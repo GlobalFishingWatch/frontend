@@ -20,7 +20,6 @@ function EventsReportGraph() {
   const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
   const { start, end } = useSelector(selectTimeRange)
   const eventsStatsDataGrouped = useSelector(selectEventsStatsDataGrouped)
-  console.log(' eventsStatsDataGrouped:', eventsStatsDataGrouped)
   const eventsStatsValueKeys = useSelector(selectEventsStatsValueKeys)
   const reportEventsGraph = useSelector(selectReportEventsGraph)
 

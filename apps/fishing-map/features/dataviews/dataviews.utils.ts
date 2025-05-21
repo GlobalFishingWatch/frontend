@@ -31,7 +31,7 @@ import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.c
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounters'
 const ENCOUNTER_EVENTS_30MIN_SOURCE_ID = 'proto-global-encounters-events-30min'
 export const PORT_VISITS_EVENTS_SOURCE_ID = 'port-visits'
-export const PORT_VISITS_REPORT_DATAVIEW_ID = 'port-visits-report'
+export const PORT_VISITS_REPORT_DATAVIEW_ID = `${PORT_VISITS_EVENTS_SOURCE_ID}-report`
 export const LOITERING_EVENTS_SOURCE_ID = 'loitering'
 export const VESSEL_GROUP_DATAVIEW_PREFIX = `vessel-group-`
 export const BIG_QUERY_PREFIX = 'bq-'

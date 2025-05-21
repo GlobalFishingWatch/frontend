@@ -28,10 +28,10 @@ import {
   selectVGReportActivityDataviews,
   selectVGRFootprintDataview,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectVesselProfileDataviewInstancesInjected } from 'features/dataviews/selectors/dataviews.injected.selectors'
 import {
   selectAllDataviewInstancesResolved,
   selectDataviewInstancesMergedOrdered,
-  selectVesselProfileDataviewInstancesInjected,
 } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
@@ -106,9 +106,6 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     vesselGroupDataviews = EMPTY_ARRAY,
     isVesselGroupReportLocation
   ) => {
-    console.log(eventsDataviews, 'eventsDataviews')
-
-    console.log(' reportCategory:', reportCategory)
     if (reportCategory === ReportCategory.Activity) {
       return isVesselGroupReportLocation ? vesselGroupDataviews : activityDataviews
     }
