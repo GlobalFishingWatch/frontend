@@ -560,9 +560,12 @@
     "loitering_other": "Peristiwa berkeliaran",
     "loiteringAction": "Berkeliaran dimulai pada {{start}} selama {{duration}}",
     "loiteringActionIn": "Berkeliaran di {{regionName}}",
-    "minuteAbbreviated": "{{count}}menit",
-    "minuteAbbreviated_one": "{{count}}menit",
-    "minuteAbbreviated_other": "{{count}}menit",
+    "minuteAbbreviated": "{{count}}'",
+    "minuteAbbreviated_one": "{{count}}'",
+    "minuteAbbreviated_other": "{{count}}'",
+    "monthAbbreviated": "{{count}}m",
+    "monthAbbreviated_one": "{{count}}m",
+    "monthAbbreviated_other": "{{count}}m",
     "noData": "Tidak ada data yang tersedia",
     "notInCVP": "Peristiwa ini terjadi di luar rentang waktu data Carrier Vessel Portal",
     "port": "Pelabuhan",
@@ -581,7 +584,10 @@
     "portAction": "Berlabuh dimulai pada {{start}} selama {{duration}}",
     "portAt": "Berlabuh di {{port}} dimulai pada {{start}} selama {{duration}}",
     "seeInCVP": "Lihat di Carrier Vessel Portal",
-    "unknown": "Peristiwa yang tidak diketahui"
+    "unknown": "Peristiwa yang tidak diketahui",
+    "yearAbbreviated": "{{count}}y",
+    "yearAbbreviated_one": "{{count}}y",
+    "yearAbbreviated_other": "{{count}}y"
   },
   "eventInfo": {
     "authorization": "otorisasi",
