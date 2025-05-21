@@ -120,7 +120,6 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
       }
       isOpen={isOpen}
       onClose={onClose}
-      size="auto"
       contentClassName={styles.modalContent}
     >
       <div className={styles.container}>
@@ -137,13 +136,20 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
             <Tag>
               {identitySource === VesselIdentitySourceEnum.Registry
                 ? t('vessel.infoSources.registry', 'Registry')
-                : identitySource === VesselIdentitySourceEnum.SelfReported &&
-                  t('vessel.infoSources.selfReported', 'Self Reported')}
+                : t('vessel.infoSources.selfReported', 'Self Reported')}
             </Tag>
           </div>
           <div>
-            <label>{t('common.vesselId', 'Vessel ID')}</label>
-            <Tag>{vesselIdentity.id} </Tag>
+            <label>
+              {identitySource === VesselIdentitySourceEnum.Registry
+                ? t(`vessel.recordId`, 'Record ID')
+                : t('common.vesselId', 'Vessel ID')}
+            </label>
+            <Tag>
+              {identitySource === VesselIdentitySourceEnum.Registry
+                ? vesselIdentity.recordId?.replaceAll('|', ' ')
+                : vesselIdentity.id}
+            </Tag>
           </div>
         </div>
 
