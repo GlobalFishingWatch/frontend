@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 
-import type { EventType } from '@globalfishingwatch/api-types'
+import type { EventNextPort, EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
@@ -78,6 +78,21 @@ const EventDetail = ({ event }: ActivityContentProps) => {
   //   </Fragment>
   // )
 
+  const PortVisitedAfterField = ({ nextPort }: { nextPort: EventNextPort | undefined }) => {
+    return (
+      <li>
+        <label className={styles.fieldLabel}>
+          {t(`eventInfo.portVisitedAfter`, 'Port visited after')}
+        </label>
+        <span>
+          {nextPort?.id
+            ? `${formatInfoField(nextPort.name || nextPort.id, 'port')} (${formatInfoField(nextPort.flag, 'flag')})`
+            : EMPTY_FIELD_PLACEHOLDER}
+        </span>
+      </li>
+    )
+  }
+
   const authAreas = event.regions?.rfmo.filter((rfmo) => AUTH_AREAS.includes(rfmo)).sort()
 
   if (event.type === EventTypes.Encounter) {
@@ -99,18 +114,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
           </label>
           <span>{event.encounter?.medianSpeedKnots?.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
-        {isGlobalReportsEnabled && (
-          <li>
-            <label className={styles.fieldLabel}>
-              {t(`eventInfo.portVisitedAfter`, 'Port visited after')}
-            </label>
-            <span>
-              {event.vessel.nextPort
-                ? `${formatInfoField(event.vessel.nextPort?.name, 'port')} (${formatInfoField(event.vessel.nextPort?.flag, 'flag')})`
-                : EMPTY_FIELD_PLACEHOLDER}
-            </span>
-          </li>
-        )}
+        {isGlobalReportsEnabled && <PortVisitedAfterField nextPort={event.vessel.nextPort} />}
         <div className={styles.divider} />
         <label className={styles.blockLabel}>
           {t(`eventInfo.encounteredVesselName`, 'Encountered vessel')}
@@ -279,18 +283,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
           </label>
           <span>{event.loitering?.averageSpeedKnots.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
-        {isGlobalReportsEnabled && (
-          <li>
-            <label className={styles.fieldLabel}>
-              {t(`eventInfo.portVisitedAfter`, 'Port visited after')}
-            </label>
-            <span>
-              {event.vessel.nextPort
-                ? `${formatInfoField(event.vessel.nextPort?.name, 'port')} (${formatInfoField(event.vessel.nextPort?.flag, 'flag')})`
-                : EMPTY_FIELD_PLACEHOLDER}
-            </span>
-          </li>
-        )}
+        {isGlobalReportsEnabled && <PortVisitedAfterField nextPort={event.vessel.nextPort} />}
       </ul>
     )
   } else if (event.type === EventTypes.Port) {

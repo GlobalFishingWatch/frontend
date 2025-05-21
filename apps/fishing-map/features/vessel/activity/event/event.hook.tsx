@@ -161,23 +161,31 @@ export function useActivityEventTranslations() {
     (event: VesselEvent) => {
       const durationDiff = getUTCDateTime(event.end as number).diff(
         getUTCDateTime(event.start as number),
-        ['days', 'hours', 'minutes']
+        ['years', 'months', 'days', 'hours', 'minutes']
       )
       const duration = durationDiff.toObject()
 
       const durationDescription =
         event.end > event.start
           ? [
+              duration.years && duration.years > 0
+                ? t('event.yearAbbreviated', '{{count}}y', { count: duration.years })
+                : '',
+              duration.months && duration.months > 0
+                ? t('event.monthAbbreviated', '{{count}}m', { count: duration.months })
+                : '',
               duration.days && duration.days > 0
                 ? t('event.dayAbbreviated', '{{count}}d', { count: duration.days })
                 : '',
-              duration.hours && duration.hours > 0
+              duration.years === 0 && duration.months === 0 && duration.hours && duration.hours > 0
                 ? t('event.hourAbbreviated', '{{count}}h', { count: duration.hours })
                 : '',
-              duration.minutes && duration.minutes > 0
-                ? t('event.minuteAbbreviated', '{{count}}m', {
-                    count: Math.round(duration.minutes as number),
-                  })
+              duration.years === 0 &&
+              duration.months === 0 &&
+              duration.days === 0 &&
+              duration.minutes &&
+              Math.round(duration.minutes as number) > 0
+                ? `${Math.round(duration.minutes as number)}'`
                 : '',
             ].join(' ')
           : null
