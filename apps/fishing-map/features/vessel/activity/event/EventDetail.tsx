@@ -9,7 +9,7 @@ import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import { EVENTS_COLORS } from 'data/config'
 import { getHasVesselProfileInstance } from 'features/dataviews/dataviews.utils'
-import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
 import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
@@ -20,7 +20,7 @@ import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
-import type VesselEvent from './Event'
+import type { VesselEvent } from './Event'
 
 import styles from './Event.module.css'
 

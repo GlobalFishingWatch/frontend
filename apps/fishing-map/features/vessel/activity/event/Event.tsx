@@ -13,7 +13,7 @@ import { useActivityEventTranslations } from './event.hook'
 
 import styles from './Event.module.css'
 
-type VesselEvent = ActivityEvent | ApiEvent
+export type VesselEvent = ActivityEvent | ApiEvent
 
 interface EventProps {
   className?: string
@@ -30,7 +30,7 @@ interface EventProps {
 
 export const EVENT_HEIGHT = 126
 
-const VesselEvent: React.FC<EventProps> = (props): React.ReactElement<any> => {
+const Event: React.FC<EventProps> = (props): React.ReactElement<any> => {
   const {
     event,
     className = '',
@@ -86,7 +86,7 @@ const VesselEvent: React.FC<EventProps> = (props): React.ReactElement<any> => {
         <EventIcon type={event.type} />
         <div className={styles.eventData}>
           <ActivityDate event={event as ActivityEvent} />
-          <p className={styles.description}>
+          <p className={cx(styles.description, { [styles.interactive]: expanded })}>
             {getEventDescription(event as ActivityEvent, regionsPriority) as string}
           </p>
         </div>
@@ -107,4 +107,4 @@ const VesselEvent: React.FC<EventProps> = (props): React.ReactElement<any> => {
   )
 }
 
-export default VesselEvent
+export default Event
