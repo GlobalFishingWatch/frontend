@@ -98,7 +98,9 @@ const VesselRegistryField = ({
             </label>
           </div>
         )}
-        {vesselIdentity.recordId && <VesselIdentityField value={vesselIdentity.recordId} />}
+        {vesselIdentity.recordId && (
+          <VesselIdentityField value={vesselIdentity.recordId.replaceAll('|', ' ')} />
+        )}
       </div>
     )
   }

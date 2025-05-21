@@ -279,16 +279,18 @@ const EventDetail = ({ event }: ActivityContentProps) => {
           </label>
           <span>{event.loitering?.averageSpeedKnots.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
-        <li>
-          <label className={styles.fieldLabel}>
-            {t(`eventInfo.portVisitedAfter`, 'Port visited after')}
-          </label>
-          <span>
-            {event.vessel.nextPort
-              ? `${formatInfoField(event.vessel.nextPort?.name, 'port')} (${formatInfoField(event.vessel.nextPort?.flag, 'flag')})`
-              : EMPTY_FIELD_PLACEHOLDER}
-          </span>
-        </li>
+        {isGlobalReportsEnabled && (
+          <li>
+            <label className={styles.fieldLabel}>
+              {t(`eventInfo.portVisitedAfter`, 'Port visited after')}
+            </label>
+            <span>
+              {event.vessel.nextPort
+                ? `${formatInfoField(event.vessel.nextPort?.name, 'port')} (${formatInfoField(event.vessel.nextPort?.flag, 'flag')})`
+                : EMPTY_FIELD_PLACEHOLDER}
+            </span>
+          </li>
+        )}
       </ul>
     )
   } else if (event.type === EventTypes.Port) {
