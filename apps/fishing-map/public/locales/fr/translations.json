@@ -560,9 +560,12 @@
     "loitering_other": "Événements de dérive",
     "loiteringAction": "La dérive a commencé à {{start}} pendant {{duration}}",
     "loiteringActionIn": "Dérive dans {{regionName}}",
-    "minuteAbbreviated": "{{count}}m",
-    "minuteAbbreviated_one": "{{count}}m",
-    "minuteAbbreviated_other": "{{count}}m",
+    "minuteAbbreviated": "{{count}}'",
+    "minuteAbbreviated_one": "{{count}}'",
+    "minuteAbbreviated_other": "{{count}}'",
+    "monthAbbreviated": "{{count}}m",
+    "monthAbbreviated_one": "{{count}}m",
+    "monthAbbreviated_other": "{{count}}m",
     "noData": "Aucune donnée disponible",
     "notInCVP": "Événement non disponible.",
     "port": "Port",
@@ -581,7 +584,10 @@
     "portAction": "À quai depuis {{start}} pendant {{duration}}",
     "portAt": "À quai à {{port}} depuis {{start}} pendant {{duration}}",
     "seeInCVP": "Voir dans le Portail des navires de transport",
-    "unknown": "Événement inconnu"
+    "unknown": "Événement inconnu",
+    "yearAbbreviated": "{{count}}y",
+    "yearAbbreviated_one": "{{count}}y",
+    "yearAbbreviated_other": "{{count}}y"
   },
   "eventInfo": {
     "authorization": "autorisation",
