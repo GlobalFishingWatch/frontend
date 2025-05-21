@@ -28,10 +28,10 @@ import {
   selectVGReportActivityDataviews,
   selectVGRFootprintDataview,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { selectVesselProfileDataviewInstancesInjected } from 'features/dataviews/selectors/dataviews.injected.selectors'
 import {
   selectAllDataviewInstancesResolved,
   selectDataviewInstancesMergedOrdered,
+  selectVesselProfileDataviewInstancesInjected,
 } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
@@ -39,11 +39,7 @@ import { selectDownloadActiveTabId } from 'features/download/downloadActivity.sl
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
-import {
-  selectIsVesselGroupReportLocation,
-  selectUrlDataviewInstances,
-  selectVesselId,
-} from 'routes/routes.selectors'
+import { selectIsVesselGroupReportLocation, selectVesselId } from 'routes/routes.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 
 export const selectBasemapLabelsDataviewInstance = createSelector(
@@ -110,6 +106,9 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     vesselGroupDataviews = EMPTY_ARRAY,
     isVesselGroupReportLocation
   ) => {
+    console.log(eventsDataviews, 'eventsDataviews')
+
+    console.log(' reportCategory:', reportCategory)
     if (reportCategory === ReportCategory.Activity) {
       return isVesselGroupReportLocation ? vesselGroupDataviews : activityDataviews
     }

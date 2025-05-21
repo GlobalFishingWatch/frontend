@@ -23,7 +23,10 @@ import {
 import type { ColorRampId } from '@globalfishingwatch/deck-layers'
 
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
-import { PORTS_FOOTPRINT_DATAVIEW_SLUG } from 'data/workspaces'
+import {
+  CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+  PORTS_FOOTPRINT_DATAVIEW_SLUG,
+} from 'data/workspaces'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
@@ -35,6 +38,7 @@ import {
   getVesselDataviewInstanceDatasetConfig,
   getVesselEncounterTrackDataviewInstance,
   getVesselIdFromInstanceId,
+  PORT_VISITS_REPORT_DATAVIEW_ID,
 } from 'features/dataviews/dataviews.utils'
 import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
 import {
@@ -108,21 +112,13 @@ export const selectWorkspaceDataviewInstancesMerged = createSelector(
   }
 )
 
-// Inject dataviews on the fly for reports and vessel profile
-// Also for the vessel profile encounter events to see encountered vessel track
-export const selectDataviewInstancesInjected = createSelector(
+export const selectVesselProfileDataviewInstancesInjected = createSelector(
   [
     selectWorkspaceDataviewInstancesMerged,
     selectVesselTemplateDataviews,
     selectIsAnyVesselLocation,
     selectIsVesselLocation,
     selectCurrentVesselEvent,
-    selectIsPortReportLocation,
-    selectIsVesselGroupReportLocation,
-    selectReportCategorySelector,
-    selectReportVesselGroupId,
-    selectReportEventsGraph,
-    selectReportPortId,
     selectVesselId,
     selectVesselInfoData,
   ],
@@ -132,12 +128,6 @@ export const selectDataviewInstancesInjected = createSelector(
     isAnyVesselLocation,
     isVesselLocation,
     currentVesselEvent,
-    isPortReportLocation,
-    isVesselGroupReportLocation,
-    reportCategory,
-    reportVesselGroupId,
-    reportEventsGraph,
-    reportPortId,
     vesselId,
     vesselInfoData
   ): UrlDataviewInstance[] | undefined => {
@@ -209,6 +199,25 @@ export const selectDataviewInstancesInjected = createSelector(
         })
       }
     }
+
+    return dataviewInstancesInjected
+  }
+)
+
+export const selectVGRDataviewInstancesInjected = createSelector(
+  [
+    selectWorkspaceDataviewInstances,
+    selectIsVesselGroupReportLocation,
+    selectReportCategorySelector,
+    selectReportVesselGroupId,
+  ],
+  (
+    workspaceDataviewInstancesMerged,
+    isVesselGroupReportLocation,
+    reportCategory,
+    reportVesselGroupId
+  ): UrlDataviewInstance[] | undefined => {
+    const dataviewInstancesInjected = [] as UrlDataviewInstance[]
     if (isVesselGroupReportLocation) {
       let vesselGroupDataviewInstance = workspaceDataviewInstancesMerged?.find((dataview) =>
         dataviewHasVesselGroupId(dataview, reportVesselGroupId)
@@ -247,8 +256,23 @@ export const selectDataviewInstancesInjected = createSelector(
         })
       }
     }
+    return dataviewInstancesInjected
+  }
+)
+
+// Inject dataviews on the fly for reports and vessel profile
+// Also for the vessel profile encounter events to see encountered vessel track
+export const selectPortReportDataviewInstancesInjected = createSelector(
+  [selectWorkspaceDataviewInstancesMerged, selectIsPortReportLocation, selectReportPortId],
+  (
+    workspaceDataviewInstancesMerged,
+    isPortReportLocation,
+    reportPortId
+  ): UrlDataviewInstance[] | undefined => {
+    const dataviewInstancesInjected = [] as UrlDataviewInstance[]
+
     if (isPortReportLocation) {
-      let footprintDataviewInstance = dataviewInstancesInjected?.find(
+      let footprintDataviewInstance = workspaceDataviewInstancesMerged?.find(
         (dataview) => dataview.id === PORTS_FOOTPRINT_DATAVIEW_SLUG
       )
       if (footprintDataviewInstance) {
@@ -273,8 +297,36 @@ export const selectDataviewInstancesInjected = createSelector(
         }
       }
       dataviewInstancesInjected.push(footprintDataviewInstance)
+
+      const hasPortVisitDataviewInstance = workspaceDataviewInstancesMerged?.some(
+        (dataview) => dataview.dataviewId === CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG
+      )
+      if (!hasPortVisitDataviewInstance) {
+        const portVisitDataviewInstance = {
+          id: PORT_VISITS_REPORT_DATAVIEW_ID,
+          category: DataviewCategory.Events,
+          config: {
+            visible: true,
+            color: '#9AEEFF',
+            clusterMaxZoomLevels: { default: 20 },
+            filters: {
+              port_id: reportPortId,
+            },
+          },
+          dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+        }
+        dataviewInstancesInjected.push(portVisitDataviewInstance)
+      }
     }
-    // Inject the dataview instance for the events graph report by area
+    return dataviewInstancesInjected
+  }
+)
+
+// Inject the dataview instance for the events graph report by area
+export const selectAreaReportDataviewInstancesInjected = createSelector(
+  [selectReportCategorySelector, selectReportEventsGraph],
+  (reportCategory, reportEventsGraph): UrlDataviewInstance[] | undefined => {
+    const dataviewInstancesInjected = [] as UrlDataviewInstance[]
     const reportAreaDataviewId =
       REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS[
         reportEventsGraph as keyof typeof REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS
@@ -293,8 +345,41 @@ export const selectDataviewInstancesInjected = createSelector(
   }
 )
 
+// Inject dataviews on the fly for reports and vessel profile
+// Also for the vessel profile encounter events to see encountered vessel track
+export function selectDataviewInstancesInjected() {
+  return createSelector(
+    [
+      selectVesselProfileDataviewInstancesInjected,
+      selectVGRDataviewInstancesInjected,
+      selectPortReportDataviewInstancesInjected,
+      selectAreaReportDataviewInstancesInjected,
+    ],
+    (
+      vesselProfileDataviewInstancesInjected = [],
+      vgrDataviewInstancesInjected = [],
+      portReportDataviewInstancesInjected = [],
+      areaReportDataviewInstancesInjected = []
+    ): UrlDataviewInstance[] | undefined => {
+      console.log(
+        ' vesselProfileDataviewInstancesInjected:',
+        vesselProfileDataviewInstancesInjected
+      )
+      console.log(' vgrDataviewInstancesInjected:', vgrDataviewInstancesInjected)
+      console.log(' portReportDataviewInstancesInjected:', portReportDataviewInstancesInjected)
+      console.log(' areaReportDataviewInstancesInjected:', areaReportDataviewInstancesInjected)
+      return [
+        ...vesselProfileDataviewInstancesInjected,
+        ...vgrDataviewInstancesInjected,
+        ...portReportDataviewInstancesInjected,
+        ...areaReportDataviewInstancesInjected,
+      ]
+    }
+  )
+}
+
 export const selectDataviewInstancesMerged = createDeepEqualSelector(
-  [selectWorkspaceDataviewInstancesMerged, selectDataviewInstancesInjected],
+  [selectWorkspaceDataviewInstancesMerged, selectDataviewInstancesInjected()],
   (
     dataviewInstances = EMPTY_ARRAY,
     injectedDataviewInstances = EMPTY_ARRAY

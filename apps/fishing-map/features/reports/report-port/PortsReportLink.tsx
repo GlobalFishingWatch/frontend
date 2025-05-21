@@ -9,14 +9,12 @@ import { BasemapType } from '@globalfishingwatch/deck-layers'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import {
-  CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
 import type { ExtendedFeatureByVesselEventPort } from 'features/map/map.slice'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { PORT_REPORT } from 'routes/routes'
 import { selectLocationQuery } from 'routes/routes.selectors'
@@ -35,23 +33,13 @@ type PortsReportLinkProps = {
 
 function PortsReportLink({ children, port, tooltip }: PortsReportLinkProps) {
   const workspace = useSelector(selectWorkspace)
-  const portVisitDataviewInstance = workspace?.dataviewInstances?.find(
-    (instance) => instance.dataviewId === CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG
-  )
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const query = useSelector(selectLocationQuery)
 
   const { dispatchClickedEvent } = useClickedEventConnect()
 
   const handleOnClick = useCallback(() => {
-    if (portVisitDataviewInstance) {
-      upsertDataviewInstance({
-        ...portVisitDataviewInstance,
-        config: { visible: true },
-      })
-    }
     dispatchClickedEvent(null)
-  }, [dispatchClickedEvent, upsertDataviewInstance, portVisitDataviewInstance])
+  }, [dispatchClickedEvent])
 
   if (!workspace || !port) {
     return children

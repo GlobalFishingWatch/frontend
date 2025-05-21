@@ -58,7 +58,7 @@ function EventsReport() {
   const timerangeSupported = getDownloadReportSupported(start, end)
   const datasetAreasId = useSelector(selectEventsGraphDatasetAreaId)
   const datasetAreas = useFetchContextDatasetAreas(datasetAreasId)
-  const showPortsTable = eventsDataview?.datasets?.[0].subcategory !== 'port_visit'
+  const showPortsTable = eventsDataview?.datasets?.[0]?.subcategory !== 'port_visit'
   const { dispatchQueryParams } = useLocationConnect()
   const { updateReportHash, reportOutdated } = useReportHash()
 
@@ -69,7 +69,6 @@ function EventsReport() {
   const { error: statsError, status: statsStatus } = useGetReportEventsStatsQuery(statsParams, {
     skip: !eventsDataview,
   })
-  console.log(' statsStatus:', statsStatus)
 
   useEffect(() => {
     if (reportLoadVessels && eventsDataview) {
