@@ -560,9 +560,12 @@
     "loitering_other": "Eventos de deriva",
     "loiteringAction": "Deriva comenzó a partir de {{start}} por {{duration}}",
     "loiteringActionIn": "Merodeando en {{regionName}}",
-    "minuteAbbreviated": "{{count}}m",
-    "minuteAbbreviated_one": "{{count}}m",
-    "minuteAbbreviated_other": "{{count}}m",
+    "minuteAbbreviated": "{{count}}'",
+    "minuteAbbreviated_one": "{{count}}'",
+    "minuteAbbreviated_other": "{{count}}'",
+    "monthAbbreviated": "{{count}}m",
+    "monthAbbreviated_one": "{{count}}m",
+    "monthAbbreviated_other": "{{count}}m",
     "noData": "No hay datos disponibles",
     "notInCVP": "Evento no disponible",
     "port": "Puerto",
@@ -581,7 +584,10 @@
     "portAction": "Visita a puerto comenzó a partir de {{start}} por {{duration}}",
     "portAt": "Visita a puerto {{port}} comenzó a partir de {{start}} por {{duration}}",
     "seeInCVP": "Ver en el Carrier Vessel Portal",
-    "unknown": "Evento desconocido"
+    "unknown": "Evento desconocido",
+    "yearAbbreviated": "{{count}}y",
+    "yearAbbreviated_one": "{{count}}y",
+    "yearAbbreviated_other": "{{count}}y"
   },
   "eventInfo": {
     "authorization": "autorización",
