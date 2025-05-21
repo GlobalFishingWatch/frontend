@@ -560,9 +560,12 @@
     "loitering_other": "Loitering events",
     "loiteringAction": "Loitering started at {{start}} for {{duration}}",
     "loiteringActionIn": "Loitering in {{regionName}}",
-    "minuteAbbreviated": "{{count}}m",
-    "minuteAbbreviated_one": "{{count}}m",
-    "minuteAbbreviated_other": "{{count}}m",
+    "minuteAbbreviated": "{{count}}'",
+    "minuteAbbreviated_one": "{{count}}'",
+    "minuteAbbreviated_other": "{{count}}'",
+    "monthAbbreviated": "{{count}}m",
+    "monthAbbreviated_one": "{{count}}m",
+    "monthAbbreviated_other": "{{count}}m",
     "noData": "No data available",
     "notInCVP": "This event happened outside the timerange of the Carrier Vessel Portal data",
     "port": "Port",
@@ -581,7 +584,10 @@
     "portAction": "Docked started at {{start}} for {{duration}}",
     "portAt": "Docked at {{port}} started at {{start}} for {{duration}}",
     "seeInCVP": "See in Carrier Vessel Portal",
-    "unknown": "Unknown event"
+    "unknown": "Unknown event",
+    "yearAbbreviated": "{{count}}y",
+    "yearAbbreviated_one": "{{count}}y",
+    "yearAbbreviated_other": "{{count}}y"
   },
   "eventInfo": {
     "authorization": "authorization",
