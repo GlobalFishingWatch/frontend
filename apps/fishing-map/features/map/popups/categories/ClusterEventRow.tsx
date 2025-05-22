@@ -9,7 +9,7 @@ import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
-import { getEventDescriptionComponent } from 'utils/events'
+import { getEventDescription } from 'utils/events'
 import { formatInfoField } from 'utils/info'
 
 import type { ExtendedFeatureSingleEvent, SliceExtendedClusterPickingObject } from '../../map.slice'
@@ -86,7 +86,7 @@ function ClusterEventTooltipRow({
                   </VesselLink>
                   ({formatInfoField(event.vessel.flag, 'flag')}){' '}
                   <span className={styles.secondary} style={{ display: 'inline' }}>
-                    {getEventDescriptionComponent(event)?.description}
+                    {getEventDescription(event)?.description}
                   </span>
                 </div>
               ) : (

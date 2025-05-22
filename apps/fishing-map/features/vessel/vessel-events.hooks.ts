@@ -22,7 +22,6 @@ const useVesselProfileEvents = () => {
     if (dataLoaded) {
       return vesselLayer?.instance?.getVesselEventsData()
     }
-     
   }, [dataLoaded])
 }
 

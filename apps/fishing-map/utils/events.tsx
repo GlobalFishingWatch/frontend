@@ -1,23 +1,18 @@
-import { Fragment } from 'react'
-import { Trans } from 'react-i18next'
 import type { Duration } from 'luxon'
 import { DateTime } from 'luxon'
 
-import type { ApiEvent, DataviewInstanceOrigin } from '@globalfishingwatch/api-types'
+import type { ApiEvent } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import type { SupportedDateType } from '@globalfishingwatch/data-transforms'
 
 import { EVENTS_COLORS } from 'data/config'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
-import type { VesselPinOnClickCb } from 'features/vessel/VesselPin'
-import VesselPin from 'features/vessel/VesselPin'
 
 import { getUTCDateTime } from './dates'
 import { formatInfoField } from './info'
 
-const getEventColors = ({ type }: { type: ApiEvent['type'] }) => {
+export const getEventColors = ({ type }: { type: ApiEvent['type'] }) => {
   const colorKey = type
   // TODO not supporting authorization status yet
   // if (event.type === 'encounter' && showAuthorizationStatus) {
@@ -153,53 +148,5 @@ export const getEventDescription = ({
   return {
     description,
     descriptionGeneric,
-  }
-}
-
-export const getEventDescriptionComponent = (
-  event: ApiEvent,
-  className = '',
-  vesselOrigin?: DataviewInstanceOrigin,
-  onVesselPinClick?: VesselPinOnClickCb
-) => {
-  const { start, end, type, encounter } = event
-  const { color, colorLabels } = getEventColors({ type })
-  let DescriptionComponent
-  const encounterVesselName = encounter?.vessel?.name
-  const encounterVesselId = encounter?.vessel?.id
-  const { descriptionGeneric, description } = getEventDescription(event)
-  if (type === EventTypes.Encounter && encounterVesselName && encounterVesselId) {
-    const time = getTimeLabels({ start, end })
-    DescriptionComponent = (
-      <p className={className}>
-        <Trans
-          i18nKey="event.encounterActionWithVesselsPin"
-          defaults="had an encounter with <pin></pin>{{encounterVessel}} starting at {{start}} for {{duration}}"
-          values={{
-            encounterVessel: formatInfoField(encounterVesselName, 'shipname'),
-            ...time,
-          }}
-          components={{
-            pin: (
-              <VesselPin
-                vesselToResolve={{ id: encounterVesselId, datasetId: DEFAULT_VESSEL_IDENTITY_ID }}
-                size="tiny"
-                onClick={onVesselPinClick}
-                origin={vesselOrigin}
-              />
-            ),
-          }}
-        ></Trans>
-      </p>
-    )
-  } else {
-    DescriptionComponent = <Fragment>{description}</Fragment>
-  }
-  return {
-    color,
-    colorLabels,
-    description,
-    descriptionGeneric,
-    DescriptionComponent,
   }
 }
