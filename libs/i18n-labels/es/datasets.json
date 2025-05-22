@@ -1191,7 +1191,18 @@
     "description": "Global Fishing Watch utiliza datos sobre la identidad, el tipo, la ubicación, la velocidad, y otros datos que son emitidos a través del Sistema de Identificación Automática (AIS) y recolectados a través de satélites y receptores terrestres. El AIS fue desarrollado para la prevención de colisión/esquivación. Global Fishing Watch analiza los datos AIS recopilados de los buques que nuestra investigación ha identificado como conocidos o posibles buques pesqueros comerciales, y aplica un algoritmo de detección de pesca para determinar una “aparente actividad pesquera” basado en cambios en la velocidad y dirección de los buques. El algoritmo clasifica cada punto de datos para estos buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera de Global Fishing Watch. Los datos AIS pueden variar en integridad, precisión y calidad. Además, la recolección de datos por parte de receptores satelitales o terrestres, puede introducir errores a través de datos faltantes o inexactos. El algoritmo de detección de pesca de Global Fishing Watch representa un esfuerzo matemático para identificar una “aparente actividad pesquera”. Como resultado, es posible que algunas actividades pesqueras no sean identificadas como tales por Global Fishing Watch. Por el contrario, Global Fishing Watch puede mostrar una actividad pesquera aparente en la que la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica “actividad pesquera”,“pesca” o “esfuerzo pesquero” como “aparente”, en lugar de brindar certeza sobre la actividad. En todo o en parte, la información de Global Fishing Watch sobre “aparente actividad de pesca” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Global Fishing Watch está tomando medidas para asegurar que la identificación del comportamiento de la actividad pesquera sea lo más exacta posible. Los algoritmos de detección de pesca de Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de buques que dan lugar a la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y técnicas de clasificación automatizadas.",
     "schema": {
       "speed": "speed",
-      "bearing": "bearing"
+      "bearing": "bearing",
+      "distance_from_port_km": {
+        "keyword": "distance_from_port_km",
+        "enum": {
+          "0": "0",
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
+        }
+      }
     }
   },
   "public-global-fishing-events": {
