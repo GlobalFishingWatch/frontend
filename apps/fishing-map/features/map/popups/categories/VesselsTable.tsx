@@ -132,7 +132,7 @@ function VesselsTable({
 
               const identitiesSummary = vessel ? getVesselIdentityTooltipSummary(vessel) : ''
               return (
-                <tr key={vessel.id} data-test={`${testId}-item-${i}`}>
+                <tr key={vessel.id + i} data-test={`${testId}-item-${i}`}>
                   {!pinTrackDisabled && (
                     <td className={styles.icon}>
                       <VesselPin vessel={vessel} />

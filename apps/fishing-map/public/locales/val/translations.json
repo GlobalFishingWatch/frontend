@@ -563,6 +563,9 @@
     "minuteAbbreviated": "crwdns60159:0{{count}}crwdne60159:0",
     "minuteAbbreviated_one": "crwdns60161:0{{count}}crwdne60161:0",
     "minuteAbbreviated_other": "crwdns60163:0{{count}}crwdne60163:0",
+    "monthAbbreviated": "crwdns84686:0{{count}}crwdne84686:0",
+    "monthAbbreviated_one": "crwdns84688:0{{count}}crwdne84688:0",
+    "monthAbbreviated_other": "crwdns84690:0{{count}}crwdne84690:0",
     "noData": "crwdns60165:0crwdne60165:0",
     "notInCVP": "crwdns60167:0crwdne60167:0",
     "port": "crwdns60169:0crwdne60169:0",
@@ -581,7 +584,10 @@
     "portAction": "crwdns60175:0{{start}}crwdnd60175:0{{duration}}crwdne60175:0",
     "portAt": "crwdns60177:0{{port}}crwdnd60177:0{{start}}crwdnd60177:0{{duration}}crwdne60177:0",
     "seeInCVP": "crwdns60179:0crwdne60179:0",
-    "unknown": "crwdns60181:0crwdne60181:0"
+    "unknown": "crwdns60181:0crwdne60181:0",
+    "yearAbbreviated": "crwdns84692:0{{count}}crwdne84692:0",
+    "yearAbbreviated_one": "crwdns84694:0{{count}}crwdne84694:0",
+    "yearAbbreviated_other": "crwdns84696:0{{count}}crwdne84696:0"
   },
   "eventInfo": {
     "authorization": "crwdns69384:0crwdne69384:0",
@@ -697,7 +703,6 @@
     "geometryError": "crwdns60291:0crwdne60291:0",
     "geometryRequired": "crwdns60293:0crwdne60293:0",
     "height": "crwdns83178:0crwdne83178:0",
-    "minimumDistanceFromPort": "crwdns84500:0crwdne84500:0",
     "name": "crwdns60299:0crwdne60299:0",
     "nameLengthError_one": "crwdns60301:0{{count}}crwdne60301:0",
     "nameLengthError_other": "crwdns60303:0{{count}}crwdne60303:0",

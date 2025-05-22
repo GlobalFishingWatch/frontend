@@ -42,10 +42,23 @@
 }
 
 .description {
+  pointer-events: none;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
   flex: 1;
+}
+
+.description a {
+  text-decoration: none;
+}
+
+.interactive {
+  pointer-events: auto;
+}
+
+.interactive a {
+  text-decoration: underline;
 }
 
 .detailContainer {

@@ -51,6 +51,7 @@ class MyDocument extends Document {
           <link
             href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap"
             rel="stylesheet"
+            media="print"
           />
           <meta name="mobile-web-app-capable" content="yes" />
           <meta name="theme-color" content="#163f89" />

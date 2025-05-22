@@ -1,13 +1,16 @@
 import { createSelector } from '@reduxjs/toolkit'
 
 import type { DataviewDatasetConfig } from '@globalfishingwatch/api-types'
-import { EventTypes } from '@globalfishingwatch/api-types'
+import { DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { ColorRampId } from '@globalfishingwatch/deck-layers'
 
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
-import { PORTS_FOOTPRINT_DATAVIEW_SLUG } from 'data/workspaces'
+import {
+  CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+  PORTS_FOOTPRINT_DATAVIEW_SLUG,
+} from 'data/workspaces'
 import {
   dataviewHasVesselGroupId,
   getHasVesselProfileInstance,
@@ -15,8 +18,9 @@ import {
   getVesselDataviewInstance,
   getVesselDataviewInstanceDatasetConfig,
   getVesselEncounterTrackDataviewInstance,
+  PORT_VISITS_REPORT_DATAVIEW_ID,
 } from 'features/dataviews/dataviews.utils'
-import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
 import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
 import {
   getVesselGroupActivityDataviewInstance,
@@ -233,6 +237,29 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
         }
       }
       dataviewInstancesInjected.push(footprintDataviewInstance)
+
+      const hasPortVisitDataviewInstance = workspaceDataviewInstancesMerged?.some(
+        (dataview) =>
+          !dataview.deleted &&
+          dataview.config?.visible &&
+          dataview.dataviewId === CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG
+      )
+      if (!hasPortVisitDataviewInstance) {
+        const portVisitDataviewInstance = {
+          id: PORT_VISITS_REPORT_DATAVIEW_ID,
+          category: DataviewCategory.Events,
+          config: {
+            visible: true,
+            color: '#9AEEFF',
+            clusterMaxZoomLevels: { default: 20 },
+            filters: {
+              port_id: reportPortId,
+            },
+          },
+          dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+        }
+        dataviewInstancesInjected.push(portVisitDataviewInstance)
+      }
     }
     return dataviewInstancesInjected
   }

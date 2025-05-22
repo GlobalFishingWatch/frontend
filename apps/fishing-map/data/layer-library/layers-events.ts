@@ -42,7 +42,6 @@ export const LAYERS_LIBRARY_EVENTS: LibraryLayerConfig[] = [
       // TODO remove this when removing the selectIsGlobalReportsEnabled feature flag
       eventsTemporalAggregation: IS_PRODUCTION_WORKSPACE_ENV,
     },
-    onlyGFWUser: true,
   },
 ]
 

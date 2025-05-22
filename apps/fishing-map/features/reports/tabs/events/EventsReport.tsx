@@ -58,7 +58,7 @@ function EventsReport() {
   const timerangeSupported = getDownloadReportSupported(start, end)
   const datasetAreasId = useSelector(selectEventsGraphDatasetAreaId)
   const datasetAreas = useFetchContextDatasetAreas(datasetAreasId)
-  const showPortsTable = eventsDataview?.datasets?.[0].subcategory !== 'port_visit'
+  const showPortsTable = eventsDataview?.datasets?.[0]?.subcategory !== 'port_visit'
   const { dispatchQueryParams } = useLocationConnect()
   const { updateReportHash, reportOutdated } = useReportHash()
 
