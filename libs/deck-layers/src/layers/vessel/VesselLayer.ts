@@ -112,7 +112,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       ...(info.object || ({} as VesselEventProperties)),
       layerId: this.root.id,
       title: this.props.name,
-      vesselId: this.props.id,
+      vesselId: this.props.id.replace('vessel-', ''),
       category: DataviewCategory.Vessels,
       subcategory: DataviewType.VesselEvents,
       color: deckToHexColor(this.props.color),

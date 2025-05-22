@@ -132,7 +132,7 @@
 .popupSectionTitle {
   opacity: var(--opacity-secondary);
   line-height: 1.2;
-  margin-bottom: var(--space-S);
+  margin-bottom: var(--space-XS);
 }
 
 .vesselRow {
