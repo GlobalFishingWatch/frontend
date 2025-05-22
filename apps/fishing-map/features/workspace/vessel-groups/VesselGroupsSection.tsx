@@ -21,16 +21,14 @@ import {
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from '../highlight-panel/highlight-panel.content'
-import LayerPanelContainer from '../shared/LayerPanelContainer'
-
 import VesselGroupLayerPanel from './VesselGroupsLayerPanel'
 
 import styles from 'features/workspace/shared/Sections.module.css'
 
-const MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION = {
-  id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
-}
+// Use this when needs to highlight a section instead of a dataview
+// const MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION = {
+//   id: HIGHLIGHT_DATAVIEW_INSTANCE_ID,
+// }
 
 function VesselGroupSection(): React.ReactElement<any> {
   const { t } = useTranslation()
@@ -109,9 +107,9 @@ function VesselGroupSection(): React.ReactElement<any> {
                 'Add vessel groups to see group presence and operation footprint.'
               )}
             </div>
-            <LayerPanelContainer dataview={MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION}>
+            {/* <LayerPanelContainer dataview={MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION}>
               <span className={styles.highlightSpan}></span>
-            </LayerPanelContainer>
+            </LayerPanelContainer> */}
           </div>
         )}
       </SortableContext>

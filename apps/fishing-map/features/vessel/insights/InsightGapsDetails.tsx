@@ -11,7 +11,7 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { removeNonTunaRFMO } from 'features/vessel/insights/insights.utils'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 
-import type VesselEvent from '../activity/event/Event'
+import type { VesselEvent } from '../activity/event/Event'
 import Event from '../activity/event/Event'
 import { selectVesselInfoData } from '../selectors/vessel.selectors'
 

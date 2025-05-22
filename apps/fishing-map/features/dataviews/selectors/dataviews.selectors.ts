@@ -39,11 +39,7 @@ import { selectDownloadActiveTabId } from 'features/download/downloadActivity.sl
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
-import {
-  selectIsVesselGroupReportLocation,
-  selectUrlDataviewInstances,
-  selectVesselId,
-} from 'routes/routes.selectors'
+import { selectIsVesselGroupReportLocation, selectVesselId } from 'routes/routes.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 
 export const selectBasemapLabelsDataviewInstance = createSelector(

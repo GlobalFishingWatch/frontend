@@ -102,7 +102,7 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   daysFromLatest: undefined,
   detectionsVisualizationMode: 'heatmap',
   environmentVisualizationMode: 'heatmap-low-res',
-  featureFlags: PUBLIC_WORKSPACE_ENV !== 'production' ? ['vesselClassInfo'] : [],
+  featureFlags: [],
   mapAnnotationsVisible: true,
   mapRulersVisible: true,
   readOnly: false,

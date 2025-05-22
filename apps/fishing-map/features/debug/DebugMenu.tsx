@@ -9,10 +9,7 @@ import { debugDatasetsInDataviews, debugRelatedDatasets } from 'features/dataset
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useToggleFeatureFlag } from 'features/debug/debug.hooks'
-import {
-  selectIsGlobalReportsEnabled,
-  selectIsVesselClassInfoEnable,
-} from 'features/debug/debug.selectors'
+import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { selectIsGFWDeveloper } from 'features/user/selectors/user.selectors'
 import { selectLocationQuery } from 'routes/routes.selectors'
 
@@ -29,7 +26,6 @@ const DebugMenu: React.FC = () => {
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
   const datasets = useSelector(selectAllDatasets)
   const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
-  const isVesselClassInfoEnabled = useSelector(selectIsVesselClassInfoEnable)
   const toggleFeatureFlag = useToggleFeatureFlag()
 
   useEffect(() => {
@@ -55,17 +51,6 @@ const DebugMenu: React.FC = () => {
               </label>
             </div>
             <p>Activates the global reports feature: aka CVP</p>
-            <div className={styles.header}>
-              <Switch
-                id="option_vessel_class_info"
-                active={isVesselClassInfoEnabled}
-                onClick={() => toggleFeatureFlag('vesselClassInfo')}
-              />
-              <label htmlFor="option_vessel_class_info">
-                <strong>Feature flag:</strong> Vessel class info
-              </label>
-            </div>
-            <p>Activates the vessel class info feature</p>
             <div className={styles.header}>
               <Switch
                 id="option_data_terminology_iframe"

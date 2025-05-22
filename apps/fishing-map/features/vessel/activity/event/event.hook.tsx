@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import type { GapPosition, Regions, RegionType } from '@globalfishingwatch/api-types'
+import type { EventType, GapPosition, Regions, RegionType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
@@ -10,8 +10,10 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
-import type VesselEvent from 'features/vessel/activity/event/Event'
+import PortsReportLink from 'features/reports/report-port/PortsReportLink'
+import type { VesselEvent } from 'features/vessel/activity/event/Event'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import { selectVesselEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 import { getUTCDateTime } from 'utils/dates'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
@@ -32,6 +34,7 @@ export function useActivityEventTranslations() {
   useFetchRegionsData()
   const { t } = useTranslation()
   const { getRegionNamesByType } = useRegionNamesByType()
+  const vesselEventsDatasets = useSelector(selectVesselEventsDatasets)
 
   const getEventRegionDescription = useCallback(
     (event: VesselEvent | GapPosition, regionsPriority = REGIONS_PRIORITY) => {
@@ -107,9 +110,19 @@ export function useActivityEventTranslations() {
           const portLabel = portName
             ? [portName, ...(flag ? [t(`flags:${flag}`, flag.toLocaleUpperCase())] : [])].join(', ')
             : ''
-          return t(`event.${portType}ActionIn`, `${portType} {{port}}`, {
-            port: formatInfoField(portLabel, 'port'),
-          })
+          const portDataset = vesselEventsDatasets?.find(
+            (dataset) => (dataset.subcategory as EventType) === 'port_visit'
+          )
+          return (
+            <Fragment>
+              {t(`event.${portType}ActionIn`, `${portType} {{port}}`, {
+                port: '',
+              })}
+              <PortsReportLink port={{ id, name, country: flag, datasetId: portDataset?.id }}>
+                {formatInfoField(portLabel, 'port')}
+              </PortsReportLink>
+            </Fragment>
+          )
         }
         case EventTypes.Loitering:
           return (
@@ -161,23 +174,31 @@ export function useActivityEventTranslations() {
     (event: VesselEvent) => {
       const durationDiff = getUTCDateTime(event.end as number).diff(
         getUTCDateTime(event.start as number),
-        ['days', 'hours', 'minutes']
+        ['years', 'months', 'days', 'hours', 'minutes']
       )
       const duration = durationDiff.toObject()
 
       const durationDescription =
         event.end > event.start
           ? [
+              duration.years && duration.years > 0
+                ? t('event.yearAbbreviated', '{{count}}y', { count: duration.years })
+                : '',
+              duration.months && duration.months > 0
+                ? t('event.monthAbbreviated', '{{count}}m', { count: duration.months })
+                : '',
               duration.days && duration.days > 0
                 ? t('event.dayAbbreviated', '{{count}}d', { count: duration.days })
                 : '',
-              duration.hours && duration.hours > 0
+              duration.years === 0 && duration.months === 0 && duration.hours && duration.hours > 0
                 ? t('event.hourAbbreviated', '{{count}}h', { count: duration.hours })
                 : '',
-              duration.minutes && duration.minutes > 0
-                ? t('event.minuteAbbreviated', '{{count}}m', {
-                    count: Math.round(duration.minutes as number),
-                  })
+              duration.years === 0 &&
+              duration.months === 0 &&
+              duration.days === 0 &&
+              duration.minutes &&
+              Math.round(duration.minutes as number) > 0
+                ? `${Math.round(duration.minutes as number)}'`
                 : '',
             ].join(' ')
           : null

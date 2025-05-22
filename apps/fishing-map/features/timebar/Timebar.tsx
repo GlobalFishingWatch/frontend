@@ -442,7 +442,7 @@ const TimebarWrapper = () => {
         labels={labels}
         start={start}
         end={end}
-        isResizable
+        isResizable={!isSmallScreen}
         absoluteStart={availableStart}
         absoluteEnd={availableEnd}
         latestAvailableDataDate={latestAvailableDataDate}

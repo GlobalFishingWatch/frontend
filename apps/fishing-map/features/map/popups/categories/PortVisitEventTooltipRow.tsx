@@ -9,7 +9,6 @@ import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
 import PortsReportLink from 'features/reports/report-port/PortsReportLink'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { selectIsPortReportLocation } from 'routes/routes.selectors'
 
 import type {
@@ -38,7 +37,6 @@ function PortVisitEventTooltipRow({
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const { datasetId, event, color } = feature
   const title = getDatasetLabel({ id: datasetId! })
-  const isGFWUser = useSelector(selectIsGFWUser)
 
   return (
     <div className={styles.popupSection}>
@@ -78,7 +76,7 @@ function PortVisitEventTooltipRow({
                 vesselProperty="events"
               />
             )}
-            {isGFWUser && event?.port && !isPortReportLocation && (
+            {event?.port && !isPortReportLocation && (
               <PortsReportLink port={event.port}>
                 <Button className={styles.portCTA}>
                   {t('portsReport.seePortReport', 'See all entry events to this port')}{' '}
