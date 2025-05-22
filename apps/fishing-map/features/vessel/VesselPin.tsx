@@ -57,6 +57,7 @@ type VesselPinProps = {
   size?: IconButtonSize
   origin?: DataviewInstanceOrigin
   onClick?: VesselPinOnClickCb
+  style?: React.CSSProperties
 }
 // Supports both options:
 // 1. When identity vessel already available: <VesselPin vessel={vessel} />
@@ -71,6 +72,7 @@ function VesselPin({
   size = 'small',
   origin,
   onClick,
+  style,
 }: VesselPinProps) {
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
@@ -204,6 +206,7 @@ function VesselPin({
         color: vesselInWorkspaceSameOriginDataview
           ? vesselInWorkspaceSameOriginDataview.config?.color
           : '',
+        ...(style || {}),
       }}
       tooltip={
         vesselInWorkspaceSameOriginDataview

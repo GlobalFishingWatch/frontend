@@ -1191,7 +1191,18 @@
     "description": "crwdns66259:0crwdne66259:0",
     "schema": {
       "speed": "crwdns83546:0crwdne83546:0",
-      "bearing": "crwdns83436:0crwdne83436:0"
+      "bearing": "crwdns83436:0crwdne83436:0",
+      "distance_from_port_km": {
+        "keyword": "crwdns84698:0crwdne84698:0",
+        "enum": {
+          "0": "crwdns84700:0crwdne84700:0",
+          "1": "crwdns84702:0crwdne84702:0",
+          "2": "crwdns84704:0crwdne84704:0",
+          "3": "crwdns84706:0crwdne84706:0",
+          "4": "crwdns84708:0crwdne84708:0",
+          "5": "crwdns84710:0crwdne84710:0"
+        }
+      }
     }
   },
   "public-global-fishing-events": {

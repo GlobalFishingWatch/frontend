@@ -113,8 +113,6 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
       config: {
         visible: false,
-        // TODO remove this when removing the selectIsGlobalReportsEnabled feature flag
-        eventsTemporalAggregation: true,
       },
     },
     {
