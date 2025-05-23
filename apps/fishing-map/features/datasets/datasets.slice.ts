@@ -401,11 +401,17 @@ export const selectDatasetById = memoize((id: string) =>
 export const selectDatasetsStatus = (state: DatasetsSliceState) => state.datasets.status
 export const selectDatasetsStatusId = (state: DatasetsSliceState) => state.datasets.statusId
 export const selectDatasetsError = (state: DatasetsSliceState) => state.datasets.error
-export const selectDeprecatedDatasets = (state: DatasetsSliceState) => {
-  return {
-    ...state.datasets.deprecatedDatasets,
-    ...(DETECTIONS_LEGACY_DATASETS_DICT as DatasetsMigration),
+export const selectSliceDeprecatedDatasets = (state: DatasetsSliceState) =>
+  state.datasets.deprecatedDatasets
+
+export const selectDeprecatedDatasets = createSelector(
+  [selectSliceDeprecatedDatasets],
+  (deprecatedDatasets) => {
+    return {
+      ...deprecatedDatasets,
+      ...(DETECTIONS_LEGACY_DATASETS_DICT as DatasetsMigration),
+    }
   }
-}
+)
 
 export default datasetSlice.reducer
