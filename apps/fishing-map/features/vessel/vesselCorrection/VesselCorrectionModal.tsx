@@ -20,6 +20,9 @@ import {
 import { formatTransmissionDate, getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
 import { formatInfoField, getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
 
+import VesselRegistryField from '../identity/VesselRegistryField'
+import VesselTypesField from '../identity/VesselTypesField'
+
 import type { InfoCorrectionSendFormat, RelevantDataFields } from './VesselCorrection.types'
 import { VALID_AIS_FIELDS, VALID_REGISTRY_FIELDS } from './VesselCorrection.types'
 
@@ -48,6 +51,8 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
   const userData = useSelector(selectUserData)
 
   const [proposedValues, setProposedValues] = useState<Partial<RelevantDataFields>>()
+  console.log(vesselIdentity.combinedSourcesInfo)
+  console.log(vesselIdentity.sourceCode)
 
   const sendCorrection = async (e: any) => {
     e.preventDefault()
@@ -58,7 +63,7 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
 
       const finalFeedbackData: InfoCorrectionSendFormat = {
         reviewer: userData!.email || '',
-        source: vesselIdentity.sourceCode?.[0] || '',
+        source: vesselIdentity.sourceCode.join(',') || '',
         workspaceLink: window.location.href,
         dateSubmitted: now,
         timeRange: formatTransmissionDate(vesselIdentity),
@@ -66,8 +71,8 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
         originalValues: {
           flag: vesselIdentity.flag || '',
           shipname: vesselIdentity.shipname || vesselIdentity.nShipname || '',
-          geartypes: (vesselIdentity.geartypes || [])[0] || '',
-          shiptypes: (vesselIdentity.shiptypes || [])[0] || '',
+          shiptypes: (vesselIdentity.shiptypes || []).join(', ') || '',
+          geartypes: (vesselIdentity.geartypes || []).join(', ') || '',
           ssvid: vesselIdentity.ssvid || '',
           imo: vesselIdentity.imo || '',
           callsign: vesselIdentity.callsign || '',
@@ -191,23 +196,22 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
                   </td>
                   <td>
                     {key === 'geartypes' ? (
-                      getVesselGearTypeLabel({
-                        geartypes: Array.isArray(vesselIdentity.geartypes)
-                          ? vesselIdentity.geartypes[0]
-                          : vesselIdentity.geartypes,
-                      }) ||
-                      (Array.isArray(vesselIdentity.geartypes)
-                        ? vesselIdentity.geartypes[0]
-                        : vesselIdentity.geartypes) ||
-                      '----'
+                      (() => {
+                        const label = getVesselGearTypeLabel({
+                          geartypes: vesselIdentity.geartypes,
+                        })
+                        return Array.isArray(label)
+                          ? label.join(', ')
+                          : label || vesselIdentity.geartypes || '----'
+                      })()
                     ) : key === 'shiptypes' ? (
                       getVesselShipTypeLabel({
                         shiptypes: Array.isArray(vesselIdentity.shiptypes)
-                          ? vesselIdentity.shiptypes[0]
+                          ? vesselIdentity.shiptypes.join(', ')
                           : vesselIdentity.shiptypes,
                       }) ||
                       (Array.isArray(vesselIdentity.shiptypes)
-                        ? vesselIdentity.shiptypes[0]
+                        ? vesselIdentity.shiptypes.join(', ')
                         : vesselIdentity.shiptypes) ||
                       '----'
                     ) : key === 'flag' ? (

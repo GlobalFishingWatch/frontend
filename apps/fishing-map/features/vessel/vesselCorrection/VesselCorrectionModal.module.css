@@ -41,6 +41,10 @@
   color: var(--color-dark);
 }
 
+.table td {
+  padding-right: 2rem;
+}
+
 .table th:last-child,
 .table td:last-child {
   width: 50%;
