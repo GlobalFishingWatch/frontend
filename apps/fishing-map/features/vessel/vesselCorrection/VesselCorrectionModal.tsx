@@ -51,8 +51,6 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
   const userData = useSelector(selectUserData)
 
   const [proposedValues, setProposedValues] = useState<Partial<RelevantDataFields>>()
-  console.log(vesselIdentity.combinedSourcesInfo)
-  console.log(vesselIdentity.sourceCode)
 
   const sendCorrection = async (e: any) => {
     e.preventDefault()
@@ -63,7 +61,8 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
 
       const finalFeedbackData: InfoCorrectionSendFormat = {
         reviewer: userData!.email || '',
-        source: vesselIdentity.sourceCode.join(',') || '',
+        source:
+          vesselIdentity.identitySource + '(' + vesselIdentity.sourceCode.join(',') + ')' || '',
         workspaceLink: window.location.href,
         dateSubmitted: now,
         timeRange: formatTransmissionDate(vesselIdentity),
