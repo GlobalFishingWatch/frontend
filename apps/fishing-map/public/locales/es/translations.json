@@ -1134,11 +1134,9 @@
     "unmatched": "Sin coincidencia con AIS",
     "vessel_type": "Tipos de embarcaciones",
     "vesselCorrection": {
-      "analystComments": "Comentarios de analista (opcional)",
-      "commentPlaceholder": "Por favor, describa la fuente de la corrección.",
+      "analystComments": "Analyst comments",
+      "commentPlaceholder": "Please provide supportive source reference(s) to your correction and describe your correction rationale.",
       "currentValue": "Valor actual",
-      "description": "Description (optional)",
-      "descriptionPlaceholder": "Por favor, describa la fuente de la corrección y el rango de tiempo para el que es relevante.",
       "field": "Campo",
       "insuficientData": "Por favor, rellene todos los campos obligatorios",
       "proposedValue": "Valor propuesto",
