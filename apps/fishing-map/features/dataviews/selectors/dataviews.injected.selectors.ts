@@ -79,7 +79,7 @@ export const selectVesselProfileDataviewInstancesInjected = createSelector(
     const eventEndDateTime = hasCurrentEvent ? getUTCDateTime(currentVesselEvent.end) : undefined
     if (isAnyVesselLocation) {
       const existingDataviewInstance = workspaceDataviewInstancesMerged?.find(
-        ({ id }) => vesselId && id.includes(vesselId)
+        ({ id }) => vesselId && id?.includes(vesselId)
       )
       if (!existingDataviewInstance && vesselInfoData?.identities) {
         const vesselDatasets = {

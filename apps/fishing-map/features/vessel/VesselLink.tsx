@@ -9,6 +9,7 @@ import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import type { VesselDataIdentity } from 'features/vessel/vessel.slice'
@@ -72,6 +73,7 @@ const VesselLink = ({
   const isVesselLocation = useSelector(selectIsVesselLocation)
   const vesselInfoDataId = useSelector(selectVesselInfoDataId)
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
+  const vesselDataviews = useSelector(selectVesselsDataviews)
   const dispatch = useDispatch()
   const vesselId = vesselIdProp || identity?.id
   const vesselDatasetId = datasetId || DEFAULT_VESSEL_IDENTITY_ID
@@ -106,6 +108,40 @@ const VesselLink = ({
 
   if (!vesselId) return children
 
+  const dataviewInstanceToUpdateId = vesselDataviews.find(
+    (instance) => instance.id.includes(vesselId) || instance.id === dataviewId
+  )?.id
+  let dataviewInstances = locationQuery?.dataviewInstances
+  if (dataviewInstanceToUpdateId) {
+    // When coming from a saved workspace the vessel instance might not be in the url yet
+    dataviewInstances = locationQuery?.dataviewInstances?.some(
+      ({ id }: DataviewInstance) => id === dataviewInstanceToUpdateId
+    )
+      ? locationQuery?.dataviewInstances?.map((instance: DataviewInstance) => {
+          const matches = instance.id === dataviewInstanceToUpdateId
+          if (matches) {
+            return {
+              ...instance,
+              config: {
+                ...instance.config,
+                visible: true,
+              },
+              deleted: false,
+            }
+          }
+          return instance
+        })
+      : [
+          ...(locationQuery?.dataviewInstances || []),
+          {
+            id: dataviewInstanceToUpdateId,
+            config: {
+              visible: true,
+            },
+          },
+        ]
+  }
+
   return (
     <Link
       {...(testId && { 'data-test': testId })}
@@ -134,24 +170,7 @@ const VesselLink = ({
               : { vesselRegistryId: getVesselIdentityId(identity) }),
           }),
           ...(query || {}),
-          ...(locationQuery?.dataviewInstances?.length && {
-            dataviewInstances: locationQuery?.dataviewInstances?.map(
-              (instance: DataviewInstance) => {
-                const matches = instance.id.includes(vesselId) || instance.id === dataviewId
-                if (matches) {
-                  return {
-                    ...instance,
-                    config: {
-                      ...instance.config,
-                      visible: true,
-                    },
-                    deleted: false,
-                  }
-                }
-                return instance
-              }
-            ),
-          }),
+          dataviewInstances,
         },
       }}
       onClick={onLinkClick}
