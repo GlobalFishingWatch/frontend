@@ -741,7 +741,7 @@
     "vessel_fit_bounds": "Centralizar visualização na rota da embarcação",
     "vessel_fit_bounds_out_of_timerange": "A rota não tem nenhuma atividade no intervalo de tempo selecionado. Mude o intervalo de tempo para se adequar a esta rota?",
     "vessel_group_fit_bounds": "Centralizar mapa no grupo de embarcações",
-    "vessel_info_correction": "Suggest a correction",
+    "vessel_info_correction": "Sugerir uma correção",
     "vesselGroup": "Vessel Group"
   },
   "map": {
@@ -780,7 +780,7 @@
     "zoom_in": "Aumentar zoom",
     "zoom_out": "Diminuir zoom"
   },
-  "navigateBackTo": "Go back to {{section}}",
+  "navigateBackTo": "Voltar para {{section}}",
   "portsReport": {
     "maxVessels": "O relatório de embarcações está disponível para até {{vessels}} embarcações",
     "newTimeRange": "Clique no botão para ver as embarcações que entraram neste porto <br/>entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
@@ -996,8 +996,8 @@
       "tuna_purse_seines": "Rede de cerco para atuns",
       "well_boat": "Barco de poço"
     },
-    "gfw_geartypes": "GFW Gear type",
-    "gfw_shiptypes": "GFW Vessel type",
+    "gfw_geartypes": "Tipo de Equipamento - GFW",
+    "gfw_shiptypes": "Tipo de Embarcação - GFW",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Tonelagem bruta",
     "grossTonnageRange": "Intervalo de arqueação bruta",
@@ -1068,7 +1068,7 @@
     "linkToVessel": "Veja o perfil da embarcação aqui",
     "loading": "Carregando rota da embarcação",
     "loadingInfo": "Carregando informações da embarcação",
-    "mainGear": "Petrecho pricipal",
+    "mainGear": "Petrecho principal",
     "matched": "Encontrado",
     "matricula": "Matrícula",
     "mmsi": "MMSI",
@@ -1309,7 +1309,7 @@
       "marine-manager": "O Marine Manager é um novo portal tecnológico para apoiar a concepção, gestão e monitoramento eficazes de áreas protegidas.",
       "search": "Pesquisa por nome ou código de identificação (IMO, MMSI, VMS ID, etc…). Você pode restringir sua pesquisa pressionando o ícone de filtro na barra superior"
     },
-    "title": "Workspace",
+    "title": "Área de trabalho",
     "title_other": "Espaços de Trabalho",
     "update": "Atualizar",
     "uploadPublic": "Permitir que outros usuários vejam este espaço de trabalho",
