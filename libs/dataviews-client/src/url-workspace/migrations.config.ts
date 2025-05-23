@@ -101,6 +101,10 @@ export const EVENTS_LEGACY_VESSELS_DATASETS_DICT = {
   'public-global-port-visits-c2-events:v20201001': 'public-global-port-visits-c2-events:v20231026',
 }
 
+export const DETECTIONS_LEGACY_DATASETS_DICT = {
+  'public-ais-presence-viirs-match:v20231026': 'public-global-viirs-presence:v3.0',
+}
+
 // Date added: October 2023
 // Release: Vessel Profile
 // Changelog: v2 datasets are not compatible with v3 format responses

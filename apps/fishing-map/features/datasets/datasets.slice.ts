@@ -21,6 +21,7 @@ import type {
   UploadResponse,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DETECTIONS_LEGACY_DATASETS_DICT } from '@globalfishingwatch/dataviews-client'
 
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV, PUBLIC_SUFIX } from 'data/config'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
@@ -400,7 +401,11 @@ export const selectDatasetById = memoize((id: string) =>
 export const selectDatasetsStatus = (state: DatasetsSliceState) => state.datasets.status
 export const selectDatasetsStatusId = (state: DatasetsSliceState) => state.datasets.statusId
 export const selectDatasetsError = (state: DatasetsSliceState) => state.datasets.error
-export const selectDeprecatedDatasets = (state: DatasetsSliceState) =>
-  state.datasets.deprecatedDatasets
+export const selectDeprecatedDatasets = (state: DatasetsSliceState) => {
+  return {
+    ...state.datasets.deprecatedDatasets,
+    ...(DETECTIONS_LEGACY_DATASETS_DICT as DatasetsMigration),
+  }
+}
 
 export default datasetSlice.reducer
