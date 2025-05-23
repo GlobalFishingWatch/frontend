@@ -20,6 +20,7 @@ import { selectAnyAppModalOpen, selectWelcomeModalKey } from 'features/modals/mo
 import {
   selectDatasetUploadModalOpen,
   selectLayerLibraryModalOpen,
+  selectWorkspaceGeneratorModalOpen,
   setModalOpen,
 } from 'features/modals/modals.slice'
 import GFWOnly from 'features/user/GFWOnly'
@@ -47,6 +48,14 @@ const LayerLibrary = dynamic(
 const DebugMenu = dynamic(
   () => import(/* webpackChunkName: "DebugMenu" */ 'features/debug/DebugMenu')
 )
+
+const WorkspaceGenerator = dynamic(
+  () =>
+    import(
+      /* webpackChunkName: "WorkspaceGenerator" */ 'features/workspace-generator/WorkspaceGenerator'
+    )
+)
+
 const DownloadActivityModal = dynamic(
   () =>
     import(
@@ -93,7 +102,7 @@ const ResetWorkspaceConfig = {
 const AppModals = () => {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
-  const gfwUser = useSelector(selectIsGFWUser)
+  const isGFWUser = useSelector(selectIsGFWUser)
   const jacUser = useSelector(selectIsJACUser)
   const dispatch = useAppDispatch()
   const [debugActive, dispatchToggleDebugMenu] = useSecretMenu(DebugMenuConfig)
@@ -104,6 +113,7 @@ const AppModals = () => {
   const isVesselGroupModalOpen = useSelector(selectVesselGroupModalOpen)
   const isDatasetUploadModalOpen = useSelector(selectDatasetUploadModalOpen)
   const isLayerLibraryModalOpen = useSelector(selectLayerLibraryModalOpen)
+  const isWorkspaceGeneratorModalOpen = useSelector(selectWorkspaceGeneratorModalOpen)
   const downloadTrackModalOpen = useSelector(selectDownloadTrackModalOpen)
   const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
   const welcomePopupContentKey = useSelector(selectWelcomeModalKey)
@@ -123,7 +133,7 @@ const AppModals = () => {
 
   return (
     <Fragment>
-      {gfwUser && (
+      {isGFWUser && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
           title={
@@ -139,7 +149,7 @@ const AppModals = () => {
           <DebugMenu />
         </Modal>
       )}
-      {gfwUser && (
+      {isGFWUser && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
           title={
@@ -155,7 +165,7 @@ const AppModals = () => {
           <EditorMenu />
         </Modal>
       )}
-      {(gfwUser || jacUser) && (
+      {(isGFWUser || jacUser) && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
           title={
@@ -181,6 +191,22 @@ const AppModals = () => {
       >
         <LayerLibrary />
       </Modal>
+      {isGFWUser && (
+        <Modal
+          appSelector={ROOT_DOM_ELEMENT}
+          title={
+            <Fragment>
+              Workspace generator 🪄
+              <GFWOnly userGroup="gfw" />
+            </Fragment>
+          }
+          isOpen={isWorkspaceGeneratorModalOpen && !anyAppModalOpen}
+          shouldCloseOnEsc
+          onClose={() => dispatch(setModalOpen({ id: 'workspaceGenerator', open: false }))}
+        >
+          <WorkspaceGenerator />
+        </Modal>
+      )}
       {!isVesselGroupModalOpen && isDatasetUploadModalOpen && <NewDataset />}
       <EditWorkspaceModal />
       <CreateWorkspaceModal />

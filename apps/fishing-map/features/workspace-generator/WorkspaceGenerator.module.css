@@ -1,0 +1,38 @@
+.messages {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 500px;
+  overflow-y: auto;
+  margin-bottom: var(--space-M);
+}
+
+.message {
+  padding: var(--space-XS);
+  margin-bottom: var(--space-XS);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+}
+
+.userMessage {
+  border-color: transparent;
+}
+
+.agentMessage {
+  border-color: var(--color-primary-blue);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input {
+  flex: 1;
+}
+
+.error {
+  border-color: var(--color-danger-red);
+  color: var(--color-danger-red);
+}
