@@ -2,6 +2,7 @@ export type RelevantDataFields = {
   flag: string
   shipname: string
   geartypes: string
+  gfw_geartypes: string
   shiptypes: string
   ssvid: string
   imo: string

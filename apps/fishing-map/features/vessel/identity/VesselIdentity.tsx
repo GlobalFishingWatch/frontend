@@ -181,7 +181,9 @@ const VesselIdentity = () => {
             </div>
           </div>
           <div className={styles.actionsContainer}>
-            {(isJACUser || isGFWUser) && <VesselInfoCorrection />}
+            {(isJACUser || isGFWUser) && !vesselIdentity.sourceCode?.[0].includes('VMS') && (
+              <VesselInfoCorrection />
+            )}
 
             <UserLoggedIconButton
               type="border"

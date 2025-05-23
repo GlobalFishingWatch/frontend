@@ -61,8 +61,7 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
 
       const finalFeedbackData: InfoCorrectionSendFormat = {
         reviewer: userData!.email || '',
-        source:
-          vesselIdentity.identitySource + '(' + vesselIdentity.sourceCode.join(',') + ')' || '',
+        source: vesselIdentity.identitySource || '',
         workspaceLink: window.location.href,
         dateSubmitted: now,
         timeRange: formatTransmissionDate(vesselIdentity),
@@ -70,8 +69,21 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
         originalValues: {
           flag: vesselIdentity.flag || '',
           shipname: vesselIdentity.shipname || vesselIdentity.nShipname || '',
+          geartypes:
+            (
+              getCurrentIdentityVessel(vesselData, {
+                identityId,
+                identitySource: VesselIdentitySourceEnum.Registry,
+              })?.geartypes || []
+            ).join(', ') || '',
+          gfw_geartypes:
+            (
+              getCurrentIdentityVessel(vesselData, {
+                identityId,
+                identitySource: VesselIdentitySourceEnum.SelfReported,
+              })?.geartypes || []
+            ).join(', ') || '',
           shiptypes: (vesselIdentity.shiptypes || []).join(', ') || '',
-          geartypes: (vesselIdentity.geartypes || []).join(', ') || '',
           ssvid: vesselIdentity.ssvid || '',
           imo: vesselIdentity.imo || '',
           callsign: vesselIdentity.callsign || '',
