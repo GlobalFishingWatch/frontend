@@ -32,10 +32,16 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 var(--space-M);
+  table-layout: fixed;
 }
 
 .table th {
   text-align: left;
   font-size: var(--font-S);
   color: var(--color-dark);
+}
+
+.table th:last-child,
+.table td:last-child {
+  width: 50%;
 }

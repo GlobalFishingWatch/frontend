@@ -65,6 +65,11 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
       description:
         'El esfuerzo de pesca aparente a menos de 3 km de los puertos ahora se filtra por defecto para reducir los resultados engañosos cerca de los fondeaderos. Cambie o elimine este filtro en la configuración de la capa de actividad.',
     },
+    pt: {
+      title: 'Novo buffer de porto aplicado',
+      description:
+        'O esforço de pesca aparente a menos de 3 km dos portos agora é filtrado por padrão para reduzir resultados enganosos perto de ancoradouros. Altere ou remova este filtro nas configurações da camada de atividade.',
+    },
   },
   {
     ...BASE_HIGHLIGHT_CONFIG,
@@ -82,6 +87,11 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
       description:
         'Cree su grupo de embarcaciones para visualizar la actividad del grupo en el mapa. Haga clic en el nombre del grupo de embarcaciones para iniciar un análisis y ver el informe del grupo.',
     },
+    pt: {
+      title: 'Nova funcionalidade de grupos de embarcações',
+      description:
+        'Crie seu grupo de embarcações para visualizar a atividade do grupo no mapa. Clique no nome do grupo de embarcações para iniciar uma análise e ver o relatório do grupo.',
+    },
   },
   {
     ...BASE_HIGHLIGHT_CONFIG,
@@ -98,6 +108,12 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
       title: 'Datos de AIS actualizados y nuevas funcionalidades',
       description:
         'Global Fishing Watch ha mejorado la precisión de los datos AIS subyacentes y ahora admite visualizar las capas con mayor resolución. Las mejoras en los datos pueden afectar los cálculos de la actividad y el esfuerzo pesquero. Los espacios de trabajo deben actualizarse para reflejar los cambios',
+      learnMoreUrl: 'https://globalfishingwatch.org/es/faqs/marine-traffic-nueva-fuente-ais/',
+    },
+    pt: {
+      title: 'Dados de AIS atualizados e novas funcionalidades',
+      description:
+        'Global Fishing Watch melhorou a precisão dos dados AIS subjacentes e agora suporta visualizar as camadas com maior resolução. As melhorias nos dados podem afetar os cálculos da atividade e do esforço pesqueiro. Os espaços de trabalho devem ser atualizados para refletir as mudanças',
       learnMoreUrl: 'https://globalfishingwatch.org/es/faqs/marine-traffic-nueva-fuente-ais/',
     },
   },
@@ -150,6 +166,11 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
       description:
         'Global Fishing Watch has added new datasets, including dynamic oceanographic and ecosystem data following your feedback. Explore the new datasets alongside human activity, and analyze them through space and time using dynamic reports to learn more about your area of interest.',
     },
+    pt: {
+      title: 'Novas fontes de dados ambientais adicionadas',
+      description:
+        'Global Fishing Watch adicionou novos conjuntos de dados, incluindo dados oceanográficos dinâmicos e de ecossistemas, seguindo seu feedback. Explore os novos conjuntos de dados ao lado da atividade humana e analise-os através do espaço e do tempo usando relatórios dinâmicos para saber mais sobre sua área de interesse.',
+    },
   },
   {
     ...BASE_HIGHLIGHT_CONFIG,
@@ -162,6 +183,12 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
       title: 'Data added from satellite radar reveals industrial vessels hidden from public view',
       description:
         'Global Fishing Watch has added an open global radar detections layer, derived from synthetic aperture radar or SAR, to display vessels at sea in any weather conditions. SAR can show vessels that can not be picked up by other cooperative tracking systems and infrastructure at sea like oil platforms and wind farms.',
+    },
+    pt: {
+      title:
+        'Dados adicionados de radar de satélite revelam embarcações industriais ocultas da visão pública',
+      description:
+        'Global Fishing Watch adicionou uma camada de detecções de radar global aberto, derivada de radar de abertura sintética ou SAR, para exibir embarcações no mar em quaisquer condições climáticas. O SAR pode mostrar embarcações que não podem ser captadas por outros sistemas e infraestrutura de rastreamento cooperativo no mar, como plataformas de petróleo e parques eólicos.',
     },
   },
   {

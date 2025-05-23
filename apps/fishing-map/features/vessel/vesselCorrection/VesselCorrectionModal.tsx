@@ -7,7 +7,9 @@ import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { Button, InputText, Modal, Select, Tag } from '@globalfishingwatch/ui-components'
 
 import { PATH_BASENAME, ROOT_DOM_ELEMENT } from 'data/config'
+import flags from 'data/flags'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import I18nFlag from 'features/i18n/i18nFlag'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
@@ -109,6 +111,11 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
     id: key,
   }))
 
+  const flagSelectOptions = flags.map((key) => ({
+    label: key.id + ' - ' + key.label,
+    id: key.id,
+  }))
+
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
@@ -183,30 +190,34 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
                     )}
                   </td>
                   <td>
-                    {key === 'geartypes'
-                      ? getVesselGearTypeLabel({
-                          geartypes: Array.isArray(vesselIdentity.geartypes)
-                            ? vesselIdentity.geartypes[0]
-                            : vesselIdentity.geartypes,
-                        }) ||
-                        (Array.isArray(vesselIdentity.geartypes)
+                    {key === 'geartypes' ? (
+                      getVesselGearTypeLabel({
+                        geartypes: Array.isArray(vesselIdentity.geartypes)
                           ? vesselIdentity.geartypes[0]
-                          : vesselIdentity.geartypes) ||
-                        '----'
-                      : key === 'shiptypes'
-                        ? getVesselShipTypeLabel({
-                            shiptypes: Array.isArray(vesselIdentity.shiptypes)
-                              ? vesselIdentity.shiptypes[0]
-                              : vesselIdentity.shiptypes,
-                          }) ||
-                          (Array.isArray(vesselIdentity.shiptypes)
-                            ? vesselIdentity.shiptypes[0]
-                            : vesselIdentity.shiptypes) ||
-                          '----'
-                        : (vesselIdentity[key as keyof typeof vesselIdentity] as string) || '----'}
+                          : vesselIdentity.geartypes,
+                      }) ||
+                      (Array.isArray(vesselIdentity.geartypes)
+                        ? vesselIdentity.geartypes[0]
+                        : vesselIdentity.geartypes) ||
+                      '----'
+                    ) : key === 'shiptypes' ? (
+                      getVesselShipTypeLabel({
+                        shiptypes: Array.isArray(vesselIdentity.shiptypes)
+                          ? vesselIdentity.shiptypes[0]
+                          : vesselIdentity.shiptypes,
+                      }) ||
+                      (Array.isArray(vesselIdentity.shiptypes)
+                        ? vesselIdentity.shiptypes[0]
+                        : vesselIdentity.shiptypes) ||
+                      '----'
+                    ) : key === 'flag' ? (
+                      <I18nFlag iso={vesselIdentity.flag} />
+                    ) : (
+                      (vesselIdentity[key as keyof typeof vesselIdentity] as string) || '----'
+                    )}
                   </td>
                   <td>
-                    {key === 'geartypes' || key === 'shiptypes' ? (
+                    {key === 'geartypes' || key === 'shiptypes' || key === 'flag' ? (
                       <Select
                         placeholder={t('selects.placeholder', 'Select an option')}
                         type="secondary"
@@ -215,16 +226,20 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
                             ? gearSelectOptions
                             : key === 'shiptypes'
                               ? shipSelectOptions
-                              : []
+                              : key === 'flag'
+                                ? flagSelectOptions
+                                : []
                         }
                         selectedOption={(key === 'geartypes'
                           ? gearSelectOptions
-                          : shipSelectOptions
-                        ).find((option) => option.label === proposedValues?.[key])}
+                          : key === 'flag'
+                            ? flagSelectOptions
+                            : shipSelectOptions
+                        ).find((option) => option.id === proposedValues?.[key])}
                         onSelect={(option) =>
                           setProposedValues({
                             ...proposedValues,
-                            [key]: option.label as string,
+                            [key]: option.id as string,
                           })
                         }
                         onCleanClick={() =>
@@ -255,13 +270,11 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
         </div>
 
         <div>
-          <label>
-            {t('vessel.vesselCorrection.analystComments', 'Analyst comments (optional)')}
-          </label>
+          <label>{t('vessel.vesselCorrection.analystComments', 'Analyst comments')}</label>
           <InputText
             placeholder={t(
               'vessel.vesselCorrection.commentPlaceholder',
-              'Please describe the source of the correction.'
+              'Please provide supportive source reference(s) to your correction and describe your correction rationale.'
             )}
             value={proposedValues?.comments || ''}
             className={styles.input}
