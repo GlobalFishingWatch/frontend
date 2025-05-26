@@ -1134,11 +1134,9 @@
     "unmatched": "crwdns60647:0crwdne60647:0",
     "vessel_type": "crwdns60649:0crwdne60649:0",
     "vesselCorrection": {
-      "analystComments": "crwdns84682:0crwdne84682:0",
-      "commentPlaceholder": "crwdns84684:0crwdne84684:0",
+      "analystComments": "crwdns84712:0crwdne84712:0",
+      "commentPlaceholder": "crwdns84714:0crwdne84714:0",
       "currentValue": "crwdns84652:0crwdne84652:0",
-      "description": "crwdns84654:0crwdne84654:0",
-      "descriptionPlaceholder": "crwdns84656:0crwdne84656:0",
       "field": "crwdns84658:0crwdne84658:0",
       "insuficientData": "crwdns84660:0crwdne84660:0",
       "proposedValue": "crwdns84662:0crwdne84662:0",
