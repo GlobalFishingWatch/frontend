@@ -1,4 +1,5 @@
 import { MastraClient } from '@mastra/client-js'
+import type { StorageThreadType } from '@mastra/core'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 const MASTRA_API_URL = process.env.NEXT_MASTRA_API_URL
@@ -12,6 +13,13 @@ const workspacesAgent = mastra.getAgent(WORKSPACES_AGENT_ID!)
 
 export type Message = {
   message: string
+  threadId?: string
+  userId: number
+}
+
+export type ResponseMessage = {
+  message: string
+  threadId?: string
 }
 
 type ApiError = {
@@ -21,7 +29,7 @@ type ApiError = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Message | ApiError>
+  res: NextApiResponse<ResponseMessage | ApiError>
 ) {
   if (!WORKSPACES_AGENT_ID || !workspacesAgent) {
     return res.status(500).json({
@@ -38,7 +46,7 @@ export default async function handler(
   }
 
   try {
-    const { message }: Message = req.body || {}
+    const { message, threadId, userId }: Message = req.body || {}
 
     if (!message) {
       return res.status(400).json({
@@ -47,17 +55,33 @@ export default async function handler(
       })
     }
 
+    let thread: StorageThreadType
+    const resourceId = `workspace-generator-${userId}`
+    if (!threadId) {
+      thread = await mastra.createMemoryThread({
+        title: `New Conversation with ${userId}`,
+        metadata: { category: 'support' },
+        resourceId,
+        agentId: WORKSPACES_AGENT_ID,
+        threadId: Date.now().toString(),
+      })
+    } else {
+      const memoryThread = mastra.getMemoryThread(threadId, WORKSPACES_AGENT_ID!)
+      thread = await memoryThread.get()
+    }
+
     const response = await workspacesAgent.generate({
       messages: [message],
+      threadId: thread.id,
+      resourceId,
     })
-    console.log('🚀 ~ response:', response)
 
     return res.status(200).json({
       error: '',
       message: response.text,
+      threadId: thread.id,
     })
   } catch (error: any) {
-    console.log('🚀 ~ error:', error)
     return res.status(500).json({
       success: false,
       error: 'Internal server error',

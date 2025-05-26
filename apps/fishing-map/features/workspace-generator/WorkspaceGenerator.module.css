@@ -1,8 +1,14 @@
-.messages {
+.container {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  max-height: 500px;
+  height: 100%;
+}
+
+.messagesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-XS);
+  flex: 1;
   overflow-y: auto;
   margin-bottom: var(--space-M);
 }
@@ -24,8 +30,8 @@
 
 .form {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  gap: var(--space-XS);
 }
 
 .input {
