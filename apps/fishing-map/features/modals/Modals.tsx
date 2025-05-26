@@ -99,6 +99,12 @@ const ResetWorkspaceConfig = {
   },
 }
 
+const workspaceGeneratorConfig = {
+  keys: 'iaiaia',
+  onToggle: () => setModalOpen({ id: 'workspaceGenerator', open: true }),
+  selectMenuActive: selectWorkspaceGeneratorModalOpen,
+}
+
 const AppModals = () => {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
@@ -108,12 +114,14 @@ const AppModals = () => {
   const [debugActive, dispatchToggleDebugMenu] = useSecretMenu(DebugMenuConfig)
   const [editorActive, dispatchToggleEditorMenu] = useSecretMenu(EditorMenuConfig)
   const [bigqueryActive, dispatchBigQueryMenu] = useSecretMenu(BigQueryMenuConfig)
+  const [workspaceGeneratorActive, dispatchWorkspaceGeneratorMenu] =
+    useSecretMenu(workspaceGeneratorConfig)
+
   useSecretKeyboardCombo(ResetWorkspaceConfig)
   const downloadActivityAreaKey = useSelector(selectDownloadActivityAreaKey)
   const isVesselGroupModalOpen = useSelector(selectVesselGroupModalOpen)
   const isDatasetUploadModalOpen = useSelector(selectDatasetUploadModalOpen)
   const isLayerLibraryModalOpen = useSelector(selectLayerLibraryModalOpen)
-  const isWorkspaceGeneratorModalOpen = useSelector(selectWorkspaceGeneratorModalOpen)
   const downloadTrackModalOpen = useSelector(selectDownloadTrackModalOpen)
   const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
   const welcomePopupContentKey = useSelector(selectWelcomeModalKey)
@@ -200,7 +208,7 @@ const AppModals = () => {
               <GFWOnly userGroup="gfw" />
             </Fragment>
           }
-          isOpen={isWorkspaceGeneratorModalOpen && !anyAppModalOpen}
+          isOpen={workspaceGeneratorActive && !anyAppModalOpen}
           shouldCloseOnEsc
           onClose={() => dispatch(setModalOpen({ id: 'workspaceGenerator', open: false }))}
         >

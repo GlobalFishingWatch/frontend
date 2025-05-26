@@ -160,13 +160,13 @@ function SidebarHeader() {
         </a>
         {!readOnly && (
           <Fragment>
-            {isGFWUser && (
+            {/* {isGFWUser && (
               <IconButton
                 icon="magic"
                 size="medium"
                 onClick={() => dispatch(setModalOpen({ id: 'workspaceGenerator', open: true }))}
               />
-            )}
+            )} */}
             {/* TODO:CVP2 add save report in isAnyReportLocation when this PR https://github.com/GlobalFishingWatch/api-monorepo-node/pull/289 is merged */}
             {isAreaReportLocation && <SaveReportButton />}
             {isWorkspaceLocation && <SaveWorkspaceButton />}
