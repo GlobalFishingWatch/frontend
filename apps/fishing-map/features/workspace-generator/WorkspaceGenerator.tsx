@@ -6,12 +6,14 @@ import { Button, Icon, InputText, Spinner } from '@globalfishingwatch/ui-compone
 
 import { PATH_BASENAME } from 'data/config'
 import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
+import type { WorkspaceGeneratorResponse } from 'pages/api/workspaces-generator'
 
 import styles from './WorkspaceGenerator.module.css'
 
 type Message = {
   role: 'user' | 'agent'
   message: string
+  url?: string
 }
 
 const EXAMPLE_MESSAGES = [
@@ -56,11 +58,14 @@ function useWorkspacesAgent() {
         },
         body: JSON.stringify({ message: userMessage, userId, threadId }),
       })
-      const data = (await response.json()) as { message: string; error?: string; threadId: string }
-      if (!response.ok) {
+      const data = (await response.json()) as WorkspaceGeneratorResponse
+      if (!response.ok || !data.success) {
         throw new Error(data.error || 'Something went wrong')
       }
-      setMessages((prev) => [...prev, { role: 'agent', message: data.message ?? '' }])
+      setMessages((prev) => [
+        ...prev,
+        { role: 'agent', message: data.message ?? '', url: data.url ?? '' },
+      ])
       setThreadId(data.threadId)
     } catch (err: any) {
       setHasError(err.message || 'Unknown error')
@@ -127,7 +132,15 @@ const WorkspaceGenerator = () => {
                     msg.role === 'user' ? styles.userMessage : styles.agentMessage
                   )}
                 >
-                  <p className={styles.messageText}>{msg.message}</p>
+                  <p className={styles.messageText}>
+                    {msg.url ? (
+                      <a href={msg.url} target="_blank" rel="noopener noreferrer">
+                        Here is the workspace
+                      </a>
+                    ) : (
+                      <span>{msg.message}</span>
+                    )}
+                  </p>
                 </li>
               )
             })}

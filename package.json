@@ -164,7 +164,8 @@
     "use-debounce": "10.0.4",
     "usehooks-ts": "3.1.1",
     "vite-plugin-svgr": "4.3.0",
-    "web-vitals": "4.2.4"
+    "web-vitals": "4.2.4",
+    "zod": "^3.25.28"
   },
   "devDependencies": {
     "@eslint/compat": "1.2.9",

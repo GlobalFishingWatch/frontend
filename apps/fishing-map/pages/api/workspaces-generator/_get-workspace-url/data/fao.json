@@ -1,0 +1,21 @@
+[
+  { "id": "18", "label": "Arctic Sea", "NAME_EN": "Arctic Sea" },
+  { "id": "61", "label": "Pacific, Northwest", "NAME_EN": "Pacific, Northwest" },
+  { "id": "67", "label": "Pacific, Northeast", "NAME_EN": "Pacific, Northeast" },
+  { "id": "37", "label": "Mediterranean and Black Sea", "NAME_EN": "Mediterranean and Black Sea" },
+  { "id": "27", "label": "Atlantic, Northeast", "NAME_EN": "Atlantic, Northeast" },
+  { "id": "31", "label": "Atlantic, Western Central", "NAME_EN": "Atlantic, Western Central" },
+  { "id": "34", "label": "Atlantic, Eastern Central", "NAME_EN": "Atlantic, Eastern Central" },
+  { "id": "51", "label": "Indian Ocean, Western", "NAME_EN": "Indian Ocean, Western" },
+  { "id": "57", "label": "Indian Ocean, Eastern", "NAME_EN": "Indian Ocean, Eastern" },
+  { "id": "71", "label": "Pacific, Western Central", "NAME_EN": "Pacific, Western Central" },
+  { "id": "87", "label": "Pacific, Southeast", "NAME_EN": "Pacific, Southeast" },
+  { "id": "41", "label": "Atlantic, Southwest", "NAME_EN": "Atlantic, Southwest" },
+  { "id": "81", "label": "Pacific, Southwest", "NAME_EN": "Pacific, Southwest" },
+  { "id": "58", "label": "Indian Ocean, Antarctic", "NAME_EN": "Indian Ocean, Antarctic" },
+  { "id": "48", "label": "Atlantic, Antarctic", "NAME_EN": "Atlantic, Antarctic" },
+  { "id": "88", "label": "Pacific, Antarctic", "NAME_EN": "Pacific, Antarctic" },
+  { "id": "77", "label": "Pacific, Eastern Central", "NAME_EN": "Pacific, Eastern Central" },
+  { "id": "47", "label": "Atlantic, Southeast", "NAME_EN": "Atlantic, Southeast" },
+  { "id": "21", "label": "Atlantic, Northwest", "NAME_EN": "Atlantic, Northwest" }
+]

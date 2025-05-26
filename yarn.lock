@@ -3912,6 +3912,7 @@ __metadata:
     vite-plugin-svgr: "npm:4.3.0"
     vitest: "npm:3.1.3"
     web-vitals: "npm:4.2.4"
+    zod: "npm:^3.25.28"
   languageName: unknown
   linkType: soft
 
@@ -38024,6 +38025,13 @@ __metadata:
   version: 3.25.23
   resolution: "zod@npm:3.25.23"
   checksum: 10/9152f700b4ed951795199455939a61a73d2435002a6ea1ddd664acc838a10c40452334e967f6fe8ae84cce201a4f042f4ab96a7dbe858ed0169c25498ad7121d
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.25.28":
+  version: 3.25.28
+  resolution: "zod@npm:3.25.28"
+  checksum: 10/78c288d9cebf29a1a75fd03dbc1a16bd15eda5cdd0df552dfa5e6190e3e7aa4b2d6e8065f857fbd6d3e687951ca64a3f40d6aee9f5b2e39ce1812b695b47e5ce
   languageName: node
   linkType: hard
 

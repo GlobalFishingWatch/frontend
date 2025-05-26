@@ -28,6 +28,10 @@
   max-width: 80%;
 }
 
+.messageText a {
+  text-decoration: underline;
+}
+
 .userMessage {
   background-color: var(--color-terthiary-blue);
   border-radius: 20px 3px 20px 20px;
