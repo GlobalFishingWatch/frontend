@@ -234,6 +234,7 @@ export type VesselCombinedSourcesInfo = {
   onFishingListSr?: CombinedSourceInfo[]
   inferredVesselClassAg?: CombinedSourceInfo[]
   prodGeartypeSource?: CombinedSourceInfo[]
+  registryVesselClass?: CombinedSourceInfo[]
 }
 
 export interface IdentityVessel {
