@@ -99,7 +99,7 @@ const VesselRegistryField = ({
           </div>
         )}
         {vesselIdentity.recordId ? (
-          <VesselIdentityField value={vesselIdentity.recordId.replaceAll('|', ' ')} />
+          <VesselIdentityField value={vesselIdentity.recordId} />
         ) : (
           EMPTY_FIELD_PLACEHOLDER
         )}

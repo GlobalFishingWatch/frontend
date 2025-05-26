@@ -1134,11 +1134,9 @@
     "unmatched": "não encontrado",
     "vessel_type": "Tipos de embarcação",
     "vesselCorrection": {
-      "analystComments": "Analyst comments (optional)",
-      "commentPlaceholder": "Please describe the source of the correction.",
+      "analystComments": "Analyst comments",
+      "commentPlaceholder": "Please provide supportive source reference(s) to your correction and describe your correction rationale.",
       "currentValue": "Current value",
-      "description": "Description (optional)",
-      "descriptionPlaceholder": "Please describe the source of the correction and the time range it is relevant for.",
       "field": "Field",
       "insuficientData": "Please fill in all mandatory fields",
       "proposedValue": "Proposed value",

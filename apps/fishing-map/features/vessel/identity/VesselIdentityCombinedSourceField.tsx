@@ -80,15 +80,8 @@ const VesselIdentityCombinedSourceField = ({
               ?.value as string
             const bqSource = identity?.combinedSourcesInfo?.prodGeartypeSource?.[index]
               ?.value as string
-            const registryGearType = vesselInfo?.identities.find((identity) => {
-              const identityYearFrom = getUTCDateTime(identity.transmissionDateFrom).year
-              const identityYearTo = getUTCDateTime(identity.transmissionDateTo).year
-              return (
-                identity.identitySource === VesselIdentitySourceEnum.Registry &&
-                identityYearFrom <= yearTo &&
-                identityYearTo >= yearFrom
-              )
-            })?.geartypes
+            const registryGearType = identity?.combinedSourcesInfo?.registryVesselClass?.[index]
+              ?.value as string
             return (
               <Fragment key={index}>
                 <li onClick={() => toggleGearTypesExpanded(index)} className={styles.expandable}>

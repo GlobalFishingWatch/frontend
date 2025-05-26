@@ -61,6 +61,8 @@
   flex: 1;
   padding: 0 var(--space-S);
   overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .buttonsContainer {
