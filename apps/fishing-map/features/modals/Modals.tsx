@@ -211,6 +211,7 @@ const AppModals = () => {
           isOpen={workspaceGeneratorActive && !anyAppModalOpen}
           shouldCloseOnEsc
           onClose={() => dispatch(setModalOpen({ id: 'workspaceGenerator', open: false }))}
+          contentClassName={styles.workspaceGeneratorModal}
         >
           <WorkspaceGenerator />
         </Modal>

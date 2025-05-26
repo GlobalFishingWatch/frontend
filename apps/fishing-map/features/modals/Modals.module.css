@@ -12,6 +12,10 @@
   padding: 0;
 }
 
+.workspaceGeneratorModal {
+  padding-top: 0;
+}
+
 @media only screen and (width <= 800px) {
   .layerLibraryModal {
     height: unset;

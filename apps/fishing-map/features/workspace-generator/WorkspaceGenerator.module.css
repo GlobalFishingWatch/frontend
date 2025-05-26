@@ -1,37 +1,50 @@
 .container {
   display: flex;
   flex-direction: column;
+  gap: var(--space-S);
   height: 100%;
 }
 
 .messagesContainer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-XS);
   flex: 1;
   overflow-y: auto;
-  margin-bottom: var(--space-M);
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--space-M);
+}
+
+.exampleMessages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-style: italic;
+  color: var(--color-secondary-blue);
 }
 
 .message {
-  padding: var(--space-XS);
-  margin-bottom: var(--space-XS);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
+  padding: var(--space-S) var(--space-SM);
+  margin-bottom: var(--space-SM);
+  max-width: 80%;
 }
 
 .userMessage {
-  border-color: transparent;
+  background-color: var(--color-terthiary-blue);
+  border-radius: 20px 3px 20px 20px;
+  justify-self: right;
 }
 
 .agentMessage {
-  border-color: var(--color-primary-blue);
+  background-color: var(--color-secondary-blue);
+  color: var(--color-white);
+  border-radius: 3px 20px 20px;
+  justify-self: left;
 }
 
 .form {
   display: flex;
   align-items: center;
-  gap: var(--space-XS);
+  gap: var(--space-S);
 }
 
 .input {
