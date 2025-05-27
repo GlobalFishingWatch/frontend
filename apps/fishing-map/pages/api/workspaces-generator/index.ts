@@ -63,7 +63,7 @@ export default async function handler(
       })
     }
 
-    let thread: StorageThreadType
+    let thread: StorageThreadType | undefined
     const resourceId = `workspace-generator-${userId}`
     if (!threadId) {
       thread = await mastra.createMemoryThread({
@@ -75,20 +75,23 @@ export default async function handler(
       })
     } else {
       const memoryThread = mastra.getMemoryThread(threadId, WORKSPACES_AGENT_ID!)
-      thread = await memoryThread.get()
+      try {
+        thread = await memoryThread.get()
+      } catch (e) {
+        thread = { id: threadId } as StorageThreadType
+      }
     }
 
     const response = await workspacesAgent.generate({
       messages: [message],
-      threadId: thread.id,
+      threadId: thread?.id,
       resourceId,
     })
-    console.log('🚀 ~ response:', response.text)
 
     const apiResponse: WorkspaceGeneratorResponse = {
       success: true,
       message: response.text,
-      threadId: thread.id,
+      threadId: thread?.id,
       error: '',
     }
     try {
@@ -113,7 +116,7 @@ export default async function handler(
     console.log('🚀 ~ error:', error)
     return res.status(500).json({
       success: false,
-      error: 'Internal server error',
+      error: error?.message || error || 'Internal server error',
     })
   }
 }

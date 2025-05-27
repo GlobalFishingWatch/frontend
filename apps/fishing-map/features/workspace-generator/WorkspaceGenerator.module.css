@@ -10,7 +10,7 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  padding-top: var(--space-M);
+  padding-top: var(--space-XL);
 }
 
 .exampleMessages {
