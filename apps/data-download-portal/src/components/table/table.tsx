@@ -408,7 +408,7 @@ function Table({ columns, data, logged }: TableProps) {
           onClick={onDownloadClick}
           disabled={!rowSelectedCount || downloadLoading || !logged}
         >
-          {logged ? 'Download' : 'Login to download'}
+          {logged ? 'Download' : 'Log in to download'}
         </button>
       </div>
     </div>

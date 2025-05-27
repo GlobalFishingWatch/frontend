@@ -20,6 +20,7 @@ const insertIntoTree = (tree: TableData[], file: DatasetFile) => {
   let currentLevel = tree
   const cleanPath = file.name.endsWith('/') ? file.name.slice(0, -1) : file.name
   const parts = cleanPath.split('/')
+  const accumulatedNodes: TableData[] = []
 
   for (let i = 0; i < parts.length; i++) {
     const part = parts[i]
@@ -31,17 +32,27 @@ const insertIntoTree = (tree: TableData[], file: DatasetFile) => {
       const node: TableData = {
         ...file,
         name: part,
-        ...(isFolder ? { subRows: [] } : {}),
+        ...(isFolder ? { subRows: [], size: 0 } : { size: Number(file.size) || 0 }),
       }
-
       currentLevel.push(node)
       existing = node
+    }
+
+    // Accumulate all folder nodes to update their size later
+    if (isFolder) {
+      accumulatedNodes.push(existing)
     }
 
     if (existing.subRows) {
       currentLevel = existing.subRows!
     }
   }
+
+  // After inserting the file, update the size of all parent folders
+  const fileSize = Number(file.size) || 0
+  accumulatedNodes.forEach((folderNode) => {
+    folderNode.size = (Number(folderNode.size) || 0) + fileSize
+  })
 }
 
 export const buildFileTree = (files: DatasetFile[]): TableData[] => {
@@ -49,6 +60,7 @@ export const buildFileTree = (files: DatasetFile[]): TableData[] => {
   files.forEach((file) => {
     insertIntoTree(tree, file)
   })
+  console.log(tree)
   return tree
 }
 

@@ -73,7 +73,7 @@ function HomePage() {
       </TopBar>
       <div className={styles.cardsContainer}>
         {!logged ? (
-          <>Login to view the datasets</>
+          <>Log in to view the datasets</>
         ) : loading ? (
           <Loader />
         ) : (
