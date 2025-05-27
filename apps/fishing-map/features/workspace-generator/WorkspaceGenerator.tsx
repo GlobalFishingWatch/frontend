@@ -135,7 +135,7 @@ const WorkspaceGenerator = () => {
                   <p className={styles.messageText}>
                     {msg.url ? (
                       <a href={msg.url} target="_blank" rel="noopener noreferrer">
-                        Here is the workspace
+                        {msg.message || 'Here is the workspace'}
                       </a>
                     ) : (
                       <span>{msg.message}</span>

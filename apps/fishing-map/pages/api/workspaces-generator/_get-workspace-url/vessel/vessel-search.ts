@@ -4,6 +4,8 @@ import type { AdvancedSearchQueryFieldKey } from '@globalfishingwatch/api-client
 import { getAdvancedSearchQuery } from '@globalfishingwatch/api-client'
 import type { APIVesselSearchPagination, IdentityVessel } from '@globalfishingwatch/api-types'
 
+import { getVesselShipNameLabel } from 'utils/info'
+
 import type { VesselParams } from '../types'
 
 const GFW_API_URL =
@@ -17,7 +19,8 @@ export const searchVessel = async (vessel: VesselParams) => {
   if (!name && !imo && !mmsi) return null
 
   let advancedQuery = ''
-  if (imo || mmsi) {
+  const hasMultipleSearchParams = Object.values(vessel).filter(Boolean).length > 1
+  if (hasMultipleSearchParams) {
     const fields = [
       ...(name ? [{ key: 'shipname' as AdvancedSearchQueryFieldKey, value: name }] : []),
       ...(imo ? [{ key: 'imo' as AdvancedSearchQueryFieldKey, value: imo }] : []),
@@ -25,7 +28,7 @@ export const searchVessel = async (vessel: VesselParams) => {
     ]
     advancedQuery = getAdvancedSearchQuery(fields)
   }
-  const query = name && !advancedQuery ? `query=${name}` : `where=${advancedQuery}`
+  const query = advancedQuery ? `where=${advancedQuery}` : `query=${name || imo || mmsi}`
   const params = {
     datasets: VESSEL_SEARCH_DATASETS,
   }
@@ -45,7 +48,7 @@ export const searchVessel = async (vessel: VesselParams) => {
     if (data.entries.length >= 1) {
       const vesselMatched = data.entries[0]
       const id = vesselMatched.selfReportedInfo?.[0]?.id
-      return { id, dataset: vesselMatched.dataset }
+      return { id, dataset: vesselMatched.dataset, name: getVesselShipNameLabel(vesselMatched) }
     }
 
     return null

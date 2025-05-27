@@ -2,7 +2,7 @@ import { MastraClient } from '@mastra/client-js'
 import type { StorageThreadType } from '@mastra/core'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import { getWorkspaceUrl } from './_get-workspace-url'
+import { getWorkspaceConfig } from './_get-workspace-url'
 
 const MASTRA_API_URL = process.env.NEXT_MASTRA_API_URL
 const WORKSPACES_AGENT_ID = process.env.NEXT_WORKSPACES_AGENT_ID
@@ -84,6 +84,7 @@ export default async function handler(
       threadId: thread.id,
       resourceId,
     })
+    console.log('🚀 ~ response:', response.text)
 
     const apiResponse: WorkspaceGeneratorResponse = {
       success: true,
@@ -94,13 +95,19 @@ export default async function handler(
     try {
       const jsonString = response.text.replace('```json\n', '').replace('\n```', '').trim()
       const parsedResponse = JSON.parse(jsonString)
-      const url = await getWorkspaceUrl(parsedResponse)
-      apiResponse.url = url
+      const { label, url } = (await getWorkspaceConfig(parsedResponse)) || {}
+      if (url) {
+        apiResponse.url = url
+      }
+      if (label) {
+        apiResponse.message = label
+      }
     } catch (_: any) {
       apiResponse.url = undefined
     }
     return res.status(200).json(apiResponse)
   } catch (error: any) {
+    console.log('🚀 ~ error:', error)
     return res.status(500).json({
       success: false,
       error: 'Internal server error',
