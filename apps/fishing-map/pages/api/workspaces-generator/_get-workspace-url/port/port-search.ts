@@ -15,9 +15,9 @@ type PortSearchResult = {
   flag?: string
 }
 
-export const searchPort = (port: PortParams): PortSearchResult | null => {
+export const searchPorts = (port: PortParams): PortSearchResult[] => {
   const { name, country } = port ?? {}
-  if (!name && !country) return null
+  if (!name && !country) return []
 
   const matchingPortsById = name
     ? matchSorter(ports, name, {
@@ -26,38 +26,13 @@ export const searchPort = (port: PortParams): PortSearchResult | null => {
     : []
 
   if (!matchingPortsById.length) {
-    return null
+    return []
   }
 
-  if (matchingPortsById.length === 1) {
-    return {
-      dataset: PORT_DATASET,
-      id: matchingPortsById[0].id,
-      label: matchingPortsById[0].name || '',
-      flag: matchingPortsById[0].flag,
-    }
-  }
-
-  const matchingCountryPorts = country
-    ? matchSorter(matchingPortsById, country, {
-        keys: ['flag'],
-        threshold: matchSorter.rankings.EQUAL,
-      })
-    : []
-
-  if (matchingCountryPorts.length > 1) {
-    return {
-      dataset: PORT_DATASET,
-      id: matchingCountryPorts[0].id,
-      label: matchingCountryPorts[0].name || '',
-      flag: matchingCountryPorts[0].flag,
-    }
-  }
-
-  return {
+  return matchingPortsById.map((port) => ({
     dataset: PORT_DATASET,
-    id: matchingPortsById[0].id,
-    label: matchingPortsById[0].name || '',
-    flag: matchingPortsById[0].flag,
-  }
+    id: port.id,
+    label: port.name || '',
+    flag: port.flag,
+  }))
 }

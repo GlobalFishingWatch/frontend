@@ -16,13 +16,14 @@ import type {
   ReportEventsSubCategory,
 } from 'features/reports/reports.types'
 import { ReportCategory } from 'features/reports/reports.types'
+import { searchPorts } from 'pages/api/workspaces-generator/_get-workspace-url/port/port-search'
 import type { AnyWorkspaceState } from 'types'
 import { TimebarVisualisations } from 'types'
+import { upperFirst } from 'utils/info'
 
-import { type AreaSearchResult, type AreaType, searchArea } from '../area/area-search'
-import { searchPort } from '../port/port-search'
+import { type AreaSearchResult, type AreaType, searchAreas } from '../area/area-search'
 import type { ConfigurationParams, DatasetType } from '../types'
-import { DEFAULT_WORKSPACE, getSharedWorkspaceParams } from '../utils'
+import { DEFAULT_WORKSPACE, getDateRangeLabel, getSharedWorkspaceParams } from '../utils'
 
 const AREA_DATAVIEW_BY_TYPE: Record<NonNullable<AreaType>, string> = {
   eez: EEZ_DATAVIEW_INSTANCE_ID,
@@ -118,25 +119,28 @@ function getAreaReportDataviewInstances(
 export async function getAreaWorkspaceConfig(configuration: ConfigurationParams) {
   const { area, port } = configuration
   if (area?.name) {
-    let areaMatched = searchArea(area)
-    if (!areaMatched && port?.name) {
-      areaMatched = searchPort(port)
+    let areasMatched = searchAreas(area)
+    if (!areasMatched?.length && port?.name) {
+      areasMatched = searchPorts(port)
     }
-    if (!areaMatched) {
+    if (!areasMatched?.length) {
       return
     }
 
-    const { id, dataset: areaDataset } = areaMatched
     const reportParams: AnyWorkspaceState = {
       ...getSharedWorkspaceParams(configuration),
       ...getAreaReportCategoryConfig(configuration),
-      dataviewInstances: getAreaReportDataviewInstances(configuration, areaMatched),
+      dataviewInstances: getAreaReportDataviewInstances(configuration, areasMatched[0]),
       timebarVisualisation: TimebarVisualisations.HeatmapActivity,
       reportLoadVessels: true,
     }
+    const links = areasMatched.map((areaMatched) => ({
+      url: `/map/${DEFAULT_WORKSPACE}/report/${areaMatched.dataset}/${areaMatched.id}?${stringifyWorkspace(reportParams)}`,
+      message: `${upperFirst(configuration.dataset || '')} in ${areaMatched.label} ${getDateRangeLabel(configuration)}`,
+    }))
     return {
-      label: `Here you have the area ${areaMatched.label} report for ${configuration.dataset}`,
-      url: `/map/${DEFAULT_WORKSPACE}/report/${areaDataset}/${id}?${stringifyWorkspace(reportParams)}`,
+      label: '',
+      links,
     }
   }
 }

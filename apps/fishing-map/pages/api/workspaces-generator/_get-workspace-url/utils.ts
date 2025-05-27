@@ -1,5 +1,6 @@
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { AnyWorkspaceState } from 'types'
 
 import type { ConfigurationParams } from './types'
@@ -19,4 +20,12 @@ export function getSharedWorkspaceParams(
     }),
   }
   return params
+}
+
+export function getDateRangeLabel(configuration: ConfigurationParams) {
+  const { start_date, end_date } = configuration
+  if (start_date && end_date) {
+    return `from ${formatI18nDate(start_date)} to ${formatI18nDate(end_date)}`
+  }
+  return ''
 }

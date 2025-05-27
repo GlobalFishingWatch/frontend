@@ -24,14 +24,14 @@ export type WorkspaceGeneratorResponse =
   | {
       success: true
       message: string
-      url?: string
+      links?: { url: string; message: string }[]
       threadId: string
       error: '' // always empty string on success
     }
   | {
       success: false
       message?: undefined
-      url?: undefined
+      links?: undefined
       threadId?: undefined
       error: string
     }
@@ -95,15 +95,15 @@ export default async function handler(
     try {
       const jsonString = response.text.replace('```json\n', '').replace('\n```', '').trim()
       const parsedResponse = JSON.parse(jsonString)
-      const { label, url } = (await getWorkspaceConfig(parsedResponse)) || {}
-      if (url) {
-        apiResponse.url = url
+      const { label, links } = (await getWorkspaceConfig(parsedResponse)) || {}
+      if (links) {
+        apiResponse.links = links
       }
       if (label) {
         apiResponse.message = label
       }
     } catch (_: any) {
-      apiResponse.url = undefined
+      apiResponse.links = undefined
     }
     return res.status(200).json(apiResponse)
   } catch (error: any) {

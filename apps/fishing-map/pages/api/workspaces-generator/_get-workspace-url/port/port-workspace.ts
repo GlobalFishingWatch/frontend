@@ -5,28 +5,35 @@ import type { AnyWorkspaceState } from 'types'
 import { TimebarVisualisations } from 'types'
 
 import type { ConfigurationParams } from '../types'
-import { DEFAULT_WORKSPACE, getSharedWorkspaceParams } from '../utils'
+import { DEFAULT_WORKSPACE, getDateRangeLabel, getSharedWorkspaceParams } from '../utils'
 
-import { searchPort } from './port-search'
+import { searchPorts } from './port-search'
 
 export async function getPortWorkspaceConfig(configuration: ConfigurationParams) {
   const { port } = configuration
   if (port?.name || port?.country) {
-    const portMatched = searchPort(port)
-    if (!portMatched) {
+    const portsMatched = searchPorts(port)
+    if (!portsMatched) {
       return
     }
-    const { id, flag, dataset, label } = portMatched
+    const { flag, dataset, label } = portsMatched[0]
     const portParams: AnyWorkspaceState = {
       ...getSharedWorkspaceParams(configuration),
       timebarVisualisation: TimebarVisualisations.Events,
       reportCategory: ReportCategory.Events,
       portsReportCountry: flag,
+      portsReportName: label,
       portsReportDatasetId: dataset,
     }
+
+    const links = portsMatched.map((portMatched) => ({
+      url: `/map/${DEFAULT_WORKSPACE}/ports-report/${portMatched.id}?${stringifyWorkspace(portParams)}`,
+      message: `See here the visits to ${portMatched.label} port ${getDateRangeLabel(configuration)}`,
+    }))
+
     return {
-      label: `Here you have the port ${label} profile`,
-      url: `/map/${DEFAULT_WORKSPACE}/ports-report/${id}?${stringifyWorkspace(portParams)}`,
+      label: '',
+      links,
     }
   }
 }

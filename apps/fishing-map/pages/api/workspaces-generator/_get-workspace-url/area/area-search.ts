@@ -35,11 +35,11 @@ const AREAS_CONFIG: Record<AreaType, { data: any[]; dataset: AreaDataset }> = {
   },
 }
 
-export const searchArea = ({ name } = {} as AreaParams) => {
-  let bestMatch: AreaSearchResult | null = null
+export const searchAreas = ({ name } = {} as AreaParams) => {
+  const matches: AreaSearchResult[] = []
 
   if (!name) {
-    return bestMatch
+    return matches
   }
 
   for (const [type, { data, dataset }] of Object.entries(AREAS_CONFIG)) {
@@ -47,10 +47,10 @@ export const searchArea = ({ name } = {} as AreaParams) => {
       keys: ['label'],
     })
     if (matchingAreas.length) {
-      bestMatch = { ...matchingAreas[0], dataset, type: type as AreaType }
+      matches.push(...matchingAreas.map((area) => ({ ...area, dataset, type: type as AreaType })))
       break
     }
   }
 
-  return bestMatch
+  return matches
 }

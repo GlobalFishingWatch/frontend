@@ -14,9 +14,9 @@ const API_TOKEN = process.env.NEXT_GFW_API_KEY
 const VESSEL_SEARCH_URL = 'v3/vessels/search'
 const VESSEL_SEARCH_DATASETS = ['public-global-vessel-identity:v3.0']
 
-export const searchVessel = async (vessel: VesselParams) => {
+export const searchVessels = async (vessel: VesselParams) => {
   const { name, imo, mmsi } = vessel || {}
-  if (!name && !imo && !mmsi) return null
+  if (!name && !imo && !mmsi) return []
 
   let advancedQuery = ''
   const hasMultipleSearchParams = Object.values(vessel).filter(Boolean).length > 1
@@ -46,13 +46,17 @@ export const searchVessel = async (vessel: VesselParams) => {
 
     const data = (await response.json()) as APIVesselSearchPagination<IdentityVessel>
     if (data.entries.length >= 1) {
-      const vesselMatched = data.entries[0]
-      const id = vesselMatched.selfReportedInfo?.[0]?.id
-      return { id, dataset: vesselMatched.dataset, name: getVesselShipNameLabel(vesselMatched) }
+      return data.entries.map((vessel) => ({
+        id: vessel.selfReportedInfo?.[0]?.id,
+        dataset: vessel.dataset,
+        name: getVesselShipNameLabel(vessel),
+        mmsi: vessel.selfReportedInfo?.[0]?.ssvid,
+        imo: vessel.selfReportedInfo?.[0]?.imo,
+      }))
     }
 
-    return null
+    return []
   } catch (e) {
-    return null
+    return []
   }
 }

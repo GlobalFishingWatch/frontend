@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
@@ -13,7 +13,7 @@ import styles from './WorkspaceGenerator.module.css'
 type Message = {
   role: 'user' | 'agent'
   message: string
-  url?: string
+  links?: { url: string; message: string }[]
 }
 
 const EXAMPLE_MESSAGES = [
@@ -64,7 +64,7 @@ function useWorkspacesAgent() {
       }
       setMessages((prev) => [
         ...prev,
-        { role: 'agent', message: data.message ?? '', url: data.url ?? '' },
+        { role: 'agent', message: data.message ?? '', links: data.links ?? [] },
       ])
       setThreadId(data.threadId)
     } catch (err: any) {
@@ -133,10 +133,19 @@ const WorkspaceGenerator = () => {
                   )}
                 >
                   <p className={styles.messageText}>
-                    {msg.url ? (
-                      <a href={msg.url} target="_blank" rel="noopener noreferrer">
-                        {msg.message || 'Here is the workspace'}
-                      </a>
+                    {msg.links && msg.links?.length > 0 ? (
+                      <Fragment>
+                        {msg.links?.length > 1 && <p>Select a link:</p>}
+                        <ul>
+                          {msg.links.map((link) => (
+                            <li key={link.url}>
+                              <a href={link.url} target="_blank" rel="noopener noreferrer">
+                                {link.message || 'Here is the workspace'}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </Fragment>
                     ) : (
                       <span>{msg.message}</span>
                     )}
