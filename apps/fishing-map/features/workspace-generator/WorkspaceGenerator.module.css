@@ -1,0 +1,61 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+  height: 100%;
+}
+
+.messagesContainer {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--space-M);
+}
+
+.exampleMessages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-style: italic;
+  color: var(--color-secondary-blue);
+}
+
+.message {
+  padding: var(--space-S) var(--space-SM);
+  margin-bottom: var(--space-SM);
+  max-width: 80%;
+}
+
+.messageText a {
+  text-decoration: underline;
+}
+
+.userMessage {
+  background-color: var(--color-terthiary-blue);
+  border-radius: 20px 3px 20px 20px;
+  justify-self: right;
+}
+
+.agentMessage {
+  background-color: var(--color-secondary-blue);
+  color: var(--color-white);
+  border-radius: 3px 20px 20px;
+  justify-self: left;
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  gap: var(--space-S);
+}
+
+.input {
+  flex: 1;
+}
+
+.error {
+  border-color: var(--color-danger-red);
+  color: var(--color-danger-red);
+}

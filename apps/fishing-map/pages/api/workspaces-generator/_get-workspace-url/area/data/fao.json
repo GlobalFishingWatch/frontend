@@ -1,0 +1,21 @@
+[
+  { "id": "18", "label": "Arctic Sea" },
+  { "id": "61", "label": "Pacific, Northwest" },
+  { "id": "67", "label": "Pacific, Northeast" },
+  { "id": "37", "label": "Mediterranean and Black Sea" },
+  { "id": "27", "label": "Atlantic, Northeast" },
+  { "id": "31", "label": "Atlantic, Western Central" },
+  { "id": "34", "label": "Atlantic, Eastern Central" },
+  { "id": "51", "label": "Indian Ocean, Western" },
+  { "id": "57", "label": "Indian Ocean, Eastern" },
+  { "id": "71", "label": "Pacific, Western Central" },
+  { "id": "87", "label": "Pacific, Southeast" },
+  { "id": "41", "label": "Atlantic, Southwest" },
+  { "id": "81", "label": "Pacific, Southwest" },
+  { "id": "58", "label": "Indian Ocean, Antarctic" },
+  { "id": "48", "label": "Atlantic, Antarctic" },
+  { "id": "88", "label": "Pacific, Antarctic" },
+  { "id": "77", "label": "Pacific, Eastern Central" },
+  { "id": "47", "label": "Atlantic, Southeast" },
+  { "id": "21", "label": "Atlantic, Northwest" }
+]
