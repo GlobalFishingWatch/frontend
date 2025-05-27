@@ -48,7 +48,7 @@ const initialState: ModalsOpenState = {
     type: undefined,
     style: 'default',
   },
-  workspaceGenerator: true,
+  workspaceGenerator: false,
 }
 
 const modals = createSlice({
