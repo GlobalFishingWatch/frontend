@@ -202,16 +202,11 @@ const AppModals = () => {
       {isGFWUser && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
-          title={
-            <Fragment>
-              Workspace generator 🪄
-              <GFWOnly userGroup="gfw" />
-            </Fragment>
-          }
           isOpen={workspaceGeneratorActive && !anyAppModalOpen}
           shouldCloseOnEsc
           onClose={() => dispatch(setModalOpen({ id: 'workspaceGenerator', open: false }))}
           contentClassName={styles.workspaceGeneratorModal}
+          header={false}
         >
           <WorkspaceGenerator />
         </Modal>
