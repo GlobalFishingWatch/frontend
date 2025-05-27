@@ -1,1427 +1,1142 @@
 [
   {
-    "label": "Jordanian Exclusive Economic Zone",
-    "id": 8491,
-    "GEONAME": "Jordanian Exclusive Economic Zone"
+    "label": "Jordan EEZ",
+    "id": 8491
   },
   {
-    "label": "Uruguayan Exclusive Economic Zone",
-    "id": 8467,
-    "GEONAME": "Uruguayan Exclusive Economic Zone"
+    "label": "Uruguay EEZ",
+    "id": 8467
   },
   {
-    "label": "Latvian Exclusive Economic Zone",
-    "id": 5683,
-    "GEONAME": "Latvian Exclusive Economic Zone"
+    "label": "Latvia EEZ",
+    "id": 5683
+  },
+  {
+    "label": "South Korea EEZ",
+    "id": 8327
+  },
+  {
+    "label": "Bahamas EEZ",
+    "id": 8404
+  },
+  {
+    "label": "Iceland EEZ",
+    "id": 5680
+  },
+  {
+    "label": "Russia EEZ",
+    "id": 5690
+  },
+  {
+    "label": "Lithuania EEZ",
+    "id": 5684
+  },
+  {
+    "label": "Israel EEZ",
+    "id": 8375
+  },
+  {
+    "label": "Brazil EEZ",
+    "id": 8464
+  },
+  {
+    "label": "Kenya EEZ",
+    "id": 8349
+  },
+  {
+    "label": "Somalia EEZ",
+    "id": 8350
+  },
+  {
+    "label": "Comoros EEZ",
+    "id": 8334
+  },
+  {
+    "label": "Bangladesh EEZ",
+    "id": 8481
+  },
+  {
+    "label": "Ireland EEZ",
+    "id": 5681
+  },
+  {
+    "label": "Marshall Islands EEZ",
+    "id": 8318
+  },
+  {
+    "label": "Montenegro EEZ",
+    "id": 5691
+  },
+  {
+    "label": "New Zealand EEZ",
+    "id": 8455
+  },
+  {
+    "label": "Palestine EEZ",
+    "id": 48953
+  },
+  {
+    "label": "Cameroon EEZ",
+    "id": 8475
+  },
+  {
+    "label": "Bosnia and Herzegovina EEZ",
+    "id": 22491
+  },
+  {
+    "label": "Argentina EEZ",
+    "id": 8466
+  },
+  {
+    "label": "Belgium EEZ",
+    "id": 3293
+  },
+  {
+    "label": "Turkmenistan EEZ",
+    "id": 26523
+  },
+  {
+    "label": "Bulgaria EEZ",
+    "id": 5672
+  },
+  {
+    "label": "Poland EEZ",
+    "id": 5687
+  },
+  {
+    "label": "Mexico EEZ",
+    "id": 8429
+  },
+  {
+    "label": "Libya EEZ",
+    "id": 8372
+  },
+  {
+    "label": "Thailand EEZ",
+    "id": 8332
+  },
+  {
+    "label": "Fiji EEZ",
+    "id": 8325
+  },
+  {
+    "label": "Liberia EEZ",
+    "id": 8391
+  },
+  {
+    "label": "Dominican Republic EEZ",
+    "id": 8417
+  },
+  {
+    "label": "Mozambique EEZ",
+    "id": 8347
+  },
+  {
+    "label": "Denmark EEZ",
+    "id": 5674
+  },
+  {
+    "label": "Croatia EEZ",
+    "id": 5673
+  },
+  {
+    "label": "Oman EEZ",
+    "id": 8354
+  },
+  {
+    "label": "Canada EEZ",
+    "id": 8493
+  },
+  {
+    "label": "Suriname EEZ",
+    "id": 8461
+  },
+  {
+    "label": "Pakistan EEZ",
+    "id": 8359
+  },
+  {
+    "label": "Guinea EEZ",
+    "id": 8472
+  },
+  {
+    "label": "Saudi Arabia EEZ",
+    "id": 8356
+  },
+  {
+    "label": "Venezuela EEZ",
+    "id": 8433
+  },
+  {
+    "label": "Georgia EEZ",
+    "id": 5678
+  },
+  {
+    "label": "Cuba EEZ",
+    "id": 8406
+  },
+  {
+    "label": "Vanuatu EEZ",
+    "id": 8313
+  },
+  {
+    "label": "Qatar EEZ",
+    "id": 8468
+  },
+  {
+    "label": "Eritrea EEZ",
+    "id": 8351
+  },
+  {
+    "label": "Sweden EEZ",
+    "id": 5694
+  },
+  {
+    "label": "Chile EEZ",
+    "id": 8465
+  },
+  {
+    "label": "China EEZ",
+    "id": 8486
+  },
+  {
+    "label": "Equatorial Guinea EEZ",
+    "id": 8398
+  },
+  {
+    "label": "Greece EEZ",
+    "id": 5679
+  },
+  {
+    "label": "Madagascar EEZ",
+    "id": 8348
+  },
+  {
+    "label": "Seychelles EEZ",
+    "id": 8337
+  },
+  {
+    "label": "Australia EEZ",
+    "id": 8323
+  },
+  {
+    "label": "Tonga EEZ",
+    "id": 8448
+  },
+  {
+    "label": "Cambodia EEZ",
+    "id": 8331
+  },
+  {
+    "label": "Netherlands EEZ",
+    "id": 5668
+  },
+  {
+    "label": "Barbados EEZ",
+    "id": 8418
+  },
+  {
+    "label": "Micronesia EEZ",
+    "id": 8316
+  },
+  {
+    "label": "Mauritania EEZ",
+    "id": 8369
+  },
+  {
+    "label": "Benin EEZ",
+    "id": 8393
+  },
+  {
+    "label": "Saint Lucia EEZ",
+    "id": 8416
+  },
+  {
+    "label": "Philippines EEZ",
+    "id": 8322
+  },
+  {
+    "label": "Papua New Guinea EEZ",
+    "id": 8324
+  },
+  {
+    "label": "India EEZ",
+    "id": 8480
+  },
+  {
+    "label": "Solomon Islands EEZ",
+    "id": 8314
+  },
+  {
+    "label": "Nauru EEZ",
+    "id": 8317
+  },
+  {
+    "label": "Spain EEZ",
+    "id": 5693
+  },
+  {
+    "label": "Syria EEZ",
+    "id": 8373
+  },
+  {
+    "label": "Tuvalu EEZ",
+    "id": 8326
+  },
+  {
+    "label": "Guyana EEZ",
+    "id": 8460
+  },
+  {
+    "label": "Egypt EEZ",
+    "id": 8490
+  },
+  {
+    "label": "Sierra Leone EEZ",
+    "id": 8390
+  },
+  {
+    "label": "Grenada EEZ",
+    "id": 8419
+  },
+  {
+    "label": "Finland EEZ",
+    "id": 5676
+  },
+  {
+    "label": "Haiti EEZ",
+    "id": 8408
+  },
+  {
+    "label": "Mauritius EEZ",
+    "id": 8343
+  },
+  {
+    "label": "Albania EEZ",
+    "id": 5670
+  },
+  {
+    "label": "Norway EEZ",
+    "id": 5686
+  },
+  {
+    "label": "Turkey EEZ",
+    "id": 5697
+  },
+  {
+    "label": "Portugal EEZ",
+    "id": 5688
+  },
+  {
+    "label": "Samoa EEZ",
+    "id": 8445
+  },
+  {
+    "label": "Trinidad and Tobago EEZ",
+    "id": 8420
+  },
+  {
+    "label": "United Kingdom EEZ",
+    "id": 5696
+  },
+  {
+    "label": "Timor-Leste EEZ",
+    "id": 8758
+  },
+  {
+    "label": "Nigeria EEZ",
+    "id": 8474
+  },
+  {
+    "label": "Vietnam EEZ",
+    "id": 8484
+  },
+  {
+    "label": "Italy EEZ",
+    "id": 5682
+  },
+  {
+    "label": "Peru EEZ",
+    "id": 8432
+  },
+  {
+    "label": "Ghana EEZ",
+    "id": 8400
+  },
+  {
+    "label": "United Arab Emirates EEZ",
+    "id": 8360
+  },
+  {
+    "label": "Indonesia EEZ",
+    "id": 8492
+  },
+  {
+    "label": "North Korea EEZ",
+    "id": 8328
+  },
+  {
+    "label": "France EEZ",
+    "id": 5677
+  },
+  {
+    "label": "Malaysia EEZ",
+    "id": 8483
+  },
+  {
+    "label": "Morocco EEZ",
+    "id": 8367
+  },
+  {
+    "label": "Sudan EEZ",
+    "id": 8355
+  },
+  {
+    "label": "Monaco EEZ",
+    "id": 21790
+  },
+  {
+    "label": "Tunisia EEZ",
+    "id": 8366
+  },
+  {
+    "label": "Brunei EEZ",
+    "id": 26521
+  },
+  {
+    "label": "El Salvador EEZ",
+    "id": 8428
+  },
+  {
+    "label": "Romania EEZ",
+    "id": 5689
+  },
+  {
+    "label": "Kuwait EEZ",
+    "id": 8357
+  },
+  {
+    "label": "Gabon EEZ",
+    "id": 8476
+  },
+  {
+    "label": "Colombia EEZ",
+    "id": 8426
+  },
+  {
+    "label": "Cyprus EEZ",
+    "id": 8376
+  },
+  {
+    "label": "United States EEZ",
+    "id": 8456
+  },
+  {
+    "label": "Ecuador EEZ",
+    "id": 8431
+  },
+  {
+    "label": "Côte d'Ivoire EEZ",
+    "id": 8473
+  },
+  {
+    "label": "Jamaica EEZ",
+    "id": 8459
+  },
+  {
+    "label": "Angola EEZ",
+    "id": 8478
+  },
+  {
+    "label": "Guatemala EEZ",
+    "id": 8430
+  },
+  {
+    "label": "Azerbaijan EEZ",
+    "id": 26524
+  },
+  {
+    "label": "Costa Rica EEZ",
+    "id": 8424
+  },
+  {
+    "label": "Sri Lanka EEZ",
+    "id": 8346
+  },
+  {
+    "label": "Senegal EEZ",
+    "id": 8371
+  },
+  {
+    "label": "Myanmar EEZ",
+    "id": 8482
+  },
+  {
+    "label": "Maldives EEZ",
+    "id": 8345
+  },
+  {
+    "label": "Honduras EEZ",
+    "id": 8427
+  },
+  {
+    "label": "Lebanon EEZ",
+    "id": 8374
+  },
+  {
+    "label": "Saint Kitts and Nevis EEZ",
+    "id": 8413
+  },
+  {
+    "label": "Bahrain EEZ",
+    "id": 8358
+  },
+  {
+    "label": "Nicaragua EEZ",
+    "id": 8425
+  },
+  {
+    "label": "Kazakhstan EEZ",
+    "id": 26522
+  },
+  {
+    "label": "Guinea-Bissau EEZ",
+    "id": 8471
+  },
+  {
+    "label": "Iran EEZ",
+    "id": 8469
+  },
+  {
+    "label": "Japan EEZ",
+    "id": 8487
+  },
+  {
+    "label": "Yemen EEZ",
+    "id": 8353
+  },
+  {
+    "label": "Slovenia EEZ",
+    "id": 5692
+  },
+  {
+    "label": "Tanzania EEZ",
+    "id": 8479
+  },
+  {
+    "label": "Germany EEZ",
+    "id": 5669
+  },
+  {
+    "label": "Iraq EEZ",
+    "id": 8470
+  },
+  {
+    "label": "Namibia EEZ",
+    "id": 8395
+  },
+  {
+    "label": "Belize EEZ",
+    "id": 8457
+  },
+  {
+    "label": "South Africa EEZ",
+    "id": 8396
+  },
+  {
+    "label": "Malta EEZ",
+    "id": 5685
+  },
+  {
+    "label": "Saint Vincent and the Grenadines EEZ",
+    "id": 8421
+  },
+  {
+    "label": "Palau EEZ",
+    "id": 8315
+  },
+  {
+    "label": "Antigua and Barbuda EEZ",
+    "id": 8414
+  },
+  {
+    "label": "Djibouti EEZ",
+    "id": 8352
+  },
+  {
+    "label": "São Tomé and Príncipe EEZ",
+    "id": 8397
+  },
+  {
+    "label": "Singapore EEZ",
+    "id": 8485
+  },
+  {
+    "label": "Cape Verde EEZ",
+    "id": 8362
+  },
+  {
+    "label": "Algeria EEZ",
+    "id": 8378
+  },
+  {
+    "label": "Estonia EEZ",
+    "id": 5675
+  },
+  {
+    "label": "Togo EEZ",
+    "id": 8392
+  },
+  {
+    "label": "Gambia EEZ",
+    "id": 8370
+  },
+  {
+    "label": "Panama EEZ",
+    "id": 8423
+  },
+  {
+    "label": "New Zealand EEZ (Cook Islands)",
+    "id": 8446
+  },
+  {
+    "label": "French EEZ (Wallis and Futuna)",
+    "id": 8454
+  },
+  {
+    "label": "French EEZ (Saint-Pierre and Miquelon)",
+    "id": 8494
+  },
+  {
+    "label": "British EEZ (Ascension)",
+    "id": 8379
+  },
+  {
+    "label": "Portuguese EEZ (Azores)",
+    "id": 8361
+  },
+  {
+    "label": "French EEZ (Kerguélen)",
+    "id": 8387
+  },
+  {
+    "label": "Dutch EEZ (Curaçao)",
+    "id": 26517
+  },
+  {
+    "label": "British EEZ (Jersey)",
+    "id": 21789
+  },
+  {
+    "label": "New Zealand EEZ (Niue)",
+    "id": 8447
+  },
+  {
+    "label": "British EEZ (British Virgin Islands)",
+    "id": 8411
+  },
+  {
+    "label": "French EEZ (French Polynesia)",
+    "id": 8440
+  },
+  {
+    "label": "United States EEZ (Palmyra Atoll)",
+    "id": 8443
+  },
+  {
+    "label": "French EEZ (Réunion)",
+    "id": 8338
+  },
+  {
+    "label": "British EEZ (Saint Helena)",
+    "id": 8380
+  },
+  {
+    "label": "United States EEZ (Jarvis Islands)",
+    "id": 8442
+  },
+  {
+    "label": "Norwegian EEZ (Jan Mayen)",
+    "id": 8437
+  },
+  {
+    "label": "Dutch EEZ (Sint-Maarten)",
+    "id": 21803
+  },
+  {
+    "label": "French EEZ (Amsterdam and Saint Paul Islands)",
+    "id": 8386
+  },
+  {
+    "label": "United States EEZ (Hawaii)",
+    "id": 8453
+  },
+  {
+    "label": "Brazilian EEZ (Trindade)",
+    "id": 8381
+  },
+  {
+    "label": "Dutch EEZ (Aruba)",
+    "id": 26519
+  },
+  {
+    "label": "Dutch EEZ (Saba)",
+    "id": 26518
+  },
+  {
+    "label": "Ecuadorian EEZ (Galapagos)",
+    "id": 8403
+  },
+  {
+    "label": "Chilean EEZ (Easter Island)",
+    "id": 21787
+  },
+  {
+    "label": "British EEZ (Bermuda)",
+    "id": 8402
+  },
+  {
+    "label": "Spanish EEZ (Canary Islands)",
+    "id": 8364
+  },
+  {
+    "label": "Australian EEZ (Norfolk Island)",
+    "id": 8310
+  },
+  {
+    "label": "Congolese (Democratic Republic of) EEZ",
+    "id": 8477
+  },
+  {
+    "label": "United States EEZ (American Samoa)",
+    "id": 8444
+  },
+  {
+    "label": "French EEZ (New Caledonia)",
+    "id": 8312
+  },
+  {
+    "label": "French EEZ (Guadeloupe)",
+    "id": 33177
+  },
+  {
+    "label": "United States EEZ (Johnston Atoll)",
+    "id": 8452
+  },
+  {
+    "label": "Indian EEZ (Andaman and Nicobar Islands)",
+    "id": 8333
+  },
+  {
+    "label": "Norwegian EEZ (Svalbard)",
+    "id": 33181
+  },
+  {
+    "label": "Kiribati EEZ (Gilbert Islands)",
+    "id": 8488
+  },
+  {
+    "label": "British EEZ (Guernsey)",
+    "id": 21788
+  },
+  {
+    "label": "Kiribati EEZ (Line Group)",
+    "id": 8441
+  },
+  {
+    "label": "Australian EEZ (Christmas Island)",
+    "id": 8309
+  },
+  {
+    "label": "British EEZ (Cayman Islands)",
+    "id": 8407
+  },
+  {
+    "label": "Dutch EEZ (Sint-Eustatius)",
+    "id": 26526
+  },
+  {
+    "label": "Colombian EEZ (Quitasueño Bank)",
+    "id": 62598
+  },
+  {
+    "label": "British EEZ (Montserrat)",
+    "id": 8415
+  },
+  {
+    "label": "French EEZ (Bassas da India)",
+    "id": 8340
+  },
+  {
+    "label": "United States EEZ (Northern Mariana Islands)",
+    "id": 48980
+  },
+  {
+    "label": "South African EEZ (Prince Edward Islands)",
+    "id": 8384
+  },
+  {
+    "label": "New Zealand EEZ (Tokelau)",
+    "id": 8449
+  },
+  {
+    "label": "Portuguese EEZ (Madeira)",
+    "id": 8363
+  },
+  {
+    "label": "Australian EEZ (Macquarie Island)",
+    "id": 8311
+  },
+  {
+    "label": "French EEZ (Clipperton Island)",
+    "id": 8401
+  },
+  {
+    "label": "British EEZ (Anguilla)",
+    "id": 8412
+  },
+  {
+    "label": "Australian EEZ (Heard and McDonald Islands)",
+    "id": 8388
+  },
+  {
+    "label": "French EEZ (Collectivity of Saint Martin)",
+    "id": 8495
+  },
+  {
+    "label": "United States EEZ (Guam)",
+    "id": 48957
+  },
+  {
+    "label": "Danish EEZ (Greenland)",
+    "id": 8438
+  },
+  {
+    "label": "British EEZ (Isle of Man)",
+    "id": 64446
+  },
+  {
+    "label": "Australian EEZ (Cocos Islands)",
+    "id": 8308
+  },
+  {
+    "label": "Congolese (Republic of) EEZ",
+    "id": 8394
+  },
+  {
+    "label": "Colombian EEZ (Serrana Bank)",
+    "id": 62596
+  },
+  {
+    "label": "Dutch EEZ (Bonaire)",
+    "id": 26520
+  },
+  {
+    "label": "Colombian EEZ (Serranilla Bank)",
+    "id": 48984
+  },
+  {
+    "label": "United States EEZ (Howland and Baker Islands)",
+    "id": 8451
+  },
+  {
+    "label": "British EEZ (Tristan da Cunha)",
+    "id": 8382
+  },
+  {
+    "label": "French EEZ (Crozet Islands)",
+    "id": 8385
+  },
+  {
+    "label": "British EEZ (Turks and Caicos Islands)",
+    "id": 8405
+  },
+  {
+    "label": "French EEZ (Martinique)",
+    "id": 33178
+  },
+  {
+    "label": "Dominican (Republic) EEZ",
+    "id": 8409
+  },
+  {
+    "label": "United States EEZ (Alaska)",
+    "id": 8463
+  },
+  {
+    "label": "French EEZ (Saint-Barthélemy)",
+    "id": 48952
+  },
+  {
+    "label": "United States EEZ (Puerto Rico)",
+    "id": 33179
+  },
+  {
+    "label": "Kiribati EEZ (Phoenix Group)",
+    "id": 8450
+  },
+  {
+    "label": "French EEZ (Juan de Nova Island)",
+    "id": 8339
+  },
+  {
+    "label": "British EEZ (Pitcairn)",
+    "id": 8439
+  },
+  {
+    "label": "Chilean EEZ (Islas San Félix and San Ambrosio)",
+    "id": 22756
+  },
+  {
+    "label": "French EEZ (French Guiana)",
+    "id": 8462
+  },
+  {
+    "label": "French EEZ (Europa Island)",
+    "id": 8341
+  },
+  {
+    "label": "United States EEZ (United States Virgin Islands)",
+    "id": 33180
+  },
+  {
+    "label": "Mauritian EEZ (Chagos Archipelago)",
+    "id": 62589
+  },
+  {
+    "label": "Colombian EEZ (Bajo Nuevo Bank)",
+    "id": 48985
+  },
+  {
+    "label": "Timorese EEZ (Oecusse)",
+    "id": 21791
+  },
+  {
+    "label": "Danish EEZ (Faeroe)",
+    "id": 8435
   },
   {
     "label": "Overlapping claim Kuril Islands: Japan / Russia",
-    "id": 48950,
-    "GEONAME": "Overlapping claim Kuril Islands: Japan / Russia"
-  },
-  {
-    "label": "South Korean Exclusive Economic Zone",
-    "id": 8327,
-    "GEONAME": "South Korean Exclusive Economic Zone"
-  },
-  {
-    "label": "Bahamian Exclusive Economic Zone",
-    "id": 8404,
-    "GEONAME": "Bahamian Exclusive Economic Zone"
-  },
-  {
-    "label": "New Zealand Exclusive Economic Zone (Cook Islands)",
-    "id": 8446,
-    "GEONAME": "New Zealand Exclusive Economic Zone (Cook Islands)"
-  },
-  {
-    "label": "Icelandic Exclusive Economic Zone",
-    "id": 5680,
-    "GEONAME": "Icelandic Exclusive Economic Zone"
-  },
-  {
-    "label": "Russian Exclusive Economic Zone",
-    "id": 5690,
-    "GEONAME": "Russian Exclusive Economic Zone"
-  },
-  {
-    "label": "Lithuanian Exclusive Economic Zone",
-    "id": 5684,
-    "GEONAME": "Lithuanian Exclusive Economic Zone"
-  },
-  {
-    "label": "Israeli Exclusive Economic Zone",
-    "id": 8375,
-    "GEONAME": "Israeli Exclusive Economic Zone"
-  },
-  {
-    "label": "French Exclusive Economic Zone (Wallis and Futuna)",
-    "id": 8454,
-    "GEONAME": "French Exclusive Economic Zone (Wallis and Futuna)"
-  },
-  {
-    "label": "Brazilian Exclusive Economic Zone",
-    "id": 8464,
-    "GEONAME": "Brazilian Exclusive Economic Zone"
-  },
-  {
-    "label": "Kenyan Exclusive Economic Zone",
-    "id": 8349,
-    "GEONAME": "Kenyan Exclusive Economic Zone"
-  },
-  {
-    "label": "Somali Exclusive Economic Zone",
-    "id": 8350,
-    "GEONAME": "Somali Exclusive Economic Zone"
-  },
-  {
-    "label": "Comoran Exclusive Economic Zone",
-    "id": 8334,
-    "GEONAME": "Comoran Exclusive Economic Zone"
-  },
-  {
-    "label": "Bangladeshi Exclusive Economic Zone",
-    "id": 8481,
-    "GEONAME": "Bangladeshi Exclusive Economic Zone"
-  },
-  {
-    "label": "Irish Exclusive Economic Zone",
-    "id": 5681,
-    "GEONAME": "Irish Exclusive Economic Zone"
-  },
-  {
-    "label": "Marshallese Exclusive Economic Zone",
-    "id": 8318,
-    "GEONAME": "Marshallese Exclusive Economic Zone"
-  },
-  {
-    "label": "Montenegrin Exclusive Economic Zone",
-    "id": 5691,
-    "GEONAME": "Montenegrin Exclusive Economic Zone"
-  },
-  {
-    "label": "New Zealand Exclusive Economic Zone",
-    "id": 8455,
-    "GEONAME": "New Zealand Exclusive Economic Zone"
-  },
-  {
-    "label": "French Exclusive Economic Zone (Saint-Pierre and Miquelon)",
-    "id": 8494,
-    "GEONAME": "French Exclusive Economic Zone (Saint-Pierre and Miquelon)"
-  },
-  {
-    "label": "Palestinian Exclusive Economic Zone",
-    "id": 48953,
-    "GEONAME": "Palestinian Exclusive Economic Zone"
-  },
-  {
-    "label": "Cameroonian Exclusive Economic Zone",
-    "id": 8475,
-    "GEONAME": "Cameroonian Exclusive Economic Zone"
-  },
-  {
-    "label": "British Exclusive Economic Zone (Ascension)",
-    "id": 8379,
-    "GEONAME": "British Exclusive Economic Zone (Ascension)"
-  },
-  {
-    "label": "Bosnian and Herzegovinian Exclusive Economic Zone",
-    "id": 22491,
-    "GEONAME": "Bosnian and Herzegovinian Exclusive Economic Zone"
-  },
-  {
-    "label": "Argentinian Exclusive Economic Zone",
-    "id": 8466,
-    "GEONAME": "Argentinian Exclusive Economic Zone"
-  },
-  {
-    "label": "Belgian Exclusive Economic Zone",
-    "id": 3293,
-    "GEONAME": "Belgian Exclusive Economic Zone"
-  },
-  {
-    "label": "Portuguese Exclusive Economic Zone (Azores)",
-    "id": 8361,
-    "GEONAME": "Portuguese Exclusive Economic Zone (Azores)"
+    "id": 48950
   },
   {
     "label": "Overlapping claim: Iraq / Iran",
-    "id": 64460,
-    "GEONAME": "Overlapping claim: Iraq / Iran"
-  },
-  {
-    "label": "Turkmen Exclusive Economic Zone",
-    "id": 26523,
-    "GEONAME": "Turkmen Exclusive Economic Zone"
-  },
-  {
-    "label": "French Exclusive Economic Zone (Kerguélen)",
-    "id": 8387,
-    "GEONAME": "French Exclusive Economic Zone (Kerguélen)"
-  },
-  {
-    "label": "Bulgarian Exclusive Economic Zone",
-    "id": 5672,
-    "GEONAME": "Bulgarian Exclusive Economic Zone"
-  },
-  {
-    "label": "Dutch Exclusive Economic Zone (Curaçao)",
-    "id": 26517,
-    "GEONAME": "Dutch Exclusive Economic Zone (Curaçao)"
-  },
-  {
-    "label": "Polish Exclusive Economic Zone",
-    "id": 5687,
-    "GEONAME": "Polish Exclusive Economic Zone"
-  },
-  {
-    "label": "Mexican Exclusive Economic Zone",
-    "id": 8429,
-    "GEONAME": "Mexican Exclusive Economic Zone"
-  },
-  {
-    "label": "British Exclusive Economic Zone (Jersey)",
-    "id": 21789,
-    "GEONAME": "British Exclusive Economic Zone (Jersey)"
-  },
-  {
-    "label": "New Zealand Exclusive Economic Zone (Niue)",
-    "id": 8447,
-    "GEONAME": "New Zealand Exclusive Economic Zone (Niue)"
-  },
-  {
-    "label": "British Exclusive Economic Zone (British Virgin Islands)",
-    "id": 8411,
-    "GEONAME": "British Exclusive Economic Zone (British Virgin Islands)"
-  },
-  {
-    "label": "Libyan Exclusive Economic Zone",
-    "id": 8372,
-    "GEONAME": "Libyan Exclusive Economic Zone"
-  },
-  {
-    "label": "Thailand Exclusive Economic Zone",
-    "id": 8332,
-    "GEONAME": "Thailand Exclusive Economic Zone"
-  },
-  {
-    "label": "Fijian Exclusive Economic Zone",
-    "id": 8325,
-    "GEONAME": "Fijian Exclusive Economic Zone"
-  },
-  {
-    "label": "Joint regime area: Costa Rica / Ecuador (Galapagos)",
-    "id": 48968,
-    "GEONAME": "Joint regime area: Costa Rica / Ecuador (Galapagos)"
-  },
-  {
-    "label": "French Exclusive Economic Zone (French Polynesia)",
-    "id": 8440,
-    "GEONAME": "French Exclusive Economic Zone (French Polynesia)"
-  },
-  {
-    "label": "Liberian Exclusive Economic Zone",
-    "id": 8391,
-    "GEONAME": "Liberian Exclusive Economic Zone"
-  },
-  {
-    "label": "Dominican Exclusive Economic Zone",
-    "id": 8417,
-    "GEONAME": "Dominican Exclusive Economic Zone"
-  },
-  {
-    "label": "Mozambican Exclusive Economic Zone",
-    "id": 8347,
-    "GEONAME": "Mozambican Exclusive Economic Zone"
-  },
-  {
-    "label": "Joint regime area: Sweden / Norway",
-    "id": 48977,
-    "GEONAME": "Joint regime area: Sweden / Norway"
+    "id": 64460
   },
   {
     "label": "Overlapping claim Matthew and Hunter Islands: France / Vanuatu",
-    "id": 48948,
-    "GEONAME": "Overlapping claim Matthew and Hunter Islands: France / Vanuatu"
-  },
-  {
-    "label": "United States Exclusive Economic Zone (Palmyra Atoll)",
-    "id": 8443,
-    "GEONAME": "United States Exclusive Economic Zone (Palmyra Atoll)"
-  },
-  {
-    "label": "Danish Exclusive Economic Zone",
-    "id": 5674,
-    "GEONAME": "Danish Exclusive Economic Zone"
-  },
-  {
-    "label": "French Exclusive Economic Zone (Réunion)",
-    "id": 8338,
-    "GEONAME": "French Exclusive Economic Zone (Réunion)"
-  },
-  {
-    "label": "Croatian Exclusive Economic Zone",
-    "id": 5673,
-    "GEONAME": "Croatian Exclusive Economic Zone"
-  },
-  {
-    "label": "Omani Exclusive Economic Zone",
-    "id": 8354,
-    "GEONAME": "Omani Exclusive Economic Zone"
-  },
-  {
-    "label": "Canadian Exclusive Economic Zone",
-    "id": 8493,
-    "GEONAME": "Canadian Exclusive Economic Zone"
-  },
-  {
-    "label": "British Exclusive Economic Zone (Saint Helena)",
-    "id": 8380,
-    "GEONAME": "British Exclusive Economic Zone (Saint Helena)"
-  },
-  {
-    "label": "Surinamese Exclusive Economic Zone",
-    "id": 8461,
-    "GEONAME": "Surinamese Exclusive Economic Zone"
-  },
-  {
-    "label": "United States Exclusive Economic Zone (Jarvis Islands)",
-    "id": 8442,
-    "GEONAME": "United States Exclusive Economic Zone (Jarvis Islands)"
-  },
-  {
-    "label": "Pakistani Exclusive Economic Zone",
-    "id": 8359,
-    "GEONAME": "Pakistani Exclusive Economic Zone"
-  },
-  {
-    "label": "Guinean Exclusive Economic Zone",
-    "id": 8472,
-    "GEONAME": "Guinean Exclusive Economic Zone"
-  },
-  {
-    "label": "Saudi Arabian Exclusive Economic Zone",
-    "id": 8356,
-    "GEONAME": "Saudi Arabian Exclusive Economic Zone"
-  },
-  {
-    "label": "Venezuelan Exclusive Economic Zone",
-    "id": 8433,
-    "GEONAME": "Venezuelan Exclusive Economic Zone"
-  },
-  {
-    "label": "Georgian Exclusive Economic Zone",
-    "id": 5678,
-    "GEONAME": "Georgian Exclusive Economic Zone"
-  },
-  {
-    "label": "Norwegian Exclusive Economic Zone (Jan Mayen)",
-    "id": 8437,
-    "GEONAME": "Norwegian Exclusive Economic Zone (Jan Mayen)"
-  },
-  {
-    "label": "Dutch Exclusive Economic Zone (Sint-Maarten)",
-    "id": 21803,
-    "GEONAME": "Dutch Exclusive Economic Zone (Sint-Maarten)"
-  },
-  {
-    "label": "Cuban Exclusive Economic Zone",
-    "id": 8406,
-    "GEONAME": "Cuban Exclusive Economic Zone"
-  },
-  {
-    "label": "Vanuatuan Exclusive Economic Zone",
-    "id": 8313,
-    "GEONAME": "Vanuatuan Exclusive Economic Zone"
-  },
-  {
-    "label": "Qatari Exclusive Economic Zone",
-    "id": 8468,
-    "GEONAME": "Qatari Exclusive Economic Zone"
-  },
-  {
-    "label": "Eritrean Exclusive Economic Zone",
-    "id": 8351,
-    "GEONAME": "Eritrean Exclusive Economic Zone"
-  },
-  {
-    "label": "French Exclusive Economic Zone (Amsterdam and Saint Paul Islands)",
-    "id": 8386,
-    "GEONAME": "French Exclusive Economic Zone (Amsterdam and Saint Paul Islands)"
-  },
-  {
-    "label": "Swedish Exclusive Economic Zone",
-    "id": 5694,
-    "GEONAME": "Swedish Exclusive Economic Zone"
-  },
-  {
-    "label": "Chilean Exclusive Economic Zone",
-    "id": 8465,
-    "GEONAME": "Chilean Exclusive Economic Zone"
-  },
-  {
-    "label": "United States Exclusive Economic Zone (Hawaii)",
-    "id": 8453,
-    "GEONAME": "United States Exclusive Economic Zone (Hawaii)"
-  },
-  {
-    "label": "Chinese Exclusive Economic Zone",
-    "id": 8486,
-    "GEONAME": "Chinese Exclusive Economic Zone"
-  },
-  {
-    "label": "Equatorial Guinean Exclusive Economic Zone",
-    "id": 8398,
-    "GEONAME": "Equatorial Guinean Exclusive Economic Zone"
-  },
-  {
-    "label": "Greek Exclusive Economic Zone",
-    "id": 5679,
-    "GEONAME": "Greek Exclusive Economic Zone"
-  },
-  {
-    "label": "Brazilian Exclusive Economic Zone (Trindade)",
-    "id": 8381,
-    "GEONAME": "Brazilian Exclusive Economic Zone (Trindade)"
-  },
-  {
-    "label": "Madagascan Exclusive Economic Zone",
-    "id": 8348,
-    "GEONAME": "Madagascan Exclusive Economic Zone"
-  },
-  {
-    "label": "Seychellois Exclusive Economic Zone",
-    "id": 8337,
-    "GEONAME": "Seychellois Exclusive Economic Zone"
-  },
-  {
-    "label": "Australian Exclusive Economic Zone",
-    "id": 8323,
-    "GEONAME": "Australian Exclusive Economic Zone"
-  },
-  {
-    "label": "Dutch Exclusive Economic Zone (Aruba)",
-    "id": 26519,
-    "GEONAME": "Dutch Exclusive Economic Zone (Aruba)"
-  },
-  {
-    "label": "Tongan Exclusive Economic Zone",
-    "id": 8448,
-    "GEONAME": "Tongan Exclusive Economic Zone"
-  },
-  {
-    "label": "Dutch Exclusive Economic Zone (Saba)",
-    "id": 26518,
-    "GEONAME": "Dutch Exclusive Economic Zone (Saba)"
-  },
-  {
-    "label": "Cambodian Exclusive Economic Zone",
-    "id": 8331,
-    "GEONAME": "Cambodian Exclusive Economic Zone"
-  },
-  {
-    "label": "Dutch Exclusive Economic Zone",
-    "id": 5668,
-    "GEONAME": "Dutch Exclusive Economic Zone"
-  },
-  {
-    "label": "Barbadian Exclusive Economic Zone",
-    "id": 8418,
-    "GEONAME": "Barbadian Exclusive Economic Zone"
-  },
-  {
-    "label": "Micronesian Exclusive Economic Zone",
-    "id": 8316,
-    "GEONAME": "Micronesian Exclusive Economic Zone"
-  },
-  {
-    "label": "Ecuadorian Exclusive Economic Zone (Galapagos)",
-    "id": 8403,
-    "GEONAME": "Ecuadorian Exclusive Economic Zone (Galapagos)"
-  },
-  {
-    "label": "Chilean Exclusive Economic Zone (Easter Island)",
-    "id": 21787,
-    "GEONAME": "Chilean Exclusive Economic Zone (Easter Island)"
-  },
-  {
-    "label": "Mauritanian Exclusive Economic Zone",
-    "id": 8369,
-    "GEONAME": "Mauritanian Exclusive Economic Zone"
-  },
-  {
-    "label": "Beninese Exclusive Economic Zone",
-    "id": 8393,
-    "GEONAME": "Beninese Exclusive Economic Zone"
-  },
-  {
-    "label": "British Exclusive Economic Zone (Bermuda)",
-    "id": 8402,
-    "GEONAME": "British Exclusive Economic Zone (Bermuda)"
-  },
-  {
-    "label": "Spanish Exclusive Economic Zone (Canary Islands)",
-    "id": 8364,
-    "GEONAME": "Spanish Exclusive Economic Zone (Canary Islands)"
-  },
-  {
-    "label": "Saint Lucian Exclusive Economic Zone",
-    "id": 8416,
-    "GEONAME": "Saint Lucian Exclusive Economic Zone"
-  },
-  {
-    "label": "Philippine Exclusive Economic Zone",
-    "id": 8322,
-    "GEONAME": "Philippine Exclusive Economic Zone"
-  },
-  {
-    "label": "Papua New Guinean Exclusive Economic Zone",
-    "id": 8324,
-    "GEONAME": "Papua New Guinean Exclusive Economic Zone"
+    "id": 48948
   },
   {
     "label": "Overlapping claim: Colombia / Dominican Republic / Venezuela",
-    "id": 48971,
-    "GEONAME": "Overlapping claim: Colombia / Dominican Republic / Venezuela"
-  },
-  {
-    "label": "Australian Exclusive Economic Zone (Norfolk Island)",
-    "id": 8310,
-    "GEONAME": "Australian Exclusive Economic Zone (Norfolk Island)"
-  },
-  {
-    "label": "Indian Exclusive Economic Zone",
-    "id": 8480,
-    "GEONAME": "Indian Exclusive Economic Zone"
-  },
-  {
-    "label": "Congolese (Democratic Republic of) Exclusive Economic Zone",
-    "id": 8477,
-    "GEONAME": "Congolese (Democratic Republic of) Exclusive Economic Zone"
-  },
-  {
-    "label": "United States Exclusive Economic Zone (American Samoa)",
-    "id": 8444,
-    "GEONAME": "United States Exclusive Economic Zone (American Samoa)"
+    "id": 48971
   },
   {
     "label": "Overlapping claim Ukraine: Ukraine / Russia",
-    "id": 5695,
-    "GEONAME": "Overlapping claim Ukraine: Ukraine / Russia"
-  },
-  {
-    "label": "French Exclusive Economic Zone (New Caledonia)",
-    "id": 8312,
-    "GEONAME": "French Exclusive Economic Zone (New Caledonia)"
-  },
-  {
-    "label": "French Exclusive Economic Zone (Guadeloupe)",
-    "id": 33177,
-    "GEONAME": "French Exclusive Economic Zone (Guadeloupe)"
-  },
-  {
-    "label": "Solomon Islands Exclusive Economic Zone",
-    "id": 8314,
-    "GEONAME": "Solomon Islands Exclusive Economic Zone"
-  },
-  {
-    "label": "Nauruan Exclusive Economic Zone",
-    "id": 8317,
-    "GEONAME": "Nauruan Exclusive Economic Zone"
-  },
-  {
-    "label": "Spanish Exclusive Economic Zone",
-    "id": 5693,
-    "GEONAME": "Spanish Exclusive Economic Zone"
-  },
-  {
-    "label": "Syrian Exclusive Economic Zone",
-    "id": 8373,
-    "GEONAME": "Syrian Exclusive Economic Zone"
-  },
-  {
-    "label": "United States Exclusive Economic Zone (Johnston Atoll)",
-    "id": 8452,
-    "GEONAME": "United States Exclusive Economic Zone (Johnston Atoll)"
-  },
-  {
-    "label": "Indian Exclusive Economic Zone (Andaman and Nicobar Islands)",
-    "id": 8333,
-    "GEONAME": "Indian Exclusive Economic Zone (Andaman and Nicobar Islands)"
-  },
-  {
-    "label": "Tuvaluan Exclusive Economic Zone",
-    "id": 8326,
-    "GEONAME": "Tuvaluan Exclusive Economic Zone"
+    "id": 5695
   },
   {
     "label": "Overlapping claim Navassa Island: United States / Haiti / Jamaica",
-    "id": 48951,
-    "GEONAME": "Overlapping claim Navassa Island: United States / Haiti / Jamaica"
-  },
-  {
-    "label": "Joint regime area: Croatia / Slovenia",
-    "id": 50167,
-    "GEONAME": "Joint regime area: Croatia / Slovenia"
-  },
-  {
-    "label": "Norwegian Exclusive Economic Zone (Svalbard)",
-    "id": 33181,
-    "GEONAME": "Norwegian Exclusive Economic Zone (Svalbard)"
-  },
-  {
-    "label": "Kiribati Exclusive Economic Zone (Gilbert Islands)",
-    "id": 8488,
-    "GEONAME": "Kiribati Exclusive Economic Zone (Gilbert Islands)"
+    "id": 48951
   },
   {
     "label": "Overlapping claim: Belize / Honduras",
-    "id": 64431,
-    "GEONAME": "Overlapping claim: Belize / Honduras"
-  },
-  {
-    "label": "Guyanese Exclusive Economic Zone",
-    "id": 8460,
-    "GEONAME": "Guyanese Exclusive Economic Zone"
-  },
-  {
-    "label": "Egyptian Exclusive Economic Zone",
-    "id": 8490,
-    "GEONAME": "Egyptian Exclusive Economic Zone"
-  },
-  {
-    "label": "Sierra Leonean Exclusive Economic Zone",
-    "id": 8390,
-    "GEONAME": "Sierra Leonean Exclusive Economic Zone"
-  },
-  {
-    "label": "Grenadian Exclusive Economic Zone",
-    "id": 8419,
-    "GEONAME": "Grenadian Exclusive Economic Zone"
+    "id": 64431
   },
   {
     "label": "Overlapping claim Liancourt Rocks: Japan / South Korea",
-    "id": 48955,
-    "GEONAME": "Overlapping claim Liancourt Rocks: Japan / South Korea"
-  },
-  {
-    "label": "Finnish Exclusive Economic Zone",
-    "id": 5676,
-    "GEONAME": "Finnish Exclusive Economic Zone"
-  },
-  {
-    "label": "Haitian Exclusive Economic Zone",
-    "id": 8408,
-    "GEONAME": "Haitian Exclusive Economic Zone"
-  },
-  {
-    "label": "Mauritian Exclusive Economic Zone",
-    "id": 8343,
-    "GEONAME": "Mauritian Exclusive Economic Zone"
-  },
-  {
-    "label": "Albanian Exclusive Economic Zone",
-    "id": 5670,
-    "GEONAME": "Albanian Exclusive Economic Zone"
-  },
-  {
-    "label": "Norwegian Exclusive Economic Zone",
-    "id": 5686,
-    "GEONAME": "Norwegian Exclusive Economic Zone"
-  },
-  {
-    "label": "Turkish Exclusive Economic Zone",
-    "id": 5697,
-    "GEONAME": "Turkish Exclusive Economic Zone"
-  },
-  {
-    "label": "British Exclusive Economic Zone (Guernsey)",
-    "id": 21788,
-    "GEONAME": "British Exclusive Economic Zone (Guernsey)"
-  },
-  {
-    "label": "Kiribati Exclusive Economic Zone (Line Group)",
-    "id": 8441,
-    "GEONAME": "Kiribati Exclusive Economic Zone (Line Group)"
-  },
-  {
-    "label": "Portuguese Exclusive Economic Zone",
-    "id": 5688,
-    "GEONAME": "Portuguese Exclusive Economic Zone"
-  },
-  {
-    "label": "Australian Exclusive Economic Zone (Christmas Island)",
-    "id": 8309,
-    "GEONAME": "Australian Exclusive Economic Zone (Christmas Island)"
-  },
-  {
-    "label": "Samoan Exclusive Economic Zone",
-    "id": 8445,
-    "GEONAME": "Samoan Exclusive Economic Zone"
-  },
-  {
-    "label": "Trinidadian and Tobagonian Exclusive Economic Zone",
-    "id": 8420,
-    "GEONAME": "Trinidadian and Tobagonian Exclusive Economic Zone"
-  },
-  {
-    "label": "British Exclusive Economic Zone (Cayman Islands)",
-    "id": 8407,
-    "GEONAME": "British Exclusive Economic Zone (Cayman Islands)"
-  },
-  {
-    "label": "British Exclusive Economic Zone",
-    "id": 5696,
-    "GEONAME": "British Exclusive Economic Zone"
-  },
-  {
-    "label": "Joint regime area Torres Strait Treaty: Papua New Guinea / Australia",
-    "id": 21798,
-    "GEONAME": "Joint regime area Torres Strait Treaty: Papua New Guinea / Australia"
-  },
-  {
-    "label": "Joint regime area: Dominican Republic / Colombia",
-    "id": 48970,
-    "GEONAME": "Joint regime area: Dominican Republic / Colombia"
-  },
-  {
-    "label": "Timorese Exclusive Economic Zone",
-    "id": 8758,
-    "GEONAME": "Timorese Exclusive Economic Zone"
-  },
-  {
-    "label": "Joint regime area: United Kingdom / Denmark (Faeroe Islands)",
-    "id": 48967,
-    "GEONAME": "Joint regime area: United Kingdom / Denmark (Faeroe Islands)"
-  },
-  {
-    "label": "Nigerian Exclusive Economic Zone",
-    "id": 8474,
-    "GEONAME": "Nigerian Exclusive Economic Zone"
+    "id": 48955
   },
   {
     "label": "Overlapping claim Wake Island / Enenkio: United States / Marshall Islands",
-    "id": 8319,
-    "GEONAME": "Overlapping claim Wake Island / Enenkio: United States / Marshall Islands"
+    "id": 8319
   },
   {
     "label": "Overlapping claim: Canada / United States",
-    "id": 48943,
-    "GEONAME": "Overlapping claim: Canada / United States"
-  },
-  {
-    "label": "Vietnamese Exclusive Economic Zone",
-    "id": 8484,
-    "GEONAME": "Vietnamese Exclusive Economic Zone"
-  },
-  {
-    "label": "Dutch Exclusive Economic Zone (Sint-Eustatius)",
-    "id": 26526,
-    "GEONAME": "Dutch Exclusive Economic Zone (Sint-Eustatius)"
+    "id": 48943
   },
   {
     "label": "Overlapping claim Western Sahara: Western Sahara / Morocco",
-    "id": 8368,
-    "GEONAME": "Overlapping claim Western Sahara: Western Sahara / Morocco"
-  },
-  {
-    "label": "Colombian Exclusive Economic Zone (Quitasueño Bank)",
-    "id": 62598,
-    "GEONAME": "Colombian Exclusive Economic Zone (Quitasueño Bank)"
+    "id": 8368
   },
   {
     "label": "Overlapping claim Taiwan: Taiwan / China",
-    "id": 8321,
-    "GEONAME": "Overlapping claim Taiwan: Taiwan / China"
-  },
-  {
-    "label": "Italian Exclusive Economic Zone",
-    "id": 5682,
-    "GEONAME": "Italian Exclusive Economic Zone"
-  },
-  {
-    "label": "Peruvian Exclusive Economic Zone",
-    "id": 8432,
-    "GEONAME": "Peruvian Exclusive Economic Zone"
-  },
-  {
-    "label": "Joint regime area: Jamaica / Colombia",
-    "id": 21792,
-    "GEONAME": "Joint regime area: Jamaica / Colombia"
-  },
-  {
-    "label": "Ghanaian Exclusive Economic Zone",
-    "id": 8400,
-    "GEONAME": "Ghanaian Exclusive Economic Zone"
-  },
-  {
-    "label": "Emirati Exclusive Economic Zone",
-    "id": 8360,
-    "GEONAME": "Emirati Exclusive Economic Zone"
-  },
-  {
-    "label": "British Exclusive Economic Zone (Montserrat)",
-    "id": 8415,
-    "GEONAME": "British Exclusive Economic Zone (Montserrat)"
+    "id": 8321
   },
   {
     "label": "Overlapping claim Falkland / Malvinas Islands: United Kingdom / Argentina",
-    "id": 8389,
-    "GEONAME": "Overlapping claim Falkland / Malvinas Islands: United Kingdom / Argentina"
-  },
-  {
-    "label": "Indonesian Exclusive Economic Zone",
-    "id": 8492,
-    "GEONAME": "Indonesian Exclusive Economic Zone"
-  },
-  {
-    "label": "North Korean Exclusive Economic Zone",
-    "id": 8328,
-    "GEONAME": "North Korean Exclusive Economic Zone"
-  },
-  {
-    "label": "French Exclusive Economic Zone",
-    "id": 5677,
-    "GEONAME": "French Exclusive Economic Zone"
-  },
-  {
-    "label": "Malaysian Exclusive Economic Zone",
-    "id": 8483,
-    "GEONAME": "Malaysian Exclusive Economic Zone"
-  },
-  {
-    "label": "Moroccan Exclusive Economic Zone",
-    "id": 8367,
-    "GEONAME": "Moroccan Exclusive Economic Zone"
-  },
-  {
-    "label": "Sudanese Exclusive Economic Zone",
-    "id": 8355,
-    "GEONAME": "Sudanese Exclusive Economic Zone"
-  },
-  {
-    "label": "French Exclusive Economic Zone (Bassas da India)",
-    "id": 8340,
-    "GEONAME": "French Exclusive Economic Zone (Bassas da India)"
-  },
-  {
-    "label": "Monégasque Exclusive Economic Zone",
-    "id": 21790,
-    "GEONAME": "Monégasque Exclusive Economic Zone"
+    "id": 8389
   },
   {
     "label": "Overlapping claim: Malaysia / Singapore",
-    "id": 64440,
-    "GEONAME": "Overlapping claim: Malaysia / Singapore"
-  },
-  {
-    "label": "Tunisian Exclusive Economic Zone",
-    "id": 8366,
-    "GEONAME": "Tunisian Exclusive Economic Zone"
-  },
-  {
-    "label": "Bruneian Exclusive Economic Zone",
-    "id": 26521,
-    "GEONAME": "Bruneian Exclusive Economic Zone"
-  },
-  {
-    "label": "United States Exclusive Economic Zone (Northern Mariana Islands)",
-    "id": 48980,
-    "GEONAME": "United States Exclusive Economic Zone (Northern Mariana Islands)"
-  },
-  {
-    "label": "South African Exclusive Economic Zone (Prince Edward Islands)",
-    "id": 8384,
-    "GEONAME": "South African Exclusive Economic Zone (Prince Edward Islands)"
-  },
-  {
-    "label": "New Zealand Exclusive Economic Zone (Tokelau)",
-    "id": 8449,
-    "GEONAME": "New Zealand Exclusive Economic Zone (Tokelau)"
-  },
-  {
-    "label": "Portuguese Exclusive Economic Zone (Madeira)",
-    "id": 8363,
-    "GEONAME": "Portuguese Exclusive Economic Zone (Madeira)"
-  },
-  {
-    "label": "Salvadoran Exclusive Economic Zone",
-    "id": 8428,
-    "GEONAME": "Salvadoran Exclusive Economic Zone"
-  },
-  {
-    "label": "Australian Exclusive Economic Zone (Macquarie Island)",
-    "id": 8311,
-    "GEONAME": "Australian Exclusive Economic Zone (Macquarie Island)"
-  },
-  {
-    "label": "Romanian Exclusive Economic Zone",
-    "id": 5689,
-    "GEONAME": "Romanian Exclusive Economic Zone"
-  },
-  {
-    "label": "Kuwaiti Exclusive Economic Zone",
-    "id": 8357,
-    "GEONAME": "Kuwaiti Exclusive Economic Zone"
-  },
-  {
-    "label": "Gabonese Exclusive Economic Zone",
-    "id": 8476,
-    "GEONAME": "Gabonese Exclusive Economic Zone"
-  },
-  {
-    "label": "French Exclusive Economic Zone (Clipperton Island)",
-    "id": 8401,
-    "GEONAME": "French Exclusive Economic Zone (Clipperton Island)"
-  },
-  {
-    "label": "Joint regime area: Uruguay / Argentina",
-    "id": 48961,
-    "GEONAME": "Joint regime area: Uruguay / Argentina"
-  },
-  {
-    "label": "British Exclusive Economic Zone (Anguilla)",
-    "id": 8412,
-    "GEONAME": "British Exclusive Economic Zone (Anguilla)"
-  },
-  {
-    "label": "Australian Exclusive Economic Zone (Heard and McDonald Islands)",
-    "id": 8388,
-    "GEONAME": "Australian Exclusive Economic Zone (Heard and McDonald Islands)"
-  },
-  {
-    "label": "French Exclusive Economic Zone (Collectivity of Saint Martin)",
-    "id": 8495,
-    "GEONAME": "French Exclusive Economic Zone (Collectivity of Saint Martin)"
-  },
-  {
-    "label": "Colombian Exclusive Economic Zone",
-    "id": 8426,
-    "GEONAME": "Colombian Exclusive Economic Zone"
-  },
-  {
-    "label": "Cypriote Exclusive Economic Zone",
-    "id": 8376,
-    "GEONAME": "Cypriote Exclusive Economic Zone"
-  },
-  {
-    "label": "United States Exclusive Economic Zone (Guam)",
-    "id": 48957,
-    "GEONAME": "United States Exclusive Economic Zone (Guam)"
-  },
-  {
-    "label": "Danish Exclusive Economic Zone (Greenland)",
-    "id": 8438,
-    "GEONAME": "Danish Exclusive Economic Zone (Greenland)"
-  },
-  {
-    "label": "British Exclusive Economic Zone (Isle of Man)",
-    "id": 64446,
-    "GEONAME": "British Exclusive Economic Zone (Isle of Man)"
-  },
-  {
-    "label": "Joint regime area: France / Italy",
-    "id": 48976,
-    "GEONAME": "Joint regime area: France / Italy"
-  },
-  {
-    "label": "United States Exclusive Economic Zone",
-    "id": 8456,
-    "GEONAME": "United States Exclusive Economic Zone"
-  },
-  {
-    "label": "Australian Exclusive Economic Zone (Cocos Islands)",
-    "id": 8308,
-    "GEONAME": "Australian Exclusive Economic Zone (Cocos Islands)"
-  },
-  {
-    "label": "Ecuadorian Exclusive Economic Zone",
-    "id": 8431,
-    "GEONAME": "Ecuadorian Exclusive Economic Zone"
-  },
-  {
-    "label": "Ivorian Exclusive Economic Zone",
-    "id": 8473,
-    "GEONAME": "Ivorian Exclusive Economic Zone"
+    "id": 64440
   },
   {
     "label": "Overlapping claim Ile Tromelin: France / Madagascar / Republic of Mauritius",
-    "id": 48946,
-    "GEONAME": "Overlapping claim Ile Tromelin: France / Madagascar / Republic of Mauritius"
-  },
-  {
-    "label": "Congolese (Republic of) Exclusive Economic Zone",
-    "id": 8394,
-    "GEONAME": "Congolese (Republic of) Exclusive Economic Zone"
-  },
-  {
-    "label": "Jamaican Exclusive Economic Zone",
-    "id": 8459,
-    "GEONAME": "Jamaican Exclusive Economic Zone"
-  },
-  {
-    "label": "Angolan Exclusive Economic Zone",
-    "id": 8478,
-    "GEONAME": "Angolan Exclusive Economic Zone"
-  },
-  {
-    "label": "Guatemalan Exclusive Economic Zone",
-    "id": 8430,
-    "GEONAME": "Guatemalan Exclusive Economic Zone"
-  },
-  {
-    "label": "Colombian Exclusive Economic Zone (Serrana Bank)",
-    "id": 62596,
-    "GEONAME": "Colombian Exclusive Economic Zone (Serrana Bank)"
+    "id": 48946
   },
   {
     "label": "Overlapping claim Halaib Triangle: Sudan / Egypt",
-    "id": 26582,
-    "GEONAME": "Overlapping claim Halaib Triangle: Sudan / Egypt"
-  },
-  {
-    "label": "Dutch Exclusive Economic Zone (Bonaire)",
-    "id": 26520,
-    "GEONAME": "Dutch Exclusive Economic Zone (Bonaire)"
-  },
-  {
-    "label": "Azerbaijani Exclusive Economic Zone",
-    "id": 26524,
-    "GEONAME": "Azerbaijani Exclusive Economic Zone"
-  },
-  {
-    "label": "Costa Rican Exclusive Economic Zone",
-    "id": 8424,
-    "GEONAME": "Costa Rican Exclusive Economic Zone"
-  },
-  {
-    "label": "Colombian Exclusive Economic Zone (Serranilla Bank)",
-    "id": 48984,
-    "GEONAME": "Colombian Exclusive Economic Zone (Serranilla Bank)"
-  },
-  {
-    "label": "United States Exclusive Economic Zone (Howland and Baker Islands)",
-    "id": 8451,
-    "GEONAME": "United States Exclusive Economic Zone (Howland and Baker Islands)"
-  },
-  {
-    "label": "British Exclusive Economic Zone (Tristan da Cunha)",
-    "id": 8382,
-    "GEONAME": "British Exclusive Economic Zone (Tristan da Cunha)"
-  },
-  {
-    "label": "French Exclusive Economic Zone (Crozet Islands)",
-    "id": 8385,
-    "GEONAME": "French Exclusive Economic Zone (Crozet Islands)"
-  },
-  {
-    "label": "British Exclusive Economic Zone (Turks and Caicos Islands)",
-    "id": 8405,
-    "GEONAME": "British Exclusive Economic Zone (Turks and Caicos Islands)"
-  },
-  {
-    "label": "Sri Lankan Exclusive Economic Zone",
-    "id": 8346,
-    "GEONAME": "Sri Lankan Exclusive Economic Zone"
-  },
-  {
-    "label": "Senegalese Exclusive Economic Zone",
-    "id": 8371,
-    "GEONAME": "Senegalese Exclusive Economic Zone"
-  },
-  {
-    "label": "French Exclusive Economic Zone (Martinique)",
-    "id": 33178,
-    "GEONAME": "French Exclusive Economic Zone (Martinique)"
+    "id": 26582
   },
   {
     "label": "Overlapping claim Abu musa, Greater and Lesser Tunb: United Arab Emirates / Iran",
-    "id": 48947,
-    "GEONAME": "Overlapping claim Abu musa, Greater and Lesser Tunb: United Arab Emirates / Iran"
-  },
-  {
-    "label": "Myanma Exclusive Economic Zone",
-    "id": 8482,
-    "GEONAME": "Myanma Exclusive Economic Zone"
-  },
-  {
-    "label": "Maldivian Exclusive Economic Zone",
-    "id": 8345,
-    "GEONAME": "Maldivian Exclusive Economic Zone"
-  },
-  {
-    "label": "Joint regime area: Iceland / Norway (Jan Mayen)",
-    "id": 48975,
-    "GEONAME": "Joint regime area: Iceland / Norway (Jan Mayen)"
-  },
-  {
-    "label": "Dominican (Republic) Exclusive Economic Zone",
-    "id": 8409,
-    "GEONAME": "Dominican (Republic) Exclusive Economic Zone"
-  },
-  {
-    "label": "Honduran Exclusive Economic Zone",
-    "id": 8427,
-    "GEONAME": "Honduran Exclusive Economic Zone"
-  },
-  {
-    "label": "United States Exclusive Economic Zone (Alaska)",
-    "id": 8463,
-    "GEONAME": "United States Exclusive Economic Zone (Alaska)"
-  },
-  {
-    "label": "Lebanese Exclusive Economic Zone",
-    "id": 8374,
-    "GEONAME": "Lebanese Exclusive Economic Zone"
-  },
-  {
-    "label": "French Exclusive Economic Zone (Saint-Barthélemy)",
-    "id": 48952,
-    "GEONAME": "French Exclusive Economic Zone (Saint-Barthélemy)"
-  },
-  {
-    "label": "United States Exclusive Economic Zone (Puerto Rico)",
-    "id": 33179,
-    "GEONAME": "United States Exclusive Economic Zone (Puerto Rico)"
+    "id": 48947
   },
   {
     "label": "Overlapping claim Senkaku Islands: Taiwan / Japan / China",
-    "id": 48954,
-    "GEONAME": "Overlapping claim Senkaku Islands: Taiwan / Japan / China"
+    "id": 48954
   },
   {
     "label": "Overlapping claim Alhucemas Islands: Spain / Morocco",
-    "id": 49001,
-    "GEONAME": "Overlapping claim Alhucemas Islands: Spain / Morocco"
+    "id": 49001
   },
   {
     "label": "Overlapping claim Gibraltar: United Kingdom / Spain",
-    "id": 8365,
-    "GEONAME": "Overlapping claim Gibraltar: United Kingdom / Spain"
-  },
-  {
-    "label": "Joint regime area: Norway / Russia",
-    "id": 64459,
-    "GEONAME": "Joint regime area: Norway / Russia"
-  },
-  {
-    "label": "Kittitian and Nevisian Exclusive Economic Zone",
-    "id": 8413,
-    "GEONAME": "Kittitian and Nevisian Exclusive Economic Zone"
+    "id": 8365
   },
   {
     "label": "Overlapping claim Melilla: Spain / Morocco",
-    "id": 49000,
-    "GEONAME": "Overlapping claim Melilla: Spain / Morocco"
-  },
-  {
-    "label": "Bahraini Exclusive Economic Zone",
-    "id": 8358,
-    "GEONAME": "Bahraini Exclusive Economic Zone"
+    "id": 49000
   },
   {
     "label": "Overlapping claim Perejil Island: Spain / Morocco",
-    "id": 48998,
-    "GEONAME": "Overlapping claim Perejil Island: Spain / Morocco"
-  },
-  {
-    "label": "Kiribati Exclusive Economic Zone (Phoenix Group)",
-    "id": 8450,
-    "GEONAME": "Kiribati Exclusive Economic Zone (Phoenix Group)"
-  },
-  {
-    "label": "Nicaraguan Exclusive Economic Zone",
-    "id": 8425,
-    "GEONAME": "Nicaraguan Exclusive Economic Zone"
-  },
-  {
-    "label": "Kazakh Exclusive Economic Zone",
-    "id": 26522,
-    "GEONAME": "Kazakh Exclusive Economic Zone"
-  },
-  {
-    "label": "Bissau-Guinean Exclusive Economic Zone",
-    "id": 8471,
-    "GEONAME": "Bissau-Guinean Exclusive Economic Zone"
+    "id": 48998
   },
   {
     "label": "Overlapping claim: South China Sea",
-    "id": 49003,
-    "GEONAME": "Overlapping claim: South China Sea"
-  },
-  {
-    "label": "Iranian Exclusive Economic Zone",
-    "id": 8469,
-    "GEONAME": "Iranian Exclusive Economic Zone"
-  },
-  {
-    "label": "Japanese Exclusive Economic Zone",
-    "id": 8487,
-    "GEONAME": "Japanese Exclusive Economic Zone"
-  },
-  {
-    "label": "Yemeni Exclusive Economic Zone",
-    "id": 8353,
-    "GEONAME": "Yemeni Exclusive Economic Zone"
-  },
-  {
-    "label": "Slovenian Exclusive Economic Zone",
-    "id": 5692,
-    "GEONAME": "Slovenian Exclusive Economic Zone"
-  },
-  {
-    "label": "French Exclusive Economic Zone (Juan de Nova Island)",
-    "id": 8339,
-    "GEONAME": "French Exclusive Economic Zone (Juan de Nova Island)"
-  },
-  {
-    "label": "Tanzanian Exclusive Economic Zone",
-    "id": 8479,
-    "GEONAME": "Tanzanian Exclusive Economic Zone"
-  },
-  {
-    "label": "Joint regime area: Peru / Ecuador",
-    "id": 48962,
-    "GEONAME": "Joint regime area: Peru / Ecuador"
-  },
-  {
-    "label": "British Exclusive Economic Zone (Pitcairn)",
-    "id": 8439,
-    "GEONAME": "British Exclusive Economic Zone (Pitcairn)"
-  },
-  {
-    "label": "German Exclusive Economic Zone",
-    "id": 5669,
-    "GEONAME": "German Exclusive Economic Zone"
-  },
-  {
-    "label": "Chilean Exclusive Economic Zone (Islas San Félix and San Ambrosio)",
-    "id": 22756,
-    "GEONAME": "Chilean Exclusive Economic Zone (Islas San Félix and San Ambrosio)"
-  },
-  {
-    "label": "Joint regime area: Senegal / Guinea-Bissau",
-    "id": 48964,
-    "GEONAME": "Joint regime area: Senegal / Guinea-Bissau"
+    "id": 49003
   },
   {
     "label": "Overlapping claim: Egypt / Libya",
-    "id": 64430,
-    "GEONAME": "Overlapping claim: Egypt / Libya"
-  },
-  {
-    "label": "French Exclusive Economic Zone (French Guiana)",
-    "id": 8462,
-    "GEONAME": "French Exclusive Economic Zone (French Guiana)"
-  },
-  {
-    "label": "Iraqi Exclusive Economic Zone",
-    "id": 8470,
-    "GEONAME": "Iraqi Exclusive Economic Zone"
-  },
-  {
-    "label": "Namibian Exclusive Economic Zone",
-    "id": 8395,
-    "GEONAME": "Namibian Exclusive Economic Zone"
-  },
-  {
-    "label": "Belizean Exclusive Economic Zone",
-    "id": 8457,
-    "GEONAME": "Belizean Exclusive Economic Zone"
-  },
-  {
-    "label": "South African Exclusive Economic Zone",
-    "id": 8396,
-    "GEONAME": "South African Exclusive Economic Zone"
+    "id": 64430
   },
   {
     "label": "Overlapping claim Glorioso Islands: France / Madagascar",
-    "id": 48945,
-    "GEONAME": "Overlapping claim Glorioso Islands: France / Madagascar"
-  },
-  {
-    "label": "French Exclusive Economic Zone (Europa Island)",
-    "id": 8341,
-    "GEONAME": "French Exclusive Economic Zone (Europa Island)"
-  },
-  {
-    "label": "Joint regime area: United States / Russia",
-    "id": 48978,
-    "GEONAME": "Joint regime area: United States / Russia"
-  },
-  {
-    "label": "Maltese Exclusive Economic Zone",
-    "id": 5685,
-    "GEONAME": "Maltese Exclusive Economic Zone"
+    "id": 48945
   },
   {
     "label": "Overlapping claim South Georgia and the South Sandwich Islands: United Kingdom / Argentina",
-    "id": 8383,
-    "GEONAME": "Overlapping claim South Georgia and the South Sandwich Islands: United Kingdom / Argentina"
-  },
-  {
-    "label": "Saint Vincentian Exclusive Economic Zone",
-    "id": 8421,
-    "GEONAME": "Saint Vincentian Exclusive Economic Zone"
+    "id": 8383
   },
   {
     "label": "Overlapping claim: Qatar / Saudi Arabia / United Arab Emirates",
-    "id": 50170,
-    "GEONAME": "Overlapping claim: Qatar / Saudi Arabia / United Arab Emirates"
+    "id": 50170
   },
   {
     "label": "Overlapping claim: Guyana / Trinidad and Tobago / Venezuela",
-    "id": 33185,
-    "GEONAME": "Overlapping claim: Guyana / Trinidad and Tobago / Venezuela"
-  },
-  {
-    "label": "Palauan Exclusive Economic Zone",
-    "id": 8315,
-    "GEONAME": "Palauan Exclusive Economic Zone"
-  },
-  {
-    "label": "Antiguan and Barbudan Exclusive Economic Zone",
-    "id": 8414,
-    "GEONAME": "Antiguan and Barbudan Exclusive Economic Zone"
-  },
-  {
-    "label": "Djiboutian Exclusive Economic Zone",
-    "id": 8352,
-    "GEONAME": "Djiboutian Exclusive Economic Zone"
-  },
-  {
-    "label": "São Toméan Exclusive Economic Zone",
-    "id": 8397,
-    "GEONAME": "São Toméan Exclusive Economic Zone"
-  },
-  {
-    "label": "United States Exclusive Economic Zone (United States Virgin Islands)",
-    "id": 33180,
-    "GEONAME": "United States Exclusive Economic Zone (United States Virgin Islands)"
-  },
-  {
-    "label": "Singaporean Exclusive Economic Zone",
-    "id": 8485,
-    "GEONAME": "Singaporean Exclusive Economic Zone"
-  },
-  {
-    "label": "Joint regime area: Spain / France",
-    "id": 48966,
-    "GEONAME": "Joint regime area: Spain / France"
-  },
-  {
-    "label": "Cape Verdean Exclusive Economic Zone",
-    "id": 8362,
-    "GEONAME": "Cape Verdean Exclusive Economic Zone"
-  },
-  {
-    "label": "Mauritian Exclusive Economic Zone (Chagos Archipelago)",
-    "id": 62589,
-    "GEONAME": "Mauritian Exclusive Economic Zone (Chagos Archipelago)"
-  },
-  {
-    "label": "Algerian Exclusive Economic Zone",
-    "id": 8378,
-    "GEONAME": "Algerian Exclusive Economic Zone"
-  },
-  {
-    "label": "Joint regime area: Ecuador / Colombia",
-    "id": 48974,
-    "GEONAME": "Joint regime area: Ecuador / Colombia"
-  },
-  {
-    "label": "Joint regime area: São Tomé and Principe / Nigeria",
-    "id": 21797,
-    "GEONAME": "Joint regime area: São Tomé and Principe / Nigeria"
-  },
-  {
-    "label": "Estonian Exclusive Economic Zone",
-    "id": 5675,
-    "GEONAME": "Estonian Exclusive Economic Zone"
-  },
-  {
-    "label": "Togolese Exclusive Economic Zone",
-    "id": 8392,
-    "GEONAME": "Togolese Exclusive Economic Zone"
+    "id": 33185
   },
   {
     "label": "Overlapping claim Mayotte: France / Comores",
-    "id": 48944,
-    "GEONAME": "Overlapping claim Mayotte: France / Comores"
-  },
-  {
-    "label": "Joint regime area: South Korea / Japan",
-    "id": 21796,
-    "GEONAME": "Joint regime area: South Korea / Japan"
-  },
-  {
-    "label": "Gambian Exclusive Economic Zone",
-    "id": 8370,
-    "GEONAME": "Gambian Exclusive Economic Zone"
-  },
-  {
-    "label": "Panamanian Exclusive Economic Zone",
-    "id": 8423,
-    "GEONAME": "Panamanian Exclusive Economic Zone"
-  },
-  {
-    "label": "Overlapping claim: United States (Puerto Rico) / Dominican Republic",
-    "id": 48982,
-    "GEONAME": "Overlapping claim: United States (Puerto Rico) / Dominican Republic"
-  },
-  {
-    "label": "Joint regime area: Barbados / Guyana",
-    "id": 48969,
-    "GEONAME": "Joint regime area: Barbados / Guyana"
-  },
-  {
-    "label": "Joint regime area: Iceland / Denmark (Faeroe Islands)",
-    "id": 48973,
-    "GEONAME": "Joint regime area: Iceland / Denmark (Faeroe Islands)"
-  },
-  {
-    "label": "Colombian Exclusive Economic Zone (Bajo Nuevo Bank)",
-    "id": 48985,
-    "GEONAME": "Colombian Exclusive Economic Zone (Bajo Nuevo Bank)"
+    "id": 48944
   },
   {
     "label": "Overlapping claim Ceuta: Spain / Morocco",
-    "id": 49002,
-    "GEONAME": "Overlapping claim Ceuta: Spain / Morocco"
-  },
-  {
-    "label": "Timorese Exclusive Economic Zone (Oecusse)",
-    "id": 21791,
-    "GEONAME": "Timorese Exclusive Economic Zone (Oecusse)"
+    "id": 49002
   },
   {
     "label": "Overlapping claim Chafarinas Islands: Spain / Morocco",
-    "id": 48997,
-    "GEONAME": "Overlapping claim Chafarinas Islands: Spain / Morocco"
-  },
-  {
-    "label": "Overlapping claim: Venezuela / Netherlands (Aruba) / Dominican Republic",
-    "id": 48965,
-    "GEONAME": "Overlapping claim: Venezuela / Netherlands (Aruba) / Dominican Republic"
+    "id": 48997
   },
   {
     "label": "Overlapping claim Doumeira Islands: Eritrea / Djibouti",
-    "id": 48956,
-    "GEONAME": "Overlapping claim Doumeira Islands: Eritrea / Djibouti"
-  },
-  {
-    "label": "Joint regime area: Honduras / United Kingdom (Cayman Islands)",
-    "id": 48972,
-    "GEONAME": "Joint regime area: Honduras / United Kingdom (Cayman Islands)"
-  },
-  {
-    "label": "Danish Exclusive Economic Zone (Faeroe)",
-    "id": 8435,
-    "GEONAME": "Danish Exclusive Economic Zone (Faeroe)"
+    "id": 48956
   },
   {
     "label": "Overlapping claim Peñón de Vélez de la Gomera: Spain / Morocco",
-    "id": 48999,
-    "GEONAME": "Overlapping claim Peñón de Vélez de la Gomera: Spain / Morocco"
+    "id": 48999
+  },
+  {
+    "label": "Overlapping claim: United States (Puerto Rico) / Dominican Republic",
+    "id": 48982
+  },
+  {
+    "label": "Overlapping claim: Venezuela / Netherlands (Aruba) / Dominican Republic",
+    "id": 48965
+  },
+  {
+    "label": "Joint regime area: Sweden / Norway",
+    "id": 48977
+  },
+  {
+    "label": "Joint regime area: Croatia / Slovenia",
+    "id": 50167
+  },
+  {
+    "label": "Joint regime area Torres Strait Treaty: Papua New Guinea / Australia",
+    "id": 21798
+  },
+  {
+    "label": "Joint regime area: Dominican Republic / Colombia",
+    "id": 48970
+  },
+  {
+    "label": "Joint regime area: Jamaica / Colombia",
+    "id": 21792
+  },
+  {
+    "label": "Joint regime area: Uruguay / Argentina",
+    "id": 48961
+  },
+  {
+    "label": "Joint regime area: France / Italy",
+    "id": 48976
+  },
+  {
+    "label": "Joint regime area: Norway / Russia",
+    "id": 64459
+  },
+  {
+    "label": "Joint regime area: Peru / Ecuador",
+    "id": 48962
+  },
+  {
+    "label": "Joint regime area: Senegal / Guinea-Bissau",
+    "id": 48964
+  },
+  {
+    "label": "Joint regime area: United States / Russia",
+    "id": 48978
+  },
+  {
+    "label": "Joint regime area: Spain / France",
+    "id": 48966
+  },
+  {
+    "label": "Joint regime area: Ecuador / Colombia",
+    "id": 48974
+  },
+  {
+    "label": "Joint regime area: São Tomé and Principe / Nigeria",
+    "id": 21797
+  },
+  {
+    "label": "Joint regime area: South Korea / Japan",
+    "id": 21796
+  },
+  {
+    "label": "Joint regime area: Barbados / Guyana",
+    "id": 48969
+  },
+  {
+    "label": "Joint regime area: Costa Rica / Ecuador (Galapagos)",
+    "id": 48968
+  },
+  {
+    "label": "Joint regime area: United Kingdom / Denmark (Faeroe Islands)",
+    "id": 48967
+  },
+  {
+    "label": "Joint regime area: Iceland / Norway (Jan Mayen)",
+    "id": 48975
+  },
+  {
+    "label": "Joint regime area: Iceland / Denmark (Faeroe Islands)",
+    "id": 48973
+  },
+  {
+    "label": "Joint regime area: Honduras / United Kingdom (Cayman Islands)",
+    "id": 48972
   }
 ]
