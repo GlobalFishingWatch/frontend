@@ -2,7 +2,10 @@ import { DatasetSubCategory, EventTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 
-import { REPORT_DATAVIEW_INSTANCES } from 'data/highlighted-workspaces/report.dataviews'
+import {
+  REPORT_DATAVIEW_INSTANCES,
+  VMS_DATAVIEW_INSTANCE_ID,
+} from 'data/highlighted-workspaces/report.dataviews'
 import {
   EEZ_DATAVIEW_INSTANCE_ID,
   FAO_AREAS_DATAVIEW_INSTANCE_ID,
@@ -88,7 +91,7 @@ function getAreaReportDataviewInstances(
     }),
     ...(configuration.filters?.gear_types &&
       configuration.dataset === 'fishing' && {
-        geartypes: configuration.filters.gear_types,
+        geartype: configuration.filters.gear_types,
       }),
     ...(configuration.filters?.vessel_types &&
       configuration.dataset === 'presence' && {
@@ -101,6 +104,7 @@ function getAreaReportDataviewInstances(
       ...instance,
       config: {
         ...instance.config,
+        visible: instance.id !== VMS_DATAVIEW_INSTANCE_ID,
         filters,
       },
     }
@@ -134,12 +138,12 @@ export async function getAreaWorkspaceConfig(configuration: ConfigurationParams)
       timebarVisualisation: TimebarVisualisations.HeatmapActivity,
       reportLoadVessels: true,
     }
-    const links = areasMatched.map((areaMatched) => ({
+    const links = areasMatched.slice(0, 10).map((areaMatched) => ({
       url: `/map/${DEFAULT_WORKSPACE}/report/${areaMatched.dataset}/${areaMatched.id}?${stringifyWorkspace(reportParams)}`,
       message: `${upperFirst(configuration.dataset || '')} in ${areaMatched.label} ${getDateRangeLabel(configuration)}`,
     }))
     return {
-      label: '',
+      label: 'Area reports',
       links,
     }
   }

@@ -26,13 +26,13 @@ export async function getPortWorkspaceConfig(configuration: ConfigurationParams)
       portsReportDatasetId: dataset,
     }
 
-    const links = portsMatched.map((portMatched) => ({
+    const links = portsMatched.slice(0, 10).map((portMatched) => ({
       url: `/map/${DEFAULT_WORKSPACE}/ports-report/${portMatched.id}?${stringifyWorkspace(portParams)}`,
       message: `See here the visits to ${portMatched.label} port ${getDateRangeLabel(configuration)}`,
     }))
 
     return {
-      label: '',
+      label: 'Port reports',
       links,
     }
   }

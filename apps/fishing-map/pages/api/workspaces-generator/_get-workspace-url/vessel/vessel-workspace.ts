@@ -19,7 +19,7 @@ export async function getVesselWorkspaceConfig(configuration: ConfigurationParam
       message: `${vesselMatched.name} (${vesselMatched.mmsi})`,
     }))
     return {
-      label: '',
+      label: 'Vessel profiles',
       links,
     }
   }

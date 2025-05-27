@@ -596,6 +596,10 @@
     "id": 8423
   },
   {
+    "label": "Dominican Republic EEZ",
+    "id": 8409
+  },
+  {
     "label": "New Zealand EEZ (Cook Islands)",
     "id": 8446
   },
@@ -854,10 +858,6 @@
   {
     "label": "French EEZ (Martinique)",
     "id": 33178
-  },
-  {
-    "label": "Dominican (Republic) EEZ",
-    "id": 8409
   },
   {
     "label": "United States EEZ (Alaska)",

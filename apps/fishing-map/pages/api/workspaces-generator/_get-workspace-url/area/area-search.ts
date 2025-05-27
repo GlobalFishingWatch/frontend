@@ -45,7 +45,26 @@ export const searchAreas = ({ name } = {} as AreaParams) => {
   for (const [type, { data, dataset }] of Object.entries(AREAS_CONFIG)) {
     const matchingAreas = matchSorter(data as [{ id: string; label: string }], name, {
       keys: ['label'],
+      threshold: matchSorter.rankings.CONTAINS,
     })
+    const matchingAreasWithoutSubareas = matchingAreas.filter(
+      (area) =>
+        !area.label.includes('Overlapping') &&
+        !area.label.includes('Joint regime') &&
+        !area.label.endsWith(')')
+    )
+
+    if (matchingAreasWithoutSubareas.length) {
+      matches.push(
+        ...matchingAreasWithoutSubareas.map((area) => ({
+          ...area,
+          dataset,
+          type: type as AreaType,
+        }))
+      )
+      break
+    }
+
     if (matchingAreas.length) {
       matches.push(...matchingAreas.map((area) => ({ ...area, dataset, type: type as AreaType })))
       break

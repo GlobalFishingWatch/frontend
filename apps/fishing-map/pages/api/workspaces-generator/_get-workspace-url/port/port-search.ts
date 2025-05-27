@@ -22,14 +22,27 @@ export const searchPorts = (port: PortParams): PortSearchResult[] => {
   const matchingPortsById = name
     ? matchSorter(ports, name, {
         keys: ['name'],
+        threshold: matchSorter.rankings.CONTAINS,
       })
     : []
 
-  if (!matchingPortsById.length) {
-    return []
+  if (matchingPortsById.length) {
+    return matchingPortsById.slice(0, 10).map((port) => ({
+      dataset: PORT_DATASET,
+      id: port.id,
+      label: port.name || '',
+      flag: port.flag,
+    }))
   }
 
-  return matchingPortsById.map((port) => ({
+  const matchingCountryPorts = country
+    ? matchSorter(ports, country, {
+        keys: ['flag'],
+        threshold: matchSorter.rankings.EQUAL,
+      })
+    : []
+
+  return matchingCountryPorts.slice(0, 10).map((port) => ({
     dataset: PORT_DATASET,
     id: port.id,
     label: port.name || '',

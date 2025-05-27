@@ -132,7 +132,7 @@ const WorkspaceGenerator = () => {
                     msg.role === 'user' ? styles.userMessage : styles.agentMessage
                   )}
                 >
-                  <p className={styles.messageText}>
+                  <div className={styles.messageText}>
                     {msg.links && msg.links?.length > 0 ? (
                       <Fragment>
                         {msg.links?.length > 1 && <p>Select a link:</p>}
@@ -149,7 +149,7 @@ const WorkspaceGenerator = () => {
                     ) : (
                       <span>{msg.message}</span>
                     )}
-                  </p>
+                  </div>
                 </li>
               )
             })}

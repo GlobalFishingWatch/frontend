@@ -93,14 +93,18 @@ export default async function handler(
       error: '',
     }
     try {
-      const jsonString = response.text.replace('```json\n', '').replace('\n```', '').trim()
-      const parsedResponse = JSON.parse(jsonString)
-      const { label, links } = (await getWorkspaceConfig(parsedResponse)) || {}
-      if (links) {
-        apiResponse.links = links
-      }
-      if (label) {
-        apiResponse.message = label
+      if (response.text.startsWith('```json')) {
+        const jsonString = response.text.replace('```json\n', '').replace('\n```', '').trim()
+        const parsedResponse = JSON.parse(jsonString)
+        const { label, links } = (await getWorkspaceConfig(parsedResponse)) || {}
+        if (links) {
+          apiResponse.links = links
+        }
+        if (label) {
+          apiResponse.message = label
+        } else {
+          apiResponse.message = 'Please be more specific'
+        }
       }
     } catch (_: any) {
       apiResponse.links = undefined
