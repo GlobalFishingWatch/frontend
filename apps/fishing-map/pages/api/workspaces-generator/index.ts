@@ -8,8 +8,7 @@ const MASTRA_API_URL = process.env.NEXT_MASTRA_API_URL
 const WORKSPACES_AGENT_ID = process.env.NEXT_WORKSPACES_AGENT_ID
 
 export const mastra = new MastraClient({
-  // baseUrl: MASTRA_API_URL || 'http://localhost:4111',
-  baseUrl: 'http://localhost:4111',
+  baseUrl: MASTRA_API_URL || 'http://localhost:4111',
 })
 
 const workspacesAgent = mastra.getAgent(WORKSPACES_AGENT_ID!)
