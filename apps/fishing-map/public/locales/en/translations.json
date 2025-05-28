@@ -942,7 +942,7 @@
     "geartypes": "Gear types",
     "gearTypes": {
       "bunker": "Bunker or tanker",
-      "bunker_or_tanker": "Bunker",
+      "bunker_or_tanker": "Bunker or Tanker",
       "cargo": "Cargo or reefer",
       "cargo_or_reefer": "Cargo or tanker",
       "cargo_or_tanker": "Cargo",
