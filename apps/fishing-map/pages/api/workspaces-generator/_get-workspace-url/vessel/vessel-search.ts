@@ -1,4 +1,5 @@
 import { stringify } from 'qs'
+import { serverT } from 'server/i18n'
 
 import type { AdvancedSearchQueryFieldKey } from '@globalfishingwatch/api-client'
 import { getAdvancedSearchQuery } from '@globalfishingwatch/api-client'
@@ -45,11 +46,12 @@ export const searchVessels = async (vessel: VesselParams) => {
     }
 
     const data = (await response.json()) as APIVesselSearchPagination<IdentityVessel>
+
     if (data.entries.length >= 1) {
       return data.entries.map((vessel) => ({
         id: vessel.selfReportedInfo?.[0]?.id,
         dataset: vessel.dataset,
-        name: getVesselShipNameLabel(vessel),
+        name: getVesselShipNameLabel(vessel, { translationFn: serverT }),
         mmsi: vessel.selfReportedInfo?.[0]?.ssvid,
         imo: vessel.selfReportedInfo?.[0]?.imo,
       }))
