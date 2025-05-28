@@ -6,7 +6,7 @@ import cx from 'classnames'
 import { uniq } from 'es-toolkit'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { InputText } from '@globalfishingwatch/ui-components'
+import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 
 import { PATH_BASENAME } from 'data/config'
 import type { LibraryLayer } from 'data/layer-library'
@@ -27,7 +27,7 @@ import LayerLibraryVesselGroupPanel from './LayerLibraryVesselGroupPanel'
 import styles from './LayerLibrary.module.css'
 
 const LayerLibrary: FC = () => {
-  const { t } = useTranslation(['translations', 'layer-library'])
+  const { t, ready } = useTranslation(['translations', 'layer-library'])
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryElements, setCategoryElements] = useState<HTMLElement[]>([])
   const initialCategory = useSelector(selectLayerLibraryModal)
@@ -236,69 +236,79 @@ const LayerLibrary: FC = () => {
             value={searchQuery || ''}
             className={styles.input}
             type="search"
+            disabled={!ready}
             autoFocus
             placeholder={t('translations:search.title', 'Search')}
           />
         </div>
         <div className={styles.categories}>
-          {extendedCategories.map(({ category, subcategories }) => (
-            <div key={category}>
-              <button
-                className={cx(styles.category, {
-                  [styles.currentCategory]: currentCategory === category,
-                })}
-                disabled={
-                  category !== DataviewCategory.User &&
-                  category !== DataviewCategory.VesselGroups &&
-                  layersByCategory[category].length === 0
-                }
-                data-category={category}
-                onClick={onCategoryClick}
-              >
-                {t(`common.${category as DataviewCategory}`, upperFirst(category))}
-              </button>
-              {currentCategory === category &&
-                subcategories.length > 0 &&
-                !guestUser &&
-                subcategories.map((subcategory) => (
-                  <button
-                    key={subcategory}
-                    className={cx(styles.subcategory, {
-                      [styles.currentCategory]: currentSubcategory === subcategory,
-                    })}
-                    data-category={category}
-                    data-subcategory={subcategory}
-                    onClick={onCategoryClick}
-                  >
-                    {t(`dataset.type${subcategory}`, upperFirst(subcategory))}
-                  </button>
-                ))}
-            </div>
-          ))}
+          {ready &&
+            extendedCategories.map(({ category, subcategories }) => (
+              <div key={category}>
+                <button
+                  className={cx(styles.category, {
+                    [styles.currentCategory]: currentCategory === category,
+                  })}
+                  disabled={
+                    category !== DataviewCategory.User &&
+                    category !== DataviewCategory.VesselGroups &&
+                    layersByCategory[category].length === 0
+                  }
+                  data-category={category}
+                  onClick={onCategoryClick}
+                >
+                  {t(`common.${category as DataviewCategory}`, upperFirst(category))}
+                </button>
+                {currentCategory === category &&
+                  subcategories.length > 0 &&
+                  !guestUser &&
+                  subcategories.map((subcategory) => (
+                    <button
+                      key={subcategory}
+                      className={cx(styles.subcategory, {
+                        [styles.currentCategory]: currentSubcategory === subcategory,
+                      })}
+                      data-category={category}
+                      data-subcategory={subcategory}
+                      onClick={onCategoryClick}
+                    >
+                      {t(`dataset.type${subcategory}`, upperFirst(subcategory))}
+                    </button>
+                  ))}
+              </div>
+            ))}
         </div>
       </div>
-      <ul className={styles.layerList} onScroll={onLayerListScroll}>
-        {uniqCategories.map((category) => (
-          <Fragment key={category}>
-            <label
-              id={category}
-              className={cx(styles.categoryLabel, {
-                [styles.categoryLabelHidden]: layersByCategory[category].length === 0,
+      {ready ? (
+        <ul className={styles.layerList} onScroll={onLayerListScroll}>
+          {uniqCategories.map((category) => (
+            <Fragment key={category}>
+              <label
+                id={category}
+                className={cx(styles.categoryLabel, {
+                  [styles.categoryLabelHidden]: layersByCategory[category].length === 0,
+                })}
+              >
+                {t(`common.${category as DataviewCategory}`, upperFirst(category))}
+              </label>
+              {layersByCategory[category].map((layer) => {
+                if (layer.onlyGFWUser && !isGFWUser) {
+                  return null
+                }
+                return (
+                  <LayerLibraryItem key={layer.id} layer={layer} highlightedText={searchQuery} />
+                )
               })}
-            >
-              {t(`common.${category as DataviewCategory}`, upperFirst(category))}
-            </label>
-            {layersByCategory[category].map((layer) => {
-              if (layer.onlyGFWUser && !isGFWUser) {
-                return null
-              }
-              return <LayerLibraryItem key={layer.id} layer={layer} highlightedText={searchQuery} />
-            })}
-          </Fragment>
-        ))}
-        <LayerLibraryVesselGroupPanel searchQuery={searchQuery} />
-        <LayerLibraryUserPanel searchQuery={searchQuery} />
-      </ul>
+            </Fragment>
+          ))}
+          <LayerLibraryVesselGroupPanel searchQuery={searchQuery} />
+          <LayerLibraryUserPanel searchQuery={searchQuery} />
+        </ul>
+      ) : (
+        <div className={styles.spinnerContainer}>
+          <Spinner />
+        </div>
+      )}
     </div>
   )
 }
