@@ -942,7 +942,7 @@
     "geartypes": "Artes de pesca",
     "gearTypes": {
       "bunker": "Aprovisionamiento o petrolero",
-      "bunker_or_tanker": "Aprovisionamiento",
+      "bunker_or_tanker": "Aprovisionamiento o Petrolero",
       "cargo": "Mercancía o frigorífico",
       "cargo_or_reefer": "Mercancía o petrolero",
       "cargo_or_tanker": "Mercancía",
