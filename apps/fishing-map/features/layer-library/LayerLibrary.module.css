@@ -76,3 +76,11 @@
     height: calc(100vh - 6.1rem);
   }
 }
+
+.spinnerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  flex: 1;
+}
