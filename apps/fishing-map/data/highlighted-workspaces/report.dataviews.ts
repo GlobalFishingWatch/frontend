@@ -13,7 +13,7 @@ export const SAR_DATAVIEW_INSTANCE_ID = 'sar'
 export const SENTINEL2_DATAVIEW_INSTANCE_ID = 'sentinel2'
 export const VIIRS_DATAVIEW_INSTANCE_ID = 'viirs'
 
-const REPORT_EVENTS_DATAVIEW_INSTANCES_IDS: string[] = [
+const REPORT_DATAVIEW_INSTANCES_IDS: string[] = [
   AIS_DATAVIEW_INSTANCE_ID,
   VMS_DATAVIEW_INSTANCE_ID,
   PRESENCE_DATAVIEW_INSTANCE_ID,
@@ -33,10 +33,11 @@ const REPORT_EVENTS_DATAVIEW_INSTANCES_IDS: string[] = [
 //     },
 //   }))
 
-export const REPORT_EVENTS_DATAVIEW_INSTANCES: UrlDataviewInstance[] =
-  REPORT_EVENTS_DATAVIEW_INSTANCES_IDS.map((id) => ({
+export const REPORT_DATAVIEW_INSTANCES: UrlDataviewInstance[] = REPORT_DATAVIEW_INSTANCES_IDS.map(
+  (id) => ({
     id,
     config: {
       visible: true,
     },
-  }))
+  })
+)

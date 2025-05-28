@@ -131,6 +131,12 @@ steps:
           NEXT_SPREADSHEET_CLIENT_EMAIL=${_NEXT_SPREADSHEET_CLIENT_EMAIL} \
           --set-secrets \
             NEXT_SPREADSHEET_PRIVATE_KEY=${_NEXT_SPREADSHEET_PRIVATE_KEY} \
+          --set-env-vars \
+          NEXT_MASTRA_API_URL=${_NEXT_MASTRA_API_URL} \
+          --set-env-vars \
+          NEXT_WORKSPACES_AGENT_ID=${_NEXT_WORKSPACES_AGENT_ID} \
+          --set-env-vars \
+          NEXT_GFW_API_KEY=${_NEXT_GFW_API_KEY} \
           --allow-unauthenticated
         workspace_env=${_NEXT_PUBLIC_WORKSPACE_ENV:-'development'}
         echo "https://globalfishingwatch.org/map" > app_url

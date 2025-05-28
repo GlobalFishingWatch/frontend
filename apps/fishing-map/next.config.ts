@@ -142,6 +142,7 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  serverExternalPackages: ['@mastra/*'],
   experimental: {
     esmExternals: true,
     optimizePackageImports: [

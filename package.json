@@ -48,6 +48,8 @@
     "@loaders.gl/worker-utils": "4.3.3",
     "@mapbox/geojson-area": "0.2.2",
     "@mapbox/vector-tile": "2.0.3",
+    "@mastra/client-js": "^0.10.0",
+    "@mastra/core": "^0.10.0",
     "@math.gl/core": "4.1.0",
     "@math.gl/web-mercator": "4.1.0",
     "@mui/icons-material": "7.0.2",
@@ -162,7 +164,8 @@
     "use-debounce": "10.0.4",
     "usehooks-ts": "3.1.1",
     "vite-plugin-svgr": "4.3.0",
-    "web-vitals": "4.2.4"
+    "web-vitals": "4.2.4",
+    "zod": "^3.25.28"
   },
   "devDependencies": {
     "@eslint/compat": "1.2.9",
