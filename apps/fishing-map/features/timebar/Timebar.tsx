@@ -154,14 +154,7 @@ const TimebarHighlighterWrapper = ({
   )
 
   return highlightedTime ? (
-    <div
-      onClick={() => {
-        console.log('onClick')
-        onClick?.()
-      }}
-      role="button"
-      tabIndex={0}
-    >
+    <div onClick={onClick} role="button" tabIndex={0}>
       <TimebarHighlighter
         fixed={fixed}
         showTooltip={showTooltip}
@@ -201,6 +194,8 @@ const TimebarWrapper = () => {
   const reportAreaLocation = useSelector(selectIsAnyAreaReportLocation)
   const fitAreaInViewport = useFitAreaInViewport()
   const dispatch = useAppDispatch()
+
+  const highlightedTime = useSelector(selectHighlightedTime)
   // const [isPending, startTransition] = useTransition()
   const tracks = useTimebarVesselTracks()
   const tracksGraphsData = useTimebarVesselTracksGraph()
@@ -263,30 +258,35 @@ const TimebarWrapper = () => {
 
   const onChange: TimebarProps['onChange'] = useCallback(
     (e) => {
-      const gaActions: Record<string, string> = {
-        TIME_RANGE_SELECTOR: 'Configure timerange using calendar option',
-        ZOOM_IN_RELEASE: 'Zoom In timerange',
-        ZOOM_OUT_RELEASE: 'Zoom Out timerange',
-        HOUR_INTERVAL_BUTTON: 'Use hour preset',
-        DAY_INTERVAL_BUTTON: 'Use day preset',
-        MONTH_INTERVAL_BUTTON: 'Use month preset',
-        YEAR_INTERVAL_BUTTON: 'Use year preset',
-        SEEK_RELEASE: 'Move timebar slider',
-        BOOKMARK_SELECT: 'Select bookmark period',
-      }
-      if (e.source && gaActions[e.source]) {
-        trackEvent({
-          category: TrackCategory.Timebar,
-          action: gaActions[e.source],
-          label: getEventLabel([e.start, e.end]),
-        })
-      }
-      onTimebarChange(e.start, e.end)
-      if (reportAreaLocation) {
-        fitAreaInViewport()
+      if (e.start !== start || e.end !== end) {
+        const gaActions: Record<string, string> = {
+          TIME_RANGE_SELECTOR: 'Configure timerange using calendar option',
+          ZOOM_IN_RELEASE: 'Zoom In timerange',
+          ZOOM_OUT_RELEASE: 'Zoom Out timerange',
+          HOUR_INTERVAL_BUTTON: 'Use hour preset',
+          DAY_INTERVAL_BUTTON: 'Use day preset',
+          MONTH_INTERVAL_BUTTON: 'Use month preset',
+          YEAR_INTERVAL_BUTTON: 'Use year preset',
+          SEEK_RELEASE: 'Move timebar slider',
+          BOOKMARK_SELECT: 'Select bookmark period',
+        }
+        if (e.source && gaActions[e.source]) {
+          trackEvent({
+            category: TrackCategory.Timebar,
+            action: gaActions[e.source],
+            label: getEventLabel([e.start, e.end]),
+          })
+        }
+        onTimebarChange(e.start, e.end)
+        if (highlightedTime && (highlightedTime.start < start || highlightedTime.end > end)) {
+          setMouseClicked(false)
+        }
+        if (reportAreaLocation) {
+          fitAreaInViewport()
+        }
       }
     },
-    [fitAreaInViewport, onTimebarChange, reportAreaLocation]
+    [fitAreaInViewport, onTimebarChange, reportAreaLocation, highlightedTime, end, start]
   )
 
   const onMouseEnter = useCallback(() => {
@@ -294,7 +294,6 @@ const TimebarWrapper = () => {
   }, [])
 
   const onMouseClick = useCallback(() => {
-    console.log('onMouseClick')
     setMouseInside(true)
     setMouseClicked(!isMouseClicked)
   }, [isMouseClicked])
