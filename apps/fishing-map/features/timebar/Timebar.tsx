@@ -75,11 +75,11 @@ export const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 const TimebarHighlighterWrapper = ({
   showTooltip,
   fixed,
-  onClick,
+  onToggleFixedTooltip,
 }: {
   showTooltip: boolean
   fixed?: boolean
-  onClick?: () => void
+  onToggleFixedTooltip?: (toggle?: boolean) => void
 }) => {
   const { highlightedEventIds, dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
@@ -154,16 +154,15 @@ const TimebarHighlighterWrapper = ({
   )
 
   return highlightedTime ? (
-    <div onClick={onClick} role="button" tabIndex={0}>
-      <TimebarHighlighter
-        fixed={fixed}
-        showTooltip={showTooltip}
-        hoverStart={highlightedTime.start}
-        hoverEnd={highlightedTime.end}
-        onHighlightChunks={onHighlightChunks}
-        dateCallback={formatDate}
-      />
-    </div>
+    <TimebarHighlighter
+      fixed={fixed}
+      showTooltip={showTooltip}
+      hoverStart={highlightedTime.start}
+      hoverEnd={highlightedTime.end}
+      onHighlightChunks={onHighlightChunks}
+      dateCallback={formatDate}
+      onToggleFixedTooltip={onToggleFixedTooltip}
+    />
   ) : null
 }
 
@@ -293,10 +292,19 @@ const TimebarWrapper = () => {
     setMouseInside(true)
   }, [])
 
-  const onMouseClick = useCallback(() => {
-    setMouseInside(true)
-    setMouseClicked(!isMouseClicked)
-  }, [isMouseClicked])
+  const onToggleFixedTooltip = useCallback(
+    (toggle?: boolean) => {
+      if (toggle !== undefined) {
+        setMouseClicked(toggle)
+        if (!toggle) {
+          setMouseInside(false)
+        }
+      } else {
+        setMouseClicked(!isMouseClicked)
+      }
+    },
+    [isMouseClicked, setMouseInside]
+  )
 
   const onMouseLeave = useCallback(() => {
     setMouseInside(false)
@@ -437,11 +445,11 @@ const TimebarWrapper = () => {
         <TimebarHighlighterWrapper
           showTooltip={isMouseInside || isMouseClicked}
           fixed={isMouseClicked}
-          onClick={onMouseClick}
+          onToggleFixedTooltip={onToggleFixedTooltip}
         />
       </Fragment>
     )
-  }, [isMouseClicked, isMouseInside, onMouseClick, timebarVisualisation, tracksComponents])
+  }, [isMouseClicked, isMouseInside, onToggleFixedTooltip, timebarVisualisation, tracksComponents])
 
   if (!start || !end || isMapDrawing || showTimeComparison) return null
 
