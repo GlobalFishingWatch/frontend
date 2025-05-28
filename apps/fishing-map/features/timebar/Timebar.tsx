@@ -239,7 +239,7 @@ const TimebarWrapper = () => {
         }
       } else {
         try {
-          if (!scale) return
+          if (!scale || isMouseClicked) return
           const start = scale(clientX - 10).toISOString()
           const end = scale(clientX + 10).toISOString()
           const startDateTime = getUTCDateTime(start)
@@ -258,7 +258,7 @@ const TimebarWrapper = () => {
         }
       }
     },
-    [dispatch, dispatchDisableHighlightedTime]
+    [dispatch, dispatchDisableHighlightedTime, isMouseClicked]
   )
 
   const onChange: TimebarProps['onChange'] = useCallback(
@@ -427,11 +427,6 @@ const TimebarWrapper = () => {
   const timebarChildren = useMemo(() => {
     return (
       <Fragment>
-        <TimebarHighlighterWrapper
-          showTooltip={isMouseInside || isMouseClicked}
-          fixed={isMouseClicked}
-          onClick={onMouseClick}
-        />
         {(timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
           timebarVisualisation === TimebarVisualisations.HeatmapDetections ||
           timebarVisualisation === TimebarVisualisations.VesselGroup ||
@@ -440,6 +435,11 @@ const TimebarWrapper = () => {
         )}
         {timebarVisualisation === TimebarVisualisations.Vessel && tracksComponents}
         {timebarVisualisation === TimebarVisualisations.Events && <TimebarClusterEventsGraph />}
+        <TimebarHighlighterWrapper
+          showTooltip={isMouseInside || isMouseClicked}
+          fixed={isMouseClicked}
+          onClick={onMouseClick}
+        />
       </Fragment>
     )
   }, [isMouseClicked, isMouseInside, onMouseClick, timebarVisualisation, tracksComponents])
