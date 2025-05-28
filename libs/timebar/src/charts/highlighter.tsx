@@ -6,7 +6,7 @@ import { DateTime } from 'luxon'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { IconType } from '@globalfishingwatch/ui-components'
-import { Icon } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 
 import type { TimelineScale } from '../timelineContext'
 import TimelineContext from '../timelineContext'
@@ -198,6 +198,7 @@ const Highlighter = ({
   dateCallback,
   showTooltip = true,
   fixed,
+  onToggleFixedTooltip,
 }: {
   hoverStart: string
   hoverEnd: string
@@ -205,6 +206,7 @@ const Highlighter = ({
   dateCallback?: HighlighterDateCallback
   showTooltip?: boolean
   fixed?: boolean
+  onToggleFixedTooltip?: (fixed?: boolean) => void
 }) => {
   const { graphHeight, tooltipContainer, outerStart, outerEnd } = useContext(TimelineContext)
   const outerScale = useOuterScale()
@@ -240,6 +242,9 @@ const Highlighter = ({
           width,
           height: graphHeight,
         }}
+        onClick={() => onToggleFixedTooltip?.()}
+        role="button"
+        tabIndex={0}
       >
         <div className={styles.highlighterCenter} style={{ left: center - left }} />
       </div>
@@ -247,7 +252,9 @@ const Highlighter = ({
         showTooltip &&
         createPortal(
           <div
-            className={styles.tooltipContainer}
+            className={cx(styles.tooltipContainer, {
+              [styles.fixed]: fixed,
+            })}
             style={{
               left: center,
             }}
@@ -255,10 +262,19 @@ const Highlighter = ({
             <div
               className={cx(styles.tooltip, {
                 [styles.overflowRight]: window.innerWidth - center < 700,
-                [styles.fixed]: fixed,
               })}
             >
-              <span className={styles.tooltipDate}>{dateLabel}</span>
+              <div className={styles.tooltipHeader}>
+                <span className={styles.tooltipDate}>{dateLabel}</span>
+                {fixed && (
+                  <IconButton
+                    icon="close"
+                    size="tiny"
+                    onClick={() => onToggleFixedTooltip?.(false)}
+                    className={cx(styles.closeButton, 'print-hidden')}
+                  />
+                )}
+              </div>
               {highlighterData?.length > 0 && (
                 <ul>
                   {highlighterData.map((item, itemIndex) => {
