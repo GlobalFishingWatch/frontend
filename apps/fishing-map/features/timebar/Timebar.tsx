@@ -72,7 +72,15 @@ import styles from './Timebar.module.css'
 
 export const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
-const TimebarHighlighterWrapper = ({ showTooltip }: { showTooltip: boolean }) => {
+const TimebarHighlighterWrapper = ({
+  showTooltip,
+  fixed,
+  onClick,
+}: {
+  showTooltip: boolean
+  fixed?: boolean
+  onClick?: () => void
+}) => {
   const { highlightedEventIds, dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const highlightedTime = useSelector(selectHighlightedTime)
@@ -146,13 +154,23 @@ const TimebarHighlighterWrapper = ({ showTooltip }: { showTooltip: boolean }) =>
   )
 
   return highlightedTime ? (
-    <TimebarHighlighter
-      showTooltip={showTooltip}
-      hoverStart={highlightedTime.start}
-      hoverEnd={highlightedTime.end}
-      onHighlightChunks={onHighlightChunks}
-      dateCallback={formatDate}
-    />
+    <div
+      onClick={() => {
+        console.log('onClick')
+        onClick?.()
+      }}
+      role="button"
+      tabIndex={0}
+    >
+      <TimebarHighlighter
+        fixed={fixed}
+        showTooltip={showTooltip}
+        hoverStart={highlightedTime.start}
+        hoverEnd={highlightedTime.end}
+        onHighlightChunks={onHighlightChunks}
+        dateCallback={formatDate}
+      />
+    </div>
   ) : null
 }
 
@@ -160,6 +178,7 @@ const TimebarWrapper = () => {
   useTimebarVisualisation()
 
   const [isMouseInside, setMouseInside] = useState(false)
+  const [isMouseClicked, setMouseClicked] = useState(false)
   const { t, ready, i18n } = useTranslation()
   const trackGraphSteps = useTimebarTracksGraphSteps()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
@@ -215,7 +234,9 @@ const TimebarWrapper = () => {
   const onMouseMove = useCallback(
     (clientX: number | null, scale: ((arg: number) => Date) | null) => {
       if (clientX === null || clientX === undefined || isNaN(clientX)) {
-        dispatchDisableHighlightedTime()
+        if (!isMouseClicked) {
+          dispatchDisableHighlightedTime()
+        }
       } else {
         try {
           if (!scale) return
@@ -272,12 +293,20 @@ const TimebarWrapper = () => {
     setMouseInside(true)
   }, [])
 
+  const onMouseClick = useCallback(() => {
+    console.log('onMouseClick')
+    setMouseInside(true)
+    setMouseClicked(!isMouseClicked)
+  }, [isMouseClicked])
+
   const onMouseLeave = useCallback(() => {
     setMouseInside(false)
-    requestAnimationFrame(() => {
-      dispatchHighlightedEvents(undefined)
-    })
-  }, [dispatchHighlightedEvents])
+    if (!isMouseClicked) {
+      requestAnimationFrame(() => {
+        dispatchHighlightedEvents(undefined)
+      })
+    }
+  }, [dispatchHighlightedEvents, isMouseClicked])
 
   const onMouseDown = useCallback(() => {
     rootElement?.classList.add('dragging')
@@ -398,6 +427,11 @@ const TimebarWrapper = () => {
   const timebarChildren = useMemo(() => {
     return (
       <Fragment>
+        <TimebarHighlighterWrapper
+          showTooltip={isMouseInside || isMouseClicked}
+          fixed={isMouseClicked}
+          onClick={onMouseClick}
+        />
         {(timebarVisualisation === TimebarVisualisations.HeatmapActivity ||
           timebarVisualisation === TimebarVisualisations.HeatmapDetections ||
           timebarVisualisation === TimebarVisualisations.VesselGroup ||
@@ -406,10 +440,9 @@ const TimebarWrapper = () => {
         )}
         {timebarVisualisation === TimebarVisualisations.Vessel && tracksComponents}
         {timebarVisualisation === TimebarVisualisations.Events && <TimebarClusterEventsGraph />}
-        <TimebarHighlighterWrapper showTooltip={isMouseInside} />
       </Fragment>
     )
-  }, [isMouseInside, timebarVisualisation, tracksComponents])
+  }, [isMouseClicked, isMouseInside, onMouseClick, timebarVisualisation, tracksComponents])
 
   if (!start || !end || isMapDrawing || showTimeComparison) return null
 
