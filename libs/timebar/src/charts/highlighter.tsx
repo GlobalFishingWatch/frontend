@@ -197,12 +197,14 @@ const Highlighter = ({
   onHighlightChunks,
   dateCallback,
   showTooltip = true,
+  fixed,
 }: {
   hoverStart: string
   hoverEnd: string
   onHighlightChunks?: (data?: HighlightedChunks) => any
   dateCallback?: HighlighterDateCallback
   showTooltip?: boolean
+  fixed?: boolean
 }) => {
   const { graphHeight, tooltipContainer, outerStart, outerEnd } = useContext(TimelineContext)
   const outerScale = useOuterScale()
@@ -232,7 +234,7 @@ const Highlighter = ({
   return (
     <Fragment>
       <div
-        className={styles.highlighter}
+        className={cx(styles.highlighter, { [styles.fixed]: fixed })}
         style={{
           left,
           width,
@@ -253,6 +255,7 @@ const Highlighter = ({
             <div
               className={cx(styles.tooltip, {
                 [styles.overflowRight]: window.innerWidth - center < 700,
+                [styles.fixed]: fixed,
               })}
             >
               <span className={styles.tooltipDate}>{dateLabel}</span>

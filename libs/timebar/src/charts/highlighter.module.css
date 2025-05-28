@@ -1,13 +1,16 @@
 .highlighter,
 .tooltipContainer {
   position: absolute;
-  pointer-events: none;
 }
 
 .highlighter {
   background-color: var(--timebar-ui-btn-color-hover);
   opacity: 0.4;
   mix-blend-mode: hue;
+}
+
+.highlighter.fixed {
+  opacity: 0.8;
 }
 
 .tooltipContainer {
@@ -32,7 +35,10 @@
   border-radius: 6px;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.4);
   min-width: 320px;
-  overflow: auto;
+}
+
+.tooltip.fixed {
+  background: var(--timebar-ui-btn-color-hover);
 }
 
 .overflowRight {
