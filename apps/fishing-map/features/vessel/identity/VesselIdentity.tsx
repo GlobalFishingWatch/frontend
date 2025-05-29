@@ -181,7 +181,9 @@ const VesselIdentity = () => {
             </div>
           </div>
           <div className={styles.actionsContainer}>
-            {(isJACUser || isGFWUser) && <VesselInfoCorrection />}
+            {(isJACUser || isGFWUser) && !vesselIdentity.sourceCode?.[0].includes('VMS') && (
+              <VesselInfoCorrection />
+            )}
 
             <UserLoggedIconButton
               type="border"
@@ -294,7 +296,7 @@ const VesselIdentity = () => {
       </div>
       {vesselIdentity?.ssvid && (
         <div className={styles.container}>
-          <label>View in</label>
+          <label>{t('common.viewIn', 'View in')}</label>
           <div className={styles.externalToolLinks}>
             <a
               href={`https://www.marinetraffic.com/${i18n.language}/ais/details/ships/mmsi:${vesselIdentity?.ssvid}`}

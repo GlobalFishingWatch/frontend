@@ -15,11 +15,19 @@ const sourceNamespaces = {
   flags: flagsSource,
 }
 
-export const serverT: any = (key: string, fallback: string) => {
+export const serverT: any = (
+  key: string,
+  params: string | Record<string | 'defaultValue', any>
+) => {
   const namespace = key.includes(':') ? (key.split(':')[0] as keyof Namespace) : 'translations'
   const keyName = key.includes(':') ? key.split(':')[1] : key
 
-  return (
+  const { defaultValue, ...replaceParams } = typeof params === 'object' ? params : {}
+  const fallback = typeof params === 'string' ? params : defaultValue
+  const value =
     get(namespaces[namespace], keyName) || get(sourceNamespaces[namespace], keyName) || fallback
-  )
+  if (Object.keys(replaceParams).length > 0) {
+    return value.replace(/{{(.*?)}}/g, (match: string, p1: string) => replaceParams[p1] || match)
+  }
+  return value
 }

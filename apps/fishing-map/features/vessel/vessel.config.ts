@@ -96,7 +96,7 @@ export const IDENTITY_FIELD_GROUPS: Record<VesselIdentitySourceEnum, VesselRende
   ],
   [VesselIdentitySourceEnum.Registry]: [
     COMMON_FIELD_GROUPS,
-    [VESSEL_GEARTYPES_FIELD, { key: 'builtYear', label: 'year built' }],
+    [VESSEL_GEARTYPES_FIELD, { key: 'builtYear' }],
     IDENTIFIER_FIELDS,
     VESSEL_FISICAL_FEATURES_FIELDS,
   ],

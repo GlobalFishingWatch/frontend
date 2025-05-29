@@ -1,0 +1,1142 @@
+[
+  {
+    "label": "Jordan EEZ",
+    "id": 8491
+  },
+  {
+    "label": "Uruguay EEZ",
+    "id": 8467
+  },
+  {
+    "label": "Latvia EEZ",
+    "id": 5683
+  },
+  {
+    "label": "South Korea EEZ",
+    "id": 8327
+  },
+  {
+    "label": "Bahamas EEZ",
+    "id": 8404
+  },
+  {
+    "label": "Iceland EEZ",
+    "id": 5680
+  },
+  {
+    "label": "Russia EEZ",
+    "id": 5690
+  },
+  {
+    "label": "Lithuania EEZ",
+    "id": 5684
+  },
+  {
+    "label": "Israel EEZ",
+    "id": 8375
+  },
+  {
+    "label": "Brazil EEZ",
+    "id": 8464
+  },
+  {
+    "label": "Kenya EEZ",
+    "id": 8349
+  },
+  {
+    "label": "Somalia EEZ",
+    "id": 8350
+  },
+  {
+    "label": "Comoros EEZ",
+    "id": 8334
+  },
+  {
+    "label": "Bangladesh EEZ",
+    "id": 8481
+  },
+  {
+    "label": "Ireland EEZ",
+    "id": 5681
+  },
+  {
+    "label": "Marshall Islands EEZ",
+    "id": 8318
+  },
+  {
+    "label": "Montenegro EEZ",
+    "id": 5691
+  },
+  {
+    "label": "New Zealand EEZ",
+    "id": 8455
+  },
+  {
+    "label": "Palestine EEZ",
+    "id": 48953
+  },
+  {
+    "label": "Cameroon EEZ",
+    "id": 8475
+  },
+  {
+    "label": "Bosnia and Herzegovina EEZ",
+    "id": 22491
+  },
+  {
+    "label": "Argentina EEZ",
+    "id": 8466
+  },
+  {
+    "label": "Belgium EEZ",
+    "id": 3293
+  },
+  {
+    "label": "Turkmenistan EEZ",
+    "id": 26523
+  },
+  {
+    "label": "Bulgaria EEZ",
+    "id": 5672
+  },
+  {
+    "label": "Poland EEZ",
+    "id": 5687
+  },
+  {
+    "label": "Mexico EEZ",
+    "id": 8429
+  },
+  {
+    "label": "Libya EEZ",
+    "id": 8372
+  },
+  {
+    "label": "Thailand EEZ",
+    "id": 8332
+  },
+  {
+    "label": "Fiji EEZ",
+    "id": 8325
+  },
+  {
+    "label": "Liberia EEZ",
+    "id": 8391
+  },
+  {
+    "label": "Dominican Republic EEZ",
+    "id": 8417
+  },
+  {
+    "label": "Mozambique EEZ",
+    "id": 8347
+  },
+  {
+    "label": "Denmark EEZ",
+    "id": 5674
+  },
+  {
+    "label": "Croatia EEZ",
+    "id": 5673
+  },
+  {
+    "label": "Oman EEZ",
+    "id": 8354
+  },
+  {
+    "label": "Canada EEZ",
+    "id": 8493
+  },
+  {
+    "label": "Suriname EEZ",
+    "id": 8461
+  },
+  {
+    "label": "Pakistan EEZ",
+    "id": 8359
+  },
+  {
+    "label": "Guinea EEZ",
+    "id": 8472
+  },
+  {
+    "label": "Saudi Arabia EEZ",
+    "id": 8356
+  },
+  {
+    "label": "Venezuela EEZ",
+    "id": 8433
+  },
+  {
+    "label": "Georgia EEZ",
+    "id": 5678
+  },
+  {
+    "label": "Cuba EEZ",
+    "id": 8406
+  },
+  {
+    "label": "Vanuatu EEZ",
+    "id": 8313
+  },
+  {
+    "label": "Qatar EEZ",
+    "id": 8468
+  },
+  {
+    "label": "Eritrea EEZ",
+    "id": 8351
+  },
+  {
+    "label": "Sweden EEZ",
+    "id": 5694
+  },
+  {
+    "label": "Chile EEZ",
+    "id": 8465
+  },
+  {
+    "label": "China EEZ",
+    "id": 8486
+  },
+  {
+    "label": "Equatorial Guinea EEZ",
+    "id": 8398
+  },
+  {
+    "label": "Greece EEZ",
+    "id": 5679
+  },
+  {
+    "label": "Madagascar EEZ",
+    "id": 8348
+  },
+  {
+    "label": "Seychelles EEZ",
+    "id": 8337
+  },
+  {
+    "label": "Australia EEZ",
+    "id": 8323
+  },
+  {
+    "label": "Tonga EEZ",
+    "id": 8448
+  },
+  {
+    "label": "Cambodia EEZ",
+    "id": 8331
+  },
+  {
+    "label": "Netherlands EEZ",
+    "id": 5668
+  },
+  {
+    "label": "Barbados EEZ",
+    "id": 8418
+  },
+  {
+    "label": "Micronesia EEZ",
+    "id": 8316
+  },
+  {
+    "label": "Mauritania EEZ",
+    "id": 8369
+  },
+  {
+    "label": "Benin EEZ",
+    "id": 8393
+  },
+  {
+    "label": "Saint Lucia EEZ",
+    "id": 8416
+  },
+  {
+    "label": "Philippines EEZ",
+    "id": 8322
+  },
+  {
+    "label": "Papua New Guinea EEZ",
+    "id": 8324
+  },
+  {
+    "label": "India EEZ",
+    "id": 8480
+  },
+  {
+    "label": "Solomon Islands EEZ",
+    "id": 8314
+  },
+  {
+    "label": "Nauru EEZ",
+    "id": 8317
+  },
+  {
+    "label": "Spain EEZ",
+    "id": 5693
+  },
+  {
+    "label": "Syria EEZ",
+    "id": 8373
+  },
+  {
+    "label": "Tuvalu EEZ",
+    "id": 8326
+  },
+  {
+    "label": "Guyana EEZ",
+    "id": 8460
+  },
+  {
+    "label": "Egypt EEZ",
+    "id": 8490
+  },
+  {
+    "label": "Sierra Leone EEZ",
+    "id": 8390
+  },
+  {
+    "label": "Grenada EEZ",
+    "id": 8419
+  },
+  {
+    "label": "Finland EEZ",
+    "id": 5676
+  },
+  {
+    "label": "Haiti EEZ",
+    "id": 8408
+  },
+  {
+    "label": "Mauritius EEZ",
+    "id": 8343
+  },
+  {
+    "label": "Albania EEZ",
+    "id": 5670
+  },
+  {
+    "label": "Norway EEZ",
+    "id": 5686
+  },
+  {
+    "label": "Turkey EEZ",
+    "id": 5697
+  },
+  {
+    "label": "Portugal EEZ",
+    "id": 5688
+  },
+  {
+    "label": "Samoa EEZ",
+    "id": 8445
+  },
+  {
+    "label": "Trinidad and Tobago EEZ",
+    "id": 8420
+  },
+  {
+    "label": "United Kingdom EEZ",
+    "id": 5696
+  },
+  {
+    "label": "Timor-Leste EEZ",
+    "id": 8758
+  },
+  {
+    "label": "Nigeria EEZ",
+    "id": 8474
+  },
+  {
+    "label": "Vietnam EEZ",
+    "id": 8484
+  },
+  {
+    "label": "Italy EEZ",
+    "id": 5682
+  },
+  {
+    "label": "Peru EEZ",
+    "id": 8432
+  },
+  {
+    "label": "Ghana EEZ",
+    "id": 8400
+  },
+  {
+    "label": "United Arab Emirates EEZ",
+    "id": 8360
+  },
+  {
+    "label": "Indonesia EEZ",
+    "id": 8492
+  },
+  {
+    "label": "North Korea EEZ",
+    "id": 8328
+  },
+  {
+    "label": "France EEZ",
+    "id": 5677
+  },
+  {
+    "label": "Malaysia EEZ",
+    "id": 8483
+  },
+  {
+    "label": "Morocco EEZ",
+    "id": 8367
+  },
+  {
+    "label": "Sudan EEZ",
+    "id": 8355
+  },
+  {
+    "label": "Monaco EEZ",
+    "id": 21790
+  },
+  {
+    "label": "Tunisia EEZ",
+    "id": 8366
+  },
+  {
+    "label": "Brunei EEZ",
+    "id": 26521
+  },
+  {
+    "label": "El Salvador EEZ",
+    "id": 8428
+  },
+  {
+    "label": "Romania EEZ",
+    "id": 5689
+  },
+  {
+    "label": "Kuwait EEZ",
+    "id": 8357
+  },
+  {
+    "label": "Gabon EEZ",
+    "id": 8476
+  },
+  {
+    "label": "Colombia EEZ",
+    "id": 8426
+  },
+  {
+    "label": "Cyprus EEZ",
+    "id": 8376
+  },
+  {
+    "label": "United States EEZ",
+    "id": 8456
+  },
+  {
+    "label": "Ecuador EEZ",
+    "id": 8431
+  },
+  {
+    "label": "Côte d'Ivoire EEZ",
+    "id": 8473
+  },
+  {
+    "label": "Jamaica EEZ",
+    "id": 8459
+  },
+  {
+    "label": "Angola EEZ",
+    "id": 8478
+  },
+  {
+    "label": "Guatemala EEZ",
+    "id": 8430
+  },
+  {
+    "label": "Azerbaijan EEZ",
+    "id": 26524
+  },
+  {
+    "label": "Costa Rica EEZ",
+    "id": 8424
+  },
+  {
+    "label": "Sri Lanka EEZ",
+    "id": 8346
+  },
+  {
+    "label": "Senegal EEZ",
+    "id": 8371
+  },
+  {
+    "label": "Myanmar EEZ",
+    "id": 8482
+  },
+  {
+    "label": "Maldives EEZ",
+    "id": 8345
+  },
+  {
+    "label": "Honduras EEZ",
+    "id": 8427
+  },
+  {
+    "label": "Lebanon EEZ",
+    "id": 8374
+  },
+  {
+    "label": "Saint Kitts and Nevis EEZ",
+    "id": 8413
+  },
+  {
+    "label": "Bahrain EEZ",
+    "id": 8358
+  },
+  {
+    "label": "Nicaragua EEZ",
+    "id": 8425
+  },
+  {
+    "label": "Kazakhstan EEZ",
+    "id": 26522
+  },
+  {
+    "label": "Guinea-Bissau EEZ",
+    "id": 8471
+  },
+  {
+    "label": "Iran EEZ",
+    "id": 8469
+  },
+  {
+    "label": "Japan EEZ",
+    "id": 8487
+  },
+  {
+    "label": "Yemen EEZ",
+    "id": 8353
+  },
+  {
+    "label": "Slovenia EEZ",
+    "id": 5692
+  },
+  {
+    "label": "Tanzania EEZ",
+    "id": 8479
+  },
+  {
+    "label": "Germany EEZ",
+    "id": 5669
+  },
+  {
+    "label": "Iraq EEZ",
+    "id": 8470
+  },
+  {
+    "label": "Namibia EEZ",
+    "id": 8395
+  },
+  {
+    "label": "Belize EEZ",
+    "id": 8457
+  },
+  {
+    "label": "South Africa EEZ",
+    "id": 8396
+  },
+  {
+    "label": "Malta EEZ",
+    "id": 5685
+  },
+  {
+    "label": "Saint Vincent and the Grenadines EEZ",
+    "id": 8421
+  },
+  {
+    "label": "Palau EEZ",
+    "id": 8315
+  },
+  {
+    "label": "Antigua and Barbuda EEZ",
+    "id": 8414
+  },
+  {
+    "label": "Djibouti EEZ",
+    "id": 8352
+  },
+  {
+    "label": "São Tomé and Príncipe EEZ",
+    "id": 8397
+  },
+  {
+    "label": "Singapore EEZ",
+    "id": 8485
+  },
+  {
+    "label": "Cape Verde EEZ",
+    "id": 8362
+  },
+  {
+    "label": "Algeria EEZ",
+    "id": 8378
+  },
+  {
+    "label": "Estonia EEZ",
+    "id": 5675
+  },
+  {
+    "label": "Togo EEZ",
+    "id": 8392
+  },
+  {
+    "label": "Gambia EEZ",
+    "id": 8370
+  },
+  {
+    "label": "Panama EEZ",
+    "id": 8423
+  },
+  {
+    "label": "Dominican Republic EEZ",
+    "id": 8409
+  },
+  {
+    "label": "New Zealand EEZ (Cook Islands)",
+    "id": 8446
+  },
+  {
+    "label": "French EEZ (Wallis and Futuna)",
+    "id": 8454
+  },
+  {
+    "label": "French EEZ (Saint-Pierre and Miquelon)",
+    "id": 8494
+  },
+  {
+    "label": "British EEZ (Ascension)",
+    "id": 8379
+  },
+  {
+    "label": "Portuguese EEZ (Azores)",
+    "id": 8361
+  },
+  {
+    "label": "French EEZ (Kerguélen)",
+    "id": 8387
+  },
+  {
+    "label": "Dutch EEZ (Curaçao)",
+    "id": 26517
+  },
+  {
+    "label": "British EEZ (Jersey)",
+    "id": 21789
+  },
+  {
+    "label": "New Zealand EEZ (Niue)",
+    "id": 8447
+  },
+  {
+    "label": "British EEZ (British Virgin Islands)",
+    "id": 8411
+  },
+  {
+    "label": "French EEZ (French Polynesia)",
+    "id": 8440
+  },
+  {
+    "label": "United States EEZ (Palmyra Atoll)",
+    "id": 8443
+  },
+  {
+    "label": "French EEZ (Réunion)",
+    "id": 8338
+  },
+  {
+    "label": "British EEZ (Saint Helena)",
+    "id": 8380
+  },
+  {
+    "label": "United States EEZ (Jarvis Islands)",
+    "id": 8442
+  },
+  {
+    "label": "Norwegian EEZ (Jan Mayen)",
+    "id": 8437
+  },
+  {
+    "label": "Dutch EEZ (Sint-Maarten)",
+    "id": 21803
+  },
+  {
+    "label": "French EEZ (Amsterdam and Saint Paul Islands)",
+    "id": 8386
+  },
+  {
+    "label": "United States EEZ (Hawaii)",
+    "id": 8453
+  },
+  {
+    "label": "Brazilian EEZ (Trindade)",
+    "id": 8381
+  },
+  {
+    "label": "Dutch EEZ (Aruba)",
+    "id": 26519
+  },
+  {
+    "label": "Dutch EEZ (Saba)",
+    "id": 26518
+  },
+  {
+    "label": "Ecuadorian EEZ (Galapagos)",
+    "id": 8403
+  },
+  {
+    "label": "Chilean EEZ (Easter Island)",
+    "id": 21787
+  },
+  {
+    "label": "British EEZ (Bermuda)",
+    "id": 8402
+  },
+  {
+    "label": "Spanish EEZ (Canary Islands)",
+    "id": 8364
+  },
+  {
+    "label": "Australian EEZ (Norfolk Island)",
+    "id": 8310
+  },
+  {
+    "label": "Congolese (Democratic Republic of) EEZ",
+    "id": 8477
+  },
+  {
+    "label": "United States EEZ (American Samoa)",
+    "id": 8444
+  },
+  {
+    "label": "French EEZ (New Caledonia)",
+    "id": 8312
+  },
+  {
+    "label": "French EEZ (Guadeloupe)",
+    "id": 33177
+  },
+  {
+    "label": "United States EEZ (Johnston Atoll)",
+    "id": 8452
+  },
+  {
+    "label": "Indian EEZ (Andaman and Nicobar Islands)",
+    "id": 8333
+  },
+  {
+    "label": "Norwegian EEZ (Svalbard)",
+    "id": 33181
+  },
+  {
+    "label": "Kiribati EEZ (Gilbert Islands)",
+    "id": 8488
+  },
+  {
+    "label": "British EEZ (Guernsey)",
+    "id": 21788
+  },
+  {
+    "label": "Kiribati EEZ (Line Group)",
+    "id": 8441
+  },
+  {
+    "label": "Australian EEZ (Christmas Island)",
+    "id": 8309
+  },
+  {
+    "label": "British EEZ (Cayman Islands)",
+    "id": 8407
+  },
+  {
+    "label": "Dutch EEZ (Sint-Eustatius)",
+    "id": 26526
+  },
+  {
+    "label": "Colombian EEZ (Quitasueño Bank)",
+    "id": 62598
+  },
+  {
+    "label": "British EEZ (Montserrat)",
+    "id": 8415
+  },
+  {
+    "label": "French EEZ (Bassas da India)",
+    "id": 8340
+  },
+  {
+    "label": "United States EEZ (Northern Mariana Islands)",
+    "id": 48980
+  },
+  {
+    "label": "South African EEZ (Prince Edward Islands)",
+    "id": 8384
+  },
+  {
+    "label": "New Zealand EEZ (Tokelau)",
+    "id": 8449
+  },
+  {
+    "label": "Portuguese EEZ (Madeira)",
+    "id": 8363
+  },
+  {
+    "label": "Australian EEZ (Macquarie Island)",
+    "id": 8311
+  },
+  {
+    "label": "French EEZ (Clipperton Island)",
+    "id": 8401
+  },
+  {
+    "label": "British EEZ (Anguilla)",
+    "id": 8412
+  },
+  {
+    "label": "Australian EEZ (Heard and McDonald Islands)",
+    "id": 8388
+  },
+  {
+    "label": "French EEZ (Collectivity of Saint Martin)",
+    "id": 8495
+  },
+  {
+    "label": "United States EEZ (Guam)",
+    "id": 48957
+  },
+  {
+    "label": "Danish EEZ (Greenland)",
+    "id": 8438
+  },
+  {
+    "label": "British EEZ (Isle of Man)",
+    "id": 64446
+  },
+  {
+    "label": "Australian EEZ (Cocos Islands)",
+    "id": 8308
+  },
+  {
+    "label": "Congolese (Republic of) EEZ",
+    "id": 8394
+  },
+  {
+    "label": "Colombian EEZ (Serrana Bank)",
+    "id": 62596
+  },
+  {
+    "label": "Dutch EEZ (Bonaire)",
+    "id": 26520
+  },
+  {
+    "label": "Colombian EEZ (Serranilla Bank)",
+    "id": 48984
+  },
+  {
+    "label": "United States EEZ (Howland and Baker Islands)",
+    "id": 8451
+  },
+  {
+    "label": "British EEZ (Tristan da Cunha)",
+    "id": 8382
+  },
+  {
+    "label": "French EEZ (Crozet Islands)",
+    "id": 8385
+  },
+  {
+    "label": "British EEZ (Turks and Caicos Islands)",
+    "id": 8405
+  },
+  {
+    "label": "French EEZ (Martinique)",
+    "id": 33178
+  },
+  {
+    "label": "United States EEZ (Alaska)",
+    "id": 8463
+  },
+  {
+    "label": "French EEZ (Saint-Barthélemy)",
+    "id": 48952
+  },
+  {
+    "label": "United States EEZ (Puerto Rico)",
+    "id": 33179
+  },
+  {
+    "label": "Kiribati EEZ (Phoenix Group)",
+    "id": 8450
+  },
+  {
+    "label": "French EEZ (Juan de Nova Island)",
+    "id": 8339
+  },
+  {
+    "label": "British EEZ (Pitcairn)",
+    "id": 8439
+  },
+  {
+    "label": "Chilean EEZ (Islas San Félix and San Ambrosio)",
+    "id": 22756
+  },
+  {
+    "label": "French EEZ (French Guiana)",
+    "id": 8462
+  },
+  {
+    "label": "French EEZ (Europa Island)",
+    "id": 8341
+  },
+  {
+    "label": "United States EEZ (United States Virgin Islands)",
+    "id": 33180
+  },
+  {
+    "label": "Mauritian EEZ (Chagos Archipelago)",
+    "id": 62589
+  },
+  {
+    "label": "Colombian EEZ (Bajo Nuevo Bank)",
+    "id": 48985
+  },
+  {
+    "label": "Timorese EEZ (Oecusse)",
+    "id": 21791
+  },
+  {
+    "label": "Danish EEZ (Faeroe)",
+    "id": 8435
+  },
+  {
+    "label": "Overlapping claim Kuril Islands: Japan / Russia",
+    "id": 48950
+  },
+  {
+    "label": "Overlapping claim: Iraq / Iran",
+    "id": 64460
+  },
+  {
+    "label": "Overlapping claim Matthew and Hunter Islands: France / Vanuatu",
+    "id": 48948
+  },
+  {
+    "label": "Overlapping claim: Colombia / Dominican Republic / Venezuela",
+    "id": 48971
+  },
+  {
+    "label": "Overlapping claim Ukraine: Ukraine / Russia",
+    "id": 5695
+  },
+  {
+    "label": "Overlapping claim Navassa Island: United States / Haiti / Jamaica",
+    "id": 48951
+  },
+  {
+    "label": "Overlapping claim: Belize / Honduras",
+    "id": 64431
+  },
+  {
+    "label": "Overlapping claim Liancourt Rocks: Japan / South Korea",
+    "id": 48955
+  },
+  {
+    "label": "Overlapping claim Wake Island / Enenkio: United States / Marshall Islands",
+    "id": 8319
+  },
+  {
+    "label": "Overlapping claim: Canada / United States",
+    "id": 48943
+  },
+  {
+    "label": "Overlapping claim Western Sahara: Western Sahara / Morocco",
+    "id": 8368
+  },
+  {
+    "label": "Overlapping claim Taiwan: Taiwan / China",
+    "id": 8321
+  },
+  {
+    "label": "Overlapping claim Falkland / Malvinas Islands: United Kingdom / Argentina",
+    "id": 8389
+  },
+  {
+    "label": "Overlapping claim: Malaysia / Singapore",
+    "id": 64440
+  },
+  {
+    "label": "Overlapping claim Ile Tromelin: France / Madagascar / Republic of Mauritius",
+    "id": 48946
+  },
+  {
+    "label": "Overlapping claim Halaib Triangle: Sudan / Egypt",
+    "id": 26582
+  },
+  {
+    "label": "Overlapping claim Abu musa, Greater and Lesser Tunb: United Arab Emirates / Iran",
+    "id": 48947
+  },
+  {
+    "label": "Overlapping claim Senkaku Islands: Taiwan / Japan / China",
+    "id": 48954
+  },
+  {
+    "label": "Overlapping claim Alhucemas Islands: Spain / Morocco",
+    "id": 49001
+  },
+  {
+    "label": "Overlapping claim Gibraltar: United Kingdom / Spain",
+    "id": 8365
+  },
+  {
+    "label": "Overlapping claim Melilla: Spain / Morocco",
+    "id": 49000
+  },
+  {
+    "label": "Overlapping claim Perejil Island: Spain / Morocco",
+    "id": 48998
+  },
+  {
+    "label": "Overlapping claim: South China Sea",
+    "id": 49003
+  },
+  {
+    "label": "Overlapping claim: Egypt / Libya",
+    "id": 64430
+  },
+  {
+    "label": "Overlapping claim Glorioso Islands: France / Madagascar",
+    "id": 48945
+  },
+  {
+    "label": "Overlapping claim South Georgia and the South Sandwich Islands: United Kingdom / Argentina",
+    "id": 8383
+  },
+  {
+    "label": "Overlapping claim: Qatar / Saudi Arabia / United Arab Emirates",
+    "id": 50170
+  },
+  {
+    "label": "Overlapping claim: Guyana / Trinidad and Tobago / Venezuela",
+    "id": 33185
+  },
+  {
+    "label": "Overlapping claim Mayotte: France / Comores",
+    "id": 48944
+  },
+  {
+    "label": "Overlapping claim Ceuta: Spain / Morocco",
+    "id": 49002
+  },
+  {
+    "label": "Overlapping claim Chafarinas Islands: Spain / Morocco",
+    "id": 48997
+  },
+  {
+    "label": "Overlapping claim Doumeira Islands: Eritrea / Djibouti",
+    "id": 48956
+  },
+  {
+    "label": "Overlapping claim Peñón de Vélez de la Gomera: Spain / Morocco",
+    "id": 48999
+  },
+  {
+    "label": "Overlapping claim: United States (Puerto Rico) / Dominican Republic",
+    "id": 48982
+  },
+  {
+    "label": "Overlapping claim: Venezuela / Netherlands (Aruba) / Dominican Republic",
+    "id": 48965
+  },
+  {
+    "label": "Joint regime area: Sweden / Norway",
+    "id": 48977
+  },
+  {
+    "label": "Joint regime area: Croatia / Slovenia",
+    "id": 50167
+  },
+  {
+    "label": "Joint regime area Torres Strait Treaty: Papua New Guinea / Australia",
+    "id": 21798
+  },
+  {
+    "label": "Joint regime area: Dominican Republic / Colombia",
+    "id": 48970
+  },
+  {
+    "label": "Joint regime area: Jamaica / Colombia",
+    "id": 21792
+  },
+  {
+    "label": "Joint regime area: Uruguay / Argentina",
+    "id": 48961
+  },
+  {
+    "label": "Joint regime area: France / Italy",
+    "id": 48976
+  },
+  {
+    "label": "Joint regime area: Norway / Russia",
+    "id": 64459
+  },
+  {
+    "label": "Joint regime area: Peru / Ecuador",
+    "id": 48962
+  },
+  {
+    "label": "Joint regime area: Senegal / Guinea-Bissau",
+    "id": 48964
+  },
+  {
+    "label": "Joint regime area: United States / Russia",
+    "id": 48978
+  },
+  {
+    "label": "Joint regime area: Spain / France",
+    "id": 48966
+  },
+  {
+    "label": "Joint regime area: Ecuador / Colombia",
+    "id": 48974
+  },
+  {
+    "label": "Joint regime area: São Tomé and Principe / Nigeria",
+    "id": 21797
+  },
+  {
+    "label": "Joint regime area: South Korea / Japan",
+    "id": 21796
+  },
+  {
+    "label": "Joint regime area: Barbados / Guyana",
+    "id": 48969
+  },
+  {
+    "label": "Joint regime area: Costa Rica / Ecuador (Galapagos)",
+    "id": 48968
+  },
+  {
+    "label": "Joint regime area: United Kingdom / Denmark (Faeroe Islands)",
+    "id": 48967
+  },
+  {
+    "label": "Joint regime area: Iceland / Norway (Jan Mayen)",
+    "id": 48975
+  },
+  {
+    "label": "Joint regime area: Iceland / Denmark (Faeroe Islands)",
+    "id": 48973
+  },
+  {
+    "label": "Joint regime area: Honduras / United Kingdom (Cayman Islands)",
+    "id": 48972
+  }
+]

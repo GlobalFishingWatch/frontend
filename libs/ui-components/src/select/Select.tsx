@@ -184,6 +184,9 @@ export function Select(props: SelectProps) {
                           width: '100%',
                           height: `${virtualRow.size}px`,
                           transform: `translateY(${virtualRow.start}px)`,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
                         }}
                         className={cx(styles.optionItem, {
                           [styles.selected]: selected,

@@ -141,24 +141,30 @@ export const getVesselGearTypeLabel = (
 
 export const getVesselShipNameLabel = (
   vessel: ExtendedFeatureVessel | IdentityVessel,
-  withGearType = false
+  {
+    translationFn = t,
+    withGearType = false,
+  }: {
+    translationFn?: TFunction
+    withGearType?: boolean
+  } = {}
 ): string => {
   const vesselInfo = getLatestIdentityPrioritised(vessel)
   if (!vesselInfo) return t('common.unknownVessel', 'Unknown vessel')
   if (vesselInfo.shipname && vesselInfo.geartypes && vesselInfo.flag && withGearType) {
-    const gearTypes = getVesselGearTypeLabel(vesselInfo)
+    const gearTypes = getVesselGearTypeLabel(vesselInfo, { translationFn })
     return `${formatInfoField(vesselInfo.shipname, 'shipname')}
-    (${t(`flags:${vesselInfo.flag}`, vesselInfo.flag)}, ${gearTypes || EMPTY_FIELD_PLACEHOLDER})`
+    (${translationFn(`flags:${vesselInfo.flag}`, vesselInfo.flag)}, ${gearTypes || EMPTY_FIELD_PLACEHOLDER})`
   }
   if (vesselInfo.shipname) {
-    return formatInfoField(vesselInfo.shipname, 'shipname') as string
+    return formatInfoField(vesselInfo.shipname, 'shipname', { translationFn }) as string
   }
   if (vesselInfo.geartypes) {
-    return `${t('vessel.unkwownVesselByGeartype', {
-      gearType: getVesselGearTypeLabel({ geartypes: vesselInfo.geartypes }),
+    return `${translationFn('vessel.unkwownVesselByGeartype', {
+      gearType: getVesselGearTypeLabel({ geartypes: vesselInfo.geartypes }, { translationFn }),
     })}`
   }
-  return t('common.unknownVessel', 'Unknown vessel')
+  return translationFn('common.unknownVessel', 'Unknown vessel')
 }
 
 export const getVesselOtherNamesLabel = (otherVesselsNames: string[]) => {
