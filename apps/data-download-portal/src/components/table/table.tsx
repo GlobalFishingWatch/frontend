@@ -39,7 +39,7 @@ import IconArrowDown from '../../assets/icons/arrow-down.svg'
 import IconArrowUp from '../../assets/icons/arrow-up.svg'
 import IconClose from '../../assets/icons/close.svg'
 import IconSearch from '../../assets/icons/search.svg'
-import { countSelectedFiles, getFlattenedFiles } from '../../utils/folderConfig'
+import { getFlattenedFiles } from '../../utils/folderConfig'
 
 import styles from './table.module.scss'
 
@@ -250,7 +250,6 @@ function Table({ columns, data, logged }: TableProps) {
 
   const onDownloadClick = useCallback(() => {
     const selectedFlatRows = getFlattenedFiles(selectedRows)
-
     if (selectedFlatRows.length === 1) {
       const { path } = selectedFlatRows[0]
       if (path) {
@@ -279,7 +278,7 @@ function Table({ columns, data, logged }: TableProps) {
     }
   }, [datasetId, downloadSingleFile, selectedRows])
 
-  const rowSelectedCount = countSelectedFiles(selectedRows)
+  const rowSelectedCount = selectedRows.length
 
   return (
     <div>
@@ -408,7 +407,7 @@ function Table({ columns, data, logged }: TableProps) {
           onClick={onDownloadClick}
           disabled={!rowSelectedCount || downloadLoading || !logged}
         >
-          {logged ? 'Download' : 'Login to download'}
+          {logged ? 'Download' : 'Log in to download'}
         </button>
       </div>
     </div>
