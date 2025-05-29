@@ -941,8 +941,8 @@
     "gearType_short": "Peralatan",
     "geartypes": "Jenis peralatan",
     "gearTypes": {
-      "bunker": "Bunker atau tanker",
-      "bunker_or_tanker": "Kapal bunker",
+      "bunker": "Kapal bunker",
+      "bunker_or_tanker": "Kapal bunker atau tanker",
       "cargo": "Kapal kargo atau kontainer berpendingin",
       "cargo_or_reefer": "Kapal kargo atau tanker",
       "cargo_or_tanker": "Kargo",
