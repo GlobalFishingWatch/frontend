@@ -146,7 +146,10 @@ export default function ReportSummaryActivity({
               defaultValue: 'hours',
               count: Math.floor(reportHours),
             })}</strong> ${
-              Math.round(timeseriesImprecision) ? `± ${Math.round(timeseriesImprecision)}% ` : ''
+              Math.round(timeseriesImprecision)
+                ? `<a href="https://globalfishingwatch.org/faqs/calculating-fishing-effort-estimates-in-dynamic-analysis-reports/" target="_blank"
+                rel="noopener noreferrer" style="cursor: help" title="${t('common.learnMore', 'Learn more')}">± ${Math.round(timeseriesImprecision)}%</a> `
+                : ''
             }${t('common.of', 'of')}`
           : ''
 
