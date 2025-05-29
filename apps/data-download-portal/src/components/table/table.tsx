@@ -216,7 +216,6 @@ function Table({ columns, data, logged }: TableProps) {
 
   const {
     rows,
-    selectedFlatRows,
     flatRows,
     state,
     prepareRow,
