@@ -31,6 +31,7 @@ const insertIntoTree = (tree: TableData[], file: DatasetFile) => {
       const node: TableData = {
         ...file,
         name: part,
+        ...(isFolder && { size: '--' }),
         ...(isFolder ? { subRows: [] } : {}),
       }
 
@@ -62,7 +63,7 @@ export const buildFileTree = (files: DatasetFile[]): TableData[] => {
   files.forEach((file) => {
     insertIntoTree(tree, file)
   })
-  tree.forEach((node) => aggregateSizes(node))
+  // tree.forEach((node) => aggregateSizes(node))
 
   return tree
 }
@@ -98,8 +99,4 @@ export function getFlattenedFiles(selectedFlatRows: Row<TableData>[]) {
 
   selectedFlatRows.forEach(processRow)
   return flattenedFiles
-}
-
-export function countSelectedFiles(selectedFlatRows: Row<TableData>[]) {
-  return getFlattenedFiles(selectedFlatRows).length
 }
