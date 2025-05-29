@@ -277,7 +277,7 @@ function Table({ columns, data, logged }: TableProps) {
         'We are preparing the files you requested, you will receive an email when they are ready'
       )
     }
-  }, [datasetId, downloadSingleFile, flatRows])
+  }, [datasetId, downloadSingleFile, selectedRows])
 
   const rowSelectedCount = countSelectedFiles(selectedRows)
 
@@ -323,13 +323,13 @@ function Table({ columns, data, logged }: TableProps) {
                     key={column.id}
                     className={styles.th}
                   >
-                    {column.render('Header')}
                     {column.id !== 'selection' && column.id !== 'name' && (
                       <div
                         {...extendedColumn.getResizerProps()}
                         className={`${styles.resizer} ${extendedColumn.isResizing ? styles.isResizing : ''}`}
                       />
                     )}
+                    {column.render('Header')}
 
                     {column.id !== 'selection' && (
                       <span className={styles.sort}>
