@@ -45,25 +45,11 @@ const insertIntoTree = (tree: TableData[], file: DatasetFile) => {
   }
 }
 
-const aggregateSizes = (node: TableData): number => {
-  if (!node.subRows || node.subRows.length === 0) {
-    return Number(node.size ?? 0)
-  }
-
-  const totalSize = node.subRows.reduce((sum, child) => {
-    return sum + aggregateSizes(child)
-  }, 0)
-
-  node.size = totalSize
-  return totalSize
-}
-
 export const buildFileTree = (files: DatasetFile[]): TableData[] => {
   const tree: TableData[] = []
   files.forEach((file) => {
     insertIntoTree(tree, file)
   })
-  // tree.forEach((node) => aggregateSizes(node))
 
   return tree
 }
