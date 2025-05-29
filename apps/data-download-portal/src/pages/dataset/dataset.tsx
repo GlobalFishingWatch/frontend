@@ -4,7 +4,7 @@ import { DateTime } from 'luxon'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Dataset } from '@globalfishingwatch/api-types'
-import { useGFWLogin } from '@globalfishingwatch/react-hooks/use-login'
+import { useGFWLogin } from '@globalfishingwatch/react-hooks'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import ApiBanner from '../../components/api-banner/api-banner'
