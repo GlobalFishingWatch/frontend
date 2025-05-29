@@ -302,8 +302,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             },
             radiusUnits: 'pixels',
             getRadius: (d: any) => {
-              const highlightOffset = highlightEventIds?.includes(d.id) ? 6 : 0
-              return (d.type === EventTypes.Fishing ? 3 : 6) + highlightOffset
+              return d.type === EventTypes.Fishing ? 3 : 6
             },
             getFilterValue: (d: VesselDeckLayersEventData) => [d.start, d.end],
             filterRange: [
@@ -313,7 +312,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             extensions: [new DataFilterExtension({ filterSize: 2 })],
             updateTriggers: {
               getFillColor: [color, highlightEventIds],
-              getRadius: [highlightEventIds],
             },
           })
         )

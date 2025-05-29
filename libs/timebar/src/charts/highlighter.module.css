@@ -1,7 +1,6 @@
 .highlighter,
 .tooltipContainer {
   position: absolute;
-  pointer-events: none;
 }
 
 .highlighter {
@@ -10,10 +9,28 @@
   mix-blend-mode: hue;
 }
 
+.highlighter.fixed {
+  opacity: 0.8;
+}
+
 .tooltipContainer {
   pointer-events: none;
   bottom: -2px;
   z-index: var(--timebar-z-highlighter-tooltips);
+}
+
+.tooltipContainer.fixed {
+  pointer-events: auto;
+}
+
+.tooltipHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.closeButton {
+  color: var(--timebar-white);
 }
 
 .highlighterCenter {
@@ -28,11 +45,15 @@
   transform: translateX(-50%);
   background: var(--timebar-ui-btn-color);
   color: var(--timebar-white);
-  padding: 6px 0;
+  padding: 6px;
+  padding-left: 0;
   border-radius: 6px;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.4);
   min-width: 320px;
-  overflow: auto;
+}
+
+.tooltipContainer.fixed .tooltip {
+  background: var(--timebar-ui-btn-color-hover);
 }
 
 .overflowRight {
