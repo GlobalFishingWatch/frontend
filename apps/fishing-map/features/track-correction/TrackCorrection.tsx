@@ -10,6 +10,7 @@ import { Select } from '@globalfishingwatch/ui-components'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import TrackSlider from 'features/track-correction/TrackSlider'
 
 type SelectOptionWithColor = SelectOption & { color: string }
 
@@ -54,6 +55,7 @@ const TrackCorrection = () => {
         selectedOption={selectedVessel}
         onSelect={(option) => setSelectedVessel(option as SelectOptionWithColor)}
       />
+      <TrackSlider segments={trackData ?? []} color={selectedVessel?.color} />
     </div>
   )
 }
