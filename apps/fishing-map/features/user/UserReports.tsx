@@ -8,6 +8,7 @@ import { Locale } from '@globalfishingwatch/api-types'
 import { IconButton, InputText, Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
+import { getReportAreaStringByLocale } from 'features/reports/report-area/title/report-title.utils'
 import {
   deleteReportThunk,
   fetchReportsThunk,
@@ -65,7 +66,7 @@ function UserReports() {
         `${t(
           'analysis.confirmRemove',
           'Are you sure you want to permanently delete this report?'
-        )}\n${report.name}`
+        )}\n${getReportAreaStringByLocale(report.name, i18n.language)}`
       )
       if (confirmation) {
         dispatch(deleteReportThunk(report))
@@ -97,7 +98,7 @@ function UserReports() {
         ) : reports && reports.length > 0 ? (
           <ul>
             {sortByCreationDate<Report>(reports).map((report) => {
-              const label = report.name
+              const label = getReportAreaStringByLocale(report.name, i18n.language)
               if (!label.toLowerCase().includes(searchQuery.toLowerCase())) {
                 return null
               }
