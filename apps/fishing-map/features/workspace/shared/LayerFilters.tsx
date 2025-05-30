@@ -136,7 +136,7 @@ function LayerFilters({
     }
   }, [baseDataview, newDataviewInstanceConfig])
 
-  const sourceOptions = getSourcesOptionsInDataview(dataview)
+  const sourceOptions = getSourcesOptionsInDataview(dataview, [DatasetTypes.Fourwings])
   // insert the "All" option only when more than one option available
   const allOption = { id: 'all', label: t('selects.allSelected', 'All') }
   const allSourceOptions = sourceOptions.length > 1 ? [allOption, ...sourceOptions] : sourceOptions
