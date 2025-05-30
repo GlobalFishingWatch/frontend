@@ -3,10 +3,10 @@ import { Link } from '@tanstack/react-router'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Dataset } from '@globalfishingwatch/api-types'
-import { IconButton, InputText, Tag } from '@globalfishingwatch/ui-components'
+import { useGFWLogin } from '@globalfishingwatch/react-hooks'
+import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 
 import Loader from '../../components/loader/loader'
-import { useGFWLogin } from '../../components/login/use-login'
 import TopBar from '../../components/topBar/topBar'
 import { getUTCString } from '../../utils/dates'
 import { sortByLastUpdated, sortDatasets } from '../../utils/sorting'
