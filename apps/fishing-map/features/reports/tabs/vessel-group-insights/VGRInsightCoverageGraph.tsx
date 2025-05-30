@@ -32,11 +32,11 @@ const CustomTick = (props: any) => {
 }
 
 const COVERAGE_GRAPH_BUCKETS: Record<string, number> = {
-  '<20%': 20,
-  '20-40%': 40,
-  '40-60%': 60,
-  '60-80%': 80,
-  '>80%': 100,
+  '≤20%': 20,
+  '21-40%': 40,
+  '41-60%': 60,
+  '61-80%': 80,
+  '≥81%': 100,
 }
 const CoverageGraphBuckets = Object.keys(COVERAGE_GRAPH_BUCKETS)
 function parseCoverageGraphValueBucket(value: number) {
