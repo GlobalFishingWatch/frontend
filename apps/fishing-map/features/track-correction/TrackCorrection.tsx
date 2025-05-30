@@ -6,25 +6,32 @@ import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { VesselLayer } from '@globalfishingwatch/deck-layers'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
-import { Select } from '@globalfishingwatch/ui-components'
+import { Icon, Select } from '@globalfishingwatch/ui-components'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import TrackSlider from 'features/track-correction/TrackSlider'
+
+import styles from './TrackCorrection.module.css'
 
 type SelectOptionWithColor = SelectOption & { color: string }
 
 const TrackCorrection = () => {
   const { t } = useTranslation()
   const { start, end } = useSelector(selectTimeRange)
-  const trackDataviews = useSelector(selectTrackDataviews)
+  const trackDataviews = useSelector(selectActiveTrackDataviews)
 
   const vesselOptions = useMemo(() => {
     return trackDataviews.map(
       (dataview) =>
         ({
           id: dataview.id,
-          label: dataview.config?.name,
+          label: (
+            <span className={styles.vesselLabel}>
+              <Icon icon="vessel" style={{ color: dataview.config?.color }} />
+              {dataview.config?.name}
+            </span>
+          ),
           color: dataview.config?.color,
         }) as SelectOptionWithColor
     )
