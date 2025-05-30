@@ -16,24 +16,24 @@ import { disableHighlightedTime, setHighlightedTime } from 'features/timebar/tim
 import styles from './TrackSlider.module.css'
 
 type SegmentsTimelineProps = TrackSliderProps & {
+  color?: string
   width?: number
   height?: number
-  highlightColor?: string
-  startTime?: number
-  endTime?: number
+  startTime: number
+  endTime: number
+  selectedStartTime?: number
+  selectedEndTime?: number
 }
-
-const smallPointSize = 3
-const largePointSize = 5
-const smallPointOffset = (largePointSize - smallPointSize) / 2
 
 function TrackSegmentsTimeline({
   segments,
   color = '#163f89',
-  width = 400,
-  height = 24,
+  width = 333,
+  height = 30,
   startTime,
   endTime,
+  selectedStartTime,
+  selectedEndTime,
 }: SegmentsTimelineProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -43,52 +43,51 @@ function TrackSegmentsTimeline({
     const ctx = canvasRef.current.getContext('2d')
     if (!ctx) return
 
-    ctx.clearRect(0, 0, width, height)
-    const timestamps = segments
-      .flat()
-      .flatMap((segment) => segment.timestamp || [])
-      .sort()
+    const scale = 2
+    const scaledWidth = width * scale
+    const scaledHeight = height * scale
+    ctx.clearRect(0, 0, scaledWidth, scaledHeight)
 
-    const minTimestamp = timestamps[0]
-    const maxTimestamp = timestamps[timestamps.length - 1]
+    const xScale = scaleLinear().domain([startTime, endTime]).range([0, scaledWidth])
 
-    if (!timestamps.length || !minTimestamp || !maxTimestamp) return
+    const pointSize = 2 * scale
+    const lineWidth = 1 * scale
+    const centerY = scaledHeight / 2 + 1
+    ctx.strokeStyle = color
+    ctx.lineWidth = lineWidth
 
-    const xScale = scaleLinear()
-      .domain([minTimestamp, maxTimestamp])
-      .range([8, width - 8])
-    ctx.fillStyle = color
-
-    timestamps.forEach((timestamp) => {
-      const x = xScale(timestamp || minTimestamp)
-      const isInRange = startTime && endTime ? timestamp >= startTime && timestamp <= endTime : true
-      const pointSize = isInRange ? largePointSize : smallPointSize
+    segments.forEach((segment) => {
+      const segmentStart = segment[0].timestamp
+      const segmentEnd = segment[segment.length - 1].timestamp
+      if (!segmentStart || !segmentEnd) return
       ctx.beginPath()
-      ctx.arc(x, height / 2 + (isInRange ? smallPointOffset : 0), pointSize, 0, 2 * Math.PI)
-      ctx.globalAlpha = isInRange ? 1 : 0.4
-      ctx.fillStyle = isInRange ? '#fff' : color
-      ctx.strokeStyle = color
-      ctx.fill()
+      ctx.moveTo(xScale(segmentStart), centerY)
+      ctx.lineTo(xScale(segmentEnd), centerY)
       ctx.stroke()
+      segment.forEach((point) => {
+        const timestamp = point.timestamp
+        if (!timestamp) return
+        ctx.beginPath()
+        const isInRange =
+          selectedStartTime && selectedEndTime
+            ? timestamp >= selectedStartTime && timestamp <= selectedEndTime
+            : true
+        ctx.arc(xScale(timestamp), centerY, pointSize, 0, 2 * Math.PI)
+        ctx.fillStyle = isInRange ? '#fff' : color
+        ctx.fill()
+        if (isInRange) {
+          ctx.stroke()
+        }
+      })
     })
-
-    // Renders an horizontal line below the points
-    // ctx.save()
-    // ctx.beginPath()
-    // ctx.strokeStyle = color
-    // ctx.lineWidth = 1
-    // const lineY = height / 2
-    // ctx.moveTo(8, lineY)
-    // ctx.lineTo(width - 8, lineY)
-    // ctx.stroke()
-    // ctx.restore()
-  }, [color, startTime, endTime, height, segments, width])
+  }, [color, selectedStartTime, selectedEndTime, segments, startTime, endTime, width, height])
 
   return (
     <canvas
       ref={canvasRef}
-      width={width}
-      height={height}
+      width={width * 2}
+      height={height * 2}
+      style={{ width: `${width}px`, height: `${height}px` }}
       className={styles.segmentsTimeline}
       aria-label="Track timeline"
     />
@@ -98,12 +97,15 @@ function TrackSegmentsTimeline({
 type TrackSliderProps = {
   segments?: TrackSegment[]
   color?: string
+  startTime: number
+  endTime: number
 }
-function TrackSlider({ segments, color = '#163f89' }: TrackSliderProps) {
+
+function TrackSlider({ segments, color = '#163f89', startTime, endTime }: TrackSliderProps) {
   const { t } = useTranslation()
   const initialPoint = segments?.[0]?.[0]
   const finalPoint = segments?.[segments.length - 1]?.[segments[segments.length - 1].length - 1]
-  const [value, setValue] = useState([initialPoint?.timestamp || 0, finalPoint?.timestamp || 0])
+  const [value, setValue] = useState([startTime, endTime])
   const dispatch = useAppDispatch()
 
   const throttledHighlightTime = useMemo(
@@ -115,14 +117,11 @@ function TrackSlider({ segments, color = '#163f89' }: TrackSliderProps) {
   )
 
   useEffect(() => {
-    if (segments?.length) {
-      setValue([initialPoint?.timestamp || 0, finalPoint?.timestamp || 0])
-    }
+    setValue([startTime, endTime])
     return () => {
       dispatch(disableHighlightedTime())
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [finalPoint?.timestamp, initialPoint?.timestamp])
+  }, [startTime, endTime, dispatch])
 
   const onSliderChange = useCallback(
     (value: number[]) => {
@@ -136,59 +135,68 @@ function TrackSlider({ segments, color = '#163f89' }: TrackSliderProps) {
     [throttledHighlightTime]
   )
 
-  if (!segments?.length) return null
+  if (!segments?.length || !initialPoint?.timestamp || !finalPoint?.timestamp) return null
 
   return (
-    <Fragment>
-      <Slider
-        value={value}
-        minValue={initialPoint?.timestamp || 0}
-        maxValue={finalPoint?.timestamp || 100}
-        step={1}
-        onChange={onSliderChange}
-        className={styles.slider}
-      >
-        <div>
-          <label>{t('common.timeRange', 'Time range')}</label>
-          <SliderOutput className={styles.sliderOutput}>
-            {({ state }) => {
-              return (
-                <Fragment>
-                  <I18nDate date={state.getThumbValue(0)} format={DateTime.DATETIME_MED} />
-                  {' - '}
-                  <I18nDate date={state.getThumbValue(1)} format={DateTime.DATETIME_MED} />
-                </Fragment>
-              )
-            }}
-          </SliderOutput>
-        </div>
-        <SliderTrack
-          className={styles.sliderTrack}
-          // style={{ '--sliderColor': color } as React.CSSProperties}
-        >
+    <Slider
+      value={value}
+      minValue={startTime}
+      maxValue={endTime}
+      step={1}
+      onChange={onSliderChange}
+      className={styles.slider}
+      aria-label="Track slider"
+    >
+      <div>
+        <label>{t('common.timeRange', 'Time range')}</label>
+        <SliderOutput className={styles.sliderOutput}>
           {({ state }) => {
             return (
               <Fragment>
-                <TrackSegmentsTimeline
-                  segments={segments}
-                  color={color}
-                  startTime={state.getThumbValue(0)}
-                  endTime={state.getThumbValue(1)}
+                <I18nDate
+                  date={state.getThumbValue(0)}
+                  format={DateTime.DATETIME_MED}
+                  showUTCLabel={false}
                 />
-                {state.values.map((_, i) => (
-                  <SliderThumb
-                    key={i}
-                    index={i}
-                    aria-label={i === 0 ? 'start' : i === state.values.length - 1 ? 'end' : ''}
-                    className={styles.sliderThumb}
-                  />
-                ))}
+                {' - '}
+                <I18nDate
+                  date={state.getThumbValue(1)}
+                  format={DateTime.DATETIME_MED}
+                  showUTCLabel={false}
+                />
               </Fragment>
             )
           }}
-        </SliderTrack>
-      </Slider>
-    </Fragment>
+        </SliderOutput>
+      </div>
+      <SliderTrack
+        className={styles.sliderTrack}
+        // style={{ '--sliderColor': color } as React.CSSProperties}
+      >
+        {({ state }) => {
+          return (
+            <Fragment>
+              <TrackSegmentsTimeline
+                segments={segments}
+                color={color}
+                startTime={startTime}
+                endTime={endTime}
+                selectedStartTime={state.getThumbValue(0)}
+                selectedEndTime={state.getThumbValue(1)}
+              />
+              {state.values.map((_, i) => (
+                <SliderThumb
+                  key={i}
+                  index={i}
+                  aria-label={i === 0 ? 'start' : i === state.values.length - 1 ? 'end' : ''}
+                  className={styles.sliderThumb}
+                />
+              ))}
+            </Fragment>
+          )
+        }}
+      </SliderTrack>
+    </Slider>
   )
 }
 

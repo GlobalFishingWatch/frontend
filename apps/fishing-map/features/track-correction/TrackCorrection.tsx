@@ -62,7 +62,12 @@ const TrackCorrection = () => {
         selectedOption={selectedVessel}
         onSelect={(option) => setSelectedVessel(option as SelectOptionWithColor)}
       />
-      <TrackSlider segments={trackData ?? []} color={selectedVessel?.color} />
+      <TrackSlider
+        startTime={getUTCDateTime(start).toMillis()}
+        endTime={getUTCDateTime(end).toMillis()}
+        segments={trackData ?? []}
+        color={selectedVessel?.color}
+      />
     </div>
   )
 }
