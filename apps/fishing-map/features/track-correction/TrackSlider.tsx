@@ -87,7 +87,6 @@ function TrackSegmentsTimeline({
       ref={canvasRef}
       width={width * 2}
       height={height * 2}
-      style={{ width: `${width}px`, height: `${height}px` }}
       className={styles.segmentsTimeline}
       aria-label="Track timeline"
     />
