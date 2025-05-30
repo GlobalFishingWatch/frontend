@@ -116,8 +116,15 @@ export default function ReportActivity() {
         <Fragment>
           <div className={styles.disclaimer}>
             <UserGuideLink section="analysis" />
-            <p>
-              {t('analysis.disclaimer', 'The data shown above should be taken as an estimate.')}
+            <p className={styles.disclaimerText}>
+              {t('analysis.disclaimer', 'The data shown above should be taken as an estimate.')}{' '}
+              <a
+                href="https://globalfishingwatch.org/faqs/calculating-fishing-effort-estimates-in-dynamic-analysis-reports/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t('common.learnMore', 'Learn more')}.
+              </a>
             </p>
           </div>
         </Fragment>

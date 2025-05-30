@@ -5,7 +5,12 @@ import cx from 'classnames'
 import { debounce } from 'es-toolkit'
 
 import type { FilterOperator } from '@globalfishingwatch/api-types'
-import { DatasetTypes, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import {
+  DatasetTypes,
+  DataviewCategory,
+  DataviewType,
+  EXCLUDE_FILTER_ID,
+} from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { MultiSelectOnChange, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { Button, MultiSelect } from '@globalfishingwatch/ui-components'
@@ -143,7 +148,10 @@ function LayerFilters({
   const allSelected = areAllSourcesSelectedInDataview(dataview)
   const sourcesSelected = allSelected ? [allOption] : getSourcesSelectedInDataview(dataview)
 
-  const showSourceFilter = sourceOptions && sourceOptions?.length > 1
+  const showSourceFilter =
+    dataview.config?.type === DataviewType.HeatmapAnimated &&
+    sourceOptions &&
+    sourceOptions?.length > 1
 
   const { filtersAllowed, filtersDisabled } = getSchemaFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
