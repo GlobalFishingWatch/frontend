@@ -27,8 +27,14 @@ import type {
 
 import { trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { ENCOUNTER_EVENTS_SOURCES } from 'features/dataviews/dataviews.utils'
-import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import {
+  BIG_QUERY_4WINGS_PREFIX,
+  ENCOUNTER_EVENTS_SOURCES,
+} from 'features/dataviews/dataviews.utils'
+import {
+  selectActivityDataviews,
+  selectEventsDataviews,
+} from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setHintDismissed } from 'features/help/hints.slice'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useDeckMap } from 'features/map/map-context.hooks'
@@ -118,6 +124,7 @@ export const useCancelInteractionPromises = () => {
 
 export const useClickedEventConnect = () => {
   const dispatch = useAppDispatch()
+  const activityDataviews = useSelector(selectActivityDataviews)
   const eventsDataviews = useSelector(selectEventsDataviews)
   const setInteractionPromises = useSetAtom(interactionPromisesAtom)
   const cancelPendingInteractionRequests = useCancelInteractionPromises()
@@ -132,8 +139,6 @@ export const useClickedEventConnect = () => {
   const areTilesClusterLoading = useMapClusterTilesLoading()
   const scrollToEvent = useVesselProfileScrollToEvent()
   const [_, setEventGroup] = useEventActivityToggle()
-  // const fishingPromiseRef = useRef<any>()
-  // const eventsPromiseRef = useRef<any>()
 
   const handleHeatmapInteraction = useCallback(
     (event: InteractionEvent) => {
@@ -143,6 +148,13 @@ export const useClickedEventConnect = () => {
       // get temporal grid clicked features and order them by sublayerindex
       const heatmapFeatures = (event.features as FourwingsHeatmapPickingObject[]).filter(
         (feature) => {
+          const isBigQueryFeature = feature.layerId.startsWith(BIG_QUERY_4WINGS_PREFIX)
+          if (isBigQueryFeature) {
+            const dataset = activityDataviews.find((d) => d.id === feature.layerId)?.datasets?.[0]
+            const isBigQueryFeatureWithVessels = dataset?.subcategory?.includes('interactive')
+            return isBigQueryFeatureWithVessels
+          }
+
           if (
             feature?.sublayers?.every((sublayer) => !sublayer.visible) ||
             feature.visualizationMode === 'positions'
@@ -171,7 +183,7 @@ export const useClickedEventConnect = () => {
         setInteractionPromises((prev) => ({ ...prev, activity: heatmapPromise as any }))
       }
     },
-    [dispatch, setInteractionPromises]
+    [activityDataviews, dispatch, setInteractionPromises]
   )
 
   const handleDetectionPositionsInteraction = useCallback(
