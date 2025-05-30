@@ -48,6 +48,7 @@ import {
   selectReportDataviewsWithPermissions,
   selectTimeComparisonValues,
 } from 'features/reports/report-area/area-reports.selectors'
+import { getReportAreaStringByLocale } from 'features/reports/report-area/title/report-title.utils'
 import {
   selectPortReportFootprintArea,
   selectPortReportFootprintDatasetId,
@@ -377,7 +378,7 @@ export function usePortsReportAreaFootprintFitBounds() {
 }
 
 export function useReportTitle() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const report = useSelector(selectCurrentReport)
   const reportArea = useSelector(selectReportArea)
   const areaDataview = useSelector(selectReportAreaDataviews)?.[0]
@@ -392,7 +393,7 @@ export function useReportTitle() {
     if (reportId && !report) {
       return ''
     }
-    let areaName = report?.name
+    let areaName = getReportAreaStringByLocale(report?.name, i18n.language)
     if (isGlobalReport) {
       return t('common.globalReport', 'Global report')
     }

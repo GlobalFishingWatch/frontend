@@ -41,6 +41,9 @@ const validateFeatures = (geoJSON: any, type: DatasetGeometryType) => {
   }
 
   const flatFeatures: Feature[] = geoJSON.features.flatMap((feature: Feature) => {
+    if (!feature.geometry) {
+      return []
+    }
     if (feature.geometry.type === 'GeometryCollection') {
       return feature.geometry.geometries.map((geometry) => {
         return { ...feature, geometry }

@@ -5,12 +5,7 @@ import cx from 'classnames'
 import { debounce } from 'es-toolkit'
 
 import type { FilterOperator } from '@globalfishingwatch/api-types'
-import {
-  DatasetTypes,
-  DataviewCategory,
-  DataviewType,
-  EXCLUDE_FILTER_ID,
-} from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { MultiSelectOnChange, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { Button, MultiSelect } from '@globalfishingwatch/ui-components'
@@ -141,17 +136,14 @@ function LayerFilters({
     }
   }, [baseDataview, newDataviewInstanceConfig])
 
-  const sourceOptions = getSourcesOptionsInDataview(dataview)
+  const sourceOptions = getSourcesOptionsInDataview(dataview, [DatasetTypes.Fourwings])
   // insert the "All" option only when more than one option available
   const allOption = { id: 'all', label: t('selects.allSelected', 'All') }
   const allSourceOptions = sourceOptions.length > 1 ? [allOption, ...sourceOptions] : sourceOptions
   const allSelected = areAllSourcesSelectedInDataview(dataview)
   const sourcesSelected = allSelected ? [allOption] : getSourcesSelectedInDataview(dataview)
 
-  const showSourceFilter =
-    dataview.config?.type === DataviewType.HeatmapAnimated &&
-    sourceOptions &&
-    sourceOptions?.length > 1
+  const showSourceFilter = sourceOptions && sourceOptions?.length > 1
 
   const { filtersAllowed, filtersDisabled } = getSchemaFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
