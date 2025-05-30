@@ -1008,7 +1008,7 @@
     "infoLogin": "Register and login to see more details (free, 2 minutes)",
     "infoSource": "Info Source",
     "infoSources": {
-      "both": "Registry and self reported",
+      "both": "Registry and AIS",
       "registry": "Registry",
       "selfReported": "Self reported"
     },
