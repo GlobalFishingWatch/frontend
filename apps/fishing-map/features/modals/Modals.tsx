@@ -20,6 +20,7 @@ import { selectAnyAppModalOpen, selectWelcomeModalKey } from 'features/modals/mo
 import {
   selectDatasetUploadModalOpen,
   selectLayerLibraryModalOpen,
+  selectTrackCorrectionModalOpen,
   selectWorkspaceGeneratorModalOpen,
   setModalOpen,
 } from 'features/modals/modals.slice'
@@ -73,6 +74,10 @@ const Welcome = dynamic(() => import(/* webpackChunkName: "Welcome" */ 'features
 const VesselGroupModal = dynamic(
   () => import(/* webpackChunkName: "VesselGroup" */ 'features/vessel-groups/VesselGroupModal')
 )
+const TrackCorrection = dynamic(
+  () =>
+    import(/* webpackChunkName: "TrackCorrection" */ 'features/track-correction/TrackCorrection')
+)
 
 const DebugMenuConfig = {
   key: 'd',
@@ -114,14 +119,14 @@ const AppModals = () => {
   const [debugActive, dispatchToggleDebugMenu] = useSecretMenu(DebugMenuConfig)
   const [editorActive, dispatchToggleEditorMenu] = useSecretMenu(EditorMenuConfig)
   const [bigqueryActive, dispatchBigQueryMenu] = useSecretMenu(BigQueryMenuConfig)
-  const [workspaceGeneratorActive, dispatchWorkspaceGeneratorMenu] =
-    useSecretMenu(workspaceGeneratorConfig)
+  const [workspaceGeneratorActive] = useSecretMenu(workspaceGeneratorConfig)
 
   useSecretKeyboardCombo(ResetWorkspaceConfig)
   const downloadActivityAreaKey = useSelector(selectDownloadActivityAreaKey)
   const isVesselGroupModalOpen = useSelector(selectVesselGroupModalOpen)
   const isDatasetUploadModalOpen = useSelector(selectDatasetUploadModalOpen)
   const isLayerLibraryModalOpen = useSelector(selectLayerLibraryModalOpen)
+  const trackCorrectionModalOpen = useSelector(selectTrackCorrectionModalOpen)
   const downloadTrackModalOpen = useSelector(selectDownloadTrackModalOpen)
   const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
   const welcomePopupContentKey = useSelector(selectWelcomeModalKey)
@@ -141,6 +146,16 @@ const AppModals = () => {
 
   return (
     <Fragment>
+      <Modal
+        appSelector={ROOT_DOM_ELEMENT}
+        title={t('common.layerLibrary', 'Layer Library')}
+        isOpen={isLayerLibraryModalOpen}
+        onClose={() => dispatch(setModalOpen({ id: 'layerLibrary', open: false }))}
+        contentClassName={styles.layerLibraryModal}
+        size="fullscreen"
+      >
+        <LayerLibrary />
+      </Modal>
       {isGFWUser && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
@@ -189,16 +204,6 @@ const AppModals = () => {
           <BigQueryMenu />
         </Modal>
       )}
-      <Modal
-        appSelector={ROOT_DOM_ELEMENT}
-        title={t('common.layerLibrary', 'Layer Library')}
-        isOpen={isLayerLibraryModalOpen}
-        onClose={() => dispatch(setModalOpen({ id: 'layerLibrary', open: false }))}
-        contentClassName={styles.layerLibraryModal}
-        size="fullscreen"
-      >
-        <LayerLibrary />
-      </Modal>
       {isGFWUser && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
@@ -212,6 +217,19 @@ const AppModals = () => {
         </Modal>
       )}
       {!isVesselGroupModalOpen && isDatasetUploadModalOpen && <NewDataset />}
+      {trackCorrectionModalOpen && (
+        <Modal
+          appSelector={ROOT_DOM_ELEMENT}
+          isOpen={trackCorrectionModalOpen && !anyAppModalOpen}
+          title={t('vessel.newIssue', 'New issue')}
+          shouldCloseOnEsc={false}
+          onClose={() => dispatch(setModalOpen({ id: 'trackCorrection', open: false }))}
+          contentClassName={styles.fullHeightModal}
+          overlayClassName={styles.transparentOverlay}
+        >
+          <TrackCorrection />
+        </Modal>
+      )}
       <EditWorkspaceModal />
       <CreateWorkspaceModal />
       {downloadActivityAreaKey && <DownloadActivityModal />}
