@@ -10,9 +10,9 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { IconButton, MiniGlobe, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import ReportControls from 'features/map/controls/ReportControl'
 import { useMapBounds } from 'features/map/map-bounds.hooks'
 import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
@@ -55,7 +55,6 @@ const MapControls = ({
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isMapDrawing = useSelector(selectIsMapDrawing)
-  const { isErrorNotificationEditing, toggleErrorNotification } = useMapErrorNotification()
   const showExtendedControls =
     (isWorkspaceLocation || isVesselLocation || isAnyReportLocation) && !isMapDrawing
 
@@ -137,16 +136,7 @@ const MapControls = ({
             <Fragment>
               <Rulers />
               <MapAnnotations />
-              {gfwUser && (
-                <IconButton
-                  icon="feedback-error"
-                  type="map-tool"
-                  disabled={mapLoading}
-                  tooltip={t('map.errorAction', 'Log an issue at a specific location')}
-                  onClick={toggleErrorNotification}
-                  className={cx({ [styles.active]: isErrorNotificationEditing })}
-                />
-              )}
+              {gfwUser && <ReportControls disabled={mapLoading} />}
               <MapControlScreenshot />
               <Tooltip
                 content={

@@ -756,6 +756,8 @@
     "change_basemap_satellite": "Switch to satellite basemap",
     "defaultRes": "See default resolution heatmaps",
     "errorAction": "Log an issue at a specific location",
+    "errorTooltip": "Log an issue",
+    "errorVessel": "Log an issue at a specific vessel",
     "errorLabel": "Please describe the error as detailed as possible",
     "errorPlaceholder": "Please describe the error as detailed as possible",
     "highRes": "See high resolution heatmaps",
