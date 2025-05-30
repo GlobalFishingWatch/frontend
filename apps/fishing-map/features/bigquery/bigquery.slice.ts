@@ -37,6 +37,8 @@ export const fetchBigQueryRunCostThunk = createAsyncThunk(
           body: {
             name: 'Calculating cost using dry-run',
             public: true,
+            unit: 'dry-run',
+            subcategory: 'bigquery',
             // ttl: 1, // days
             query,
           } as any,
@@ -70,7 +72,8 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
           body: {
             query,
             name: kebabCase(name),
-            ...(unit && { unit }),
+            unit: unit || (visualisationMode === '4wings' ? '' : 'events'),
+            subcategory: 'user-interactive',
             public: createAsPublic,
           } as any,
         }
