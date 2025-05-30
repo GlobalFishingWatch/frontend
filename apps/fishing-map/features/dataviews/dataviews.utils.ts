@@ -35,8 +35,8 @@ export const PORT_VISITS_REPORT_DATAVIEW_ID = `${PORT_VISITS_EVENTS_SOURCE_ID}-r
 export const LOITERING_EVENTS_SOURCE_ID = 'loitering'
 export const VESSEL_GROUP_DATAVIEW_PREFIX = `vessel-group-`
 export const BIG_QUERY_PREFIX = 'bq-'
-const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`
-const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
+export const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`
+export const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
 export const VESSEL_LAYER_PREFIX = 'vessel-'
 const CONTEXT_LAYER_PREFIX = 'context-'
 export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
@@ -374,7 +374,9 @@ export const getBigQuery4WingsDataviewInstance = (
     config: {
       colorCyclingType: 'fill' as ColorCyclingType,
       aggregationOperation,
+      datasets: [datasetId],
     },
+    category: DataviewCategory.Activity,
     dataviewId: TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
     datasetsConfig: [
       {
@@ -398,6 +400,7 @@ export const getBigQueryEventsDataviewInstance = (
   const contextDataviewInstance = {
     id: `${BIG_QUERY_EVENTS_PREFIX}${Date.now()}`,
     dataviewId: TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
+    category: DataviewCategory.Events,
     datasetsConfig: [
       {
         datasetId,
