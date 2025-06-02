@@ -72,7 +72,7 @@ function WorkspacesList() {
             cta,
             reportCategory,
             dataviewInstances,
-            reportId,
+            reports,
             img,
           } = highlightedWorkspace
           const isLegacyCVPWorkspace = id === LEGACY_CVP_WORKSPACE_ID
@@ -120,16 +120,6 @@ function WorkspacesList() {
               replaceQuery: true,
             }
           }
-          const reportLink = reportId
-            ? {
-                type: REPORT,
-                payload: {
-                  reportId,
-                },
-                query: { featureFlags },
-              }
-            : undefined
-
           return (
             <li key={id || name} className={cx(styles.workspace)}>
               {isLegacyCVPWorkspace ? (
@@ -181,15 +171,29 @@ function WorkspacesList() {
                       {cta}
                     </Link>
                   )}
-                  {reportLink && (
-                    <Link
-                      to={reportLink}
-                      className={styles.link}
-                      onClick={() => onWorkspaceClick(highlightedWorkspace)}
-                    >
-                      {t('analysis.see', 'See report')}
-                    </Link>
-                  )}
+                  {reports?.map(({ id: reportId, key }) => {
+                    const reportLink = reportId
+                      ? {
+                          type: REPORT,
+                          payload: {
+                            reportId,
+                          },
+                          query: { featureFlags },
+                        }
+                      : undefined
+                    if (!reportLink) {
+                      return null
+                    }
+                    return (
+                      <Link
+                        to={reportLink}
+                        className={styles.link}
+                        onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                      >
+                        {t(key || 'analysis.see', 'See report')}
+                      </Link>
+                    )
+                  })}
                 </div>
               </div>
             </li>

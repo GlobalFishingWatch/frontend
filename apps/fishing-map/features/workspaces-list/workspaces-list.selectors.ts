@@ -3,7 +3,10 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { WorkspaceViewport } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-import type { FishingMapWorkspace } from 'data/highlighted-workspaces/fishing-activity'
+import type {
+  FishingMapWorkspace,
+  WorkspaceReportLink,
+} from 'data/highlighted-workspaces/fishing-activity'
 import { FISHING_MAP_WORKSPACES } from 'data/highlighted-workspaces/fishing-activity'
 import type { MarineManagerWorkspace } from 'data/highlighted-workspaces/marine-manager'
 import { MARINE_MANAGER_WORKSPACES } from 'data/highlighted-workspaces/marine-manager'
@@ -36,7 +39,7 @@ export type HighlightedWorkspace = {
   img?: string
   reportUrl?: string
   visible?: boolean
-  reportId?: string
+  reports?: WorkspaceReportLink[]
   dataviewInstances?: UrlDataviewInstance[]
   viewport?: WorkspaceViewport
   category?: WorkspaceCategory
