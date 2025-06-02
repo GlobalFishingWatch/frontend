@@ -9,6 +9,7 @@ export enum ContextLayerId {
   HighSeas = 'high-seas',
   EEZBoundaries = 'eez-boundaries',
   MPA = 'mpa',
+  MPAtlas = 'mpatlas',
   MPANoTake = 'mpa-no-take',
   MPARestricted = 'mpa-restricted',
   TunaRfmo = 'tuna-rfmo',
