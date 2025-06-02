@@ -30,7 +30,7 @@ export const LAYERS_LIBRARY_DETECTIONS: LibraryLayerConfig[] = [
   {
     id: OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID,
     dataviewId: FIXED_SAR_INFRASTRUCTURE,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/offshore-fixed-infrastructure.png`,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/offshore-fixed-infrastructure.jpg`,
     config: {
       color: '#8E24A9',
     },

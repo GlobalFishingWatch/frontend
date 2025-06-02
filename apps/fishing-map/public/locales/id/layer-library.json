@@ -74,6 +74,11 @@
     "moreInfoLink": "",
     "name": "KKP/Kawasan Konservasi Perairan (WDPA)"
   },
+  "mpatlas": {
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably",
+    "moreInfoLink": "https://mpatlas.org",
+    "name": "MPAs (MPAtlas)"
+  },
   "nitrate": {
     "description": "Nitrat diperlukan oleh tanaman laut untuk fotosintesis dan merupakan nutrisi utama bagi produktivitas laut, namun konsentrasi yang tinggi dapat menjadi indikator polusi. Kumpulan data ini terdiri dari parameter biogeokimia, termasuk nitrat, di lautan global yang ditampilkan dengan resolusi horizontal 1/4 derajat.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
