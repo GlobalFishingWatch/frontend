@@ -1286,6 +1286,7 @@
     "new": "New workspace",
     "noDetectionInFilters": "No detections match your current filters",
     "noVesselInFilters": "No vessels match your current filters",
+    "noTakeReportLink": "See no-take MPAs report",
     "passwordIncorrect": "Invalid password",
     "passwordInvalid": "Invalid password",
     "passwordMinLength": "Password must be at least 5 characters",

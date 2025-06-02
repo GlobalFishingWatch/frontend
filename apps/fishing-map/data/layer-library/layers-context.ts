@@ -8,6 +8,7 @@ import {
   GRATICULES_DATAVIEW_SLUG,
   HIGH_SEAS_DATAVIEW_SLUG,
   MPA_DATAVIEW_SLUG,
+  MPATLAS_DATAVIEW_SLUG,
   PROTECTED_SEAS_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
@@ -46,6 +47,14 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/protected-seas.jpg`,
     config: {
       color: '#4184F4',
+    },
+  },
+  {
+    id: 'mpatlas',
+    dataviewId: MPATLAS_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/mpaatlas.jpg`,
+    config: {
+      color: '#F95E5E',
     },
   },
   {

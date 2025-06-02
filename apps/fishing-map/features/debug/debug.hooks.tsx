@@ -1,9 +1,7 @@
-import { Fragment, useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { uniq } from 'es-toolkit'
-
-import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectDebugActive } from 'features/debug/debug.slice'
 import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
@@ -55,7 +53,8 @@ function FeatureFlagsToast({ featureFlags }: { featureFlags: FeatureFlag[] }) {
 
 let toastDismissed = false
 export const useFeatureFlagsToast = () => {
-  const featureFlags = useSelector(selectFeatureFlags)
+  const allFeatureFlags = useSelector(selectFeatureFlags)
+  const featureFlags = allFeatureFlags.filter((flag) => flag !== 'workspaceGenerator')
   const toastId = useRef<any>(undefined)
   const debugActive = useSelector(selectDebugActive)
 

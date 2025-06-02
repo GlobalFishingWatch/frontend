@@ -10,7 +10,8 @@ type DebugMenu = [boolean, () => void]
 type SecretMenuProps =
   | {
       keys: string // sequence of keys, e.g., 'iaiaia'
-      onToggle: () => any
+      onToggle?: () => any
+      dispatchToggle?: () => any
       key?: never
       repeatNumber?: never
       selectMenuActive?: (state: RootState) => boolean
@@ -18,7 +19,8 @@ type SecretMenuProps =
   | {
       key: string
       repeatNumber?: number
-      onToggle: () => any
+      onToggle?: () => any
+      dispatchToggle?: () => any
       keys?: never
       selectMenuActive?: (state: RootState) => boolean
     }
@@ -27,6 +29,7 @@ export const useSecretKeyboardCombo = ({
   key,
   keys,
   onToggle,
+  dispatchToggle,
   repeatNumber = 7,
 }: SecretMenuProps) => {
   const gfwUser = useSelector(selectIsGFWUser)
@@ -43,13 +46,14 @@ export const useSecretKeyboardCombo = ({
 
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (sequence) {
+      const onToggleFn = onToggle ?? dispatchToggle
+      if (sequence && onToggleFn) {
         // Sequence mode
         if (event?.key?.toLocaleLowerCase() === sequence[currentIndex.current]) {
           window.clearTimeout(sequenceTimeout.current)
           currentIndex.current++
           if (currentIndex.current === sequence.length) {
-            onToggle()
+            onToggleFn()
             currentIndex.current = 0
           } else {
             sequenceTimeout.current = window.setTimeout(() => {
@@ -59,7 +63,7 @@ export const useSecretKeyboardCombo = ({
         } else {
           currentIndex.current = 0
         }
-      } else if (repeatKey) {
+      } else if (repeatKey && onToggleFn) {
         // Repeated key mode
         if (event?.key?.toLocaleLowerCase() === repeatKey) {
           window.clearTimeout(debugKeyDownInterval.current)
@@ -71,12 +75,12 @@ export const useSecretKeyboardCombo = ({
           numTimesDebugKeyDown.current = 0
         }
         if (numTimesDebugKeyDown.current === repeatNumber) {
-          onToggle()
+          onToggleFn()
           numTimesDebugKeyDown.current = 0
         }
       }
     },
-    [sequence, repeatKey, repeatNumber, onToggle]
+    [onToggle, dispatchToggle, sequence, repeatKey, repeatNumber]
   )
 
   useEffect(() => {
@@ -92,7 +96,11 @@ export const useSecretKeyboardCombo = ({
 const useSecretMenu = (props: SecretMenuProps): DebugMenu => {
   const dispatch = useAppDispatch()
   const dispatchToggleMenu = useCallback(() => {
-    dispatch(props.onToggle())
+    if (props.dispatchToggle !== undefined) {
+      dispatch(props.dispatchToggle())
+    } else if (props.onToggle !== undefined) {
+      props.onToggle()
+    }
   }, [dispatch, props])
   useSecretKeyboardCombo({ ...props, onToggle: dispatchToggleMenu })
   const menuActive = useSelector(props.selectMenuActive ?? (() => false))
