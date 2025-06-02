@@ -74,6 +74,11 @@
     "moreInfoLink": "",
     "name": "AMP (WDPA)"
   },
+  "mpatlas": {
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably",
+    "moreInfoLink": "https://mpatlas.org",
+    "name": "MPAs (MPAtlas)"
+  },
   "nitrate": {
     "description": "L'azote est requis par les plantes marines pour la photosynthèse et c'est un nutriment majeur pour la productivité de l'océan, cependant des concentrations élevées peuvent être un indicateur de pollution. Ce jeu de données est composé de paramètres biogéochimiques, y compris l'azote, affichés à l'échelle de l'océan mondial avec une résolution horizontale de 1/4 degrés.   ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
