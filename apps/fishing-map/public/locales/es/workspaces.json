@@ -78,27 +78,27 @@
     },
     "costa_rica_amps-public": {
       "name": "Costa Rica",
-      "description": "Cocos Island National Park is a fully protected area spanning nearly 55,000 square kilometers. Bicentennial Marine Managed Area which surrounds Cocos Island National Park is 106,000 square kilometers."
+      "description": "El Parque Nacional Isla del Coco es un área totalmente protegida que abarca casi 55.000 kilómetros cuadrados. El Área Marina de Manejo del Bicentenario que rodea el Parque Nacional Isla del Coco tiene 106.000 kilómetros cuadrados."
     },
     "colombia-public": {
       "name": "Colombia",
-      "description": "Colombia has created and managed MPAs along its Pacific and Caribbean coasts, promoting the participation of various stakeholders to conserve the country's biological and cultural diversity."
+      "description": "Colombia ha creado y gestionado AMP a lo largo de sus costas del Pacífico y el Caribe que abarcan el Distrito de Manejo Integrado Yuruparí-Malpelo, donde se encuentra el Santuario de Fauna y Flora de Malpelo, totalmente protegido, Lomas y Colinas, Gorgona y Cabo Manglares en el Océano Pacífico, así como Beata y Corales de Profundidad en el mar Caribe."
     },
     "panama-public": {
       "name": "Panama",
-      "description": "Marine protected areas in Panama total just over 98,000 square kilometers (approximately 38,000 square miles), which include Coiba National Park, a UNESCO World Heritage Site that is a coastal marine protected area off the southwest coast, and the Coiba Ridge Managed Resource Area."
+      "description": "Las áreas marinas protegidas en Panamá suman un poco más de 98.000 kilómetros cuadrados, que incluyen el Parque Nacional Coiba, declarado Patrimonio de la Humanidad por la UNESCO, y que es un área marina costera protegida frente a la costa suroeste del país, y el Área de Recursos Administrados de Cordillera de Coiba."
     },
     "reserva_de_la_biosfera_cmar-public": {
-      "name": "CMAR AMPs",
-      "description": "Initiated in 2004, the Eastern Tropical Pacific Marine Corridor is a voluntary regional cooperative effort to protect one of the most productive and biodiverse ecosystems."
+      "name": "AMPs núcleo del CMAR",
+      "description": "Iniciado en 2004, el Corredor Marino del Pacífico Este Tropical es un esfuerzo cooperativo regional voluntario para proteger uno de los ecosistemas más productivos y biodiversos del mundo."
     },
     "galapagos_y_hermandad-public": {
       "name": "Galapagos y Hermandad",
-      "description": "Galápagos Marine Reserve covers 133,000 square kilometers (51,300 square miles) of Pacific Ocean off the coast of South America. The Galápagos Marine Reserve was expanded with the creation of the Hermandad Marine Reserve to cover an additional 60,000 square kilometers (23,000 square miles)."
+      "description": "La Reserva Marina de Galápagos cubre 133.000 kilómetros cuadrados del océano Pacífico frente a la costa de América del Sur. La Reserva Marina de Galápagos se amplió con la creación de la Reserva Marina Hermandad para cubrir 60.000 kilómetros cuadrados adicionales."
     },
     "revillagigedo-public": {
       "name": "Revillagigedo",
-      "description": "Centered on four volcanic islands south of Mexico’s Baja California peninsula, Revillagigedo National Park was created in 2017 and spans 148,000 square kilometers."
+      "description": "En medio de cuatro islas volcánicas al sur de la península de Baja California en México, el Parque Nacional Revillagigedo fue creado en 2017 y abarca 148.000 kilómetros cuadrados."
     }
   }
 }
