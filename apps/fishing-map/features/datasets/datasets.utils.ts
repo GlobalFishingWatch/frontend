@@ -211,7 +211,7 @@ export const getIsBQEditorDataset = (dataset: Dataset): boolean => {
   // TODO use a custom category for BQ datasets but the API doesn't allow it yet
   return (
     (dataset.category === DatasetCategory.Activity || dataset.category === DatasetCategory.Event) &&
-    dataset.subcategory === 'user'
+    (dataset.subcategory === 'user' || dataset.subcategory === 'user-interactive')
   )
 }
 
