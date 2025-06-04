@@ -1285,6 +1285,7 @@
     "nameRequired": "Workspace name is required",
     "new": "Ruang kerja baru",
     "noDetectionInFilters": "Tidak ada deteksi yang cocok dengan filter Anda saat ini",
+    "noTakeReportLink": "See no-take MPAs report",
     "noVesselInFilters": "Tidak ada kapal yang cocok dengan filter Anda saat ini",
     "passwordIncorrect": "Invalid password",
     "passwordInvalid": "Invalid password",
