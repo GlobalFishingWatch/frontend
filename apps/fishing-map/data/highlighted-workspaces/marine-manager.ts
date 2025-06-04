@@ -59,10 +59,6 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
       {
         id: 'costa_rica_amps-public',
       },
-      {
-        id: 'cmar_mpas_no_take_analysis_using_all_sources-user-public',
-        key: 'workspace.noTakeReportLink',
-      },
     ],
     visible: !IS_PRODUCTION_WORKSPACE_ENV,
   },
@@ -72,10 +68,6 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
     reports: [
       {
         id: 'colombias_amps-public',
-      },
-      {
-        id: 'cmar_mpas_no_take_analysis_using_all_sources-user-public',
-        key: 'workspace.noTakeReportLink',
       },
     ],
     visible: !IS_PRODUCTION_WORKSPACE_ENV,
@@ -96,10 +88,6 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
     reports: [
       {
         id: 'reserva_de_la_biosfera_cmar-public',
-      },
-      {
-        id: 'cmar_mpas_no_take_analysis_using_all_sources-user-public',
-        key: 'workspace.noTakeReportLink',
       },
     ],
     visible: !IS_PRODUCTION_WORKSPACE_ENV,
