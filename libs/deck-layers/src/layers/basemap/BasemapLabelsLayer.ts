@@ -56,6 +56,8 @@ export class BaseMapLabelsLayer extends CompositeLayer<BaseMapLabelsLayerProps> 
               data: props.data?.features,
               getText: (d) =>
                 d.properties?.[`name_${this.props.locale as Locale}`] || d.properties?.name,
+              getPolygonOffset: (params: any) =>
+                getLayerGroupOffset(LayerGroup.BasemapFill, params),
               pickable: false,
               extensions: [new CollisionFilterExtension()],
               transitions: {},
