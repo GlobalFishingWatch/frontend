@@ -1656,7 +1656,30 @@
   },
   "public-mp-as-mp-atlas": {
     "name": "crwdns84730:0crwdne84730:0",
-    "description": "crwdns84732:0crwdne84732:0"
+    "description": "crwdns84732:0crwdne84732:0",
+    "schema": {
+      "establishment_stage": {
+        "keyword": "crwdns87794:0crwdne87794:0",
+        "enum": {
+          "proposed/committed": "crwdns87796:0crwdne87796:0",
+          "designated": "crwdns87798:0crwdne87798:0",
+          "actively managed": "crwdns87800:0crwdne87800:0",
+          "implemented": "crwdns87802:0crwdne87802:0",
+          "unknown": "crwdns87804:0crwdne87804:0"
+        }
+      },
+      "protection_mpaguide_level": {
+        "keyword": "crwdns87806:0crwdne87806:0",
+        "enum": {
+          "unknown": "crwdns87808:0crwdne87808:0",
+          "light": "crwdns87810:0crwdne87810:0",
+          "full": "crwdns87812:0crwdne87812:0",
+          "high": "crwdns87814:0crwdne87814:0",
+          "incompatible": "crwdns87816:0crwdne87816:0",
+          "minimal": "crwdns87818:0crwdne87818:0"
+        }
+      }
+    }
   },
   "public-mpa-all": {
     "name": "crwdns66853:0crwdne66853:0",
