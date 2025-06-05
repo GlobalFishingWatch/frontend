@@ -102,7 +102,7 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   daysFromLatest: undefined,
   detectionsVisualizationMode: 'heatmap',
   environmentVisualizationMode: 'heatmap-low-res',
-  featureFlags: [],
+  featureFlags: ['globalReports'],
   mapAnnotationsVisible: true,
   mapRulersVisible: true,
   readOnly: false,
