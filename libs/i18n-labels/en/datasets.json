@@ -1659,7 +1659,7 @@
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably",
     "schema": {
       "establishment_stage": {
-        "keyword": "establishment_stage",
+        "keyword": "Establishment stage",
         "enum": {
           "proposed/committed": "proposed/committed",
           "designated": "designated",
@@ -1669,7 +1669,7 @@
         }
       },
       "protection_mpaguide_level": {
-        "keyword": "protection_mpaguide_level",
+        "keyword": "Level of protection",
         "enum": {
           "unknown": "unknown",
           "light": "light",
