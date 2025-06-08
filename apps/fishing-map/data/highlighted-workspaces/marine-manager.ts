@@ -53,18 +53,13 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
     img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-mediterranean.jpg`,
   },
   {
-    id: 'costa_rica_amps-public',
+    id: 'costa_rica_1-public',
     img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
     reports: [
       {
-        id: 'costa_rica_amps-public',
-      },
-      {
-        id: 'cmar_mpas_no_take_analysis_using_all_sources-user-public',
-        key: 'workspace.noTakeReportLink',
+        id: 'costa_rica-public',
       },
     ],
-    visible: !IS_PRODUCTION_WORKSPACE_ENV,
   },
   {
     id: 'colombia-public',
@@ -73,22 +68,26 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
       {
         id: 'colombias_amps-public',
       },
-      {
-        id: 'cmar_mpas_no_take_analysis_using_all_sources-user-public',
-        key: 'workspace.noTakeReportLink',
-      },
     ],
     visible: !IS_PRODUCTION_WORKSPACE_ENV,
   },
   {
-    id: 'panama-public',
+    id: 'panama_1-public',
     img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
     reports: [
       {
         id: 'panama-public',
       },
     ],
-    visible: !IS_PRODUCTION_WORKSPACE_ENV,
+  },
+  {
+    id: 'cmar_core_mpas-public',
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    reports: [
+      {
+        id: 'cmar_core_mpas-public',
+      },
+    ],
   },
   {
     id: 'reserva_de_la_biosfera_cmar-public',
@@ -97,31 +96,25 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
       {
         id: 'reserva_de_la_biosfera_cmar-public',
       },
-      {
-        id: 'cmar_mpas_no_take_analysis_using_all_sources-user-public',
-        key: 'workspace.noTakeReportLink',
-      },
     ],
     visible: !IS_PRODUCTION_WORKSPACE_ENV,
   },
   {
-    id: 'galapagos_y_hermandad-public',
+    id: 'galapagos_and_hermandad-public',
     img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
     reports: [
       {
-        id: 'galapagos_y_hermandad-public',
+        id: 'galapagos_and_hermandad-public',
       },
     ],
-    visible: !IS_PRODUCTION_WORKSPACE_ENV,
   },
   {
     id: 'revillagigedo-public',
     img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
     reports: [
       {
-        id: 'revillagigedo-public',
+        id: 'revillagigedo_mexico-public',
       },
     ],
-    visible: !IS_PRODUCTION_WORKSPACE_ENV,
   },
 ]

@@ -46,7 +46,7 @@ export const useDataviewHistogram = (dataview: UrlDataviewInstance) => {
   )
   useEffect(() => {
     if (sourcesLoaded) {
-      const features = environmentalLayer.instance?.getViewportData() as FourwingsFeature[]
+      const features = environmentalLayer.instance?.getViewportData?.() as FourwingsFeature[]
       updateHistogram(features)
     }
   }, [sourcesLoaded, deboncedBounds])

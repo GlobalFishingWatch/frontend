@@ -55,6 +55,10 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/mpaatlas.jpg`,
     config: {
       color: '#F95E5E',
+      filters: {
+        establishment_stage: ['actively managed', 'implemented'],
+        protection_mpaguide_level: ['full', 'high'],
+      },
     },
   },
   {

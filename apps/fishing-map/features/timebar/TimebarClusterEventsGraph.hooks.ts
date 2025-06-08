@@ -61,7 +61,7 @@ export const useClusterEventsGraph = () => {
   useEffect(() => {
     if (loaded) {
       const viewportData = instances.flatMap((instance, index) => {
-        return instance?.getViewportData().map((feature) => {
+        return instance?.getViewportData?.().map((feature) => {
           return {
             ...feature,
             properties: {
