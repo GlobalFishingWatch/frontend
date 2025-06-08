@@ -65,6 +65,8 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
     { dispatch, rejectWithValue }
   ) => {
     try {
+      const hasUserInteraction = query.includes('vessel_id')
+      const subcategory = hasUserInteraction ? 'user-interactive' : 'user'
       const { id } = await GFWAPI.fetch<CreateBigQueryDatasetResponse>(
         `/${visualisationMode}/bq/create-temporal-dataset`,
         {
@@ -73,7 +75,7 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
             query,
             name: kebabCase(name),
             unit: unit || (visualisationMode === '4wings' ? '' : 'events'),
-            subcategory: 'user-interactive',
+            subcategory,
             public: createAsPublic,
           } as any,
         }

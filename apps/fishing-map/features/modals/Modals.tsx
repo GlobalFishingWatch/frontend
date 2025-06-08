@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from 'react'
+import { Fragment, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
@@ -12,6 +12,7 @@ import { WorkspaceCategory } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectBigQueryActive, toggleBigQueryMenu } from 'features/bigquery/bigquery.slice'
+import { useToggleFeatureFlag } from 'features/debug/debug.hooks'
 import { selectDebugActive, toggleDebugMenu } from 'features/debug/debug.slice'
 import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
 import { selectDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
@@ -76,33 +77,27 @@ const VesselGroupModal = dynamic(
 
 const DebugMenuConfig = {
   key: 'd',
-  onToggle: toggleDebugMenu,
+  dispatchToggle: toggleDebugMenu,
   selectMenuActive: selectDebugActive,
 }
 
 const EditorMenuConfig = {
   key: 'e',
-  onToggle: toggleEditorMenu,
+  dispatchToggle: toggleEditorMenu,
   selectMenuActive: selectEditorActive,
 }
 
 const BigQueryMenuConfig = {
   key: 'b',
-  onToggle: toggleBigQueryMenu,
+  dispatchToggle: toggleBigQueryMenu,
   selectMenuActive: selectBigQueryActive,
 }
 
 const ResetWorkspaceConfig = {
   key: 'w',
-  onToggle: () => {
+  dispatchToggle: () => {
     replace(window.location.origin)
   },
-}
-
-const workspaceGeneratorConfig = {
-  keys: 'iaiaia',
-  onToggle: () => setModalOpen({ id: 'workspaceGenerator', open: true }),
-  selectMenuActive: selectWorkspaceGeneratorModalOpen,
 }
 
 const AppModals = () => {
@@ -114,6 +109,16 @@ const AppModals = () => {
   const [debugActive, dispatchToggleDebugMenu] = useSecretMenu(DebugMenuConfig)
   const [editorActive, dispatchToggleEditorMenu] = useSecretMenu(EditorMenuConfig)
   const [bigqueryActive, dispatchBigQueryMenu] = useSecretMenu(BigQueryMenuConfig)
+
+  const toggleFeatureFlag = useToggleFeatureFlag()
+  const workspaceGeneratorConfig = useMemo(
+    () => ({
+      keys: 'iaiaia',
+      onToggle: () => toggleFeatureFlag('workspaceGenerator'),
+      selectMenuActive: selectWorkspaceGeneratorModalOpen,
+    }),
+    [toggleFeatureFlag]
+  )
   const [workspaceGeneratorActive, dispatchWorkspaceGeneratorMenu] =
     useSecretMenu(workspaceGeneratorConfig)
 
