@@ -51,5 +51,6 @@
     ".yarn": true,
     "**/dist": true
   },
-  "eslint.experimental.useFlatConfig": true
+  "eslint.experimental.useFlatConfig": true,
+  "nxConsole.generateAiAgentRules": true
 }
