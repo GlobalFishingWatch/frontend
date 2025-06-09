@@ -48,12 +48,19 @@ export const getVesselResourceChunks = (start: number, end: number) => {
 export type GetSegmentsFromDataParams = {
   includeMiddlePoints?: boolean
   includeCoordinates?: boolean
+  startTime?: number
+  endTime?: number
 }
 
 export const getSegmentsFromData = memoize(
   (
     data: VesselTrackData | UserTrackBinaryData,
-    { includeMiddlePoints = false, includeCoordinates = false } = {} as GetSegmentsFromDataParams
+    {
+      includeMiddlePoints = false,
+      includeCoordinates = false,
+      startTime,
+      endTime,
+    } = {} as GetSegmentsFromDataParams
   ): TrackSegment[] => {
     const segmentsIndexes = data.startIndices
     const positions = data.attributes?.getPath?.value
@@ -72,60 +79,81 @@ export const getSegmentsFromData = memoize(
 
     const segments = segmentsIndexes.map((segmentIndex, i, segmentsIndexes) => {
       const points = [] as TrackSegment
-      points.push({
-        ...(includeCoordinates && {
-          longitude: positions[segmentIndex * pathSize],
-          latitude: positions[segmentIndex * pathSize + 1],
-        }),
-        timestamp: timestamps[segmentIndex / timestampSize],
-        ...(speedSize && {
-          speed: speeds?.[segmentIndex / speedSize] || 0,
-        }),
-        ...(elevationSize && {
-          elevation: elevations?.[segmentIndex / elevationSize] || 0,
-        }),
-      })
+      const isLastSegment = i === segmentsIndexes.length - 1
       const nextSegmentIndex = segmentsIndexes[i + 1] || timestamps.length - 1
+      const initialSegmentTimestamp = timestamps[segmentIndex / timestampSize]
+      const finalSegmentTimestamp = isLastSegment
+        ? timestamps[timestamps.length - 1]
+        : timestamps[nextSegmentIndex / timestampSize - 1]
+
+      if (
+        (!startTime || initialSegmentTimestamp > startTime) &&
+        (!endTime || initialSegmentTimestamp < endTime)
+      ) {
+        points.push({
+          ...(includeCoordinates && {
+            longitude: positions[segmentIndex * pathSize],
+            latitude: positions[segmentIndex * pathSize + 1],
+          }),
+          timestamp: initialSegmentTimestamp,
+          ...(speedSize && {
+            speed: speeds?.[segmentIndex / speedSize] || 0,
+          }),
+          ...(elevationSize && {
+            elevation: elevations?.[segmentIndex / elevationSize] || 0,
+          }),
+        })
+      }
+
       if (includeMiddlePoints && segmentIndex + 1 < nextSegmentIndex) {
         for (let index = segmentIndex + 1; index < nextSegmentIndex; index++) {
+          const timestamp = timestamps[index / timestampSize]
+          if ((!startTime || timestamp > startTime) && (!endTime || timestamp < endTime)) {
+            points.push({
+              ...(includeCoordinates && {
+                longitude: positions[index * pathSize],
+                latitude: positions[index * pathSize + 1],
+              }),
+
+              timestamp: timestamps[index / timestampSize],
+              ...(speedSize && {
+                speed: speeds?.[index / speedSize] || 0,
+              }),
+              ...(elevationSize && {
+                elevation: elevations?.[index / elevationSize] || 0,
+              }),
+            })
+          }
+        }
+      }
+
+      if (
+        (!startTime || finalSegmentTimestamp > startTime) &&
+        (!endTime || finalSegmentTimestamp < endTime)
+      ) {
+        if (isLastSegment) {
           points.push({
             ...(includeCoordinates && {
-              longitude: positions[index * pathSize],
-              latitude: positions[index * pathSize + 1],
+              longitude: positions[positions.length - pathSize],
+              latitude: positions[positions.length - 1],
             }),
-
-            timestamp: timestamps[index / timestampSize],
-            ...(speedSize && {
-              speed: speeds?.[index / speedSize] || 0,
+            timestamp: finalSegmentTimestamp,
+            ...(speedSize && { speed: speeds?.[speeds.length - 1] || 0 }),
+            ...(elevationSize && { elevation: elevations?.[elevations.length - 1] || 0 }),
+          })
+        } else {
+          points.push({
+            ...(includeCoordinates && {
+              longitude: positions[nextSegmentIndex / pathSize - 1],
+              latitude: positions[nextSegmentIndex / timestampSize + 1],
             }),
+            timestamp: finalSegmentTimestamp,
+            ...(speedSize && { speed: speeds?.[nextSegmentIndex / speedSize - 1] || 0 }),
             ...(elevationSize && {
-              elevation: elevations?.[index / elevationSize] || 0,
+              elevation: elevations?.[nextSegmentIndex / elevationSize - 1] || 0,
             }),
           })
         }
-      }
-      if (i === segmentsIndexes.length - 1) {
-        points.push({
-          ...(includeCoordinates && {
-            longitude: positions[positions.length - pathSize],
-            latitude: positions[positions.length - 1],
-          }),
-          timestamp: timestamps[timestamps.length - 1],
-          ...(speedSize && { speed: speeds?.[speeds.length - 1] || 0 }),
-          ...(elevationSize && { elevation: elevations?.[elevations.length - 1] || 0 }),
-        })
-      } else {
-        points.push({
-          ...(includeCoordinates && {
-            longitude: positions[nextSegmentIndex / pathSize - 1],
-            latitude: positions[nextSegmentIndex / timestampSize + 1],
-          }),
-          timestamp: timestamps[nextSegmentIndex / timestampSize - 1],
-          ...(speedSize && { speed: speeds?.[nextSegmentIndex / speedSize - 1] || 0 }),
-          ...(elevationSize && {
-            elevation: elevations?.[nextSegmentIndex / elevationSize - 1] || 0,
-          }),
-        })
       }
       return points
     })
