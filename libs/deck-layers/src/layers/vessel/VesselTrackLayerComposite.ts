@@ -27,45 +27,45 @@ export class VesselTrackLayerComposite extends CompositeLayer<VesselTrackLayerCo
     }
 
     const trackLayer = info.sourceLayer as VesselTrackLayer
-    const trackData = trackLayer.getData()
-    if (trackData?.length) {
-      const segments = trackLayer.getSegments({
-        includeMiddlePoints: true,
-        includeCoordinates: true,
-      })
-      if (segments?.length) {
-        // Find the closest point to the hover coordinate
-        let closestSegmentIndex
-        let closestPointIndex
-        let minDistance = Number.MAX_VALUE
 
-        segments.forEach((points, index) => {
-          for (let i = 0; i < points.length - 1; i++) {
-            const point = points[i]
-            const pointDistance = distance(info.coordinate as Position, [
-              point.longitude!,
-              point.latitude!,
-            ])
-            if (pointDistance < minDistance) {
-              minDistance = pointDistance
-              closestSegmentIndex = index
-              closestPointIndex = i
-            }
+    const segments = trackLayer.getSegments({
+      includeMiddlePoints: true,
+      includeCoordinates: true,
+      startTime: this.props.startTime,
+      endTime: this.props.endTime,
+    })
+    if (segments?.length) {
+      // Find the closest point to the hover coordinate
+      let closestSegmentIndex
+      let closestPointIndex
+      let minDistance = Number.MAX_VALUE
+
+      segments.forEach((points, segmentIndex) => {
+        for (let i = 0; i < points.length - 1; i++) {
+          const point = points[i]
+          const pointDistance = distance(info.coordinate as Position, [
+            point.longitude!,
+            point.latitude!,
+          ])
+          if (pointDistance < minDistance) {
+            minDistance = pointDistance
+            closestSegmentIndex = segmentIndex
+            closestPointIndex = i
           }
-        })
-        if (closestSegmentIndex !== undefined && closestPointIndex !== undefined) {
-          const closestPoint = segments[closestSegmentIndex][closestPointIndex]
-          if (closestPoint) {
-            object.timestamp = closestPoint.timestamp || undefined
-            object.speed = closestPoint?.speed || undefined
-            object.depth = closestPoint?.elevation || undefined
-            const nextPoint = segments[closestSegmentIndex][closestPointIndex + 1]
-            const pointBearing = rhumbBearing(
-              [closestPoint.longitude, closestPoint.latitude] as Position,
-              [nextPoint.longitude, nextPoint.latitude] as Position
-            )
-            object.course = pointBearing
-          }
+        }
+      })
+      if (closestSegmentIndex !== undefined && closestPointIndex !== undefined) {
+        const closestPoint = segments[closestSegmentIndex][closestPointIndex]
+        if (closestPoint) {
+          object.timestamp = closestPoint.timestamp || undefined
+          object.speed = closestPoint.speed || undefined
+          object.depth = closestPoint.elevation || undefined
+          const nextPoint = segments[closestSegmentIndex][closestPointIndex + 1]
+          const pointBearing = rhumbBearing(
+            [closestPoint.longitude, closestPoint.latitude] as Position,
+            [nextPoint.longitude, nextPoint.latitude] as Position
+          )
+          object.course = pointBearing
         }
       }
     }
