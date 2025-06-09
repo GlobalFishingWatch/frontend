@@ -10,6 +10,7 @@ import DataTerminology from 'features/vessel/identity/DataTerminology'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import { formatInfoField } from 'utils/info'
+import { listAsSentence } from 'utils/shared'
 
 import styles from './Insights.module.css'
 
@@ -52,7 +53,13 @@ const InsightFlagChanges = ({
                   count: flagsChanges?.valuesInThePeriod.length,
                   defaultValue: '{{count}} flag changes',
                 })}{' '}
-                ({flagsChanges?.valuesInThePeriod.map((v) => formatInfoField(v.value, 'flag'))})
+                (
+                {listAsSentence(
+                  flagsChanges?.valuesInThePeriod.map(
+                    (v) => formatInfoField(v.value, 'flag') as string
+                  ) || []
+                )}
+                )
               </span>
             ) : (
               <span className={styles.secondary}>
