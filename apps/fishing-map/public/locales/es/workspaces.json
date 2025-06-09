@@ -78,15 +78,15 @@
     },
     "cmar_core_mpas-public": {
       "name": "CMAR core MPAs",
-      "description": ""
+      "description": "Iniciado en 2004, el Corredor de Conservación Marítima del Pacífico Tropical Oriental es una iniciativa regional de conservación y uso sostenible de los gobiernos de Colombia, Costa Rica, Ecuador y Panamá que buscan el manejo adecuado de la biodiversidad y de los recursos marinos y costeros a través del manejo de los ecosistemas y el establecimiento de estrategias conjuntas del gobierno regional. Todos ellos apoyados por la sociedad civil, la cooperación internacional y las organizaciones no gubernamentales, envueltas en diez MPAs centrales en las ZEE del Océano Pacífico de los cuatro países."
     },
     "costa_rica_1-public": {
       "name": "Costa Rica",
       "description": "El Parque Nacional Isla del Coco es un área totalmente protegida que abarca casi 55.000 kilómetros cuadrados. El Área Marina de Manejo del Bicentenario que rodea el Parque Nacional Isla del Coco tiene 106.000 kilómetros cuadrados."
     },
-    "colombia-public": {
+    "colombia_3-public": {
       "name": "Colombia",
-      "description": "Colombia ha creado y gestionado AMP a lo largo de sus costas del Pacífico y el Caribe que abarcan el Distrito de Manejo Integrado Yuruparí-Malpelo, donde se encuentra el Santuario de Fauna y Flora de Malpelo, totalmente protegido, Lomas y Colinas, Gorgona y Cabo Manglares en el Océano Pacífico, así como Beata y Corales de Profundidad en el mar Caribe."
+      "description": "Colombia ha creado y gestionado AMP a lo largo de sus costas del Pacífico y el Caribe que abarcan el Distrito de Manejo Integrado Yuruparí-Malpelo, donde se encuentra el Santuario de Fauna y Flora de Malpelo, totalmente protegido, Lomas y Colinas, Gorgona y Cabo Manglares en el Océano Pacífico, así como Beata y Corales de Profundidad en el mar Caribe. "
     },
     "panama_1-public": {
       "name": "Panama",
