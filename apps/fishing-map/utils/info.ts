@@ -62,9 +62,10 @@ export const formatInfoField = (
       return getVesselGearTypeLabel({ geartypes: fieldValue }, { translationFn }) || fallbackValue
     }
     if (type === 'shipname' || type === 'owner' || type === 'operator' || type === 'port') {
-      return fieldValue
-        .replace('_', ' ')
-        .replace(/\b(?![LXIVCDM]+\b)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)(?:\d+)?\b/g, upperFirst)
+      return fieldValue.replace(
+        /\b(?![LXIVCDM]+\b)(\d*)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)\b/g,
+        (_, num, name) => num + upperFirst(name)
+      )
     }
     if (type === 'fleet') {
       const fleetClean = fieldValue.replaceAll('_', ' ')
