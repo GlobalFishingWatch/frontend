@@ -184,6 +184,7 @@ const uniformBlock = `
     uniform float maxSpeedFilter;
     uniform float minElevationFilter;
     uniform float maxElevationFilter;
+    uniform float discardOnFilter;
     uniform float value0;
     uniform float value1;
     uniform float value2;
@@ -223,6 +224,7 @@ const trackLayerUniforms = {
     maxSpeedFilter: 'f32',
     minElevationFilter: 'f32',
     maxElevationFilter: 'f32',
+    discardOnFilter: 'f32',
     value0: 'f32',
     value1: 'f32',
     value2: 'f32',
@@ -308,7 +310,11 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
             vElevation < track.minElevationFilter ||
             vElevation > track.maxElevationFilter)
         {
-          color.a = 0.25;
+          if (track.discardOnFilter == 1.0) {
+            discard;
+          } else {
+            color.a = 0.25;
+          }
         }
 
         // TODO how can we fade the rest of the track?
@@ -372,6 +378,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       minElevationFilter = -MAX_FILTER_VALUE,
       maxElevationFilter = MAX_FILTER_VALUE,
       colorBy,
+      id,
     } = this.props
 
     const steps =
@@ -406,6 +413,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
           maxSpeedFilter,
           minElevationFilter,
           maxElevationFilter,
+          discardOnFilter: id.includes('interactive') ? 1.0 : 0.0,
           colorBy: colorBy ? COLOR_BY[colorBy] : COLOR_BY.track,
           ...values,
           ...colors,
