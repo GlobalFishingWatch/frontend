@@ -243,8 +243,8 @@
   text-decoration: underline;
 }
 
-.rowText p {
-  margin-bottom: var(--space-XS);
+.rowText p + p {
+  margin-top: var(--space-XS);
 }
 
 .rowActions {
