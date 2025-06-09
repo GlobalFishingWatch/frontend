@@ -154,22 +154,26 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     if (!info.object) {
       info.object = {} as FourwingsHeatmapStaticPickingObject
     }
+    const object = {
+      ...info.object,
+      properties: {
+        ...info.object?.properties,
+      },
+      layerId: this.root.id,
+      category: this.props.category,
+      subcategory: this.props.subcategory,
+    }
     const { minVisibleValue, maxVisibleValue } = this.props
-    if (info.object?.properties?.[HEATMAP_STATIC_PROPERTY_ID]) {
+    if (object?.properties?.[HEATMAP_STATIC_PROPERTY_ID]) {
       if (
-        (minVisibleValue &&
-          info.object?.properties?.[HEATMAP_STATIC_PROPERTY_ID] < minVisibleValue) ||
-        (maxVisibleValue && info.object?.properties?.[HEATMAP_STATIC_PROPERTY_ID] > maxVisibleValue)
+        (minVisibleValue && object?.properties?.[HEATMAP_STATIC_PROPERTY_ID] < minVisibleValue) ||
+        (maxVisibleValue && object?.properties?.[HEATMAP_STATIC_PROPERTY_ID] > maxVisibleValue)
       ) {
         return { ...info, object: undefined } as any
       }
-      info.object.properties.values = [[info.object.properties?.[HEATMAP_STATIC_PROPERTY_ID]]]
+      object.properties.values = [[object.properties?.[HEATMAP_STATIC_PROPERTY_ID]]]
     }
-    info.object.layerId = this.root.id
-    info.object.sublayers = this.props.sublayers
-    info.object.category = this.props.category
-    info.object.subcategory = this.props.subcategory
-    return info as FourwingsHeatmapStaticPickingInfo
+    return { ...info, object } as FourwingsHeatmapStaticPickingInfo
   }
 
   getFillColor = (feature: Feature<Geometry, FourwingsStaticFeatureProperties>) => {
