@@ -16,7 +16,6 @@ import type { BBox, Position } from 'geojson'
 import { extent } from 'simple-statistics'
 
 import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
-import type { TrackSegment } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType, EventTypes } from '@globalfishingwatch/api-types'
 import { type Bbox, getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type { VesselDeckLayersEventData } from '@globalfishingwatch/deck-loaders'
@@ -48,11 +47,12 @@ import {
 } from './vessel.config'
 import type {
   _VesselLayerProps,
-  VesselDataType,
   VesselDeckLayersEvent,
   VesselEventPickingInfo,
   VesselEventPickingObject,
   VesselEventProperties,
+  VesselTrackPickingInfo,
+  VesselTrackProperties,
 } from './vessel.types'
 import type { GetSegmentsFromDataParams } from './vessel.utils'
 import { getEvents, getVesselResourceChunks } from './vessel.utils'
@@ -60,7 +60,7 @@ import type { _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselEventsLayer } from './VesselEventsLayer'
 import { VesselPositionLayer } from './VesselPositionLayer'
 import type { _VesselTrackLayerProps } from './VesselTrackLayer'
-import { VesselTrackLayer } from './VesselTrackLayer'
+import { VesselTrackLayerComposite } from './VesselTrackLayerComposite'
 
 export type VesselEventsLayerProps = Omit<_VesselEventsLayerProps, 'type'> & {
   events: VesselDeckLayersEvent[]
@@ -106,16 +106,30 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   getPickingInfo = ({
     info,
   }: {
-    info: PickingInfo<VesselEventProperties>
-  }): VesselEventPickingInfo => {
-    const object = {
-      ...(info.object || ({} as VesselEventProperties)),
+    info: PickingInfo<VesselEventProperties | VesselTrackProperties>
+  }): VesselEventPickingInfo | VesselTrackPickingInfo => {
+    const vesselId = this.props.id.replace('vessel-', '')
+    const baseObject = {
       layerId: this.root.id,
       title: this.props.name,
-      vesselId: this.props.id.replace('vessel-', ''),
+      vesselId,
+      id: vesselId,
       category: DataviewCategory.Vessels,
-      subcategory: DataviewType.VesselEvents,
       color: deckToHexColor(this.props.color),
+    }
+    if ((info.object as VesselTrackProperties)?.subcategory === DataviewType.Track) {
+      const object = {
+        ...(info.object || ({} as VesselTrackProperties)),
+        ...baseObject,
+        subcategory: DataviewType.Track,
+      }
+      return { ...info, object } as VesselTrackPickingInfo
+    }
+
+    const object = {
+      ...(info.object || ({} as VesselEventProperties)),
+      ...baseObject,
+      subcategory: DataviewType.VesselEvents,
     }
     if (!info.object) {
       info.object = {} as VesselEventPickingObject
@@ -123,7 +137,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     // info.object.getDetail = async () => {
     //   return GFWAPI.fetch(`/events/${info.object?.properties.id}`)
     // }
-    return { ...info, object }
+    return { ...info, object } as VesselEventPickingInfo
   }
 
   onSublayerError = (type: EventTypes | 'track', error: any) => {
@@ -207,7 +221,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         return []
       }
       const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}`
-      return new VesselTrackLayer<any, { type: VesselDataType }>(
+      return new VesselTrackLayerComposite(
         this.getSubLayerProps({
           id: chunkId,
           visible,
@@ -226,7 +240,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           loaders: [VesselTrackLoader],
           _pathType: 'open',
           widthUnits: 'pixels',
-          getWidth: 1.5,
           widthScale: 1,
           wrapLongitude: true,
           jointRounded: true,
@@ -292,6 +305,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             pickable: true,
             highlightStartTime,
             highlightEndTime,
+            name: this.props.name,
+            color,
+            vesselId: this.props.id.replace('vessel-', ''),
             getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
             getFillColor: (d: any): Color => {
               if (highlightEventIds?.includes(d.id)) return DEFAULT_FISHING_EVENT_COLOR
@@ -437,9 +453,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getTrackLayers() {
-    return this.getSubLayers().filter((l) => l.id.includes(TRACK_LAYER_TYPE)) as VesselTrackLayer<
-      TrackSegment[]
-    >[]
+    return this.getSubLayers().filter((l) =>
+      l.id.includes(TRACK_LAYER_TYPE)
+    ) as VesselTrackLayerComposite[]
   }
 
   getEventLayers() {
