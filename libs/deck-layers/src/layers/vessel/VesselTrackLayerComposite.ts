@@ -88,6 +88,7 @@ export class VesselTrackLayerComposite extends CompositeLayer<VesselTrackLayerCo
       highlightEndTime: undefined,
       highlightEventStartTime: undefined,
       highlightEventEndTime: undefined,
+      hoveredTime: undefined,
       colorBy: undefined,
     })
 
