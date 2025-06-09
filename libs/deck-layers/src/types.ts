@@ -20,7 +20,11 @@ import type { PMTilesLayer } from './layers/pm-tiles/PMTilesLayer'
 import type { RulerPickingInfo, RulerPickingObject } from './layers/rulers'
 import type { RulersLayer } from './layers/rulers/RulersLayer'
 import type { UserLayerPickingObject } from './layers/user'
-import type { VesselEventPickingInfo, VesselEventPickingObject } from './layers/vessel'
+import type {
+  VesselEventPickingInfo,
+  VesselEventPickingObject,
+  VesselTrackPickingObject,
+} from './layers/vessel'
 import type { VesselLayer } from './layers/vessel/VesselLayer'
 
 export type DeckLayerCategory = `${DataviewCategory}` | 'rulers' | 'draw'
@@ -61,6 +65,7 @@ export type DeckLayerPickingObject =
   | UserLayerPickingObject
   | FourwingsClusterPickingObject
   | RulerPickingObject
+  | VesselTrackPickingObject
   | VesselEventPickingObject
   | DrawPickingObject
   | PolygonPickingObject

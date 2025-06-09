@@ -336,12 +336,14 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   _getVesselPositionLayer() {
-    const { visible, highlightStartTime, highlightEndTime, color, name } = this.props
+    const { visible, highlightStartTime, highlightEndTime, hoveredTime, color, name } = this.props
     const trackData = this.getVesselTrackData()
-    if (!visible || !trackData?.length || !highlightEndTime || !highlightStartTime) {
+    const start = highlightStartTime || hoveredTime
+    const end = highlightEndTime || hoveredTime
+    if (!visible || !trackData?.length || !end || !start) {
       return []
     }
-    const highlightCenter = highlightEndTime - (highlightEndTime - highlightStartTime) / 2
+    const highlightCenter = end - (end - start) / 2
     let timestampIndex = -1
     const chunkIndex = trackData.findIndex((chunk) => {
       if (
@@ -353,7 +355,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         timestampIndex = chunk.attributes.getTimestamp.value.findIndex((t, i) => {
           return (
             !chunk.startIndices.includes(i) &&
-            t > highlightCenter &&
+            t >= highlightCenter &&
             chunk.attributes.getTimestamp.value[i - 1] < highlightCenter
           )
         })
@@ -393,9 +395,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           getColor: hexToDeckColor(BLEND_BACKGROUND),
           getSize: 18,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
-          transitions: {
-            getPosition: 50,
-          },
         })
       ),
       new VesselPositionLayer(
@@ -410,9 +409,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           getColor: color,
           getSize: 15,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
-          transitions: {
-            getPosition: 50,
-          },
         })
       ),
       new VesselPositionLayer(
@@ -427,12 +423,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           getColor: [255, 255, 255, 255],
           getSize: 15,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
-          transitions: {
-            getPosition: 50,
-          },
         })
       ),
-      ...(name
+      ...(name && highlightStartTime
         ? [
             new LabelLayer({
               id: `${this.props.id}-vessel-position-label`,

@@ -54,6 +54,11 @@ export type _VesselTrackLayerProps<DataT = any> = {
    */
   highlightEndTime?: number
   /**
+   * The time to highlight the track in milliseconds
+   * @default 0
+   */
+  hoveredTime?: number
+  /**
    * The start time of an event to thicken the track in milliseconds
    * @default 0
    */
