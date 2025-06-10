@@ -186,6 +186,7 @@ function WorkspacesList() {
                     }
                     return (
                       <Link
+                        key={reportId}
                         to={reportLink}
                         className={styles.link}
                         onClick={() => onWorkspaceClick(highlightedWorkspace)}
