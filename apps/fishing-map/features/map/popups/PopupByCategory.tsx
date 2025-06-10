@@ -38,6 +38,7 @@ import UserPointsTooltipSection from 'features/map/popups/categories/UserPointsL
 import UserTracksTooltipSection from 'features/map/popups/categories/UserTracksLayers'
 import VesselEventsLayers from 'features/map/popups/categories/VesselEventsLayers'
 import VesselGroupTooltipRow from 'features/map/popups/categories/VesselGroupLayers'
+import VesselTracksLayers from 'features/map/popups/categories/VesselTracksLayers'
 import WorkspacePointsTooltipSection from 'features/map/popups/categories/WorkspacePointsLayers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -344,12 +345,23 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
           }
 
           case DataviewCategory.Vessels: {
+            const trackFeatures = (features as VesselEventPickingObject[]).filter(
+              (feature) => feature.subcategory === DataviewType.Track
+            )
+            const eventFeatures = (features as VesselEventPickingObject[]).filter(
+              (feature) => feature.subcategory === DataviewType.VesselEvents
+            )
             return (
-              <VesselEventsLayers
-                key={featureCategory}
-                features={features as VesselEventPickingObject[]}
-                showFeaturesDetails={type === 'click'}
-              />
+              <Fragment key={featureCategory}>
+                <VesselTracksLayers
+                  features={trackFeatures}
+                  showFeaturesDetails={type === 'click'}
+                />
+                <VesselEventsLayers
+                  features={eventFeatures}
+                  showFeaturesDetails={type === 'click'}
+                />
+              </Fragment>
             )
           }
 
