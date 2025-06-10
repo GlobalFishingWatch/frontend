@@ -25,13 +25,10 @@ type CreateBigQueryDataset = {
 
 export const fetchBigQueryRunCostThunk = createAsyncThunk(
   'bigQuery/fetchRunCost',
-  async (
-    { query, visualisationMode }: Omit<CreateBigQueryDataset, 'name'>,
-    { rejectWithValue }
-  ) => {
+  async ({ query }: Pick<CreateBigQueryDataset, 'query'>, { rejectWithValue }) => {
     try {
       const response = await GFWAPI.fetch<RunCostResponse>(
-        `/${visualisationMode}/bq/create-temporal-dataset?dry-run=true`,
+        `/4wings/bq/create-temporal-dataset?dry-run=true`,
         {
           method: 'POST',
           body: {
@@ -68,13 +65,14 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
       const hasUserInteraction = query.includes('vessel_id')
       const subcategory = hasUserInteraction ? 'user-interactive' : 'user'
       const { id } = await GFWAPI.fetch<CreateBigQueryDatasetResponse>(
-        `/${visualisationMode}/bq/create-temporal-dataset`,
+        `/4wings/bq/create-temporal-dataset`,
         {
           method: 'POST',
           body: {
             query,
             name: kebabCase(name),
-            unit: unit || (visualisationMode === '4wings' ? '' : 'events'),
+            unit: unit || (visualisationMode === '4wings' ? '' : 'event'),
+            category: visualisationMode === '4wings' ? 'activity' : 'event',
             subcategory,
             public: createAsPublic,
           } as any,

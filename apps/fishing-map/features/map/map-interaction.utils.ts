@@ -13,7 +13,6 @@ import { TrackCategory } from 'features/app/analytics.hooks'
 import type { SliceExtendedFourwingsPickingObject } from './map.slice'
 
 export const isTilesClusterLayer = (pickingObject: DeckLayerPickingObject) =>
-  pickingObject.subcategory === DataviewType.TileCluster ||
   pickingObject.subcategory === DataviewType.FourwingsTileCluster
 
 export const isTilesClusterLayerCluster = (pickingObject: FourwingsClusterPickingObject) =>
