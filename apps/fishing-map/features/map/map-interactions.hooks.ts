@@ -49,11 +49,9 @@ import { annotationsCursorAtom } from './overlays/annotations/Annotations'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
 import type { SliceExtendedClusterPickingObject, SliceInteractionEvent } from './map.slice'
 import {
-  fetchBQEventThunk,
   fetchClusterEventThunk,
   fetchDetectionThumbnailsThunk,
   fetchHeatmapInteractionThunk,
-  fetchLegacyEncounterEventThunk,
   selectActivityInteractionStatus,
   selectApiEventStatus,
   selectClickedEvent,
