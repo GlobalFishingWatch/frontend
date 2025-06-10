@@ -327,6 +327,7 @@
     "title": "Datos",
     "title_one": "Datos",
     "title_other": "Datos",
+    "typeBigQuery": "BigQuery",
     "typePoints": " Puntos",
     "typePointsDescription": "Mostrar una o varias posiciones con etiquetas en los datos",
     "typePolygons": " Polígonos",
