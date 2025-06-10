@@ -45,7 +45,7 @@ function VesselTracksLegend(): React.ReactElement<any> | null {
 
   return (
     <div className={styles.legend}>
-      <MapLegend layer={legend} />
+      <MapLegend layer={legend} roundValues={false} />
     </div>
   )
 }
