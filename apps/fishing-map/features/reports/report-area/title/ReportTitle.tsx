@@ -24,6 +24,7 @@ import {
   selectReportBufferUnit,
   selectReportBufferValue,
 } from 'features/reports/report-area/area-reports.selectors'
+import { getReportAreaStringByLocale } from 'features/reports/report-area/title/report-title.utils'
 import { DEFAULT_BUFFER_OPERATION } from 'features/reports/reports.config'
 import { selectCurrentReport } from 'features/reports/reports.selectors'
 import AreaReportSearch from 'features/reports/shared/area-search/AreaReportSearch'
@@ -45,7 +46,7 @@ import { BufferButtonTooltip } from './BufferButonTooltip'
 import styles from './ReportTitle.module.css'
 
 export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [showBufferTooltip, setShowBufferTooltip] = useState(false)
   const [longDescription, setLongDescription] = useState(false)
   const [expandedDescription, setExpandedDescription] = useState(false)
@@ -177,7 +178,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
 
   const reportDescription =
     typeof report?.description === 'string' && report?.description.length
-      ? parse(report?.description)
+      ? parse(getReportAreaStringByLocale(report?.description, i18n.language))
       : report?.description || ''
 
   const reportAreaSpace =

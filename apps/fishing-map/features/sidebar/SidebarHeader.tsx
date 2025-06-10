@@ -11,6 +11,7 @@ import { WorkspaceCategory } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
+import { selectIsWorkspaceGeneratorEnabled } from 'features/debug/debug.selectors'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import { setModalOpen } from 'features/modals/modals.slice'
 import ReportTitle from 'features/reports/report-area/title/ReportTitle'
@@ -56,6 +57,7 @@ function SidebarHeader() {
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
+  const isWorkspaceGeneratorEnabled = useSelector(selectIsWorkspaceGeneratorEnabled)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const activeSearchOption = useSelector(selectSearchOption)
@@ -160,13 +162,13 @@ function SidebarHeader() {
         </a>
         {!readOnly && (
           <Fragment>
-            {/* {isGFWUser && (
+            {isGFWUser && isWorkspaceGeneratorEnabled && (
               <IconButton
                 icon="magic"
                 size="medium"
                 onClick={() => dispatch(setModalOpen({ id: 'workspaceGenerator', open: true }))}
               />
-            )} */}
+            )}
             {/* TODO:CVP2 add save report in isAnyReportLocation when this PR https://github.com/GlobalFishingWatch/api-monorepo-node/pull/289 is merged */}
             {isAreaReportLocation && <SaveReportButton />}
             {isWorkspaceLocation && <SaveWorkspaceButton />}

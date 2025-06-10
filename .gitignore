@@ -142,3 +142,6 @@ terraform.tfstate
 terraform.tfstate.backup
 **/*/.terraform
 **/*.terraform.lock.hcl
+
+.cursor/rules/nx-rules.mdc
+.github/instructions/nx.instructions.md

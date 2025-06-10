@@ -7,3 +7,4 @@ export const selectIsFeatureFlagEnabled = (flag: FeatureFlag) =>
   createSelector([selectFeatureFlags], (featureFlags = []) => featureFlags?.includes(flag))
 
 export const selectIsGlobalReportsEnabled = selectIsFeatureFlagEnabled('globalReports')
+export const selectIsWorkspaceGeneratorEnabled = selectIsFeatureFlagEnabled('workspaceGenerator')

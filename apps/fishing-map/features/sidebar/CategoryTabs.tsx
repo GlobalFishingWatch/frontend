@@ -13,6 +13,7 @@ import type { WorkspaceCategory } from 'data/workspaces'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectWorkspaceCategory } from 'features/app/selectors/app.workspace.selectors'
 import HelpHub from 'features/help/HelpHub'
 // import HelpModal from 'features/help/HelpModal'
 import LanguageToggle from 'features/i18n/LanguageToggle'
@@ -28,7 +29,6 @@ import { SEARCH, USER, WORKSPACE_SEARCH, WORKSPACES_LIST } from 'routes/routes'
 import {
   selectIsAnySearchLocation,
   selectIsWorkspaceLocation,
-  selectLocationCategory,
   selectLocationType,
 } from 'routes/routes.selectors'
 
@@ -59,7 +59,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const workspace = useSelector(selectWorkspace)
   const featureFlags = useSelector(selectFeatureFlags)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
-  const locationCategory = useSelector(selectLocationCategory)
+  const locationCategory = useSelector(selectWorkspaceCategory)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
   const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const userData = useSelector(selectUserData)
@@ -118,33 +118,35 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             </Tooltip>
           </Link>
         </li>
-        {availableCategories?.map((category, index) => (
-          <Tooltip
-            key={category}
-            content={t(`workspace.categories.${category}`, category)}
-            placement="right"
-          >
-            <li
-              className={cx(styles.tab, {
-                [styles.current]:
-                  !isAnySearchLocation &&
-                  (locationCategory === (category as WorkspaceCategory) ||
-                    (index === 0 && !locationCategory)),
-              })}
+        {availableCategories?.map((category, index) => {
+          return (
+            <Tooltip
+              key={category}
+              content={t(`workspace.categories.${category}`, category)}
+              placement="right"
             >
-              <Link
-                className={styles.tabContent}
-                to={{
-                  ...getLinkToCategory(category as WorkspaceCategory),
-                  query: { featureFlags },
-                }}
-                onClick={onCategoryClick}
+              <li
+                className={cx(styles.tab, {
+                  [styles.current]:
+                    !isAnySearchLocation &&
+                    (locationCategory === (category as WorkspaceCategory) ||
+                      (index === 0 && !locationCategory)),
+                })}
               >
-                <Icon icon={`category-${category}` as IconType} />
-              </Link>
-            </li>
-          </Tooltip>
-        ))}
+                <Link
+                  className={styles.tabContent}
+                  to={{
+                    ...getLinkToCategory(category as WorkspaceCategory),
+                    query: { featureFlags },
+                  }}
+                  onClick={onCategoryClick}
+                >
+                  <Icon icon={`category-${category}` as IconType} />
+                </Link>
+              </li>
+            </Tooltip>
+          )
+        })}
         <li className={styles.separator} aria-hidden></li>
         <li className={cx(styles.tab, styles.secondary)}>
           <WhatsNew />

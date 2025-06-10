@@ -76,25 +76,29 @@
       "name": "crwdns84207:0crwdne84207:0",
       "description": "crwdns84209:0crwdne84209:0"
     },
-    "costa_rica_amps-public": {
-      "name": "crwdns84285:0crwdne84285:0",
-      "description": "crwdns84287:0crwdne84287:0"
+    "cmar_core_mpas-public": {
+      "name": "crwdns87820:0crwdne87820:0",
+      "description": "crwdns87836:0crwdne87836:0"
     },
-    "colombia-public": {
-      "name": "crwdns84289:0crwdne84289:0",
-      "description": "crwdns84291:0crwdne84291:0"
+    "costa_rica_1-public": {
+      "name": "crwdns87824:0crwdne87824:0",
+      "description": "crwdns87826:0crwdne87826:0"
     },
-    "panama-public": {
-      "name": "crwdns84293:0crwdne84293:0",
-      "description": "crwdns84295:0crwdne84295:0"
+    "colombia_3-public": {
+      "name": "crwdns87838:0crwdne87838:0",
+      "description": "crwdns87840:0crwdne87840:0"
+    },
+    "panama_1-public": {
+      "name": "crwdns87828:0crwdne87828:0",
+      "description": "crwdns87830:0crwdne87830:0"
     },
     "reserva_de_la_biosfera_cmar-public": {
       "name": "crwdns84297:0crwdne84297:0",
       "description": "crwdns84299:0crwdne84299:0"
     },
-    "galapagos_y_hermandad-public": {
-      "name": "crwdns84301:0crwdne84301:0",
-      "description": "crwdns84303:0crwdne84303:0"
+    "galapagos_and_hermandad-public": {
+      "name": "crwdns87832:0crwdne87832:0",
+      "description": "crwdns87834:0crwdne87834:0"
     },
     "revillagigedo-public": {
       "name": "crwdns84305:0crwdne84305:0",

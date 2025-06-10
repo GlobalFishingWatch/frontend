@@ -41,3 +41,7 @@
   height: 1px;
   margin-block: var(--space-S);
 }
+
+.link {
+  text-decoration: underline;
+}

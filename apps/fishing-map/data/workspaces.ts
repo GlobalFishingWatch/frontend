@@ -42,6 +42,7 @@ export const RFMO_DATAVIEW_SLUG = 'tuna-rfmo-areas' as const
 export const RFMO_DATAVIEW_INSTANCE_ID = 'context-layer-rfmo' as const
 export const HIGH_SEAS_DATAVIEW_SLUG = 'high-seas' as const
 export const PROTECTED_SEAS_DATAVIEW_SLUG = 'protected-seas' as const
+export const MPATLAS_DATAVIEW_SLUG = 'mpatlas' as const
 export const GRATICULES_DATAVIEW_SLUG = 'graticules' as const
 export const FIXED_SAR_INFRASTRUCTURE = 'fixed-infrastructure' as const
 export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas' as const
@@ -118,6 +119,7 @@ export const CONTEXT_LAYERS_DATAVIEWS = [
   RFMO_DATAVIEW_SLUG,
   HIGH_SEAS_DATAVIEW_SLUG,
   PROTECTED_SEAS_DATAVIEW_SLUG,
+  MPATLAS_DATAVIEW_SLUG,
   GRATICULES_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
   BASEMAP_LABELS_DATAVIEW_SLUG,

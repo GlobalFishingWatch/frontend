@@ -27,10 +27,8 @@ import type {
 
 import { trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  BIG_QUERY_4WINGS_PREFIX,
-  ENCOUNTER_EVENTS_SOURCES,
-} from 'features/dataviews/dataviews.utils'
+import { getIsBQEditorDataset } from 'features/datasets/datasets.utils'
+import { BIG_QUERY_4WINGS_PREFIX } from 'features/dataviews/dataviews.utils'
 import {
   selectActivityDataviews,
   selectEventsDataviews,
@@ -51,11 +49,9 @@ import { annotationsCursorAtom } from './overlays/annotations/Annotations'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
 import type { SliceExtendedClusterPickingObject, SliceInteractionEvent } from './map.slice'
 import {
-  fetchBQEventThunk,
   fetchClusterEventThunk,
   fetchDetectionThumbnailsThunk,
   fetchHeatmapInteractionThunk,
-  fetchLegacyEncounterEventThunk,
   selectActivityInteractionStatus,
   selectApiEventStatus,
   selectClickedEvent,
@@ -226,19 +222,15 @@ export const useClickedEventConnect = () => {
       ) as SliceExtendedClusterPickingObject
 
       if (tileClusterFeature) {
-        const bqPocQuery = !ENCOUNTER_EVENTS_SOURCES.includes(tileClusterFeature.layerId)
-        // TODO:deck migrate bqPocQuery to FourwingsClusters
-        const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchClusterEventThunk
-        // TODO:deck remove fetchLegacyEncounterEventThunk once fourwings cluster goes to pro
-        const clusterFn =
-          tileClusterFeature?.subcategory === DataviewType.TileCluster
-            ? fetchLegacyEncounterEventThunk
-            : fetchClusterEventThunk
-        const eventsPromise = dispatch(clusterFn(tileClusterFeature as any) as any)
-        setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
+        const dataset = eventsDataviews?.find((d) => d.id === tileClusterFeature?.layerId)
+          ?.datasets?.[0]
+        if (!getIsBQEditorDataset(dataset!)) {
+          const eventsPromise = dispatch(fetchClusterEventThunk(tileClusterFeature as any))
+          setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
+        }
       }
     },
-    [dispatch, setInteractionPromises]
+    [dispatch, eventsDataviews, setInteractionPromises]
   )
 
   const handleVesselEventInteraction = useCallback(

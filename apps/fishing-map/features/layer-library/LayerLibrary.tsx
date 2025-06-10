@@ -26,6 +26,8 @@ import LayerLibraryVesselGroupPanel from './LayerLibraryVesselGroupPanel'
 
 import styles from './LayerLibrary.module.css'
 
+type UserSubcategory = DataviewCategory | 'bigQuery'
+
 const LayerLibrary: FC = () => {
   const { t, ready } = useTranslation(['translations', 'layer-library'])
   const [searchQuery, setSearchQuery] = useState('')
@@ -37,7 +39,7 @@ const LayerLibrary: FC = () => {
   const [currentCategory, setCurrentCategory] = useState<DataviewCategory>(
     initialCategory || DataviewCategory.Activity
   )
-  const [currentSubcategory, setCurrentSubcategory] = useState<DataviewCategory | null>(null)
+  const [currentSubcategory, setCurrentSubcategory] = useState<UserSubcategory | null>(null)
   const userDatasets = useSelector(selectUserDatasets)
   const userGeometries = useMemo(() => {
     return groupDatasetsByGeometryType(userDatasets)
@@ -82,10 +84,11 @@ const LayerLibrary: FC = () => {
   )
 
   const extendedCategories = useMemo(() => {
-    const userSubcategories = []
+    const userSubcategories = [] as UserSubcategory[]
     if (userGeometries.tracks?.length) userSubcategories.push(DataviewCategory.UserTracks)
     if (userGeometries.polygons?.length) userSubcategories.push(DataviewCategory.UserPolygons)
     if (userGeometries.points?.length) userSubcategories.push(DataviewCategory.UserPoints)
+    if (userGeometries.bigQuery?.length) userSubcategories.push('bigQuery')
 
     return [
       ...uniqCategories.map((category) => ({ category, subcategories: [] })),
@@ -104,7 +107,7 @@ const LayerLibrary: FC = () => {
       smooth = true,
     }: {
       category: DataviewCategory
-      subcategory?: DataviewCategory | null
+      subcategory?: UserSubcategory | null
       smooth?: boolean
     }) => {
       const targetId = subcategory || category
@@ -186,7 +189,7 @@ const LayerLibrary: FC = () => {
 
       const topViewport = target.clientHeight / 5
       let newCategory = currentCategory
-      let newSubcategory: DataviewCategory | null = null
+      let newSubcategory: UserSubcategory | null = null
 
       extendedCategories.forEach(({ category, subcategories }) => {
         const mainElement = document.getElementById(category)
@@ -272,7 +275,7 @@ const LayerLibrary: FC = () => {
                       data-subcategory={subcategory}
                       onClick={onCategoryClick}
                     >
-                      {t(`dataset.type${subcategory}`, upperFirst(subcategory))}
+                      {t(`dataset.type${upperFirst(subcategory)}`, upperFirst(subcategory))}
                     </button>
                   ))}
               </div>

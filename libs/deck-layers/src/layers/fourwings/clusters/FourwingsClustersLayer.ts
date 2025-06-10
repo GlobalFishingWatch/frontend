@@ -72,6 +72,7 @@ const defaultProps: DefaultProps<FourwingsClustersLayerProps> = {
 const GEOLOCATION_PRIORITY: FourwingsGeolocation[] = ['country', 'port', 'default']
 
 const ICON_SIZE: Record<FourwingsClusterEventType, number> = {
+  user: 16,
   encounter: 16,
   loitering: 16,
   gap: 14,
@@ -82,6 +83,7 @@ const MAX_CLUSTER_RADIUS = 30
 const ICON_MAPPING: Record<FourwingsClusterEventType, any> = {
   encounter: { x: 0, y: 0, width: 36, height: 36, mask: true },
   gap: { x: 40, y: 0, width: 36, height: 36, mask: true },
+  user: { x: 40, y: 0, width: 36, height: 36, mask: true },
   port_visit: { x: 80, y: 0, width: 36, height: 36, mask: true },
   loitering: { x: 120, y: 0, width: 36, height: 36, mask: true },
 }

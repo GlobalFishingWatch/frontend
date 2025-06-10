@@ -25,13 +25,10 @@ type CreateBigQueryDataset = {
 
 export const fetchBigQueryRunCostThunk = createAsyncThunk(
   'bigQuery/fetchRunCost',
-  async (
-    { query, visualisationMode }: Omit<CreateBigQueryDataset, 'name'>,
-    { rejectWithValue }
-  ) => {
+  async ({ query }: Pick<CreateBigQueryDataset, 'query'>, { rejectWithValue }) => {
     try {
       const response = await GFWAPI.fetch<RunCostResponse>(
-        `/${visualisationMode}/bq/create-temporal-dataset?dry-run=true`,
+        `/4wings/bq/create-temporal-dataset?dry-run=true`,
         {
           method: 'POST',
           body: {
@@ -65,17 +62,20 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
     { dispatch, rejectWithValue }
   ) => {
     try {
+      const hasUserInteraction = query.includes('vessel_id')
+      const subcategory = hasUserInteraction ? 'user-interactive' : 'user'
       const { id } = await GFWAPI.fetch<CreateBigQueryDatasetResponse>(
-        `/${visualisationMode}/bq/create-temporal-dataset`,
+        `/4wings/bq/create-temporal-dataset`,
         {
           method: 'POST',
           body: {
             query,
             name: kebabCase(name),
-            unit: unit || (visualisationMode === '4wings' ? '' : 'events'),
-            subcategory: 'user-interactive',
+            unit: unit || (visualisationMode === '4wings' ? '' : 'event'),
+            category: visualisationMode === '4wings' ? 'activity' : 'event',
+            subcategory,
             relatedDatasets: [], // TODO: add related datasets
-            ttl: 365,
+            // ttl: 365, // TODO: larger TTL only for turning-tides datasets
             public: createAsPublic,
           } as any,
         }

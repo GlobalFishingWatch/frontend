@@ -21,6 +21,7 @@ import type {
 } from '@globalfishingwatch/api-types'
 import {
   DatasetCategory,
+  DatasetStatus,
   DatasetSubCategory,
   DatasetTypes,
   DataviewCategory,
@@ -183,27 +184,6 @@ export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
   }
   return 'polygons'
 }
-
-export const groupDatasetsByGeometryType = (datasets: Dataset[]): Record<string, Dataset[]> => {
-  const orderedObject: Record<string, Dataset[]> = {
-    tracks: [],
-    polygons: [],
-    points: [],
-  }
-
-  return datasets.reduce((acc, dataset) => {
-    const geometryType = getDatasetConfigurationProperty({
-      dataset,
-      property: 'geometryType',
-    })
-    if (!acc[geometryType]) {
-      acc[geometryType] = []
-    }
-    acc[geometryType].push(dataset)
-    return acc
-  }, orderedObject)
-}
-
 export const getIsBQEditorDataset = (dataset: Dataset): boolean => {
   if (!dataset) {
     return false
@@ -211,8 +191,38 @@ export const getIsBQEditorDataset = (dataset: Dataset): boolean => {
   // TODO use a custom category for BQ datasets but the API doesn't allow it yet
   return (
     (dataset.category === DatasetCategory.Activity || dataset.category === DatasetCategory.Event) &&
-    dataset.subcategory === 'user'
+    (dataset.subcategory === 'user' || dataset.subcategory === 'user-interactive')
   )
+}
+
+export const groupDatasetsByGeometryType = (datasets: Dataset[]): Record<string, Dataset[]> => {
+  const orderedObject: Record<string, Dataset[]> = {
+    tracks: [],
+    polygons: [],
+    points: [],
+    bigQuery: [],
+  }
+
+  return datasets.reduce((acc, dataset) => {
+    if (getIsBQEditorDataset(dataset)) {
+      if (dataset.status !== DatasetStatus.Deleted) {
+        acc.bigQuery.push(dataset)
+      }
+      return acc
+    }
+    const geometryType = getDatasetConfigurationProperty({
+      dataset,
+      property: 'geometryType',
+    })
+    if (!geometryType) {
+      return acc
+    }
+    if (!acc[geometryType]) {
+      acc[geometryType] = []
+    }
+    acc[geometryType].push(dataset)
+    return acc
+  }, orderedObject)
 }
 
 export const getDatasetSourceIcon = (dataset: Dataset): IconType | null => {

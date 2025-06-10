@@ -74,6 +74,11 @@
     "moreInfoLink": "",
     "name": "AMPs (WDPA)"
   },
+  "mpatlas": {
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably",
+    "moreInfoLink": "https://mpatlas.org",
+    "name": "MPAs (MPAtlas)"
+  },
   "nitrate": {
     "description": "O nitrato é necessário para as plantas marinhas para a fotossíntese e é um nutriente importante para a produtividade dos oceanos. No entanto, concentrações elevadas podem ser um indicador de poluição. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo nitrato, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau.   ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",

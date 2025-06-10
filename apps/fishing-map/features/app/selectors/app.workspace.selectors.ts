@@ -130,6 +130,13 @@ const selectWorkspaceAppState = createSelector(
   }
 )
 
+export const selectWorkspaceCategory = createSelector(
+  [selectLocationCategory, selectWorkspace],
+  (locationCategory, workspace) => {
+    return locationCategory || workspace?.category || DEFAULT_WORKSPACE_CATEGORY
+  }
+)
+
 export const selectWorkspaceWithCurrentState = createSelector(
   [
     selectWorkspace,

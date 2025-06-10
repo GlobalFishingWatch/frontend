@@ -327,6 +327,7 @@
     "title": "Dataset",
     "title_one": "Conjunto de dados",
     "title_other": "Datasets",
+    "typeBigQuery": "BigQuery",
     "typePoints": " Pontos",
     "typePointsDescription": "Exibir uma ou várias posições com rótulos no seu conjunto de dados",
     "typePolygons": " Polígonos",
@@ -1008,7 +1009,7 @@
     "infoLogin": "Register and login to see more details (free, 2 minutes)",
     "infoSource": "Fonte de informações",
     "infoSources": {
-      "both": "Registry and self reported",
+      "both": "Registro e AIS",
       "registry": "Registro",
       "selfReported": "Autodeclarado"
     },

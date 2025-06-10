@@ -405,6 +405,7 @@ export const getBigQueryEventsDataviewInstance = (
       {
         datasetId,
         params: [],
+        query: [{ id: 'datasets', value: [datasetId] }],
         endpoint: EndpointId.ClusterTiles,
       },
     ],

@@ -327,6 +327,7 @@
     "title": "Jeu de données",
     "title_one": "Jeu de données",
     "title_other": "Jeux de données",
+    "typeBigQuery": "BigQuery",
     "typePoints": " Points",
     "typePointsDescription": "Afficher une ou plusieurs points avec labels de votre jeu de données",
     "typePolygons": " Polygones",
@@ -1008,7 +1009,7 @@
     "infoLogin": "Register and login to see more details (free, 2 minutes)",
     "infoSource": "Source des informations",
     "infoSources": {
-      "both": "Registres et auto-déclarées",
+      "both": "Registres et AIS",
       "registry": "Registres",
       "selfReported": "Autodéclarées"
     },

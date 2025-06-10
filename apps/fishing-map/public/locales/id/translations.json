@@ -327,6 +327,7 @@
     "title": "Dataset",
     "title_one": "Dataset",
     "title_other": "Dataset",
+    "typeBigQuery": "BigQuery",
     "typePoints": " Poin",
     "typePointsDescription": "Tampilkan satu atau beberapa posisi dengan label di dataset Anda",
     "typePolygons": " Poligon",
@@ -1008,7 +1009,7 @@
     "infoLogin": "Register and login to see more details (free, 2 minutes)",
     "infoSource": "Sumber Info",
     "infoSources": {
-      "both": "Registry and self reported",
+      "both": "Registry and AIS",
       "registry": "Registri",
       "selfReported": "Dilaporkan sendiri"
     },

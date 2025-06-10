@@ -327,6 +327,7 @@
     "title": "Dataset",
     "title_one": "Dataset",
     "title_other": "Datasets",
+    "typeBigQuery": "BigQuery",
     "typePoints": "Points",
     "typePointsDescription": "Display one or multiple positions with labels in your dataset",
     "typePolygons": " Polygons",
@@ -1010,7 +1011,7 @@
     "infoLogin": "Register and login to see more details (free, 2 minutes)",
     "infoSource": "Info Source",
     "infoSources": {
-      "both": "Registry and self reported",
+      "both": "Registry and AIS",
       "registry": "Registry",
       "selfReported": "Self reported"
     },
@@ -1277,7 +1278,7 @@
     "emptyStateVesselGroups": "Add vessel groups to see group presence and operation footprint.",
     "emptyStateVessels": "Search for vessels or add them from the map.",
     "list": "Workspaces list",
-    "marineManagerLink": "See marine manager portal",
+    "marineManagerLink": "See map",
     "migrationDisclaimer": "Update your workspace to view the latest data and features.",
     "migrationDisclaimerNote": "Note, some vessel identity and activity information may change. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> Learn more.</a>",
     "migrationMaintain": "Skip",

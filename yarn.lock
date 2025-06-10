@@ -3754,6 +3754,7 @@ __metadata:
     "@types/file-saver": "npm:2.0.7"
     "@types/functional-red-black-tree": "npm:1.0.6"
     "@types/geojson": "npm:7946.0.16"
+    "@types/geokdbush": "npm:^1.1.5"
     "@types/jest": "npm:29.5.14"
     "@types/json2csv": "npm:5.0.7"
     "@types/lodash": "npm:4.17.16"
@@ -3815,6 +3816,7 @@ __metadata:
     functional-red-black-tree: "npm:1.0.1"
     geo-coordinates-parser: "npm:1.7.4"
     geojson: "npm:0.5.0"
+    geokdbush: "npm:^2.0.1"
     gl-matrix: "npm:3.4.3"
     google-auth-library: "npm:9.15.1"
     google-spreadsheet: "npm:4.1.4"
@@ -3835,6 +3837,7 @@ __metadata:
     jsdom: "npm:~26.1.0"
     jszip: "npm:3.10.1"
     jwt-decode: "npm:4.0.0"
+    kdbush: "npm:^4.0.2"
     knip: "npm:5.53.0"
     lint-staged: "npm:15.5.1"
     load-json-file: "npm:7.0.1"
@@ -14933,6 +14936,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/geokdbush@npm:^1.1.5":
+  version: 1.1.5
+  resolution: "@types/geokdbush@npm:1.1.5"
+  dependencies:
+    "@types/kdbush": "npm:^1"
+  checksum: 10/64e02d220880067ca053f6662359bb380788450a97b45dc2a92bc829283a24c1770bcc454fb2783debd69c683937e4204419d78bcf16c20ba15a383baae018c1
+  languageName: node
+  linkType: hard
+
 "@types/glob@npm:^7.1.1":
   version: 7.2.0
   resolution: "@types/glob@npm:7.2.0"
@@ -15073,6 +15085,13 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10/309fda20eb5f1cf68f2df28931afdf189c5e7e6bec64ac783ce737bb98908d57f6f58757ad5da9be37b815645a6f914e2d4f3ac66c574b8fe1ba6616284d0e97
+  languageName: node
+  linkType: hard
+
+"@types/kdbush@npm:^1":
+  version: 1.0.7
+  resolution: "@types/kdbush@npm:1.0.7"
+  checksum: 10/31b1865f5a401a1844fc5988793c543e209e2f1a98f529504e2dcf0ba43d908fd57741ebee6a21ad35dc6d67326d21a6d80898b515358c81d376eb4638302ff0
   languageName: node
   linkType: hard
 
@@ -23223,6 +23242,15 @@ __metadata:
   version: 0.5.0
   resolution: "geojson@npm:0.5.0"
   checksum: 10/7f821b9871d6095e2dcca3d7725e61f13dcf206ce83a1fc5ef746803ce49a5fd3d2d8e716c19dbf6d9ecd4153f4e09b4921a01e87c83ddcefa9e8579ecfe9264
+  languageName: node
+  linkType: hard
+
+"geokdbush@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "geokdbush@npm:2.0.1"
+  dependencies:
+    tinyqueue: "npm:^2.0.3"
+  checksum: 10/09225b73490c9d1cbf6896224cdfc39358bcdd88cb3a53331efc95789d18515a6d953f12cf6cc3203f1665453b204bda9b7513223cacc7fa40f9e40ad22c2f8d
   languageName: node
   linkType: hard
 

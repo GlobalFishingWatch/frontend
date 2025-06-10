@@ -327,6 +327,7 @@
     "title": "Datos",
     "title_one": "Datos",
     "title_other": "Datos",
+    "typeBigQuery": "BigQuery",
     "typePoints": " Puntos",
     "typePointsDescription": "Mostrar una o varias posiciones con etiquetas en los datos",
     "typePolygons": " Polígonos",
@@ -1008,7 +1009,7 @@
     "infoLogin": "Registra e inicia sesión para ver mas detalles (gratis, 2 minutos)",
     "infoSource": "Fuente de la Información",
     "infoSources": {
-      "both": "Registry and self reported",
+      "both": "Registro y AIS",
       "registry": "Registro",
       "selfReported": "Autodeclarado"
     },
