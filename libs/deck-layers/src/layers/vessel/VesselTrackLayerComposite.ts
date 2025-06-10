@@ -49,8 +49,6 @@ export class VesselTrackLayerComposite extends CompositeLayer<VesselTrackLayerCo
       const closestPoint = this.state.points[nearestIds[0]]
       if (closestPoint) {
         object.timestamp = closestPoint.timestamp || undefined
-        object.speed = closestPoint.speed || undefined
-        object.depth = closestPoint.elevation || undefined
         const nextPoint = this.state.points[nearestIds[0] + 1]
         if (nextPoint) {
           const pointBearing = rhumbBearing(

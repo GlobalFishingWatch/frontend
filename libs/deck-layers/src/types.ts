@@ -23,6 +23,7 @@ import type { UserLayerPickingObject } from './layers/user'
 import type {
   VesselEventPickingInfo,
   VesselEventPickingObject,
+  VesselPositionPickingObject,
   VesselTrackPickingObject,
 } from './layers/vessel'
 import type { VesselLayer } from './layers/vessel/VesselLayer'
@@ -67,6 +68,7 @@ export type DeckLayerPickingObject =
   | RulerPickingObject
   | VesselTrackPickingObject
   | VesselEventPickingObject
+  | VesselPositionPickingObject
   | DrawPickingObject
   | PolygonPickingObject
   | PMTilePickingObject

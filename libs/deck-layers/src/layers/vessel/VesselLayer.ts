@@ -44,7 +44,9 @@ import type {
   VesselEventPickingInfo,
   VesselEventPickingObject,
   VesselEventProperties,
+  VesselPositionProperties,
   VesselTrackPickingInfo,
+  VesselTrackPickingObject,
   VesselTrackProperties,
 } from './vessel.types'
 import type { GetSegmentsFromDataParams } from './vessel.utils'
@@ -99,28 +101,43 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   getPickingInfo = ({
     info,
   }: {
-    info: PickingInfo<VesselEventProperties | VesselTrackProperties>
+    info: PickingInfo<VesselEventProperties | VesselTrackProperties | VesselPositionProperties>
   }): VesselEventPickingInfo | VesselTrackPickingInfo => {
     const vesselId = this.props.id.replace('vessel-', '')
+
     const baseObject = {
+      ...(info.object || ({} as VesselTrackProperties | VesselEventProperties)),
       layerId: this.root.id,
       title: this.props.name,
       vesselId,
       id: vesselId,
-      category: DataviewCategory.Vessels,
       color: deckToHexColor(this.props.color),
+      category: DataviewCategory.Vessels,
     }
-    if ((info.object as VesselTrackProperties)?.subcategory === DataviewType.Track) {
-      const object = {
-        ...(info.object || ({} as VesselTrackProperties)),
-        ...baseObject,
-        subcategory: DataviewType.Track,
+
+    if (
+      info.sourceLayer instanceof VesselTrackLayerComposite ||
+      info.sourceLayer instanceof VesselPositionLayer
+    ) {
+      const { timestamp, speed, depth, course } =
+        info.sourceLayer instanceof VesselTrackLayerComposite
+          ? (info.object as VesselTrackProperties)
+          : (info.object as VesselPositionProperties).properties
+      return {
+        ...info,
+        object: {
+          ...baseObject,
+          subcategory: DataviewType.Track,
+          timestamp,
+          speed,
+          depth,
+          course,
+          interactionType: info.sourceLayer instanceof VesselPositionLayer ? 'point' : 'segment',
+        } as VesselTrackPickingObject,
       }
-      return { ...info, object } as VesselTrackPickingInfo
     }
 
     const object = {
-      ...(info.object || ({} as VesselEventProperties)),
       ...baseObject,
       subcategory: DataviewType.VesselEvents,
     }
@@ -371,7 +388,11 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     ]
     const pointBearing = rhumbBearing(pointCoords, nextPointCoords)
     const centerPoint = point(pointCoords, {
-      course: 360 - bearingToAzimuth(pointBearing),
+      layerId: this.root.id,
+      course: pointBearing,
+      timestamp: trackData[chunkIndex].attributes.getTimestamp.value[timestampIndex],
+      speed: trackData[chunkIndex].attributes.getSpeed.value[timestampIndex],
+      depth: trackData[chunkIndex].attributes.getElevation.value[timestampIndex],
     })
 
     if (!centerPoint) return []
@@ -384,9 +405,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
           getIcon: () => 'vessel',
           getPosition: (d: any) => d.geometry.coordinates,
-          getAngle: (d: any) => d.properties.course,
+          getAngle: (d: any) => 360 - bearingToAzimuth(d.properties.course),
           getColor: hexToDeckColor(BLEND_BACKGROUND),
           getSize: 18,
+          pickable: true,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
         })
       ),
@@ -398,7 +420,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
           getIcon: () => 'vessel',
           getPosition: (d: any) => d.geometry.coordinates,
-          getAngle: (d: any) => d.properties.course,
+          getAngle: (d: any) => 360 - bearingToAzimuth(d.properties.course),
           getColor: color,
           getSize: 15,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
@@ -412,7 +434,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           iconMapping: VESSEL_SPRITE_ICON_MAPPING,
           getIcon: () => 'vesselHighlight',
           getPosition: (d: any) => d.geometry.coordinates,
-          getAngle: (d: any) => d.properties.course,
+          getAngle: (d: any) => 360 - bearingToAzimuth(d.properties.course),
           getColor: [255, 255, 255, 255],
           getSize: 15,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),

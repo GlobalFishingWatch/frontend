@@ -23,6 +23,7 @@ import type {
   FourwingsHeatmapPickingObject,
   FourwingsPositionsPickingObject,
   VesselEventPickingObject,
+  VesselTrackPickingObject,
 } from '@globalfishingwatch/deck-layers'
 
 import { trackEvent } from 'features/app/analytics.hooks'
@@ -62,6 +63,7 @@ import {
   isRulerLayerPoint,
   isTilesClusterLayer,
   isTilesClusterLayerCluster,
+  isTrackSegment,
 } from './map-interaction.utils'
 import { useSetMapCoordinates } from './map-viewport.hooks'
 
@@ -497,6 +499,9 @@ export const useMapMouseClick = () => {
         return false
       }
       const clickInteraction = getPickingInteraction(info, 'click')
+      if (clickInteraction?.features?.length === 1 && info.object?.interactionType === 'segment') {
+        return
+      }
       if (clickInteraction) {
         dispatchClickedEvent(clickInteraction)
       }
@@ -514,7 +519,9 @@ export const useMapCursor = () => {
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { rulersEditing } = useRulers()
   const hoverFeatures = useMapHoverInteraction()?.features
-  const hoverFeaturesHash = hoverFeatures?.map((f) => f.id).join()
+  const hoverFeaturesHash = hoverFeatures
+    ?.map((f) => `${f.id}-${(f as VesselTrackPickingObject).interactionType ?? ''}`)
+    .join()
 
   const getCursor = useCallback(
     ({ isDragging }: { isDragging: boolean }) => {
@@ -545,7 +552,10 @@ export const useMapCursor = () => {
         return 'grabbing'
       }
       if (hoverFeatures?.length) {
-        return 'pointer'
+        if (hoverFeatures?.some((f) => !isTrackSegment(f))) {
+          return 'pointer'
+        }
+        return 'grab'
       }
       return 'grab'
     },
