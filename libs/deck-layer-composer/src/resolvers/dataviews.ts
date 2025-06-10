@@ -241,7 +241,7 @@ const DATAVIEWS_LAYER_ORDER: DataviewType[] = [
   DataviewType.HeatmapStatic,
   DataviewType.Heatmap,
   DataviewType.HeatmapAnimated,
-  DataviewType.TileCluster,
+  DataviewType.FourwingsTileCluster,
   DataviewType.Track,
   DataviewType.VesselEvents,
   DataviewType.VesselEventsShapes,

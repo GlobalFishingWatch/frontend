@@ -400,7 +400,7 @@ export const getBigQueryEventsDataviewInstance = (
   const contextDataviewInstance = {
     id: `${BIG_QUERY_EVENTS_PREFIX}${Date.now()}`,
     dataviewId: TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
-    // category: DataviewCategory.Events,
+    category: DataviewCategory.Events,
     datasetsConfig: [
       {
         datasetId,

@@ -98,7 +98,7 @@ export const FILTER_OPERATOR_SQL: Record<FilterOperator, string> = {
 export const FILTERABLE_GENERATORS: DataviewType[] = [
   DataviewType.HeatmapAnimated,
   DataviewType.HeatmapStatic,
-  DataviewType.TileCluster,
+  DataviewType.FourwingsTileCluster,
   DataviewType.UserContext,
   DataviewType.UserPoints,
 ]
