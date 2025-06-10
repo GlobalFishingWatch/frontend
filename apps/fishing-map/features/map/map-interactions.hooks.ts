@@ -221,12 +221,13 @@ export const useClickedEventConnect = () => {
         (f) => f.category === DataviewCategory.Events && isTilesClusterLayer(f)
       ) as SliceExtendedClusterPickingObject
 
-      const dataset = eventsDataviews?.find((d) => d.id === tileClusterFeature.layerId)
-        ?.datasets?.[0]
-
-      if (tileClusterFeature && !getIsBQEditorDataset(dataset!)) {
-        const eventsPromise = dispatch(fetchClusterEventThunk(tileClusterFeature as any))
-        setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
+      if (tileClusterFeature) {
+        const dataset = eventsDataviews?.find((d) => d.id === tileClusterFeature?.layerId)
+          ?.datasets?.[0]
+        if (!getIsBQEditorDataset(dataset!)) {
+          const eventsPromise = dispatch(fetchClusterEventThunk(tileClusterFeature as any))
+          setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
+        }
       }
     },
     [dispatch, eventsDataviews, setInteractionPromises]
