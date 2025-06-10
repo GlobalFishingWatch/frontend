@@ -1,10 +1,22 @@
 import { useEffect } from 'react'
-import Markdown from 'react-markdown'
-import type { Heading, Root } from 'mdast'
+import Markdown, { defaultUrlTransform } from 'react-markdown'
+import type { Heading, PhrasingContent, Root } from 'mdast'
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import type { Plugin } from 'unified'
 import { visit } from 'unist-util-visit'
+
+const extractText = (node: PhrasingContent): string => {
+  if ('value' in node && typeof node.value === 'string') {
+    return node.value
+  }
+
+  if ('children' in node && Array.isArray(node.children)) {
+    return node.children.map(extractText).join('')
+  }
+
+  return ''
+}
 
 const remarkCollapseH2: Plugin<[], Root> = () => {
   return (tree: Root) => {
@@ -13,7 +25,6 @@ const remarkCollapseH2: Plugin<[], Root> = () => {
       value: `
         <style>
           details summary {
-            list-style: none;
             cursor: pointer;
             display: inline-flex;
             justify-content: center;
@@ -32,7 +43,7 @@ const remarkCollapseH2: Plugin<[], Root> = () => {
             margin-left: 0.5em;
           }
 
-                  details .copy {
+          details .copy {
             display: none;
           }
           details[open] .copy {
@@ -89,10 +100,18 @@ const remarkCollapseH2: Plugin<[], Root> = () => {
             max-width: 30rem;
         }
 
-            .tooltip-wrapper:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-            }
+        .tooltip-wrapper:hover .tooltip-text {
+          visibility: visible;
+          opacity: 1;
+          }
+
+        details ol {
+          padding-left: 5rem;
+          }
+
+        details h3 {
+            font-weight: var(--GFW-font-bold) !important;
+        }
         </style>
       `,
     }
@@ -110,7 +129,7 @@ const remarkCollapseH2: Plugin<[], Root> = () => {
       ) {
         return
       }
-      const title = node.children.map((child) => ('value' in child ? child.value : '')).join('')
+      const title = node.children.map(extractText).join('')
 
       const id = title
         .toLowerCase()
@@ -222,6 +241,7 @@ function EnhancedMarkdown({ content }: { content: string }) {
     <Markdown
       rehypePlugins={[rehypeRaw]}
       remarkPlugins={[remarkCollapseH2, [remarkGfm, { singleTilde: false }]]}
+      urlTransform={(url: string) => (url.startsWith('data:') ? url : defaultUrlTransform(url))}
     >
       {content}
     </Markdown>
