@@ -35,6 +35,9 @@ function VesselTracksTooltipSection({
         const dataview = dataviews.find((d) => d.id === title)
         const dataset = dataview?.datasets?.find((d) => d.id === datasetId)
         const rowTitle = dataset ? getDatasetLabel(dataset) : title
+        if (showFeaturesDetails && featureByType[0].interactionType === 'segment') {
+          return null
+        }
         return (
           <div key={`${featureByType[0].title}-${index}`} className={styles.popupSection}>
             <Icon
@@ -50,7 +53,7 @@ function VesselTracksTooltipSection({
                     <div className={styles.rowText}>
                       <p>
                         {!showFeaturesDetails && formatInfoField(feature.title, 'shipname')}{' '}
-                        {feature.timestamp && (
+                        {featureByType[0].interactionType === 'point' && feature.timestamp && (
                           <span className={cx({ [styles.secondary]: !showFeaturesDetails })}>
                             <I18nDate date={feature.timestamp} format={DateTime.DATETIME_MED} />
                           </span>

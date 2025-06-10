@@ -83,7 +83,6 @@ function PopupWrapper({
 
   if (!mapViewport || !latitude || !longitude) return null
   const [left, top] = mapViewport.project([longitude, latitude])
-
   return (
     <div
       ref={refs.setReference}

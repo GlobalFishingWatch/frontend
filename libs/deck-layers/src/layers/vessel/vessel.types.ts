@@ -33,6 +33,8 @@ export type VesselEventProperties = ApiEvent & {
   vesselId: string
 }
 
+export type VesselTrackInteractionType = 'segment' | 'point'
+
 export type VesselTrackProperties = {
   color: string
   title: string
@@ -42,6 +44,17 @@ export type VesselTrackProperties = {
   speed?: number
   depth?: number
   subcategory?: DeckLayerSubcategory
+  interactionType?: VesselTrackInteractionType
+}
+
+export type VesselPositionProperties = {
+  interactionType?: VesselTrackInteractionType
+  properties: {
+    timestamp?: number
+    speed?: number
+    depth?: number
+    course?: number
+  }
 }
 
 export type TrackLabelerPoint = {
@@ -61,3 +74,10 @@ export type VesselEventPickingInfo = PickingInfo<VesselEventPickingObject, { til
 export type VesselTrackPickingObject = VesselTrackProperties &
   DeckPickingObject<Record<string, unknown>>
 export type VesselTrackPickingInfo = PickingInfo<VesselTrackPickingObject, { tile?: Tile2DHeader }>
+
+export type VesselPositionPickingObject = VesselPositionProperties &
+  DeckPickingObject<Record<string, unknown>>
+export type VesselPositionPickingInfo = PickingInfo<
+  VesselPositionPickingObject,
+  { tile?: Tile2DHeader }
+>
