@@ -29,25 +29,25 @@
   --white-rgb: 255, 255, 255; /* rgb(255, 255, 255) */
 
   /* COLORS */
-  --color-primary-blue: rgb(var(--primary-blue-rgb));
+  --color-primary-blue: rgba(var(--primary-blue-rgb));
   --color-primary-blue-hover: rgba(var(--primary-blue-rgb), var(--opacity-hover));
   --color-secondary-blue: rgba(var(--primary-blue-rgb), var(--opacity-secondary));
   --color-terthiary-blue: rgba(var(--primary-blue-rgb), var(--opacity-terthiary));
-  --color-danger-red: rgb(var(--danger-red-rgb));
+  --color-danger-red: rgba(var(--danger-red-rgb));
   --color-danger-red-background: #f6bdbd;
   --color-danger-secondary-red: rgba(var(--danger-red-rgb), var(--opacity-secondary));
-  --color-help-yellow: rgb(var(--help-yellow-rgb));
-  --color-gradient: rgb(var(--gradient-rgb));
-  --color-off-white: rgb(var(--off-white-rgb));
-  --color-white: rgb(var(--white-rgb));
+  --color-help-yellow: rgba(var(--help-yellow-rgb));
+  --color-gradient: rgba(var(--gradient-rgb));
+  --color-off-white: rgba(var(--off-white-rgb));
+  --color-white: rgba(var(--white-rgb));
   --gradient: linear-gradient(180deg, var(--color-gradient) 0, var(--color-white) 70rem);
   --color-map-background: #002457;
   --color-highlight-blue: #6aecf9;
 
   /* ENCOUNTER STATUS COLORS */
-  --color-encounter-status-pending: rgb(175, 187, 202);
-  --color-encounter-status-authorized: rgb(250, 233, 160);
-  --color-encounter-status-unauthorized: rgb(216, 86, 118);
+  --color-encounter-status-pending: rgba(175, 187, 202);
+  --color-encounter-status-authorized: rgba(250, 233, 160);
+  --color-encounter-status-unauthorized: rgba(216, 86, 118);
 
   /* OPACITIES */
   --opacity-hover: 0.9;
@@ -141,7 +141,6 @@ button {
   color: inherit;
 }
 
-ol,
 ul {
   list-style: none;
 }
