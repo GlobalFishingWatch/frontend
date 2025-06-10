@@ -54,7 +54,7 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
   },
   {
     id: 'costa_rica_1-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-costa-rica.jpg`,
     reports: [
       {
         id: 'costa_rica-public',
@@ -63,7 +63,7 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
   },
   {
     id: 'colombia_3-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-colombia.jpg`,
     reports: [
       {
         id: 'colombia-public',
@@ -72,7 +72,7 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
   },
   {
     id: 'panama_1-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-panama.jpg`,
     reports: [
       {
         id: 'panama-public',
@@ -81,7 +81,7 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
   },
   {
     id: 'cmar_core_mpas-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-core-cmar.jpg`,
     reports: [
       {
         id: 'cmar_core_mpas-public',
@@ -100,7 +100,7 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
   // },
   {
     id: 'galapagos_and_hermandad-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-galapagos-hermandad.jpg`,
     reports: [
       {
         id: 'galapagos_and_hermandad-public',
@@ -109,7 +109,7 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
   },
   {
     id: 'revillagigedo-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-revillagigedo.jpg`,
     reports: [
       {
         id: 'revillagigedo_mexico-public',
