@@ -84,7 +84,7 @@ export const getSegmentsFromData = memoize(
       const initialSegmentTimestamp = timestamps[segmentIndex / timestampSize]
       const finalSegmentTimestamp = isLastSegment
         ? timestamps[timestamps.length - 1]
-        : timestamps[nextSegmentIndex / timestampSize - 1]
+        : timestamps[nextSegmentIndex * timestampSize - 1]
 
       if (
         (!startTime || initialSegmentTimestamp > startTime) &&
@@ -97,10 +97,10 @@ export const getSegmentsFromData = memoize(
           }),
           timestamp: initialSegmentTimestamp,
           ...(speedSize && {
-            speed: speeds?.[segmentIndex / speedSize] || 0,
+            speed: speeds?.[segmentIndex * speedSize] || 0,
           }),
           ...(elevationSize && {
-            elevation: elevations?.[segmentIndex / elevationSize] || 0,
+            elevation: elevations?.[segmentIndex * elevationSize] || 0,
           }),
         })
       }
@@ -115,12 +115,12 @@ export const getSegmentsFromData = memoize(
                 latitude: positions[index * pathSize + 1],
               }),
 
-              timestamp: timestamps[index / timestampSize],
+              timestamp: timestamps[index * timestampSize],
               ...(speedSize && {
-                speed: speeds?.[index / speedSize] || 0,
+                speed: speeds?.[index * speedSize] || 0,
               }),
               ...(elevationSize && {
-                elevation: elevations?.[index / elevationSize] || 0,
+                elevation: elevations?.[index * elevationSize] || 0,
               }),
             })
           }
@@ -144,13 +144,13 @@ export const getSegmentsFromData = memoize(
         } else {
           points.push({
             ...(includeCoordinates && {
-              longitude: positions[nextSegmentIndex / pathSize - 1],
-              latitude: positions[nextSegmentIndex / timestampSize + 1],
+              longitude: positions[nextSegmentIndex * pathSize],
+              latitude: positions[nextSegmentIndex * pathSize + 1],
             }),
             timestamp: finalSegmentTimestamp,
-            ...(speedSize && { speed: speeds?.[nextSegmentIndex / speedSize - 1] || 0 }),
+            ...(speedSize && { speed: speeds?.[nextSegmentIndex * speedSize - 1] || 0 }),
             ...(elevationSize && {
-              elevation: elevations?.[nextSegmentIndex / elevationSize - 1] || 0,
+              elevation: elevations?.[nextSegmentIndex * elevationSize - 1] || 0,
             }),
           })
         }

@@ -1,11 +1,4 @@
-import type {
-  Color,
-  Layer,
-  LayerProps,
-  LayersList,
-  PickingInfo,
-  UpdateParameters,
-} from '@deck.gl/core'
+import type { Color, LayerProps, PickingInfo, UpdateParameters } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { DataFilterExtension } from '@deck.gl/extensions'
 import bbox from '@turf/bbox'
@@ -437,7 +430,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     ]
   }
 
-  renderLayers(): Layer<Record<string, unknown>> | LayersList {
+  renderLayers() {
     return [
       ...this._getVesselTrackLayers(),
       ...this._getVesselEventLayers(),
@@ -448,7 +441,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   getTrackLayers() {
     return this.getSubLayers().filter((l) =>
       l.id.includes(TRACK_LAYER_TYPE)
-    ) as VesselTrackLayerComposite[]
+    ) as unknown as VesselTrackLayerComposite[]
   }
 
   getEventLayers() {

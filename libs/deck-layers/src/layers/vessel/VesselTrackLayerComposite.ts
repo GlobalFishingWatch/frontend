@@ -1,10 +1,17 @@
-import type { Layer, LayerDataSource, LayerProps, LayersList, PickingInfo } from '@deck.gl/core'
+import type { Layer, LayerProps, LayersList, PickingInfo, UpdateParameters } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import { distance, rhumbBearing } from '@turf/turf'
+import { rhumbBearing } from '@turf/turf'
 import type { Position } from 'geojson'
+import * as geokdbush from 'geokdbush'
+import KDBush from 'kdbush'
 
-import { DataviewType, type TrackSegment } from '@globalfishingwatch/api-types'
-import { COLOR_TRANSPARENT, type GetSegmentsFromDataParams } from '@globalfishingwatch/deck-layers'
+import { DataviewType, type TrackPoint, type TrackSegment } from '@globalfishingwatch/api-types'
+import {
+  COLOR_TRANSPARENT,
+  getSegmentsFromData,
+  type GetSegmentsFromDataParams,
+} from '@globalfishingwatch/deck-layers'
+import type { VesselTrackData } from '@globalfishingwatch/deck-loaders'
 
 import type {
   VesselDataType,
@@ -18,49 +25,34 @@ export type VesselTrackLayerCompositeProps = _VesselTrackLayerProps & LayerProps
 
 export class VesselTrackLayerComposite extends CompositeLayer<VesselTrackLayerCompositeProps> {
   static layerName = 'VesselTrackLayerComposite'
+  state: {
+    points: TrackPoint[]
+    pointIndex: KDBush
+  } = {
+    points: [],
+    pointIndex: new KDBush(0),
+  }
 
-  getPickingInfo(params: { info: PickingInfo<VesselTrackPickingObject> }) {
+  getPickingInfo = (params: { info: PickingInfo<VesselTrackPickingObject> }) => {
     const { info } = params
     const object = {
       ...(info.object || ({} as VesselTrackProperties)),
       subcategory: DataviewType.Track,
     }
-
-    const trackLayer = info.sourceLayer as VesselTrackLayer
-
-    const segments = trackLayer.getSegments({
-      includeMiddlePoints: true,
-      includeCoordinates: true,
-      startTime: this.props.startTime,
-      endTime: this.props.endTime,
-    })
-    if (segments?.length) {
-      // Find the closest point to the hover coordinate
-      let closestSegmentIndex
-      let closestPointIndex
-      let minDistance = Number.MAX_VALUE
-
-      segments.forEach((points, segmentIndex) => {
-        for (let i = 0; i < points.length - 1; i++) {
-          const point = points[i]
-          const pointDistance = distance(info.coordinate as Position, [
-            point.longitude!,
-            point.latitude!,
-          ])
-          if (pointDistance < minDistance) {
-            minDistance = pointDistance
-            closestSegmentIndex = segmentIndex
-            closestPointIndex = i
-          }
-        }
-      })
-      if (closestSegmentIndex !== undefined && closestPointIndex !== undefined) {
-        const closestPoint = segments[closestSegmentIndex][closestPointIndex]
-        if (closestPoint) {
-          object.timestamp = closestPoint.timestamp || undefined
-          object.speed = closestPoint.speed || undefined
-          object.depth = closestPoint.elevation || undefined
-          const nextPoint = segments[closestSegmentIndex][closestPointIndex + 1]
+    if (this.state.points?.length && info.coordinate) {
+      const nearestIds = geokdbush.around(
+        this.state.pointIndex,
+        info.coordinate[0]!,
+        info.coordinate[1]!,
+        1
+      ) as number[]
+      const closestPoint = this.state.points[nearestIds[0]]
+      if (closestPoint) {
+        object.timestamp = closestPoint.timestamp || undefined
+        object.speed = closestPoint.speed || undefined
+        object.depth = closestPoint.elevation || undefined
+        const nextPoint = this.state.points[nearestIds[0] + 1]
+        if (nextPoint) {
           const pointBearing = rhumbBearing(
             [closestPoint.longitude, closestPoint.latitude] as Position,
             [nextPoint.longitude, nextPoint.latitude] as Position
@@ -69,18 +61,48 @@ export class VesselTrackLayerComposite extends CompositeLayer<VesselTrackLayerCo
         }
       }
     }
-
     return { ...info, object }
+  }
+
+  updateState = ({
+    changeFlags,
+    oldProps,
+  }: UpdateParameters<Layer<VesselTrackLayerCompositeProps>>) => {
+    if (
+      changeFlags.dataChanged ||
+      oldProps.startTime !== this.props.startTime ||
+      oldProps.endTime !== this.props.endTime
+    ) {
+      const segments = this.getSegments({
+        includeMiddlePoints: true,
+        includeCoordinates: true,
+        startTime: this.props.startTime,
+        endTime: this.props.endTime,
+      })
+      if (segments?.length) {
+        const points = segments.flatMap((segment) => (segment.length ? segment : []))
+        if (points.length) {
+          this.setState({
+            points,
+            pointIndex: new KDBush(points.length),
+          })
+          points.forEach(({ longitude, latitude }) => {
+            this.state.pointIndex.add(longitude!, latitude!)
+          })
+          this.state.pointIndex.finish()
+        }
+      }
+    }
   }
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList {
     const { id, data, ...props } = this.props
 
-    // Create a transparent thicker layer for better interactivity
+    // Transparent thicker layer for interactivity
     const interactiveLayer = new VesselTrackLayer<TrackSegment[], { type: VesselDataType }>({
       ...props,
       id: `${id}-interactive`,
-      data: data as LayerDataSource<TrackSegment[]>,
+      data: data as TrackSegment[],
       getWidth: 10,
       getColor: COLOR_TRANSPARENT,
       pickable: true,
@@ -92,46 +114,38 @@ export class VesselTrackLayerComposite extends CompositeLayer<VesselTrackLayerCo
       colorBy: undefined,
     })
 
-    // Create the normal track layer
+    // Visisble track layer
     const trackLayer = new VesselTrackLayer<TrackSegment[], { type: VesselDataType }>({
       ...props,
       id: `${id}-track`,
-      data: data as LayerDataSource<TrackSegment[]>,
+      data: data as TrackSegment[],
       getWidth: 1.5,
     })
 
-    return [interactiveLayer, trackLayer]
+    return [interactiveLayer, trackLayer] as LayersList
   }
 
   getData() {
-    const interactiveLayer = this.getSubLayers()[0] as VesselTrackLayer<
-      TrackSegment[],
-      { type: VesselDataType }
-    >
-    return interactiveLayer.getData()
+    return this.props.data as VesselTrackData
   }
 
   getSegments(params: GetSegmentsFromDataParams) {
-    const interactiveLayer = this.getSubLayers()[0] as VesselTrackLayer<
-      TrackSegment[],
-      { type: VesselDataType }
-    >
-    return interactiveLayer.getSegments(params)
+    return getSegmentsFromData(this.props.data as VesselTrackData, params)
   }
 
   getGraphExtent(graph: 'speed' | 'elevation') {
-    const interactiveLayer = this.getSubLayers()[0] as VesselTrackLayer<
+    const interactiveLayer = this.getSubLayers()?.[0] as VesselTrackLayer<
       TrackSegment[],
       { type: VesselDataType }
     >
-    return interactiveLayer.getGraphExtent(graph)
+    return interactiveLayer?.getGraphExtent(graph)
   }
 
   getBbox(params: { startDate?: number | string; endDate?: number | string }) {
-    const interactiveLayer = this.getSubLayers()[0] as VesselTrackLayer<
+    const interactiveLayer = this.getSubLayers()?.[0] as VesselTrackLayer<
       TrackSegment[],
       { type: VesselDataType }
     >
-    return interactiveLayer.getBbox(params)
+    return interactiveLayer?.getBbox(params)
   }
 }
