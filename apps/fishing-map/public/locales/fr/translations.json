@@ -327,6 +327,7 @@
     "title": "Jeu de données",
     "title_one": "Jeu de données",
     "title_other": "Jeux de données",
+    "typeBigQuery": "BigQuery",
     "typePoints": " Points",
     "typePointsDescription": "Afficher une ou plusieurs points avec labels de votre jeu de données",
     "typePolygons": " Polygones",

@@ -16,6 +16,7 @@ export type FourwingsClusterEventType =
   | `${EventTypes.Gap}`
   | `${EventTypes.Port}`
   | `${EventTypes.Loitering}`
+  | 'user' // Used for BigQuery user datasets
 
 export type FourwingsClusterMode = FourwingsGeolocation | 'positions'
 

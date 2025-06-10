@@ -327,6 +327,7 @@
     "title": "Dataset",
     "title_one": "Dataset",
     "title_other": "Datasets",
+    "typeBigQuery": "BigQuery",
     "typePoints": "Points",
     "typePointsDescription": "Display one or multiple positions with labels in your dataset",
     "typePolygons": " Polygons",
