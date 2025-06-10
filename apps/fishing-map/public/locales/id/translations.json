@@ -327,6 +327,7 @@
     "title": "Dataset",
     "title_one": "Dataset",
     "title_other": "Dataset",
+    "typeBigQuery": "BigQuery",
     "typePoints": " Poin",
     "typePointsDescription": "Tampilkan satu atau beberapa posisi dengan label di dataset Anda",
     "typePolygons": " Poligon",

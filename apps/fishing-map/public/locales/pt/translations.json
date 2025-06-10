@@ -327,6 +327,7 @@
     "title": "Dataset",
     "title_one": "Conjunto de dados",
     "title_other": "Datasets",
+    "typeBigQuery": "BigQuery",
     "typePoints": " Pontos",
     "typePointsDescription": "Exibir uma ou várias posições com rótulos no seu conjunto de dados",
     "typePolygons": " Polígonos",
