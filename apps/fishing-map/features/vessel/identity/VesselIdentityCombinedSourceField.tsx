@@ -5,16 +5,14 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { DateTime } from 'luxon'
 
-import { VesselIdentitySourceEnum, type VesselInfo } from '@globalfishingwatch/api-types'
-import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import { SelfReportedSource, type VesselInfo } from '@globalfishingwatch/api-types'
 import { Icon, Tooltip } from '@globalfishingwatch/ui-components'
 
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
-import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
-import { formatInfoField } from 'utils/info'
+import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
 import styles from './VesselIdentity.module.css'
 
@@ -27,7 +25,6 @@ const VesselIdentityCombinedSourceField = ({
   property,
 }: VesselIdentityCombinedSourceFieldProps) => {
   const { t } = useTranslation()
-  const vesselInfo = useSelector(selectVesselInfoData)
   const isGFWUser = useSelector(selectIsGFWUser)
   const [geartypesExpanded, setGeartypesExpanded] = useState<number | null>(null)
   const combinedSource = identity?.combinedSourcesInfo?.[property]
@@ -115,16 +112,17 @@ const VesselIdentityCombinedSourceField = ({
                     <li>
                       <Tooltip content="Vessel self-reports as a fishing vessel in AIS messages 98% or more of the time.">
                         <span className={cx(styles.secondary, styles.help)}>
-                          AIS self-reported:{' '}
+                          {identity.sourceCode.includes(SelfReportedSource.Ais) ? 'AIS' : 'VMS'}{' '}
+                          self-reported:{' '}
                         </span>
                       </Tooltip>
-                      {selfReportedGearType}
+                      {selfReportedGearType || EMPTY_FIELD_PLACEHOLDER}
                     </li>
                     <li>
                       <Tooltip content="Data table and specific field the GFW gear type value is populated from">
                         <span className={cx(styles.secondary, styles.help)}>BQ Source: </span>
                       </Tooltip>
-                      {bqSource.toLowerCase()}
+                      {bqSource?.toLowerCase() || EMPTY_FIELD_PLACEHOLDER}
                     </li>
                   </ul>
                 )}
