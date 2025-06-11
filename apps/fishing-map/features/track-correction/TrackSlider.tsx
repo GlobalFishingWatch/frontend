@@ -1,6 +1,7 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Slider, SliderOutput, SliderThumb, SliderTrack } from 'react-aria-components'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { scaleLinear } from 'd3-scale'
 import { throttle } from 'es-toolkit'
 import { DateTime } from 'luxon'
@@ -11,6 +12,10 @@ import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { useAppDispatch } from 'features/app/app.hooks'
 import I18nDate from 'features/i18n/i18nDate'
 import { disableHighlightedTime, setHighlightedTime } from 'features/timebar/timebar.slice'
+import {
+  selectTrackCorrectionTimerange,
+  setTrackCorrectionTimerange,
+} from 'features/track-correction/track-correction.slice'
 
 // import './TrackSlider.css'
 import styles from './TrackSlider.module.css'
@@ -19,8 +24,6 @@ type SegmentsTimelineProps = Omit<TrackSliderProps, 'onTimerangeChange'> & {
   color?: string
   width?: number
   height?: number
-  startTime: number
-  endTime: number
   selectedStartTime?: number
   selectedEndTime?: number
 }
@@ -30,8 +33,8 @@ function TrackSegmentsTimeline({
   color = '#163f89',
   width = 333,
   height = 30,
-  startTime,
-  endTime,
+  rangeStartTime,
+  rangeEndTime,
   selectedStartTime,
   selectedEndTime,
 }: SegmentsTimelineProps) {
@@ -48,7 +51,7 @@ function TrackSegmentsTimeline({
     const scaledHeight = height * scale
     ctx.clearRect(0, 0, scaledWidth, scaledHeight)
 
-    const xScale = scaleLinear().domain([startTime, endTime]).range([0, scaledWidth])
+    const xScale = scaleLinear().domain([rangeStartTime, rangeEndTime]).range([0, scaledWidth])
 
     const pointSize = 2 * scale
     const lineWidth = 1 * scale
@@ -80,7 +83,16 @@ function TrackSegmentsTimeline({
         }
       })
     })
-  }, [color, selectedStartTime, selectedEndTime, segments, startTime, endTime, width, height])
+  }, [
+    color,
+    selectedStartTime,
+    selectedEndTime,
+    segments,
+    rangeStartTime,
+    rangeEndTime,
+    width,
+    height,
+  ])
 
   return (
     <canvas
@@ -96,61 +108,73 @@ function TrackSegmentsTimeline({
 type TrackSliderProps = {
   segments?: TrackSegment[]
   color?: string
-  startTime: number
-  endTime: number
+  rangeStartTime: number
+  rangeEndTime: number
   onTimerangeChange: (start: number, end: number) => void
 }
 
 function TrackSlider({
   segments,
   color = '#163f89',
-  startTime,
-  endTime,
+  rangeStartTime,
+  rangeEndTime,
   onTimerangeChange,
 }: TrackSliderProps) {
   const { t } = useTranslation()
   const initialPoint = segments?.[0]?.[0]
   const finalPoint = segments?.[segments.length - 1]?.[segments[segments.length - 1].length - 1]
-  const [value, setValue] = useState([startTime, endTime])
+  const { start, end } = useSelector(selectTrackCorrectionTimerange)
   const dispatch = useAppDispatch()
+  const startTime = getUTCDateTime(start).toMillis()
+  const endTime = getUTCDateTime(end).toMillis()
+
+  useEffect(() => {
+    if (!start || !end) {
+      dispatch(
+        setTrackCorrectionTimerange({
+          start: getUTCDateTime(rangeStartTime!).toISO() ?? start,
+          end: getUTCDateTime(rangeEndTime!).toISO() ?? end,
+        })
+      )
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, rangeStartTime, rangeEndTime])
 
   const throttledHighlightTime = useMemo(
     () =>
       throttle(({ start, end }: { start: string; end: string }) => {
-        dispatch(setHighlightedTime({ start, end }))
+        dispatch(setTrackCorrectionTimerange({ start, end }))
       }, 300),
     [dispatch]
   )
 
-  useEffect(() => {
-    setValue([startTime, endTime])
-    return () => {
-      dispatch(disableHighlightedTime())
-    }
-  }, [startTime, endTime, dispatch])
-
   const onSliderChange = useCallback(
     (value: number[]) => {
-      setValue(value)
       const start = getUTCDateTime(value[0])
       const end = getUTCDateTime(value[1])
       if (start && end) {
-        throttledHighlightTime({ start: start.toISO() as string, end: end.toISO() as string })
+        dispatch(
+          setTrackCorrectionTimerange({
+            start: start.toISO() as string,
+            end: end.toISO() as string,
+          })
+        )
+        // throttledHighlightTime({ start: start.toISO() as string, end: end.toISO() as string })
         if (onTimerangeChange) {
           onTimerangeChange(start.toMillis(), end.toMillis())
         }
       }
     },
-    [throttledHighlightTime, onTimerangeChange]
+    [dispatch, onTimerangeChange]
   )
 
   if (!segments?.length || !initialPoint?.timestamp || !finalPoint?.timestamp) return null
 
   return (
     <Slider
-      value={value}
-      minValue={startTime}
-      maxValue={endTime}
+      value={[startTime, endTime]}
+      minValue={rangeStartTime}
+      maxValue={rangeEndTime}
       step={1}
       onChange={onSliderChange}
       className={styles.slider}
@@ -188,8 +212,8 @@ function TrackSlider({
               <TrackSegmentsTimeline
                 segments={segments}
                 color={color}
-                startTime={startTime}
-                endTime={endTime}
+                rangeStartTime={rangeStartTime}
+                rangeEndTime={rangeEndTime}
                 selectedStartTime={state.getThumbValue(0)}
                 selectedEndTime={state.getThumbValue(1)}
               />

@@ -3,11 +3,17 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
-import { Button, Icon } from '@globalfishingwatch/ui-components'
+import { Button, Icon, Select } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { selectTrackCorrectionVesselDataviewId } from 'features/track-correction/track-correction.slice'
+import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import {
+  resetTrackCorrection,
+  selectTrackCorrectionVesselDataviewId,
+  setTrackCorrectionDataviewId,
+} from 'features/track-correction/track-correction.slice'
+import { selectIsNewTrackCorrection } from 'features/track-correction/track-selection.selectors'
 import TrackSlider from 'features/track-correction/TrackSlider'
 import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
@@ -16,10 +22,42 @@ import { getVesselGearTypeLabel, getVesselShipNameLabel, getVesselShipTypeLabel 
 
 import styles from './TrackCorrection.module.css'
 
+function VesselOptionsSelect() {
+  const dispatch = useAppDispatch()
+  const trackDataviews = useSelector(selectActiveTrackDataviews)
+  const vesselOptions = useMemo(() => {
+    return trackDataviews.map((dataview) => ({
+      id: dataview.id,
+      label: (
+        <span className={styles.vesselLabel}>
+          <Icon icon="vessel" style={{ color: dataview.config?.color }} />
+          {dataview.config?.name}
+        </span>
+      ),
+      color: dataview.config?.color,
+    }))
+  }, [trackDataviews])
+
+  useEffect(() => {
+    if (vesselOptions.length === 1) {
+      dispatch(setTrackCorrectionDataviewId(vesselOptions[0].id))
+    }
+  }, [dispatch, vesselOptions])
+
+  return (
+    <Select
+      options={vesselOptions}
+      containerClassName={styles.vesselSelect}
+      onSelect={(option) => dispatch(setTrackCorrectionDataviewId(option.id))}
+    />
+  )
+}
+
 const TrackCorrection = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { start, end } = useSelector(selectTimeRange)
+  const isNewTrackCorrection = useSelector(selectIsNewTrackCorrection)
   const [isTimerangePristine, setIsTimerangePristine] = useState(true)
 
   const trackCorrectionVesselDataviewId = useSelector(selectTrackCorrectionVesselDataviewId)
@@ -35,6 +73,12 @@ const TrackCorrection = () => {
     }
   }, [trackCorrectionVesselDataviewId])
 
+  useEffect(() => {
+    return () => {
+      dispatch(resetTrackCorrection())
+    }
+  }, [dispatch])
+
   const trackData = useMemo(() => {
     return vesselLayer?.instance
       ?.getVesselTrackSegments({
@@ -49,11 +93,15 @@ const TrackCorrection = () => {
     <div>
       <label>{t('common.vessel', 'Vessel')}</label>
       <div className={styles.vessel}>
-        <span className={styles.vesselLabel}>
-          <Icon icon="vessel" style={{ color: vesselColor }} />
-          {vesselInfo ? getVesselShipNameLabel(vesselInfo) : dataview?.config?.name}
-        </span>
-        <FitBounds layer={vesselLayer?.instance} disabled={!vesselLayer.loaded} />
+        {isNewTrackCorrection && trackCorrectionVesselDataviewId ? (
+          <span className={styles.vesselLabel}>
+            <Icon icon="vessel" style={{ color: vesselColor }} />
+            {vesselInfo ? getVesselShipNameLabel(vesselInfo) : dataview?.config?.name}
+          </span>
+        ) : (
+          <VesselOptionsSelect />
+        )}
+        <FitBounds layer={vesselLayer?.instance} disabled={!vesselLayer?.loaded} />
       </div>
       {vesselInfo && (
         <div className={styles.vesselInfo}>
@@ -72,8 +120,8 @@ const TrackCorrection = () => {
         </div>
       )}
       <TrackSlider
-        startTime={getUTCDateTime(start).toMillis()}
-        endTime={getUTCDateTime(end).toMillis()}
+        rangeStartTime={getUTCDateTime(start).toMillis()}
+        rangeEndTime={getUTCDateTime(end).toMillis()}
         segments={trackData ?? []}
         color={vesselColor}
         onTimerangeChange={(start, end) => {

@@ -5,24 +5,24 @@ import cx from 'classnames'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import { useAppDispatch } from 'features/app/app.hooks'
 import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
-import { selectTrackCorrectionModalOpen, setModalOpen } from 'features/modals/modals.slice'
+import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
+import { selectTrackCorrectionModalOpen } from 'features/track-correction/track-selection.selectors'
 
 import styles from './ReportControl.module.css'
 
 const ReportControls = ({ disabled = false }: { disabled?: boolean }) => {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
+  const setTrackCorrectionId = useSetTrackCorrectionId()
   const trackCorrectionModalOpen = useSelector(selectTrackCorrectionModalOpen)
   const { isErrorNotificationEditing, toggleErrorNotification } = useMapErrorNotification()
 
   const onErrorNotificationClick = useCallback(() => {
     if (trackCorrectionModalOpen) {
-      dispatch(setModalOpen({ id: 'trackCorrection', open: false }))
+      setTrackCorrectionId('')
     }
     toggleErrorNotification()
-  }, [dispatch, toggleErrorNotification, trackCorrectionModalOpen])
+  }, [setTrackCorrectionId, toggleErrorNotification, trackCorrectionModalOpen])
 
   return (
     <IconButton

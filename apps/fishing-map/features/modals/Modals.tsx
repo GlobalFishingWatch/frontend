@@ -21,10 +21,11 @@ import { selectAnyAppModalOpen, selectWelcomeModalKey } from 'features/modals/mo
 import {
   selectDatasetUploadModalOpen,
   selectLayerLibraryModalOpen,
-  selectTrackCorrectionModalOpen,
   selectWorkspaceGeneratorModalOpen,
   setModalOpen,
 } from 'features/modals/modals.slice'
+import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
+import { selectTrackCorrectionModalOpen } from 'features/track-correction/track-selection.selectors'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
@@ -137,6 +138,7 @@ const AppModals = () => {
   const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
   const welcomePopupContentKey = useSelector(selectWelcomeModalKey)
 
+  const setTrackCorrectionId = useSetTrackCorrectionId()
   const [saveWorkspaceBeforeLeave, setSaveWorkspaceBeforeLeave] = useSessionStorage<
     boolean | undefined
   >(SAVE_WORKSPACE_BEFORE_LEAVE_KEY, undefined)
@@ -229,7 +231,7 @@ const AppModals = () => {
           isOpen={trackCorrectionModalOpen && !anyAppModalOpen}
           title={t('vessel.newIssue', 'New issue')}
           shouldCloseOnEsc={false}
-          onClose={() => dispatch(setModalOpen({ id: 'trackCorrection', open: false }))}
+          onClose={() => setTrackCorrectionId('')}
           contentClassName={styles.fullHeightModal}
           overlayClassName={styles.transparentOverlay}
         >

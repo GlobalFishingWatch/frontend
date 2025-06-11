@@ -13,7 +13,6 @@ type ModalId =
   | 'editWorkspace'
   | 'createWorkspace'
   | 'workspaceGenerator'
-  | 'trackCorrection'
 
 type LayerLibraryMode = DataviewCategory | false
 export type DatasetUploadStyle = 'default' | 'transparent'
@@ -28,7 +27,6 @@ export type DatasetUploadConfig = {
 type ModalsOpenState = {
   feedback: boolean
   vesselCorrection: boolean
-  trackCorrection: boolean
   screenshot: boolean
   layerLibrary: LayerLibraryMode
   editWorkspace: boolean
@@ -40,7 +38,6 @@ type ModalsOpenState = {
 const initialState: ModalsOpenState = {
   feedback: false,
   vesselCorrection: false,
-  trackCorrection: false,
   screenshot: false,
   layerLibrary: false,
   editWorkspace: false,
@@ -90,6 +87,5 @@ export const selectEditWorkspaceModalOpen = (state: RootState) => state.modals.e
 export const selectCreateWorkspaceModalOpen = (state: RootState) => state.modals.createWorkspace
 export const selectScreenshotModalOpen = (state: RootState) => state.modals.screenshot
 export const selectVesselCorrectionModalOpen = (state: RootState) => state.modals.vesselCorrection
-export const selectTrackCorrectionModalOpen = (state: RootState) => state.modals.trackCorrection
 
 export default modals.reducer

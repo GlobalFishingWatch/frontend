@@ -20,8 +20,8 @@ import {
 import I18nDate from 'features/i18n/i18nDate'
 import { setClickedEvent } from 'features/map/map.slice'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { setModalOpen } from 'features/modals/modals.slice'
 import { useTimebarVisualisationConnect, useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
 import { setTrackCorrectionDataviewId } from 'features/track-correction/track-correction.slice'
 import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
 import { TimebarVisualisations } from 'types'
@@ -49,6 +49,7 @@ function VesselTracksTooltipRow({
   const { vesselLayer } = useGetVesselInfoByDataviewId(dataviewId)
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const fitBounds = useMapFitBounds()
+  const setTrackCorrectionId = useSetTrackCorrectionId()
   const { setTimerange } = useTimerangeConnect()
 
   const onReportClick = useCallback(() => {
@@ -74,15 +75,16 @@ function VesselTracksTooltipRow({
     // TODO:NTH remove other vessels from timebar while reporting
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
     dispatch(setTrackCorrectionDataviewId(dataviewId))
-    dispatch(setModalOpen({ id: 'trackCorrection', open: true }))
+    setTrackCorrectionId('new')
     dispatch(setClickedEvent(null))
   }, [
     dataviewId,
     dispatch,
     dispatchTimebarVisualisation,
-    feature,
+    feature.timestamp,
     fitBounds,
     setTimerange,
+    setTrackCorrectionId,
     vesselLayer?.instance,
   ])
 
