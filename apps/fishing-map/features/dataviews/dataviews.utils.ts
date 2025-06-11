@@ -414,7 +414,7 @@ export const getBigQueryEventsDataviewInstance = (
 }
 
 export const dataviewWithPrivateDatasets = (dataview: UrlDataviewInstance) => {
-  const datasets = dataview.datasets || []
+  const datasets = dataview?.datasets || []
   return datasets.some(isPrivateDataset)
 }
 
