@@ -1,6 +1,7 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
@@ -78,7 +79,7 @@ function PortVisitEventTooltipRow({
             )}
             {event?.port && !isPortReportLocation && (
               <PortsReportLink port={event.port}>
-                <Button className={styles.portCTA}>
+                <Button className={cx(styles.portCTA, styles.rowMarginTop)}>
                   {t('portsReport.seePortReport', 'See all entry events to this port')}{' '}
                   {event.port.name && `(${event.port.name})`}
                 </Button>

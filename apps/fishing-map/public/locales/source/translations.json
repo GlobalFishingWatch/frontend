@@ -782,7 +782,6 @@
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
-  "navigateBackTo": "Go back to {{section}}",
   "portsReport": {
     "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
     "newTimeRange": "Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
@@ -906,6 +905,10 @@
     "uploadTracks": "Upload track datasets",
     "vesselGroups": "Vessel groups",
     "vesselSearch": "Vessel Search"
+  },
+  "trackCorrection": {
+    "adjustDisabled": "Adjusting the time range is needed.",
+    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on."
   },
   "vessel": {
     "activityByType": "By type",

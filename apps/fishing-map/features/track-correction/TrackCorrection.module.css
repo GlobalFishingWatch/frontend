@@ -1,4 +1,25 @@
+.vessel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-M);
+}
+
 .vesselLabel {
   display: flex;
   align-items: center;
+  flex: 1;
+}
+
+.vesselInfo {
+  display: flex;
+  gap: var(--space-S);
+}
+
+.disclaimer {
+  background-color: var(--color-danger-red-background);
+  display: flex;
+  align-items: center;
+  gap: var(--space-S);
+  padding: var(--space-XS) var(--space-S);
+  border-radius: var(--border-radius);
 }

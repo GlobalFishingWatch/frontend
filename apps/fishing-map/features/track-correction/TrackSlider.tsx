@@ -15,7 +15,7 @@ import { disableHighlightedTime, setHighlightedTime } from 'features/timebar/tim
 // import './TrackSlider.css'
 import styles from './TrackSlider.module.css'
 
-type SegmentsTimelineProps = TrackSliderProps & {
+type SegmentsTimelineProps = Omit<TrackSliderProps, 'onTimerangeChange'> & {
   color?: string
   width?: number
   height?: number
@@ -98,9 +98,16 @@ type TrackSliderProps = {
   color?: string
   startTime: number
   endTime: number
+  onTimerangeChange: (start: number, end: number) => void
 }
 
-function TrackSlider({ segments, color = '#163f89', startTime, endTime }: TrackSliderProps) {
+function TrackSlider({
+  segments,
+  color = '#163f89',
+  startTime,
+  endTime,
+  onTimerangeChange,
+}: TrackSliderProps) {
   const { t } = useTranslation()
   const initialPoint = segments?.[0]?.[0]
   const finalPoint = segments?.[segments.length - 1]?.[segments[segments.length - 1].length - 1]
@@ -125,13 +132,16 @@ function TrackSlider({ segments, color = '#163f89', startTime, endTime }: TrackS
   const onSliderChange = useCallback(
     (value: number[]) => {
       setValue(value)
-      const start = getUTCDateTime(value[0]).toISO()
-      const end = getUTCDateTime(value[1]).toISO()
+      const start = getUTCDateTime(value[0])
+      const end = getUTCDateTime(value[1])
       if (start && end) {
-        throttledHighlightTime({ start, end })
+        throttledHighlightTime({ start: start.toISO() as string, end: end.toISO() as string })
+        if (onTimerangeChange) {
+          onTimerangeChange(start.toMillis(), end.toMillis())
+        }
       }
     },
-    [throttledHighlightTime]
+    [throttledHighlightTime, onTimerangeChange]
   )
 
   if (!segments?.length || !initialPoint?.timestamp || !finalPoint?.timestamp) return null

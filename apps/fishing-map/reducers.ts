@@ -21,6 +21,7 @@ import reportReducer from 'features/reports/tabs/activity/reports-activity.slice
 import resourcesReducer from 'features/resources/resources.slice'
 import searchReducer from 'features/search/search.slice'
 import timebarReducer from 'features/timebar/timebar.slice'
+import trackCorrectionReducer from 'features/track-correction/track-correction.slice'
 import userReducer from 'features/user/user.slice'
 import vesselReducer from 'features/vessel/vessel.slice'
 import vesselGroupsReducer from 'features/vessel-groups/vessel-groups.slice'
@@ -55,6 +56,7 @@ export const rootReducer = combineReducers({
   search: searchReducer,
   timebar: timebarReducer,
   title: titleReducer,
+  trackCorrection: trackCorrectionReducer,
   user: userReducer,
   vessel: vesselReducer,
   vesselGroupModal: vesselGroupsModalReducer,
