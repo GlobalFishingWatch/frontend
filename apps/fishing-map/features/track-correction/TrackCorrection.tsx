@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { center } from '@turf/center'
+import type { Feature, Point } from 'geojson'
 
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
@@ -12,6 +14,7 @@ import { selectActiveTrackDataviews } from 'features/dataviews/selectors/datavie
 import type { IssueType } from 'features/track-correction/track-correction.slice'
 import {
   resetTrackCorrection,
+  selectTrackCorrectionTimerange,
   selectTrackCorrectionVesselDataviewId,
   selectTrackIssueType,
   setTrackCorrectionDataviewId,
@@ -75,6 +78,7 @@ const TrackCorrection = () => {
   const [isTimerangePristine, setIsTimerangePristine] = useState(true)
 
   const trackCorrectionVesselDataviewId = useSelector(selectTrackCorrectionVesselDataviewId)
+  const trackCorrectionTimerange = useSelector(selectTrackCorrectionTimerange)
   const { dataview, vesselInfoResource, vesselLayer } = useGetVesselInfoByDataviewId(
     trackCorrectionVesselDataviewId
   )
@@ -104,6 +108,33 @@ const TrackCorrection = () => {
       })
       .filter((segment) => segment.length > 0)
   }, [end, start, vesselLayer?.instance])
+
+  const onConfirmClick = useCallback(
+    (trackCorrectionTimerange: { start: string; end: string }) => {
+      const trackCorrectionSegments = vesselLayer?.instance?.getVesselTrackSegments({
+        includeMiddlePoints: true,
+        includeCoordinates: true,
+        startTime: getUTCDateTime(trackCorrectionTimerange.start).toMillis(),
+        endTime: getUTCDateTime(trackCorrectionTimerange.end).toMillis(),
+      })
+      const middlePoint = center({
+        type: 'FeatureCollection',
+        features: trackCorrectionSegments.flatMap((segment) => {
+          if (!segment.length) return []
+          return segment.map((point) => {
+            return {
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [point.longitude, point.latitude],
+              },
+            } as Feature<Point>
+          })
+        }),
+      })
+    },
+    [vesselLayer?.instance]
+  )
 
   return (
     <div>
@@ -190,6 +221,7 @@ const TrackCorrection = () => {
               : undefined
           }
           disabled={isTimerangePristine}
+          onClick={() => onConfirmClick(trackCorrectionTimerange)}
         >
           {t('common.confirm', 'Confirm')}
         </Button>
