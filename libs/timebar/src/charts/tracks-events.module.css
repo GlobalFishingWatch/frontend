@@ -1,7 +1,4 @@
 .Events {
-  --loiteringIcon: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="12"><path fill="%23CFA9F9" fill-rule="nonzero" stroke="%23163F89" stroke-width=".5" d="m15.6 6-5.17 5.3H6L.7 6 6 .7h4.43L15.6 6Zm-2.2 0L9.58 2.17H6.61L2.81 6l3.8 3.82h2.97L13.4 6Z"/></svg>');
-  --encounterIcon: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="17" height="12"><path fill="%23FAE9A0" fill-rule="evenodd" stroke="%23163F89" stroke-width=".5" d="M.7 6 6 .7h5.3L16.83 6l-5.53 5.3H6z"/></svg>');
-
   position: absolute;
 }
 
@@ -48,19 +45,65 @@
 }
 
 .encounter {
-  border-image: var(--encounterIcon);
-  border-width: 6px;
-  border-image-slice: 50% 6 fill;
+  border: none;
+  background: var(--background-color);
+}
+
+.encounter::before,
+.encounter::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  top: 0;
+  border-top: calc(var(--size) / 2) solid transparent;
+  border-bottom: calc(var(--size) / 2) solid transparent;
+}
+
+.encounter::before {
+  border-right: calc(var(--size) / 2) solid var(--background-color);
+  left: calc(var(--size) * -0.5);
+}
+
+.encounter::after {
+  border-left: calc(var(--size) / 2) solid var(--background-color);
+  right: calc(var(--size) * -0.5);
 }
 
 .loitering {
-  border-image: var(--loiteringIcon);
-  border-width: 6px;
-  border-image-slice: 50% 6 fill;
+  border-width: 0;
+  background: none;
+  border-top: var(--border-size) solid var(--background-color);
+  border-bottom: var(--border-size) solid var(--background-color);
+}
+
+.loitering::before,
+.loitering::after {
+  content: '';
+  position: absolute;
+  box-sizing: content-box;
+  width: calc(var(--size) * 0.6);
+  height: calc(var(--size) * 0.6);
+  border-top: var(--border-size) solid var(--background-color);
+  border-right: var(--border-size) solid var(--background-color);
+  top: 50%;
+}
+
+.loitering::before {
+  left: calc(var(--size) * -0.35);
+  transform: translateY(-50%) rotate(-135deg);
+}
+
+.loitering::after {
+  right: calc(var(--size) * -0.35);
+  transform: translateY(-50%) rotate(45deg);
 }
 
 .encounter:hover,
-.encounter.highlighted,
+.encounter.highlighted {
+  filter: brightness(1.75);
+}
+
 .loitering:hover,
 .loitering.highlighted {
   filter: brightness(1.75);

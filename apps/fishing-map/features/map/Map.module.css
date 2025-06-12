@@ -3,25 +3,6 @@
   position: relative;
 }
 
-.screenshot {
-  position: absolute;
-  inset: 0;
-  display: none;
-  object-fit: contain;
-  width: 100%;
-  height: 100%;
-}
-
-:global(.printing) .screenshot {
-  display: block !important;
-}
-
-@media print {
-  .screenshot {
-    display: block;
-  }
-}
-
 .helpHintLeft {
   position: absolute;
   top: 50%;

@@ -98,8 +98,7 @@
     "visualiationMode": "crwdns59679:0crwdne59679:0",
     "visualisationActivity": "crwdns59681:0crwdne59681:0",
     "visualisationActivityHint": "crwdns59683:0crwdne59683:0",
-    "visualisationEvents": "crwdns59685:0crwdne59685:0",
-    "visualisationEventsHint": "crwdns59687:0crwdne59687:0"
+    "visualisationEvents": "crwdns59685:0crwdne59685:0"
   },
   "common": {
     "active": "crwdns69336:0crwdne69336:0",
@@ -760,6 +759,7 @@
     "errorLabel": "crwdns70404:0crwdne70404:0",
     "errorPlaceholder": "crwdns70406:0crwdne70406:0",
     "highRes": "crwdns83398:0crwdne83398:0",
+    "highResDisabled": "crwdns87848:0crwdne87848:0",
     "legend_help": "crwdns60347:0crwdne60347:0",
     "loading": "crwdns60349:0crwdne60349:0",
     "lowRes": "crwdns83400:0crwdne83400:0",

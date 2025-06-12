@@ -98,8 +98,7 @@
     "visualiationMode": "Modo de visualização",
     "visualisationActivity": "Atividade (mapa de calor)",
     "visualisationActivityHint": "(Garanta que id, lat, lon, timestamp e valor estejam todos presentes)",
-    "visualisationEvents": "Eventos (clusters)",
-    "visualisationEventsHint": "(Garanta que event_id, event_start event_end e geom estejam todos presentes)"
+    "visualisationEvents": "Eventos (clusters)"
   },
   "common": {
     "active": "Ativa",
@@ -243,7 +242,7 @@
     "share": "Compartilhar a visão atual",
     "since": "desde",
     "sourceOptions": {
-      "both": "Registro e autodeclarado",
+      "both": "Registro e AIS",
       "registryOnly": "Somente registro",
       "selfReportedOnly": "Somente autodeclarado"
     },
@@ -760,6 +759,7 @@
     "errorLabel": "Descreva o erro o mais detalhado possível",
     "errorPlaceholder": "Descreva o erro o mais detalhado possível",
     "highRes": "Ver mapas de calor em alta resolução",
+    "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Área aproximada de células do grid na região do Equador",
     "loading": "Carregando",
     "lowRes": "Ver mapas de calor em baixa resolução",
