@@ -98,8 +98,7 @@
     "visualiationMode": "Mode de visualisation",
     "visualisationActivity": "Activité (cartes thermiques)",
     "visualisationActivityHint": "(Assurez-vous que l'id, les lat et lon, la date, l'heure et la valeur sont présents)",
-    "visualisationEvents": "Événements (regroupements)",
-    "visualisationEventsHint": "(Assurez-vous que event_id, event_start, event_end et geom sont tous présents)"
+    "visualisationEvents": "Événements (regroupements)"
   },
   "common": {
     "active": "Actif",
@@ -243,7 +242,7 @@
     "share": "Partager la vue actuelle",
     "since": "depuis",
     "sourceOptions": {
-      "both": "Registres et autodéclarées",
+      "both": "Registres et AIS",
       "registryOnly": "Registre uniquement",
       "selfReportedOnly": "Autodéclarées uniquement"
     },
@@ -760,6 +759,7 @@
     "errorLabel": "Veuillez décrire l'erreur de manière aussi détaillée que possible",
     "errorPlaceholder": "Veuillez décrire l'erreur de manière aussi détaillée que possible",
     "highRes": "Voir les cartes thermiques haute résolution",
+    "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Zone approximatie des cellules de la grille par rapport à l'équateur",
     "loading": "Chargement",
     "lowRes": "Voir les cartes thermiques basse résolution",

@@ -98,8 +98,7 @@
     "visualiationMode": "Modo de visualización",
     "visualisationActivity": "Actividad (Heatmap)",
     "visualisationActivityHint": "(Asegúrate de que el id, lat, lon, timestamp y value estén todos presentes)",
-    "visualisationEvents": "Eventos (clusters)",
-    "visualisationEventsHint": "(Asegúrate de que el event_id, el event_start, el event_end y gem estén todos presentes)"
+    "visualisationEvents": "Eventos (clusters)"
   },
   "common": {
     "active": "Activo",
@@ -243,7 +242,7 @@
     "share": "Comparte el mapa actual",
     "since": "desde",
     "sourceOptions": {
-      "both": "Registry and self reported",
+      "both": "Registro y AIS",
       "registryOnly": "Registry only",
       "selfReportedOnly": "Self reported only"
     },
@@ -760,6 +759,7 @@
     "errorLabel": "Describa el error con el mayor detalle posible",
     "errorPlaceholder": "Describa el error con el mayor detalle posible",
     "highRes": "Ver mapas de calor de alta resolución",
+    "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Área de celda de cuadrícula aproximada en el ecuador",
     "loading": "Cargando",
     "lowRes": "Ver mapas de calor de baja resolución",

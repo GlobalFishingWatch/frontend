@@ -98,8 +98,7 @@
     "visualiationMode": "Visualisation mode",
     "visualisationActivity": "Activity (heatmap)",
     "visualisationActivityHint": "(Ensure id, lat, lon, timestamp and value are all present)",
-    "visualisationEvents": "Events (clusters)",
-    "visualisationEventsHint": "(Ensure event_id, event_start, event_end and geom are all present)"
+    "visualisationEvents": "Events (clusters)"
   },
   "common": {
     "active": "Active",
@@ -760,6 +759,7 @@
     "errorLabel": "Please describe the error as detailed as possible",
     "errorPlaceholder": "Please describe the error as detailed as possible",
     "highRes": "See high resolution heatmaps",
+    "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Approximate grid cell area at equator",
     "loading": "Loading",
     "lowRes": "See low resolution heatmaps",
