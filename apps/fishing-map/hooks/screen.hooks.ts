@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { saveAs } from 'file-saver'
 
 import { useDeckMap } from 'features/map/map-context.hooks'
-import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
 
 export const useDownloadDomElementAsImage = () => {
