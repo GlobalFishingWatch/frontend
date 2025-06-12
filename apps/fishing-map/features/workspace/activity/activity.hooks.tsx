@@ -24,6 +24,8 @@ import {
 import {
   selectActivityMergedDataviewId,
   selectDetectionsMergedDataviewId,
+  selectHasActivityDataviewVesselGroups,
+  selectHasDetectionsDataviewVesselGroups,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { setUserSetting } from 'features/user/user.slice'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -39,6 +41,15 @@ export const useVisualizationsOptions = (
       ? selectDetectionsMergedDataviewId
       : selectActivityMergedDataviewId
   )
+  const hasActivityDataviewVesselGroups = useSelector(selectHasActivityDataviewVesselGroups)
+  const hasDetectionsDataviewVesselGroups = useSelector(selectHasDetectionsDataviewVesselGroups)
+  const hasVesselGroupsFilter =
+    category === DataviewCategory.Activity
+      ? hasActivityDataviewVesselGroups
+      : category === DataviewCategory.Detections
+        ? hasDetectionsDataviewVesselGroups
+        : false
+
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(layerId)
   const isPositionsLayerAvailable = fourwingsActivityLayer?.instance?.getIsPositionsAvailable()
   const activeVisualizationOption = useSelector(
@@ -78,9 +89,19 @@ export const useVisualizationsOptions = (
         ? ([
             {
               id: HEATMAP_HIGH_RES_ID,
-              label: <Icon icon="heatmap-high-res" />,
-              tooltip: t('map.highRes', 'See high resolution heatmaps'),
+              label: (
+                <Icon
+                  icon={hasVesselGroupsFilter ? 'heatmap-high-res-disabled' : 'heatmap-high-res'}
+                />
+              ),
+              tooltip: hasVesselGroupsFilter
+                ? t(
+                    'map.highResDisabled',
+                    'High resolution heatmaps are disabled when using a vessel group filter'
+                  )
+                : t('map.highRes', 'See high resolution heatmaps'),
               tooltipPlacement: 'bottom',
+              disabled: hasVesselGroupsFilter,
             },
             {
               id: POSITIONS_ID,
@@ -97,7 +118,7 @@ export const useVisualizationsOptions = (
           ] as ChoiceOption<FourwingsVisualizationMode>[])
         : []),
     ]
-  }, [category, isPositionsLayerAvailable, t])
+  }, [category, hasVesselGroupsFilter, isPositionsLayerAvailable, t])
 
   return useMemo(
     () => ({ visualizationOptions, activeVisualizationOption, onVisualizationModeChange }),
