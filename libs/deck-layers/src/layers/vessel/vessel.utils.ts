@@ -77,59 +77,65 @@ export const getSegmentsFromData = memoize(
     const speedSize = (data as VesselTrackData).attributes.getSpeed?.size
     const elevationSize = (data as VesselTrackData).attributes.getElevation?.size
 
+    const getPointByIndex = (index: number) => {
+      return {
+        ...(includeCoordinates && {
+          longitude: positions[index * pathSize],
+          latitude: positions[index * pathSize + 1],
+        }),
+
+        timestamp: timestamps[index * timestampSize],
+        ...(speedSize && {
+          speed: speeds?.[index * speedSize] || 0,
+        }),
+        ...(elevationSize && {
+          elevation: elevations?.[index * elevationSize] || 0,
+        }),
+      }
+    }
+
     const segments = segmentsIndexes.map((segmentIndex, i, segmentsIndexes) => {
       const points = [] as TrackSegment
       const isLastSegment = i === segmentsIndexes.length - 1
       const nextSegmentIndex = segmentsIndexes[i + 1] || timestamps.length - 1
-      const initialSegmentTimestamp = timestamps[segmentIndex / timestampSize]
+      const initialSegmentTimestamp = timestamps[segmentIndex * timestampSize]
       const finalSegmentTimestamp = isLastSegment
         ? timestamps[timestamps.length - 1]
         : timestamps[nextSegmentIndex * timestampSize - 1]
 
+      let firstSegmentPointIncluded = false
+      let lastSegmentPointIncluded = false
       if (
         (!startTime || initialSegmentTimestamp > startTime) &&
         (!endTime || initialSegmentTimestamp < endTime)
       ) {
-        points.push({
-          ...(includeCoordinates && {
-            longitude: positions[segmentIndex * pathSize],
-            latitude: positions[segmentIndex * pathSize + 1],
-          }),
-          timestamp: initialSegmentTimestamp,
-          ...(speedSize && {
-            speed: speeds?.[segmentIndex * speedSize] || 0,
-          }),
-          ...(elevationSize && {
-            elevation: elevations?.[segmentIndex * elevationSize] || 0,
-          }),
-        })
+        firstSegmentPointIncluded = true
+
+        points.push(getPointByIndex(segmentIndex))
       }
 
       if (includeMiddlePoints && segmentIndex + 1 < nextSegmentIndex) {
         for (let index = segmentIndex + 1; index < nextSegmentIndex; index++) {
           const timestamp = timestamps[index / timestampSize]
           if ((!startTime || timestamp > startTime) && (!endTime || timestamp < endTime)) {
-            points.push({
-              ...(includeCoordinates && {
-                longitude: positions[index * pathSize],
-                latitude: positions[index * pathSize + 1],
-              }),
-
-              timestamp: timestamps[index * timestampSize],
-              ...(speedSize && {
-                speed: speeds?.[index * speedSize] || 0,
-              }),
-              ...(elevationSize && {
-                elevation: elevations?.[index * elevationSize] || 0,
-              }),
-            })
+            if (!firstSegmentPointIncluded) {
+              const previousPoint = getPointByIndex(index - 1)
+              points.push(previousPoint)
+              firstSegmentPointIncluded = true
+            }
+            points.push(getPointByIndex(index))
+          } else if (!lastSegmentPointIncluded && timestamp > endTime) {
+            const nextPoint = getPointByIndex(index)
+            points.push(nextPoint)
+            lastSegmentPointIncluded = true
           }
         }
       }
 
       if (
         (!startTime || finalSegmentTimestamp > startTime) &&
-        (!endTime || finalSegmentTimestamp < endTime)
+        (!endTime || finalSegmentTimestamp < endTime) &&
+        !lastSegmentPointIncluded
       ) {
         if (isLastSegment) {
           points.push({

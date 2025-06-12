@@ -5,7 +5,7 @@ import { selectTrackCorrectionId } from 'routes/routes.selectors'
 export const selectTrackCorrectionModalOpen = createSelector(
   [selectTrackCorrectionId],
   (trackCorrectionId) => {
-    return trackCorrectionId !== undefined
+    return trackCorrectionId !== undefined && trackCorrectionId !== ''
   }
 )
 
