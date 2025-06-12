@@ -1,5 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
-import { Fragment, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useContext, useMemo, useRef } from 'react'
 import type { OrthographicViewState } from '@deck.gl/core'
 import { OrthographicView } from '@deck.gl/core'
 import { SolidPolygonLayer } from '@deck.gl/layers'
@@ -9,7 +8,6 @@ import { scaleSqrt } from 'd3-scale'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { hexToDeckColor } from '@globalfishingwatch/deck-layers'
-import { usePrintSize } from '@globalfishingwatch/react-hooks'
 
 import TimelineContext from '../timelineContext'
 
@@ -18,17 +16,13 @@ import { getTrackY } from './common/utils'
 import type { TimebarChartData } from '.'
 import { useUpdateChartsData } from './chartsData.atom'
 
-import styles from './tracks-graph.module.css'
-
 const VIEW = new OrthographicView({ id: '2d-scene', controller: false })
 const GRAPH_STYLE = { zIndex: '-1' }
 
 type TimebarChartSteps = { value: number; color: string }[]
 type TimebarChartProps = { data: TimebarChartData; steps: TimebarChartSteps; printing?: boolean }
 
-const TrackGraph = ({ data, steps, printing = false }: TimebarChartProps) => {
-  const printSize = usePrintSize()
-  const [screenshotImage, setScreenshotImage] = useState<string | null>(null)
+const TrackGraph = ({ data, steps }: TimebarChartProps) => {
   const deckRef = useRef<DeckGLRef>(null)
   const { outerScale, innerWidth, outerWidth, graphHeight, trackGraphOrientation, start } =
     useContext(TimelineContext)
@@ -43,19 +37,6 @@ const TrackGraph = ({ data, steps, printing = false }: TimebarChartProps) => {
 
   const filteredGraphsData = useFilteredChartData(data)
   useUpdateChartsData('tracksGraphs', filteredGraphsData)
-
-  useEffect(() => {
-    if (deckRef.current && printing) {
-      const canvas = deckRef.current?.deck?.getCanvas()
-      if (canvas) {
-        deckRef.current?.deck?.redraw('graph-screenshot')
-        setScreenshotImage(canvas.toDataURL())
-      }
-    }
-    return () => {
-      setScreenshotImage(null)
-    }
-  }, [printing])
 
   const initialViewState = useMemo(
     () =>
@@ -154,22 +135,6 @@ const TrackGraph = ({ data, steps, printing = false }: TimebarChartProps) => {
           style={GRAPH_STYLE}
         />
       </div>
-      {screenshotImage && (
-        <Fragment>
-          <img
-            id="graph-screenshot-img"
-            className={styles.screenshot}
-            src={screenshotImage}
-            alt="graph screenshot"
-          />
-          <style>
-            {`@page {
-          size: ${printSize};
-          margin: 0;
-        }`}
-          </style>
-        </Fragment>
-      )}
     </Fragment>
   )
 }
