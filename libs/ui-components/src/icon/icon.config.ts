@@ -68,6 +68,7 @@ const icons = [
   'graph',
   'heatmap-default-res',
   'heatmap-high-res',
+  'heatmap-high-res-disabled',
   'heatmap-low-res',
   'heatmap',
   'help',

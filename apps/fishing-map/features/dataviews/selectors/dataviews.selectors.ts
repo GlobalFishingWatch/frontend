@@ -62,10 +62,24 @@ export const selectActivityMergedDataviewId = createSelector(
   }
 )
 
+export const selectHasActivityDataviewVesselGroups = createSelector(
+  [selectActiveActivityDataviews, selectVGReportActivityDataviews],
+  (dataviews): boolean => {
+    return dataviews?.some((d) => d.config?.filters?.['vessel-groups'] !== undefined)
+  }
+)
+
 export const selectDetectionsMergedDataviewId = createSelector(
   [selectActiveDetectionsDataviews],
   (dataviews): string => {
     return dataviews?.length ? getMergedDataviewId(dataviews) : ''
+  }
+)
+
+export const selectHasDetectionsDataviewVesselGroups = createSelector(
+  [selectActiveDetectionsDataviews],
+  (dataviews): boolean => {
+    return dataviews?.some((d) => d.config?.filters?.['vessel-groups'] !== undefined)
   }
 )
 

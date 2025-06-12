@@ -243,7 +243,7 @@
     "share": "Share map",
     "since": "since",
     "sourceOptions": {
-      "both": "Registry and self reported",
+      "both": "Registry and AIS",
       "registryOnly": "Registry only",
       "selfReportedOnly": "Self reported only"
     },
