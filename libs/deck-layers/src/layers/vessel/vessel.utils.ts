@@ -124,7 +124,11 @@ export const getSegmentsFromData = memoize(
               firstSegmentPointIncluded = true
             }
             points.push(getPointByIndex(index))
-          } else if (!lastSegmentPointIncluded && timestamp > endTime) {
+          } else if (
+            firstSegmentPointIncluded &&
+            !lastSegmentPointIncluded &&
+            timestamp > endTime
+          ) {
             const nextPoint = getPointByIndex(index)
             points.push(nextPoint)
             lastSegmentPointIncluded = true
