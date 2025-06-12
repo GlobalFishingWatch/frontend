@@ -43,58 +43,25 @@ export type ApiResponse = {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
-  const rawData = req.body.data || {}
+  const { workspaceId } = req.query
+  console.log('🚀 ~ handler ~ workspaceId:', workspaceId)
 
-  if (!rawData) {
-    return res.status(400).json({
-      success: false,
-      message: 'Feedback data is required',
-    })
-  }
-
-  if (req.method !== 'POST') {
-    return res.status(405).json({
-      success: false,
-      message: 'Method not allowed',
-    })
-  }
-
-  try {
-    const spreadsheetId: string = IDENTITY_REVIEW_SPREADSHEET_ID
-    const spreadsheetTitle: string = CORRECTIONS_SHEET_TITLE
-
-    const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(spreadsheetId)
-    const sheet = feedbackSpreadsheetDoc.sheetsByTitle[spreadsheetTitle]
-
-    if (!sheet) {
-      console.error('Sheet not found:', spreadsheetTitle)
-      throw new Error(`Sheet "${spreadsheetTitle}" not found in spreadsheet`)
-    }
-
-    try {
-      await sheet.loadHeaderRow(3)
-      const headers = sheet.headerValues
-
-      const rowToAdd: Record<string, any> = {}
-      for (const header of headers) {
-        rowToAdd[header] = mapDataToHeader(header, rawData)
-      }
-
-      await sheet.addRow(rowToAdd)
-    } catch (error) {
-      console.error('Error adding row:', error)
-      throw error
-    }
-
+  if (req.method === 'POST') {
     return res.status(200).json({
-      success: true,
-      message: 'Feedback received successfully',
-    })
-  } catch (error: any) {
-    console.error('Feedback submission error:', error.message)
-    return res.status(500).json({
       success: false,
-      message: 'Internal server error',
+      message: 'TODO: form submit',
     })
   }
+
+  if (req.method === 'GET') {
+    return res.status(200).json({
+      success: false,
+      message: 'TODO: get issues',
+    })
+  }
+
+  return res.status(405).json({
+    success: false,
+    message: 'Method not allowed',
+  })
 }
