@@ -139,6 +139,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
 
     const object = {
       ...baseObject,
+      id: (info.object as VesselEventProperties)?.id,
       subcategory: DataviewType.VesselEvents,
     }
     if (!info.object) {
