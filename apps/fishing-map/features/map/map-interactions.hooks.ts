@@ -407,8 +407,9 @@ const useGetPickingInteraction = () => {
       const uniqFeatureIds = [] as string[]
       const features = pickingInfo.flatMap((f) => {
         if (f.object?.id) {
-          if (!uniqFeatureIds.includes(f.object.id as string)) {
-            uniqFeatureIds.push(f.object.id as string)
+          const featureId = `${f.object.id}-${f.layer.id}`
+          if (!uniqFeatureIds.includes(featureId)) {
+            uniqFeatureIds.push(featureId)
             return f.object
           }
           return []
