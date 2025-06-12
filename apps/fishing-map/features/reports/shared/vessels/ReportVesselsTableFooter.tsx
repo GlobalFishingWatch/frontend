@@ -82,7 +82,7 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
           'GFW vessel type': vessel.vesselType,
           ...(extendedFields && { 'GFW gear type': vessel.geartype }),
           ...(activityUnit && {
-            [reportUnit ? t(`common.${reportUnit}_other`) : 'value']: vessel.value,
+            [`Total ${reportSubCategory} ${reportUnit}s`]: vessel.value,
           }),
           vesselId: vessel.id,
           dataset: vessel.datasetId,
