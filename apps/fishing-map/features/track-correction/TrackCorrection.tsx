@@ -3,24 +3,37 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
-import { Button, Icon, Select } from '@globalfishingwatch/ui-components'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Button, Choice, Icon, InputText, Select } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import type { IssueType } from 'features/track-correction/track-correction.slice'
 import {
   resetTrackCorrection,
   selectTrackCorrectionVesselDataviewId,
+  selectTrackIssueType,
   setTrackCorrectionDataviewId,
+  setTrackIssueComment,
+  setTrackIssueCreatedInfo,
+  setTrackIssueType,
 } from 'features/track-correction/track-correction.slice'
 import { selectIsNewTrackCorrection } from 'features/track-correction/track-selection.selectors'
 import TrackSlider from 'features/track-correction/TrackSlider'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import FitBounds from 'features/workspace/shared/FitBounds'
 import { getVesselGearTypeLabel, getVesselShipNameLabel, getVesselShipTypeLabel } from 'utils/info'
 
 import styles from './TrackCorrection.module.css'
+
+const issueTypesOptions: ChoiceOption<IssueType>[] = [
+  { id: 'falsePositive', label: 'False positive' },
+  { id: 'falseNegative', label: 'False negative' },
+  { id: 'other', label: 'Other' },
+]
 
 function VesselOptionsSelect() {
   const dispatch = useAppDispatch()
@@ -57,6 +70,7 @@ const TrackCorrection = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { start, end } = useSelector(selectTimeRange)
+  const issueType = useSelector(selectTrackIssueType)
   const isNewTrackCorrection = useSelector(selectIsNewTrackCorrection)
   const [isTimerangePristine, setIsTimerangePristine] = useState(true)
 
@@ -66,6 +80,8 @@ const TrackCorrection = () => {
   )
   const vesselInfo = vesselInfoResource?.data
   const vesselColor = dataview?.config?.color
+
+  const userData = useSelector(selectUserData)
 
   useEffect(() => {
     if (trackCorrectionVesselDataviewId) {
@@ -137,8 +153,37 @@ const TrackCorrection = () => {
           )}
         </span>
       </div>
+
+      <div>
+        <label>{t('trackCorrection.issueType', 'Type of issue')}</label>
+        <Choice
+          options={issueTypesOptions}
+          activeOption={issueType}
+          onSelect={(option) => {
+            setTrackIssueType(option.id)
+          }}
+          size="small"
+        />
+      </div>
+
+      <div>
+        <label>{t('trackCorrection.comment', 'Comment')}</label>
+        <InputText
+          inputSize="small"
+          className={styles.input}
+          onChange={(e) => setTrackIssueComment(e.target.value)}
+          // disabled={loading}
+        />
+      </div>
+
       <div className={styles.actions}>
         <Button
+          onClick={() => {
+            setTrackIssueCreatedInfo({
+              createdAt: new Date().toISOString(),
+              createdBy: userData!.email || 'anonymous user',
+            })
+          }}
           tooltip={
             isTimerangePristine
               ? t('common.adjustDisabled', 'Adjusting the time range is needed.')

@@ -908,7 +908,11 @@
   },
   "trackCorrection": {
     "adjustDisabled": "Adjusting the time range is needed.",
-    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on."
+    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
+    "issueType": "Type of issue",
+    "falsePositive": "False positive",
+    "falseNegative": "False negative",
+    "comment": "Comment"
   },
   "vessel": {
     "activityByType": "By type",
