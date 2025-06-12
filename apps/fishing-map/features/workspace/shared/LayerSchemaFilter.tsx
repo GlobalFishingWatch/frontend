@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { Fragment, useCallback, useMemo } from 'react'
 import cx from 'classnames'
 
 import type { FilterOperator } from '@globalfishingwatch/api-types'
@@ -9,7 +9,14 @@ import type {
   MultiSelectOption,
   SliderRangeValues,
 } from '@globalfishingwatch/ui-components'
-import { Choice, MultiSelect, Select, Slider, SliderRange } from '@globalfishingwatch/ui-components'
+import {
+  Choice,
+  MultiSelect,
+  Select,
+  Slider,
+  SliderRange,
+  Tooltip,
+} from '@globalfishingwatch/ui-components'
 
 import type { SchemaFilter, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
@@ -300,23 +307,38 @@ function LayerSchemaFilter({
 
   if (type === 'boolean') {
     return (
-      <Select
-        key={id}
-        disabled={disabled}
-        label={getLabelWithUnit(label, unit)}
-        placeholder={getPlaceholderBySelections({
-          selection: optionsSelected.map(({ id }) => id),
-          options,
-        })}
-        options={sortedOptions}
-        selectedOption={optionsSelected?.[0]}
-        containerClassName={cx(styles.multiSelect, {
-          experimentalLabel: EXPERIMENTAL_FILTERS.includes(id),
-        })}
-        onSelect={(selection) => onSelect({ filterKey: id, selection: [selection] })}
-        onRemove={() => onRemove(id, [])}
-        onCleanClick={() => onClean(id)}
-      />
+      <Fragment>
+        <Tooltip
+          content={
+            EXPERIMENTAL_FILTERS.includes(id)
+              ? t(
+                  'common.experimentalTooltip',
+                  'Dataset still in development, click the information icon to learn more'
+                )
+              : ''
+          }
+        >
+          <label className={cx(styles.labelWithExperimental, 'experimental')}>
+            {getLabelWithUnit(label, unit)}
+          </label>
+        </Tooltip>
+        <Select
+          key={id}
+          disabled={disabled}
+          placeholder={getPlaceholderBySelections({
+            selection: optionsSelected.map(({ id }) => id),
+            options,
+          })}
+          options={sortedOptions}
+          selectedOption={optionsSelected?.[0]}
+          containerClassName={cx(styles.multiSelect, {
+            [styles.withLabel]: EXPERIMENTAL_FILTERS.includes(id),
+          })}
+          onSelect={(selection) => onSelect({ filterKey: id, selection: [selection] })}
+          onRemove={() => onRemove(id, [])}
+          onCleanClick={() => onClean(id)}
+        />
+      </Fragment>
     )
   }
 
