@@ -759,6 +759,7 @@
     "errorLabel": "Please describe the error as detailed as possible",
     "errorPlaceholder": "Please describe the error as detailed as possible",
     "highRes": "See high resolution heatmaps",
+    "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Approximated grid cell area at the Equator",
     "loading": "Loading",
     "lowRes": "See low resolution heatmaps",
