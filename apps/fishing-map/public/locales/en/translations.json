@@ -164,6 +164,8 @@
     "Events": "Events",
     "exclude": "Exclude",
     "excluded": "Excluded",
+    "experimental": "Experimental",
+    "experimentalTooltip": "Dataset still in development, click the information icon to learn more",
     "faq": "FAQs",
     "feedback": "Feedback",
     "field": "Field",
