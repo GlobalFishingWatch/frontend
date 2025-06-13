@@ -25,6 +25,7 @@ import I18nFlag from 'features/i18n/i18nFlag'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
 import TrackFootprint from 'features/search/basic/TrackFootprint'
+import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
@@ -46,6 +47,7 @@ import {
   getVesselOtherNamesLabel,
   getVesselShipTypeLabel,
 } from 'utils/info'
+import { getHighlightedText } from 'utils/text'
 
 import styles from './SearchBasicResult.module.css'
 
@@ -70,6 +72,7 @@ function SearchBasicResult({
   const dispatch = useAppDispatch()
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const isSmallScreen = useSmallScreen()
+  const searchQuery = useSelector(selectSearchQuery)
   const isStandaloneSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const [highlightedYear, setHighlightedYear] = useState<number>()
   const [trackBbox, setTrackBbox] = useState<Bbox>()
@@ -224,7 +227,7 @@ function SearchBasicResult({
               query={vesselQuery}
               fitBounds={isStandaloneSearchLocation}
             >
-              {name}
+              {getHighlightedText((name as string) || EMPTY_FIELD_PLACEHOLDER, searchQuery, styles)}
             </VesselLink>
             <span className={styles.secondary}>{otherNamesLabel}</span>
           </div>
@@ -237,15 +240,19 @@ function SearchBasicResult({
             </div>
             <div className={styles.property}>
               <label>{t('vessel.mmsi', 'MMSI')}</label>
-              <span>{ssvid || EMPTY_FIELD_PLACEHOLDER}</span>
+              <span>
+                {getHighlightedText(ssvid || EMPTY_FIELD_PLACEHOLDER, searchQuery, styles)}
+              </span>
             </div>
             <div className={styles.property}>
               <label>{t('vessel.imo', 'IMO')}</label>
-              <span>{imo || EMPTY_FIELD_PLACEHOLDER}</span>
+              <span>{getHighlightedText(imo || EMPTY_FIELD_PLACEHOLDER, searchQuery, styles)}</span>
             </div>
             <div className={styles.property}>
               <label>{t('vessel.callsign', 'Callsign')}</label>
-              <span>{callsign || EMPTY_FIELD_PLACEHOLDER}</span>
+              <span>
+                {getHighlightedText(callsign || EMPTY_FIELD_PLACEHOLDER, searchQuery, styles)}
+              </span>
             </div>
             <div className={styles.property}>
               <label>{t('vessel.vesselType', 'Vessel Type')}</label>
