@@ -33,6 +33,10 @@
   align-items: center;
 }
 
+.labelWithExperimental {
+  margin-top: var(--space-XS);
+}
+
 .actions {
   opacity: 0;
   transition: opacity 150ms linear;
@@ -76,6 +80,10 @@
 
 .multiSelect {
   margin-top: var(--space-S);
+}
+
+.withLabel {
+  margin-top: var(--space-XS);
 }
 
 .range {

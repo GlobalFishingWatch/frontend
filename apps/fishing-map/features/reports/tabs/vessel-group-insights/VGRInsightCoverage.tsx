@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { useGetVesselGroupInsightQuery } from 'queries/vessel-insight-api'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
+import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { ReportBarGraphPlaceholder } from 'features/reports/shared/placeholders/ReportBarGraphPlaceholder'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
@@ -22,7 +23,14 @@ const VesselGroupReportInsightCoverage = ({ skip }: { skip?: boolean }) => {
   return (
     <div id="vessel-group-coverage" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label className="experimental">{t('vessel.insights.coverage', 'AIS Coverage')}</label>
+        <Tooltip
+          content={t(
+            'common.experimentalTooltip',
+            'Dataset still in development, click the information icon to learn more'
+          )}
+        >
+          <label className="experimental">{t('vessel.insights.coverage', 'AIS Coverage')}</label>
+        </Tooltip>
         <DataTerminology
           title={t('vessel.insights.coverage', 'AIS Coverage')}
           terminologyKey="insightsCoverage"

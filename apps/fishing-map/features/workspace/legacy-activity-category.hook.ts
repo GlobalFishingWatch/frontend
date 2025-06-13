@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import {
-  FISHING_DATAVIEW_SLUG,
+  FISHING_DATAVIEW_SLUG_ALL,
   PRESENCE_DATAVIEW_SLUG,
   VIIRS_MATCH_DATAVIEW_SLUG,
 } from 'data/workspaces'
@@ -35,7 +35,7 @@ export const useHideLegacyActivityCategoryDataviews = () => {
           })
         }
         dataviewInstancesToUpdate = dataviewInstancesResolved.filter((dataviewInstance) => {
-          return dataviewInstance.dataviewId === FISHING_DATAVIEW_SLUG
+          return dataviewInstance.dataviewId === FISHING_DATAVIEW_SLUG_ALL
         })
       }
       if (dataviewInstancesToUpdate.length) {

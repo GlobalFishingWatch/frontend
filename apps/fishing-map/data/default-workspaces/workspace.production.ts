@@ -20,7 +20,8 @@ import {
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
-  FISHING_DATAVIEW_SLUG,
+  FISHING_DATAVIEW_SLUG_AIS,
+  FISHING_DATAVIEW_SLUG_VMS,
   FIXED_SAR_INFRASTRUCTURE,
   GRATICULES_DATAVIEW_SLUG,
   HIGH_SEAS_DATAVIEW_SLUG,
@@ -60,7 +61,7 @@ const workspace: Workspace<WorkspaceState> = {
           distance_from_port_km: '3',
         },
       },
-      dataviewId: FISHING_DATAVIEW_SLUG,
+      dataviewId: FISHING_DATAVIEW_SLUG_AIS,
     },
     {
       id: VMS_DATAVIEW_INSTANCE_ID,
@@ -80,7 +81,7 @@ const workspace: Workspace<WorkspaceState> = {
           'public-norway-fishing-effort:v20220112',
         ],
       },
-      dataviewId: FISHING_DATAVIEW_SLUG,
+      dataviewId: FISHING_DATAVIEW_SLUG_VMS,
     },
     {
       id: PRESENCE_DATAVIEW_INSTANCE_ID,
