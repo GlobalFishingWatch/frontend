@@ -164,6 +164,8 @@
     "Events": "Events",
     "exclude": "Kecualikan",
     "excluded": "Dikecualikan",
+    "experimental": "Experimental",
+    "experimentalTooltip": "Dataset still in development, click the information icon to learn more",
     "faq": "Pertanyaan umum (FAQ)",
     "feedback": "Umpan balik",
     "field": "Field",
