@@ -5,6 +5,7 @@ import type { RootState } from 'reducers'
 import { parseAPIError } from '@globalfishingwatch/api-client'
 
 import { PATH_BASENAME } from 'data/config'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 export type IssueType = 'falsePositive' | 'falseNegative' | 'other'
 
@@ -27,8 +28,8 @@ export type TrackCorrection = {
   lastUpdated: string
   resolved: boolean
   comments?: TrackCorrectionComment[]
-  latitude: number
-  longitude: number
+  lat: number
+  lon: number
 }
 
 type TrackCorrectionState = {
@@ -40,7 +41,10 @@ type TrackCorrectionState = {
     }
     type: IssueType
   }
-  issues: TrackCorrection[]
+  issues: {
+    status: AsyncReducerStatus
+    data: TrackCorrection[]
+  }
 }
 
 const initialState: TrackCorrectionState = {
@@ -52,7 +56,10 @@ const initialState: TrackCorrectionState = {
     },
     type: 'falsePositive',
   },
-  issues: [],
+  issues: {
+    status: AsyncReducerStatus.Idle,
+    data: [],
+  },
 }
 
 type FetchTrackCorrectionsThunkParam = {
@@ -63,45 +70,21 @@ export const fetchTrackIssuesThunk = createAsyncThunk(
   'trackCorrection/fetch',
   async (
     { workspaceId }: FetchTrackCorrectionsThunkParam = {} as FetchTrackCorrectionsThunkParam,
-    { signal, getState, rejectWithValue, dispatch }
+    { rejectWithValue }
   ) => {
     try {
       // TODO: should we securize this endpoint?
-      const response = await fetch(`${PATH_BASENAME}/api/track-corrections`, {
+      const response = await fetch(`${PATH_BASENAME}/api/track-corrections/${workspaceId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
       })
       if (!response.ok) {
-        throw new Error('Failed to fetch track corrections')
+        throw new Error(response.statusText)
       }
       const data = await response.json()
       return data
-    } catch (e: any) {
-      return rejectWithValue(parseAPIError(e))
-    }
-  }
-)
-
-type FetchTrackCorrectionDetailsThunkParam = {
-  workspaceId: string
-  trackCorrectionId: string
-}
-export const fetchTrackCorrectionDetailsThunk = createAsyncThunk(
-  'trackCorrection/fetchDetails',
-  async (
-    {
-      workspaceId,
-      trackCorrectionId,
-    }: FetchTrackCorrectionDetailsThunkParam = {} as FetchTrackCorrectionDetailsThunkParam,
-    { signal, getState, rejectWithValue, dispatch }
-  ) => {
-    try {
-      console.log(
-        `TODO: fetch track correction details for ${trackCorrectionId} in workspace ${workspaceId}`
-      )
-      return []
     } catch (e: any) {
       return rejectWithValue(parseAPIError(e))
     }
@@ -126,6 +109,18 @@ const trackCorrection = createSlice({
       }
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(fetchTrackIssuesThunk.pending, (state) => {
+      state.issues.status = AsyncReducerStatus.Loading
+    })
+    builder.addCase(fetchTrackIssuesThunk.fulfilled, (state, action) => {
+      state.issues.status = AsyncReducerStatus.Finished
+      state.issues.data = action.payload
+    })
+    builder.addCase(fetchTrackIssuesThunk.rejected, (state) => {
+      state.issues.status = AsyncReducerStatus.Error
+    })
+  },
 })
 
 export const { setTrackCorrectionDataviewId, setTrackCorrectionTimerange, resetTrackCorrection } =
@@ -136,5 +131,8 @@ export const selectTrackCorrectionVesselDataviewId = (state: RootState) =>
 
 export const selectTrackCorrectionTimerange = (state: RootState) =>
   state.trackCorrection.newIssue.timerange
+
+export const selectAllTrackCorrectionIssues = (state: RootState) =>
+  state.trackCorrection.issues.data
 
 export default trackCorrection.reducer

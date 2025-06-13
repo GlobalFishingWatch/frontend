@@ -908,7 +908,8 @@
   },
   "trackCorrection": {
     "adjustDisabled": "Adjusting the time range is needed.",
-    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on."
+    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
+    "mapTooltip": "Issue added on {{date}} reported as {{type}}"
   },
   "vessel": {
     "activityByType": "By type",
