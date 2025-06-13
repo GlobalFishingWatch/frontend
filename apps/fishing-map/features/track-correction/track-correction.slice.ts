@@ -59,24 +59,44 @@ const initialState: TrackCorrectionState = {
   issues: [],
 }
 
+type CreateNewIssueThunkParam = {
+  issueBody: TrackCorrection
+  commentBody: TrackCorrectionComment
+  workspaceId: string
+}
 export const createNewIssueThunk = createAsyncThunk(
   'trackCorrection/newIssue',
-  async (newRowData, { rejectWithValue }) => {
+  async (
+    { issueBody, commentBody, workspaceId }: CreateNewIssueThunkParam,
+    { rejectWithValue, dispatch }
+  ) => {
     try {
-      const response = await fetch('/api/spreadsheet', {
+      const response = await fetch(`/api/track-corrections/`, {
         method: 'POST',
-        body: JSON.stringify(newRowData),
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          issueBody,
+          commentBody,
+        }),
       })
 
       if (!response.ok) {
-        throw new Error('Failed to post data')
+        const errorData = await response.json()
+        throw new Error(errorData.message || 'Failed to submit track correction')
       }
 
+      // Handle successful response
       const data = await response.json()
+      console.log('Track correction submitted successfully:', data)
+
+      // Reset form
+      dispatch(resetTrackCorrection())
+
       return data
     } catch (e: any) {
-      return rejectWithValue(e.message)
+      return rejectWithValue(e.message || 'An unknown error occurred')
     }
   }
 )
@@ -179,6 +199,8 @@ export const selectTrackCorrectionTimerange = (state: RootState) =>
   state.trackCorrection.newIssue.timerange
 
 export const selectTrackIssueType = (state: RootState) => state.trackCorrection.newIssue.type
+
+export const selectTrackIssueComment = (state: RootState) => state.trackCorrection.newIssue.comment
 
 export const selectTrackCorrectionState = (state: RootState) => state.trackCorrection
 
