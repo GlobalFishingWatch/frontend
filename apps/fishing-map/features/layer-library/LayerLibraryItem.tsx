@@ -67,11 +67,11 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
       : LineColorBarOptions
 
     const usedColors = uniq(dataviews.flatMap((dataview) => dataview.config?.color || []))
+    const unusedColors = palette.filter((c) => !usedColors.includes(c.value))
     const isDefaultColorUnused = !usedColors.includes(config?.color as string)
-    const firstUnusedcolor =
-      palette.length <= usedColors.length
-        ? palette.find((c) => !usedColors.includes(c.value))
-        : palette[Math.floor(Math.random() * palette.length + 1)]
+    const paletteToChooseFrom = unusedColors.length > 0 ? unusedColors : palette
+    const firstUnusedColor =
+      paletteToChooseFrom[Math.floor(Math.random() * paletteToChooseFrom.length)]
     const supportsColorChange = !LAYER_LIBRARY_EVENTS_IDS.includes(id)
     const apiDataview = allDataviews.find((d) => d.id === dataviewId)
     if (!apiDataview) {
@@ -93,8 +93,8 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
       config: {
         ...config,
         ...(supportsColorChange && {
-          color: isDefaultColorUnused ? config?.color : firstUnusedcolor?.value,
-          colorRamp: isDefaultColorUnused ? config?.colorRamp : firstUnusedcolor?.id,
+          color: isDefaultColorUnused ? config?.color : firstUnusedColor?.value,
+          colorRamp: isDefaultColorUnused ? config?.colorRamp : firstUnusedColor?.id,
         }),
       },
     })
