@@ -5,13 +5,7 @@ import { uniq } from 'es-toolkit'
 
 import type { Dataview } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import {
-  Button,
-  FillColorBarOptions,
-  Icon,
-  LineColorBarOptions,
-  Tooltip,
-} from '@globalfishingwatch/ui-components'
+import { Button, Icon, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
 import type { LibraryLayer } from 'data/layer-library'
@@ -26,7 +20,7 @@ import {
 import { fetchDataviewsByIdsThunk, selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { getNextColor, useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import { getHighlightedText } from 'utils/text'
 
@@ -62,16 +56,12 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
   const allDataviews = useSelector(selectAllDataviews)
 
   const onAddToWorkspaceClick = async () => {
-    const palette = FILL_DATAVIEWS.includes(dataview.config?.type)
-      ? FillColorBarOptions
-      : LineColorBarOptions
-
     const usedColors = uniq(dataviews.flatMap((dataview) => dataview.config?.color || []))
-    const unusedColors = palette.filter((c) => !usedColors.includes(c.value))
     const isDefaultColorUnused = !usedColors.includes(config?.color as string)
-    const paletteToChooseFrom = unusedColors.length > 0 ? unusedColors : palette
-    const firstUnusedColor =
-      paletteToChooseFrom[Math.floor(Math.random() * paletteToChooseFrom.length)]
+    const firstUnusedColor = getNextColor(
+      FILL_DATAVIEWS.includes(dataview.config?.type) ? 'fill' : 'line',
+      usedColors
+    )
     const supportsColorChange = !LAYER_LIBRARY_EVENTS_IDS.includes(id)
     const apiDataview = allDataviews.find((d) => d.id === dataviewId)
     if (!apiDataview) {
