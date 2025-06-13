@@ -18,6 +18,13 @@ export const selectIsNewTrackCorrection = createSelector(
   }
 )
 
+export const selectCurrentTrackCorrectionIssue = createSelector(
+  [selectTrackCorrectionId, selectAllTrackCorrectionIssues],
+  (trackCorrectionId, trackCorrectionIssues) => {
+    return trackCorrectionIssues.find((issue) => issue.issueId === trackCorrectionId)
+  }
+)
+
 export const selectTrackCorrectionIssues = createSelector(
   [selectAllTrackCorrectionIssues, selectTimeRange],
   (trackCorrectionIssues, timeRange) => {

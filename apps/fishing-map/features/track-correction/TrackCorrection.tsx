@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { center } from '@turf/center'
 import type { Feature, Point } from 'geojson'
+import { DateTime } from 'luxon'
 
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { Button, Icon, Select } from '@globalfishingwatch/ui-components'
@@ -10,13 +11,13 @@ import { Button, Icon, Select } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import I18nDate from 'features/i18n/i18nDate'
 import {
-  resetTrackCorrection,
   selectTrackCorrectionTimerange,
   selectTrackCorrectionVesselDataviewId,
   setTrackCorrectionDataviewId,
 } from 'features/track-correction/track-correction.slice'
-import { selectIsNewTrackCorrection } from 'features/track-correction/track-selection.selectors'
+import { selectCurrentTrackCorrectionIssue } from 'features/track-correction/track-selection.selectors'
 import TrackSlider from 'features/track-correction/TrackSlider'
 import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
@@ -59,7 +60,7 @@ function VesselOptionsSelect() {
 const TrackCorrection = () => {
   const { t } = useTranslation()
   const { start, end } = useSelector(selectTimeRange)
-  const isNewTrackCorrection = useSelector(selectIsNewTrackCorrection)
+  const currentTrackCorrectionIssue = useSelector(selectCurrentTrackCorrectionIssue)
   const [isTimerangePristine, setIsTimerangePristine] = useState(true)
 
   const trackCorrectionVesselDataviewId = useSelector(selectTrackCorrectionVesselDataviewId)
@@ -144,15 +145,32 @@ const TrackCorrection = () => {
           </div>
         </div>
       )}
-      <TrackSlider
-        rangeStartTime={getUTCDateTime(start).toMillis()}
-        rangeEndTime={getUTCDateTime(end).toMillis()}
-        segments={trackData ?? []}
-        color={vesselColor}
-        onTimerangeChange={(start, end) => {
-          setIsTimerangePristine(false)
-        }}
-      />
+      <label>{t('common.timeRange', 'Time range')}</label>
+      {currentTrackCorrectionIssue ? (
+        <Fragment>
+          <I18nDate
+            date={currentTrackCorrectionIssue.startDate}
+            format={DateTime.DATETIME_MED}
+            showUTCLabel={false}
+          />
+          {' - '}
+          <I18nDate
+            date={currentTrackCorrectionIssue.endDate}
+            format={DateTime.DATETIME_MED}
+            showUTCLabel={false}
+          />
+        </Fragment>
+      ) : (
+        <TrackSlider
+          rangeStartTime={getUTCDateTime(start).toMillis()}
+          rangeEndTime={getUTCDateTime(end).toMillis()}
+          segments={trackData ?? []}
+          color={vesselColor}
+          onTimerangeChange={(start, end) => {
+            setIsTimerangePristine(false)
+          }}
+        />
+      )}
       <div className={styles.disclaimer}>
         <Icon type="default" icon="warning" />
         <span>

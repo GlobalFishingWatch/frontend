@@ -181,7 +181,6 @@ function TrackSlider({
       aria-label="Track slider"
     >
       <div>
-        <label>{t('common.timeRange', 'Time range')}</label>
         <SliderOutput className={styles.sliderOutput}>
           {({ state }) => {
             return (
