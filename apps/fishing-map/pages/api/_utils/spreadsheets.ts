@@ -21,3 +21,20 @@ export const loadSpreadsheetDoc = async (id: string) => {
   await spreadsheetDoc.loadInfo()
   return spreadsheetDoc
 }
+
+const TEMPLATE_SPREADSHEET_ID = process.env.NEXT_TURNING_TIDES_TEMPLATE_SPREADSHEET_ID || ''
+
+export const SPREADSHEET_ID_BY_WORKSPACE = {
+  'default-public': TEMPLATE_SPREADSHEET_ID,
+}
+
+export const loadSpreadsheetDocByWorkspace = async (workspaceId: string) => {
+  const spreadsheetId =
+    SPREADSHEET_ID_BY_WORKSPACE[workspaceId as keyof typeof SPREADSHEET_ID_BY_WORKSPACE]
+  if (!spreadsheetId) {
+    throw new Error(`Spreadsheet ID not found for workspace ${workspaceId}`)
+  }
+
+  const spreadsheetDoc = await loadSpreadsheetDoc(spreadsheetId)
+  return spreadsheetDoc
+}

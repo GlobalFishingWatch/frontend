@@ -1,15 +1,27 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-import type { InfoCorrectionSendFormat } from 'features/vessel/vesselCorrection/VesselCorrection.types'
-import { loadSpreadsheetDoc } from 'pages/api/_utils/spreadsheets'
+import type { TrackCorrection } from 'features/track-correction/track-correction.slice'
+import { getWorkspaceIssues } from 'pages/api/track-corrections/[workspaceId]/_issues/get-all'
 
-export type ApiResponse = {
+export type ErrorAPIResponse = {
   success: boolean
   message: string
-  data?: InfoCorrectionSendFormat
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<ApiResponse>) {
+export type CreateIssueAPIResponse = TrackCorrection
+export type GetAllIssuesAPIResponse = TrackCorrection[]
+
+export type APIResponse = ErrorAPIResponse | GetAllIssuesAPIResponse | CreateIssueAPIResponse
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse<APIResponse>) {
+  const { workspaceId } = req.query as { workspaceId: string }
+  if (!workspaceId) {
+    return res.status(400).json({
+      success: false,
+      message: 'Workspace ID is required',
+    })
+  }
+
   if (req.method === 'POST') {
     return res.status(200).json({
       success: false,
@@ -18,10 +30,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
 
   if (req.method === 'GET') {
-    return res.status(200).json({
-      success: false,
-      message: 'TODO: get issues',
-    })
+    const issues = await getWorkspaceIssues(workspaceId as string)
+    return res.status(200).json(issues)
   }
 
   return res.status(405).json({

@@ -8,12 +8,13 @@ import { PATH_BASENAME } from 'data/config'
 
 export type IssueType = 'falsePositive' | 'falseNegative' | 'other'
 
-type TrackCorrectionComment = {
+export type TrackCorrectionComment = {
+  issueId: string
   comment: string
   user: string
   date: string
   datasetVersion: number
-  resolved: boolean
+  marksAsResolved: boolean
 }
 
 export type TrackCorrection = {
@@ -22,6 +23,7 @@ export type TrackCorrection = {
   startDate: string
   endDate: string
   type: IssueType
+  createdAt: string
   lastUpdated: string
   resolved: boolean
   comments?: TrackCorrectionComment[]
