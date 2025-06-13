@@ -77,10 +77,17 @@ export enum UserTab {
   VesselGroups = 'vesselGroups',
 }
 
+/**
+ * Track correction identifier
+ * @remarks 'new' represents a new track correction
+ * @remarks 'issueId' as string shows a existing correction
+ */
+export type TrackCorrectionId = 'new' | string
 export type AppState = {
   userTab?: UserTab
   mapDrawing?: DrawFeatureType | boolean
   mapDrawingEditId?: string
+  trackCorrectionId?: TrackCorrectionId
 }
 
 export type QueryParams = Partial<WorkspaceViewport> &

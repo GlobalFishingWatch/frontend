@@ -106,7 +106,7 @@ function NavigationHistoryButton() {
               ? t('workspace.list', 'Workspaces list')
               : t('workspace.title', 'Workspace')
 
-    const tooltip = t('navigateBackTo', 'Go back to {{section}}', {
+    const tooltip = t('common.navigateBackTo', 'Go back to {{section}}', {
       section: previousLocation.toLocaleLowerCase(),
     })
 

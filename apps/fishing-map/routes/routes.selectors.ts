@@ -203,6 +203,8 @@ export const selectIsIndexLocation = createSelector(
 // App state
 export const selectUserTab = selectQueryParam('userTab')
 export const selectUrlMapZoomQuery = selectQueryParam('zoom')
+export const selectTrackCorrectionId = selectQueryParam('trackCorrectionId')
+
 const selectUrlMapLatitudeQuery = selectQueryParam('latitude')
 const selectUrlMapLongitudeQuery = selectQueryParam('longitude')
 export const selectUrlStartQuery = selectQueryParam('start')

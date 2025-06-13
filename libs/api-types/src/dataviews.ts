@@ -147,6 +147,10 @@ export interface DataviewConfig<Type = DataviewType> {
   highlightEventStartTime?: string
   highlightEventEndTime?: string
 
+  /** Vessels to override the globalconfig start and end */
+  highlightStartTime?: string
+  highlightEndTime?: string
+
   /** Requests fourwings events datasets aggregated  */
   eventsTemporalAggregation?: boolean
 

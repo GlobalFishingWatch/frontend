@@ -40,13 +40,13 @@ import { useDeckMap } from 'features/map/map-context.hooks'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useMapAnnotation } from 'features/map/overlays/annotations/annotations.hooks'
 import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
+import { overlaysCursorAtom } from 'features/map/overlays/overlays-hooks'
 import useRulers from 'features/map/overlays/rulers/rulers.hooks'
 import { setHighlightedEvents } from 'features/timebar/timebar.slice'
 import { useEventActivityToggle } from 'features/vessel/activity/event/event-activity.hooks'
 import { useVesselProfileScrollToEvent } from 'features/vessel/activity/event/event-scroll.hooks'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 
-import { annotationsCursorAtom } from './overlays/annotations/Annotations'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
 import type { SliceExtendedClusterPickingObject, SliceInteractionEvent } from './map.slice'
 import {
@@ -514,7 +514,7 @@ export const useMapMouseClick = () => {
 }
 
 export const useMapCursor = () => {
-  const annotationsCursor = useAtomValue(annotationsCursorAtom)
+  const overlaysCursor = useAtomValue(overlaysCursorAtom)
   const areClusterTilesLoading = useMapClusterTilesLoading()
   const { isMapAnnotating } = useMapAnnotation()
   const { isErrorNotificationEditing } = useMapErrorNotification()
@@ -526,8 +526,8 @@ export const useMapCursor = () => {
 
   const getCursor = useCallback(
     ({ isDragging }: { isDragging: boolean }) => {
-      if (annotationsCursor) {
-        return annotationsCursor
+      if (overlaysCursor) {
+        return overlaysCursor
       }
       if (hoverFeatures?.some(isRulerLayerPoint)) {
         return 'move'
@@ -562,7 +562,7 @@ export const useMapCursor = () => {
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
-      annotationsCursor,
+      overlaysCursor,
       hoverFeaturesHash,
       isMapAnnotating,
       isErrorNotificationEditing,
