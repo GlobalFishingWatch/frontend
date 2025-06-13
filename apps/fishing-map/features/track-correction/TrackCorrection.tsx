@@ -58,7 +58,6 @@ function VesselOptionsSelect() {
 
 const TrackCorrection = () => {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const { start, end } = useSelector(selectTimeRange)
   const isNewTrackCorrection = useSelector(selectIsNewTrackCorrection)
   const [isTimerangePristine, setIsTimerangePristine] = useState(true)
@@ -76,12 +75,6 @@ const TrackCorrection = () => {
       setIsTimerangePristine(true)
     }
   }, [trackCorrectionVesselDataviewId])
-
-  useEffect(() => {
-    return () => {
-      dispatch(resetTrackCorrection())
-    }
-  }, [dispatch])
 
   const trackData = useMemo(() => {
     return vesselLayer?.instance
@@ -125,7 +118,7 @@ const TrackCorrection = () => {
     <div>
       <label>{t('common.vessel', 'Vessel')}</label>
       <div className={styles.vessel}>
-        {isNewTrackCorrection && trackCorrectionVesselDataviewId ? (
+        {trackCorrectionVesselDataviewId ? (
           <span className={styles.vesselLabel}>
             <Icon icon="vessel" style={{ color: vesselColor }} />
             {vesselInfo ? getVesselShipNameLabel(vesselInfo) : dataview?.config?.name}
