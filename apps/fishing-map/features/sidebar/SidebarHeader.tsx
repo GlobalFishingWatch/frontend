@@ -18,7 +18,12 @@ import ReportTitle from 'features/reports/report-area/title/ReportTitle'
 import PortReportHeader from 'features/reports/report-port/PortReportHeader'
 import VesselGroupReportTitle from 'features/reports/report-vessel-group/VesselGroupReportTitle'
 import type { SearchType } from 'features/search/search.config'
-import { EMPTY_SEARCH_FILTERS, IMO_LENGTH, SSVID_LENGTH } from 'features/search/search.config'
+import {
+  CALLSIGN_MIN_LENGTH,
+  EMPTY_SEARCH_FILTERS,
+  IMO_LENGTH,
+  SSVID_LENGTH,
+} from 'features/search/search.config'
 import { selectSearchOption, selectSearchQuery } from 'features/search/search.config.selectors'
 import { useSearchFiltersConnect } from 'features/search/search.hook'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
@@ -117,16 +122,16 @@ function SidebarHeader() {
         additionalParams = { ssvid: searchQuery }
       } else if (searchQuery?.length === IMO_LENGTH && !isNaN(Number(searchQuery))) {
         additionalParams = { imo: searchQuery }
+      } else if (searchQuery?.length >= CALLSIGN_MIN_LENGTH && /^[A-Z0-9]+$/.test(searchQuery)) {
+        additionalParams = { callsign: searchQuery }
       } else {
         additionalParams = { query: searchQuery }
       }
     } else {
-      if (searchQuery) {
-        additionalParams = { query: searchQuery }
-      } else if (searchFilters.ssvid) {
-        additionalParams = { query: searchFilters.ssvid }
-      } else if (searchFilters.imo) {
-        additionalParams = { query: searchFilters.imo }
+      if (searchQuery || searchFilters.ssvid || searchFilters.imo) {
+        additionalParams = {
+          query: searchQuery || searchFilters.ssvid || searchFilters.imo,
+        }
       }
     }
     dispatch(cleanVesselSearchResults())
