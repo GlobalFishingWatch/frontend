@@ -9,7 +9,7 @@ import {
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS,
-  FISHING_DATAVIEW_SLUG,
+  FISHING_DATAVIEW_SLUG_ALL,
   PRESENCE_DATAVIEW_SLUG,
 } from 'data/workspaces'
 
@@ -137,7 +137,7 @@ export const getVesselGroupActivityDataviewInstance = ({
           'vessel-groups': [vesselGroupId],
         },
       },
-      dataviewId: activityType === 'presence' ? PRESENCE_DATAVIEW_SLUG : FISHING_DATAVIEW_SLUG,
+      dataviewId: activityType === 'presence' ? PRESENCE_DATAVIEW_SLUG : FISHING_DATAVIEW_SLUG_ALL,
     }
   }
 }
