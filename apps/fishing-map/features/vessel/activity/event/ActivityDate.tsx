@@ -3,8 +3,10 @@ import { DateTime } from 'luxon'
 
 import I18nDate from 'features/i18n/i18nDate'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
-import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
-import { ActivityEventSubType } from 'features/vessel/activity/vessels-activity.selectors'
+import {
+  type ActivityEvent,
+  ActivityEventSubType,
+} from 'features/vessel/activity/vessels-activity.selectors'
 
 import styles from './Event.module.css'
 
@@ -22,8 +24,15 @@ const ActivityDate: React.FC<ActivityDateProps> = ({ event }): React.ReactElemen
     <Fragment>
       {event.start && (
         <label className={styles.date}>
-          <I18nDate date={date as number} format={DateTime.DATETIME_SHORT} showUTCLabel />
-          {durationDescription && <span> - {durationDescription}</span>}
+          <I18nDate date={date as number} format={DateTime.DATETIME_SHORT} />
+          {durationDescription && (
+            <span>
+              {' - '}
+              <I18nDate date={event.end as number} format={DateTime.DATETIME_SHORT} showUTCLabel />
+              {' - '}
+              {durationDescription}
+            </span>
+          )}
         </label>
       )}
     </Fragment>
