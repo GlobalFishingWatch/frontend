@@ -23,27 +23,26 @@ export type TrackCorrection = {
   startDate: string
   endDate: string
   type: IssueType
-  createdAt: string
   lastUpdated: string
   resolved: boolean
   comments?: TrackCorrectionComment[]
   latitude: number
   longitude: number
+  source?: string
+}
+
+export type NewIssue = {
+  vesselDataviewId: string
+  timerange: {
+    start: string
+    end: string
+  }
+  type: IssueType
+  comment: string
 }
 
 type TrackCorrectionState = {
-  newIssue: {
-    vesselDataviewId: string
-    timerange: {
-      start: string
-      end: string
-    }
-    type: IssueType
-  }
-  issueType: IssueType
-  comment: string
-  issueCreatedAt?: string
-  issueCreatedBy?: string
+  newIssue: NewIssue
   issues: TrackCorrection[]
 }
 
@@ -55,11 +54,32 @@ const initialState: TrackCorrectionState = {
       end: '',
     },
     type: 'falsePositive',
+    comment: '',
   },
-  issueType: 'falsePositive',
-  comment: '',
   issues: [],
 }
+
+export const createNewIssueThunk = createAsyncThunk(
+  'trackCorrection/newIssue',
+  async (newRowData, { rejectWithValue }) => {
+    try {
+      const response = await fetch('/api/spreadsheet', {
+        method: 'POST',
+        body: JSON.stringify(newRowData),
+        headers: { 'Content-Type': 'application/json' },
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to post data')
+      }
+
+      const data = await response.json()
+      return data
+    } catch (e: any) {
+      return rejectWithValue(e.message)
+    }
+  }
+)
 
 type FetchTrackCorrectionsThunkParam = {
   workspaceId: string
@@ -125,28 +145,21 @@ const trackCorrection = createSlice({
       state.newIssue.timerange = action.payload
     },
     setTrackIssueType: (state, action: PayloadAction<IssueType>) => {
-      state.issueType = action.payload
+      state.newIssue.type = action.payload
     },
     setTrackIssueComment: (state, action: PayloadAction<string>) => {
-      state.comment = action.payload
+      state.newIssue.comment = action.payload
     },
-    setTrackIssueCreatedInfo: (
-      state,
-      action: PayloadAction<{ createdAt: string; createdBy: string }>
-    ) => {
-      state.issueCreatedAt = action.payload.createdAt
-      state.issueCreatedBy = action.payload.createdBy
-    },
+
     resetTrackCorrection: (state) => {
       state.newIssue.vesselDataviewId = ''
       state.newIssue.timerange = {
         start: '',
         end: '',
       }
-      state.issueType = 'falsePositive'
-      state.comment = ''
-      state.issueCreatedAt = undefined
-      state.issueCreatedBy = undefined
+      state.newIssue.type = 'falsePositive'
+      state.newIssue.comment = ''
+      state.issues = []
     },
   },
 })
@@ -156,7 +169,6 @@ export const {
   setTrackCorrectionTimerange,
   setTrackIssueType,
   setTrackIssueComment,
-  setTrackIssueCreatedInfo,
   resetTrackCorrection,
 } = trackCorrection.actions
 
@@ -166,6 +178,8 @@ export const selectTrackCorrectionVesselDataviewId = (state: RootState) =>
 export const selectTrackCorrectionTimerange = (state: RootState) =>
   state.trackCorrection.newIssue.timerange
 
-export const selectTrackIssueType = (state: RootState) => state.trackCorrection.issueType
+export const selectTrackIssueType = (state: RootState) => state.trackCorrection.newIssue.type
+
+export const selectTrackCorrectionState = (state: RootState) => state.trackCorrection
 
 export default trackCorrection.reducer

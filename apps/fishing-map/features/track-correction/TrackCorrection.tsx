@@ -14,12 +14,12 @@ import { selectActiveTrackDataviews } from 'features/dataviews/selectors/datavie
 import type { IssueType } from 'features/track-correction/track-correction.slice'
 import {
   resetTrackCorrection,
+  selectTrackCorrectionState,
   selectTrackCorrectionTimerange,
   selectTrackCorrectionVesselDataviewId,
   selectTrackIssueType,
   setTrackCorrectionDataviewId,
   setTrackIssueComment,
-  setTrackIssueCreatedInfo,
   setTrackIssueType,
 } from 'features/track-correction/track-correction.slice'
 import { selectIsNewTrackCorrection } from 'features/track-correction/track-selection.selectors'
@@ -73,7 +73,7 @@ const TrackCorrection = () => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { start, end } = useSelector(selectTimeRange)
-  const issueType = useSelector(selectTrackIssueType)
+  const issueType = useSelector(selectTrackCorrectionState)
   const isNewTrackCorrection = useSelector(selectIsNewTrackCorrection)
   const [isTimerangePristine, setIsTimerangePristine] = useState(true)
 
@@ -84,7 +84,7 @@ const TrackCorrection = () => {
   )
   const vesselInfo = vesselInfoResource?.data
   const vesselColor = dataview?.config?.color
-
+  console.log('🚀 initial state:', issueType)
   const userData = useSelector(selectUserData)
 
   useEffect(() => {
@@ -138,18 +138,20 @@ const TrackCorrection = () => {
   )
 
   return (
-    <div>
-      <label>{t('common.vessel', 'Vessel')}</label>
-      <div className={styles.vessel}>
-        {isNewTrackCorrection && trackCorrectionVesselDataviewId ? (
-          <span className={styles.vesselLabel}>
-            <Icon icon="vessel" style={{ color: vesselColor }} />
-            {vesselInfo ? getVesselShipNameLabel(vesselInfo) : dataview?.config?.name}
-          </span>
-        ) : (
-          <VesselOptionsSelect />
-        )}
-        <FitBounds layer={vesselLayer?.instance} disabled={!vesselLayer?.loaded} />
+    <div className={styles.container}>
+      <div>
+        <label>{t('common.vessel', 'Vessel')}</label>
+        <div className={styles.vessel}>
+          {isNewTrackCorrection && trackCorrectionVesselDataviewId ? (
+            <span className={styles.vesselLabel}>
+              <Icon icon="vessel" style={{ color: vesselColor }} />
+              {vesselInfo ? getVesselShipNameLabel(vesselInfo) : dataview?.config?.name}
+            </span>
+          ) : (
+            <VesselOptionsSelect />
+          )}
+          <FitBounds layer={vesselLayer?.instance} disabled={!vesselLayer?.loaded} />
+        </div>
       </div>
       {vesselInfo && (
         <div className={styles.vesselInfo}>
@@ -190,7 +192,7 @@ const TrackCorrection = () => {
         <label>{t('trackCorrection.issueType', 'Type of issue')}</label>
         <Choice
           options={issueTypesOptions}
-          activeOption={issueType}
+          activeOption={issueType.newIssue.type}
           onSelect={(option) => {
             setTrackIssueType(option.id)
           }}
@@ -210,12 +212,6 @@ const TrackCorrection = () => {
 
       <div className={styles.actions}>
         <Button
-          onClick={() => {
-            setTrackIssueCreatedInfo({
-              createdAt: new Date().toISOString(),
-              createdBy: userData!.email || 'anonymous user',
-            })
-          }}
           tooltip={
             isTimerangePristine
               ? t('common.adjustDisabled', 'Adjusting the time range is needed.')

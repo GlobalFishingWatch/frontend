@@ -1,4 +1,4 @@
-import type { GoogleSpreadsheetRow } from 'google-spreadsheet'
+import type { GoogleSpreadsheet, GoogleSpreadsheetRow } from 'google-spreadsheet'
 
 import type {
   TrackCorrection,
@@ -32,10 +32,17 @@ export function parseIssueRow(row: GoogleSpreadsheetRow<TrackCorrection>): Track
     startDate: row.get('startDate'),
     endDate: row.get('endDate'),
     type: row.get('type'),
-    createdAt: row.get('createdAt'),
     lastUpdated: row.get('lastUpdated'),
     resolved: parseIssueResolved(row.get('resolved')),
     latitude: row.get('latitude'),
     longitude: row.get('longitude'),
   }
+}
+
+export const getSheetTab = (title: string, spreadsheetDoc: GoogleSpreadsheet) => {
+  const sheet = spreadsheetDoc.sheetsByTitle[title]
+  if (!sheet) {
+    throw new Error(`Spreadsheet tab (${title}) not found in spreadsheet.`)
+  }
+  return sheet
 }

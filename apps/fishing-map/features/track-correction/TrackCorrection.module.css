@@ -1,3 +1,9 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-M);
+}
+
 .vessel {
   display: flex;
   align-items: center;
@@ -21,9 +27,12 @@
 
 .disclaimer {
   background-color: var(--color-danger-red-background);
+  opacity: var(--opacity-secondary);
   display: flex;
   align-items: center;
   gap: var(--space-S);
   padding: var(--space-XS) var(--space-S);
   border-radius: var(--border-radius);
+  font-size: small;
+  line-height: 1.5;
 }
