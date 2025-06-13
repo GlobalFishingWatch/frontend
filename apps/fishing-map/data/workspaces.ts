@@ -50,10 +50,11 @@ export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas' as const
 export const PORTS_FOOTPRINT_DATAVIEW_SLUG = 'ports-footprint' as const
 export const CURRENTS_DATAVIEW_SLUG = 'currents' as const
 
+export const FISHING_DATAVIEW_SLUG_PREFIX = 'apparent-fishing-effort' as const
 // Workspaces dataviews
-export const FISHING_DATAVIEW_SLUG_ALL = 'apparent-fishing-effort-v-3' as const
-export const FISHING_DATAVIEW_SLUG_AIS = 'apparent-fishing-effort-ais-v-3' as const
-export const FISHING_DATAVIEW_SLUG_VMS = 'apparent-fishing-effort-vms-v-3' as const
+export const FISHING_DATAVIEW_SLUG_ALL = `${FISHING_DATAVIEW_SLUG_PREFIX}-v-3` as const
+export const FISHING_DATAVIEW_SLUG_AIS = `${FISHING_DATAVIEW_SLUG_PREFIX}-ais-v-3` as const
+export const FISHING_DATAVIEW_SLUG_VMS = `${FISHING_DATAVIEW_SLUG_PREFIX}-vms-v-3` as const
 export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG = 'encounter-cluster-events-v-3' as const
 export const CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG = 'loitering-cluster-events-v-3' as const
 export const CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG = 'port-visit-cluster-events-v-3' as const
