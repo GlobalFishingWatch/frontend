@@ -132,6 +132,7 @@ const TrackCorrection = () => {
           })
         }),
       })
+      console.log('🚀 ~ TrackCorrection ~ middlePoint:', middlePoint)
     },
     [vesselLayer?.instance]
   )

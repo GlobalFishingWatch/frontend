@@ -98,8 +98,7 @@
     "visualiationMode": "Mode visualisasi",
     "visualisationActivity": "Aktivitas (peta panas)",
     "visualisationActivityHint": "(Pastikan id, lat, lon, timestamp dan nilai semuanya ada)",
-    "visualisationEvents": "Peristiwa (kelompok)",
-    "visualisationEventsHint": "(Pastikan event_id, event_start, event_end dan geom semuanya ada)"
+    "visualisationEvents": "Peristiwa (kelompok)"
   },
   "common": {
     "active": "Aktif",
@@ -760,6 +759,7 @@
     "errorLabel": "Harap jelaskan kesalahannya sedetail mungkin",
     "errorPlaceholder": "Harap jelaskan kesalahannya sedetail mungkin",
     "highRes": "See high resolution heatmaps",
+    "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Perkiraan area grid sel di Khatulistiwa",
     "loading": "Memuat",
     "lowRes": "See low resolution heatmaps",

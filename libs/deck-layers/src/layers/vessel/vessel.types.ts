@@ -28,6 +28,7 @@ export type _VesselLayerProps = {
 // export type VesselTrackPickingInfo = PickingInfo<VesselTrackPickingObject, { tile?: Tile2DHeader }>
 
 export type VesselEventProperties = ApiEvent & {
+  id: string
   color: string
   title: string
   vesselId: string

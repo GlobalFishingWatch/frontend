@@ -106,6 +106,7 @@ const TracksEvents = ({
             color = trackEvents.color as string
           }
           const eventSizeByType = Math.min(eventSize, event.type === 'fishing' ? 5 : 15)
+          const borderSize = eventSizeByType >= 10 ? 1.5 : 1
           return (
             <div
               role="button"
@@ -120,11 +121,9 @@ const TracksEvents = ({
                   left: `${event.x}px`,
                   width: `${event.width}px`,
                   height: `${eventSizeByType}px`,
-                  minWidth: `${eventSizeByType}px`,
-                  ...(event.type !== 'port_visit' && {
-                    borderWidth: `${Math.max(Math.ceil(eventSizeByType / 2), 3)}px`,
-                  }),
                   '--background-color': color,
+                  '--size': `${eventSizeByType}px`,
+                  '--border-size': `${borderSize}px`,
                 } as React.CSSProperties
               }
               onClick={() => {

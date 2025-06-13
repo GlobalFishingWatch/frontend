@@ -16,16 +16,12 @@ import { selectIsAnyReportLocation, selectIsAnyVesselLocation } from 'routes/rou
 import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
 
 import type { MAP_CONTAINER_ID } from '../map-viewport.hooks'
-import MapScreenshot, { MAP_IMAGE_DEBOUNCE } from '../MapScreenshot'
 
 import { ScrenshotAreaIds, selectScreenshotAreaId, setScreenshotAreaId } from './screenshot.slice'
 
 import styles from './MapControls.module.css'
 
-type ScrenshotArea = 'map' | 'withTimebar' | 'withTimebarAndLegend'
 type ScrenshotDOMArea = typeof ROOT_DOM_ELEMENT | typeof MAP_CONTAINER_ID | typeof MAIN_DOM_ID
-
-const DEFAULT_SCREENSHOT_AREA = ScrenshotAreaIds.withTimebarAndLegend
 
 const MapControlScreenshot = ({
   mapLoading = false,
@@ -74,10 +70,9 @@ const MapControlScreenshot = ({
           setInlineStyles(rootElement)
           // leave some time to
           // 1. apply the styles + timebar to re - render
-          // 2. map static image generated with debounced finishes
           timeoutRef.current = setTimeout(() => {
             generatePreviewImage(domId)
-          }, MAP_IMAGE_DEBOUNCE + 400)
+          }, 400)
         }
       }, 100)
     },
@@ -126,7 +121,6 @@ const MapControlScreenshot = ({
 
   return (
     <Fragment>
-      {modalOpen && <MapScreenshot />}
       {showScreenshot && (
         <IconButton
           icon="camera"

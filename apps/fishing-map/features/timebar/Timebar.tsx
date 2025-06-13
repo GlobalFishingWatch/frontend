@@ -33,7 +33,6 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
 import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import { selectShowTimeComparison } from 'features/reports/report-area/area-reports.selectors'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
@@ -189,7 +188,6 @@ const TimebarWrapper = () => {
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
-  const screenshotModalOpen = useSelector(selectScreenshotModalOpen)
   const reportAreaLocation = useSelector(selectIsAnyAreaReportLocation)
   const fitAreaInViewport = useFitAreaInViewport()
   const dispatch = useAppDispatch()
@@ -402,12 +400,7 @@ const TimebarWrapper = () => {
       <Fragment>
         <TimebarTracks key="tracks" data={tracks} />
         {showGraph && tracksGraphsData && (
-          <TimebarTracksGraph
-            key="trackGraph"
-            data={tracksGraphsData}
-            steps={trackGraphSteps}
-            printing={screenshotModalOpen}
-          />
+          <TimebarTracksGraph key="trackGraph" data={tracksGraphsData} steps={trackGraphSteps} />
         )}
         {events && (
           <TimebarTracksEvents
@@ -423,7 +416,6 @@ const TimebarWrapper = () => {
     hasTrackError,
     highlightedEventIds,
     onEventClick,
-    screenshotModalOpen,
     showGraph,
     t,
     trackGraphSteps,
