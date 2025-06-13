@@ -301,6 +301,12 @@ const VesselIdentity = () => {
             <a
               href={`https://www.marinetraffic.com/${i18n.language}/ais/details/ships/mmsi:${vesselIdentity?.ssvid}`}
               target="_blank"
+              onClick={() => {
+                trackEvent({
+                  category: TrackCategory.VesselProfile,
+                  action: 'click_marine_traffic_link',
+                })
+              }}
             >
               Marine Traffic
               <Icon icon="external-link" type="default" />
@@ -308,6 +314,12 @@ const VesselIdentity = () => {
             <a
               href={`https://sc-production.skylight.earth/vesselsearch?mmsi=${vesselIdentity?.ssvid}`}
               target="_blank"
+              onClick={() => {
+                trackEvent({
+                  category: TrackCategory.VesselProfile,
+                  action: 'click_skylight_link',
+                })
+              }}
             >
               Skylight
               <Icon icon="external-link" type="default" />
@@ -315,6 +327,12 @@ const VesselIdentity = () => {
             <a
               href={`https://app.triton.fish/search?name=${vesselIdentity?.ssvid}`}
               target="_blank"
+              onClick={() => {
+                trackEvent({
+                  category: TrackCategory.VesselProfile,
+                  action: 'click_triton_link',
+                })
+              }}
             >
               Triton
               <Icon icon="external-link" type="default" />
