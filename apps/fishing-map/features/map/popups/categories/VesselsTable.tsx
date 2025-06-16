@@ -1,12 +1,14 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { DataviewCategory } from '@globalfishingwatch/api-types'
 import { DatasetSubCategory, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { Tooltip } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
@@ -50,14 +52,17 @@ function VesselsTable({
   activityType = DatasetSubCategory.Fishing,
   testId = 'vessels-table',
   showValue = true,
+  linkToSkylight = false,
 }: {
   feature: SliceExtendedFourwingsDeckSublayer & { category: DataviewCategory }
   vesselProperty?: ActivityProperty
   activityType?: `${DatasetSubCategory}`
   testId?: string
   showValue?: boolean
+  linkToSkylight?: boolean
 }) {
   const { t } = useTranslation()
+  const { start, end } = useSelector(selectTimeRange)
 
   const interactionAllowed = [...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION].includes(
     feature?.category || ''
@@ -141,18 +146,38 @@ function VesselsTable({
                   <td colSpan={hasPinColumn && pinTrackDisabled ? 2 : 1} data-test="vessel-name">
                     {vesselName !== EMPTY_FIELD_PLACEHOLDER ? (
                       <Fragment>
-                        <VesselLink
-                          className={styles.link}
-                          vesselId={vessel.id}
-                          datasetId={vessel.infoDataset?.id}
-                          tooltip={identitiesSummary}
-                          query={{
-                            vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-                            vesselSelfReportedId: vessel.id,
-                          }}
-                        >
-                          {vesselName}
-                        </VesselLink>
+                        {linkToSkylight ? (
+                          <span className={styles.skylightLink}>
+                            {vesselName}
+                            <a
+                              className={styles.link}
+                              target="_blank"
+                              href={`https://sc-production.skylight.earth/vesseldetails/${vessel.id}?startTime=${start}&endTime=${end}&timesliderStart=${start}&timesliderEnd=${end}`}
+                            >
+                              <IconButton
+                                icon="external-link"
+                                size="tiny"
+                                tooltip={t(
+                                  'vessel.skylightLink',
+                                  'Click to see Skylight vessel profile'
+                                )}
+                              />
+                            </a>
+                          </span>
+                        ) : (
+                          <VesselLink
+                            className={styles.link}
+                            vesselId={vessel.id}
+                            datasetId={vessel.infoDataset?.id}
+                            tooltip={identitiesSummary}
+                            query={{
+                              vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                              vesselSelfReportedId: vessel.id,
+                            }}
+                          >
+                            {vesselName}
+                          </VesselLink>
+                        )}
                         {otherVesselsLabel && (
                           <span className={styles.secondary}>{otherVesselsLabel}</span>
                         )}

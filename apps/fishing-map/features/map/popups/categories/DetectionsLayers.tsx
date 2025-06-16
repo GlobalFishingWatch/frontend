@@ -1,14 +1,14 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { DataviewCategory } from '@globalfishingwatch/api-types'
+import type { DataviewCategory, SelfReportedInfo } from '@globalfishingwatch/api-types'
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselDetectionTimestamps from 'features/map/popups/categories/VesselDetectionTimestamps'
 import VesselsTable, { getVesselsInfoConfig } from 'features/map/popups/categories/VesselsTable'
 
-import type { SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
+import type { ExtendedFeatureVessel, SliceExtendedFourwingsDeckSublayer } from '../../map.slice'
 
 import styles from '../Popup.module.css'
 
@@ -45,6 +45,20 @@ function DetectionsTooltipRow({
   const notMatchedDetectionsCount = feature.value! - matchedDetections
   const notMatchedDetection = feature?.vessels?.find((v: any) => v.id === null)
 
+  const isSkylight = feature.datasets[0] === 'proto-global-skylight-viirs:v1.0'
+  if (isSkylight) {
+    featureVesselsFilter.vessels = matchedVessels.map((vessel: ExtendedFeatureVessel) => ({
+      ...vessel,
+      selfReportedInfo: [
+        {
+          id: vessel.id,
+          shipname: (vessel as any).shipname,
+          flag: (vessel as any).flag,
+        } as SelfReportedInfo,
+      ],
+    }))
+  }
+
   return (
     <div className={styles.popupSection}>
       <Icon icon="heatmap" className={styles.layerIcon} style={{ color: feature.color }} />
@@ -80,6 +94,7 @@ function DetectionsTooltipRow({
         {!loading && error && <p className={styles.error}>{error}</p>}
         {!loading && showFeaturesDetails && (
           <VesselsTable
+            linkToSkylight={isSkylight}
             feature={{ ...featureVesselsFilter, category: feature.category }}
             vesselProperty="detections"
           />

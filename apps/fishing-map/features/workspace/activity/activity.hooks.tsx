@@ -21,6 +21,12 @@ import {
   selectDetectionsVisualizationMode,
   selectEnvironmentVisualizationMode,
 } from 'features/app/selectors/app.selectors'
+import { getIsPositionSupportedInDataview } from 'features/dataviews/dataviews.utils'
+import {
+  selectActivityDataviews,
+  selectDetectionsDataviews,
+  selectEnvironmentalDataviews,
+} from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   selectActivityMergedDataviewId,
   selectDetectionsMergedDataviewId,
@@ -36,6 +42,14 @@ export const useVisualizationsOptions = (
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useAppDispatch()
+  const dataviews = useSelector(
+    category === DataviewCategory.Activity
+      ? selectActivityDataviews
+      : category === DataviewCategory.Detections
+        ? selectDetectionsDataviews
+        : selectEnvironmentalDataviews
+  )
+
   const layerId = useSelector(
     category === DataviewCategory.Detections
       ? selectDetectionsMergedDataviewId
@@ -58,6 +72,10 @@ export const useVisualizationsOptions = (
       : category === DataviewCategory.Environment
         ? selectEnvironmentVisualizationMode
         : selectActivityVisualizationMode
+  )
+
+  const positionsSupported = dataviews.every((dataview) =>
+    getIsPositionSupportedInDataview(dataview)
   )
 
   const onVisualizationModeChange = useCallback(
@@ -103,22 +121,26 @@ export const useVisualizationsOptions = (
               tooltipPlacement: 'bottom',
               disabled: hasVesselGroupsFilter,
             },
-            {
-              id: POSITIONS_ID,
-              label: <Icon icon={isPositionsLayerAvailable ? 'vessel' : 'vessel-disabled'} />,
-              tooltip: isPositionsLayerAvailable
-                ? t('map.positions', 'See positions visualization mode')
-                : t(
-                    'map.positionsDisabled',
-                    'A more detailed visualization is available in areas with less activity, please zoom in or reduce your time range to see it'
-                  ),
-              tooltipPlacement: 'bottom',
-              disabled: !isPositionsLayerAvailable,
-            },
+            ...(positionsSupported
+              ? [
+                  {
+                    id: POSITIONS_ID,
+                    label: <Icon icon={isPositionsLayerAvailable ? 'vessel' : 'vessel-disabled'} />,
+                    tooltip: isPositionsLayerAvailable
+                      ? t('map.positions', 'See positions visualization mode')
+                      : t(
+                          'map.positionsDisabled',
+                          'A more detailed visualization is available in areas with less activity, please zoom in or reduce your time range to see it'
+                        ),
+                    tooltipPlacement: 'bottom',
+                    disabled: !isPositionsLayerAvailable,
+                  },
+                ]
+              : []),
           ] as ChoiceOption<FourwingsVisualizationMode>[])
         : []),
     ]
-  }, [category, hasVesselGroupsFilter, isPositionsLayerAvailable, t])
+  }, [category, hasVesselGroupsFilter, isPositionsLayerAvailable, positionsSupported, t])
 
   return useMemo(
     () => ({ visualizationOptions, activeVisualizationOption, onVisualizationModeChange }),

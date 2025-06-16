@@ -41,10 +41,6 @@ function DetectionsSection(): React.ReactElement<any> {
   const { visualizationOptions, activeVisualizationOption, onVisualizationModeChange } =
     useVisualizationsOptions(DataviewCategory.Detections)
 
-  const positionsSupported = dataviews.every((dataview) =>
-    getIsPositionSupportedInDataview(dataview)
-  )
-
   const dispatch = useAppDispatch()
   const onAddLayerClick = useCallback(() => {
     dispatch(setModalOpen({ id: 'layerLibrary', open: DataviewCategory.Detections }))
@@ -112,15 +108,14 @@ function DetectionsSection(): React.ReactElement<any> {
         <h2 className={styles.sectionTitle}>{t('common.detections', 'Detections')}</h2>
         {!readOnly && (
           <div className={cx(styles.sectionButtons)}>
-            {positionsSupported && (
-              <VisualisationChoice
-                options={visualizationOptions}
-                testId="activity-visualizations-change"
-                activeOption={activeVisualizationOption}
-                onSelect={(option) => onVisualizationModeChange(option.id)}
-                className={cx({ [styles.hidden]: !hasVisibleDataviews })}
-              />
-            )}
+            <VisualisationChoice
+              options={visualizationOptions}
+              testId="activity-visualizations-change"
+              activeOption={activeVisualizationOption}
+              onSelect={(option) => onVisualizationModeChange(option.id)}
+              className={cx({ [styles.hidden]: !hasVisibleDataviews })}
+            />
+
             {hasVisibleDataviews && <GlobalReportLink reportCategory={ReportCategory.Detections} />}
             <IconButton
               icon="plus"
