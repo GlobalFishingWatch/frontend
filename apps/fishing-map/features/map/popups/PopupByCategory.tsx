@@ -23,6 +23,7 @@ import {
 } from '@globalfishingwatch/deck-layers'
 
 import { POPUP_CATEGORY_ORDER } from 'data/config'
+import { SKYLIGHT_PROTOTYPE_DATASET_ID } from 'data/workspaces'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
@@ -149,10 +150,16 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               }
               return feature.sublayers?.map((sublayer, j) => {
                 const dataview = dataviews.find((d) => d.id === sublayer.id)
+                const isSkylighPrototype = sublayer.datasets.some(
+                  (d) => d === SKYLIGHT_PROTOTYPE_DATASET_ID
+                )
                 return (
                   <TooltipComponent
                     key={`${i}-${j}`}
-                    loading={interactionStatus === AsyncReducerStatus.Loading}
+                    loading={
+                      (isSkylighPrototype ? activityInteractionStatus : interactionStatus) ===
+                      AsyncReducerStatus.Loading
+                    }
                     error={
                       interactionStatus === AsyncReducerStatus.Error
                         ? interactionError || t('errors.genericShort', 'Something went wrong')
