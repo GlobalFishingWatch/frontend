@@ -28,6 +28,7 @@ import {
   PRESENCE_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
   VIIRS_MATCH_DATAVIEW_SLUG,
+  VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import {
   ENCOUNTER_EVENTS_SOURCE_ID,
@@ -97,14 +98,25 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: PRESENCE_DATAVIEW_SLUG,
     },
+    // {
+    //   id: VIIRS_DATAVIEW_INSTANCE_ID,
+    //   config: {
+    //     color: '#FFEA00',
+    //     colorRamp: 'yellow',
+    //     visible: false,
+    //   },
+    //   dataviewId: VIIRS_MATCH_DATAVIEW_SLUG,
+    //   datasetsConfig: [],
+    // },
     {
       id: VIIRS_DATAVIEW_INSTANCE_ID,
       config: {
         color: '#FFEA00',
         colorRamp: 'yellow',
         visible: false,
+        datasets: ['proto-global-skylight-viirs:v1.0'],
       },
-      dataviewId: VIIRS_MATCH_DATAVIEW_SLUG,
+      dataviewId: VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG,
       datasetsConfig: [],
     },
     {
