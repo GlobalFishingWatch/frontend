@@ -27,24 +27,24 @@ export type TrackCorrection = {
   lastUpdated: string
   resolved: boolean
   comments?: TrackCorrectionComment[]
-  latitude: number
-  longitude: number
-  source?: string
-}
-
-export type NewIssue = {
-  vesselDataviewId: string
-  timerange: {
-    start: string
-    end: string
-  }
-  type: IssueType
-  comment: string
+  lat: number
+  lon: number
 }
 
 type TrackCorrectionState = {
-  newIssue: NewIssue
-  issues: TrackCorrection[]
+  newIssue: {
+    vesselDataviewId: string
+    timerange: {
+      start: string
+      end: string
+    }
+    type: IssueType
+    comment: string
+  }
+  issues: {
+    status: AsyncReducerStatus
+    data: TrackCorrection[]
+  }
 }
 
 const initialState: TrackCorrectionState = {
@@ -57,7 +57,10 @@ const initialState: TrackCorrectionState = {
     type: 'falsePositive',
     comment: '',
   },
-  issues: [],
+  issues: {
+    status: AsyncReducerStatus.Idle,
+    data: [],
+  },
 }
 
 type CreateNewIssueThunkParam = {
@@ -72,7 +75,7 @@ export const createNewIssueThunk = createAsyncThunk(
     { rejectWithValue, dispatch }
   ) => {
     try {
-      const response = await fetch(`/api/track-corrections/`, {
+      const response = await fetch(`${PATH_BASENAME}/api/track-corrections/${workspaceId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,11 +91,8 @@ export const createNewIssueThunk = createAsyncThunk(
         throw new Error(errorData.message || 'Failed to submit track correction')
       }
 
-      // Handle successful response
       const data = await response.json()
-      console.log('Track correction submitted successfully:', data)
 
-      // Reset form
       dispatch(resetTrackCorrection())
 
       return data
@@ -155,22 +155,21 @@ const trackCorrection = createSlice({
         end: '',
       }
       state.newIssue.type = 'falsePositive'
-      state.newIssue.comment = ''
-      state.issues = []
+      state.issues.data = []
     },
   },
-  // extraReducers: (builder) => {
-  //   builder.addCase(fetchTrackIssuesThunk.pending, (state) => {
-  //     state.issues.status = AsyncReducerStatus.Loading
-  //   })
-  //   builder.addCase(fetchTrackIssuesThunk.fulfilled, (state, action) => {
-  //     state.issues.status = AsyncReducerStatus.Finished
-  //     state.issues.data = action.payload
-  //   })
-  //   builder.addCase(fetchTrackIssuesThunk.rejected, (state) => {
-  //     state.issues.status = AsyncReducerStatus.Error
-  //   })
-  // },
+  extraReducers: (builder) => {
+    builder.addCase(fetchTrackIssuesThunk.pending, (state) => {
+      state.issues.status = AsyncReducerStatus.Loading
+    })
+    builder.addCase(fetchTrackIssuesThunk.fulfilled, (state, action) => {
+      state.issues.status = AsyncReducerStatus.Finished
+      state.issues.data = action.payload
+    })
+    builder.addCase(fetchTrackIssuesThunk.rejected, (state) => {
+      state.issues.status = AsyncReducerStatus.Error
+    })
+  },
 })
 
 export const {
@@ -192,5 +191,7 @@ export const selectTrackIssueType = (state: RootState) => state.trackCorrection.
 export const selectTrackIssueComment = (state: RootState) => state.trackCorrection.newIssue.comment
 
 export const selectTrackCorrectionState = (state: RootState) => state.trackCorrection
+export const selectAllTrackCorrectionIssues = (state: RootState) =>
+  state.trackCorrection.issues.data
 
 export default trackCorrection.reducer

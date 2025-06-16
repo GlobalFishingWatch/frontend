@@ -2,27 +2,23 @@ import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { center } from '@turf/center'
-import { dispatch } from 'd3'
 import type { Feature, Point } from 'geojson'
 import { DateTime } from 'luxon'
 
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
-import { Button, Choice, Icon, InputText, Select } from '@globalfishingwatch/ui-components'
+import { Button, Choice, Icon, InputText } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import type { IssueType, TrackCorrection } from 'features/track-correction/track-correction.slice'
 import {
-  resetTrackCorrection,
-  selectTrackCorrectionState,
+  createNewIssueThunk,
   selectTrackCorrectionTimerange,
   selectTrackCorrectionVesselDataviewId,
   selectTrackIssueComment,
   selectTrackIssueType,
-  setTrackCorrectionDataviewId,
   setTrackIssueComment,
   setTrackIssueType,
 } from 'features/track-correction/track-correction.slice'
@@ -82,6 +78,7 @@ const TrackCorrection = () => {
   const { start, end } = useSelector(selectTimeRange)
   const issueType = useSelector(selectTrackIssueType)
   const issueComment = useSelector(selectTrackIssueComment)
+  const dispatch = useAppDispatch()
 
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
 
@@ -146,7 +143,7 @@ const TrackCorrection = () => {
           }),
         })
 
-        const issueId = `issue_${Date.now()}_${Math.random().toString(36).substring(2, 9)}` // Generate a unique issue ID
+        const issueId = Date.now().toString()
 
         const issueBody: TrackCorrection = {
           issueId,
@@ -154,40 +151,37 @@ const TrackCorrection = () => {
           startDate: trackCorrectionTimerange.start,
           endDate: trackCorrectionTimerange.end,
           type: issueType,
-          lastUpdated: Date.now().toString(),
+          lastUpdated: new Date().toISOString(),
           resolved: false,
-          longitude: middlePoint.geometry.coordinates[0],
-          latitude: middlePoint.geometry.coordinates[1],
+          lat: middlePoint.geometry.coordinates[0],
+          lon: middlePoint.geometry.coordinates[1],
         }
 
         const commentBody = {
           issueId,
-          user: issueComment || 'No comment provided',
+          user: userData?.email || 'Anonymous',
+          date: new Date().toISOString(),
+          comment: issueComment || 'No comment provided',
           datasetVersion: 1,
           marksAsResolved: false,
         }
 
-        const response = await fetch(`/api/track-corrections/${currentWorkspaceId}/`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
+        const workspaceId = 'default-public'
+
+        dispatch(
+          createNewIssueThunk({
             issueBody,
             commentBody,
-          }),
-        })
-
-        if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.message || 'Failed to submit track correction')
-        }
-
-        // Handle successful response
-        const data = await response.json()
-        console.log('Track correction submitted successfully:', data)
-
-        // dispatch(resetTrackCorrection())
+            workspaceId,
+          })
+        )
+          .unwrap()
+          .then((data) => {
+            console.log('Success:', data)
+          })
+          .catch((err) => {
+            console.error('Failed to submit:', err)
+          })
       } catch (error) {
         console.error('Error submitting track correction:', error)
         setSubmitError(error instanceof Error ? error.message : 'An unknown error occurred')
@@ -199,8 +193,9 @@ const TrackCorrection = () => {
       vesselLayer?.instance,
       trackCorrectionVesselDataviewId,
       issueType,
+      userData?.email,
       issueComment,
-      currentWorkspaceId,
+      dispatch,
     ]
   )
   return (
@@ -285,8 +280,8 @@ const TrackCorrection = () => {
         <InputText
           inputSize="small"
           className={styles.input}
-          onChange={(e) => setTrackIssueComment(e.target.value)}
-          // disabled={loading}
+          onChange={(e) => dispatch(setTrackIssueComment(e.target.value))}
+          disabled={isSubmitting}
         />
       </div>
 
@@ -299,6 +294,7 @@ const TrackCorrection = () => {
           }
           disabled={isTimerangePristine}
           onClick={() => onConfirmClick(trackCorrectionTimerange)}
+          loading={isSubmitting}
         >
           {t('common.confirm', 'Confirm')}
         </Button>
