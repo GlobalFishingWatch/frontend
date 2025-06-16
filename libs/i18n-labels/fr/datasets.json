@@ -1116,6 +1116,10 @@
       "structure_start_date": ""
     }
   },
+  "public-gfcm-fao": {
+    "name": "PAAS",
+    "description": "GFCM Fisheries Restricted Areas"
+  },
   "public-global-all-tracks": {
     "name": "Trajectoires",
     "description": "Le jeu de données contient les tracés de tous les navires (AIS) - Version 3.0",
