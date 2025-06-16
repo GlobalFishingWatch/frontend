@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import type { DataviewCategory, SelfReportedInfo } from '@globalfishingwatch/api-types'
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 
+import { SKYLIGHT_PROTOTYPE_DATASET_ID } from 'data/workspaces'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselDetectionTimestamps from 'features/map/popups/categories/VesselDetectionTimestamps'
 import VesselsTable, { getVesselsInfoConfig } from 'features/map/popups/categories/VesselsTable'
@@ -45,7 +46,7 @@ function DetectionsTooltipRow({
   const notMatchedDetectionsCount = feature.value! - matchedDetections
   const notMatchedDetection = feature?.vessels?.find((v: any) => v.id === null)
 
-  const isSkylight = feature.datasets[0] === 'proto-global-skylight-viirs:v1.0'
+  const isSkylight = feature.datasets.some((d) => d === SKYLIGHT_PROTOTYPE_DATASET_ID)
   if (isSkylight) {
     featureVesselsFilter.vessels = matchedVessels.map((vessel: ExtendedFeatureVessel) => ({
       ...vessel,
