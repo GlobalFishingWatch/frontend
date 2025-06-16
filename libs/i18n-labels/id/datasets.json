@@ -1116,6 +1116,10 @@
       "structure_start_date": "structure_start_date"
     }
   },
+  "public-gfcm-fao": {
+    "name": "PAAS",
+    "description": "GFCM Fisheries Restricted Areas"
+  },
   "public-global-all-tracks": {
     "name": "Lintasan",
     "description": "The dataset contains the tracks from all vessels (AIS) - Version 3.0",
