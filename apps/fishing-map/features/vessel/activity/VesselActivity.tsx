@@ -17,7 +17,6 @@ import { ACTIVITY_CONTAINER_ID } from 'features/vessel/activity/event/event-scro
 import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
 import { selectVesselHasEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
 import { selectVesselActivityMode } from 'features/vessel/vessel.config.selectors'
-import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 
 import type { VesselProfileActivityMode } from '../vessel.types'
@@ -35,7 +34,6 @@ const VesselActivity = () => {
   const eventsLoadingDebounce = useDebounce(eventsLoading, 400)
   const eventsError = useVesselProfileEventsError()
   const vesselProfileDataview = useSelector(selectVesselProfileDataview)
-  const vesselLayer = useVesselProfileLayer()
   const hasVesselEvents =
     vesselProfileDataview?.config?.events && vesselProfileDataview?.config?.events?.length > 0
 
@@ -61,11 +59,7 @@ const VesselActivity = () => {
     [t]
   )
 
-  if (
-    hasVesselEvents &&
-    !hasDeprecatedDataviewInstances &&
-    (!vesselLayer?.instance || eventsLoadingDebounce)
-  ) {
+  if (hasVesselEvents && !hasDeprecatedDataviewInstances && eventsLoadingDebounce) {
     return (
       <div className={styles.placeholder}>
         <Spinner />
