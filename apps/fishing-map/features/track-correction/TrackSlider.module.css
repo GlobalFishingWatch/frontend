@@ -1,7 +1,6 @@
 .slider {
   --thumb-size: 1.4rem;
 
-  margin-top: var(--space-S);
   width: 100%;
 }
 

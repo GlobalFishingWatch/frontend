@@ -1,7 +1,10 @@
 .searchResult {
   position: relative;
   padding: var(--space-M);
-  transition: background-color 150ms linear, box-shadow 150ms linear, border 150ms linear;
+  transition:
+    background-color 150ms linear,
+    box-shadow 150ms linear,
+    border 150ms linear;
   border-bottom: var(--border);
 }
 
@@ -68,6 +71,11 @@
 
 .property span {
   white-space: nowrap;
+}
+
+span.highlighted {
+  display: inline-block;
+  background: var(--color-highlight-blue);
 }
 
 .fullWidth {

@@ -48,34 +48,35 @@ export type VesselPinClickProps = {
 
 export type VesselPinOnClickCb = ({ vesselId, dataviewInstance }: VesselPinClickProps) => void
 
-type VesselPinProps = {
+type UsePinVesselParams = {
   vessel?: IdentityVessel | ExtendedFeatureVessel
   vesselToResolve?: VesselToResolve
   vesselToSearch?: VesselToSearch
+  origin?: DataviewInstanceOrigin
+  onClick?: VesselPinOnClickCb
+}
+
+type VesselPinProps = UsePinVesselParams & {
   className?: string
   disabled?: boolean
   size?: IconButtonSize
-  origin?: DataviewInstanceOrigin
-  onClick?: VesselPinOnClickCb
   style?: React.CSSProperties
 }
-// Supports both options:
-// 1. When identity vessel already available: <VesselPin vessel={vessel} />
-// 2. When identity vessel is not available and we only have the vesselId, for example reports or encounters:
-//    <VesselPin vesselToResolve={vesselToResolve} /> This will fetch the vessel info and the info dataset
-function VesselPin({
+
+type UsePinVesselResult = {
+  onPinClick: () => Promise<{ dataviewInstance: UrlDataviewInstance | undefined }>
+  loading: boolean
+  vesselInWorkspace: ReturnType<typeof getVesselDataview> | undefined
+}
+
+export function usePinVessel({
   vessel,
   vesselToResolve,
   vesselToSearch,
-  disabled,
-  className = '',
-  size = 'small',
   origin,
   onClick,
-  style,
-}: VesselPinProps) {
+}: UsePinVesselParams): UsePinVesselResult {
   const [loading, setLoading] = useState(false)
-  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const populateVesselInfoResource = usePopulateVesselResource()
@@ -89,14 +90,14 @@ function VesselPin({
   const vesselInstanceId = vessel
     ? getVesselId(vessel)
     : vesselToResolve?.id || vesselToSearch?.id || ''
-  const vesselInWorkspaceSameOriginDataview = getVesselDataview({
+  const vesselInWorkspace = getVesselDataview({
     dataviews: vesselsInWorkspace,
     vesselId: vesselInstanceId,
     origin,
-  })
+  }) as UrlDataviewInstance | undefined
 
   const onPinClick = async () => {
-    let dataviewInstance = vesselInWorkspaceSameOriginDataview
+    let dataviewInstance = vesselInWorkspace
     let vesselWithIdentity = vessel ? ({ ...vessel } as IdentityVessel) : undefined
     let infoDatasetIdResolved = infoDatasetId
     let infoDatasetResolved = infoDataset ? ({ ...infoDataset } as Dataset) : undefined
@@ -104,8 +105,8 @@ function VesselPin({
       dataviews: vesselsInWorkspace,
       vesselId: vesselInstanceId,
     })
-    if (vesselInWorkspaceSameOriginDataview) {
-      deleteDataviewInstance(vesselInWorkspaceSameOriginDataview.id)
+    if (vesselInWorkspace) {
+      deleteDataviewInstance(vesselInWorkspace.id)
     } else if (vesselInWorkspaceDataview) {
       upsertDataviewInstance({ id: vesselInWorkspaceDataview.id, origin })
     } else {
@@ -194,22 +195,44 @@ function VesselPin({
       vesselId: getVesselId(vessel as IdentityVessel),
       dataviewInstance,
     })
+    return { dataviewInstance }
   }
+
+  return { onPinClick, loading, vesselInWorkspace }
+}
+
+export function VesselPin({
+  vessel,
+  vesselToResolve,
+  vesselToSearch,
+  disabled,
+  className = '',
+  size = 'small',
+  origin,
+  onClick,
+  style,
+}: VesselPinProps) {
+  const { t } = useTranslation()
+  const { onPinClick, loading, vesselInWorkspace } = usePinVessel({
+    vessel,
+    vesselToResolve,
+    vesselToSearch,
+    origin,
+    onClick,
+  })
 
   return (
     <IconButton
-      icon={vesselInWorkspaceSameOriginDataview ? 'pin-filled' : 'pin'}
+      icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
       loading={loading}
       disabled={disabled}
       className={className}
       style={{
-        color: vesselInWorkspaceSameOriginDataview
-          ? vesselInWorkspaceSameOriginDataview.config?.color
-          : '',
+        color: vesselInWorkspace ? vesselInWorkspace.config?.color : '',
         ...(style || {}),
       }}
       tooltip={
-        vesselInWorkspaceSameOriginDataview
+        vesselInWorkspace
           ? t('search.vesselAlreadyInWorkspace', 'This vessel is already in your workspace')
           : t('vessel.addToWorkspace', 'Add vessel to view')
       }

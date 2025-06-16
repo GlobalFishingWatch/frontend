@@ -34,8 +34,8 @@ export function parseIssueRow(row: GoogleSpreadsheetRow<TrackCorrection>): Track
     type: row.get('type'),
     lastUpdated: row.get('lastUpdated'),
     resolved: parseIssueResolved(row.get('resolved')),
-    latitude: row.get('latitude'),
-    longitude: row.get('longitude'),
+    lat: row.get('lat'),
+    lon: row.get('lon'),
   }
 }
 

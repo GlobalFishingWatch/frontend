@@ -164,6 +164,8 @@
     "Events": "Events",
     "exclude": "Exclude",
     "excluded": "Excluded",
+    "experimental": "Experimental",
+    "experimentalTooltip": "Dataset still in development, click the information icon to learn more",
     "faq": "FAQs",
     "feedback": "Feedback",
     "field": "Field",
@@ -912,7 +914,8 @@
     "issueType": "Type of issue",
     "falsePositive": "False positive",
     "falseNegative": "False negative",
-    "comment": "Comment"
+    "comment": "Comment",
+    "mapTooltip": "Issue added on {{date}} reported as {{type}}"
   },
   "vessel": {
     "activityByType": "By type",

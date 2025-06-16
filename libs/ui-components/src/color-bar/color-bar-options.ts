@@ -5,7 +5,6 @@ export type ColorBarOption = {
 
 export const FILL_COLOR_BAR_OPTIONS: ColorBarOption[] = [
   { id: 'teal', value: '#00FFBC' },
-  { id: 'magenta', value: '#FF64CE' },
   { id: 'lilac', value: '#9CA4FF' },
   { id: 'salmon', value: '#FFAE9B' },
   { id: 'sky', value: '#00EEFF' },
@@ -13,6 +12,7 @@ export const FILL_COLOR_BAR_OPTIONS: ColorBarOption[] = [
   { id: 'yellow', value: '#FFEA00' },
   { id: 'green', value: '#A6FF59' },
   { id: 'orange', value: '#FFAA0D' },
+  { id: 'magenta', value: '#FF64CE' },
 ]
 
 export const LINE_COLOR_BAR_OPTIONS: ColorBarOption[] = [

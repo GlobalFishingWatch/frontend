@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { center } from '@turf/center'
+import { dispatch } from 'd3'
 import type { Feature, Point } from 'geojson'
+import { DateTime } from 'luxon'
 
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
@@ -11,6 +13,7 @@ import { Button, Choice, Icon, InputText, Select } from '@globalfishingwatch/ui-
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import I18nDate from 'features/i18n/i18nDate'
 import type { IssueType, TrackCorrection } from 'features/track-correction/track-correction.slice'
 import {
   resetTrackCorrection,
@@ -23,7 +26,10 @@ import {
   setTrackIssueComment,
   setTrackIssueType,
 } from 'features/track-correction/track-correction.slice'
-import { selectIsNewTrackCorrection } from 'features/track-correction/track-selection.selectors'
+import {
+  selectCurrentTrackCorrectionIssue,
+  selectIsNewTrackCorrection,
+} from 'features/track-correction/track-selection.selectors'
 import TrackSlider from 'features/track-correction/TrackSlider'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
@@ -73,7 +79,6 @@ const issueTypesOptions: ChoiceOption<IssueType>[] = [
 
 const TrackCorrection = () => {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const { start, end } = useSelector(selectTimeRange)
   const issueType = useSelector(selectTrackIssueType)
   const issueComment = useSelector(selectTrackIssueComment)
@@ -81,6 +86,7 @@ const TrackCorrection = () => {
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
 
   const isNewTrackCorrection = useSelector(selectIsNewTrackCorrection)
+  const currentTrackCorrectionIssue = useSelector(selectCurrentTrackCorrectionIssue)
   const [isTimerangePristine, setIsTimerangePristine] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
@@ -100,12 +106,6 @@ const TrackCorrection = () => {
       setIsTimerangePristine(true)
     }
   }, [trackCorrectionVesselDataviewId])
-
-  useEffect(() => {
-    return () => {
-      dispatch(resetTrackCorrection())
-    }
-  }, [dispatch])
 
   const trackData = useMemo(() => {
     return vesselLayer?.instance
@@ -130,7 +130,6 @@ const TrackCorrection = () => {
           endTime: getUTCDateTime(trackCorrectionTimerange.end).toMillis(),
         })
 
-        // Calculate the middle point of the track
         const middlePoint = center({
           type: 'FeatureCollection',
           features: trackCorrectionSegments.flatMap((segment) => {
@@ -161,7 +160,6 @@ const TrackCorrection = () => {
           latitude: middlePoint.geometry.coordinates[1],
         }
 
-        // Create the comment body object
         const commentBody = {
           issueId,
           user: issueComment || 'No comment provided',
@@ -189,10 +187,7 @@ const TrackCorrection = () => {
         const data = await response.json()
         console.log('Track correction submitted successfully:', data)
 
-        // Reset form or navigate to a different page
-        dispatch(resetTrackCorrection())
-
-        // You could also add a success notification here
+        // dispatch(resetTrackCorrection())
       } catch (error) {
         console.error('Error submitting track correction:', error)
         setSubmitError(error instanceof Error ? error.message : 'An unknown error occurred')
@@ -206,7 +201,6 @@ const TrackCorrection = () => {
       issueType,
       issueComment,
       currentWorkspaceId,
-      dispatch,
     ]
   )
   return (
@@ -238,15 +232,32 @@ const TrackCorrection = () => {
           </div>
         </div>
       )}
-      <TrackSlider
-        rangeStartTime={getUTCDateTime(start).toMillis()}
-        rangeEndTime={getUTCDateTime(end).toMillis()}
-        segments={trackData ?? []}
-        color={vesselColor}
-        onTimerangeChange={(start, end) => {
-          setIsTimerangePristine(false)
-        }}
-      />
+      <label>{t('common.timeRange', 'Time range')}</label>
+      {currentTrackCorrectionIssue ? (
+        <Fragment>
+          <I18nDate
+            date={currentTrackCorrectionIssue.startDate}
+            format={DateTime.DATETIME_MED}
+            showUTCLabel={false}
+          />
+          {' - '}
+          <I18nDate
+            date={currentTrackCorrectionIssue.endDate}
+            format={DateTime.DATETIME_MED}
+            showUTCLabel={false}
+          />
+        </Fragment>
+      ) : (
+        <TrackSlider
+          rangeStartTime={getUTCDateTime(start).toMillis()}
+          rangeEndTime={getUTCDateTime(end).toMillis()}
+          segments={trackData ?? []}
+          color={vesselColor}
+          onTimerangeChange={(start, end) => {
+            setIsTimerangePristine(false)
+          }}
+        />
+      )}
       <div className={styles.disclaimer}>
         <Icon type="default" icon="warning" />
         <span>

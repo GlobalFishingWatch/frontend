@@ -16,6 +16,7 @@ import I18nFlag from 'features/i18n/i18nFlag'
 import I18nNumber from 'features/i18n/i18nNumber'
 import AdvancedResultCellWithFilter from 'features/search/advanced/AdvancedResultCellWithFilter'
 import type { SearchComponentProps } from 'features/search/basic/SearchBasic'
+import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { useSearchFiltersConnect } from 'features/search/search.hook'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import {
@@ -44,6 +45,7 @@ import {
   getVesselOtherNamesLabel,
   getVesselShipTypeLabel,
 } from 'utils/info'
+import { getHighlightedText } from 'utils/text'
 
 import styles from '../basic/SearchBasicResult.module.css'
 
@@ -54,6 +56,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const { searchFilters } = useSearchFiltersConnect()
+  const searchQuery = useSelector(selectSearchQuery)
   const searchStatus = useSelector(selectSearchStatus)
   const searchResults = useSelector(selectSearchResults)
   const vesselsSelected = useSelector(selectSelectedVessels)
@@ -150,7 +153,9 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const { dataset, shipname, nShipname } = vesselData
           const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
           const { transmissionDateFrom, transmissionDateTo } = vesselData
-          const name = shipname ? formatInfoField(shipname, 'shipname') : EMPTY_FIELD_PLACEHOLDER
+          const name = shipname
+            ? (formatInfoField(shipname, 'shipname') as string)
+            : EMPTY_FIELD_PLACEHOLDER
           const label = `${name} ${otherNamesLabel || ''}`
           const vesselQuery = {
             start: transmissionDateFrom,
@@ -170,7 +175,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             >
               <Tooltip content={label?.length > TOOLTIP_LABEL_CHARACTERS && label}>
                 <span>
-                  {name}{' '}
+                  {getHighlightedText(name, searchQuery || '', styles)}{' '}
                   {otherNamesLabel && <span className={styles.secondary}>{otherNamesLabel}</span>}
                 </span>
               </Tooltip>
@@ -215,20 +220,30 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       },
       {
         id: 'ssvid',
-        accessorFn: (vessel: IdentityVesselData) =>
-          getVesselProperty(vessel, 'ssvid') || EMPTY_FIELD_PLACEHOLDER,
+        accessorFn: (vessel: IdentityVesselData) => {
+          const ssvid = getVesselProperty(vessel, 'ssvid') || EMPTY_FIELD_PLACEHOLDER
+          return searchFilters.ssvid
+            ? getHighlightedText(ssvid, searchFilters.ssvid || '', styles)
+            : ssvid
+        },
         header: t('vessel.mmsi', 'MMSI'),
       },
       {
         id: 'imo',
-        accessorFn: (vessel: IdentityVesselData) =>
-          getVesselProperty(vessel, 'imo') || EMPTY_FIELD_PLACEHOLDER,
+        accessorFn: (vessel: IdentityVesselData) => {
+          const imo = getVesselProperty(vessel, 'imo') || EMPTY_FIELD_PLACEHOLDER
+          return searchFilters.imo ? getHighlightedText(imo, searchFilters.imo || '', styles) : imo
+        },
         header: t('vessel.imo', 'IMO'),
       },
       {
         id: 'callsign',
-        accessorFn: (vessel: IdentityVesselData) =>
-          getVesselProperty(vessel, 'callsign') || EMPTY_FIELD_PLACEHOLDER,
+        accessorFn: (vessel: IdentityVesselData) => {
+          const callsign = getVesselProperty(vessel, 'callsign') || EMPTY_FIELD_PLACEHOLDER
+          return searchFilters.callsign
+            ? getHighlightedText(callsign, searchFilters.callsign || '', styles)
+            : callsign
+        },
         header: t('vessel.callsign', 'Callsign'),
       },
       ...columnsByInfoSource,
@@ -242,7 +257,9 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
               <Tooltip
                 content={(label as string[])?.length > TOOLTIP_LABEL_CHARACTERS ? label : ''}
               >
-                <span>{label}</span>
+                <span>
+                  {getHighlightedText(label as string, searchFilters.owner || '', styles)}
+                </span>
               </Tooltip>
             </AdvancedResultCellWithFilter>
           )
@@ -293,8 +310,13 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
     i18n.language,
     isSearchLocation,
     onVesselClick,
-    searchFilters.id,
+    searchFilters?.callsign,
+    searchFilters?.id,
+    searchFilters?.imo,
     searchFilters?.infoSource,
+    searchFilters?.owner,
+    searchFilters?.ssvid,
+    searchQuery,
     t,
   ])
 

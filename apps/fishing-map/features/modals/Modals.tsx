@@ -25,6 +25,7 @@ import {
   setModalOpen,
 } from 'features/modals/modals.slice'
 import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
+import { resetTrackCorrection } from 'features/track-correction/track-correction.slice'
 import { selectTrackCorrectionModalOpen } from 'features/track-correction/track-selection.selectors'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
@@ -231,7 +232,10 @@ const AppModals = () => {
           isOpen={trackCorrectionModalOpen && !anyAppModalOpen}
           title={t('vessel.newIssue', 'New issue')}
           shouldCloseOnEsc={false}
-          onClose={() => setTrackCorrectionId('')}
+          onClose={() => {
+            setTrackCorrectionId('')
+            dispatch(resetTrackCorrection())
+          }}
           contentClassName={styles.fullHeightModal}
           overlayClassName={styles.transparentOverlay}
         >
