@@ -1,12 +1,13 @@
+import { getTimezoneAtSea } from 'browser-geo-tz'
 import type { Duration } from 'luxon'
 import { DateTime } from 'luxon'
 
-import type { ApiEvent } from '@globalfishingwatch/api-types'
+import type { ApiEvent, Locale } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import type { SupportedDateType } from '@globalfishingwatch/data-transforms'
 
 import { EVENTS_COLORS } from 'data/config'
-import { t } from 'features/i18n/i18n'
+import i18n, { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 
 import { getUTCDateTime } from './dates'
@@ -50,17 +51,26 @@ type TimeLabels = {
 export const getTimeLabels = ({
   start,
   end,
+  longitude,
 }: {
   start: SupportedDateType
   end: SupportedDateType
+  longitude?: number
 }): TimeLabels => {
   const startDT = getUTCDateTime(start)
   const endDT = getUTCDateTime(end)
   const durationRaw = endDT.diff(startDT, ['days', 'hours', 'minutes'])
 
-  const startLabel = formatI18nDate(start, { format: DateTime.DATETIME_MED, showUTCLabel: true })
+  let startLabel = formatI18nDate(start, { format: DateTime.DATETIME_MED, showUTCLabel: true })
 
   const durationLabel = getEventDurationLabel({ durationRaw })
+  if (longitude) {
+    const timezone = longitude ? getTimezoneAtSea(longitude)[0] : undefined
+    const hoursOffset = timezone ? Number(timezone.split('GMT')[1]) : undefined
+    const startLocalTime = startDT.plus({ hours: hoursOffset })
+    startLabel = `${startLabel} (${startLocalTime.toLocaleString(DateTime.TIME_SIMPLE, { locale: i18n.language as Locale })} ${t('common.localTime', 'local time')})`
+  }
+
   return {
     start: startLabel,
     duration: durationLabel,
@@ -74,8 +84,9 @@ export const getEventDescription = ({
   vessel,
   encounter,
   port_visit,
+  coordinates,
 }: ApiEvent) => {
-  const time = getTimeLabels({ start, end })
+  const time = getTimeLabels({ start, end, longitude: coordinates?.[0] })
   let description: string
   let descriptionGeneric: string
   switch (type) {
