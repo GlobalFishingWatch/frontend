@@ -2,13 +2,13 @@ import { getTimezoneAtSea } from 'browser-geo-tz'
 import type { Duration } from 'luxon'
 import { DateTime } from 'luxon'
 
-import type { ApiEvent, Locale } from '@globalfishingwatch/api-types'
+import type { ApiEvent } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import type { SupportedDateType } from '@globalfishingwatch/data-transforms'
 
 import { EVENTS_COLORS } from 'data/config'
-import i18n, { t } from 'features/i18n/i18n'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { t } from 'features/i18n/i18n'
+import { formatI18nDate, formatLocalTimeDate } from 'features/i18n/i18nDate'
 
 import { getUTCDateTime } from './dates'
 import { formatInfoField } from './info'
@@ -44,6 +44,12 @@ const getEventDurationLabel = ({ durationRaw }: { durationRaw: Duration }): stri
   ].join(' ')
 }
 
+export const getOffsetHours = (longitude: number) => {
+  const timezone = getTimezoneAtSea(longitude)[0]
+  const hoursOffset = timezone ? Number(timezone.split('GMT')[1]) : undefined
+  return hoursOffset
+}
+
 type TimeLabels = {
   start: string
   duration: string
@@ -65,10 +71,9 @@ export const getTimeLabels = ({
 
   const durationLabel = getEventDurationLabel({ durationRaw })
   if (longitude) {
-    const timezone = longitude ? getTimezoneAtSea(longitude)[0] : undefined
-    const hoursOffset = timezone ? Number(timezone.split('GMT')[1]) : undefined
+    const hoursOffset = getOffsetHours(longitude)
     const startLocalTime = startDT.plus({ hours: hoursOffset })
-    startLabel = `${startLabel} (${startLocalTime.toLocaleString(DateTime.TIME_SIMPLE, { locale: i18n.language as Locale })} ${t('common.localTime', 'local time')})`
+    startLabel = `${startLabel} (${formatLocalTimeDate(startLocalTime)})`
   }
 
   return {
