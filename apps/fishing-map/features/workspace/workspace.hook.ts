@@ -1,10 +1,8 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
-import type { ColorCyclingType, Workspace } from '@globalfishingwatch/api-types'
+import type { Workspace } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { ColorBarOption } from '@globalfishingwatch/ui-components'
-import { FillColorBarOptions, LineColorBarOptions } from '@globalfishingwatch/ui-components'
 
 import { LAYERS_LIBRARY_ACTIVITY } from 'data/layer-library/layers-activity'
 import { LAYERS_LIBRARY_DETECTIONS } from 'data/layer-library/layers-detections'
@@ -20,6 +18,7 @@ import {
 } from 'routes/routes.selectors'
 
 import { selectWorkspaceDataviewInstances } from './workspace.selectors'
+import { getNextColor } from './workspace.utils'
 
 export const useFitWorkspaceBounds = () => {
   const urlViewport = useSelector(selectUrlViewport)
@@ -45,27 +44,6 @@ export const useFitWorkspaceBounds = () => {
   )
 
   return fitWorkspaceBounds
-}
-
-export const getNextColor = (
-  colorCyclingType: ColorCyclingType,
-  currentColors: string[] | undefined
-) => {
-  const palette = colorCyclingType === 'fill' ? FillColorBarOptions : LineColorBarOptions
-  if (!currentColors) {
-    return palette[Math.floor(Math.random() * palette.length)]
-  }
-  let minRepeat = Number.POSITIVE_INFINITY
-  const availableColors: (ColorBarOption & { num: number })[] = palette.map((color) => {
-    const num = currentColors.filter((c) => c === color.value).length
-    if (num < minRepeat) minRepeat = num
-    return {
-      ...color,
-      num,
-    }
-  })
-  const nextColor = availableColors.find((c) => c.num === minRepeat) || availableColors[0]
-  return nextColor
 }
 
 const createDataviewsInstances = (

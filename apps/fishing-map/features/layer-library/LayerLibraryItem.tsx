@@ -20,8 +20,9 @@ import {
 import { fetchDataviewsByIdsThunk, selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
-import { getNextColor, useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
+import { getNextColor } from 'features/workspace/workspace.utils'
 import { getHighlightedText } from 'utils/text'
 
 import styles from './LayerLibraryItem.module.css'
