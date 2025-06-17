@@ -34,6 +34,7 @@ export const DEEP_SEA_MINING_WORKSPACE_ID = 'deep-sea-mining-public' as const
 export const BASEMAP_DATAVIEW_SLUG = 'basemap' as const
 export const BASEMAP_LABELS_DATAVIEW_SLUG = 'basemap-labels' as const
 export const EEZ_DATAVIEW_SLUG = 'eez' as const
+export const EEZ_AREAS_12NM_DATAVIEW_SLUG = 'eez-12-nm' as const
 export const EEZ_DATAVIEW_INSTANCE_ID = 'context-layer-eez' as const
 export const MPA_DATAVIEW_SLUG = 'mpa' as const
 export const MPA_DATAVIEW_INSTANCE_ID = 'context-layer-mpa' as const
@@ -42,6 +43,9 @@ export const PROTECTEDSEAS_DATAVIEW_INSTANCE_ID = 'context-layer-protectedseas' 
 export const RFMO_DATAVIEW_SLUG = 'tuna-rfmo-areas' as const
 export const RFMO_DATAVIEW_INSTANCE_ID = 'context-layer-rfmo' as const
 export const HIGH_SEAS_DATAVIEW_SLUG = 'high-seas' as const
+export const HIGH_SEAS_POCKETS_DATAVIEW_SLUG = 'high-seas-pocket' as const
+export const PAA_DUKE_DATAVIEW_SLUG = 'paa-duke' as const
+export const GFCM_FAO_DATAVIEW_SLUG = 'gfcm-fao' as const
 export const PROTECTED_SEAS_DATAVIEW_SLUG = 'protected-seas' as const
 export const MPATLAS_DATAVIEW_SLUG = 'mpatlas' as const
 export const GRATICULES_DATAVIEW_SLUG = 'graticules' as const
@@ -124,6 +128,10 @@ export const CONTEXT_LAYERS_DATAVIEWS = [
   MPA_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
   HIGH_SEAS_DATAVIEW_SLUG,
+  GFCM_FAO_DATAVIEW_SLUG,
+  EEZ_AREAS_12NM_DATAVIEW_SLUG,
+  HIGH_SEAS_POCKETS_DATAVIEW_SLUG,
+  PAA_DUKE_DATAVIEW_SLUG,
   PROTECTED_SEAS_DATAVIEW_SLUG,
   MPATLAS_DATAVIEW_SLUG,
   GRATICULES_DATAVIEW_SLUG,
