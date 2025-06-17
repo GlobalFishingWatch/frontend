@@ -28,8 +28,9 @@ import {
   fetchAllSearchVessels,
   getAllSearchVesselsUrl,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
-import { getNextColor, useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
+import { getNextColor } from 'features/workspace/workspace.utils'
 
 export const MAX_VESSEL_REPORT_PIN = 50
 
