@@ -211,6 +211,7 @@
     "@types/d3-shape": "3.1.7",
     "@types/file-saver": "2.0.7",
     "@types/functional-red-black-tree": "1.0.6",
+    "@types/geobuf": "^3.0.4",
     "@types/geojson": "7946.0.16",
     "@types/geokdbush": "^1.1.5",
     "@types/jest": "29.5.14",
