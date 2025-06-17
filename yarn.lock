@@ -3753,6 +3753,7 @@ __metadata:
     "@types/d3-shape": "npm:3.1.7"
     "@types/file-saver": "npm:2.0.7"
     "@types/functional-red-black-tree": "npm:1.0.6"
+    "@types/geobuf": "npm:^3.0.4"
     "@types/geojson": "npm:7946.0.16"
     "@types/geokdbush": "npm:^1.1.5"
     "@types/jest": "npm:29.5.14"
@@ -14920,6 +14921,16 @@ __metadata:
   version: 1.0.6
   resolution: "@types/functional-red-black-tree@npm:1.0.6"
   checksum: 10/1eb19806de419ce816411ad2492c7337d566d7a1db6fdba249be8120cee753ffd8383e9d144139374c8271d56fcb4de1bdd61f050260b789d3c0121cfa62c064
+  languageName: node
+  linkType: hard
+
+"@types/geobuf@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "@types/geobuf@npm:3.0.4"
+  dependencies:
+    "@types/geojson": "npm:*"
+    "@types/pbf": "npm:*"
+  checksum: 10/a628101f9f35ad4368453be4082049a7729db14fc291d22042d3deb1ab769b21ceff4b008764253f8ff3d9250b15e13e6f7342e32e36dcff05519cc6fa0cd154
   languageName: node
   linkType: hard
 
