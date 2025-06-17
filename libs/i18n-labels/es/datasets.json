@@ -1117,7 +1117,7 @@
     }
   },
   "public-gfcm-fao": {
-    "name": "PAAS",
+    "name": "GFCM FAO",
     "description": "GFCM Fisheries Restricted Areas"
   },
   "public-global-all-tracks": {
