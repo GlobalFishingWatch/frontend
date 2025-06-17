@@ -24,6 +24,11 @@
     "moreInfoLink": "",
     "name": "EEZs"
   },
+  "eez-areas-12nm": {
+    "description": "World 12 Nautical Miles Zone (Territorial Seas). Flanders Marine Institute (2023). Maritime Boundaries Geodatabase: Territorial Seas (12NM), version 4. Available online at https://www.marineregions.org/. https://doi.org/10.14284/633",
+    "moreInfoLink": "",
+    "name": "Territorial Seas"
+  },
   "encounters": {
     "description": "Identified from AIS data as locations where two vessels, a carrier and fishing vessel, were within 500 meters for at least 2 hours and traveling at a median speed under 2 knots, while at least 10 km from a coastal anchorage.",
     "moreInfoLink": "",
@@ -44,12 +49,22 @@
     "moreInfoLink": "",
     "name": "Apparent fishing effort (VMS)"
   },
+  "gfcm-fao": {
+    "description": "General Fisheries Commission for the Mediterranean Fisheries Restricted Areas",
+    "moreInfoLink": "https://www.fao.org/gfcm/data/maps/fras/ru",
+    "name": "GFCM FRAs"
+  },
   "graticules": {
     "description": "Grids or graticules of latitude and longitude at 1, 5, 10 and 30° intervals depending on the zoom level of the map",
     "moreInfoLink": "",
     "name": "Latitude longitude grids"
   },
   "high-seas": {
+    "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
+    "moreInfoLink": "",
+    "name": "High seas"
+  },
+  "high-seas-pockets": {
     "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
     "moreInfoLink": "",
     "name": "High seas"
@@ -93,6 +108,11 @@
     "description": "Dissolved oxygen is the amount of oxygen present in water and is crucial for the growth and survival of marine organisms. Warming ocean temperatures can lead to an expansion of low oxygen zones, which can impact the distribution and abundance of marine life. This dataset is comprised of biogeochemical parameters, including dissolved oxygen, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Oxygen concentration (O2)"
+  },
+  "paa-duke": {
+    "description": "Global dataset of Preferential Access Areas for small-scale fishing",
+    "moreInfoLink": "https://research.repository.duke.edu/concern/datasets/79407z51r",
+    "name": "Duke paas"
   },
   "ph": {
     "description": "The acidity of the ocean is measured by pH. Increased carbon dioxide absorption has lowered the ocean's pH, resulting in ocean acidification which can have wide-ranging impacts on marine organisms. This dataset is comprised of biogeochemical parameters, including pH, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
