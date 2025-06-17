@@ -2,12 +2,17 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
+import Link from 'redux-first-router-link'
 
 import type { DataviewCategory } from '@globalfishingwatch/api-types'
 import { DatasetSubCategory, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
-import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
+import {
+  DEFAULT_WORKSPACE_CATEGORY,
+  DEFAULT_WORKSPACE_ID,
+  GLOBAL_VESSELS_DATASET_ID,
+} from 'data/workspaces'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
@@ -24,6 +29,8 @@ import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.u
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/VesselLayerPanel'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import { WORKSPACE_SEARCH } from 'routes/routes'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
@@ -63,6 +70,7 @@ function VesselsTable({
 }) {
   const { t } = useTranslation()
   const { start, end } = useSelector(selectTimeRange)
+  const workspace = useSelector(selectWorkspace)
 
   const interactionAllowed = [...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION].includes(
     feature?.category || ''
@@ -89,9 +97,13 @@ function VesselsTable({
             <tr>
               <th colSpan={hasPinColumn ? 2 : 1}>{t('common.vessel_other', 'Vessels')}</th>
               <th>{t('vessel.flag', 'flag')}</th>
-              <th>
-                {isPresenceActivity ? t('vessel.type', 'Type') : t('vessel.gearType_short', 'Gear')}
-              </th>
+              {!linkToSkylight && (
+                <th>
+                  {isPresenceActivity
+                    ? t('vessel.type', 'Type')
+                    : t('vessel.gearType_short', 'Gear')}
+                </th>
+              )}
               {/* Disabled for detections to allocate some space for timestamps interaction */}
               {isHoursProperty && <th>{t('vessel.source_short', 'source')}</th>}
               {showValue && (
@@ -149,10 +161,32 @@ function VesselsTable({
                         {linkToSkylight ? (
                           <span className={styles.skylightLink}>
                             {vesselName}
-                            <a
+                            <Link
                               className={styles.link}
-                              target="_blank"
+                              to={{
+                                type: WORKSPACE_SEARCH,
+                                payload: {
+                                  category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+                                  workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+                                },
+                                query: {
+                                  searchOption: 'advanced',
+                                  query: vesselName,
+                                  ssvid: vessel.id,
+                                  flag: [(vessel as any).flag],
+                                },
+                              }}
+                            >
+                              <IconButton
+                                icon="search"
+                                size="tiny"
+                                tooltip={t('vessel.skylightSearch', 'Click to search this vessel')}
+                              />
+                            </Link>
+                            <a
                               href={`https://sc-production.skylight.earth/vesseldetails/${vessel.id}?startTime=${start}&endTime=${end}&timesliderStart=${start}&timesliderEnd=${end}`}
+                              target="_blank"
+                              className={styles.link}
                             >
                               <IconButton
                                 icon="external-link"
@@ -192,7 +226,7 @@ function VesselsTable({
                     </Tooltip>
                   </td>
 
-                  <td className={styles.columnSpace}>{vesselType}</td>
+                  {!linkToSkylight && <td className={styles.columnSpace}>{vesselType}</td>}
                   {isHoursProperty && (
                     <td className={styles.columnSpace}>
                       <Tooltip content={getDatasetLabel(vessel.infoDataset)}>
