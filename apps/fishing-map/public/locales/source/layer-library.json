@@ -67,7 +67,7 @@
   "high-seas-pockets": {
     "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
     "moreInfoLink": "",
-    "name": "High seas"
+    "name": "High seas pockets"
   },
   "loitering": {
     "description": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is estimated using automatic identification system (AIS) data, including vessel speed, duration in a given location, and distance from shore. Loitering occurs when a vessel travels at average speed of < two knots, while at least an average of 20 nautical miles from shore. To reduce noise in the carrier vessel portal, only loitering events greater than one hour are shown.",
