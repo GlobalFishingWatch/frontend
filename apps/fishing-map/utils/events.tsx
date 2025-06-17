@@ -46,7 +46,7 @@ const getEventDurationLabel = ({ durationRaw }: { durationRaw: Duration }): stri
 
 export const getOffsetHours = (longitude: number) => {
   const timezone = getTimezoneAtSea(longitude)[0]
-  const hoursOffset = timezone ? Number(timezone.split('GMT')[1]) : undefined
+  const hoursOffset = timezone ? -Number(timezone.split('GMT')[1]) : undefined
   return hoursOffset
 }
 
