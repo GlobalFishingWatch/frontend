@@ -1,0 +1,15 @@
+{
+  "name": "open-ocean",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/open-ocean",
+  "projectType": "application",
+  "targets": {
+    "start": {
+      "executor": "nx:run-script",
+      "options": {
+        "script": "dev"
+      }
+    }
+  },
+  "tags": []
+}
