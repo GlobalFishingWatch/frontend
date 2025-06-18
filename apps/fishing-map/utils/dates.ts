@@ -1,5 +1,5 @@
 import type { TFunction } from 'i18next'
-import { Duration } from 'luxon'
+import { DateTime, Duration } from 'luxon'
 
 import type { Dataset, Report, VesselGroup } from '@globalfishingwatch/api-types'
 
@@ -41,4 +41,35 @@ export const getDurationLabel = (seconds: number, t: TFunction) => {
   return t('event.hourAbbreviated', {
     count: hours,
   })
+}
+
+export const getTimeAgo = (date: number | DateTime) => {
+  const now = DateTime.local()
+  const past = typeof date === 'number' ? DateTime.fromMillis(date) : date
+  const diff = now.diff(past, ['days', 'hours', 'minutes'])
+
+  const days = Math.floor(diff.days)
+  const hours = Math.floor(diff.hours)
+  const minutes = Math.floor(diff.minutes)
+
+  if (days >= 30) {
+    const months = Math.floor(days / 30)
+    return `${months} month${months > 1 ? 's' : ''} ago`
+  }
+  if (days >= 7) {
+    const weeks = Math.floor(days / 7)
+    return `${weeks} week${weeks > 1 ? 's' : ''} ago`
+  }
+  if (days > 0) {
+    return `${days} day${days > 1 ? 's' : ''} ago`
+  }
+  if (hours === 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
+  if (minutes === 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`
+  return `${hours} hour${hours > 1 ? 's' : ''} ${minutes} minute${minutes > 1 ? 's' : ''} ago`
+}
+
+export const getDateLabel = (date: number) => {
+  return `${DateTime.fromMillis(date, { zone: 'utc' }).toLocaleString(
+    DateTime.DATETIME_FULL
+  )} (${getTimeAgo(DateTime.fromMillis(date, { zone: 'utc' }))})`
 }

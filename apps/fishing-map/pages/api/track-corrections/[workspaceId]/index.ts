@@ -28,29 +28,12 @@ const handlers = {
     try {
       const body = req.body
 
-      if (body.issueBody && body.commentBody) {
-        await createNewIssue(
-          body.issueBody as TrackCorrection,
-          body.commentBody as TrackCorrectionComment,
-          workspaceId
-        )
-        return res.status(201).json(body.issueBody as TrackCorrection)
-      } else if (body.issueId && body.commentBody) {
-        await addCommentToIssue(
-          body.issueId as string,
-          body.commentBody as TrackCorrectionComment,
-          workspaceId
-        )
-        return res.status(200).json({
-          success: true,
-          message: 'Comment added successfully',
-        } as ErrorAPIResponse)
-      } else {
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid request body. Required fields missing.',
-        })
-      }
+      await createNewIssue(
+        body.issueBody as TrackCorrection,
+        body.commentBody as TrackCorrectionComment,
+        workspaceId
+      )
+      return res.status(201).json(body.issueBody as TrackCorrection)
     } catch (error) {
       console.error('Error processing request:', error)
       return res.status(500).json({

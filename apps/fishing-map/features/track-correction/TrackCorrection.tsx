@@ -16,6 +16,7 @@ import type { IssueType, TrackCorrection } from 'features/track-correction/track
 import {
   createCommentThunk,
   createNewIssueThunk,
+  resetTrackCorrection,
   selectTrackCorrectionTimerange,
   selectTrackCorrectionVesselDataviewId,
   selectTrackIssueComment,
@@ -134,20 +135,28 @@ const TrackCorrection = () => {
 
           const commentBody = {
             issueId,
-            user: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
+            userName: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
+            userEmail: userData?.email || '',
+            workspaceLink: '',
             date: new Date().toISOString(),
             comment: issueComment || 'No comment provided',
             datasetVersion: 1,
             marksAsResolved: isResolved,
           }
 
-          dispatch(
+          await dispatch(
             createNewIssueThunk({
               issueBody,
               commentBody,
               workspaceId,
             })
           )
+            .unwrap()
+            .catch((err) => {
+              console.error('Failed to submit:', err)
+            })
+
+          dispatch(resetTrackCorrection())
         } else if (currentTrackCorrectionIssue) {
           const issueId = currentTrackCorrectionIssue?.issueId
           if (!issueId) {
@@ -156,19 +165,28 @@ const TrackCorrection = () => {
           }
           const commentBody = {
             issueId,
-            user: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
+            userName: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
+            userEmail: userData?.email || '',
+            workspaceLink: window.location.href,
             date: new Date().toISOString(),
             comment: issueComment || 'No comment provided',
             datasetVersion: 1,
             marksAsResolved: isResolved,
           }
-          dispatch(
+
+          await dispatch(
             createCommentThunk({
               issueId,
               commentBody,
               workspaceId,
             })
           )
+            .unwrap()
+            .catch((err) => {
+              console.error('Failed to submit:', err)
+            })
+
+          dispatch(resetTrackCorrection())
         }
       } catch (error) {
         console.error('Error submitting track correction:', error)
@@ -187,6 +205,7 @@ const TrackCorrection = () => {
       isResolved,
       userData?.firstName,
       userData?.lastName,
+      userData?.email,
       issueComment,
       dispatch,
     ]
@@ -265,7 +284,7 @@ const TrackCorrection = () => {
               options={issueTypesOptions}
               activeOption={issueType}
               onSelect={(option) => {
-                setTrackIssueType(option.id)
+                dispatch(setTrackIssueType(option.id))
               }}
               size="small"
             />
@@ -311,7 +330,7 @@ const TrackCorrection = () => {
       {!currentTrackCorrectionIssue?.resolved && (
         <>
           <div>
-            {/* <label>{t('trackCorrection.comment', 'Comment')}</label> */}
+            {isNewTrackCorrection && <label>{t('trackCorrection.comment', 'Comment')}</label>}
             <InputText
               inputSize="small"
               placeholder={
@@ -334,14 +353,16 @@ const TrackCorrection = () => {
               }
             </span>
             <div className={styles.actions}>
-              <IconButton
-                icon={'check'}
-                type={isResolved ? 'map-tool' : 'border'}
-                size="small"
-                onClick={() => setIsResolved((prev) => !prev)}
-                tooltip={!isResolved && t('trackCorrection.markAsResolved', 'Mark as resolved')}
-                aria-pressed={isResolved}
-              />
+              {!isNewTrackCorrection && (
+                <IconButton
+                  icon="tick"
+                  type={isResolved ? 'map-tool' : 'default'}
+                  size="small"
+                  onClick={() => setIsResolved((prev) => !prev)}
+                  tooltip={!isResolved && t('trackCorrection.markAsResolved', 'Mark as resolved')}
+                  // aria-pressed={isResolved}
+                />
+              )}
 
               <Button
                 tooltip={

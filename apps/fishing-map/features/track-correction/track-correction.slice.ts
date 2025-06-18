@@ -12,7 +12,9 @@ export type IssueType = 'falsePositive' | 'falseNegative' | 'other'
 export type TrackCorrectionComment = {
   issueId: string
   comment: string
-  user: string
+  userName: string
+  userEmail: string
+  workspaceLink: string
   date: string
   datasetVersion: number
   marksAsResolved: boolean
@@ -94,8 +96,6 @@ export const createNewIssueThunk = createAsyncThunk(
 
       const data = await response.json()
 
-      dispatch(resetTrackCorrection())
-
       return data
     } catch (e: any) {
       return rejectWithValue(e.message || 'An unknown error occurred')
@@ -115,16 +115,19 @@ export const createCommentThunk = createAsyncThunk(
     { rejectWithValue, dispatch }
   ) => {
     try {
-      const response = await fetch(`${PATH_BASENAME}/api/track-corrections/${workspaceId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          issueId,
-          commentBody,
-        }),
-      })
+      const response = await fetch(
+        `${PATH_BASENAME}/api/track-corrections/${workspaceId}/${issueId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            issueId,
+            commentBody,
+          }),
+        }
+      )
 
       if (!response.ok) {
         const errorData = await response.json()
@@ -132,8 +135,6 @@ export const createCommentThunk = createAsyncThunk(
       }
 
       const data = await response.json()
-
-      dispatch(resetTrackCorrection())
 
       return data
     } catch (e: any) {

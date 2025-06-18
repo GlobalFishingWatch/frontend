@@ -26,7 +26,8 @@ export async function createNewIssue(
 
     const rowData = {
       ...issueBody,
-      issueId: commentBody.issueId,
+      issueId: `=HYPERLINK("${commentBody.workspaceLink}", "${commentBody.issueId}")`,
+      createdBy: `=HYPERLINK("mailto:${commentBody.userEmail}", "${commentBody.userName}")`,
       comments: `=HYPERLINK("${commentRowLink}", "See comments")`,
     }
     await issuesSheet.addRow(rowData)
