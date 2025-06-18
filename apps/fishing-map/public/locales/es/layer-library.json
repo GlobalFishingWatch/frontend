@@ -67,7 +67,7 @@
   "high-seas-pockets": {
     "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
     "moreInfoLink": "",
-    "name": "High seas"
+    "name": "High seas pockets"
   },
   "loitering": {
     "description": "El merodeo ocurre cuando una embarcación individual exhibe un comportamiento que podría indicar un posible encuentro. Este se calcula utilizando datos del sistema de identificación automática (AIS), que incluyen la velocidad de la embarcación, el tiempo que permanece en una ubicación específica y la distancia desde la costa. El merodeo se identifica cuando una embarcación mantiene una velocidad promedio inferior a dos nudos mientras se encuentra, en promedio, a más de 20 millas náuticas de la costa. Para minimizar el ruido en el portal de buques de transporte, únicamente se muestran los eventos de merodeo que superan una hora de duración.",
@@ -112,7 +112,7 @@
   "paa-duke": {
     "description": "Global dataset of Preferential Access Areas for small-scale fishing",
     "moreInfoLink": "https://research.repository.duke.edu/concern/datasets/79407z51r",
-    "name": "Duke paas"
+    "name": "Preferential Access Areas"
   },
   "ph": {
     "description": "La acidez del océano se mide con el pH. El aumento de la absorción de dióxido de carbono ha reducido el pH del océano, lo que ha dado lugar a la acidificación del océano, lo cual puede tener un impacto amplio en los organismos marinos. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el pH, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
