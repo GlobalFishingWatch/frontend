@@ -22,6 +22,7 @@ const icons = [
   'category-news',
   'category-reports',
   'category-search',
+  'check',
   'close',
   'clusters',
   'color-picker-filled',

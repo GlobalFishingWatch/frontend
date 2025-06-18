@@ -42,8 +42,15 @@
   padding-bottom: var(--space-M);
 }
 
+.version {
+  color: var(--color-secondary-blue);
+  opacity: var(--opacity-secondary);
+  font-size: small;
+}
+
 .actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-S);
 }

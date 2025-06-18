@@ -28,4 +28,6 @@
 
 .version {
   color: var(--color-secondary-blue);
+  opacity: var(--opacity-secondary);
+  font-size: small;
 }

@@ -276,9 +276,10 @@ const TrackCorrection = () => {
           <div>
             <div className={styles.item}>
               <h2>
-                {currentTrackCorrectionIssue.vesselName ||
-                  (vesselInfo && getVesselShipNameLabel(vesselInfo)) ||
-                  dataview?.config?.name}{' '}
+                {currentTrackCorrectionIssue.vesselName
+                  ? currentTrackCorrectionIssue.vesselName
+                  : (vesselInfo && getVesselShipNameLabel(vesselInfo)) ||
+                    dataview?.config?.name}{' '}
                 {' - '} {currentTrackCorrectionIssue.issueId}
               </h2>
               <h2>
@@ -307,46 +308,67 @@ const TrackCorrection = () => {
           </div>
         )
       )}
-      <div>
-        <label>{t('trackCorrection.comment', 'Comment')}</label>
-        <InputText
-          inputSize="small"
-          placeholder={
-            isNewTrackCorrection
-              ? t('trackCorrection.commentPlaceholder', 'Add a comment...')
-              : t('trackCorrection.replyPlaceholder', 'Write a reply')
-          }
-          value={issueComment}
-          className={styles.input}
-          onChange={(e) => dispatch(setTrackIssueComment(e.target.value))}
-          disabled={isSubmitting}
-        />
-      </div>
+      {!currentTrackCorrectionIssue?.resolved && (
+        <>
+          <div>
+            {/* <label>{t('trackCorrection.comment', 'Comment')}</label> */}
+            <InputText
+              inputSize="small"
+              placeholder={
+                isNewTrackCorrection
+                  ? t('trackCorrection.commentPlaceholder', 'Add a comment...')
+                  : t('trackCorrection.replyPlaceholder', 'Write a reply')
+              }
+              value={issueComment}
+              className={styles.input}
+              onChange={(e) => dispatch(setTrackIssueComment(e.target.value))}
+              disabled={isSubmitting}
+            />
+          </div>
 
-      <div className={styles.actions}>
-        <span className={styles.version}>
-          {
-            t('trackCorrection.version', 'Version') + ' 1'
-            /*vesselInfo.datasetVersion*/
-          }
-        </span>
-        <IconButton icon="language" type="border" onClick={() => setIsResolved(true)} />
+          <div className={styles.actions}>
+            <span className={styles.version}>
+              {
+                t('trackCorrection.version', 'Version') + ' 1'
+                /*vesselInfo.datasetVersion*/
+              }
+            </span>
+            <div className={styles.actions}>
+              <IconButton
+                icon={'check'}
+                type={isResolved ? 'map-tool' : 'border'}
+                size="small"
+                onClick={() => setIsResolved((prev) => !prev)}
+                tooltip={!isResolved && t('trackCorrection.markAsResolved', 'Mark as resolved')}
+                aria-pressed={isResolved}
+              />
 
-        <Button
-          tooltip={
-            isNewTrackCorrection && isTimerangePristine
-              ? t('common.adjustDisabled', 'Adjusting the time range is needed.')
-              : undefined
-          }
-          disabled={
-            (isNewTrackCorrection && isTimerangePristine) || issueComment === '' || isSubmitting
-          }
-          onClick={() => onConfirmClick(trackCorrectionTimerange)}
-          loading={isSubmitting}
-        >
-          {t('common.confirm', 'Confirm')}
-        </Button>
-      </div>
+              <Button
+                tooltip={
+                  isNewTrackCorrection && isTimerangePristine
+                    ? t('common.adjustDisabled', 'Adjusting the time range is needed.')
+                    : undefined
+                }
+                size="medium"
+                type="border-secondary"
+                disabled={
+                  (isNewTrackCorrection && isTimerangePristine) ||
+                  issueComment === '' ||
+                  isSubmitting
+                }
+                onClick={() => onConfirmClick(trackCorrectionTimerange)}
+                loading={isSubmitting}
+              >
+                {isNewTrackCorrection
+                  ? t('common.confirm', 'Confirm')
+                  : isResolved
+                    ? t('trackCorrection.commentResolve', 'Comment and resolve')
+                    : t('trackCorrection.comment', 'Comment')}
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
