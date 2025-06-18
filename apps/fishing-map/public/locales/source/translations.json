@@ -914,6 +914,8 @@
     "issueType": "Type of issue",
     "falsePositive": "False positive",
     "falseNegative": "False negative",
+    "other": "Other",
+    "version": "Version",
     "comment": "Comment",
     "mapTooltip": "Issue added on {{date}} reported as {{type}}"
   },

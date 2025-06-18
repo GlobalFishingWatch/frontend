@@ -21,6 +21,7 @@ export type TrackCorrectionComment = {
 export type TrackCorrection = {
   issueId: string
   vesselId: string
+  vesselName?: string
   startDate: string
   endDate: string
   type: IssueType
@@ -39,8 +40,8 @@ type TrackCorrectionState = {
       end: string
     }
     type: IssueType
-    comment: string
   }
+  comment: string
   issues: {
     status: AsyncReducerStatus
     data: TrackCorrection[]
@@ -55,8 +56,8 @@ const initialState: TrackCorrectionState = {
       end: '',
     },
     type: 'falsePositive',
-    comment: '',
   },
+  comment: '',
   issues: {
     status: AsyncReducerStatus.Idle,
     data: [],
@@ -82,6 +83,45 @@ export const createNewIssueThunk = createAsyncThunk(
         },
         body: JSON.stringify({
           issueBody,
+          commentBody,
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || 'Failed to submit track correction')
+      }
+
+      const data = await response.json()
+
+      dispatch(resetTrackCorrection())
+
+      return data
+    } catch (e: any) {
+      return rejectWithValue(e.message || 'An unknown error occurred')
+    }
+  }
+)
+
+type CreateCommentThunkParam = {
+  issueId: string
+  commentBody: TrackCorrectionComment
+  workspaceId: string
+}
+export const createCommentThunk = createAsyncThunk(
+  'trackCorrection/comment',
+  async (
+    { issueId, commentBody, workspaceId }: CreateCommentThunkParam,
+    { rejectWithValue, dispatch }
+  ) => {
+    try {
+      const response = await fetch(`${PATH_BASENAME}/api/track-corrections/${workspaceId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          issueId,
           commentBody,
         }),
       })
@@ -145,7 +185,7 @@ const trackCorrection = createSlice({
       state.newIssue.type = action.payload
     },
     setTrackIssueComment: (state, action: PayloadAction<string>) => {
-      state.newIssue.comment = action.payload
+      state.comment = action.payload
     },
 
     resetTrackCorrection: (state) => {
@@ -188,10 +228,14 @@ export const selectTrackCorrectionTimerange = (state: RootState) =>
 
 export const selectTrackIssueType = (state: RootState) => state.trackCorrection.newIssue.type
 
-export const selectTrackIssueComment = (state: RootState) => state.trackCorrection.newIssue.comment
+export const selectTrackIssueComment = (state: RootState) => state.trackCorrection.comment
 
 export const selectTrackCorrectionState = (state: RootState) => state.trackCorrection
+
 export const selectAllTrackCorrectionIssues = (state: RootState) =>
   state.trackCorrection.issues.data
+
+export const selectTrackIssueComments = (issueId: string) => (state: RootState) =>
+  state.trackCorrection.issues.data.find((issue) => issue.issueId === issueId)?.comments || []
 
 export default trackCorrection.reducer

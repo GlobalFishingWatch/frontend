@@ -36,3 +36,14 @@
   font-size: small;
   line-height: 1.5;
 }
+
+.item {
+  border-bottom: 1px solid var(--color-border-thick);
+  padding-bottom: var(--space-M);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
