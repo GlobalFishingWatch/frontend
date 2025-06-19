@@ -1197,7 +1197,7 @@
       "speed": "vitesse",
       "bearing": "cap",
       "distance_from_port_km": {
-        "keyword": "distance_from_port_km",
+        "keyword": "Tampon de port (km)",
         "enum": {
           "0": "0",
           "1": "1",
@@ -1684,6 +1684,10 @@
         }
       }
     }
+  },
+  "public-mp-atlas": {
+    "name": "MPAs (MPAtlas)",
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably"
   },
   "public-mpa-all": {
     "name": "AMPs (WDPA)",
