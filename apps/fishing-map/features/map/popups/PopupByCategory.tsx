@@ -33,6 +33,7 @@ import ComparisonRow from 'features/map/popups/categories/ComparisonRow'
 import ContextTooltipSection from 'features/map/popups/categories/ContextLayers'
 import DetectionsTooltipRow from 'features/map/popups/categories/DetectionsLayers'
 import EnvironmentTooltipSection from 'features/map/popups/categories/EnvironmentLayers'
+import PortsTooltipSection from 'features/map/popups/categories/PortsLayers'
 import PositionsRow from 'features/map/popups/categories/PositionsRow'
 import RulerTooltip from 'features/map/popups/categories/RulerTooltip'
 import UserPointsTooltipSection from 'features/map/popups/categories/UserPointsLayers'
@@ -294,10 +295,17 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             )
           }
           case DataviewCategory.User: {
+            const userPortFeatures = (features as UserLayerPickingObject[]).filter(
+              (feature) =>
+                feature.subcategory === DataviewType.UserPoints &&
+                feature.datasetId.includes('public-ports')
+            )
             const userPointFeatures = (features as UserLayerPickingObject[]).filter(
               (feature) =>
-                feature.subcategory === DataviewType.UserPoints ||
-                feature.subcategory === 'draw-points'
+                // TODO remove this once we have a proper way to filter out public ports
+                !feature.datasetId.includes('public-ports') &&
+                (feature.subcategory === DataviewType.UserPoints ||
+                  feature.subcategory === 'draw-points')
             )
             const userContextFeatures = (features as UserLayerPickingObject[]).filter(
               (feature) =>
@@ -316,6 +324,10 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               <Fragment key={featureCategory}>
                 <UserPointsTooltipSection
                   features={userPointFeatures}
+                  showFeaturesDetails={type === 'click'}
+                />
+                <PortsTooltipSection
+                  features={userPortFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
                 <UserTracksTooltipSection
