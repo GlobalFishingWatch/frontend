@@ -69,7 +69,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
       color: '#F95E5E',
       filters: {
         establishment_stage: ['actively managed', 'implemented'],
-        protection_mpaguide_level: ['full', 'high'],
+        mpaguide_protection_level: ['full', 'high'],
       },
     },
   },
