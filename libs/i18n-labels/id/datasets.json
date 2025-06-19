@@ -1687,7 +1687,30 @@
   },
   "public-mp-atlas": {
     "name": "MPAs (MPAtlas)",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably"
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably",
+    "schema": {
+      "establishment_stage": {
+        "keyword": "establishment_stage",
+        "enum": {
+          "proposed/committed": "proposed/committed",
+          "designated": "designated",
+          "actively managed": "actively managed",
+          "implemented": "implemented",
+          "unknown": "unknown"
+        }
+      },
+      "mpaguide_protection_level": {
+        "keyword": "mpaguide_protection_level",
+        "enum": {
+          "unknown": "unknown",
+          "light": "light",
+          "full": "full",
+          "high": "high",
+          "incompatible": "incompatible",
+          "minimal": "minimal"
+        }
+      }
+    }
   },
   "public-mpa-all": {
     "name": "KKP (WDPA)",
