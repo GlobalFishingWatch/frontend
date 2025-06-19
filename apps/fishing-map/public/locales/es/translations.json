@@ -710,7 +710,7 @@
     "nameLengthError_one": "El nombre de la capa requiere al menos {{count}} caracter",
     "nameLengthError_other": "El nombre de la capa requiere al menos {{count}} caracter",
     "nameRequired": "Se requiere el nombre de la capa.",
-    "next_port_id": "Siguiente id de puerto",
+    "next_port_id": "Siguiente puerto",
     "period": "Periodo",
     "properties": {
       "color": "Color",
