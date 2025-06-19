@@ -710,7 +710,7 @@
     "nameLengthError_one": "Le nom du calque nécessite au moins {{count}} caractères",
     "nameLengthError_other": "Le nom du calque nécessite au moins {{count}} caractères",
     "nameRequired": "Le nom du calque est requis",
-    "next_port_id": "Next port id",
+    "next_port_id": "Port suivant",
     "period": "Période",
     "properties": {
       "color": "Color",
