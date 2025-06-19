@@ -3,17 +3,20 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import type { UseComboboxStateChange } from 'downshift'
 import { useCombobox } from 'downshift'
+import type { Point } from 'geojson'
 
-import type { OceanArea,OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
+import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { searchOceanAreas } from '@globalfishingwatch/ocean-areas'
-import { IconButton,InputText } from '@globalfishingwatch/ui-components'
+import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 
 import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
 import { useAppDispatch } from 'features/app/app.hooks'
 import Hint from 'features/help/Hint'
 import { setHintDismissed } from 'features/help/hints.slice'
+import { useMapSetViewState } from 'features/map/map-viewport.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import type { Bbox } from 'types'
+import { formatInfoField } from 'utils/info'
 
 import { useMapFitBounds } from '../map-bounds.hooks'
 
@@ -28,6 +31,7 @@ const MapSearch = () => {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const fitBounds = useMapFitBounds()
+  const setMapViewState = useMapSetViewState()
 
   const onSelectResult = ({ selectedItem }: UseComboboxStateChange<OceanArea>) => {
     const bounds = selectedItem?.properties.bounds as Bbox
@@ -44,7 +48,14 @@ const MapSearch = () => {
         },
       })
     }
-    if (bounds) {
+    if (selectedItem?.properties.type === 'port') {
+      const [longitude, latitude] = (selectedItem.geometry as Point).coordinates
+      setMapViewState({
+        latitude,
+        longitude,
+        zoom: 12,
+      })
+    } else if (bounds) {
       fitBounds(bounds, { fitZoom: true })
     }
   }
@@ -107,16 +118,21 @@ const MapSearch = () => {
           value={inputValue}
         />
         <ul {...getMenuProps()} className={styles.results} data-test="map-search-results">
-          {areasMatching?.map((item, index) => (
-            <li
-              {...getItemProps({ item, index })}
-              key={`${item}${index}`}
-              data-test={`map-search-result-${index}`}
-              className={cx(styles.result, { [styles.highlighted]: highlightedIndex === index })}
-            >
-              {item.properties.name}
-            </li>
-          ))}
+          {areasMatching?.map((item, index) => {
+            const { type, name, flag } = item.properties
+            return (
+              <li
+                {...getItemProps({ item, index })}
+                key={`${item}${index}`}
+                data-test={`map-search-result-${index}`}
+                className={cx(styles.result, { [styles.highlighted]: highlightedIndex === index })}
+              >
+                {`${t(`search.searchTypes.${type}`, type)}: ${formatInfoField(name, 'name')}${
+                  type === 'port' ? ` (${formatInfoField(flag, 'flag')})` : ''
+                }`}
+              </li>
+            )
+          })}
         </ul>
       </div>
     </div>
