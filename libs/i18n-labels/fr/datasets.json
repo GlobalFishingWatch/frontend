@@ -1197,7 +1197,7 @@
       "speed": "vitesse",
       "bearing": "cap",
       "distance_from_port_km": {
-        "keyword": "distance_from_port_km",
+        "keyword": "Tampon de port (km)",
         "enum": {
           "0": "0",
           "1": "1",
