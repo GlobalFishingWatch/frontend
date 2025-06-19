@@ -681,7 +681,7 @@
     "color_change": "Modifier la couleur",
     "colorSelectCustom": "Select custom color",
     "colorSelectPredefined": "Select predefined color",
-    "distance_from_port_km": "Tampon de port",
+    "distance_from_port_km": "Tampon de port (km)",
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",
