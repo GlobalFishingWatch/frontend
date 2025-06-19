@@ -1197,7 +1197,7 @@
       "speed": "speed",
       "bearing": "bearing",
       "distance_from_port_km": {
-        "keyword": "distance_from_port_km",
+        "keyword": "Búfer del puerto (km)",
         "enum": {
           "0": "0",
           "1": "1",
