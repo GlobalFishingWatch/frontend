@@ -38,14 +38,6 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
     },
   },
   {
-    id: 'eez-areas-12nm',
-    dataviewId: EEZ_AREAS_12NM_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/eezs-12nm.jpg`,
-    config: {
-      color: '#069688',
-    },
-  },
-  {
     id: 'mpa',
     dataviewId: MPA_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/mpa.jpg`,
@@ -82,14 +74,6 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
     },
   },
   {
-    id: 'gfcm-fao',
-    dataviewId: GFCM_FAO_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/gfcm-fao.jpg`,
-    config: {
-      color: '#8E24A9',
-    },
-  },
-  {
     id: 'rfmo',
     dataviewId: RFMO_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/rfmos.jpg`,
@@ -105,24 +89,40 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
       color: '#4184F4',
     },
   },
-  {
-    id: 'high-seas-pockets',
-    dataviewId: HIGH_SEAS_POCKETS_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/high-seas-pockets.jpg`,
-    config: {
-      color: '#4184F4',
-    },
-  },
-  {
-    id: 'paa-duke',
-    dataviewId: PAA_DUKE_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/paa-duke.jpg`,
-    config: {
-      color: '#4184F4',
-    },
-  },
   ...(IS_DEVELOPMENT_ENV
-    ? [
+    ? ([
+        {
+          id: 'eez-areas-12nm',
+          dataviewId: EEZ_AREAS_12NM_DATAVIEW_SLUG,
+          previewImageUrl: `${PATH_BASENAME}/images/layer-library/eezs-12nm.jpg`,
+          config: {
+            color: '#069688',
+          },
+        },
+        {
+          id: 'high-seas-pockets',
+          dataviewId: HIGH_SEAS_POCKETS_DATAVIEW_SLUG,
+          previewImageUrl: `${PATH_BASENAME}/images/layer-library/high-seas-pockets.jpg`,
+          config: {
+            color: '#4184F4',
+          },
+        },
+        {
+          id: 'paa-duke',
+          dataviewId: PAA_DUKE_DATAVIEW_SLUG,
+          previewImageUrl: `${PATH_BASENAME}/images/layer-library/paa-duke.jpg`,
+          config: {
+            color: '#4184F4',
+          },
+        },
+        {
+          id: 'gfcm-fao',
+          dataviewId: GFCM_FAO_DATAVIEW_SLUG,
+          previewImageUrl: `${PATH_BASENAME}/images/layer-library/gfcm-fao.jpg`,
+          config: {
+            color: '#8E24A9',
+          },
+        },
         {
           id: 'dsm-isa-leasing-areas',
           dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
@@ -138,7 +138,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
               endpoint: 'context-tiles',
             },
           ],
-        } as LibraryLayerConfig,
-      ]
+        },
+      ] as LibraryLayerConfig[])
     : []),
 ]
