@@ -119,7 +119,8 @@ const MapSearch = () => {
         />
         <ul {...getMenuProps()} className={styles.results} data-test="map-search-results">
           {areasMatching?.map((item, index) => {
-            const { type, name, flag } = item.properties
+            const { type, name, area } = item.properties
+            const flag = type === 'port' ? (area as string).split('-')[0]?.toUpperCase() : undefined
             return (
               <li
                 {...getItemProps({ item, index })}
@@ -128,7 +129,7 @@ const MapSearch = () => {
                 className={cx(styles.result, { [styles.highlighted]: highlightedIndex === index })}
               >
                 {`${t(`search.searchTypes.${type}`, type)}: ${formatInfoField(name, 'name')}${
-                  type === 'port' ? ` (${formatInfoField(flag, 'flag')})` : ''
+                  flag ? ` (${formatInfoField(flag, 'flag')})` : ''
                 }`}
               </li>
             )

@@ -30,7 +30,6 @@ export interface OceanAreaProperties {
   area?: number | string
   mrgid?: string
   bounds?: OceanAreaBBox
-  flag?: string
 }
 
 export type OceanArea = Feature<Geometry, OceanAreaProperties>
