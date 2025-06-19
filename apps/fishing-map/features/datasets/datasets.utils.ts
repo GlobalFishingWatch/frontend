@@ -226,26 +226,28 @@ export const groupDatasetsByGeometryType = (datasets: Dataset[]): Record<string,
 }
 
 export const getDatasetSourceIcon = (dataset: Dataset): IconType | null => {
-  const source = dataset?.source
+  const source = dataset?.source?.toLowerCase()
   if (!source) {
     return null
   }
   // Activity, Detections & Events
-  if (source === 'Global Fishing Watch' || source === 'GFW') return 'gfw-logo'
+  if (source === 'global fishing watch' || source === 'gfw') return 'gfw-logo'
   // Environment
-  if (source.includes('HYCOM')) return 'hycom-logo'
-  if (source.includes('Copernicus')) return 'copernicus-logo'
-  if (source.includes('NASA')) return 'nasa-logo'
-  if (source.includes('PacIOOS')) return 'pacioos-logo'
+  if (source.includes('hycom')) return 'hycom-logo'
+  if (source.includes('copernicus')) return 'copernicus-logo'
+  if (source.includes('nasa')) return 'nasa-logo'
+  if (source.includes('pacioos')) return 'pacioos-logo'
   if (source.includes('gebco')) return 'gebco-logo'
-  if (source.includes('Geospatial Conservation Atlas')) return 'gca-logo'
-  if (source.includes('UNEP')) return 'unep-logo'
-  if (source.includes('Blue Habitats')) return 'blue-habitats-logo'
+  if (source.includes('geospatial conservation atlas')) return 'gca-logo'
+  if (source.includes('unep')) return 'unep-logo'
+  if (source.includes('blue habitats')) return 'blue-habitats-logo'
   // Reference
   if (source.includes('protectedplanet')) return 'protected-planet-logo'
   if (source.includes('protectedseas')) return 'protected-seas-logo'
   if (source.includes('marineregions')) return 'marine-regions-logo'
   if (source.includes('fao')) return 'fao-logo'
+  if (source.includes('mpatlas')) return 'mci-logo'
+  if (source.includes('duke')) return 'duke-logo'
 
   return null
 }
