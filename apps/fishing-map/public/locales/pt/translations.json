@@ -710,7 +710,7 @@
     "nameLengthError_one": "O nome da camada requer pelo menos {{count}} caracteres",
     "nameLengthError_other": "O nome da camada requer pelo menos {{count}} caracteres",
     "nameRequired": "É necessário informar o nome da camada",
-    "next_port_id": "Next port id",
+    "next_port_id": "Próxima porta",
     "period": "Período",
     "properties": {
       "color": "Color",
