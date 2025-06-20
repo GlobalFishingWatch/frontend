@@ -22,6 +22,7 @@ import AppModals from 'features/modals/Modals'
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { selectReportAreaBounds } from 'features/reports/reports.config.selectors'
 import Sidebar from 'features/sidebar/Sidebar'
+import { useFetchTrackCorrections } from 'features/track-correction/track-correction.hooks'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { fetchUserThunk } from 'features/user/user.slice'
 import { useFitWorkspaceBounds } from 'features/workspace/workspace.hook'
@@ -84,6 +85,7 @@ function App() {
   useBeforeUnload()
   useUserLanguageUpdate()
   useFeatureFlagsToast()
+  useFetchTrackCorrections()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
   const isMapDrawing = useSelector(selectIsMapDrawing)
