@@ -50,6 +50,7 @@ export const PROTECTED_SEAS_DATAVIEW_SLUG = 'protected-seas' as const
 export const MPATLAS_DATAVIEW_SLUG = 'mpatlas' as const
 export const GRATICULES_DATAVIEW_SLUG = 'graticules' as const
 export const FIXED_SAR_INFRASTRUCTURE = 'fixed-infrastructure' as const
+export const PORTS_DATAVIEW_SLUG = 'ports' as const
 export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas' as const
 export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas' as const
 export const PORTS_FOOTPRINT_DATAVIEW_SLUG = 'ports-footprint' as const
@@ -138,6 +139,7 @@ export const CONTEXT_LAYERS_DATAVIEWS = [
   FAO_AREAS_DATAVIEW_SLUG,
   BASEMAP_LABELS_DATAVIEW_SLUG,
   FIXED_SAR_INFRASTRUCTURE,
+  PORTS_DATAVIEW_SLUG,
   PORTS_FOOTPRINT_DATAVIEW_SLUG,
 ]
 

@@ -26,6 +26,7 @@ import { POPUP_CATEGORY_ORDER } from 'data/config'
 import { SKYLIGHT_PROTOTYPE_DATASET_ID } from 'data/workspaces'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { PORTS_LAYER_ID } from 'features/map/map.config'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import ActivityTooltipRow from 'features/map/popups/categories/ActivityLayers'
 import ClusterEventTooltip from 'features/map/popups/categories/ClusterEventTooltip'
@@ -256,18 +257,24 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             )
           }
           case DataviewCategory.Context: {
-            const contextFeatures = (features as ContextPickingObject[]).filter(
-              (feature) => feature.subcategory !== DataviewType.UserPoints
-            )
-            const pointFeatures = (features as UserLayerPickingObject[]).filter(
-              (feature) => feature.subcategory === DataviewType.UserPoints
-            )
-            // Workaround to show user context features in the context section
-            const userContextFeatures = (features as UserLayerPickingObject[]).filter(
-              (feature) =>
-                feature.subcategory === DataviewType.UserContext &&
-                !contextFeatures.includes(feature as ContextPickingObject)
-            )
+            const portFeatures: UserLayerPickingObject[] = []
+            const pointFeatures: UserLayerPickingObject[] = []
+            const contextFeatures: ContextPickingObject[] = []
+            const userContextFeatures: UserLayerPickingObject[] = []
+            for (const feature of features) {
+              if (feature.layerId === PORTS_LAYER_ID) {
+                portFeatures.push(feature as UserLayerPickingObject)
+              } else if (
+                (feature as UserLayerPickingObject).subcategory === DataviewType.UserPoints
+              ) {
+                pointFeatures.push(feature as UserLayerPickingObject)
+              } else if (feature.subcategory === DataviewType.UserContext) {
+                // Workaround to show user context features in the context section
+                userContextFeatures.push(feature as UserLayerPickingObject)
+              } else {
+                contextFeatures.push(feature as ContextPickingObject)
+              }
+            }
 
             return (
               <Fragment key={featureCategory}>
@@ -283,6 +290,10 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                   features={userContextFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
+                <PortsTooltipSection
+                  features={portFeatures}
+                  showFeaturesDetails={type === 'click'}
+                />
               </Fragment>
             )
           }
@@ -295,17 +306,10 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             )
           }
           case DataviewCategory.User: {
-            const userPortFeatures = (features as UserLayerPickingObject[]).filter(
-              (feature) =>
-                feature.subcategory === DataviewType.UserPoints &&
-                feature.datasetId.includes('public-ports')
-            )
             const userPointFeatures = (features as UserLayerPickingObject[]).filter(
               (feature) =>
-                // TODO remove this once we have a proper way to filter out public ports
-                !feature.datasetId.includes('public-ports') &&
-                (feature.subcategory === DataviewType.UserPoints ||
-                  feature.subcategory === 'draw-points')
+                feature.subcategory === DataviewType.UserPoints ||
+                feature.subcategory === 'draw-points'
             )
             const userContextFeatures = (features as UserLayerPickingObject[]).filter(
               (feature) =>
@@ -324,10 +328,6 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               <Fragment key={featureCategory}>
                 <UserPointsTooltipSection
                   features={userPointFeatures}
-                  showFeaturesDetails={type === 'click'}
-                />
-                <PortsTooltipSection
-                  features={userPortFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
                 <UserTracksTooltipSection
