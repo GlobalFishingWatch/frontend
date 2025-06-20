@@ -23,7 +23,13 @@ import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useTimebarVisualisationConnect, useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
 import { setTrackCorrectionDataviewId } from 'features/track-correction/track-correction.slice'
+import {
+  selectIsGuestUser,
+  selectIsUserExpired,
+  selectIsUserLogged,
+} from 'features/user/selectors/user.selectors'
 import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
+import { selectIsAnyVesselLocation } from 'routes/routes.selectors'
 import { TimebarVisualisations } from 'types'
 import { formatInfoField } from 'utils/info'
 
@@ -51,6 +57,10 @@ function VesselTracksTooltipRow({
   const fitBounds = useMapFitBounds()
   const setTrackCorrectionId = useSetTrackCorrectionId()
   const { setTimerange } = useTimerangeConnect()
+  const userLogged = useSelector(selectIsUserLogged)
+  const guestUser = useSelector(selectIsGuestUser)
+  const isUserExpired = useSelector(selectIsUserExpired)
+  const isVesselLocation = useSelector(selectIsAnyVesselLocation)
 
   const onReportClick = useCallback(() => {
     if (feature.timestamp) {
@@ -119,7 +129,7 @@ function VesselTracksTooltipRow({
             </p>
           </Fragment>
         )}
-        {showFeaturesDetails && (
+        {showFeaturesDetails && userLogged && !guestUser && !isUserExpired && !isVesselLocation && (
           <div>
             <Button onClick={onReportClick} className={styles.rowMarginTop}>
               <span>{t('feedback.logAnIssue', 'Log an issue')}</span>

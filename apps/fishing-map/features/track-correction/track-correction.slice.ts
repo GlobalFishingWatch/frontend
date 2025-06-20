@@ -200,7 +200,6 @@ const trackCorrection = createSlice({
       }
       state.comment = ''
       state.newIssue.type = 'falsePositive'
-      state.issues.data = []
     },
   },
   extraReducers: (builder) => {

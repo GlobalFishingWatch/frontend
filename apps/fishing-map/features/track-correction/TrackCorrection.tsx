@@ -11,24 +11,17 @@ import { Button, Choice, Icon, IconButton, InputText } from '@globalfishingwatch
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import datasets from 'features/datasets/datasets.mock'
 import I18nDate from 'features/i18n/i18nDate'
-import {
-  useFetchTrackCorrections,
-  useSetTrackCorrectionId,
-} from 'features/track-correction/track-correction.hooks'
+import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
 import type { IssueType, TrackCorrection } from 'features/track-correction/track-correction.slice'
 import {
   createCommentThunk,
   createNewIssueThunk,
   fetchTrackIssuesThunk,
-  resetTrackCorrection,
   selectTrackCorrectionTimerange,
   selectTrackCorrectionVesselDataviewId,
   selectTrackIssueComment,
-  selectTrackIssueComments,
   selectTrackIssueType,
-  setTrackCorrectionDataviewId,
   setTrackIssueComment,
   setTrackIssueType,
 } from 'features/track-correction/track-correction.slice'
@@ -37,8 +30,7 @@ import {
   selectIsNewTrackCorrection,
 } from 'features/track-correction/track-selection.selectors'
 import TrackSlider from 'features/track-correction/TrackSlider'
-import { selectIsUserLogged, selectUserData } from 'features/user/selectors/user.selectors'
-import { selectVesselIdentitySource } from 'features/vessel/vessel.config.selectors'
+import { selectUserData, selectUserLogged } from 'features/user/selectors/user.selectors'
 import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import FitBounds from 'features/workspace/shared/FitBounds'
@@ -61,7 +53,7 @@ const TrackCorrection = () => {
   const issueType = useSelector(selectTrackIssueType)
   const issueComment = useSelector(selectTrackIssueComment)
   const dispatch = useAppDispatch()
-  const userLogged = useSelector(selectIsUserLogged)
+  const userLogged = useSelector(selectUserLogged)
   const setTrackCorrectionId = useSetTrackCorrectionId()
 
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
