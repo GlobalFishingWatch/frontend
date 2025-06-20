@@ -18,10 +18,12 @@ import {
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
 import { formatTransmissionDate, getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
-import { formatInfoField, getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
-
-import VesselRegistryField from '../identity/VesselRegistryField'
-import VesselTypesField from '../identity/VesselTypesField'
+import {
+  formatInfoField,
+  getVesselGearTypeLabel,
+  getVesselShipTypeLabel,
+  sortOptionsAlphabetically,
+} from 'utils/info'
 
 import type { InfoCorrectionSendFormat, RelevantDataFields } from './VesselCorrection.types'
 import { VALID_AIS_FIELDS, VALID_REGISTRY_FIELDS } from './VesselCorrection.types'
@@ -65,7 +67,10 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
         workspaceLink: window.location.href,
         dateSubmitted: now,
         timeRange: formatTransmissionDate(vesselIdentity),
-        vesselId: vesselIdentity.id,
+        vesselId:
+          VesselIdentitySourceEnum.Registry && vesselIdentity.recordId
+            ? vesselIdentity.recordId
+            : vesselIdentity.id,
         originalValues: {
           flag: vesselIdentity.flag || '',
           shipname: vesselIdentity.shipname || vesselIdentity.nShipname || '',
@@ -158,8 +163,8 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
             <label>{t('layer.source', 'Source')}</label>
             <Tag>
               {identitySource === VesselIdentitySourceEnum.Registry
-                ? t('vessel.infoSources.registry', 'Registry')
-                : t('vessel.infoSources.selfReported', 'Self Reported')}
+                ? t('vessel.infoSources.registry', 'Registry') //
+                : t('vessel.infoSources.gfw-source', 'GFW Source')}
             </Tag>
           </div>
           <div>
@@ -238,11 +243,11 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
                         type="secondary"
                         options={
                           key === 'geartypes'
-                            ? gearSelectOptions
+                            ? sortOptionsAlphabetically(gearSelectOptions)
                             : key === 'shiptypes'
-                              ? shipSelectOptions
+                              ? sortOptionsAlphabetically(shipSelectOptions)
                               : key === 'flag'
-                                ? flagSelectOptions
+                                ? sortOptionsAlphabetically(flagSelectOptions)
                                 : []
                         }
                         selectedOption={(key === 'geartypes'

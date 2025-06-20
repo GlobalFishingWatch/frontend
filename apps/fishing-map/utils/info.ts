@@ -180,3 +180,9 @@ export const getVesselOtherNamesLabel = (otherVesselsNames: string[]) => {
 export const getDetectionsTimestamps = (vessel: any) => {
   return vessel?.timestamp?.split(',').sort()
 }
+
+export function sortOptionsAlphabetically<T extends { label: string; id: string }>(
+  options: T[]
+): T[] {
+  return [...options].sort((a, b) => a.label.localeCompare(b.label))
+}
