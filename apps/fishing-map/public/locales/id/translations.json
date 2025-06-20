@@ -913,8 +913,6 @@
     "activityByType": "Berdasarkan jenis",
     "activityByVoyages": "Berdasarkan pelayaran",
     "addToWorkspace": "Tambahkan kapal untuk melihat",
-    "ais-geartypes": "GFW Gear Types",
-    "ais-shiptypes": "GFW Vessel Types",
     "authorization": "otorisasi",
     "authorizationDatesDisclaimer": "The most recent vessel authorized date is the last date Global Fishing Watch collected data. Visit registry source to verify status.",
     "beam": "Beam",
@@ -1000,8 +998,8 @@
       "tuna_purse_seines": "Pukat Cincin Tuna",
       "well_boat": "Kapal sumur (well-boat)"
     },
-    "gfw_geartypes": "GFW Gear type",
-    "gfw_shiptypes": "GFW Vessel type",
+    "gfw-geartypes": "GFW Gear type",
+    "gfw-shiptypes": "GFW Vessel type",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Tonase Kotor",
     "grossTonnageRange": "Rentang Gross Tonnage",
@@ -1013,7 +1011,8 @@
     "infoSources": {
       "both": "Registry and AIS",
       "registry": "Registri",
-      "selfReported": "Dilaporkan sendiri"
+      "selfReported": "Dilaporkan sendiri",
+      "gfw-source": "GFW Source"
     },
     "insights": {
       "countries": {
