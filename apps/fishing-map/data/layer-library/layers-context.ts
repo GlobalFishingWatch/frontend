@@ -6,6 +6,7 @@ import {
   EEZ_AREAS_12NM_DATAVIEW_SLUG,
   EEZ_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
+  FIXED_SAR_INFRASTRUCTURE,
   GFCM_FAO_DATAVIEW_SLUG,
   GRATICULES_DATAVIEW_SLUG,
   HIGH_SEAS_DATAVIEW_SLUG,
@@ -13,10 +14,12 @@ import {
   MPA_DATAVIEW_SLUG,
   MPATLAS_DATAVIEW_SLUG,
   PAA_DUKE_DATAVIEW_SLUG,
+  PORTS_DATAVIEW_SLUG,
   PROTECTED_SEAS_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
 } from 'data/workspaces'
+import { PORTS_LAYER_ID } from 'features/map/map.config'
 
 export const OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID = 'offshore-fixed-infrastructure'
 
@@ -87,6 +90,22 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/high-seas.jpg`,
     config: {
       color: '#4184F4',
+    },
+  },
+  {
+    id: OFFSHORE_FIXED_INFRASTRUCTURE_DATAVIEW_ID,
+    dataviewId: FIXED_SAR_INFRASTRUCTURE,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/offshore-fixed-infrastructure.jpg`,
+    config: {
+      color: '#8E24A9',
+    },
+  },
+  {
+    id: PORTS_LAYER_ID,
+    dataviewId: PORTS_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/ports.jpg`,
+    config: {
+      color: '#9AEEFF',
     },
   },
   ...(IS_DEVELOPMENT_ENV

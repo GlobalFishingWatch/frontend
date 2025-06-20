@@ -262,7 +262,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const contextFeatures: ContextPickingObject[] = []
             const userContextFeatures: UserLayerPickingObject[] = []
             for (const feature of features) {
-              if (feature.layerId === PORTS_LAYER_ID) {
+              if (feature.layerId.startsWith(PORTS_LAYER_ID)) {
                 portFeatures.push(feature as UserLayerPickingObject)
               } else if (
                 (feature as UserLayerPickingObject).subcategory === DataviewType.UserPoints
