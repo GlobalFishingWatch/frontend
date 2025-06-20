@@ -913,8 +913,6 @@
     "activityByType": "Por tipo",
     "activityByVoyages": "Por viajes",
     "addToWorkspace": "Añadir embarcación a la vista",
-    "ais-geartypes": "GFW Gear Types",
-    "ais-shiptypes": "GFW Vessel Types",
     "authorization": "autorización",
     "authorizationDatesDisclaimer": "La fecha más reciente de la autorización de buques es la última fecha que Global Fishing Watch recolectó datos. Visite la fuente del registro para verificar el estado.",
     "beam": "Manga",
@@ -1000,8 +998,8 @@
       "tuna_purse_seines": "Red de cerco atunera",
       "well_boat": "Barco vivero"
     },
-    "gfw_geartypes": "GFW Gear type",
-    "gfw_shiptypes": "GFW Vessel type",
+    "gfw-geartypes": "GFW Gear type",
+    "gfw-shiptypes": "GFW Vessel type",
     "goToImage": "Ir a la imagen {{number}}",
     "grossTonnage": "Tonelaje",
     "grossTonnageRange": "Rango de tonelaje bruto",
@@ -1013,7 +1011,8 @@
     "infoSources": {
       "both": "Registro y AIS",
       "registry": "Registro",
-      "selfReported": "Autodeclarado"
+      "selfReported": "Autodeclarado",
+      "gfw-source": "GFW Source"
     },
     "insights": {
       "countries": {
