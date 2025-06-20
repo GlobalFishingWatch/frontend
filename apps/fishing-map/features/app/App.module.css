@@ -13,13 +13,12 @@
 }
 
 :global(#__next:not(.printing)) .withSmallScreenSwitch {
-  height: calc(calc(var(--vh, 1vh) * 100) - var(--footer-height) - var(--switch-height));
+  height: calc(100dvh - var(--footer-height) - var(--switch-height));
 }
 
 :global(#__next:not(.printing)) .withTimebarAndSmallScreenSwitch {
   height: calc(
-    calc(var(--vh, 1vh) * 100) - var(--footer-height) - var(--timebar-height-small-screen) -
-      var(--switch-height)
+    100dvh - var(--footer-height) - var(--timebar-height-small-screen) - var(--switch-height)
   );
 }
 

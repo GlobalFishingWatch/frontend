@@ -8,7 +8,7 @@ import type { SupportedDateType } from '@globalfishingwatch/data-transforms'
 import type { Locale } from 'types'
 import { getUTCDateTime } from 'utils/dates'
 
-import i18n from './i18n'
+import i18n, { t } from './i18n'
 
 type Dates = {
   date: string | number
@@ -50,6 +50,10 @@ export const useI18nDate = (
 const I18nDate = ({ date, format = DateTime.DATE_MED, showUTCLabel = false }: Dates) => {
   const dateFormatted = useI18nDate(date, format, showUTCLabel)
   return <Fragment>{dateFormatted}</Fragment>
+}
+
+export const formatLocalTimeDate = (date: DateTime) => {
+  return `${date.toLocaleString(DateTime.TIME_SIMPLE, { locale: i18n.language as Locale })} ${t('common.localTime', 'local time')}`
 }
 
 export default I18nDate
