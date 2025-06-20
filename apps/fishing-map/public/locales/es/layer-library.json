@@ -24,6 +24,11 @@
     "moreInfoLink": "",
     "name": "ZEE"
   },
+  "eez-areas-12nm": {
+    "description": "World 12 Nautical Miles Zone (Territorial Seas). Flanders Marine Institute (2023). Maritime Boundaries Geodatabase: Territorial Seas (12NM), version 4. Available online at https://www.marineregions.org/. https://doi.org/10.14284/633",
+    "moreInfoLink": "",
+    "name": "Territorial Seas"
+  },
   "encounters": {
     "description": "Identificados de los datos AIS como lugares donde dos buques, un transportador y uno pesquero, estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media menor a 2 nudos mientras se encontraban a mas de 10 km de un anclaje costero.",
     "moreInfoLink": "",
@@ -44,6 +49,11 @@
     "moreInfoLink": "",
     "name": "Esfuerzo de pesca aparente (VMS)"
   },
+  "gfcm-fao": {
+    "description": "General Fisheries Commission for the Mediterranean Fisheries Restricted Areas",
+    "moreInfoLink": "https://www.fao.org/gfcm/data/maps/fras/ru",
+    "name": "GFCM FRAs"
+  },
   "graticules": {
     "description": "Rejillas o cuadrículas de latitud y longitud en intervalos de 1, 5, 10 y 30° dependiendo del nivel de acercamiento del mapa",
     "moreInfoLink": "",
@@ -53,6 +63,11 @@
     "description": "El alta mar es cualquier área de la columna de agua del océano más allá de las aguas jurisdiccionales. Estos puntos pueden ser difíciles de distinguir de las múltiples jurisdicciones de la ZEE que los rodean, por lo que tenemos una capa que los resalta.",
     "moreInfoLink": "",
     "name": "Alta mar"
+  },
+  "high-seas-pockets": {
+    "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
+    "moreInfoLink": "",
+    "name": "High seas pockets"
   },
   "loitering": {
     "description": "El merodeo ocurre cuando una embarcación individual exhibe un comportamiento que podría indicar un posible encuentro. Este se calcula utilizando datos del sistema de identificación automática (AIS), que incluyen la velocidad de la embarcación, el tiempo que permanece en una ubicación específica y la distancia desde la costa. El merodeo se identifica cuando una embarcación mantiene una velocidad promedio inferior a dos nudos mientras se encuentra, en promedio, a más de 20 millas náuticas de la costa. Para minimizar el ruido en el portal de buques de transporte, únicamente se muestran los eventos de merodeo que superan una hora de duración.",
@@ -93,6 +108,11 @@
     "description": "El oxígeno disuelto es la cantidad de oxígeno presente en el agua y es crucial para el crecimiento y la supervivencia de los organismos marinos. El calentamiento de las aguas del océano pueden llevar a una expansión de zonas bajas en oxígeno, lo cual puede impactar la distribución y la abundancia de vida marina. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el oxígeno disuelto, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Concentración de oxígeno (O2)"
+  },
+  "paa-duke": {
+    "description": "Global dataset of Preferential Access Areas for small-scale fishing",
+    "moreInfoLink": "https://research.repository.duke.edu/concern/datasets/79407z51r",
+    "name": "Preferential Access Areas"
   },
   "ph": {
     "description": "La acidez del océano se mide con el pH. El aumento de la absorción de dióxido de carbono ha reducido el pH del océano, lo que ha dado lugar a la acidificación del océano, lo cual puede tener un impacto amplio en los organismos marinos. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el pH, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",

@@ -21,6 +21,7 @@ export enum WorkspaceCategory {
 }
 
 export const GLOBAL_VESSELS_DATASET_ID = 'public-global-all-vessels'
+export const SKYLIGHT_PROTOTYPE_DATASET_ID = 'proto-global-skylight-viirs:v1.0'
 
 const DEFAULT_WORKSPACE_KEY = 'default'
 export const DEFAULT_WORKSPACE_ID = `${DEFAULT_WORKSPACE_KEY}-${PUBLIC_SUFIX}`
@@ -33,6 +34,7 @@ export const DEEP_SEA_MINING_WORKSPACE_ID = 'deep-sea-mining-public' as const
 export const BASEMAP_DATAVIEW_SLUG = 'basemap' as const
 export const BASEMAP_LABELS_DATAVIEW_SLUG = 'basemap-labels' as const
 export const EEZ_DATAVIEW_SLUG = 'eez' as const
+export const EEZ_AREAS_12NM_DATAVIEW_SLUG = 'eez-12-nm' as const
 export const EEZ_DATAVIEW_INSTANCE_ID = 'context-layer-eez' as const
 export const MPA_DATAVIEW_SLUG = 'mpa' as const
 export const MPA_DATAVIEW_INSTANCE_ID = 'context-layer-mpa' as const
@@ -41,6 +43,9 @@ export const PROTECTEDSEAS_DATAVIEW_INSTANCE_ID = 'context-layer-protectedseas' 
 export const RFMO_DATAVIEW_SLUG = 'tuna-rfmo-areas' as const
 export const RFMO_DATAVIEW_INSTANCE_ID = 'context-layer-rfmo' as const
 export const HIGH_SEAS_DATAVIEW_SLUG = 'high-seas' as const
+export const HIGH_SEAS_POCKETS_DATAVIEW_SLUG = 'high-seas-pocket' as const
+export const PAA_DUKE_DATAVIEW_SLUG = 'paa-duke' as const
+export const GFCM_FAO_DATAVIEW_SLUG = 'gfcm-fao' as const
 export const PROTECTED_SEAS_DATAVIEW_SLUG = 'protected-seas' as const
 export const MPATLAS_DATAVIEW_SLUG = 'mpatlas' as const
 export const GRATICULES_DATAVIEW_SLUG = 'graticules' as const
@@ -59,6 +64,7 @@ export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG = 'encounter-cluster-events-
 export const CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG = 'loitering-cluster-events-v-3' as const
 export const CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG = 'port-visit-cluster-events-v-3' as const
 export const VIIRS_MATCH_DATAVIEW_SLUG = 'viirs-match-v-3' as const
+export const VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG = 'viirs-match-skylight-v-3' as const
 export const SAR_DATAVIEW_SLUG = 'sar-v-3' as const
 export const SENTINEL2_DATAVIEW_SLUG = 'sentinel-2-v-3' as const
 export const PRESENCE_DATAVIEW_SLUG = 'presence-activity-v-3' as const
@@ -105,6 +111,7 @@ export const DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS = [
 
 const PRESENCE_DATAVIEWS = [
   VIIRS_MATCH_DATAVIEW_SLUG, // we ensure the + icon woks for the presence category
+  VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG, // we ensure the + icon woks for the presence category
   PRESENCE_DATAVIEW_SLUG, // In case the workspace doesn't have the dataview added,
   SAR_DATAVIEW_SLUG, // TODO include once ready to release
 ]
@@ -121,6 +128,10 @@ export const CONTEXT_LAYERS_DATAVIEWS = [
   MPA_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
   HIGH_SEAS_DATAVIEW_SLUG,
+  GFCM_FAO_DATAVIEW_SLUG,
+  EEZ_AREAS_12NM_DATAVIEW_SLUG,
+  HIGH_SEAS_POCKETS_DATAVIEW_SLUG,
+  PAA_DUKE_DATAVIEW_SLUG,
   PROTECTED_SEAS_DATAVIEW_SLUG,
   MPATLAS_DATAVIEW_SLUG,
   GRATICULES_DATAVIEW_SLUG,
@@ -143,6 +154,7 @@ const ENVIRONMENT_DATAVIEWS = [
 
 export const DEFAULT_DATAVIEW_SLUGS = [
   BASEMAP_DATAVIEW_SLUG,
+  FISHING_DATAVIEW_SLUG_ALL,
   FISHING_DATAVIEW_SLUG_AIS,
   FISHING_DATAVIEW_SLUG_VMS,
   ...EVENTS_DATAVIEWS,

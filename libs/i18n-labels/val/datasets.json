@@ -1116,6 +1116,10 @@
       "structure_start_date": "crwdns83376:0crwdne83376:0"
     }
   },
+  "public-gfcm-fao": {
+    "name": "crwdns87882:0crwdne87882:0",
+    "description": "crwdns87856:0crwdne87856:0"
+  },
   "public-global-all-tracks": {
     "name": "crwdns69888:0crwdne69888:0",
     "description": "crwdns83478:0crwdne83478:0",
@@ -1677,6 +1681,33 @@
           "high": "crwdns87814:0crwdne87814:0",
           "incompatible": "crwdns87816:0crwdne87816:0",
           "minimal": "crwdns87818:0crwdne87818:0"
+        }
+      }
+    }
+  },
+  "public-mp-atlas": {
+    "name": "crwdns87892:0crwdne87892:0",
+    "description": "crwdns87894:0crwdne87894:0",
+    "schema": {
+      "establishment_stage": {
+        "keyword": "crwdns87922:0crwdne87922:0",
+        "enum": {
+          "proposed/committed": "crwdns87924:0crwdne87924:0",
+          "designated": "crwdns87926:0crwdne87926:0",
+          "actively managed": "crwdns87928:0crwdne87928:0",
+          "implemented": "crwdns87930:0crwdne87930:0",
+          "unknown": "crwdns87932:0crwdne87932:0"
+        }
+      },
+      "mpaguide_protection_level": {
+        "keyword": "crwdns87934:0crwdne87934:0",
+        "enum": {
+          "unknown": "crwdns87936:0crwdne87936:0",
+          "light": "crwdns87938:0crwdne87938:0",
+          "full": "crwdns87940:0crwdne87940:0",
+          "high": "crwdns87942:0crwdne87942:0",
+          "incompatible": "crwdns87944:0crwdne87944:0",
+          "minimal": "crwdns87946:0crwdne87946:0"
         }
       }
     }

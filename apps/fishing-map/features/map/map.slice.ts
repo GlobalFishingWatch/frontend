@@ -370,7 +370,6 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
 
         const infoDatasets = allInfoDatasets.flatMap((datasets) => datasets.flatMap((d) => d || []))
         const topActivityVesselIds = topActivityVessels.map(({ id }) => id)
-
         const vesselsInfo = await fetchVesselInfo(infoDatasets, topActivityVesselIds, signal)
 
         const sublayersIds = heatmapFeatures.flatMap(

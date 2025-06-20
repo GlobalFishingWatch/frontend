@@ -24,6 +24,11 @@
     "moreInfoLink": "",
     "name": "Zona Ekonomi Eksklusif (ZEE)"
   },
+  "eez-areas-12nm": {
+    "description": "World 12 Nautical Miles Zone (Territorial Seas). Flanders Marine Institute (2023). Maritime Boundaries Geodatabase: Territorial Seas (12NM), version 4. Available online at https://www.marineregions.org/. https://doi.org/10.14284/633",
+    "moreInfoLink": "",
+    "name": "Territorial Seas"
+  },
   "encounters": {
     "description": "Diidentifikasi dari data AIS sebagai lokasi di mana dua kapal, kapal pengangkut dan kapal penangkap ikan, berada dalam jarak 500 meter selama setidaknya 2 jam dan melakukan perjalanan dengan kecepatan rata-rata <2 knot, sementara setidaknya 10 km dari pelabuhan pantai.",
     "moreInfoLink": "",
@@ -44,6 +49,11 @@
     "moreInfoLink": "",
     "name": "Upaya penangkapan ikan yang nyata (VMS)"
   },
+  "gfcm-fao": {
+    "description": "General Fisheries Commission for the Mediterranean Fisheries Restricted Areas",
+    "moreInfoLink": "https://www.fao.org/gfcm/data/maps/fras/ru",
+    "name": "GFCM FRAs"
+  },
   "graticules": {
     "description": "Grid atau gratikula garis lintang dan bujur pada interval 1, 5, 10 dan 30° tergantung pada tingkat pembesaran (zoom) peta",
     "moreInfoLink": "",
@@ -53,6 +63,11 @@
     "description": "Laut lepas adalah wilayah lautan di luar zona ekonomi eksklusif (ZEE). Kantong laut lepas adalah area yang benar-benar tertutup oleh ZEE. Kantong-kantong ini mungkin sulit dibedakan dari beberapa yurisdiksi ZEE yang mengelilinginya, oleh karena itu, kami memiliki lapisan (layer) yang menyorotinya.",
     "moreInfoLink": "",
     "name": "Laut lepas"
+  },
+  "high-seas-pockets": {
+    "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
+    "moreInfoLink": "",
+    "name": "High seas pockets"
   },
   "loitering": {
     "description": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is estimated using automatic identification system (AIS) data, including vessel speed, duration in a given location, and distance from shore. Loitering occurs when a vessel travels at average speed of < two knots, while at least an average of 20 nautical miles from shore. To reduce noise in the carrier vessel portal, only loitering events greater than one hour are shown.",
@@ -93,6 +108,11 @@
     "description": "Oksigen terlarut adalah jumlah oksigen yang ada di air dan sangat penting untuk pertumbuhan dan kelangsungan hidup organisme laut. Pemanasan suhu laut dapat menyebabkan perluasan zona rendah oksigen, yang dapat berdampak pada distribusi dan kelimpahan kehidupan laut. Kumpulan data ini terdiri dari parameter biogeokimia, termasuk oksigen terlarut, di lautan global yang ditampilkan dengan resolusi horizontal 1/4 derajat.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Konsentrasi oksigen (O2)"
+  },
+  "paa-duke": {
+    "description": "Global dataset of Preferential Access Areas for small-scale fishing",
+    "moreInfoLink": "https://research.repository.duke.edu/concern/datasets/79407z51r",
+    "name": "Preferential Access Areas"
   },
   "ph": {
     "description": "Keasaman laut diukur dengan pH. Peningkatan penyerapan karbon dioksida telah menurunkan pH laut, sehingga mengakibatkan pengasaman laut yang dapat berdampak luas pada organisme laut. Kumpulan data ini terdiri dari parameter biogeokimia, termasuk pH, di lautan global yang ditampilkan dengan resolusi horizontal 1/4 derajat.",

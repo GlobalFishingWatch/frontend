@@ -74,3 +74,9 @@
 .link {
   text-decoration: underline;
 }
+
+.skylightLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}

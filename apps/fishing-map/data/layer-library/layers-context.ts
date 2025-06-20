@@ -3,12 +3,16 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { IS_DEVELOPMENT_ENV, PATH_BASENAME } from 'data/config'
 import type { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
+  EEZ_AREAS_12NM_DATAVIEW_SLUG,
   EEZ_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
+  GFCM_FAO_DATAVIEW_SLUG,
   GRATICULES_DATAVIEW_SLUG,
   HIGH_SEAS_DATAVIEW_SLUG,
+  HIGH_SEAS_POCKETS_DATAVIEW_SLUG,
   MPA_DATAVIEW_SLUG,
   MPATLAS_DATAVIEW_SLUG,
+  PAA_DUKE_DATAVIEW_SLUG,
   PROTECTED_SEAS_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
@@ -57,7 +61,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
       color: '#F95E5E',
       filters: {
         establishment_stage: ['actively managed', 'implemented'],
-        protection_mpaguide_level: ['full', 'high'],
+        mpaguide_protection_level: ['full', 'high'],
       },
     },
   },
@@ -86,7 +90,39 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
     },
   },
   ...(IS_DEVELOPMENT_ENV
-    ? [
+    ? ([
+        {
+          id: 'eez-areas-12nm',
+          dataviewId: EEZ_AREAS_12NM_DATAVIEW_SLUG,
+          previewImageUrl: `${PATH_BASENAME}/images/layer-library/eezs-12nm.jpg`,
+          config: {
+            color: '#069688',
+          },
+        },
+        {
+          id: 'high-seas-pockets',
+          dataviewId: HIGH_SEAS_POCKETS_DATAVIEW_SLUG,
+          previewImageUrl: `${PATH_BASENAME}/images/layer-library/high-seas-pockets.jpg`,
+          config: {
+            color: '#4184F4',
+          },
+        },
+        {
+          id: 'paa-duke',
+          dataviewId: PAA_DUKE_DATAVIEW_SLUG,
+          previewImageUrl: `${PATH_BASENAME}/images/layer-library/paa-duke.jpg`,
+          config: {
+            color: '#4184F4',
+          },
+        },
+        {
+          id: 'gfcm-fao',
+          dataviewId: GFCM_FAO_DATAVIEW_SLUG,
+          previewImageUrl: `${PATH_BASENAME}/images/layer-library/gfcm-fao.jpg`,
+          config: {
+            color: '#8E24A9',
+          },
+        },
         {
           id: 'dsm-isa-leasing-areas',
           dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
@@ -102,7 +138,7 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
               endpoint: 'context-tiles',
             },
           ],
-        } as LibraryLayerConfig,
-      ]
+        },
+      ] as LibraryLayerConfig[])
     : []),
 ]

@@ -1,5 +1,7 @@
-import type { Workspace, WorkspaceUpsert } from '@globalfishingwatch/api-types'
+import type { ColorCyclingType, Workspace, WorkspaceUpsert } from '@globalfishingwatch/api-types'
 import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PRIVATE_ACCESS } from '@globalfishingwatch/api-types'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import { FillColorBarOptions, LineColorBarOptions } from '@globalfishingwatch/ui-components'
 
 import { PUBLIC_SUFIX } from 'data/config'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
@@ -30,4 +32,25 @@ export const getWorkspaceLabel = (workspace: AppWorkspace | Workspace<WorkspaceS
     return `${isPasswordProtected ? '🔐' : '🔒'} ${workspace.name}`
   }
   return workspace.name
+}
+
+export const getNextColor = (
+  colorCyclingType: ColorCyclingType,
+  currentColors: string[] | undefined
+) => {
+  const palette = colorCyclingType === 'fill' ? FillColorBarOptions : LineColorBarOptions
+  if (!currentColors) {
+    return palette[Math.floor(Math.random() * palette.length)]
+  }
+  let minRepeat = Number.POSITIVE_INFINITY
+  const availableColors: (ColorBarOption & { num: number })[] = palette.map((color) => {
+    const num = currentColors.filter((c) => c === color.value).length
+    if (num < minRepeat) minRepeat = num
+    return {
+      ...color,
+      num,
+    }
+  })
+  const nextColor = availableColors.find((c) => c.num === minRepeat) || availableColors[0]
+  return nextColor
 }
