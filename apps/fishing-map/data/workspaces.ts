@@ -111,7 +111,6 @@ export const DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS = [
 
 const PRESENCE_DATAVIEWS = [
   VIIRS_MATCH_DATAVIEW_SLUG, // we ensure the + icon woks for the presence category
-  VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG, // we ensure the + icon woks for the presence category
   PRESENCE_DATAVIEW_SLUG, // In case the workspace doesn't have the dataview added,
   SAR_DATAVIEW_SLUG, // TODO include once ready to release
 ]
@@ -174,7 +173,9 @@ export const PROFILE_DATAVIEW_SLUGS = [
   TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
 ]
 
-export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: string[] = []
+export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: string[] = [
+  VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG, // we ensure the + icon woks for the presence category
+]
 export const HIDDEN_DATAVIEW_FILTERS: string[] = []
 
 export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE: DataviewInstance = {
