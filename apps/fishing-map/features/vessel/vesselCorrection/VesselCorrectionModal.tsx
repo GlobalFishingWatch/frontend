@@ -67,9 +67,10 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
         workspaceLink: window.location.href,
         dateSubmitted: now,
         timeRange: formatTransmissionDate(vesselIdentity),
-        vesselId: VesselIdentitySourceEnum.Registry
-          ? vesselIdentity.recordId || 'N/A'
-          : vesselIdentity.id,
+        vesselId:
+          VesselIdentitySourceEnum.Registry && vesselIdentity.recordId
+            ? vesselIdentity.recordId
+            : vesselIdentity.id,
         originalValues: {
           flag: vesselIdentity.flag || '',
           shipname: vesselIdentity.shipname || vesselIdentity.nShipname || '',
@@ -162,8 +163,8 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
             <label>{t('layer.source', 'Source')}</label>
             <Tag>
               {identitySource === VesselIdentitySourceEnum.Registry
-                ? t('vessel.infoSources.registry', 'Registry')
-                : t('vessel.infoSources.selfReported', 'Self Reported')}
+                ? t('vessel.infoSources.registry', 'Registry') //
+                : t('vessel.infoSources.gfw-source', 'GFW Source')}
             </Tag>
           </div>
           <div>
