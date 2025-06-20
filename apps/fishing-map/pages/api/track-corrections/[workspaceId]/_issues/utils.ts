@@ -27,6 +27,9 @@ export function parseIssueComment(
 
 export function parseIssueRow(row: GoogleSpreadsheetRow<TrackCorrection>): TrackCorrection {
   return {
+    workspaceLink: row.get('workspaceLink'),
+    source: row.get('source'),
+    ssvid: row.get('ssvid'),
     issueId: row.get('issueId'),
     vesselId: row.get('vesselId'),
     startDate: row.get('startDate'),
