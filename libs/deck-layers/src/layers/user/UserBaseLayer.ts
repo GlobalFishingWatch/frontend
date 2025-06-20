@@ -35,7 +35,6 @@ const defaultProps: DefaultProps<_UserBaseLayerProps> = {
   debounceTime: 500,
   minPointSize: 3,
   maxPointSize: 15,
-  circleRadiusRange: POINT_SIZES_DEFAULT_RANGE,
 }
 
 // update this in Sat Nov 20 2286 as deck gl does not support Infinity

@@ -21,7 +21,7 @@ const importOceanAreasData = async () => {
 }
 
 export type OceanAreaLocaleKey = string
-export type OceanAreaType = 'eez' | 'mpa' | 'fao' | 'rfmo'
+export type OceanAreaType = 'eez' | 'mpa' | 'fao' | 'rfmo' | 'port'
 export type OceanAreaBBox = [number, number, number, number]
 
 export interface OceanAreaProperties {
