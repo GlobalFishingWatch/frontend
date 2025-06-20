@@ -5,6 +5,7 @@ import { center } from '@turf/center'
 import type { Feature, Point } from 'geojson'
 import { DateTime } from 'luxon'
 
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Button, Choice, Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
@@ -31,8 +32,9 @@ import {
 } from 'features/track-correction/track-selection.selectors'
 import TrackSlider from 'features/track-correction/TrackSlider'
 import { selectUserData, selectUserLogged } from 'features/user/selectors/user.selectors'
+import { isRegistryInTimerange } from 'features/vessel/identity/VesselIdentitySelector'
 import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
-import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
 import FitBounds from 'features/workspace/shared/FitBounds'
 import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
 import { getVesselGearTypeLabel, getVesselShipNameLabel, getVesselShipTypeLabel } from 'utils/info'
@@ -151,8 +153,18 @@ const TrackCorrection = () => {
             resolved: isResolved,
             lon: middlePoint.geometry.coordinates[0],
             lat: middlePoint.geometry.coordinates[1],
-            source: dataview?.config?.track || 'unknown',
-            ssvid: vesselInfo?.registryInfo?.[0]?.ssvid || '',
+            source: vesselInfo?.dataset || 'unknown',
+            ssvid: vesselInfo
+              ? getVesselIdentities(vesselInfo, {
+                  identitySource: VesselIdentitySourceEnum.SelfReported,
+                }).find((v) =>
+                  isRegistryInTimerange(
+                    v,
+                    trackCorrectionTimerange.start,
+                    trackCorrectionTimerange.end
+                  )
+                )?.ssvid || ''
+              : '',
           }
 
           const commentBody = buildCommentBody(issueId, isResolved)
@@ -170,6 +182,7 @@ const TrackCorrection = () => {
             })
           dispatch(setTrackIssueComment(''))
           setTrackCorrectionId('')
+          dispatch(fetchTrackIssuesThunk({ workspaceId: workspaceId }))
         } else if (currentTrackCorrectionIssue) {
           const issueId = currentTrackCorrectionIssue?.issueId
           if (!issueId) {
