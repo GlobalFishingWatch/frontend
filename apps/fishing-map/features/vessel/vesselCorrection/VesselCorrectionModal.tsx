@@ -20,9 +20,6 @@ import {
 import { formatTransmissionDate, getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
 import { formatInfoField, getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
 
-import VesselRegistryField from '../identity/VesselRegistryField'
-import VesselTypesField from '../identity/VesselTypesField'
-
 import type { InfoCorrectionSendFormat, RelevantDataFields } from './VesselCorrection.types'
 import { VALID_AIS_FIELDS, VALID_REGISTRY_FIELDS } from './VesselCorrection.types'
 

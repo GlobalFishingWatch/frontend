@@ -5,63 +5,66 @@ import { center } from '@turf/center'
 import type { Feature, Point } from 'geojson'
 import { DateTime } from 'luxon'
 
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
-import { Button, Icon, Select } from '@globalfishingwatch/ui-components'
+import type { ChoiceOption } from '@globalfishingwatch/ui-components'
+import { Button, Choice, Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import I18nDate from 'features/i18n/i18nDate'
+import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
+import type { IssueType, TrackCorrection } from 'features/track-correction/track-correction.slice'
 import {
+  createCommentThunk,
+  createNewIssueThunk,
+  fetchTrackIssuesThunk,
   selectTrackCorrectionTimerange,
   selectTrackCorrectionVesselDataviewId,
-  setTrackCorrectionDataviewId,
+  selectTrackIssueComment,
+  selectTrackIssueType,
+  setTrackIssueComment,
+  setTrackIssueType,
 } from 'features/track-correction/track-correction.slice'
-import { selectCurrentTrackCorrectionIssue } from 'features/track-correction/track-selection.selectors'
+import {
+  selectCurrentTrackCorrectionIssue,
+  selectIsNewTrackCorrection,
+} from 'features/track-correction/track-selection.selectors'
 import TrackSlider from 'features/track-correction/TrackSlider'
+import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
+import { isRegistryInTimerange } from 'features/vessel/identity/VesselIdentitySelector'
 import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
-import { getVesselProperty } from 'features/vessel/vessel.utils'
+import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
 import FitBounds from 'features/workspace/shared/FitBounds'
+import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
 import { getVesselGearTypeLabel, getVesselShipNameLabel, getVesselShipTypeLabel } from 'utils/info'
+
+import TrackCommentsList from './TrackCommentsList'
 
 import styles from './TrackCorrection.module.css'
 
-function VesselOptionsSelect() {
-  const dispatch = useAppDispatch()
-  const trackDataviews = useSelector(selectActiveTrackDataviews)
-  const vesselOptions = useMemo(() => {
-    return trackDataviews.map((dataview) => ({
-      id: dataview.id,
-      label: (
-        <span className={styles.vesselLabel}>
-          <Icon icon="vessel" style={{ color: dataview.config?.color }} />
-          {dataview.config?.name}
-        </span>
-      ),
-      color: dataview.config?.color,
-    }))
-  }, [trackDataviews])
-
-  useEffect(() => {
-    if (vesselOptions.length === 1) {
-      dispatch(setTrackCorrectionDataviewId(vesselOptions[0].id))
-    }
-  }, [dispatch, vesselOptions])
-
-  return (
-    <Select
-      options={vesselOptions}
-      containerClassName={styles.vesselSelect}
-      onSelect={(option) => dispatch(setTrackCorrectionDataviewId(option.id))}
-    />
-  )
-}
+const issueTypesOptions: ChoiceOption<IssueType>[] = [
+  { id: 'falsePositive', label: 'False positive' },
+  { id: 'falseNegative', label: 'False negative' },
+  { id: 'other', label: 'Other' },
+]
 
 const TrackCorrection = () => {
   const { t } = useTranslation()
   const { start, end } = useSelector(selectTimeRange)
+  const issueType = useSelector(selectTrackIssueType)
+  const issueComment = useSelector(selectTrackIssueComment)
+  const dispatch = useAppDispatch()
+  const isGuestUser = useSelector(selectIsGuestUser)
+  const setTrackCorrectionId = useSetTrackCorrectionId()
+
+  const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
+
+  const isNewTrackCorrection = useSelector(selectIsNewTrackCorrection)
   const currentTrackCorrectionIssue = useSelector(selectCurrentTrackCorrectionIssue)
   const [isTimerangePristine, setIsTimerangePristine] = useState(true)
+  const [isResolved, setIsResolved] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const trackCorrectionVesselDataviewId = useSelector(selectTrackCorrectionVesselDataviewId)
   const trackCorrectionTimerange = useSelector(selectTrackCorrectionTimerange)
@@ -70,6 +73,8 @@ const TrackCorrection = () => {
   )
   const vesselInfo = vesselInfoResource?.data
   const vesselColor = dataview?.config?.color
+
+  const userData = useSelector(selectUserData)
 
   useEffect(() => {
     if (trackCorrectionVesselDataviewId) {
@@ -87,112 +92,323 @@ const TrackCorrection = () => {
       .filter((segment) => segment.length > 0)
   }, [end, start, vesselLayer?.instance])
 
-  const onConfirmClick = useCallback(
-    (trackCorrectionTimerange: { start: string; end: string }) => {
-      const trackCorrectionSegments = vesselLayer?.instance?.getVesselTrackSegments({
-        includeMiddlePoints: true,
-        includeCoordinates: true,
-        startTime: getUTCDateTime(trackCorrectionTimerange.start).toMillis(),
-        endTime: getUTCDateTime(trackCorrectionTimerange.end).toMillis(),
-      })
-      const middlePoint = center({
-        type: 'FeatureCollection',
-        features: trackCorrectionSegments.flatMap((segment) => {
-          if (!segment.length) return []
-          return segment.map((point) => {
-            return {
-              type: 'Feature',
-              geometry: {
-                type: 'Point',
-                coordinates: [point.longitude, point.latitude],
-              },
-            } as Feature<Point>
-          })
-        }),
-      })
-      console.log('🚀 ~ TrackCorrection ~ middlePoint:', middlePoint)
-    },
-    [vesselLayer?.instance]
+  const buildCommentBody = useCallback(
+    (issueId: string, marksAsResolved: boolean) => ({
+      issueId,
+      user: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
+      userEmail: userData?.email || '',
+      workspaceLink: window.location.href,
+      date: new Date().toISOString(),
+      comment: issueComment || 'No comment provided',
+      datasetVersion: 1,
+      marksAsResolved,
+    }),
+    [userData, issueComment]
   )
 
-  return (
-    <div>
-      <label>{t('common.vessel', 'Vessel')}</label>
-      <div className={styles.vessel}>
-        {trackCorrectionVesselDataviewId ? (
-          <span className={styles.vesselLabel}>
-            <Icon icon="vessel" style={{ color: vesselColor }} />
-            {vesselInfo ? getVesselShipNameLabel(vesselInfo) : dataview?.config?.name}
-          </span>
-        ) : (
-          <VesselOptionsSelect />
-        )}
-        <FitBounds layer={vesselLayer?.instance} disabled={!vesselLayer?.loaded} />
-      </div>
-      {vesselInfo && (
-        <div className={styles.vesselInfo}>
-          <div>
-            <label>{t('common.flag', 'Flag')}</label>
-            {getVesselProperty(vesselInfo, 'flag')}
-          </div>
-          <div>
-            <label>{t('common.shiptype', 'Shiptype')}</label>
-            {getVesselShipTypeLabel({ shiptypes: getVesselProperty(vesselInfo, 'shiptypes') })}
-          </div>
-          <div>
-            <label>{t('common.geartype', 'Geartype')}</label>
-            {getVesselGearTypeLabel({ geartypes: getVesselProperty(vesselInfo, 'geartypes') })}
-          </div>
-        </div>
-      )}
-      <label>{t('common.timeRange', 'Time range')}</label>
-      {currentTrackCorrectionIssue ? (
-        <Fragment>
-          <I18nDate
-            date={currentTrackCorrectionIssue.startDate}
-            format={DateTime.DATETIME_MED}
-            showUTCLabel={false}
-          />
-          {' - '}
-          <I18nDate
-            date={currentTrackCorrectionIssue.endDate}
-            format={DateTime.DATETIME_MED}
-            showUTCLabel={false}
-          />
-        </Fragment>
-      ) : (
-        <TrackSlider
-          rangeStartTime={getUTCDateTime(start).toMillis()}
-          rangeEndTime={getUTCDateTime(end).toMillis()}
-          segments={trackData ?? []}
-          color={vesselColor}
-          onTimerangeChange={(start, end) => {
-            setIsTimerangePristine(false)
-          }}
-        />
-      )}
-      <div className={styles.disclaimer}>
-        <Icon type="default" icon="warning" />
-        <span>
-          {t(
-            'trackCorrection.adjustDisclaimer',
-            'Adjust your time range to cover as precisely as possible the activity you are reporting on.'
-          )}
-        </span>
-      </div>
-      <div className={styles.actions}>
-        <Button
-          tooltip={
-            isTimerangePristine
-              ? t('common.adjustDisabled', 'Adjusting the time range is needed.')
-              : undefined
+  const onConfirmClick = useCallback(
+    async (trackCorrectionTimerange: { start: string; end: string }) => {
+      try {
+        setIsSubmitting(true)
+        const workspaceId = 'default-public'
+
+        if (isNewTrackCorrection) {
+          const trackCorrectionSegments = vesselLayer?.instance?.getVesselTrackSegments({
+            includeMiddlePoints: true,
+            includeCoordinates: true,
+            startTime: getUTCDateTime(trackCorrectionTimerange.start).toMillis(),
+            endTime: getUTCDateTime(trackCorrectionTimerange.end).toMillis(),
+          })
+
+          const middlePoint = center({
+            type: 'FeatureCollection',
+            features: trackCorrectionSegments.flatMap((segment) =>
+              segment.length
+                ? segment.map(
+                    (point) =>
+                      ({
+                        type: 'Feature',
+                        geometry: {
+                          type: 'Point',
+                          coordinates: [point.longitude, point.latitude],
+                        },
+                      }) as Feature<Point>
+                  )
+                : []
+            ),
+          })
+
+          const issueId = Date.now().toString()
+
+          const issueBody: TrackCorrection = {
+            issueId,
+            vesselId: trackCorrectionVesselDataviewId.replace('vessel-', ''),
+            vesselName: vesselInfo ? getVesselShipNameLabel(vesselInfo) : dataview?.config?.name,
+            userEmail: userData?.email || '',
+            startDate: trackCorrectionTimerange.start,
+            endDate: trackCorrectionTimerange.end,
+            workspaceLink: window.location.href,
+            type: issueType,
+            lastUpdated: new Date().toISOString(),
+            resolved: isResolved,
+            lon: middlePoint.geometry.coordinates[0],
+            lat: middlePoint.geometry.coordinates[1],
+            source: vesselInfo?.dataset || 'unknown',
+            ssvid: vesselInfo
+              ? getVesselIdentities(vesselInfo, {
+                  identitySource: VesselIdentitySourceEnum.SelfReported,
+                }).find((v) =>
+                  isRegistryInTimerange(
+                    v,
+                    trackCorrectionTimerange.start,
+                    trackCorrectionTimerange.end
+                  )
+                )?.ssvid || ''
+              : '',
           }
-          disabled={isTimerangePristine}
-          onClick={() => onConfirmClick(trackCorrectionTimerange)}
-        >
-          {t('common.confirm', 'Confirm')}
-        </Button>
-      </div>
+
+          const commentBody = buildCommentBody(issueId, isResolved)
+
+          await dispatch(
+            createNewIssueThunk({
+              issueBody,
+              commentBody,
+              workspaceId,
+            })
+          )
+            .unwrap()
+            .then(() => {
+              dispatch(setTrackIssueComment(''))
+              setTrackCorrectionId('')
+              dispatch(fetchTrackIssuesThunk({ workspaceId: workspaceId }))
+            })
+            .catch((err) => {
+              console.error('Failed to submit:', err)
+            })
+        } else if (currentTrackCorrectionIssue) {
+          const issueId = currentTrackCorrectionIssue?.issueId
+          if (!issueId) {
+            console.error('No issueId found for the current track correction issue.')
+            return
+          }
+          const commentBody = buildCommentBody(issueId, isResolved)
+
+          await dispatch(
+            createCommentThunk({
+              issueId,
+              commentBody,
+              workspaceId,
+            })
+          )
+            .unwrap()
+            .then(() => {
+              dispatch(fetchTrackIssuesThunk({ workspaceId }))
+              dispatch(setTrackIssueComment(''))
+            })
+            .catch((err) => {
+              console.error('Failed to submit:', err)
+            })
+        }
+      } catch (error) {
+        console.error('Error submitting track correction:', error)
+      } finally {
+        setIsSubmitting(false)
+      }
+    },
+    [
+      isNewTrackCorrection,
+      currentTrackCorrectionIssue,
+      vesselLayer?.instance,
+      trackCorrectionVesselDataviewId,
+      vesselInfo,
+      dataview?.config?.name,
+      userData?.email,
+      issueType,
+      isResolved,
+      buildCommentBody,
+      dispatch,
+      setTrackCorrectionId,
+    ]
+  )
+
+  if (isGuestUser || !userData) return null
+
+  return (
+    <div className={styles.container}>
+      {isNewTrackCorrection ? (
+        <>
+          <div>
+            <label>{t('common.vessel', 'Vessel')}</label>
+            <div className={styles.vessel}>
+              <span className={styles.vesselLabel}>
+                <Icon icon="vessel" style={{ color: vesselColor }} />
+                {(vesselInfo && getVesselShipNameLabel(vesselInfo)) || dataview?.config?.name}
+              </span>
+
+              <FitBounds layer={vesselLayer?.instance} disabled={!vesselLayer?.loaded} />
+            </div>
+          </div>
+          {vesselInfo && (
+            <div className={styles.vesselInfo}>
+              <div>
+                <label>{t('common.flag', 'Flag')}</label>
+                {getVesselProperty(vesselInfo, 'flag')}
+              </div>
+              <div>
+                <label>{t('common.shiptype', 'Shiptype')}</label>
+                {getVesselShipTypeLabel({ shiptypes: getVesselProperty(vesselInfo, 'shiptypes') })}
+              </div>
+              <div>
+                <label>{t('common.geartype', 'Geartype')}</label>
+                {getVesselGearTypeLabel({ geartypes: getVesselProperty(vesselInfo, 'geartypes') })}
+              </div>
+            </div>
+          )}
+          <label>{t('common.timeRange', 'Time range')}</label>
+          {currentTrackCorrectionIssue ? (
+            <Fragment>
+              <I18nDate
+                date={currentTrackCorrectionIssue.startDate}
+                format={DateTime.DATETIME_MED}
+                showUTCLabel={false}
+              />
+              {' - '}
+              <I18nDate
+                date={currentTrackCorrectionIssue.endDate}
+                format={DateTime.DATETIME_MED}
+                showUTCLabel={false}
+              />
+            </Fragment>
+          ) : (
+            <TrackSlider
+              rangeStartTime={getUTCDateTime(start).toMillis()}
+              rangeEndTime={getUTCDateTime(end).toMillis()}
+              segments={trackData ?? []}
+              color={vesselColor}
+              onTimerangeChange={(start, end) => {
+                setIsTimerangePristine(false)
+              }}
+            />
+          )}
+
+          <div className={styles.disclaimer}>
+            <Icon type="default" icon="warning" />
+            <span>
+              {t(
+                'trackCorrection.adjustDisclaimer',
+                'Adjust your time range to cover as precisely as possible the activity you are reporting on.'
+              )}
+            </span>
+          </div>
+          <div>
+            <label>{t('trackCorrection.issueType', 'Type of issue')}</label>
+            <Choice
+              options={issueTypesOptions}
+              activeOption={issueType}
+              onSelect={(option) => {
+                dispatch(setTrackIssueType(option.id))
+              }}
+              size="small"
+            />
+          </div>
+        </>
+      ) : (
+        currentTrackCorrectionIssue && (
+          <div>
+            <div className={styles.item}>
+              <h2>
+                {currentTrackCorrectionIssue.vesselName
+                  ? currentTrackCorrectionIssue.vesselName
+                  : (vesselInfo && getVesselShipNameLabel(vesselInfo)) ||
+                    dataview?.config?.name}{' '}
+                {' - '} {currentTrackCorrectionIssue.issueId}
+              </h2>
+              <h2>
+                {t(`trackCorrection.falsePositive`, {
+                  defaultValue: currentTrackCorrectionIssue.type,
+                })}
+              </h2>
+              <label>
+                <I18nDate
+                  date={currentTrackCorrectionIssue.startDate}
+                  format={DateTime.DATETIME_MED}
+                  showUTCLabel={false}
+                />
+                {' - '}
+                <I18nDate
+                  date={currentTrackCorrectionIssue.endDate}
+                  format={DateTime.DATETIME_MED}
+                  showUTCLabel={false}
+                />
+              </label>
+            </div>
+            {currentTrackCorrectionIssue && (
+              <TrackCommentsList track={currentTrackCorrectionIssue} />
+            )}
+          </div>
+        )
+      )}
+      {!currentTrackCorrectionIssue?.resolved && (
+        <>
+          <div>
+            {isNewTrackCorrection && <label>{t('trackCorrection.comment', 'Comment')}</label>}
+            <InputText
+              inputSize="small"
+              placeholder={
+                isNewTrackCorrection
+                  ? t('trackCorrection.commentPlaceholder', 'Add a comment...')
+                  : t('trackCorrection.replyPlaceholder', 'Write a reply')
+              }
+              value={issueComment}
+              className={styles.input}
+              onChange={(e) => dispatch(setTrackIssueComment(e.target.value))}
+              disabled={isSubmitting}
+            />
+          </div>
+
+          <div className={styles.actions}>
+            <span className={styles.version}>
+              {
+                t('trackCorrection.version', 'Version') + ' 1'
+                /*vesselInfo.datasetVersion*/
+              }
+            </span>
+            <div className={styles.actions}>
+              {!isNewTrackCorrection && (
+                <IconButton
+                  icon="tick"
+                  type={isResolved ? 'map-tool' : 'border'}
+                  size="small"
+                  onClick={() => setIsResolved((prev) => !prev)}
+                  tooltip={!isResolved && t('trackCorrection.markAsResolved', 'Mark as resolved')}
+                />
+              )}
+
+              <Button
+                tooltip={
+                  isNewTrackCorrection && isTimerangePristine
+                    ? t('common.adjustDisabled', 'Adjusting the time range is needed.')
+                    : undefined
+                }
+                size="medium"
+                disabled={
+                  (isNewTrackCorrection && isTimerangePristine) ||
+                  issueComment === '' ||
+                  isGuestUser
+                }
+                onClick={() => onConfirmClick(trackCorrectionTimerange)}
+                loading={isSubmitting}
+              >
+                {isNewTrackCorrection
+                  ? t('common.confirm', 'Confirm')
+                  : isResolved
+                    ? t('trackCorrection.commentResolve', 'Comment and resolve')
+                    : t('trackCorrection.comment', 'Comment')}
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }

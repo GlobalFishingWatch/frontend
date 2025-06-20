@@ -279,7 +279,7 @@ export const useClickedEventConnect = () => {
         onRulerMapClick([deckEvent.longitude, deckEvent.latitude])
         return
       }
-
+      // TODO: identify if clicked on a track correction overlay and return to stop propagation from opening events popup
       const event = {
         features: deckEvent.features,
         //   .map((feature) => {

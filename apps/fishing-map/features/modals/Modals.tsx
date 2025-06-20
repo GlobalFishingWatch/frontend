@@ -26,7 +26,10 @@ import {
 } from 'features/modals/modals.slice'
 import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
 import { resetTrackCorrection } from 'features/track-correction/track-correction.slice'
-import { selectTrackCorrectionModalOpen } from 'features/track-correction/track-selection.selectors'
+import {
+  selectCurrentTrackCorrectionIssue,
+  selectTrackCorrectionModalOpen,
+} from 'features/track-correction/track-selection.selectors'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
@@ -116,6 +119,7 @@ const AppModals = () => {
   const [debugActive, dispatchToggleDebugMenu] = useSecretMenu(DebugMenuConfig)
   const [editorActive, dispatchToggleEditorMenu] = useSecretMenu(EditorMenuConfig)
   const [bigqueryActive, dispatchBigQueryMenu] = useSecretMenu(BigQueryMenuConfig)
+  const currentTrackCorrectionIssue = useSelector(selectCurrentTrackCorrectionIssue)
 
   const toggleFeatureFlag = useToggleFeatureFlag()
   const workspaceGeneratorConfig = useMemo(
@@ -230,7 +234,13 @@ const AppModals = () => {
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
           isOpen={trackCorrectionModalOpen && !anyAppModalOpen}
-          title={t('vessel.newIssue', 'New issue')}
+          title={
+            currentTrackCorrectionIssue?.issueId
+              ? t('vessel.issue', 'Issue {{issueId}}', {
+                  issueId: currentTrackCorrectionIssue.issueId,
+                })
+              : t('vessel.newIssue', 'New issue')
+          }
           shouldCloseOnEsc={false}
           onClose={() => {
             setTrackCorrectionId('')
