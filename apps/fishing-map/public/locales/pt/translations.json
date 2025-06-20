@@ -913,8 +913,6 @@
     "activityByType": "Por tipo",
     "activityByVoyages": "Por viagens",
     "addToWorkspace": "Adicionar embarcação na visualização",
-    "ais-geartypes": "GFW Gear Types",
-    "ais-shiptypes": "GFW Vessel Types",
     "authorization": "autorização",
     "authorizationDatesDisclaimer": "A data de autorização mais recente da embarcação é a última data em que a Global Fishing Watch coletou dados. Visite a fonte do registro para verificar o status.",
     "beam": "Rede de draga",
@@ -1000,8 +998,8 @@
       "tuna_purse_seines": "Rede de cerco para atuns",
       "well_boat": "Barco de poço"
     },
-    "gfw_geartypes": "Tipo de Equipamento - GFW",
-    "gfw_shiptypes": "Tipo de Embarcação - GFW",
+    "gfw-geartypes": "GFW Gear type",
+    "gfw-shiptypes": "GFW Vessel type",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Tonelagem bruta",
     "grossTonnageRange": "Intervalo de arqueação bruta",
@@ -1013,7 +1011,8 @@
     "infoSources": {
       "both": "Registro e AIS",
       "registry": "Registro",
-      "selfReported": "Autodeclarado"
+      "selfReported": "Autodeclarado",
+      "gfw-source": "GFW Source"
     },
     "insights": {
       "countries": {
