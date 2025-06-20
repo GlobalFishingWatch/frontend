@@ -23,6 +23,7 @@ export type TrackCorrection = {
   vesselId: string
   vesselName?: string
   createdBy?: string
+  userEmail?: string
   workspaceLink: string
   startDate: string
   endDate: string
@@ -33,7 +34,7 @@ export type TrackCorrection = {
   lat: number
   lon: number
   source: string
-  ssvid?: string
+  ssvid: string
 }
 
 type TrackCorrectionState = {

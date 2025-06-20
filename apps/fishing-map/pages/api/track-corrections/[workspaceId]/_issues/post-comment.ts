@@ -27,6 +27,12 @@ export async function addCommentToIssue(
 
   try {
     await commentsSheet.addRow(commentBody)
+    issueRow.set('lastUpdated', commentBody.date)
+
+    if (commentBody.marksAsResolved) {
+      issueRow.set('resolved', true)
+      await issueRow.save()
+    }
   } catch (error) {
     console.error('Error adding row:', error)
     throw error

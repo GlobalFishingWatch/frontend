@@ -20,15 +20,13 @@ export async function createNewIssue(
   const commentsSheet = getSheetTab(COMMENTS_SPREADSHEET_TITLE, spreadsheetDoc)
 
   try {
-    const commentResponse = await commentsSheet.addRow(commentBody)
-    const commentRowNumber = commentResponse.rowNumber
-    const commentRowLink = `https://docs.google.com/spreadsheets/d/${spreadsheetDoc.spreadsheetId}/edit#gid=${commentsSheet.sheetId}&range=A${commentRowNumber}`
+    await commentsSheet.addRow(commentBody)
 
     const rowData = {
       ...issueBody,
-      issueId: `=HYPERLINK("${commentBody.workspaceLink}", "${commentBody.issueId}")`,
-      createdBy: `=HYPERLINK("mailto:${commentBody.userEmail}", "${commentBody.userName}")`,
-      comments: `=HYPERLINK("${commentRowLink}", "See comments")`,
+      issueId: `=HYPERLINK("${issueBody.workspaceLink}", "${commentBody.issueId}")`,
+      createdBy: `=HYPERLINK("mailto:${issueBody.userEmail}", "${commentBody.user}")`,
+      comments: `=LINKTOCOMMENTS(${issueBody.issueId})`,
     }
     await issuesSheet.addRow(rowData)
   } catch (error) {

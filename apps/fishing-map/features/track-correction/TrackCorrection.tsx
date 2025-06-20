@@ -63,7 +63,6 @@ const TrackCorrection = () => {
   const dispatch = useAppDispatch()
   const userLogged = useSelector(selectIsUserLogged)
   const setTrackCorrectionId = useSetTrackCorrectionId()
-  useFetchTrackCorrections()
 
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
 
@@ -99,11 +98,24 @@ const TrackCorrection = () => {
       .filter((segment) => segment.length > 0)
   }, [end, start, vesselLayer?.instance])
 
+  const buildCommentBody = useCallback(
+    (issueId: string, marksAsResolved: boolean) => ({
+      issueId,
+      user: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
+      userEmail: userData?.email || '',
+      workspaceLink: window.location.href,
+      date: new Date().toISOString(),
+      comment: issueComment || 'No comment provided',
+      datasetVersion: 1,
+      marksAsResolved,
+    }),
+    [userData, issueComment]
+  )
+
   const onConfirmClick = useCallback(
     async (trackCorrectionTimerange: { start: string; end: string }) => {
       try {
         setIsSubmitting(true)
-
         const workspaceId = 'default-public'
 
         if (isNewTrackCorrection) {
@@ -116,18 +128,20 @@ const TrackCorrection = () => {
 
           const middlePoint = center({
             type: 'FeatureCollection',
-            features: trackCorrectionSegments.flatMap((segment) => {
-              if (!segment.length) return []
-              return segment.map((point) => {
-                return {
-                  type: 'Feature',
-                  geometry: {
-                    type: 'Point',
-                    coordinates: [point.longitude, point.latitude],
-                  },
-                } as Feature<Point>
-              })
-            }),
+            features: trackCorrectionSegments.flatMap((segment) =>
+              segment.length
+                ? segment.map(
+                    (point) =>
+                      ({
+                        type: 'Feature',
+                        geometry: {
+                          type: 'Point',
+                          coordinates: [point.longitude, point.latitude],
+                        },
+                      }) as Feature<Point>
+                  )
+                : []
+            ),
           })
 
           const issueId = Date.now().toString()
@@ -136,6 +150,7 @@ const TrackCorrection = () => {
             issueId,
             vesselId: trackCorrectionVesselDataviewId.replace('vessel-', ''),
             vesselName: vesselInfo ? getVesselShipNameLabel(vesselInfo) : dataview?.config?.name,
+            userEmail: userData?.email || '',
             startDate: trackCorrectionTimerange.start,
             endDate: trackCorrectionTimerange.end,
             workspaceLink: window.location.href,
@@ -148,15 +163,7 @@ const TrackCorrection = () => {
             ssvid: vesselInfo?.registryInfo?.[0]?.ssvid || '',
           }
 
-          const commentBody = {
-            issueId,
-            user: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
-            userEmail: userData?.email || '',
-            date: new Date().toISOString(),
-            comment: issueComment || 'No comment provided',
-            datasetVersion: 1,
-            marksAsResolved: isResolved,
-          }
+          const commentBody = buildCommentBody(issueId, isResolved)
 
           await dispatch(
             createNewIssueThunk({
@@ -177,16 +184,7 @@ const TrackCorrection = () => {
             console.error('No issueId found for the current track correction issue.')
             return
           }
-          const commentBody = {
-            issueId,
-            user: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
-            userEmail: userData?.email || '',
-            workspaceLink: window.location.href,
-            date: new Date().toISOString(),
-            comment: issueComment || 'No comment provided',
-            datasetVersion: 1,
-            marksAsResolved: isResolved,
-          }
+          const commentBody = buildCommentBody(issueId, isResolved)
 
           await dispatch(
             createCommentThunk({
@@ -218,12 +216,10 @@ const TrackCorrection = () => {
       vesselInfo,
       dataview?.config?.name,
       dataview?.config?.track,
+      userData?.email,
       issueType,
       isResolved,
-      userData?.firstName,
-      userData?.lastName,
-      userData?.email,
-      issueComment,
+      buildCommentBody,
       dispatch,
       setTrackCorrectionId,
     ]
