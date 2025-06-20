@@ -5,7 +5,6 @@ import type {
   TrackCorrectionComment,
 } from 'features/track-correction/track-correction.slice'
 import { getWorkspaceIssues } from 'pages/api/track-corrections/[workspaceId]/_issues/get-all'
-import { addCommentToIssue } from 'pages/api/track-corrections/[workspaceId]/_issues/post-comment'
 import { createNewIssue } from 'pages/api/track-corrections/[workspaceId]/_issues/post-new'
 
 export type ErrorAPIResponse = {

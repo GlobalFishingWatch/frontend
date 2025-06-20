@@ -136,10 +136,6 @@ export const createCommentThunk = createAsyncThunk(
         const errorData = await response.json()
         throw new Error(errorData.message || 'Failed to submit track correction')
       }
-
-      const data = await response.json()
-
-      return data
     } catch (e: any) {
       return rejectWithValue(e.message || 'An unknown error occurred')
     }

@@ -31,7 +31,7 @@ import {
   selectIsNewTrackCorrection,
 } from 'features/track-correction/track-selection.selectors'
 import TrackSlider from 'features/track-correction/TrackSlider'
-import { selectUserData, selectUserLogged } from 'features/user/selectors/user.selectors'
+import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { isRegistryInTimerange } from 'features/vessel/identity/VesselIdentitySelector'
 import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
 import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
@@ -55,7 +55,7 @@ const TrackCorrection = () => {
   const issueType = useSelector(selectTrackIssueType)
   const issueComment = useSelector(selectTrackIssueComment)
   const dispatch = useAppDispatch()
-  const userLogged = useSelector(selectUserLogged)
+  const isGuestUser = useSelector(selectIsGuestUser)
   const setTrackCorrectionId = useSetTrackCorrectionId()
 
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
@@ -177,12 +177,14 @@ const TrackCorrection = () => {
             })
           )
             .unwrap()
+            .then(() => {
+              dispatch(setTrackIssueComment(''))
+              setTrackCorrectionId('')
+              dispatch(fetchTrackIssuesThunk({ workspaceId: workspaceId }))
+            })
             .catch((err) => {
               console.error('Failed to submit:', err)
             })
-          dispatch(setTrackIssueComment(''))
-          setTrackCorrectionId('')
-          dispatch(fetchTrackIssuesThunk({ workspaceId: workspaceId }))
         } else if (currentTrackCorrectionIssue) {
           const issueId = currentTrackCorrectionIssue?.issueId
           if (!issueId) {
@@ -220,7 +222,6 @@ const TrackCorrection = () => {
       trackCorrectionVesselDataviewId,
       vesselInfo,
       dataview?.config?.name,
-      dataview?.config?.track,
       userData?.email,
       issueType,
       isResolved,
@@ -230,7 +231,7 @@ const TrackCorrection = () => {
     ]
   )
 
-  if (!userLogged || !userData) return null
+  if (isGuestUser || !userData) return null
 
   return (
     <div className={styles.container}>
@@ -394,7 +395,7 @@ const TrackCorrection = () => {
                 disabled={
                   (isNewTrackCorrection && isTimerangePristine) ||
                   issueComment === '' ||
-                  !userLogged
+                  isGuestUser
                 }
                 onClick={() => onConfirmClick(trackCorrectionTimerange)}
                 loading={isSubmitting}
