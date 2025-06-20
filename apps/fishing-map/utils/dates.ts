@@ -63,6 +63,7 @@ export const getTimeAgo = (date: number | DateTime) => {
   if (days > 0) {
     return `${days} day${days > 1 ? 's' : ''} ago`
   }
+  if (days === 0 && hours === 0 && minutes < 2) return 'now'
   if (hours === 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`
   if (minutes === 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`
   return `${hours} hour${hours > 1 ? 's' : ''} ${minutes} minute${minutes > 1 ? 's' : ''} ago`
