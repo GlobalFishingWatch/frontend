@@ -12,9 +12,7 @@ export type IssueType = 'falsePositive' | 'falseNegative' | 'other'
 export type TrackCorrectionComment = {
   issueId: string
   comment: string
-  userName: string
-  userEmail: string
-  workspaceLink: string
+  user: string
   date: string
   datasetVersion: number
   marksAsResolved: boolean
@@ -24,6 +22,8 @@ export type TrackCorrection = {
   issueId: string
   vesselId: string
   vesselName?: string
+  createdBy?: string
+  workspaceLink: string
   startDate: string
   endDate: string
   type: IssueType
@@ -32,6 +32,8 @@ export type TrackCorrection = {
   comments?: TrackCorrectionComment[]
   lat: number
   lon: number
+  source: string
+  ssvid?: string
 }
 
 type TrackCorrectionState = {
@@ -195,6 +197,7 @@ const trackCorrection = createSlice({
         start: '',
         end: '',
       }
+      state.comment = ''
       state.newIssue.type = 'falsePositive'
       state.issues.data = []
     },

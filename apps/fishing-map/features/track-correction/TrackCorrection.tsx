@@ -11,16 +11,24 @@ import { Button, Choice, Icon, IconButton, InputText } from '@globalfishingwatch
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import datasets from 'features/datasets/datasets.mock'
 import I18nDate from 'features/i18n/i18nDate'
+import {
+  useFetchTrackCorrections,
+  useSetTrackCorrectionId,
+} from 'features/track-correction/track-correction.hooks'
 import type { IssueType, TrackCorrection } from 'features/track-correction/track-correction.slice'
 import {
   createCommentThunk,
   createNewIssueThunk,
+  fetchTrackIssuesThunk,
   resetTrackCorrection,
   selectTrackCorrectionTimerange,
   selectTrackCorrectionVesselDataviewId,
   selectTrackIssueComment,
+  selectTrackIssueComments,
   selectTrackIssueType,
+  setTrackCorrectionDataviewId,
   setTrackIssueComment,
   setTrackIssueType,
 } from 'features/track-correction/track-correction.slice'
@@ -29,7 +37,8 @@ import {
   selectIsNewTrackCorrection,
 } from 'features/track-correction/track-selection.selectors'
 import TrackSlider from 'features/track-correction/TrackSlider'
-import { selectUserData } from 'features/user/selectors/user.selectors'
+import { selectIsUserLogged, selectUserData } from 'features/user/selectors/user.selectors'
+import { selectVesselIdentitySource } from 'features/vessel/vessel.config.selectors'
 import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import FitBounds from 'features/workspace/shared/FitBounds'
@@ -52,6 +61,9 @@ const TrackCorrection = () => {
   const issueType = useSelector(selectTrackIssueType)
   const issueComment = useSelector(selectTrackIssueComment)
   const dispatch = useAppDispatch()
+  const userLogged = useSelector(selectIsUserLogged)
+  const setTrackCorrectionId = useSetTrackCorrectionId()
+  useFetchTrackCorrections()
 
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
 
@@ -126,18 +138,20 @@ const TrackCorrection = () => {
             vesselName: vesselInfo ? getVesselShipNameLabel(vesselInfo) : dataview?.config?.name,
             startDate: trackCorrectionTimerange.start,
             endDate: trackCorrectionTimerange.end,
+            workspaceLink: window.location.href,
             type: issueType,
             lastUpdated: new Date().toISOString(),
             resolved: isResolved,
             lon: middlePoint.geometry.coordinates[0],
             lat: middlePoint.geometry.coordinates[1],
+            source: dataview?.config?.track || 'unknown',
+            ssvid: vesselInfo?.registryInfo?.[0]?.ssvid || '',
           }
 
           const commentBody = {
             issueId,
-            userName: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
+            user: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
             userEmail: userData?.email || '',
-            workspaceLink: '',
             date: new Date().toISOString(),
             comment: issueComment || 'No comment provided',
             datasetVersion: 1,
@@ -155,8 +169,8 @@ const TrackCorrection = () => {
             .catch((err) => {
               console.error('Failed to submit:', err)
             })
-
-          dispatch(resetTrackCorrection())
+          dispatch(setTrackIssueComment(''))
+          setTrackCorrectionId('')
         } else if (currentTrackCorrectionIssue) {
           const issueId = currentTrackCorrectionIssue?.issueId
           if (!issueId) {
@@ -165,7 +179,7 @@ const TrackCorrection = () => {
           }
           const commentBody = {
             issueId,
-            userName: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
+            user: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
             userEmail: userData?.email || '',
             workspaceLink: window.location.href,
             date: new Date().toISOString(),
@@ -182,11 +196,13 @@ const TrackCorrection = () => {
             })
           )
             .unwrap()
+            .then(() => {
+              dispatch(fetchTrackIssuesThunk({ workspaceId }))
+              dispatch(setTrackIssueComment(''))
+            })
             .catch((err) => {
               console.error('Failed to submit:', err)
             })
-
-          dispatch(resetTrackCorrection())
         }
       } catch (error) {
         console.error('Error submitting track correction:', error)
@@ -201,6 +217,7 @@ const TrackCorrection = () => {
       trackCorrectionVesselDataviewId,
       vesselInfo,
       dataview?.config?.name,
+      dataview?.config?.track,
       issueType,
       isResolved,
       userData?.firstName,
@@ -208,8 +225,11 @@ const TrackCorrection = () => {
       userData?.email,
       issueComment,
       dispatch,
+      setTrackCorrectionId,
     ]
   )
+
+  if (!userLogged || !userData) return null
 
   return (
     <div className={styles.container}>
@@ -356,11 +376,10 @@ const TrackCorrection = () => {
               {!isNewTrackCorrection && (
                 <IconButton
                   icon="tick"
-                  type={isResolved ? 'map-tool' : 'default'}
+                  type={isResolved ? 'map-tool' : 'border'}
                   size="small"
                   onClick={() => setIsResolved((prev) => !prev)}
                   tooltip={!isResolved && t('trackCorrection.markAsResolved', 'Mark as resolved')}
-                  // aria-pressed={isResolved}
                 />
               )}
 
@@ -371,11 +390,10 @@ const TrackCorrection = () => {
                     : undefined
                 }
                 size="medium"
-                type="border-secondary"
                 disabled={
                   (isNewTrackCorrection && isTimerangePristine) ||
                   issueComment === '' ||
-                  isSubmitting
+                  !userLogged
                 }
                 onClick={() => onConfirmClick(trackCorrectionTimerange)}
                 loading={isSubmitting}
