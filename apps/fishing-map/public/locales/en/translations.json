@@ -913,8 +913,6 @@
     "activityByType": "Activity by type",
     "activityByVoyages": "Timeline by voyages",
     "addToWorkspace": "Add vessel to workspace",
-    "ais-geartypes": "GFW Gear Types",
-    "ais-shiptypes": "GFW Vessel Types",
     "authorization": "authorization",
     "authorizationDatesDisclaimer": "The most recent vessel authorized date is the last date Global Fishing Watch collected data. Visit registry source to verify status.",
     "beam": "Beam",
@@ -1000,8 +998,8 @@
       "tuna_purse_seines": "Tuna purse seine",
       "well_boat": "Well boat"
     },
-    "gfw_geartypes": "GFW Gear type",
-    "gfw_shiptypes": "GFW Vessel type",
+    "gfw-geartypes": "GFW Gear type",
+    "gfw-shiptypes": "GFW Vessel type",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Gross Tonnage",
     "grossTonnageRange": "Gross tonnage range",
@@ -1013,7 +1011,8 @@
     "infoSources": {
       "both": "Registry and AIS",
       "registry": "Registry",
-      "selfReported": "Self reported"
+      "selfReported": "Self reported",
+      "gfw-source": "GFW Source"
     },
     "insights": {
       "countries": {
