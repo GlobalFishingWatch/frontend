@@ -917,7 +917,9 @@
     "other": "Other",
     "version": "Version",
     "comment": "Comment",
-    "mapTooltip": "Issue added on {{date}} reported as {{type}}"
+    "mapTooltip": "Issue added on {{date}} reported as {{type}}",
+    "commentPlaceholder": "Add a comment...",
+    "replyPlaceholder": "Write a reply"
   },
   "vessel": {
     "activityByType": "By type",

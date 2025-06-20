@@ -324,10 +324,9 @@ const TrackCorrection = () => {
                 {' - '} {currentTrackCorrectionIssue.issueId}
               </h2>
               <h2>
-                {t(
-                  `trackCorrection.${currentTrackCorrectionIssue.type}`,
-                  currentTrackCorrectionIssue.type
-                )}
+                {t(`trackCorrection.falsePositive`, {
+                  defaultValue: currentTrackCorrectionIssue.type,
+                })}
               </h2>
               <label>
                 <I18nDate

@@ -70,7 +70,7 @@ const TrackCorrectionOverlayIssue = ({ issue }: { issue: TrackCorrection }) => {
       onMouseLeave={handleMouseLeave}
       tooltip={t('trackCorrection.mapTooltip', {
         date: formatI18nDate(issue.lastUpdated),
-        type: issue.type, // TODO: translate type
+        type: t(`trackCorrection.${issue.type}`),
         defaultValue: 'Issue added on {{date}} reported as {{type}}',
       })}
     />
