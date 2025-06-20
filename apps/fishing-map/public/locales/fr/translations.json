@@ -913,8 +913,6 @@
     "activityByType": "Par type",
     "activityByVoyages": "Par voyages",
     "addToWorkspace": "Ajouter un navire à la vue",
-    "ais-geartypes": "GFW Gear Types",
-    "ais-shiptypes": "GFW Vessel Types",
     "authorization": "autorisation",
     "authorizationDatesDisclaimer": "La date d’autorisation la plus récente du navire est la dernière date à laquelle Global Fishing Watch a collecté des données. Consultez la source du registre pour vérifier le statut.",
     "beam": "Largeur",
@@ -1000,8 +998,8 @@
       "tuna_purse_seines": "Senne coulissante au thon",
       "well_boat": "Navire vivier"
     },
-    "gfw_geartypes": "Type d'engin GFW",
-    "gfw_shiptypes": "Type de navire GFW",
+    "gfw-geartypes": "GFW Gear type",
+    "gfw-shiptypes": "GFW Vessel type",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Tonnage brut",
     "grossTonnageRange": "Plage de tonnage brut",
@@ -1013,7 +1011,8 @@
     "infoSources": {
       "both": "Registres et AIS",
       "registry": "Registres",
-      "selfReported": "Autodéclarées"
+      "selfReported": "Autodéclarées",
+      "gfw-source": "GFW Source"
     },
     "insights": {
       "countries": {
