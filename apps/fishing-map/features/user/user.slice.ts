@@ -70,10 +70,6 @@ export const fetchUserThunk = createAsyncThunk(
       return await GFWAPI.fetchGuestUser()
     }
     const accessToken = getAccessTokenFromUrl()
-    if (accessToken) {
-      removeAccessTokenFromUrl()
-    }
-
     try {
       const user = await GFWAPI.login({ accessToken })
       if (accessToken) {
@@ -86,6 +82,11 @@ export const fetchUserThunk = createAsyncThunk(
           },
         })
       }
+
+      if (accessToken) {
+        removeAccessTokenFromUrl()
+      }
+
       return user
     } catch (e: any) {
       return await GFWAPI.fetchGuestUser()

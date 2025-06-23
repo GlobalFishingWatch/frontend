@@ -24,6 +24,11 @@
     "moreInfoLink": "",
     "name": "ZEE"
   },
+  "eez-areas-12nm": {
+    "description": "World 12 Nautical Miles Zone (Territorial Seas). Flanders Marine Institute (2023). Maritime Boundaries Geodatabase: Territorial Seas (12NM), version 4. Available online at https://www.marineregions.org/. https://doi.org/10.14284/633",
+    "moreInfoLink": "",
+    "name": "Territorial Seas"
+  },
   "encounters": {
     "description": "Identifié à partir des données AIS comme des lieux où deux navires (un transporteur et un navire de pêche) se trouvaient à moins de 500 mètres l'un de l'autre pendant au moins 2 heures et se déplaçaient à une vitesse médiane inférieure à 2 noeuds, à au moins 10 km d'un mouillage côtier.",
     "moreInfoLink": "",
@@ -44,6 +49,11 @@
     "moreInfoLink": "",
     "name": "Effort de pêche apparent (VMS)"
   },
+  "gfcm-fao": {
+    "description": "General Fisheries Commission for the Mediterranean Fisheries Restricted Areas",
+    "moreInfoLink": "https://www.fao.org/gfcm/data/maps/fras/ru",
+    "name": "GFCM FRAs"
+  },
   "graticules": {
     "description": "Grilles ou graticules de latitude et de longitude à des intervalles de 1, 5, 10 et 30° selon le niveau de zoom de la carte",
     "moreInfoLink": "",
@@ -53,6 +63,11 @@
     "description": "La haute mer est la zone de l'océan au-delà des zones économiques exclusives (ZEE). Les poches de haute mer sont des zones totalement entourées par les ZEE. Ces poches peuvent être difficiles à distinguer des juridictions de ZEE multiples qui les entourent, c'est pourquoi nous disposons d'un calque qui les met en évidence.",
     "moreInfoLink": "",
     "name": "Haute mer"
+  },
+  "high-seas-pockets": {
+    "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
+    "moreInfoLink": "",
+    "name": "High seas pockets"
   },
   "loitering": {
     "description": "Un épisode de dérive se produit lorsqu'un navire dstinct présente un comportement indiquant une rencontre potentielle. La déive est estimée à l'aide des données du système d'identification automatique (AIS), notamment la vitesse du navire, le temps passé dans un endroit donné et la distance par rapport à la côte. La dérive se produit lorsqu'un navire se déplace à une vitesse moyenne inférieure à deux nœuds, tout en se trouvant à au moins 20 milles nautiques en moyenne de la côte. Pour réduire le bruit dans le portail des navires de transport, seuls les épisodes de dérive d'une durée supérieure à une heure sont affichés.",
@@ -75,7 +90,7 @@
     "name": "AMP (WDPA)"
   },
   "mpatlas": {
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably",
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term biodiversity conservation. Reported MPAs vary greatly in their status in the process of becoming an MPA (Stage of Establishment) and the impact of human activities (Level of Protection). MPAtlas assesses MPAs using The MPA Guide, a science-based tool that identifies different types of MPAs and connects them to the outcome they are likely to achieve. Source: Marine Protection Atlas",
     "moreInfoLink": "https://mpatlas.org",
     "name": "MPAs (MPAtlas)"
   },
@@ -94,6 +109,11 @@
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Concentration d'oxygène (O2)"
   },
+  "paa-duke": {
+    "description": "Global dataset of Preferential Access Areas for small-scale fishing",
+    "moreInfoLink": "https://research.repository.duke.edu/concern/datasets/79407z51r",
+    "name": "Preferential Access Areas"
+  },
   "ph": {
     "description": "L'acidité de l'océan est mesurée par le pH. L'absorption accrue du dioxyde de carbone a abaissé le pH de l'océan, entraînant une acidification des océans qui peut avoir de vastes répercussions sur les organismes marins. Ce jeu de données est composé de paramètres biogéochimiques, y compris le pH, affichés à l'échelle de l'océan mondial avec une résolution horizontale de 1/4 degrés. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
@@ -108,6 +128,11 @@
     "description": "Les ports sont basés sur le jeu de données des mouillages de Global Fishing Watch, qui et une base de données mondiale des emplacements de mouillage où les navires se rassemblent. Le jeu de données contient plus de 160 000 emplacements de mouillage individuels, qui sont eux-mêmes regroupés en près de 32 000 ports. ",
     "moreInfoLink": "",
     "name": "Visites de ports (AIS)"
+  },
+  "port-locations": {
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
+    "moreInfoLink": "",
+    "name": "Ports"
   },
   "presence": {
     "description": "Le calque de présence analyse les données du système d’identification automatique (AIS) recueillies auprès des navires que nos recherches ont identifiés. La présence est déterminée en affichant les positions transmises par l'AIS du navire sous forme de carte thermique. ",

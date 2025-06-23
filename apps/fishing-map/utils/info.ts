@@ -37,6 +37,7 @@ export const formatInfoField = (
     | 'authorization'
     | 'vesselType'
     | 'port'
+    | 'name'
     | 'fleet'
     | 'transmissionDateFrom'
     | 'transmissionDateTo',
@@ -61,7 +62,13 @@ export const formatInfoField = (
     if (type === 'geartypes') {
       return getVesselGearTypeLabel({ geartypes: fieldValue }, { translationFn }) || fallbackValue
     }
-    if (type === 'shipname' || type === 'owner' || type === 'operator' || type === 'port') {
+    if (
+      type === 'shipname' ||
+      type === 'owner' ||
+      type === 'operator' ||
+      type === 'port' ||
+      type === 'name'
+    ) {
       return fieldValue.replace(
         /\b(?![LXIVCDM]+\b)(\d*)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)\b/g,
         (_, num, name) => num + upperFirst(name)
@@ -179,4 +186,10 @@ export const getVesselOtherNamesLabel = (otherVesselsNames: string[]) => {
 // 'any' is used here as timestamp is not declared in Vessel anyways
 export const getDetectionsTimestamps = (vessel: any) => {
   return vessel?.timestamp?.split(',').sort()
+}
+
+export function sortOptionsAlphabetically<T extends { label: string; id: string }>(
+  options: T[]
+): T[] {
+  return [...options].sort((a, b) => a.label.localeCompare(b.label))
 }

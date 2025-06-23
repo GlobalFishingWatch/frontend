@@ -61,7 +61,7 @@ export default function ReportSummaryEvents() {
           '<strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
         activityQuantity,
         activityUnit,
-        area: !reportAreaId ? t('analysis.globally', 'globally') : '',
+        area: reportAreaId ? '' : t('analysis.globally', 'globally'),
         start: startDate,
         end: endDate,
       })
@@ -80,13 +80,14 @@ export default function ReportSummaryEvents() {
     }
     return t('analysis.summaryEvents', {
       defaultValue:
-        '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> globally between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
+        '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
       vessels,
       flags: reportVesselsFlags?.size || 0,
       activityQuantity,
       activityUnit,
       start: startDate,
       end: endDate,
+      area: reportAreaId ? '' : t('analysis.globally', 'globally'),
     })
   }, [
     eventType,

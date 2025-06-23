@@ -111,7 +111,7 @@ export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
 }
 
 export function useStatsBounds(dataview?: UrlDataviewInstance) {
-  const urlTimeRange = useSelector(selectUrlTimeRange)
+  const urlTimeRange = useSelector(selectTimeRange)
   const {
     data: stats,
     isFetching,
@@ -459,6 +459,7 @@ export function useReportTitle() {
   }, [
     reportId,
     report,
+    i18n.language,
     isGlobalReport,
     dataset,
     urlBufferValue,

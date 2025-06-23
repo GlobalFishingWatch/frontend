@@ -92,8 +92,9 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   _onLayerError = (error: Error) => {
-    console.warn(error.message)
-    this.setState({ error: error.message })
+    if (!error.message.includes('404')) {
+      this.setState({ error: error.message })
+    }
     return true
   }
 

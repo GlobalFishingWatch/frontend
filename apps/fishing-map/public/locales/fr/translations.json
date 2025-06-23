@@ -164,6 +164,8 @@
     "Events": "Évènements",
     "exclude": "Exclure",
     "excluded": "Exclu",
+    "experimental": "Experimental",
+    "experimentalTooltip": "Dataset still in development, click the information icon to learn more",
     "faq": "FAQs",
     "feedback": "Vos commentaires",
     "field": "Field",
@@ -679,7 +681,7 @@
     "color_change": "Modifier la couleur",
     "colorSelectCustom": "Select custom color",
     "colorSelectPredefined": "Select predefined color",
-    "distance_from_port_km": "Port Buffer",
+    "distance_from_port_km": "Tampon de port (km)",
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",
@@ -708,7 +710,7 @@
     "nameLengthError_one": "Le nom du calque nécessite au moins {{count}} caractères",
     "nameLengthError_other": "Le nom du calque nécessite au moins {{count}} caractères",
     "nameRequired": "Le nom du calque est requis",
-    "next_port_id": "Next port id",
+    "next_port_id": "Port suivant",
     "period": "Période",
     "properties": {
       "color": "Color",
@@ -779,6 +781,13 @@
     "screenshotDownload": "Télécharger l'image",
     "screenshotPreview": "Aperçu de la capture d'écran",
     "search": "Recherchez des zones maritimes, les AMP ou les ZEE",
+    "searchTypes": {
+      "eez": "EEZ",
+      "fao": "FAO",
+      "mpa": "MPA",
+      "port": "Port",
+      "rfmo": "RFMO"
+    },
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer"
   },
@@ -911,8 +920,6 @@
     "activityByType": "Par type",
     "activityByVoyages": "Par voyages",
     "addToWorkspace": "Ajouter un navire à la vue",
-    "ais-geartypes": "GFW Gear Types",
-    "ais-shiptypes": "GFW Vessel Types",
     "authorization": "autorisation",
     "authorizationDatesDisclaimer": "La date d’autorisation la plus récente du navire est la dernière date à laquelle Global Fishing Watch a collecté des données. Consultez la source du registre pour vérifier le statut.",
     "beam": "Largeur",
@@ -998,8 +1005,8 @@
       "tuna_purse_seines": "Senne coulissante au thon",
       "well_boat": "Navire vivier"
     },
-    "gfw_geartypes": "Type d'engin GFW",
-    "gfw_shiptypes": "Type de navire GFW",
+    "gfw-geartypes": "GFW Gear type",
+    "gfw-shiptypes": "GFW Vessel type",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Tonnage brut",
     "grossTonnageRange": "Plage de tonnage brut",
@@ -1011,7 +1018,8 @@
     "infoSources": {
       "both": "Registres et AIS",
       "registry": "Registres",
-      "selfReported": "Autodéclarées"
+      "selfReported": "Autodéclarées",
+      "gfw-source": "GFW Source"
     },
     "insights": {
       "countries": {
@@ -1113,6 +1121,8 @@
     "shiptype": "Types de navires",
     "shiptypes": "Types de navires",
     "showOtherLayers": "Afficher les autres calques",
+    "skylightLink": "Click to see Skylight vessel profile",
+    "skylightSearch": "Click to search this vessel",
     "sortAsc": "Trier les navires par ordre alphabétique (ascendant).",
     "sortDesc": "Trier les navires par ordre alphabétique (décroissant).",
     "source": "Source",

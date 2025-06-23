@@ -61,6 +61,7 @@ function WorkspaceWizard() {
   const updateMatchingAreas = async (inputValue: string) => {
     const matchingAreas = await searchOceanAreas(inputValue, {
       locale: i18n.language as OceanAreaLocale,
+      types: ['eez', 'mpa', 'fao', 'rfmo'],
     })
     setAreasMatching(matchingAreas.slice(0, MAX_RESULTS_NUMBER))
   }

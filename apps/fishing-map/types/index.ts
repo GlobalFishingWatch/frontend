@@ -67,6 +67,7 @@ export type AnyWorkspaceState = Partial<WorkspaceState & ReportState & VesselPro
 
 type RedirectParam = {
   'access-token'?: string
+  callbackUrlStorage?: boolean
 }
 
 export enum UserTab {

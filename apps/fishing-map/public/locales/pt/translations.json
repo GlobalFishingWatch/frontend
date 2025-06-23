@@ -164,6 +164,8 @@
     "Events": "Eventos",
     "exclude": "Excluir",
     "excluded": "Excluído",
+    "experimental": "Experimental",
+    "experimentalTooltip": "Dataset still in development, click the information icon to learn more",
     "faq": "FAQs",
     "feedback": "Retorno",
     "field": "Field",
@@ -679,7 +681,7 @@
     "color_change": "Alterar cor",
     "colorSelectCustom": "Select custom color",
     "colorSelectPredefined": "Select predefined color",
-    "distance_from_port_km": "Port Buffer",
+    "distance_from_port_km": "Distância do porto (km)",
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",
@@ -708,7 +710,7 @@
     "nameLengthError_one": "O nome da camada requer pelo menos {{count}} caracteres",
     "nameLengthError_other": "O nome da camada requer pelo menos {{count}} caracteres",
     "nameRequired": "É necessário informar o nome da camada",
-    "next_port_id": "Next port id",
+    "next_port_id": "Próxima porta",
     "period": "Período",
     "properties": {
       "color": "Color",
@@ -779,6 +781,13 @@
     "screenshotDownload": "Baixar imagem",
     "screenshotPreview": "Pré-visualizar imagem",
     "search": "Procure por oceanos e mares, AMPs ou ZEEs",
+    "searchTypes": {
+      "eez": "EEZ",
+      "fao": "FAO",
+      "mpa": "MPA",
+      "port": "Port",
+      "rfmo": "RFMO"
+    },
     "zoom_in": "Aumentar zoom",
     "zoom_out": "Diminuir zoom"
   },
@@ -911,8 +920,6 @@
     "activityByType": "Por tipo",
     "activityByVoyages": "Por viagens",
     "addToWorkspace": "Adicionar embarcação na visualização",
-    "ais-geartypes": "GFW Gear Types",
-    "ais-shiptypes": "GFW Vessel Types",
     "authorization": "autorização",
     "authorizationDatesDisclaimer": "A data de autorização mais recente da embarcação é a última data em que a Global Fishing Watch coletou dados. Visite a fonte do registro para verificar o status.",
     "beam": "Rede de draga",
@@ -998,8 +1005,8 @@
       "tuna_purse_seines": "Rede de cerco para atuns",
       "well_boat": "Barco de poço"
     },
-    "gfw_geartypes": "Tipo de Equipamento - GFW",
-    "gfw_shiptypes": "Tipo de Embarcação - GFW",
+    "gfw-geartypes": "GFW Gear type",
+    "gfw-shiptypes": "GFW Vessel type",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Tonelagem bruta",
     "grossTonnageRange": "Intervalo de arqueação bruta",
@@ -1011,7 +1018,8 @@
     "infoSources": {
       "both": "Registro e AIS",
       "registry": "Registro",
-      "selfReported": "Autodeclarado"
+      "selfReported": "Autodeclarado",
+      "gfw-source": "GFW Source"
     },
     "insights": {
       "countries": {
@@ -1113,6 +1121,8 @@
     "shiptype": "Tipos de embarcação",
     "shiptypes": "Ship types",
     "showOtherLayers": "Mostrar outras camadas",
+    "skylightLink": "Click to see Skylight vessel profile",
+    "skylightSearch": "Click to search this vessel",
     "sortAsc": "Classificar embarcações em ordem alfabética (crescente)",
     "sortDesc": "Classificar embarcações em ordem alfabética (decrescente)",
     "source": "Fonte",

@@ -240,6 +240,8 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                     lineWidthUnits: 'pixels',
                     lineWidthMinPixels: 0,
                     filled: false,
+                    lineJointRounded: true,
+                    lineCapRounded: true,
                     getPolygonOffset: (params) =>
                       getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
                     getLineWidth: (d) => this.getLineWidth(d as ContextFeature, layer.filters),

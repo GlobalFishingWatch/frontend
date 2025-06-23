@@ -36,15 +36,10 @@ function ActivitySection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectActivityDataviews)
-  const activeDataviews = useSelector(selectActiveActivityDataviews)
   const detectionsDataviews = useSelector(selectDetectionsDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
-
-  const positionsSupported = activeDataviews.every((dataview) =>
-    getIsPositionSupportedInDataview(dataview)
-  )
 
   const { visualizationOptions, activeVisualizationOption, onVisualizationModeChange } =
     useVisualizationsOptions(DataviewCategory.Activity)
@@ -120,15 +115,13 @@ function ActivitySection(): React.ReactElement<any> {
         <h2 className={styles.sectionTitle}>{t('common.activity', 'Activity')}</h2>
         {!readOnly && (
           <div className={cx(styles.sectionButtons)}>
-            {positionsSupported && (
-              <VisualisationChoice
-                options={visualizationOptions}
-                testId="activity-visualizations-change"
-                activeOption={activeVisualizationOption}
-                onSelect={(option) => onVisualizationModeChange(option.id)}
-                className={cx({ [styles.hidden]: !hasVisibleDataviews })}
-              />
-            )}
+            <VisualisationChoice
+              options={visualizationOptions}
+              testId="activity-visualizations-change"
+              activeOption={activeVisualizationOption}
+              onSelect={(option) => onVisualizationModeChange(option.id)}
+              className={cx({ [styles.hidden]: !hasVisibleDataviews })}
+            />
             {hasVisibleDataviews && <GlobalReportLink reportCategory={ReportCategory.Activity} />}
             <IconButton
               icon="plus"

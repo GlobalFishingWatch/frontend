@@ -164,6 +164,8 @@
     "Events": "crwdns83812:0crwdne83812:0",
     "exclude": "crwdns59757:0crwdne59757:0",
     "excluded": "crwdns59759:0crwdne59759:0",
+    "experimental": "crwdns87850:0crwdne87850:0",
+    "experimentalTooltip": "crwdns87852:0crwdne87852:0",
     "faq": "crwdns59761:0crwdne59761:0",
     "feedback": "crwdns59763:0crwdne59763:0",
     "field": "crwdns84676:0crwdne84676:0",
@@ -779,6 +781,13 @@
     "screenshotDownload": "crwdns84078:0crwdne84078:0",
     "screenshotPreview": "crwdns84080:0crwdne84080:0",
     "search": "crwdns60357:0crwdne60357:0",
+    "searchTypes": {
+      "eez": "crwdns87954:0crwdne87954:0",
+      "fao": "crwdns87956:0crwdne87956:0",
+      "mpa": "crwdns87958:0crwdne87958:0",
+      "port": "crwdns87960:0crwdne87960:0",
+      "rfmo": "crwdns87962:0crwdne87962:0"
+    },
     "zoom_in": "crwdns60359:0crwdne60359:0",
     "zoom_out": "crwdns60361:0crwdne60361:0"
   },
@@ -911,8 +920,6 @@
     "activityByType": "crwdns69456:0crwdne69456:0",
     "activityByVoyages": "crwdns69458:0crwdne69458:0",
     "addToWorkspace": "crwdns60483:0crwdne60483:0",
-    "ais-geartypes": "crwdns84650:0crwdne84650:0",
-    "ais-shiptypes": "crwdns84670:0crwdne84670:0",
     "authorization": "crwdns70100:0crwdne70100:0",
     "authorizationDatesDisclaimer": "crwdns84108:0crwdne84108:0",
     "beam": "crwdns60485:0crwdne60485:0",
@@ -998,8 +1005,8 @@
       "tuna_purse_seines": "crwdns60571:0crwdne60571:0",
       "well_boat": "crwdns69514:0crwdne69514:0"
     },
-    "gfw_geartypes": "crwdns70102:0crwdne70102:0",
-    "gfw_shiptypes": "crwdns70104:0crwdne70104:0",
+    "gfw-geartypes": "crwdns87948:0crwdne87948:0",
+    "gfw-shiptypes": "crwdns87950:0crwdne87950:0",
     "goToImage": "crwdns84100:0{{number}}crwdne84100:0",
     "grossTonnage": "crwdns69516:0crwdne69516:0",
     "grossTonnageRange": "crwdns60589:0crwdne60589:0",
@@ -1011,7 +1018,8 @@
     "infoSources": {
       "both": "crwdns69752:0crwdne69752:0",
       "registry": "crwdns69524:0crwdne69524:0",
-      "selfReported": "crwdns69526:0crwdne69526:0"
+      "selfReported": "crwdns69526:0crwdne69526:0",
+      "gfw-source": "crwdns87952:0crwdne87952:0"
     },
     "insights": {
       "countries": {
@@ -1113,6 +1121,8 @@
     "shiptype": "crwdns60625:0crwdne60625:0",
     "shiptypes": "crwdns70114:0crwdne70114:0",
     "showOtherLayers": "crwdns69566:0crwdne69566:0",
+    "skylightLink": "crwdns87888:0crwdne87888:0",
+    "skylightSearch": "crwdns87890:0crwdne87890:0",
     "sortAsc": "crwdns83674:0crwdne83674:0",
     "sortDesc": "crwdns83676:0crwdne83676:0",
     "source": "crwdns60627:0crwdne60627:0",

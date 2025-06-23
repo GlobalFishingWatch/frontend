@@ -164,6 +164,8 @@
     "Events": "Eventos",
     "exclude": "Excluir",
     "excluded": "Excluido",
+    "experimental": "Experimental",
+    "experimentalTooltip": "Dataset still in development, click the information icon to learn more",
     "faq": "FAQs",
     "feedback": "Comentarios",
     "field": "Campo",
@@ -708,7 +710,7 @@
     "nameLengthError_one": "El nombre de la capa requiere al menos {{count}} caracter",
     "nameLengthError_other": "El nombre de la capa requiere al menos {{count}} caracter",
     "nameRequired": "Se requiere el nombre de la capa.",
-    "next_port_id": "Siguiente id de puerto",
+    "next_port_id": "Siguiente puerto",
     "period": "Periodo",
     "properties": {
       "color": "Color",
@@ -779,6 +781,13 @@
     "screenshotDownload": "Descargar imagen",
     "screenshotPreview": "Vista previa de captura de pantalla",
     "search": "Buscar áreas oceánicas y marinas, AMPs o ZEEs",
+    "searchTypes": {
+      "eez": "EEZ",
+      "fao": "FAO",
+      "mpa": "MPA",
+      "port": "Port",
+      "rfmo": "RFMO"
+    },
     "zoom_in": "Acercarse",
     "zoom_out": "Alejarse"
   },
@@ -911,8 +920,6 @@
     "activityByType": "Por tipo",
     "activityByVoyages": "Por viajes",
     "addToWorkspace": "Añadir embarcación a la vista",
-    "ais-geartypes": "GFW Gear Types",
-    "ais-shiptypes": "GFW Vessel Types",
     "authorization": "autorización",
     "authorizationDatesDisclaimer": "La fecha más reciente de la autorización de buques es la última fecha que Global Fishing Watch recolectó datos. Visite la fuente del registro para verificar el estado.",
     "beam": "Manga",
@@ -998,8 +1005,8 @@
       "tuna_purse_seines": "Red de cerco atunera",
       "well_boat": "Barco vivero"
     },
-    "gfw_geartypes": "GFW Gear type",
-    "gfw_shiptypes": "GFW Vessel type",
+    "gfw-geartypes": "GFW Gear type",
+    "gfw-shiptypes": "GFW Vessel type",
     "goToImage": "Ir a la imagen {{number}}",
     "grossTonnage": "Tonelaje",
     "grossTonnageRange": "Rango de tonelaje bruto",
@@ -1011,7 +1018,8 @@
     "infoSources": {
       "both": "Registro y AIS",
       "registry": "Registro",
-      "selfReported": "Autodeclarado"
+      "selfReported": "Autodeclarado",
+      "gfw-source": "GFW Source"
     },
     "insights": {
       "countries": {
@@ -1113,6 +1121,8 @@
     "shiptype": "Tipos de embarcaciones",
     "shiptypes": "Ship types",
     "showOtherLayers": "Mostrar otras capas",
+    "skylightLink": "Click to see Skylight vessel profile",
+    "skylightSearch": "Click to search this vessel",
     "sortAsc": "Ordenar las embarcaciones alfabéticamente (ascendiendo)",
     "sortDesc": "Ordenar las embarcaciones alfabéticamente (descendiendo)",
     "source": "Fuente",
