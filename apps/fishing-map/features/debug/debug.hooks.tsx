@@ -33,9 +33,9 @@ function FeatureFlagsToast({ featureFlags }: { featureFlags: FeatureFlag[] }) {
 let toastDismissed = false
 export const useFeatureFlagsToast = () => {
   const allFeatureFlags = useSelector(selectFeatureFlags)
-  const featureFlags = Object.keys(allFeatureFlags).filter(
-    (flag) => flag !== 'workspaceGenerator'
-  ) as FeatureFlag[]
+  const featureFlags = Object.entries(allFeatureFlags)
+    .filter(([flag, value]) => flag !== 'workspaceGenerator' && value === true)
+    .map(([flag]) => flag) as FeatureFlag[]
   const toastId = useRef<any>(undefined)
   const debugActive = useSelector(selectDebugActive)
 
