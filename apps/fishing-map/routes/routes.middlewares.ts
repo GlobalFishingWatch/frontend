@@ -43,16 +43,15 @@ export const routerQueryMiddleware: Middleware =
           ...prevQuery,
           ...newAction.query,
         }
-        if (newAction?.query?.[ACCESS_TOKEN_STRING]) {
+        if (
+          newAction?.query?.[ACCESS_TOKEN_STRING] &&
+          newAction?.query?.callbackUrlStorage === undefined
+        ) {
           delete newAction.query[ACCESS_TOKEN_STRING]
         }
       } else {
         newAction.query = {
           ...newAction.query,
-          featureFlags: uniq([
-            ...(prevQuery.featureFlags || []),
-            ...(newAction.query?.featureFlags || []),
-          ]) as any,
         }
       }
       const { query, replaceUrl } = routerAction

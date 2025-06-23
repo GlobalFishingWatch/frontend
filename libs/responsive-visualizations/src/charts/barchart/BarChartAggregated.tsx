@@ -48,7 +48,9 @@ export function AggregatedBarChart({
                 dataKey={dataKey}
                 fill={barColor}
                 stackId="a"
-                onClick={(e) => onClick?.(e.activePayload as ResponsiveVisualizationValue)}
+                onClick={(e) => {
+                  onClick?.((e as any).payload as ResponsiveVisualizationValue)
+                }}
                 isAnimationActive={false}
               >
                 {index === valueKeys.length - 1 && (
@@ -66,7 +68,7 @@ export function AggregatedBarChart({
           <Bar
             dataKey={valueKeys}
             fill={color}
-            onClick={(e) => onClick?.(e.activePayload as ResponsiveVisualizationValue)}
+            onClick={(e) => onClick?.((e as any).payload as ResponsiveVisualizationValue)}
           >
             <LabelList
               position="top"

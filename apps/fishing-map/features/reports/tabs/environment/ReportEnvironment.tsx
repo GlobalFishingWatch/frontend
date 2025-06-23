@@ -52,7 +52,8 @@ function ReportEnvironment() {
         const isCurrents = dataview.config?.type === DataviewType.Currents
         const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
         const title = getDatasetNameTranslated(dataset)
-        const error = layersTimeseriesErrors?.[index]
+        const hasError =
+          layersTimeseriesErrors?.[index] !== undefined && layersTimeseriesErrors?.[index] !== ''
         const isLoading = loading || layersTimeseriesFiltered?.[index]?.mode === 'loading'
         const unit = dataset?.unit
         return (
@@ -70,9 +71,9 @@ function ReportEnvironment() {
               )}
             </p>
             {isDynamic || isCurrents ? (
-              isLoading || !layersTimeseriesFiltered?.[index] || error !== '' ? (
+              isLoading || !layersTimeseriesFiltered?.[index] || hasError ? (
                 <ReportActivityPlaceholder showHeader={false}>
-                  {error !== '' && (
+                  {hasError && (
                     <p className={styles.errorMessage}>
                       {t('errors.layerLoading', 'There was an error loading the layer')}
                     </p>

@@ -73,11 +73,6 @@ declare global {
   }
 }
 
-const setMobileSafeVH = () => {
-  const vh = window.innerHeight * 0.01
-  document.documentElement.style.setProperty('--vh', `${vh}px`)
-}
-
 function App() {
   useAnalytics()
   useDatasetDrag()
@@ -103,12 +98,6 @@ function App() {
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
-  }, [])
-
-  useEffect(() => {
-    setMobileSafeVH()
-    window.addEventListener('resize', setMobileSafeVH, false)
-    return () => window.removeEventListener('resize', setMobileSafeVH)
   }, [])
 
   const fitMapBounds = useMapFitBounds()

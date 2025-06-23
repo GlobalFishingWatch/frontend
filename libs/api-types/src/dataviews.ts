@@ -28,6 +28,7 @@ export enum DataviewType {
   HeatmapAnimated = 'HEATMAP_ANIMATED',
   HeatmapStatic = 'HEATMAP_STATIC',
   Polygons = 'POLYGONS',
+  Ports = 'PORTS',
   Rulers = 'RULERS',
   Track = 'TRACK',
   UserContext = 'USER_CONTEXT',

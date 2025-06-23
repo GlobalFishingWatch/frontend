@@ -90,7 +90,7 @@
     "name": "MPAs (WDPA)"
   },
   "mpatlas": {
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably",
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term biodiversity conservation. Reported MPAs vary greatly in their status in the process of becoming an MPA (Stage of Establishment) and the impact of human activities (Level of Protection). MPAtlas assesses MPAs using The MPA Guide, a science-based tool that identifies different types of MPAs and connects them to the outcome they are likely to achieve. Source: Marine Protection Atlas",
     "moreInfoLink": "https://mpatlas.org",
     "name": "MPAs (MPAtlas)"
   },
@@ -128,6 +128,11 @@
     "description": "La lista de puertos se define a partir del conjunto de datos obtenidos por Global Fishing Watch sobre fondeaderos. Se trata de una base de datos global que identifica lugares de fondeo donde se congregan las embarcaciones. Este conjunto de datos incluye más de 160.000 puntos de fondeo individuales, que se agrupan en aproximadamente 32.000 puertos. ",
     "moreInfoLink": "",
     "name": "Visitas al Puerto (AIS)"
+  },
+  "port-locations": {
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
+    "moreInfoLink": "",
+    "name": "Ports"
   },
   "presence": {
     "description": "La capa de presencia analiza los datos del sistema de identificación automática (AIS) recopilados de buques identificados por nuestra investigación. La presencia está determinada por la toma de posiciones transmitidas por el AIS del buque y se despliegan como un mapa del calor. ",

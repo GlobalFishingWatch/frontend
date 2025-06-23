@@ -29,7 +29,6 @@ import {
   resetReportData,
   selectReportVesselsStatus,
 } from 'features/reports/tabs/activity/reports-activity.slice'
-import { useSetTimeseries } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import {
   useTimebarEnvironmentConnect,
   useTimebarVisualisationConnect,
@@ -63,7 +62,6 @@ export default function Report() {
   useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const setTimeseries = useSetTimeseries()
   const highlightArea = useHighlightReportArea()
   const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
@@ -160,7 +158,6 @@ export default function Report() {
 
   const handleTabClick = (option: Tab<ReportCategory>) => {
     if (option.id !== reportCategory) {
-      setTimeseries(undefined)
       dispatch(resetReportData())
       dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
       fitAreaInViewport()

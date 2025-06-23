@@ -90,7 +90,7 @@
     "name": "MPAs (WDPA)"
   },
   "mpatlas": {
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably",
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term biodiversity conservation. Reported MPAs vary greatly in their status in the process of becoming an MPA (Stage of Establishment) and the impact of human activities (Level of Protection). MPAtlas assesses MPAs using The MPA Guide, a science-based tool that identifies different types of MPAs and connects them to the outcome they are likely to achieve. Source: Marine Protection Atlas",
     "moreInfoLink": "https://mpatlas.org",
     "name": "MPAs (MPAtlas)"
   },
@@ -128,6 +128,11 @@
     "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. The dataset contains over 160,000 individual anchorage locations, which are further grouped into nearly 32,000 ports. ",
     "moreInfoLink": "",
     "name": "Port Visits (AIS)"
+  },
+  "port-locations": {
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
+    "moreInfoLink": "",
+    "name": "Ports"
   },
   "presence": {
     "description": "The presence layer analyzes automatic identification system (AIS) data collected from vessels that our research has identified. The presence is determined by taking positions transmitted by the vessel’s AIS and is displayed as a heatmap. ",

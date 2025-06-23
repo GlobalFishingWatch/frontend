@@ -2,6 +2,8 @@ import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 
+import type { UserGroup } from 'features/user/user.slice'
+
 import { PUBLIC_SUFIX } from './config'
 
 type WorkspaceEnv = 'development' | 'production'
@@ -50,6 +52,7 @@ export const PROTECTED_SEAS_DATAVIEW_SLUG = 'protected-seas' as const
 export const MPATLAS_DATAVIEW_SLUG = 'mpatlas' as const
 export const GRATICULES_DATAVIEW_SLUG = 'graticules' as const
 export const FIXED_SAR_INFRASTRUCTURE = 'fixed-infrastructure' as const
+export const PORTS_DATAVIEW_SLUG = 'ports' as const
 export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas' as const
 export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas' as const
 export const PORTS_FOOTPRINT_DATAVIEW_SLUG = 'ports-footprint' as const
@@ -82,13 +85,8 @@ export const TEMPLATE_ACTIVITY_DATAVIEW_SLUG = 'activity-template' as const
 export const TEMPLATE_CLUSTERS_DATAVIEW_SLUG = 'template-for-bigquery-cluster-events' as const
 const TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG = 'default-environmental-layer' as const
 
-export const VESSEL_TRACK_DATAVIEW_TEMPLATES = [
-  TEMPLATE_VESSEL_DATAVIEW_SLUG,
-  TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_BRAZIL,
-]
-
 export const TEMPLATE_DATAVIEW_SLUGS = [
-  ...VESSEL_TRACK_DATAVIEW_TEMPLATES,
+  TEMPLATE_VESSEL_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
   TEMPLATE_USER_TRACK_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
@@ -101,6 +99,10 @@ export const TEMPLATE_DATAVIEW_SLUGS = [
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
 ]
 
+export const PRIVATE_TEMPLATE_VESSEL_DATAVIEW_SLUGS: Partial<Record<UserGroup, string>> = {
+  brazil: TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_BRAZIL,
+}
+
 export const DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS = [
   'public-global-presence:v3.0',
   'public-chile-presence:v20211126',
@@ -111,7 +113,6 @@ export const DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS = [
 
 const PRESENCE_DATAVIEWS = [
   VIIRS_MATCH_DATAVIEW_SLUG, // we ensure the + icon woks for the presence category
-  VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG, // we ensure the + icon woks for the presence category
   PRESENCE_DATAVIEW_SLUG, // In case the workspace doesn't have the dataview added,
   SAR_DATAVIEW_SLUG, // TODO include once ready to release
 ]
@@ -138,6 +139,7 @@ export const CONTEXT_LAYERS_DATAVIEWS = [
   FAO_AREAS_DATAVIEW_SLUG,
   BASEMAP_LABELS_DATAVIEW_SLUG,
   FIXED_SAR_INFRASTRUCTURE,
+  PORTS_DATAVIEW_SLUG,
   PORTS_FOOTPRINT_DATAVIEW_SLUG,
 ]
 
@@ -174,7 +176,9 @@ export const PROFILE_DATAVIEW_SLUGS = [
   TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
 ]
 
-export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: string[] = []
+export const ONLY_GFW_STAFF_DATAVIEW_SLUGS: string[] = [
+  VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG, // we ensure the + icon woks for the presence category
+]
 export const HIDDEN_DATAVIEW_FILTERS: string[] = []
 
 export const DEFAULT_BASEMAP_DATAVIEW_INSTANCE: DataviewInstance = {

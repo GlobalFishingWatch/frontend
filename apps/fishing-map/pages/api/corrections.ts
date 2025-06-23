@@ -1,36 +1,55 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+
 import type { InfoCorrectionSendFormat } from 'features/vessel/vesselCorrection/VesselCorrection.types'
 import { loadSpreadsheetDoc } from 'pages/api/_utils/spreadsheets'
 
 const IDENTITY_REVIEW_SPREADSHEET_ID = process.env.NEXT_IDENTITY_REVIEW_SPREADSHEET_ID || ''
 
-const CORRECTIONS_SHEET_TITLE = 'Vessel Identity Correction'
+const REGISTRY_CORRECTIONS_SHEET_TITLE = 'Vessel Registry Corrections'
+const GFW_SOURCE_CORRECTIONS_SHEET_TITLE = 'Vessel GFW Source Corrections'
 
 function mapDataToHeader(header: string, data: any): string {
-  const map: Record<string, any> = {
+  const sharedMap: Record<string, any> = {
     Reviewer: data.reviewer,
-    Source: data.source,
     'Workspace Link': data.workspaceLink,
     'Date submitted': data.dateSubmitted,
     'Time Range': data.timeRange,
-    'Vessel ID': data.vesselId,
-    Flag: data.originalValues?.flag,
-    'Vessel Name': data.originalValues?.shipname,
-    'Gear type': data.originalValues?.geartypes,
-    MMSI: data.originalValues?.ssvid,
-    IMO: data.originalValues?.imo,
-    CallSign: data.originalValues?.callsign,
-    'GFW Gear Type': data.originalValues?.gfw_geartypes,
-    'GFW Vessel Type': data.originalValues?.shiptypes,
-    'Ssvid/MMSI Corrected': data.proposedCorrections?.ssvid,
-    'Vessel Name Corrected': data.proposedCorrections?.shipname,
-    'Gear Type Corrected': data.proposedCorrections?.geartypes,
-    'Vessel Type Corrected': data.proposedCorrections?.shiptypes,
-    'Flag Corrected': data.proposedCorrections?.flag,
-    'IMO Corrected': data.proposedCorrections?.imo,
-    'CallSign Corrected': data.proposedCorrections?.callsign,
     'Analyst Comments': data.proposedCorrections?.comments,
+  }
+
+  const registryMap: Record<string, any> = {
+    'Vessel Record ID': data.vesselId,
+    'Vessel Name': data.originalValues?.shipname,
+    CallSign: data.originalValues?.callsign,
+    'SSVID/MMSI': data.originalValues?.ssvid,
+    IMO: data.originalValues?.imo,
+    Flag: data.originalValues?.flag,
+    'Gear type': data.originalValues?.geartypes,
+    'Vessel Name Corrected': data.proposedCorrections?.shipname,
+    'CallSign Corrected': data.proposedCorrections?.callsign,
+    'SSVID/MMSI Corrected': data.proposedCorrections?.ssvid,
+    'IMO Corrected': data.proposedCorrections?.imo,
+    'Flag Corrected': data.proposedCorrections?.flag,
+    'Gear Type Corrected': data.proposedCorrections?.geartypes,
+  }
+
+  const selfReportedMap: Record<string, any> = {
+    'Vessel ID': data.vesselId,
+    'GFW Vessel Type': data.originalValues?.shiptypes,
+    'GFW Gear Type': data.originalValues?.gfw_geartypes,
+    'GFW Vessel Type Corrected': data.proposedCorrections?.shiptypes,
+    'GFW Gear Type Corrected': data.proposedCorrections?.geartypes,
+  }
+
+  let map: Record<string, any> = { ...sharedMap }
+  if (data.source === VesselIdentitySourceEnum.Registry) {
+    map = { ...map, ...registryMap }
+  } else if (data.source === VesselIdentitySourceEnum.SelfReported) {
+    map = { ...map, ...selfReportedMap }
+  } else {
+    return ''
   }
 
   return map[header] || ''
@@ -61,7 +80,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   try {
     const spreadsheetId: string = IDENTITY_REVIEW_SPREADSHEET_ID
-    const spreadsheetTitle: string = CORRECTIONS_SHEET_TITLE
+    const spreadsheetTitle: string =
+      rawData.source === VesselIdentitySourceEnum.Registry
+        ? REGISTRY_CORRECTIONS_SHEET_TITLE
+        : GFW_SOURCE_CORRECTIONS_SHEET_TITLE
 
     const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(spreadsheetId)
     const sheet = feedbackSpreadsheetDoc.sheetsByTitle[spreadsheetTitle]

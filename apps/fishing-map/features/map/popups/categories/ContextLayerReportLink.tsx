@@ -16,7 +16,7 @@ import { DEFAULT_BUFFER_OPERATION, DEFAULT_BUFFER_UNIT } from 'features/reports/
 import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
-import { selectFeatureFlags, selectWorkspace } from 'features/workspace/workspace.selectors'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'
 import { WORKSPACE_REPORT } from 'routes/routes'
 import { selectLocationQuery } from 'routes/routes.selectors'
@@ -38,7 +38,6 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
   const dispatch = useAppDispatch()
   const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)
   const workspace = useSelector(selectWorkspace)
-  const featureFlags = useSelector(selectFeatureFlags)
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const isPointFeature = (feature?.geometry as any)?.type === 'Point'
   const query = useSelector(selectLocationQuery)
@@ -106,7 +105,6 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
       datasetId: [reportAreaDataset, (feature as any).datasetId].join(','),
       areaId: [reportAreaId, areaId].join(','),
     },
-    query: { featureFlags },
   }
 
   return (

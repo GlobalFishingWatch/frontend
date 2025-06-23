@@ -90,7 +90,7 @@
     "name": "AMP (WDPA)"
   },
   "mpatlas": {
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably",
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term biodiversity conservation. Reported MPAs vary greatly in their status in the process of becoming an MPA (Stage of Establishment) and the impact of human activities (Level of Protection). MPAtlas assesses MPAs using The MPA Guide, a science-based tool that identifies different types of MPAs and connects them to the outcome they are likely to achieve. Source: Marine Protection Atlas",
     "moreInfoLink": "https://mpatlas.org",
     "name": "MPAs (MPAtlas)"
   },
@@ -128,6 +128,11 @@
     "description": "Les ports sont basés sur le jeu de données des mouillages de Global Fishing Watch, qui et une base de données mondiale des emplacements de mouillage où les navires se rassemblent. Le jeu de données contient plus de 160 000 emplacements de mouillage individuels, qui sont eux-mêmes regroupés en près de 32 000 ports. ",
     "moreInfoLink": "",
     "name": "Visites de ports (AIS)"
+  },
+  "port-locations": {
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
+    "moreInfoLink": "",
+    "name": "Ports"
   },
   "presence": {
     "description": "Le calque de présence analyse les données du système d’identification automatique (AIS) recueillies auprès des navires que nos recherches ont identifiés. La présence est déterminée en affichant les positions transmises par l'AIS du navire sous forme de carte thermique. ",

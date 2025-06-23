@@ -64,6 +64,10 @@
   gap: 1rem;
 }
 
+.stats {
+  margin-top: 2rem;
+}
+
 .block {
   height: 1.6rem;
   border-radius: 0.8rem;
