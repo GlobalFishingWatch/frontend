@@ -29,7 +29,6 @@ import { fetchDataviewsByIdsThunk, selectAllDataviews } from 'features/dataviews
 import { t as trans } from 'features/i18n/i18n'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useMapViewState } from 'features/map/map-viewport.hooks'
-import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
 import { WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
 import type { Bbox } from 'types'
 import { getEventLabel } from 'utils/analytics'
@@ -50,7 +49,6 @@ function WorkspaceWizard() {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const fitBounds = useMapFitBounds()
-  const featureFlags = useSelector(selectFeatureFlags)
   const viewState = useMapViewState()
   const dataviews = useSelector(selectAllDataviews)
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -147,7 +145,6 @@ function WorkspaceWizard() {
       },
       query: {
         ...linkViewport,
-        featureFlags,
         daysFromLatest: 90,
         dataviewInstances: [
           {

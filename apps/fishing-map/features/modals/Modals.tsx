@@ -12,8 +12,12 @@ import { WorkspaceCategory } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectBigQueryActive, toggleBigQueryMenu } from 'features/bigquery/bigquery.slice'
-import { useToggleFeatureFlag } from 'features/debug/debug.hooks'
-import { selectDebugActive, toggleDebugMenu } from 'features/debug/debug.slice'
+import {
+  FeatureFlag,
+  selectDebugActive,
+  toggleDebugMenu,
+  toggleFeatureFlag,
+} from 'features/debug/debug.slice'
 import { selectDownloadTrackModalOpen } from 'features/download/download.selectors'
 import { selectDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { selectEditorActive, toggleEditorMenu } from 'features/editor/editor.slice'
@@ -110,14 +114,13 @@ const AppModals = () => {
   const [editorActive, dispatchToggleEditorMenu] = useSecretMenu(EditorMenuConfig)
   const [bigqueryActive, dispatchBigQueryMenu] = useSecretMenu(BigQueryMenuConfig)
 
-  const toggleFeatureFlag = useToggleFeatureFlag()
   const workspaceGeneratorConfig = useMemo(
     () => ({
       keys: 'iaiaia',
-      onToggle: () => toggleFeatureFlag('workspaceGenerator'),
+      onToggle: () => dispatch(toggleFeatureFlag(FeatureFlag.WorkspaceGenerator)),
       selectMenuActive: selectWorkspaceGeneratorModalOpen,
     }),
-    [toggleFeatureFlag]
+    [dispatch]
   )
   const [workspaceGeneratorActive, dispatchWorkspaceGeneratorMenu] =
     useSecretMenu(workspaceGeneratorConfig)

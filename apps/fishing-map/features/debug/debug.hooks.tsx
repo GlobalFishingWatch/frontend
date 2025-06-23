@@ -1,32 +1,11 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { uniq } from 'es-toolkit'
 
-import { selectDebugActive } from 'features/debug/debug.slice'
-import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
-import type { FeatureFlag } from 'types'
+import type { FeatureFlag } from 'features/debug/debug.slice'
+import { selectDebugActive, selectFeatureFlags } from 'features/debug/debug.slice'
 
 import styles from './DebugMenu.module.css'
-
-export const useToggleFeatureFlag = () => {
-  const { dispatchQueryParams } = useLocationConnect()
-  const featureFlags = useSelector(selectFeatureFlags)
-
-  const toggleFeatureFlag = useCallback(
-    (flag: FeatureFlag) => {
-      if (featureFlags?.includes(flag)) {
-        dispatchQueryParams({ featureFlags: uniq(featureFlags.filter((f) => f !== flag)) })
-      } else {
-        dispatchQueryParams({ featureFlags: uniq([...(featureFlags || []), flag]) })
-      }
-    },
-    [dispatchQueryParams, featureFlags]
-  )
-
-  return toggleFeatureFlag
-}
 
 function FeatureFlagsToast({ featureFlags }: { featureFlags: FeatureFlag[] }) {
   if (featureFlags.length === 0) {
@@ -54,7 +33,9 @@ function FeatureFlagsToast({ featureFlags }: { featureFlags: FeatureFlag[] }) {
 let toastDismissed = false
 export const useFeatureFlagsToast = () => {
   const allFeatureFlags = useSelector(selectFeatureFlags)
-  const featureFlags = allFeatureFlags.filter((flag) => flag !== 'workspaceGenerator')
+  const featureFlags = Object.keys(allFeatureFlags).filter(
+    (flag) => flag !== 'workspaceGenerator'
+  ) as FeatureFlag[]
   const toastId = useRef<any>(undefined)
   const debugActive = useSelector(selectDebugActive)
 

@@ -52,10 +52,6 @@ export const routerQueryMiddleware: Middleware =
       } else {
         newAction.query = {
           ...newAction.query,
-          featureFlags: uniq([
-            ...(prevQuery.featureFlags || []),
-            ...(newAction.query?.featureFlags || []),
-          ]) as any,
         }
       }
       const { query, replaceUrl } = routerAction
