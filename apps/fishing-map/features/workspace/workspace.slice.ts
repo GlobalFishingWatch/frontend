@@ -30,6 +30,7 @@ import {
   DEFAULT_WORKSPACE_ID,
   getWorkspaceEnv,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
+  PRIVATE_TEMPLATE_VESSEL_DATAVIEW_SLUGS,
   WorkspaceCategory,
 } from 'data/workspaces'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
@@ -44,7 +45,11 @@ import { cleanPortClusterDataviewFromReport } from 'features/reports/report-port
 import { DEFAULT_REPORT_STATE } from 'features/reports/reports.config'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
-import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import {
+  selectIsGFWUser,
+  selectIsGuestUser,
+  selectUserGroups,
+} from 'features/user/selectors/user.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
@@ -124,6 +129,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const guestUser = selectIsGuestUser(state)
+    const userGroups = selectUserGroups(state)
     const gfwUser = selectIsGFWUser(state)
     const privateUserGroups = selectPrivateUserGroups(state)
     const reportId = selectReportId(state)
@@ -193,6 +199,12 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         ...(workspace?.dataviewInstances || []).map(({ dataviewId }) => dataviewId),
         ...(urlDataviewInstances || []).map(({ dataviewId }) => dataviewId),
       ].filter(Boolean)
+
+      Object.entries(PRIVATE_TEMPLATE_VESSEL_DATAVIEW_SLUGS).forEach(([group, dataviewId]) => {
+        if (userGroups.includes(group.toLowerCase())) {
+          dataviewIds.push(dataviewId)
+        }
+      })
 
       const uniqDataviewIds = uniq(dataviewIds) as string[]
 

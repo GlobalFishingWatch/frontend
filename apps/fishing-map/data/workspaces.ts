@@ -2,6 +2,8 @@ import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 
+import type { UserGroup } from 'features/user/user.slice'
+
 import { PUBLIC_SUFIX } from './config'
 
 type WorkspaceEnv = 'development' | 'production'
@@ -83,13 +85,8 @@ export const TEMPLATE_ACTIVITY_DATAVIEW_SLUG = 'activity-template' as const
 export const TEMPLATE_CLUSTERS_DATAVIEW_SLUG = 'template-for-bigquery-cluster-events' as const
 const TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG = 'default-environmental-layer' as const
 
-export const VESSEL_TRACK_DATAVIEW_TEMPLATES = [
-  TEMPLATE_VESSEL_DATAVIEW_SLUG,
-  TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_BRAZIL,
-]
-
 export const TEMPLATE_DATAVIEW_SLUGS = [
-  ...VESSEL_TRACK_DATAVIEW_TEMPLATES,
+  TEMPLATE_VESSEL_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
   TEMPLATE_USER_TRACK_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
@@ -101,6 +98,10 @@ export const TEMPLATE_DATAVIEW_SLUGS = [
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
 ]
+
+export const PRIVATE_TEMPLATE_VESSEL_DATAVIEW_SLUGS: Partial<Record<UserGroup, string>> = {
+  brazil: TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_BRAZIL,
+}
 
 export const DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS = [
   'public-global-presence:v3.0',
