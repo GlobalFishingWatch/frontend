@@ -13,7 +13,6 @@ import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { cleanVesselProfileDataviewInstances } from 'features/sidebar/sidebar-header.hooks'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import { resetVesselState } from 'features/vessel/vessel.slice'
-import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
 import { cleanReportQuery } from 'features/workspace/workspace.slice'
 import type { ROUTE_TYPES } from 'routes/routes'
 import { WORKSPACE } from 'routes/routes'
@@ -35,7 +34,6 @@ function NavigationWorkspaceButton() {
   const workspaceId = useSelector(selectWorkspaceId)
   const locationQuery = useSelector(selectLocationQuery)
   const locationCategory = useSelector(selectLocationCategory)
-  const featureFlags = useSelector(selectFeatureFlags)
 
   const resetState = useCallback(() => {
     resetSidebarScroll()
@@ -54,7 +52,6 @@ function NavigationWorkspaceButton() {
       ...cleanReportQuery(locationQuery),
       ...EMPTY_SEARCH_FILTERS,
       ...DEFAULT_VESSEL_STATE,
-      featureFlags,
     }
     const linkTo = {
       type: WORKSPACE as ROUTE_TYPES,

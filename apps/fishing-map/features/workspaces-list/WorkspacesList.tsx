@@ -11,7 +11,6 @@ import { REPORT_IDS } from 'data/highlighted-workspaces/reports'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
 import { HOME, REPORT, WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
 import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
 
@@ -27,7 +26,6 @@ function WorkspacesList() {
   const locationCategory = useSelector(selectLocationCategory)
   const highlightedWorkspaces = useSelector(selectCurrentHighlightedWorkspaces)
   const validCategory = useSelector(isValidLocationCategory)
-  const featureFlags = useSelector(selectFeatureFlags)
   const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
 
   const onWorkspaceClick = useCallback(
@@ -44,10 +42,7 @@ function WorkspacesList() {
       <div className={styles.placeholder}>
         <h2>{t('errors.pageNotFound', 'Page not found')}</h2>
         <p>🙈</p>
-        <Link
-          className={styles.linkButton}
-          to={{ type: HOME, replaceQuery: true, query: { featureFlags } }}
-        >
+        <Link className={styles.linkButton} to={{ type: HOME, replaceQuery: true, query: {} }}>
           {t('common.seeDefault', 'See default view')}
         </Link>
       </div>
@@ -85,7 +80,7 @@ function WorkspacesList() {
             linkTo = {
               type: HOME,
               payload: {},
-              query: { featureFlags },
+              query: {},
               replaceQuery: true,
             }
           } else if (REPORT_IDS.includes(id as ReportWorkspaceId)) {
@@ -96,7 +91,6 @@ function WorkspacesList() {
                 workspaceId: DEFAULT_WORKSPACE_ID,
               },
               query: {
-                featureFlags,
                 dataviewInstances,
                 reportCategory,
                 latitude: 0,
@@ -113,7 +107,6 @@ function WorkspacesList() {
                 workspaceId: highlightedWorkspace.workspaceId || id,
               },
               query: {
-                featureFlags,
                 ...(dataviewInstances?.length && { dataviewInstances }),
                 ...(highlightedWorkspace.viewport || {}),
               },
@@ -178,7 +171,7 @@ function WorkspacesList() {
                           payload: {
                             reportId,
                           },
-                          query: { featureFlags },
+                          query: {},
                         }
                       : undefined
                     if (!reportLink) {
