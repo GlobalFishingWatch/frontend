@@ -129,6 +129,11 @@
     "moreInfoLink": "",
     "name": "Port Visits (AIS)"
   },
+  "port-locations": {
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
+    "moreInfoLink": "",
+    "name": "Ports"
+  },
   "presence": {
     "description": "Lapisan kehadiran menganalisis data sistem identifikasi otomatis (AIS) yang dikumpulkan dari kapal yang telah diidentifikasi oleh penelitian kami. Kehadirannya ditentukan dengan mengambil posisi yang dikirimkan oleh AIS kapal dan ditampilkan sebagai peta panas.",
     "moreInfoLink": "",
