@@ -100,16 +100,16 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
       color: '#8E24A9',
     },
   },
-  {
-    id: PORTS_LAYER_ID,
-    dataviewId: PORTS_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/ports.jpg`,
-    config: {
-      color: '#9AEEFF',
-    },
-  },
   ...(IS_DEVELOPMENT_ENV
     ? ([
+        {
+          id: PORTS_LAYER_ID,
+          dataviewId: PORTS_DATAVIEW_SLUG,
+          previewImageUrl: `${PATH_BASENAME}/images/layer-library/ports.jpg`,
+          config: {
+            color: '#9AEEFF',
+          },
+        },
         {
           id: 'eez-areas-12nm',
           dataviewId: EEZ_AREAS_12NM_DATAVIEW_SLUG,
