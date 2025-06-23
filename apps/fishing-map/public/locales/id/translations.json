@@ -781,6 +781,13 @@
     "screenshotDownload": "Download image",
     "screenshotPreview": "Screenshot preview",
     "search": "Mencari wilayah laut dan samudra, KKP/MPA, atau ZEE",
+    "searchTypes": {
+      "eez": "EEZ",
+      "fao": "FAO",
+      "mpa": "MPA",
+      "port": "Port",
+      "rfmo": "RFMO"
+    },
     "zoom_in": "Perbesar",
     "zoom_out": "Perkecil"
   },
