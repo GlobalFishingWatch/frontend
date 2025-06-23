@@ -25,7 +25,7 @@ import {
   LayerGroup,
 } from '../../utils'
 
-import type { UserLayerFeature,UserPointsLayerProps } from './user.types'
+import type { UserLayerFeature, UserPointsLayerProps } from './user.types'
 import { DEFAULT_USER_TILES_MAX_ZOOM } from './user.utils'
 import type { UserBaseLayerState } from './UserBaseLayer'
 import { UserBaseLayer } from './UserBaseLayer'
@@ -39,7 +39,7 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
   valueProperties: [],
   maxRequests: 100,
   debounceTime: 500,
-  minPointSize: 6,
+  minPointSize: 3,
   maxPointSize: 15,
   maxZoom: DEFAULT_USER_TILES_MAX_ZOOM,
 }
@@ -96,6 +96,21 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return d?.geometry?.coordinates
   }
 
+  _getZoomLevel = () => {
+    const { zoom } = this.context.viewport
+    return Math.floor(zoom)
+  }
+
+  _getPointRadiusByZoom = () => {
+    const zoom = this._getZoomLevel()
+    if (zoom < 2) {
+      return 2
+    } else if (zoom < DEFAULT_POINT_RADIUS) {
+      return zoom
+    }
+    return DEFAULT_POINT_RADIUS
+  }
+
   _getPointRadius: Accessor<GeoJsonProperties, number> = (d) => {
     const { staticPointRadius, circleRadiusProperty, circleRadiusRange, filters, filterOperators } =
       this.props
@@ -105,19 +120,21 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     if (staticPointRadius) {
       return staticPointRadius
     }
+    const pointRadius = this._getPointRadiusByZoom()
     const { scale } = this.state
     const value = d?.properties?.[circleRadiusProperty!]
     if (!value) {
-      return circleRadiusRange && scale ? scale(circleRadiusRange[0]) : DEFAULT_POINT_RADIUS
+      return circleRadiusRange && scale ? scale(circleRadiusRange[0]) : pointRadius
     }
     if (circleRadiusRange && scale) {
       return scale(value)
     }
-    return DEFAULT_POINT_RADIUS
+    return pointRadius
   }
 
   renderLayers() {
     const { layers, color, pickable, maxPointSize, maxZoom, filters } = this.props
+    const zoom = this._getZoomLevel()
     const highlightedFeatures = this._getHighlightedFeatures()
     const filterProps = this._getTimeFilterProps()
     const renderLayers: Layer[] = layers.map((layer) => {
@@ -155,7 +172,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
               getFillColor: hexToDeckColor(this.props.color, 0.7),
               updateTriggers: {
                 getFillColor: [color],
-                getRadius: [filters],
+                getRadius: [filters, zoom],
               },
             }),
           ]

@@ -18,6 +18,7 @@ import {
 import { selectReportEventsGraph } from 'features/reports/reports.config.selectors'
 import type { ReportEventsGraph } from 'features/reports/reports.types'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectIsPortReportLocation } from 'routes/routes.selectors'
 
 type EventsReportGraphSelectorProps = {
   disabled: boolean
@@ -27,6 +28,7 @@ function EventsReportGraphSelector({ disabled = false }: EventsReportGraphSelect
   const { dispatchQueryParams } = useLocationConnect()
   const reportEventsGraph = useSelector(selectReportEventsGraph)
   const isGlobalReport = useSelector(selectIsGlobalReport)
+  const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const { t } = useTranslation()
   const fitAreaInViewport = useFitAreaInViewport()
 
@@ -41,7 +43,7 @@ function EventsReportGraphSelector({ disabled = false }: EventsReportGraphSelect
       label: t('analysis.groupByFlag', 'By flag'),
       disabled,
     },
-    ...(isGlobalReport
+    ...(isGlobalReport && !isPortReportLocation
       ? [
           {
             id: REPORT_EVENTS_GRAPH_GROUP_BY_RFMO,
