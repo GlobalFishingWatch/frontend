@@ -781,6 +781,13 @@
     "screenshotDownload": "Baixar imagem",
     "screenshotPreview": "Pré-visualizar imagem",
     "search": "Procure por oceanos e mares, AMPs ou ZEEs",
+    "searchTypes": {
+      "eez": "EEZ",
+      "fao": "FAO",
+      "mpa": "MPA",
+      "port": "Port",
+      "rfmo": "RFMO"
+    },
     "zoom_in": "Aumentar zoom",
     "zoom_out": "Diminuir zoom"
   },
