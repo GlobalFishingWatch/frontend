@@ -129,6 +129,11 @@
     "moreInfoLink": "",
     "name": "Visitas al Puerto (AIS)"
   },
+  "port-locations": {
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
+    "moreInfoLink": "",
+    "name": "Ports"
+  },
   "presence": {
     "description": "La capa de presencia analiza los datos del sistema de identificación automática (AIS) recopilados de buques identificados por nuestra investigación. La presencia está determinada por la toma de posiciones transmitidas por el AIS del buque y se despliegan como un mapa del calor. ",
     "moreInfoLink": "",
