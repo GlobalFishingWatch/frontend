@@ -31,7 +31,7 @@ function mapDataToHeader(header: string, data: any): string {
       'Gear type': data.originalValues?.geartypes,
       'Vessel Name Corrected': data.proposedCorrections?.shipname,
       'CallSign Corrected': data.proposedCorrections?.callsign,
-      'Ssvid/MMSI Corrected': data.proposedCorrections?.ssvid,
+      'SSVID/MMSI Corrected': data.proposedCorrections?.ssvid,
       'IMO Corrected': data.proposedCorrections?.imo,
       'Flag Corrected': data.proposedCorrections?.flag,
       'Analyst Comments': data.proposedCorrections?.comments,
@@ -42,7 +42,7 @@ function mapDataToHeader(header: string, data: any): string {
       Reviewer: data.reviewer,
       'Workspace Link': data.workspaceLink,
       'Date submitted': data.dateSubmitted,
-      // 'Time Range': data.timeRange,
+      'Time Range': data.timeRange,
 
       'Vessel ID': data.vesselId,
       'GFW Vessel Type': data.originalValues?.shiptypes,
