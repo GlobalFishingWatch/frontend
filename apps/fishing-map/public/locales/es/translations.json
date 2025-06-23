@@ -781,6 +781,13 @@
     "screenshotDownload": "Descargar imagen",
     "screenshotPreview": "Vista previa de captura de pantalla",
     "search": "Buscar áreas oceánicas y marinas, AMPs o ZEEs",
+    "searchTypes": {
+      "eez": "EEZ",
+      "fao": "FAO",
+      "mpa": "MPA",
+      "port": "Port",
+      "rfmo": "RFMO"
+    },
     "zoom_in": "Acercarse",
     "zoom_out": "Alejarse"
   },

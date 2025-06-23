@@ -129,6 +129,11 @@
     "moreInfoLink": "",
     "name": "Visites de ports (AIS)"
   },
+  "port-locations": {
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
+    "moreInfoLink": "",
+    "name": "Ports"
+  },
   "presence": {
     "description": "Le calque de présence analyse les données du système d’identification automatique (AIS) recueillies auprès des navires que nos recherches ont identifiés. La présence est déterminée en affichant les positions transmises par l'AIS du navire sous forme de carte thermique. ",
     "moreInfoLink": "",

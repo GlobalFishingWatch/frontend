@@ -781,6 +781,13 @@
     "screenshotDownload": "crwdns84078:0crwdne84078:0",
     "screenshotPreview": "crwdns84080:0crwdne84080:0",
     "search": "crwdns60357:0crwdne60357:0",
+    "searchTypes": {
+      "eez": "crwdns87954:0crwdne87954:0",
+      "fao": "crwdns87956:0crwdne87956:0",
+      "mpa": "crwdns87958:0crwdne87958:0",
+      "port": "crwdns87960:0crwdne87960:0",
+      "rfmo": "crwdns87962:0crwdne87962:0"
+    },
     "zoom_in": "crwdns60359:0crwdne60359:0",
     "zoom_out": "crwdns60361:0crwdne60361:0"
   },

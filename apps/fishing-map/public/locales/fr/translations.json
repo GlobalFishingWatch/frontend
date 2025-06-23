@@ -781,6 +781,13 @@
     "screenshotDownload": "Télécharger l'image",
     "screenshotPreview": "Aperçu de la capture d'écran",
     "search": "Recherchez des zones maritimes, les AMP ou les ZEE",
+    "searchTypes": {
+      "eez": "EEZ",
+      "fao": "FAO",
+      "mpa": "MPA",
+      "port": "Port",
+      "rfmo": "RFMO"
+    },
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer"
   },
