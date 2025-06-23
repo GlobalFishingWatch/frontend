@@ -15,45 +15,46 @@ const REGISTRY_CORRECTIONS_SHEET_TITLE = 'Vessel Registry Corrections'
 const GFW_SOURCE_CORRECTIONS_SHEET_TITLE = 'Vessel GFW Source Corrections'
 
 function mapDataToHeader(header: string, data: any): string {
-  let map: Record<string, any>
+  const sharedMap: Record<string, any> = {
+    Reviewer: data.reviewer,
+    'Workspace Link': data.workspaceLink,
+    'Date submitted': data.dateSubmitted,
+    'Time Range': data.timeRange,
+    'Analyst Comments': data.proposedCorrections?.comments,
+  }
+
+  const registryMap: Record<string, any> = {
+    'Vessel Record ID': data.vesselId,
+    'Vessel Name': data.originalValues?.shipname,
+    CallSign: data.originalValues?.callsign,
+    'SSVID/MMSI': data.originalValues?.ssvid,
+    IMO: data.originalValues?.imo,
+    Flag: data.originalValues?.flag,
+    'Gear type': data.originalValues?.geartypes,
+    'Vessel Name Corrected': data.proposedCorrections?.shipname,
+    'CallSign Corrected': data.proposedCorrections?.callsign,
+    'SSVID/MMSI Corrected': data.proposedCorrections?.ssvid,
+    'IMO Corrected': data.proposedCorrections?.imo,
+    'Flag Corrected': data.proposedCorrections?.flag,
+    'Gear Type Corrected': data.proposedCorrections?.geartypes,
+  }
+
+  const selfReportedMap: Record<string, any> = {
+    'Vessel ID': data.vesselId,
+    'GFW Vessel Type': data.originalValues?.shiptypes,
+    'GFW Gear Type': data.originalValues?.gfw_geartypes,
+    'GFW Vessel Type Corrected': data.proposedCorrections?.shiptypes,
+    'GFW Gear Type Corrected': data.proposedCorrections?.geartypes,
+  }
+
+  let map: Record<string, any> = { ...sharedMap }
   if (data.source === VesselIdentitySourceEnum.Registry) {
-    map = {
-      Reviewer: data.reviewer,
-      'Workspace Link': data.workspaceLink,
-      'Date submitted': data.dateSubmitted,
-      'Time Range': data.timeRange,
-      'Vessel Record ID': data.vesselId,
-      'Vessel Name': data.originalValues?.shipname,
-      CallSign: data.originalValues?.callsign,
-      'SSVID/MMSI': data.originalValues?.ssvid,
-      IMO: data.originalValues?.imo,
-      Flag: data.originalValues?.flag,
-      'Gear type': data.originalValues?.geartypes,
-      'Vessel Name Corrected': data.proposedCorrections?.shipname,
-      'CallSign Corrected': data.proposedCorrections?.callsign,
-      'Ssvid/MMSI Corrected': data.proposedCorrections?.ssvid,
-      'IMO Corrected': data.proposedCorrections?.imo,
-      'Flag Corrected': data.proposedCorrections?.flag,
-      'Analyst Comments': data.proposedCorrections?.comments,
-      'Gear Type Corrected': data.proposedCorrections?.geartypes,
-    }
+    map = { ...map, ...registryMap }
   } else if (data.source === VesselIdentitySourceEnum.SelfReported) {
-    map = {
-      Reviewer: data.reviewer,
-      'Workspace Link': data.workspaceLink,
-      'Date submitted': data.dateSubmitted,
-      // 'Time Range': data.timeRange,
-
-      'Vessel ID': data.vesselId,
-      'GFW Vessel Type': data.originalValues?.shiptypes,
-      'GFW Gear Type': data.originalValues?.gfw_geartypes,
-
-      'GFW Vessel Type Corrected': data.proposedCorrections?.shiptypes,
-      'GFW Gear Type Corrected': data.proposedCorrections?.geartypes,
-
-      'Analyst Comments': data.proposedCorrections?.comments,
-    }
-  } else return ''
+    map = { ...map, ...selfReportedMap }
+  } else {
+    return ''
+  }
 
   return map[header] || ''
 }
