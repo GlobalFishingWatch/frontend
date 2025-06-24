@@ -6,7 +6,7 @@ import { useGetVesselGroupInsightQuery } from 'queries/vessel-insight-api'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { Collapsable } from '@globalfishingwatch/ui-components'
+import { Collapsable, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
@@ -58,7 +58,14 @@ const VesselGroupReportInsightGap = ({ skip }: { skip?: boolean }) => {
   return (
     <div id="vessel-group-gaps" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label className="experimental">{t('vessel.insights.gaps', 'AIS Off Events')}</label>
+        <Tooltip
+          content={t(
+            'common.experimentalTooltip',
+            'Dataset still in development, click the information icon to learn more'
+          )}
+        >
+          <label className="experimental">{t('vessel.insights.gaps', 'AIS Off Events')}</label>
+        </Tooltip>
         <DataTerminology
           title={t('vessel.insights.gaps', 'AIS Off Events')}
           terminologyKey="insightsGaps"

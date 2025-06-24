@@ -9,7 +9,6 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
 import { WORKSPACE } from 'routes/routes'
 import type { MapCoordinates } from 'types'
 
@@ -24,7 +23,6 @@ function WorkspacePointsTooltipSection({
   features,
   showFeaturesDetails,
 }: WorkspacePointsLayersProps) {
-  const featureFlags = useSelector(selectFeatureFlags)
   const setMapCoordinates = useSetMapCoordinates()
   const { dispatchClickedEvent } = useClickedEventConnect()
 
@@ -65,7 +63,7 @@ function WorkspacePointsTooltipSection({
                     category: feature.properties.category || DEFAULT_WORKSPACE_CATEGORY,
                     workspaceId: feature.properties.id,
                   },
-                  query: { featureFlags },
+                  query: {},
                 }}
                 onClick={() =>
                   onWorkspaceClick({

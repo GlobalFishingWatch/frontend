@@ -98,8 +98,7 @@
     "visualiationMode": "Mode visualisasi",
     "visualisationActivity": "Aktivitas (peta panas)",
     "visualisationActivityHint": "(Pastikan id, lat, lon, timestamp dan nilai semuanya ada)",
-    "visualisationEvents": "Peristiwa (kelompok)",
-    "visualisationEventsHint": "(Pastikan event_id, event_start, event_end dan geom semuanya ada)"
+    "visualisationEvents": "Peristiwa (kelompok)"
   },
   "common": {
     "active": "Aktif",
@@ -165,6 +164,8 @@
     "Events": "Events",
     "exclude": "Kecualikan",
     "excluded": "Dikecualikan",
+    "experimental": "Experimental",
+    "experimentalTooltip": "Dataset still in development, click the information icon to learn more",
     "faq": "Pertanyaan umum (FAQ)",
     "feedback": "Umpan balik",
     "field": "Field",
@@ -327,6 +328,7 @@
     "title": "Dataset",
     "title_one": "Dataset",
     "title_other": "Dataset",
+    "typeBigQuery": "BigQuery",
     "typePoints": " Poin",
     "typePointsDescription": "Tampilkan satu atau beberapa posisi dengan label di dataset Anda",
     "typePolygons": " Poligon",
@@ -679,7 +681,7 @@
     "color_change": "Ganti warna",
     "colorSelectCustom": "Select custom color",
     "colorSelectPredefined": "Select predefined color",
-    "distance_from_port_km": "Port Buffer",
+    "distance_from_port_km": "Port Buffer (km)",
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",
@@ -759,6 +761,7 @@
     "errorLabel": "Harap jelaskan kesalahannya sedetail mungkin",
     "errorPlaceholder": "Harap jelaskan kesalahannya sedetail mungkin",
     "highRes": "See high resolution heatmaps",
+    "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Perkiraan area grid sel di Khatulistiwa",
     "loading": "Memuat",
     "lowRes": "See low resolution heatmaps",
@@ -778,6 +781,13 @@
     "screenshotDownload": "Download image",
     "screenshotPreview": "Screenshot preview",
     "search": "Mencari wilayah laut dan samudra, KKP/MPA, atau ZEE",
+    "searchTypes": {
+      "eez": "EEZ",
+      "fao": "FAO",
+      "mpa": "MPA",
+      "port": "Port",
+      "rfmo": "RFMO"
+    },
     "zoom_in": "Perbesar",
     "zoom_out": "Perkecil"
   },
@@ -910,8 +920,6 @@
     "activityByType": "Berdasarkan jenis",
     "activityByVoyages": "Berdasarkan pelayaran",
     "addToWorkspace": "Tambahkan kapal untuk melihat",
-    "ais-geartypes": "GFW Gear Types",
-    "ais-shiptypes": "GFW Vessel Types",
     "authorization": "otorisasi",
     "authorizationDatesDisclaimer": "The most recent vessel authorized date is the last date Global Fishing Watch collected data. Visit registry source to verify status.",
     "beam": "Beam",
@@ -997,8 +1005,8 @@
       "tuna_purse_seines": "Pukat Cincin Tuna",
       "well_boat": "Kapal sumur (well-boat)"
     },
-    "gfw_geartypes": "GFW Gear type",
-    "gfw_shiptypes": "GFW Vessel type",
+    "gfw-geartypes": "GFW Gear type",
+    "gfw-shiptypes": "GFW Vessel type",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Tonase Kotor",
     "grossTonnageRange": "Rentang Gross Tonnage",
@@ -1010,7 +1018,8 @@
     "infoSources": {
       "both": "Registry and AIS",
       "registry": "Registri",
-      "selfReported": "Dilaporkan sendiri"
+      "selfReported": "Dilaporkan sendiri",
+      "gfw-source": "GFW Source"
     },
     "insights": {
       "countries": {
@@ -1112,6 +1121,8 @@
     "shiptype": "Jenis Kapal",
     "shiptypes": "Ship types",
     "showOtherLayers": "Tampilkan lapisan lainnya",
+    "skylightLink": "Click to see Skylight vessel profile",
+    "skylightSearch": "Click to search this vessel",
     "sortAsc": "Sort vessels alphabetically (ascending)",
     "sortDesc": "Sort vessels alphabetically (descending)",
     "source": "Sumber",

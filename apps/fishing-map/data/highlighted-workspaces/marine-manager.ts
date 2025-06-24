@@ -20,10 +20,10 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
     id: 'fiji-public',
     img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-fiji.png`,
   },
-  {
-    id: 'galapagos-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-galapagos.jpg`,
-  },
+  // {
+  //   id: 'galapagos-public',
+  //   img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-galapagos.jpg`,
+  // },
   {
     id: 'guyana-public',
     img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-guyana.jpg`,
@@ -54,7 +54,7 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
   },
   {
     id: 'costa_rica_1-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-costa-rica.jpg`,
     reports: [
       {
         id: 'costa_rica-public',
@@ -62,18 +62,17 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
     ],
   },
   {
-    id: 'colombia-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    id: 'colombia_3-public',
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-colombia.jpg`,
     reports: [
       {
-        id: 'colombias_amps-public',
+        id: 'colombia-public',
       },
     ],
-    visible: !IS_PRODUCTION_WORKSPACE_ENV,
   },
   {
     id: 'panama_1-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-panama.jpg`,
     reports: [
       {
         id: 'panama-public',
@@ -82,26 +81,26 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
   },
   {
     id: 'cmar_core_mpas-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-core-cmar.jpg`,
     reports: [
       {
         id: 'cmar_core_mpas-public',
       },
     ],
   },
-  {
-    id: 'reserva_de_la_biosfera_cmar-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
-    reports: [
-      {
-        id: 'reserva_de_la_biosfera_cmar-public',
-      },
-    ],
-    visible: !IS_PRODUCTION_WORKSPACE_ENV,
-  },
+  // {
+  //   id: 'reserva_de_la_biosfera_cmar-public',
+  //   img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+  //   reports: [
+  //     {
+  //       id: 'reserva_de_la_biosfera_cmar-public',
+  //     },
+  //   ],
+  //   visible: !IS_PRODUCTION_WORKSPACE_ENV,
+  // },
   {
     id: 'galapagos_and_hermandad-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-galapagos-hermandad.jpg`,
     reports: [
       {
         id: 'galapagos_and_hermandad-public',
@@ -110,7 +109,7 @@ export const MARINE_MANAGER_WORKSPACES: MarineManagerWorkspace[] = [
   },
   {
     id: 'revillagigedo-public',
-    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-default.jpg`,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/mm-revillagigedo.jpg`,
     reports: [
       {
         id: 'revillagigedo_mexico-public',

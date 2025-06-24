@@ -1116,6 +1116,10 @@
       "structure_start_date": "structure_start_date"
     }
   },
+  "public-gfcm-fao": {
+    "name": "GFCM FAO",
+    "description": "GFCM Fisheries Restricted Areas"
+  },
   "public-global-all-tracks": {
     "name": "Lintasan",
     "description": "The dataset contains the tracks from all vessels (AIS) - Version 3.0",
@@ -1681,6 +1685,33 @@
       }
     }
   },
+  "public-mp-atlas": {
+    "name": "MPAs (MPAtlas)",
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably",
+    "schema": {
+      "establishment_stage": {
+        "keyword": "establishment_stage",
+        "enum": {
+          "proposed/committed": "proposed/committed",
+          "designated": "designated",
+          "actively managed": "actively managed",
+          "implemented": "implemented",
+          "unknown": "unknown"
+        }
+      },
+      "mpaguide_protection_level": {
+        "keyword": "mpaguide_protection_level",
+        "enum": {
+          "unknown": "unknown",
+          "light": "light",
+          "full": "full",
+          "high": "high",
+          "incompatible": "incompatible",
+          "minimal": "minimal"
+        }
+      }
+    }
+  },
   "public-mpa-all": {
     "name": "KKP (WDPA)",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably. Source: World Database on Protected Areas. Last updated: November 2022. See more detailed <a href='https://globalfishingwatch.org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer."
@@ -1738,6 +1769,10 @@
   "public-norway-vessel-identity-non-fishing": {
     "name": "Norway VMS (Non Fishing Vessels)",
     "description": "Dataset for VMS Norway (Public)"
+  },
+  "public-paa-duke": {
+    "name": "PAAS",
+    "description": "Global dataset of Preferential Access Areas for small-scale fishing"
   },
   "public-panama-fishing-effort": {
     "name": "Panama VMS",

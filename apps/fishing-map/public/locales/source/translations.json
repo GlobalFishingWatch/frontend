@@ -98,8 +98,7 @@
     "visualiationMode": "Visualisation mode",
     "visualisationActivity": "Activity (heatmap)",
     "visualisationActivityHint": "(Ensure id, lat, lon, timestamp and value are all present)",
-    "visualisationEvents": "Events (clusters)",
-    "visualisationEventsHint": "(Ensure event_id, event_start, event_end and geom are all present)"
+    "visualisationEvents": "Events (clusters)"
   },
   "common": {
     "active": "Active",
@@ -165,6 +164,8 @@
     "Events": "Events",
     "exclude": "Exclude",
     "excluded": "Excluded",
+    "experimental": "Experimental",
+    "experimentalTooltip": "Dataset still in development, click the information icon to learn more",
     "faq": "FAQs",
     "feedback": "Feedback",
     "field": "Field",
@@ -327,6 +328,7 @@
     "title": "Dataset",
     "title_one": "Dataset",
     "title_other": "Datasets",
+    "typeBigQuery": "BigQuery",
     "typePoints": " Points",
     "typePointsDescription": "Display one or multiple positions with labels in your dataset",
     "typePolygons": " Polygons",
@@ -759,6 +761,7 @@
     "errorLabel": "Please describe the error as detailed as possible",
     "errorPlaceholder": "Please describe the error as detailed as possible",
     "highRes": "See high resolution heatmaps",
+    "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Approximated grid cell area at the Equator",
     "loading": "Loading",
     "lowRes": "See low resolution heatmaps",
@@ -778,6 +781,13 @@
     "screenshotDownload": "Download image",
     "screenshotPreview": "Screenshot preview",
     "search": "Search ocean and sea areas, MPAs or EEZs",
+    "searchTypes": {
+      "eez": "EEZ",
+      "fao": "FAO",
+      "mpa": "MPA",
+      "port": "Port",
+      "rfmo": "RFMO"
+    },
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
@@ -910,8 +920,6 @@
     "activityByType": "By type",
     "activityByVoyages": "By voyages",
     "addToWorkspace": "Add vessel to view",
-    "ais-geartypes": "GFW Gear Types",
-    "ais-shiptypes": "GFW Vessel Types",
     "authorization": "authorization",
     "authorizationDatesDisclaimer": "The most recent vessel authorized date is the last date Global Fishing Watch collected data. Visit registry source to verify status.",
     "beam": "Beam",
@@ -997,8 +1005,8 @@
       "tuna_purse_seines": "Tuna Purse Seine",
       "well_boat": "Well boat"
     },
-    "gfw_geartypes": "GFW Gear type",
-    "gfw_shiptypes": "GFW Vessel type",
+    "gfw-geartypes": "GFW Gear type",
+    "gfw-shiptypes": "GFW Vessel type",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Gross Tonnage",
     "grossTonnageRange": "Gross Tonnage range",
@@ -1010,7 +1018,8 @@
     "infoSources": {
       "both": "Registry and self reported",
       "registry": "Registry",
-      "selfReported": "Self reported"
+      "selfReported": "Self reported",
+      "gfw-source": "GFW Source"
     },
     "insights": {
       "countries": {
@@ -1112,6 +1121,8 @@
     "shiptype": "Vessel type",
     "shiptypes": "Ship types",
     "showOtherLayers": "Show other layers",
+    "skylightLink": "Click to see Skylight vessel profile",
+    "skylightSearch": "Click to search this vessel",
     "sortAsc": "Sort vessels alphabetically (ascending)",
     "sortDesc": "Sort vessels alphabetically (descending)",
     "source": "Source",

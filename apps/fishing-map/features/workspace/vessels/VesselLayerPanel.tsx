@@ -84,9 +84,12 @@ export const getVesselIdentityTooltipSummary = (
       const selfReported = selfReportedInfo[0]
       const name = formatInfoField(selfReported.shipname, 'shipname')
       const flag = formatInfoField(selfReported.flag, 'flag')
-      const info = `${name} - (${flag}) (${formatI18nDate(
-        firstTransmissionDateFrom
-      )} - ${formatI18nDate(lastTransmissionDateTo)})`
+      let info = `${name} - (${flag})`
+      if (firstTransmissionDateFrom && lastTransmissionDateTo) {
+        info = `${info} (${formatI18nDate(
+          firstTransmissionDateFrom
+        )} - ${formatI18nDate(lastTransmissionDateTo)})`
+      }
       return showVesselId ? (
         <Fragment key={index}>
           {info}

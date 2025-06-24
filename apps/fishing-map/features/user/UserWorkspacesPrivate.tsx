@@ -8,7 +8,6 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import { selectWorkspaceListStatus } from 'features/workspaces-list/workspaces-list.slice'
 import { WORKSPACE } from 'routes/routes'
@@ -25,7 +24,6 @@ function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {
   const { t } = useTranslation()
   const workspaces = useSelector(selectUserWorkspacesPrivate)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
-  const featureFlags = useSelector(selectFeatureFlags)
   const setMapCoordinates = useSetMapCoordinates()
   const dispatch = useAppDispatch()
 
@@ -65,9 +63,7 @@ function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {
                     category: workspace.category || DEFAULT_WORKSPACE_CATEGORY,
                     workspaceId: workspace.id,
                   },
-                  query: {
-                    featureFlags,
-                  },
+                  query: {},
                   replaceQuery: true,
                 }}
                 onClick={() => onWorkspaceClick(workspace)}

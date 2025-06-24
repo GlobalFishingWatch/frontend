@@ -243,6 +243,10 @@
   text-decoration: underline;
 }
 
+.rowText p + p {
+  margin-top: var(--space-XS);
+}
+
 .rowActions {
   display: flex;
   flex-wrap: nowrap;

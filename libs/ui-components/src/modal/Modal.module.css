@@ -21,8 +21,7 @@
   width: 100%;
   max-width: 78rem;
   overflow-y: auto;
-  max-height: 100vh;
-  height: var(--vh, 1vh) * 100;
+  max-height: 100dvh;
 }
 
 .auto {

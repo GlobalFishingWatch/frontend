@@ -23,14 +23,13 @@ import type {
   FourwingsHeatmapPickingObject,
   FourwingsPositionsPickingObject,
   VesselEventPickingObject,
+  VesselTrackPickingObject,
 } from '@globalfishingwatch/deck-layers'
 
 import { trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import {
-  BIG_QUERY_4WINGS_PREFIX,
-  ENCOUNTER_EVENTS_SOURCES,
-} from 'features/dataviews/dataviews.utils'
+import { getIsBQEditorDataset } from 'features/datasets/datasets.utils'
+import { BIG_QUERY_4WINGS_PREFIX } from 'features/dataviews/dataviews.utils'
 import {
   selectActivityDataviews,
   selectEventsDataviews,
@@ -51,11 +50,9 @@ import { annotationsCursorAtom } from './overlays/annotations/Annotations'
 import { useMapRulersDrag } from './overlays/rulers/rulers-drag.hooks'
 import type { SliceExtendedClusterPickingObject, SliceInteractionEvent } from './map.slice'
 import {
-  fetchBQEventThunk,
   fetchClusterEventThunk,
   fetchDetectionThumbnailsThunk,
   fetchHeatmapInteractionThunk,
-  fetchLegacyEncounterEventThunk,
   selectActivityInteractionStatus,
   selectApiEventStatus,
   selectClickedEvent,
@@ -66,6 +63,7 @@ import {
   isRulerLayerPoint,
   isTilesClusterLayer,
   isTilesClusterLayerCluster,
+  isTrackSegment,
 } from './map-interaction.utils'
 import { useSetMapCoordinates } from './map-viewport.hooks'
 
@@ -226,19 +224,15 @@ export const useClickedEventConnect = () => {
       ) as SliceExtendedClusterPickingObject
 
       if (tileClusterFeature) {
-        const bqPocQuery = !ENCOUNTER_EVENTS_SOURCES.includes(tileClusterFeature.layerId)
-        // TODO:deck migrate bqPocQuery to FourwingsClusters
-        const fetchFn = bqPocQuery ? fetchBQEventThunk : fetchClusterEventThunk
-        // TODO:deck remove fetchLegacyEncounterEventThunk once fourwings cluster goes to pro
-        const clusterFn =
-          tileClusterFeature?.subcategory === DataviewType.TileCluster
-            ? fetchLegacyEncounterEventThunk
-            : fetchClusterEventThunk
-        const eventsPromise = dispatch(clusterFn(tileClusterFeature as any) as any)
-        setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
+        const dataset = eventsDataviews?.find((d) => d.id === tileClusterFeature?.layerId)
+          ?.datasets?.[0]
+        if (!getIsBQEditorDataset(dataset!)) {
+          const eventsPromise = dispatch(fetchClusterEventThunk(tileClusterFeature as any))
+          setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
+        }
       }
     },
-    [dispatch, setInteractionPromises]
+    [dispatch, eventsDataviews, setInteractionPromises]
   )
 
   const handleVesselEventInteraction = useCallback(
@@ -413,8 +407,9 @@ const useGetPickingInteraction = () => {
       const uniqFeatureIds = [] as string[]
       const features = pickingInfo.flatMap((f) => {
         if (f.object?.id) {
-          if (!uniqFeatureIds.includes(f.object.id as string)) {
-            uniqFeatureIds.push(f.object.id as string)
+          const featureId = `${f.object.id}-${f.layer.id}`
+          if (!uniqFeatureIds.includes(featureId)) {
+            uniqFeatureIds.push(featureId)
             return f.object
           }
           return []
@@ -505,6 +500,9 @@ export const useMapMouseClick = () => {
         return false
       }
       const clickInteraction = getPickingInteraction(info, 'click')
+      if (clickInteraction?.features?.length === 1 && info.object?.interactionType === 'segment') {
+        return
+      }
       if (clickInteraction) {
         dispatchClickedEvent(clickInteraction)
       }
@@ -522,7 +520,9 @@ export const useMapCursor = () => {
   const { isErrorNotificationEditing } = useMapErrorNotification()
   const { rulersEditing } = useRulers()
   const hoverFeatures = useMapHoverInteraction()?.features
-  const hoverFeaturesHash = hoverFeatures?.map((f) => f.id).join()
+  const hoverFeaturesHash = hoverFeatures
+    ?.map((f) => `${f.id}-${(f as VesselTrackPickingObject).interactionType ?? ''}`)
+    .join()
 
   const getCursor = useCallback(
     ({ isDragging }: { isDragging: boolean }) => {
@@ -553,7 +553,10 @@ export const useMapCursor = () => {
         return 'grabbing'
       }
       if (hoverFeatures?.length) {
-        return 'pointer'
+        if (hoverFeatures?.some((f) => !isTrackSegment(f))) {
+          return 'pointer'
+        }
+        return 'grab'
       }
       return 'grab'
     },

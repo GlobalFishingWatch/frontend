@@ -8,12 +8,17 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { debugDatasetsInDataviews, debugRelatedDatasets } from 'features/datasets/datasets.debug'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { useToggleFeatureFlag } from 'features/debug/debug.hooks'
-import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { selectIsGFWDeveloper } from 'features/user/selectors/user.selectors'
 import { selectLocationQuery } from 'routes/routes.selectors'
 
-import { DebugOption, selectDebugOptions, toggleOption } from './debug.slice'
+import {
+  DebugOption,
+  FeatureFlag,
+  selectDebugOptions,
+  selectFeatureFlags,
+  toggleFeatureFlag,
+  toggleOption,
+} from './debug.slice'
 
 import styles from './DebugMenu.module.css'
 
@@ -21,12 +26,11 @@ const DebugMenu: React.FC = () => {
   const dispatch = useAppDispatch()
   const isGFWDeveloper = useSelector(selectIsGFWDeveloper)
   const debugOptions = useSelector(selectDebugOptions)
+  const featureFlags = useSelector(selectFeatureFlags)
   const locationQuery = useSelector(selectLocationQuery)
   const [datasetId, setDatasetId] = useState<string>('')
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
   const datasets = useSelector(selectAllDatasets)
-  const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
-  const toggleFeatureFlag = useToggleFeatureFlag()
 
   useEffect(() => {
     if (datasetId?.length > 4) {
@@ -43,8 +47,8 @@ const DebugMenu: React.FC = () => {
             <div className={styles.header}>
               <Switch
                 id="option_global_reports"
-                active={isGlobalReportsEnabled}
-                onClick={() => toggleFeatureFlag('globalReports')}
+                active={featureFlags.globalReports}
+                onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.GlobalReports))}
               />
               <label htmlFor="option_global_reports">
                 <strong>Feature flag:</strong> Global reports

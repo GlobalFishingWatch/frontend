@@ -7,11 +7,16 @@ import { debounce } from 'es-toolkit'
 import type { FilterOperator } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { HEATMAP_HIGH_RES_ID, HEATMAP_ID } from '@globalfishingwatch/deck-layers'
 import type { MultiSelectOnChange, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { Button, MultiSelect } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  selectActivityVisualizationMode,
+  selectDetectionsVisualizationMode,
+} from 'features/app/selectors/app.selectors'
 import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import {
   getCommonSchemaFieldsInDataview,
@@ -28,6 +33,7 @@ import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-m
 import HistogramRangeFilter from 'features/workspace/environmental/HistogramRangeFilter'
 import LayerSchemaFilter, { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { useLocationConnect } from 'routes/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { listAsSentence } from 'utils/shared'
 
@@ -109,6 +115,9 @@ function LayerFilters({
   const { t } = useTranslation()
   const isGuestUser = useSelector(selectIsGuestUser)
   const categoryDataviews = useSelector(selectDataviewInstancesByCategory(baseDataview?.category))
+  const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
+  const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
+  const { dispatchQueryParams } = useLocationConnect()
 
   const [newDataviewInstanceConfig, setNewDataviewInstanceConfig] = useState<
     UrlDataviewInstance | undefined
@@ -181,6 +190,22 @@ function LayerFilters({
     newDataviewInstanceConfigRef.current = newDataviewInstanceConfig
   }, [newDataviewInstanceConfig])
 
+  const checkVesselGroupsFilter = useCallback(
+    (dataviewInstance: UrlDataviewInstance) => {
+      const isHighRes =
+        dataview.category === DataviewCategory.Activity
+          ? activityVisualizationMode === HEATMAP_HIGH_RES_ID
+          : dataview.category === DataviewCategory.Detections
+            ? detectionsVisualizationMode === HEATMAP_HIGH_RES_ID
+            : false
+      if (isHighRes && dataviewInstance?.config?.filters?.['vessel-groups']) {
+        const categoryQueryParam = `${dataview.category}VisualizationMode`
+        dispatchQueryParams({ [categoryQueryParam]: HEATMAP_ID })
+      }
+    },
+    [activityVisualizationMode, dataview.category, detectionsVisualizationMode, dispatchQueryParams]
+  )
+
   useEffect(() => {
     return () => {
       if (newDataviewInstanceConfigRef.current) {
@@ -190,6 +215,7 @@ function LayerFilters({
           ) === true
         ) {
           upsertDataviewInstance(newDataviewInstanceConfigRef.current)
+          checkVesselGroupsFilter(newDataviewInstanceConfigRef.current)
         }
       }
     }
@@ -380,6 +406,7 @@ function LayerFilters({
           }))
         : newDataviewInstanceConfig
       upsertDataviewInstance(newDataviewInstancesConfig)
+      checkVesselGroupsFilter(newDataviewInstancesConfig as UrlDataviewInstance)
       newDataviewInstanceConfigRef.current = undefined
     } else if (applyToAll && baseDataview.config?.filters) {
       const newDataviewInstancesConfig = categoryDataviews.map((d) => ({

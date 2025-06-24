@@ -17,10 +17,7 @@ import { cleanVesselSearchResults } from 'features/search/search.slice'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { cleanVesselProfileDataviewInstances } from 'features/sidebar/sidebar-header.hooks'
 import { setVesselEventId } from 'features/vessel/vessel.slice'
-import {
-  selectFeatureFlags,
-  selectWorkspaceHistoryNavigation,
-} from 'features/workspace/workspace.selectors'
+import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
 import {
   cleanCurrentWorkspaceReportState,
   cleanReportQuery,
@@ -51,7 +48,6 @@ function NavigationHistoryButton() {
   const isRouteWithWorkspace = useSelector(selectIsRouteWithWorkspace)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const { dispatchQueryParams } = useLocationConnect()
-  const featureFlags = useSelector(selectFeatureFlags)
   const reportAreaIds = useSelector(selectReportAreaIds)
   const lastWorkspaceVisited = workspaceHistoryNavigation[workspaceHistoryNavigation.length - 1]
 
@@ -114,7 +110,6 @@ function NavigationHistoryButton() {
       ...(!isPreviousLocationReport
         ? { ...cleanReportQuery(lastWorkspaceVisited.query || {}), ...EMPTY_SEARCH_FILTERS }
         : lastWorkspaceVisited.query),
-      featureFlags,
     }
     const linkTo = {
       ...lastWorkspaceVisited,

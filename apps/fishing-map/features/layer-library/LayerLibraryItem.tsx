@@ -5,13 +5,7 @@ import { uniq } from 'es-toolkit'
 
 import type { Dataview } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import {
-  Button,
-  FillColorBarOptions,
-  Icon,
-  LineColorBarOptions,
-  Tooltip,
-} from '@globalfishingwatch/ui-components'
+import { Button, Icon, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
 import type { LibraryLayer } from 'data/layer-library'
@@ -28,6 +22,7 @@ import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selec
 import { setModalOpen } from 'features/modals/modals.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
+import { getNextColor } from 'features/workspace/workspace.utils'
 import { getHighlightedText } from 'utils/text'
 
 import styles from './LayerLibraryItem.module.css'
@@ -62,16 +57,12 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
   const allDataviews = useSelector(selectAllDataviews)
 
   const onAddToWorkspaceClick = async () => {
-    const palette = FILL_DATAVIEWS.includes(dataview.config?.type)
-      ? FillColorBarOptions
-      : LineColorBarOptions
-
     const usedColors = uniq(dataviews.flatMap((dataview) => dataview.config?.color || []))
     const isDefaultColorUnused = !usedColors.includes(config?.color as string)
-    const firstUnusedcolor =
-      palette.length <= usedColors.length
-        ? palette.find((c) => !usedColors.includes(c.value))
-        : palette[Math.floor(Math.random() * palette.length + 1)]
+    const firstUnusedColor = getNextColor(
+      FILL_DATAVIEWS.includes(dataview.config?.type) ? 'fill' : 'line',
+      usedColors
+    )
     const supportsColorChange = !LAYER_LIBRARY_EVENTS_IDS.includes(id)
     const apiDataview = allDataviews.find((d) => d.id === dataviewId)
     if (!apiDataview) {
@@ -93,8 +84,8 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
       config: {
         ...config,
         ...(supportsColorChange && {
-          color: isDefaultColorUnused ? config?.color : firstUnusedcolor?.value,
-          colorRamp: isDefaultColorUnused ? config?.colorRamp : firstUnusedcolor?.id,
+          color: isDefaultColorUnused ? config?.color : firstUnusedColor?.value,
+          colorRamp: isDefaultColorUnused ? config?.colorRamp : firstUnusedColor?.id,
         }),
       },
     })

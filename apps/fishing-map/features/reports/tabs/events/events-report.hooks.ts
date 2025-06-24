@@ -48,11 +48,11 @@ export function useGetEventReportGraphLabel() {
         case REPORT_EVENTS_GRAPH_GROUP_BY_RFMO:
         case REPORT_EVENTS_GRAPH_GROUP_BY_FAO:
           return eventsGraphDatasetAreas?.find(
-            (f) => f.id?.toString().toUpperCase() === areaId?.toUpperCase()
+            (f) => areaId && f.id?.toString().toUpperCase() === areaId?.toString()?.toUpperCase()
           )?.label
         case REPORT_EVENTS_GRAPH_GROUP_BY_EEZ:
           return eventsGraphDatasetAreas
-            ?.find((f) => f.id?.toString().toUpperCase() === areaId?.toUpperCase())
+            ?.find((f) => f.id?.toString().toUpperCase() === areaId?.toString()?.toUpperCase())
             ?.label.replace('Exclusive Economic Zone', 'EEZ')
             .trim()
         default:

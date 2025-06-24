@@ -6,6 +6,7 @@ import type {
   FourwingsClusterPickingObject,
   FourwingsPositionsPickingObject,
   VesselEventPickingObject,
+  VesselTrackPickingObject,
 } from '@globalfishingwatch/deck-layers'
 
 import { TrackCategory } from 'features/app/analytics.hooks'
@@ -13,7 +14,6 @@ import { TrackCategory } from 'features/app/analytics.hooks'
 import type { SliceExtendedFourwingsPickingObject } from './map.slice'
 
 export const isTilesClusterLayer = (pickingObject: DeckLayerPickingObject) =>
-  pickingObject.subcategory === DataviewType.TileCluster ||
   pickingObject.subcategory === DataviewType.FourwingsTileCluster
 
 export const isTilesClusterLayerCluster = (pickingObject: FourwingsClusterPickingObject) =>
@@ -21,6 +21,10 @@ export const isTilesClusterLayerCluster = (pickingObject: FourwingsClusterPickin
 
 export const isRulerLayerPoint = (pickingObject: DeckLayerPickingObject) =>
   pickingObject.category === 'rulers'
+
+export const isTrackSegment = (pickingObject: DeckLayerPickingObject) =>
+  pickingObject.subcategory === DataviewType.Track &&
+  (pickingObject as VesselTrackPickingObject).interactionType === 'segment'
 
 export const getAnalyticsEvent = (feature: DeckLayerPickingObject) => {
   const category = feature.category

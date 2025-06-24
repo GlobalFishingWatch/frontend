@@ -21,10 +21,12 @@ import {
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
-  FISHING_DATAVIEW_SLUG,
+  FISHING_DATAVIEW_SLUG_AIS,
+  FISHING_DATAVIEW_SLUG_VMS,
   FIXED_SAR_INFRASTRUCTURE,
   GRATICULES_DATAVIEW_SLUG,
   HIGH_SEAS_DATAVIEW_SLUG,
+  PORTS_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
   VIIRS_MATCH_DATAVIEW_SLUG,
@@ -34,8 +36,7 @@ import {
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
 } from 'features/dataviews/dataviews.utils'
-import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/map/map.config'
-import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
+import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID, PORTS_LAYER_ID } from 'features/map/map.config'
 import type { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
@@ -66,7 +67,7 @@ const workspace: Workspace<WorkspaceState> = {
           distance_from_port_km: '3',
         },
       },
-      dataviewId: FISHING_DATAVIEW_SLUG,
+      dataviewId: FISHING_DATAVIEW_SLUG_AIS,
     },
     {
       id: VMS_DATAVIEW_INSTANCE_ID,
@@ -86,7 +87,7 @@ const workspace: Workspace<WorkspaceState> = {
           'public-norway-fishing-effort:v20220112',
         ],
       },
-      dataviewId: FISHING_DATAVIEW_SLUG,
+      dataviewId: FISHING_DATAVIEW_SLUG_VMS,
     },
     {
       id: PRESENCE_DATAVIEW_INSTANCE_ID,
@@ -163,6 +164,14 @@ const workspace: Workspace<WorkspaceState> = {
         colorRamp: 'seance',
       },
       dataviewId: FIXED_SAR_INFRASTRUCTURE,
+    },
+    {
+      id: PORTS_LAYER_ID,
+      config: {
+        visible: false,
+        color: '#9AEEFF',
+      },
+      dataviewId: PORTS_DATAVIEW_SLUG,
     },
     {
       id: BASEMAP_DATAVIEW_INSTANCE_ID,

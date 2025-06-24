@@ -98,8 +98,7 @@
     "visualiationMode": "Mode de visualisation",
     "visualisationActivity": "Activité (cartes thermiques)",
     "visualisationActivityHint": "(Assurez-vous que l'id, les lat et lon, la date, l'heure et la valeur sont présents)",
-    "visualisationEvents": "Événements (regroupements)",
-    "visualisationEventsHint": "(Assurez-vous que event_id, event_start, event_end et geom sont tous présents)"
+    "visualisationEvents": "Événements (regroupements)"
   },
   "common": {
     "active": "Actif",
@@ -165,6 +164,8 @@
     "Events": "Évènements",
     "exclude": "Exclure",
     "excluded": "Exclu",
+    "experimental": "Experimental",
+    "experimentalTooltip": "Dataset still in development, click the information icon to learn more",
     "faq": "FAQs",
     "feedback": "Vos commentaires",
     "field": "Field",
@@ -243,7 +244,7 @@
     "share": "Partager la vue actuelle",
     "since": "depuis",
     "sourceOptions": {
-      "both": "Registres et autodéclarées",
+      "both": "Registres et AIS",
       "registryOnly": "Registre uniquement",
       "selfReportedOnly": "Autodéclarées uniquement"
     },
@@ -327,6 +328,7 @@
     "title": "Jeu de données",
     "title_one": "Jeu de données",
     "title_other": "Jeux de données",
+    "typeBigQuery": "BigQuery",
     "typePoints": " Points",
     "typePointsDescription": "Afficher une ou plusieurs points avec labels de votre jeu de données",
     "typePolygons": " Polygones",
@@ -679,7 +681,7 @@
     "color_change": "Modifier la couleur",
     "colorSelectCustom": "Select custom color",
     "colorSelectPredefined": "Select predefined color",
-    "distance_from_port_km": "Port Buffer",
+    "distance_from_port_km": "Tampon de port (km)",
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",
@@ -708,7 +710,7 @@
     "nameLengthError_one": "Le nom du calque nécessite au moins {{count}} caractères",
     "nameLengthError_other": "Le nom du calque nécessite au moins {{count}} caractères",
     "nameRequired": "Le nom du calque est requis",
-    "next_port_id": "Next port id",
+    "next_port_id": "Port suivant",
     "period": "Période",
     "properties": {
       "color": "Color",
@@ -759,6 +761,7 @@
     "errorLabel": "Veuillez décrire l'erreur de manière aussi détaillée que possible",
     "errorPlaceholder": "Veuillez décrire l'erreur de manière aussi détaillée que possible",
     "highRes": "Voir les cartes thermiques haute résolution",
+    "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Zone approximatie des cellules de la grille par rapport à l'équateur",
     "loading": "Chargement",
     "lowRes": "Voir les cartes thermiques basse résolution",
@@ -778,6 +781,13 @@
     "screenshotDownload": "Télécharger l'image",
     "screenshotPreview": "Aperçu de la capture d'écran",
     "search": "Recherchez des zones maritimes, les AMP ou les ZEE",
+    "searchTypes": {
+      "eez": "EEZ",
+      "fao": "FAO",
+      "mpa": "MPA",
+      "port": "Port",
+      "rfmo": "RFMO"
+    },
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer"
   },
@@ -910,8 +920,6 @@
     "activityByType": "Par type",
     "activityByVoyages": "Par voyages",
     "addToWorkspace": "Ajouter un navire à la vue",
-    "ais-geartypes": "GFW Gear Types",
-    "ais-shiptypes": "GFW Vessel Types",
     "authorization": "autorisation",
     "authorizationDatesDisclaimer": "La date d’autorisation la plus récente du navire est la dernière date à laquelle Global Fishing Watch a collecté des données. Consultez la source du registre pour vérifier le statut.",
     "beam": "Largeur",
@@ -997,8 +1005,8 @@
       "tuna_purse_seines": "Senne coulissante au thon",
       "well_boat": "Navire vivier"
     },
-    "gfw_geartypes": "Type d'engin GFW",
-    "gfw_shiptypes": "Type de navire GFW",
+    "gfw-geartypes": "GFW Gear type",
+    "gfw-shiptypes": "GFW Vessel type",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Tonnage brut",
     "grossTonnageRange": "Plage de tonnage brut",
@@ -1010,7 +1018,8 @@
     "infoSources": {
       "both": "Registres et AIS",
       "registry": "Registres",
-      "selfReported": "Autodéclarées"
+      "selfReported": "Autodéclarées",
+      "gfw-source": "GFW Source"
     },
     "insights": {
       "countries": {
@@ -1112,6 +1121,8 @@
     "shiptype": "Types de navires",
     "shiptypes": "Types de navires",
     "showOtherLayers": "Afficher les autres calques",
+    "skylightLink": "Click to see Skylight vessel profile",
+    "skylightSearch": "Click to search this vessel",
     "sortAsc": "Trier les navires par ordre alphabétique (ascendant).",
     "sortDesc": "Trier les navires par ordre alphabétique (décroissant).",
     "source": "Source",

@@ -24,6 +24,11 @@
     "moreInfoLink": "",
     "name": "ZEE"
   },
+  "eez-areas-12nm": {
+    "description": "World 12 Nautical Miles Zone (Territorial Seas). Flanders Marine Institute (2023). Maritime Boundaries Geodatabase: Territorial Seas (12NM), version 4. Available online at https://www.marineregions.org/. https://doi.org/10.14284/633",
+    "moreInfoLink": "",
+    "name": "Territorial Seas"
+  },
   "encounters": {
     "description": "Identificados a partir de dados AIS como localizações onde duas embarcações, uma transportadora e uma embarcação de pesca, estiveram a uma distância de 500 metros durante pelo menos 2 horas e viajaram a uma velocidade média inferior a 2 nós, enquanto estavam a pelo menos 10 km de um ancoradouro costeiro.",
     "moreInfoLink": "",
@@ -44,6 +49,11 @@
     "moreInfoLink": "",
     "name": "Esforço de pesca aparente (VMS)"
   },
+  "gfcm-fao": {
+    "description": "General Fisheries Commission for the Mediterranean Fisheries Restricted Areas",
+    "moreInfoLink": "https://www.fao.org/gfcm/data/maps/fras/ru",
+    "name": "GFCM FRAs"
+  },
   "graticules": {
     "description": "Grades ou quadrículas de latitude e longitude em intervalos de 1, 5, 10 e 30° dependendo do nível de zoom do mapa",
     "moreInfoLink": "",
@@ -53,6 +63,11 @@
     "description": "O Alto-mar é qualquer área do oceano além das Zonas Econômicas Exclusivas (ZEEs). Os bolsões de alto-mar são áreas totalmente cercadas por ZEEs. Esses bolsões podem ser difíceis de distinguir das múltiplas jurisdições das ZEEs que os cercam, portanto, temos uma camada que os destaca.",
     "moreInfoLink": "",
     "name": "Alto-mar"
+  },
+  "high-seas-pockets": {
+    "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
+    "moreInfoLink": "",
+    "name": "High seas pockets"
   },
   "loitering": {
     "description": "Um episódio de deriva é quando uma única embarcação exibe um comportamento indicativo de um evento de encontro potencial. Um episódio de deriva é estimado usando dados do sistema de identificação automática (AIS), incluindo a velocidade da embarcação, a duração em um determinado local e a distância da costa. Deriva ocorre quando uma embarcação viaja a uma velocidade média inferior a dois nós, estando, em média, a pelo menos 20 milhas náuticas da costa. Para reduzir o ruído no portal da embarcação transportadora, apenas eventos de deriva maiores que uma hora são mostrados.",
@@ -75,7 +90,7 @@
     "name": "AMPs (WDPA)"
   },
   "mpatlas": {
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably",
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term biodiversity conservation. Reported MPAs vary greatly in their status in the process of becoming an MPA (Stage of Establishment) and the impact of human activities (Level of Protection). MPAtlas assesses MPAs using The MPA Guide, a science-based tool that identifies different types of MPAs and connects them to the outcome they are likely to achieve. Source: Marine Protection Atlas",
     "moreInfoLink": "https://mpatlas.org",
     "name": "MPAs (MPAtlas)"
   },
@@ -94,6 +109,11 @@
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
     "name": "Concentração de oxigênio (O2)"
   },
+  "paa-duke": {
+    "description": "Global dataset of Preferential Access Areas for small-scale fishing",
+    "moreInfoLink": "https://research.repository.duke.edu/concern/datasets/79407z51r",
+    "name": "Preferential Access Areas"
+  },
   "ph": {
     "description": "A acidez dos oceanos é medida pelo pH. O aumento da absorção de dióxido de carbono reduziu o pH dos oceanos, resultando na acidificação dos oceanos, que pode ter um amplo impacto nos organismos marinhos. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo o pH, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. ",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
@@ -108,6 +128,11 @@
     "description": "Os portos são baseados no conjunto de dados de ancoragens da Global Fishing Watch, um banco de dados global de locais de ancoragem onde as embarcações se reúnem. O conjunto de dados contém mais de 160.000 locais de ancoragem individuais, que são agrupados em cerca de 32.000 portos. ",
     "moreInfoLink": "",
     "name": "Visitas portuárias (AIS)"
+  },
+  "port-locations": {
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
+    "moreInfoLink": "",
+    "name": "Ports"
   },
   "presence": {
     "description": "A camada de presença analisa dados do sistema de identificação automática (AIS) coletados de embarcações identificadas pela nossa pesquisa. A presença é determinada pelas posições assumidas e transmitidas pelo AIS da embarcação e é exibida como um mapa de calor. ",

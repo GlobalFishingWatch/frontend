@@ -33,7 +33,6 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { useTimebarTracksGraphSteps } from 'features/map/map-layers.hooks'
 import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import { selectShowTimeComparison } from 'features/reports/report-area/area-reports.selectors'
 import { MAX_TIMEBAR_VESSELS } from 'features/timebar/timebar.config'
@@ -72,7 +71,15 @@ import styles from './Timebar.module.css'
 
 export const ZOOM_LEVEL_TO_FOCUS_EVENT = 5
 
-const TimebarHighlighterWrapper = ({ showTooltip }: { showTooltip: boolean }) => {
+const TimebarHighlighterWrapper = ({
+  showTooltip,
+  fixed,
+  onToggleFixedTooltip,
+}: {
+  showTooltip: boolean
+  fixed?: boolean
+  onToggleFixedTooltip?: (toggle?: boolean) => void
+}) => {
   const { highlightedEventIds, dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const highlightedTime = useSelector(selectHighlightedTime)
@@ -147,11 +154,13 @@ const TimebarHighlighterWrapper = ({ showTooltip }: { showTooltip: boolean }) =>
 
   return highlightedTime ? (
     <TimebarHighlighter
+      fixed={fixed}
       showTooltip={showTooltip}
       hoverStart={highlightedTime.start}
       hoverEnd={highlightedTime.end}
       onHighlightChunks={onHighlightChunks}
       dateCallback={formatDate}
+      onToggleFixedTooltip={onToggleFixedTooltip}
     />
   ) : null
 }
@@ -160,6 +169,7 @@ const TimebarWrapper = () => {
   useTimebarVisualisation()
 
   const [isMouseInside, setMouseInside] = useState(false)
+  const [isMouseClicked, setMouseClicked] = useState(false)
   const { t, ready, i18n } = useTranslation()
   const trackGraphSteps = useTimebarTracksGraphSteps()
   const labels = ready ? (i18n?.getDataByLanguage(i18n.language) as any)?.timebar : undefined
@@ -178,10 +188,11 @@ const TimebarWrapper = () => {
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
-  const screenshotModalOpen = useSelector(selectScreenshotModalOpen)
   const reportAreaLocation = useSelector(selectIsAnyAreaReportLocation)
   const fitAreaInViewport = useFitAreaInViewport()
   const dispatch = useAppDispatch()
+
+  const highlightedTime = useSelector(selectHighlightedTime)
   // const [isPending, startTransition] = useTransition()
   const tracks = useTimebarVesselTracks()
   const tracksGraphsData = useTimebarVesselTracksGraph()
@@ -215,10 +226,12 @@ const TimebarWrapper = () => {
   const onMouseMove = useCallback(
     (clientX: number | null, scale: ((arg: number) => Date) | null) => {
       if (clientX === null || clientX === undefined || isNaN(clientX)) {
-        dispatchDisableHighlightedTime()
+        if (!isMouseClicked) {
+          dispatchDisableHighlightedTime()
+        }
       } else {
         try {
-          if (!scale) return
+          if (!scale || isMouseClicked) return
           const start = scale(clientX - 10).toISOString()
           const end = scale(clientX + 10).toISOString()
           const startDateTime = getUTCDateTime(start)
@@ -237,47 +250,68 @@ const TimebarWrapper = () => {
         }
       }
     },
-    [dispatch, dispatchDisableHighlightedTime]
+    [dispatch, dispatchDisableHighlightedTime, isMouseClicked]
   )
 
   const onChange: TimebarProps['onChange'] = useCallback(
     (e) => {
-      const gaActions: Record<string, string> = {
-        TIME_RANGE_SELECTOR: 'Configure timerange using calendar option',
-        ZOOM_IN_RELEASE: 'Zoom In timerange',
-        ZOOM_OUT_RELEASE: 'Zoom Out timerange',
-        HOUR_INTERVAL_BUTTON: 'Use hour preset',
-        DAY_INTERVAL_BUTTON: 'Use day preset',
-        MONTH_INTERVAL_BUTTON: 'Use month preset',
-        YEAR_INTERVAL_BUTTON: 'Use year preset',
-        SEEK_RELEASE: 'Move timebar slider',
-        BOOKMARK_SELECT: 'Select bookmark period',
-      }
-      if (e.source && gaActions[e.source]) {
-        trackEvent({
-          category: TrackCategory.Timebar,
-          action: gaActions[e.source],
-          label: getEventLabel([e.start, e.end]),
-        })
-      }
-      onTimebarChange(e.start, e.end)
-      if (reportAreaLocation) {
-        fitAreaInViewport()
+      if (e.start !== start || e.end !== end) {
+        const gaActions: Record<string, string> = {
+          TIME_RANGE_SELECTOR: 'Configure timerange using calendar option',
+          ZOOM_IN_RELEASE: 'Zoom In timerange',
+          ZOOM_OUT_RELEASE: 'Zoom Out timerange',
+          HOUR_INTERVAL_BUTTON: 'Use hour preset',
+          DAY_INTERVAL_BUTTON: 'Use day preset',
+          MONTH_INTERVAL_BUTTON: 'Use month preset',
+          YEAR_INTERVAL_BUTTON: 'Use year preset',
+          SEEK_RELEASE: 'Move timebar slider',
+          BOOKMARK_SELECT: 'Select bookmark period',
+        }
+        if (e.source && gaActions[e.source]) {
+          trackEvent({
+            category: TrackCategory.Timebar,
+            action: gaActions[e.source],
+            label: getEventLabel([e.start, e.end]),
+          })
+        }
+        onTimebarChange(e.start, e.end)
+        if (highlightedTime && (highlightedTime.start < start || highlightedTime.end > end)) {
+          setMouseClicked(false)
+        }
+        if (reportAreaLocation) {
+          fitAreaInViewport()
+        }
       }
     },
-    [fitAreaInViewport, onTimebarChange, reportAreaLocation]
+    [fitAreaInViewport, onTimebarChange, reportAreaLocation, highlightedTime, end, start]
   )
 
   const onMouseEnter = useCallback(() => {
     setMouseInside(true)
   }, [])
 
+  const onToggleFixedTooltip = useCallback(
+    (toggle?: boolean) => {
+      if (toggle !== undefined) {
+        setMouseClicked(toggle)
+        if (!toggle) {
+          setMouseInside(false)
+        }
+      } else {
+        setMouseClicked(!isMouseClicked)
+      }
+    },
+    [isMouseClicked, setMouseInside]
+  )
+
   const onMouseLeave = useCallback(() => {
     setMouseInside(false)
-    requestAnimationFrame(() => {
-      dispatchHighlightedEvents(undefined)
-    })
-  }, [dispatchHighlightedEvents])
+    if (!isMouseClicked) {
+      requestAnimationFrame(() => {
+        dispatchHighlightedEvents(undefined)
+      })
+    }
+  }, [dispatchHighlightedEvents, isMouseClicked])
 
   const onMouseDown = useCallback(() => {
     rootElement?.classList.add('dragging')
@@ -366,12 +400,7 @@ const TimebarWrapper = () => {
       <Fragment>
         <TimebarTracks key="tracks" data={tracks} />
         {showGraph && tracksGraphsData && (
-          <TimebarTracksGraph
-            key="trackGraph"
-            data={tracksGraphsData}
-            steps={trackGraphSteps}
-            printing={screenshotModalOpen}
-          />
+          <TimebarTracksGraph key="trackGraph" data={tracksGraphsData} steps={trackGraphSteps} />
         )}
         {events && (
           <TimebarTracksEvents
@@ -387,7 +416,6 @@ const TimebarWrapper = () => {
     hasTrackError,
     highlightedEventIds,
     onEventClick,
-    screenshotModalOpen,
     showGraph,
     t,
     trackGraphSteps,
@@ -406,10 +434,14 @@ const TimebarWrapper = () => {
         )}
         {timebarVisualisation === TimebarVisualisations.Vessel && tracksComponents}
         {timebarVisualisation === TimebarVisualisations.Events && <TimebarClusterEventsGraph />}
-        <TimebarHighlighterWrapper showTooltip={isMouseInside} />
+        <TimebarHighlighterWrapper
+          showTooltip={isMouseInside || isMouseClicked}
+          fixed={isMouseClicked}
+          onToggleFixedTooltip={onToggleFixedTooltip}
+        />
       </Fragment>
     )
-  }, [isMouseInside, timebarVisualisation, tracksComponents])
+  }, [isMouseClicked, isMouseInside, onToggleFixedTooltip, timebarVisualisation, tracksComponents])
 
   if (!start || !end || isMapDrawing || showTimeComparison) return null
 

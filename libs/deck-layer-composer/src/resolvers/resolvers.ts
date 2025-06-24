@@ -4,7 +4,6 @@ import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import {
   BaseMapLabelsLayer,
   BaseMapLayer,
-  ClusterLayer,
   ContextLayer,
   FourwingsClustersLayer,
   FourwingsCurrentsTileLayer,
@@ -25,7 +24,6 @@ import { resolveDeckCurrentsLayerProps } from './currents'
 import { resolveDeckFourwingsLayerProps } from './fourwings'
 import { resolveDeckGraticulesLayerProps } from './graticules'
 import { resolveDeckPolygonsLayerProps } from './polygons'
-import { resolveDeckTileClusterLayerProps } from './tile-cluster'
 import type { ResolverGlobalConfig } from './types'
 import {
   resolveDeckUserContextLayerProps,
@@ -91,11 +89,6 @@ export const dataviewToDeckLayer = (
   if (dataview.config?.type === DataviewType.UserPoints) {
     const deckLayerProps = resolveDeckUserPointsLayerProps(dataview, layerConfig)
     const layer = new UserPointsTileLayer(deckLayerProps)
-    return layer
-  }
-  if (dataview.config?.type === DataviewType.TileCluster) {
-    const deckLayerProps = resolveDeckTileClusterLayerProps(dataview, layerConfig)
-    const layer = new ClusterLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.FourwingsTileCluster) {

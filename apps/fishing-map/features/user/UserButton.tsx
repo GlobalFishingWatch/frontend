@@ -10,7 +10,6 @@ import {
   selectIsUserExpired,
   selectUserData,
 } from 'features/user/selectors/user.selectors'
-import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { USER } from 'routes/routes'
 
@@ -22,7 +21,6 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
   const initials = userData?.firstName
     ? `${userData?.firstName?.slice(0, 1)}${userData?.lastName?.slice(0, 1)}`
     : ''
-  const featureFlags = useSelector(selectFeatureFlags)
   return (
     <div className={className}>
       {guestUser || isUserExpired ? (
@@ -36,7 +34,7 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
           to={{
             type: USER,
             payload: {},
-            query: { ...DEFAULT_WORKSPACE_LIST_VIEWPORT, featureFlags },
+            query: { ...DEFAULT_WORKSPACE_LIST_VIEWPORT },
             replaceQuery: true,
           }}
           data-test={testId}

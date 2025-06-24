@@ -98,8 +98,7 @@
     "visualiationMode": "Modo de visualización",
     "visualisationActivity": "Actividad (Heatmap)",
     "visualisationActivityHint": "(Asegúrate de que el id, lat, lon, timestamp y value estén todos presentes)",
-    "visualisationEvents": "Eventos (clusters)",
-    "visualisationEventsHint": "(Asegúrate de que el event_id, el event_start, el event_end y gem estén todos presentes)"
+    "visualisationEvents": "Eventos (clusters)"
   },
   "common": {
     "active": "Activo",
@@ -165,6 +164,8 @@
     "Events": "Eventos",
     "exclude": "Excluir",
     "excluded": "Excluido",
+    "experimental": "Experimental",
+    "experimentalTooltip": "Dataset still in development, click the information icon to learn more",
     "faq": "FAQs",
     "feedback": "Comentarios",
     "field": "Campo",
@@ -243,7 +244,7 @@
     "share": "Comparte el mapa actual",
     "since": "desde",
     "sourceOptions": {
-      "both": "Registry and self reported",
+      "both": "Registro y AIS",
       "registryOnly": "Registry only",
       "selfReportedOnly": "Self reported only"
     },
@@ -327,6 +328,7 @@
     "title": "Datos",
     "title_one": "Datos",
     "title_other": "Datos",
+    "typeBigQuery": "BigQuery",
     "typePoints": " Puntos",
     "typePointsDescription": "Mostrar una o varias posiciones con etiquetas en los datos",
     "typePolygons": " Polígonos",
@@ -708,7 +710,7 @@
     "nameLengthError_one": "El nombre de la capa requiere al menos {{count}} caracter",
     "nameLengthError_other": "El nombre de la capa requiere al menos {{count}} caracter",
     "nameRequired": "Se requiere el nombre de la capa.",
-    "next_port_id": "Siguiente id de puerto",
+    "next_port_id": "Siguiente puerto",
     "period": "Periodo",
     "properties": {
       "color": "Color",
@@ -759,6 +761,7 @@
     "errorLabel": "Describa el error con el mayor detalle posible",
     "errorPlaceholder": "Describa el error con el mayor detalle posible",
     "highRes": "Ver mapas de calor de alta resolución",
+    "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
     "legend_help": "Área de celda de cuadrícula aproximada en el ecuador",
     "loading": "Cargando",
     "lowRes": "Ver mapas de calor de baja resolución",
@@ -778,6 +781,13 @@
     "screenshotDownload": "Descargar imagen",
     "screenshotPreview": "Vista previa de captura de pantalla",
     "search": "Buscar áreas oceánicas y marinas, AMPs o ZEEs",
+    "searchTypes": {
+      "eez": "EEZ",
+      "fao": "FAO",
+      "mpa": "MPA",
+      "port": "Port",
+      "rfmo": "RFMO"
+    },
     "zoom_in": "Acercarse",
     "zoom_out": "Alejarse"
   },
@@ -910,8 +920,6 @@
     "activityByType": "Por tipo",
     "activityByVoyages": "Por viajes",
     "addToWorkspace": "Añadir embarcación a la vista",
-    "ais-geartypes": "GFW Gear Types",
-    "ais-shiptypes": "GFW Vessel Types",
     "authorization": "autorización",
     "authorizationDatesDisclaimer": "La fecha más reciente de la autorización de buques es la última fecha que Global Fishing Watch recolectó datos. Visite la fuente del registro para verificar el estado.",
     "beam": "Manga",
@@ -997,8 +1005,8 @@
       "tuna_purse_seines": "Red de cerco atunera",
       "well_boat": "Barco vivero"
     },
-    "gfw_geartypes": "GFW Gear type",
-    "gfw_shiptypes": "GFW Vessel type",
+    "gfw-geartypes": "GFW Gear type",
+    "gfw-shiptypes": "GFW Vessel type",
     "goToImage": "Ir a la imagen {{number}}",
     "grossTonnage": "Tonelaje",
     "grossTonnageRange": "Rango de tonelaje bruto",
@@ -1010,7 +1018,8 @@
     "infoSources": {
       "both": "Registro y AIS",
       "registry": "Registro",
-      "selfReported": "Autodeclarado"
+      "selfReported": "Autodeclarado",
+      "gfw-source": "GFW Source"
     },
     "insights": {
       "countries": {
@@ -1112,6 +1121,8 @@
     "shiptype": "Tipos de embarcaciones",
     "shiptypes": "Ship types",
     "showOtherLayers": "Mostrar otras capas",
+    "skylightLink": "Click to see Skylight vessel profile",
+    "skylightSearch": "Click to search this vessel",
     "sortAsc": "Ordenar las embarcaciones alfabéticamente (ascendiendo)",
     "sortDesc": "Ordenar las embarcaciones alfabéticamente (descendiendo)",
     "source": "Fuente",

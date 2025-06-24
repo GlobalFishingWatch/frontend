@@ -17,7 +17,6 @@ import {
 } from 'features/reports/reports.slice'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectUserReports } from 'features/user/selectors/user.permissions.selectors'
-import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
 import { resetWorkspaceSlice } from 'features/workspace/workspace.slice'
 import { REPORT } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -41,7 +40,6 @@ function UserReports() {
   const reports = useSelector(selectUserReports)
   const reportsStatus = useSelector(selectReportsStatus)
   const reportsStatusId = useSelector(selectReportsStatusId)
-  const featureFlags = useSelector(selectFeatureFlags)
   const [searchQuery, setSearchQuery] = useState('')
 
   const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,7 +107,7 @@ function UserReports() {
                     to={{
                       type: REPORT,
                       payload: { reportId: report.id },
-                      query: { featureFlags },
+                      query: {},
                     }}
                     onClick={() => onReportClick(report)}
                   >

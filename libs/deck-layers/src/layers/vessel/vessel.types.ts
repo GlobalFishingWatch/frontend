@@ -3,7 +3,7 @@ import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 
 import type { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
 
-import type { DeckPickingObject } from '../../types'
+import type { DeckLayerSubcategory, DeckPickingObject } from '../../types'
 
 import type { TRACK_LAYER_TYPE } from './vessel.config'
 
@@ -28,9 +28,34 @@ export type _VesselLayerProps = {
 // export type VesselTrackPickingInfo = PickingInfo<VesselTrackPickingObject, { tile?: Tile2DHeader }>
 
 export type VesselEventProperties = ApiEvent & {
+  id: string
   color: string
   title: string
   vesselId: string
+}
+
+export type VesselTrackInteractionType = 'segment' | 'point'
+
+export type VesselTrackProperties = {
+  color: string
+  title: string
+  vesselId: string
+  timestamp?: number
+  course?: number
+  speed?: number
+  depth?: number
+  subcategory?: DeckLayerSubcategory
+  interactionType?: VesselTrackInteractionType
+}
+
+export type VesselPositionProperties = {
+  interactionType?: VesselTrackInteractionType
+  properties: {
+    timestamp?: number
+    speed?: number
+    depth?: number
+    course?: number
+  }
 }
 
 export type TrackLabelerPoint = {
@@ -46,3 +71,14 @@ export type TrackLabelerPoint = {
 export type VesselEventPickingObject = VesselEventProperties &
   DeckPickingObject<Record<string, unknown>>
 export type VesselEventPickingInfo = PickingInfo<VesselEventPickingObject, { tile?: Tile2DHeader }>
+
+export type VesselTrackPickingObject = VesselTrackProperties &
+  DeckPickingObject<Record<string, unknown>>
+export type VesselTrackPickingInfo = PickingInfo<VesselTrackPickingObject, { tile?: Tile2DHeader }>
+
+export type VesselPositionPickingObject = VesselPositionProperties &
+  DeckPickingObject<Record<string, unknown>>
+export type VesselPositionPickingInfo = PickingInfo<
+  VesselPositionPickingObject,
+  { tile?: Tile2DHeader }
+>

@@ -23,8 +23,10 @@ import {
 } from '@globalfishingwatch/deck-layers'
 
 import { POPUP_CATEGORY_ORDER } from 'data/config'
+import { SKYLIGHT_PROTOTYPE_DATASET_ID } from 'data/workspaces'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { PORTS_LAYER_ID } from 'features/map/map.config'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import ActivityTooltipRow from 'features/map/popups/categories/ActivityLayers'
 import ClusterEventTooltip from 'features/map/popups/categories/ClusterEventTooltip'
@@ -32,12 +34,14 @@ import ComparisonRow from 'features/map/popups/categories/ComparisonRow'
 import ContextTooltipSection from 'features/map/popups/categories/ContextLayers'
 import DetectionsTooltipRow from 'features/map/popups/categories/DetectionsLayers'
 import EnvironmentTooltipSection from 'features/map/popups/categories/EnvironmentLayers'
+import PortsTooltipSection from 'features/map/popups/categories/PortsLayers'
 import PositionsRow from 'features/map/popups/categories/PositionsRow'
 import RulerTooltip from 'features/map/popups/categories/RulerTooltip'
 import UserPointsTooltipSection from 'features/map/popups/categories/UserPointsLayers'
 import UserTracksTooltipSection from 'features/map/popups/categories/UserTracksLayers'
 import VesselEventsLayers from 'features/map/popups/categories/VesselEventsLayers'
 import VesselGroupTooltipRow from 'features/map/popups/categories/VesselGroupLayers'
+import VesselTracksLayers from 'features/map/popups/categories/VesselTracksLayers'
 import WorkspacePointsTooltipSection from 'features/map/popups/categories/WorkspacePointsLayers'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -148,10 +152,16 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               }
               return feature.sublayers?.map((sublayer, j) => {
                 const dataview = dataviews.find((d) => d.id === sublayer.id)
+                const isSkylighPrototype = sublayer.datasets.some(
+                  (d) => d === SKYLIGHT_PROTOTYPE_DATASET_ID
+                )
                 return (
                   <TooltipComponent
                     key={`${i}-${j}`}
-                    loading={interactionStatus === AsyncReducerStatus.Loading}
+                    loading={
+                      (isSkylighPrototype ? activityInteractionStatus : interactionStatus) ===
+                      AsyncReducerStatus.Loading
+                    }
                     error={
                       interactionStatus === AsyncReducerStatus.Error
                         ? interactionError || t('errors.genericShort', 'Something went wrong')
@@ -247,18 +257,24 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             )
           }
           case DataviewCategory.Context: {
-            const contextFeatures = (features as ContextPickingObject[]).filter(
-              (feature) => feature.subcategory !== DataviewType.UserPoints
-            )
-            const pointFeatures = (features as UserLayerPickingObject[]).filter(
-              (feature) => feature.subcategory === DataviewType.UserPoints
-            )
-            // Workaround to show user context features in the context section
-            const userContextFeatures = (features as UserLayerPickingObject[]).filter(
-              (feature) =>
-                feature.subcategory === DataviewType.UserContext &&
-                !contextFeatures.includes(feature as ContextPickingObject)
-            )
+            const portFeatures: UserLayerPickingObject[] = []
+            const pointFeatures: UserLayerPickingObject[] = []
+            const contextFeatures: ContextPickingObject[] = []
+            const userContextFeatures: UserLayerPickingObject[] = []
+            for (const feature of features) {
+              if (feature.layerId.startsWith(PORTS_LAYER_ID)) {
+                portFeatures.push(feature as UserLayerPickingObject)
+              } else if (
+                (feature as UserLayerPickingObject).subcategory === DataviewType.UserPoints
+              ) {
+                pointFeatures.push(feature as UserLayerPickingObject)
+              } else if (feature.subcategory === DataviewType.UserContext) {
+                // Workaround to show user context features in the context section
+                userContextFeatures.push(feature as UserLayerPickingObject)
+              } else {
+                contextFeatures.push(feature as ContextPickingObject)
+              }
+            }
 
             return (
               <Fragment key={featureCategory}>
@@ -272,6 +288,10 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 />
                 <UserContextTooltipSection
                   features={userContextFeatures}
+                  showFeaturesDetails={type === 'click'}
+                />
+                <PortsTooltipSection
+                  features={portFeatures}
                   showFeaturesDetails={type === 'click'}
                 />
               </Fragment>
@@ -344,12 +364,23 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
           }
 
           case DataviewCategory.Vessels: {
+            const trackFeatures = (features as VesselEventPickingObject[]).filter(
+              (feature) => feature.subcategory === DataviewType.Track
+            )
+            const eventFeatures = (features as VesselEventPickingObject[]).filter(
+              (feature) => feature.subcategory === DataviewType.VesselEvents
+            )
             return (
-              <VesselEventsLayers
-                key={featureCategory}
-                features={features as VesselEventPickingObject[]}
-                showFeaturesDetails={type === 'click'}
-              />
+              <Fragment key={featureCategory}>
+                <VesselTracksLayers
+                  features={trackFeatures}
+                  showFeaturesDetails={type === 'click'}
+                />
+                <VesselEventsLayers
+                  features={eventFeatures}
+                  showFeaturesDetails={type === 'click'}
+                />
+              </Fragment>
             )
           }
 

@@ -24,6 +24,11 @@
     "moreInfoLink": "crwdns82498:0crwdne82498:0",
     "name": "crwdns82494:0crwdne82494:0"
   },
+  "eez-areas-12nm": {
+    "description": "crwdns87858:0crwdne87858:0",
+    "moreInfoLink": "crwdns87860:0crwdne87860:0",
+    "name": "crwdns87862:0crwdne87862:0"
+  },
   "encounters": {
     "description": "crwdns82502:0crwdne82502:0",
     "moreInfoLink": "crwdns82504:0crwdne82504:0",
@@ -44,6 +49,11 @@
     "moreInfoLink": "crwdns84646:0crwdne84646:0",
     "name": "crwdns84648:0crwdne84648:0"
   },
+  "gfcm-fao": {
+    "description": "crwdns87864:0crwdne87864:0",
+    "moreInfoLink": "crwdns87866:0crwdne87866:0",
+    "name": "crwdns87868:0crwdne87868:0"
+  },
   "graticules": {
     "description": "crwdns82520:0crwdne82520:0",
     "moreInfoLink": "crwdns82522:0crwdne82522:0",
@@ -53,6 +63,11 @@
     "description": "crwdns82526:0crwdne82526:0",
     "moreInfoLink": "crwdns82528:0crwdne82528:0",
     "name": "crwdns82524:0crwdne82524:0"
+  },
+  "high-seas-pockets": {
+    "description": "crwdns87870:0crwdne87870:0",
+    "moreInfoLink": "crwdns87872:0crwdne87872:0",
+    "name": "crwdns87884:0crwdne87884:0"
   },
   "loitering": {
     "description": "crwdns83784:0crwdne83784:0",
@@ -94,6 +109,11 @@
     "moreInfoLink": "crwdns82558:0crwdne82558:0",
     "name": "crwdns82554:0crwdne82554:0"
   },
+  "paa-duke": {
+    "description": "crwdns87876:0crwdne87876:0",
+    "moreInfoLink": "crwdns87878:0crwdne87878:0",
+    "name": "crwdns87886:0crwdne87886:0"
+  },
   "ph": {
     "description": "crwdns82562:0crwdne82562:0",
     "moreInfoLink": "crwdns82564:0crwdne82564:0",
@@ -108,6 +128,11 @@
     "description": "crwdns83790:0crwdne83790:0",
     "moreInfoLink": "crwdns83792:0crwdne83792:0",
     "name": "crwdns83794:0crwdne83794:0"
+  },
+  "port-locations": {
+    "description": "crwdns87964:0crwdne87964:0",
+    "moreInfoLink": "crwdns87966:0crwdne87966:0",
+    "name": "crwdns87968:0crwdne87968:0"
   },
   "presence": {
     "description": "crwdns82574:0crwdne82574:0",

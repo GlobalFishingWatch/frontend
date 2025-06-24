@@ -41,7 +41,7 @@ import {
   selectVesselInfoData,
 } from 'features/vessel/selectors/vessel.selectors'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
-import { getNextColor } from 'features/workspace/workspace.hook'
+import { getNextColor } from 'features/workspace/workspace.utils'
 import {
   selectIsAnyVesselLocation,
   selectIsPortReportLocation,

@@ -53,7 +53,7 @@ const BigQueryMenu: React.FC = () => {
     if (error) {
       setError('')
     }
-    const action = await dispatch(fetchBigQueryRunCostThunk({ query, visualisationMode }))
+    const action = await dispatch(fetchBigQueryRunCostThunk({ query }))
     if (fetchBigQueryRunCostThunk.fulfilled.match(action)) {
       setRunCostChecked(true)
     } else {

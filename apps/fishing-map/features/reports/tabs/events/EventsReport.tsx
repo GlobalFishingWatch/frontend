@@ -58,7 +58,6 @@ function EventsReport() {
   const timerangeSupported = getDownloadReportSupported(start, end)
   const datasetAreasId = useSelector(selectEventsGraphDatasetAreaId)
   const datasetAreas = useFetchContextDatasetAreas(datasetAreasId)
-  const showPortsTable = eventsDataview?.datasets?.[0]?.subcategory !== 'port_visit'
   const { dispatchQueryParams } = useLocationConnect()
   const { updateReportHash, reportOutdated } = useReportHash()
 
@@ -80,6 +79,7 @@ function EventsReport() {
   const isLoadingStats = statsStatus === 'pending'
   const isLoadingVessels = vessselStatus === 'pending'
   const noEvents = !isLoadingStats && totalEvents !== undefined && totalEvents === 0
+  const showPortsTable = eventsDataview?.datasets?.[0]?.subcategory !== 'port_visit' && !noEvents
 
   const graph = useMemo(() => {
     if (statsError) {
