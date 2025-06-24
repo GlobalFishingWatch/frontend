@@ -11,13 +11,15 @@ import { EVENTS_COLORS } from 'data/config'
 import { getHasVesselProfileInstance } from 'features/dataviews/dataviews.utils'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
 import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate, formatLocalTimeDate } from 'features/i18n/i18nDate'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { useVesselProfileEncounterLayer } from 'features/vessel/vessel.hooks'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
+import { getUTCDateTime } from 'utils/dates'
+import { getOffsetHours } from 'utils/events'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
 import type { VesselEvent } from './Event'
@@ -36,6 +38,13 @@ const EventDetail = ({ event }: ActivityContentProps) => {
   const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
   const vesselProfileEncounterLayer = useVesselProfileEncounterLayer()
   const workspaceDataviewInstancesMerged = useSelector(selectWorkspaceDataviewInstancesMerged)
+  const hoursOffset = getOffsetHours(event.coordinates?.[0] as number)
+  const startLocalTimeLabel = formatLocalTimeDate(
+    getUTCDateTime(event.start).plus({ hours: hoursOffset })
+  )
+  const endLocalTimeLabel = formatLocalTimeDate(
+    getUTCDateTime(event.end).plus({ hours: hoursOffset })
+  )
 
   const TimeFields = ({ type }: { type?: EventType }) => (
     <Fragment>
@@ -45,7 +54,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
             ? t(`eventInfo.port_entry`, 'Port entry')
             : t(`eventInfo.start`, 'start')}
         </label>
-        <span>{formatI18nDate(event.start, { format: DateTime.DATETIME_FULL })}</span>
+        <span>{`${formatI18nDate(event.start, { format: DateTime.DATETIME_FULL })} (${startLocalTimeLabel})`}</span>
       </li>
       <li>
         <label className={styles.fieldLabel}>
@@ -53,7 +62,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
             ? t(`eventInfo.port_exit`, 'Port exit')
             : t(`eventInfo.end`, 'end')}
         </label>
-        <span>{formatI18nDate(event.end, { format: DateTime.DATETIME_FULL })}</span>
+        <span>{`${formatI18nDate(event.end, { format: DateTime.DATETIME_FULL })} (${endLocalTimeLabel})`}</span>
       </li>
       <li>
         <label className={styles.fieldLabel}>{t(`eventInfo.duration`, 'duration')}</label>
