@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { Bar, BarChart, LabelList,XAxis, YAxis } from 'recharts'
+import { Bar, BarChart, LabelList, XAxis, YAxis } from 'recharts'
+import type { CartesianLayout } from 'recharts/types/util/types'
 
 import { Spinner } from '@globalfishingwatch/ui-components'
 
@@ -20,6 +21,7 @@ import styles from './RelatedVessels.module.css'
 const VesselTick = ({ y, index }: any) => {
   const encountersByVessel = useSelector(selectEventsGroupedByEncounteredVessel)
   const vessel = encountersByVessel[index]
+  if (!vessel) return null
   return (
     <foreignObject x={0} y={y - 20} width="200" height="40" className={styles.vesselContainer}>
       <RelatedVessel
@@ -46,6 +48,12 @@ const RelatedEncounterVessels = () => {
     }
   }, [])
 
+  // TODO: remove this hack if recharts fixes the 3.0.0 vertical layout bug
+  const [layout, setLayout] = useState<CartesianLayout>('horizontal')
+  useEffect(() => {
+    setLayout(encountersByVessel?.length ? 'vertical' : 'horizontal')
+  }, [encountersByVessel])
+
   if (eventsLoading) {
     return (
       <div className={styles.placeholder}>
@@ -56,11 +64,11 @@ const RelatedEncounterVessels = () => {
 
   return (
     <div className={styles.vesselsList}>
-      {encountersByVessel && encountersByVessel.length ? (
+      {encountersByVessel && encountersByVessel.length > 0 ? (
         <BarChart
           width={graphWidth}
           height={encountersByVessel.length * 40}
-          layout="vertical"
+          layout={layout}
           data={encountersByVessel}
           margin={{ right: 20 }}
         >
