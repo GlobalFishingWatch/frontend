@@ -77,7 +77,7 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews }, 'hover-target')}>
       <div className={cx(styles.header, 'print-hidden')}>
-        <h2 className={styles.sectionTitle}>{t('common.environment', 'Environment')}</h2>
+        <h2 className={styles.sectionTitle}>{t('common.environment')}</h2>
         {!readOnly && (
           <div className={styles.sectionButtons}>
             <VisualisationChoice
@@ -94,7 +94,7 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
               icon="plus"
               type="border"
               size="medium"
-              tooltip={t('dataset.addEnvironmental', 'Add environmental dataset')}
+              tooltip={t('dataset.addEnvironmental')}
               tooltipPlacement="top"
               onClick={onAddClick}
             />

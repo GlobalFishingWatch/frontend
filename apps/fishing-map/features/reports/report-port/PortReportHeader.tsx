@@ -17,7 +17,7 @@ const PortReportHeader = () => {
   const reportCountry = useSelector(selectPortReportCountry)
   return (
     <div className={styles.titleContainer}>
-      <label className={styles.portLabel}>{t('event.port', 'Port')}</label>
+      <label className={styles.portLabel}>{t('event.port')}</label>
       <h1 className={styles.title}>
         {formatInfoField(reportName || portId, 'shipname')} (
         {formatInfoField(reportCountry, 'flag')})

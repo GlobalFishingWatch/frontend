@@ -97,7 +97,7 @@ const RelatedEncounterVessels = () => {
                 'vessel.noEncountersInTimeRange',
                 'There are no encounters fully contained in your timerange.'
               )
-            : t('vessel.noEncountersVisible', 'Please turn on encounter events visibility.')}
+            : t('vessel.noEncountersVisible')}
         </span>
       )}
     </div>

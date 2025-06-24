@@ -147,7 +147,7 @@ function LayerFilters({
 
   const sourceOptions = getSourcesOptionsInDataview(dataview, [DatasetTypes.Fourwings])
   // insert the "All" option only when more than one option available
-  const allOption = { id: 'all', label: t('selects.allSelected', 'All') }
+  const allOption = { id: 'all', label: t('selects.allSelected') }
   const allSourceOptions = sourceOptions.length > 1 ? [allOption, ...sourceOptions] : sourceOptions
   const allSelected = areAllSourcesSelectedInDataview(dataview)
   const sourcesSelected = allSelected ? [allOption] : getSourcesSelectedInDataview(dataview)
@@ -209,11 +209,7 @@ function LayerFilters({
   useEffect(() => {
     return () => {
       if (newDataviewInstanceConfigRef.current) {
-        if (
-          window.confirm(
-            t('layer.filtersConfirmAbort', 'Do you want to apply the changes made to the layer?')
-          ) === true
-        ) {
+        if (window.confirm(t('layer.filtersConfirmAbort')) === true) {
           upsertDataviewInstance(newDataviewInstanceConfigRef.current)
           checkVesselGroupsFilter(newDataviewInstanceConfigRef.current)
         }
@@ -425,7 +421,7 @@ function LayerFilters({
     showHistogramFilter || showSourceFilter || filtersAllowed.some(showSchemaFilter)
 
   if (!showSchemaFilters) {
-    return <p className={styles.placeholder}>{t('dataset.emptyFilters', 'No filters available')}</p>
+    return <p className={styles.placeholder}>{t('dataset.emptyFilters')}</p>
   }
 
   return (
@@ -433,7 +429,7 @@ function LayerFilters({
       {showSourceFilter && (
         <MultiSelect
           testId="activity-filters"
-          label={t('layer.source_other', 'Sources') as string}
+          label={t('layer.source_other') as string}
           placeholder={getPlaceholderBySelections({
             selection: sourcesSelected.map(({ id }) => id),
             options: allSourceOptions,
@@ -468,10 +464,10 @@ function LayerFilters({
       <div className={cx(styles.footer, { [styles.spaceBetween]: showApplyToAll })}>
         {showApplyToAll && (
           <Button type="secondary" onClick={() => onConfirmFilters({ applyToAll: true })}>
-            {t('common.applyToAll', 'Apply to all')}
+            {t('common.applyToAll')}
           </Button>
         )}
-        <Button onClick={() => onConfirmFilters()}>{t('common.confirm', 'confirm')}</Button>
+        <Button onClick={() => onConfirmFilters()}>{t('common.confirm')}</Button>
       </div>
       {filtersDisabled.length >= 1 && (
         <p className={styles.filtersDisabled}>

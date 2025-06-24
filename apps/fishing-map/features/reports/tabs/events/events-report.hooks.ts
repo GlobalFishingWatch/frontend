@@ -42,9 +42,7 @@ export function useGetEventReportGraphLabel() {
     (areaId: string) => {
       switch (reportEventsGraph) {
         case REPORT_EVENTS_GRAPH_GROUP_BY_FLAG:
-          return areaId
-            ? (formatInfoField(areaId, 'flag') as string)
-            : t('common.unknownProperty', 'Unknown')
+          return areaId ? (formatInfoField(areaId, 'flag') as string) : t('common.unknownProperty')
         case REPORT_EVENTS_GRAPH_GROUP_BY_RFMO:
         case REPORT_EVENTS_GRAPH_GROUP_BY_FAO:
           return eventsGraphDatasetAreas?.find(

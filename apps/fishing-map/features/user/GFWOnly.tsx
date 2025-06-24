@@ -32,14 +32,14 @@ function GFWOnly(props: GFWOnlyProps) {
 
   let disclaimerText = ''
   if (userGroup === 'jac') {
-    disclaimerText = t('common.onlyVisibleForJAC', 'Only visible for JAC users')
+    disclaimerText = t('common.onlyVisibleForJAC')
   } else if (userGroup === 'gfw') {
-    disclaimerText = t('common.onlyVisibleForGFW', 'Only visible for GFW users')
+    disclaimerText = t('common.onlyVisibleForGFW')
   } else if (userGroup === 'any') {
     if (gfwUser) {
-      disclaimerText = t('common.onlyVisibleForGFW', 'Only visible for GFW users')
+      disclaimerText = t('common.onlyVisibleForGFW')
     } else if (jacUser) {
-      disclaimerText = t('common.onlyVisibleForJAC', 'Only visible for JAC users')
+      disclaimerText = t('common.onlyVisibleForJAC')
     }
   }
 

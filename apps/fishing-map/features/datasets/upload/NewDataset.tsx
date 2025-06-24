@@ -108,9 +108,7 @@ function NewDataset() {
         })
 
         if (createDatasetError) {
-          setError(
-            `${t('errors.generic', 'Something went wrong, try again or contact:')} ${SUPPORT_EMAIL}`
-          )
+          setError(`${t('errors.generic')} ${SUPPORT_EMAIL}`)
         } else if (payload) {
           if (locationType === 'HOME' || locationType === 'WORKSPACE') {
             const dataset = { ...payload }
@@ -191,11 +189,7 @@ function NewDataset() {
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
-      title={
-        isDatasetEdit
-          ? t('dataset.edit', 'Edit dataset')
-          : t('dataset.uploadNew', 'Upload new dataset')
-      }
+      title={isDatasetEdit ? t('dataset.edit') : t('dataset.uploadNew')}
       isOpen={datasetModalOpen}
       contentId={NEW_DATASET_MODAL_ID}
       shouldCloseOnEsc={style === 'transparent'}
@@ -227,7 +221,7 @@ function NewDataset() {
           </p>
           {isGuestUserDismissVisible && (
             <Button onClick={onClose} className={styles.dismiss}>
-              {t('common.dismiss', 'Dismiss')}
+              {t('common.dismiss')}
             </Button>
           )}
         </div>
@@ -254,7 +248,7 @@ function NewDataset() {
           )}
           {style === 'transparent' && fileRejected && (
             <Button onClick={onClose} className={styles.dismiss}>
-              {t('common.dismiss', 'Dismiss')}
+              {t('common.dismiss')}
             </Button>
           )}
         </Fragment>

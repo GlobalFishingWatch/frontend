@@ -32,12 +32,8 @@ function VesselTracksLegend(): React.ReactElement<any> | null {
   const legend: UILegendColorRamp = {
     id: vesselsTimebarGraph,
     type: LegendType.ColorRampDiscrete,
-    label:
-      vesselsTimebarGraph === 'speed'
-        ? t('eventInfo.speed', 'Speed')
-        : t('eventInfo.depth', 'Depth'),
-    unit:
-      vesselsTimebarGraph === 'speed' ? t('common.knots', 'knots') : t('common.meters', 'meters'),
+    label: vesselsTimebarGraph === 'speed' ? t('eventInfo.speed') : t('eventInfo.depth'),
+    unit: vesselsTimebarGraph === 'speed' ? t('common.knots') : t('common.meters'),
     values: steps.map((step) => step.value),
     colors:
       vesselsTimebarGraph === 'speed' ? VESSEL_GRAPH_COLORS : VESSEL_GRAPH_COLORS.slice().reverse(),

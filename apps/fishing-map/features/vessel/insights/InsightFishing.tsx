@@ -58,11 +58,8 @@ const InsightFishing = ({
   return (
     <div id="fishing" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vessel.insights.fishing', 'Fishing Events')}</label>
-        <DataTerminology
-          title={t('vessel.insights.fishing', 'Fishing Events')}
-          terminologyKey="insightsFishing"
-        />
+        <label>{t('vessel.insights.fishing')}</label>
+        <DataTerminology title={t('vessel.insights.fishing')} terminologyKey="insightsFishing" />
       </div>
       {isLoading ? (
         <Fragment>

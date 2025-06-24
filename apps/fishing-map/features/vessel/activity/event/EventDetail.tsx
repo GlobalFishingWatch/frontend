@@ -173,9 +173,9 @@ const EventDetail = ({ event }: ActivityContentProps) => {
                 <tr>
                   <th>
                     <label>
-                      {t('eventInfo.authorization', 'authorization')}
+                      {t('eventInfo.authorization')}
                       <DataTerminology
-                        title={t('eventInfo.authorization', 'authorization')}
+                        title={t('eventInfo.authorization')}
                         terminologyKey="authorization"
                       />
                     </label>
@@ -241,9 +241,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
                 ) : (
                   <tr>
                     <td>
-                      <p className={styles.secondary}>
-                        {t('eventInfo.authorizationEmpty', 'No authorization data available')}
-                      </p>
+                      <p className={styles.secondary}>{t('eventInfo.authorizationEmpty')}</p>
                     </td>
                   </tr>
                 )}

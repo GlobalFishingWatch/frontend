@@ -11,7 +11,7 @@ import Tracks from 'assets/icons/dataset-type-tracks.svg'
 import { useDatasetModalConfigConnect } from 'features/datasets/datasets.hook'
 import type { DatasetUploadStyle } from 'features/modals/modals.slice'
 import type { DatasetGeometryTypesSupported } from 'utils/files'
-import { getFilesAcceptedByMime,getFileTypes } from 'utils/files'
+import { getFilesAcceptedByMime, getFileTypes } from 'utils/files'
 
 import styles from './DatasetTypeSelect.module.css'
 
@@ -91,7 +91,7 @@ const DatasetType = ({
           </div>
         ) : (
           <div className={styles.textContainer}>
-            <p>{t('dataset.dragActive', 'Drop the file here ...')}</p>
+            <p>{t('dataset.dragActive')}</p>
           </div>
         )
       ) : (
@@ -129,7 +129,7 @@ const DatasetTypeSelect = ({
     <div className={styles.wrapper}>
       <DatasetType
         type="polygons"
-        title={t('dataset.typePolygons', 'Polygons')}
+        title={t('dataset.typePolygons')}
         style={style}
         description={t(
           'dataset.typePolygonsDescription',
@@ -140,7 +140,7 @@ const DatasetTypeSelect = ({
       />
       <DatasetType
         type="tracks"
-        title={t('dataset.typeTracks', 'Tracks')}
+        title={t('dataset.typeTracks')}
         style={style}
         description={t(
           'dataset.typeTracksDescription',
@@ -151,7 +151,7 @@ const DatasetTypeSelect = ({
       />
       <DatasetType
         type="points"
-        title={t('dataset.typePoints', 'Points')}
+        title={t('dataset.typePoints')}
         style={style}
         description={t(
           'dataset.typePointsDescription',

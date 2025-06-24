@@ -120,7 +120,7 @@ function NewPointDataset({
               t('datasetUpload.errors.invalidDatesFeatures', {
                 defaultValue:
                   "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
-                featureType: t('dataset.typePoints', 'points'),
+                featureType: t('dataset.typePoints'),
               })
             )
           } else {
@@ -164,7 +164,7 @@ function NewPointDataset({
             t('datasetUpload.errors.invalidDatesFeatures', {
               defaultValue:
                 "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
-              featureType: t('dataset.typePoints', 'points'),
+              featureType: t('dataset.typePoints'),
             })
           )
         } else {
@@ -220,7 +220,7 @@ function NewPointDataset({
     return (
       <div className={styles.processingData}>
         <Spinner className={styles.processingDataSpinner} />
-        <p>{t('datasetUpload.processingData', 'Processing data...')}</p>
+        <p>{t('datasetUpload.processingData')}</p>
       </div>
     )
   }
@@ -244,7 +244,7 @@ function NewPointDataset({
       )}
       <InputText
         value={datasetMetadata?.name}
-        label={t('datasetUpload.datasetName', 'Dataset Name')}
+        label={t('datasetUpload.datasetName')}
         className={styles.input}
         onChange={(e) => setDatasetMetadata({ name: e.target.value })}
         disabled={loading}
@@ -255,10 +255,7 @@ function NewPointDataset({
           <NewDatasetField
             datasetMetadata={datasetMetadata}
             property="latitude"
-            label={`${t('datasetUpload.point.coordinates', 'Point coordinates')} - ${t(
-              'common.latitude',
-              'Latitude'
-            )}`}
+            label={`${t('datasetUpload.point.coordinates')} - ${t('common.latitude')}`}
             editable={!isEditing && !loading}
             onSelect={(selected) => {
               setDatasetMetadataConfig({ latitude: selected.id })
@@ -267,7 +264,7 @@ function NewPointDataset({
           <NewDatasetField
             datasetMetadata={datasetMetadata}
             property="longitude"
-            label={t('common.longitude', 'Longitude')}
+            label={t('common.longitude')}
             editable={!isEditing && !loading}
             onSelect={(selected) => {
               setDatasetMetadataConfig({ longitude: selected.id })
@@ -283,13 +280,10 @@ function NewPointDataset({
         />
       </div>
       <span className={styles.errorMsg}>{timeFilterError}</span>
-      <Collapsable
-        className={styles.optional}
-        label={t('datasetUpload.optionalFields', 'Optional fields')}
-      >
+      <Collapsable className={styles.optional} label={t('datasetUpload.optionalFields')}>
         <InputText
           value={datasetMetadata?.description}
-          label={t('datasetUpload.datasetDescription', 'Dataset description')}
+          label={t('datasetUpload.datasetDescription')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
           disabled={loading}
@@ -297,7 +291,7 @@ function NewPointDataset({
         <NewDatasetField
           datasetMetadata={datasetMetadata}
           property="valueProperties"
-          label={t('datasetUpload.points.name', 'Point label')}
+          label={t('datasetUpload.points.name')}
           editable={!loading}
           onSelect={(selected) => {
             setDatasetMetadataConfig({ valueProperties: [selected.id] })
@@ -314,7 +308,7 @@ function NewPointDataset({
           <NewDatasetField
             datasetMetadata={datasetMetadata}
             property="pointSize"
-            label={t('datasetUpload.points.size', 'point size')}
+            label={t('datasetUpload.points.size')}
             placeholder={t(
               'datasetUpload.fieldNumericPlaceholder',
               'Select a numeric field from your dataset'
@@ -345,7 +339,7 @@ function NewPointDataset({
                   }) || POINT_SIZES_DEFAULT_RANGE[0]
                 }
                 min={MIN_POINT_SIZE}
-                label={t('datasetUpload.points.sizeMin', 'Minimum size')}
+                label={t('datasetUpload.points.sizeMin')}
                 className={styles.input}
                 onChange={(e) =>
                   setDatasetMetadataConfig({ minPointSize: parseFloat(e.target.value) })
@@ -361,7 +355,7 @@ function NewPointDataset({
                   }) || POINT_SIZES_DEFAULT_RANGE[1]
                 }
                 max={MAX_POINT_SIZE}
-                label={t('datasetUpload.points.sizeMax', 'Maximum size')}
+                label={t('datasetUpload.points.sizeMax')}
                 className={styles.input}
                 onChange={(e) =>
                   setDatasetMetadataConfig({ maxPointSize: parseFloat(e.target.value) })
@@ -373,7 +367,7 @@ function NewPointDataset({
         </div>
 
         <MultiSelect
-          label={t('datasetUpload.points.filters', 'point filters')}
+          label={t('datasetUpload.points.filters')}
           placeholder={
             datasetFieldsAllowed.length > 0
               ? datasetFieldsAllowed.join(', ')
@@ -422,7 +416,7 @@ function NewPointDataset({
           disabled={!datasetMetadata || error !== '' || !isValid}
           loading={loading}
         >
-          {t('common.confirm', 'Confirm') as string}
+          {t('common.confirm') as string}
         </Button>
       </div>
     </div>

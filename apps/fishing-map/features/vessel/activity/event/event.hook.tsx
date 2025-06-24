@@ -90,12 +90,12 @@ export function useActivityEventTranslations() {
             return (
               // TODO check if we can get the dataset of the vessel encountered, using Identity for now
               <span>
-                {t('event.encounterAction', 'had an encounter with')}{' '}
-                {formatInfoField(name, 'shipname')} ({formatInfoField(flag, 'flag')}){' '}
+                {t('event.encounterAction')} {formatInfoField(name, 'shipname')} (
+                {formatInfoField(flag, 'flag')}){' '}
                 {mainRegionDescription && (
                   <Tooltip content={allRegionsDescription}>
                     <span className={styles.region}>
-                      {t('common.in', 'in')} {mainRegionDescription}
+                      {t('common.in')} {mainRegionDescription}
                       {allRegionsDescription ? <span className="print-hidden">...</span> : ''}
                     </span>
                   </Tooltip>
@@ -164,7 +164,7 @@ export function useActivityEventTranslations() {
             )
           )
         default:
-          return t('event.unknown', 'Unknown event')
+          return t('event.unknown')
       }
     },
     [getEventRegionDescription, t]

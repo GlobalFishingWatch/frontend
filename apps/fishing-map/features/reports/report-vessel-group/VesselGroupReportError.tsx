@@ -21,7 +21,7 @@ function VesselGroupReportError({ vesselGroupId }: { vesselGroupId: string }) {
   if (reportError?.status === 404) {
     return (
       <div className={styles.emptyState}>
-        <p className={styles.error}>{t('vesselGroupReport.notFound', 'Vessel group not found')}</p>
+        <p className={styles.error}>{t('vesselGroupReport.notFound')}</p>
       </div>
     )
   }
@@ -29,7 +29,7 @@ function VesselGroupReportError({ vesselGroupId }: { vesselGroupId: string }) {
   if (reportError?.status === 403) {
     return (
       <WorkspaceLoginError
-        title={t('errors.privateVesselGroupReport', 'This is a private vessel group report')}
+        title={t('errors.privateVesselGroupReport')}
         emailSubject={`Requesting access for ${vesselGroupId} vessel group report`}
       />
     )
@@ -48,9 +48,7 @@ function VesselGroupReportError({ vesselGroupId }: { vesselGroupId: string }) {
 
   return (
     <div className={styles.emptyState}>
-      <p className={styles.error}>
-        {reportError?.message || t('errors.genericShort', 'Something went wrong')}
-      </p>
+      <p className={styles.error}>{reportError?.message || t('errors.genericShort')}</p>
     </div>
   )
 }

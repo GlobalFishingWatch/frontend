@@ -40,7 +40,7 @@ const TimeComparisonLegend = () => {
         currentValueClassName={styles.currentValue}
         labelComponent={
           uiLegend.label?.includes('²') ? (
-            <Tooltip content={t('map.legend_help', 'Approximated grid cell area at the Equator')}>
+            <Tooltip content={t('map.legend_help')}>
               <span className={cx(styles.legendLabel, styles.help)}>{uiLegend.label}</span>
             </Tooltip>
           ) : (

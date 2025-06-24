@@ -110,7 +110,7 @@ export const getVesselIdentityTooltipSummary = (
       )
     }
   )
-  return [...identities, t('vessel.clickToSeeMore', 'Click to see more information')]
+  return [...identities, t('vessel.clickToSeeMore')]
 }
 
 function VesselLayerPanel({
@@ -198,8 +198,8 @@ function VesselLayerPanel({
     ''
 
   const getVesselTitle = (): ReactNode => {
-    if (infoLoading) return t('vessel.loadingInfo', 'Loading vessel info')
-    if (infoError) return t('common.unknownVessel', 'Unknown vessel')
+    if (infoLoading) return t('vessel.loadingInfo')
+    if (infoError) return t('common.unknownVessel')
     if (dataview?.datasetsConfig?.some((d) => isGFWOnlyDataset({ id: d.datasetId })))
       return (
         <Fragment>
@@ -284,7 +284,7 @@ function VesselLayerPanel({
               <VesselDownload
                 dataview={dataview}
                 vesselIds={[vesselId]}
-                vesselTitle={vesselLabel || t('common.unknownVessel', 'Unknown vessel')}
+                vesselTitle={vesselLabel || t('common.unknownVessel')}
                 datasetId={trackDatasetId}
               />
             )}
@@ -322,11 +322,7 @@ function VesselLayerPanel({
                     icon={filterOpen ? 'filter-on' : 'filter-off'}
                     size="small"
                     onClick={onToggleFilterOpen}
-                    tooltip={
-                      filterOpen
-                        ? t('layer.filterClose', 'Close filters')
-                        : t('layer.filterOpen', 'Open filters')
-                    }
+                    tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
                     tooltipPlacement="top"
                   />
                 </div>
@@ -339,7 +335,7 @@ function VesselLayerPanel({
               loading
               className={styles.loadingIcon}
               size="small"
-              tooltip={t('vessel.loadingInfo', 'Loading vessel info')}
+              tooltip={t('vessel.loadingInfo')}
             />
           )}
           {infoError && (

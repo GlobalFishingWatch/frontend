@@ -115,7 +115,7 @@ function SearchBasic({
                 searchStatus === AsyncReducerStatus.Loading ||
                 searchStatus === AsyncReducerStatus.Aborted
               }
-              placeholder={`${t('search.placeholder', 'Type to search vessels')} (${t(
+              placeholder={`${t('search.placeholder')} (${t(
                 'search.mainQueryLabel',
                 'Name, IMO or MMSI'
               )})`}
@@ -142,7 +142,7 @@ function SearchBasic({
                   searchSuggestion !== searchQuery &&
                   !searchSuggestionClicked && (
                     <li key="suggestion" className={cx(styles.searchSuggestion)}>
-                      {t('search.suggestion', 'Did you mean')}{' '}
+                      {t('search.suggestion')}{' '}
                       <button onClick={onSuggestionClick} className={styles.suggestion}>
                         {' '}
                         {searchSuggestion}{' '}

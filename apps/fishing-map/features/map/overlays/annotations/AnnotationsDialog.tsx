@@ -63,7 +63,7 @@ const MapAnnotationsDialog = (): React.ReactNode | null => {
           <InputText
             value={mapAnnotation?.label || ''}
             onChange={(e) => setMapAnnotation({ label: e.target.value })}
-            placeholder={t('map.annotationPlaceholder', 'Type something here')}
+            placeholder={t('map.annotationPlaceholder')}
           />
           <ColorBar
             colorBarOptions={colors}
@@ -82,7 +82,7 @@ const MapAnnotationsDialog = (): React.ReactNode | null => {
             className={styles.confirmBtn}
             disabled={!mapAnnotation?.label}
           >
-            {t('common.confirm', 'Confirm')}
+            {t('common.confirm')}
           </Button>
         </div>
       </div>

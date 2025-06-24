@@ -29,12 +29,9 @@ const VesselGroupReportInsightCoverage = ({ skip }: { skip?: boolean }) => {
             'Dataset still in development, click the information icon to learn more'
           )}
         >
-          <label className="experimental">{t('vessel.insights.coverage', 'AIS Coverage')}</label>
+          <label className="experimental">{t('vessel.insights.coverage')}</label>
         </Tooltip>
-        <DataTerminology
-          title={t('vessel.insights.coverage', 'AIS Coverage')}
-          terminologyKey="insightsCoverage"
-        />
+        <DataTerminology title={t('vessel.insights.coverage')} terminologyKey="insightsCoverage" />
       </div>
       {skip || isLoading ? (
         <ReportBarGraphPlaceholder numberOfElements={5} />

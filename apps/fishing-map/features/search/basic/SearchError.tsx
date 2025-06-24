@@ -42,7 +42,7 @@ function SearchError() {
     )
   }
 
-  return <p className={styles.error}>{t('errors.genericShort', 'Something went wrong')}</p>
+  return <p className={styles.error}>{t('errors.genericShort')}</p>
 }
 
 export default SearchError

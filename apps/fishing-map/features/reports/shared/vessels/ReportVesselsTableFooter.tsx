@@ -196,7 +196,7 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
           <span className={cx(styles.noWrap, styles.right)}>
             {reportVesselFilter && (
               <Fragment>
-                <I18nNumber number={pagination.totalFiltered} /> {t('common.of', 'of')}{' '}
+                <I18nNumber number={pagination.totalFiltered} /> {t('common.of')}{' '}
               </Fragment>
             )}
             <I18nNumber number={pagination.total} />{' '}
@@ -217,7 +217,7 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
           // testId="download-vessel-table-report"
           onClick={onDownloadVesselsClick}
         >
-          {t('analysis.downloadVesselsList', 'Download csv')}
+          {t('analysis.downloadVesselsList')}
         </Button>
       </div>
     </div>

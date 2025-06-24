@@ -11,7 +11,7 @@ export const VisualisationOptions: {
 }[] = [
   {
     id: '4wings',
-    label: t('bigQuery.visualisationActivity', 'Activity (heatmap)'),
+    label: t('bigQuery.visualisationActivity'),
     fieldsHint: t(
       'bigQuery.visualisationActivityHint',
       '(Ensure id, lat, lon, timestamp and value are all present)'
@@ -19,7 +19,7 @@ export const VisualisationOptions: {
   },
   {
     id: 'events',
-    label: t('bigQuery.visualisationEvents', 'Events (clusters)'),
+    label: t('bigQuery.visualisationEvents'),
     fieldsHint: t(
       'bigQuery.visualisationActivityHint',
       '(Ensure id, lat, lon, timestamp and value are all present)'
@@ -30,10 +30,10 @@ export const VisualisationOptions: {
 export const AggregationOptions = [
   {
     id: FourwingsAggregationOperation.Avg,
-    label: t('bigQuery.aggregateAvg', 'Average'),
+    label: t('bigQuery.aggregateAvg'),
   },
   {
     id: FourwingsAggregationOperation.Sum,
-    label: t('bigQuery.aggregateSum', 'Sum'),
+    label: t('bigQuery.aggregateSum'),
   },
 ]

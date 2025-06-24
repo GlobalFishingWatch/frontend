@@ -1,4 +1,4 @@
-import { useEffect,useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import type { Placement } from '@floating-ui/react'
@@ -87,14 +87,12 @@ const HighlightPanel = ({
             <h3 className={styles.title}>{highlightContent.title}</h3>
             <p className={styles.text}>
               {highlightContent.description}{' '}
-              {config.workspaceUrl && (
-                <a href={config.workspaceUrl}>{t('common.view_layer', 'View the layer')}</a>
-              )}
+              {config.workspaceUrl && <a href={config.workspaceUrl}>{t('common.view_layer')}</a>}
             </p>
           </div>
           <div className={styles.footer}>
             <Button type="secondary" onClick={onDismiss} className={styles.footerBtn}>
-              {t('common.dismiss', 'Dismiss')}
+              {t('common.dismiss')}
             </Button>
             {learnMoreUrl && (
               <Button
@@ -103,7 +101,7 @@ const HighlightPanel = ({
                 onClick={onDismiss}
                 className={cx(styles.footerBtn, styles.cta)}
               >
-                {t('common.learnMore', 'Learn more')}
+                {t('common.learnMore')}
               </Button>
             )}
           </div>

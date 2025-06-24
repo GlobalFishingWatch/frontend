@@ -18,8 +18,8 @@ export const getPlaceholderBySelections = ({
 }: PlaceholderBySelectionParams): string => {
   if (!selection?.length) {
     return filterOperator === EXCLUDE_FILTER_ID
-      ? t('selects.noneSelected', 'None')
-      : t('selects.allSelected', 'All')
+      ? t('selects.noneSelected')
+      : t('selects.allSelected')
   }
   const isSelectionArray = Array.isArray(selection)
   const optionSelected = options?.filter((o) =>
@@ -27,7 +27,7 @@ export const getPlaceholderBySelections = ({
   )
   const placeholder =
     isSelectionArray && selection.length > 1
-      ? `${selection.length} ${t('selects.selected', 'selected')}`
+      ? `${selection.length} ${t('selects.selected')}`
       : optionSelected?.[0]?.label
 
   if (typeof placeholder === 'string') {

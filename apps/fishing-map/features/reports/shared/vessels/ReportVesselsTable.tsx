@@ -108,7 +108,7 @@ export default function ReportVesselsTable({
           )}
         <div className={cx(styles.vesselsTable, { [styles.vesselsTableWithValue]: activityUnit })}>
           <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
-            {t('common.name', 'Name')}
+            {t('common.name')}
             {allowSorting && (
               <IconButton
                 size="tiny"
@@ -120,9 +120,9 @@ export default function ReportVesselsTable({
               />
             )}
           </div>
-          <div className={styles.header}>{t('vessel.mmsi', 'mmsi')}</div>
+          <div className={styles.header}>{t('vessel.mmsi')}</div>
           <div className={styles.header}>
-            {t('layer.flagState_one', 'Flag state')}
+            {t('layer.flagState_one')}
             {allowSorting && (
               <IconButton
                 size="tiny"
@@ -133,7 +133,7 @@ export default function ReportVesselsTable({
             )}
           </div>
           <div className={styles.header}>
-            {t('vessel.type', 'Type')}
+            {t('vessel.type')}
             {allowSorting && (
               <IconButton
                 size="tiny"
@@ -148,10 +148,10 @@ export default function ReportVesselsTable({
           {activityUnit && (
             <div className={cx(styles.header, styles.right)}>
               {activityUnit === 'hour'
-                ? t('common.hour_other', 'hours')
+                ? t('common.hour_other')
                 : activityUnit === 'detection'
-                  ? t('common.detection_other', 'detections')
-                  : t('common.event_other', 'events')}
+                  ? t('common.detection_other')
+                  : t('common.event_other')}
             </div>
           )}
           {vessels?.map((vessel, i) => {
@@ -226,9 +226,7 @@ export default function ReportVesselsTable({
                     [styles.pointer]: flagInteractionEnabled,
                   })}
                   title={
-                    flagInteractionEnabled
-                      ? `${t('analysis.clickToFilterBy', `Click to filter by:`)} ${flag}`
-                      : undefined
+                    flagInteractionEnabled ? `${t('analysis.clickToFilterBy')} ${flag}` : undefined
                   }
                   onClick={
                     flagInteractionEnabled
@@ -244,7 +242,7 @@ export default function ReportVesselsTable({
                   className={cx(styles.pointer, {
                     [styles.border]: !isLastRow,
                   })}
-                  title={`${t('analysis.clickToFilterBy', `Click to filter by:`)} ${type}`}
+                  title={`${t('analysis.clickToFilterBy')} ${type}`}
                   onClick={() => onFilterClick(`${'type'}:${type}`)}
                 >
                   {type}

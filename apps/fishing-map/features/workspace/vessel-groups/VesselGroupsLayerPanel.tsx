@@ -156,7 +156,7 @@ function VesselGroupLayerPanel({
                   >
                     <span>
                       {vesselGroupLoading ? (
-                        t('vesselGroup.loadingInfo', 'Loading vessel group info')
+                        t('vesselGroup.loadingInfo')
                       ) : (
                         <Fragment>
                           {vesselGroup?.name}{' '}
@@ -213,7 +213,7 @@ function VesselGroupLayerPanel({
                     size="small"
                     icon={'edit'}
                     type={'default'}
-                    tooltip={t('vesselGroup.edit', 'Edit list of vessels')}
+                    tooltip={t('vesselGroup.edit')}
                     loading={vesselGroupStatus === AsyncReducerStatus.LoadingUpdate}
                     onClick={onEditClick}
                   />
@@ -221,7 +221,7 @@ function VesselGroupLayerPanel({
                 <IconButton
                   icon="target"
                   size="small"
-                  tooltip={t('layer.vessel_group_fit_bounds', 'Center map on vessel group')}
+                  tooltip={t('layer.vessel_group_fit_bounds')}
                   onClick={() => setfitBoundsClicked(true)}
                   tooltipPlacement="top"
                   loading={fitBoundsClicked}
@@ -247,7 +247,7 @@ function VesselGroupLayerPanel({
                         'errors.layerLoading',
                         'There was an error loading the layer'
                       )} (${layerError})`
-                    : t('errors.layerLoading', 'There was an error loading the layer')
+                    : t('errors.layerLoading')
                 }
                 size="small"
               />

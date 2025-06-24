@@ -101,11 +101,11 @@ function SidebarHeader() {
     return [
       {
         id: 'basic' as SearchType,
-        label: t('search.basic', 'Basic'),
+        label: t('search.basic'),
       },
       {
         id: 'advanced' as SearchType,
-        label: t('search.advanced', 'Advanced'),
+        label: t('search.advanced'),
       },
     ]
   }, [t])

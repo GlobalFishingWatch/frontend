@@ -45,20 +45,20 @@ function DownloadActivityModal() {
     return [
       {
         id: HeatmapDownloadTab.ByVessel,
-        title: t('download.byVessel', 'Active vessels'),
+        title: t('download.byVessel'),
         content: <DownloadActivityByVessel />,
         disabled: activityAndDetectionsDataviews.length === 0,
       },
       {
         id: HeatmapDownloadTab.Gridded,
-        title: t('download.gridded', 'Gridded activity'),
+        title: t('download.gridded'),
         content: <DownloadActivityGridded />,
         testId: 'activity-modal-gridded-activity',
         disabled: activityAndDetectionsDataviews.length === 0,
       },
       {
         id: HeatmapDownloadTab.Environment,
-        title: t('common.environment', 'Environment'),
+        title: t('common.environment'),
         content: <DownloadActivityEnvironment />,
         testId: 'activity-modal-environment',
         disabled: environmentalDataviews.length === 0,
@@ -79,7 +79,7 @@ function DownloadActivityModal() {
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
-      title={t('download.title', 'Download')}
+      title={t('download.title')}
       isOpen={downloadModalOpen}
       onClose={onClose}
       contentClassName={styles.modalContent}

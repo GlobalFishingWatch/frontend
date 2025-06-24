@@ -51,17 +51,14 @@ const Insights = () => {
 
   return (
     <div className={styles.container}>
-      <h2 className="print-only">{t('vessel.sectionInsights', 'Insights')}</h2>
+      <h2 className="print-only">{t('vessel.sectionInsights')}</h2>
       <p className={styles.title}>
         {t('vessel.insights.sectionTitle', {
           defaultValue: 'Vessel insights between {{start}} and {{end}}',
           start: formatI18nDate(start),
           end: formatI18nDate(end),
         })}
-        <DataTerminology
-          title={t('vessel.sectionInsights', 'Insights')}
-          terminologyKey="insights"
-        />
+        <DataTerminology title={t('vessel.sectionInsights')} terminologyKey="insights" />
       </p>
       {insightsByVesselType.map((insight) => (
         <InsightWrapper insight={insight} key={insight} />

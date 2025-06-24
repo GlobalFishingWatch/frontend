@@ -1,4 +1,4 @@
-import { Fragment, type JSX,useEffect, useMemo, useState } from 'react';
+import { Fragment, type JSX, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -173,13 +173,13 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
     <div className={styles.container}>
       <InputText
         value={dataview.name}
-        label={`${t('common.name', 'Name')} *`}
+        label={`${t('common.name')} *`}
         className={styles.input}
         onChange={(e) => onDataviewPropertyChange({ name: e.target.value })}
       />
       <Select
-        label={`${t('common.category', 'Category')} *`}
-        placeholder={t('selects.placeholder', 'Select an option')}
+        label={`${t('common.category')} *`}
+        placeholder={t('selects.placeholder')}
         options={categoryOptions}
         className={styles.input}
         selectedOption={categoryOptions.find(({ id }) => id === dataview.category)}
@@ -202,11 +202,11 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
       />
       {!isEditingDataview && (
         <MultiSelect
-          label={`${t('dataset.title_other', 'Datasets')} *`}
+          label={`${t('dataset.title_other')} *`}
           placeholder={
             dataviewDatasets.length > 0
               ? dataviewDatasets.map(({ id }) => id).join(', ')
-              : t('selects.placeholder', 'Select an option')
+              : t('selects.placeholder')
           }
           options={datasetsOptions}
           selectedOptions={dataviewDatasets}
@@ -293,7 +293,7 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
               {!dataview.config?.static && (
                 <Select
                   label="Temporal resolution"
-                  placeholder={t('selects.placeholder', 'Select an option')}
+                  placeholder={t('selects.placeholder')}
                   options={temporalResolutionOptions}
                   containerClassName={styles.input2Columns}
                   direction="top"
@@ -320,7 +320,7 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
         </p>
         <div>
           <Button className={styles.cancelButton} type="secondary" onClick={onCancelClick}>
-            {t('common.cancel', 'Cancel')}
+            {t('common.cancel')}
           </Button>
           <Button
             loading={loading}
@@ -329,7 +329,7 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
             tooltipPlacement="top"
             onClick={onSaveClick}
           >
-            {t('common.save', 'Save')}
+            {t('common.save')}
           </Button>
         </div>
       </div>

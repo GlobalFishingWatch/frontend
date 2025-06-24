@@ -64,7 +64,7 @@ const AggregatedGraphTooltip = (props: any) => {
               return (
                 <li key={index} className={styles.tooltipValue}>
                   <span className={styles.tooltipValueDot} style={{ color }}></span>
-                  {formatTooltipValue(value, t('common.events', 'Events').toLowerCase())}
+                  {formatTooltipValue(value, t('common.events').toLowerCase())}
                 </li>
               )
             })}
@@ -95,7 +95,7 @@ export const EventsReportIndividualGraphTooltip = ({
       <div className={styles.properties}>
         <div className={styles.property}>
           <label>
-            {`${formatInfoField(data.vessel?.type, 'shiptypes')} ${t('common.vessel', 'vessel')}`}
+            {`${formatInfoField(data.vessel?.type, 'shiptypes')} ${t('common.vessel')}`}
           </label>
           <span>
             {formatInfoField(data.vessel?.name, 'shipname')}{' '}
@@ -104,18 +104,18 @@ export const EventsReportIndividualGraphTooltip = ({
         </div>
         {eventType === 'encounter' && data.encounter?.vessel && (
           <div className={styles.property}>
-            <label>{`${formatInfoField(data.encounter.vessel.type, 'shiptypes')} ${t('common.vessel', 'vessel')}`}</label>
+            <label>{`${formatInfoField(data.encounter.vessel.type, 'shiptypes')} ${t('common.vessel')}`}</label>
             <span>{`${formatInfoField(data.encounter.vessel.name, 'shipname')} ${data.encounter.vessel.flag ? `(${formatInfoField(data.encounter.vessel.flag, 'flag')}` : ''}`}</span>
           </div>
         )}
       </div>
       <div className={styles.properties}>
         <div className={styles.property}>
-          <label>{t('eventInfo.start', 'Start')}</label>
+          <label>{t('eventInfo.start')}</label>
           <span>{start}</span>
         </div>
         <div className={styles.property}>
-          <label>{t('eventInfo.duration', 'Duration')}</label>
+          <label>{t('eventInfo.duration')}</label>
           <span>{duration}</span>
         </div>
       </div>

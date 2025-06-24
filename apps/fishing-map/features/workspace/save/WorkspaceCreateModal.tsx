@@ -116,14 +116,14 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
 
   const getWorkspaceError = () => {
     if (!name) {
-      return t('workspace.nameRequired', 'Workspace name is required')
+      return t('workspace.nameRequired')
     }
     if (viewAccess === WORKSPACE_PASSWORD_ACCESS || editAccess === WORKSPACE_PASSWORD_ACCESS) {
       if (!password) {
-        return t('workspace.passwordRequired', 'Workspace password is required')
+        return t('workspace.passwordRequired')
       }
       if (password.length < MIN_WORKSPACE_PASSWORD_LENGTH) {
-        return t('workspace.passwordMinLength', 'Password must be at least 5 characters')
+        return t('workspace.passwordMinLength')
       }
     }
     return ''
@@ -187,7 +187,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
-      title={title || t('workspace.save', 'Save the current workspace')}
+      title={title || t('workspace.save')}
       isOpen={workspaceModalOpen}
       shouldCloseOnEsc
       className={styles.modalContentWrapper}
@@ -200,7 +200,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
             value={name}
             className={styles.input}
             testId="create-workspace-name"
-            label={t('common.name', 'Name')}
+            label={t('common.name')}
             onChange={onNameChange}
             // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus
@@ -209,7 +209,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
         <div className={styles.row}>
           <Select
             options={timeRangeOptions}
-            label={t('common.timerange', 'Time range')}
+            label={t('common.timerange')}
             containerClassName={styles.select}
             onSelect={onSelectTimeRangeChange}
             selectedOption={
@@ -221,7 +221,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
               value={daysFromLatest}
               type="number"
               className={styles.select}
-              label={t('common.timerangeDaysFromLatest', 'Days from latest data update (1-100)')}
+              label={t('common.timerangeDaysFromLatest')}
               onChange={onDaysFromLatestChange}
               min={DAYS_FROM_LATEST_MIN}
               max={DAYS_FROM_LATEST_MAX}
@@ -232,7 +232,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
           <Select
             options={viewOptions}
             direction="top"
-            label={t('workspace.viewAccess', 'View access')}
+            label={t('workspace.viewAccess')}
             infoTooltip={
               containsPrivateDatasets
                 ? `${t(
@@ -248,11 +248,11 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
           <Select
             options={editOptions}
             direction="top"
-            label={t('workspace.editAccess', 'Edit access')}
+            label={t('workspace.editAccess')}
             placeholder={
               viewAccess === WORKSPACE_PRIVATE_ACCESS
-                ? t('common.onlyMe', 'Only me')
-                : t('selects.placeholder', 'Select an option')
+                ? t('common.onlyMe')
+                : t('selects.placeholder')
             }
             infoTooltip={
               viewAccess === WORKSPACE_PRIVATE_ACCESS
@@ -275,7 +275,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
               className={styles.select}
               type="password"
               testId="create-workspace-password"
-              label={t('common.setNewPassword', 'Set a new password')}
+              label={t('common.setNewPassword')}
               onChange={(e) => setPassword(e.target.value)}
             />
           )}
@@ -288,7 +288,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
             htmlType="submit"
             testId="create-workspace-button"
           >
-            {t('workspace.create', 'Create as new workspace') as string}
+            {t('workspace.create') as string}
           </Button>
         </div>
       </form>

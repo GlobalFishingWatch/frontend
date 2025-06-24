@@ -42,7 +42,7 @@ const ContextLayerDownloadPopupButton: React.FC<ContextLayerDownloadPopupButtonP
         testId="download-activity-layers"
         tooltip={
           datasetsReportSupported
-            ? t('download.heatmapLayers', 'Download visible layers for this area')
+            ? t('download.heatmapLayers')
             : t(
                 'download.noHeatmapLayers',
                 'Turn on an activity, detections or environment layer to download its data for this area'

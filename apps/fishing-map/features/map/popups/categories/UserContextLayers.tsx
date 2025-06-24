@@ -47,7 +47,7 @@ export function getUserContextLayerLabel(
             start: formatI18nDate(startDate, i18nParams),
             end: formatI18nDate(endDate, i18nParams),
           })
-        : `${t('common.since', 'since')} ${formatI18nDate(startDate, i18nParams)}`
+        : `${t('common.since')} ${formatI18nDate(startDate, i18nParams)}`
     return `${feature.properties.label} - ${feature.properties.label_confidence} ${t(
       'common.confidence',
       'confidence'

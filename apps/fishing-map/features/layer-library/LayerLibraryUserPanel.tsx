@@ -145,7 +145,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
                     'Click to see layer description'
                   ) as string
                   if (datasetImporting) {
-                    infoTooltip = t('dataset.importing', 'Dataset is being imported')
+                    infoTooltip = t('dataset.importing')
                   }
                   if (datasetError) {
                     infoTooltip = `${t(
@@ -177,7 +177,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
                           <IconButton
                             icon="view-on-map"
                             onClick={() => onAddToWorkspaceClick(dataset)}
-                            tooltip={t('user.seeDataset', 'See on map')}
+                            tooltip={t('user.seeDataset')}
                           />
                         )}
                       </div>
@@ -188,9 +188,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
             )
           )
         ) : (
-          <div className={styles.placeholder}>
-            {t('dataset.emptyState', 'Your datasets will appear here')}
-          </div>
+          <div className={styles.placeholder}>{t('dataset.emptyState')}</div>
         )}
       </div>
     )
@@ -212,7 +210,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
             icon="upload"
             type="border"
             size="medium"
-            tooltip={t('dataset.upload', 'Upload dataset')}
+            tooltip={t('dataset.upload')}
             tooltipPlacement="top"
             className="print-hidden"
             onClick={onUploadClick}
@@ -228,7 +226,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
             icon="draw"
             type="border"
             size="medium"
-            tooltip={t('layer.drawPolygon', 'Draw a layer')}
+            tooltip={t('layer.drawPolygon')}
             tooltipPlacement="top"
             className="print-hidden"
             onClick={() => onDrawClick('polygons')}
@@ -244,7 +242,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
             icon="draw-points"
             type="border"
             size="medium"
-            tooltip={t('layer.drawPoints', 'Draw points')}
+            tooltip={t('layer.drawPoints')}
             tooltipPlacement="top"
             className="print-hidden"
             onClick={() => onDrawClick('points')}

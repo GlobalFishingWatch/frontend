@@ -35,7 +35,7 @@ const Remove = ({ onClick, className, dataview, loading }: RemoveProps) => {
       icon="delete"
       size="small"
       loading={loading}
-      tooltip={t('layer.remove', 'Remove layer')}
+      tooltip={t('layer.remove')}
       tooltipPlacement="top"
       onClick={onClickInternal}
       className={className}

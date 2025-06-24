@@ -35,29 +35,29 @@ function EventsReportGraphSelector({ disabled = false }: EventsReportGraphSelect
   const options: ChoiceOption<ReportEventsGraph>[] = [
     {
       id: REPORT_EVENTS_GRAPH_EVOLUTION,
-      label: t('analysis.evolution', 'Evolution'),
+      label: t('analysis.evolution'),
       disabled,
     },
     {
       id: REPORT_EVENTS_GRAPH_GROUP_BY_FLAG,
-      label: t('analysis.groupByFlag', 'By flag'),
+      label: t('analysis.groupByFlag'),
       disabled,
     },
     ...(isGlobalReport && !isPortReportLocation
       ? [
           {
             id: REPORT_EVENTS_GRAPH_GROUP_BY_RFMO,
-            label: t('analysis.groupByRFMO', 'By RFMO'),
+            label: t('analysis.groupByRFMO'),
             disabled,
           },
           {
             id: REPORT_EVENTS_GRAPH_GROUP_BY_FAO,
-            label: t('analysis.groupByFAO', 'By FAO'),
+            label: t('analysis.groupByFAO'),
             disabled,
           },
           {
             id: REPORT_EVENTS_GRAPH_GROUP_BY_EEZ,
-            label: t('analysis.groupByEEZ', 'By EEZ'),
+            label: t('analysis.groupByEEZ'),
             disabled,
           },
         ]

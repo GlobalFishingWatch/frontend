@@ -40,28 +40,28 @@ function User() {
     const tabs = [
       {
         id: UserTab.Info,
-        title: t('user.info', 'User Info'),
+        title: t('user.info'),
         content: <UserInfo />,
       },
       {
         id: UserTab.Workspaces,
-        title: t('workspace.title_other', 'Workspaces'),
+        title: t('workspace.title_other'),
         testId: 'user-workspace',
         content: <UserWorkspaces />,
       },
       {
         id: UserTab.Datasets,
-        title: t('dataset.title_other', 'Datasets'),
+        title: t('dataset.title_other'),
         content: <UserDatasets />,
       },
       {
         id: UserTab.Reports,
-        title: t('common.reports', 'Reports'),
+        title: t('common.reports'),
         content: <UserReports />,
       },
       {
         id: UserTab.VesselGroups,
-        title: t('vesselGroup.vesselGroups', 'Vessel Groups'),
+        title: t('vesselGroup.vesselGroups'),
         content: <UserVesselGroups />,
       },
     ]

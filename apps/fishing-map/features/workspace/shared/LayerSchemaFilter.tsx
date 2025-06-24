@@ -52,15 +52,15 @@ const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transformation> 
   minutes: {
     in: (v) => parseFloat(v) / 60,
     out: (v) => parseFloat(v) * 60,
-    label: t('common.hour_other', 'Hours'),
+    label: t('common.hour_other'),
   },
   hours: {
     in: (v) => parseInt(v),
     out: (v) => parseInt(v),
-    label: t('common.hour_other', 'Hours'),
+    label: t('common.hour_other'),
   },
   km: {
-    label: t('common.km', 'km'),
+    label: t('common.km'),
   },
 }
 
@@ -109,11 +109,11 @@ const getFilterOperatorOptions = () => {
   return [
     {
       id: INCLUDE_FILTER_ID,
-      label: t('common.include', 'Include'),
+      label: t('common.include'),
     },
     {
       id: EXCLUDE_FILTER_ID,
-      label: t('common.exclude', 'Exclude'),
+      label: t('common.exclude'),
     },
   ] as ChoiceOption[]
 }

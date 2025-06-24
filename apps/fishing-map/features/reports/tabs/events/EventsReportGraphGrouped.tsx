@@ -87,7 +87,7 @@ const AggregatedGraphTooltip = (props: any) => {
                     ))}
                     {restValue !== 0 && (
                       <li key="others" className={styles.tooltipValue}>
-                        {t('analysis.others', 'Others')}: {restValue}
+                        {t('analysis.others')}: {restValue}
                       </li>
                     )}
                   </Fragment>
@@ -169,9 +169,7 @@ const ReportGraphTick = (props: any) => {
     }
   }
 
-  const label = isOtherCategory
-    ? t('analysis.others', 'Others')
-    : getReportAreaLabel(payload.value) || ''
+  const label = isOtherCategory ? t('analysis.others') : getReportAreaLabel(payload.value) || ''
   const labelChunks = label.split(' ')
   const labelChunksClean = [labelChunks[0]]
   labelChunks.slice(1).forEach((chunk: any) => {
@@ -185,7 +183,7 @@ const ReportGraphTick = (props: any) => {
 
   const tooltip =
     graphType === 'byFlag'
-      ? `${t('analysis.clickToFilterBy', 'Click to filter by:')} ${label}`
+      ? `${t('analysis.clickToFilterBy')} ${label}`
       : `${t('analysis.clickToSeeAreaReport', 'Click to see the {{area}} report', {
           area: getReportAreaLabel(payload.value),
         })}`
@@ -245,7 +243,7 @@ export default function EventsReportGraphGrouped({
       (acc, event) => {
         const regions = []
         if (graphType === 'byFlag') {
-          regions.push(event.vessel?.flag || t('common.unknownProperty', 'Unknown'))
+          regions.push(event.vessel?.flag || t('common.unknownProperty'))
         }
         if (graphType === 'byRFMO' && event.regions?.rfmo) {
           regions.push(

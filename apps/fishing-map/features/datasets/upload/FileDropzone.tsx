@@ -15,10 +15,10 @@ import { FILE_TYPES_CONFIG, getFilesAcceptedByMime } from 'utils/files'
 
 import styles from './FileDropzone.module.css'
 
-// t('dataset.formats.csv', 'csv')
-// t('dataset.formats.geojson', 'geojson')
-// t('dataset.formats.shapefile', 'compressed shapefile')
-// t('dataset.formats.kml', 'KML')
+// t('dataset.formats.csv')
+// t('dataset.formats.geojson')
+// t('dataset.formats.shapefile')
+// t('dataset.formats.kml')
 
 const IconsByType: Record<string, any> = {
   geojson: <FilesJsonIcon key="json" />,
@@ -69,10 +69,10 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
         label
       ) : acceptedFiles.length ? (
         <p className={styles.fileText}>
-          {t('dataset.file', 'File')}: {acceptedFiles[0].name}
+          {t('dataset.file')}: {acceptedFiles[0].name}
         </p>
       ) : isDragActive ? (
-        <p className={styles.fileText}>{t('dataset.dragActive', 'Drop the file here ...')}</p>
+        <p className={styles.fileText}>{t('dataset.dragActive')}</p>
       ) : (
         <p className={styles.fileText}>
           {t('dataset.dragFileFormatsPlaceholder', {

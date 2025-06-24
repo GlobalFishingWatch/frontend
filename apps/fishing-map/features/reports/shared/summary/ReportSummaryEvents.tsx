@@ -61,7 +61,7 @@ export default function ReportSummaryEvents() {
           '<strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
         activityQuantity,
         activityUnit,
-        area: reportAreaId ? '' : t('analysis.globally', 'globally'),
+        area: reportAreaId ? '' : t('analysis.globally'),
         start: startDate,
         end: endDate,
       })
@@ -87,7 +87,7 @@ export default function ReportSummaryEvents() {
       activityUnit,
       start: startDate,
       end: endDate,
-      area: reportAreaId ? '' : t('analysis.globally', 'globally'),
+      area: reportAreaId ? '' : t('analysis.globally'),
     })
   }, [
     eventType,

@@ -58,14 +58,14 @@ function ActivityDownloadError() {
       'Your account is currently loading an analysis report, please wait for the report to finish before downloading data'
     )
   } else if (isDownloadTimeoutError || hadDownloadTimeoutError) {
-    downloadErrorMsg = t('analysis.timeoutError', 'This is taking more than expected, please wait')
+    downloadErrorMsg = t('analysis.timeoutError')
   } else if (isDownloadAreaTooBig) {
     downloadErrorMsg = `${t(
       'analysis.errorTooComplex',
       'The geometry of the area is too complex to perform a report, try to simplify and upload again.'
     )}`
   } else if (!downloadErrorMsg) {
-    downloadErrorMsg = `${t('analysis.errorMessage', 'Something went wrong')} 🙈`
+    downloadErrorMsg = `${t('analysis.errorMessage')} 🙈`
   }
 
   return <p className={cx(styles.footerLabel, styles.error)}>{downloadErrorMsg}</p>

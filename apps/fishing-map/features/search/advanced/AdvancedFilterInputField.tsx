@@ -23,7 +23,7 @@ function AdvancedFilterInputField({ onChange, field }: AdvancedFilterInputFieldP
       ssvid: '123456789, 987654321, ...',
       imo: '1234567, 7654321, ...',
       callsign: 'A1BC2, X2YZ, ...',
-      owner: t('search.placeholderFilterMultiple', 'One or more values (comma separated)'),
+      owner: t('search.placeholderFilterMultiple'),
     }),
     [t]
   )

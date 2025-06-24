@@ -56,7 +56,7 @@ function VesselDownloadButton({
       }
       tooltip={
         downloadSupported
-          ? t('download.trackAction', 'Download vessel track')
+          ? t('download.trackAction')
           : t(
               'download.trackNotAllowed',
               "You don't have permissions to download tracks from this source"

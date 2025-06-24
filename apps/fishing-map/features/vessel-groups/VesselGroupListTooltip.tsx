@@ -47,7 +47,7 @@ function VesselGroupListTooltip({ onAddToVesselGroup, ...props }: VesselGroupLis
 
   useEffect(() => {
     if (addingToGroup && !vesselGroupsStatusId) {
-      toast(t('vesselGroup.vesselAddedToGroup', 'Your vessel group was updated'), {
+      toast(t('vesselGroup.vesselAddedToGroup'), {
         toastId: 'vesselAddedToGroup',
       })
       setVesselGroupsOpen(false)
@@ -88,7 +88,7 @@ function VesselGroupListTooltip({ onAddToVesselGroup, ...props }: VesselGroupLis
               onClick={() => handleVesselGroupClick(NEW_VESSEL_GROUP_ID)}
               key="new-group"
             >
-              {t('vesselGroup.createNewGroup', 'Create new group')}
+              {t('vesselGroup.createNewGroup')}
             </li>
           )}
           {vesselGroupOptions.map((group) => (

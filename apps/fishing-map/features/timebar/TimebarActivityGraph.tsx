@@ -25,10 +25,10 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
       const labels = [
         formatNumber(value.value, maxHighlighterFractionDigits),
         item?.props.unit || '',
-        t('common.onScreen', 'on screen'),
+        t('common.onScreen'),
       ]
       if (visualisation === TimebarVisualisations.Environment) {
-        labels.push(t('common.averageAbbreviated', 'avg.'))
+        labels.push(t('common.averageAbbreviated'))
       }
 
       return labels.join(' ')

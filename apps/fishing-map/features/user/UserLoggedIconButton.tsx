@@ -31,10 +31,7 @@ const UserLoggedIconButton = ({ loginTooltip, onToggleClick, ...props }: UserLog
           {...props}
           icon={isLoginHover ? 'user' : props.icon}
           disabled={props.disabled}
-          tooltip={
-            loginTooltip ||
-            t('vessel.infoLogin', 'Register and login to see more details (free, 2 minutes)')
-          }
+          tooltip={loginTooltip || t('vessel.infoLogin')}
           onClick={undefined}
           onMouseEnter={() => setIsLoginHover(true)}
           onMouseLeave={() => setIsLoginHover(false)}

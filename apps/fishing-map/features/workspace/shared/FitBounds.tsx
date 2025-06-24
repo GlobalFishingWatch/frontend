@@ -104,11 +104,11 @@ const FitBounds = ({ className, layer, hasError, infoResource, disabled }: FitBo
 
   let tooltip = ''
   if (hasError) {
-    tooltip = t('errors.trackLoading', 'There was an error loading the vessel track')
+    tooltip = t('errors.trackLoading')
   } else if (layer instanceof VesselLayer) {
-    tooltip = t('layer.vessel_fit_bounds', 'Center view on vessel track')
+    tooltip = t('layer.vessel_fit_bounds')
   } else {
-    tooltip = t('layer.user_track_fit_bounds', 'Change view and time range to see the entire track')
+    tooltip = t('layer.user_track_fit_bounds')
   }
   return (
     <IconButton

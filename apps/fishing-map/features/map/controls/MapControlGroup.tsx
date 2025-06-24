@@ -49,7 +49,7 @@ function MapControlGroup({
             icon={visible ? 'visibility-off' : 'visibility-on'}
             disabled={disabled}
             type="map-tool"
-            tooltip={t('common.toggleVisibility', 'Toggle visibility')}
+            tooltip={t('common.toggleVisibility')}
             onClick={onVisibilityClick}
           />
         </li>
@@ -60,7 +60,7 @@ function MapControlGroup({
             icon={'delete'}
             disabled={disabled}
             type="map-tool"
-            tooltip={deleteTooltip || t('common.delete', 'Delete')}
+            tooltip={deleteTooltip || t('common.delete')}
             onClick={onDeleteClick}
           />
         </li>

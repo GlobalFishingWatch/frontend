@@ -189,9 +189,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
           {formatInfoField(shipname, 'shipname')}
           <span className={styles.secondary}>{otherNamesLabel}</span>
           <span className={styles.reportLink}>
-            <a href={window.location.href}>
-              {t('vessel.linkToVessel', 'Check the vessel profile here')}
-            </a>
+            <a href={window.location.href}>{t('vessel.linkToVessel')}</a>
           </span>
         </h1>
 
@@ -211,7 +209,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
             className="print-hidden"
             type="border"
             icon="target"
-            tooltip={t('layer.vessel_fit_bounds', 'Center view on vessel track')}
+            tooltip={t('layer.vessel_fit_bounds')}
             tooltipPlacement="bottom"
             size="small"
             disabled={!boundsReady}
@@ -223,7 +221,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
             size="small"
             onClick={onPrintClick}
           >
-            <p>{t('analysis.print ', 'print')}</p>
+            <p>{t('analysis.print ')}</p>
             <Icon icon="print" type="default" />
           </Button>
           <VesselGroupAddButton

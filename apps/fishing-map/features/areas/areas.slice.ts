@@ -191,9 +191,7 @@ export const fetchAreaDetailThunk = createAsyncThunk(
               id: areaId?.toString(),
               name:
                 areaName ||
-                `${t('common.unionOf', 'Union of')} ${listAsSentence(
-                  areas.flatMap((a) => a?.name || [])
-                )}`,
+                `${t('common.unionOf')} ${listAsSentence(areas.flatMap((a) => a?.name || []))}`,
               bounds: bounds,
               geometry: mergedFeature.geometry as AreaGeometry,
               properties: { areaIds, datasetIds },

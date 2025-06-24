@@ -142,7 +142,7 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
       appSelector={ROOT_DOM_ELEMENT}
       title={
         <Fragment>
-          {t('vessel.vesselCorrection.title', 'Vessel Info Correction')}
+          {t('vessel.vesselCorrection.title')}
           <GFWOnly userGroup="any" />
         </Fragment>
       }
@@ -153,25 +153,25 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
       <div className={styles.container}>
         <div className={styles.top}>
           <div>
-            <label>{t('common.vessel', 'Vessel')}</label>
+            <label>{t('common.vessel')}</label>
             <Tag>
               {formatInfoField(vesselIdentity.shipname || vesselIdentity.nShipname, 'shipname')}
             </Tag>
             <Tag>{formatTransmissionDate(vesselIdentity, true)}</Tag>
           </div>
           <div>
-            <label>{t('layer.source', 'Source')}</label>
+            <label>{t('layer.source')}</label>
             <Tag>
               {identitySource === VesselIdentitySourceEnum.Registry
-                ? t('vessel.infoSources.registry', 'Registry') //
-                : t('vessel.infoSources.gfw-source', 'GFW Source')}
+                ? t('vessel.infoSources.registry') //
+                : t('vessel.infoSources.gfw-source')}
             </Tag>
           </div>
           <div>
             <label>
               {identitySource === VesselIdentitySourceEnum.Registry
                 ? t(`vessel.recordId`, 'Record ID')
-                : t('common.vesselId', 'Vessel ID')}
+                : t('common.vesselId')}
             </label>
             <Tag>
               {identitySource === VesselIdentitySourceEnum.Registry
@@ -186,13 +186,13 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
             <thead>
               <tr>
                 <th>
-                  <label>{t('common.field', 'Field')}</label>
+                  <label>{t('common.field')}</label>
                 </th>
                 <th>
-                  <label>{t('common.value', 'Value')}</label>
+                  <label>{t('common.value')}</label>
                 </th>
                 <th>
-                  <label>{t('layer.vessel_info_correction', 'Suggest a correction')}</label>
+                  <label>{t('layer.vessel_info_correction')}</label>
                 </th>
               </tr>
             </thead>
@@ -239,7 +239,7 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
                   <td>
                     {key === 'geartypes' || key === 'shiptypes' || key === 'flag' ? (
                       <Select
-                        placeholder={t('selects.placeholder', 'Select an option')}
+                        placeholder={t('selects.placeholder')}
                         type="secondary"
                         options={
                           key === 'geartypes'
@@ -290,7 +290,7 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
         </div>
 
         <div>
-          <label>{t('vessel.vesselCorrection.analystComments', 'Analyst comments')}</label>
+          <label>{t('vessel.vesselCorrection.analystComments')}</label>
           <InputText
             placeholder={t(
               'vessel.vesselCorrection.commentPlaceholder',
@@ -311,9 +311,7 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
         <div className={styles.footer}>
           <Button
             tooltip={
-              proposedValues === undefined
-                ? t('vessel.vesselCorrection.insuficientData', 'Please fill in at least one field')
-                : ''
+              proposedValues === undefined ? t('vessel.vesselCorrection.insuficientData') : ''
             }
             disabled={
               loading ||
@@ -324,7 +322,7 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
             loading={loading}
             className={styles.cta}
           >
-            {t('vessel.vesselCorrection.send', 'Send correction')}
+            {t('vessel.vesselCorrection.send')}
           </Button>
         </div>
       </div>

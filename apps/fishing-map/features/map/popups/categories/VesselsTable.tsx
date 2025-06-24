@@ -95,22 +95,18 @@ function VesselsTable({
         <table className={cx(styles.vesselsTable)} data-test={testId}>
           <thead>
             <tr>
-              <th colSpan={hasPinColumn ? 2 : 1}>{t('common.vessel_other', 'Vessels')}</th>
-              <th>{t('vessel.flag', 'flag')}</th>
+              <th colSpan={hasPinColumn ? 2 : 1}>{t('common.vessel_other')}</th>
+              <th>{t('vessel.flag')}</th>
               {!linkToSkylight && (
-                <th>
-                  {isPresenceActivity
-                    ? t('vessel.type', 'Type')
-                    : t('vessel.gearType_short', 'Gear')}
-                </th>
+                <th>{isPresenceActivity ? t('vessel.type') : t('vessel.gearType_short')}</th>
               )}
               {/* Disabled for detections to allocate some space for timestamps interaction */}
-              {isHoursProperty && <th>{t('vessel.source_short', 'source')}</th>}
+              {isHoursProperty && <th>{t('vessel.source_short')}</th>}
               {showValue && (
                 <th className={isHoursProperty ? styles.vesselsTableHeaderRight : ''}>
-                  {feature?.unit === 'hours' && t('common.hour_other', 'hours')}
-                  {feature?.unit === 'days' && t('common.days_other', 'days')}
-                  {feature?.unit === 'detections' && t('common.detection_other', 'detections')}
+                  {feature?.unit === 'hours' && t('common.hour_other')}
+                  {feature?.unit === 'days' && t('common.days_other')}
+                  {feature?.unit === 'detections' && t('common.detection_other')}
                 </th>
               )}
             </tr>
@@ -180,7 +176,7 @@ function VesselsTable({
                               <IconButton
                                 icon="search"
                                 size="tiny"
-                                tooltip={t('vessel.skylightSearch', 'Click to search this vessel')}
+                                tooltip={t('vessel.skylightSearch')}
                               />
                             </Link>
                             <a
@@ -255,7 +251,7 @@ function VesselsTable({
       )}
       {vesselsInfo && vesselsInfo.overflow && (
         <p className={styles.vesselsMore}>
-          + {vesselsInfo.overflowNumber} {t('common.more', 'more')}
+          + {vesselsInfo.overflowNumber} {t('common.more')}
         </p>
       )}
     </Fragment>

@@ -224,11 +224,7 @@ function ActivityLayerPanel({
                       icon={filterOpen ? 'filter-on' : 'filter-off'}
                       size="small"
                       onClick={onToggleFilterOpen}
-                      tooltip={
-                        filterOpen
-                          ? t('layer.filterClose', 'Close filters')
-                          : t('layer.filterOpen', 'Open filters')
-                      }
+                      tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
                       tooltipPlacement="top"
                     />
                     {dataview.id === 'fishing-ais' && (
@@ -259,7 +255,7 @@ function ActivityLayerPanel({
                           'errors.layerLoading',
                           'There was an error loading the layer'
                         )} (${layerError})`
-                      : t('errors.layerLoading', 'There was an error loading the layer')
+                      : t('errors.layerLoading')
                   }
                   size="small"
                 />
@@ -314,9 +310,9 @@ function ActivityLayerPanel({
                               }).toLocaleLowerCase()}
                         </span>
                       ) : stats.type === 'vessels' ? (
-                        t('workspace.noVesselInFilters', 'No vessels match your filters')
+                        t('workspace.noVesselInFilters')
                       ) : (
-                        t('workspace.noDetectionInFilters', 'No detections match your filters')
+                        t('workspace.noDetectionInFilters')
                       )}
                       {stats.type === 'vessels' &&
                         stats.flags > 0 &&
@@ -324,7 +320,7 @@ function ActivityLayerPanel({
                           dataview.config?.filterOperators?.flag === EXCLUDE_FILTER_ID ||
                           dataview.config?.filters?.flag.length > 1) && (
                           <Fragment>
-                            <span> {t('common.from', 'from')} </span>
+                            <span> {t('common.from')} </span>
                             <span>
                               <I18nNumber number={stats.flags} />{' '}
                               {t('layer.flagState', {
@@ -334,7 +330,7 @@ function ActivityLayerPanel({
                             </span>
                           </Fragment>
                         )}{' '}
-                      {t('common.globally', 'globally')}
+                      {t('common.globally')}
                     </div>
                   </Tooltip>
                 </div>
@@ -360,7 +356,7 @@ function ActivityLayerPanel({
                     size="small"
                     type="border"
                     icon="split"
-                    tooltip={t('layer.toggleCombinationMode.split', 'Split layers')}
+                    tooltip={t('layer.toggleCombinationMode.split')}
                     tooltipPlacement="left"
                     className={cx(activityStyles.bivariateSplit, 'print-hidden')}
                     onClick={onSplitLayers}

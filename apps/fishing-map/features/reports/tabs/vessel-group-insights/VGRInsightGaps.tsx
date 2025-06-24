@@ -64,12 +64,9 @@ const VesselGroupReportInsightGap = ({ skip }: { skip?: boolean }) => {
             'Dataset still in development, click the information icon to learn more'
           )}
         >
-          <label className="experimental">{t('vessel.insights.gaps', 'AIS Off Events')}</label>
+          <label className="experimental">{t('vessel.insights.gaps')}</label>
         </Tooltip>
-        <DataTerminology
-          title={t('vessel.insights.gaps', 'AIS Off Events')}
-          terminologyKey="insightsGaps"
-        />
+        <DataTerminology title={t('vessel.insights.gaps')} terminologyKey="insightsGaps" />
       </div>
       {skip || isLoading || !vesselGroup ? (
         <VesselGroupReportInsightPlaceholder />
@@ -77,7 +74,7 @@ const VesselGroupReportInsightGap = ({ skip }: { skip?: boolean }) => {
         <InsightError error={error as ParsedAPIError} />
       ) : !vesselsWithGaps || vesselsWithGaps?.length === 0 ? (
         <p className={cx(styles.nested, styles.secondary, styles.row)}>
-          {t('vessel.insights.gapsEventsEmpty', 'No AIS Off events detected')}
+          {t('vessel.insights.gapsEventsEmpty')}
         </p>
       ) : (
         <div className={cx(styles.nested, styles.row)}>

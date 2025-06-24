@@ -80,8 +80,7 @@ function DetectionsTooltipRow({
             {hasVesselsResolved && showFeaturesDetails && notMatchedDetectionsCount >= 0 && (
               <Fragment>
                 {' - '}
-                <I18nNumber number={notMatchedDetectionsCount} />{' '}
-                {t('vessel.unmatched', 'unmatched')}{' '}
+                <I18nNumber number={notMatchedDetectionsCount} /> {t('vessel.unmatched')}{' '}
                 {notMatchedDetection && <VesselDetectionTimestamps vessel={notMatchedDetection} />}
               </Fragment>
             )}

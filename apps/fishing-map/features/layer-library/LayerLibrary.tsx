@@ -241,7 +241,7 @@ const LayerLibrary: FC = () => {
             type="search"
             disabled={!ready}
             autoFocus
-            placeholder={t('translations:search.title', 'Search')}
+            placeholder={t('translations:search.title')}
           />
         </div>
         <div className={styles.categories}>

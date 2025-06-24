@@ -30,7 +30,7 @@ export default function WorkspaceError() {
   ) {
     return (
       <WorkspaceLoginError
-        title={t('errors.privateView', 'This is a private view')}
+        title={t('errors.privateView')}
         emailSubject={`Requesting access for ${workspaceId} view`}
       />
     )
@@ -38,7 +38,7 @@ export default function WorkspaceError() {
 
   if (error.status === 404) {
     return (
-      <ErrorPlaceholder title={t('errors.workspaceNotFound', 'The view you request was not found')}>
+      <ErrorPlaceholder title={t('errors.workspaceNotFound')}>
         <Button
           onClick={() => {
             dispatch(
@@ -50,7 +50,7 @@ export default function WorkspaceError() {
             )
           }}
         >
-          {t('errors.loadDefaultWorkspace', 'Load default workspace')}
+          {t('errors.loadDefaultWorkspace')}
         </Button>
       </ErrorPlaceholder>
     )

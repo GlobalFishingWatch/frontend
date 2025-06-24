@@ -182,12 +182,12 @@ function VesselsSection(): React.ReactElement<any> {
             active={someVesselsVisible}
             disabled={hasDeprecatedDataviewInstances}
             onClick={onToggleAllVessels}
-            tooltip={t('vessel.toggleAllVessels', 'Toggle all vessels visibility')}
+            tooltip={t('vessel.toggleAllVessels')}
             tooltipPlacement="top"
           />
         )}
         <h2 className={styles.sectionTitle}>
-          {t('common.vessel_other', 'Vessels')}
+          {t('common.vessel_other')}
           <span className="print-hidden">
             {dataviews.length > 1 ? ` (${dataviews.length})` : ''}
           </span>
@@ -219,11 +219,7 @@ function VesselsSection(): React.ReactElement<any> {
               <IconButton
                 icon={sortOrder.current === 'DESC' ? 'sort-asc' : 'sort-desc'}
                 size="medium"
-                tooltip={
-                  sortOrder.current === 'DESC'
-                    ? t('vessel.sortAsc', 'Sort vessels alphabetically (ascending)')
-                    : t('vessel.sortDesc', 'Sort vessels alphabetically (descending)')
-                }
+                tooltip={sortOrder.current === 'DESC' ? t('vessel.sortAsc') : t('vessel.sortDesc')}
                 tooltipPlacement="top"
                 onClick={onSetSortOrderClick}
               />
@@ -232,7 +228,7 @@ function VesselsSection(): React.ReactElement<any> {
               <IconButton
                 icon="delete"
                 size="medium"
-                tooltip={t('vessel.removeAllVessels', 'Remove all vessels')}
+                tooltip={t('vessel.removeAllVessels')}
                 tooltipPlacement="top"
                 onClick={onDeleteAllClick}
               />
@@ -246,11 +242,7 @@ function VesselsSection(): React.ReactElement<any> {
           testId="search-vessels-open"
           disabled={!searchAllowed || hasDeprecatedDataviewInstances}
           className="print-hidden"
-          tooltip={
-            searchAllowed
-              ? t('search.vessels', 'Search vessels')
-              : t('search.notAllowed', 'Search not allowed')
-          }
+          tooltip={searchAllowed ? t('search.vessels') : t('search.notAllowed')}
           tooltipPlacement="top"
           onClick={onSearchClick}
         />

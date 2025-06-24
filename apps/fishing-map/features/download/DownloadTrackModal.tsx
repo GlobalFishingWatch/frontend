@@ -88,7 +88,7 @@ function DownloadTrackModal() {
       appSelector={ROOT_DOM_ELEMENT}
       title={
         <Fragment>
-          {t('download.title', 'Download')} - {t('download.track', 'Vessel Track')}
+          {t('download.title')} - {t('download.track')}
         </Fragment>
       }
       isOpen={downloadModalOpen}
@@ -98,18 +98,18 @@ function DownloadTrackModal() {
       <div className={styles.container}>
         <div className={styles.info}>
           <div>
-            <label>{t('common.vessel', 'Vessel')}</label>
+            <label>{t('common.vessel')}</label>
             <Tag>{downloadTrackName || EMPTY_FIELD_PLACEHOLDER}</Tag>
           </div>
           <div>
-            <label>{t('download.timeRange', 'Time Range')}</label>
+            <label>{t('download.timeRange')}</label>
             <Tag>
               <TimelineDatesRange />
             </Tag>
           </div>
         </div>
         <div>
-          <label>{t('download.format', 'Format')}</label>
+          <label>{t('download.format')}</label>
           <Choice
             options={FORMAT_OPTIONS}
             size="small"
@@ -141,7 +141,7 @@ function DownloadTrackModal() {
             {downloadStatus === AsyncReducerStatus.Finished ? (
               <Icon icon="tick" />
             ) : (
-              t('download.title', 'Download')
+              t('download.title')
             )}
           </Button>
         </div>

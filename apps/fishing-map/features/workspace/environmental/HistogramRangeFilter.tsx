@@ -70,7 +70,7 @@ function HistogramRangeFilter({ dataview, onSelect }: HistogramRangeFilterProps)
       <SliderRange
         className={styles.slider}
         initialRange={[minSliderValue, maxSliderValue]}
-        label={t('layer.filterValues', 'Filter values')}
+        label={t('layer.filterValues')}
         config={sliderConfig}
         onChange={onSliderChange}
         histogram={false}

@@ -78,7 +78,7 @@ export const VesselActivitySummary = () => {
     })}`,
     voyages:
       voyages !== 0 && (visibleEvents.includes('port_visit') || visibleEvents === 'all')
-        ? `${t('common.in', 'in')} <strong>${formatI18nNumber(voyages as number)}</strong> ${t(
+        ? `${t('common.in')} <strong>${formatI18nNumber(voyages as number)}</strong> ${t(
             'vessel.voyage',
             { defaultValue: 'voyages', count: voyages }
           )}`
@@ -101,14 +101,14 @@ export const VesselActivitySummary = () => {
 
   return (
     <div className={styles.summaryContainer}>
-      <h2 className="print-only">{t('vessel.sectionActivity', 'activity')}</h2>
+      <h2 className="print-only">{t('vessel.sectionActivity')}</h2>
       <div className={styles.container}>
         <h2 className={styles.summary}>
           <span dangerouslySetInnerHTML={{ __html: summary }}></span>
           {hasActivityRegionsData ? (
             <span>
               {' '}
-              {t('common.in', 'in')}{' '}
+              {t('common.in')}{' '}
               {REGIONS_PRIORITY.map((regionType, index) => {
                 if (activityRegions[regionType] && activityRegions[regionType].length !== 0) {
                   const tooltipContent = (
@@ -194,7 +194,7 @@ export const VesselActivitySummary = () => {
                     {active && eventType === EventTypes.Fishing && fishingHours !== 0 && (
                       <span>
                         (
-                        <I18nNumber number={fishingHours} /> {t('common.hour_other', 'hours')})
+                        <I18nNumber number={fishingHours} /> {t('common.hour_other')})
                       </span>
                     )}
                     {eventType === EventTypes.Port && threeMostVisitedPortCountries.length > 0 && (
@@ -218,9 +218,9 @@ export const VesselActivitySummary = () => {
                         })}
                         {restMostVisitedPortCountries.length > 0 && (
                           <Tooltip content={restTooltipContent}>
-                            <span className={styles.help}>{` ${t('common.and', 'and')} ${
+                            <span className={styles.help}>{` ${t('common.and')} ${
                               restMostVisitedPortCountries.length
-                            } ${t('common.more', 'more')}`}</span>
+                            } ${t('common.more')}`}</span>
                           </Tooltip>
                         )}
                         )

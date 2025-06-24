@@ -131,7 +131,7 @@ function EventsReport() {
         {t('vesselGroup.disclaimerFeaturesNotAvailable', {
           defaultValue:
             '{{features}} are only available for AIS vessels and your group contains vessels from {{datasets}}.',
-          features: t('common.Events', 'Events'),
+          features: t('common.Events'),
           datasets: Array.from(datasetsWithoutRelatedEvents)
             .map((d) => getDatasetLabel(d))
             .join(', '),
@@ -152,7 +152,7 @@ function EventsReport() {
         <ReportSummary />
         <div className={styles.container}>
           <div className={styles.headerContainer}>
-            <label>{t('common.events', 'Events')}</label>
+            <label>{t('common.events')}</label>
             <EventsReportGraphSelector disabled={isLoadingVessels || noEvents} />
           </div>
           {graph}
@@ -191,7 +191,7 @@ function EventsReport() {
                   })
                 }}
               >
-                {t('analysis.seeVessels', 'See vessels')}
+                {t('analysis.seeVessels')}
               </Button>
             </div>
           </ReportVesselsPlaceholder>
@@ -199,7 +199,7 @@ function EventsReport() {
           <ReportVessels
             color={eventsDataview?.config?.color}
             activityUnit="numEvents"
-            title={t('common.vessels', 'Vessels')}
+            title={t('common.vessels')}
             loading={isLoadingVessels}
           />
         )}

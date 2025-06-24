@@ -67,16 +67,16 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
 
   const datasetFields: { field: SupportedEnvDatasetSchema; label: string }[] = useMemo(
     () => [
-      { field: 'type', label: t('layer.type', 'Type') },
-      { field: 'flag', label: t('layer.flagState_other', 'Flags') },
-      { field: 'vessel_type', label: t('vessel.vesselType_other', 'Vessel types') },
-      { field: 'speed', label: t('layer.speed', 'Speed') },
-      { field: 'Height', label: t('layer.height', 'Height') },
-      { field: 'REALM', label: t('layer.REALM', 'REALM') },
-      { field: 'genus', label: t('layer.genus', 'Genus') },
-      { field: 'specie', label: t('layer.specie', 'specie') },
-      { field: 'period', label: t('layer.period', 'Period') },
-      { field: 'scenario', label: t('layer.scenario', 'Scenario') },
+      { field: 'type', label: t('layer.type') },
+      { field: 'flag', label: t('layer.flagState_other') },
+      { field: 'vessel_type', label: t('vessel.vesselType_other') },
+      { field: 'speed', label: t('layer.speed') },
+      { field: 'Height', label: t('layer.height') },
+      { field: 'REALM', label: t('layer.REALM') },
+      { field: 'genus', label: t('layer.genus') },
+      { field: 'specie', label: t('layer.specie') },
+      { field: 'period', label: t('layer.period') },
+      { field: 'scenario', label: t('layer.scenario') },
     ],
     [t]
   )
@@ -191,11 +191,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
                   loading={isPending}
                   size="small"
                   onClick={onToggleFilterOpen}
-                  tooltip={
-                    filterOpen
-                      ? t('layer.filterClose', 'Close filters')
-                      : t('layer.filterOpen', 'Open filters')
-                  }
+                  tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
                   tooltipPlacement="top"
                 />
               </div>
@@ -235,7 +231,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
                       'errors.layerLoading',
                       'There was an error loading the layer'
                     )} (${layerError})`
-                  : t('errors.layerLoading', 'There was an error loading the layer')
+                  : t('errors.layerLoading')
               }
               size="small"
             />
@@ -262,7 +258,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
                   key={'visibleValues'}
                   dataview={dataview}
                   field={'visibleValues'}
-                  label={t('common.visibleValues', 'Visible values')}
+                  label={t('common.visibleValues')}
                 />
               )}
             </div>

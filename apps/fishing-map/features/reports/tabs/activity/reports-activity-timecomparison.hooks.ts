@@ -286,7 +286,7 @@ export const useTimeCompareTimeDescription = (addPrefix = true) => {
         })
 
   if (addPrefix) {
-    label = [t('analysis.change', 'Change'), label].join(' ')
+    label = [t('analysis.change'), label].join(' ')
   }
 
   return label

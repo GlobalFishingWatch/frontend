@@ -123,7 +123,7 @@ function NewPolygonDataset({
           t('datasetUpload.errors.invalidDatesFeatures', {
             defaultValue:
               "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
-            featureType: t('dataset.typePolygons', 'polygons'),
+            featureType: t('dataset.typePolygons'),
           })
         )
       }
@@ -147,7 +147,7 @@ function NewPolygonDataset({
     return (
       <div className={styles.processingData}>
         <Spinner className={styles.processingDataSpinner} />
-        <p>{t('datasetUpload.processingData', 'Processing data...')}</p>
+        <p>{t('datasetUpload.processingData')}</p>
       </div>
     )
   }
@@ -171,19 +171,16 @@ function NewPolygonDataset({
       )}
       <InputText
         value={datasetMetadata?.name}
-        label={t('datasetUpload.datasetName', 'Dataset Name')}
+        label={t('datasetUpload.datasetName')}
         className={styles.input}
         onChange={(e) => setDatasetMetadata({ name: e.target.value })}
         disabled={loading}
       />
       {errors.name && <p className={cx(styles.errorMsg, styles.errorMargin)}>{errors.name}</p>}
-      <Collapsable
-        className={styles.optional}
-        label={t('datasetUpload.optionalFields', 'Optional fields')}
-      >
+      <Collapsable className={styles.optional} label={t('datasetUpload.optionalFields')}>
         <InputText
           value={datasetMetadata?.description}
-          label={t('datasetUpload.datasetDescription', 'Dataset description')}
+          label={t('datasetUpload.datasetDescription')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
           disabled={loading}
@@ -191,7 +188,7 @@ function NewPolygonDataset({
         <NewDatasetField
           datasetMetadata={datasetMetadata}
           property="valueProperties"
-          label={t('datasetUpload.polygons.name', 'Polygon name')}
+          label={t('datasetUpload.polygons.name')}
           onSelect={(selected) => {
             setDatasetMetadataConfig({ valueProperties: [selected.id] })
           }}
@@ -207,7 +204,7 @@ function NewPolygonDataset({
         <NewDatasetField
           datasetMetadata={datasetMetadata}
           property="polygonColor"
-          label={t('datasetUpload.polygons.color', 'polygon color')}
+          label={t('datasetUpload.polygons.color')}
           placeholder={t(
             'datasetUpload.fieldNumericPlaceholder',
             'Select a numeric field from your dataset'
@@ -234,7 +231,7 @@ function NewPolygonDataset({
         <span className={styles.errorMsg}>{timeFilterError}</span>
         <MultiSelect
           className={styles.input}
-          label={t('datasetUpload.polygons.filters', 'Polygon filters')}
+          label={t('datasetUpload.polygons.filters')}
           placeholder={
             datasetFieldsAllowed.length > 0
               ? datasetFieldsAllowed.join(', ')
@@ -283,7 +280,7 @@ function NewPolygonDataset({
           disabled={!datasetMetadata || error !== '' || !isValid}
           loading={loading}
         >
-          {t('common.confirm', 'Confirm') as string}
+          {t('common.confirm') as string}
         </Button>
       </div>
     </div>

@@ -105,7 +105,7 @@ function SearchAdvanced({
             onChange={handleSearchQueryChange}
             id="name"
             value={searchQuery || ''}
-            label={t('common.name', 'Name')}
+            label={t('common.name')}
             className={styles.input}
             autoFocus
           />
@@ -115,7 +115,7 @@ function SearchAdvanced({
             searchSuggestion !== searchQuery &&
             !searchSuggestionClicked && (
               <div>
-                {t('search.suggestion', 'Did you mean')}{' '}
+                {t('search.suggestion')}{' '}
                 <button onClick={onSuggestionClick} className={styles.suggestion}>
                   {' '}
                   {searchSuggestion}{' '}
@@ -145,7 +145,7 @@ function SearchAdvanced({
               searchStatus === AsyncReducerStatus.Aborted
             }
           >
-            {t('search.title', 'Search')}
+            {t('search.title')}
           </Button>
         </div>
       </div>

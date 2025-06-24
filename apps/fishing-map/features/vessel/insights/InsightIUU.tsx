@@ -22,11 +22,8 @@ const InsightIUU = ({
   return (
     <div id="IUU" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vessel.insights.IUU', 'RFMO IUU Vessel List')}</label>
-        <DataTerminology
-          title={t('vessel.insights.IUU', 'RFMO IUU Vessel List')}
-          terminologyKey="insightsIUU"
-        />
+        <label>{t('vessel.insights.IUU')}</label>
+        <DataTerminology title={t('vessel.insights.IUU')} terminologyKey="insightsIUU" />
       </div>
       {isLoading ? (
         <div style={{ width: '50rem' }} className={styles.loadingPlaceholder} />

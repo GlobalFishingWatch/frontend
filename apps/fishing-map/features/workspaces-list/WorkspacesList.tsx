@@ -40,10 +40,10 @@ function WorkspacesList() {
   if (!validCategory) {
     return (
       <div className={styles.placeholder}>
-        <h2>{t('errors.pageNotFound', 'Page not found')}</h2>
+        <h2>{t('errors.pageNotFound')}</h2>
         <p>🙈</p>
         <Link className={styles.linkButton} to={{ type: HOME, replaceQuery: true, query: {} }}>
-          {t('common.seeDefault', 'See default view')}
+          {t('common.seeDefault')}
         </Link>
       </div>
     )
@@ -54,7 +54,7 @@ function WorkspacesList() {
       {locationCategory === WorkspaceCategory.MarineManager && (
         <Fragment>
           <WorkspaceWizard />
-          <label className={styles.listTitle}>{t('common.partnerSites', 'Partner sites')}</label>
+          <label className={styles.listTitle}>{t('common.partnerSites')}</label>
         </Fragment>
       )}
       <ul>

@@ -110,7 +110,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             }}
             onClick={onSearchClick}
           >
-            <Tooltip content={t('workspace.categories.search', 'Vessel search')} placement="right">
+            <Tooltip content={t('workspace.categories.search')} placement="right">
               <span className={styles.tabContent}>
                 <Icon icon="category-search" className={styles.searchIcon} />
               </span>
@@ -166,7 +166,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
                   className={cx(styles.link)}
                   onClick={onFeedbackClick}
                 >
-                  {t('feedback.logAnIssue', 'Log an issue')}
+                  {t('feedback.logAnIssue')}
                 </span>
               </li>
               <li>
@@ -176,7 +176,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
                   rel="noreferrer"
                   className={cx(styles.link)}
                 >
-                  {t('feedback.requestAnImprovement', 'Request an improvement')}
+                  {t('feedback.requestAnImprovement')}
                 </a>
               </li>
             </ul>

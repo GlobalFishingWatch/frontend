@@ -34,7 +34,7 @@ const VesselGroupReportInsights = () => {
         {t('vesselGroup.disclaimerFeaturesNotAvailable', {
           defaultValue:
             '{{features}} are only available for AIS vessels and your group contains vessels from {{datasets}}.',
-          features: t('common.insights', 'Insights'),
+          features: t('common.insights'),
           datasets: Array.from(datasetsWithoutRelatedEvents)
             .map((d) => getDatasetLabel(d))
             .join(', '),
@@ -58,7 +58,7 @@ const VesselGroupReportInsights = () => {
 
   return (
     <div className={styles.container}>
-      <h2 className="print-only">{t('vessel.sectionInsights', 'Insights')}</h2>
+      <h2 className="print-only">{t('vessel.sectionInsights')}</h2>
       <p className={styles.title}>
         {t('vesselGroup.insightSectionTitle', {
           defaultValue: 'Vessel group insights between {{start}} and {{end}}',
@@ -66,7 +66,7 @@ const VesselGroupReportInsights = () => {
           end: formatI18nDate(end),
         })}
         <DataTerminology
-          title={t('vesselGroupReport.insights.title', 'Vessel group insights')}
+          title={t('vesselGroupReport.insights.title')}
           terminologyKey="insightsVesselGroups"
         />
       </p>

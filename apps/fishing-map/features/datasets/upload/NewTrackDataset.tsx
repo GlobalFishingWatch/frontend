@@ -120,7 +120,7 @@ function NewTrackDataset({
               t('datasetUpload.errors.invalidDatesFeatures', {
                 defaultValue:
                   "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
-                featureType: t('dataset.typePoints', 'points'),
+                featureType: t('dataset.typePoints'),
               })
             )
           } else {
@@ -155,7 +155,7 @@ function NewTrackDataset({
           t('datasetUpload.errors.invalidDatesFeatures', {
             defaultValue:
               "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
-            featureType: t('dataset.typePoints', 'points'),
+            featureType: t('dataset.typePoints'),
           })
         )
       } else {
@@ -228,7 +228,7 @@ function NewTrackDataset({
     return (
       <div className={styles.processingData}>
         <Spinner className={styles.processingDataSpinner} />
-        <p>{t('datasetUpload.processingData', 'Processing data...')}</p>
+        <p>{t('datasetUpload.processingData')}</p>
       </div>
     )
   }
@@ -253,7 +253,7 @@ function NewTrackDataset({
       <div className={styles.content}>
         <InputText
           value={datasetMetadata?.name}
-          label={t('datasetUpload.datasetName', 'Dataset Name')}
+          label={t('datasetUpload.datasetName')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ name: e.target.value })}
           disabled={loading}
@@ -264,7 +264,7 @@ function NewTrackDataset({
             <NewDatasetField
               datasetMetadata={datasetMetadata}
               property="latitude"
-              label={`${t('datasetUpload.point.coordinates', 'Point coordinates')} - ${t(
+              label={`${t('datasetUpload.point.coordinates')} - ${t(
                 'common.latitude',
                 'Latitude'
               )}`}
@@ -276,7 +276,7 @@ function NewTrackDataset({
             <NewDatasetField
               datasetMetadata={datasetMetadata}
               property="longitude"
-              label={t('common.longitude', 'longitude')}
+              label={t('common.longitude')}
               editable={!isEditing && !loading}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ longitude: selected.id })
@@ -298,7 +298,7 @@ function NewTrackDataset({
             <NewDatasetField
               datasetMetadata={datasetMetadata}
               property="lineId"
-              label={t('datasetUpload.tracks.lineId', 'Individual line id')}
+              label={t('datasetUpload.tracks.lineId')}
               editable={!isEditing && !loading}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ lineId: selected.id })
@@ -315,7 +315,7 @@ function NewTrackDataset({
             <NewDatasetField
               datasetMetadata={datasetMetadata}
               property="segmentId"
-              label={t('datasetUpload.tracks.segmentId', 'Individual segment id')}
+              label={t('datasetUpload.tracks.segmentId')}
               editable={!isEditing && !loading}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ segmentId: selected.id })
@@ -332,13 +332,10 @@ function NewTrackDataset({
           </div>
         )}
       </div>
-      <Collapsable
-        className={styles.optional}
-        label={t('datasetUpload.optionalFields', 'Optional fields')}
-      >
+      <Collapsable className={styles.optional} label={t('datasetUpload.optionalFields')}>
         <InputText
           value={datasetMetadata?.description}
-          label={t('datasetUpload.datasetDescription', 'Dataset description')}
+          label={t('datasetUpload.datasetDescription')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
           disabled={loading}
@@ -346,7 +343,7 @@ function NewTrackDataset({
         <NewDatasetField
           datasetMetadata={datasetMetadata}
           property="valueProperties"
-          label={t('datasetUpload.tracks.name', 'Line label')}
+          label={t('datasetUpload.tracks.name')}
           onSelect={(selected) => {
             setDatasetMetadataConfig({ valueProperties: [selected.id] })
           }}
@@ -360,7 +357,7 @@ function NewTrackDataset({
           )}
         />
         <MultiSelect
-          label={t('datasetUpload.tracks.filters', 'Line filters')}
+          label={t('datasetUpload.tracks.filters')}
           placeholder={
             fieldsAllowed.length > 0
               ? fieldsAllowed.join(', ')
@@ -410,7 +407,7 @@ function NewTrackDataset({
           disabled={!datasetMetadata || error !== '' || !isValid}
           loading={loading}
         >
-          {t('common.confirm', 'Confirm') as string}
+          {t('common.confirm') as string}
         </Button>
       </div>
     </div>

@@ -191,11 +191,8 @@ const InsightMOUList = ({
   return (
     <div id="MOULists" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vessel.insights.MOULists', 'MOU Lists')}</label>
-        <DataTerminology
-          title={t('vessel.insights.MOULists', 'MOU Lists')}
-          terminologyKey="insightsMOUList"
-        />
+        <label>{t('vessel.insights.MOULists')}</label>
+        <DataTerminology title={t('vessel.insights.MOULists')} terminologyKey="insightsMOUList" />
       </div>
       {guestUser ? (
         <VesselIdentityFieldLogin />

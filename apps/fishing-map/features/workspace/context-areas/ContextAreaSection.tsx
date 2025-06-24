@@ -61,14 +61,14 @@ function ContextAreaSection(): React.ReactElement<any> {
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
         <h2 className={cx('print-hidden', styles.sectionTitle)}>
-          {t('common.context_area_other', 'Context areas')}
+          {t('common.context_area_other')}
         </h2>
         {!readOnly && (
           <IconButton
             icon="plus"
             type="border"
             size="medium"
-            tooltip={t('dataset.addContext', 'Add context dataset')}
+            tooltip={t('dataset.addContext')}
             tooltipPlacement="top"
             className="print-hidden"
             onClick={onAdd}

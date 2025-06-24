@@ -30,9 +30,9 @@ const InsightFlagChanges = ({
   return (
     <div id="flagChanges" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vessel.insights.flagChanges', 'Flag Changes')}</label>
+        <label>{t('vessel.insights.flagChanges')}</label>
         <DataTerminology
-          title={t('vessel.insights.flagChanges', 'Flag Changes')}
+          title={t('vessel.insights.flagChanges')}
           terminologyKey="insightsFlagsChanges"
         />
       </div>
@@ -62,9 +62,7 @@ const InsightFlagChanges = ({
                 )
               </span>
             ) : (
-              <span className={styles.secondary}>
-                {t('vessel.insights.flagChangesEmpty', 'No flag changes')}
-              </span>
+              <span className={styles.secondary}>{t('vessel.insights.flagChangesEmpty')}</span>
             )}
           </p>
         </div>

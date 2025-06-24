@@ -7,12 +7,12 @@ import fishingEffortHeatmapImg from 'assets/images/hints/fishingEffortHeatmap.pn
 import howToFilterActivityLayersImg from 'assets/images/hints/howToFilterActivityLayers.png'
 
 // t('help-hints:areaSearch', 'Search by country, sea or ocean to focus on an area you\'re interested in.')
-// t('help-hints:changingTheTimeRange', 'Click and drag to change the time range you are viewing in the time bar.')
-// t('help-hints:clickingOnAGridCellToShowVessels', 'Click on any grid cell to show the most active vessels in that area over the chosen time range.')
-// t('help-hints:filterActivityLayers', 'Click the filter icon to filter activity using different available criteria, including data source, flag and gear types.')
-// t('help-hints:fishingEffortHeatmap', 'The map shows an interactive heat map of activity. The lighter grid cells are the areas with more activity.')
-// t('help-hints:periodComparisonBaseline', 'Select a baseline to compare changes in activity e.g. between now and the same date last year, or to compare activity at different times of year.')
-// t('help-hints:userContextLayers', 'Upload and combine your area, track or point data in more formats with flexible color, size, labeling, time and filter options to best visualize and analyze your datasets alongside Global Fishing Watch layers.')
+// t('help-hints:changingTheTimeRange')
+// t('help-hints:clickingOnAGridCellToShowVessels')
+// t('help-hints:filterActivityLayers')
+// t('help-hints:fishingEffortHeatmap')
+// t('help-hints:periodComparisonBaseline')
+// t('help-hints:userContextLayers')
 
 export type HintId =
   | 'fishingEffortHeatmap'

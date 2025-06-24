@@ -67,7 +67,7 @@ export function VesselGroupAddActionButton({
       disabled={disabled}
       tooltip={
         guestUser
-          ? t('vesselGroup.loginToAdd', 'Login to add to group')
+          ? t('vesselGroup.loginToAdd')
           : tooManyVessels
             ? t('vesselGroup.tooManyVessels', {
                 count: MAX_VESSEL_GROUP_VESSELS,
@@ -78,7 +78,7 @@ export function VesselGroupAddActionButton({
       tooltipPlacement="top"
     >
       <Icon icon={'vessel-group'} />
-      {t('vesselGroup.add', 'Add to group')}
+      {t('vesselGroup.add')}
       {showCount && vessels ? ` (${vessels.length})` : ''}
     </Button>
   )

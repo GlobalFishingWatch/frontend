@@ -146,11 +146,9 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
 
   const getVesselGraphTooltip = (graph: 'speed' | 'depth') => {
     let tooltipLabel =
-      graph === 'depth'
-        ? t('timebarSettings.showGraphDepth', 'Show track depth graph')
-        : t('timebarSettings.showGraphSpeed', 'Show track speed graph')
+      graph === 'depth' ? t('timebarSettings.showGraphDepth') : t('timebarSettings.showGraphSpeed')
     if (!activeTrackDataviews?.length) {
-      tooltipLabel = t('timebarSettings.tracksDisabled', 'Select at least one vessel')
+      tooltipLabel = t('timebarSettings.tracksDisabled')
     } else if (!timebarGraphEnabled) {
       tooltipLabel = t(
         'timebarSettings.graphDisabled',
@@ -171,12 +169,12 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const expandedContainerRef = useClickedOutside(closeOptions)
 
   const activityTooltipLabel = !activeActivityDataviews?.length
-    ? t('timebarSettings.activityDisabled', 'Select at least one activity layer')
-    : t('timebarSettings.showActivity', 'Show activity graph')
+    ? t('timebarSettings.activityDisabled')
+    : t('timebarSettings.showActivity')
 
   const detectionsTooltipLabel = !activeDetectionsDataviews?.length
-    ? t('timebarSettings.detectionsDisabled', 'Select at least one detections layer')
-    : t('timebarSettings.showDetections', 'Show detections graph')
+    ? t('timebarSettings.detectionsDisabled')
+    : t('timebarSettings.showDetections')
 
   return (
     <div className={cx('print-hidden', styles.container)} ref={expandedContainerRef}>
@@ -189,13 +187,13 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
           loading
             ? t('vessel.loadingInfo')
             : optionsPanelOpen
-              ? t('timebarSettings.settings_close', 'Close timebar settings')
-              : t('timebarSettings.settings_open', 'Open timebar settings')
+              ? t('timebarSettings.settings_close')
+              : t('timebarSettings.settings_open')
         }
       />
       {optionsPanelOpen && (
         <div className={styles.optionsContainer}>
-          <h1>{t('timebarSettings.title', 'Timebar settings')}</h1>
+          <h1>{t('timebarSettings.title')}</h1>
           <div className={styles.radiosContainer}>
             {!isStandaloneVesselLocation && (
               <Fragment>
@@ -203,7 +201,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   label={
                     <Icon
                       SvgIcon={AreaIcon}
-                      label={t('common.activity', 'Activity')}
+                      label={t('common.activity')}
                       color={activeActivityDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                       disabled={!activeActivityDataviews?.length}
                     />
@@ -217,7 +215,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   label={
                     <Icon
                       SvgIcon={AreaIcon}
-                      label={t('common.detections', 'Detections')}
+                      label={t('common.detections')}
                       color={activeDetectionsDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                       disabled={!activeDetectionsDataviews?.length}
                     />
@@ -231,7 +229,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   label={
                     <Icon
                       SvgIcon={AreaIcon}
-                      label={t('common.events', 'Events')}
+                      label={t('common.events')}
                       color={activeEventsDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                       disabled={!activeEventsDataviews?.length}
                     />
@@ -267,7 +265,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               label={
                 <Icon
                   SvgIcon={TracksIcon}
-                  label={t('timebarSettings.tracks', 'Tracks')}
+                  label={t('timebarSettings.tracks')}
                   color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                   disabled={!activeTrackDataviews?.length}
                 />
@@ -279,8 +277,8 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               }
               tooltip={
                 !activeTrackDataviews?.length
-                  ? t('timebarSettings.tracksDisabled', 'Select at least one vessel')
-                  : t('timebarSettings.showTracks', 'Show tracks graph')
+                  ? t('timebarSettings.tracksDisabled')
+                  : t('timebarSettings.showTracks')
               }
               onClick={setVesselActive}
             />
@@ -288,7 +286,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               label={
                 <Icon
                   SvgIcon={TrackSpeedIcon}
-                  label={t('timebarSettings.graphSpeed', 'Vessel Speed')}
+                  label={t('timebarSettings.graphSpeed')}
                   color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                   disabled={!hasSomeVesselLayer || !activeTrackDataviews?.length}
                 />
@@ -305,7 +303,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               label={
                 <Icon
                   SvgIcon={TrackDepthIcon}
-                  label={t('timebarSettings.graphDepth', 'Vessel Depth')}
+                  label={t('timebarSettings.graphDepth')}
                   color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                   disabled={!hasSomeVesselLayer || !activeTrackDataviews?.length}
                 />

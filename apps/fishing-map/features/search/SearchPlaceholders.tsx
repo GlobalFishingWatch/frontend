@@ -61,13 +61,13 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
       <div className={styles.container}>
         <VesselSearchImage className={styles.image} />
         <div className={cx({ [styles.hidden]: searchStatus !== AsyncReducerStatus.Loading })}>
-          {t('search.searching', 'Searching more than 100K vessels ...')}
+          {t('search.searching')}
           <Spinner className={styles.spinner} />
         </div>
         <div className={cx({ [styles.hidden]: searchStatus === AsyncReducerStatus.Loading })}>
           {activeSearchOption === 'basic' && (
             <div className={styles.description}>
-              {t('search.description', 'Search by vessel name or identification code.')}
+              {t('search.description')}
               <br />
               {isSmallScreen
                 ? t(
@@ -92,7 +92,7 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
             <p className={cx(styles.description, styles.center)}>
               <Tooltip content={noGuestDatasets.join(', ')}>
                 <span className={styles.bold}>
-                  {noGuestDatasets.length} {t('common.sources', 'Sources')}
+                  {noGuestDatasets.length} {t('common.sources')}
                 </span>
               </Tooltip>{' '}
               <Trans i18nKey="search.missingSources">
@@ -101,9 +101,7 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
               </Trans>
             </p>
           )}
-          <p className={styles.highlighted}>
-            {parse(t('search.learnMore', 'Learn more about how vessel identity work'))}
-          </p>
+          <p className={styles.highlighted}>{parse(t('search.learnMore'))}</p>
           <UserGuideLink section="vesselSearch" className={cx(styles.userGuide, styles.center)} />
         </div>
       </div>
@@ -115,7 +113,7 @@ export function SearchNotAllowed({ className = '' }: SearchPlaceholderProps) {
   const { t } = useTranslation()
   return (
     <SearchPlaceholder className={className}>
-      <p>{t('search.notAllowed', 'Search not allowed')}</p>
+      <p>{t('search.notAllowed')}</p>
     </SearchPlaceholder>
   )
 }

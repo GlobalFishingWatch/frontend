@@ -113,7 +113,7 @@ function UserSection(): React.ReactElement<any> {
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={cx(styles.header, 'print-hidden')}>
-        <h2 className={styles.sectionTitle}>{t('user.datasets', 'User datasets')}</h2>
+        <h2 className={styles.sectionTitle}>{t('user.datasets')}</h2>
         {!readOnly && (
           <Fragment>
             {!isSmallScreen && (
@@ -124,7 +124,7 @@ function UserSection(): React.ReactElement<any> {
                   type="border"
                   size="medium"
                   onClick={onUploadClick}
-                  tooltip={t('dataset.upload', 'Upload dataset')}
+                  tooltip={t('dataset.upload')}
                   tooltipPlacement="top"
                   loginTooltip={t(
                     'download.eventsDownloadLogin',
@@ -137,7 +137,7 @@ function UserSection(): React.ReactElement<any> {
               icon="draw"
               type="border"
               size="medium"
-              tooltip={t('layer.drawPolygon', 'Draw a layer')}
+              tooltip={t('layer.drawPolygon')}
               tooltipPlacement="top"
               onClick={() => onDrawClick('polygons')}
               loginTooltip={t(
@@ -149,7 +149,7 @@ function UserSection(): React.ReactElement<any> {
               icon="draw-points"
               type="border"
               size="medium"
-              tooltip={t('layer.drawPoints', 'Draw points')}
+              tooltip={t('layer.drawPoints')}
               tooltipPlacement="top"
               onClick={() => onDrawClick('points')}
               loginTooltip={t(
@@ -161,7 +161,7 @@ function UserSection(): React.ReactElement<any> {
               icon="plus"
               type="border"
               size="medium"
-              tooltip={t('dataset.addUser', 'Add an uploaded dataset')}
+              tooltip={t('dataset.addUser')}
               tooltipPlacement="top"
               onClick={onAddClick}
             />
@@ -184,7 +184,7 @@ function UserSection(): React.ReactElement<any> {
           </div>
         ) : !dataviews.length ? (
           <div className={cx(styles.emptyStateBig, 'print-hidden')}>
-            {t('workspace.emptyStateUser', 'Upload custom datasets clicking on the plus icon.')}
+            {t('workspace.emptyStateUser')}
           </div>
         ) : null}
       </Fragment>

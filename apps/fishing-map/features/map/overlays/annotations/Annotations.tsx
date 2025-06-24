@@ -119,9 +119,7 @@ const MapAnnotations = (): React.ReactNode | null => {
               onDrag={handleDrag}
               onDragEnd={() => handleDragEnd(annotation)}
             >
-              <Tooltip
-                content={t('map.annotationsHover', 'Drag to move or click to edit annotation')}
-              >
+              <Tooltip content={t('map.annotationsHover')}>
                 <span>{annotation.label}</span>
               </Tooltip>
             </p>

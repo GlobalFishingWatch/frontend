@@ -89,14 +89,8 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
         />
       )}
       {/* TODO remove when GFWOnly is removed */}
-      <Icon
-        icon="gfw-logo"
-        type="original-colors"
-        tooltip={t('common.onlyVisibleForGFW', 'Only visible for GFW users')}
-      />
-      {hasAllVesselsInWorkspace
-        ? t('analysis.removeVessels', 'Remove from workspace')
-        : t('analysis.pinVessels', 'Add to workspace')}
+      <Icon icon="gfw-logo" type="original-colors" tooltip={t('common.onlyVisibleForGFW')} />
+      {hasAllVesselsInWorkspace ? t('analysis.removeVessels') : t('analysis.pinVessels')}
     </Button>
   )
 }

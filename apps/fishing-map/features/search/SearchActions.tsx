@@ -108,11 +108,7 @@ function SearchActions() {
         onClick={onSeeVesselsInMapClick}
         disabled={!hasVesselsSelected}
         testId="search-vessels-add-vessel"
-        tooltip={
-          !hasVesselsSelected
-            ? t('search.selectVesselResults', 'Select results to see vessels on map')
-            : ''
-        }
+        tooltip={!hasVesselsSelected ? t('search.selectVesselResults') : ''}
       >
         {t('search.seeVesselsOnMap', {
           defaultValue: 'See vessels on map',

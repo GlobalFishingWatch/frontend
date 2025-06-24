@@ -122,7 +122,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
                   </VesselGroupReportLink>
 
                   <IconButton
-                    tooltip={t('workspace.addLayer', 'Add to workspace')}
+                    tooltip={t('workspace.addLayer')}
                     icon="plus"
                     onClick={() => toggleAddToWorkspace(vesselGroup.id, 'add')}
                   />
@@ -152,7 +152,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
           type="border"
           icon="add-to-vessel-group"
           size="medium"
-          tooltip={t('vesselGroup.createNewGroup', 'Create new group')}
+          tooltip={t('vesselGroup.createNewGroup')}
           tooltipPlacement="top"
           onClick={() => onAddVesselGroupClick()}
         />

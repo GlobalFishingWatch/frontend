@@ -98,9 +98,7 @@ export const getEventDescription = ({
           'had an encounter with {{vessel}} starting at {{start}} for {{duration}}',
           {
             ...time,
-            vessel: encounterVesselName
-              ? encounterVesselName
-              : t('event.encounterAnotherVessel', 'another vessel'),
+            vessel: encounterVesselName ? encounterVesselName : t('event.encounterAnotherVessel'),
           }
         )
       }
@@ -141,8 +139,8 @@ export const getEventDescription = ({
       descriptionGeneric = t('event.fishing')
       break
     default:
-      description = t('event.unknown', 'Unknown event')
-      descriptionGeneric = t('event.unknown', 'Unknown event')
+      description = t('event.unknown')
+      descriptionGeneric = t('event.unknown')
   }
 
   return {

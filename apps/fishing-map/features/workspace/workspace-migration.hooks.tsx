@@ -224,7 +224,7 @@ export const useMigrateWorkspaceToast = () => {
       </p>
       <div className={styles.disclaimerFooter}>
         {/* <Button onClick={dissmissToast} type="secondary" className={styles.updateBtn}>
-          {t('workspace.migrationMaintain', 'Skip')}
+          {t('workspace.migrationMaintain')}
         </Button> */}
         <Button
           loading={loading}
@@ -232,7 +232,7 @@ export const useMigrateWorkspaceToast = () => {
           onClick={updateWorkspace}
           className={styles.updateBtn}
         >
-          {t('workspace.migrationUpdate', 'Update')}
+          {t('workspace.migrationUpdate')}
         </Button>
       </div>
     </div>

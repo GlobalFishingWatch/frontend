@@ -77,7 +77,7 @@ const VesselRegistryField = ({
         {showLabel && (
           <div className={styles.labelContainer}>
             <label>{t(`vessel.registryOperator`, 'Operators')}</label>
-            <DataTerminology title={t('vessel.operator', 'Operator')} terminologyKey="operator" />
+            <DataTerminology title={t('vessel.operator')} terminologyKey="operator" />
           </div>
         )}
         <RegistryOperatorField registryField={registryField} vesselIdentity={vesselIdentity} />

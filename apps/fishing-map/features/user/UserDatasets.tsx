@@ -129,9 +129,9 @@ function UserDatasets() {
       </div>
       <div className={styles.views}>
         <div className={styles.viewsHeader}>
-          <label>{t('user.datasets', 'User datasets')}</label>
+          <label>{t('user.datasets')}</label>
           <Button disabled={loading} type="secondary" onClick={onNewDatasetClick}>
-            {t('dataset.new', 'New dataset') as string}
+            {t('dataset.new') as string}
           </Button>
         </div>
         {loading ? (
@@ -154,7 +154,7 @@ function UserDatasets() {
                   'Click to see layer description'
                 )
                 if (datasetImporting) {
-                  infoTooltip = t('dataset.importing', 'Dataset is being imported')
+                  infoTooltip = t('dataset.importing')
                 }
                 if (datasetError) {
                   infoTooltip = `${t(
@@ -176,7 +176,7 @@ function UserDatasets() {
                         <IconButton
                           icon="arrow-right"
                           onClick={() => onDatasetClick(dataset)}
-                          tooltip={t('user.seeDataset', 'See on map')}
+                          tooltip={t('user.seeDataset')}
                         />
                       )}
                       {(datasetError || datasetDescription) && (
@@ -190,7 +190,7 @@ function UserDatasets() {
                       {!datasetImporting && !datasetError && (
                         <IconButton
                           icon="edit"
-                          tooltip={t('dataset.edit', 'Edit dataset')}
+                          tooltip={t('dataset.edit')}
                           onClick={() => onEditClick(dataset)}
                         />
                       )}
@@ -198,7 +198,7 @@ function UserDatasets() {
                         icon="delete"
                         type="warning"
                         loading={dataset.id === datasetStatusId}
-                        tooltip={t('dataset.remove', 'Remove dataset')}
+                        tooltip={t('dataset.remove')}
                         onClick={() => onDeleteClick(dataset)}
                       />
                     </div>
@@ -206,9 +206,7 @@ function UserDatasets() {
                 )
               })
             ) : (
-              <div className={styles.placeholder}>
-                {t('dataset.emptyState', 'Your datasets will appear here')}
-              </div>
+              <div className={styles.placeholder}>{t('dataset.emptyState')}</div>
             )}
           </ul>
         )}

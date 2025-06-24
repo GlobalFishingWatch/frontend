@@ -288,7 +288,7 @@ export const getDatasetTitleByDataview = (
   }
   const sources =
     dataview?.datasets && dataview?.datasets?.length > 1
-      ? `(${dataview.datasets?.length} ${t('common.sources', 'Sources')})`
+      ? `(${dataview.datasets?.length} ${t('common.sources')})`
       : `(${getDatasetNameTranslated(dataview.datasets?.[0] as Dataset)})`
 
   return datasetTitle + ' ' + sources
@@ -799,7 +799,7 @@ export const getCommonSchemaFieldsInDataview = (
       }
       const addNewGroup = {
         id: VESSEL_GROUPS_MODAL_ID,
-        label: t('vesselGroup.createNewGroup', 'Create new group'),
+        label: t('vesselGroup.createNewGroup'),
         disableSelection: true,
         className: styles.openModalLink,
       } as MultiSelectOption

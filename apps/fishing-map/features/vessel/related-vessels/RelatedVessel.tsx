@@ -33,9 +33,7 @@ const RelatedVessel = ({
   const fullLabel = `${nameLabel} (${flagLabel})`
   const lengthComparison = isWorkspaceVesselLocation ? 25 : 35
   const tooltip =
-    fullLabel?.length > lengthComparison
-      ? [fullLabel, <br />, t('vessel.clickToSeeMore', 'Click to see more information')]
-      : ''
+    fullLabel?.length > lengthComparison ? [fullLabel, <br />, t('vessel.clickToSeeMore')] : ''
 
   return (
     <Fragment>

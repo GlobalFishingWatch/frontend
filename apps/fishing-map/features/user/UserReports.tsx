@@ -87,7 +87,7 @@ function UserReports() {
       </div>
       <div className={styles.views}>
         <div className={styles.viewsHeader}>
-          <label>{t('common.reports', 'Reports')}</label>
+          <label>{t('common.reports')}</label>
         </div>
         {loading ? (
           <div className={styles.placeholder}>
@@ -142,7 +142,7 @@ function UserReports() {
                 target="_blank"
                 rel="noreferrer"
               >
-                {t('analysis.createReportHelpLink', 'Learn more.')}
+                {t('analysis.createReportHelpLink')}
               </a>
             </p>
           </div>

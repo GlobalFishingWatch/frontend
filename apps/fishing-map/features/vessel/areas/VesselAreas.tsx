@@ -126,19 +126,19 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
     () => [
       {
         id: 'eez',
-        label: t('layer.areas.eez', 'EEZ'),
+        label: t('layer.areas.eez'),
       },
       {
         id: 'fao',
-        label: t('layer.areas.fao', 'FAO'),
+        label: t('layer.areas.fao'),
       },
       {
         id: 'rfmo',
-        label: t('layer.areas.rfmo', 'RFMO'),
+        label: t('layer.areas.rfmo'),
       },
       {
         id: 'mpa',
-        label: t('layer.areas.mpa', 'MPA'),
+        label: t('layer.areas.mpa'),
       },
     ],
     [t]
@@ -176,7 +176,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
 
   return (
     <div className={styles.container}>
-      <h2 className="print-only">{t('vessel.sectionAreas', 'areas')}</h2>
+      <h2 className="print-only">{t('vessel.sectionAreas')}</h2>
       <div className="print-hidden">
         <VesselActivitySummary />
       </div>
@@ -199,7 +199,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
               className={styles.dataWarningLink}
               onClick={() => setModalDataWarningOpen(!modalDataWarningOpen)}
             >
-              {t('common.learnMore', 'Learn more')}
+              {t('common.learnMore')}
             </button>
             <Modal
               appSelector={ROOT_DOM_ELEMENT}

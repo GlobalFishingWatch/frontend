@@ -91,7 +91,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </AdvancedResultCellWithFilter>
           )
         },
-        header: t('vessel.gfw_shiptypes', 'GFW Vessel Type'),
+        header: t('vessel.gfw_shiptypes'),
       },
       {
         id: 'gfw_geartypes',
@@ -108,7 +108,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </AdvancedResultCellWithFilter>
           )
         },
-        header: t('vessel.gfw_geartypes', 'GFW Gear Type'),
+        header: t('vessel.gfw_geartypes'),
       },
     ]
     const registryColumns: MRT_ColumnDef<any>[] = [
@@ -132,7 +132,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </AdvancedResultCellWithFilter>
           )
         },
-        header: t('vessel.registryGeartype', 'Registry Gear Type'),
+        header: t('vessel.registryGeartype'),
       },
     ]
     let columnsByInfoSource = [...selfReportedColums, ...registryColumns]
@@ -182,7 +182,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </VesselLink>
           )
         },
-        header: t('common.name', 'Name'),
+        header: t('common.name'),
         enableColumnDragging: false,
         enableColumnActions: false,
       },
@@ -205,7 +205,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </div>
           )
         },
-        header: t('vessel.transmissionDates', 'Transmission Dates'),
+        header: t('vessel.transmissionDates'),
       },
       {
         id: 'flag',
@@ -216,7 +216,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </AdvancedResultCellWithFilter>
           )
         },
-        header: t('vessel.flag', 'Flag'),
+        header: t('vessel.flag'),
       },
       {
         id: 'ssvid',
@@ -226,7 +226,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             ? getHighlightedText(ssvid, searchFilters.ssvid || '', styles)
             : ssvid
         },
-        header: t('vessel.mmsi', 'MMSI'),
+        header: t('vessel.mmsi'),
       },
       {
         id: 'imo',
@@ -234,7 +234,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const imo = getVesselProperty(vessel, 'imo') || EMPTY_FIELD_PLACEHOLDER
           return searchFilters.imo ? getHighlightedText(imo, searchFilters.imo || '', styles) : imo
         },
-        header: t('vessel.imo', 'IMO'),
+        header: t('vessel.imo'),
       },
       {
         id: 'callsign',
@@ -244,7 +244,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             ? getHighlightedText(callsign, searchFilters.callsign || '', styles)
             : callsign
         },
-        header: t('vessel.callsign', 'Callsign'),
+        header: t('vessel.callsign'),
       },
       ...columnsByInfoSource,
       {
@@ -264,7 +264,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </AdvancedResultCellWithFilter>
           )
         },
-        header: t('vessel.owner', 'Owner'),
+        header: t('vessel.owner'),
       },
       {
         id: 'infoSource',
@@ -283,7 +283,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
               'vessel.infoSources.both',
               'Registry and self reported'
             )} (${selfReportedIdentitiesSources.join(', ')})`
-          if (registryIdentities.length) return t('vessel.infoSources.registry', 'Registry')
+          if (registryIdentities.length) return t('vessel.infoSources.registry')
           if (selfReportedIdentities.length)
             return `${t(
               'vessel.infoSources.selfReported',
@@ -292,7 +292,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
 
           return EMPTY_FIELD_PLACEHOLDER
         },
-        header: t('vessel.infoSource', 'Info Source'),
+        header: t('vessel.infoSource'),
       },
       {
         id: 'transmissionCount',
@@ -302,7 +302,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             return <I18nNumber number={positionsCounter} />
           }
         },
-        header: t('vessel.transmission_other', 'Transmissions'),
+        header: t('vessel.transmission_other'),
       },
     ]
   }, [

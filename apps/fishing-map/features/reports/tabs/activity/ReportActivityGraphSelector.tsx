@@ -38,12 +38,12 @@ export default function ReportActivityGraphSelector({
   const options: ChoiceOption<ReportActivityGraph>[] = [
     {
       id: REPORT_ACTIVITY_GRAPH_EVOLUTION,
-      label: t('analysis.evolution', 'Evolution'),
+      label: t('analysis.evolution'),
       disabled: loading,
     },
     {
       id: REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
-      label: t('analysis.beforeAfter', 'Before/after'),
+      label: t('analysis.beforeAfter'),
       tooltip: !areAllFiltersEqual
         ? t(
             'analysis.noTimeComparisonAllowed',
@@ -55,7 +55,7 @@ export default function ReportActivityGraphSelector({
     },
     {
       id: REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
-      label: t('analysis.periodComparison', 'Period comparison'),
+      label: t('analysis.periodComparison'),
       tooltip: !areAllFiltersEqual
         ? t(
             'analysis.noTimeComparisonAllowed',

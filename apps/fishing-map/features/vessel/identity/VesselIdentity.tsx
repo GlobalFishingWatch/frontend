@@ -142,9 +142,9 @@ const VesselIdentity = () => {
           {identitySource === VesselIdentitySourceEnum.Registry && (
             <div>
               <div className={styles.labelContainer}>
-                <label>{t('vessel.registrySources', 'Registry Sources')}</label>
+                <label>{t('vessel.registrySources')}</label>
                 <DataTerminology
-                  title={t('vessel.registrySources', 'Registry Sources')}
+                  title={t('vessel.registrySources')}
                   terminologyKey="registrySources"
                 />
               </div>
@@ -173,7 +173,7 @@ const VesselIdentity = () => {
                 <IconButton
                   size="small"
                   icon="fit-to-timerange"
-                  tooltip={t('timebar.fitOnThisDates', 'Fit time range to these dates')}
+                  tooltip={t('timebar.fitOnThisDates')}
                   className="print-hidden"
                   onClick={onTimeRangeClick}
                 />
@@ -191,7 +191,7 @@ const VesselIdentity = () => {
               size="medium"
               className="print-hidden"
               onClick={onDownloadClick}
-              tooltip={t('download.dataDownload', 'Download Data')}
+              tooltip={t('download.dataDownload')}
               loginTooltip={t(
                 'download.dataDownloadLogin',
                 'Register and login to download vessel information (free, 2 minutes)'
@@ -296,7 +296,7 @@ const VesselIdentity = () => {
       </div>
       {vesselIdentity?.ssvid && (
         <div className={styles.container}>
-          <label>{t('common.viewIn', 'View in')}</label>
+          <label>{t('common.viewIn')}</label>
           <div className={styles.externalToolLinks}>
             <a
               href={`https://www.marinetraffic.com/${i18n.language}/ais/details/ships/mmsi:${vesselIdentity?.ssvid}`}

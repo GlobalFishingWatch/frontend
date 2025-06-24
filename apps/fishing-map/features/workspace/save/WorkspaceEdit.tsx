@@ -84,7 +84,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
       ) {
         const workspace = dispatchedAction.payload as AppWorkspace
         if (!workspace?.dataviewInstances.length) {
-          setError(t('workspace.passwordIncorrect', 'Invalid password'))
+          setError(t('workspace.passwordIncorrect'))
         }
         trackEvent({
           category: TrackCategory.WorkspaceManagement,
@@ -98,7 +98,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
       } else {
         const error = dispatchedAction.payload as UpdateWorkspaceThunkRejectError
         if (error?.isWorkspaceWrongPassword) {
-          setError(t('workspace.passwordIncorrect', 'Invalid password'))
+          setError(t('workspace.passwordIncorrect'))
         } else {
           setError('Error updating workspace')
         }
@@ -138,7 +138,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
           value={name}
           className={styles.input}
           testId="create-workspace-name"
-          label={t('common.name', 'Name')}
+          label={t('common.name')}
           onChange={(e) => setName(e.target.value)}
           autoFocus
         />
@@ -146,7 +146,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
       <div className={styles.row}>
         <Select
           options={timeRangeOptions}
-          label={t('common.timerange', 'Time range')}
+          label={t('common.timerange')}
           containerClassName={styles.select}
           onSelect={onSelectTimeRangeChange}
           selectedOption={
@@ -158,7 +158,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
             value={daysFromLatest}
             type="number"
             className={styles.select}
-            label={t('common.timerangeDaysFromLatest', 'Days from latest data update (1-100)')}
+            label={t('common.timerangeDaysFromLatest')}
             onChange={onDaysFromLatestChange}
             min={DAYS_FROM_LATEST_MIN}
             max={DAYS_FROM_LATEST_MAX}
@@ -170,11 +170,11 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
           <Select
             options={editOptions}
             direction="top"
-            label={t('workspace.editAccess', 'Edit access')}
+            label={t('workspace.editAccess')}
             placeholder={
               workspace?.viewAccess === WORKSPACE_PRIVATE_ACCESS
-                ? t('common.onlyMe', 'Only me')
-                : t('selects.placeholder', 'Select an option')
+                ? t('common.onlyMe')
+                : t('selects.placeholder')
             }
             infoTooltip={
               workspace?.viewAccess === WORKSPACE_PRIVATE_ACCESS
@@ -197,11 +197,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
             className={styles.select}
             type="password"
             testId="create-workspace-password"
-            label={
-              isOwnerWorkspace
-                ? t('common.setNewPassword', 'Set a new password')
-                : t('common.password', 'Password')
-            }
+            label={isOwnerWorkspace ? t('common.setNewPassword') : t('common.password')}
             onChange={(e) =>
               isOwnerWorkspace ? setNewPassword(e.target.value) : setEditPassword(e.target.value)
             }
@@ -212,16 +208,12 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
         {error && <p className={styles.error}>{error}</p>}
         <Button
           loading={loading}
-          tooltip={
-            passwordDisabled
-              ? t('workspace.passwordMinLength', 'Password must be at least 5 characters')
-              : ''
-          }
+          tooltip={passwordDisabled ? t('workspace.passwordMinLength') : ''}
           disabled={!name || passwordDisabled || !validDaysFromLatestValue}
           htmlType="submit"
           testId="create-workspace-button"
         >
-          {t('workspace.edit', 'Edit workspace') as string}
+          {t('workspace.edit') as string}
         </Button>
       </div>
     </form>

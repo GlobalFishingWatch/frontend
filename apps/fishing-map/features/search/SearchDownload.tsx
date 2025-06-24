@@ -79,10 +79,8 @@ function SearchDownload() {
       disabled={vesselsSelected.length <= 0}
       tooltip={
         vesselsSelected.length
-          ? `${t('search.downloadSelected', 'Download CSV of selected vessels')} (${
-              vesselsSelected.length
-            })`
-          : t('search.downloadDisabled', 'Select vessels to download their info')
+          ? `${t('search.downloadSelected')} (${vesselsSelected.length})`
+          : t('search.downloadDisabled')
       }
       tooltipPlacement="top"
     />

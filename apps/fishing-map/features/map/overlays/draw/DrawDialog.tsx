@@ -191,25 +191,23 @@ function MapDraw() {
   let saveTooltip = ''
 
   if (!layerName) {
-    saveTooltip = t('layer.nameRequired', 'Layer name is required')
+    saveTooltip = t('layer.nameRequired')
   } else if (!layerNameMinLength) {
     saveTooltip = t('layer.nameLengthError', 'Layer name requires at least {{count}} characters', {
       count: MIN_DATASET_NAME_LENGTH,
     })
     // } else if (!hasFeaturesDrawn) {
-    //   saveTooltip = t('layer.geometryRequired', 'Draw a polygon is required')
+    //   saveTooltip = t('layer.geometryRequired')
   } else if (hasOverlappingFeatures) {
-    saveTooltip = t('layer.geometryError', 'Some polygons have self-intersections')
+    saveTooltip = t('layer.geometryError')
   }
 
   let placeholderMessage: string =
-    mapDrawingMode === 'points'
-      ? t('layer.editPointHint', 'Click on the point to adjust their coordinates')
-      : t('layer.editPolygonHint', 'Click on polygon corners to adjust their coordinates')
+    mapDrawingMode === 'points' ? t('layer.editPointHint') : t('layer.editPolygonHint')
   if (error) {
     placeholderMessage = error
   } else if (hasOverlappingFeatures) {
-    placeholderMessage = t('layer.geometryError', 'Some polygons have self-intersections')
+    placeholderMessage = t('layer.geometryError')
   }
   return (
     <div className={cx(styles.container, { [styles.hidden]: !isMapDrawing })}>
@@ -227,7 +225,7 @@ function MapDraw() {
         </div>
       )}
       <InputText
-        label={t('layer.name', 'Layer name')}
+        label={t('layer.name')}
         labelClassName={styles.layerLabel}
         value={layerName}
         disabled={!!mapDrawEditDataset}
@@ -236,11 +234,7 @@ function MapDraw() {
       />
       <IconButton
         icon={mapDrawingMode === 'points' ? 'add-point' : 'add-polygon'}
-        tooltip={
-          mapDrawingMode === 'points'
-            ? t('layer.drawAddPoint', 'Add a point')
-            : t('layer.drawAddPolygon', 'Add a geometry')
-        }
+        tooltip={mapDrawingMode === 'points' ? t('layer.drawAddPoint') : t('layer.drawAddPolygon')}
         onClick={onAddPolygonClick}
       />
       <IconButton
@@ -248,9 +242,7 @@ function MapDraw() {
         icon="delete"
         disabled={!drawFeaturesIndexes.length}
         tooltip={
-          !drawFeaturesIndexes.length
-            ? t('layer.selectPolygonToRemove', 'Select the polygon to remove')
-            : t('layer.drawDelete', 'Delete selection')
+          !drawFeaturesIndexes.length ? t('layer.selectPolygonToRemove') : t('layer.drawDelete')
         }
         onClick={drawLayer?.deleteSelectedFeature}
       />
@@ -267,7 +259,7 @@ function MapDraw() {
         />
         <div className={styles.actionButtons}>
           <Button className={styles.button} type="secondary" onClick={closeDraw}>
-            {t('common.dismiss', 'Dismiss')}
+            {t('common.dismiss')}
           </Button>
           <Button
             className={styles.button}
@@ -283,7 +275,7 @@ function MapDraw() {
             tooltipPlacement="top"
             onClick={() => onSaveClick(drawFeatures)}
           >
-            {t('common.save', 'Save')}
+            {t('common.save')}
           </Button>
         </div>
       </div>

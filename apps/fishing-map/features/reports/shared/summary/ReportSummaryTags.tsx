@@ -48,11 +48,7 @@ export default function ReportSummaryTags({ dataview }: LayerPanelProps) {
               size="small"
               onClick={onToggleFiltersUIOpen}
               className={cx(styles.printHidden, styles.filterButton)}
-              tooltip={
-                filtersUIOpen
-                  ? t('layer.filterClose', 'Close filters UI')
-                  : t('layer.filterOpen', 'Open filters UI')
-              }
+              tooltip={filtersUIOpen ? t('layer.filterClose') : t('layer.filterOpen')}
               tooltipPlacement="top"
             />
           </ExpandedContainer>

@@ -108,11 +108,7 @@ export const routerWorkspaceMiddleware: Middleware =
         vesselProfileDataviewIntance &&
         !hasVesselProfileInstancePinned
       ) {
-        if (
-          window.confirm(
-            t('vessel.confirmationClose', 'Do you want to keep this vessel in your workspace?')
-          ) === true
-        ) {
+        if (window.confirm(t('vessel.confirmationClose')) === true) {
           const cleanVesselDataviewInstance = {
             ...vesselProfileDataviewIntance,
             config: {

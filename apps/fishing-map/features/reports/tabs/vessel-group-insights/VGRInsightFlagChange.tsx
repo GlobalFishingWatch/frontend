@@ -62,9 +62,9 @@ const VesselGroupReportInsightFlagChange = ({ skip }: { skip?: boolean }) => {
   return (
     <div id="vessel-group-flags" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vessel.insights.flagChanges', 'Flag Changes')}</label>
+        <label>{t('vessel.insights.flagChanges')}</label>
         <DataTerminology
-          title={t('vessel.insights.flagChanges', 'Flag Changes')}
+          title={t('vessel.insights.flagChanges')}
           terminologyKey="insightsFlagsChanges"
         />
       </div>

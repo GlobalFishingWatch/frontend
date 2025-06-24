@@ -202,7 +202,7 @@ function SearchAdvancedFilters() {
         sourceOptions &&
         sourceOptions.length > 0 && (
           <MultiSelect
-            label={t('layer.source_other', 'Sources')}
+            label={t('layer.source_other')}
             placeholder={getPlaceholderBySelections({ selection: sources, options: sourceOptions })}
             options={sourceOptions}
             selectedOptions={sourceOptions.filter((f) => sources?.includes(f.id))}
@@ -271,7 +271,7 @@ function SearchAdvancedFilters() {
           value={transmissionDateTo || ''}
           max={AVAILABLE_END.slice(0, 10) as string}
           min={AVAILABLE_START.slice(0, 10) as string}
-          label={t('common.active_after', 'Active after')}
+          label={t('common.active_after')}
           onChange={(e) => {
             if (e.target.value !== transmissionDateTo) {
               setSearchFilters({ transmissionDateTo: e.target.value })
@@ -289,7 +289,7 @@ function SearchAdvancedFilters() {
           value={transmissionDateFrom || ''}
           max={AVAILABLE_END.slice(0, 10) as string}
           min={AVAILABLE_START.slice(0, 10) as string}
-          label={t('common.active_before', 'Active Before')}
+          label={t('common.active_before')}
           onChange={(e) => {
             if (e.target.value !== transmissionDateFrom) {
               setSearchFilters({ transmissionDateFrom: e.target.value })

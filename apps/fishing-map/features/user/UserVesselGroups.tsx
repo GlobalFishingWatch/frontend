@@ -80,9 +80,9 @@ function UserVesselGroups() {
       </div>
       <div className={styles.views}>
         <div className={styles.viewsHeader}>
-          <label>{t('vesselGroup.vesselGroups', 'Vessel Groups')}</label>
+          <label>{t('vesselGroup.vesselGroups')}</label>
           <Button disabled={loading} type="secondary" onClick={onNewGroupClick}>
-            {t('vesselGroup.new', 'New vessel group') as string}
+            {t('vesselGroup.new') as string}
           </Button>
         </div>
         {loading ? (
@@ -129,7 +129,7 @@ function UserVesselGroups() {
                                   'vesselGroup.clickToUpdateLong',
                                   'Click to update your vessel group to view the latest data and features'
                                 )
-                              : t('vesselGroup.edit', 'Edit list of vessels')
+                              : t('vesselGroup.edit')
                           }
                           loading={
                             vesselGroup.id === editingGroupId &&
@@ -139,12 +139,12 @@ function UserVesselGroups() {
                           className={styles.warningButton}
                         >
                           <Icon icon="warning" />
-                          {t('vesselGroup.updateRequired', 'Update Required')}
+                          {t('vesselGroup.updateRequired')}
                         </Button>
                       ) : (
                         <IconButton
                           icon="edit"
-                          tooltip={t('vesselGroup.edit', 'Edit list of vessels')}
+                          tooltip={t('vesselGroup.edit')}
                           loading={
                             vesselGroup.id === editingGroupId &&
                             vesselGroupStatus === AsyncReducerStatus.LoadingUpdate
@@ -159,7 +159,7 @@ function UserVesselGroups() {
                           vesselGroup.id === vesselGroupStatusId &&
                           vesselGroupStatus === AsyncReducerStatus.LoadingDelete
                         }
-                        tooltip={t('vesselGroup.remove', 'Remove vessel group')}
+                        tooltip={t('vesselGroup.remove')}
                         onClick={() => onDeleteClick(vesselGroup)}
                       />
                     </div>
@@ -167,9 +167,7 @@ function UserVesselGroups() {
                 )
               })
             ) : (
-              <div className={styles.placeholder}>
-                {t('vesselGroup.emptyState', 'Your vessel groups will appear here')}
-              </div>
+              <div className={styles.placeholder}>{t('vesselGroup.emptyState')}</div>
             )}
           </ul>
         )}

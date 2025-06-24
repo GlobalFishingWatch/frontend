@@ -60,7 +60,7 @@ function VesselGroupSection(): React.ReactElement<any> {
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={cx('print-hidden', styles.header)}>
-        <h2 className={styles.sectionTitle}>{t('vesselGroup.vesselGroups', 'Vessel groups')}</h2>
+        <h2 className={styles.sectionTitle}>{t('vesselGroup.vesselGroups')}</h2>
         {!readOnly && (
           <div
             className={cx(styles.sectionButtons, styles.sectionButtonsSecondary, 'print-hidden')}
@@ -69,7 +69,7 @@ function VesselGroupSection(): React.ReactElement<any> {
               type="border"
               icon="vessel-group"
               size="medium"
-              tooltip={t('vesselGroup.createNewGroup', 'Create new group')}
+              tooltip={t('vesselGroup.createNewGroup')}
               tooltipPlacement="top"
               onClick={onAddVesselGroupClick}
             />
@@ -79,7 +79,7 @@ function VesselGroupSection(): React.ReactElement<any> {
           icon="plus"
           type="border"
           size="medium"
-          tooltip={t('vesselGroup.addToWorkspace', 'Add vessel group to workspace')}
+          tooltip={t('vesselGroup.addToWorkspace')}
           tooltipPlacement="top"
           onClick={onAddClick}
         />

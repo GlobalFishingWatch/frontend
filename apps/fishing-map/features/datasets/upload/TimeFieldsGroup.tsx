@@ -94,15 +94,15 @@ export const TimeFieldsGroup = ({
 
   const translatedGeometryType =
     geometryType === 'tracks'
-      ? t('dataset.typeTracks', 'Tracks')
+      ? t('dataset.typeTracks')
       : geometryType === 'polygons'
-      ? t('dataset.typePolygons', 'Polygons')
-      : t('dataset.typePoints', 'Points')
+        ? t('dataset.typePolygons')
+        : t('dataset.typePoints')
 
   return (
     <div className={styles.row}>
       <Choice
-        label={t('datasetUpload.timePeriodType', 'Time filter')}
+        label={t('datasetUpload.timePeriodType')}
         infoTooltip={t(
           'datasetUpload.timePeriodTypePlaceholder',
           'Choose whether to filter your dataset by dates or time ranges'
@@ -115,7 +115,7 @@ export const TimeFieldsGroup = ({
       />
       {datasetTimeFilterConfiguration && (
         <Select
-          placeholder={t('datasetUpload.fieldPlaceholder', 'Select a field from your dataset')}
+          placeholder={t('datasetUpload.fieldPlaceholder')}
           options={fieldsOptions}
           label={
             datasetTimeFilterConfiguration === 'date'
@@ -163,7 +163,7 @@ export const TimeFieldsGroup = ({
       )}
       {datasetTimeFilterConfiguration === 'dateRange' && (
         <Select
-          placeholder={t('datasetUpload.fieldPlaceholder', 'Select a field from your dataset')}
+          placeholder={t('datasetUpload.fieldPlaceholder')}
           options={fieldsOptions}
           direction="top"
           selectedOption={

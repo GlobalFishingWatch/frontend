@@ -60,24 +60,20 @@ function ReportEnvironment() {
           <div key={dataview.id} className={styles.container}>
             <p className={styles.summary}>
               {dataset?.configuration?.function === 'AVG' && (
-                <span>{upperFirst(t('common.average', 'Average'))} </span>
+                <span>{upperFirst(t('common.average'))} </span>
               )}
               <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
               {(isDynamic || isCurrents) && (
                 <Fragment>
-                  {t('common.between', 'betweeen')} <strong>{formatI18nDate(start)}</strong>{' '}
-                  {t('common.and', 'and')} <strong>{formatI18nDate(end)}</strong>
+                  {t('common.between')} <strong>{formatI18nDate(start)}</strong> {t('common.and')}{' '}
+                  <strong>{formatI18nDate(end)}</strong>
                 </Fragment>
               )}
             </p>
             {isDynamic || isCurrents ? (
               isLoading || !layersTimeseriesFiltered?.[index] || hasError ? (
                 <ReportActivityPlaceholder showHeader={false}>
-                  {hasError && (
-                    <p className={styles.errorMessage}>
-                      {t('errors.layerLoading', 'There was an error loading the layer')}
-                    </p>
-                  )}
+                  {hasError && <p className={styles.errorMessage}>{t('errors.layerLoading')}</p>}
                 </ReportActivityPlaceholder>
               ) : isCurrents && layersFilteredFeatures?.[index] ? (
                 <Fragment>
@@ -125,7 +121,7 @@ function ReportEnvironment() {
                     })}{' '}
                 {dataset?.source && (
                   <span>
-                    {t('analysis.dataSource', 'Data source')}: {htmlParse(dataset.source)}
+                    {t('analysis.dataSource')}: {htmlParse(dataset.source)}
                   </span>
                 )}
               </p>

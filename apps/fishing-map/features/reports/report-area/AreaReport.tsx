@@ -82,23 +82,23 @@ export default function Report() {
   const categoryTabs: Tab<ReportCategory>[] = [
     {
       id: ReportCategory.Activity,
-      title: t('common.activity', 'Activity'),
+      title: t('common.activity'),
     },
     {
       id: ReportCategory.Detections,
-      title: t('common.detections', 'Detections'),
+      title: t('common.detections'),
     },
     ...(isGlobalReportsEnabled
       ? [
           {
             id: ReportCategory.Events,
-            title: t('common.events', 'Events'),
+            title: t('common.events'),
           },
         ]
       : []),
     {
       id: ReportCategory.Environment,
-      title: t('common.environment', 'Environment'),
+      title: t('common.environment'),
     },
   ]
   const filteredCategoryTabs = categoryTabs.flatMap((tab) => {
@@ -176,11 +176,7 @@ export default function Report() {
   }
 
   if (reportAreaError) {
-    return (
-      <ErrorPlaceholder
-        title={t('errors.areaLoad', 'There was an error loading the report area')}
-      ></ErrorPlaceholder>
-    )
+    return <ErrorPlaceholder title={t('errors.areaLoad')}></ErrorPlaceholder>
   }
 
   if (!reportCategory) {

@@ -71,8 +71,8 @@ const VesselIdentityCombinedSourceField = ({
           if (isGFWUser && property === 'geartypes') {
             const selfReportedGearType = identity?.combinedSourcesInfo?.onFishingListSr?.[index]
               ?.value
-              ? t('vessel.gearTypes.fishing', 'Fishing')
-              : t('vessel.gearTypes.other', 'Other')
+              ? t('vessel.gearTypes.fishing')
+              : t('vessel.gearTypes.other')
             const neuralNetGearType = identity?.combinedSourcesInfo?.inferredVesselClassAg?.[index]
               ?.value as string
             const bqSource = identity?.combinedSourcesInfo?.prodGeartypeSource?.[index]

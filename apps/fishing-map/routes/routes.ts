@@ -69,7 +69,7 @@ const confirmLeave = (state: any, action: any) => {
     state.location?.type !== action.type &&
     suggestWorkspaceSave
   ) {
-    return t('common.confirmLeave', 'Are you sure you want to leave without saving your workspace?')
+    return t('common.confirmLeave')
   }
 }
 
