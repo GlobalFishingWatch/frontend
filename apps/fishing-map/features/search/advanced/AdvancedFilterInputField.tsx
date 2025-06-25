@@ -37,7 +37,7 @@ function AdvancedFilterInputField({ onChange, field }: AdvancedFilterInputFieldP
         invalid
           ? t('search.filterNotSupported', {
               defaultValue: "One of your sources selected doesn't support filtering by {{filter}}",
-              filter: t(`vessel.${field}`, 'field').toLowerCase(),
+              filter: t(`vessel.${field}`).toLowerCase(),
             })
           : ''
       }

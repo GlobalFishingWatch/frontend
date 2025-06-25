@@ -198,7 +198,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
     <Fragment>
       <div className={styles.titleContainer}>
         <label id={DataviewCategory.User} className={styles.categoryLabel}>
-          {t(`common.user`, 'User')}
+          {t('common.user')}
         </label>
         <LoginButtonWrapper
           tooltip={t(

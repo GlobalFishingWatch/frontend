@@ -41,22 +41,18 @@ const EventDetail = ({ event }: ActivityContentProps) => {
     <Fragment>
       <li>
         <label className={styles.fieldLabel}>
-          {type === EventTypes.Port
-            ? t(`eventInfo.port_entry`, 'Port entry')
-            : t(`eventInfo.start`, 'start')}
+          {type === EventTypes.Port ? t('eventInfo.port_entry') : t('eventInfo.start')}
         </label>
         <span>{formatI18nDate(event.start, { format: DateTime.DATETIME_FULL })}</span>
       </li>
       <li>
         <label className={styles.fieldLabel}>
-          {type === EventTypes.Port
-            ? t(`eventInfo.port_exit`, 'Port exit')
-            : t(`eventInfo.end`, 'end')}
+          {type === EventTypes.Port ? t('eventInfo.port_exit') : t('eventInfo.end')}
         </label>
         <span>{formatI18nDate(event.end, { format: DateTime.DATETIME_FULL })}</span>
       </li>
       <li>
-        <label className={styles.fieldLabel}>{t(`eventInfo.duration`, 'duration')}</label>
+        <label className={styles.fieldLabel}>{t('eventInfo.duration')}</label>
         <span>{getEventDurationDescription(event)}</span>
       </li>
     </Fragment>
@@ -65,13 +61,13 @@ const EventDetail = ({ event }: ActivityContentProps) => {
   //   <Fragment>
   //     <li>
   //       <label className={styles.fieldLabel}>
-  //         {t(`eventInfo.distanceFromShoreKm`, 'distanceFromShoreKm')}
+  //         {t(`eventInfo.distanceFromShoreKm`)}
   //       </label>
   //       <span>{event.distances?.startDistanceFromShoreKm || EMPTY_FIELD_PLACEHOLDER}</span>
   //     </li>
   //     <li>
   //       <label className={styles.fieldLabel}>
-  //         {t(`eventInfo.distanceFromPortKm`, 'distanceFromPortKm')}
+  //         {t(`eventInfo.distanceFromPortKm`)}
   //       </label>
   //       <span>{event.distances?.startDistanceFromPortKm || EMPTY_FIELD_PLACEHOLDER}</span>
   //     </li>
@@ -81,9 +77,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
   const PortVisitedAfterField = ({ nextPort }: { nextPort: EventNextPort | undefined }) => {
     return (
       <li>
-        <label className={styles.fieldLabel}>
-          {t(`eventInfo.portVisitedAfter`, 'Port visited after')}
-        </label>
+        <label className={styles.fieldLabel}>{t('eventInfo.portVisitedAfter')}</label>
         <span>
           {nextPort?.id
             ? `${formatInfoField(nextPort.name || nextPort.id, 'port')} (${formatInfoField(nextPort.flag, 'flag')})`
@@ -106,21 +100,17 @@ const EventDetail = ({ event }: ActivityContentProps) => {
       !id || !vesselProfileEncounterLayer?.id.includes(id) || !vesselProfileEncounterLayer?.loaded
     return (
       <ul className={styles.detailContainer}>
-        <label className={styles.blockLabel}>{t(`eventInfo.eventInfo`, 'Event Info')}</label>
+        <label className={styles.blockLabel}>{t('eventInfo.eventInfo')}</label>
         <TimeFields />
         <li>
-          <label className={styles.fieldLabel}>
-            {t(`eventInfo.medianSpeedKnots`, 'median speed (knots)')}
-          </label>
+          <label className={styles.fieldLabel}>{t('eventInfo.medianSpeedKnots')}</label>
           <span>{event.encounter?.medianSpeedKnots?.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
         {isGlobalReportsEnabled && <PortVisitedAfterField nextPort={event.vessel.nextPort} />}
         <div className={styles.divider} />
-        <label className={styles.blockLabel}>
-          {t(`eventInfo.encounteredVesselName`, 'Encountered vessel')}
-        </label>
+        <label className={styles.blockLabel}>{t('eventInfo.encounteredVesselName')}</label>
         <li>
-          <label className={styles.fieldLabel}>{t(`eventInfo.name`, 'Vessel name')}</label>
+          <label className={styles.fieldLabel}>{t('eventInfo.name')}</label>
           <span className={styles.vesselNameWithPin}>
             {isLoading && isEncounterInstanceInWorkspace ? (
               <Spinner size="tiny" className={styles.spinner} />
@@ -140,15 +130,15 @@ const EventDetail = ({ event }: ActivityContentProps) => {
           </span>
         </li>
         <li>
-          <label className={styles.fieldLabel}>{t(`eventInfo.flag`, 'flag')}</label>
+          <label className={styles.fieldLabel}>{t('eventInfo.flag')}</label>
           <span>{formatInfoField(flag, 'flag')}</span>
         </li>
         <li>
-          <label className={styles.fieldLabel}>{t(`eventInfo.mmsi`, 'mmsi')}</label>
+          <label className={styles.fieldLabel}>{t('eventInfo.mmsi')}</label>
           <span>{ssvid || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
         <li>
-          <label className={styles.fieldLabel}>{t(`vessel.shiptype`, 'vessel type')}</label>
+          <label className={styles.fieldLabel}>{t('vessel.shiptype')}</label>
           <span>{formatInfoField(type, 'vesselType')}</span>
         </li>
         {!isEncounterInstanceInWorkspace && (
@@ -257,9 +247,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
         <TimeFields />
         {/* <DistanceFields /> */}
         <li>
-          <label className={styles.fieldLabel}>
-            {t(`eventInfo.averageSpeedKnots`, 'averageSpeedKnots')}
-          </label>
+          <label className={styles.fieldLabel}>{t('eventInfo.averageSpeedKnots')}</label>
           <span>{event.fishing?.averageSpeedKnots.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
       </ul>
@@ -270,15 +258,11 @@ const EventDetail = ({ event }: ActivityContentProps) => {
         <TimeFields />
         {/* <DistanceFields /> */}
         <li>
-          <label className={styles.fieldLabel}>
-            {t(`eventInfo.totalDistanceKm`, 'totalDistanceKm')}
-          </label>
+          <label className={styles.fieldLabel}>{t('eventInfo.totalDistanceKm')}</label>
           <span>{event.loitering?.totalDistanceKm.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
         <li>
-          <label className={styles.fieldLabel}>
-            {t(`eventInfo.averageSpeedKnots`, 'averageSpeedKnots')}
-          </label>
+          <label className={styles.fieldLabel}>{t('eventInfo.averageSpeedKnots')}</label>
           <span>{event.loitering?.averageSpeedKnots.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
         {isGlobalReportsEnabled && <PortVisitedAfterField nextPort={event.vessel.nextPort} />}

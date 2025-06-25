@@ -162,7 +162,7 @@ const VesselIdentity = () => {
             </div>
           )}
           <div className={styles.twoCells}>
-            <label>{t(`common.date_other`, 'Dates')}</label>
+            <label>{t('common.date_other')}</label>
             <div className={styles.timerange}>
               <VesselIdentityField
                 value={`${formatI18nDate(vesselIdentity.transmissionDateFrom)} - ${formatI18nDate(
@@ -284,7 +284,7 @@ const VesselIdentity = () => {
                     )}
                   >
                     <div>
-                      <label>{t(`vessel.extraInfo`, 'has more information')}</label>
+                      <label>{t('vessel.extraInfo')}</label>
                       <p>{registrySourceData?.contact}</p>
                     </div>
                   </Tooltip>

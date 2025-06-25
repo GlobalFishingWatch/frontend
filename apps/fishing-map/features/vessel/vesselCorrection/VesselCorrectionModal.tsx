@@ -170,7 +170,7 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
           <div>
             <label>
               {identitySource === VesselIdentitySourceEnum.Registry
-                ? t(`vessel.recordId`, 'Record ID')
+                ? t('vessel.recordId')
                 : t('common.vesselId')}
             </label>
             <Tag>

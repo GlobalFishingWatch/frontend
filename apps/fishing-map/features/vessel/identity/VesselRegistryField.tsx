@@ -76,7 +76,7 @@ const VesselRegistryField = ({
       <div className={styles.fieldGroupContainer} key={key}>
         {showLabel && (
           <div className={styles.labelContainer}>
-            <label>{t(`vessel.registryOperator`, 'Operators')}</label>
+            <label>{t('vessel.registryOperator')}</label>
             <DataTerminology title={t('vessel.operator')} terminologyKey="operator" />
           </div>
         )}
@@ -93,7 +93,7 @@ const VesselRegistryField = ({
         {showLabel && (
           <div className={styles.labelContainer}>
             <label>
-              {t(`vessel.recordId`, 'Record ID')}
+              {t('vessel.recordId')}
               <GFWOnly userGroup="gfw" />
             </label>
           </div>

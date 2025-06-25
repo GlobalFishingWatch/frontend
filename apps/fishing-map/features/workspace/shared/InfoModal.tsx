@@ -85,7 +85,7 @@ const InfoModal = ({
   const datasetImporting = dataset?.status === DatasetStatus.Importing
   const datasetError = dataset?.status === DatasetStatus.Error
 
-  let tooltip: string = t(`layer.seeDescription`, 'Click to see layer description')
+  let tooltip: string = t('layer.seeDescription')
   if (datasetImporting) {
     tooltip = t('dataset.importing')
   }

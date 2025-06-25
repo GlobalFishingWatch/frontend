@@ -268,13 +268,13 @@ export const getDatasetTitleByDataview = (
   let datasetTitle = dataview.name || ''
   const { category, subcategory } = dataviewInstance.datasets?.[0] || {}
   if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Fishing) {
-    datasetTitle = t(`common.apparentFishing`, 'Apparent Fishing Effort')
+    datasetTitle = t('common.apparentFishing')
   } else if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Presence) {
-    datasetTitle = t(`common.presence`, 'Vessel presence')
+    datasetTitle = t('common.presence')
   } else if (category === DatasetCategory.Detections && subcategory === DatasetSubCategory.Viirs) {
-    datasetTitle = t(`common.viirs`, 'Night light detections (VIIRS)')
+    datasetTitle = t('common.viirs')
   } else if (category === DatasetCategory.Detections && subcategory === DatasetSubCategory.Sar) {
-    datasetTitle = t(`common.sar`, 'Radar detections (SAR)')
+    datasetTitle = t('common.sar')
   } else if (activeDatasets) {
     if (hasDatasetsConfig && activeDatasets?.length !== 1) {
       return datasetTitle

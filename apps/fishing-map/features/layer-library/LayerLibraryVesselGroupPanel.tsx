@@ -146,7 +146,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
     <Fragment>
       <div className={styles.titleContainer}>
         <label id={DataviewCategory.VesselGroups} className={styles.categoryLabel}>
-          {t(`common.vesselGroups`, 'Vessel Groups')}
+          {t('common.vesselGroups')}
         </label>
         <UserLoggedIconButton
           type="border"
