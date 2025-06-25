@@ -791,7 +791,6 @@
     "zoom_in": "Aumentar zoom",
     "zoom_out": "Diminuir zoom"
   },
-  "navigateBackTo": "Voltar para {{section}}",
   "portsReport": {
     "maxVessels": "O relatório de embarcações está disponível para até {{vessels}} embarcações",
     "newTimeRange": "Clique no botão para ver as embarcações que entraram neste porto <br/>entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
@@ -869,6 +868,23 @@
   },
   "toasts": {
     "maxPointsVisualizationExceeded": "Visualização máxima de pontos excedida, alternando para o modo de mapa de calor."
+  },
+  "trackCorrection": {
+    "adjustDisabled": "Adjusting the time range is needed.",
+    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
+    "comment": "Comment",
+    "commentPlaceholder": "Add a comment...",
+    "commentResolve": "Comment and resolve",
+    "falseNegative": "False negative",
+    "falsePositive": "False positive",
+    "issue": "Issue {{issueId}}",
+    "issueType": "Type of issue",
+    "mapTooltip": "Issue added on {{date}} reported as {{type}}",
+    "markAsResolved": "Mark as resolved",
+    "newIssue": "New issue",
+    "other": "Other",
+    "replyPlaceholder": "Write a reply",
+    "version": "Version"
   },
   "user": {
     "badges": {
@@ -1005,8 +1021,8 @@
       "tuna_purse_seines": "Rede de cerco para atuns",
       "well_boat": "Barco de poço"
     },
-    "gfw-geartypes": "GFW Gear type",
-    "gfw-shiptypes": "GFW Vessel type",
+    "gfw_geartypes": "GFW Gear type",
+    "gfw_shiptypes": "GFW Vessel type",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Tonelagem bruta",
     "grossTonnageRange": "Intervalo de arqueação bruta",
@@ -1017,9 +1033,9 @@
     "infoSource": "Fonte de informações",
     "infoSources": {
       "both": "Registro e AIS",
+      "gfw-source": "GFW Source",
       "registry": "Registro",
-      "selfReported": "Autodeclarado",
-      "gfw-source": "GFW Source"
+      "selfReported": "Autodeclarado"
     },
     "insights": {
       "countries": {
