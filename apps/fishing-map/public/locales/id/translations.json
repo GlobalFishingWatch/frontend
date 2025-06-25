@@ -81,7 +81,7 @@
     "timeoutError": "This is taking more than expected, please wait",
     "timeRangeTooLong": "Laporan hanya diizinkan untuk rentang waktu hingga satu tahun",
     "title": "Report",
-    "unknown": "Tidak diketahui",
+    "unknown": "Unknown",
     "unknownProperty": "Unknown"
   },
   "bigQuery": {
@@ -261,7 +261,7 @@
     "tutorials": "Tutorial",
     "unionOf": "Union of",
     "unit": "unit",
-    "unknown": "Tidak diketahui",
+    "unknown": "Unknown",
     "unknownProperty": "Unknown",
     "unknownVessel": "Kapal tidak dikenal",
     "update": "Memperbarui",
@@ -538,7 +538,7 @@
     "dayAbbreviated_one": "{{count}}hari",
     "dayAbbreviated_other": "{{count}}hari",
     "during": "selama",
-    "encounter": "Pertemuan",
+    "encounter": "Encounter event",
     "encounter_one": "Encounter event",
     "encounter_other": "Pertemuan kapal",
     "encounterAction": "terjadi pertemuan dengan",
@@ -558,7 +558,7 @@
     "hourAbbreviated": "{{count}}jam",
     "hourAbbreviated_one": "{{count}}jam",
     "hourAbbreviated_other": "{{count}}jam",
-    "loitering": "Berkeliaran",
+    "loitering": "Loitering event",
     "loitering_one": "Loitering event",
     "loitering_other": "Peristiwa berkeliaran",
     "loiteringAction": "Berkeliaran dimulai pada {{start}} selama {{duration}}",
@@ -675,7 +675,7 @@
       "fao": "Organisasi Pangan dan Pertanian (Food and Agriculture Organization/FAO)",
       "mpa": "KKP/MPA",
       "mpa_other": "KKP (WDPA)",
-      "rfmo": "Organisasi pengelolaan perikanan regional (Regional fisheries management organizations/RFMO) "
+      "rfmo": "RFMO"
     },
     "areasOnScreen": "Area pada layar",
     "color_change": "Ganti warna",
@@ -791,7 +791,6 @@
     "zoom_in": "Perbesar",
     "zoom_out": "Perkecil"
   },
-  "navigateBackTo": "Go back to {{section}}",
   "portsReport": {
     "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
     "newTimeRange": "Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
@@ -916,6 +915,19 @@
     "vesselGroups": "Kelompok kapal",
     "vesselSearch": "Pencarian Kapal"
   },
+  "trackCorrection": {
+    "adjustDisabled": "Adjusting the time range is needed.",
+    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
+    "issueType": "Type of issue",
+    "falsePositive": "False positive",
+    "falseNegative": "False negative",
+    "other": "Tidak diketahui",
+    "version": "Version",
+    "comment": "Comment",
+    "mapTooltip": "Issue added on {{date}} reported as {{type}}",
+    "commentPlaceholder": "Add a comment...",
+    "replyPlaceholder": "Write a reply"
+  },
   "vessel": {
     "activityByType": "Berdasarkan jenis",
     "activityByVoyages": "Berdasarkan pelayaran",
@@ -949,8 +961,8 @@
     "gearType_short": "Peralatan",
     "geartypes": "Jenis peralatan",
     "gearTypes": {
-      "bunker": "Kapal bunker",
-      "bunker_or_tanker": "Kapal bunker atau tanker",
+      "bunker": "Bunker atau tanker",
+      "bunker_or_tanker": "Kapal bunker",
       "cargo": "Kapal kargo atau kontainer berpendingin",
       "cargo_or_reefer": "Kapal kargo atau tanker",
       "cargo_or_tanker": "Kargo",
@@ -980,8 +992,8 @@
       "patrol_vessel": "Kapal patroli",
       "pole_and_line": "Huhate",
       "pots_and_traps": "Bubu dan Perangkap",
-      "purse seine": "Pukat cincin",
-      "purse_seine": "Pukat cincin",
+      "purse seine": "Pukat Cincin",
+      "purse_seine": "Pukat Cincin",
       "purse_seine_support": "Kapal pendukung pukat cincin",
       "purse_seines": "Pukat Cincin",
       "reefer": "Reefer",
@@ -1170,7 +1182,7 @@
       "passenger": "Penumpang",
       "seismic_vessel": "Kapal seismik",
       "support": "Kapal pendukung",
-      "unknown": "Tidak diketahui"
+      "unknown": "Unknown"
     },
     "voyage_one": "pelayaran",
     "voyage_other": "pelayaran",
