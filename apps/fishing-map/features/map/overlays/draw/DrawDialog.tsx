@@ -193,7 +193,7 @@ function MapDraw() {
   if (!layerName) {
     saveTooltip = t('layer.nameRequired')
   } else if (!layerNameMinLength) {
-    saveTooltip = t('layer.nameLengthError', 'Layer name requires at least {{count}} characters', {
+    saveTooltip = t('layer.nameLengthError', {
       count: MIN_DATASET_NAME_LENGTH,
     })
     // } else if (!hasFeaturesDrawn) {

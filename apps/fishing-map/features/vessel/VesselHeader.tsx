@@ -167,7 +167,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
                   key={index}
                   onClick={() => setCurrentImageIndex(index)}
                   className={`${styles.dot} ${index === currentImageIndex ? styles.activeDot : ''}`}
-                  aria-label={t('vessel.goToImage', 'Go to image {{number}}', {
+                  aria-label={t('vessel.goToImage', {
                     number: index + 1,
                   })}
                 />

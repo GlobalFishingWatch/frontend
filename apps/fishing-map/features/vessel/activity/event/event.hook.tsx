@@ -129,7 +129,7 @@ export function useActivityEventTranslations() {
             mainRegionDescription && (
               <Tooltip content={allRegionsDescription}>
                 <span className={styles.region}>
-                  {t('event.loiteringActionIn', 'Loitering in {{regionName}}', {
+                  {t('event.loiteringActionIn', {
                     regionName: mainRegionDescription,
                   })}
                   {allRegionsDescription ? <span className="print-hidden">...</span> : ''}
@@ -142,7 +142,7 @@ export function useActivityEventTranslations() {
             mainRegionDescription && (
               <Tooltip content={allRegionsDescription}>
                 <span className={styles.region}>
-                  {t('event.fishingActionIn', 'Fished in {{regionName}}', {
+                  {t('event.fishingActionIn', {
                     regionName: mainRegionDescription,
                   })}
                   {allRegionsDescription ? <span className="print-hidden">...</span> : ''}
@@ -155,7 +155,7 @@ export function useActivityEventTranslations() {
             mainRegionDescription && (
               <Tooltip content={allRegionsDescription}>
                 <span className={styles.region}>
-                  {t('event.gapActionIn', 'Likely Disabling in {{regionName}}', {
+                  {t('event.gapActionIn', {
                     regionName: mainRegionDescription,
                   })}
                   {allRegionsDescription ? <span className="print-hidden">...</span> : ''}
@@ -182,16 +182,16 @@ export function useActivityEventTranslations() {
         event.end > event.start
           ? [
               duration.years && duration.years > 0
-                ? t('event.yearAbbreviated', '{{count}}y', { count: duration.years })
+                ? t('event.yearAbbreviated', { count: duration.years })
                 : '',
               duration.months && duration.months > 0
-                ? t('event.monthAbbreviated', '{{count}}m', { count: duration.months })
+                ? t('event.monthAbbreviated', { count: duration.months })
                 : '',
               duration.days && duration.days > 0
-                ? t('event.dayAbbreviated', '{{count}}d', { count: duration.days })
+                ? t('event.dayAbbreviated', { count: duration.days })
                 : '',
               duration.years === 0 && duration.months === 0 && duration.hours && duration.hours > 0
-                ? t('event.hourAbbreviated', '{{count}}h', { count: duration.hours })
+                ? t('event.hourAbbreviated', { count: duration.hours })
                 : '',
               duration.years === 0 &&
               duration.months === 0 &&

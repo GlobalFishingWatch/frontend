@@ -29,14 +29,12 @@ export const getEventColors = ({ type }: { type: ApiEvent['type'] }) => {
 const getEventDurationLabel = ({ durationRaw }: { durationRaw: Duration }): string => {
   const duration = durationRaw.toObject()
   return [
-    duration.days && duration.days > 0
-      ? t('event.dayAbbreviated', '{{count}}d', { count: duration.days })
-      : '',
+    duration.days && duration.days > 0 ? t('event.dayAbbreviated', { count: duration.days }) : '',
     duration.hours && duration.hours > 0 && durationRaw.as('days') < 10
-      ? t('event.hourAbbreviated', '{{count}}h', { count: duration.hours })
+      ? t('event.hourAbbreviated', { count: duration.hours })
       : '',
     duration.minutes && duration.minutes > 0 && durationRaw.as('hours') < 10
-      ? t('event.minuteAbbreviated', '{{count}}m', {
+      ? t('event.minuteAbbreviated', {
           count: Math.round(duration.minutes as number),
         })
       : '',
@@ -121,7 +119,7 @@ export const getEventDescription = ({
           { ...time, port: portLabel }
         )
       } else {
-        description = t('event.portAction', 'Docked started at {{start}} for {{duration}}', time)
+        description = t('event.portAction', time)
       }
       descriptionGeneric = t('event.port')
       break
@@ -135,7 +133,7 @@ export const getEventDescription = ({
       descriptionGeneric = t('event.loitering')
       break
     case EventTypes.Fishing:
-      description = t('event.fishingAction', 'Fishing started at {{start}} for {{duration}}', time)
+      description = t('event.fishingAction', time)
       descriptionGeneric = t('event.fishing')
       break
     default:

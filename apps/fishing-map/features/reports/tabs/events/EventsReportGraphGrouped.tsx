@@ -184,7 +184,7 @@ const ReportGraphTick = (props: any) => {
   const tooltip =
     graphType === 'byFlag'
       ? `${t('analysis.clickToFilterBy')} ${label}`
-      : `${t('analysis.clickToSeeAreaReport', 'Click to see the {{area}} report', {
+      : `${t('analysis.clickToSeeAreaReport', {
           area: getReportAreaLabel(payload.value),
         })}`
 
