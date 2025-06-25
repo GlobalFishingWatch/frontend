@@ -127,6 +127,9 @@ const formatDateTicks: BaseResponsiveTimeseriesProps['tickLabelFormatter'] = (
   tick,
   timeChunkInterval
 ) => {
+  if (!tick) {
+    return ''
+  }
   const date = getUTCDateTime(tick).setLocale(i18n.language)
   return formatDateForInterval(date, timeChunkInterval)
 }
