@@ -242,10 +242,10 @@ const AppModals = () => {
           isOpen={trackCorrectionModalOpen && !anyAppModalOpen}
           title={
             currentTrackCorrectionIssue?.issueId
-              ? t('vessel.issue', 'Issue {{issueId}}', {
+              ? t('trackCorrection.issue', 'Issue {{issueId}}', {
                   issueId: currentTrackCorrectionIssue.issueId,
                 })
-              : t('vessel.newIssue', 'New issue')
+              : t('trackCorrection.newIssue', 'New issue')
           }
           shouldCloseOnEsc={false}
           onClose={() => {

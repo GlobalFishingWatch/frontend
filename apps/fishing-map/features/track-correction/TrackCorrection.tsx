@@ -248,7 +248,7 @@ const TrackCorrection = () => {
       {isNewTrackCorrection ? (
         <>
           <div>
-            <label>{t('common.vessel', 'Vessel')}</label>
+            <label>{t('common.vessel')}</label>
             <div className={styles.vessel}>
               <span className={styles.vesselLabel}>
                 <Icon icon="vessel" style={{ color: vesselColor }} />
@@ -261,20 +261,20 @@ const TrackCorrection = () => {
           {vesselInfo && (
             <div className={styles.vesselInfo}>
               <div>
-                <label>{t('common.flag', 'Flag')}</label>
+                <label>{t('common.flag')}</label>
                 {getVesselProperty(vesselInfo, 'flag')}
               </div>
               <div>
-                <label>{t('common.shiptype', 'Shiptype')}</label>
+                <label>{t('vessel.shiptype')}</label>
                 {getVesselShipTypeLabel({ shiptypes: getVesselProperty(vesselInfo, 'shiptypes') })}
               </div>
               <div>
-                <label>{t('common.geartype', 'Geartype')}</label>
+                <label>{t('vessel.geartype')}</label>
                 {getVesselGearTypeLabel({ geartypes: getVesselProperty(vesselInfo, 'geartypes') })}
               </div>
             </div>
           )}
-          <label>{t('common.timeRange', 'Time range')}</label>
+          <label>{t('common.timerange')}</label>
           {currentTrackCorrectionIssue ? (
             <Fragment>
               <I18nDate
@@ -303,15 +303,10 @@ const TrackCorrection = () => {
 
           <div className={styles.disclaimer}>
             <Icon type="default" icon="warning" />
-            <span>
-              {t(
-                'trackCorrection.adjustDisclaimer',
-                'Adjust your time range to cover as precisely as possible the activity you are reporting on.'
-              )}
-            </span>
+            <span>{t('trackCorrection.adjustDisclaimer')}</span>
           </div>
           <div>
-            <label>{t('trackCorrection.issueType', 'Type of issue')}</label>
+            <label>{t('trackCorrection.issueType')}</label>
             <Choice
               options={issueTypesOptions}
               activeOption={issueType}
@@ -333,11 +328,7 @@ const TrackCorrection = () => {
                     dataview?.config?.name}{' '}
                 {' - '} {currentTrackCorrectionIssue.issueId}
               </h2>
-              <h2>
-                {t(`trackCorrection.falsePositive`, {
-                  defaultValue: currentTrackCorrectionIssue.type,
-                })}
-              </h2>
+              <h2>{t(`trackCorrection.falsePositive`)}</h2>
               <label>
                 <I18nDate
                   date={currentTrackCorrectionIssue.startDate}
@@ -361,13 +352,13 @@ const TrackCorrection = () => {
       {!currentTrackCorrectionIssue?.resolved && (
         <>
           <div>
-            {isNewTrackCorrection && <label>{t('trackCorrection.comment', 'Comment')}</label>}
+            {isNewTrackCorrection && <label>{t('trackCorrection.comment')}</label>}
             <InputText
               inputSize="small"
               placeholder={
                 isNewTrackCorrection
-                  ? t('trackCorrection.commentPlaceholder', 'Add a comment...')
-                  : t('trackCorrection.replyPlaceholder', 'Write a reply')
+                  ? t('trackCorrection.commentPlaceholder')
+                  : t('trackCorrection.replyPlaceholder')
               }
               value={issueComment}
               className={styles.input}
@@ -379,7 +370,7 @@ const TrackCorrection = () => {
           <div className={styles.actions}>
             <span className={styles.version}>
               {
-                t('trackCorrection.version', 'Version') + ' 1'
+                t('trackCorrection.version') + ' 1'
                 /*vesselInfo.datasetVersion*/
               }
             </span>
@@ -390,14 +381,14 @@ const TrackCorrection = () => {
                   type={isResolved ? 'map-tool' : 'border'}
                   size="small"
                   onClick={() => setIsResolved((prev) => !prev)}
-                  tooltip={!isResolved && t('trackCorrection.markAsResolved', 'Mark as resolved')}
+                  tooltip={!isResolved && t('trackCorrection.markAsResolved')}
                 />
               )}
 
               <Button
                 tooltip={
                   isNewTrackCorrection && isTimerangePristine
-                    ? t('common.adjustDisabled', 'Adjusting the time range is needed.')
+                    ? t('trackCorrection.adjustDisabled')
                     : undefined
                 }
                 size="medium"
@@ -410,10 +401,10 @@ const TrackCorrection = () => {
                 loading={isSubmitting}
               >
                 {isNewTrackCorrection
-                  ? t('common.confirm', 'Confirm')
+                  ? t('common.confirm')
                   : isResolved
-                    ? t('trackCorrection.commentResolve', 'Comment and resolve')
-                    : t('trackCorrection.comment', 'Comment')}
+                    ? t('trackCorrection.commentResolve')
+                    : t('trackCorrection.comment')}
               </Button>
             </div>
           </div>
