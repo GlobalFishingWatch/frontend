@@ -1,5 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
 import type { RootState } from 'reducers'
 
@@ -49,7 +49,7 @@ import {
   getVesselGroupInDataview,
 } from 'features/datasets/datasets.utils'
 import {
-  selectDetectionsDataviews,
+  selectActiveDetectionsDataviews,
   selectEventsDataviews,
   selectVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -664,10 +664,12 @@ export const fetchDetectionThumbnailsThunk = createAsyncThunk<
   async ({ detectionFeatures }, { signal, getState, rejectWithValue }) => {
     try {
       const state = getState() as any
-      const detectionsDataviews = selectDetectionsDataviews(state) || []
+      const detectionsDataviews = selectActiveDetectionsDataviews(state) || []
       const thumbnails = await Promise.all(
         detectionFeatures.map(async (detectionFeature) => {
-          const dataview = detectionsDataviews.find((d) => d.id === detectionFeature.layerId)
+          const dataview = detectionsDataviews.find(
+            (d) => d.id === detectionFeature.sublayers?.[0].id
+          )
           const datasetId = detectionFeature.sublayers?.flatMap((s) => s.datasets)?.[0]
           const detectionsDataset = dataview?.datasets?.find((d) => d.id === datasetId)
           const thumbnailDatasetId = getRelatedDatasetByType(
