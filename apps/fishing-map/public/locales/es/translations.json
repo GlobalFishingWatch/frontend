@@ -1005,8 +1005,8 @@
       "tuna_purse_seines": "Red de cerco atunera",
       "well_boat": "Barco vivero"
     },
-    "gfw-geartypes": "Arte de pesca GFW",
-    "gfw-shiptypes": "Tipo de embarcación GFW",
+    "gfw_geartypes": "GFW Gear type",
+    "gfw_shiptypes": "GFW Vessel type",
     "goToImage": "Ir a la imagen {{number}}",
     "grossTonnage": "Tonelaje",
     "grossTonnageRange": "Rango de tonelaje bruto",
@@ -1017,9 +1017,9 @@
     "infoSource": "Fuente de la Información",
     "infoSources": {
       "both": "Registro y AIS",
+      "gfw-source": "GFW Source",
       "registry": "Registro",
-      "selfReported": "Autodeclarado",
-      "gfw-source": "GFW Source"
+      "selfReported": "Autodeclarado"
     },
     "insights": {
       "countries": {
