@@ -2,7 +2,7 @@
   "analysis": {
     "activityChange": "Activity change",
     "around": "around",
-    "beforeAfter": "before/after",
+    "beforeAfter": "Before/After",
     "beforeAfterDate": "date",
     "beforeAfterRange": "between the {{duration}} before and after {{compareStart}}",
     "buffer": "Buffer area",
