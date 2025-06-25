@@ -22,7 +22,6 @@ import { mean, sample, standardDeviation } from 'simple-statistics'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
-import { CONFIG_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 
 import {
   COLOR_HIGHLIGHT_LINE,
@@ -257,11 +256,15 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getIconSize = (d: FourwingsPositionFeature): number => {
-    if (this.getIsPositionMatched(d)) {
+    if (this._canShowVesselIcon(d)) {
       return this._getIsHighlightedVessel(d) ? 22 : 15
     } else {
       return this._getIsHighlightedVessel(d) ? 13 : 10
     }
+  }
+
+  _canShowVesselIcon = (d: FourwingsPositionFeature) => {
+    return this.getIsPositionMatched(d) || d.properties.bearing
   }
 
   _getLabelColor = (d: FourwingsPositionFeature): Color => {
@@ -414,7 +417,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         data: positions,
         iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
         iconMapping: VESSEL_SPRITE_ICON_MAPPING,
-        getIcon: (d: any) => (this.getIsPositionMatched(d) ? 'vessel' : 'circle'),
+        getIcon: (d: any) => (this._canShowVesselIcon(d) ? 'vessel' : 'circle'),
         getPosition: (d: any) => d.geometry.coordinates,
         getColor: this._getFillColor,
         getSize: this._getIconSize,
@@ -432,7 +435,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         data: positions,
         iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
         iconMapping: VESSEL_SPRITE_ICON_MAPPING,
-        getIcon: (d: any) => (this.getIsPositionMatched(d) ? 'vesselHighlight' : 'circle'),
+        getIcon: (d: any) => (this._canShowVesselIcon(d) ? 'vesselHighlight' : 'circle'),
         getPosition: (d: any) => d.geometry.coordinates,
         getColor: this._getHighlightColor,
         getSize: this._getIconSize,
