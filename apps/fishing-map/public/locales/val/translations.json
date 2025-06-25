@@ -791,7 +791,6 @@
     "zoom_in": "crwdns60359:0crwdne60359:0",
     "zoom_out": "crwdns60361:0crwdne60361:0"
   },
-  "navigateBackTo": "crwdns84570:0{{section}}crwdne84570:0",
   "portsReport": {
     "maxVessels": "crwdns84004:0{{vessels}}crwdne84004:0",
     "newTimeRange": "crwdns84000:0{{start}}crwdnd84000:0{{end}}crwdne84000:0",
@@ -869,6 +868,23 @@
   },
   "toasts": {
     "maxPointsVisualizationExceeded": "crwdns83408:0crwdne83408:0"
+  },
+  "trackCorrection": {
+    "adjustDisabled": "crwdns93658:0crwdne93658:0",
+    "adjustDisclaimer": "crwdns93660:0crwdne93660:0",
+    "comment": "crwdns93662:0crwdne93662:0",
+    "commentPlaceholder": "crwdns93664:0crwdne93664:0",
+    "commentResolve": "crwdns93666:0crwdne93666:0",
+    "falseNegative": "crwdns93668:0crwdne93668:0",
+    "falsePositive": "crwdns93670:0crwdne93670:0",
+    "issue": "crwdns93672:0{{issueId}}crwdne93672:0",
+    "issueType": "crwdns93674:0crwdne93674:0",
+    "mapTooltip": "crwdns93676:0{{date}}crwdnd93676:0{{type}}crwdne93676:0",
+    "markAsResolved": "crwdns93678:0crwdne93678:0",
+    "newIssue": "crwdns93680:0crwdne93680:0",
+    "other": "crwdns93682:0crwdne93682:0",
+    "replyPlaceholder": "crwdns93684:0crwdne93684:0",
+    "version": "crwdns93686:0crwdne93686:0"
   },
   "user": {
     "badges": {
