@@ -46,11 +46,7 @@ const OwnerVessels = ({ owner, dataset, ignoreVessel }: OwnerVesselsProps) => {
   const vessels = data?.entries?.filter((v) => getVesselProperty(v, 'id') !== ignoreVessel)
 
   if (!vessels?.length) {
-    return (
-      <p className={cx(styles.secondary, styles.ownersList)}>
-        {t('vessel.noOwnersMatch', "We can't find other vessels with this owner")}
-      </p>
-    )
+    return <p className={cx(styles.secondary, styles.ownersList)}>{t('vessel.noOwnersMatch')}</p>
   }
 
   return (

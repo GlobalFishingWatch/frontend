@@ -78,9 +78,7 @@ export default function VesselGroupReportTitle() {
       <div className={cx(styles.row, styles.border)}>
         <div>
           {vesselGroup.ownerType === 'user' && (
-            <label className={styles.userLabel}>
-              {t('vesselGroupReport.user', 'User Vessel Group')}
-            </label>
+            <label className={styles.userLabel}>{t('vesselGroupReport.user')}</label>
           )}
           <h1 className={styles.title} data-test="report-title">
             {vesselGroup.name}
@@ -88,8 +86,6 @@ export default function VesselGroupReportTitle() {
           <h2 className={styles.summary}>
             {parse(
               t('vesselGroup.summary', {
-                defaultValue:
-                  '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>',
                 vessels: formatI18nNumber(getVesselGroupVesselsCount(vesselGroup)),
                 flags: flags?.size,
                 start: formatI18nDate(timeRange.start, {
@@ -100,14 +96,11 @@ export default function VesselGroupReportTitle() {
                 }),
               })
             )}
-            <DataTerminology
-              title={t('vesselGroupReport.vessels', 'Vessel group report vessels')}
-              terminologyKey="vessels"
-            />
+            <DataTerminology title={t('vesselGroupReport.vessels')} terminologyKey="vessels" />
           </h2>
         </div>
         <a className={styles.reportLink} href={window.location.href}>
-          {t('vesselGroupReport.linkToReport', 'Check the vessel group report here')}
+          {t('vesselGroupReport.linkToReport')}
         </a>
 
         <div className={styles.actions}>
@@ -118,9 +111,9 @@ export default function VesselGroupReportTitle() {
               className={styles.actionButton}
               onClick={onEditClick}
               disabled={loading}
-              tooltip={t('vesselGroup.edit ', 'Edit list of vessels')}
+              tooltip={t('vesselGroup.edit ')}
             >
-              <p>{t('common.edit ', 'edit')}</p>
+              <p>{t('common.edit ')}</p>
               <Icon icon="edit" type="default" />
             </Button>
           )}
@@ -131,7 +124,7 @@ export default function VesselGroupReportTitle() {
             onClick={onPrintClick}
             disabled={loading}
           >
-            <p>{t('analysis.print ', 'print')}</p>
+            <p>{t('analysis.print ')}</p>
             <Icon icon="print" type="default" />
           </Button> */}
         </div>

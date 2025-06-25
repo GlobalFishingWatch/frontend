@@ -51,11 +51,10 @@ const OutOfTimerangeDisclaimer = ({
     const datasetInTimerange = end >= extentStart
     return datasetInTimerange ? null : (
       <span className={cx(styles.dataWarning, styles.error, className)}>
-        {t('dataset.noDataForTimerange', 'No data for current timerange')}.
+        {t('dataset.noDataForTimerange')}.
         <br />
         {t('dataset.extentStart', {
           start: formatI18nDate(extentStart),
-          defaultValue: 'Dataset start date: {{start}}',
         })}
       </span>
     )
@@ -66,11 +65,10 @@ const OutOfTimerangeDisclaimer = ({
     const datasetInTimerange = start <= extentEnd
     return datasetInTimerange ? null : (
       <span className={cx(styles.dataWarning, styles.error, className)}>
-        {t('dataset.noDataForTimerange', 'No data for current timerange')}.
+        {t('dataset.noDataForTimerange')}.
         <br />
         {t('dataset.extentEnd', {
           end: formatI18nDate(extentEnd),
-          defaultValue: 'Dataset end date: {{end}}',
         })}
       </span>
     )
@@ -84,11 +82,10 @@ const OutOfTimerangeDisclaimer = ({
 
   return datasetInTimerange ? null : (
     <span className={cx(styles.dataWarning, styles.error, className)}>
-      {t('dataset.noDataForTimerange', 'No data for current timerange')}.
+      {t('dataset.noDataForTimerange')}.
       <br />
       {t('dataset.extent', {
         extent: [formatI18nDate(extentStart), formatI18nDate(extentEnd)].join(' - '),
-        defaultValue: 'Dataset extent: {{ extent }}',
       })}
     </span>
   )

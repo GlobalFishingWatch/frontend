@@ -62,9 +62,9 @@ const VesselGroupReportInsightFlagChange = ({ skip }: { skip?: boolean }) => {
   return (
     <div id="vessel-group-flags" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vessel.insights.flagChanges', 'Flag Changes')}</label>
+        <label>{t('vessel.insights.flagChanges')}</label>
         <DataTerminology
-          title={t('vessel.insights.flagChanges', 'Flag Changes')}
+          title={t('vessel.insights.flagChanges')}
           terminologyKey="insightsFlagsChanges"
         />
       </div>
@@ -76,10 +76,7 @@ const VesselGroupReportInsightFlagChange = ({ skip }: { skip?: boolean }) => {
         <InsightError error={error as ParsedAPIError} />
       ) : !vesselsWithFlagChanges || vesselsWithFlagChanges.length === 0 ? (
         <span className={cx(styles.secondary, styles.nested, styles.row)}>
-          {t(
-            'vesselGroupReport.insights.flagChangesEmpty',
-            'There are no vessels with flag changes'
-          )}
+          {t('vesselGroupReport.insights.flagChangesEmpty')}
         </span>
       ) : (
         <div className={styles.nested}>
@@ -89,7 +86,6 @@ const VesselGroupReportInsightFlagChange = ({ skip }: { skip?: boolean }) => {
             className={styles.collapsable}
             labelClassName={cx(styles.collapsableLabel, styles.row)}
             label={t('vesselGroupReport.insights.flagChangesCount', {
-              defaultValue: '{{vessels}} vessels had flag changes',
               vessels: vesselsWithFlagChanges.length,
             })}
             onToggle={onInsightToggle}

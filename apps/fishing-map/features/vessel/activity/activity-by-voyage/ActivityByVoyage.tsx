@@ -103,14 +103,7 @@ const ActivityByVoyage = () => {
 
   const renderedComponent = useMemo(() => {
     if (!groupCounts.length) {
-      return (
-        <span className={styles.enptyState}>
-          {t(
-            'vessel.noVoyagesinTimeRange',
-            'There are no voyages fully contained in your timerange.'
-          )}
-        </span>
-      )
+      return <span className={styles.enptyState}>{t('vessel.noVoyagesinTimeRange')}</span>
     }
     if (vesselPrintMode) {
       return (
@@ -212,11 +205,7 @@ const ActivityByVoyage = () => {
   ])
 
   if (visibleEvents !== 'all' && !visibleEvents.includes('port_visit')) {
-    return (
-      <span className={styles.enptyState}>
-        {t('vessel.noVoyagesWithoutPorts', 'Please turn on port visits visibility.')}
-      </span>
-    )
+    return <span className={styles.enptyState}>{t('vessel.noVoyagesWithoutPorts')}</span>
   }
 
   return <ul className={styles.activityContainer}>{renderedComponent}</ul>

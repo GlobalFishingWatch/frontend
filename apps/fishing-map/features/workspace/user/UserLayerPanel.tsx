@@ -216,11 +216,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<a
               icon="edit"
               size="small"
               disabled={dataview.datasets?.[0]?.status === DatasetStatus.Importing}
-              tooltip={
-                datasetGeometryType === 'draw'
-                  ? t('layer.editDraw', 'Edit draw')
-                  : t('dataset.edit', 'Edit dataset')
-              }
+              tooltip={datasetGeometryType === 'draw' ? t('layer.editDraw') : t('dataset.edit')}
               tooltipPlacement="top"
               onClick={onEditClick}
             />
@@ -269,11 +265,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<a
                     icon={filterOpen ? 'filter-on' : 'filter-off'}
                     size="small"
                     onClick={onToggleFilterOpen}
-                    tooltip={
-                      filterOpen
-                        ? t('layer.filterClose', 'Close filters')
-                        : t('layer.filterOpen', 'Open filters')
-                    }
+                    tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
                     tooltipPlacement="top"
                   />
                 </div>

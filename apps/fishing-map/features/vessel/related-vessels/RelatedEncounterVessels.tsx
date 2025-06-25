@@ -93,11 +93,8 @@ const RelatedEncounterVessels = () => {
       ) : (
         <span className={styles.enptyState}>
           {visibleEvents === 'all' || visibleEvents.includes('encounter')
-            ? t(
-                'vessel.noEncountersInTimeRange',
-                'There are no encounters fully contained in your timerange.'
-              )
-            : t('vessel.noEncountersVisible', 'Please turn on encounter events visibility.')}
+            ? t('vessel.noEncountersInTimeRange')
+            : t('vessel.noEncountersVisible')}
         </span>
       )}
     </div>

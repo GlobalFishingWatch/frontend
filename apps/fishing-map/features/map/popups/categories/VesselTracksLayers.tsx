@@ -109,7 +109,7 @@ function VesselTracksTooltipRow({
             <p key="speed">
               {feature.speed && (
                 <span>
-                  {upperFirst(t('eventInfo.speed', 'Speed'))}: {feature.speed.toFixed(2)}{' '}
+                  {upperFirst(t('eventInfo.speed'))}: {feature.speed.toFixed(2)}{' '}
                   {t('common.knots', 'knots')}
                 </span>
               )}
@@ -117,8 +117,7 @@ function VesselTracksTooltipRow({
             <p key="depth">
               {feature.depth && (
                 <span>
-                  {upperFirst(t('eventInfo.depth', 'Depth'))}: {feature.depth}{' '}
-                  {t('common.meters', 'meters')}
+                  {upperFirst(t('eventInfo.depth'))}: {feature.depth} {t('common.meters')}
                 </span>
               )}
             </p>
@@ -127,7 +126,7 @@ function VesselTracksTooltipRow({
         {showFeaturesDetails && !guestUser && !isUserExpired && !isVesselLocation && (
           <div>
             <Button onClick={onReportClick} className={styles.rowMarginTop}>
-              <span>{t('feedback.logAnIssue', 'Log an issue')}</span>
+              <span>{t('feedback.logAnIssue')}</span>
             </Button>
           </div>
         )}

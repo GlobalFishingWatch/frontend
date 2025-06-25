@@ -93,7 +93,7 @@ export default function ReportActivity() {
     <div className={styles.container}>
       {showSelectors && (
         <div className={styles.titleRow}>
-          <label className={styles.blockTitle}>{t('common.activity', 'Activity')}</label>
+          <label className={styles.blockTitle}>{t('common.activity')}</label>
           <ReportActivityGraphSelector loading={loading} />
         </div>
       )}
@@ -101,8 +101,8 @@ export default function ReportActivity() {
         <ReportActivityPlaceholder showHeader={!showSelectors} />
       ) : isEmptyData || hasError ? (
         <ReportActivityPlaceholder showHeader={false} animate={false}>
-          {hasError && t('errors.layerLoading', 'There was an error loading the layer')}
-          {/* : t('analysis.noDataByArea', 'No data available for the selected area')} */}
+          {hasError && t('errors.layerLoading')}
+          {/* : t('analysis.noDataByArea')} */}
         </ReportActivityPlaceholder>
       ) : (
         <GraphComponent
@@ -117,13 +117,13 @@ export default function ReportActivity() {
           <div className={styles.disclaimer}>
             <UserGuideLink section="analysis" />
             <p className={styles.disclaimerText}>
-              {t('analysis.disclaimer', 'The data shown above should be taken as an estimate.')}{' '}
+              {t('analysis.disclaimer')}{' '}
               <a
                 href="https://globalfishingwatch.org/faqs/calculating-fishing-effort-estimates-in-dynamic-analysis-reports/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {t('common.learnMore', 'Learn more')}.
+                {t('common.learnMore')}.
               </a>
             </p>
           </div>

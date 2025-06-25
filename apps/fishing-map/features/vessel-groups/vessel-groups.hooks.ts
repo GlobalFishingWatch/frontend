@@ -42,7 +42,7 @@ export const useVesselGroupsOptions = () => {
     const vesselGroupsOptions: (MultiSelectOption & { loading?: boolean })[] =
       sortByCreationDate<VesselGroup>(vesselGroups).map((vesselGroup) => ({
         id: vesselGroup.id.toString(),
-        label: t('vesselGroup.label', `{{name}} ({{count}} IDs)`, {
+        label: t('vesselGroup.label', {
           name: getVesselGroupLabel(vesselGroup),
           count: getVesselGroupVesselsCount(vesselGroup),
         }),

@@ -13,10 +13,9 @@ function DatasetNotFound({ dataview }: { dataview: UrlDataviewInstance }) {
   return (
     <div className={cx(styles.LayerPanel, 'print-hidden')}>
       <div className={styles.header}>
-        <Tooltip content={t('errors.datasetNotFound', 'Dataset not found')}>
+        <Tooltip content={t('errors.datasetNotFound')}>
           <h3 className={cx(styles.name, styles.error)}>
-            {dataview.datasetsConfig?.[0]?.datasetId ||
-              t('errors.datasetNotFound', 'Dataset not found')}
+            {dataview.datasetsConfig?.[0]?.datasetId || t('errors.datasetNotFound')}
           </h3>
         </Tooltip>
         <div className={styles.actions}>

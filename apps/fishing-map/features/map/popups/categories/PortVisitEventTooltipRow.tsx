@@ -80,8 +80,7 @@ function PortVisitEventTooltipRow({
             {event?.port && !isPortReportLocation && (
               <PortsReportLink port={event.port}>
                 <Button className={cx(styles.portCTA, styles.rowMarginTop)}>
-                  {t('portsReport.seePortReport', 'See all entry events to this port')}{' '}
-                  {event.port.name && `(${event.port.name})`}
+                  {t('portsReport.seePortReport')} {event.port.name && `(${event.port.name})`}
                 </Button>
               </PortsReportLink>
             )}

@@ -118,9 +118,7 @@ function NewPointDataset({
           if ((startTimeProperty || endTimeProperty) && geojson.metadata?.hasDatesError) {
             setTimeFilterError(
               t('datasetUpload.errors.invalidDatesFeatures', {
-                defaultValue:
-                  "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
-                featureType: t('dataset.typePoints', 'points'),
+                featureType: t('dataset.typePoints'),
               })
             )
           } else {
@@ -162,9 +160,7 @@ function NewPointDataset({
         if ((startTimeProperty || endTimeProperty) && geojson.metadata?.hasDatesError) {
           setTimeFilterError(
             t('datasetUpload.errors.invalidDatesFeatures', {
-              defaultValue:
-                "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
-              featureType: t('dataset.typePoints', 'points'),
+              featureType: t('dataset.typePoints'),
             })
           )
         } else {
@@ -197,7 +193,6 @@ function NewPointDataset({
           const fields = ['latitude', 'longitude'].map((f) => t(`common.${f}` as any, f))
           error = t('dataset.requiredFields', {
             fields,
-            defaultValue: `Required fields ${fields}`,
           })
         }
       }
@@ -220,7 +215,7 @@ function NewPointDataset({
     return (
       <div className={styles.processingData}>
         <Spinner className={styles.processingDataSpinner} />
-        <p>{t('datasetUpload.processingData', 'Processing data...')}</p>
+        <p>{t('datasetUpload.processingData')}</p>
       </div>
     )
   }
@@ -244,7 +239,7 @@ function NewPointDataset({
       )}
       <InputText
         value={datasetMetadata?.name}
-        label={t('datasetUpload.datasetName', 'Dataset Name')}
+        label={t('datasetUpload.datasetName')}
         className={styles.input}
         onChange={(e) => setDatasetMetadata({ name: e.target.value })}
         disabled={loading}
@@ -255,10 +250,7 @@ function NewPointDataset({
           <NewDatasetField
             datasetMetadata={datasetMetadata}
             property="latitude"
-            label={`${t('datasetUpload.point.coordinates', 'Point coordinates')} - ${t(
-              'common.latitude',
-              'Latitude'
-            )}`}
+            label={`${t('datasetUpload.point.coordinates')} - ${t('common.latitude')}`}
             editable={!isEditing && !loading}
             onSelect={(selected) => {
               setDatasetMetadataConfig({ latitude: selected.id })
@@ -267,7 +259,7 @@ function NewPointDataset({
           <NewDatasetField
             datasetMetadata={datasetMetadata}
             property="longitude"
-            label={t('common.longitude', 'Longitude')}
+            label={t('common.longitude')}
             editable={!isEditing && !loading}
             onSelect={(selected) => {
               setDatasetMetadataConfig({ longitude: selected.id })
@@ -283,13 +275,10 @@ function NewPointDataset({
         />
       </div>
       <span className={styles.errorMsg}>{timeFilterError}</span>
-      <Collapsable
-        className={styles.optional}
-        label={t('datasetUpload.optionalFields', 'Optional fields')}
-      >
+      <Collapsable className={styles.optional} label={t('datasetUpload.optionalFields')}>
         <InputText
           value={datasetMetadata?.description}
-          label={t('datasetUpload.datasetDescription', 'Dataset description')}
+          label={t('datasetUpload.datasetDescription')}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
           disabled={loading}
@@ -297,7 +286,7 @@ function NewPointDataset({
         <NewDatasetField
           datasetMetadata={datasetMetadata}
           property="valueProperties"
-          label={t('datasetUpload.points.name', 'Point label')}
+          label={t('datasetUpload.points.name')}
           editable={!loading}
           onSelect={(selected) => {
             setDatasetMetadataConfig({ valueProperties: [selected.id] })
@@ -305,20 +294,14 @@ function NewPointDataset({
           onCleanClick={() => {
             setDatasetMetadataConfig({ valueProperties: [] })
           }}
-          infoTooltip={t(
-            'datasetUpload.points.nameHelp',
-            'Select a property of each point to make it appear as its label'
-          )}
+          infoTooltip={t('datasetUpload.points.nameHelp')}
         />
         <div className={styles.row}>
           <NewDatasetField
             datasetMetadata={datasetMetadata}
             property="pointSize"
-            label={t('datasetUpload.points.size', 'point size')}
-            placeholder={t(
-              'datasetUpload.fieldNumericPlaceholder',
-              'Select a numeric field from your dataset'
-            )}
+            label={t('datasetUpload.points.size')}
+            placeholder={t('datasetUpload.fieldNumericPlaceholder')}
             editable={!loading}
             onSelect={(selected) => {
               setDatasetMetadataConfig({ pointSize: selected.id })
@@ -326,10 +309,7 @@ function NewPointDataset({
             onCleanClick={() => {
               setDatasetMetadataConfig({ pointSize: '' })
             }}
-            infoTooltip={t(
-              'datasetUpload.points.sizeHelp',
-              'Select a numeric property of each point to change its radius'
-            )}
+            infoTooltip={t('datasetUpload.points.sizeHelp')}
           />
           {getDatasetConfigurationProperty({
             dataset: datasetMetadata,
@@ -345,7 +325,7 @@ function NewPointDataset({
                   }) || POINT_SIZES_DEFAULT_RANGE[0]
                 }
                 min={MIN_POINT_SIZE}
-                label={t('datasetUpload.points.sizeMin', 'Minimum size')}
+                label={t('datasetUpload.points.sizeMin')}
                 className={styles.input}
                 onChange={(e) =>
                   setDatasetMetadataConfig({ minPointSize: parseFloat(e.target.value) })
@@ -361,7 +341,7 @@ function NewPointDataset({
                   }) || POINT_SIZES_DEFAULT_RANGE[1]
                 }
                 max={MAX_POINT_SIZE}
-                label={t('datasetUpload.points.sizeMax', 'Maximum size')}
+                label={t('datasetUpload.points.sizeMax')}
                 className={styles.input}
                 onChange={(e) =>
                   setDatasetMetadataConfig({ maxPointSize: parseFloat(e.target.value) })
@@ -373,14 +353,11 @@ function NewPointDataset({
         </div>
 
         <MultiSelect
-          label={t('datasetUpload.points.filters', 'point filters')}
+          label={t('datasetUpload.points.filters')}
           placeholder={
             datasetFieldsAllowed.length > 0
               ? datasetFieldsAllowed.join(', ')
-              : t(
-                  'datasetUpload.fieldMultiplePlaceholder',
-                  'Select one or multiple fields from your dataset'
-                )
+              : t('datasetUpload.fieldMultiplePlaceholder')
           }
           direction="top"
           options={filtersFieldsOptions}
@@ -395,17 +372,11 @@ function NewPointDataset({
             setDatasetMetadata({ fieldsAllowed: [] })
           }}
           disabled={loading}
-          infoTooltip={t(
-            'datasetUpload.points.filtersHelp',
-            'Select properties of the points to be able to dinamically filter them in the sidebar after'
-          )}
+          infoTooltip={t('datasetUpload.points.filtersHelp')}
         />
         <SwitchRow
           className={styles.saveAsPublic}
-          label={t(
-            'dataset.uploadPublic',
-            'Allow other users to see this dataset when you share a workspace'
-          )}
+          label={t('dataset.uploadPublic')}
           disabled={isEditing || loading}
           active={isPublic}
           onClick={() => setDatasetMetadata({ public: !isPublic })}
@@ -422,7 +393,7 @@ function NewPointDataset({
           disabled={!datasetMetadata || error !== '' || !isValid}
           loading={loading}
         >
-          {t('common.confirm', 'Confirm') as string}
+          {t('common.confirm') as string}
         </Button>
       </div>
     </div>

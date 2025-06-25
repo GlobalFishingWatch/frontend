@@ -7,10 +7,7 @@ const VesselIdentityFieldLogin = () => {
   return (
     <UserLoggedIconButton
       icon="private"
-      loginTooltip={t(
-        'vessel.infoLogin',
-        'Register and login to see more details (free, 2 minutes)'
-      )}
+      loginTooltip={t('vessel.infoLogin')}
       tooltipPlacement="bottom"
       size="small"
     />

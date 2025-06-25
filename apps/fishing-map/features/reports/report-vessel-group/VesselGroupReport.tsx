@@ -112,22 +112,22 @@ function VesselGroupReport() {
     () => [
       {
         id: ReportCategory.VesselGroup,
-        title: t('common.vessels', 'vessels'),
+        title: t('common.vessels'),
         content: <ReportVessels loading={loading} color={reportDataview?.config?.color} />,
       },
       {
         id: ReportCategory.VesselGroupInsights,
-        title: t('common.insights', 'Insights'),
+        title: t('common.insights'),
         content: <VesselGroupReportInsights />,
       },
       {
         id: ReportCategory.Activity,
-        title: t('common.activity', 'Activity'),
+        title: t('common.activity'),
         content: <ReportActivity />,
       },
       {
         id: ReportCategory.Events,
-        title: t('common.events', 'Events'),
+        title: t('common.events'),
         content: <EventsReport />,
       },
     ],
@@ -139,15 +139,10 @@ function VesselGroupReport() {
     return (
       <div className={styles.emptyState}>
         <div className={styles.updateContainer}>
-          <label>
-            {t(
-              'vesselGroupReport.linkDisabled',
-              'This vessel group needs to be updated to latest available data'
-            )}
-          </label>
+          <label>{t('vesselGroupReport.linkDisabled')}</label>
           {isOwnedByUser && (
             <Button onClick={() => onEditClick(vesselGroup)}>
-              {t('vesselGroup.clickToUpdate', 'Click to update')}
+              {t('vesselGroup.clickToUpdate')}
             </Button>
           )}
         </div>

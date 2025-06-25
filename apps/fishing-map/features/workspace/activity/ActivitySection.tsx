@@ -112,7 +112,7 @@ function ActivitySection(): React.ReactElement<any> {
       className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews }, 'hover-target')}
     >
       <div className={cx(styles.header, 'print-hidden')}>
-        <h2 className={styles.sectionTitle}>{t('common.activity', 'Activity')}</h2>
+        <h2 className={styles.sectionTitle}>{t('common.activity')}</h2>
         {!readOnly && (
           <div className={cx(styles.sectionButtons)}>
             <VisualisationChoice
@@ -127,7 +127,7 @@ function ActivitySection(): React.ReactElement<any> {
               icon="plus"
               type="border"
               size="medium"
-              tooltip={t('layer.add', 'Add layer')}
+              tooltip={t('layer.add')}
               tooltipPlacement="top"
               onClick={() => onAddLayerClick()}
             />
@@ -161,7 +161,7 @@ function ActivitySection(): React.ReactElement<any> {
                   type="border"
                   size="small"
                   className={activityStyles.bivariateToggle}
-                  tooltip={t('layer.toggleCombinationMode.combine', 'Combine layers')}
+                  tooltip={t('layer.toggleCombinationMode.combine')}
                   tooltipPlacement="top"
                   onClick={() => onBivariateDataviewsClick(dataview, dataviews[index + 1])}
                 />

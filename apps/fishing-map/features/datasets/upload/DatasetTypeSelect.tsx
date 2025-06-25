@@ -11,7 +11,7 @@ import Tracks from 'assets/icons/dataset-type-tracks.svg'
 import { useDatasetModalConfigConnect } from 'features/datasets/datasets.hook'
 import type { DatasetUploadStyle } from 'features/modals/modals.slice'
 import type { DatasetGeometryTypesSupported } from 'utils/files'
-import { getFilesAcceptedByMime,getFileTypes } from 'utils/files'
+import { getFilesAcceptedByMime, getFileTypes } from 'utils/files'
 
 import styles from './DatasetTypeSelect.module.css'
 
@@ -82,16 +82,11 @@ const DatasetType = ({
       {isDragActive ? (
         dragError ? (
           <div className={styles.textContainer}>
-            <p>
-              {t(
-                'dataset.dragNotAccepted',
-                'This file is not compatible with this type of dataset.'
-              )}
-            </p>
+            <p>{t('dataset.dragNotAccepted')}</p>
           </div>
         ) : (
           <div className={styles.textContainer}>
-            <p>{t('dataset.dragActive', 'Drop the file here ...')}</p>
+            <p>{t('dataset.dragActive')}</p>
           </div>
         )
       ) : (
@@ -102,10 +97,7 @@ const DatasetType = ({
           <div className={styles.textContainer}>
             {fileRejections.length > 0 ? (
               <p className={cx(styles.description, styles.errorMessage)}>
-                {t(
-                  'dataset.dragNotAccepted',
-                  'This file is not compatible with this type of dataset.'
-                )}
+                {t('dataset.dragNotAccepted')}
               </p>
             ) : (
               <p className={styles.fileTypes}>{fileTypes.join(', ')}</p>
@@ -129,34 +121,25 @@ const DatasetTypeSelect = ({
     <div className={styles.wrapper}>
       <DatasetType
         type="polygons"
-        title={t('dataset.typePolygons', 'Polygons')}
+        title={t('dataset.typePolygons')}
         style={style}
-        description={t(
-          'dataset.typePolygonsDescription',
-          'Display one or multiple areas coloured by any quantitative value in your dataset.'
-        )}
+        description={t('dataset.typePolygonsDescription')}
         onFileLoaded={onFileLoaded}
         icon={<Polygons />}
       />
       <DatasetType
         type="tracks"
-        title={t('dataset.typeTracks', 'Tracks')}
+        title={t('dataset.typeTracks')}
         style={style}
-        description={t(
-          'dataset.typeTracksDescription',
-          'Display the movement of one or multiple animals or vessels.'
-        )}
+        description={t('dataset.typeTracksDescription')}
         icon={<Tracks />}
         onFileLoaded={onFileLoaded}
       />
       <DatasetType
         type="points"
-        title={t('dataset.typePoints', 'Points')}
+        title={t('dataset.typePoints')}
         style={style}
-        description={t(
-          'dataset.typePointsDescription',
-          'Display one or multiple positions sized by any quantitative value in your dataset.'
-        )}
+        description={t('dataset.typePointsDescription')}
         icon={<Points />}
         onFileLoaded={onFileLoaded}
       />

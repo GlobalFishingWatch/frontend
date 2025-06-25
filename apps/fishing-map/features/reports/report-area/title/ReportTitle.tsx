@@ -215,7 +215,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
           )}
         </h1>
         <a className={styles.reportLink} href={window.location.href}>
-          {t('analysis.linkToReport', 'Check the dynamic report here')}
+          {t('analysis.linkToReport')}
         </a>
         {isGlobalReport && <AreaReportSearch />}
         <div className={styles.actions}>
@@ -249,7 +249,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
                   size="small"
                   className={styles.actionButton}
                 >
-                  {t('analysis.buffer', 'Buffer Area')}
+                  {t('analysis.buffer')}
                   <Icon icon="expand" type="default" />
                 </Button>
               </div>
@@ -262,7 +262,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
             onClick={onPrintClick}
             disabled={loading}
           >
-            <p>{t('analysis.print ', 'print')}</p>
+            <p>{t('analysis.print ')}</p>
             <Icon icon="print" type="default" />
           </Button>
         </div>
@@ -282,9 +282,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
               role="button"
               tabIndex={0}
             >
-              {expandedDescription
-                ? t('vessel.insights.gapsSeeLess', 'See less')
-                : t('common.seeMore', 'See more')}
+              {expandedDescription ? t('vessel.insights.gapsSeeLess') : t('common.seeMore')}
             </span>
           )}
         </Fragment>

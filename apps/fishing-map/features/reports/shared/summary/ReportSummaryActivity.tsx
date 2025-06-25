@@ -79,7 +79,7 @@ export default function ReportSummaryActivity({
     const datasetTitle = sameTitleDataviews
       ? datasetTitles?.[0]
       : reportCategory === ReportCategory.Activity
-        ? `${t('common.of', 'of')} <strong>${t(`common.activity`, 'Activity').toLowerCase()}</strong>`
+        ? `${t('common.of')} <strong>${t('common.activity').toLowerCase()}</strong>`
         : undefined
 
     if (
@@ -89,8 +89,6 @@ export default function ReportSummaryActivity({
       !reportOutdated
     ) {
       return t('analysis.summary', {
-        defaultValue:
-          '<strong>{{vessels}} vessels{{sources}} </strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
         vessels: formatI18nNumber(reportVessels || 0, {
           locale: i18n.language as Locale,
         }),
@@ -148,14 +146,12 @@ export default function ReportSummaryActivity({
             })}</strong> ${
               Math.round(timeseriesImprecision)
                 ? `<a href="https://globalfishingwatch.org/faqs/calculating-fishing-effort-estimates-in-dynamic-analysis-reports/" target="_blank"
-                rel="noopener noreferrer" style="cursor: help" title="${t('common.learnMore', 'Learn more')}">± ${Math.round(timeseriesImprecision)}%</a> `
+                rel="noopener noreferrer" style="cursor: help" title="${t('common.learnMore')}">± ${Math.round(timeseriesImprecision)}%</a> `
                 : ''
-            }${t('common.of', 'of')}`
+            }${t('common.of')}`
           : ''
 
       return t('analysis.summaryNoVessels', {
-        defaultValue:
-          '<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
         activityQuantity,
         activityUnit: activityUnitLabel,
         activityType: datasetTitle,

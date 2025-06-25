@@ -47,7 +47,7 @@ function ActivityAuxiliaryLayer({ dataview }: LayerPanelProps) {
           size="small"
           active={auxiliarLayerActive}
           onClick={onAuxiliarLayerSwitchToggle}
-          tooltip={t('layer.toggleVisibility', 'Toggle layer visibility')}
+          tooltip={t('layer.toggleVisibility')}
           tooltipPlacement="top"
           className={styles.switch}
           color={dataview.config?.color}

@@ -45,7 +45,7 @@ function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {
   return (
     <div className={styles.views}>
       <div className={styles.viewsHeader}>
-        <label>{t('workspace.privateTitle_other', 'Private workspaces')}</label>
+        <label>{t('workspace.privateTitle_other')}</label>
       </div>
       <ul>
         {sortByCreationDate<Workspace>(workspaces).map((workspace) => {

@@ -33,7 +33,7 @@ function EventsLayerSection(): React.ReactElement<any> | null {
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={cx(styles.header, 'print-hidden')}>
-        <h2 className={styles.sectionTitle}>{t('common.events', 'Events')}</h2>
+        <h2 className={styles.sectionTitle}>{t('common.events')}</h2>
         {!readOnly && (
           <div className={cx(styles.sectionButtons)}>
             {hasVisibleDataviews && <GlobalReportLink reportCategory={ReportCategory.Events} />}
@@ -41,7 +41,7 @@ function EventsLayerSection(): React.ReactElement<any> | null {
               icon="plus"
               type="border"
               size="medium"
-              tooltip={t('layer.add', 'Add layer')}
+              tooltip={t('layer.add')}
               tooltipPlacement="top"
               onClick={() => onAddLayerClick()}
             />

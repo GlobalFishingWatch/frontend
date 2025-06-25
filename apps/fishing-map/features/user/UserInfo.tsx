@@ -35,13 +35,13 @@ import { fetchUserThunk, logoutUserThunk } from './user.slice'
 
 import styles from './User.module.css'
 
-// t('user.badges.ambassador.title', 'Ambassador')
+// t('user.badges.ambassador.title')
 // t('user.badges.ambassador.description')
-// t('user.badges.fixer.title', 'Fixer')
+// t('user.badges.fixer.title')
 // t('user.badges.fixer.description')
-// t('user.badges.presenter.title', 'Presenter')
+// t('user.badges.presenter.title')
 // t('user.badges.presenter.description')
-// t('user.badges.teacher.title', 'Teacher')
+// t('user.badges.teacher.title')
 // t('user.badges.teacher.description')
 type Badge = 'ambassador' | 'fixer' | 'presenter' | 'teacher'
 type BadgeInfo = { image: string; placeholder: string; userHasIt: boolean }
@@ -127,10 +127,10 @@ function UserInfo() {
             disabled={logoutLoading}
             onClick={onLogoutClick}
           >
-            <span>{t('common.logout', 'Log out')}</span>
+            <span>{t('common.logout')}</span>
           </Button>
         </div>
-        <label>{t('user.groups', 'User Groups')}</label>
+        <label>{t('user.groups')}</label>
         {userGroups && <p className={styles.textSpaced}>{userGroups.join(', ')}</p>}
         <p className={styles.missingGroup}>
           <Trans i18nKey="user.groupMissing">
@@ -146,14 +146,14 @@ function UserInfo() {
         {isGFWUser && (
           <Fragment>
             <div className={styles.row}>
-              <label>{t('user.gfwBadges', 'GFW Badges')}</label>
+              <label>{t('user.gfwBadges')}</label>
               <ul className={styles.badges}>
                 {Object.entries(BADGES).map((entry) => {
                   const [badgeKey, badgeInfo] = entry as [Badge, BadgeInfo]
                   return (
                     <li key={badgeKey} className={styles.badge}>
                       {badgeInfo.userHasIt ? (
-                        <Tooltip content={t('common.seeMore', 'See more')}>
+                        <Tooltip content={t('common.seeMore')}>
                           <button
                             onClick={badgeInfo.userHasIt ? () => onBadgeClick(badgeKey) : undefined}
                           >
