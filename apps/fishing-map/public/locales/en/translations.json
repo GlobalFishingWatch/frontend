@@ -81,7 +81,7 @@
     "timeoutError": "This is taking more than expected, please wait",
     "timeRangeTooLong": "Reports are only supported for time ranges up to one year.",
     "title": "Report",
-    "unknown": "Other",
+    "unknown": "Unknown",
     "unknownProperty": "Unknown"
   },
   "bigQuery": {
@@ -261,7 +261,7 @@
     "tutorials": "Tutorials",
     "unionOf": "Union of",
     "unit": "unit",
-    "unknown": "Other",
+    "unknown": "Unknown",
     "unknownProperty": "Unknown",
     "unknownVessel": "Unknown vessel",
     "update": "Update",
@@ -538,7 +538,7 @@
     "dayAbbreviated_one": "{{count}}d",
     "dayAbbreviated_other": "{{count}}d",
     "during": "during",
-    "encounter": "Encounter",
+    "encounter": "Encounter event",
     "encounter_one": "Encounter event",
     "encounter_other": "Encounter events",
     "encounterAction": "had an encounter with",
@@ -558,7 +558,7 @@
     "hourAbbreviated": "{{count}}h",
     "hourAbbreviated_one": "{{count}}h",
     "hourAbbreviated_other": "{{count}}h",
-    "loitering": "Loitering",
+    "loitering": "Loitering event",
     "loitering_one": "Loitering event",
     "loitering_other": "Loitering events",
     "loiteringAction": "Loitering started at {{start}} for {{duration}}",
@@ -675,7 +675,7 @@
       "fao": "FAO",
       "mpa": "MPA",
       "mpa_other": "MPAs (WDPA)",
-      "rfmo": "RFMOs"
+      "rfmo": "RFMO"
     },
     "areasOnScreen": "Areas on the map",
     "color_change": "Change color",
@@ -758,8 +758,6 @@
     "change_basemap_satellite": "Switch to satellite basemap",
     "defaultRes": "See default resolution heatmaps",
     "errorAction": "Log an issue at a specific location",
-    "errorTooltip": "Log an issue",
-    "errorVessel": "Log an issue at a specific vessel",
     "errorLabel": "Please describe the error as detailed as possible",
     "errorPlaceholder": "Please describe the error as detailed as possible",
     "highRes": "See high resolution heatmaps",
@@ -793,7 +791,6 @@
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
-  "navigateBackTo": "Go back to {{section}}",
   "portsReport": {
     "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
     "newTimeRange": "Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
@@ -918,6 +915,19 @@
     "vesselGroups": "Vessel groups",
     "vesselSearch": "Vessel Search"
   },
+  "trackCorrection": {
+    "adjustDisabled": "Adjusting the time range is needed.",
+    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
+    "issueType": "Type of issue",
+    "falsePositive": "False positive",
+    "falseNegative": "False negative",
+    "other": "Other",
+    "version": "Version",
+    "comment": "Comment",
+    "mapTooltip": "Issue added on {{date}} reported as {{type}}",
+    "commentPlaceholder": "Add a comment...",
+    "replyPlaceholder": "Write a reply"
+  },
   "vessel": {
     "activityByType": "Activity by type",
     "activityByVoyages": "Timeline by voyages",
@@ -951,8 +961,8 @@
     "gearType_short": "gear",
     "geartypes": "Gear types",
     "gearTypes": {
-      "bunker": "Bunker",
-      "bunker_or_tanker": "Bunker or Tanker",
+      "bunker": "Bunker or tanker",
+      "bunker_or_tanker": "Bunker",
       "cargo": "Cargo or reefer",
       "cargo_or_reefer": "Cargo or tanker",
       "cargo_or_tanker": "Cargo",
@@ -982,8 +992,8 @@
       "patrol_vessel": "Patrol vessel",
       "pole_and_line": "Pole and line",
       "pots_and_traps": "Pots and traps",
-      "purse seine": "Purse Seine",
-      "purse_seine": "Purse Seine",
+      "purse seine": "Purse seine",
+      "purse_seine": "Purse seine",
       "purse_seine_support": "Purse seine support",
       "purse_seines": "Purse seine",
       "reefer": "Reefer",
@@ -1172,7 +1182,7 @@
       "passenger": "Passenger",
       "seismic_vessel": "Seismic vessel",
       "support": "Support",
-      "unknown": "Other"
+      "unknown": "Unknown"
     },
     "voyage_one": "voyage",
     "voyage_other": "voyages",
