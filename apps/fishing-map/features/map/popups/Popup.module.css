@@ -310,3 +310,12 @@
   height: 300px;
   object-fit: cover;
 }
+
+.navigationFooter {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-XS);
+}

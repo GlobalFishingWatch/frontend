@@ -19,6 +19,7 @@ import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import DetectionThumbnailImage from 'features/map/popups/categories/DetectionThumbnail'
+import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { formatInfoField, upperFirst } from 'utils/info'
 
@@ -60,7 +61,7 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
 
   // TODO get the value based on the sublayer
   const color = feature.sublayers?.[0]?.color
-  const angle = feature.properties.bearing ? feature.properties.bearing - 45 : 0
+  const angle = feature.properties.bearing !== undefined ? feature.properties.bearing - 45 : 0
   const isPositionMatched =
     feature.category === 'activity'
       ? getIsActivityPositionMatched(feature)
@@ -79,55 +80,54 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
     return []
   })
 
+  const vesselId = feature.properties.vessel_id || feature.properties.id
+
   return (
     <Fragment>
-      <div className={cx(popupStyles.popupSection, popupStyles.smallPadding)}>
-        <Icon
-          icon={feature.properties.bearing ? 'vessel' : 'circle'}
-          className={popupStyles.layerIcon}
-          style={{ color, transform: `rotate(${angle}deg)` }}
-        />
-        <div className={popupStyles.popupSectionContent}>
-          <div className={popupStyles.row}>
-            <span className={cx(popupStyles.rowText, popupStyles.vesselTitle)}>
-              {showFeaturesDetails && isPositionMatched && (
-                <VesselPin
-                  vesselToSearch={{
-                    id: feature.properties.vessel_id || feature.properties.id,
-                    name: feature.properties.shipname,
-                    datasets: searchDatasets,
-                  }}
-                />
-              )}
-              <span>
-                <span className={popupStyles.marginRight}>{shipname}</span>
-                {feature.properties.stime && (
-                  <span className={popupStyles.secondary}>
-                    {' '}
-                    <I18nDate
-                      date={feature.properties.stime * 1000}
-                      format={DateTime.DATETIME_MED}
-                    />
-                  </span>
-                )}
-              </span>
-            </span>
-          </div>
-          {loading && (
-            <div className={popupStyles.loading}>
-              <Spinner size="small" />
-            </div>
-          )}
-          {!loading && error && <p className={popupStyles.error}>{error}</p>}
-          {!loading &&
-            feature.category === 'detections' &&
-            feature.properties.thumbnails?.length > 0 && (
-              <DetectionThumbnails
-                thumbnails={feature.properties.thumbnails}
-                scale={thumbnailsDataset?.configuration?.scale}
+      <Icon
+        icon={feature.properties.bearing !== undefined ? 'vessel' : 'circle'}
+        className={popupStyles.layerIcon}
+        style={{ color, transform: `rotate(${angle}deg)` }}
+      />
+      <div className={popupStyles.popupSectionContent}>
+        <div className={popupStyles.row}>
+          <span className={cx(popupStyles.rowText, popupStyles.vesselTitle)}>
+            {showFeaturesDetails && isPositionMatched && (
+              <VesselPin
+                vesselToSearch={{
+                  id: vesselId,
+                  name: feature.properties.shipname,
+                  datasets: searchDatasets,
+                }}
               />
             )}
+            <span>
+              <span className={popupStyles.marginRight}>
+                <VesselLink vesselId={vesselId}>{shipname}</VesselLink>
+              </span>
+              {feature.properties.stime && (
+                <span className={popupStyles.secondary}>
+                  {' '}
+                  <I18nDate date={feature.properties.stime * 1000} format={DateTime.DATETIME_MED} />
+                </span>
+              )}
+            </span>
+          </span>
         </div>
+        {loading && (
+          <div className={popupStyles.loading}>
+            <Spinner size="small" />
+          </div>
+        )}
+        {!loading && error && <p className={popupStyles.error}>{error}</p>}
+        {!loading &&
+          feature.category === 'detections' &&
+          feature.properties.thumbnails?.length > 0 && (
+            <DetectionThumbnails
+              thumbnails={feature.properties.thumbnails}
+              scale={thumbnailsDataset?.configuration?.scale}
+            />
+          )}
       </div>
     </Fragment>
   )

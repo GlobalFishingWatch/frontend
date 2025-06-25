@@ -175,7 +175,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }): FourwingsPositionsPickingInfo => {
     const object: FourwingsPositionsPickingObject = {
       ...(info.object || ({} as FourwingsPositionFeature)),
-      id: info.object?.id?.toString() || '',
+      id: (info.object?.id || info.object?.properties?.id)?.toString() || '',
       layerId: this.root.id,
       title: info.object?.properties?.shipname,
       category: this.props.category,
@@ -264,7 +264,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _canShowVesselIcon = (d: FourwingsPositionFeature) => {
-    return this.getIsPositionMatched(d) || d.properties.bearing
+    return this.getIsPositionMatched(d) || d.properties.bearing !== undefined
   }
 
   _getLabelColor = (d: FourwingsPositionFeature): Color => {
