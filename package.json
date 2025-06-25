@@ -297,6 +297,9 @@
     "*.{css, scss}": [
       "prettier --write",
       "stylelint --fix"
+    ],
+    "apps/fishing-map/**/*": [
+      "nx i18n fishing-map"
     ]
   },
   "packageManager": "yarn@4.7.0"
