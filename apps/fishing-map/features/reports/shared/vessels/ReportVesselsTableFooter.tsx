@@ -186,9 +186,6 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
                   results: isShowingMore
                     ? REPORT_VESSELS_PER_PAGE
                     : REPORT_SHOW_MORE_VESSELS_PER_PAGE,
-                  defaultValue: `Show ${
-                    isShowingMore ? REPORT_VESSELS_PER_PAGE : REPORT_SHOW_MORE_VESSELS_PER_PAGE
-                  } per page`,
                 })}
               </label>
             </button>

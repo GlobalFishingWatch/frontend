@@ -186,7 +186,6 @@ function NewTrackDataset({
           const fields = ['latitude', 'longitude'].map((f) => t(`common.${f}` as any, f))
           error = t('dataset.requiredFields', {
             fields,
-            defaultValue: `Required fields ${fields}`,
           })
         } else {
           const errors = checkRecordValidity({
@@ -197,7 +196,6 @@ function NewTrackDataset({
             const fields = errors.map((error) => t(`common.${error}` as any, error)).join(',')
             error = t('errors.fields', {
               fields,
-              defaultValue: `Error with fields: ${fields}`,
             })
           }
         }

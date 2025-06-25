@@ -193,7 +193,6 @@ function NewPointDataset({
           const fields = ['latitude', 'longitude'].map((f) => t(`common.${f}` as any, f))
           error = t('dataset.requiredFields', {
             fields,
-            defaultValue: `Required fields ${fields}`,
           })
         }
       }

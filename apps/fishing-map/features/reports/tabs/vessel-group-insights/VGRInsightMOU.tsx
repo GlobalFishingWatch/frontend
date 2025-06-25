@@ -144,7 +144,6 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
             label={t(`vesselGroupReport.insights.MOUListsCount`, {
               vessels: uniqVessels.length,
               list: t(`insights.lists.${list}`, list),
-              defaultValue: `{{vessels}} vessels operated under a flag present on the {{list}} list`,
             })}
           />
         </div>
