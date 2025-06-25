@@ -71,8 +71,6 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
       tooltip={
         hasMoreMaxVesselsAllowed
           ? t('analysis.pinVesselsMaxAllowed', {
-              defaultValue:
-                'Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels. Please consider using the vessel groups feature to manage your vessels.',
               maxVessels: MAX_VESSEL_REPORT_PIN,
             })
           : ''

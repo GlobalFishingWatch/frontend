@@ -177,8 +177,6 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
               className={styles.collapsable}
               labelClassName={styles.collapsableLabel}
               label={t('vesselGroups.insights.fishingInNoTakeMpas', {
-                defaultValue:
-                  '{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs',
                 count: vesselsWithNoTakeMpas.reduce(
                   (acc, vessel) => acc + vessel.eventsInNoTakeMpas.length,
                   0
@@ -205,8 +203,6 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
               className={styles.collapsable}
               labelClassName={styles.collapsableLabel}
               label={t('vesselGroups.insights.fishingInRfmoWithoutKnownAuthorization', {
-                defaultValue:
-                  '{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas',
                 count: vesselsInRfmoWithoutKnownAuthorization.reduce(
                   (acc, vessel) => acc + vessel.eventsInRfmoWithoutKnownAuthorization.length,
                   0

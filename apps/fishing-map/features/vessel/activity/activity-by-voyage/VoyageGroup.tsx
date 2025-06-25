@@ -50,7 +50,7 @@ const VoyageGroup: React.FC<EventProps> = ({
     const startDate = voyageStart ? firstVoyageEvent.end : start
     const endDate = voyageEnd ? latestVoyageEvent.start : end
     const eventCount = events.filter((e) => e.type !== EventTypes.Port).length
-    parts.push(`${eventCount} ${t('common.event', { defaultValue: 'Events', count: eventCount })}`)
+    parts.push(`${eventCount} ${t('common.event', { count: eventCount })}`)
     parts.push(t('common.between'))
     parts.push(formatI18nDate(startDate, { format: DateTime.DATE_MED }))
     if (voyageStart) {

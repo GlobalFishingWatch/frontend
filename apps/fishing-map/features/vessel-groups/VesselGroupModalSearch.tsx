@@ -119,8 +119,6 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
           }
           placeholder={t('vesselGroup.idsPlaceholder', {
             field: searchIdField,
-            defaultValue:
-              'Type here or paste a list of {{field}} separated by commas, spaces or line breaks',
           })}
           onChange={onIdsTextareaChange}
         />

@@ -89,8 +89,6 @@ export default function ReportSummaryActivity({
       !reportOutdated
     ) {
       return t('analysis.summary', {
-        defaultValue:
-          '<strong>{{vessels}} vessels{{sources}} </strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> of <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
         vessels: formatI18nNumber(reportVessels || 0, {
           locale: i18n.language as Locale,
         }),
@@ -154,8 +152,6 @@ export default function ReportSummaryActivity({
           : ''
 
       return t('analysis.summaryNoVessels', {
-        defaultValue:
-          '<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
         activityQuantity,
         activityUnit: activityUnitLabel,
         activityType: datasetTitle,

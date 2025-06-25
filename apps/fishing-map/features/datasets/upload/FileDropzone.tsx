@@ -76,7 +76,6 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
       ) : (
         <p className={styles.fileText}>
           {t('dataset.dragFileFormatsPlaceholder', {
-            defaultValue: 'Drag and drop a {{formats}} here or click to select it',
             formats: joinTranslatedList(
               fileTypesConfigs.map(({ id }) => t(`dataset.formats.${id}` as any, id as string))
             ),
@@ -87,7 +86,6 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
         <p className={cx(styles.fileText, styles.warning)}>
           {t('dataset.onlyFileFormatAllowed', {
             formats: joinTranslatedList(filesAcceptedExtensions),
-            defaultValue: '(Only {{formats}} files are allowed)',
           })}
         </p>
       )}

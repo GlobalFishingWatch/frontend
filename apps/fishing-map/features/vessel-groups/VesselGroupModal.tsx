@@ -347,13 +347,11 @@ function VesselGroupModal(): React.ReactElement<any> {
   let confirmButtonTooltip = hasVesselsOverflow
     ? t('vesselGroup.tooManyVessels', {
         count: MAX_VESSEL_GROUP_VESSELS,
-        defaultValue: 'Maximum number of vessels is {{count}}',
       })
     : ''
   if (hasVesselGroupsVessels) {
     if (groupName === '') {
       confirmButtonTooltip = t('vesselGroup.missingParam', {
-        defaultValue: 'Vessel group {{param}} is mandatory',
         param: t('common.name').toLowerCase(),
       })
     }
@@ -361,7 +359,6 @@ function VesselGroupModal(): React.ReactElement<any> {
     confirmButtonTooltip =
       searchIdField === ''
         ? t('vesselGroup.missingParam', {
-            defaultValue: 'Vessel group {{param}} is mandatory',
             param: t('vesselGroup.idField').toLowerCase(),
           })
         : searchVesselStatus === AsyncReducerStatus.Loading
@@ -456,8 +453,6 @@ function VesselGroupModal(): React.ReactElement<any> {
             <div className={styles.disclaimerFooter}>
               <Icon icon="warning" type="warning" />
               {t('vesselGroup.disclaimerFeaturesNotAvailable', {
-                defaultValue:
-                  '{{features}} are only available for AIS vessels and your group contains vessels from {{datasets}}.',
                 features: t('vesselGroup.disclaimerFeaturesNotAvailableGenericPrefix'),
                 datasets: Array.from(datasetsWithoutRelatedEvents)
                   .map((d) => getDatasetLabel(d))
@@ -468,7 +463,6 @@ function VesselGroupModal(): React.ReactElement<any> {
           {!searchVesselGroupsVesselsAllowed && (
             <span className={styles.errorMsg}>
               {t('vesselGroup.searchLimit', {
-                defaultValue: 'Search is limited up to {{limit}} vessels',
                 limit: MAX_VESSEL_GROUP_VESSELS,
               })}
             </span>

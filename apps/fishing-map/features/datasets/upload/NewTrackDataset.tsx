@@ -118,8 +118,6 @@ function NewTrackDataset({
           if (startTimeProperty && geojson.metadata?.hasDatesError) {
             setTimeFilterError(
               t('datasetUpload.errors.invalidDatesFeatures', {
-                defaultValue:
-                  "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
                 featureType: t('dataset.typePoints'),
               })
             )
@@ -153,8 +151,6 @@ function NewTrackDataset({
       if (startTimeProperty && geojson.metadata?.hasDatesError) {
         setTimeFilterError(
           t('datasetUpload.errors.invalidDatesFeatures', {
-            defaultValue:
-              "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
             featureType: t('dataset.typePoints'),
           })
         )
@@ -163,16 +159,9 @@ function NewTrackDataset({
       }
       if (!geojson.features.some((f) => f.geometry.coordinates?.[0]?.length >= 2)) {
         if (lineIdProperty || segmentIdProperty) {
-          setError(
-            t('errors.trackSegmentIdFields', "Grouping by this field doesn't generate valid lines")
-          )
+          setError(t('errors.trackSegmentIdFields'))
         } else {
-          setError(
-            t(
-              'errors.trackCoordinateFields',
-              "The fields selected to define point coordinates don't generate valid lines"
-            )
-          )
+          setError(t('errors.trackCoordinateFields'))
         }
       } else {
         setError('')

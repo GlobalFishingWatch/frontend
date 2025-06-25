@@ -204,11 +204,7 @@ const Vessel = () => {
     const hasAuthError = isAuthError(infoError)
     return hasAuthError ? (
       <WorkspaceLoginError
-        title={
-          guestUser
-            ? t('errors.profileLogin')
-            : t('errors.privateProfile', "Your account doesn't have permissions to see this vessel")
-        }
+        title={guestUser ? t('errors.profileLogin') : t('errors.privateProfile')}
         emailSubject={`Requesting access for ${datasetId}-${vesselId} profile`}
       />
     ) : (

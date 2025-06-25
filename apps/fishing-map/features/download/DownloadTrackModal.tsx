@@ -121,13 +121,10 @@ function DownloadTrackModal() {
           <p className={cx({ [styles.error]: isDownloadRatioExceeded })}>
             {isDownloadRatioExceeded
               ? (t('download.trackLimitExceeded', {
-                  defaultValue:
-                    'You have already downloaded {{limit}} tracks today, please try again tomorrow',
                   limit: rateLimit?.limit,
                 }) as string)
               : rateLimit?.remaining
                 ? (t('download.trackRemaining', {
-                    defaultValue: 'You can download {{count}} more tracks today',
                     count: rateLimit?.remaining as number,
                   }) as string)
                 : null}

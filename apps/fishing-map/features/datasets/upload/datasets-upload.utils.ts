@@ -42,7 +42,6 @@ export function getDatasetMetadataValidations(datasetMetadata: DatasetMetadata) 
       datasetMetadata.name && datasetMetadata.name.length < MIN_NAME_LENGTH
         ? t('datasetUpload.errors.name', {
             min: MIN_NAME_LENGTH,
-            defaultValue: 'Dataset name must be at least {{min}} characters long',
           })
         : null,
   }

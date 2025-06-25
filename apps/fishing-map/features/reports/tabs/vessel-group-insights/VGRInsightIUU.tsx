@@ -66,7 +66,6 @@ const VesselGroupReportInsightIUU = ({ skip }: { skip?: boolean }) => {
             className={styles.collapsable}
             labelClassName={cx(styles.collapsableLabel, styles.row)}
             label={t('vesselGroupReport.insights.IUUBlackListsCount', {
-              defaultValue: '{{vessels}} vessels are present on a RFMO IUU vessel list',
               vessels: vesselsWithIIU.length,
             })}
             onToggle={onInsightToggle}

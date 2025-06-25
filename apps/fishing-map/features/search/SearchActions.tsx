@@ -111,7 +111,6 @@ function SearchActions() {
         tooltip={!hasVesselsSelected ? t('search.selectVesselResults') : ''}
       >
         {t('search.seeVesselsOnMap', {
-          defaultValue: 'See vessels on map',
           ...(hasVesselsSelected && { count: vesselsSelected.length }),
         })}
       </Button>

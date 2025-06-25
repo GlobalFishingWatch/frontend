@@ -81,24 +81,16 @@ export const getEventDescription = ({
       const mainVesselName = vessel?.name
       const encounterVesselName = encounter?.vessel?.name
       if (mainVesselName && encounterVesselName) {
-        description = t(
-          'event.encounterActionWithVessels',
-          'had an encounter with {{encounterVessel}} starting at {{start}} for {{duration}}',
-          {
-            ...time,
-            mainVessel: mainVesselName,
-            encounterVessel: encounterVesselName,
-          }
-        )
+        description = t('event.encounterActionWithVessels', {
+          ...time,
+          mainVessel: mainVesselName,
+          encounterVessel: encounterVesselName,
+        })
       } else {
-        description = t(
-          'event.encounterActionWith',
-          'had an encounter with {{vessel}} starting at {{start}} for {{duration}}',
-          {
-            ...time,
-            vessel: encounterVesselName ? encounterVesselName : t('event.encounterAnotherVessel'),
-          }
-        )
+        description = t('event.encounterActionWith', {
+          ...time,
+          vessel: encounterVesselName ? encounterVesselName : t('event.encounterAnotherVessel'),
+        })
       }
 
       descriptionGeneric = t('event.encounter')
@@ -113,11 +105,7 @@ export const getEventDescription = ({
           formatInfoField(portName, 'port'),
           formatInfoField(portFlag, 'flag'),
         ].join(', ')
-        description = t(
-          'event.portAt',
-          'Docked at {{port}} started at {{start}} for {{duration}}',
-          { ...time, port: portLabel }
-        )
+        description = t('event.portAt', { ...time, port: portLabel })
       } else {
         description = t('event.portAction', time)
       }

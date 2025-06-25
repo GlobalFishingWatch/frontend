@@ -41,8 +41,6 @@ const Insights = () => {
       <div className={styles.disclaimer}>
         <Icon icon="warning" type="warning" />
         {t('vessel.insights.disclaimerTimeRangeBeforeMinYear', {
-          defaultValue:
-            'Insights available from 1 January {{year}} onwards. Adjust your time range to view insights.',
           year: MIN_INSIGHTS_YEAR,
         })}
       </div>
@@ -54,7 +52,6 @@ const Insights = () => {
       <h2 className="print-only">{t('vessel.sectionInsights')}</h2>
       <p className={styles.title}>
         {t('vessel.insights.sectionTitle', {
-          defaultValue: 'Vessel insights between {{start}} and {{end}}',
           start: formatI18nDate(start),
           end: formatI18nDate(end),
         })}

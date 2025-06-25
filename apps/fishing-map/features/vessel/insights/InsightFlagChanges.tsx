@@ -51,7 +51,6 @@ const InsightFlagChanges = ({
               <span>
                 {t('vessel.insights.flagChangesCount', {
                   count: flagsChanges?.valuesInThePeriod.length,
-                  defaultValue: '{{count}} flag changes',
                 })}{' '}
                 (
                 {listAsSentence(

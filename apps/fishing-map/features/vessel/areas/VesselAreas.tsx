@@ -256,7 +256,6 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
               <p className={styles.unknownRegionEvents}>
                 <span className={styles.unknownRegionEventsTitle}>
                   {t('vessel.unknownRegionEvents', {
-                    defaultValue: 'Outside {{regionType}} areas',
                     regionType: t(`layer.areas.${vesselArea}`, vesselArea),
                   })}
                 </span>
@@ -285,7 +284,6 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
         ) : (
           <span className={styles.enptyState}>
             {t('vessel.noEventsIn', {
-              defaultValue: 'No event in your timerange happened in any {{regionType}}',
               regionType: t(`layer.areas.${vesselArea}`, vesselArea),
             })}
           </span>

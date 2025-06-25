@@ -57,8 +57,6 @@ export default function ReportSummaryEvents() {
         return ''
       }
       return t('analysis.summaryEventsNoVessels', {
-        defaultValue:
-          '<strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
         activityQuantity,
         activityUnit,
         area: reportAreaId ? '' : t('analysis.globally'),
@@ -69,8 +67,6 @@ export default function ReportSummaryEvents() {
     const vessels = formatI18nNumber(totalEventsVessels || 0)
     if (isPortReportLocation) {
       return t('portsReport.summaryEvents', {
-        defaultValue:
-          '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> entered this port <strong>{{activityQuantity}}</strong> times between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
         vessels,
         flags: reportVesselsFlags?.size || 0,
         activityQuantity,
@@ -79,8 +75,6 @@ export default function ReportSummaryEvents() {
       })
     }
     return t('analysis.summaryEvents', {
-      defaultValue:
-        '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
       vessels,
       flags: reportVesselsFlags?.size || 0,
       activityQuantity,

@@ -176,8 +176,6 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
             ) : (
               <p className={cx(styles.secondary, styles.nested, styles.row)}>
                 {t('vesselGroupReport.insights.MOUListsEmpty', {
-                  defaultValue:
-                    'No vessels flying under a flag present on the {{country}} MOU black or grey lists',
                   country: t('vessel.insights.countries.paris'),
                 })}
               </p>
@@ -188,8 +186,6 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
             ) : (
               <p className={cx(styles.secondary, styles.nested, styles.row)}>
                 {t('vesselGroupReport.insights.MOUListsEmpty', {
-                  defaultValue:
-                    'No vessels flying under a flag present on the {{country}} MOU black or grey lists',
                   country: t('vessel.insights.countries.tokyo'),
                 })}
               </p>

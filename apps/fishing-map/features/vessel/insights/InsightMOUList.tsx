@@ -81,7 +81,6 @@ const InsightMOUList = ({
                   )} ${t('common.to')} ${formatI18nDate(v.to)}`
               )
               .join(', '),
-            defaultValue: 'Flag present on the Tokyo MOU black list ({{flags}})',
           })}
         </p>
       )
@@ -98,7 +97,6 @@ const InsightMOUList = ({
                   )} ${t('common.to')} ${formatI18nDate(v.to)}`
               )
               .join(', '),
-            defaultValue: 'Flag present on the Tokyo MOU grey list ({{flags}})',
           })}
         </p>
       )
@@ -127,7 +125,6 @@ const InsightMOUList = ({
                   )} ${t('common.to')} ${formatI18nDate(v.to)}`
               )
               .join(', '),
-            defaultValue: 'Flag present on the Paris MOU black list ({{flags}})',
           })}
         </p>
       )
@@ -144,7 +141,6 @@ const InsightMOUList = ({
                   )} ${t('common.to')} ${formatI18nDate(v.to)}`
               )
               .join(', '),
-            defaultValue: 'Flag present on the Paris MOU grey list ({{flags}})',
           })}
         </p>
       )

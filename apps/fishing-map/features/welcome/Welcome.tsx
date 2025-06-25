@@ -105,7 +105,7 @@ const Welcome = ({ contentKey }: WelcomeProps) => {
               checked={!welcomePopup?.showAgain}
             />
             <label className={styles.disableLabel} htmlFor="disableWelcomePopup">
-              {t('common.welcomePopupDisable', "Don't show again")}
+              {t('common.welcomePopupDisable')}
             </label>
           </div>
           <LanguageToggle className={styles.lngToggle} position="rightDown" />

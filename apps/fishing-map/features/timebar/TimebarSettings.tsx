@@ -153,7 +153,6 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
       tooltipLabel = t('timebarSettings.graphDisabled')
     } else if (!hasSomeVesselLayer) {
       tooltipLabel = t('timebarSettings.graphVesselOnly', {
-        defaultValue: '{{graph}} is only available for vessel tracks',
         graph:
           graph === 'depth' ? t('timebarSettings.graphDepth') : t('timebarSettings.graphSpeed'),
       })

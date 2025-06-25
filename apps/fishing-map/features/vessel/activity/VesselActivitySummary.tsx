@@ -57,7 +57,6 @@ export const VesselActivitySummary = () => {
               <li key={flag}>
                 {formatInfoField(flag, 'flag')} ({<I18nNumber number={count} />}{' '}
                 {t('event.port_visit', {
-                  defaultValue: 'port visit',
                   count,
                 })}
                 )
@@ -70,17 +69,14 @@ export const VesselActivitySummary = () => {
   )
 
   const summary = t('vessel.summary', {
-    defaultValue:
-      '{{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>',
     events: `<strong>${formatI18nNumber(events?.length as number)}</strong> ${t('common.event', {
-      defaultValue: 'events',
       count: events?.length,
     })}`,
     voyages:
       voyages !== 0 && (visibleEvents.includes('port_visit') || visibleEvents === 'all')
         ? `${t('common.in')} <strong>${formatI18nNumber(voyages as number)}</strong> ${t(
             'vessel.voyage',
-            { defaultValue: 'voyages', count: voyages }
+            { count: voyages }
           )}`
         : '',
     timerangeStart: formatI18nDate(timerange?.start),
@@ -119,8 +115,7 @@ export const VesselActivitySummary = () => {
                           return (
                             <li key={id}>
                               {getRegionNamesByType(regionType, [id])[0] || id} (
-                              {<I18nNumber number={count} />}{' '}
-                              {t('common.event', { defaultValue: 'events', count })})
+                              {<I18nNumber number={count} />} {t('common.event', { count })})
                             </li>
                           )
                         })}
@@ -138,7 +133,6 @@ export const VesselActivitySummary = () => {
                           <span>
                             {' '}
                             {t(`common.area`, {
-                              defaultValue: 'areas',
                               count: activityRegions[regionType].length,
                             })}
                           </span>
@@ -205,7 +199,6 @@ export const VesselActivitySummary = () => {
                             <Tooltip
                               key={flag}
                               content={`${count} ${t('event.port_visit', {
-                                defaultValue: 'port visit',
                                 count,
                               })}`}
                             >

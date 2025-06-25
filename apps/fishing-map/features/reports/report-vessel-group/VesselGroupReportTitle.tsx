@@ -86,8 +86,6 @@ export default function VesselGroupReportTitle() {
           <h2 className={styles.summary}>
             {parse(
               t('vesselGroup.summary', {
-                defaultValue:
-                  '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>',
                 vessels: formatI18nNumber(getVesselGroupVesselsCount(vesselGroup)),
                 flags: flags?.size,
                 start: formatI18nDate(timeRange.start, {

@@ -6,7 +6,7 @@ import clickingOnAGridCellToShowVesselsImg from 'assets/images/hints/clickingOnA
 import fishingEffortHeatmapImg from 'assets/images/hints/fishingEffortHeatmap.png'
 import howToFilterActivityLayersImg from 'assets/images/hints/howToFilterActivityLayers.png'
 
-// t('help-hints:areaSearch', 'Search by country, sea or ocean to focus on an area you\'re interested in.')
+// t('help-hints:areaSearch')
 // t('help-hints:changingTheTimeRange')
 // t('help-hints:clickingOnAGridCellToShowVessels')
 // t('help-hints:filterActivityLayers')

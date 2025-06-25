@@ -32,8 +32,6 @@ const VesselGroupReportInsights = () => {
       <div className={styles.disclaimer}>
         <Icon icon="warning" type="warning" />
         {t('vesselGroup.disclaimerFeaturesNotAvailable', {
-          defaultValue:
-            '{{features}} are only available for AIS vessels and your group contains vessels from {{datasets}}.',
           features: t('common.insights'),
           datasets: Array.from(datasetsWithoutRelatedEvents)
             .map((d) => getDatasetLabel(d))
@@ -48,8 +46,6 @@ const VesselGroupReportInsights = () => {
       <div className={styles.disclaimer}>
         <Icon icon="warning" type="warning" />
         {t('vessel.insights.disclaimerTimeRangeBeforeMinYear', {
-          defaultValue:
-            'Insights available from 1 January {{year}} onwards. Adjust your time range to view insights.',
           year: MIN_INSIGHTS_YEAR,
         })}
       </div>
@@ -61,7 +57,6 @@ const VesselGroupReportInsights = () => {
       <h2 className="print-only">{t('vessel.sectionInsights')}</h2>
       <p className={styles.title}>
         {t('vesselGroup.insightSectionTitle', {
-          defaultValue: 'Vessel group insights between {{start}} and {{end}}',
           start: formatI18nDate(start),
           end: formatI18nDate(end),
         })}

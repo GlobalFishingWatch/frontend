@@ -55,7 +55,6 @@ const OutOfTimerangeDisclaimer = ({
         <br />
         {t('dataset.extentStart', {
           start: formatI18nDate(extentStart),
-          defaultValue: 'Dataset start date: {{start}}',
         })}
       </span>
     )
@@ -70,7 +69,6 @@ const OutOfTimerangeDisclaimer = ({
         <br />
         {t('dataset.extentEnd', {
           end: formatI18nDate(extentEnd),
-          defaultValue: 'Dataset end date: {{end}}',
         })}
       </span>
     )
@@ -88,7 +86,6 @@ const OutOfTimerangeDisclaimer = ({
       <br />
       {t('dataset.extent', {
         extent: [formatI18nDate(extentStart), formatI18nDate(extentEnd)].join(' - '),
-        defaultValue: 'Dataset extent: {{ extent }}',
       })}
     </span>
   )

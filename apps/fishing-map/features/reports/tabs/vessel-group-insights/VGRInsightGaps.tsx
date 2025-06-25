@@ -79,7 +79,6 @@ const VesselGroupReportInsightGap = ({ skip }: { skip?: boolean }) => {
             className={styles.collapsable}
             labelClassName={styles.collapsableLabel}
             label={t('vesselGroups.insights.gaps', {
-              defaultValue: '{{count}} AIS Off Event from {{vessels}} vessels detected',
               count: vesselsWithGaps?.reduce(
                 (acc, vessel) => acc + vessel.periodSelectedCounters.eventsGapOff,
                 0

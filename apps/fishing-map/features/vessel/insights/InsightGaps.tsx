@@ -45,7 +45,6 @@ const InsightGaps = ({
               <span>
                 {t('vessel.insights.gapsEvents', {
                   count: aisOff?.length,
-                  defaultValue: '{{count}} AIS Off events detected',
                 })}
               </span>
               <InsightGapsDetails

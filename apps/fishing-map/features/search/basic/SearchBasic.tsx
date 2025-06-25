@@ -129,7 +129,6 @@ function SearchBasic({
                 {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
                   <li key="suggestion" className={cx(styles.searchSuggestion, styles.red)}>
                     {t('search.minCharacters', {
-                      defaultValue: 'Please type at least {{count}} characters',
                       count: MIN_SEARCH_CHARACTERS,
                     })}
                   </li>

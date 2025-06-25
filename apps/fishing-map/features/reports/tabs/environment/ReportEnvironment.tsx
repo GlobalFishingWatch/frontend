@@ -102,8 +102,6 @@ function ReportEnvironment() {
               <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
                 {isDynamic
                   ? t('analysis.statsDisclaimerDynamic', {
-                      defaultValue:
-                        'During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.',
                       interval: t(`common.${interval.toLowerCase()}s` as any, {
                         count: 1,
                       }).toLowerCase(),
@@ -112,8 +110,6 @@ function ReportEnvironment() {
                       unit,
                     })
                   : t('analysis.statsDisclaimerStatic', {
-                      defaultValue:
-                        'The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.',
                       min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
                       max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
                       mean: formatI18nNumber(mean, { maximumFractionDigits: 2 }),

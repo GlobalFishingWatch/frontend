@@ -280,8 +280,6 @@ function ActivityReport() {
             <p
               dangerouslySetInnerHTML={{
                 __html: t('analysis.newTimeRange', {
-                  defaultValue:
-                    'Click the button to see the vessels active in the area<br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
                   start: formatI18nDate(timerange?.start),
                   end: formatI18nDate(timerange?.end),
                 }),

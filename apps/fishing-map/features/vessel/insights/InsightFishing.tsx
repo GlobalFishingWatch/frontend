@@ -74,7 +74,6 @@ const InsightFishing = ({
             <p>
               {t('vessel.insights.fishingEventsInNoTakeMpas', {
                 count: eventsInNoTakeMpas?.length,
-                defaultValue: '{{count}} fishing events detected in no-take MPAs',
               })}
               <InsightEventDetails
                 events={eventsInNoTakeMpasDetails}
@@ -91,8 +90,6 @@ const InsightFishing = ({
             <p>
               {t('vessel.insights.fishingEventsInRfmoWithoutKnownAuthorization', {
                 count: eventsInRfmoWithoutKnownAuthorization?.length,
-                defaultValue:
-                  '{{count}} fishing events detected outside known RFMO authorized areas',
               })}
               <InsightEventDetails
                 events={eventsInRfmoWithoutKnownAuthorizationDetails}

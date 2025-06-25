@@ -71,7 +71,6 @@ export function VesselGroupAddActionButton({
           : tooManyVessels
             ? t('vesselGroup.tooManyVessels', {
                 count: MAX_VESSEL_GROUP_VESSELS,
-                defaultValue: 'Maximum number of vessels is {{count}}',
               })
             : ''
       }

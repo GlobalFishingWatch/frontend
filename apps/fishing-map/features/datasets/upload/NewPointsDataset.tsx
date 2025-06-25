@@ -118,8 +118,6 @@ function NewPointDataset({
           if ((startTimeProperty || endTimeProperty) && geojson.metadata?.hasDatesError) {
             setTimeFilterError(
               t('datasetUpload.errors.invalidDatesFeatures', {
-                defaultValue:
-                  "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
                 featureType: t('dataset.typePoints'),
               })
             )
@@ -162,8 +160,6 @@ function NewPointDataset({
         if ((startTimeProperty || endTimeProperty) && geojson.metadata?.hasDatesError) {
           setTimeFilterError(
             t('datasetUpload.errors.invalidDatesFeatures', {
-              defaultValue:
-                "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
               featureType: t('dataset.typePoints'),
             })
           )

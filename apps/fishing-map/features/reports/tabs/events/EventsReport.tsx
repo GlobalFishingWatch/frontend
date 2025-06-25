@@ -126,8 +126,6 @@ function EventsReport() {
       <div className={styles.disclaimer}>
         <Icon icon="warning" type="warning" />
         {t('vesselGroup.disclaimerFeaturesNotAvailable', {
-          defaultValue:
-            '{{features}} are only available for AIS vessels and your group contains vessels from {{datasets}}.',
           features: t('common.Events'),
           datasets: Array.from(datasetsWithoutRelatedEvents)
             .map((d) => getDatasetLabel(d))
@@ -166,8 +164,6 @@ function EventsReport() {
               <p
                 dangerouslySetInnerHTML={{
                   __html: t('eventsReport.newTimeRange', {
-                    defaultValue:
-                      'Click the button to see the vessels that had events in this area <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
                     start: formatI18nDate(start),
                     end: formatI18nDate(end),
                   }),

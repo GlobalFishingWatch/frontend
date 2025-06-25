@@ -36,8 +36,6 @@ const InsightIUU = ({
               <span>
                 {t('vessel.insights.IUUBlackListsCount', {
                   // value: iuuBlacklist.valuesInThePeriod.join(', '),
-                  // defaultValue: 'The vessel is present on an RFMO IUU blacklist ({{value}})',
-                  defaultValue: 'The vessel is present on an RFMO IUU vessel list',
                 })}
               </span>
             ) : (

@@ -1,4 +1,4 @@
-import { useEffect,useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
@@ -27,7 +27,6 @@ function WhatsNew() {
   useEffect(() => {
     // We want to hide the icon automatically for following visits
     setLastVersionSeen(currentVersion)
-     
   }, [])
 
   const dismissNewVersionHint = () => {
@@ -48,11 +47,8 @@ function WhatsNew() {
         icon="sparks"
         tooltip={
           newVersionSinceLastVisit.current
-            ? t(
-                'common.whatsNewWithNewVersion',
-                "We've made some changes since you last visited the map. Click to learn more"
-              )
-            : t('common.whatsNew', "What's new?")
+            ? t('common.whatsNewWithNewVersion')
+            : t('common.whatsNew')
         }
         tooltipPlacement="right"
       />

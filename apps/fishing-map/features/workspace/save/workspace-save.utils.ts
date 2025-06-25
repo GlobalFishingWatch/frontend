@@ -61,7 +61,6 @@ export function getTimeRangeOptions(
     {
       id: 'static',
       label: t('common.timerangeStatic', {
-        defaultValue: 'Static ({{start}} - {{end}})',
         start: formatTimerangeBoundary(start, dateFormat),
         end: formatTimerangeBoundary(end, dateFormat),
       }),
@@ -96,7 +95,6 @@ const getStaticWorkspaceName = ({ timerange }: { timerange: { start: string; end
   if (timerange?.start && timerange?.end) {
     const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
     return t('common.timerangeDescription', {
-      defaultValue: 'From {{start}} to {{end}}',
       start: formatTimerangeBoundary(timerange.start, dateFormat),
       end: formatTimerangeBoundary(timerange.end, dateFormat),
     })
@@ -106,7 +104,6 @@ const getStaticWorkspaceName = ({ timerange }: { timerange: { start: string; end
 
 const getDynamicWorkspaceName = ({ daysFromLatest }: { daysFromLatest: number }) => {
   return t('common.latestDays', {
-    defaultValue: 'Latest {{count}} days',
     count: daysFromLatest || 0,
   })
 }

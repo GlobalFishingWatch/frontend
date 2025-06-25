@@ -295,12 +295,10 @@ function ActivityLayerPanel({
                           {stats.type === 'vessels'
                             ? t('common.vessel', {
                                 count: statsValue,
-                                defaultValue: 'vessels',
-                              }).toLocaleLowerCase()
+                                }).toLocaleLowerCase()
                             : t('common.detection', {
                                 count: statsValue,
-                                defaultValue: 'detections',
-                              }).toLocaleLowerCase()}
+                                }).toLocaleLowerCase()}
                         </span>
                       ) : stats.type === 'vessels' ? (
                         t('workspace.noVesselInFilters')
@@ -318,8 +316,7 @@ function ActivityLayerPanel({
                               <I18nNumber number={stats.flags} />{' '}
                               {t('layer.flagState', {
                                 count: stats.flags,
-                                defaultValue: 'flag states',
-                              }).toLocaleLowerCase()}
+                                }).toLocaleLowerCase()}
                             </span>
                           </Fragment>
                         )}{' '}
