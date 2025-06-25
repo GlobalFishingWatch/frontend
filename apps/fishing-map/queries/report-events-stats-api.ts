@@ -87,6 +87,7 @@ export function parseEventsFilters(filters: BaseReportEventsVesselsParamsFilters
   if (!filters) {
     return {}
   }
+  const vesselGroupId = filters.vesselGroupId || (filters as any)['vessel-groups']?.[0]
   return {
     ...(filters.confidence && { confidences: filters.confidence }),
     ...(filters.encounter_type && { 'encounter-types': filters.encounter_type }),
@@ -95,7 +96,7 @@ export function parseEventsFilters(filters: BaseReportEventsVesselsParamsFilters
     ...(filters.minDuration && { 'min-duration': filters.minDuration }),
     ...(filters.next_port_id && { 'next-port-ids': filters.next_port_id }),
     ...((filters.portId || filters.port_id) && { 'port-ids': [filters.portId || filters.port_id] }),
-    ...(filters.vesselGroupId && { 'vessel-groups': [filters.vesselGroupId] }),
+    ...(vesselGroupId && { 'vessel-groups': [vesselGroupId] }),
   }
 }
 
