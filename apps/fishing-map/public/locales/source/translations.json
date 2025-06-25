@@ -868,7 +868,7 @@
     "tracksDisabled": "Select at least one vessel"
   },
   "toasts": {
-    "maxPointsVisualizationExceeded": "Max points visualization exceeded, swithing to heatmap mode."
+    "maxPointsVisualizationExceeded": "Max points visualization exceeded, switching to heatmap mode."
   },
   "user": {
     "badges": {
