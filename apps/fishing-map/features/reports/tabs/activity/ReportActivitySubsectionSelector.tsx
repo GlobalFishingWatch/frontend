@@ -31,24 +31,24 @@ function ReportActivitySubsectionSelector() {
       ? [
           {
             id: 'fishing',
-            label: t('common.apparentFishing', 'Apparent fishing effort'),
+            label: t('common.apparentFishing'),
             disabled: loading,
           },
           {
             id: 'presence',
-            label: t('common.vesselPresence', 'Vessel presence'),
+            label: t('common.vesselPresence'),
             disabled: loading,
           },
         ]
       : [
           {
             id: 'viirs',
-            label: t('common.viirs', 'Night light detections (VIIRS)'),
+            label: t('common.viirs'),
             disabled: loading,
           },
           {
             id: 'sar',
-            label: t('common.sar', 'Radar vessel detections (SAR)'),
+            label: t('common.sar'),
             disabled: loading,
           },
         ]

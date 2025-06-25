@@ -67,12 +67,7 @@ const VesselIdentitySelector = () => {
   return (
     <div>
       {!isIdentityInTimerange && (
-        <p className={styles.error}>
-          {t(
-            'vessel.identityDatesOutOfRange',
-            'The dates of this identity don’t overlap with your current time range'
-          )}
-        </p>
+        <p className={styles.error}>{t('vessel.identityDatesOutOfRange')}</p>
       )}
       <ul className={cx(styles.selector, 'print-hidden')}>
         {identities.map((identity) => {
@@ -80,10 +75,7 @@ const VesselIdentitySelector = () => {
           const end = formatI18nDate(identity.transmissionDateTo)
           const identityId = getVesselIdentityId(identity)
           return (
-            <Tooltip
-              key={identityId}
-              content={t('vessel.selectIdentity', 'See the identity for this dates')}
-            >
+            <Tooltip key={identityId} content={t('vessel.selectIdentity')}>
               <li
                 className={cx(styles.icon, {
                   [styles.selected]: identityId === getVesselIdentityId(currentIdentity),

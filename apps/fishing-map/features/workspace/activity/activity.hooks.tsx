@@ -94,13 +94,13 @@ export const useVisualizationsOptions = (
       {
         id: HEATMAP_LOW_RES_ID,
         label: <Icon icon="heatmap-low-res" />,
-        tooltip: t('map.lowRes', 'See low resolution heatmaps'),
+        tooltip: t('map.lowRes'),
         tooltipPlacement: 'bottom',
       },
       {
         id: HEATMAP_ID,
         label: <Icon icon="heatmap-default-res" />,
-        tooltip: t('map.defaultRes', 'See default resolution heatmaps'),
+        tooltip: t('map.defaultRes'),
         tooltipPlacement: 'bottom',
       },
       ...(category !== DataviewCategory.Environment
@@ -112,12 +112,7 @@ export const useVisualizationsOptions = (
                   icon={hasVesselGroupsFilter ? 'heatmap-high-res-disabled' : 'heatmap-high-res'}
                 />
               ),
-              tooltip: hasVesselGroupsFilter
-                ? t(
-                    'map.highResDisabled',
-                    'High resolution heatmaps are disabled when using a vessel group filter'
-                  )
-                : t('map.highRes', 'See high resolution heatmaps'),
+              tooltip: hasVesselGroupsFilter ? t('map.highResDisabled') : t('map.highRes'),
               tooltipPlacement: 'bottom',
               disabled: hasVesselGroupsFilter,
             },
@@ -127,11 +122,8 @@ export const useVisualizationsOptions = (
                     id: POSITIONS_ID,
                     label: <Icon icon={isPositionsLayerAvailable ? 'vessel' : 'vessel-disabled'} />,
                     tooltip: isPositionsLayerAvailable
-                      ? t('map.positions', 'See positions visualization mode')
-                      : t(
-                          'map.positionsDisabled',
-                          'A more detailed visualization is available in areas with less activity, please zoom in or reduce your time range to see it'
-                        ),
+                      ? t('map.positions')
+                      : t('map.positionsDisabled'),
                     tooltipPlacement: 'bottom',
                     disabled: !isPositionsLayerAvailable,
                   },

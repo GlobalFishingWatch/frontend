@@ -108,9 +108,7 @@ function NewDataset() {
         })
 
         if (createDatasetError) {
-          setError(
-            `${t('errors.generic', 'Something went wrong, try again or contact:')} ${SUPPORT_EMAIL}`
-          )
+          setError(`${t('errors.generic')} ${SUPPORT_EMAIL}`)
         } else if (payload) {
           if (locationType === 'HOME' || locationType === 'WORKSPACE') {
             const dataset = { ...payload }
@@ -163,7 +161,7 @@ function NewDataset() {
 
   const onDatasetParseError: NewDatasetProps['onDatasetParseError'] = useCallback(
     (error, errorHandleCallback) => {
-      errorHandleCallback(t(`${error?.message}`, 'There was an error uploading your dataset'))
+      errorHandleCallback(t(`${error?.message}`))
     },
     [t]
   )
@@ -191,11 +189,7 @@ function NewDataset() {
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
-      title={
-        isDatasetEdit
-          ? t('dataset.edit', 'Edit dataset')
-          : t('dataset.uploadNew', 'Upload new dataset')
-      }
+      title={isDatasetEdit ? t('dataset.edit') : t('dataset.uploadNew')}
       isOpen={datasetModalOpen}
       contentId={NEW_DATASET_MODAL_ID}
       shouldCloseOnEsc={style === 'transparent'}
@@ -227,7 +221,7 @@ function NewDataset() {
           </p>
           {isGuestUserDismissVisible && (
             <Button onClick={onClose} className={styles.dismiss}>
-              {t('common.dismiss', 'Dismiss')}
+              {t('common.dismiss')}
             </Button>
           )}
         </div>
@@ -237,14 +231,8 @@ function NewDataset() {
         <Fragment>
           <p className={styles.instructions}>
             {style !== 'transparent'
-              ? t(
-                  'dataset.dragAndDropFileToCreateDataset',
-                  'Drag and drop a file in one of the boxes or click on them to upload your dataset'
-                )
-              : t(
-                  'dataset.dropFileToCreateDataset',
-                  'Drop your file in one of the boxes to upload your dataset'
-                )}
+              ? t('dataset.dragAndDropFileToCreateDataset')
+              : t('dataset.dropFileToCreateDataset')}
           </p>
           <div className={styles.modalContent}>
             <DatasetTypeSelect style={style} onFileLoaded={onFileLoaded} />
@@ -254,7 +242,7 @@ function NewDataset() {
           )}
           {style === 'transparent' && fileRejected && (
             <Button onClick={onClose} className={styles.dismiss}>
-              {t('common.dismiss', 'Dismiss')}
+              {t('common.dismiss')}
             </Button>
           )}
         </Fragment>

@@ -46,14 +46,7 @@ export const useVesselProfileBounds = () => {
       if (bounds) {
         fitBounds(bounds, { padding: 60, fitZoom: true })
       } else if (canFitDates) {
-        if (
-          window.confirm(
-            t(
-              'layer.vessel_fit_bounds_out_of_timerange',
-              'The track has no activity in your selected timerange. Change timerange to fit this track?'
-            ) as string
-          )
-        ) {
+        if (window.confirm(t('layer.vessel_fit_bounds_out_of_timerange') as string)) {
           setTimerange({
             start: getUTCDateTime(transmissionDateFrom).toISO()!,
             end: getUTCDateTime(transmissionDateTo).toISO()!,

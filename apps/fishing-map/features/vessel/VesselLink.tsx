@@ -176,10 +176,7 @@ const VesselLink = ({
       onClick={onLinkClick}
     >
       {showTooltip ? (
-        <Tooltip
-          className={styles.linkTooltip}
-          content={tooltip || t('vessel.clickToSeeMore', 'Click to see more information')}
-        >
+        <Tooltip className={styles.linkTooltip} content={tooltip || t('vessel.clickToSeeMore')}>
           <span>{children}</span>
         </Tooltip>
       ) : (

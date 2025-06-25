@@ -46,7 +46,7 @@ const MapScaleControl = ({ maxWidth = 100 }: ScaleControlProps) => {
 
   return (
     <div className={styles.scale} style={{ width: `${maxWidth * ratio}px` }}>
-      {distance} {t(`map.nauticalMilesAbbr`, 'nm')}
+      {distance} {t('map.nauticalMilesAbbr')}
     </div>
   )
 }

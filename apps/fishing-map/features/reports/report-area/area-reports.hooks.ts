@@ -395,7 +395,7 @@ export function useReportTitle() {
     }
     let areaName = getReportAreaStringByLocale(report?.name, i18n.language)
     if (isGlobalReport) {
-      return t('common.globalReport', 'Global report')
+      return t('common.globalReport')
     }
     const propertyToInclude = getDatasetConfigurationProperty({
       dataset,
@@ -444,12 +444,12 @@ export function useReportTitle() {
     }
     if (areaName && urlBufferOperation === 'dissolve') {
       if (urlBufferValue > 0) {
-        return `${areaName} ${t('common.and', 'and')} ${urlBufferValue} ${t(
+        return `${areaName} ${t('common.and')} ${urlBufferValue} ${t(
           `analysis.${urlBufferUnit}` as any,
           urlBufferUnit
-        )} ${t('analysis.around', 'around')}`
+        )} ${t('analysis.around')}`
       } else {
-        return `${areaName} ${t('common.minus', 'minus')} ${Math.abs(urlBufferValue)} ${t(
+        return `${areaName} ${t('common.minus')} ${Math.abs(urlBufferValue)} ${t(
           `analysis.${urlBufferUnit}` as any,
           urlBufferUnit
         )}`

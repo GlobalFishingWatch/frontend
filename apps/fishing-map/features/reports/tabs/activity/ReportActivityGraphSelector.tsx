@@ -38,30 +38,20 @@ export default function ReportActivityGraphSelector({
   const options: ChoiceOption<ReportActivityGraph>[] = [
     {
       id: REPORT_ACTIVITY_GRAPH_EVOLUTION,
-      label: t('analysis.evolution', 'Evolution'),
+      label: t('analysis.evolution'),
       disabled: loading,
     },
     {
       id: REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
-      label: t('analysis.beforeAfter', 'Before/after'),
-      tooltip: !areAllFiltersEqual
-        ? t(
-            'analysis.noTimeComparisonAllowed',
-            'Time comparison modes are not available when layers have different filters'
-          )
-        : '',
+      label: t('analysis.beforeAfter'),
+      tooltip: !areAllFiltersEqual ? t('analysis.noTimeComparisonAllowed') : '',
       tooltipPlacement: 'bottom',
       disabled: loading || !areAllFiltersEqual,
     },
     {
       id: REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
-      label: t('analysis.periodComparison', 'Period comparison'),
-      tooltip: !areAllFiltersEqual
-        ? t(
-            'analysis.noTimeComparisonAllowed',
-            'Time comparison modes are not available when layers have different filters'
-          )
-        : '',
+      label: t('analysis.periodComparison'),
+      tooltip: !areAllFiltersEqual ? t('analysis.noTimeComparisonAllowed') : '',
       tooltipPlacement: 'bottom',
       disabled: loading || !areAllFiltersEqual,
     },

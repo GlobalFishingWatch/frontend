@@ -124,13 +124,13 @@ const MapControls = ({
           <IconButton
             icon="plus"
             type="map-tool"
-            tooltip={t('map.zoom_in', 'Zoom in')}
+            tooltip={t('map.zoom_in')}
             onClick={onZoomInClick}
           />
           <IconButton
             icon="minus"
             type="map-tool"
-            tooltip={t('map.zoom_out', 'Zoom out')}
+            tooltip={t('map.zoom_out')}
             onClick={onZoomOutClick}
           />
           {showExtendedControls && (
@@ -142,7 +142,7 @@ const MapControls = ({
                   icon="feedback-error"
                   type="map-tool"
                   disabled={mapLoading}
-                  tooltip={t('map.errorAction', 'Log an issue at a specific location')}
+                  tooltip={t('map.errorAction')}
                   onClick={toggleErrorNotification}
                   className={cx({ [styles.active]: isErrorNotificationEditing })}
                 />
@@ -151,16 +151,16 @@ const MapControls = ({
               <Tooltip
                 content={
                   currentBasemap === BasemapType.Default
-                    ? t('map.change_basemap_satellite', 'Switch to satellite basemap')
-                    : t('map.change_basemap_default', 'Switch to default basemap')
+                    ? t('map.change_basemap_satellite')
+                    : t('map.change_basemap_default')
                 }
                 placement="left"
               >
                 <button
                   aria-label={
                     currentBasemap === BasemapType.Default
-                      ? t('map.change_basemap_satellite', 'Switch to satellite basemap')
-                      : t('map.change_basemap_default', 'Switch to default basemap')
+                      ? t('map.change_basemap_satellite')
+                      : t('map.change_basemap_default')
                   }
                   className={cx(styles.basemapSwitcher, styles[currentBasemap])}
                   onClick={switchBasemap}
@@ -170,7 +170,7 @@ const MapControls = ({
           )}
           <IconButton
             type="map-tool"
-            tooltip={t('map.loading', 'Loading')}
+            tooltip={t('map.loading')}
             loading={mapLoading}
             className={cx(styles.loadingBtn, { [styles.visible]: mapLoading })}
           />

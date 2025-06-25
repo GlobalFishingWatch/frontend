@@ -168,18 +168,18 @@ function DownloadActivityByVessel() {
       <div className={styles.container} data-test="download-activity-byvessel">
         <div className={styles.info}>
           <div>
-            <label>{t('download.area', 'Area')}</label>
+            <label>{t('download.area')}</label>
             <Tag testId="area-name">{parsedLabel || EMPTY_FIELD_PLACEHOLDER}</Tag>
           </div>
           <div>
-            <label>{t('download.timeRange', 'Time Range')}</label>
+            <label>{t('download.timeRange')}</label>
             <Tag>
               <TimelineDatesRange />
             </Tag>
           </div>
         </div>
         <div>
-          <label>{t('download.format', 'Format')}</label>
+          <label>{t('download.format')}</label>
           <Choice
             options={VESSEL_FORMAT_OPTIONS}
             size="small"
@@ -189,7 +189,7 @@ function DownloadActivityByVessel() {
           />
         </div>
         <div>
-          <label>{t('download.groupVesselsBy', 'Group vessels by')}</label>
+          <label>{t('download.groupVesselsBy')}</label>
           <Choice
             options={filteredGroupByOptions}
             size="small"
@@ -199,7 +199,7 @@ function DownloadActivityByVessel() {
           />
         </div>
         <div>
-          <label>{t('download.temporalResolution', 'Group time by')}</label>
+          <label>{t('download.temporalResolution')}</label>
           <Choice
             options={filteredTemporalResolutionOptions}
             size="small"
@@ -211,9 +211,7 @@ function DownloadActivityByVessel() {
         <UserGuideLink section="downloadActivity" />
         <div className={styles.footer}>
           {!isDownloadReportSupported ? (
-            <p className={cx(styles.footerLabel, styles.error)}>
-              {t('download.timerangeTooLong', 'The maximum time range is 1 year')}
-            </p>
+            <p className={cx(styles.footerLabel, styles.error)}>{t('download.timerangeTooLong')}</p>
           ) : datasetsDownloadNotSupported.length > 0 ? (
             <p className={styles.footerLabel}>
               {t(
@@ -238,7 +236,7 @@ function DownloadActivityByVessel() {
               isDownloadAreaLoading || !isDownloadReportSupported || hadDownloadTimeoutError
             }
           >
-            {isDownloadFinished ? <Icon icon="tick" /> : t('download.title', 'Download')}
+            {isDownloadFinished ? <Icon icon="tick" /> : t('download.title')}
           </Button>
         </div>
       </div>

@@ -165,7 +165,7 @@ function VesselEventsTooltipSection({
             })}
             {overflows && (
               <div className={styles.vesselsMore}>
-                + {features.length - MAX_TOOLTIP_LIST} {t('common.more', 'more')}
+                + {features.length - MAX_TOOLTIP_LIST} {t('common.more')}
               </div>
             )}
           </div>
