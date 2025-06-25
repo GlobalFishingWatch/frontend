@@ -244,7 +244,7 @@
     "share": "Bagikan tampilan saat ini",
     "since": "since",
     "sourceOptions": {
-      "both": "Registry and self reported",
+      "both": "Registry and AIS",
       "registryOnly": "Registry only",
       "selfReportedOnly": "Self reported only"
     },
@@ -710,7 +710,7 @@
     "nameLengthError_one": "Nama lapisan membutuhkan setidaknya {{count}} karakter",
     "nameLengthError_other": "Nama lapisan membutuhkan setidaknya {{count}} karakter",
     "nameRequired": "Nama lapisan diperlukan",
-    "next_port_id": "Next port id",
+    "next_port_id": "Next port",
     "period": "Period",
     "properties": {
       "color": "Color",
@@ -1028,7 +1028,7 @@
       },
       "coverage": "AIS Coverage",
       "disclaimerTimeRangeBeforeMinYear": "Insights available from 1 January {{year}} onwards. Adjust your time range to view insights.",
-      "errorPermisions": "You don't have permissions to see this insight",
+      "errorPermisions": "This insight is restricted to limited account users, contact us at support@globalfishingwatch.org for more details",
       "fishing": "Fishing Events",
       "fishingEventsInNoTakeMpas": "{{count}} fishing events detected in no-take MPAs",
       "fishingEventsInNoTakeMpas_one": "{{count}} fishing events detected in no-take MPAs",
@@ -1058,7 +1058,7 @@
         "grey": "grey"
       },
       "MOULists": "Tokyo and Paris MOU Lists",
-      "MOUListsEmpty": "Flying under a flag/flags not present on the Tokio or Paris MOU black or grey lists",
+      "MOUListsEmpty": "Flying under a flag/flags not present on the Tokyo or Paris MOU black or grey lists",
       "MOUParisBlackListsCount": "Flag present on the Paris MOU black list ({{flags}})",
       "MOUParisGreyListsCount": "Flag present on the Paris MOU grey list ({{flags}})",
       "MOUParisListsCount": "Flag present on the Paris MOU black or grey list ({{flags}})",
@@ -1104,7 +1104,7 @@
     "recordId": "Record ID",
     "registeredGearType": "Jenis Peralatan Terdaftar",
     "registryGeartype": "Registry Gear Type",
-    "registryOperator": "Operators",
+    "registryOperator": "Operator",
     "registryOwners": "Registry owners",
     "registryPublicAuthorizations": "Authorizations",
     "registrySources": "sumber registri",
