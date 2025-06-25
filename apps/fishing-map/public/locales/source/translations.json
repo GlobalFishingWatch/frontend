@@ -1005,8 +1005,8 @@
       "tuna_purse_seines": "Tuna Purse Seine",
       "well_boat": "Well boat"
     },
-    "gfw-geartypes": "GFW Gear type",
-    "gfw-shiptypes": "GFW Vessel type",
+    "gfw_geartypes": "GFW Gear type",
+    "gfw_shiptypes": "GFW Vessel type",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Gross Tonnage",
     "grossTonnageRange": "Gross Tonnage range",
@@ -1017,9 +1017,9 @@
     "infoSource": "Info Source",
     "infoSources": {
       "both": "Registry and self reported",
+      "gfw-source": "GFW Source",
       "registry": "Registry",
-      "selfReported": "Self reported",
-      "gfw-source": "GFW Source"
+      "selfReported": "Self reported"
     },
     "insights": {
       "countries": {
