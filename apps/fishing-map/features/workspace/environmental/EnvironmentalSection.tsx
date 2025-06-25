@@ -121,20 +121,12 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
       {locationCategory === WorkspaceCategory.MarineManager && (
         <div className={cx(styles.surveyLink, 'print-hidden')}>
           <a
-            href={
-              t(
-                'feedback.marineManagerDatasetsSurveyLink',
-                'https://www.surveymonkey.com/r/marinemanagerdata'
-              ) as string
-            }
+            href={t('feedback.marineManagerDatasetsSurveyLink') as string}
             target="_blank"
             rel="noreferrer"
             className={styles.link}
           >
-            {t(
-              'feedback.marineManagerDatasetsSurvey',
-              'What other datasets would you like to see?'
-            )}
+            {t('feedback.marineManagerDatasetsSurvey')}
           </a>
         </div>
       )}

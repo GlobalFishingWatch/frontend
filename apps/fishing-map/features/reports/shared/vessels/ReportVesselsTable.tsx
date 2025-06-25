@@ -94,10 +94,7 @@ export default function ReportVesselsTable({
           reportCategory === 'activity' &&
           datasetsDownloadNotSupported.length > 0 && (
             <p className={styles.error}>
-              {t(
-                'analysis.datasetsNotAllowed',
-                'Vessels are not included from the following sources:'
-              )}{' '}
+              {t('analysis.datasetsNotAllowed')}{' '}
               {datasetsDownloadNotSupported.map((dataset, index) => (
                 <Fragment key={dataset}>
                   <DatasetLabel key={dataset} dataset={{ id: dataset }} />

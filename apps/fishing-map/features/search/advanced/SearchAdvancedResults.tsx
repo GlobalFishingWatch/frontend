@@ -279,15 +279,11 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             selfReportedIdentities.flatMap(({ sourceCode }) => sourceCode || [])
           )
           if (registryIdentities.length && selfReportedIdentities.length)
-            return `${t(
-              'vessel.infoSources.both',
-              'Registry and self reported'
-            )} (${selfReportedIdentitiesSources.join(', ')})`
+            return `${t('vessel.infoSources.both')} (${selfReportedIdentitiesSources.join(', ')})`
           if (registryIdentities.length) return t('vessel.infoSources.registry')
           if (selfReportedIdentities.length)
             return `${t(
-              'vessel.infoSources.selfReported',
-              'Self reported'
+              'vessel.infoSources.selfReported'
             )} (${selfReportedIdentitiesSources.join(', ')})`
 
           return EMPTY_FIELD_PLACEHOLDER

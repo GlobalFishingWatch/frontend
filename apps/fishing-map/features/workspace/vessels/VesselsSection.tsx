@@ -207,10 +207,7 @@ function VesselsSection(): React.ReactElement<any> {
                   loading={areVesselsLoading || isVesselGroupUpdating}
                   disabled={areVesselsLoading || isVesselGroupUpdating}
                   size="medium"
-                  tooltip={t(
-                    'vesselGroup.addVisibleVessels',
-                    'Add visible vessels to vessel group'
-                  )}
+                  tooltip={t('vesselGroup.addVisibleVessels')}
                   tooltipPlacement="top"
                 />
               </VesselGroupAddButton>
@@ -258,12 +255,7 @@ function VesselsSection(): React.ReactElement<any> {
             />
           ))
         ) : (
-          <div className={styles.emptyState}>
-            {t(
-              'workspace.emptyStateVessels',
-              'The vessels selected in the search or by clicking on activity grid cells will appear here.'
-            )}
-          </div>
+          <div className={styles.emptyState}>{t('workspace.emptyStateVessels')}</div>
         )}
       </SortableContext>
       {activeDataviews.length > 0 && guestUser && !hasDeprecatedDataviewInstances && (

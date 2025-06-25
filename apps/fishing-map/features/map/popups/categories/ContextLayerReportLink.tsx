@@ -55,14 +55,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
         icon="analysis"
         disabled={!hasAnalysableLayer}
         size="small"
-        tooltip={
-          isSameArea
-            ? ''
-            : t(
-                'common.analysisNotAvailable',
-                'Toggle an analyzable layer to create a report for this area'
-              )
-        }
+        tooltip={isSameArea ? '' : t('common.analysisNotAvailable')}
       />
     )
   }

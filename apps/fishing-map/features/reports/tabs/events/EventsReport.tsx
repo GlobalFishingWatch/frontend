@@ -101,10 +101,7 @@ function EventsReport() {
             width={EventsEmptyState.width / 2}
             height={EventsEmptyState.height / 2}
           />
-          {t(
-            'vessel.noEventsinTimeRange',
-            'There are no events fully contained in your timerange.'
-          )}
+          {t('vessel.noEventsinTimeRange')}
         </div>
       )
     }
@@ -160,12 +157,7 @@ function EventsReport() {
         {noEvents ? null : !timerangeSupported ? (
           <ReportVesselsPlaceholder animate={false}>
             <div className={cx(styles.cover, styles.error)}>
-              <p>
-                {t(
-                  'analysis.timeRangeTooLong',
-                  'The selected time range is too long, please select a shorter time range'
-                )}
-              </p>
+              <p>{t('analysis.timeRangeTooLong')}</p>
             </div>
           </ReportVesselsPlaceholder>
         ) : reportOutdated ? (

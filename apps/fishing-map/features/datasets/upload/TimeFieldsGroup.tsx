@@ -103,10 +103,7 @@ export const TimeFieldsGroup = ({
     <div className={styles.row}>
       <Choice
         label={t('datasetUpload.timePeriodType')}
-        infoTooltip={t(
-          'datasetUpload.timePeriodTypePlaceholder',
-          'Choose whether to filter your dataset by dates or time ranges'
-        )}
+        infoTooltip={t('datasetUpload.timePeriodTypePlaceholder')}
         activeOption={activeOption}
         options={timeFilterOptions}
         onSelect={onTimeFilterTypeSelect}

@@ -76,10 +76,7 @@ const VesselGroupReportInsightFlagChange = ({ skip }: { skip?: boolean }) => {
         <InsightError error={error as ParsedAPIError} />
       ) : !vesselsWithFlagChanges || vesselsWithFlagChanges.length === 0 ? (
         <span className={cx(styles.secondary, styles.nested, styles.row)}>
-          {t(
-            'vesselGroupReport.insights.flagChangesEmpty',
-            'There are no vessels with flag changes'
-          )}
+          {t('vesselGroupReport.insights.flagChangesEmpty')}
         </span>
       ) : (
         <div className={styles.nested}>

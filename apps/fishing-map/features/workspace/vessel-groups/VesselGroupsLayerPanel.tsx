@@ -133,12 +133,7 @@ function VesselGroupLayerPanel({
           title={
             layerActive ? (
               isOutdated ? (
-                <Tooltip
-                  content={t(
-                    'vesselGroupReport.linkDisabled',
-                    'This vessel group needs to be migrated to latest available data'
-                  )}
-                >
+                <Tooltip content={t('vesselGroupReport.linkDisabled')}>
                   <span>
                     {formatInfoField(vesselGroup?.name, 'shipname')}
                     <span className={styles.secondary}>
@@ -148,12 +143,7 @@ function VesselGroupLayerPanel({
                 </Tooltip>
               ) : (
                 <VesselGroupReportLink vesselGroupId={vesselGroup?.id}>
-                  <Tooltip
-                    content={t(
-                      'vesselGroupReport.clickToSee',
-                      'Click to analyse vessel group and see report'
-                    )}
-                  >
+                  <Tooltip content={t('vesselGroupReport.clickToSee')}>
                     <span>
                       {vesselGroupLoading ? (
                         t('vesselGroup.loadingInfo')
@@ -199,10 +189,7 @@ function VesselGroupLayerPanel({
                 {!isOutdated && (
                   <VesselGroupReportLink vesselGroupId={vesselGroup?.id}>
                     <IconButton
-                      tooltip={t(
-                        'vesselGroupReport.clickToSee',
-                        'Click to see the vessel group report'
-                      )}
+                      tooltip={t('vesselGroupReport.clickToSee')}
                       icon="analysis"
                       size="small"
                     />
@@ -243,10 +230,7 @@ function VesselGroupLayerPanel({
                 type={'warning'}
                 tooltip={
                   isGFWUser
-                    ? `${t(
-                        'errors.layerLoading',
-                        'There was an error loading the layer'
-                      )} (${layerError})`
+                    ? `${t('errors.layerLoading')} (${layerError})`
                     : t('errors.layerLoading')
                 }
                 size="small"
@@ -259,10 +243,7 @@ function VesselGroupLayerPanel({
             size="small"
             icon={'warning'}
             type={'warning'}
-            tooltip={t(
-              'vesselGroup.clickToUpdateLong',
-              'Click to update your vessel group to view the latest data and features'
-            )}
+            tooltip={t('vesselGroup.clickToUpdateLong')}
             loading={vesselGroupStatus === AsyncReducerStatus.LoadingUpdate}
             onClick={onEditClick}
           />

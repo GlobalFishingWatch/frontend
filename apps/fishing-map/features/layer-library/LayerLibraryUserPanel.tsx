@@ -148,10 +148,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
                     infoTooltip = t('dataset.importing')
                   }
                   if (datasetError) {
-                    infoTooltip = `${t(
-                      'errors.uploadError',
-                      'There was an error uploading your dataset'
-                    )} - ${dataset.importLogs}`
+                    infoTooltip = `${t('errors.uploadError')} - ${dataset.importLogs}`
                   }
                   const datasetIcon = getDatasetTypeIcon(dataset)
 
@@ -200,12 +197,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
         <label id={DataviewCategory.User} className={styles.categoryLabel}>
           {t('common.user')}
         </label>
-        <LoginButtonWrapper
-          tooltip={t(
-            'dataset.uploadLogin',
-            'Register and login to upload datasets (free, 2 minutes)'
-          )}
-        >
+        <LoginButtonWrapper tooltip={t('dataset.uploadLogin')}>
           <IconButton
             icon="upload"
             type="border"
@@ -216,12 +208,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
             onClick={onUploadClick}
           />
         </LoginButtonWrapper>
-        <LoginButtonWrapper
-          tooltip={t(
-            'layer.drawPolygonLogin',
-            'Register and login to draw a layer (free, 2 minutes)'
-          )}
-        >
+        <LoginButtonWrapper tooltip={t('layer.drawPolygonLogin')}>
           <IconButton
             icon="draw"
             type="border"
@@ -232,12 +219,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
             onClick={() => onDrawClick('polygons')}
           />
         </LoginButtonWrapper>
-        <LoginButtonWrapper
-          tooltip={t(
-            'layer.drawPointsLogin',
-            'Register and login to draw a layer (free, 2 minutes)'
-          )}
-        >
+        <LoginButtonWrapper tooltip={t('layer.drawPointsLogin')}>
           <IconButton
             icon="draw-points"
             type="border"

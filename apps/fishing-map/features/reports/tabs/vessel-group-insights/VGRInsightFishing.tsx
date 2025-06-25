@@ -168,10 +168,7 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
         <div className={styles.nested}>
           {!vesselsWithNoTakeMpas || vesselsWithNoTakeMpas?.length === 0 ? (
             <p className={cx(styles.secondary, styles.row)}>
-              {t(
-                'vessel.insights.fishingEventsInNoTakeMpasEmpty',
-                'No fishing events detected in no-take MPAs'
-              )}
+              {t('vessel.insights.fishingEventsInNoTakeMpasEmpty')}
             </p>
           ) : (
             <Collapsable
@@ -199,10 +196,7 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
           {!vesselsInRfmoWithoutKnownAuthorization ||
           !vesselsInRfmoWithoutKnownAuthorization?.length ? (
             <p className={cx(styles.secondary, styles.row)}>
-              {t(
-                'vessel.insights.fishingEventsInRfmoWithoutKnownAuthorizationEmpty',
-                'No fishing events detected outside known RFMO authorized areas'
-              )}
+              {t('vessel.insights.fishingEventsInRfmoWithoutKnownAuthorizationEmpty')}
             </p>
           ) : (
             <Collapsable

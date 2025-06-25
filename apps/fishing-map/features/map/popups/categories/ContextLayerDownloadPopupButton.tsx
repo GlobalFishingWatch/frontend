@@ -30,23 +30,13 @@ const ContextLayerDownloadPopupButton: React.FC<ContextLayerDownloadPopupButtonP
 
   const datasetsReportSupported = datasetsReportAllowed?.length > 0
   return (
-    <LoginButtonWrapper
-      tooltip={t(
-        'download.heatmapLogin',
-        'Register and login to download activity, detections or environment data (free, 2 minutes)'
-      )}
-    >
+    <LoginButtonWrapper tooltip={t('download.heatmapLogin')}>
       <IconButton
         icon="download"
         disabled={!guestUser && (!hasAnalysableLayer || !datasetsReportSupported)}
         testId="download-activity-layers"
         tooltip={
-          datasetsReportSupported
-            ? t('download.heatmapLayers')
-            : t(
-                'download.noHeatmapLayers',
-                'Turn on an activity, detections or environment layer to download its data for this area'
-              )
+          datasetsReportSupported ? t('download.heatmapLayers') : t('download.noHeatmapLayers')
         }
         onClick={onClick}
         size="small"

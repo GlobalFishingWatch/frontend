@@ -152,10 +152,7 @@ const BigQueryMenu: React.FC = () => {
       </div>
       <SwitchRow
         className={styles.row}
-        label={t(
-          'dataset.uploadPublic',
-          'Allow other users to see this dataset when you share a workspace'
-        )}
+        label={t('dataset.uploadPublic')}
         active={createAsPublic}
         onClick={() => setCreateAsPublic((createAsPublic) => !createAsPublic)}
       />
@@ -177,14 +174,7 @@ const BigQueryMenu: React.FC = () => {
         <Button
           disabled={disableCreation || creationStatus === AsyncReducerStatus.Loading}
           tooltip={
-            error
-              ? t('bigQuery.queryError')
-              : disableCreation
-                ? t(
-                    'bigQuery.validationError',
-                    'Query, name, visualisation mode, aggregation mode and checking creation cost are required'
-                  )
-                : ''
+            error ? t('bigQuery.queryError') : disableCreation ? t('bigQuery.validationError') : ''
           }
           loading={creationStatus === AsyncReducerStatus.Loading}
           onClick={onCreateClick}

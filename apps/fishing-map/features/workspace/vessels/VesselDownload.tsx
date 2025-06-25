@@ -48,12 +48,7 @@ function VesselDownloadButton({
       icon="download"
       type={iconType}
       disabled={!downloadSupported}
-      loginTooltip={
-        t(
-          'download.trackLogin',
-          'Register and login to download vessel tracks (free, 2 minutes)'
-        ) as string
-      }
+      loginTooltip={t('download.trackLogin') as string}
       tooltip={
         downloadSupported
           ? t('download.trackAction')

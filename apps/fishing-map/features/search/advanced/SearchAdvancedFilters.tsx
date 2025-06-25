@@ -303,11 +303,7 @@ function SearchAdvancedFilters() {
         />
       </div>
       <div className={styles.error}>
-        {searchFilterErrors.date &&
-          t(
-            'search.endDateMustBeAfterStartDate',
-            'The ACTIVE BEFORE date must come after the ACTIVE AFTER date'
-          )}
+        {searchFilterErrors.date && t('search.endDateMustBeAfterStartDate')}
       </div>
     </div>
   )

@@ -187,10 +187,7 @@ function VesselsTable({
                               <IconButton
                                 icon="external-link"
                                 size="tiny"
-                                tooltip={t(
-                                  'vessel.skylightLink',
-                                  'Click to see Skylight vessel profile'
-                                )}
+                                tooltip={t('vessel.skylightLink')}
                               />
                             </a>
                           </span>

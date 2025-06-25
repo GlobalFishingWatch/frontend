@@ -75,10 +75,7 @@ export default function ReportVesselsFilter({
         <InputText
           type="search"
           value={query}
-          placeholder={t(
-            'analysis.searchPlaceholder',
-            'Type to filter vessels by name, mmsi, flag states or gear type'
-          )}
+          placeholder={t('analysis.searchPlaceholder')}
           onChange={(e) => setQuery(e.target.value)}
           onCleanButtonClick={() => setQuery('')}
           className={styles.input}

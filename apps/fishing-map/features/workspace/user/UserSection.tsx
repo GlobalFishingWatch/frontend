@@ -126,10 +126,7 @@ function UserSection(): React.ReactElement<any> {
                   onClick={onUploadClick}
                   tooltip={t('dataset.upload')}
                   tooltipPlacement="top"
-                  loginTooltip={t(
-                    'download.eventsDownloadLogin',
-                    'Register and login to download vessel events (free, 2 minutes)'
-                  )}
+                  loginTooltip={t('download.eventsDownloadLogin')}
                 />
               </div>
             )}
@@ -140,10 +137,7 @@ function UserSection(): React.ReactElement<any> {
               tooltip={t('layer.drawPolygon')}
               tooltipPlacement="top"
               onClick={() => onDrawClick('polygons')}
-              loginTooltip={t(
-                'download.eventsDownloadLogin',
-                'Register and login to download vessel events (free, 2 minutes)'
-              )}
+              loginTooltip={t('download.eventsDownloadLogin')}
             />
             <UserLoggedIconButton
               icon="draw-points"
@@ -152,10 +146,7 @@ function UserSection(): React.ReactElement<any> {
               tooltip={t('layer.drawPoints')}
               tooltipPlacement="top"
               onClick={() => onDrawClick('points')}
-              loginTooltip={t(
-                'download.eventsDownloadLogin',
-                'Register and login to download vessel events (free, 2 minutes)'
-              )}
+              loginTooltip={t('download.eventsDownloadLogin')}
             />
             <IconButton
               icon="plus"

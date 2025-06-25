@@ -196,19 +196,13 @@ function NewPolygonDataset({
             setDatasetMetadataConfig({ valueProperties: [] })
           }}
           editable={!loading}
-          infoTooltip={t(
-            'datasetUpload.polygons.nameHelp',
-            'Select a property of each polygon to make it appear as its label'
-          )}
+          infoTooltip={t('datasetUpload.polygons.nameHelp')}
         />
         <NewDatasetField
           datasetMetadata={datasetMetadata}
           property="polygonColor"
           label={t('datasetUpload.polygons.color')}
-          placeholder={t(
-            'datasetUpload.fieldNumericPlaceholder',
-            'Select a numeric field from your dataset'
-          )}
+          placeholder={t('datasetUpload.fieldNumericPlaceholder')}
           onSelect={(selected) => {
             setDatasetMetadataConfig({ polygonColor: selected.id })
           }}
@@ -216,10 +210,7 @@ function NewPolygonDataset({
             setDatasetMetadataConfig({ polygonColor: '' })
           }}
           editable={!loading}
-          infoTooltip={t(
-            'datasetUpload.polygons.colorHelp',
-            'Select a numeric property of each polygon to change its fill color'
-          )}
+          infoTooltip={t('datasetUpload.polygons.colorHelp')}
         />
         <div className={styles.row}>
           <TimeFieldsGroup
@@ -235,10 +226,7 @@ function NewPolygonDataset({
           placeholder={
             datasetFieldsAllowed.length > 0
               ? datasetFieldsAllowed.join(', ')
-              : t(
-                  'datasetUpload.fieldMultiplePlaceholder',
-                  'Select one or multiple fields from your dataset'
-                )
+              : t('datasetUpload.fieldMultiplePlaceholder')
           }
           direction="top"
           options={filtersFieldsOptions}
@@ -253,17 +241,11 @@ function NewPolygonDataset({
             setDatasetMetadata({ fieldsAllowed: [] })
           }}
           disabled={loading}
-          infoTooltip={t(
-            'datasetUpload.polygons.filtersHelp',
-            'Select properties of the polygons to be able to dinamically filter them in the sidebar after'
-          )}
+          infoTooltip={t('datasetUpload.polygons.filtersHelp')}
         />
         <SwitchRow
           className={styles.saveAsPublic}
-          label={t(
-            'dataset.uploadPublic',
-            'Allow other users to see this dataset when you share a workspace'
-          )}
+          label={t('dataset.uploadPublic')}
           disabled={isEditing || loading}
           active={isPublic}
           onClick={() => setDatasetMetadata({ public: !isPublic })}

@@ -44,24 +44,14 @@ export default function ReportActivityGraphSelector({
     {
       id: REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
       label: t('analysis.beforeAfter'),
-      tooltip: !areAllFiltersEqual
-        ? t(
-            'analysis.noTimeComparisonAllowed',
-            'Time comparison modes are not available when layers have different filters'
-          )
-        : '',
+      tooltip: !areAllFiltersEqual ? t('analysis.noTimeComparisonAllowed') : '',
       tooltipPlacement: 'bottom',
       disabled: loading || !areAllFiltersEqual,
     },
     {
       id: REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
       label: t('analysis.periodComparison'),
-      tooltip: !areAllFiltersEqual
-        ? t(
-            'analysis.noTimeComparisonAllowed',
-            'Time comparison modes are not available when layers have different filters'
-          )
-        : '',
+      tooltip: !areAllFiltersEqual ? t('analysis.noTimeComparisonAllowed') : '',
       tooltipPlacement: 'bottom',
       disabled: loading || !areAllFiltersEqual,
     },

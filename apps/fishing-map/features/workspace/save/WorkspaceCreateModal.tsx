@@ -235,10 +235,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
             label={t('workspace.viewAccess')}
             infoTooltip={
               containsPrivateDatasets
-                ? `${t(
-                    'workspace.sharePrivateDisclaimer',
-                    'This workspace contains datasets that require special permissions'
-                  )}: ${privateDatasets.join(', ')}`
+                ? `${t('workspace.sharePrivateDisclaimer')}: ${privateDatasets.join(', ')}`
                 : ''
             }
             containerClassName={styles.select}
@@ -255,12 +252,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
                 : t('selects.placeholder')
             }
             infoTooltip={
-              viewAccess === WORKSPACE_PRIVATE_ACCESS
-                ? t(
-                    'workspace.privateEditAcessInfo',
-                    'Your current view access permissions do not allow for others to edit this workspace'
-                  )
-                : ''
+              viewAccess === WORKSPACE_PRIVATE_ACCESS ? t('workspace.privateEditAcessInfo') : ''
             }
             disabled={viewAccess === WORKSPACE_PRIVATE_ACCESS}
             containerClassName={styles.select}

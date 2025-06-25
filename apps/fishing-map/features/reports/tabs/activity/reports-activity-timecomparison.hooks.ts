@@ -156,12 +156,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
         },
       })
       if (error) {
-        setErrorMsg(
-          t(
-            'analysis.errorPeriodComparisonDateRange',
-            'Date range error. Comparison start must be after baseline start.'
-          )
-        )
+        setErrorMsg(t('analysis.errorPeriodComparisonDateRange'))
       } else {
         setErrorMsg('')
       }

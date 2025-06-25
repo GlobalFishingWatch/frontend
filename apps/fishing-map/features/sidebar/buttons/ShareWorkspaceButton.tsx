@@ -54,14 +54,7 @@ function ShareWorkspaceButton() {
       size="medium"
       className="print-hidden"
       onClick={onShareClick}
-      tooltip={
-        showClipboardNotification
-          ? t(
-              'common.copiedToClipboard',
-              'The link to share this view has been copied to your clipboard'
-            )
-          : shareTitles[location]
-      }
+      tooltip={showClipboardNotification ? t('common.copiedToClipboard') : shareTitles[location]}
       tooltipPlacement="bottom"
     />
   )

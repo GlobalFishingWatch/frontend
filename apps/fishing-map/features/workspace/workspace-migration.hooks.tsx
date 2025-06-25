@@ -208,12 +208,7 @@ export const useMigrateWorkspaceToast = () => {
 
   const ToastContent = ({ loading = false }: { loading?: boolean }) => (
     <div className={styles.disclaimer}>
-      <p>
-        {t(
-          'workspace.migrationDisclaimer',
-          'Update your workspace to view the latest AIS data and features.'
-        )}
-      </p>
+      <p>{t('workspace.migrationDisclaimer')}</p>
       <p className={styles.secondary}>
         {parse(
           t(

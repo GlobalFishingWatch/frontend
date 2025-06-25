@@ -139,12 +139,7 @@ function VesselGroupReport() {
     return (
       <div className={styles.emptyState}>
         <div className={styles.updateContainer}>
-          <label>
-            {t(
-              'vesselGroupReport.linkDisabled',
-              'This vessel group needs to be updated to latest available data'
-            )}
-          </label>
+          <label>{t('vesselGroupReport.linkDisabled')}</label>
           {isOwnedByUser && (
             <Button onClick={() => onEditClick(vesselGroup)}>
               {t('vesselGroup.clickToUpdate')}

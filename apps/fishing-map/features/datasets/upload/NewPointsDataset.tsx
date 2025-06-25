@@ -299,20 +299,14 @@ function NewPointDataset({
           onCleanClick={() => {
             setDatasetMetadataConfig({ valueProperties: [] })
           }}
-          infoTooltip={t(
-            'datasetUpload.points.nameHelp',
-            'Select a property of each point to make it appear as its label'
-          )}
+          infoTooltip={t('datasetUpload.points.nameHelp')}
         />
         <div className={styles.row}>
           <NewDatasetField
             datasetMetadata={datasetMetadata}
             property="pointSize"
             label={t('datasetUpload.points.size')}
-            placeholder={t(
-              'datasetUpload.fieldNumericPlaceholder',
-              'Select a numeric field from your dataset'
-            )}
+            placeholder={t('datasetUpload.fieldNumericPlaceholder')}
             editable={!loading}
             onSelect={(selected) => {
               setDatasetMetadataConfig({ pointSize: selected.id })
@@ -320,10 +314,7 @@ function NewPointDataset({
             onCleanClick={() => {
               setDatasetMetadataConfig({ pointSize: '' })
             }}
-            infoTooltip={t(
-              'datasetUpload.points.sizeHelp',
-              'Select a numeric property of each point to change its radius'
-            )}
+            infoTooltip={t('datasetUpload.points.sizeHelp')}
           />
           {getDatasetConfigurationProperty({
             dataset: datasetMetadata,
@@ -371,10 +362,7 @@ function NewPointDataset({
           placeholder={
             datasetFieldsAllowed.length > 0
               ? datasetFieldsAllowed.join(', ')
-              : t(
-                  'datasetUpload.fieldMultiplePlaceholder',
-                  'Select one or multiple fields from your dataset'
-                )
+              : t('datasetUpload.fieldMultiplePlaceholder')
           }
           direction="top"
           options={filtersFieldsOptions}
@@ -389,17 +377,11 @@ function NewPointDataset({
             setDatasetMetadata({ fieldsAllowed: [] })
           }}
           disabled={loading}
-          infoTooltip={t(
-            'datasetUpload.points.filtersHelp',
-            'Select properties of the points to be able to dinamically filter them in the sidebar after'
-          )}
+          infoTooltip={t('datasetUpload.points.filtersHelp')}
         />
         <SwitchRow
           className={styles.saveAsPublic}
-          label={t(
-            'dataset.uploadPublic',
-            'Allow other users to see this dataset when you share a workspace'
-          )}
+          label={t('dataset.uploadPublic')}
           disabled={isEditing || loading}
           active={isPublic}
           onClick={() => setDatasetMetadata({ public: !isPublic })}

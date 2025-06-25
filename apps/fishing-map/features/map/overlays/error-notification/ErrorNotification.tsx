@@ -115,10 +115,7 @@ const ErrorNotification = (): React.ReactNode | null => {
             label={t('map.errorLabel')}
             value={errorNotification?.label || ''}
             onChange={(e) => setErrorNotification({ label: e.target.value })}
-            placeholder={t(
-              'map.errorPlaceholder',
-              'Please describe the error as detailed as possible'
-            )}
+            placeholder={t('map.errorPlaceholder')}
             className={styles.input}
           />
           <div className={styles.popupButtons}>

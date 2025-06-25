@@ -61,10 +61,7 @@ function UserReports() {
   const onDeleteClick = useCallback(
     (report: Report) => {
       const confirmation = window.confirm(
-        `${t(
-          'analysis.confirmRemove',
-          'Are you sure you want to permanently delete this report?'
-        )}\n${getReportAreaStringByLocale(report.name, i18n.language)}`
+        `${t('analysis.confirmRemove')}\n${getReportAreaStringByLocale(report.name, i18n.language)}`
       )
       if (confirmation) {
         dispatch(deleteReportThunk(report))
@@ -132,10 +129,7 @@ function UserReports() {
         ) : (
           <div className={styles.placeholder}>
             <p>
-              {t(
-                'analysis.createReportHelp',
-                'To explore how activity and environmental data changes over time, you can create a dynamic report containing analysis for any area. Dynamic reports offer a rapid way to access and understand more information about any ocean area, exclusive economic zone, marine protected area or area of interest. Dynamic reports help you understand how much activity is happening in each area, including which vessels and flag States are active.'
-              )}{' '}
+              {t('analysis.createReportHelp')}{' '}
               <a
                 className={styles.link}
                 href={getUserGuideReportLinkByLocale(i18n.language as Locale)}

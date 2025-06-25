@@ -56,10 +56,7 @@ const VesselGroupReportInsightIUU = ({ skip }: { skip?: boolean }) => {
         <InsightError error={error as ParsedAPIError} />
       ) : !vesselsWithIIU || vesselsWithIIU.length === 0 ? (
         <span className={cx(styles.secondary, styles.nested, styles.row)}>
-          {t(
-            'vesselGroupReport.insights.IUUBlackListsEmpty',
-            'No vessels are present on a RFMO IUU vessel list'
-          )}
+          {t('vesselGroupReport.insights.IUUBlackListsEmpty')}
         </span>
       ) : (
         <div className={styles.nested}>

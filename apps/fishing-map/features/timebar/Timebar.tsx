@@ -372,14 +372,7 @@ const TimebarWrapper = () => {
 
   const tracksComponents = useMemo(() => {
     if (hasTrackError) {
-      return (
-        <div className={styles.error}>
-          {t(
-            'analysis.error',
-            'There was a problem loading the data, please try refreshing the page'
-          )}
-        </div>
-      )
+      return <div className={styles.error}>{t('analysis.error')}</div>
     } else if (!tracks) {
       return null
     } else if (tracks?.length > MAX_TIMEBAR_VESSELS) {
@@ -466,10 +459,7 @@ const TimebarWrapper = () => {
     >
       <Timebar
         disablePlayback={vesselGroupsFiltering}
-        disabledPlaybackTooltip={t(
-          'timebar.disablePlaybackVesselGroups',
-          'Playback of vessel group layers is not supported'
-        )}
+        disabledPlaybackTooltip={t('timebar.disablePlaybackVesselGroups')}
         showPlayback={!isReportLocation}
         labels={labels}
         start={start}

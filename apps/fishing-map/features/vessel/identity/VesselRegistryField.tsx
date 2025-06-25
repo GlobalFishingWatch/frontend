@@ -194,12 +194,7 @@ const VesselRegistryField = ({
             })}
           </ul>
           {isAuthorizations && showLabel && (
-            <p className={styles.disclaimer}>
-              {t(
-                'vessel.authorizationDatesDisclaimer',
-                'The most recent vessel authorized date is the last date Global Fishing Watch collected data. Visit registry source to verify status.'
-              )}
-            </p>
+            <p className={styles.disclaimer}>{t('vessel.authorizationDatesDisclaimer')}</p>
           )}
         </Fragment>
       ) : (

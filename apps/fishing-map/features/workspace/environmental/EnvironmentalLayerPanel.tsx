@@ -226,12 +226,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
               icon={'warning'}
               type={'warning'}
               tooltip={
-                isGFWUser
-                  ? `${t(
-                      'errors.layerLoading',
-                      'There was an error loading the layer'
-                    )} (${layerError})`
-                  : t('errors.layerLoading')
+                isGFWUser ? `${t('errors.layerLoading')} (${layerError})` : t('errors.layerLoading')
               }
               size="small"
             />

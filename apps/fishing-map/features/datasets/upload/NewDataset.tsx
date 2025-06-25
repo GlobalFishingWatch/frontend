@@ -231,14 +231,8 @@ function NewDataset() {
         <Fragment>
           <p className={styles.instructions}>
             {style !== 'transparent'
-              ? t(
-                  'dataset.dragAndDropFileToCreateDataset',
-                  'Drag and drop a file in one of the boxes or click on them to upload your dataset'
-                )
-              : t(
-                  'dataset.dropFileToCreateDataset',
-                  'Drop your file in one of the boxes to upload your dataset'
-                )}
+              ? t('dataset.dragAndDropFileToCreateDataset')
+              : t('dataset.dropFileToCreateDataset')}
           </p>
           <div className={styles.modalContent}>
             <DatasetTypeSelect style={style} onFileLoaded={onFileLoaded} />

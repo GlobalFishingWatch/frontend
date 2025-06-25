@@ -103,14 +103,7 @@ const ActivityByVoyage = () => {
 
   const renderedComponent = useMemo(() => {
     if (!groupCounts.length) {
-      return (
-        <span className={styles.enptyState}>
-          {t(
-            'vessel.noVoyagesinTimeRange',
-            'There are no voyages fully contained in your timerange.'
-          )}
-        </span>
-      )
+      return <span className={styles.enptyState}>{t('vessel.noVoyagesinTimeRange')}</span>
     }
     if (vesselPrintMode) {
       return (

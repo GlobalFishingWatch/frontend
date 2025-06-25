@@ -344,10 +344,7 @@ function VesselLayerPanel({
               icon="warning"
               type="warning"
               disabled
-              tooltip={`${t(
-                'errors.vesselLoading',
-                'There was an error loading the vessel details'
-              )} (${vesselId})`}
+              tooltip={`${t('errors.vesselLoading')} (${vesselId})`}
               tooltipPlacement="top"
             />
           )}

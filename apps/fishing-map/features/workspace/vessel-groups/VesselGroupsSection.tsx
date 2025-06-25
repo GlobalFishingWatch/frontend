@@ -102,10 +102,7 @@ function VesselGroupSection(): React.ReactElement<any> {
         ) : (
           <div className={cx('print-hidden', styles.header)}>
             <div className={cx(styles.emptyState, styles.emptyStateVesselGroups)}>
-              {t(
-                'workspace.emptyStateVesselGroups',
-                'Add vessel groups to see group presence and operation footprint.'
-              )}
+              {t('workspace.emptyStateVesselGroups')}
             </div>
             {/* <LayerPanelContainer dataview={MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION}>
               <span className={styles.highlightSpan}></span>

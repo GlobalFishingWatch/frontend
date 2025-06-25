@@ -65,12 +65,7 @@ const AreaTick = ({ y, payload }: any) => {
 
   return (
     <foreignObject x={0} y={y - 12} width="200" height="40" className={styles.areaContainer}>
-      <Tooltip
-        content={`${t(
-          'vessel.clickToFitMapToEvents',
-          'Center map on the events inside'
-        )} ${areaLabel}`}
-      >
+      <Tooltip content={`${t('vessel.clickToFitMapToEvents')} ${areaLabel}`}>
         <span
           onMouseOver={setHighlightEvents}
           onMouseOut={resetHighlightedEvents}
@@ -286,12 +281,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
             )}
           </div>
         ) : events.length === 0 ? (
-          <span className={styles.enptyState}>
-            {t(
-              'vessel.noEventsinTimeRange',
-              'There are no events fully contained in your timerange.'
-            )}
-          </span>
+          <span className={styles.enptyState}>{t('vessel.noEventsinTimeRange')}</span>
         ) : (
           <span className={styles.enptyState}>
             {t('vessel.noEventsIn', {

@@ -292,10 +292,7 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
         <div>
           <label>{t('vessel.vesselCorrection.analystComments')}</label>
           <InputText
-            placeholder={t(
-              'vessel.vesselCorrection.commentPlaceholder',
-              'Please provide supportive source reference(s) to your correction and describe your correction rationale.'
-            )}
+            placeholder={t('vessel.vesselCorrection.commentPlaceholder')}
             value={proposedValues?.comments || ''}
             className={styles.input}
             onChange={(e) =>

@@ -85,12 +85,7 @@ function EventReportPorts() {
     return (
       <ReportVesselsPlaceholder animate={false} showGraph={false} showSearch={false}>
         <div className={cx(styles.cover, styles.center, styles.top)}>
-          <p>
-            {t(
-              'eventsReport.newTimeRangePorts',
-              'Click the button to see the ports visited after events'
-            )}
-          </p>
+          <p>{t('eventsReport.newTimeRangePorts')}</p>
           <Button onClick={updateReportHash}>{t('eventsReport.seePorts')}</Button>
         </div>
       </ReportVesselsPlaceholder>
@@ -145,10 +140,7 @@ function EventReportPorts() {
                         tooltip={
                           isPortInFilter
                             ? t('event.port_visitedAfterRemove')
-                            : t(
-                                'event.port_visitedAfterFilter',
-                                'Filter events by port visited after'
-                              )
+                            : t('event.port_visitedAfterFilter')
                         }
                       />
                       {port.name}

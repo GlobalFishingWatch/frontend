@@ -110,10 +110,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
                 <div>
                   <VesselGroupReportLink vesselGroupId={vesselGroup?.id ?? ''}>
                     <IconButton
-                      tooltip={t(
-                        'vesselGroupReport.clickToSee',
-                        'Click to see the vessel group report'
-                      )}
+                      tooltip={t('vesselGroupReport.clickToSee')}
                       icon="analysis"
                       onClick={() => {
                         dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
@@ -131,12 +128,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
             )
           })
         ) : (
-          <div className={styles.placeholder}>
-            {t(
-              'workspace.emptyStateVesselGroups',
-              'Add vessel groups to see group presence and operation footprint.'
-            )}
-          </div>
+          <div className={styles.placeholder}>{t('workspace.emptyStateVesselGroups')}</div>
         )}
       </ul>
     )

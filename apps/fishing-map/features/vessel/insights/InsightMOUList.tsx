@@ -109,14 +109,7 @@ const InsightMOUList = ({
       mouList?.tokyo.totalTimesListed &&
       mouList?.tokyo.totalTimesListed > 0
     ) {
-      messages.push(
-        <p key="tokyoEmpty">
-          {t(
-            'vessel.insights.MOUTokyoListsPreviousAppearance',
-            'Previously flew under another flag on the Tokyo MOU black or grey list'
-          )}
-        </p>
-      )
+      messages.push(<p key="tokyoEmpty">{t('vessel.insights.MOUTokyoListsPreviousAppearance')}</p>)
     }
 
     const hasParisBlackAppearences = Object.values(parisAppearences.BLACK).length > 0
@@ -163,14 +156,7 @@ const InsightMOUList = ({
       mouList?.paris.totalTimesListed &&
       mouList?.paris.totalTimesListed > 0
     ) {
-      messages.push(
-        <p key="parisEmpty">
-          {t(
-            'vessel.insights.MOUParisListsPreviousAppearance',
-            'Previously flew under another flag on the Paris MOU black or grey list'
-          )}
-        </p>
-      )
+      messages.push(<p key="parisEmpty">{t('vessel.insights.MOUParisListsPreviousAppearance')}</p>)
     }
     if (
       mouList?.tokyo.valuesInThePeriod.length === 0 &&
@@ -178,10 +164,7 @@ const InsightMOUList = ({
     ) {
       messages.push(
         <p className={styles.secondary} key="allEmpty">
-          {t(
-            'vessel.insights.MOUListsEmpty',
-            'Flying under a flag/flags not present on the Tokio or Paris MOU black or grey lists'
-          )}
+          {t('vessel.insights.MOUListsEmpty')}
         </p>
       )
     }

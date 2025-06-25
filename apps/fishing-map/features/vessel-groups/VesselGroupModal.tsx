@@ -215,12 +215,7 @@ function VesselGroupModal(): React.ReactElement<any> {
   const onBackClick = useCallback(
     (action: 'back' | 'close' = 'back') => {
       const confirmed = hasVesselGroupsVessels
-        ? window.confirm(
-            t(
-              'vesselGroup.confirmAbort',
-              'You will lose any changes made in this vessel group. Are you sure?'
-            )
-          )
+        ? window.confirm(t('vesselGroup.confirmAbort'))
         : true
       if (confirmed) {
         if (action === 'back') {
@@ -447,10 +442,7 @@ function VesselGroupModal(): React.ReactElement<any> {
         {!editingVesselGroup && (
           <SwitchRow
             className={styles.row}
-            label={t(
-              'vesselGroup.uploadPublic',
-              'Allow other users to see this vessel group when you share a workspace'
-            )}
+            label={t('vesselGroup.uploadPublic')}
             active={createAsPublic}
             onClick={() => setCreateAsPublic((createAsPublic) => !createAsPublic)}
           />
@@ -466,10 +458,7 @@ function VesselGroupModal(): React.ReactElement<any> {
               {t('vesselGroup.disclaimerFeaturesNotAvailable', {
                 defaultValue:
                   '{{features}} are only available for AIS vessels and your group contains vessels from {{datasets}}.',
-                features: t(
-                  'vesselGroup.disclaimerFeaturesNotAvailableGenericPrefix',
-                  'Some features'
-                ),
+                features: t('vesselGroup.disclaimerFeaturesNotAvailableGenericPrefix'),
                 datasets: Array.from(datasetsWithoutRelatedEvents)
                   .map((d) => getDatasetLabel(d))
                   .join(', '),

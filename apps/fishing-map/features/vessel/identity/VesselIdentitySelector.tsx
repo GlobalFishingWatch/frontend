@@ -67,12 +67,7 @@ const VesselIdentitySelector = () => {
   return (
     <div>
       {!isIdentityInTimerange && (
-        <p className={styles.error}>
-          {t(
-            'vessel.identityDatesOutOfRange',
-            'The dates of this identity don’t overlap with your current time range'
-          )}
-        </p>
+        <p className={styles.error}>{t('vessel.identityDatesOutOfRange')}</p>
       )}
       <ul className={cx(styles.selector, 'print-hidden')}>
         {identities.map((identity) => {

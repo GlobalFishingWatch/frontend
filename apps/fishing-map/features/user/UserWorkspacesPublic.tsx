@@ -51,12 +51,7 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
 
   const onDeleteClick = useCallback(
     async (workspace: AppWorkspace) => {
-      const confirmation = window.confirm(
-        `${t(
-          'workspace.confirmRemove',
-          'Are you sure you want to permanently delete this workspace?'
-        )}\n${workspace.name}`
-      )
+      const confirmation = window.confirm(`${t('workspace.confirmRemove')}\n${workspace.name}`)
       if (confirmation) {
         await dispatch(deleteWorkspaceThunk(workspace.id))
       }

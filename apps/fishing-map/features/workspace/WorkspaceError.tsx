@@ -56,12 +56,5 @@ export default function WorkspaceError() {
     )
   }
 
-  return (
-    <ErrorPlaceholder
-      title={t(
-        'errors.workspaceLoad',
-        'There was an error loading the workspace, please try again later'
-      )}
-    />
-  )
+  return <ErrorPlaceholder title={t('errors.workspaceLoad')} />
 }

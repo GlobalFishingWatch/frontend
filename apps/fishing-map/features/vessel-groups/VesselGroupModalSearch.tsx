@@ -1,4 +1,4 @@
-import { useCallback, useEffect,useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { parse as parseCSV } from 'papaparse'
@@ -69,12 +69,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
         }
 
         if (columns.length > 1 && !foundIdColumn) {
-          onError(
-            t(
-              'vesselGroup.csvError',
-              'Uploaded CSV file has multiple columns and there is no obvious ID column'
-            )
-          )
+          onError(t('vesselGroup.csvError'))
           return
         } else {
           onError('')
@@ -109,7 +104,6 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
     if (csvData && searchIdField) {
       updateSearchByIdField(csvData, searchIdField)
     }
-     
   }, [searchIdField])
 
   return (

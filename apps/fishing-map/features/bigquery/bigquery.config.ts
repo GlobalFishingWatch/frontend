@@ -12,18 +12,12 @@ export const VisualisationOptions: {
   {
     id: '4wings',
     label: t('bigQuery.visualisationActivity'),
-    fieldsHint: t(
-      'bigQuery.visualisationActivityHint',
-      '(Ensure id, lat, lon, timestamp and value are all present)'
-    ),
+    fieldsHint: t('bigQuery.visualisationActivityHint'),
   },
   {
     id: 'events',
     label: t('bigQuery.visualisationEvents'),
-    fieldsHint: t(
-      'bigQuery.visualisationActivityHint',
-      '(Ensure id, lat, lon, timestamp and value are all present)'
-    ),
+    fieldsHint: t('bigQuery.visualisationActivityHint'),
   },
 ]
 

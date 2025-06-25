@@ -239,12 +239,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
                   placeholder={t('feedback.email')}
                   onChange={({ target }) => onFieldChange('email', target.value)}
                 />
-                <span className={styles.emailDisclaimer}>
-                  {t(
-                    'feedback.emailDisclaimer',
-                    'We will only email you in relation to this feedback'
-                  )}
-                </span>
+                <span className={styles.emailDisclaimer}>{t('feedback.emailDisclaimer')}</span>
               </Fragment>
             )}
             <Select
@@ -285,21 +280,13 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
                 onChange={({ target }) => onFieldChange('description', target.value)}
                 value={feedbackData.description || ''}
                 className={styles.textarea}
-                placeholder={t(
-                  'feedback.descriptionPlaceholder',
-                  'Please be as specific as possible.'
-                )}
+                placeholder={t('feedback.descriptionPlaceholder')}
               ></textarea>
             </div>
           )}
         </div>
 
-        <p className={styles.intro}>
-          {t(
-            'feedback.intro',
-            'Global Fishing Watch is constantly working to improve our data. With billions of positions and hundreds of thousands of vessel to review, and an entire ocean of activity, we will inevitably have some vessels and activities misclassified. Feedback from you can help us identify where we most need to improve our data. We will endeavour to address your feedback.'
-          )}
-        </p>
+        <p className={styles.intro}>{t('feedback.intro')}</p>
         <div className={styles.footer}>
           <Button
             tooltip={!suficientData ? t('feedback.insuficientData') : ''}

@@ -264,10 +264,7 @@ function NewTrackDataset({
             <NewDatasetField
               datasetMetadata={datasetMetadata}
               property="latitude"
-              label={`${t('datasetUpload.point.coordinates')} - ${t(
-                'common.latitude',
-                'Latitude'
-              )}`}
+              label={`${t('datasetUpload.point.coordinates')} - ${t('common.latitude')}`}
               editable={!isEditing && !loading}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ latitude: selected.id })
@@ -307,10 +304,7 @@ function NewTrackDataset({
                 setDatasetMetadata({ fieldsAllowed: [] })
                 setDatasetMetadataConfig({ lineId: '' })
               }}
-              infoTooltip={t(
-                'datasetUpload.tracks.lineIdHelp',
-                'Select the property of your dataset that defines which track is each point part of (e.g. each vessel or animal)'
-              )}
+              infoTooltip={t('datasetUpload.tracks.lineIdHelp')}
             />
             <NewDatasetField
               datasetMetadata={datasetMetadata}
@@ -324,10 +318,7 @@ function NewTrackDataset({
                 setDatasetMetadata({ fieldsAllowed: [] })
                 setDatasetMetadataConfig({ segmentId: '' })
               }}
-              infoTooltip={t(
-                'datasetUpload.tracks.segmentIdHelp',
-                'Select the property of your dataset that defines which segment of a track is each point part of (i.e. each trip)'
-              )}
+              infoTooltip={t('datasetUpload.tracks.segmentIdHelp')}
             />
           </div>
         )}
@@ -351,20 +342,14 @@ function NewTrackDataset({
             setDatasetMetadataConfig({ valueProperties: [] })
           }}
           editable={!loading}
-          infoTooltip={t(
-            'datasetUpload.tracks.nameHelp',
-            'Select a property to add a label to each line on the map'
-          )}
+          infoTooltip={t('datasetUpload.tracks.nameHelp')}
         />
         <MultiSelect
           label={t('datasetUpload.tracks.filters')}
           placeholder={
             fieldsAllowed.length > 0
               ? fieldsAllowed.join(', ')
-              : t(
-                  'datasetUpload.fieldMultiplePlaceholder',
-                  'Select one or multiple fields from your dataset'
-                )
+              : t('datasetUpload.fieldMultiplePlaceholder')
           }
           direction="top"
           disabled={loading}
@@ -379,17 +364,11 @@ function NewTrackDataset({
           onCleanClick={() => {
             setDatasetMetadata({ fieldsAllowed: [] })
           }}
-          infoTooltip={t(
-            'datasetUpload.tracks.filtersHelp',
-            'Select properties of the lines or their points to be able to dinamically filter them in the sidebar after'
-          )}
+          infoTooltip={t('datasetUpload.tracks.filtersHelp')}
         />
         <SwitchRow
           className={styles.saveAsPublic}
-          label={t(
-            'dataset.uploadPublic',
-            'Allow other users to see this dataset when you share a workspace'
-          )}
+          label={t('dataset.uploadPublic')}
           // disabled={!!mapDrawEditDataset}
           active={isPublic}
           disabled={isEditing || loading}

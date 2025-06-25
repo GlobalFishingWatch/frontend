@@ -69,25 +69,10 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
             <div className={styles.description}>
               {t('search.description')}
               <br />
-              {isSmallScreen
-                ? t(
-                    'search.descriptionSmallScreens',
-                    'An advanced search with flters is available on bigger screens'
-                  )
-                : t(
-                    'search.descriptionNarrow',
-                    'You can narrow your search by clicking "ADVANCED" in the top menu bar.'
-                  )}
+              {isSmallScreen ? t('search.descriptionSmallScreens') : t('search.descriptionNarrow')}
             </div>
           )}
-          {activeSearchOption === 'advanced' && (
-            <p>
-              {t(
-                'search.descriptionAdvanced',
-                'The vessels will appear here once you select your desired filters.'
-              )}
-            </p>
-          )}
+          {activeSearchOption === 'advanced' && <p>{t('search.descriptionAdvanced')}</p>}
           {guestUser && noGuestDatasets?.length > 0 && (
             <p className={cx(styles.description, styles.center)}>
               <Tooltip content={noGuestDatasets.join(', ')}>

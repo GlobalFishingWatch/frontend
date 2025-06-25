@@ -308,16 +308,7 @@ function LayerSchemaFilter({
   if (type === 'boolean') {
     return (
       <Fragment>
-        <Tooltip
-          content={
-            EXPERIMENTAL_FILTERS.includes(id)
-              ? t(
-                  'common.experimentalTooltip',
-                  'Dataset still in development, click the information icon to learn more'
-                )
-              : ''
-          }
-        >
+        <Tooltip content={EXPERIMENTAL_FILTERS.includes(id) ? t('common.experimentalTooltip') : ''}>
           <label className={cx(styles.labelWithExperimental, 'experimental')}>
             {getLabelWithUnit(label, unit)}
           </label>

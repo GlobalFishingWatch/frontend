@@ -102,12 +102,7 @@ function UserDatasets() {
 
   const onDeleteClick = useCallback(
     (dataset: Dataset) => {
-      const confirmation = window.confirm(
-        `${t(
-          'dataset.confirmRemove',
-          'Are you sure you want to permanently delete this dataset?'
-        )}\n${dataset.name}`
-      )
+      const confirmation = window.confirm(`${t('dataset.confirmRemove')}\n${dataset.name}`)
       if (confirmation) {
         dispatch(deleteDatasetThunk(dataset.id))
       }
@@ -157,10 +152,7 @@ function UserDatasets() {
                   infoTooltip = t('dataset.importing')
                 }
                 if (datasetError) {
-                  infoTooltip = `${t(
-                    'errors.uploadError',
-                    'There was an error uploading your dataset'
-                  )} - ${dataset.importLogs}`
+                  infoTooltip = `${t('errors.uploadError')} - ${dataset.importLogs}`
                 }
                 const datasetIcon = getDatasetTypeIcon(dataset)
                 return (

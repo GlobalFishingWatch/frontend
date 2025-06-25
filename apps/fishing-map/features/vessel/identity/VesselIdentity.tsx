@@ -192,10 +192,7 @@ const VesselIdentity = () => {
               className="print-hidden"
               onClick={onDownloadClick}
               tooltip={t('download.dataDownload')}
-              loginTooltip={t(
-                'download.dataDownloadLogin',
-                'Register and login to download vessel information (free, 2 minutes)'
-              )}
+              loginTooltip={t('download.dataDownloadLogin')}
               tooltipPlacement="top"
             />
           </div>
@@ -277,12 +274,7 @@ const VesselIdentity = () => {
                     alt={registrySourceData?.key}
                     className={styles.registrySourceLogo}
                   />
-                  <Tooltip
-                    content={t(
-                      'vessel.extraInfoTooltip',
-                      'TMT has additional insights relating to the vessel’s compliance history and/or IUU listing'
-                    )}
-                  >
+                  <Tooltip content={t('vessel.extraInfoTooltip')}>
                     <div>
                       <label>{t('vessel.extraInfo')}</label>
                       <p>{registrySourceData?.contact}</p>

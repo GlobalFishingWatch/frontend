@@ -84,10 +84,7 @@ const InsightFishing = ({
             </p>
           ) : (
             <p className={styles.secondary}>
-              {t(
-                'vessel.insights.fishingEventsInNoTakeMpasEmpty',
-                'No fishing events detected in no-take MPAs'
-              )}
+              {t('vessel.insights.fishingEventsInNoTakeMpasEmpty')}
             </p>
           )}
           {eventsInRfmoWithoutKnownAuthorization?.length !== 0 ? (
@@ -105,10 +102,7 @@ const InsightFishing = ({
             </p>
           ) : (
             <p className={styles.secondary}>
-              {t(
-                'vessel.insights.fishingEventsInRfmoWithoutKnownAuthorizationEmpty',
-                'No fishing events detected outside known RFMO authorized areas'
-              )}
+              {t('vessel.insights.fishingEventsInRfmoWithoutKnownAuthorizationEmpty')}
             </p>
           )}
         </div>

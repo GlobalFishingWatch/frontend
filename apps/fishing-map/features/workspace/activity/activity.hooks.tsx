@@ -112,12 +112,7 @@ export const useVisualizationsOptions = (
                   icon={hasVesselGroupsFilter ? 'heatmap-high-res-disabled' : 'heatmap-high-res'}
                 />
               ),
-              tooltip: hasVesselGroupsFilter
-                ? t(
-                    'map.highResDisabled',
-                    'High resolution heatmaps are disabled when using a vessel group filter'
-                  )
-                : t('map.highRes'),
+              tooltip: hasVesselGroupsFilter ? t('map.highResDisabled') : t('map.highRes'),
               tooltipPlacement: 'bottom',
               disabled: hasVesselGroupsFilter,
             },
@@ -128,10 +123,7 @@ export const useVisualizationsOptions = (
                     label: <Icon icon={isPositionsLayerAvailable ? 'vessel' : 'vessel-disabled'} />,
                     tooltip: isPositionsLayerAvailable
                       ? t('map.positions')
-                      : t(
-                          'map.positionsDisabled',
-                          'A more detailed visualization is available in areas with less activity, please zoom in or reduce your time range to see it'
-                        ),
+                      : t('map.positionsDisabled'),
                     tooltipPlacement: 'bottom',
                     disabled: !isPositionsLayerAvailable,
                   },

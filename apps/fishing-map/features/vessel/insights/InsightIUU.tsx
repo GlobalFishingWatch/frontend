@@ -41,12 +41,7 @@ const InsightIUU = ({
                 })}
               </span>
             ) : (
-              <span className={styles.secondary}>
-                {t(
-                  'vessel.insights.IUUBlackListsEmpty',
-                  'The vessel is not present on an RFMO IUU vessel list'
-                )}
-              </span>
+              <span className={styles.secondary}>{t('vessel.insights.IUUBlackListsEmpty')}</span>
             )}
           </p>
         </div>

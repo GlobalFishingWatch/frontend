@@ -115,10 +115,7 @@ function SearchBasic({
                 searchStatus === AsyncReducerStatus.Loading ||
                 searchStatus === AsyncReducerStatus.Aborted
               }
-              placeholder={`${t('search.placeholder')} (${t(
-                'search.mainQueryLabel',
-                'Name, IMO or MMSI'
-              )})`}
+              placeholder={`${t('search.placeholder')} (${t('search.mainQueryLabel')})`}
             />
           </div>
           <div className={styles.scrollContainer}>

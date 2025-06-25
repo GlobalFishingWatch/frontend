@@ -62,14 +62,7 @@ const FitBounds = ({ className, layer, hasError, infoResource, disabled }: FitBo
             console.warn("transmissionDates not available, can't fit time", infoResource)
             return
           }
-          if (
-            window.confirm(
-              t(
-                'layer.vessel_fit_bounds_out_of_timerange',
-                'The track has no activity in your selected timerange. Change timerange to fit this track?'
-              ) as string
-            )
-          ) {
+          if (window.confirm(t('layer.vessel_fit_bounds_out_of_timerange') as string)) {
             if (infoResource) {
               setTimerange({
                 start: getUTCDate(transmissionDateFrom).toISOString()!,

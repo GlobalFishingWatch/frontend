@@ -55,12 +55,7 @@ function UserVesselGroups() {
 
   const onDeleteClick = useCallback(
     (vesselGroup: VesselGroup) => {
-      const confirmation = window.confirm(
-        `${t(
-          'vesselGroup.confirmRemove',
-          'Are you sure you want to permanently delete this vessel group?'
-        )}\n${vesselGroup.name}`
-      )
+      const confirmation = window.confirm(`${t('vesselGroup.confirmRemove')}\n${vesselGroup.name}`)
       if (confirmation) {
         dispatch(deleteVesselGroupThunk(vesselGroup.id.toString()))
       }
@@ -124,12 +119,7 @@ function UserVesselGroups() {
                           type="border-secondary"
                           size="small"
                           tooltip={
-                            isOutdated
-                              ? t(
-                                  'vesselGroup.clickToUpdateLong',
-                                  'Click to update your vessel group to view the latest data and features'
-                                )
-                              : t('vesselGroup.edit')
+                            isOutdated ? t('vesselGroup.clickToUpdateLong') : t('vesselGroup.edit')
                           }
                           loading={
                             vesselGroup.id === editingGroupId &&

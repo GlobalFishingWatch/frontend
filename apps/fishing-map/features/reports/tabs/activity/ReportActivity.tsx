@@ -189,12 +189,7 @@ function ActivityReport() {
         return (
           <ReportVesselsPlaceholder animate={false}>
             <div className={styles.cover}>
-              <p className={styles.error}>
-                {t(
-                  'analysis.errorTooComplex',
-                  'The geometry of the area is too complex to perform a report, try to simplify and upload again.'
-                )}
-              </p>
+              <p className={styles.error}>{t('analysis.errorTooComplex')}</p>
             </div>
           </ReportVesselsPlaceholder>
         )
@@ -218,14 +213,7 @@ function ActivityReport() {
     }
 
     if (!reportDataviews?.length) {
-      return (
-        <p className={styles.error}>
-          {t(
-            'analysis.datasetsNotAllowedAll',
-            'None of your datasets are allowed to be used in reports'
-          )}{' '}
-        </p>
-      )
+      return <p className={styles.error}>{t('analysis.datasetsNotAllowedAll')} </p>
     }
     return (
       <p className={styles.error}>
@@ -257,12 +245,7 @@ function ActivityReport() {
       return (
         <ReportVesselsPlaceholder animate={false} className="print-hidden">
           <div className={cx(styles.cover, styles.error)}>
-            <p>
-              {t(
-                'analysis.timeRangeTooLong',
-                'The selected time range is too long, please select a shorter time range'
-              )}
-            </p>
+            <p>{t('analysis.timeRangeTooLong')}</p>
           </div>
         </ReportVesselsPlaceholder>
       )
@@ -278,10 +261,7 @@ function ActivityReport() {
           <div className={cx(styles.cover, styles.center, styles.top)}>
             <p
               dangerouslySetInnerHTML={{
-                __html: t(
-                  'analysis.onlyEvolutionSupported',
-                  'Click the evolution button above to see the vessels active in the area'
-                ),
+                __html: t('analysis.onlyEvolutionSupported'),
               }}
             />
           </div>
@@ -349,10 +329,7 @@ function ActivityReport() {
         <div className={styles.error}>
           {datasetsDownloadNotSupported.length > 0 ? (
             <p className={styles.secondary}>
-              {t(
-                'analysis.datasetsNotAllowed',
-                'Vessels are not included from the following sources:'
-              )}{' '}
+              {t('analysis.datasetsNotAllowed')}{' '}
               {datasetsDownloadNotSupported.map((dataset, index) => (
                 <Fragment>
                   <DatasetLabel key={dataset} dataset={{ id: dataset }} />

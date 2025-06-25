@@ -251,10 +251,7 @@ function ActivityLayerPanel({
                   type={'warning'}
                   tooltip={
                     isGFWUser
-                      ? `${t(
-                          'errors.layerLoading',
-                          'There was an error loading the layer'
-                        )} (${layerError})`
+                      ? `${t('errors.layerLoading')} (${layerError})`
                       : t('errors.layerLoading')
                   }
                   size="small"
@@ -286,13 +283,9 @@ function ActivityLayerPanel({
                     content={
                       stats.type === 'vessels'
                         ? t(
-                            'layer.statsHelp',
-                            'The number of vessels and flag states is calculated for your current filters and time range globally (up to 1 year). Some double counting may occur.'
-                          )
+                            'layer.statsHelp'                          )
                         : t(
-                            'layer.statsHelpDetection',
-                            'The number of detections is calculated for your current filters and time range globally (up to 1 year). Some double counting may occur.'
-                          )
+                            'layer.statsHelpDetection'                          )
                     }
                   >
                     <div className={activityStyles.help}>

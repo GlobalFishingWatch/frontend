@@ -178,10 +178,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
             }
             infoTooltip={
               workspace?.viewAccess === WORKSPACE_PRIVATE_ACCESS
-                ? t(
-                    'workspace.privateEditAcessInfo',
-                    'Private view workspace does not allow editing'
-                  )
+                ? t('workspace.privateEditAcessInfo')
                 : ''
             }
             disabled={workspace?.viewAccess === WORKSPACE_PRIVATE_ACCESS}

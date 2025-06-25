@@ -249,10 +249,7 @@ function MapDraw() {
       <div className={styles.buttonsContainer}>
         <SwitchRow
           className={styles.saveAsPublic}
-          label={t(
-            'dataset.uploadPublic',
-            'Allow other users to see this dataset when you share a workspace'
-          )}
+          label={t('dataset.uploadPublic')}
           disabled={!!mapDrawEditDataset}
           active={createAsPublic}
           onClick={toggleCreateAsPublic}

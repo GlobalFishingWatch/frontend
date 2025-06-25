@@ -149,10 +149,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
               style={{ backgroundColor: EVENTS_COLORS.encounter }}
               loading={isLoading}
             />
-            {t(
-              'eventInfo.trackDisclaimer',
-              'Encountered vessel track shows one month before and after the event.'
-            )}
+            {t('eventInfo.trackDisclaimer')}
           </div>
         )}
         {isGlobalReportsEnabled && (

@@ -150,10 +150,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
     if (!activeTrackDataviews?.length) {
       tooltipLabel = t('timebarSettings.tracksDisabled')
     } else if (!timebarGraphEnabled) {
-      tooltipLabel = t(
-        'timebarSettings.graphDisabled',
-        'Graph is not available with more than 2 vessels selected'
-      )
+      tooltipLabel = t('timebarSettings.graphDisabled')
     } else if (!hasSomeVesselLayer) {
       tooltipLabel = t('timebarSettings.graphVesselOnly', {
         defaultValue: '{{graph}} is only available for vessel tracks',

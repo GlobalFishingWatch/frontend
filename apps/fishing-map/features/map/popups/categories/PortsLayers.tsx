@@ -47,10 +47,7 @@ function PortsTooltipSection({ features, showFeaturesDetails = false }: PortsLay
                         <PortsReportLink port={port}>
                           <IconButton
                             icon="analysis"
-                            tooltip={t(
-                              'portsReport.seePortReport',
-                              'See all entry events to this port'
-                            )}
+                            tooltip={t('portsReport.seePortReport')}
                             size="small"
                           />
                         </PortsReportLink>

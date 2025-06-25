@@ -82,12 +82,7 @@ const DatasetType = ({
       {isDragActive ? (
         dragError ? (
           <div className={styles.textContainer}>
-            <p>
-              {t(
-                'dataset.dragNotAccepted',
-                'This file is not compatible with this type of dataset.'
-              )}
-            </p>
+            <p>{t('dataset.dragNotAccepted')}</p>
           </div>
         ) : (
           <div className={styles.textContainer}>
@@ -102,10 +97,7 @@ const DatasetType = ({
           <div className={styles.textContainer}>
             {fileRejections.length > 0 ? (
               <p className={cx(styles.description, styles.errorMessage)}>
-                {t(
-                  'dataset.dragNotAccepted',
-                  'This file is not compatible with this type of dataset.'
-                )}
+                {t('dataset.dragNotAccepted')}
               </p>
             ) : (
               <p className={styles.fileTypes}>{fileTypes.join(', ')}</p>
@@ -131,10 +123,7 @@ const DatasetTypeSelect = ({
         type="polygons"
         title={t('dataset.typePolygons')}
         style={style}
-        description={t(
-          'dataset.typePolygonsDescription',
-          'Display one or multiple areas coloured by any quantitative value in your dataset.'
-        )}
+        description={t('dataset.typePolygonsDescription')}
         onFileLoaded={onFileLoaded}
         icon={<Polygons />}
       />
@@ -142,10 +131,7 @@ const DatasetTypeSelect = ({
         type="tracks"
         title={t('dataset.typeTracks')}
         style={style}
-        description={t(
-          'dataset.typeTracksDescription',
-          'Display the movement of one or multiple animals or vessels.'
-        )}
+        description={t('dataset.typeTracksDescription')}
         icon={<Tracks />}
         onFileLoaded={onFileLoaded}
       />
@@ -153,10 +139,7 @@ const DatasetTypeSelect = ({
         type="points"
         title={t('dataset.typePoints')}
         style={style}
-        description={t(
-          'dataset.typePointsDescription',
-          'Display one or multiple positions sized by any quantitative value in your dataset.'
-        )}
+        description={t('dataset.typePointsDescription')}
         icon={<Points />}
         onFileLoaded={onFileLoaded}
       />
