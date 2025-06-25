@@ -1005,8 +1005,8 @@
       "tuna_purse_seines": "crwdns60571:0crwdne60571:0",
       "well_boat": "crwdns69514:0crwdne69514:0"
     },
-    "gfw-geartypes": "crwdns87948:0crwdne87948:0",
-    "gfw-shiptypes": "crwdns87950:0crwdne87950:0",
+    "gfw_geartypes": "crwdns93654:0crwdne93654:0",
+    "gfw_shiptypes": "crwdns93656:0crwdne93656:0",
     "goToImage": "crwdns84100:0{{number}}crwdne84100:0",
     "grossTonnage": "crwdns69516:0crwdne69516:0",
     "grossTonnageRange": "crwdns60589:0crwdne60589:0",
@@ -1017,9 +1017,9 @@
     "infoSource": "crwdns69522:0crwdne69522:0",
     "infoSources": {
       "both": "crwdns69752:0crwdne69752:0",
+      "gfw-source": "crwdns87952:0crwdne87952:0",
       "registry": "crwdns69524:0crwdne69524:0",
-      "selfReported": "crwdns69526:0crwdne69526:0",
-      "gfw-source": "crwdns87952:0crwdne87952:0"
+      "selfReported": "crwdns69526:0crwdne69526:0"
     },
     "insights": {
       "countries": {
