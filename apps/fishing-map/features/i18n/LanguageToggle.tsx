@@ -6,13 +6,13 @@ import Script from 'next/script'
 
 import { Icon } from '@globalfishingwatch/ui-components'
 
+import { IS_DEVELOPMENT_ENV } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
 import { CROWDIN_IN_CONTEXT_LANG, LocaleLabels } from 'features/i18n/i18n'
 import { selectHasEditTranslationsPermissions } from 'features/user/selectors/user.permissions.selectors'
-import { selectIsGFWDeveloper } from 'features/user/selectors/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import type { Locale } from 'types'
+import { Locale } from 'types'
 
 import styles from './LanguageToggle.module.css'
 
@@ -29,7 +29,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const hasEditTranslationsPermissions = useSelector(selectHasEditTranslationsPermissions)
   const basemapDataviewInstance = useSelector(selectBasemapLabelsDataviewInstance)
-  const toggleLanguage = (lang: Locale) => {
+  const toggleLanguage = (lang: Locale | 'source') => {
     trackEvent({
       category: TrackCategory.I18n,
       action: `Change language`,
@@ -40,7 +40,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
       upsertDataviewInstance({
         id: basemapDataviewInstance.id as string,
         config: {
-          locale: lang,
+          locale: lang === 'source' ? Locale.en : (lang as Locale),
         },
       })
     }
@@ -51,6 +51,18 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
         <Icon icon="language" />
       </div>
       <ul className={cx(styles.languages, styles[position])}>
+        {IS_DEVELOPMENT_ENV && (
+          <li>
+            <button
+              onClick={() => toggleLanguage('source')}
+              className={cx(styles.language, {
+                [styles.currentLanguage]: i18n.language === 'source',
+              })}
+            >
+              🚧 Source 🚧
+            </button>
+          </li>
+        )}
         {LocaleLabels.map(({ id, label }) => (
           <li key={id}>
             <button

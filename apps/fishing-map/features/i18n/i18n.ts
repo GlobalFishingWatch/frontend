@@ -23,6 +23,10 @@ const SHARED_LABELS_PATH = IS_DEVELOPMENT_ENV
   : `https://cdn.jsdelivr.net/npm/@globalfishingwatch/i18n-labels@${NPM_SCOPE}`
 
 const PACKAGE_NAMESPACES = ['flags', 'datasets', 'timebar']
+const SUPPORTED_LANGUAGES = [...Object.values(Locale), CROWDIN_IN_CONTEXT_LANG]
+if (IS_DEVELOPMENT_ENV) {
+  SUPPORTED_LANGUAGES.push('source')
+}
 
 i18n
   // load translation using http -> see /public/locales
@@ -39,6 +43,9 @@ i18n
     backend: {
       loadPath: (lngs: string[], namespaces: string[]) => {
         if (namespaces.some((namespace: string) => PACKAGE_NAMESPACES.includes(namespace))) {
+          if (lngs.includes('source')) {
+            return `${SHARED_LABELS_PATH}/en/{{ns}}.json`
+          }
           return `${SHARED_LABELS_PATH}/{{lng}}/{{ns}}.json`
         }
         return `${PATH_BASENAME}/locales/{{lng}}/{{ns}}.json`
@@ -46,8 +53,8 @@ i18n
     },
     ns: ['translations', 'flags', 'datasets', 'timebar', 'workspaces'],
     defaultNS: 'translations',
-    fallbackLng: Locale.en,
-    supportedLngs: [...Object.values(Locale), CROWDIN_IN_CONTEXT_LANG],
+    fallbackLng: IS_DEVELOPMENT_ENV ? 'source' : Locale.en,
+    supportedLngs: SUPPORTED_LANGUAGES,
     debug: process.env.i18n_DEBUG === 'true',
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default,
