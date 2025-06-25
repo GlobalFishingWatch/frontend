@@ -791,7 +791,6 @@
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer"
   },
-  "navigateBackTo": "Go back to {{section}}",
   "portsReport": {
     "maxVessels": "Des rapports de navires sont disponibles pour {{vessels}} navires",
     "newTimeRange": "Cliquez sur le bouton pour voir les navires qui sont entrés dans le port <br/>entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
@@ -869,6 +868,23 @@
   },
   "toasts": {
     "maxPointsVisualizationExceeded": "Le nombre maximal de points pouvant être visualisés est dépassé, passage en mode « carte thermique »."
+  },
+  "trackCorrection": {
+    "adjustDisabled": "Adjusting the time range is needed.",
+    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
+    "comment": "Comment",
+    "commentPlaceholder": "Add a comment...",
+    "commentResolve": "Comment and resolve",
+    "falseNegative": "False negative",
+    "falsePositive": "False positive",
+    "issue": "Issue {{issueId}}",
+    "issueType": "Type of issue",
+    "mapTooltip": "Issue added on {{date}} reported as {{type}}",
+    "markAsResolved": "Mark as resolved",
+    "newIssue": "New issue",
+    "other": "Other",
+    "replyPlaceholder": "Write a reply",
+    "version": "Version"
   },
   "user": {
     "badges": {
