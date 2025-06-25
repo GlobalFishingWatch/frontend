@@ -81,7 +81,7 @@
     "timeoutError": "Isso está demorando mais do que o esperado. Por favor, aguarde.",
     "timeRangeTooLong": "Relatórios só estão disponíveis para intervalos de tempo de até um ano",
     "title": "Report",
-    "unknown": "Desconhecido",
+    "unknown": "Unknown",
     "unknownProperty": "Unknown"
   },
   "bigQuery": {
@@ -261,7 +261,7 @@
     "tutorials": "Tutoriais",
     "unionOf": "União de",
     "unit": "unidade",
-    "unknown": "Desconhecido",
+    "unknown": "Unknown",
     "unknownProperty": "Unknown",
     "unknownVessel": "Embarcação desconhecida",
     "update": "Atualizar",
@@ -538,7 +538,7 @@
     "dayAbbreviated_one": "{{count}}d",
     "dayAbbreviated_other": "{{count}}d",
     "during": "durante",
-    "encounter": "Encontro",
+    "encounter": "Encounter event",
     "encounter_one": "Encounter event",
     "encounter_other": "Eventos de encontro",
     "encounterAction": "teve um encontro com",
@@ -558,7 +558,7 @@
     "hourAbbreviated": "{{count}}h",
     "hourAbbreviated_one": "{{count}}h",
     "hourAbbreviated_other": "{{count}}h",
-    "loitering": "à deriva",
+    "loitering": "Loitering event",
     "loitering_one": "Loitering event",
     "loitering_other": "Eventos de deriva",
     "loiteringAction": "à deriva começou em {{start}} por {{duration}}",
@@ -791,7 +791,6 @@
     "zoom_in": "Aumentar zoom",
     "zoom_out": "Diminuir zoom"
   },
-  "navigateBackTo": "Voltar para {{section}}",
   "portsReport": {
     "maxVessels": "O relatório de embarcações está disponível para até {{vessels}} embarcações",
     "newTimeRange": "Clique no botão para ver as embarcações que entraram neste porto <br/>entre <strong>{{start}}</strong> e <strong>{{end}}</strong>",
@@ -916,6 +915,19 @@
     "vesselGroups": "Grupos de embarcações",
     "vesselSearch": "Pesquisar Embarcação"
   },
+  "trackCorrection": {
+    "adjustDisabled": "Adjusting the time range is needed.",
+    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
+    "issueType": "Type of issue",
+    "falsePositive": "False positive",
+    "falseNegative": "False negative",
+    "other": "Desconhecido",
+    "version": "Version",
+    "comment": "Comment",
+    "mapTooltip": "Issue added on {{date}} reported as {{type}}",
+    "commentPlaceholder": "Add a comment...",
+    "replyPlaceholder": "Write a reply"
+  },
   "vessel": {
     "activityByType": "Por tipo",
     "activityByVoyages": "Por viagens",
@@ -949,8 +961,8 @@
     "gearType_short": "petrecho",
     "geartypes": "Petrechos de pesca",
     "gearTypes": {
-      "bunker": "Bunker",
-      "bunker_or_tanker": "Bunker ou petroleiro",
+      "bunker": "Bunker ou petroleiro",
+      "bunker_or_tanker": "Bunker",
       "cargo": "Carga ou frigorífica",
       "cargo_or_reefer": "Carga ou petroleira",
       "cargo_or_tanker": "Carga",
@@ -980,8 +992,8 @@
       "patrol_vessel": "Navio-patrulha",
       "pole_and_line": "Vara e isca viva",
       "pots_and_traps": "Potes e Armadilhas",
-      "purse seine": "Rede de Cerco",
-      "purse_seine": "Rede de Cerco",
+      "purse seine": "Traineira",
+      "purse_seine": "Traineira",
       "purse_seine_support": "Apoio para rede de cerco",
       "purse_seines": "Traineira",
       "reefer": "Navio frigorífico",
@@ -1170,7 +1182,7 @@
       "passenger": "Passageiro",
       "seismic_vessel": "Embarcação sísmica",
       "support": "Apoio",
-      "unknown": "Desconhecido"
+      "unknown": "Unknown"
     },
     "voyage_one": "viagem",
     "voyage_other": "viagens",
