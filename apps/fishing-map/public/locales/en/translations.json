@@ -793,7 +793,6 @@
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
-  "navigateBackTo": "Go back to {{section}}",
   "portsReport": {
     "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
     "newTimeRange": "Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
@@ -871,6 +870,23 @@
   },
   "toasts": {
     "maxPointsVisualizationExceeded": "Max points visualization exceeded, switching to heatmap mode."
+  },
+  "trackCorrection": {
+    "adjustDisabled": "Adjusting the time range is needed.",
+    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
+    "comment": "Comment",
+    "commentPlaceholder": "Add a comment...",
+    "commentResolve": "Comment and resolve",
+    "falseNegative": "False negative",
+    "falsePositive": "False positive",
+    "issue": "Issue {{issueId}}",
+    "issueType": "Type of issue",
+    "mapTooltip": "Issue added on {{date}} reported as {{type}}",
+    "markAsResolved": "Mark as resolved",
+    "newIssue": "New issue",
+    "other": "Other",
+    "replyPlaceholder": "Write a reply",
+    "version": "Version"
   },
   "user": {
     "badges": {
@@ -1007,8 +1023,8 @@
       "tuna_purse_seines": "Tuna purse seine",
       "well_boat": "Well boat"
     },
-    "gfw-geartypes": "GFW Gear type",
-    "gfw-shiptypes": "GFW Vessel type",
+    "gfw_geartypes": "GFW Gear type",
+    "gfw_shiptypes": "GFW Vessel type",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Gross Tonnage",
     "grossTonnageRange": "Gross tonnage range",
@@ -1019,9 +1035,9 @@
     "infoSource": "Info Source",
     "infoSources": {
       "both": "Registry and AIS",
+      "gfw-source": "GFW Source",
       "registry": "Registry",
-      "selfReported": "Self reported",
-      "gfw-source": "GFW Source"
+      "selfReported": "Self reported"
     },
     "insights": {
       "countries": {
