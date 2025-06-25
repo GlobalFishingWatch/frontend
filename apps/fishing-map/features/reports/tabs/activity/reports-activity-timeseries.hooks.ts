@@ -144,7 +144,8 @@ const getTimeseries = ({ featuresFiltered, instances }: GetTimeseriesParams) => 
       })
       return
     }
-    const chunk = instance.getChunk()
+    const chunk = instance.getChunk?.()
+    if (!chunk) return
     const sublayers = instance.getFourwingsLayers()
     const props = instance.props as FourwingsLayerProps
     const params: FeaturesToTimeseriesParams = {
@@ -187,7 +188,8 @@ const getTimeseriesStats = ({
         }
         return
       }
-      const chunk = instance.getChunk()
+      const chunk = instance.getChunk?.()
+      if (!chunk) return
       const { startFrame, endFrame } = getIntervalFrames({
         startTime: DateTime.fromISO(start).toUTC().toMillis(),
         endTime: DateTime.fromISO(end).toUTC().toMillis(),
