@@ -81,7 +81,7 @@
     "timeoutError": "Cela prend plus de temps que prévu, merci de patienter",
     "timeRangeTooLong": "Les rapports ne sont autorisés que pour les intervalles de temps maximal  d'un an. ",
     "title": "Report",
-    "unknown": "Inconnu",
+    "unknown": "Unknown",
     "unknownProperty": "Unknown"
   },
   "bigQuery": {
@@ -261,7 +261,7 @@
     "tutorials": "Tutoriels",
     "unionOf": "Union de",
     "unit": "unité",
-    "unknown": "Inconnu",
+    "unknown": "Unknown",
     "unknownProperty": "Unknown",
     "unknownVessel": "Navire inconnu",
     "update": "Mise à jour",
@@ -538,7 +538,7 @@
     "dayAbbreviated_one": "{{count}}j",
     "dayAbbreviated_other": "{{count}}j",
     "during": "pendant",
-    "encounter": "Événement de rencontre",
+    "encounter": "Encounter event",
     "encounter_one": "Encounter event",
     "encounter_other": "Événements de rencontre",
     "encounterAction": "a eu une rencontre avec",
@@ -558,7 +558,7 @@
     "hourAbbreviated": "{{count}}h",
     "hourAbbreviated_one": "{{count}}h",
     "hourAbbreviated_other": "{{count}}h",
-    "loitering": "Événement de dérive",
+    "loitering": "Loitering event",
     "loitering_one": "Loitering event",
     "loitering_other": "Événements de dérive",
     "loiteringAction": "La dérive a commencé à {{start}} pendant {{duration}}",
@@ -675,7 +675,7 @@
       "fao": "FAO",
       "mpa": "AMP",
       "mpa_other": "AMP (WDPA)",
-      "rfmo": "ORGP"
+      "rfmo": "RFMO"
     },
     "areasOnScreen": "Zones à l'écran",
     "color_change": "Modifier la couleur",
@@ -791,7 +791,6 @@
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer"
   },
-  "navigateBackTo": "Go back to {{section}}",
   "portsReport": {
     "maxVessels": "Des rapports de navires sont disponibles pour {{vessels}} navires",
     "newTimeRange": "Cliquez sur le bouton pour voir les navires qui sont entrés dans le port <br/>entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
@@ -916,6 +915,19 @@
     "vesselGroups": "Groupes de navires",
     "vesselSearch": "Recherche de navire"
   },
+  "trackCorrection": {
+    "adjustDisabled": "Adjusting the time range is needed.",
+    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
+    "issueType": "Type of issue",
+    "falsePositive": "False positive",
+    "falseNegative": "False negative",
+    "other": "Inconnu",
+    "version": "Version",
+    "comment": "Comment",
+    "mapTooltip": "Issue added on {{date}} reported as {{type}}",
+    "commentPlaceholder": "Add a comment...",
+    "replyPlaceholder": "Write a reply"
+  },
   "vessel": {
     "activityByType": "Par type",
     "activityByVoyages": "Par voyages",
@@ -949,8 +961,8 @@
     "gearType_short": "engin",
     "geartypes": "Types d’engins",
     "gearTypes": {
-      "bunker": "Ravitailleur",
-      "bunker_or_tanker": "Ravitailleur ou pétrolier",
+      "bunker": "Bunker ou navire-citerne",
+      "bunker_or_tanker": "Ravitailleur",
       "cargo": "Navire cargo ou reefer",
       "cargo_or_reefer": "Navire cargo ou pétrolier",
       "cargo_or_tanker": "Cargo",
@@ -980,8 +992,8 @@
       "patrol_vessel": "Navire de patrouille",
       "pole_and_line": "Ligneurs",
       "pots_and_traps": "Caseyeurs",
-      "purse seine": "Senneur",
-      "purse_seine": "Senneur",
+      "purse seine": "Sennes coulissantes",
+      "purse_seine": "Sennes coulissantes",
       "purse_seine_support": "Soutien à la senne",
       "purse_seines": "Sennes coulissantes",
       "reefer": "Bateau frigorifique",
@@ -1170,7 +1182,7 @@
       "passenger": "Passager",
       "seismic_vessel": "Navire d'étude sismique",
       "support": "Soutien",
-      "unknown": "Inconnu"
+      "unknown": "Unknown"
     },
     "voyage_one": "voyage",
     "voyage_other": "voyages",
