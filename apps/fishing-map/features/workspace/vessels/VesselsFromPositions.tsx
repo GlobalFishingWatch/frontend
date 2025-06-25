@@ -127,6 +127,7 @@ function VesselsFromPositions() {
   if (!vessels.length) {
     return null
   }
+  console.log(' vessels:', vessels)
 
   return (
     <div className={cx(styles.content, 'print-hidden')}>
