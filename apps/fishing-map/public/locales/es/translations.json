@@ -791,7 +791,6 @@
     "zoom_in": "Acercarse",
     "zoom_out": "Alejarse"
   },
-  "navigateBackTo": "volver a {{section}}",
   "portsReport": {
     "maxVessels": "Los informes de buques están disponibles para un máximo de {{vessels}} buques",
     "newTimeRange": "Haga clic en el botón para ver los buques que entraron en este puerto <br/>entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
@@ -869,6 +868,23 @@
   },
   "toasts": {
     "maxPointsVisualizationExceeded": "Se ha superado la visualización máxima de puntos, cambiando al modo de mapa de calor."
+  },
+  "trackCorrection": {
+    "adjustDisabled": "Adjusting the time range is needed.",
+    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
+    "comment": "Comment",
+    "commentPlaceholder": "Add a comment...",
+    "commentResolve": "Comment and resolve",
+    "falseNegative": "False negative",
+    "falsePositive": "False positive",
+    "issue": "Issue {{issueId}}",
+    "issueType": "Type of issue",
+    "mapTooltip": "Issue added on {{date}} reported as {{type}}",
+    "markAsResolved": "Mark as resolved",
+    "newIssue": "New issue",
+    "other": "Other",
+    "replyPlaceholder": "Write a reply",
+    "version": "Version"
   },
   "user": {
     "badges": {
