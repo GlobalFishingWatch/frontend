@@ -29,7 +29,10 @@ import {
   setModalOpen,
 } from 'features/modals/modals.slice'
 import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
-import { resetTrackCorrection } from 'features/track-correction/track-correction.slice'
+import {
+  resetTrackCorrection,
+  setTrackCorrectionTimerange,
+} from 'features/track-correction/track-correction.slice'
 import {
   selectCurrentTrackCorrectionIssue,
   selectTrackCorrectionModalOpen,
@@ -248,6 +251,12 @@ const AppModals = () => {
           onClose={() => {
             setTrackCorrectionId('')
             dispatch(resetTrackCorrection())
+            dispatch(
+              setTrackCorrectionTimerange({
+                start: '',
+                end: '',
+              })
+            )
           }}
           contentClassName={styles.fullHeightModal}
           overlayClassName={styles.transparentOverlay}

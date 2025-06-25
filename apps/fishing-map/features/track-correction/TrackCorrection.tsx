@@ -23,6 +23,7 @@ import {
   selectTrackCorrectionVesselDataviewId,
   selectTrackIssueComment,
   selectTrackIssueType,
+  setTrackCorrectionTimerange,
   setTrackIssueComment,
   setTrackIssueType,
 } from 'features/track-correction/track-correction.slice'
@@ -180,6 +181,12 @@ const TrackCorrection = () => {
             .then(() => {
               dispatch(setTrackIssueComment(''))
               setTrackCorrectionId('')
+              dispatch(
+                setTrackCorrectionTimerange({
+                  start: '',
+                  end: '',
+                })
+              )
               dispatch(fetchTrackIssuesThunk({ workspaceId: workspaceId }))
             })
             .catch((err) => {
