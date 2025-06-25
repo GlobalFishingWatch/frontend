@@ -298,7 +298,7 @@
       "prettier --write",
       "stylelint --fix"
     ],
-    "apps/fishing-map/**/*": [
+    "apps/fishing-map/**/*.{js,jsx,ts,tsx}": [
       "nx i18n fishing-map"
     ]
   },
