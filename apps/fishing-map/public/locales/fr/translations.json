@@ -1005,8 +1005,8 @@
       "tuna_purse_seines": "Senne coulissante au thon",
       "well_boat": "Navire vivier"
     },
-    "gfw-geartypes": "GFW Gear type",
-    "gfw-shiptypes": "GFW Vessel type",
+    "gfw_geartypes": "GFW Gear type",
+    "gfw_shiptypes": "GFW Vessel type",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Tonnage brut",
     "grossTonnageRange": "Plage de tonnage brut",
@@ -1017,9 +1017,9 @@
     "infoSource": "Source des informations",
     "infoSources": {
       "both": "Registres et AIS",
+      "gfw-source": "GFW Source",
       "registry": "Registres",
-      "selfReported": "Autodéclarées",
-      "gfw-source": "GFW Source"
+      "selfReported": "Autodéclarées"
     },
     "insights": {
       "countries": {
