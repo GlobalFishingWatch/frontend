@@ -2,5 +2,7 @@
 files:
   - source: apps/fishing-map/public/locales/source
     translation: /apps/fishing-map/public/locales/%two_letters_code%/%original_file_name%
+    update_option: update_without_changes
   - source: libs/i18n-labels/source
     translation: /libs/i18n-labels/%two_letters_code%/%original_file_name%
+    update_option: update_without_changes

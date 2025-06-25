@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import parse from 'html-react-parser'
 import { Bar, BarChart, LabelList, Tooltip as RechartsTooltip, XAxis, YAxis } from 'recharts'
+import type { CartesianLayout } from 'recharts/types/util/types'
 
 import type { RegionType } from '@globalfishingwatch/api-types'
 import { eventsToBbox } from '@globalfishingwatch/data-transforms'
@@ -122,6 +123,12 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
     setModalDataWarningOpen(false)
   }, [setModalDataWarningOpen])
 
+  // TODO: remove this hack if recharts fixes the 3.0.0 vertical layout bug
+  const [layout, setLayout] = useState<CartesianLayout>('horizontal')
+  useEffect(() => {
+    setLayout(eventsGroupedWithoutUnknown.length > 0 ? 'vertical' : 'horizontal')
+  }, [eventsGroupedWithoutUnknown])
+
   const areaOptions: ChoiceOption<VesselAreaSubsection>[] = useMemo(
     () => [
       {
@@ -224,7 +231,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
             <BarChart
               width={graphWidth}
               height={eventsGroupedWithoutUnknown.length * 40}
-              layout="vertical"
+              layout={layout}
               data={eventsGroupedWithoutUnknown}
               margin={{ right: 40 }}
             >
