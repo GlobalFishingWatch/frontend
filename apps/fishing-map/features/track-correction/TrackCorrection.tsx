@@ -98,7 +98,10 @@ const TrackCorrection = () => {
       issueId,
       user: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
       userEmail: userData?.email || '',
-      workspaceLink: window.location.href,
+      workspaceLink: window.location.href.replace(
+        'trackCorrectionId=new',
+        `trackCorrectionId=${issueId}`
+      ),
       date: new Date().toISOString(),
       comment: issueComment || 'No comment provided',
       datasetVersion: 1,
