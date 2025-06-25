@@ -10,7 +10,6 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
-import { getIsPositionSupportedInDataview } from 'features/dataviews/dataviews.utils'
 import {
   selectActivityDataviews,
   selectDetectionsDataviews,

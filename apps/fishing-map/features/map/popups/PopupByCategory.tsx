@@ -35,7 +35,7 @@ import ContextTooltipSection from 'features/map/popups/categories/ContextLayers'
 import DetectionsTooltipRow from 'features/map/popups/categories/DetectionsLayers'
 import EnvironmentTooltipSection from 'features/map/popups/categories/EnvironmentLayers'
 import PortsTooltipSection from 'features/map/popups/categories/PortsLayers'
-import PositionsRow from 'features/map/popups/categories/PositionsRow'
+import PositionsTooltipSection from 'features/map/popups/categories/PositionsTooltipSection'
 import RulerTooltip from 'features/map/popups/categories/RulerTooltip'
 import UserPointsTooltipSection from 'features/map/popups/categories/UserPointsLayers'
 import UserTracksTooltipSection from 'features/map/popups/categories/UserTracksLayers'
@@ -129,57 +129,57 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               featureCategory === DataviewCategory.Detections
                 ? detectionsInteractionError
                 : activityInteractionError
-            return [...uniqPositionFeatures, ...heatmapFeatures].map((feature, i) => {
-              if (feature.visualizationMode === POSITIONS_ID) {
-                return (
-                  <PositionsRow
-                    key={`${feature.id}-${i}`}
-                    loading={interactionStatus === AsyncReducerStatus.Loading}
-                    error={interactionError}
-                    feature={feature as any as FourwingsPositionsPickingObject}
-                    showFeaturesDetails={type === 'click'}
-                  />
-                )
-              }
-              if (feature.comparisonMode === FourwingsComparisonMode.TimeCompare) {
-                return (
-                  <ComparisonRow
-                    key={featureCategory}
-                    feature={features[0] as FourwingsHeatmapPickingObject}
-                    showFeaturesDetails={type === 'click'}
-                  />
-                )
-              }
-              return feature.sublayers?.map((sublayer, j) => {
-                const dataview = dataviews.find((d) => d.id === sublayer.id)
-                const isSkylighPrototype = sublayer.datasets.some(
-                  (d) => d === SKYLIGHT_PROTOTYPE_DATASET_ID
-                )
-                return (
-                  <TooltipComponent
-                    key={`${i}-${j}`}
-                    loading={
-                      (isSkylighPrototype ? activityInteractionStatus : interactionStatus) ===
-                      AsyncReducerStatus.Loading
-                    }
-                    error={
-                      interactionStatus === AsyncReducerStatus.Error
-                        ? interactionError || t('errors.genericShort')
-                        : undefined
-                    }
-                    feature={{
-                      ...sublayer,
-                      category: feature.category as DataviewCategory,
-                      title: dataview
-                        ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
-                        : feature.title,
-                    }}
-                    showFeaturesDetails={type === 'click'}
-                    activityType={dataview?.datasets?.[0]?.subcategory as DatasetSubCategory}
-                  />
-                )
-              })
-            })
+            return (
+              <Fragment key={featureCategory}>
+                <PositionsTooltipSection
+                  key={featureCategory}
+                  features={uniqPositionFeatures}
+                  showFeaturesDetails={type === 'click'}
+                  loading={interactionStatus === AsyncReducerStatus.Loading}
+                  error={interactionError}
+                />
+                {heatmapFeatures.map((feature, i) => {
+                  if (feature.comparisonMode === FourwingsComparisonMode.TimeCompare) {
+                    return (
+                      <ComparisonRow
+                        key={featureCategory}
+                        feature={features[0] as FourwingsHeatmapPickingObject}
+                        showFeaturesDetails={type === 'click'}
+                      />
+                    )
+                  }
+                  return feature.sublayers?.map((sublayer, j) => {
+                    const dataview = dataviews.find((d) => d.id === sublayer.id)
+                    const isSkylighPrototype = sublayer.datasets.some(
+                      (d) => d === SKYLIGHT_PROTOTYPE_DATASET_ID
+                    )
+                    return (
+                      <TooltipComponent
+                        key={`${i}-${j}`}
+                        loading={
+                          (isSkylighPrototype ? activityInteractionStatus : interactionStatus) ===
+                          AsyncReducerStatus.Loading
+                        }
+                        error={
+                          interactionStatus === AsyncReducerStatus.Error
+                            ? interactionError || t('errors.genericShort', 'Something went wrong')
+                            : undefined
+                        }
+                        feature={{
+                          ...sublayer,
+                          category: feature.category as DataviewCategory,
+                          title: dataview
+                            ? getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
+                            : feature.title,
+                        }}
+                        showFeaturesDetails={type === 'click'}
+                        activityType={dataview?.datasets?.[0]?.subcategory as DatasetSubCategory}
+                      />
+                    )
+                  })
+                })}
+              </Fragment>
+            )
           }
           case DataviewCategory.VesselGroups: {
             const heatmapFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
