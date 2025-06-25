@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
@@ -19,7 +20,7 @@ import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors
 import I18nDate from 'features/i18n/i18nDate'
 import DetectionThumbnailImage from 'features/map/popups/categories/DetectionThumbnail'
 import VesselPin from 'features/vessel/VesselPin'
-import { formatInfoField } from 'utils/info'
+import { formatInfoField, upperFirst } from 'utils/info'
 
 import popupStyles from '../Popup.module.css'
 
@@ -45,6 +46,7 @@ function DetectionThumbnails({
 }
 
 function PositionsRow({ loading, error, feature, showFeaturesDetails }: PositionsRowProps) {
+  const { t } = useTranslation()
   const allDatasets = useSelector(selectAllDatasets)
   const dataviewInstances = useSelector(selectAllDataviewInstancesResolved)
   const featureDataview = dataviewInstances?.find((instance) => instance.id === feature.layerId)
@@ -58,13 +60,14 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
 
   // TODO get the value based on the sublayer
   const color = feature.sublayers?.[0]?.color
+  const angle = feature.properties.bearing ? feature.properties.bearing - 45 : 0
   const isPositionMatched =
     feature.category === 'activity'
       ? getIsActivityPositionMatched(feature)
       : getIsDetectionsPositionMatched(feature)
   const shipname = isPositionMatched
     ? (formatInfoField(feature.properties.shipname, 'shipname') as string)
-    : ''
+    : upperFirst(t('vessel.unmatched'))
   const activityDatasets = uniq(
     feature.sublayers?.flatMap((sublayer) => sublayer.datasets || []) || []
   )
@@ -79,7 +82,11 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
   return (
     <Fragment>
       <div className={cx(popupStyles.popupSection, popupStyles.smallPadding)}>
-        <Icon icon="vessel" className={popupStyles.layerIcon} style={{ color }} />
+        <Icon
+          icon={feature.properties.bearing ? 'vessel' : 'circle'}
+          className={popupStyles.layerIcon}
+          style={{ color, transform: `rotate(${angle}deg)` }}
+        />
         <div className={popupStyles.popupSectionContent}>
           <div className={popupStyles.row}>
             <span className={cx(popupStyles.rowText, popupStyles.vesselTitle)}>
