@@ -1,108 +1,108 @@
 {
   "fishing-activity": {
     "default-public": {
-      "name": "crwdns84141:0crwdne84141:0",
-      "description": "crwdns84143:0crwdne84143:0",
-      "cta": "crwdns84145:0crwdne84145:0"
+      "name": "crwdns90690:0crwdne90690:0",
+      "description": "crwdns90692:0crwdne90692:0",
+      "cta": "crwdns90694:0crwdne90694:0"
     },
     "carrier-portal-public": {
-      "name": "crwdns84586:0crwdne84586:0",
-      "description": "crwdns84588:0crwdne84588:0",
-      "cta": "crwdns84590:0crwdne84590:0"
+      "name": "crwdns90696:0crwdne90696:0",
+      "description": "crwdns90698:0crwdne90698:0",
+      "cta": "crwdns90700:0crwdne90700:0"
     },
     "deep-sea-mining-public": {
-      "name": "crwdns84231:0crwdne84231:0",
-      "description": "crwdns84217:0crwdne84217:0",
-      "cta": "crwdns84219:0crwdne84219:0"
+      "name": "crwdns90702:0crwdne90702:0",
+      "description": "crwdns90704:0crwdne90704:0",
+      "cta": "crwdns90706:0crwdne90706:0"
     }
   },
   "reports": {
     "carrier-portal-report": {
-      "name": "crwdns84580:0crwdne84580:0",
-      "description": "crwdns84582:0crwdne84582:0",
-      "cta": "crwdns84584:0crwdne84584:0"
+      "name": "crwdns90708:0crwdne90708:0",
+      "description": "crwdns90710:0crwdne90710:0",
+      "cta": "crwdns90712:0crwdne90712:0"
     },
     "activity-report": {
-      "name": "crwdns84159:0crwdne84159:0",
-      "description": "crwdns84161:0crwdne84161:0"
+      "name": "crwdns90714:0crwdne90714:0",
+      "description": "crwdns90716:0crwdne90716:0"
     },
     "detections-report": {
-      "name": "crwdns84163:0crwdne84163:0",
-      "description": "crwdns84165:0crwdne84165:0"
+      "name": "crwdns90718:0crwdne90718:0",
+      "description": "crwdns90720:0crwdne90720:0"
     },
     "events-report": {
-      "name": "crwdns84167:0crwdne84167:0",
-      "description": "crwdns84502:0crwdne84502:0"
+      "name": "crwdns90722:0crwdne90722:0",
+      "description": "crwdns90724:0crwdne90724:0"
     }
   },
   "marine-manager": {
     "ascension-public": {
-      "name": "crwdns84171:0crwdne84171:0",
-      "description": "crwdns84173:0crwdne84173:0"
+      "name": "crwdns90726:0crwdne90726:0",
+      "description": "crwdns90728:0crwdne90728:0"
     },
     "fiji-public": {
-      "name": "crwdns84175:0crwdne84175:0",
-      "description": "crwdns84177:0crwdne84177:0"
+      "name": "crwdns90730:0crwdne90730:0",
+      "description": "crwdns90732:0crwdne90732:0"
     },
     "galapagos-public": {
-      "name": "crwdns84179:0crwdne84179:0",
-      "description": "crwdns84181:0crwdne84181:0"
+      "name": "crwdns90734:0crwdne90734:0",
+      "description": "crwdns90736:0crwdne90736:0"
     },
     "guyana-public": {
-      "name": "crwdns84183:0crwdne84183:0",
-      "description": "crwdns84185:0crwdne84185:0"
+      "name": "crwdns90738:0crwdne90738:0",
+      "description": "crwdns90740:0crwdne90740:0"
     },
     "micronesia-public": {
-      "name": "crwdns84187:0crwdne84187:0",
-      "description": "crwdns84189:0crwdne84189:0"
+      "name": "crwdns90742:0crwdne90742:0",
+      "description": "crwdns90744:0crwdne90744:0"
     },
     "maldives-public": {
-      "name": "crwdns84191:0crwdne84191:0",
-      "description": "crwdns84193:0crwdne84193:0"
+      "name": "crwdns90746:0crwdne90746:0",
+      "description": "crwdns90748:0crwdne90748:0"
     },
     "niue-public": {
-      "name": "crwdns84195:0crwdne84195:0",
-      "description": "crwdns84197:0crwdne84197:0"
+      "name": "crwdns90750:0crwdne90750:0",
+      "description": "crwdns90752:0crwdne90752:0"
     },
     "palau-public": {
-      "name": "crwdns84199:0crwdne84199:0",
-      "description": "crwdns84201:0crwdne84201:0"
+      "name": "crwdns90754:0crwdne90754:0",
+      "description": "crwdns90756:0crwdne90756:0"
     },
     "tristan-public": {
-      "name": "crwdns84203:0crwdne84203:0",
-      "description": "crwdns84205:0crwdne84205:0"
+      "name": "crwdns90758:0crwdne90758:0",
+      "description": "crwdns90760:0crwdne90760:0"
     },
     "mediterranean-public": {
-      "name": "crwdns84207:0crwdne84207:0",
-      "description": "crwdns84209:0crwdne84209:0"
+      "name": "crwdns90762:0crwdne90762:0",
+      "description": "crwdns90764:0crwdne90764:0"
     },
     "cmar_core_mpas-public": {
-      "name": "crwdns87820:0crwdne87820:0",
-      "description": "crwdns87836:0crwdne87836:0"
+      "name": "crwdns90766:0crwdne90766:0",
+      "description": "crwdns90768:0crwdne90768:0"
     },
     "costa_rica_1-public": {
-      "name": "crwdns87824:0crwdne87824:0",
-      "description": "crwdns87826:0crwdne87826:0"
+      "name": "crwdns90770:0crwdne90770:0",
+      "description": "crwdns90772:0crwdne90772:0"
     },
     "colombia_3-public": {
-      "name": "crwdns87838:0crwdne87838:0",
-      "description": "crwdns87840:0crwdne87840:0"
+      "name": "crwdns90774:0crwdne90774:0",
+      "description": "crwdns90776:0crwdne90776:0"
     },
     "panama_1-public": {
-      "name": "crwdns87828:0crwdne87828:0",
-      "description": "crwdns87830:0crwdne87830:0"
+      "name": "crwdns90778:0crwdne90778:0",
+      "description": "crwdns90780:0crwdne90780:0"
     },
     "reserva_de_la_biosfera_cmar-public": {
-      "name": "crwdns84297:0crwdne84297:0",
-      "description": "crwdns84299:0crwdne84299:0"
+      "name": "crwdns90782:0crwdne90782:0",
+      "description": "crwdns90784:0crwdne90784:0"
     },
     "galapagos_and_hermandad-public": {
-      "name": "crwdns87832:0crwdne87832:0",
-      "description": "crwdns87834:0crwdne87834:0"
+      "name": "crwdns90786:0crwdne90786:0",
+      "description": "crwdns90788:0crwdne90788:0"
     },
     "revillagigedo-public": {
-      "name": "crwdns84305:0crwdne84305:0",
-      "description": "crwdns84307:0crwdne84307:0"
+      "name": "crwdns90790:0crwdne90790:0",
+      "description": "crwdns90792:0crwdne90792:0"
     }
   }
 }
