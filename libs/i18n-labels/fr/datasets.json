@@ -1412,6 +1412,39 @@
       }
     }
   },
+  "public-global-sentinel2-footprints": {
+    "name": "Sentinel2 Footprints",
+    "description": "Sentinel2 Footprints"
+  },
+  "public-global-sentinel2-presence": {
+    "name": "Sentinel 2 detections",
+    "description": "Sentinel 2 detections",
+    "schema": {
+      "bearing": "bearing",
+      "matched": {
+        "keyword": "matched",
+        "enum": {
+          "true": "true",
+          "false": "false"
+        }
+      },
+      "shiptype": {
+        "keyword": "shiptype",
+        "enum": {
+          "carrier": "carrier",
+          "seismic_vessel": "seismic_vessel",
+          "passenger": "passenger",
+          "other": "other",
+          "support": "support",
+          "bunker": "bunker",
+          "gear": "gear",
+          "cargo": "cargo",
+          "fishing": "fishing",
+          "discrepancy": "discrepancy"
+        }
+      }
+    }
+  },
   "public-global-sst-anomalies-max": {
     "name": "Anomalies de température de la surface de la mer (max.)",
     "description": "Anomalies de température de la surface de la mer (max.)"
