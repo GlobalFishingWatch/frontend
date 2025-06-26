@@ -4,7 +4,7 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectAllTrackCorrectionIssues } from 'features/track-correction/track-correction.slice'
 import { selectTrackCorrectionId } from 'routes/routes.selectors'
 
-export const selectTrackCorrectionModalOpen = createSelector(
+export const selectTrackCorrectionOpen = createSelector(
   [selectTrackCorrectionId],
   (trackCorrectionId) => {
     return trackCorrectionId !== undefined && trackCorrectionId !== ''

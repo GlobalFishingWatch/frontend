@@ -9,6 +9,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { resetAreaDetail } from 'features/areas/areas.slice'
+import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
 import { resetVesselGroupReportData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
@@ -16,6 +17,12 @@ import { EMPTY_SEARCH_FILTERS } from 'features/search/search.config'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { cleanVesselProfileDataviewInstances } from 'features/sidebar/sidebar-header.hooks'
+import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
+import {
+  resetTrackCorrection,
+  setTrackCorrectionTimerange,
+} from 'features/track-correction/track-correction.slice'
 import { setVesselEventId } from 'features/vessel/vessel.slice'
 import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
 import {
@@ -50,6 +57,9 @@ function NavigationHistoryButton() {
   const { dispatchQueryParams } = useLocationConnect()
   const reportAreaIds = useSelector(selectReportAreaIds)
   const lastWorkspaceVisited = workspaceHistoryNavigation[workspaceHistoryNavigation.length - 1]
+  const setTrackCorrectionId = useSetTrackCorrectionId()
+  const { setTimerange } = useTimerangeConnect()
+  const setMapCoordinates = useSetMapCoordinates()
 
   const trackAnalytics = useCallback(() => {
     const analyticsAction = isAnyVesselLocation
@@ -85,8 +95,28 @@ function NavigationHistoryButton() {
     dispatch(cleanCurrentWorkspaceReportState())
     dispatch(setVesselEventId(null))
 
+    // setTrackCorrectionId('')
+    // dispatch(resetTrackCorrection())
+    dispatch(
+      setTrackCorrectionTimerange({
+        start: '',
+        end: '',
+      })
+    )
+
+    setTimerange({
+      start: lastWorkspaceVisited.query.start!,
+      end: lastWorkspaceVisited.query.end!,
+    })
+
+    setMapCoordinates({
+      latitude: lastWorkspaceVisited.query.latitude,
+      longitude: lastWorkspaceVisited.query.longitude,
+      zoom: lastWorkspaceVisited.query.zoom,
+    })
+
     trackAnalytics()
-  }, [dispatch, reportAreaIds, trackAnalytics])
+  }, [dispatch, reportAreaIds, setTrackCorrectionId, trackAnalytics])
 
   const isPreviousLocationReport = REPORT_ROUTES.includes(lastWorkspaceVisited.type)
 

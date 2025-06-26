@@ -28,15 +28,6 @@ import {
   selectWorkspaceGeneratorModalOpen,
   setModalOpen,
 } from 'features/modals/modals.slice'
-import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
-import {
-  resetTrackCorrection,
-  setTrackCorrectionTimerange,
-} from 'features/track-correction/track-correction.slice'
-import {
-  selectCurrentTrackCorrectionIssue,
-  selectTrackCorrectionModalOpen,
-} from 'features/track-correction/track-selection.selectors'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.selectors'
 import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
@@ -87,10 +78,6 @@ const Welcome = dynamic(() => import(/* webpackChunkName: "Welcome" */ 'features
 const VesselGroupModal = dynamic(
   () => import(/* webpackChunkName: "VesselGroup" */ 'features/vessel-groups/VesselGroupModal')
 )
-const TrackCorrection = dynamic(
-  () =>
-    import(/* webpackChunkName: "TrackCorrection" */ 'features/track-correction/TrackCorrection')
-)
 
 const DebugMenuConfig = {
   key: 'd',
@@ -126,7 +113,6 @@ const AppModals = () => {
   const [debugActive, dispatchToggleDebugMenu] = useSecretMenu(DebugMenuConfig)
   const [editorActive, dispatchToggleEditorMenu] = useSecretMenu(EditorMenuConfig)
   const [bigqueryActive, dispatchBigQueryMenu] = useSecretMenu(BigQueryMenuConfig)
-  const currentTrackCorrectionIssue = useSelector(selectCurrentTrackCorrectionIssue)
 
   const workspaceGeneratorConfig = useMemo(
     () => ({
@@ -144,12 +130,10 @@ const AppModals = () => {
   const isVesselGroupModalOpen = useSelector(selectVesselGroupModalOpen)
   const isDatasetUploadModalOpen = useSelector(selectDatasetUploadModalOpen)
   const isLayerLibraryModalOpen = useSelector(selectLayerLibraryModalOpen)
-  const trackCorrectionModalOpen = useSelector(selectTrackCorrectionModalOpen)
   const downloadTrackModalOpen = useSelector(selectDownloadTrackModalOpen)
   const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
   const welcomePopupContentKey = useSelector(selectWelcomeModalKey)
 
-  const setTrackCorrectionId = useSetTrackCorrectionId()
   const [saveWorkspaceBeforeLeave, setSaveWorkspaceBeforeLeave] = useSessionStorage<
     boolean | undefined
   >(SAVE_WORKSPACE_BEFORE_LEAVE_KEY, undefined)
@@ -236,34 +220,6 @@ const AppModals = () => {
         </Modal>
       )}
       {!isVesselGroupModalOpen && isDatasetUploadModalOpen && <NewDataset />}
-      {trackCorrectionModalOpen && (
-        <Modal
-          appSelector={ROOT_DOM_ELEMENT}
-          isOpen={trackCorrectionModalOpen && !anyAppModalOpen}
-          title={
-            currentTrackCorrectionIssue?.issueId
-              ? t('trackCorrection.issue', 'Issue {{issueId}}', {
-                  issueId: currentTrackCorrectionIssue.issueId,
-                })
-              : t('trackCorrection.newIssue', 'New issue')
-          }
-          shouldCloseOnEsc={false}
-          onClose={() => {
-            setTrackCorrectionId('')
-            dispatch(resetTrackCorrection())
-            dispatch(
-              setTrackCorrectionTimerange({
-                start: '',
-                end: '',
-              })
-            )
-          }}
-          contentClassName={styles.fullHeightModal}
-          overlayClassName={styles.transparentOverlay}
-        >
-          <TrackCorrection />
-        </Modal>
-      )}
       <EditWorkspaceModal />
       <CreateWorkspaceModal />
       {downloadActivityAreaKey && <DownloadActivityModal />}

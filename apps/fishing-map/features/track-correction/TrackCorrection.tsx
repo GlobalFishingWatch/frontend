@@ -324,11 +324,10 @@ const TrackCorrection = () => {
               <h2>
                 {currentTrackCorrectionIssue.vesselName
                   ? currentTrackCorrectionIssue.vesselName
-                  : (vesselInfo && getVesselShipNameLabel(vesselInfo)) ||
-                    dataview?.config?.name}{' '}
+                  : (vesselInfo && getVesselShipNameLabel(vesselInfo)) || dataview?.config?.name}
                 {' - '} {currentTrackCorrectionIssue.issueId}
               </h2>
-              <h2>{t(`trackCorrection.falsePositive`)}</h2>
+              <h2>{t(`trackCorrection.${currentTrackCorrectionIssue.type}`)}</h2>
               <label>
                 <I18nDate
                   date={currentTrackCorrectionIssue.startDate}

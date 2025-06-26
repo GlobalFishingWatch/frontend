@@ -33,6 +33,8 @@ import SaveReportButton from 'features/sidebar/buttons/SaveReportButton'
 import SaveWorkspaceButton from 'features/sidebar/buttons/SaveWorkspaceButton'
 import ShareWorkspaceButton from 'features/sidebar/buttons/ShareWorkspaceButton'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
+import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
+import TrackCorrectionHeader from 'features/track-correction/TrackCorrectionHeader'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
 import VesselHeader from 'features/vessel/VesselHeader'
@@ -64,6 +66,7 @@ function SidebarHeader() {
   const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
   const isWorkspaceGeneratorEnabled = useSelector(selectIsWorkspaceGeneratorEnabled)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
+  const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const activeSearchOption = useSelector(selectSearchOption)
   const isGFWUser = useSelector(selectIsGFWUser)
@@ -139,6 +142,9 @@ function SidebarHeader() {
   }
 
   const sectionHeaderComponent = useMemo(() => {
+    if (isTrackCorrectionOpen) {
+      return <TrackCorrectionHeader />
+    }
     if (isAnyVesselLocation) {
       return <VesselHeader isSticky={isSticky} />
     }
@@ -156,8 +162,11 @@ function SidebarHeader() {
     isAreaReportLocation,
     isPortReportLocation,
     isSticky,
+    isTrackCorrectionOpen,
     isVesselGroupReportLocation,
   ])
+
+  console.log(workspaceHistoryNavigation)
 
   return (
     <div className={cx({ [styles.sticky]: isSticky })}>
