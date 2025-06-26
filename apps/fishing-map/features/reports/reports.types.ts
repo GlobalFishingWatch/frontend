@@ -36,6 +36,7 @@ export type ReportActivitySubCategory =
 export type ReportDetectionsSubCategory =
   | `${DatasetSubCategory.Sar}`
   | `${DatasetSubCategory.Viirs}`
+  | `${DatasetSubCategory.Sentinel2}`
 export type ReportEventsSubCategory = EventType
 export type ReportVesselsSubCategory = ReportVesselGraph | 'source'
 
