@@ -25,9 +25,9 @@
     "name": "ZEE"
   },
   "eez-areas-12nm": {
-    "description": "World 12 Nautical Miles Zone (Territorial Seas). Flanders Marine Institute (2023). Maritime Boundaries Geodatabase: Territorial Seas (12NM), version 4. Available online at https://www.marineregions.org/. https://doi.org/10.14284/633",
-    "moreInfoLink": "",
-    "name": "Territorial Seas"
+    "description": "Territorial seas are a belt of coastal waters extending at most 12 nautical miles (22.2 km; 13.8 mi) from the baseline (usually the mean low-water mark) of a coastal state.",
+    "moreInfoLink": "https://www.marineregions.org/downloads.php",
+    "name": "Territorial Seas (12 nautical miles)"
   },
   "encounters": {
     "description": "Identificados de los datos AIS como lugares donde dos buques, un transportador y uno pesquero, estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media menor a 2 nudos mientras se encontraban a mas de 10 km de un anclaje costero.",
@@ -50,9 +50,9 @@
     "name": "Esfuerzo de pesca aparente (VMS)"
   },
   "gfcm-fao": {
-    "description": "General Fisheries Commission for the Mediterranean Fisheries Restricted Areas",
+    "description": "In the Mediterranean and the Black Sea, 1,760,000 square kilometers of sea habitats are protected by ten fisheries restricted areas established by the GFCM, in which some specific fishing activities are temporarily or permanently banned or restricted.",
     "moreInfoLink": "https://www.fao.org/gfcm/data/maps/fras/ru",
-    "name": "GFCM FRAs"
+    "name": "GFCM Fisheries Restricted Areas"
   },
   "graticules": {
     "description": "Rejillas o cuadrículas de latitud y longitud en intervalos de 1, 5, 10 y 30° dependiendo del nivel de acercamiento del mapa",
@@ -65,8 +65,8 @@
     "name": "Alta mar"
   },
   "high-seas-pockets": {
-    "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
-    "moreInfoLink": "",
+    "description": "High Seas pockets are areas totally enclosed by EEZs that are beyond Exclusive Economic Zones (EEZ). These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
+    "moreInfoLink": "https://www.marineregions.org/downloads.php",
     "name": "High seas pockets"
   },
   "loitering": {
@@ -110,9 +110,9 @@
     "name": "Concentración de oxígeno (O2)"
   },
   "paa-duke": {
-    "description": "Global dataset of Preferential Access Areas for small-scale fishing",
+    "description": "This global Preferential Access Area (PAA) database was built with data for 44 countries identified by the Illuminating Hidden Harvests (IHH) initiative following Basurto et al. (2023) and the FAOLEX database.",
     "moreInfoLink": "https://research.repository.duke.edu/concern/datasets/79407z51r",
-    "name": "Preferential Access Areas"
+    "name": "Preferential Access Areas for Small-Scale Fishing"
   },
   "ph": {
     "description": "La acidez del océano se mide con el pH. El aumento de la absorción de dióxido de carbono ha reducido el pH del océano, lo que ha dado lugar a la acidificación del océano, lo cual puede tener un impacto amplio en los organismos marinos. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el pH, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
