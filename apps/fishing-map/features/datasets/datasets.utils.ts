@@ -904,7 +904,7 @@ const getSchemaOptionsSelectedInDataview = (
   return options?.filter((option) => {
     const filterValues = dataview.config?.filters?.[schema] as string | string[]
     return Array.isArray(filterValues)
-      ? filterValues.includes(option.id)
+      ? filterValues.map((f) => f.toString()).includes(option.id)
       : filterValues?.toString() === option.id
   })
 }
