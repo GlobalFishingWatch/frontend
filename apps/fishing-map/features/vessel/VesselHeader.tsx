@@ -219,7 +219,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
             className="print-hidden"
             type="border"
             icon="print"
-            tooltip={t('analysis.print ')}
+            tooltip={t('analysis.print')}
             size="small"
             tooltipPlacement="bottom"
             onClick={onPrintClick}

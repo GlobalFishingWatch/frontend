@@ -259,7 +259,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
             className={styles.actionButton}
             type="border"
             icon="print"
-            tooltip={t('analysis.print ')}
+            tooltip={t('analysis.print')}
             size="small"
             tooltipPlacement="bottom"
             onClick={onPrintClick}
