@@ -115,7 +115,7 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
           </span>
         </div>
         {loading && (
-          <div className={popupStyles.loading}>
+          <div className={cx(popupStyles.loading, popupStyles.thumbnailLoading)}>
             <Spinner size="small" />
           </div>
         )}

@@ -10,7 +10,6 @@ import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import type {
   ContextPickingObject,
   FourwingsHeatmapPickingObject,
-  FourwingsPositionsPickingObject,
   PolygonPickingObject,
   RulerPickingObject,
   UserLayerPickingObject,
