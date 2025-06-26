@@ -66,6 +66,7 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
     feature.category === 'activity'
       ? getIsActivityPositionMatched(feature)
       : getIsDetectionsPositionMatched(feature)
+
   const shipname = isPositionMatched
     ? (formatInfoField(feature.properties.shipname, 'shipname') as string)
     : upperFirst(t('vessel.unmatched'))
@@ -103,7 +104,11 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
             )}
             <span>
               <span className={popupStyles.marginRight}>
-                <VesselLink vesselId={vesselId}>{shipname}</VesselLink>
+                {isPositionMatched ? (
+                  <VesselLink vesselId={vesselId}>{shipname}</VesselLink>
+                ) : (
+                  <span>{shipname}</span>
+                )}
               </span>
               {feature.properties.stime && (
                 <span className={popupStyles.secondary}>
