@@ -50,11 +50,7 @@ const InsightGapsDetails = ({
         onClick={toggleVisibility}
         className={styles.seeMoreBtn}
         loading={isLoading}
-        tooltip={
-          visible
-            ? t('vessel.insights.gapsSeeLess', 'See less')
-            : t('vessel.insights.gapsSeeMore', 'See more')
-        }
+        tooltip={visible ? t('vessel.insights.gapsSeeLess') : t('vessel.insights.gapsSeeMore')}
         icon={visible ? 'arrow-top' : 'arrow-down'}
       />
       {visible && data && data?.length > 0 && (

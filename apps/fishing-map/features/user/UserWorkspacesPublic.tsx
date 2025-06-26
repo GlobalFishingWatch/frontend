@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 
-import { IconButton, Modal,Spinner } from '@globalfishingwatch/ui-components'
+import { IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
@@ -51,12 +51,7 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
 
   const onDeleteClick = useCallback(
     async (workspace: AppWorkspace) => {
-      const confirmation = window.confirm(
-        `${t(
-          'workspace.confirmRemove',
-          'Are you sure you want to permanently delete this workspace?'
-        )}\n${workspace.name}`
-      )
+      const confirmation = window.confirm(`${t('workspace.confirmRemove')}\n${workspace.name}`)
       if (confirmation) {
         await dispatch(deleteWorkspaceThunk(workspace.id))
       }
@@ -71,12 +66,12 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
   return (
     <div className={styles.views}>
       <div className={styles.viewsHeader}>
-        <label>{t('workspace.title_other', 'Workspaces')}</label>
+        <label>{t('workspace.title_other')}</label>
       </div>
       {editWorkspace && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
-          title={t('workspace.edit', 'Edit workspace')}
+          title={t('workspace.edit')}
           isOpen
           shouldCloseOnEsc
           contentClassName={styles.modal}
@@ -119,14 +114,14 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
                   <IconButton
                     icon="edit"
                     loading={workspace.id === workspacesStatusId && updateLoading}
-                    tooltip={t('workspace.editName', 'Edit workspace name')}
+                    tooltip={t('workspace.editName')}
                     onClick={() => setEditWorkspace(workspace)}
                   />
                   <IconButton
                     icon="delete"
                     type="warning"
                     loading={workspace.id === workspacesStatusId && deleteLoading}
-                    tooltip={t('workspace.remove', 'Remove workspace')}
+                    tooltip={t('workspace.remove')}
                     onClick={() => onDeleteClick(workspace)}
                     testId="remove-workspace-button"
                   />
@@ -135,7 +130,7 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
             })
           ) : (
             <div className={styles.placeholder} data-test="user-workspaces">
-              {t('workspace.emptyState', 'Your workspaces will appear here')}
+              {t('workspace.emptyState')}
             </div>
           )}
         </ul>

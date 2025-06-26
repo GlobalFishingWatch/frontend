@@ -252,6 +252,7 @@ export enum DatasetSubCategory {
   Presence = 'presence',
   Viirs = 'viirs',
   Sar = 'sar',
+  Sentinel2 = 'sentinel-2',
 }
 
 export interface DatasetFile {

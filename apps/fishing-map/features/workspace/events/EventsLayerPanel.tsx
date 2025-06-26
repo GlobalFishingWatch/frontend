@@ -142,11 +142,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
                   icon={filterOpen ? 'filter-on' : 'filter-off'}
                   size="small"
                   onClick={onToggleFilterOpen}
-                  tooltip={
-                    filterOpen
-                      ? t('layer.filterClose', 'Close filters')
-                      : t('layer.filterOpen', 'Open filters')
-                  }
+                  tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
                   tooltipPlacement="top"
                 />
               </div>
@@ -162,12 +158,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
               icon={'warning'}
               type={'warning'}
               tooltip={
-                isGFWUser
-                  ? `${t(
-                      'errors.layerLoading',
-                      'There was an error loading the layer'
-                    )} (${layerError})`
-                  : t('errors.layerLoading', 'There was an error loading the layer')
+                isGFWUser ? `${t('errors.layerLoading')} (${layerError})` : t('errors.layerLoading')
               }
               size="small"
             />

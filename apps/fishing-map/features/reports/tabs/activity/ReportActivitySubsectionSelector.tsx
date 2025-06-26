@@ -6,6 +6,13 @@ import { Choice } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import {
+  selectHasFishingDataviews,
+  selectHasPresenceDataviews,
+  selectHasSarDataviews,
+  selectHasSentinel2Dataviews,
+  selectHasViirsDataviews,
+} from 'features/dataviews/selectors/dataviews.selectors'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
 import type {
@@ -23,35 +30,57 @@ function ReportActivitySubsectionSelector() {
   const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
   const subsection = useSelector(selectReportSubCategory)
+  const hasFishingDataviews = useSelector(selectHasFishingDataviews)
+  const hasPresenceDataviews = useSelector(selectHasPresenceDataviews)
+  const hasViirsDataviews = useSelector(selectHasViirsDataviews)
+  const hasSarDataviews = useSelector(selectHasSarDataviews)
+  const hasSentinel2Dataviews = useSelector(selectHasSentinel2Dataviews)
   const loading = useReportFeaturesLoading()
   const fitAreaInViewport = useFitAreaInViewport()
 
   const options: ChoiceOption<ReportActivitySubCategory | ReportDetectionsSubCategory>[] =
     reportCategory === ReportCategory.Activity
-      ? [
+      ? ([
           {
             id: 'fishing',
-            label: t('common.apparentFishing', 'Apparent fishing effort'),
-            disabled: loading,
+            label: t('common.apparentFishing'),
+            disabled: loading || !hasFishingDataviews,
           },
           {
             id: 'presence',
-            label: t('common.vesselPresence', 'Vessel presence'),
-            disabled: loading,
+            label: t('common.vesselPresence'),
+            disabled: loading || !hasPresenceDataviews,
           },
-        ]
-      : [
-          {
-            id: 'viirs',
-            label: t('common.viirs', 'Night light detections (VIIRS)'),
-            disabled: loading,
-          },
-          {
-            id: 'sar',
-            label: t('common.sar', 'Radar vessel detections (SAR)'),
-            disabled: loading,
-          },
-        ]
+        ] as ChoiceOption<ReportActivitySubCategory>[])
+      : ([
+          ...(hasViirsDataviews
+            ? [
+                {
+                  id: 'viirs',
+                  label: t('common.viirs'),
+                  disabled: loading,
+                },
+              ]
+            : []),
+          ...(hasSarDataviews
+            ? [
+                {
+                  id: 'sar',
+                  label: t('common.sar'),
+                  disabled: loading,
+                },
+              ]
+            : []),
+          ...(hasSentinel2Dataviews
+            ? [
+                {
+                  id: 'sentinel-2',
+                  label: t('common.sentinel2'),
+                  disabled: loading,
+                },
+              ]
+            : []),
+        ] as ChoiceOption<ReportDetectionsSubCategory>[])
 
   const onSelectSubsection = (
     option: ChoiceOption<ReportActivitySubCategory | ReportDetectionsSubCategory>

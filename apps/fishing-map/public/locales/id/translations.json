@@ -58,7 +58,7 @@
     "pinVesselsMaxAllowed": "Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels. Please consider using the vessel groups feature to manage your vessels.",
     "portsAfterEvents": "Ports visited after events",
     "portsSearchPlaceholder": "Search ports",
-    "print ": "cetak",
+    "print": "print",
     "removeVessels": "Remove from workspace",
     "resultsPerPage": "Tampilkan {{results}} per halaman",
     "save": "Simpan laporan ini",
@@ -149,7 +149,6 @@
     "disabled": "Disabled",
     "dismiss": "Abaikan",
     "edit": "Edit",
-    "edit ": "edit",
     "environment": "Lingkungan",
     "event_one": "peristiwa",
     "event_other": "peristiwa",
@@ -213,7 +212,7 @@
     "months_other": "bulan",
     "more": "tambah",
     "name": "Nama",
-    "navigateBackTo": "back to {{section}}",
+    "navigateBackTo": "Go back to {{section}}",
     "none": "Tidak ada",
     "of": "melakukan",
     "onlyMe": "Only me",
@@ -240,11 +239,12 @@
     "seeDefault": "Lihat tampilan default",
     "seeMore": "See more",
     "send": "Send",
+    "sentinel2": "Sentinel 2",
     "setNewPassword": "Set a new password",
     "share": "Bagikan tampilan saat ini",
     "since": "since",
     "sourceOptions": {
-      "both": "Registry and self reported",
+      "both": "Registry and AIS",
       "registryOnly": "Registry only",
       "selfReportedOnly": "Self reported only"
     },
@@ -710,7 +710,7 @@
     "nameLengthError_one": "Nama lapisan membutuhkan setidaknya {{count}} karakter",
     "nameLengthError_other": "Nama lapisan membutuhkan setidaknya {{count}} karakter",
     "nameRequired": "Nama lapisan diperlukan",
-    "next_port_id": "Next port id",
+    "next_port_id": "Next port",
     "period": "Period",
     "properties": {
       "color": "Color",
@@ -791,7 +791,6 @@
     "zoom_in": "Perbesar",
     "zoom_out": "Perkecil"
   },
-  "navigateBackTo": "Go back to {{section}}",
   "portsReport": {
     "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
     "newTimeRange": "Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
@@ -868,7 +867,24 @@
     "tracksDisabled": "Pilih setidaknya satu kapal"
   },
   "toasts": {
-    "maxPointsVisualizationExceeded": "Max points visualization exceeded, swithing to heatmap mode."
+    "maxPointsVisualizationExceeded": "Max points visualization exceeded, switching to heatmap mode."
+  },
+  "trackCorrection": {
+    "adjustDisabled": "Adjusting the time range is needed.",
+    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
+    "comment": "Comment",
+    "commentPlaceholder": "Add a comment...",
+    "commentResolve": "Comment and resolve",
+    "falseNegative": "False negative",
+    "falsePositive": "False positive",
+    "issue": "Issue {{issueId}}",
+    "issueType": "Type of issue",
+    "mapTooltip": "Issue added on {{date}} reported as {{type}}",
+    "markAsResolved": "Mark as resolved",
+    "newIssue": "New issue",
+    "other": "Other",
+    "replyPlaceholder": "Write a reply",
+    "version": "Version"
   },
   "user": {
     "badges": {
@@ -1005,8 +1021,8 @@
       "tuna_purse_seines": "Pukat Cincin Tuna",
       "well_boat": "Kapal sumur (well-boat)"
     },
-    "gfw-geartypes": "GFW Gear type",
-    "gfw-shiptypes": "GFW Vessel type",
+    "gfw_geartypes": "GFW Gear type",
+    "gfw_shiptypes": "GFW Vessel type",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Tonase Kotor",
     "grossTonnageRange": "Rentang Gross Tonnage",
@@ -1017,9 +1033,9 @@
     "infoSource": "Sumber Info",
     "infoSources": {
       "both": "Registry and AIS",
+      "gfw-source": "GFW Source",
       "registry": "Registri",
-      "selfReported": "Dilaporkan sendiri",
-      "gfw-source": "GFW Source"
+      "selfReported": "Dilaporkan sendiri"
     },
     "insights": {
       "countries": {
@@ -1028,7 +1044,7 @@
       },
       "coverage": "AIS Coverage",
       "disclaimerTimeRangeBeforeMinYear": "Insights available from 1 January {{year}} onwards. Adjust your time range to view insights.",
-      "errorPermisions": "You don't have permissions to see this insight",
+      "errorPermisions": "This insight is restricted to limited account users, contact us at support@globalfishingwatch.org for more details",
       "fishing": "Fishing Events",
       "fishingEventsInNoTakeMpas": "{{count}} fishing events detected in no-take MPAs",
       "fishingEventsInNoTakeMpas_one": "{{count}} fishing events detected in no-take MPAs",
@@ -1058,7 +1074,7 @@
         "grey": "grey"
       },
       "MOULists": "Tokyo and Paris MOU Lists",
-      "MOUListsEmpty": "Flying under a flag/flags not present on the Tokio or Paris MOU black or grey lists",
+      "MOUListsEmpty": "Flying under a flag/flags not present on the Tokyo or Paris MOU black or grey lists",
       "MOUParisBlackListsCount": "Flag present on the Paris MOU black list ({{flags}})",
       "MOUParisGreyListsCount": "Flag present on the Paris MOU grey list ({{flags}})",
       "MOUParisListsCount": "Flag present on the Paris MOU black or grey list ({{flags}})",
@@ -1104,7 +1120,7 @@
     "recordId": "Record ID",
     "registeredGearType": "Jenis Peralatan Terdaftar",
     "registryGeartype": "Registry Gear Type",
-    "registryOperator": "Operators",
+    "registryOperator": "Operator",
     "registryOwners": "Registry owners",
     "registryPublicAuthorizations": "Authorizations",
     "registrySources": "sumber registri",

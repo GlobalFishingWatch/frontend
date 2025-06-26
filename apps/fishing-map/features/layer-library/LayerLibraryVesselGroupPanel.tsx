@@ -110,10 +110,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
                 <div>
                   <VesselGroupReportLink vesselGroupId={vesselGroup?.id ?? ''}>
                     <IconButton
-                      tooltip={t(
-                        'vesselGroupReport.clickToSee',
-                        'Click to see the vessel group report'
-                      )}
+                      tooltip={t('vesselGroupReport.clickToSee')}
                       icon="analysis"
                       onClick={() => {
                         dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
@@ -122,7 +119,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
                   </VesselGroupReportLink>
 
                   <IconButton
-                    tooltip={t('workspace.addLayer', 'Add to workspace')}
+                    tooltip={t('workspace.addLayer')}
                     icon="plus"
                     onClick={() => toggleAddToWorkspace(vesselGroup.id, 'add')}
                   />
@@ -131,12 +128,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
             )
           })
         ) : (
-          <div className={styles.placeholder}>
-            {t(
-              'workspace.emptyStateVesselGroups',
-              'Add vessel groups to see group presence and operation footprint.'
-            )}
-          </div>
+          <div className={styles.placeholder}>{t('workspace.emptyStateVesselGroups')}</div>
         )}
       </ul>
     )
@@ -146,13 +138,13 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
     <Fragment>
       <div className={styles.titleContainer}>
         <label id={DataviewCategory.VesselGroups} className={styles.categoryLabel}>
-          {t(`common.vesselGroups`, 'Vessel Groups')}
+          {t('common.vesselGroups')}
         </label>
         <UserLoggedIconButton
           type="border"
           icon="add-to-vessel-group"
           size="medium"
-          tooltip={t('vesselGroup.createNewGroup', 'Create new group')}
+          tooltip={t('vesselGroup.createNewGroup')}
           tooltipPlacement="top"
           onClick={() => onAddVesselGroupClick()}
         />

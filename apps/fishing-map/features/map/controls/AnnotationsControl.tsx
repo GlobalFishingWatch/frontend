@@ -34,12 +34,8 @@ const MapAnnotationsControls = () => {
       active={isMapAnnotating}
       visible={areMapAnnotationsVisible}
       expanded={mapAnnotations?.length > 0}
-      editTooltip={
-        isMapAnnotating
-          ? t('map.annotationsStop', 'Stop editing annotations')
-          : t('map.annotationsAdd', 'Add annotation')
-      }
-      deleteTooltip={t('map.annotationsDelete', 'Delete all annotations')}
+      editTooltip={isMapAnnotating ? t('map.annotationsStop') : t('map.annotationsAdd')}
+      deleteTooltip={t('map.annotationsDelete')}
       onClick={onToggleClick}
       onVisibilityClick={toggleMapAnnotationsVisibility}
       onDeleteClick={onRemoveClick}

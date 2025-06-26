@@ -208,12 +208,7 @@ export const useMigrateWorkspaceToast = () => {
 
   const ToastContent = ({ loading = false }: { loading?: boolean }) => (
     <div className={styles.disclaimer}>
-      <p>
-        {t(
-          'workspace.migrationDisclaimer',
-          'Update your workspace to view the latest AIS data and features.'
-        )}
-      </p>
+      <p>{t('workspace.migrationDisclaimer')}</p>
       <p className={styles.secondary}>
         {parse(
           t(
@@ -224,7 +219,7 @@ export const useMigrateWorkspaceToast = () => {
       </p>
       <div className={styles.disclaimerFooter}>
         {/* <Button onClick={dissmissToast} type="secondary" className={styles.updateBtn}>
-          {t('workspace.migrationMaintain', 'Skip')}
+          {t('workspace.migrationMaintain')}
         </Button> */}
         <Button
           loading={loading}
@@ -232,7 +227,7 @@ export const useMigrateWorkspaceToast = () => {
           onClick={updateWorkspace}
           className={styles.updateBtn}
         >
-          {t('workspace.migrationUpdate', 'Update')}
+          {t('workspace.migrationUpdate')}
         </Button>
       </div>
     </div>

@@ -81,7 +81,6 @@ const InsightMOUList = ({
                   )} ${t('common.to')} ${formatI18nDate(v.to)}`
               )
               .join(', '),
-            defaultValue: 'Flag present on the Tokyo MOU black list ({{flags}})',
           })}
         </p>
       )
@@ -98,7 +97,6 @@ const InsightMOUList = ({
                   )} ${t('common.to')} ${formatI18nDate(v.to)}`
               )
               .join(', '),
-            defaultValue: 'Flag present on the Tokyo MOU grey list ({{flags}})',
           })}
         </p>
       )
@@ -109,14 +107,7 @@ const InsightMOUList = ({
       mouList?.tokyo.totalTimesListed &&
       mouList?.tokyo.totalTimesListed > 0
     ) {
-      messages.push(
-        <p key="tokyoEmpty">
-          {t(
-            'vessel.insights.MOUTokyoListsPreviousAppearance',
-            'Previously flew under another flag on the Tokyo MOU black or grey list'
-          )}
-        </p>
-      )
+      messages.push(<p key="tokyoEmpty">{t('vessel.insights.MOUTokyoListsPreviousAppearance')}</p>)
     }
 
     const hasParisBlackAppearences = Object.values(parisAppearences.BLACK).length > 0
@@ -134,7 +125,6 @@ const InsightMOUList = ({
                   )} ${t('common.to')} ${formatI18nDate(v.to)}`
               )
               .join(', '),
-            defaultValue: 'Flag present on the Paris MOU black list ({{flags}})',
           })}
         </p>
       )
@@ -151,7 +141,6 @@ const InsightMOUList = ({
                   )} ${t('common.to')} ${formatI18nDate(v.to)}`
               )
               .join(', '),
-            defaultValue: 'Flag present on the Paris MOU grey list ({{flags}})',
           })}
         </p>
       )
@@ -163,14 +152,7 @@ const InsightMOUList = ({
       mouList?.paris.totalTimesListed &&
       mouList?.paris.totalTimesListed > 0
     ) {
-      messages.push(
-        <p key="parisEmpty">
-          {t(
-            'vessel.insights.MOUParisListsPreviousAppearance',
-            'Previously flew under another flag on the Paris MOU black or grey list'
-          )}
-        </p>
-      )
+      messages.push(<p key="parisEmpty">{t('vessel.insights.MOUParisListsPreviousAppearance')}</p>)
     }
     if (
       mouList?.tokyo.valuesInThePeriod.length === 0 &&
@@ -178,10 +160,7 @@ const InsightMOUList = ({
     ) {
       messages.push(
         <p className={styles.secondary} key="allEmpty">
-          {t(
-            'vessel.insights.MOUListsEmpty',
-            'Flying under a flag/flags not present on the Tokio or Paris MOU black or grey lists'
-          )}
+          {t('vessel.insights.MOUListsEmpty')}
         </p>
       )
     }
@@ -191,11 +170,8 @@ const InsightMOUList = ({
   return (
     <div id="MOULists" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vessel.insights.MOULists', 'MOU Lists')}</label>
-        <DataTerminology
-          title={t('vessel.insights.MOULists', 'MOU Lists')}
-          terminologyKey="insightsMOUList"
-        />
+        <label>{t('vessel.insights.MOULists')}</label>
+        <DataTerminology title={t('vessel.insights.MOULists')} terminologyKey="insightsMOUList" />
       </div>
       {guestUser ? (
         <VesselIdentityFieldLogin />

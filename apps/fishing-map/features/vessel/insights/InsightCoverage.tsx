@@ -22,11 +22,8 @@ const InsightCoverage = ({
   return (
     <div id="coverage" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label className="experimental">{t('vessel.insights.coverage', 'AIS Coverage')}</label>
-        <DataTerminology
-          title={t('vessel.insights.coverage', 'AIS Coverage')}
-          terminologyKey="insightsCoverage"
-        />
+        <label className="experimental">{t('vessel.insights.coverage')}</label>
+        <DataTerminology title={t('vessel.insights.coverage')} terminologyKey="insightsCoverage" />
       </div>
       {isLoading ? (
         <div style={{ width: '20rem' }} className={styles.loadingPlaceholder} />

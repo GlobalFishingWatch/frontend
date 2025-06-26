@@ -1,4 +1,4 @@
-import type { ContextFeature, ContextPickingObject } from './context.types';
+import type { ContextFeature, ContextPickingObject } from './context.types'
 import { ContextLayerId } from './context.types'
 
 export const getContextId = (feature: ContextFeature, idProperty = 'gfw_id'): string => {
@@ -60,6 +60,10 @@ export const getContextLink = (feature: ContextPickingObject) => {
     case ContextLayerId.MPARestricted: {
       const id = feature.properties?.WDPA_PID || feature.id
       return `https://www.protectedplanet.net/${id}`
+    }
+    case ContextLayerId.MPAtlas: {
+      const id = feature.properties.id
+      return id ? `https://mpatlas.org/zones/${id}` : ''
     }
     case ContextLayerId.TunaRfmo: {
       return RFMO_LINKS[feature.id]

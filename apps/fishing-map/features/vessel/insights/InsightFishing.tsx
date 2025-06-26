@@ -58,11 +58,8 @@ const InsightFishing = ({
   return (
     <div id="fishing" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vessel.insights.fishing', 'Fishing Events')}</label>
-        <DataTerminology
-          title={t('vessel.insights.fishing', 'Fishing Events')}
-          terminologyKey="insightsFishing"
-        />
+        <label>{t('vessel.insights.fishing')}</label>
+        <DataTerminology title={t('vessel.insights.fishing')} terminologyKey="insightsFishing" />
       </div>
       {isLoading ? (
         <Fragment>
@@ -77,7 +74,6 @@ const InsightFishing = ({
             <p>
               {t('vessel.insights.fishingEventsInNoTakeMpas', {
                 count: eventsInNoTakeMpas?.length,
-                defaultValue: '{{count}} fishing events detected in no-take MPAs',
               })}
               <InsightEventDetails
                 events={eventsInNoTakeMpasDetails}
@@ -87,18 +83,13 @@ const InsightFishing = ({
             </p>
           ) : (
             <p className={styles.secondary}>
-              {t(
-                'vessel.insights.fishingEventsInNoTakeMpasEmpty',
-                'No fishing events detected in no-take MPAs'
-              )}
+              {t('vessel.insights.fishingEventsInNoTakeMpasEmpty')}
             </p>
           )}
           {eventsInRfmoWithoutKnownAuthorization?.length !== 0 ? (
             <p>
               {t('vessel.insights.fishingEventsInRfmoWithoutKnownAuthorization', {
                 count: eventsInRfmoWithoutKnownAuthorization?.length,
-                defaultValue:
-                  '{{count}} fishing events detected outside known RFMO authorized areas',
               })}
               <InsightEventDetails
                 events={eventsInRfmoWithoutKnownAuthorizationDetails}
@@ -108,10 +99,7 @@ const InsightFishing = ({
             </p>
           ) : (
             <p className={styles.secondary}>
-              {t(
-                'vessel.insights.fishingEventsInRfmoWithoutKnownAuthorizationEmpty',
-                'No fishing events detected outside known RFMO authorized areas'
-              )}
+              {t('vessel.insights.fishingEventsInRfmoWithoutKnownAuthorizationEmpty')}
             </p>
           )}
         </div>

@@ -76,8 +76,8 @@ const VesselRegistryField = ({
       <div className={styles.fieldGroupContainer} key={key}>
         {showLabel && (
           <div className={styles.labelContainer}>
-            <label>{t(`vessel.registryOperator`, 'Operators')}</label>
-            <DataTerminology title={t('vessel.operator', 'Operator')} terminologyKey="operator" />
+            <label>{t('vessel.registryOperator')}</label>
+            <DataTerminology title={t('vessel.operator')} terminologyKey="operator" />
           </div>
         )}
         <RegistryOperatorField registryField={registryField} vesselIdentity={vesselIdentity} />
@@ -93,7 +93,7 @@ const VesselRegistryField = ({
         {showLabel && (
           <div className={styles.labelContainer}>
             <label>
-              {t(`vessel.recordId`, 'Record ID')}
+              {t('vessel.recordId')}
               <GFWOnly userGroup="gfw" />
             </label>
           </div>
@@ -194,12 +194,7 @@ const VesselRegistryField = ({
             })}
           </ul>
           {isAuthorizations && showLabel && (
-            <p className={styles.disclaimer}>
-              {t(
-                'vessel.authorizationDatesDisclaimer',
-                'The most recent vessel authorized date is the last date Global Fishing Watch collected data. Visit registry source to verify status.'
-              )}
-            </p>
+            <p className={styles.disclaimer}>{t('vessel.authorizationDatesDisclaimer')}</p>
           )}
         </Fragment>
       ) : (

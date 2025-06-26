@@ -101,10 +101,7 @@ function EventsReport() {
             width={EventsEmptyState.width / 2}
             height={EventsEmptyState.height / 2}
           />
-          {t(
-            'vessel.noEventsinTimeRange',
-            'There are no events fully contained in your timerange.'
-          )}
+          {t('vessel.noEventsinTimeRange')}
         </div>
       )
     }
@@ -129,9 +126,7 @@ function EventsReport() {
       <div className={styles.disclaimer}>
         <Icon icon="warning" type="warning" />
         {t('vesselGroup.disclaimerFeaturesNotAvailable', {
-          defaultValue:
-            '{{features}} are only available for AIS vessels and your group contains vessels from {{datasets}}.',
-          features: t('common.Events', 'Events'),
+          features: t('common.Events'),
           datasets: Array.from(datasetsWithoutRelatedEvents)
             .map((d) => getDatasetLabel(d))
             .join(', '),
@@ -152,7 +147,7 @@ function EventsReport() {
         <ReportSummary />
         <div className={styles.container}>
           <div className={styles.headerContainer}>
-            <label>{t('common.events', 'Events')}</label>
+            <label>{t('common.events')}</label>
             <EventsReportGraphSelector disabled={isLoadingVessels || noEvents} />
           </div>
           {graph}
@@ -160,12 +155,7 @@ function EventsReport() {
         {noEvents ? null : !timerangeSupported ? (
           <ReportVesselsPlaceholder animate={false}>
             <div className={cx(styles.cover, styles.error)}>
-              <p>
-                {t(
-                  'analysis.timeRangeTooLong',
-                  'The selected time range is too long, please select a shorter time range'
-                )}
-              </p>
+              <p>{t('analysis.timeRangeTooLong')}</p>
             </div>
           </ReportVesselsPlaceholder>
         ) : reportOutdated ? (
@@ -174,8 +164,6 @@ function EventsReport() {
               <p
                 dangerouslySetInnerHTML={{
                   __html: t('eventsReport.newTimeRange', {
-                    defaultValue:
-                      'Click the button to see the vessels that had events in this area <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
                     start: formatI18nDate(start),
                     end: formatI18nDate(end),
                   }),
@@ -191,7 +179,7 @@ function EventsReport() {
                   })
                 }}
               >
-                {t('analysis.seeVessels', 'See vessels')}
+                {t('analysis.seeVessels')}
               </Button>
             </div>
           </ReportVesselsPlaceholder>
@@ -199,7 +187,7 @@ function EventsReport() {
           <ReportVessels
             color={eventsDataview?.config?.color}
             activityUnit="numEvents"
-            title={t('common.vessels', 'Vessels')}
+            title={t('common.vessels')}
             loading={isLoadingVessels}
           />
         )}

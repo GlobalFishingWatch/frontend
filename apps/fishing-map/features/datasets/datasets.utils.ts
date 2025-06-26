@@ -268,13 +268,13 @@ export const getDatasetTitleByDataview = (
   let datasetTitle = dataview.name || ''
   const { category, subcategory } = dataviewInstance.datasets?.[0] || {}
   if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Fishing) {
-    datasetTitle = t(`common.apparentFishing`, 'Apparent Fishing Effort')
+    datasetTitle = t('common.apparentFishing')
   } else if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Presence) {
-    datasetTitle = t(`common.presence`, 'Vessel presence')
+    datasetTitle = t('common.presence')
   } else if (category === DatasetCategory.Detections && subcategory === DatasetSubCategory.Viirs) {
-    datasetTitle = t(`common.viirs`, 'Night light detections (VIIRS)')
+    datasetTitle = t('common.viirs')
   } else if (category === DatasetCategory.Detections && subcategory === DatasetSubCategory.Sar) {
-    datasetTitle = t(`common.sar`, 'Radar detections (SAR)')
+    datasetTitle = t('common.sar')
   } else if (activeDatasets) {
     if (hasDatasetsConfig && activeDatasets?.length !== 1) {
       return datasetTitle
@@ -288,7 +288,7 @@ export const getDatasetTitleByDataview = (
   }
   const sources =
     dataview?.datasets && dataview?.datasets?.length > 1
-      ? `(${dataview.datasets?.length} ${t('common.sources', 'Sources')})`
+      ? `(${dataview.datasets?.length} ${t('common.sources')})`
       : `(${getDatasetNameTranslated(dataview.datasets?.[0] as Dataset)})`
 
   return datasetTitle + ' ' + sources
@@ -799,7 +799,7 @@ export const getCommonSchemaFieldsInDataview = (
       }
       const addNewGroup = {
         id: VESSEL_GROUPS_MODAL_ID,
-        label: t('vesselGroup.createNewGroup', 'Create new group'),
+        label: t('vesselGroup.createNewGroup'),
         disableSelection: true,
         className: styles.openModalLink,
       } as MultiSelectOption
@@ -904,7 +904,7 @@ const getSchemaOptionsSelectedInDataview = (
   return options?.filter((option) => {
     const filterValues = dataview.config?.filters?.[schema] as string | string[]
     return Array.isArray(filterValues)
-      ? filterValues.includes(option.id)
+      ? filterValues.map((f) => f.toString()).includes(option.id)
       : filterValues?.toString() === option.id
   })
 }

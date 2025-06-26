@@ -29,14 +29,12 @@ export const getEventColors = ({ type }: { type: ApiEvent['type'] }) => {
 const getEventDurationLabel = ({ durationRaw }: { durationRaw: Duration }): string => {
   const duration = durationRaw.toObject()
   return [
-    duration.days && duration.days > 0
-      ? t('event.dayAbbreviated', '{{count}}d', { count: duration.days })
-      : '',
+    duration.days && duration.days > 0 ? t('event.dayAbbreviated', { count: duration.days }) : '',
     duration.hours && duration.hours > 0 && durationRaw.as('days') < 10
-      ? t('event.hourAbbreviated', '{{count}}h', { count: duration.hours })
+      ? t('event.hourAbbreviated', { count: duration.hours })
       : '',
     duration.minutes && duration.minutes > 0 && durationRaw.as('hours') < 10
-      ? t('event.minuteAbbreviated', '{{count}}m', {
+      ? t('event.minuteAbbreviated', {
           count: Math.round(duration.minutes as number),
         })
       : '',
@@ -83,26 +81,16 @@ export const getEventDescription = ({
       const mainVesselName = vessel?.name
       const encounterVesselName = encounter?.vessel?.name
       if (mainVesselName && encounterVesselName) {
-        description = t(
-          'event.encounterActionWithVessels',
-          'had an encounter with {{encounterVessel}} starting at {{start}} for {{duration}}',
-          {
-            ...time,
-            mainVessel: mainVesselName,
-            encounterVessel: encounterVesselName,
-          }
-        )
+        description = t('event.encounterActionWithVessels', {
+          ...time,
+          mainVessel: mainVesselName,
+          encounterVessel: encounterVesselName,
+        })
       } else {
-        description = t(
-          'event.encounterActionWith',
-          'had an encounter with {{vessel}} starting at {{start}} for {{duration}}',
-          {
-            ...time,
-            vessel: encounterVesselName
-              ? encounterVesselName
-              : t('event.encounterAnotherVessel', 'another vessel'),
-          }
-        )
+        description = t('event.encounterActionWith', {
+          ...time,
+          vessel: encounterVesselName ? encounterVesselName : t('event.encounterAnotherVessel'),
+        })
       }
 
       descriptionGeneric = t('event.encounter')
@@ -117,13 +105,9 @@ export const getEventDescription = ({
           formatInfoField(portName, 'port'),
           formatInfoField(portFlag, 'flag'),
         ].join(', ')
-        description = t(
-          'event.portAt',
-          'Docked at {{port}} started at {{start}} for {{duration}}',
-          { ...time, port: portLabel }
-        )
+        description = t('event.portAt', { ...time, port: portLabel })
       } else {
-        description = t('event.portAction', 'Docked started at {{start}} for {{duration}}', time)
+        description = t('event.portAction', time)
       }
       descriptionGeneric = t('event.port')
       break
@@ -137,12 +121,12 @@ export const getEventDescription = ({
       descriptionGeneric = t('event.loitering')
       break
     case EventTypes.Fishing:
-      description = t('event.fishingAction', 'Fishing started at {{start}} for {{duration}}', time)
+      description = t('event.fishingAction', time)
       descriptionGeneric = t('event.fishing')
       break
     default:
-      description = t('event.unknown', 'Unknown event')
-      descriptionGeneric = t('event.unknown', 'Unknown event')
+      description = t('event.unknown')
+      descriptionGeneric = t('event.unknown')
   }
 
   return {

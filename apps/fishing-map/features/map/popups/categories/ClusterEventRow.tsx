@@ -90,7 +90,7 @@ function ClusterEventTooltipRow({
                   </span>
                 </div>
               ) : (
-                t('event.noData', 'No data available')
+                t('event.noData')
               )}
             </div>
           )

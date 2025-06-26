@@ -1412,6 +1412,39 @@
       }
     }
   },
+  "public-global-sentinel2-footprints": {
+    "name": "crwdns93688:0crwdne93688:0",
+    "description": "crwdns93690:0crwdne93690:0"
+  },
+  "public-global-sentinel2-presence": {
+    "name": "crwdns93692:0crwdne93692:0",
+    "description": "crwdns93694:0crwdne93694:0",
+    "schema": {
+      "bearing": "crwdns93696:0crwdne93696:0",
+      "matched": {
+        "keyword": "crwdns93698:0crwdne93698:0",
+        "enum": {
+          "true": "crwdns93700:0crwdne93700:0",
+          "false": "crwdns93702:0crwdne93702:0"
+        }
+      },
+      "shiptype": {
+        "keyword": "crwdns93704:0crwdne93704:0",
+        "enum": {
+          "carrier": "crwdns93706:0crwdne93706:0",
+          "seismic_vessel": "crwdns93708:0crwdne93708:0",
+          "passenger": "crwdns93710:0crwdne93710:0",
+          "other": "crwdns93712:0crwdne93712:0",
+          "support": "crwdns93714:0crwdne93714:0",
+          "bunker": "crwdns93716:0crwdne93716:0",
+          "gear": "crwdns93718:0crwdne93718:0",
+          "cargo": "crwdns93720:0crwdne93720:0",
+          "fishing": "crwdns93722:0crwdne93722:0",
+          "discrepancy": "crwdns93724:0crwdne93724:0"
+        }
+      }
+    }
+  },
   "public-global-sst-anomalies-max": {
     "name": "crwdns70290:0crwdne70290:0",
     "description": "crwdns70292:0crwdne70292:0"
@@ -1687,7 +1720,7 @@
   },
   "public-mp-atlas": {
     "name": "crwdns87892:0crwdne87892:0",
-    "description": "crwdns87894:0crwdne87894:0",
+    "description": "crwdns93730:0crwdne93730:0",
     "schema": {
       "establishment_stage": {
         "keyword": "crwdns87922:0crwdne87922:0",

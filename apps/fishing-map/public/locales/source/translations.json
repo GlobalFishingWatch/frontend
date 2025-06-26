@@ -58,7 +58,7 @@
     "pinVesselsMaxAllowed": "Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels. Please consider using the vessel groups feature to manage your vessels.",
     "portsAfterEvents": "Ports visited after events",
     "portsSearchPlaceholder": "Search ports",
-    "print ": "print",
+    "print": "print",
     "removeVessels": "Remove from workspace",
     "resultsPerPage": "Show {{results}} per page",
     "save": "Save this report",
@@ -149,7 +149,6 @@
     "disabled": "Disabled",
     "dismiss": "Dismiss",
     "edit": "Edit",
-    "edit ": "edit",
     "environment": "Environment",
     "event_one": "event",
     "event_other": "events",
@@ -213,7 +212,7 @@
     "months_other": "months",
     "more": "more",
     "name": "Name",
-    "navigateBackTo": "back to {{section}}",
+    "navigateBackTo": "Go back to {{section}}",
     "none": "None",
     "of": "of",
     "onlyMe": "Only me",
@@ -240,6 +239,7 @@
     "seeDefault": "See default workspace",
     "seeMore": "See more",
     "send": "Send",
+    "sentinel2": "Sentinel 2",
     "setNewPassword": "Set a new password",
     "share": "Share map",
     "since": "since",
@@ -791,7 +791,6 @@
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out"
   },
-  "navigateBackTo": "Go back to {{section}}",
   "portsReport": {
     "maxVessels": "Vessels report is available for up to {{vessels}} vessels",
     "newTimeRange": "Click the button to see the vessels that entered this port <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
@@ -868,7 +867,24 @@
     "tracksDisabled": "Select at least one vessel"
   },
   "toasts": {
-    "maxPointsVisualizationExceeded": "Max points visualization exceeded, swithing to heatmap mode."
+    "maxPointsVisualizationExceeded": "Max points visualization exceeded, switching to heatmap mode."
+  },
+  "trackCorrection": {
+    "adjustDisabled": "Adjusting the time range is needed.",
+    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
+    "comment": "Comment",
+    "commentPlaceholder": "Add a comment...",
+    "commentResolve": "Comment and resolve",
+    "falseNegative": "False negative",
+    "falsePositive": "False positive",
+    "issue": "Issue {{issueId}}",
+    "issueType": "Type of issue",
+    "mapTooltip": "Issue added on {{date}} reported as {{type}}",
+    "markAsResolved": "Mark as resolved",
+    "newIssue": "New issue",
+    "other": "Other",
+    "replyPlaceholder": "Write a reply",
+    "version": "Version"
   },
   "user": {
     "badges": {
@@ -1005,8 +1021,8 @@
       "tuna_purse_seines": "Tuna purse seine",
       "well_boat": "Well boat"
     },
-    "gfw-geartypes": "GFW Gear type",
-    "gfw-shiptypes": "GFW Vessel type",
+    "gfw_geartypes": "GFW Gear type",
+    "gfw_shiptypes": "GFW Vessel type",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Gross Tonnage",
     "grossTonnageRange": "Gross tonnage range",
@@ -1017,9 +1033,9 @@
     "infoSource": "Info Source",
     "infoSources": {
       "both": "Registry and AIS",
+      "gfw-source": "GFW Source",
       "registry": "Registry",
-      "selfReported": "Self reported",
-      "gfw-source": "GFW Source"
+      "selfReported": "Self reported"
     },
     "insights": {
       "countries": {

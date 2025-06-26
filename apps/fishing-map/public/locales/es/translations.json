@@ -58,7 +58,7 @@
     "pinVesselsMaxAllowed": "Añadir estos muchos barcos hará que tu espacio de trabajo supere el límite recomendado de {{maxVessels}} . Por favor, considere utilizar la función de grupos de buques para gestionar sus discursos.",
     "portsAfterEvents": "Puertos visitados después de eventos",
     "portsSearchPlaceholder": "Buscar puertos",
-    "print ": "imprimir",
+    "print": "print",
     "removeVessels": "Quitar del área de trabajo",
     "resultsPerPage": "Mostrar {{results}} por página",
     "save": "Guardar este informe",
@@ -149,7 +149,6 @@
     "disabled": "Desactivado",
     "dismiss": "Cancelar",
     "edit": "Editar",
-    "edit ": "editar",
     "environment": "Datos ambientales",
     "event_one": "evento",
     "event_other": "eventos",
@@ -240,6 +239,7 @@
     "seeDefault": "Ver la vista por defecto",
     "seeMore": "Ver más",
     "send": "Enviar",
+    "sentinel2": "Sentinel 2",
     "setNewPassword": "Establecer una nueva contraseña",
     "share": "Comparte el mapa actual",
     "since": "desde",
@@ -791,7 +791,6 @@
     "zoom_in": "Acercarse",
     "zoom_out": "Alejarse"
   },
-  "navigateBackTo": "volver a {{section}}",
   "portsReport": {
     "maxVessels": "Los informes de buques están disponibles para un máximo de {{vessels}} buques",
     "newTimeRange": "Haga clic en el botón para ver los buques que entraron en este puerto <br/>entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
@@ -869,6 +868,23 @@
   },
   "toasts": {
     "maxPointsVisualizationExceeded": "Se ha superado la visualización máxima de puntos, cambiando al modo de mapa de calor."
+  },
+  "trackCorrection": {
+    "adjustDisabled": "Adjusting the time range is needed.",
+    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
+    "comment": "Comment",
+    "commentPlaceholder": "Add a comment...",
+    "commentResolve": "Comment and resolve",
+    "falseNegative": "False negative",
+    "falsePositive": "False positive",
+    "issue": "Issue {{issueId}}",
+    "issueType": "Type of issue",
+    "mapTooltip": "Issue added on {{date}} reported as {{type}}",
+    "markAsResolved": "Mark as resolved",
+    "newIssue": "New issue",
+    "other": "Other",
+    "replyPlaceholder": "Write a reply",
+    "version": "Version"
   },
   "user": {
     "badges": {
@@ -1005,8 +1021,8 @@
       "tuna_purse_seines": "Red de cerco atunera",
       "well_boat": "Barco vivero"
     },
-    "gfw-geartypes": "Arte de pesca GFW",
-    "gfw-shiptypes": "Tipo de embarcación GFW",
+    "gfw_geartypes": "GFW Gear type",
+    "gfw_shiptypes": "GFW Vessel type",
     "goToImage": "Ir a la imagen {{number}}",
     "grossTonnage": "Tonelaje",
     "grossTonnageRange": "Rango de tonelaje bruto",
@@ -1017,9 +1033,9 @@
     "infoSource": "Fuente de la Información",
     "infoSources": {
       "both": "Registro y AIS",
+      "gfw-source": "GFW Source",
       "registry": "Registro",
-      "selfReported": "Autodeclarado",
-      "gfw-source": "GFW Source"
+      "selfReported": "Autodeclarado"
     },
     "insights": {
       "countries": {
