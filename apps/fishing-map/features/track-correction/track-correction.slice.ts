@@ -188,7 +188,10 @@ const trackCorrection = createSlice({
     setTrackIssueComment: (state, action: PayloadAction<string>) => {
       state.comment = action.payload
     },
-
+    resetIssues: (state) => {
+      state.issues.data = []
+      state.issues.status = AsyncReducerStatus.Idle
+    },
     resetTrackCorrection: (state) => {
       state.newIssue.vesselDataviewId = ''
       state.newIssue.timerange = {
@@ -218,6 +221,7 @@ export const {
   setTrackCorrectionTimerange,
   setTrackIssueType,
   setTrackIssueComment,
+  resetIssues,
   resetTrackCorrection,
 } = trackCorrection.actions
 

@@ -25,6 +25,7 @@ import { useSetTrackCorrectionId } from 'features/track-correction/track-correct
 import { setTrackCorrectionDataviewId } from 'features/track-correction/track-correction.slice'
 import { selectIsGuestUser, selectIsUserExpired } from 'features/user/selectors/user.selectors'
 import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
+import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
 import { selectIsAnyVesselLocation } from 'routes/routes.selectors'
 import { TimebarVisualisations } from 'types'
 import { formatInfoField } from 'utils/info'
@@ -56,6 +57,7 @@ function VesselTracksTooltipRow({
   const guestUser = useSelector(selectIsGuestUser)
   const isUserExpired = useSelector(selectIsUserExpired)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
+  const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
 
   const onReportClick = useCallback(() => {
     if (feature.timestamp) {
@@ -123,13 +125,17 @@ function VesselTracksTooltipRow({
             </p>
           </Fragment>
         )}
-        {showFeaturesDetails && !guestUser && !isUserExpired && !isVesselLocation && (
-          <div>
-            <Button onClick={onReportClick} className={styles.rowMarginTop}>
-              <span>{t('feedback.logAnIssue')}</span>
-            </Button>
-          </div>
-        )}
+        {showFeaturesDetails &&
+          !guestUser &&
+          !isUserExpired &&
+          !isVesselLocation &&
+          isTurningTidesWorkspace && (
+            <div>
+              <Button onClick={onReportClick} className={styles.rowMarginTop}>
+                <span>{t('feedback.logAnIssue')}</span>
+              </Button>
+            </div>
+          )}
       </div>
     </div>
   )

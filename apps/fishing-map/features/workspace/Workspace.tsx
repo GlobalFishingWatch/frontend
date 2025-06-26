@@ -21,6 +21,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectDataviewInstancesMergedOrdered } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
+import { resetIssues } from 'features/track-correction/track-correction.slice'
 import { useUserExpiredToast } from 'features/user/user-expired.hooks'
 import { selectWorkspaceVessselGroupsIds } from 'features/vessel-groups/vessel-groups.selectors'
 import {
@@ -82,6 +83,12 @@ function Workspace() {
     DEEP_SEA_MINING_POPUP,
     { visible: false, showAgain: false }
   )
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetIssues())
+    }
+  }, [dispatch])
 
   useEffect(() => {
     if (workspace) {

@@ -14,6 +14,7 @@ import {
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
+import { SPREADSHEET_ID_BY_WORKSPACE } from 'features/track-correction/track-correction.config'
 import { selectUserData, selectUserSettings } from 'features/user/selectors/user.selectors'
 import type { UserSettings } from 'features/user/user.slice'
 import { WORKSPACE_ROUTES } from 'routes/routes'
@@ -50,6 +51,11 @@ export const selectIsGFWWorkspace = createSelector([selectWorkspace], (workspace
 
 export const selectIsDefaultWorkspace = createSelector([selectWorkspace], (workspace) => {
   return workspace?.id === DEFAULT_WORKSPACE_ID
+})
+
+export const selectIsTurningTidesWorkspace = createSelector([selectWorkspace], (workspace) => {
+  if (!workspace) return false
+  return Object.keys(SPREADSHEET_ID_BY_WORKSPACE).includes(workspace?.id)
 })
 
 export const selectIsWorkspaceOwner = createSelector(
