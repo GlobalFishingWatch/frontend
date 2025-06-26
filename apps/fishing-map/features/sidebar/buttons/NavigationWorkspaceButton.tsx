@@ -45,7 +45,7 @@ function NavigationWorkspaceButton() {
     (isWorkspaceVesselLocation ||
       (isAnyWorkspaceReportLocation && locationCategory !== WorkspaceCategory.Reports))
   ) {
-    const tooltip = t('navigateBackTo', {
+    const tooltip = t('common.navigateBackTo', {
       section: t('workspace.title').toLocaleLowerCase(),
     })
     const query = {
