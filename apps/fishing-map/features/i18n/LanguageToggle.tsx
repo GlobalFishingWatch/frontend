@@ -48,7 +48,10 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
   return (
     <div className={cx(styles.languageToggle, className)}>
       <div className={styles.languageBtn}>
-        <Icon icon="language" />
+        <Icon
+          icon={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'language'}
+          type={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'default'}
+        />
       </div>
       <ul className={cx(styles.languages, styles[position])}>
         {IS_DEVELOPMENT_ENV && (
@@ -57,6 +60,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
               onClick={() => toggleLanguage('source')}
               className={cx(styles.language, {
                 [styles.currentLanguage]: i18n.language === 'source',
+                [styles.warning]: IS_DEVELOPMENT_ENV && i18n.language !== 'source',
               })}
             >
               🚧 Source 🚧

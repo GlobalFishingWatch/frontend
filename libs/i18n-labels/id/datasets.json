@@ -1412,6 +1412,39 @@
       }
     }
   },
+  "public-global-sentinel2-footprints": {
+    "name": "Sentinel2 Footprints",
+    "description": "Sentinel2 Footprints"
+  },
+  "public-global-sentinel2-presence": {
+    "name": "Sentinel 2 detections",
+    "description": "Sentinel 2 detections",
+    "schema": {
+      "bearing": "bearing",
+      "matched": {
+        "keyword": "matched",
+        "enum": {
+          "true": "true",
+          "false": "false"
+        }
+      },
+      "shiptype": {
+        "keyword": "shiptype",
+        "enum": {
+          "carrier": "carrier",
+          "seismic_vessel": "seismic_vessel",
+          "passenger": "passenger",
+          "other": "other",
+          "support": "support",
+          "bunker": "bunker",
+          "gear": "gear",
+          "cargo": "cargo",
+          "fishing": "fishing",
+          "discrepancy": "discrepancy"
+        }
+      }
+    }
+  },
   "public-global-sst-anomalies-max": {
     "name": "Sea Surface Temperatures anomalies (Max)",
     "description": "Sea surface temperatures anomalies (Max)"
@@ -1579,6 +1612,50 @@
     "name": "Inshore Fishing Zone",
     "description": "50 nm around the Tristan Archipelago and 40nm around Gough (8% of EEZ)"
   },
+  "public-isa-areas-contractor": {
+    "name": "ISA Areas by contract ID",
+    "description": "ISA Areas contractor",
+    "schema": {
+      "contract": {
+        "keyword": "contract",
+        "enum": {
+          "BrazilCRFC1": "BrazilCRFC1",
+          "BGRPMN1": "BGRPMN1",
+          "IFREMERPMN1": "IFREMERPMN1",
+          "KOREACRFC1": "KOREACRFC1",
+          "KOREAPMN1": "KOREAPMN1",
+          "JOGMECCRFC1": "JOGMECCRFC1",
+          "IFREMERPMS1": "IFREMERPMS1",
+          "IOMPMN1": "IOMPMN1",
+          "BPHDCPMN1": "BPHDCPMN1",
+          "DORDPMN1": "DORDPMN1",
+          "POLPMS1": "POLPMS1",
+          "UKSRLPMN2": "UKSRLPMN2",
+          "UKSRLPMN1": "UKSRLPMN1",
+          "YUZHPMN1": "YUZHPMN1",
+          "BMJPMN1": "BMJPMN1",
+          "RUSMNRCRFC1": "RUSMNRCRFC1",
+          "CIICPMN1": "CIICPMN1",
+          "IndiaPMS1": "IndiaPMS1",
+          "IndiaPMN1": "IndiaPMN1",
+          "OMSPMN1": "OMSPMN1",
+          "RUSFEDPMS1": "RUSFEDPMS1",
+          "CRFCReserved": "CRFCReserved",
+          "GSRPMN1": "GSRPMN1",
+          "KOREAPMS1": "KOREAPMS1",
+          "MARAWAPMN1": "MARAWAPMN1",
+          "COMRAPMS1": "COMRAPMS1",
+          "COMRACRFC1": "COMRACRFC1",
+          "CMMPMN1": "CMMPMN1",
+          "NORIPMN1": "NORIPMN1",
+          "TOMLPMN1": "TOMLPMN1",
+          "BGRPMS1": "BGRPMS1",
+          "COMRAPMN1": "COMRAPMN1",
+          "PMNReserved": "PMNReserved"
+        }
+      }
+    }
+  },
   "public-location-labels": {
     "name": "Location Labels",
     "description": "Combination of countries, places and seas dataset labels"
@@ -1660,34 +1737,11 @@
   },
   "public-mp-as-mp-atlas": {
     "name": "MPAs (MPAtlas)",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably",
-    "schema": {
-      "establishment_stage": {
-        "keyword": "establishment_stage",
-        "enum": {
-          "proposed/committed": "proposed/committed",
-          "designated": "designated",
-          "actively managed": "actively managed",
-          "implemented": "implemented",
-          "unknown": "unknown"
-        }
-      },
-      "protection_mpaguide_level": {
-        "keyword": "protection_mpaguide_level",
-        "enum": {
-          "unknown": "unknown",
-          "light": "light",
-          "full": "full",
-          "high": "high",
-          "incompatible": "incompatible",
-          "minimal": "minimal"
-        }
-      }
-    }
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably"
   },
   "public-mp-atlas": {
     "name": "MPAs (MPAtlas)",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably",
+    "description": "<p><a href=\"https://www.science.org/doi/10.1126/science.abf0861/\" target=\"_blank\" >The MPA Guide</a > is intended to fill a gap in existing MPA classification and assessment tools to help determine how likely MPAs are to deliver the desired conservation outcomes. Over the past few years, the MPAtlas team and key collaborators have applied The MPA Guide framework to MPAs around the world to develop a clearer picture of global marine protection, which includes a recent study establishing a baseline for global \"30x30\" targets - Publication: <a href=\"https://conbio.onlinelibrary.wiley.com/doi/10.1111/conl.13020\" target=\"_blank\" >Ocean Protection Quality is Lagging Behind Quantity</a >. MPAtlas is the online repository for MPA Guide assessments and associated data. Stage of Establishment represents where the MPA is in its process of being an MPA. <u>Proposed/Committed</u>: The intent to create an MPA is made public. <u>Designated</u>: MPA is established/recognized through legal means or other authoritative rulemaking. <u>Implemented</u>: MPA is acknowledged to be operation ‘in the water’ with plans for management activated. <u>Actively managed</u>: MPA management is ongoing, with monitoring, periodic review and adjustments made as needed to achieve biodiversity conservation and other ecological and social goals. Level of Protection represents the extent to which the MPA protected from seven main types of human activities and is likely to generate positive biodiversity outcomes. <u>Fully Protected</u>: No impact from extractive or destructive activities is allowed, and all abatable impacts are minimized. <u>Highly Protected</u>: Only light extractive activities are allowed that have low total impact, and all other abatable impacts are minimized. <u>Lightly Protected</u>: Some protection of biodiversity exists, but extractive or destructive activities that can have moderate to significant impact are allowed. <u>Minimally Protected</u>: Extensive extraction and other activities with high total impact are allowed, but the site can still be considered an MPA under the IUCN protected area definition and provides some conservation benefit. Some areas allow activities that have an impact so large that they are incompatible with the conservation of biodiversity, as defined by the IUCN. For more information, please visit <a href=\"https://mpatlas.org/\" target=\"_blank\">https://mpatlas.org/</a>. Each assessed MPA has a score card that describes its stage of establishment and level of protection, as well as more details about the components that contributed to these assessments. Note: The MPAtlas dataset does not contain boundaries for all global MPAs, only those assessed against MPA quality frameworks. </p>",
     "schema": {
       "establishment_stage": {
         "keyword": "establishment_stage",

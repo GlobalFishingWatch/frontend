@@ -1,4 +1,3 @@
-import { uniq } from 'es-toolkit'
 import type { RootState } from 'reducers'
 import type { Dispatch, Middleware } from 'redux'
 import { NOT_FOUND } from 'redux-first-router'
@@ -11,7 +10,7 @@ import { t } from 'features/i18n/i18n'
 import type { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { setWorkspaceHistoryNavigation } from 'features/workspace/workspace.slice'
 import { REPLACE_URL_PARAMS } from 'routes/routes.config'
-import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
+import { selectIsAnyVesselLocation } from 'routes/routes.selectors'
 import type { LinkToPayload } from 'routes/routes.types'
 import type { QueryParam, QueryParams } from 'types'
 
@@ -92,7 +91,7 @@ export const routerWorkspaceMiddleware: Middleware =
       // Needs to happen here instead of other middleware to reuse the same query object
       const newQuery = { ...(query || {}) }
 
-      const isWorkspaceVesselLocation = selectIsWorkspaceVesselLocation(state)
+      const isAnyVesselLocation = selectIsAnyVesselLocation(state)
       const navigatesToWorkspaceRoute = ALL_WORKSPACE_ROUTES.includes(routerAction.type)
       const vesselProfileDataviewIntance = selectVesselProfileDataviewIntance(state)
       const hasVesselProfileInstancePinned = selectHasVesselProfileInstancePinned(state)
@@ -102,7 +101,7 @@ export const routerWorkspaceMiddleware: Middleware =
         VESSEL_ROUTES.includes(state.location.type) &&
         routerAction.payload.vesselId !== state.location.payload.vesselId
       if (
-        isWorkspaceVesselLocation &&
+        isAnyVesselLocation &&
         navigatesToWorkspaceRoute &&
         (navigatesToDifferentLocation || navigatesToDifferentVessel) &&
         vesselProfileDataviewIntance &&

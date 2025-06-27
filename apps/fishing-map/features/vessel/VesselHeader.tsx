@@ -8,7 +8,7 @@ import { uniqBy } from 'es-toolkit'
 import type { RegistryImage } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
-import { Button, Icon, IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
@@ -215,15 +215,15 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
             disabled={!boundsReady}
             onClick={onVesselFitBoundsClick}
           />
-          <Button
+          <IconButton
             className="print-hidden"
-            type="border-secondary"
+            type="border"
+            icon="print"
+            tooltip={t('analysis.print')}
             size="small"
+            tooltipPlacement="bottom"
             onClick={onPrintClick}
-          >
-            <p>{t('analysis.print ')}</p>
-            <Icon icon="print" type="default" />
-          </Button>
+          />
           <VesselGroupAddButton
             vessels={vessel ? [vessel] : []}
             onAddToVesselGroup={onAddToVesselGroup}
