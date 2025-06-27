@@ -1612,6 +1612,50 @@
     "name": "Inshore Fishing Zone",
     "description": "50 nm around the Tristan Archipelago and 40nm around Gough (8% of EEZ)"
   },
+  "public-isa-areas-contractor": {
+    "name": "ISA Areas by contract ID",
+    "description": "ISA Areas contractor",
+    "schema": {
+      "contract": {
+        "keyword": "contract",
+        "enum": {
+          "BrazilCRFC1": "BrazilCRFC1",
+          "BGRPMN1": "BGRPMN1",
+          "IFREMERPMN1": "IFREMERPMN1",
+          "KOREACRFC1": "KOREACRFC1",
+          "KOREAPMN1": "KOREAPMN1",
+          "JOGMECCRFC1": "JOGMECCRFC1",
+          "IFREMERPMS1": "IFREMERPMS1",
+          "IOMPMN1": "IOMPMN1",
+          "BPHDCPMN1": "BPHDCPMN1",
+          "DORDPMN1": "DORDPMN1",
+          "POLPMS1": "POLPMS1",
+          "UKSRLPMN2": "UKSRLPMN2",
+          "UKSRLPMN1": "UKSRLPMN1",
+          "YUZHPMN1": "YUZHPMN1",
+          "BMJPMN1": "BMJPMN1",
+          "RUSMNRCRFC1": "RUSMNRCRFC1",
+          "CIICPMN1": "CIICPMN1",
+          "IndiaPMS1": "IndiaPMS1",
+          "IndiaPMN1": "IndiaPMN1",
+          "OMSPMN1": "OMSPMN1",
+          "RUSFEDPMS1": "RUSFEDPMS1",
+          "CRFCReserved": "CRFCReserved",
+          "GSRPMN1": "GSRPMN1",
+          "KOREAPMS1": "KOREAPMS1",
+          "MARAWAPMN1": "MARAWAPMN1",
+          "COMRAPMS1": "COMRAPMS1",
+          "COMRACRFC1": "COMRACRFC1",
+          "CMMPMN1": "CMMPMN1",
+          "NORIPMN1": "NORIPMN1",
+          "TOMLPMN1": "TOMLPMN1",
+          "BGRPMS1": "BGRPMS1",
+          "COMRAPMN1": "COMRAPMN1",
+          "PMNReserved": "PMNReserved"
+        }
+      }
+    }
+  },
   "public-location-labels": {
     "name": "Location Labels",
     "description": "Combination of countries, places and seas dataset labels"
@@ -1693,30 +1737,7 @@
   },
   "public-mp-as-mp-atlas": {
     "name": "MPAs (MPAtlas)",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably",
-    "schema": {
-      "establishment_stage": {
-        "keyword": "establishment_stage",
-        "enum": {
-          "proposed/committed": "proposed/committed",
-          "designated": "designated",
-          "actively managed": "actively managed",
-          "implemented": "implemented",
-          "unknown": "unknown"
-        }
-      },
-      "protection_mpaguide_level": {
-        "keyword": "protection_mpaguide_level",
-        "enum": {
-          "unknown": "unknown",
-          "light": "light",
-          "full": "full",
-          "high": "high",
-          "incompatible": "incompatible",
-          "minimal": "minimal"
-        }
-      }
-    }
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably"
   },
   "public-mp-atlas": {
     "name": "MPAs (MPAtlas)",
