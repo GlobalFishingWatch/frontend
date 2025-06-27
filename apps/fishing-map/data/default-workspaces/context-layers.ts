@@ -31,13 +31,6 @@ export const BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES: DataviewInstance[] = [
     dataviewId: MPA_DATAVIEW_SLUG,
   },
   {
-    id: PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
-    config: {
-      visible: false,
-    },
-    dataviewId: PROTECTED_SEAS_DATAVIEW_SLUG,
-  },
-  {
     id: FAO_AREAS_DATAVIEW_INSTANCE_ID,
     config: {
       visible: false,
