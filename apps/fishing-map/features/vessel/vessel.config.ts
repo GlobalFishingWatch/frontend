@@ -54,7 +54,9 @@ type CustomVMSGroup = Partial<Record<SelfReportedSource, VesselRenderField[][]>>
 export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   [SelfReportedSource.Peru]: [
     [{ key: 'origin' }, { key: 'fleet' }, { key: 'nationalId' }],
-    [{ key: 'capacity' }, { key: 'beam' }],
+    [{ key: 'length' }, { key: 'capacity' }, { key: 'beam' }],
+    [{ key: 'regimen' }, { key: 'resolution' }],
+    [{ key: 'casco' }, { key: 'chdSpecies' }],
   ],
   [SelfReportedSource.CostaRica]: [[{ key: 'nationalId' }]],
   [SelfReportedSource.Indonesia]: [
