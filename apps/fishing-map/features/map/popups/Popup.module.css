@@ -303,8 +303,11 @@
   text-overflow: ellipsis;
 }
 
-.portCTA {
+.rowMarginTop {
   margin-top: var(--space-S);
+}
+
+.portCTA {
   display: block;
   width: 100%;
 }

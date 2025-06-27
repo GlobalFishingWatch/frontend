@@ -29,8 +29,6 @@ deck-loaders:
   - libs/deck-loaders/**/*
 i18n-labels:
   - libs/i18n-labels/**/*
-layer-composer:
-  - libs/layer-composer/**/*
 ocean-areas:
   - libs/ocean-areas/**/*
 pbf-decoders:

@@ -33,6 +33,8 @@ import SaveReportButton from 'features/sidebar/buttons/SaveReportButton'
 import SaveWorkspaceButton from 'features/sidebar/buttons/SaveWorkspaceButton'
 import ShareWorkspaceButton from 'features/sidebar/buttons/ShareWorkspaceButton'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
+import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
+import TrackCorrectionHeader from 'features/track-correction/TrackCorrectionHeader'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
 import VesselHeader from 'features/vessel/VesselHeader'
@@ -64,6 +66,7 @@ function SidebarHeader() {
   const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
   const isWorkspaceGeneratorEnabled = useSelector(selectIsWorkspaceGeneratorEnabled)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
+  const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const activeSearchOption = useSelector(selectSearchOption)
   const isGFWUser = useSelector(selectIsGFWUser)
@@ -139,6 +142,9 @@ function SidebarHeader() {
   }
 
   const sectionHeaderComponent = useMemo(() => {
+    if (isTrackCorrectionOpen) {
+      return <TrackCorrectionHeader />
+    }
     if (isAnyVesselLocation) {
       return <VesselHeader isSticky={isSticky} />
     }
@@ -156,6 +162,7 @@ function SidebarHeader() {
     isAreaReportLocation,
     isPortReportLocation,
     isSticky,
+    isTrackCorrectionOpen,
     isVesselGroupReportLocation,
   ])
 
@@ -176,10 +183,9 @@ function SidebarHeader() {
             )}
             {/* TODO:CVP2 add save report in isAnyReportLocation when this PR https://github.com/GlobalFishingWatch/api-monorepo-node/pull/289 is merged */}
             {isAreaReportLocation && <SaveReportButton />}
-            {isWorkspaceLocation && <SaveWorkspaceButton />}
-            {(isWorkspaceLocation || isAreaReportLocation || isAnyVesselLocation) && (
-              <ShareWorkspaceButton />
-            )}
+            {isWorkspaceLocation && !isTrackCorrectionOpen && <SaveWorkspaceButton />}
+            {(isWorkspaceLocation || isAreaReportLocation || isAnyVesselLocation) &&
+              !isTrackCorrectionOpen && <ShareWorkspaceButton />}
             {isSmallScreen && <LanguageToggle className={styles.lngToggle} position="rightDown" />}
             {isSmallScreen && <UserButton className={styles.userButton} />}
             {isSearchLocation && !readOnly && !isSmallScreen && (
