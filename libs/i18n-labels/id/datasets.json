@@ -1022,7 +1022,7 @@
   },
   "public-eez-areas-12nm": {
     "name": "EEZs 12nm",
-    "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (12NM), version 11. Source: marineregions.org."
+    "description": "Territorial seas are a belt of coastal waters extending at most 12 nautical miles (22.2 km; 13.8 mi) from the baseline (usually the mean low-water mark) of a coastal state.The territorial seas (and EEZs) lines are generally drawn from straight line baselines and these baselines are defined by each coastal state following UNCLOS rules See article 7. Waters inside the baseline are considered \"internal waters\" (See article 8) Citation: Flanders Marine Institute (2023). Maritime Boundaries Geodatabase: Territorial Seas (12NM), version 4. Available online at https://www.marineregions.org/. https://doi.org/10.14284/633"
   },
   "public-eez-boundaries": {
     "name": "Areas boundaries for eez",
@@ -1118,7 +1118,7 @@
   },
   "public-gfcm-fao": {
     "name": "GFCM FAO",
-    "description": "GFCM Fisheries Restricted Areas"
+    "description": "A fisheries restricted area (FRA) is a geographically defined area in which some specific fishing activities are temporarily or permanently banned or restricted in order to improve the exploitation patterns and conservation of specific stocks as well as of habitats and deep-sea ecosystems. In the Mediterranean and the Black Sea, 1,760,000 square kilometers of sea habitats are protected by ten FRAs established by the GFCM. This includes one large deep-water FRA (1,730,000 square kilometers) in which the use of towed dredges and trawl nets in all waters deeper than 1000 metres is banned to protect deep-sea benthic habitats. The layer was taken from the GFCM website but manually adjusted to reflect the original coordinates of the FRAs as stipulated in the document REC. GFCM/29/2005/1."
   },
   "public-global-all-tracks": {
     "name": "Lintasan",
@@ -1582,7 +1582,7 @@
   },
   "public-high-seas-pockets": {
     "name": "High seas pockets",
-    "description": "This data set is derived from the Marine Regions high-seas data set by extracting just the polygons corresponding to the 15 high seas pockets that GFW has labeled from HSP-1 to HSP-15.   Note that HSP-15 is split across the anti-meridian, so it appears in two pieces that have the same label.   Naming of the pockets is consistent with the naming that WCPFC uses to identify HSP 1-4."
+    "description": "<p> The United Nations Convention on the Law of the Sea describes the high seas as ‘all parts of the sea that are not included in the exclusive economic zone, in the territorial sea or in the internal waters of a State, or in the archipelagic waters of an archipelagic State.’ High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them. Citation: Flanders Marine Institute (2024). Maritime Boundaries Geodatabase: High Seas, version 2. Available online at <a href=\"https://www.marineregions.org/\" target=\"_blank\" >https://www.marineregions.org/</a >. </p>"
   },
   "public-indonesia-fishing-effort": {
     "name": "Indonesia VMS",
@@ -1616,6 +1616,113 @@
     "name": "ISA Areas by contract ID",
     "description": "ISA Areas contractor",
     "schema": {
+      "layer": {
+        "keyword": "layer",
+        "enum": {
+          "CFC Reserved Areas": "CFC Reserved Areas",
+          "CFC Exploration Areas": "CFC Exploration Areas",
+          "PMN Reserved Areas": "PMN Reserved Areas",
+          "PMN Exploration Areas": "PMN Exploration Areas",
+          "PMS Exploration Areas": "PMS Exploration Areas"
+        }
+      },
+      "status": "status",
+      "remarks": {
+        "keyword": "remarks",
+        "enum": {
+          "Origin:INDIA": "Origin:INDIA",
+          "Total exploration area of MARAWA (PMN) is 74,990 sq.km; AreaKM2 was calculated by ISA": "Total exploration area of MARAWA (PMN) is 74,990 sq.km; AreaKM2 was calculated by ISA",
+          "Total exploration area of CIIC (PMN) is 71,937 sq.km; AreaKM2 was calcualted by ISA\r\n": "Total exploration area of CIIC (PMN) is 71,937 sq.km; AreaKM2 was calcualted by ISA\r\n",
+          "Total exploration area of IFREMER (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "Total exploration area of IFREMER (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA",
+          "Total exploration area of DORD (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "Total exploration area of DORD (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA",
+          "Total exploration area of GSR (PMN) is 41,468.91606 sq.km": "Total exploration area of GSR (PMN) is 41,468.91606 sq.km",
+          "xx": "xx",
+          "Total exploration area of India (PMN) is 75,000 sq.km, AreaKM2 was calculated by ISA": "Total exploration area of India (PMN) is 75,000 sq.km, AreaKM2 was calculated by ISA",
+          "Total exploration area of Korea (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "Total exploration area of Korea (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA",
+          "Total exploration area of IOM (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "Total exploration area of IOM (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA",
+          "Total exploration area of COMRA (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "Total exploration area of COMRA (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA",
+          "Total exploration area of Yuzhmorgeologiya (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "Total exploration area of Yuzhmorgeologiya (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA"
+        }
+      },
+      "act_date": {
+        "keyword": "act_date",
+        "enum": {
+          "1425945600000": "1425945600000",
+          "1474848000000": "1474848000000"
+        }
+      },
+      "area_key": {
+        "keyword": "area_key",
+        "enum": {
+          "CRFCReservedR_001": "CRFCReservedR_001",
+          "KOREACRFC1X_001": "KOREACRFC1X_001",
+          "RUSMNRCRFC1X_001a": "RUSMNRCRFC1X_001a",
+          "BrazilCRFC1X_001": "BrazilCRFC1X_001",
+          "JOGMECCRFC1X_001c": "JOGMECCRFC1X_001c",
+          "COMRACRFC1X_001a": "COMRACRFC1X_001a",
+          "PMNReservedR_Block 24": "PMNReservedR_Block 24",
+          "BPHDCPMN1R_C-3": "BPHDCPMN1R_C-3",
+          "MARAWAPMN1X_01": "MARAWAPMN1X_01",
+          "CIICPMN1X_790": "CIICPMN1X_790",
+          "IFREMERPMN1X_01": "IFREMERPMN1X_01",
+          "NORIPMN1X_A": "NORIPMN1X_A",
+          "UKSRLPMN2X": "UKSRLPMN2X",
+          "UKSRLPMN1X": "UKSRLPMN1X",
+          "DORDPMN1X_DOR1": "DORDPMN1X_DOR1",
+          "OMSPMN1X_Singapore": "OMSPMN1X_Singapore",
+          "GSRPMN1X_B6a": "GSRPMN1X_B6a",
+          "BMJPMN1_A": "BMJPMN1_A",
+          "IndiaPMN1X_806": "IndiaPMN1X_806",
+          "CMMPMN1X_Poly1": "CMMPMN1X_Poly1",
+          "TOMLPMN1X_A": "TOMLPMN1X_A",
+          "KOREAPMN1X_01": "KOREAPMN1X_01",
+          "IOMPMN1X_01": "IOMPMN1X_01",
+          "COMRAPMN1X_COM1a": "COMRAPMN1X_COM1a",
+          "YUZHPMN1X_01": "YUZHPMN1X_01",
+          "BPHDCPMN1X_C-1": "BPHDCPMN1X_C-1",
+          "BGRPMN1X_East_a": "BGRPMN1X_East_a",
+          "KOREAPMS1X_001a": "KOREAPMS1X_001a",
+          "BGRPMS1X_024a": "BGRPMS1X_024a",
+          "POLPMS1X_001": "POLPMS1X_001",
+          "RUSFEDPMS1X_010c": "RUSFEDPMS1X_010c",
+          "IFREMERPMS1X_001a": "IFREMERPMS1X_001a",
+          "COMRAPMS1X_010c": "COMRAPMS1X_010c",
+          "IndiaPMS1X_001": "IndiaPMS1X_001"
+        }
+      },
+      "blk_cell": {
+        "keyword": "blk_cell",
+        "enum": {
+          "Block": "Block",
+          "NA": "NA"
+        }
+      },
+      "blk_orig": {
+        "keyword": "blk_orig",
+        "enum": {
+          "1": "1",
+          "1c": "1c",
+          "BPHDC C-3": "BPHDC C-3",
+          "MARAWA 1": "MARAWA 1",
+          "NA": "NA",
+          "IFR1": "IFR1",
+          "NORI A": "NORI A",
+          "UKSRL2": "UKSRL2",
+          "UKSRL": "UKSRL",
+          "DOR1": "DOR1",
+          "OMSingapore": "OMSingapore",
+          "GSR B6": "GSR B6",
+          "Site: poly1": "Site: poly1",
+          "TOML A": "TOML A",
+          "KR1 (N3)": "KR1 (N3)",
+          "IOM1": "IOM1",
+          "COM1/a": "COM1/a",
+          "YUZ1": "YUZ1",
+          "BPHDC C-1": "BPHDC C-1",
+          "BGR East_a": "BGR East_a",
+          "24a": "24a"
+        }
+      },
       "contract": {
         "keyword": "contract",
         "enum": {
@@ -1652,6 +1759,73 @@
           "BGRPMS1": "BGRPMS1",
           "COMRAPMN1": "COMRAPMN1",
           "PMNReserved": "PMNReserved"
+        }
+      },
+      "sub_area": {
+        "keyword": "sub_area",
+        "enum": {
+          "NA": "NA",
+          "Block 24": "Block 24",
+          "C-3": "C-3",
+          "MARAWA 1": "MARAWA 1",
+          "IFR1": "IFR1",
+          "NORI A": "NORI A",
+          "UKSRL2": "UKSRL2",
+          "UKSRL": "UKSRL",
+          "DOR1": "DOR1",
+          "OMSingapore": "OMSingapore",
+          "GSR B6a": "GSR B6a",
+          "Block A": "Block A",
+          "Poly1": "Poly1",
+          "TOML A": "TOML A",
+          "KR1 (N3)": "KR1 (N3)",
+          "IOM1": "IOM1",
+          "COM1a": "COM1a",
+          "YUZ1": "YUZ1",
+          "C-1": "C-1",
+          "East": "East"
+        }
+      },
+      "area_km_2": {
+        "keyword": "area_km_2",
+        "enum": {
+          "1": "1",
+          "150000": "150000"
+        }
+      },
+      "area_type": {
+        "keyword": "area_type",
+        "enum": {
+          "Reserved": "Reserved",
+          "Exploration": "Exploration"
+        }
+      },
+      "clst_orig": {
+        "keyword": "clst_orig",
+        "enum": {
+          "KC-1": "KC-1",
+          "NA": "NA",
+          "A": "A"
+        }
+      },
+      "cluster_id": {
+        "keyword": "cluster_id",
+        "enum": {
+          "NR": "NR",
+          "KC-1": "KC-1",
+          "NA": "NA",
+          "A": "A"
+        }
+      },
+      "blk_cell_id": {
+        "keyword": "blk_cell_id",
+        "enum": {
+          "1": "1",
+          "10": "10",
+          "24": "24",
+          "1c": "1c",
+          "1a": "1a",
+          "NA": "NA"
         }
       }
     }
@@ -1737,7 +1911,30 @@
   },
   "public-mp-as-mp-atlas": {
     "name": "MPAs (MPAtlas)",
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably"
+    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably",
+    "schema": {
+      "establishment_stage": {
+        "keyword": "establishment_stage",
+        "enum": {
+          "proposed/committed": "proposed/committed",
+          "designated": "designated",
+          "actively managed": "actively managed",
+          "implemented": "implemented",
+          "unknown": "unknown"
+        }
+      },
+      "protection_mpaguide_level": {
+        "keyword": "protection_mpaguide_level",
+        "enum": {
+          "unknown": "unknown",
+          "light": "light",
+          "full": "full",
+          "high": "high",
+          "incompatible": "incompatible",
+          "minimal": "minimal"
+        }
+      }
+    }
   },
   "public-mp-atlas": {
     "name": "MPAs (MPAtlas)",
@@ -1826,7 +2023,7 @@
   },
   "public-paa-duke": {
     "name": "PAAS",
-    "description": "Global dataset of Preferential Access Areas for small-scale fishing"
+    "description": "<p> This global Preferential Access Area (PAA) database was built with data for 44 countries identified by the Illuminating Hidden Harvests (IHH) initiative following Basurto et al. (2023) and the FAOLEX database (https://www.fao.org/faolex/en/). The total resulting PAAs identified in this study (n = 63) in 44 countries may be considered a lower bound and not comprehensive, as governments can also establish PAAs via laws or regulations either: (i) not relating to the fisheries sector and categorized elsewhere in the FAOLEX database and hence not searched, or (ii) not reported or captured in it. The most recent review of FAOLEX to identify PAAs was conducted in 2022. For mapping and spatial analysis of the PAAs, a geodatabase of PAA boundaries was created using definition parameters for each PAA (i.e., distance from shoreline or the baseline, depth, or a given set of coordinates or buffered distances around undersea features). Baselines were extracted from Flanders Marine Institute’s (2023) version 12 global EEZ database, defined by ‘Straight Baseline’ features. The shoreline dataset was ESRI’s 2014 global shoreline, the same shoreline dataset as the Flanders Marine Institute global EEZ database. Depth data was extracted from the GEBCO 2023 global relief dataset. When possible, Duke reached out to local experts to review the boundaries for confirmation that our interpretation of FAOLEX and the relevant law or regulation matches what is being used by local fishers. If you have feedback on the PAA boundaries, information regarding PAAs that are not reflected here, or other questions, please reach out to ssf-paa-info@duke.edu. For more information on PAAs and how they are managed, please see Duke’s publication by Basurto et al. (2024) here: <a href=\"https://doi.org/10.1038/s44183-024-00096-0\" target=\"_blank\" >https://doi.org/10.1038/s44183-024-00096-0</a >. Please note that there is no singular definition of a PAA, therefore each country will decide what activities, vessels, gear types, etc. are prohibited or restricted in the PAA. For more information of the specific designation of each PAA, please see the law or regulation in FAOLex. Citation: DeLand, S., Vegh, T., Cleary, J., Basurto, X., Virdin, J., & Halpin, P. N. (2025). A global dataset of preferential access areas for small-scale fishing. Duke Research Data Repository. <a href=\"https://doi.org/10.7924/r40s01h5j\" target=\"_blank\" >https://doi.org/10.7924/r40s01h5j</a > </p>"
   },
   "public-panama-fishing-effort": {
     "name": "Panama VMS",

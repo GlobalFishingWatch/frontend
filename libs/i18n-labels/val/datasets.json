@@ -1022,7 +1022,7 @@
   },
   "public-eez-areas-12nm": {
     "name": "crwdns66085:0crwdne66085:0",
-    "description": "crwdns66087:0crwdne66087:0"
+    "description": "crwdns93804:0crwdne93804:0"
   },
   "public-eez-boundaries": {
     "name": "crwdns66089:0crwdne66089:0",
@@ -1118,7 +1118,7 @@
   },
   "public-gfcm-fao": {
     "name": "crwdns87882:0crwdne87882:0",
-    "description": "crwdns87856:0crwdne87856:0"
+    "description": "crwdns93806:0crwdne93806:0"
   },
   "public-global-all-tracks": {
     "name": "crwdns69888:0crwdne69888:0",
@@ -1582,7 +1582,7 @@
   },
   "public-high-seas-pockets": {
     "name": "crwdns66625:0crwdne66625:0",
-    "description": "crwdns66627:0crwdne66627:0"
+    "description": "crwdns93808:0crwdne93808:0"
   },
   "public-indonesia-fishing-effort": {
     "name": "crwdns66629:0crwdne66629:0",
@@ -1616,6 +1616,113 @@
     "name": "crwdns93732:0crwdne93732:0",
     "description": "crwdns93734:0crwdne93734:0",
     "schema": {
+      "layer": {
+        "keyword": "crwdns93810:0crwdne93810:0",
+        "enum": {
+          "CFC Reserved Areas": "crwdns93812:0crwdne93812:0",
+          "CFC Exploration Areas": "crwdns93814:0crwdne93814:0",
+          "PMN Reserved Areas": "crwdns93816:0crwdne93816:0",
+          "PMN Exploration Areas": "crwdns93818:0crwdne93818:0",
+          "PMS Exploration Areas": "crwdns93820:0crwdne93820:0"
+        }
+      },
+      "status": "crwdns93822:0crwdne93822:0",
+      "remarks": {
+        "keyword": "crwdns93824:0crwdne93824:0",
+        "enum": {
+          "Origin:INDIA": "crwdns93826:0crwdne93826:0",
+          "Total exploration area of MARAWA (PMN) is 74,990 sq.km; AreaKM2 was calculated by ISA": "crwdns93828:0crwdne93828:0",
+          "Total exploration area of CIIC (PMN) is 71,937 sq.km; AreaKM2 was calcualted by ISA\r\n": "crwdns93830:0crwdne93830:0",
+          "Total exploration area of IFREMER (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns93832:0crwdne93832:0",
+          "Total exploration area of DORD (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns93834:0crwdne93834:0",
+          "Total exploration area of GSR (PMN) is 41,468.91606 sq.km": "crwdns93836:0crwdne93836:0",
+          "xx": "crwdns93838:0crwdne93838:0",
+          "Total exploration area of India (PMN) is 75,000 sq.km, AreaKM2 was calculated by ISA": "crwdns93840:0crwdne93840:0",
+          "Total exploration area of Korea (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns93842:0crwdne93842:0",
+          "Total exploration area of IOM (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns93844:0crwdne93844:0",
+          "Total exploration area of COMRA (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns93846:0crwdne93846:0",
+          "Total exploration area of Yuzhmorgeologiya (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns93848:0crwdne93848:0"
+        }
+      },
+      "act_date": {
+        "keyword": "crwdns93850:0crwdne93850:0",
+        "enum": {
+          "1425945600000": "crwdns93852:0crwdne93852:0",
+          "1474848000000": "crwdns93854:0crwdne93854:0"
+        }
+      },
+      "area_key": {
+        "keyword": "crwdns93856:0crwdne93856:0",
+        "enum": {
+          "CRFCReservedR_001": "crwdns93858:0crwdne93858:0",
+          "KOREACRFC1X_001": "crwdns93860:0crwdne93860:0",
+          "RUSMNRCRFC1X_001a": "crwdns93862:0crwdne93862:0",
+          "BrazilCRFC1X_001": "crwdns93864:0crwdne93864:0",
+          "JOGMECCRFC1X_001c": "crwdns93866:0crwdne93866:0",
+          "COMRACRFC1X_001a": "crwdns93868:0crwdne93868:0",
+          "PMNReservedR_Block 24": "crwdns93870:0crwdne93870:0",
+          "BPHDCPMN1R_C-3": "crwdns93872:0crwdne93872:0",
+          "MARAWAPMN1X_01": "crwdns93874:0crwdne93874:0",
+          "CIICPMN1X_790": "crwdns93876:0crwdne93876:0",
+          "IFREMERPMN1X_01": "crwdns93878:0crwdne93878:0",
+          "NORIPMN1X_A": "crwdns93880:0crwdne93880:0",
+          "UKSRLPMN2X": "crwdns93882:0crwdne93882:0",
+          "UKSRLPMN1X": "crwdns93884:0crwdne93884:0",
+          "DORDPMN1X_DOR1": "crwdns93886:0crwdne93886:0",
+          "OMSPMN1X_Singapore": "crwdns93888:0crwdne93888:0",
+          "GSRPMN1X_B6a": "crwdns93890:0crwdne93890:0",
+          "BMJPMN1_A": "crwdns93892:0crwdne93892:0",
+          "IndiaPMN1X_806": "crwdns93894:0crwdne93894:0",
+          "CMMPMN1X_Poly1": "crwdns93896:0crwdne93896:0",
+          "TOMLPMN1X_A": "crwdns93898:0crwdne93898:0",
+          "KOREAPMN1X_01": "crwdns93900:0crwdne93900:0",
+          "IOMPMN1X_01": "crwdns93902:0crwdne93902:0",
+          "COMRAPMN1X_COM1a": "crwdns93904:0crwdne93904:0",
+          "YUZHPMN1X_01": "crwdns93906:0crwdne93906:0",
+          "BPHDCPMN1X_C-1": "crwdns93908:0crwdne93908:0",
+          "BGRPMN1X_East_a": "crwdns93910:0crwdne93910:0",
+          "KOREAPMS1X_001a": "crwdns93912:0crwdne93912:0",
+          "BGRPMS1X_024a": "crwdns93914:0crwdne93914:0",
+          "POLPMS1X_001": "crwdns93916:0crwdne93916:0",
+          "RUSFEDPMS1X_010c": "crwdns93918:0crwdne93918:0",
+          "IFREMERPMS1X_001a": "crwdns93920:0crwdne93920:0",
+          "COMRAPMS1X_010c": "crwdns93922:0crwdne93922:0",
+          "IndiaPMS1X_001": "crwdns93924:0crwdne93924:0"
+        }
+      },
+      "blk_cell": {
+        "keyword": "crwdns93926:0crwdne93926:0",
+        "enum": {
+          "Block": "crwdns93928:0crwdne93928:0",
+          "NA": "crwdns93930:0crwdne93930:0"
+        }
+      },
+      "blk_orig": {
+        "keyword": "crwdns93932:0crwdne93932:0",
+        "enum": {
+          "1": "crwdns93934:0crwdne93934:0",
+          "1c": "crwdns93936:0crwdne93936:0",
+          "BPHDC C-3": "crwdns93938:0crwdne93938:0",
+          "MARAWA 1": "crwdns93940:0crwdne93940:0",
+          "NA": "crwdns93942:0crwdne93942:0",
+          "IFR1": "crwdns93944:0crwdne93944:0",
+          "NORI A": "crwdns93946:0crwdne93946:0",
+          "UKSRL2": "crwdns93948:0crwdne93948:0",
+          "UKSRL": "crwdns93950:0crwdne93950:0",
+          "DOR1": "crwdns93952:0crwdne93952:0",
+          "OMSingapore": "crwdns93954:0crwdne93954:0",
+          "GSR B6": "crwdns93956:0crwdne93956:0",
+          "Site: poly1": "crwdns93958:0crwdne93958:0",
+          "TOML A": "crwdns93960:0crwdne93960:0",
+          "KR1 (N3)": "crwdns93962:0crwdne93962:0",
+          "IOM1": "crwdns93964:0crwdne93964:0",
+          "COM1/a": "crwdns93966:0crwdne93966:0",
+          "YUZ1": "crwdns93968:0crwdne93968:0",
+          "BPHDC C-1": "crwdns93970:0crwdne93970:0",
+          "BGR East_a": "crwdns93972:0crwdne93972:0",
+          "24a": "crwdns93974:0crwdne93974:0"
+        }
+      },
       "contract": {
         "keyword": "crwdns93736:0crwdne93736:0",
         "enum": {
@@ -1652,6 +1759,73 @@
           "BGRPMS1": "crwdns93798:0crwdne93798:0",
           "COMRAPMN1": "crwdns93800:0crwdne93800:0",
           "PMNReserved": "crwdns93802:0crwdne93802:0"
+        }
+      },
+      "sub_area": {
+        "keyword": "crwdns93976:0crwdne93976:0",
+        "enum": {
+          "NA": "crwdns93978:0crwdne93978:0",
+          "Block 24": "crwdns93980:0crwdne93980:0",
+          "C-3": "crwdns93982:0crwdne93982:0",
+          "MARAWA 1": "crwdns93984:0crwdne93984:0",
+          "IFR1": "crwdns93986:0crwdne93986:0",
+          "NORI A": "crwdns93988:0crwdne93988:0",
+          "UKSRL2": "crwdns93990:0crwdne93990:0",
+          "UKSRL": "crwdns93992:0crwdne93992:0",
+          "DOR1": "crwdns93994:0crwdne93994:0",
+          "OMSingapore": "crwdns93996:0crwdne93996:0",
+          "GSR B6a": "crwdns93998:0crwdne93998:0",
+          "Block A": "crwdns94000:0crwdne94000:0",
+          "Poly1": "crwdns94002:0crwdne94002:0",
+          "TOML A": "crwdns94004:0crwdne94004:0",
+          "KR1 (N3)": "crwdns94006:0crwdne94006:0",
+          "IOM1": "crwdns94008:0crwdne94008:0",
+          "COM1a": "crwdns94010:0crwdne94010:0",
+          "YUZ1": "crwdns94012:0crwdne94012:0",
+          "C-1": "crwdns94014:0crwdne94014:0",
+          "East": "crwdns94016:0crwdne94016:0"
+        }
+      },
+      "area_km_2": {
+        "keyword": "crwdns94018:0crwdne94018:0",
+        "enum": {
+          "1": "crwdns94020:0crwdne94020:0",
+          "150000": "crwdns94022:0crwdne94022:0"
+        }
+      },
+      "area_type": {
+        "keyword": "crwdns94024:0crwdne94024:0",
+        "enum": {
+          "Reserved": "crwdns94026:0crwdne94026:0",
+          "Exploration": "crwdns94028:0crwdne94028:0"
+        }
+      },
+      "clst_orig": {
+        "keyword": "crwdns94030:0crwdne94030:0",
+        "enum": {
+          "KC-1": "crwdns94032:0crwdne94032:0",
+          "NA": "crwdns94034:0crwdne94034:0",
+          "A": "crwdns94036:0crwdne94036:0"
+        }
+      },
+      "cluster_id": {
+        "keyword": "crwdns94038:0crwdne94038:0",
+        "enum": {
+          "NR": "crwdns94040:0crwdne94040:0",
+          "KC-1": "crwdns94042:0crwdne94042:0",
+          "NA": "crwdns94044:0crwdne94044:0",
+          "A": "crwdns94046:0crwdne94046:0"
+        }
+      },
+      "blk_cell_id": {
+        "keyword": "crwdns94048:0crwdne94048:0",
+        "enum": {
+          "1": "crwdns94050:0crwdne94050:0",
+          "10": "crwdns94052:0crwdne94052:0",
+          "24": "crwdns94054:0crwdne94054:0",
+          "1c": "crwdns94056:0crwdne94056:0",
+          "1a": "crwdns94058:0crwdne94058:0",
+          "NA": "crwdns94060:0crwdne94060:0"
         }
       }
     }
@@ -1737,7 +1911,30 @@
   },
   "public-mp-as-mp-atlas": {
     "name": "crwdns84730:0crwdne84730:0",
-    "description": "crwdns84732:0crwdne84732:0"
+    "description": "crwdns84732:0crwdne84732:0",
+    "schema": {
+      "establishment_stage": {
+        "keyword": "crwdns94062:0crwdne94062:0",
+        "enum": {
+          "proposed/committed": "crwdns94064:0crwdne94064:0",
+          "designated": "crwdns94066:0crwdne94066:0",
+          "actively managed": "crwdns94068:0crwdne94068:0",
+          "implemented": "crwdns94070:0crwdne94070:0",
+          "unknown": "crwdns94072:0crwdne94072:0"
+        }
+      },
+      "protection_mpaguide_level": {
+        "keyword": "crwdns94074:0crwdne94074:0",
+        "enum": {
+          "unknown": "crwdns94076:0crwdne94076:0",
+          "light": "crwdns94078:0crwdne94078:0",
+          "full": "crwdns94080:0crwdne94080:0",
+          "high": "crwdns94082:0crwdne94082:0",
+          "incompatible": "crwdns94084:0crwdne94084:0",
+          "minimal": "crwdns94086:0crwdne94086:0"
+        }
+      }
+    }
   },
   "public-mp-atlas": {
     "name": "crwdns87892:0crwdne87892:0",
@@ -1826,7 +2023,7 @@
   },
   "public-paa-duke": {
     "name": "crwdns87844:0crwdne87844:0",
-    "description": "crwdns87846:0crwdne87846:0"
+    "description": "crwdns94088:0crwdne94088:0"
   },
   "public-panama-fishing-effort": {
     "name": "crwdns67067:0crwdne67067:0",
