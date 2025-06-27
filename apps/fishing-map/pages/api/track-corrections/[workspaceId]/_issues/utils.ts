@@ -32,6 +32,7 @@ export function parseIssueRow(row: GoogleSpreadsheetRow<TrackCorrection>): Track
     ssvid: row.get('ssvid'),
     issueId: row.get('issueId'),
     vesselId: row.get('vesselId'),
+    vesselName: row.get('vesselName'),
     startDate: row.get('startDate'),
     endDate: row.get('endDate'),
     type: row.get('type'),

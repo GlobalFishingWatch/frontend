@@ -880,7 +880,7 @@
     "falsePositive": "False positive",
     "issue": "Issue {{issueId}}",
     "issueType": "Type of issue",
-    "mapTooltip": "Issue added on {{date}} reported as {{type}}",
+    "mapTooltip": "{{vesselName}} reported as {{type}} on {{date}} ",
     "markAsResolved": "Mark as resolved",
     "newIssue": "New issue",
     "other": "Other",
