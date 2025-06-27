@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchTrackIssuesThunk } from 'features/track-correction/track-correction.slice'
+import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import {
   selectCurrentWorkspaceId,
   selectIsTurningTidesWorkspace,
@@ -23,23 +24,23 @@ export function useSetTrackCorrectionId() {
 
 export function useFetchTrackCorrections() {
   const dispatch = useAppDispatch()
+  const isGuestUser = useSelector(selectIsGuestUser)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
 
   const fetchTrackCorrections = useCallback(
     async (workspaceId: string) => {
-      if (!workspaceId) {
+      if (!workspaceId || isGuestUser || !isTurningTidesWorkspace) {
         return []
       }
-      if (isTurningTidesWorkspace) {
-        const response = await dispatch(fetchTrackIssuesThunk({ workspaceId: workspaceId }))
-        if (fetchTrackIssuesThunk.fulfilled.match(response)) {
-          return response.payload
-        }
+      const response = await dispatch(fetchTrackIssuesThunk({ workspaceId: workspaceId }))
+      if (fetchTrackIssuesThunk.fulfilled.match(response)) {
+        return response.payload
+      } else {
+        return []
       }
-      return []
     },
-    [dispatch, isTurningTidesWorkspace]
+    [dispatch, isGuestUser, isTurningTidesWorkspace]
   )
 
   useEffect(() => {
