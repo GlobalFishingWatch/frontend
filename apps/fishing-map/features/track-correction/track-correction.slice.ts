@@ -47,10 +47,7 @@ type TrackCorrectionState = {
     type: IssueType
   }
   comment: string
-  issues: {
-    status: AsyncReducerStatus
-    data: TrackCorrection[]
-  }
+  workspacesIssues: Record<string, { status: AsyncReducerStatus; data: TrackCorrection[] }>
 }
 
 const initialState: TrackCorrectionState = {
@@ -63,10 +60,7 @@ const initialState: TrackCorrectionState = {
     type: 'falsePositive',
   },
   comment: '',
-  issues: {
-    status: AsyncReducerStatus.Idle,
-    data: [],
-  },
+  workspacesIssues: {},
 }
 
 type CreateNewIssueThunkParam = {
@@ -187,10 +181,6 @@ const trackCorrection = createSlice({
     setTrackIssueComment: (state, action: PayloadAction<string>) => {
       state.comment = action.payload
     },
-    resetIssues: (state) => {
-      state.issues.data = []
-      state.issues.status = AsyncReducerStatus.Idle
-    },
     resetTrackCorrection: (state) => {
       state.newIssue.vesselDataviewId = ''
       state.newIssue.timerange = {
@@ -202,15 +192,25 @@ const trackCorrection = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchTrackIssuesThunk.pending, (state) => {
-      state.issues.status = AsyncReducerStatus.Loading
+    builder.addCase(fetchTrackIssuesThunk.pending, (state, action) => {
+      const workspaceId = action.meta.arg.workspaceId
+      if (!state.workspacesIssues[workspaceId]) {
+        state.workspacesIssues[workspaceId] = {
+          status: AsyncReducerStatus.Loading,
+          data: [],
+        }
+      } else {
+        state.workspacesIssues[workspaceId].status = AsyncReducerStatus.Loading
+      }
     })
     builder.addCase(fetchTrackIssuesThunk.fulfilled, (state, action) => {
-      state.issues.status = AsyncReducerStatus.Finished
-      state.issues.data = action.payload
+      const workspaceId = action.meta.arg.workspaceId
+      state.workspacesIssues[workspaceId].status = AsyncReducerStatus.Finished
+      state.workspacesIssues[workspaceId].data = action.payload
     })
-    builder.addCase(fetchTrackIssuesThunk.rejected, (state) => {
-      state.issues.status = AsyncReducerStatus.Error
+    builder.addCase(fetchTrackIssuesThunk.rejected, (state, action) => {
+      const workspaceId = action.meta.arg.workspaceId
+      state.workspacesIssues[workspaceId].status = AsyncReducerStatus.Error
     })
   },
 })
@@ -220,7 +220,6 @@ export const {
   setTrackCorrectionTimerange,
   setTrackIssueType,
   setTrackIssueComment,
-  resetIssues,
   resetTrackCorrection,
 } = trackCorrection.actions
 
@@ -236,10 +235,7 @@ export const selectTrackIssueComment = (state: RootState) => state.trackCorrecti
 
 export const selectTrackCorrectionState = (state: RootState) => state.trackCorrection
 
-export const selectAllTrackCorrectionIssues = (state: RootState) =>
-  state.trackCorrection.issues.data
-
-export const selectTrackIssueComments = (issueId: string) => (state: RootState) =>
-  state.trackCorrection.issues.data.find((issue) => issue.issueId === issueId)?.comments || []
+export const selectWorkspacesTrackCorrectionIssues = (state: RootState) =>
+  state.trackCorrection.workspacesIssues
 
 export default trackCorrection.reducer
