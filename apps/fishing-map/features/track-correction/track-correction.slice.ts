@@ -46,7 +46,6 @@ type TrackCorrectionState = {
     }
     type: IssueType
   }
-  // previousState?: WorkspaceState
   comment: string
   issues: {
     status: AsyncReducerStatus

@@ -166,8 +166,6 @@ function SidebarHeader() {
     isVesselGroupReportLocation,
   ])
 
-  console.log(workspaceHistoryNavigation)
-
   return (
     <div className={cx({ [styles.sticky]: isSticky })}>
       <div className={cx(styles.sidebarHeader)}>

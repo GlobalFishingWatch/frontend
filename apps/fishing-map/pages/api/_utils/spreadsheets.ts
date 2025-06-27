@@ -1,7 +1,7 @@
 import { JWT } from 'google-auth-library'
 import { GoogleSpreadsheet } from 'google-spreadsheet'
 
-import { SPREADSHEET_ID_BY_WORKSPACE } from '../../../features/track-correction/track-correction.config'
+import { TRACK_CORRECTION_SPREADSHEET_ID_BY_WORKSPACE } from '../../../features/track-correction/track-correction.config'
 
 const FEEDBACK_CLIENT_EMAIL = process.env.NEXT_SPREADSHEET_CLIENT_EMAIL
 const FEEDBACK_PRIVATE_KEY = process.env.NEXT_SPREADSHEET_PRIVATE_KEY?.replace(/\\n/gm, '\n') || ''
@@ -26,7 +26,9 @@ export const loadSpreadsheetDoc = async (id: string) => {
 
 export const loadSpreadsheetDocByWorkspace = async (workspaceId: string) => {
   const spreadsheetId =
-    SPREADSHEET_ID_BY_WORKSPACE[workspaceId as keyof typeof SPREADSHEET_ID_BY_WORKSPACE]
+    TRACK_CORRECTION_SPREADSHEET_ID_BY_WORKSPACE[
+      workspaceId as keyof typeof TRACK_CORRECTION_SPREADSHEET_ID_BY_WORKSPACE
+    ]
   if (!spreadsheetId) {
     throw new Error(`Spreadsheet ID not found for workspace ${workspaceId}`)
   }
