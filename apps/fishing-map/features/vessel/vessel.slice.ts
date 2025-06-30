@@ -15,14 +15,11 @@ import type {
   Resource,
   SelfReportedInfo,
   VesselCombinedSourcesInfo,
+  VesselIdentitySourceEnum,
   VesselRegistryInfo,
   VesselType,
 } from '@globalfishingwatch/api-types'
-import {
-  DatasetTypes,
-  ResourceStatus,
-  VesselIdentitySourceEnum,
-} from '@globalfishingwatch/api-types'
+import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { setResource } from '@globalfishingwatch/dataviews-client'
 
@@ -181,15 +178,7 @@ export const fetchVesselInfoThunk = createAsyncThunk(
         }
         dispatch(setResource(resource))
 
-        const allIdentities = getVesselIdentities(vessel)
-        const filteredIdentities = allIdentities.filter(
-          // TODO remove once the match-fields works in the API
-          (i) =>
-            i.identitySource === VesselIdentitySourceEnum.SelfReported
-              ? i.matchFields === 'SEVERAL_FIELDS'
-              : true
-        )
-        const identities = filteredIdentities.length ? filteredIdentities : allIdentities
+        const identities = getVesselIdentities(vessel)
         return {
           id: getVesselProperty(vessel, 'id'),
           dataset: dataset,

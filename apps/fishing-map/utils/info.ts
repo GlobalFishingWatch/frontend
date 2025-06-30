@@ -70,8 +70,16 @@ export const formatInfoField = (
       type === 'name'
     ) {
       return fieldValue.replace(
-        /\b(?![LXIVCDM]+\b)(\d*)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)\b/g,
-        (_, num, name) => num + upperFirst(name)
+        /\b(?![LXIVCDM]+\b)(\d*)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)\b|\b([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)(\d+)\b/g,
+        (match, num, name, nameFirst, numLast) => {
+          if (num && name) {
+            return num + upperFirst(name)
+          }
+          if (nameFirst && numLast) {
+            return upperFirst(nameFirst) + numLast
+          }
+          return upperFirst(match)
+        }
       )
     }
     if (type === 'fleet') {

@@ -78,3 +78,7 @@
 .currentLanguage {
   color: var(--color-primary-blue);
 }
+
+.warning {
+  color: var(--color-danger-red);
+}

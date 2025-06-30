@@ -23,9 +23,9 @@ import {
 } from 'features/app/selectors/app.selectors'
 import { getIsPositionSupportedInDataview } from 'features/dataviews/dataviews.utils'
 import {
-  selectActivityDataviews,
-  selectDetectionsDataviews,
-  selectEnvironmentalDataviews,
+  selectActiveActivityDataviews,
+  selectActiveDetectionsDataviews,
+  selectActiveEnvironmentalDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   selectActivityMergedDataviewId,
@@ -44,10 +44,10 @@ export const useVisualizationsOptions = (
   const dispatch = useAppDispatch()
   const dataviews = useSelector(
     category === DataviewCategory.Activity
-      ? selectActivityDataviews
+      ? selectActiveActivityDataviews
       : category === DataviewCategory.Detections
-        ? selectDetectionsDataviews
-        : selectEnvironmentalDataviews
+        ? selectActiveDetectionsDataviews
+        : selectActiveEnvironmentalDataviews
   )
 
   const layerId = useSelector(
