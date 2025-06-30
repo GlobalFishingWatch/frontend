@@ -875,7 +875,7 @@
     "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
     "comment": "Comment",
     "commentPlaceholder": "Add a comment...",
-    "commentResolve": "Comment and resolve",
+    "commentResolve": "Resolve",
     "falseNegative": "False negative",
     "falsePositive": "False positive",
     "issue": "Issue {{issueId}}",

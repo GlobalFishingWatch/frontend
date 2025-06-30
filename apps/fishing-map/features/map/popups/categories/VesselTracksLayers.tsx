@@ -109,7 +109,7 @@ function VesselTracksTooltipRow({
         {showFeaturesDetails && (
           <Fragment>
             <p key="speed">
-              {feature.speed && (
+              {feature.speed !== undefined && (
                 <span>
                   {upperFirst(t('eventInfo.speed'))}: {feature.speed.toFixed(2)}{' '}
                   {t('common.knots', 'knots')}
@@ -117,7 +117,7 @@ function VesselTracksTooltipRow({
               )}
             </p>
             <p key="depth">
-              {feature.depth && (
+              {feature.depth !== undefined && (
                 <span>
                   {upperFirst(t('eventInfo.depth'))}: {feature.depth} {t('common.meters')}
                 </span>

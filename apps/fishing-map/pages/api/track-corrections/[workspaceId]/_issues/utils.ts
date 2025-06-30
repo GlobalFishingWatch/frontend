@@ -38,8 +38,9 @@ export function parseIssueRow(row: GoogleSpreadsheetRow<TrackCorrection>): Track
     type: row.get('type'),
     lastUpdated: row.get('lastUpdated'),
     resolved: parseIssueResolved(row.get('resolved')),
-    lat: row.get('lat'),
-    lon: row.get('lon'),
+    lat: parseFloat(row.get('lat')),
+    lon: parseFloat(row.get('lon')),
+    zoom: parseFloat(row.get('zoom')),
   }
 }
 
