@@ -1022,7 +1022,7 @@
   },
   "public-eez-areas-12nm": {
     "name": "EEZs 12nm",
-    "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (12NM), version 11. Source: marineregions.org."
+    "description": "Territorial seas are a belt of coastal waters extending at most 12 nautical miles (22.2 km; 13.8 mi) from the baseline (usually the mean low-water mark) of a coastal state.The territorial seas (and EEZs) lines are generally drawn from straight line baselines and these baselines are defined by each coastal state following UNCLOS rules See article 7. Waters inside the baseline are considered \"internal waters\" (See article 8) Citation: Flanders Marine Institute (2023). Maritime Boundaries Geodatabase: Territorial Seas (12NM), version 4. Available online at https://www.marineregions.org/. https://doi.org/10.14284/633"
   },
   "public-eez-boundaries": {
     "name": "Areas boundaries for eez",
@@ -1118,7 +1118,7 @@
   },
   "public-gfcm-fao": {
     "name": "GFCM FAO",
-    "description": "GFCM Fisheries Restricted Areas"
+    "description": "A fisheries restricted area (FRA) is a geographically defined area in which some specific fishing activities are temporarily or permanently banned or restricted in order to improve the exploitation patterns and conservation of specific stocks as well as of habitats and deep-sea ecosystems. In the Mediterranean and the Black Sea, 1,760,000 square kilometers of sea habitats are protected by ten FRAs established by the GFCM. This includes one large deep-water FRA (1,730,000 square kilometers) in which the use of towed dredges and trawl nets in all waters deeper than 1000 metres is banned to protect deep-sea benthic habitats. The layer was taken from the GFCM website but manually adjusted to reflect the original coordinates of the FRAs as stipulated in the document REC. GFCM/29/2005/1."
   },
   "public-global-all-tracks": {
     "name": "Tracks",
@@ -1582,7 +1582,7 @@
   },
   "public-high-seas-pockets": {
     "name": "High seas pockets",
-    "description": "This data set is derived from the Marine Regions high-seas data set by extracting just the polygons corresponding to the 15 high seas pockets that GFW has labeled from HSP-1 to HSP-15.   Note that HSP-15 is split across the anti-meridian, so it appears in two pieces that have the same label.   Naming of the pockets is consistent with the naming that WCPFC uses to identify HSP 1-4."
+    "description": "<p> The United Nations Convention on the Law of the Sea describes the high seas as ‘all parts of the sea that are not included in the exclusive economic zone, in the territorial sea or in the internal waters of a State, or in the archipelagic waters of an archipelagic State.’ High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them. Citation: Flanders Marine Institute (2024). Maritime Boundaries Geodatabase: High Seas, version 2. Available online at <a href=\"https://www.marineregions.org/\" target=\"_blank\" >https://www.marineregions.org/</a >. </p>"
   },
   "public-indonesia-fishing-effort": {
     "name": "Indonesia VMS",
@@ -1826,7 +1826,7 @@
   },
   "public-paa-duke": {
     "name": "PAAS",
-    "description": "Global dataset of Preferential Access Areas for small-scale fishing"
+    "description": "<p> This global Preferential Access Area (PAA) database was built with data for 44 countries identified by the Illuminating Hidden Harvests (IHH) initiative following Basurto et al. (2023) and the FAOLEX database (https://www.fao.org/faolex/en/). The total resulting PAAs identified in this study (n = 63) in 44 countries may be considered a lower bound and not comprehensive, as governments can also establish PAAs via laws or regulations either: (i) not relating to the fisheries sector and categorized elsewhere in the FAOLEX database and hence not searched, or (ii) not reported or captured in it. The most recent review of FAOLEX to identify PAAs was conducted in 2022. For mapping and spatial analysis of the PAAs, a geodatabase of PAA boundaries was created using definition parameters for each PAA (i.e., distance from shoreline or the baseline, depth, or a given set of coordinates or buffered distances around undersea features). Baselines were extracted from Flanders Marine Institute’s (2023) version 12 global EEZ database, defined by ‘Straight Baseline’ features. The shoreline dataset was ESRI’s 2014 global shoreline, the same shoreline dataset as the Flanders Marine Institute global EEZ database. Depth data was extracted from the GEBCO 2023 global relief dataset. When possible, Duke reached out to local experts to review the boundaries for confirmation that our interpretation of FAOLEX and the relevant law or regulation matches what is being used by local fishers. If you have feedback on the PAA boundaries, information regarding PAAs that are not reflected here, or other questions, please reach out to ssf-paa-info@duke.edu. For more information on PAAs and how they are managed, please see Duke’s publication by Basurto et al. (2024) here: <a href=\"https://doi.org/10.1038/s44183-024-00096-0\" target=\"_blank\" >https://doi.org/10.1038/s44183-024-00096-0</a >. Please note that there is no singular definition of a PAA, therefore each country will decide what activities, vessels, gear types, etc. are prohibited or restricted in the PAA. For more information of the specific designation of each PAA, please see the law or regulation in FAOLex. Citation: DeLand, S., Vegh, T., Cleary, J., Basurto, X., Virdin, J., & Halpin, P. N. (2025). A global dataset of preferential access areas for small-scale fishing. Duke Research Data Repository. <a href=\"https://doi.org/10.7924/r40s01h5j\" target=\"_blank\" >https://doi.org/10.7924/r40s01h5j</a > </p>"
   },
   "public-panama-fishing-effort": {
     "name": "Panama VMS",
