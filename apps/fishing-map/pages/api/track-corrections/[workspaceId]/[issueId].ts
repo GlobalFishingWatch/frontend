@@ -5,6 +5,7 @@ import type {
   TrackCorrectionComment,
 } from 'features/track-correction/track-correction.slice'
 
+import { getWorkspaceIssueDetail } from './_issues/get-one'
 import { addCommentToIssue } from './_issues/post-comment'
 
 export type ErrorAPIResponse = {
@@ -37,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       'marksAsResolved',
     ]
 
-    const missingFields = requiredFields.filter((field) => !(field in body))
+    const missingFields = requiredFields.filter((field) => !(field in body.commentBody))
 
     if (missingFields.length > 0) {
       return res.status(400).json({
@@ -47,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     await addCommentToIssue(issueId, body.commentBody as TrackCorrectionComment, workspaceId)
-    // await getWorkspaceIssueDetail(workspaceId, issueId)
+    await getWorkspaceIssueDetail(workspaceId, issueId)
 
     return res.status(200).json({
       success: true,
