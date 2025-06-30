@@ -60,6 +60,15 @@
   padding: var(--space-S) var(--space-M);
 }
 
+.titleContainer h1 {
+  padding-bottom: var(--space-M);
+  font-weight: bold;
+}
+
+.link {
+  text-decoration: underline;
+}
+
 .commentButton {
   min-width: 12rem;
 }
