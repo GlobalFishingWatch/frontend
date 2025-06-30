@@ -1349,5 +1349,19 @@
       "help": "You can move the map and update your workspace later",
       "title": "Setup a marine manager workspace for any area globally"
     }
+  },
+  "time": {
+    "ago": "{{time}} ago",
+    "months": "{{count}} month",
+    "months_plural": "{{count}} months",
+    "weeks": "{{count}} week",
+    "weeks_plural": "{{count}} weeks",
+    "days": "{{count}} day",
+    "days_plural": "{{count}} days",
+    "hours": "{{count}} hour",
+    "hours_plural": "{{count}} hours",
+    "minutes": "{{count}} minute",
+    "minutes_plural": "{{count}} minutes",
+    "now": "now"
   }
 }

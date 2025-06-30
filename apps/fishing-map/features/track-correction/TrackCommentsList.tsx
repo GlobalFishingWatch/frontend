@@ -24,7 +24,7 @@ const TrackCommentsList = ({ track }: TrackCommentsListProps) => {
           <li key={comment.issueId + '-' + comment.date} className={styles.item}>
             <div className={styles.header}>
               <span className={styles.user}>{comment.user}</span>
-              <span className={styles.version}>{getTimeAgo(getUTCDateTime(comment.date))}</span>
+              <span className={styles.version}>{getTimeAgo(getUTCDateTime(comment.date), t)}</span>
             </div>
             <div className="comment-content">{comment.comment}</div>
             <span className={styles.version}>
