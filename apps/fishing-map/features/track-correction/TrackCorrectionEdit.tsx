@@ -141,23 +141,26 @@ const TrackCorrectionEdit = () => {
                 /*vesselInfo.datasetVersion*/
               }
             </span>
-            <div className={styles.actions}>
-              <IconButton
-                icon="tick"
-                type={isResolved ? 'map-tool' : 'border'}
-                size="small"
-                onClick={() => setIsResolved((prev) => !prev)}
-                tooltip={!isResolved && t('trackCorrection.markAsResolved')}
-              />
-              <Button
-                size="medium"
-                disabled={issueComment === '' || isGuestUser}
-                onClick={onConfirmClick}
-                loading={isSubmitting}
-              >
-                {isResolved ? t('trackCorrection.commentResolve') : t('trackCorrection.comment')}
-              </Button>
-            </div>
+            {!isGuestUser && (
+              <div className={styles.actions}>
+                <IconButton
+                  icon="tick"
+                  type={isResolved ? 'map-tool' : 'border'}
+                  size="tiny"
+                  onClick={() => setIsResolved((prev) => !prev)}
+                  tooltip={!isResolved && t('trackCorrection.markAsResolved')}
+                />
+                <Button
+                  size="medium"
+                  className={styles.commentButton}
+                  disabled={isResolved ? false : issueComment === ''}
+                  onClick={onConfirmClick}
+                  loading={isSubmitting}
+                >
+                  {isResolved ? t('trackCorrection.commentResolve') : t('trackCorrection.comment')}
+                </Button>
+              </div>
+            )}
           </div>
         </Fragment>
       )}

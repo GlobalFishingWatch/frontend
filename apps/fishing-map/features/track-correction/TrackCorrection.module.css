@@ -59,3 +59,7 @@
 .titleContainer {
   padding: var(--space-S) var(--space-M);
 }
+
+.commentButton {
+  min-width: 12rem;
+}

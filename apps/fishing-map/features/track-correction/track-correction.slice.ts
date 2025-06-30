@@ -33,6 +33,7 @@ export type TrackCorrection = {
   comments?: TrackCorrectionComment[]
   lat: number
   lon: number
+  zoom: number
   source: string
   ssvid: string
 }

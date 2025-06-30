@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { HtmlOverlay, HtmlOverlayItem } from '@nebula.gl/overlays'
+import cx from 'classnames'
 import { useSetAtom } from 'jotai'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -9,7 +10,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
-import { useMapViewport } from 'features/map/map-viewport.hooks'
+import { useMapViewport, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { overlaysCursorAtom } from 'features/map/overlays/overlays-hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
@@ -17,7 +18,10 @@ import {
   setTrackCorrectionDataviewId,
   type TrackCorrection,
 } from 'features/track-correction/track-correction.slice'
-import { selectTrackCorrectionIssues } from 'features/track-correction/track-selection.selectors'
+import {
+  selectCurrentTrackCorrectionIssue,
+  selectTrackCorrectionIssues,
+} from 'features/track-correction/track-selection.selectors'
 import { usePinVessel } from 'features/vessel/VesselPin'
 
 import styles from './TrackCorrectionsOverlay.module.css'
@@ -27,8 +31,10 @@ const TrackCorrectionOverlayIssue = ({ issue }: { issue: TrackCorrection }) => {
   const dispatch = useAppDispatch()
   const setOverlaysCursor = useSetAtom(overlaysCursorAtom)
   const vesselDatasets = useSelector(selectVesselsDatasets)
+  const currentTrackCorrectionId = useSelector(selectCurrentTrackCorrectionIssue)?.issueId
   const setTrackCorrectionId = useSetTrackCorrectionId()
   const { setTimerange } = useTimerangeConnect()
+  const setMapCoordinates = useSetMapCoordinates()
 
   const handleMouseEnter = useCallback(() => {
     setOverlaysCursor('pointer')
@@ -60,13 +66,29 @@ const TrackCorrectionOverlayIssue = ({ issue }: { issue: TrackCorrection }) => {
           end: issue.endDate,
         })
       }
+
+      if (issue.lat && issue.lon) {
+        setMapCoordinates({
+          latitude: issue.lat,
+          longitude: issue.lon,
+          ...(issue.zoom && { zoom: issue.zoom }),
+        })
+      }
     }
-  }, [vesselInWorkspace?.id, onPinClick, dispatch, setTrackCorrectionId, issue, setTimerange])
+  }, [
+    vesselInWorkspace?.id,
+    onPinClick,
+    dispatch,
+    issue,
+    setTrackCorrectionId,
+    setTimerange,
+    setMapCoordinates,
+  ])
 
   return (
     <IconButton
-      className={styles.button}
-      icon="feedback"
+      className={cx(styles.button, { [styles.active]: issue.issueId === currentTrackCorrectionId })}
+      icon={issue.resolved ? 'tick' : 'feedback'}
       loading={loading}
       onClick={onIssueClick}
       onMouseEnter={handleMouseEnter}

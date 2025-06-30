@@ -138,8 +138,10 @@ export const routerWorkspaceMiddleware: Middleware =
         const isDifferentRoute =
           routerAction.type !== type ||
           Object.entries(routerAction.payload).some(([key, value]) => value !== payload[key])
+        const isDifferentTrackCorrection =
+          routerAction.query?.trackCorrectionId && !query?.trackCorrectionId
         if (
-          (isDifferentRoute || routerAction.query?.trackCorrectionId) &&
+          (isDifferentRoute || isDifferentTrackCorrection) &&
           !routerAction.isHistoryNavigation &&
           (!lastHistoryNavigation || lastHistoryNavigation.pathname !== pathname)
         ) {

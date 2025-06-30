@@ -10,6 +10,7 @@ import { Button, Choice, Icon, InputText } from '@globalfishingwatch/ui-componen
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { useMapViewState } from 'features/map/map-viewport.hooks'
 import { getTrackCorrectionIssueOptions } from 'features/track-correction/track-correction.config'
 import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
 import type { TrackCorrection } from 'features/track-correction/track-correction.slice'
@@ -43,6 +44,7 @@ const TrackCorrectionNew = () => {
   const dispatch = useAppDispatch()
   const isGuestUser = useSelector(selectIsGuestUser)
   const setTrackCorrectionId = useSetTrackCorrectionId()
+  const viewState = useMapViewState()
 
   const workspaceId = useSelector(selectCurrentWorkspaceId)
 
@@ -137,6 +139,7 @@ const TrackCorrectionNew = () => {
           resolved: false,
           lon: middlePoint.geometry.coordinates[0],
           lat: middlePoint.geometry.coordinates[1],
+          zoom: viewState.zoom,
           source: vesselInfo?.dataset || 'unknown',
           ssvid: vesselInfo
             ? getVesselIdentities(vesselInfo, {
@@ -190,6 +193,7 @@ const TrackCorrectionNew = () => {
       dataview?.config?.name,
       userData?.email,
       issueType,
+      viewState.zoom,
       buildCommentBody,
       workspaceId,
       dispatch,
