@@ -84,6 +84,7 @@ function NavigationHistoryButton() {
     dispatchQueryParams({ ...EMPTY_SEARCH_FILTERS, userTab: undefined })
   }, [dispatchQueryParams])
 
+  const { start, end, latitude, longitude, zoom } = lastWorkspaceVisited.query
   const onCloseClick = useCallback(() => {
     resetSidebarScroll()
 
@@ -95,8 +96,8 @@ function NavigationHistoryButton() {
     dispatch(cleanCurrentWorkspaceReportState())
     dispatch(setVesselEventId(null))
 
-    // setTrackCorrectionId('')
-    // dispatch(resetTrackCorrection())
+    setTrackCorrectionId('')
+    dispatch(resetTrackCorrection())
     dispatch(
       setTrackCorrectionTimerange({
         start: '',
@@ -104,19 +105,33 @@ function NavigationHistoryButton() {
       })
     )
 
-    setTimerange({
-      start: lastWorkspaceVisited.query.start!,
-      end: lastWorkspaceVisited.query.end!,
-    })
+    if (start && end) {
+      setTimerange({
+        start,
+        end,
+      })
+    }
 
     setMapCoordinates({
-      latitude: lastWorkspaceVisited.query.latitude,
-      longitude: lastWorkspaceVisited.query.longitude,
-      zoom: lastWorkspaceVisited.query.zoom,
+      latitude,
+      longitude,
+      zoom,
     })
 
     trackAnalytics()
-  }, [dispatch, reportAreaIds, setTrackCorrectionId, trackAnalytics])
+  }, [
+    dispatch,
+    end,
+    latitude,
+    longitude,
+    start,
+    zoom,
+    reportAreaIds,
+    setMapCoordinates,
+    setTimerange,
+    setTrackCorrectionId,
+    trackAnalytics,
+  ])
 
   const isPreviousLocationReport = REPORT_ROUTES.includes(lastWorkspaceVisited.type)
 

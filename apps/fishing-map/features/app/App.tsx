@@ -193,8 +193,6 @@ function App() {
   let asideWidth = '50%'
   if (readOnly) {
     asideWidth = isAreaReportLocation ? '45%' : '34rem'
-  } else if (isTrackCorrectionOpen) {
-    asideWidth = '45rem'
   } else if (isAnySearchLocation) {
     asideWidth = '100%'
   } else if (isWorkspaceLocation) {

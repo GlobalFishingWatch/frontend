@@ -39,7 +39,10 @@ const TrackCorrectionOverlayIssue = ({ issue }: { issue: TrackCorrection }) => {
   }, [setOverlaysCursor])
 
   const { onPinClick, loading, vesselInWorkspace } = usePinVessel({
-    vesselToSearch: { id: issue.vesselId, datasets: (vesselDatasets || []).map((d) => d.id) },
+    vesselToSearch: {
+      id: issue.vesselId,
+      datasets: issue.source ? [issue.source] : (vesselDatasets || []).map((d) => d.id),
+    },
   })
 
   const onIssueClick = useCallback(async () => {
@@ -69,9 +72,9 @@ const TrackCorrectionOverlayIssue = ({ issue }: { issue: TrackCorrection }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       tooltip={t('trackCorrection.mapTooltip', {
+        vesselName: issue.vesselName,
         date: formatI18nDate(issue.lastUpdated),
-        type: t(`trackCorrection.${issue.type}`),
-        defaultValue: 'Issue added on {{date}} reported as {{type}}',
+        type: t(`trackCorrection.${issue.type}`).toLocaleLowerCase(),
       })}
     />
   )
@@ -85,7 +88,7 @@ const TrackCorrectionsOverlay = (): React.ReactNode | null => {
     return null
   }
   return (
-    <HtmlOverlay viewport={viewport} key="2">
+    <HtmlOverlay viewport={viewport} key="track-corrections-overlay">
       {trackCorrectionIssues.map((issue) => {
         if (!issue.lon || !issue.lat) {
           return null

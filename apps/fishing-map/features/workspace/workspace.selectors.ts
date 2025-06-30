@@ -14,7 +14,8 @@ import {
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
 } from 'data/workspaces'
-import { SPREADSHEET_ID_BY_WORKSPACE } from 'features/track-correction/track-correction.config'
+import type { TurningTidesWorkspaceId } from 'features/track-correction/track-correction.config'
+import { TURNING_TIDES_WORKSPACES_IDS } from 'features/track-correction/track-correction.config'
 import { selectUserData, selectUserSettings } from 'features/user/selectors/user.selectors'
 import type { UserSettings } from 'features/user/user.slice'
 import { WORKSPACE_ROUTES } from 'routes/routes'
@@ -55,7 +56,7 @@ export const selectIsDefaultWorkspace = createSelector([selectWorkspace], (works
 
 export const selectIsTurningTidesWorkspace = createSelector([selectWorkspace], (workspace) => {
   if (!workspace) return false
-  return Object.keys(SPREADSHEET_ID_BY_WORKSPACE).includes(workspace?.id)
+  return TURNING_TIDES_WORKSPACES_IDS.includes(workspace?.id as TurningTidesWorkspaceId)
 })
 
 export const selectIsWorkspaceOwner = createSelector(

@@ -152,9 +152,9 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     isSearchLocation,
   ])
 
-  const showTabs = !readOnly && !isSmallScreen && !isPrinting
+  const showTabs = !readOnly && !isSmallScreen && !isPrinting && !isTrackCorrectionOpen
   return (
-    <div className={styles.container}>
+    <div className={cx(styles.container, { [styles.overlay]: isTrackCorrectionOpen })}>
       {showTabs && <CategoryTabs onMenuClick={onMenuClick} />}
       <div className={cx(styles.content, { [styles.withoutTabs]: !showTabs })}>
         <SidebarHeader />

@@ -166,8 +166,6 @@ function SidebarHeader() {
     isVesselGroupReportLocation,
   ])
 
-  console.log(workspaceHistoryNavigation)
-
   return (
     <div className={cx({ [styles.sticky]: isSticky })}>
       <div className={cx(styles.sidebarHeader)}>
@@ -185,10 +183,9 @@ function SidebarHeader() {
             )}
             {/* TODO:CVP2 add save report in isAnyReportLocation when this PR https://github.com/GlobalFishingWatch/api-monorepo-node/pull/289 is merged */}
             {isAreaReportLocation && <SaveReportButton />}
-            {isWorkspaceLocation && <SaveWorkspaceButton />}
-            {(isWorkspaceLocation || isAreaReportLocation || isAnyVesselLocation) && (
-              <ShareWorkspaceButton />
-            )}
+            {isWorkspaceLocation && !isTrackCorrectionOpen && <SaveWorkspaceButton />}
+            {(isWorkspaceLocation || isAreaReportLocation || isAnyVesselLocation) &&
+              !isTrackCorrectionOpen && <ShareWorkspaceButton />}
             {isSmallScreen && <LanguageToggle className={styles.lngToggle} position="rightDown" />}
             {isSmallScreen && <UserButton className={styles.userButton} />}
             {isSearchLocation && !readOnly && !isSmallScreen && (
