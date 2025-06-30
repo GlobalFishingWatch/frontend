@@ -1,8 +1,7 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: var(--space-M);
-  padding: var(--space-M);
+  padding: var(--space-S) var(--space-M);
 }
 
 .vessel {
@@ -57,9 +56,26 @@
 }
 
 .titleContainer {
-  padding: var(--space-S) var(--space-M);
+  padding: var(--space-M) var(--space-M) 0;
+}
+
+.loginRequired {
+  padding-top: var(--space-S);
+  font-size: small;
+  line-height: 1.5;
+}
+
+.link {
+  text-decoration: underline;
 }
 
 .commentButton {
   min-width: 12rem;
+}
+
+.commentContainer {
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--space-M);
+  gap: var(--space-S);
 }

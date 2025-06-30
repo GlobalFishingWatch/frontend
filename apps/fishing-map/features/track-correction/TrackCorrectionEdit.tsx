@@ -122,7 +122,7 @@ const TrackCorrectionEdit = () => {
       </div>
       <TrackCommentsList track={currentTrackCorrectionIssue} />
       {!currentTrackCorrectionIssue.resolved && (
-        <Fragment>
+        <div className={styles.commentContainer}>
           <div>
             <InputText
               inputSize="small"
@@ -162,7 +162,7 @@ const TrackCorrectionEdit = () => {
               </div>
             )}
           </div>
-        </Fragment>
+        </div>
       )}
     </div>
   )
