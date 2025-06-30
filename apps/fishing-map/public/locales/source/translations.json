@@ -885,8 +885,6 @@
     "maxPointsVisualizationExceeded": "Max points visualization exceeded, switching to heatmap mode."
   },
   "trackCorrection": {
-    "loginRequired": "To suggest and view a correction, you must <1>log in</1> (free, 2 minutes)",
-    "title": "Track correction panel",
     "adjustDisabled": "Adjusting the time range is needed.",
     "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
     "comment": "Comment",
@@ -896,11 +894,13 @@
     "falsePositive": "False positive",
     "issue": "Issue {{issueId}}",
     "issueType": "Type of issue",
+    "loginRequired": "To suggest and view a correction, you must <1>log in</1> (free, 2 minutes)",
     "mapTooltip": "{{vesselName}} reported as {{type}} on {{date}} ",
     "markAsResolved": "Mark as resolved",
     "newIssue": "New issue",
     "other": "Other",
     "replyPlaceholder": "Write a reply",
+    "title": "Track correction panel",
     "version": "Version"
   },
   "user": {
