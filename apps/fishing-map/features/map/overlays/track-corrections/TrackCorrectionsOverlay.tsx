@@ -39,7 +39,10 @@ const TrackCorrectionOverlayIssue = ({ issue }: { issue: TrackCorrection }) => {
   }, [setOverlaysCursor])
 
   const { onPinClick, loading, vesselInWorkspace } = usePinVessel({
-    vesselToSearch: { id: issue.vesselId, datasets: (vesselDatasets || []).map((d) => d.id) },
+    vesselToSearch: {
+      id: issue.vesselId,
+      datasets: issue.source ? [issue.source] : (vesselDatasets || []).map((d) => d.id),
+    },
   })
 
   const onIssueClick = useCallback(async () => {
