@@ -55,14 +55,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
         icon="analysis"
         disabled={!hasAnalysableLayer}
         size="small"
-        tooltip={
-          isSameArea
-            ? ''
-            : t(
-                'common.analysisNotAvailable',
-                'Toggle an analyzable layer to create a report for this area'
-              )
-        }
+        tooltip={isSameArea ? '' : t('common.analysisNotAvailable')}
       />
     )
   }
@@ -112,7 +105,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
       <Link className={styles.workspaceLink} to={reportLinkTo} onClick={onReportClick}>
         <IconButton
           icon="analysis"
-          tooltip={t('common.analysis', 'Create an analysis for this area')}
+          tooltip={t('common.analysis')}
           testId="open-analysis"
           size="small"
         />
@@ -121,7 +114,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
         <Link className={styles.workspaceLink} to={addReportLinkTo} onClick={onReportClick}>
           <IconButton
             icon="add-polygon-to-analysis"
-            tooltip={t('common.analysisAddArea', 'Add area to the analysis')}
+            tooltip={t('common.analysisAddArea')}
             testId="add-analysis"
             size="small"
           />

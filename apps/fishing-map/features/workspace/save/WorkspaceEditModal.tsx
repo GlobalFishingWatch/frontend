@@ -31,7 +31,7 @@ function EditWorkspaceModal({ title }: EditWorkspaceModalProps) {
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
-      title={title || t('workspace.edit', 'Edit workspace')}
+      title={title || t('workspace.edit')}
       isOpen={workspaceModalOpen}
       shouldCloseOnEsc
       contentClassName={styles.modal}

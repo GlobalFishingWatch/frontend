@@ -101,8 +101,8 @@ const BigQueryMenu: React.FC = () => {
           onChange={(e) => setName(e.target.value)}
         />
         <Select
-          label={t('bigQuery.visualiationMode', 'Visualisation mode')}
-          placeholder={t('selects.placeholder', 'Select an option')}
+          label={t('bigQuery.visualiationMode')}
+          placeholder={t('selects.placeholder')}
           options={VisualisationOptions}
           containerClassName={styles.input}
           selectedOption={currentVisualisationMode}
@@ -113,8 +113,8 @@ const BigQueryMenu: React.FC = () => {
         {visualisationMode === '4wings' && (
           <Fragment>
             <Select
-              label={t('bigQuery.aggregationMode', 'Aggregation mode *')}
-              placeholder={t('selects.placeholder', 'Select an option')}
+              label={t('bigQuery.aggregationMode')}
+              placeholder={t('selects.placeholder')}
               options={AggregationOptions}
               containerClassName={styles.input}
               selectedOption={AggregationOptions.find(({ id }) => id === aggregationOperation)}
@@ -134,18 +134,12 @@ const BigQueryMenu: React.FC = () => {
       </div>
       <div className={styles.row}>
         <label>
-          {t('bigQuery.query', 'Query')}{' '}
+          {t('bigQuery.query')}{' '}
           {currentVisualisationMode && (
             <span className={styles.lowercase}>{currentVisualisationMode.fieldsHint}</span>
           )}
         </label>
-        <Tooltip
-          content={
-            !visualisationMode
-              ? t('bigQuery.selectVisualisation', 'Select a visualisation mode first')
-              : ''
-          }
-        >
+        <Tooltip content={!visualisationMode ? t('bigQuery.selectVisualisation') : ''}>
           <div>
             <textarea
               value={query}
@@ -158,10 +152,7 @@ const BigQueryMenu: React.FC = () => {
       </div>
       <SwitchRow
         className={styles.row}
-        label={t(
-          'dataset.uploadPublic',
-          'Allow other users to see this dataset when you share a workspace'
-        )}
+        label={t('dataset.uploadPublic')}
         active={createAsPublic}
         onClick={() => setCreateAsPublic((createAsPublic) => !createAsPublic)}
       />
@@ -169,7 +160,7 @@ const BigQueryMenu: React.FC = () => {
         {error && <p className={styles.error}>{error}</p>}
         {runCost !== null && (
           <p>
-            {t('bigQuery.runCost', 'This query will move:')} {runCost?.totalBytesPretty}
+            {t('bigQuery.runCost')} {runCost?.totalBytesPretty}
           </p>
         )}
         <Button
@@ -178,24 +169,17 @@ const BigQueryMenu: React.FC = () => {
           loading={runCostStatus === AsyncReducerStatus.Loading}
           onClick={onRunCostClick}
         >
-          {t('bigQuery.runCostCheck', 'Check creation cost')}
+          {t('bigQuery.runCostCheck')}
         </Button>
         <Button
           disabled={disableCreation || creationStatus === AsyncReducerStatus.Loading}
           tooltip={
-            error
-              ? t('bigQuery.queryError', 'There is an error in the query')
-              : disableCreation
-                ? t(
-                    'bigQuery.validationError',
-                    'Query, name, visualisation mode, aggregation mode and checking creation cost are required'
-                  )
-                : ''
+            error ? t('bigQuery.queryError') : disableCreation ? t('bigQuery.validationError') : ''
           }
           loading={creationStatus === AsyncReducerStatus.Loading}
           onClick={onCreateClick}
         >
-          {t('bigQuery.create', 'Create')}
+          {t('bigQuery.create')}
         </Button>
       </div>
     </div>

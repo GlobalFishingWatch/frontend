@@ -199,7 +199,7 @@ const AppModals = () => {
       )}
       <Modal
         appSelector={ROOT_DOM_ELEMENT}
-        title={t('common.layerLibrary', 'Layer Library')}
+        title={t('common.layerLibrary')}
         isOpen={isLayerLibraryModalOpen}
         onClose={() => dispatch(setModalOpen({ id: 'layerLibrary', open: false }))}
         contentClassName={styles.layerLibraryModal}

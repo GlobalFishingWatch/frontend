@@ -144,7 +144,6 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
             label={t(`vesselGroupReport.insights.MOUListsCount`, {
               vessels: uniqVessels.length,
               list: t(`insights.lists.${list}`, list),
-              defaultValue: `{{vessels}} vessels operated under a flag present on the {{list}} list`,
             })}
           />
         </div>
@@ -155,9 +154,9 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
   return (
     <div id="vessel-group-mou" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vesselGroupReport.insights.MOULists', 'MOU Lists')}</label>
+        <label>{t('vesselGroupReport.insights.MOULists')}</label>
         <DataTerminology
-          title={t('vesselGroupReport.insights.MOULists', 'MOU Lists')}
+          title={t('vesselGroupReport.insights.MOULists')}
           terminologyKey="insightsMOUList"
         />
       </div>
@@ -170,27 +169,23 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
       ) : (
         <div className={styles.insightContent}>
           <div className={styles.nested}>
-            <label className={styles.row}>{t('vessel.insights.countries.paris', 'Paris')}</label>
+            <label className={styles.row}>{t('vessel.insights.countries.paris')}</label>
             {hasVesselsInParisMOU ? (
               getVesselsInMOU(MOUVesselsGrouped.paris, 'paris')
             ) : (
               <p className={cx(styles.secondary, styles.nested, styles.row)}>
                 {t('vesselGroupReport.insights.MOUListsEmpty', {
-                  defaultValue:
-                    'No vessels flying under a flag present on the {{country}} MOU black or grey lists',
-                  country: t('vessel.insights.countries.paris', 'Paris'),
+                  country: t('vessel.insights.countries.paris'),
                 })}
               </p>
             )}
-            <label className={styles.row}>{t('vessel.insights.countries.tokyo', 'Tokyo')}</label>
+            <label className={styles.row}>{t('vessel.insights.countries.tokyo')}</label>
             {hasVesselsInTokyoMOU ? (
               getVesselsInMOU(MOUVesselsGrouped.tokyo, 'tokyo')
             ) : (
               <p className={cx(styles.secondary, styles.nested, styles.row)}>
                 {t('vesselGroupReport.insights.MOUListsEmpty', {
-                  defaultValue:
-                    'No vessels flying under a flag present on the {{country}} MOU black or grey lists',
-                  country: t('vessel.insights.countries.tokyo', 'Tokyo'),
+                  country: t('vessel.insights.countries.tokyo'),
                 })}
               </p>
             )}

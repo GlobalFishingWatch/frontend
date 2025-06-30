@@ -137,8 +137,8 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
         setLoading(false)
         setError(
           error.status === 422 && error.message?.includes('duplicated')
-            ? t('analysis.errorDuplicatedName', 'There is already a report with the same name')
-            : t('analysis.errorMessage', 'Something went wrong')
+            ? t('analysis.errorDuplicatedName')
+            : t('analysis.errorMessage')
         )
       }
     }
@@ -161,11 +161,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
-      title={
-        report?.id
-          ? t('analysis.editTitle', 'Edit report')
-          : t('analysis.saveTitle', 'Save the current report')
-      }
+      title={report?.id ? t('analysis.editTitle') : t('analysis.saveTitle')}
       isOpen={isOpen}
       shouldCloseOnEsc
       contentClassName={styles.modal}
@@ -175,7 +171,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
         <div className={styles.row}>
           <InputText
             value={name}
-            label={t('common.name', 'Name')}
+            label={t('common.name')}
             className={styles.input}
             onChange={(e) => setName(e.target.value)}
             autoFocus
@@ -184,7 +180,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
         <div className={styles.row}>
           <InputText
             value={description}
-            label={t('common.description', 'Description')}
+            label={t('common.description')}
             className={styles.input}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -192,7 +188,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
         <div className={styles.row}>
           <Select
             options={timeRangeOptions}
-            label={t('common.timerange', 'Time range')}
+            label={t('common.timerange')}
             direction="top"
             containerClassName={styles.select}
             onSelect={onSelectTimeRangeChange}
@@ -205,7 +201,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
               value={daysFromLatest}
               type="number"
               className={styles.select}
-              label={t('common.timerangeDaysFromLatest', 'Days from latest data update (1-100)')}
+              label={t('common.timerangeDaysFromLatest')}
               onChange={onDaysFromLatestChange}
               min={DAYS_FROM_LATEST_MIN}
               max={DAYS_FROM_LATEST_MAX}
@@ -217,7 +213,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
             <Select
               options={viewOptions}
               direction="top"
-              label={t('workspace.viewAccess', 'View access')}
+              label={t('workspace.viewAccess')}
               disabled={containsPrivateDatasets}
               infoTooltip={
                 containsPrivateDatasets
@@ -236,7 +232,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
         <div className={styles.footer}>
           {error && <p className={styles.error}>{error}</p>}
           <Button loading={loading} disabled={!name} htmlType="submit">
-            {isEditing ? t('common.update', 'Update') : t('common.save', 'Save')}
+            {isEditing ? t('common.update') : t('common.save')}
           </Button>
         </div>
       </form>

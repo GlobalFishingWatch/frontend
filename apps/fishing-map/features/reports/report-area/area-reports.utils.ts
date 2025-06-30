@@ -147,7 +147,6 @@ export const getBufferedFeature = ({
     label: t('analysis.bufferedArea', {
       value,
       unit,
-      defaultValue: '{{value}} {{unit}} buffered area',
     }),
   }
   const dissolvedBufferedPolygonsFeatures = multiPolygon(

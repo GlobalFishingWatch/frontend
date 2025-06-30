@@ -28,7 +28,7 @@ function DatasetFilterSource({ dataview, hideColor, className = '' }: DatasetFil
       ...nonVmsSources,
       {
         id: 'vms-grouped',
-        label: `VMS (${vmsSources.length} ${t('common.country_other', 'countries')})`,
+        label: `VMS (${vmsSources.length} ${t('common.country_other')})`,
         tooltip: vmsSources.map((source) => source.label).join(', '),
       },
     ]
@@ -40,7 +40,7 @@ function DatasetFilterSource({ dataview, hideColor, className = '' }: DatasetFil
 
   return (
     <div className={cx(styles.filter, className)} data-test="source-tags">
-      <label>{t('layer.source', 'Sources')}</label>
+      <label>{t('layer.source')}</label>
       {/* Rendering both so the unmerged one is visible in printing */}
       <TagList
         testId="source-tag-item"

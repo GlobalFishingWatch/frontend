@@ -74,10 +74,10 @@ export const selectHighlightedWorkspaces = createSelector(
             locale,
             defaultValue:
               category === 'marine-manager'
-                ? t('workspace.marineManagerLink', 'See marine manager portal')
+                ? t('workspace.marineManagerLink')
                 : category === 'reports'
-                  ? t('analysis.see', 'See report')
-                  : t('common.see', 'See'),
+                  ? t('analysis.see')
+                  : t('common.see'),
           }),
         })),
       }

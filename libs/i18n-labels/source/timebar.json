@@ -1,7 +1,7 @@
 {
   "playback": {
     "playAnimation": "Play animation",
-    "pauseAnimation": "Pause animation",
+    "pauseAnimation": "Pause Animation",
     "toogleAnimationLooping": "Toggle animation looping",
     "moveBack": "Move back",
     "moveForward": "Move forward",
@@ -12,8 +12,8 @@
     "year": "Year",
     "month": "Month",
     "day": "Day",
-    "start": "start",
-    "end": "end",
+    "start": "Start",
+    "end": "End",
     "selectAValidDate": "Please select a valid date",
     "endBeforeStart": "The end needs to be after the start",
     "tooLongForMonths": "Your timerange is too long to see individual months",
@@ -23,10 +23,10 @@
     "last6months": "Last 6 months",
     "lastYear": "Last year",
     "done": "Done",
-    "errorEarlyStart": "Your start date is the earliest date with data available",
-    "errorLatestEnd": "Your end date is the latest date with data available",
-    "errorMinRange": "Your start and end date must be at least one day apart",
-    "errorMaxRange": "Your time range is the maximum range with data available"
+    "errorEarlyStart": "Your start date is the earliest date with data available.",
+    "errorLatestEnd": "Your end date is the latest date with data available.",
+    "errorMinRange": "Your start and end date must be at least one day apart.",
+    "errorMaxRange": "Your time range is the maximum range with data available."
   },
   "bookmark": {
     "goToBookmark": "Go to your bookmarked time range",

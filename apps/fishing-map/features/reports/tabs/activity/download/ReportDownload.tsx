@@ -30,16 +30,11 @@ export default function ReportDownload() {
 
   return (
     <div className={styles.container}>
-      <label>{t('download.dataDownload', 'Data download')}</label>
-      <p className={styles.description}>
-        {t(
-          'download.descriptionReport',
-          'You can download a list of the activity or a heat map bitmap for this area in different formats'
-        )}
-      </p>
+      <label>{t('download.dataDownload')}</label>
+      <p className={styles.description}>{t('download.descriptionReport')}</p>
       <div className={styles.actionsRow}>
         <Button type="secondary" onClick={handleMoreOptionsClick}>
-          {t('download.downloadOptions', 'Dowload options')}
+          {t('download.downloadOptions')}
         </Button>
       </div>
     </div>

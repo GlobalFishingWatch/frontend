@@ -48,14 +48,12 @@ export default function WorkspacePassword() {
       }
       setLoading(false)
     } else {
-      setError(t('workspace.passwordMinLength', 'Password must be at least 5 characters'))
+      setError(t('workspace.passwordMinLength'))
     }
   }
 
   return (
-    <ErrorPlaceholder
-      title={t('workspace.passwordProtected', 'This workspace is password protected')}
-    >
+    <ErrorPlaceholder title={t('workspace.passwordProtected')}>
       <form onSubmit={handleSubmit}>
         <div>
           <InputText
@@ -68,7 +66,7 @@ export default function WorkspacePassword() {
           />
           {error && <p className={styles.error}>{error}</p>}
           {!error && workspacePassword && (
-            <p className={styles.error}>{t('workspace.passwordIncorrect', 'Invalid password')}</p>
+            <p className={styles.error}>{t('workspace.passwordIncorrect')}</p>
           )}
         </div>
         <Button
@@ -77,14 +75,14 @@ export default function WorkspacePassword() {
           className={styles.passwordButton}
           tooltip={
             !password || password.length < MIN_WORKSPACE_PASSWORD_LENGTH
-              ? t('workspace.passwordMinLength', 'passwordMinLength')
+              ? t('workspace.passwordMinLength')
               : undefined
           }
           tooltipPlacement="top"
           disabled={!password || password.length < MIN_WORKSPACE_PASSWORD_LENGTH}
           loading={loading}
         >
-          {t('common.send', 'Send') as string}
+          {t('common.send') as string}
         </Button>
       </form>
     </ErrorPlaceholder>

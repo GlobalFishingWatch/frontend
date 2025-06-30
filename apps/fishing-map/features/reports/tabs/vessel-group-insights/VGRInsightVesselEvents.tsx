@@ -38,14 +38,7 @@ const VesselGroupReportInsightVesselEvents = ({
   if (isLoading) {
     return <Spinner size="small" />
   } else if (error) {
-    return (
-      <p className={styles.secondary}>
-        {t(
-          'vesselGroupReport.insights.fishingEventsError',
-          'There was an error loading the fishing events'
-        )}
-      </p>
-    )
+    return <p className={styles.secondary}>{t('vesselGroupReport.insights.fishingEventsError')}</p>
   } else if (!data) {
     return null
   }

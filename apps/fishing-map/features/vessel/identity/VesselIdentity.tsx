@@ -142,9 +142,9 @@ const VesselIdentity = () => {
           {identitySource === VesselIdentitySourceEnum.Registry && (
             <div>
               <div className={styles.labelContainer}>
-                <label>{t('vessel.registrySources', 'Registry Sources')}</label>
+                <label>{t('vessel.registrySources')}</label>
                 <DataTerminology
-                  title={t('vessel.registrySources', 'Registry Sources')}
+                  title={t('vessel.registrySources')}
                   terminologyKey="registrySources"
                 />
               </div>
@@ -162,7 +162,7 @@ const VesselIdentity = () => {
             </div>
           )}
           <div className={styles.twoCells}>
-            <label>{t(`common.date_other`, 'Dates')}</label>
+            <label>{t('common.date_other')}</label>
             <div className={styles.timerange}>
               <VesselIdentityField
                 value={`${formatI18nDate(vesselIdentity.transmissionDateFrom)} - ${formatI18nDate(
@@ -173,7 +173,7 @@ const VesselIdentity = () => {
                 <IconButton
                   size="small"
                   icon="fit-to-timerange"
-                  tooltip={t('timebar.fitOnThisDates', 'Fit time range to these dates')}
+                  tooltip={t('timebar.fitOnThisDates')}
                   className="print-hidden"
                   onClick={onTimeRangeClick}
                 />
@@ -191,11 +191,8 @@ const VesselIdentity = () => {
               size="medium"
               className="print-hidden"
               onClick={onDownloadClick}
-              tooltip={t('download.dataDownload', 'Download Data')}
-              loginTooltip={t(
-                'download.dataDownloadLogin',
-                'Register and login to download vessel information (free, 2 minutes)'
-              )}
+              tooltip={t('download.dataDownload')}
+              loginTooltip={t('download.dataDownloadLogin')}
               tooltipPlacement="top"
             />
           </div>
@@ -277,14 +274,9 @@ const VesselIdentity = () => {
                     alt={registrySourceData?.key}
                     className={styles.registrySourceLogo}
                   />
-                  <Tooltip
-                    content={t(
-                      'vessel.extraInfoTooltip',
-                      'TMT has additional insights relating to the vessel’s compliance history and/or IUU listing'
-                    )}
-                  >
+                  <Tooltip content={t('vessel.extraInfoTooltip')}>
                     <div>
-                      <label>{t(`vessel.extraInfo`, 'has more information')}</label>
+                      <label>{t('vessel.extraInfo')}</label>
                       <p>{registrySourceData?.contact}</p>
                     </div>
                   </Tooltip>
@@ -296,7 +288,7 @@ const VesselIdentity = () => {
       </div>
       {vesselIdentity?.ssvid && (
         <div className={styles.container}>
-          <label>{t('common.viewIn', 'View in')}</label>
+          <label>{t('common.viewIn')}</label>
           <div className={styles.externalToolLinks}>
             <a
               href={`https://www.marinetraffic.com/${i18n.language}/ais/details/ships/mmsi:${vesselIdentity?.ssvid}`}

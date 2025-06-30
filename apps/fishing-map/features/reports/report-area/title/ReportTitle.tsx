@@ -7,7 +7,7 @@ import parse from 'html-react-parser'
 
 import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
-import { Button, Icon, Popover } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton, Popover } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -215,7 +215,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
           )}
         </h1>
         <a className={styles.reportLink} href={window.location.href}>
-          {t('analysis.linkToReport', 'Check the dynamic report here')}
+          {t('analysis.linkToReport')}
         </a>
         {isGlobalReport && <AreaReportSearch />}
         <div className={styles.actions}>
@@ -249,22 +249,22 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
                   size="small"
                   className={styles.actionButton}
                 >
-                  {t('analysis.buffer', 'Buffer Area')}
+                  {t('analysis.buffer')}
                   <Icon icon="expand" type="default" />
                 </Button>
               </div>
             </Popover>
           )}
-          <Button
-            type="border-secondary"
-            size="small"
+          <IconButton
             className={styles.actionButton}
+            type="border"
+            icon="print"
+            tooltip={t('analysis.print')}
+            size="small"
+            tooltipPlacement="bottom"
             onClick={onPrintClick}
             disabled={loading}
-          >
-            <p>{t('analysis.print ', 'print')}</p>
-            <Icon icon="print" type="default" />
-          </Button>
+          />
         </div>
       </div>
       {reportDescription && !isSticky && (
@@ -282,9 +282,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
               role="button"
               tabIndex={0}
             >
-              {expandedDescription
-                ? t('vessel.insights.gapsSeeLess', 'See less')
-                : t('common.seeMore', 'See more')}
+              {expandedDescription ? t('vessel.insights.gapsSeeLess') : t('common.seeMore')}
             </span>
           )}
         </Fragment>

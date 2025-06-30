@@ -13,10 +13,9 @@ function VesselGroupNotFound({ dataview }: { dataview: UrlDataviewInstance }) {
   return (
     <div className={cx(styles.LayerPanel, 'print-hidden')}>
       <div className={styles.header}>
-        <Tooltip content={t('vesselGroup.notFound', 'Vessel group not found')}>
+        <Tooltip content={t('vesselGroup.notFound')}>
           <h3 className={cx(styles.name, styles.error)}>
-            {dataview.config?.filters?.['vessel-groups']?.[0] ||
-              t('vesselGroup.notFound', 'Vessel group not found')}
+            {dataview.config?.filters?.['vessel-groups']?.[0] || t('vesselGroup.notFound')}
           </h3>
         </Tooltip>
         <div className={styles.actions}>

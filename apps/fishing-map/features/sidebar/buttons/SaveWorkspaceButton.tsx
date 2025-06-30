@@ -65,14 +65,14 @@ function SaveWorkspaceButton() {
 
   if (isDefaultWorkspace) {
     return (
-      <LoginButtonWrapper tooltip={t('workspace.saveLogin', 'You need to login to save views')}>
+      <LoginButtonWrapper tooltip={t('workspace.saveLogin')}>
         <IconButton
           icon="save"
           size="medium"
           className="print-hidden"
           onClick={onSaveAsClick}
           testId="save-workspace-button"
-          tooltip={t('analysis.save', 'Save this report')}
+          tooltip={t('analysis.save')}
           tooltipPlacement="bottom"
         />
       </LoginButtonWrapper>
@@ -89,37 +89,33 @@ function SaveWorkspaceButton() {
         content={
           <ul>
             <Tooltip
-              content={
-                canEditWorkspace
-                  ? t('workspace.save', 'Save this report')
-                  : t('workspace.saveOwnerOnly', 'This workspace can only be edited by its creator')
-              }
+              content={canEditWorkspace ? t('workspace.save') : t('workspace.saveOwnerOnly')}
             >
               <li key="workspace-save">
                 <button
                   className={cx(styles.groupOption, { [styles.disabled]: !canEditWorkspace })}
                   onClick={onSaveClick}
                 >
-                  {t('workspace.save', 'Save this report')}
+                  {t('workspace.save')}
                 </button>
               </li>
             </Tooltip>
             <li key="workspace-save-as">
               <button className={styles.groupOption} onClick={onSaveAsClick}>
-                {t('workspace.saveAs', 'Save this as a new workspace')}
+                {t('workspace.saveAs')}
               </button>
             </li>
           </ul>
         }
       >
         <div>
-          <LoginButtonWrapper tooltip={t('workspace.saveLogin', 'You need to login to save views')}>
+          <LoginButtonWrapper tooltip={t('workspace.saveLogin')}>
             <IconButton
               icon="save"
               size="medium"
               className="print-hidden"
               onClick={() => setSaveWorkspaceTooltipOpen(true)}
-              tooltip={t('analysis.save', 'Save this report')}
+              tooltip={t('analysis.save')}
               tooltipPlacement="bottom"
             />
           </LoginButtonWrapper>

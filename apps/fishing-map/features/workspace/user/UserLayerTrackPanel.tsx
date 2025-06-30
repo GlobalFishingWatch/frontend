@@ -157,7 +157,7 @@ function UserLayerTrackPanel({ dataview }: UserPanelProps) {
           })}
           onClick={onSeeMoreClick}
         >
-          {seeMoreOpen ? t('common.less', 'less') : t('common.more', 'more')}
+          {seeMoreOpen ? t('common.less') : t('common.more')}
         </button>
       )}
     </Fragment>

@@ -204,12 +204,7 @@ function ActivityByType() {
       {groupCounts.length > 0 ? (
         renderedComponent
       ) : (
-        <span className={styles.enptyState}>
-          {t(
-            'vessel.noEventsinTimeRange',
-            'There are no events fully contained in your timerange.'
-          )}
-        </span>
+        <span className={styles.enptyState}>{t('vessel.noEventsinTimeRange')}</span>
       )}
     </ul>
   )

@@ -11,7 +11,7 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "devDependencies": {
-    "@lingual/i18n-check": "^0.8.2",
+    "@lingual/i18n-check": "^0.8.4",
     "i18next-parser": "9.3.0",
     "source-map-explorer": "2.5.3"
   },

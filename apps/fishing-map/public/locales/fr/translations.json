@@ -58,7 +58,7 @@
     "pinVesselsMaxAllowed": "Adding these many vessels would make your workspace surpass the recommended limit of {{maxVessels}} vessels. Please consider using the vessel groups feature to manage your vessels.",
     "portsAfterEvents": "Ports visited after events",
     "portsSearchPlaceholder": "Search ports",
-    "print ": "imprimer",
+    "print": "print",
     "removeVessels": "Remove from workspace",
     "resultsPerPage": "Afficher {{results}} par page",
     "save": "Enregistrer ce rapport",
@@ -149,7 +149,6 @@
     "disabled": "Désactivé",
     "dismiss": "Ignorer",
     "edit": "Modifier",
-    "edit ": "modifier",
     "environment": "Environnement",
     "event_one": "événement",
     "event_other": "évènements",
@@ -213,7 +212,7 @@
     "months_other": "mois",
     "more": "plus",
     "name": "Nom",
-    "navigateBackTo": "back to {{section}}",
+    "navigateBackTo": "Go back to {{section}}",
     "none": "Aucun",
     "of": "d'",
     "onlyMe": "Seulement moi",
@@ -240,6 +239,7 @@
     "seeDefault": "Voir la vue par défaut",
     "seeMore": "En voir plus",
     "send": "Envoyer",
+    "sentinel2": "Sentinel 2",
     "setNewPassword": "Définir un nouveau mot de passe",
     "share": "Partager la vue actuelle",
     "since": "depuis",
@@ -791,7 +791,6 @@
     "zoom_in": "Zoomer",
     "zoom_out": "Dézoomer"
   },
-  "navigateBackTo": "Go back to {{section}}",
   "portsReport": {
     "maxVessels": "Des rapports de navires sont disponibles pour {{vessels}} navires",
     "newTimeRange": "Cliquez sur le bouton pour voir les navires qui sont entrés dans le port <br/>entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
@@ -869,6 +868,23 @@
   },
   "toasts": {
     "maxPointsVisualizationExceeded": "Le nombre maximal de points pouvant être visualisés est dépassé, passage en mode « carte thermique »."
+  },
+  "trackCorrection": {
+    "adjustDisabled": "Adjusting the time range is needed.",
+    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
+    "comment": "Comment",
+    "commentPlaceholder": "Add a comment...",
+    "commentResolve": "Comment and resolve",
+    "falseNegative": "False negative",
+    "falsePositive": "False positive",
+    "issue": "Issue {{issueId}}",
+    "issueType": "Type of issue",
+    "mapTooltip": "Issue added on {{date}} reported as {{type}}",
+    "markAsResolved": "Mark as resolved",
+    "newIssue": "New issue",
+    "other": "Other",
+    "replyPlaceholder": "Write a reply",
+    "version": "Version"
   },
   "user": {
     "badges": {
@@ -1005,8 +1021,8 @@
       "tuna_purse_seines": "Senne coulissante au thon",
       "well_boat": "Navire vivier"
     },
-    "gfw-geartypes": "GFW Gear type",
-    "gfw-shiptypes": "GFW Vessel type",
+    "gfw_geartypes": "GFW Gear type",
+    "gfw_shiptypes": "GFW Vessel type",
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Tonnage brut",
     "grossTonnageRange": "Plage de tonnage brut",
@@ -1017,9 +1033,9 @@
     "infoSource": "Source des informations",
     "infoSources": {
       "both": "Registres et AIS",
+      "gfw-source": "GFW Source",
       "registry": "Registres",
-      "selfReported": "Autodéclarées",
-      "gfw-source": "GFW Source"
+      "selfReported": "Autodéclarées"
     },
     "insights": {
       "countries": {

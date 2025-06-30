@@ -100,6 +100,54 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
       color: '#8E24A9',
     },
   },
+  {
+    id: 'eez-areas-12nm',
+    dataviewId: EEZ_AREAS_12NM_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/eezs-12nm.jpg`,
+    config: {
+      color: '#069688',
+    },
+  },
+  {
+    id: 'high-seas-pockets',
+    dataviewId: HIGH_SEAS_POCKETS_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/high-seas-pockets.jpg`,
+    config: {
+      color: '#4184F4',
+    },
+  },
+  {
+    id: 'paa-duke',
+    dataviewId: PAA_DUKE_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/paa-duke.jpg`,
+    config: {
+      color: '#4184F4',
+    },
+  },
+  {
+    id: 'gfcm-fao',
+    dataviewId: GFCM_FAO_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/gfcm-fao.jpg`,
+    config: {
+      color: '#8E24A9',
+    },
+  },
+  {
+    id: 'dsm-isa-leasing-areas',
+    dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/deep-sea-mining.jpeg`,
+    category: DataviewCategory.Context,
+    config: {
+      color: '#8E24A9',
+    },
+    datasetsConfig: [
+      {
+        datasetId: 'public-isa-layers',
+        params: [],
+        endpoint: 'context-tiles',
+      },
+    ],
+  },
   ...(IS_DEVELOPMENT_ENV
     ? ([
         {
@@ -109,54 +157,6 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
           config: {
             color: '#9AEEFF',
           },
-        },
-        {
-          id: 'eez-areas-12nm',
-          dataviewId: EEZ_AREAS_12NM_DATAVIEW_SLUG,
-          previewImageUrl: `${PATH_BASENAME}/images/layer-library/eezs-12nm.jpg`,
-          config: {
-            color: '#069688',
-          },
-        },
-        {
-          id: 'high-seas-pockets',
-          dataviewId: HIGH_SEAS_POCKETS_DATAVIEW_SLUG,
-          previewImageUrl: `${PATH_BASENAME}/images/layer-library/high-seas-pockets.jpg`,
-          config: {
-            color: '#4184F4',
-          },
-        },
-        {
-          id: 'paa-duke',
-          dataviewId: PAA_DUKE_DATAVIEW_SLUG,
-          previewImageUrl: `${PATH_BASENAME}/images/layer-library/paa-duke.jpg`,
-          config: {
-            color: '#4184F4',
-          },
-        },
-        {
-          id: 'gfcm-fao',
-          dataviewId: GFCM_FAO_DATAVIEW_SLUG,
-          previewImageUrl: `${PATH_BASENAME}/images/layer-library/gfcm-fao.jpg`,
-          config: {
-            color: '#8E24A9',
-          },
-        },
-        {
-          id: 'dsm-isa-leasing-areas',
-          dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
-          previewImageUrl: `${PATH_BASENAME}/images/layer-library/deep-sea-mining.jpeg`,
-          category: DataviewCategory.Context,
-          config: {
-            color: '#8E24A9',
-          },
-          datasetsConfig: [
-            {
-              datasetId: 'public-isa-layers',
-              params: [],
-              endpoint: 'context-tiles',
-            },
-          ],
         },
       ] as LibraryLayerConfig[])
     : []),

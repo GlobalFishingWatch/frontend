@@ -112,13 +112,10 @@ const ErrorNotification = (): React.ReactNode | null => {
       >
         <div className={styles.popupContent} ref={ref}>
           <InputText
-            label={t('map.errorLabel', 'Error description')}
+            label={t('map.errorLabel')}
             value={errorNotification?.label || ''}
             onChange={(e) => setErrorNotification({ label: e.target.value })}
-            placeholder={t(
-              'map.errorPlaceholder',
-              'Please describe the error as detailed as possible'
-            )}
+            placeholder={t('map.errorPlaceholder')}
             className={styles.input}
           />
           <div className={styles.popupButtons}>
@@ -128,11 +125,7 @@ const ErrorNotification = (): React.ReactNode | null => {
               disabled={!errorNotification.label}
               loading={loading}
             >
-              {success ? (
-                <Icon icon="tick" className={styles.successIcon} />
-              ) : (
-                t('common.confirm', 'Confirm')
-              )}
+              {success ? <Icon icon="tick" className={styles.successIcon} /> : t('common.confirm')}
             </Button>
           </div>
         </div>

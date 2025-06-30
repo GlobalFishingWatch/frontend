@@ -42,7 +42,7 @@ export function ClusterTooltip({
         />
         {moreFeatures.length > 0 && (
           <div className={cx(styles.popupSection, styles.secondary)}>
-            + {moreFeatures.length} {t('common.more', 'more')}
+            + {moreFeatures.length} {t('common.more')}
           </div>
         )}
       </Fragment>

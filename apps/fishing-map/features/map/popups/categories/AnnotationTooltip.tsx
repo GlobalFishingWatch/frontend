@@ -21,9 +21,7 @@ function AnnotationTooltip({ features }: AnnotationTooltipProps) {
   return features.length ? (
     <div className={cx(styles.popupSection, styles.withoutIcon)}>
       <div className={styles.popupSectionContent}>
-        <span className={styles.rowText}>
-          {t('map.annotationsHover', 'Drag to move or click to edit annotation')}
-        </span>
+        <span className={styles.rowText}>{t('map.annotationsHover')}</span>
       </div>
     </div>
   ) : null

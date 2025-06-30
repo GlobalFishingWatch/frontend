@@ -31,11 +31,8 @@ const InsightGaps = ({
   return (
     <div id="gaps" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label className="experimental">{t('vessel.insights.gaps', 'AIS Off Events')}</label>
-        <DataTerminology
-          title={t('vessel.insights.gaps', 'AIS Off Events')}
-          terminologyKey="insightsGaps"
-        />
+        <label className="experimental">{t('vessel.insights.gaps')}</label>
+        <DataTerminology title={t('vessel.insights.gaps')} terminologyKey="insightsGaps" />
       </div>
       {isLoading ? (
         <div style={{ width: '20rem' }} className={styles.loadingPlaceholder} />
@@ -48,7 +45,6 @@ const InsightGaps = ({
               <span>
                 {t('vessel.insights.gapsEvents', {
                   count: aisOff?.length,
-                  defaultValue: '{{count}} AIS Off events detected',
                 })}
               </span>
               <InsightGapsDetails
@@ -58,9 +54,7 @@ const InsightGaps = ({
               />
             </Fragment>
           ) : (
-            <p className={styles.secondary}>
-              {t('vessel.insights.gapsEventsEmpty', 'No AIS Off events detected')}
-            </p>
+            <p className={styles.secondary}>{t('vessel.insights.gapsEventsEmpty')}</p>
           )}
         </div>
       )}

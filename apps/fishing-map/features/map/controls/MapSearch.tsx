@@ -104,7 +104,7 @@ const MapSearch = () => {
         icon="search"
         type="map-tool"
         testId="map-search-button"
-        tooltip={isOpen ? t('search.close', 'Close search') : t('map.search', 'Search areas')}
+        tooltip={isOpen ? t('search.close') : t('map.search')}
         className={cx({ [styles.active]: isOpen })}
       ></IconButton>
 
@@ -114,7 +114,7 @@ const MapSearch = () => {
           {...getInputProps({ ref: inputRef })}
           className={styles.input}
           testId="map-search-input"
-          placeholder={t('map.search', 'Search areas')}
+          placeholder={t('map.search')}
           value={inputValue}
         />
         <ul {...getMenuProps()} className={styles.results} data-test="map-search-results">

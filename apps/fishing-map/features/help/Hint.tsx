@@ -1,4 +1,4 @@
-import { useCallback,useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -91,10 +91,10 @@ function Hint({ id, className }: HintProps) {
           </div>
           <div className={styles.footer}>
             <Button type="secondary" onClick={onDismissAll} className={styles.footerBtn}>
-              {t('translations:common.hideAllHelpHints', 'Dismiss all')}
+              {t('translations:common.hideAllHelpHints')}
             </Button>
             <Button type="secondary" onClick={onDismiss} className={styles.footerBtn}>
-              {t('translations:common.hideHelpHint', 'Dismiss')}
+              {t('translations:common.hideHelpHint')}
             </Button>
           </div>
         </div>

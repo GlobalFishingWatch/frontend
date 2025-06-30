@@ -157,11 +157,8 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
   return (
     <div id="vessel-group-fishing" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vessel.insights.fishing', 'Fishing Events')}</label>
-        <DataTerminology
-          title={t('vessel.insights.fishing', 'Fishing Events')}
-          terminologyKey="insightsFishing"
-        />
+        <label>{t('vessel.insights.fishing')}</label>
+        <DataTerminology title={t('vessel.insights.fishing')} terminologyKey="insightsFishing" />
       </div>
       {skip || isLoading || !vesselGroup ? (
         <VesselGroupReportInsightPlaceholder />
@@ -171,10 +168,7 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
         <div className={styles.nested}>
           {!vesselsWithNoTakeMpas || vesselsWithNoTakeMpas?.length === 0 ? (
             <p className={cx(styles.secondary, styles.row)}>
-              {t(
-                'vessel.insights.fishingEventsInNoTakeMpasEmpty',
-                'No fishing events detected in no-take MPAs'
-              )}
+              {t('vessel.insights.fishingEventsInNoTakeMpasEmpty')}
             </p>
           ) : (
             <Collapsable
@@ -183,8 +177,6 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
               className={styles.collapsable}
               labelClassName={styles.collapsableLabel}
               label={t('vesselGroups.insights.fishingInNoTakeMpas', {
-                defaultValue:
-                  '{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs',
                 count: vesselsWithNoTakeMpas.reduce(
                   (acc, vessel) => acc + vessel.eventsInNoTakeMpas.length,
                   0
@@ -202,10 +194,7 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
           {!vesselsInRfmoWithoutKnownAuthorization ||
           !vesselsInRfmoWithoutKnownAuthorization?.length ? (
             <p className={cx(styles.secondary, styles.row)}>
-              {t(
-                'vessel.insights.fishingEventsInRfmoWithoutKnownAuthorizationEmpty',
-                'No fishing events detected outside known RFMO authorized areas'
-              )}
+              {t('vessel.insights.fishingEventsInRfmoWithoutKnownAuthorizationEmpty')}
             </p>
           ) : (
             <Collapsable
@@ -214,8 +203,6 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
               className={styles.collapsable}
               labelClassName={styles.collapsableLabel}
               label={t('vesselGroups.insights.fishingInRfmoWithoutKnownAuthorization', {
-                defaultValue:
-                  '{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas',
                 count: vesselsInRfmoWithoutKnownAuthorization.reduce(
                   (acc, vessel) => acc + vessel.eventsInRfmoWithoutKnownAuthorization.length,
                   0

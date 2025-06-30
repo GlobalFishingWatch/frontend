@@ -127,17 +127,13 @@ const MapControlScreenshot = ({
           type="map-tool"
           loading={loading}
           disabled={mapLoading || loading}
-          tooltip={
-            mapLoading || loading
-              ? t('map.mapLoadingWait', 'Please wait until map loads')
-              : t('map.captureMap', 'Capture map')
-          }
+          tooltip={mapLoading || loading ? t('map.mapLoadingWait') : t('map.captureMap')}
           onClick={onScreenshotClick}
         />
       )}
       <Modal
         appSelector={ROOT_DOM_ELEMENT}
-        title={t('map.screenshotPreview', 'Screenshot preview')}
+        title={t('map.screenshotPreview')}
         isOpen={modalOpen}
         onClose={handleModalClose}
         contentClassName={styles.previewContainer}
@@ -160,7 +156,7 @@ const MapControlScreenshot = ({
         </div>
         <div className={styles.previewFooter}>
           <Button id="dismiss-preview-download" onClick={handleModalClose} type="secondary">
-            {t('common.dismiss', 'Dismiss')}
+            {t('common.dismiss')}
           </Button>
           <div>
             {isPrintSupported && (
@@ -173,7 +169,7 @@ const MapControlScreenshot = ({
               </Button>
             )}
             <Button id="image-preview-download" loading={loading} onClick={onImageDownloadClick}>
-              {t('map.screenshotDownload', 'Download image')}
+              {t('map.screenshotDownload')}
             </Button>
           </div>
         </div>

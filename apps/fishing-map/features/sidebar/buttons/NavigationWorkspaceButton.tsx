@@ -15,9 +15,10 @@ import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import { resetVesselState } from 'features/vessel/vessel.slice'
 import { cleanReportQuery } from 'features/workspace/workspace.slice'
 import type { ROUTE_TYPES } from 'routes/routes'
-import { WORKSPACE } from 'routes/routes'
+import { HOME, WORKSPACE } from 'routes/routes'
 import {
   selectIsAnyWorkspaceReportLocation,
+  selectIsVesselLocation,
   selectIsWorkspaceVesselLocation,
   selectLocationCategory,
   selectLocationQuery,
@@ -29,6 +30,7 @@ import styles from '../SidebarHeader.module.css'
 function NavigationWorkspaceButton() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const isVesselLocation = useSelector(selectIsVesselLocation)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
   const isAnyWorkspaceReportLocation = useSelector(selectIsAnyWorkspaceReportLocation)
   const workspaceId = useSelector(selectWorkspaceId)
@@ -40,13 +42,27 @@ function NavigationWorkspaceButton() {
     dispatch(resetVesselState())
   }, [dispatch])
 
+  if (!workspaceId && isVesselLocation) {
+    const linkTo = {
+      type: HOME,
+      query: {},
+      replaceQuery: true,
+      isHistoryNavigation: true,
+    }
+    return (
+      <Link className={cx(styles.workspaceLink, 'print-hidden')} to={linkTo} onClick={resetState}>
+        <IconButton type="border" icon="close" />
+      </Link>
+    )
+  }
+
   if (
     workspaceId &&
     (isWorkspaceVesselLocation ||
       (isAnyWorkspaceReportLocation && locationCategory !== WorkspaceCategory.Reports))
   ) {
-    const tooltip = t('navigateBackTo', 'Go back to {{section}}', {
-      section: t('workspace.title', 'Workspace').toLocaleLowerCase(),
+    const tooltip = t('common.navigateBackTo', {
+      section: t('workspace.title').toLocaleLowerCase(),
     })
     const query = {
       ...cleanReportQuery(locationQuery),

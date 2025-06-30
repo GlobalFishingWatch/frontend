@@ -20,6 +20,7 @@ import {
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
+import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { formatInfoField } from 'utils/info'
 
@@ -95,20 +96,23 @@ function VesselsFromPositions() {
         return []
       })
       if (positions.length) {
-        const vesselsByValue = positions.reduce((acc, position) => {
-          if (position.properties.shipname) {
-            if (!acc[position.properties.shipname]) {
-              acc[position.properties.shipname] = {
-                id: position.properties.id,
-                shipname: position.properties.shipname,
-                value: 0,
-                datasets: searchDatasets,
+        const vesselsByValue = positions.reduce(
+          (acc, position) => {
+            if (position.properties.shipname) {
+              if (!acc[position.properties.shipname]) {
+                acc[position.properties.shipname] = {
+                  id: position.properties.vessel_id || position.properties.id,
+                  shipname: position.properties.shipname,
+                  value: 0,
+                  datasets: searchDatasets,
+                }
               }
+              acc[position.properties.shipname].value += position.properties.value
             }
-            acc[position.properties.shipname].value += position.properties.value
-          }
-          return acc
-        }, {} as Record<string, VesselFromPosition>)
+            return acc
+          },
+          {} as Record<string, VesselFromPosition>
+        )
         const vessels = Object.values(vesselsByValue).sort((a, b) => b.value - a.value)
         const vesselsNotAlreadyPinned = vessels.filter((vessel) => !vesselIds.includes(vessel.id))
         setVessels(vesselsNotAlreadyPinned || [])
@@ -127,7 +131,7 @@ function VesselsFromPositions() {
   return (
     <div className={cx(styles.content, 'print-hidden')}>
       <Collapsable
-        label={t('vessel.onScreen', 'Vessels on screen')}
+        label={t('vessel.onScreen')}
         open
         className={cx(styles.header, styles.vesselsOnScreen, 'print-hidden')}
       >
@@ -144,17 +148,23 @@ function VesselsFromPositions() {
             >
               <VesselPin vesselToSearch={vessel} onClick={() => setHighlightVessel(undefined)} />
               <div className={styles.vesselOnScreen}>
-                <span>{formatInfoField(vessel.shipname, 'shipname')} </span>
+                <VesselLink
+                  className={styles.link}
+                  vesselId={vessel.id}
+                  datasetId={vessel.datasets?.[0]}
+                >
+                  {formatInfoField(vessel.shipname, 'shipname')}
+                </VesselLink>
                 {fourwingsActivityLayer?.instance && !fourwingsDetectionsLayer?.instance && (
                   <span>
                     <I18nNumber number={Math.round(vessel.value)} />{' '}
-                    {index === 0 && ` ${t('common.hour_other', 'hours')}`}
+                    {index === 0 && ` ${t('common.hour_other')}`}
                   </span>
                 )}
                 {fourwingsDetectionsLayer?.instance && !fourwingsActivityLayer?.instance && (
                   <span>
                     <I18nNumber number={Math.round(vessel.value)} />{' '}
-                    {index === 0 && ` ${t('common.detection_other', 'detections').toLowerCase()}`}
+                    {index === 0 && ` ${t('common.detection_other').toLowerCase()}`}
                   </span>
                 )}
               </div>
@@ -163,7 +173,7 @@ function VesselsFromPositions() {
         </ul>
         {vessels.length > MAX_VESSLES_TO_DISPLAY && (
           <span className={styles.moreVesselsOnScreen}>
-            + {vessels.length - MAX_VESSLES_TO_DISPLAY} {t('common.more', 'more')}
+            + {vessels.length - MAX_VESSLES_TO_DISPLAY} {t('common.more')}
           </span>
         )}
       </Collapsable>

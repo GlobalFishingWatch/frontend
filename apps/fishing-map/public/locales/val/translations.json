@@ -58,7 +58,7 @@
     "pinVesselsMaxAllowed": "crwdns84046:0{{maxVessels}}crwdne84046:0",
     "portsAfterEvents": "crwdns84522:0crwdne84522:0",
     "portsSearchPlaceholder": "crwdns84524:0crwdne84524:0",
-    "print ": "crwdns69298:0crwdne69298:0",
+    "print": "crwdns93726:0crwdne93726:0",
     "removeVessels": "crwdns84026:0crwdne84026:0",
     "resultsPerPage": "crwdns59631:0{{results}}crwdne59631:0",
     "save": "crwdns59639:0crwdne59639:0",
@@ -149,7 +149,6 @@
     "disabled": "crwdns83222:0crwdne83222:0",
     "dismiss": "crwdns59751:0crwdne59751:0",
     "edit": "crwdns83692:0crwdne83692:0",
-    "edit ": "crwdns83810:0crwdne83810:0",
     "environment": "crwdns59753:0crwdne59753:0",
     "event_one": "crwdns69346:0crwdne69346:0",
     "event_other": "crwdns69348:0crwdne69348:0",
@@ -240,6 +239,7 @@
     "seeDefault": "crwdns59857:0crwdne59857:0",
     "seeMore": "crwdns83166:0crwdne83166:0",
     "send": "crwdns83228:0crwdne83228:0",
+    "sentinel2": "crwdns93728:0crwdne93728:0",
     "setNewPassword": "crwdns83252:0crwdne83252:0",
     "share": "crwdns59859:0crwdne59859:0",
     "since": "crwdns83388:0crwdne83388:0",
@@ -791,7 +791,6 @@
     "zoom_in": "crwdns60359:0crwdne60359:0",
     "zoom_out": "crwdns60361:0crwdne60361:0"
   },
-  "navigateBackTo": "crwdns84570:0{{section}}crwdne84570:0",
   "portsReport": {
     "maxVessels": "crwdns84004:0{{vessels}}crwdne84004:0",
     "newTimeRange": "crwdns84000:0{{start}}crwdnd84000:0{{end}}crwdne84000:0",
@@ -869,6 +868,23 @@
   },
   "toasts": {
     "maxPointsVisualizationExceeded": "crwdns83408:0crwdne83408:0"
+  },
+  "trackCorrection": {
+    "adjustDisabled": "crwdns93658:0crwdne93658:0",
+    "adjustDisclaimer": "crwdns93660:0crwdne93660:0",
+    "comment": "crwdns93662:0crwdne93662:0",
+    "commentPlaceholder": "crwdns93664:0crwdne93664:0",
+    "commentResolve": "crwdns93666:0crwdne93666:0",
+    "falseNegative": "crwdns93668:0crwdne93668:0",
+    "falsePositive": "crwdns93670:0crwdne93670:0",
+    "issue": "crwdns93672:0{{issueId}}crwdne93672:0",
+    "issueType": "crwdns93674:0crwdne93674:0",
+    "mapTooltip": "crwdns93676:0{{date}}crwdnd93676:0{{type}}crwdne93676:0",
+    "markAsResolved": "crwdns93678:0crwdne93678:0",
+    "newIssue": "crwdns93680:0crwdne93680:0",
+    "other": "crwdns93682:0crwdne93682:0",
+    "replyPlaceholder": "crwdns93684:0crwdne93684:0",
+    "version": "crwdns93686:0crwdne93686:0"
   },
   "user": {
     "badges": {
@@ -1005,8 +1021,8 @@
       "tuna_purse_seines": "crwdns60571:0crwdne60571:0",
       "well_boat": "crwdns69514:0crwdne69514:0"
     },
-    "gfw-geartypes": "crwdns87948:0crwdne87948:0",
-    "gfw-shiptypes": "crwdns87950:0crwdne87950:0",
+    "gfw_geartypes": "crwdns93654:0crwdne93654:0",
+    "gfw_shiptypes": "crwdns93656:0crwdne93656:0",
     "goToImage": "crwdns84100:0{{number}}crwdne84100:0",
     "grossTonnage": "crwdns69516:0crwdne69516:0",
     "grossTonnageRange": "crwdns60589:0crwdne60589:0",
@@ -1017,9 +1033,9 @@
     "infoSource": "crwdns69522:0crwdne69522:0",
     "infoSources": {
       "both": "crwdns69752:0crwdne69752:0",
+      "gfw-source": "crwdns87952:0crwdne87952:0",
       "registry": "crwdns69524:0crwdne69524:0",
-      "selfReported": "crwdns69526:0crwdne69526:0",
-      "gfw-source": "crwdns87952:0crwdne87952:0"
+      "selfReported": "crwdns69526:0crwdne69526:0"
     },
     "insights": {
       "countries": {
