@@ -19,13 +19,27 @@ export const selectIsNewTrackCorrection = createSelector(
   }
 )
 
-export const selectAllTrackCorrectionIssues = createSelector(
+export const selectWorkspaceTrackCorrectionIssues = createSelector(
   [selectWorkspacesTrackCorrectionIssues, selectCurrentWorkspaceId],
   (workspacesIssues, workspaceId) => {
     if (!workspaceId) {
       return
     }
-    return workspacesIssues[workspaceId]?.data
+    return workspacesIssues[workspaceId]
+  }
+)
+
+export const selectAllTrackCorrectionIssues = createSelector(
+  [selectWorkspaceTrackCorrectionIssues],
+  (workspacesIssues) => {
+    return workspacesIssues?.data || []
+  }
+)
+
+export const selectTrackCorrectionStatus = createSelector(
+  [selectWorkspaceTrackCorrectionIssues],
+  (workspacesIssues) => {
+    return workspacesIssues?.status
   }
 )
 
