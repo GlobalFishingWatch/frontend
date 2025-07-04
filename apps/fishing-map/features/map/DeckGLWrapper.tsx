@@ -19,6 +19,7 @@ import {
 import { useMapLayers } from 'features/map/map-layers.hooks'
 import { MAP_VIEW, useMapSetViewState, useMapViewState } from 'features/map/map-viewport.hooks'
 import MapAnnotations from 'features/map/overlays/annotations/Annotations'
+import TrackCorrectionsOverlay from 'features/map/overlays/track-corrections/TrackCorrectionsOverlay'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { useReportFeaturesLoading } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
@@ -115,6 +116,7 @@ const DeckGLWrapper = () => {
       onLoad={onMapLoad}
     >
       <MapAnnotations />
+      <TrackCorrectionsOverlay />
     </DeckGL>
   )
 }

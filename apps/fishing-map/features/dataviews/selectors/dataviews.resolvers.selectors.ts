@@ -27,6 +27,10 @@ import { selectDataviewInstancesInjected } from 'features/dataviews/selectors/da
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
 import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
+import {
+  selectTrackCorrectionTimerange,
+  selectTrackCorrectionVesselDataviewId,
+} from 'features/track-correction/track-correction.slice'
 import { selectIsGuestUser, selectUserLogged } from 'features/user/selectors/user.selectors'
 import { selectCurrentVesselEvent } from 'features/vessel/selectors/vessel.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
@@ -69,6 +73,8 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectUserLogged,
     selectTrackThinningConfig,
     selectIsGuestUser,
+    selectTrackCorrectionVesselDataviewId,
+    selectTrackCorrectionTimerange,
   ],
   (
     dataviewInstances,
@@ -77,7 +83,9 @@ export const selectAllDataviewInstancesResolved = createSelector(
     vesselGroups,
     loggedUser,
     trackThinningZoomConfig,
-    guestUser
+    guestUser,
+    trackCorrectionVesselDataviewId,
+    trackCorrectionTimerange
   ): UrlDataviewInstance[] | undefined => {
     if (!dataviews?.length || !datasets?.length || !dataviewInstances?.length) {
       return EMPTY_ARRAY
@@ -124,11 +132,26 @@ export const selectAllDataviewInstancesResolved = createSelector(
       datasets,
       vesselGroups
     )
+    const dataviewInstancesResolvedWithConfigInjected = dataviewInstancesResolved.map(
+      (dataview) => {
+        if (dataview.id === trackCorrectionVesselDataviewId) {
+          return {
+            ...dataview,
+            config: {
+              ...(dataview.config || {}),
+              highlightStartTime: trackCorrectionTimerange.start,
+              highlightEndTime: trackCorrectionTimerange.end,
+            },
+          }
+        }
+        return dataview
+      }
+    )
     const callbacks: GetDatasetConfigsCallbacks = {
       info: infoDatasetConfigsCallback(guestUser),
     }
     const dataviewInstancesResolvedExtended = extendDataviewDatasetConfig(
-      dataviewInstancesResolved,
+      dataviewInstancesResolvedWithConfigInjected,
       callbacks
     )
 
