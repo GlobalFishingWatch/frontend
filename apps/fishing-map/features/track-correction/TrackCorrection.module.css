@@ -1,8 +1,8 @@
 .container {
   display: flex;
   flex-direction: column;
-  gap: var(--space-M);
   padding: var(--space-M);
+  gap: var(--space-M);
 }
 
 .vessel {
@@ -56,10 +56,31 @@
   gap: var(--space-S);
 }
 
-.titleContainer {
-  padding: var(--space-S) var(--space-M);
+.title {
+  font: var(--font-M);
+  border-bottom: 1px solid rgba(22, 62, 137, 0.275);
+  flex: 1;
+  padding: var(--space-M);
+  text-transform: uppercase;
+}
+
+.loginRequired {
+  margin: var(--space-S);
+  padding: var(--space-S);
+  background-color: var(--color-danger-red-background);
+  border-radius: var(--border-radius);
+}
+
+.link {
+  text-decoration: underline;
 }
 
 .commentButton {
   min-width: 12rem;
+}
+
+.commentContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
 }

@@ -9,7 +9,7 @@
   flex-direction: column;
   gap: var(--space-XS);
   border-bottom: 1px solid var(--color-border-thick);
-  padding: var(--space-M) 0;
+  padding-bottom: var(--space-M);
 }
 
 .header {

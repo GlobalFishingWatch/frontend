@@ -1,7 +1,7 @@
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import { Spinner } from '@globalfishingwatch/ui-components'
+import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import type { TrackCorrection } from 'features/track-correction/track-correction.slice'
 import {
@@ -27,15 +27,16 @@ const TrackCorrection = () => {
 
   if (isGuestUser || !userData)
     return (
-      <div className={styles.titleContainer}>
-        <h1>{t('trackCorrection.title')}</h1>
+      <>
+        <h1 className={styles.title}>{t('trackCorrection.title')}</h1>
         <div className={styles.loginRequired}>
+          <Icon type="default" icon="warning" />
           <Trans i18nKey="trackCorrection.loginRequired">
             To suggest and view this correction, you must
             <LocalStorageLoginLink className={styles.link}> log in </LocalStorageLoginLink>
           </Trans>
         </div>
-      </div>
+      </>
     )
 
   if (!isWorkspaceReady || trackCorrectionStatus !== AsyncReducerStatus.Finished) return <Spinner />

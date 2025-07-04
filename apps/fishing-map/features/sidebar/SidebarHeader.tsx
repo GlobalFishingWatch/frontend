@@ -34,7 +34,6 @@ import SaveWorkspaceButton from 'features/sidebar/buttons/SaveWorkspaceButton'
 import ShareWorkspaceButton from 'features/sidebar/buttons/ShareWorkspaceButton'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
-import TrackCorrectionHeader from 'features/track-correction/TrackCorrectionHeader'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
 import VesselHeader from 'features/vessel/VesselHeader'
@@ -142,9 +141,9 @@ function SidebarHeader() {
   }
 
   const sectionHeaderComponent = useMemo(() => {
-    if (isTrackCorrectionOpen) {
-      return <TrackCorrectionHeader />
-    }
+    // if (isTrackCorrectionOpen) {
+    //   return <TrackCorrectionHeader />
+    // }
     if (isAnyVesselLocation) {
       return <VesselHeader isSticky={isSticky} />
     }
@@ -162,7 +161,6 @@ function SidebarHeader() {
     isAreaReportLocation,
     isPortReportLocation,
     isSticky,
-    isTrackCorrectionOpen,
     isVesselGroupReportLocation,
   ])
 

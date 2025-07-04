@@ -48,10 +48,6 @@ const TrackCorrectionEdit = () => {
       issueId,
       user: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
       userEmail: userData?.email || '',
-      workspaceLink: window.location.href.replace(
-        'trackCorrectionId=new',
-        `trackCorrectionId=${issueId}`
-      ),
       date: new Date().toISOString(),
       comment: issueComment || 'No comment provided',
       datasetVersion: 1,
@@ -97,74 +93,83 @@ const TrackCorrectionEdit = () => {
   if (isGuestUser || !userData || !currentTrackCorrectionIssue) return null
 
   return (
-    <div className={styles.container}>
-      <div className={styles.item}>
-        <h2>
-          {currentTrackCorrectionIssue.vesselName
-            ? currentTrackCorrectionIssue.vesselName
-            : (vesselInfo && getVesselShipNameLabel(vesselInfo)) || dataview?.config?.name}
-          {' - '} {currentTrackCorrectionIssue.issueId}
-        </h2>
-        <h2>{t(`trackCorrection.${currentTrackCorrectionIssue.type}`)}</h2>
-        <label>
-          <I18nDate
-            date={currentTrackCorrectionIssue.startDate}
-            format={DateTime.DATETIME_MED}
-            showUTCLabel={false}
-          />
-          {' - '}
-          <I18nDate
-            date={currentTrackCorrectionIssue.endDate}
-            format={DateTime.DATETIME_MED}
-            showUTCLabel={false}
-          />
-        </label>
-      </div>
-      <TrackCommentsList track={currentTrackCorrectionIssue} />
-      {!currentTrackCorrectionIssue.resolved && (
-        <div className={styles.commentContainer}>
-          <div>
-            <InputText
-              inputSize="small"
-              placeholder={t('trackCorrection.replyPlaceholder')}
-              value={issueComment}
-              className={styles.input}
-              onChange={(e) => dispatch(setTrackIssueComment(e.target.value))}
-              disabled={isSubmitting}
+    <>
+      <h1 className={styles.title}>
+        {t('trackCorrection.issue', 'Issue {{issueId}}', {
+          issueId: currentTrackCorrectionIssue.issueId,
+        })}
+      </h1>
+      <div className={styles.container}>
+        <div className={styles.item}>
+          <h2>
+            {currentTrackCorrectionIssue.vesselName
+              ? currentTrackCorrectionIssue.vesselName
+              : (vesselInfo && getVesselShipNameLabel(vesselInfo)) || dataview?.config?.name}
+            {' - '} {currentTrackCorrectionIssue.issueId}
+          </h2>
+          <h2>{t(`trackCorrection.${currentTrackCorrectionIssue.type}`)}</h2>
+          <label>
+            <I18nDate
+              date={currentTrackCorrectionIssue.startDate}
+              format={DateTime.DATETIME_MED}
+              showUTCLabel={false}
             />
-          </div>
-
-          <div className={styles.actions}>
-            <span className={styles.version}>
-              {
-                t('trackCorrection.version') + ' 1'
-                /*vesselInfo.datasetVersion*/
-              }
-            </span>
-            {!isGuestUser && (
-              <div className={styles.actions}>
-                <IconButton
-                  icon="tick"
-                  type={isResolved ? 'map-tool' : 'border'}
-                  size="tiny"
-                  onClick={() => setIsResolved((prev) => !prev)}
-                  tooltip={!isResolved && t('trackCorrection.markAsResolved')}
-                />
-                <Button
-                  size="medium"
-                  className={styles.commentButton}
-                  disabled={isResolved ? false : issueComment === ''}
-                  onClick={onConfirmClick}
-                  loading={isSubmitting}
-                >
-                  {isResolved ? t('trackCorrection.commentResolve') : t('trackCorrection.comment')}
-                </Button>
-              </div>
-            )}
-          </div>
+            {' - '}
+            <I18nDate
+              date={currentTrackCorrectionIssue.endDate}
+              format={DateTime.DATETIME_MED}
+              showUTCLabel={false}
+            />
+          </label>
         </div>
-      )}
-    </div>
+        <TrackCommentsList track={currentTrackCorrectionIssue} />
+        {!currentTrackCorrectionIssue.resolved && (
+          <div className={styles.commentContainer}>
+            <div>
+              <InputText
+                inputSize="small"
+                placeholder={t('trackCorrection.replyPlaceholder')}
+                value={issueComment}
+                className={styles.input}
+                onChange={(e) => dispatch(setTrackIssueComment(e.target.value))}
+                disabled={isSubmitting}
+              />
+            </div>
+
+            <div className={styles.actions}>
+              <span className={styles.version}>
+                {
+                  t('trackCorrection.version') + ' 1'
+                  /*vesselInfo.datasetVersion*/
+                }
+              </span>
+              {!isGuestUser && (
+                <div className={styles.actions}>
+                  <IconButton
+                    icon="tick"
+                    type={isResolved ? 'map-tool' : 'border'}
+                    size="tiny"
+                    onClick={() => setIsResolved((prev) => !prev)}
+                    tooltip={!isResolved && t('trackCorrection.markAsResolved')}
+                  />
+                  <Button
+                    size="medium"
+                    className={styles.commentButton}
+                    disabled={isResolved ? false : issueComment === ''}
+                    onClick={onConfirmClick}
+                    loading={isSubmitting}
+                  >
+                    {isResolved
+                      ? t('trackCorrection.commentResolve')
+                      : t('trackCorrection.comment')}
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   )
 }
 

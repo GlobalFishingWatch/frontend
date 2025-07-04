@@ -82,10 +82,6 @@ const TrackCorrectionNew = () => {
       issueId,
       user: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
       userEmail: userData?.email || '',
-      workspaceLink: window.location.href.replace(
-        'trackCorrectionId=new',
-        `trackCorrectionId=${issueId}`
-      ),
       date: new Date().toISOString(),
       comment: issueComment || 'No comment provided',
       datasetVersion: 1,
@@ -133,7 +129,10 @@ const TrackCorrectionNew = () => {
           userEmail: userData?.email || '',
           startDate: trackCorrectionTimerange.start,
           endDate: trackCorrectionTimerange.end,
-          workspaceLink: window.location.href,
+          workspaceLink: window.location.href.replace(
+            'trackCorrectionId=new',
+            `trackCorrectionId=${issueId}`
+          ),
           type: issueType,
           lastUpdated: new Date().toISOString(),
           resolved: false,
@@ -204,83 +203,96 @@ const TrackCorrectionNew = () => {
   if (isGuestUser || !userData) return null
 
   return (
-    <div className={styles.container}>
-      <div>
-        <label>{t('common.vessel')}</label>
-        <div className={styles.vessel}>
-          <span className={styles.vesselLabel}>
-            <Icon icon="vessel" style={{ color: vesselColor }} />
-            {(vesselInfo && getVesselShipNameLabel(vesselInfo)) || dataview?.config?.name}
+    <>
+      <h1 className={styles.title}>{t('trackCorrection.newIssue')}</h1>
+      <div className={styles.container}>
+        <div>
+          <label>{t('common.vessel')}</label>
+          <div className={styles.vessel}>
+            <span className={styles.vesselLabel}>
+              <Icon icon="vessel" style={{ color: vesselColor }} />
+              {(vesselInfo && getVesselShipNameLabel(vesselInfo)) || dataview?.config?.name}
+            </span>
+
+            <FitBounds layer={vesselLayer?.instance} disabled={!vesselLayer?.loaded} />
+          </div>
+        </div>
+        {vesselInfo && (
+          <div className={styles.vesselInfo}>
+            <div>
+              <label>{t('common.flag')}</label>
+              {getVesselProperty(vesselInfo, 'flag')}
+            </div>
+            <div>
+              <label>{t('vessel.shiptype')}</label>
+              {getVesselShipTypeLabel({ shiptypes: getVesselProperty(vesselInfo, 'shiptypes') })}
+            </div>
+            <div>
+              <label>{t('vessel.geartype')}</label>
+              {getVesselGearTypeLabel({ geartypes: getVesselProperty(vesselInfo, 'geartypes') })}
+            </div>
+          </div>
+        )}
+
+        <div>
+          <label>{t('common.timerange')}</label>
+          <TrackSlider
+            rangeStartTime={getUTCDateTime(start).toMillis()}
+            rangeEndTime={getUTCDateTime(end).toMillis()}
+            segments={trackData ?? []}
+            color={vesselColor}
+            onTimerangeChange={(start, end) => {
+              setIsTimerangePristine(false)
+            }}
+          />
+        </div>
+
+        <div className={styles.disclaimer}>
+          <Icon type="default" icon="warning" />
+          <span>{t('trackCorrection.adjustDisclaimer')}</span>
+        </div>
+        <div>
+          <label>{t('trackCorrection.issueType')}</label>
+          <Choice
+            options={getTrackCorrectionIssueOptions()}
+            activeOption={issueType}
+            onSelect={(option) => {
+              dispatch(setTrackIssueType(option.id))
+            }}
+            size="small"
+          />
+        </div>
+        <div>
+          <label>{t('trackCorrection.comment')}</label>
+          <InputText
+            inputSize="small"
+            placeholder={t('trackCorrection.commentPlaceholder')}
+            value={issueComment}
+            className={styles.input}
+            onChange={(e) => dispatch(setTrackIssueComment(e.target.value))}
+            disabled={isSubmitting}
+          />
+        </div>
+        <div className={styles.actions}>
+          <span className={styles.version}>
+            {
+              t('trackCorrection.version') + ' 1'
+              /*vesselInfo.datasetVersion*/
+            }
           </span>
 
-          <FitBounds layer={vesselLayer?.instance} disabled={!vesselLayer?.loaded} />
+          <Button
+            tooltip={isTimerangePristine ? t('trackCorrection.adjustDisabled') : undefined}
+            size="medium"
+            disabled={isTimerangePristine || issueComment === '' || isGuestUser}
+            onClick={() => onConfirmClick(trackCorrectionTimerange)}
+            loading={isSubmitting}
+          >
+            {t('common.confirm')}
+          </Button>
         </div>
       </div>
-      {vesselInfo && (
-        <div className={styles.vesselInfo}>
-          <div>
-            <label>{t('common.flag')}</label>
-            {getVesselProperty(vesselInfo, 'flag')}
-          </div>
-          <div>
-            <label>{t('vessel.shiptype')}</label>
-            {getVesselShipTypeLabel({ shiptypes: getVesselProperty(vesselInfo, 'shiptypes') })}
-          </div>
-          <div>
-            <label>{t('vessel.geartype')}</label>
-            {getVesselGearTypeLabel({ geartypes: getVesselProperty(vesselInfo, 'geartypes') })}
-          </div>
-        </div>
-      )}
-      <label>{t('common.timerange')}</label>
-      <TrackSlider
-        rangeStartTime={getUTCDateTime(start).toMillis()}
-        rangeEndTime={getUTCDateTime(end).toMillis()}
-        segments={trackData ?? []}
-        color={vesselColor}
-        onTimerangeChange={(start, end) => {
-          setIsTimerangePristine(false)
-        }}
-      />
-
-      <div className={styles.disclaimer}>
-        <Icon type="default" icon="warning" />
-        <span>{t('trackCorrection.adjustDisclaimer')}</span>
-      </div>
-      <div>
-        <label>{t('trackCorrection.issueType')}</label>
-        <Choice
-          options={getTrackCorrectionIssueOptions()}
-          activeOption={issueType}
-          onSelect={(option) => {
-            dispatch(setTrackIssueType(option.id))
-          }}
-          size="small"
-        />
-      </div>
-      <div>
-        <label>{t('trackCorrection.comment')}</label>
-        <InputText
-          inputSize="small"
-          placeholder={t('trackCorrection.commentPlaceholder')}
-          value={issueComment}
-          className={styles.input}
-          onChange={(e) => dispatch(setTrackIssueComment(e.target.value))}
-          disabled={isSubmitting}
-        />
-      </div>
-      <div className={styles.actions}>
-        <Button
-          tooltip={isTimerangePristine ? t('trackCorrection.adjustDisabled') : undefined}
-          size="medium"
-          disabled={isTimerangePristine || issueComment === '' || isGuestUser}
-          onClick={() => onConfirmClick(trackCorrectionTimerange)}
-          loading={isSubmitting}
-        >
-          {t('common.confirm')}
-        </Button>
-      </div>
-    </div>
+    </>
   )
 }
 
