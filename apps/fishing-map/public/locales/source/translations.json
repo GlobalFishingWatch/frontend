@@ -894,11 +894,13 @@
     "falsePositive": "False positive",
     "issue": "Issue {{issueId}}",
     "issueType": "Type of issue",
+    "loginRequired": "To suggest and view this correction, you must <1>log in</1>.",
     "mapTooltip": "{{vesselName}} reported as {{type}} on {{date}} ",
     "markAsResolved": "Mark as resolved",
     "newIssue": "New issue",
     "other": "Other",
     "replyPlaceholder": "Write a reply",
+    "title": "Track correction panel",
     "version": "Version"
   },
   "user": {
