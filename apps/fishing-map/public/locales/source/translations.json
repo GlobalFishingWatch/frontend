@@ -885,7 +885,6 @@
     "maxPointsVisualizationExceeded": "Max points visualization exceeded, switching to heatmap mode."
   },
   "trackCorrection": {
-    "logAnIssue": "Log an activity issue",
     "adjustDisabled": "Adjusting the time range is needed.",
     "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
     "comment": "Comment",
@@ -895,6 +894,7 @@
     "falsePositive": "False positive",
     "issue": "Issue {{issueId}}",
     "issueType": "Type of issue",
+    "logAnIssue": "Log an activity issue",
     "loginRequired": "To suggest and view this correction, you must <1>log in</1>.",
     "mapTooltip": "{{vesselName}} reported as {{type}} on {{date}} ",
     "markAsResolved": "Mark as resolved",
