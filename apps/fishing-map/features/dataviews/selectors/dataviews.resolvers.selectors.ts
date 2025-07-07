@@ -141,6 +141,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
               ...(dataview.config || {}),
               highlightStartTime: trackCorrectionTimerange.start,
               highlightEndTime: trackCorrectionTimerange.end,
+              showVesselIcon: false,
             },
           }
         }

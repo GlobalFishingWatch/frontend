@@ -39,6 +39,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     name: dataview.config?.name,
     endTime: endTime,
     startTime: startTime,
+    showVesselIcon: dataview.config?.showVesselIcon ?? true,
     ...(dataview.config?.highlightEventStartTime && {
       highlightEventStartTime: getUTCDateTime(dataview.config.highlightEventStartTime).toMillis(),
     }),

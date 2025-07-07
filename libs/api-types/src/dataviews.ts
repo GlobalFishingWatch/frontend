@@ -147,6 +147,7 @@ export interface DataviewConfig<Type = DataviewType> {
   /** Vessels to override the globalconfig start and end */
   highlightEventStartTime?: string
   highlightEventEndTime?: string
+  showVesselIcon?: boolean
 
   /** Vessels to override the globalconfig start and end */
   highlightStartTime?: string
