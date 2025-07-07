@@ -1,3 +1,5 @@
+import { last } from 'lodash'
+
 import type {
   TrackCorrection,
   TrackCorrectionComment,
@@ -27,6 +29,8 @@ export async function createNewIssue(
       issueId: `=HYPERLINK("${issueBody.workspaceLink}", "${commentBody.issueId}")`,
       createdBy: `=HYPERLINK("mailto:${issueBody.userEmail}", "${commentBody.user}")`,
       comments: `=LINKTOCOMMENTS(${issueBody.issueId})`,
+      lastUpdated: `=GET_LAST_UPDATED(${issueBody.issueId})`,
+      resolved: `=GET_IS_RESOLVED(${issueBody.issueId})`,
     }
     await issuesSheet.addRow(rowData)
   } catch (error) {

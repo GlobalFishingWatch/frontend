@@ -139,7 +139,7 @@ const TrackCorrectionNew = () => {
           lon: middlePoint.geometry.coordinates[0],
           lat: middlePoint.geometry.coordinates[1],
           zoom: viewState.zoom,
-          source: vesselInfo?.dataset || 'unknown',
+          source: vesselInfo?.dataset || 'unknown', //depending on the dataset we add different properties
           ssvid: vesselInfo
             ? getVesselIdentities(vesselInfo, {
                 identitySource: VesselIdentitySourceEnum.SelfReported,
