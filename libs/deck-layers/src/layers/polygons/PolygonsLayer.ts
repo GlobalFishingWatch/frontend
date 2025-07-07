@@ -91,8 +91,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
         lineWidthMinPixels: 0,
         lineWidthMaxPixels: 2,
         filled: false,
-        getPolygonOffset: (params) =>
-          getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+        getPolygonOffset: (params) => getLayerGroupOffset(group, params),
         getLineWidth: id === PREVIEW_BUFFER_GENERATOR_ID ? 2 : 1,
         getLineColor: hexToDeckColor(color),
       }),

@@ -955,12 +955,18 @@ export const getSchemaFieldsSelectedInDataview = (
 
 export const getSchemaFieldLabel = (schema: SupportedDatasetSchema, datasetId: string) => {
   if (datasetId && i18n.exists(`datasets:${datasetId}.schema.${schema}.keyword`)) {
-    return t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
+    const label = t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
+    if (label !== schema) {
+      return label
+    }
   }
   if (i18n.exists(`vessel.${schema}`)) {
-    return t(`vessel.${schema}`, { defaultValue: schema, count: 2 })
+    const label = t(`vessel.${schema}`, { defaultValue: schema.toString(), count: 2 })
+    if (label !== schema) {
+      return label
+    }
   }
-  return t(`layer.${schema}`, schema)
+  return t(`layer.${schema}`, schema.toString())
 }
 
 export type SchemaFilter = {

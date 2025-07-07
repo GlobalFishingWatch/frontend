@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDatasetConfigByDatasetType } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
@@ -328,7 +328,9 @@ function ActivityLayerPanel({
               <div className={styles.filters}>
                 <div className={styles.filters}>
                   <OutOfTimerangeDisclaimer dataview={dataview} />
-                  <DatasetFilterSource dataview={dataview} />
+                  {dataview.category === DataviewCategory.Activity && (
+                    <DatasetFilterSource dataview={dataview} />
+                  )}
                   {filtersAllowed.map(({ id, label }) => (
                     <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
                   ))}
