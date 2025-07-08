@@ -169,6 +169,11 @@
     "moreInfoLink": "https://bluehabitats.org/",
     "name": "Seamounts"
   },
+  "sentinel2": {
+    "description": "This layer shows vessels detected using optical satellite imagery collected by the European Space Agency’s Sentinel-2 satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths.",
+    "moreInfoLink": "",
+    "name": "Imagery detections (Optical)"
+  },
   "species": {
     "description": "TODO",
     "moreInfoLink": "",
@@ -203,5 +208,10 @@
     "description": "The night lights vessel detections layer, known as visible infrared imaging radiometer suite or VIIRS, shows vessels at sea that satellites have detected by the light they emit at night. Though not exclusively associated with fishing vessels, this activity layer is likely to show vessels associated with activities like squid fishing, which use bright lights and fish at night.",
     "moreInfoLink": "",
     "name": "Night light detections (VIIRS)"
+  },
+  "viirs-skylight": {
+    "description": "TODO: description",
+    "moreInfoLink": "",
+    "name": "Night light detections (VIIRS Skylight)"
   }
 }

@@ -169,6 +169,11 @@
     "moreInfoLink": "https://bluehabitats.org/",
     "name": "Gunung laut"
   },
+  "sentinel2": {
+    "description": "This layer shows vessels detected using optical satellite imagery collected by the European Space Agency’s Sentinel-2 satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths.",
+    "moreInfoLink": "",
+    "name": "Imagery detections (Optical)"
+  },
   "species": {
     "description": "TODO",
     "moreInfoLink": "",
@@ -203,5 +208,10 @@
     "description": "Lapisan pendeteksi kapal lampu malam, yang dikenal sebagai suite radiometer pencitraan inframerah tampak atau VIIRS, menunjukkan kapal di laut yang telah dideteksi oleh satelit melalui cahaya yang dipancarkannya di malam hari. Meskipun tidak secara eksklusif dikaitkan dengan kapal penangkap ikan, lapisan aktivitas ini kemungkinan besar menampilkan kapal yang terkait dengan aktivitas seperti penangkapan cumi-cumi, yang menggunakan lampu terang dan menangkap ikan di malam hari.",
     "moreInfoLink": "",
     "name": "Deteksi cahaya malam (Night light detections/VIIRS)"
+  },
+  "viirs-skylight": {
+    "description": "TODO: description",
+    "moreInfoLink": "",
+    "name": "Night light detections (VIIRS Skylight)"
   }
 }

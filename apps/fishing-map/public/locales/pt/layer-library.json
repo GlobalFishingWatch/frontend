@@ -169,6 +169,11 @@
     "moreInfoLink": "https://bluehabitats.org/",
     "name": "Montes marinhos"
   },
+  "sentinel2": {
+    "description": "This layer shows vessels detected using optical satellite imagery collected by the European Space Agency’s Sentinel-2 satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths.",
+    "moreInfoLink": "",
+    "name": "Imagery detections (Optical)"
+  },
   "species": {
     "description": "Tarefas pendentes",
     "moreInfoLink": "",
@@ -203,5 +208,10 @@
     "description": "A camada de detecção de embarcações com luzes noturnas, conhecida como conjunto de radiômetros de imagens infravermelhas visíveis ou VIIRS, mostra as embarcações no mar que os satélites detectaram pela luz que elas emitem à noite. Embora não esteja exclusivamente associada a embarcações de pesca, essa camada de atividade provavelmente mostra embarcações associadas a atividades como a pesca de lula, que utiliza luzes fortes, e a pesca noturna.",
     "moreInfoLink": "",
     "name": "Detecção de luz noturna (VIIRS)"
+  },
+  "viirs-skylight": {
+    "description": "TODO: description",
+    "moreInfoLink": "",
+    "name": "Night light detections (VIIRS Skylight)"
   }
 }
