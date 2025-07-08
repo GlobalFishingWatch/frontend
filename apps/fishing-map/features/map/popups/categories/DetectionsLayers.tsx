@@ -77,7 +77,7 @@ function DetectionsTooltipRow({
             {t([`common.${feature?.unit}` as any, 'common.detection'], 'detections', {
               count: feature.value, // neded to select the plural automatically
             })}{' '}
-            {hasVesselsResolved && showFeaturesDetails && notMatchedDetectionsCount >= 0 && (
+            {feature?.vessels && showFeaturesDetails && notMatchedDetectionsCount > 0 && (
               <Fragment>
                 {' - '}
                 <I18nNumber number={notMatchedDetectionsCount} /> {t('vessel.unmatched')}{' '}

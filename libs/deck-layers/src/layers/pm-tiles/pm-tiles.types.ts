@@ -1,4 +1,4 @@
-import type { PickingInfo } from '@deck.gl/core'
+import type { Accessor, Color, PickingInfo } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 
@@ -27,5 +27,7 @@ export type PMTileLayerProps = DeckLayerProps<{
   idProperty?: string
   valueProperties?: string[]
   highlightedFeatures?: PMTilePickingObject[]
+  getFillColor?: Accessor<PMTilePickingObject, Color>
+  stroked?: boolean
 }> &
   Omit<TileLayerProps, 'data' | 'renderSubLayers' | 'getTileData'>
