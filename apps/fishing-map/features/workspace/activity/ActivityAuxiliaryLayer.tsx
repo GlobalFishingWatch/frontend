@@ -23,7 +23,7 @@ function ActivityAuxiliaryLayer({ dataview }: LayerPanelProps) {
   const auxiliarLayerActive = dataview?.config?.auxiliarLayerActive ?? true
   const { dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.TemporalContext)
   const layer = useGetDeckLayer<AnyDeckLayer>(`${dataview.id}-${AUXILIAR_DATAVIEW_SUFIX}`)
-  const isLayerLoaded = layer?.loaded
+  const isLayerLoaded = layer?.instance?.isLoaded
 
   if (!dataset) {
     return null

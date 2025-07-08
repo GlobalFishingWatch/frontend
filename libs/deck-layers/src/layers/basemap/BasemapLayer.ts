@@ -1,7 +1,7 @@
 import type { LayerContext } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { MVTLayerProps } from '@deck.gl/geo-layers'
-import { MVTLayer, TileLayer } from '@deck.gl/geo-layers'
+import { TileLayer } from '@deck.gl/geo-layers'
 import { BitmapLayer } from '@deck.gl/layers'
 
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
@@ -48,7 +48,7 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
   }
 
   _getLandMassLayer() {
-    return new MVTLayer<BaseMapLayerProps>({
+    return new PMTilesLayer({
       id: 'basemap-landmass',
       minZoom: 0,
       maxZoom: 8,
@@ -57,8 +57,8 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
       onDataLoad: this.props.onDataLoad,
       getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.BasemapFill, params),
       getFillColor: [39, 70, 119],
-      getLineWidth: 0,
-      data: 'https://storage.googleapis.com/public-tiles/basemap/default/{z}/{x}/{y}.pbf',
+      stroked: false,
+      data: 'https://storage.googleapis.com/public-tiles/basemap/default/landmass.pmtiles',
     })
   }
 

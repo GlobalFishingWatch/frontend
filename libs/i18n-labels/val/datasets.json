@@ -24,6 +24,7 @@
     "name": "crwdns63963:0crwdne63963:0",
     "description": "crwdns63965:0crwdne63965:0",
     "schema": {
+      "length": "crwdns94100:0crwdne94100:0",
       "source": "crwdns63973:0crwdne63973:0"
     }
   },
@@ -39,6 +40,7 @@
           "not defined": "crwdns64003:0crwdne64003:0"
         }
       },
+      "length": "crwdns94102:0crwdne94102:0",
       "origin": {
         "keyword": "crwdns64009:0crwdne64009:0",
         "enum": {
@@ -496,6 +498,7 @@
     "name": "crwdns65147:0crwdne65147:0",
     "description": "crwdns65149:0crwdne65149:0",
     "schema": {
+      "length": "crwdns94104:0crwdne94104:0",
       "source": "crwdns65159:0crwdne65159:0"
     }
   },
@@ -574,6 +577,7 @@
           "not defined": "crwdns65307:0crwdne65307:0"
         }
       },
+      "length": "crwdns94106:0crwdne94106:0",
       "origin": {
         "keyword": "crwdns65315:0crwdne65315:0",
         "enum": {
@@ -1413,13 +1417,22 @@
     }
   },
   "public-global-sentinel2-footprints": {
-    "name": "crwdns93688:0crwdne93688:0",
-    "description": "crwdns93690:0crwdne93690:0"
+    "name": "crwdns94096:0crwdne94096:0",
+    "description": "crwdns94098:0crwdne94098:0"
   },
   "public-global-sentinel2-presence": {
-    "name": "crwdns93692:0crwdne93692:0",
-    "description": "crwdns93694:0crwdne93694:0",
+    "name": "crwdns94092:0crwdne94092:0",
+    "description": "crwdns94094:0crwdne94094:0",
     "schema": {
+      "length": {
+        "keyword": "crwdns94108:0crwdne94108:0",
+        "enum": {
+          "<20": "crwdns94110:0crwdne94110:0",
+          "20-60": "crwdns94112:0crwdne94112:0",
+          "60-100": "crwdns94114:0crwdne94114:0",
+          ">100": "crwdns94116:0crwdne94116:0"
+        }
+      },
       "bearing": "crwdns93696:0crwdne93696:0",
       "matched": {
         "keyword": "crwdns93698:0crwdne93698:0",

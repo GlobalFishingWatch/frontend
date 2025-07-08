@@ -47,12 +47,18 @@ function ExpandedContainer({
         boundary: document.getElementById(overflowDOMId)!,
       })
       Object.entries(overflow).forEach(([key, value]) => {
-        if (value > 0) {
-          const property = key === 'top' || key === 'bottom' ? 'y' : 'x'
-          state[property] =
-            key === 'bottom' || key === 'right' ? state[property] - value : state[property] + value
+        if (value > 0 && (key === 'left' || key === 'right')) {
+          // const property = key === 'top' || key === 'bottom' ? 'y' : 'x'
+          const property = 'x'
+          state[property] = key === 'right' ? state[property] - value : state[property] + value
         }
       })
+      if (overflow.bottom > 0 && state.elements.floating) {
+        state.elements.floating.scrollIntoView({
+          behavior: 'smooth',
+          block: 'end',
+        })
+      }
       return state
     },
   }
