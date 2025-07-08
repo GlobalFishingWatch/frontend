@@ -24,6 +24,7 @@
     "name": "Panama VMS (Full Fishing Vessels)",
     "description": "Dataset for VMS Panama (Public)",
     "schema": {
+      "length": "length",
       "source": "source"
     }
   },
@@ -39,6 +40,7 @@
           "not defined": "not defined"
         }
       },
+      "length": "length",
       "origin": {
         "keyword": "origin",
         "enum": {
@@ -496,6 +498,7 @@
     "name": "Panama Private VMS (Private Fishing Vessels)",
     "description": "Dataset for VMS Panama (Private)",
     "schema": {
+      "length": "length",
       "source": "source"
     }
   },
@@ -574,6 +577,7 @@
           "not defined": "not defined"
         }
       },
+      "length": "length",
       "origin": {
         "keyword": "origin",
         "enum": {
@@ -1022,7 +1026,7 @@
   },
   "public-eez-areas-12nm": {
     "name": "EEZs 12nm",
-    "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (12NM), version 11. Source: marineregions.org."
+    "description": "Territorial seas are a belt of coastal waters extending at most 12 nautical miles (22.2 km; 13.8 mi) from the baseline (usually the mean low-water mark) of a coastal state.The territorial seas (and EEZs) lines are generally drawn from straight line baselines and these baselines are defined by each coastal state following UNCLOS rules See article 7. Waters inside the baseline are considered \"internal waters\" (See article 8) Citation: Flanders Marine Institute (2023). Maritime Boundaries Geodatabase: Territorial Seas (12NM), version 4. Available online at https://www.marineregions.org/. https://doi.org/10.14284/633"
   },
   "public-eez-boundaries": {
     "name": "Areas boundaries for eez",
@@ -1118,7 +1122,7 @@
   },
   "public-gfcm-fao": {
     "name": "GFCM FAO",
-    "description": "GFCM Fisheries Restricted Areas"
+    "description": "A fisheries restricted area (FRA) is a geographically defined area in which some specific fishing activities are temporarily or permanently banned or restricted in order to improve the exploitation patterns and conservation of specific stocks as well as of habitats and deep-sea ecosystems. In the Mediterranean and the Black Sea, 1,760,000 square kilometers of sea habitats are protected by ten FRAs established by the GFCM. This includes one large deep-water FRA (1,730,000 square kilometers) in which the use of towed dredges and trawl nets in all waters deeper than 1000 metres is banned to protect deep-sea benthic habitats. The layer was taken from the GFCM website but manually adjusted to reflect the original coordinates of the FRAs as stipulated in the document REC. GFCM/29/2005/1."
   },
   "public-global-all-tracks": {
     "name": "Rotas",
@@ -1413,34 +1417,43 @@
     }
   },
   "public-global-sentinel2-footprints": {
-    "name": "Sentinel2 Footprints",
-    "description": "Sentinel2 Footprints"
+    "name": "Pegadas de detecção",
+    "description": "Pegadas de detecção"
   },
   "public-global-sentinel2-presence": {
-    "name": "Sentinel 2 detections",
-    "description": "Sentinel 2 detections",
+    "name": "Detecções por imagens (Ópticas)",
+    "description": "<h2>Visão geral</h2>\n<p> Esta camada mostra embarcações detectadas por meio de imagens ópticas de satélite coletadas pelos satélites Sentinel-2 da Agência Espacial Europeia. Imagens ópticas são semelhantes a fotografias aéreas de alta qualidade tiradas do espaço, usando a luz solar refletida em comprimentos de onda visíveis infravermelhos próximos. Esse tipo de imagem fornece detalhes em alta resolução que nos permitem localizar pequenas embarcações, identificar padrões de esteira e entender melhor as atividades próximas à costa. </p>\n<p> A Global Fishing Watch utiliza um modelo de aprendizado de máquina que processa cada imagem para identificar embarcações e estimar seu comprimento, orientação e velocidade com base nas características da esteira. As detecções são então filtradas com um classificador secundário para a remoção de objetos que não são embarcações, como nuvens, rochas ou icebergs. Cada detecção é vinculada a uma imagem recortada (uma miniatura) para que os usuários possam inspecionar visualmente o que o modelo identificou. </p>\n<p> Como os satélites ópticos dependem da luz solar e do céu limpo, as detecções só são possíveis durante o dia e quando a área não está obscurecida por nuvens ou neblina. Apesar dessas limitações, as detecções com imagens ópticas são muito úteis para identificar pequenas embarcações não rastreadas que podem não aparecer em outros sistemas de rastreamento. </p>\n<h2>Casos de uso</h2>\n<ul>\n <li> Monitoramento de presença de embarcações (pesqueiras e não pesqueiras) em áreas de interesse, como áreas marinhas protegidas (AMPs), zonas econômicas exclusivas (ZEEs), zonas de exclusão costeira (IEZs) e Organizações Regionais de Gestão de Pesca (ORGPs). Em alguns casos, atividades como a pesca de arrasto de fundo podem ser observadas por meio de perturbação dos sedimentos do leito marinho. </li>\n <li> Avaliação da presença de embarcações que não aparecem nos sistemas de rastreamento cooperativo — incluindo o sistema de identificação automática (AIS) e o sistema de monitoramento de embarcações (VMS) — perto de ecossistemas marinhos vulneráveis e habitats essenciais para os peixes. </li>\n <li> Suporte para análises sobre pesca em pequena escala. Embora a resolução de 10 m ainda seja muito grosseira para mapear de forma abrangente a pesca em pequena escala, as detecções do Sentinel-2 foram integradas em diversas análises relacionadas à pesca regional em pequena escala e demonstraram seu potencial como uma adição valiosa aos dados limitados de rastreamento de embarcações. </li>\n</ul>\n<h2>Limitações</h2>\n<ul>\n <li> <strong>A detecção de embarcações com imagens ópticas precisa da luz do dia e de céu limpo </strong><ul>\n <li> Diferente de um radar, os satélites ópticos não conseguem enxergar através de nuvens, neblina ou névoa. As detecções só são possíveis durante o dia, quando a visão não está obstruída. </li>\n </ul>\n </li>\n <li> <strong>Nem todas as regiões geográficas são cobertas igualmente </strong><ul>\n <li> A cobertura do Sentinel-2 é limitada principalmente às águas costeiras. Ele revisita a maioria das áreas a cada cinco dias, mas a disponibilidade das imagens depende do clima. Regiões nubladas ou com neblina têm frequências efetivas de revisita mais baixas do que regiões com melhores condições climáticas. </li>\n </ul>\n </li>\n <li> <strong>As detecções podem incluir falsos positivos </strong><ul>\n <li> Apesar do pós-processamento, o modelo ainda pode produzir detecções ocasionais falsas como, por exemplo, detecções de boias, detritos, infraestrutura fixa ou artefatos de imagem. Esses falsos positivos são reduzidos com o uso de um classificador secundário, porém não são completamente eliminados. </li>\n </ul>\n </li>\n <li> <strong>Incerteza com relação a algumas características das embarcações</strong> <ul>\n <li> Embarcações menores ou mais lentas podem não produzir esteiras visíveis, dificultando a estimativa da velocidade ou direção. Portanto, esses valores podem ser imprecisos para pequenas embarcações. </li>\n </ul>\n </li>\n <li> <strong>Nem todas as detecções não correspondidas ao AIS são embarcações não rastreadas </strong><ul>\n <li> As detecções incluem embarcações no AIS e embarcações não rastreadas. Tentamos corresponder as detecções às rotas do AIS, mas algumas vezes a correspondência não é viável devido a grandes intervalos de tempo entre as posições do AIS e em área com alta densidade de detecções. </li>\n </ul>\n </li>\n</ul>\n<h2>Métodos</h2>\n<h3>Imagens ópticas</h3>\n<p> Essa camada é baseada em imagens dos satélites Sentinel-2 operados pela Agência Espacial Europeia (ESA). Esses satélites capturam imagens de média resolução (10 m por pixel) do oceano usando luz visível e infravermelha próxima (entre várias outras bandas). Combinados, os satélites adquirem imagens da maioria das águas costeiras e áreas dedicadas no oceano aberto aproximadamente a cada cinco dias, e as imagens são disponibilizadas gratuitamente pela ESA. </p>\n<h3>Processamento e seleção de imagens</h3>\n<p> Usamos imagens pré-processadas do Sentinel-2 que foram corrigidas para distorções geométricas e alinhadas à superfície da Terra. Essas imagens são divididas em blocos gerenciáveis, e nós selecionamos os blocos que cobrem apenas áreas oceânicas (blocos de imagens sobre áreas terrestres são excluídos). Utilizamos quatro bandas de imagem: vermelho, verde, azul (RGB) e infravermelho próximo (NIR), todas com resolução de 10 metros. Essas bandas nos fornecem os detalhes e o contraste necessários para detectar e classificar as embarcações. </p>\n<h3>Detecção de embarcações</h3>\n<p> Nosso modelo de aprendizado de máquina escaneia cada bloco de imagem para detectar as embarcações. Ele é treinado para buscar características como o formato, o brilho e a esteira de uma embarcação. Quando encontra uma possível candidata, o modelo prevê uma pontuação para a presença da embarcação, juntamente com estimativas da localização, tamanho, orientação e velocidade da embarcação. </p>\n<p> O modelo de detecção foi treinado em mais de 11.000 exemplos de embarcações revisados manualmente em milhares de cenas do Sentinel-2. Esse processo de treinamento incluiu muitas pequenas embarcações e cenas do mundo todo, ajudando o modelo a apresentar um bom desempenho em diferentes ambientes e tipos de embarcações. </p>\n<h3>Miniaturas das imagens</h3>\n<p> Cada detecção inclui um pequeno “recorte” visual mostrando a embarcação detectada ao centro. Essas miniaturas estão disponíveis em dois formatos: uma versão colorida a partir das bandas RGB e uma versão em tons de cinza a partir da banda do infravermelho próximo. Cada chip cobre uma área de 1 km². Essas miniaturas são úteis para confirmar visualmente uma detecção ou entender seu contexto. Para embarcações muito pequenas (com menos de 15 metros), ainda pode ser difícil vê-las claramente. </p>\n<h3>Redução de falsos positivos</h3>\n<p> Nem tudo que parece uma embarcação em imagens de satélite realmente é. Para ajudar a remover detecções falsas (como boias, plataformas offshore, gelo marinho ou nuvens), executamos cada detecção por meio de um classificador secundário. Esse classificador é um modelo de aprendizado de máquina que usa tanto a miniatura da imagem quanto informações adicionais sobre a detecção (como distância da costa, profundidade local e densidade de embarcações próximas) para decidir se o objeto é provavelmente uma embarcação. Nós também sinalizamos detecções próximas a infraestruturas fixas conhecidas ou em áreas com presença considerável de gelo marinho ou icebergs. </p>\n<p> Se uma detecção for classificada como provavelmente não relacionada a embarcações ou sinalizada como uma possível infraestrutura ou gelo, nós a removemos da camada do mapa para que apenas detecções de alta confiança sejam incluídas. Também recortamos as pegadas de satélite exibidas na camada do mapa para excluir as áreas sob a máscara de área gelada. No entanto, fornecemos todos os falsos positivos com rótulos por meio do portal de download de dados para as partes interessadas que exigem um conjunto de dados mais completo. </p>\n<h3>Correspondência do AIS e identidade das embarcações</h3>\n<p> Os dados do AIS podem revelar a identidade das embarcações, de seus proprietários e corporações, bem como atividades de pesca. No entanto, nem todas as embarcações são obrigadas a usar dispositivos AIS, já que as regulamentações variam de acordo com o país, o tamanho da embarcação e a atividade. Embarcações envolvidas em atividades ilícitas também podem desligar seus transponders AIS ou podem manipular os locais que transmitem. Além disso, grandes “pontos cegos” ao longo das águas costeiras surgem de nações que restringem o acesso a dados do AIS capturados por receptores terrestres em vez de satélites ou de recepção ruim devido à alta densidade de embarcações e dispositivos AIS de baixa qualidade. As detecções de imagens não correspondentes fornecem, portanto, as informações que faltam sobre o tráfego de embarcações no oceano. </p>\n<p> A correspondência entre as detecções de imagens e as coordenadas por GPS das embarcações do AIS é desafiadora porque o registro de data e hora das imagens e dos registros do AIS não coincidem, e uma única identidade do AIS pode potencialmente corresponder a várias embarcações que aparecem na imagem, e vice-versa. Para determinar a probabilidade de uma embarcação transmitindo AIS corresponder a uma detecção específica, desenvolvemos uma abordagem de correspondência baseada em rasters de probabilidade de onde uma embarcação provavelmente estaria minutos antes e depois de uma posição do AIS ser registrada. Esses rasters foram produzidos a partir de um ano de dados globais do AIS provenientes do pipeline da Global Fishing Watch, que obtém dados de satélite da Spire Global e da Orbcomm. Os rasters de probabilidade são baseados em aproximadamente 10 bilhões de posições de embarcações e são computados para seis classes diferentes de embarcações, considerando seis velocidades diferentes e 36 intervalos de tempo. Assim, obtemos a provável posição de uma embarcação que poderia corresponder a uma detecção com base na classe da embarcação, velocidade e intervalo de tempo. Além da correspondência espaço-temporal, levamos em conta a semelhança entre o comprimento da embarcação inferido pelo modelo e o comprimento a partir dos dados de identidade do AIS para evitar correspondências (provavelmente incorretas) com grandes discrepâncias de tamanho como, por exemplo, AIS de um rebocador e a detecção de uma grande embarcação atrás dele. </p>\n<h3>Pegadas de detecção</h3>\n<p> Para ajudar os usuários a entender onde as detecções foram possíveis, mostramos as “pegadas” de detecção no mapa. Esses polígonos são as porções das imagens de satélite que cobrem o oceano e que foram usadas para a detecção. Assim, se você vir uma pegada, mas nenhuma detecção, significa que nenhuma embarcação foi detectada na área. Se não houver pegada, nenhuma imagem será processada para determinado local e hora. </p>\n<h3>Automação e atualizações</h3>\n<p> Nosso sistema de detecção e correspondência é executado automaticamente todos os dias. Ele verifica novas imagens do Sentinel-2 publicadas no Google Cloud e processa as que atendem aos nossos critérios de qualidade. Novas detecções geralmente ficam disponíveis em 1 a 2 dias após a captura da imagem pelo satélite. O pipeline automatizado também verifica novamente quaisquer imagens publicadas tardiamente para garantir que eventuais lacunas de dados sejam preenchidas. </p>\n<h2>Dados de origem e citações</h2>\n<p> Todos os dados das embarcações estão disponíveis gratuitamente no portal de dados da Global Fishing Watch em <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://globalfishingwatch.org/data-download/\">https://globalfishingwatch.org/data-download/</a>. </p>\n<h2>Licença</h2>\n<p> Somente para uso não comercial. O Site e os Serviços são fornecidos apenas para uso não comercial, de acordo com a licença CC BY-NC 4.0. Caso queira usar o Site e/ou os Serviços para fins comerciais, por favor, entre em contato conosco. </p>",
     "schema": {
-      "bearing": "bearing",
-      "matched": {
-        "keyword": "matched",
+      "length": {
+        "keyword": "Comprimento da embarcação",
         "enum": {
-          "true": "AIS matched",
-          "false": "AIS unmatched"
+          "<20": "<20",
+          "20-60": "20-60",
+          "60-100": "60-100",
+          ">100": ">100"
+        }
+      },
+      "bearing": "Rumo",
+      "matched": {
+        "keyword": "Encontrado",
+        "enum": {
+          "true": "Correspondência AIS",
+          "false": "Sem correspondência AIS"
         }
       },
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "Tipos de embarcação",
         "enum": {
-          "carrier": "carrier",
-          "seismic_vessel": "seismic_vessel",
-          "passenger": "passenger",
-          "other": "other",
-          "support": "support",
-          "bunker": "bunker",
-          "gear": "gear",
-          "cargo": "cargo",
-          "fishing": "fishing",
-          "discrepancy": "discrepancy"
+          "carrier": "Navio cargueiro",
+          "seismic_vessel": "Embarcação sísmica",
+          "passenger": "Passageiro",
+          "other": "Outros",
+          "support": "Apoio",
+          "bunker": "Bunker",
+          "gear": "Petrecho",
+          "cargo": "Carga",
+          "fishing": "Pesca",
+          "discrepancy": "Discrepância"
         }
       }
     }
@@ -1582,7 +1595,7 @@
   },
   "public-high-seas-pockets": {
     "name": "High seas pockets",
-    "description": "This data set is derived from the Marine Regions high-seas data set by extracting just the polygons corresponding to the 15 high seas pockets that GFW has labeled from HSP-1 to HSP-15.   Note that HSP-15 is split across the anti-meridian, so it appears in two pieces that have the same label.   Naming of the pockets is consistent with the naming that WCPFC uses to identify HSP 1-4."
+    "description": "<p> The United Nations Convention on the Law of the Sea describes the high seas as ‘all parts of the sea that are not included in the exclusive economic zone, in the territorial sea or in the internal waters of a State, or in the archipelagic waters of an archipelagic State.’ High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them. Citation: Flanders Marine Institute (2024). Maritime Boundaries Geodatabase: High Seas, version 2. Available online at <a href=\"https://www.marineregions.org/\" target=\"_blank\" >https://www.marineregions.org/</a >. </p>"
   },
   "public-indonesia-fishing-effort": {
     "name": "Indonesia VMS",
@@ -1826,7 +1839,7 @@
   },
   "public-paa-duke": {
     "name": "PAAS",
-    "description": "Global dataset of Preferential Access Areas for small-scale fishing"
+    "description": "<p> This global Preferential Access Area (PAA) database was built with data for 44 countries identified by the Illuminating Hidden Harvests (IHH) initiative following Basurto et al. (2023) and the FAOLEX database (https://www.fao.org/faolex/en/). The total resulting PAAs identified in this study (n = 63) in 44 countries may be considered a lower bound and not comprehensive, as governments can also establish PAAs via laws or regulations either: (i) not relating to the fisheries sector and categorized elsewhere in the FAOLEX database and hence not searched, or (ii) not reported or captured in it. The most recent review of FAOLEX to identify PAAs was conducted in 2022. For mapping and spatial analysis of the PAAs, a geodatabase of PAA boundaries was created using definition parameters for each PAA (i.e., distance from shoreline or the baseline, depth, or a given set of coordinates or buffered distances around undersea features). Baselines were extracted from Flanders Marine Institute’s (2023) version 12 global EEZ database, defined by ‘Straight Baseline’ features. The shoreline dataset was ESRI’s 2014 global shoreline, the same shoreline dataset as the Flanders Marine Institute global EEZ database. Depth data was extracted from the GEBCO 2023 global relief dataset. When possible, Duke reached out to local experts to review the boundaries for confirmation that our interpretation of FAOLEX and the relevant law or regulation matches what is being used by local fishers. If you have feedback on the PAA boundaries, information regarding PAAs that are not reflected here, or other questions, please reach out to ssf-paa-info@duke.edu. For more information on PAAs and how they are managed, please see Duke’s publication by Basurto et al. (2024) here: <a href=\"https://doi.org/10.1038/s44183-024-00096-0\" target=\"_blank\" >https://doi.org/10.1038/s44183-024-00096-0</a >. Please note that there is no singular definition of a PAA, therefore each country will decide what activities, vessels, gear types, etc. are prohibited or restricted in the PAA. For more information of the specific designation of each PAA, please see the law or regulation in FAOLex. Citation: DeLand, S., Vegh, T., Cleary, J., Basurto, X., Virdin, J., & Halpin, P. N. (2025). A global dataset of preferential access areas for small-scale fishing. Duke Research Data Repository. <a href=\"https://doi.org/10.7924/r40s01h5j\" target=\"_blank\" >https://doi.org/10.7924/r40s01h5j</a > </p>"
   },
   "public-panama-fishing-effort": {
     "name": "Panama VMS",

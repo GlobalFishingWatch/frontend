@@ -8,6 +8,7 @@ import {
   AIS_DATAVIEW_INSTANCE_ID,
   PRESENCE_DATAVIEW_INSTANCE_ID,
   SAR_DATAVIEW_INSTANCE_ID,
+  SENTINEL2_DATAVIEW_INSTANCE_ID,
   VIIRS_DATAVIEW_INSTANCE_ID,
   VMS_DATAVIEW_INSTANCE_ID,
 } from 'data/highlighted-workspaces/report.dataviews'
@@ -27,6 +28,7 @@ import {
   HIGH_SEAS_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
+  SENTINEL2_DATAVIEW_SLUG,
   VIIRS_MATCH_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
@@ -91,6 +93,13 @@ const workspace: Workspace<WorkspaceState> = {
         visible: false,
       },
       dataviewId: PRESENCE_DATAVIEW_SLUG,
+    },
+    {
+      id: SENTINEL2_DATAVIEW_INSTANCE_ID,
+      dataviewId: SENTINEL2_DATAVIEW_SLUG,
+      config: {
+        visible: false,
+      },
     },
     {
       id: VIIRS_DATAVIEW_INSTANCE_ID,

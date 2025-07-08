@@ -24,6 +24,7 @@
     "name": "Panama VMS (Full Fishing Vessels)",
     "description": "Dataset for VMS Panama (Public)",
     "schema": {
+      "length": "length",
       "source": "source"
     }
   },
@@ -39,6 +40,7 @@
           "not defined": "not defined"
         }
       },
+      "length": "length",
       "origin": {
         "keyword": "origin",
         "enum": {
@@ -496,6 +498,7 @@
     "name": "Panama Private VMS (Private Fishing Vessels)",
     "description": "Dataset for VMS Panama (Private)",
     "schema": {
+      "length": "length",
       "source": "source"
     }
   },
@@ -574,6 +577,7 @@
           "not defined": "non définie"
         }
       },
+      "length": "length",
       "origin": {
         "keyword": "origine",
         "enum": {
@@ -1022,7 +1026,7 @@
   },
   "public-eez-areas-12nm": {
     "name": "EEZs 12nm",
-    "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (12NM), version 11. Source: marineregions.org."
+    "description": "Territorial seas are a belt of coastal waters extending at most 12 nautical miles (22.2 km; 13.8 mi) from the baseline (usually the mean low-water mark) of a coastal state.The territorial seas (and EEZs) lines are generally drawn from straight line baselines and these baselines are defined by each coastal state following UNCLOS rules See article 7. Waters inside the baseline are considered \"internal waters\" (See article 8) Citation: Flanders Marine Institute (2023). Maritime Boundaries Geodatabase: Territorial Seas (12NM), version 4. Available online at https://www.marineregions.org/. https://doi.org/10.14284/633"
   },
   "public-eez-boundaries": {
     "name": "Areas boundaries for eez",
@@ -1118,7 +1122,7 @@
   },
   "public-gfcm-fao": {
     "name": "GFCM FAO",
-    "description": "GFCM Fisheries Restricted Areas"
+    "description": "A fisheries restricted area (FRA) is a geographically defined area in which some specific fishing activities are temporarily or permanently banned or restricted in order to improve the exploitation patterns and conservation of specific stocks as well as of habitats and deep-sea ecosystems. In the Mediterranean and the Black Sea, 1,760,000 square kilometers of sea habitats are protected by ten FRAs established by the GFCM. This includes one large deep-water FRA (1,730,000 square kilometers) in which the use of towed dredges and trawl nets in all waters deeper than 1000 metres is banned to protect deep-sea benthic habitats. The layer was taken from the GFCM website but manually adjusted to reflect the original coordinates of the FRAs as stipulated in the document REC. GFCM/29/2005/1."
   },
   "public-global-all-tracks": {
     "name": "Trajectoires",
@@ -1413,34 +1417,43 @@
     }
   },
   "public-global-sentinel2-footprints": {
-    "name": "Sentinel2 Footprints",
-    "description": "Sentinel2 Footprints"
+    "name": "Empreintes de détection",
+    "description": "Empreintes de détection"
   },
   "public-global-sentinel2-presence": {
-    "name": "Sentinel 2 detections",
-    "description": "Sentinel 2 detections",
+    "name": "Détections par imagerie (optique)",
+    "description": "<h2>Vue d’ensemble</h2>\n<p> Ce calque montre les navires détectés à l’aide d’images satellites optiques collectées par les satellites Sentinel-2 de l’Agence spatiale européenne. L'imagerie optique est similaire à la photographie aérienne de haute qualité depuis l'espace, utilisant la lumière solaire réfléchie dans les longueurs d'onde visibles et proches infrarouges. Ce type d’imagerie fournit des détails haute résolution qui nous permettent de repérer les petits navires, d’identifier les schémas de sillage et de mieux comprendre l’activité à proximité de la côte.</p>\n<p> Global Fishing Watch utilise un modèle d'apprentissage machine qui traite chaque image pour identifier les navires et estimer leur longueur, leur cap et leur vitesse en fonction des caractéristiques du sillage. Les détections sont ensuite filtrées à l’aide d’un modèle de classification secondaire pour supprimer les objets qui ne sont pas des navires, tels que les nuages, les rochers ou les icebergs. Chaque détection est liée à une image recadrée (une vignette) afin que les utilisateurs puissent inspecter visuellement ce que le modèle a identifié. </p>\n<p> Étant donné que les satellites optiques dépendent de la lumière du soleil et d’un ciel dégagé, les détections ne sont possibles que pendant la journée et lorsque la zone n’est pas obscurcie par des nuages ou de la brume. Malgré ces limitations, les détections par imagerie optique sont particulièrement utiles pour identifier les petits navires non suivis qui peuvent ne pas apparaître dans d’autres systèmes de suivi. </p>\n<h2>Cas d'utilisation</h2>\n<ul>\n <li> Suivre la présence de navires (de pêche et autres) dans les zones d’intérêt telles que les aires marines protégées (AMP), les zones économiques exclusives (ZEE), les zones d’exclusion côtières (ZEC) et les organisations régionales de gestion des pêches (ORGP). Dans certains cas, il est possible d’observer des activités telles que le chalutage de fond à travers la perturbation des sédiments du fond marin. </li>\n <li> Évaluer la présence de navires qui n’apparaissent pas sur les systèmes de suivi coopératifs, notamment le système d’identification automatique (AIS) et les systèmes de surveillance des navires (VMS), à proximité des écosystèmes marins vulnérables et des habitats essentiels des poissons. </li>\n <li> Soutenir les analyses sur la pêche à petite échelle. Bien que la résolution de 10 m soit encore trop grossière pour cartographier de manière exhaustive la pêche à petite échelle, les détections Sentinel-2 ont été intégrées dans de multiples analyses liées à la pêche à petite échelle à l’échelle régionale et ont démontré leur potentiel en tant qu'ajout précieux aux données de suivi des navires qui demeurent limitées. </li>\n</ul>\n<h2>Limitations</h2>\n<ul>\n <li> <strong>La détection de navires par imagerie optique nécessite la lumière du jour et un ciel dégagé </strong><ul>\n <li> Contrairement au radar, les satellites optiques ne peuvent pas voir à travers les nuages, le brouillard ou la brume. Les détections ne sont possibles que pendant les heures de clarté lorsque la vue est dégagée. </li>\n </ul>\n </li>\n <li> <strong>Toutes les zones géographiques ne sont pas couvertes de manière égale </strong><ul>\n <li> La couverture de Sentinel-2 est principalement limitée aux eaux côtières. Il revisite la plupart des zones tous les cinq jours, mais la disponibilité de l'image dépend de la météo. Les régions nuageuses ou brumeuses ont des fréquences de revisite effectives plus faibles que les régions qui présentent de meilleures conditions météorologiques. </li>\n </ul>\n </li>\n <li> <strong>Les détections peuvent inclure de faux résultats positifs </strong><ul>\n <li> Malgré le post-traitement, le modèle peut encore produire occasionnellement de fausses détections, par exemple en captant des bouées, des débris, des infrastructures fixes ou des artefacts d'image. Ces faux résultats positifs sont réduits à l’aide d’un modèle de classification secondaire, mais ils ne sont pas complètement éliminés. </li>\n </ul>\n </li>\n <li> <strong>Incertitude dans certaines caractéristiques des navires </strong> <ul>\n <li> Les navires plus petits ou plus lents peuvent ne pas produire de sillages visibles, ce qui rend plus difficile l’estimation de leur vitesse ou de leur cap. Par conséquent, ces valeurs peuvent être inexactes pour les petits bateaux. </li>\n </ul>\n </li>\n <li> <strong>Toutes les détections non associées à l'AIS ne sont pas des navires non suivis </strong><ul>\n <li> Les détections incluent à la fois les navires sur AIS et les navires non suivis. Nous essayons de faire correspondre les détections aux tracés AIS, mais parfois, une correspondance n'est pas possible en raison des grands écarts de temps entre les positions AIS et dans les zones à forte densité de détections. </li>\n </ul>\n </li>\n</ul>\n<h2>Méthodes</h2>\n<h3>Imagerie optique</h3>\n<p> Cette couche est basée sur des images des satellites Sentinel-2 exploités par l'Agence spatiale européenne (ASE). Ces satellites capturent des images de résolution moyenne (10 m par pixel) de l’océan en utilisant la lumière visible et proche infrarouge (parmi plusieurs autres bandes). Ensemble, les satellites acquièrent des images de la plupart des eaux côtières et des zones dédiées en haute mer environ tous les cinq jours, et les images sont mises gratuitement à disposition par l’ASE. </p>\n<h3>Traitement et sélection d'images</h3>\n<p> Nous utilisons des images Sentinel-2 prétraitées qui ont été corrigées pour les distorsions géométriques et alignées sur la surface de la Terre. Ces images sont divisées en tuiles gérables, et nous avons sélectionné les tuiles qui couvrent uniquement les zones océaniques (les tuiles d'images terrestres sont exclues). Nous utilisons quatre bandes d’images : rouge, vert, bleu (RVB) et proche infrarouge (PIR), toutes à une résolution de 10 mètres. Ces bandes nous donnent les détails et le contraste nécessaires pour détecter et classifier les navires. </p>\n<h3>Détection de navires</h3>\n<p> Notre modèle d’apprentissage machine analyse chaque tuile d’image pour détecter les navires. Il est entraîné pour rechercher des caractéristiques telles que la forme, la luminosité et le sillage d'un navire. Lorsqu'il identifie un candidat probable, le modèle prédit un score pour la présence du navire ainsi que des estimations de la position, de la taille, du cap et de la vitesse du navire. </p>\n<p> Le modèle de détection a été entraîné avec plus de 11 000 exemples de navires examinés manuellement dans des milliers de scènes Sentinel-2. Ce processus d’entraînement comprenait de nombreux petits navires et scènes du monde entier, aidant le modèle à bien fonctionner pour différents environnements et types de navires. </p>\n<h3>Vignettes d'images</h3>\n<p> Chaque détection comprend une petite « vignette » visuelle montrant le navire détecté au centre. Ces vignettes sont disponibles en deux formats : une version couleur des bandes RVB et une version en niveaux de gris de la bande proche infrarouge. Chaque vignette couvre une superficie de 1 km². Ces vignettes sont utiles pour confirmer visuellement une détection ou comprendre son contexte. Les très petits navires (moins de 15 mètres) peuvent tout de même être difficiles à voir clairement. </p>\n<h3>Réduire les faux résultats positifs</h3>\n<p> Tout ce qui ressemble à un navire sur les images satellites n’en est pas forcément un. Pour aider à éliminer les fausses détections (comme les bouées, les plateformes offshore, la glace de mer ou les nuages), nous soumettons chaque détection à un modèle de classification secondaire. Ce classificateur est un modèle d'apprentissage machine qui utilise à la fois la vignette de l'image et d’autres données relatives à la détection (telles que la distance par rapport à la côte, la profondeur locale et la densité des navires à proximité) pour décider si l'objet est susceptible d'être un navire. Nous signalons également les détections qui sont proches d’infrastructures fixes connues ou dans des zones où il y a une présence importante de glace de mer ou d’icebergs. </p>\n<p> Si une détection est classée comme étant probablement non liée à un navire ou signalée comme étant potentiellement une infrastructure ou de la glace, nous la supprimons de la couche cartographique afin que seules les détections à haute confiance soient incluses. Nous découpons également les empreintes satellites (affichées sur le calque cartographique) pour exclure les zones couvertes par le masque des zones glacées. Toutefois, nous fournissons tous les faux résultats positifs avec des étiquettes via le portail de téléchargement de données pour les parties prenantes qui ont besoin d'un ensemble de données plus complet. </p>\n<h3>Correspondance AIS et identité des navires</h3>\n<p> Les données AIS peuvent révéler l’identité des navires, de leurs propriétaires et de leurs sociétés, ainsi que l’activité de pêche. Cependant, tous les navires ne sont pas tenus d’utiliser des dispositifs AIS, car les réglementations varient selon le pays, la taille du navire et l’activité. Les navires engagés dans des activités illicites peuvent également potentiellement désactiver leurs transpondeurs AIS ou manipuler les positions qu’ils diffusent. De plus, d’importantes « zones d’ombre » le long des eaux côtières résultent des pays qui restreignent l’accès aux données AIS capturées par des récepteurs terrestres au lieu de satellites ou d’une mauvaise réception due à une forte densité de navires et à des dispositifs AIS de mauvaise qualité. Les détections par imagerie sans correspondance fournissent donc les informations manquantes sur le trafic maritime dans l’océan. </p>\n<p> La correspondance des détections par imagerie avec les coordonnées GPS des navires provenant de l’AIS est un défi, car l’horodatage des images et des archives AIS ne coïncide pas, et une identité AIS distincte peut potentiellement correspondre à plusieurs navires apparaissant sur l’image, et vice versa. Pour déterminer la probabilité qu'un navire diffusant sur AIS corresponde à une détection spécifique, nous avons développé une approche de correspondance basée sur des rasters de probabilité de l'endroit où un navire est susceptible de se trouver quelques minutes avant et après l'enregistrement d'une position AIS. Ces rasters ont été produits à partir d'une année de données AIS mondiales provenant du flux de données Global Fishing Watch, qui utilise des données satellites fournies par Spire Global et Orbcomm. Ces rasters de probabilité sont basés sur environ 10 milliards de positions de navires, et ils sont calculés pour six classes de navires différentes, en tenant compte de six vitesses différentes et de 36 intervalles de temps. Nous obtenons ainsi la position probable d'un navire qui pourrait correspondre à une détection en fonction de la classe du navire, de la vitesse et de l'intervalle de temps. En plus de la correspondance spatiotemporelle, nous prenons en compte la similitude entre la longueur du navire déduite du modèle et la longueur des données d'identité AIS pour éviter les correspondances (probablement incorrectes) avec de grandes différences de taille, par exemple, l'AIS d’un remorqueur et la détection d'un grand navire se trouvant derrière lui. </p>\n<h3>Empreintes de détection</h3>\n<p> Pour aider les utilisateurs à comprendre où les détections ont été possibles, nous affichons les « empreintes » de détection sur la carte. Ces polygones sont les portions des images satellites qui couvrent l’océan et qui ont été utilisées pour la détection. Ainsi, si vous voyez une empreinte, mais aucune détection, cela signifie qu'aucun navire n'a été détecté dans cette zone. S'il n'y a pas d'empreinte, aucune image n’a été traitée pour cet emplacement et cette heure. </p>\n<h3>Automatisation et mises à jour</h3>\n<p> Notre système de détection et de correspondance est exécuté automatiquement chaque jour. Le système vérifie régulièrement la publication de nouvelles images Sentinel-2 sur Google Cloud et traite celles qui répondent à nos critères de qualité. Les nouvelles détections sont généralement disponibles dans un délai de 1 à 2 jours après la capture de l’image par le satellite. La chaîne de traitement automatisée revérifie également toutes les images publiées tardivement pour garantir que toutes les lacunes de données sont comblées. </p>\n<h2>Données sources et citations</h2>\n<p> Toutes les données sur les navires sont disponibles gratuitement via le portail de données Global Fishing Watch à l'adresse <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://globalfishingwatch.org/data-download/\">https://globalfishingwatch.org/data-download/</a>. </p>\n<h2>Licence</h2>\n<p> Usage non commercial uniquement. Le Site et les Services sont fournis pour une utilisation non commerciale uniquement conformément à la licence CC BY-NC 4.0. Si vous souhaitez utiliser le Site et/ou les Services à des fins commerciales, veuillez nous contacter. </p>",
     "schema": {
-      "bearing": "bearing",
-      "matched": {
-        "keyword": "matched",
+      "length": {
+        "keyword": "Longueur du navire",
         "enum": {
-          "true": "AIS matched",
-          "false": "AIS unmatched"
+          "<20": "<20",
+          "20-60": "20-60",
+          "60-100": "60-100",
+          ">100": ">100"
+        }
+      },
+      "bearing": "Cap",
+      "matched": {
+        "keyword": "Correspondance",
+        "enum": {
+          "true": "Correspondance AIS",
+          "false": "Sans correspondance AIS"
         }
       },
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "Type de navire",
         "enum": {
-          "carrier": "carrier",
-          "seismic_vessel": "seismic_vessel",
-          "passenger": "passenger",
-          "other": "other",
-          "support": "support",
-          "bunker": "bunker",
-          "gear": "gear",
-          "cargo": "cargo",
-          "fishing": "fishing",
-          "discrepancy": "discrepancy"
+          "carrier": "Transporteur",
+          "seismic_vessel": "Navire d’étude sismique",
+          "passenger": "Passager",
+          "other": "Autres",
+          "support": "Soutien",
+          "bunker": "Navire ravitailleur",
+          "gear": "Engin",
+          "cargo": "Fret",
+          "fishing": "Pêche",
+          "discrepancy": "Discordance"
         }
       }
     }
@@ -1582,7 +1595,7 @@
   },
   "public-high-seas-pockets": {
     "name": "High seas pockets",
-    "description": "This data set is derived from the Marine Regions high-seas data set by extracting just the polygons corresponding to the 15 high seas pockets that GFW has labeled from HSP-1 to HSP-15.   Note that HSP-15 is split across the anti-meridian, so it appears in two pieces that have the same label.   Naming of the pockets is consistent with the naming that WCPFC uses to identify HSP 1-4."
+    "description": "<p> The United Nations Convention on the Law of the Sea describes the high seas as ‘all parts of the sea that are not included in the exclusive economic zone, in the territorial sea or in the internal waters of a State, or in the archipelagic waters of an archipelagic State.’ High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them. Citation: Flanders Marine Institute (2024). Maritime Boundaries Geodatabase: High Seas, version 2. Available online at <a href=\"https://www.marineregions.org/\" target=\"_blank\" >https://www.marineregions.org/</a >. </p>"
   },
   "public-indonesia-fishing-effort": {
     "name": "Indonesia VMS",
@@ -1826,7 +1839,7 @@
   },
   "public-paa-duke": {
     "name": "PAAS",
-    "description": "Global dataset of Preferential Access Areas for small-scale fishing"
+    "description": "<p> This global Preferential Access Area (PAA) database was built with data for 44 countries identified by the Illuminating Hidden Harvests (IHH) initiative following Basurto et al. (2023) and the FAOLEX database (https://www.fao.org/faolex/en/). The total resulting PAAs identified in this study (n = 63) in 44 countries may be considered a lower bound and not comprehensive, as governments can also establish PAAs via laws or regulations either: (i) not relating to the fisheries sector and categorized elsewhere in the FAOLEX database and hence not searched, or (ii) not reported or captured in it. The most recent review of FAOLEX to identify PAAs was conducted in 2022. For mapping and spatial analysis of the PAAs, a geodatabase of PAA boundaries was created using definition parameters for each PAA (i.e., distance from shoreline or the baseline, depth, or a given set of coordinates or buffered distances around undersea features). Baselines were extracted from Flanders Marine Institute’s (2023) version 12 global EEZ database, defined by ‘Straight Baseline’ features. The shoreline dataset was ESRI’s 2014 global shoreline, the same shoreline dataset as the Flanders Marine Institute global EEZ database. Depth data was extracted from the GEBCO 2023 global relief dataset. When possible, Duke reached out to local experts to review the boundaries for confirmation that our interpretation of FAOLEX and the relevant law or regulation matches what is being used by local fishers. If you have feedback on the PAA boundaries, information regarding PAAs that are not reflected here, or other questions, please reach out to ssf-paa-info@duke.edu. For more information on PAAs and how they are managed, please see Duke’s publication by Basurto et al. (2024) here: <a href=\"https://doi.org/10.1038/s44183-024-00096-0\" target=\"_blank\" >https://doi.org/10.1038/s44183-024-00096-0</a >. Please note that there is no singular definition of a PAA, therefore each country will decide what activities, vessels, gear types, etc. are prohibited or restricted in the PAA. For more information of the specific designation of each PAA, please see the law or regulation in FAOLex. Citation: DeLand, S., Vegh, T., Cleary, J., Basurto, X., Virdin, J., & Halpin, P. N. (2025). A global dataset of preferential access areas for small-scale fishing. Duke Research Data Repository. <a href=\"https://doi.org/10.7924/r40s01h5j\" target=\"_blank\" >https://doi.org/10.7924/r40s01h5j</a > </p>"
   },
   "public-panama-fishing-effort": {
     "name": "VMS Panama",

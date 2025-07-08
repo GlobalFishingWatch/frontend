@@ -1,4 +1,4 @@
-import type { Color, DefaultProps, PickingInfo } from '@deck.gl/core'
+import type { Color, DefaultProps, LayerProps, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import type { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
@@ -28,6 +28,22 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
 > {
   static layerName = 'PolygonsLayer'
   static defaultProps = defaultProps
+  state!: { error: string }
+
+  constructor(props: PolygonsLayerProps & PropsT) {
+    ;(props as LayerProps).onDataLoad = () => {
+      this.setState({ error: '' })
+    }
+    ;(props as LayerProps).onError = (error: Error) => {
+      this.setState({ error: error.message })
+    }
+    super(props as any)
+    this.state = { error: '' }
+  }
+
+  get isLoaded(): boolean {
+    return super.isLoaded || this.state.error !== ''
+  }
 
   getPickingInfo = ({ info }: { info: PickingInfo<PolygonFeature> }): PolygonPickingInfo => {
     if (!info.object) return { ...info, object: undefined }
@@ -91,8 +107,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
         lineWidthMinPixels: 0,
         lineWidthMaxPixels: 2,
         filled: false,
-        getPolygonOffset: (params) =>
-          getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+        getPolygonOffset: (params) => getLayerGroupOffset(group, params),
         getLineWidth: id === PREVIEW_BUFFER_GENERATOR_ID ? 2 : 1,
         getLineColor: hexToDeckColor(color),
       }),
