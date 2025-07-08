@@ -1435,7 +1435,7 @@
       },
       "bearing": "Rumbo",
       "matched": {
-        "keyword": "Coincidencia Con AIS Vessels",
+        "keyword": "Coincidencia con AIS",
         "enum": {
           "true": "Coincidencia con AIS",
           "false": "Sin coincidencia con AIS"
