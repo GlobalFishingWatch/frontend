@@ -242,6 +242,7 @@
     "sentinel2": "Sentinel 2",
     "setNewPassword": "Set a new password",
     "share": "Share map",
+    "shiptype": "Shiptype",
     "since": "since",
     "sourceOptions": {
       "both": "Registry and AIS",
@@ -842,6 +843,20 @@
     "placeholder": "Select an option",
     "selected": "selected"
   },
+  "time": {
+    "ago": "{{time}} ago",
+    "days": "{{count}} day",
+    "days_plural": "{{count}} days",
+    "hours": "{{count}} hour",
+    "hours_plural": "{{count}} hours",
+    "minutes": "{{count}} minute",
+    "minutes_plural": "{{count}} minutes",
+    "months": "{{count}} month",
+    "months_plural": "{{count}} months",
+    "now": "now",
+    "weeks": "{{count}} week",
+    "weeks_plural": "{{count}} weeks"
+  },
   "timebar": {
     "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
     "fitOnThisDates": "Fit time range to these dates",
@@ -874,16 +889,19 @@
     "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
     "comment": "Comment",
     "commentPlaceholder": "Add a comment...",
-    "commentResolve": "Comment and resolve",
+    "commentResolve": "Resolve",
     "falseNegative": "False negative",
     "falsePositive": "False positive",
     "issue": "Issue {{issueId}}",
     "issueType": "Type of issue",
-    "mapTooltip": "Issue added on {{date}} reported as {{type}}",
+    "logAnIssue": "Log an activity issue",
+    "loginRequired": "To suggest and view this correction, you must <1>log in</1>.",
+    "mapTooltip": "{{vesselName}} reported as {{type}} on {{date}} ",
     "markAsResolved": "Mark as resolved",
     "newIssue": "New issue",
     "other": "Other",
     "replyPlaceholder": "Write a reply",
+    "title": "Track correction panel",
     "version": "Version"
   },
   "user": {
