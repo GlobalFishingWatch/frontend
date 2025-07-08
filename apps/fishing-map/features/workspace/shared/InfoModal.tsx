@@ -62,7 +62,7 @@ const InfoModal = ({
       })
       .sort((a, b) => a.labelString.localeCompare(b.labelString))
     // Updating options when t changes to ensure the content is updated on lang change
-  }, [dataview, t])
+  }, [dataview, showAllDatasets])
 
   const [activeTab, setActiveTab] = useState<SelectOption | undefined>(options?.[0])
   const handleClick = useCallback(
