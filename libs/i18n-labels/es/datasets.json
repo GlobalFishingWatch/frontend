@@ -24,6 +24,7 @@
     "name": "Panama VMS (Full Fishing Vessels)",
     "description": "Conjunto de Datos VMS Panamá (Público)",
     "schema": {
+      "length": "length",
       "source": "fuente"
     }
   },
@@ -39,6 +40,7 @@
           "not defined": "not defined"
         }
       },
+      "length": "length",
       "origin": {
         "keyword": "origin",
         "enum": {
@@ -496,6 +498,7 @@
     "name": "Panama Private VMS (Private Fishing Vessels)",
     "description": "Esta capa utiliza los datos del Sistema de Seguimiento de Buques (VMS) proporcionados por la Autoridad Panamana de Recursos Acuáticos (ARAP). Los datos son recibidos por el sistema VMS de Panama vía satélite y contienen identidades de buques, tipo de engranaje, ubicación, velocidad, dirección y más. Los datos del buque portador de Panama también están disponibles aquí. Cada punto en la capa de datos del buque de transporte representa una posición de los transportistas, pero no todas las posiciones se muestran. Las posiciones del buque portador se muestran una vez al día. En el futuro, esperamos poder mostrar más posiciones. Haga clic en la posición del transportista para ver el camino completo de la compañía. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos que desarrollamos para los datos AIS para identificar la actividad y el comportamiento de la pesca. El algoritmo clasifica cada punto de datos de emisión de los buques como pesca aparente o sin actividad pesquera y muestra el primero en el mapa de calor de la actividad pesquera del Observatorio Mundial de Pesca. El VMS transmite datos de forma muy diferente al AIS y puede exhibir diferentes medidas de integridad, precisión y calidad. Con el tiempo, nuestros algoritmos mejorarán a través de todos nuestros formatos de datos de difusión. El algoritmo de detección de pesca de Global Fishing Watch para VMS, como para AIS, es un mejor esfuerzo para identificar algorítmicamente “aparente actividad pesquera”. Es posible que no se identifique alguna actividad pesquera, o que el mapa de calor pueda mostrar una actividad pesquera aparente donde la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” y “esfuerzo pesquero” como “aparente” en lugar de brindar certeza sobre esa actividad. En un todo o en parte, la información de Global Fishing Watch sobre “actividad pesqura aparente” debe ser considerada una estimación y debe ser confiada únicamente bajo su propio riesgo. Los algoritmos de detección de pesca Global Fishing Watch son desarrollados y probados usando datos reales de eventos de pesca recopilados por observadores, combinado con el análisis experto de los datos del movimiento de los buques AIS resultando en la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de actividades pesqueras y clasificación automatizada.",
     "schema": {
+      "length": "length",
       "source": "fuente"
     }
   },
@@ -574,6 +577,7 @@
           "not defined": "not defined"
         }
       },
+      "length": "length",
       "origin": {
         "keyword": "origin",
         "enum": {
@@ -1413,34 +1417,43 @@
     }
   },
   "public-global-sentinel2-footprints": {
-    "name": "Sentinel2 Footprints",
-    "description": "Sentinel2 Footprints"
+    "name": "Zonas de detección",
+    "description": "Zonas de detección"
   },
   "public-global-sentinel2-presence": {
-    "name": "Sentinel 2 detections",
-    "description": "Sentinel 2 detections",
+    "name": "Detecciones de imágenes (Ópticas)",
+    "description": "<h2><strong>Descripción General</strong></h2>\n<p>Esta capa muestra embarcaciones detectadas mediante imágenes satelitales ópticas recopiladas por los satélites Sentinel-2 de la Agencia Espacial Europea. Las imágenes ópticas son similares a fotografías aéreas de alta calidad tomadas desde el espacio, utilizando la luz solar reflejada en longitudes de onda visibles y del infrarrojo cercano. Este tipo de imágenes ofrece un nivel de detalle de alta resolución que permite identificar embarcaciones pequeñas, observar patrones en la estela de la embarcación, así como comprender mejor la actividad cercana a la costa.</p>\n<p>Global Fishing Watch utiliza un modelo de aprendizaje automático que procesa cada imagen para identificar embarcaciones y estimar su longitud, orientación y velocidad a partir de las características de su estela. Luego, las detecciones se filtran mediante una clasificación secundaria que elimina elementos que no corresponden a embarcaciones, como nubes, rocas o icebergs. Cada detección está vinculada a una imagen recortada (o miniatura) para que los usuarios puedan inspeccionar visualmente lo que el modelo ha identificado.</p>\n<p>Dado que los satélites ópticos dependen de la luz solar y del cielo despejado, las detecciones solo son posibles durante el día y cuando el área no está cubierta por nubes o neblina. A pesar de estas limitaciones, las detecciones con imágenes ópticas son especialmente útiles para identificar embarcaciones pequeñas y no rastreadas que podrían no aparecer en otros sistemas de seguimiento.</p>\n<h2><strong>Casos de uso</strong></h2>\n<ul>\n  <li>\n    <p>Monitorear la presencia de embarcaciones (tanto pesqueras como no pesqueras) en zonas de interés como Áreas Marinas Protegidas (AMP), Zonas Económicas Exclusivas (ZEE), zonas de exclusión costera (IEZ, por sus siglas en inglés) y organizaciones regionales de ordenación pesquera (OROP). En algunos casos, actividades como la pesca de arrastre de fondo pueden ser identificadas por la alteración de los sedimentos del lecho marino.</p>\n  </li>\n  <li>\n    <p>Evaluar la presencia de embarcaciones que no aparecen en sistemas de seguimiento cooperativo —incluidos el sistema de identificación automática (AIS) y el sistema de monitoreo de embarcaciones (VMS)— cerca de ecosistemas marinos vulnerables y hábitats esenciales para peces.</p>\n  </li>\n  <li>\n    <p>Apoyar el análisis de la pesca en pequeña escala. Aunque la resolución de 10 metros aún es demasiado baja para cartografiar completamente esta actividad, las detecciones del Sentinel-2 se han integrado en varios análisis regionales y han demostrado su potencial como un valioso complemento a los limitados datos disponibles sobre el seguimiento de embarcaciones.</p>\n  </li>\n</ul>\n<h2><strong>Limitaciones</strong></h2>\n<ul>\n  <li>\n    <p><strong>Detecciones de embarcaciones mediante imágenes ópticas requieren luz diurna y cielos despejados.</strong>\n    </p>\n    <ul>\n      <li>\n        <p>A diferencia del radar, los satélites ópticos no pueden atravesar nubes, niebla o bruma. Las detecciones solo son posibles durante las horas de luz solar y cuando la visibilidad no está obstruida.\n        </p>\n      </li>\n    </ul>\n  </li>\n  <li>\n    <p><strong>La cobertura geográfica no es uniforme.</strong>\n    </p>\n    <ul>\n      <li>\n        <p>La cobertura del Sentinel-2 se limita principalmente a aguas costeras. Revisa la mayoría de las zonas cada cinco días, pero la disponibilidad de las imágenes depende de las condiciones meteorológicas. Las regiones con nubosidad o bruma frecuentes son visitadas con menor frecuencias que aquellas con mejor clima.\n        </p>\n      </li>\n    </ul>\n  </li>\n  <li>\n    <p><strong>Las detecciones pueden incluir falsos positivos</strong>\n    </p>\n    <ul>\n      <li>\n        <p>A pesar del posprocesamiento, el modelo puede generar detecciones erróneas ocasionales, como boyas, residuos, infraestructura fija o artefactos de imagen. Estos falsos positivos se reducen mediante un clasificador secundario, pero no serán eliminados por completo\n        </p>\n      </li>\n    </ul>\n  </li>\n  <li>\n    <p><strong>Incertidumbre sobre algunas características de las embarcaciones</strong>\n    </p>\n    <ul>\n      <li>\n        <p>Las embarcaciones más pequeñas o de movimiento lento pueden no dejar una estela visible, lo que dificulta estimar su velocidad o rumbo. Por lo tanto, estos valores podrían ser imprecisos en el caso de las embarcaciones pequeñas.\n        </p>\n      </li>\n    </ul>\n  </li>\n  <li>\n    <p><strong>No todas las detecciones sin coincidencia con AIS son a embarcaciones no rastreadas</strong>\n    </p>\n    <ul>\n      <li>\n        <p>Las detecciones incluyen tanto embarcaciones con AIS como sin él. Se intenta cotejar las detecciones con trayectorias AIS, pero esto no siempre es posible debido a grandes intervalos entre posiciones AIS o a la alta densidad de embarcaciones detectadas.\n        </p>\n      </li>\n    </ul>\n  </li>\n</ul>\n<h2><strong>Métodos</strong></h2>\n<h3><strong>Imágenes ópticas</strong></h3>\n<p>Esta capa se basa en imágenes de los satélites Sentinel-2, operados por la Agencia Espacial Europea (ESA). Estos satélites capturan imágenes del océano con resolución media (10 metros por píxel), utilizando luz visible y del infrarrojo cercano, entre otras bandas. En conjunto, los satélites cubren la mayoría de las aguas costeras y ciertas zonas del mar abierto aproximadamente cada cinco días. Las imágenes están disponibles de forma gratuita a través de la ESA.</p>\n<h3><strong>Procesamiento y selección de imágenes</strong></h3>\n<p>Utilizamos imágenes preprocesadas de Sentinel-2 que han sido corregidas debido a distorsiones geométricas y alineadas con la superficie terrestre. Estas imágenes se dividen en recuadros manejables y hemos elegido los recuadros que cubren únicamente zonas oceánicas (se excluyen áreas terrestres). Utilizamos cuatro bandas espectrales: rojo, verde, azul (RGB) y el infrarrojo cercano (NIR), todas con una resolución de 10 metros. Estas bandas nos proporcionan el detalle y contraste necesarios para detectar y clasificar embarcaciones.</p>\n<h3><strong>Detección de embarcaciones</strong></h3>\n<p>Nuestro modelo de aprendizaje automático escanea cada recuadro con el objetivo de detectar embarcaciones. Ha sido entrenado para buscar características como la forma, el brillo y la estela de una embarcación. Cuando encuentra un candidato probable, el modelo estima una puntuación de presencia del buque junto con estimaciones de su ubicación, tamaño, orientación y velocidad.</p>\n<p>El modelo fue entrenado utilizando más de 11.000 ejemplos de embarcaciones revisados manualmente en miles de escenas Sentinel-2. Este entrenamiento incluyó muchas embarcaciones pequeñas y escenas de todo el mundo, lo que le permite desempeñarse bien en distintos entornos y con diversos tipos de buques.</p>\n<h3><strong>Miniaturas de imagen</strong></h3>\n<p>Cada detección incluye una pequeña “muestra visual” con la embarcación detectada en el centro. Estas miniaturas están disponibles en dos formatos: una versión en color basada en las bandas RGB, y una versión en escala de grises basada en la banda del infrarrojo cercano. Cada muestra visual cubre un área de 1 km². Estas miniaturas son útiles para confirmar visualmente una detección o comprender su contexto. Sin embargo, en el caso de embarcaciones muy pequeñas (menores a 15 metros), es posible que sea difícil verlas con claridad.</p>\n<h3><strong>Reducción de falsos positivos</strong></h3>\n<p>No todo lo que parece una embarcación en una imagen satelital realmente lo es. Para ayudar a eliminar detecciones erróneas (como boyas, plataformas marinas, hielo marino o nubes), cada detección pasa por un clasificador secundario. Este clasificador —también basado en aprendizaje automático— utiliza tanto la miniatura de la imagen como información adicional sobre la detección (como, por ejemplo, la distancia de la costa, profundidad local y densidad de embarcaciones cercanas) para evaluar si el objeto probablemente es una embarcación.</p>\n<p>Además, marcamos las detecciones que se encuentren cerca de infraestructuras fijas conocidas o en zonas con presencia significativa de hielo marino o icebergs. Si una detección se clasifica como “probablemente no embarcación” o se marca como posible infraestructura o hielo, se elimina de la capa del mapa, de modo que solo incluye detecciones con alta probabilidad. Asimismo, recortamos los límites de las escenas satelitales mostradas en el mapa para excluir las áreas cubiertas por la máscara de regiones heladas.</p>\n<p>Sin embargo, todos los falsos positivos se proporcionan con etiquetas a través del portal de descarga de datos, para los usuarios que necesiten conjuntos de datos más completos.</p>\n<h3><strong>Vinculación con AIS e identificación de embarcaciones</strong></h3>\n<p>Los datos del sistema AIS pueden revelar la identidad de una embarcación, sus propietarios, operadores y su actividad pesquera. Sin embargo, no todas las embarcaciones están obligadas a usar dispositivos AIS, ya que las regulaciones varían según el país, el tamaño del buque y su actividad. Además, embarcaciones involucradas en actividades ilícitas pueden apagar sus transpondedores AIS o manipular las ubicaciones que transmiten.</p>\n<p>También existen grandes “zonas ciegas” en aguas costeras, debido a países que restringen el acceso a los datos AIS captados por receptores terrestres (en lugar de satelitales), o a una mala recepción provocada por alta densidad de embarcaciones o equipos de baja calidad. Por este motivo, las detecciones no cotejadas con AIS ofrecen la información faltante del tráfico marítimo.</p>\n<p>Cotejar las detecciones con coordenadas GPS del AIS es un desafío, ya que las marcas de tiempo de las imágenes y de los registros AIS no coinciden, y una sola identidad AIS puede corresponder a múltiples embarcaciones visibles en una imagen, o viceversa. Para determinar la probabilidad de que una embarcación con señal AIS coincida con una detección específica, hemos desarrollado un enfoque basado en rásters de probabilidad que indica dónde es probable que se encuentre una embarcación minutos antes y después de una posición AIS registrada.</p>\n<p>Estos rásters fueron producidos a partir de un año de datos globales AIS en el flujo de datos de Global Fishing Watch, que obtiene datos satelitales de Spire Global y Orbcomm. Los rásters de probabilidad se basan en aproximadamente 10.000 millones de posiciones de embarcaciones y se calculan para seis clases de buques, considerando seis velocidades distintas y 36 intervalos de tiempo. Esto permite estimar la posición probable de una embarcación que podría coincidir con una detección, en función de su clase, velocidad e intervalo temporal.</p>\n<p>Además del cotejamiento espaciotemporal, también se toma en cuenta la similitud entre la eslora inferida por el modelo y la eslora reportada en el AIS, con el fin de evitar coincidencias (probablemente erróneas) con grandes diferencias de tamaño, como asociar el AIS de un remolcador con la detección de un buque grande que le sigue.</p>\n<h3><strong>Huellas de detección</strong></h3>\n<p>Para ayudar a los usuarios a entender dónde eran posibles las detecciones, mostramos las “huellas de detección” en el mapa. Estos polígonos corresponden a las porciones de las imágenes satelitales que cubren zonas oceánicas y que se utilizan para detección. Por lo tanto, si encuentra una huella sin detecciones, significa que no se detectaron embarcaciones en esa área. Si no hay huella, no se procesó ninguna imagen para ese lugar y momento.</p>\n<h3><strong>Automatización y actualizaciones</strong></h3>\n<p>Nuestro sistema de detección y cotejamiento funciona de forma automatizada cada día. Verifica si hay nuevas imágenes Sentinel-2 publicadas en Google Cloud y procesa las que cumplan con nuestros criterios de calidad. Las nuevas detecciones suelen estar disponibles entre 1 y 2 días después de que el satélite captura la imagen. El flujo automático también vuelve a revisar cualquier imagen publicadas con retraso, para asegurar que cualquier brecha en los datos sea completada.</p>\n<h2><strong>Datos fuente y citas</strong></h2>\n<p>Todos los datos de embarcaciones están disponibles gratuitamente a través del portal de datos de Global Fishing Watch <a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://globalfishingwatch.org/data-download\">https://globalfishingwatch.org/data-download</a>.</p>\n<h2><strong>Licencia</strong></h2>\n<p>Uso no comercial únicamente. El Sitio y los Servicios se proporcionan exclusivamente para uso no comercial de acuerdo con la licencia CC BY-NC 4.0. Si desea utilizar el Sitio o los Servicios con fines comerciales, póngase en contacto con nosotros.</p>",
     "schema": {
-      "bearing": "bearing",
-      "matched": {
-        "keyword": "matched",
+      "length": {
+        "keyword": "Longitud de la embarcación",
         "enum": {
-          "true": "AIS matched",
-          "false": "AIS unmatched"
+          "<20": "<20",
+          "20-60": "20-60",
+          "60-100": "60-100",
+          ">100": ">100"
+        }
+      },
+      "bearing": "Rumbo",
+      "matched": {
+        "keyword": "Coincidencia con AIS",
+        "enum": {
+          "true": "Coincidencia con AIS",
+          "false": "Sin coincidencia con AIS"
         }
       },
       "shiptype": {
-        "keyword": "shiptype",
+        "keyword": "Tipos de Embarcaciones",
         "enum": {
-          "carrier": "carrier",
-          "seismic_vessel": "seismic_vessel",
-          "passenger": "passenger",
-          "other": "other",
-          "support": "support",
-          "bunker": "bunker",
-          "gear": "gear",
-          "cargo": "cargo",
-          "fishing": "fishing",
-          "discrepancy": "discrepancy"
+          "carrier": "Embarcación de transporte",
+          "seismic_vessel": "Buque sismológico",
+          "passenger": "Pasajeros",
+          "other": "Otro",
+          "support": "Soporte",
+          "bunker": "Aprovisionamiento",
+          "gear": "Arte de pesca",
+          "cargo": "Mercancía",
+          "fishing": "Pesca",
+          "discrepancy": "Discrepancia"
         }
       }
     }

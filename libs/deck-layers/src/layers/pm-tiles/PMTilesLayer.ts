@@ -10,7 +10,7 @@ type PMTilesLayerState = TileLayer['state'] & {
   tileSource: TileSource | null
 }
 
-export class PMTilesLayer extends TileLayer<PMTileLayerProps, PMTilesLayerState> {
+export class PMTilesLayer<DataT = any> extends TileLayer<DataT, PMTileLayerProps> {
   static layerName = 'PMTilesLayer'
   state!: PMTilesLayerState
 
