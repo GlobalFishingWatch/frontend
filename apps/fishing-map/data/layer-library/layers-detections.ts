@@ -13,6 +13,16 @@ export const LAYERS_LIBRARY_DETECTIONS: LibraryLayerConfig[] = [
     },
   },
   {
+    id: 'viirs-skylight',
+    dataviewId: VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/VIIRS.jpg`,
+    onlyGFWUser: true,
+    config: {
+      color: '#FFEA00',
+      colorRamp: 'yellow',
+    },
+  },
+  {
     id: 'sar',
     dataviewId: SAR_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/SAR.jpg`,

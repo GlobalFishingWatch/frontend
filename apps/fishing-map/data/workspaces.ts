@@ -112,9 +112,13 @@ export const DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS = [
 ]
 
 const PRESENCE_DATAVIEWS = [
-  VIIRS_MATCH_DATAVIEW_SLUG, // we ensure the + icon woks for the presence category
   PRESENCE_DATAVIEW_SLUG, // In case the workspace doesn't have the dataview added,
-  SAR_DATAVIEW_SLUG, // TODO include once ready to release
+]
+
+const DETECTIONS_DATAVIEWS = [
+  VIIRS_MATCH_DATAVIEW_SLUG, // we ensure the + icon woks for the presence category
+  SAR_DATAVIEW_SLUG,
+  SENTINEL2_DATAVIEW_SLUG,
 ]
 
 const EVENTS_DATAVIEWS = [
@@ -161,6 +165,7 @@ export const DEFAULT_DATAVIEW_SLUGS = [
   FISHING_DATAVIEW_SLUG_VMS,
   ...EVENTS_DATAVIEWS,
   ...PRESENCE_DATAVIEWS,
+  ...DETECTIONS_DATAVIEWS,
   ...ENVIRONMENT_DATAVIEWS,
   ...TEMPLATE_DATAVIEW_SLUGS,
   ...CONTEXT_LAYERS_DATAVIEWS,
