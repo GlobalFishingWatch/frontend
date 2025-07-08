@@ -242,7 +242,6 @@
     "sentinel2": "crwdns93728:0crwdne93728:0",
     "setNewPassword": "crwdns83252:0crwdne83252:0",
     "share": "crwdns59859:0crwdne59859:0",
-    "shiptype": "crwdns94130:0crwdne94130:0",
     "since": "crwdns83388:0crwdne83388:0",
     "sourceOptions": {
       "both": "crwdns83694:0crwdne83694:0",
@@ -843,20 +842,6 @@
     "placeholder": "crwdns60407:0crwdne60407:0",
     "selected": "crwdns60409:0crwdne60409:0"
   },
-  "time": {
-    "ago": "crwdns94132:0{{time}}crwdne94132:0",
-    "days": "crwdns94134:0{{count}}crwdne94134:0",
-    "days_plural": "crwdns94136:0{{count}}crwdne94136:0",
-    "hours": "crwdns94138:0{{count}}crwdne94138:0",
-    "hours_plural": "crwdns94140:0{{count}}crwdne94140:0",
-    "minutes": "crwdns94142:0{{count}}crwdne94142:0",
-    "minutes_plural": "crwdns94144:0{{count}}crwdne94144:0",
-    "months": "crwdns94146:0{{count}}crwdne94146:0",
-    "months_plural": "crwdns94148:0{{count}}crwdne94148:0",
-    "now": "crwdns94150:0crwdne94150:0",
-    "weeks": "crwdns94152:0{{count}}crwdne94152:0",
-    "weeks_plural": "crwdns94154:0{{count}}crwdne94154:0"
-  },
   "timebar": {
     "disablePlaybackVesselGroups": "crwdns84050:0crwdne84050:0",
     "fitOnThisDates": "crwdns60411:0crwdne60411:0",
@@ -894,14 +879,11 @@
     "falsePositive": "crwdns93670:0crwdne93670:0",
     "issue": "crwdns93672:0{{issueId}}crwdne93672:0",
     "issueType": "crwdns93674:0crwdne93674:0",
-    "logAnIssue": "crwdns94156:0crwdne94156:0",
-    "loginRequired": "crwdns94158:0crwdne94158:0",
-    "mapTooltip": "crwdns93676:0{{vesselName}}crwdnd93676:0{{type}}crwdnd93676:0{{date}}crwdne93676:0",
+    "mapTooltip": "crwdns93676:0{{date}}crwdnd93676:0{{type}}crwdne93676:0",
     "markAsResolved": "crwdns93678:0crwdne93678:0",
     "newIssue": "crwdns93680:0crwdne93680:0",
     "other": "crwdns93682:0crwdne93682:0",
     "replyPlaceholder": "crwdns93684:0crwdne93684:0",
-    "title": "crwdns94160:0crwdne94160:0",
     "version": "crwdns93686:0crwdne93686:0"
   },
   "user": {
