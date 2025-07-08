@@ -1433,9 +1433,9 @@
           ">100": ">100"
         }
       },
-      "bearing": "bearing",
+      "bearing": "Bearing",
       "matched": {
-        "keyword": "matched",
+        "keyword": "Matching",
         "enum": {
           "true": "AIS matched",
           "false": "AIS unmatched"
