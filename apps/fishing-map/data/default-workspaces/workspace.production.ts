@@ -94,13 +94,13 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: PRESENCE_DATAVIEW_SLUG,
     },
-    // {
-    //   id: SENTINEL2_DATAVIEW_INSTANCE_ID,
-    //   dataviewId: SENTINEL2_DATAVIEW_SLUG,
-    //   config: {
-    //     visible: false,
-    //   },
-    // },
+    {
+      id: SENTINEL2_DATAVIEW_INSTANCE_ID,
+      dataviewId: SENTINEL2_DATAVIEW_SLUG,
+      config: {
+        visible: false,
+      },
+    },
     {
       id: VIIRS_DATAVIEW_INSTANCE_ID,
       config: {
