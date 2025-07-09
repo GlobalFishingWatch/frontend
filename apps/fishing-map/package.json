@@ -9,9 +9,9 @@
     "i18n:check": "i18n-check --locales ./public/locales --source source -f i18next -e ./public/locales/val/*",
     "i18n:parser": "i18next",
     "i18n:ts": "yarn i18n:interface",
-    "i18n:toc": "i18next-resources-for-ts toc -i ./public/locales/source -o ./features/i18n/resources.ts",
-    "i18n:merge": "i18next-resources-for-ts merge -i ./public/locales/source -o ./features/i18n/resources.json",
-    "i18n:interface": "i18next-resources-for-ts interface -i ./public/locales/source -o ./features/i18n/resources.d.ts",
+    "i18n:toc": "i18next-resources-for-ts toc -i ./public/locales/source -o ./features/i18n/i18n.resources.ts",
+    "i18n:merge": "i18next-resources-for-ts merge -i ./public/locales/source -o ./features/i18n/i18n.namespaces.json",
+    "i18n:interface": "i18next-resources-for-ts interface -i ./public/locales/source -o ./features/i18n/i18n.types.d.ts",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "devDependencies": {
