@@ -30,16 +30,22 @@ const stretchHistogram = (imageData: Uint8ClampedArray, p: number = 0.1): Uint8C
   const p1 = pixelValues[p1Index]
   const p2 = pixelValues[p2Index]
 
-  // Rescale intensity
+  // Calculate exposure adjustment parameters
   const range = p2 - p1
+  const exposureScale = 255 / range
+  const exposureOffset = -p1 * exposureScale
+
+  // Apply exposure adjustment to each RGB channel
   const stretchedData = new Uint8ClampedArray(imageData.length)
 
   for (let i = 0; i < imageData.length; i += 4) {
-    // Apply stretching to each RGB channel
+    // Apply exposure adjustment to each RGB channel
     for (let j = 0; j < 3; j++) {
       const value = imageData[i + j]
-      const stretched = Math.max(0, Math.min(255, ((value - p1) / range) * 255))
-      stretchedData[i + j] = Math.round(stretched)
+      // Rescale exposure: newValue = (originalValue * scale) + offset
+      const exposed = value * exposureScale + exposureOffset
+      const clamped = Math.max(0, Math.min(255, exposed))
+      stretchedData[i + j] = Math.round(clamped)
     }
     // Preserve alpha channel
     stretchedData[i + 3] = imageData[i + 3]
@@ -64,7 +70,7 @@ const drawEnhancedImageToCanvas = ({
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
 
   // Apply histogram stretching
-  const stretchedData = stretchHistogram(imageData.data, 0.01)
+  const stretchedData = stretchHistogram(imageData.data, 0.1)
 
   // Create new ImageData with stretched values
   const newImageData = new ImageData(stretchedData, canvas.width, canvas.height)
