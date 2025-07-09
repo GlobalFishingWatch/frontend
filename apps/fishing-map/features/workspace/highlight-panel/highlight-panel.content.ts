@@ -55,7 +55,7 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
   {
     ...BASE_HIGHLIGHT_CONFIG,
     dataviewInstanceId: SENTINEL2_DATAVIEW_INSTANCE_ID,
-    releaseDateTimestamp: Date.parse('2025-07-10T00:00:00Z'),
+    releaseDateTimestamp: Date.parse('2025-07-10T18:00:00:00Z'),
     imageUrl: `${PATH_BASENAME}/images/highlighted-popup/sentinel2.jpg`,
     learnMoreUrl: 'https://globalfishingwatch.org/article/expanding-our-view-with-sentinel-2/',
     en: {
