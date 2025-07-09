@@ -11,7 +11,44 @@ type DetectionThumbnailProps = {
 
 const SCALE_LINE_WIDTH_PERCENTAGE = 10
 
-const drawEnhancedImageToCanvas = async ({
+const stretchHistogram = (imageData: Uint8ClampedArray, p: number = 0.1): Uint8ClampedArray => {
+  // Convert to array of pixel values (excluding alpha channel)
+  const pixelValues: number[] = []
+  for (let i = 0; i < imageData.length; i += 4) {
+    // Use average of RGB channels for percentile calculation
+    const avg = (imageData[i] + imageData[i + 1] + imageData[i + 2]) / 3
+    pixelValues.push(avg)
+  }
+
+  // Sort values for percentile calculation
+  pixelValues.sort((a, b) => a - b)
+
+  // Calculate percentiles
+  const pPercentile = p / 100
+  const p1Index = Math.floor(pixelValues.length * pPercentile)
+  const p2Index = Math.floor(pixelValues.length * (1 - pPercentile))
+  const p1 = pixelValues[p1Index]
+  const p2 = pixelValues[p2Index]
+
+  // Rescale intensity
+  const range = p2 - p1
+  const stretchedData = new Uint8ClampedArray(imageData.length)
+
+  for (let i = 0; i < imageData.length; i += 4) {
+    // Apply stretching to each RGB channel
+    for (let j = 0; j < 3; j++) {
+      const value = imageData[i + j]
+      const stretched = Math.max(0, Math.min(255, ((value - p1) / range) * 255))
+      stretchedData[i + j] = Math.round(stretched)
+    }
+    // Preserve alpha channel
+    stretchedData[i + 3] = imageData[i + 3]
+  }
+
+  return stretchedData
+}
+
+const drawEnhancedImageToCanvas = ({
   img,
   canvas,
 }: {
@@ -20,23 +57,25 @@ const drawEnhancedImageToCanvas = async ({
 }) => {
   if (!canvas) return
   const ctx = canvas.getContext('2d')
+  if (!ctx) return
 
-  const Jimp = await import('jimp').then((module) => module.Jimp)
-  const image = await Jimp.read(img.src)
-  image.normalize()
-  const imageData = new ImageData(
-    new Uint8ClampedArray(image.bitmap.data),
-    image.bitmap.width,
-    image.bitmap.height
-  )
-  ctx?.putImageData(imageData, 0, 0)
+  // Draw the image to canvas first to get the image data
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+
+  // Apply histogram stretching
+  const stretchedData = stretchHistogram(imageData.data, 0.01)
+
+  // Create new ImageData with stretched values
+  const newImageData = new ImageData(stretchedData, canvas.width, canvas.height)
+  ctx.putImageData(newImageData, 0, 0)
 }
 
 export function DetectionThumbnail({ data, scale }: DetectionThumbnailProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
 
-  const draw = async (e: React.SyntheticEvent<HTMLImageElement>) => {
+  const draw = (e: React.SyntheticEvent<HTMLImageElement>) => {
     drawEnhancedImageToCanvas({
       img: e.currentTarget,
       canvas: canvasRef.current,
