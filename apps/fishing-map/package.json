@@ -8,11 +8,16 @@
     "start": "next start",
     "i18n:check": "i18n-check --locales ./public/locales --source source -f i18next -e ./public/locales/val/*",
     "i18n:parser": "i18next",
+    "i18n:ts": "yarn i18n:interface",
+    "i18n:toc": "i18next-resources-for-ts toc -i ./public/locales/source -o ./features/i18n/resources.ts",
+    "i18n:merge": "i18next-resources-for-ts merge -i ./public/locales/source -o ./features/i18n/resources.json",
+    "i18n:interface": "i18next-resources-for-ts interface -i ./public/locales/source -o ./features/i18n/resources.d.ts",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "devDependencies": {
     "@lingual/i18n-check": "^0.8.4",
     "i18next-parser": "9.3.0",
+    "i18next-resources-for-ts": "1.6.0",
     "source-map-explorer": "2.5.3"
   },
   "browserslist": [
