@@ -45,22 +45,22 @@ const EXPERIMENTAL_FILTERS: SchemaFilter['id'][] = ['matched', 'neural_vessel_ty
 type Transformation = {
   in?: (v: any) => number
   out?: (v: any) => number
-  label: string | ((v: any) => string)
+  getLabel: () => string
 }
 
 const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transformation> = {
   minutes: {
     in: (v) => parseFloat(v) / 60,
     out: (v) => parseFloat(v) * 60,
-    label: t('common.hour_other'),
+    getLabel: () => t('common.hour_other'),
   },
   hours: {
     in: (v) => parseInt(v),
     out: (v) => parseInt(v),
-    label: t('common.hour_other'),
+    getLabel: () => t('common.hour_other'),
   },
   km: {
-    label: t('common.km'),
+    getLabel: () => t('common.km'),
   },
 }
 
@@ -76,12 +76,9 @@ const getValueByUnit = (
   return parseFloat(value)
 }
 
-const getLabelByUnit = (value: string | number, { unit } = {} as { unit?: string }): string => {
-  const label = VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]?.label
-  if (!label) return ''
-  if (typeof label === 'function') {
-    return label(value)
-  }
+const getUnitLabel = (unit?: string): string => {
+  if (!unit) return ''
+  const label = VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]?.getLabel?.()
   return label || unit || ''
 }
 
@@ -90,7 +87,7 @@ export const getValueLabelByUnit = (
   { unit, unitLabel = true } = {} as { unit?: string; unitLabel?: boolean }
 ): string => {
   if (unitLabel) {
-    return `${formatI18nNumber(getValueByUnit(value, { unit }))} ${getLabelByUnit(value, { unit })}`
+    return `${formatI18nNumber(getValueByUnit(value, { unit }))} ${getUnitLabel(unit)}`
   }
   return formatI18nNumber(getValueByUnit(value, { unit })) as string
 }
@@ -98,9 +95,7 @@ export const getValueLabelByUnit = (
 export const getLabelWithUnit = (label: string, unit?: string): string => {
   const translatedLabel = t(`layer.${label}`, label)
   if (unit) {
-    return `${translatedLabel} (${
-      VALUE_TRANSFORMATIONS_BY_UNIT[unit as TransformationUnit]?.label
-    })`
+    return `${translatedLabel} (${getUnitLabel(unit)})`
   }
   return translatedLabel
 }
