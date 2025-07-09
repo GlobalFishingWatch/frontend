@@ -27,10 +27,10 @@ export default function ErrorBoundaryUI({ error }: ErrorBoundaryUIProps) {
 
   return (
     <div className={styles.errorBoundary}>
-      <h1 className={styles.title}>{t('errors.genericShort', 'Something went wrong')}</h1>
+      <h1 className={styles.title}>{t('errors.genericShort')}</h1>
       <div>
         <Button type="secondary" size="small" onClick={() => setShowError(!showError)}>
-          {t('errors.showError', 'Show error')} ▾
+          {t('errors.showError')} ▾
         </Button>
         <div className={styles.error}>
           {showError && errorInfo.map((info, i) => <div key={i}>{info}</div>)}

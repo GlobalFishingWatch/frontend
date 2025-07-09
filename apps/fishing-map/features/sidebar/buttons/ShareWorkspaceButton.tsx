@@ -14,12 +14,12 @@ function ShareWorkspaceButton() {
   const location = useSelector(selectLocationType)
 
   const shareTitles: Partial<Record<ROUTE_TYPES, string>> = {
-    HOME: t('common.share', 'Share map'),
-    WORKSPACE: t('common.share', 'Share map'),
-    REPORT: t('analysis.share', 'Share report'),
-    WORKSPACE_REPORT: t('analysis.share', 'Share report'),
-    VESSEL: t('vessel.share', 'Share vessel'),
-    WORKSPACE_VESSEL: t('vessel.share', 'Share vessel'),
+    HOME: t('common.share'),
+    WORKSPACE: t('common.share'),
+    REPORT: t('analysis.share'),
+    WORKSPACE_REPORT: t('analysis.share'),
+    VESSEL: t('vessel.share'),
+    WORKSPACE_VESSEL: t('vessel.share'),
   }
 
   const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
@@ -54,14 +54,7 @@ function ShareWorkspaceButton() {
       size="medium"
       className="print-hidden"
       onClick={onShareClick}
-      tooltip={
-        showClipboardNotification
-          ? t(
-              'common.copiedToClipboard',
-              'The link to share this view has been copied to your clipboard'
-            )
-          : shareTitles[location]
-      }
+      tooltip={showClipboardNotification ? t('common.copiedToClipboard') : shareTitles[location]}
       tooltipPlacement="bottom"
     />
   )

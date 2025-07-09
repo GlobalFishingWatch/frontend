@@ -30,21 +30,19 @@ const ReportVesselsIndividualTooltip = ({ data }: { data?: ReportTableVessel }) 
       </div>
       <div className={styles.properties}>
         <div className={styles.property}>
-          <label>{t('vessel.mmsi', 'MMSI')}</label>
+          <label>{t('vessel.mmsi')}</label>
           <span>{data.ssvid}</span>
         </div>
         <div className={styles.property}>
-          <label>{t('vessel.flag', 'Flag')}</label>
+          <label>{t('vessel.flag')}</label>
           <span>{data.flagTranslated}</span>
         </div>
         <div className={styles.property}>
-          <label>{t('vessel.type', 'Ship Type')}</label>
+          <label>{t('vessel.type')}</label>
           <span>{data.vesselType}</span>
         </div>
       </div>
-      <div className={styles.cta}>
-        {t('vessel.clickToSeeMore', 'Click to see more information')}
-      </div>
+      <div className={styles.cta}>{t('vessel.clickToSeeMore')}</div>
     </div>
   )
 }

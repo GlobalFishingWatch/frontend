@@ -23,28 +23,24 @@ function DownloadActivityProductsBanner({ format }: DownloadActivityProductsBann
     <div className={cx(styles.downloadFooterContainer, styles.open)}>
       {!isDownloadReportSupported ? (
         <div className={styles.downloadFooter}>
-          <p className={styles.downloadLabel}>
-            {t('download.fullDataset', 'Do you need the full dataset?')}
-          </p>
+          <p className={styles.downloadLabel}>{t('download.fullDataset')}</p>
           <Button
             className={styles.downloadBtn}
             href="https://globalfishingwatch.org/data-download/datasets/public-fishing-effort"
             target="_blank"
           >
-            {t('download.dataPortal', 'See data download portal')}
+            {t('download.dataPortal')}
           </Button>
         </div>
       ) : (
         <div className={styles.downloadFooter}>
-          <p className={styles.downloadLabel}>
-            {t('download.doYouNeedAnAPI', 'Does your application need continuous data?')}
-          </p>
+          <p className={styles.downloadLabel}>{t('download.doYouNeedAnAPI')}</p>
           <Button
             className={styles.downloadBtn}
             href="https://globalfishingwatch.org/our-apis/documentation?utm_source=map&utm_medium=banner&utm_campaign=download_activity#create-a-report-of-a-specified-region"
             target="_blank"
           >
-            {t('download.apiPortal', 'See our APIs here')}
+            {t('download.apiPortal')}
           </Button>
         </div>
       )}

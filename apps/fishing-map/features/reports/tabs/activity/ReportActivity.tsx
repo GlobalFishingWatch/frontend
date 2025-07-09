@@ -144,8 +144,8 @@ function ActivityReport() {
     if (hasAuthError || guestUser) {
       const errorMsg = guestUser
         ? isVesselGroupReportLocation
-          ? t('errors.vesselGroupReportLogin', 'Login to see the vessels active')
-          : t('errors.reportLogin', 'Login to see the vessels active in the area')
+          ? t('errors.vesselGroupReportLogin')
+          : t('errors.reportLogin')
         : t(
             'errors.privateReport',
             "Your account doesn't have permissions to see the vessels active in this area"
@@ -170,12 +170,10 @@ function ActivityReport() {
           <ReportVesselsPlaceholder animate={false}>
             <div className={styles.cover}>
               <p className={styles.error}>
-                {t('analysis.errorConcurrentReport', 'There is already a report running')}
+                {t('analysis.errorConcurrentReport')}
                 <p className={styles.link}>
                   {lastReport && (
-                    <a href={lastReport.workspaceUrl}>
-                      {t('analysis.errorConcurrentReportLink', 'See it')}
-                    </a>
+                    <a href={lastReport.workspaceUrl}>{t('analysis.errorConcurrentReportLink')}</a>
                   )}
                 </p>
               </p>
@@ -191,12 +189,7 @@ function ActivityReport() {
         return (
           <ReportVesselsPlaceholder animate={false}>
             <div className={styles.cover}>
-              <p className={styles.error}>
-                {t(
-                  'analysis.errorTooComplex',
-                  'The geometry of the area is too complex to perform a report, try to simplify and upload again.'
-                )}
-              </p>
+              <p className={styles.error}>{t('analysis.errorTooComplex')}</p>
             </div>
           </ReportVesselsPlaceholder>
         )
@@ -205,9 +198,7 @@ function ActivityReport() {
         return (
           <ReportVesselsPlaceholder animate={false}>
             <div className={styles.cover}>
-              <p className={cx(styles.center, styles.top)}>
-                {t('analysis.timeoutError', 'This is taking more than expected, please wait')}
-              </p>
+              <p className={cx(styles.center, styles.top)}>{t('analysis.timeoutError')}</p>
             </div>
           </ReportVesselsPlaceholder>
         )
@@ -222,20 +213,12 @@ function ActivityReport() {
     }
 
     if (!reportDataviews?.length) {
-      return (
-        <p className={styles.error}>
-          {t(
-            'analysis.datasetsNotAllowedAll',
-            'None of your datasets are allowed to be used in reports'
-          )}{' '}
-        </p>
-      )
+      return <p className={styles.error}>{t('analysis.datasetsNotAllowedAll')} </p>
     }
     return (
       <p className={styles.error}>
         <span>
-          {t('errors.generic', 'Something went wrong, try again or contact:')}{' '}
-          <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+          {t('errors.generic')} <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
         </span>
       </p>
     )
@@ -262,12 +245,7 @@ function ActivityReport() {
       return (
         <ReportVesselsPlaceholder animate={false} className="print-hidden">
           <div className={cx(styles.cover, styles.error)}>
-            <p>
-              {t(
-                'analysis.timeRangeTooLong',
-                'The selected time range is too long, please select a shorter time range'
-              )}
-            </p>
+            <p>{t('analysis.timeRangeTooLong')}</p>
           </div>
         </ReportVesselsPlaceholder>
       )
@@ -283,10 +261,7 @@ function ActivityReport() {
           <div className={cx(styles.cover, styles.center, styles.top)}>
             <p
               dangerouslySetInnerHTML={{
-                __html: t(
-                  'analysis.onlyEvolutionSupported',
-                  'Click the evolution button above to see the vessels active in the area'
-                ),
+                __html: t('analysis.onlyEvolutionSupported'),
               }}
             />
           </div>
@@ -305,8 +280,6 @@ function ActivityReport() {
             <p
               dangerouslySetInnerHTML={{
                 __html: t('analysis.newTimeRange', {
-                  defaultValue:
-                    'Click the button to see the vessels active in the area<br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>',
                   start: formatI18nDate(timerange?.start),
                   end: formatI18nDate(timerange?.end),
                 }),
@@ -323,7 +296,7 @@ function ActivityReport() {
                 })
               }}
             >
-              {t('analysis.seeVessels', 'See vessels')}
+              {t('analysis.seeVessels')}
             </Button>
           </div>
         </ReportVesselsPlaceholder>
@@ -337,8 +310,8 @@ function ActivityReport() {
               isVesselGroupReportLocation
                 ? undefined
                 : reportCategory === ReportCategory.Detections
-                  ? t('common.matchedVessels', 'Matched vessels')
-                  : t('common.vessel_other', 'Vessels')
+                  ? t('common.matchedVessels')
+                  : t('common.vessel_other')
             }
             activityUnit={
               isVesselGroupReportLocation
@@ -354,10 +327,7 @@ function ActivityReport() {
         <div className={styles.error}>
           {datasetsDownloadNotSupported.length > 0 ? (
             <p className={styles.secondary}>
-              {t(
-                'analysis.datasetsNotAllowed',
-                'Vessels are not included from the following sources:'
-              )}{' '}
+              {t('analysis.datasetsNotAllowed')}{' '}
               {datasetsDownloadNotSupported.map((dataset, index) => (
                 <Fragment>
                   <DatasetLabel key={dataset} dataset={{ id: dataset }} />
@@ -366,7 +336,7 @@ function ActivityReport() {
               ))}
             </p>
           ) : (
-            <p>{t('analysis.noDataByArea', 'No data available for the selected area')}</p>
+            <p>{t('analysis.noDataByArea')}</p>
           )}
         </div>
       )

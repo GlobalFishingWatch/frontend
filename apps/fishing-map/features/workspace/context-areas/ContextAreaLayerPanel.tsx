@@ -287,11 +287,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
                     icon={filterOpen ? 'filter-on' : 'filter-off'}
                     size="small"
                     onClick={onToggleFilterOpen}
-                    tooltip={
-                      filterOpen
-                        ? t('layer.filterClose', 'Close filters')
-                        : t('layer.filterOpen', 'Open filters')
-                    }
+                    tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
                     tooltipPlacement="top"
                   />
                 </div>
@@ -339,12 +335,9 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
                   'This platform uses a reference layer from an external source.'
                 )}
                 <div className={cx('print-hidden', styles.dataWarningLinks)}>
-                  <button onClick={onAddNewClick}>
-                    {t('dataset.uploadYourOwn', 'Upload your own')}
-                  </button>{' '}
-                  |{' '}
+                  <button onClick={onAddNewClick}>{t('dataset.uploadYourOwn')}</button> |{' '}
                   <button onClick={() => setModalDataWarningOpen(!modalDataWarningOpen)}>
-                    {t('common.learnMore', 'Learn more')}
+                    {t('common.learnMore')}
                   </button>
                   <Modal
                     appSelector={ROOT_DOM_ELEMENT}
@@ -382,12 +375,12 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
           <Collapsable
             label={
               layerLoadedDebounced ? (
-                `${t('layer.areasOnScreen', 'Areas on screen')} ${
+                `${t('layer.areasOnScreen')} ${
                   areasOnScreenOpen ? `(${featuresOnScreen?.total})` : ''
                 }`
               ) : (
                 <span>
-                  {`${t('layer.areasOnScreen', 'Areas on screen')}`}
+                  {`${t('layer.areasOnScreen')}`}
                   {areasOnScreenOpen && <Spinner className={styles.inline} size="tiny" />}
                 </span>
               )

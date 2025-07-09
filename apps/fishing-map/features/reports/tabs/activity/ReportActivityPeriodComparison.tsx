@@ -110,11 +110,11 @@ export default function ReportActivityGraph() {
                 strokeWidth={2}
               ></path>
             </svg>
-            <label>{t('analysis.periodComparison1st', 'Baseline start')}</label>
+            <label>{t('analysis.periodComparison1st')}</label>
             <Hint id="periodComparisonBaseline" className={styles.helpHint} />
           </div>
           <InputDate
-            // label={t('analysis.periodComparison1st', 'Baseline start')}
+            // label={t('analysis.periodComparison1st')}
             onChange={trackAndChangeBaselineDate}
             value={timeComparison.start}
             min={MIN_DATE}
@@ -131,7 +131,7 @@ export default function ReportActivityGraph() {
                 fill="none"
               ></path>
             </svg>
-            <label>{t('analysis.periodComparison2nd', 'comparison start')}</label>
+            <label>{t('analysis.periodComparison2nd')}</label>
           </div>
           <InputDate
             onChange={trackAndChangeComparisonDate}
@@ -142,7 +142,7 @@ export default function ReportActivityGraph() {
         </div>
         <div>
           <div className={styles.inputDateLabel}>
-            <label>{t('analysis.periodComparisonDuration', 'duration')}</label>
+            <label>{t('analysis.periodComparisonDuration')}</label>
           </div>
           <div className={styles.durationWrapper}>
             <InputText

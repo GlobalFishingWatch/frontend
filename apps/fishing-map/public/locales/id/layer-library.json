@@ -25,9 +25,9 @@
     "name": "Zona Ekonomi Eksklusif (ZEE)"
   },
   "eez-areas-12nm": {
-    "description": "World 12 Nautical Miles Zone (Territorial Seas). Flanders Marine Institute (2023). Maritime Boundaries Geodatabase: Territorial Seas (12NM), version 4. Available online at https://www.marineregions.org/. https://doi.org/10.14284/633",
-    "moreInfoLink": "",
-    "name": "Territorial Seas"
+    "description": "Territorial seas are a belt of coastal waters extending at most 12 nautical miles (22.2 km; 13.8 mi) from the baseline (usually the mean low-water mark) of a coastal state.",
+    "moreInfoLink": "https://www.marineregions.org/downloads.php",
+    "name": "Territorial Seas (12 nautical miles)"
   },
   "encounters": {
     "description": "Diidentifikasi dari data AIS sebagai lokasi di mana dua kapal, kapal pengangkut dan kapal penangkap ikan, berada dalam jarak 500 meter selama setidaknya 2 jam dan melakukan perjalanan dengan kecepatan rata-rata <2 knot, sementara setidaknya 10 km dari pelabuhan pantai.",
@@ -50,9 +50,9 @@
     "name": "Upaya penangkapan ikan yang nyata (VMS)"
   },
   "gfcm-fao": {
-    "description": "General Fisheries Commission for the Mediterranean Fisheries Restricted Areas",
+    "description": "In the Mediterranean and the Black Sea, 1,760,000 square kilometers of sea habitats are protected by ten fisheries restricted areas established by the GFCM, in which some specific fishing activities are temporarily or permanently banned or restricted.",
     "moreInfoLink": "https://www.fao.org/gfcm/data/maps/fras/ru",
-    "name": "GFCM FRAs"
+    "name": "GFCM Fisheries Restricted Areas"
   },
   "graticules": {
     "description": "Grid atau gratikula garis lintang dan bujur pada interval 1, 5, 10 dan 30° tergantung pada tingkat pembesaran (zoom) peta",
@@ -65,8 +65,8 @@
     "name": "Laut lepas"
   },
   "high-seas-pockets": {
-    "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
-    "moreInfoLink": "",
+    "description": "High Seas pockets are areas totally enclosed by EEZs that are beyond Exclusive Economic Zones (EEZ). These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
+    "moreInfoLink": "https://www.marineregions.org/downloads.php",
     "name": "High seas pockets"
   },
   "loitering": {
@@ -90,7 +90,7 @@
     "name": "KKP/Kawasan Konservasi Perairan (WDPA)"
   },
   "mpatlas": {
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term biodiversity conservation. Reported MPAs vary greatly in their status in the process of becoming an MPA (Stage of Establishment) and the impact of human activities (Level of Protection). MPAtlas assesses MPAs using The MPA Guide, a science-based tool that identifies different types of MPAs and connects them to the outcome they are likely to achieve. Source: Marine Protection Atlas",
+    "description": "MPAs vary greatly in their status in the process of becoming an MPA and the impact of human activities. MPAtlas applies The MPA Guide, a science-based tool that identifies different types of MPAs and connects them to the outcome they are likely to achieve.",
     "moreInfoLink": "https://mpatlas.org",
     "name": "MPAs (MPAtlas)"
   },
@@ -110,9 +110,9 @@
     "name": "Konsentrasi oksigen (O2)"
   },
   "paa-duke": {
-    "description": "Global dataset of Preferential Access Areas for small-scale fishing",
+    "description": "This global Preferential Access Area (PAA) database was built with data for 44 countries identified by the Illuminating Hidden Harvests (IHH) initiative following Basurto et al. (2023) and the FAOLEX database.",
     "moreInfoLink": "https://research.repository.duke.edu/concern/datasets/79407z51r",
-    "name": "Preferential Access Areas"
+    "name": "Preferential Access Areas for Small-Scale Fishing"
   },
   "ph": {
     "description": "Keasaman laut diukur dengan pH. Peningkatan penyerapan karbon dioksida telah menurunkan pH laut, sehingga mengakibatkan pengasaman laut yang dapat berdampak luas pada organisme laut. Kumpulan data ini terdiri dari parameter biogeokimia, termasuk pH, di lautan global yang ditampilkan dengan resolusi horizontal 1/4 derajat.",
@@ -169,6 +169,11 @@
     "moreInfoLink": "https://bluehabitats.org/",
     "name": "Gunung laut"
   },
+  "sentinel2": {
+    "description": "This layer shows vessels detected using optical satellite imagery collected by the European Space Agency’s Sentinel-2 satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths.",
+    "moreInfoLink": "",
+    "name": "Imagery detections (Optical)"
+  },
   "species": {
     "description": "TODO",
     "moreInfoLink": "",
@@ -203,5 +208,10 @@
     "description": "Lapisan pendeteksi kapal lampu malam, yang dikenal sebagai suite radiometer pencitraan inframerah tampak atau VIIRS, menunjukkan kapal di laut yang telah dideteksi oleh satelit melalui cahaya yang dipancarkannya di malam hari. Meskipun tidak secara eksklusif dikaitkan dengan kapal penangkap ikan, lapisan aktivitas ini kemungkinan besar menampilkan kapal yang terkait dengan aktivitas seperti penangkapan cumi-cumi, yang menggunakan lampu terang dan menangkap ikan di malam hari.",
     "moreInfoLink": "",
     "name": "Deteksi cahaya malam (Night light detections/VIIRS)"
+  },
+  "viirs-skylight": {
+    "description": "TODO: description",
+    "moreInfoLink": "",
+    "name": "Night light detections (VIIRS Skylight)"
   }
 }

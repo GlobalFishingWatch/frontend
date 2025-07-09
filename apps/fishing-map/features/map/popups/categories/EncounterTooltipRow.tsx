@@ -174,7 +174,7 @@ function EncounterTooltipRow({
                           className={styles.btnLarge}
                         >
                           <Button target="_blank" size="small" className={styles.btnLarge}>
-                            {t('common.seeMore', 'See more')}
+                            {t('common.seeMore')}
                           </Button>
                         </VesselLink>
                       </div>
@@ -182,7 +182,7 @@ function EncounterTooltipRow({
                   ) : error ? (
                     <p className={styles.error}>{error}</p>
                   ) : (
-                    t('event.noData', 'No data available')
+                    t('event.noData')
                   )}
                 </Fragment>
               )}

@@ -62,7 +62,7 @@ const InfoModal = ({
       })
       .sort((a, b) => a.labelString.localeCompare(b.labelString))
     // Updating options when t changes to ensure the content is updated on lang change
-  }, [dataview, t])
+  }, [dataview, showAllDatasets])
 
   const [activeTab, setActiveTab] = useState<SelectOption | undefined>(options?.[0])
   const handleClick = useCallback(
@@ -85,14 +85,12 @@ const InfoModal = ({
   const datasetImporting = dataset?.status === DatasetStatus.Importing
   const datasetError = dataset?.status === DatasetStatus.Error
 
-  let tooltip: string = t(`layer.seeDescription`, 'Click to see layer description')
+  let tooltip: string = t('layer.seeDescription')
   if (datasetImporting) {
-    tooltip = t('dataset.importing', 'Dataset is being imported')
+    tooltip = t('dataset.importing')
   }
   if (datasetError) {
-    tooltip = `${t('errors.uploadError', 'There was an error uploading your dataset')} - ${
-      dataset?.importLogs
-    }`
+    tooltip = `${t('errors.uploadError')} - ${dataset?.importLogs}`
   }
   const selectedDataset = useMemo(
     () => dataview.datasets?.find((d) => d.id === activeTab?.id),

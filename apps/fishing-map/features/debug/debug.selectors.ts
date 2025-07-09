@@ -1,10 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
 
-import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
-import type { FeatureFlag } from 'types'
+import { selectFeatureFlags } from 'features/debug/debug.slice'
 
-export const selectIsFeatureFlagEnabled = (flag: FeatureFlag) =>
-  createSelector([selectFeatureFlags], (featureFlags = []) => featureFlags?.includes(flag))
-
-export const selectIsGlobalReportsEnabled = selectIsFeatureFlagEnabled('globalReports')
-export const selectIsWorkspaceGeneratorEnabled = selectIsFeatureFlagEnabled('workspaceGenerator')
+export const selectIsGlobalReportsEnabled = createSelector(
+  [selectFeatureFlags],
+  (featureFlags) => featureFlags.globalReports === true
+)
+export const selectIsWorkspaceGeneratorEnabled = createSelector(
+  [selectFeatureFlags],
+  (featureFlags) => featureFlags.workspaceGenerator === true
+)

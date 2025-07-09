@@ -17,7 +17,6 @@ import {
 } from 'features/reports/reports.slice'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectUserReports } from 'features/user/selectors/user.permissions.selectors'
-import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
 import { resetWorkspaceSlice } from 'features/workspace/workspace.slice'
 import { REPORT } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -41,7 +40,6 @@ function UserReports() {
   const reports = useSelector(selectUserReports)
   const reportsStatus = useSelector(selectReportsStatus)
   const reportsStatusId = useSelector(selectReportsStatusId)
-  const featureFlags = useSelector(selectFeatureFlags)
   const [searchQuery, setSearchQuery] = useState('')
 
   const onSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,10 +61,7 @@ function UserReports() {
   const onDeleteClick = useCallback(
     (report: Report) => {
       const confirmation = window.confirm(
-        `${t(
-          'analysis.confirmRemove',
-          'Are you sure you want to permanently delete this report?'
-        )}\n${getReportAreaStringByLocale(report.name, i18n.language)}`
+        `${t('analysis.confirmRemove')}\n${getReportAreaStringByLocale(report.name, i18n.language)}`
       )
       if (confirmation) {
         dispatch(deleteReportThunk(report))
@@ -89,7 +84,7 @@ function UserReports() {
       </div>
       <div className={styles.views}>
         <div className={styles.viewsHeader}>
-          <label>{t('common.reports', 'Reports')}</label>
+          <label>{t('common.reports')}</label>
         </div>
         {loading ? (
           <div className={styles.placeholder}>
@@ -109,7 +104,7 @@ function UserReports() {
                     to={{
                       type: REPORT,
                       payload: { reportId: report.id },
-                      query: { featureFlags },
+                      query: {},
                     }}
                     onClick={() => onReportClick(report)}
                   >
@@ -134,17 +129,14 @@ function UserReports() {
         ) : (
           <div className={styles.placeholder}>
             <p>
-              {t(
-                'analysis.createReportHelp',
-                'To explore how activity and environmental data changes over time, you can create a dynamic report containing analysis for any area. Dynamic reports offer a rapid way to access and understand more information about any ocean area, exclusive economic zone, marine protected area or area of interest. Dynamic reports help you understand how much activity is happening in each area, including which vessels and flag States are active.'
-              )}{' '}
+              {t('analysis.createReportHelp')}{' '}
               <a
                 className={styles.link}
                 href={getUserGuideReportLinkByLocale(i18n.language as Locale)}
                 target="_blank"
                 rel="noreferrer"
               >
-                {t('analysis.createReportHelpLink', 'Learn more.')}
+                {t('analysis.createReportHelpLink')}
               </a>
             </p>
           </div>

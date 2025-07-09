@@ -269,8 +269,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
   getTilesData({ aggregated } = {} as { aggregated?: boolean }) {
     const layer = this.getLayerInstance()
     if (layer) {
-      const offset = 1
-      const roudedZoom = Math.round(this.context.viewport.zoom)
+      const roundedZoom = Math.round(this.context.viewport.zoom)
       return layer
         .getSubLayers()
         .map((l: any) => {
@@ -280,7 +279,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
           if (l.props.tile.zoom === l.props.maxZoom) {
             return l.getData({ aggregated })
           }
-          return l.props.tile.zoom === roudedZoom + offset ? l.getData({ aggregated }) : []
+          return l.props.tile.zoom === roundedZoom ? l.getData({ aggregated }) : []
         })
         .filter((t) => t.length > 0) as FourwingsFeature[][]
     }

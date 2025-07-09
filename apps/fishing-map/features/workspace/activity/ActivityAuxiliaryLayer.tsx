@@ -23,7 +23,7 @@ function ActivityAuxiliaryLayer({ dataview }: LayerPanelProps) {
   const auxiliarLayerActive = dataview?.config?.auxiliarLayerActive ?? true
   const { dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.TemporalContext)
   const layer = useGetDeckLayer<AnyDeckLayer>(`${dataview.id}-${AUXILIAR_DATAVIEW_SUFIX}`)
-  const isLayerLoaded = layer?.loaded
+  const isLayerLoaded = layer?.instance?.isLoaded
 
   if (!dataset) {
     return null
@@ -47,7 +47,7 @@ function ActivityAuxiliaryLayer({ dataview }: LayerPanelProps) {
           size="small"
           active={auxiliarLayerActive}
           onClick={onAuxiliarLayerSwitchToggle}
-          tooltip={t('layer.toggleVisibility', 'Toggle layer visibility')}
+          tooltip={t('layer.toggleVisibility')}
           tooltipPlacement="top"
           className={styles.switch}
           color={dataview.config?.color}

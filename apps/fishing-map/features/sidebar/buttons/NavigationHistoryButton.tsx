@@ -17,10 +17,7 @@ import { cleanVesselSearchResults } from 'features/search/search.slice'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { cleanVesselProfileDataviewInstances } from 'features/sidebar/sidebar-header.hooks'
 import { setVesselEventId } from 'features/vessel/vessel.slice'
-import {
-  selectFeatureFlags,
-  selectWorkspaceHistoryNavigation,
-} from 'features/workspace/workspace.selectors'
+import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
 import {
   cleanCurrentWorkspaceReportState,
   cleanReportQuery,
@@ -51,7 +48,6 @@ function NavigationHistoryButton() {
   const isRouteWithWorkspace = useSelector(selectIsRouteWithWorkspace)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const { dispatchQueryParams } = useLocationConnect()
-  const featureFlags = useSelector(selectFeatureFlags)
   const reportAreaIds = useSelector(selectReportAreaIds)
   const lastWorkspaceVisited = workspaceHistoryNavigation[workspaceHistoryNavigation.length - 1]
 
@@ -97,16 +93,16 @@ function NavigationHistoryButton() {
   if (workspaceHistoryNavigation.length) {
     const previousLocation =
       lastWorkspaceVisited.type === VESSEL || lastWorkspaceVisited.type === WORKSPACE_VESSEL
-        ? t('vessel.title', 'Vessel profile')
+        ? t('vessel.title')
         : isPreviousLocationReport
-          ? t('analysis.title', 'Report')
+          ? t('analysis.title')
           : isVesselGroupReportLocation
-            ? t('vesselGroup.vesselGroupProfile', 'Vessel group profile')
+            ? t('vesselGroup.vesselGroupProfile')
             : lastWorkspaceVisited.type === WORKSPACES_LIST
-              ? t('workspace.list', 'Workspaces list')
-              : t('workspace.title', 'Workspace')
+              ? t('workspace.list')
+              : t('workspace.title')
 
-    const tooltip = t('navigateBackTo', 'Go back to {{section}}', {
+    const tooltip = t('common.navigateBackTo', {
       section: previousLocation.toLocaleLowerCase(),
     })
 
@@ -114,7 +110,6 @@ function NavigationHistoryButton() {
       ...(!isPreviousLocationReport
         ? { ...cleanReportQuery(lastWorkspaceVisited.query || {}), ...EMPTY_SEARCH_FILTERS }
         : lastWorkspaceVisited.query),
-      featureFlags,
     }
     const linkTo = {
       ...lastWorkspaceVisited,

@@ -108,13 +108,13 @@ const Vessel = () => {
     () => [
       {
         id: 'activity',
-        title: t('vessel.sectionSummary', 'Summary'),
+        title: t('vessel.sectionSummary'),
         content: <VesselActivity />,
         testId: 'vv-summary-tab',
       },
       {
         id: 'areas',
-        title: t('vessel.sectionAreas', 'Areas'),
+        title: t('vessel.sectionAreas'),
         content: hasDeprecatedDataviewInstances ? null : (
           <VesselAreas updateAreaLayersVisibility={updateAreaLayersVisibility} />
         ),
@@ -123,14 +123,14 @@ const Vessel = () => {
       },
       {
         id: 'related_vessels',
-        title: t('vessel.sectionRelatedVessels', 'Related Vessels'),
+        title: t('vessel.sectionRelatedVessels'),
         content: hasDeprecatedDataviewInstances ? null : <RelatedVessels />,
         disabled: !hasEventsDataset,
         testId: 'vv-related-tab',
       },
       {
         id: 'insights' as VesselSection,
-        title: t('vessel.sectionInsights', 'Insights'),
+        title: t('vessel.sectionInsights'),
         content: hasDeprecatedDataviewInstances ? null : <Insights />,
         disabled: !hasEventsDataset,
         testId: 'vv-insights-tab',
@@ -204,11 +204,7 @@ const Vessel = () => {
     const hasAuthError = isAuthError(infoError)
     return hasAuthError ? (
       <WorkspaceLoginError
-        title={
-          guestUser
-            ? t('errors.profileLogin', 'Login to see this vessel')
-            : t('errors.privateProfile', "Your account doesn't have permissions to see this vessel")
-        }
+        title={guestUser ? t('errors.profileLogin') : t('errors.privateProfile')}
         emailSubject={`Requesting access for ${datasetId}-${vesselId} profile`}
       />
     ) : (
@@ -244,9 +240,7 @@ const Vessel = () => {
         />
       ) : (
         <div className={styles.placeholder}>
-          <p className={styles.secondary}>
-            {t('vessel.noActivityData', 'There is no activity information for this vessel')}
-          </p>
+          <p className={styles.secondary}>{t('vessel.noActivityData')}</p>
         </div>
       )}
     </Fragment>

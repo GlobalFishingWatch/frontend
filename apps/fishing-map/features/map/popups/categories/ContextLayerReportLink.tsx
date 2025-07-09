@@ -16,7 +16,7 @@ import { DEFAULT_BUFFER_OPERATION, DEFAULT_BUFFER_UNIT } from 'features/reports/
 import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
-import { selectFeatureFlags, selectWorkspace } from 'features/workspace/workspace.selectors'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'
 import { WORKSPACE_REPORT } from 'routes/routes'
 import { selectLocationQuery } from 'routes/routes.selectors'
@@ -38,7 +38,6 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
   const dispatch = useAppDispatch()
   const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)
   const workspace = useSelector(selectWorkspace)
-  const featureFlags = useSelector(selectFeatureFlags)
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const isPointFeature = (feature?.geometry as any)?.type === 'Point'
   const query = useSelector(selectLocationQuery)
@@ -56,14 +55,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
         icon="analysis"
         disabled={!hasAnalysableLayer}
         size="small"
-        tooltip={
-          isSameArea
-            ? ''
-            : t(
-                'common.analysisNotAvailable',
-                'Toggle an analyzable layer to create a report for this area'
-              )
-        }
+        tooltip={isSameArea ? '' : t('common.analysisNotAvailable')}
       />
     )
   }
@@ -106,7 +98,6 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
       datasetId: [reportAreaDataset, (feature as any).datasetId].join(','),
       areaId: [reportAreaId, areaId].join(','),
     },
-    query: { featureFlags },
   }
 
   return (
@@ -114,7 +105,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
       <Link className={styles.workspaceLink} to={reportLinkTo} onClick={onReportClick}>
         <IconButton
           icon="analysis"
-          tooltip={t('common.analysis', 'Create an analysis for this area')}
+          tooltip={t('common.analysis')}
           testId="open-analysis"
           size="small"
         />
@@ -123,7 +114,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
         <Link className={styles.workspaceLink} to={addReportLinkTo} onClick={onReportClick}>
           <IconButton
             icon="add-polygon-to-analysis"
-            tooltip={t('common.analysisAddArea', 'Add area to the analysis')}
+            tooltip={t('common.analysisAddArea')}
             testId="add-analysis"
             size="small"
           />

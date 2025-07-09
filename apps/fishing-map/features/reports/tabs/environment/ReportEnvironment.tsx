@@ -60,24 +60,20 @@ function ReportEnvironment() {
           <div key={dataview.id} className={styles.container}>
             <p className={styles.summary}>
               {dataset?.configuration?.function === 'AVG' && (
-                <span>{upperFirst(t('common.average', 'Average'))} </span>
+                <span>{upperFirst(t('common.average'))} </span>
               )}
               <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
               {(isDynamic || isCurrents) && (
                 <Fragment>
-                  {t('common.between', 'betweeen')} <strong>{formatI18nDate(start)}</strong>{' '}
-                  {t('common.and', 'and')} <strong>{formatI18nDate(end)}</strong>
+                  {t('common.between')} <strong>{formatI18nDate(start)}</strong> {t('common.and')}{' '}
+                  <strong>{formatI18nDate(end)}</strong>
                 </Fragment>
               )}
             </p>
             {isDynamic || isCurrents ? (
               isLoading || !layersTimeseriesFiltered?.[index] || hasError ? (
                 <ReportActivityPlaceholder showHeader={false}>
-                  {hasError && (
-                    <p className={styles.errorMessage}>
-                      {t('errors.layerLoading', 'There was an error loading the layer')}
-                    </p>
-                  )}
+                  {hasError && <p className={styles.errorMessage}>{t('errors.layerLoading')}</p>}
                 </ReportActivityPlaceholder>
               ) : isCurrents && layersFilteredFeatures?.[index] ? (
                 <Fragment>
@@ -106,8 +102,6 @@ function ReportEnvironment() {
               <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
                 {isDynamic
                   ? t('analysis.statsDisclaimerDynamic', {
-                      defaultValue:
-                        'During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.',
                       interval: t(`common.${interval.toLowerCase()}s` as any, {
                         count: 1,
                       }).toLowerCase(),
@@ -116,8 +110,6 @@ function ReportEnvironment() {
                       unit,
                     })
                   : t('analysis.statsDisclaimerStatic', {
-                      defaultValue:
-                        'The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.',
                       min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
                       max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
                       mean: formatI18nNumber(mean, { maximumFractionDigits: 2 }),
@@ -125,7 +117,7 @@ function ReportEnvironment() {
                     })}{' '}
                 {dataset?.source && (
                   <span>
-                    {t('analysis.dataSource', 'Data source')}: {htmlParse(dataset.source)}
+                    {t('analysis.dataSource')}: {htmlParse(dataset.source)}
                   </span>
                 )}
               </p>

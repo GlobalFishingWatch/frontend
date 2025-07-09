@@ -78,22 +78,22 @@ function VesselTracksTooltipSection({
                   </p>
                   {showFeaturesDetails && (
                     <Fragment>
-                      <p key="speed">
-                        {speed && (
+                      {speed && (
+                        <p key="speed">
                           <span>
                             {upperFirst(t('eventInfo.speed', 'Speed'))}: {speed.toFixed(2)}{' '}
                             {t('common.knots', 'knots')}
                           </span>
-                        )}
-                      </p>
-                      <p key="depth">
-                        {depth && (
+                        </p>
+                      )}
+                      {depth && (
+                        <p key="depth">
                           <span>
                             {upperFirst(t('eventInfo.depth', 'Depth'))}: {depth}{' '}
                             {t('common.meters', 'meters')}
                           </span>
-                        )}
-                      </p>
+                        </p>
+                      )}
                     </Fragment>
                   )}
                 </div>

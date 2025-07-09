@@ -20,6 +20,7 @@ import {
 import { fetchDataviewsByIdsThunk, selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
+import GFWOnly from 'features/user/GFWOnly'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import { getNextColor } from 'features/workspace/workspace.utils'
@@ -44,6 +45,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
     description,
     moreInfoLink,
     datasetsConfig,
+    onlyGFWUser,
   } = layer
   const [loading, setLoading] = useState(false)
   const dataviews = useSelector(selectDataviewInstancesResolvedVisible)
@@ -108,7 +110,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
             {datasetTypeIcon && <Icon icon={datasetTypeIcon} />}
             {datasetSourceIcon ? (
               moreInfoLink ? (
-                <Tooltip content={t('common.seeMore', 'See more')}>
+                <Tooltip content={t('common.seeMore')}>
                   <a href={moreInfoLink} target="_blank" rel="noreferrer" style={{ lineHeight: 1 }}>
                     <Icon icon={datasetSourceIcon} type="original-colors" />
                   </a>
@@ -117,8 +119,9 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
                 <Icon icon={datasetSourceIcon} type="original-colors" />
               )
             ) : null}
+            {onlyGFWUser && <GFWOnly userGroup="gfw" />}
             <Button className={styles.cta} onClick={onAddToWorkspaceClick} loading={loading}>
-              {t('workspace.addLayer', 'Add to workspace')}
+              {t('workspace.addLayer')}
             </Button>
           </div>
         </div>

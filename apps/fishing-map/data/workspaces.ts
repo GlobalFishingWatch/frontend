@@ -2,6 +2,8 @@ import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 
+import type { UserGroup } from 'features/user/user.slice'
+
 import { PUBLIC_SUFIX } from './config'
 
 type WorkspaceEnv = 'development' | 'production'
@@ -83,13 +85,8 @@ export const TEMPLATE_ACTIVITY_DATAVIEW_SLUG = 'activity-template' as const
 export const TEMPLATE_CLUSTERS_DATAVIEW_SLUG = 'template-for-bigquery-cluster-events' as const
 const TEMPLATE_ENVIRONMENT_DATAVIEW_SLUG = 'default-environmental-layer' as const
 
-export const VESSEL_TRACK_DATAVIEW_TEMPLATES = [
-  TEMPLATE_VESSEL_DATAVIEW_SLUG,
-  TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_BRAZIL,
-]
-
 export const TEMPLATE_DATAVIEW_SLUGS = [
-  ...VESSEL_TRACK_DATAVIEW_TEMPLATES,
+  TEMPLATE_VESSEL_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
   TEMPLATE_USER_TRACK_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
@@ -102,6 +99,10 @@ export const TEMPLATE_DATAVIEW_SLUGS = [
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
 ]
 
+export const PRIVATE_TEMPLATE_VESSEL_DATAVIEW_SLUGS: Partial<Record<UserGroup, string>> = {
+  brazil: TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_BRAZIL,
+}
+
 export const DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS = [
   'public-global-presence:v3.0',
   'public-chile-presence:v20211126',
@@ -111,9 +112,13 @@ export const DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS = [
 ]
 
 const PRESENCE_DATAVIEWS = [
-  VIIRS_MATCH_DATAVIEW_SLUG, // we ensure the + icon woks for the presence category
   PRESENCE_DATAVIEW_SLUG, // In case the workspace doesn't have the dataview added,
-  SAR_DATAVIEW_SLUG, // TODO include once ready to release
+]
+
+const DETECTIONS_DATAVIEWS = [
+  VIIRS_MATCH_DATAVIEW_SLUG, // we ensure the + icon woks for the presence category
+  SAR_DATAVIEW_SLUG,
+  SENTINEL2_DATAVIEW_SLUG,
 ]
 
 const EVENTS_DATAVIEWS = [
@@ -160,6 +165,7 @@ export const DEFAULT_DATAVIEW_SLUGS = [
   FISHING_DATAVIEW_SLUG_VMS,
   ...EVENTS_DATAVIEWS,
   ...PRESENCE_DATAVIEWS,
+  ...DETECTIONS_DATAVIEWS,
   ...ENVIRONMENT_DATAVIEWS,
   ...TEMPLATE_DATAVIEW_SLUGS,
   ...CONTEXT_LAYERS_DATAVIEWS,

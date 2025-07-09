@@ -23,7 +23,7 @@ import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.sl
 import WhatsNew from 'features/sidebar/WhatsNew'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
-import { selectFeatureFlags, selectWorkspace } from 'features/workspace/workspace.selectors'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
 import { SEARCH, USER, WORKSPACE_SEARCH, WORKSPACES_LIST } from 'routes/routes'
 import {
@@ -57,7 +57,6 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const locationType = useSelector(selectLocationType)
   const setMapCoordinates = useSetMapCoordinates()
   const workspace = useSelector(selectWorkspace)
-  const featureFlags = useSelector(selectFeatureFlags)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const locationCategory = useSelector(selectWorkspaceCategory)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
@@ -106,12 +105,12 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
                 category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
                 workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
               },
-              query: { featureFlags },
+              query: {},
               replaceQuery: !isWorkspaceLocation,
             }}
             onClick={onSearchClick}
           >
-            <Tooltip content={t('workspace.categories.search', 'Vessel search')} placement="right">
+            <Tooltip content={t('workspace.categories.search')} placement="right">
               <span className={styles.tabContent}>
                 <Icon icon="category-search" className={styles.searchIcon} />
               </span>
@@ -137,7 +136,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
                   className={styles.tabContent}
                   to={{
                     ...getLinkToCategory(category as WorkspaceCategory),
-                    query: { featureFlags },
+                    query: {},
                   }}
                   onClick={onCategoryClick}
                 >
@@ -167,7 +166,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
                   className={cx(styles.link)}
                   onClick={onFeedbackClick}
                 >
-                  {t('feedback.logAnIssue', 'Log an issue')}
+                  {t('feedback.logAnIssue')}
                 </span>
               </li>
               <li>
@@ -177,7 +176,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
                   rel="noreferrer"
                   className={cx(styles.link)}
                 >
-                  {t('feedback.requestAnImprovement', 'Request an improvement')}
+                  {t('feedback.requestAnImprovement')}
                 </a>
               </li>
             </ul>

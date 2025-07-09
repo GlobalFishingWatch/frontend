@@ -32,7 +32,7 @@ function VesselInfoCorrection() {
         className="vessel-info-correction"
         type="border"
         icon="feedback-error"
-        tooltip={t('layer.vessel_info_correction', 'Suggest a correction')}
+        tooltip={t('layer.vessel_info_correction')}
         tooltipPlacement="bottom"
         size="small"
         onClick={onInfoCorrectionClick}

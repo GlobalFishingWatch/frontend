@@ -37,19 +37,17 @@ const formatTimerangeBoundary = (
 export function getViewAccessOptions(
   containsPrivateDatasets = false
 ): SelectOption<WorkspaceViewAccessType>[] {
-  const permissionsLabel = containsPrivateDatasets
-    ? `(${t('common.permissions', 'permissions required')})`
-    : ''
+  const permissionsLabel = containsPrivateDatasets ? `(${t('common.permissions')})` : ''
   return [
     {
       id: WORKSPACE_PUBLIC_ACCESS,
-      label: `${t('common.anyoneWithTheLink', 'Anyone with the link')} ${permissionsLabel}`,
+      label: `${t('common.anyoneWithTheLink')} ${permissionsLabel}`,
     },
     {
       id: WORKSPACE_PASSWORD_ACCESS,
-      label: `${t('common.anyoneWithThePassword', 'Anyone with the password')} ${permissionsLabel}`,
+      label: `${t('common.anyoneWithThePassword')} ${permissionsLabel}`,
     },
-    { id: WORKSPACE_PRIVATE_ACCESS, label: t('common.onlyMe', 'Only me') },
+    { id: WORKSPACE_PRIVATE_ACCESS, label: t('common.onlyMe') },
   ]
 }
 
@@ -63,24 +61,23 @@ export function getTimeRangeOptions(
     {
       id: 'static',
       label: t('common.timerangeStatic', {
-        defaultValue: 'Static ({{start}} - {{end}})',
         start: formatTimerangeBoundary(start, dateFormat),
         end: formatTimerangeBoundary(end, dateFormat),
       }),
     },
     {
       id: 'dynamic',
-      label: t('common.timerangeDynamic', 'Dynamic'),
+      label: t('common.timerangeDynamic'),
     },
   ]
 }
 
 function getEditAccessOptions(): SelectOption<WorkspaceEditAccessType>[] {
   return [
-    { id: WORKSPACE_PRIVATE_ACCESS, label: t('common.onlyMe', 'Only me') },
+    { id: WORKSPACE_PRIVATE_ACCESS, label: t('common.onlyMe') },
     {
       id: WORKSPACE_PASSWORD_ACCESS,
-      label: t('common.anyoneWithThePassword', 'Anyone with the password'),
+      label: t('common.anyoneWithThePassword'),
     },
   ]
 }
@@ -98,7 +95,6 @@ const getStaticWorkspaceName = ({ timerange }: { timerange: { start: string; end
   if (timerange?.start && timerange?.end) {
     const dateFormat = pickDateFormatByRange(timerange.start as string, timerange.end as string)
     return t('common.timerangeDescription', {
-      defaultValue: 'From {{start}} to {{end}}',
       start: formatTimerangeBoundary(timerange.start, dateFormat),
       end: formatTimerangeBoundary(timerange.end, dateFormat),
     })
@@ -108,7 +104,6 @@ const getStaticWorkspaceName = ({ timerange }: { timerange: { start: string; end
 
 const getDynamicWorkspaceName = ({ daysFromLatest }: { daysFromLatest: number }) => {
   return t('common.latestDays', {
-    defaultValue: 'Latest {{count}} days',
     count: daysFromLatest || 0,
   })
 }

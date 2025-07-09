@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { atom, useAtom, useAtomValue } from 'jotai'
 import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 import memoizeOne from 'memoize-one'
@@ -104,16 +104,6 @@ const initialReportState: ReportState = {
 
 const reportStateAtom = atom(initialReportState)
 
-const mapTimeseriesAtom = atom([] as ReportGraphProps[] | undefined)
-
-if (process.env.NODE_ENV !== 'production') {
-  mapTimeseriesAtom.debugLabel = 'mapTimeseries'
-}
-
-export function useSetTimeseries() {
-  return useSetAtom(mapTimeseriesAtom)
-}
-
 export function useTimeseriesStats() {
   return useAtomValue(reportStateAtom)?.stats
 }
@@ -154,7 +144,8 @@ const getTimeseries = ({ featuresFiltered, instances }: GetTimeseriesParams) => 
       })
       return
     }
-    const chunk = instance.getChunk()
+    const chunk = instance.getChunk?.()
+    if (!chunk) return
     const sublayers = instance.getFourwingsLayers()
     const props = instance.props as FourwingsLayerProps
     const params: FeaturesToTimeseriesParams = {
@@ -197,7 +188,8 @@ const getTimeseriesStats = ({
         }
         return
       }
-      const chunk = instance.getChunk()
+      const chunk = instance.getChunk?.()
+      if (!chunk) return
       const { startFrame, endFrame } = getIntervalFrames({
         startTime: DateTime.fromISO(start).toUTC().toMillis(),
         endTime: DateTime.fromISO(end).toUTC().toMillis(),

@@ -29,7 +29,6 @@ import { fetchDataviewsByIdsThunk, selectAllDataviews } from 'features/dataviews
 import { t as trans } from 'features/i18n/i18n'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useMapViewState } from 'features/map/map-viewport.hooks'
-import { selectFeatureFlags } from 'features/workspace/workspace.selectors'
 import { WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
 import type { Bbox } from 'types'
 import { getEventLabel } from 'utils/analytics'
@@ -50,7 +49,6 @@ function WorkspaceWizard() {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const fitBounds = useMapFitBounds()
-  const featureFlags = useSelector(selectFeatureFlags)
   const viewState = useMapViewState()
   const dataviews = useSelector(selectAllDataviews)
   const inputRef = useRef<HTMLInputElement | null>(null)
@@ -147,7 +145,6 @@ function WorkspaceWizard() {
       },
       query: {
         ...linkViewport,
-        featureFlags,
         daysFromLatest: 90,
         dataviewInstances: [
           {
@@ -195,22 +192,20 @@ function WorkspaceWizard() {
   }, [selectedItem, dataviews, linkToArea])
 
   const linkLabel = selectedItem
-    ? t('workspace.wizard.exploreArea', 'Explore area')
-    : t('workspace.wizard.exploreGlobal', 'Explore global')
+    ? t('workspace.wizard.exploreArea')
+    : t('workspace.wizard.exploreGlobal')
 
   return (
     <div className={styles.wizardContainer}>
       <div
         className={cx(styles.inputContainer, { [styles.open]: isOpen && areasMatching.length > 0 })}
       >
-        <label>
-          {t('workspace.wizard.title', 'Setup a marine manager workspace for any area globally')}
-        </label>
+        <label>{t('workspace.wizard.title')}</label>
         <div className={styles.comboContainer}>
           <InputText
             {...getInputProps({ ref: inputRef })}
             className={styles.input}
-            placeholder={t('map.search', 'Search areas')}
+            placeholder={t('map.search')}
             onBlur={onInputBlur}
           />
           <IconButton
@@ -238,13 +233,13 @@ function WorkspaceWizard() {
         <div>
           <p className={styles.hint}>
             <Icon icon="magic" />
-            {t('workspace.wizard.help', 'You can move the map and update your workspace later')}
+            {t('workspace.wizard.help')}
           </p>
         </div>
         <div className={styles.linksContainer}>
           {selectedItem && linkToReport && (
             <Link to={linkToReport} target="_self" className={cx(styles.confirmBtn)}>
-              {t('analysis.see', 'See report')}
+              {t('analysis.see')}
             </Link>
           )}
           <Link to={linkToArea} target="_self" className={cx(styles.confirmBtn)}>

@@ -1,5 +1,4 @@
 import React, { Fragment, type JSX } from 'react'
-import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
 
 import { Icon } from '../icon'
@@ -225,9 +224,9 @@ export function Header({
       )}
     >
       <header className={styles.gfwHeader}>
-        <Link to={homeRedirectURL} className={styles.appLogo}>
+        <a href={homeRedirectURL} className={styles.appLogo}>
           <span className={styles.screenReaderOnly}>Home</span>
-        </Link>
+        </a>
         <a className={styles.screenReaderOnly} href="#main">
           Skip navigation links
         </a>

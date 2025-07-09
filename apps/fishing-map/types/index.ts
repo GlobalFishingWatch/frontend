@@ -39,7 +39,6 @@ type WorkspaceTimeRange = Record<WorkspaceTimeRangeParam, string>
 
 type BivariateDataviews = [string, string] | null
 
-export type FeatureFlag = 'globalReports' | 'workspaceGenerator'
 export interface WorkspaceState extends BaseUrlWorkspace {
   activityVisualizationMode?: FourwingsVisualizationMode
   bivariateDataviews?: BivariateDataviews
@@ -47,7 +46,6 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   daysFromLatest?: number // use latest day as endAt minus the number of days set here
   detectionsVisualizationMode?: FourwingsVisualizationMode
   environmentVisualizationMode?: typeof HEATMAP_ID | typeof HEATMAP_LOW_RES_ID
-  featureFlags?: FeatureFlag[]
   mapAnnotations?: MapAnnotation[]
   mapAnnotationsVisible?: boolean
   mapRulers?: RulerData[]

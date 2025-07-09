@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDatasetConfigByDatasetType } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
@@ -224,11 +224,7 @@ function ActivityLayerPanel({
                       icon={filterOpen ? 'filter-on' : 'filter-off'}
                       size="small"
                       onClick={onToggleFilterOpen}
-                      tooltip={
-                        filterOpen
-                          ? t('layer.filterClose', 'Close filters')
-                          : t('layer.filterOpen', 'Open filters')
-                      }
+                      tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
                       tooltipPlacement="top"
                     />
                     {dataview.id === 'fishing-ais' && (
@@ -255,11 +251,8 @@ function ActivityLayerPanel({
                   type={'warning'}
                   tooltip={
                     isGFWUser
-                      ? `${t(
-                          'errors.layerLoading',
-                          'There was an error loading the layer'
-                        )} (${layerError})`
-                      : t('errors.layerLoading', 'There was an error loading the layer')
+                      ? `${t('errors.layerLoading')} (${layerError})`
+                      : t('errors.layerLoading')
                   }
                   size="small"
                 />
@@ -290,13 +283,9 @@ function ActivityLayerPanel({
                     content={
                       stats.type === 'vessels'
                         ? t(
-                            'layer.statsHelp',
-                            'The number of vessels and flag states is calculated for your current filters and time range globally (up to 1 year). Some double counting may occur.'
-                          )
+                            'layer.statsHelp'                          )
                         : t(
-                            'layer.statsHelpDetection',
-                            'The number of detections is calculated for your current filters and time range globally (up to 1 year). Some double counting may occur.'
-                          )
+                            'layer.statsHelpDetection'                          )
                     }
                   >
                     <div className={activityStyles.help}>
@@ -306,17 +295,15 @@ function ActivityLayerPanel({
                           {stats.type === 'vessels'
                             ? t('common.vessel', {
                                 count: statsValue,
-                                defaultValue: 'vessels',
-                              }).toLocaleLowerCase()
+                                }).toLocaleLowerCase()
                             : t('common.detection', {
                                 count: statsValue,
-                                defaultValue: 'detections',
-                              }).toLocaleLowerCase()}
+                                }).toLocaleLowerCase()}
                         </span>
                       ) : stats.type === 'vessels' ? (
-                        t('workspace.noVesselInFilters', 'No vessels match your filters')
+                        t('workspace.noVesselInFilters')
                       ) : (
-                        t('workspace.noDetectionInFilters', 'No detections match your filters')
+                        t('workspace.noDetectionInFilters')
                       )}
                       {stats.type === 'vessels' &&
                         stats.flags > 0 &&
@@ -324,17 +311,16 @@ function ActivityLayerPanel({
                           dataview.config?.filterOperators?.flag === EXCLUDE_FILTER_ID ||
                           dataview.config?.filters?.flag.length > 1) && (
                           <Fragment>
-                            <span> {t('common.from', 'from')} </span>
+                            <span> {t('common.from')} </span>
                             <span>
                               <I18nNumber number={stats.flags} />{' '}
                               {t('layer.flagState', {
                                 count: stats.flags,
-                                defaultValue: 'flag states',
-                              }).toLocaleLowerCase()}
+                                }).toLocaleLowerCase()}
                             </span>
                           </Fragment>
                         )}{' '}
-                      {t('common.globally', 'globally')}
+                      {t('common.globally')}
                     </div>
                   </Tooltip>
                 </div>
@@ -342,7 +328,9 @@ function ActivityLayerPanel({
               <div className={styles.filters}>
                 <div className={styles.filters}>
                   <OutOfTimerangeDisclaimer dataview={dataview} />
-                  <DatasetFilterSource dataview={dataview} />
+                  {dataview.category === DataviewCategory.Activity && (
+                    <DatasetFilterSource dataview={dataview} />
+                  )}
                   {filtersAllowed.map(({ id, label }) => (
                     <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
                   ))}
@@ -360,7 +348,7 @@ function ActivityLayerPanel({
                     size="small"
                     type="border"
                     icon="split"
-                    tooltip={t('layer.toggleCombinationMode.split', 'Split layers')}
+                    tooltip={t('layer.toggleCombinationMode.split')}
                     tooltipPlacement="left"
                     className={cx(activityStyles.bivariateSplit, 'print-hidden')}
                     onClick={onSplitLayers}

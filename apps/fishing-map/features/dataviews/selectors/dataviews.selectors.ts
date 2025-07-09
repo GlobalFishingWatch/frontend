@@ -1,7 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
 
 import type { Dataset, Dataview, DataviewInstance } from '@globalfishingwatch/api-types'
-import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import {
+  DatasetSubCategory,
+  DatasetTypes,
+  DataviewCategory,
+  DataviewType,
+} from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 
@@ -32,6 +37,7 @@ import { selectVesselProfileDataviewInstancesInjected } from 'features/dataviews
 import {
   selectAllDataviewInstancesResolved,
   selectDataviewInstancesMergedOrdered,
+  selectDataviewInstancesResolved,
 } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
@@ -134,6 +140,29 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     }
     return environmentalDataviews
   }
+)
+
+export const selectHasSubcategoryDetectionsDataview = (subcategory: DatasetSubCategory) =>
+  createSelector([selectDataviewInstancesResolved], (dataviews) => {
+    return dataviews.some(
+      (dataview) =>
+        dataview.config?.visible &&
+        dataview.datasets?.some((dataset) => dataset.subcategory === subcategory)
+    )
+  })
+
+export const selectHasFishingDataviews = selectHasSubcategoryDetectionsDataview(
+  DatasetSubCategory.Fishing
+)
+export const selectHasPresenceDataviews = selectHasSubcategoryDetectionsDataview(
+  DatasetSubCategory.Presence
+)
+export const selectHasViirsDataviews = selectHasSubcategoryDetectionsDataview(
+  DatasetSubCategory.Viirs
+)
+export const selectHasSarDataviews = selectHasSubcategoryDetectionsDataview(DatasetSubCategory.Sar)
+export const selectHasSentinel2Dataviews = selectHasSubcategoryDetectionsDataview(
+  DatasetSubCategory.Sentinel2
 )
 
 export const selectActiveHeatmapAnimatedEnvironmentalDataviews = createSelector(

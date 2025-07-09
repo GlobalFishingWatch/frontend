@@ -20,21 +20,21 @@ import {
 const PREFIX = 'GFW'
 
 const titleReducer = (_: any, action: PayloadAction<{ category?: string }>) => {
-  const defaultTitle = `${PREFIX} | ${t('common.map', 'Map')}`
+  const defaultTitle = `${PREFIX} | ${t('common.map')}`
   switch (action.type) {
     case HOME:
       return defaultTitle
     case SEARCH:
     case WORKSPACE_SEARCH:
-      return `${PREFIX} | ${t('search.title', 'Search')}`
+      return `${PREFIX} | ${t('search.title')}`
     case VESSEL:
     case WORKSPACE_VESSEL:
-      return `${PREFIX} | ${t('vessel.title', 'Vessel profile')}`
+      return `${PREFIX} | ${t('vessel.title')}`
     case USER:
-      return `${PREFIX} | ${t('user.profile', 'User profile')}`
+      return `${PREFIX} | ${t('user.profile')}`
     case REPORT:
     case WORKSPACE_REPORT:
-      return `${PREFIX} | ${t('analysis.title', 'Report')}`
+      return `${PREFIX} | ${t('analysis.title')}`
     case WORKSPACE:
     case WORKSPACES_LIST: {
       const parsedCategory = capitalize(lowerCase(action.payload.category))

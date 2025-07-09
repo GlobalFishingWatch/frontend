@@ -156,12 +156,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
         },
       })
       if (error) {
-        setErrorMsg(
-          t(
-            'analysis.errorPeriodComparisonDateRange',
-            'Date range error. Comparison start must be after baseline start.'
-          )
-        )
+        setErrorMsg(t('analysis.errorPeriodComparisonDateRange'))
       } else {
         setErrorMsg('')
       }
@@ -276,17 +271,14 @@ export const useTimeCompareTimeDescription = (addPrefix = true) => {
           }),
           start: startLabel,
           duration: durationLabel,
-          defaultValue:
-            'in the {{duration}} following {{compareStart}} compared to baseline in the {{duration}} following {{start}}',
         })
       : t('analysis.beforeAfterRange', {
           compareStart: compareStartLabel,
           duration: durationLabel,
-          defaultValue: 'between the {{duration}} before and after {{compareStart}}',
         })
 
   if (addPrefix) {
-    label = [t('analysis.change', 'Change'), label].join(' ')
+    label = [t('analysis.change'), label].join(' ')
   }
 
   return label

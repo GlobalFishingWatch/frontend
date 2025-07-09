@@ -25,9 +25,9 @@
     "name": "ZEE"
   },
   "eez-areas-12nm": {
-    "description": "World 12 Nautical Miles Zone (Territorial Seas). Flanders Marine Institute (2023). Maritime Boundaries Geodatabase: Territorial Seas (12NM), version 4. Available online at https://www.marineregions.org/. https://doi.org/10.14284/633",
-    "moreInfoLink": "",
-    "name": "Territorial Seas"
+    "description": "Territorial seas are a belt of coastal waters extending at most 12 nautical miles (22.2 km; 13.8 mi) from the baseline (usually the mean low-water mark) of a coastal state.",
+    "moreInfoLink": "https://www.marineregions.org/downloads.php",
+    "name": "Territorial Seas (12 nautical miles)"
   },
   "encounters": {
     "description": "Identifié à partir des données AIS comme des lieux où deux navires (un transporteur et un navire de pêche) se trouvaient à moins de 500 mètres l'un de l'autre pendant au moins 2 heures et se déplaçaient à une vitesse médiane inférieure à 2 noeuds, à au moins 10 km d'un mouillage côtier.",
@@ -50,9 +50,9 @@
     "name": "Effort de pêche apparent (VMS)"
   },
   "gfcm-fao": {
-    "description": "General Fisheries Commission for the Mediterranean Fisheries Restricted Areas",
+    "description": "In the Mediterranean and the Black Sea, 1,760,000 square kilometers of sea habitats are protected by ten fisheries restricted areas established by the GFCM, in which some specific fishing activities are temporarily or permanently banned or restricted.",
     "moreInfoLink": "https://www.fao.org/gfcm/data/maps/fras/ru",
-    "name": "GFCM FRAs"
+    "name": "GFCM Fisheries Restricted Areas"
   },
   "graticules": {
     "description": "Grilles ou graticules de latitude et de longitude à des intervalles de 1, 5, 10 et 30° selon le niveau de zoom de la carte",
@@ -65,8 +65,8 @@
     "name": "Haute mer"
   },
   "high-seas-pockets": {
-    "description": "The High Seas are any area of the ocean beyond Exclusive Economic Zones (EEZ). High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
-    "moreInfoLink": "",
+    "description": "High Seas pockets are areas totally enclosed by EEZs that are beyond Exclusive Economic Zones (EEZ). These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
+    "moreInfoLink": "https://www.marineregions.org/downloads.php",
     "name": "High seas pockets"
   },
   "loitering": {
@@ -90,7 +90,7 @@
     "name": "AMP (WDPA)"
   },
   "mpatlas": {
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term biodiversity conservation. Reported MPAs vary greatly in their status in the process of becoming an MPA (Stage of Establishment) and the impact of human activities (Level of Protection). MPAtlas assesses MPAs using The MPA Guide, a science-based tool that identifies different types of MPAs and connects them to the outcome they are likely to achieve. Source: Marine Protection Atlas",
+    "description": "MPAs vary greatly in their status in the process of becoming an MPA and the impact of human activities. MPAtlas applies The MPA Guide, a science-based tool that identifies different types of MPAs and connects them to the outcome they are likely to achieve.",
     "moreInfoLink": "https://mpatlas.org",
     "name": "MPAs (MPAtlas)"
   },
@@ -110,9 +110,9 @@
     "name": "Concentration d'oxygène (O2)"
   },
   "paa-duke": {
-    "description": "Global dataset of Preferential Access Areas for small-scale fishing",
+    "description": "This global Preferential Access Area (PAA) database was built with data for 44 countries identified by the Illuminating Hidden Harvests (IHH) initiative following Basurto et al. (2023) and the FAOLEX database.",
     "moreInfoLink": "https://research.repository.duke.edu/concern/datasets/79407z51r",
-    "name": "Preferential Access Areas"
+    "name": "Preferential Access Areas for Small-Scale Fishing"
   },
   "ph": {
     "description": "L'acidité de l'océan est mesurée par le pH. L'absorption accrue du dioxyde de carbone a abaissé le pH de l'océan, entraînant une acidification des océans qui peut avoir de vastes répercussions sur les organismes marins. Ce jeu de données est composé de paramètres biogéochimiques, y compris le pH, affichés à l'échelle de l'océan mondial avec une résolution horizontale de 1/4 degrés. ",
@@ -169,6 +169,11 @@
     "moreInfoLink": "https://bluehabitats.org/",
     "name": "Monts sous-marins"
   },
+  "sentinel2": {
+    "description": "This layer shows vessels detected using optical satellite imagery collected by the European Space Agency’s Sentinel-2 satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths.",
+    "moreInfoLink": "",
+    "name": "Imagery detections (Optical)"
+  },
   "species": {
     "description": "À FAIRE",
     "moreInfoLink": "",
@@ -203,5 +208,10 @@
     "description": "Le calque de détection des navires par lumière nocturne, connu sous le nom de suite de radiomètres pour imageurs dans l'infrarouge et le visible (ou VIIRS), affiche les navires en mer que les satellites ont détecté par la lumière qu'ils émettent la nuit. Bien qu'il ne soit pas exclusivement associé aux navires de pêche, ce calque d'activité est susceptible d'afficher des navires réalisant des activités qui impliquent des lumières vives et ont lieu la nuit, telles que la pêche au calmar.",
     "moreInfoLink": "",
     "name": "Détection de lumière de nuit (VIIRS)"
+  },
+  "viirs-skylight": {
+    "description": "TODO: description",
+    "moreInfoLink": "",
+    "name": "Night light detections (VIIRS Skylight)"
   }
 }

@@ -21,8 +21,7 @@
   width: 100%;
   max-width: 78rem;
   overflow-y: auto;
-  max-height: 100vh;
-  height: 100dvh;
+  max-height: 100dvh;
 }
 
 .auto {

@@ -57,7 +57,6 @@ export const VesselActivitySummary = () => {
               <li key={flag}>
                 {formatInfoField(flag, 'flag')} ({<I18nNumber number={count} />}{' '}
                 {t('event.port_visit', {
-                  defaultValue: 'port visit',
                   count,
                 })}
                 )
@@ -70,17 +69,14 @@ export const VesselActivitySummary = () => {
   )
 
   const summary = t('vessel.summary', {
-    defaultValue:
-      '{{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>',
     events: `<strong>${formatI18nNumber(events?.length as number)}</strong> ${t('common.event', {
-      defaultValue: 'events',
       count: events?.length,
     })}`,
     voyages:
       voyages !== 0 && (visibleEvents.includes('port_visit') || visibleEvents === 'all')
-        ? `${t('common.in', 'in')} <strong>${formatI18nNumber(voyages as number)}</strong> ${t(
+        ? `${t('common.in')} <strong>${formatI18nNumber(voyages as number)}</strong> ${t(
             'vessel.voyage',
-            { defaultValue: 'voyages', count: voyages }
+            { count: voyages }
           )}`
         : '',
     timerangeStart: formatI18nDate(timerange?.start),
@@ -101,14 +97,14 @@ export const VesselActivitySummary = () => {
 
   return (
     <div className={styles.summaryContainer}>
-      <h2 className="print-only">{t('vessel.sectionActivity', 'activity')}</h2>
+      <h2 className="print-only">{t('vessel.sectionActivity')}</h2>
       <div className={styles.container}>
         <h2 className={styles.summary}>
           <span dangerouslySetInnerHTML={{ __html: summary }}></span>
           {hasActivityRegionsData ? (
             <span>
               {' '}
-              {t('common.in', 'in')}{' '}
+              {t('common.in')}{' '}
               {REGIONS_PRIORITY.map((regionType, index) => {
                 if (activityRegions[regionType] && activityRegions[regionType].length !== 0) {
                   const tooltipContent = (
@@ -119,8 +115,7 @@ export const VesselActivitySummary = () => {
                           return (
                             <li key={id}>
                               {getRegionNamesByType(regionType, [id])[0] || id} (
-                              {<I18nNumber number={count} />}{' '}
-                              {t('common.event', { defaultValue: 'events', count })})
+                              {<I18nNumber number={count} />} {t('common.event', { count })})
                             </li>
                           )
                         })}
@@ -138,7 +133,6 @@ export const VesselActivitySummary = () => {
                           <span>
                             {' '}
                             {t(`common.area`, {
-                              defaultValue: 'areas',
                               count: activityRegions[regionType].length,
                             })}
                           </span>
@@ -194,7 +188,7 @@ export const VesselActivitySummary = () => {
                     {active && eventType === EventTypes.Fishing && fishingHours !== 0 && (
                       <span>
                         (
-                        <I18nNumber number={fishingHours} /> {t('common.hour_other', 'hours')})
+                        <I18nNumber number={fishingHours} /> {t('common.hour_other')})
                       </span>
                     )}
                     {eventType === EventTypes.Port && threeMostVisitedPortCountries.length > 0 && (
@@ -205,7 +199,6 @@ export const VesselActivitySummary = () => {
                             <Tooltip
                               key={flag}
                               content={`${count} ${t('event.port_visit', {
-                                defaultValue: 'port visit',
                                 count,
                               })}`}
                             >
@@ -218,9 +211,9 @@ export const VesselActivitySummary = () => {
                         })}
                         {restMostVisitedPortCountries.length > 0 && (
                           <Tooltip content={restTooltipContent}>
-                            <span className={styles.help}>{` ${t('common.and', 'and')} ${
+                            <span className={styles.help}>{` ${t('common.and')} ${
                               restMostVisitedPortCountries.length
-                            } ${t('common.more', 'more')}`}</span>
+                            } ${t('common.more')}`}</span>
                           </Tooltip>
                         )}
                         )

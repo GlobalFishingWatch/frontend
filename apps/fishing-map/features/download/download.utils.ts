@@ -73,8 +73,8 @@ function hasDataviewWithIntervalSupported(
       const intervals = datasetIntervalsConfig?.length
         ? datasetIntervalsConfig
         : dataview.category === DataviewCategory.Environment
-        ? FALLBACK_HEATMAP_INTERVALS
-        : FALLBACK_ENVIRONMENT_INTERVALS
+          ? FALLBACK_HEATMAP_INTERVALS
+          : FALLBACK_ENVIRONMENT_INTERVALS
       return intervals.includes(interval) || intervals.includes(interval.toLowerCase() as any)
     })
   })
@@ -104,7 +104,7 @@ export function getSupportedTemporalResolutions(
         return {
           ...option,
           disabled: true,
-          tooltip: t('download.yearlyNotAvailable', 'Your time range is shorter than 1 year'),
+          tooltip: t('download.yearlyNotAvailable'),
           tooltipPlacement: 'top',
         }
       }
@@ -116,7 +116,7 @@ export function getSupportedTemporalResolutions(
         return {
           ...option,
           disabled: true,
-          tooltip: t('download.monthlyNotAvailable', 'Your time range is shorter than 1 month'),
+          tooltip: t('download.monthlyNotAvailable'),
           tooltipPlacement: 'top',
         }
       }

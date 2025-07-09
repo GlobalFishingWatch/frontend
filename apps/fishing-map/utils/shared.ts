@@ -40,6 +40,6 @@ export const sortFields = (a: Field, b: Field) => {
 export const listAsSentence = (list: string[]) => {
   if (!list) return
   if (list.length === 1) return list[0]
-  if (list.length === 2) return list.join(` ${t('common.and', 'and')} `)
-  return `${list.slice(0, -1).join(', ')} ${t('common.and', 'and')} ${list.slice(-1)}`
+  if (list.length === 2) return list.join(` ${t('common.and')} `)
+  return `${list.slice(0, -1).join(', ')} ${t('common.and')} ${list.slice(-1)}`
 }

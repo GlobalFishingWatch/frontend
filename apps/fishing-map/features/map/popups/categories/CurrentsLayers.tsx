@@ -43,7 +43,7 @@ function CurrentsTooltipRow({ feature, showFeaturesDetails }: CurrentsTooltipRow
           )}
           {speed && (
             <span>
-              <I18nNumber number={metersPerSecondToKnots(speed)} /> {t('common.knots', 'knots')}
+              <I18nNumber number={metersPerSecondToKnots(speed)} /> {t('common.knots')}
             </span>
           )}
         </div>

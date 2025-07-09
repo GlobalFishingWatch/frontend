@@ -35,14 +35,14 @@ function VesselGroupReportVesselsGraphSelector() {
   const options: ChoiceOption<ReportVesselGraph | ReportVesselsSubCategory>[] = [
     {
       id: REPORT_VESSELS_GRAPH_FLAG,
-      label: t('analysis.groupByFlag', 'by flag'),
+      label: t('analysis.groupByFlag'),
       disabled: loading,
     },
     ...(reportSubCategory !== 'fishing'
       ? [
           {
             id: REPORT_VESSELS_GRAPH_VESSELTYPE,
-            label: t('analysis.groupByVesseltype', 'by vessel type'),
+            label: t('analysis.groupByVesseltype'),
             disabled: loading,
           },
         ]
@@ -51,7 +51,7 @@ function VesselGroupReportVesselsGraphSelector() {
       ? [
           {
             id: REPORT_VESSELS_GRAPH_GEARTYPE,
-            label: t('analysis.groupByGeartype', 'by gear type'),
+            label: t('analysis.groupByGeartype'),
             disabled: loading,
           },
         ]
@@ -62,12 +62,12 @@ function VesselGroupReportVesselsGraphSelector() {
             id: 'source' as ReportVesselsSubCategory,
             label: (
               <span>
-                {t('analysis.groupBySource', 'by source')}
+                {t('analysis.groupBySource')}
                 {selectedOptionId === 'source' && (
                   <DataTerminology
                     size="tiny"
                     type="default"
-                    title={t('vesselGroupReport.sources', 'Vessel group report sources')}
+                    title={t('vesselGroupReport.sources')}
                     terminologyKey="sources"
                     className={styles.dataTerminology}
                   />

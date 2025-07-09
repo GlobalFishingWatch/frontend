@@ -63,9 +63,9 @@ const ReportBarTooltip = (props: any) => {
   let otherLabelCounted = false
   let parsedLabel = label
   if (label === EMPTY_FIELD_PLACEHOLDER) {
-    parsedLabel = t('analysis.unknownProperty', 'Unknown')
+    parsedLabel = t('analysis.unknownProperty')
   } else if (EMPTY_API_VALUES.includes(label)) {
-    parsedLabel = t('common.unknown', 'Unknown')
+    parsedLabel = t('common.unknown')
   } else if (type === 'flag') {
     parsedLabel = formatInfoField(label, 'flag') as string
   } else if (type === 'geartype') {
@@ -98,7 +98,7 @@ const ReportBarTooltip = (props: any) => {
                     ))}
                     {restValue !== 0 && (
                       <li key="others" className={styles.tooltipValue}>
-                        {t('analysis.others', 'Others')}: {restValue}
+                        {t('analysis.others')}: {restValue}
                       </li>
                     )}
                   </Fragment>
@@ -134,10 +134,10 @@ const ReportGraphTick = (props: any) => {
 
   const getTickLabel = (label: string) => {
     if (label === EMPTY_FIELD_PLACEHOLDER) {
-      return t('analysis.unknownProperty', 'Unknown')
+      return t('analysis.unknownProperty')
     }
     if (EMPTY_API_VALUES.includes(label)) {
-      return t('analysis.unknown', 'Unknown')
+      return t('analysis.unknown')
     }
     switch (property) {
       case 'flag':
@@ -162,7 +162,7 @@ const ReportGraphTick = (props: any) => {
     }
   }
 
-  const label = isOtherCategory ? t('analysis.others', 'Others') : getTickLabel(payload.value)
+  const label = isOtherCategory ? t('analysis.others') : getTickLabel(payload.value)
   const labelChunks = label.split(' ')
   const labelChunksClean = [labelChunks[0]]
   labelChunks.slice(1).forEach((chunk: any) => {

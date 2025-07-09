@@ -70,8 +70,16 @@ export const formatInfoField = (
       type === 'name'
     ) {
       return fieldValue.replace(
-        /\b(?![LXIVCDM]+\b)(\d*)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)\b/g,
-        (_, num, name) => num + upperFirst(name)
+        /\b(?![LXIVCDM]+\b)(\d*)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)\b|\b([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)(\d+)\b/g,
+        (match, num, name, nameFirst, numLast) => {
+          if (num && name) {
+            return num + upperFirst(name)
+          }
+          if (nameFirst && numLast) {
+            return upperFirst(nameFirst) + numLast
+          }
+          return upperFirst(match)
+        }
       )
     }
     if (type === 'fleet') {
@@ -158,7 +166,7 @@ export const getVesselShipNameLabel = (
   } = {}
 ): string => {
   const vesselInfo = getLatestIdentityPrioritised(vessel)
-  if (!vesselInfo) return t('common.unknownVessel', 'Unknown vessel')
+  if (!vesselInfo) return t('common.unknownVessel')
   if (vesselInfo.shipname && vesselInfo.geartypes && vesselInfo.flag && withGearType) {
     const gearTypes = getVesselGearTypeLabel(vesselInfo, { translationFn })
     return `${formatInfoField(vesselInfo.shipname, 'shipname')}
@@ -177,7 +185,7 @@ export const getVesselShipNameLabel = (
 
 export const getVesselOtherNamesLabel = (otherVesselsNames: string[]) => {
   return otherVesselsNames?.length
-    ? `, ${t('common.aka', 'a.k.a.')} ${otherVesselsNames
+    ? `, ${t('common.aka')} ${otherVesselsNames
         .map((i) => formatInfoField(i, 'shipname'))
         .join(', ')}`
     : ''

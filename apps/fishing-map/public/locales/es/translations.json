@@ -1,7 +1,7 @@
 {
   "analysis": {
     "activityChange": "Cambio de actividad",
-    "around": "alrededor de",
+    "around": "alrededor",
     "beforeAfter": "Antes/Después",
     "beforeAfterDate": "fecha",
     "beforeAfterRange": "{{duration}} antes y después del {{compareStart}}",
@@ -58,7 +58,7 @@
     "pinVesselsMaxAllowed": "Añadir estos muchos barcos hará que tu espacio de trabajo supere el límite recomendado de {{maxVessels}} . Por favor, considere utilizar la función de grupos de buques para gestionar sus discursos.",
     "portsAfterEvents": "Puertos visitados después de eventos",
     "portsSearchPlaceholder": "Buscar puertos",
-    "print ": "imprimir",
+    "print": "print",
     "removeVessels": "Quitar del área de trabajo",
     "resultsPerPage": "Mostrar {{results}} por página",
     "save": "Guardar este informe",
@@ -149,7 +149,6 @@
     "disabled": "Desactivado",
     "dismiss": "Cancelar",
     "edit": "Editar",
-    "edit ": "editar",
     "environment": "Datos ambientales",
     "event_one": "evento",
     "event_other": "eventos",
@@ -165,7 +164,7 @@
     "exclude": "Excluir",
     "excluded": "Excluido",
     "experimental": "Experimental",
-    "experimentalTooltip": "Dataset still in development, click the information icon to learn more",
+    "experimentalTooltip": "Dataset todavía en desarrollo, haga clic en el icono de información para aprender más",
     "faq": "FAQs",
     "feedback": "Comentarios",
     "field": "Campo",
@@ -240,13 +239,15 @@
     "seeDefault": "Ver la vista por defecto",
     "seeMore": "Ver más",
     "send": "Enviar",
+    "sentinel2": "Sentinel 2",
     "setNewPassword": "Establecer una nueva contraseña",
     "share": "Comparte el mapa actual",
+    "shiptype": "Shiptype",
     "since": "desde",
     "sourceOptions": {
       "both": "Registro y AIS",
-      "registryOnly": "Registry only",
-      "selfReportedOnly": "Self reported only"
+      "registryOnly": "Sólo registro",
+      "selfReportedOnly": "Autodeclarado"
     },
     "sources": "Fuentes",
     "summary": "Resumen",
@@ -277,7 +278,7 @@
     "vesselPresence": "Presencia de buques",
     "vessels": "Embarcaciones",
     "view_layer": "Ver la capa",
-    "viewIn": "View in",
+    "viewIn": "Ver en",
     "viirs": "Detección de luz nocturna",
     "visibleValues": "Valores visibles",
     "visits": "Visitas",
@@ -552,14 +553,14 @@
     "fishing_other": "Eventos de pesca",
     "fishingAction": "La pesca comenzó a partir de {{start}} por {{duration}}",
     "fishingActionIn": "Pescando en {{regionName}}",
-    "gap": "AIS Off event",
-    "gap_other": "AIS Off events",
-    "gapActionIn": "Probablemente deshabilitado en {{regionName}}",
+    "gap": "Evento de desactivación de AIS",
+    "gap_other": "Eventos de desactivación de AIS",
+    "gapActionIn": "Desactivación probable en {{regionName}}",
     "hourAbbreviated": "{{count}}h",
     "hourAbbreviated_one": "{{count}}h",
     "hourAbbreviated_other": "{{count}}h",
     "loitering": "Evento de deriva",
-    "loitering_one": "Loitering event",
+    "loitering_one": "Evento de deriva",
     "loitering_other": "Eventos de deriva",
     "loiteringAction": "Deriva comenzó a partir de {{start}} por {{duration}}",
     "loiteringActionIn": "Merodeando en {{regionName}}",
@@ -761,7 +762,7 @@
     "errorLabel": "Describa el error con el mayor detalle posible",
     "errorPlaceholder": "Describa el error con el mayor detalle posible",
     "highRes": "Ver mapas de calor de alta resolución",
-    "highResDisabled": "High resolution heatmaps are disabled when using a vessel group filter",
+    "highResDisabled": "Los mapas de calor de alta resolución están desactivados cuando se utiliza un filtro de grupo de embarcaciones",
     "legend_help": "Área de celda de cuadrícula aproximada en el ecuador",
     "loading": "Cargando",
     "lowRes": "Ver mapas de calor de baja resolución",
@@ -782,16 +783,15 @@
     "screenshotPreview": "Vista previa de captura de pantalla",
     "search": "Buscar áreas oceánicas y marinas, AMPs o ZEEs",
     "searchTypes": {
-      "eez": "EEZ",
+      "eez": "ZEE",
       "fao": "FAO",
-      "mpa": "MPA",
-      "port": "Port",
-      "rfmo": "RFMO"
+      "mpa": "AMP",
+      "port": "Puerto",
+      "rfmo": "OROP"
     },
     "zoom_in": "Acercarse",
     "zoom_out": "Alejarse"
   },
-  "navigateBackTo": "volver a {{section}}",
   "portsReport": {
     "maxVessels": "Los informes de buques están disponibles para un máximo de {{vessels}} buques",
     "newTimeRange": "Haga clic en el botón para ver los buques que entraron en este puerto <br/>entre <strong>{{start}}</strong> y <strong>{{end}}</strong>",
@@ -843,6 +843,20 @@
     "placeholder": "Seleccione una opción",
     "selected": "seleccionado"
   },
+  "time": {
+    "ago": "{{time}} ago",
+    "days": "{{count}} day",
+    "days_plural": "{{count}} days",
+    "hours": "{{count}} hour",
+    "hours_plural": "{{count}} hours",
+    "minutes": "{{count}} minute",
+    "minutes_plural": "{{count}} minutes",
+    "months": "{{count}} month",
+    "months_plural": "{{count}} months",
+    "now": "now",
+    "weeks": "{{count}} week",
+    "weeks_plural": "{{count}} weeks"
+  },
   "timebar": {
     "disablePlaybackVesselGroups": "La animación no está soportada con capas de grupo de buques activadas",
     "fitOnThisDates": "Ajustar rango de tiempo a estas fechas",
@@ -869,6 +883,26 @@
   },
   "toasts": {
     "maxPointsVisualizationExceeded": "Se ha superado la visualización máxima de puntos, cambiando al modo de mapa de calor."
+  },
+  "trackCorrection": {
+    "adjustDisabled": "Adjusting the time range is needed.",
+    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
+    "comment": "Comment",
+    "commentPlaceholder": "Add a comment...",
+    "commentResolve": "Resolve",
+    "falseNegative": "False negative",
+    "falsePositive": "False positive",
+    "issue": "Issue {{issueId}}",
+    "issueType": "Type of issue",
+    "logAnIssue": "Log an activity issue",
+    "loginRequired": "To suggest and view this correction, you must <1>log in</1>.",
+    "mapTooltip": "{{vesselName}} reported as {{type}} on {{date}} ",
+    "markAsResolved": "Mark as resolved",
+    "newIssue": "New issue",
+    "other": "Other",
+    "replyPlaceholder": "Write a reply",
+    "title": "Track correction panel",
+    "version": "Version"
   },
   "user": {
     "badges": {
@@ -945,7 +979,7 @@
     "fleet": "Flota",
     "geartype": "Arte de pesca",
     "geartype_other": "Artes de pesca",
-    "gearType": "Gear Type",
+    "gearType": "Arte de pesca",
     "gearType_short": "Arte",
     "geartypes": "Artes de pesca",
     "gearTypes": {
@@ -1005,8 +1039,8 @@
       "tuna_purse_seines": "Red de cerco atunera",
       "well_boat": "Barco vivero"
     },
-    "gfw-geartypes": "GFW Gear type",
-    "gfw-shiptypes": "GFW Vessel type",
+    "gfw_geartypes": "GFW Gear type",
+    "gfw_shiptypes": "GFW Vessel type",
     "goToImage": "Ir a la imagen {{number}}",
     "grossTonnage": "Tonelaje",
     "grossTonnageRange": "Rango de tonelaje bruto",
@@ -1017,9 +1051,9 @@
     "infoSource": "Fuente de la Información",
     "infoSources": {
       "both": "Registro y AIS",
+      "gfw-source": "GFW Source",
       "registry": "Registro",
-      "selfReported": "Autodeclarado",
-      "gfw-source": "GFW Source"
+      "selfReported": "Autodeclarado"
     },
     "insights": {
       "countries": {
@@ -1121,8 +1155,8 @@
     "shiptype": "Tipos de embarcaciones",
     "shiptypes": "Ship types",
     "showOtherLayers": "Mostrar otras capas",
-    "skylightLink": "Click to see Skylight vessel profile",
-    "skylightSearch": "Click to search this vessel",
+    "skylightLink": "Haga clic para ver el perfil de embarcación en Skylight",
+    "skylightSearch": "Haga clic para buscar este buque",
     "sortAsc": "Ordenar las embarcaciones alfabéticamente (ascendiendo)",
     "sortDesc": "Ordenar las embarcaciones alfabéticamente (descendiendo)",
     "source": "Fuente",
@@ -1226,26 +1260,26 @@
     "clickToSee": "Haga clic para analizar el grupo de buques y ver su informe",
     "insights": {
       "fishingEventsError": "Se ha producido un error al cargar los eventos de pesca",
-      "fishingInNoTakeMpas_one": "{{count}} fishing event from {{vessels}} vessels detected in no-take MPAs",
-      "fishingInNoTakeMpas_other": "{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs",
-      "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} fishing event from {{vessels}} vessels detected outside known RFMO authorized areas",
-      "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} fishing event from {{vessels}} vessels detected outside known RFMO authorized areas",
-      "flagChangesCount": "{{vessels}} vessels had flag changes",
-      "flagChangesCount_one": "{{vessels}} vessel had flag changes",
-      "flagChangesCount_other": "{{vessels}} vessels had flag changes",
-      "flagChangesEmpty": "There are no vessels with flag changes",
-      "gaps_one": "{{count}} AIS Off Event from {{vessels}} vessels detected",
-      "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected",
-      "IUUBlackListsCount": "{{vessels}} vessels are present on a RFMO IUU vessel list",
-      "IUUBlackListsCount_one": "{{vessels}} vessel is present on a RFMO IUU vessel list",
-      "IUUBlackListsCount_other": "{{vessels}} vessels are present on a RFMO IUU vessel list",
-      "IUUBlackListsEmpty": "No vessels are present on a RFMO IUU vessel list",
-      "MOULists": "MOU Lists",
-      "MOUListsCount": "{{vessels}} vessels operated under a flag present on the {{list}} list",
-      "MOUListsCount_one": "{{vessels}} vessel operated under a flag present on the {{list}} list",
-      "MOUListsCount_other": "{{vessels}} buques operaron bajo una bandera presente en la lista de {{list}}",
-      "MOUListsEmpty": "No vessels flying under a flag present on the {{country}} MOU black or grey lists",
-      "title": "Vessel group insights"
+      "fishingInNoTakeMpas_one": "{{count}} evento de pesca de {{vessels}} embarcación detectado en AMP de no extracción",
+      "fishingInNoTakeMpas_other": "{{count}} eventos de pesca de {{vessels}} embarcaciones detectados en AMP de no extracción",
+      "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} evento de pesca de {{vessels}} embarcación detectado fuera de las OROP con autorización conocida",
+      "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} eventos de pesca de {{vessels}} embarcaciones detectados fuera de las OROP con autorización conocida",
+      "flagChangesCount": "{{vessels}} embarcaciones tuvieron cambios de bandera",
+      "flagChangesCount_one": "{{vessels}} embarcación tuvo cambios de bandera",
+      "flagChangesCount_other": "{{vessels}} embarcaciones tuvieron cambios de bandera",
+      "flagChangesEmpty": "No hay embarcaciones con cambios de bandera",
+      "gaps_one": "{{count}} evento de desactivación probable de AIS de {{vessels}} embarcación detectado",
+      "gaps_other": "{{count}} eventos de desactivación probable de AIS de {{vessels}} embarcaciones detectados",
+      "IUUBlackListsCount": "{{vessels}} embarcaciones presentes en una lista INDNR de OROP",
+      "IUUBlackListsCount_one": "{{vessels}} embarcación presente en una lista INDNR de OROP",
+      "IUUBlackListsCount_other": "{{vessels}} embarcaciones presentes en una lista INDNR de OROP",
+      "IUUBlackListsEmpty": "No hay embarcaciones presentes en una lista INDNR de OROP",
+      "MOULists": "Listas MOU",
+      "MOUListsCount": "{{vessels}} embarcaciones operaron bajo una bandera presente en la lista de {{list}}",
+      "MOUListsCount_one": "{{vessels}} embarcación operó bajo una bandera presente en la lista de {{list}}",
+      "MOUListsCount_other": "{{vessels}} embarcaciones operaron bajo una bandera presente en la lista de {{list}}",
+      "MOUListsEmpty": "Ningún buque operó bajo una bandera presente en las listas negras o grises de la MOU de {{country}}",
+      "title": "Indicadores del grupo de embarcaciones"
     },
     "linkDisabled": "Este grupo de buques necesita ser actualizado a los últimos datos disponibles",
     "linkToReport": "Compruebe el informe del grupo de buques aquí",
@@ -1257,12 +1291,12 @@
   },
   "vesselGroups": {
     "insights": {
-      "fishingInNoTakeMpas_one": "{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs",
-      "fishingInNoTakeMpas_other": "{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs",
-      "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas",
-      "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas",
-      "gaps_one": "{{count}} AIS Off Event from {{vessels}} vessels detected",
-      "gaps_other": "{{count}} AIS Off Event from {{vessels}} vessels detected"
+      "fishingInNoTakeMpas_one": "{{count}} eventos de pesca de {{vessels}} embarcaciones detectados en AMP de no extracción",
+      "fishingInNoTakeMpas_other": "{{count}} eventos de pesca de {{vessels}} embarcaciones detectados en AMP de no extracción",
+      "fishingInRfmoWithoutKnownAuthorization_one": "{{count}} evento de pesca de {{vessels}} embarcación detectado fuera de las OROP con autorización conocida",
+      "fishingInRfmoWithoutKnownAuthorization_other": "{{count}} eventos de pesca de {{vessels}} embarcaciones detectados fuera de las OROP con autorización conocida",
+      "gaps_one": "{{count}} evento de desactivación probable de AIS de {{vessels}} embarcación detectado",
+      "gaps_other": "{{count}} eventos de desactivación probable de AIS de {{vessels}} embarcaciones detectados"
     }
   },
   "workspace": {
