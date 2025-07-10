@@ -19,6 +19,7 @@ export type _VesselLayerProps = {
   color: Color
   singleTrack: boolean
   visible: boolean
+  showVesselIcon: boolean
 }
 
 // type VesselTrackProperties = {

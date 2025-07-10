@@ -28,6 +28,10 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
   const endTime = getUTCDateTime(
     strictTimeRange ? (dataview.config?.endDate as string) : end
   ).toMillis()
+
+  const highlightStartTime = dataview.config?.highlightStartTime || highlightedTime?.start
+  const highlightEndTime = dataview.config?.highlightEndTime || highlightedTime?.end
+
   return {
     id: dataview.id,
     visible: dataview.config?.visible ?? true,
@@ -35,6 +39,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     name: dataview.config?.name,
     endTime: endTime,
     startTime: startTime,
+    showVesselIcon: dataview.config?.showVesselIcon ?? true,
     ...(dataview.config?.highlightEventStartTime && {
       highlightEventStartTime: getUTCDateTime(dataview.config.highlightEventStartTime).toMillis(),
     }),
@@ -72,11 +77,9 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
       minElevationFilter: parseFloat(dataview.config?.filters?.['elevation'][0]),
       maxElevationFilter: parseFloat(dataview.config?.filters?.['elevation'][1]),
     }),
-    ...(highlightedTime?.start && {
-      highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),
+    ...(highlightStartTime && {
+      highlightStartTime: getUTCDateTime(highlightStartTime).toMillis(),
     }),
-    ...(highlightedTime?.end && {
-      highlightEndTime: getUTCDateTime(highlightedTime?.end).toMillis(),
-    }),
+    ...(highlightEndTime && { highlightEndTime: getUTCDateTime(highlightEndTime).toMillis() }),
   }
 }

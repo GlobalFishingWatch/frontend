@@ -127,6 +127,14 @@ steps:
           --set-env-vars \
           NEXT_IDENTITY_REVIEW_SPREADSHEET_ID=${_NEXT_IDENTITY_REVIEW_SPREADSHEET_ID} \
           --set-env-vars \
+          NEXT_TURNING_TIDES_TEMPLATE_SPREADSHEET_ID=${_NEXT_TURNING_TIDES_TEMPLATE_SPREADSHEET_ID} \
+          --set-env-vars \
+          NEXT_TURNING_TIDES_BRAZIL_ID=${_NEXT_TURNING_TIDES_BRAZIL_ID} \
+          --set-env-vars \
+          NEXT_TURNING_TIDES_CHILE_ID=${_NEXT_TURNING_TIDES_CHILE_ID} \
+          --set-env-vars \
+          NEXT_TURNING_TIDES_PERU_ID=${_NEXT_TURNING_TIDES_PERU_ID} \
+          --set-env-vars \
           NEXT_FEEDBACK_SPREADSHEET_ID=${_NEXT_FEEDBACK_SPREADSHEET_ID} \
           --set-env-vars \
           NEXT_SPREADSHEET_CLIENT_EMAIL=${_NEXT_SPREADSHEET_CLIENT_EMAIL} \
