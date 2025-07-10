@@ -47,6 +47,7 @@ const DeckGLWrapper = () => {
     },
     [setViewState, viewState]
   )
+
   const onMapClick = useMapMouseClick()
   const { onMouseMove } = useMapMouseHover()
   const getCursor = useMapCursor()
