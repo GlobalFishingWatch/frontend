@@ -24,6 +24,7 @@ export function ProjectsList() {
   const login = useGFWLogin()
   useGFWLoginRedirect(login)
   const { data, isLoading } = useGetLabellingProjectsListQuery({}, { skip: !login.logged })
+  console.log('🚀 ~ ProjectsList ~ data:', data)
   const [createOpen, setCreateOpen] = useState(false)
   if (!login.logged || isLoading) {
     return <Spinner />

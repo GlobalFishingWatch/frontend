@@ -4,6 +4,6 @@
     "cloudbuildTaskStagingId": "ui-fishing-map-autodeploy-staging",
     "cloudbuildTaskProId": "ui-fishing-map-autodeploy-pro",
     "auto": false,
-    "watch": ["apps/fishing-map/**/*", "yarn.lock"]
+    "watch": ["apps/fishing-map/**/*", "apps/image-labeler/**/*", "yarn.lock"]
   }
 }
