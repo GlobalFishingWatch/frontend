@@ -6,7 +6,7 @@ import { scaleLinear } from 'd3-scale'
 import { throttle } from 'es-toolkit'
 import { DateTime } from 'luxon'
 
-import type { TrackSegment } from '@globalfishingwatch/api-types'
+import type { TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -121,8 +121,9 @@ function TrackSlider({
   onTimerangeChange,
 }: TrackSliderProps) {
   const { t } = useTranslation()
-  const initialPoint = segments?.[0]?.[0]
-  const finalPoint = segments?.[segments.length - 1]?.[segments[segments.length - 1].length - 1]
+  const allPoints = segments?.flatMap((segment) => segment)
+  const initialPoint = allPoints?.[0]
+  const finalPoint = allPoints?.[allPoints.length - 1]
   const { start, end } = useSelector(selectTrackCorrectionTimerange)
   const dispatch = useAppDispatch()
   const startTime = getUTCDateTime(start).toMillis()
@@ -148,10 +149,27 @@ function TrackSlider({
     [dispatch]
   )
 
+  const findNearestPoint = useCallback(
+    (date: DateTime) => {
+      let minTimeDelta = Infinity
+      let nearestDate: DateTime | null = null
+      allPoints?.forEach((point) => {
+        const pointDate = getUTCDateTime(point.timestamp as number)
+        const delta = Math.abs(pointDate.diff(date).toMillis())
+        if (delta < minTimeDelta) {
+          minTimeDelta = delta
+          nearestDate = pointDate
+        }
+      })
+      return nearestDate as DateTime | null
+    },
+    [allPoints]
+  )
+
   const onSliderChange = useCallback(
     (value: number[]) => {
-      const start = getUTCDateTime(value[0])
-      const end = getUTCDateTime(value[1])
+      const start = findNearestPoint(getUTCDateTime(value[0]))
+      const end = findNearestPoint(getUTCDateTime(value[1]))
       if (start && end) {
         dispatch(
           setTrackCorrectionTimerange({
@@ -165,7 +183,7 @@ function TrackSlider({
         }
       }
     },
-    [dispatch, onTimerangeChange]
+    [dispatch, findNearestPoint, onTimerangeChange]
   )
 
   if (!segments?.length || !initialPoint?.timestamp || !finalPoint?.timestamp) return null
