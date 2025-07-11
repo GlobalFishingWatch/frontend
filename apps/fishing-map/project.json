@@ -37,6 +37,8 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
+          "nx ts i18n-labels",
+          "nx i18n:ts fishing-map",
           "nx clean-locales fishing-map",
           "nx prepare-loaders fishing-map",
           "nx serve i18n-labels",
@@ -74,6 +76,12 @@
       "executor": "nx:run-script",
       "options": {
         "script": "i18n:parser"
+      }
+    },
+    "i18n:ts": {
+      "executor": "nx:run-script",
+      "options": {
+        "script": "i18n:ts"
       }
     },
     "i18n:check": {

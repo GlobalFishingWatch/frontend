@@ -36,7 +36,7 @@ function AdvancedFilterInputField({ onChange, field }: AdvancedFilterInputFieldP
       invalidTooltip={
         invalid
           ? t('search.filterNotSupported', {
-              filter: t(`vessel.${field}`).toLowerCase(),
+              filter: t(`vessel.${field}` as any).toLowerCase(),
             })
           : ''
       }

@@ -2186,7 +2186,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.22.6, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.8, @babel/runtime@npm:^7.24.5, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.26.10, @babel/runtime@npm:^7.27.1, @babel/runtime@npm:^7.27.6, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.22.6, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.8, @babel/runtime@npm:^7.24.5, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.26.10, @babel/runtime@npm:^7.27.0, @babel/runtime@npm:^7.27.1, @babel/runtime@npm:^7.27.6, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.27.6
   resolution: "@babel/runtime@npm:7.27.6"
   checksum: 10/cc957a12ba3781241b83d528eb69ddeb86ca5ac43179a825e83aa81263a6b3eb88c57bed8a937cdeacfc3192e07ec24c73acdfea4507d0c0428c8e23d6322bfe
@@ -3754,7 +3754,7 @@ __metadata:
     html-react-parser: "npm:5.2.5"
     html2canvas: "npm:1.4.1"
     husky: "npm:9.1.7"
-    i18next: "npm:25.2.1"
+    i18next: "npm:25.3.2"
     i18next-browser-languagedetector: "npm:8.2.0"
     i18next-http-backend: "npm:3.0.2"
     intersection-observer: "npm:0.12.2"
@@ -3800,7 +3800,7 @@ __metadata:
     react-fps: "npm:1.0.6"
     react-ga4: "npm:2.1.0"
     react-hot-keys: "npm:2.7.3"
-    react-i18next: "npm:15.5.3"
+    react-i18next: "npm:15.6.0"
     react-image-gallery: "npm:1.4.0"
     react-map-gl: "npm:7.1.9"
     react-markdown: "npm:10.1.0"
@@ -3833,6 +3833,7 @@ __metadata:
     ts-jest: "npm:29.4.0"
     ts-node: "npm:10.9.2"
     tslib: "npm:2.8.1"
+    type-fest: "npm:^4.41.0"
     typesafe-actions: "npm:5.1.0"
     typescript: "npm:5.8.3"
     typescript-eslint: "npm:8.35.0"
@@ -3855,6 +3856,7 @@ __metadata:
   dependencies:
     "@lingual/i18n-check": "npm:^0.8.4"
     i18next-parser: "npm:9.3.0"
+    i18next-resources-for-ts: "npm:1.6.0"
     source-map-explorer: "npm:2.5.3"
   languageName: unknown
   linkType: soft
@@ -24992,17 +24994,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:25.2.1":
-  version: 25.2.1
-  resolution: "i18next@npm:25.2.1"
+"i18next-resources-for-ts@npm:1.6.0":
+  version: 1.6.0
+  resolution: "i18next-resources-for-ts@npm:1.6.0"
   dependencies:
-    "@babel/runtime": "npm:^7.27.1"
+    "@babel/runtime": "npm:^7.27.0"
+    yaml: "npm:^2.7.1"
+  bin:
+    i18next-resources-for-ts: bin/i18next-resources-for-ts.js
+  checksum: 10/e6f98c606adc4c31e7f757dded5cf609042f515bb32ce8bd4609e3bd09ea06a0a8ff2ff07cdf888b605ad295df7b3ebdfa0936c01566ff08944f7978331d5b65
+  languageName: node
+  linkType: hard
+
+"i18next@npm:25.3.2":
+  version: 25.3.2
+  resolution: "i18next@npm:25.3.2"
+  dependencies:
+    "@babel/runtime": "npm:^7.27.6"
   peerDependencies:
     typescript: ^5
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/7abc9dedee928d23c926917fcc640ff45e22320c814f3f254ade74bc255247edd78e8dd58c835bbfe1898489f6cb2e874e547f9fa68a1a6820409c1306dec28c
+  checksum: 10/fb6b2035cc8f3bcc89f56e164d22cefbefd54e5a569315b20ddcfa6e1b68c48962307181b271fea7e5ee37ddfaa90721a4a7f7814b739f24bf00a3a670b8eb93
   languageName: node
   linkType: hard
 
@@ -32251,9 +32265,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-i18next@npm:15.5.3":
-  version: 15.5.3
-  resolution: "react-i18next@npm:15.5.3"
+"react-i18next@npm:15.6.0":
+  version: 15.6.0
+  resolution: "react-i18next@npm:15.6.0"
   dependencies:
     "@babel/runtime": "npm:^7.27.6"
     html-parse-stringify: "npm:^3.0.1"
@@ -32268,7 +32282,7 @@ __metadata:
       optional: true
     typescript:
       optional: true
-  checksum: 10/7e93c2fe408c0a56ce57be4ff87d8cbf58ea181380d4b366f73142e45ddc10b3a435feb76447ad3c5e5320e7fc10d61596113405e89b97bc23e140613f5b19a4
+  checksum: 10/d8549c364eb32ea078be0e87df35ee23b8c9d6a30af4fe2a41099c12f62b5ce4268f9997132a9b5abcb4556e30fb37f4ba7f5548429333548b5b9856627c6a50
   languageName: node
   linkType: hard
 
@@ -38383,7 +38397,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.6.0, yaml@npm:^2.8.0":
+"yaml@npm:^2.6.0, yaml@npm:^2.7.1, yaml@npm:^2.8.0":
   version: 2.8.0
   resolution: "yaml@npm:2.8.0"
   bin:

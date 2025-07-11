@@ -131,7 +131,7 @@ function SearchBasicResult({
     (vessel) => vessel.id === `${VESSEL_LAYER_PREFIX}${id}`
   )
   const isSelected = vesselsSelected?.some((vessel) => vessel?.id === id)
-  let tooltip = t('search.selectVessel')
+  let tooltip: string = t('search.selectVessel')
   if (isInWorkspace) {
     tooltip = t('search.vesselAlreadyInWorkspace')
   } else if (isSelected) {

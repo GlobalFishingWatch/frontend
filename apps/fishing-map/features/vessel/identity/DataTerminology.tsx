@@ -9,7 +9,7 @@ import { Icon, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
-import type { I18nNamespaces } from 'features/i18n/i18n.types'
+import type I18nNamespaces from 'features/i18n/i18n.types'
 
 import { selectVesselSection } from '../vessel.config.selectors'
 
@@ -21,7 +21,7 @@ interface ModalProps {
   title?: string
   size?: IconButtonSize
   type?: IconButtonType
-  terminologyKey: I18nNamespaces['dataTerminology']
+  terminologyKey: keyof I18nNamespaces['data-terminology']
 }
 
 const DataTerminology: React.FC<ModalProps> = ({
