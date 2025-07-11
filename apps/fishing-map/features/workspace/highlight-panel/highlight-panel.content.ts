@@ -79,28 +79,6 @@ const HIGHLIGHT_CONFIGS: HighlightPanelConfig[] = [
         'A Global Fishing Watch adicionou uma nova camada de detecção de embarcações baseada em imagens ópticas de satélite do Sentinel-2. Esse conjunto de dados permite visualizar embarcações detectadas em condições de tempo claro e durante o dia, incluindo embarcações menores que muitas vezes não são detectadas por radar ou outros sistemas de rastreamento. Cada detecção inclui uma miniatura da imagem, permitindo inspecionar visualmente as embarcações diretamente na imagem de satélite.',
     },
   },
-  {
-    ...BASE_HIGHLIGHT_CONFIG,
-    dataviewInstanceId: AIS_DATAVIEW_INSTANCE_ID,
-    releaseDateTimestamp: Date.parse('2025-05-21T00:00:00Z'),
-    imageUrl: '',
-    learnMoreUrl: ' https://globalfishingwatch.org/faqs/port-buffer-explained',
-    en: {
-      title: 'New Port Buffer Applied',
-      description:
-        'Fishing effort within 3km of ports is now filtered by default to reduce misleading results near anchorages. Change or remove this filter in the activity layer settings.',
-    },
-    es: {
-      title: 'Nuevo búfer de puerto aplicado',
-      description:
-        'El esfuerzo de pesca aparente a menos de 3 km de los puertos ahora se filtra por defecto para reducir los resultados engañosos cerca de los fondeaderos. Cambie o elimine este filtro en la configuración de la capa de actividad.',
-    },
-    pt: {
-      title: 'Novo buffer de porto aplicado',
-      description:
-        'O esforço de pesca aparente a menos de 3 km dos portos agora é filtrado por padrão para reduzir resultados enganosos perto de ancoradouros. Altere ou remova este filtro nas configurações da camada de atividade.',
-    },
-  },
 ]
 
 const AVAILABLE_HIGHLIGHT_CONFIGS = HIGHLIGHT_CONFIGS
