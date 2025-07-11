@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import type { InsightResponse } from '@globalfishingwatch/api-types'
+import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 
@@ -31,7 +32,9 @@ const InsightGaps = ({
   return (
     <div id="gaps" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label className="experimental">{t('vessel.insights.gaps')}</label>
+        <Tooltip content={t('common.experimentalTooltip')}>
+          <label className="experimental">{t('vessel.insights.gaps')}</label>
+        </Tooltip>
         <DataTerminology title={t('vessel.insights.gaps')} terminologyKey="insightsGaps" />
       </div>
       {isLoading ? (
