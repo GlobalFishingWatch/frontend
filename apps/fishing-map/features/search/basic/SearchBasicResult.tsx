@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import type { GetItemPropsOptions } from 'downshift'
-import { uniq } from 'es-toolkit'
+import { uniq, upperFirst } from 'es-toolkit'
 import type { FeatureCollection } from 'geojson'
 
 import type { Locale } from '@globalfishingwatch/api-types'
@@ -98,6 +98,7 @@ function SearchBasicResult({
   const bestIdentityMatch = getBestMatchCriteriaIdentity(vessel)
   const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
   const name = shipname ? formatInfoField(shipname, 'shipname') : EMPTY_FIELD_PLACEHOLDER
+  const hasPositions = positionsCounter !== undefined && positionsCounter > 0
 
   const identitySource = useMemo(() => {
     const registryIdentities = vessel.identities.filter(
@@ -312,8 +313,9 @@ function SearchBasicResult({
             {transmissionDateFrom && transmissionDateTo && (
               <div className={cx(styles.property, styles.fullWidth)}>
                 <span>
-                  {positionsCounter && positionsCounter > 0 && formatI18nNumber(positionsCounter)}{' '}
-                  {t('vessel.transmission_other')} {t('common.from')}{' '}
+                  {hasPositions
+                    ? `${formatI18nNumber(positionsCounter)} ${t('vessel.transmission_other')} ${t('common.from')} `
+                    : `${upperFirst(t('common.from'))} `}
                   <I18nDate date={transmissionDateFrom} /> {t('common.to')}{' '}
                   <I18nDate date={transmissionDateTo} />
                 </span>
