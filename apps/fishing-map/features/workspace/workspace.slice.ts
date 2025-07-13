@@ -171,18 +171,6 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           return rejectWithValue({ error: { status: 401, message: 'Private workspace' } })
         }
       }
-      if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
-        // Inject dataviews for gfw staff only
-        ONLY_GFW_STAFF_DATAVIEW_SLUGS.forEach((id) => {
-          workspace?.dataviewInstances.push({
-            id: `${id}-instance`,
-            config: {
-              visible: false,
-            },
-            dataviewId: id,
-          })
-        })
-      }
 
       if (workspace) {
         workspace = {
@@ -199,6 +187,11 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         ...(workspace?.dataviewInstances || []).map(({ dataviewId }) => dataviewId),
         ...(urlDataviewInstances || []).map(({ dataviewId }) => dataviewId),
       ].filter(Boolean)
+
+      if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
+        // Inject dataviews for gfw staff only+
+        dataviewIds.push(...ONLY_GFW_STAFF_DATAVIEW_SLUGS)
+      }
 
       Object.entries(PRIVATE_TEMPLATE_VESSEL_DATAVIEW_SLUGS).forEach(([group, dataviewId]) => {
         if (userGroups.includes(group.toLowerCase())) {

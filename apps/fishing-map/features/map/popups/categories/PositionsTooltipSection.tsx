@@ -37,6 +37,10 @@ function PositionsTooltipSection({
 
   const currentFeature = features[currentFeatureIndex]
 
+  if (!currentFeature) {
+    return null
+  }
+
   if (showFeaturesDetails) {
     return (
       <div className={styles.popupSection}>

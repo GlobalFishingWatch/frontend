@@ -4,13 +4,13 @@ import { useSelector } from 'react-redux'
 import { center } from '@turf/center'
 import type { Feature, Point } from 'geojson'
 
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { Button, Choice, Icon, InputText } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { useMapViewState } from 'features/map/map-viewport.hooks'
+import type { TurningTidesWorkspaceId } from 'features/track-correction/track-correction.config'
 import { getTrackCorrectionIssueOptions } from 'features/track-correction/track-correction.config'
 import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
 import type { TrackCorrection } from 'features/track-correction/track-correction.slice'
@@ -25,11 +25,11 @@ import {
   setTrackIssueComment,
   setTrackIssueType,
 } from 'features/track-correction/track-correction.slice'
+import { getCustomVesselPropertiesByWorkspaceId } from 'features/track-correction/track-correction.utils'
 import TrackSlider from 'features/track-correction/TrackSlider'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
-import { isRegistryInTimerange } from 'features/vessel/identity/VesselIdentitySelector'
 import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
-import { getVesselIdentities, getVesselProperty } from 'features/vessel/vessel.utils'
+import { getVesselProperty } from 'features/vessel/vessel.utils'
 import FitBounds from 'features/workspace/shared/FitBounds'
 import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
 import { getVesselGearTypeLabel, getVesselShipNameLabel, getVesselShipTypeLabel } from 'utils/info'
@@ -46,7 +46,7 @@ const TrackCorrectionNew = () => {
   const setTrackCorrectionId = useSetTrackCorrectionId()
   const viewState = useMapViewState()
 
-  const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const workspaceId = useSelector(selectCurrentWorkspaceId) as TurningTidesWorkspaceId
 
   const [isTimerangePristine, setIsTimerangePristine] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -92,6 +92,9 @@ const TrackCorrectionNew = () => {
 
   const onConfirmClick = useCallback(
     async (trackCorrectionTimerange: { start: string; end: string }) => {
+      if (!workspaceId) {
+        return
+      }
       try {
         setIsSubmitting(true)
 
@@ -121,7 +124,11 @@ const TrackCorrectionNew = () => {
         })
 
         const issueId = Date.now().toString()
-
+        const customVesselProperties = getCustomVesselPropertiesByWorkspaceId(
+          workspaceId,
+          vesselInfo!,
+          trackCorrectionTimerange
+        )
         const issueBody: TrackCorrection = {
           issueId,
           vesselId: trackCorrectionVesselDataviewId.replace('vessel-', ''),
@@ -140,45 +147,33 @@ const TrackCorrectionNew = () => {
           lat: middlePoint.geometry.coordinates[1],
           zoom: viewState.zoom,
           source: vesselInfo?.dataset || 'unknown', //depending on the dataset we add different properties
-          ssvid: vesselInfo
-            ? getVesselIdentities(vesselInfo, {
-                identitySource: VesselIdentitySourceEnum.SelfReported,
-              }).find((v) =>
-                isRegistryInTimerange(
-                  v,
-                  trackCorrectionTimerange.start,
-                  trackCorrectionTimerange.end
-                )
-              )?.ssvid || ''
-            : '',
+          ...customVesselProperties,
         }
 
         const commentBody = buildCommentBody(issueId)
 
-        if (workspaceId) {
-          await dispatch(
-            createNewIssueThunk({
-              issueBody,
-              commentBody,
-              workspaceId: workspaceId,
-            })
-          )
-            .unwrap()
-            .then(() => {
-              dispatch(setTrackIssueComment(''))
-              setTrackCorrectionId('')
-              dispatch(
-                setTrackCorrectionTimerange({
-                  start: '',
-                  end: '',
-                })
-              )
-              dispatch(fetchTrackIssuesThunk({ workspaceId: workspaceId }))
-            })
-            .catch((err) => {
-              console.error('Failed to submit:', err)
-            })
-        }
+        await dispatch(
+          createNewIssueThunk({
+            issueBody,
+            commentBody,
+            workspaceId: workspaceId,
+          })
+        )
+          .unwrap()
+          .then(() => {
+            dispatch(setTrackIssueComment(''))
+            setTrackCorrectionId('')
+            dispatch(
+              setTrackCorrectionTimerange({
+                start: '',
+                end: '',
+              })
+            )
+            dispatch(fetchTrackIssuesThunk({ workspaceId: workspaceId }))
+          })
+          .catch((err) => {
+            console.error('Failed to submit:', err)
+          })
       } catch (error) {
         console.error('Error submitting track correction:', error)
       } finally {

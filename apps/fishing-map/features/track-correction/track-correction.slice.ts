@@ -35,7 +35,6 @@ export type TrackCorrection = {
   lon: number
   zoom: number
   source: string
-  ssvid: string
 }
 
 type TrackCorrectionState = {

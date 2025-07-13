@@ -90,7 +90,7 @@
     "name": "MPAs (WDPA)"
   },
   "mpatlas": {
-    "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term biodiversity conservation. Reported MPAs vary greatly in their status in the process of becoming an MPA (Stage of Establishment) and the impact of human activities (Level of Protection). MPAtlas assesses MPAs using The MPA Guide, a science-based tool that identifies different types of MPAs and connects them to the outcome they are likely to achieve. Source: Marine Protection Atlas",
+    "description": "MPAs vary greatly in their status in the process of becoming an MPA and the impact of human activities. MPAtlas applies The MPA Guide, a science-based tool that identifies different types of MPAs and connects them to the outcome they are likely to achieve.",
     "moreInfoLink": "https://mpatlas.org",
     "name": "MPAs (MPAtlas)"
   },
@@ -169,6 +169,11 @@
     "moreInfoLink": "https://bluehabitats.org/",
     "name": "Montes submarinos"
   },
+  "sentinel2": {
+    "description": "This layer shows vessels detected using optical satellite imagery collected by the European Space Agency’s Sentinel-2 satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths.",
+    "moreInfoLink": "",
+    "name": "Imagery detections (Optical)"
+  },
   "species": {
     "description": "TODO",
     "moreInfoLink": "",
@@ -203,5 +208,10 @@
     "description": "La capa de detección de luces nocturnas de buques, conocida como suite de radiómetro de imagen infrarroja visible o VIIRS, muestra las embarcaciones en el mar que los satélites han detectado por la luz que emiten por la noche. Aunque no se asocia exclusivamente con los buques de pesca, es probable que esta capa de actividad muestre buques asociados con actividades como la pesca de calamar, la cual utiliza luces brillantes y se realiza por la noche.",
     "moreInfoLink": "",
     "name": "Detección de luz nocturna"
+  },
+  "viirs-skylight": {
+    "description": "TODO: description",
+    "moreInfoLink": "",
+    "name": "Night light detections (VIIRS Skylight)"
   }
 }
