@@ -10,6 +10,7 @@ import { Tooltip } from '@globalfishingwatch/ui-components'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
 import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import type { VesselDataIdentity } from 'features/vessel/vessel.slice'
@@ -78,6 +79,7 @@ const VesselLink = ({
   const vesselId = vesselIdProp || identity?.id
   const vesselDatasetId = datasetId || DEFAULT_VESSEL_IDENTITY_ID
   const standaloneLink = isSearchLocation || isVesselLocation
+  const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
 
   const onLinkClick = useCallback(
     (e: any) => {
@@ -142,7 +144,13 @@ const VesselLink = ({
         ]
   }
 
-  return (
+  return isTrackCorrectionOpen ? (
+    <>
+      <Tooltip className={styles.linkTooltip} content={t('vessel.exitTrackCorrection')}>
+        <span>{children}</span>
+      </Tooltip>
+    </>
+  ) : (
     <Link
       {...(testId && { 'data-test': testId })}
       className={className}

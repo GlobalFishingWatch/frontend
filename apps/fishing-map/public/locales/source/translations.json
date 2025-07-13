@@ -970,6 +970,7 @@
     "dataset": "Source",
     "depthM": "Depth (m)",
     "donor": "Donor vessel",
+    "exitTrackCorrection": "Exit activity issue (track correction) panel to be able to navigate to the vessel profile",
     "extraInfo": "Request additional information at",
     "extraInfoTooltip": "TMT has additional insights relating to the vessel’s compliance history and/or IUU listing",
     "firstTransmissionDate": "First transmission date",
