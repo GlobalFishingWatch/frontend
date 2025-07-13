@@ -36,6 +36,11 @@ import { getVesselGearTypeLabel, getVesselShipNameLabel, getVesselShipTypeLabel 
 
 import styles from './TrackCorrection.module.css'
 
+enum ValidationError {
+  MISSING_TIMERANGE = 'MISSING_TIMERANGE',
+  MISSING_COMMENT = 'MISSING_COMMENT',
+}
+
 const TrackCorrectionNew = () => {
   const { t } = useTranslation()
   const { start, end } = useSelector(selectTimeRange)
@@ -58,7 +63,7 @@ const TrackCorrectionNew = () => {
   )
   const vesselInfo = vesselInfoResource?.data
   const vesselColor = dataview?.config?.color
-
+  const [validationError, setValidationError] = useState<ValidationError | null>(null)
   const userData = useSelector(selectUserData)
 
   useEffect(() => {
@@ -83,7 +88,7 @@ const TrackCorrectionNew = () => {
       user: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
       userEmail: userData?.email || '',
       date: new Date().toISOString(),
-      comment: issueComment || 'No comment provided',
+      comment: issueComment,
       datasetVersion: 1,
       marksAsResolved: false,
     }),
@@ -95,6 +100,18 @@ const TrackCorrectionNew = () => {
       if (!workspaceId) {
         return
       }
+
+      if (!trackCorrectionTimerange.start || !trackCorrectionTimerange.end || isTimerangePristine) {
+        setValidationError(ValidationError.MISSING_TIMERANGE)
+        return
+      }
+      if (!issueComment) {
+        setValidationError(ValidationError.MISSING_COMMENT)
+        return
+      }
+
+      setValidationError(null)
+
       try {
         setIsSubmitting(true)
 
@@ -181,15 +198,17 @@ const TrackCorrectionNew = () => {
       }
     },
     [
+      workspaceId,
+      isTimerangePristine,
+      issueComment,
       vesselLayer?.instance,
-      trackCorrectionVesselDataviewId,
       vesselInfo,
+      trackCorrectionVesselDataviewId,
       dataview?.config?.name,
       userData?.email,
       issueType,
       viewState.zoom,
       buildCommentBody,
-      workspaceId,
       dispatch,
       setTrackCorrectionId,
     ]
@@ -238,36 +257,47 @@ const TrackCorrectionNew = () => {
             color={vesselColor}
             onTimerangeChange={(start, end) => {
               setIsTimerangePristine(false)
+              setValidationError(null)
             }}
           />
         </div>
 
-        <div className={styles.disclaimer}>
-          <Icon type="default" icon="warning" />
-          <span>{t('trackCorrection.adjustDisclaimer')}</span>
-        </div>
-        <div>
-          <label>{t('trackCorrection.issueType')}</label>
-          <Choice
-            options={getTrackCorrectionIssueOptions()}
-            activeOption={issueType}
-            onSelect={(option) => {
-              dispatch(setTrackIssueType(option.id))
-            }}
-            size="small"
-          />
-        </div>
-        <div>
-          <label>{t('trackCorrection.comment')}</label>
-          <InputText
-            inputSize="small"
-            placeholder={t('trackCorrection.commentPlaceholder')}
-            value={issueComment}
-            className={styles.input}
-            onChange={(e) => dispatch(setTrackIssueComment(e.target.value))}
-            disabled={isSubmitting}
-          />
-        </div>
+        {(isTimerangePristine || validationError === ValidationError.MISSING_TIMERANGE) && (
+          <div className={styles.disclaimer}>
+            <Icon type="default" icon="warning" />
+            <span>{t('trackCorrection.adjustDisclaimer')}</span>
+          </div>
+        )}
+        <Choice
+          label={t('trackCorrection.issueType')}
+          options={getTrackCorrectionIssueOptions()}
+          activeOption={issueType}
+          onSelect={(option) => {
+            dispatch(setTrackIssueType(option.id))
+          }}
+          size="small"
+        />
+        <InputText
+          label={t('trackCorrection.comment')}
+          inputSize="small"
+          placeholder={t('trackCorrection.commentPlaceholder')}
+          value={issueComment}
+          className={styles.input}
+          onChange={(e) => dispatch(setTrackIssueComment(e.target.value))}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault()
+              onConfirmClick(trackCorrectionTimerange)
+            }
+          }}
+          invalid={validationError === ValidationError.MISSING_COMMENT}
+          invalidTooltip={
+            validationError === ValidationError.MISSING_COMMENT
+              ? t('trackCorrection.commentRequired')
+              : undefined
+          }
+          disabled={isSubmitting}
+        />
         <div className={styles.actions}>
           <span className={styles.version}>
             {
@@ -279,7 +309,6 @@ const TrackCorrectionNew = () => {
           <Button
             tooltip={isTimerangePristine ? t('trackCorrection.adjustDisabled') : undefined}
             size="medium"
-            disabled={isTimerangePristine || issueComment === '' || isGuestUser}
             onClick={() => onConfirmClick(trackCorrectionTimerange)}
             loading={isSubmitting}
           >

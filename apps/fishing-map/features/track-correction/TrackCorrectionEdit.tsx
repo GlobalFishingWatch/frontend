@@ -132,6 +132,12 @@ const TrackCorrectionEdit = () => {
                 value={issueComment}
                 className={styles.input}
                 onChange={(e) => dispatch(setTrackIssueComment(e.target.value))}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    onConfirmClick()
+                  }
+                }}
                 disabled={isSubmitting}
               />
             </div>
