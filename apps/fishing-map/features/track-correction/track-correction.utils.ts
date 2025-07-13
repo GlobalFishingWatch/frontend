@@ -12,7 +12,7 @@ const CUSTOM_TURNING_TIDES_DATASET_PROPERTIES: Record<
   'turning_tides_testing-user-public': ['ssvid'],
   'tt-brazil-public': ['codMarinha', 'matricula'],
   'tt-chile-public': ['matricula'],
-  'tt-peru-public': [],
+  'tt-peru-public': ['nationalId'],
 }
 
 export function getCustomVesselPropertiesByWorkspaceId(
