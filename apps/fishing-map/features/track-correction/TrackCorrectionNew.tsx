@@ -163,7 +163,7 @@ const TrackCorrectionNew = () => {
           lon: middlePoint.geometry.coordinates[0],
           lat: middlePoint.geometry.coordinates[1],
           zoom: viewState.zoom,
-          source: vesselInfo?.dataset || 'unknown', //depending on the dataset we add different properties
+          source: vesselInfo!.dataset,
           ...customVesselProperties,
         }
 
