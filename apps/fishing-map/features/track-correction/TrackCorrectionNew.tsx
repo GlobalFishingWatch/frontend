@@ -63,7 +63,6 @@ const TrackCorrectionNew = () => {
   )
   const vesselInfo = vesselInfoResource?.data
   const vesselColor = dataview?.config?.color
-  const [validationError, setValidationError] = useState<ValidationError | null>(null)
   const userData = useSelector(selectUserData)
 
   useEffect(() => {
@@ -100,17 +99,6 @@ const TrackCorrectionNew = () => {
       if (!workspaceId) {
         return
       }
-
-      if (!trackCorrectionTimerange.start || !trackCorrectionTimerange.end || isTimerangePristine) {
-        setValidationError(ValidationError.MISSING_TIMERANGE)
-        return
-      }
-      if (!issueComment) {
-        setValidationError(ValidationError.MISSING_COMMENT)
-        return
-      }
-
-      setValidationError(null)
 
       try {
         setIsSubmitting(true)
@@ -199,8 +187,6 @@ const TrackCorrectionNew = () => {
     },
     [
       workspaceId,
-      isTimerangePristine,
-      issueComment,
       vesselLayer?.instance,
       vesselInfo,
       trackCorrectionVesselDataviewId,
@@ -257,17 +243,14 @@ const TrackCorrectionNew = () => {
             color={vesselColor}
             onTimerangeChange={(start, end) => {
               setIsTimerangePristine(false)
-              setValidationError(null)
             }}
           />
         </div>
 
-        {(isTimerangePristine || validationError === ValidationError.MISSING_TIMERANGE) && (
-          <div className={styles.disclaimer}>
-            <Icon type="default" icon="warning" />
-            <span>{t('trackCorrection.adjustDisclaimer')}</span>
-          </div>
-        )}
+        <div className={styles.disclaimer}>
+          <Icon type="default" icon="warning" />
+          <span>{t('trackCorrection.adjustDisclaimer')}</span>
+        </div>
         <Choice
           label={t('trackCorrection.issueType')}
           options={getTrackCorrectionIssueOptions()}
@@ -290,12 +273,6 @@ const TrackCorrectionNew = () => {
               onConfirmClick(trackCorrectionTimerange)
             }
           }}
-          invalid={validationError === ValidationError.MISSING_COMMENT}
-          invalidTooltip={
-            validationError === ValidationError.MISSING_COMMENT
-              ? t('trackCorrection.commentRequired')
-              : undefined
-          }
           disabled={isSubmitting}
         />
         <div className={styles.actions}>
