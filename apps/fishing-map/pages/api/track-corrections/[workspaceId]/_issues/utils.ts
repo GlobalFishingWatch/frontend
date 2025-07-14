@@ -29,7 +29,6 @@ export function parseIssueRow(row: GoogleSpreadsheetRow<TrackCorrection>): Track
   return {
     workspaceLink: row.get('workspaceLink'),
     source: row.get('source'),
-    ssvid: row.get('ssvid'),
     issueId: row.get('issueId'),
     vesselId: row.get('vesselId'),
     vesselName: row.get('vesselName'),
