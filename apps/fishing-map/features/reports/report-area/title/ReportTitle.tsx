@@ -217,6 +217,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
         <a className={styles.reportLink} href={window.location.href}>
           {t('analysis.linkToReport')}
         </a>
+
         {isGlobalReport && <AreaReportSearch />}
         <div className={styles.actions}>
           {!isGlobalReport && (
