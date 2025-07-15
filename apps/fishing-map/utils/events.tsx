@@ -1,3 +1,4 @@
+import { getTimezoneAtSea } from 'browser-geo-tz'
 import type { Duration } from 'luxon'
 import { DateTime } from 'luxon'
 
@@ -7,7 +8,7 @@ import type { SupportedDateType } from '@globalfishingwatch/data-transforms'
 
 import { EVENTS_COLORS } from 'data/config'
 import { t } from 'features/i18n/i18n'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nDate, formatLocalTimeDate } from 'features/i18n/i18nDate'
 
 import { getUTCDateTime } from './dates'
 import { formatInfoField } from './info'
@@ -41,6 +42,12 @@ const getEventDurationLabel = ({ durationRaw }: { durationRaw: Duration }): stri
   ].join(' ')
 }
 
+export const getOffsetHours = (longitude: number) => {
+  const timezone = getTimezoneAtSea(longitude)[0]
+  const hoursOffset = timezone ? -Number(timezone.split('GMT')[1]) : undefined
+  return hoursOffset
+}
+
 type TimeLabels = {
   start: string
   duration: string
@@ -48,17 +55,25 @@ type TimeLabels = {
 export const getTimeLabels = ({
   start,
   end,
+  longitude,
 }: {
   start: SupportedDateType
   end: SupportedDateType
+  longitude?: number
 }): TimeLabels => {
   const startDT = getUTCDateTime(start)
   const endDT = getUTCDateTime(end)
   const durationRaw = endDT.diff(startDT, ['days', 'hours', 'minutes'])
 
-  const startLabel = formatI18nDate(start, { format: DateTime.DATETIME_MED, showUTCLabel: true })
+  let startLabel = formatI18nDate(start, { format: DateTime.DATETIME_MED, showUTCLabel: true })
 
   const durationLabel = getEventDurationLabel({ durationRaw })
+  if (longitude) {
+    const hoursOffset = getOffsetHours(longitude)
+    const startLocalTime = startDT.plus({ hours: hoursOffset })
+    startLabel = `${startLabel} (${formatLocalTimeDate(startLocalTime)})`
+  }
+
   return {
     start: startLabel,
     duration: durationLabel,
@@ -72,8 +87,9 @@ export const getEventDescription = ({
   vessel,
   encounter,
   port_visit,
+  coordinates,
 }: ApiEvent) => {
-  const time = getTimeLabels({ start, end })
+  const time = getTimeLabels({ start, end, longitude: coordinates?.[0] })
   let description: string
   let descriptionGeneric: string
   switch (type) {
