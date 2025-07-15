@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import type { InsightResponse } from '@globalfishingwatch/api-types'
+import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
@@ -22,7 +23,9 @@ const InsightCoverage = ({
   return (
     <div id="coverage" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label className="experimental">{t('vessel.insights.coverage')}</label>
+        <Tooltip content={t('common.experimentalTooltip')}>
+          <label className="experimental">{t('vessel.insights.coverage')}</label>
+        </Tooltip>
         <DataTerminology title={t('vessel.insights.coverage')} terminologyKey="insightsCoverage" />
       </div>
       {isLoading ? (
