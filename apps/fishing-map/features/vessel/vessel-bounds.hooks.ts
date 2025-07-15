@@ -20,13 +20,14 @@ import { getUTCDateTime } from 'utils/dates'
 export const useVesselProfileBbox = () => {
   const vesselLayer = useVesselProfileLayer()
   const trackLoaded = vesselLayer?.instance?.getVesselTracksLayersLoaded()
+  const urlTimerange = useSelector(selectUrlTimeRange)
   return useMemo(() => {
     if (trackLoaded) {
       return vesselLayer?.instance?.getVesselTrackBounds()
     }
     return null
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trackLoaded])
+  }, [trackLoaded, urlTimerange?.start, urlTimerange?.end])
 }
 
 export const useVesselProfileBounds = () => {
@@ -59,6 +60,7 @@ export const useVesselProfileBounds = () => {
     canFitDates,
     fitBounds,
     t,
+    bounds,
     setTimerange,
     transmissionDateFrom,
     transmissionDateTo,
