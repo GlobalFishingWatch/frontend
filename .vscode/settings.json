@@ -40,6 +40,12 @@
     "**/build": true,
     "**/coverage": true
   },
+  "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "files.readonlyInclude": {
+    "**/routeTree.gen.ts": true
+  },
   "editor.formatOnSave": true, // auto format the file on each save
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   "eslint.format.enable": true,
@@ -49,7 +55,8 @@
   },
   "search.exclude": {
     ".yarn": true,
-    "**/dist": true
+    "**/dist": true,
+    "**/routeTree.gen.ts": true
   },
   "eslint.experimental.useFlatConfig": true,
   "nxConsole.generateAiAgentRules": true
