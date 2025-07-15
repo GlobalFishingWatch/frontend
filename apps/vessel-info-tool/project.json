@@ -1,0 +1,8 @@
+{
+  "name": "vessel-info-tool",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/vessel-info-tool",
+  "projectType": "application",
+  "targets": {},
+  "tags": []
+}
