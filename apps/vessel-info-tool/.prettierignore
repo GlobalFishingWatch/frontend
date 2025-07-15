@@ -1,4 +1,7 @@
 **/build
 **/public
+**/.nitro
+**/.output
+**/.tanstack
 pnpm-lock.yaml
 routeTree.gen.ts
