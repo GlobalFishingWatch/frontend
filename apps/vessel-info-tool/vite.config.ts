@@ -37,17 +37,5 @@ export default defineConfig({
       include: ['**/*.svg', '**/*.svg?react'],
     }),
     nxCopyAssetsPlugin(['*.md']),
-    viteStaticCopy({
-      targets: [
-        {
-          src: '.nitro',
-          dest: '',
-        },
-        {
-          src: '.output',
-          dest: '',
-        },
-      ],
-    }),
   ],
 })
