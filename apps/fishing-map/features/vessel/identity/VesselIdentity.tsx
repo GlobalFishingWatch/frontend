@@ -202,6 +202,7 @@ const VesselIdentity = () => {
             {identityFields?.map((fieldGroup, index) => {
               const twoColumns =
                 isGFWUser &&
+                identitySource === VesselIdentitySourceEnum.SelfReported &&
                 fieldGroup.some((field) => field.key === 'shiptypes' || field.key === 'geartypes')
               return (
                 <div
