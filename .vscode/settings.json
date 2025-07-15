@@ -34,6 +34,7 @@
   // ----------------------------------------------
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
   "editor.rulers": [140],
   "files.exclude": {
     "**/.git": true,
@@ -56,6 +57,7 @@
   "search.exclude": {
     ".yarn": true,
     "**/dist": true,
+    "**/.output": true,
     "**/routeTree.gen.ts": true
   },
   "eslint.experimental.useFlatConfig": true,
