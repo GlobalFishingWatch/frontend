@@ -1,8 +1,10 @@
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
-import viteReact from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
+import svgr from 'vite-plugin-svgr'
 import tsConfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
@@ -18,13 +20,34 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  define: {
+    'process.env': {
+      API_GATEWAY: process.env.API_GATEWAY,
+      API_VERSION: process.env.API_VERSION,
+    },
+  },
   plugins: [
     tsConfigPaths({
       projects: ['./tsconfig.json'],
     }),
     tanstackStart({ customViteReactPlugin: true }),
-    viteReact(),
+    react(),
     nxViteTsPaths(),
-    nxCopyAssetsPlugin(['*.md']),
+    svgr({
+      include: ['**/*.svg', '**/*.svg?react'],
+    }),
+    // nxCopyAssetsPlugin(['*.md']),
+    viteStaticCopy({
+      targets: [
+        {
+          src: '.nitro',
+          dest: '',
+        },
+        {
+          src: '.output',
+          dest: '',
+        },
+      ],
+    }),
   ],
 })
