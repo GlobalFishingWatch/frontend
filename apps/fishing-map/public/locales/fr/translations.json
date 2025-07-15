@@ -1244,6 +1244,7 @@
     "saveForLater": "Enregistrer pour plus tard",
     "saveForLaterTooltip": "Vous trouverez le groupe dans les filtres des calques d'activité ou sur le bouton du panneau utilisateur",
     "searchLimit": "La recherche est limitée à {{limit}} navires",
+    "searchLink": "Need to add more vessels to the group? Go to search, select results and click 'Add to vessel group'.",
     "searchNotFound": "Aucun navire trouvé",
     "searchVesselsRequired": "Recherchez des navires pour créer un groupe de navires",
     "summary": "Ce groupe contient <strong>{{vessels}} navires</strong> battant pavillon du/de <strong>{{flags}}</strong> actifs entre <strong>{{start}}</strong> et <strong>{{end}}</strong>",
