@@ -145,7 +145,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   }
 
   const getVesselGraphTooltip = (graph: 'speed' | 'depth') => {
-    let tooltipLabel =
+    let tooltipLabel: string =
       graph === 'depth' ? t('timebarSettings.showGraphDepth') : t('timebarSettings.showGraphSpeed')
     if (!activeTrackDataviews?.length) {
       tooltipLabel = t('timebarSettings.tracksDisabled')
