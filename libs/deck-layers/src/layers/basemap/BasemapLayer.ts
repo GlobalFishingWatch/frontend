@@ -25,19 +25,20 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
   }
 
   _getBathimetryLayer() {
-    return new TileLayer({
+    return new PMTilesLayer({
       id: 'basemap-bathimetry',
-      data: 'https://storage.googleapis.com/public-tiles/basemap/bathymetry/{z}/{x}/{y}.png',
+      data: 'https://storage.googleapis.com/public-tiles/basemap/bathymetry/bathymetry.pmtiles',
       minZoom: 0,
-      maxZoom: 9,
+      maxZoom: 7,
       onDataLoad: this.props.onDataLoad,
       getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Basemap, params),
       maxRequests: 100,
       debounceTime: 200,
+
       renderSubLayers: (props: any) => {
         const {
           bbox: { west, south, east, north },
-        } = props.tile as any
+        } = props.tile
         return new BitmapLayer(props, {
           data: undefined,
           image: props.data,

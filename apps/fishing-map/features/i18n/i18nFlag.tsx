@@ -5,7 +5,7 @@ import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 const useI18nFlag = (iso: string) => {
   const { t } = useTranslation('flags')
-  return t(iso as any)
+  return t(iso as any) as string
 }
 
 const I18nFlag = ({ iso }: { iso: string }) => {
