@@ -20,7 +20,8 @@
   },
   "workspaces": [
     "linting",
-    "apps/fishing-map"
+    "apps/fishing-map",
+    "apps/vessel-info-tool"
   ],
   "dependencies": {
     "@deck.gl-community/editable-layers": "9.1.1",
