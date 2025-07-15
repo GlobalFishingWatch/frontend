@@ -1500,6 +1500,7 @@ interface Resources {
       "saveForLater": "Save for later",
       "saveForLaterTooltip": "You'll find the group in the activity layers filters or your user panel button",
       "searchLimit": "Search is limited up to {{limit}} vessels",
+      "searchLink": "Need to add more vessels to the group? Go to search, select results and click 'Add to vessel group'.",
       "searchNotFound": "No vessels found",
       "searchVesselsRequired": "Search for vessels to create a vessel group",
       "summary": "This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>",
