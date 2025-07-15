@@ -1244,6 +1244,7 @@
     "saveForLater": "Salvar para mais tarde",
     "saveForLaterTooltip": "Você encontrará o grupo nos filtros das camadas de atividade ou no botão do painel do usuário",
     "searchLimit": "A pesquisa é limitada a {{limit}} embarcações",
+    "searchLink": "Need to add more vessels to the group? Go to search, select results and click 'Add to vessel group'.",
     "searchNotFound": "Nenhuma embarcação encontrada",
     "searchVesselsRequired": "Pesquise embarcações para criar um grupo de embarcações",
     "summary": "Este grupo contém <strong>{{vessels}} embarcações</strong> com as <strong>bandeiras {{flags}}</strong> ativas de <strong>{{start}}</strong> a <strong>{{end}}</strong>",
