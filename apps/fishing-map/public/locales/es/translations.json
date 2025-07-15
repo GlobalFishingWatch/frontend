@@ -1244,7 +1244,7 @@
     "saveForLater": "Guardar para más tarde",
     "saveForLaterTooltip": "Encontrarás el grupo en los filtros de las capas de actividad o en tu panel de usuario",
     "searchLimit": "La búsqueda está limitada a {{limit}} embarcaciones",
-    "searchLink": "Need to add more vessels to the group? Go to search, select results and click 'Add to vessel group'.",
+    "searchLink": "¿Necesitas añadir más buques al grupo? Ve a buscar, selecciona los resultados y haz clic en 'Agregar al grupo'.",
     "searchNotFound": "No se han encontrado resultados",
     "searchVesselsRequired": "Buscar buques para crear un grupo de buques",
     "summary": "This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>",
