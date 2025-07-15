@@ -13,7 +13,7 @@ yarn install
 To start the development server:
 
 ```bash
-nx dev vessel-info-tool
+nx start vessel-info-tool
 ```
 
 Then open [http://localhost:3000](http://localhost:3000) in your browser.

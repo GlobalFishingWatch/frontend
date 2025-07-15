@@ -36,7 +36,7 @@ export default defineConfig({
     svgr({
       include: ['**/*.svg', '**/*.svg?react'],
     }),
-    // nxCopyAssetsPlugin(['*.md']),
+    nxCopyAssetsPlugin(['*.md']),
     viteStaticCopy({
       targets: [
         {
