@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -88,7 +89,12 @@ const ReferenceLayersControl = () => {
                 color={layer.color}
                 className={styles.switch}
               />
-              <p className={styles.label}>{layer.label}</p>
+              <p
+                className={cx(styles.label, { [styles.active]: layer.visible })}
+                onClick={() => updateAreaLayersVisibility(layer.id, !layer.visible)}
+              >
+                {layer.label}
+              </p>
               <InfoModal dataview={layer.dataview} />
             </div>
           ))}

@@ -35,3 +35,12 @@
   gap: 0.5rem;
   margin-block: var(--space-XS);
 }
+
+.label {
+  cursor: pointer;
+  color: var(--color-secondary-blue);
+}
+
+.label.active {
+  color: var(--color-primary-blue);
+}
