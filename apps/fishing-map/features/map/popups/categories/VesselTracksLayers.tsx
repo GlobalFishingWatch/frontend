@@ -12,6 +12,7 @@ import type { VesselTrackPickingObject } from '@globalfishingwatch/deck-layers'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import {
   selectActiveVesselsDataviews,
@@ -58,26 +59,33 @@ function VesselTracksTooltipRow({
   const isUserExpired = useSelector(selectIsUserExpired)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
+  const { start, end } = useSelector(selectTimeRange)
+  const diffDays = getUTCDateTime(end).diff(getUTCDateTime(start), 'days').days
 
   const onReportClick = useCallback(() => {
-    if (feature.timestamp) {
-      const startDate = getUTCDateTime(feature.timestamp)
-        .minus({ hours: 12 })
-        .startOf('hour')
-        .toISO() as string
-      const endDate = getUTCDateTime(feature.timestamp)
-        .plus({ hours: 12 })
-        .endOf('hour')
-        .plus({ millisecond: 1 })
-        .toISO() as string
-      const bbox = vesselLayer?.instance?.getVesselTrackBounds({ startDate, endDate })
-      if (bbox) {
-        fitBounds(bbox as Bbox, { padding: 60, fitZoom: true })
+    if (diffDays > 10) {
+      if (
+        window.confirm(t('trackCorrection.reduce_issue_timerange') as string) &&
+        feature.timestamp
+      ) {
+        const startDate = getUTCDateTime(feature.timestamp)
+          .minus({ days: 5 })
+          .startOf('day')
+          .toISO() as string
+        const endDate = getUTCDateTime(feature.timestamp)
+          .plus({ days: 5 })
+          .endOf('day')
+          .plus({ millisecond: 1 })
+          .toISO() as string
+        const bbox = vesselLayer?.instance?.getVesselTrackBounds({ startDate, endDate })
+        if (bbox) {
+          fitBounds(bbox as Bbox, { padding: 60, fitZoom: true })
+        }
+        setTimerange({
+          start: startDate,
+          end: endDate,
+        })
       }
-      setTimerange({
-        start: startDate,
-        end: endDate,
-      })
     }
     // TODO:NTH remove other vessels from timebar while reporting
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
@@ -86,12 +94,14 @@ function VesselTracksTooltipRow({
     dispatch(setClickedEvent(null))
   }, [
     dataviewId,
+    diffDays,
     dispatch,
     dispatchTimebarVisualisation,
     feature.timestamp,
     fitBounds,
     setTimerange,
     setTrackCorrectionId,
+    t,
     vesselLayer?.instance,
   ])
 

@@ -36,11 +36,6 @@ import { getVesselGearTypeLabel, getVesselShipNameLabel, getVesselShipTypeLabel 
 
 import styles from './TrackCorrection.module.css'
 
-enum ValidationError {
-  MISSING_TIMERANGE = 'MISSING_TIMERANGE',
-  MISSING_COMMENT = 'MISSING_COMMENT',
-}
-
 const TrackCorrectionNew = () => {
   const { t } = useTranslation()
   const { start, end } = useSelector(selectTimeRange)
