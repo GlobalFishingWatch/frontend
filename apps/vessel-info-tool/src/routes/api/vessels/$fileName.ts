@@ -32,14 +32,10 @@ function parseCsv(csv: string): any[] {
   })
 }
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
 export const ServerRoute = createServerFileRoute('/api/vessels/$fileName').methods({
   GET: async ({ params }) => {
     const fileName = params.fileName || 'scraped'
-    const csvPath = path.join(__dirname, `${fileName}.csv`)
-    const csv = await readFile(csvPath, 'utf8')
+    const csv = await readFile(`./data/${fileName}.csv`, 'utf-8')
     const data = parseCsv(csv)
     return json(data)
   },
