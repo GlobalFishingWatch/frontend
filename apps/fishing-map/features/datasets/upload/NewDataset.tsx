@@ -161,7 +161,7 @@ function NewDataset() {
 
   const onDatasetParseError: NewDatasetProps['onDatasetParseError'] = useCallback(
     (error, errorHandleCallback) => {
-      errorHandleCallback(t(`${error?.message}`))
+      errorHandleCallback(t(`${error?.message}` as any))
     },
     [t]
   )

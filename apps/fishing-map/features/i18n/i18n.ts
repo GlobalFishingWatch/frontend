@@ -17,6 +17,9 @@ export const LocaleLabels = [
   { id: Locale.pt, label: 'Portuguese' },
 ]
 
+export const DEFAULT_NAMESPACE = 'translations'
+export const FALLBACK_LNG = IS_DEVELOPMENT_ENV ? 'source' : Locale.en
+
 const NPM_SCOPE = WORKSPACE_ENV === 'production' ? 'stable' : 'latest'
 const UNIQUE_BUILD_ID = process.env.NEXT_PUBLIC_UNIQUE_BUILD_ID || Date.now()
 
@@ -53,8 +56,8 @@ i18n
       },
     },
     ns: ['translations', 'flags', 'datasets', 'timebar', 'workspaces'],
-    defaultNS: 'translations',
-    fallbackLng: IS_DEVELOPMENT_ENV ? 'source' : Locale.en,
+    defaultNS: DEFAULT_NAMESPACE,
+    fallbackLng: FALLBACK_LNG,
     supportedLngs: SUPPORTED_LANGUAGES,
     debug: process.env.i18n_DEBUG === 'true',
     interpolation: {

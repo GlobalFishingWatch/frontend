@@ -127,6 +127,7 @@ build
 .local*
 tmp/
 affected-apps
+affected
 
 # local parquet files
 *.parquet

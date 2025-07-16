@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import type { ChangeEvent, FC } from 'react'
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -68,8 +69,8 @@ const LayerLibrary: FC = () => {
         id: 'currents',
         dataviewId: CURRENTS_DATAVIEW_SLUG,
         category: DataviewCategory.Environment,
-        name: 'Currents prototype',
-        description: 'Prototype for currents layer',
+        name: t('layer-library:currents.name'),
+        description: t('layer-library:currents.description'),
         moreInfoLink: '',
         previewImageUrl: `${PATH_BASENAME}/images/layer-library/currents.jpg`,
         dataview: {} as any,
@@ -240,7 +241,6 @@ const LayerLibrary: FC = () => {
             className={styles.input}
             type="search"
             disabled={!ready}
-            autoFocus
             placeholder={t('translations:search.title')}
           />
         </div>

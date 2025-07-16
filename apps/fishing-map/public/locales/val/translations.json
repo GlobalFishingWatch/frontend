@@ -1244,6 +1244,7 @@
     "saveForLater": "crwdns60689:0crwdne60689:0",
     "saveForLaterTooltip": "crwdns60691:0crwdne60691:0",
     "searchLimit": "crwdns83046:0{{limit}}crwdne83046:0",
+    "searchLink": "crwdns94200:0crwdne94200:0",
     "searchNotFound": "crwdns83838:0crwdne83838:0",
     "searchVesselsRequired": "crwdns83840:0crwdne83840:0",
     "summary": "crwdns83734:0{{vessels}}crwdnd83734:0{{flags}}crwdnd83734:0{{start}}crwdnd83734:0{{end}}crwdne83734:0",

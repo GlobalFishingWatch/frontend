@@ -7,6 +7,7 @@ import type { SelectOption } from '@globalfishingwatch/ui-components'
 import {
   Button,
   Icon,
+  IconButton,
   InputText,
   Modal,
   MultiSelect,
@@ -45,9 +46,11 @@ import {
   mergeDataviewIntancesToUpsert,
   useDataviewInstancesConnect,
 } from 'features/workspace/workspace.hook'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
-import type { ROUTE_TYPES } from 'routes/routes'
+import { type ROUTE_TYPES, SEARCH, WORKSPACE_SEARCH } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
+import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -131,6 +134,8 @@ function VesselGroupModal(): React.ReactElement<any> {
   const searchVesselGroupsVesselsAllowed = vesselGroupVesselsToSearch
     ? vesselGroupVesselsToSearch?.length < MAX_VESSEL_GROUP_VESSELS
     : true
+  const workspace = useSelector(selectWorkspace)
+  const { dispatchLocation } = useLocationConnect()
 
   const vesselDatasets = useSelector(selectVesselGroupCompatibleDatasets)
   const sourceOptions = vesselDatasets.map((d) => ({
@@ -373,6 +378,20 @@ function VesselGroupModal(): React.ReactElement<any> {
     [dispatch]
   )
 
+  const onSearchClick = useCallback(() => {
+    onBackClick('close')
+    if (workspace?.id) {
+      dispatchLocation(WORKSPACE_SEARCH, {
+        payload: {
+          category: workspace.category,
+          workspaceId: workspace.id,
+        },
+      })
+    } else {
+      dispatchLocation(SEARCH)
+    }
+  }, [onBackClick, dispatchLocation, workspace])
+
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
@@ -413,6 +432,17 @@ function VesselGroupModal(): React.ReactElement<any> {
                 disabled={hasVesselGroupsVessels}
               />
             </Fragment>
+          )}
+          {editingVesselGroup && hasVesselGroupsVessels && (
+            <p className={styles.searchLink}>
+              {t('vesselGroup.searchLink')}
+              <IconButton
+                size="small"
+                icon="external-link"
+                className={styles.link}
+                onClick={onSearchClick}
+              />
+            </p>
           )}
         </div>
         {fullModalLoading ? (

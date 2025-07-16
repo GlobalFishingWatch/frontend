@@ -5,14 +5,15 @@ import type {
   DataviewInstance,
 } from '@globalfishingwatch/api-types'
 
-import type libraryTranslations from '../../public/locales/source/layer-library.json'
+import type AppResources from 'features/i18n/i18n.types'
 
 // Browser config for equal screenshots
 // map at latitude=30&longitude=4&zoom=2
 // browser zoom at 80%
 
+type LayerLibraryId = keyof AppResources['layer-library']
 export type LibraryLayerConfig = Omit<DataviewInstance, 'id'> & {
-  id: keyof typeof libraryTranslations | 'currents' // Currents is just a prototype so don't need translations for now
+  id: LayerLibraryId
   previewImageUrl: string
   moreInfoLink?: string
   onlyGFWUser?: boolean

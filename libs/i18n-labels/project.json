@@ -95,6 +95,12 @@
         "parallel": false
       }
     },
+    "ts": {
+      "executor": "nx:run-script",
+      "options": {
+        "script": "ts"
+      }
+    },
     "purge": {
       "executor": "nx:run-commands",
       "options": {

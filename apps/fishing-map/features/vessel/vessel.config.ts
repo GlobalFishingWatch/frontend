@@ -4,7 +4,7 @@ import {
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 
-import type { I18nNamespaces } from 'features/i18n/i18n.types'
+import type I18nNamespaces from 'features/i18n/i18n.types'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 
 import type { VesselProfileState } from './vessel.types'
@@ -37,7 +37,7 @@ export const DEFAULT_VESSEL_STATE: VesselProfileState = {
 export type VesselRenderField<Key = string> = {
   key: Key
   label?: string
-  terminologyKey?: I18nNamespaces['dataTerminology']
+  terminologyKey?: keyof I18nNamespaces['data-terminology']
 }
 
 const COMMON_FIELD_GROUPS: VesselRenderField[] = [{ key: 'shipname' }, { key: 'flag' }]

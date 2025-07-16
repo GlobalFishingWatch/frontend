@@ -14,6 +14,11 @@
     "moreInfoLink": "crwdns82492:0crwdne82492:0",
     "name": "crwdns82488:0crwdne82488:0"
   },
+  "currents": {
+    "description": "crwdns94194:0crwdne94194:0",
+    "moreInfoLink": "crwdns94196:0crwdne94196:0",
+    "name": "crwdns94198:0crwdne94198:0"
+  },
   "dsm-isa-leasing-areas": {
     "description": "crwdns84221:0crwdne84221:0",
     "moreInfoLink": "crwdns84223:0crwdne84223:0",
@@ -124,15 +129,15 @@
     "moreInfoLink": "crwdns82570:0crwdne82570:0",
     "name": "crwdns82566:0crwdne82566:0"
   },
-  "port-visits": {
-    "description": "crwdns83790:0crwdne83790:0",
-    "moreInfoLink": "crwdns83792:0crwdne83792:0",
-    "name": "crwdns83794:0crwdne83794:0"
-  },
   "port-locations": {
     "description": "crwdns87964:0crwdne87964:0",
     "moreInfoLink": "crwdns87966:0crwdne87966:0",
     "name": "crwdns87968:0crwdne87968:0"
+  },
+  "port-visits": {
+    "description": "crwdns83790:0crwdne83790:0",
+    "moreInfoLink": "crwdns83792:0crwdne83792:0",
+    "name": "crwdns83794:0crwdne83794:0"
   },
   "presence": {
     "description": "crwdns82574:0crwdne82574:0",

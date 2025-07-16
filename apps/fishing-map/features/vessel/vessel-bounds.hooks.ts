@@ -20,13 +20,14 @@ import { getUTCDateTime } from 'utils/dates'
 export const useVesselProfileBbox = () => {
   const vesselLayer = useVesselProfileLayer()
   const trackLoaded = vesselLayer?.instance?.getVesselTracksLayersLoaded()
+  const urlTimerange = useSelector(selectUrlTimeRange)
   return useMemo(() => {
     if (trackLoaded) {
       return vesselLayer?.instance?.getVesselTrackBounds()
     }
     return null
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trackLoaded])
+  }, [trackLoaded, urlTimerange?.start, urlTimerange?.end])
 }
 
 export const useVesselProfileBounds = () => {
@@ -59,6 +60,7 @@ export const useVesselProfileBounds = () => {
     canFitDates,
     fitBounds,
     t,
+    bounds,
     setTimerange,
     transmissionDateFrom,
     transmissionDateTo,
@@ -108,13 +110,14 @@ const useVesselFitTranmissionsBounds = () => {
   useEffect(() => {
     if (isVesselLocation && needsTimerangeUpdate) {
       // This is needed to update the url instantly instead of waiting for the debounced
-      // update in setTimerange fn as the resouce needs to be generated asap
+      // update in setTimerange fn as the resource needs to be generated asap
       dispatchQueryParams({ start: transmissionDateFrom, end: transmissionDateTo })
       setTimerange({ start: transmissionDateFrom, end: transmissionDateTo })
       requestAnimationFrame(() => {
         seTimerangeBoundsUpdated(true)
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [needsTimerangeUpdate])
 
   // There has to wait for the timerange to be updated so the track loads with the entire track
