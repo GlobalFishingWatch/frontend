@@ -10,6 +10,7 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { IconButton, MiniGlobe, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import ReferenceLayersControl from 'features/map/controls/ReferenceLayersControl'
 import { useMapBounds } from 'features/map/map-bounds.hooks'
 import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
@@ -168,6 +169,7 @@ const MapControls = ({
               </Tooltip>
             </Fragment>
           )}
+          {isVesselLocation && <ReferenceLayersControl />}
           <IconButton
             type="map-tool"
             tooltip={t('map.loading')}

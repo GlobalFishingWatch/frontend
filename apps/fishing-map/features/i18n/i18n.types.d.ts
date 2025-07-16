@@ -1028,6 +1028,8 @@ interface Resources {
       "nauticalMilesAbbr": "nm",
       "positions": "See positions visualizations mode",
       "positionsDisabled": "A more detailed visualization is available in areas with less activity, please zoom in or reduce your time range to see it",
+      "referenceLayersClose": "Close",
+      "referenceLayersOpen": "Reference layers",
       "rulers_add": "Measure distance",
       "rulersDelete": "Delete all measures",
       "rulersHover": "Drag to move or click to see more",
