@@ -191,7 +191,7 @@ const VesselIdentity = () => {
               size="medium"
               className="print-hidden"
               onClick={onDownloadClick}
-              tooltip={t('download.dataDownload')}
+              tooltip={t('download.identityDownload')}
               loginTooltip={t('download.dataDownloadLogin')}
               tooltipPlacement="top"
             />
