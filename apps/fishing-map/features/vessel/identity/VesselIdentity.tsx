@@ -269,7 +269,7 @@ const VesselIdentity = () => {
             {identitySource === VesselIdentitySourceEnum.Registry &&
               hasMoreInfo &&
               registrySourceData && (
-                <div className={styles.extraInfoContainer}>
+                <div className={cx(styles.extraInfoContainer, 'print-hidden')}>
                   <img
                     src={registrySourceData?.logo}
                     alt={registrySourceData?.key}
@@ -278,7 +278,9 @@ const VesselIdentity = () => {
                   <Tooltip content={t('vessel.extraInfoTooltip')}>
                     <div>
                       <label>{t('vessel.extraInfo')}</label>
-                      <p>{registrySourceData?.contact}</p>
+                      <a href={`mailto:${registrySourceData?.contact}`} target="_blank">
+                        {registrySourceData?.contact}
+                      </a>
                     </div>
                   </Tooltip>
                 </div>
