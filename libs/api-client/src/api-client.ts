@@ -1,4 +1,4 @@
-import { saveAs } from 'file-saver'
+// import { saveAs } from 'file-saver'
 
 import type {
   APIPagination,
@@ -248,9 +248,11 @@ export class GFW_API_CLASS {
     this.status = 'downloading'
     return this._internalFetch<Blob>(downloadUrl, { responseType: 'blob' })
       .then((blob) => {
-        saveAs(blob, fileName)
-        this.status = 'idle'
-        return true
+        return import('file-saver').then(({ saveAs }) => {
+          saveAs(blob, fileName)
+          this.status = 'idle'
+          return true
+        })
       })
       .catch((e) => {
         this.status = 'idle'
