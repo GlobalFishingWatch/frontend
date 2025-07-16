@@ -1,5 +1,7 @@
 import { Link } from '@tanstack/react-router'
 
+import styles from './NotFound.module.css'
+
 export function NotFound({ children }: { children?: any }) {
   return (
     <div className="space-y-2 p-2">
@@ -11,7 +13,7 @@ export function NotFound({ children }: { children?: any }) {
           onClick={() => window.history.back()}
           className="bg-emerald-500 text-white px-2 py-1 rounded uppercase font-black text-sm"
         >
-          Go back
+          <span className={styles.red}>Go back</span>
         </button>
         <Link
           to="/"

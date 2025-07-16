@@ -1,11 +1,12 @@
-import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin'
+// import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
+import tailwindcss from '@tailwindcss/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
-import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
 import svgr from 'vite-plugin-svgr'
 import tsConfigPaths from 'vite-tsconfig-paths'
+
+// import { pluginSSRCssModuleFix } from '../../config/vite.plugins'
 
 export default defineConfig({
   cacheDir: '../../node_modules/.vite/apps/vessel-info-tool',
@@ -18,7 +19,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000,
+    port: 3001,
   },
   define: {
     'process.env': {
@@ -30,12 +31,18 @@ export default defineConfig({
     tsConfigPaths({
       projects: ['./tsconfig.json'],
     }),
-    tanstackStart({ customViteReactPlugin: true }),
-    react(),
     nxViteTsPaths(),
+    tanstackStart({
+      customViteReactPlugin: true,
+      spa: {
+        enabled: true,
+      },
+    }),
+    tailwindcss(),
     svgr({
       include: ['**/*.svg', '**/*.svg?react'],
     }),
-    nxCopyAssetsPlugin(['*.md']),
+    // nxCopyAssetsPlugin(['*.md']),
+    // pluginSSRCssModuleFix(),
   ],
 })
