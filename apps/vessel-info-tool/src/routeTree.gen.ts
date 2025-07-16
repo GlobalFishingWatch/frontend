@@ -27,6 +27,7 @@ import { Route as PathlessLayoutNestedLayoutRouteBRouteImport } from './routes/_
 import { Route as PathlessLayoutNestedLayoutRouteARouteImport } from './routes/_pathlessLayout/_nested-layout/route-a'
 import { ServerRoute as CustomScriptDotjsServerRouteImport } from './routes/customScript[.]js'
 import { ServerRoute as ApiUsersServerRouteImport } from './routes/api/users'
+import { ServerRoute as ApiVesselsFileNameServerRouteImport } from './routes/api/vessels/$fileName'
 import { ServerRoute as ApiUsersUserIdServerRouteImport } from './routes/api/users.$userId'
 
 const rootServerRouteImport = createServerRootRoute()
@@ -112,6 +113,12 @@ const ApiUsersServerRoute = ApiUsersServerRouteImport.update({
   path: '/api/users',
   getParentRoute: () => rootServerRouteImport,
 } as any)
+const ApiVesselsFileNameServerRoute =
+  ApiVesselsFileNameServerRouteImport.update({
+    id: '/api/vessels/$fileName',
+    path: '/api/vessels/$fileName',
+    getParentRoute: () => rootServerRouteImport,
+  } as any)
 const ApiUsersUserIdServerRoute = ApiUsersUserIdServerRouteImport.update({
   id: '/$userId',
   path: '/$userId',
@@ -219,29 +226,46 @@ export interface FileServerRoutesByFullPath {
   '/customScript.js': typeof CustomScriptDotjsServerRoute
   '/api/users': typeof ApiUsersServerRouteWithChildren
   '/api/users/$userId': typeof ApiUsersUserIdServerRoute
+  '/api/vessels/$fileName': typeof ApiVesselsFileNameServerRoute
 }
 export interface FileServerRoutesByTo {
   '/customScript.js': typeof CustomScriptDotjsServerRoute
   '/api/users': typeof ApiUsersServerRouteWithChildren
   '/api/users/$userId': typeof ApiUsersUserIdServerRoute
+  '/api/vessels/$fileName': typeof ApiVesselsFileNameServerRoute
 }
 export interface FileServerRoutesById {
   __root__: typeof rootServerRouteImport
   '/customScript.js': typeof CustomScriptDotjsServerRoute
   '/api/users': typeof ApiUsersServerRouteWithChildren
   '/api/users/$userId': typeof ApiUsersUserIdServerRoute
+  '/api/vessels/$fileName': typeof ApiVesselsFileNameServerRoute
 }
 export interface FileServerRouteTypes {
   fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths: '/customScript.js' | '/api/users' | '/api/users/$userId'
+  fullPaths:
+    | '/customScript.js'
+    | '/api/users'
+    | '/api/users/$userId'
+    | '/api/vessels/$fileName'
   fileServerRoutesByTo: FileServerRoutesByTo
-  to: '/customScript.js' | '/api/users' | '/api/users/$userId'
-  id: '__root__' | '/customScript.js' | '/api/users' | '/api/users/$userId'
+  to:
+    | '/customScript.js'
+    | '/api/users'
+    | '/api/users/$userId'
+    | '/api/vessels/$fileName'
+  id:
+    | '__root__'
+    | '/customScript.js'
+    | '/api/users'
+    | '/api/users/$userId'
+    | '/api/vessels/$fileName'
   fileServerRoutesById: FileServerRoutesById
 }
 export interface RootServerRouteChildren {
   CustomScriptDotjsServerRoute: typeof CustomScriptDotjsServerRoute
   ApiUsersServerRoute: typeof ApiUsersServerRouteWithChildren
+  ApiVesselsFileNameServerRoute: typeof ApiVesselsFileNameServerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -362,6 +386,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ApiUsersServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/api/vessels/$fileName': {
+      id: '/api/vessels/$fileName'
+      path: '/api/vessels/$fileName'
+      fullPath: '/api/vessels/$fileName'
+      preLoaderRoute: typeof ApiVesselsFileNameServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
     '/api/users/$userId': {
       id: '/api/users/$userId'
       path: '/$userId'
@@ -453,6 +484,7 @@ export const routeTree = rootRouteImport
 const rootServerRouteChildren: RootServerRouteChildren = {
   CustomScriptDotjsServerRoute: CustomScriptDotjsServerRoute,
   ApiUsersServerRoute: ApiUsersServerRouteWithChildren,
+  ApiVesselsFileNameServerRoute: ApiVesselsFileNameServerRoute,
 }
 export const serverRouteTree = rootServerRouteImport
   ._addFileChildren(rootServerRouteChildren)
