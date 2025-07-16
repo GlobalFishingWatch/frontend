@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { uniq } from 'es-toolkit'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 
@@ -18,7 +19,7 @@ export const useVisibleVesselEvents = () => {
         const visibleEvents: any =
           currentVisibleEvents === 'all'
             ? ALL_EVENT_TYPES.filter((eventType) => eventType !== event)
-            : [...(currentVisibleEvents === 'none' ? [] : currentVisibleEvents), event]
+            : uniq([...(currentVisibleEvents === 'none' ? [] : currentVisibleEvents), event])
         dispatchQueryParams({
           visibleEvents: visibleEvents?.length === ALL_EVENT_TYPES.length ? 'all' : visibleEvents,
         })
@@ -27,8 +28,8 @@ export const useVisibleVesselEvents = () => {
           currentVisibleEvents === 'all'
             ? ALL_EVENT_TYPES
             : currentVisibleEvents === 'none'
-            ? []
-            : currentVisibleEvents
+              ? []
+              : currentVisibleEvents
         const visibleEvents = currentVisibleEventsTypes.filter(
           (eventType) => event !== eventType
         ) as EventType[]
