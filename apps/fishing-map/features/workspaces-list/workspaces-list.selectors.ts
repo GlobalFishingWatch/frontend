@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import type { Entries } from 'type-fest'
 
 import type { WorkspaceViewport } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -62,26 +63,30 @@ export const selectHighlightedWorkspaces = createSelector(
       'marine-manager': MARINE_MANAGER_WORKSPACES,
       reports: isGlobalReportsEnabled ? REPORTS_INDEX : [],
     }
-    return Object.entries(WORKSPACES_BY_CATEGORY).map(([category, workspaces]) => {
-      return {
-        category: category as HighlightedWorkspaceCategory,
-        workspaces: workspaces.map((workspace) => ({
-          ...workspace,
-          name: t(`workspaces:${category}.${workspace.id}.name`, { locale }),
-          description: t(`workspaces:${category}.${workspace.id}.description`, { locale }),
-          visible: workspace.visible !== false,
-          cta: t(`workspaces:${category}.${workspace.id}.cta`, {
-            locale,
-            defaultValue:
-              category === 'marine-manager'
-                ? t('workspace.marineManagerLink')
-                : category === 'reports'
-                  ? t('analysis.see')
-                  : t('common.see'),
-          }),
-        })),
+    return (Object.entries(WORKSPACES_BY_CATEGORY) as Entries<typeof WORKSPACES_BY_CATEGORY>).map(
+      ([category, workspaces]) => {
+        return {
+          category: category,
+          workspaces: workspaces.map((workspace) => ({
+            ...workspace,
+            name: t(`workspaces:${category}.${workspace.id}.name`, { locale } as any) as string,
+            description: t(`workspaces:${category}.${workspace.id}.description`, {
+              locale,
+            } as any) as string,
+            visible: workspace.visible !== false,
+            cta: t(`workspaces:${category}.${workspace.id}.cta`, {
+              locale,
+              defaultValue:
+                category === 'marine-manager'
+                  ? t('workspace.marineManagerLink')
+                  : category === 'reports'
+                    ? t('analysis.see')
+                    : t('common.see'),
+            }),
+          })),
+        }
       }
-    })
+    )
   }
 )
 
