@@ -200,7 +200,7 @@ const VesselIdentity = () => {
         {vesselIdentity && (
           <div className={styles.fields}>
             {identityFields?.map((fieldGroup, index) => {
-              const twoColumns =
+              const showExpandableGearTypes =
                 isGFWUser &&
                 identitySource === VesselIdentitySourceEnum.SelfReported &&
                 fieldGroup.some((field) => field.key === 'shiptypes' || field.key === 'geartypes')
@@ -208,7 +208,7 @@ const VesselIdentity = () => {
                 <div
                   key={index}
                   className={cx(styles.fieldGroupContainer, styles.fieldGroup, {
-                    [styles.twoColumns]: twoColumns,
+                    [styles.secondColumnLarger]: showExpandableGearTypes,
                   })}
                 >
                   {/* TODO: make fields more dynamic to account for VMS */}
