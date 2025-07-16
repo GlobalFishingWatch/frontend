@@ -14,6 +14,8 @@ import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { SCROLL_CONTAINER_DOM_ID } from 'features/sidebar/sidebar.utils'
+import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
+import TrackCorrection from 'features/track-correction/TrackCorrection'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import {
@@ -74,6 +76,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const isPrinting = useSelector(selectScreenshotModalOpen)
+  const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
 
   useEffect(() => {
     if (isUserLogged) {
@@ -108,6 +111,10 @@ function Sidebar({ onMenuClick }: SidebarProps) {
       return <User />
     }
 
+    if (isTrackCorrectionOpen) {
+      return <TrackCorrection />
+    }
+
     if (isVesselLocation) {
       return <VesselProfile />
     }
@@ -134,18 +141,20 @@ function Sidebar({ onMenuClick }: SidebarProps) {
 
     return <Workspace />
   }, [
-    isAreaReportLocation,
-    isPortReportLocation,
-    isSearchLocation,
+    isUserLogged,
     isUserLocation,
-    isVesselGroupReportLocation,
+    isTrackCorrectionOpen,
     isVesselLocation,
     isWorkspacesListLocation,
-    isUserLogged,
+    isAreaReportLocation,
+    isPortReportLocation,
+    isVesselGroupReportLocation,
+    isSearchLocation,
   ])
-  const showTabs = !readOnly && !isSmallScreen && !isPrinting
+
+  const showTabs = !readOnly && !isSmallScreen && !isPrinting && !isTrackCorrectionOpen
   return (
-    <div className={styles.container}>
+    <div className={cx(styles.container, { [styles.overlay]: isTrackCorrectionOpen })}>
       {showTabs && <CategoryTabs onMenuClick={onMenuClick} />}
       <div className={cx(styles.content, { [styles.withoutTabs]: !showTabs })}>
         <SidebarHeader />

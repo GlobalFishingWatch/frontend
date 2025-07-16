@@ -47,6 +47,14 @@ function patchWasmModuleImport(
 const nextConfig: NextConfig = {
   async rewrites() {
     return [
+      {
+        source: '/vessel/:vesselId/:any*',
+        destination: '/vessel/:vesselId/:any*',
+      },
+      {
+        source: '/:category/:workspace/vessel/:vesselId/:any*',
+        destination: '/:category/:workspace/vessel/:vesselId/:any*',
+      },
       // Rewrite everything to `pages/index`
       {
         source: '/:any*',
