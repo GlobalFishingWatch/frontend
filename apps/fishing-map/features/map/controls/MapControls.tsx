@@ -10,6 +10,7 @@ import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { IconButton, MiniGlobe, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import ReferenceLayersControl from 'features/map/controls/ReferenceLayersControl'
 import ReportControls from 'features/map/controls/ReportControl'
 import { useMapBounds } from 'features/map/map-bounds.hooks'
 import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
@@ -53,10 +54,10 @@ const MapControls = ({
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
-  const isVesselLocation = useSelector(selectIsAnyVesselLocation)
+  const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const showExtendedControls =
-    (isWorkspaceLocation || isVesselLocation || isAnyReportLocation) && !isMapDrawing
+    (isWorkspaceLocation || isAnyVesselLocation || isAnyReportLocation) && !isMapDrawing
 
   const setMapCoordinates = useSetMapCoordinates()
   const viewState = useMapViewState()
@@ -119,7 +120,7 @@ const MapControls = ({
           {miniGlobeHovered && <MiniGlobeInfo viewport={viewState} />}
         </div>
         <div className={cx('print-hidden', styles.controlsNested)}>
-          {(isWorkspaceLocation || isVesselLocation) && !isMapDrawing && <MapSearch />}
+          {(isWorkspaceLocation || isAnyVesselLocation) && !isMapDrawing && <MapSearch />}
           <IconButton
             icon="plus"
             type="map-tool"
@@ -158,6 +159,7 @@ const MapControls = ({
               </Tooltip>
             </Fragment>
           )}
+          {isAnyVesselLocation && <ReferenceLayersControl />}
           <IconButton
             type="map-tool"
             tooltip={t('map.loading')}

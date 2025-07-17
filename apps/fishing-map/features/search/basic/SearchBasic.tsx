@@ -165,7 +165,7 @@ function SearchBasic({
                 )}
 
                 {searchStatus === AsyncReducerStatus.Finished && !hasMoreResults && (
-                  <SearchNoResultsState />
+                  <SearchNoResultsState className={styles.noMoreResults} />
                 )}
                 {searchStatus === AsyncReducerStatus.Error && <SearchError />}
               </ul>

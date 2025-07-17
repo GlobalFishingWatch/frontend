@@ -7,7 +7,6 @@ import {
   FAO_AREAS_DATAVIEW_SLUG,
   MPA_DATAVIEW_INSTANCE_ID,
   MPA_DATAVIEW_SLUG,
-  PROTECTED_SEAS_DATAVIEW_SLUG,
   PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
   RFMO_DATAVIEW_INSTANCE_ID,
   RFMO_DATAVIEW_SLUG,
@@ -23,14 +22,6 @@ export const BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES: DataviewInstance[] = [
     dataviewId: EEZ_DATAVIEW_SLUG,
   },
   {
-    id: MPA_DATAVIEW_INSTANCE_ID,
-    config: {
-      color: '#1AFF6B',
-      visible: false,
-    },
-    dataviewId: MPA_DATAVIEW_SLUG,
-  },
-  {
     id: FAO_AREAS_DATAVIEW_INSTANCE_ID,
     config: {
       visible: false,
@@ -44,6 +35,14 @@ export const BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES: DataviewInstance[] = [
       visible: false,
     },
     dataviewId: RFMO_DATAVIEW_SLUG,
+  },
+  {
+    id: MPA_DATAVIEW_INSTANCE_ID,
+    config: {
+      color: '#1AFF6B',
+      visible: false,
+    },
+    dataviewId: MPA_DATAVIEW_SLUG,
   },
 ]
 
