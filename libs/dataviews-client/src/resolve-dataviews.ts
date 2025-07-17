@@ -169,6 +169,9 @@ export const getDatasetConfigsByDatasetType = (
   dataview: UrlDataviewInstance,
   type: DatasetTypes
 ): DataviewDatasetConfig[] => {
+  if (!dataview) {
+    return []
+  }
   const availableDatasets = dataview.datasets || []
   const availableDatasetConfigs = dataview.datasetsConfig || []
   const datasets = availableDatasets.filter((dataset) => dataset.type === type)
@@ -297,6 +300,8 @@ export const resolveDataviewDatasetResources = (
   dataview: UrlDataviewInstance,
   datasetTypeOrId: DatasetTypes | DatasetTypes[] | string
 ) => {
+  if (!dataview) return []
+
   const isArray = Array.isArray(datasetTypeOrId)
   const isType = isArray || Object.values(DatasetTypes).includes(datasetTypeOrId as DatasetTypes)
   let types: DatasetTypes[]

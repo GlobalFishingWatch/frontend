@@ -11,9 +11,9 @@ import { IconButton, MiniGlobe, Tooltip } from '@globalfishingwatch/ui-component
 
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import ReferenceLayersControl from 'features/map/controls/ReferenceLayersControl'
+import ReportControls from 'features/map/controls/ReportControl'
 import { useMapBounds } from 'features/map/map-bounds.hooks'
 import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { useMapErrorNotification } from 'features/map/overlays/error-notification/error-notification.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
@@ -54,11 +54,10 @@ const MapControls = ({
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
-  const isVesselLocation = useSelector(selectIsAnyVesselLocation)
+  const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isMapDrawing = useSelector(selectIsMapDrawing)
-  const { isErrorNotificationEditing, toggleErrorNotification } = useMapErrorNotification()
   const showExtendedControls =
-    (isWorkspaceLocation || isVesselLocation || isAnyReportLocation) && !isMapDrawing
+    (isWorkspaceLocation || isAnyVesselLocation || isAnyReportLocation) && !isMapDrawing
 
   const setMapCoordinates = useSetMapCoordinates()
   const viewState = useMapViewState()
@@ -121,7 +120,7 @@ const MapControls = ({
           {miniGlobeHovered && <MiniGlobeInfo viewport={viewState} />}
         </div>
         <div className={cx('print-hidden', styles.controlsNested)}>
-          {(isWorkspaceLocation || isVesselLocation) && !isMapDrawing && <MapSearch />}
+          {(isWorkspaceLocation || isAnyVesselLocation) && !isMapDrawing && <MapSearch />}
           <IconButton
             icon="plus"
             type="map-tool"
@@ -138,16 +137,7 @@ const MapControls = ({
             <Fragment>
               <Rulers />
               <MapAnnotations />
-              {gfwUser && (
-                <IconButton
-                  icon="feedback-error"
-                  type="map-tool"
-                  disabled={mapLoading}
-                  tooltip={t('map.errorAction')}
-                  onClick={toggleErrorNotification}
-                  className={cx({ [styles.active]: isErrorNotificationEditing })}
-                />
-              )}
+              {gfwUser && <ReportControls disabled={mapLoading} />}
               <MapControlScreenshot />
               <Tooltip
                 content={
@@ -169,7 +159,7 @@ const MapControls = ({
               </Tooltip>
             </Fragment>
           )}
-          {isVesselLocation && <ReferenceLayersControl />}
+          {isAnyVesselLocation && <ReferenceLayersControl />}
           <IconButton
             type="map-tool"
             tooltip={t('map.loading')}

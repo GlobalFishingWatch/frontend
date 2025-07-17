@@ -1,7 +1,13 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { IdentityVessel, Resource } from '@globalfishingwatch/api-types'
+import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import {
+  resolveDataviewDatasetResource,
+  selectResourceByUrl,
+  type UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { VesselLayer } from '@globalfishingwatch/deck-layers'
 
@@ -11,6 +17,10 @@ import {
   getVesselDataviewInstanceId,
   VESSEL_LAYER_PREFIX,
 } from 'features/dataviews/dataviews.utils'
+import {
+  selectActiveVesselsDataviews,
+  selectCustomUserDataviews,
+} from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
   selectCurrentVesselEvent,
@@ -59,5 +69,28 @@ export const useUpdateVesselEventsVisibility = () => {
         setVesselEventVisibility({ event: 'fishing', visible: false })
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vessel])
+}
+
+export function useGetVesselInfoByDataviewId(dataviewId: string) {
+  const trackDataviews = useSelector(selectActiveVesselsDataviews) as UrlDataviewInstance[]
+  const userDataviews = useSelector(selectCustomUserDataviews) as UrlDataviewInstance[]
+  const dataviews = useMemo(
+    () => [...trackDataviews, ...userDataviews],
+    [trackDataviews, userDataviews]
+  )
+  const dataview = dataviews.find((dataview) => dataview.id === dataviewId)
+  const { url: infoUrl } = resolveDataviewDatasetResource(dataview!, DatasetTypes.Vessels)
+
+  const vesselInfoResource: Resource<IdentityVessel> | undefined = useSelector(
+    selectResourceByUrl<IdentityVessel>(infoUrl)
+  )
+
+  const vesselLayer = useGetDeckLayer<VesselLayer>(dataviewId)
+
+  return useMemo(
+    () => ({ dataview, vesselInfoResource, vesselLayer }),
+    [dataview, vesselInfoResource, vesselLayer]
+  )
 }

@@ -72,7 +72,6 @@ export const getUTCDateTime = (d: SupportedDateType): DateTime => {
       return DateTime.utc()
     }
   }
-  console.warn('Not a valid date', typeof d, d)
   return DateTime.utc()
 }
 

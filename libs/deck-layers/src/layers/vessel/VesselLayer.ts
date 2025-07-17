@@ -347,11 +347,19 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   _getVesselPositionLayer() {
-    const { visible, highlightStartTime, highlightEndTime, hoveredTime, color, name } = this.props
+    const {
+      visible,
+      highlightStartTime,
+      highlightEndTime,
+      hoveredTime,
+      color,
+      name,
+      showVesselIcon,
+    } = this.props
     const trackData = this.getVesselTrackData()
     const start = highlightStartTime || hoveredTime
     const end = highlightEndTime || hoveredTime
-    if (!visible || !trackData?.length || !end || !start) {
+    if (!visible || !trackData?.length || !end || !start || !showVesselIcon) {
       return []
     }
     const highlightCenter = end - (end - start) / 2
