@@ -34,11 +34,18 @@
   // ----------------------------------------------
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
   "editor.rulers": [140],
   "files.exclude": {
     "**/.git": true,
     "**/build": true,
     "**/coverage": true
+  },
+  "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "files.readonlyInclude": {
+    "**/routeTree.gen.ts": true
   },
   "editor.formatOnSave": true, // auto format the file on each save
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
@@ -49,7 +56,9 @@
   },
   "search.exclude": {
     ".yarn": true,
-    "**/dist": true
+    "**/dist": true,
+    "**/.output": true,
+    "**/routeTree.gen.ts": true
   },
   "eslint.experimental.useFlatConfig": true,
   "nxConsole.generateAiAgentRules": true
