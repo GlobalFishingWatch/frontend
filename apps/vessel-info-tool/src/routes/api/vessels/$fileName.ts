@@ -1,6 +1,4 @@
 import { readFile } from 'fs/promises'
-import path from 'path'
-import { fileURLToPath } from 'url'
 
 import { json } from '@tanstack/react-start'
 import { createServerFileRoute } from '@tanstack/react-start/server'
