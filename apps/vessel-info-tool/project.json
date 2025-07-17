@@ -15,7 +15,7 @@
       "options": {
         "commands": [
           "rimraf dist/apps/vessel-info-tool/.output",
-          "shx cp -R apps/vessel-info-tool/data apps/vessel-info-tool/.output/server",
+          "shx cp -R apps/vessel-info-tool/data apps/vessel-info-tool/.output",
           "shx cp -R apps/vessel-info-tool/.output dist/apps/vessel-info-tool"
         ],
         "parallel": false
