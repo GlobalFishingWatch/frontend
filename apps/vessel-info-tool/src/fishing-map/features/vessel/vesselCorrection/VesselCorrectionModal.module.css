@@ -1,0 +1,51 @@
+.modalContent {
+  height: auto;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: var(--space-M);
+}
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-S);
+}
+
+.footer {
+  margin-top: var(--space-S);
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cta {
+  min-width: 15rem;
+  padding: 0 5rem;
+  margin-bottom: 2rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 var(--space-M);
+  table-layout: fixed;
+}
+
+.table th {
+  text-align: left;
+  font-size: var(--font-S);
+  color: var(--color-dark);
+}
+
+.table td {
+  padding-right: 2rem;
+}
+
+.table th:last-child,
+.table td:last-child {
+  width: 50%;
+}

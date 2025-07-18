@@ -1,0 +1,47 @@
+.list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: var(--size-M);
+  border: var(--border);
+  padding: 0.2rem;
+}
+
+.option {
+  line-height: 1;
+}
+
+.VisualisationChoice .optionButton {
+  overflow: hidden;
+  width: 2.6rem;
+  height: 2.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--size-M);
+  background-color: transparent;
+  color: var(--color-secondary-blue);
+  padding: 0;
+}
+
+.VisualisationChoice .optionActive {
+  background-color: var(--color-terthiary-blue);
+  color: var(--color-primary-blue);
+}
+
+.VisualisationChoice .optionCollapsable {
+  width: 0;
+}
+
+:global(.hover-target):hover .VisualisationChoice .optionCollapsable {
+  width: 2.6rem;
+}
+
+.Choice .optionActive:focus {
+  box-shadow: none;
+}
+
+.Choice .disabled {
+  background-color: transparent;
+  opacity: 0.5;
+}

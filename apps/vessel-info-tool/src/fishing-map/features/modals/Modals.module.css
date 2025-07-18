@@ -1,0 +1,36 @@
+.editorModal {
+  height: 60rem;
+}
+
+.bqModal {
+  height: 56rem;
+}
+
+.layerLibraryModal {
+  height: calc(100vh - 14rem);
+  min-height: 40rem;
+  padding: 0;
+}
+
+.workspaceGeneratorModal {
+  padding-top: 0;
+  height: 80vh;
+  max-height: 60rem;
+  padding-right: var(--space-M);
+}
+
+@media only screen and (width <= 800px) {
+  .layerLibraryModal {
+    height: unset;
+  }
+}
+
+.transparentOverlay {
+  justify-content: flex-start;
+  background-color: #0000;
+  width: 43.34rem;
+}
+
+.fullHeightModal {
+  height: 100vh;
+}

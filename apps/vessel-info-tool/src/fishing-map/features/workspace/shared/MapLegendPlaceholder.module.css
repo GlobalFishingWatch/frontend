@@ -1,0 +1,36 @@
+.container {
+  margin-top: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.flex {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.block {
+  height: 1.1rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--primary-blue-rgb), 0.1) 0%,
+    rgba(var(--primary-blue-rgb), 0.2) 40%,
+    rgba(var(--primary-blue-rgb), 0.1) 70%
+  );
+  background-size: 1000px 100%;
+  animation: placeHolderShimmer 2s linear forwards infinite;
+}
+
+@keyframes placeHolderShimmer {
+  0% {
+    background-position: -500px 0;
+  }
+
+  100% {
+    background-position: 500px 0;
+  }
+}

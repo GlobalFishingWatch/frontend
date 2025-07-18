@@ -1,0 +1,23 @@
+.footer {
+  width: 100%;
+  height: 2.4rem;
+  background-color: #021441;
+  border-top: var(--border);
+  font: var(--font-XS);
+  padding: 0 var(--space-XS);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: -1;
+}
+
+.partners {
+  display: flex;
+  align-items: center;
+  gap: var(--space-S);
+}
+
+.text {
+  opacity: 0.5;
+}

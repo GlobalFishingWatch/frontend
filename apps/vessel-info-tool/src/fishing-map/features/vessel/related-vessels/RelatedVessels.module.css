@@ -1,0 +1,60 @@
+.placeholder {
+  padding-block: var(--space-XL);
+}
+
+.container {
+  padding: var(--space-M);
+}
+
+.choice {
+  width: 100%;
+  margin-bottom: var(--space-M);
+}
+
+.vesselsList {
+  margin-top: var(--space-S);
+  margin-bottom: var(--space-XL);
+}
+
+.vesselContainer {
+  width: 25rem;
+  height: 4rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.vesselsList a,
+.vesselContainer a {
+  text-decoration: underline;
+}
+
+.ownersList {
+  padding-left: var(--space-M);
+  margin-bottom: var(--space-M);
+}
+
+.vessel {
+  line-height: 4rem;
+}
+
+.count {
+  font: var(--font-S);
+  fill: var(--color-secondary-blue);
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
+.tooltipContainer {
+  background-color: var(--color-white);
+  border: var(--border);
+  padding: var(--space-S);
+}
+
+.enptyState {
+  display: block;
+  width: 100%;
+  padding: var(--space-L) var(--space-M);
+  text-align: center;
+}

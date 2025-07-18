@@ -1,0 +1,45 @@
+.timebarWrapper {
+  position: relative;
+  z-index: 0;
+}
+
+.loading {
+  filter: blur(5px);
+  opacity: 0.5;
+}
+
+.disclaimer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.disclaimerLabel {
+  color: rgba(var(--white-rgb), var(--opacity-secondary));
+  background-color: var(--color-primary-blue);
+  border: var(--border-white);
+  border-radius: 99px;
+  height: var(--size-S);
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  text-transform: none;
+}
+
+.helpHint {
+  position: absolute;
+  top: 0;
+  left: 50%;
+}
+
+.error {
+  transform: translateX(50%);
+  width: 50%;
+  color: var(--color-white);
+  text-align: center;
+  line-height: 1.5rem;
+  margin-top: 14px;
+  opacity: 0.5;
+}

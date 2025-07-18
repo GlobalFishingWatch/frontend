@@ -1,0 +1,96 @@
+.container {
+  padding: var(--space-M);
+  position: absolute;
+  bottom: var(--space-L);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--color-off-white);
+  display: flex;
+  align-items: flex-end;
+  z-index: 100;
+}
+
+.hidden {
+  z-index: -1;
+  visibility: hidden;
+}
+
+.hint {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: -4rem;
+  right: 0;
+  background-color: var(--color-help);
+  text-align: right;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+}
+
+.container .layerLabel {
+  margin-bottom: 1rem;
+}
+
+.warning {
+  background-color: var(--color-danger-red-background);
+}
+
+.hintIcon {
+  margin-right: var(--space-S);
+}
+
+.flex {
+  display: flex;
+}
+
+.actionButtons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-S);
+}
+
+.button {
+  min-width: 15rem;
+}
+
+.coordinateInput {
+  min-width: 15rem;
+}
+
+.coordinateInput + .coordinateInput {
+  margin-left: var(--space-M);
+}
+
+.input {
+  width: 20rem;
+  margin-right: var(--space-M);
+}
+
+.popupContent {
+  color: var(--color-primary-blue);
+  box-shadow: var(--box-shadow);
+  max-width: 40vw;
+  background: var(--color-white);
+  padding: var(--space-S);
+}
+
+.popupButtons {
+  display: flex;
+  align-items: center;
+  margin-top: var(--space-S);
+  width: 100%;
+}
+
+.confirmBtn {
+  margin-left: var(--space-M);
+  flex: 1;
+}
+
+.buttonsContainer {
+  margin-left: var(--space-L);
+}
+
+.saveAsPublic {
+  margin-bottom: var(--space-S);
+}

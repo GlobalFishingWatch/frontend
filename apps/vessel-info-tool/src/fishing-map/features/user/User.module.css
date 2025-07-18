@@ -1,0 +1,154 @@
+.container {
+  height: calc(100% - var(--header-height));
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  margin-top: var(--space-M);
+}
+
+.spinner {
+  flex: 1;
+}
+
+.userInfo {
+  border-bottom: var(--border);
+}
+
+.secondary {
+  opacity: var(--opacity-secondary);
+}
+
+.views {
+  padding: var(--space-M) 0 var(--space-M) var(--space-M);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: var(--space-S) 0;
+}
+
+.badge {
+  width: 10rem;
+  height: 10rem;
+}
+
+.badge button {
+  cursor: pointer;
+}
+
+.badge img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.badgeModalContent {
+  height: 50rem;
+  padding: var(--space-M);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.badgeModalContent img {
+  height: 90%;
+}
+
+.badgeModalContent span {
+  padding-inline: var(--space-XL);
+  padding-bottom: var(--space-L);
+  text-align: center;
+}
+
+.viewsHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: var(--space-M);
+  margin-bottom: var(--space-S);
+}
+
+.dataset,
+.workspace {
+  padding: var(--space-XS) var(--space-XS) 0 0;
+  display: flex;
+}
+
+.dataset,
+.workspace:not(:last-child) {
+  border-bottom: var(--border);
+}
+
+.workspaceLink {
+  display: flex;
+  flex: 1;
+  align-items: center;
+}
+
+.workspaceTitle {
+  flex: 1;
+}
+
+.right {
+  margin-left: auto;
+}
+
+.marginLeft {
+  margin-left: var(--space-XS);
+}
+
+.dataset {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.placeholder {
+  min-height: 15rem;
+  padding-right: var(--space-M);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-secondary-blue);
+}
+
+.missingGroup {
+  color: var(--color-secondary-blue);
+}
+
+.link {
+  text-decoration: underline;
+}
+
+.textSpaced {
+  padding: var(--space-XS) 0;
+}
+
+div.modal {
+  height: auto;
+}
+
+.warningButton {
+  /* border: 1px solid var(--color-danger-secondary-red); */
+  color: var(--color-danger-secondary-red);
+}
+
+.search {
+  padding: var(--space-M);
+  padding-bottom: 0;
+}
+
+.highlighted {
+  display: inline-block;
+  background: var(--color-highlight-blue);
+}
+
+.loginLinkButton {
+  line-height: 1;
+}

@@ -1,0 +1,41 @@
+.imgContainer {
+  position: relative;
+  display: block;
+  width: 30rem;
+  height: 30rem;
+}
+
+.img {
+  position: absolute;
+  width: 30rem;
+  height: 30rem;
+  object-fit: cover;
+  visibility: hidden;
+  z-index: 0;
+}
+
+.canvas {
+  position: absolute;
+  width: 30rem;
+  height: 30rem;
+}
+
+.scaleValue {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: var(--space-S);
+  filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 1));
+  color: white;
+  font-size: var(--font-size-S);
+  opacity: 1;
+}
+
+.scaleLine {
+  position: absolute;
+  bottom: var(--space-S);
+  right: var(--space-S);
+  filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.5));
+  height: 2px;
+  background: white;
+}

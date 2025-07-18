@@ -1,0 +1,9 @@
+{
+  "areaSearch": "Search by country, sea or ocean to focus on an area you're interested in.",
+  "changingTheTimeRange": "Click and drag to change the time range you are viewing in the time bar.",
+  "clickingOnAGridCellToShowVessels": "Click on any grid cell to show the most active vessels in that area over the chosen time range.",
+  "filterActivityLayers": "Click the filter icon to filter activity using different available criteria, including data source, flag and gear types.",
+  "fishingEffortHeatmap": "The map shows an interactive heat map of activity. The lighter grid cells are the areas with more activity.",
+  "periodComparisonBaseline": "Select a baseline to compare changes in activity e.g. between now and the same date last year, or to compare activity at different times of year.",
+  "userContextLayers": "Upload and combine your area, track or point data in more formats with flexible color, size, labeling, time and filter options to best visualize and analyze your datasets alongside Global Fishing Watch layers."
+}

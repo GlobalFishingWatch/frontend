@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises'
 
 import { json } from '@tanstack/react-start'
-import { createServerFileRoute } from '@tanstack/react-start/server'
+import { createServerFileRoute, setHeaders } from '@tanstack/react-start/server'
 
 function parseCsv(csv: string): any[] {
   const [headerLine, ...lines] = csv.split(/\r?\n/).filter(Boolean)
@@ -35,6 +35,10 @@ export const ServerRoute = createServerFileRoute('/api/vessels/$fileName').metho
     const fileName = params.fileName || 'scraped'
     const csv = await readFile(`./data/${fileName}.csv`, 'utf-8')
     const data = parseCsv(csv)
+    setHeaders({
+      'Content-Type': 'application/json',
+      'X-custom': 'public, max-age=3600, stale-while-revalidate=86400',
+    })
     return json(data)
   },
 })

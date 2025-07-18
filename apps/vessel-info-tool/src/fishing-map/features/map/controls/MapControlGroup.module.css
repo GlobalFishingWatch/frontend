@@ -1,0 +1,35 @@
+.container {
+  position: relative;
+  background-color: var(--color-primary-blue);
+  border-radius: var(--space-M);
+  border: var(--border-white);
+  transition: var(--transition);
+}
+
+.container.active {
+  opacity: 1;
+  background-color: var(--color-white);
+  color: var(--color-primary-blue);
+}
+
+.container button,
+.container button:focus,
+.container button:hover {
+  border: none;
+  background: none;
+  box-shadow: none;
+}
+
+.container.active button {
+  color: var(--color-primary-blue);
+}
+
+.expandedAction {
+  height: 0;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.expandedAction.visible {
+  height: var(--size-M);
+}

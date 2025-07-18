@@ -1,0 +1,31 @@
+.newVersionHint {
+  position: relative;
+  cursor: pointer;
+}
+
+.newVersionHint::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 1rem;
+  background-color: var(--color-danger-red);
+  outline: 1px solid var(--color-danger-red-background);
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    outline: 1px solid var(--color-danger-red-background);
+  }
+
+  50% {
+    outline: 5px solid var(--color-danger-red-background);
+  }
+
+  100% {
+    outline: 1px solid var(--color-danger-red-background);
+  }
+}

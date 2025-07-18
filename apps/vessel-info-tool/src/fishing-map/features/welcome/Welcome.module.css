@@ -1,0 +1,112 @@
+.container {
+  padding: var(--space-S) var(--space-M) var(--space-L);
+}
+
+.logos {
+  display: flex;
+  align-items: center;
+  gap: var(--space-M);
+}
+
+.logos a {
+  line-height: 0;
+}
+
+.partnerLogo {
+  max-width: 20rem;
+  max-height: 2.8rem;
+}
+
+.title {
+  font: var(--font-XL);
+  margin-top: var(--space-L);
+  margin-bottom: var(--space-M);
+}
+
+.contentContainer h2 {
+  margin-top: var(--space-L);
+  font: var(--font-L);
+  display: flex;
+  align-items: center;
+  gap: var(--space-S);
+  margin-bottom: var(--space-S);
+}
+
+.contentContainer > ul {
+  list-style: disc;
+  margin-bottom: var(--space-M);
+}
+
+.contentContainer > ul > li {
+  margin-left: var(--space-M);
+}
+
+.contentContainer img {
+  max-width: 100%;
+  height: auto;
+  margin-top: var(--space-S);
+  margin-bottom: var(--space-S);
+}
+
+.contentContainer h2 img {
+  width: 4rem;
+}
+
+.contentContainer p {
+  margin-bottom: var(--space-S);
+}
+
+.contentContainer a {
+  color: var(--color-danger-red);
+}
+
+.headerActions {
+  display: flex;
+}
+
+@media only screen and (width <= 800px) {
+  .container {
+    padding: var(--space-S);
+  }
+
+  .title {
+    margin-top: var(--space-M);
+  }
+}
+
+@media only screen and (width <= 520px) {
+  .lngToggle {
+    height: 4rem;
+    width: 4rem;
+    margin-left: var(--space-M);
+  }
+}
+
+@media only screen and (width > 520px) {
+  .headerActions {
+    position: absolute;
+    top: var(--space-M);
+    right: 7rem;
+    display: flex;
+    gap: var(--space-M);
+  }
+}
+
+.disableSection {
+  display: flex;
+  align-items: center;
+}
+
+.disableCheckbox {
+  cursor: pointer;
+}
+
+.disableLabel {
+  display: inline;
+  cursor: pointer;
+  position: relative;
+  padding-left: 0.5rem;
+  font: var(--font-S);
+  flex: 1;
+  white-space: pre;
+}

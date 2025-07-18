@@ -1,0 +1,47 @@
+.header {
+  display: flex;
+  align-items: center;
+}
+
+.header:not(:first-child) {
+  margin-top: 2rem;
+}
+
+.header label {
+  margin-left: 1rem;
+}
+
+.header label strong {
+  font-weight: 500;
+}
+
+.editor {
+  margin-top: 1rem;
+  width: 100%;
+  height: 600px;
+  font-size: 1.2rem;
+  font-family: monospace;
+  background: #212121;
+  color: white;
+  resize: vertical;
+}
+
+.section:not(:first-child) {
+  border-top: var(--border);
+  margin-top: 4rem;
+}
+
+.input {
+  margin-left: var(--space-M);
+}
+
+.separation {
+  background: var(--color-secondary-blue);
+  width: 100%;
+  height: 1px;
+  margin-block: var(--space-S);
+}
+
+.link {
+  text-decoration: underline;
+}

@@ -1,0 +1,135 @@
+.tabTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}
+
+.container {
+  padding: var(--space-M);
+  border-bottom: var(--border);
+  position: relative;
+}
+
+.fieldGroupContainer {
+  padding: var(--space-S) 0;
+}
+
+.fieldGroupContainer:not(:last-child) {
+  border-bottom: var(--border);
+}
+
+.fieldGroup {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.twoColumns {
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-flow: column;
+}
+
+.secondColumnLarger {
+  grid-template-columns: 1fr 2fr;
+}
+
+.twoCells {
+  grid-column: span 2;
+}
+
+.threeCells {
+  grid-column: span 3;
+}
+
+.actionsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-S);
+  position: absolute;
+  right: var(--space-M);
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
+.hidden {
+  display: none;
+}
+
+.timerange {
+  display: flex;
+  align-items: center;
+}
+
+.help {
+  cursor: help;
+}
+
+.labelContainer {
+  display: flex;
+  align-items: center;
+}
+
+.extraInfoContainer {
+  display: flex;
+  gap: var(--space-S);
+  margin-top: var(--space-M);
+  align-items: center;
+}
+
+.registrySourceLogo {
+  width: 98px;
+  height: 26px;
+}
+
+.externalToolLinks {
+  display: flex;
+  gap: var(--space-M);
+}
+
+.externalToolLinks a {
+  display: flex;
+  align-self: center;
+  height: 3rem;
+  text-decoration: underline;
+}
+
+.externalToolLinks a:not(:hover) {
+  /* filter: brightness(0) saturate(100%) invert(19%) sepia(25%) saturate(4893%) hue-rotate(206deg)
+    brightness(94%) contrast(98%); */
+  opacity: var(--opacity-secondary);
+  mix-blend-mode: multiply;
+}
+
+.externalToolLinks a img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.disclaimer {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+}
+
+.expandable {
+  cursor: pointer;
+  position: relative;
+}
+
+.expandIcon {
+  position: absolute;
+  color: var(--color-secondary-blue);
+  bottom: 0.3rem;
+  margin-left: var(--space-XS);
+}
+
+.extendedInfo {
+  font: var(--font-S);
+}
+
+.gfwOnly {
+  display: inline-block;
+  margin: var(--space-XS) 0;
+}

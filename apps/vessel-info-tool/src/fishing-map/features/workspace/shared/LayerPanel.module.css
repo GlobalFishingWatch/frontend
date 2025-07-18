@@ -1,0 +1,348 @@
+.LayerPanelContainer {
+  display: flex;
+}
+
+.LayerPanel {
+  width: 100%;
+  position: relative;
+  min-height: var(--size-M);
+}
+
+.LayerPanelContainer:not(:last-child) .LayerPanel::after {
+  content: '';
+  position: absolute;
+  left: var(--space-S);
+  bottom: 0;
+  height: 0.1rem;
+  width: calc(100% - var(--space-S));
+  background-color: var(--color-border);
+  opacity: 0;
+  z-index: -1;
+  transition: var(--transition);
+}
+
+.LayerPanelContainer:not(:last-child) .LayerPanel:not(.noBorder)::after {
+  opacity: 1;
+}
+
+.expandedContainerOpen {
+  z-index: 1;
+  filter: drop-shadow(0 0 1rem rgba(var(--primary-blue-rgb), 0.4));
+}
+
+.header {
+  padding: var(--space-XS) var(--space-S);
+  display: flex;
+  align-items: center;
+  min-height: 4.1rem;
+}
+
+.dragger {
+  width: 0;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.dragger:focus {
+  box-shadow: none;
+}
+
+.expandedContainerOpen .dragger,
+.LayerPanel:hover .dragger {
+  width: var(--size-S);
+}
+
+.expandedContainerOpen .header {
+  background-color: var(--color-off-white);
+}
+
+.name {
+  margin-left: var(--space-XS);
+  flex: 1;
+  opacity: var(--opacity-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  font: var(--font-M);
+  line-height: 2.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.actions {
+  opacity: 0;
+  transition: opacity 150ms linear;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.shownUntilHovered,
+.hideUntilHovered,
+.hideUntilHovered > * {
+  transition: var(--transition);
+}
+
+.actions > *:not(:last-child) {
+  margin-right: calc(0px - var(--space-XS));
+}
+
+.LayerPanel:not(.expandedContainerOpen, :hover) .hideUntilHovered > * {
+  overflow: hidden;
+  width: 0;
+  opacity: 0;
+}
+
+.active {
+  opacity: 1;
+}
+
+.LayerPanel:hover .actions {
+  opacity: 1;
+}
+
+.LayerPanel.expandedContainerOpen .shownUntilHovered,
+.LayerPanel:hover .shownUntilHovered {
+  display: none;
+}
+
+.properties {
+  padding: 0 var(--space-S) var(--space-S);
+}
+
+.propertiesNoPaddingBlock {
+  padding: 0 var(--space-S);
+}
+
+.dataWarning {
+  opacity: var(--opacity-secondary);
+  font: var(--font-S);
+  width: 100%;
+}
+
+.dataWarningLinks button {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.disabled {
+  cursor: not-allowed;
+}
+
+.drag {
+  opacity: 1;
+  transition: opacity 100ms linear;
+}
+
+.dragging {
+  opacity: 0;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--space-M);
+}
+
+.tagList {
+  width: 100%;
+  white-space: normal;
+}
+
+.tagList.hidden {
+  display: none;
+}
+
+.infoLogin {
+  margin-top: var(--space-M);
+  color: var(--color-secondary-blue);
+}
+
+.actions .loadingIcon:hover {
+  cursor: default;
+}
+
+.link {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.more,
+.less {
+  text-transform: capitalize;
+}
+
+.more::after {
+  content: ' ▾';
+}
+
+.less::after {
+  content: ' ▴';
+}
+
+.error {
+  color: var(--color-danger-red);
+}
+
+.modalContent a {
+  text-decoration: underline;
+}
+
+.trackColor {
+  color: var(--color-secondary-blue);
+  transition: var(--transition);
+  cursor: default;
+}
+
+.trackColor:hover {
+  color: var(--color-primary-blue);
+}
+
+.trackColor::before {
+  content: ' ';
+  display: inline-block;
+  width: 20px;
+  height: 6px;
+  border-top: 2px solid var(--color);
+  margin-right: 6px;
+}
+
+.closestAreas {
+  transition: height 300ms ease-in-out;
+  overflow: hidden;
+}
+
+.inline {
+  display: inline-block;
+  margin-inline: var(--space-XS);
+  transform: scale(0.7) translateY(0.2rem);
+}
+
+.area {
+  cursor: default;
+  font: var(--font-S);
+  opacity: var(--opacity-secondary);
+  transition: opacity 200ms linear;
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  gap: var(--space-XS);
+}
+
+.area:hover {
+  opacity: var(--opacity-primary);
+}
+
+.ellipsis {
+  line-height: 1;
+}
+
+.areaTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.areasOnScreen summary {
+  justify-content: left;
+}
+
+.areasOnScreen summary::before {
+  content: unset;
+}
+
+.areasOnScreen summary span {
+  padding: 0;
+}
+
+@media print {
+  .tagList > li > div {
+    border: var(--border);
+  }
+
+  .tagList > li *::after {
+    background-color: transparent;
+  }
+
+  .switch {
+    width: 1.4rem !important;
+    transition: none;
+  }
+
+  .switch > span {
+    display: none !important;
+  }
+}
+
+:global(.printing) .header {
+  margin-block: 0;
+  padding-block: 0;
+  min-height: 3rem;
+}
+
+:global(.printing) .LayerPanel {
+  min-height: 3rem;
+}
+
+:global(.printing) .name {
+  font: var(--font-M);
+  line-height: 1;
+}
+
+:global(.printing) .tagList {
+  display: flex;
+  margin-block: 0;
+}
+
+:global(.printing) .mergedTagList {
+  display: none;
+}
+
+:global(.printing) .tagList > li > div {
+  border: var(--border);
+}
+
+:global(.printing) .tagList > li *::after {
+  background-color: transparent;
+}
+
+:global(.printing) .switch {
+  transform: translateY(-0.4rem);
+  width: 1.4rem !important;
+  transition: none;
+}
+
+:global(.printing) .switch > span {
+  display: none !important;
+}
+
+:global(.printing) .LayerPanelContainer:not(:last-child) .LayerPanel:not(.noBorder)::after {
+  display: none;
+}
+
+:global(.printing) .properties {
+  padding: 0 var(--space-S);
+}
+
+.faded,
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
+.gfwIcon {
+  margin-left: var(--space-XS);
+}
+
+.LayerPanel .areasOnScreen summary,
+.LayerPanel .areasOnScreen summary > span,
+.LayerPanel .areasOnScreen summary > svg {
+  background: none;
+}
+
+@media print {
+  .LayerPanelContainer:not(:last-child) .LayerPanel:not(.noBorder)::after {
+    display: none;
+  }
+}

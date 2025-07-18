@@ -11,6 +11,9 @@ export function createRouter() {
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: () => <NotFound />,
     scrollRestoration: true,
+    context: {
+      user: { name: 'John Doe' },
+    },
   })
 
   return router

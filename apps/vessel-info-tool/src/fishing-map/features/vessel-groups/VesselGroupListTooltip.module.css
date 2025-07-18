@@ -1,0 +1,30 @@
+.groupOptions {
+  padding: var(--space-S);
+  padding-right: 0;
+  max-height: 40rem;
+  overflow: auto;
+}
+
+.groupOption {
+  cursor: pointer;
+  padding: var(--space-XS);
+  padding-right: var(--space-M);
+  display: flex;
+  align-items: center;
+}
+
+.groupLoading {
+  margin-left: var(--space-S);
+}
+
+.groupOptionNew {
+  text-decoration: underline;
+}
+
+.groupOption:not(:last-of-type) {
+  border-bottom: var(--border);
+}
+
+.button {
+  white-space: nowrap;
+}

@@ -1,0 +1,36 @@
+.inputContainer {
+  position: relative;
+}
+
+.input input {
+  padding: 0 7rem 0 1.5rem;
+}
+
+.input svg {
+  right: 1rem;
+}
+
+.resultsNumber {
+  position: absolute;
+  text-align: right;
+  line-height: 4rem;
+  bottom: 0;
+  right: 4rem;
+  z-index: 2;
+}
+
+@media print {
+  .inputContainer input {
+    background: none;
+    border-radius: 0;
+    border-bottom: 1px solid black;
+  }
+
+  .inputContainer input:placeholder-shown {
+    display: none;
+  }
+
+  .inputContainer svg {
+    display: none;
+  }
+}

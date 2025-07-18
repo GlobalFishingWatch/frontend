@@ -1,0 +1,126 @@
+.mapControls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  right: var(--space-S);
+  top: var(--space-S);
+  z-index: 1;
+}
+
+.miniGlobeInfo {
+  position: absolute;
+  width: 530px;
+  right: 70px;
+  top: 14px;
+  color: var(--color-white);
+  text-transform: uppercase;
+  text-align: right;
+  line-height: 1.6rem;
+}
+
+.miniGlobeInfoTitle {
+  font-weight: bold;
+}
+
+.controlsNested {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mapControls > *,
+.controlsNested > * {
+  margin-bottom: var(--space-XS);
+}
+
+.basemapSwitcher {
+  cursor: pointer;
+  border: var(--border-white);
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center center;
+  flex-shrink: 0;
+  width: var(--size-M);
+  height: var(--size-M);
+}
+
+.basemapSwitcher.basemap_default {
+  background-image: url('../../../assets/images/basemap-satellite.jpg');
+}
+
+.basemapSwitcher.satellite {
+  background-image: url('../../../assets/images/basemap-default.jpg');
+}
+
+.active,
+.active:hover,
+.active:focus {
+  background-color: var(--color-white);
+  color: var(--color-primary-blue);
+}
+
+.loadingBtn {
+  transform: scale(0);
+  height: 0;
+  pointer-events: none;
+  transition:
+    transform 0.3s 0.5s,
+    border 0.3s 0s;
+  margin-bottom: 0;
+  border: none;
+}
+
+.visible {
+  transform: scale(1);
+  border: var(--border-white);
+  height: var(--size-M);
+}
+
+.previewContainer {
+  display: flex;
+  flex-direction: column;
+  height: 66rem;
+}
+
+.previewPlaceholder {
+  height: calc(100% - 5rem);
+}
+
+.previewImage {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  max-height: 52rem;
+  object-fit: contain;
+  filter: drop-shadow(0 0 4px var(--color-border));
+}
+
+.screenshotArea {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.previewFooter {
+  margin-top: var(--space-S);
+  display: flex;
+  gap: var(--space-S);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.previewFooter button {
+  min-width: 15rem;
+}
+
+.printBtn {
+  margin-right: var(--space-S);
+}
+
+@media print {
+  .mapControls {
+    right: unset;
+    left: var(--space-S);
+  }
+}

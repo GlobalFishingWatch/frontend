@@ -14,11 +14,13 @@ import 'features/i18n/i18n'
 
 import { makeStore } from '../store'
 
+import AppNoSSRComponent from './index'
+
 import './styles.css'
 import '../../../libs/ui-components/src/base.css'
 import '../../../libs/timebar/src/timebar-settings.css'
 
-function CustomApp({ Component, pageProps }: AppProps) {
+function CustomApp(props: any) {
   const store = makeStore()
 
   return (
@@ -28,8 +30,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </Head>
       <Provider store={store}>
-        {/* <ClickToComponent /> */}
-        <Component {...pageProps} />
+        <AppNoSSRComponent />
       </Provider>
     </React.StrictMode>
   )

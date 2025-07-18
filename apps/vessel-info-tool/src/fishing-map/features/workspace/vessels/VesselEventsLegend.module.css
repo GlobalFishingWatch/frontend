@@ -1,0 +1,104 @@
+.eventsLegendContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.eventsLegend {
+  display: flex;
+  align-items: center;
+}
+
+.eventsLegendSwitch {
+  transform-origin: left;
+  transform: scale(0.75);
+}
+
+.eventLegendLabel {
+  cursor: pointer;
+  margin-left: -0.2rem;
+  text-transform: none;
+}
+
+.active .eventLegendLabel {
+  text-decoration: none;
+  color: var(--color-primary-blue);
+}
+
+.iconWrapper {
+  position: relative;
+  margin-left: 1.2rem;
+}
+
+.icon {
+  position: relative;
+  display: block;
+  width: 12px;
+  height: 12px;
+}
+
+.iconWrapper::before {
+  content: ' ';
+  border: 0.5px solid var(--color-secondary-blue);
+  position: absolute;
+  width: 15px;
+  top: 3.5px;
+  left: -4px;
+  z-index: 0;
+}
+
+.disabled {
+  opacity: 0.5;
+}
+
+.fishing > .icon {
+  border-radius: 99px;
+  background: var(--color);
+  border: 1px solid var(--color-border);
+  width: 8px;
+  height: 8px;
+}
+
+.encounter > .icon,
+.loitering > .icon,
+.port_visit > .icon {
+  background-repeat: no-repeat;
+}
+
+.encounter::before,
+.loitering::before {
+  top: 5.5px;
+  left: -2px;
+}
+
+.encounter > .icon {
+  background-image: var(--encounterIcon);
+}
+
+.loitering > .icon {
+  background-image: var(--loiteringIcon);
+}
+
+.port_visit::before {
+  top: 4.5px;
+  left: -3px;
+}
+
+.port_visit > .icon {
+  background-image: var(--portIcon);
+}
+
+:global(.printing) .eventsLegend {
+  height: 2rem;
+}
+
+:global(.printing) .eventsLegendSwitch {
+  display: none;
+}
+
+:global(.printing) .eventLegendLabel {
+  margin-left: 0;
+}
+
+:global(.printing) .iconWrapper {
+  transform: translateY(-0.2rem);
+}

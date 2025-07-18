@@ -1,0 +1,80 @@
+.iFrameContainer {
+  width: calc(100vw - 10rem);
+  height: calc(100vh - 10rem);
+  padding: 0;
+  overflow: hidden;
+}
+
+.iFrameSpinnerContainer {
+  width: 100%;
+  height: calc(100vh - 10rem);
+}
+
+.iFramecontent {
+  padding: 0;
+  width: 100%;
+  height: calc(100vh - 10rem);
+  max-width: 110rem;
+  overflow: hidden;
+}
+
+.content {
+  padding: var(--space-L);
+  font: var(--font-S);
+}
+
+.content strong {
+  font-weight: bold;
+}
+
+.content p {
+  margin-bottom: var(--space-M);
+}
+
+.content a {
+  text-decoration: underline;
+}
+
+.content img {
+  max-width: 100%;
+}
+
+.infoButton {
+  vertical-align: text-bottom;
+  transition: var(--transition);
+  border-radius: 50%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  color: var(--color-primary-blue);
+  opacity: var(--opacity-secondary);
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.infoButton:focus,
+.infoButton:hover {
+  opacity: 1;
+  background-color: var(--color-terthiary-blue);
+}
+
+.content h2 {
+  font: var(--font-L);
+}
+
+.content h3 {
+  font: var(--font-M);
+}
+
+.content ul {
+  padding-left: var(--space-M);
+  list-style-type: circle;
+}
+
+.content > ul {
+  list-style: disc;
+  margin-bottom: var(--space-M);
+}
+
+.content > *:nth-last-child(1) {
+  padding-bottom: var(--space-XL);
+}

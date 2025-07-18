@@ -1,0 +1,14 @@
+.expandedContainer {
+  width: 100%;
+  transition: none;
+  padding: var(--space-S);
+  padding-bottom: var(--space-M);
+  background-color: var(--color-off-white);
+  border-top: var(--border);
+  border-bottom: var(--border);
+  z-index: 1;
+}
+
+.tooltipArrow {
+  fill: var(--color-off-white);
+}

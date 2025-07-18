@@ -1,0 +1,19 @@
+.errorBoundary {
+  margin: 2rem;
+}
+
+.errorBoundary > * {
+  margin-bottom: 2rem;
+}
+
+.title {
+  font: var(--font-L);
+}
+
+.error {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.mailto a {
+  text-decoration: underline;
+}

@@ -1,0 +1,9 @@
+.titleSpan {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.disabled {
+  cursor: not-allowed;
+}
