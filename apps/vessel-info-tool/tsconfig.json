@@ -1,5 +1,12 @@
 {
-  "include": ["**/*.ts", "**/*.tsx", "**/*.csv"],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.csv",
+    "../../apps/fishing-map/**/*.ts",
+    "../../apps/fishing-map/**/*.tsx",
+    "../../apps/fishing-map/**/*.d.ts"
+  ],
   "compilerOptions": {
     "outDir": "../../dist/apps/vessel-info-tool",
     "strict": true,
@@ -17,6 +24,21 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
+      "assets/*": ["./src/fishing-map/assets/*"],
+      "utils/*": ["./src/fishing-map/utils/*"],
+      "features/*": ["./src/fishing-map/features/*"],
+      "routes/*": ["./src/fishing-map/routes/*"],
+      "queries/*": ["./src/fishing-map/queries/*"],
+      "data": ["./src/fishing-map/data/index.ts"],
+      "data/*": ["./src/fishing-map/data/*"],
+      "data/layer-library": ["./src/fishing-map/data/layer-library/index.ts"],
+      "data/layer-library/*": ["./src/fishing-map/data/layer-library/*"],
+      "hooks/*": ["./src/fishing-map/hooks/*"],
+      "types/*": ["./src/fishing-map/types/*"],
+      "store": ["./src/fishing-map/store.ts"],
+      "reducers": ["./src/fishing-map/reducers.ts"],
+      "middlewares": ["./src/fishing-map/middlewares.ts"],
+      "@globalfishingwatch/fishing-map": ["./src/fishing-map/pages/_app.tsx"],
       "@globalfishingwatch/api-client": ["../../libs/api-client/src/index.ts"],
       "@globalfishingwatch/api-types": ["../../libs/api-types/src/index.ts"],
       "@globalfishingwatch/data-transforms": ["../../libs/data-transforms/src/index.ts"],

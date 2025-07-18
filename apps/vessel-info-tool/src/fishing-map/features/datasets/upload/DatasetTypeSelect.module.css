@@ -1,0 +1,77 @@
+.wrapper {
+  width: 100%;
+  display: flex;
+  gap: var(--space-S);
+}
+
+.geometryTypeContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 0.2rem dotted var(--color-secondary-blue);
+  border-radius: var(--border-radius);
+  background-color: rgba(var(--primary-blue-rgb), 0.05);
+  padding: var(--space-S);
+  transition: var(--transition);
+  text-align: center;
+}
+
+.geometryTypeContainer:hover,
+.current {
+  border: 0.2rem solid var(--color-secondary-blue);
+  background-color: rgba(var(--primary-blue-rgb), 0.1);
+}
+
+.transparent {
+  color: var(--color-white);
+  border-color: var(--color-white);
+  background-color: rgba(var(--white-rgb), 0.05);
+}
+
+.transparent.current {
+  border: 0.2rem solid var(--color-white);
+  background-color: rgba(var(--white-rgb), 0.1);
+}
+
+.error,
+.transparent.error {
+  color: var(--color-danger-red);
+  border: 0.2rem solid var(--color-danger-red);
+  background-color: rgba(var(--danger-red-rgb), 0.1);
+}
+
+.textContainer {
+  padding-top: var(--space-M);
+}
+
+.title {
+  font: var(--font-L);
+}
+
+.description {
+  opacity: var(--opacity-secondary);
+  transition: var(--transition);
+  min-height: 7.2rem;
+}
+
+.geometryTypeContainer:hover .description {
+  opacity: var(--opacity-primary);
+}
+
+.fileTypes {
+  opacity: var(--opacity-secondary);
+  font: var(--font-S);
+}
+
+.errorMessage {
+  font: var(--font-S);
+  opacity: 1;
+  background-color: var(--color-danger-red);
+  color: var(--color-white);
+  min-height: auto;
+  padding: 1rem;
+  display: inline-block;
+}

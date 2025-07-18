@@ -1,0 +1,18 @@
+import {
+  CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
+  FISHING_DATAVIEW_SLUG_ALL,
+  PRESENCE_DATAVIEW_SLUG,
+  SAR_DATAVIEW_SLUG,
+  TEMPLATE_VESSEL_DATAVIEW_SLUG,
+  VIIRS_MATCH_DATAVIEW_SLUG,
+} from './workspaces'
+
+export const LEGACY_TO_LATEST_DATAVIEWS: Record<string, string> = {
+  'apparent-fishing-effort': FISHING_DATAVIEW_SLUG_ALL,
+  'encounter-cluster-events': CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
+  'viirs-match': VIIRS_MATCH_DATAVIEW_SLUG,
+  sar: SAR_DATAVIEW_SLUG,
+  'presence-activity': PRESENCE_DATAVIEW_SLUG,
+  'vessel-presence': PRESENCE_DATAVIEW_SLUG,
+  'fishing-map-vessel-track': TEMPLATE_VESSEL_DATAVIEW_SLUG,
+}

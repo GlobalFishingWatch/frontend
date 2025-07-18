@@ -14,6 +14,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VesselsRouteImport } from './routes/vessels'
 import { Route as RedirectRouteImport } from './routes/redirect'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PortsIndexRouteImport } from './routes/ports/index'
+import { Route as MapSplatRouteImport } from './routes/map.$'
 import { ServerRoute as ApiVesselsFileNameServerRouteImport } from './routes/api/vessels/$fileName'
 
 const rootServerRouteImport = createServerRootRoute()
@@ -33,6 +35,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PortsIndexRoute = PortsIndexRouteImport.update({
+  id: '/ports/',
+  path: '/ports/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MapSplatRoute = MapSplatRouteImport.update({
+  id: '/map/$',
+  path: '/map/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiVesselsFileNameServerRoute =
   ApiVesselsFileNameServerRouteImport.update({
     id: '/api/vessels/$fileName',
@@ -44,30 +56,38 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/redirect': typeof RedirectRoute
   '/vessels': typeof VesselsRoute
+  '/map/$': typeof MapSplatRoute
+  '/ports': typeof PortsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/redirect': typeof RedirectRoute
   '/vessels': typeof VesselsRoute
+  '/map/$': typeof MapSplatRoute
+  '/ports': typeof PortsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/redirect': typeof RedirectRoute
   '/vessels': typeof VesselsRoute
+  '/map/$': typeof MapSplatRoute
+  '/ports/': typeof PortsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/redirect' | '/vessels'
+  fullPaths: '/' | '/redirect' | '/vessels' | '/map/$' | '/ports'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/redirect' | '/vessels'
-  id: '__root__' | '/' | '/redirect' | '/vessels'
+  to: '/' | '/redirect' | '/vessels' | '/map/$' | '/ports'
+  id: '__root__' | '/' | '/redirect' | '/vessels' | '/map/$' | '/ports/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   RedirectRoute: typeof RedirectRoute
   VesselsRoute: typeof VesselsRoute
+  MapSplatRoute: typeof MapSplatRoute
+  PortsIndexRoute: typeof PortsIndexRoute
 }
 export interface FileServerRoutesByFullPath {
   '/api/vessels/$fileName': typeof ApiVesselsFileNameServerRoute
@@ -114,6 +134,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ports/': {
+      id: '/ports/'
+      path: '/ports'
+      fullPath: '/ports'
+      preLoaderRoute: typeof PortsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/map/$': {
+      id: '/map/$'
+      path: '/map/$'
+      fullPath: '/map/$'
+      preLoaderRoute: typeof MapSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 declare module '@tanstack/react-start/server' {
@@ -132,6 +166,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   RedirectRoute: RedirectRoute,
   VesselsRoute: VesselsRoute,
+  MapSplatRoute: MapSplatRoute,
+  PortsIndexRoute: PortsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

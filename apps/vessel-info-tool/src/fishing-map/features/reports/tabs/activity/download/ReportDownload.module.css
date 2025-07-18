@@ -1,0 +1,21 @@
+.container {
+  border-top: var(--border);
+  padding: var(--space-M);
+}
+
+.description {
+  margin: var(--space-S) 0;
+}
+
+.actionsRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+@media print {
+  .container {
+    display: none;
+  }
+}

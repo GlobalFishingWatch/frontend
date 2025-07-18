@@ -1,0 +1,77 @@
+.container {
+  flex: 1;
+  width: 100%;
+}
+
+.eventTypeRowContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+  color: var(--color-secondary-blue);
+}
+
+.eventTypeRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+  opacity: 0.5;
+}
+
+.active {
+  opacity: 1;
+}
+
+.eventSwitch {
+  flex-shrink: 0;
+}
+
+.summaryContainer {
+  width: 100%;
+  display: flex;
+  gap: var(--space-S);
+  margin-bottom: var(--space-M);
+}
+
+.summary {
+  font: var(--font-M);
+  color: var(--color-secondary-blue);
+  margin-bottom: var(--space-M);
+}
+
+.summary strong {
+  font-weight: 400;
+  color: var(--color-primary-blue);
+}
+
+.title {
+  color: var(--color-primary-blue);
+  margin-bottom: var(--space-SM);
+}
+
+.eventsCount strong {
+  font-weight: 400;
+  color: var(--color-primary-blue);
+}
+
+.iconContainer {
+  width: 2rem;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.help {
+  cursor: help;
+}
+
+.fishingIcon {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 0.6rem;
+  border: var(--border-thick);
+}
+
+@media print {
+  .summaryContainer {
+    flex-direction: column;
+  }
+}

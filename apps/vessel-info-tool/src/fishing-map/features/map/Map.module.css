@@ -1,0 +1,23 @@
+.container {
+  height: 100%;
+  position: relative;
+}
+
+.helpHintLeft {
+  position: absolute;
+  top: 50%;
+  left: calc(50% - 5rem);
+}
+
+.helpHintRight {
+  position: absolute;
+  top: 50%;
+  left: calc(50% + 5rem);
+}
+
+.logo {
+  position: absolute;
+  top: 0;
+  left: var(--space-XS);
+  z-index: 10;
+}

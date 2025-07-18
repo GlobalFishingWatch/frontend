@@ -1,0 +1,148 @@
+.container {
+  padding-top: var(--space-XS);
+  padding-bottom: var(--space-S);
+  position: relative;
+}
+
+.container ~ .container {
+  padding-top: var(--space-S);
+}
+
+.container:not(:last-of-type) {
+  border-bottom: var(--border-thick);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-XS) var(--space-S);
+  gap: var(--space-XS);
+}
+
+.content {
+  padding: var(--space-XS) var(--space-S);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  color: var(--color-secondary-blue);
+}
+
+.row:hover {
+  color: var(--color-primary-blue);
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
+.relative {
+  position: relative;
+}
+
+.sectionTitle {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  margin: 0;
+  text-transform: uppercase;
+  flex: 1;
+}
+
+.sectionButtons {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}
+
+.sectionButtonsSecondary {
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.container:hover .sectionButtonsSecondary {
+  opacity: 1;
+}
+
+.emptyState,
+.emptyStateBig,
+.disclaimer {
+  font: var(--font-S);
+  opacity: var(--opacity-secondary);
+  padding: 0 var(--space-S);
+}
+
+.emptyStateBig {
+  padding: var(--space-L) var(--space-S);
+}
+
+.emptyStateVesselGroups {
+  padding: 0;
+}
+
+.disclaimer {
+  background-color: var(--color-help-yellow);
+  padding: 0 var(--space-XS);
+  margin: 0 var(--space-XS);
+}
+
+.link {
+  text-decoration: underline;
+}
+
+.surveyLink {
+  padding: var(--space-M) var(--space-S);
+  color: var(--color-secondary-blue);
+}
+
+.vesselsOnScreen summary {
+  justify-content: left;
+}
+
+.vesselsOnScreen summary::before {
+  content: unset;
+}
+
+.vesselsOnScreen summary span {
+  padding: 0;
+}
+
+.vesselOnScreen {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+}
+
+.moreVesselsOnScreen {
+  color: var(--color-secondary-blue);
+}
+
+.hidden {
+  display: none;
+}
+
+.highlightSpan {
+  position: absolute;
+  right: 0;
+}
+
+.expandedContainerContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+}
+
+.legend {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  padding-inline: var(--space-S);
+}
+
+:global(.printing) .container {
+  padding-block: var(--space-XS);
+}
+
+:global(.printing) .content {
+  padding-block: 0;
+}

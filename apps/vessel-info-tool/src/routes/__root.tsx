@@ -78,9 +78,33 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           >
             Vessels
           </Link>
+          <Link
+            to="/ports"
+            activeProps={{
+              className: 'font-bold',
+            }}
+          >
+            Ports
+          </Link>
+          <Link
+            to="/map/$"
+            params={{
+              _splat: '/marine-manager',
+            }}
+            search={{
+              latitude: 30,
+              longitude: 0,
+              zoom: 4,
+            }}
+            activeProps={{
+              className: 'font-bold',
+            }}
+          >
+            Fishing Map
+          </Link>
         </div>
         <hr />
-        {children}
+        <div id="__next">{children}</div>
         <TanStackRouterDevtools position="bottom-right" />
         <Scripts />
       </body>

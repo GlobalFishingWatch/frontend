@@ -1,0 +1,24 @@
+.popupContent {
+  background: var(--color-white);
+  padding: var(--space-S);
+}
+
+.input {
+  width: 40rem;
+}
+
+.popupButtons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-S);
+  width: 100%;
+}
+
+.confirmBtn {
+  margin-left: auto;
+}
+
+.successIcon {
+  transform: scale(1.5);
+}

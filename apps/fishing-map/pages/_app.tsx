@@ -14,12 +14,14 @@ import 'features/i18n/i18n'
 
 import { wrapper } from '../store'
 
+import AppNoSSRComponent from './index'
+
 import './styles.css'
 import '../../../libs/ui-components/src/base.css'
 import '../../../libs/timebar/src/timebar-settings.css'
 
-function CustomApp({ Component, ...rest }: AppProps) {
-  const { store, props } = wrapper.useWrappedStore(rest)
+function CustomApp(props: any) {
+  const { store } = wrapper.useWrappedStore(props)
 
   return (
     <React.StrictMode>
@@ -28,8 +30,7 @@ function CustomApp({ Component, ...rest }: AppProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </Head>
       <Provider store={store}>
-        {/* <ClickToComponent /> */}
-        <Component {...props.pageProps} />
+        <AppNoSSRComponent />
       </Provider>
     </React.StrictMode>
   )

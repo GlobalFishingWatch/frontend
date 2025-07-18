@@ -1,0 +1,222 @@
+{
+  "bathymetry": {
+    "description": "Batimetri adalah pengukuran kedalaman air dan memberikan rincian ciri fisik dasar laut. Kumpulan data batimetri berkisi ini adalah model medan global berkelanjutan yang menyediakan data ketinggian lautan dalam meter, pada kisi interval 15 detik busur. ",
+    "moreInfoLink": "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2023/",
+    "name": "Batimetri"
+  },
+  "chlorophyl": {
+    "description": "Klorofil-a adalah pigmen pemanen cahaya yang ditemukan di semua tanaman fotosintesis. Fitoplankton laut secara kimia memfiksasi karbon melalui fotosintesis dengan mengambil karbon dioksida terlarut dan menghasilkan oksigen. Kumpulan data ini terdiri dari parameter biogeokimia, termasuk klorofil, di lautan global yang ditampilkan dengan resolusi horizontal 1/4 derajat. ",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
+    "name": "Konsentrasi Klorofil-a"
+  },
+  "coral-reefs": {
+    "description": "Terumbu karang air hangat ditemukan di perairan jernih dan dangkal serta merupakan ekosistem yang sangat dinamis yang mendukung habitat laut dengan keanekaragaman hayati tertinggi. Rangkaian data ini menunjukkan sebaran global terumbu karang di wilayah tropis dan subtropis.",
+    "moreInfoLink": "https://data.unep-wcmc.org/datasets/1",
+    "name": "Terumbu karang"
+  },
+  "currents": {
+    "description": "TODO",
+    "moreInfoLink": "",
+    "name": "Currents"
+  },
+  "dsm-isa-leasing-areas": {
+    "description": "These represent the areas currently leased by the International Seabed Authority (ISA) for exploration of polymetallic nodules, polymetallic sulfides, and cobalt-rich ferromanganese crusts in the high seas. Each polygon represents a 15-year contract with a mining contractor and sponsoring country for the exploration of minerals. None of these areas are currently leased for exploitation (i.e. commercial mining), though these are the same regions that will be mined if exploitation contracts are ever approved by the ISA. The ISA is the intergovernmental United Nations body that is tasked with both protecting the international seabed alongside managing any mineral-resources-related activity in the area.",
+    "moreInfoLink": "",
+    "name": "ISA leasing areas"
+  },
+  "eez": {
+    "description": "Zona ekonomi eksklusif/ZEE (Exclusive economic zones/EEZ) terbentang hingga 200 mil laut dari pantai sebuah negara. Institut Kelautan Flanders (2019). Basis Geodata Batas Maritim: Batas Maritim dan Zona Ekonomi Eksklusif (200NM), versi 11.",
+    "moreInfoLink": "",
+    "name": "Zona Ekonomi Eksklusif (ZEE)"
+  },
+  "eez-areas-12nm": {
+    "description": "Territorial seas are a belt of coastal waters extending at most 12 nautical miles (22.2 km; 13.8 mi) from the baseline (usually the mean low-water mark) of a coastal state.",
+    "moreInfoLink": "https://www.marineregions.org/downloads.php",
+    "name": "Territorial Seas (12 nautical miles)"
+  },
+  "encounters": {
+    "description": "Diidentifikasi dari data AIS sebagai lokasi di mana dua kapal, kapal pengangkut dan kapal penangkap ikan, berada dalam jarak 500 meter selama setidaknya 2 jam dan melakukan perjalanan dengan kecepatan rata-rata <2 knot, sementara setidaknya 10 km dari pelabuhan pantai.",
+    "moreInfoLink": "",
+    "name": "Acara pertemuan (Sistem Identifikasi Otomatis/AIS)"
+  },
+  "fao-major": {
+    "description": "Daerah penangkapan ikan utama FAO untuk tujuan statistik adalah daerah sembarangan yang batas-batasnya ditentukan melalui konsultasi dengan lembaga perikanan internasional. Daerah penangkapan ikan utama, baik di darat maupun di laut, tercantum di bawah ini dengan kode dua digit dan namanya. Untuk mengakses peta dan deskripsi batas setiap wilayah penangkapan ikan, klik item yang relevan dalam daftar di bawah ini atau pada peta yang menunjukkan 19 wilayah penangkapan ikan laut utama.",
+    "moreInfoLink": "",
+    "name": "Wilayah penangkapan ikan utama Organisasi Pangan dan Pertanian (Food and Agriculture Organization/FAO)"
+  },
+  "fishing-effort-ais": {
+    "description": "Untuk menentukan “upaya penangkapan ikan yang nyata”, Global Fishing Watch menganalisis data sistem identifikasi otomatis (AIS) yang dikumpulkan dari kapal-kapal yang menurut penelitian kami telah diidentifikasi sebagai diketahui atau mungkin merupakan kapal penangkapan ikan komersial dan menerapkan algoritma deteksi penangkapan ikan berdasarkan perubahan. dalam kecepatan dan arah kapal.",
+    "moreInfoLink": "",
+    "name": "Upaya penangkapan ikan yang nyata (AIS)"
+  },
+  "fishing-effort-vms": {
+    "description": "Untuk menentukan “upaya penangkapan ikan yang nyata”, Global Fishing Watch menganalisis data sistem pemantauan kapal (VMS) yang dikumpulkan dari kapal-kapal yang menurut penelitian kami telah diidentifikasi sebagai diketahui atau mungkin merupakan kapal penangkapan ikan komersial dan menerapkan algoritma deteksi penangkapan ikan berdasarkan perubahan. dalam kecepatan dan arah kapal.",
+    "moreInfoLink": "",
+    "name": "Upaya penangkapan ikan yang nyata (VMS)"
+  },
+  "gfcm-fao": {
+    "description": "In the Mediterranean and the Black Sea, 1,760,000 square kilometers of sea habitats are protected by ten fisheries restricted areas established by the GFCM, in which some specific fishing activities are temporarily or permanently banned or restricted.",
+    "moreInfoLink": "https://www.fao.org/gfcm/data/maps/fras/ru",
+    "name": "GFCM Fisheries Restricted Areas"
+  },
+  "graticules": {
+    "description": "Grid atau gratikula garis lintang dan bujur pada interval 1, 5, 10 dan 30° tergantung pada tingkat pembesaran (zoom) peta",
+    "moreInfoLink": "",
+    "name": "Grid garis lintang dan bujur"
+  },
+  "high-seas": {
+    "description": "Laut lepas adalah wilayah lautan di luar zona ekonomi eksklusif (ZEE). Kantong laut lepas adalah area yang benar-benar tertutup oleh ZEE. Kantong-kantong ini mungkin sulit dibedakan dari beberapa yurisdiksi ZEE yang mengelilinginya, oleh karena itu, kami memiliki lapisan (layer) yang menyorotinya.",
+    "moreInfoLink": "",
+    "name": "Laut lepas"
+  },
+  "high-seas-pockets": {
+    "description": "High Seas pockets are areas totally enclosed by EEZs that are beyond Exclusive Economic Zones (EEZ). These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
+    "moreInfoLink": "https://www.marineregions.org/downloads.php",
+    "name": "High seas pockets"
+  },
+  "loitering": {
+    "description": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is estimated using automatic identification system (AIS) data, including vessel speed, duration in a given location, and distance from shore. Loitering occurs when a vessel travels at average speed of < two knots, while at least an average of 20 nautical miles from shore. To reduce noise in the carrier vessel portal, only loitering events greater than one hour are shown.",
+    "moreInfoLink": "",
+    "name": "Loitering events (AIS)"
+  },
+  "mangroves": {
+    "description": "Hutan bakau (mangrove) adalah pohon atau semak yang dapat bertahan hidup di lingkungan asin dan biasanya tumbuh di zona pasang surut di daerah tropis dan subtropis. Dianggap sebagai habitat karbon biru, hutan bakau meningkatkan kualitas air, menstabilkan dan melindungi garis pantai, dan menyediakan perlindungan bagi burung, hewan, dan organisme laut. Kumpulan ini menggunakan citra satelit observasi bumi untuk menunjukkan sebaran hutan bakau secara global.  ",
+    "moreInfoLink": "https://data.unep-wcmc.org/datasets/4",
+    "name": "Hutan bakau"
+  },
+  "marine-ecoregions": {
+    "description": "Ekoregion laut adalah klasifikasi biogeografi perairan pesisir dan landasan benua dunia. Kumpulan data ini memberikan kerangka geografis bagi berbagai analisis terkait keanekaragaman hayati di lingkungan laut.",
+    "moreInfoLink": "https://geospatial.tnc.org/datasets/ed2be4cf8b7a451f84fd093c2e7660e3/explore",
+    "name": "Ekoregion laut"
+  },
+  "mpa": {
+    "description": "KKP (Kawasan Konservasi Perairan) adalah kawasan laut yang diperuntukkan bagi konservasi jangka panjang. Kawasan ini mempunyai tingkat perlindungan yang berbeda-beda, dan cakupan aktivitas yang diperbolehkan atau dilarang di dalam kawasan tersebut sangat bervariasi. Sumber: Basis Data Dunia tentang Kawasan Konservasi (World Database on Protected Areas).",
+    "moreInfoLink": "",
+    "name": "KKP/Kawasan Konservasi Perairan (WDPA)"
+  },
+  "mpatlas": {
+    "description": "MPAs vary greatly in their status in the process of becoming an MPA and the impact of human activities. MPAtlas applies The MPA Guide, a science-based tool that identifies different types of MPAs and connects them to the outcome they are likely to achieve.",
+    "moreInfoLink": "https://mpatlas.org",
+    "name": "MPAs (MPAtlas)"
+  },
+  "nitrate": {
+    "description": "Nitrat diperlukan oleh tanaman laut untuk fotosintesis dan merupakan nutrisi utama bagi produktivitas laut, namun konsentrasi yang tinggi dapat menjadi indikator polusi. Kumpulan data ini terdiri dari parameter biogeokimia, termasuk nitrat, di lautan global yang ditampilkan dengan resolusi horizontal 1/4 derajat.",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
+    "name": "Konsentrasi nitrat (NO3)"
+  },
+  "offshore-fixed-infrastructure": {
+    "description": "Offshore fixed infrastructure is a global dataset that uses AI and machine learning to detect and classify structures throughout the world’s oceans. Classification labels (oil, wind, and unknown) are provided, as well as confidence levels (high, medium, or low) reflecting our certainty in the assigned label. Detections can be filtered and colored on the map using both label and confidence level. The data is updated on a monthly basis, and new classified detections are added at the beginning of every month. Viewing change using the timebar is simple, and allows anyone to recognize the rapid industrialization of the world’s oceans.",
+    "moreInfoLink": "",
+    "name": "Offshore Fixed Infrastructure (SAR, Optical)"
+  },
+  "oxygen": {
+    "description": "Oksigen terlarut adalah jumlah oksigen yang ada di air dan sangat penting untuk pertumbuhan dan kelangsungan hidup organisme laut. Pemanasan suhu laut dapat menyebabkan perluasan zona rendah oksigen, yang dapat berdampak pada distribusi dan kelimpahan kehidupan laut. Kumpulan data ini terdiri dari parameter biogeokimia, termasuk oksigen terlarut, di lautan global yang ditampilkan dengan resolusi horizontal 1/4 derajat.",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
+    "name": "Konsentrasi oksigen (O2)"
+  },
+  "paa-duke": {
+    "description": "This global Preferential Access Area (PAA) database was built with data for 44 countries identified by the Illuminating Hidden Harvests (IHH) initiative following Basurto et al. (2023) and the FAOLEX database.",
+    "moreInfoLink": "https://research.repository.duke.edu/concern/datasets/79407z51r",
+    "name": "Preferential Access Areas for Small-Scale Fishing"
+  },
+  "ph": {
+    "description": "Keasaman laut diukur dengan pH. Peningkatan penyerapan karbon dioksida telah menurunkan pH laut, sehingga mengakibatkan pengasaman laut yang dapat berdampak luas pada organisme laut. Kumpulan data ini terdiri dari parameter biogeokimia, termasuk pH, di lautan global yang ditampilkan dengan resolusi horizontal 1/4 derajat.",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
+    "name": "pH"
+  },
+  "phosphate": {
+    "description": "Fosfat merupakan nutrisi utama bagi jaring makanan laut dan produktivitas laut, namun konsentrasi yang tinggi juga dapat menjadi indikator polusi. Kumpulan data ini terdiri dari parameter biogeokimia, termasuk fosfat, di lautan global yang ditampilkan dengan resolusi horizontal 1/4 derajat. ",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
+    "name": "Konsentrasi fosfat (PO4)"
+  },
+  "port-locations": {
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
+    "moreInfoLink": "",
+    "name": "Ports"
+  },
+  "port-visits": {
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. The dataset contains over 160,000 individual anchorage locations, which are further grouped into nearly 32,000 ports. ",
+    "moreInfoLink": "",
+    "name": "Port Visits (AIS)"
+  },
+  "presence": {
+    "description": "Lapisan kehadiran menganalisis data sistem identifikasi otomatis (AIS) yang dikumpulkan dari kapal yang telah diidentifikasi oleh penelitian kami. Kehadirannya ditentukan dengan mengambil posisi yang dikirimkan oleh AIS kapal dan ditampilkan sebagai peta panas.",
+    "moreInfoLink": "",
+    "name": "Kehadiran kapal"
+  },
+  "protectedseas": {
+    "description": "KKP (Kawasan Konservasi Perairan) adalah wilayah lautan yang disisihkan untuk konservasi jangka panjang. Kawasan ini mempunyai tingkat perlindungan yang berbeda-beda, dan cakupan aktivitas yang diperbolehkan atau dilarang di dalam kawasan tersebut sangat bervariasi. Source: https://navigatormap.org/methodology/",
+    "moreInfoLink": "",
+    "name": "KKP/Kawasan Konservasi Perairan (MPA/ProtectedSeas)"
+  },
+  "rfmo": {
+    "description": "Organisasi pengelolaan perikanan regional (Regional fisheries management organizations/RFMO) adalah badan internasional yang dibentuk oleh negara-negara yang mempunyai kepentingan bersama dalam mengelola atau melestarikan stok ikan di suatu wilayah tertentu. Beberapa perusahaan mengelola seluruh stok ikan yang ditemukan di wilayah tertentu, sementara yang lain fokus pada spesies tertentu yang bermigrasi jauh, terutama tuna. Organisasi pengelolaan perikanan regional pada peta Global Fishing Watch saat ini mencakup lima organisasi pengelolaan perikanan regional tuna.",
+    "moreInfoLink": "",
+    "name": "Organisasi pengelolaan perikanan regional (Regional fisheries management organizations/RFMO) "
+  },
+  "salinity": {
+    "description": "Salinitas permukaan laut adalah pengukuran konsentrasi garam di permukaan laut. Hal ini menentukan kepadatan air laut serta suhu dan merupakan parameter kunci untuk memperkirakan pengaruh laut terhadap iklim. Salinitas rangkaian data ini ditampilkan dengan resolusi horizontal 1/12 derajat.",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description",
+    "name": "Kadar garam"
+  },
+  "sar": {
+    "description": "Radar aperture sintetis (Synthetic aperture radar/SAR) dapat mendeteksi kapal dan bangunan di laut dalam kondisi cuaca apa pun. SAR adalah sensor berbasis satelit yang menembakkan gelombang mikro ke permukaan bumi dan mengukur amplitudo dan fase sinyal yang dipantulkan kembali dari objek di tanah dan air, yang dikenal sebagai hamburan balik..",
+    "moreInfoLink": "",
+    "name": "Deteksi radar (SAR)"
+  },
+  "seagrasses": {
+    "description": "Lamun merupakan ekosistem produktif yang ditemukan secara global di wilayah laut dangkal tempat lamun menyediakan makanan dan habitat bagi organisme serta memainkan peran penting dalam siklus nutrisi. Rangkaian data ini menunjukkan sebaran lamun secara global.",
+    "moreInfoLink": "https://data.unep-wcmc.org/datasets/7",
+    "name": "Lamun"
+  },
+  "seamounts": {
+    "description": "Gunung laut adalah pegunungan bawah laut yang berasal dari gunung berapi yang dapat menghasilkan \"upwelling\" nutrisi, mendukung peningkatan produktivitas biologis, kekayaan spesies, dan komunitas yang berbeda. Kumpulan data fitur geomorfik dasar laut global ini mencakup gunung bawah laut, yang didefinisikan sebagai puncak yang tingginya lebih dari 1.000 m di atas dasar laut.",
+    "moreInfoLink": "https://bluehabitats.org/",
+    "name": "Gunung laut"
+  },
+  "sentinel2": {
+    "description": "This layer shows vessels detected using optical satellite imagery collected by the European Space Agency’s Sentinel-2 satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths.",
+    "moreInfoLink": "",
+    "name": "Imagery detections (Optical)"
+  },
+  "species": {
+    "description": "TODO",
+    "moreInfoLink": "",
+    "name": "Species"
+  },
+  "sst": {
+    "description": "Suhu permukaan laut adalah suhu air pada atau dekat permukaan. Hal ini dapat berdampak pada cuaca dan iklim regional, dan bersama dengan salinitas dapat mendorong sirkulasi laut dan pergerakan arus laut dalam skala besar secara global. Kumpulan data ini menyediakan suhu permukaan laut pada resolusi grid horizontal 1/20 derajat, menggunakan data in-situ dan satelit dari radiometer inframerah dan gelombang mikro.",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001/description",
+    "name": "Suhu permukaan laut"
+  },
+  "sst-anomalies": {
+    "description": "Anomali suhu permukaan laut merupakan selisih antara suhu permukaan laut harian dengan rata-rata klimatologi 30 tahun. Anomali suhu permukaan laut dapat berdampak pada wilayah jelajah dan habitat spesies dan mungkin mewakili peristiwa sementara atau siklus iklim tertentu seperti El Niño dan La Niña yang mempengaruhi pola cuaca secara global. Dalam peta, angka positif menunjukkan suhu yang lebih hangat dibandingkan suhu rata-rata.",
+    "moreInfoLink": "https://developers.google.com/earth-engine/datasets/catalog/NOAA_CDR_OISST_V2_1",
+    "name": "Anomali suhu permukaan laut"
+  },
+  "sst-anomalies-max": {
+    "description": "",
+    "moreInfoLink": "",
+    "name": "Anomali suhu permukaan laut (maks.)"
+  },
+  "sst-anomalies-min": {
+    "description": "",
+    "moreInfoLink": "",
+    "name": "Anomali suhu permukaan laut (min.)"
+  },
+  "thgt": {
+    "description": "Tinggi gelombang adalah jarak vertikal dari palung (bawah) sampai puncak (puncak) gelombang di permukaan laut. Kumpulan data ini menggunakan tinggi gelombang signifikan, yang merupakan rata-rata sepertiga tertinggi dari seluruh tinggi gelombang selama periode sampel tertentu.",
+    "moreInfoLink": "https://www.pacioos.hawaii.edu/waves/model-global/#about",
+    "name": "Tinggi gelombang"
+  },
+  "viirs": {
+    "description": "Lapisan pendeteksi kapal lampu malam, yang dikenal sebagai suite radiometer pencitraan inframerah tampak atau VIIRS, menunjukkan kapal di laut yang telah dideteksi oleh satelit melalui cahaya yang dipancarkannya di malam hari. Meskipun tidak secara eksklusif dikaitkan dengan kapal penangkap ikan, lapisan aktivitas ini kemungkinan besar menampilkan kapal yang terkait dengan aktivitas seperti penangkapan cumi-cumi, yang menggunakan lampu terang dan menangkap ikan di malam hari.",
+    "moreInfoLink": "",
+    "name": "Deteksi cahaya malam (Night light detections/VIIRS)"
+  },
+  "viirs-skylight": {
+    "description": "TODO: description",
+    "moreInfoLink": "",
+    "name": "Night light detections (VIIRS Skylight)"
+  }
+}

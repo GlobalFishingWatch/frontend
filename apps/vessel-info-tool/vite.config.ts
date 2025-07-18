@@ -25,6 +25,7 @@ export default defineConfig({
     'process.env': {
       API_GATEWAY: process.env.API_GATEWAY,
       API_VERSION: process.env.API_VERSION,
+      NEXT_PUBLIC_WORKSPACE_ENV: process.env.NEXT_PUBLIC_WORKSPACE_ENV,
     },
   },
   plugins: [
@@ -34,9 +35,9 @@ export default defineConfig({
     nxViteTsPaths(),
     tanstackStart({
       customViteReactPlugin: true,
-      spa: {
-        enabled: true,
-      },
+      // spa: {
+      //   enabled: true,
+      // },
     }),
     tailwindcss(),
     svgr({

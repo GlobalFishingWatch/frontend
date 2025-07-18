@@ -3,7 +3,10 @@ import { createFileRoute, Link, Outlet } from '@tanstack/react-router'
 import { fetchVessels } from '../utils/vessels'
 
 export const Route = createFileRoute('/vessels')({
-  loader: async () => fetchVessels(),
+  loader: async (ctx) => {
+    console.log('🚀 ~ loader: ~ ctx:', ctx)
+    return fetchVessels()
+  },
   component: PostsComponent,
 })
 

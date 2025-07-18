@@ -1,0 +1,72 @@
+.container {
+  position: relative;
+  min-height: 100%;
+}
+
+.footerButton {
+  position: sticky;
+  bottom: var(--space-M);
+  left: 100%;
+}
+
+.dataviewsList {
+  padding-bottom: var(--space-M);
+}
+
+.dataviewsList > li {
+  margin-bottom: var(--space-M);
+}
+
+.dataviewsList ul {
+  margin-left: var(--space-S);
+}
+
+.loading {
+  min-height: 40rem;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--space-S);
+}
+
+.rowHighlight {
+  font-weight: 500;
+}
+
+.input {
+  margin-bottom: var(--space-S);
+}
+
+.input2Columns {
+  width: 50%;
+}
+
+.addButton {
+  margin-left: var(--space-S);
+}
+
+.cancelButton {
+  margin-right: var(--space-S);
+}
+
+.rangeContainer {
+  display: flex;
+  margin-top: var(--space-S);
+}
+
+.stepInput {
+  width: 10%;
+  margin-left: var(--space-XS);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.error {
+  color: var(--color-danger-red);
+}

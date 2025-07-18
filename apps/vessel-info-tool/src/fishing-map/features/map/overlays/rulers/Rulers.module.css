@@ -1,0 +1,26 @@
+.container {
+  position: relative;
+}
+
+.container .active {
+  opacity: 1;
+  background-color: var(--color-white);
+  color: var(--color-primary-blue);
+}
+
+.num {
+  font: var(--font-XS);
+  transform: translate(-2px, 5px);
+}
+
+.remove {
+  position: absolute;
+  inset: -20% -20% auto auto;
+  width: 2.4rem;
+  height: 2.4rem;
+  opacity: 1;
+}
+
+.container .remove:hover {
+  opacity: 1;
+}

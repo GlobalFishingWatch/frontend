@@ -1,0 +1,104 @@
+.tableContainer {
+  margin-top: 1.5rem;
+  min-height: 42rem;
+}
+
+.portsTable {
+  width: 100%;
+  border-collapse: collapse;
+  display: grid;
+  grid-template-columns: 1fr 1fr max-content;
+}
+
+.cover {
+  position: absolute;
+  inset: 0;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: var(--space-S);
+  padding: var(--space-L);
+  justify-content: center;
+  align-items: center;
+}
+
+.top {
+  justify-content: unset;
+  padding-top: 12rem;
+}
+
+.header {
+  text-align: left;
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+}
+
+.headerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tablePlaceholder {
+  padding-inline: 0;
+}
+
+.portsTable > div:not(.header) {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  height: 4rem;
+  overflow: hidden;
+  padding-block: 0.8rem;
+}
+
+.portsTable > div:not(.header, .right) {
+  padding-right: 1rem;
+}
+
+.right {
+  text-align: right;
+}
+
+.border {
+  border-bottom: 1px solid var(--color-terthiary-blue);
+}
+
+.footer {
+  margin-top: var(--space-S);
+  color: var(--color-secondary-blue);
+  text-transform: uppercase;
+  font: var(--font-S);
+  gap: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.noWrap {
+  white-space: nowrap;
+}
+
+.portName {
+  display: flex;
+  align-items: center;
+}
+
+.searchInput {
+  width: 24rem;
+}

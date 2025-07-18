@@ -1,0 +1,98 @@
+.main {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.mapContainer {
+  height: 100%;
+}
+
+:global(#__next:not(.printing)) .withTimebar {
+  height: 100%;
+}
+
+:global(#__next:not(.printing)) .withSmallScreenSwitch {
+  height: calc(100dvh - var(--footer-height) - var(--switch-height));
+}
+
+:global(#__next:not(.printing)) .withTimebarAndSmallScreenSwitch {
+  height: calc(
+    100dvh - var(--footer-height) - var(--timebar-height-small-screen) - var(--switch-height)
+  );
+}
+
+.toastContainer {
+  max-width: 60%;
+
+  --toastify-toast-width: auto;
+  --toastify-color-light: var(--color-help-yellow);
+  --toastify-text-color-light: var(--color-secondary-blue);
+  --toastify-color-progress-light: linear-gradient(
+    90deg,
+    var(--color-help-yellow),
+    var(--color-secondary-blue)
+  );
+}
+
+@page {
+  size: 21cm 29.7cm;
+  margin: 1cm;
+}
+
+@media print {
+  .splitContainer {
+    --color-primary-blue: black;
+
+    height: auto;
+    min-height: 100%;
+    background: none;
+    width: 21cm;
+    display: flex;
+    flex-direction: column-reverse;
+    overflow: visible;
+  }
+
+  .aside {
+    position: relative;
+    width: 100% !important;
+    overflow: visible;
+    height: auto;
+    background: none;
+    page-break-before: always;
+  }
+
+  .main {
+    position: relative;
+    width: 100%;
+    height: 28.5cm;
+    left: 0 !important;
+    overflow: hidden;
+  }
+
+  .mapContainer,
+  .withTimebar {
+    height: 28.5cm;
+  }
+
+  .mapContainer ~ * {
+    display: none;
+  }
+
+  .splitContainer .aside * {
+    color: var(--color-primary-blue);
+  }
+
+  .splitContainer .aside tspan {
+    fill: var(--color-primary-blue);
+  }
+
+  .splitContainer .aside :global(.recharts-surface) {
+    display: block;
+    width: calc(21cm - 30px);
+  }
+
+  .aside h2 {
+    font: var(--font-L);
+  }
+}

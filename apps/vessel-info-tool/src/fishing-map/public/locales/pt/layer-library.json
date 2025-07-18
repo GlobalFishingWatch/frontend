@@ -1,0 +1,222 @@
+{
+  "bathymetry": {
+    "description": "A batimetria é a medição da profundidade da água e fornece detalhes das características físicas do fundo do oceano. Esse conjunto de dados batimétricos em grade é um modelo de terreno global contínuo que fornece dados de elevação do oceano em metros em uma grade com intervalo de 15 segundos de arco. ",
+    "moreInfoLink": "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2023/",
+    "name": "Batimetria"
+  },
+  "chlorophyl": {
+    "description": "A clorofila a é o pigmento captador de luz encontrado em todas as plantas fotossintéticas. O fitoplâncton marinho fixa quimicamente o carbono através da fotossíntese, absorvendo dióxido de carbono dissolvido e produzindo oxigênio. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo a clorofila, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. ",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
+    "name": "Concentração de clorofila-a"
+  },
+  "coral-reefs": {
+    "description": "Os recifes de coral de águas quentes são encontrados em águas claras e rasas e são ecossistemas altamente dinâmicos que sustentam o habitat marinho mais biodiverso. Este conjunto de dados mostra a distribuição global dos recifes de coral em regiões tropicais e subtropicais.",
+    "moreInfoLink": "https://data.unep-wcmc.org/datasets/1",
+    "name": "Recifes de coral"
+  },
+  "currents": {
+    "description": "TODO",
+    "moreInfoLink": "",
+    "name": "Currents"
+  },
+  "dsm-isa-leasing-areas": {
+    "description": "These represent the areas currently leased by the International Seabed Authority (ISA) for exploration of polymetallic nodules, polymetallic sulfides, and cobalt-rich ferromanganese crusts in the high seas. Each polygon represents a 15-year contract with a mining contractor and sponsoring country for the exploration of minerals. None of these areas are currently leased for exploitation (i.e. commercial mining), though these are the same regions that will be mined if exploitation contracts are ever approved by the ISA. The ISA is the intergovernmental United Nations body that is tasked with both protecting the international seabed alongside managing any mineral-resources-related activity in the area.",
+    "moreInfoLink": "",
+    "name": "ISA leasing areas"
+  },
+  "eez": {
+    "description": "As zonas econômicas exclusivas (ZEEs) estendem-se até 200 milhas náuticas da costa de um país. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11.",
+    "moreInfoLink": "",
+    "name": "ZEE"
+  },
+  "eez-areas-12nm": {
+    "description": "Territorial seas are a belt of coastal waters extending at most 12 nautical miles (22.2 km; 13.8 mi) from the baseline (usually the mean low-water mark) of a coastal state.",
+    "moreInfoLink": "https://www.marineregions.org/downloads.php",
+    "name": "Territorial Seas (12 nautical miles)"
+  },
+  "encounters": {
+    "description": "Identificados a partir de dados AIS como localizações onde duas embarcações, uma transportadora e uma embarcação de pesca, estiveram a uma distância de 500 metros durante pelo menos 2 horas e viajaram a uma velocidade média inferior a 2 nós, enquanto estavam a pelo menos 10 km de um ancoradouro costeiro.",
+    "moreInfoLink": "",
+    "name": "Eventos de encontro (AIS)"
+  },
+  "fao-major": {
+    "description": "As principais áreas de pesca da FAO para fins estatísticos são áreas arbitrárias, cujos limites foram determinados em consulta com agências internacionais de pesca. As principais áreas de pesca, interiores e marítimas, estão listadas abaixo por códigos de dois dígitos com seus nomes. Para acessar os mapas e a descrição dos limites de cada zona de pesca, clique no item relevante da lista abaixo ou no mapa que mostra as 19 principais áreas de pesca marítima.",
+    "moreInfoLink": "",
+    "name": "Principais áreas de pesca da FAO"
+  },
+  "fishing-effort-ais": {
+    "description": "Para determinar o “esforço de pesca aparente”, o Global Fishing Watch analisa dados do sistema de identificação automática (AIS) coletados de embarcações que nossa pesquisa identificou como embarcações de pesca comercial conhecidas ou possíveis e aplica um algoritmo de detecção de pesca baseado em mudanças de velocidade e direção da embarcação.",
+    "moreInfoLink": "",
+    "name": "Esforço de pesca aparente (AIS)"
+  },
+  "fishing-effort-vms": {
+    "description": "Para determinar o “esforço de pesca aparente”, o Global Fishing Watch analisa dados do sistema de monitoramento de embarcações (VMS) coletados de embarcações que nossa pesquisa identificou como embarcações de pesca comercial conhecidas ou possíveis e aplica um algoritmo de detecção de pesca baseado em mudanças de velocidade e direção da embarcação.",
+    "moreInfoLink": "",
+    "name": "Esforço de pesca aparente (VMS)"
+  },
+  "gfcm-fao": {
+    "description": "In the Mediterranean and the Black Sea, 1,760,000 square kilometers of sea habitats are protected by ten fisheries restricted areas established by the GFCM, in which some specific fishing activities are temporarily or permanently banned or restricted.",
+    "moreInfoLink": "https://www.fao.org/gfcm/data/maps/fras/ru",
+    "name": "GFCM Fisheries Restricted Areas"
+  },
+  "graticules": {
+    "description": "Grades ou quadrículas de latitude e longitude em intervalos de 1, 5, 10 e 30° dependendo do nível de zoom do mapa",
+    "moreInfoLink": "",
+    "name": "Grades de latitude e longitude"
+  },
+  "high-seas": {
+    "description": "O Alto-mar é qualquer área do oceano além das Zonas Econômicas Exclusivas (ZEEs). Os bolsões de alto-mar são áreas totalmente cercadas por ZEEs. Esses bolsões podem ser difíceis de distinguir das múltiplas jurisdições das ZEEs que os cercam, portanto, temos uma camada que os destaca.",
+    "moreInfoLink": "",
+    "name": "Alto-mar"
+  },
+  "high-seas-pockets": {
+    "description": "High Seas pockets are areas totally enclosed by EEZs that are beyond Exclusive Economic Zones (EEZ). These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
+    "moreInfoLink": "https://www.marineregions.org/downloads.php",
+    "name": "High seas pockets"
+  },
+  "loitering": {
+    "description": "Um episódio de deriva é quando uma única embarcação exibe um comportamento indicativo de um evento de encontro potencial. Um episódio de deriva é estimado usando dados do sistema de identificação automática (AIS), incluindo a velocidade da embarcação, a duração em um determinado local e a distância da costa. Deriva ocorre quando uma embarcação viaja a uma velocidade média inferior a dois nós, estando, em média, a pelo menos 20 milhas náuticas da costa. Para reduzir o ruído no portal da embarcação transportadora, apenas eventos de deriva maiores que uma hora são mostrados.",
+    "moreInfoLink": "",
+    "name": "Eventos de deriva (AIS)"
+  },
+  "mangroves": {
+    "description": "Os mangues são árvores ou arbustos que podem sobreviver em ambientes salinos e normalmente crescem na zona entremarés de regiões tropicais e subtropicais. Considerados habitats de carbono azul, os manguezais melhoram a qualidade da água, estabilizam e protegem as costas e fornecem abrigo para pássaros, animais e organismos marinhos. Este conjunto de dados utiliza imagens de satélite de observação da Terra para mostrar a distribuição global dos mangues.  ",
+    "moreInfoLink": "https://data.unep-wcmc.org/datasets/4",
+    "name": "Mangues"
+  },
+  "marine-ecoregions": {
+    "description": "As ecorregiões marinhas são uma classificação biogeográfica das águas costeiras e da plataforma continental do mundo. O conjunto de dados fornece um quadro geográfico para uma ampla gama de análises relacionadas com a biodiversidade no ambiente marinho.",
+    "moreInfoLink": "https://geospatial.tnc.org/datasets/ed2be4cf8b7a451f84fd093c2e7660e3/explore",
+    "name": "Ecorregiões marinhas"
+  },
+  "mpa": {
+    "description": "As áreas marinhas protegidas (AMPs) são áreas do oceano reservadas para conservação a longo prazo. Elas podem ter níveis diferentes de proteção, e a variedade de atividades permitidas ou proibidas dentro dos seus limites varia consideravelmente. Fonte: Base de Dados Mundial de Áreas Protegidas (World Database on Protected Areas, WDPA).",
+    "moreInfoLink": "",
+    "name": "AMPs (WDPA)"
+  },
+  "mpatlas": {
+    "description": "MPAs vary greatly in their status in the process of becoming an MPA and the impact of human activities. MPAtlas applies The MPA Guide, a science-based tool that identifies different types of MPAs and connects them to the outcome they are likely to achieve.",
+    "moreInfoLink": "https://mpatlas.org",
+    "name": "MPAs (MPAtlas)"
+  },
+  "nitrate": {
+    "description": "O nitrato é necessário para as plantas marinhas para a fotossíntese e é um nutriente importante para a produtividade dos oceanos. No entanto, concentrações elevadas podem ser um indicador de poluição. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo nitrato, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau.   ",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
+    "name": "Concentração de nitrato (NO3)"
+  },
+  "offshore-fixed-infrastructure": {
+    "description": "A infraestrutura fixa offshore é um conjunto de dados global que usa IA e aprendizado de máquina para detectar e classificar estruturas nos oceanos do mundo. Rótulos de classificação (petróleo, vento e desconhecido) são fornecidos, bem como níveis de confiança (alto, médio ou baixo) refletindo nossa certeza sobre o rótulo atribuído. As detecções podem ser filtradas e coloridas no mapa usando tanto o rótulo quanto o nível de confiança. Os dados são atualizados mensalmente, e novas detecções classificadas são adicionadas no início de cada mês. A visualização das alterações usando a barra de tempo é simples e permite que qualquer pessoa reconheça a rápida industrialização dos oceanos do mundo.",
+    "moreInfoLink": "",
+    "name": "Infraestrutura fixa offshore (SAR, óptica)"
+  },
+  "oxygen": {
+    "description": "Oxigênio dissolvido é a quantidade de oxigênio presente na água e é fundamental para o crescimento e a sobrevivência dos organismos marinhos. O aquecimento das temperaturas dos oceanos pode levar a uma expansão de zonas com baixo teor de oxigénio, o que pode impactar a distribuição e a abundância da vida marinha. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo o oxigênio dissolvido, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. ",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
+    "name": "Concentração de oxigênio (O2)"
+  },
+  "paa-duke": {
+    "description": "This global Preferential Access Area (PAA) database was built with data for 44 countries identified by the Illuminating Hidden Harvests (IHH) initiative following Basurto et al. (2023) and the FAOLEX database.",
+    "moreInfoLink": "https://research.repository.duke.edu/concern/datasets/79407z51r",
+    "name": "Preferential Access Areas for Small-Scale Fishing"
+  },
+  "ph": {
+    "description": "A acidez dos oceanos é medida pelo pH. O aumento da absorção de dióxido de carbono reduziu o pH dos oceanos, resultando na acidificação dos oceanos, que pode ter um amplo impacto nos organismos marinhos. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo o pH, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. ",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
+    "name": "pH"
+  },
+  "phosphate": {
+    "description": "O fosfato é um nutriente importante para as cadeias alimentares marinhas e para a produtividade dos oceanos. No entanto, concentrações elevadas podem ser também um indicador de poluição. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo o fosfato, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. ",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_BGC_001_028/description",
+    "name": "Concentração de fosfato (PO4)"
+  },
+  "port-locations": {
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
+    "moreInfoLink": "",
+    "name": "Ports"
+  },
+  "port-visits": {
+    "description": "Os portos são baseados no conjunto de dados de ancoragens da Global Fishing Watch, um banco de dados global de locais de ancoragem onde as embarcações se reúnem. O conjunto de dados contém mais de 160.000 locais de ancoragem individuais, que são agrupados em cerca de 32.000 portos. ",
+    "moreInfoLink": "",
+    "name": "Visitas portuárias (AIS)"
+  },
+  "presence": {
+    "description": "A camada de presença analisa dados do sistema de identificação automática (AIS) coletados de embarcações identificadas pela nossa pesquisa. A presença é determinada pelas posições assumidas e transmitidas pelo AIS da embarcação e é exibida como um mapa de calor. ",
+    "moreInfoLink": "",
+    "name": "Presença de embarcações"
+  },
+  "protectedseas": {
+    "description": "As áreas marinhas protegidas (AMPs) são áreas do oceano reservadas para conservação a longo prazo. Elas podem ter níveis diferentes de proteção, e a variedade de atividades permitidas ou proibidas dentro de seus limites varia consideravelmente. Source: https://navigatormap.org/methodology/",
+    "moreInfoLink": "",
+    "name": "AMPs (ProtectedSeas)"
+  },
+  "rfmo": {
+    "description": "As organizações regionais de gestão de pesca (ORGPs) são órgãos internacionais formados por países com um interesse em comum na gestão ou conservação dos estoques de peixes em uma determinada região. Alguns gerenciam todos os estoques de peixes existentes em uma determinada área, enquanto outros se concentram em espécies específicas altamente migratórias, especialmente o atum. A organização regional de gestão de pesca do mapa do Global Fishing Watch inclui atualmente as cinco organizações regionais de gestão de pesca do atum.",
+    "moreInfoLink": "",
+    "name": "ORGPs"
+  },
+  "salinity": {
+    "description": "A salinidade da superfície do mar é a medição da concentração de sal na superfície do oceano. Ela determina a densidade da água do oceano juntamente com a temperatura e é um parâmetro-chave para estimar a influência do oceano no clima. A salinidade deste conjunto de dados é exibida com uma resolução horizontal de 1/12 grau.",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description",
+    "name": "Salinidade"
+  },
+  "sar": {
+    "description": "O radar de abertura sintética (SAR) pode detectar embarcações e estruturas no mar em quaisquer condições climáticas. O SAR é um sensor baseado em satélite que dispara micro-ondas para a superfície da Terra e mede a amplitude e a fase dos sinais que são refletidos de objetos no solo e na água, conhecidos como retroespalhamento.",
+    "moreInfoLink": "",
+    "name": "Detecções de radar (SAR)"
+  },
+  "seagrasses": {
+    "description": "As ervas marinhas são um ecossistema produtivo encontrado globalmente em áreas marinhas rasas, onde elas fornecem alimento e habitat para organismos e desempenham um papel fundamental na ciclagem nutrientes. Este conjunto de dados mostra a distribuição global das ervas marinhas. ",
+    "moreInfoLink": "https://data.unep-wcmc.org/datasets/7",
+    "name": "Ervas marinhas"
+  },
+  "seamounts": {
+    "description": "Os montes marinhos são montanhas subaquáticas de origem vulcânica que podem gerar uma ressurgência de nutrientes, apoiando o aumento da produtividade biológica, a riqueza de espécies e comunidades distintas. Este conjunto de dados de características geomórficas globais do fundo do mar inclui montes marinhos, que são definidos como picos que se elevam mais de 1.000 m acima do fundo do mar.",
+    "moreInfoLink": "https://bluehabitats.org/",
+    "name": "Montes marinhos"
+  },
+  "sentinel2": {
+    "description": "This layer shows vessels detected using optical satellite imagery collected by the European Space Agency’s Sentinel-2 satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths.",
+    "moreInfoLink": "",
+    "name": "Imagery detections (Optical)"
+  },
+  "species": {
+    "description": "Tarefas pendentes",
+    "moreInfoLink": "",
+    "name": "Espécie"
+  },
+  "sst": {
+    "description": "A temperatura da superfície do mar é a temperatura da água na superfície ou perto dela. Ela pode impactar o clima e os climas regionais e, juntamente com a salinidade, pode impulsionar a circulação oceânica e o movimento em grande escala das correntes oceânicas globalmente. Este conjunto de dados fornece a temperatura da superfície do mar com uma resolução de grade horizontal de 1/20 de grau, usando dados in-situ e de satélite de radiômetros infravermelhos e de micro-ondas.",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001/description",
+    "name": "Temperatura da superfície do mar"
+  },
+  "sst-anomalies": {
+    "description": "A anomalia da temperatura da superfície do mar é a diferença entre a temperatura diária da superfície do mar e a média climatológica de 30 anos. As anomalias da temperatura da superfície do mar podem impactar a variedade e os habitats das espécies e podem representar eventos transitórios ou ciclos climáticos específicos, como o El Niño e o La Niña, que afetam os padrões climáticos a nível global. No mapa, um número positivo representa uma temperatura mais quente que a média. ",
+    "moreInfoLink": "https://developers.google.com/earth-engine/datasets/catalog/NOAA_CDR_OISST_V2_1",
+    "name": "Anomalias na temperatura da superfície do mar"
+  },
+  "sst-anomalies-max": {
+    "description": "",
+    "moreInfoLink": "",
+    "name": "Anomalias na temperatura da superfície do mar (máx.)"
+  },
+  "sst-anomalies-min": {
+    "description": "",
+    "moreInfoLink": "",
+    "name": "Anomalias na temperatura da superfície do mar (mín.)"
+  },
+  "thgt": {
+    "description": "A altura da onda é a distância vertical do vale (fundo) até a crista (topo) de uma onda na superfície do mar. Este conjunto de dados usa a altura significativa da onda, que é a média do terço mais alto de todas as alturas das ondas durante um determinado período de amostragem.",
+    "moreInfoLink": "https://www.pacioos.hawaii.edu/waves/model-global/#about",
+    "name": "Altura da onda"
+  },
+  "viirs": {
+    "description": "A camada de detecção de embarcações com luzes noturnas, conhecida como conjunto de radiômetros de imagens infravermelhas visíveis ou VIIRS, mostra as embarcações no mar que os satélites detectaram pela luz que elas emitem à noite. Embora não esteja exclusivamente associada a embarcações de pesca, essa camada de atividade provavelmente mostra embarcações associadas a atividades como a pesca de lula, que utiliza luzes fortes, e a pesca noturna.",
+    "moreInfoLink": "",
+    "name": "Detecção de luz noturna (VIIRS)"
+  },
+  "viirs-skylight": {
+    "description": "TODO: description",
+    "moreInfoLink": "",
+    "name": "Night light detections (VIIRS Skylight)"
+  }
+}

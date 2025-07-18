@@ -1,0 +1,87 @@
+.bivariateToggleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  height: 2.8rem;
+  transition: var(--transition);
+}
+
+.bivariateToggleContainer::before {
+  content: '';
+  position: absolute;
+  left: var(--space-S);
+  top: 50%;
+  bottom: 1.3rem;
+  height: 0.1rem;
+  width: calc(50% - 2.3rem);
+  background-color: var(--color-border);
+  z-index: -1;
+}
+
+.bivariateToggleContainer::after {
+  content: '';
+  position: absolute;
+  left: calc(50% + 1.3rem);
+  top: 50%;
+  bottom: 1.3rem;
+  height: 0.1rem;
+  width: calc(50% - 1.3rem);
+  background-color: var(--color-border);
+  z-index: -1;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+  height: 0;
+}
+
+.bivariateToggle {
+  transform: scale(1);
+  transition: all 0.2s ease-in-out 0.1s;
+}
+
+.hidden .bivariateToggle {
+  transform: scale(0);
+}
+
+.legendContainer {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 0;
+}
+
+.legend {
+  flex: 1;
+}
+
+.bivariateSplit {
+  margin-top: 2.4rem;
+}
+
+.stats {
+  font: var(--font-S);
+  color: var(--color-secondary-blue);
+  margin-bottom: var(--space-XS);
+  transition: filter 0.2s linear;
+}
+
+.statsLoading {
+  filter: blur(3px);
+  user-select: none;
+}
+
+.help {
+  cursor: help;
+}
+
+.helpHint {
+  position: absolute;
+  top: 50%;
+  right: 2rem;
+}

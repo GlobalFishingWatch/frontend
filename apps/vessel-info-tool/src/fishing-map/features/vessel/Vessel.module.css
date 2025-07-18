@@ -1,0 +1,21 @@
+.placeholder {
+  text-align: center;
+  padding-block: var(--space-XL);
+}
+
+.secondary {
+  color: var(--color-secondary-blue);
+}
+
+.fullProfileMessage {
+  color: var(--color-secondary-blue);
+  padding: var(--space-S) var(--space-S) var(--space-S) var(--space-M);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: var(--border);
+}
+
+.linkTooltip {
+  max-width: none;
+}

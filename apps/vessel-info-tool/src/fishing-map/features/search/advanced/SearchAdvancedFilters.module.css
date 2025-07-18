@@ -1,0 +1,11 @@
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+  padding-bottom: var(--space-M);
+}
+
+.error {
+  padding-block: var(--space-S);
+  color: var(--color-danger-red);
+}
