@@ -6,9 +6,12 @@
   "scripts": {
     "mpas": "ts-node -P tsconfig.json src/scripts/mpas.ts",
     "eezs": "ts-node -P tsconfig.json src/scripts/eezs.ts",
-    "prepare": "yarn mpas && yarn eezs && yarn locales",
-    "locales": "ts-node -P tsconfig.json src/scripts/names.ts"
+    "locales": "ts-node -P tsconfig.json src/scripts/names.ts",
+    "prepare": "yarn mpas && yarn eezs && yarn locales"
   },
+  "files": [
+    "src"
+  ],
   "dependencies": {
     "@turf/bbox": "7.x",
     "@turf/boolean-point-in-polygon": "7.x",

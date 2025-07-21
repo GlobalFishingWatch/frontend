@@ -27,18 +27,7 @@ async function start() {
       }),
       (f) => f.properties.name
     )
-
-    const mpasAreasString = `
-    import { FeatureCollection } from 'geojson'
-    import { OceanAreaProperties } from '../ocean-areas'
-
-    const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
-      type: 'FeatureCollection',
-      features: ${JSON.stringify(mpas)},
-    }
-    export default mpasAreas
-    `
-    await fs.writeFile(path.resolve(__dirname, '../data/mpas.ts'), mpasAreasString)
+    await fs.writeFile(path.resolve(__dirname, '../data/source/mpas.json'), JSON.stringify(mpas))
     console.log(`✅ ${mpas.length} MPAs`)
   } catch (e) {
     console.error(e)

@@ -29,6 +29,7 @@ import { selectVGReportActivityDataviews } from 'features/dataviews/selectors/da
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import type { FitBoundsParams } from 'features/map/map-bounds.hooks'
 import { getMapCoordinatesFromBounds } from 'features/map/map-bounds.hooks'
+import { useDeckMap } from 'features/map/map-context.hooks'
 import { useMapViewState, useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import type { LastReportStorage } from 'features/reports/report-area/area-reports.config'
 import {
@@ -211,14 +212,15 @@ export function useReportAreaInViewport() {
 
 export function useFitAreaInViewport(params = defaultParams) {
   const setMapCoordinates = useSetMapCoordinates()
+  const deckMap = useDeckMap()
   const { bbox } = useReportAreaBounds()
   const areaCenter = useReportAreaCenter(bbox as Bbox, params)
   const areaInViewport = useReportAreaInViewport()
   return useCallback(() => {
-    if (!areaInViewport && areaCenter) {
+    if (!areaInViewport && areaCenter && deckMap) {
       setMapCoordinates(areaCenter)
     }
-  }, [areaCenter, areaInViewport, setMapCoordinates])
+  }, [areaCenter, areaInViewport, deckMap, setMapCoordinates])
 }
 
 // 0 - 20MB No simplifyTrack
@@ -365,16 +367,17 @@ export function usePortsReportAreaFootprintBounds() {
 }
 
 export function usePortsReportAreaFootprintFitBounds() {
+  const deckMap = useDeckMap()
   const { loaded, bbox } = usePortsReportAreaFootprintBounds()
-  const fitAreaInViewport = useFitAreaInViewport({ padding: 10 })
+  const fitAreaInViewport = useFitAreaInViewport()
   const bboxHash = bbox ? bbox.join(',') : ''
   // This ensures that the area is in viewport when then area load finishes
   useEffect(() => {
-    if (loaded && bbox?.length) {
+    if (loaded && bbox?.length && deckMap) {
       fitAreaInViewport()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded, bboxHash])
+  }, [loaded, bboxHash, deckMap])
 }
 
 export function useReportTitle() {
