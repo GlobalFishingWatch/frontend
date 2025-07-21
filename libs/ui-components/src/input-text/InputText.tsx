@@ -1,13 +1,5 @@
-import type {
-  Ref} from 'react';
-import React, {
-  forwardRef,
-  Fragment,
-  useCallback,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react'
+import type { Ref } from 'react'
+import React, { forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react'
 import cx from 'classnames'
 
 import { Icon } from '../icon'

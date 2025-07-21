@@ -29,25 +29,27 @@ export const formatI18nDate = (
   {
     format = DateTime.DATE_MED,
     locale = i18n.language as Locale,
-    showUTCLabel = false,
+    showUTCLabel,
   }: formatI18DateParams = {}
 ) => {
   const dateTimeDate = getUTCDateTime(date)
-  return `${dateTimeDate?.setLocale(locale).toLocaleString(format)}${
-    format === DateTime.DATETIME_MED || showUTCLabel ? ` ${UTC_SUFFIX}` : ''
-  }`
+  let utcSuffix = ''
+  if ((format === DateTime.DATETIME_MED && showUTCLabel === undefined) || showUTCLabel) {
+    utcSuffix = ` ${UTC_SUFFIX}`
+  }
+  return `${dateTimeDate?.setLocale(locale).toLocaleString(format)}${utcSuffix}`
 }
 
 export const useI18nDate = (
   date: SupportedDateType,
   format = DateTime.DATE_MED,
-  showUTCLabel = false
+  showUTCLabel?: boolean
 ) => {
   const { i18n } = useTranslation()
   return formatI18nDate(date, { format, locale: i18n.language as Locale, showUTCLabel })
 }
 
-const I18nDate = ({ date, format = DateTime.DATE_MED, showUTCLabel = false }: Dates) => {
+const I18nDate = ({ date, format = DateTime.DATE_MED, showUTCLabel }: Dates) => {
   const dateFormatted = useI18nDate(date, format, showUTCLabel)
   return <Fragment>{dateFormatted}</Fragment>
 }

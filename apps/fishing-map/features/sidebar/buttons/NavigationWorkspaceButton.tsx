@@ -11,6 +11,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { EMPTY_SEARCH_FILTERS } from 'features/search/search.config'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { cleanVesselProfileDataviewInstances } from 'features/sidebar/sidebar-header.hooks'
+import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import { resetVesselState } from 'features/vessel/vessel.slice'
 import { cleanReportQuery } from 'features/workspace/workspace.slice'
@@ -32,6 +33,7 @@ function NavigationWorkspaceButton() {
   const dispatch = useAppDispatch()
   const isVesselLocation = useSelector(selectIsVesselLocation)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
+  const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
   const isAnyWorkspaceReportLocation = useSelector(selectIsAnyWorkspaceReportLocation)
   const workspaceId = useSelector(selectWorkspaceId)
   const locationQuery = useSelector(selectLocationQuery)
@@ -59,6 +61,7 @@ function NavigationWorkspaceButton() {
   if (
     workspaceId &&
     (isWorkspaceVesselLocation ||
+      isTrackCorrectionOpen ||
       (isAnyWorkspaceReportLocation && locationCategory !== WorkspaceCategory.Reports))
   ) {
     const tooltip = t('common.navigateBackTo', {
@@ -68,6 +71,7 @@ function NavigationWorkspaceButton() {
       ...cleanReportQuery(locationQuery),
       ...EMPTY_SEARCH_FILTERS,
       ...DEFAULT_VESSEL_STATE,
+      trackCorrectionId: undefined,
     }
     const linkTo = {
       type: WORKSPACE as ROUTE_TYPES,

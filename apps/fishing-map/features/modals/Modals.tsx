@@ -149,6 +149,16 @@ const AppModals = () => {
 
   return (
     <Fragment>
+      <Modal
+        appSelector={ROOT_DOM_ELEMENT}
+        title={t('common.layerLibrary', 'Layer Library')}
+        isOpen={isLayerLibraryModalOpen}
+        onClose={() => dispatch(setModalOpen({ id: 'layerLibrary', open: false }))}
+        contentClassName={styles.layerLibraryModal}
+        size="fullscreen"
+      >
+        <LayerLibrary />
+      </Modal>
       {isGFWUser && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
@@ -197,16 +207,6 @@ const AppModals = () => {
           <BigQueryMenu />
         </Modal>
       )}
-      <Modal
-        appSelector={ROOT_DOM_ELEMENT}
-        title={t('common.layerLibrary')}
-        isOpen={isLayerLibraryModalOpen}
-        onClose={() => dispatch(setModalOpen({ id: 'layerLibrary', open: false }))}
-        contentClassName={styles.layerLibraryModal}
-        size="fullscreen"
-      >
-        <LayerLibrary />
-      </Modal>
       {isGFWUser && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}

@@ -110,13 +110,14 @@ const useVesselFitTranmissionsBounds = () => {
   useEffect(() => {
     if (isVesselLocation && needsTimerangeUpdate) {
       // This is needed to update the url instantly instead of waiting for the debounced
-      // update in setTimerange fn as the resouce needs to be generated asap
+      // update in setTimerange fn as the resource needs to be generated asap
       dispatchQueryParams({ start: transmissionDateFrom, end: transmissionDateTo })
       setTimerange({ start: transmissionDateFrom, end: transmissionDateTo })
       requestAnimationFrame(() => {
         seTimerangeBoundsUpdated(true)
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [needsTimerangeUpdate])
 
   // There has to wait for the timerange to be updated so the track loads with the entire track

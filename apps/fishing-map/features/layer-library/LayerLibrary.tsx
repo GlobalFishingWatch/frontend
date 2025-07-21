@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import type { ChangeEvent, FC } from 'react'
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -240,7 +241,6 @@ const LayerLibrary: FC = () => {
             className={styles.input}
             type="search"
             disabled={!ready}
-            autoFocus
             placeholder={t('translations:search.title')}
           />
         </div>

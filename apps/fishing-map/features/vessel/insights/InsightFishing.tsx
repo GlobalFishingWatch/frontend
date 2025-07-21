@@ -3,12 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
-import type { InsightResponse } from '@globalfishingwatch/api-types'
+import { EventTypes, type InsightResponse } from '@globalfishingwatch/api-types'
 
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import InsightEventDetails from 'features/vessel/insights/InsightEventsDetails'
 import { removeNonTunaRFMO } from 'features/vessel/insights/insights.utils'
+import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 
 import { selectVesselEventsDataWithVoyages } from '../selectors/vessel.resources.selectors'
 
@@ -25,19 +26,23 @@ const InsightFishing = ({
 }) => {
   const { t } = useTranslation()
   const vesselEvents = useSelector(selectVesselEventsDataWithVoyages)
+
+  const { setVesselEventVisibility } = useVisibleVesselEvents()
   const { eventsInNoTakeMpas, eventsInRfmoWithoutKnownAuthorization } =
     insightData?.apparentFishing || {}
 
   const [eventsInNoTakeMpasDetailsVisibility, setEventsInNoTakeMpasDetailsVisibility] =
     useState(false)
   const toggleEventsInNoTakeMpasDetailsVisibility = useCallback(() => {
+    setVesselEventVisibility({ event: EventTypes.Fishing, visible: true })
     setEventsInNoTakeMpasDetailsVisibility((visibility) => !visibility)
-  }, [])
+  }, [setVesselEventVisibility])
 
   const [eventsInRfmoDetailsVisibility, setEventsInRfmoDetailsVisibility] = useState(false)
   const toggleEventsInRfmoDetailsVisibility = useCallback(() => {
+    setVesselEventVisibility({ event: EventTypes.Fishing, visible: true })
     setEventsInRfmoDetailsVisibility((visibility) => !visibility)
-  }, [])
+  }, [setVesselEventVisibility])
 
   const eventsInNoTakeMpasDetails = useMemo(() => {
     return eventsInNoTakeMpas
