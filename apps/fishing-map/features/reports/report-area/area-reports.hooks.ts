@@ -369,7 +369,7 @@ export function usePortsReportAreaFootprintBounds() {
 export function usePortsReportAreaFootprintFitBounds() {
   const deckMap = useDeckMap()
   const { loaded, bbox } = usePortsReportAreaFootprintBounds()
-  const fitAreaInViewport = useFitAreaInViewport({ padding: 10 })
+  const fitAreaInViewport = useFitAreaInViewport()
   const bboxHash = bbox ? bbox.join(',') : ''
   // This ensures that the area is in viewport when then area load finishes
   useEffect(() => {
