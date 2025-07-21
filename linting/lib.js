@@ -129,15 +129,6 @@ export const config = {
     'jsx-a11y/mouse-events-have-key-events': 'warn',
     'jsx-a11y/no-static-element-interactions': 'warn',
     'jsx-a11y/no-noninteractive-element-interactions': 'warn',
-    '@nx/dependency-checks': [
-      'error',
-      {
-        ignoredFiles: [
-          '{projectRoot}/vite.config.{js,ts,mjs,mts}',
-          '{projectRoot}/rollup.config.{js,ts,mjs,mts}',
-        ],
-      },
-    ],
   },
 }
 

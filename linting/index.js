@@ -19,6 +19,15 @@ const repoConfig = {
     ...config.rules,
     ...nextPlugin.configs.recommended.rules,
     ...nextPlugin.configs['core-web-vitals'].rules,
+    '@nx/dependency-checks': [
+      'error',
+      {
+        ignoredFiles: [
+          '{projectRoot}/vite.config.{js,ts,mjs,mts}',
+          '{projectRoot}/rollup.config.{js,ts,mjs,mts}',
+        ],
+      },
+    ],
   },
 }
 
