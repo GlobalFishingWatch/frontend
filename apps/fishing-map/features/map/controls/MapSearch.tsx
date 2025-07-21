@@ -106,7 +106,7 @@ const MapSearch = () => {
         testId="map-search-button"
         tooltip={isOpen ? t('search.close') : t('map.search')}
         className={cx({ [styles.active]: isOpen })}
-      ></IconButton>
+      />
 
       <Hint id="areaSearch" className={styles.helpHint} />
       <div className={cx(styles.searchContainer, { [styles.hidden]: !isOpen })}>

@@ -74,6 +74,8 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
             unit: unit || (visualisationMode === '4wings' ? '' : 'event'),
             category: visualisationMode === '4wings' ? 'activity' : 'event',
             subcategory,
+            relatedDatasets: [], // TODO: add related datasets
+            // ttl: 365, // TODO: larger TTL only for turning-tides datasets
             public: createAsPublic,
           } as any,
         }

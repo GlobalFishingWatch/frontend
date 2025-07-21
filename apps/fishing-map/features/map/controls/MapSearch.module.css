@@ -26,7 +26,6 @@
   width: var(--size-XS);
   height: var(--size-XS);
   background-color: var(--color-white);
-  border: red;
 }
 
 .input > input {

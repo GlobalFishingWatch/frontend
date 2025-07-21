@@ -8,8 +8,10 @@ import KDBush from 'kdbush'
 import { DataviewType, type TrackPoint, type TrackSegment } from '@globalfishingwatch/api-types'
 import {
   COLOR_TRANSPARENT,
+  getLayerGroupOffset,
   getSegmentsFromData,
   type GetSegmentsFromDataParams,
+  LayerGroup,
 } from '@globalfishingwatch/deck-layers'
 import type { VesselTrackData } from '@globalfishingwatch/deck-loaders'
 
@@ -103,6 +105,7 @@ export class VesselTrackLayerComposite extends CompositeLayer<VesselTrackLayerCo
       data: data as TrackSegment[],
       getWidth: 10,
       getColor: COLOR_TRANSPARENT,
+      getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Background, params),
       pickable: true,
       highlightStartTime: undefined,
       highlightEndTime: undefined,

@@ -28,6 +28,10 @@
   grid-auto-flow: column;
 }
 
+.secondColumnLarger {
+  grid-template-columns: 1fr 2fr;
+}
+
 .twoCells {
   grid-column: span 2;
 }

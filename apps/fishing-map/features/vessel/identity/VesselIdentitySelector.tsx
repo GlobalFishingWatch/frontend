@@ -24,7 +24,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 
 import styles from './VesselIdentitySelector.module.css'
 
-function isRegistryInTimerange(registry: VesselDataIdentity, start: string, end: string) {
+export function isRegistryInTimerange(registry: VesselDataIdentity, start: string, end: string) {
   const registryStart = DateTime.fromISO(registry.transmissionDateFrom).toMillis()
   const registryEnd = DateTime.fromISO(registry.transmissionDateTo).toMillis()
   const timerangeStart = DateTime.fromISO(start).toMillis()

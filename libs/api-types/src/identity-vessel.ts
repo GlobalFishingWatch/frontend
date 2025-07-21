@@ -145,6 +145,7 @@ export type SelfReportedInfo = VesselInfo & {
   depth?: string
   matricula?: string
   nationalId?: string
+  codMarinha?: string
   vesselType?: string
 }
 

@@ -28,3 +28,8 @@
   padding: var(--space-M);
   text-align: center;
 }
+
+.overlay {
+  background-color: var(--color-white);
+  z-index: 3;
+}

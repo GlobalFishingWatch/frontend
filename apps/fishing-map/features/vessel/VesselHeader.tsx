@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { uniqBy } from 'es-toolkit'
+import { uniqBy, upperFirst } from 'es-toolkit'
 
 import type { RegistryImage } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -219,7 +219,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
             className="print-hidden"
             type="border"
             icon="print"
-            tooltip={t('analysis.print')}
+            tooltip={upperFirst(t('analysis.print'))}
             size="small"
             tooltipPlacement="bottom"
             onClick={onPrintClick}

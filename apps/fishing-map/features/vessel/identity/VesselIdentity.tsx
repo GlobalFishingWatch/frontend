@@ -191,7 +191,7 @@ const VesselIdentity = () => {
               size="medium"
               className="print-hidden"
               onClick={onDownloadClick}
-              tooltip={t('download.dataDownload')}
+              tooltip={t('download.identityDownload')}
               loginTooltip={t('download.dataDownloadLogin')}
               tooltipPlacement="top"
             />
@@ -200,14 +200,15 @@ const VesselIdentity = () => {
         {vesselIdentity && (
           <div className={styles.fields}>
             {identityFields?.map((fieldGroup, index) => {
-              const twoColumns =
+              const showExpandableGearTypes =
                 isGFWUser &&
+                identitySource === VesselIdentitySourceEnum.SelfReported &&
                 fieldGroup.some((field) => field.key === 'shiptypes' || field.key === 'geartypes')
               return (
                 <div
                   key={index}
                   className={cx(styles.fieldGroupContainer, styles.fieldGroup, {
-                    [styles.twoColumns]: twoColumns,
+                    [styles.secondColumnLarger]: showExpandableGearTypes,
                   })}
                 >
                   {/* TODO: make fields more dynamic to account for VMS */}
@@ -268,7 +269,7 @@ const VesselIdentity = () => {
             {identitySource === VesselIdentitySourceEnum.Registry &&
               hasMoreInfo &&
               registrySourceData && (
-                <div className={styles.extraInfoContainer}>
+                <div className={cx(styles.extraInfoContainer, 'print-hidden')}>
                   <img
                     src={registrySourceData?.logo}
                     alt={registrySourceData?.key}
@@ -277,7 +278,9 @@ const VesselIdentity = () => {
                   <Tooltip content={t('vessel.extraInfoTooltip')}>
                     <div>
                       <label>{t('vessel.extraInfo')}</label>
-                      <p>{registrySourceData?.contact}</p>
+                      <a href={`mailto:${registrySourceData?.contact}`} target="_blank">
+                        {registrySourceData?.contact}
+                      </a>
                     </div>
                   </Tooltip>
                 </div>
