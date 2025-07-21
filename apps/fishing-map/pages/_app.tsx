@@ -12,14 +12,14 @@ import Head from 'next/head'
 import 'utils/polyfills'
 import 'features/i18n/i18n'
 
-import { wrapper } from '../store'
+import { makeStore } from '../store'
 
 import './styles.css'
 import '../../../libs/ui-components/src/base.css'
 import '../../../libs/timebar/src/timebar-settings.css'
 
-function CustomApp({ Component, ...rest }: AppProps) {
-  const { store, props } = wrapper.useWrappedStore(rest)
+function CustomApp({ Component, pageProps }: AppProps) {
+  const store = makeStore()
 
   return (
     <React.StrictMode>
@@ -29,7 +29,7 @@ function CustomApp({ Component, ...rest }: AppProps) {
       </Head>
       <Provider store={store}>
         {/* <ClickToComponent /> */}
-        <Component {...props.pageProps} />
+        <Component {...pageProps} />
       </Provider>
     </React.StrictMode>
   )
