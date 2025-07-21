@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/linting",
-  "version": "3.0.2",
+  "version": "3.1.1",
   "description": "linting config ready to be used in every gfw frontend project",
   "type": "module",
   "keywords": [
@@ -14,6 +14,7 @@
   "main": "index.js",
   "exports": {
     ".": "./index.js",
+    "./lib": "./lib.js",
     "./legacy": "./legacy.js",
     "./prettier": "./prettier.js",
     "./stylelint": "./stylelint.js"
@@ -36,14 +37,14 @@
     "url": "https://github.com/GlobalFishingWatch/frontend/issues"
   },
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
-  "devDependencies": {
+  "dependencies": {
     "@eslint/compat": "1.x",
     "@next/eslint-plugin-next": "15.x",
-    "@nx/eslint-plugin": "20.x",
+    "@nx/eslint-plugin": "21.x",
     "eslint": "9.x",
     "eslint-config-next": "15.x",
     "eslint-config-prettier": "10.x",
-    "eslint-plugin-cypress": "4.x",
+    "eslint-plugin-cypress": "5.x",
     "eslint-plugin-import": "2.x",
     "eslint-plugin-jsx-a11y": "6.x",
     "eslint-plugin-react": "7.x",
