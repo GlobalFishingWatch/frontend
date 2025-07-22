@@ -43,12 +43,11 @@ export async function prepare(
     await fs.writeFile(outputPath, '[\n')
 
     let fileIndex = 0
+    let filteredFileIndex = 0
     let errorCounting = 0
-    const listLength = list.length
+    let listLength = list.length
     for (const file of list) {
       fileIndex++
-      process.stdout.write(`\r[${type}] ${renderBar(fileIndex, listLength)}`)
-
       const areaFile = await fs.readFile(`${sourcePath}/${file.id}.json`, 'utf8')
       if (!areaFile) {
         console.error(`❌ Area file not found ${sourcePath}/${file.id}.json`)
@@ -56,7 +55,12 @@ export async function prepare(
       }
       const areaData = JSON.parse(areaFile) as Feature
       if (filter && !filter(areaData)) {
+        listLength--
+        process.stdout.write(`\r[${type}] ${renderBar(filteredFileIndex, listLength)}`)
         continue
+      } else {
+        filteredFileIndex++
+        process.stdout.write(`\r[${type}] ${renderBar(filteredFileIndex, listLength)}`)
       }
       const simplifiedArea = simplifyArea(areaData, propertiesMapping.area)
       if (simplifiedArea) {
@@ -74,8 +78,12 @@ export async function prepare(
           ...simplifiedArea,
           properties: { type, area, name },
         }
-        const jsonLine = JSON.stringify(finalArea) + (fileIndex === listLength ? '\n' : ',\n')
-        await fs.appendFile(outputPath, jsonLine)
+        const jsonLine = JSON.stringify(finalArea)
+        if (fileIndex === 1) {
+          await fs.appendFile(outputPath, jsonLine)
+        } else {
+          await fs.appendFile(outputPath, ',\n' + jsonLine)
+        }
 
         // Force garbage collection every 50 areas to prevent memory buildup
         if (fileIndex % 50 === 0 && global.gc) {
@@ -91,7 +99,8 @@ export async function prepare(
         `\r[${type}] ❌ Error simplifying ${errorCounting} ${errorCounting === 1 ? 'area' : 'areas'}`
       )
     }
-    await fs.appendFile(outputPath, ']\n')
+
+    await fs.appendFile(outputPath, '\n]\n')
 
     // Final garbage collection to clean up any remaining memory
     if (global.gc) {

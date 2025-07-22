@@ -7,6 +7,12 @@ prepare({
   skipDownload: true,
   propertiesMapping: {
     area: 'MRGID_EEZ',
-    name: 'GEONAME',
+    name: 'TERRITORY1',
+  },
+  filter: (feature) => {
+    return (
+      !feature.properties?.GEONAME.includes('Overlapping claim') &&
+      !feature.properties?.GEONAME.includes('Joint regime')
+    )
   },
 })
