@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import type { GetItemPropsOptions } from 'downshift'
 
 import SearchBasicResult from 'features/search/basic/SearchBasicResult'
+import { getSearchVesselId } from 'features/search/search.utils'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 
 type SearchBasicResultListProps = {
@@ -24,7 +25,7 @@ function SearchBasicResultList({
       {searchResults?.map((vessel, index: number) => {
         return (
           <SearchBasicResult
-            key={index}
+            key={getSearchVesselId(vessel)}
             vessel={vessel}
             index={index}
             highlightedIndex={highlightedIndex}
