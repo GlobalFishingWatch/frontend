@@ -2,7 +2,7 @@ import type { Feature, FeatureCollection, Geometry, MultiPolygon, Polygon } from
 
 import type { OceanAreaProperties } from '../ocean-areas'
 
-import rfmosData from './source/rfmos.json'
+import rfmosData from './rfmos.json'
 
 const rfmos: FeatureCollection<Geometry, OceanAreaProperties> = {
   type: 'FeatureCollection',

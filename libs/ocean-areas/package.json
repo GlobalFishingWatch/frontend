@@ -5,8 +5,10 @@
   "module": "./index.js",
   "scripts": {
     "mpas": "ts-node -P tsconfig.json src/scripts/mpas.ts",
+    "fao": "ts-node -P tsconfig.json src/scripts/fao.ts",
     "eezs": "ts-node -P tsconfig.json src/scripts/eezs.ts",
-    "locales": "ts-node -P tsconfig.json src/scripts/names.ts",
+    "rfmos": "ts-node -P tsconfig.json src/scripts/rfmos.ts",
+    "locales": "ts-node -P tsconfig.json src/scripts/locales.ts",
     "prepare": "yarn mpas && yarn eezs && yarn locales"
   },
   "files": [
@@ -19,6 +21,8 @@
     "@turf/explode": "7.x",
     "@turf/helpers": "7.x",
     "@turf/nearest-point": "7.x",
+    "@turf/simplify": "7.x",
+    "@turf/truncate": "7.x",
     "geojson": "0.x",
     "lodash": "4.x",
     "match-sorter": "6.x"
@@ -26,6 +30,7 @@
   "devDependencies": {
     "@types/lodash": "4.x",
     "@types/node": "20.x",
+    "dotenv": "^17.2.0",
     "ts-node": "10.x",
     "typescript": "5.x"
   }
