@@ -2,10 +2,11 @@ import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 
 import type { OceanAreaProperties } from '../ocean-areas'
 
-import mpas from './source/mpas.json'
+import mpasData from './mpas.json'
 
-const mpasAreas: FeatureCollection<any, OceanAreaProperties> = {
+const mpas: FeatureCollection<any, OceanAreaProperties> = {
   type: 'FeatureCollection',
-  features: mpas as Feature<Polygon | MultiPolygon, OceanAreaProperties>[],
+  features: mpasData as Feature<Polygon | MultiPolygon, OceanAreaProperties>[],
 }
-export default mpasAreas
+
+export default mpas

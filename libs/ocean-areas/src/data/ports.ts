@@ -2,7 +2,7 @@ import type { Feature, FeatureCollection, Geometry, Point } from 'geojson'
 
 import type { OceanAreaProperties } from '../ocean-areas'
 
-import portsData from './source/ports.json'
+import portsData from './ports.json'
 
 const ports: FeatureCollection<Geometry, OceanAreaProperties> = {
   type: 'FeatureCollection',
