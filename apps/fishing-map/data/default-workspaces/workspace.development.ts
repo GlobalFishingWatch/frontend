@@ -159,13 +159,6 @@ const workspace: Workspace<WorkspaceState> = {
     },
     ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,
     {
-      id: 'context-layer-high-seas',
-      config: {
-        visible: false,
-      },
-      dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
-    },
-    {
       id: OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID,
       config: {
         visible: false,
