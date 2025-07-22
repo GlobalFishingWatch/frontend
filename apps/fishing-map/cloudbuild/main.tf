@@ -44,7 +44,7 @@ module "develop" {
   ]
   set_env_vars = [
     "BASIC_AUTH=Restricted",
-    "BASIC_AUTH_USER=gfw",
+    "BASIC_AUTH_USER=gfw-fish",
   ]
   set_secrets = [
     "BASIC_AUTH_PASS=${local.secrets_path.dev}/BASIC_AUTH_PASS_FISHING_MAP",
@@ -91,7 +91,7 @@ module "staging" {
   ]
   set_env_vars = [
     "BASIC_AUTH=Restricted",
-    "BASIC_AUTH_USER=gfw",
+    "BASIC_AUTH_USER=gfw-fish",
   ]
   set_secrets = [
     "BASIC_AUTH_PASS=${local.secrets_path.sta}/BASIC_AUTH_PASS_FISHING_MAP",
