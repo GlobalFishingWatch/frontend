@@ -2,7 +2,7 @@ import type { Feature, FeatureCollection, Geometry, MultiPolygon, Polygon } from
 
 import type { OceanAreaProperties } from '../ocean-areas'
 
-import faoData from './source/fao.json'
+import faoData from './fao.json'
 
 const fao: FeatureCollection<Geometry, OceanAreaProperties> = {
   type: 'FeatureCollection',

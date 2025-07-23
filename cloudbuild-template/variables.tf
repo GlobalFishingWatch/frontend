@@ -46,7 +46,6 @@ variable "set_secrets" {
   type        = list(string)
   default     = []
 }
-
 variable "labels" {
   description = "The labels to set"
   type        = map(string)
@@ -60,3 +59,4 @@ variable "push_config" {
     invert_regex = optional(bool, false)
   })
 }
+
