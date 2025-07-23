@@ -3,7 +3,7 @@ import { WORKSPACE_PASSWORD_ACCESS, WORKSPACE_PRIVATE_ACCESS } from '@globalfish
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { FillColorBarOptions, LineColorBarOptions } from '@globalfishingwatch/ui-components'
 
-import { PUBLIC_SUFIX } from 'data/config'
+import { PRIVATE_ICON, PRIVATE_PASSWORD_ICON, PUBLIC_SUFIX } from 'data/config'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import type { WorkspaceState } from 'types'
 
@@ -29,7 +29,7 @@ export const getWorkspaceLabel = (workspace: AppWorkspace | Workspace<WorkspaceS
   const isPrivate = !workspace.id.endsWith(`-${PUBLIC_SUFIX}`)
   const isPasswordProtected = workspace.viewAccess === WORKSPACE_PASSWORD_ACCESS
   if (isPrivate || isPasswordProtected) {
-    return `${isPasswordProtected ? '🔐' : '🔒'} ${workspace.name}`
+    return `${isPasswordProtected ? PRIVATE_PASSWORD_ICON : PRIVATE_ICON} ${workspace.name}`
   }
   return workspace.name
 }

@@ -5,6 +5,7 @@ import {
   EEZ_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_INSTANCE_ID,
   FAO_AREAS_DATAVIEW_SLUG,
+  HIGH_SEAS_DATAVIEW_SLUG,
   MPA_DATAVIEW_INSTANCE_ID,
   MPA_DATAVIEW_SLUG,
   PROTECTEDSEAS_DATAVIEW_INSTANCE_ID,
@@ -43,6 +44,13 @@ export const BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES: DataviewInstance[] = [
       visible: false,
     },
     dataviewId: MPA_DATAVIEW_SLUG,
+  },
+  {
+    id: 'context-layer-high-seas',
+    config: {
+      visible: false,
+    },
+    dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
   },
 ]
 

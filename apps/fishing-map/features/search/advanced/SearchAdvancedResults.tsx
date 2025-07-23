@@ -9,8 +9,9 @@ import type { Dataset } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 
-import { FIRST_YEAR_OF_DATA } from 'data/config'
+import { FIRST_YEAR_OF_DATA, PRIVATE_ICON } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
 import I18nNumber from 'features/i18n/i18nNumber'
@@ -26,6 +27,7 @@ import {
   selectSelectedVessels,
   setSelectedVessels,
 } from 'features/search/search.slice'
+import { getSearchVesselId } from 'features/search/search.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import {
@@ -279,12 +281,12 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             selfReportedIdentities.flatMap(({ sourceCode }) => sourceCode || [])
           )
           if (registryIdentities.length && selfReportedIdentities.length)
-            return `${t('vessel.infoSources.both')} (${selfReportedIdentitiesSources.join(', ')})`
+            return `${t('vessel.infoSources.both')} (${isPrivateDataset(vessel.dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
           if (registryIdentities.length) return t('vessel.infoSources.registry')
           if (selfReportedIdentities.length)
             return `${t(
               'vessel.infoSources.selfReported'
-            )} (${selfReportedIdentitiesSources.join(', ')})`
+            )} (${isPrivateDataset(vessel.dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
 
           return EMPTY_FIELD_PLACEHOLDER
         },
@@ -330,21 +332,21 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
 
   const onSelectHandler = useCallback(
     (vessels: IdentityVesselData[]) => {
-      const vessesSelected = vessels.map(getSearchIdentityResolved).flatMap((v) => v.id || [])
+      const vessesSelected = vessels.map(getSearchVesselId)
       dispatch(setSelectedVessels(vessesSelected))
     },
     [dispatch]
   )
 
   const vesselSelectedIds = useMemo(
-    () => vesselsSelected.map((vessel) => vessel.id),
+    () => vesselsSelected.map((vessel) => getSearchVesselId(vessel)),
     [vesselsSelected]
   )
 
   const rowSelection = useMemo(() => {
     return Object.fromEntries(
       (searchResults || []).map((vessel, index) => {
-        return [`${index}-${vessel.id}`, vesselSelectedIds.includes(vessel.id)]
+        return [`${index}-${vessel.id}`, vesselSelectedIds.includes(getSearchVesselId(vessel))]
       })
     )
   }, [searchResults, vesselSelectedIds])

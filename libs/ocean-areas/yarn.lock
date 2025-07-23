@@ -33,8 +33,11 @@ __metadata:
     "@turf/explode": "npm:7.x"
     "@turf/helpers": "npm:7.x"
     "@turf/nearest-point": "npm:7.x"
+    "@turf/simplify": "npm:7.x"
+    "@turf/truncate": "npm:7.x"
     "@types/lodash": "npm:4.x"
     "@types/node": "npm:20.x"
+    dotenv: "npm:^17.2.0"
     geojson: "npm:0.x"
     lodash: "npm:4.x"
     match-sorter: "npm:6.x"
@@ -120,6 +123,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@turf/clean-coords@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "@turf/clean-coords@npm:7.2.0"
+  dependencies:
+    "@turf/helpers": "npm:^7.2.0"
+    "@turf/invariant": "npm:^7.2.0"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.8.1"
+  checksum: 10/d029f790f33b1485b01737dc29863361b6f64676cecafa9d594d3fba0b9aaa72bc8969abf7a7d79d0bb5db9ad63a9e6a75f6fd93aadef413e76cc0ea19ded974
+  languageName: node
+  linkType: hard
+
 "@turf/clone@npm:^7.2.0":
   version: 7.2.0
   resolution: "@turf/clone@npm:7.2.0"
@@ -200,6 +215,32 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@turf/simplify@npm:7.x":
+  version: 7.2.0
+  resolution: "@turf/simplify@npm:7.2.0"
+  dependencies:
+    "@turf/clean-coords": "npm:^7.2.0"
+    "@turf/clone": "npm:^7.2.0"
+    "@turf/helpers": "npm:^7.2.0"
+    "@turf/meta": "npm:^7.2.0"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.8.1"
+  checksum: 10/b83a14de5f671d2dacd68bb21628a31257a6304ef731fab8e722267b924b9cfd7300f525b7294200a6bfb9276f7e7f1d7984e16a6792617fccf0453e698cb701
+  languageName: node
+  linkType: hard
+
+"@turf/truncate@npm:7.x":
+  version: 7.2.0
+  resolution: "@turf/truncate@npm:7.2.0"
+  dependencies:
+    "@turf/helpers": "npm:^7.2.0"
+    "@turf/meta": "npm:^7.2.0"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.8.1"
+  checksum: 10/fc103a8f4588fce03a42761e06a4e9e3f1277bb7aacb21f7d2f398c2b80300726b4239a16dbdf4327f7e81802aa3e0d6cd0523de123da5091f7a015df28bb9fe
+  languageName: node
+  linkType: hard
+
 "@types/geojson@npm:^7946.0.10":
   version: 7946.0.16
   resolution: "@types/geojson@npm:7946.0.16"
@@ -257,6 +298,13 @@ __metadata:
   version: 4.0.2
   resolution: "diff@npm:4.0.2"
   checksum: 10/ec09ec2101934ca5966355a229d77afcad5911c92e2a77413efda5455636c4cf2ce84057e2d7715227a2eeeda04255b849bd3ae3a4dd22eb22e86e76456df069
+  languageName: node
+  linkType: hard
+
+"dotenv@npm:^17.2.0":
+  version: 17.2.0
+  resolution: "dotenv@npm:17.2.0"
+  checksum: 10/73d57d7ed8ae46e45c0b1dea382de3f180e71d20a3a4e10a13a3d5271a08639166e6647bb6dc0fa160ea440a55e85ff9be233150d9037d268c823cb72859d87f
   languageName: node
   linkType: hard
 

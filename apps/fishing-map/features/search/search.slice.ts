@@ -22,6 +22,7 @@ import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType, isFieldInFieldsAllowed } from 'features/datasets/datasets.utils'
 import { ADVANCED_SEARCH_FIELDS } from 'features/search/advanced/advanced-search.utils'
 import type { VesselSearchState } from 'features/search/search.types'
+import { getSearchVesselId } from 'features/search/search.utils'
 import type { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
 import { getVesselId, getVesselIdentities } from 'features/vessel/vessel.utils'
 import type { AsyncError } from 'utils/async-slice'
@@ -245,7 +246,8 @@ const searchSlice = createSlice({
       state.status = AsyncReducerStatus.Finished
       const payload = action.payload as any
       if (payload) {
-        state.data = payload.data
+        const uniqData = uniqBy(payload.data, (d: IdentityVesselData) => getSearchVesselId(d))
+        state.data = uniqData
         state.suggestion = payload.suggestion
         state.pagination = payload.pagination
       }
@@ -278,7 +280,7 @@ export const selectSearchSelectedVesselsIds = (state: SearchSliceState) =>
 export const selectSelectedVessels = createSelector(
   [selectSearchResults, selectSearchSelectedVesselsIds],
   (searchResults, vesselsSelectedIds) => {
-    return searchResults.filter((vessel) => vesselsSelectedIds.includes(vessel.id))
+    return searchResults.filter((vessel) => vesselsSelectedIds.includes(getSearchVesselId(vessel)))
   }
 )
 

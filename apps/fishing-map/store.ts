@@ -1,7 +1,6 @@
 import type { Action, AnyAction, Middleware, ThunkAction, ThunkDispatch } from '@reduxjs/toolkit'
 import { configureStore } from '@reduxjs/toolkit'
 import { logoutUserMiddleware } from 'middlewares'
-import { createWrapper } from 'next-redux-wrapper'
 import { queriesApiMiddlewares, queriesApiReducers } from 'queries'
 
 import connectedRoutes from 'routes/routes'
@@ -29,7 +28,7 @@ const defaultMiddlewareOptions: any = {
   },
 }
 
-const makeStore = () => {
+export const makeStore = () => {
   return configureStore({
     devTools: {
       stateSanitizer: (state: any) => {
@@ -81,14 +80,3 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 //   return store
 // }
 export type RootState = ReturnType<typeof rootReducer>
-
-export const wrapper = createWrapper<AppStore>(makeStore, {
-  debug: false,
-  serializeState: (state) => {
-    return {
-      vessel: state.vessel,
-      location: { payload: state.location.payload },
-    }
-  },
-  // deserializeState: (state) => JSON.parse(state),
-})
