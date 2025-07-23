@@ -24,6 +24,12 @@ variable "app_name" {
   type        = string
 }
 
+variable "app_suffix" {
+  description = "The suffix to add to the UI name"
+  type        = string
+  default     = ""
+}
+
 variable "short_environment" {
   description = "The short name of the environment (dev, sta, pro)"
   type        = string
@@ -57,6 +63,13 @@ variable "push_config" {
     branch       = optional(string)
     tag          = optional(string)
     invert_regex = optional(bool, false)
+    trigger      = optional(string, "manual")
   })
+  default = {}
+
+  validation {
+    condition     = var.push_config.trigger == null || contains(["manual", "tag", "branch"], var.push_config.trigger)
+    error_message = "The trigger value must be one of: manual, tag, or branch."
+  }
 }
 
