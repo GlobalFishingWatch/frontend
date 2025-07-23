@@ -53,7 +53,7 @@ module "staging" {
     invert_regex = false
   }
   set_env_vars_build = [
-    "API_GATEWAY=https://gateway.api.staging-v2.globalfishingwatch.org",
+    "API_GATEWAY=https://gateway.api.staging.globalfishingwatch.org",
   ]
   set_env_vars = [
     "BASIC_AUTH=off",

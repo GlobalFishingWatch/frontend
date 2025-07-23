@@ -2,7 +2,7 @@ locals {
   repository       = "frontend"
   location         = "us-central1"
   project          = "gfw-int-infrastructure"
-  ui_name          = "ui-${var.app_name}${var.app_suffix}"
+  ui_name          = "ui-${var.app_name}"
   cloudrun_name    = "${var.short_environment != "pro" ? "${var.short_environment}-" : ""}${local.ui_name}"
   cache_repository = "frontend-dependencies-cache"
   cache_env = [
@@ -13,7 +13,7 @@ locals {
 }
 
 resource "google_cloudbuild_trigger" "trigger" {
-  name        = "${local.ui_name}-${var.short_environment}"
+  name        = "${local.ui_name}-${var.short_environment}${var.app_suffix}"
   location    = local.location
   description = var.description
 
