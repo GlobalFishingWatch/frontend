@@ -3,7 +3,7 @@ import type LibraryResources from '@globalfishingwatch/i18n-labels/resources'
 import 'i18next'
 
 import type { DEFAULT_NAMESPACE, FALLBACK_LNG } from './i18n'
-import type AppResources from './resources'
+import type AppResources from './i18n.types'
 
 type Resources = AppResources & LibraryResources
 
