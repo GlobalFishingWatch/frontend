@@ -89,8 +89,7 @@ module "carrier-portal" {
     "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366"
   ]
   set_env_vars = [
-    "BASIC_AUTH=Restricted",
-    "BASIC_AUTH_USER=gfw-fish",
+    "BASIC_AUTH=off"
   ]
   set_secrets = [
     "BASIC_AUTH_PASS=${local.secrets_path.dev}/BASIC_AUTH_PASS_FISHING_MAP",

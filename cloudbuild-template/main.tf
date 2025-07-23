@@ -3,7 +3,7 @@ locals {
   location         = "us-central1"
   project          = "gfw-int-infrastructure"
   ui_name          = "ui-${var.app_name}"
-  cloudrun_name    = "${var.short_environment != "pro" ? "${var.short_environment}-" : ""}${local.ui_name}"
+  cloudrun_name    = "${var.short_environment != "pro" ? "${var.short_environment}-" : ""}${local.ui_name}${var.app_suffix}"
   cache_repository = "frontend-dependencies-cache"
   cache_env = [
     "PROJECT=${local.project}",
