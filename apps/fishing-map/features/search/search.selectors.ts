@@ -3,6 +3,7 @@ import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 
 import type { Dataset, UserData } from '@globalfishingwatch/api-types'
 
+import { PRIVATE_SUFIX, PUBLIC_SUFIX } from 'data/config'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
@@ -14,7 +15,7 @@ import { selectAllDataviewsInWorkspace } from 'features/dataviews/selectors/data
 import { isDatasetSearchFieldNeededSupported } from 'features/search/advanced/advanced-search.utils'
 import type { SearchType } from 'features/search/search.config'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
-import { selectIsGuestUser,selectUserData } from 'features/user/selectors/user.selectors'
+import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 
 const EMPTY_ARRAY: [] = []
@@ -37,7 +38,19 @@ const selectSearchDatasetsInWorkspace = createSelector(
       if (!datasetsIds.includes(id)) return EMPTY_ARRAY
       return [id, ...(relatedDatasets || []).map((d) => d.id)]
     })
-    return vesselsDatasets.filter((dataset) => datasets.includes(dataset.id))
+    const filteredDatasets = vesselsDatasets.filter((dataset) => datasets.includes(dataset.id))
+
+    // Remove public-... datasets if a corresponding private-... dataset exists
+    const privateDatasetsIds = filteredDatasets.flatMap((d) =>
+      d.id.startsWith(PRIVATE_SUFIX) ? [d.id] : []
+    )
+    const filteredDatasetsPrioritised = filteredDatasets.filter((d) => {
+      if (d.id.startsWith(PUBLIC_SUFIX)) {
+        return !privateDatasetsIds.includes(d.id.replace(PUBLIC_SUFIX, PRIVATE_SUFIX))
+      }
+      return true
+    })
+    return filteredDatasetsPrioritised
   }
 )
 
