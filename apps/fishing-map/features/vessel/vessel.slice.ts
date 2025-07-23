@@ -1,6 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { HYDRATE } from 'next-redux-wrapper'
 import type { RootState } from 'reducers'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
@@ -264,12 +263,6 @@ const vesselSlice = createSlice({
           state.data[vesselId].status = AsyncReducerStatus.Error
           state.data[vesselId].error = action.payload as ParsedAPIError
         }
-      }
-    })
-    builder.addCase(HYDRATE, (state, action: any) => {
-      return {
-        ...state,
-        ...action.payload.vessel,
       }
     })
   },

@@ -15,8 +15,8 @@ let oceanAreasLocales = {} as Record<OceanAreaLocale, Record<string, string>>
 
 const importOceanAreasData = async () => {
   if (!oceanAreas.features.length) {
-    oceanAreas = (await import('./data/geometries')).default
-    oceanAreasLocales = (await import('./data/locales')).default
+    oceanAreas = (await import('./data')).default
+    oceanAreasLocales = (await import('./locales')).default
   }
 }
 

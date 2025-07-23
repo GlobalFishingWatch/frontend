@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 
 export const getHighlightedText = (
   text: string,
-  highlight: string,
+  highlight: string = '',
   styles: {
     readonly [key: string]: string
   }

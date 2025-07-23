@@ -1,11 +1,11 @@
 import { Fragment, useCallback } from 'react'
-import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import Link from 'redux-first-router-link'
 
 import type { WorkspacesPickingObject } from '@globalfishingwatch/deck-layers'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { PRIVATE_ICON, PRIVATE_PASSWORD_ICON } from 'data/config'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
@@ -42,8 +42,8 @@ function WorkspacePointsTooltipSection({
   }: Partial<WorkspacesPickingObject['properties']>) => {
     return (
       <span className={styles.workspaceLabel}>
-        {viewAccess === 'private' && '🔒 '}
-        {viewAccess === 'password' && '🔐 '}
+        {viewAccess === 'private' && `${PRIVATE_ICON} `}
+        {viewAccess === 'password' && `${PRIVATE_PASSWORD_ICON} `}
         {label}
       </span>
     )
