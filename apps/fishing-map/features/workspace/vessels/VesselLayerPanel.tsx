@@ -22,6 +22,7 @@ import type { VesselLayer } from '@globalfishingwatch/deck-layers'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { PRIVATE_ICON } from 'data/config'
 import {
   getSchemaFiltersInDataview,
   isGFWOnlyDataset,
@@ -214,7 +215,7 @@ function VesselLayerPanel({
       .some((d) => isPrivateDataset({ id: d.datasetId }))
     return (
       <Fragment>
-        {isPrivateVessel && '🔒'}
+        {isPrivateVessel && PRIVATE_ICON}
         {vesselLabel}
         {otherVesselsLabel && <span className={styles.secondary}>{otherVesselsLabel}</span>}
       </Fragment>

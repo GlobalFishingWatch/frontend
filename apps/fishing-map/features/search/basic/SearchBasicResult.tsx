@@ -17,7 +17,9 @@ import {
   YearlyTransmissionsTimeline,
 } from '@globalfishingwatch/ui-components'
 
+import { PRIVATE_ICON } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import I18nDate from 'features/i18n/i18nDate'
@@ -27,6 +29,7 @@ import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-b
 import TrackFootprint from 'features/search/basic/TrackFootprint'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
+import { getSearchVesselId } from 'features/search/search.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
@@ -110,13 +113,14 @@ function SearchBasicResult({
     const selfReportedIdentitiesSources = uniq(
       selfReportedIdentities.flatMap(({ sourceCode }) => sourceCode || [])
     )
+
     if (registryIdentities.length && selfReportedIdentities.length)
       return `${t('vessel.infoSources.both')} (${selfReportedIdentitiesSources.join(', ')})`
     if (registryIdentities.length) return t('vessel.infoSources.registry')
     if (selfReportedIdentities.length)
-      return `${t('vessel.infoSources.selfReported')} (${selfReportedIdentitiesSources.join(', ')})`
+      return `${t('vessel.infoSources.selfReported')} (${isPrivateDataset(dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
     return EMPTY_FIELD_PLACEHOLDER
-  }, [t, vessel.identities])
+  }, [t, vessel.identities, dataset])
 
   const selfReportedVesselIds = useMemo(() => {
     const identities = getVesselIdentities(vessel, {
@@ -131,7 +135,9 @@ function SearchBasicResult({
   const isInWorkspace = vesselDataviews?.some(
     (vessel) => vessel.id === `${VESSEL_LAYER_PREFIX}${id}`
   )
-  const isSelected = vesselsSelected?.some((vessel) => vessel?.id === id)
+  const isSelected = vesselsSelected?.some(
+    (v) => getSearchVesselId(v) === getSearchVesselId(vessel)
+  )
   let tooltip: string = t('search.selectVessel')
   if (isInWorkspace) {
     tooltip = t('search.vesselAlreadyInWorkspace')

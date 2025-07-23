@@ -20,6 +20,7 @@ import {
   setSelectedVessels,
   setSuggestionClicked,
 } from 'features/search/search.slice'
+import { getSearchVesselId } from 'features/search/search.utils'
 import {
   SearchEmptyState,
   SearchNoResultsState,
@@ -94,7 +95,7 @@ function SearchBasic({
     <Downshift
       onSelect={(selectedItem: IdentityVesselData | null) => {
         if (selectedItem) {
-          dispatch(setSelectedVessels([selectedItem?.id]))
+          dispatch(setSelectedVessels([getSearchVesselId(selectedItem)]))
         }
       }}
       itemToString={(item) => (item ? getVesselProperty(item, 'shipname') : '')}
