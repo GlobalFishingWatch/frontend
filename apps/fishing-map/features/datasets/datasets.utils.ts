@@ -39,7 +39,7 @@ import {
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 
-import { DEFAULT_TIME_RANGE, FULL_SUFIX, PUBLIC_SUFIX } from 'data/config'
+import { DEFAULT_TIME_RANGE, FULL_SUFIX, PRIVATE_ICON, PUBLIC_SUFIX } from 'data/config'
 import i18n, { t } from 'features/i18n/i18n'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { getFlags, getFlagsByIds } from 'utils/flags'
@@ -160,7 +160,7 @@ export const getDatasetLabel = (dataset = {} as GetDatasetLabelParams): string =
   if (!id) return name || ''
   const label = getDatasetNameTranslated(dataset)
   if (isGFWOnlyDataset(dataset)) return `${label}${GFW_ONLY_SUFFIX}`
-  if (isPrivateDataset(dataset)) return `🔒 ${label}`
+  if (isPrivateDataset(dataset)) return `${PRIVATE_ICON} ${label}`
   return label
 }
 

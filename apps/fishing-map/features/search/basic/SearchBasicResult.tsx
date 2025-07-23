@@ -17,8 +17,9 @@ import {
   YearlyTransmissionsTimeline,
 } from '@globalfishingwatch/ui-components'
 
-import { PRIVATE_SUFIX } from 'data/config'
+import { PRIVATE_ICON } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import I18nDate from 'features/i18n/i18nDate'
@@ -117,7 +118,7 @@ function SearchBasicResult({
       return `${t('vessel.infoSources.both')} (${selfReportedIdentitiesSources.join(', ')})`
     if (registryIdentities.length) return t('vessel.infoSources.registry')
     if (selfReportedIdentities.length)
-      return `${t('vessel.infoSources.selfReported')} (${dataset.id.startsWith(PRIVATE_SUFIX) ? '🔒 ' : ''}${selfReportedIdentitiesSources.join(', ')})`
+      return `${t('vessel.infoSources.selfReported')} (${isPrivateDataset(dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
     return EMPTY_FIELD_PLACEHOLDER
   }, [t, vessel.identities, dataset])
 

@@ -9,8 +9,9 @@ import type { Dataset } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
 
-import { FIRST_YEAR_OF_DATA, PRIVATE_SUFIX } from 'data/config'
+import { FIRST_YEAR_OF_DATA, PRIVATE_ICON } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
 import I18nNumber from 'features/i18n/i18nNumber'
@@ -280,12 +281,12 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             selfReportedIdentities.flatMap(({ sourceCode }) => sourceCode || [])
           )
           if (registryIdentities.length && selfReportedIdentities.length)
-            return `${t('vessel.infoSources.both')} (${vessel.dataset.id.startsWith(PRIVATE_SUFIX) ? '🔒 ' : ''}${selfReportedIdentitiesSources.join(', ')})`
+            return `${t('vessel.infoSources.both')} (${isPrivateDataset(vessel.dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
           if (registryIdentities.length) return t('vessel.infoSources.registry')
           if (selfReportedIdentities.length)
             return `${t(
               'vessel.infoSources.selfReported'
-            )} (${vessel.dataset.id.startsWith(PRIVATE_SUFIX) ? '🔒 ' : ''}${selfReportedIdentitiesSources.join(', ')})`
+            )} (${isPrivateDataset(vessel.dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
 
           return EMPTY_FIELD_PLACEHOLDER
         },
