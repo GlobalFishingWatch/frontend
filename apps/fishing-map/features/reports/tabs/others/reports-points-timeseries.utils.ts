@@ -1,27 +1,34 @@
-import type { FourwingsDeckSublayer } from '@globalfishingwatch/deck-layers'
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import type { Feature, Point } from 'geojson'
+
+import { getUTCDate } from '@globalfishingwatch/data-transforms'
+import type { FourwingsDeckSublayer, UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
+import { type FourwingsInterval, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
+import { frameTimeseriesToDateTimeseries } from 'features/reports/reports-timeseries.utils'
+import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
+import { getGraphDataFromPoints } from 'features/timebar/timebar.utils'
 
-export type FourwingsFeaturesToTimeseriesParams = {
+export type PointsFeaturesToTimeseriesParams = {
   start: number
   end: number
   interval: FourwingsInterval
-  minVisibleValue?: number
-  maxVisibleValue?: number
+  startTimeProperty: string
+  endTimeProperty?: string
   sublayers: FourwingsDeckSublayer[]
 }
-export const pointFeaturesToTimeseries = (
+
+export const pointsFeaturesToTimeseries = (
   filteredFeatures: FilteredPolygons[],
   {
     start,
     end,
     interval,
-    minVisibleValue,
-    maxVisibleValue,
+    startTimeProperty,
+    endTimeProperty,
     sublayers,
-  }: FourwingsFeaturesToTimeseriesParams
+  }: PointsFeaturesToTimeseriesParams
 ): ReportGraphProps[] => {
   return filteredFeatures.map(({ contained }, sourceIndex) => {
     const featureToTimeseries: ReportGraphProps = {
@@ -35,6 +42,55 @@ export const pointFeaturesToTimeseries = (
       })),
       timeseries: [],
     }
+
+    const valuesContainedRaw = getGraphDataFromPoints(contained as Feature<Point>[], {
+      start,
+      end,
+      interval,
+      sublayersLength: sublayers.length,
+      startTimeProperty,
+      endTimeProperty,
+    })
+    const valuesContained = frameTimeseriesToDateTimeseries(valuesContainedRaw as any)
+
+    featureToTimeseries.timeseries = valuesContained.map(({ values, date }) => {
+      return {
+        date,
+        min: values,
+        max: values,
+      } as ComparisonGraphData
+    })
     return featureToTimeseries
   })
+}
+
+export type GetPointsTimeseriesParams = {
+  features: FilteredPolygons[]
+  instance: UserPointsTileLayer
+}
+
+export const getPointsTimeseries = ({ features, instance }: GetPointsTimeseriesParams) => {
+  const { id, startTime, endTime, startTimeProperty, endTimeProperty, color } = instance.props || {}
+  if (!startTime || !endTime || !startTimeProperty) {
+    // need to add empty timeseries because they are then used by their index
+    return {
+      timeseries: [],
+      interval: 'MONTH',
+      sublayers: [],
+    } as ReportGraphProps
+  }
+
+  const interval = getFourwingsInterval(
+    getUTCDate(startTime).toISOString(),
+    getUTCDate(endTime).toISOString()
+  )
+  const params: PointsFeaturesToTimeseriesParams = {
+    interval: interval,
+    start: startTime,
+    end: endTime,
+    startTimeProperty,
+    endTimeProperty,
+    sublayers: [{ id, color, unit: '' } as FourwingsDeckSublayer],
+  }
+  return pointsFeaturesToTimeseries(features, params)[0]
 }

@@ -2,7 +2,7 @@ import type { DateTimeUnit, DurationUnit } from 'luxon'
 import { DateTime, Duration } from 'luxon'
 import { max, mean, min } from 'simple-statistics'
 
-import { getUTCDate, getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type {
   FourwingsAggregationOperation,
   FourwingsDeckSublayer,
@@ -20,38 +20,13 @@ import type {
   FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
 
-import type { DateTimeSeries } from 'features/reports/report-area/area-reports.hooks'
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
+import type { TimeSeries } from 'features/reports/reports-timeseries.utils'
+import { frameTimeseriesToDateTimeseries } from 'features/reports/reports-timeseries.utils'
 import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
 import type { TimeRange } from 'features/timebar/timebar.slice'
 import { getGraphDataFromFourwingsHeatmap } from 'features/timebar/timebar.utils'
-
-export interface TimeSeriesFrame {
-  frame: number
-  // key will be "0", "1", etc corresponding to a stringified sublayer index.
-  // This is intended to accomodate the d3 layouts we use. The associated value corresponds to
-  // the sum or avg (depending on aggregationOp used) for all cells at this frame for this sublayer
-  [key: string]: number
-}
-
-export type TimeSeries = {
-  values: TimeSeriesFrame[]
-  minFrame: number
-  maxFrame: number
-}
-
-const frameTimeseriesToDateTimeseries = (frameTimeseries: TimeSeriesFrame[]): DateTimeSeries => {
-  const dateFrameseries = frameTimeseries.map((frameValues) => {
-    const { frame, count, date, ...rest } = frameValues
-    const dateTime = getUTCDate(date)
-    return {
-      values: Object.values(rest) as number[],
-      date: dateTime.toISOString(),
-    }
-  })
-  return dateFrameseries
-}
 
 export type FourwingsFeaturesToTimeseriesParams = {
   start: number
@@ -80,7 +55,7 @@ export const fourwingsFeaturesToTimeseries = (
     compareEnd,
   }: FourwingsFeaturesToTimeseriesParams
 ): ReportGraphProps[] => {
-  return filteredFeatures.map(({ contained, overlapping }, sourceIndex) => {
+  return filteredFeatures.map(({ contained, overlapping }) => {
     const featureToTimeseries: ReportGraphProps = {
       interval,
       sublayers: sublayers.map((sublayer) => ({
@@ -92,12 +67,10 @@ export const fourwingsFeaturesToTimeseries = (
       })),
       timeseries: [],
     }
-    // const sourceMetadata = layersWithFeatures[sourceIndex]?.metadata
     if (staticHeatmap === true) {
       return featureToTimeseries
     }
 
-    // const sourceInterval = sourceMetadata.timeChunks.interval
     const valuesContainedRaw = getGraphDataFromFourwingsHeatmap(contained as FourwingsFeature[], {
       sublayers,
       interval,
@@ -162,15 +135,13 @@ export type GetFourwingsTimeseriesParams = {
   instance: FourwingsLayer
 }
 export const getFourwingsTimeseries = ({ features, instance }: GetFourwingsTimeseriesParams) => {
-  const timeseries: ReportGraphProps[] = []
   if (instance.props.static || !features || !instance.getChunk) {
     // need to add empty timeseries because they are then used by their index
-    timeseries.push({
+    return {
       timeseries: [],
       interval: 'MONTH',
       sublayers: [],
-    })
-    return
+    } as ReportGraphProps
   }
   const chunk = instance.getChunk?.()
   if (!chunk) return
