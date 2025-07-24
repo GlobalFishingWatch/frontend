@@ -141,7 +141,7 @@ const ActivityByVoyage = () => {
             if (!events) {
               return null
             }
-            const expanded = selectedEventGroup === index + 1
+            const expanded = selectedEventGroup === events[0]?.voyage
 
             return (
               <Fragment>
