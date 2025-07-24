@@ -8,10 +8,11 @@ import type {
 } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
+import type { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { ScatterplotLayer } from '@deck.gl/layers'
 import type { ScalePower } from 'd3-scale'
 import { scaleSqrt } from 'd3-scale'
-import type { GeoJsonProperties } from 'geojson'
+import type { Feature, GeoJsonProperties, Point } from 'geojson'
 
 import {
   COLOR_HIGHLIGHT_LINE,
@@ -24,6 +25,8 @@ import {
   hexToDeckColor,
   LayerGroup,
 } from '../../utils'
+import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
+import { filteredPositionsByViewport } from '../fourwings'
 
 import type { UserLayerFeature, UserPointsLayerProps } from './user.types'
 import { DEFAULT_USER_TILES_MAX_ZOOM } from './user.utils'
@@ -130,6 +133,27 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
       return scale(value)
     }
     return pointRadius
+  }
+
+  getData = (): Feature<Point>[] => {
+    const layer = this.getSubLayers()?.[0] as TileLayer<UserLayerFeature>
+    return (layer?.state.tileset?.tiles || []).flatMap((tile) => {
+      return tile.content
+        ? tile.content.flatMap((feature: any) => {
+            return feature
+              ? (transformTileCoordsToWGS84(
+                  feature,
+                  tile.bbox as GeoBoundingBox,
+                  this.context.viewport
+                ) as Feature<Point>)
+              : []
+          })
+        : []
+    })
+  }
+
+  getViewportData = () => {
+    return filteredPositionsByViewport(this.getData(), this.context.viewport)
   }
 
   renderLayers() {
