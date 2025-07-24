@@ -1,5 +1,5 @@
-import type { FilterByPolygomParams } from './reports-activity-geo.utils'
-import { filterByPolygon } from './reports-activity-geo.utils'
+import type { FilterByPolygomParams } from './reports-geo.utils'
+import { filterByPolygon } from './reports-geo.utils'
 
 addEventListener(
   'message',
