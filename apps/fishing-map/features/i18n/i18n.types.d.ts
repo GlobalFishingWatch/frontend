@@ -488,6 +488,7 @@ interface Resources {
       onScreen: 'on screen'
       optional: 'Optional'
       or: 'or'
+      others: 'common.others'
       partnerSites: 'Partner sites'
       password: 'password'
       permissions: 'permissions required'

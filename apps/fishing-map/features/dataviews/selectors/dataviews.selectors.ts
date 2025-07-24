@@ -30,6 +30,7 @@ import {
   selectActiveEnvironmentalDataviews,
   selectActiveEventsDataviews,
   selectActiveVesselsDataviews,
+  selectOthersActiveReportDataviews,
   selectVGReportActivityDataviews,
   selectVGRFootprintDataview,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -42,6 +43,7 @@ import {
 import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
+import { isSupportedReportDataview } from 'features/reports/report-area/area-reports.utils'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
@@ -115,6 +117,7 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     selectActiveEventsDataviews,
     selectVGReportActivityDataviews,
     selectIsVesselGroupReportLocation,
+    selectOthersActiveReportDataviews,
   ],
   (
     reportCategory,
@@ -124,7 +127,8 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     vGRFootprintDataview,
     eventsDataviews = EMPTY_ARRAY,
     vesselGroupDataviews = EMPTY_ARRAY,
-    isVesselGroupReportLocation
+    isVesselGroupReportLocation,
+    othersActiveReportDataviews
   ) => {
     if (reportCategory === ReportCategory.Activity) {
       return isVesselGroupReportLocation ? vesselGroupDataviews : activityDataviews
@@ -137,6 +141,9 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     }
     if (reportCategory === ReportCategory.VesselGroup) {
       return vGRFootprintDataview ? [vGRFootprintDataview] : EMPTY_ARRAY
+    }
+    if (reportCategory === ReportCategory.Others) {
+      return othersActiveReportDataviews
     }
     return environmentalDataviews
   }
@@ -235,17 +242,12 @@ export const selectActiveTemporalgridDataviews: (
 export const selectReportLayersVisible = createSelector(
   [selectAllDataviewInstancesResolved, selectIsGlobalReportsEnabled],
   (allDataviewInstancesResolved, isGlobalReportsEnabled) => {
-    return allDataviewInstancesResolved?.filter(({ config }) => {
-      const isVisible = config?.visible === true
+    return allDataviewInstancesResolved?.filter((dataview) => {
+      const isVisible = dataview.config?.visible === true
       if (!isVisible) {
         return false
       }
-      return (
-        config?.type === DataviewType.HeatmapAnimated ||
-        config?.type === DataviewType.HeatmapStatic ||
-        config?.type === DataviewType.Currents ||
-        (config?.type === DataviewType.FourwingsTileCluster && isGlobalReportsEnabled)
-      )
+      return isSupportedReportDataview(dataview, isGlobalReportsEnabled)
     })
   }
 )
