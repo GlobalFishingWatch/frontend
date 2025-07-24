@@ -1,11 +1,13 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
 
-import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 
+import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import {
   getReportCategoryFromDataview,
   getReportSubCategoryFromDataview,
+  isSupportedReportDataview,
 } from 'features/reports/report-area/area-reports.utils'
 import type {
   AnyReportSubCategory,
@@ -21,29 +23,11 @@ import {
 
 import { selectDataviewInstancesResolved } from './dataviews.resolvers.selectors'
 
-const SUPPORTED_REPORT_CATEGORIES = [
-  DataviewCategory.Activity,
-  DataviewCategory.Detections,
-  DataviewCategory.Environment,
-  DataviewCategory.VesselGroups,
-  DataviewCategory.Events,
-]
-const SUPPORTED_REPORT_TYPES = [
-  DataviewType.HeatmapAnimated,
-  DataviewType.HeatmapStatic,
-  DataviewType.FourwingsTileCluster,
-  DataviewType.Currents,
-]
 export const selectActiveSupportedReportDataviews = createSelector(
-  [selectDataviewInstancesResolved],
-  (dataviews) => {
-    return dataviews.filter(
-      (d) =>
-        d.config?.visible &&
-        d.category &&
-        d.config?.type &&
-        SUPPORTED_REPORT_CATEGORIES.includes(d.category) &&
-        SUPPORTED_REPORT_TYPES.includes(d.config?.type)
+  [selectDataviewInstancesResolved, selectIsGlobalReportsEnabled],
+  (dataviews, isGlobalReportsEnabled) => {
+    return dataviews.filter((dataview) =>
+      isSupportedReportDataview(dataview, isGlobalReportsEnabled)
     )
   }
 )
