@@ -112,6 +112,46 @@ export function getGraphDataFromFourwingsPositions(
   return Object.values(data)
 }
 
+export function getGraphDataFromPoints(
+  features: Feature<Point>[],
+  {
+    start,
+    end,
+    interval,
+    sublayersLength,
+    startTimeProperty,
+    endTimeProperty,
+  }: Pick<GetGraphDataFromFourwingsFeaturesParams, 'start' | 'end' | 'interval'> & {
+    sublayersLength: number
+    startTimeProperty: string
+    endTimeProperty?: string
+  }
+): ActivityTimeseriesFrame[] {
+  if (!features?.length || !start || !end) {
+    return []
+  }
+  const data = getDatesPopulated({ start, end, interval, sublayersLength, count: false })
+
+  features.forEach((feature) => {
+    const {
+      layer = 0,
+      [startTimeProperty]: startTime,
+      [endTimeProperty || '']: endTime,
+    } = feature?.properties || {}
+    if (startTime) {
+      const date = getDateInIntervalResolution(startTime, interval)
+      if (!data[date]) {
+        data[date] = { date }
+        for (let i = 0; i < sublayersLength; i++) {
+          data[date][i] = 0
+        }
+      }
+      data[date][layer] += 1
+    }
+  })
+  return Object.values(data)
+}
+
 export function getGraphDataFromFourwingsHeatmap(
   features: FourwingsFeature[] | FourwingsValuesAndDatesFeature[] | Feature<Point>[],
   {
