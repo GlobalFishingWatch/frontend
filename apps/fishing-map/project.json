@@ -72,7 +72,7 @@
         "commands": ["rimraf dist/apps/fishing-map", "rimraf .next"]
       }
     },
-    "i18n": {
+    "i18n:parser": {
       "executor": "nx:run-script",
       "options": {
         "script": "i18n:parser"
@@ -82,6 +82,13 @@
       "executor": "nx:run-script",
       "options": {
         "script": "i18n:ts"
+      }
+    },
+    "i18n": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx i18n:parser fishing-map", "nx i18n:ts fishing-map"],
+        "parallel": false
       }
     },
     "i18n:check": {
