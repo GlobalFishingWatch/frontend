@@ -3,24 +3,16 @@ import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 import { atom, useAtom, useAtomValue } from 'jotai'
 import type { DateTimeUnit } from 'luxon'
-import { DateTime } from 'luxon'
 import memoizeOne from 'memoize-one'
-import { max, mean, min } from 'simple-statistics'
 
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
-import type { FourwingsLayer, FourwingsLayerProps } from '@globalfishingwatch/deck-layers'
-import {
-  getIntervalFrames,
-  HEATMAP_STATIC_PROPERTY_ID,
-  sliceCellValues,
-} from '@globalfishingwatch/deck-layers'
+import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import {
   type FourwingsFeature,
   type FourwingsInterval,
-  type FourwingsStaticFeature,
   getFourwingsInterval,
 } from '@globalfishingwatch/deck-loaders'
 
@@ -40,15 +32,14 @@ import { selectReportActivityGraph } from 'features/reports/reports.config.selec
 import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
 import { ReportCategory } from 'features/reports/reports.types'
-import type { FilteredPolygons } from 'features/reports/tabs/activity/reports-activity-geo.utils'
-import { useFilterCellsByPolygonWorker } from 'features/reports/tabs/activity/reports-activity-geo.utils.workers.hooks'
-import type { FeaturesToTimeseriesParams } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
+import type { FilterByPolygonMode, FilteredPolygons } from 'features/reports/reports-geo.utils'
+import { useFilterCellsByPolygonWorker } from 'features/reports/reports-geo.utils.workers.hooks'
 import {
-  featuresToTimeseries,
   filterTimeseriesByTimerange,
-} from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
+  getTimeseries,
+  getTimeseriesStats,
+} from 'features/reports/reports-timeseries.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import type { TimeRange } from 'features/timebar/timebar.slice'
 
 interface EvolutionGraphData {
   date: string
@@ -127,96 +118,6 @@ export const useReportFeaturesLoading = () => {
   return useAtomValue(reportStateAtom)?.isLoading
 }
 
-type GetTimeseriesParams = {
-  featuresFiltered: FilteredPolygons[][]
-  instances: FourwingsLayer[]
-}
-const getTimeseries = ({ featuresFiltered, instances }: GetTimeseriesParams) => {
-  const timeseries: ReportGraphProps[] = []
-  instances.forEach((instance, index) => {
-    const features = featuresFiltered?.[index]
-    if (instance.props.static || !features || !instance.getChunk) {
-      // need to add empty timeseries because they are then used by their index
-      timeseries.push({
-        timeseries: [],
-        interval: 'MONTH',
-        sublayers: [],
-      })
-      return
-    }
-    const chunk = instance.getChunk?.()
-    if (!chunk) return
-    const sublayers = instance.getFourwingsLayers()
-    const props = instance.props as FourwingsLayerProps
-    const params: FeaturesToTimeseriesParams = {
-      staticHeatmap: props.static,
-      interval: chunk.interval,
-      start: props.comparisonMode === 'timeCompare' ? props.startTime : chunk.bufferedStart,
-      end: props.comparisonMode === 'timeCompare' ? props.endTime : chunk.bufferedEnd,
-      compareStart: props.compareStart,
-      compareEnd: props.compareEnd,
-      aggregationOperation: props.aggregationOperation,
-      minVisibleValue: props.minVisibleValue,
-      maxVisibleValue: props.maxVisibleValue,
-      sublayers,
-    }
-    timeseries.push(featuresToTimeseries(features, params)[0])
-  })
-  return timeseries
-}
-
-const getTimeseriesStats = ({
-  featuresFiltered,
-  instances,
-  start,
-  end,
-}: GetTimeseriesParams & TimeRange) => {
-  const timeseriesStats = {} as ReportGraphStats
-  instances.forEach((instance, index) => {
-    const features = featuresFiltered[index]
-    if (features?.[0]?.contained?.length > 0) {
-      if (instance.props.static) {
-        const allValues = (features[0].contained as FourwingsStaticFeature[]).flatMap((f) => {
-          return f.properties?.[HEATMAP_STATIC_PROPERTY_ID] || []
-        })
-        if (allValues.length > 0) {
-          timeseriesStats[instance.id] = {
-            min: min(allValues),
-            max: max(allValues),
-            mean: mean(allValues),
-          }
-        }
-        return
-      }
-      const chunk = instance.getChunk?.()
-      if (!chunk) return
-      const { startFrame, endFrame } = getIntervalFrames({
-        startTime: DateTime.fromISO(start).toUTC().toMillis(),
-        endTime: DateTime.fromISO(end).toUTC().toMillis(),
-        availableIntervals: [chunk.interval],
-        bufferedStart: chunk.bufferedStart,
-      })
-      const allValues = (features[0].contained as FourwingsFeature[]).flatMap((f) => {
-        const values = sliceCellValues({
-          values: f.properties.values[0],
-          startFrame,
-          endFrame,
-          startOffset: f.properties.startOffsets[0],
-        })
-        return values || []
-      })
-      if (allValues.length > 0) {
-        timeseriesStats[instance.id] = {
-          min: min(allValues),
-          max: max(allValues),
-          mean: mean(allValues),
-        }
-      }
-    }
-  })
-  return timeseriesStats
-}
-
 const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   const [reportState, setReportState] = useAtom(reportStateAtom)
   const filterCellsByPolygon = useFilterCellsByPolygonWorker()
@@ -235,7 +136,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 
   const instancesChunkHash = reportLayers
     ?.flatMap(({ instance }) => {
-      if (!instance?.getChunk) return []
+      if (!instance?.getChunk) return instance.id || []
       const { bufferedStart, bufferedEnd, interval } = instance.getChunk()
       return `${instance.id}-${interval}-${bufferedStart}-${bufferedEnd}`
     })
@@ -300,22 +201,28 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
         const featuresFiltered: FilteredPolygons[][] = []
         for (const instance of instances) {
           const features = instance?.getData?.() as FourwingsFeature[]
+
           const error = instance?.getError?.()
           if (error || !features?.length) {
             featuresFiltered.push([{ contained: [], overlapping: [], error }])
           } else {
+            let mode: FilterByPolygonMode = 'cell'
+            if (instance.props.category === 'environment') {
+              mode = 'cellCenter'
+            } else if (instance.props.category === 'user') {
+              mode = 'point'
+            }
             const filteredInstanceFeatures =
               area.id === ENTIRE_WORLD_REPORT_AREA_ID
                 ? ([{ contained: features, overlapping: [] }] as FilteredPolygons[])
                 : await filterCellsByPolygon({
                     layersCells: [features],
                     polygon: area.geometry!,
-                    mode: instance.props.category === 'environment' ? 'point' : 'cell',
+                    mode,
                   })
             featuresFiltered.push(filteredInstanceFeatures)
           }
         }
-
         const timeseries = getTimeseries({
           featuresFiltered,
           instances,
@@ -380,7 +287,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
   return reportState
 }
 
-// Run in ReportActivityGraph.tsx and ReportEnvironmnet.tsx
+// Run once only in ReportActivityGraph.tsx and ReportEnvironmnet.tsx
 export const useComputeReportTimeSeries = () => {
   const reportLayers = useReportInstances()
   useReportTimeseries(reportLayers)
