@@ -22,6 +22,7 @@ export enum ReportCategory {
   Detections = DataviewCategory.Detections,
   Environment = DataviewCategory.Environment,
   Events = DataviewCategory.Events,
+  Others = 'others',
   VesselGroup = 'vessel-groups',
   VesselGroupInsights = 'vessel-groups-insights',
 }

@@ -5,6 +5,10 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import {
+  isContextDataviewReportSupported,
+  isUserContextDataviewReportSupported,
+} from 'features/reports/report-area/area-reports.utils'
 import { isVesselGroupActivityDataview } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 
@@ -94,5 +98,15 @@ export const selectVGReportActivityDataviews = createSelector(
   [selectVGRDataviews],
   (vesselGroupDataviews) => {
     return vesselGroupDataviews?.filter((dataview) => isVesselGroupActivityDataview(dataview.id))
+  }
+)
+
+export const selectOthersActiveReportDataviews = createSelector(
+  [selectCustomUserDataviews],
+  (dataviews) => {
+    return dataviews?.filter(
+      (dataview) =>
+        isUserContextDataviewReportSupported(dataview) || isContextDataviewReportSupported(dataview)
+    )
   }
 )

@@ -1,6 +1,11 @@
 import type { StatsGroupBy } from '@globalfishingwatch/api-types'
 
-import { EEZ_DATAVIEW_SLUG, FAO_AREAS_DATAVIEW_SLUG, RFMO_DATAVIEW_SLUG } from 'data/workspaces'
+import {
+  EEZ_DATAVIEW_SLUG,
+  FAO_AREAS_DATAVIEW_SLUG,
+  FIXED_SAR_INFRASTRUCTURE,
+  RFMO_DATAVIEW_SLUG,
+} from 'data/workspaces'
 import type { BufferOperation, BufferUnit } from 'types'
 
 import { ReportCategory, type ReportState, type ReportVesselOrderProperty } from './reports.types'
@@ -53,6 +58,8 @@ export const REPORT_EVENTS_RFMO_AREAS = [
   'SPRFMO',
   'WCPFC',
 ]
+
+export const CONTEXT_DATAVIEWS_WITH_REPORTS = [FIXED_SAR_INFRASTRUCTURE]
 
 export const DEFAULT_REPORT_STATE: Required<ReportState> = {
   // Category
