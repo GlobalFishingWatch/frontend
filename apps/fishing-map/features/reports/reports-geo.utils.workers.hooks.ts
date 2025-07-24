@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 
-import type { FilterByPolygomParams, FilteredPolygons } from './reports-activity-geo.utils'
+import type { FilterByPolygomParams, FilteredPolygons } from './reports-geo.utils'
 
 type Request = {
   resolve: (result: FilteredPolygons[]) => void
@@ -13,7 +13,7 @@ const requests = new Map<number, Request>()
 
 function getWorker() {
   if (worker === undefined) {
-    worker = new Worker(new URL('./reports-activity-geo.utils.workers.ts', import.meta.url))
+    worker = new Worker(new URL('./reports-geo.utils.workers.ts', import.meta.url))
     worker.onmessage = ({ data }: MessageEvent<{ id: number; result: FilteredPolygons[] }>) => {
       const request = requests.get(data.id)
       if (request) {
