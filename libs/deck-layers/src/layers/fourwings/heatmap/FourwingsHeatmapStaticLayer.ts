@@ -14,7 +14,7 @@ import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { PathLayer } from '@deck.gl/layers'
 import { scaleLinear } from 'd3-scale'
 import { debounce } from 'es-toolkit'
-import type { Feature, Geometry } from 'geojson'
+import type { Feature, Geometry, Polygon } from 'geojson'
 import { stringify } from 'qs'
 
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
@@ -212,8 +212,15 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList {
-    const { tilesUrl, sublayers, resolution, minVisibleValue, maxVisibleValue, maxZoom } =
-      this.props
+    const {
+      tilesUrl,
+      sublayers,
+      resolution,
+      minVisibleValue,
+      maxVisibleValue,
+      maxZoom,
+      highlightedFeatures,
+    } = this.props
     const { colorDomain, colorRanges } = this.state
     const { zoom } = this.context.viewport
     const params = {
@@ -243,15 +250,14 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
       }),
     ]
 
-    const layerHighlightedFeature = this.props.highlightedFeatures?.find(
-      (f) => f.layerId === this.root.id
-    )
+    const layerHighlightedFeature = highlightedFeatures?.find((f) => f.layerId === this.root.id)
 
     if (layerHighlightedFeature) {
       layers.push(
         new PathLayer(
           this.props,
           this.getSubLayerProps({
+            pickable: false,
             material: false,
             _normalize: false,
             positionFormat: 'XY',
@@ -259,7 +265,10 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
             id: `fourwings-cell-highlight`,
             widthUnits: 'pixels',
             widthMinPixels: 4,
-            getPath: (d: FourwingsFeature) => d.coordinates,
+            getPath: (feature: FourwingsFeature | Feature) =>
+              (feature as FourwingsFeature).coordinates
+                ? (feature as FourwingsFeature).coordinates
+                : (feature as Feature<any>).geometry.coordinates[0].flat(),
             getColor: COLOR_HIGHLIGHT_LINE,
             getOffset: 0.5,
             getPolygonOffset: (params: any) =>
