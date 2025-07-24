@@ -54,6 +54,9 @@ const ReportEnvironment = dynamic(
       /* webpackChunkName: "ReportEnvironment" */ 'features/reports/tabs/environment/ReportEnvironment'
     )
 )
+const ReportOthers = dynamic(
+  () => import(/* webpackChunkName: "ReportOthers" */ 'features/reports/tabs/others/ReportOthers')
+)
 const ReportEvents = dynamic(
   () => import(/* webpackChunkName: "ReportEvents" */ 'features/reports/tabs/events/EventsReport')
 )
@@ -99,6 +102,10 @@ export default function Report() {
     {
       id: ReportCategory.Environment,
       title: t('common.environment'),
+    },
+    {
+      id: ReportCategory.Others,
+      title: t('common.others'),
     },
   ]
   const filteredCategoryTabs = categoryTabs.flatMap((tab) => {
@@ -198,6 +205,8 @@ export default function Report() {
         <ReportEnvironment />
       ) : reportCategory === ReportCategory.Events ? (
         <ReportEvents />
+      ) : reportCategory === ReportCategory.Others ? (
+        <ReportOthers />
       ) : (
         <div>
           <ReportActivity />
