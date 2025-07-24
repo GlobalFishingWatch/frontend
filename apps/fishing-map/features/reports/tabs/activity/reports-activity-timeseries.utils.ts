@@ -1,19 +1,31 @@
 import type { DateTimeUnit, DurationUnit } from 'luxon'
-import { Duration } from 'luxon'
+import { DateTime, Duration } from 'luxon'
+import { max, mean, min } from 'simple-statistics'
 
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
+import { getUTCDate, getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type {
   FourwingsAggregationOperation,
   FourwingsDeckSublayer,
+  FourwingsLayer,
+  FourwingsLayerProps,
 } from '@globalfishingwatch/deck-layers'
-import type { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import {
+  getIntervalFrames,
+  HEATMAP_STATIC_PROPERTY_ID,
+  sliceCellValues,
+} from '@globalfishingwatch/deck-layers'
+import type {
+  FourwingsFeature,
+  FourwingsInterval,
+  FourwingsStaticFeature,
+} from '@globalfishingwatch/deck-loaders'
 
 import type { DateTimeSeries } from 'features/reports/report-area/area-reports.hooks'
+import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
+import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
-import type { FilteredPolygons } from 'features/reports/tabs/activity/reports-activity-geo.utils'
-import type { ReportGraphProps } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
+import type { TimeRange } from 'features/timebar/timebar.slice'
 import { getGraphDataFromFourwingsHeatmap } from 'features/timebar/timebar.utils'
-import { getUTCDateTime } from 'utils/dates'
 
 export interface TimeSeriesFrame {
   frame: number
@@ -29,25 +41,6 @@ export type TimeSeries = {
   maxFrame: number
 }
 
-export const filterTimeseriesByTimerange = (
-  timeseries: ReportGraphProps[],
-  start: string,
-  end: string
-) => {
-  return timeseries?.map((layerTimeseries) => {
-    return {
-      ...layerTimeseries,
-      timeseries: layerTimeseries?.timeseries.filter((current) => {
-        return (
-          (current.max.some((v) => v !== 0) || current.min.some((v) => v !== 0)) &&
-          current.date >= start &&
-          current.date < end
-        )
-      }),
-    }
-  })
-}
-
 const frameTimeseriesToDateTimeseries = (frameTimeseries: TimeSeriesFrame[]): DateTimeSeries => {
   const dateFrameseries = frameTimeseries.map((frameValues) => {
     const { frame, count, date, ...rest } = frameValues
@@ -60,7 +53,7 @@ const frameTimeseriesToDateTimeseries = (frameTimeseries: TimeSeriesFrame[]): Da
   return dateFrameseries
 }
 
-export type FeaturesToTimeseriesParams = {
+export type FourwingsFeaturesToTimeseriesParams = {
   start: number
   end: number
   compareStart?: number
@@ -72,8 +65,7 @@ export type FeaturesToTimeseriesParams = {
   maxVisibleValue?: number
   sublayers: FourwingsDeckSublayer[]
 }
-
-export const featuresToTimeseries = (
+export const fourwingsFeaturesToTimeseries = (
   filteredFeatures: FilteredPolygons[],
   {
     start,
@@ -86,7 +78,7 @@ export const featuresToTimeseries = (
     sublayers,
     compareStart,
     compareEnd,
-  }: FeaturesToTimeseriesParams
+  }: FourwingsFeaturesToTimeseriesParams
 ): ReportGraphProps[] => {
   return filteredFeatures.map(({ contained, overlapping }, sourceIndex) => {
     const featureToTimeseries: ReportGraphProps = {
@@ -163,6 +155,87 @@ export const featuresToTimeseries = (
     })
     return featureToTimeseries
   })
+}
+
+export type GetFourwingsTimeseriesParams = {
+  features: FilteredPolygons[]
+  instance: FourwingsLayer
+}
+export const getFourwingsTimeseries = ({ features, instance }: GetFourwingsTimeseriesParams) => {
+  const timeseries: ReportGraphProps[] = []
+  if (instance.props.static || !features || !instance.getChunk) {
+    // need to add empty timeseries because they are then used by their index
+    timeseries.push({
+      timeseries: [],
+      interval: 'MONTH',
+      sublayers: [],
+    })
+    return
+  }
+  const chunk = instance.getChunk?.()
+  if (!chunk) return
+  const sublayers = instance.getFourwingsLayers()
+  const props = instance.props as FourwingsLayerProps
+  const params: FourwingsFeaturesToTimeseriesParams = {
+    staticHeatmap: props.static,
+    interval: chunk.interval,
+    start: props.comparisonMode === 'timeCompare' ? props.startTime : chunk.bufferedStart,
+    end: props.comparisonMode === 'timeCompare' ? props.endTime : chunk.bufferedEnd,
+    compareStart: props.compareStart,
+    compareEnd: props.compareEnd,
+    aggregationOperation: props.aggregationOperation,
+    minVisibleValue: props.minVisibleValue,
+    maxVisibleValue: props.maxVisibleValue,
+    sublayers,
+  }
+  return fourwingsFeaturesToTimeseries(features, params)[0]
+}
+export const getFourwingsTimeseriesStats = ({
+  features,
+  instance,
+  start,
+  end,
+}: GetFourwingsTimeseriesParams & TimeRange) => {
+  if (features?.[0]?.contained?.length > 0) {
+    if (instance.props.static) {
+      const allValues = (features[0].contained as FourwingsStaticFeature[]).flatMap((f) => {
+        return f.properties?.[HEATMAP_STATIC_PROPERTY_ID] || []
+      })
+      if (allValues.length > 0) {
+        return {
+          min: min(allValues),
+          max: max(allValues),
+          mean: mean(allValues),
+        }
+      }
+      return
+    }
+    const chunk = instance.getChunk?.()
+    if (!chunk) return
+    const { startFrame, endFrame } = getIntervalFrames({
+      startTime: DateTime.fromISO(start).toUTC().toMillis(),
+      endTime: DateTime.fromISO(end).toUTC().toMillis(),
+      availableIntervals: [chunk.interval],
+      bufferedStart: chunk.bufferedStart,
+    })
+    const allValues = (features[0].contained as FourwingsFeature[]).flatMap((f) => {
+      const values = sliceCellValues({
+        values: f.properties.values[0],
+        startFrame,
+        endFrame,
+        startOffset: f.properties.startOffsets[0],
+      })
+      return values || []
+    })
+    if (allValues.length > 0) {
+      return {
+        min: min(allValues),
+        max: max(allValues),
+        mean: mean(allValues),
+      }
+    }
+  }
+  return
 }
 
 export const formatEvolutionData = (

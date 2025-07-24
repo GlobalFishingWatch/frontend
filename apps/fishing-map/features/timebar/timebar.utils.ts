@@ -1,3 +1,4 @@
+import type { Feature, Point } from 'geojson'
 import type { DateTimeUnit, DurationUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
@@ -9,14 +10,13 @@ import type {
   FourwingsPositionFeature,
   FourwingsValuesAndDatesFeature,
 } from '@globalfishingwatch/deck-loaders'
-import { CONFIG_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 
-import type { FeaturesToTimeseriesParams } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
+import type { FourwingsFeaturesToTimeseriesParams } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { getUTCDateTime } from 'utils/dates'
 
 type GetGraphDataFromFourwingsFeaturesParams = Pick<
-  FeaturesToTimeseriesParams,
+  FourwingsFeaturesToTimeseriesParams,
   | 'start'
   | 'end'
   | 'compareStart'
@@ -113,7 +113,7 @@ export function getGraphDataFromFourwingsPositions(
 }
 
 export function getGraphDataFromFourwingsHeatmap(
-  features: FourwingsFeature[] | FourwingsValuesAndDatesFeature[],
+  features: FourwingsFeature[] | FourwingsValuesAndDatesFeature[] | Feature<Point>[],
   {
     start,
     end,
