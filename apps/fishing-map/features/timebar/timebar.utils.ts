@@ -138,15 +138,30 @@ export function getGraphDataFromPoints(
       [startTimeProperty]: startTime,
       [endTimeProperty || '']: endTime,
     } = feature?.properties || {}
+
     if (startTime) {
-      const date = getDateInIntervalResolution(startTime, interval)
-      if (!data[date]) {
-        data[date] = { date }
-        for (let i = 0; i < sublayersLength; i++) {
-          data[date][i] = 0
-        }
+      const featureStart = Math.max(startTime, start)
+      const featureEnd = endTime ? Math.min(endTime, end) : end
+
+      if (featureStart > featureEnd) {
+        return
       }
-      data[date][layer] += 1
+
+      let currentDate = getDateInIntervalResolution(featureStart, interval)
+      const endDate = getDateInIntervalResolution(featureEnd, interval)
+
+      while (currentDate <= endDate) {
+        if (!data[currentDate]) {
+          data[currentDate] = { date: currentDate }
+          for (let i = 0; i < sublayersLength; i++) {
+            data[currentDate][i] = 0
+          }
+        }
+        data[currentDate][layer] += 1
+        currentDate = getUTCDateTime(currentDate)
+          .plus({ [interval]: 1 })
+          .toMillis()
+      }
     }
   })
   return Object.values(data)
