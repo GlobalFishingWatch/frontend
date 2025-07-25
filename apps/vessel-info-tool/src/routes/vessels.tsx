@@ -1,5 +1,7 @@
 import { createFileRoute, Link, Outlet } from '@tanstack/react-router'
 
+import { VesselTable } from '@/features/table/VesselsTable'
+
 import { fetchVessels } from '../utils/vessels'
 
 export const Route = createFileRoute('/vessels')({
@@ -13,13 +15,13 @@ function PostsComponent() {
   return (
     <div className="p-2 flex gap-2">
       <ul className="list-disc pl-4">
-        {vessels.map((vessel) => {
-          return (
-            <li key={vessel.IMO} className="whitespace-nowrap">
-              {vessel.IMO}
-            </li>
-          )
-        })}
+        <VesselTable
+          data={vessels}
+          columns={Object.keys(vessels[0] || {}).map((key) => ({
+            accessorKey: key,
+            header: key,
+          }))}
+        />
       </ul>
       <hr />
       <Outlet />
