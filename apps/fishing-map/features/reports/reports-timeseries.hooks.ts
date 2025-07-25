@@ -38,6 +38,7 @@ import {
   filterTimeseriesByTimerange,
   getTimeseries,
   getTimeseriesStats,
+  isInstanceOfPointsLayer,
 } from 'features/reports/reports-timeseries.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
@@ -136,9 +137,15 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 
   const instancesChunkHash = reportLayers
     ?.flatMap(({ instance }) => {
-      if (!instance?.getChunk) return instance.id || []
-      const { bufferedStart, bufferedEnd, interval } = instance.getChunk()
-      return `${instance.id}-${interval}-${bufferedStart}-${bufferedEnd}`
+      if (isInstanceOfPointsLayer(instance)) {
+        const interval = getFourwingsInterval(start, end)
+        return `${instance.id}-${interval}`
+      }
+      if (instance?.getChunk) {
+        const { bufferedStart, bufferedEnd, interval } = instance.getChunk()
+        return `${instance.id}-${interval}-${bufferedStart}-${bufferedEnd}`
+      }
+      return `${instance.id}`
     })
     .join(',')
 
@@ -158,7 +165,7 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
     setReportState((prev) => ({
       ...prev,
       ...initialReportState,
-      isLoading: reportCategory && reportCategory !== 'events',
+      isLoading: reportCategory && reportCategory !== 'events' && reportCategory !== 'others',
     }))
     // We want to clean the reportState when any of these params changes to avoid using old data until it loads
   }, [
