@@ -22,8 +22,8 @@ import type {
 
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
-import type { TimeSeries } from 'features/reports/reports-timeseries.utils'
-import { frameTimeseriesToDateTimeseries } from 'features/reports/reports-timeseries.utils'
+import type { TimeSeries } from 'features/reports/reports-timeseries-shared.utils'
+import { frameTimeseriesToDateTimeseries } from 'features/reports/reports-timeseries-shared.utils'
 import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
 import type { TimeRange } from 'features/timebar/timebar.slice'
 import { getGraphDataFromFourwingsHeatmap } from 'features/timebar/timebar.utils'
