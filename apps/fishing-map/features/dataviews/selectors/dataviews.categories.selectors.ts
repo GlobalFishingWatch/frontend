@@ -104,9 +104,13 @@ export const selectVGReportActivityDataviews = createSelector(
 export const selectOthersActiveReportDataviews = createSelector(
   [selectCustomUserDataviews],
   (dataviews) => {
-    return dataviews?.filter(
-      (dataview) =>
+    return dataviews?.filter((dataview) => {
+      if (!dataview.config?.visible) {
+        return false
+      }
+      return (
         isUserContextDataviewReportSupported(dataview) || isContextDataviewReportSupported(dataview)
-    )
+      )
+    })
   }
 )
