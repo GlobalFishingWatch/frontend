@@ -14,6 +14,8 @@ import type { ScalePower } from 'd3-scale'
 import { scaleSqrt } from 'd3-scale'
 import type { Feature, GeoJsonProperties, Point } from 'geojson'
 
+import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+
 import {
   COLOR_HIGHLIGHT_LINE,
   DEFAULT_LINE_COLOR,
@@ -48,6 +50,7 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
 }
 
 type UserPointsLayerState = UserBaseLayerState & {
+  intervalDirty: boolean
   scale?: ScalePower<number, number, never>
 }
 export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserBaseLayer<
@@ -66,6 +69,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     } = this.props
     if (circleRadiusRange && circleRadiusRange?.length) {
       this.state = {
+        intervalDirty: false,
         scale: scaleSqrt(circleRadiusRange as [number, number], [
           minPointSize as number,
           maxPointSize as number,
@@ -74,8 +78,25 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     }
   }
 
+  get isLoaded(): boolean {
+    return super.isLoaded && !this.state.intervalDirty
+  }
+
   updateState({ props, oldProps }: UpdateParameters<this>) {
-    const { minPointSize, maxPointSize, circleRadiusRange } = props
+    const newState: Partial<UserPointsLayerState> = {}
+    const { startTime, endTime, minPointSize, maxPointSize, circleRadiusRange } = props
+
+    // Checks if the interval has changed to force a re-render
+    const oldStartTime = oldProps.startTime
+    const oldEndTime = oldProps.endTime
+    const oldInterval =
+      oldStartTime && oldEndTime ? getFourwingsInterval(oldStartTime, oldEndTime) : ''
+    const interval = startTime && endTime ? getFourwingsInterval(startTime, endTime) : ''
+
+    if (oldInterval !== interval) {
+      newState.intervalDirty = true
+    }
+
     const newPointRange =
       circleRadiusRange?.[0] !== oldProps.circleRadiusRange?.[0] ||
       circleRadiusRange?.[1] !== oldProps.circleRadiusRange?.[1]
@@ -88,10 +109,22 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
           minPointSize as number,
           maxPointSize as number,
         ])
-        this.setState({ scale })
+        newState.scale = scale
       } else if (this.state.scale) {
-        this.setState({ scale: undefined })
+        newState.scale = undefined
       }
+    }
+
+    if (Object.keys(newState).length) {
+      this.setState(newState)
+    }
+
+    if (newState.intervalDirty) {
+      requestAnimationFrame(() => {
+        this.setState({
+          intervalDirty: false,
+        })
+      })
     }
   }
 
