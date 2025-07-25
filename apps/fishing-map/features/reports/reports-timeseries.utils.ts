@@ -1,6 +1,7 @@
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { TimeRange } from '@globalfishingwatch/deck-layer-composer'
-import type { FourwingsLayer, UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
+import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import { UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
 
 import type { DateTimeSeries } from 'features/reports/report-area/area-reports.hooks'
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
@@ -11,9 +12,9 @@ import {
 } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { getPointsTimeseries } from 'features/reports/tabs/others/reports-points-timeseries.utils'
 
-export type GetTimeseriesParams = {
+export type GetTimeseriesParams<T extends FourwingsLayer | UserPointsTileLayer> = {
   featuresFiltered: FilteredPolygons[][]
-  instances: (FourwingsLayer | UserPointsTileLayer)[]
+  instances: T[]
 }
 
 export interface TimeSeriesFrame {
@@ -44,16 +45,20 @@ export const frameTimeseriesToDateTimeseries = (
   return dateFrameseries
 }
 
-const isInstanceOfPointsLayer = (instance: FourwingsLayer | UserPointsTileLayer) => {
-  return instance.props.category === 'user' || instance.props.category === 'context'
+export const isInstanceOfPointsLayer = (instance: FourwingsLayer | UserPointsTileLayer) => {
+  return instance instanceof UserPointsTileLayer
 }
-export const getTimeseries = ({ featuresFiltered, instances }: GetTimeseriesParams) => {
+
+export const getTimeseries = <T extends FourwingsLayer | UserPointsTileLayer>({
+  featuresFiltered,
+  instances,
+}: GetTimeseriesParams<T>) => {
   const timeseries: ReportGraphProps[] = []
   instances.forEach((instance, index) => {
     const features = featuresFiltered?.[index]
     if (isInstanceOfPointsLayer(instance)) {
       const fourwingsTimeseries = getPointsTimeseries({
-        instance: instance as UserPointsTileLayer,
+        instance,
         features,
       })
       if (fourwingsTimeseries) {
@@ -61,7 +66,7 @@ export const getTimeseries = ({ featuresFiltered, instances }: GetTimeseriesPara
       }
     } else {
       const fourwingsTimeseries = getFourwingsTimeseries({
-        instance: instance as FourwingsLayer,
+        instance: instance,
         features,
       })
       if (fourwingsTimeseries) {
@@ -72,19 +77,18 @@ export const getTimeseries = ({ featuresFiltered, instances }: GetTimeseriesPara
   return timeseries
 }
 
-export type GetTimeseriesParamsStats = GetTimeseriesParams & TimeRange
-export const getTimeseriesStats = ({
+export const getTimeseriesStats = <T extends FourwingsLayer | UserPointsTileLayer>({
   featuresFiltered,
   instances,
   start,
   end,
-}: GetTimeseriesParamsStats) => {
+}: GetTimeseriesParams<T> & TimeRange) => {
   const timeseriesStats = {} as ReportGraphStats
   instances.forEach((instance, index) => {
     if (!isInstanceOfPointsLayer(instance)) {
       const features = featuresFiltered?.[index]
       const stats = getFourwingsTimeseriesStats({
-        instance: instance as FourwingsLayer,
+        instance: instance,
         features,
         start,
         end,
