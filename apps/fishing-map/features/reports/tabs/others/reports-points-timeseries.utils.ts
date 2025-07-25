@@ -1,6 +1,5 @@
 import type { Feature, Point } from 'geojson'
 
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { FourwingsDeckSublayer, UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
 import { type FourwingsInterval, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
@@ -80,10 +79,7 @@ export const getPointsTimeseries = ({ features, instance }: GetPointsTimeseriesP
     } as ReportGraphProps
   }
 
-  const interval = getFourwingsInterval(
-    getUTCDate(startTime).toISOString(),
-    getUTCDate(endTime).toISOString()
-  )
+  const interval = getFourwingsInterval(startTime, endTime)
   const params: PointsFeaturesToTimeseriesParams = {
     interval: interval,
     start: startTime,
