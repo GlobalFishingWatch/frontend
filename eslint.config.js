@@ -71,7 +71,6 @@ module.exports = tseslint.config({
     ...reactHooksPlugin.configs.recommended.rules,
     ...nextPlugin.configs.recommended.rules,
     ...nextPlugin.configs['core-web-vitals'].rules,
-    '@next/next/no-html-link-for-pages': 'off',
     'import/default': 0,
     'import/no-unresolved': 0,
     'import/no-named-as-default': 0,
