@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { format } from 'd3-format'
 
@@ -9,7 +10,7 @@ import type {
   FourwingsHeatmapStaticPickingObject,
 } from '@globalfishingwatch/deck-layers'
 import { HEATMAP_STATIC_PROPERTY_ID } from '@globalfishingwatch/deck-layers'
-import { Icon } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -35,11 +36,14 @@ function EnvironmentTooltipSection({
   features,
   showFeaturesDetails = false,
 }: ContextTooltipRowProps) {
+  const { t } = useTranslation()
+
   const dataviews = useSelector(selectEnvironmentalDataviews) as UrlDataviewInstance[]
   return (
     <Fragment>
       {features.map((feature, index) => {
         const dataview = dataviews.find((d) => d.id === feature.layerId)
+
         const isHeatmapFeature =
           feature.subcategory === DataviewType.HeatmapAnimated ||
           feature.subcategory === DataviewType.HeatmapStatic
@@ -50,7 +54,9 @@ function EnvironmentTooltipSection({
                 HEATMAP_STATIC_PROPERTY_ID
               ]
 
-        const unit = feature.sublayers?.[0]?.unit
+        const unit = feature.sublayers
+          ? feature.sublayers?.[0]?.unit
+          : dataview?.datasets?.[0]?.unit
         return (
           <div key={`${feature.title}-${index}`} className={styles.popupSection}>
             <Icon
@@ -58,6 +64,7 @@ function EnvironmentTooltipSection({
               className={styles.layerIcon}
               style={{ color: feature.sublayers?.[0]?.color }}
             />
+
             <div className={styles.popupSectionContent}>
               {showFeaturesDetails && (
                 <h3 className={styles.popupSectionTitle}>
@@ -66,8 +73,18 @@ function EnvironmentTooltipSection({
               )}
               <div className={styles.row}>
                 <span className={styles.rowText}>
-                  {parseEnvironmentalValue(value)} {unit && <span>{unit}</span>}
+                  <span>
+                    {parseEnvironmentalValue(value)}{' '}
+                    {unit && <span>{t(`common.${unit}`, unit)}</span>}
+                  </span>
                 </span>
+                {dataview?.id === 'bathymetry' && (
+                  <IconButton
+                    icon={'warning'}
+                    size="small"
+                    tooltip={t('common.bathymetry_disclaimer')}
+                  />
+                )}
               </div>
             </div>
           </div>
