@@ -1,9 +1,7 @@
-import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import type { TimeRange } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
 
-import type { DateTimeSeries } from 'features/reports/report-area/area-reports.hooks'
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type { ReportGraphProps, ReportGraphStats } from 'features/reports/reports-timeseries.hooks'
 import {
@@ -15,34 +13,6 @@ import { getPointsTimeseries } from 'features/reports/tabs/others/reports-points
 export type GetTimeseriesParams<T extends FourwingsLayer | UserPointsTileLayer> = {
   featuresFiltered: FilteredPolygons[][]
   instances: T[]
-}
-
-export interface TimeSeriesFrame {
-  frame: number
-  // key will be "0", "1", etc corresponding to a stringified sublayer index.
-  // This is intended to accomodate the d3 layouts we use. The associated value corresponds to
-  // the sum or avg (depending on aggregationOp used) for all cells at this frame for this sublayer
-  [key: string]: number
-}
-
-export type TimeSeries = {
-  values: TimeSeriesFrame[]
-  minFrame: number
-  maxFrame: number
-}
-
-export const frameTimeseriesToDateTimeseries = (
-  frameTimeseries: TimeSeriesFrame[]
-): DateTimeSeries => {
-  const dateFrameseries = frameTimeseries.map((frameValues) => {
-    const { frame, count, date, ...rest } = frameValues
-    const dateTime = getUTCDate(date)
-    return {
-      values: Object.values(rest) as number[],
-      date: dateTime.toISOString(),
-    }
-  })
-  return dateFrameseries
 }
 
 export const isInstanceOfPointsLayer = (instance: FourwingsLayer | UserPointsTileLayer) => {
