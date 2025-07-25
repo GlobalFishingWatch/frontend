@@ -5,7 +5,7 @@ import { type FourwingsInterval, getFourwingsInterval } from '@globalfishingwatc
 
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
-import { frameTimeseriesToDateTimeseries } from 'features/reports/reports-timeseries.utils'
+import { frameTimeseriesToDateTimeseries } from 'features/reports/reports-timeseries-shared.utils'
 import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
 import { getGraphDataFromPoints } from 'features/timebar/timebar.utils'
 
