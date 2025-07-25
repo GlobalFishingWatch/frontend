@@ -1334,7 +1334,7 @@ interface Resources {
         area: 'area'
         label: {
           keyword: 'label'
-          enum: { '' }
+          enum: {}
         }
         perimeter: 'perimeter'
       }
@@ -2112,19 +2112,19 @@ interface Resources {
       schema: {
         GENUS: {
           keyword: 'GENUS'
-          enum: { '' }
+          enum: {}
         }
         FAMILY: {
           keyword: 'FAMILY'
-          enum: { '' }
+          enum: {}
         }
         habitat: {
           keyword: 'habitat'
-          enum: { '' }
+          enum: {}
         }
         BIO_CLASS: {
           keyword: 'BIO_CLASS'
-          enum: { '' }
+          enum: {}
         }
       }
     }
