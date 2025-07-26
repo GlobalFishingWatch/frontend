@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import type {
-  ColumnDef,  ExpandedState} from '@tanstack/react-table';
+import type { ColumnDef, ExpandedState } from '@tanstack/react-table'
 import {
   Column,
   flexRender,
@@ -11,11 +10,13 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 
+import type { Vessel } from '@/routes/vessels'
+
 import styles from './VesselsTable.module.css'
 
 type VesselTableProps = {
-  data: string[]
-  columns: ColumnDef<string, any>[]
+  data: Vessel[]
+  columns: ColumnDef<Vessel, any>[]
 }
 
 export function VesselTable({ data, columns }: VesselTableProps) {
@@ -31,9 +32,6 @@ export function VesselTable({ data, columns }: VesselTableProps) {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
-    // filterFromLeafRows: true,
-    // maxLeafRowFilterDepth: 0,
-    debugTable: true,
   })
 
   return (
@@ -78,11 +76,6 @@ export function VesselTable({ data, columns }: VesselTableProps) {
           })}
         </tbody>
       </table>
-      <div>{table.getRowModel().rows.length} Rows</div>
-      <label>Expanded State:</label>
-      <pre>{JSON.stringify(expanded, null, 2)}</pre>
-      <label>Row Selection State:</label>
-      <pre>{JSON.stringify(table.getState().rowSelection, null, 2)}</pre>
     </div>
   )
 }
