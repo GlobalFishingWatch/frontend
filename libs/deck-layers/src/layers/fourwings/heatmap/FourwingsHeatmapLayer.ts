@@ -269,8 +269,8 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
             comparisonMode === FourwingsComparisonMode.TimeCompare
               ? this.getTimeCompareFillColor
               : comparisonMode === FourwingsComparisonMode.Bivariate
-              ? this.getBivariateFillColor
-              : this.getCompareFillColor,
+                ? this.getBivariateFillColor
+                : this.getCompareFillColor,
           getPolygon: (d: FourwingsFeature) => d.coordinates,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
           updateTriggers: {

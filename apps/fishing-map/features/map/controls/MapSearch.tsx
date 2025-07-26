@@ -58,6 +58,7 @@ const MapSearch = () => {
     } else if (bounds) {
       fitBounds(bounds, { fitZoom: true })
     }
+    setQuery('')
   }
 
   const onInputChange = async ({ type, inputValue }: UseComboboxStateChange<OceanArea>) => {

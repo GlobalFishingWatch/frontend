@@ -58,7 +58,7 @@ const objectArrayToCSV = (
     return csvConfig
       .map(({ accessor, transform }) => {
         const value = Array.isArray(accessor)
-          ? accessor.find((a) => getter(d, a))
+          ? accessor.map((a) => getter(d, a)).filter(Boolean)[0]
           : getter(d, accessor)
         const transformedValue = transform ? transform(value) : value
         return transformedValue ? parseCSVString(transformedValue) : ''
@@ -119,8 +119,12 @@ const EVENTS_CSV_CONFIG: CsvConfig[] = [
   { label: 'latitude', accessor: 'coordinates[1]' },
   { label: 'longitude', accessor: 'coordinates[0]' },
   {
+    label: 'portVisitId',
+    accessor: 'port_visit.intermediateAnchorage.id',
+  },
+  {
     label: 'portVisitName',
-    accessor: ['port_visit.intermediateAnchorage.name', 'port_visit.intermediateAnchorage.id'],
+    accessor: 'port_visit.intermediateAnchorage.name',
   },
   { label: 'portVisitFlag', accessor: 'port_visit.intermediateAnchorage.flag' },
   // { label: 'encounterAuthorization', accessor: 'encounter.mainVesselAuthorizationStatus' },

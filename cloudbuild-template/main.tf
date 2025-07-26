@@ -1,8 +1,9 @@
 locals {
+  repository       = "frontend"
   location         = "us-central1"
   project          = "gfw-int-infrastructure"
   ui_name          = "ui-${var.app_name}"
-  cloudrun_name    = "${var.short_environment != "pro" ? "${var.short_environment}-" : ""}${local.ui_name}"
+  cloudrun_name    = "${var.short_environment != "pro" ? "${var.short_environment}-" : ""}${local.ui_name}${var.app_suffix}"
   cache_repository = "frontend-dependencies-cache"
   cache_env = [
     "PROJECT=${local.project}",
@@ -12,32 +13,32 @@ locals {
 }
 
 resource "google_cloudbuild_trigger" "trigger" {
-  name        = "${local.ui_name}-${var.short_environment}"
+  name        = "${local.ui_name}-${var.short_environment}${var.app_suffix}"
   location    = local.location
   description = var.description
 
 
   dynamic "github" {
-    for_each = var.push_config.tag != null ? [var.push_config] : []
+    for_each = var.push_config.tag != null || var.push_config.trigger == "branch" ? [var.push_config] : []
     content {
-      name  = "frontend"
+      name  = local.repository
       owner = "GlobalFishingWatch"
       push {
         tag          = github.value.tag
         invert_regex = github.value.invert_regex
+        branch       = github.value.branch
       }
     }
   }
 
   dynamic "source_to_build" {
-    for_each = var.push_config.branch != null ? [var.push_config] : []
+    for_each = var.push_config.branch != null && var.push_config.trigger == "manual" ? [var.push_config] : []
     content {
       uri       = "https://github.com/GlobalFishingWatch/frontend"
       ref       = "refs/heads/${source_to_build.value.branch}"
       repo_type = "GITHUB"
     }
   }
-
 
   service_account = "projects/${local.project}/serviceAccounts/cloudbuild@gfw-int-infrastructure.iam.gserviceaccount.com"
   build {
