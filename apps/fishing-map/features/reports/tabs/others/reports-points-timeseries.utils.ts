@@ -1,16 +1,15 @@
 import type { Feature, Point } from 'geojson'
 
 import type { FourwingsDeckSublayer, UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
-import type {
-  FourwingsFeature,
-  FourwingsInterval,
-  FourwingsStaticFeature,
-} from '@globalfishingwatch/deck-loaders'
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
-import { frameTimeseriesToDateTimeseries } from 'features/reports/reports-timeseries-shared.utils'
+import {
+  frameTimeseriesToDateTimeseries,
+  isFeatureInRange,
+} from 'features/reports/reports-timeseries-shared.utils'
 import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
 import { getGraphDataFromPoints } from 'features/timebar/timebar.utils'
 
@@ -94,28 +93,6 @@ export const getPointsTimeseries = ({ features, instance }: GetPointsTimeseriesP
     sublayers: [{ id, color, unit: '' } as FourwingsDeckSublayer],
   }
   return pointsFeaturesToTimeseries(features, params)[0]
-}
-
-export function isFeatureInRange(
-  feature: Feature<Point> | FourwingsFeature | FourwingsStaticFeature,
-  {
-    startTime,
-    endTime,
-    startTimeProperty,
-    endTimeProperty,
-  }: {
-    startTime: number | undefined
-    endTime: number | undefined
-    startTimeProperty: string | undefined
-    endTimeProperty: string | undefined
-  }
-) {
-  const featureStart = ((feature.properties as any)?.[startTimeProperty!] as number) || 0
-  const featureEnd = ((feature.properties as any)?.[endTimeProperty!] as number) || Infinity
-  return (
-    (typeof featureEnd === 'string' ? parseInt(featureEnd) : featureEnd) >= startTime! &&
-    (typeof featureStart === 'string' ? parseInt(featureStart) : featureStart) < endTime!
-  )
 }
 
 export const getPointsTimeseriesStats = ({ features, instance }: GetPointsTimeseriesParams) => {
