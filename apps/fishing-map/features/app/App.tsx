@@ -10,6 +10,7 @@ import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { useShutdownDisclaimerToast } from 'features/app/disclaimers.hooks'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import { useFeatureFlagsToast } from 'features/debug/debug.hooks'
@@ -23,7 +24,6 @@ import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { selectReportAreaBounds } from 'features/reports/reports.config.selectors'
 import Sidebar from 'features/sidebar/Sidebar'
 import { useFetchTrackCorrections } from 'features/track-correction/track-correction.hooks'
-import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { fetchUserThunk } from 'features/user/user.slice'
 import { useFitWorkspaceBounds } from 'features/workspace/workspace.hook'
@@ -81,6 +81,7 @@ function App() {
   useBeforeUnload()
   useUserLanguageUpdate()
   useFeatureFlagsToast()
+  useShutdownDisclaimerToast()
   useFetchTrackCorrections()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)
@@ -96,7 +97,6 @@ function App() {
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
