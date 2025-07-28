@@ -160,9 +160,9 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   getData = (): Feature<Point>[] => {
-    // TODO: implement filters here
+    const roundedZoom = Math.round(this.context.viewport.zoom)
     return (this.getLayer()?.state.tileset?.tiles || []).flatMap((tile) => {
-      return tile.content
+      return tile.content && tile.zoom === roundedZoom
         ? tile.content.flatMap((feature: any) => {
             return feature
               ? (transformTileCoordsToWGS84(
