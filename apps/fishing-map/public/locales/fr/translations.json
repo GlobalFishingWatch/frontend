@@ -903,8 +903,8 @@
   },
   "toasts": {
     "maxPointsVisualizationExceeded": "Le nombre maximal de points pouvant être visualisés est dépassé, passage en mode « carte thermique ».",
-    "shutdownDisclaimer": "Product and data improvements are scheduled for the week of 4 August. During this time, some products may not show the latest data. Full updates will resume shortly.",
-    "shutdownDisclaimerTitle": "Temporary delay in data updates"
+    "shutdownDisclaimer": "Des améliorations des produits et des données sont prévues pour la semaine du 4 août. Pendant ce temps, certains produits peuvent ne pas afficher les dernières données. Les mises à jour complètes reprendront sous peu.",
+    "shutdownDisclaimerTitle": "Délai temporaire des mises à jour des données"
   },
   "trackCorrection": {
     "adjustDisabled": "Adjusting the time range is needed.",
