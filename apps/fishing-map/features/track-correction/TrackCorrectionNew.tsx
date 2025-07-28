@@ -132,6 +132,7 @@ const TrackCorrectionNew = () => {
         const issueBody: TrackCorrection = {
           issueId,
           vesselId: trackCorrectionVesselDataviewId.replace('vessel-', ''),
+          ssvid: vesselInfo?.selfReportedInfo?.[0]?.ssvid || '',
           vesselName: vesselInfo ? getVesselShipNameLabel(vesselInfo) : dataview?.config?.name,
           userEmail: userData?.email || '',
           startDate: trackCorrectionTimerange.start,
