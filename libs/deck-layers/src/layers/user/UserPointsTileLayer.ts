@@ -14,8 +14,6 @@ import type { ScalePower } from 'd3-scale'
 import { scaleSqrt } from 'd3-scale'
 import type { Feature, GeoJsonProperties, Point } from 'geojson'
 
-import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
-
 import {
   COLOR_HIGHLIGHT_LINE,
   DEFAULT_LINE_COLOR,
@@ -84,9 +82,8 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
 
   get cacheHash(): string {
     const { startTime, endTime, filters = {} } = this.props
-    const interval = startTime && endTime ? getFourwingsInterval(startTime, endTime) : ''
     const filtersHash = Object.values(filters).filter(Boolean).join('-')
-    return `${interval}-${filtersHash}`
+    return `${startTime}-${endTime}-${filtersHash}`
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
@@ -181,8 +178,9 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   _onLayerError = (error: Error) => {
-    console.warn(error.message)
-    this.setState({ error: error.message })
+    if (!error.message.includes('404')) {
+      this.setState({ error: error.message })
+    }
     return true
   }
 
