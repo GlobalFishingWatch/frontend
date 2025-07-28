@@ -150,7 +150,7 @@ export function getGraphDataFromPoints(
       let currentDate = getDateInIntervalResolution(featureStart, interval)
       const endDate = getDateInIntervalResolution(featureEnd, interval)
 
-      while (currentDate <= endDate) {
+      while (currentDate < endDate) {
         if (!data[currentDate]) {
           data[currentDate] = { date: currentDate }
           for (let i = 0; i < sublayersLength; i++) {
