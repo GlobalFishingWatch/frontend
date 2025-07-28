@@ -13,6 +13,7 @@ import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/
 import { useAppDispatch } from 'features/app/app.hooks'
 import Hint from 'features/help/Hint'
 import { setHintDismissed } from 'features/help/hints.slice'
+import { PORTS_LAYER_ID } from 'features/map/map.config'
 import { useMapSetViewState } from 'features/map/map-viewport.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import type { Bbox } from 'types'
@@ -42,7 +43,7 @@ const MapSearch = () => {
       )
     if (areaDataview) {
       upsertDataviewInstance({
-        ...areaDataview,
+        id: areaDataview.id,
         config: {
           visible: true,
         },
@@ -54,6 +55,12 @@ const MapSearch = () => {
         latitude,
         longitude,
         zoom: 12,
+      })
+      upsertDataviewInstance({
+        id: PORTS_LAYER_ID,
+        config: {
+          visible: true,
+        },
       })
     } else if (bounds) {
       fitBounds(bounds, { fitZoom: true })
