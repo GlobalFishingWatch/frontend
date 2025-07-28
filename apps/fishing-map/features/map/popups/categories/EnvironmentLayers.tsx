@@ -13,6 +13,7 @@ import { HEATMAP_STATIC_PROPERTY_ID } from '@globalfishingwatch/deck-layers'
 import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 
 import styles from '../Popup.module.css'
@@ -78,8 +79,9 @@ function EnvironmentTooltipSection({
                     {unit && <span>{t(`common.${unit}`, unit)}</span>}
                   </span>
                 </span>
-                {dataview?.id === 'bathymetry' && (
+                {dataview && isBathymetryDataview(dataview) && showFeaturesDetails && (
                   <IconButton
+                    className={styles.bathymetryDisclaimer}
                     icon={'warning'}
                     size="small"
                     tooltip={t('common.bathymetry_disclaimer')}

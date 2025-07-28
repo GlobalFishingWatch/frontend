@@ -419,7 +419,7 @@ export const dataviewWithPrivateDatasets = (dataview: UrlDataviewInstance) => {
 }
 
 export const isBathymetryDataview = (dataview: UrlDataviewInstance) => {
-  return dataview.id.includes('bathymetry')
+  return dataview.id === 'bathymetry'
 }
 
 export const getIsPositionSupportedInDataview = (dataview: UrlDataviewInstance) => {
