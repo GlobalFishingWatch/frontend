@@ -50,7 +50,7 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
 }
 
 type UserPointsLayerState = UserBaseLayerState & {
-  intervalDirty: boolean
+  error: string
   scale?: ScalePower<number, number, never>
 }
 export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserBaseLayer<
@@ -69,7 +69,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     } = this.props
     if (circleRadiusRange && circleRadiusRange?.length) {
       this.state = {
-        intervalDirty: false,
+        error: '',
         scale: scaleSqrt(circleRadiusRange as [number, number], [
           minPointSize as number,
           maxPointSize as number,
@@ -79,23 +79,18 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   get isLoaded(): boolean {
-    return super.isLoaded && !this.state.intervalDirty
+    return super.isLoaded
+  }
+
+  get cacheHash(): string {
+    const { startTime, endTime, filters = {} } = this.props
+    const interval = startTime && endTime ? getFourwingsInterval(startTime, endTime) : ''
+    const filtersHash = Object.values(filters).filter(Boolean).join('-')
+    return `${interval}-${filtersHash}`
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
-    const newState: Partial<UserPointsLayerState> = {}
-    const { startTime, endTime, minPointSize, maxPointSize, circleRadiusRange } = props
-
-    // Checks if the interval has changed to force a re-render
-    const oldStartTime = oldProps.startTime
-    const oldEndTime = oldProps.endTime
-    const oldInterval =
-      oldStartTime && oldEndTime ? getFourwingsInterval(oldStartTime, oldEndTime) : ''
-    const interval = startTime && endTime ? getFourwingsInterval(startTime, endTime) : ''
-
-    if (oldInterval !== interval) {
-      newState.intervalDirty = true
-    }
+    const { minPointSize, maxPointSize, circleRadiusRange } = props
 
     const newPointRange =
       circleRadiusRange?.[0] !== oldProps.circleRadiusRange?.[0] ||
@@ -109,22 +104,10 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
           minPointSize as number,
           maxPointSize as number,
         ])
-        newState.scale = scale
+        this.setState({ scale })
       } else if (this.state.scale) {
-        newState.scale = undefined
+        this.setState({ scale: undefined })
       }
-    }
-
-    if (Object.keys(newState).length) {
-      this.setState(newState)
-    }
-
-    if (newState.intervalDirty) {
-      requestAnimationFrame(() => {
-        this.setState({
-          intervalDirty: false,
-        })
-      })
     }
   }
 
@@ -168,9 +151,17 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return pointRadius
   }
 
+  getLayer() {
+    return this.getSubLayers()?.[0] as TileLayer<UserLayerFeature>
+  }
+
+  getError() {
+    return this?.state.error
+  }
+
   getData = (): Feature<Point>[] => {
-    const layer = this.getSubLayers()?.[0] as TileLayer<UserLayerFeature>
-    return (layer?.state.tileset?.tiles || []).flatMap((tile) => {
+    // TODO: implement filters here
+    return (this.getLayer()?.state.tileset?.tiles || []).flatMap((tile) => {
       return tile.content
         ? tile.content.flatMap((feature: any) => {
             return feature
@@ -189,6 +180,12 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return filteredPositionsByViewport(this.getData(), this.context.viewport)
   }
 
+  _onLayerError = (error: Error) => {
+    console.warn(error.message)
+    this.setState({ error: error.message })
+    return true
+  }
+
   renderLayers() {
     const { layers, color, pickable, maxPointSize, maxZoom, filters } = this.props
     const zoom = this._getZoomLevel()
@@ -203,6 +200,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
         loadOptions: {
           ...getFetchLoadOptions(),
         },
+        onTileError: this._onLayerError,
         onViewportLoad: this.props.onViewportLoad,
         ...filterProps,
         renderSubLayers: (props) => {
