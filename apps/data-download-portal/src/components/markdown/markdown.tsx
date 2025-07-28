@@ -6,8 +6,6 @@ import remarkGfm from 'remark-gfm'
 import type { Plugin } from 'unified'
 import { visit } from 'unist-util-visit'
 
-import { BASE_PATH } from '../../app'
-
 const extractText = (node: PhrasingContent): string => {
   if ('value' in node && typeof node.value === 'string') {
     return node.value
@@ -175,7 +173,7 @@ const remarkCollapseH2: Plugin<[], Root> = () => {
 }
 
 function getLinkHashPath(path: string) {
-  return `${window.location.origin}${BASE_PATH}${window.location.pathname}${window.location.search}#${path}`
+  return `${window.location.origin}${window.location.pathname}${window.location.search}#${path}`
 }
 
 function EnhancedMarkdown({ content }: { content: string }) {
