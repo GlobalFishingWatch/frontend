@@ -376,6 +376,7 @@ interface Resources {
       "average": "average",
       "averageAbbreviated": "avg.",
       "back": "back",
+      "bathymetry_disclaimer": "Depth shown on map is a cell average — actual depth at clicked point may vary.",
       "between": "between",
       "cancel": "Cancel",
       "category": "Category",
