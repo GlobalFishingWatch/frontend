@@ -156,7 +156,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return this?.state.error
   }
 
-  getData = (): Feature<Point>[] => {
+  _getData = (): Feature<Point>[] => {
     const roundedZoom = Math.round(this.context.viewport.zoom)
     return (this.getLayer()?.state.tileset?.tiles || []).flatMap((tile) => {
       return tile.content && tile.zoom === roundedZoom
@@ -171,6 +171,16 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
           })
         : []
     })
+  }
+
+  getData = (): Feature<Point>[] => {
+    const { filters, filterOperators } = this.props
+    if (filters && Object.keys(filters).filter(Boolean).length) {
+      return this._getData().filter((feature) =>
+        getFeatureInFilter(feature, filters, filterOperators)
+      )
+    }
+    return this._getData()
   }
 
   getViewportData = () => {
