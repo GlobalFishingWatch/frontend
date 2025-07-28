@@ -903,8 +903,8 @@
   },
   "toasts": {
     "maxPointsVisualizationExceeded": "Se ha superado la visualización máxima de puntos, cambiando al modo de mapa de calor.",
-    "shutdownDisclaimer": "Product and data improvements are scheduled for the week of 4 August. During this time, some products may not show the latest data. Full updates will resume shortly.",
-    "shutdownDisclaimerTitle": "Temporary delay in data updates"
+    "shutdownDisclaimer": "Las mejoras del producto y de los datos están previstas para la semana del 4 de agosto. Durante este tiempo, es posible que algunos productos no muestren los últimos datos. Las actualizaciones completas se reanudarán en breve.",
+    "shutdownDisclaimerTitle": "Retraso temporal en las actualizaciones de datos"
   },
   "trackCorrection": {
     "adjustDisabled": "Adjusting the time range is needed.",
