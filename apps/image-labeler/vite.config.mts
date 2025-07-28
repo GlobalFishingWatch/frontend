@@ -4,7 +4,7 @@ import svgr from 'vite-plugin-svgr'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
-import { TanStackRouterVite } from '@tanstack/router-vite-plugin'
+import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import 'dotenv/config'
 
 export default defineConfig({
@@ -27,11 +27,9 @@ export default defineConfig({
       include: ['**/*.svg', '**/*.svg?react'],
     }),
     nxViteTsPaths(),
-    TanStackRouterVite({
+    tanstackRouter({
       target: 'react',
       autoCodeSplitting: true,
-      // routesDirectory: './apps/image-labeler/src/routes',
-      // generatedRouteTree: './apps/image-labeler/src/routeTree.gen.ts',
     }),
     viteStaticCopy({
       targets: [
