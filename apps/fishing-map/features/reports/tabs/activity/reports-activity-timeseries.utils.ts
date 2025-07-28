@@ -174,6 +174,7 @@ export const getFourwingsTimeseriesStats = ({
       })
       if (allValues.length > 0) {
         return {
+          type: 'fourwings' as const,
           min: min(allValues),
           max: max(allValues),
           mean: mean(allValues),
@@ -200,6 +201,7 @@ export const getFourwingsTimeseriesStats = ({
     })
     if (allValues.length > 0) {
       return {
+        type: 'fourwings' as const,
         min: min(allValues),
         max: max(allValues),
         mean: mean(allValues),

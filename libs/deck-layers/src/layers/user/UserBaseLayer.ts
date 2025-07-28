@@ -164,8 +164,14 @@ export abstract class UserBaseLayer<
 
   _getTimeFilterProps() {
     const { startTime, endTime, startTimeProperty, endTimeProperty, timeFilterType } = this.props
-    if (!timeFilterType || (!startTime && !endTime && !startTimeProperty && !endTimeProperty))
+    if (!timeFilterType || (!startTime && !endTime && !startTimeProperty && !endTimeProperty)) {
       return {}
+    }
+    // https://deck.gl/docs/api-reference/extensions/data-filter-extension#limitations
+    // When using very large filter values, most commonly Epoch timestamps, 32-bit float representation could lead to an error margin of >1 minute.
+    const offsetPrecision = 1000 * 60 * 30 // 30 minutes
+    const startMatchRange = [0, endTime! - offsetPrecision]
+    const endMatchRange = [startTime!, INFINITY_TIMERANGE_LIMIT]
     if (timeFilterType === 'date') {
       if (startTimeProperty) {
         return {
@@ -186,24 +192,21 @@ export abstract class UserBaseLayer<
               end ? parseInt(end) : INFINITY_TIMERANGE_LIMIT,
             ]
           },
-          filterRange: [
-            [0, endTime],
-            [startTime, INFINITY_TIMERANGE_LIMIT],
-          ],
+          filterRange: [startMatchRange, endMatchRange],
           extensions: [new DataFilterExtension({ filterSize: 2 })],
         }
       } else if (endTimeProperty) {
         return {
           getFilterValue: (d: UserLayerFeature) =>
             parseInt(d.properties[endTimeProperty as string]),
-          filterRange: [startTime, INFINITY_TIMERANGE_LIMIT],
+          filterRange: endMatchRange,
           extensions: [new DataFilterExtension({ filterSize: 1 })],
         }
       } else if (startTimeProperty) {
         return {
           getFilterValue: (d: UserLayerFeature) =>
             parseInt(d.properties[startTimeProperty as string]),
-          filterRange: [0, endTime],
+          filterRange: startMatchRange,
           extensions: [new DataFilterExtension({ filterSize: 1 })],
         }
       }
