@@ -13,6 +13,7 @@ import type {
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 
 import type { FourwingsFeaturesToTimeseriesParams } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
+import { isFeatureInRange } from 'features/reports/tabs/others/reports-points-timeseries.utils'
 import { getUTCDateTime } from 'utils/dates'
 
 type GetGraphDataFromFourwingsFeaturesParams = Pick<
@@ -132,38 +133,26 @@ export function getGraphDataFromPoints(
   }
   const data = getDatesPopulated({ start, end, interval, sublayersLength, count: false })
 
-  features.forEach((feature) => {
-    const {
-      layer = 0,
-      [startTimeProperty]: startTime,
-      [endTimeProperty || '']: endTime,
-    } = feature?.properties || {}
-
-    if (startTime) {
-      const featureStart = Math.max(startTime, start)
-      const featureEnd = endTime ? Math.min(endTime, end) : end
-
-      if (featureStart > featureEnd) {
-        return
+  Object.keys(data).forEach((dateString) => {
+    const date = parseInt(dateString)
+    const nextDate = getUTCDateTime(date)
+      .plus({ [interval]: 1 })
+      .toMillis()
+    features.forEach((feature) => {
+      const { layer = 0 } = feature?.properties || {}
+      if (
+        isFeatureInRange(feature, {
+          startTime: date,
+          endTime: nextDate,
+          startTimeProperty,
+          endTimeProperty,
+        })
+      ) {
+        data[date][layer]++
       }
-
-      let currentDate = getDateInIntervalResolution(featureStart, interval)
-      const endDate = getDateInIntervalResolution(featureEnd, interval)
-
-      while (currentDate < endDate) {
-        if (!data[currentDate]) {
-          data[currentDate] = { date: currentDate }
-          for (let i = 0; i < sublayersLength; i++) {
-            data[currentDate][i] = 0
-          }
-        }
-        data[currentDate][layer] += 1
-        currentDate = getUTCDateTime(currentDate)
-          .plus({ [interval]: 1 })
-          .toMillis()
-      }
-    }
+    })
   })
+
   return Object.values(data)
 }
 

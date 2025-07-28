@@ -1,6 +1,10 @@
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 
 import type { DateTimeSeries } from 'features/reports/report-area/area-reports.hooks'
+import type {
+  FourwingsReportGraphStats,
+  PointsReportGraphStats,
+} from 'features/reports/reports-timeseries.hooks'
 
 export interface TimeSeriesFrame {
   frame: number
@@ -28,4 +32,21 @@ export const frameTimeseriesToDateTimeseries = (
     }
   })
   return dateFrameseries
+}
+
+export function getStatsValue<
+  T extends keyof FourwingsReportGraphStats | keyof PointsReportGraphStats,
+>(
+  stats: FourwingsReportGraphStats | PointsReportGraphStats,
+  property: T
+): T extends keyof PointsReportGraphStats
+  ? PointsReportGraphStats[T]
+  : T extends keyof FourwingsReportGraphStats
+    ? FourwingsReportGraphStats[T]
+    : never {
+  if (stats.type === 'points') {
+    return stats[property as keyof PointsReportGraphStats] as any
+  } else {
+    return stats[property as keyof FourwingsReportGraphStats] as any
+  }
 }
