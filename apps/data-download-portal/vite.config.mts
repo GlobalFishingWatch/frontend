@@ -4,7 +4,7 @@ import svgr from 'vite-plugin-svgr'
 import { defineConfig } from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
-import { TanStackRouterVite } from '@tanstack/router-vite-plugin'
+import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import 'dotenv/config'
 
 const basePath =
@@ -26,9 +26,11 @@ export default defineConfig({
   },
 
   plugins: [
-    TanStackRouterVite({
+    tanstackRouter({
       target: 'react',
       autoCodeSplitting: true,
+      routesDirectory: './apps/data-download-portal/src/routes',
+      generatedRouteTree: './apps/data-download-portal/src/routeTree.gen.ts',
     }),
     react(),
     svgr({

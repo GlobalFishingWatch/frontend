@@ -75,6 +75,7 @@ i18n
     },
   })
 
+// @ts-ignore - avoids loop error
 const t = i18n.t.bind(i18n)
 
 export { t }

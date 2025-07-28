@@ -30,16 +30,16 @@ const remarkCollapseH2: Plugin<[], Root> = () => {
             justify-content: center;
             align-items: center;
           }
-          
+
           details summary::-webkit-details-marker {
             display: none;
           }
-          
+
           details .custom-arrow {
             transition: transform 0.3s ease;
             display: inline-flex;
             fill: var(--color-primary-blue);
-            margin-bottom:1em;
+            margin-bottom: 1em;
             margin-left: 0.5em;
           }
 
@@ -49,7 +49,7 @@ const remarkCollapseH2: Plugin<[], Root> = () => {
           details[open] .copy {
             display: inline-flex;
             fill: var(--color-primary-blue);
-            margin-bottom:1em;
+            margin-bottom: 1em;
             margin-left: 0.5em;
             cursor: pointer;
           }
@@ -59,18 +59,18 @@ const remarkCollapseH2: Plugin<[], Root> = () => {
             animation: pulse 0.4s ease;
           }
 
-        @keyframes pulse {
+          @keyframes pulse {
             0% {
-                transform: scale(1);
+              transform: scale(1);
             }
             50% {
-                transform: scale(0.9);
+              transform: scale(0.9);
             }
             100% {
-                transform: scale(1);
+              transform: scale(1);
             }
-        }
-          
+          }
+
           details[open] .custom-arrow {
             transform: rotate(180deg);
           }
@@ -78,9 +78,9 @@ const remarkCollapseH2: Plugin<[], Root> = () => {
           .tooltip-wrapper {
             position: relative;
             display: inline-block;
-            }
+          }
 
-        .tooltip-text {
+          .tooltip-text {
             visibility: hidden;
             text-align: center;
             position: absolute;
@@ -98,20 +98,20 @@ const remarkCollapseH2: Plugin<[], Root> = () => {
             border: var(--border-white);
             width: max-content;
             max-width: 30rem;
-        }
-
-        .tooltip-wrapper:hover .tooltip-text {
-          visibility: visible;
-          opacity: 1;
           }
 
-        details ol {
-          padding-left: 5rem;
+          .tooltip-wrapper:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
           }
 
-        details h3 {
+          details ol {
+            padding-left: 5rem;
+          }
+
+          details h3 {
             font-weight: var(--GFW-font-bold) !important;
-        }
+          }
         </style>
       `,
     }
@@ -139,7 +139,7 @@ const remarkCollapseH2: Plugin<[], Root> = () => {
         type: 'html',
         value: `<details id="${id}">
           <summary>
-                <h2>${title}</h2> 
+                <h2>${title}</h2>
                 <svg class="custom-arrow" width="20" height="20" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><path d="M14.54 7.54a.65.65 0 01.988.84l-.068.08-5 5a.65.65 0 01-.84.068l-.08-.068-5-5a.65.65 0 01.84-.988l.08.068L10 12.081l4.54-4.54z" fill-rule="nonzero"/></svg>
                 <span class="tooltip-wrapper">
                 <svg class="copy" width="20" height="20" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="M12 4.5c.78 0 1.42.6 1.5 1.36V18c0 .78-.6 1.42-1.36 1.5H4a1.5 1.5 0 01-1.5-1.36V6c0-.78.6-1.42 1.36-1.5H12zM12 6H4v12h8V6zm4-4.75c.38 0 .7.28.74.65l.01.1v12c0 .38-.28.7-.65.74l-.1.01h-1.5v-1.5h.75V2.75h-6.5v.75h-1.5V2c0-.38.28-.7.65-.74l.1-.01h8z"/></svg>
@@ -170,6 +170,10 @@ const remarkCollapseH2: Plugin<[], Root> = () => {
       return nextH2Index
     })
   }
+}
+
+function getLinkHashPath(path: string) {
+  return `${window.location.origin}${window.location.pathname}${window.location.search}#${path}`
 }
 
 function EnhancedMarkdown({ content }: { content: string }) {
@@ -211,7 +215,7 @@ function EnhancedMarkdown({ content }: { content: string }) {
         if (!parentDetails) return
 
         const id = parentDetails.id
-        const url = `${window.location.origin}${window.location.pathname}${window.location.search}#${id}`
+        const url = getLinkHashPath(id)
 
         navigator.clipboard
           ?.writeText(url)
@@ -241,7 +245,12 @@ function EnhancedMarkdown({ content }: { content: string }) {
     <Markdown
       rehypePlugins={[rehypeRaw]}
       remarkPlugins={[remarkCollapseH2, [remarkGfm, { singleTilde: false }]]}
-      urlTransform={(url: string) => (url.startsWith('data:') ? url : defaultUrlTransform(url))}
+      urlTransform={(url: string) => {
+        if (url.startsWith('#')) {
+          return getLinkHashPath(url)
+        }
+        return url.startsWith('data:') ? url : defaultUrlTransform(url)
+      }}
     >
       {content}
     </Markdown>

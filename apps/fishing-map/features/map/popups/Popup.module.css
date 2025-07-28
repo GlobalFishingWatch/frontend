@@ -330,3 +330,7 @@
   justify-content: space-between;
   padding: var(--space-XS);
 }
+
+.bathymetryDisclaimer {
+  cursor: default;
+}
