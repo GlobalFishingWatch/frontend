@@ -4,6 +4,11 @@
   flex-direction: column;
 }
 
+.disclaimerTitle {
+  color: var(--color-primary-blue);
+  font: var(--font-L-bold);
+}
+
 .mapContainer {
   height: 100%;
 }
