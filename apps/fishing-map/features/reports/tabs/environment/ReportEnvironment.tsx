@@ -12,6 +12,7 @@ import { selectActiveReportDataviews } from 'features/dataviews/selectors/datavi
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
+import type { FourwingsReportGraphStats } from 'features/reports/reports-timeseries.hooks'
 import {
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
@@ -49,7 +50,8 @@ function ReportEnvironment() {
     <Fragment>
       {environmentalDataviews.map((dataview, index) => {
         const isDynamic = dataview.config?.type === DataviewType.HeatmapAnimated
-        const { min, mean, max } = timeseriesStats?.[dataview.id] || {}
+        const { min, mean, max } =
+          (timeseriesStats?.[dataview.id] as FourwingsReportGraphStats) || {}
         const isCurrents = dataview.config?.type === DataviewType.Currents
         const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
         const title = getDatasetNameTranslated(dataset)

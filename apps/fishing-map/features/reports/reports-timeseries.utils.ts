@@ -8,7 +8,10 @@ import {
   getFourwingsTimeseries,
   getFourwingsTimeseriesStats,
 } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
-import { getPointsTimeseries } from 'features/reports/tabs/others/reports-points-timeseries.utils'
+import {
+  getPointsTimeseries,
+  getPointsTimeseriesStats,
+} from 'features/reports/tabs/others/reports-points-timeseries.utils'
 
 export type GetTimeseriesParams<T extends FourwingsLayer | UserPointsTileLayer> = {
   featuresFiltered: FilteredPolygons[][]
@@ -27,12 +30,12 @@ export const getTimeseries = <T extends FourwingsLayer | UserPointsTileLayer>({
   instances.forEach((instance, index) => {
     const features = featuresFiltered?.[index]
     if (isInstanceOfPointsLayer(instance)) {
-      const fourwingsTimeseries = getPointsTimeseries({
+      const pointsTimeseries = getPointsTimeseries({
         instance,
         features,
       })
-      if (fourwingsTimeseries) {
-        timeseries.push(fourwingsTimeseries)
+      if (pointsTimeseries) {
+        timeseries.push(pointsTimeseries)
       }
     } else {
       const fourwingsTimeseries = getFourwingsTimeseries({
@@ -55,10 +58,18 @@ export const getTimeseriesStats = <T extends FourwingsLayer | UserPointsTileLaye
 }: GetTimeseriesParams<T> & TimeRange) => {
   const timeseriesStats = {} as ReportGraphStats
   instances.forEach((instance, index) => {
-    if (!isInstanceOfPointsLayer(instance)) {
-      const features = featuresFiltered?.[index]
+    const features = featuresFiltered?.[index]
+    if (isInstanceOfPointsLayer(instance)) {
+      const stats = getPointsTimeseriesStats({
+        instance,
+        features,
+      })
+      if (stats) {
+        timeseriesStats[instance.id] = stats
+      }
+    } else {
       const stats = getFourwingsTimeseriesStats({
-        instance: instance,
+        instance,
         features,
         start,
         end,

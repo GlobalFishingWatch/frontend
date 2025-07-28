@@ -9,7 +9,7 @@ import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
-import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import type { FourwingsLayer, UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
 import {
   type FourwingsFeature,
   type FourwingsInterval,
@@ -70,14 +70,18 @@ export interface ReportGraphProps {
   mode?: ReportGraphMode
 }
 
-export type ReportGraphStats = Record<
-  string,
-  {
-    min: number
-    max: number
-    mean: number
-  }
->
+export type FourwingsReportGraphStats = {
+  type: 'fourwings'
+  min: number
+  max: number
+  mean: number
+}
+
+export type PointsReportGraphStats = {
+  type: 'points'
+  total: number
+}
+export type ReportGraphStats = Record<string, FourwingsReportGraphStats | PointsReportGraphStats>
 
 interface ReportState {
   isLoading: boolean
@@ -219,7 +223,10 @@ const useReportTimeseries = (
             let mode: FilterByPolygonMode = 'cell'
             if (instance.props.category === 'environment') {
               mode = 'cellCenter'
-            } else if (instance.props.category === 'user') {
+            } else if (
+              instance.props.category === 'user' ||
+              instance.props.category === 'context'
+            ) {
               mode = 'point'
             }
             const filteredInstanceFeatures =
