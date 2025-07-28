@@ -38,7 +38,6 @@ import {
   filterTimeseriesByTimerange,
   getTimeseries,
   getTimeseriesStats,
-  isInstanceOfPointsLayer,
 } from 'features/reports/reports-timeseries.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
@@ -119,7 +118,9 @@ export const useReportFeaturesLoading = () => {
   return useAtomValue(reportStateAtom)?.isLoading
 }
 
-const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
+const useReportTimeseries = (
+  reportLayers: DeckLayerAtom<FourwingsLayer | UserPointsTileLayer>[]
+) => {
   const [reportState, setReportState] = useAtom(reportStateAtom)
   const filterCellsByPolygon = useFilterCellsByPolygonWorker()
   const area = useSelector(selectReportArea)
@@ -137,11 +138,10 @@ const useReportTimeseries = (reportLayers: DeckLayerAtom<FourwingsLayer>[]) => {
 
   const instancesChunkHash = reportLayers
     ?.flatMap(({ instance }) => {
-      if (isInstanceOfPointsLayer(instance)) {
-        const interval = getFourwingsInterval(start, end)
-        return `${instance.id}-${interval}`
+      if ('cacheHash' in instance && instance.cacheHash) {
+        return instance.cacheHash
       }
-      if (instance?.getChunk) {
+      if ('getChunk' in instance && instance.getChunk) {
         const { bufferedStart, bufferedEnd, interval } = instance.getChunk()
         return `${instance.id}-${interval}-${bufferedStart}-${bufferedEnd}`
       }
