@@ -376,13 +376,23 @@ export function getDataviewsResolved(
         visualizationMode: params.environmentVisualizationMode,
       }) || []
   )
-  const staticDataviewsParsed = staticDataviews.flatMap(
-    (d) =>
+  const staticDataviewsParsed = staticDataviews.flatMap((d) => {
+    let visualizationMode = undefined
+    if (d.category === DataviewCategory.Environment) {
+      visualizationMode = params.environmentVisualizationMode
+    } else if (d.category === DataviewCategory.Activity) {
+      visualizationMode = params.activityVisualizationMode
+    } else if (d.category === DataviewCategory.Detections) {
+      visualizationMode = params.detectionsVisualizationMode
+    }
+    return (
       getFourwingsDataviewsResolved(d, {
         colorRampWhiteEnd:
           d.config?.type === DataviewType.HeatmapStatic ? false : singleHeatmapDataview,
+        visualizationMode,
       }) || []
-  )
+    )
+  })
   const currentsDataviewsParsed = currentsDataviews.flatMap((dataview) => {
     return {
       ...dataview,

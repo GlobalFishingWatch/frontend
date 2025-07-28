@@ -19,7 +19,7 @@ import { FourwingsHeatmapStaticLayer } from './heatmap/FourwingsHeatmapStaticLay
 import { FourwingsHeatmapTileLayer } from './heatmap/FourwingsHeatmapTileLayer'
 import type { FourwingsPositionsTileLayerProps } from './positions/fourwings-positions.types'
 import { FourwingsPositionsTileLayer } from './positions/FourwingsPositionsTileLayer'
-import { FOOTPRINT_ID, HEATMAP_ID, HEATMAP_STATIC_ID, POSITIONS_ID } from './fourwings.config'
+import { FOOTPRINT_ID, HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
 import type {
   FourwingsPickingObject,
   FourwingsVisualizationMode,
@@ -79,13 +79,13 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     }
     const resolution = getResolutionByVisualizationMode(visualizationMode)
     const HeatmapLayerClass = this.props.static
-      ? this.getSubLayerClass(HEATMAP_STATIC_ID, FourwingsHeatmapStaticLayer)
+      ? this.getSubLayerClass(resolution, FourwingsHeatmapStaticLayer)
       : this.getSubLayerClass(resolution, FourwingsHeatmapTileLayer)
 
     return new HeatmapLayerClass(
       this.props,
       this.getSubLayerProps({
-        id: HEATMAP_STATIC_ID,
+        id: resolution,
         resolution,
         onViewportLoad: this.props.onViewportLoad,
       })
