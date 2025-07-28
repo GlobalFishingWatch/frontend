@@ -11,6 +11,7 @@ export type AreaConfig = {
     area: string
     name: string
   }
+  geometryMode?: 'bbox' | 'simplify'
   filter?: (area: Feature) => boolean
   limitBy?: (areas: Feature[]) => Feature[]
 }

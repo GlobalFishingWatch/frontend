@@ -28,6 +28,7 @@ __metadata:
   resolution: "@globalfishingwatch/ocean-areas@workspace:."
   dependencies:
     "@turf/bbox": "npm:7.x"
+    "@turf/bbox-polygon": "npm:7.x"
     "@turf/boolean-point-in-polygon": "npm:7.x"
     "@turf/distance": "npm:7.x"
     "@turf/explode": "npm:7.x"
@@ -95,6 +96,17 @@ __metadata:
   version: 1.0.4
   resolution: "@tsconfig/node16@npm:1.0.4"
   checksum: 10/202319785901f942a6e1e476b872d421baec20cf09f4b266a1854060efbf78cde16a4d256e8bc949d31e6cd9a90f1e8ef8fb06af96a65e98338a2b6b0de0a0ff
+  languageName: node
+  linkType: hard
+
+"@turf/bbox-polygon@npm:7.x":
+  version: 7.2.0
+  resolution: "@turf/bbox-polygon@npm:7.2.0"
+  dependencies:
+    "@turf/helpers": "npm:^7.2.0"
+    "@types/geojson": "npm:^7946.0.10"
+    tslib: "npm:^2.8.1"
+  checksum: 10/6aef238801b3264fc78ed5ccc1c2beb6f6debe88639f2c27ef573a387f699d758512952b30bad26c9ede9675aa9f3e4a8a9acef33992be056860f079c039569d
   languageName: node
   linkType: hard
 

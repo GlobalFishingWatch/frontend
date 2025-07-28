@@ -7,6 +7,7 @@ prepare({
   path: 'mpas',
   bucketFolder: 'public-mpa-all',
   skipDownload: true,
+  geometryMode: 'bbox',
   propertiesMapping: {
     area: 'WDPA_PID',
     name: 'NAME',

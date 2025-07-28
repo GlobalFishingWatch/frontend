@@ -18,7 +18,16 @@ async function existsFilePath(path: string) {
 }
 
 export async function prepare(
-  { type, path, bucketFolder, propertiesMapping, limitBy, filter, skipDownload } = {} as AreaConfig
+  {
+    type,
+    path,
+    bucketFolder,
+    propertiesMapping,
+    limitBy,
+    filter,
+    skipDownload,
+    geometryMode = 'simplify',
+  } = {} as AreaConfig
 ) {
   const sourcePath = `${sourcePathPrefix}/${path}`
   const areasListPath = `${sourcePath}/list.json`
@@ -62,7 +71,7 @@ export async function prepare(
         filteredFileIndex++
         process.stdout.write(`\r[${type}] ${renderBar(filteredFileIndex, listLength)}`)
       }
-      const simplifiedArea = simplifyArea(areaData, propertiesMapping.area)
+      const simplifiedArea = simplifyArea(areaData, propertiesMapping.area, geometryMode)
       if (simplifiedArea) {
         const area = areaData.properties?.[propertiesMapping.area]
         if (!area) {

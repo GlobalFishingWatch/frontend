@@ -16,6 +16,7 @@
   ],
   "dependencies": {
     "@turf/bbox": "7.x",
+    "@turf/bbox-polygon": "7.x",
     "@turf/boolean-point-in-polygon": "7.x",
     "@turf/distance": "7.x",
     "@turf/explode": "7.x",
