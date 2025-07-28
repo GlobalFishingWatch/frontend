@@ -12,8 +12,8 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 
+import { isFeatureInRange } from 'features/reports/reports-timeseries-shared.utils'
 import type { FourwingsFeaturesToTimeseriesParams } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
-import { isFeatureInRange } from 'features/reports/tabs/others/reports-points-timeseries.utils'
 import { getUTCDateTime } from 'utils/dates'
 
 type GetGraphDataFromFourwingsFeaturesParams = Pick<
