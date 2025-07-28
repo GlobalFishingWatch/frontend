@@ -21,6 +21,7 @@ export type TrackCorrectionComment = {
 export type TrackCorrection = {
   issueId: string
   vesselId: string
+  ssvid: string
   vesselName?: string
   createdBy?: string
   userEmail?: string
