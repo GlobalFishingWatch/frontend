@@ -104,10 +104,13 @@ export const useReportInstances = () => {
   const currentCategoryDataviews = useSelector(selectActiveReportDataviews)
   let ids = ['']
   if (currentCategoryDataviews?.length > 0) {
-    if (currentCategory === ReportCategory.Environment) {
-      ids = currentCategoryDataviews.map((dataview) => dataview.id)
-    } else {
+    if (
+      currentCategory === ReportCategory.Activity ||
+      currentCategory === ReportCategory.Detections
+    ) {
       ids = [getMergedDataviewId(currentCategoryDataviews)]
+    } else {
+      ids = currentCategoryDataviews.map((dataview) => dataview.id)
     }
   }
   const reportLayerInstances = useGetDeckLayers<FourwingsLayer>(ids)
