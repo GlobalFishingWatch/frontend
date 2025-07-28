@@ -247,7 +247,7 @@ function EnhancedMarkdown({ content }: { content: string }) {
       remarkPlugins={[remarkCollapseH2, [remarkGfm, { singleTilde: false }]]}
       urlTransform={(url: string) => {
         if (url.startsWith('#')) {
-          return getLinkHashPath(url)
+          return getLinkHashPath(url.replace('#', ''))
         }
         return url.startsWith('data:') ? url : defaultUrlTransform(url)
       }}
