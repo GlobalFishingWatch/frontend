@@ -66,7 +66,6 @@ export type VesselLayerProps = DeckLayerProps<
 >
 
 type VesselLayerState = {
-  colorDirty: boolean
   errors: {
     [key in EventTypes | 'track']?: string
   }
@@ -78,24 +77,18 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   initializeState() {
     super.initializeState(this.context)
     this.state = {
-      colorDirty: false,
       errors: {},
     }
   }
 
   get isLoaded(): boolean {
-    return this.getAllSublayersLoaded() && this.state ? !this.state.colorDirty : false
+    return this.getAllSublayersLoaded()
   }
 
-  updateState({ props, oldProps }: UpdateParameters<this>) {
-    // TODO:deck try to remove this workaround because we cannot find
-    // why useTimebarVesselTracks is not updating on color change
-    if (oldProps.color?.join('') !== props.color.join('')) {
-      this.setState({ colorDirty: true })
-      requestAnimationFrame(() => {
-        this.setState({ colorDirty: false })
-      })
-    }
+  get cacheHash(): string {
+    const { color } = this.props
+    const filters = this.getFilters()
+    return `${color.join('')}-${Object.values(filters).filter(Boolean).join('-')}`
   }
 
   getPickingInfo = ({
