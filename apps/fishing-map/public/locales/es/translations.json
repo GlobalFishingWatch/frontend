@@ -120,6 +120,7 @@
     "average": "promedio",
     "averageAbbreviated": "prom.",
     "back": "atrás",
+    "bathymetry_disclaimer": "Depth shown on map is a cell average — actual depth at clicked point may vary.",
     "between": "entre",
     "cancel": "Cancelar",
     "category": "Categoría",
@@ -901,7 +902,9 @@
     "tracksDisabled": "Seleccione al menos una embarcación"
   },
   "toasts": {
-    "maxPointsVisualizationExceeded": "Se ha superado la visualización máxima de puntos, cambiando al modo de mapa de calor."
+    "maxPointsVisualizationExceeded": "Se ha superado la visualización máxima de puntos, cambiando al modo de mapa de calor.",
+    "shutdownDisclaimer": "Las mejoras del producto y de los datos están previstas para la semana del 4 de agosto. Durante este tiempo, es posible que algunos productos no muestren los últimos datos. Las actualizaciones completas se reanudarán en breve.",
+    "shutdownDisclaimerTitle": "Retraso temporal en las actualizaciones de datos"
   },
   "trackCorrection": {
     "adjustDisabled": "Adjusting the time range is needed.",
