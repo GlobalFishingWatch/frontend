@@ -7,12 +7,12 @@ import { routeTree } from './routeTree.gen'
 // Import styles
 import '../../../libs/ui-components/src/base.css'
 
-const basepath = process.env.NODE_ENV === 'production' ? '/data-download' : ''
+export const BASE_PATH = process.env.NODE_ENV === 'production' ? '/data-download' : ''
 
 // Create a new router instance
 const router = createRouter({
   routeTree,
-  basepath,
+  basepath: BASE_PATH,
 })
 
 // Register the router instance for type safety
