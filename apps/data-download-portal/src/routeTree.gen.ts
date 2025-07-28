@@ -8,82 +8,43 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as ReportReportIdRouteImport } from './routes/report.$reportId'
+import { Route as DatasetsDatasetIdRouteImport } from './routes/datasets.$datasetId'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as IndexImport } from './routes/index'
-import { Route as ReportReportIdImport } from './routes/report.$reportId'
-import { Route as DatasetsDatasetIdImport } from './routes/datasets.$datasetId'
-
-// Create/Update Routes
-
-const IndexRoute = IndexImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const ReportReportIdRoute = ReportReportIdImport.update({
+const ReportReportIdRoute = ReportReportIdRouteImport.update({
   id: '/report/$reportId',
   path: '/report/$reportId',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const DatasetsDatasetIdRoute = DatasetsDatasetIdImport.update({
+const DatasetsDatasetIdRoute = DatasetsDatasetIdRouteImport.update({
   id: '/datasets/$datasetId',
   path: '/datasets/$datasetId',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-// Populate the FileRoutesByPath interface
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/datasets/$datasetId': {
-      id: '/datasets/$datasetId'
-      path: '/datasets/$datasetId'
-      fullPath: '/datasets/$datasetId'
-      preLoaderRoute: typeof DatasetsDatasetIdImport
-      parentRoute: typeof rootRoute
-    }
-    '/report/$reportId': {
-      id: '/report/$reportId'
-      path: '/report/$reportId'
-      fullPath: '/report/$reportId'
-      preLoaderRoute: typeof ReportReportIdImport
-      parentRoute: typeof rootRoute
-    }
-  }
-}
-
-// Create and export the route tree
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/datasets/$datasetId': typeof DatasetsDatasetIdRoute
   '/report/$reportId': typeof ReportReportIdRoute
 }
-
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/datasets/$datasetId': typeof DatasetsDatasetIdRoute
   '/report/$reportId': typeof ReportReportIdRoute
 }
-
 export interface FileRoutesById {
-  __root__: typeof rootRoute
+  __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/datasets/$datasetId': typeof DatasetsDatasetIdRoute
   '/report/$reportId': typeof ReportReportIdRoute
 }
-
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths: '/' | '/datasets/$datasetId' | '/report/$reportId'
@@ -92,11 +53,36 @@ export interface FileRouteTypes {
   id: '__root__' | '/' | '/datasets/$datasetId' | '/report/$reportId'
   fileRoutesById: FileRoutesById
 }
-
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DatasetsDatasetIdRoute: typeof DatasetsDatasetIdRoute
   ReportReportIdRoute: typeof ReportReportIdRoute
+}
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/report/$reportId': {
+      id: '/report/$reportId'
+      path: '/report/$reportId'
+      fullPath: '/report/$reportId'
+      preLoaderRoute: typeof ReportReportIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/datasets/$datasetId': {
+      id: '/datasets/$datasetId'
+      path: '/datasets/$datasetId'
+      fullPath: '/datasets/$datasetId'
+      preLoaderRoute: typeof DatasetsDatasetIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+  }
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -104,31 +90,6 @@ const rootRouteChildren: RootRouteChildren = {
   DatasetsDatasetIdRoute: DatasetsDatasetIdRoute,
   ReportReportIdRoute: ReportReportIdRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/datasets/$datasetId",
-        "/report/$reportId"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/datasets/$datasetId": {
-      "filePath": "datasets.$datasetId.tsx"
-    },
-    "/report/$reportId": {
-      "filePath": "report.$reportId.tsx"
-    }
-  }
-}
-ROUTE_MANIFEST_END */
