@@ -1388,6 +1388,7 @@
       "marine-manager": "Marine Manager est un nouveau portail technologique destiné à soutenir la conception, la gestion et le suivi efficaces des aires protégées.",
       "search": "Recherche par nom de navire ou code d'identification . Vous pouvez affiner votre recherche en cliquant sur « Avancé » dans la barre supérieure."
     },
+    "test_notification": "workspace.test_notification",
     "title": "Workspace",
     "title_other": "Espaces de travail",
     "update": "Mise à jour",
