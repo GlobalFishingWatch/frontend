@@ -1210,7 +1210,8 @@ interface Resources {
       "info": "User Info",
       "profile": "Profile",
       "seeDataset": "See on map",
-      "title": "User"
+      "title": "User",
+      "title2": "user.title2"
     },
     "userGuide": {
       "activityFilters": "Filter activity layers",

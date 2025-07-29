@@ -182,7 +182,7 @@ function App() {
   const showStats = isReady && debugOptions.mapStats === true
 
   const getSidebarName = useCallback(() => {
-    if (locationType === USER) return t('user.title')
+    if (locationType === USER) return t('user.title2')
     if (locationType === WORKSPACES_LIST) return t('workspace.title_other')
     if (locationType === SEARCH || locationType === WORKSPACE_SEARCH) return t('search.title')
     if (locationType === VESSEL || locationType === WORKSPACE_VESSEL) return t('vessel.title')
