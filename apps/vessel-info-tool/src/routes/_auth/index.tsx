@@ -1,18 +1,17 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 
 import SidebarHeader from '@/features/header/SidebarHeader'
 import { createColumns, VesselTable } from '@/features/table/VesselsTable'
-
-import { fetchVessels } from '../utils/vessels'
-
-export const Route = createFileRoute('/vessels')({
-  loader: async () => fetchVessels(),
-  component: PostsComponent,
-})
+import { fetchVessels } from '@/utils/vessels'
 
 export type Vessel = Record<string, any>
 
-function PostsComponent() {
+export const Route = createFileRoute('/_auth/')({
+  loader: async () => fetchVessels(),
+  component: Home,
+})
+
+function Home() {
   const vessels: Vessel[] = Route.useLoaderData()
   const columns = createColumns(vessels)
 

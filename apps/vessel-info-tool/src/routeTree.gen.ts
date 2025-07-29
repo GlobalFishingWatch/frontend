@@ -8,35 +8,30 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
 import { createServerRootRoute } from '@tanstack/react-start/server'
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VesselsRouteImport } from './routes/vessels'
-import { Route as RedirectRouteImport } from './routes/redirect'
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { ServerRoute as ApiVesselsFileNameServerRouteImport } from './routes/api/vessels/$fileName'
 
+const LoginIndexLazyRouteImport = createFileRoute('/login/')()
 const rootServerRouteImport = createServerRootRoute()
 
-const VesselsRoute = VesselsRouteImport.update({
-  id: '/vessels',
-  path: '/vessels',
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RedirectRoute = RedirectRouteImport.update({
-  id: '/redirect',
-  path: '/redirect',
+const LoginIndexLazyRoute = LoginIndexLazyRouteImport.update({
+  id: '/login/',
+  path: '/login/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: '/_authenticated',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
+} as any).lazy(() => import('./routes/login/index.lazy').then((d) => d.Route))
+const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthRoute,
 } as any)
 const ApiVesselsFileNameServerRoute =
   ApiVesselsFileNameServerRouteImport.update({
@@ -46,35 +41,30 @@ const ApiVesselsFileNameServerRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/redirect': typeof RedirectRoute
-  '/vessels': typeof VesselsRoute
+  '/': typeof AuthIndexRoute
+  '/login': typeof LoginIndexLazyRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/redirect': typeof RedirectRoute
-  '/vessels': typeof VesselsRoute
+  '/': typeof AuthIndexRoute
+  '/login': typeof LoginIndexLazyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/_authenticated': typeof AuthenticatedRoute
-  '/redirect': typeof RedirectRoute
-  '/vessels': typeof VesselsRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/_auth/': typeof AuthIndexRoute
+  '/login/': typeof LoginIndexLazyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/redirect' | '/vessels'
+  fullPaths: '/' | '/login'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/redirect' | '/vessels'
-  id: '__root__' | '/' | '/_authenticated' | '/redirect' | '/vessels'
+  to: '/' | '/login'
+  id: '__root__' | '/_auth' | '/_auth/' | '/login/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AuthenticatedRoute: typeof AuthenticatedRoute
-  RedirectRoute: typeof RedirectRoute
-  VesselsRoute: typeof VesselsRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  LoginIndexLazyRoute: typeof LoginIndexLazyRoute
 }
 export interface FileServerRoutesByFullPath {
   '/api/vessels/$fileName': typeof ApiVesselsFileNameServerRoute
@@ -100,33 +90,26 @@ export interface RootServerRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/vessels': {
-      id: '/vessels'
-      path: '/vessels'
-      fullPath: '/vessels'
-      preLoaderRoute: typeof VesselsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/redirect': {
-      id: '/redirect'
-      path: '/redirect'
-      fullPath: '/redirect'
-      preLoaderRoute: typeof RedirectRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated': {
-      id: '/_authenticated'
+    '/_auth': {
+      id: '/_auth'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof AuthenticatedRouteImport
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/login/': {
+      id: '/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginIndexLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_auth/': {
+      id: '/_auth/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthIndexRouteImport
+      parentRoute: typeof AuthRoute
     }
   }
 }
@@ -142,11 +125,19 @@ declare module '@tanstack/react-start/server' {
   }
 }
 
+interface AuthRouteChildren {
+  AuthIndexRoute: typeof AuthIndexRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthIndexRoute: AuthIndexRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AuthenticatedRoute: AuthenticatedRoute,
-  RedirectRoute: RedirectRoute,
-  VesselsRoute: VesselsRoute,
+  AuthRoute: AuthRouteWithChildren,
+  LoginIndexLazyRoute: LoginIndexLazyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
