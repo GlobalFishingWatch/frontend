@@ -106,7 +106,7 @@ function DatasetSchemaField({
       config: {
         filters: {
           ...(dataview.config?.filters || {}),
-          [field]: tags.length ? tags.map((t) => t.id) : undefined,
+          [field]: tags.length ? tags.map((t) => t.id) : '',
         },
       },
     })
