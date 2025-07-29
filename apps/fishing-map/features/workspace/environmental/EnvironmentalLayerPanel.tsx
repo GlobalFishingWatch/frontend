@@ -8,7 +8,7 @@ import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-clien
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
-import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import type { ColorBarOption, TagItem } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
@@ -144,6 +144,16 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   const showVisibleFilterValues = showMinVisibleFilter || showMaxVisibleFilter || hasFilters
   const showSortHandler = items.length > 1 && !readOnly
 
+  const onRemoveVisibleValuesClick = () => {
+    upsertDataviewInstance({
+      id: dataview.id,
+      config: {
+        minVisibleValue: undefined,
+        maxVisibleValue: undefined,
+      },
+    })
+  }
+
   return (
     <div
       className={cx(styles.LayerPanel, {
@@ -254,6 +264,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
                   dataview={dataview}
                   field={'visibleValues'}
                   label={t('common.visibleValues')}
+                  onRemove={onRemoveVisibleValuesClick}
                 />
               )}
             </div>

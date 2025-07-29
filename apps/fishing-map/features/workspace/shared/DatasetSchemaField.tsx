@@ -29,6 +29,7 @@ type LayerPanelProps = {
   field: SupportedDatasetSchema
   label: string
   className?: string
+  onRemove?: (tag: TagItem, tags: TagItem[]) => void
 }
 
 function DatasetSchemaField({
@@ -36,6 +37,7 @@ function DatasetSchemaField({
   field,
   label,
   className = '',
+  onRemove,
 }: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const vesselGroupsOptions = useVesselGroupsOptions()
@@ -122,7 +124,7 @@ function DatasetSchemaField({
             tags={valuesSelected}
             color={dataview.config?.color}
             className={styles.tagList}
-            onRemove={onRemoveClick}
+            onRemove={onRemove ? onRemove : onRemoveClick}
           />
         </div>
       )}
