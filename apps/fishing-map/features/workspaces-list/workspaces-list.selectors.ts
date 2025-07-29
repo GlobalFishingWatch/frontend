@@ -101,6 +101,14 @@ export const selectAvailableWorkspacesCategories = createSelector(
   }
 )
 
+export const selectCurrentHighlightedWorkspacesIds = createSelector(
+  [selectLocationCategory, selectHighlightedWorkspaces],
+  (locationCategory, highlightedWorkspaces): string[] => {
+    const highlighted = highlightedWorkspaces?.find(({ category }) => category === locationCategory)
+    return highlighted?.workspaces.map(({ id }) => id) || []
+  }
+)
+
 export const selectCurrentHighlightedWorkspaces = createSelector(
   [selectLocationCategory, selectHighlightedWorkspaces, selectWorkspaces],
   (locationCategory, highlightedWorkspaces, apiWorkspaces): HighlightedWorkspace[] | undefined => {
