@@ -59,26 +59,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <div className="p-2 flex gap-2 text-lg">
-          <Link
-            to="/"
-            activeProps={{
-              className: 'font-bold',
-            }}
-            activeOptions={{ exact: true }}
-          >
-            Home
-          </Link>{' '}
-          <Link
-            to="/vessels"
-            activeProps={{
-              className: 'font-bold',
-            }}
-          >
-            Vessels
-          </Link>
-        </div>
-        <hr />
         {children}
         <TanStackRouterDevtools position="bottom-right" />
         <Scripts />

@@ -1,0 +1,22 @@
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-S);
+  border-bottom: var(--border);
+  height: var(--header-height);
+}
+
+.logoLink {
+  line-height: 0;
+  margin-right: auto;
+}
+
+.logo {
+  width: 18rem;
+  height: auto;
+}
+
+.sticky {
+  background-color: var(--color-white);
+  z-index: 3;
+}

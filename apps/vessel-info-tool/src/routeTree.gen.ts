@@ -13,6 +13,7 @@ import { createServerRootRoute } from '@tanstack/react-start/server'
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VesselsRouteImport } from './routes/vessels'
 import { Route as RedirectRouteImport } from './routes/redirect'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { ServerRoute as ApiVesselsFileNameServerRouteImport } from './routes/api/vessels/$fileName'
 
@@ -26,6 +27,10 @@ const VesselsRoute = VesselsRouteImport.update({
 const RedirectRoute = RedirectRouteImport.update({
   id: '/redirect',
   path: '/redirect',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -53,6 +58,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRoute
   '/redirect': typeof RedirectRoute
   '/vessels': typeof VesselsRoute
 }
@@ -61,11 +67,12 @@ export interface FileRouteTypes {
   fullPaths: '/' | '/redirect' | '/vessels'
   fileRoutesByTo: FileRoutesByTo
   to: '/' | '/redirect' | '/vessels'
-  id: '__root__' | '/' | '/redirect' | '/vessels'
+  id: '__root__' | '/' | '/_authenticated' | '/redirect' | '/vessels'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRoute
   RedirectRoute: typeof RedirectRoute
   VesselsRoute: typeof VesselsRoute
 }
@@ -107,6 +114,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RedirectRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -130,6 +144,7 @@ declare module '@tanstack/react-start/server' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRoute,
   RedirectRoute: RedirectRoute,
   VesselsRoute: VesselsRoute,
 }

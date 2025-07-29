@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
+import SidebarHeader from '@/features/header/SidebarHeader'
 import { createColumns, VesselTable } from '@/features/table/VesselsTable'
 
 import { fetchVessels } from '../utils/vessels'
@@ -16,12 +17,11 @@ function PostsComponent() {
   const columns = createColumns(vessels)
 
   return (
-    <div className="p-2 flex gap-2">
-      <ul className="list-disc pl-4">
-        <VesselTable data={vessels} columns={columns} />
-      </ul>
-      <hr />
-      <Outlet />
-    </div>
+    <>
+      <SidebarHeader>
+        <h1>Vessels</h1>
+      </SidebarHeader>
+      <VesselTable data={vessels} columns={columns} />
+    </>
   )
 }
