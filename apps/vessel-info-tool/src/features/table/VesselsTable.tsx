@@ -1,5 +1,5 @@
 import type { HTMLProps } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import type { ColumnDef, ExpandedState, SortingState } from '@tanstack/react-table'
 import {
   flexRender,
@@ -13,6 +13,8 @@ import {
 
 import type { Vessel } from '@/routes/vessels'
 import { Icon, IconButton } from '@globalfishingwatch/ui-components'
+
+import ExpandedRow from '../expandedRow/ExpandedRow'
 
 import styles from './VesselsTable.module.css'
 
@@ -85,7 +87,14 @@ export const createColumns = (vessels: Vessel): ColumnDef<Vessel>[] => {
       cell: ({ row, getValue }) => (
         <div className="flex items-center justify-between p-2">
           <span>{String(getValue())}</span>
-          <IconButton icon={row.getIsExpanded() ? 'arrow-top' : 'arrow-down'} size="small" />
+          <IconButton
+            {...{
+              onClick: row.getToggleExpandedHandler(),
+              style: { cursor: 'pointer' },
+            }}
+            icon={row.getIsExpanded() ? 'arrow-top' : 'arrow-down'}
+            size="small"
+          />
         </div>
       ),
     },
@@ -120,6 +129,7 @@ export function VesselTable({ data, columns }: VesselTableProps) {
     onSortingChange: setSorting,
     getFilteredRowModel: getFilteredRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
+    getRowCanExpand: () => true,
   })
 
   return (
@@ -167,25 +177,34 @@ export function VesselTable({ data, columns }: VesselTableProps) {
         <tbody>
           {table.getRowModel().rows.map((row) => {
             return (
-              <tr key={row.id}>
-                {row.getVisibleCells().map((cell) => {
-                  const { column } = cell
-                  return (
-                    <td
-                      key={cell.id}
-                      className={styles.td}
-                      style={{
-                        left: column.getIsPinned() ? `${column.getStart('left')}px` : undefined,
-                        position: column.getIsPinned() ? 'sticky' : 'relative',
-                        width: column.getSize(),
-                        zIndex: column.getIsPinned() ? 1 : 0,
-                      }}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              <Fragment key={row.id}>
+                <tr>
+                  {row.getVisibleCells().map((cell) => {
+                    const { column } = cell
+                    return (
+                      <td
+                        key={cell.id}
+                        className={styles.td}
+                        style={{
+                          left: column.getIsPinned() ? `${column.getStart('left')}px` : undefined,
+                          position: column.getIsPinned() ? 'sticky' : 'relative',
+                          width: column.getSize(),
+                          zIndex: column.getIsPinned() ? 1 : 0,
+                        }}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    )
+                  })}
+                </tr>
+                {row.getIsExpanded() && (
+                  <tr>
+                    <td colSpan={row.getVisibleCells().length}>
+                      <ExpandedRow vessel={row.original} />
                     </td>
-                  )
-                })}
-              </tr>
+                  </tr>
+                )}
+              </Fragment>
             )
           })}
         </tbody>
