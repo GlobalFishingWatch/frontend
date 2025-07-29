@@ -1,5 +1,5 @@
 import type { HTMLProps } from 'react'
-import { useEffect, useRef,useState  } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { ColumnDef, ExpandedState, SortingState } from '@tanstack/react-table'
 import {
   flexRender,
@@ -35,15 +35,15 @@ function IndeterminateCheckbox({
   }, [ref, indeterminate])
 
   return (
-    <div className={styles.checkbox}>
+    <div>
       <input
         id="indeterminate-checkbox"
         type="checkbox"
         ref={ref}
-        className={className + ' cursor-pointer'}
+        className={`${styles.checkbox} ${className}`}
         {...rest}
       />
-      <label htmlFor="indeterminate-checkbox"></label>
+      <label htmlFor="indeterminate-checkbox" className="h-0"></label>
     </div>
   )
 }
@@ -57,13 +57,21 @@ export const createColumns = (vessels: Vessel): ColumnDef<Vessel>[] => {
   return [
     {
       id: 'select',
-      header: '',
-      cell: ({ table }) => (
+      header: ({ table }) => (
         <IndeterminateCheckbox
           {...{
             checked: table.getIsAllRowsSelected(),
             indeterminate: table.getIsSomeRowsSelected(),
             onChange: table.getToggleAllRowsSelectedHandler(),
+          }}
+        />
+      ),
+      cell: ({ row }) => (
+        <IndeterminateCheckbox
+          {...{
+            checked: row.getIsSelected(),
+            indeterminate: false,
+            onChange: row.getToggleSelectedHandler(),
           }}
         />
       ),
@@ -74,13 +82,10 @@ export const createColumns = (vessels: Vessel): ColumnDef<Vessel>[] => {
     {
       accessorKey: nameKey[0],
       header: nameKey[0] || 'Name',
-      cell: ({ table, getValue }) => (
+      cell: ({ row, getValue }) => (
         <div className="flex items-center justify-between p-2">
           <span>{String(getValue())}</span>
-          <IconButton
-            icon={table.getIsAllRowsExpanded() ? 'arrow-top' : 'arrow-down'}
-            size="small"
-          />
+          <IconButton icon={row.getIsExpanded() ? 'arrow-top' : 'arrow-down'} size="small" />
         </div>
       ),
     },
@@ -144,7 +149,7 @@ export function VesselTable({ data, columns }: VesselTableProps) {
                         onClick={header.column.getToggleSortingHandler()}
                         className="flex items-center justify-between p-2"
                       >
-                        <span className="block text-ellipsis overflow-hidden whitespace-nowrap max-w-[150px]">
+                        <span className="block text-ellipsis overflow-hidden whitespace-nowrap max-w-[170px]">
                           {flexRender(header.column.columnDef.header, header.getContext())}
                         </span>
                         {{
