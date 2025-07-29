@@ -1,3 +1,25 @@
 .container {
   display: flex;
+  background: linear-gradient(180deg, rgba(229, 240, 242, 1) 0%, rgba(255, 255, 255, 1) 100%);
+}
+
+.th {
+  border-bottom: 1px solid var(--border-color);
+  min-width: 30px;
+  background: white;
+}
+
+.td {
+  margin: 0;
+  padding: 0.6rem 2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
+  height: 50px;
+  box-shadow: -1px 0 0 0 inset rgba(22, 63, 137, 0.1);
+  font-size: 1.4rem;
+  border: none;
+  border-bottom: 1px solid var(--border-color-light);
+  text-transform: capitalize;
 }
