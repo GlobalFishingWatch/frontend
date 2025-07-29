@@ -1388,6 +1388,7 @@
       "marine-manager": "Marine Manager adalah portal teknologi baru untuk mendukung desain, pengelolaan, dan pemantauan kawasan lindung yang efektif.",
       "search": "Pencarian berdasarkan nama kapal atau kode identifikasi. Anda dapat mempersempit pencarian Anda dengan menekan Lanjutan di bar bagian atas"
     },
+    "test_notification": "workspace.test_notification",
     "title": "Workspace",
     "title_other": "Ruang kerja",
     "update": "Memperbarui",
