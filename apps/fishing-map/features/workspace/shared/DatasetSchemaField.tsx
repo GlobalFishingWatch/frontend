@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from 'react'
+import { Fragment, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -29,6 +29,7 @@ type LayerPanelProps = {
   field: SupportedDatasetSchema
   label: string
   className?: string
+  removeType?: 'visibleValues' | 'filter'
 }
 
 function DatasetSchemaField({
@@ -36,6 +37,7 @@ function DatasetSchemaField({
   field,
   label,
   className = '',
+  removeType = 'filter',
 }: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const vesselGroupsOptions = useVesselGroupsOptions()
@@ -98,17 +100,30 @@ function DatasetSchemaField({
     ]
   }
 
-  const onRemoveClick = (tag: TagItem, tags: TagItem[]) => {
+  const onRemoveFilterClick = useCallback(
+    (tag: TagItem, tags: TagItem[]) => {
+      upsertDataviewInstance({
+        id: dataview.id,
+        config: {
+          filters: {
+            ...(dataview.config?.filters || {}),
+            [field]: tags.length ? tags.map((t) => t.id) : '',
+          },
+        },
+      })
+    },
+    [dataview, field, upsertDataviewInstance]
+  )
+
+  const onRemoveVisibleValuesClick = useCallback(() => {
     upsertDataviewInstance({
       id: dataview.id,
       config: {
-        filters: {
-          ...(dataview.config?.filters || {}),
-          [field]: tags.length ? tags.map((t) => t.id) : undefined,
-        },
+        minVisibleValue: undefined,
+        maxVisibleValue: undefined,
       },
     })
-  }
+  }, [dataview, upsertDataviewInstance])
 
   return (
     <Fragment>
@@ -122,7 +137,9 @@ function DatasetSchemaField({
             tags={valuesSelected}
             color={dataview.config?.color}
             className={styles.tagList}
-            onRemove={onRemoveClick}
+            onRemove={
+              removeType === 'visibleValues' ? onRemoveVisibleValuesClick : onRemoveFilterClick
+            }
           />
         </div>
       )}

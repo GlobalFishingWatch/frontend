@@ -4,10 +4,12 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, TagList } from '@globalfishingwatch/ui-components'
 
 import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
 import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
+import { selectReportCategory } from 'features/reports/reports.selectors'
+import { ReportCategory } from 'features/reports/reports.types'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
@@ -16,13 +18,13 @@ import Filters from 'features/workspace/shared/LayerFilters'
 import styles from './ReportSummaryTags.module.css'
 
 type LayerPanelProps = {
-  index: number
   dataview: UrlDataviewInstance
 }
 
 export default function ReportSummaryTags({ dataview }: LayerPanelProps) {
   const { t } = useTranslation()
   const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
+  const reportCategory = useSelector(selectReportCategory)
 
   const [filtersUIOpen, setFiltersUIOpen] = useState(false)
 
@@ -55,16 +57,41 @@ export default function ReportSummaryTags({ dataview }: LayerPanelProps) {
         )}
       </div>
       <Fragment>
-        <DatasetFilterSource dataview={dataview} className={styles.tag} />
-        {filtersAllowed.map(({ id, label }) => (
-          <DatasetSchemaField
-            key={id}
-            dataview={dataview}
-            field={id}
-            label={label}
-            className={styles.tag}
-          />
-        ))}
+        {(reportCategory === ReportCategory.Activity ||
+          reportCategory === ReportCategory.Detections) && (
+          <Fragment>
+            <DatasetFilterSource dataview={dataview} className={styles.tag} />
+            {filtersAllowed.map(({ id, label }) => (
+              <DatasetSchemaField
+                key={id}
+                dataview={dataview}
+                field={id}
+                label={label}
+                className={styles.tag}
+              />
+            ))}
+          </Fragment>
+        )}
+        {reportCategory === ReportCategory.Environment ? (
+          dataview.config?.minVisibleValue || dataview.config?.maxVisibleValue ? (
+            <DatasetSchemaField
+              key={'visibleValues'}
+              dataview={dataview}
+              field={'visibleValues'}
+              label={t('common.visibleValues')}
+              removeType="visibleValues"
+            />
+          ) : (
+            <div className={styles.filter}>
+              <label>{t('common.visibleValues')}</label>
+              <TagList
+                tags={[{ id: 'all', label: t('selects.allSelected') }]}
+                color={dataview.config?.color}
+                className={styles.tagList}
+              />
+            </div>
+          )
+        ) : null}
       </Fragment>
     </div>
   )

@@ -28,22 +28,25 @@ export default function ReportSummary({
 
   return (
     <div className={styles.summaryWrapper}>
-      <div className={styles.summaryContainer}>
-        {reportCategory === ReportCategory.Activity ||
-        reportCategory === ReportCategory.Detections ? (
+      {(reportCategory === ReportCategory.Activity ||
+        reportCategory === ReportCategory.Detections) && (
+        <div className={styles.summaryContainer}>
           <ReportSummaryActivity
             activityUnit={activityUnit || 'hour'}
             reportStatus={reportStatus}
           />
-        ) : (
+        </div>
+      )}
+      {reportCategory === ReportCategory.Events && (
+        <div className={styles.summaryContainer}>
           <ReportSummaryEvents />
-        )}
-      </div>
+        </div>
+      )}
       {dataviews?.length > 0 && (
         <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
           <div className={styles.tagsContainer}>
-            {dataviews?.map((dataview, index) => (
-              <ReportSummaryTags key={dataview.id} dataview={dataview} index={index} />
+            {dataviews?.map((dataview) => (
+              <ReportSummaryTags key={dataview.id} dataview={dataview} />
             ))}
           </div>
         </Sticky>
