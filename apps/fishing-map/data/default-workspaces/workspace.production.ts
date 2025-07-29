@@ -25,7 +25,6 @@ import {
   FISHING_DATAVIEW_SLUG_VMS,
   FIXED_SAR_INFRASTRUCTURE,
   GRATICULES_DATAVIEW_SLUG,
-  HIGH_SEAS_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
   SENTINEL2_DATAVIEW_SLUG,
@@ -138,13 +137,6 @@ const workspace: Workspace<WorkspaceState> = {
       config: { visible: false },
     },
     ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,
-    {
-      id: 'context-layer-high-seas',
-      config: {
-        visible: false,
-      },
-      dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
-    },
     {
       id: OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID,
       config: {
