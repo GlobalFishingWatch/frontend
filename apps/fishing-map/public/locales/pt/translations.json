@@ -120,7 +120,7 @@
     "average": "média",
     "averageAbbreviated": "méd.",
     "back": "voltar",
-    "bathymetry_disclaimer": "Depth shown on map is a cell average — actual depth at clicked point may vary.",
+    "bathymetry_disclaimer": "A profundidade mostrada no mapa é uma média de célula do grid — a profundidade real no ponto clicado pode variar.",
     "between": "entre",
     "cancel": "Cancelar",
     "category": "Categoria",
