@@ -178,14 +178,25 @@ function getLinkHashPath(path: string) {
 
 function EnhancedMarkdown({ content }: { content: string }) {
   useEffect(() => {
-    const hash = window.location.hash.slice(1)
-    if (hash) {
-      const el = document.getElementById(hash)
-      if (el && el.tagName.toLowerCase() === 'details') {
-        el.setAttribute('open', 'true')
-        el.scrollIntoView()
+    const updateDetailsOpenState = () => {
+      const hash = window.location.hash.slice(1)
+      const allDetails = document.querySelectorAll('details')
+
+      if (hash) {
+        allDetails.forEach((detail) => {
+          detail.removeAttribute('open')
+        })
+        const targetEl = document.getElementById(hash)
+        if (targetEl && targetEl.tagName.toLowerCase() === 'details') {
+          targetEl.setAttribute('open', 'true')
+          targetEl.scrollIntoView()
+        }
       }
     }
+
+    updateDetailsOpenState()
+
+    window.addEventListener('hashchange', updateDetailsOpenState)
 
     const summaries = document.querySelectorAll('details > summary')
     const copyButtons = document.querySelectorAll('.copy')
@@ -234,8 +245,8 @@ function EnhancedMarkdown({ content }: { content: string }) {
       copyHandlers.push(() => btn.removeEventListener('click', handler))
     })
 
-    // Cleanup
     return () => {
+      window.removeEventListener('hashchange', updateDetailsOpenState)
       summaryHandlers.forEach((off) => off())
       copyHandlers.forEach((off) => off())
     }
