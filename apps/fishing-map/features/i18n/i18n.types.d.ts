@@ -1644,7 +1644,6 @@ interface Resources {
         "marine-manager": "The portal provides dynamic interactive data on marine traffic, biology and ocean conditions to support marine protected area design and management.",
         "search": "Search by vessel name or identification code."
       },
-      "test_notification": "workspace.test_notification",
       "title": "Workspace",
       "title_other": "Workspaces",
       "update": "Update",
