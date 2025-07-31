@@ -1670,7 +1670,7 @@
     }
   },
   "public-location-labels": {
-    "name": "Location Labels",
+    "name": "Ubicaciones",
     "description": "Combination of countries, places and seas dataset labels"
   },
   "public-mangroves": {
