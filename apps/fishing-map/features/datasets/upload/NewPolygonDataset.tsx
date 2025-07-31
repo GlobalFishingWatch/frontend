@@ -29,7 +29,7 @@ import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
 import { TimeFieldsGroup } from 'features/datasets/upload/TimeFieldsGroup'
 import UserGuideLink from 'features/help/UserGuideLink'
-import type { FileType } from 'utils/files'
+import type { FileType, FileTypeResult } from 'utils/files'
 import { getFileFromGeojson, getFileName, getFileType } from 'utils/files'
 
 import { getDatasetParsed } from './datasets-parse.utils'
@@ -58,8 +58,15 @@ function NewPolygonDataset({
   const isEditing = dataset?.id !== undefined
   const isPublic = !!datasetMetadata?.public
   const datasetFieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
-  const fileType = getFileType(file)
   const { isValid, errors } = getDatasetMetadataValidations(datasetMetadata)
+  const [fileTypeResult, setFileTypeResult] = useState<FileTypeResult | undefined>()
+  useEffect(() => {
+    const updateFileType = async () => {
+      const fileTypeResult = await getFileType(file)
+      setFileTypeResult(fileTypeResult)
+    }
+    updateFileType()
+  }, [file])
 
   const timeFilterType = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
@@ -77,15 +84,14 @@ function NewPolygonDataset({
   })
 
   const handleRawData = useCallback(
-    async (file: File) => {
+    async (file: File, fileTypeResult: FileTypeResult) => {
       setProcessingData(true)
       try {
-        const data = await getDatasetParsed(file, 'polygons')
-        const fileType = getFileType(file)
+        const data = await getDatasetParsed(file, 'polygons', fileTypeResult)
         const datasetMetadata = getPolygonsDatasetMetadata({
           data,
           name: getFileName(file),
-          sourceFormat: fileType,
+          sourceFormat: fileTypeResult.fileType,
         })
         setDatasetMetadata(datasetMetadata)
         setGeojson(data as PolygonFeatureCollection)
@@ -99,12 +105,12 @@ function NewPolygonDataset({
   )
 
   useEffect(() => {
-    if (file && !loading) {
-      handleRawData(file)
+    if (file && !loading && fileTypeResult) {
+      handleRawData(file, fileTypeResult)
     } else if (dataset) {
       setDatasetMetadata(getMetadataFromDataset(dataset))
     }
-  }, [dataset, file])
+  }, [dataset, file, fileTypeResult])
 
   useEffect(() => {
     if (timeFilterType && (startTimeProperty || endTimeProperty)) {
@@ -163,7 +169,7 @@ function NewPolygonDataset({
       {!dataset && (
         <FileDropzone
           label={file?.name}
-          fileTypes={[fileType as FileType]}
+          fileTypes={fileTypeResult ? [fileTypeResult.fileType as FileType] : []}
           onFileLoaded={onFileUpdate}
         />
       )}

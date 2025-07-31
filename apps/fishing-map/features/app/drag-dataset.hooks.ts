@@ -47,7 +47,7 @@ export function useDatasetDrag() {
   )
 
   const onDrop = useCallback(
-    (e: DragEvent) => {
+    async (e: DragEvent) => {
       e.preventDefault()
       e.stopPropagation()
 
@@ -57,14 +57,17 @@ export function useDatasetDrag() {
         dispatchDatasetModalOpen(false)
       }
 
-      const isValidFile = [...(e.dataTransfer?.items || [])].some((item) => {
+      let isValidFile = false
+      for (const item of e.dataTransfer?.items || []) {
         if (item.kind === 'file') {
           const file = item.getAsFile()
-          const fileType = file ? getFileType(file) : undefined
-          return fileType !== undefined
+          const { fileType } = file ? await getFileType(file) : { fileType: undefined }
+          if (fileType !== undefined) {
+            isValidFile = true
+            break
+          }
         }
-        return false
-      })
+      }
       if (isValidFile) {
         dispatchDatasetModalConfig({ style: 'default' })
       }
