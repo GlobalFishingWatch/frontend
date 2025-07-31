@@ -8,10 +8,11 @@ import type {
 } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
+import type { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { ScatterplotLayer } from '@deck.gl/layers'
 import type { ScalePower } from 'd3-scale'
 import { scaleSqrt } from 'd3-scale'
-import type { GeoJsonProperties } from 'geojson'
+import type { Feature, GeoJsonProperties, Point } from 'geojson'
 
 import {
   COLOR_HIGHLIGHT_LINE,
@@ -24,6 +25,8 @@ import {
   hexToDeckColor,
   LayerGroup,
 } from '../../utils'
+import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
+import { filteredPositionsByViewport } from '../fourwings'
 
 import type { UserLayerFeature, UserPointsLayerProps } from './user.types'
 import { DEFAULT_USER_TILES_MAX_ZOOM } from './user.utils'
@@ -45,6 +48,7 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
 }
 
 type UserPointsLayerState = UserBaseLayerState & {
+  error: string
   scale?: ScalePower<number, number, never>
 }
 export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserBaseLayer<
@@ -63,6 +67,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     } = this.props
     if (circleRadiusRange && circleRadiusRange?.length) {
       this.state = {
+        error: '',
         scale: scaleSqrt(circleRadiusRange as [number, number], [
           minPointSize as number,
           maxPointSize as number,
@@ -71,8 +76,19 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     }
   }
 
+  get isLoaded(): boolean {
+    return super.isLoaded
+  }
+
+  get cacheHash(): string {
+    const { startTime, endTime, filters = {} } = this.props
+    const filtersHash = Object.values(filters).filter(Boolean).join('-')
+    return `${startTime}-${endTime}-${filtersHash}`
+  }
+
   updateState({ props, oldProps }: UpdateParameters<this>) {
     const { minPointSize, maxPointSize, circleRadiusRange } = props
+
     const newPointRange =
       circleRadiusRange?.[0] !== oldProps.circleRadiusRange?.[0] ||
       circleRadiusRange?.[1] !== oldProps.circleRadiusRange?.[1]
@@ -132,6 +148,52 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return pointRadius
   }
 
+  getLayer() {
+    return this.getSubLayers()?.[0] as TileLayer<UserLayerFeature>
+  }
+
+  getError() {
+    return this?.state.error
+  }
+
+  _getData = (): Feature<Point>[] => {
+    const roundedZoom = Math.round(this.context.viewport.zoom)
+    return (this.getLayer()?.state.tileset?.tiles || []).flatMap((tile) => {
+      return tile.content && tile.zoom === roundedZoom
+        ? tile.content.flatMap((feature: any) => {
+            return feature
+              ? (transformTileCoordsToWGS84(
+                  feature,
+                  tile.bbox as GeoBoundingBox,
+                  this.context.viewport
+                ) as Feature<Point>)
+              : []
+          })
+        : []
+    })
+  }
+
+  getData = (): Feature<Point>[] => {
+    const { filters, filterOperators } = this.props
+    if (filters && Object.keys(filters).filter(Boolean).length) {
+      return this._getData().filter((feature) =>
+        getFeatureInFilter(feature, filters, filterOperators)
+      )
+    }
+    return this._getData()
+  }
+
+  getViewportData = () => {
+    return filteredPositionsByViewport(this.getData(), this.context.viewport)
+  }
+
+  _onLayerError = (error: Error) => {
+    if (!error.message.includes('404')) {
+      this.setState({ error: error.message })
+    }
+    return true
+  }
+
   renderLayers() {
     const { layers, color, pickable, maxPointSize, maxZoom, filters } = this.props
     const zoom = this._getZoomLevel()
@@ -146,6 +208,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
         loadOptions: {
           ...getFetchLoadOptions(),
         },
+        onTileError: this._onLayerError,
         onViewportLoad: this.props.onViewportLoad,
         ...filterProps,
         renderSubLayers: (props) => {

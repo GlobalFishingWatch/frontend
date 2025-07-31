@@ -74,6 +74,7 @@ export const selectReportActiveCategories = createSelector(
       ReportCategory.Detections,
       ReportCategory.Environment,
       ReportCategory.Events,
+      ReportCategory.Others,
     ]
     return orderedCategories.flatMap((category) =>
       activeCategories.some((a) => a === category) ? category : []
