@@ -112,7 +112,9 @@ export function useDatasetMetadataOptions(
     [fieldsOptions]
   )
 
-  const filtersFieldsOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
+  const filtersFieldsOptions: ((SelectOption | MultiSelectOption) & {
+    type?: DatasetSchemaType
+  })[] = useMemo(() => {
     const options = datasetMetadata?.schema
       ? Object.keys(datasetMetadata.schema).flatMap((field) => {
           const schema = datasetMetadata.schema?.[field]
@@ -122,7 +124,11 @@ export function useDatasetMetadataOptions(
           const isEnumAllowed = schema?.type === 'string' || schema?.type === 'boolean'
           const isRangeAllowed = schema?.type === 'range' && schema.enum?.length === 2
           return isEnumAllowed || isRangeAllowed
-            ? { id: field, label: <DatasetFieldLabel field={field} fieldSchema={schema} /> }
+            ? {
+                id: field,
+                label: <DatasetFieldLabel field={field} fieldSchema={schema} />,
+                type: schema?.type,
+              }
             : []
         })
       : []
@@ -132,7 +138,10 @@ export function useDatasetMetadataOptions(
           o.id !==
             getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'latitude' }) &&
           o.id !==
-            getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'longitude' }) &&
+            getDatasetConfigurationProperty({
+              dataset: datasetMetadata,
+              property: 'longitude',
+            }) &&
           o.id !==
             getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'timestamp' })
         )

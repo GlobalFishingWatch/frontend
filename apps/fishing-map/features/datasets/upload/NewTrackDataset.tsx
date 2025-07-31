@@ -57,6 +57,7 @@ function NewTrackDataset({
   const [geojson, setGeojson] = useState<FeatureCollection | undefined>()
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
   const { getSelectedOption, filtersFieldsOptions } = useDatasetMetadataOptions(datasetMetadata)
+  const numericFiltersFieldsOptions = filtersFieldsOptions.filter((f) => f.type === 'range')
   const isEditing = dataset?.id !== undefined
   const [fileTypeResult, setFileTypeResult] = useState<FileTypeResult | undefined>()
   const [isCSVFile, setIsCSVFile] = useState<boolean>(false)
@@ -350,7 +351,7 @@ function NewTrackDataset({
           }
           direction="top"
           disabled={loading}
-          options={filtersFieldsOptions}
+          options={isCSVFile ? numericFiltersFieldsOptions : filtersFieldsOptions}
           selectedOptions={getSelectedOption(fieldsAllowed) as MultiSelectOption[]}
           onSelect={(newFilter: MultiSelectOption) => {
             setDatasetMetadata({ fieldsAllowed: [...fieldsAllowed, newFilter.id] })
