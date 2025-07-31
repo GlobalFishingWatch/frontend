@@ -39,7 +39,7 @@ module "develop" {
   ]
   set_env_vars = [
     "BASIC_AUTH=Restricted",
-    "BASIC_AUTH_USER=gfw"
+    "BASIC_AUTH_USER=gfw-api"
   ]
   set_secrets = [
     "BASIC_AUTH_PASS=${local.secrets_path.dev}/BASIC_AUTH_PASS_API_PORTAL",
@@ -69,7 +69,7 @@ module "staging" {
   ]
   set_env_vars = [
     "BASIC_AUTH=Restricted",
-    "BASIC_AUTH_USER=gfw"
+    "BASIC_AUTH_USER=gfw-api"
   ]
   set_secrets = [
     "BASIC_AUTH_PASS=${local.secrets_path.sta}/BASIC_AUTH_PASS_API_PORTAL",
