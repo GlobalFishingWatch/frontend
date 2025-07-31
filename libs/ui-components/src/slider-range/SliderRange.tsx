@@ -222,7 +222,9 @@ export function SliderRange(props: SliderRangeProps) {
               type="number"
             />
             {internalValues?.[1] === max && (
-              <div className={styles.inputWithOverlay}>{`${internalValues?.[1]}+`}</div>
+              <div
+                className={styles.inputWithOverlay}
+              >{`${internalValues?.[1].toString().replace('.', ',')}+`}</div>
             )}
           </div>
         </div>

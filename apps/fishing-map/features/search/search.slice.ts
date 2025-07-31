@@ -21,6 +21,7 @@ import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType, isFieldInFieldsAllowed } from 'features/datasets/datasets.utils'
 import { ADVANCED_SEARCH_FIELDS } from 'features/search/advanced/advanced-search.utils'
+import type { SearchType } from 'features/search/search.config'
 import type { VesselSearchState } from 'features/search/search.types'
 import { getSearchVesselId } from 'features/search/search.utils'
 import type { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
@@ -65,17 +66,13 @@ type VesselSearchThunk = {
   filters: VesselSearchState
   datasets: Dataset[]
   gfwUser?: boolean
-}
-
-function checkAdvanceSearchFiltersEnabled(filters: VesselSearchState): boolean {
-  const { sources, ...rest } = filters
-  return Object.values(rest).filter((f) => f !== undefined).length > 0
+  searchType?: SearchType
 }
 
 export const fetchVesselSearchThunk = createAsyncThunk(
   'search/fetch',
   async (
-    { query, filters, datasets, since, gfwUser = false }: VesselSearchThunk,
+    { query, filters, datasets, since, gfwUser = false, searchType = 'basic' }: VesselSearchThunk,
     { getState, signal, rejectWithValue }
   ) => {
     const state = getState() as SearchSliceState
@@ -84,7 +81,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     let advancedQuery
 
     try {
-      if (checkAdvanceSearchFiltersEnabled(filters)) {
+      if (searchType === 'advanced') {
         const fieldsAllowed = Array.from(
           new Set(datasets.flatMap((dataset) => dataset.fieldsAllowed))
         )

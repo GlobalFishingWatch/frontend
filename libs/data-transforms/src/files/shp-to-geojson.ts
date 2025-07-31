@@ -18,27 +18,31 @@ const invalidDataErrorHandler = (type: DatasetGeometryType) => {
 
 export const shpToGeoJSON = async (data: string, type: DatasetGeometryType) => {
   const shpjs = await import('shpjs').then((module) => module.default)
-  const expandedShp = await shpjs(data)
-  const normalizedTypes: Partial<DatasetGeometryToGeoJSONGeometry> = {
-    points: ['Point', 'MultiPoint'],
-    tracks: ['LineString', 'MultiLineString'],
-    polygons: ['Polygon', 'MultiPolygon'],
-  }
-  if (Array.isArray(expandedShp)) {
-    const matchedTypeCollections = expandedShp.filter((shp) =>
-      normalizedTypes[type]?.includes(shp.features?.[0].geometry.type)
-    )
-    if (!matchedTypeCollections.length) {
-      return invalidDataErrorHandler(type)
-    } else if (matchedTypeCollections.length > 1) {
-      throw new Error('datasetUpload.errors.shapefile.invalidMultipleFiles')
+  try {
+    const expandedShp = await shpjs(data)
+    const normalizedTypes: Partial<DatasetGeometryToGeoJSONGeometry> = {
+      points: ['Point', 'MultiPoint'],
+      tracks: ['LineString', 'MultiLineString'],
+      polygons: ['Polygon', 'MultiPolygon'],
+    }
+    if (Array.isArray(expandedShp)) {
+      const matchedTypeCollections = expandedShp.filter((shp) =>
+        normalizedTypes[type]?.includes(shp.features?.[0].geometry.type)
+      )
+      if (!matchedTypeCollections.length) {
+        return invalidDataErrorHandler(type)
+      } else if (matchedTypeCollections.length > 1) {
+        throw new Error('datasetUpload.errors.shapefile.invalidMultipleFiles')
+      } else {
+        return matchedTypeCollections[0]
+      }
     } else {
-      return matchedTypeCollections[0]
+      if (!normalizedTypes[type]?.includes(expandedShp.features?.[0].geometry.type)) {
+        invalidDataErrorHandler(type)
+      }
+      return expandedShp
     }
-  } else {
-    if (!normalizedTypes[type]?.includes(expandedShp.features?.[0].geometry.type)) {
-      invalidDataErrorHandler(type)
-    }
-    return expandedShp
+  } catch (e) {
+    throw new Error('datasetUpload.errors.shapefile.invalidData')
   }
 }

@@ -31,7 +31,7 @@ import {
 import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
 import UserGuideLink from 'features/help/UserGuideLink'
-import type { FileType } from 'utils/files'
+import type { FileType, FileTypeResult } from 'utils/files'
 import { getFileFromGeojson, getFileName, getFileType } from 'utils/files'
 
 import type { DataList, DataParsed } from './datasets-parse.utils'
@@ -70,9 +70,19 @@ function NewPointDataset({
   const isPublic = !!datasetMetadata?.public
   const datasetFieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
   const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
-  const fileType = getFileType(file)
-  const isCSVFile = fileType === 'CSV' || sourceFormat === 'CSV'
   const { isValid, errors } = getDatasetMetadataValidations(datasetMetadata)
+  const [fileTypeResult, setFileTypeResult] = useState<FileTypeResult | undefined>()
+  const [isCSVFile, setIsCSVFile] = useState<boolean>(false)
+
+  useEffect(() => {
+    const updateFileType = async () => {
+      const fileTypeResult = await getFileType(file)
+      const isCSVFile = fileTypeResult.fileType === 'CSV' || sourceFormat === 'CSV'
+      setFileTypeResult(fileTypeResult)
+      setIsCSVFile(isCSVFile)
+    }
+    updateFileType()
+  }, [file, sourceFormat])
 
   const latitudeProperty = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
@@ -97,18 +107,17 @@ function NewPointDataset({
   })
 
   const handleRawData = useCallback(
-    async (file: File) => {
+    async (file: File, fileTypeResult: FileTypeResult) => {
       setProcessingData(true)
       try {
-        const data = await getDatasetParsed(file, 'points')
-        const fileType = getFileType(file)
+        const data = await getDatasetParsed(file, 'points', fileTypeResult)
         const datasetMetadata = getPointsDatasetMetadata({
           data,
           name: getFileName(file),
-          sourceFormat: fileType,
+          sourceFormat: fileTypeResult.fileType,
         })
         setDatasetMetadata(datasetMetadata)
-        if (fileType === 'CSV') {
+        if (fileTypeResult.fileType === 'CSV') {
           setSourceData(data as DataList)
           const geojson = getGeojsonFromPointsList(
             data as DataList,
@@ -142,12 +151,12 @@ function NewPointDataset({
   )
 
   useEffect(() => {
-    if (file && !loading) {
-      handleRawData(file)
+    if (file && !loading && fileTypeResult) {
+      handleRawData(file, fileTypeResult)
     } else if (dataset) {
       setDatasetMetadata(getMetadataFromDataset(dataset))
     }
-  }, [dataset, file])
+  }, [dataset, file, fileTypeResult])
 
   useEffect(() => {
     if (sourceData) {
@@ -180,8 +189,10 @@ function NewPointDataset({
     startTimeProperty,
     endTimeProperty,
     timeFilterType,
-    fileType,
     sourceData,
+    isCSVFile,
+    datasetMetadata,
+    t,
   ])
 
   const onConfirmClick = useCallback(async () => {
@@ -189,7 +200,7 @@ function NewPointDataset({
     if (datasetMetadata) {
       if (sourceData) {
         const config = getDatasetConfiguration(datasetMetadata)
-        if (fileType === 'CSV' && (!config?.latitude || !config?.longitude)) {
+        if (fileTypeResult?.fileType === 'CSV' && (!config?.latitude || !config?.longitude)) {
           const fields = ['latitude', 'longitude'].map((f) => t(`common.${f}` as any, f))
           error = t('dataset.requiredFields', {
             fields,
@@ -209,7 +220,7 @@ function NewPointDataset({
         setLoading(false)
       }
     }
-  }, [datasetMetadata, sourceData, onConfirm, fileType, geojson, t, isEditing])
+  }, [datasetMetadata, sourceData, onConfirm, fileTypeResult, geojson, t, isEditing])
 
   if (processingData) {
     return (
@@ -233,7 +244,7 @@ function NewPointDataset({
       {!dataset && (
         <FileDropzone
           label={file?.name}
-          fileTypes={[fileType as FileType]}
+          fileTypes={fileTypeResult ? [fileTypeResult.fileType as FileType] : []}
           onFileLoaded={onFileUpdate}
         />
       )}

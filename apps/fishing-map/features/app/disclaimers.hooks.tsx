@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'react-toastify'
 
+import { IS_PRODUCTION_WORKSPACE_ENV } from 'data/config'
+
 import styles from './App.module.css'
 
 function ShutdownDisclaimerToast() {
@@ -16,9 +18,11 @@ function ShutdownDisclaimerToast() {
 
 export const useShutdownDisclaimerToast = () => {
   useEffect(() => {
-    toast(<ShutdownDisclaimerToast />, {
-      toastId: 'shutdownDisclaimer',
-      autoClose: 5000,
-    })
+    if (IS_PRODUCTION_WORKSPACE_ENV) {
+      toast(<ShutdownDisclaimerToast />, {
+        toastId: 'shutdownDisclaimer',
+        autoClose: 5000,
+      })
+    }
   }, [])
 }

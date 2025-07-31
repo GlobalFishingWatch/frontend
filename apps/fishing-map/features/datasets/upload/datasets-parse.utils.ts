@@ -8,20 +8,18 @@ import type {
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
 import {
-  isZipFile,
   kmlToGeoJSON,
   listToTrackSegments,
   pointsGeojsonToNormalizedGeojson,
   pointsListToGeojson,
   segmentsToGeoJSON,
   shpToGeoJSON,
-  zipToFiles,
 } from '@globalfishingwatch/data-transforms'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 
 import type { DatasetMetadata } from 'features/datasets/upload/NewDataset'
-import type { DatasetGeometryTypesSupported } from 'utils/files'
+import type { DatasetGeometryTypesSupported, FileTypeResult } from 'utils/files'
 import { getFileType, readBlobAs } from 'utils/files'
 
 // interface FeatureCollectionWithMetadata extends FeatureCollectionWithFilename {
@@ -102,9 +100,10 @@ const validatedGeoJSON = (fileText: string, type: DatasetGeometryType) => {
 
 export async function getDatasetParsed(
   file: File,
-  type: DatasetGeometryTypesSupported
+  type: DatasetGeometryTypesSupported,
+  fileTypeResult?: FileTypeResult
 ): Promise<DataParsed> {
-  const fileType = getFileType(file, type)
+  const { fileType, zipContent } = fileTypeResult || (await getFileType(file))
   if (!fileType) {
     throw new Error('File type not supported')
   }
@@ -115,9 +114,8 @@ export async function getDatasetParsed(
     } else if (fileType === 'CSV') {
       let fileText: string | undefined
       try {
-        if (isZipFile(file)) {
-          const files = await zipToFiles(file, /\.csv$/)
-          const csvFile = files?.find((f) => f.name.endsWith('.csv'))
+        if (zipContent.length) {
+          const csvFile = zipContent?.find((f) => f.name.endsWith('.csv'))
           if (!csvFile) {
             throw new Error('No .csv found in .zip file')
           }
@@ -144,6 +142,7 @@ export async function getDatasetParsed(
     const fileText = await file.text()
     return validatedGeoJSON(fileText, type)
   } catch (e: any) {
+    console.error(e)
     if (e.message === NOT_VALID_GEOJSON_FEATURES_ERROR) {
       throw new Error('datasetUpload.errors.geoJSON.noValidFeatures')
     }
