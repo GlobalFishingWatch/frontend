@@ -300,9 +300,6 @@
     "*.{css, scss}": [
       "prettier --write",
       "stylelint --fix"
-    ],
-    "apps/fishing-map/**/*.{js,jsx,ts,tsx}": [
-      "nx i18n fishing-map"
     ]
   },
   "packageManager": "yarn@4.9.2"

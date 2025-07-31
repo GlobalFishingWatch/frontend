@@ -320,7 +320,7 @@ function ActivityLayerPanel({
                             </span>
                           </Fragment>
                         )}{' '}
-                      {t('common.globally')}
+                      {t('analysis.globally')}
                     </div>
                   </Tooltip>
                 </div>
