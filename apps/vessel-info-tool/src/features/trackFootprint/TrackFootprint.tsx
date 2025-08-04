@@ -10,6 +10,7 @@ import { DateTime } from 'luxon'
 import qs from 'qs'
 
 import { GFWAPI, THINNING_LEVELS } from '@globalfishingwatch/api-client'
+import type { Vessel } from '@globalfishingwatch/api-types';
 import { TrackField } from '@globalfishingwatch/api-types'
 import { segmentsToGeoJSON, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
 import { Icon, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
@@ -17,10 +18,7 @@ import { Icon, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 import styles from './TrackFootprint.module.css'
 
 type TrackFootprintProps = {
-  vesselIds: string[]
-  trackDatasetId?: string
-  highlightedYear?: number
-  onDataLoad?: (data: FeatureCollection) => void
+  vessel: Vessel
 }
 
 const FOOTPRINT_WIDTH = 300
@@ -34,12 +32,7 @@ const TRACK_FOOTPRINT_QUERY = {
   format: 'VALUE_ARRAY',
 }
 
-function TrackFootprint({
-  vesselIds,
-  trackDatasetId,
-  highlightedYear,
-  onDataLoad,
-}: TrackFootprintProps) {
+function TrackFootprint({ vessel }: TrackFootprintProps) {
   const { t } = useTranslation()
   const [trackData, setTrackData] = useState<FeatureCollection<Geometry, GeoJsonProperties>>()
   const [lastPosition, setLastPosition] = useState<Point>()

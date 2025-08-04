@@ -1,118 +1,81 @@
-import type { HTMLProps } from 'react'
-import { Fragment, useEffect, useRef, useState } from 'react'
-import type { ColumnDef, ExpandedState, SortingState } from '@tanstack/react-table'
+import { Fragment, useState } from 'react'
+import type { ExpandedState, Row, SortingState } from '@tanstack/react-table'
 import {
   flexRender,
   getCoreRowModel,
   getExpandedRowModel,
   getFilteredRowModel,
   getSortedRowModel,
-  Table,
   useReactTable,
 } from '@tanstack/react-table'
 
-import type { Vessel } from '@/routes/vessels'
-import { Icon, IconButton } from '@globalfishingwatch/ui-components'
+import { Icon } from '@globalfishingwatch/ui-components'
 
-import ExpandedRow from '../expandedRow/ExpandedRow'
+import ExpandableRow from './components/ExpandableRow'
+import { useDynamicColumns } from './hooks/useDynamicColumns'
+import { useRowExpansion } from './hooks/useRowExpansion'
+import { useTableFilters } from './hooks/useTableFilters'
 
-import styles from './VesselsTable.module.css'
+import styles from './DynamicTable.module.css'
 
-type VesselTableProps = {
-  data: Vessel[]
-  columns: ColumnDef<Vessel, any>[]
+export interface DynamicTableProps<T extends Record<string, any>> {
+  data: T[]
+  onExpandRow?: (row: T) => Promise<any>
+  checkCanExpand?: (row: Row<T>) => boolean
 }
 
-function IndeterminateCheckbox({
-  indeterminate,
-  className = '',
-  ...rest
-}: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
-  const ref = useRef<HTMLInputElement>(null!)
+export interface FilterState {
+  [columnKey: string]: string[]
+}
 
-  useEffect(() => {
-    if (typeof indeterminate === 'boolean') {
-      ref.current.indeterminate = !rest.checked && indeterminate
-    }
-  }, [ref, indeterminate])
+export interface ExpandedRowData {
+  [key: string]: any
+}
 
-  return (
-    <div>
-      <input
-        id="indeterminate-checkbox"
-        type="checkbox"
-        ref={ref}
-        className={`${styles.checkbox} ${className}`}
-        {...rest}
-      />
-      <label htmlFor="indeterminate-checkbox" className="h-0"></label>
-    </div>
+export function DynamicTable<T extends Record<string, any>>({
+  data,
+  onExpandRow,
+  checkCanExpand,
+}: DynamicTableProps<T>) {
+  const { filterState, filteredData, updateFilter } = useTableFilters(data)
+  const { expandedRows, loadingExpansions, toggleExpansion, canExpand } = useRowExpansion(
+    checkCanExpand,
+    onExpandRow
   )
-}
-export const createColumns = (vessels: Vessel): ColumnDef<Vessel>[] => {
-  if (!vessels?.length) return []
 
-  const keys = Object.keys(vessels[0])
-  const nameKey = keys.filter((key) => key.toLowerCase().includes('name'))
-  const otherKeys = keys.filter((key) => !key.toLowerCase().includes('name'))
+  const columns = useDynamicColumns(data, filterState, updateFilter)
 
-  return [
-    {
-      id: 'select',
-      header: ({ table }) => (
-        <IndeterminateCheckbox
-          {...{
-            checked: table.getIsAllRowsSelected(),
-            indeterminate: table.getIsSomeRowsSelected(),
-            onChange: table.getToggleAllRowsSelectedHandler(),
-          }}
-        />
-      ),
-      cell: ({ row }) => (
-        <IndeterminateCheckbox
-          {...{
-            checked: row.getIsSelected(),
-            indeterminate: false,
-            onChange: row.getToggleSelectedHandler(),
-          }}
-        />
-      ),
-      enableSorting: false,
-      enableColumnFilter: false,
-      size: 40,
-    },
-    {
-      accessorKey: nameKey[0],
-      header: nameKey[0] || 'Name',
-      cell: ({ row, getValue }) => (
-        <div className="flex items-center justify-between p-2">
-          <span>{String(getValue())}</span>
-          <IconButton
-            {...{
-              onClick: row.getToggleExpandedHandler(),
-              style: { cursor: 'pointer' },
-            }}
-            icon={row.getIsExpanded() ? 'arrow-top' : 'arrow-down'}
-            size="small"
-          />
-        </div>
-      ),
-    },
-    ...otherKeys.map((key) => ({
-      accessorKey: key,
-      header: key,
-    })),
-  ]
-}
+  //   const columnsWithExpansion = useMemo(
+  //     () => [
+  //       {
+  //         id: 'expander',
+  //         header: '',
+  //         cell: ({ row }) => {
+  //           const rowData = row.original
+  //           const rowId = rowData.id
+  //           const isExpanded = expandedRows[rowId]
+  //           const isLoading = loadingExpansions.has(rowId)
 
-export function VesselTable({ data, columns }: VesselTableProps) {
+  //           return (
+  //             <button
+  //               onClick={() => toggleExpansion(rowData)}
+  //               disabled={isLoading}
+  //               className="px-2 py-1 text-sm border rounded hover:bg-gray-50 disabled:opacity-50"
+  //             >
+  //               {isLoading ? '...' : isExpanded ? '−' : '+'}
+  //             </button>
+  //           )
+  //         },
+  //       },
+  //       ...columns,
+  //     ],
+  //     [columns, expandedRows, loadingExpansions, toggleExpansion]
+  //   )
   const [expanded, setExpanded] = useState<ExpandedState>({})
-  const [sorting, setSorting] = useState<SortingState>([
-    columns[1]?.id || (columns[1] as any)?.accessorKey,
-  ])
+  const [sorting, setSorting] = useState<SortingState>([(columns[1] as any)?.accessorKey])
 
   const columnPinning = {
-    left: ['select', columns[1]?.id || (columns[1] as any)?.accessorKey],
+    left: ['select', (columns[1] as any)?.accessorKey],
   }
 
   const table = useReactTable({
@@ -129,7 +92,7 @@ export function VesselTable({ data, columns }: VesselTableProps) {
     onSortingChange: setSorting,
     getFilteredRowModel: getFilteredRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
-    getRowCanExpand: () => true,
+    getRowCanExpand: checkCanExpand,
   })
 
   return (
@@ -199,8 +162,8 @@ export function VesselTable({ data, columns }: VesselTableProps) {
                 </tr>
                 {row.getIsExpanded() && (
                   <tr>
-                    <td colSpan={row.getVisibleCells().length}>
-                      <ExpandedRow vessel={row.original} />
+                    <td colSpan={columns.length} className="p-0">
+                      <ExpandableRow data={expandedRows[row.original.id]} />
                     </td>
                   </tr>
                 )}
