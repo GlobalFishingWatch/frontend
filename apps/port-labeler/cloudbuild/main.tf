@@ -90,7 +90,7 @@ module "production" {
     invert_regex = false
   }
   set_env_vars_build = [
-    "API_GATEWAY=https://gateway.api.pro-v2.globalfishingwatch.org",
+    "API_GATEWAY=https://gateway.api.globalfishingwatch.org",
   ]
   set_env_vars = [
     "BASIC_AUTH=off"
