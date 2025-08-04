@@ -32,6 +32,7 @@ import {
   SENTINEL2_DATAVIEW_SLUG,
   VIIRS_MATCH_DATAVIEW_SLUG,
 } from 'data/workspaces'
+import { BATHYMETRY_CONTOUR_DATAVIEW_ID } from 'features/dataviews/dataviews.mock'
 import {
   ENCOUNTER_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,
@@ -155,6 +156,11 @@ const workspace: Workspace<WorkspaceState> = {
       ...BATHYMETRY_DATAVIEW_INSTANCE,
       id: 'bathymetry',
       config: { visible: false },
+    },
+    {
+      id: 'bathymetry-contour',
+      config: { visible: false },
+      dataviewId: BATHYMETRY_CONTOUR_DATAVIEW_ID,
     },
     ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,
     {
