@@ -3,6 +3,7 @@ import { CompositeLayer } from '@deck.gl/core'
 import type { TextLayerProps } from '@deck.gl/layers'
 import { TextLayer } from '@deck.gl/layers'
 import type { Feature, Point } from '@loaders.gl/schema'
+import type { Position } from 'geojson'
 
 import { BLEND_BACKGROUND, getLayerGroupOffset, LayerGroup } from '../../utils'
 import { hexToDeckColor } from '../../utils/colors'
@@ -13,7 +14,10 @@ type LabelLayerState = {
 }
 
 type LabelLayerProps<DataT> = {
+  getPosition?: Accessor<DataT, Position>
   getPickingInfo?: ({ info }: { info: PickingInfo<DataT> }) => typeof info
+  filterRange?: [number, number]
+  getFilterValue?: Accessor<DataT, number>
   getCollisionPriority?: Accessor<DataT, number>
   collisionTestProps?: Record<string, number>
 }
