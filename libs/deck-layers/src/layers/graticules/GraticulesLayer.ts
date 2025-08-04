@@ -48,7 +48,11 @@ export class GraticulesLayer<PropsT = Record<string, unknown>> extends Composite
 
   shouldUpdateState({ context, oldProps, props }: UpdateParameters<this>) {
     const viewportHash = getViewportHash({ viewport: context.viewport })
-    return this.state.viewportHash !== viewportHash || oldProps.color !== props.color
+    return (
+      this.state.viewportHash !== viewportHash ||
+      oldProps.color !== props.color ||
+      oldProps.thickness !== props.thickness
+    )
   }
 
   updateState({ context }: UpdateParameters<this>) {
@@ -58,7 +62,9 @@ export class GraticulesLayer<PropsT = Record<string, unknown>> extends Composite
   }
 
   _getLineWidth: Accessor<GeoJsonProperties, number> = (d) => {
-    return checkScaleRankByViewport(d as GraticulesFeature, this.context.viewport) ? 1 : 0
+    return checkScaleRankByViewport(d as GraticulesFeature, this.context.viewport)
+      ? this.props.thickness || 1
+      : 0
   }
 
   _getLabel: AccessorFunction<GeoJsonProperties, string> = (d) => {
@@ -92,7 +98,7 @@ export class GraticulesLayer<PropsT = Record<string, unknown>> extends Composite
   }
 
   renderLayers() {
-    const { color } = this.props
+    const { color, thickness } = this.props
     const { viewportHash, data } = this.state
     return [
       new PathLayer<GraticulesFeature>({
@@ -104,7 +110,7 @@ export class GraticulesLayer<PropsT = Record<string, unknown>> extends Composite
         getWidth: this._getLineWidth,
         getColor: hexToDeckColor(color, 0.3),
         updateTriggers: {
-          getWidth: [viewportHash],
+          getWidth: [viewportHash, thickness],
           getColor: [color],
         },
       }),

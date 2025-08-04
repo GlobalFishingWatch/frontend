@@ -9,5 +9,6 @@ export const resolveDeckGraticulesLayerProps: DeckResolverFunction<GraticulesLay
     id: dataview.id,
     category: dataview.category!,
     color: dataview.config?.color as string,
+    thickness: dataview.config?.thickness as number,
   }
 }
