@@ -52,7 +52,7 @@ resource "google_cloudbuild_trigger" "i18n-labels-stable" {
 
     step {
       id       = "install-yarn"
-      name     = "node:23"
+      name     = "node:24"
       script   = file("../../../cloudbuild-template/scripts/install-yarn.sh")
       wait_for = ["restore-cache"]
     }

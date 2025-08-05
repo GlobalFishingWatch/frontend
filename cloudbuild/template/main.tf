@@ -54,14 +54,14 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
 
     step {
       id       = "install-yarn"
-      name     = "node:23"
+      name     = "node:24"
       script   = file("../cloudbuild-template/scripts/install-yarn.sh")
       wait_for = ["restore-cache"]
     }
 
     step {
       id       = "get-affected"
-      name     = "node:23"
+      name     = "node:24"
       script   = file("${path.module}/scripts/affected-apps.sh")
       wait_for = ["install-yarn"]
     }
