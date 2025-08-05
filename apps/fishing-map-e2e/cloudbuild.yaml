@@ -3,7 +3,7 @@ steps:
     args: [fetch, --depth=1000]
   - id: 'switch_tag'
     waitFor: ['-']
-    name: node:21
+    name: node:24
     env:
       - '_NEXT_PUBLIC_WORKSPACE_ENV=$_NEXT_PUBLIC_WORKSPACE_ENV'
     script: |
@@ -32,7 +32,7 @@ steps:
 
   - id: 'install-yarn'
     waitFor: ['restore_cache']
-    name: node:21
+    name: node:24
     script: |
       yarn set version 4.9.2
       yarn -v

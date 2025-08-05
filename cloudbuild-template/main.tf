@@ -64,14 +64,14 @@ resource "google_cloudbuild_trigger" "trigger" {
 
     step {
       id       = "install-yarn"
-      name     = "node:23"
+      name     = "node:24"
       script   = file("${path.module}/scripts/install-yarn.sh")
       wait_for = ["restore-cache"]
     }
 
     step {
       id       = "build-app"
-      name     = "node:23"
+      name     = "node:24"
       script   = "yarn nx run ${var.app_name}:build --parallel"
       wait_for = ["install-yarn"]
       env      = var.set_env_vars_build
