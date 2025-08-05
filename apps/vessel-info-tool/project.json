@@ -1,0 +1,33 @@
+{
+  "name": "vessel-info-tool",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/vessel-info-tool",
+  "projectType": "application",
+  "targets": {
+    "build:app": {
+      "executor": "nx:run-script",
+      "options": {
+        "script": "build"
+      }
+    },
+    "copy:app": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "rimraf dist/apps/vessel-info-tool/.output",
+          "shx cp -R apps/vessel-info-tool/data apps/vessel-info-tool/.output",
+          "shx cp -R apps/vessel-info-tool/.output dist/apps/vessel-info-tool"
+        ],
+        "parallel": false
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx build:app vessel-info-tool", "nx copy:app vessel-info-tool"],
+        "parallel": false
+      }
+    }
+  },
+  "tags": []
+}
