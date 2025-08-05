@@ -2,6 +2,10 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.2.245](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.244...i18n-labels@1.2.245) (2025-08-05)
+
+
+
 ## [1.2.244](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.243...i18n-labels@1.2.244) (2025-08-01)
 
 
