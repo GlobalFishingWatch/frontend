@@ -1,21 +1,13 @@
 import type { DefaultProps, LayerContext } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { CollisionFilterExtension, DataFilterExtension } from '@deck.gl/extensions'
-import type { GeoBoundingBox, TileLayerProps } from '@deck.gl/geo-layers'
-import { TileLayer } from '@deck.gl/geo-layers'
+import type { TileLayerProps } from '@deck.gl/geo-layers'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import { scaleLinear } from 'd3-scale'
 
-import {
-  getFeatureInFilter,
-  getLayerGroupOffset,
-  getMVTSublayerProps,
-  GFWMVTLoader,
-  hexToDeckColor,
-  LayerGroup,
-} from '../../utils'
-import { transformCoordinates } from '../../utils/coordinates'
+import { getFeatureInFilter, getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
 import { LabelLayer } from '../labels/LabelLayer'
+import { PMTilesLayer } from '../pm-tiles'
 
 import type {
   BathymetryContourFeature,
@@ -31,19 +23,13 @@ const defaultProps: DefaultProps<_ContextLayerProps> = {
   debounceTime: 500,
 }
 
-const MIN_ELEVATION = -10000
-const TILES_MAX_ZOOM = 9
-const LABELS_ZOOM_THRESHOLD = 6
+const TILES_MAX_ZOOM = 12
 
 export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends CompositeLayer<
   _ContextLayerProps & PropsT
 > {
   static layerName = 'BathymetryContourLayer'
   static defaultProps = defaultProps
-
-  get renderLabels() {
-    return this.context.viewport.zoom > LABELS_ZOOM_THRESHOLD
-  }
 
   get isOverMaxZoom() {
     return this.context.viewport.zoom >= TILES_MAX_ZOOM
@@ -53,7 +39,6 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
     super.initializeState(context)
     this.setState({ viewportLoaded: false, labels: [] })
   }
-
   _getLineWidth = (d: BathymetryContourFeature): number => {
     const { thickness, filters } = this.props
     return getFeatureInFilter(d, filters) ? thickness || 1 : 0
@@ -61,7 +46,7 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
 
   _bathymetryColorScale = scaleLinear([-50, -500, -1000, -6000], [1, 0.3, 0.2, 0.1])
 
-  _getBathymetryLineColor = (d: BathymetryContourFeature) => {
+  _getBathymetryColor = (d: BathymetryContourFeature | BathymetryLabelFeature) => {
     // return hexToDeckColor(this.props.color)
     // if (this.context.viewport.zoom < 2) {
     //   if ((d.properties.elevation / 2000) % 1 === 0) {
@@ -87,26 +72,24 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
 
     if (!visible) return []
 
-    return new TileLayer<TileLayerProps>({
+    return new PMTilesLayer<TileLayerProps>({
       id: `${this.id}-boundaries-layer`,
       data: tilesUrl,
-      loaders: [GFWMVTLoader],
       maxZoom: TILES_MAX_ZOOM,
       renderSubLayers: (props: any) => {
-        const mvtSublayerProps = { ...props, ...getMVTSublayerProps(props) }
         return [
-          new GeoJsonLayer(mvtSublayerProps, {
+          new GeoJsonLayer(props, {
             id: `${props.id}-bathymetry-contour`,
             lineWidthMinPixels: 0,
             extensions: [new DataFilterExtension({ filterSize: 1 })],
             getFilterValue: (d: BathymetryContourFeature | BathymetryLabelFeature) => {
-              return d.geometry?.type === 'Point' ? 0 : 1
+              return d.geometry?.type !== 'Point' ? 1 : 0
             },
             filterRange: [1, 1],
             filled: false,
             getPolygonOffset: (params: { layerIndex: number }) =>
               getLayerGroupOffset(LayerGroup.Overlay, params),
-            getLineColor: this._getBathymetryLineColor,
+            getLineColor: this._getBathymetryColor,
             getLineWidth: this._getLineWidth,
             lineWidthUnits: 'pixels',
             lineJointRounded: true,
@@ -118,7 +101,7 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
           } as any),
           new LabelLayer<BathymetryLabelFeature>({
             id: `${props.id}-labels`,
-            data: mvtSublayerProps.data,
+            data: props.data?.features,
             extensions: [
               new DataFilterExtension({ filterSize: 1 }),
               new CollisionFilterExtension(),
@@ -127,26 +110,20 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
               return d.geometry?.type === 'Point' ? 1 : 0
             },
             filterRange: [1, 1],
-            visible: this.renderLabels,
-            getCollisionPriority: (d: BathymetryLabelFeature) => Math.abs(d.properties.elevation),
-            collisionTestProps: { sizeScale: 3 },
-            getSize: 9,
+            getCollisionPriority: (d: BathymetryLabelFeature) => d.properties.length / 1000,
+            collisionTestProps: { sizeScale: 5 },
+            getSize: 10,
             getPixelOffset: [0, 0],
             getText: (d: BathymetryLabelFeature) => {
               return d.properties.elevation?.toString()
             },
             getPosition: (d: BathymetryLabelFeature) => {
-              return transformCoordinates(
-                d.geometry,
-                props.tile.bbox as GeoBoundingBox,
-                this.context.viewport
-              ).coordinates
+              return d.geometry.coordinates as [number, number]
             },
             getAngle: (d: BathymetryLabelFeature) => {
-              return 0
-              return 90 - d.properties.angle || 0
+              return 90 - d.properties.bearing || 0
             },
-            getColor: hexToDeckColor(color),
+            getColor: this._getBathymetryColor,
             // outlineColor: hexToDeckColor(BLEND_BACKGROUND, 0.7),
           }),
         ]

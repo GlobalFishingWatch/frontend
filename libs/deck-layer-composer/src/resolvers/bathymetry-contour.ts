@@ -12,7 +12,8 @@ export const resolveDeckBathymetryContourLayerProps: DeckResolverFunction<
   const datasetConfig = dataview.datasetsConfig?.[0]
   const filters = dataview.config?.filters
   // const tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
-  const tilesUrl = `http://localhost:8001/{z}/{x}/{y}.pbf`
+  // const tilesUrl = `http://localhost:8002/{z}/{x}/{y}.pbf`
+  const tilesUrl = `https://storage.googleapis.com/public-tiles/basemap/bathymetry-contour/contour.pmtiles?cache=1`
   return {
     id: dataview.id,
     tilesUrl,
