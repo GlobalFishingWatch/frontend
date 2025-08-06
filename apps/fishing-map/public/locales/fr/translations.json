@@ -903,7 +903,7 @@
   },
   "toasts": {
     "maxPointsVisualizationExceeded": "Le nombre maximal de points pouvant être visualisés est dépassé, passage en mode « carte thermique ».",
-    "shutdownDisclaimer": "Des améliorations des produits et des données sont prévues pour la semaine du 4 août. Pendant ce temps, certains produits peuvent ne pas afficher les dernières données. Les mises à jour complètes reprendront sous peu.",
+    "shutdownDisclaimer": "Des améliorations seront apportées aux produits et aux données pendant deux à trois semaines en août. Certains produits pourraient ne pas afficher les données les plus récentes. Les mises à jour complètes reprendront prochainement.",
     "shutdownDisclaimerTitle": "Délai temporaire des mises à jour des données"
   },
   "trackCorrection": {
