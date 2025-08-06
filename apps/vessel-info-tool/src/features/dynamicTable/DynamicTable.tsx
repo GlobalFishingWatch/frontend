@@ -11,17 +11,17 @@ import {
 
 import { Icon } from '@globalfishingwatch/ui-components'
 
-import ExpandableRow from './components/ExpandableRow'
+import ExpandableRow from '../expandableRow/ExpandableRow'
+
 import { useDynamicColumns } from './hooks/useDynamicColumns'
 import { useRowExpansion } from './hooks/useRowExpansion'
-import { useTableFilters } from './hooks/useTableFilters'
 
 import styles from './DynamicTable.module.css'
 
 export interface DynamicTableProps<T extends Record<string, any>> {
   data: T[]
   onExpandRow?: (row: T) => Promise<any>
-  checkCanExpand?: (row: Row<T>) => boolean
+  checkCanExpand?: (row: Row<T>) => Promise<boolean>
 }
 
 export interface FilterState {
@@ -37,13 +37,12 @@ export function DynamicTable<T extends Record<string, any>>({
   onExpandRow,
   checkCanExpand,
 }: DynamicTableProps<T>) {
-  const { filterState, filteredData, updateFilter } = useTableFilters(data)
   const { expandedRows, loadingExpansions, toggleExpansion, canExpand } = useRowExpansion(
     checkCanExpand,
     onExpandRow
   )
 
-  const columns = useDynamicColumns(data, filterState, updateFilter)
+  const columns = useDynamicColumns(data)
 
   //   const columnsWithExpansion = useMemo(
   //     () => [
@@ -92,7 +91,7 @@ export function DynamicTable<T extends Record<string, any>>({
     onSortingChange: setSorting,
     getFilteredRowModel: getFilteredRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
-    getRowCanExpand: checkCanExpand,
+    getRowCanExpand: (row) => true,
   })
 
   return (

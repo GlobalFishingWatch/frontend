@@ -1,6 +1,7 @@
-import { useMemo,useState } from 'react'
+import { useMemo, useState } from 'react'
+import { id } from 'zod/v4/locales'
 
-import type { FilterState } from '../DynamicTable'
+import type { FilterState,FilterType } from '@/features/filter/DynamicFilters'
 
 export function useTableFilters<T extends Record<string, any>>(data: T[]) {
   const [filterState, setFilterState] = useState<FilterState>({})
@@ -17,9 +18,53 @@ export function useTableFilters<T extends Record<string, any>>(data: T[]) {
       })
     })
 
-    return Object.fromEntries(
-      Object.entries(valuesMap).map(([key, valueSet]) => [key, Array.from(valueSet).sort()])
-    )
+    return Object.entries(valuesMap).map(([key, valueSet]) => {
+      const valuesArray = Array.from(valueSet)
+      let isDateValues = true
+      let isNumberValues = true
+
+      for (const value of valuesArray) {
+        const date = new Date(value)
+        if (isNaN(date.getTime())) {
+          isDateValues = false
+        }
+
+        if (isNaN(Number(value)) || value.trim() === '') {
+          isNumberValues = false
+        }
+
+        if (!isDateValues && !isNumberValues) {
+          break
+        }
+      }
+
+      let type: FilterType
+      switch (true) {
+        case isDateValues:
+          type = 'date'
+          break
+        case isNumberValues:
+          type = 'number'
+          break
+        case valueSet.size > 10:
+          type = 'text'
+          break
+        default:
+          type = 'select'
+      }
+
+      return {
+        id: key,
+        label: key,
+        type,
+        options: Array.from(valueSet)
+          .sort()
+          .map((value) => ({
+            id: value,
+            label: value,
+          })), // options.sort((a, b) => a.label.localeCompare(b.label));
+      }
+    })
   }, [data])
 
   const filteredData = useMemo(() => {
@@ -31,10 +76,10 @@ export function useTableFilters<T extends Record<string, any>>(data: T[]) {
     })
   }, [data, filterState])
 
-  const updateFilter = (columnKey: string, values: string[]) => {
+  const updateFilter = (filters: FilterState) => {
     setFilterState((prev) => ({
       ...prev,
-      [columnKey]: values,
+      ...filters,
     }))
   }
 

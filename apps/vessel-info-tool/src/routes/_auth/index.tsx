@@ -1,12 +1,15 @@
+import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import type { Row } from '@tanstack/react-table'
 import { stringify } from 'qs'
 
 import { DynamicTable } from '@/features/dynamicTable/DynamicTable'
+import { useTableFilters } from '@/features/dynamicTable/hooks/useTableFilters'
+import DynamicFilters from '@/features/filter/DynamicFilters'
 import SidebarHeader from '@/features/header/SidebarHeader'
-import { createColumns, VesselTable } from '@/features/table/VesselsTable'
 import type { Vessel } from '@/types/vessel.types'
 import { fetchVessels } from '@/utils/vessels'
+import { IconButton } from '@globalfishingwatch/ui-components'
 
 const GFW_API_URL =
   process.env.NEXT_PUBLIC_API_GATEWAY || 'https://gateway.api.globalfishingwatch.org'
@@ -21,19 +24,28 @@ export const Route = createFileRoute('/_auth/')({
 
 function Home() {
   const vessels: Vessel[] = Route.useLoaderData()
-  const columns = createColumns(vessels)
+  const { uniqueValues, filterState, filteredData, updateFilter } = useTableFilters(vessels)
+  console.log('🚀 ~ Home ~ uniqueValues:', uniqueValues)
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   const handleExpandRow = async (row: Vessel) => {
-    const response = await fetch(`${GFW_API_URL}/${VESSEL_SEARCH_URL}?query=${row.id}`)
+    const { name, imo, mmsi } = row
+    const query = `query=${name || imo || mmsi}`
+    const params = {
+      datasets: VESSEL_SEARCH_DATASETS,
+    }
+    const url = `${GFW_API_URL}/${VESSEL_SEARCH_URL}?${query}&${stringify(params, { arrayFormat: 'indices' })}`
+    const response = await fetch(url)
+    console.log('response', response)
     return response.json()
   }
 
   const checkCanExpand = async (row: Row<Vessel>) => {
-    const { id } = row.original
+    const { name, imo, mmsi } = row.original
     // const { name, imo, mmsi } = vessel || {}
-    // if (!name && !imo && !mmsi) return []
+    if (!name || !imo || !mmsi) return []
 
-    const query = `query=${id}`
+    const query = `query=${name || imo || mmsi}`
     const params = {
       datasets: VESSEL_SEARCH_DATASETS,
     }
@@ -54,12 +66,18 @@ function Home() {
     } catch (e) {
       return false
     }
+    console.log('data', data)
     return data.entries.length >= 1 || false
   }
 
   return (
     <>
       <SidebarHeader>
+        <IconButton
+          icon={isFilterOpen ? 'filter-off' : 'filter-on'}
+          onClick={() => setIsFilterOpen(!isFilterOpen)}
+        />
+        {isFilterOpen && <DynamicFilters filters={uniqueValues} onFilterChange={updateFilter} />}
         <h1>Vessels</h1>
       </SidebarHeader>
       <DynamicTable data={vessels} onExpandRow={handleExpandRow} checkCanExpand={checkCanExpand} />

@@ -1,8 +1,8 @@
-import { useCallback,useState } from 'react'
+import { useCallback, useState } from 'react'
 import type { Row } from '@tanstack/react-table'
 
 export function useRowExpansion<T extends Record<string, any>>(
-  checkCanExpand?: (row: Row<T>) => boolean,
+  checkCanExpand?: (row: Row<T>) => Promise<boolean>,
   onExpandRow?: (row: T) => Promise<any>
 ) {
   const [expandedRows, setExpandedRows] = useState<Record<string, any>>({})

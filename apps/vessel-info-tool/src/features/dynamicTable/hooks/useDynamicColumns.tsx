@@ -1,12 +1,8 @@
-import type { HTMLProps} from 'react';
+import type { HTMLProps } from 'react'
 import { useEffect, useMemo, useRef } from 'react'
-import type { Row, Table } from '@tanstack/react-table';
-import { ColumnDef } from '@tanstack/react-table'
+import type { Row, Table } from '@tanstack/react-table'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
-
-import { ColumnFilter } from '../components/ColumnFilters'
-import type { FilterState } from '../DynamicTable'
 
 import styles from '../DynamicTable.module.css'
 
@@ -37,11 +33,7 @@ function IndeterminateCheckbox({
   )
 }
 
-export function useDynamicColumns<T extends Record<string, any>>(
-  data: T[],
-  filterState: FilterState,
-  onFilterChange: (columnKey: string, values: string[]) => void
-) {
+export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
   return useMemo(() => {
     if (!data.length) return []
 
@@ -93,20 +85,8 @@ export function useDynamicColumns<T extends Record<string, any>>(
       },
       ...otherKeys.map((key) => ({
         accessorKey: key,
-        header: () => (
-          <div className="flex flex-col gap-2">
-            <span className="font-semibold capitalize">
-              {key.replace(/([A-Z])/g, ' $1').trim()}
-            </span>
-            <ColumnFilter
-              columnKey={key}
-              data={data}
-              selectedValues={filterState[key] || []}
-              onFilterChange={(values) => onFilterChange(key, values)}
-            />
-          </div>
-        ),
+        header: key,
       })),
     ]
-  }, [data, filterState, onFilterChange])
+  }, [data])
 }
