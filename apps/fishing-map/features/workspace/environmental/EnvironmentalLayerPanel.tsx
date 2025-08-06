@@ -8,7 +8,7 @@ import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-clien
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
-import type { ColorBarOption, TagItem } from '@globalfishingwatch/ui-components'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
@@ -77,6 +77,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
       { field: 'specie', label: t('layer.specie') },
       { field: 'period', label: t('layer.period') },
       { field: 'scenario', label: t('layer.scenario') },
+      { field: 'elevation', label: t('layer.elevation') },
     ],
     [t]
   )
@@ -118,7 +119,8 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
       d.type === DatasetTypes.Fourwings ||
       d.type === DatasetTypes.Context ||
       d.type === DatasetTypes.UserContext ||
-      d.type === DatasetTypes.UserTracks
+      d.type === DatasetTypes.UserTracks ||
+      d.type === DatasetTypes.PMTiles
   )
   const hasLegend = dataset?.type === DatasetTypes.Fourwings
 

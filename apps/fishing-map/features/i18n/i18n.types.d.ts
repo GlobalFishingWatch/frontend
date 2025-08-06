@@ -971,6 +971,7 @@ interface Resources {
       "editDraw": "Edit draw",
       "editPointHint": "Click on the point to adjust their coordinates",
       "editPolygonHint": "Click on polygon corners to adjust their coordinates",
+      "elevation": "Elevation",
       "filterClose": "Close filters",
       "filterOpen": "Open filters",
       "filtersConfirmAbort": "Do you want to apply the changes made to the layer?",

@@ -4,7 +4,7 @@ import type { DeckLayerProps } from '../../types'
 
 export type BathymetryContourLayerProps = DeckLayerProps<{
   tilesUrl: string
-  filters?: Record<string, any>
+  elevations?: number[]
   color: string
   thickness: number
 }>

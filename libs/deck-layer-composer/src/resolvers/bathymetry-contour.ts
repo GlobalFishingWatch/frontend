@@ -8,16 +8,21 @@ import type { DeckResolverFunction } from './types'
 export const resolveDeckBathymetryContourLayerProps: DeckResolverFunction<
   BathymetryContourLayerProps
 > = (dataview) => {
-  const dataset = findDatasetByType(dataview.datasets, DatasetTypes.Context) as Dataset
+  const dataset = findDatasetByType(dataview.datasets, DatasetTypes.PMTiles) as Dataset
   const datasetConfig = dataview.datasetsConfig?.[0]
   const filters = dataview.config?.filters
-  // const tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
-  // const tilesUrl = `http://localhost:8002/{z}/{x}/{y}.pbf`
-  const tilesUrl = `https://storage.googleapis.com/public-tiles/basemap/bathymetry-contour/contour.pmtiles?cache=1`
+  const tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
+  let elevations: number[] = []
+  if (typeof filters?.elevation === 'string' && filters.elevation !== '') {
+    elevations = [Number(filters.elevation)]
+  } else if (Array.isArray(filters?.elevation)) {
+    elevations = filters?.elevation?.map((e: string) => Number(e)) || []
+  }
+
   return {
     id: dataview.id,
     tilesUrl,
-    filters,
+    elevations,
     visible: dataview.config?.visible ?? true,
     category: dataview.category!,
     color: dataview.config?.color as string,

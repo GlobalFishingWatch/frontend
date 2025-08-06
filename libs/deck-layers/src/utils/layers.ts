@@ -49,7 +49,8 @@ export function getFeatureInFilter(
       isNumeric(values[0]) &&
       isNumeric(values[1]) &&
       // this is needed because protected_seas layer has a numeric filter that comes as a string
-      id !== 'removal_of'
+      id !== 'removal_of' &&
+      id !== 'elevation'
     ) {
       const min = parseFloat(values[0] as string)
       const max = parseFloat(values[1] as string)
