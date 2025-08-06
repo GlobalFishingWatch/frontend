@@ -136,7 +136,7 @@ const workspace: Workspace<WorkspaceState> = {
     },
     {
       ...BATHYMETRY_DATAVIEW_INSTANCE,
-      id: BATHYMETRY_DATAVIEW_PREFIX.replace('-', ''),
+      id: BATHYMETRY_DATAVIEW_PREFIX,
       config: { visible: false },
     },
     ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,
