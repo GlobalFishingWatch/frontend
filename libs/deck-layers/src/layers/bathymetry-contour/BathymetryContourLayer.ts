@@ -108,8 +108,7 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
             lineJointRounded: true,
             lineCapRounded: true,
             updateTriggers: {
-              getFilterCategory: [elevations],
-              getLineWidth: [thickness, elevations],
+              getLineWidth: [thickness],
               getLineColor: [color],
             },
           } as any),
@@ -132,9 +131,6 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
             collisionTestProps: { sizeScale: 5 },
             getSize: 10,
             getPixelOffset: [0, 0],
-            updateTriggers: {
-              getFilterCategory: [elevations],
-            },
             getText: (d: BathymetryLabelFeature) => {
               return d.properties.elevation?.toString()
             },
