@@ -3,6 +3,7 @@ import type { UserGroup } from './user.slice'
 export const GFW_GROUP_ID = 'GFW Staff'
 export const JAC_GROUP_ID = 'Joint Analytical Cell (JAC)'
 export const GFW_DEV_GROUP_ID = 'development-group'
+export const GFW_TEST_GROUP_ID = 'testing-fishing-map'
 export const ADMIN_GROUP_ID = 'admin-group'
 export const DEFAULT_GROUP_ID = 'Default'
 export const PRIVATE_SUPPORTED_GROUPS = [

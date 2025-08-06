@@ -13,7 +13,7 @@ export enum DebugOption {
   MapStats = 'mapStats',
   Thinning = 'thinning',
   DatasetIdHash = 'addDatasetIdHash',
-  CurrentsLayer = 'currentsLayer',
+  ExperimentalLayers = 'experimentalLayers',
   AreasOnScreen = 'areasOnScreen',
   DataTerminologyIframe = 'dataTerminologyIframe',
 }
@@ -39,7 +39,7 @@ const initialState: DebugState = {
     thinning: true,
     addDatasetIdHash: true,
     dataTerminologyIframe: false,
-    currentsLayer: false,
+    experimentalLayers: false,
     areasOnScreen: false,
   },
 }

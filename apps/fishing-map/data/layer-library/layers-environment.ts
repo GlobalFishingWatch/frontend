@@ -7,6 +7,7 @@ import {
   TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
   TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
 } from 'data/workspaces'
+import { BATHYMETRY_DATAVIEW_PREFIX } from 'features/dataviews/dataviews.utils'
 
 const heatmapDatasetConfig = {
   params: [
@@ -19,7 +20,7 @@ const heatmapDatasetConfig = {
 }
 
 export const BATHYMETRY_DATAVIEW_INSTANCE: Omit<LibraryLayerConfig, 'previewImageUrl'> = {
-  id: 'bathymetry',
+  id: BATHYMETRY_DATAVIEW_PREFIX,
   dataviewId: TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
   config: {
     color: 'bathymetry',
@@ -56,7 +57,7 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   // },
   {
     ...BATHYMETRY_DATAVIEW_INSTANCE,
-    id: 'bathymetry',
+    id: BATHYMETRY_DATAVIEW_PREFIX,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/bathymetry.jpg`,
   },
   // {

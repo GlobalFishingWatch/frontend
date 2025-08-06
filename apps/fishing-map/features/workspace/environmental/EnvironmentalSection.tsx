@@ -12,7 +12,10 @@ import { WorkspaceCategory } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
+import {
+  isBathymetryContourDataview,
+  isBathymetryDataview,
+} from 'features/dataviews/dataviews.utils'
 import { selectEnvironmentalDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectEnvironmentReportLayersVisible } from 'features/dataviews/selectors/dataviews.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
@@ -35,8 +38,12 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectEnvironmentalDataviews)
   const reportDataviews = useSelector(selectEnvironmentReportLayersVisible)
-  const dataviewsMinusBathymetry = dataviews.filter((d) => !isBathymetryDataview(d))
-  const bathymetryDataview = dataviews.find((d) => isBathymetryDataview(d))
+  const dataviewsMinusBathymetry = dataviews.filter(
+    (d) => !isBathymetryDataview(d) && !isBathymetryContourDataview(d)
+  )
+  const bathymetryDataviews = dataviews.filter(
+    (d) => isBathymetryDataview(d) || isBathymetryContourDataview(d)
+  )
   const userDatasets = useSelector(selectUserEnvironmentDatasets)
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const hasVisibleReportDataviews = reportDataviews && reportDataviews?.length > 0
@@ -110,14 +117,15 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
             ))
           : null}
       </SortableContext>
-      {bathymetryDataview && (
-        <LayerPanelContainer key={bathymetryDataview.id} dataview={bathymetryDataview}>
-          <EnvironmentalLayerPanel
-            dataview={bathymetryDataview}
-            onToggle={onToggleLayer(bathymetryDataview)}
-          />
-        </LayerPanelContainer>
-      )}
+      {bathymetryDataviews.length > 0 &&
+        bathymetryDataviews.map((bathymetryDataview) => (
+          <LayerPanelContainer key={bathymetryDataview.id} dataview={bathymetryDataview}>
+            <EnvironmentalLayerPanel
+              dataview={bathymetryDataview}
+              onToggle={onToggleLayer(bathymetryDataview)}
+            />
+          </LayerPanelContainer>
+        ))}
       {locationCategory === WorkspaceCategory.MarineManager && (
         <div className={cx(styles.surveyLink, 'print-hidden')}>
           <a

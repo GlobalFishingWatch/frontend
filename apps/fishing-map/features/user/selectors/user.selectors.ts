@@ -7,6 +7,7 @@ import {
   ADMIN_GROUP_ID,
   GFW_DEV_GROUP_ID,
   GFW_GROUP_ID,
+  GFW_TEST_GROUP_ID,
   JAC_GROUP_ID,
 } from 'features/user/user.config'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -35,6 +36,9 @@ export const selectIsGFWAdminUser = createSelector([selectUserData], (userData) 
 })
 export const selectIsGFWDeveloper = createSelector([selectUserData], (userData) => {
   return userData?.groups.includes(GFW_DEV_GROUP_ID)
+})
+export const selectIsGFWTestGroup = createSelector([selectUserData], (userData) => {
+  return userData?.groups.includes(GFW_TEST_GROUP_ID)
 })
 
 export const selectIsGuestUser = createSelector([selectUserData], (userData) => {

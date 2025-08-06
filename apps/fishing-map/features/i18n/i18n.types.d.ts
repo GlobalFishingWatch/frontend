@@ -34,9 +34,14 @@ interface Resources {
   },
   "layer-library": {
     "bathymetry": {
-      "description": "Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This gridded bathymetric dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second interval grid. ",
-      "moreInfoLink": "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2023/",
+      "description": "Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This gridded bathymetric dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second interval grid.",
+      "moreInfoLink": "https://www.gebco.net/data-products/gridded-bathymetry-data/gebco2023-grid",
       "name": "Bathymetry"
+    },
+    "bathymetry-contour": {
+      "description": "Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This contour dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second resolution.",
+      "moreInfoLink": "https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO2022",
+      "name": "Bathymetry contour"
     },
     "chlorophyl": {
       "description": "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Marine phytoplankton chemically fix carbon through photosynthesis by taking in dissolved carbon dioxide and producing oxygen. This dataset is comprised of biogeochemical parameters, including chlorophyll, over the global ocean displayed with a 1/4 degree horizontal resolution. ",
