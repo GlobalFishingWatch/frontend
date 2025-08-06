@@ -1159,7 +1159,7 @@ interface Resources {
     },
     "toasts": {
       "maxPointsVisualizationExceeded": "Max points visualization exceeded, switching to heatmap mode.",
-      "shutdownDisclaimer": "Product and data improvements are scheduled for the week of 4 August. During this time, some products may not show the latest data. Full updates will resume shortly.",
+      "shutdownDisclaimer": "Product and data improvements will be running for 2 to 3 weeks in August, some products may not show the latest data. Full updates will resume shortly.",
       "shutdownDisclaimerTitle": "Temporary delay in data updates"
     },
     "trackCorrection": {
