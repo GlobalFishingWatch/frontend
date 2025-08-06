@@ -1,5 +1,6 @@
 import type { Accessor, LayerContext, LayerProps, LayersList, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
+import type { CollisionFilterExtensionProps, DataFilterExtensionProps } from '@deck.gl/extensions'
 import type { TextLayerProps } from '@deck.gl/layers'
 import { TextLayer } from '@deck.gl/layers'
 import type { Feature, Point } from '@loaders.gl/schema'
@@ -16,10 +17,10 @@ type LabelLayerState = {
 type LabelLayerProps<DataT> = {
   getPosition?: Accessor<DataT, Position>
   getPickingInfo?: ({ info }: { info: PickingInfo<DataT> }) => typeof info
-  filterRange?: [number, number]
-  getFilterValue?: Accessor<DataT, number>
-  getCollisionPriority?: Accessor<DataT, number>
-  collisionTestProps?: Record<string, number>
+  filterRange?: DataFilterExtensionProps['filterRange']
+  getFilterValue?: DataFilterExtensionProps['getFilterValue']
+  getCollisionPriority?: CollisionFilterExtensionProps['getCollisionPriority']
+  collisionTestProps?: CollisionFilterExtensionProps['collisionTestProps']
 }
 
 export class LabelLayer<DataT = unknown> extends CompositeLayer<
