@@ -903,7 +903,7 @@
   },
   "toasts": {
     "maxPointsVisualizationExceeded": "Visualização máxima de pontos excedida, alternando para o modo de mapa de calor.",
-    "shutdownDisclaimer": "Estão previstas melhorias de produtos e dados para a semana de 4 de Agosto. Durante este período, alguns produtos podem não mostrar os últimos dados. As atualizações completas serão retomadas em breve.",
+    "shutdownDisclaimer": "As melhorias em produtos e dados serão aplicadas por 2 a 3 semanas em agosto. Alguns produtos podem não exibir os dados mais recentes. As atualizações completas serão retomadas em breve.",
     "shutdownDisclaimerTitle": "Atraso temporário nas atualizações de dados"
   },
   "trackCorrection": {
