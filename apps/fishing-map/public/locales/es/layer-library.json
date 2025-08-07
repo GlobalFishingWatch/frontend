@@ -1,8 +1,13 @@
 {
   "bathymetry": {
     "description": "La batimetría es la medición de la profundidad del agua y proporciona detalles de las características físicas del fondo del océano. Este conjunto de datos de cuadrícula batimétrica es un modelo global continuo que proporciona datos de elevación para el océano en metros en una cuadrícula con intervalos de 15 arco segundos. ",
-    "moreInfoLink": "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2023/",
+    "moreInfoLink": "https://www.gebco.net/data-products/gridded-bathymetry-data/gebco2023-grid",
     "name": "Batimetría"
+  },
+  "bathymetry-contour": {
+    "description": "Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This contour dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second resolution.",
+    "moreInfoLink": "https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO2022",
+    "name": "Bathymetry contour"
   },
   "chlorophyl": {
     "description": "La clorofila a es el pigmento cosechador de luz que se encuentra en todas las plantas fotosintéticas. El fitoplancton marino fija el carbono químicamente a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo la clorofila, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",

@@ -710,6 +710,7 @@
     "editDraw": "Modifier le dessin",
     "editPointHint": "Cliquez sur le point pour ajuster leurs coordonnées",
     "editPolygonHint": "Cliquez sur les coins du polygone pour ajuster leurs coordonnées",
+    "elevation": "Elevation",
     "filterClose": "Fermer les filtres",
     "filterOpen": "Ouvrir les filtres",
     "filtersConfirmAbort": "Voulez-vous appliquer les modifications apportées au calque ?",
