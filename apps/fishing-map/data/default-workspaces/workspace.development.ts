@@ -13,8 +13,8 @@ import {
 } from 'data/highlighted-workspaces/report.dataviews'
 import { BATHYMETRY_DATAVIEW_INSTANCE } from 'data/layer-library/layers-environment'
 import {
-  BASEMAP_DATAVIEW_INSTANCE_ID,
   BASEMAP_DATAVIEW_SLUG,
+  BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
   BASEMAP_LABELS_DATAVIEW_SLUG,
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
@@ -175,7 +175,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: PORTS_DATAVIEW_SLUG,
     },
     {
-      id: BASEMAP_DATAVIEW_INSTANCE_ID,
+      id: BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
       config: {
         visible: false,
       },

@@ -14,8 +14,8 @@ import {
 } from 'data/highlighted-workspaces/report.dataviews'
 import { BATHYMETRY_DATAVIEW_INSTANCE } from 'data/layer-library/layers-environment'
 import {
-  BASEMAP_DATAVIEW_INSTANCE_ID,
   BASEMAP_DATAVIEW_SLUG,
+  BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
   BASEMAP_LABELS_DATAVIEW_SLUG,
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
@@ -147,7 +147,7 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: FIXED_SAR_INFRASTRUCTURE,
     },
     {
-      id: BASEMAP_DATAVIEW_INSTANCE_ID,
+      id: BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
       config: {
         visible: false,
       },
