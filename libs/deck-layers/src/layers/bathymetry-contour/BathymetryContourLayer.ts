@@ -43,6 +43,8 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
   }
 
   _bathymetryColorScale = scaleLinear([-50, -500, -6000], [0.7, 0.4, 0.1]).clamp(true)
+  _priorityLengthScale = scaleLinear([5, 10000], [-1000, 1000]).clamp(true)
+  _priorityBearingScale = scaleLinear([-180, 0, 180], [-100, 100, -100]).clamp(true)
 
   _getBathymetryColor = (d: BathymetryContourFeature | BathymetryLabelFeature) => {
     const baseOpacity = this._bathymetryColorScale(d.properties?.elevation)
@@ -114,7 +116,15 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
               getFilterCategory: (d: BathymetryLabelFeature) => d.properties.elevation,
               filterCategories: elevations,
             }),
-            getCollisionPriority: (d: BathymetryLabelFeature) => d.properties.length / 1000,
+            getCollisionPriority: (d: BathymetryLabelFeature) => {
+              if (d.properties.length === undefined) {
+                return -1000
+              }
+              return (
+                this._priorityLengthScale(d.properties.length) +
+                this._priorityBearingScale(90 - (d.properties.bearing || 0))
+              )
+            },
             collisionTestProps: { sizeScale: 5 },
             getSize: 11,
             getPixelOffset: [0, 0],
@@ -125,7 +135,7 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
               return d.geometry.coordinates as [number, number]
             },
             getAngle: (d: BathymetryLabelFeature) => {
-              return 90 - d.properties.bearing || 0
+              return 90 - (d.properties.bearing || 0)
             },
             getColor: this._getBathymetryColor,
             // outlineColor: hexToDeckColor(BLEND_BACKGROUND, 0.7),
