@@ -76,6 +76,36 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
       },
       renderSubLayers: (props: any) => {
         return [
+          // new PathLayer(props, {
+          //   id: `${props.id}-bathymetry-contour`,
+          //   data: props.data?.features,
+          //   extensions: [new DataFilterExtension(filterExtensionParams)],
+          //   // getFilterValue: (d: BathymetryContourFeature | BathymetryLabelFeature) => {
+          //   //   return d.geometry?.type !== 'Point' ? 1 : 0
+          //   // },
+          //   // filterRange,
+          //   ...(hasElevationsFilter && {
+          //     getFilterCategory: (d: BathymetryLabelFeature) => d.properties.elevation,
+          //     filterCategories: elevations,
+          //   }),
+          //   getPolygonOffset: (params: { layerIndex: number }) =>
+          //     getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+          //   getColor: this._getBathymetryColor,
+          //   getPath: (d: BathymetryContourFeature) => {
+          //     if (d.geometry.type === 'MultiLineString') {
+          //       return d.geometry.coordinates.flat()
+          //     }
+          //     return d.geometry.coordinates
+          //   },
+          //   positionFormat: 'XY',
+          //   getWidth: thickness,
+          //   widthUnits: 'pixels',
+          //   jointRounded: true,
+          //   updateTriggers: {
+          //     getWidth: [thickness],
+          //     getColor: [color],
+          //   },
+          // } as any),
           new GeoJsonLayer(props, {
             id: `${props.id}-bathymetry-contour`,
             lineWidthMinPixels: 0,
