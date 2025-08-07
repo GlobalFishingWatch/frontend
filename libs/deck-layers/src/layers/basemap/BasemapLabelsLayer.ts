@@ -7,8 +7,8 @@ import { TileLayer } from '@deck.gl/geo-layers'
 import { Locale } from '@globalfishingwatch/api-types'
 
 import { getLayerGroupOffset, LayerGroup } from '../../utils'
+import { LabelLayer } from '../labels/LabelLayer'
 import { PMTilesLayer } from '../pm-tiles'
-import { LabelLayer } from '../vessel/LabelLayer'
 
 import type { _BasemapLabelsLayerProps, BasemapLayerFeature } from './basemap.types'
 

@@ -27,8 +27,8 @@ import {
   VESSEL_SPRITE_ICON_MAPPING,
 } from '../../utils'
 import { deckToHexColor, hexToDeckColor } from '../../utils/colors'
+import { LabelLayer } from '../labels/LabelLayer'
 import { PATH_BASENAME } from '../layers.config'
-import { LabelLayer } from '../vessel/LabelLayer'
 
 import {
   DEFAULT_FISHING_EVENT_COLOR,

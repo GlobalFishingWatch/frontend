@@ -30,7 +30,10 @@ import {
   SENTINEL2_DATAVIEW_SLUG,
   VIIRS_MATCH_DATAVIEW_SLUG,
 } from 'data/workspaces'
-import { ENCOUNTER_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
+import {
+  BATHYMETRY_DATAVIEW_PREFIX,
+  ENCOUNTER_EVENTS_SOURCE_ID,
+} from 'features/dataviews/dataviews.utils'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/map/map.config'
 import type { WorkspaceState } from 'types'
 
@@ -133,7 +136,7 @@ const workspace: Workspace<WorkspaceState> = {
     },
     {
       ...BATHYMETRY_DATAVIEW_INSTANCE,
-      id: 'bathymetry',
+      id: BATHYMETRY_DATAVIEW_PREFIX,
       config: { visible: false },
     },
     ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,

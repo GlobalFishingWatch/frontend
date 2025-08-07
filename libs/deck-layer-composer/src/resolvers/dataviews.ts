@@ -248,6 +248,7 @@ const DATAVIEWS_LAYER_ORDER: DataviewType[] = [
   DataviewType.UserPoints,
   DataviewType.BasemapLabels,
   DataviewType.Graticules,
+  DataviewType.Bathymetry,
   DataviewType.Rulers,
   DataviewType.Annotation,
 ]

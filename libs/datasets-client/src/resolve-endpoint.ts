@@ -1,3 +1,5 @@
+import { camelCase } from 'es-toolkit'
+
 import { API_VERSION, GFWAPI } from '@globalfishingwatch/api-client'
 import type {
   Dataset,
@@ -22,7 +24,9 @@ export const resolveEndpoint = (
 
   let url = endpoint.pathTemplate
   datasetConfig.params?.forEach((param) => {
-    url = url.replace(`{{${param.id}}}`, param.value as string)
+    const datasetConfigurationId = camelCase(param.id) as keyof typeof dataset.configuration
+    const value = param.value || dataset.configuration?.[datasetConfigurationId]
+    url = url.replace(`{{${param.id}}}`, value as string)
   })
 
   url = url.replace('{{x}}', '{x}').replace('{{y}}', '{y}').replace('{{z}}', '{z}')

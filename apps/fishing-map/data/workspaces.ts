@@ -57,6 +57,7 @@ export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas' as const
 export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas' as const
 export const PORTS_FOOTPRINT_DATAVIEW_SLUG = 'ports-footprint' as const
 export const CURRENTS_DATAVIEW_SLUG = 'currents' as const
+export const BATHYMETRY_CONTOUR_DATAVIEW_SLUG = 'bathymetry-contour' as const
 
 export const FISHING_DATAVIEW_SLUG_PREFIX = 'apparent-fishing-effort' as const
 // Workspaces dataviews

@@ -33,6 +33,7 @@ import {
   VIIRS_MATCH_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import {
+  BATHYMETRY_DATAVIEW_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
@@ -153,7 +154,7 @@ const workspace: Workspace<WorkspaceState> = {
     },
     {
       ...BATHYMETRY_DATAVIEW_INSTANCE,
-      id: 'bathymetry',
+      id: BATHYMETRY_DATAVIEW_PREFIX,
       config: { visible: false },
     },
     ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,

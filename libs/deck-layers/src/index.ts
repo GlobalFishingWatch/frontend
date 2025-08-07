@@ -1,4 +1,5 @@
 export * from './layers/basemap'
+export * from './layers/bathymetry-contour'
 export * from './layers/context'
 export * from './layers/polygons'
 export * from './layers/fourwings'

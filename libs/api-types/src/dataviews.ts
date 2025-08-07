@@ -24,6 +24,7 @@ export enum DataviewType {
   FourwingsTileCluster = 'FOURWINGS_TILE_CLUSTER',
   GL = 'GL',
   Graticules = 'GRATICULES',
+  Bathymetry = 'BATHYMETRY',
   Heatmap = 'HEATMAP',
   HeatmapAnimated = 'HEATMAP_ANIMATED',
   HeatmapStatic = 'HEATMAP_STATIC',

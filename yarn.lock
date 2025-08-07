@@ -3366,6 +3366,7 @@ __metadata:
     "@lingual/i18n-check": "npm:^0.8.4"
     i18next-parser: "npm:9.3.0"
     i18next-resources-for-ts: "npm:1.6.0"
+    prettier: "npm:3.6.2"
     source-map-explorer: "npm:2.5.3"
   languageName: unknown
   linkType: soft

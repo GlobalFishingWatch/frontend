@@ -12,9 +12,10 @@ import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 import { PATH_BASENAME } from 'data/config'
 import type { LibraryLayer } from 'data/layer-library'
 import { LIBRARY_LAYERS } from 'data/layer-library'
-import { CURRENTS_DATAVIEW_SLUG } from 'data/workspaces'
+import { BATHYMETRY_CONTOUR_DATAVIEW_SLUG, CURRENTS_DATAVIEW_SLUG } from 'data/workspaces'
 import { groupDatasetsByGeometryType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
+import { BATHYMETRY_CONTOUR_DATAVIEW_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import LayerLibraryItem from 'features/layer-library/LayerLibraryItem'
 import LayerLibraryUserPanel from 'features/layer-library/LayerLibraryUserPanel'
@@ -64,7 +65,7 @@ const LayerLibrary: FC = () => {
         },
       }
     })
-    if (debugOptions.currentsLayer) {
+    if (debugOptions.experimentalLayers) {
       layers.push({
         id: 'currents',
         dataviewId: CURRENTS_DATAVIEW_SLUG,
@@ -75,9 +76,23 @@ const LayerLibrary: FC = () => {
         previewImageUrl: `${PATH_BASENAME}/images/layer-library/currents.jpg`,
         dataview: {} as any,
       })
+
+      layers.push({
+        id: BATHYMETRY_CONTOUR_DATAVIEW_PREFIX,
+        dataviewId: BATHYMETRY_CONTOUR_DATAVIEW_SLUG,
+        config: {
+          color: '#ffffff',
+        },
+        category: DataviewCategory.Environment,
+        name: t('layer-library:bathymetry-contour.name'),
+        description: t('layer-library:bathymetry-contour.description'),
+        moreInfoLink: '',
+        previewImageUrl: `${PATH_BASENAME}/images/layer-library/bathymetry-contour.jpg`,
+        dataview: {} as any,
+      })
     }
     return layers
-  }, [dataviews, debugOptions.currentsLayer, t])
+  }, [dataviews, debugOptions.experimentalLayers, t])
 
   const uniqCategories = useMemo(
     () => uniq(layersResolved.map(({ category }) => category)),

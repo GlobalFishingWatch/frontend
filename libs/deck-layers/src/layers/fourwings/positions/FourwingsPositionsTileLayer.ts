@@ -35,8 +35,8 @@ import {
   VESSEL_SPRITE_ICON_MAPPING,
 } from '../../../utils'
 import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
+import { LabelLayer } from '../../labels/LabelLayer'
 import { PATH_BASENAME } from '../../layers.config'
-import { LabelLayer } from '../../vessel/LabelLayer'
 import {
   MAX_POSITIONS_PER_TILE_SUPPORTED,
   POSITIONS_API_TILES_URL,

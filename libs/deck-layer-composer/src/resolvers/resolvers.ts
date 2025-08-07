@@ -4,6 +4,7 @@ import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import {
   BaseMapLabelsLayer,
   BaseMapLayer,
+  BathymetryContourLayer,
   ContextLayer,
   FourwingsClustersLayer,
   FourwingsCurrentsTileLayer,
@@ -18,6 +19,7 @@ import {
 } from '@globalfishingwatch/deck-layers'
 
 import { resolveDeckBasemapLabelsLayerProps, resolveDeckBasemapLayerProps } from './basemap'
+import { resolveDeckBathymetryContourLayerProps } from './bathymetry-contour'
 import { resolveDeckFourwingsClustersLayerProps } from './clusters'
 import { resolveDeckContextLayerProps } from './context'
 import { resolveDeckCurrentsLayerProps } from './currents'
@@ -53,6 +55,10 @@ export const dataviewToDeckLayer = (
   if (dataview.config?.type === DataviewType.BasemapLabels) {
     const deckLayerProps = resolveDeckBasemapLabelsLayerProps(dataview, layerConfig)
     return new BaseMapLabelsLayer(deckLayerProps)
+  }
+  if (dataview.config?.type === DataviewType.Bathymetry) {
+    const deckLayerProps = resolveDeckBathymetryContourLayerProps(dataview, layerConfig)
+    return new BathymetryContourLayer(deckLayerProps)
   }
   if (dataview.config?.type === DataviewType.Graticules) {
     const deckLayerProps = resolveDeckGraticulesLayerProps(dataview, layerConfig)
