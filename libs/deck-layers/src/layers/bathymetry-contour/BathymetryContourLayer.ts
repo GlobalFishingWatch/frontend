@@ -42,8 +42,8 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
     this.setState({ viewportLoaded: false, labels: [] })
   }
 
-  _bathymetryColorScale = scaleLinear([-50, -500, -6000], [0.7, 0.4, 0.1]).clamp(true)
-  _priorityLengthScale = scaleLinear([5, 10000], [-1000, 1000]).clamp(true)
+  _bathymetryColorScale = scaleLinear([-10, -100, -1000, -10000], [0.7, 0.4, 0.3, 0.1]).clamp(true)
+  _priorityLengthScale = scaleLinear([5, 10000], [-900, 900]).clamp(true)
   _priorityBearingScale = scaleLinear([-180, 0, 180], [-100, 100, -100]).clamp(true)
 
   _getBathymetryColor = (d: BathymetryContourFeature | BathymetryLabelFeature) => {
@@ -120,7 +120,7 @@ export class BathymetryContourLayer<PropsT = Record<string, unknown>> extends Co
             }),
             filled: false,
             getPolygonOffset: (params: { layerIndex: number }) =>
-              getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+              getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
             getLineColor: this._getBathymetryColor,
             getLineWidth: thickness,
             lineWidthUnits: 'pixels',

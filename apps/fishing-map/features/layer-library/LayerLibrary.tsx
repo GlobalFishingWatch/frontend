@@ -80,6 +80,9 @@ const LayerLibrary: FC = () => {
       layers.push({
         id: BATHYMETRY_CONTOUR_DATAVIEW_PREFIX,
         dataviewId: BATHYMETRY_CONTOUR_DATAVIEW_SLUG,
+        config: {
+          color: '#ffffff',
+        },
         category: DataviewCategory.Environment,
         name: t('layer-library:bathymetry-contour.name'),
         description: t('layer-library:bathymetry-contour.description'),
