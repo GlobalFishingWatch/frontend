@@ -710,6 +710,7 @@
     "editDraw": "Sunting gambar",
     "editPointHint": "Click on the point to adjust their coordinates",
     "editPolygonHint": "Klik pada sudut poligon untuk menyesuaikan koordinatnya",
+    "elevation": "Elevation",
     "filterClose": "Tutup filter",
     "filterOpen": "Buka filter",
     "filtersConfirmAbort": "Anda ingin menerapkan perubahan yang dilakukan pada lapisan?",
