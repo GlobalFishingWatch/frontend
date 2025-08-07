@@ -1147,7 +1147,7 @@ interface Resources {
     }
     'public-global-bathymetry': {
       name: 'Bathymetry'
-      description: "<h2>Overview</h2>\n<ul>\n<li>Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This gridded bathymetric dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second interval grid.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://www.gebco.net/data_and_products/gridded_bathymetry_data/#global'>GEBCO Compilation Group (2023) GEBCO 2023 Grid (doi:10.5285/f98b053b-0cbc-6c23-e053-6c86abc0af7b).</a></li>"
+      description: "<h2>Overview</h2>\n<ul>\n<li>Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This gridded bathymetric dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second interval grid.</li>\n <li>Disclaimer:\nThe bathymetry layer shown on the map is based on gridded data from GEBCO and represents average depth values per tile, calculated in meters. These tiles are at a coarser resolution, so the depth shown may differ from the specific value at a point where you click. For example, if you click on a vessel track within the 50-meter isoline, the depth shown at that point may not exactly match the tile's average due to differences in resolution.\nKeep in mind that bathymetry datasets are generalized and may not reflect precise seafloor conditions at fine scales. Use caution when interpreting these values for regulatory or analytical purposes. \n\n If you require finer detail, you can also upload your own bathymetry polygons for a more precise analysis.</li> \n\n <ul>\n<h2>Source</h2>\n<ul>\n <a href='https://www.gebco.net/data_and_products/gridded_bathymetry_data/#global'>GEBCO Compilation Group (2023) GEBCO 2023 Grid (doi:10.5285/f98b053b-0cbc-6c23-e053-6c86abc0af7b).</a></li>"
     }
     'public-global-carrier-vessels': {
       name: 'AIS (Carrier Vessels)'
@@ -1334,7 +1334,7 @@ interface Resources {
         area: 'area'
         label: {
           keyword: 'label'
-          enum: { '' }
+          enum: {}
         }
         perimeter: 'perimeter'
       }
@@ -2112,19 +2112,19 @@ interface Resources {
       schema: {
         GENUS: {
           keyword: 'GENUS'
-          enum: { '' }
+          enum: {}
         }
         FAMILY: {
           keyword: 'FAMILY'
-          enum: { '' }
+          enum: {}
         }
         habitat: {
           keyword: 'habitat'
-          enum: { '' }
+          enum: {}
         }
         BIO_CLASS: {
           keyword: 'BIO_CLASS'
-          enum: { '' }
+          enum: {}
         }
       }
     }

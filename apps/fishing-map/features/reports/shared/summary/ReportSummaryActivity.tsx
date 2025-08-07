@@ -13,6 +13,11 @@ import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { selectReportDataviewsWithPermissions } from 'features/reports/report-area/area-reports.selectors'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
+import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
+import {
+  useReportFeaturesLoading,
+  useReportFilteredTimeSeries,
+} from 'features/reports/reports-timeseries.hooks'
 import ReportSummaryPlaceholder from 'features/reports/shared/placeholders/ReportSummaryPlaceholder'
 import { getHasAllSourcesInCommon } from 'features/reports/shared/summary/report-summary.utils'
 import {
@@ -21,11 +26,6 @@ import {
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
 import { useTimeCompareTimeDescription } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
-import type { ReportGraphProps } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
-import {
-  useReportFeaturesLoading,
-  useReportFilteredTimeSeries,
-} from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import { formatEvolutionData } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import {
   selectReportVesselsHours,
