@@ -710,6 +710,7 @@
     "editDraw": "Editar desenho",
     "editPointHint": "Clique no ponto para ajustar as coordenadas",
     "editPolygonHint": "Clique nos cantos do polígono para ajustar suas coordenadas",
+    "elevation": "Elevation",
     "filterClose": "Fechar filtros",
     "filterOpen": "Abrir filtros",
     "filtersConfirmAbort": "Deseja aplicar as alterações feitas à camada?",
