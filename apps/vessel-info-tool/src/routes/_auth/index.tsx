@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import type { Row } from '@tanstack/react-table'
+import { t } from 'i18next'
 import { stringify } from 'qs'
 
 import { DynamicTable } from '@/features/dynamicTable/DynamicTable'
 import { useTableFilters } from '@/features/dynamicTable/hooks/useTableFilters'
 import DynamicFilters from '@/features/filter/DynamicFilters'
+import Footer from '@/features/footer/Footer'
 import SidebarHeader from '@/features/header/SidebarHeader'
 import type { Vessel } from '@/types/vessel.types'
 import { fetchVessels } from '@/utils/vessels'
@@ -81,6 +83,9 @@ function Home() {
         <h1>Vessels</h1>
       </SidebarHeader>
       <DynamicTable data={vessels} onExpandRow={handleExpandRow} checkCanExpand={checkCanExpand} />
+      <Footer downloadClick={() => console.log('Download clicked')}>
+        {vessels.length + t('footer.results')}
+      </Footer>
     </>
   )
 }

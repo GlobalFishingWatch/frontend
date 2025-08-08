@@ -1,0 +1,13 @@
+.footer {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-S);
+  border-top: var(--border);
+  height: var(--header-height);
+}
+
+.sticky {
+  background-color: var(--color-white);
+  z-index: 3;
+  bottom: 0;
+}
