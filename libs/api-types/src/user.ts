@@ -55,6 +55,12 @@ export interface UserPermission {
   action: UserPermissionAction
 }
 
+export const MOCK_USER_PERMISSION: UserPermission = {
+  type: 'application',
+  value: 'fishing-map',
+  action: 'read',
+}
+
 export interface UserGroup {
   id: number
   name: string

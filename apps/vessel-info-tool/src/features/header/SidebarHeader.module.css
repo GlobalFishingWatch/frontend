@@ -18,5 +18,5 @@
 
 .sticky {
   background-color: var(--color-white);
-  z-index: 3;
+  z-index: 5;
 }

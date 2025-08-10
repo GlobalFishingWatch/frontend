@@ -1,17 +1,18 @@
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createFileRoute } from '@tanstack/react-router'
 import type { Row } from '@tanstack/react-table'
 import { stringify } from 'qs'
 
 import { DynamicTable } from '@/features/dynamicTable/DynamicTable'
-import { useTableFilters } from '@/features/dynamicTable/hooks/useTableFilters'
-import DynamicFilters from '@/features/filter/DynamicFilters'
 import Footer from '@/features/footer/Footer'
 import SidebarHeader from '@/features/header/SidebarHeader'
+import OptionsMenu from '@/features/options/OptionsMenu'
+import Profile from '@/features/profile/Profile'
+import Search from '@/features/search/Search'
+import type { TableSearchParams } from '@/hooks/useTableFilters'
 import type { Vessel } from '@/types/vessel.types'
 import { fetchVessels } from '@/utils/vessels'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { MOCK_USER_PERMISSION } from '@globalfishingwatch/api-types'
 
 const GFW_API_URL =
   process.env.NEXT_PUBLIC_API_GATEWAY || 'https://gateway.api.globalfishingwatch.org'
@@ -21,16 +22,19 @@ const VESSEL_SEARCH_DATASETS = ['public-global-vessel-identity:v3.0']
 
 export const Route = createFileRoute('/_auth/')({
   loader: async () => fetchVessels(),
+  validateSearch: (search: Record<string, unknown>): TableSearchParams => ({
+    search: typeof search.search === 'string' ? search.search : undefined,
+    filters:
+      typeof search.filters === 'object' && search.filters !== null
+        ? (search.filters as Record<string, string | string[]>)
+        : undefined,
+  }),
   component: Home,
 })
 
 function Home() {
   const vessels: Vessel[] = Route.useLoaderData()
   const { t } = useTranslation()
-
-  const { uniqueValues, filterState, filteredData, updateFilter } = useTableFilters(vessels)
-  console.log('🚀 ~ Home ~ uniqueValues:', uniqueValues)
-  const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   const handleExpandRow = async (row: Vessel) => {
     const { name, imo, mmsi } = row
@@ -76,19 +80,32 @@ function Home() {
   console.log('🚀 ~ t ~ vessels.length:', vessels.length)
 
   return (
-    <>
+    <div className="fixed inset-0 flex flex-col overflow-hidden">
       <SidebarHeader>
-        <IconButton
-          icon={isFilterOpen ? 'filter-off' : 'filter-on'}
-          onClick={() => setIsFilterOpen(!isFilterOpen)}
+        <Search data={vessels} />
+        <OptionsMenu />
+        <Profile
+          user={{
+            id: 1,
+            type: 'user',
+            groups: ['admin', 'analyst'],
+            permissions: [MOCK_USER_PERMISSION],
+            email: 'user@example.com',
+            firstName: 'John',
+            lastName: 'Doe',
+          }}
         />
-        {isFilterOpen && <DynamicFilters filters={uniqueValues} onFilterChange={updateFilter} />}
-        <h1>Vessels</h1>
       </SidebarHeader>
-      <DynamicTable data={vessels} onExpandRow={handleExpandRow} checkCanExpand={checkCanExpand} />
-      <Footer downloadClick={() => console.log('Download clicked')}>
-        {t('footer.results', `${vessels.length} results`, { count: vessels.length })}
-      </Footer>
-    </>
+      <div className="flex-1 overflow-auto">
+        <DynamicTable
+          data={vessels}
+          onExpandRow={handleExpandRow}
+          // checkCanExpand={checkCanExpand}
+        />
+        <Footer downloadClick={() => console.log('Download clicked')}>
+          {t('footer.results', `${vessels.length} results`, { count: vessels.length })}
+        </Footer>
+      </div>
+    </div>
   )
 }

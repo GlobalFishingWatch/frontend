@@ -111,6 +111,10 @@ body {
   font: var(--font-M);
   color: var(--color-primary-blue);
   overflow-anchor: auto;
+  background: linear-gradient(180deg, rgba(229, 240, 242, 1) 0%, rgba(255, 255, 255, 1) 100%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 /* * {

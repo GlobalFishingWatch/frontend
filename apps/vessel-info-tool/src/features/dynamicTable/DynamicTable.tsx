@@ -11,10 +11,9 @@ import {
 
 import { Icon } from '@globalfishingwatch/ui-components'
 
+import { useDynamicColumns } from '../../hooks/useDynamicColumns'
+import { useRowExpansion } from '../../hooks/useRowExpansion'
 import ExpandableRow from '../expandableRow/ExpandableRow'
-
-import { useDynamicColumns } from './hooks/useDynamicColumns'
-import { useRowExpansion } from './hooks/useRowExpansion'
 
 import styles from './DynamicTable.module.css'
 
@@ -95,82 +94,79 @@ export function DynamicTable<T extends Record<string, any>>({
   })
 
   return (
-    <div className={`p-2 ${styles.container}`}>
-      <div className="h-2" />
-      <table className={styles.table}>
-        <thead className={`sticky top-0 z-10 bg-white`}>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id} className={styles.th}>
-              {headerGroup.headers.map((header) => {
-                const { column } = header
-                return (
-                  <th
-                    key={header.id}
-                    colSpan={header.colSpan}
-                    className={`sticky top-0 z-10 cursor-pointer select-none bg-white ${styles.td}`}
-                    style={{
-                      left: column.getIsPinned() ? `${column.getStart('left')}px` : undefined,
-                      position: column.getIsPinned() ? 'sticky' : 'relative',
-                      width: column.getSize(),
-                      zIndex: column.getIsPinned() ? 1 : 0,
-                    }}
-                    onClick={header.column.getToggleSortingHandler()}
-                  >
-                    {header.isPlaceholder ? null : (
-                      <div
-                        onClick={header.column.getToggleSortingHandler()}
-                        className="flex items-center justify-between p-2"
-                      >
-                        <span className="block text-ellipsis overflow-hidden whitespace-nowrap max-w-[170px]">
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                        </span>
-                        {{
-                          asc: <Icon icon="sort-asc" />,
-                          desc: <Icon icon="sort-desc" />,
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </div>
-                    )}
-                  </th>
-                )
-              })}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map((row) => {
-            return (
-              <Fragment key={row.id}>
-                <tr>
-                  {row.getVisibleCells().map((cell) => {
-                    const { column } = cell
-                    return (
-                      <td
-                        key={cell.id}
-                        className={styles.td}
-                        style={{
-                          left: column.getIsPinned() ? `${column.getStart('left')}px` : undefined,
-                          position: column.getIsPinned() ? 'sticky' : 'relative',
-                          width: column.getSize(),
-                          zIndex: column.getIsPinned() ? 1 : 0,
-                        }}
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
-                    )
-                  })}
-                </tr>
-                {row.getIsExpanded() && (
-                  <tr>
-                    <td colSpan={columns.length} className="p-0">
-                      <ExpandableRow data={expandedRows[row.original.id]} />
+    <table className={styles.table}>
+      <thead className={`sticky z-3 top-0 bg-white`}>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <tr key={headerGroup.id} className={styles.th}>
+            {headerGroup.headers.map((header) => {
+              const { column } = header
+              return (
+                <th
+                  key={header.id}
+                  colSpan={header.colSpan}
+                  className={`sticky top-0 cursor-pointer select-none bg-white ${styles.td}`}
+                  style={{
+                    left: column.getIsPinned() ? `${column.getStart('left')}px` : undefined,
+                    position: column.getIsPinned() ? 'sticky' : 'relative',
+                    width: column.getSize(),
+                    zIndex: column.getIsPinned() ? 1 : 0,
+                  }}
+                  onClick={header.column.getToggleSortingHandler()}
+                >
+                  {header.isPlaceholder ? null : (
+                    <div
+                      onClick={header.column.getToggleSortingHandler()}
+                      className="flex items-center justify-between p-2"
+                    >
+                      <span className="block text-ellipsis overflow-hidden whitespace-nowrap max-w-[170px]">
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                      </span>
+                      {{
+                        asc: <Icon icon="sort-asc" />,
+                        desc: <Icon icon="sort-desc" />,
+                      }[header.column.getIsSorted() as string] ?? null}
+                    </div>
+                  )}
+                </th>
+              )
+            })}
+          </tr>
+        ))}
+      </thead>
+      <tbody>
+        {table.getRowModel().rows.map((row) => {
+          return (
+            <Fragment key={row.id}>
+              <tr>
+                {row.getVisibleCells().map((cell) => {
+                  const { column } = cell
+                  return (
+                    <td
+                      key={cell.id}
+                      className={styles.td}
+                      style={{
+                        left: column.getIsPinned() ? `${column.getStart('left')}px` : undefined,
+                        position: column.getIsPinned() ? 'sticky' : 'relative',
+                        width: column.getSize(),
+                        zIndex: column.getIsPinned() ? 1 : 0,
+                      }}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
-                  </tr>
-                )}
-              </Fragment>
-            )
-          })}
-        </tbody>
-      </table>
-    </div>
+                  )
+                })}
+              </tr>
+              {row.getIsExpanded() && (
+                <tr>
+                  <td colSpan={columns.length} className="p-0">
+                    <ExpandableRow data={expandedRows[row.original.id]} />
+                  </td>
+                </tr>
+              )}
+            </Fragment>
+          )
+        })}
+      </tbody>
+    </table>
   )
 }

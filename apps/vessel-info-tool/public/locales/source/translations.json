@@ -1,4 +1,9 @@
 {
+  "search": {
+    "placeholder": "Search",
+    "noResults": "No results found",
+    "typeaValue": "Type a value"
+  },
   "footer": {
     "download": "Download all",
     "results": "{{count}} results"

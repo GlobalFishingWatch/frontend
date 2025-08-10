@@ -4,7 +4,7 @@ import type { Row, Table } from '@tanstack/react-table'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import styles from '../DynamicTable.module.css'
+// import styles from '../DynamicTable.module.css'
 
 function IndeterminateCheckbox({
   indeterminate,
@@ -25,7 +25,7 @@ function IndeterminateCheckbox({
         id="indeterminate-checkbox"
         type="checkbox"
         ref={ref}
-        className={`${styles.checkbox} ${className}`}
+        // className={`${styles.checkbox} ${className}`}
         {...rest}
       />
       <label htmlFor="indeterminate-checkbox" className="h-0"></label>
