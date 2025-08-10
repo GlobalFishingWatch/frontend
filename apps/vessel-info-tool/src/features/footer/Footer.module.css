@@ -1,13 +1,21 @@
 .footer {
   display: flex;
   align-items: center;
-  padding: 0 var(--space-S);
   border-top: var(--border);
   height: var(--header-height);
+  width: 100vw;
+  justify-content: space-between;
+  padding: var(--space-S) var(--space-M);
 }
 
 .sticky {
+  position: fixed;
   background-color: var(--color-white);
   z-index: 3;
   bottom: 0;
+}
+
+.downloadButton {
+  padding-left: 6rem;
+  padding-right: 6rem;
 }

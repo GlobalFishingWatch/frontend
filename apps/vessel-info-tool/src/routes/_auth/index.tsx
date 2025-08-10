@@ -1,7 +1,7 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { createFileRoute } from '@tanstack/react-router'
 import type { Row } from '@tanstack/react-table'
-import { t } from 'i18next'
 import { stringify } from 'qs'
 
 import { DynamicTable } from '@/features/dynamicTable/DynamicTable'
@@ -26,6 +26,8 @@ export const Route = createFileRoute('/_auth/')({
 
 function Home() {
   const vessels: Vessel[] = Route.useLoaderData()
+  const { t } = useTranslation()
+
   const { uniqueValues, filterState, filteredData, updateFilter } = useTableFilters(vessels)
   console.log('🚀 ~ Home ~ uniqueValues:', uniqueValues)
   const [isFilterOpen, setIsFilterOpen] = useState(false)
@@ -71,6 +73,7 @@ function Home() {
     console.log('data', data)
     return data.entries.length >= 1 || false
   }
+  console.log('🚀 ~ t ~ vessels.length:', vessels.length)
 
   return (
     <>
@@ -84,7 +87,7 @@ function Home() {
       </SidebarHeader>
       <DynamicTable data={vessels} onExpandRow={handleExpandRow} checkCanExpand={checkCanExpand} />
       <Footer downloadClick={() => console.log('Download clicked')}>
-        {vessels.length + t('footer.results')}
+        {t('footer.results', `${vessels.length} results`, { count: vessels.length })}
       </Footer>
     </>
   )

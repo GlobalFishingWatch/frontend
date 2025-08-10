@@ -1,4 +1,4 @@
-import { t } from 'i18next'
+import { useTranslation } from 'react-i18next'
 
 import { Button } from '@globalfishingwatch/ui-components'
 
@@ -11,11 +11,15 @@ function Footer({
   children?: React.ReactNode
   downloadClick: () => void
 }) {
+  const { t } = useTranslation()
+
   return (
     <div className={styles.sticky}>
       <div className={styles.footer}>
         {children}
-        <Button onClick={() => downloadClick()}>{t('footer.buttonText')}</Button>
+        <Button className={styles.downloadButton} onClick={() => downloadClick()}>
+          {t('footer.download', 'Download all')}
+        </Button>
       </div>
     </div>
   )
