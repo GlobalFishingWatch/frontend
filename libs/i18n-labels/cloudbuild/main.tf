@@ -95,7 +95,7 @@ resource "google_cloudbuild_trigger" "i18n-labels-stable" {
       id       = "save-cache"
       name     = "gcr.io/cloud-builders/gcloud"
       script   = file("../../../cloudbuild-template/scripts/save-cache.sh")
-      wait_for = ["install-yarn"]
+      wait_for = ["i18n-labels purge stable"]
       env      = local.cache_env
     }
 

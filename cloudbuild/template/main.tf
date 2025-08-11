@@ -82,7 +82,7 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
       id       = "save-cache"
       name     = "gcr.io/cloud-builders/gcloud"
       script   = file("../cloudbuild-template/scripts/save-cache.sh")
-      wait_for = ["install-yarn"]
+      wait_for = ["deploy-cloud-run"]
       env      = local.cache_env
     }
 

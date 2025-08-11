@@ -118,7 +118,7 @@ resource "google_cloudbuild_trigger" "trigger" {
       id       = "save-cache"
       name     = "gcr.io/cloud-builders/gcloud"
       script   = file("${path.module}/scripts/save-cache.sh")
-      wait_for = ["install-yarn"]
+      wait_for = ["deploy-cloud-run"]
       env      = local.cache_env
     }
 
