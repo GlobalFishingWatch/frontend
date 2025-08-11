@@ -110,6 +110,6 @@ resource "google_cloudbuild_trigger" "i18n-labels-stable" {
       }
     }
 
-    timeout = "1200s"
+    timeout = "1800s"
   }
 }

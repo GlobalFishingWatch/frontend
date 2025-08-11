@@ -90,6 +90,6 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
       logging = "CLOUD_LOGGING_ONLY"
     }
 
-    timeout = "1200s"
+    timeout = "1800s"
   }
 }
