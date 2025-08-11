@@ -5,7 +5,7 @@ const withNx = require('@nx/next/plugins/with-nx')
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 const basePath =
-  process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/our-apis/tokens' : '')
+  process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/api-portal' : '')
 
 /**
  * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
