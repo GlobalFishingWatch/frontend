@@ -1,17 +1,8 @@
 import { useTranslation } from 'react-i18next'
 
+import type { FilterState } from '@/types/vessel.types'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { InputText, MultiSelect } from '@globalfishingwatch/ui-components'
-
-export type FilterType = 'select' | 'text' | 'date' | 'number' | ''
-
-export interface FilterState {
-  id: string
-  label: string
-  type: FilterType
-  options?: SelectOption[]
-  filteredValue?: any
-}
 
 export interface DynamicFiltersProps {
   filters: FilterState[]

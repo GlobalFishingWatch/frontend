@@ -1,13 +1,14 @@
-/// <reference types="vite/client" />
 import * as React from 'react'
-import { createRootRoute, HeadContent, Link, Scripts } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import { Provider } from 'react-redux'
+import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
 
 import { DefaultCatchBoundary } from '@/features/router/DefaultCatchBoundary'
 import { NotFound } from '@/features/router/NotFound'
 import appCss from '@/styles/app.css?url'
 import baseCss from '@/styles/base.css?url'
 import { seo } from '@/utils/seo'
+
+import { store } from 'store'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -59,7 +60,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <Provider store={store}>{children}</Provider>
         <Scripts />
       </body>
     </html>

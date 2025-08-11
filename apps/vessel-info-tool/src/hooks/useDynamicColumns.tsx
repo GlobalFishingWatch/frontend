@@ -20,16 +20,30 @@ function IndeterminateCheckbox({
   }, [ref, indeterminate])
 
   return (
-    <div>
+    <label className="inline-flex items-center cursor-pointer">
       <input
-        id="indeterminate-checkbox"
         type="checkbox"
         ref={ref}
-        // className={`${styles.checkbox} ${className}`}
+        className="peer sr-only"
+        aria-checked={indeterminate ? 'mixed' : undefined}
         {...rest}
       />
-      <label htmlFor="indeterminate-checkbox" className="h-0"></label>
-    </div>
+      <span
+        className="
+        relative inline-flex w-8 h-8 rounded-full border-2 border-gray-300
+        peer-checked:bg-[rgba(22,63,137,0.8)] peer-checked:border-[rgba(22,63,137,0.1)]
+      "
+      >
+        <span
+          className="
+        absolute inset-0 flex items-center justify-center text-white text-[12px]
+        opacity-0 peer-checked:opacity-100
+        "
+        >
+          ✓
+        </span>
+      </span>
+    </label>
   )
 }
 

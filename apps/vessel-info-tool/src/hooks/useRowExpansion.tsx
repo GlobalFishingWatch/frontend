@@ -2,25 +2,10 @@ import { useCallback, useState } from 'react'
 import type { Row } from '@tanstack/react-table'
 
 export function useRowExpansion<T extends Record<string, any>>(
-  checkCanExpand?: (row: Row<T>) => Promise<boolean>,
   onExpandRow?: (row: T) => Promise<any>
 ) {
   const [expandedRows, setExpandedRows] = useState<Record<string, any>>({})
   const [loadingExpansions, setLoadingExpansions] = useState<Set<string>>(new Set())
-
-  const canExpand = useCallback(
-    async (row: T): Promise<boolean> => {
-      if (!checkCanExpand || !row.id) return false
-
-      try {
-        return await checkCanExpand(row.id)
-      } catch (error) {
-        console.error('Error checking row expansion:', error)
-        return false
-      }
-    },
-    [checkCanExpand]
-  )
 
   const toggleExpansion = useCallback(
     async (row: T) => {
@@ -34,9 +19,6 @@ export function useRowExpansion<T extends Record<string, any>>(
         })
         return
       }
-
-      const canExp = await canExpand(row)
-      if (!canExp) return
 
       setLoadingExpansions((prev) => new Set([...prev, rowId]))
 
@@ -58,13 +40,12 @@ export function useRowExpansion<T extends Record<string, any>>(
         })
       }
     },
-    [expandedRows, canExpand, onExpandRow]
+    [expandedRows, onExpandRow]
   )
 
   return {
     expandedRows,
     loadingExpansions,
     toggleExpansion,
-    canExpand,
   }
 }

@@ -1,8 +1,8 @@
-import { useCallback,useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import type { Table } from '@tanstack/react-table'
 
-import type { FilterState, FilterType } from '@/features/filter/DynamicFilters'
+import type { FilterState, FilterType } from '@/types/vessel.types'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 
 export interface TableSearchParams {

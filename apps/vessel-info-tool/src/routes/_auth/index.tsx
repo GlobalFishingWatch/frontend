@@ -9,7 +9,7 @@ import SidebarHeader from '@/features/header/SidebarHeader'
 import OptionsMenu from '@/features/options/OptionsMenu'
 import Profile from '@/features/profile/Profile'
 import Search from '@/features/search/Search'
-import type { TableSearchParams } from '@/hooks/useTableFilters'
+import { type TableSearchParams,useTableFilters } from '@/hooks/useTableFilters'
 import type { Vessel } from '@/types/vessel.types'
 import { fetchVessels } from '@/utils/vessels'
 import { MOCK_USER_PERMISSION } from '@globalfishingwatch/api-types'
@@ -36,6 +36,11 @@ function Home() {
   const vessels: Vessel[] = Route.useLoaderData()
   const { t } = useTranslation()
 
+  const { filteredData } = useTableFilters(vessels, undefined, {
+    syncWithUrl: true,
+    debounceMs: 300,
+  })
+
   const handleExpandRow = async (row: Vessel) => {
     const { name, imo, mmsi } = row
     const query = `query=${name || imo || mmsi}`
@@ -44,40 +49,8 @@ function Home() {
     }
     const url = `${GFW_API_URL}/${VESSEL_SEARCH_URL}?${query}&${stringify(params, { arrayFormat: 'indices' })}`
     const response = await fetch(url)
-    console.log('response', response)
     return response.json()
   }
-
-  const checkCanExpand = async (row: Row<Vessel>) => {
-    const { name, imo, mmsi } = row.original
-    // const { name, imo, mmsi } = vessel || {}
-    if (!name || !imo || !mmsi) return []
-
-    const query = `query=${name || imo || mmsi}`
-    const params = {
-      datasets: VESSEL_SEARCH_DATASETS,
-    }
-    const url = `${GFW_API_URL}/${VESSEL_SEARCH_URL}?${query}&${stringify(params, { arrayFormat: 'indices' })}`
-    let data
-    try {
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${API_TOKEN}`,
-        },
-      })
-
-      if (!response.ok) {
-        throw new Error(response.statusText || 'Failed to fetch data from GFW API')
-      }
-
-      data = await response.json()
-    } catch (e) {
-      return false
-    }
-    console.log('data', data)
-    return data.entries.length >= 1 || false
-  }
-  console.log('🚀 ~ t ~ vessels.length:', vessels.length)
 
   return (
     <div className="fixed inset-0 flex flex-col overflow-hidden">
@@ -97,13 +70,9 @@ function Home() {
         />
       </SidebarHeader>
       <div className="flex-1 overflow-auto">
-        <DynamicTable
-          data={vessels}
-          onExpandRow={handleExpandRow}
-          // checkCanExpand={checkCanExpand}
-        />
+        <DynamicTable data={filteredData} onExpandRow={handleExpandRow} />
         <Footer downloadClick={() => console.log('Download clicked')}>
-          {t('footer.results', `${vessels.length} results`, { count: vessels.length })}
+          {t('footer.results', `${filteredData.length} results`, { count: filteredData.length })}
         </Footer>
       </div>
     </div>

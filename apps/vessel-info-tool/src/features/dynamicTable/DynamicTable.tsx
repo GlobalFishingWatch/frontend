@@ -1,4 +1,5 @@
 import { Fragment, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import type { ExpandedState, Row, SortingState } from '@tanstack/react-table'
 import {
   flexRender,
@@ -11,66 +12,34 @@ import {
 
 import { Icon } from '@globalfishingwatch/ui-components'
 
+import type { AppDispatch,RootState } from 'store'
+
 import { useDynamicColumns } from '../../hooks/useDynamicColumns'
 import { useRowExpansion } from '../../hooks/useRowExpansion'
 import ExpandableRow from '../expandableRow/ExpandableRow'
+
+import { setSelectedRows } from './table.slice'
 
 import styles from './DynamicTable.module.css'
 
 export interface DynamicTableProps<T extends Record<string, any>> {
   data: T[]
   onExpandRow?: (row: T) => Promise<any>
-  checkCanExpand?: (row: Row<T>) => Promise<boolean>
-}
-
-export interface FilterState {
-  [columnKey: string]: string[]
-}
-
-export interface ExpandedRowData {
-  [key: string]: any
 }
 
 export function DynamicTable<T extends Record<string, any>>({
   data,
   onExpandRow,
-  checkCanExpand,
 }: DynamicTableProps<T>) {
-  const { expandedRows, loadingExpansions, toggleExpansion, canExpand } = useRowExpansion(
-    checkCanExpand,
-    onExpandRow
-  )
-
+  const { expandedRows } = useRowExpansion(onExpandRow)
   const columns = useDynamicColumns(data)
-
-  //   const columnsWithExpansion = useMemo(
-  //     () => [
-  //       {
-  //         id: 'expander',
-  //         header: '',
-  //         cell: ({ row }) => {
-  //           const rowData = row.original
-  //           const rowId = rowData.id
-  //           const isExpanded = expandedRows[rowId]
-  //           const isLoading = loadingExpansions.has(rowId)
-
-  //           return (
-  //             <button
-  //               onClick={() => toggleExpansion(rowData)}
-  //               disabled={isLoading}
-  //               className="px-2 py-1 text-sm border rounded hover:bg-gray-50 disabled:opacity-50"
-  //             >
-  //               {isLoading ? '...' : isExpanded ? '−' : '+'}
-  //             </button>
-  //           )
-  //         },
-  //       },
-  //       ...columns,
-  //     ],
-  //     [columns, expandedRows, loadingExpansions, toggleExpansion]
-  //   )
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const [sorting, setSorting] = useState<SortingState>([(columns[1] as any)?.accessorKey])
+
+  const dispatch = useDispatch<AppDispatch>()
+  const filters = useSelector((state: RootState) => state.filter)
+  const selectedRowIds = useSelector((state: RootState) => state.table.selectedRowIds)
+  console.log('🚀 ~ DynamicTable ~ selectedRowIds:', selectedRowIds)
 
   const columnPinning = {
     left: ['select', (columns[1] as any)?.accessorKey],
@@ -83,6 +52,7 @@ export function DynamicTable<T extends Record<string, any>>({
       expanded,
       columnPinning,
       sorting,
+      rowSelection: Object.fromEntries(selectedRowIds.map((id) => [id, true])),
     },
     onExpandedChange: setExpanded,
     getCoreRowModel: getCoreRowModel(),
@@ -91,6 +61,10 @@ export function DynamicTable<T extends Record<string, any>>({
     getFilteredRowModel: getFilteredRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getRowCanExpand: (row) => true,
+    onRowSelectionChange: (updater) => {
+      const selection = typeof updater === 'function' ? updater({}) : updater
+      dispatch(setSelectedRows(Object.keys(selection)))
+    },
   })
 
   return (
