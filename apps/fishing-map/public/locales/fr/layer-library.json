@@ -1,8 +1,13 @@
 {
   "bathymetry": {
     "description": "La bathymétrie est l'étude de la profondeur d'eau et des caractéristiques physiques du plancher océanique. Ce jeu de données bathymétriques à grille est un modèle de terrain global continu qui fournit des données d'élévation pour l'océan en mètres sur une grille d'intervalles de 15 arc-secondes. ",
-    "moreInfoLink": "https://www.gebco.net/data_and_products/gridded_bathymetry_data/gebco_2023/",
+    "moreInfoLink": "https://www.gebco.net/data-products/gridded-bathymetry-data/gebco2023-grid",
     "name": "Bathymétrie"
+  },
+  "bathymetry-contour": {
+    "description": "Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This contour dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second resolution.",
+    "moreInfoLink": "https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO2022",
+    "name": "Bathymetry contour"
   },
   "chlorophyl": {
     "description": "La chlorophylle-a est le pigment assimilateur de lumière que l'on retrouve dans toutes les plantes photosynthétiques. Le phytoplancton marin fixe chimiquement le carbone par photosynthèse en absorbant du dioxyde de carbone dissous et en produisant de l'oxygène. Ce jeu de données est composé de paramètres biogéochimiques, y compris la chlorophylle, affichés sur l'océan global avec une résolution horizontale de 1/4 degré. ",
