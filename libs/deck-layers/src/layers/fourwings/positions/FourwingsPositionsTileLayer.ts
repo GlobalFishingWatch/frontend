@@ -5,7 +5,6 @@ import type {
   LayerContext,
   LayersList,
   PickingInfo,
-  Position,
   UpdateParameters,
 } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
@@ -452,7 +451,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
               id: `${this.props.id}-lastPositionsNames`,
               data: lastPositions,
               getText: this._getVesselLabel,
-              getPosition: (d) => d.geometry.coordinates as Position,
+              getPosition: (d) => d.geometry.coordinates as [number, number, number],
               getColor: this._getLabelColor,
               pickable: true,
               getPickingInfo: this.getPickingInfo,
