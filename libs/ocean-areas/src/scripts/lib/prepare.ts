@@ -57,11 +57,15 @@ export async function prepare(
     let listLength = list.length
     for (const file of list) {
       fileIndex++
-      const areaFile = await fs.readFile(`${sourcePath}/${file.id}.json`, 'utf8')
-      if (!areaFile) {
-        console.error(`❌ Area file not found ${sourcePath}/${file.id}.json`)
+      const id = typeof file.id === 'string' ? file.id.replace('\r\n', '') : file.id
+
+      const areaFilePath = `${sourcePath}/${id}.json`
+      if (!(await existsFilePath(areaFilePath))) {
+        console.error(`❌ Area file not found ${areaFilePath}`)
         continue
       }
+
+      const areaFile = await fs.readFile(areaFilePath, 'utf8')
       const areaData = JSON.parse(areaFile) as Feature
       if (filter && !filter(areaData)) {
         listLength--

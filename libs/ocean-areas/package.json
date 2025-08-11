@@ -9,7 +9,7 @@
     "eezs": "ts-node -P tsconfig.json src/scripts/eezs.ts",
     "rfmos": "ts-node -P tsconfig.json src/scripts/rfmos.ts",
     "locales": "ts-node -P tsconfig.json src/scripts/locales.ts",
-    "prepare": "yarn mpas && yarn eezs && yarn locales"
+    "prepare": "yarn mpas && yarn eezs && yarn rfmos && yarn fao && yarn locales"
   },
   "files": [
     "src"
