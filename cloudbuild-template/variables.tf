@@ -73,3 +73,13 @@ variable "push_config" {
   }
 }
 
+variable "machine_type" {
+  description = "Optional Cloud Build machine type. Example: E2_HIGHCPU_8"
+  type        = string
+  default     = null
+  validation {
+    condition     = var.machine_type == null || contains(["E2_HIGHCPU_8", "E2-STANDARD-2"], var.machine_type)
+    error_message = "machine_type must be one of: E2_HIGHCPU_8, E2-STANDARD-2"
+  }
+}
+
