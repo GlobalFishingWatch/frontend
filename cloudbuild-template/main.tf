@@ -55,10 +55,21 @@ resource "google_cloudbuild_trigger" "trigger" {
     }
 
     step {
+      id         = "install-tools"
+      name       = "gcr.io/cloud-builders/docker"
+      entrypoint = "bash"
+      args = [
+        "-c",
+        "apt-get update && apt-get install -y pigz && echo 'Tools installed'"
+      ]
+      wait_for = ["compute-cache-key"]
+    }
+
+    step {
       id       = "restore-cache"
       name     = "gcr.io/cloud-builders/gcloud"
       script   = file("${path.module}/scripts/restore-cache.sh")
-      wait_for = ["compute-cache-key"]
+      wait_for = ["install-tools"]
       env      = local.cache_env
     }
 
