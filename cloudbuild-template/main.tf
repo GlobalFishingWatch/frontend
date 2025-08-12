@@ -55,10 +55,21 @@ resource "google_cloudbuild_trigger" "trigger" {
     }
 
     step {
+      id         = "install-tools"
+      name       = "gcr.io/cloud-builders/docker"
+      entrypoint = "bash"
+      args = [
+        "-c",
+        "apt-get update && apt-get install -y pigz && echo 'Tools installed'"
+      ]
+      wait_for = ["compute-cache-key"]
+    }
+
+    step {
       id       = "restore-cache"
       name     = "gcr.io/cloud-builders/gcloud"
       script   = file("${path.module}/scripts/restore-cache.sh")
-      wait_for = ["compute-cache-key"]
+      wait_for = ["install-tools"]
       env      = local.cache_env
     }
 
@@ -78,15 +89,28 @@ resource "google_cloudbuild_trigger" "trigger" {
     }
 
     step {
+      id         = "pull-image"
+      name       = "gcr.io/cloud-builders/docker"
+      entrypoint = "bash"
+      args = [
+        "-c",
+        "docker pull ${var.docker_image} || exit 0"
+      ]
+      wait_for = ["save-cache"]
+    }
+
+    step {
       id       = "build-image"
       name     = "gcr.io/kaniko-project/executor:debug"
-      wait_for = ["build-app"]
+      wait_for = ["pull-image"]
       args = [
         "--destination=${var.docker_image}",
         "--build-arg", "APP_NAME=${var.app_name}",
         "--target", "production",
         "-f", "./apps/${var.app_name}/Dockerfile",
         "-c", "./dist/apps/${var.app_name}",
+        "--cache=true",
+        "--cache-repo=${var.docker_image}-cache"
       ]
     }
 
@@ -118,7 +142,7 @@ resource "google_cloudbuild_trigger" "trigger" {
       id       = "save-cache"
       name     = "gcr.io/cloud-builders/gcloud"
       script   = file("${path.module}/scripts/save-cache.sh")
-      wait_for = ["deploy-cloud-run"]
+      wait_for = ["build-app"]
       env      = local.cache_env
     }
 
