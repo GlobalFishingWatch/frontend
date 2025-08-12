@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
+import { useTableFilters } from '@/hooks/useTableFilters'
 import type { FilterState } from '@/types/vessel.types'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { InputText, MultiSelect } from '@globalfishingwatch/ui-components'
@@ -55,34 +56,6 @@ const DynamicFilters = ({
             />
           </div>
         )
-      //   case 'date':
-      //     return (
-      //       <InputDate
-      //         key={filter.id}
-      //         label={filter.label}
-      //         value={filterState[filter.id] || ''}
-      //         onChange={(value) => handleFilterChange(filter.id, value)}
-      //       />
-      //     )
-      //   case 'range':
-      //     return (
-      //       <SliderRange
-      //         key={filter.id}
-      //         thumbsSize="mini"
-      //         range={filterState[filter.id] || [0, 100]}
-      //         initialRange={filterState[filter.id] || [0, 100]}
-      //         step={1}
-      //         onChange={(value) => handleFilterChange(filter.id, value)}
-      //         showInputs
-      //         label={''}
-      //         config={{
-      //           steps: [],
-      //           min: 0,
-      //           max: 0,
-      //         }}
-      //       />
-      //     )
-
       default:
         return null
     }

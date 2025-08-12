@@ -20,3 +20,16 @@ export interface FilterState {
 export interface ExpandedRowData {
   [key: string]: any
 }
+export interface TableSearchParams {
+  search?: string
+  filters?: Record<string, string | string[]>
+}
+export interface FiltersState {
+  filterConfigs: FilterState[]
+  globalFilter: string
+  filteredData: any[]
+  originalData: any[]
+  isLoading: boolean
+  urlSyncEnabled: boolean
+  debounceMs: number
+}

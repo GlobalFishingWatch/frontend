@@ -1,33 +1,29 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { Vessel } from '@/types/vessel.types'
 import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 
-import { useTableFilters } from '../../hooks/useTableFilters'
+import type { useTableFilters } from '../../hooks/useTableFilters'
 import DynamicFilters from '../filter/DynamicFilters'
 
 interface SearchProps {
-  data: Vessel[]
+  tableFilters: ReturnType<typeof useTableFilters>
   searchQuery?: string
 }
 
-export const Search = ({ data }: SearchProps) => {
+export const Search = ({ tableFilters }: SearchProps) => {
   const { t } = useTranslation()
 
   const {
-    filterStates,
-    globalSearch,
-    updateGlobalSearch,
-    clearGlobalSearch,
+    filterConfigs,
     handleSelectChange,
-    updateFilterValue,
     getSelectedValues,
+    updateFilterValue,
     clearColumnFilter,
-  } = useTableFilters(data, undefined, {
-    syncWithUrl: true,
-    debounceMs: 300,
-  })
+    globalFilter,
+    clearGlobalFilter,
+    updateGlobalFilter,
+  } = tableFilters
 
   const [isFilterOpen, setIsFilterOpen] = useState(false)
 
@@ -42,11 +38,11 @@ export const Search = ({ data }: SearchProps) => {
       <div className="flex gap-6 w-full justify-center align-center">
         <InputText
           className={isFilterOpen ? 'w-full' : 'w-[70%]'}
-          onChange={(e) => updateGlobalSearch(e.target.value)}
-          value={globalSearch}
+          onChange={(e) => updateGlobalFilter(e.target.value)}
+          value={globalFilter}
           // className={styles.input}
           type="search"
-          onCleanButtonClick={clearGlobalSearch}
+          onCleanButtonClick={clearGlobalFilter}
           placeholder={t('search.placeholderGlobal', 'Search across whole table')}
         />
         {isFilterOpen ? (
@@ -61,7 +57,7 @@ export const Search = ({ data }: SearchProps) => {
       </div>
       {isFilterOpen && (
         <DynamicFilters
-          filters={filterStates}
+          filters={filterConfigs}
           onFilterChange={handleSelectChange}
           getSelectedValues={getSelectedValues}
           updateFilterValue={updateFilterValue}

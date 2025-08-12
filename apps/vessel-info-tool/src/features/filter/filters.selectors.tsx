@@ -1,4 +1,4 @@
-import { createSelector,createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import type { TableFiltersState } from './filters.slice'
 
@@ -14,9 +14,9 @@ export const selectActiveFilters = createSelector(
   (filters) => filters.activeFilters
 )
 
-export const selectGlobalSearch = createSelector(
+export const selectGlobalFilter = createSelector(
   [selectTableFilters],
-  (filters) => filters.globalSearch
+  (filters) => filters.GlobalFilter
 )
 
 export const selectSourceData = createSelector(
@@ -28,13 +28,13 @@ export const selectIsLoading = createSelector([selectTableFilters], (filters) =>
 
 // Complex selectors
 export const selectFilteredData = createSelector(
-  [selectSourceData, selectActiveFilters, selectGlobalSearch],
-  (sourceData, activeFilters, globalSearch) => {
+  [selectSourceData, selectActiveFilters, selectGlobalFilter],
+  (sourceData, activeFilters, GlobalFilter) => {
     let result = [...sourceData]
 
     // Apply global search first
-    if (globalSearch.trim()) {
-      const searchTerm = globalSearch.toLowerCase().trim()
+    if (GlobalFilter.trim()) {
+      const searchTerm = GlobalFilter.toLowerCase().trim()
       result = result.filter((row) => {
         return Object.values(row).some((value) => String(value).toLowerCase().includes(searchTerm))
       })
@@ -62,11 +62,11 @@ export const selectFilteredData = createSelector(
 )
 
 export const selectHasActiveFilters = createSelector(
-  [selectActiveFilters, selectGlobalSearch],
-  (activeFilters, globalSearch) => {
+  [selectActiveFilters, selectGlobalFilter],
+  (activeFilters, GlobalFilter) => {
     const hasColumnFilters = Object.keys(activeFilters).length > 0
-    const hasGlobalSearch = globalSearch.trim() !== ''
-    return hasColumnFilters || hasGlobalSearch
+    const hasGlobalFilter = GlobalFilter.trim() !== ''
+    return hasColumnFilters || hasGlobalFilter
   }
 )
 

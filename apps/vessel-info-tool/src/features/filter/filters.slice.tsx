@@ -1,173 +1,289 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
 
-import type { FilterState } from '@/types/vessel.types'
-import { generateFilterConfigs } from '@/utils/vessels'
+import type { FiltersState, FilterState } from '@/types/vessel.types'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 
-export interface TableFiltersState {
-  // Core filter data
-  filterConfigs: FilterState[]
-  activeFilters: Record<string, any> // columnId -> filterValue
-  globalSearch: string
+const generateFilterConfigs = (data: any[]): FilterState[] => {
+  const valuesMap: Record<string, Set<string>> = {}
 
-  // UI state
-  isLoading: boolean
+  data.forEach((row) => {
+    Object.entries(row).forEach(([key, value]) => {
+      if (!valuesMap[key]) {
+        valuesMap[key] = new Set()
+      }
+      valuesMap[key].add(String(value))
+    })
+  })
 
-  // Data source info
-  sourceData: any[]
-  dataSourceKey: string // To track different datasets (vessels, users, etc.)
+  return Object.entries(valuesMap).map(([key, valueSet]) => {
+    const valuesArray = Array.from(valueSet)
+    let isDateValues = true
+    let isNumberValues = true
+    let isLink = true
+    const linkPattern = /^(https?:\/\/|www\.)/i
+
+    for (const value of valuesArray) {
+      const date = new Date(value)
+      if (isNaN(date.getTime())) {
+        isDateValues = false
+      }
+
+      if (isNaN(Number(value)) || value.trim() === '') {
+        isNumberValues = false
+      }
+
+      if (!linkPattern.test(value.trim())) {
+        isLink = false
+      }
+
+      if (!isDateValues && !isNumberValues && !isLink) {
+        break
+      }
+    }
+
+    let type: FilterState['type']
+    switch (true) {
+      case valueSet.size <= 1:
+        type = ''
+        break
+      case isDateValues:
+        type = 'date'
+        break
+      case isNumberValues:
+        type = 'number'
+        break
+      case isLink:
+        type = ''
+        break
+      case valueSet.size > 15:
+        type = 'text'
+        break
+      default:
+        type = 'select'
+    }
+
+    const filterState: FilterState = {
+      id: key,
+      label: key,
+      type,
+      ...(type === 'select' && {
+        options: Array.from(valueSet)
+          .sort()
+          .map((value) => ({
+            id: value,
+            label: value,
+          })),
+      }),
+    }
+
+    return filterState
+  })
 }
 
-const initialState: TableFiltersState = {
-  filterConfigs: [],
-  activeFilters: {},
-  globalSearch: '',
+const applyFilters = (data: any[], filterConfigs: FilterState[], globalFilter: string) => {
+  let result = data
+
+  if (globalFilter.trim()) {
+    const searchTerm = globalFilter.toLowerCase().trim()
+    result = result.filter((row) => {
+      return Object.values(row).some((value) => String(value).toLowerCase().includes(searchTerm))
+    })
+  }
+
+  result = result.filter((row) => {
+    return filterConfigs.every((filterState) => {
+      const { id, type, filteredValue } = filterState
+
+      if (!filteredValue) return true
+
+      const cellValue = String(row[id])
+      const numValue = Number(cellValue)
+      const filterNum = Number(filteredValue)
+      const dateValue = new Date(cellValue).toDateString()
+      const filterDate = new Date(filteredValue).toDateString()
+
+      switch (type) {
+        case 'select':
+          if (Array.isArray(filteredValue) && filteredValue.length === 0) return true
+          return Array.isArray(filteredValue)
+            ? filteredValue.includes(cellValue)
+            : filteredValue === cellValue
+
+        case 'text':
+          return cellValue.toLowerCase().includes(String(filteredValue).toLowerCase())
+
+        case 'number':
+          return !isNaN(numValue) && !isNaN(filterNum) && numValue === filterNum
+
+        case 'date':
+          return dateValue === filterDate
+
+        default:
+          return true
+      }
+    })
+  })
+
+  return result
+}
+
+const initialState: FiltersState = {
+  filterConfigs: generateFilterConfigs([]),
+  globalFilter: '',
+  filteredData: [],
+  originalData: [],
   isLoading: false,
-  sourceData: [],
-  dataSourceKey: '',
+  urlSyncEnabled: true,
+  debounceMs: 200,
 }
-export const filtersSlice = createSlice({
+
+const filtersSlice = createSlice({
   name: 'filters',
   initialState,
   reducers: {
-    // Initialize filters from data
-    initializeFilters: (state, action: PayloadAction<{ data: any[]; dataSourceKey: string }>) => {
-      const { data, dataSourceKey } = action.payload
-
-      // Only reinitialize if data source changed or configs don't exist
-      if (state.dataSourceKey !== dataSourceKey || state.filterConfigs.length === 0) {
-        state.sourceData = data
-        state.dataSourceKey = dataSourceKey
-        state.filterConfigs = generateFilterConfigs(data)
-
-        // Reset filters when data source changes
-        if (state.dataSourceKey !== dataSourceKey) {
-          state.activeFilters = {}
-          state.globalSearch = ''
-        }
-      } else {
-        // Just update source data if same source
-        state.sourceData = data
-      }
+    initializeData: (state, action: PayloadAction<{ data: any[] }>) => {
+      const { data } = action.payload
+      state.originalData = data
+      state.filterConfigs = generateFilterConfigs(data)
+      state.filteredData = applyFilters(data, state.filterConfigs, state.globalFilter)
     },
 
-    // Initialize from URL params
     initializeFromUrl: (
       state,
       action: PayloadAction<{
-        globalSearch?: string
+        globalFilter?: string
         filters?: Record<string, string | string[]>
       }>
     ) => {
-      const { globalSearch, filters } = action.payload
+      const { globalFilter, filters } = action.payload
 
-      if (globalSearch !== undefined) {
-        state.globalSearch = globalSearch
+      if (globalFilter !== undefined) {
+        state.globalFilter = globalFilter
       }
 
       if (filters) {
-        // Convert URL filters to active filters format
-        const newActiveFilters: Record<string, any> = {}
+        state.filterConfigs = state.filterConfigs.map((config) => {
+          const urlValue = filters[config.id]
+          let filteredValue = config.filteredValue
 
-        Object.entries(filters).forEach(([columnId, value]) => {
-          const filterConfig = state.filterConfigs.find((f) => f.id === columnId)
-          if (filterConfig) {
-            switch (filterConfig.type) {
+          if (urlValue !== undefined) {
+            switch (config.type) {
               case 'select':
-                newActiveFilters[columnId] = Array.isArray(value) ? value : [value]
+                filteredValue = Array.isArray(urlValue) ? urlValue : [urlValue]
                 break
               case 'text':
               case 'number':
               case 'date':
-                newActiveFilters[columnId] = Array.isArray(value) ? value[0] : value
+                filteredValue = Array.isArray(urlValue) ? urlValue[0] : urlValue
                 break
             }
+          } else {
+            filteredValue = config.type === 'select' ? [] : undefined
+          }
+
+          return {
+            ...config,
+            filteredValue,
           }
         })
-
-        state.activeFilters = { ...state.activeFilters, ...newActiveFilters }
       }
+
+      state.filteredData = applyFilters(state.originalData, state.filterConfigs, state.globalFilter)
     },
 
-    // Global search actions
-    setGlobalSearch: (state, action: PayloadAction<string>) => {
-      state.globalSearch = action.payload
+    setGlobalFilter: (state, action: PayloadAction<string>) => {
+      state.globalFilter = action.payload
+      state.filteredData = applyFilters(state.originalData, state.filterConfigs, state.globalFilter)
     },
 
-    clearGlobalSearch: (state) => {
-      state.globalSearch = ''
+    clearGlobalFilter: (state) => {
+      state.globalFilter = ''
+      state.filteredData = applyFilters(state.originalData, state.filterConfigs, state.globalFilter)
     },
 
-    // Column filter actions
-    setColumnFilter: (state, action: PayloadAction<{ columnId: string; value: any }>) => {
-      const { columnId, value } = action.payload
+    updateColumnFilter: (state, action: PayloadAction<{ id: string; value: any }>) => {
+      const { id, value } = action.payload
 
-      if (value === undefined || value === '' || (Array.isArray(value) && value.length === 0)) {
-        delete state.activeFilters[columnId]
-      } else {
-        state.activeFilters[columnId] = value
-      }
-    },
-
-    // Multi-select toggle for select filters
-    toggleSelectValue: (state, action: PayloadAction<{ columnId: string; value: string }>) => {
-      const { columnId, value } = action.payload
-      const currentValues = state.activeFilters[columnId] || []
-
-      if (Array.isArray(currentValues)) {
-        if (currentValues.includes(value)) {
-          // Remove value
-          const newValues = currentValues.filter((v) => v !== value)
-          if (newValues.length === 0) {
-            delete state.activeFilters[columnId]
-          } else {
-            state.activeFilters[columnId] = newValues
-          }
-        } else {
-          // Add value
-          state.activeFilters[columnId] = [...currentValues, value]
+      state.filterConfigs = state.filterConfigs.map((config) => {
+        if (config.id === id) {
+          return { ...config, filteredValue: value }
         }
-      } else {
-        // Initialize as array with single value
-        state.activeFilters[columnId] = [value]
-      }
+        return config
+      })
+
+      state.filteredData = applyFilters(state.originalData, state.filterConfigs, state.globalFilter)
     },
 
-    // Clear single column filter
+    toggleSelectOption: (state, action: PayloadAction<{ id: string; option: SelectOption }>) => {
+      const { id, option } = action.payload
+
+      state.filterConfigs = state.filterConfigs.map((config) => {
+        if (config.id === id && config.type === 'select') {
+          const currentValues = Array.isArray(config.filteredValue) ? config.filteredValue : []
+          const optionValue = String(option.id)
+          const isAlreadySelected = currentValues.includes(optionValue)
+
+          const updatedValues = isAlreadySelected
+            ? currentValues.filter((val) => val !== optionValue)
+            : [...currentValues, optionValue]
+
+          return { ...config, filteredValue: updatedValues }
+        }
+        return config
+      })
+
+      state.filteredData = applyFilters(state.originalData, state.filterConfigs, state.globalFilter)
+    },
+
     clearColumnFilter: (state, action: PayloadAction<string>) => {
-      const columnId = action.payload
-      delete state.activeFilters[columnId]
+      const id = action.payload
+
+      state.filterConfigs = state.filterConfigs.map((config) => {
+        if (config.id === id) {
+          const clearedValue = config.type === 'select' ? [] : undefined
+          return { ...config, filteredValue: clearedValue }
+        }
+        return config
+      })
+
+      state.filteredData = applyFilters(state.originalData, state.filterConfigs, state.globalFilter)
     },
 
-    // Clear all column filters (keep global search)
-    clearColumnFilters: (state) => {
-      state.activeFilters = {}
-    },
-
-    // Clear all filters including global search
     clearAllFilters: (state) => {
-      state.activeFilters = {}
-      state.globalSearch = ''
+      state.globalFilter = ''
+      state.filterConfigs = state.filterConfigs.map((config) => ({
+        ...config,
+        filteredValue: config.type === 'select' ? [] : undefined,
+      }))
+      state.filteredData = state.originalData
     },
 
-    // Set loading state
+    setUrlSyncEnabled: (state, action: PayloadAction<boolean>) => {
+      state.urlSyncEnabled = action.payload
+    },
+
+    setDebounceMs: (state, action: PayloadAction<number>) => {
+      state.debounceMs = action.payload
+    },
+
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload
     },
   },
 })
 
-// Action creators
 export const {
-  initializeFilters,
+  initializeData,
   initializeFromUrl,
-  setGlobalSearch,
-  clearGlobalSearch,
-  setColumnFilter,
-  toggleSelectValue,
+  setGlobalFilter,
+  clearGlobalFilter,
+  updateColumnFilter,
+  toggleSelectOption,
   clearColumnFilter,
-  clearColumnFilters,
   clearAllFilters,
+  setUrlSyncEnabled,
+  setDebounceMs,
   setLoading,
 } = filtersSlice.actions
 

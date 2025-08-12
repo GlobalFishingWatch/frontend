@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import { createFileRoute } from '@tanstack/react-router'
-import type { Row } from '@tanstack/react-table'
 import { stringify } from 'qs'
 
 import { DynamicTable } from '@/features/dynamicTable/DynamicTable'
@@ -36,11 +35,8 @@ function Home() {
   const vessels: Vessel[] = Route.useLoaderData()
   const { t } = useTranslation()
 
-  const { filteredData } = useTableFilters(vessels, undefined, {
-    syncWithUrl: true,
-    debounceMs: 300,
-  })
-
+  const tableFilters = useTableFilters(vessels)
+  console.log(tableFilters.filterConfigs)
   const handleExpandRow = async (row: Vessel) => {
     const { name, imo, mmsi } = row
     const query = `query=${name || imo || mmsi}`
@@ -55,7 +51,7 @@ function Home() {
   return (
     <div className="fixed inset-0 flex flex-col overflow-hidden">
       <SidebarHeader>
-        <Search data={vessels} />
+        <Search tableFilters={tableFilters} />
         <OptionsMenu />
         <Profile
           user={{
@@ -70,9 +66,9 @@ function Home() {
         />
       </SidebarHeader>
       <div className="flex-1 overflow-auto">
-        <DynamicTable data={filteredData} onExpandRow={handleExpandRow} />
+        <DynamicTable data={vessels} tableFilters={tableFilters} onExpandRow={handleExpandRow} />
         <Footer downloadClick={() => console.log('Download clicked')}>
-          {t('footer.results', `${filteredData.length} results`, { count: filteredData.length })}
+          {t('footer.results', `${vessels.length} results`, { count: vessels.length })}
         </Footer>
       </div>
     </div>

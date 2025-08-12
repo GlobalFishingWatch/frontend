@@ -1,6 +1,5 @@
 import { Fragment, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import type { ExpandedState, Row, SortingState } from '@tanstack/react-table'
+import type { ExpandedState, SortingState } from '@tanstack/react-table'
 import {
   flexRender,
   getCoreRowModel,
@@ -10,25 +9,24 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 
+import type { useTableFilters } from '@/hooks/useTableFilters'
 import { Icon } from '@globalfishingwatch/ui-components'
-
-import type { AppDispatch,RootState } from 'store'
 
 import { useDynamicColumns } from '../../hooks/useDynamicColumns'
 import { useRowExpansion } from '../../hooks/useRowExpansion'
 import ExpandableRow from '../expandableRow/ExpandableRow'
 
-import { setSelectedRows } from './table.slice'
-
 import styles from './DynamicTable.module.css'
 
 export interface DynamicTableProps<T extends Record<string, any>> {
   data: T[]
+  tableFilters: ReturnType<typeof useTableFilters>
   onExpandRow?: (row: T) => Promise<any>
 }
 
 export function DynamicTable<T extends Record<string, any>>({
   data,
+  tableFilters,
   onExpandRow,
 }: DynamicTableProps<T>) {
   const { expandedRows } = useRowExpansion(onExpandRow)
@@ -36,23 +34,18 @@ export function DynamicTable<T extends Record<string, any>>({
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const [sorting, setSorting] = useState<SortingState>([(columns[1] as any)?.accessorKey])
 
-  const dispatch = useDispatch<AppDispatch>()
-  const filters = useSelector((state: RootState) => state.filter)
-  const selectedRowIds = useSelector((state: RootState) => state.table.selectedRowIds)
-  console.log('🚀 ~ DynamicTable ~ selectedRowIds:', selectedRowIds)
-
   const columnPinning = {
     left: ['select', (columns[1] as any)?.accessorKey],
   }
+  const { filteredData } = tableFilters
 
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     state: {
       expanded,
       columnPinning,
       sorting,
-      rowSelection: Object.fromEntries(selectedRowIds.map((id) => [id, true])),
     },
     onExpandedChange: setExpanded,
     getCoreRowModel: getCoreRowModel(),
@@ -61,10 +54,6 @@ export function DynamicTable<T extends Record<string, any>>({
     getFilteredRowModel: getFilteredRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getRowCanExpand: (row) => true,
-    onRowSelectionChange: (updater) => {
-      const selection = typeof updater === 'function' ? updater({}) : updater
-      dispatch(setSelectedRows(Object.keys(selection)))
-    },
   })
 
   return (
