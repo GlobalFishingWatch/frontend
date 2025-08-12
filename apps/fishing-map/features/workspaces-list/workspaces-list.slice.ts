@@ -97,9 +97,14 @@ export const createWorkspaceThunk = createAsyncThunk<
   }
 })
 
+export type UpdateWorkspaceThunkParams = Partial<AppWorkspace> & {
+  id: string
+  editPassword?: string
+  newPassword?: string
+}
 export const updateWorkspaceThunk = createAsyncThunk<
   AppWorkspace,
-  Partial<AppWorkspace> & { id: string; password?: string; newPassword?: string },
+  UpdateWorkspaceThunkParams,
   {
     rejectValue: UpdateWorkspaceThunkRejectError
   }
@@ -107,8 +112,8 @@ export const updateWorkspaceThunk = createAsyncThunk<
   'workspaces/update',
   async (workspace, { rejectWithValue }) => {
     try {
-      const { id, password: prevPassword, newPassword, ...rest } = workspace
-      const password = newPassword || prevPassword || 'default'
+      const { id, editPassword, newPassword, ...rest } = workspace
+      const password = newPassword || editPassword || 'default'
       const updatedWorkspace = await GFWAPI.fetch<AppWorkspace>(`/workspaces/${id}`, {
         method: 'PATCH',
         body: { ...parseUpsertWorkspace(rest), password },
