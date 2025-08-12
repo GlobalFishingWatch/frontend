@@ -99,7 +99,7 @@ export function DynamicTable<T extends Record<string, any>>({
       <tbody>
         {table.getRowModel().rows.map((row) => {
           return (
-            <Fragment key={row.id}>
+            <Fragment key={row.index}>
               <tr>
                 {row.getVisibleCells().map((cell) => {
                   const { column } = cell

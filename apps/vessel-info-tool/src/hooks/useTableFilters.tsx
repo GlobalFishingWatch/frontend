@@ -1,13 +1,9 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useSearch } from '@tanstack/react-router'
 
 import {
-  clearAllFilters,
   clearColumnFilter,
-  clearGlobalFilter,
   initializeData,
-  initializeFromUrl,
   setGlobalFilter,
   toggleSelectOption,
   updateColumnFilter,
@@ -24,11 +20,9 @@ export interface TableSearchParams {
 
 export function useTableFilters<T extends Record<string, any>>(data: T[]) {
   const dispatch = useDispatch()
-  const { filterConfigs, globalFilter, filteredData, urlSyncEnabled, debounceMs, isLoading } =
-    useSelector((state: RootState) => state.filter)
-
-  const search = useSearch({ strict: false }) as TableSearchParams
-  const navigate = useNavigate()
+  const { filterConfigs, globalFilter, filteredData, isLoading } = useSelector(
+    (state: RootState) => state.filter
+  )
 
   useEffect(() => {
     if (data.length > 0) {
@@ -36,67 +30,8 @@ export function useTableFilters<T extends Record<string, any>>(data: T[]) {
     }
   }, [data, dispatch])
 
-  // useEffect(() => {
-  //   if (!urlSyncEnabled || !search) return
-
-  //   dispatch(
-  //     initializeFromUrl({
-  //       globalFilter: search.search,
-  //       filters: search.filters,
-  //     })
-  //   )
-  // }, [search, dispatch, urlSyncEnabled])
-
-  useEffect(() => {
-    if (!urlSyncEnabled) return
-
-    const timeout = setTimeout(() => {
-      const newSearch: TableSearchParams = {}
-
-      if (globalFilter.trim()) {
-        newSearch.search = globalFilter
-      }
-
-      const activeFilters: Record<string, string | string[]> = {}
-      filterConfigs.forEach((filter) => {
-        if (filter.filteredValue) {
-          if (Array.isArray(filter.filteredValue) && filter.filteredValue.length > 0) {
-            activeFilters[filter.id] = filter.filteredValue
-          } else if (!Array.isArray(filter.filteredValue) && filter.filteredValue !== '') {
-            activeFilters[filter.id] = filter.filteredValue
-          }
-        }
-      })
-
-      if (Object.keys(activeFilters).length > 0) {
-        newSearch.filters = activeFilters
-      }
-
-      const currentSearch = search as TableSearchParams
-      const sameSearch =
-        (currentSearch.search ?? '') === (newSearch.search ?? '') &&
-        JSON.stringify(currentSearch.filters ?? {}) === JSON.stringify(newSearch.filters ?? {})
-
-      if (!sameSearch) {
-        navigate({
-          search: () => ({
-            ...(currentSearch ?? {}),
-            ...newSearch,
-          }),
-          replace: true,
-        })
-      }
-    }, debounceMs)
-
-    return () => clearTimeout(timeout)
-  }, [filterConfigs, globalFilter, navigate, urlSyncEnabled, debounceMs, search])
-
   const updateGlobalFilter = (searchTerm: string) => {
     dispatch(setGlobalFilter(searchTerm))
-  }
-
-  const clearGlobalFilter = () => {
-    dispatch(clearGlobalFilter())
   }
 
   const handleSelectChange = (filterId: string) => (option: SelectOption) => {
@@ -137,13 +72,10 @@ export function useTableFilters<T extends Record<string, any>>(data: T[]) {
     globalFilter,
     filteredData,
     isLoading,
-
     updateGlobalFilter,
-    clearGlobalFilter,
     handleSelectChange,
     updateFilterValue,
     clearColumnFilter: clearColumnFilterAction,
-
     getSelectedValues,
     getFilterState,
     hasActiveFilters,

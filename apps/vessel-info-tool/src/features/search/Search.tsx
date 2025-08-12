@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { IconButton, InputText } from '@globalfishingwatch/ui-components'
@@ -21,9 +21,20 @@ export const Search = ({ tableFilters }: SearchProps) => {
     updateFilterValue,
     clearColumnFilter,
     globalFilter,
-    clearGlobalFilter,
     updateGlobalFilter,
   } = tableFilters
+
+  const [localValue, setLocalValue] = useState(globalFilter)
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (localValue !== globalFilter) {
+        updateGlobalFilter(localValue)
+      }
+    }, 150)
+
+    return () => clearTimeout(handler)
+  }, [localValue])
 
   const [isFilterOpen, setIsFilterOpen] = useState(false)
 
@@ -38,12 +49,11 @@ export const Search = ({ tableFilters }: SearchProps) => {
       <div className="flex gap-6 w-full justify-center align-center">
         <InputText
           className={isFilterOpen ? 'w-full' : 'w-[70%]'}
-          onChange={(e) => updateGlobalFilter(e.target.value)}
-          value={globalFilter}
-          // className={styles.input}
+          onChange={(e) => setLocalValue(e.target.value)}
+          value={localValue}
           type="search"
-          onCleanButtonClick={clearGlobalFilter}
-          placeholder={t('search.placeholderGlobal', 'Search across whole table')}
+          onCleanButtonClick={() => setLocalValue('')}
+          placeholder={t('search.placeholderGlobal', 'Search all data..')}
         />
         {isFilterOpen ? (
           <IconButton type="solid" icon="close" onClick={() => setIsFilterOpen(!isFilterOpen)} />

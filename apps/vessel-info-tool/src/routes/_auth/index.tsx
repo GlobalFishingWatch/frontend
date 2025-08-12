@@ -8,7 +8,7 @@ import SidebarHeader from '@/features/header/SidebarHeader'
 import OptionsMenu from '@/features/options/OptionsMenu'
 import Profile from '@/features/profile/Profile'
 import Search from '@/features/search/Search'
-import { type TableSearchParams,useTableFilters } from '@/hooks/useTableFilters'
+import { type TableSearchParams, useTableFilters } from '@/hooks/useTableFilters'
 import type { Vessel } from '@/types/vessel.types'
 import { fetchVessels } from '@/utils/vessels'
 import { MOCK_USER_PERMISSION } from '@globalfishingwatch/api-types'
@@ -36,7 +36,7 @@ function Home() {
   const { t } = useTranslation()
 
   const tableFilters = useTableFilters(vessels)
-  console.log(tableFilters.filterConfigs)
+
   const handleExpandRow = async (row: Vessel) => {
     const { name, imo, mmsi } = row
     const query = `query=${name || imo || mmsi}`

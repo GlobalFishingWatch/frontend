@@ -149,56 +149,8 @@ const filtersSlice = createSlice({
       state.filteredData = applyFilters(data, state.filterConfigs, state.globalFilter)
     },
 
-    initializeFromUrl: (
-      state,
-      action: PayloadAction<{
-        globalFilter?: string
-        filters?: Record<string, string | string[]>
-      }>
-    ) => {
-      const { globalFilter, filters } = action.payload
-
-      if (globalFilter !== undefined) {
-        state.globalFilter = globalFilter
-      }
-
-      if (filters) {
-        state.filterConfigs = state.filterConfigs.map((config) => {
-          const urlValue = filters[config.id]
-          let filteredValue = config.filteredValue
-
-          if (urlValue !== undefined) {
-            switch (config.type) {
-              case 'select':
-                filteredValue = Array.isArray(urlValue) ? urlValue : [urlValue]
-                break
-              case 'text':
-              case 'number':
-              case 'date':
-                filteredValue = Array.isArray(urlValue) ? urlValue[0] : urlValue
-                break
-            }
-          } else {
-            filteredValue = config.type === 'select' ? [] : undefined
-          }
-
-          return {
-            ...config,
-            filteredValue,
-          }
-        })
-      }
-
-      state.filteredData = applyFilters(state.originalData, state.filterConfigs, state.globalFilter)
-    },
-
     setGlobalFilter: (state, action: PayloadAction<string>) => {
       state.globalFilter = action.payload
-      state.filteredData = applyFilters(state.originalData, state.filterConfigs, state.globalFilter)
-    },
-
-    clearGlobalFilter: (state) => {
-      state.globalFilter = ''
       state.filteredData = applyFilters(state.originalData, state.filterConfigs, state.globalFilter)
     },
 
@@ -250,23 +202,6 @@ const filtersSlice = createSlice({
       state.filteredData = applyFilters(state.originalData, state.filterConfigs, state.globalFilter)
     },
 
-    clearAllFilters: (state) => {
-      state.globalFilter = ''
-      state.filterConfigs = state.filterConfigs.map((config) => ({
-        ...config,
-        filteredValue: config.type === 'select' ? [] : undefined,
-      }))
-      state.filteredData = state.originalData
-    },
-
-    setUrlSyncEnabled: (state, action: PayloadAction<boolean>) => {
-      state.urlSyncEnabled = action.payload
-    },
-
-    setDebounceMs: (state, action: PayloadAction<number>) => {
-      state.debounceMs = action.payload
-    },
-
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload
     },
@@ -275,15 +210,10 @@ const filtersSlice = createSlice({
 
 export const {
   initializeData,
-  initializeFromUrl,
   setGlobalFilter,
-  clearGlobalFilter,
   updateColumnFilter,
   toggleSelectOption,
   clearColumnFilter,
-  clearAllFilters,
-  setUrlSyncEnabled,
-  setDebounceMs,
   setLoading,
 } = filtersSlice.actions
 
