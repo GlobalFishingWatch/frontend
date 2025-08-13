@@ -35,32 +35,9 @@ export enum DataviewType {
   Workspaces = 'WORKSPACES',
 }
 
-export type DataviewSublayerConfig = {
-  id: string
-  datasets: Dataset[]
-  visible?: boolean
-  color?: string
-  colorRamp?: string
-  filter?: DataviewConfig['filter']
-  filters?: DataviewConfig['filters']
-  vesselGroups?: DataviewConfig['vessel-groups']
-  /** Needed to update the layer when the vessel group is edited */
-  vesselGroupsLength?: number
-  maxZoom?: number
-}
-
-export type DataviewContextSublayerConfig = {
-  id: string
-  dataviewId: string
-  color: string
-  thickness?: number
-  filters?: DataviewConfig['filters']
-}
-
 export interface DataviewContexLayerConfig {
   id: string
   dataset: string
-  sublayers?: DataviewContextSublayerConfig[]
 }
 
 export type FourwingsGeolocation = 'country' | 'port' | 'default'
@@ -168,8 +145,6 @@ export interface DataviewConfig<Type = DataviewType> {
 
   pickable?: boolean
   trackThinningZoomConfig?: Record<number, string>
-  /** Fourwings layers merged, needed for Activity or Detections */
-  sublayers?: DataviewSublayerConfig[]
   includeWithoutEndDate?: boolean
 }
 
