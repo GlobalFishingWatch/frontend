@@ -19,21 +19,27 @@ export enum ContextLayerId {
   ProtectedSeas = 'protected-seas',
 }
 
+type ConterLayerConfigFilter = Record<string, any>
+type ConterSubLayerConfig = {
+  id: string
+  dataviewId: string
+  color: string
+  thickness?: number
+  filters?: ConterLayerConfigFilter
+}
 export type ContextLayerConfig<Id = ContextLayerId> = {
   id: Id
   datasetId: string
   tilesUrl: string
-  filters?: Record<string, any>
+  idProperty?: string
+  valueProperties?: string[]
+  sublayers: ConterSubLayerConfig[]
 }
 
 export type ContextLayerProps = DeckLayerProps<{
   id: string
   layers: ContextLayerConfig[]
-  color: string
-  thickness: number
   pickable?: boolean
-  idProperty?: string
-  valueProperties?: string[]
   highlightedFeatures?: ContextPickingObject[]
 }>
 

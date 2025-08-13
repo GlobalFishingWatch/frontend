@@ -8,11 +8,6 @@ export const INCLUDE_FILTER_ID = 'include'
 export const EXCLUDE_FILTER_ID = 'exclude'
 export type FilterOperator = typeof INCLUDE_FILTER_ID | typeof EXCLUDE_FILTER_ID
 
-export interface DataviewContexLayerConfig {
-  id: string
-  dataset: string
-}
-
 export enum DataviewType {
   Annotation = 'ANNOTATION',
   Background = 'BACKGROUND',
@@ -52,6 +47,20 @@ export type DataviewSublayerConfig = {
   /** Needed to update the layer when the vessel group is edited */
   vesselGroupsLength?: number
   maxZoom?: number
+}
+
+export type DataviewContextSublayerConfig = {
+  id: string
+  dataviewId: string
+  color: string
+  thickness?: number
+  filters?: DataviewConfig['filters']
+}
+
+export interface DataviewContexLayerConfig {
+  id: string
+  dataset: string
+  sublayers?: DataviewContextSublayerConfig[]
 }
 
 export type FourwingsGeolocation = 'country' | 'port' | 'default'

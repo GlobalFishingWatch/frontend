@@ -97,9 +97,10 @@ export const getPointsTimeseries = ({ features, instance }: GetPointsTimeseriesP
 
 export const getPointsTimeseriesStats = ({ features, instance }: GetPointsTimeseriesParams) => {
   const { startTime, endTime, startTimeProperty, endTimeProperty } = instance.props || {}
+
   return {
     type: 'points' as const,
-    total: features.reduce((acc, { contained }) => {
+    total: features?.reduce((acc, { contained }) => {
       if (!contained) {
         return acc
       }

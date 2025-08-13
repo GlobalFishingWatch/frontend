@@ -38,9 +38,12 @@ type ContextLayerState = {
   highlightedFeatures?: ContextPickingObject[]
 }
 
+type SublayerCallbackParams<T = Record<string, any>> = {
+  layerIndex: number
+  sublayerIndex: number
+} & T
+
 const defaultProps: DefaultProps<_ContextLayerProps> = {
-  idProperty: 'gfw_id',
-  valueProperties: [],
   pickable: true,
   maxRequests: 100,
   debounceTime: 500,
@@ -64,29 +67,44 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
     return [...(this.props.highlightedFeatures || []), ...(this.state.highlightedFeatures || [])]
   }
 
-  getHighlightLineWidth(d: ContextFeature, filters?: Record<string, any>, lineWidth = 2): number {
-    if (!getFeatureInFilter(d, filters)) return 0
-    const { idProperty, layers, thickness } = this.props
+  getHighlightLineWidth(
+    d: ContextFeature,
+    {
+      layerIndex,
+      sublayerIndex,
+      lineWidth,
+    }: SublayerCallbackParams<{
+      lineWidth: number
+    }>
+  ): number {
+    const layer = this.props.layers[layerIndex]
+    const sublayer = layer.sublayers[sublayerIndex]
+    if (!layer || !sublayer) return 0
+    if (!getFeatureInFilter(d, sublayer.filters)) return 0
     const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, {
-      idProperty,
-      datasetId: layers?.[0]?.datasetId,
+      idProperty: layer.idProperty,
+      datasetId: layer.datasetId,
     })
-      ? Math.max(thickness, lineWidth)
+      ? Math.max(sublayer.thickness || 1, lineWidth)
       : 0
   }
 
-  getLineWidth(d: ContextFeature, filters?: Record<string, any>): number {
-    return getFeatureInFilter(d, filters) ? this.props.thickness || 1 : 0
+  getLineWidth(d: ContextFeature, { layerIndex, sublayerIndex }: SublayerCallbackParams): number {
+    const { filters, thickness } = this.props.layers[layerIndex]?.sublayers?.[sublayerIndex] || {}
+    return getFeatureInFilter(d, filters) ? thickness || 1 : 0
   }
 
-  getFillColor(d: ContextFeature, filters?: Record<string, any>): Color {
-    if (!getFeatureInFilter(d, filters)) return COLOR_TRANSPARENT
-    const { idProperty, layers } = this.props
+  getFillColor(d: ContextFeature, { layerIndex, sublayerIndex }: SublayerCallbackParams): Color {
+    const layer = this.props.layers[layerIndex]
+    const sublayer = layer.sublayers[sublayerIndex]
+    if (!layer || !sublayer) return COLOR_TRANSPARENT
+
+    if (!getFeatureInFilter(d, sublayer.filters)) return COLOR_TRANSPARENT
     const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, {
-      idProperty,
-      datasetId: layers?.[0]?.datasetId,
+      idProperty: layer.idProperty,
+      datasetId: layer.datasetId,
     })
       ? COLOR_HIGHLIGHT_FILL
       : COLOR_TRANSPARENT
@@ -101,8 +119,10 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
   }: {
     info: PickingInfo<ContextFeature, { tile?: Tile2DHeader }>
   }): ContextPickingInfo => {
+    // TODO: handle multiple layers
     if (!info.object) return { ...info, object: undefined }
-    const { idProperty, valueProperties } = this.props
+    const { idProperty, valueProperties } = this.props.layers[0]
+    const sublayer = this.props.layers[0].sublayers[0]
     const object = {
       ...transformTileCoordsToWGS84(
         info.object as ContextFeature,
@@ -110,7 +130,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
         this.context.viewport
       ),
       title: this.props.id,
-      color: this.props.color,
+      color: sublayer.color,
       layerId: this.props.id,
       datasetId: this.props.layers[0].datasetId,
       category: this.props.category,
@@ -123,7 +143,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
     } as ContextPickingObject
     return {
       ...info,
-      object: getFeatureInFilter(object, this.props.layers[0].filters) ? object : undefined,
+      object: getFeatureInFilter(object, sublayer.filters) ? object : undefined,
     }
   }
 
@@ -150,7 +170,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
     const renderedFeatures: ContextFeature[] = []
 
     for (const f of features) {
-      const featureId = getContextId(f.object as ContextFeature, this.props.idProperty)
+      const featureId = getContextId(f.object as ContextFeature, this.props.layers?.[0]?.idProperty)
 
       if (featureId === undefined) {
         // we have no id for the feature, we just add to the list
@@ -166,30 +186,30 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
   }
 
   renderLayers() {
-    const { visible, color, layers, thickness, pickable } = this.props
+    const { visible, layers, pickable } = this.props
 
     if (!visible) return []
 
     const highlightedFeatures = this._getHighlightedFeatures()
-    return layers.map((layer) => {
+    return layers.map((layer, layerIndex) => {
       if (layer.id === ContextLayerId.EEZBoundaries) {
         return new TileLayer<TileLayerProps>({
-          id: `${this.id}-boundaries-layer`,
+          id: `${layer.id}-boundaries-layer`,
           data: layer.tilesUrl,
           loaders: [GFWMVTLoader],
           maxZoom: 8,
           renderSubLayers: (props: any) => {
             const mvtSublayerProps = { ...props, ...getMVTSublayerProps(props) }
-            return [
+            return layer.sublayers.map((sublayer) => [
               new GeoJsonLayer(mvtSublayerProps, {
-                id: `${props.id}-boundaries`,
+                id: `${props.id}-${sublayer.dataviewId}-${sublayer.id}-boundaries`,
                 onViewportLoad: this.props.onViewportLoad,
                 lineWidthMinPixels: 1,
                 filled: false,
                 getPolygonOffset: (params: { layerIndex: number }) =>
                   getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
-                getLineColor: hexToDeckColor(this.props.color),
-                getLineWidth: thickness,
+                getLineColor: hexToDeckColor(sublayer.color),
+                getLineWidth: sublayer.thickness,
                 lineWidthUnits: 'pixels',
                 lineJointRounded: true,
                 lineCapRounded: true,
@@ -199,16 +219,16 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                 ],
                 getDashArray: (d: ContextFeature) => this.getDashArray(d),
                 updateTriggers: {
-                  getLineWidth: thickness,
+                  getLineWidth: sublayer.thickness,
                 },
               } as any),
-            ]
+            ])
           },
         })
       }
 
       return new TileLayer<TileLayerProps<ContextFeature>>({
-        id: `${this.id}-base-layer`,
+        id: `${layer.id}-base-layer`,
         data: layer.tilesUrl,
         loaders: [GFWMVTLoader],
         loadOptions: {
@@ -221,14 +241,15 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
             ...props,
             ...getMVTSublayerProps({ tile: props.tile, extensions: props.extensions }),
           }
-          return [
+          return layer.sublayers.map((sublayer, sublayerIndex) => [
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-              id: `${props.id}-highlight-fills`,
+              id: `${props.id}-${sublayer.dataviewId}-${sublayer.id}-highlight-fills`,
               stroked: false,
               pickable,
               getPolygonOffset: (params) =>
                 getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
-              getFillColor: (d) => this.getFillColor(d as ContextFeature, layer.filters),
+              getFillColor: (d) =>
+                this.getFillColor(d as ContextFeature, { layerIndex, sublayerIndex }),
               updateTriggers: {
                 getFillColor: [highlightedFeatures],
               },
@@ -236,7 +257,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
             ...(layer.id !== ContextLayerId.EEZ && layer.id !== ContextLayerId.EEZBoundaries
               ? [
                   new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-                    id: `${props.id}-lines`,
+                    id: `${props.id}-${sublayer.dataviewId}-${sublayer.id}-lines`,
                     lineWidthUnits: 'pixels',
                     lineWidthMinPixels: 0,
                     filled: false,
@@ -244,16 +265,17 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                     lineCapRounded: true,
                     getPolygonOffset: (params) =>
                       getLayerGroupOffset(LayerGroup.OutlinePolygons, params),
-                    getLineWidth: (d) => this.getLineWidth(d as ContextFeature, layer.filters),
-                    getLineColor: hexToDeckColor(color),
+                    getLineWidth: (d) =>
+                      this.getLineWidth(d as ContextFeature, { layerIndex, sublayerIndex }),
+                    getLineColor: hexToDeckColor(sublayer.color),
                     updateTriggers: {
-                      getLineWidth: [layer.filters, thickness],
+                      getLineWidth: [sublayer.filters, sublayer.thickness],
                     },
                   }),
                 ]
               : []),
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-              id: `${props.id}-highlight-lines-bg`,
+              id: `${props.id}-${sublayer.dataviewId}-${sublayer.id}-highlight-lines-bg`,
               lineWidthMinPixels: 0,
               lineWidthUnits: 'pixels',
               filled: false,
@@ -263,14 +285,18 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
               getPolygonOffset: (params) =>
                 getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
               getLineWidth: (d) =>
-                this.getHighlightLineWidth(d as ContextFeature, layer.filters, 4),
+                this.getHighlightLineWidth(d as ContextFeature, {
+                  layerIndex,
+                  sublayerIndex,
+                  lineWidth: 4,
+                }),
               getLineColor: DEFAULT_BACKGROUND_COLOR,
               updateTriggers: {
                 getLineWidth: [highlightedFeatures],
               },
             }),
             new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-              id: `${props.id}-highlight-lines-fg`,
+              id: `${props.id}-${sublayer.dataviewId}-${sublayer.id}-highlight-lines-fg`,
               lineWidthMinPixels: 0,
               lineWidthUnits: 'pixels',
               filled: false,
@@ -280,13 +306,17 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
               getPolygonOffset: (params) =>
                 getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
               getLineWidth: (d) =>
-                this.getHighlightLineWidth(d as ContextFeature, layer.filters, 2),
+                this.getHighlightLineWidth(d as ContextFeature, {
+                  layerIndex,
+                  sublayerIndex,
+                  lineWidth: 2,
+                }),
               getLineColor: COLOR_HIGHLIGHT_LINE,
               updateTriggers: {
                 getLineWidth: [highlightedFeatures],
               },
             }),
-          ]
+          ])
         },
       })
     })
