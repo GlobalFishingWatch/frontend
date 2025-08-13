@@ -1,14 +1,15 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
+import type { RowSelectionState } from '@tanstack/react-table'
 
 interface TableState {
   columns: string[]
-  selectedRowIds: string[]
+  selectedRows: RowSelectionState
 }
 
 const initialState: TableState = {
   columns: [],
-  selectedRowIds: [],
+  selectedRows: {},
 }
 
 export const tableSlice = createSlice({
@@ -18,11 +19,11 @@ export const tableSlice = createSlice({
     setColumns: (state, action: PayloadAction<string[]>) => {
       state.columns = action.payload
     },
-    setSelectedRows: (state, action: PayloadAction<string[]>) => {
-      state.selectedRowIds = action.payload
+    setSelectedRows: (state, action: PayloadAction<RowSelectionState>) => {
+      state.selectedRows = action.payload
     },
     clearSelectedRows: (state) => {
-      state.selectedRowIds = []
+      state.selectedRows = {}
     },
   },
 })

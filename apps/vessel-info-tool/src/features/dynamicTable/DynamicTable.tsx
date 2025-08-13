@@ -1,5 +1,5 @@
 import { Fragment, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import type { ExpandedState, RowSelectionState, SortingState } from '@tanstack/react-table'
 import {
   flexRender,
@@ -13,11 +13,13 @@ import {
 import type { useTableFilters } from '@/hooks/useTableFilters'
 import { Icon } from '@globalfishingwatch/ui-components'
 
-import type { AppDispatch } from 'store'
+import type { AppDispatch, RootState } from 'store'
 
 import { useDynamicColumns } from '../../hooks/useDynamicColumns'
 import { useRowExpansion } from '../../hooks/useRowExpansion'
 import ExpandableRow from '../expandableRow/ExpandableRow'
+
+import { setSelectedRows } from './table.slice'
 
 import styles from './DynamicTable.module.css'
 
@@ -36,13 +38,16 @@ export function DynamicTable<T extends Record<string, any>>({
   const columns = useDynamicColumns(data)
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const [sorting, setSorting] = useState<SortingState>([(columns[1] as any)?.accessorKey])
-  const dispatch = useDispatch<AppDispatch>()
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
-  console.log('🚀 ~ DynamicTable ~ rowSelection:', Object.keys(rowSelection).length)
 
   const columnPinning = {
     left: ['select', (columns[1] as any)?.accessorKey],
   }
+
+  const dispatch = useDispatch<AppDispatch>()
+  const rowSelection = useSelector(
+    (state: RootState) => state.table.selectedRows
+  ) as RowSelectionState
+
   const { filteredData, globalFilter } = tableFilters
 
   const table = useReactTable({
@@ -62,7 +67,13 @@ export function DynamicTable<T extends Record<string, any>>({
     getFilteredRowModel: getFilteredRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getRowCanExpand: () => true,
-    onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: (newSelection) => {
+      if (typeof newSelection === 'function') {
+        dispatch(setSelectedRows(newSelection(rowSelection)))
+      } else {
+        dispatch(setSelectedRows(newSelection))
+      }
+    },
     getRowId: (row: any, index) => {
       const imoKey = Object.keys(row).find((k) => k.toLowerCase().includes('imo'))
       const val = imoKey ? row[imoKey] : undefined
