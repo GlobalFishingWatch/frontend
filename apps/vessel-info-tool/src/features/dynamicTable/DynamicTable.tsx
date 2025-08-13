@@ -37,7 +37,7 @@ export function DynamicTable<T extends Record<string, any>>({
   const columnPinning = {
     left: ['select', (columns[1] as any)?.accessorKey],
   }
-  const { filteredData } = tableFilters
+  const { filteredData, globalFilter } = tableFilters
 
   const table = useReactTable({
     data: filteredData,
@@ -46,6 +46,7 @@ export function DynamicTable<T extends Record<string, any>>({
       expanded,
       columnPinning,
       sorting,
+      globalFilter,
     },
     onExpandedChange: setExpanded,
     getCoreRowModel: getCoreRowModel(),

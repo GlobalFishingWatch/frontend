@@ -1,10 +1,9 @@
 import type { HTMLProps } from 'react'
 import { useEffect, useMemo, useRef } from 'react'
 import type { Row, Table } from '@tanstack/react-table'
+import escapeRegExp from 'lodash/escapeRegExp'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
-
-// import styles from '../DynamicTable.module.css'
 
 function IndeterminateCheckbox({
   indeterminate,
@@ -24,21 +23,32 @@ function IndeterminateCheckbox({
       <input
         type="checkbox"
         ref={ref}
-        className="peer sr-only"
         aria-checked={indeterminate ? 'mixed' : undefined}
+        className="
+    appearance-none w-8 h-8 rounded-full border-2 border-gray-300
+    cursor-pointer relative
+    checked:bg-[rgba(22,63,137,0.8)]
+    checked:border-[rgba(22,63,137,0.1)]
+    before:content-['✓'] before:absolute before:text-white before:text-[12px]
+    before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2
+    before:opacity-0 checked:before:opacity-100
+    transition-colors
+  "
         {...rest}
       />
       <span
         className="
-        relative inline-flex w-8 h-8 rounded-full border-2 border-gray-300
-        peer-checked:bg-[rgba(22,63,137,0.8)] peer-checked:border-[rgba(22,63,137,0.1)]
-      "
+      relative w-8 h-8 border-2 border-gray-300 rounded-full
+      peer-checked:bg-[rgba(22,63,137,0.8)]
+      peer-checked:border-[rgba(22,63,137,0.1)]
+      transition-colors
+    "
       >
         <span
           className="
         absolute inset-0 flex items-center justify-center text-white text-[12px]
         opacity-0 peer-checked:opacity-100
-        "
+      "
         >
           ✓
         </span>
@@ -100,6 +110,43 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
       ...otherKeys.map((key) => ({
         accessorKey: key,
         header: key,
+        cell: ({ table, getValue }: { table: Table<T>; getValue: () => any }) => {
+          const globalFilter = (table.getState().globalFilter as string | undefined)?.trim()
+          const value = String(getValue())
+
+          if (!globalFilter) {
+            return (
+              <div className="flex items-center justify-between p-2">
+                <span>{value}</span>
+              </div>
+            )
+          }
+
+          const regex = new RegExp(`(${escapeRegExp(globalFilter)})`, 'gi')
+          const parts = value.split(regex)
+
+          return (
+            <div className="flex items-center justify-between p-2">
+              <span>
+                {parts
+                  .filter((part) => part)
+                  .map((part, i) =>
+                    regex.test(part) ? (
+                      <mark
+                        style={{ backgroundColor: 'var(--color-highlight-blue)' }}
+                        className="inline-block"
+                        key={i}
+                      >
+                        {part}
+                      </mark>
+                    ) : (
+                      <span key={i}>{part}</span>
+                    )
+                  )}
+              </span>
+            </div>
+          )
+        },
       })),
     ]
   }, [data])

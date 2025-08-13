@@ -31,7 +31,7 @@ export const Search = ({ tableFilters }: SearchProps) => {
       if (localValue !== globalFilter) {
         updateGlobalFilter(localValue)
       }
-    }, 150)
+    }, 200)
 
     return () => clearTimeout(handler)
   }, [localValue])
