@@ -23,7 +23,6 @@ import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { selectReportAreaBounds } from 'features/reports/reports.config.selectors'
 import Sidebar from 'features/sidebar/Sidebar'
 import { useFetchTrackCorrections } from 'features/track-correction/track-correction.hooks'
-import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
 import { fetchUserThunk } from 'features/user/user.slice'
 import { useFitWorkspaceBounds } from 'features/workspace/workspace.hook'
@@ -96,7 +95,6 @@ function App() {
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
