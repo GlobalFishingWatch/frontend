@@ -1,5 +1,6 @@
 import { Fragment, useState } from 'react'
-import type { ExpandedState, SortingState } from '@tanstack/react-table'
+import { useDispatch } from 'react-redux'
+import type { ExpandedState, RowSelectionState, SortingState } from '@tanstack/react-table'
 import {
   flexRender,
   getCoreRowModel,
@@ -11,6 +12,8 @@ import {
 
 import type { useTableFilters } from '@/hooks/useTableFilters'
 import { Icon } from '@globalfishingwatch/ui-components'
+
+import type { AppDispatch } from 'store'
 
 import { useDynamicColumns } from '../../hooks/useDynamicColumns'
 import { useRowExpansion } from '../../hooks/useRowExpansion'
@@ -33,6 +36,9 @@ export function DynamicTable<T extends Record<string, any>>({
   const columns = useDynamicColumns(data)
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const [sorting, setSorting] = useState<SortingState>([(columns[1] as any)?.accessorKey])
+  const dispatch = useDispatch<AppDispatch>()
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
+  console.log('🚀 ~ DynamicTable ~ rowSelection:', Object.keys(rowSelection).length)
 
   const columnPinning = {
     left: ['select', (columns[1] as any)?.accessorKey],
@@ -47,6 +53,7 @@ export function DynamicTable<T extends Record<string, any>>({
       columnPinning,
       sorting,
       globalFilter,
+      rowSelection,
     },
     onExpandedChange: setExpanded,
     getCoreRowModel: getCoreRowModel(),
@@ -54,7 +61,13 @@ export function DynamicTable<T extends Record<string, any>>({
     onSortingChange: setSorting,
     getFilteredRowModel: getFilteredRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
-    getRowCanExpand: (row) => true,
+    getRowCanExpand: () => true,
+    onRowSelectionChange: setRowSelection,
+    getRowId: (row: any, index) => {
+      const imoKey = Object.keys(row).find((k) => k.toLowerCase().includes('imo'))
+      const val = imoKey ? row[imoKey] : undefined
+      return (typeof val === 'string' && val.trim()) || String(index)
+    },
   })
 
   return (

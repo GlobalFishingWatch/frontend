@@ -5,9 +5,10 @@ import escapeRegExp from 'lodash/escapeRegExp'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import styles from '../features/dynamicTable/DynamicTable.module.css'
+
 function IndeterminateCheckbox({
   indeterminate,
-  className = '',
   ...rest
 }: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
   const ref = useRef<HTMLInputElement>(null!)
@@ -19,41 +20,16 @@ function IndeterminateCheckbox({
   }, [ref, indeterminate])
 
   return (
-    <label className="inline-flex items-center cursor-pointer">
+    <div className="flex">
       <input
+        id="indeterminate-checkbox"
         type="checkbox"
         ref={ref}
-        aria-checked={indeterminate ? 'mixed' : undefined}
-        className="
-    appearance-none w-8 h-8 rounded-full border-2 border-gray-300
-    cursor-pointer relative
-    checked:bg-[rgba(22,63,137,0.8)]
-    checked:border-[rgba(22,63,137,0.1)]
-    before:content-['✓'] before:absolute before:text-white before:text-[12px]
-    before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2
-    before:opacity-0 checked:before:opacity-100
-    transition-colors
-  "
+        className={styles.checkbox}
         {...rest}
       />
-      <span
-        className="
-      relative w-8 h-8 border-2 border-gray-300 rounded-full
-      peer-checked:bg-[rgba(22,63,137,0.8)]
-      peer-checked:border-[rgba(22,63,137,0.1)]
-      transition-colors
-    "
-      >
-        <span
-          className="
-        absolute inset-0 flex items-center justify-center text-white text-[12px]
-        opacity-0 peer-checked:opacity-100
-      "
-        >
-          ✓
-        </span>
-      </span>
-    </label>
+      <label htmlFor="indeterminate-checkbox" className="h-0"></label>
+    </div>
   )
 }
 
@@ -88,7 +64,7 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
         ),
         enableSorting: false,
         enableColumnFilter: false,
-        size: 40,
+        size: 20,
       },
       {
         accessorKey: nameKey[0],
