@@ -1,4 +1,3 @@
-import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import {
@@ -18,6 +17,13 @@ import {
   WorkspacesLayer,
 } from '@globalfishingwatch/deck-layers'
 
+import type {
+  ResolvedContextDataviewInstance,
+  ResolvedDataviewInstance,
+  ResolvedFourwingsDataviewInstance,
+} from '../types/dataviews'
+import type { ResolverGlobalConfig } from '../types/resolvers'
+
 import { resolveDeckBasemapLabelsLayerProps, resolveDeckBasemapLayerProps } from './basemap'
 import { resolveDeckBathymetryContourLayerProps } from './bathymetry-contour'
 import { resolveDeckFourwingsClustersLayerProps } from './clusters'
@@ -26,7 +32,6 @@ import { resolveDeckCurrentsLayerProps } from './currents'
 import { resolveDeckFourwingsLayerProps } from './fourwings'
 import { resolveDeckGraticulesLayerProps } from './graticules'
 import { resolveDeckPolygonsLayerProps } from './polygons'
-import type { ResolverGlobalConfig } from './types'
 import {
   resolveDeckUserContextLayerProps,
   resolveDeckUserPointsLayerProps,
@@ -36,14 +41,14 @@ import { resolveDeckVesselLayerProps } from './vessels'
 import { resolveDeckWorkspacesLayerProps } from './workspaces'
 
 export const getDataviewHighlightedFeatures = (
-  dataview: DataviewInstance,
+  dataview: ResolvedDataviewInstance,
   globalConfig: ResolverGlobalConfig
 ) => {
   return globalConfig.highlightedFeatures?.filter((f) => f.layerId === dataview.id)
 }
 
 export const dataviewToDeckLayer = (
-  dataview: DataviewInstance,
+  dataview: ResolvedDataviewInstance,
   globalConfig: ResolverGlobalConfig
 ): AnyDeckLayer => {
   const highlightedFeatures = getDataviewHighlightedFeatures(dataview, globalConfig)
@@ -68,17 +73,26 @@ export const dataviewToDeckLayer = (
     dataview.config?.type === DataviewType.HeatmapAnimated ||
     dataview.config?.type === DataviewType.HeatmapStatic
   ) {
-    const deckLayerProps = resolveDeckFourwingsLayerProps(dataview, layerConfig)
+    const deckLayerProps = resolveDeckFourwingsLayerProps(
+      dataview as ResolvedFourwingsDataviewInstance,
+      layerConfig
+    )
     const layer = new FourwingsLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.Currents) {
-    const deckLayerProps = resolveDeckCurrentsLayerProps(dataview, layerConfig)
+    const deckLayerProps = resolveDeckCurrentsLayerProps(
+      dataview as ResolvedFourwingsDataviewInstance,
+      layerConfig
+    )
     const layer = new FourwingsCurrentsTileLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.Context) {
-    const deckLayerProps = resolveDeckContextLayerProps(dataview, layerConfig)
+    const deckLayerProps = resolveDeckContextLayerProps(
+      dataview as ResolvedContextDataviewInstance,
+      layerConfig
+    )
     const layer = new ContextLayer(deckLayerProps)
     return layer
   }

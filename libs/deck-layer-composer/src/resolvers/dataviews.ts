@@ -1,13 +1,6 @@
 import { groupBy, uniq, uniqBy } from 'es-toolkit'
 
-import type {
-  ApiEvent,
-  Dataset,
-  DataviewConfig,
-  DataviewInstance,
-  DataviewSublayerConfig,
-  EventTypes,
-} from '@globalfishingwatch/api-types'
+import type { ApiEvent, Dataset, DataviewInstance, EventTypes } from '@globalfishingwatch/api-types'
 import {
   DatasetTypes,
   DataviewCategory,
@@ -37,18 +30,28 @@ import { FourwingsComparisonMode } from '@globalfishingwatch/deck-layers'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
 
+import type {
+  FourwingsSublayerConfig,
+  ResolvedContextDataviewInstance,
+  ResolvedDataviewInstance,
+  ResolvedFourwingsDataviewInstance,
+} from '../types/dataviews'
+import type { TimeRange } from '../types/resolvers'
+
 export const AUXILIAR_DATAVIEW_SUFIX = 'auxiliar'
 
 const getDatasetsAvailableIntervals = (datasets: Dataset[]) =>
   uniq((datasets || [])?.flatMap((d) => (d?.configuration?.intervals as FourwingsInterval[]) || []))
 
 export const getDataviewAvailableIntervals = (
-  dataview: UrlDataviewInstance,
+  dataview: UrlDataviewInstance | ResolvedFourwingsDataviewInstance,
   defaultIntervals = FOURWINGS_INTERVALS_ORDER
 ): FourwingsInterval[] => {
   const allDatasets = dataview.datasets?.length
     ? dataview.datasets
-    : (dataview?.config?.sublayers || [])?.flatMap((sublayer) => sublayer.datasets || [])
+    : ((dataview as ResolvedFourwingsDataviewInstance)?.config?.sublayers || [])?.flatMap(
+        (sublayer) => sublayer.datasets || []
+      )
   const fourwingsDatasets = allDatasets?.filter(
     (dataset) => dataset.type === DatasetTypes.Fourwings
   )
@@ -70,8 +73,6 @@ export const getDataviewAvailableIntervals = (
 export const getAvailableIntervalsInDataviews = (dataviews: UrlDataviewInstance[]) => {
   return uniq(dataviews.flatMap((dataview) => getDataviewAvailableIntervals(dataview)))
 }
-
-export type TimeRange = { start: string; end: string }
 
 type GetMergedHeatmapAnimatedDataviewParams = {
   visualizationMode?: FourwingsVisualizationMode
@@ -104,7 +105,7 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
   )
   const maxZoom = maxZoomLevels?.length ? Math.min(...maxZoomLevels) : undefined
 
-  const sublayer: DataviewSublayerConfig = {
+  const sublayer: FourwingsSublayerConfig = {
     id: dataview.id,
     datasets: activeDatasets,
     color: config.color as string,
@@ -138,7 +139,7 @@ export function getFourwingsDataviewsResolved(
     return []
   }
 
-  const mergedActivityDataview = {
+  const mergedActivityDataview: ResolvedFourwingsDataviewInstance = {
     id: getMergedDataviewId(fourwingsDataviews),
     category: fourwingsDataviews[0]?.category,
     config: {
@@ -200,7 +201,7 @@ export function getFourwingsDataviewsResolved(
 
 export function getContextDataviewsResolved(
   contextDataview: UrlDataviewInstance | UrlDataviewInstance[]
-): UrlDataviewInstance[] {
+): ResolvedContextDataviewInstance[] {
   const contextDataviews = Array.isArray(contextDataview)
     ? contextDataview
     : [contextDataview].filter(Boolean)
@@ -223,7 +224,7 @@ export function getContextDataviewsResolved(
       dataviews.flatMap((d) => d.config?.layers || []),
       (l) => l.id
     )
-    const mergedDataviewConfig: DataviewConfig = {
+    const mergedDataviewConfig: ResolvedContextDataviewInstance['config'] = {
       type: dataviews[0]?.config?.type as DataviewType,
       ...(isUserTrackDataview(dataviews[0]) && {
         singleTrack: hasSingleUserTrackDataview,
@@ -244,7 +245,7 @@ export function getContextDataviewsResolved(
         }
       }),
     }
-    const mergedContextDataview = {
+    const mergedContextDataview: ResolvedContextDataviewInstance = {
       ...dataviews[0],
       id: getMergedDataviewId(dataviews),
       config: mergedDataviewConfig,
@@ -488,5 +489,5 @@ export function getDataviewsResolved(
     ...userHeatmapDataviewsParsed,
     ...contextDataviewsParsed,
   ]
-  return dataviewsMerged
+  return dataviewsMerged as ResolvedDataviewInstance[]
 }

@@ -18,7 +18,7 @@ import type {
 } from '@globalfishingwatch/deck-layers'
 import { getUTCDateTime } from '@globalfishingwatch/deck-layers'
 
-import type { DeckResolverFunction } from './types'
+import type { DeckResolverFunction } from '../types/resolvers'
 
 const getUserContexTimeFilterProps = ({
   dataset,

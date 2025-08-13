@@ -12,7 +12,7 @@ import type {
 } from '@globalfishingwatch/deck-layers'
 import { FOURWINGS_MAX_ZOOM, getUTCDateTime } from '@globalfishingwatch/deck-layers'
 
-import type { DeckResolverFunction, ResolverGlobalConfig } from './types'
+import type { DeckResolverFunction, ResolverGlobalConfig } from '../types/resolvers'
 
 const getDateRangeQuery = ({
   startTime,

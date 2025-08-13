@@ -1,3 +1,5 @@
+import type { ResolvedContextDataviewInstance } from 'libs/deck-layer-composer/src/types/dataviews'
+
 import { getDatasetConfiguration, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type {
   ContextLayerConfig,
@@ -6,12 +8,12 @@ import type {
   ContextPickingObject,
 } from '@globalfishingwatch/deck-layers'
 
-import type { DeckResolverFunction } from './types'
+import type { DeckResolverFunction } from '../types/resolvers'
 
-export const resolveDeckContextLayerProps: DeckResolverFunction<ContextLayerProps> = (
-  dataview,
-  { highlightedFeatures }
-) => {
+export const resolveDeckContextLayerProps: DeckResolverFunction<
+  ContextLayerProps,
+  ResolvedContextDataviewInstance
+> = (dataview, { highlightedFeatures }) => {
   const layers = (dataview.config?.layers || [])?.flatMap((layer): ContextLayerConfig | [] => {
     const dataset = dataview.datasets?.find((dataset) => dataset.id === layer.dataset)
     const { idProperty, valueProperties } = getDatasetConfiguration(dataset)
