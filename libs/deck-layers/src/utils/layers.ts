@@ -11,11 +11,15 @@ import type { PolygonPickingObject } from '../layers/polygons'
 import type { FilterOperators, UserLayerPickingObject } from '../layers/user'
 
 const WORLD_SIZE = 512
+export const DEFAULT_ID_PROPERTY = 'gfw_id'
 
 export function getPickedFeatureToHighlight(
   data: any,
   pickedFeatures: (ContextPickingObject | UserLayerPickingObject | PolygonPickingObject)[],
-  { idProperty = 'gfw_id', datasetId } = {} as { idProperty?: string; datasetId?: string }
+  { idProperty = DEFAULT_ID_PROPERTY, datasetId } = {} as {
+    idProperty?: string
+    datasetId?: string
+  }
 ) {
   return pickedFeatures?.some((f) => {
     if (

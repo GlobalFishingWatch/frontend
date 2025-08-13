@@ -1,7 +1,9 @@
+import { DEFAULT_ID_PROPERTY } from '../../utils'
+
 import type { ContextFeature, ContextPickingObject } from './context.types'
 import { ContextLayerId } from './context.types'
 
-export const getContextId = (feature: ContextFeature, idProperty = 'gfw_id'): string => {
+export const getContextId = (feature: ContextFeature, idProperty = DEFAULT_ID_PROPERTY): string => {
   if (!feature) return ''
   return feature.properties?.[idProperty] || feature.properties?.gfw_id || feature.properties.id
 }
