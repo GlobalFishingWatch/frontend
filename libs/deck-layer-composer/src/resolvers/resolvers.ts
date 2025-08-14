@@ -44,7 +44,7 @@ export const getDataviewHighlightedFeatures = (
   dataview: ResolvedDataviewInstance,
   globalConfig: ResolverGlobalConfig
 ) => {
-  return globalConfig.highlightedFeatures?.filter((f) => f.layerId === dataview.id)
+  return globalConfig.highlightedFeatures?.filter((f) => dataview.id.includes(f.layerId))
 }
 
 export const dataviewToDeckLayer = (
