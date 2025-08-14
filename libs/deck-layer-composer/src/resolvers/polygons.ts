@@ -10,7 +10,7 @@ import type {
   PolygonsLayerProps,
 } from '@globalfishingwatch/deck-layers'
 
-import type { DeckResolverFunction } from './types'
+import type { DeckResolverFunction } from '../types/resolvers'
 
 const resolvePolygonsData: DeckResolverFunction<PolygonsLayerProps['data']> = (
   dataview,

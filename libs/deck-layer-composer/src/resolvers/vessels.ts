@@ -8,7 +8,7 @@ import {
 import type { VesselLayerProps, VesselTrackPickingObject } from '@globalfishingwatch/deck-layers'
 import { getUTCDateTime, hexToDeckColor } from '@globalfishingwatch/deck-layers'
 
-import type { DeckResolverFunction } from './types'
+import type { DeckResolverFunction } from '../types/resolvers'
 
 export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps> = (
   dataview,

@@ -288,66 +288,32 @@ export const useTimebarVesselTracksGraph = () => {
   }, [tracksLoaded, timebarGraph, tracksGraph, timebarVisualisation])
 
   const tracksFiltersHash = useMemo(() => {
-    return activeVesselDataviews
-      .flatMap((dataview) => [
-        (dataview.config?.filters?.speed || []).join(),
-        (dataview.config?.filters?.elevation || []).join(),
+    return trackLayers
+      .flatMap(({ instance }) => [
+        instance instanceof VesselLayer ? Object.values(instance.getFilters()).filter(Boolean) : [],
       ])
       .join(',')
-  }, [activeVesselDataviews])
+  }, [trackLayers])
 
   useEffect(() => {
-    setVesselTracksGraph((tracksGraph) =>
-      tracksGraph?.map((graph) => {
-        const dataview = activeVesselDataviews.find((dataview) => dataview.id === graph.id)
-        if (!dataview) {
+    setVesselTracksGraph((tracksGraph) => {
+      return tracksGraph?.map((graph) => {
+        const trackLayerInstance = trackLayers.find(
+          (layer) => layer.instance?.id === graph.id
+        )?.instance
+        if (!trackLayerInstance) {
           return graph
         }
-        const { speed, elevation } = dataview.config?.filters || {}
+        const filters =
+          trackLayerInstance instanceof VesselLayer ? trackLayerInstance.getFilters() : {}
         return {
           ...graph,
-          filters: {
-            minSpeedFilter: speed?.[0],
-            maxSpeedFilter: speed?.[1],
-            minElevationFilter: elevation?.[0],
-            maxElevationFilter: elevation?.[1],
-          },
+          filters,
         } as TimebarChartItem
       })
-    )
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tracksFiltersHash])
-
-  // TODO: debug why the trackLayers is updated but the filters not
-  // 👀using the workaround above to take the filter from the dataview for now
-  // ⚠ but it should be taken from the layer itself as the source of truth
-
-  // const tracksFiltersHash = useMemo(() => {
-  //   return trackLayers
-  //     .flatMap(({ instance }) => [
-  //       instance instanceof VesselLayer ? Object.values(instance.getFilters()) : [],
-  //     ])
-  //     .join(',')
-  // }, [trackLayers])
-
-  // useEffect(() => {
-  //   setVesselTracksGraph((tracksGraph) => {
-  //     return tracksGraph?.map((graph) => {
-  //       const trackLayerInstance = trackLayers.find(
-  //         (layer) => layer.instance?.id === graph.id
-  //       )?.instance
-  //       if (!trackLayerInstance) {
-  //         return graph
-  //       }
-  //       const filters =
-  //         trackLayerInstance instanceof VesselLayer ? trackLayerInstance.getFilters() : {}
-  //       return {
-  //         ...graph,
-  //         filters,
-  //       } as TimebarChartItem
-  //     })
-  //   })
-  // }, [tracksFiltersHash])
 
   return tracksGraph
 }

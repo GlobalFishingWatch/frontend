@@ -1,6 +1,6 @@
 import type { WorkspacesLayerProps } from '@globalfishingwatch/deck-layers'
 
-import type { DeckResolverFunction } from './types'
+import type { DeckResolverFunction } from '../types/resolvers'
 
 export const resolveDeckWorkspacesLayerProps: DeckResolverFunction<WorkspacesLayerProps> = (
   dataview
