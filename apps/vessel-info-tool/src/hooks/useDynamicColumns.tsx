@@ -38,8 +38,18 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
     if (!data.length) return []
 
     const keys = Object.keys(data[0])
-    const nameKey = keys.filter((key) => key.toLowerCase().includes('name'))
-    const otherKeys = keys.filter((key) => !key.toLowerCase().includes('name'))
+    const nameKey = [
+      keys.find((key) => {
+        const lowerKey = key.toLowerCase()
+        return (
+          lowerKey.includes('name') ||
+          lowerKey.includes('nom') ||
+          lowerKey.includes('nombre') ||
+          lowerKey.includes('nome')
+        )
+      }) || keys[0],
+    ]
+    const otherKeys = keys.filter((key) => key !== nameKey[0])
 
     return [
       {

@@ -1,11 +1,7 @@
 import { notFound } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 
-import type { FilterState, FilterType } from '@/types/vessel.types'
-
-export type Vessel = {
-  IMO: string
-}
+import type { Vessel } from '@/types/vessel.types'
 
 export const fetchVessels = createServerFn().handler(async () => {
   console.info('Fetching posts...')
