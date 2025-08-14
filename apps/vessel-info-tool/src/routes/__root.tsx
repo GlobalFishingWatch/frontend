@@ -60,7 +60,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <Provider store={store}>{children}</Provider>
+        <div id="root">
+          <Provider store={store}>{children}</Provider>
+        </div>
         <Scripts />
       </body>
     </html>

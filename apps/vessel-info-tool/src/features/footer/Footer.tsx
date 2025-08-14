@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 
 import { Button } from '@globalfishingwatch/ui-components'
 
-import styles from './Footer.module.css'
+import styles from '../../styles/global.module.css'
 
 function Footer({
   children,

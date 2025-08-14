@@ -21,7 +21,7 @@ import ExpandableRow from '../expandableRow/ExpandableRow'
 
 import { setSelectedRows } from './table.slice'
 
-import styles from './DynamicTable.module.css'
+import styles from '../../styles/global.module.css'
 
 export interface DynamicTableProps<T extends Record<string, any>> {
   data: T[]

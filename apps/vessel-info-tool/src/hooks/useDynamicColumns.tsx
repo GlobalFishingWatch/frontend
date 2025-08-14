@@ -5,7 +5,7 @@ import escapeRegExp from 'lodash/escapeRegExp'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import styles from '../features/dynamicTable/DynamicTable.module.css'
+import styles from '../styles/global.module.css'
 
 function IndeterminateCheckbox({
   indeterminate,
