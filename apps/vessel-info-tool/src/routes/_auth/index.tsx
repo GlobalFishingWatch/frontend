@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createFileRoute } from '@tanstack/react-router'
 import { stringify } from 'qs'
@@ -5,6 +6,7 @@ import { stringify } from 'qs'
 import { DynamicTable } from '@/features/dynamicTable/DynamicTable'
 import Footer from '@/features/footer/Footer'
 import SidebarHeader from '@/features/header/SidebarHeader'
+import DownloadModal from '@/features/modal/DownloadModal'
 import OptionsMenu from '@/features/options/OptionsMenu'
 import Profile from '@/features/profile/Profile'
 import Search from '@/features/search/Search'
@@ -34,6 +36,8 @@ export const Route = createFileRoute('/_auth/')({
 function Home() {
   const vessels: Vessel[] = Route.useLoaderData()
   const { t } = useTranslation()
+
+  const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false)
 
   const tableFilters = useTableFilters(vessels)
 
@@ -67,10 +71,11 @@ function Home() {
       </SidebarHeader>
       <div className="flex-1 overflow-auto">
         <DynamicTable data={vessels} tableFilters={tableFilters} onExpandRow={handleExpandRow} />
-        <Footer downloadClick={() => console.log('Download clicked')}>
+        <Footer downloadClick={() => setIsDownloadModalOpen(true)}>
           {t('footer.results', `${vessels.length} results`, { count: vessels.length })}
         </Footer>
       </div>
+      <DownloadModal isOpen={isDownloadModalOpen} onClose={() => setIsDownloadModalOpen(false)} />
     </div>
   )
 }

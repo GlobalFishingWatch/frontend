@@ -33,3 +33,9 @@ export interface FiltersState {
   urlSyncEnabled: boolean
   debounceMs: number
 }
+
+export enum RFMO {
+  ICCAT = 'iccat',
+  SPRFMO = 'sprfmo',
+  GR = 'gr',
+}
