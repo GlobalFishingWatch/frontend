@@ -26,6 +26,7 @@ import {
   LayerGroup,
 } from '../../utils'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
+import type { ContextSublayerCallbackParams } from '../context/context.types'
 import { filteredPositionsByViewport } from '../fourwings'
 
 import type { UserLayerFeature, UserPointsLayerProps } from './user.types'
@@ -37,9 +38,7 @@ type _UserPointsLayerProps = TileLayerProps & UserPointsLayerProps
 
 export const DEFAULT_POINT_RADIUS = 6
 const defaultProps: DefaultProps<_UserPointsLayerProps> = {
-  idProperty: 'gfw_id',
   pickable: true,
-  valueProperties: [],
   maxRequests: 100,
   debounceTime: 500,
   minPointSize: 3,
@@ -81,7 +80,8 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   get cacheHash(): string {
-    const { startTime, endTime, filters = {} } = this.props
+    const { startTime, endTime } = this.props
+    const filters = this.props.layers?.[0]?.sublayers?.[0]?.filters || {}
     const filtersHash = Object.values(filters).filter(Boolean).join('-')
     return `${startTime}-${endTime}-${filtersHash}`
   }
@@ -127,10 +127,13 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return DEFAULT_POINT_RADIUS
   }
 
-  _getPointRadius: Accessor<GeoJsonProperties, number> = (d) => {
-    const { staticPointRadius, circleRadiusProperty, circleRadiusRange, filters, filterOperators } =
-      this.props
-    if (!getFeatureInFilter(d, filters, filterOperators)) {
+  _getPointRadius = (d: GeoJsonProperties, { layer, sublayer }: ContextSublayerCallbackParams) => {
+    if (!layer || !sublayer) {
+      console.warn('TODO: handle user points highlighted features')
+      return 0
+    }
+    const { staticPointRadius, circleRadiusProperty, circleRadiusRange } = this.props
+    if (!getFeatureInFilter(d, sublayer.filters, sublayer.filterOperators)) {
       return 0
     }
     if (staticPointRadius) {
@@ -195,7 +198,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   renderLayers() {
-    const { layers, color, pickable, maxPointSize, maxZoom, filters } = this.props
+    const { layers, pickable, maxPointSize, maxZoom } = this.props
     const zoom = this._getZoomLevel()
     const highlightedFeatures = this._getHighlightedFeatures()
     const filterProps = this._getTimeFilterProps()
@@ -216,9 +219,9 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
             ...props,
             ...getMVTSublayerProps({ tile: props.tile, extensions: props.extensions }),
           }
-          return [
+          return layer.sublayers.map((sublayer) => [
             new ScatterplotLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-              id: `${props.id}-points`,
+              id: `${props.id}-${sublayer.dataviewId}-points`,
               pickable: pickable,
               radiusMinPixels: 0,
               radiusMaxPixels: maxPointSize,
@@ -227,18 +230,18 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
               radiusUnits: 'pixels',
               getPosition: this._getPosition,
               getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Default, params),
-              getRadius: this._getPointRadius,
+              getRadius: (d) => this._getPointRadius(d, { layer, sublayer }),
               lineWidthUnits: 'pixels',
               lineWidthMinPixels: 1,
               getLineWidth: 1,
               getLineColor: DEFAULT_LINE_COLOR,
-              getFillColor: hexToDeckColor(this.props.color, 0.7),
+              getFillColor: hexToDeckColor(sublayer.color, 0.7),
               updateTriggers: {
-                getFillColor: [color],
-                getRadius: [filters, zoom],
+                getFillColor: [sublayer.color],
+                getRadius: [sublayer.filters, zoom],
               },
             }),
-          ]
+          ])
         },
       })
     })
