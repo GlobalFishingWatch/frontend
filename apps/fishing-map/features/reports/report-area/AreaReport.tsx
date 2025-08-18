@@ -11,7 +11,10 @@ import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReportLayersVisible } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
+import {
+  selectIsGlobalReportsEnabled,
+  selectIsOthersReportEnabled,
+} from 'features/debug/debug.selectors'
 import {
   useFetchReportArea,
   useFitAreaInViewport,
@@ -77,6 +80,7 @@ export default function Report() {
   const reportArea = useSelector(selectReportArea)
   const hasReportBuffer = useSelector(selectHasReportBuffer)
   const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
+  const isOthersReportEnabled = useSelector(selectIsOthersReportEnabled)
   const reportDataviews = useSelector(selectReportLayersVisible)
   const dataviewCategories = useMemo(
     () => uniq(reportDataviews?.map((d) => getReportCategoryFromDataview(d)) || []),
@@ -103,10 +107,14 @@ export default function Report() {
       id: ReportCategory.Environment,
       title: t('common.environment'),
     },
-    {
-      id: ReportCategory.Others,
-      title: t('common.others'),
-    },
+    ...(isOthersReportEnabled
+      ? [
+          {
+            id: ReportCategory.Others,
+            title: t('common.others'),
+          },
+        ]
+      : []),
   ]
   const filteredCategoryTabs = categoryTabs.flatMap((tab) => {
     if (!dataviewCategories.includes(tab.id)) {
