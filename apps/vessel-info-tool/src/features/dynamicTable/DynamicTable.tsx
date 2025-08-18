@@ -1,6 +1,6 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import type { ExpandedState, RowSelectionState, SortingState } from '@tanstack/react-table'
+import type { ExpandedState, Row, RowSelectionState, SortingState } from '@tanstack/react-table'
 import {
   flexRender,
   getCoreRowModel,
@@ -9,8 +9,10 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
+import { useVirtualizer } from '@tanstack/react-virtual'
 
 import type { useTableFilters } from '@/hooks/useTableFilters'
+import type { Vessel } from '@/types/vessel.types'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import type { AppDispatch, RootState } from 'store'
@@ -34,6 +36,8 @@ export function DynamicTable<T extends Record<string, any>>({
   tableFilters,
   onExpandRow,
 }: DynamicTableProps<T>) {
+  const tableContainerRef = useRef<HTMLDivElement>(null)
+
   const { expandedRows } = useRowExpansion(onExpandRow)
   const columns = useDynamicColumns(data)
   const [expanded, setExpanded] = useState<ExpandedState>({})
@@ -81,51 +85,87 @@ export function DynamicTable<T extends Record<string, any>>({
     },
   })
 
+  const rowVirtualizer = useVirtualizer<HTMLDivElement, HTMLTableRowElement>({
+    count: table.getRowModel().rows.length,
+    estimateSize: () => 33,
+    getScrollElement: () => tableContainerRef.current,
+    measureElement:
+      typeof window !== 'undefined' && navigator.userAgent.indexOf('Firefox') === -1
+        ? (element) => element?.getBoundingClientRect().height
+        : undefined,
+    overscan: 5,
+  })
+
   return (
-    <table className={styles.table}>
-      <thead className={`sticky z-3 top-0 bg-white`}>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <tr key={headerGroup.id} className={styles.th}>
-            {headerGroup.headers.map((header) => {
-              const { column } = header
-              return (
-                <th
-                  key={header.id}
-                  colSpan={header.colSpan}
-                  className={`sticky top-0 cursor-pointer select-none bg-white ${styles.td}`}
-                  style={{
-                    left: column.getIsPinned() ? `${column.getStart('left')}px` : undefined,
-                    position: column.getIsPinned() ? 'sticky' : 'relative',
-                    width: column.getSize(),
-                    zIndex: column.getIsPinned() ? 1 : 0,
-                  }}
-                  onClick={header.column.getToggleSortingHandler()}
-                >
-                  {header.isPlaceholder ? null : (
-                    <div
-                      onClick={header.column.getToggleSortingHandler()}
-                      className="flex items-center justify-between p-2"
-                    >
-                      <span className="block text-ellipsis overflow-hidden whitespace-nowrap max-w-[170px]">
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                      </span>
-                      {{
-                        asc: <Icon icon="sort-asc" />,
-                        desc: <Icon icon="sort-desc" />,
-                      }[header.column.getIsSorted() as string] ?? null}
-                    </div>
-                  )}
-                </th>
-              )
-            })}
-          </tr>
-        ))}
-      </thead>
-      <tbody>
-        {table.getRowModel().rows.map((row) => {
-          return (
-            <Fragment key={row.index}>
-              <tr>
+    <div
+      ref={tableContainerRef}
+      style={{
+        overflow: 'auto', //our scrollable table container
+        position: 'relative', //needed for sticky header
+        height: '90vh', //should be a fixed height
+      }}
+    >
+      <table className="table-fixed w-full">
+        <thead className="sticky z-3 top-0 !bg-white">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                const { column } = header
+                return (
+                  <th
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    className={`sticky top-0 cursor-pointer select-none bg-white ${styles.td}`}
+                    style={{
+                      left: column.getIsPinned() ? `${column.getStart('left')}px` : undefined,
+                      position: column.getIsPinned() ? 'sticky' : 'relative',
+                      width: column.getSize(),
+                      zIndex: column.getIsPinned() ? 1 : 0,
+                    }}
+                    onClick={header.column.getToggleSortingHandler()}
+                  >
+                    {header.isPlaceholder ? null : (
+                      <div
+                        onClick={header.column.getToggleSortingHandler()}
+                        className="flex items-center justify-between p-2"
+                      >
+                        <span className="block text-ellipsis overflow-hidden whitespace-nowrap max-w-[170px]">
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                        </span>
+                        {{
+                          asc: <Icon icon="sort-asc" />,
+                          desc: <Icon icon="sort-desc" />,
+                        }[header.column.getIsSorted() as string] ?? null}
+                      </div>
+                    )}
+                  </th>
+                )
+              })}
+            </tr>
+          ))}
+        </thead>
+        <tbody
+          style={{
+            display: 'block',
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            position: 'relative',
+          }}
+        >
+          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+            const row = table.getRowModel().rows[virtualRow.index] as Row<Vessel>
+            return (
+              <tr
+                data-index={virtualRow.index}
+                ref={(node) => rowVirtualizer.measureElement(node)}
+                key={row.id}
+                style={{
+                  display: 'table',
+                  tableLayout: 'fixed',
+                  width: '100%',
+                  position: 'absolute',
+                  transform: `translateY(${virtualRow.start}px)`,
+                }}
+              >
                 {row.getVisibleCells().map((cell) => {
                   const { column } = cell
                   return (
@@ -143,18 +183,16 @@ export function DynamicTable<T extends Record<string, any>>({
                     </td>
                   )
                 })}
+                {/* {row.getIsExpanded() && (
+          <td colSpan={columns.length} className="p-0">
+            <ExpandableRow data={expandedRows[row.original.id]} />
+          </td>
+            )} */}
               </tr>
-              {row.getIsExpanded() && (
-                <tr>
-                  <td colSpan={columns.length} className="p-0">
-                    <ExpandableRow data={expandedRows[row.original.id]} />
-                  </td>
-                </tr>
-              )}
-            </Fragment>
-          )
-        })}
-      </tbody>
-    </table>
+            )
+          })}
+        </tbody>
+      </table>
+    </div>
   )
 }

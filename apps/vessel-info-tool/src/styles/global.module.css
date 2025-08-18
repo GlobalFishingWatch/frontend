@@ -49,19 +49,14 @@
   overflow-x: scroll;
 }
 
-.th {
-  border-bottom: 1px solid var(--border-color);
-  min-width: 30px;
-  background: white;
-}
-
 .td {
   margin: 0;
   padding: 0.8rem 1.5rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 250px;
+  width: inherit;
+  max-width: none;
   font-size: 1.4rem;
   border: 1px solid rgba(22, 63, 137, 0.1);
   text-transform: capitalize;

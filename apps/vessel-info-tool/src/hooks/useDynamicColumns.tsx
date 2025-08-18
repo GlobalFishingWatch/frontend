@@ -74,7 +74,7 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
         ),
         enableSorting: false,
         enableColumnFilter: false,
-        size: 20,
+        size: 50,
       },
       {
         accessorKey: String(nameKey[0]),
