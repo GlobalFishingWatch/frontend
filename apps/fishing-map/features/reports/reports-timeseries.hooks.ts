@@ -8,7 +8,7 @@ import memoizeOne from 'memoize-one'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
-import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
+import { groupContextDataviews, useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer, UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
 import {
   type FourwingsFeature,
@@ -113,6 +113,10 @@ export const useReportInstances = () => {
       currentCategory === ReportCategory.Detections
     ) {
       ids = [getMergedDataviewId(currentCategoryDataviews)]
+    } else if (currentCategory === ReportCategory.Others) {
+      ids = Object.values(groupContextDataviews(currentCategoryDataviews)).map((dataviews) =>
+        getMergedDataviewId(dataviews)
+      )
     } else {
       ids = currentCategoryDataviews.map((dataview) => dataview.id)
     }

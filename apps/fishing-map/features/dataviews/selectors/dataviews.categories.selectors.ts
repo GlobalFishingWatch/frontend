@@ -3,6 +3,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { DataviewType } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { groupContextDataviews } from '@globalfishingwatch/deck-layer-composer'
 
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import {
@@ -104,7 +105,7 @@ export const selectVGReportActivityDataviews = createSelector(
 export const selectOthersActiveReportDataviews = createSelector(
   [selectContextAreasDataviews, selectCustomUserDataviews],
   (contextDataviews = [], userDataviews = []) => {
-    return [...contextDataviews, ...userDataviews]?.filter((dataview) => {
+    const otherDataviews = [...contextDataviews, ...userDataviews]?.filter((dataview) => {
       if (!dataview.config?.visible) {
         return false
       }
@@ -112,5 +113,13 @@ export const selectOthersActiveReportDataviews = createSelector(
         isUserContextDataviewReportSupported(dataview) || isContextDataviewReportSupported(dataview)
       )
     })
+    return otherDataviews
+  }
+)
+
+export const selectOthersActiveReportDataviewsGrouped = createSelector(
+  [selectOthersActiveReportDataviews],
+  (otherDataviews = []) => {
+    return groupContextDataviews(otherDataviews)
   }
 )

@@ -1,10 +1,11 @@
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import Sticky from 'react-sticky-el'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 
-import { selectOthersActiveReportDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectOthersActiveReportDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import {
@@ -13,10 +14,12 @@ import {
   useTimeseriesStats,
 } from 'features/reports/reports-timeseries.hooks'
 import { getStatsValue } from 'features/reports/reports-timeseries-shared.utils'
+import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
 import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivityEvolution'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
 import styles from './ReportOthers.module.css'
+import summaryStyles from 'features/reports/shared/summary/ReportSummary.module.css'
 
 function ReportOthers() {
   useComputeReportTimeSeries()
@@ -24,13 +27,14 @@ function ReportOthers() {
   const { start, end } = useTimerangeConnect()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const timeseriesStats = useTimeseriesStats()
-  const otherDataviews = useSelector(selectOthersActiveReportDataviews)
+  const otherDataviews = useSelector(selectOthersActiveReportDataviewsGrouped)
 
-  if (!otherDataviews?.length) return null
+  if (!Object.keys(otherDataviews)?.length) return null
 
   return (
     <Fragment>
-      {otherDataviews.map((dataview, index) => {
+      {Object.values(otherDataviews).map((dataviews, index) => {
+        const dataview = dataviews[0]
         const dataset = dataview.datasets?.find(
           (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
         )
@@ -55,6 +59,15 @@ function ReportOthers() {
                 </Fragment>
               )}
             </p>
+            {dataviews?.length > 0 && (
+              <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
+                <div className={summaryStyles.tagsContainer}>
+                  {dataviews?.map((d) => (
+                    <ReportSummaryTags key={d.id} dataview={d} />
+                  ))}
+                </div>
+              </Sticky>
+            )}
             <ReportActivityEvolution
               start={start}
               end={end}

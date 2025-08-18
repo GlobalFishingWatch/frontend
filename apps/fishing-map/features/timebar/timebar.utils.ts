@@ -139,7 +139,10 @@ export function getGraphDataFromPoints(
       .plus({ [interval]: 1 })
       .toMillis()
     features.forEach((feature) => {
-      const { layer = 0 } = feature?.properties || {}
+      const { layer = 0, values } = (feature?.properties || {}) as {
+        values: number[]
+        layer?: number
+      }
       if (
         isFeatureInRange(feature, {
           startTime: date,
@@ -148,7 +151,13 @@ export function getGraphDataFromPoints(
           endTimeProperty,
         })
       ) {
-        data[date][layer]++
+        if (values?.length) {
+          values.forEach((value, index) => {
+            data[date][index] += value
+          })
+        } else {
+          data[date][layer]++
+        }
       }
     })
   })
