@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import type { ExpandedState, Row, RowSelectionState, SortingState } from '@tanstack/react-table'
 import {
@@ -78,11 +78,7 @@ export function DynamicTable<T extends Record<string, any>>({
         dispatch(setSelectedRows(newSelection))
       }
     },
-    getRowId: (row: any, index) => {
-      const idKey = Object.keys(row).find((k) => k.toLowerCase().includes('imo'))
-      const val = idKey ? row[idKey] : undefined
-      return (typeof val === 'string' && val.trim()) || String(index)
-    },
+    getRowId: (row: any, index) => row.id || index,
   })
 
   const rowVirtualizer = useVirtualizer<HTMLDivElement, HTMLTableRowElement>({
@@ -100,23 +96,24 @@ export function DynamicTable<T extends Record<string, any>>({
     <div
       ref={tableContainerRef}
       style={{
-        overflow: 'auto', //our scrollable table container
-        position: 'relative', //needed for sticky header
-        height: '90vh', //should be a fixed height
+        overflow: 'auto',
+        position: 'relative',
+        height: '90vh',
       }}
     >
-      <table className="table-fixed w-full">
-        <thead className="sticky z-3 top-0 !bg-white">
+      <table className="grid w-full">
+        <thead className="grid sticky z-3 top-0 !bg-white">
           {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
+            <tr key={headerGroup.id} className="flex w-full">
               {headerGroup.headers.map((header) => {
                 const { column } = header
                 return (
                   <th
                     key={header.id}
                     colSpan={header.colSpan}
-                    className={`sticky top-0 cursor-pointer select-none bg-white ${styles.td}`}
+                    className={`flex ${styles.td}`}
                     style={{
+                      backgroundColor: column.getIsPinned() ? '#fff' : undefined,
                       left: column.getIsPinned() ? `${column.getStart('left')}px` : undefined,
                       position: column.getIsPinned() ? 'sticky' : 'relative',
                       width: column.getSize(),
@@ -138,6 +135,10 @@ export function DynamicTable<T extends Record<string, any>>({
                         }[header.column.getIsSorted() as string] ?? null}
                       </div>
                     )}
+                    <div
+                      onMouseDown={header.getResizeHandler()}
+                      onTouchStart={header.getResizeHandler()}
+                    />
                   </th>
                 )
               })}
@@ -154,41 +155,46 @@ export function DynamicTable<T extends Record<string, any>>({
           {rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const row = table.getRowModel().rows[virtualRow.index] as Row<Vessel>
             return (
-              <tr
-                data-index={virtualRow.index}
-                ref={(node) => rowVirtualizer.measureElement(node)}
-                key={row.id}
-                style={{
-                  display: 'table',
-                  tableLayout: 'fixed',
-                  width: '100%',
-                  position: 'absolute',
-                  transform: `translateY(${virtualRow.start}px)`,
-                }}
-              >
-                {row.getVisibleCells().map((cell) => {
-                  const { column } = cell
-                  return (
-                    <td
-                      key={cell.id}
-                      className={styles.td}
-                      style={{
-                        left: column.getIsPinned() ? `${column.getStart('left')}px` : undefined,
-                        position: column.getIsPinned() ? 'sticky' : 'relative',
-                        width: column.getSize(),
-                        zIndex: column.getIsPinned() ? 1 : 0,
-                      }}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              <Fragment key={row.index}>
+                <tr
+                  data-index={virtualRow.index}
+                  ref={(node) => rowVirtualizer.measureElement(node)}
+                  style={{
+                    display: 'flex',
+                    position: 'absolute',
+                    transform: `translateY(${virtualRow.start}px)`,
+                    width: '100%',
+                  }}
+                >
+                  {row.getVisibleCells().map((cell) => {
+                    const { column } = cell
+                    return (
+                      <td
+                        key={cell.id}
+                        className={styles.td}
+                        style={{
+                          left: column.getIsPinned() ? `${column.getStart('left')}px` : undefined,
+                          position: column.getIsPinned() ? 'sticky' : 'relative',
+                          width: column.getSize(),
+                          zIndex: column.getIsPinned() ? 1 : 0,
+                          backgroundColor: column.getIsPinned()
+                            ? 'rgba(229, 240, 242, 0.95)'
+                            : undefined,
+                        }}
+                      >
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    )
+                  })}
+                </tr>
+                {row.getIsExpanded() && (
+                  <tr>
+                    <td colSpan={columns.length} className="p-0 h-10">
+                      <ExpandableRow data={expandedRows[row.original.id]} />
                     </td>
-                  )
-                })}
-                {/* {row.getIsExpanded() && (
-          <td colSpan={columns.length} className="p-0">
-            <ExpandableRow data={expandedRows[row.original.id]} />
-          </td>
-            )} */}
-              </tr>
+                  </tr>
+                )}
+              </Fragment>
             )
           })}
         </tbody>
