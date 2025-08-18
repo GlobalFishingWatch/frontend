@@ -8,7 +8,6 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { TrackSegment } from '@globalfishingwatch/api-types'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { geoJSONToSegments } from '@globalfishingwatch/data-transforms'
-import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import type {
   UserTrackBinaryData,
   UserTrackFeature,
@@ -23,6 +22,7 @@ import {
   hexToDeckColor,
   LayerGroup,
 } from '../../utils'
+import type { ContextFeature, ContextSublayerCallbackParams } from '../context/context.types'
 import { getContextId } from '../context/context.utils'
 import { MAX_FILTER_VALUE } from '../layers.config'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
@@ -37,8 +37,6 @@ import type {
 type _UserTrackLayerProps<DataT = any> = UserTrackLayerProps & PathLayerProps<DataT>
 const defaultProps: DefaultProps<_UserTrackLayerProps> = {
   _pathType: 'open',
-  idProperty: 'gfw_id',
-  valueProperties: [],
   loaders: [UserTrackLoader],
   endTime: { type: 'number', value: 0, min: 0 },
   startTime: { type: 'number', value: 0, min: 0 },
@@ -157,14 +155,19 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   state!: UserTracksLayerState
 
   getPickingInfo = ({ info }: { info: PickingInfo<UserTrackFeature> }): UserLayerPickingInfo => {
-    const { idProperty, valueProperties } = this.props
     const feature = this.state.rawData?.features[info.index]
+    // TODO: support multiple sublayers
+    const layer = this.props.layers?.[0]
+    const sublayer = layer?.sublayers?.[0]
+    const color = sublayer?.color
     if (feature) {
       const object = {
-        id: getContextId(feature as ContextFeature, idProperty) || info.index,
-        value: valueProperties?.length ? feature?.properties[valueProperties[0]] : undefined,
+        id: getContextId(feature as ContextFeature, layer.idProperty) || info.index,
+        value: layer.valueProperties?.length
+          ? feature?.properties[layer.valueProperties[0]]
+          : undefined,
         title: this.props.id,
-        color: this.props.color,
+        color,
         layerId: this.props.id,
         datasetId: this.props.layers[0].datasetId,
         category: this.props.category,
@@ -193,11 +196,16 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       method: 'GET',
       responseType: 'arrayBuffer',
     })
-
+    // TODO: support multiple sublayers
+    const filters = this.props.layers?.[0]?.sublayers?.[0]?.filters
+    // let filters: ContextLayerConfigFilter = {}
+    // this.props.layers?.[0]?.sublayers?.forEach((sublayer) => {
+    //   filters = { ...filters, ...sublayer.filters }
+    // })
     const userTracksLoadOptions = {
       ...loadOptions,
       userTracks: {
-        filters: this.props.filters,
+        filters: filters,
       },
     }
     const { data, binary } = await parse(response, UserTrackLoader, userTracksLoadOptions)
@@ -227,7 +235,8 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
   }
 
   getColor() {
-    return this.props.color
+    // TODO: support multiple sublayers
+    return this.props.layers?.[0]?.sublayers?.[0]?.color
   }
 
   getSegments(
@@ -259,80 +268,80 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
     return bbox
   }
 
-  _getColor = (_: any, { index }: { index: number }) => {
-    const { highlightedFeatures, idProperty = 'id', singleTrack } = this.props
+  _getColor = (
+    _: any,
+    { layer, sublayer, index }: ContextSublayerCallbackParams<{ index: number }>
+  ) => {
+    const { highlightedFeatures, singleTrack } = this.props
     const featureIndex = this.state.rawDataIndexes.find(({ length }) => index < length)
       ?.index as number
     const currentFeature = this.state.rawData?.features?.[featureIndex]
     const isHighlighted = highlightedFeatures?.some(
       (feature) =>
-        feature.id === currentFeature?.properties?.[idProperty] ||
+        feature.id === currentFeature?.properties?.[layer.idProperty || 'id'] ||
         feature.id === currentFeature?.properties?.id
     )
     if (isHighlighted) {
       return COLOR_HIGHLIGHT_LINE
     }
-    const color = singleTrack
-      ? currentFeature?.properties?.color || this.props.color
-      : this.props.color
+    const color = singleTrack ? currentFeature?.properties?.color || sublayer.color : sublayer.color
     return hexToDeckColor(color)
   }
 
   renderLayers() {
     const {
-      color,
       layers,
-      filters,
       startTime,
       endTime,
       highlightStartTime,
       highlightEndTime,
       singleTrack,
-      pickable,
       highlightedFeatures,
     } = this.props
 
     return layers.map((layer) => {
-      const tilesUrl = new URL(layer.tilesUrl)
-      tilesUrl.searchParams.set('filters', Object.values(filters || {}).join(','))
+      return layer.sublayers.map((sublayer) => {
+        const tilesUrl = new URL(layer.tilesUrl)
+        tilesUrl.searchParams.set('filters', Object.values(sublayer.filters || {}).join(','))
 
-      const commonProps = {
-        _pathType: 'open',
-        widthUnits: 'pixels',
-        widthScale: 1,
-        startTime,
-        endTime,
-        wrapLongitude: true,
-        widthMinPixels: 1,
-        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
-      } as _UserTrackLayerProps
+        const commonProps = {
+          _pathType: 'open',
+          widthUnits: 'pixels',
+          widthScale: 1,
+          startTime,
+          endTime,
+          wrapLongitude: true,
+          widthMinPixels: 1,
+          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
+        } as _UserTrackLayerProps
 
-      return [
-        new UserTracksPathLayer<any>({
-          ...commonProps,
-          id: `${layer.id}-interactive`,
-          data: this.state.binaryData,
-          pickable,
-          getWidth: 5,
-          getColor: COLOR_TRANSPARENT,
-        }),
-        new UserTracksPathLayer<any>({
-          ...commonProps,
-          id: layer.id,
-          data: tilesUrl.toString(),
-          fetch: this._fetch,
-          highlightStartTime,
-          highlightEndTime,
-          onError: this._onLayerError,
-          jointRounded: true,
-          capRounded: true,
-          getWidth: 1.5,
-          getColor: this._getColor,
-          updateTriggers: {
-            getColor: [singleTrack, color, highlightedFeatures],
-          },
-        }),
-      ]
+        return [
+          new UserTracksPathLayer<any>({
+            ...commonProps,
+            id: `${layer.id}-interactive`,
+            data: this.state.binaryData,
+            pickable: layer.pickable,
+            getWidth: 5,
+            getColor: COLOR_TRANSPARENT,
+          }),
+          new UserTracksPathLayer<any>({
+            ...commonProps,
+            id: sublayer.id,
+            data: tilesUrl.toString(),
+            fetch: this._fetch,
+            highlightStartTime,
+            highlightEndTime,
+            onError: this._onLayerError,
+            jointRounded: true,
+            capRounded: true,
+            getWidth: 1.5,
+            getColor: (d, { index }) => this._getColor(d, { layer, sublayer, index }),
+            updateTriggers: {
+              getColor: [singleTrack, sublayer.color, highlightedFeatures],
+            },
+          }),
+        ]
+      })
     })
   }
 }

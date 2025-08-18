@@ -102,12 +102,18 @@ export const dataviewToDeckLayer = (
     return layer
   }
   if (dataview.config?.type === DataviewType.UserContext) {
-    const deckLayerProps = resolveDeckUserContextLayerProps(dataview, layerConfig)
+    const deckLayerProps = resolveDeckUserContextLayerProps(
+      dataview as ResolvedContextDataviewInstance,
+      layerConfig
+    )
     const layer = new UserContextTileLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.UserPoints) {
-    const deckLayerProps = resolveDeckUserPointsLayerProps(dataview, layerConfig)
+    const deckLayerProps = resolveDeckUserPointsLayerProps(
+      dataview as ResolvedContextDataviewInstance,
+      layerConfig
+    )
     const layer = new UserPointsTileLayer(deckLayerProps)
     return layer
   }
@@ -118,7 +124,10 @@ export const dataviewToDeckLayer = (
   }
   if (dataview.config?.type === DataviewType.Track) {
     if (dataview.category === DataviewCategory.User) {
-      const deckLayerProps = resolveDeckUserTracksLayerProps(dataview, layerConfig)
+      const deckLayerProps = resolveDeckUserTracksLayerProps(
+        dataview as ResolvedContextDataviewInstance,
+        layerConfig
+      )
       const layer = new UserTracksLayer(deckLayerProps)
       return layer
     }

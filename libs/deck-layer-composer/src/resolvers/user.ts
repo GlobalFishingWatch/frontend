@@ -9,7 +9,7 @@ import {
 } from '@globalfishingwatch/datasets-client'
 import type {
   BaseUserLayerProps,
-  ContextLayerConfig,
+  DeckLayerProps,
   DeckLayerSubcategory,
   UserLayerPickingObject,
   UserPointsLayerProps,
@@ -18,9 +18,10 @@ import type {
 } from '@globalfishingwatch/deck-layers'
 import { getUTCDateTime } from '@globalfishingwatch/deck-layers'
 
+import type { ResolvedContextDataviewInstance } from '../types/dataviews'
 import type { DeckResolverFunction } from '../types/resolvers'
 
-const getUserContexTimeFilterProps = ({
+export const getUserContexTimeFilterProps = ({
   dataset,
   start,
   end,
@@ -119,17 +120,14 @@ export const getUserCircleProps = ({
   }
 }
 
-export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps> = (
-  dataview,
-  { highlightedFeatures, start, end, highlightedTime }
-) => {
+export const resolveDeckUserLayerProps: DeckResolverFunction<
+  BaseUserLayerProps,
+  ResolvedContextDataviewInstance
+> = (dataview, { highlightedFeatures, start, end, highlightedTime }) => {
   const baseLayerProps = {
     id: dataview.id,
     category: dataview.category!,
     subcategory: dataview.config?.type as DeckLayerSubcategory,
-    singleTrack: dataview.config?.singleTrack,
-    color: dataview.config?.color as string,
-    thickness: dataview.config?.thickness || 1,
     ...(highlightedTime?.start && {
       highlightStartTime: getUTCDateTime(highlightedTime?.start).toMillis(),
     }),
@@ -137,71 +135,74 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<BaseUserLayerProps>
       highlightEndTime: getUTCDateTime(highlightedTime?.end).toMillis(),
     }),
   }
-  const dataset =
-    findDatasetByType(dataview.datasets, DatasetTypes.UserContext) ||
-    findDatasetByType(dataview.datasets, DatasetTypes.UserTracks) ||
-    findDatasetByType(dataview.datasets, DatasetTypes.Context) // Needed for fixed-infrastructure
 
-  if (!dataset || dataset?.status !== 'done') {
-    return { ...baseLayerProps, layers: [] }
+  const baseDataset = dataview.datasets?.find((d) => d.id === dataview.config?.layers?.[0].dataset)
+  if (!baseDataset) {
+    console.error('No dataset found for user layer', dataview)
   }
 
-  if (dataset.source === DRAW_DATASET_SOURCE) {
+  const timeFilters = baseDataset
+    ? getUserContexTimeFilterProps({ dataset: baseDataset, start, end })
+    : {}
+  if (baseDataset?.source === DRAW_DATASET_SOURCE) {
     const geometryType = getDatasetConfigurationProperty({
-      dataset,
+      dataset: baseDataset,
       property: 'geometryType',
     })
     baseLayerProps.subcategory = `draw-${geometryType}` as DeckLayerSubcategory
   }
 
-  const datasetConfig = dataview.datasetsConfig?.find(
-    (datasetConfig) => datasetConfig.datasetId === dataset.id
-  )
+  const layers = dataview.config?.layers?.flatMap((layer) => {
+    const dataset = dataview.datasets?.find((dataset) => dataset.id === layer.dataset)
 
-  let tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
-  if (!tilesUrl) {
-    console.warn('No url found for user context')
-  }
-  if (dataset.source === DRAW_DATASET_SOURCE) {
-    // This invalidates cache after drawn editions
-    tilesUrl = `${tilesUrl}?cache=${dataset.configuration?.filePath}`
-  }
+    const datasetConfig = dataview.datasetsConfig?.find(
+      (datasetConfig) => datasetConfig.datasetId === layer.dataset
+    )
+    if (!dataset || dataset?.status !== 'done' || !datasetConfig) {
+      return []
+    }
 
-  const layer: ContextLayerConfig<string> = {
-    id: `${dataview.id}-${dataset.id}`,
-    datasetId: dataset.id,
-    tilesUrl,
-  }
-  const { idProperty, valueProperties } = getDatasetConfiguration(dataset)
-  const timeFilters = getUserContexTimeFilterProps({ dataset, start, end })
-  const { filter, filters, filterOperators = {} } = dataview.config || {}
-  const allFilters = {
-    ...Object.fromEntries((dataset.fieldsAllowed || []).map((f) => [f, undefined])),
-    ...filters,
-  }
+    let tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
+    if (!tilesUrl) {
+      console.warn('No url found for user context')
+    }
+    if (dataset.source === DRAW_DATASET_SOURCE) {
+      // This invalidates cache after drawn editions
+      tilesUrl = `${tilesUrl}?cache=${dataset.configuration?.filePath}`
+    }
+
+    const { idProperty, valueProperties } = getDatasetConfiguration(dataset)
+    const allFilters = Object.fromEntries((dataset.fieldsAllowed || []).map((f) => [f, undefined]))
+    return {
+      id: `${dataview.id}-${dataset.id}`,
+      datasetId: dataset.id,
+      tilesUrl,
+      idProperty,
+      valueProperties,
+      pickable:
+        dataview.config?.pickable !== undefined
+          ? dataview.config?.pickable
+          : !dataset.configuration?.disableInteraction,
+      sublayers: layer.sublayers.map((sublayer) => ({
+        ...sublayer,
+        filters: { ...allFilters, ...(sublayer.filters || {}) },
+      })),
+    }
+  })
 
   return {
     ...baseLayerProps,
-    pickable:
-      dataview.config?.pickable !== undefined
-        ? dataview.config?.pickable
-        : !dataset.configuration?.disableInteraction,
-    layers: [layer],
-    highlightedFeatures: highlightedFeatures as UserLayerPickingObject[],
-    ...(filter && { filter }),
-    ...(Object.keys(allFilters).length && { filters: allFilters }),
-    ...(Object.keys(filterOperators).length && { filterOperators }),
-    ...(idProperty && { idProperty }),
-    ...(valueProperties?.length && { valueProperties }),
-    ...(dataview.config?.maxZoom && { maxZoom: dataview.config.maxZoom }),
+    layers,
     ...timeFilters,
-  }
+    highlightedFeatures: highlightedFeatures as UserLayerPickingObject[],
+    ...(dataview.config?.maxZoom && { maxZoom: dataview.config.maxZoom }),
+  } as DeckLayerProps<BaseUserLayerProps>
 }
 
-export const resolveDeckUserContextLayerProps: DeckResolverFunction<UserPolygonsLayerProps> = (
-  dataview,
-  globalConfig
-) => {
+export const resolveDeckUserContextLayerProps: DeckResolverFunction<
+  UserPolygonsLayerProps,
+  ResolvedContextDataviewInstance
+> = (dataview, globalConfig) => {
   const dataset = findDatasetByType(dataview.datasets, DatasetTypes.UserContext) as Dataset
   const polygonColor = getUserPolygonColorProps({ dataset })
   return {
@@ -210,10 +211,10 @@ export const resolveDeckUserContextLayerProps: DeckResolverFunction<UserPolygons
   } as UserPolygonsLayerProps
 }
 
-export const resolveDeckUserPointsLayerProps: DeckResolverFunction<UserPointsLayerProps> = (
-  dataview,
-  globalConfig
-) => {
+export const resolveDeckUserPointsLayerProps: DeckResolverFunction<
+  UserPointsLayerProps,
+  ResolvedContextDataviewInstance
+> = (dataview, globalConfig) => {
   const dataset = (findDatasetByType(dataview.datasets, DatasetTypes.UserContext) ||
     findDatasetByType(dataview.datasets, DatasetTypes.Context)) as Dataset
   const circleProps = getUserCircleProps({ dataset })
@@ -223,14 +224,15 @@ export const resolveDeckUserPointsLayerProps: DeckResolverFunction<UserPointsLay
   } as UserPointsLayerProps
 }
 
-export const resolveDeckUserTracksLayerProps: DeckResolverFunction<UserTrackLayerProps> = (
-  dataview,
-  globalConfig
-) => {
+export const resolveDeckUserTracksLayerProps: DeckResolverFunction<
+  UserTrackLayerProps,
+  ResolvedContextDataviewInstance
+> = (dataview, globalConfig) => {
   // const dataset = findDatasetByType(dataview.datasets, DatasetTypes.UserContext) as Dataset
   // const tracksProps = getUserTracksProps({ dataset })
   return {
     ...resolveDeckUserLayerProps(dataview, globalConfig),
+    singleTrack: dataview.config?.singleTrack,
     // ...tracksProps,
   } as UserTrackLayerProps
 }

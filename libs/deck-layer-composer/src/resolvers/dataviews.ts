@@ -199,6 +199,13 @@ export function getFourwingsDataviewsResolved(
   return dataviewsFiltered
 }
 
+export function groupContextDataviews(contextDataviews: UrlDataviewInstance[]) {
+  return groupBy(contextDataviews, (d) => {
+    const datasets = d.datasets?.map((d) => d.id).join(',')
+    return `${d.dataviewId}_${datasets}` as string
+  })
+}
+
 export function getContextDataviewsResolved(
   contextDataview: UrlDataviewInstance | UrlDataviewInstance[]
 ): ResolvedContextDataviewInstance[] {
@@ -211,19 +218,23 @@ export function getContextDataviewsResolved(
   }
 
   const hasSingleUserTrackDataview = contextDataviews.filter(isUserTrackDataview).length === 1
-  const contextDataviewsGrouped = groupBy(contextDataviews, (d) => {
-    const datasets = d.datasets?.map((d) => d.id).join(',')
-    return `${d.dataviewId}_${datasets}`
-  })
+  const contextDataviewsGrouped = groupContextDataviews(contextDataviews)
 
   return Object.values(contextDataviewsGrouped).flatMap((dataviews) => {
     if (!dataviews.length) {
       return []
     }
-    const uniqLayers = uniqBy(
-      dataviews.flatMap((d) => d.config?.layers || []),
-      (l) => l.id
-    )
+    const layers = dataviews.flatMap((d) => {
+      if (d.config?.layers?.length) {
+        return d.config?.layers
+      }
+      if (d.datasetsConfig?.length) {
+        return d.datasetsConfig?.map((d) => ({ id: d.datasetId, dataset: d.datasetId }))
+      }
+      return []
+    })
+    const uniqLayers = uniqBy(layers, (l) => l.id)
+
     const mergedDataviewConfig: ResolvedContextDataviewInstance['config'] = {
       type: dataviews[0]?.config?.type as DataviewType,
       ...(isUserTrackDataview(dataviews[0]) && {
@@ -237,9 +248,11 @@ export function getContextDataviewsResolved(
             return {
               id: layer.id,
               color: dataview.config?.color as string,
+              unit: dataview.datasets?.find((d) => d.id === layer.dataset)?.unit,
               dataviewId: dataview.id,
               thickness: dataview.config?.thickness,
               filters: dataview.config?.filters,
+              filterOperators: dataview.config?.filterOperators,
             }
           }),
         }
