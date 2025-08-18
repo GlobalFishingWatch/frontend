@@ -1,4 +1,4 @@
-import type { Color, DefaultProps, PickingInfo } from '@deck.gl/core'
+import type { Color, DefaultProps, LayerContext, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { DataFilterExtension, PathStyleExtension } from '@deck.gl/extensions'
 import type { GeoBoundingBox, TileLayerProps } from '@deck.gl/geo-layers'
@@ -7,6 +7,7 @@ import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import type { GeoJsonProperties } from 'geojson'
 
+import type { SublayerCallbackParams } from '../../types'
 import {
   COLOR_HIGHLIGHT_FILL,
   COLOR_HIGHLIGHT_LINE,
@@ -34,10 +35,9 @@ import { getContextId, getContextLink, getContextValue } from './context.utils'
 
 type _ContextLayerProps = TileLayerProps & ContextLayerProps
 
-type SublayerCallbackParams<T = Record<string, any>> = {
-  layerIndex: number
-  sublayerIndex: number
-} & T
+type ContextLayerState = {
+  highlightedFeatures?: ContextPickingObject[]
+}
 
 const defaultProps: DefaultProps<_ContextLayerProps> = {
   pickable: true,
@@ -51,8 +51,17 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
   static layerName = 'ContextLayer'
   static defaultProps = defaultProps
 
+  state!: ContextLayerState
+
+  initializeState(context: LayerContext) {
+    super.initializeState(context)
+    this.state = {
+      highlightedFeatures: [],
+    }
+  }
+
   _getHighlightedFeatures() {
-    return this.props.highlightedFeatures || []
+    return [...(this.props.highlightedFeatures || []), ...(this.state.highlightedFeatures || [])]
   }
 
   getHighlightLineWidth(
@@ -325,5 +334,9 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
         },
       })
     })
+  }
+
+  setHighlightedFeatures(highlightedFeatures: ContextFeature[]) {
+    this.setState({ highlightedFeatures })
   }
 }
