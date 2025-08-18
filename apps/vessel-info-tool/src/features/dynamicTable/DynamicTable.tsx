@@ -75,8 +75,8 @@ export function DynamicTable<T extends Record<string, any>>({
       }
     },
     getRowId: (row: any, index) => {
-      const imoKey = Object.keys(row).find((k) => k.toLowerCase().includes('imo'))
-      const val = imoKey ? row[imoKey] : undefined
+      const idKey = Object.keys(row).find((k) => k.toLowerCase().includes('imo'))
+      const val = idKey ? row[idKey] : undefined
       return (typeof val === 'string' && val.trim()) || String(index)
     },
   })

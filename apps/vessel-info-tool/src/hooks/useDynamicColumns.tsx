@@ -77,11 +77,13 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
         size: 20,
       },
       {
-        accessorKey: nameKey[0],
+        accessorKey: String(nameKey[0]),
         header: nameKey[0] || 'Name',
+        id: String(nameKey[0] || `col_01`),
+
         cell: ({ row, getValue }: { row: Row<T>; getValue: () => any }) => (
           <div className="flex items-center justify-between p-2">
-            <span>{String(getValue())}</span>
+            <span>{String(getValue() || '-')}</span>
             <IconButton
               {...{
                 onClick: row.getToggleExpandedHandler(),
@@ -93,12 +95,13 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
           </div>
         ),
       },
-      ...otherKeys.map((key) => ({
-        accessorKey: key,
-        header: key,
+      ...otherKeys.map((key, index) => ({
+        accessorKey: key || `col_${index}`,
+        id: String(key || `col_${index}`),
+        header: key || `Column ${index + 1}`,
         cell: ({ table, getValue }: { table: Table<T>; getValue: () => any }) => {
           const globalFilter = (table.getState().globalFilter as string | undefined)?.trim()
-          const value = String(getValue())
+          const value = String(getValue() || '-')
 
           if (!globalFilter) {
             return (

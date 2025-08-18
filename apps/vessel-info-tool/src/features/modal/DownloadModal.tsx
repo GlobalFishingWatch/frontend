@@ -2,8 +2,10 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import type { Vessel } from '@/types/vessel.types';
 import { RFMO } from '@/types/vessel.types'
-import type { SelectOption } from '@globalfishingwatch/ui-components';
+import { parseVessels } from '@/utils/vessels'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, Modal, Select } from '@globalfishingwatch/ui-components'
 
 import type { RootState } from 'store'
@@ -14,9 +16,15 @@ interface DownloadModalProps {
   isOpen: boolean
   onClose: () => void
   title?: string
+  data: Vessel[]
 }
 
-const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose, title = 'Download' }) => {
+const DownloadModal: React.FC<DownloadModalProps> = ({
+  isOpen,
+  onClose,
+  title = 'Download',
+  data,
+}) => {
   const { t } = useTranslation()
   const rfmoOptions: SelectOption[] = Object.values(RFMO).map((rfmo) => ({
     id: rfmo,
@@ -26,6 +34,7 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose, title = 
   const [selectedRFMO, setSelectedRFMO] = useState<SelectOption>(rfmoOptions[0])
 
   const rowSelection = useSelector((state: RootState) => state.table.selectedRows)
+  const selectedIds = Object.keys(rowSelection).map((k) => k.toString())
 
   const hasMinimalFields = () => {
     return true
@@ -34,7 +43,8 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose, title = 
   const handleDownload = async () => {
     try {
       setIsLoading(true)
-      // Implement your download logic here
+      const vessels = data.filter((vessel: Vessel) => vessel.id.includes(selectedIds.toString()))
+      const parsed = parseVessels(vessels, selectedRFMO.id as RFMO)
       onClose()
     } catch (error) {
       console.error('Download failed:', error)
@@ -54,12 +64,14 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose, title = 
       shouldCloseOnEsc
       header={false}
     >
-      <div className="flex gap-6">
+      <div className="flex flex-col gap-8 !pt-10">
+        <h2>{t('modal.download', 'Download')}</h2>
         <>
           <Select
             type="secondary"
             options={rfmoOptions}
             onSelect={(option) => setSelectedRFMO(option)}
+            selectedOption={selectedRFMO}
             label={t('modal.submissionFormat', 'Submission format')}
           />
         </>
@@ -69,11 +81,11 @@ const DownloadModal: React.FC<DownloadModalProps> = ({ isOpen, onClose, title = 
             {/* <DownloadTable /> */}
           </div>
         )}
-      </div>
-      <div className="flex justify-end">
-        <Button className={styles.downloadButton} onClick={handleDownload} disabled={isLoading}>
-          {isLoading ? 'Downloading...' : 'Download'}
-        </Button>
+        <div className="flex justify-end">
+          <Button className={styles.downloadButton} onClick={handleDownload} disabled={isLoading}>
+            {isLoading ? 'Downloading...' : 'Download'}
+          </Button>
+        </div>
       </div>
     </Modal>
   )

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux'
 import { createFileRoute } from '@tanstack/react-router'
 import { stringify } from 'qs'
 
@@ -14,6 +15,8 @@ import { type TableSearchParams, useTableFilters } from '@/hooks/useTableFilters
 import type { Vessel } from '@/types/vessel.types'
 import { fetchVessels } from '@/utils/vessels'
 import { MOCK_USER_PERMISSION } from '@globalfishingwatch/api-types'
+
+import { AppDispatch, RootState } from 'store'
 
 const GFW_API_URL =
   process.env.NEXT_PUBLIC_API_GATEWAY || 'https://gateway.api.globalfishingwatch.org'
@@ -75,7 +78,11 @@ function Home() {
           {t('footer.results', `${vessels.length} results`, { count: vessels.length })}
         </Footer>
       </div>
-      <DownloadModal isOpen={isDownloadModalOpen} onClose={() => setIsDownloadModalOpen(false)} />
+      <DownloadModal
+        isOpen={isDownloadModalOpen}
+        onClose={() => setIsDownloadModalOpen(false)}
+        data={vessels}
+      />
     </div>
   )
 }
