@@ -177,13 +177,27 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   getData = (): Feature<Point>[] => {
-    const { filters, filterOperators } = this.props
-    if (filters && Object.keys(filters).filter(Boolean).length) {
-      return this._getData().filter((feature) =>
-        getFeatureInFilter(feature, filters, filterOperators)
-      )
-    }
-    return this._getData()
+    const data = this._getData().flatMap((feature) => {
+      const values: number[] = []
+      this.props.layers?.[0]?.sublayers?.forEach((sublayer) => {
+        if (sublayer.filters && Object.keys(sublayer.filters).filter(Boolean).length) {
+          values.push(
+            getFeatureInFilter(feature, sublayer.filters, sublayer.filterOperators) ? 1 : 0
+          )
+        }
+      })
+      if (values.every((value) => value === 0)) {
+        return []
+      }
+      return {
+        ...feature,
+        properties: {
+          ...feature.properties,
+          values,
+        },
+      }
+    })
+    return data
   }
 
   getViewportData = () => {

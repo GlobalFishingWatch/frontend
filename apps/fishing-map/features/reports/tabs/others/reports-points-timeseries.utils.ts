@@ -1,6 +1,10 @@
 import type { Feature, Point } from 'geojson'
 
-import type { FourwingsDeckSublayer, UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
+import type {
+  ContextSubLayerConfig,
+  FourwingsDeckSublayer,
+  UserPointsTileLayer,
+} from '@globalfishingwatch/deck-layers'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
@@ -19,7 +23,7 @@ export type PointsFeaturesToTimeseriesParams = {
   interval: FourwingsInterval
   startTimeProperty: string
   endTimeProperty?: string
-  sublayers: FourwingsDeckSublayer[]
+  sublayers: (FourwingsDeckSublayer | ContextSubLayerConfig)[]
 }
 
 export const pointsFeaturesToTimeseries = (
@@ -33,7 +37,7 @@ export const pointsFeaturesToTimeseries = (
     sublayers,
   }: PointsFeaturesToTimeseriesParams
 ): ReportGraphProps[] => {
-  return filteredFeatures.map(({ contained }, sourceIndex) => {
+  return filteredFeatures.map(({ contained }) => {
     const featureToTimeseries: ReportGraphProps = {
       interval,
       sublayers: sublayers.map((sublayer) => ({
@@ -73,7 +77,10 @@ export type GetPointsTimeseriesParams = {
 }
 
 export const getPointsTimeseries = ({ features, instance }: GetPointsTimeseriesParams) => {
-  const { id, startTime, endTime, startTimeProperty, endTimeProperty, color } = instance.props || {}
+  const { startTime, endTime, startTimeProperty, endTimeProperty, layers } = instance.props || {}
+
+  const sublayers = layers?.flatMap((l) => l?.sublayers)
+
   if (!startTime || !endTime || !startTimeProperty) {
     // need to add empty timeseries because they are then used by their index
     return {
@@ -90,7 +97,7 @@ export const getPointsTimeseries = ({ features, instance }: GetPointsTimeseriesP
     end: endTime,
     startTimeProperty,
     endTimeProperty,
-    sublayers: [{ id, color, unit: '' } as FourwingsDeckSublayer],
+    sublayers,
   }
   return pointsFeaturesToTimeseries(features, params)[0]
 }

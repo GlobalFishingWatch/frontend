@@ -58,7 +58,8 @@ export default function ReportSummaryTags({ dataview }: LayerPanelProps) {
       </div>
       <Fragment>
         {(reportCategory === ReportCategory.Activity ||
-          reportCategory === ReportCategory.Detections) && (
+          reportCategory === ReportCategory.Detections ||
+          reportCategory === ReportCategory.Others) && (
           <Fragment>
             <DatasetFilterSource dataview={dataview} className={styles.tag} />
             {filtersAllowed.map(({ id, label }) => (
