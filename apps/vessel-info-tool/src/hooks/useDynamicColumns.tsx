@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import type { Row, Table } from '@tanstack/react-table'
 import escapeRegExp from 'lodash/escapeRegExp'
 
+import { Vessel } from '@/types/vessel.types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import styles from '../styles/global.module.css'
@@ -80,7 +81,7 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
         accessorKey: String(nameKey[0]),
         header: nameKey[0] || 'Name',
         id: String(nameKey[0] || `col_01`),
-
+        size: 230,
         cell: ({ row, getValue }: { row: Row<T>; getValue: () => any }) => (
           <div className="flex items-center justify-between p-2">
             <span>{String(getValue() || '-')}</span>
@@ -99,16 +100,13 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
         accessorKey: key || `col_${index}`,
         id: String(key || `col_${index}`),
         header: key || `Column ${index + 1}`,
+        size: 200,
         cell: ({ table, getValue }: { table: Table<T>; getValue: () => any }) => {
           const globalFilter = (table.getState().globalFilter as string | undefined)?.trim()
           const value = String(getValue() || '-')
 
           if (!globalFilter) {
-            return (
-              <div className="flex items-center justify-between p-2">
-                <span>{value}</span>
-              </div>
-            )
+            return <span>{value}</span>
           }
 
           const regex = new RegExp(`(${escapeRegExp(globalFilter)})`, 'gi')
