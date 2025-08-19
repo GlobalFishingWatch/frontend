@@ -60,13 +60,11 @@ function ReportOthers() {
               )}
             </p>
             {dataviews?.length > 0 && (
-              <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
-                <div className={summaryStyles.tagsContainer}>
-                  {dataviews?.map((d) => (
-                    <ReportSummaryTags key={d.id} dataview={d} />
-                  ))}
-                </div>
-              </Sticky>
+              <div className={summaryStyles.tagsContainer}>
+                {dataviews?.map((d) => (
+                  <ReportSummaryTags key={d.id} dataview={d} />
+                ))}
+              </div>
             )}
             <ReportActivityEvolution
               start={start}
