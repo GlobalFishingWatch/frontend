@@ -28,9 +28,7 @@ type _UserBaseLayerProps =
 
 export const POINT_SIZES_DEFAULT_RANGE = [3, 15]
 const defaultProps: DefaultProps<_UserBaseLayerProps> = {
-  idProperty: 'gfw_id',
   pickable: true,
-  valueProperties: [],
   maxRequests: 100,
   debounceTime: 500,
   minPointSize: 3,
@@ -72,7 +70,12 @@ export abstract class UserBaseLayer<
   }: {
     info: PickingInfo<UserLayerFeature, { tile?: Tile2DHeader }>
   }): UserLayerPickingInfo => {
-    const { subcategory, idProperty, valueProperties, filters } = this.props
+    // TODO: support multiple sublayers
+    const idProperty = this.props.layers[0].idProperty
+    const valueProperties = this.props.layers[0].valueProperties || []
+    // TODO: once filtered with the filter extension this works as expected
+    const filters = this.props.layers[0].sublayers?.flatMap((s) => Object.keys(s.filters || {}))
+    const color = this.props.layers[0].sublayers?.[0]?.color
     const object = {
       ...(info.tile && {
         ...transformTileCoordsToWGS84(
@@ -84,7 +87,7 @@ export abstract class UserBaseLayer<
       id: getContextId(info.object as ContextFeature, idProperty),
       value: info.object?.properties.value,
       title: this.props.id,
-      color: this.props.color,
+      color: color,
       layerId: this.props.id,
       datasetId: this.props.layers[0].datasetId,
       category: this.props.category,
@@ -95,7 +98,7 @@ export abstract class UserBaseLayer<
       return { ...info, object: undefined }
     }
 
-    if (!subcategory?.includes('draw')) {
+    if (!this.props.subcategory?.includes('draw')) {
       const properties = { ...((info.object as UserLayerFeature)?.properties || {}) }
 
       object.value =
@@ -121,9 +124,11 @@ export abstract class UserBaseLayer<
     const features = this._pickObjects(maxFeatures)
     const featureCache = new Set()
     const renderedFeatures: UserLayerFeature[] = []
+    // TODO: support multiple sublayers
+    const idProperty = this.props.layers[0].idProperty
 
     for (const f of features) {
-      const featureId = getContextId(f.object as ContextFeature, this.props.idProperty)
+      const featureId = getContextId(f.object as ContextFeature, idProperty)
 
       if (featureId === undefined) {
         // we have no id for the feature, we just add to the list
@@ -139,7 +144,9 @@ export abstract class UserBaseLayer<
   }
 
   _getTilesUrl(tilesUrl: string) {
-    const { valueProperties, startTimeProperty, endTimeProperty, filters } = this.props
+    const { startTimeProperty, endTimeProperty, layers } = this.props
+    const valueProperties = layers.flatMap((l) => l.valueProperties || [])
+    const filters = layers.flatMap((l) => l.sublayers?.flatMap((s) => Object.keys(s.filters || {})))
     const stepsPickValue = (this.props as UserPolygonsLayerProps)?.stepsPickValue
     const circleRadiusProperty = (this.props as UserPointsLayerProps)?.circleRadiusProperty
     const tilesUrlObject = new URL(tilesUrl)
@@ -150,7 +157,7 @@ export abstract class UserBaseLayer<
       endTimeProperty || '',
       stepsPickValue || '',
       circleRadiusProperty || '',
-      ...Object.keys(filters || {}),
+      ...filters,
     ].filter((p) => !!p)
     const uniqProperties = Array.from(new Set([...properties]))
     if (uniqProperties.length) {
