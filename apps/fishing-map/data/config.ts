@@ -140,8 +140,9 @@ export const FIT_BOUNDS_REPORT_PADDING = 30
 
 export const REPORT_ONLY_VISIBLE_LAYERS = [
   DataviewType.Basemap,
+  DataviewType.BasemapLabels,
   DataviewType.Context,
+  DataviewType.Graticules,
   DataviewType.UserContext,
   DataviewType.UserPoints,
-  DataviewType.BasemapLabels,
 ]

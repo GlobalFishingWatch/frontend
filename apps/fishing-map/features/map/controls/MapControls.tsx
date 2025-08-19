@@ -159,7 +159,7 @@ const MapControls = ({
               </Tooltip>
             </Fragment>
           )}
-          {isAnyVesselLocation && <ReferenceLayersControl />}
+          {(isAnyVesselLocation || isAnyReportLocation) && <ReferenceLayersControl />}
           <IconButton
             type="map-tool"
             tooltip={t('map.loading')}

@@ -11,6 +11,7 @@ import { IconButton, Switch } from '@globalfishingwatch/ui-components'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectReportAreaDataviews } from 'features/reports/report-area/area-reports.selectors'
 import InfoModal from 'features/workspace/shared/InfoModal'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
@@ -28,16 +29,18 @@ const ReferenceLayersControl = () => {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const contextAreasDataviews = useSelector(selectContextAreasDataviews)
+  const reportAreaDataviews = useSelector(selectReportAreaDataviews)
   const [isOpen, setIsOpen] = useState(false)
 
   const layers = useMemo(
     () =>
-      VESSEL_PROFILE_DATAVIEWS_INSTANCES.map((layer) => {
-        const dataview = contextAreasDataviews.find((d) => d.id === layer.id)
+      VESSEL_PROFILE_DATAVIEWS_INSTANCES.flatMap((layer) => {
+        const dataview = contextAreasDataviews.find((d) => d.dataviewId === layer.dataviewId)
+        if (!dataview) return []
         const dataset = dataview?.datasets?.find((d) => d.type === DatasetTypes.Context)
         const label = dataset ? getDatasetLabel(dataset) : layer.id
         return {
-          id: layer.id,
+          id: dataview.id,
           visible: dataview?.config?.visible ?? false,
           color: dataview?.config?.color,
           label,
@@ -50,15 +53,16 @@ const ReferenceLayersControl = () => {
 
   const updateAreaLayersVisibility = useCallback(
     (id: string, visible: boolean) => {
-      const layer = VESSEL_PROFILE_DATAVIEWS_INSTANCES.find((d) => d.id === id)
-      if (layer) {
+      const layer = layers.find((d) => d.dataview.id === id)
+      const isReportAreaLayer = reportAreaDataviews.some((d) => d.id === id)
+      if (layer && !isReportAreaLayer) {
         upsertDataviewInstance({
           ...layer,
           config: { visible },
         })
       }
     },
-    [upsertDataviewInstance]
+    [upsertDataviewInstance, layers, reportAreaDataviews]
   )
 
   const toggleOpen = useCallback(() => {
@@ -80,24 +84,30 @@ const ReferenceLayersControl = () => {
       />
       {isOpen && (
         <div className={styles.layers}>
-          {layers.map((layer) => (
-            <div className={styles.layer} key={layer.id}>
-              <Switch
-                active={layer.visible}
-                onClick={() => updateAreaLayersVisibility(layer.id, !layer.visible)}
-                id={layer.id}
-                color={layer.color}
-                className={styles.switch}
-              />
-              <p
-                className={cx(styles.label, { [styles.active]: layer.visible })}
-                onClick={() => updateAreaLayersVisibility(layer.id, !layer.visible)}
-              >
-                {layer.label}
-              </p>
-              <InfoModal dataview={layer.dataview} />
-            </div>
-          ))}
+          {layers.map((layer) => {
+            return (
+              <div className={styles.layer} key={layer.id}>
+                <Switch
+                  active={layer.visible}
+                  onClick={() => updateAreaLayersVisibility(layer.id, !layer.visible)}
+                  id={layer.id}
+                  color={layer.color}
+                  className={styles.switch}
+                  disabled={reportAreaDataviews.some((d) => d.id === layer.id)}
+                />
+                <p
+                  className={cx(styles.label, {
+                    [styles.active]: layer.visible,
+                    [styles.disabled]: reportAreaDataviews.some((d) => d.id === layer.id),
+                  })}
+                  onClick={() => updateAreaLayersVisibility(layer.id, !layer.visible)}
+                >
+                  {layer.label}
+                </p>
+                <InfoModal dataview={layer.dataview} />
+              </div>
+            )
+          })}
         </div>
       )}
     </div>
