@@ -129,6 +129,10 @@
   width: 100%;
 }
 
+.reportTitleTooltip {
+  cursor: help;
+}
+
 @media print {
   .actions {
     display: none;
