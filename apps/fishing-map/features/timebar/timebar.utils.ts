@@ -2,7 +2,7 @@ import type { Feature, Point } from 'geojson'
 import type { DateTimeUnit, DurationUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
-import { getDateInIntervalResolution } from '@globalfishingwatch/deck-layers'
+import { getDateInIntervalResolution, isFeatureInRange } from '@globalfishingwatch/deck-layers'
 import type {
   FourwingsFeature,
   FourwingsInterval,
@@ -12,7 +12,6 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 
-import { isFeatureInRange } from 'features/reports/reports-timeseries-shared.utils'
 import type { FourwingsFeaturesToTimeseriesParams } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { getUTCDateTime } from 'utils/dates'
 

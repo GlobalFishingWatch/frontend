@@ -1,5 +1,3 @@
-import type { ResolvedContextDataviewInstance } from 'libs/deck-layer-composer/src/types/dataviews'
-
 import { getDatasetConfiguration, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type {
   ContextLayerConfig,
@@ -8,36 +6,39 @@ import type {
   ContextPickingObject,
 } from '@globalfishingwatch/deck-layers'
 
+import type { ResolvedContextDataviewInstance } from '../types/dataviews'
 import type { DeckResolverFunction } from '../types/resolvers'
 
 export const resolveDeckContextLayerProps: DeckResolverFunction<
-  ContextLayerProps,
+  ContextLayerProps<ContextLayerId>,
   ResolvedContextDataviewInstance
 > = (dataview, { highlightedFeatures }) => {
-  const layers = (dataview.config?.layers || [])?.flatMap((layer): ContextLayerConfig | [] => {
-    const dataset = dataview.datasets?.find((dataset) => dataset.id === layer.dataset)
-    const { idProperty, valueProperties } = getDatasetConfiguration(dataset)
-    const datasetConfig = dataview.datasetsConfig?.find(
-      (datasetConfig) => datasetConfig.datasetId === layer.dataset
-    )
-    if (!dataset || !datasetConfig) {
-      return []
-    }
+  const layers = (dataview.config?.layers || [])?.flatMap(
+    (layer): ContextLayerConfig<ContextLayerId> | [] => {
+      const dataset = dataview.datasets?.find((dataset) => dataset.id === layer.dataset)
+      const { idProperty, valueProperties } = getDatasetConfiguration(dataset)
+      const datasetConfig = dataview.datasetsConfig?.find(
+        (datasetConfig) => datasetConfig.datasetId === layer.dataset
+      )
+      if (!dataset || !datasetConfig) {
+        return []
+      }
 
-    const tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
-    if (!tilesUrl) {
-      console.warn('No tilesUrl found for context dataview', dataview)
-    }
+      const tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
+      if (!tilesUrl) {
+        console.warn('No tilesUrl found for context dataview', dataview)
+      }
 
-    return {
-      id: layer.id as ContextLayerId,
-      datasetId: dataset.id,
-      tilesUrl,
-      idProperty,
-      valueProperties,
-      sublayers: layer.sublayers || [],
+      return {
+        id: layer.id as ContextLayerId,
+        datasetId: dataset.id,
+        tilesUrl,
+        idProperty,
+        valueProperties,
+        sublayers: layer.sublayers || [],
+      }
     }
-  })
+  )
 
   return {
     id: dataview.id,

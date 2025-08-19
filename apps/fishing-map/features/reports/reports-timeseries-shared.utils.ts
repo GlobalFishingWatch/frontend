@@ -53,25 +53,3 @@ export function getStatsValue<
     return stats[property as keyof FourwingsReportGraphStats] as any
   }
 }
-
-export function isFeatureInRange(
-  feature: Feature<Point> | FourwingsFeature | FourwingsStaticFeature,
-  {
-    startTime,
-    endTime,
-    startTimeProperty,
-    endTimeProperty,
-  }: {
-    startTime: number | undefined
-    endTime: number | undefined
-    startTimeProperty: string | undefined
-    endTimeProperty: string | undefined
-  }
-) {
-  const featureStart = ((feature.properties as any)?.[startTimeProperty!] as number) || 0
-  const featureEnd = ((feature.properties as any)?.[endTimeProperty!] as number) || Infinity
-  return (
-    (typeof featureEnd === 'string' ? parseInt(featureEnd) : featureEnd) >= startTime! &&
-    (typeof featureStart === 'string' ? parseInt(featureStart) : featureStart) < endTime!
-  )
-}

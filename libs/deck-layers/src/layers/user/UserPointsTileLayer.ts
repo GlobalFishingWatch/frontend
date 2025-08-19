@@ -30,7 +30,8 @@ import type { ContextSublayerCallbackParams } from '../context/context.types'
 import { filteredPositionsByViewport } from '../fourwings'
 
 import type { UserLayerFeature, UserPointsLayerProps } from './user.types'
-import { DEFAULT_USER_TILES_MAX_ZOOM } from './user.utils'
+import type { IsFeatureInRangeParams } from './user.utils'
+import { DEFAULT_USER_TILES_MAX_ZOOM, isFeatureInRange } from './user.utils'
 import type { UserBaseLayerState } from './UserBaseLayer'
 import { UserBaseLayer } from './UserBaseLayer'
 
@@ -133,6 +134,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
       return 0
     }
     const { staticPointRadius, circleRadiusProperty, circleRadiusRange } = this.props
+    // TODO: use filter extension instead
     if (!getFeatureInFilter(d, sublayer.filters, sublayer.filterOperators)) {
       return 0
     }
@@ -152,6 +154,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   getLayer() {
+    // TODO: support multiple sublayers
     return this.getSubLayers()?.[0] as TileLayer<UserLayerFeature>
   }
 
@@ -177,10 +180,16 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   getData = (): Feature<Point>[] => {
+    // TODO: support multiple sublayers
     const data = this._getData().flatMap((feature) => {
       const values: number[] = []
       this.props.layers?.[0]?.sublayers?.forEach((sublayer) => {
-        if (sublayer.filters && Object.keys(sublayer.filters).filter(Boolean).length) {
+        const matchesTimeFilter = isFeatureInRange(feature, this.props as IsFeatureInRangeParams)
+        if (
+          matchesTimeFilter &&
+          sublayer.filters &&
+          Object.keys(sublayer.filters).filter(Boolean).length
+        ) {
           values.push(
             getFeatureInFilter(feature, sublayer.filters, sublayer.filterOperators) ? 1 : 0
           )
