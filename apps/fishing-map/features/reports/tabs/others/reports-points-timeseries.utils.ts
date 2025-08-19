@@ -42,7 +42,7 @@ export const pointsFeaturesToTimeseries = (
         id: sublayer.id,
         legend: {
           color: sublayer.color,
-          unit: sublayer.unit,
+          unit: '',
         },
       })),
       timeseries: [],

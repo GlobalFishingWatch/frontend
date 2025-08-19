@@ -224,7 +224,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     const { layers, pickable, maxPointSize, maxZoom } = this.props
     const zoom = this._getZoomLevel()
     const highlightedFeatures = this._getHighlightedFeatures()
-    const filterProps = this._getTimeFilterProps()
+    const timefilterProps = this._getTimeFilterProps()
     const renderLayers: Layer[] = layers.map((layer) => {
       return new TileLayer<TileLayerProps<UserLayerFeature>>({
         id: `${layer.id}-base-layer`,
@@ -236,7 +236,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
         },
         onTileError: this._onLayerError,
         onViewportLoad: this.props.onViewportLoad,
-        ...filterProps,
+        ...timefilterProps,
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,
