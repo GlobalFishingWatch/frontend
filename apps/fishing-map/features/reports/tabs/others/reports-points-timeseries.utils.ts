@@ -1,19 +1,17 @@
 import type { Feature, Point } from 'geojson'
 
-import type {
-  ContextSubLayerConfig,
-  FourwingsDeckSublayer,
-  UserPointsTileLayer,
+import {
+  type ContextSubLayerConfig,
+  type FourwingsDeckSublayer,
+  isFeatureInRange,
+  type UserPointsTileLayer,
 } from '@globalfishingwatch/deck-layers'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
-import {
-  frameTimeseriesToDateTimeseries,
-  isFeatureInRange,
-} from 'features/reports/reports-timeseries-shared.utils'
+import { frameTimeseriesToDateTimeseries } from 'features/reports/reports-timeseries-shared.utils'
 import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
 import { getGraphDataFromPoints } from 'features/timebar/timebar.utils'
 
@@ -116,9 +114,9 @@ export const getPointsTimeseriesStats = ({ features, instance }: GetPointsTimese
       }
       const filteredPoints = contained.filter((feature) => {
         return isFeatureInRange(feature, {
-          startTime,
-          endTime,
-          startTimeProperty,
+          startTime: startTime!,
+          endTime: endTime!,
+          startTimeProperty: startTimeProperty!,
           endTimeProperty,
         })
       })

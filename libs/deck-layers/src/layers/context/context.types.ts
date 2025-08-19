@@ -45,9 +45,9 @@ export type ContextLayerConfig<Id = string> = {
   sublayers: ContextSubLayerConfig[]
 }
 
-export type ContextLayerProps = DeckLayerProps<{
+export type ContextLayerProps<Id = ContextLayerId> = DeckLayerProps<{
   id: string
-  layers: ContextLayerConfig<ContextLayerId>[]
+  layers: ContextLayerConfig<Id>[]
   pickable?: boolean
   highlightedFeatures?: ContextPickingObject[]
 }>
