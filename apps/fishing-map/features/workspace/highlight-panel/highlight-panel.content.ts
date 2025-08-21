@@ -1,4 +1,4 @@
-import { SENTINEL2_DATAVIEW_INSTANCE_ID } from 'data/highlighted-workspaces/report.dataviews'
+import { SENTINEL2_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
 
 import {
   IS_PRODUCTION_BUILD,

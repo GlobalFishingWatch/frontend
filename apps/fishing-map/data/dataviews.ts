@@ -16,3 +16,10 @@ export const LEGACY_TO_LATEST_DATAVIEWS: Record<string, string> = {
   'vessel-presence': PRESENCE_DATAVIEW_SLUG,
   'fishing-map-vessel-track': TEMPLATE_VESSEL_DATAVIEW_SLUG,
 }
+
+export const AIS_DATAVIEW_INSTANCE_ID = 'ais'
+export const VMS_DATAVIEW_INSTANCE_ID = 'vms'
+export const PRESENCE_DATAVIEW_INSTANCE_ID = 'presence'
+export const SAR_DATAVIEW_INSTANCE_ID = 'sar'
+export const SENTINEL2_DATAVIEW_INSTANCE_ID = 'sentinel2'
+export const VIIRS_DATAVIEW_INSTANCE_ID = 'viirs'

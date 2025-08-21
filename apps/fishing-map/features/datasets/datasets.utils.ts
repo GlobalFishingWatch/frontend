@@ -40,6 +40,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { IconType, MultiSelectOption } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_TIME_RANGE, FULL_SUFIX, PRIVATE_ICON, PUBLIC_SUFIX } from 'data/config'
+import { VMS_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
 import i18n, { t } from 'features/i18n/i18n'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { getFlags, getFlagsByIds } from 'utils/flags'
@@ -268,7 +269,12 @@ export const getDatasetTitleByDataview = (
   let datasetTitle = dataview.name || ''
   const { category, subcategory } = dataviewInstance.datasets?.[0] || {}
   if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Fishing) {
-    const sourceType = dataviewInstance.id.toString().toLowerCase().includes('vms') ? 'VMS' : 'AIS'
+    const sourceType = dataviewInstance.id
+      .toString()
+      .toLowerCase()
+      .includes(VMS_DATAVIEW_INSTANCE_ID)
+      ? 'VMS'
+      : 'AIS'
     datasetTitle = `${sourceType} ${t('common.apparentFishing')}`
   } else if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Presence) {
     datasetTitle = t('common.presence')
