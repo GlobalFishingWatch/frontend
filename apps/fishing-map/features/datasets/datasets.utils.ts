@@ -268,7 +268,8 @@ export const getDatasetTitleByDataview = (
   let datasetTitle = dataview.name || ''
   const { category, subcategory } = dataviewInstance.datasets?.[0] || {}
   if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Fishing) {
-    datasetTitle = t('common.apparentFishing')
+    const sourceType = dataviewInstance.id.toString().toLowerCase().includes('vms') ? 'VMS' : 'AIS'
+    datasetTitle = `${sourceType} ${t('common.apparentFishing')}`
   } else if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Presence) {
     datasetTitle = t('common.presence')
   } else if (category === DatasetCategory.Detections && subcategory === DatasetSubCategory.Viirs) {
