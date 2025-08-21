@@ -57,3 +57,13 @@
 .notAllowed {
   cursor: not-allowed;
 }
+
+.dataWarning {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}
+
+.bold {
+  font-weight: 500;
+}

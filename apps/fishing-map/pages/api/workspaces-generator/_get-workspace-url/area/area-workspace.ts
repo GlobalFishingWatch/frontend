@@ -2,10 +2,8 @@ import { DatasetSubCategory, EventTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 
-import {
-  REPORT_DATAVIEW_INSTANCES,
-  VMS_DATAVIEW_INSTANCE_ID,
-} from 'data/highlighted-workspaces/report.dataviews'
+import { VMS_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
+import { REPORT_DATAVIEW_INSTANCES } from 'data/highlighted-workspaces/report.dataviews'
 import {
   EEZ_DATAVIEW_INSTANCE_ID,
   FAO_AREAS_DATAVIEW_INSTANCE_ID,

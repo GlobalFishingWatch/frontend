@@ -84,11 +84,11 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
   _fetchTimeseriesTileData: any = async (tile: TileLoadProps) => {
     const { startTime, endTime, sublayers, tilesUrl, extentStart, availableIntervals } = this.props
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
-    let cols: number = 0
-    let rows: number = 0
-    let scale: number = 0
-    let offset: number = 0
-    let noDataValue: number = 0
+    const cols: number[] = []
+    const rows: number[] = []
+    const scale: number[] = []
+    const offset: number[] = []
+    const noDataValue: number[] = []
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const chunk = getFourwingsChunk(startTime, endTime, availableIntervals)
     const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
@@ -106,20 +106,20 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
       if (response.status >= 400 && response.status !== 404) {
         throw new Error(response.statusText)
       }
-      if (response.headers.get('X-columns') && !cols) {
-        cols = parseInt(response.headers.get('X-columns') as string)
+      if (response.headers.get('X-columns') && !cols[0]) {
+        cols[0] = parseInt(response.headers.get('X-columns') as string)
       }
-      if (response.headers.get('X-rows') && !rows) {
-        rows = parseInt(response.headers.get('X-rows') as string)
+      if (response.headers.get('X-rows') && !rows[0]) {
+        rows[0] = parseInt(response.headers.get('X-rows') as string)
       }
-      if (response.headers.get('X-scale') && !scale) {
-        scale = parseFloat(response.headers.get('X-scale') as string)
+      if (response.headers.get('X-scale') && !scale[0]) {
+        scale[0] = parseFloat(response.headers.get('X-scale') as string)
       }
-      if (response.headers.get('X-offset') && !offset) {
-        offset = parseInt(response.headers.get('X-offset') as string)
+      if (response.headers.get('X-offset') && !offset[0]) {
+        offset[0] = parseInt(response.headers.get('X-offset') as string)
       }
-      if (response.headers.get('X-empty-value') && !noDataValue) {
-        noDataValue = parseInt(response.headers.get('X-empty-value') as string)
+      if (response.headers.get('X-empty-value') && !noDataValue[0]) {
+        noDataValue[0] = parseInt(response.headers.get('X-empty-value') as string)
       }
       return await response.arrayBuffer()
     }

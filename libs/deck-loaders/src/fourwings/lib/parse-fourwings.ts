@@ -29,9 +29,9 @@ export const getCellTimeseries = (
     sublayers,
     initialTimeRange,
     aggregationOperation = 'sum',
-    scale = SCALE_VALUE,
-    offset = OFFSET_VALUE,
-    noDataValue = NO_DATA_VALUE,
+    scale,
+    offset,
+    noDataValue,
     tile,
     cols,
     rows,
@@ -84,12 +84,12 @@ export const getCellTimeseries = (
         let feature = data.features.get(cellNum)
         if (!feature) {
           // add the feature if previous sublayers didn't contain data for it
-          const { col, row } = getCellProperties(tileBBox, cellNum, cols)
+          const { col, row } = getCellProperties(tileBBox, cellNum, cols[subLayerIndex])
           feature = {
             coordinates: getCellCoordinates({
               cellIndex: cellNum,
-              cols,
-              rows,
+              cols: cols[subLayerIndex],
+              rows: rows[subLayerIndex],
               tileBBox,
             }),
             properties: {
@@ -109,12 +109,15 @@ export const getCellTimeseries = (
         // calculate how many values are in the tile
         const numCellValues = (endFrame - startFrame + 1) * sublayers
         const numValuesBySubLayer = new Array(sublayersLength).fill(0)
+        const sublayerScale = scale?.[subLayerIndex] ?? SCALE_VALUE
+        const sublayerOffset = offset?.[subLayerIndex] ?? OFFSET_VALUE
+        const sublayerNoDataValue = noDataValue?.[subLayerIndex] ?? NO_DATA_VALUE
 
         // Rest of the processing using 'feature' directly instead of features.get(cellNum)
         for (let j = 0; j < numCellValues; j++) {
           const cellValue = pbf.readVarint()
 
-          if (cellValue !== noDataValue) {
+          if (cellValue !== sublayerNoDataValue) {
             if (!feature.properties.values[subLayerIndex]) {
               // create properties for this sublayer if the feature dind't have it already
               feature.properties.values[subLayerIndex] = new Array(numCellValues)
@@ -124,7 +127,7 @@ export const getCellTimeseries = (
             }
             // add current value to the array of values for this sublayer
             feature.properties.values[subLayerIndex][Math.floor(j / sublayers)] =
-              cellValue * scale - offset
+              cellValue * sublayerScale - sublayerOffset
             // add current date to the array of dates for this sublayer
             feature.properties.dates[subLayerIndex][Math.floor(j / sublayers)] =
               getIntervalTimestamp(startFrame + tileStartFrame + j)
@@ -132,7 +135,7 @@ export const getCellTimeseries = (
             // sum current value to the initialValue for this sublayer
             if (j + startFrame >= timeRangeStartFrame && j + startFrame < timeRangeEndFrame) {
               feature.properties.initialValues[timeRangeKey][subLayerIndex] +=
-                cellValue * scale - offset
+                cellValue * sublayerScale - sublayerOffset
               numValuesBySubLayer[subLayerIndex] = numValuesBySubLayer[subLayerIndex] + 1
             }
           }

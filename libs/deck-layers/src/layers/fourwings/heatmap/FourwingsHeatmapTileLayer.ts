@@ -389,15 +389,16 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       throw new Error('Invalid interval')
     }
     const sublayers = this._getTimeCompareSublayers()
-    let cols: number = 0
-    let rows: number = 0
-    let scale: number = 0
-    let offset: number = 0
-    let noDataValue: number = 0
 
     this.setState({ rampDirty: true })
-    const getSublayerData: any = async (
-      sublayer: FourwingsDeckSublayer & { chunk: FourwingsChunk }
+    const cols: number[] = []
+    const rows: number[] = []
+    const scale: number[] = []
+    const offset: number[] = []
+    const noDataValue: number[] = []
+    const getSublayerData = async (
+      sublayer: FourwingsDeckSublayer & { chunk: FourwingsChunk },
+      sublayerIndex: number
     ) => {
       const url = getDataUrlBySublayer({
         tile,
@@ -412,25 +413,27 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       if (response.status >= 400 && response.status !== 404) {
         throw new Error(response.statusText)
       }
-      if (response.headers.get('X-columns') && !cols) {
-        cols = parseInt(response.headers.get('X-columns') as string)
+      if (response.headers.get('X-columns') && !cols[sublayerIndex]) {
+        cols[sublayerIndex] = parseInt(response.headers.get('X-columns') as string)
       }
-      if (response.headers.get('X-rows') && !rows) {
-        rows = parseInt(response.headers.get('X-rows') as string)
+      if (response.headers.get('X-rows') && !rows[sublayerIndex]) {
+        rows[sublayerIndex] = parseInt(response.headers.get('X-rows') as string)
       }
-      if (response.headers.get('X-scale') && !scale) {
-        scale = parseFloat(response.headers.get('X-scale') as string)
+      if (response.headers.get('X-scale') && !scale[sublayerIndex]) {
+        scale[sublayerIndex] = parseFloat(response.headers.get('X-scale') as string)
       }
-      if (response.headers.get('X-offset') && !offset) {
-        offset = parseInt(response.headers.get('X-offset') as string)
+      if (response.headers.get('X-offset') && !offset[sublayerIndex]) {
+        offset[sublayerIndex] = parseInt(response.headers.get('X-offset') as string)
       }
-      if (response.headers.get('X-empty-value') && !noDataValue) {
-        noDataValue = parseInt(response.headers.get('X-empty-value') as string)
+      if (response.headers.get('X-empty-value') && !noDataValue[sublayerIndex]) {
+        noDataValue[sublayerIndex] = parseInt(response.headers.get('X-empty-value') as string)
       }
       return await response.arrayBuffer()
     }
 
-    const promises = sublayers.map(getSublayerData) as Promise<ArrayBuffer>[]
+    const promises = sublayers.map((sublayer, sublayerIndex) =>
+      getSublayerData(sublayer, sublayerIndex)
+    )
     const settledPromises = await Promise.allSettled(promises)
     const hasChunkError = settledPromises.some((p) => p.status === 'rejected')
     if (hasChunkError) {
@@ -443,7 +446,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const arrayBuffers = settledPromises.flatMap((d) => {
       return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
     })
-
     if (tile.signal?.aborted) {
       return
     }
@@ -486,15 +488,15 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     } = this.props
     const { colorDomain, colorRanges } = this.state
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
-    let cols: number = 0
-    let rows: number = 0
-    let scale: number = 0
-    let offset: number = 0
-    let noDataValue: number = 0
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const chunk = getFourwingsChunk(startTime, endTime, availableIntervals)
     this.setState({ rampDirty: true })
-    const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
+    const cols: number[] = []
+    const rows: number[] = []
+    const scale: number[] = []
+    const offset: number[] = []
+    const noDataValue: number[] = []
+    const getSublayerData = async (sublayer: FourwingsDeckSublayer, sublayerIndex: number) => {
       const url = getDataUrlBySublayer({
         tile,
         chunk,
@@ -509,23 +511,23 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       if (response.status >= 400 && response.status !== 404) {
         throw new Error(response.statusText)
       }
-      if (response.headers.get('X-columns') && !cols) {
-        cols = parseInt(response.headers.get('X-columns') as string)
+      if (response.headers.get('X-columns') && !cols[sublayerIndex]) {
+        cols[sublayerIndex] = parseInt(response.headers.get('X-columns') as string)
       }
-      if (response.headers.get('X-rows') && !rows) {
-        rows = parseInt(response.headers.get('X-rows') as string)
+      if (response.headers.get('X-rows') && !rows[sublayerIndex]) {
+        rows[sublayerIndex] = parseInt(response.headers.get('X-rows') as string)
       }
-      if (response.headers.get('X-scale') && !scale) {
-        scale = parseFloat(response.headers.get('X-scale') as string)
+      if (response.headers.get('X-scale') && !scale[sublayerIndex]) {
+        scale[sublayerIndex] = parseFloat(response.headers.get('X-scale') as string)
       }
-      if (response.headers.get('X-offset') && !offset) {
-        offset = parseInt(response.headers.get('X-offset') as string)
+      if (response.headers.get('X-offset') && !offset[sublayerIndex]) {
+        offset[sublayerIndex] = parseInt(response.headers.get('X-offset') as string)
       }
-      if (response.headers.get('X-empty-value') && !noDataValue) {
-        noDataValue = parseInt(response.headers.get('X-empty-value') as string)
+      if (response.headers.get('X-empty-value') && !noDataValue[sublayerIndex]) {
+        noDataValue[sublayerIndex] = parseInt(response.headers.get('X-empty-value') as string)
       }
       const bins = JSON.parse(response.headers.get('X-bins-0') as string)?.map((n: string) => {
-        return (parseInt(n) - offset) * scale
+        return (parseInt(n) - offset[sublayerIndex]) * scale[sublayerIndex]
       })
       if (
         !colorDomain?.length &&
@@ -540,7 +542,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       return await response.arrayBuffer()
     }
 
-    const promises = visibleSublayers.map(getSublayerData) as Promise<ArrayBuffer>[]
+    const promises = visibleSublayers.map(getSublayerData)
     const settledPromises = await Promise.allSettled(promises)
 
     const hasChunkError = settledPromises.some(

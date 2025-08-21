@@ -1,6 +1,8 @@
+import type { JSX } from 'react'
 import { useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { uniq } from 'es-toolkit'
 import { useGetStatsByDataviewQuery } from 'queries/stats-api'
 
 import {
@@ -14,6 +16,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextFeature, ContextLayer } from '@globalfishingwatch/deck-layers'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
+import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { FIT_BOUNDS_REPORT_PADDING } from 'data/config'
 import { RFMO_DATAVIEW_SLUG } from 'data/workspaces'
@@ -67,10 +70,11 @@ import {
   selectIsVesselGroupReportLocation,
   selectReportId,
   selectReportPortId,
-  selectUrlTimeRange,
 } from 'routes/routes.selectors'
 import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
+
+import styles from './title/ReportTitle.module.css'
 
 export type DateTimeSeries = {
   date: string
@@ -384,55 +388,65 @@ export function useReportTitle() {
   const { t, i18n } = useTranslation()
   const report = useSelector(selectCurrentReport)
   const reportArea = useSelector(selectReportArea)
-  const areaDataview = useSelector(selectReportAreaDataviews)?.[0]
+  const areaDataviews = useSelector(selectReportAreaDataviews)
   const reportId = useSelector(selectReportId)
   const isGlobalReport = useSelector(selectIsGlobalReport)
   const reportAreaStatus = useSelector(selectReportAreaStatus)
   const urlBufferValue = useSelector(selectReportBufferValue)
   const urlBufferOperation = useSelector(selectReportBufferOperation)
   const urlBufferUnit = useSelector(selectReportBufferUnit)
-  const dataset = areaDataview?.datasets?.[0]
   const reportTitle = useMemo(() => {
     if (reportId && !report) {
       return ''
     }
-    let areaName = getReportAreaStringByLocale(report?.name, i18n.language)
     if (isGlobalReport) {
       return t('common.globalReport')
     }
-    const propertyToInclude = getDatasetConfigurationProperty({
-      dataset,
-      property: 'propertyToInclude',
-    }) as string
-    const valueProperties = getDatasetConfigurationProperty({
-      dataset,
-      property: 'valueProperties',
-    })
-    const valueProperty = Array.isArray(valueProperties) ? valueProperties[0] : valueProperties
-
+    let areaName: string | JSX.Element = getReportAreaStringByLocale(report?.name, i18n.language)
     if (!areaName) {
-      if (
-        areaDataview?.config?.type === DataviewType.Context ||
-        areaDataview?.config?.type === DataviewType.UserContext ||
-        areaDataview?.config?.type === DataviewType.UserPoints
-      ) {
-        if (reportAreaStatus === AsyncReducerStatus.Finished) {
-          if (dataset?.source === DRAW_DATASET_SOURCE) {
-            areaName = getDatasetLabel(dataset)
-          } else {
-            const propertyValue =
-              reportArea?.properties?.[propertyToInclude] ||
-              reportArea?.properties?.[valueProperty] ||
-              (reportArea as any)?.[propertyToInclude?.toLowerCase()] ||
-              (reportArea as any)?.[valueProperty?.toLowerCase()]
-            areaName =
-              propertyValue && typeof propertyValue === 'string'
-                ? propertyValue
-                : getDatasetLabel(dataset)
+      if (areaDataviews?.length > 1) {
+        const datasets = areaDataviews.flatMap((d) => d.datasets?.[0] || [])
+        const uniqDatasetLabels = uniq(datasets?.map((d) => getDatasetLabel(d)))
+        areaName = (
+          <Tooltip content={reportArea?.name}>
+            <span
+              className={styles.reportTitleTooltip}
+            >{`${areaDataviews.length > 1 ? `${areaDataviews.length} ` : ''}${uniqDatasetLabels.length > 1 ? t('common.area_other') : uniqDatasetLabels[0]}`}</span>
+          </Tooltip>
+        )
+      } else {
+        const areaDataview = areaDataviews?.[0]
+        const dataset = areaDataview?.datasets?.[0]
+        const propertyToInclude = getDatasetConfigurationProperty({
+          dataset,
+          property: 'propertyToInclude',
+        }) as string
+        const valueProperties = getDatasetConfigurationProperty({
+          dataset,
+          property: 'valueProperties',
+        })
+        const valueProperty = Array.isArray(valueProperties) ? valueProperties[0] : valueProperties
+        if (
+          areaDataview?.config?.type === DataviewType.Context ||
+          areaDataview?.config?.type === DataviewType.UserContext ||
+          areaDataview?.config?.type === DataviewType.UserPoints
+        ) {
+          if (reportAreaStatus === AsyncReducerStatus.Finished) {
+            if (dataset?.source === DRAW_DATASET_SOURCE) {
+              areaName = getDatasetLabel(dataset)
+            } else {
+              const propertyValue =
+                reportArea?.properties?.[propertyToInclude] ||
+                reportArea?.properties?.[valueProperty] ||
+                (reportArea as any)?.[propertyToInclude?.toLowerCase()] ||
+                (reportArea as any)?.[valueProperty?.toLowerCase()]
+              areaName =
+                propertyValue && typeof propertyValue === 'string'
+                  ? propertyValue
+                  : getDatasetLabel(dataset)
+            }
           }
         }
-      } else {
-        areaName = reportArea?.name || ''
       }
     }
 
@@ -464,14 +478,13 @@ export function useReportTitle() {
     report,
     i18n.language,
     isGlobalReport,
-    dataset,
     urlBufferValue,
     urlBufferOperation,
     t,
-    areaDataview?.config?.type,
     reportAreaStatus,
     reportArea,
     urlBufferUnit,
+    areaDataviews,
   ])
 
   return reportTitle
