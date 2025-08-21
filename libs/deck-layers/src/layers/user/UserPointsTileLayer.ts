@@ -17,7 +17,7 @@ import type { Feature, GeoJsonProperties, Point } from 'geojson'
 import {
   COLOR_HIGHLIGHT_LINE,
   DEFAULT_LINE_COLOR,
-  getFeatureInFilter,
+  getFeatureInFilters,
   getFetchLoadOptions,
   getLayerGroupOffset,
   getMVTSublayerProps,
@@ -27,6 +27,7 @@ import {
 } from '../../utils'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
 import type { ContextSublayerCallbackParams } from '../context/context.types'
+import { hasSublayerFilters, supportDataFilterExtension } from '../context/context.utils'
 import { filteredPositionsByViewport } from '../fourwings'
 
 import type { UserLayerFeature, UserPointsLayerProps } from './user.types'
@@ -134,8 +135,11 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
       return 0
     }
     const { staticPointRadius, circleRadiusProperty, circleRadiusRange } = this.props
-    // TODO: use filter extension instead
-    if (!getFeatureInFilter(d, sublayer.filters, sublayer.filterOperators)) {
+    if (
+      hasSublayerFilters(sublayer) &&
+      !supportDataFilterExtension(sublayer) &&
+      !getFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
+    ) {
       return 0
     }
     if (staticPointRadius) {
@@ -185,14 +189,15 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
       const values: number[] = []
       this.props.layers?.[0]?.sublayers?.forEach((sublayer) => {
         const matchesTimeFilter = isFeatureInRange(feature, this.props as IsFeatureInRangeParams)
-        if (
-          matchesTimeFilter &&
-          sublayer.filters &&
-          Object.keys(sublayer.filters).filter(Boolean).length
-        ) {
-          values.push(
-            getFeatureInFilter(feature, sublayer.filters, sublayer.filterOperators) ? 1 : 0
-          )
+        if (matchesTimeFilter) {
+          if (hasSublayerFilters(sublayer)) {
+            // TODO: support getting values from certain property instead of just counting the points
+            values.push(
+              getFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators) ? 1 : 0
+            )
+          } else {
+            values.push(1)
+          }
         }
       })
       if (values.every((value) => value === 0)) {
@@ -242,29 +247,37 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
             ...props,
             ...getMVTSublayerProps({ tile: props.tile, extensions: props.extensions }),
           }
-          return layer.sublayers.map((sublayer) => [
-            new ScatterplotLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-              id: `${props.id}-${sublayer.dataviewId}-points`,
-              pickable: pickable,
-              radiusMinPixels: 0,
-              radiusMaxPixels: maxPointSize,
-              filled: true,
-              stroked: true,
-              radiusUnits: 'pixels',
-              getPosition: this._getPosition,
-              getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Default, params),
-              getRadius: (d) => this._getPointRadius(d, { layer, sublayer }),
-              lineWidthUnits: 'pixels',
-              lineWidthMinPixels: 1,
-              getLineWidth: 1,
-              getLineColor: DEFAULT_LINE_COLOR,
-              getFillColor: hexToDeckColor(sublayer.color, 0.7),
-              updateTriggers: {
-                getFillColor: [sublayer.color],
-                getRadius: [sublayer.filters, zoom],
-              },
-            }),
-          ])
+          return layer.sublayers.map((sublayer) => {
+            const sublayerFilterExtensionProps = this._getSublayerFilterExtensionProps(sublayer)
+            const hasFilters = Object.keys(sublayerFilterExtensionProps).length > 0
+            return [
+              new ScatterplotLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
+                id: `${props.id}-${sublayer.dataviewId}-points`,
+                pickable: pickable,
+                radiusMinPixels: 0,
+                radiusMaxPixels: maxPointSize,
+                filled: true,
+                stroked: true,
+                radiusUnits: 'pixels',
+                getPosition: this._getPosition,
+                ...sublayerFilterExtensionProps,
+                getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Default, params),
+                getRadius: (d) => this._getPointRadius(d, { layer, sublayer }),
+                lineWidthUnits: 'pixels',
+                lineWidthMinPixels: 1,
+                getLineWidth: 1,
+                getLineColor: DEFAULT_LINE_COLOR,
+                getFillColor: hexToDeckColor(sublayer.color, 0.7),
+                updateTriggers: {
+                  getFillColor: [sublayer.color],
+                  getRadius: [sublayer.filters, zoom],
+                  ...(hasFilters && {
+                    getFilterValue: [sublayer.filters],
+                  }),
+                },
+              }),
+            ]
+          })
         },
       })
     })

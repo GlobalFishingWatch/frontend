@@ -12,7 +12,7 @@ import {
   COLOR_TRANSPARENT,
   DEFAULT_BACKGROUND_COLOR,
   getColorRampByOpacitySteps,
-  getFeatureInFilter,
+  getFeatureInFilters,
   getFetchLoadOptions,
   getLayerGroupOffset,
   getMVTSublayerProps,
@@ -23,6 +23,7 @@ import {
   rgbaStringToComponents,
 } from '../../utils'
 import type { ContextSublayerCallbackParams } from '../context/context.types'
+import { hasSublayerFilters, supportDataFilterExtension } from '../context/context.utils'
 
 import type { UserLayerFeature, UserPolygonsLayerProps } from './user.types'
 import { DEFAULT_USER_TILES_MAX_ZOOM } from './user.utils'
@@ -92,14 +93,22 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   }
 
   _getLineColor = (d: GeoJsonProperties, { sublayer }: ContextSublayerCallbackParams): Color => {
-    if (!getFeatureInFilter(d, sublayer.filters, sublayer.filterOperators)) {
+    if (
+      hasSublayerFilters(sublayer) &&
+      !supportDataFilterExtension(sublayer) &&
+      !getFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
+    ) {
       return COLOR_TRANSPARENT
     }
     return hexToDeckColor(sublayer.color)
   }
 
   _getLineWidth = (d: GeoJsonProperties, { sublayer }: ContextSublayerCallbackParams): number => {
-    if (!getFeatureInFilter(d, sublayer.filters, sublayer.filterOperators)) {
+    if (
+      hasSublayerFilters(sublayer) &&
+      !supportDataFilterExtension(sublayer) &&
+      !getFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
+    ) {
       return 0
     }
     return sublayer.thickness || 1
@@ -109,7 +118,11 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
     d: GeoJsonProperties,
     { layer, sublayer }: ContextSublayerCallbackParams
   ): Color => {
-    if (!getFeatureInFilter(d, sublayer.filters, sublayer.filterOperators)) {
+    if (
+      hasSublayerFilters(sublayer) &&
+      !supportDataFilterExtension(sublayer) &&
+      !getFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
+    ) {
       return COLOR_TRANSPARENT
     }
     const highlightedFeatures = this._getHighlightedFeatures()
@@ -125,7 +138,11 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
     d: GeoJsonProperties,
     { layer, sublayer }: ContextSublayerCallbackParams
   ): Color => {
-    if (!getFeatureInFilter(d, sublayer.filters, sublayer.filterOperators)) {
+    if (
+      hasSublayerFilters(sublayer) &&
+      !supportDataFilterExtension(sublayer) &&
+      !getFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
+    ) {
       return COLOR_TRANSPARENT
     }
     const highlightedFeatures = this._getHighlightedFeatures()
@@ -169,69 +186,89 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
             ...props,
             ...getMVTSublayerProps({ tile: props.tile, extensions: props.extensions }),
           }
-          return layer.sublayers.map((sublayer) => [
-            new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-              id: `${props.id}-highlight-fills`,
-              stroked: false,
-              pickable: pickable,
-              getPolygonOffset: (params) =>
-                getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
-              getFillColor: (d) =>
-                hasColorSteps
-                  ? this._getFillStepsColor(d, { layer, sublayer })
-                  : this._getFillColor(d, { layer, sublayer }),
-              updateTriggers: {
-                getFillColor: [highlightedFeatures, sublayer.filters, sublayer.color],
-              },
-            }),
-            new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-              id: `${props.id}-lines`,
-              lineWidthMinPixels: 0,
-              lineWidthUnits: 'pixels',
-              filled: false,
-              getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.CustomLayer, params),
-              getLineColor: (d) => this._getLineColor(d, { layer, sublayer }),
-              getLineWidth: (d) => this._getLineWidth(d, { layer, sublayer }),
-              updateTriggers: {
-                getLineColor: [sublayer.filters, sublayer.color],
-                getLineWidth: [sublayer.filters, sublayer.thickness],
-              },
-            }),
-            new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-              id: `${props.id}-highlight-lines-bg`,
-              lineWidthMinPixels: 0,
-              lineWidthUnits: 'pixels',
-              filled: false,
-              lineJointRounded: true,
-              lineCapRounded: true,
-              visible: highlightedFeatures && highlightedFeatures?.length > 0,
-              getPolygonOffset: (params) =>
-                getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-              getLineWidth: (d) =>
-                this._getHighlightLineWidth(d, { layer, sublayer, lineWidth: 4 }),
-              getLineColor: DEFAULT_BACKGROUND_COLOR,
-              updateTriggers: {
-                getLineWidth: [highlightedFeatures],
-              },
-            }),
-            new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-              id: `${props.id}-highlight-lines-fg`,
-              lineWidthMinPixels: 0,
-              lineWidthUnits: 'pixels',
-              filled: false,
-              lineJointRounded: true,
-              lineCapRounded: true,
-              visible: highlightedFeatures && highlightedFeatures?.length > 0,
-              getPolygonOffset: (params) =>
-                getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-              getLineWidth: (d) =>
-                this._getHighlightLineWidth(d, { layer, sublayer, lineWidth: 2 }),
-              getLineColor: COLOR_HIGHLIGHT_LINE,
-              updateTriggers: {
-                getLineWidth: [highlightedFeatures],
-              },
-            }),
-          ])
+          return layer.sublayers.map((sublayer) => {
+            const sublayerFilterExtensionProps = this._getSublayerFilterExtensionProps(sublayer)
+            const hasFilters = Object.keys(sublayerFilterExtensionProps).length > 0
+            return [
+              new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
+                id: `${props.id}-highlight-fills`,
+                stroked: false,
+                pickable: pickable,
+                ...sublayerFilterExtensionProps,
+                getPolygonOffset: (params) =>
+                  getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
+                getFillColor: (d) =>
+                  hasColorSteps
+                    ? this._getFillStepsColor(d, { layer, sublayer })
+                    : this._getFillColor(d, { layer, sublayer }),
+                updateTriggers: {
+                  getFillColor: [highlightedFeatures, sublayer.filters, sublayer.color],
+                  ...(hasFilters && {
+                    getFilterValue: [sublayer.filters],
+                  }),
+                },
+              }),
+              new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
+                id: `${props.id}-lines`,
+                lineWidthMinPixels: 0,
+                lineWidthUnits: 'pixels',
+                filled: false,
+                ...sublayerFilterExtensionProps,
+                getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.CustomLayer, params),
+                getLineColor: hexToDeckColor(sublayer.color),
+                getLineWidth: sublayer.thickness || 1,
+                updateTriggers: {
+                  getLineColor: [sublayer.filters, sublayer.color],
+                  getLineWidth: [sublayer.filters, sublayer.thickness],
+                  ...(hasFilters && {
+                    getFilterValue: [sublayer.filters],
+                  }),
+                },
+              }),
+              new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
+                id: `${props.id}-highlight-lines-bg`,
+                lineWidthMinPixels: 0,
+                lineWidthUnits: 'pixels',
+                filled: false,
+                lineJointRounded: true,
+                lineCapRounded: true,
+                visible: highlightedFeatures && highlightedFeatures?.length > 0,
+                ...sublayerFilterExtensionProps,
+                getPolygonOffset: (params) =>
+                  getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+                getLineWidth: (d) =>
+                  this._getHighlightLineWidth(d, { layer, sublayer, lineWidth: 4 }),
+                getLineColor: DEFAULT_BACKGROUND_COLOR,
+                updateTriggers: {
+                  getLineWidth: [highlightedFeatures],
+                  ...(hasFilters && {
+                    getFilterValue: [sublayer.filters],
+                  }),
+                },
+              }),
+              new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
+                id: `${props.id}-highlight-lines-fg`,
+                lineWidthMinPixels: 0,
+                lineWidthUnits: 'pixels',
+                filled: false,
+                lineJointRounded: true,
+                lineCapRounded: true,
+                visible: highlightedFeatures && highlightedFeatures?.length > 0,
+                ...sublayerFilterExtensionProps,
+                getPolygonOffset: (params) =>
+                  getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+                getLineWidth: (d) =>
+                  this._getHighlightLineWidth(d, { layer, sublayer, lineWidth: 2 }),
+                getLineColor: COLOR_HIGHLIGHT_LINE,
+                updateTriggers: {
+                  getLineWidth: [highlightedFeatures],
+                  ...(hasFilters && {
+                    getFilterValue: [sublayer.filters],
+                  }),
+                },
+              }),
+            ]
+          })
         },
       })
     })

@@ -1,11 +1,45 @@
 import { DEFAULT_ID_PROPERTY } from '../../utils'
 
-import type { ContextFeature, ContextPickingObject } from './context.types'
+import type {
+  ContextFeature,
+  ContextLayerConfigFilter,
+  ContextPickingObject,
+  ContextSubLayerConfig,
+} from './context.types'
 import { ContextLayerId } from './context.types'
 
 export const getContextId = (feature: ContextFeature, idProperty = DEFAULT_ID_PROPERTY): string => {
   if (!feature) return ''
   return feature.properties?.[idProperty] || feature.properties?.gfw_id || feature.properties.id
+}
+
+export function getValidSublayerFilters(sublayer: ContextSubLayerConfig) {
+  const filters: ContextLayerConfigFilter = {}
+  Object.entries(sublayer.filters || {}).forEach(([key, value]) => {
+    if (key !== undefined && key !== '' && value !== undefined) {
+      filters[key] = value
+    }
+  })
+  return filters
+}
+
+export function hasSublayerFilters(sublayer: ContextSubLayerConfig) {
+  return sublayer.filters ? Object.keys(getValidSublayerFilters(sublayer)).length > 0 : false
+}
+
+// https://deck.gl/docs/api-reference/extensions/data-filter-extension#filtercategories
+// The maximum number of supported is determined by the categorySize:
+// If categorySize is 1: 128 categories
+// If categorySize is 2: 64 categories per dimension
+// If categorySize is 3 or 4: 32 categories per dimension
+export function supportDataFilterExtension(sublayer: ContextSubLayerConfig) {
+  if (getValidSublayerFilters(sublayer).length > 4) {
+    console.warn(
+      'Filters for more than 4 categories are not supported by deck.gl, using CPU based filter as fallback'
+    )
+    return false
+  }
+  return true
 }
 
 export const getContextValue = (

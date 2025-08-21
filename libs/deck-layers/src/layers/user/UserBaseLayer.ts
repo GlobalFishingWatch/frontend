@@ -1,14 +1,21 @@
 import type { DefaultProps, LayerContext, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
+import type { DataFilterExtensionProps } from '@deck.gl/extensions'
 import { DataFilterExtension } from '@deck.gl/extensions'
 import type { GeoBoundingBox, TileLayerProps } from '@deck.gl/geo-layers'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { Entries } from 'type-fest'
 
 import type { DeckLayerProps } from '../../types'
-import { getFeatureInFilter } from '../../utils'
+import { getFeatureInFilters, isFeatureInFilter } from '../../utils'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
-import type { ContextFeature } from '../context'
-import { getContextId } from '../context/context.utils'
+import type { ContextFeature, ContextSubLayerConfig } from '../context'
+import {
+  getContextId,
+  getValidSublayerFilters,
+  hasSublayerFilters,
+  supportDataFilterExtension,
+} from '../context/context.utils'
 
 import type {
   BaseUserLayerProps,
@@ -74,8 +81,9 @@ export abstract class UserBaseLayer<
     const idProperty = this.props.layers[0].idProperty
     const valueProperties = this.props.layers[0].valueProperties || []
     // TODO: once filtered with the filter extension this works as expected
-    const filters = this.props.layers[0].sublayers?.flatMap((s) => Object.keys(s.filters || {}))
-    const color = this.props.layers[0].sublayers?.[0]?.color
+    const sublayers = this.props.layers[0].sublayers
+    const filters = sublayers?.flatMap((s) => Object.keys(s.filters || {}))
+    const color = sublayers?.[0]?.color
     const object = {
       ...(info.tile && {
         ...transformTileCoordsToWGS84(
@@ -94,8 +102,13 @@ export abstract class UserBaseLayer<
       subcategory: this.props.subcategory,
     } as UserLayerPickingObject
 
-    if (!getFeatureInFilter(object, filters)) {
-      return { ...info, object: undefined }
+    if (hasSublayerFilters(sublayers?.[0])) {
+      if (
+        !supportDataFilterExtension(sublayers?.[0]) &&
+        !getFeatureInFilters(object, filters, sublayers?.[0].filterOperators)
+      ) {
+        return { ...info, object: undefined }
+      }
     }
 
     if (!this.props.subcategory?.includes('draw')) {
@@ -219,5 +232,36 @@ export abstract class UserBaseLayer<
       }
     }
     return {}
+  }
+
+  _getSublayerFilterExtensionProps(sublayer: ContextSubLayerConfig): {
+    extensions: DataFilterExtension[]
+    filterRange: DataFilterExtensionProps['filterRange']
+    getFilterValue: DataFilterExtensionProps['getFilterValue']
+  } {
+    if (hasSublayerFilters(sublayer) && supportDataFilterExtension(sublayer)) {
+      const filterEntries = Object.entries(getValidSublayerFilters(sublayer)) as Entries<
+        typeof sublayer.filters
+      >
+      const hasMultipleFilters = filterEntries.length > 1
+
+      return {
+        extensions: [
+          new DataFilterExtension({
+            filterSize: filterEntries.length as DataFilterExtension['opts']['filterSize'],
+          }),
+        ],
+        filterRange: hasMultipleFilters
+          ? filterEntries.map(() => [1, 1] as [number, number])
+          : ([1, 1] as [number, number]),
+        getFilterValue: (d: UserLayerFeature) => {
+          const filters = filterEntries.map(([id, values]) =>
+            isFeatureInFilter(d, { id, values, operator: sublayer.filterOperators?.[id] }) ? 1 : 0
+          )
+          return hasMultipleFilters ? filters : filters[0]
+        },
+      }
+    }
+    return {} as ReturnType<typeof this._getSublayerFilterExtensionProps>
   }
 }

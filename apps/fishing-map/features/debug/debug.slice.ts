@@ -32,7 +32,8 @@ const initialState: DebugState = {
   featureFlags: {
     globalReports: false,
     workspaceGenerator: false,
-    othersReport: false,
+    // TODO: set this to false when we are ready to release
+    othersReport: true,
   },
   options: {
     datasetRelationship: false,
