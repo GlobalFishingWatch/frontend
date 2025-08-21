@@ -236,6 +236,10 @@ export type VesselCombinedSourcesInfo = {
   inferredVesselClassAg?: CombinedSourceInfo[]
   prodGeartypeSource?: CombinedSourceInfo[]
   registryVesselClass?: CombinedSourceInfo[]
+  bestVesselClassRf?: CombinedSourceInfo[]
+  rfCoarseClass?: CombinedSourceInfo[]
+  inferredLowActivityVesselClassAgRf?: CombinedSourceInfo[]
+  messyMmsi?: CombinedSourceInfo[]
 }
 
 export interface IdentityVessel {
