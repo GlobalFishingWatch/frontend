@@ -39,6 +39,10 @@ import {
   VIIRS_MATCH_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import {
+  RANDOM_FOREST_FISHING_EFFORT_DATAVIEW_ID,
+  RANDOM_FOREST_PRESENCE_DATAVIEW_ID,
+} from 'features/dataviews/dataviews.mock'
+import {
   BATHYMETRY_DATAVIEW_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
   GAPS_EVENTS_SOURCE_ID,
@@ -68,45 +72,65 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: BASEMAP_DATAVIEW_SLUG,
     },
     {
-      id: AIS_DATAVIEW_INSTANCE_ID,
+      id: 'random-forest-fishing',
       config: {
         visible: true,
-        datasets: [DEFAULT_FISHING_DATASET_ID],
+        datasets: ['public-global-fishing-effort-vi-653:v1.0'],
         filters: {
           distance_from_port_km: '3',
         },
       },
-      dataviewId: FISHING_DATAVIEW_SLUG_AIS,
+      dataviewId: RANDOM_FOREST_FISHING_EFFORT_DATAVIEW_ID,
     },
     {
-      id: VMS_DATAVIEW_INSTANCE_ID,
-      config: {
-        color: '#FFAA0D',
-        colorRamp: 'orange',
-        datasets: [
-          'public-belize-fishing-effort:v20220304',
-          'public-bra-onyxsat-fishing-effort:v20211126',
-          'public-chile-fishing-effort:v20211126',
-          'public-costa-rica-fishing-effort:v20211126',
-          'public-ecuador-fishing-effort:v20211126',
-          'public-indonesia-fishing-effort:v20200320',
-          'public-panama-fishing-effort:v20211126',
-          'public-peru-fishing-effort:v20211126',
-          'public-png-fishing-effort:v20230210',
-          'public-norway-fishing-effort:v20220112',
-        ],
-      },
-      dataviewId: FISHING_DATAVIEW_SLUG_VMS,
-    },
-    {
-      id: PRESENCE_DATAVIEW_INSTANCE_ID,
+      id: 'random-forest-presence',
       config: {
         color: '#FF64CE',
         colorRamp: 'magenta',
         visible: false,
       },
-      dataviewId: PRESENCE_DATAVIEW_SLUG,
+      dataviewId: RANDOM_FOREST_PRESENCE_DATAVIEW_ID,
     },
+    // {
+    //   id: AIS_DATAVIEW_INSTANCE_ID,
+    //   config: {
+    //     visible: true,
+    //     datasets: ['public-global-fishing-effort:v3.0'],
+    //     filters: {
+    //       distance_from_port_km: '3',
+    //     },
+    //   },
+    //   dataviewId: FISHING_DATAVIEW_SLUG_AIS,
+    // },
+    // {
+    //   id: VMS_DATAVIEW_INSTANCE_ID,
+    //   config: {
+    //     color: '#FFAA0D',
+    //     colorRamp: 'orange',
+    //     datasets: [
+    //       'public-belize-fishing-effort:v20220304',
+    //       'public-bra-onyxsat-fishing-effort:v20211126',
+    //       'public-chile-fishing-effort:v20211126',
+    //       'public-costa-rica-fishing-effort:v20211126',
+    //       'public-ecuador-fishing-effort:v20211126',
+    //       'public-indonesia-fishing-effort:v20200320',
+    //       'public-panama-fishing-effort:v20211126',
+    //       'public-peru-fishing-effort:v20211126',
+    //       'public-png-fishing-effort:v20230210',
+    //       'public-norway-fishing-effort:v20220112',
+    //     ],
+    //   },
+    //   dataviewId: FISHING_DATAVIEW_SLUG_VMS,
+    // },
+    // {
+    //   id: PRESENCE_DATAVIEW_INSTANCE_ID,
+    //   config: {
+    //     color: '#FF64CE',
+    //     colorRamp: 'magenta',
+    //     visible: false,
+    //   },
+    //   dataviewId: PRESENCE_DATAVIEW_SLUG,
+    // },
     {
       id: SENTINEL2_DATAVIEW_INSTANCE_ID,
       dataviewId: SENTINEL2_DATAVIEW_SLUG,
