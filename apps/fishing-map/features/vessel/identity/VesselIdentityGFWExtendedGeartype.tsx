@@ -35,6 +35,12 @@ const VesselIdentityGFWExtendedGeartype = ({
   const bqSource = identity?.combinedSourcesInfo?.prodGeartypeSource?.[sourceIndex]?.value as string
   const registryGearType = identity?.combinedSourcesInfo?.registryVesselClass?.[sourceIndex]
     ?.value as string
+  const bestVesselClassRf = identity?.combinedSourcesInfo?.bestVesselClassRf?.[sourceIndex]
+    ?.value as string
+  const rfCoarseClass = identity?.combinedSourcesInfo?.rfCoarseClass?.[sourceIndex]?.value as string
+  const inferredLowActivityVesselClassAgRf = identity?.combinedSourcesInfo
+    ?.inferredLowActivityVesselClassAgRf?.[sourceIndex]?.value as string
+  const messyMmsi = identity?.combinedSourcesInfo?.messyMmsi?.[sourceIndex]?.value as string
   return (
     <ul className={styles.extendedInfo}>
       <li>
@@ -66,6 +72,32 @@ const VesselIdentityGFWExtendedGeartype = ({
           <span className={cx(styles.secondary, styles.help)}>BQ Source: </span>
         </Tooltip>
         {bqSource?.toLowerCase() || EMPTY_FIELD_PLACEHOLDER}
+      </li>
+      <li>
+        <Tooltip content="">
+          <span className={cx(styles.secondary, styles.help)}>Best vessel class: </span>
+        </Tooltip>
+        {bestVesselClassRf?.toLowerCase() || EMPTY_FIELD_PLACEHOLDER}
+      </li>
+      <li>
+        <Tooltip content="">
+          <span className={cx(styles.secondary, styles.help)}>Rf coarse class: </span>
+        </Tooltip>
+        {rfCoarseClass?.toLowerCase() || EMPTY_FIELD_PLACEHOLDER}
+      </li>
+      <li>
+        <Tooltip content="">
+          <span className={cx(styles.secondary, styles.help)}>
+            Inferred low activity vessel class:
+          </span>
+        </Tooltip>
+        {inferredLowActivityVesselClassAgRf?.toLowerCase() || EMPTY_FIELD_PLACEHOLDER}
+      </li>
+      <li>
+        <Tooltip content="">
+          <span className={cx(styles.secondary, styles.help)}>Messy MMSI: </span>
+        </Tooltip>
+        {messyMmsi !== undefined ? messyMmsi.toString() : EMPTY_FIELD_PLACEHOLDER}
       </li>
     </ul>
   )
