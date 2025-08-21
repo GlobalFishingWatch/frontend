@@ -20,8 +20,8 @@ export type FourwingsInterval = 'YEAR' | 'MONTH' | 'DAY' | 'HOUR'
 type FourwingsAggregationOperation = 'sum' | 'avg'
 
 export type ParseFourwingsOptions = {
-  cols: number
-  rows: number
+  cols: number[]
+  rows: number[]
   tile?: TileLoadProps
   bufferedStartDate: number
   initialTimeRange?: {
@@ -30,9 +30,9 @@ export type ParseFourwingsOptions = {
   }
   interval: FourwingsInterval
   aggregationOperation: FourwingsAggregationOperation
-  scale?: number
-  offset?: number
-  noDataValue?: number
+  scale?: number[]
+  offset?: number[]
+  noDataValue?: number[]
   sublayers: number
   buffersLength: number[]
   workerUrl?: string

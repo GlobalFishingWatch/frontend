@@ -28,8 +28,8 @@ export const getPointsTemporalAggregated = (
   options?: FourwingsClustersLoaderOptions
 ): FourwingsPointFeature[] => {
   const {
-    scale = SCALE_VALUE,
-    offset = OFFSET_VALUE,
+    scale = [SCALE_VALUE],
+    offset = [OFFSET_VALUE],
     tile,
     cols,
     rows,
@@ -51,7 +51,7 @@ export const getPointsTemporalAggregated = (
       // this number defines the cell number frame
       cellNum = value
     } else if (indexInCell === CELL_VALUE_INDEX) {
-      const { col, row } = getCellProperties(tileBBox, cellNum, cols)
+      const { col, row } = getCellProperties(tileBBox, cellNum, cols[0])
       // this number defines the cell value frame
       features.push({
         type: 'Feature',
@@ -59,20 +59,20 @@ export const getPointsTemporalAggregated = (
           type: 'Point',
           coordinates: getCellPointCoordinates({
             cellIndex: cellNum,
-            cols,
-            rows,
+            cols: cols[0],
+            rows: rows[0],
             tileBBox,
           }),
         },
         properties: {
           // TODO:deck remove the round as won't be needed with real data
-          value: Math.round(offset + value * scale),
+          value: Math.round(offset[0] + value * scale[0]),
           id: generateUniqueId(tile!.index.x, tile!.index.y, cellNum),
           cellNum,
           cellBounds: getCellBounds({
             cellIndex: cellNum,
-            cols,
-            rows,
+            cols: cols[0],
+            rows: rows[0],
             tileBBox,
           }),
           tile: tile?.index,
@@ -92,15 +92,8 @@ export const getPoints = (
   intArray: FourwingsRawData,
   options?: FourwingsClustersLoaderOptions
 ): FourwingsPointFeature[] => {
-  const {
-    scale = SCALE_VALUE,
-    offset = OFFSET_VALUE,
-    noDataValue = NO_DATA_VALUE,
-    tile,
-    cols,
-    rows,
-    interval,
-  } = options?.fourwingsClusters || ({} as ParseFourwingsClustersOptions)
+  const { scale, offset, noDataValue, tile, cols, rows, interval } =
+    options?.fourwingsClusters || ({} as ParseFourwingsClustersOptions)
 
   const tileBBox: BBox = [
     (tile?.bbox as GeoBoundingBox).west,
@@ -126,17 +119,20 @@ export const getPoints = (
       endFrame = value
 
       const numCellValues = endFrame - startFrame + 1
-      const { col, row } = getCellProperties(tileBBox, cellNum, cols)
+      const { col, row } = getCellProperties(tileBBox, cellNum, cols[0])
       const coordinates = getCellPointCoordinates({
         cellIndex: cellNum,
-        cols,
-        rows,
+        cols: cols[0],
+        rows: rows[0],
         tileBBox,
       })
+      const sublayerScale = scale?.[0] ?? SCALE_VALUE
+      const sublayerOffset = offset?.[0] ?? OFFSET_VALUE
+      const sublayerNoDataValue = noDataValue?.[0] ?? NO_DATA_VALUE
       for (let j = 1; j <= numCellValues; j++) {
         const stime = CONFIG_BY_INTERVAL[interval]?.getIntervalTimestamp(startFrame + j - 1) / 1000
         const pointValue = intArray[i + j]
-        if (pointValue !== 0 && pointValue !== noDataValue) {
+        if (pointValue !== 0 && pointValue !== sublayerNoDataValue) {
           // this number defines the cell value frame
           features.push({
             type: 'Feature',
@@ -145,14 +141,14 @@ export const getPoints = (
               coordinates,
             },
             properties: {
-              value: Math.round(offset + pointValue * scale),
+              value: Math.round(sublayerOffset + pointValue * sublayerScale),
               id: generateUniqueId(tile!.index.x, tile!.index.y, cellNum + j),
               tile: tile?.index,
               cellNum,
               cellBounds: getCellBounds({
                 cellIndex: cellNum,
-                cols,
-                rows,
+                cols: cols[0],
+                rows: rows[0],
                 tileBBox,
               }),
               stime,

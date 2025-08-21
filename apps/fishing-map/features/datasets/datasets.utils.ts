@@ -275,7 +275,7 @@ export const getDatasetTitleByDataview = (
       .includes(VMS_DATAVIEW_INSTANCE_ID)
       ? 'VMS'
       : 'AIS'
-    datasetTitle = `${sourceType} ${t('common.apparentFishing')}`
+    datasetTitle = `${t('common.apparentFishing')} (${sourceType})`
   } else if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Presence) {
     datasetTitle = t('common.presence')
   } else if (category === DatasetCategory.Detections && subcategory === DatasetSubCategory.Viirs) {
