@@ -903,9 +903,7 @@
     "tracksDisabled": "Selecione pelo menos uma embarcação"
   },
   "toasts": {
-    "maxPointsVisualizationExceeded": "Visualização máxima de pontos excedida, alternando para o modo de mapa de calor.",
-    "shutdownDisclaimer": "As melhorias em produtos e dados serão aplicadas por 2 a 3 semanas em agosto. Alguns produtos podem não exibir os dados mais recentes. As atualizações completas serão retomadas em breve.",
-    "shutdownDisclaimerTitle": "Atraso temporário nas atualizações de dados"
+    "maxPointsVisualizationExceeded": "Visualização máxima de pontos excedida, alternando para o modo de mapa de calor."
   },
   "trackCorrection": {
     "adjustDisabled": "Adjusting the time range is needed.",

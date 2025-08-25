@@ -903,9 +903,7 @@
     "tracksDisabled": "Sélectionnez au moins un navire"
   },
   "toasts": {
-    "maxPointsVisualizationExceeded": "Le nombre maximal de points pouvant être visualisés est dépassé, passage en mode « carte thermique ».",
-    "shutdownDisclaimer": "Des améliorations seront apportées aux produits et aux données pendant deux à trois semaines en août. Certains produits pourraient ne pas afficher les données les plus récentes. Les mises à jour complètes reprendront prochainement.",
-    "shutdownDisclaimerTitle": "Délai temporaire des mises à jour des données"
+    "maxPointsVisualizationExceeded": "Le nombre maximal de points pouvant être visualisés est dépassé, passage en mode « carte thermique »."
   },
   "trackCorrection": {
     "adjustDisabled": "Adjusting the time range is needed.",
