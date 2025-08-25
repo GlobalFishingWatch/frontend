@@ -16,7 +16,7 @@ import type { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, InputText, Modal, Select } from '@globalfishingwatch/ui-components'
 
-import { PATH_BASENAME, ROOT_DOM_ELEMENT } from 'data/config'
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
@@ -25,6 +25,7 @@ import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/d
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { saveWorkspaceThunk, setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import { useOceanAreas } from 'hooks/ocean-areas'
 
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 
@@ -56,6 +57,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
   const privateDatasets = useSelector(selectPrivateDatasetsInWorkspace)
   const workspace = useSelector(selectWorkspaceWithCurrentState)
   const containsPrivateDatasets = privateDatasets.length > 0
+  const { getOceanAreaName } = useOceanAreas()
 
   const [name, setName] = useState('')
   const [viewAccess, setViewAccess] = useState<WorkspaceViewAccessType>(WORKSPACE_PUBLIC_ACCESS)
@@ -89,23 +91,17 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
     let workspaceName = workspace?.name
     if (!workspaceName) {
       try {
-        const response = await fetch(`${PATH_BASENAME}/api/ocean-areas/name`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+        const areaName = await getOceanAreaName({
+          viewport: {
+            latitude: viewport.latitude,
+            longitude: viewport.longitude,
+            zoom: viewport.zoom,
           },
-          body: JSON.stringify({
-            ...viewport,
-            locale: i18n.language as OceanAreaLocale,
-          }),
+          locale: i18n.language as OceanAreaLocale,
+          combineWithEEZ: true,
         })
-
-        let areaName = ''
-        if (response.ok) {
-          const result = await response.json()
-          areaName = result.data || ''
-        } else {
-          console.error('Failed to get ocean area name:', response.statusText)
+        if (areaName) {
+          workspaceName = areaName
         }
 
         const workspaceTimerangeName = getWorkspaceTimerangeName(timeRangeOption, {

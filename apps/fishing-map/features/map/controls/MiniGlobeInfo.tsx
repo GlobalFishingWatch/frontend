@@ -4,7 +4,7 @@ import formatcoords from 'formatcoords'
 
 import type { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 
-import { PATH_BASENAME } from 'data/config'
+import { useOceanAreas } from 'hooks/ocean-areas'
 import type { MapCoordinates } from 'types'
 import { toFixed } from 'utils/shared'
 
@@ -14,29 +14,21 @@ const MiniGlobeInfo = ({ viewport }: { viewport: MapCoordinates }) => {
   const { i18n } = useTranslation()
   const [showDMS, setShowDMS] = useState(true)
   const [areaName, setAreaName] = useState('')
+  const { getOceanAreaName } = useOceanAreas()
 
   useEffect(() => {
     const updateAreaName = async (viewport: MapCoordinates, locale: OceanAreaLocale) => {
       try {
-        const response = await fetch(`${PATH_BASENAME}/api/ocean-areas/name`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+        const areaName = await getOceanAreaName({
+          viewport: {
+            latitude: viewport.latitude,
+            longitude: viewport.longitude,
+            zoom: viewport.zoom,
           },
-          body: JSON.stringify({
-            ...viewport,
-            locale,
-            combineWithEEZ: true,
-          }),
+          locale,
+          combineWithEEZ: true,
         })
-
-        if (response.ok) {
-          const result = await response.json()
-          setAreaName(result.data || '')
-        } else {
-          console.error('Failed to get ocean area name:', response.statusText)
-          setAreaName('')
-        }
+        setAreaName(areaName || '')
       } catch (error) {
         console.error('Error getting ocean area name:', error)
         setAreaName('')

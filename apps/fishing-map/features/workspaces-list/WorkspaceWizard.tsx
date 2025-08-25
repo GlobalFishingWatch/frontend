@@ -10,7 +10,6 @@ import type { Dataview } from '@globalfishingwatch/api-types'
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 
-import { PATH_BASENAME } from 'data/config'
 import {
   MARINE_MANAGER_DATAVIEWS,
   MARINE_MANAGER_DATAVIEWS_INSTANCES,
@@ -29,6 +28,7 @@ import { fetchDataviewsByIdsThunk, selectAllDataviews } from 'features/dataviews
 import { t as trans } from 'features/i18n/i18n'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useMapViewState } from 'features/map/map-viewport.hooks'
+import { useOceanAreas } from 'hooks/ocean-areas'
 import { WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
 import type { Bbox } from 'types'
 import { getEventLabel } from 'utils/analytics'
@@ -55,28 +55,16 @@ function WorkspaceWizard() {
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
   const [selectedItem, setSelectedItem] = useState<OceanArea | null>(null)
   const [inputSearch, setInputSearch] = useState<string>('')
+  const { searchOceanAreas } = useOceanAreas()
 
   const updateMatchingAreas = async (inputValue: string) => {
     try {
-      const response = await fetch(`${PATH_BASENAME}/api/ocean-areas/search`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          query: inputValue,
-          locale: i18n.language as OceanAreaLocale,
-          types: ['eez', 'mpa', 'fao', 'rfmo'],
-        }),
+      const areas = await searchOceanAreas({
+        query: inputValue,
+        locale: i18n.language as OceanAreaLocale,
+        types: ['eez', 'mpa', 'fao', 'rfmo'],
       })
-
-      if (response.ok) {
-        const result = await response.json()
-        setAreasMatching((result.data || []).slice(0, MAX_RESULTS_NUMBER))
-      } else {
-        console.error('Failed to search ocean areas:', response.statusText)
-        setAreasMatching([])
-      }
+      setAreasMatching((areas || []).slice(0, MAX_RESULTS_NUMBER))
     } catch (error) {
       console.error('Error searching ocean areas:', error)
       setAreasMatching([])
