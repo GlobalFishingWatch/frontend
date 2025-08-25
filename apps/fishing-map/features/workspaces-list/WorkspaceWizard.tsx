@@ -8,7 +8,6 @@ import Link from 'redux-first-router-link'
 
 import type { Dataview } from '@globalfishingwatch/api-types'
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
-import { searchOceanAreas } from '@globalfishingwatch/ocean-areas'
 import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 
 import {
@@ -29,6 +28,7 @@ import { fetchDataviewsByIdsThunk, selectAllDataviews } from 'features/dataviews
 import { t as trans } from 'features/i18n/i18n'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useMapViewState } from 'features/map/map-viewport.hooks'
+import { useOceanAreas } from 'hooks/ocean-areas'
 import { WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
 import type { Bbox } from 'types'
 import { getEventLabel } from 'utils/analytics'
@@ -55,13 +55,20 @@ function WorkspaceWizard() {
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
   const [selectedItem, setSelectedItem] = useState<OceanArea | null>(null)
   const [inputSearch, setInputSearch] = useState<string>('')
+  const { searchOceanAreas } = useOceanAreas()
 
   const updateMatchingAreas = async (inputValue: string) => {
-    const matchingAreas = await searchOceanAreas(inputValue, {
-      locale: i18n.language as OceanAreaLocale,
-      types: ['eez', 'mpa', 'fao', 'rfmo'],
-    })
-    setAreasMatching(matchingAreas.slice(0, MAX_RESULTS_NUMBER))
+    try {
+      const areas = await searchOceanAreas({
+        query: inputValue,
+        locale: i18n.language as OceanAreaLocale,
+        types: ['eez', 'mpa', 'fao', 'rfmo'],
+      })
+      setAreasMatching((areas || []).slice(0, MAX_RESULTS_NUMBER))
+    } catch (error) {
+      console.error('Error searching ocean areas:', error)
+      setAreasMatching([])
+    }
   }
 
   const onInputChange = ({ inputValue }: UseComboboxStateChange<OceanArea>) => {

@@ -13,7 +13,6 @@ import {
   WORKSPACE_PUBLIC_ACCESS,
 } from '@globalfishingwatch/api-types'
 import type { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
-import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, InputText, Modal, Select } from '@globalfishingwatch/ui-components'
 
@@ -26,6 +25,7 @@ import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/d
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { saveWorkspaceThunk, setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import { useOceanAreas } from 'hooks/ocean-areas'
 
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 
@@ -57,6 +57,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
   const privateDatasets = useSelector(selectPrivateDatasetsInWorkspace)
   const workspace = useSelector(selectWorkspaceWithCurrentState)
   const containsPrivateDatasets = privateDatasets.length > 0
+  const { getOceanAreaName } = useOceanAreas()
 
   const [name, setName] = useState('')
   const [viewAccess, setViewAccess] = useState<WorkspaceViewAccessType>(WORKSPACE_PUBLIC_ACCESS)
@@ -89,18 +90,37 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
   const setDefaultWorkspaceName = async () => {
     let workspaceName = workspace?.name
     if (!workspaceName) {
-      const areaName = await getOceanAreaName(viewport, {
-        locale: i18n.language as OceanAreaLocale,
-      })
-      const workspaceTimerangeName = getWorkspaceTimerangeName(timeRangeOption, {
-        timerange,
-        daysFromLatest,
-      })
+      try {
+        const areaName = await getOceanAreaName({
+          viewport: {
+            latitude: viewport.latitude,
+            longitude: viewport.longitude,
+            zoom: viewport.zoom,
+          },
+          locale: i18n.language as OceanAreaLocale,
+          combineWithEEZ: true,
+        })
+        if (areaName) {
+          workspaceName = areaName
+        }
 
-      if (workspaceTimerangeName) {
-        workspaceName = `${workspaceTimerangeName} ${areaName ? `near ${areaName}` : ''}`
-      } else {
-        workspaceName = areaName
+        const workspaceTimerangeName = getWorkspaceTimerangeName(timeRangeOption, {
+          timerange,
+          daysFromLatest,
+        })
+
+        if (workspaceTimerangeName) {
+          workspaceName = `${workspaceTimerangeName} ${areaName ? `near ${areaName}` : ''}`
+        } else {
+          workspaceName = areaName
+        }
+      } catch (error) {
+        console.error('Error getting ocean area name:', error)
+        const workspaceTimerangeName = getWorkspaceTimerangeName(timeRangeOption, {
+          timerange,
+          daysFromLatest,
+        })
+        workspaceName = workspaceTimerangeName || ''
       }
     }
     if (workspaceName) {

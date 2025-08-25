@@ -46,7 +46,7 @@ const MIN_ZOOM_TO_PREFER_EEZS = 5
 const MAX_RESULTS_NUMBER = 10
 
 type GetOceanAreaNameLocaleParam = {
-  locale: OceanAreaLocale
+  locale?: OceanAreaLocale
 }
 
 const localizeName = (name: OceanAreaLocaleKey, locale = OceanAreaLocale.en) => {
