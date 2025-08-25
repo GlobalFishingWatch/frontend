@@ -13,11 +13,10 @@ import {
   WORKSPACE_PUBLIC_ACCESS,
 } from '@globalfishingwatch/api-types'
 import type { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
-import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, InputText, Modal, Select } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/config'
+import { PATH_BASENAME, ROOT_DOM_ELEMENT } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
@@ -89,18 +88,43 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
   const setDefaultWorkspaceName = async () => {
     let workspaceName = workspace?.name
     if (!workspaceName) {
-      const areaName = await getOceanAreaName(viewport, {
-        locale: i18n.language as OceanAreaLocale,
-      })
-      const workspaceTimerangeName = getWorkspaceTimerangeName(timeRangeOption, {
-        timerange,
-        daysFromLatest,
-      })
+      try {
+        const response = await fetch(`${PATH_BASENAME}/api/ocean-areas/name`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...viewport,
+            locale: i18n.language as OceanAreaLocale,
+          }),
+        })
 
-      if (workspaceTimerangeName) {
-        workspaceName = `${workspaceTimerangeName} ${areaName ? `near ${areaName}` : ''}`
-      } else {
-        workspaceName = areaName
+        let areaName = ''
+        if (response.ok) {
+          const result = await response.json()
+          areaName = result.data || ''
+        } else {
+          console.error('Failed to get ocean area name:', response.statusText)
+        }
+
+        const workspaceTimerangeName = getWorkspaceTimerangeName(timeRangeOption, {
+          timerange,
+          daysFromLatest,
+        })
+
+        if (workspaceTimerangeName) {
+          workspaceName = `${workspaceTimerangeName} ${areaName ? `near ${areaName}` : ''}`
+        } else {
+          workspaceName = areaName
+        }
+      } catch (error) {
+        console.error('Error getting ocean area name:', error)
+        const workspaceTimerangeName = getWorkspaceTimerangeName(timeRangeOption, {
+          timerange,
+          daysFromLatest,
+        })
+        workspaceName = workspaceTimerangeName || ''
       }
     }
     if (workspaceName) {

@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import formatcoords from 'formatcoords'
 
 import type { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
-import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
 
+import { PATH_BASENAME } from 'data/config'
 import type { MapCoordinates } from 'types'
 import { toFixed } from 'utils/shared'
 
@@ -17,11 +17,30 @@ const MiniGlobeInfo = ({ viewport }: { viewport: MapCoordinates }) => {
 
   useEffect(() => {
     const updateAreaName = async (viewport: MapCoordinates, locale: OceanAreaLocale) => {
-      const areaName = await getOceanAreaName(viewport, {
-        locale,
-        combineWithEEZ: true,
-      })
-      setAreaName(areaName)
+      try {
+        const response = await fetch(`${PATH_BASENAME}/api/ocean-areas/name`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...viewport,
+            locale,
+            combineWithEEZ: true,
+          }),
+        })
+
+        if (response.ok) {
+          const result = await response.json()
+          setAreaName(result.data || '')
+        } else {
+          console.error('Failed to get ocean area name:', response.statusText)
+          setAreaName('')
+        }
+      } catch (error) {
+        console.error('Error getting ocean area name:', error)
+        setAreaName('')
+      }
     }
     updateAreaName(viewport, i18n.language as OceanAreaLocale)
   }, [i18n.language, viewport])

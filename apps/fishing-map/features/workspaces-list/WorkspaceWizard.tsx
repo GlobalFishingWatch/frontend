@@ -8,9 +8,9 @@ import Link from 'redux-first-router-link'
 
 import type { Dataview } from '@globalfishingwatch/api-types'
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
-import { searchOceanAreas } from '@globalfishingwatch/ocean-areas'
 import { Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 
+import { PATH_BASENAME } from 'data/config'
 import {
   MARINE_MANAGER_DATAVIEWS,
   MARINE_MANAGER_DATAVIEWS_INSTANCES,
@@ -57,11 +57,30 @@ function WorkspaceWizard() {
   const [inputSearch, setInputSearch] = useState<string>('')
 
   const updateMatchingAreas = async (inputValue: string) => {
-    const matchingAreas = await searchOceanAreas(inputValue, {
-      locale: i18n.language as OceanAreaLocale,
-      types: ['eez', 'mpa', 'fao', 'rfmo'],
-    })
-    setAreasMatching(matchingAreas.slice(0, MAX_RESULTS_NUMBER))
+    try {
+      const response = await fetch(`${PATH_BASENAME}/api/ocean-areas/search`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: inputValue,
+          locale: i18n.language as OceanAreaLocale,
+          types: ['eez', 'mpa', 'fao', 'rfmo'],
+        }),
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        setAreasMatching((result.data || []).slice(0, MAX_RESULTS_NUMBER))
+      } else {
+        console.error('Failed to search ocean areas:', response.statusText)
+        setAreasMatching([])
+      }
+    } catch (error) {
+      console.error('Error searching ocean areas:', error)
+      setAreasMatching([])
+    }
   }
 
   const onInputChange = ({ inputValue }: UseComboboxStateChange<OceanArea>) => {

@@ -6,9 +6,9 @@ import { useCombobox } from 'downshift'
 import type { Point } from 'geojson'
 
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
-import { searchOceanAreas } from '@globalfishingwatch/ocean-areas'
 import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 
+import { PATH_BASENAME } from 'data/config'
 import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
 import { useAppDispatch } from 'features/app/app.hooks'
 import Hint from 'features/help/Hint'
@@ -74,10 +74,29 @@ const MapSearch = () => {
       setAreasMatching([])
     } else {
       setQuery(inputValue)
-      const areas = await searchOceanAreas(inputValue, {
-        locale: i18n.language as OceanAreaLocale,
-      })
-      setAreasMatching(areas)
+      try {
+        const response = await fetch(`${PATH_BASENAME}/api/ocean-areas/search`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            query: inputValue,
+            locale: i18n.language as OceanAreaLocale,
+          }),
+        })
+
+        if (response.ok) {
+          const result = await response.json()
+          setAreasMatching(result.data || [])
+        } else {
+          console.error('Failed to search ocean areas:', response.statusText)
+          setAreasMatching([])
+        }
+      } catch (error) {
+        console.error('Error searching ocean areas:', error)
+        setAreasMatching([])
+      }
     }
   }
 
