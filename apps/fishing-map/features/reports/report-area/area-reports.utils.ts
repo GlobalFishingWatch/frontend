@@ -8,7 +8,7 @@ import { matchSorter } from 'match-sorter'
 import { parse } from 'qs'
 
 import { API_VERSION } from '@globalfishingwatch/api-client'
-import type { Dataview } from '@globalfishingwatch/api-types'
+import { DatasetCategory, type Dataview } from '@globalfishingwatch/api-types'
 import { getFeatureBuffer, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
@@ -86,7 +86,15 @@ export const getReportCategoryFromDataview = (
 export const getReportSubCategoryFromDataview = (
   dataview: Dataview | UrlDataviewInstance
 ): ReportActivitySubCategory | ReportDetectionsSubCategory => {
-  return dataview.datasets?.[0]?.subcategory as unknown as
+  // Workaround to display BQ datasets as fishing ones (e.g. turning-tides)
+  if (
+    dataview.datasets?.[0]?.category === DatasetCategory.Activity &&
+    dataview.datasets?.[0]?.subcategory === 'user'
+  ) {
+    return 'fishing' as ReportActivitySubCategory
+  }
+
+  return dataview.datasets?.[0]?.subcategory as
     | ReportActivitySubCategory
     | ReportDetectionsSubCategory
 }
