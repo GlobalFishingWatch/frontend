@@ -10,7 +10,6 @@ import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
 import menuBgImage from 'assets/images/menubg.jpg'
 import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { useShutdownDisclaimerToast } from 'features/app/disclaimers.hooks'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
 import { useFeatureFlagsToast } from 'features/debug/debug.hooks'
@@ -81,7 +80,6 @@ function App() {
   useBeforeUnload()
   useUserLanguageUpdate()
   useFeatureFlagsToast()
-  useShutdownDisclaimerToast()
   useFetchTrackCorrections()
   const dispatch = useAppDispatch()
   const sidebarOpen = useSelector(selectSidebarOpen)

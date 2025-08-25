@@ -6,7 +6,6 @@ import { useCombobox } from 'downshift'
 import type { Point } from 'geojson'
 
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
-import { searchOceanAreas } from '@globalfishingwatch/ocean-areas'
 import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 
 import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
@@ -16,6 +15,7 @@ import { setHintDismissed } from 'features/help/hints.slice'
 import { PORTS_LAYER_ID } from 'features/map/map.config'
 import { useMapSetViewState } from 'features/map/map-viewport.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { useOceanAreas } from 'hooks/ocean-areas'
 import type { Bbox } from 'types'
 import { formatInfoField } from 'utils/info'
 
@@ -30,6 +30,7 @@ const MapSearch = () => {
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { searchOceanAreas } = useOceanAreas()
 
   const fitBounds = useMapFitBounds()
   const setMapViewState = useMapSetViewState()
@@ -74,10 +75,16 @@ const MapSearch = () => {
       setAreasMatching([])
     } else {
       setQuery(inputValue)
-      const areas = await searchOceanAreas(inputValue, {
-        locale: i18n.language as OceanAreaLocale,
-      })
-      setAreasMatching(areas)
+      try {
+        const areas = await searchOceanAreas({
+          query: inputValue,
+          locale: i18n.language as OceanAreaLocale,
+        })
+        setAreasMatching(areas || [])
+      } catch (error) {
+        console.error('Error searching ocean areas:', error)
+        setAreasMatching([])
+      }
     }
   }
 

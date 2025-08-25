@@ -8,12 +8,12 @@ import { useCombobox } from 'downshift'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
-import { searchOceanAreas } from '@globalfishingwatch/ocean-areas'
 import { InputText } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { t as trans } from 'features/i18n/i18n'
+import { useOceanAreas } from 'hooks/ocean-areas'
 import { WORKSPACE_REPORT } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectLocationQuery } from 'routes/routes.selectors'
@@ -39,14 +39,20 @@ function AreaReportSearch() {
   const [inputSearch, setInputSearch] = useState<string>('')
   const dataviews = useSelector(selectContextAreasDataviews)
   const query = useSelector(selectLocationQuery)
+  const { searchOceanAreas } = useOceanAreas()
   const { dispatchLocation } = useLocationConnect()
 
   const updateMatchingAreas = async (inputValue: string) => {
-    const matchingAreas = await searchOceanAreas(inputValue, {
-      locale: i18n.language as OceanAreaLocale,
-      types: ['eez', 'mpa', 'fao', 'rfmo'],
-    })
-    setAreasMatching(matchingAreas.slice(0, MAX_RESULTS_NUMBER))
+    try {
+      const areas = await searchOceanAreas({
+        query: inputValue,
+        locale: i18n.language as OceanAreaLocale,
+      })
+      setAreasMatching((areas || []).slice(0, MAX_RESULTS_NUMBER))
+    } catch (error) {
+      console.error('Error searching ocean areas:', error)
+      setAreasMatching([])
+    }
   }
 
   const onInputChange = ({ inputValue }: UseComboboxStateChange<OceanArea>) => {

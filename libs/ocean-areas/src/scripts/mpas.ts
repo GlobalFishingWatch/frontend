@@ -14,6 +14,6 @@ prepare({
   },
   limitBy: (areas: Feature[]) => {
     const areasByArea = areas.sort((a, b) => a.properties?.GIS_AREA - b.properties?.GIS_AREA)
-    return areasByArea.slice(0, 1000)
+    return areasByArea
   },
 })
