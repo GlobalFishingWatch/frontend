@@ -33,6 +33,7 @@ export default function ReportSummaryTags({ dataview }: LayerPanelProps) {
   }
 
   const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+  const hasFilterSelected = filtersAllowed.some((filter) => filter.optionsSelected.length > 0)
 
   return (
     <div className={styles.row}>
@@ -58,18 +59,23 @@ export default function ReportSummaryTags({ dataview }: LayerPanelProps) {
       </div>
       <Fragment>
         {(reportCategory === ReportCategory.Activity ||
-          reportCategory === ReportCategory.Detections) && (
+          reportCategory === ReportCategory.Detections ||
+          reportCategory === ReportCategory.Others) && (
           <Fragment>
             <DatasetFilterSource dataview={dataview} className={styles.tag} />
-            {filtersAllowed.map(({ id, label }) => (
-              <DatasetSchemaField
-                key={id}
-                dataview={dataview}
-                field={id}
-                label={label}
-                className={styles.tag}
-              />
-            ))}
+            {hasFilterSelected ? (
+              filtersAllowed.map(({ id, label }) => (
+                <DatasetSchemaField
+                  key={id}
+                  dataview={dataview}
+                  field={id}
+                  label={label}
+                  className={styles.tag}
+                />
+              ))
+            ) : (
+              <label>{t('selects.allSelected')}</label>
+            )}
           </Fragment>
         )}
         {reportCategory === ReportCategory.Environment ? (

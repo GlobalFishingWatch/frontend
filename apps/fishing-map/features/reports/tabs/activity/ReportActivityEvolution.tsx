@@ -106,7 +106,7 @@ const ReportActivityEvolution: React.FC<{
           )}
           {data?.sublayers.map(({ id, legend }, index) => (
             <Line
-              key={`${id}-line`}
+              key={`${id}-${index}-line`}
               name="line"
               type="monotone"
               dataKey={(data) => data.avg?.[index]}
@@ -119,7 +119,7 @@ const ReportActivityEvolution: React.FC<{
           ))}
           {data?.sublayers.map(({ id, legend }, index) => (
             <Area
-              key={`${id}-area`}
+              key={`${id}-${index}-area`}
               name="area"
               type="monotone"
               dataKey={(data) => data.range?.[index]}

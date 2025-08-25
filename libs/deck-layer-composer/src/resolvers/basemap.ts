@@ -4,7 +4,7 @@ import { findDatasetByType, resolveEndpoint } from '@globalfishingwatch/datasets
 import type { BaseMapLabelsLayerProps, BaseMapLayerProps } from '@globalfishingwatch/deck-layers'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 
-import type { DeckResolverFunction } from './types'
+import type { DeckResolverFunction } from '../types/resolvers'
 
 export const resolveDeckBasemapLabelsLayerProps: DeckResolverFunction<BaseMapLabelsLayerProps> = (
   dataview

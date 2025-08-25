@@ -729,7 +729,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const layer = this.getLayerInstance()
     if (layer) {
       const offset = getZoomOffsetByResolution(this.props.resolution!, this.context.viewport.zoom)
-      const roudedZoom = Math.round(this.context.viewport.zoom)
+      const roundedZoom = Math.round(this.context.viewport.zoom)
       return layer
         .getSubLayers()
         .map((l: any) => {
@@ -739,7 +739,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
           if (l.props.tile.zoom === l.props.maxZoom) {
             return l.getData({ aggregated })
           }
-          return l.props.tile.zoom === roudedZoom + offset ? l.getData({ aggregated }) : []
+          return l.props.tile.zoom === roundedZoom + offset ? l.getData({ aggregated }) : []
         })
         .filter((t) => t.length > 0) as FourwingsFeature[][]
     }

@@ -9,11 +9,14 @@ import type {
 } from '@globalfishingwatch/deck-layers'
 import { getUTCDateTime } from '@globalfishingwatch/deck-layers'
 
+import type { ResolvedFourwingsDataviewInstance } from '../types/dataviews'
+import type { DeckResolverFunction } from '../types/resolvers'
+
 import { getDataviewAvailableIntervals } from './dataviews'
-import type { DeckResolverFunction } from './types'
 
 export const resolveDeckCurrentsLayerProps: DeckResolverFunction<
-  FourwingsCurrentsTileLayerProps
+  FourwingsCurrentsTileLayerProps,
+  ResolvedFourwingsDataviewInstance
 > = (dataview, { start, end, highlightedFeatures }): FourwingsCurrentsTileLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity

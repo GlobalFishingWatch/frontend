@@ -12,28 +12,7 @@ export type FilterOperators = Record<string, 'include' | 'exclude'>
 export type BaseUserLayerProps = {
   id: string
   layers: ContextLayerConfig<string>[]
-  color: string
-  thickness: number
-  idProperty?: string
-  valueProperties?: string[]
   highlightedFeatures?: UserLayerPickingObject[]
-  /**
-   * Disable interaction (needed when user uploaded a non-polygon layer)
-   * legacy known as disableInteraction
-   */
-  pickable?: boolean
-  /**
-   * SQL filter to apply to the dataset
-   */
-  filter?: string
-  /**
-   * Filters object without parse
-   */
-  filters?: Record<string, any>
-  /**
-   * Filters operators object without parse
-   */
-  filterOperators?: FilterOperators
   /**
    * Global timerange config filter timestamps
    */
@@ -96,6 +75,8 @@ export type UserTrackLayerProps = DeckLayerProps<
     singleTrack?: boolean
   }
 >
+
+export type AnyUserLayerProps = UserPolygonsLayerProps | UserPointsLayerProps | UserTrackLayerProps
 
 export type UserLayerFeatureProperties = {
   id: string
