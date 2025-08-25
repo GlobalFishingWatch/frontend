@@ -44,3 +44,7 @@
 .label.active {
   color: var(--color-primary-blue);
 }
+
+.label.disabled {
+  cursor: not-allowed;
+}

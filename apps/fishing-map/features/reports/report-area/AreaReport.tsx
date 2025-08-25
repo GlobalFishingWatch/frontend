@@ -10,6 +10,7 @@ import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectTimebarSelectedEnvId } from 'features/app/selectors/app.timebar.selectors'
 import { selectReportLayersVisible } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   selectIsGlobalReportsEnabled,
@@ -82,6 +83,7 @@ export default function Report() {
   const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
   const isOthersReportEnabled = useSelector(selectIsOthersReportEnabled)
   const reportDataviews = useSelector(selectReportLayersVisible)
+  const timebarSelectedEnvId = useSelector(selectTimebarSelectedEnvId)
   const dataviewCategories = useMemo(
     () => uniq(reportDataviews?.map((d) => getReportCategoryFromDataview(d)) || []),
     [reportDataviews]
@@ -155,7 +157,7 @@ export default function Report() {
         reportDataviews.length > 0
       ) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment)
-        dispatchTimebarSelectedEnvId(reportDataviews[0]?.id)
+        dispatchTimebarSelectedEnvId(timebarSelectedEnvId || reportDataviews[0]?.id)
       } else if (category === ReportCategory.Activity || category === ReportCategory.Detections) {
         dispatchTimebarVisualisation(
           category === ReportCategory.Detections
@@ -164,7 +166,12 @@ export default function Report() {
         )
       }
     },
-    [reportDataviews, dispatchTimebarSelectedEnvId, dispatchTimebarVisualisation]
+    [
+      reportDataviews,
+      dispatchTimebarSelectedEnvId,
+      dispatchTimebarVisualisation,
+      timebarSelectedEnvId,
+    ]
   )
 
   useEffect(() => {
