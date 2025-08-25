@@ -23,9 +23,9 @@ import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.sl
 import WhatsNew from 'features/sidebar/WhatsNew'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
-import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import { selectIsDefaultWorkspace, selectWorkspace } from 'features/workspace/workspace.selectors'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
-import { SEARCH, USER, WORKSPACE_SEARCH, WORKSPACES_LIST } from 'routes/routes'
+import { HOME, SEARCH, USER, WORKSPACE_SEARCH, WORKSPACES_LIST } from 'routes/routes'
 import {
   selectIsAnySearchLocation,
   selectIsWorkspaceLocation,
@@ -60,6 +60,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const locationCategory = useSelector(selectWorkspaceCategory)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
+  const isDefaultWorkspace = useSelector(selectIsDefaultWorkspace)
   const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const userData = useSelector(selectUserData)
 
@@ -91,6 +92,27 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           <span className={styles.tabContent}>
             <Icon icon="menu" />
           </span>
+        </li>
+        <li
+          className={cx(styles.tab, {
+            [styles.current]: isWorkspaceLocation && isDefaultWorkspace,
+          })}
+        >
+          <Link
+            className={styles.tabContent}
+            to={{
+              type: HOME,
+              payload: {},
+              query: {},
+              replaceQuery: true,
+            }}
+          >
+            <Tooltip content={t('common.seeDefault')} placement="right">
+              <span className={styles.tabContent}>
+                <Icon icon="home" className={styles.searchIcon} />
+              </span>
+            </Tooltip>
+          </Link>
         </li>
         <li
           className={cx(styles.tab, {
