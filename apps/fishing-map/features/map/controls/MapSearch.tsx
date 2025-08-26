@@ -127,6 +127,10 @@ const MapSearch = () => {
       <div className={cx(styles.searchContainer, { [styles.hidden]: !isOpen })}>
         <InputText
           {...getInputProps({ ref: inputRef })}
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+          }}
           className={styles.input}
           testId="map-search-input"
           placeholder={t('map.search')}
