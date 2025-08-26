@@ -75,13 +75,13 @@ const VesselIdentityGFWExtendedGeartype = ({
       </li>
       <li>
         <Tooltip content="">
-          <span className={cx(styles.secondary, styles.help)}>Best vessel class: </span>
+          <span className={cx(styles.secondary, styles.help)}>Random Forest estimate: </span>
         </Tooltip>
         {bestVesselClassRf?.toLowerCase() || EMPTY_FIELD_PLACEHOLDER}
       </li>
       <li>
         <Tooltip content="">
-          <span className={cx(styles.secondary, styles.help)}>Rf coarse class: </span>
+          <span className={cx(styles.secondary, styles.help)}>RF coarse class: </span>
         </Tooltip>
         {rfCoarseClass?.toLowerCase() || EMPTY_FIELD_PLACEHOLDER}
       </li>
