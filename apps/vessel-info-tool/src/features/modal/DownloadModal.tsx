@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import type { Vessel } from '@/types/vessel.types';
+import type { Vessel } from '@/types/vessel.types'
 import { RFMO } from '@/types/vessel.types'
-import { parseVessels } from '@/utils/vessels'
+import { handleExportICCATVessels, parseVessels } from '@/utils/vessels'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, Modal, Select } from '@globalfishingwatch/ui-components'
 
@@ -43,8 +43,9 @@ const DownloadModal: React.FC<DownloadModalProps> = ({
   const handleDownload = async () => {
     try {
       setIsLoading(true)
-      const vessels = data.filter((vessel: Vessel) => vessel.id.includes(selectedIds.toString()))
+      const vessels = data.filter((vessel) => selectedIds.includes(vessel.id))
       const parsed = parseVessels(vessels, selectedRFMO.id as RFMO)
+      handleExportICCATVessels(parsed)
       onClose()
     } catch (error) {
       console.error('Download failed:', error)

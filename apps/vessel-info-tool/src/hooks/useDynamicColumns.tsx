@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import type { Row, Table } from '@tanstack/react-table'
 import escapeRegExp from 'lodash/escapeRegExp'
 
-import { Vessel } from '@/types/vessel.types'
+import type { Vessel } from '@/types/vessel.types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import styles from '../styles/global.module.css'
@@ -38,19 +38,7 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
   return useMemo(() => {
     if (!data.length) return []
 
-    const keys = Object.keys(data[0])
-    const nameKey = [
-      keys.find((key) => {
-        const lowerKey = key.toLowerCase()
-        return (
-          lowerKey.includes('name') ||
-          lowerKey.includes('nom') ||
-          lowerKey.includes('nombre') ||
-          lowerKey.includes('nome')
-        )
-      }) || keys[0],
-    ]
-    const otherKeys = keys.filter((key) => key !== nameKey[0])
+    const keys = Object.keys(data[0]).filter((key) => Boolean(key))
 
     return [
       {
@@ -77,31 +65,19 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
         enableColumnFilter: false,
         size: 50,
       },
-      {
-        accessorKey: String(nameKey[0]),
-        header: nameKey[0] || 'Name',
-        id: String(nameKey[0] || `col_01`),
-        size: 230,
-        cell: ({ row, getValue }: { row: Row<T>; getValue: () => any }) => (
-          <div className="flex items-center justify-between p-2">
-            <span>{String(getValue() || '-')}</span>
-            <IconButton
-              {...{
-                onClick: row.getToggleExpandedHandler(),
-                style: { cursor: 'pointer' },
-              }}
-              icon={row.getIsExpanded() ? 'arrow-top' : 'arrow-down'}
-              size="small"
-            />
-          </div>
-        ),
-      },
-      ...otherKeys.map((key, index) => ({
+      ...keys.map((key, index) => ({
         accessorKey: key || `col_${index}`,
-        id: String(key || `col_${index}`),
-        header: key || `Column ${index + 1}`,
+        header: key,
         size: 200,
-        cell: ({ table, getValue }: { table: Table<T>; getValue: () => any }) => {
+        cell: ({
+          table,
+          row,
+          getValue,
+        }: {
+          table: Table<T>
+          row: Row<Vessel>
+          getValue: () => any
+        }) => {
           const globalFilter = (table.getState().globalFilter as string | undefined)?.trim()
           const value = String(getValue() || '-')
 
@@ -131,6 +107,16 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
                     )
                   )}
               </span>
+              {key === 'name' && (
+                <IconButton
+                  {...{
+                    onClick: row.getToggleExpandedHandler(),
+                    style: { cursor: 'pointer' },
+                  }}
+                  icon={row.getIsExpanded() ? 'arrow-top' : 'arrow-down'}
+                  size="small"
+                />
+              )}
             </div>
           )
         },

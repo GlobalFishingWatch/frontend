@@ -12,7 +12,7 @@ import {
 import { useVirtualizer } from '@tanstack/react-virtual'
 
 import type { useTableFilters } from '@/hooks/useTableFilters'
-import type { Vessel } from '@/types/vessel.types'
+import { fieldMap, type Vessel } from '@/types/vessel.types'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import type { AppDispatch, RootState } from 'store'
@@ -42,6 +42,7 @@ export function DynamicTable<T extends Record<string, any>>({
   const columns = useDynamicColumns(data)
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const [sorting, setSorting] = useState<SortingState>([(columns[1] as any)?.accessorKey])
+  const [selected, setSelected] = useState<RowSelectionState>({})
 
   const columnPinning = {
     left: ['select', (columns[1] as any)?.accessorKey],
@@ -51,6 +52,10 @@ export function DynamicTable<T extends Record<string, any>>({
   const rowSelection = useSelector(
     (state: RootState) => state.table.selectedRows
   ) as RowSelectionState
+
+  useEffect(() => {
+    dispatch(setSelectedRows(selected))
+  }, [selected])
 
   const { filteredData, globalFilter } = tableFilters
 
@@ -71,14 +76,15 @@ export function DynamicTable<T extends Record<string, any>>({
     getFilteredRowModel: getFilteredRowModel(),
     getExpandedRowModel: getExpandedRowModel(),
     getRowCanExpand: () => true,
-    onRowSelectionChange: (newSelection) => {
-      if (typeof newSelection === 'function') {
-        dispatch(setSelectedRows(newSelection(rowSelection)))
-      } else {
-        dispatch(setSelectedRows(newSelection))
-      }
-    },
+    onRowSelectionChange: setSelected,
     getRowId: (row: any, index) => row.id || index,
+    // getRowId: (row: any, index) => {
+    //   const id = findBestMatchingKey(Object.keys(row), fieldMap.id)
+    //   if (id == null) {
+    //     return String(index)
+    //   }
+    //   return String(row[id] ?? index)
+    // },
   })
 
   const rowVirtualizer = useVirtualizer<HTMLDivElement, HTMLTableRowElement>({
@@ -135,10 +141,10 @@ export function DynamicTable<T extends Record<string, any>>({
                         }[header.column.getIsSorted() as string] ?? null}
                       </div>
                     )}
-                    <div
+                    {/* <div
                       onMouseDown={header.getResizeHandler()}
                       onTouchStart={header.getResizeHandler()}
-                    />
+                    /> */}
                   </th>
                 )
               })}

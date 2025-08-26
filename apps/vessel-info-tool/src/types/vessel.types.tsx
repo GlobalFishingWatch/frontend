@@ -54,10 +54,16 @@ export type FieldMap = Record<string, FieldMapConfig>
 
 export const fieldMap: FieldMap = {
   id: {
-    gr: 'Unique Vessel Identifier (UVI)/ IMO Number',
-    iccat: 'ICCATSerialNo',
+    gr: 'IMO',
+    iccat: 'IntRegNo',
     sprfmo: "Lloyd's",
-    variants: ['IMO Number', 'RGP Registration Number (PPP or RAEP)', 'IMO'],
+    variants: [
+      'RGP Registration Number (PPP or RAEP)',
+      'id',
+      'codigo marinha',
+      'Número de Inscrição na Marinha do Brasil',
+      'Unique Vessel Identifier (UVI)',
+    ],
     mandatory: true,
   },
   name: {
