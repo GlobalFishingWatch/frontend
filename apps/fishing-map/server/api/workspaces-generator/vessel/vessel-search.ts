@@ -5,7 +5,7 @@ import type { AdvancedSearchQueryFieldKey } from '@globalfishingwatch/api-client
 import { API_GATEWAY, API_VERSION, getAdvancedSearchQuery } from '@globalfishingwatch/api-client'
 import type { APIVesselSearchPagination, IdentityVessel } from '@globalfishingwatch/api-types'
 
-import { DEFAULT_IDENTITY_DATASET_ID } from 'data/workspaces'
+// import { DEFAULT_IDENTITY_DATASET_ID } from 'data/workspaces'
 import { getVesselShipNameLabel } from 'utils/info'
 
 import type { VesselParams } from '../types'
@@ -13,6 +13,7 @@ import type { VesselParams } from '../types'
 const GFW_API_URL = API_GATEWAY || 'https://gateway.api.globalfishingwatch.org'
 const API_TOKEN = process.env.NEXT_GFW_API_KEY
 const VESSEL_SEARCH_URL = `${API_VERSION}/vessels/search`
+const VESSEL_SEARCH_DATASETS = ['public-global-vessel-identity-vi-653:v1.0']
 
 export const searchVessels = async (vessel: VesselParams) => {
   const { name, imo, mmsi } = vessel || {}
@@ -30,7 +31,7 @@ export const searchVessels = async (vessel: VesselParams) => {
   }
   const query = advancedQuery ? `where=${advancedQuery}` : `query=${name || imo || mmsi}`
   const params = {
-    datasets: [DEFAULT_IDENTITY_DATASET_ID],
+    datasets: [VESSEL_SEARCH_DATASETS],
   }
   const url = `${GFW_API_URL}/${VESSEL_SEARCH_URL}?${query}&${stringify(params, { arrayFormat: 'indices' })}`
   try {
