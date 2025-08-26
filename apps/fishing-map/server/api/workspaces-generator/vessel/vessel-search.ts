@@ -14,6 +14,7 @@ const GFW_API_URL =
   process.env.NEXT_PUBLIC_API_GATEWAY || 'https://gateway.api.globalfishingwatch.org'
 const API_TOKEN = process.env.NEXT_GFW_API_KEY
 const VESSEL_SEARCH_URL = 'v3/vessels/search'
+const VESSEL_SEARCH_DATASETS = ['public-global-vessel-identity-vi-653:v1.0']
 
 export const searchVessels = async (vessel: VesselParams) => {
   const { name, imo, mmsi } = vessel || {}
