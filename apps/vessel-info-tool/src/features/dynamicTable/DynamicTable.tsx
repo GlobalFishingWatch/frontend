@@ -99,8 +99,7 @@ export function DynamicTable({ data, tableFilters, onExpandRow }: DynamicTablePr
       ref={tableContainerRef}
       style={{
         overflow: 'auto',
-        position: 'relative',
-        height: '90vh',
+        height: '100%',
       }}
     >
       <table className="grid w-full">
@@ -193,10 +192,7 @@ export function DynamicTable({ data, tableFilters, onExpandRow }: DynamicTablePr
                 </tr>
                 {row.getIsExpanded() && (
                   <tr>
-                    <td
-                      colSpan={columns.length}
-                      className="relative top-[46px] w-screen h-[162px] !px-[6rem] !py-[3rem] !bg-[var(--color-brand)]"
-                    >
+                    <td colSpan={columns.length} className="!bg-[var(--color-brand)]">
                       {renderExpandedRow({ row })}
                     </td>
                   </tr>

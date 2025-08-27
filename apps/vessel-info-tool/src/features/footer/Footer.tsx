@@ -14,7 +14,7 @@ function Footer({
   const { t } = useTranslation()
 
   return (
-    <div className={styles.sticky}>
+    <div>
       <div className={styles.footer}>
         {children}
         <Button className={styles.downloadButton} onClick={() => downloadClick()}>
