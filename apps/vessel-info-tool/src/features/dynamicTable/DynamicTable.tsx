@@ -12,30 +12,26 @@ import {
 import { useVirtualizer } from '@tanstack/react-virtual'
 
 import type { useTableFilters } from '@/hooks/useTableFilters'
-import { fieldMap, type Vessel } from '@/types/vessel.types'
+import { type Vessel } from '@/types/vessel.types'
 import { Icon } from '@globalfishingwatch/ui-components'
 
 import type { AppDispatch, RootState } from 'store'
 
 import { useDynamicColumns } from '../../hooks/useDynamicColumns'
 import { useRowExpansion } from '../../hooks/useRowExpansion'
-import ExpandableRow from '../expandableRow/ExpandableRow'
+import { renderExpandedRow } from '../expandableRow/ExpandableRow'
 
 import { setSelectedRows } from './table.slice'
 
 import styles from '../../styles/global.module.css'
 
-export interface DynamicTableProps<T extends Record<string, any>> {
-  data: T[]
+export interface DynamicTableProps {
+  data: Vessel[]
   tableFilters: ReturnType<typeof useTableFilters>
-  onExpandRow?: (row: T) => Promise<any>
+  onExpandRow?: (row: Vessel) => Promise<any>
 }
 
-export function DynamicTable<T extends Record<string, any>>({
-  data,
-  tableFilters,
-  onExpandRow,
-}: DynamicTableProps<T>) {
+export function DynamicTable({ data, tableFilters, onExpandRow }: DynamicTableProps) {
   const tableContainerRef = useRef<HTMLDivElement>(null)
 
   const { expandedRows } = useRowExpansion(onExpandRow)
@@ -77,7 +73,7 @@ export function DynamicTable<T extends Record<string, any>>({
     getExpandedRowModel: getExpandedRowModel(),
     getRowCanExpand: () => true,
     onRowSelectionChange: setSelected,
-    getRowId: (row: any, index) => row.id || index,
+    getRowId: (row: any) => row.id,
     // getRowId: (row: any, index) => {
     //   const id = findBestMatchingKey(Object.keys(row), fieldMap.id)
     //   if (id == null) {
@@ -184,7 +180,9 @@ export function DynamicTable<T extends Record<string, any>>({
                           width: column.getSize(),
                           zIndex: column.getIsPinned() ? 1 : 0,
                           backgroundColor: column.getIsPinned()
-                            ? 'rgba(229, 240, 242, 0.95)'
+                            ? row.getIsExpanded() && column.id !== 'select'
+                              ? 'var(--color-brand)'
+                              : 'rgba(229, 240, 242, 0.95)'
                             : undefined,
                         }}
                       >
@@ -195,8 +193,11 @@ export function DynamicTable<T extends Record<string, any>>({
                 </tr>
                 {row.getIsExpanded() && (
                   <tr>
-                    <td colSpan={columns.length} className="p-0 h-10">
-                      <ExpandableRow data={expandedRows[row.original.id]} />
+                    <td
+                      colSpan={columns.length}
+                      className="relative top-[46px] w-screen h-[162px] !px-[6rem] !py-[3rem] !bg-[var(--color-brand)]"
+                    >
+                      {renderExpandedRow({ row })}
                     </td>
                   </tr>
                 )}

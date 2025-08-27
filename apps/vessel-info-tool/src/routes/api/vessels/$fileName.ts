@@ -22,10 +22,14 @@ function parseCsv(csv: string): any[] {
       }
     }
     values.push(current)
-    const obj: Record<string, string> = {}
+    let obj: Record<string, string> = {}
     headers.forEach((h, i) => {
       obj[h] = values[i] ?? ''
     })
+    obj = Object.fromEntries(Object.entries(obj).filter(([key]) => Boolean(key))) as Record<
+      string,
+      string
+    >
     return obj
   })
 }

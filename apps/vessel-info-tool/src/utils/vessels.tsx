@@ -3,7 +3,9 @@ import { createServerFn } from '@tanstack/react-start'
 import ExcelJS from 'exceljs'
 
 import type { fieldMap, FieldMapConfig, type Vessel } from '@/types/vessel.types';
-
+import { GFWAPI } from '@globalfishingwatch/api-client'
+import { IdentityVessel } from '@globalfishingwatch/api-types'
+import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
 export const findBestMatchingKey = (keys: string[], fieldConfig: FieldMapConfig): string | null => {
   const allMatchingValues = [
@@ -155,3 +157,11 @@ export const fetchVessels = createServerFn().handler(async () => {
   const vessels = (await res.json()) as Vessel[]
   return parseBasicVessels(vessels)
 })
+
+// export const getVesselsFromAPI = async ({ id }: { id: string }) => {
+//   const url = resolveEndpoint(dataset, datasetConfig)
+//   if (url) {
+//     const results = await GFWAPI.fetch<IdentityVessel>(url)
+//     return results
+//   }
+// }

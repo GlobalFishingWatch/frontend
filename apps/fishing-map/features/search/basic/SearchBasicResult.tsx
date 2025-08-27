@@ -221,7 +221,7 @@ function SearchBasicResult({
         <div className={styles.fullWidth}>
           <div className={styles.name}>
             <VesselLink
-              vesselId={vesselData.id}
+              vesselId={id}
               identity={bestIdentityMatch}
               datasetId={dataset?.id}
               onClick={onVesselClick}

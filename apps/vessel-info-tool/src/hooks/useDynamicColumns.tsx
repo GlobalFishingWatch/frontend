@@ -38,7 +38,7 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
   return useMemo(() => {
     if (!data.length) return []
 
-    const keys = Object.keys(data[0]).filter((key) => Boolean(key))
+    const keys = Object.keys(data[0]).filter((k) => k !== undefined && k !== null && k !== 'id')
 
     return [
       {
@@ -81,31 +81,31 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
           const globalFilter = (table.getState().globalFilter as string | undefined)?.trim()
           const value = String(getValue() || '-')
 
-          if (!globalFilter) {
-            return <span>{value}</span>
-          }
-
           const regex = new RegExp(`(${escapeRegExp(globalFilter)})`, 'gi')
-          const parts = value.split(regex)
 
           return (
             <div className="flex items-center justify-between p-2">
               <span>
-                {parts
-                  .filter((part) => part)
-                  .map((part, i) =>
-                    regex.test(part) ? (
-                      <mark
-                        style={{ backgroundColor: 'var(--color-highlight-blue)' }}
-                        className="inline-block"
-                        key={i}
-                      >
-                        {part}
-                      </mark>
-                    ) : (
-                      <span key={i}>{part}</span>
+                {!globalFilter ? (
+                  <span>{value}</span>
+                ) : (
+                  value
+                    .split(regex)
+                    .filter((part) => part)
+                    .map((part, i) =>
+                      regex.test(part) ? (
+                        <mark
+                          style={{ backgroundColor: 'var(--color-highlight-blue)' }}
+                          className="inline-block"
+                          key={i}
+                        >
+                          {part}
+                        </mark>
+                      ) : (
+                        <span key={i}>{part}</span>
+                      )
                     )
-                  )}
+                )}
               </span>
               {key === 'name' && (
                 <IconButton

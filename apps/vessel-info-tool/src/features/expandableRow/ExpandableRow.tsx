@@ -5,6 +5,10 @@
 // import { upperFirst } from 'es-toolkit'
 // import type { FeatureCollection } from 'geojson'
 
+import type { Row } from '@tanstack/react-table'
+
+import type { Vessel } from '@/types/vessel.types'
+
 // import type { Vessel } from '@/routes/vessels'
 // import type { Locale } from '@globalfishingwatch/api-types'
 // import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -78,7 +82,7 @@
 // export default ExpandedRow
 
 interface ExpandableRowProps {
-  data: any
+  data: Vessel
   isLoading?: boolean
 }
 
@@ -94,20 +98,32 @@ function ExpandableRow({ data, isLoading }: ExpandableRowProps) {
   if (!data) return null
 
   return (
-    <div className="p-4 bg-gray-50 border-t">
+    <div>
       <h4 className="font-semibold mb-2">Additional Details:</h4>
       <div className="grid grid-cols-2 gap-4">
-        {Object.entries(data).map(([key, value]) => (
-          <div key={key} className="flex flex-col">
-            <span className="text-sm font-medium text-gray-600 capitalize">
-              {key.replace(/([A-Z])/g, ' $1').trim()}:
-            </span>
-            <span className="text-sm">{String(value)}</span>
-          </div>
-        ))}
+        <div className="flex flex-col">
+          <span className="text-sm font-medium text-gray-600">IMO:</span>
+          <span className="text-sm">{data.imo}</span>
+        </div>
+        <div className="flex flex-col">
+          <span className="text-sm font-medium text-gray-600">Name:</span>
+          <span className="text-sm">{data.name}</span>
+        </div>
+        <div className="flex flex-col">
+          <span className="text-sm font-medium text-gray-600">Type:</span>
+          <span className="text-sm">{data.type}</span>
+        </div>
+        <div className="flex flex-col">
+          <span className="text-sm font-medium text-gray-600">Flag:</span>
+          <span className="text-sm">{data.flag}</span>
+        </div>
       </div>
     </div>
   )
 }
 
 export default ExpandableRow
+
+export const renderExpandedRow = ({ row }: { row: Row<Vessel> }) => {
+  return <ExpandableRow data={row.original} />
+}
