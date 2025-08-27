@@ -922,7 +922,7 @@
     "markAsResolved": "Mark as resolved",
     "newIssue": "New issue",
     "other": "Other",
-    "reduce_issue_timerange": "Looks like your time range is a bit long for reporting. To keep things accurate and fast, may we narrow it to 10 days?",
+    "reduce_issue_timerange": "Looks like your time range is a bit long for reporting. To keep things accurate and fast, may we narrow it to 14 days?",
     "replyPlaceholder": "Write a reply",
     "title": "Track correction panel",
     "version": "Version"
