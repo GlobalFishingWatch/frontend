@@ -31,6 +31,7 @@ export async function createNewIssue(
       comments: `=LINKTOCOMMENTS(${issueBody.issueId})`,
       lastUpdated: `=GET_LAST_UPDATED(${issueBody.issueId})`,
       resolved: `=GET_IS_RESOLVED(${issueBody.issueId})`,
+      confirmed: `=GET_IS_CONFIRMED(${issueBody.issueId})`,
     }
     await issuesSheet.addRow(rowData)
   } catch (error) {
