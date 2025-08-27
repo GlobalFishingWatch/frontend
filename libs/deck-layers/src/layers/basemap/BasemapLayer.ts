@@ -27,7 +27,7 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
   _getBathimetryLayer() {
     return new PMTilesLayer({
       id: 'basemap-bathimetry',
-      data: 'https://storage.googleapis.com/public-tiles/basemap/bathymetry/bathymetry.pmtiles',
+      data: 'https://storage.googleapis.com/gfw-public-tiles-us-central1/basemap/bathymetry/bathymetry.pmtiles',
       minZoom: 0,
       maxZoom: 7,
       onDataLoad: this.props.onDataLoad,
@@ -59,7 +59,7 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
       getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.BasemapFill, params),
       getFillColor: [39, 70, 119],
       stroked: false,
-      data: 'https://storage.googleapis.com/public-tiles/basemap/default/landmass.pmtiles',
+      data: 'https://storage.googleapis.com/gfw-public-tiles-us-central1/basemap/default/landmass.pmtiles',
     })
   }
 
@@ -67,7 +67,7 @@ export class BaseMapLayer extends CompositeLayer<BaseMapLayerProps> {
     return [
       new PMTilesLayer({
         id: 'basemap-satellite-pmtiles',
-        data: 'https://storage.googleapis.com/public-tiles/satellite-basemap/satellite.pmtiles',
+        data: 'https://storage.googleapis.com/gfw-public-tiles-us-central1/satellite-basemap/satellite.pmtiles',
         maxRequests: 100,
         debounceTime: 800,
         maxZoom: SATELLITE_SWITCH_ZOOM,
