@@ -1,9 +1,9 @@
-import { Fragment, useCallback, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 
-import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import I18nDate from 'features/i18n/i18nDate'
@@ -23,6 +23,12 @@ import { getVesselShipNameLabel } from 'utils/info'
 import TrackCommentsList from './TrackCommentsList'
 
 import styles from './TrackCorrection.module.css'
+
+enum ActionType {
+  Resolve = 'resolve',
+  Confirm = 'confirm',
+  Comment = 'comment',
+}
 
 const TrackCorrectionEdit = () => {
   const { t } = useTranslation()
@@ -44,58 +50,69 @@ const TrackCorrectionEdit = () => {
   const userData = useSelector(selectUserData)
 
   const buildCommentBody = useCallback(
-    (issueId: string, marksAsResolved: boolean) => ({
+    (issueId: string, action: ActionType) => ({
       issueId,
       user: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
       userEmail: userData?.email || '',
       date: new Date().toISOString(),
-      comment: issueComment || 'No comment provided',
+      comment:
+        issueComment || action === ActionType.Confirm
+          ? 'Verified'
+          : action === ActionType.Resolve
+            ? 'Resolved'
+            : 'No comment provided',
       datasetVersion: 1,
-      marksAsResolved,
+      marksAsResolved: action === ActionType.Resolve,
+      confirmed: action === ActionType.Confirm,
     }),
     [userData, issueComment]
   )
 
-  const onConfirmClick = useCallback(async () => {
-    try {
-      setIsSubmitting(true)
-      if (currentTrackCorrectionIssue && workspaceId) {
-        const issueId = currentTrackCorrectionIssue?.issueId
-        if (!issueId) {
-          console.error('No issueId found for the current track correction issue.')
-          return
-        }
-        const commentBody = buildCommentBody(issueId, isResolved)
+  const onConfirmClick = useCallback(
+    async (action: ActionType) => {
+      try {
+        setIsSubmitting(true)
+        if (currentTrackCorrectionIssue && workspaceId) {
+          const issueId = currentTrackCorrectionIssue?.issueId
+          if (!issueId) {
+            console.error('No issueId found for the current track correction issue.')
+            return
+          }
 
-        await dispatch(
-          createCommentThunk({
-            issueId,
-            commentBody,
-            workspaceId,
-          })
-        )
-          .unwrap()
-          .then(() => {
-            dispatch(fetchTrackIssuesThunk({ workspaceId }))
-            dispatch(setTrackIssueComment(''))
-          })
-          .catch((err) => {
-            console.error('Failed to submit:', err)
-          })
+          const commentBody = buildCommentBody(issueId, action)
+
+          await dispatch(
+            createCommentThunk({
+              issueId,
+              commentBody,
+              workspaceId,
+            })
+          )
+            .unwrap()
+            .then(() => {
+              dispatch(fetchTrackIssuesThunk({ workspaceId }))
+              dispatch(setTrackIssueComment(''))
+            })
+            .catch((err) => {
+              console.error('Failed to submit:', err)
+            })
+        }
+      } catch (error) {
+        console.error('Error submitting track correction:', error)
+      } finally {
+        setIsSubmitting(false)
       }
-    } catch (error) {
-      console.error('Error submitting track correction:', error)
-    } finally {
-      setIsSubmitting(false)
-    }
-  }, [currentTrackCorrectionIssue, workspaceId, buildCommentBody, isResolved, dispatch])
+    },
+    [currentTrackCorrectionIssue, workspaceId, buildCommentBody, dispatch]
+  )
+  console.log('🚀:', currentTrackCorrectionIssue)
 
   if (isGuestUser || !userData || !currentTrackCorrectionIssue) return null
 
   return (
     <>
       <h1 className={styles.title}>
-        {t('trackCorrection.issue', 'Issue {{issueId}}', {
+        {t('trackCorrection.issue', {
           issueId: currentTrackCorrectionIssue.issueId,
         })}
       </h1>
@@ -135,7 +152,7 @@ const TrackCorrectionEdit = () => {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault()
-                    onConfirmClick()
+                    onConfirmClick(ActionType.Comment)
                   }
                 }}
                 disabled={isSubmitting}
@@ -151,24 +168,44 @@ const TrackCorrectionEdit = () => {
               </span>
               {!isGuestUser && (
                 <div className={styles.actions}>
-                  <IconButton
-                    icon="tick"
-                    type={isResolved ? 'map-tool' : 'border'}
-                    size="tiny"
-                    onClick={() => setIsResolved((prev) => !prev)}
-                    tooltip={!isResolved && t('trackCorrection.markAsResolved')}
-                  />
-                  <Button
-                    size="medium"
-                    className={styles.commentButton}
-                    disabled={isResolved ? false : issueComment === ''}
-                    onClick={onConfirmClick}
-                    loading={isSubmitting}
-                  >
-                    {isResolved
-                      ? t('trackCorrection.commentResolve')
-                      : t('trackCorrection.comment')}
-                  </Button>
+                  {!currentTrackCorrectionIssue?.confirmed ? (
+                    <Button
+                      size="medium"
+                      className={styles.commentButton}
+                      onClick={() => onConfirmClick(ActionType.Confirm)}
+                      loading={isSubmitting}
+                      disabled={currentTrackCorrectionIssue?.confirmed}
+                      tooltip={
+                        t('trackCorrection.confirmAs') +
+                        ' ' +
+                        t(`trackCorrection.${currentTrackCorrectionIssue.type}`)
+                      }
+                    >
+                      <Icon icon={'tick'} />
+                      {t('trackCorrection.confirm')}
+                    </Button>
+                  ) : (
+                    <>
+                      <IconButton
+                        icon="tick"
+                        type={isResolved ? 'map-tool' : 'border'}
+                        size="tiny"
+                        onClick={() => setIsResolved((prev) => !prev)}
+                        tooltip={!isResolved && t('trackCorrection.markAsResolved')}
+                      />
+                      <Button
+                        size="medium"
+                        className={styles.commentButton}
+                        onClick={() => onConfirmClick(ActionType.Resolve)}
+                        loading={isSubmitting}
+                        tooltip={isResolved && t('trackCorrection.resolveAndClose')}
+                      >
+                        {isResolved
+                          ? t('trackCorrection.commentResolve')
+                          : t('trackCorrection.comment')}
+                      </Button>
+                    </>
+                  )}
                 </div>
               )}
             </div>

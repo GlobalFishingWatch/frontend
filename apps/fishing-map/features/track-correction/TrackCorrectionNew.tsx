@@ -85,6 +85,7 @@ const TrackCorrectionNew = () => {
       comment: issueComment,
       datasetVersion: 1,
       marksAsResolved: false,
+      confirmed: false,
     }),
     [userData, issueComment]
   )
