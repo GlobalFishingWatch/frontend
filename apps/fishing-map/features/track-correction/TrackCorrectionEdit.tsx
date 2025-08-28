@@ -1,9 +1,9 @@
-import { useCallback, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 
-import { Button, Icon, IconButton, InputText } from '@globalfishingwatch/ui-components'
+import { Button, Icon, InputText } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import I18nDate from 'features/i18n/i18nDate'
@@ -33,13 +33,14 @@ enum ActionType {
 const TrackCorrectionEdit = () => {
   const { t } = useTranslation()
   const issueComment = useSelector(selectTrackIssueComment)
+  console.log('🚀 ~ TrackCorrectionEdit ~ issueComment:', issueComment)
   const dispatch = useAppDispatch()
   const isGuestUser = useSelector(selectIsGuestUser)
 
   const workspaceId = useSelector(selectCurrentWorkspaceId)
 
   const currentTrackCorrectionIssue = useSelector(selectCurrentTrackCorrectionIssue)
-  const [isResolved, setIsResolved] = useState(false)
+  const [isCommenting, setIsCommenting] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const trackCorrectionVesselDataviewId = useSelector(selectTrackCorrectionVesselDataviewId)
@@ -56,11 +57,13 @@ const TrackCorrectionEdit = () => {
       userEmail: userData?.email || '',
       date: new Date().toISOString(),
       comment:
-        issueComment || action === ActionType.Confirm
-          ? 'Verified'
-          : action === ActionType.Resolve
-            ? 'Resolved'
-            : 'No comment provided',
+        issueComment !== ''
+          ? issueComment
+          : action === ActionType.Confirm
+            ? 'Confirmed'
+            : action === ActionType.Resolve
+              ? 'Resolved'
+              : 'No comment provided',
       datasetVersion: 1,
       marksAsResolved: action === ActionType.Resolve,
       confirmed: action === ActionType.Confirm,
@@ -71,7 +74,11 @@ const TrackCorrectionEdit = () => {
   const onConfirmClick = useCallback(
     async (action: ActionType) => {
       try {
-        setIsSubmitting(true)
+        if (action === ActionType.Comment) {
+          setIsCommenting(true)
+        } else {
+          setIsSubmitting(true)
+        }
         if (currentTrackCorrectionIssue && workspaceId) {
           const issueId = currentTrackCorrectionIssue?.issueId
           if (!issueId) {
@@ -100,17 +107,20 @@ const TrackCorrectionEdit = () => {
       } catch (error) {
         console.error('Error submitting track correction:', error)
       } finally {
-        setIsSubmitting(false)
+        if (action === ActionType.Comment) {
+          setIsCommenting(false)
+        } else {
+          setIsSubmitting(false)
+        }
       }
     },
     [currentTrackCorrectionIssue, workspaceId, buildCommentBody, dispatch]
   )
-  console.log('🚀:', currentTrackCorrectionIssue)
 
   if (isGuestUser || !userData || !currentTrackCorrectionIssue) return null
 
   return (
-    <>
+    <Fragment>
       <h1 className={styles.title}>
         {t('trackCorrection.issue', {
           issueId: currentTrackCorrectionIssue.issueId,
@@ -148,7 +158,9 @@ const TrackCorrectionEdit = () => {
                 placeholder={t('trackCorrection.replyPlaceholder')}
                 value={issueComment}
                 className={styles.input}
-                onChange={(e) => dispatch(setTrackIssueComment(e.target.value))}
+                onChange={(e) => {
+                  dispatch(setTrackIssueComment(e.target.value))
+                }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault()
@@ -168,51 +180,53 @@ const TrackCorrectionEdit = () => {
               </span>
               {!isGuestUser && (
                 <div className={styles.actions}>
-                  {!currentTrackCorrectionIssue?.confirmed ? (
+                  <Fragment>
                     <Button
                       size="medium"
                       className={styles.commentButton}
-                      onClick={() => onConfirmClick(ActionType.Confirm)}
-                      loading={isSubmitting}
-                      disabled={currentTrackCorrectionIssue?.confirmed}
-                      tooltip={
-                        t('trackCorrection.confirmAs') +
-                        ' ' +
-                        t(`trackCorrection.${currentTrackCorrectionIssue.type}`)
-                      }
+                      onClick={() => onConfirmClick(ActionType.Comment)}
+                      loading={isCommenting}
+                      disabled={!issueComment}
+                      tooltip={!issueComment && t('trackCorrection.commentRequired')}
                     >
-                      <Icon icon={'tick'} />
-                      {t('trackCorrection.confirm')}
+                      {t('trackCorrection.comment')}
                     </Button>
-                  ) : (
-                    <>
-                      <IconButton
-                        icon="tick"
-                        type={isResolved ? 'map-tool' : 'border'}
-                        size="tiny"
-                        onClick={() => setIsResolved((prev) => !prev)}
-                        tooltip={!isResolved && t('trackCorrection.markAsResolved')}
-                      />
+                    {currentTrackCorrectionIssue.confirmed ? (
                       <Button
                         size="medium"
                         className={styles.commentButton}
                         onClick={() => onConfirmClick(ActionType.Resolve)}
                         loading={isSubmitting}
-                        tooltip={isResolved && t('trackCorrection.resolveAndClose')}
+                        tooltip={t('trackCorrection.resolveAndClose')}
                       >
-                        {isResolved
-                          ? t('trackCorrection.commentResolve')
-                          : t('trackCorrection.comment')}
+                        <Icon icon={'tick'} />
+                        {t('trackCorrection.commentResolve')}
                       </Button>
-                    </>
-                  )}
+                    ) : (
+                      <Button
+                        size="medium"
+                        className={styles.commentButton}
+                        onClick={() => onConfirmClick(ActionType.Confirm)}
+                        loading={isSubmitting}
+                        disabled={currentTrackCorrectionIssue?.confirmed}
+                        tooltip={
+                          t('trackCorrection.confirmAs') +
+                          ' ' +
+                          t(`trackCorrection.${currentTrackCorrectionIssue.type}`).toLowerCase()
+                        }
+                      >
+                        <Icon icon={'tick'} />
+                        {t('trackCorrection.confirm')}
+                      </Button>
+                    )}
+                  </Fragment>
                 </div>
               )}
             </div>
           </div>
         )}
       </div>
-    </>
+    </Fragment>
   )
 }
 
