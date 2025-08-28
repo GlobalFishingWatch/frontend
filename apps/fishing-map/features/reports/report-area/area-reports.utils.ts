@@ -8,8 +8,14 @@ import { matchSorter } from 'match-sorter'
 import { parse } from 'qs'
 
 import { API_VERSION } from '@globalfishingwatch/api-client'
-import { DatasetCategory, type Dataview } from '@globalfishingwatch/api-types'
+import {
+  DatasetCategory,
+  type Dataview,
+  DataviewCategory,
+  DataviewType,
+} from '@globalfishingwatch/api-types'
 import { getFeatureBuffer, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
@@ -18,9 +24,9 @@ import { t } from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import type {
   ReportActivitySubCategory,
-  ReportCategory,
   ReportDetectionsSubCategory,
 } from 'features/reports/reports.types'
+import { ReportCategory } from 'features/reports/reports.types'
 import type { FilterProperty } from 'features/reports/shared/vessels/report-vessels.config'
 import { FILTER_PROPERTIES } from 'features/reports/shared/vessels/report-vessels.config'
 import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
@@ -29,6 +35,7 @@ import type { Bbox, BufferOperation, BufferUnit } from 'types'
 import { formatInfoField } from 'utils/info'
 
 import {
+  CONTEXT_DATAVIEWS_WITH_REPORTS,
   DEFAULT_BUFFER_OPERATION,
   DEFAULT_BUFFER_UNIT,
   OTHERS_CATEGORY_LABEL,
@@ -77,9 +84,71 @@ export const formatTooltipValue = (value: number, unit: string, asDifference = f
   return valueLabel
 }
 
+const SUPPORTED_REPORT_CATEGORIES = [
+  DataviewCategory.Activity,
+  DataviewCategory.Detections,
+  DataviewCategory.Environment,
+  DataviewCategory.VesselGroups,
+  DataviewCategory.Events,
+]
+const SUPPORTED_REPORT_TYPES = [
+  DataviewType.HeatmapAnimated,
+  DataviewType.HeatmapStatic,
+  DataviewType.FourwingsTileCluster,
+  DataviewType.Currents,
+]
+
+export const isContextDataviewReportSupported = (dataview: Dataview | UrlDataviewInstance) => {
+  if (dataview.category !== DataviewCategory.Context) {
+    return false
+  }
+  return (CONTEXT_DATAVIEWS_WITH_REPORTS as readonly string[]).includes(
+    String((dataview as UrlDataviewInstance).dataviewId || dataview.slug)
+  )
+}
+
+export const isUserContextDataviewReportSupported = (dataview: Dataview | UrlDataviewInstance) => {
+  if (dataview.category !== DataviewCategory.User) {
+    return false
+  }
+  const dataset = dataview.datasets?.[0]
+  if (!dataset) {
+    return false
+  }
+  return getDatasetConfigurationProperty({ dataset, property: 'geometryType' }) === 'points'
+}
+
+export const isSupportedReportDataview = (
+  dataview: Dataview | UrlDataviewInstance,
+  isGlobalReportsEnabled: boolean
+) => {
+  const { category, config } = dataview
+  if (!category || !config?.visible || !config?.type) {
+    return false
+  }
+  if (config?.type === DataviewType.FourwingsTileCluster && isGlobalReportsEnabled) {
+    return false
+  }
+  if (category === DataviewCategory.User) {
+    return isUserContextDataviewReportSupported(dataview)
+  }
+  if (category === DataviewCategory.Context) {
+    return isContextDataviewReportSupported(dataview)
+  }
+  return (
+    SUPPORTED_REPORT_CATEGORIES.includes(category) && SUPPORTED_REPORT_TYPES.includes(config?.type)
+  )
+}
+
 export const getReportCategoryFromDataview = (
   dataview: Dataview | UrlDataviewInstance
 ): ReportCategory => {
+  if (
+    isContextDataviewReportSupported(dataview) ||
+    isUserContextDataviewReportSupported(dataview)
+  ) {
+    return ReportCategory.Others
+  }
   return dataview.category as unknown as ReportCategory
 }
 

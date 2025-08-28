@@ -5,6 +5,7 @@ import type { RootState } from 'reducers'
 export enum FeatureFlag {
   GlobalReports = 'globalReports',
   WorkspaceGenerator = 'workspaceGenerator',
+  OthersReport = 'othersReport',
 }
 
 export enum DebugOption {
@@ -31,6 +32,8 @@ const initialState: DebugState = {
   featureFlags: {
     globalReports: false,
     workspaceGenerator: false,
+    // TODO: set this to false when we are ready to release
+    othersReport: true,
   },
   options: {
     datasetRelationship: false,
