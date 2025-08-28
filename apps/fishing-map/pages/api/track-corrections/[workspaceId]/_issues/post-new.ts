@@ -1,5 +1,3 @@
-import { last } from 'lodash'
-
 import type {
   TrackCorrection,
   TrackCorrectionComment,
