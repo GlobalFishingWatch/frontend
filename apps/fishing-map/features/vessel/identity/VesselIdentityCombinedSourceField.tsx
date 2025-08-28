@@ -11,6 +11,7 @@ import type { VesselLastIdentity } from 'features/search/search.slice'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import VesselIdentityField from 'features/vessel/identity/VesselIdentityField'
 import VesselIdentityGFWExtendedGeartype from 'features/vessel/identity/VesselIdentityGFWExtendedGeartype'
+import VesselIdentityGFWExtendedVesseltype from 'features/vessel/identity/VesselIdentityGFWExtendedVesseltype'
 import { formatInfoField } from 'utils/info'
 
 import styles from './VesselIdentity.module.css'
@@ -26,6 +27,7 @@ const VesselIdentityCombinedSourceField = ({
   const { t } = useTranslation()
   const isGFWUser = useSelector(selectIsGFWUser)
   const [geartypesExpanded, setGeartypesExpanded] = useState<number | null>(null)
+  const [vesseltypesExpanded, setVesseltypesExpanded] = useState<number | null>(null)
   const combinedSource = identity?.combinedSourcesInfo?.[property]
 
   const toggleGearTypesExpanded = useCallback(
@@ -33,6 +35,13 @@ const VesselIdentityCombinedSourceField = ({
       setGeartypesExpanded(geartypesExpanded === index ? null : index)
     },
     [geartypesExpanded]
+  )
+
+  const toggleVesselTypesExpanded = useCallback(
+    (index: number) => {
+      setVesseltypesExpanded(vesseltypesExpanded === index ? null : index)
+    },
+    [vesseltypesExpanded]
   )
 
   if (!combinedSource) {
@@ -79,6 +88,23 @@ const VesselIdentityCombinedSourceField = ({
                 </li>
                 {geartypesExpanded === index && (
                   <VesselIdentityGFWExtendedGeartype identity={identity} sourceIndex={index} />
+                )}
+              </Fragment>
+            )
+          }
+
+          if (isGFWUser && property === 'shiptypes') {
+            return (
+              <Fragment key={index}>
+                <li onClick={() => toggleVesselTypesExpanded(index)} className={styles.expandable}>
+                  {Component}
+                  <Icon
+                    className={styles.expandIcon}
+                    icon={vesseltypesExpanded === index ? 'arrow-top' : 'arrow-down'}
+                  />
+                </li>
+                {vesseltypesExpanded === index && (
+                  <VesselIdentityGFWExtendedVesseltype identity={identity} sourceIndex={index} />
                 )}
               </Fragment>
             )
