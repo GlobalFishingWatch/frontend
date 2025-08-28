@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { center } from '@turf/center'
@@ -85,6 +85,7 @@ const TrackCorrectionNew = () => {
       comment: issueComment,
       datasetVersion: 1,
       marksAsResolved: false,
+      confirmed: false,
     }),
     [userData, issueComment]
   )
@@ -141,6 +142,7 @@ const TrackCorrectionNew = () => {
             'trackCorrectionId=new',
             `trackCorrectionId=${issueId}`
           ),
+          confirmed: false,
           type: issueType,
           lastUpdated: new Date().toISOString(),
           resolved: false,
@@ -199,7 +201,7 @@ const TrackCorrectionNew = () => {
   if (isGuestUser || !userData) return null
 
   return (
-    <>
+    <Fragment>
       <h1 className={styles.title}>{t('trackCorrection.newIssue')}</h1>
       <div className={styles.container}>
         <div>
@@ -289,7 +291,7 @@ const TrackCorrectionNew = () => {
           </Button>
         </div>
       </div>
-    </>
+    </Fragment>
   )
 }
 

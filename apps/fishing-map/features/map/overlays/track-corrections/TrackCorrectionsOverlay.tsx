@@ -85,10 +85,14 @@ const TrackCorrectionOverlayIssue = ({ issue }: { issue: TrackCorrection }) => {
     setMapCoordinates,
   ])
 
+  if (issue.resolved) {
+    return null
+  }
+
   return (
     <IconButton
       className={cx(styles.button, { [styles.active]: issue.issueId === currentTrackCorrectionId })}
-      icon={issue.resolved ? 'tick' : 'feedback'}
+      icon={issue.confirmed ? 'tick' : 'feedback'}
       loading={loading}
       onClick={onIssueClick}
       onMouseEnter={handleMouseEnter}

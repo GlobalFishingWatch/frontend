@@ -9,6 +9,7 @@ import { debugDatasetsInDataviews, debugRelatedDatasets } from 'features/dataset
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectIsGFWDeveloper, selectIsGFWTestGroup } from 'features/user/selectors/user.selectors'
+import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
 import { selectLocationQuery } from 'routes/routes.selectors'
 
 import {
@@ -29,6 +30,7 @@ const DebugMenu: React.FC = () => {
   const debugOptions = useSelector(selectDebugOptions)
   const featureFlags = useSelector(selectFeatureFlags)
   const locationQuery = useSelector(selectLocationQuery)
+  const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
   const [datasetId, setDatasetId] = useState<string>('')
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
   const datasets = useSelector(selectAllDatasets)
@@ -64,7 +66,8 @@ const DebugMenu: React.FC = () => {
         <div className={styles.header}>
           <Switch
             id="option_thinning"
-            active={debugOptions.thinning}
+            active={isTurningTidesWorkspace ? false : debugOptions.thinning}
+            disabled={isTurningTidesWorkspace}
             onClick={() => dispatch(toggleOption(DebugOption.Thinning))}
           />
           <label htmlFor="option_thinning">Track thinning</label>

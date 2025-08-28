@@ -840,10 +840,11 @@ interface Resources {
       loiteringActionIn: 'Loitering in {{regionName}}'
       minuteAbbreviated: "{{count}}'"
       minuteAbbreviated_one: "{{count}}'"
+      minuteAbbreviated_many: '{{count}}'
       minuteAbbreviated_other: "{{count}}'"
       monthAbbreviated: '{{count}}m'
       monthAbbreviated_one: '{{count}}m'
-      monthAbbreviated_many: 'event.monthAbbreviated'
+      monthAbbreviated_many: '{{count}}m'
       monthAbbreviated_other: '{{count}}m'
       noData: 'No data available'
       notInCVP: 'Event not available.'
@@ -1174,6 +1175,9 @@ interface Resources {
       commentPlaceholder: 'Tell us why you think this was misclassified'
       commentRequired: 'Your feedback is required to submit a correction'
       commentResolve: 'Resolve'
+      confirm: 'Confirm'
+      confirmAs: 'Confirm as'
+      confirmed: 'This issue has already been verified by specialists'
       falseNegative: 'False negative'
       falsePositive: 'False positive'
       issue: 'Issue {{issueId}}'
@@ -1184,8 +1188,9 @@ interface Resources {
       markAsResolved: 'Mark as resolved'
       newIssue: 'New issue'
       other: 'Other'
-      reduce_issue_timerange: 'Looks like your time range is a bit long for reporting. To keep things accurate and fast, may we narrow it to 10 days?'
+      reduce_issue_timerange: 'Looks like your time range is a bit long for reporting. To keep things accurate and fast, may we narrow it to 14 days?'
       replyPlaceholder: 'Write a reply'
+      resolveAndClose: 'Resolve and close issue'
       title: 'Track correction panel'
       version: 'Version'
     }
