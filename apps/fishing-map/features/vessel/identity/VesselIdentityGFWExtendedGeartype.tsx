@@ -92,8 +92,8 @@ const VesselIdentityGFWExtendedGeartype = ({
         <Tooltip content="(geartype)">
           <span className={cx(styles.secondary, styles.help)}>Random Forest estimate: </span>
         </Tooltip>
-        {geartypes?.[sourceIndex]?.value
-          ? (formatInfoField(geartypes?.[sourceIndex]?.value as string, 'geartypes') as string)
+        {geartypes?.[sourceIndex]?.name
+          ? (formatInfoField(geartypes?.[sourceIndex]?.name as string, 'geartypes') as string)
           : EMPTY_FIELD_PLACEHOLDER}
       </li>
       <li>
