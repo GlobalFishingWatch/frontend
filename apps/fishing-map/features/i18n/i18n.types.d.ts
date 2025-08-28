@@ -839,11 +839,11 @@ interface Resources {
       loiteringActionIn: 'Loitering in {{regionName}}'
       minuteAbbreviated: "{{count}}'"
       minuteAbbreviated_one: "{{count}}'"
-      minuteAbbreviated_many: 'event.minuteAbbreviated'
+      minuteAbbreviated_many: '{{count}}'
       minuteAbbreviated_other: "{{count}}'"
       monthAbbreviated: '{{count}}m'
       monthAbbreviated_one: '{{count}}m'
-      monthAbbreviated_many: 'event.monthAbbreviated'
+      monthAbbreviated_many: '{{count}}m'
       monthAbbreviated_other: '{{count}}m'
       noData: 'No data available'
       notInCVP: 'Event not available.'
