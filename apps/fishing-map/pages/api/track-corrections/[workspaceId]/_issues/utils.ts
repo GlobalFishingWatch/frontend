@@ -22,6 +22,7 @@ export function parseIssueComment(
     date: row.get('date'),
     datasetVersion: row.get('datasetVersion'),
     marksAsResolved: parseIssueResolved(row.get('marksAsResolved')),
+    confirmed: parseIssueResolved(row.get('confirmed')),
   }
 }
 
@@ -32,10 +33,12 @@ export function parseIssueRow(row: GoogleSpreadsheetRow<TrackCorrection>): Track
     issueId: row.get('issueId'),
     vesselId: row.get('vesselId'),
     vesselName: row.get('vesselName'),
+    ssvid: row.get('ssvid'),
     startDate: row.get('startDate'),
     endDate: row.get('endDate'),
     type: row.get('type'),
     lastUpdated: row.get('lastUpdated'),
+    confirmed: parseIssueResolved(row.get('confirmed')),
     resolved: parseIssueResolved(row.get('resolved')),
     lat: parseFloat(row.get('lat')),
     lon: parseFloat(row.get('lon')),

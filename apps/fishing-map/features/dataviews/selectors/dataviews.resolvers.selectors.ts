@@ -1,4 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
+import { uniqBy } from 'es-toolkit'
 
 import type { DataviewDatasetConfig, IdentityVessel, Resource } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
@@ -155,8 +156,21 @@ export const selectAllDataviewInstancesResolved = createSelector(
       dataviewInstancesResolvedWithConfigInjected,
       callbacks
     )
-
-    return dataviewInstancesResolvedExtended
+    const dataviewInstancesResolvedExtendedUniq = uniqBy(
+      dataviewInstancesResolvedExtended,
+      (d) => d.id
+    )
+    if (dataviewInstancesResolvedExtendedUniq.length !== dataviewInstancesResolvedExtended.length) {
+      console.warn(
+        'Duplicated dataview instance ids:',
+        dataviewInstancesResolvedExtended
+          .filter((d, index, self) => self.findIndex((t) => t.id === d.id) !== index)
+          .map((d) => d.id)
+          .join(', '),
+        dataviewInstancesResolvedExtended
+      )
+    }
+    return dataviewInstancesResolvedExtendedUniq
   }
 )
 

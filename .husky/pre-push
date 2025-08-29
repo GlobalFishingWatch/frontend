@@ -1,0 +1,1 @@
+bash -c 'nx i18n fishing-map > /dev/null 2>&1 && git add apps/fishing-map/features/i18n/ > /dev/null 2>&1 && git diff --cached --quiet apps/fishing-map/features/i18n/ || (echo i18n files have changed. Please commit the changes first. && git reset apps/fishing-map/features/i18n/ > /dev/null 2>&1 && exit 1)'

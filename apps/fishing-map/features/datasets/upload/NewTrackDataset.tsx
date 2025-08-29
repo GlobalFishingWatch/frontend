@@ -33,7 +33,7 @@ import FileDropzone from 'features/datasets/upload/FileDropzone'
 import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
 import NewDatasetField from 'features/datasets/upload/NewDatasetField'
 import UserGuideLink from 'features/help/UserGuideLink'
-import type { FileType } from 'utils/files'
+import type { FileType, FileTypeResult } from 'utils/files'
 import { getFileFromGeojson, getFileName, getFileType } from 'utils/files'
 
 import { TimeFieldsGroup } from './TimeFieldsGroup'
@@ -57,10 +57,22 @@ function NewTrackDataset({
   const [geojson, setGeojson] = useState<FeatureCollection | undefined>()
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
   const { getSelectedOption, filtersFieldsOptions } = useDatasetMetadataOptions(datasetMetadata)
+  const numericFiltersFieldsOptions = filtersFieldsOptions.filter((f) => f.type === 'range')
   const isEditing = dataset?.id !== undefined
-  const fileType = getFileType(file, 'tracks')
+  const [fileTypeResult, setFileTypeResult] = useState<FileTypeResult | undefined>()
+  const [isCSVFile, setIsCSVFile] = useState<boolean>(false)
   const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
-  const isCSVFile = fileType === 'CSV' || sourceFormat === 'CSV'
+
+  useEffect(() => {
+    const updateFileType = async () => {
+      const fileTypeResult = await getFileType(file)
+      const isCSVFile = fileTypeResult.fileType === 'CSV' || sourceFormat === 'CSV'
+      setFileTypeResult(fileTypeResult)
+      setIsCSVFile(isCSVFile)
+    }
+    updateFileType()
+  }, [file, sourceFormat])
+
   const fieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
 
   const isPublic = !!datasetMetadata?.public
@@ -100,18 +112,17 @@ function NewTrackDataset({
   const { isValid, errors } = getDatasetMetadataValidations(datasetMetadata)
 
   const handleRawData = useCallback(
-    async (file: File) => {
+    async (file: File, fileTypeResult: FileTypeResult) => {
       setProcessingData(true)
       try {
-        const data = await getDatasetParsed(file, 'tracks')
-        const fileType = getFileType(file, 'tracks')
+        const data = await getDatasetParsed(file, 'tracks', fileTypeResult)
         const datasetMetadata = getTracksDatasetMetadata({
           data,
           name: getFileName(file),
-          sourceFormat: fileType as FileType,
+          sourceFormat: fileTypeResult.fileType,
         })
         setDatasetMetadata(datasetMetadata)
-        if (fileType === 'CSV') {
+        if (fileTypeResult.fileType === 'CSV') {
           setSourceData(data as DataList)
           const geojson = getTrackFromList(data as DataList, datasetMetadata)
           setGeojson(geojson)
@@ -137,12 +148,12 @@ function NewTrackDataset({
   )
 
   useEffect(() => {
-    if (file && !loading) {
-      handleRawData(file)
+    if (file && !loading && fileTypeResult) {
+      handleRawData(file, fileTypeResult)
     } else if (dataset) {
       setDatasetMetadata(getMetadataFromDataset(dataset))
     }
-  }, [dataset, file])
+  }, [dataset, file, fileTypeResult])
 
   useEffect(() => {
     if (sourceData) {
@@ -233,7 +244,7 @@ function NewTrackDataset({
       {!isEditing && (
         <FileDropzone
           label={file?.name}
-          fileTypes={[fileType as FileType]}
+          fileTypes={fileTypeResult ? [fileTypeResult.fileType as FileType] : []}
           onFileLoaded={onFileUpdate}
         />
       )}
@@ -340,7 +351,7 @@ function NewTrackDataset({
           }
           direction="top"
           disabled={loading}
-          options={filtersFieldsOptions}
+          options={isCSVFile ? numericFiltersFieldsOptions : filtersFieldsOptions}
           selectedOptions={getSelectedOption(fieldsAllowed) as MultiSelectOption[]}
           onSelect={(newFilter: MultiSelectOption) => {
             setDatasetMetadata({ fieldsAllowed: [...fieldsAllowed, newFilter.id] })

@@ -44,13 +44,14 @@
     "strictNullChecks": true
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
     "**/*.js",
     "**/*.jsx",
-    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
     "../../dist/apps/api-portal/.next/types/**/*.ts",
-    "eslint.config.mjs"
+    "eslint.config.mjs",
+    "next-env.d.ts",
+    ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules", "jest.config.ts", ".next", "exported"]
 }

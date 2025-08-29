@@ -6,6 +6,8 @@ import type {
   DatasetConfigurationSourceFormat,
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
+import type { JSZipObject } from '@globalfishingwatch/data-transforms'
+import { isZipFile, zipToFiles } from '@globalfishingwatch/data-transforms'
 
 export function getFileName(file: File): string {
   const name =
@@ -29,6 +31,8 @@ export type MimeExtention =
   | '.KML'
   | '.kmz'
   | '.KMZ'
+  | '.shp'
+  | '.SHP'
 type MimeType =
   | 'application/json'
   | 'application/geo+json'
@@ -39,7 +43,10 @@ type MimeType =
   | 'text/tab-separated-values'
   | 'application/vnd.google-earth.kml+xml'
   | 'application/vnd.google-earth.kmz'
-const MIME_TYPES_BY_EXTENSION: Record<MimeExtention, MimeType[]> = {
+
+export type MimeExtentionWithoutShp = Exclude<MimeExtention, '.shp' | '.SHP'>
+
+const MIME_TYPES_BY_EXTENSION: Record<MimeExtentionWithoutShp, MimeType[]> = {
   '.json': ['application/json'],
   '.JSON': ['application/json'],
   '.geojson': ['application/geo+json'],
@@ -79,23 +86,30 @@ export const FILE_TYPES_CONFIG: Record<FileType, FileConfig> = {
     icon: 'geojson',
   },
   // TODO: replace with zip
-  Shapefile: { id: 'Shapefile', files: ['.zip', '.ZIP'], icon: 'zip' },
+  Shapefile: { id: 'Shapefile', files: ['.zip', '.ZIP', '.shp', '.SHP'], icon: 'zip' },
   CSV: { id: 'CSV', files: ['.csv', '.tsv', '.CSV', '.TSV'], icon: 'csv' },
   KML: { id: 'KML', files: ['.kml', '.kmz', '.KML', '.KMZ'], icon: 'kml' },
 }
 
-export function getFileType(
-  file?: File,
-  geometryType?: DatasetGeometryTypesSupported
-): FileType | undefined {
+export type FileTypeResult = { fileType: FileType | undefined; zipContent: JSZipObject[] }
+export async function getFileType(file?: File): Promise<FileTypeResult> {
   if (!file) {
-    return undefined
+    return { fileType: undefined, zipContent: [] }
   }
+  if (isZipFile(file)) {
+    const zippedFiles = await zipToFiles(file)
+    if (zippedFiles?.length) {
+      const fileType = Object.values(FILE_TYPES_CONFIG).find(({ files }) => {
+        return files.some((ext) => zippedFiles.some((f) => f.name.endsWith(ext)))
+      })?.id
+      return { fileType, zipContent: zippedFiles }
+    }
+  }
+
   const fileType = Object.values(FILE_TYPES_CONFIG).find(({ files }) => {
     return files.some((ext) => file.name.endsWith(ext))
   })?.id
-
-  return fileType === 'Shapefile' && geometryType === 'tracks' ? 'CSV' : fileType
+  return { fileType, zipContent: [] }
 }
 
 export function getFilesAcceptedByMime(fileTypes: FileType[]) {
@@ -103,17 +117,20 @@ export function getFilesAcceptedByMime(fileTypes: FileType[]) {
   const filesAcceptedExtensions = fileTypesConfigs.flatMap(
     (config) => config?.files as MimeExtention[]
   )
-  const fileAcceptedByMime = filesAcceptedExtensions.reduce((acc, extension) => {
-    const mime = MIME_TYPES_BY_EXTENSION[extension]
-    mime?.forEach((m) => {
-      if (!acc[m]) {
-        acc[m] = [extension]
-      } else {
-        acc[m].push(extension)
-      }
-    })
-    return acc
-  }, {} as Record<MimeType, MimeExtention[]>)
+  const fileAcceptedByMime = filesAcceptedExtensions.reduce(
+    (acc, extension) => {
+      const mime = MIME_TYPES_BY_EXTENSION[extension as MimeExtentionWithoutShp]
+      mime?.forEach((m) => {
+        if (!acc[m]) {
+          acc[m] = [extension]
+        } else {
+          acc[m].push(extension)
+        }
+      })
+      return acc
+    },
+    {} as Record<MimeType, MimeExtention[]>
+  )
   return fileAcceptedByMime
 }
 

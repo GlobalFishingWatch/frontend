@@ -6,7 +6,14 @@ import cx from 'classnames'
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import type { Dataset } from '@globalfishingwatch/api-types'
 import type { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
-import { Button, InputText, Select, SwitchRow, Tooltip } from '@globalfishingwatch/ui-components'
+import {
+  Button,
+  Icon,
+  InputText,
+  Select,
+  SwitchRow,
+  Tooltip,
+} from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { AggregationOptions, VisualisationOptions } from 'features/bigquery/bigquery.config'
@@ -149,6 +156,13 @@ const BigQueryMenu: React.FC = () => {
             />
           </div>
         </Tooltip>
+        <span className={cx(styles.dataWarning)}>
+          <Icon icon="warning" />
+          <span>
+            Data needs to be stored in:{' '}
+            <span className={styles.bold}>world-fishing-827.bigquery_editor_30daysttl</span>
+          </span>
+        </span>
       </div>
       <SwitchRow
         className={styles.row}

@@ -81,15 +81,15 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
   _fetchTileData: any = async (tile: TileLoadProps) => {
     const { startTime, endTime, sublayers, availableIntervals, tilesUrl, extentStart } = this.props
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
-    let cols: number = 0
-    let rows: number = 0
-    let scale: number = 0
-    let offset: number = 0
-    let noDataValue: number = 0
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const chunk = getFourwingsChunk(startTime, endTime, availableIntervals)
     this.setState({ rampDirty: true })
-    const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
+    const cols: number[] = []
+    const rows: number[] = []
+    const scale: number[] = []
+    const offset: number[] = []
+    const noDataValue: number[] = []
+    const getSublayerData: any = async (sublayer: FourwingsDeckSublayer, sublayerIndex: number) => {
       const url = getDataUrlBySublayer({
         tile,
         chunk,
@@ -104,20 +104,20 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
       if (response.status >= 400 && response.status !== 404) {
         throw new Error(response.statusText)
       }
-      if (response.headers.get('X-columns') && !cols) {
-        cols = parseInt(response.headers.get('X-columns') as string)
+      if (response.headers.get('X-columns') && !cols[sublayerIndex]) {
+        cols[sublayerIndex] = parseInt(response.headers.get('X-columns') as string)
       }
-      if (response.headers.get('X-rows') && !rows) {
-        rows = parseInt(response.headers.get('X-rows') as string)
+      if (response.headers.get('X-rows') && !rows[sublayerIndex]) {
+        rows[sublayerIndex] = parseInt(response.headers.get('X-rows') as string)
       }
-      if (response.headers.get('X-scale') && !scale) {
-        scale = parseFloat(response.headers.get('X-scale') as string)
+      if (response.headers.get('X-scale') && !scale[sublayerIndex]) {
+        scale[sublayerIndex] = parseFloat(response.headers.get('X-scale') as string)
       }
-      if (response.headers.get('X-offset') && !offset) {
-        offset = parseInt(response.headers.get('X-offset') as string)
+      if (response.headers.get('X-offset') && !offset[sublayerIndex]) {
+        offset[sublayerIndex] = parseInt(response.headers.get('X-offset') as string)
       }
-      if (response.headers.get('X-empty-value') && !noDataValue) {
-        noDataValue = parseInt(response.headers.get('X-empty-value') as string)
+      if (response.headers.get('X-empty-value') && !noDataValue[sublayerIndex]) {
+        noDataValue[sublayerIndex] = parseInt(response.headers.get('X-empty-value') as string)
       }
       return await response.arrayBuffer()
     }

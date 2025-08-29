@@ -77,7 +77,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
   }
 
   getLineWidth(d: ContextFeature, filters?: Record<string, any>): number {
-    return getFeatureInFilter(d, filters) ? this.props.thickness : 0
+    return getFeatureInFilter(d, filters) ? this.props.thickness || 1 : 0
   }
 
   getFillColor(d: ContextFeature, filters?: Record<string, any>): Color {

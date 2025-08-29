@@ -414,24 +414,30 @@ export type UpdateWorkspaceThunkRejectError = AsyncError & {
   isWorkspaceWrongPassword: boolean
 }
 
+export type UpdateCurrentWorkspaceThunkParams = Omit<AppWorkspace, 'editAccess'> & {
+  editPassword?: string
+  newPassword?: string
+  editAccess?: WorkspaceEditAccessType | undefined
+}
+
 export const updateCurrentWorkspaceThunk = createAsyncThunk<
   AppWorkspace,
-  Omit<AppWorkspace, 'editAccess'> & {
-    password?: string
-    newPassword?: string
-    editAccess?: WorkspaceEditAccessType | undefined
-  },
+  UpdateCurrentWorkspaceThunkParams,
   {
     dispatch: AppDispatch
     rejectValue: UpdateWorkspaceThunkRejectError
   }
 >('workspace/updatedCurrent', async (workspaceWithPassword, { dispatch, rejectWithValue }) => {
   try {
-    const { password: prevPassword, newPassword, ...workspace } = workspaceWithPassword
-    const password = newPassword || prevPassword || 'default'
+    const { editPassword, newPassword, ...workspace } = workspaceWithPassword
+    const password = newPassword || editPassword || 'default'
+    const body = {
+      ...parseUpsertWorkspace(workspace),
+      ...(newPassword && { password: newPassword }),
+    }
     const workspaceUpdated = await GFWAPI.fetch<AppWorkspace>(`/workspaces/${workspace.id}`, {
       method: 'PATCH',
-      body: { ...parseUpsertWorkspace(workspace), password },
+      body,
       ...(password && {
         headers: {
           'x-workspace-password': password,

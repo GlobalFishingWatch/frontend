@@ -26,13 +26,13 @@
   "dependencies": {
     "@deck.gl-community/editable-layers": "9.1.1",
     "@deck.gl-community/layers": "9.1.1",
-    "@deck.gl/core": "9.1.13",
-    "@deck.gl/extensions": "9.1.13",
-    "@deck.gl/geo-layers": "9.1.13",
-    "@deck.gl/layers": "9.1.13",
-    "@deck.gl/mesh-layers": "9.1.13",
-    "@deck.gl/react": "9.1.13",
-    "@deck.gl/widgets": "9.1.13",
+    "@deck.gl/core": "9.1.14",
+    "@deck.gl/extensions": "9.1.14",
+    "@deck.gl/geo-layers": "9.1.14",
+    "@deck.gl/layers": "9.1.14",
+    "@deck.gl/mesh-layers": "9.1.14",
+    "@deck.gl/react": "9.1.14",
+    "@deck.gl/widgets": "9.1.14",
     "@dnd-kit/core": "6.3.1",
     "@dnd-kit/modifiers": "9.0.0",
     "@dnd-kit/sortable": "10.0.0",
@@ -49,8 +49,8 @@
     "@loaders.gl/worker-utils": "4.3.4",
     "@mapbox/geojson-area": "0.2.2",
     "@mapbox/vector-tile": "2.0.4",
-    "@mastra/client-js": "^0.10.14",
-    "@mastra/core": "^0.10.15",
+    "@mastra/client-js": "^0.10.20",
+    "@mastra/core": "^0.13.1",
     "@math.gl/core": "4.1.0",
     "@math.gl/web-mercator": "4.1.0",
     "@mui/icons-material": "7.2.0",
@@ -173,7 +173,7 @@
     "use-debounce": "10.0.5",
     "usehooks-ts": "3.1.1",
     "web-vitals": "5.0.3",
-    "zod": "^4.0.5"
+    "zod": "3.25.76"
   },
   "devDependencies": {
     "@eslint/compat": "1.3.1",
@@ -312,9 +312,6 @@
     "*.{css, scss}": [
       "prettier --write",
       "stylelint --fix"
-    ],
-    "apps/fishing-map/**/*.{js,jsx,ts,tsx}": [
-      "nx i18n fishing-map"
     ]
   },
   "packageManager": "yarn@4.9.2"

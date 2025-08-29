@@ -11,9 +11,15 @@ import { Button, InputText, Select } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectUserData } from 'features/user/selectors/user.selectors'
-import type { UpdateWorkspaceThunkRejectError } from 'features/workspace/workspace.slice'
+import type {
+  UpdateCurrentWorkspaceThunkParams,
+  UpdateWorkspaceThunkRejectError,
+} from 'features/workspace/workspace.slice'
 import { updateCurrentWorkspaceThunk } from 'features/workspace/workspace.slice'
-import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import type {
+  AppWorkspace,
+  UpdateWorkspaceThunkParams,
+} from 'features/workspaces-list/workspaces-list.slice'
 import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
 
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
@@ -63,21 +69,23 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
   const updateWorkspace = async () => {
     if (workspace && !loading) {
       setLoading(true)
-      const updateParams = {
+      const updateParams: UpdateCurrentWorkspaceThunkParams | UpdateWorkspaceThunkParams = {
         ...workspace,
         name,
+        newPassword: isOwnerWorkspace ? newPassword : undefined,
         editAccess: isOwnerWorkspace ? editAccess : undefined,
         state: {
           ...workspace.state,
           daysFromLatest,
         },
-        password: editPassword,
-        newPassword,
+        editPassword,
       }
 
       const dispatchedAction = isWorkspaceList
-        ? await dispatch(updateWorkspaceThunk(updateParams))
-        : await dispatch(updateCurrentWorkspaceThunk(updateParams))
+        ? await dispatch(updateWorkspaceThunk(updateParams as UpdateWorkspaceThunkParams))
+        : await dispatch(
+            updateCurrentWorkspaceThunk(updateParams as UpdateCurrentWorkspaceThunkParams)
+          )
       if (
         updateWorkspaceThunk.fulfilled.match(dispatchedAction) ||
         updateCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)

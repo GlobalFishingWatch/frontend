@@ -39,7 +39,7 @@ module "develop" {
   ]
   set_env_vars = [
     "BASIC_AUTH=Restricted",
-    "BASIC_AUTH_USER=gfw"
+    "BASIC_AUTH_USER=gfw-api"
   ]
   set_secrets = [
     "BASIC_AUTH_PASS=${local.secrets_path.dev}/BASIC_AUTH_PASS_API_PORTAL",
@@ -69,7 +69,7 @@ module "staging" {
   ]
   set_env_vars = [
     "BASIC_AUTH=Restricted",
-    "BASIC_AUTH_USER=gfw"
+    "BASIC_AUTH_USER=gfw-api"
   ]
   set_secrets = [
     "BASIC_AUTH_PASS=${local.secrets_path.sta}/BASIC_AUTH_PASS_API_PORTAL",
@@ -94,9 +94,10 @@ module "production" {
     invert_regex = false
   }
   set_env_vars_build = [
-    "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.pro-v2.globalfishingwatch.org",
+    "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.globalfishingwatch.org",
     "NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
     "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
+    "NEXT_PUBLIC_URL=/our-apis/tokens",
   ]
   set_env_vars = [
     "BASIC_AUTH=off"

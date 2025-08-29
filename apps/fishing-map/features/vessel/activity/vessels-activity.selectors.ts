@@ -192,7 +192,7 @@ export const selectEventsGroupedByArea = createSelector(
       Record<typeof UNKNOWN_AREA | 'total' | EventTypes, number>
     > = eventsList.reduce(
       (acc, event) => {
-        let eventAreas = event.regions?.[area]
+        let eventAreas = area === 'fao' ? event.regions?.majorFao : event.regions?.[area]
         if (!eventAreas?.length) eventAreas = [UNKNOWN_AREA]
         if (area === 'fao') {
           eventAreas = eventAreas?.filter((area) => area.split('.').length === 1)

@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import formatcoords from 'formatcoords'
 
 import type { OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
-import { getOceanAreaName } from '@globalfishingwatch/ocean-areas'
 
+import { useOceanAreas } from 'hooks/ocean-areas'
 import type { MapCoordinates } from 'types'
 import { toFixed } from 'utils/shared'
 
@@ -14,14 +14,25 @@ const MiniGlobeInfo = ({ viewport }: { viewport: MapCoordinates }) => {
   const { i18n } = useTranslation()
   const [showDMS, setShowDMS] = useState(true)
   const [areaName, setAreaName] = useState('')
+  const { getOceanAreaName } = useOceanAreas()
 
   useEffect(() => {
     const updateAreaName = async (viewport: MapCoordinates, locale: OceanAreaLocale) => {
-      const areaName = await getOceanAreaName(viewport, {
-        locale,
-        combineWithEEZ: true,
-      })
-      setAreaName(areaName)
+      try {
+        const areaName = await getOceanAreaName({
+          viewport: {
+            latitude: viewport.latitude,
+            longitude: viewport.longitude,
+            zoom: viewport.zoom,
+          },
+          locale,
+          combineWithEEZ: true,
+        })
+        setAreaName(areaName || '')
+      } catch (error) {
+        console.error('Error getting ocean area name:', error)
+        setAreaName('')
+      }
     }
     updateAreaName(viewport, i18n.language as OceanAreaLocale)
   }, [i18n.language, viewport])

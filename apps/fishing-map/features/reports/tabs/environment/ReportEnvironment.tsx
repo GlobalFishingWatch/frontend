@@ -14,6 +14,7 @@ import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportStatsPlaceholder from 'features/reports/shared/placeholders/ReportStatsPlaceholder'
+import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
 import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivityEvolution'
 import ReportCurrentsGraph from 'features/reports/tabs/activity/ReportCurrentsGraph'
 import {
@@ -70,6 +71,7 @@ function ReportEnvironment() {
                 </Fragment>
               )}
             </p>
+            <ReportSummaryTags key={dataview.id} dataview={dataview} />
             {isDynamic || isCurrents ? (
               isLoading || !layersTimeseriesFiltered?.[index] || hasError ? (
                 <ReportActivityPlaceholder showHeader={false}>

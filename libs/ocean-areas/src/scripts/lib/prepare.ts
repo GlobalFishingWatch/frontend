@@ -18,7 +18,16 @@ async function existsFilePath(path: string) {
 }
 
 export async function prepare(
-  { type, path, bucketFolder, propertiesMapping, limitBy, filter, skipDownload } = {} as AreaConfig
+  {
+    type,
+    path,
+    bucketFolder,
+    propertiesMapping,
+    limitBy,
+    filter,
+    skipDownload,
+    geometryMode = 'simplify',
+  } = {} as AreaConfig
 ) {
   const sourcePath = `${sourcePathPrefix}/${path}`
   const areasListPath = `${sourcePath}/list.json`
@@ -48,11 +57,15 @@ export async function prepare(
     let listLength = list.length
     for (const file of list) {
       fileIndex++
-      const areaFile = await fs.readFile(`${sourcePath}/${file.id}.json`, 'utf8')
-      if (!areaFile) {
-        console.error(`❌ Area file not found ${sourcePath}/${file.id}.json`)
+      const id = typeof file.id === 'string' ? file.id.replace('\r\n', '') : file.id
+
+      const areaFilePath = `${sourcePath}/${id}.json`
+      if (!(await existsFilePath(areaFilePath))) {
+        console.error(`❌ Area file not found ${areaFilePath}`)
         continue
       }
+
+      const areaFile = await fs.readFile(areaFilePath, 'utf8')
       const areaData = JSON.parse(areaFile) as Feature
       if (filter && !filter(areaData)) {
         listLength--
@@ -62,7 +75,7 @@ export async function prepare(
         filteredFileIndex++
         process.stdout.write(`\r[${type}] ${renderBar(filteredFileIndex, listLength)}`)
       }
-      const simplifiedArea = simplifyArea(areaData, propertiesMapping.area)
+      const simplifiedArea = simplifyArea(areaData, propertiesMapping.area, geometryMode)
       if (simplifiedArea) {
         const area = areaData.properties?.[propertiesMapping.area]
         if (!area) {

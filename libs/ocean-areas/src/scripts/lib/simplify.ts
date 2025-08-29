@@ -1,8 +1,14 @@
+import bbox from '@turf/bbox'
+import bboxPolygon from '@turf/bbox-polygon'
 import simplify from '@turf/simplify'
 import truncate from '@turf/truncate'
 import type { Feature, MultiPolygon, Polygon } from 'geojson'
 
-export function simplifyArea(feature: Feature, idProperty?: string) {
+export function simplifyArea(
+  feature: Feature,
+  idProperty?: string,
+  geometryMode: 'bbox' | 'simplify' = 'simplify'
+) {
   if (!feature.geometry || !('coordinates' in feature.geometry)) {
     return null
   }
@@ -21,15 +27,24 @@ export function simplifyArea(feature: Feature, idProperty?: string) {
   } as Feature<Polygon | MultiPolygon>
 
   try {
+    if (geometryMode === 'bbox') {
+      return {
+        type: 'Feature',
+        properties: area.properties,
+        geometry: {
+          type: 'Polygon',
+          coordinates: [bboxPolygon(bbox(area)).geometry.coordinates[0]],
+        },
+      }
+    }
+
     const simplified = simplify(area, {
       tolerance: 0.3,
       highQuality: true,
     })
-
     const truncated = truncate(simplified, {
       precision: 2,
     })
-
     return truncated
   } catch (error) {
     if (process.env.DEBUG) {

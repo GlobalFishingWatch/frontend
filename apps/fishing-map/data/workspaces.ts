@@ -40,7 +40,7 @@ export const EEZ_AREAS_12NM_DATAVIEW_SLUG = 'eez-12-nm' as const
 export const EEZ_DATAVIEW_INSTANCE_ID = 'context-layer-eez' as const
 export const MPA_DATAVIEW_SLUG = 'mpa' as const
 export const MPA_DATAVIEW_INSTANCE_ID = 'context-layer-mpa' as const
-export const BASEMAP_DATAVIEW_INSTANCE_ID = 'basemap-labels' as const
+export const BASEMAP_LABELS_DATAVIEW_INSTANCE_ID = 'basemap-labels' as const
 export const PROTECTEDSEAS_DATAVIEW_INSTANCE_ID = 'context-layer-protectedseas' as const
 export const RFMO_DATAVIEW_SLUG = 'tuna-rfmo-areas' as const
 export const RFMO_DATAVIEW_INSTANCE_ID = 'context-layer-rfmo' as const
@@ -57,6 +57,7 @@ export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas' as const
 export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas' as const
 export const PORTS_FOOTPRINT_DATAVIEW_SLUG = 'ports-footprint' as const
 export const CURRENTS_DATAVIEW_SLUG = 'currents' as const
+export const BATHYMETRY_CONTOUR_DATAVIEW_SLUG = 'bathymetry-contour' as const
 
 export const FISHING_DATAVIEW_SLUG_PREFIX = 'apparent-fishing-effort' as const
 // Workspaces dataviews

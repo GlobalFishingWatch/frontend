@@ -49,7 +49,7 @@ resource "google_cloudbuild_trigger" "trigger" {
       entrypoint = "bash"
       args = [
         "-c",
-        "echo $(sha256sum yarn.lock | cut -d' ' -f1) > /workspace/cache-key"
+        "echo $(cat yarn.lock cloudbuild-template/scripts/install-yarn.sh | sha256sum | cut -d' ' -f1) > /workspace/cache-key"
       ]
       wait_for = ["-"]
     }
@@ -64,29 +64,42 @@ resource "google_cloudbuild_trigger" "trigger" {
 
     step {
       id       = "install-yarn"
-      name     = "node:23"
+      name     = "node:24"
       script   = file("${path.module}/scripts/install-yarn.sh")
       wait_for = ["restore-cache"]
     }
 
     step {
       id       = "build-app"
-      name     = "node:23"
+      name     = "node:24"
       script   = "yarn nx run ${var.app_name}:build --parallel"
       wait_for = ["install-yarn"]
       env      = var.set_env_vars_build
     }
 
     step {
+      id         = "pull-image"
+      name       = "gcr.io/cloud-builders/docker"
+      entrypoint = "bash"
+      args = [
+        "-c",
+        "docker pull ${var.docker_image} || exit 0"
+      ]
+      wait_for = ["build-app"]
+    }
+
+    step {
       id       = "build-image"
       name     = "gcr.io/kaniko-project/executor:debug"
-      wait_for = ["build-app"]
+      wait_for = ["pull-image"]
       args = [
         "--destination=${var.docker_image}",
         "--build-arg", "APP_NAME=${var.app_name}",
         "--target", "production",
         "-f", "./apps/${var.app_name}/Dockerfile",
         "-c", "./dist/apps/${var.app_name}",
+        "--cache=true",
+        "--cache-repo=${var.docker_image}-cache"
       ]
     }
 
@@ -118,7 +131,7 @@ resource "google_cloudbuild_trigger" "trigger" {
       id       = "save-cache"
       name     = "gcr.io/cloud-builders/gcloud"
       script   = file("${path.module}/scripts/save-cache.sh")
-      wait_for = ["install-yarn"]
+      wait_for = ["build-app"]
       env      = local.cache_env
     }
 
@@ -140,9 +153,10 @@ resource "google_cloudbuild_trigger" "trigger" {
 
 
     options {
-      logging = "CLOUD_LOGGING_ONLY"
+      logging      = "CLOUD_LOGGING_ONLY"
+      machine_type = var.machine_type == null ? null : var.machine_type
     }
 
-    timeout = "1200s"
+    timeout = "1800s"
   }
 }

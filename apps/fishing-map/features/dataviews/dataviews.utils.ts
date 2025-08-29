@@ -46,6 +46,9 @@ export const ENCOUNTER_EVENTS_SOURCES = [
   ENCOUNTER_EVENTS_30MIN_SOURCE_ID,
 ]
 
+export const BATHYMETRY_DATAVIEW_PREFIX = 'bathymetry' as const
+export const BATHYMETRY_CONTOUR_DATAVIEW_PREFIX = 'bathymetry-contour' as const
+
 export function dataviewHasVesselGroupId(dataview: UrlDataviewInstance, vesselGroupId: string) {
   return dataview.config?.filters?.['vessel-groups']?.includes(vesselGroupId)
 }
@@ -419,7 +422,14 @@ export const dataviewWithPrivateDatasets = (dataview: UrlDataviewInstance) => {
 }
 
 export const isBathymetryDataview = (dataview: UrlDataviewInstance) => {
-  return dataview.id.includes('bathymetry')
+  return (
+    dataview.id.includes(BATHYMETRY_DATAVIEW_PREFIX) &&
+    !dataview.id.includes(BATHYMETRY_CONTOUR_DATAVIEW_PREFIX)
+  )
+}
+
+export const isBathymetryContourDataview = (dataview: UrlDataviewInstance) => {
+  return dataview.id.includes(BATHYMETRY_CONTOUR_DATAVIEW_PREFIX)
 }
 
 export const getIsPositionSupportedInDataview = (dataview: UrlDataviewInstance) => {

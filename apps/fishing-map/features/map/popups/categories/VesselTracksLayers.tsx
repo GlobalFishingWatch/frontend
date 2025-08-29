@@ -63,17 +63,17 @@ function VesselTracksTooltipRow({
   const diffDays = getUTCDateTime(end).diff(getUTCDateTime(start), 'days').days
 
   const onReportClick = useCallback(() => {
-    if (diffDays > 10) {
+    if (diffDays > 14) {
       if (
         window.confirm(t('trackCorrection.reduce_issue_timerange') as string) &&
         feature.timestamp
       ) {
         const startDate = getUTCDateTime(feature.timestamp)
-          .minus({ days: 5 })
+          .minus({ days: 6.5 })
           .startOf('day')
           .toISO() as string
         const endDate = getUTCDateTime(feature.timestamp)
-          .plus({ days: 5 })
+          .plus({ days: 6.5 })
           .endOf('day')
           .plus({ millisecond: 1 })
           .toISO() as string

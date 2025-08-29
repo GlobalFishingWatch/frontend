@@ -6,6 +6,7 @@ export type GraticuleLineGroup = 1 | 5 | 10 | 30 | 90
 
 export type GraticulesLayerProps = DeckLayerProps<{
   color: string
+  thickness: number
 }>
 
 export type ViewportSize = {

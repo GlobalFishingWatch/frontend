@@ -3,7 +3,7 @@ import type { Loader, LoaderWithParser } from '@loaders.gl/loader-utils'
 import packageJson from '../../package.json'
 import { PATH_BASENAME } from '../loaders.config'
 
-import { parseFourwings } from './lib/parse-fourwings'
+import { NO_DATA_VALUE, OFFSET_VALUE, parseFourwings, SCALE_VALUE } from './lib/parse-fourwings'
 import type { FourwingsLoaderOptions, ParseFourwingsOptions } from './lib/types'
 
 /**
@@ -22,11 +22,11 @@ export const FourwingsWorkerLoader: Loader = {
     fourwings: {
       workerUrl: `${PATH_BASENAME}/workers/fourwings-worker.js`,
       sublayers: 1,
-      cols: 113,
-      rows: 53,
-      scale: 1,
-      offset: 0,
-      noDataValue: 0,
+      cols: [113],
+      rows: [53],
+      scale: [SCALE_VALUE],
+      offset: [OFFSET_VALUE],
+      noDataValue: [NO_DATA_VALUE],
       bufferedStartDate: 0,
       initialTimeRange: undefined,
       tile: undefined,

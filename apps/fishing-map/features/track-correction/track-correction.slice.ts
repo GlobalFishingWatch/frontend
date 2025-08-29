@@ -16,11 +16,13 @@ export type TrackCorrectionComment = {
   date: string
   datasetVersion: number
   marksAsResolved: boolean
+  confirmed: boolean
 }
 
 export type TrackCorrection = {
   issueId: string
   vesselId: string
+  ssvid: string
   vesselName?: string
   createdBy?: string
   userEmail?: string
@@ -29,6 +31,7 @@ export type TrackCorrection = {
   endDate: string
   type: IssueType
   lastUpdated: string
+  confirmed: boolean
   resolved: boolean
   comments?: TrackCorrectionComment[]
   lat: number

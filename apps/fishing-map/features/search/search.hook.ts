@@ -52,10 +52,10 @@ const FIRST_FETCH_FILTERS_TO_IGNORE = [
 const hasFiltersActive = (filters: VesselSearchState): boolean => {
   return (
     Object.entries(filters).filter(([key]) => {
+      const value = filters[key as keyof VesselSearchState]
       return (
         !FIRST_FETCH_FILTERS_TO_IGNORE.includes(key) &&
-        filters[key as keyof VesselSearchState] !== undefined &&
-        filters[key as keyof VesselSearchState] !== ''
+        (typeof value === 'string' ? value.trim() !== '' : value !== undefined)
       )
     }).length > 0
   )
@@ -153,7 +153,7 @@ export const useFetchSearchResults = () => {
       const searchInBasic =
         activeSearchOption === 'basic' && query?.length > MIN_SEARCH_CHARACTERS - 1
       const searchInAdvanced =
-        activeSearchOption === 'advanced' && (hasFiltersActive(filters) || query)
+        activeSearchOption === 'advanced' && (hasFiltersActive(filters) || query?.trim() !== '')
       if (datasets?.length && (searchInAdvanced || searchInBasic)) {
         const sources = filters?.sources
           ? datasets.filter(({ id }) => filters?.sources?.includes(id))
@@ -170,6 +170,7 @@ export const useFetchSearchResults = () => {
             datasets: sources,
             since,
             gfwUser,
+            searchType: activeSearchOption,
           })
         )
         // TODO: Find a better approach to sync query

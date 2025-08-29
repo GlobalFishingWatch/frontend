@@ -39,7 +39,7 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
       entrypoint = "bash"
       args = [
         "-c",
-        "echo $(sha256sum yarn.lock | cut -d' ' -f1) > /workspace/cache-key"
+        "echo $(cat yarn.lock cloudbuild-template/scripts/install-yarn.sh | sha256sum | cut -d' ' -f1) > /workspace/cache-key"
       ]
       wait_for = ["-"]
     }
@@ -54,16 +54,25 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
 
     step {
       id       = "install-yarn"
-      name     = "node:23"
+      name     = "node:24"
       script   = file("../cloudbuild-template/scripts/install-yarn.sh")
       wait_for = ["restore-cache"]
     }
 
+
+    step {
+      id       = "save-cache"
+      name     = "gcr.io/cloud-builders/gcloud"
+      script   = file("../cloudbuild-template/scripts/save-cache.sh")
+      wait_for = ["install-yarn"]
+      env      = local.cache_env
+    }
+
     step {
       id       = "get-affected"
-      name     = "node:23"
+      name     = "node:24"
       script   = file("${path.module}/scripts/affected-apps.sh")
-      wait_for = ["install-yarn"]
+      wait_for = ["save-cache"]
     }
 
     step {
@@ -78,18 +87,10 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
       ]
     }
 
-    step {
-      id       = "save-cache"
-      name     = "gcr.io/cloud-builders/gcloud"
-      script   = file("../cloudbuild-template/scripts/save-cache.sh")
-      wait_for = ["install-yarn"]
-      env      = local.cache_env
-    }
-
     options {
       logging = "CLOUD_LOGGING_ONLY"
     }
 
-    timeout = "1200s"
+    timeout = "1800s"
   }
 }

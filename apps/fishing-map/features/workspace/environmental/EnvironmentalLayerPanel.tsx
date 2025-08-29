@@ -77,6 +77,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
       { field: 'specie', label: t('layer.specie') },
       { field: 'period', label: t('layer.period') },
       { field: 'scenario', label: t('layer.scenario') },
+      { field: 'elevation', label: t('layer.elevation') },
     ],
     [t]
   )
@@ -118,7 +119,8 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
       d.type === DatasetTypes.Fourwings ||
       d.type === DatasetTypes.Context ||
       d.type === DatasetTypes.UserContext ||
-      d.type === DatasetTypes.UserTracks
+      d.type === DatasetTypes.UserTracks ||
+      d.type === DatasetTypes.PMTiles
   )
   const hasLegend = dataset?.type === DatasetTypes.Fourwings
 
@@ -254,6 +256,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
                   dataview={dataview}
                   field={'visibleValues'}
                   label={t('common.visibleValues')}
+                  removeType="visibleValues"
                 />
               )}
             </div>

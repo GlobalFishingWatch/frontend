@@ -5,7 +5,6 @@ import type {
   LayerContext,
   LayersList,
   PickingInfo,
-  Position,
   UpdateParameters,
 } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
@@ -35,8 +34,8 @@ import {
   VESSEL_SPRITE_ICON_MAPPING,
 } from '../../../utils'
 import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
+import { LabelLayer } from '../../labels/LabelLayer'
 import { PATH_BASENAME } from '../../layers.config'
-import { LabelLayer } from '../../vessel/LabelLayer'
 import {
   MAX_POSITIONS_PER_TILE_SUPPORTED,
   POSITIONS_API_TILES_URL,
@@ -452,7 +451,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
               id: `${this.props.id}-lastPositionsNames`,
               data: lastPositions,
               getText: this._getVesselLabel,
-              getPosition: (d) => d.geometry.coordinates as Position,
+              getPosition: (d) => d.geometry.coordinates as [number, number, number],
               getColor: this._getLabelColor,
               pickable: true,
               getPickingInfo: this.getPickingInfo,

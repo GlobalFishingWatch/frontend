@@ -44,7 +44,7 @@ function MultiPolygon(multiPolygon: any, bbox: number[][], viewport: Viewport) {
 }
 
 // copied from deck.gl geo-layers/src/mvt-layer/coordinate-transform as it not exported
-export function transform(geometry: any, bbox: GeoBoundingBox, viewport: Viewport) {
+export function transformCoordinates(geometry: any, bbox: GeoBoundingBox, viewport: Viewport) {
   const nw = viewport.projectFlat([bbox.west, bbox.north])
   const se = viewport.projectFlat([bbox.east, bbox.south])
   const projectedBbox = [nw, se]
@@ -58,17 +58,24 @@ export function transform(geometry: any, bbox: GeoBoundingBox, viewport: Viewpor
     ),
   }
 }
-
-export function transformTileCoordsToWGS84(
-  object: Feature,
+// export function filteredPositionsByViewport<T extends FourwingsPositionFeature | Feature<Point>>(
+//   positions: T[],
+//   viewport: Viewport
+// ): T[] {
+//   const viewportBounds = viewport.getBounds()
+//   const viewportPolygon = bboxPolygon(viewportBounds)
+//   return positions.filter((position) => booleanPointInPolygon(position, viewportPolygon))
+// }
+export function transformTileCoordsToWGS84<T extends Feature>(
+  object: T,
   bbox: GeoBoundingBox,
   viewport: Viewport
-): Feature {
+): T {
   const feature = {
     ...(object || {}),
     geometry: {
       type: object.geometry.type,
-      coordinates: transform(object.geometry, bbox, viewport).coordinates,
+      coordinates: transformCoordinates(object.geometry, bbox, viewport).coordinates,
     },
   }
 
@@ -79,5 +86,5 @@ export function transformTileCoordsToWGS84(
   //   },
   // })
 
-  return feature as Feature
+  return feature as T
 }

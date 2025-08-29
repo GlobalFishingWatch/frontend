@@ -7,6 +7,8 @@ module.exports = {
   defaultNamespace: 'translations',
   // Indentation of the catalog files
   indentation: 2,
+  // Exit with an exit code of 1 when translations are updated (for CI purpose)
+  failOnUpdate: false,
   // Keep keys from the catalog that are no longer in code
   keepRemoved: true,
   // Plural separator used in your translation keys
@@ -41,6 +43,8 @@ module.exports = {
     './data/**/*',
     './pages/**/*',
     './features/**/*',
+    './routes/**/*',
+    './utils/**/*',
     '[!node_modules][!public]*/**/*.{js,jsx,ts,tsx}',
   ],
   // For react file, extract the defaultNamespace - https://react.i18next.com/latest/withtranslation-hoc
@@ -55,6 +59,6 @@ module.exports = {
   // Display info about the parsing including some stats
   verbose: true,
   i18nextOptions: {
-    compatibilityJSON: "v4"
-  }
+    compatibilityJSON: 'v4',
+  },
 }

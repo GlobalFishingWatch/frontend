@@ -160,6 +160,7 @@ module "production" {
   short_environment = "pro"
   description       = "Deploy to production when pushing new tag @gfw/fishing-map@x.x.x"
   app_name          = local.app_name
+  machine_type      = "E2_HIGHCPU_8"
   docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-sta"
   service_account   = local.service_account.pro
   labels = {
@@ -172,10 +173,10 @@ module "production" {
     invert_regex = false
   }
   set_env_vars_build = [
-    "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.pro-v2.globalfishingwatch.org",
+    "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.globalfishingwatch.org",
     "NEXT_PUBLIC_API_VERSION=v3",
     "NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
-    "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
+    "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GTM-WXTMN69",
     "NEXT_PUBLIC_USE_LOCAL_DATASETS=true",
     "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=true",
     "NEXT_PUBLIC_WORKSPACE_ENV=staging",
