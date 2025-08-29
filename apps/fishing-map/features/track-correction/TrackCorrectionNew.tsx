@@ -282,7 +282,6 @@ const TrackCorrectionNew = () => {
           </span>
 
           <Button
-            tooltip={isTimerangePristine ? t('trackCorrection.adjustDisabled') : undefined}
             size="medium"
             onClick={() => onConfirmClick(trackCorrectionTimerange)}
             loading={isSubmitting}
