@@ -48,7 +48,6 @@ const TrackCorrectionNew = () => {
 
   const workspaceId = useSelector(selectCurrentWorkspaceId) as TurningTidesWorkspaceId
 
-  const [isTimerangePristine, setIsTimerangePristine] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const trackCorrectionVesselDataviewId = useSelector(selectTrackCorrectionVesselDataviewId)
@@ -59,12 +58,6 @@ const TrackCorrectionNew = () => {
   const vesselInfo = vesselInfoResource?.data
   const vesselColor = dataview?.config?.color
   const userData = useSelector(selectUserData)
-
-  useEffect(() => {
-    if (trackCorrectionVesselDataviewId) {
-      setIsTimerangePristine(true)
-    }
-  }, [trackCorrectionVesselDataviewId])
 
   const trackData = useMemo(() => {
     return vesselLayer?.instance
@@ -197,6 +190,17 @@ const TrackCorrectionNew = () => {
       setTrackCorrectionId,
     ]
   )
+  if (!trackCorrectionVesselDataviewId) {
+    return (
+      <>
+        <h1 className={styles.title}>{t('trackCorrection.title')}</h1>
+        <div className={styles.container}>
+          <Icon type="default" icon="warning" />
+          {t('trackCorrection.badLink')}
+        </div>
+      </>
+    )
+  }
 
   if (isGuestUser || !userData) return null
 
@@ -239,9 +243,6 @@ const TrackCorrectionNew = () => {
             rangeEndTime={getUTCDateTime(end).toMillis()}
             segments={trackData ?? []}
             color={vesselColor}
-            onTimerangeChange={(start, end) => {
-              setIsTimerangePristine(false)
-            }}
           />
         </div>
 
