@@ -26,6 +26,10 @@ export async function getWorkspaceIssues(
   const rows = await sheet.getRows()
   const issues: TrackCorrection[] = rows.map(parseIssueRow)
 
+  if (!issues.length) {
+    return []
+  }
+
   if (includeComments) {
     const commentsSheet = spreadsheetDoc.sheetsByTitle[COMMENTS_SPREADSHEET_TITLE]
     if (!commentsSheet) {

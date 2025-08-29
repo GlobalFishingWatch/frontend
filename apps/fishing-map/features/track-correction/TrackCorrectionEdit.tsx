@@ -15,7 +15,11 @@ import {
   setTrackIssueComment,
 } from 'features/track-correction/track-correction.slice'
 import { selectCurrentTrackCorrectionIssue } from 'features/track-correction/track-selection.selectors'
-import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
+import {
+  selectIsGFWUser,
+  selectIsGuestUser,
+  selectUserData,
+} from 'features/user/selectors/user.selectors'
 import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
 import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
 import { getVesselShipNameLabel } from 'utils/info'
@@ -32,9 +36,9 @@ enum ActionType {
 
 const TrackCorrectionEdit = () => {
   const { t } = useTranslation()
-  const issueComment = useSelector(selectTrackIssueComment)
-  console.log('🚀 ~ TrackCorrectionEdit ~ issueComment:', issueComment)
   const dispatch = useAppDispatch()
+  const issueComment = useSelector(selectTrackIssueComment)
+  const isGFWUser = useSelector(selectIsGFWUser)
   const isGuestUser = useSelector(selectIsGuestUser)
 
   const workspaceId = useSelector(selectCurrentWorkspaceId)
@@ -191,34 +195,36 @@ const TrackCorrectionEdit = () => {
                     >
                       {t('trackCorrection.comment')}
                     </Button>
-                    {currentTrackCorrectionIssue.confirmed ? (
-                      <Button
-                        size="medium"
-                        className={styles.commentButton}
-                        onClick={() => onConfirmClick(ActionType.Resolve)}
-                        loading={isSubmitting}
-                        tooltip={t('trackCorrection.resolveAndClose')}
-                      >
-                        <Icon icon={'tick'} />
-                        {t('trackCorrection.commentResolve')}
-                      </Button>
-                    ) : (
-                      <Button
-                        size="medium"
-                        className={styles.commentButton}
-                        onClick={() => onConfirmClick(ActionType.Confirm)}
-                        loading={isSubmitting}
-                        disabled={currentTrackCorrectionIssue?.confirmed}
-                        tooltip={
-                          t('trackCorrection.confirmAs') +
-                          ' ' +
-                          t(`trackCorrection.${currentTrackCorrectionIssue.type}`).toLowerCase()
-                        }
-                      >
-                        <Icon icon={'tick'} />
-                        {t('trackCorrection.confirm')}
-                      </Button>
-                    )}
+                    {isGFWUser ? (
+                      currentTrackCorrectionIssue.confirmed ? (
+                        <Button
+                          size="medium"
+                          className={styles.commentButton}
+                          onClick={() => onConfirmClick(ActionType.Resolve)}
+                          loading={isSubmitting}
+                          tooltip={t('trackCorrection.resolveAndClose')}
+                        >
+                          <Icon icon={'tick'} />
+                          {t('trackCorrection.commentResolve')}
+                        </Button>
+                      ) : (
+                        <Button
+                          size="medium"
+                          className={styles.commentButton}
+                          onClick={() => onConfirmClick(ActionType.Confirm)}
+                          loading={isSubmitting}
+                          disabled={currentTrackCorrectionIssue?.confirmed}
+                          tooltip={
+                            t('trackCorrection.confirmAs') +
+                            ' ' +
+                            t(`trackCorrection.${currentTrackCorrectionIssue.type}`).toLowerCase()
+                          }
+                        >
+                          <Icon icon={'tick'} />
+                          {t('trackCorrection.confirm')}
+                        </Button>
+                      )
+                    ) : null}
                   </Fragment>
                 </div>
               )}
