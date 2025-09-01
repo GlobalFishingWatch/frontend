@@ -1169,6 +1169,7 @@ interface Resources {
     }
     trackCorrection: {
       adjustDisclaimer: 'Adjust your time range to cover as precisely as possible the activity you are reporting on.'
+      badLink: 'The issue you are trying to access was not found. Close this panel to view the list of all issues.'
       comment: 'Comment'
       commentPlaceholder: 'Tell us why you think this was misclassified'
       commentRequired: 'Your feedback is required to submit a correction'
@@ -1186,7 +1187,6 @@ interface Resources {
       markAsResolved: 'Mark as resolved'
       newIssue: 'New issue'
       other: 'Other'
-      badLink: 'The issue you are trying to access was not found. Close this panel to view the list of all issues.'
       reduce_issue_timerange: 'Looks like your time range is a bit long for reporting. To keep things accurate and fast, may we narrow it to 14 days?'
       replyPlaceholder: 'Write a reply'
       resolveAndClose: 'Resolve and close issue'
