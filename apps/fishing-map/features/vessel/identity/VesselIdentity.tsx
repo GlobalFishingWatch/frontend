@@ -6,7 +6,11 @@ import cx from 'classnames'
 import { saveAs } from 'file-saver'
 
 import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
-import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import {
+  API_LOGIN_REQUIRED,
+  SelfReportedSource,
+  VesselIdentitySourceEnum,
+} from '@globalfishingwatch/api-types'
 import type { TabsProps } from '@globalfishingwatch/ui-components'
 import { Icon, IconButton, Tabs, Tooltip } from '@globalfishingwatch/ui-components'
 
@@ -123,14 +127,16 @@ const VesselIdentity = () => {
     }
   }
 
+  const source = vesselIdentity?.sourceCode
+
   const identityFields = useMemo(() => {
-    const source = vesselIdentity.sourceCode?.[0]
-    const customIdentityFields = CUSTOM_VMS_IDENTITY_FIELD_GROUPS[source]
+    const customIdentityFields = CUSTOM_VMS_IDENTITY_FIELD_GROUPS[source[0]]
     return customIdentityFields?.length
       ? [...IDENTITY_FIELD_GROUPS[identitySource], ...customIdentityFields]
       : IDENTITY_FIELD_GROUPS[identitySource]
-  }, [identitySource, vesselIdentity?.sourceCode])
+  }, [identitySource, source])
 
+  const isChileanVMSVessel = source?.includes(SelfReportedSource.Chile)
   const hasMoreInfo = vesselIdentity?.hasComplianceInfo || vesselIdentity?.iuuStatus === 'Current'
   const registrySourceData = REGISTRY_SOURCES.find((s) => s.key === vesselIdentity.registrySource)
 
@@ -148,13 +154,11 @@ const VesselIdentity = () => {
                   terminologyKey="registrySources"
                 />
               </div>
-              {vesselIdentity?.sourceCode ? (
+              {source ? (
                 <VesselIdentityField
-                  tooltip={vesselIdentity?.sourceCode?.filter(Boolean)?.join(', ')}
+                  tooltip={source?.filter(Boolean)?.join(', ')}
                   className={styles.help}
-                  value={`${vesselIdentity?.sourceCode?.slice(0, 3).join(', ')}${
-                    vesselIdentity?.sourceCode?.length > 3 ? '...' : ''
-                  }`}
+                  value={`${source?.slice(0, 3).join(', ')}${source?.length > 3 ? '...' : ''}`}
                 />
               ) : (
                 EMPTY_FIELD_PLACEHOLDER
@@ -181,9 +185,7 @@ const VesselIdentity = () => {
             </div>
           </div>
           <div className={styles.actionsContainer}>
-            {(isJACUser || isGFWUser) && !vesselIdentity.sourceCode?.[0].includes('VMS') && (
-              <VesselInfoCorrection />
-            )}
+            {(isJACUser || isGFWUser) && !source?.[0].includes('VMS') && <VesselInfoCorrection />}
 
             <UserLoggedIconButton
               type="border"
@@ -221,7 +223,8 @@ const VesselIdentity = () => {
                       label = 'gfw_' + label
                     }
                     const key = field.key as keyof VesselLastIdentity
-                    let value = vesselIdentity[key] as string
+                    let value =
+                      isChileanVMSVessel && key === 'ssvid' ? '--' : (vesselIdentity[key] as string)
                     if (key === 'depthM' || key === 'builtYear') {
                       value =
                         (vesselIdentity[key] as any) === API_LOGIN_REQUIRED

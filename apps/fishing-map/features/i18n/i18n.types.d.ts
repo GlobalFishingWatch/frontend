@@ -1168,8 +1168,8 @@ interface Resources {
       maxPointsVisualizationExceeded: 'Max points visualization exceeded, switching to heatmap mode.'
     }
     trackCorrection: {
-      adjustDisabled: 'Adjusting the time range is needed.'
       adjustDisclaimer: 'Adjust your time range to cover as precisely as possible the activity you are reporting on.'
+      badLink: 'The issue you are trying to access was not found. Close this panel to view the list of all issues.'
       comment: 'Comment'
       commentPlaceholder: 'Tell us why you think this was misclassified'
       commentRequired: 'Your feedback is required to submit a correction'
