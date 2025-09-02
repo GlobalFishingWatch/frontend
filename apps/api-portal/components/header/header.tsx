@@ -1,14 +1,8 @@
- 
 import React, { Fragment } from 'react'
 
 import type { UserData } from '@globalfishingwatch/api-types'
-import type {
-  MenuItem} from '@globalfishingwatch/ui-components';
-import {
-  Header as UIHeader,
-  HeaderMenuItem,
-  IconButton
-} from '@globalfishingwatch/ui-components'
+import type { MenuItem } from '@globalfishingwatch/ui-components'
+import { Header as UIHeader, HeaderMenuItem, IconButton } from '@globalfishingwatch/ui-components'
 
 import styles from './header.module.css'
 
@@ -27,25 +21,23 @@ export function Header({ title = '', user, logout }: HeaderProps) {
     ({
       className: styles.userMenuItem,
       label: (
-        <Fragment>
-          <IconButton type="solid" className={styles.userInitials}>
-            {userInitials.toLocaleUpperCase()}
-          </IconButton>
-        </Fragment>
+        <IconButton type="solid" className={styles.userInitials}>
+          {userInitials.toLocaleUpperCase()}
+        </IconButton>
       ),
-      childs: [
+      items: [
         {
-          label: (
-            <Fragment>
-              <p className={styles.userFullname}>{`${user.firstName} ${user.lastName || ''}`}</p>
-              <p className={styles.secondary}>{user.email}</p>
-            </Fragment>
-          ),
-        },
-        {
-          className: styles.logoutLink,
-          onClick: logout,
-          label: 'Logout',
+          label: `${user.firstName} ${user.lastName || ''}`,
+          items: [
+            {
+              label: user.email,
+            },
+            {
+              label: 'Logout',
+              className: styles.logoutLink,
+              onClick: logout,
+            },
+          ],
         },
       ],
     } as MenuItem)
