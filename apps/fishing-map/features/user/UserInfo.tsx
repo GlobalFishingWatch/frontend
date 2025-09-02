@@ -10,6 +10,8 @@ import ambassadorImg from 'assets/images/badges/ambassador.webp'
 import ambassadorPlaceholderImg from 'assets/images/badges/ambassador-placeholder.webp'
 import fixerImg from 'assets/images/badges/fixer.webp'
 import fixerPlaceholderImg from 'assets/images/badges/fixer-placeholder.webp'
+import impactReporterImg from 'assets/images/badges/impact-reporter.webp'
+import impactReporterPlaceholderImg from 'assets/images/badges/impact-reporter-placeholder.webp'
 import presenterImg from 'assets/images/badges/presenter.webp'
 import presenterPlaceholderImg from 'assets/images/badges/presenter-placeholder.webp'
 import teacherImg from 'assets/images/badges/teacher.webp'
@@ -27,6 +29,7 @@ import { updateLocation } from 'routes/routes.actions'
 import {
   selectHasAmbassadorBadge,
   selectHasFeedbackProviderBadge,
+  selectHasImpactReporterBadge,
   selectHasPresenterBadge,
   selectHasTeacherBadge,
   selectUserGroupsClean,
@@ -35,15 +38,7 @@ import { fetchUserThunk, logoutUserThunk } from './user.slice'
 
 import styles from './User.module.css'
 
-// t('user.badges.ambassador.title')
-// t('user.badges.ambassador.description')
-// t('user.badges.fixer.title')
-// t('user.badges.fixer.description')
-// t('user.badges.presenter.title')
-// t('user.badges.presenter.description')
-// t('user.badges.teacher.title')
-// t('user.badges.teacher.description')
-type Badge = 'ambassador' | 'fixer' | 'presenter' | 'teacher'
+type Badge = 'ambassador' | 'fixer' | 'presenter' | 'teacher' | 'impactReporter'
 type BadgeInfo = { image: string; placeholder: string; userHasIt: boolean }
 
 function UserInfo() {
@@ -57,6 +52,7 @@ function UserInfo() {
   const hasFeedbackProviderBadge = useSelector(selectHasFeedbackProviderBadge)
   const hasPresenterBadge = useSelector(selectHasPresenterBadge)
   const hasTeacherBadge = useSelector(selectHasTeacherBadge)
+  const hasImpactReporterBadge = useSelector(selectHasImpactReporterBadge)
   const [logoutLoading, setLogoutLoading] = useState(false)
   const [badgeSelected, setBadgeSelected] = useState<Badge>()
 
@@ -99,8 +95,19 @@ function UserInfo() {
         placeholder: ambassadorPlaceholderImg.src,
         userHasIt: hasAmbassadorBadge,
       },
+      impactReporter: {
+        image: impactReporterImg.src,
+        placeholder: impactReporterPlaceholderImg.src,
+        userHasIt: hasImpactReporterBadge,
+      },
     }),
-    [hasAmbassadorBadge, hasFeedbackProviderBadge, hasPresenterBadge, hasTeacherBadge]
+    [
+      hasAmbassadorBadge,
+      hasFeedbackProviderBadge,
+      hasImpactReporterBadge,
+      hasPresenterBadge,
+      hasTeacherBadge,
+    ]
   )
 
   if (!userLogged || !userData) return null
