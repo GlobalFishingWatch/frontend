@@ -17,10 +17,8 @@ export const resolveEndpoint = (
   { absolute = false } = {} as { absolute: boolean }
 ) => {
   const endpoint = dataset.endpoints?.find((endpoint) => {
-    console.log('🚀 ~ resolveEndpoint ~ endpoint:', endpoint)
     return endpoint.id === datasetConfig.endpoint
   })
-  console.log('🚀:', endpoint)
 
   if (!endpoint) return null
 

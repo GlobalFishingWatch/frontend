@@ -1,10 +1,13 @@
 import { notFound } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
+import { uniqBy } from 'es-toolkit'
 import ExcelJS from 'exceljs'
+import { stringify } from 'qs'
 
 import type { fieldMap, FieldMapConfig, type Vessel } from '@/types/vessel.types';
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import { IdentityVessel } from '@globalfishingwatch/api-types'
+import type { APIPagination, Dataset, IdentityVessel } from '@globalfishingwatch/api-types';
+import { EndpointId } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
 export const findBestMatchingKey = (keys: string[], fieldConfig: FieldMapConfig): string | null => {
@@ -158,10 +161,45 @@ export const fetchVessels = createServerFn().handler(async () => {
   return parseBasicVessels(vessels)
 })
 
-// export const getVesselsFromAPI = async ({ id }: { id: string }) => {
-//   const url = resolveEndpoint(dataset, datasetConfig)
-//   if (url) {
-//     const results = await GFWAPI.fetch<IdentityVessel>(url)
-//     return results
-//   }
-// }
+export const getVesselsFromAPI = async ({ id }: { id: string }) => {
+  const datasetIds = [
+    'public-global-vessel-identity:v3.0',
+    'private-panama-vessel-identity-fishing',
+    'private-panama-vessel-identity-non-fishing',
+  ]
+  const datasetsResponse = await GFWAPI.fetch<Response>(
+    `/datasets?${stringify(
+      {
+        ids: datasetIds,
+        include: 'endpoints',
+        cache: false,
+        limit: 999999,
+        offset: 0,
+      },
+      { arrayFormat: 'comma' }
+    )}`,
+    { responseType: 'default' }
+  )
+  const initialDatasets = (await datasetsResponse.json()) as APIPagination<Dataset>
+  const datasets = uniqBy([...initialDatasets.entries], (d) => d.id)
+
+  const datasetConfig = {
+    endpoint: EndpointId.VesselSearch,
+    datasetId: datasetIds[0],
+    params: [],
+    query: [
+      { id: 'includes', value: ['MATCH_CRITERIA', 'OWNERSHIP'] },
+      { id: 'datasets', value: datasets.map((d) => d.id) },
+      {
+        id: 'where',
+        value: encodeURIComponent(`imo=${id}`),
+      },
+      { id: 'since', value: '' },
+    ],
+  }
+  const url = resolveEndpoint(datasets[0], datasetConfig)
+  if (url) {
+    const results = await GFWAPI.fetch<APIPagination<IdentityVessel>>(url)
+    return results.entries[0]
+  }
+}
