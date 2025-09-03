@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import type { ExpandedState, Row, RowSelectionState, SortingState } from '@tanstack/react-table'
 import {
@@ -9,7 +9,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { useVirtualizer } from '@tanstack/react-virtual'
 
 import type { useTableFilters } from '@/hooks/useTableFilters'
 import { type Vessel } from '@/types/vessel.types'
@@ -18,7 +17,6 @@ import { Icon } from '@globalfishingwatch/ui-components'
 import type { AppDispatch, RootState } from 'store'
 
 import { useDynamicColumns } from '../../hooks/useDynamicColumns'
-import { useRowExpansion } from '../../hooks/useRowExpansion'
 import { renderExpandedRow } from '../expandableRow/ExpandableRow'
 
 import { setSelectedRows } from './table.slice'
@@ -28,13 +26,9 @@ import styles from '../../styles/global.module.css'
 export interface DynamicTableProps {
   data: Vessel[]
   tableFilters: ReturnType<typeof useTableFilters>
-  onExpandRow?: (row: Vessel) => Promise<any>
 }
 
-export function DynamicTable({ data, tableFilters, onExpandRow }: DynamicTableProps) {
-  const tableContainerRef = useRef<HTMLDivElement>(null)
-
-  const { expandedRows } = useRowExpansion(onExpandRow)
+export function DynamicTable({ data, tableFilters }: DynamicTableProps) {
   const columns = useDynamicColumns(data)
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const [sorting, setSorting] = useState<SortingState>([(columns[1] as any)?.accessorKey])
@@ -74,134 +68,88 @@ export function DynamicTable({ data, tableFilters, onExpandRow }: DynamicTablePr
     getRowCanExpand: () => true,
     onRowSelectionChange: setSelected,
     getRowId: (row: any) => row.id,
-    // getRowId: (row: any, index) => {
-    //   const id = findBestMatchingKey(Object.keys(row), fieldMap.id)
-    //   if (id == null) {
-    //     return String(index)
-    //   }
-    //   return String(row[id] ?? index)
-    // },
-  })
-
-  const rowVirtualizer = useVirtualizer<HTMLDivElement, HTMLTableRowElement>({
-    count: table.getRowModel().rows.length,
-    estimateSize: () => 33,
-    getScrollElement: () => tableContainerRef.current,
-    measureElement:
-      typeof window !== 'undefined' && navigator.userAgent.indexOf('Firefox') === -1
-        ? (element) => element?.getBoundingClientRect().height
-        : undefined,
-    overscan: 5,
   })
 
   return (
-    <div
-      ref={tableContainerRef}
-      style={{
-        overflow: 'auto',
-        height: '100%',
-      }}
-    >
-      <table className="grid w-full">
-        <thead className="grid sticky z-3 top-0 !bg-white">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id} className="flex w-full">
-              {headerGroup.headers.map((header) => {
-                const { column } = header
-                return (
-                  <th
-                    key={header.id}
-                    colSpan={header.colSpan}
-                    className={`flex ${styles.td}`}
-                    style={{
-                      backgroundColor: column.getIsPinned() ? '#fff' : undefined,
-                      left: column.getIsPinned() ? `${column.getStart('left')}px` : undefined,
-                      position: column.getIsPinned() ? 'sticky' : 'relative',
-                      width: column.getSize(),
-                      zIndex: column.getIsPinned() ? 1 : 0,
-                    }}
-                    onClick={header.column.getToggleSortingHandler()}
-                  >
-                    {header.isPlaceholder ? null : (
-                      <div
-                        onClick={header.column.getToggleSortingHandler()}
-                        className="flex items-center justify-between p-2"
-                      >
-                        <span className="block text-ellipsis overflow-hidden whitespace-nowrap max-w-[170px]">
-                          {flexRender(header.column.columnDef.header, header.getContext())}
-                        </span>
-                        {{
-                          asc: <Icon icon="sort-asc" />,
-                          desc: <Icon icon="sort-desc" />,
-                        }[header.column.getIsSorted() as string] ?? null}
-                      </div>
-                    )}
-                    {/* <div
-                      onMouseDown={header.getResizeHandler()}
-                      onTouchStart={header.getResizeHandler()}
-                    /> */}
-                  </th>
-                )
-              })}
-            </tr>
-          ))}
-        </thead>
-        <tbody
-          style={{
-            display: 'block',
-            height: `${rowVirtualizer.getTotalSize()}px`,
-            position: 'relative',
-          }}
-        >
-          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-            const row = table.getRowModel().rows[virtualRow.index] as Row<Vessel>
-            return (
-              <Fragment key={row.index}>
-                <tr
-                  data-index={virtualRow.index}
-                  ref={(node) => rowVirtualizer.measureElement(node)}
+    <table className="w-full">
+      <thead className="sticky z-3 top-0 !bg-white">
+        {table.getHeaderGroups().map((headerGroup) => (
+          <tr key={headerGroup.id}>
+            {headerGroup.headers.map((header) => {
+              const { column } = header
+              return (
+                <th
+                  key={header.id}
+                  colSpan={header.colSpan}
+                  className={styles.th}
                   style={{
-                    display: 'flex',
-                    position: 'absolute',
-                    transform: `translateY(${virtualRow.start}px)`,
-                    width: '100%',
+                    backgroundColor: column.getIsPinned() ? '#fff' : undefined,
+                    left: column.getIsPinned() ? `${column.getStart('left')}px` : undefined,
+                    position: column.getIsPinned() ? 'sticky' : 'relative',
+                    width: column.getSize(),
+                    zIndex: column.getIsPinned() ? 1 : 0,
                   }}
+                  onClick={header.column.getToggleSortingHandler()}
                 >
-                  {row.getVisibleCells().map((cell) => {
-                    const { column } = cell
-                    return (
-                      <td
-                        key={cell.id}
-                        className={styles.td}
-                        style={{
-                          left: column.getIsPinned() ? `${column.getStart('left')}px` : undefined,
-                          position: column.getIsPinned() ? 'sticky' : 'relative',
-                          width: column.getSize(),
-                          zIndex: column.getIsPinned() ? 1 : 0,
-                          backgroundColor: column.getIsPinned()
-                            ? row.getIsExpanded() && column.id !== 'select'
-                              ? 'var(--color-brand)'
-                              : 'rgba(229, 240, 242, 0.95)'
-                            : undefined,
-                        }}
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
-                    )
-                  })}
-                </tr>
-                {row.getIsExpanded() && (
-                  <tr>
-                    <td colSpan={columns.length} className="!bg-[var(--color-brand)]">
-                      {renderExpandedRow({ row })}
+                  {header.isPlaceholder ? null : (
+                    <div
+                      onClick={header.column.getToggleSortingHandler()}
+                      className="flex items-center justify-between p-2"
+                    >
+                      <span className="block text-ellipsis overflow-hidden whitespace-nowrap max-w-[170px]">
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                      </span>
+                      {{
+                        asc: <Icon icon="sort-asc" />,
+                        desc: <Icon icon="sort-desc" />,
+                      }[header.column.getIsSorted() as string] ?? null}
+                    </div>
+                  )}
+                </th>
+              )
+            })}
+          </tr>
+        ))}
+      </thead>
+      <tbody>
+        {table.getRowModel().rows.map((row) => {
+          return (
+            <Fragment key={row.index}>
+              <tr>
+                {row.getVisibleCells().map((cell) => {
+                  const { column } = cell
+                  return (
+                    <td
+                      key={cell.id}
+                      className={styles.td}
+                      style={{
+                        left: column.getIsPinned() ? `${column.getStart('left')}px` : undefined,
+                        position: column.getIsPinned() ? 'sticky' : 'relative',
+                        width: column.getSize(),
+                        zIndex: column.getIsPinned() ? 1 : 0,
+                        backgroundColor: column.getIsPinned()
+                          ? row.getIsExpanded() && column.id !== 'select'
+                            ? 'var(--color-brand)'
+                            : 'rgba(229, 240, 242, 0.95)'
+                          : undefined,
+                      }}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
-                  </tr>
-                )}
-              </Fragment>
-            )
-          })}
-        </tbody>
-      </table>
-    </div>
+                  )
+                })}
+              </tr>
+              {row.getIsExpanded() && (
+                <tr>
+                  <td colSpan={columns.length} className="!bg-[var(--color-brand)]">
+                    {renderExpandedRow({ row })}
+                  </td>
+                </tr>
+              )}
+            </Fragment>
+          )
+        })}
+      </tbody>
+    </table>
   )
 }

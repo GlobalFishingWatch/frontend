@@ -49,6 +49,21 @@
   overflow-x: scroll;
 }
 
+.th {
+  margin: 0;
+  padding: 0.8rem 1.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: inherit;
+  max-width: none;
+  font-size: 1.4rem;
+  border-left: 1px solid rgba(22, 63, 137, 0.1);
+  border-right: 1px solid rgba(22, 63, 137, 0.1);
+  text-transform: capitalize;
+  align-content: center;
+}
+
 .td {
   margin: 0;
   padding: 0.8rem 1.5rem;
