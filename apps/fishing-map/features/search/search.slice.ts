@@ -125,7 +125,10 @@ export const fetchVesselSearchThunk = createAsyncThunk(
         if (!fields?.length) {
           console.warn('No fields to search found or allowed')
         }
-        advancedQuery = getAdvancedSearchQuery(fields, { rootObject: filters.infoSource })
+        const areAllDatasetsFromVMS = datasets.every((d) => d.source?.includes('VMS'))
+        const rootObject: 'registryInfo' | 'selfReportedInfo' | undefined =
+          areAllDatasetsFromVMS && !filters.infoSource ? 'selfReportedInfo' : filters.infoSource
+        advancedQuery = getAdvancedSearchQuery(fields, { rootObject })
       }
 
       const datasetConfig = {
