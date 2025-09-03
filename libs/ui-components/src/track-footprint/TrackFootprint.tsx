@@ -35,7 +35,7 @@ const TRACK_FOOTPRINT_QUERY = {
   format: 'VALUE_ARRAY',
 }
 
-function TrackFootprint({
+export function TrackFootprint({
   vesselIds,
   trackDatasetId,
   highlightedYear,
@@ -223,5 +223,3 @@ function TrackFootprint({
     </Tooltip>
   )
 }
-
-export default TrackFootprint

@@ -14,6 +14,7 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   FIRST_YEAR_OF_DATA,
   IconButton,
+  TrackFootprint,
   YearlyTransmissionsTimeline,
 } from '@globalfishingwatch/ui-components'
 
@@ -26,7 +27,6 @@ import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
-import TrackFootprint from 'features/search/basic/TrackFootprint'
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
 import { getSearchVesselId } from 'features/search/search.utils'
