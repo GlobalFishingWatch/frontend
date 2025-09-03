@@ -1018,9 +1018,9 @@
     "gearTypes": {
       "bunker": "Bunker",
       "bunker_or_tanker": "Bunker ou petroleiro",
-      "cargo": "Carga ou frigorífica",
-      "cargo_or_reefer": "Carga ou petroleira",
-      "cargo_or_tanker": "Carga",
+      "cargo": "Carga",
+      "cargo_or_reefer": "Carga ou frigorífica",
+      "cargo_or_tanker": "Carga ou petroleira",
       "carrier": "Navio cargueiro",
       "container_reefer": "Contêiner refrigerado",
       "dive_vessel": "Embarcação de mergulho",
