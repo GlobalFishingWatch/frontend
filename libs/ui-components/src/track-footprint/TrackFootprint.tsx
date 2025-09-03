@@ -12,6 +12,7 @@ import qs from 'qs'
 import { GFWAPI, THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { TrackField } from '@globalfishingwatch/api-types'
 import { segmentsToGeoJSON, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
+import { useOnScreen, useScreenDPI } from '@globalfishingwatch/react-hooks'
 import { Icon, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
 import styles from './TrackFootprint.module.css'
@@ -46,7 +47,9 @@ function TrackFootprint({
   const [error, setError] = useState(false)
   const fullCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const highlightCanvasRef = useRef<HTMLCanvasElement | null>(null)
-  const isHighDensityDisplay = window.devicePixelRatio && window.devicePixelRatio >= 2
+  const onScreen = useOnScreen(fullCanvasRef)
+  const screenDPI = useScreenDPI()
+  const isHighDensityDisplay = screenDPI && screenDPI >= 96
   const densityMultiplier = isHighDensityDisplay ? 2 : 1
   const footprintWidth = FOOTPRINT_WIDTH * densityMultiplier
   const footprintHeight = FOOTPRINT_HEIGHT * densityMultiplier
@@ -105,10 +108,10 @@ function TrackFootprint({
   )
 
   useEffect(() => {
-    if (!trackData && !error && vesselIds?.length) {
+    if (onScreen && !trackData && !error && vesselIds?.length) {
       fetchData(vesselIds)
     }
-  }, [error, fetchData, trackData, vesselIds])
+  }, [error, fetchData, onScreen, trackData, vesselIds])
 
   useEffect(() => {
     if (fullContext && trackData && lastPosition) {
