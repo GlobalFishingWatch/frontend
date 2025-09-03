@@ -1018,9 +1018,9 @@
     "gearTypes": {
       "bunker": "Aprovisionamiento",
       "bunker_or_tanker": "Aprovisionamiento o Petrolero",
-      "cargo": "Mercancía o frigorífico",
-      "cargo_or_reefer": "Mercancía o petrolero",
-      "cargo_or_tanker": "Mercancía",
+      "cargo": "Mercancía",
+      "cargo_or_reefer": "Mercancía o frigorífico",
+      "cargo_or_tanker": "Mercancía o petrolero",
       "carrier": "Embarcación de transporte",
       "container_reefer": "Contenedor frigorífico",
       "dive_vessel": "Buque de buceo",
