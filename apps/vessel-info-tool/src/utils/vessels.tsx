@@ -6,7 +6,7 @@ import { stringify } from 'qs'
 
 import type { fieldMap, FieldMapConfig, type Vessel } from '@/types/vessel.types';
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { APIPagination, Dataset, IdentityVessel } from '@globalfishingwatch/api-types';
+import type { APIPagination, Dataset, IdentityVessel } from '@globalfishingwatch/api-types'
 import { EndpointId } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
@@ -164,8 +164,8 @@ export const fetchVessels = createServerFn().handler(async () => {
 export const getVesselsFromAPI = async ({ id }: { id: string }) => {
   const datasetIds = [
     'public-global-vessel-identity:v3.0',
-    'private-panama-vessel-identity-fishing',
-    'private-panama-vessel-identity-non-fishing',
+    'public-panama-vessel-identity-fishing:v3',
+    'public-panama-vessel-identity-non-fishing:v3', //check if public contains imo or switch to private
   ]
   const datasetsResponse = await GFWAPI.fetch<Response>(
     `/datasets?${stringify(
@@ -185,7 +185,7 @@ export const getVesselsFromAPI = async ({ id }: { id: string }) => {
 
   const datasetConfig = {
     endpoint: EndpointId.VesselSearch,
-    datasetId: datasetIds[0],
+    datasetId: datasets[0].id,
     params: [],
     query: [
       { id: 'includes', value: ['MATCH_CRITERIA', 'OWNERSHIP'] },

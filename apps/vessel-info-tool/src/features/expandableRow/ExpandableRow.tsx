@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Row } from '@tanstack/react-table'
 import { upperFirst } from 'es-toolkit'
@@ -7,7 +7,7 @@ import type { FeatureCollection } from 'geojson'
 import type { Vessel } from '@/types/vessel.types'
 import { getVesselsFromAPI } from '@/utils/vessels'
 import type { IdentityVessel, Locale } from '@globalfishingwatch/api-types'
-import type { Bbox} from '@globalfishingwatch/data-transforms';
+import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { geoJSONToSegments, segmentsToBbox } from '@globalfishingwatch/data-transforms'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
@@ -18,36 +18,56 @@ import {
 } from '@globalfishingwatch/ui-components'
 
 interface ExpandableRowProps {
-  vessel: IdentityVessel
-  track?: string
-  isLoading?: boolean
+  rowId: string
 }
 
-function ExpandableRow({ vessel, track, isLoading }: ExpandableRowProps) {
+function ExpandableRow({ rowId }: ExpandableRowProps) {
   const { t, i18n } = useTranslation()
-
+  const [vesselMatch, setVesselMatch] = useState<IdentityVessel | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const isSmallScreen = useSmallScreen()
   const [highlightedYear, setHighlightedYear] = useState<number>()
   const [trackBbox, setTrackBbox] = useState<Bbox>()
 
-  const { ssvid, transmissionDateFrom, transmissionDateTo, positionsCounter } =
-    vessel.selfReportedInfo[0]
-  const hasPositions = positionsCounter !== undefined && positionsCounter > 0
+  // const trackDatasetId = await getVesselTracks()
 
-  const onYearHover = useCallback(
-    (year?: number) => {
-      if (!isSmallScreen) {
-        setHighlightedYear(year)
-      }
-    },
-    [isSmallScreen]
-  )
+  // if (!vesselMatch || !trackDatasetId) {
+  //   return <div>Couldn't find vessel information</div>
+  // }
+
+  const onYearHover = useCallback((year?: number) => {
+    setHighlightedYear(year)
+  }, [])
 
   const onTrackFootprintLoad = useCallback((data: FeatureCollection) => {
     const segments = geoJSONToSegments(data)
     const bbox = segments?.length ? segmentsToBbox(segments) : undefined
     setTrackBbox(bbox)
   }, [])
+
+  useEffect(() => {
+    const fetchVessel = async () => {
+      setIsLoading(true)
+      try {
+        const vessel = await getVesselsFromAPI({ id: rowId })
+        setVesselMatch(vessel ?? null)
+      } catch (error) {
+        console.error('Error fetching vessel:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchVessel()
+  }, [rowId])
+
+  if (isLoading) return <div>Loading...</div>
+  if (!vesselMatch) {
+    return <div>Couldn't find vessel information</div>
+  }
+  const { ssvid, transmissionDateFrom, transmissionDateTo, positionsCounter } =
+    vesselMatch.selfReportedInfo[0]
+  const hasPositions = positionsCounter !== undefined && positionsCounter > 0
 
   return (
     <div>
@@ -119,20 +139,10 @@ function ExpandableRow({ vessel, track, isLoading }: ExpandableRowProps) {
   )
 }
 
-export const renderExpandedRow = async ({ row }: { row: Row<Vessel> }) => {
-  return <div>Loading...</div>
+export const renderExpandedRow = ({ row }: { row: Row<Vessel> }) => {
   const rowId = row.original.imo || row.original.id || row.original.mmsi
   if (!rowId) {
     return <div>No vessel ID available</div>
   }
-  const vesselMatch = await getVesselsFromAPI({ id: rowId })
-  if (!vesselMatch) {
-    return <div>Couldn't find vessel information</div>
-  }
-  // const trackDatasetId = await getVesselTracks()
-
-  // if (!vesselMatch || !trackDatasetId) {
-  //   return <div>Couldn't find vessel information</div>
-  // }
-  // return <ExpandableRow vessel={vesselMatch} />
+  return <ExpandableRow rowId={rowId} />
 }
