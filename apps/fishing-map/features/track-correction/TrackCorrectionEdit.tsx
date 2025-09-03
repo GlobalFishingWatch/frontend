@@ -33,7 +33,6 @@ enum ActionType {
 const TrackCorrectionEdit = () => {
   const { t } = useTranslation()
   const issueComment = useSelector(selectTrackIssueComment)
-  console.log('🚀 ~ TrackCorrectionEdit ~ issueComment:', issueComment)
   const dispatch = useAppDispatch()
   const isGuestUser = useSelector(selectIsGuestUser)
 

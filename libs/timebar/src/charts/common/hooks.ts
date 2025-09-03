@@ -44,6 +44,8 @@ export const useFilteredChartData = (data: TimebarChartData<any>) => {
   const getDataHash = (d: TimebarChartData<any>) => {
     return d
       .flatMap((vessel) => [
+        vessel.color,
+        vessel.chunks?.flatMap((chunk) => chunk.props?.color),
         vessel.chunks[0]?.start,
         vessel.chunks[0]?.values?.[0]?.value,
         vessel.chunks[vessel.chunks.length - 1]?.end,
@@ -56,7 +58,9 @@ export const useFilteredChartData = (data: TimebarChartData<any>) => {
   const debouncedSetFilteredData = useDebouncedCallback(
     (data, outerStart, outerEnd) => {
       const newData = filterData(data, outerStart, outerEnd)
-      if (getDataHash(filteredData) !== getDataHash(newData)) setFilteredData(newData)
+      if (getDataHash(filteredData) !== getDataHash(newData)) {
+        setFilteredData(newData)
+      }
     },
     100,
     { maxWait: 1000, leading: true }

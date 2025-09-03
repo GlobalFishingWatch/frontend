@@ -76,6 +76,7 @@ export const useTimebarVesselTracks = () => {
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const timebarGraph = useSelector(selectTimebarGraph)
   const [tracks, setVesselTracks] = useAtom(vesselTracksAtom)
+
   const trackLayers = useTimebarLayers()
 
   const tracksLoaded = useMemo(
@@ -91,8 +92,21 @@ export const useTimebarVesselTracks = () => {
         .join(','),
     [trackLayers]
   )
-  const tracksColor = useMemo(
-    () => trackLayers.flatMap((v) => v.instance.getColor() || []).join(','),
+  const tracksColorHash = useMemo(
+    () =>
+      trackLayers
+        .flatMap((v) => {
+          const color = v.instance.getColor()
+          const cacheHash =
+            'cacheHash' in v.instance && v.instance.cacheHash
+              ? (v.instance.cacheHash as string)
+              : ''
+          if (!color && !cacheHash) {
+            return []
+          }
+          return `${color}-${cacheHash}`
+        })
+        .join(','),
     [trackLayers]
   )
 
@@ -108,14 +122,21 @@ export const useTimebarVesselTracks = () => {
         if (!trackLayers[index]) {
           return track
         }
+        const color = trackLayers[index]?.instance?.getColor()
         return {
           ...track,
-          color: trackLayers[index]?.instance?.getColor(),
+          color,
+          chunks: track.chunks.map((chunk) => {
+            return {
+              ...chunk,
+              color,
+            }
+          }),
         }
       })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tracksColor, timebarVisualisation])
+  }, [tracksColorHash, timebarVisualisation])
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -161,7 +182,7 @@ export const useTimebarVesselTracks = () => {
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tracksLoaded, timebarGraph, tracksColor, timebarVisualisation])
+  }, [tracksLoaded, timebarGraph, tracksColorHash, timebarVisualisation])
 
   return tracks
 }
