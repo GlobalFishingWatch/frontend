@@ -4,10 +4,16 @@ import { uniqBy } from 'es-toolkit'
 import ExcelJS from 'exceljs'
 import { stringify } from 'qs'
 
-import type { fieldMap, FieldMapConfig, type Vessel } from '@/types/vessel.types';
+import type { FieldMapConfig,Vessel  } from '@/types/vessel.types'
+import { fieldMap } from '@/types/vessel.types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { APIPagination, Dataset, IdentityVessel } from '@globalfishingwatch/api-types'
-import { EndpointId } from '@globalfishingwatch/api-types'
+import type {
+  APIPagination,
+  Dataset,
+  IdentityVessel} from '@globalfishingwatch/api-types';
+import {
+  DatasetTypes,
+ EndpointId,  VesselType } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
 export const findBestMatchingKey = (keys: string[], fieldConfig: FieldMapConfig): string | null => {
@@ -191,15 +197,40 @@ export const getVesselsFromAPI = async ({ id }: { id: string }) => {
       { id: 'includes', value: ['MATCH_CRITERIA', 'OWNERSHIP'] },
       { id: 'datasets', value: datasets.map((d) => d.id) },
       {
-        id: 'where',
+        id: 'query',
         value: encodeURIComponent(`imo=${id}`),
       },
       { id: 'since', value: '' },
     ],
   }
   const url = resolveEndpoint(datasets[0], datasetConfig)
+
   if (url) {
     const results = await GFWAPI.fetch<APIPagination<IdentityVessel>>(url)
-    return results.entries[0]
+
+    const vesselWithTracks = results.entries.flatMap((vessel) => {
+      const datasetById = datasets.find((d) => d.id === vessel.dataset)
+      const trackDatasetId = getRelatedDatasetByType(datasetById, DatasetTypes.Tracks)?.id
+      return { track: trackDatasetId ? trackDatasetId : '', ...vessel }
+    })
+
+    return vesselWithTracks[0]
   }
+}
+
+export const getRelatedDatasetByType = (
+  dataset?: Dataset,
+  datasetType?: DatasetTypes,
+  { fullDatasetAllowed = false } = {}
+) => {
+  if (fullDatasetAllowed) {
+    const fullDataset = dataset?.relatedDatasets?.find(
+      (relatedDataset) =>
+        relatedDataset.type === datasetType && relatedDataset.id.startsWith('full')
+    )
+    if (fullDataset) {
+      return fullDataset
+    }
+  }
+  return dataset?.relatedDatasets?.find((relatedDataset) => relatedDataset.type === datasetType)
 }

@@ -6,7 +6,7 @@ import type { FeatureCollection } from 'geojson'
 
 import type { Vessel } from '@/types/vessel.types'
 import { getVesselsFromAPI } from '@/utils/vessels'
-import type { IdentityVessel, Locale } from '@globalfishingwatch/api-types'
+import { DatasetTypes, type IdentityVessel, type Locale } from '@globalfishingwatch/api-types'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { geoJSONToSegments, segmentsToBbox } from '@globalfishingwatch/data-transforms'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -14,8 +14,12 @@ import {
   Button,
   FIRST_YEAR_OF_DATA,
   Icon,
+  Spinner,
+  TrackFootprint,
   YearlyTransmissionsTimeline,
 } from '@globalfishingwatch/ui-components'
+
+import styles from '../../styles/global.module.css'
 
 interface ExpandableRowProps {
   rowId: string
@@ -23,17 +27,11 @@ interface ExpandableRowProps {
 
 function ExpandableRow({ rowId }: ExpandableRowProps) {
   const { t, i18n } = useTranslation()
-  const [vesselMatch, setVesselMatch] = useState<IdentityVessel | null>(null)
+  const [vesselMatch, setVesselMatch] = useState<(IdentityVessel & { track: string }) | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const isSmallScreen = useSmallScreen()
   const [highlightedYear, setHighlightedYear] = useState<number>()
   const [trackBbox, setTrackBbox] = useState<Bbox>()
-
-  // const trackDatasetId = await getVesselTracks()
-
-  // if (!vesselMatch || !trackDatasetId) {
-  //   return <div>Couldn't find vessel information</div>
-  // }
 
   const onYearHover = useCallback((year?: number) => {
     setHighlightedYear(year)
@@ -61,36 +59,41 @@ function ExpandableRow({ rowId }: ExpandableRowProps) {
     fetchVessel()
   }, [rowId])
 
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading)
+    return (
+      <div className="!w-screen sticky left-0 !px-[6rem] !py-[3rem]">
+        <Spinner />
+      </div>
+    )
   if (!vesselMatch) {
-    return <div>Couldn't find vessel information</div>
+    return <div>{t('expanded_row.not_found')}</div>
   }
   const { ssvid, transmissionDateFrom, transmissionDateTo, positionsCounter } =
     vesselMatch.selfReportedInfo[0]
   const hasPositions = positionsCounter !== undefined && positionsCounter > 0
 
   return (
-    <div>
-      <div className="grid grid-cols-3 gap-4">
-        {/* <div className="flex flex-col">
+    <div className="!w-screen sticky left-0 !px-[6rem] !py-[3rem]">
+      <div className="grid [grid-template-columns:repeat(3,minmax(max-content,min-content))] gap-4">
+        <div className="flex flex-col">
           {!isSmallScreen && (
             <TrackFootprint
-              vesselIds={['ef9f4545a-a733-e7a5-4cb3-b9cc3cbf66c0']}
-              trackDatasetId={track}
+              vesselIds={[vesselMatch.selfReportedInfo[0].id]}
+              trackDatasetId={vesselMatch.track}
               highlightedYear={highlightedYear}
               onDataLoad={onTrackFootprintLoad}
             />
           )}
-        </div> */}
-        <div className="flex flex-col">
-          <h4 className="font-semibold mb-2">Vessel Viewer</h4>
+        </div>
+        <div className="flex flex-col items-start justify-between">
+          <h4 className="font-semibold mb-2">{t('expanded_row.title', 'Vessel Viewer')}</h4>
           {transmissionDateFrom && transmissionDateTo && (
-            <div className="flex-1">
+            <div>
               <span className="whitespace-nowrap">
                 {hasPositions
-                  ? `${positionsCounter} ${t('vessel.transmission_other')} ${t('common.from')} `
-                  : `${upperFirst(t('common.from'))} `}
-                {transmissionDateFrom} {t('common.to')} {transmissionDateTo}
+                  ? `${positionsCounter} ${t('expanded_row.transmission_other')} ${t('expanded_row.from')} `
+                  : `${upperFirst(t('expanded_row.from'))} `}
+                {transmissionDateFrom} {t('expanded_row.to')} {transmissionDateTo}
               </span>
 
               <YearlyTransmissionsTimeline
@@ -103,10 +106,14 @@ function ExpandableRow({ rowId }: ExpandableRowProps) {
               />
             </div>
           )}
-          <Button>See more</Button>
+          <Button className={styles.downloadButton} size="medium" onClick={() => {}}>
+            {t('expanded_row.see_more', 'See more')}
+          </Button>
         </div>
-        <div className="flex flex-col">
-          <h4 className="font-semibold mb-2">External Links</h4>
+        <div className="flex flex-col justify-between">
+          <h4 className="font-semibold mb-2">
+            {t('expanded_row.external_links', 'External Links')}
+          </h4>
           <div>
             <a
               href={`https://www.marinetraffic.com/${i18n.language}/ais/details/ships/mmsi:${ssvid}`}
@@ -142,7 +149,7 @@ function ExpandableRow({ rowId }: ExpandableRowProps) {
 export const renderExpandedRow = ({ row }: { row: Row<Vessel> }) => {
   const rowId = row.original.imo || row.original.id || row.original.mmsi
   if (!rowId) {
-    return <div>No vessel ID available</div>
+    return <p>No vessel ID available</p>
   }
   return <ExpandableRow rowId={rowId} />
 }

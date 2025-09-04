@@ -141,7 +141,7 @@ export function DynamicTable({ data, tableFilters }: DynamicTableProps) {
               </tr>
               {row.getIsExpanded() && (
                 <tr>
-                  <td colSpan={columns.length} className="!bg-[var(--color-brand)]">
+                  <td colSpan={row.getVisibleCells().length} className="!bg-[var(--color-brand)]">
                     {renderExpandedRow({ row })}
                   </td>
                 </tr>
