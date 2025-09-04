@@ -235,26 +235,34 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
             ...getMVTSublayerProps({ tile: props.tile, extensions: props.extensions }),
           }
           return layer.sublayers.map((sublayer) => {
-            const filterCategories = Object.values(sublayer.filters || {})
-              .flat()
-              .filter(Boolean)
-            const hasFilters = filterCategories.length > 0
+            const filterCategories = Object.values(sublayer.filters || {}).flatMap(
+              (value) => value || []
+            )
+
+            const hasValidFilters =
+              filterCategories.length > 0 &&
+              sublayer.filters &&
+              Object.keys(sublayer.filters).length > 0
+            const filtersHash = getContextFiltersHash(sublayer.filters)
             const extensions = [
               ...mvtSublayerProps.extensions,
-              ...(hasFilters ? [new DataFilterExtension({ categorySize: 1 })] : []),
+              ...(hasValidFilters ? [new DataFilterExtension({ categorySize: 1 })] : []),
             ]
-            const filterProperties = hasFilters
+            const filterProperties = hasValidFilters
               ? {
                   getFilterCategory: (d: ContextFeature) => {
                     // TODO: do we need to handle multiple filters?
-                    return d.properties[Object.keys(sublayer.filters || {})[0]]
+                    const filterKeys = Object.keys(sublayer.filters || {})
+                    if (filterKeys.length === 0) return 0
+                    const propertyValue = d.properties[filterKeys[0]]
+                    return propertyValue !== undefined ? propertyValue : 0
                   },
-                  filterCategories,
+                  filterCategories: filterCategories.length > 0 ? filterCategories : [0],
                 }
               : {}
             return [
               new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-                id: `${props.id}-${sublayer.dataviewId}-highlight-fills`,
+                id: `${props.id}-${sublayer.dataviewId}-highlight-fills-${filtersHash}`,
                 stroked: false,
                 pickable,
                 extensions,
@@ -264,12 +272,16 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                 getFillColor: (d) => this.getFillColor(d as ContextFeature, { layer, sublayer }),
                 updateTriggers: {
                   getFillColor: [highlightedFeatures],
+                  ...(hasValidFilters && {
+                    getFilterCategory: [filtersHash],
+                    filterCategories: [filtersHash],
+                  }),
                 },
               }),
               ...(layer.id !== ContextLayerId.EEZ && layer.id !== ContextLayerId.EEZBoundaries
                 ? [
                     new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-                      id: `${props.id}-${sublayer.dataviewId}-lines`,
+                      id: `${props.id}-${sublayer.dataviewId}-lines-${filtersHash}`,
                       lineWidthUnits: 'pixels',
                       extensions,
                       ...filterProperties,
@@ -282,7 +294,11 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
                       getLineWidth: sublayer.thickness || 1,
                       getLineColor: hexToDeckColor(sublayer.color),
                       updateTriggers: {
-                        getLineWidth: [sublayer.filters, sublayer.thickness],
+                        getLineWidth: [filtersHash, sublayer.thickness],
+                        ...(hasValidFilters && {
+                          getFilterCategory: [filtersHash],
+                          filterCategories: [filtersHash],
+                        }),
                       },
                     }),
                   ]
