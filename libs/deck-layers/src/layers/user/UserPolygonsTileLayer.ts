@@ -187,6 +187,9 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
             ...getMVTSublayerProps({ tile: props.tile, extensions: props.extensions }),
           }
           return layer.sublayers.map((sublayer) => {
+            const filtersHash = Object.values(sublayer.filters || {})
+              .flatMap((value) => value || [])
+              .join('')
             const sublayerFilterExtensionProps = this._getSublayerFilterExtensionProps(sublayer)
             const hasFilters = Object.keys(sublayerFilterExtensionProps).length > 0
             return [
@@ -202,9 +205,9 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
                     ? this._getFillStepsColor(d, { layer, sublayer })
                     : this._getFillColor(d, { layer, sublayer }),
                 updateTriggers: {
-                  getFillColor: [highlightedFeatures, sublayer.filters, sublayer.color],
+                  getFillColor: [highlightedFeatures, filtersHash, sublayer.color],
                   ...(hasFilters && {
-                    getFilterValue: [sublayer.filters],
+                    getFilterValue: [filtersHash],
                   }),
                 },
               }),
@@ -218,10 +221,10 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
                 getLineColor: hexToDeckColor(sublayer.color),
                 getLineWidth: sublayer.thickness || 1,
                 updateTriggers: {
-                  getLineColor: [sublayer.filters, sublayer.color],
-                  getLineWidth: [sublayer.filters, sublayer.thickness],
+                  getLineColor: [filtersHash, sublayer.color],
+                  getLineWidth: [filtersHash, sublayer.thickness],
                   ...(hasFilters && {
-                    getFilterValue: [sublayer.filters],
+                    getFilterValue: [filtersHash],
                   }),
                 },
               }),
@@ -242,7 +245,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
                 updateTriggers: {
                   getLineWidth: [highlightedFeatures],
                   ...(hasFilters && {
-                    getFilterValue: [sublayer.filters],
+                    getFilterValue: [filtersHash],
                   }),
                 },
               }),
@@ -263,7 +266,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
                 updateTriggers: {
                   getLineWidth: [highlightedFeatures],
                   ...(hasFilters && {
-                    getFilterValue: [sublayer.filters],
+                    getFilterValue: [filtersHash],
                   }),
                 },
               }),

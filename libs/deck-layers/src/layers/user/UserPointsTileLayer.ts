@@ -248,6 +248,9 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
             ...getMVTSublayerProps({ tile: props.tile, extensions: props.extensions }),
           }
           return layer.sublayers.map((sublayer) => {
+            const filtersHash = Object.values(sublayer.filters || {})
+              .flatMap((value) => value || [])
+              .join('')
             const sublayerFilterExtensionProps = this._getSublayerFilterExtensionProps(sublayer)
             const hasFilters = Object.keys(sublayerFilterExtensionProps).length > 0
             return [
@@ -270,9 +273,9 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
                 getFillColor: hexToDeckColor(sublayer.color, 0.7),
                 updateTriggers: {
                   getFillColor: [sublayer.color],
-                  getRadius: [sublayer.filters, zoom],
+                  getRadius: [filtersHash, zoom],
                   ...(hasFilters && {
-                    getFilterValue: [sublayer.filters],
+                    getFilterValue: [filtersHash],
                   }),
                 },
               }),
