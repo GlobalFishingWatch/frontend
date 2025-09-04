@@ -52,7 +52,6 @@ export const parseUserTrack = (
   if (!rawData) {
     return {} as UserTrackData
   }
-
   const data = filterTrackByCoordinateProperties(rawData, {
     filters: getCoordinatesFilter(params.filters),
     includeNonTemporalFeatures: true,
