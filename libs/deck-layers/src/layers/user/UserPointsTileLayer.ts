@@ -27,7 +27,11 @@ import {
 } from '../../utils'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
 import type { ContextSublayerCallbackParams } from '../context/context.types'
-import { hasSublayerFilters, supportDataFilterExtension } from '../context/context.utils'
+import {
+  getContextFiltersHash,
+  hasSublayerFilters,
+  supportDataFilterExtension,
+} from '../context/context.utils'
 import { filteredPositionsByViewport } from '../fourwings'
 
 import type { UserLayerFeature, UserPointsLayerProps } from './user.types'
@@ -84,7 +88,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   get cacheHash(): string {
     const { startTime, endTime } = this.props
     const filters = this.props.layers?.[0]?.sublayers?.[0]?.filters || {}
-    const filtersHash = Object.values(filters).filter(Boolean).join('-')
+    const filtersHash = getContextFiltersHash(filters)
     return `${startTime}-${endTime}-${filtersHash}`
   }
 
@@ -250,9 +254,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
             ...getMVTSublayerProps({ tile: props.tile, extensions: props.extensions }),
           }
           return layer.sublayers.map((sublayer) => {
-            const filtersHash = Object.values(sublayer.filters || {})
-              .flatMap((value) => value || [])
-              .join('')
+            const filtersHash = getContextFiltersHash(sublayer.filters)
             const sublayerFilterExtensionProps = this._getSublayerFilterExtensionProps(sublayer)
             const hasFilters = Object.keys(sublayerFilterExtensionProps).length > 0
             return [

@@ -31,7 +31,12 @@ import type {
   ContextSublayerCallbackParams,
 } from './context.types'
 import { ContextLayerId } from './context.types'
-import { getContextId, getContextLink, getContextValue } from './context.utils'
+import {
+  getContextFiltersHash,
+  getContextId,
+  getContextLink,
+  getContextValue,
+} from './context.utils'
 
 type _ContextLayerProps = TileLayerProps & ContextLayerProps
 

@@ -13,6 +13,12 @@ export const getContextId = (feature: ContextFeature, idProperty = DEFAULT_ID_PR
   return feature.properties?.[idProperty] || feature.properties?.gfw_id || feature.properties.id
 }
 
+export const getContextFiltersHash = (filters: ContextSubLayerConfig['filters']) => {
+  return Object.values(filters || {})
+    .flatMap((value) => value || [])
+    .join('-')
+}
+
 export function getValidSublayerFilters(sublayer: ContextSubLayerConfig) {
   const filters: ContextLayerConfigFilter = {}
   Object.entries(sublayer.filters || {}).forEach(([key, value]) => {
