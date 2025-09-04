@@ -7,5 +7,14 @@
   "footer": {
     "download": "Download all",
     "results": "{{count}} results"
+  },
+  "expanded_row": {
+    "title": "Vessel Viewer",
+    "see_more": "See more",
+    "to": "to",
+    "from": "from",
+    "transmission_other": "transmissions",
+    "external_links": "External Links",
+    "not_found": "Couldn't find vessel information"
   }
 }
