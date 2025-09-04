@@ -1,7 +1,7 @@
-import type { DefaultProps, LayerContext, PickingInfo } from '@deck.gl/core'
+import type { DefaultProps, LayerContext, LayerExtension, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { DataFilterExtensionProps } from '@deck.gl/extensions'
-import { DataFilterExtension } from '@deck.gl/extensions'
+import { ClipExtension, DataFilterExtension } from '@deck.gl/extensions'
 import type { GeoBoundingBox, TileLayerProps } from '@deck.gl/geo-layers'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import type { Entries } from 'type-fest'
@@ -234,8 +234,11 @@ export abstract class UserBaseLayer<
     return {}
   }
 
-  _getSublayerFilterExtensionProps(sublayer: ContextSubLayerConfig): {
-    extensions: DataFilterExtension[]
+  _getSublayerFilterExtensionProps(
+    sublayer: ContextSubLayerConfig,
+    { clip = true } = {} as { clip?: boolean }
+  ): {
+    extensions: LayerExtension<unknown>[]
     filterRange: DataFilterExtensionProps['filterRange']
     getFilterValue: DataFilterExtensionProps['getFilterValue']
   } {
@@ -247,6 +250,7 @@ export abstract class UserBaseLayer<
 
       return {
         extensions: [
+          ...(clip ? [new ClipExtension()] : []),
           new DataFilterExtension({
             filterSize: filterEntries.length as DataFilterExtension['opts']['filterSize'],
           }),

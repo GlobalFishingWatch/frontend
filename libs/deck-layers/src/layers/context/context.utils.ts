@@ -24,7 +24,7 @@ export function getValidSublayerFilters(sublayer: ContextSubLayerConfig) {
 }
 
 export function hasSublayerFilters(sublayer: ContextSubLayerConfig) {
-  return sublayer.filters ? Object.keys(getValidSublayerFilters(sublayer)).length > 0 : false
+  return sublayer?.filters ? Object.keys(getValidSublayerFilters(sublayer)).length > 0 : false
 }
 
 // https://deck.gl/docs/api-reference/extensions/data-filter-extension#filtercategories
