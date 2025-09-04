@@ -45,8 +45,8 @@
   transform: translate(-50%, -50%);
 }
 
-.table {
-  overflow-x: scroll;
+.tbody {
+  background: linear-gradient(180deg, rgba(229, 240, 242, 1) 0%, rgba(255, 255, 255, 1) 100%);
 }
 
 .th {
@@ -62,6 +62,7 @@
   border-right: 1px solid rgba(22, 63, 137, 0.1);
   text-transform: capitalize;
   align-content: center;
+  box-shadow: -1px 0 0 0 inset rgba(22, 63, 137, 0.1);
 }
 
 .td {

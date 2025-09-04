@@ -32,7 +32,7 @@ const TRACK_FOOTPRINT_QUERY = {
   ...THINNING_LEVELS.Footprint,
   binary: true,
   fields: ['LONLAT', 'TIMESTAMP'],
-  format: 'VALUE_ARRAY',
+  format: 'GEOJSON',
 }
 
 export function TrackFootprint({
@@ -77,10 +77,10 @@ export function TrackFootprint({
             dataset: trackDatasetId,
           },
           { arrayFormat: 'indices' }
-        )}`,
-        {
-          responseType: 'vessel',
-        }
+        )}`
+        // {
+        //   responseType: 'vessel',
+        // }
       )
 
       if (vesselData.length === 0) {

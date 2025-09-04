@@ -4,16 +4,11 @@ import { uniqBy } from 'es-toolkit'
 import ExcelJS from 'exceljs'
 import { stringify } from 'qs'
 
-import type { FieldMapConfig,Vessel  } from '@/types/vessel.types'
+import type { FieldMapConfig, Vessel } from '@/types/vessel.types'
 import { fieldMap } from '@/types/vessel.types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type {
-  APIPagination,
-  Dataset,
-  IdentityVessel} from '@globalfishingwatch/api-types';
-import {
-  DatasetTypes,
- EndpointId,  VesselType } from '@globalfishingwatch/api-types'
+import type { APIPagination, Dataset, IdentityVessel } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EndpointId, VesselType } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
 export const findBestMatchingKey = (keys: string[], fieldConfig: FieldMapConfig): string | null => {
@@ -170,8 +165,8 @@ export const fetchVessels = createServerFn().handler(async () => {
 export const getVesselsFromAPI = async ({ id }: { id: string }) => {
   const datasetIds = [
     'public-global-vessel-identity:v3.0',
-    // 'public-panama-vessel-identity-fishing:v20211126',
-    // 'public-panama-vessel-identity-non-fishing:v20211126', //check if public contains imo or switch to private
+    //'public-panama-vessel-identity-fishing:v20211126',
+    // 'private-panama-vessel-identity-non-fishing:v20211126', //check if public contains imo or switch to private
   ]
   const datasetsResponse = await GFWAPI.fetch<Response>(
     `/datasets?${stringify(
@@ -197,7 +192,7 @@ export const getVesselsFromAPI = async ({ id }: { id: string }) => {
       { id: 'includes', value: ['MATCH_CRITERIA', 'OWNERSHIP'] },
       { id: 'datasets', value: datasets.map((d) => d.id) },
       {
-        id: 'query',
+        id: 'where',
         value: encodeURIComponent(`imo=${id}`),
       },
       { id: 'since', value: '' },

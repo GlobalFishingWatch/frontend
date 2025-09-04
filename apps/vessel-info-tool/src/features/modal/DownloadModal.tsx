@@ -4,11 +4,14 @@ import { useSelector } from 'react-redux'
 
 import type { Vessel } from '@/types/vessel.types'
 import { RFMO } from '@/types/vessel.types'
+import { checkMissingMandatoryFields } from '@/utils/validations'
 import { handleExportICCATVessels, parseVessels } from '@/utils/vessels'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, Modal, Select } from '@globalfishingwatch/ui-components'
 
 import type { RootState } from 'store'
+
+import { FieldsTable } from '../fieldsTable/FieldsTable'
 
 import styles from '../../styles/global.module.css'
 
@@ -18,6 +21,11 @@ interface DownloadModalProps {
   title?: string
   data: Vessel[]
 }
+
+const mandatory = [
+  { field: 'IntRegNumber', format: 'string' },
+  { field: 'VesselName', format: 'string' },
+]
 
 const DownloadModal: React.FC<DownloadModalProps> = ({
   isOpen,
@@ -35,16 +43,15 @@ const DownloadModal: React.FC<DownloadModalProps> = ({
 
   const rowSelection = useSelector((state: RootState) => state.table.selectedRows)
   const selectedIds = Object.keys(rowSelection).map((k) => k.toString())
+  const vessels = data.filter((vessel) => selectedIds.includes(vessel.id))
+  const parsed = parseVessels(vessels, selectedRFMO.id as RFMO)
 
-  const hasMinimalFields = () => {
-    return true
-  }
+  const report = checkMissingMandatoryFields(parsed, mandatory)
+  console.log('🚀 ~ DownloadModal ~ report:', report)
 
   const handleDownload = async () => {
     try {
       setIsLoading(true)
-      const vessels = data.filter((vessel) => selectedIds.includes(vessel.id))
-      const parsed = parseVessels(vessels, selectedRFMO.id as RFMO)
       handleExportICCATVessels(parsed)
       onClose()
     } catch (error) {
@@ -76,10 +83,10 @@ const DownloadModal: React.FC<DownloadModalProps> = ({
             label={t('modal.submissionFormat', 'Submission format')}
           />
         </>
-        {!hasMinimalFields() && (
+        {report.length && (
           <div className="flex flex-col">
             {t('modal.fields_minimal', 'The following fields are missing in the registry data')}
-            {/* <DownloadTable /> */}
+            <FieldsTable fields={report} />
           </div>
         )}
         <div className="flex justify-end">
