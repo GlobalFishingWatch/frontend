@@ -54,6 +54,11 @@ export const selectHasTeacherBadge = hasUserPermission({
   value: 'gfw-teacher-badge',
   action: 'read',
 })
+export const selectHasImpactReporterBadge = hasUserPermission({
+  type: 'user-property',
+  value: 'gfw-impact-reporter-badge',
+  action: 'read',
+})
 
 export const selectUserId = createSelector([selectUserData], (userData) => {
   return userData?.id

@@ -907,8 +907,8 @@
     "maxPointsVisualizationExceeded": "Max points visualization exceeded, switching to heatmap mode."
   },
   "trackCorrection": {
-    "adjustDisabled": "Adjusting the time range is needed.",
     "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
+    "badLink": "The issue you are trying to access was not found. Close this panel to view the list of all issues.",
     "comment": "Comment",
     "commentPlaceholder": "Add a comment...",
     "commentRequired": "Your feedback is required to submit a correction",
@@ -941,6 +941,10 @@
       "fixer": {
         "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support.",
         "title": "Fixer"
+      },
+      "impactReporter": {
+        "description": "Like a whale in song, you amplify the voices of impact, bringing stories to life and helping everyone hear the difference being made.",
+        "title": "Impact reporter"
       },
       "presenter": {
         "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest.",
@@ -1014,9 +1018,9 @@
     "gearTypes": {
       "bunker": "Bunker",
       "bunker_or_tanker": "Bunker or Tanker",
-      "cargo": "Cargo or reefer",
-      "cargo_or_reefer": "Cargo or tanker",
-      "cargo_or_tanker": "Cargo",
+      "cargo": "Cargo",
+      "cargo_or_reefer": "Cargo or reefer",
+      "cargo_or_tanker": "Cargo or tanker",
       "carrier": "Carrier",
       "container_reefer": "Container reefer",
       "dive_vessel": "Dive vessel",

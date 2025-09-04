@@ -907,8 +907,8 @@
     "maxPointsVisualizationExceeded": "crwdns83408:0crwdne83408:0"
   },
   "trackCorrection": {
-    "adjustDisabled": "crwdns93658:0crwdne93658:0",
     "adjustDisclaimer": "crwdns93660:0crwdne93660:0",
+    "badLink": "crwdns106578:0crwdne106578:0",
     "comment": "crwdns93662:0crwdne93662:0",
     "commentPlaceholder": "crwdns93664:0crwdne93664:0",
     "commentRequired": "crwdns94232:0crwdne94232:0",
@@ -941,6 +941,10 @@
       "fixer": {
         "description": "crwdns84068:0crwdne84068:0",
         "title": "crwdns84066:0crwdne84066:0"
+      },
+      "impactReporter": {
+        "description": "crwdns106580:0crwdne106580:0",
+        "title": "crwdns106582:0crwdne106582:0"
       },
       "presenter": {
         "description": "crwdns84072:0crwdne84072:0",
