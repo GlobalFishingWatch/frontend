@@ -129,22 +129,13 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return DEFAULT_POINT_RADIUS
   }
 
-  _getPointRadius = (d: GeoJsonProperties, { layer, sublayer }: ContextSublayerCallbackParams) => {
-    if (!layer || !sublayer) {
-      console.warn('TODO: handle user points highlighted features')
-      return 0
-    }
+  _getPointRadiusValue = (d: GeoJsonProperties) => {
     const { staticPointRadius, circleRadiusProperty, circleRadiusRange } = this.props
-    if (
-      hasSublayerFilters(sublayer) &&
-      !supportDataFilterExtension(sublayer) &&
-      !getFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
-    ) {
-      return 0
-    }
+
     if (staticPointRadius) {
       return staticPointRadius
     }
+
     const pointRadius = this._getPointRadiusByZoom()
     const { scale } = this.state
     const value = d?.properties?.[circleRadiusProperty!]
@@ -155,6 +146,17 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
       return scale(value)
     }
     return pointRadius
+  }
+
+  _getPointRadius = (d: GeoJsonProperties, { sublayer }: ContextSublayerCallbackParams) => {
+    if (
+      hasSublayerFilters(sublayer) &&
+      !supportDataFilterExtension(sublayer) &&
+      !getFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
+    ) {
+      return 0
+    }
+    return this._getPointRadiusValue(d)
   }
 
   getLayer() {
@@ -297,7 +299,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
           getPosition: this._getPosition,
           getPolygonOffset: (params) =>
             getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-          getRadius: this._getPointRadius,
+          getRadius: this._getPointRadiusValue,
           getFillColor: COLOR_HIGHLIGHT_LINE,
         })
       )
