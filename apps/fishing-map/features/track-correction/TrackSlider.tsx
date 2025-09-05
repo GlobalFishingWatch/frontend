@@ -1,23 +1,20 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Slider, SliderOutput, SliderThumb, SliderTrack } from 'react-aria-components'
-import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { scaleLinear } from 'd3-scale'
 import { throttle } from 'es-toolkit'
 import { DateTime } from 'luxon'
 
-import type { TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
+import type { TrackSegment } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import I18nDate from 'features/i18n/i18nDate'
-import { disableHighlightedTime, setHighlightedTime } from 'features/timebar/timebar.slice'
 import {
   selectTrackCorrectionTimerange,
   setTrackCorrectionTimerange,
 } from 'features/track-correction/track-correction.slice'
 
-// import './TrackSlider.css'
 import styles from './TrackSlider.module.css'
 
 type SegmentsTimelineProps = Omit<TrackSliderProps, 'onTimerangeChange'> & {
@@ -110,7 +107,7 @@ type TrackSliderProps = {
   color?: string
   rangeStartTime: number
   rangeEndTime: number
-  onTimerangeChange: (start: number, end: number) => void
+  onTimerangeChange?: (start: number, end: number) => void
 }
 
 function TrackSlider({
@@ -120,7 +117,6 @@ function TrackSlider({
   rangeEndTime,
   onTimerangeChange,
 }: TrackSliderProps) {
-  const { t } = useTranslation()
   const allPoints = segments?.flatMap((segment) => segment)
   const initialPoint = allPoints?.[0]
   const finalPoint = allPoints?.[allPoints.length - 1]
@@ -219,10 +215,7 @@ function TrackSlider({
           }}
         </SliderOutput>
       </div>
-      <SliderTrack
-        className={styles.sliderTrack}
-        // style={{ '--sliderColor': color } as React.CSSProperties}
-      >
+      <SliderTrack className={styles.sliderTrack}>
         {({ state }) => {
           return (
             <Fragment>

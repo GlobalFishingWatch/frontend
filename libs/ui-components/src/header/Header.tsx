@@ -164,8 +164,8 @@ interface HeaderMenuItemProps {
 export function HeaderMenuItem({ index, item }: HeaderMenuItemProps): JSX.Element {
   return (
     <li key={index} role="menuitem" className={styles.navItem}>
-      {item.href ? (
-        <a href={item.href} onClick={item.onClick} className={styles.itemLabel}>
+      {item.href || item.onClick ? (
+        <a href={item.href} onClick={item.onClick} className={cx(item.className, styles.itemLabel)}>
           {item.label}
         </a>
       ) : (

@@ -6,18 +6,21 @@ export const AMBASSADOR_BADGE_ID = `${BADGES_GROUP_PREFIX} - Ambassador`
 export const FEEDBACK_PROVIDER_BADGE_ID = `${BADGES_GROUP_PREFIX} - Feedback Provider`
 export const PRESENTER_BADGE_ID = `${BADGES_GROUP_PREFIX} - Presenter`
 export const TEACHER_BADGE_ID = `${BADGES_GROUP_PREFIX} - Teacher`
+export const IMPACT_REPORTER_BADGE_ID = `${BADGES_GROUP_PREFIX} - Impact Reporter`
 
 export type BADGES_GROUP =
   | typeof AMBASSADOR_BADGE_ID
   | typeof FEEDBACK_PROVIDER_BADGE_ID
   | typeof PRESENTER_BADGE_ID
   | typeof TEACHER_BADGE_ID
+  | typeof IMPACT_REPORTER_BADGE_ID
 
 export type BADGES_PERMISSIONS =
   | 'gfw-presenter-badge'
   | 'gfw-teacher-badge'
   | 'gfw-feedback-provider-badge'
   | 'gfw-ambassador-badge'
+  | 'gfw-impact-reporter-badge'
 
 export type UserPermissionType =
   | 'application'

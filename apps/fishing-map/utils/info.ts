@@ -24,89 +24,6 @@ export const upperFirst = (text: string) => {
   return text ? text.charAt(0).toUpperCase() + text.slice(1).toLowerCase() : ''
 }
 
-export const formatInfoField = (
-  fieldValue: string | string[] | number | undefined,
-  type:
-    | 'shipname'
-    | 'flag'
-    | 'ownerFlag'
-    | 'shiptypes'
-    | 'geartypes'
-    | 'owner'
-    | 'operator'
-    | 'authorization'
-    | 'vesselType'
-    | 'port'
-    | 'name'
-    | 'fleet'
-    | 'transmissionDateFrom'
-    | 'transmissionDateTo',
-  {
-    translationFn = t,
-    fallbackValue,
-  }: {
-    translationFn?: TFunction
-    fallbackValue?: string
-  } = {}
-) => {
-  if (!fieldValue && type === 'shipname') {
-    return translationFn('common.unknownVessel', 'Unknown Vessel')
-  }
-  if (typeof fieldValue === 'string') {
-    if (type === 'flag' || type === 'ownerFlag') {
-      return translationFn(`flags:${fieldValue}` as any, fieldValue)
-    }
-    if (type === 'shiptypes' || type === 'vesselType') {
-      return getVesselShipTypeLabel({ shiptypes: fieldValue }, { translationFn }) || fallbackValue
-    }
-    if (type === 'geartypes') {
-      return getVesselGearTypeLabel({ geartypes: fieldValue }, { translationFn }) || fallbackValue
-    }
-    if (
-      type === 'shipname' ||
-      type === 'owner' ||
-      type === 'operator' ||
-      type === 'port' ||
-      type === 'name'
-    ) {
-      return fieldValue.replace(
-        /\b(?![LXIVCDM]+\b)(\d*)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)\b|\b([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)(\d+)\b/g,
-        (match, num, name, nameFirst, numLast) => {
-          if (num && name) {
-            return num + upperFirst(name)
-          }
-          if (nameFirst && numLast) {
-            return upperFirst(nameFirst) + numLast
-          }
-          return upperFirst(match)
-        }
-      )
-    }
-    if (type === 'fleet') {
-      const fleetClean = fieldValue.replaceAll('_', ' ')
-      return fleetClean.charAt(0).toUpperCase() + fleetClean.slice(1)
-    }
-    if (type === 'transmissionDateFrom' || type === 'transmissionDateTo') {
-      return formatI18nDate(fieldValue)
-    }
-  } else if (Array.isArray(fieldValue)) {
-    if (type === 'geartypes') {
-      return (
-        getVesselGearTypeLabel({ geartypes: fieldValue as GearType[] }, { translationFn }) ||
-        fallbackValue
-      )
-    } else if (type === 'shiptypes') {
-      return (
-        getVesselShipTypeLabel({ shiptypes: fieldValue as VesselType[] }, { translationFn }) ||
-        fallbackValue
-      )
-    }
-  } else if (fieldValue) {
-    return formatI18nNumber(fieldValue)
-  }
-  return fieldValue || fallbackValue || EMPTY_FIELD_PLACEHOLDER
-}
-
 export const formatNumber = (num: string | number, maximumFractionDigits?: number) => {
   const number = typeof num === 'string' ? parseFloat(num) : num
   return number.toLocaleString(undefined, {
@@ -181,6 +98,90 @@ export const getVesselShipNameLabel = (
     })}`
   }
   return translationFn('common.unknownVessel', 'Unknown vessel')
+}
+
+export const formatInfoField = (
+  fieldValue: string | string[] | number | undefined,
+  type:
+    | 'shipname'
+    | 'flag'
+    | 'ownerFlag'
+    | 'shiptypes'
+    | 'geartypes'
+    | 'owner'
+    | 'operator'
+    | 'authorization'
+    | 'vesselType'
+    | 'mmsi'
+    | 'port'
+    | 'name'
+    | 'fleet'
+    | 'transmissionDateFrom'
+    | 'transmissionDateTo',
+  {
+    translationFn = t,
+    fallbackValue,
+  }: {
+    translationFn?: TFunction
+    fallbackValue?: string
+  } = {}
+) => {
+  if (!fieldValue && type === 'shipname') {
+    return translationFn('common.unknownVessel', 'Unknown Vessel')
+  }
+  if (typeof fieldValue === 'string') {
+    if (type === 'flag' || type === 'ownerFlag') {
+      return translationFn(`flags:${fieldValue}` as any, fieldValue)
+    }
+    if (type === 'shiptypes' || type === 'vesselType') {
+      return getVesselShipTypeLabel({ shiptypes: fieldValue }, { translationFn }) || fallbackValue
+    }
+    if (type === 'geartypes') {
+      return getVesselGearTypeLabel({ geartypes: fieldValue }, { translationFn }) || fallbackValue
+    }
+    if (
+      type === 'shipname' ||
+      type === 'owner' ||
+      type === 'operator' ||
+      type === 'port' ||
+      type === 'name'
+    ) {
+      return fieldValue.replace(
+        /\b(?![LXIVCDM]+\b)(\d*)([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)\b|\b([A-Z,ÁÉÍÓÚÑÜÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÇÅÆØ]+)(\d+)\b/g,
+        (match, num, name, nameFirst, numLast) => {
+          if (num && name) {
+            return num + upperFirst(name)
+          }
+          if (nameFirst && numLast) {
+            return upperFirst(nameFirst) + numLast
+          }
+          return upperFirst(match)
+        }
+      )
+    }
+    if (type === 'fleet') {
+      const fleetClean = fieldValue.replaceAll('_', ' ')
+      return fleetClean.charAt(0).toUpperCase() + fleetClean.slice(1)
+    }
+    if (type === 'transmissionDateFrom' || type === 'transmissionDateTo') {
+      return formatI18nDate(fieldValue)
+    }
+  } else if (Array.isArray(fieldValue)) {
+    if (type === 'geartypes') {
+      return (
+        getVesselGearTypeLabel({ geartypes: fieldValue as GearType[] }, { translationFn }) ||
+        fallbackValue
+      )
+    } else if (type === 'shiptypes') {
+      return (
+        getVesselShipTypeLabel({ shiptypes: fieldValue as VesselType[] }, { translationFn }) ||
+        fallbackValue
+      )
+    }
+  } else if (fieldValue) {
+    return formatI18nNumber(fieldValue)
+  }
+  return fieldValue || fallbackValue || EMPTY_FIELD_PLACEHOLDER
 }
 
 export const getVesselOtherNamesLabel = (otherVesselsNames: string[]) => {
