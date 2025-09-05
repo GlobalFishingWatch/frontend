@@ -9,6 +9,8 @@ import type { RootState } from 'reducers'
 import type { InsightType } from '@globalfishingwatch/api-types'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 
 export const COVERAGE_INSIGHT_ID = 'COVERAGE' as InsightType
@@ -72,4 +74,11 @@ export const selectVGRFlagChangeInsightData = selectVGRInsightDataById(
 )
 export const selectVGRMOUInsightData = selectVGRInsightDataById(
   selectFetchVesselGroupReportMOUParams
+)
+
+export const selectUserIsVesselGroupOwner = createSelector(
+  [selectUserData, selectVGRData],
+  (userData, vesselGroup) => {
+    return userData?.id === vesselGroup?.ownerId
+  }
 )
