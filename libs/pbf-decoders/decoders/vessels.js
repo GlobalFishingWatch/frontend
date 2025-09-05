@@ -1,23 +1,21 @@
-/*eslint-disable*/
-'use strict'
-
-var $protobuf = require('protobufjs/minimal')
+/*eslint-disable no-prototype-builtins*/
+import * as $protobuf from 'protobufjs/minimal'
 
 // Common aliases
-var $Reader = $protobuf.Reader,
+const $Reader = $protobuf.Reader,
   $Writer = $protobuf.Writer,
   $util = $protobuf.util
 
 // Exported root namespace
-var $root = $protobuf.roots['default'] || ($protobuf.roots['default'] = {})
+const $root = $protobuf.roots['default'] || ($protobuf.roots['default'] = {})
 
-$root.vessels = (function () {
+export const vessels = ($root.vessels = (() => {
   /**
    * Namespace vessels.
    * @exports vessels
    * @namespace
    */
-  var vessels = {}
+  const vessels = {}
 
   vessels.Track = (function () {
     /**
@@ -38,7 +36,7 @@ $root.vessels = (function () {
     function Track(properties) {
       this.data = []
       if (properties)
-        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+        for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
           if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]]
     }
 
@@ -75,7 +73,7 @@ $root.vessels = (function () {
       if (!writer) writer = $Writer.create()
       if (message.data != null && message.data.length) {
         writer.uint32(/* id 1, wireType 2 =*/ 10).fork()
-        for (var i = 0; i < message.data.length; ++i) writer.sint32(message.data[i])
+        for (let i = 0; i < message.data.length; ++i) writer.sint32(message.data[i])
         writer.ldelim()
       }
       return writer
@@ -105,17 +103,18 @@ $root.vessels = (function () {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    Track.decode = function decode(reader, length) {
+    Track.decode = function decode(reader, length, error) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
-      var end = length === undefined ? reader.len : reader.pos + length,
+      const end = length === undefined ? reader.len : reader.pos + length,
         message = new $root.vessels.Track()
       while (reader.pos < end) {
-        var tag = reader.uint32()
+        const tag = reader.uint32()
+        if (tag === error) break
         switch (tag >>> 3) {
           case 1: {
             if (!(message.data && message.data.length)) message.data = []
             if ((tag & 7) === 2) {
-              var end2 = reader.uint32() + reader.pos
+              const end2 = reader.uint32() + reader.pos
               while (reader.pos < end2) message.data.push(reader.sint32())
             } else message.data.push(reader.sint32())
             break
@@ -155,7 +154,7 @@ $root.vessels = (function () {
       if (typeof message !== 'object' || message === null) return 'object expected'
       if (message.data != null && message.hasOwnProperty('data')) {
         if (!Array.isArray(message.data)) return 'data: array expected'
-        for (var i = 0; i < message.data.length; ++i)
+        for (let i = 0; i < message.data.length; ++i)
           if (!$util.isInteger(message.data[i])) return 'data: integer[] expected'
       }
       return null
@@ -171,11 +170,11 @@ $root.vessels = (function () {
      */
     Track.fromObject = function fromObject(object) {
       if (object instanceof $root.vessels.Track) return object
-      var message = new $root.vessels.Track()
+      const message = new $root.vessels.Track()
       if (object.data) {
         if (!Array.isArray(object.data)) throw TypeError('.vessels.Track.data: array expected')
         message.data = []
-        for (var i = 0; i < object.data.length; ++i) message.data[i] = object.data[i] | 0
+        for (let i = 0; i < object.data.length; ++i) message.data[i] = object.data[i] | 0
       }
       return message
     }
@@ -191,11 +190,11 @@ $root.vessels = (function () {
      */
     Track.toObject = function toObject(message, options) {
       if (!options) options = {}
-      var object = {}
+      const object = {}
       if (options.arrays || options.defaults) object.data = []
       if (message.data && message.data.length) {
         object.data = []
-        for (var j = 0; j < message.data.length; ++j) object.data[j] = message.data[j]
+        for (let j = 0; j < message.data.length; ++j) object.data[j] = message.data[j]
       }
       return object
     }
@@ -253,7 +252,7 @@ $root.vessels = (function () {
     function TilesetVesselQuery(properties) {
       this.entries = []
       if (properties)
-        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+        for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
           if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]]
     }
 
@@ -339,7 +338,7 @@ $root.vessels = (function () {
       if (message.nextOffset != null && Object.hasOwnProperty.call(message, 'nextOffset'))
         writer.uint32(/* id 5, wireType 0 =*/ 40).uint32(message.nextOffset)
       if (message.entries != null && message.entries.length)
-        for (var i = 0; i < message.entries.length; ++i)
+        for (let i = 0; i < message.entries.length; ++i)
           $root.vessels.TilesetVesselInfo.encode(
             message.entries[i],
             writer.uint32(/* id 6, wireType 2 =*/ 50).fork()
@@ -371,12 +370,13 @@ $root.vessels = (function () {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    TilesetVesselQuery.decode = function decode(reader, length) {
+    TilesetVesselQuery.decode = function decode(reader, length, error) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
-      var end = length === undefined ? reader.len : reader.pos + length,
+      const end = length === undefined ? reader.len : reader.pos + length,
         message = new $root.vessels.TilesetVesselQuery()
       while (reader.pos < end) {
-        var tag = reader.uint32()
+        const tag = reader.uint32()
+        if (tag === error) break
         switch (tag >>> 3) {
           case 1: {
             message.query = reader.string()
@@ -448,8 +448,8 @@ $root.vessels = (function () {
         if (!$util.isInteger(message.nextOffset)) return 'nextOffset: integer expected'
       if (message.entries != null && message.hasOwnProperty('entries')) {
         if (!Array.isArray(message.entries)) return 'entries: array expected'
-        for (var i = 0; i < message.entries.length; ++i) {
-          var error = $root.vessels.TilesetVesselInfo.verify(message.entries[i])
+        for (let i = 0; i < message.entries.length; ++i) {
+          const error = $root.vessels.TilesetVesselInfo.verify(message.entries[i])
           if (error) return 'entries.' + error
         }
       }
@@ -466,7 +466,7 @@ $root.vessels = (function () {
      */
     TilesetVesselQuery.fromObject = function fromObject(object) {
       if (object instanceof $root.vessels.TilesetVesselQuery) return object
-      var message = new $root.vessels.TilesetVesselQuery()
+      const message = new $root.vessels.TilesetVesselQuery()
       if (object.query != null) message.query = String(object.query)
       if (object.total != null) message.total = object.total >>> 0
       if (object.limit != null) message.limit = object.limit >>> 0
@@ -476,7 +476,7 @@ $root.vessels = (function () {
         if (!Array.isArray(object.entries))
           throw TypeError('.vessels.TilesetVesselQuery.entries: array expected')
         message.entries = []
-        for (var i = 0; i < object.entries.length; ++i) {
+        for (let i = 0; i < object.entries.length; ++i) {
           if (typeof object.entries[i] !== 'object')
             throw TypeError('.vessels.TilesetVesselQuery.entries: object expected')
           message.entries[i] = $root.vessels.TilesetVesselInfo.fromObject(object.entries[i])
@@ -496,7 +496,7 @@ $root.vessels = (function () {
      */
     TilesetVesselQuery.toObject = function toObject(message, options) {
       if (!options) options = {}
-      var object = {}
+      const object = {}
       if (options.arrays || options.defaults) object.entries = []
       if (options.defaults) {
         object.query = ''
@@ -513,7 +513,7 @@ $root.vessels = (function () {
         object.nextOffset = message.nextOffset
       if (message.entries && message.entries.length) {
         object.entries = []
-        for (var j = 0; j < message.entries.length; ++j)
+        for (let j = 0; j < message.entries.length; ++j)
           object.entries[j] = $root.vessels.TilesetVesselInfo.toObject(message.entries[j], options)
       }
       return object
@@ -573,7 +573,7 @@ $root.vessels = (function () {
      */
     function TilesetVesselInfo(properties) {
       if (properties)
-        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+        for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
           if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]]
     }
 
@@ -707,12 +707,13 @@ $root.vessels = (function () {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    TilesetVesselInfo.decode = function decode(reader, length) {
+    TilesetVesselInfo.decode = function decode(reader, length, error) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
-      var end = length === undefined ? reader.len : reader.pos + length,
+      const end = length === undefined ? reader.len : reader.pos + length,
         message = new $root.vessels.TilesetVesselInfo()
       while (reader.pos < end) {
-        var tag = reader.uint32()
+        const tag = reader.uint32()
+        if (tag === error) break
         switch (tag >>> 3) {
           case 1: {
             message.id = reader.string()
@@ -808,7 +809,7 @@ $root.vessels = (function () {
      */
     TilesetVesselInfo.fromObject = function fromObject(object) {
       if (object instanceof $root.vessels.TilesetVesselInfo) return object
-      var message = new $root.vessels.TilesetVesselInfo()
+      const message = new $root.vessels.TilesetVesselInfo()
       if (object.id != null) message.id = String(object.id)
       if (object.name != null) message.name = String(object.name)
       if (object.end != null) message.end = String(object.end)
@@ -831,7 +832,7 @@ $root.vessels = (function () {
      */
     TilesetVesselInfo.toObject = function toObject(message, options) {
       if (!options) options = {}
-      var object = {}
+      const object = {}
       if (options.defaults) {
         object.id = ''
         object.name = ''
@@ -905,7 +906,7 @@ $root.vessels = (function () {
     function DatasetVesselV1Query(properties) {
       this.results = []
       if (properties)
-        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+        for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
           if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]]
     }
 
@@ -951,7 +952,7 @@ $root.vessels = (function () {
       if (message.dataset != null && Object.hasOwnProperty.call(message, 'dataset'))
         writer.uint32(/* id 10, wireType 2 =*/ 82).string(message.dataset)
       if (message.results != null && message.results.length)
-        for (var i = 0; i < message.results.length; ++i)
+        for (let i = 0; i < message.results.length; ++i)
           $root.vessels.DatasetVesselQuery.encode(
             message.results[i],
             writer.uint32(/* id 11, wireType 2 =*/ 90).fork()
@@ -983,12 +984,13 @@ $root.vessels = (function () {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    DatasetVesselV1Query.decode = function decode(reader, length) {
+    DatasetVesselV1Query.decode = function decode(reader, length, error) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
-      var end = length === undefined ? reader.len : reader.pos + length,
+      const end = length === undefined ? reader.len : reader.pos + length,
         message = new $root.vessels.DatasetVesselV1Query()
       while (reader.pos < end) {
-        var tag = reader.uint32()
+        const tag = reader.uint32()
+        if (tag === error) break
         switch (tag >>> 3) {
           case 10: {
             message.dataset = reader.string()
@@ -1036,8 +1038,8 @@ $root.vessels = (function () {
         if (!$util.isString(message.dataset)) return 'dataset: string expected'
       if (message.results != null && message.hasOwnProperty('results')) {
         if (!Array.isArray(message.results)) return 'results: array expected'
-        for (var i = 0; i < message.results.length; ++i) {
-          var error = $root.vessels.DatasetVesselQuery.verify(message.results[i])
+        for (let i = 0; i < message.results.length; ++i) {
+          const error = $root.vessels.DatasetVesselQuery.verify(message.results[i])
           if (error) return 'results.' + error
         }
       }
@@ -1054,13 +1056,13 @@ $root.vessels = (function () {
      */
     DatasetVesselV1Query.fromObject = function fromObject(object) {
       if (object instanceof $root.vessels.DatasetVesselV1Query) return object
-      var message = new $root.vessels.DatasetVesselV1Query()
+      const message = new $root.vessels.DatasetVesselV1Query()
       if (object.dataset != null) message.dataset = String(object.dataset)
       if (object.results) {
         if (!Array.isArray(object.results))
           throw TypeError('.vessels.DatasetVesselV1Query.results: array expected')
         message.results = []
-        for (var i = 0; i < object.results.length; ++i) {
+        for (let i = 0; i < object.results.length; ++i) {
           if (typeof object.results[i] !== 'object')
             throw TypeError('.vessels.DatasetVesselV1Query.results: object expected')
           message.results[i] = $root.vessels.DatasetVesselQuery.fromObject(object.results[i])
@@ -1080,14 +1082,14 @@ $root.vessels = (function () {
      */
     DatasetVesselV1Query.toObject = function toObject(message, options) {
       if (!options) options = {}
-      var object = {}
+      const object = {}
       if (options.arrays || options.defaults) object.results = []
       if (options.defaults) object.dataset = ''
       if (message.dataset != null && message.hasOwnProperty('dataset'))
         object.dataset = message.dataset
       if (message.results && message.results.length) {
         object.results = []
-        for (var j = 0; j < message.results.length; ++j)
+        for (let j = 0; j < message.results.length; ++j)
           object.results[j] = $root.vessels.DatasetVesselQuery.toObject(message.results[j], options)
       }
       return object
@@ -1146,7 +1148,7 @@ $root.vessels = (function () {
     function DatasetVesselQuery(properties) {
       this.entries = []
       if (properties)
-        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+        for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
           if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]]
     }
 
@@ -1232,7 +1234,7 @@ $root.vessels = (function () {
       if (message.nextOffset != null && Object.hasOwnProperty.call(message, 'nextOffset'))
         writer.uint32(/* id 5, wireType 0 =*/ 40).uint32(message.nextOffset)
       if (message.entries != null && message.entries.length)
-        for (var i = 0; i < message.entries.length; ++i)
+        for (let i = 0; i < message.entries.length; ++i)
           $root.vessels.DatasetVesselInfo.encode(
             message.entries[i],
             writer.uint32(/* id 6, wireType 2 =*/ 50).fork()
@@ -1264,12 +1266,13 @@ $root.vessels = (function () {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    DatasetVesselQuery.decode = function decode(reader, length) {
+    DatasetVesselQuery.decode = function decode(reader, length, error) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
-      var end = length === undefined ? reader.len : reader.pos + length,
+      const end = length === undefined ? reader.len : reader.pos + length,
         message = new $root.vessels.DatasetVesselQuery()
       while (reader.pos < end) {
-        var tag = reader.uint32()
+        const tag = reader.uint32()
+        if (tag === error) break
         switch (tag >>> 3) {
           case 1: {
             message.query = reader.string()
@@ -1341,8 +1344,8 @@ $root.vessels = (function () {
         if (!$util.isInteger(message.nextOffset)) return 'nextOffset: integer expected'
       if (message.entries != null && message.hasOwnProperty('entries')) {
         if (!Array.isArray(message.entries)) return 'entries: array expected'
-        for (var i = 0; i < message.entries.length; ++i) {
-          var error = $root.vessels.DatasetVesselInfo.verify(message.entries[i])
+        for (let i = 0; i < message.entries.length; ++i) {
+          const error = $root.vessels.DatasetVesselInfo.verify(message.entries[i])
           if (error) return 'entries.' + error
         }
       }
@@ -1359,7 +1362,7 @@ $root.vessels = (function () {
      */
     DatasetVesselQuery.fromObject = function fromObject(object) {
       if (object instanceof $root.vessels.DatasetVesselQuery) return object
-      var message = new $root.vessels.DatasetVesselQuery()
+      const message = new $root.vessels.DatasetVesselQuery()
       if (object.query != null) message.query = String(object.query)
       if (object.total != null) message.total = object.total >>> 0
       if (object.limit != null) message.limit = object.limit >>> 0
@@ -1369,7 +1372,7 @@ $root.vessels = (function () {
         if (!Array.isArray(object.entries))
           throw TypeError('.vessels.DatasetVesselQuery.entries: array expected')
         message.entries = []
-        for (var i = 0; i < object.entries.length; ++i) {
+        for (let i = 0; i < object.entries.length; ++i) {
           if (typeof object.entries[i] !== 'object')
             throw TypeError('.vessels.DatasetVesselQuery.entries: object expected')
           message.entries[i] = $root.vessels.DatasetVesselInfo.fromObject(object.entries[i])
@@ -1389,7 +1392,7 @@ $root.vessels = (function () {
      */
     DatasetVesselQuery.toObject = function toObject(message, options) {
       if (!options) options = {}
-      var object = {}
+      const object = {}
       if (options.arrays || options.defaults) object.entries = []
       if (options.defaults) {
         object.query = ''
@@ -1406,7 +1409,7 @@ $root.vessels = (function () {
         object.nextOffset = message.nextOffset
       if (message.entries && message.entries.length) {
         object.entries = []
-        for (var j = 0; j < message.entries.length; ++j)
+        for (let j = 0; j < message.entries.length; ++j)
           object.entries[j] = $root.vessels.DatasetVesselInfo.toObject(message.entries[j], options)
       }
       return object
@@ -1475,7 +1478,7 @@ $root.vessels = (function () {
       this.callsign = []
       this.flags = []
       if (properties)
-        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+        for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
           if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]]
     }
 
@@ -1613,31 +1616,31 @@ $root.vessels = (function () {
       if (message.dataset != null && Object.hasOwnProperty.call(message, 'dataset'))
         writer.uint32(/* id 7, wireType 2 =*/ 58).string(message.dataset)
       if (message.authorizations != null && message.authorizations.length)
-        for (var i = 0; i < message.authorizations.length; ++i)
+        for (let i = 0; i < message.authorizations.length; ++i)
           $root.vessels.StartEndValue.encode(
             message.authorizations[i],
             writer.uint32(/* id 8, wireType 2 =*/ 66).fork()
           ).ldelim()
       if (message.extra != null && message.extra.length)
-        for (var i = 0; i < message.extra.length; ++i)
+        for (let i = 0; i < message.extra.length; ++i)
           $root.vessels.Extra.encode(
             message.extra[i],
             writer.uint32(/* id 9, wireType 2 =*/ 74).fork()
           ).ldelim()
       if (message.mmsi != null && message.mmsi.length)
-        for (var i = 0; i < message.mmsi.length; ++i)
+        for (let i = 0; i < message.mmsi.length; ++i)
           $root.vessels.StartEndValue.encode(
             message.mmsi[i],
             writer.uint32(/* id 10, wireType 2 =*/ 82).fork()
           ).ldelim()
       if (message.callsign != null && message.callsign.length)
-        for (var i = 0; i < message.callsign.length; ++i)
+        for (let i = 0; i < message.callsign.length; ++i)
           $root.vessels.StartEndValue.encode(
             message.callsign[i],
             writer.uint32(/* id 11, wireType 2 =*/ 90).fork()
           ).ldelim()
       if (message.flags != null && message.flags.length)
-        for (var i = 0; i < message.flags.length; ++i)
+        for (let i = 0; i < message.flags.length; ++i)
           $root.vessels.StartEndValue.encode(
             message.flags[i],
             writer.uint32(/* id 12, wireType 2 =*/ 98).fork()
@@ -1669,12 +1672,13 @@ $root.vessels = (function () {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    DatasetVesselInfo.decode = function decode(reader, length) {
+    DatasetVesselInfo.decode = function decode(reader, length, error) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
-      var end = length === undefined ? reader.len : reader.pos + length,
+      const end = length === undefined ? reader.len : reader.pos + length,
         message = new $root.vessels.DatasetVesselInfo()
       while (reader.pos < end) {
-        var tag = reader.uint32()
+        const tag = reader.uint32()
+        if (tag === error) break
         switch (tag >>> 3) {
           case 1: {
             message.id = reader.string()
@@ -1779,36 +1783,36 @@ $root.vessels = (function () {
         if (!$util.isString(message.dataset)) return 'dataset: string expected'
       if (message.authorizations != null && message.hasOwnProperty('authorizations')) {
         if (!Array.isArray(message.authorizations)) return 'authorizations: array expected'
-        for (var i = 0; i < message.authorizations.length; ++i) {
-          var error = $root.vessels.StartEndValue.verify(message.authorizations[i])
+        for (let i = 0; i < message.authorizations.length; ++i) {
+          const error = $root.vessels.StartEndValue.verify(message.authorizations[i])
           if (error) return 'authorizations.' + error
         }
       }
       if (message.extra != null && message.hasOwnProperty('extra')) {
         if (!Array.isArray(message.extra)) return 'extra: array expected'
-        for (var i = 0; i < message.extra.length; ++i) {
-          var error = $root.vessels.Extra.verify(message.extra[i])
+        for (let i = 0; i < message.extra.length; ++i) {
+          const error = $root.vessels.Extra.verify(message.extra[i])
           if (error) return 'extra.' + error
         }
       }
       if (message.mmsi != null && message.hasOwnProperty('mmsi')) {
         if (!Array.isArray(message.mmsi)) return 'mmsi: array expected'
-        for (var i = 0; i < message.mmsi.length; ++i) {
-          var error = $root.vessels.StartEndValue.verify(message.mmsi[i])
+        for (let i = 0; i < message.mmsi.length; ++i) {
+          const error = $root.vessels.StartEndValue.verify(message.mmsi[i])
           if (error) return 'mmsi.' + error
         }
       }
       if (message.callsign != null && message.hasOwnProperty('callsign')) {
         if (!Array.isArray(message.callsign)) return 'callsign: array expected'
-        for (var i = 0; i < message.callsign.length; ++i) {
-          var error = $root.vessels.StartEndValue.verify(message.callsign[i])
+        for (let i = 0; i < message.callsign.length; ++i) {
+          const error = $root.vessels.StartEndValue.verify(message.callsign[i])
           if (error) return 'callsign.' + error
         }
       }
       if (message.flags != null && message.hasOwnProperty('flags')) {
         if (!Array.isArray(message.flags)) return 'flags: array expected'
-        for (var i = 0; i < message.flags.length; ++i) {
-          var error = $root.vessels.StartEndValue.verify(message.flags[i])
+        for (let i = 0; i < message.flags.length; ++i) {
+          const error = $root.vessels.StartEndValue.verify(message.flags[i])
           if (error) return 'flags.' + error
         }
       }
@@ -1825,7 +1829,7 @@ $root.vessels = (function () {
      */
     DatasetVesselInfo.fromObject = function fromObject(object) {
       if (object instanceof $root.vessels.DatasetVesselInfo) return object
-      var message = new $root.vessels.DatasetVesselInfo()
+      const message = new $root.vessels.DatasetVesselInfo()
       if (object.id != null) message.id = String(object.id)
       if (object.name != null) message.name = String(object.name)
       if (object.imo != null) message.imo = String(object.imo)
@@ -1837,7 +1841,7 @@ $root.vessels = (function () {
         if (!Array.isArray(object.authorizations))
           throw TypeError('.vessels.DatasetVesselInfo.authorizations: array expected')
         message.authorizations = []
-        for (var i = 0; i < object.authorizations.length; ++i) {
+        for (let i = 0; i < object.authorizations.length; ++i) {
           if (typeof object.authorizations[i] !== 'object')
             throw TypeError('.vessels.DatasetVesselInfo.authorizations: object expected')
           message.authorizations[i] = $root.vessels.StartEndValue.fromObject(
@@ -1849,7 +1853,7 @@ $root.vessels = (function () {
         if (!Array.isArray(object.extra))
           throw TypeError('.vessels.DatasetVesselInfo.extra: array expected')
         message.extra = []
-        for (var i = 0; i < object.extra.length; ++i) {
+        for (let i = 0; i < object.extra.length; ++i) {
           if (typeof object.extra[i] !== 'object')
             throw TypeError('.vessels.DatasetVesselInfo.extra: object expected')
           message.extra[i] = $root.vessels.Extra.fromObject(object.extra[i])
@@ -1859,7 +1863,7 @@ $root.vessels = (function () {
         if (!Array.isArray(object.mmsi))
           throw TypeError('.vessels.DatasetVesselInfo.mmsi: array expected')
         message.mmsi = []
-        for (var i = 0; i < object.mmsi.length; ++i) {
+        for (let i = 0; i < object.mmsi.length; ++i) {
           if (typeof object.mmsi[i] !== 'object')
             throw TypeError('.vessels.DatasetVesselInfo.mmsi: object expected')
           message.mmsi[i] = $root.vessels.StartEndValue.fromObject(object.mmsi[i])
@@ -1869,7 +1873,7 @@ $root.vessels = (function () {
         if (!Array.isArray(object.callsign))
           throw TypeError('.vessels.DatasetVesselInfo.callsign: array expected')
         message.callsign = []
-        for (var i = 0; i < object.callsign.length; ++i) {
+        for (let i = 0; i < object.callsign.length; ++i) {
           if (typeof object.callsign[i] !== 'object')
             throw TypeError('.vessels.DatasetVesselInfo.callsign: object expected')
           message.callsign[i] = $root.vessels.StartEndValue.fromObject(object.callsign[i])
@@ -1879,7 +1883,7 @@ $root.vessels = (function () {
         if (!Array.isArray(object.flags))
           throw TypeError('.vessels.DatasetVesselInfo.flags: array expected')
         message.flags = []
-        for (var i = 0; i < object.flags.length; ++i) {
+        for (let i = 0; i < object.flags.length; ++i) {
           if (typeof object.flags[i] !== 'object')
             throw TypeError('.vessels.DatasetVesselInfo.flags: object expected')
           message.flags[i] = $root.vessels.StartEndValue.fromObject(object.flags[i])
@@ -1899,7 +1903,7 @@ $root.vessels = (function () {
      */
     DatasetVesselInfo.toObject = function toObject(message, options) {
       if (!options) options = {}
-      var object = {}
+      const object = {}
       if (options.arrays || options.defaults) {
         object.authorizations = []
         object.extra = []
@@ -1927,7 +1931,7 @@ $root.vessels = (function () {
         object.dataset = message.dataset
       if (message.authorizations && message.authorizations.length) {
         object.authorizations = []
-        for (var j = 0; j < message.authorizations.length; ++j)
+        for (let j = 0; j < message.authorizations.length; ++j)
           object.authorizations[j] = $root.vessels.StartEndValue.toObject(
             message.authorizations[j],
             options
@@ -1935,22 +1939,22 @@ $root.vessels = (function () {
       }
       if (message.extra && message.extra.length) {
         object.extra = []
-        for (var j = 0; j < message.extra.length; ++j)
+        for (let j = 0; j < message.extra.length; ++j)
           object.extra[j] = $root.vessels.Extra.toObject(message.extra[j], options)
       }
       if (message.mmsi && message.mmsi.length) {
         object.mmsi = []
-        for (var j = 0; j < message.mmsi.length; ++j)
+        for (let j = 0; j < message.mmsi.length; ++j)
           object.mmsi[j] = $root.vessels.StartEndValue.toObject(message.mmsi[j], options)
       }
       if (message.callsign && message.callsign.length) {
         object.callsign = []
-        for (var j = 0; j < message.callsign.length; ++j)
+        for (let j = 0; j < message.callsign.length; ++j)
           object.callsign[j] = $root.vessels.StartEndValue.toObject(message.callsign[j], options)
       }
       if (message.flags && message.flags.length) {
         object.flags = []
-        for (var j = 0; j < message.flags.length; ++j)
+        for (let j = 0; j < message.flags.length; ++j)
           object.flags[j] = $root.vessels.StartEndValue.toObject(message.flags[j], options)
       }
       return object
@@ -2005,7 +2009,7 @@ $root.vessels = (function () {
      */
     function Extra(properties) {
       if (properties)
-        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+        for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
           if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]]
     }
 
@@ -2089,12 +2093,13 @@ $root.vessels = (function () {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    Extra.decode = function decode(reader, length) {
+    Extra.decode = function decode(reader, length, error) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
-      var end = length === undefined ? reader.len : reader.pos + length,
+      const end = length === undefined ? reader.len : reader.pos + length,
         message = new $root.vessels.Extra()
       while (reader.pos < end) {
-        var tag = reader.uint32()
+        const tag = reader.uint32()
+        if (tag === error) break
         switch (tag >>> 3) {
           case 1: {
             message.id = reader.string()
@@ -2160,7 +2165,7 @@ $root.vessels = (function () {
      */
     Extra.fromObject = function fromObject(object) {
       if (object instanceof $root.vessels.Extra) return object
-      var message = new $root.vessels.Extra()
+      const message = new $root.vessels.Extra()
       if (object.id != null) message.id = String(object.id)
       if (object.label != null) message.label = String(object.label)
       if (object.value != null) message.value = Number(object.value)
@@ -2178,7 +2183,7 @@ $root.vessels = (function () {
      */
     Extra.toObject = function toObject(message, options) {
       if (!options) options = {}
-      var object = {}
+      const object = {}
       if (options.defaults) {
         object.id = ''
         object.label = ''
@@ -2241,7 +2246,7 @@ $root.vessels = (function () {
      */
     function StartEndValue(properties) {
       if (properties)
-        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+        for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
           if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]]
     }
 
@@ -2325,12 +2330,13 @@ $root.vessels = (function () {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    StartEndValue.decode = function decode(reader, length) {
+    StartEndValue.decode = function decode(reader, length, error) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
-      var end = length === undefined ? reader.len : reader.pos + length,
+      const end = length === undefined ? reader.len : reader.pos + length,
         message = new $root.vessels.StartEndValue()
       while (reader.pos < end) {
-        var tag = reader.uint32()
+        const tag = reader.uint32()
+        if (tag === error) break
         switch (tag >>> 3) {
           case 1: {
             message.start = reader.string()
@@ -2396,7 +2402,7 @@ $root.vessels = (function () {
      */
     StartEndValue.fromObject = function fromObject(object) {
       if (object instanceof $root.vessels.StartEndValue) return object
-      var message = new $root.vessels.StartEndValue()
+      const message = new $root.vessels.StartEndValue()
       if (object.start != null) message.start = String(object.start)
       if (object.end != null) message.end = String(object.end)
       if (object.value != null) message.value = String(object.value)
@@ -2414,7 +2420,7 @@ $root.vessels = (function () {
      */
     StartEndValue.toObject = function toObject(message, options) {
       if (!options) options = {}
-      var object = {}
+      const object = {}
       if (options.defaults) {
         object.start = ''
         object.end = ''
@@ -2456,6 +2462,6 @@ $root.vessels = (function () {
   })()
 
   return vessels
-})()
+})())
 
-module.exports = $root
+export { $root as default }
