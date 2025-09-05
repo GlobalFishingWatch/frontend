@@ -12,9 +12,8 @@ import qs from 'qs'
 import { GFWAPI, THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { TrackField } from '@globalfishingwatch/api-types'
 import { segmentsToGeoJSON, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
+import { useOnScreen, useScreenDPI } from '@globalfishingwatch/react-hooks'
 import { Icon, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
-
-import { useOnScreen, useScreenDPI } from 'hooks/screen.hooks'
 
 import styles from './TrackFootprint.module.css'
 
@@ -33,10 +32,10 @@ const TRACK_FOOTPRINT_QUERY = {
   ...THINNING_LEVELS.Footprint,
   binary: true,
   fields: ['LONLAT', 'TIMESTAMP'],
-  format: 'VALUE_ARRAY',
+  format: 'GEOJSON',
 }
 
-function TrackFootprint({
+export function TrackFootprint({
   vesselIds,
   trackDatasetId,
   highlightedYear,
@@ -78,10 +77,10 @@ function TrackFootprint({
             dataset: trackDatasetId,
           },
           { arrayFormat: 'indices' }
-        )}`,
-        {
-          responseType: 'vessel',
-        }
+        )}`
+        // {
+        //   responseType: 'vessel',
+        // }
       )
 
       if (vesselData.length === 0) {
@@ -224,5 +223,3 @@ function TrackFootprint({
     </Tooltip>
   )
 }
-
-export default TrackFootprint
