@@ -8,15 +8,16 @@ import type {
 } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
+import type { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { ScatterplotLayer } from '@deck.gl/layers'
 import type { ScalePower } from 'd3-scale'
 import { scaleSqrt } from 'd3-scale'
-import type { GeoJsonProperties } from 'geojson'
+import type { Feature, GeoJsonProperties, Point } from 'geojson'
 
 import {
   COLOR_HIGHLIGHT_LINE,
   DEFAULT_LINE_COLOR,
-  getFeatureInFilter,
+  getFeatureInFilters,
   getFetchLoadOptions,
   getLayerGroupOffset,
   getMVTSublayerProps,
@@ -24,9 +25,18 @@ import {
   hexToDeckColor,
   LayerGroup,
 } from '../../utils'
+import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
+import type { ContextSublayerCallbackParams } from '../context/context.types'
+import {
+  getContextFiltersHash,
+  hasSublayerFilters,
+  supportDataFilterExtension,
+} from '../context/context.utils'
+import { filteredPositionsByViewport } from '../fourwings'
 
 import type { UserLayerFeature, UserPointsLayerProps } from './user.types'
-import { DEFAULT_USER_TILES_MAX_ZOOM } from './user.utils'
+import type { IsFeatureInRangeParams } from './user.utils'
+import { DEFAULT_USER_TILES_MAX_ZOOM, isFeatureInRange } from './user.utils'
 import type { UserBaseLayerState } from './UserBaseLayer'
 import { UserBaseLayer } from './UserBaseLayer'
 
@@ -34,9 +44,7 @@ type _UserPointsLayerProps = TileLayerProps & UserPointsLayerProps
 
 export const DEFAULT_POINT_RADIUS = 6
 const defaultProps: DefaultProps<_UserPointsLayerProps> = {
-  idProperty: 'gfw_id',
   pickable: true,
-  valueProperties: [],
   maxRequests: 100,
   debounceTime: 500,
   minPointSize: 3,
@@ -45,6 +53,7 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
 }
 
 type UserPointsLayerState = UserBaseLayerState & {
+  error: string
   scale?: ScalePower<number, number, never>
 }
 export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserBaseLayer<
@@ -63,6 +72,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     } = this.props
     if (circleRadiusRange && circleRadiusRange?.length) {
       this.state = {
+        error: '',
         scale: scaleSqrt(circleRadiusRange as [number, number], [
           minPointSize as number,
           maxPointSize as number,
@@ -71,8 +81,20 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     }
   }
 
+  get isLoaded(): boolean {
+    return super.isLoaded
+  }
+
+  get cacheHash(): string {
+    const { startTime, endTime } = this.props
+    const filters = this.props.layers?.[0]?.sublayers?.[0]?.filters || {}
+    const filtersHash = getContextFiltersHash(filters)
+    return `${startTime}-${endTime}-${filtersHash}`
+  }
+
   updateState({ props, oldProps }: UpdateParameters<this>) {
     const { minPointSize, maxPointSize, circleRadiusRange } = props
+
     const newPointRange =
       circleRadiusRange?.[0] !== oldProps.circleRadiusRange?.[0] ||
       circleRadiusRange?.[1] !== oldProps.circleRadiusRange?.[1]
@@ -111,15 +133,13 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return DEFAULT_POINT_RADIUS
   }
 
-  _getPointRadius: Accessor<GeoJsonProperties, number> = (d) => {
-    const { staticPointRadius, circleRadiusProperty, circleRadiusRange, filters, filterOperators } =
-      this.props
-    if (!getFeatureInFilter(d, filters, filterOperators)) {
-      return 0
-    }
+  _getPointRadiusValue = (d: GeoJsonProperties) => {
+    const { staticPointRadius, circleRadiusProperty, circleRadiusRange } = this.props
+
     if (staticPointRadius) {
       return staticPointRadius
     }
+
     const pointRadius = this._getPointRadiusByZoom()
     const { scale } = this.state
     const value = d?.properties?.[circleRadiusProperty!]
@@ -132,11 +152,90 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return pointRadius
   }
 
+  _getPointRadius = (d: GeoJsonProperties, { sublayer }: ContextSublayerCallbackParams) => {
+    if (
+      hasSublayerFilters(sublayer) &&
+      !supportDataFilterExtension(sublayer) &&
+      !getFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
+    ) {
+      return 0
+    }
+    return this._getPointRadiusValue(d)
+  }
+
+  getLayer() {
+    // TODO: support multiple sublayers
+    return this.getSubLayers()?.[0] as TileLayer<UserLayerFeature>
+  }
+
+  getError() {
+    return this?.state.error
+  }
+
+  _getData = (): Feature<Point>[] => {
+    const roundedZoom = Math.round(this.context.viewport.zoom)
+    return (this.getLayer()?.state.tileset?.tiles || []).flatMap((tile) => {
+      return tile.content && tile.zoom === roundedZoom
+        ? tile.content.flatMap((feature: any) => {
+            return feature
+              ? (transformTileCoordsToWGS84(
+                  feature,
+                  tile.bbox as GeoBoundingBox,
+                  this.context.viewport
+                ) as Feature<Point>)
+              : []
+          })
+        : []
+    })
+  }
+
+  getData = (): Feature<Point>[] => {
+    // TODO: support multiple sublayers
+    const data = this._getData().flatMap((feature) => {
+      const values: number[] = []
+      this.props.layers?.[0]?.sublayers?.forEach((sublayer) => {
+        const matchesTimeFilter = isFeatureInRange(feature, this.props as IsFeatureInRangeParams)
+        if (matchesTimeFilter) {
+          if (hasSublayerFilters(sublayer)) {
+            // TODO: support getting values from certain property instead of just counting the points
+            values.push(
+              getFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators) ? 1 : 0
+            )
+          } else {
+            values.push(1)
+          }
+        }
+      })
+      if (values.every((value) => value === 0)) {
+        return []
+      }
+      return {
+        ...feature,
+        properties: {
+          ...feature.properties,
+          values,
+        },
+      }
+    })
+    return data
+  }
+
+  getViewportData = () => {
+    return filteredPositionsByViewport(this.getData(), this.context.viewport)
+  }
+
+  _onLayerError = (error: Error) => {
+    if (!error.message.includes('404')) {
+      this.setState({ error: error.message })
+    }
+    return true
+  }
+
   renderLayers() {
-    const { layers, color, pickable, maxPointSize, maxZoom, filters } = this.props
+    const { layers, pickable, maxPointSize, maxZoom } = this.props
     const zoom = this._getZoomLevel()
     const highlightedFeatures = this._getHighlightedFeatures()
-    const filterProps = this._getTimeFilterProps()
+    const timefilterProps = this._getTimeFilterProps()
     const renderLayers: Layer[] = layers.map((layer) => {
       return new TileLayer<TileLayerProps<UserLayerFeature>>({
         id: `${layer.id}-base-layer`,
@@ -146,36 +245,46 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
         loadOptions: {
           ...getFetchLoadOptions(),
         },
+        onTileError: this._onLayerError,
         onViewportLoad: this.props.onViewportLoad,
-        ...filterProps,
+        ...timefilterProps,
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,
             ...getMVTSublayerProps({ tile: props.tile, extensions: props.extensions }),
           }
-          return [
-            new ScatterplotLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-              id: `${props.id}-points`,
-              pickable: pickable,
-              radiusMinPixels: 0,
-              radiusMaxPixels: maxPointSize,
-              filled: true,
-              stroked: true,
-              radiusUnits: 'pixels',
-              getPosition: this._getPosition,
-              getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Default, params),
-              getRadius: this._getPointRadius,
-              lineWidthUnits: 'pixels',
-              lineWidthMinPixels: 1,
-              getLineWidth: 1,
-              getLineColor: DEFAULT_LINE_COLOR,
-              getFillColor: hexToDeckColor(this.props.color, 0.7),
-              updateTriggers: {
-                getFillColor: [color],
-                getRadius: [filters, zoom],
-              },
-            }),
-          ]
+          return layer.sublayers.map((sublayer) => {
+            const filtersHash = getContextFiltersHash(sublayer.filters)
+            const sublayerFilterExtensionProps = this._getSublayerFilterExtensionProps(sublayer)
+            const hasFilters = Object.keys(sublayerFilterExtensionProps).length > 0
+            return [
+              new ScatterplotLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
+                id: `${props.id}-${sublayer.dataviewId}-points`,
+                pickable: pickable,
+                radiusMinPixels: 0,
+                radiusMaxPixels: maxPointSize,
+                filled: true,
+                stroked: true,
+                radiusUnits: 'pixels',
+                getPosition: this._getPosition,
+                ...sublayerFilterExtensionProps,
+                getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Default, params),
+                getRadius: (d) => this._getPointRadius(d, { layer, sublayer }),
+                lineWidthUnits: 'pixels',
+                lineWidthMinPixels: 1,
+                getLineWidth: 1,
+                getLineColor: DEFAULT_LINE_COLOR,
+                getFillColor: hexToDeckColor(sublayer.color, 0.7),
+                updateTriggers: {
+                  getFillColor: [sublayer.color],
+                  getRadius: [filtersHash, zoom],
+                  ...(hasFilters && {
+                    getFilterValue: [filtersHash],
+                  }),
+                },
+              }),
+            ]
+          })
         },
       })
     })
@@ -192,7 +301,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
           getPosition: this._getPosition,
           getPolygonOffset: (params) =>
             getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-          getRadius: this._getPointRadius,
+          getRadius: this._getPointRadiusValue,
           getFillColor: COLOR_HIGHLIGHT_LINE,
         })
       )

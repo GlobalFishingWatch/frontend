@@ -1,6 +1,7 @@
 import type { Viewport } from '@deck.gl/core'
 import bboxPolygon from '@turf/bbox-polygon'
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
+import type { Feature, Point } from 'geojson'
 
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 
@@ -28,10 +29,10 @@ export function getIsDetectionsPositionMatched(feature: FourwingsPositionFeature
   )
 }
 
-export function filteredPositionsByViewport(
-  positions: FourwingsPositionFeature[],
+export function filteredPositionsByViewport<T extends FourwingsPositionFeature | Feature<Point>>(
+  positions: T[],
   viewport: Viewport
-) {
+): T[] {
   const viewportBounds = viewport.getBounds()
   const viewportPolygon = bboxPolygon(viewportBounds)
   return positions.filter((position) => booleanPointInPolygon(position, viewportPolygon))

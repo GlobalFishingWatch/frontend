@@ -12,11 +12,7 @@ import { selectActiveReportDataviews } from 'features/dataviews/selectors/datavi
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
-import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
-import ReportStatsPlaceholder from 'features/reports/shared/placeholders/ReportStatsPlaceholder'
-import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
-import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivityEvolution'
-import ReportCurrentsGraph from 'features/reports/tabs/activity/ReportCurrentsGraph'
+import type { FourwingsReportGraphStats } from 'features/reports/reports-timeseries.hooks'
 import {
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
@@ -24,7 +20,12 @@ import {
   useReportFilteredTimeSeries,
   useReportTimeSeriesErrors,
   useTimeseriesStats,
-} from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
+} from 'features/reports/reports-timeseries.hooks'
+import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
+import ReportStatsPlaceholder from 'features/reports/shared/placeholders/ReportStatsPlaceholder'
+import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
+import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivityEvolution'
+import ReportCurrentsGraph from 'features/reports/tabs/activity/ReportCurrentsGraph'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { upperFirst } from 'utils/info'
 
@@ -49,7 +50,8 @@ function ReportEnvironment() {
     <Fragment>
       {environmentalDataviews.map((dataview, index) => {
         const isDynamic = dataview.config?.type === DataviewType.HeatmapAnimated
-        const { min, mean, max } = timeseriesStats?.[dataview.id] || {}
+        const { min, mean, max } =
+          (timeseriesStats?.[dataview.id] as FourwingsReportGraphStats) || {}
         const isCurrents = dataview.config?.type === DataviewType.Currents
         const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
         const title = getDatasetNameTranslated(dataset)

@@ -3,7 +3,7 @@ import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { findDatasetByType, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type { BathymetryContourLayerProps } from '@globalfishingwatch/deck-layers'
 
-import type { DeckResolverFunction } from './types'
+import type { DeckResolverFunction } from '../types/resolvers'
 
 export const resolveDeckBathymetryContourLayerProps: DeckResolverFunction<
   BathymetryContourLayerProps

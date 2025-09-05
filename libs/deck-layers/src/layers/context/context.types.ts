@@ -3,6 +3,12 @@ import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import type { Feature, LineString, MultiLineString, MultiPolygon, Polygon } from 'geojson'
 
 import type { DeckLayerProps, DeckPickingObject } from '../../types'
+import type { FilterOperators } from '../user/user.types'
+
+export type ContextSublayerCallbackParams<T = Record<string, any>> = {
+  layer: ContextLayerConfig
+  sublayer: ContextSubLayerConfig
+} & T
 
 export enum ContextLayerId {
   EEZ = 'eez-areas',
@@ -19,21 +25,30 @@ export enum ContextLayerId {
   ProtectedSeas = 'protected-seas',
 }
 
-export type ContextLayerConfig<Id = ContextLayerId> = {
+export type ContextLayerConfigFilter = Record<string, any>
+export type ContextSubLayerConfig = {
+  id: string
+  dataviewId: string
+  color: string
+  unit?: string
+  thickness?: number
+  filters?: ContextLayerConfigFilter
+  filterOperators?: FilterOperators
+}
+export type ContextLayerConfig<Id = string> = {
   id: Id
   datasetId: string
   tilesUrl: string
-  filters?: Record<string, any>
-}
-
-export type ContextLayerProps = DeckLayerProps<{
-  id: string
-  layers: ContextLayerConfig[]
-  color: string
-  thickness: number
   pickable?: boolean
   idProperty?: string
   valueProperties?: string[]
+  sublayers: ContextSubLayerConfig[]
+}
+
+export type ContextLayerProps<Id = ContextLayerId> = DeckLayerProps<{
+  id: string
+  layers: ContextLayerConfig<Id>[]
+  pickable?: boolean
   highlightedFeatures?: ContextPickingObject[]
 }>
 

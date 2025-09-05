@@ -1,7 +1,8 @@
+import type { Feature, Point } from 'geojson'
 import type { DateTimeUnit, DurationUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
-import { getDateInIntervalResolution } from '@globalfishingwatch/deck-layers'
+import { getDateInIntervalResolution, isFeatureInRange } from '@globalfishingwatch/deck-layers'
 import type {
   FourwingsFeature,
   FourwingsInterval,
@@ -9,14 +10,13 @@ import type {
   FourwingsPositionFeature,
   FourwingsValuesAndDatesFeature,
 } from '@globalfishingwatch/deck-loaders'
-import { CONFIG_BY_INTERVAL } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 
-import type { FeaturesToTimeseriesParams } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
+import type { FourwingsFeaturesToTimeseriesParams } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { getUTCDateTime } from 'utils/dates'
 
 type GetGraphDataFromFourwingsFeaturesParams = Pick<
-  FeaturesToTimeseriesParams,
+  FourwingsFeaturesToTimeseriesParams,
   | 'start'
   | 'end'
   | 'compareStart'
@@ -112,8 +112,60 @@ export function getGraphDataFromFourwingsPositions(
   return Object.values(data)
 }
 
+export function getGraphDataFromPoints(
+  features: Feature<Point>[],
+  {
+    start,
+    end,
+    interval,
+    sublayersLength,
+    startTimeProperty,
+    endTimeProperty,
+  }: Pick<GetGraphDataFromFourwingsFeaturesParams, 'start' | 'end' | 'interval'> & {
+    sublayersLength: number
+    startTimeProperty: string
+    endTimeProperty?: string
+  }
+): ActivityTimeseriesFrame[] {
+  if (!features?.length || !start || !end) {
+    return []
+  }
+  const data = getDatesPopulated({ start, end, interval, sublayersLength, count: false })
+
+  Object.keys(data).forEach((dateString) => {
+    const date = parseInt(dateString)
+    const nextDate = getUTCDateTime(date)
+      .plus({ [interval]: 1 })
+      .toMillis()
+    features.forEach((feature) => {
+      const { layer = 0, values } = (feature?.properties || {}) as {
+        values: number[]
+        layer?: number
+      }
+      if (
+        isFeatureInRange(feature, {
+          startTime: date,
+          endTime: nextDate,
+          startTimeProperty,
+          endTimeProperty,
+        })
+      ) {
+        if (values?.length) {
+          values.forEach((value, index) => {
+            data[date][index] += value
+          })
+        } else {
+          data[date][layer]++
+        }
+      }
+    })
+  })
+
+  return Object.values(data)
+}
+
 export function getGraphDataFromFourwingsHeatmap(
-  features: FourwingsFeature[] | FourwingsValuesAndDatesFeature[],
+  features: FourwingsFeature[] | FourwingsValuesAndDatesFeature[] | Feature<Point>[],
   {
     start,
     end,

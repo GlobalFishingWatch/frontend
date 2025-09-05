@@ -1,0 +1,9 @@
+.container {
+  padding: var(--space-M) var(--space-M);
+  border-bottom: var(--border);
+}
+
+.tagsContainer {
+  position: relative;
+  z-index: 1;
+}
