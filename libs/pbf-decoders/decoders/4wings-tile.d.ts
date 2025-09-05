@@ -1,4 +1,3 @@
-/* eslint-disable */
 import type * as $protobuf from 'protobufjs'
 import Long = require('long')
 /** Namespace tile. */

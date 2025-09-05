@@ -1,23 +1,21 @@
-/*eslint-disable */
-'use strict'
-
-var $protobuf = require('protobufjs/minimal')
+/*eslint-disable no-prototype-builtins*/
+import * as $protobuf from 'protobufjs/minimal'
 
 // Common aliases
-var $Reader = $protobuf.Reader,
+const $Reader = $protobuf.Reader,
   $Writer = $protobuf.Writer,
   $util = $protobuf.util
 
 // Exported root namespace
-var $root = $protobuf.roots['default'] || ($protobuf.roots['default'] = {})
+const $root = $protobuf.roots['default'] || ($protobuf.roots['default'] = {})
 
-$root.tile = (function () {
+export const tile = ($root.tile = (() => {
   /**
    * Namespace tile.
    * @exports tile
    * @namespace
    */
-  var tile = {}
+  const tile = {}
 
   tile.Tile = (function () {
     /**
@@ -38,7 +36,7 @@ $root.tile = (function () {
     function Tile(properties) {
       this.data = []
       if (properties)
-        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+        for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
           if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]]
     }
 
@@ -75,7 +73,7 @@ $root.tile = (function () {
       if (!writer) writer = $Writer.create()
       if (message.data != null && message.data.length) {
         writer.uint32(/* id 1, wireType 2 =*/ 10).fork()
-        for (var i = 0; i < message.data.length; ++i) writer.uint32(message.data[i])
+        for (let i = 0; i < message.data.length; ++i) writer.uint32(message.data[i])
         writer.ldelim()
       }
       return writer
@@ -105,17 +103,18 @@ $root.tile = (function () {
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    Tile.decode = function decode(reader, length) {
+    Tile.decode = function decode(reader, length, error) {
       if (!(reader instanceof $Reader)) reader = $Reader.create(reader)
-      var end = length === undefined ? reader.len : reader.pos + length,
+      const end = length === undefined ? reader.len : reader.pos + length,
         message = new $root.tile.Tile()
       while (reader.pos < end) {
-        var tag = reader.uint32()
+        const tag = reader.uint32()
+        if (tag === error) break
         switch (tag >>> 3) {
           case 1: {
             if (!(message.data && message.data.length)) message.data = []
             if ((tag & 7) === 2) {
-              var end2 = reader.uint32() + reader.pos
+              const end2 = reader.uint32() + reader.pos
               while (reader.pos < end2) message.data.push(reader.uint32())
             } else message.data.push(reader.uint32())
             break
@@ -155,7 +154,7 @@ $root.tile = (function () {
       if (typeof message !== 'object' || message === null) return 'object expected'
       if (message.data != null && message.hasOwnProperty('data')) {
         if (!Array.isArray(message.data)) return 'data: array expected'
-        for (var i = 0; i < message.data.length; ++i)
+        for (let i = 0; i < message.data.length; ++i)
           if (!$util.isInteger(message.data[i])) return 'data: integer[] expected'
       }
       return null
@@ -171,11 +170,11 @@ $root.tile = (function () {
      */
     Tile.fromObject = function fromObject(object) {
       if (object instanceof $root.tile.Tile) return object
-      var message = new $root.tile.Tile()
+      const message = new $root.tile.Tile()
       if (object.data) {
         if (!Array.isArray(object.data)) throw TypeError('.tile.Tile.data: array expected')
         message.data = []
-        for (var i = 0; i < object.data.length; ++i) message.data[i] = object.data[i] >>> 0
+        for (let i = 0; i < object.data.length; ++i) message.data[i] = object.data[i] >>> 0
       }
       return message
     }
@@ -191,11 +190,11 @@ $root.tile = (function () {
      */
     Tile.toObject = function toObject(message, options) {
       if (!options) options = {}
-      var object = {}
+      const object = {}
       if (options.arrays || options.defaults) object.data = []
       if (message.data && message.data.length) {
         object.data = []
-        for (var j = 0; j < message.data.length; ++j) object.data[j] = message.data[j]
+        for (let j = 0; j < message.data.length; ++j) object.data[j] = message.data[j]
       }
       return object
     }
@@ -230,6 +229,6 @@ $root.tile = (function () {
   })()
 
   return tile
-})()
+})())
 
-module.exports = $root
+export { $root as default }
