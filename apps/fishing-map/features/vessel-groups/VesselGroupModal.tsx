@@ -454,13 +454,10 @@ function VesselGroupModal(): React.ReactElement<any> {
           )}
           {editingVesselGroup && hasVesselGroupsVessels && (
             <p className={styles.searchLink}>
-              {t('vesselGroup.searchLink')}
-              <IconButton
-                size="small"
-                icon="external-link"
-                className={styles.link}
-                onClick={onSearchClick}
-              />
+              <span className={styles.searchLinkText}>
+                {t('vesselGroup.searchLink')}
+                <IconButton size="small" icon="search" type="border" onClick={onSearchClick} />
+              </span>
             </p>
           )}
         </div>

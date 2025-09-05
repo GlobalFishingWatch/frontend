@@ -170,3 +170,9 @@
   justify-content: flex-end;
   margin-right: 0;
 }
+
+.searchLinkText {
+  display: flex;
+  align-items: center;
+  gap: var(--space-S);
+}
