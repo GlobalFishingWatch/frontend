@@ -30,7 +30,7 @@ interface DebugState {
 const initialState: DebugState = {
   active: false,
   featureFlags: {
-    globalReports: false,
+    globalReports: true,
     workspaceGenerator: false,
     othersReport: false,
   },
