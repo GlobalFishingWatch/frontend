@@ -111,7 +111,7 @@ export function DynamicTable({ data, tableFilters }: DynamicTableProps) {
           </tr>
         ))}
       </thead>
-      <tbody>
+      <tbody className={styles.tbody}>
         {table.getRowModel().rows.map((row) => {
           return (
             <Fragment key={row.index}>

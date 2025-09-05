@@ -84,7 +84,7 @@ const DownloadModal: React.FC<DownloadModalProps> = ({
           />
         </>
         {report.length && (
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-6">
             {t('modal.fields_minimal', 'The following fields are missing in the registry data')}
             <FieldsTable fields={report} />
           </div>

@@ -22,6 +22,7 @@ type TrackFootprintProps = {
   trackDatasetId?: string
   highlightedYear?: number
   onDataLoad?: (data: FeatureCollection) => void
+  className?: string
 }
 
 const FOOTPRINT_WIDTH = 300
@@ -32,7 +33,7 @@ const TRACK_FOOTPRINT_QUERY = {
   ...THINNING_LEVELS.Footprint,
   binary: true,
   fields: ['LONLAT', 'TIMESTAMP'],
-  format: 'GEOJSON',
+  format: 'VALUE_ARRAY',
 }
 
 export function TrackFootprint({
@@ -40,6 +41,7 @@ export function TrackFootprint({
   trackDatasetId,
   highlightedYear,
   onDataLoad,
+  className,
 }: TrackFootprintProps) {
   const { t } = useTranslation()
   const [trackData, setTrackData] = useState<FeatureCollection<Geometry, GeoJsonProperties>>()
@@ -77,10 +79,10 @@ export function TrackFootprint({
             dataset: trackDatasetId,
           },
           { arrayFormat: 'indices' }
-        )}`
-        // {
-        //   responseType: 'vessel',
-        // }
+        )}`,
+        {
+          responseType: 'vessel',
+        }
       )
 
       if (vesselData.length === 0) {
@@ -202,7 +204,7 @@ export function TrackFootprint({
 
   return (
     <Tooltip content={error && t('vessel.noTrackAvailable')}>
-      <div className={styles.map}>
+      <div className={cx(styles.map, className)}>
         <canvas
           className={cx(styles.canvas, { [styles.faint]: highlightedYear })}
           width={footprintWidth}

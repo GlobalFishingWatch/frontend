@@ -165,8 +165,8 @@ export const fetchVessels = createServerFn().handler(async () => {
 export const getVesselsFromAPI = async ({ id }: { id: string }) => {
   const datasetIds = [
     'public-global-vessel-identity:v3.0',
-    //'public-panama-vessel-identity-fishing:v20211126',
-    // 'private-panama-vessel-identity-non-fishing:v20211126', //check if public contains imo or switch to private
+    // 'public-panama-vessel-identity-fishing:v20211126',
+    // 'public-panama-vessel-identity-non-fishing:v20211126', //check if public contains imo or switch to private
   ]
   const datasetsResponse = await GFWAPI.fetch<Response>(
     `/datasets?${stringify(

@@ -3,6 +3,7 @@ import type { ColumnDef } from '@tanstack/react-table'
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 
 import type { MissingFieldsTableType } from '@/utils/validations'
+import { InputText } from '@globalfishingwatch/ui-components'
 
 import styles from '../../styles/global.module.css'
 
@@ -17,10 +18,18 @@ const columnConfigs: {
 ]
 
 const defaultColumns: ColumnDef<MissingFieldsTableType>[] = columnConfigs.map(
-  ({ key, header }) => ({
-    header,
-    accessorKey: key,
-  })
+  ({ key, header }, index) => {
+    const column: ColumnDef<MissingFieldsTableType> = {
+      header,
+      accessorKey: key,
+    }
+
+    if (index === columnConfigs.length - 1) {
+      column.cell = ({ getValue }) => <InputText defaultValue={(getValue() as string) || ''} />
+    }
+
+    return column
+  }
 )
 
 export interface DynamicTableProps {
@@ -62,26 +71,16 @@ export function FieldsTable({ fields }: DynamicTableProps) {
         {table.getRowModel().rows.map((row) => (
           <tr key={row.id}>
             {row.getVisibleCells().map((cell) => (
-              <td key={cell.id} className={styles.td}>
+              <td
+                key={cell.id}
+                className={cell.column.id === 'fallbackValue' ? styles.inputTd : styles.td}
+              >
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
               </td>
             ))}
           </tr>
         ))}
       </tbody>
-      <tfoot>
-        {table.getFooterGroups().map((footerGroup) => (
-          <tr key={footerGroup.id}>
-            {footerGroup.headers.map((header) => (
-              <th key={header.id} colSpan={header.colSpan}>
-                {header.isPlaceholder
-                  ? null
-                  : flexRender(header.column.columnDef.footer, header.getContext())}
-              </th>
-            ))}
-          </tr>
-        ))}
-      </tfoot>
     </table>
   )
 }
