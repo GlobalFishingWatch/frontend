@@ -75,11 +75,25 @@ export const selectContextAreasDataviews = selectDataviewInstancesByCategory(
   DataviewCategory.Context
 )
 
+export const selectContextAreasDataviewsGrouped = createSelector(
+  [selectContextAreasDataviews],
+  (dataviews) => {
+    return groupContextDataviews(dataviews)
+  }
+)
+
 export const selectActiveContextAreasDataviews = selectDataviewInstancesByCategory(
   DataviewCategory.Context
 )
 
 export const selectCustomUserDataviews = selectDataviewInstancesByCategory(DataviewCategory.User)
+
+export const selectCustomUserDataviewsGrouped = createSelector(
+  [selectCustomUserDataviews],
+  (dataviews) => {
+    return groupContextDataviews(dataviews)
+  }
+)
 
 const selectVGRDataviews = createSelector(
   [selectActiveVesselGroupDataviews, selectReportVesselGroupId],

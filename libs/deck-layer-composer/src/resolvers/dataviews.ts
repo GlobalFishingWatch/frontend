@@ -201,6 +201,11 @@ export function getFourwingsDataviewsResolved(
 
 export function groupContextDataviews(contextDataviews: UrlDataviewInstance[]) {
   return groupBy(contextDataviews, (d) => {
+    if (isUserTrackDataview(d)) {
+      // This skips the track dataviews groups as is much harder
+      // to load just one dataset because of the data loader filtering logic
+      return d.id
+    }
     const datasets = d.datasets?.map((d) => d.id).join(',')
     return `${d.dataviewId}_${datasets}` as string
   })

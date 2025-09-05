@@ -39,6 +39,7 @@ const defaultProps: DefaultProps<_UserContextLayerProps> = {
 
 type UserContextLayerState = UserBaseLayerState & {
   scale: ScaleLinear<string, string, never>
+  error: string
 }
 
 export class UserContextTileLayer<PropsT = Record<string, unknown>> extends UserBaseLayer<
@@ -56,8 +57,13 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
     if (this.props.steps && this.props.steps?.length > 0 && colorRange) {
       this.state = {
         scale: scaleLinear(this.props.steps as number[], colorRange).clamp(true),
+        error: '',
       }
     }
+  }
+
+  getError() {
+    return this?.state.error
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
@@ -90,6 +96,13 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
     })
       ? Math.max(sublayer.thickness || 1, lineWidth)
       : 0
+  }
+
+  _onLayerError = (error: Error) => {
+    if (!error.message.includes('404')) {
+      this.setState({ error: error.message })
+    }
+    return true
   }
 
   _getLineColor = (d: GeoJsonProperties, { sublayer }: ContextSublayerCallbackParams): Color => {
@@ -179,6 +192,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
         loadOptions: {
           ...getFetchLoadOptions(),
         },
+        onTileError: this._onLayerError,
         onViewportLoad: this.props.onViewportLoad,
         ...filterProps,
         renderSubLayers: (props) => {
