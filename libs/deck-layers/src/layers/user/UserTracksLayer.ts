@@ -28,6 +28,13 @@ import { MAX_FILTER_VALUE } from '../layers.config'
 import { DEFAULT_HIGHLIGHT_COLOR_VEC } from '../vessel/vessel.config'
 import type { GetSegmentsFromDataParams } from '../vessel/vessel.utils'
 
+import {
+  cloneArrayBuffer,
+  generateCacheKey,
+  getCachedResponse,
+  responseCache,
+  startCacheCleanup,
+} from './user.cache'
 import type {
   UserLayerPickingInfo,
   UserLayerPickingObject,
@@ -149,6 +156,9 @@ type UserTracksLayerState = {
   binaryData: UserTrackBinaryData
 }
 
+// Start cleanup when module loads
+startCacheCleanup()
+
 export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerProps> {
   static layerName = 'UserTracksLayer'
   static defaultProps = defaultProps
@@ -189,19 +199,31 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       loadOptions?: any
     }
   ) => {
-    const urlObject = new URL(url)
-    urlObject.searchParams.delete('filters')
-    const response = await GFWAPI.fetch<any>(urlObject.toString(), {
+    const cacheKey = generateCacheKey(url)
+    const cachedResponse = getCachedResponse(cacheKey)
+    if (cachedResponse) {
+      return await this._processResponse(cachedResponse, loadOptions)
+    }
+
+    const response = await GFWAPI.fetch<any>(url, {
       signal,
       method: 'GET',
       responseType: 'arrayBuffer',
     })
+
+    // Clone and store the response in cache to avoid detached ArrayBuffer issues
+    responseCache.set(cacheKey, {
+      response: cloneArrayBuffer(response),
+      timestamp: Date.now(),
+    })
+
+    return await this._processResponse(response, loadOptions)
+  }
+
+  _processResponse = async (response: ArrayBuffer, loadOptions: any) => {
     // TODO: support multiple sublayers
     const filters = this.props.layers?.[0]?.sublayers?.[0]?.filters
-    // let filters: ContextLayerConfigFilter = {}
-    // this.props.layers?.[0]?.sublayers?.forEach((sublayer) => {
-    //   filters = { ...filters, ...sublayer.filters }
-    // })
+
     const userTracksLoadOptions = {
       ...loadOptions,
       userTracks: {
@@ -210,12 +232,16 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
     }
     const { data, binary } = await parse(response, UserTrackLoader, userTracksLoadOptions)
     let totalCoordinatesLength = 0
-    const rawDataIndexes = data.features.reduce((acc, feature: any, index: number) => {
-      totalCoordinatesLength +=
-        feature.geometry.type === 'MultiLineString' ? feature.geometry.coordinates.length : 1
-      acc.push({ index, length: totalCoordinatesLength })
-      return acc
-    }, [] as RawDataIndex[])
+    const rawDataIndexes = data.features.reduce(
+      (acc: RawDataIndex[], feature: any, index: number) => {
+        totalCoordinatesLength +=
+          feature.geometry.type === 'MultiLineString' ? feature.geometry.coordinates.length : 1
+        acc.push({ index, length: totalCoordinatesLength })
+        return acc
+      },
+      [] as RawDataIndex[]
+    )
+
     this.setState({ rawData: data, binaryData: binary, rawDataIndexes })
     return binary
   }
@@ -300,48 +326,51 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
     } = this.props
 
     return layers.map((layer) => {
-      return layer.sublayers.map((sublayer) => {
-        const tilesUrl = new URL(layer.tilesUrl)
-        tilesUrl.searchParams.set('filters', Object.values(sublayer.filters || {}).join(','))
+      const sublayer = layer.sublayers?.[0]
+      // TODO support multiple layers
+      // return layer.sublayers.map((sublayer) => {
+      const tilesUrl = new URL(layer.tilesUrl)
+      const layerIdHash = `${layer.id}-${sublayer.id}-${Object.values(sublayer.filters || {}).join(',')}`
+      // tilesUrl.searchParams.set('filters', Object.values(sublayer.filters || {}).join(','))
 
-        const commonProps = {
-          _pathType: 'open',
-          widthUnits: 'pixels',
-          widthScale: 1,
-          startTime,
-          endTime,
-          wrapLongitude: true,
-          widthMinPixels: 1,
-          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
-        } as _UserTrackLayerProps
+      const commonProps = {
+        _pathType: 'open',
+        widthUnits: 'pixels',
+        widthScale: 1,
+        startTime,
+        endTime,
+        wrapLongitude: true,
+        widthMinPixels: 1,
+        getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
+      } as _UserTrackLayerProps
 
-        return [
-          new UserTracksPathLayer<any>({
-            ...commonProps,
-            id: `${layer.id}-interactive`,
-            data: this.state.binaryData,
-            pickable: layer.pickable,
-            getWidth: 5,
-            getColor: COLOR_TRANSPARENT,
-          }),
-          new UserTracksPathLayer<any>({
-            ...commonProps,
-            id: sublayer.id,
-            data: tilesUrl.toString(),
-            fetch: this._fetch,
-            highlightStartTime,
-            highlightEndTime,
-            onError: this._onLayerError,
-            jointRounded: true,
-            capRounded: true,
-            getWidth: 1.5,
-            getColor: (d, { index }) => this._getColor(d, { layer, sublayer, index }),
-            updateTriggers: {
-              getColor: [singleTrack, sublayer.color, highlightedFeatures],
-            },
-          }),
-        ]
-      })
+      return [
+        new UserTracksPathLayer<any>({
+          ...commonProps,
+          id: `${layerIdHash}-interactive`,
+          data: this.state.binaryData,
+          pickable: layer.pickable,
+          getWidth: 5,
+          getColor: COLOR_TRANSPARENT,
+        }),
+        new UserTracksPathLayer<any>({
+          ...commonProps,
+          id: layerIdHash,
+          data: tilesUrl.toString(),
+          fetch: this._fetch,
+          highlightStartTime,
+          highlightEndTime,
+          onError: this._onLayerError,
+          jointRounded: true,
+          capRounded: true,
+          getWidth: 1.5,
+          getColor: (d, { index }) => this._getColor(d, { layer, sublayer, index }),
+          updateTriggers: {
+            getColor: [singleTrack, sublayer.color, highlightedFeatures],
+          },
+        }),
+      ]
+      // })
     })
   }
 }
