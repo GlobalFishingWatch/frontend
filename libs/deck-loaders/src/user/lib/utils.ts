@@ -1,4 +1,4 @@
-import type { FeatureCollection, LineString, MultiLineString,Position } from 'geojson'
+import type { FeatureCollection, LineString, MultiLineString, Position } from 'geojson'
 
 import type { UserTrackFeature, UserTrackFeatureProperties, UserTrackRawData } from './types'
 
@@ -107,7 +107,7 @@ const getFilteredCoordinates = ({
         if (min !== undefined && max !== undefined) {
           return (currentValue as number) >= min && (currentValue as number) <= max
         }
-        return values?.includes(currentValue)
+        return values?.length ? values?.includes(currentValue) : true
       })
       const coordinatesIndex = filteredCoordinates.coordinates.length
         ? filteredCoordinates.coordinates.length - 1
@@ -230,12 +230,15 @@ export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertie
         const coordinateProperties = [
           ...filters.map(({ id }) => id),
           ...includeCoordinateProperties,
-        ].reduce((acc, property) => {
-          acc[property] = filteredLines.flatMap(
-            (line) => (line.coordinateProperties as MultiLineCoordinateProperties)[property]
-          )
-          return acc
-        }, {} as Record<string, (string | number)[][]>)
+        ].reduce(
+          (acc, property) => {
+            acc[property] = filteredLines.flatMap(
+              (line) => (line.coordinateProperties as MultiLineCoordinateProperties)[property]
+            )
+            return acc
+          },
+          {} as Record<string, (string | number)[][]>
+        )
 
         filteredFeatures.push({
           type: 'Feature',

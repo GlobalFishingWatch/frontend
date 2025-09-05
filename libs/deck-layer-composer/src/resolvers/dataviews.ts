@@ -1,12 +1,6 @@
-import { uniq, uniqBy } from 'es-toolkit'
+import { groupBy, uniq, uniqBy } from 'es-toolkit'
 
-import type {
-  ApiEvent,
-  Dataset,
-  DataviewInstance,
-  DataviewSublayerConfig,
-  EventTypes,
-} from '@globalfishingwatch/api-types'
+import type { ApiEvent, Dataset, DataviewInstance, EventTypes } from '@globalfishingwatch/api-types'
 import {
   DatasetTypes,
   DataviewCategory,
@@ -17,6 +11,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getMergedDataviewId,
   isActivityDataview,
+  isAnyContextDataview,
   isDetectionsDataview,
   isEnvironmentalDataview,
   isHeatmapCurrentsDataview,
@@ -35,22 +30,28 @@ import { FourwingsComparisonMode } from '@globalfishingwatch/deck-layers'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FOURWINGS_INTERVALS_ORDER } from '@globalfishingwatch/deck-loaders'
 
+import type {
+  FourwingsSublayerConfig,
+  ResolvedContextDataviewInstance,
+  ResolvedDataviewInstance,
+  ResolvedFourwingsDataviewInstance,
+} from '../types/dataviews'
+import type { TimeRange } from '../types/resolvers'
+
 export const AUXILIAR_DATAVIEW_SUFIX = 'auxiliar'
 
 const getDatasetsAvailableIntervals = (datasets: Dataset[]) =>
   uniq((datasets || [])?.flatMap((d) => (d?.configuration?.intervals as FourwingsInterval[]) || []))
 
-export const getAvailableIntervalsInDataviews = (dataviews: UrlDataviewInstance[]) => {
-  return uniq(dataviews.flatMap((dataview) => getDataviewAvailableIntervals(dataview)))
-}
-
 export const getDataviewAvailableIntervals = (
-  dataview: UrlDataviewInstance,
+  dataview: UrlDataviewInstance | ResolvedFourwingsDataviewInstance,
   defaultIntervals = FOURWINGS_INTERVALS_ORDER
 ): FourwingsInterval[] => {
   const allDatasets = dataview.datasets?.length
     ? dataview.datasets
-    : (dataview?.config?.sublayers || [])?.flatMap((sublayer) => sublayer.datasets || [])
+    : ((dataview as ResolvedFourwingsDataviewInstance)?.config?.sublayers || [])?.flatMap(
+        (sublayer) => sublayer.datasets || []
+      )
   const fourwingsDatasets = allDatasets?.filter(
     (dataset) => dataset.type === DatasetTypes.Fourwings
   )
@@ -69,10 +70,9 @@ export const getDataviewAvailableIntervals = (
   return availableIntervals
 }
 
-const getDatasetAttribution = (dataset?: Dataset) =>
-  dataset?.source && dataset?.source !== 'user' ? dataset?.source : undefined
-
-export type TimeRange = { start: string; end: string }
+export const getAvailableIntervalsInDataviews = (dataviews: UrlDataviewInstance[]) => {
+  return uniq(dataviews.flatMap((dataview) => getDataviewAvailableIntervals(dataview)))
+}
 
 type GetMergedHeatmapAnimatedDataviewParams = {
   visualizationMode?: FourwingsVisualizationMode
@@ -105,7 +105,7 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
   )
   const maxZoom = maxZoomLevels?.length ? Math.min(...maxZoomLevels) : undefined
 
-  const sublayer: DataviewSublayerConfig = {
+  const sublayer: FourwingsSublayerConfig = {
     id: dataview.id,
     datasets: activeDatasets,
     color: config.color as string,
@@ -139,7 +139,7 @@ export function getFourwingsDataviewsResolved(
     return []
   }
 
-  const mergedActivityDataview = {
+  const mergedActivityDataview: ResolvedFourwingsDataviewInstance = {
     id: getMergedDataviewId(fourwingsDataviews),
     category: fourwingsDataviews[0]?.category,
     config: {
@@ -197,6 +197,80 @@ export function getFourwingsDataviewsResolved(
   })
   dataviewsFiltered.push(...activityWithContextDataviews)
   return dataviewsFiltered
+}
+
+export function groupContextDataviews(contextDataviews: UrlDataviewInstance[]) {
+  return groupBy(contextDataviews, (d) => {
+    if (isUserTrackDataview(d)) {
+      // This skips the track dataviews groups as is much harder
+      // to load just one dataset because of the data loader filtering logic
+      return d.id
+    }
+    const datasets = d.datasets?.map((d) => d.id).join(',')
+    return `${d.dataviewId}_${datasets}` as string
+  })
+}
+
+export function getContextDataviewsResolved(
+  contextDataview: UrlDataviewInstance | UrlDataviewInstance[]
+): ResolvedContextDataviewInstance[] {
+  const contextDataviews = Array.isArray(contextDataview)
+    ? contextDataview
+    : [contextDataview].filter(Boolean)
+
+  if (!contextDataviews.length) {
+    return []
+  }
+
+  const hasSingleUserTrackDataview = contextDataviews.filter(isUserTrackDataview).length === 1
+  const contextDataviewsGrouped = groupContextDataviews(contextDataviews)
+
+  return Object.values(contextDataviewsGrouped).flatMap((dataviews) => {
+    if (!dataviews.length) {
+      return []
+    }
+    const layers = dataviews.flatMap((d) => {
+      if (d.config?.layers?.length) {
+        return d.config?.layers
+      }
+      if (d.datasetsConfig?.length) {
+        return d.datasetsConfig?.map((d) => ({ id: d.datasetId, dataset: d.datasetId }))
+      }
+      return []
+    })
+    const uniqLayers = uniqBy(layers, (l) => l.id)
+
+    const mergedDataviewConfig: ResolvedContextDataviewInstance['config'] = {
+      type: dataviews[0]?.config?.type as DataviewType,
+      ...(isUserTrackDataview(dataviews[0]) && {
+        singleTrack: hasSingleUserTrackDataview,
+      }),
+      layers: uniqLayers.map((layer) => {
+        return {
+          id: layer.id,
+          dataset: layer.dataset,
+          sublayers: dataviews.flatMap((dataview) => {
+            return {
+              id: layer.id,
+              color: dataview.config?.color as string,
+              unit: dataview.datasets?.find((d) => d.id === layer.dataset)?.unit,
+              dataviewId: dataview.id,
+              thickness: dataview.config?.thickness,
+              filters: dataview.config?.filters,
+              filterOperators: dataview.config?.filterOperators,
+            }
+          }),
+        }
+      }),
+    }
+    const mergedContextDataview: ResolvedContextDataviewInstance = {
+      ...dataviews[0],
+      id: getMergedDataviewId(dataviews),
+      config: mergedDataviewConfig,
+    }
+
+    return mergedContextDataview
+  })
 }
 
 /**
@@ -291,60 +365,54 @@ export function getComparisonMode(
     : FourwingsComparisonMode.Compare
 }
 
+const DATAVIEW_GROUPS_CONFIG = [
+  { key: 'activityDataviews' as const, test: isActivityDataview },
+  { key: 'detectionDataviews' as const, test: isDetectionsDataview },
+  { key: 'environmentalDataviews' as const, test: isEnvironmentalDataview },
+  { key: 'staticDataviews' as const, test: isHeatmapStaticDataview },
+  { key: 'currentsDataviews' as const, test: isHeatmapCurrentsDataview },
+  { key: 'vesselGroupDataview' as const, test: isVesselGroupDataview },
+  { key: 'userHeatmapDataviews' as const, test: isUserHeatmapDataview },
+  { key: 'vesselTrackDataviews' as const, test: isTrackDataview },
+  {
+    key: 'contextDataviews' as const,
+    test: isAnyContextDataview,
+  },
+]
+
+type DataviewGroupKey = (typeof DATAVIEW_GROUPS_CONFIG)[number]['key'] | 'otherDataviews'
+type DataviewsGrouped = Record<DataviewGroupKey, UrlDataviewInstance[]>
+
+function getDataviewsGrouped(dataviews: UrlDataviewInstance[]): DataviewsGrouped {
+  return dataviews.reduce<Record<DataviewGroupKey, UrlDataviewInstance[]>>(
+    (acc, dataview) => {
+      const key = DATAVIEW_GROUPS_CONFIG.find(({ test }) => test(dataview))?.key || 'otherDataviews'
+      if (!acc[key]) {
+        acc[key] = []
+      }
+      acc[key].push(dataview as UrlDataviewInstance)
+      return acc
+    },
+    {} as Record<DataviewGroupKey, UrlDataviewInstance[]>
+  )
+}
+
 export function getDataviewsResolved(
   dataviews: (UrlDataviewInstance | DataviewInstance)[],
   params: ResolverGlobalConfig = {}
 ) {
   const {
-    activityDataviews,
-    detectionDataviews,
-    environmentalDataviews,
-    staticDataviews,
-    currentsDataviews,
-    vesselGroupDataview,
-    vesselTrackDataviews,
-    userTrackDataviews,
-    userHeatmapDataviews,
-    otherDataviews,
-  } = dataviews.reduce(
-    (acc, dataview) => {
-      // TODO: refactor to avoid the else if chain
-      if (isActivityDataview(dataview)) {
-        acc.activityDataviews.push(dataview)
-      } else if (isDetectionsDataview(dataview)) {
-        acc.detectionDataviews.push(dataview)
-      } else if (isEnvironmentalDataview(dataview)) {
-        acc.environmentalDataviews.push(dataview)
-      } else if (isHeatmapStaticDataview(dataview)) {
-        acc.staticDataviews.push(dataview)
-      } else if (isHeatmapCurrentsDataview(dataview)) {
-        acc.currentsDataviews.push(dataview)
-      } else if (isVesselGroupDataview(dataview)) {
-        acc.vesselGroupDataview.push(dataview)
-      } else if (isUserHeatmapDataview(dataview)) {
-        acc.userHeatmapDataviews.push(dataview)
-      } else if (isTrackDataview(dataview)) {
-        acc.vesselTrackDataviews.push(dataview)
-      } else if (isUserTrackDataview(dataview)) {
-        acc.userTrackDataviews.push(dataview)
-      } else {
-        acc.otherDataviews.push(dataview)
-      }
-      return acc
-    },
-    {
-      activityDataviews: [] as UrlDataviewInstance[],
-      detectionDataviews: [] as UrlDataviewInstance[],
-      environmentalDataviews: [] as UrlDataviewInstance[],
-      staticDataviews: [] as UrlDataviewInstance[],
-      currentsDataviews: [] as UrlDataviewInstance[],
-      vesselGroupDataview: [] as UrlDataviewInstance[],
-      vesselTrackDataviews: [] as UrlDataviewInstance[],
-      userHeatmapDataviews: [] as UrlDataviewInstance[],
-      userTrackDataviews: [] as UrlDataviewInstance[],
-      otherDataviews: [] as UrlDataviewInstance[],
-    }
-  )
+    activityDataviews = [],
+    detectionDataviews = [],
+    environmentalDataviews = [],
+    staticDataviews = [],
+    currentsDataviews = [],
+    vesselGroupDataview = [],
+    vesselTrackDataviews = [],
+    userHeatmapDataviews = [],
+    contextDataviews = [],
+    otherDataviews = [],
+  } = getDataviewsGrouped(dataviews)
 
   const singleHeatmapDataview =
     [...activityDataviews, ...detectionDataviews, ...environmentalDataviews].length === 1
@@ -424,13 +492,9 @@ export function getDataviewsResolved(
     })),
     (d) => d.id
   )
-  const userTrackDataviewsParsed = userTrackDataviews.flatMap<UrlDataviewInstance>((d) => ({
-    ...d,
-    config: {
-      ...d.config,
-      singleTrack: userTrackDataviews.length === 1,
-    },
-  }))
+
+  const contextDataviewsParsed = getContextDataviewsResolved(contextDataviews)
+
   const dataviewsMerged = [
     ...otherDataviews,
     ...staticDataviewsParsed,
@@ -440,8 +504,8 @@ export function getDataviewsResolved(
     ...mergedDetectionsDataview,
     ...mergedActivityDataview,
     ...vesselTrackDataviewsParsed,
-    ...userTrackDataviewsParsed,
     ...userHeatmapDataviewsParsed,
+    ...contextDataviewsParsed,
   ]
-  return dataviewsMerged
+  return dataviewsMerged as ResolvedDataviewInstance[]
 }

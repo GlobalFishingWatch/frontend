@@ -5,7 +5,9 @@
   "module": "./index.mjs",
   "typings": "./index.d.ts",
   "scripts": {
-    "ts": "i18next-resources-for-ts interface -i ./source -o ./resources.d.ts"
+    "ts:lint": "npx prettier ./resources.d.ts --write",
+    "ts:generate": "i18next-resources-for-ts interface -i ./source -o ./resources.d.ts",
+    "ts": "yarn ts:generate && yarn ts:lint"
   },
   "devDependencies": {
     "i18next-resources-for-ts": "1.6.0"

@@ -58,8 +58,29 @@ export function isUserHeatmapDataview(dataview: UrlDataviewInstance) {
   )
 }
 
+export function isContextDataview(dataview: UrlDataviewInstance) {
+  return dataview.config?.type === DataviewType.Context
+}
+
 export function isUserTrackDataview(dataview: UrlDataviewInstance) {
   return dataview.category === DataviewCategory.User && dataview.config?.type === DataviewType.Track
+}
+
+export function isUserPolygonsDataview(dataview: UrlDataviewInstance) {
+  return dataview.config?.type === DataviewType.UserContext
+}
+
+export function isUserPointsDataview(dataview: UrlDataviewInstance) {
+  return dataview.config?.type === DataviewType.UserPoints
+}
+
+export function isAnyContextDataview(dataview: UrlDataviewInstance) {
+  return (
+    isContextDataview(dataview) ||
+    isUserTrackDataview(dataview) ||
+    isUserPointsDataview(dataview) ||
+    isUserPolygonsDataview(dataview)
+  )
 }
 
 export function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {

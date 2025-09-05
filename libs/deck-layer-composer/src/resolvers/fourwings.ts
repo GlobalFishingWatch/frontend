@@ -21,10 +21,15 @@ import {
   TIME_COMPARISON_NOT_SUPPORTED_INTERVALS,
 } from '@globalfishingwatch/deck-layers'
 
-import { getDataviewAvailableIntervals } from './dataviews'
-import type { DeckResolverFunction } from './types'
+import type { ResolvedFourwingsDataviewInstance } from '../types/dataviews'
+import type { DeckResolverFunction } from '../types/resolvers'
 
-export const resolveDeckFourwingsLayerProps: DeckResolverFunction<FourwingsLayerProps> = (
+import { getDataviewAvailableIntervals } from './dataviews'
+
+export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
+  FourwingsLayerProps,
+  ResolvedFourwingsDataviewInstance
+> = (
   dataview,
   {
     start,

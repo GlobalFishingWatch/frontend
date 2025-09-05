@@ -27,6 +27,7 @@ import {
 import { getReportAreaStringByLocale } from 'features/reports/report-area/title/report-title.utils'
 import { DEFAULT_BUFFER_OPERATION } from 'features/reports/reports.config'
 import { selectCurrentReport } from 'features/reports/reports.selectors'
+import { useReportFeaturesLoading } from 'features/reports/reports-timeseries.hooks'
 import AreaReportSearch from 'features/reports/shared/area-search/AreaReportSearch'
 import ReportTitlePlaceholder from 'features/reports/shared/placeholders/ReportTitlePlaceholder'
 import {
@@ -34,7 +35,6 @@ import {
   selectReportPreviewBuffer,
   setPreviewBuffer,
 } from 'features/reports/tabs/activity/reports-activity.slice'
-import { useReportFeaturesLoading } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import type { BufferOperation, BufferUnit } from 'types'

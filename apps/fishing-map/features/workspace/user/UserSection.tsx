@@ -6,7 +6,7 @@ import cx from 'classnames'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getMergedDataviewId, type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -15,7 +15,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { useAddDataset } from 'features/datasets/datasets.hook'
-import { selectCustomUserDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectCustomUserDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import Hint from 'features/help/Hint'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
@@ -57,7 +57,9 @@ function UserSection(): React.ReactElement<any> {
   const isSmallScreen = useSmallScreen()
 
   const readOnly = useSelector(selectReadOnly)
-  const dataviews = useSelector(selectCustomUserDataviews)
+  const dataviewsGrouped = useSelector(selectCustomUserDataviewsGrouped)
+  const allDataviews = Object.values(dataviewsGrouped)
+  const dataviews = allDataviews.flat()
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   const onAddNewClick = useAddDataset()
@@ -109,7 +111,6 @@ function UserSection(): React.ReactElement<any> {
     },
     []
   )
-
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={cx(styles.header, 'print-hidden')}>
@@ -160,15 +161,26 @@ function UserSection(): React.ReactElement<any> {
         )}
       </div>
       <Fragment>
-        {dataviews?.length > 0 && (
-          <SortableContext items={dataviews}>
-            {dataviews?.map((dataview, index) => (
+        <SortableContext items={allDataviews.flat()}>
+          {allDataviews.map((dataviews) => {
+            if (!dataviews?.length) return null
+            const visibleDataviews = dataviews.filter(
+              (dataview) => dataview.config?.visible !== false
+            )
+            return dataviews?.map((dataview) => (
               <LayerPanelContainer key={dataview.id} dataview={dataview}>
-                <LayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
+                <LayerPanel
+                  dataview={dataview}
+                  onToggle={onToggleLayer(dataview)}
+                  mergedDataviewId={
+                    visibleDataviews?.length > 0 ? getMergedDataviewId(visibleDataviews) : undefined
+                  }
+                />
               </LayerPanelContainer>
-            ))}
-          </SortableContext>
-        )}
+            ))
+          })}
+        </SortableContext>
+
         {guestUser ? (
           <div className={cx(styles.emptyStateBig, 'print-hidden')}>
             <RegisterOrLoginToUpload />

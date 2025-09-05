@@ -13,17 +13,17 @@ import {
 } from 'features/reports/report-area/area-reports.selectors'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
-import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
-import ReportActivityGraphSelector from 'features/reports/tabs/activity/ReportActivityGraphSelector'
-import ReportActivityPeriodComparison from 'features/reports/tabs/activity/ReportActivityPeriodComparison'
-import ReportActivityPeriodComparisonGraph from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
-import type { ReportGraphProps } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
+import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import {
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
   useReportTimeSeriesErrors,
-} from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
+} from 'features/reports/reports-timeseries.hooks'
+import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
+import ReportActivityGraphSelector from 'features/reports/tabs/activity/ReportActivityGraphSelector'
+import ReportActivityPeriodComparison from 'features/reports/tabs/activity/ReportActivityPeriodComparison'
+import ReportActivityPeriodComparisonGraph from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { AsyncReducerStatus } from 'utils/async-slice'
 

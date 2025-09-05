@@ -1,5 +1,4 @@
 import type { EventTypes } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type {
   AnyDeckLayer,
   DeckLayerPickingObject,
@@ -11,7 +10,9 @@ import type {
 } from '@globalfishingwatch/deck-layers'
 import type { VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
 
-import type { TimeRange } from './dataviews'
+import type { ResolvedDataviewInstance } from './dataviews'
+
+export type TimeRange = { start: string; end: string }
 
 export type ResolverGlobalConfig = {
   start: string
@@ -35,7 +36,7 @@ export type ResolverGlobalConfig = {
   highlightedFeatures?: DeckLayerPickingObject[]
 }
 
-export type DeckResolverFunction<LayerProps = AnyDeckLayer['props']> = (
-  dataview: UrlDataviewInstance,
-  globalConfig: ResolverGlobalConfig
-) => LayerProps
+export type DeckResolverFunction<
+  LayerProps = AnyDeckLayer['props'],
+  Dataview extends ResolvedDataviewInstance = ResolvedDataviewInstance,
+> = (dataview: Dataview, globalConfig: ResolverGlobalConfig) => LayerProps
