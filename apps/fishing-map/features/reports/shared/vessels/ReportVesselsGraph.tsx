@@ -53,6 +53,7 @@ const FILTER_PROPERTIES: Record<ReportVesselGraph | ReportVesselsSubCategory, st
   [REPORT_VESSELS_GRAPH_GEARTYPE]: 'gear',
   [REPORT_VESSELS_GRAPH_VESSELTYPE]: 'type',
   source: 'source',
+  coverage: 'coverage',
 }
 
 const ReportBarTooltip = (props: any) => {

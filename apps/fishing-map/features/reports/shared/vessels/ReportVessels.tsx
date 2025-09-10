@@ -6,6 +6,7 @@ import { selectReportVesselGraph } from 'features/reports/reports.selectors'
 import { type ReportVesselsSubCategory } from 'features/reports/reports.types'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
+import VesselGroupReportInsightCoverage from 'features/reports/tabs/vessel-group-insights/VGRInsightCoverage'
 
 import {
   selectReportVesselsGraphAggregatedData,
@@ -48,13 +49,17 @@ function ReportVessels({
         <ReportVesselsPlaceholder showGraphHeader={false} />
       ) : (
         <Fragment>
-          <ReportVesselsGraph
-            data={aggregatedData!}
-            individualData={individualData}
-            aggregatedValueKey={valueKeys}
-            color={color}
-            property={property as ReportVesselsSubCategory}
-          />
+          {property === 'coverage' ? (
+            <VesselGroupReportInsightCoverage />
+          ) : (
+            <ReportVesselsGraph
+              data={aggregatedData!}
+              individualData={individualData}
+              aggregatedValueKey={valueKeys}
+              color={color}
+              property={property as ReportVesselsSubCategory}
+            />
+          )}
           <ReportVesselsFilter filter={filter} />
           <ReportVesselsTable
             activityUnit={activityUnit}

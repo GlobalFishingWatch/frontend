@@ -22,12 +22,6 @@ const VesselGroupReportInsightCoverage = ({ skip }: { skip?: boolean }) => {
 
   return (
     <div id="vessel-group-coverage" className={styles.insightContainer}>
-      <div className={styles.insightTitle}>
-        <Tooltip content={t('common.experimentalTooltip')}>
-          <label className="experimental">{t('vessel.insights.coverage')}</label>
-        </Tooltip>
-        <DataTerminology title={t('vessel.insights.coverage')} terminologyKey="insightsCoverage" />
-      </div>
       {skip || isLoading ? (
         <ReportBarGraphPlaceholder numberOfElements={5} />
       ) : error ? (

@@ -76,6 +76,24 @@ function VesselGroupReportVesselsGraphSelector() {
             ),
             disabled: loading,
           },
+          {
+            id: 'coverage' as ReportVesselsSubCategory,
+            label: (
+              <span>
+                {t('analysis.groupByCoverage')}
+                {selectedOptionId === 'coverage' && (
+                  <DataTerminology
+                    size="tiny"
+                    type="default"
+                    title={t('vessel.insights.coverage')}
+                    terminologyKey="insightsCoverage"
+                    className={styles.dataTerminology}
+                  />
+                )}
+              </span>
+            ),
+            disabled: loading,
+          },
         ]
       : []),
   ]
