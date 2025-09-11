@@ -12,6 +12,7 @@ export enum DataviewType {
   Annotation = 'ANNOTATION',
   Background = 'BACKGROUND',
   Basemap = 'BASEMAP',
+  BasemapImage = 'BASEMAP_IMAGE',
   BasemapLabels = 'BASEMAP_LABELS',
   CartoPolygons = 'CARTO_POLYGONS',
   Context = 'CONTEXT',
@@ -146,6 +147,9 @@ export interface DataviewConfig<Type = DataviewType> {
   pickable?: boolean
   trackThinningZoomConfig?: Record<number, string>
   includeWithoutEndDate?: boolean
+
+  /** Tile size for basemap image layer */
+  tileSize?: number
 }
 
 export interface DataviewDatasetConfigParam {

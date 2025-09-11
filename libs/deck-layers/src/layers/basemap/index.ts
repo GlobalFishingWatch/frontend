@@ -1,4 +1,5 @@
 export * from './basemap.types'
+export * from './BasemapImage'
 export * from './BasemapLayer'
 export * from './BasemapLabelsLayer'
 export * from './TilesBoundariesLayer'

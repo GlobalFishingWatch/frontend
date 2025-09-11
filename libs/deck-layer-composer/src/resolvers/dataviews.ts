@@ -309,6 +309,7 @@ type ResolverGlobalConfig = {
 
 const DATAVIEWS_LAYER_ORDER: DataviewType[] = [
   DataviewType.Basemap,
+  DataviewType.BasemapImage,
   DataviewType.Context,
   DataviewType.UserContext,
   DataviewType.Polygons,
