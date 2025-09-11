@@ -4,74 +4,17 @@ import { uniqBy } from 'es-toolkit'
 import ExcelJS from 'exceljs'
 import { stringify } from 'qs'
 
-import type { FieldMapConfig, Vessel } from '@/types/vessel.types'
-import { fieldMap } from '@/types/vessel.types'
+import type { Vessel } from '@/types/vessel.types'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { APIPagination, Dataset, IdentityVessel } from '@globalfishingwatch/api-types'
-import { DatasetTypes, EndpointId, VesselType } from '@globalfishingwatch/api-types'
+import { DatasetTypes, EndpointId } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
-export const findBestMatchingKey = (keys: string[], fieldConfig: FieldMapConfig): string | null => {
-  const allMatchingValues = [
-    ...(fieldConfig.gr ? [fieldConfig.gr] : []),
-    ...(fieldConfig.iccat ? [fieldConfig.iccat] : []),
-    ...(fieldConfig.sprfmo ? [fieldConfig.sprfmo] : []),
-    ...(fieldConfig.variants || []),
-  ]
-
-  for (const matchValue of allMatchingValues) {
-    const exactMatch = keys.find((key) => key.toLowerCase() === matchValue.toLowerCase())
-    if (exactMatch) return exactMatch
-  }
-
-  for (const matchValue of allMatchingValues) {
-    const partialMatch = keys.find(
-      (key) =>
-        key.toLowerCase().includes(matchValue.toLowerCase()) ||
-        matchValue.toLowerCase().includes(key.toLowerCase())
-    )
-    if (partialMatch) return partialMatch
-  }
-
-  return null
-}
-
-export const parseVessels = (data: Vessel[], targetSystem: 'iccat' | 'sprfmo' | 'gr') => {
-  if (!data.length) return []
-
-  const sampleKeys = Object.keys(data[0])
-
-  const matchConfig = Object.entries(fieldMap).map(([internalKey, config]) => {
-    const possibleNames = [config[targetSystem], config.gr, ...(config.variants || [])].filter(
-      Boolean
-    )
-
-    return { internalKey, possibleNames, config }
-  })
-
-  return data.map((row) => {
-    const normalized: Record<string, any> = {}
-
-    matchConfig.forEach(({ internalKey, possibleNames, config }) => {
-      let bestMatchKey: string | undefined
-
-      bestMatchKey = sampleKeys.find((k) =>
-        possibleNames.some((name) => k.toLowerCase() === name.toLowerCase())
-      )
-
-      if (!bestMatchKey) {
-        bestMatchKey = sampleKeys.find((k) =>
-          possibleNames.some((name) => k.toLowerCase().includes(name.toLowerCase()))
-        )
-      }
-
-      const outputKey = config[targetSystem]
-      normalized[outputKey] = bestMatchKey ? (row as any)[bestMatchKey] : null
-    })
-
-    return normalized
-  })
-}
+const VESSEL_SEARCH_DATASETS = [
+  'public-global-vessel-identity:v3.0',
+  // 'public-panama-vessel-identity-fishing:v20211126',
+  // 'public-panama-vessel-identity-non-fishing:v20211126', //check if public contains imo or switch to private
+]
 
 export const handleExportICCATVessels = async (vessels: Vessel[] | Record<string, any>) => {
   try {
@@ -96,10 +39,10 @@ export const handleExportICCATVessels = async (vessels: Vessel[] | Record<string
       }
     })
 
-    vessels.forEach((vessel, index) => {
+    vessels.forEach((vessel: { [key: string]: any }, index: number) => {
       const row = worksheet.getRow(24 + index)
 
-      Object.keys(vessel).forEach((field) => {
+      Object.keys(vessel).forEach((field: string) => {
         const colIndex = headers[field]
         if (colIndex) {
           const cell = row.getCell(colIndex)
@@ -127,27 +70,6 @@ export const handleExportICCATVessels = async (vessels: Vessel[] | Record<string
   }
 }
 
-export const parseBasicVessels = (data: any[]): Vessel[] => {
-  if (!Array.isArray(data) || !data.length) return []
-
-  return data.map((item) => {
-    const keys = Object.keys(item)
-
-    const idKey = findBestMatchingKey(keys, fieldMap.id)
-    const nameKey = findBestMatchingKey(keys, fieldMap.name)
-
-    const remainingData = { ...item }
-
-    if (nameKey && nameKey !== idKey) delete remainingData[nameKey]
-
-    return {
-      id: String(item[idKey ?? keys[0]] ?? ''),
-      name: String(item[nameKey ?? keys[0]] ?? ''),
-      ...remainingData,
-    }
-  })
-}
-
 export const fetchVessels = createServerFn().handler(async () => {
   const res = await fetch('/api/vessels/scraped')
   if (!res.ok) {
@@ -159,19 +81,14 @@ export const fetchVessels = createServerFn().handler(async () => {
   }
 
   const vessels = (await res.json()) as Vessel[]
-  return parseBasicVessels(vessels)
+  return vessels
 })
 
 export const getVesselsFromAPI = async ({ id }: { id: string }) => {
-  const datasetIds = [
-    'public-global-vessel-identity:v3.0',
-    // 'public-panama-vessel-identity-fishing:v20211126',
-    // 'public-panama-vessel-identity-non-fishing:v20211126', //check if public contains imo or switch to private
-  ]
   const datasetsResponse = await GFWAPI.fetch<Response>(
     `/datasets?${stringify(
       {
-        ids: datasetIds,
+        ids: VESSEL_SEARCH_DATASETS,
         include: 'endpoints',
         cache: false,
         limit: 999999,

@@ -6,7 +6,7 @@ import { createServerFileRoute } from '@tanstack/react-start/server'
 function parseCsv(csv: string): any[] {
   const [headerLine, ...lines] = csv.split(/\r?\n/).filter(Boolean)
   const headers = headerLine.split(',')
-  return lines.map((line) => {
+  return lines.map((line, index) => {
     const values: any[] = []
     let current = ''
     let inQuotes = false
@@ -30,7 +30,17 @@ function parseCsv(csv: string): any[] {
       string,
       string
     >
-    return obj
+
+    const idField = Object.keys(obj).find((key) => key.toLowerCase().includes('imo'))
+    const nameField = Object.keys(obj).find(
+      (key) => key.toLowerCase().includes('name') || key.toLowerCase().includes('nome')
+    )
+
+    return {
+      id: obj[idField || ''] || `vessel-${index}`,
+      name: obj[nameField || ''] || '',
+      ...obj,
+    }
   })
 }
 

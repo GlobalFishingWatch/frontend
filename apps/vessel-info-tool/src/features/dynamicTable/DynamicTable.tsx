@@ -67,7 +67,7 @@ export function DynamicTable({ data, tableFilters }: DynamicTableProps) {
     getExpandedRowModel: getExpandedRowModel(),
     getRowCanExpand: () => true,
     onRowSelectionChange: setSelected,
-    getRowId: (row: any) => row.id,
+    getRowId: (row: Vessel) => row.id,
   })
 
   return (
