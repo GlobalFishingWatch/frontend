@@ -91,9 +91,9 @@ function ExpandableRow({ rowId }: ExpandableRowProps) {
             <div>
               <span className="whitespace-nowrap">
                 {hasPositions
-                  ? `${positionsCounter} ${t('expanded_row.transmission_other')} ${t('expanded_row.from')} `
-                  : `${upperFirst(t('expanded_row.from'))} `}
-                {transmissionDateFrom} {t('expanded_row.to')} {transmissionDateTo}
+                  ? `${positionsCounter} ${t('expanded_row.transmission_other', 'transmissions')} ${t('expanded_row.from', 'from')} `
+                  : `${upperFirst(t('expanded_row.from', 'from'))} `}
+                {transmissionDateFrom} {t('expanded_row.to', 'to')} {transmissionDateTo}
               </span>
 
               <YearlyTransmissionsTimeline
@@ -147,7 +147,7 @@ function ExpandableRow({ rowId }: ExpandableRowProps) {
 }
 
 export const renderExpandedRow = ({ row }: { row: Row<Vessel> }) => {
-  const rowId = row.original.imo || row.original.id || row.original.mmsi
+  const rowId = row.id || row.original.imo
   if (!rowId) {
     return <p>No vessel ID available</p>
   }
