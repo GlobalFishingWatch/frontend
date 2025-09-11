@@ -15,12 +15,6 @@ import type { Vessel } from '@/types/vessel.types'
 import { fetchVessels } from '@/utils/vessels'
 import { MOCK_USER_PERMISSION } from '@globalfishingwatch/api-types'
 
-const GFW_API_URL =
-  process.env.NEXT_PUBLIC_API_GATEWAY || 'https://gateway.api.globalfishingwatch.org'
-const API_TOKEN = process.env.NEXT_GFW_API_KEY
-const VESSEL_SEARCH_URL = 'v3/vessels/search'
-const VESSEL_SEARCH_DATASETS = ['public-global-vessel-identity:v3.0']
-
 export const Route = createFileRoute('/_auth/')({
   loader: async () => fetchVessels(),
   validateSearch: (search: Record<string, unknown>): TableSearchParams => ({
@@ -41,17 +35,6 @@ function Home() {
 
   const tableFilters = useTableFilters(vessels)
 
-  const handleExpandRow = async (row: Vessel) => {
-    const { name, imo, mmsi } = row
-    const query = `query=${name || imo || mmsi}`
-    const params = {
-      datasets: VESSEL_SEARCH_DATASETS,
-    }
-    const url = `${GFW_API_URL}/${VESSEL_SEARCH_URL}?${query}&${stringify(params, { arrayFormat: 'indices' })}`
-    const response = await fetch(url)
-    return response.json()
-  }
-
   return (
     <div className="fixed inset-0 flex flex-col overflow-hidden">
       <SidebarHeader>
@@ -70,7 +53,7 @@ function Home() {
         />
       </SidebarHeader>
       <div className="flex-1 overflow-auto">
-        <DynamicTable data={vessels} tableFilters={tableFilters} onExpandRow={handleExpandRow} />
+        <DynamicTable data={vessels} tableFilters={tableFilters} />
       </div>
       <Footer downloadClick={() => setIsDownloadModalOpen(true)}>
         {t('footer.results', `${vessels.length} results`, { count: vessels.length })}

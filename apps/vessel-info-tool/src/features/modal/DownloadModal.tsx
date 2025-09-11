@@ -4,8 +4,9 @@ import { useSelector } from 'react-redux'
 
 import type { Vessel } from '@/types/vessel.types'
 import { RFMO } from '@/types/vessel.types'
+import { parseVessels } from '@/utils/conversion'
 import { checkMissingMandatoryFields } from '@/utils/validations'
-import { handleExportICCATVessels, parseVessels } from '@/utils/vessels'
+import { handleExportICCATVessels } from '@/utils/vessels'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, Modal, Select } from '@globalfishingwatch/ui-components'
 
@@ -21,11 +22,6 @@ interface DownloadModalProps {
   title?: string
   data: Vessel[]
 }
-
-const mandatory = [
-  { field: 'IntRegNumber', format: 'string' },
-  { field: 'VesselName', format: 'string' },
-]
 
 const DownloadModal: React.FC<DownloadModalProps> = ({
   isOpen,
@@ -44,10 +40,8 @@ const DownloadModal: React.FC<DownloadModalProps> = ({
   const rowSelection = useSelector((state: RootState) => state.table.selectedRows)
   const selectedIds = Object.keys(rowSelection).map((k) => k.toString())
   const vessels = data.filter((vessel) => selectedIds.includes(vessel.id))
-  const parsed = parseVessels(vessels, selectedRFMO.id as RFMO)
-
-  const report = checkMissingMandatoryFields(parsed, mandatory)
-  console.log('🚀 ~ DownloadModal ~ report:', report)
+  const parsed = parseVessels(vessels, 'panama', selectedRFMO.id as RFMO)
+  const report = checkMissingMandatoryFields(parsed)
 
   const handleDownload = async () => {
     try {
