@@ -148,7 +148,9 @@ export default function ReportVesselsTable({
                 ? t('common.hour_other')
                 : activityUnit === 'detection'
                   ? t('common.detection_other')
-                  : t('common.event_other')}
+                  : activityUnit === 'coverage'
+                    ? t('vessel.insights.coverage')
+                    : t('common.event_other')}
             </div>
           )}
           {vessels?.map((vessel, i) => {
@@ -246,7 +248,16 @@ export default function ReportVesselsTable({
                 </div>
                 {activityUnit && (
                   <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
-                    {values.length &&
+                    {activityUnit === 'coverage' ? (
+                      vessel.coverage !== -1 && vessel.coverage !== undefined ? (
+                        <span>
+                          <I18nNumber number={vessel.coverage} />%
+                        </span>
+                      ) : (
+                        EMPTY_FIELD_PLACEHOLDER
+                      )
+                    ) : (
+                      values.length &&
                       values.map((v) =>
                         v.value ? (
                           <Fragment key={v.value}>
@@ -263,7 +274,8 @@ export default function ReportVesselsTable({
                         ) : (
                           EMPTY_FIELD_PLACEHOLDER
                         )
-                      )}
+                      )
+                    )}
                   </div>
                 )}
               </Fragment>

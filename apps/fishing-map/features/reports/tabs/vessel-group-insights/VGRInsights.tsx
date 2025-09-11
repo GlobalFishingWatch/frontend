@@ -65,7 +65,6 @@ const VesselGroupReportInsights = () => {
           terminologyKey="insightsVesselGroups"
         />
       </p>
-      <VesselGroupReportInsightCoverage skip={!vesselDatasets.length} />
       <VesselGroupReportInsightGap skip={!vesselDatasets.length} />
       <VesselGroupReportInsightFishing skip={!vesselDatasets.length} />
       <VesselGroupReportInsightIUU skip={!vesselDatasets.length} />
