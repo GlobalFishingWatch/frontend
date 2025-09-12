@@ -93,6 +93,7 @@ export function useDatasetMetadataOptions(
         label: <DatasetFieldLabel field={field} fieldSchema={fieldSchema} />,
       }
     })
+
     return options.sort(sortFields)
   }, [datasetMetadata?.schema, schemaTypes])
 
@@ -121,7 +122,9 @@ export function useDatasetMetadataOptions(
           if (schemaTypes.length > 0 && !schemaTypes.includes(schema?.type as DatasetSchemaType)) {
             return []
           }
-          const isEnumAllowed = schema?.type === 'string' || schema?.type === 'boolean'
+          const isEnumAllowed =
+            schema?.type === 'boolean' ||
+            (schema?.type === 'string' && schema?.enum && schema?.enum?.length > 0)
           const isRangeAllowed = schema?.type === 'range' && schema.enum?.length === 2
           return isEnumAllowed || isRangeAllowed
             ? {
