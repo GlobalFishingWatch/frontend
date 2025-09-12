@@ -33,6 +33,7 @@
     "errorTooComplex": "Não conseguimos criar um relatório dinâmico para esta área porque as informações de limite são complexas. Simplifique sua área de interesse, carregando uma nova camada ou desenhando sua camada no mapa, e tente o relatório novamente para solucionar o problema.",
     "evolution": "evolução",
     "globally": "globally",
+    "groupByCoverage": "by coverage",
     "groupByEEZ": "By EEZ",
     "groupByFAO": "By FAO",
     "groupByFlag": "por bandeira",
