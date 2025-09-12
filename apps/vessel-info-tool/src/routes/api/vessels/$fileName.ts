@@ -37,9 +37,9 @@ function parseCsv(csv: string): any[] {
     )
 
     return {
-      id: obj[idField || ''] || `vessel-${index}`,
-      name: obj[nameField || ''] || '',
-      ...obj,
+      id: idField ? obj[idField] : `vessel-${index}`,
+      ...(nameField ? { [nameField]: obj[nameField] || '' } : {}),
+      ...Object.fromEntries(Object.entries(obj).filter(([key]) => key !== nameField)),
     }
   })
 }

@@ -72,14 +72,17 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
         cell: ({
           table,
           row,
+          column,
           getValue,
         }: {
           table: Table<T>
           row: Row<Vessel>
+          column: any
           getValue: () => any
         }) => {
           const globalFilter = (table.getState().globalFilter as string | undefined)?.trim()
           const value = String(getValue() || '-')
+          const isFirstDataColumn = column.id === keys[0] || column.accessorKey === keys[0]
 
           const regex = new RegExp(`(${escapeRegExp(globalFilter)})`, 'gi')
 
@@ -107,7 +110,7 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
                     )
                 )}
               </span>
-              {key === 'name' && (
+              {isFirstDataColumn && (
                 <IconButton
                   {...{
                     onClick: row.getToggleExpandedHandler(),
