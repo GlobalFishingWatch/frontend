@@ -2,8 +2,10 @@ import React, { useMemo, useState } from 'react'
 import * as d3 from 'd3'
 import max from 'lodash/max'
 
+import type { FourwingsFeature, FourwingsStaticFeature } from '@globalfishingwatch/deck-loaders'
+
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import type { FilteredPolygons } from 'features/reports/tabs/activity/reports-activity-geo.utils'
+import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 
 import styles from './ReportActivityEvolution.module.css'
 
@@ -35,7 +37,7 @@ function ReportCurrentsGraph({ data, color }: ReportCurrentsProps) {
   const dataFormated = useMemo(() => {
     // Store force sums and counts for each degree bin
     const directions: { [key: number]: { force: number; count: number } } = {}
-    data?.[0].contained.forEach((feature) => {
+    ;(data?.[0].contained as (FourwingsFeature | FourwingsStaticFeature)[]).forEach((feature) => {
       const rawDirection = -270 - Math.round(feature.aggregatedValues?.[1] || 0)
       const direction = Math.abs((Math.round(rawDirection / DEGREES_BINNED) * DEGREES_BINNED) % 360)
       const force = feature.aggregatedValues?.[0] || 0

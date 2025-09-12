@@ -5,13 +5,13 @@ import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
 
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getMergedDataviewId, type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectContextAreasDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { selectUserContextDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { getEventLabel } from 'utils/analytics'
@@ -27,7 +27,9 @@ function ContextAreaSection(): React.ReactElement<any> {
   const dispatch = useAppDispatch()
 
   const readOnly = useSelector(selectReadOnly)
-  const dataviews = useSelector(selectContextAreasDataviews)
+  const dataviewsGrouped = useSelector(selectContextAreasDataviewsGrouped)
+  const allDataviews = Object.values(dataviewsGrouped)
+  const dataviews = allDataviews.flat()
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   const userDatasets = useSelector(selectUserContextDatasets)
@@ -75,12 +77,24 @@ function ContextAreaSection(): React.ReactElement<any> {
           />
         )}
       </div>
-      <SortableContext items={dataviews}>
-        {dataviews?.map((dataview) => (
-          <LayerPanelContainer key={dataview.id} dataview={dataview}>
-            <LayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
-          </LayerPanelContainer>
-        ))}
+      <SortableContext items={allDataviews.flat()}>
+        {allDataviews.map((dataviews) => {
+          if (!dataviews?.length) return null
+          const visibleDataviews = dataviews.filter(
+            (dataview) => dataview.config?.visible !== false
+          )
+          return dataviews?.map((dataview) => (
+            <LayerPanelContainer key={dataview.id} dataview={dataview}>
+              <LayerPanel
+                dataview={dataview}
+                onToggle={onToggleLayer(dataview)}
+                mergedDataviewId={
+                  visibleDataviews?.length ? getMergedDataviewId(visibleDataviews) : undefined
+                }
+              />
+            </LayerPanelContainer>
+          ))
+        })}
       </SortableContext>
     </div>
   )

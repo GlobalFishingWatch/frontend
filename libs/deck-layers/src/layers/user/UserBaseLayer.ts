@@ -1,14 +1,21 @@
-import type { DefaultProps, LayerContext, PickingInfo } from '@deck.gl/core'
+import type { DefaultProps, LayerContext, LayerExtension, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import { DataFilterExtension } from '@deck.gl/extensions'
+import type { DataFilterExtensionProps } from '@deck.gl/extensions'
+import { ClipExtension, DataFilterExtension } from '@deck.gl/extensions'
 import type { GeoBoundingBox, TileLayerProps } from '@deck.gl/geo-layers'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { Entries } from 'type-fest'
 
 import type { DeckLayerProps } from '../../types'
-import { getFeatureInFilter } from '../../utils'
+import { getFeatureInFilters, isFeatureInFilter } from '../../utils'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
-import type { ContextFeature } from '../context'
-import { getContextId } from '../context/context.utils'
+import type { ContextFeature, ContextSubLayerConfig } from '../context'
+import {
+  getContextId,
+  getValidSublayerFilters,
+  hasSublayerFilters,
+  supportDataFilterExtension,
+} from '../context/context.utils'
 
 import type {
   BaseUserLayerProps,
@@ -28,9 +35,7 @@ type _UserBaseLayerProps =
 
 export const POINT_SIZES_DEFAULT_RANGE = [3, 15]
 const defaultProps: DefaultProps<_UserBaseLayerProps> = {
-  idProperty: 'gfw_id',
   pickable: true,
-  valueProperties: [],
   maxRequests: 100,
   debounceTime: 500,
   minPointSize: 3,
@@ -72,7 +77,13 @@ export abstract class UserBaseLayer<
   }: {
     info: PickingInfo<UserLayerFeature, { tile?: Tile2DHeader }>
   }): UserLayerPickingInfo => {
-    const { subcategory, idProperty, valueProperties, filters } = this.props
+    // TODO: support multiple sublayers
+    const idProperty = this.props.layers[0].idProperty
+    const valueProperties = this.props.layers[0].valueProperties || []
+    // TODO: once filtered with the filter extension this works as expected
+    const sublayers = this.props.layers[0].sublayers
+    const filters = sublayers?.flatMap((s) => Object.keys(s.filters || {}))
+    const color = sublayers?.[0]?.color
     const object = {
       ...(info.tile && {
         ...transformTileCoordsToWGS84(
@@ -84,18 +95,23 @@ export abstract class UserBaseLayer<
       id: getContextId(info.object as ContextFeature, idProperty),
       value: info.object?.properties.value,
       title: this.props.id,
-      color: this.props.color,
+      color: color,
       layerId: this.props.id,
       datasetId: this.props.layers[0].datasetId,
       category: this.props.category,
       subcategory: this.props.subcategory,
     } as UserLayerPickingObject
 
-    if (!getFeatureInFilter(object, filters)) {
-      return { ...info, object: undefined }
+    if (hasSublayerFilters(sublayers?.[0])) {
+      if (
+        !supportDataFilterExtension(sublayers?.[0]) &&
+        !getFeatureInFilters(object, filters, sublayers?.[0].filterOperators)
+      ) {
+        return { ...info, object: undefined }
+      }
     }
 
-    if (!subcategory?.includes('draw')) {
+    if (!this.props.subcategory?.includes('draw')) {
       const properties = { ...((info.object as UserLayerFeature)?.properties || {}) }
 
       object.value =
@@ -121,9 +137,11 @@ export abstract class UserBaseLayer<
     const features = this._pickObjects(maxFeatures)
     const featureCache = new Set()
     const renderedFeatures: UserLayerFeature[] = []
+    // TODO: support multiple sublayers
+    const idProperty = this.props.layers[0].idProperty
 
     for (const f of features) {
-      const featureId = getContextId(f.object as ContextFeature, this.props.idProperty)
+      const featureId = getContextId(f.object as ContextFeature, idProperty)
 
       if (featureId === undefined) {
         // we have no id for the feature, we just add to the list
@@ -139,7 +157,9 @@ export abstract class UserBaseLayer<
   }
 
   _getTilesUrl(tilesUrl: string) {
-    const { valueProperties, startTimeProperty, endTimeProperty, filters } = this.props
+    const { startTimeProperty, endTimeProperty, layers } = this.props
+    const valueProperties = layers.flatMap((l) => l.valueProperties || [])
+    const filters = layers.flatMap((l) => l.sublayers?.flatMap((s) => Object.keys(s.filters || {})))
     const stepsPickValue = (this.props as UserPolygonsLayerProps)?.stepsPickValue
     const circleRadiusProperty = (this.props as UserPointsLayerProps)?.circleRadiusProperty
     const tilesUrlObject = new URL(tilesUrl)
@@ -150,7 +170,7 @@ export abstract class UserBaseLayer<
       endTimeProperty || '',
       stepsPickValue || '',
       circleRadiusProperty || '',
-      ...Object.keys(filters || {}),
+      ...filters,
     ].filter((p) => !!p)
     const uniqProperties = Array.from(new Set([...properties]))
     if (uniqProperties.length) {
@@ -164,8 +184,14 @@ export abstract class UserBaseLayer<
 
   _getTimeFilterProps() {
     const { startTime, endTime, startTimeProperty, endTimeProperty, timeFilterType } = this.props
-    if (!timeFilterType || (!startTime && !endTime && !startTimeProperty && !endTimeProperty))
+    if (!timeFilterType || (!startTime && !endTime && !startTimeProperty && !endTimeProperty)) {
       return {}
+    }
+    // https://deck.gl/docs/api-reference/extensions/data-filter-extension#limitations
+    // When using very large filter values, most commonly Epoch timestamps, 32-bit float representation could lead to an error margin of >1 minute.
+    const offsetPrecision = 1000 * 60 * 30 // 30 minutes
+    const startMatchRange = [0, endTime! - offsetPrecision]
+    const endMatchRange = [startTime!, INFINITY_TIMERANGE_LIMIT]
     if (timeFilterType === 'date') {
       if (startTimeProperty) {
         return {
@@ -186,28 +212,60 @@ export abstract class UserBaseLayer<
               end ? parseInt(end) : INFINITY_TIMERANGE_LIMIT,
             ]
           },
-          filterRange: [
-            [0, endTime],
-            [startTime, INFINITY_TIMERANGE_LIMIT],
-          ],
+          filterRange: [startMatchRange, endMatchRange],
           extensions: [new DataFilterExtension({ filterSize: 2 })],
         }
       } else if (endTimeProperty) {
         return {
           getFilterValue: (d: UserLayerFeature) =>
             parseInt(d.properties[endTimeProperty as string]),
-          filterRange: [startTime, INFINITY_TIMERANGE_LIMIT],
+          filterRange: endMatchRange,
           extensions: [new DataFilterExtension({ filterSize: 1 })],
         }
       } else if (startTimeProperty) {
         return {
           getFilterValue: (d: UserLayerFeature) =>
             parseInt(d.properties[startTimeProperty as string]),
-          filterRange: [0, endTime],
+          filterRange: startMatchRange,
           extensions: [new DataFilterExtension({ filterSize: 1 })],
         }
       }
     }
     return {}
+  }
+
+  _getSublayerFilterExtensionProps(
+    sublayer: ContextSubLayerConfig,
+    { clip = true } = {} as { clip?: boolean }
+  ): {
+    extensions: LayerExtension<unknown>[]
+    filterRange: DataFilterExtensionProps['filterRange']
+    getFilterValue: DataFilterExtensionProps['getFilterValue']
+  } {
+    if (hasSublayerFilters(sublayer) && supportDataFilterExtension(sublayer)) {
+      const filterEntries = Object.entries(getValidSublayerFilters(sublayer)) as Entries<
+        typeof sublayer.filters
+      >
+      const hasMultipleFilters = filterEntries.length > 1
+
+      return {
+        extensions: [
+          ...(clip ? [new ClipExtension()] : []),
+          new DataFilterExtension({
+            filterSize: filterEntries.length as DataFilterExtension['opts']['filterSize'],
+          }),
+        ],
+        filterRange: hasMultipleFilters
+          ? filterEntries.map(() => [1, 1] as [number, number])
+          : ([1, 1] as [number, number]),
+        getFilterValue: (d: UserLayerFeature) => {
+          const filters = filterEntries.map(([id, values]) =>
+            isFeatureInFilter(d, { id, values, operator: sublayer.filterOperators?.[id] }) ? 1 : 0
+          )
+          return hasMultipleFilters ? filters : filters[0]
+        },
+      }
+    }
+    return {} as ReturnType<typeof this._getSublayerFilterExtensionProps>
   }
 }

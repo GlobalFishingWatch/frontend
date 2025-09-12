@@ -20,8 +20,8 @@ import type {
   ReportDetectionsSubCategory,
 } from 'features/reports/reports.types'
 import { ReportCategory } from 'features/reports/reports.types'
+import { useReportFeaturesLoading } from 'features/reports/reports-timeseries.hooks'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
-import { useReportFeaturesLoading } from 'features/reports/tabs/activity/reports-activity-timeseries.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 
 function ReportActivitySubsectionSelector() {

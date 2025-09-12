@@ -1,11 +1,4 @@
-import type { Dataset } from '@globalfishingwatch/api-types'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
-import {
-  findDatasetByType,
-  getDatasetConfiguration,
-  resolveEndpoint,
-} from '@globalfishingwatch/datasets-client'
-import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
+import { getDatasetConfiguration, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type {
   ContextLayerConfig,
   ContextLayerId,
@@ -13,49 +6,46 @@ import type {
   ContextPickingObject,
 } from '@globalfishingwatch/deck-layers'
 
-import type { DeckResolverFunction } from './types'
+import type { ResolvedContextDataviewInstance } from '../types/dataviews'
+import type { DeckResolverFunction } from '../types/resolvers'
 
-export const resolveDeckContextLayerProps: DeckResolverFunction<ContextLayerProps> = (
-  dataview,
-  { highlightedFeatures }
-) => {
-  // TODO make this work for auxiliar layers
-  // https://github.com/GlobalFishingWatch/frontend/blob/master/libs/dataviews-client/src/resolve-dataviews-generators.ts#L606
-  const { url } = resolveDataviewDatasetResource(dataview, DatasetTypes.Context)
-  if (!url) {
-    console.warn('No url found for temporal context')
-  }
-  const dataset = findDatasetByType(dataview.datasets, DatasetTypes.Context) as Dataset
-  const { idProperty, valueProperties } = getDatasetConfiguration(dataset)
+export const resolveDeckContextLayerProps: DeckResolverFunction<
+  ContextLayerProps<ContextLayerId>,
+  ResolvedContextDataviewInstance
+> = (dataview, { highlightedFeatures }) => {
+  const layers = (dataview.config?.layers || [])?.flatMap(
+    (layer): ContextLayerConfig<ContextLayerId> | [] => {
+      const dataset = dataview.datasets?.find((dataset) => dataset.id === layer.dataset)
+      const { idProperty, valueProperties } = getDatasetConfiguration(dataset)
+      const datasetConfig = dataview.datasetsConfig?.find(
+        (datasetConfig) => datasetConfig.datasetId === layer.dataset
+      )
+      if (!dataset || !datasetConfig) {
+        return []
+      }
 
-  const layers = (dataview.config?.layers || [])?.flatMap((layer): ContextLayerConfig | [] => {
-    const dataset = dataview.datasets?.find((dataset) => dataset.id === layer.dataset)
-    const datasetConfig = dataview.datasetsConfig?.find(
-      (datasetConfig) => datasetConfig.datasetId === layer.dataset
-    )
-    if (!dataset || !datasetConfig) {
-      return []
+      const tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
+      if (!tilesUrl) {
+        console.warn('No tilesUrl found for context dataview', dataview)
+      }
+
+      return {
+        id: layer.id as ContextLayerId,
+        datasetId: dataset.id,
+        tilesUrl,
+        idProperty,
+        valueProperties,
+        sublayers: layer.sublayers || [],
+      }
     }
-
-    const tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
-    return {
-      id: layer.id as ContextLayerId,
-      datasetId: dataset.id,
-      tilesUrl,
-      filters: dataview.config?.filters,
-    }
-  })
+  )
 
   return {
     id: dataview.id,
     layers: layers,
     visible: dataview.config?.visible ?? true,
     category: dataview.category!,
-    color: dataview.config?.color as string,
-    thickness: dataview.config?.thickness || 1,
     pickable: dataview.config?.pickable ?? true,
-    idProperty,
-    valueProperties,
     highlightedFeatures: highlightedFeatures as ContextPickingObject[],
   }
 }

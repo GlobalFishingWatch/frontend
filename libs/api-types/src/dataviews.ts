@@ -8,15 +8,11 @@ export const INCLUDE_FILTER_ID = 'include'
 export const EXCLUDE_FILTER_ID = 'exclude'
 export type FilterOperator = typeof INCLUDE_FILTER_ID | typeof EXCLUDE_FILTER_ID
 
-export interface DataviewContexLayerConfig {
-  id: string
-  dataset: string
-}
-
 export enum DataviewType {
   Annotation = 'ANNOTATION',
   Background = 'BACKGROUND',
   Basemap = 'BASEMAP',
+  BasemapImage = 'BASEMAP_IMAGE',
   BasemapLabels = 'BASEMAP_LABELS',
   CartoPolygons = 'CARTO_POLYGONS',
   Context = 'CONTEXT',
@@ -40,18 +36,9 @@ export enum DataviewType {
   Workspaces = 'WORKSPACES',
 }
 
-export type DataviewSublayerConfig = {
+export interface DataviewContexLayerConfig {
   id: string
-  datasets: Dataset[]
-  visible?: boolean
-  color?: string
-  colorRamp?: string
-  filter?: DataviewConfig['filter']
-  filters?: DataviewConfig['filters']
-  vesselGroups?: DataviewConfig['vessel-groups']
-  /** Needed to update the layer when the vessel group is edited */
-  vesselGroupsLength?: number
-  maxZoom?: number
+  dataset: string
 }
 
 export type FourwingsGeolocation = 'country' | 'port' | 'default'
@@ -159,9 +146,10 @@ export interface DataviewConfig<Type = DataviewType> {
 
   pickable?: boolean
   trackThinningZoomConfig?: Record<number, string>
-  /** Fourwings layers merged, needed for Activity or Detections */
-  sublayers?: DataviewSublayerConfig[]
   includeWithoutEndDate?: boolean
+
+  /** Tile size for basemap image layer */
+  tileSize?: number
 }
 
 export interface DataviewDatasetConfigParam {

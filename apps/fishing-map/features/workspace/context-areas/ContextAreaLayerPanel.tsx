@@ -63,6 +63,7 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
   onToggle?: () => void
+  mergedDataviewId?: string
 }
 
 export const DATAVIEWS_WARNING = [
@@ -77,7 +78,11 @@ const LIST_MARGIN_HEIGHT = 10
 const LIST_TITLE_HEIGHT = 22
 
 type FeaturesOnScreen = { total: number; closest: ContextPickingObject[] }
-function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement<any> {
+function LayerPanel({
+  dataview,
+  onToggle,
+  mergedDataviewId,
+}: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { onReportClick } = useContextInteractions()
@@ -89,7 +94,7 @@ function LayerPanel({ dataview, onToggle }: LayerPanelProps): React.ReactElement
     closest: [],
   })
 
-  const contextLayer = useGetDeckLayer<ContextLayer>(dataview.id)
+  const contextLayer = useGetDeckLayer<ContextLayer>(mergedDataviewId || dataview.id)
   const [propertiesOpen, setPropertiesOpen] = useState(false)
   const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
   const onDataWarningModalClose = useCallback(() => {

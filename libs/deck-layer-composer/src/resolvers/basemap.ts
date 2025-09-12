@@ -1,17 +1,20 @@
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes, EndpointId } from '@globalfishingwatch/api-types'
 import { findDatasetByType, resolveEndpoint } from '@globalfishingwatch/datasets-client'
-import type { BaseMapLabelsLayerProps, BaseMapLayerProps } from '@globalfishingwatch/deck-layers'
+import type {
+  BaseMapImageLayerProps,
+  BaseMapLabelsLayerProps,
+  BaseMapLayerProps,
+} from '@globalfishingwatch/deck-layers'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 
-import type { DeckResolverFunction } from './types'
+import type { ResolvedDataviewInstance } from '../types/dataviews'
+import type { DeckResolverFunction } from '../types/resolvers'
 
-export const resolveDeckBasemapLabelsLayerProps: DeckResolverFunction<BaseMapLabelsLayerProps> = (
-  dataview
-) => {
+export function resolvePMTilesDatasetTilesUrl(dataview: ResolvedDataviewInstance) {
   const dataset = findDatasetByType(dataview.datasets, DatasetTypes.PMTiles) as Dataset
   if (!dataset) {
-    throw new Error('Dataset not found for basemap labels layer')
+    throw new Error('Dataset not found for basemap image layer')
   }
 
   const datasetConfig = {
@@ -25,7 +28,13 @@ export const resolveDeckBasemapLabelsLayerProps: DeckResolverFunction<BaseMapLab
       },
     ],
   }
-  const tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
+  return resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
+}
+
+export const resolveDeckBasemapLabelsLayerProps: DeckResolverFunction<BaseMapLabelsLayerProps> = (
+  dataview
+) => {
+  const tilesUrl = resolvePMTilesDatasetTilesUrl(dataview)
   return {
     id: dataview.id,
     tilesUrl,
@@ -41,5 +50,18 @@ export const resolveDeckBasemapLayerProps: DeckResolverFunction<BaseMapLayerProp
     category: dataview.category!,
     visible: dataview.config?.visible ?? true,
     basemap: (dataview.config?.basemap as BasemapType) || BasemapType.Default,
+  }
+}
+
+export const resolveDeckBasemapImageLayerProps: DeckResolverFunction<BaseMapImageLayerProps> = (
+  dataview
+) => {
+  const tilesUrl = resolvePMTilesDatasetTilesUrl(dataview)
+  return {
+    id: dataview.id,
+    visible: dataview.config?.visible ?? true,
+    tileSize: dataview.config?.tileSize as number,
+    tilesUrl: tilesUrl as string,
+    maxZoom: dataview.config?.maxZoom as number,
   }
 }

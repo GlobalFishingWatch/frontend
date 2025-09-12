@@ -15,7 +15,7 @@ import {
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
-import type { UserTracksLayer } from '@globalfishingwatch/deck-layers'
+import { type AnyUserLayer, UserTracksLayer } from '@globalfishingwatch/deck-layers'
 import type { UserTrackFeature } from '@globalfishingwatch/deck-loaders'
 
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -27,17 +27,21 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type UserPanelProps = {
   dataview: UrlDataviewInstance
+  mergedDataviewId?: string
 }
 
 const SEE_MORE_LENGTH = 5
 
-export function useUserLayerTrackMetadata(dataview: UrlDataviewInstance) {
+export function useUserLayerMetadata(dataview: UrlDataviewInstance, mergedDataviewId?: string) {
   const dataset = getUserDataviewDataset(dataview)
   const allTracksActive = useSelector(selectActiveUserTrackDataviews)
-  const trackLayer = useGetDeckLayer<UserTracksLayer>(dataview?.id)
+  const userLayer = useGetDeckLayer<AnyUserLayer>(mergedDataviewId || dataview?.id)
+
   const data = useMemo(() => {
-    return trackLayer?.instance?.getData?.()
-  }, [trackLayer])
+    if (userLayer?.instance instanceof UserTracksLayer) {
+      return userLayer?.instance?.getData?.()
+    }
+  }, [userLayer])
 
   const idProperty = getDatasetConfigurationProperty({
     dataset,
@@ -55,8 +59,9 @@ export function useUserLayerTrackMetadata(dataview: UrlDataviewInstance) {
     data,
     hasRecordIds,
     hasFeaturesColoredByField,
-    error: trackLayer?.instance?.getError?.(),
-    loaded: trackLayer?.loaded,
+    error: userLayer?.instance?.getError?.(),
+    loaded: userLayer?.loaded,
+    instance: userLayer?.instance,
   }
 }
 
@@ -79,13 +84,13 @@ const getFeatureTimeExtent = (
   return { start: getUTCDate(min).toISOString(), end: getUTCDate(max).toISOString() }
 }
 
-function UserLayerTrackPanel({ dataview }: UserPanelProps) {
+function UserLayerTrackPanel({ dataview, mergedDataviewId }: UserPanelProps) {
   const { t } = useTranslation()
   const [seeMoreOpen, setSeeMoreOpen] = useState(false)
   const dispatch = useAppDispatch()
   const { dispatchDisableHighlightedTime } = useDisableHighlightTimeConnect()
 
-  const { data, hasFeaturesColoredByField } = useUserLayerTrackMetadata(dataview)
+  const { data, hasFeaturesColoredByField } = useUserLayerMetadata(dataview, mergedDataviewId)
   const dataset = getUserDataviewDataset(dataview)
 
   const onSeeMoreClick = useCallback(() => {

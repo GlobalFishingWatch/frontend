@@ -2,38 +2,17 @@ import type { Accessor, PickingInfo } from '@deck.gl/core'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import type { Feature, Geometry } from 'geojson'
 
-import type { TimeFilterType } from '@globalfishingwatch/api-types'
+import type { FilterOperator, TimeFilterType } from '@globalfishingwatch/api-types'
 
 import type { DeckLayerProps, DeckPickingObject } from '../../types'
 import type { ContextLayerConfig } from '../context'
 
-export type FilterOperators = Record<string, 'include' | 'exclude'>
+export type FilterOperators = Record<string, FilterOperator>
 
 export type BaseUserLayerProps = {
   id: string
   layers: ContextLayerConfig<string>[]
-  color: string
-  thickness: number
-  idProperty?: string
-  valueProperties?: string[]
   highlightedFeatures?: UserLayerPickingObject[]
-  /**
-   * Disable interaction (needed when user uploaded a non-polygon layer)
-   * legacy known as disableInteraction
-   */
-  pickable?: boolean
-  /**
-   * SQL filter to apply to the dataset
-   */
-  filter?: string
-  /**
-   * Filters object without parse
-   */
-  filters?: Record<string, any>
-  /**
-   * Filters operators object without parse
-   */
-  filterOperators?: FilterOperators
   /**
    * Global timerange config filter timestamps
    */
@@ -96,6 +75,8 @@ export type UserTrackLayerProps = DeckLayerProps<
     singleTrack?: boolean
   }
 >
+
+export type AnyUserLayerProps = UserPolygonsLayerProps | UserPointsLayerProps | UserTrackLayerProps
 
 export type UserLayerFeatureProperties = {
   id: string

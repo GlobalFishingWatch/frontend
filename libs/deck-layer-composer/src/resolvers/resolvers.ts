@@ -1,7 +1,7 @@
-import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import {
+  BaseMapImageLayer,
   BaseMapLabelsLayer,
   BaseMapLayer,
   BathymetryContourLayer,
@@ -18,7 +18,18 @@ import {
   WorkspacesLayer,
 } from '@globalfishingwatch/deck-layers'
 
-import { resolveDeckBasemapLabelsLayerProps, resolveDeckBasemapLayerProps } from './basemap'
+import type {
+  ResolvedContextDataviewInstance,
+  ResolvedDataviewInstance,
+  ResolvedFourwingsDataviewInstance,
+} from '../types/dataviews'
+import type { ResolverGlobalConfig } from '../types/resolvers'
+
+import {
+  resolveDeckBasemapImageLayerProps,
+  resolveDeckBasemapLabelsLayerProps,
+  resolveDeckBasemapLayerProps,
+} from './basemap'
 import { resolveDeckBathymetryContourLayerProps } from './bathymetry-contour'
 import { resolveDeckFourwingsClustersLayerProps } from './clusters'
 import { resolveDeckContextLayerProps } from './context'
@@ -26,7 +37,6 @@ import { resolveDeckCurrentsLayerProps } from './currents'
 import { resolveDeckFourwingsLayerProps } from './fourwings'
 import { resolveDeckGraticulesLayerProps } from './graticules'
 import { resolveDeckPolygonsLayerProps } from './polygons'
-import type { ResolverGlobalConfig } from './types'
 import {
   resolveDeckUserContextLayerProps,
   resolveDeckUserPointsLayerProps,
@@ -36,14 +46,14 @@ import { resolveDeckVesselLayerProps } from './vessels'
 import { resolveDeckWorkspacesLayerProps } from './workspaces'
 
 export const getDataviewHighlightedFeatures = (
-  dataview: DataviewInstance,
+  dataview: ResolvedDataviewInstance,
   globalConfig: ResolverGlobalConfig
 ) => {
-  return globalConfig.highlightedFeatures?.filter((f) => f.layerId === dataview.id)
+  return globalConfig.highlightedFeatures?.filter((f) => dataview.id.includes(f.layerId))
 }
 
 export const dataviewToDeckLayer = (
-  dataview: DataviewInstance,
+  dataview: ResolvedDataviewInstance,
   globalConfig: ResolverGlobalConfig
 ): AnyDeckLayer => {
   const highlightedFeatures = getDataviewHighlightedFeatures(dataview, globalConfig)
@@ -51,6 +61,10 @@ export const dataviewToDeckLayer = (
   if (dataview.config?.type === DataviewType.Basemap) {
     const deckLayerProps = resolveDeckBasemapLayerProps(dataview, layerConfig)
     return new BaseMapLayer(deckLayerProps)
+  }
+  if (dataview.config?.type === DataviewType.BasemapImage) {
+    const deckLayerProps = resolveDeckBasemapImageLayerProps(dataview, layerConfig)
+    return new BaseMapImageLayer(deckLayerProps)
   }
   if (dataview.config?.type === DataviewType.BasemapLabels) {
     const deckLayerProps = resolveDeckBasemapLabelsLayerProps(dataview, layerConfig)
@@ -68,17 +82,26 @@ export const dataviewToDeckLayer = (
     dataview.config?.type === DataviewType.HeatmapAnimated ||
     dataview.config?.type === DataviewType.HeatmapStatic
   ) {
-    const deckLayerProps = resolveDeckFourwingsLayerProps(dataview, layerConfig)
+    const deckLayerProps = resolveDeckFourwingsLayerProps(
+      dataview as ResolvedFourwingsDataviewInstance,
+      layerConfig
+    )
     const layer = new FourwingsLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.Currents) {
-    const deckLayerProps = resolveDeckCurrentsLayerProps(dataview, layerConfig)
+    const deckLayerProps = resolveDeckCurrentsLayerProps(
+      dataview as ResolvedFourwingsDataviewInstance,
+      layerConfig
+    )
     const layer = new FourwingsCurrentsTileLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.Context) {
-    const deckLayerProps = resolveDeckContextLayerProps(dataview, layerConfig)
+    const deckLayerProps = resolveDeckContextLayerProps(
+      dataview as ResolvedContextDataviewInstance,
+      layerConfig
+    )
     const layer = new ContextLayer(deckLayerProps)
     return layer
   }
@@ -88,12 +111,18 @@ export const dataviewToDeckLayer = (
     return layer
   }
   if (dataview.config?.type === DataviewType.UserContext) {
-    const deckLayerProps = resolveDeckUserContextLayerProps(dataview, layerConfig)
+    const deckLayerProps = resolveDeckUserContextLayerProps(
+      dataview as ResolvedContextDataviewInstance,
+      layerConfig
+    )
     const layer = new UserContextTileLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.UserPoints) {
-    const deckLayerProps = resolveDeckUserPointsLayerProps(dataview, layerConfig)
+    const deckLayerProps = resolveDeckUserPointsLayerProps(
+      dataview as ResolvedContextDataviewInstance,
+      layerConfig
+    )
     const layer = new UserPointsTileLayer(deckLayerProps)
     return layer
   }
@@ -104,7 +133,10 @@ export const dataviewToDeckLayer = (
   }
   if (dataview.config?.type === DataviewType.Track) {
     if (dataview.category === DataviewCategory.User) {
-      const deckLayerProps = resolveDeckUserTracksLayerProps(dataview, layerConfig)
+      const deckLayerProps = resolveDeckUserTracksLayerProps(
+        dataview as ResolvedContextDataviewInstance,
+        layerConfig
+      )
       const layer = new UserTracksLayer(deckLayerProps)
       return layer
     }

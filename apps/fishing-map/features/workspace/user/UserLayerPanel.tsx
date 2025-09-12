@@ -11,7 +11,6 @@ import {
   getUserDataviewDataset,
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { DrawFeatureType, UserTracksLayer } from '@globalfishingwatch/deck-layers'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import type { ColorBarOption, ThicknessSelectorOption } from '@globalfishingwatch/ui-components'
@@ -50,16 +49,21 @@ import LayerSwitch from '../shared/LayerSwitch'
 import Remove from '../shared/Remove'
 import Title from '../shared/Title'
 
-import UserLayerTrackPanel, { useUserLayerTrackMetadata } from './UserLayerTrackPanel'
+import UserLayerTrackPanel, { useUserLayerMetadata } from './UserLayerTrackPanel'
 
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type UserPanelProps = {
   dataview: UrlDataviewInstance
+  mergedDataviewId?: string
   onToggle?: () => void
 }
 
-function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<any> {
+function UserPanel({
+  dataview,
+  mergedDataviewId,
+  onToggle,
+}: UserPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
@@ -72,11 +76,13 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<a
   const layerActive = dataview?.config?.visible ?? true
   const dataset = getUserDataviewDataset(dataview)
   const datasetGeometryType = getDatasetGeometryType(dataset)
-  const { loaded, hasFeaturesColoredByField, error } = useUserLayerTrackMetadata(dataview)
+  const { instance, loaded, hasFeaturesColoredByField, error } = useUserLayerMetadata(
+    dataview,
+    mergedDataviewId
+  )
   const layerLoaded = loaded && !error
   const layerLoadedDebounced = useDebounce(layerLoaded, 300)
   const layerLoading = layerActive && !layerLoadedDebounced && !error
-  const layer = useGetDeckLayer<UserTracksLayer>(dataview.id)
 
   useAutoRefreshImportingDataset(layerActive ? dataset : ({} as Dataset), 5000)
 
@@ -248,7 +254,7 @@ function UserPanel({ dataview, onToggle }: UserPanelProps): React.ReactElement<a
           {layerActive && datasetGeometryType === 'tracks' && (
             <FitBounds
               hasError={error !== undefined}
-              layer={layer?.instance}
+              layer={instance as UserTracksLayer}
               disabled={layerLoading}
             />
           )}

@@ -88,6 +88,17 @@ const DebugMenu: React.FC = () => {
             <p>Activates the global reports feature: aka CVP</p>
             <div className={styles.header}>
               <Switch
+                id="option_others_reports"
+                active={featureFlags.othersReport}
+                onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.OthersReport))}
+              />
+              <label htmlFor="option_others_reports">
+                <strong>Feature flag:</strong> Others reports
+              </label>
+            </div>
+            <p>Activates the context points reports feature</p>
+            <div className={styles.header}>
+              <Switch
                 id="option_data_terminology_iframe"
                 active={debugOptions.dataTerminologyIframe}
                 onClick={() => dispatch(toggleOption(DebugOption.DataTerminologyIframe))}

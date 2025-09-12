@@ -1,6 +1,6 @@
 import type { GraticulesLayerProps } from '@globalfishingwatch/deck-layers'
 
-import type { DeckResolverFunction } from './types'
+import type { DeckResolverFunction } from '../types/resolvers'
 
 export const resolveDeckGraticulesLayerProps: DeckResolverFunction<GraticulesLayerProps> = (
   dataview

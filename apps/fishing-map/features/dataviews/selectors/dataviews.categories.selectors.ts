@@ -3,8 +3,13 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { DataviewType } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { groupContextDataviews } from '@globalfishingwatch/deck-layer-composer'
 
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import {
+  isContextDataviewReportSupported,
+  isUserContextDataviewReportSupported,
+} from 'features/reports/report-area/area-reports.utils'
 import { isVesselGroupActivityDataview } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 
@@ -70,11 +75,25 @@ export const selectContextAreasDataviews = selectDataviewInstancesByCategory(
   DataviewCategory.Context
 )
 
+export const selectContextAreasDataviewsGrouped = createSelector(
+  [selectContextAreasDataviews],
+  (dataviews) => {
+    return groupContextDataviews(dataviews)
+  }
+)
+
 export const selectActiveContextAreasDataviews = selectDataviewInstancesByCategory(
   DataviewCategory.Context
 )
 
 export const selectCustomUserDataviews = selectDataviewInstancesByCategory(DataviewCategory.User)
+
+export const selectCustomUserDataviewsGrouped = createSelector(
+  [selectCustomUserDataviews],
+  (dataviews) => {
+    return groupContextDataviews(dataviews)
+  }
+)
 
 const selectVGRDataviews = createSelector(
   [selectActiveVesselGroupDataviews, selectReportVesselGroupId],
@@ -94,5 +113,27 @@ export const selectVGReportActivityDataviews = createSelector(
   [selectVGRDataviews],
   (vesselGroupDataviews) => {
     return vesselGroupDataviews?.filter((dataview) => isVesselGroupActivityDataview(dataview.id))
+  }
+)
+
+export const selectOthersActiveReportDataviews = createSelector(
+  [selectContextAreasDataviews, selectCustomUserDataviews],
+  (contextDataviews = [], userDataviews = []) => {
+    const otherDataviews = [...contextDataviews, ...userDataviews]?.filter((dataview) => {
+      if (!dataview.config?.visible) {
+        return false
+      }
+      return (
+        isUserContextDataviewReportSupported(dataview) || isContextDataviewReportSupported(dataview)
+      )
+    })
+    return otherDataviews
+  }
+)
+
+export const selectOthersActiveReportDataviewsGrouped = createSelector(
+  [selectOthersActiveReportDataviews],
+  (otherDataviews = []) => {
+    return groupContextDataviews(otherDataviews)
   }
 )

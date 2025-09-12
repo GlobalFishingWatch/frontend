@@ -1,10 +1,7 @@
 import type { tile as TileType } from './decoders/4wings-tile'
+import { tile as tileDecoder } from './decoders/4wings-tile.js'
 import type { vessels as VesselType } from './decoders/vessels'
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const tileDecoder = require('./decoders/4wings-tile')
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const vesselsDecoder = require('./decoders/vessels')
+import { vessels as vesselsDecoder } from './decoders/vessels.js'
 
-const tile = tileDecoder.tile as typeof TileType
-const vessels = vesselsDecoder.vessels as typeof VesselType
-export { vessels, tile }
+export const tile = tileDecoder as typeof TileType
+export const vessels = vesselsDecoder as typeof VesselType
