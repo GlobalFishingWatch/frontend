@@ -1,30 +1,7 @@
 import type { UserTrack } from '@globalfishingwatch/api-types'
 
 import type { UserTrackBinaryData, UserTrackData } from './types'
-import type { TrackCoordinatesPropertyFilter } from './utils'
 import { filterTrackByCoordinateProperties } from './utils'
-
-export function isNumeric(str: string | number) {
-  if (!str) return false
-  if (typeof str == 'number') return true
-  return !isNaN(parseFloat(str))
-}
-
-function getCoordinatesFilter(filters = {} as Record<string, any>) {
-  const coordinateFilters: TrackCoordinatesPropertyFilter[] = Object.entries(filters).map(
-    ([id, values]) => {
-      if (values.length === 2 && isNumeric(values[0]) && isNumeric(values[1])) {
-        return {
-          id,
-          min: parseFloat(values[0] as string),
-          max: parseFloat(values[1] as string),
-        }
-      }
-      return { id, values }
-    }
-  )
-  return coordinateFilters
-}
 
 function arrayBufferToJson(arrayBuffer: ArrayBuffer) {
   try {
@@ -53,7 +30,7 @@ export const parseUserTrack = (
     return {} as UserTrackData
   }
   const data = filterTrackByCoordinateProperties(rawData, {
-    filters: getCoordinatesFilter(params.filters),
+    filters: params.filters,
     includeNonTemporalFeatures: true,
     includeCoordinateProperties: [COORDINATE_PROPERTY_TIMESTAMP],
   })

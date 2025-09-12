@@ -14,10 +14,11 @@ import type { ScalePower } from 'd3-scale'
 import { scaleSqrt } from 'd3-scale'
 import type { Feature, GeoJsonProperties, Point } from 'geojson'
 
+import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
+
 import {
   COLOR_HIGHLIGHT_LINE,
   DEFAULT_LINE_COLOR,
-  getFeatureInFilters,
   getFetchLoadOptions,
   getLayerGroupOffset,
   getMVTSublayerProps,
@@ -156,7 +157,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     if (
       hasSublayerFilters(sublayer) &&
       !supportDataFilterExtension(sublayer) &&
-      !getFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
+      !isFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
     ) {
       return 0
     }
@@ -199,7 +200,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
           if (hasSublayerFilters(sublayer)) {
             // TODO: support getting values from certain property instead of just counting the points
             values.push(
-              getFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators) ? 1 : 0
+              isFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators) ? 1 : 0
             )
           } else {
             values.push(1)

@@ -1,5 +1,6 @@
 import type { FeatureCollection, LineString, MultiLineString, Position } from 'geojson'
 
+import { isFeatureInFilters, isNumeric } from './features.utils'
 import type { UserTrackFeature, UserTrackFeatureProperties, UserTrackRawData } from './types'
 
 // Originally duplicated from data-transforms libs to avoid circular dependencies
@@ -13,7 +14,7 @@ export type TrackCoordinatesPropertyFilter = {
 }
 
 export type FilterTrackByCoordinatePropertiesParams = {
-  filters: TrackCoordinatesPropertyFilter[]
+  filters: Record<string, (string | number)[]>
   includeNonTemporalFeatures?: boolean
   includeCoordinateProperties?: string[]
 }
@@ -195,10 +196,30 @@ const getFilteredLines = (
   return lines.filter((l) => l.coordinates.length)
 }
 
+function getCoordinatesFilter(filters = {} as Record<string, any>) {
+  const coordinateFilters: TrackCoordinatesPropertyFilter[] = Object.entries(filters).flatMap(
+    ([id, values]) => {
+      if (!values) {
+        return []
+      }
+      if (values.length === 2 && isNumeric(values[0]) && isNumeric(values[1])) {
+        return {
+          id,
+          min: parseFloat(values[0] as string),
+          max: parseFloat(values[1] as string),
+          values,
+        }
+      }
+      return { id, values }
+    }
+  )
+  return coordinateFilters
+}
+
 export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertiesFn = (
   geojson,
   {
-    filters = [],
+    filters = {},
     includeNonTemporalFeatures = false,
     includeCoordinateProperties = [],
   } = {} as FilterTrackByCoordinatePropertiesParams
@@ -210,16 +231,17 @@ export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertie
     }
   }
 
+  const filterIds = getCoordinatesFilter(filters).map((p) => p.id)
   const featuresFiltered: UserTrackFeature[] = geojson.features.reduce(
     (filteredFeatures: UserTrackFeature[], feature) => {
-      // TODO review if this check of other properties really works
-      const hasValues = filters
-        .map((p) => p.id)
-        .some((id) => feature?.properties?.coordinateProperties?.[id]?.length > 0)
-      if (hasValues) {
+      const hasCoordinatePropertiesValues = filterIds.some(
+        (id) => feature?.properties?.coordinateProperties?.[id]?.length > 0
+      )
+      const hasPropertiesValues = filterIds.some((id) => feature?.properties?.[id] !== undefined)
+      if (hasCoordinatePropertiesValues) {
         const filteredLines = getFilteredLines(
           feature as UserTrackFeature,
-          filters,
+          getCoordinatesFilter(filters),
           includeCoordinateProperties
         )
 
@@ -227,10 +249,7 @@ export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertie
           return filteredFeatures
         }
 
-        const coordinateProperties = [
-          ...filters.map(({ id }) => id),
-          ...includeCoordinateProperties,
-        ].reduce(
+        const coordinateProperties = [...filterIds, ...includeCoordinateProperties].reduce(
           (acc, property) => {
             acc[property] = filteredLines.flatMap(
               (line) => (line.coordinateProperties as MultiLineCoordinateProperties)[property]
@@ -256,6 +275,11 @@ export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertie
             coordinateProperties,
           } as UserTrackFeatureProperties,
         })
+      } else if (hasPropertiesValues) {
+        const featureInFilter = isFeatureInFilters(feature, filters)
+        if (featureInFilter) {
+          filteredFeatures.push(feature as UserTrackFeature)
+        }
       } else if (includeNonTemporalFeatures) {
         filteredFeatures.push(feature as UserTrackFeature)
       }
