@@ -77,6 +77,7 @@ export function useDatasetMetadata() {
   )
 }
 
+const DISCARDED_FIELDS = ['gfw_id']
 export function useDatasetMetadataOptions(
   datasetMetadata?: DatasetMetadata,
   schemaTypes = [] as DatasetSchemaType[]
@@ -119,7 +120,10 @@ export function useDatasetMetadataOptions(
     const options = datasetMetadata?.schema
       ? Object.keys(datasetMetadata.schema).flatMap((field) => {
           const schema = datasetMetadata.schema?.[field]
-          if (schemaTypes.length > 0 && !schemaTypes.includes(schema?.type as DatasetSchemaType)) {
+          if (
+            (schemaTypes.length > 0 && !schemaTypes.includes(schema?.type as DatasetSchemaType)) ||
+            DISCARDED_FIELDS.includes(field)
+          ) {
             return []
           }
           const isEnumAllowed =
