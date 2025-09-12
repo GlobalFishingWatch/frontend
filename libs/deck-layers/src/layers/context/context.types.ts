@@ -2,8 +2,9 @@ import type { PickingInfo } from '@deck.gl/core'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import type { Feature, LineString, MultiLineString, MultiPolygon, Polygon } from 'geojson'
 
+import type { FilterOperators } from '@globalfishingwatch/deck-loaders'
+
 import type { DeckLayerProps, DeckPickingObject } from '../../types'
-import type { FilterOperators } from '../user/user.types'
 
 export type ContextSublayerCallbackParams<T = Record<string, any>> = {
   layer: ContextLayerConfig

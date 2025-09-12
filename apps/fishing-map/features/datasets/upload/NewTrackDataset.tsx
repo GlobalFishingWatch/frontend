@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import type { FeatureCollection } from 'geojson'
+import type { FeatureCollection, LineString } from 'geojson'
 
 import { checkRecordValidity } from '@globalfishingwatch/data-transforms'
 import {
@@ -28,6 +28,7 @@ import {
   getDatasetMetadataValidations,
   getMetadataFromDataset,
   getTracksDatasetMetadata,
+  parseGeoJsonProperties,
 } from 'features/datasets/upload/datasets-upload.utils'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
 import type { NewDatasetProps } from 'features/datasets/upload/NewDataset'
@@ -54,7 +55,7 @@ function NewTrackDataset({
   const [processingData, setProcessingData] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [sourceData, setSourceData] = useState<DataList | undefined>()
-  const [geojson, setGeojson] = useState<FeatureCollection | undefined>()
+  const [geojson, setGeojson] = useState<FeatureCollection<LineString> | undefined>()
   const { datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig } = useDatasetMetadata()
   const { getSelectedOption, filtersFieldsOptions } = useDatasetMetadataOptions(datasetMetadata)
   const numericFiltersFieldsOptions = filtersFieldsOptions.filter((f) => f.type === 'range')
@@ -136,7 +137,7 @@ function NewTrackDataset({
             setTimeFilterError('')
           }
         } else {
-          setGeojson(data as FeatureCollection)
+          setGeojson(data as FeatureCollection<LineString>)
         }
         setProcessingData(false)
       } catch (e: any) {
@@ -215,7 +216,9 @@ function NewTrackDataset({
         setError(error)
       } else if (onConfirm) {
         setLoading(true)
-        const file = geojson ? getFileFromGeojson(geojson) : undefined
+        const file = geojson
+          ? getFileFromGeojson(parseGeoJsonProperties<LineString>(geojson, datasetMetadata))
+          : undefined
         await onConfirm(datasetMetadata, { file, isEditing })
         setLoading(false)
       }

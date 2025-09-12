@@ -77,6 +77,7 @@ export function useDatasetMetadata() {
   )
 }
 
+const DISCARDED_FIELDS = ['gfw_id']
 export function useDatasetMetadataOptions(
   datasetMetadata?: DatasetMetadata,
   schemaTypes = [] as DatasetSchemaType[]
@@ -93,6 +94,7 @@ export function useDatasetMetadataOptions(
         label: <DatasetFieldLabel field={field} fieldSchema={fieldSchema} />,
       }
     })
+
     return options.sort(sortFields)
   }, [datasetMetadata?.schema, schemaTypes])
 
@@ -118,10 +120,15 @@ export function useDatasetMetadataOptions(
     const options = datasetMetadata?.schema
       ? Object.keys(datasetMetadata.schema).flatMap((field) => {
           const schema = datasetMetadata.schema?.[field]
-          if (schemaTypes.length > 0 && !schemaTypes.includes(schema?.type as DatasetSchemaType)) {
+          if (
+            (schemaTypes.length > 0 && !schemaTypes.includes(schema?.type as DatasetSchemaType)) ||
+            DISCARDED_FIELDS.includes(field)
+          ) {
             return []
           }
-          const isEnumAllowed = schema?.type === 'string' || schema?.type === 'boolean'
+          const isEnumAllowed =
+            schema?.type === 'boolean' ||
+            (schema?.type === 'string' && schema?.enum && schema?.enum?.length > 0)
           const isRangeAllowed = schema?.type === 'range' && schema.enum?.length === 2
           return isEnumAllowed || isRangeAllowed
             ? {

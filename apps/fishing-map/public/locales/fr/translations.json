@@ -33,6 +33,7 @@
     "errorTooComplex": "Nous ne pouvons pas créer de rapport dynamique pour cette zone, car les informations relatives aux limites sont complexes. Veuillez simplifier votre zone d'intérêt - en téléchargeant un nouveau calque ou en dessinant votre calque sur la carte - et essayez à nouveau de créer le rapport pour résoudre le problème.",
     "evolution": "Évolution",
     "globally": "globally",
+    "groupByCoverage": "by coverage",
     "groupByEEZ": "By EEZ",
     "groupByFAO": "By FAO",
     "groupByFlag": "par pavillon",

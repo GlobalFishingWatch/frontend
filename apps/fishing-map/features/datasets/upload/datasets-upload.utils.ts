@@ -5,6 +5,7 @@ import type {
   FeatureCollection,
   GeoJsonProperties,
   GeometryCollection,
+  LineString,
   Point,
   Polygon,
 } from 'geojson'
@@ -182,7 +183,7 @@ export const getFinalDatasetFromMetadata = (datasetMetadata: DatasetMetadata) =>
   return baseDataset
 }
 
-export const parseGeoJsonProperties = <T extends Polygon | Point>(
+export const parseGeoJsonProperties = <T extends Polygon | Point | LineString>(
   geojson: FeatureCollection<T, GeoJsonProperties>,
   datasetMetadata: DatasetMetadata
 ): FeatureCollection<T, GeoJsonProperties> => {
