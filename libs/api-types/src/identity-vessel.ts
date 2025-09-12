@@ -154,12 +154,12 @@ export type RegistryImage = {
   copyright: string
 }
 
-export type RegistryExtraFieldValue = {
+export type RegistryExtraFieldValue<V = number> = {
   dateFrom: string
   dateFromMask: string
   dateTo: string
   dateToMask: string
-  value: number
+  value: V
 }
 
 export type RegistryExtraFields = {
@@ -167,7 +167,7 @@ export type RegistryExtraFields = {
   depthM: RegistryExtraFieldValue
   hasArchiveInfo: boolean
   hasComplianceInfo: boolean
-  iuuStatus: string | null
+  iuuStatus: RegistryExtraFieldValue<string> | null
   operator: string | null
   registrySource: string
   images: RegistryImage[]

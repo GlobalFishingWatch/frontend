@@ -138,7 +138,9 @@ const VesselIdentity = () => {
 
   const isChileanVMSVessel =
     source?.includes(SelfReportedSource.Chile) || vesselIdentity?.flag === 'CHL'
-  const hasMoreInfo = vesselIdentity?.hasComplianceInfo || vesselIdentity?.iuuStatus === 'Current'
+  const hasMoreInfo =
+    vesselIdentity?.hasComplianceInfo ||
+    vesselIdentity?.iuuStatus?.value?.toUpperCase() === 'CURRENT'
   const registrySourceData = REGISTRY_SOURCES.find((s) => s.key === vesselIdentity.registrySource)
 
   return (
