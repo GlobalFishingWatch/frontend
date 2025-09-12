@@ -2,7 +2,7 @@ export type FilterProperty = 'name' | 'flag' | 'mmsi' | 'type' | 'gear'
 export const FILTER_PROPERTIES: Record<FilterProperty, string[]> = {
   name: ['shipName'],
   flag: ['flag', 'flagTranslated', 'flagTranslatedClean'],
-  mmsi: ['mmsi'],
+  mmsi: ['mmsi', 'ssvid'],
   gear: ['geartype'],
   type: ['geartype', 'vesselType', 'shiptype'],
 }
