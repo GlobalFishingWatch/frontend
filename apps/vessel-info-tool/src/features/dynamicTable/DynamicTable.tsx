@@ -1,6 +1,5 @@
 import { Fragment, useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import type { ExpandedState, Row, RowSelectionState, SortingState } from '@tanstack/react-table'
+import type { ExpandedState, RowSelectionState, SortingState } from '@tanstack/react-table'
 import {
   flexRender,
   getCoreRowModel,
@@ -10,54 +9,60 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 
-import type { useTableFilters } from '@/hooks/useTableFilters'
+import { Route } from '@/routes/_auth/index'
 import { type Vessel } from '@/types/vessel.types'
 import { Icon } from '@globalfishingwatch/ui-components'
 
-import type { AppDispatch, RootState } from 'store'
-
 import { useDynamicColumns } from '../../hooks/useDynamicColumns'
 import { renderExpandedRow } from '../expandableRow/ExpandableRow'
-
-import { setSelectedRows } from './table.slice'
 
 import styles from '../../styles/global.module.css'
 
 export interface DynamicTableProps {
   data: Vessel[]
-  tableFilters: ReturnType<typeof useTableFilters>
 }
 
-export function DynamicTable({ data, tableFilters }: DynamicTableProps) {
-  const columns = useDynamicColumns(data)
-  const [expanded, setExpanded] = useState<ExpandedState>({})
-  const [sorting, setSorting] = useState<SortingState>([(columns[1] as any)?.accessorKey])
-  const [selected, setSelected] = useState<RowSelectionState>({})
+export function DynamicTable({ data }: DynamicTableProps) {
+  const searchQuery = Route.useSearch()
+  const navigate = Route.useNavigate()
 
+  const columns = useDynamicColumns(data)
   const columnPinning = {
     left: ['select', (columns[1] as any)?.accessorKey],
   }
-
-  const dispatch = useDispatch<AppDispatch>()
-  const rowSelection = useSelector(
-    (state: RootState) => state.table.selectedRows
-  ) as RowSelectionState
+  const [expanded, setExpanded] = useState<ExpandedState>({})
+  const [sorting, setSorting] = useState<SortingState>([(columns[1] as any)?.accessorKey])
+  const [selected, setSelected] = useState<RowSelectionState>(
+    searchQuery.selectedRows
+      ? Array.isArray(searchQuery.selectedRows)
+        ? Object.fromEntries(searchQuery.selectedRows.map((id) => [id, true]))
+        : { [searchQuery.selectedRows]: true }
+      : {}
+  )
 
   useEffect(() => {
-    dispatch(setSelectedRows(selected))
+    if (Object.keys(selected).length > 0) {
+      navigate({
+        search: (prev) => ({
+          ...prev,
+          selectedRows: Object.keys(selected).join(','),
+        }),
+      })
+    }
   }, [selected])
 
-  const { filteredData, globalFilter } = tableFilters
-
   const table = useReactTable({
-    data: filteredData,
+    data: data,
     columns,
     state: {
       expanded,
       columnPinning,
       sorting,
-      globalFilter,
-      rowSelection,
+      globalFilter: searchQuery.globalSearch,
+      columnFilters: searchQuery.filters
+        ? Object.entries(searchQuery.filters).map(([id, value]) => ({ id, value }))
+        : undefined,
+      rowSelection: selected,
     },
     onExpandedChange: setExpanded,
     getCoreRowModel: getCoreRowModel(),
@@ -96,7 +101,7 @@ export function DynamicTable({ data, tableFilters }: DynamicTableProps) {
                       onClick={header.column.getToggleSortingHandler()}
                       className="flex items-center justify-between p-2"
                     >
-                      <span className="block text-ellipsis overflow-hidden whitespace-nowrap max-w-[170px]">
+                      <span className="block text-ellipsis overflow-hidden whitespace-nowrap max-w-[200px]">
                         {flexRender(header.column.columnDef.header, header.getContext())}
                       </span>
                       {{

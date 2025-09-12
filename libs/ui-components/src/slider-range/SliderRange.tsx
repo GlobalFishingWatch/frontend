@@ -10,13 +10,13 @@ import { formatSliderNumber } from '../slider'
 import styles from '../slider/slider.module.css'
 
 export type SliderRangeValues = number[]
-type SliderRangeConfig = {
+export type SliderRangeConfig = {
   steps: number[]
   min: number
   max: number
 }
 interface SliderRangeProps {
-  label: string
+  label?: string
   thumbsSize?: SliderThumbsSize
   initialRange: SliderRangeValues
   range?: SliderRangeValues

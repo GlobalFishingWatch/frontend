@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createFileRoute } from '@tanstack/react-router'
-import { stringify } from 'qs'
 
 import { DynamicTable } from '@/features/dynamicTable/DynamicTable'
 import Footer from '@/features/footer/Footer'
@@ -10,20 +9,26 @@ import DownloadModal from '@/features/modal/DownloadModal'
 import OptionsMenu from '@/features/options/OptionsMenu'
 import Profile from '@/features/profile/Profile'
 import Search from '@/features/search/Search'
-import { type TableSearchParams, useTableFilters } from '@/hooks/useTableFilters'
-import type { Vessel } from '@/types/vessel.types'
+import type { RFMO, TableSearchParams, Vessel } from '@/types/vessel.types'
 import { fetchVessels } from '@/utils/vessels'
 import { MOCK_USER_PERMISSION } from '@globalfishingwatch/api-types'
 
 export const Route = createFileRoute('/_auth/')({
   loader: async () => fetchVessels(),
-  validateSearch: (search: Record<string, unknown>): TableSearchParams => ({
-    search: typeof search.search === 'string' ? search.search : undefined,
-    filters:
-      typeof search.filters === 'object' && search.filters !== null
-        ? (search.filters as Record<string, string | string[]>)
-        : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): TableSearchParams => {
+    const { selectedRows, rfmo, globalSearch, ...rest } = search
+    return {
+      selectedRows: typeof selectedRows === 'string' ? selectedRows : undefined,
+      rfmo: rfmo as RFMO,
+      globalSearch: typeof globalSearch === 'string' ? globalSearch : undefined,
+      ...Object.fromEntries(
+        Object.entries(rest).map(([key, value]) => [
+          key,
+          Array.isArray(value) ? value.map(String) : String(value),
+        ])
+      ),
+    }
+  },
   component: Home,
 })
 
@@ -33,12 +38,10 @@ function Home() {
 
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false)
 
-  const tableFilters = useTableFilters(vessels)
-
   return (
     <div className="fixed inset-0 flex flex-col overflow-hidden">
       <SidebarHeader>
-        <Search tableFilters={tableFilters} />
+        <Search data={vessels} />
         <OptionsMenu />
         <Profile
           user={{
@@ -53,7 +56,7 @@ function Home() {
         />
       </SidebarHeader>
       <div className="flex-1 overflow-auto">
-        <DynamicTable data={vessels} tableFilters={tableFilters} />
+        <DynamicTable data={vessels} />
       </div>
       <Footer downloadClick={() => setIsDownloadModalOpen(true)}>
         {t('footer.results', `${vessels.length} results`, { count: vessels.length })}
@@ -61,7 +64,7 @@ function Home() {
       <DownloadModal
         isOpen={isDownloadModalOpen}
         onClose={() => setIsDownloadModalOpen(false)}
-        data={vessels}
+        data={vessels} // change to selected vessels only
       />
     </div>
   )

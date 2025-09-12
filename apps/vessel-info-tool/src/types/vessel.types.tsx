@@ -1,4 +1,4 @@
-import type { SelectOption } from '@globalfishingwatch/ui-components'
+import type { SelectOption, SliderRangeConfig } from '@globalfishingwatch/ui-components'
 
 export type VesselParams = {
   name: string | null
@@ -15,23 +15,26 @@ export type FilterType = 'select' | 'text' | 'date' | 'number' | ''
 
 export interface FilterState {
   id: string
-  label: string
-  type: FilterType
+  value: any
+  label?: string
+  type?: FilterType
   options?: SelectOption[]
-  filteredValue?: any
+  numberConfig?: SliderRangeConfig
 }
 export interface ExpandedRowData {
   [key: string]: any
 }
 export interface TableSearchParams {
-  search?: string
-  filters?: Record<string, string | string[]>
+  selectedRows?: string
+  sourceSystem?: 'brazil' | 'panama'
+  rfmo?: RFMO
+  globalSearch?: string
+  [key: string]: string | string[] | undefined
 }
 export interface FiltersState {
   filterConfigs: FilterState[]
   globalFilter: string
   filteredData: any[]
-  originalData: any[]
   isLoading: boolean
   urlSyncEnabled: boolean
   debounceMs: number

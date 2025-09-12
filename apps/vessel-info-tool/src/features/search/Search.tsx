@@ -1,35 +1,29 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { Route } from '@/routes/_auth/index'
+import type { Vessel } from '@/types/vessel.types'
 import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 
-import type { useTableFilters } from '../../hooks/useTableFilters'
 import DynamicFilters from '../filter/DynamicFilters'
 
-interface SearchProps {
-  tableFilters: ReturnType<typeof useTableFilters>
-  searchQuery?: string
-}
-
-export const Search = ({ tableFilters }: SearchProps) => {
+export const Search = ({ data }: { data: Vessel[] }) => {
   const { t } = useTranslation()
+  const searchQuery = Route.useSearch()
 
-  const {
-    filterConfigs,
-    handleSelectChange,
-    getSelectedValues,
-    updateFilterValue,
-    clearColumnFilter,
-    globalFilter,
-    updateGlobalFilter,
-  } = tableFilters
+  const [localValue, setLocalValue] = useState(searchQuery?.globalSearch || undefined)
 
-  const [localValue, setLocalValue] = useState(globalFilter)
+  const navigate = Route.useNavigate()
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      if (localValue !== globalFilter) {
-        updateGlobalFilter(localValue)
+      if (localValue !== searchQuery?.globalSearch) {
+        navigate({
+          search: (prev) => ({
+            ...prev,
+            globalSearch: localValue,
+          }),
+        })
       }
     }, 200)
 
@@ -52,7 +46,7 @@ export const Search = ({ tableFilters }: SearchProps) => {
           onChange={(e) => setLocalValue(e.target.value)}
           value={localValue}
           type="search"
-          onCleanButtonClick={() => setLocalValue('')}
+          onCleanButtonClick={() => setLocalValue(undefined)}
           placeholder={t('search.placeholderGlobal', 'Search all data..')}
         />
         {isFilterOpen ? (
@@ -65,15 +59,7 @@ export const Search = ({ tableFilters }: SearchProps) => {
           />
         )}
       </div>
-      {isFilterOpen && (
-        <DynamicFilters
-          filters={filterConfigs}
-          onFilterChange={handleSelectChange}
-          getSelectedValues={getSelectedValues}
-          updateFilterValue={updateFilterValue}
-          clearColumnFilter={clearColumnFilter}
-        />
-      )}
+      {isFilterOpen && <DynamicFilters originalData={data} />}
     </div>
   )
 }
