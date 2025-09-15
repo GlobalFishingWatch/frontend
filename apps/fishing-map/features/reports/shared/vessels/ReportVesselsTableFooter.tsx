@@ -22,6 +22,7 @@ import {
   selectReportCategory,
   selectReportSubCategory,
   selectReportUnit,
+  selectReportVesselGraph,
 } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
@@ -53,6 +54,7 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
   const allFilteredVessels = useSelector(selectReportVesselsFiltered)
   const reportVesselFilter = useSelector(selectReportVesselFilter)
   const pagination = useSelector(selectReportVesselsPagination)
+  const reportVesselGraph = useSelector(selectReportVesselGraph)
   const { start, end } = useSelector(selectTimeRange)
 
   const vesselGroupVessels = useMemo(() => {
@@ -82,7 +84,8 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
           'GFW vessel type': vessel.vesselType,
           ...(extendedFields && { 'GFW gear type': vessel.geartype }),
           ...(activityUnit && {
-            [`Total ${reportSubCategory} ${reportUnit}s`]: vessel.value,
+            [`Total ${reportSubCategory} ${reportUnit}s`]:
+              reportVesselGraph === 'coverage' && vessel.value !== -1 ? vessel.value : undefined,
           }),
           vesselId: vessel.id,
           dataset: vessel.datasetId,

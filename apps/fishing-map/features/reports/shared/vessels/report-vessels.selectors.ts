@@ -142,7 +142,7 @@ export const selectReportVessels = createSelector(
           shipName: formatInfoField(shipname, 'shipname') as string,
           vesselType,
           geartype,
-          coverage,
+          value: coverage,
           coverageBucket: parseCoverageGraphValueBucket(coverage),
           ssvid: getVesselProperty(identity, 'ssvid', {
             identitySource: VesselIdentitySourceEnum.SelfReported,
@@ -277,14 +277,13 @@ export const selectReportVesselsOrdered = createSelector(
     selectReportVesselsFiltered,
     selectReportVesselsOrderProperty,
     selectReportVesselsOrderDirection,
-    selectReportVesselGraph,
   ],
-  (vessels, property, direction, reportVesselGraph) => {
+  (vessels, property, direction) => {
     if (!vessels?.length) return []
     return vessels.toSorted((a, b) => {
       // First compare by value
-      const valueA = reportVesselGraph === 'coverage' ? a.coverage || 0 : a.value || 0
-      const valueB = reportVesselGraph === 'coverage' ? b.coverage || 0 : b.value || 0
+      const valueA = a.value || 0
+      const valueB = b.value || 0
       if (valueA !== valueB) {
         return valueB - valueA
       }

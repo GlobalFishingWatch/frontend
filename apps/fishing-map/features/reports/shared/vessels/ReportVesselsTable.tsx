@@ -248,18 +248,9 @@ export default function ReportVesselsTable({
                 </div>
                 {activityUnit && (
                   <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
-                    {activityUnit === 'coverage' ? (
-                      vessel.coverage !== -1 && vessel.coverage !== undefined ? (
-                        <span>
-                          <I18nNumber number={vessel.coverage} />%
-                        </span>
-                      ) : (
-                        EMPTY_FIELD_PLACEHOLDER
-                      )
-                    ) : (
-                      values.length &&
+                    {values.length &&
                       values.map((v) =>
-                        v.value ? (
+                        (activityUnit === 'coverage' ? v.value !== -1 : v.value !== undefined) ? (
                           <Fragment key={v.value}>
                             {v.color && dataviews?.length > 1 && (
                               <span
@@ -269,13 +260,13 @@ export default function ReportVesselsTable({
                             )}
                             <span className={styles.value}>
                               <I18nNumber number={v.value} />
+                              {activityUnit === 'coverage' ? '%' : ''}
                             </span>
                           </Fragment>
                         ) : (
                           EMPTY_FIELD_PLACEHOLDER
                         )
-                      )
-                    )}
+                      )}
                   </div>
                 )}
               </Fragment>
