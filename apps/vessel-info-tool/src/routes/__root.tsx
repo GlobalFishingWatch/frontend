@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { Provider } from 'react-redux'
-import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
+import { createRootRouteWithContext, HeadContent, Scripts } from '@tanstack/react-router'
 
 import { DefaultCatchBoundary } from '@/features/router/DefaultCatchBoundary'
 import { NotFound } from '@/features/router/NotFound'
@@ -8,9 +7,9 @@ import appCss from '@/styles/app.css?url'
 import baseCss from '@/styles/base.css?url'
 import { seo } from '@/utils/seo'
 
-import { store } from 'store'
+interface VesselTableContext {}
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<VesselTableContext>()({
   head: () => ({
     meta: [
       {
@@ -60,9 +59,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <div id="root">
-          <Provider store={store}>{children}</Provider>
-        </div>
+        <div id="root">{children}</div>
         <Scripts />
       </body>
     </html>
