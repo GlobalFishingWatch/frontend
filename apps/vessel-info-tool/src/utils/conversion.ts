@@ -31,14 +31,6 @@ export const panamaToICCAT: Record<string, string> = {
   'HOLD CAPACITY (M3) / CAPACIDAD DE BODEGA (M3)': 'CarCapacity',
 }
 
-function normalizeKey(key: string): string {
-  return key
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]/g, '')
-}
-
 export function convertOutput(
   mapping: Record<string, string>,
   data: Record<string, any>[]
@@ -53,22 +45,6 @@ export function convertOutput(
     return newRow
   })
 }
-
-// export function convertToICCAT(data: Record<string, keyof Vessel>[]) {
-//   if (data.length === 0) return 'unknown'
-
-//   const normalizedBrazilKeys = Object.keys(brazilToICCAT).map(normalizeKey)
-//   const normalizedPanamaKeys = Object.keys(panamaToICCAT).map(normalizeKey)
-
-//   const inputKeys = Object.keys(data[0]).map(normalizeKey)
-
-//   const brazilMatches = inputKeys.filter((k) => normalizedBrazilKeys.includes(k)).length
-
-//   const panamaMatches = inputKeys.filter((k) => normalizedPanamaKeys.includes(k)).length
-
-//   if (brazilMatches > panamaMatches) return convertOutput(brazilToICCAT, data)
-//   if (panamaMatches > brazilMatches) return convertOutput(panamaToICCAT, data)
-// }
 
 export const parseVessels = (
   data: Vessel[],

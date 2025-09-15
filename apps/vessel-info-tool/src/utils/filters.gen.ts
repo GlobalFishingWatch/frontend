@@ -76,7 +76,7 @@ export const generateFilterConfigs = (data: any[]): FilterState[] => {
               })),
           }
         : type === 'number' &&
-          key !== 'imo' &&
+          key !== 'IMO' &&
           key !== 'id' && {
             numberConfig: {
               min: Math.min(...valuesArray.map(Number)),

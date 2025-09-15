@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createFileRoute } from '@tanstack/react-router'
+import type { ColumnFiltersState } from '@tanstack/react-table';
+import { ColumnFilter } from '@tanstack/react-table'
 
 import { DynamicTable } from '@/features/dynamicTable/DynamicTable'
 import Footer from '@/features/footer/Footer'
@@ -15,18 +17,14 @@ import { MOCK_USER_PERMISSION } from '@globalfishingwatch/api-types'
 
 export const Route = createFileRoute('/_auth/')({
   loader: async () => fetchVessels(),
+  loaderDeps: () => ({}),
   validateSearch: (search: Record<string, unknown>): TableSearchParams => {
-    const { selectedRows, rfmo, globalSearch, ...rest } = search
+    const { selectedRows, rfmo, globalSearch, columnFilters } = search
     return {
       selectedRows: typeof selectedRows === 'string' ? selectedRows : undefined,
       rfmo: rfmo as RFMO,
       globalSearch: typeof globalSearch === 'string' ? globalSearch : undefined,
-      ...Object.fromEntries(
-        Object.entries(rest).map(([key, value]) => [
-          key,
-          Array.isArray(value) ? value.map(String) : String(value),
-        ])
-      ),
+      columnFilters: columnFilters as ColumnFiltersState,
     }
   },
   component: Home,

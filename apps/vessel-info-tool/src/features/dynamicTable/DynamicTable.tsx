@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import type { ExpandedState, RowSelectionState, SortingState } from '@tanstack/react-table'
 import {
   flexRender,
@@ -23,7 +23,7 @@ export interface DynamicTableProps {
 }
 
 export function DynamicTable({ data }: DynamicTableProps) {
-  const searchQuery = Route.useSearch()
+  const { selectedRows, rfmo, globalSearch, columnFilters } = Route.useSearch()
   const navigate = Route.useNavigate()
 
   const columns = useDynamicColumns(data)
@@ -33,23 +33,23 @@ export function DynamicTable({ data }: DynamicTableProps) {
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const [sorting, setSorting] = useState<SortingState>([(columns[1] as any)?.accessorKey])
   const [selected, setSelected] = useState<RowSelectionState>(
-    searchQuery.selectedRows
-      ? Array.isArray(searchQuery.selectedRows)
-        ? Object.fromEntries(searchQuery.selectedRows.map((id) => [id, true]))
-        : { [searchQuery.selectedRows]: true }
+    selectedRows
+      ? Array.isArray(selectedRows)
+        ? Object.fromEntries(selectedRows.map((id) => [id, true]))
+        : { [selectedRows]: true }
       : {}
   )
 
-  useEffect(() => {
-    if (Object.keys(selected).length > 0) {
-      navigate({
-        search: (prev) => ({
-          ...prev,
-          selectedRows: Object.keys(selected).join(','),
-        }),
-      })
-    }
-  }, [selected])
+  // useEffect(() => {
+  //   if (Object.keys(selected).length > 0) {
+  //     navigate({
+  //       search: (prev) => ({
+  //         ...prev,
+  //         selectedRows: Object.keys(selected).join(','),
+  //       }),
+  //     })
+  //   }
+  // }, [selected])
 
   const table = useReactTable({
     data: data,
@@ -58,12 +58,11 @@ export function DynamicTable({ data }: DynamicTableProps) {
       expanded,
       columnPinning,
       sorting,
-      globalFilter: searchQuery.globalSearch,
-      columnFilters: searchQuery.filters
-        ? Object.entries(searchQuery.filters).map(([id, value]) => ({ id, value }))
-        : undefined,
-      rowSelection: selected,
+      globalFilter: globalSearch,
+      columnFilters,
+      // rowSelection: selected,
     },
+    // manualFiltering: true,
     onExpandedChange: setExpanded,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -74,6 +73,7 @@ export function DynamicTable({ data }: DynamicTableProps) {
     onRowSelectionChange: setSelected,
     getRowId: (row: Vessel) => row.id,
   })
+  console.log('🚀 ~ DynamicTable ~ columnFilters:', table.getState().columnFilters)
 
   return (
     <table className="w-full">

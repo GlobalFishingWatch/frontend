@@ -1,3 +1,5 @@
+import type { ColumnFiltersState } from '@tanstack/react-table'
+
 import type { SelectOption, SliderRangeConfig } from '@globalfishingwatch/ui-components'
 
 export type VesselParams = {
@@ -29,7 +31,7 @@ export interface TableSearchParams {
   sourceSystem?: 'brazil' | 'panama'
   rfmo?: RFMO
   globalSearch?: string
-  [key: string]: string | string[] | undefined
+  columnFilters: ColumnFiltersState
 }
 export interface FiltersState {
   filterConfigs: FilterState[]

@@ -2,8 +2,10 @@ import type { HTMLProps } from 'react'
 import { useEffect, useMemo, useRef } from 'react'
 import type { Row, Table } from '@tanstack/react-table'
 import escapeRegExp from 'lodash/escapeRegExp'
+import { id } from 'zod/v4/locales'
 
 import type { Vessel } from '@/types/vessel.types'
+import { normalizeKey } from '@/utils/source'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import styles from '../styles/global.module.css'
@@ -66,6 +68,7 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
         size: 50,
       },
       ...keys.map((key, index) => ({
+        id: normalizeKey(key),
         accessorKey: key || `col_${index}`,
         header: key,
         size: 200,

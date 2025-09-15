@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Route } from '@/routes/_auth/index'
 import type { FilterState, Vessel } from '@/types/vessel.types'
 import { generateFilterConfigs } from '@/utils/filters.gen'
-import type { SelectOption } from '@globalfishingwatch/ui-components'
+import type { MultiSelectOption } from '@globalfishingwatch/api-client'
 import { InputText, MultiSelect, SliderRange } from '@globalfishingwatch/ui-components'
 
 const DynamicFilters = ({ originalData }: { originalData: Vessel[] }) => {
@@ -14,31 +14,52 @@ const DynamicFilters = ({ originalData }: { originalData: Vessel[] }) => {
   const searchQuery = Route.useSearch()
 
   const getSelectedValues = (id: string) => {
-    const value = searchQuery[id]
+    if (!searchQuery.columnFilters) return []
+    const value = searchQuery.columnFilters.find((filter) => filter.id === id)?.value
     if (!value) return []
-
     return Array.isArray(value) ? value : [value]
   }
 
   const updateFilterValue = (id: string, value: any) => {
     navigate({
-      search: (prev) => ({
-        ...prev,
-        [id]: value,
-      }),
+      search: (prev) => {
+        if (prev.columnFilters.find((filter) => filter.id === id)?.value === value) return prev
+        return {
+          ...prev,
+          columnFilters: [
+            ...prev.columnFilters.filter((filter) => filter.id !== id),
+            { id, value },
+          ],
+        }
+      },
     })
   }
 
-  const onFilterChange = (id: string) => (selectedOptions: SelectOption[]) => {
-    const values = selectedOptions.map((option) =>
-      typeof option.label === 'string' ? option.label : String(option.label)
-    )
-
+  const onFilterChange = (id: string, option: MultiSelectOption) => {
     navigate({
-      search: (prev) => ({
-        ...prev,
-        [id]: values.length ? values : undefined,
-      }),
+      search: (prev) => {
+        // if (prev.columnFilters.find((filter) => filter.id === id)?.value === option.label)
+        //   return prev
+        return {
+          ...prev,
+          columnFilters: [
+            ...prev.columnFilters.filter((filter) => filter.id !== id),
+            { id, value: typeof option.label === 'string' ? option.label : '' },
+          ],
+        }
+      },
+    })
+  }
+
+  const clearColumnFilter = (id: string): void => {
+    navigate({
+      search: (prev) => {
+        const { columnFilters, ...rest } = prev
+        return {
+          ...rest,
+          columnFilters: columnFilters.filter((filter) => filter.id !== id),
+        }
+      },
     })
   }
 
@@ -56,8 +77,8 @@ const DynamicFilters = ({ originalData }: { originalData: Vessel[] }) => {
                 id: value,
                 label: value,
               }))}
-              onSelect={() => onFilterChange(filter.id)}
-              // onCleanClick={() => clearColumnFilter(filter.id)}
+              onSelect={(option) => onFilterChange(filter.id, option)}
+              onCleanClick={() => clearColumnFilter(filter.id)}
             />
           </div>
         )
@@ -73,6 +94,7 @@ const DynamicFilters = ({ originalData }: { originalData: Vessel[] }) => {
               onChange={(e) => updateFilterValue(filter.id, e.target.value)}
               type="search"
               placeholder={t('search.typeaValue', 'Type a value')}
+              onCleanButtonClick={() => clearColumnFilter(filter.id)}
             />
           </div>
         )
