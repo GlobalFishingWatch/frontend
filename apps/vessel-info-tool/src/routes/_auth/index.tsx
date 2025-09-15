@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createFileRoute } from '@tanstack/react-router'
-import type { ColumnFiltersState } from '@tanstack/react-table';
+import type { ColumnFiltersState } from '@tanstack/react-table'
 import { ColumnFilter } from '@tanstack/react-table'
 
 import { DynamicTable } from '@/features/dynamicTable/DynamicTable'
@@ -16,15 +16,16 @@ import { fetchVessels } from '@/utils/vessels'
 import { MOCK_USER_PERMISSION } from '@globalfishingwatch/api-types'
 
 export const Route = createFileRoute('/_auth/')({
+  ssr: false,
   loader: async () => fetchVessels(),
   loaderDeps: () => ({}),
-  validateSearch: (search: Record<string, unknown>): TableSearchParams => {
+  validateSearch: (search: Record<string, unknown>): Partial<TableSearchParams> => {
     const { selectedRows, rfmo, globalSearch, columnFilters } = search
     return {
       selectedRows: typeof selectedRows === 'string' ? selectedRows : undefined,
-      rfmo: rfmo as RFMO,
+      rfmo: typeof rfmo === 'string' ? (rfmo as RFMO) : undefined,
       globalSearch: typeof globalSearch === 'string' ? globalSearch : undefined,
-      columnFilters: columnFilters as ColumnFiltersState,
+      columnFilters: columnFilters as ColumnFiltersState | undefined,
     }
   },
   component: Home,
@@ -62,7 +63,7 @@ function Home() {
       <DownloadModal
         isOpen={isDownloadModalOpen}
         onClose={() => setIsDownloadModalOpen(false)}
-        data={vessels} // change to selected vessels only
+        data={vessels}
       />
     </div>
   )

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { createRootRouteWithContext, HeadContent, Scripts } from '@tanstack/react-router'
+import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
 
 import { DefaultCatchBoundary } from '@/features/router/DefaultCatchBoundary'
 import { NotFound } from '@/features/router/NotFound'
@@ -7,9 +7,7 @@ import appCss from '@/styles/app.css?url'
 import baseCss from '@/styles/base.css?url'
 import { seo } from '@/utils/seo'
 
-interface VesselTableContext {}
-
-export const Route = createRootRouteWithContext<VesselTableContext>()({
+export const Route = createRootRoute({
   head: () => ({
     meta: [
       {
