@@ -85,8 +85,14 @@ function VesselGroupReportVesselsGraphSelector() {
                   <DataTerminology
                     size="tiny"
                     type="default"
-                    title={t('vessel.insights.coverage')}
+                    title={
+                      <span>
+                        {t('vessel.insights.coverage')}
+                        <span className={styles.experimental}>(Experimental)</span>
+                      </span>
+                    }
                     terminologyKey="insightsCoverage"
+                    tooltip={t('common.experimental')}
                     className={styles.dataTerminology}
                   />
                 )}
