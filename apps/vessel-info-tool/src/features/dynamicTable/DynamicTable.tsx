@@ -23,7 +23,7 @@ export interface DynamicTableProps {
 }
 
 export function DynamicTable({ data }: DynamicTableProps) {
-  const searchQuery = Route.useSearch()
+  const { selectedRows, rfmo, globalSearch, ...rest } = Route.useSearch()
   const navigate = Route.useNavigate()
 
   const columns = useDynamicColumns(data)
@@ -33,12 +33,15 @@ export function DynamicTable({ data }: DynamicTableProps) {
   const [expanded, setExpanded] = useState<ExpandedState>({})
   const [sorting, setSorting] = useState<SortingState>([(columns[1] as any)?.accessorKey])
   const [selected, setSelected] = useState<RowSelectionState>(
-    searchQuery.selectedRows
-      ? Array.isArray(searchQuery.selectedRows)
-        ? Object.fromEntries(searchQuery.selectedRows.map((id) => [id, true]))
-        : { [searchQuery.selectedRows]: true }
+    selectedRows
+      ? Array.isArray(selectedRows)
+        ? Object.fromEntries(selectedRows.map((id) => [id, true]))
+        : { [selectedRows]: true }
       : {}
   )
+  const columnFilters = rest
+    ? Object.entries(rest).map(([id, value]) => ({ id: id, value: value }))
+    : []
 
   useEffect(() => {
     if (Object.keys(selected).length > 0) {
@@ -58,12 +61,11 @@ export function DynamicTable({ data }: DynamicTableProps) {
       expanded,
       columnPinning,
       sorting,
-      globalFilter: searchQuery.globalSearch,
-      columnFilters: searchQuery.filters
-        ? Object.entries(searchQuery.filters).map(([id, value]) => ({ id, value }))
-        : undefined,
+      globalFilter: globalSearch,
+      columnFilters,
       rowSelection: selected,
     },
+    manualFiltering: true,
     onExpandedChange: setExpanded,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),

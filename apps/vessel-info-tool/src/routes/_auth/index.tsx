@@ -17,10 +17,18 @@ export const Route = createFileRoute('/_auth/')({
   loader: async () => fetchVessels(),
   validateSearch: (search: Record<string, unknown>): TableSearchParams => {
     const { selectedRows, rfmo, globalSearch, ...rest } = search
-    return {
+    const baseParams = {
       selectedRows: typeof selectedRows === 'string' ? selectedRows : undefined,
       rfmo: rfmo as RFMO,
       globalSearch: typeof globalSearch === 'string' ? globalSearch : undefined,
+    }
+
+    if (Object.keys(rest).length === 0) {
+      return baseParams
+    }
+
+    return {
+      ...baseParams,
       ...Object.fromEntries(
         Object.entries(rest).map(([key, value]) => [
           key,

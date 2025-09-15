@@ -1,9 +1,7 @@
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 
+import { Route } from '@/routes/_auth/index'
 import { Button } from '@globalfishingwatch/ui-components'
-
-import type { RootState } from 'store'
 
 import styles from '../../styles/global.module.css'
 
@@ -15,8 +13,10 @@ function Footer({
   downloadClick: () => void
 }) {
   const { t } = useTranslation()
-  const rowSelection = useSelector((state: RootState) => state.table.selectedRows)
-  const hasSelectedRows = Object.keys(rowSelection).length > 0
+  const searchQuery = Route.useSearch()
+
+  const rowSelection = searchQuery.selectedRows
+  const hasSelectedRows = rowSelection && rowSelection.length > 0
 
   return (
     <div>
