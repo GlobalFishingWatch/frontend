@@ -277,14 +277,14 @@ export const selectReportVesselsOrdered = createSelector(
     selectReportVesselsFiltered,
     selectReportVesselsOrderProperty,
     selectReportVesselsOrderDirection,
+    selectReportVesselGraph,
   ],
-  (vessels, property, direction) => {
+  (vessels, property, direction, reportVesselGraph) => {
     if (!vessels?.length) return []
-
     return vessels.toSorted((a, b) => {
       // First compare by value
-      const valueA = a.value || 0
-      const valueB = b.value || 0
+      const valueA = reportVesselGraph === 'coverage' ? a.coverage || 0 : a.value || 0
+      const valueB = reportVesselGraph === 'coverage' ? b.coverage || 0 : b.value || 0
       if (valueA !== valueB) {
         return valueB - valueA
       }

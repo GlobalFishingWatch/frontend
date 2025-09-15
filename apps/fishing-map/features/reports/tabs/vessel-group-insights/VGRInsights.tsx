@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 
-import { Icon, Spinner } from '@globalfishingwatch/ui-components'
+import { Icon } from '@globalfishingwatch/ui-components'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
@@ -12,7 +12,6 @@ import { selectVGRVesselDatasetsWithoutEventsRelated } from 'features/reports/sh
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { MIN_INSIGHTS_YEAR } from 'features/vessel/insights/insights.config'
 
-import VesselGroupReportInsightCoverage from './VGRInsightCoverage'
 import VesselGroupReportInsightFishing from './VGRInsightFishing'
 import VesselGroupReportInsightFlagChange from './VGRInsightFlagChange'
 import VesselGroupReportInsightGap from './VGRInsightGaps'

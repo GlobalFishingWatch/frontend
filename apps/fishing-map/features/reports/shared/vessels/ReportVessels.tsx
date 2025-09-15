@@ -34,7 +34,7 @@ function ReportVessels({
 }) {
   const aggregatedData = useSelector(selectReportVesselsGraphAggregatedData)
   const individualData = useSelector(selectReportVesselsGraphIndividualData)
-  const property = useSelector(selectReportVesselGraph)
+  const reportVesselGraph = useSelector(selectReportVesselGraph)
   const filter = useSelector(selectReportVesselFilter)
   const vessels = useSelector(selectReportVesselsPaginated)
   const valueKeys = useSelector(selectReportVesselsGraphDataKeys)
@@ -49,7 +49,7 @@ function ReportVessels({
         <ReportVesselsPlaceholder showGraphHeader={false} />
       ) : (
         <Fragment>
-          {property === 'coverage' ? (
+          {reportVesselGraph === 'coverage' ? (
             <VesselGroupReportInsightCoverage />
           ) : (
             <ReportVesselsGraph
@@ -57,7 +57,7 @@ function ReportVessels({
               individualData={individualData}
               aggregatedValueKey={valueKeys}
               color={color}
-              property={property as ReportVesselsSubCategory}
+              property={reportVesselGraph as ReportVesselsSubCategory}
             />
           )}
           <ReportVesselsFilter filter={filter} />
