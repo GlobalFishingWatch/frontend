@@ -1,5 +1,6 @@
 {
   "search": {
+    "placeholderGlobal": "Search all data..",
     "placeholder": "Search",
     "noResults": "No results found",
     "typeaValue": "Type a value"

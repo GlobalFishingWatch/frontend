@@ -7,6 +7,7 @@ import { routeTree } from './routeTree.gen'
 export function createRouter() {
   const router = createTanStackRouter({
     routeTree,
+    basepath: process.env.PUBLIC_URL || '/',
     context: {},
     defaultPreload: 'intent',
     defaultErrorComponent: DefaultCatchBoundary,
