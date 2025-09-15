@@ -122,11 +122,10 @@ export const selectReportVessels = createSelector(
         const coverage =
           coverages && coverages.length
             ? weightedMean(
-                coverages.flatMap((d) => d.percentage || []),
-                coverages.flatMap((d) => parseInt(d.blocks) || [])
+                coverages.flatMap((d) => d.percentage ?? []),
+                coverages.flatMap((d) => parseInt(d.blocks) ?? [])
               )
             : -1
-
         const { shipname, ...vesselData } = getSearchIdentityResolved(identity!)
         const source = getVesselSource(identity)
         const vesselType = getVesselShipTypeLabel(vesselData) || EMPTY_FIELD_PLACEHOLDER
