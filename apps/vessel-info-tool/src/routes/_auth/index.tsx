@@ -13,11 +13,15 @@ import Profile from '@/features/profile/Profile'
 import Search from '@/features/search/Search'
 import type { RFMO, TableSearchParams, Vessel } from '@/types/vessel.types'
 import { fetchVessels } from '@/utils/vessels'
-import { MOCK_USER_PERMISSION } from '@globalfishingwatch/api-types'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 
 export const Route = createFileRoute('/_auth/')({
   ssr: false,
-  loader: async () => fetchVessels(),
+  loader: async () => {
+    const user = await GFWAPI.fetchUser()
+    const vessels = await fetchVessels()
+    return { user, vessels }
+  },
   loaderDeps: () => ({}),
   validateSearch: (search: Record<string, unknown>): Partial<TableSearchParams> => {
     const { selectedRows, rfmo, globalSearch, columnFilters } = search
@@ -32,7 +36,7 @@ export const Route = createFileRoute('/_auth/')({
 })
 
 function Home() {
-  const vessels: Vessel[] = Route.useLoaderData()
+  const { vessels } = Route.useLoaderData()
   const { t } = useTranslation()
 
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false)
@@ -42,17 +46,7 @@ function Home() {
       <SidebarHeader>
         <Search data={vessels} />
         <OptionsMenu />
-        <Profile
-          user={{
-            id: 1,
-            type: 'user',
-            groups: ['admin', 'analyst'],
-            permissions: [MOCK_USER_PERMISSION],
-            email: 'user@example.com',
-            firstName: 'John',
-            lastName: 'Doe',
-          }}
-        />
+        <Profile />
       </SidebarHeader>
       <div className="flex-1 overflow-auto">
         <DynamicTable data={vessels} />

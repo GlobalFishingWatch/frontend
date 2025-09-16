@@ -8,7 +8,7 @@
   "footer": {
     "download": "Baixar tudo",
     "results": "{{count}} resultados",
-    "select_rows": "Selecionar embarcações para download"
+    "select_rows": "Selecione embarcações para poder baixar"
   },
   "expanded_row": {
     "title": "Vessel Viewer",

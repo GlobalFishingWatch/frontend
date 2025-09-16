@@ -1,12 +1,22 @@
-import type { UserData } from '@globalfishingwatch/api-types'
+import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
+
+import { Route } from '@/routes/_auth/index'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Button } from '@globalfishingwatch/ui-components'
 
 import styles from './Profile.module.css'
 
-interface ProfileProps {
-  user: UserData
-}
-export const Profile = ({ user }: ProfileProps) => {
+export const Profile = () => {
+  const { t } = useTranslation()
+  const { user } = Route.useLoaderData()
+
+  const handleLogoutClick = useCallback(() => {
+    GFWAPI.logout().then(() => {
+      window.location.reload()
+    })
+  }, [])
+
   const userInitials = [
     (user?.firstName && user?.firstName?.slice(0, 1)) || '',
     (user?.lastName && user?.lastName?.slice(0, 1)) || '',
@@ -17,7 +27,8 @@ export const Profile = ({ user }: ProfileProps) => {
       <Button
         className={styles.button}
         type="secondary"
-        onClick={() => console.log('Profile button clicked')}
+        onClick={handleLogoutClick}
+        tooltip={t('logout', 'Log out')}
       >
         {userInitials}
       </Button>

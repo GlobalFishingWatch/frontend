@@ -1,4 +1,7 @@
 {
+  "profile": {
+    "logout": "Log out"
+  },
   "search": {
     "placeholderGlobal": "Search all data..",
     "placeholder": "Search",
