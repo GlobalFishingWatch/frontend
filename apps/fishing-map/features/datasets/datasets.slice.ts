@@ -1,7 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { kebabCase, uniq, uniqBy, without } from 'es-toolkit'
-import memoize from 'lodash/memoize'
+import { kebabCase, memoize, uniq, uniqBy, without } from 'es-toolkit'
 import { stringify } from 'qs'
 
 import {

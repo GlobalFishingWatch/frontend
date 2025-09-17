@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { kebabCase } from 'es-toolkit'
-import memoize from 'lodash/memoize'
+import { kebabCase, memoize } from 'es-toolkit'
 import { stringify } from 'qs'
 
 import {

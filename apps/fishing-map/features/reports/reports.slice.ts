@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import memoize from 'lodash/memoize'
+import { memoize } from 'es-toolkit'
 import { stringify } from 'qs'
 
 import {
