@@ -23,6 +23,7 @@ const DynamicFilters = ({ originalData }: { originalData: Vessel[] }) => {
   const updateFilterValue = (id: string, value: any) => {
     navigate({
       search: (prev) => {
+        if (!prev.columnFilters) return { ...prev, columnFilters: [{ id, value }] }
         if (prev.columnFilters.find((filter) => filter.id === id)?.value === value) return prev
         return {
           ...prev,
@@ -38,8 +39,10 @@ const DynamicFilters = ({ originalData }: { originalData: Vessel[] }) => {
   const onFilterChange = (id: string, option: MultiSelectOption) => {
     navigate({
       search: (prev) => {
-        // if (prev.columnFilters.find((filter) => filter.id === id)?.value === option.label)
-        //   return prev
+        if (!prev.columnFilters) return { ...prev, columnFilters: [{ id, value: option.label }] }
+
+        if (prev.columnFilters.find((filter) => filter.id === id)?.value === option.label)
+          return prev
         return {
           ...prev,
           columnFilters: [
@@ -55,10 +58,13 @@ const DynamicFilters = ({ originalData }: { originalData: Vessel[] }) => {
     navigate({
       search: (prev) => {
         const { columnFilters, ...rest } = prev
-        return {
-          ...rest,
-          columnFilters: columnFilters.filter((filter) => filter.id !== id),
+        if (columnFilters) {
+          return {
+            ...rest,
+            columnFilters: columnFilters.filter((filter) => filter.id !== id),
+          }
         }
+        return rest
       },
     })
   }
