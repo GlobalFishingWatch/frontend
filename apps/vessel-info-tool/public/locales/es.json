@@ -1,22 +1,22 @@
 {
   "search": {
-    "placeholderGlobal": "Search all data..",
-    "placeholder": "Search",
-    "noResults": "No results found",
-    "typeaValue": "Type a value"
+    "placeholderGlobal": "Buscar en todos los datos...",
+    "placeholder": "Buscar",
+    "noResults": "No se encontraron resultados",
+    "typeaValue": "Escriba un valor"
   },
   "footer": {
-    "download": "Download all",
-    "results": "{{count}} results",
-    "select_rows": "Select vessels to download"
+    "download": "Descargar todo",
+    "results": "{{count}} resultados",
+    "select_rows": "Seleccione embarcaciones para descargar"
   },
   "expanded_row": {
-    "title": "Vessel Viewer",
-    "see_more": "See more",
-    "to": "to",
-    "from": "from",
-    "transmission_other": "transmissions",
-    "external_links": "External Links",
-    "not_found": "Couldn't find vessel information"
+    "title": "Visor de Embarcaciones",
+    "see_more": "Ver más",
+    "to": "hasta",
+    "from": "desde",
+    "transmission_other": "transmisiones",
+    "external_links": "Enlaces Externos",
+    "not_found": "No se pudo encontrar información de la embarcación"
   }
 }
