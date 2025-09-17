@@ -106,7 +106,7 @@ export const getDatasetByIdsThunk = createAsyncThunk(
       console.warn(e)
       return rejectWithValue({
         status: parseAPIErrorStatus(e),
-        message: `${id} - ${parseAPIErrorMessage(e)}`,
+        message: `${ids.join(', ')} - ${parseAPIErrorMessage(e)}`,
       })
     }
   }

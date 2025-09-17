@@ -105,7 +105,7 @@ export const fetchVesselGroupByIdThunk = createAsyncThunk(
   async (vesselGroupId: string, { rejectWithValue }) => {
     try {
       if (vesselGroupId) {
-        const vesselGroup = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${id}`)
+        const vesselGroup = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${vesselGroupId}`)
         return vesselGroup
       }
     } catch (e: any) {
