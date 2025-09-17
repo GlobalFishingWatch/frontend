@@ -9,6 +9,9 @@ import type { JSZipObject } from '@globalfishingwatch/data-transforms'
 import { isZipFile, zipToFiles } from '@globalfishingwatch/data-transforms'
 
 export function getFileName(file: File): string {
+  if (!file?.name) {
+    return ''
+  }
   const name =
     file.name.lastIndexOf('.') > 0 ? file.name.slice(0, file.name.lastIndexOf('.')) : file.name
   return capitalize(lowerCase(name))

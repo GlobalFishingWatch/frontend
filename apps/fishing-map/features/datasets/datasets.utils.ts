@@ -851,7 +851,8 @@ export const getCommonSchemaFieldsInDataview = (
             schema !== 'speed' &&
             schema !== 'encounter_type'
           ) {
-            label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(field as string)))
+            const fallbackValue = typeof field === 'string' ? field : (field || '').toString()
+            label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(fallbackValue)))
           }
         }
         return { id: field?.toString(), label: label as string }
