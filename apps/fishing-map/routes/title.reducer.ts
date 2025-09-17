@@ -37,7 +37,7 @@ const titleReducer = (_: any, action: PayloadAction<{ category?: string }>) => {
       return `${PREFIX} | ${t('analysis.title')}`
     case WORKSPACE:
     case WORKSPACES_LIST: {
-      const parsedCategory = capitalize(lowerCase(action.payload.category))
+      const parsedCategory = capitalize(lowerCase(action.payload.category || ''))
       return `${PREFIX} | ${parsedCategory}`
     }
     default:

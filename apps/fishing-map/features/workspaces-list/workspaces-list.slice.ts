@@ -80,7 +80,13 @@ export const createWorkspaceThunk = createAsyncThunk<
     rejectValue: AsyncError
   }
 >('workspaces/create', async (workspace, { rejectWithValue }) => {
-  const id = kebabCase(workspace.name)
+  const id = kebabCase(workspace.name!)
+  if (!id) {
+    return rejectWithValue({
+      status: 400,
+      message: 'Workspace name is required',
+    })
+  }
   const parsedWorkspace = {
     ...workspace,
     id: workspace.viewAccess === WORKSPACE_PUBLIC_ACCESS ? `${id}-public` : id,

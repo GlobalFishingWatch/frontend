@@ -274,7 +274,7 @@ export const upsertDatasetThunk = createAsyncThunk<
       // need to be lowercase
       const propertyToInclude = (dataset.configuration?.propertyToInclude as string)?.toLowerCase()
       const suffix = addIdSuffix ? `-${Date.now()}` : ''
-      const generatedId = dataset.id || `${kebabCase(dataset.name)}${suffix}`
+      const generatedId = dataset.id || `${kebabCase(dataset.name || '')}${suffix}`
       const id = createAsPublic ? `${PUBLIC_SUFIX}-${generatedId}` : generatedId
       const { id: originalId, ...rest } = dataset
       const isPatchDataset = originalId !== undefined
