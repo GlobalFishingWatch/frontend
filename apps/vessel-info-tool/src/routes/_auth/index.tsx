@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { createFileRoute } from '@tanstack/react-router'
 import type { ColumnFiltersState } from '@tanstack/react-table'
@@ -39,6 +39,14 @@ function Home() {
   const { t } = useTranslation()
 
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false)
+  const tableContainerRef = useRef<HTMLDivElement>(null)
+  const [containerEl, setContainerEl] = useState<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (tableContainerRef.current) {
+      setContainerEl(tableContainerRef.current)
+    }
+  }, [])
 
   return (
     <div className="fixed inset-0 flex flex-col overflow-hidden">
@@ -47,8 +55,8 @@ function Home() {
         <OptionsMenu />
         <Profile />
       </SidebarHeader>
-      <div className="flex-1 overflow-auto">
-        <DynamicTable data={vessels} />
+      <div className="flex-1 relative overflow-auto" ref={tableContainerRef}>
+        {containerEl && <DynamicTable data={vessels} tableContainerRef={containerEl} />}
       </div>
       <Footer downloadClick={() => setIsDownloadModalOpen(true)}>
         {t('footer.results', `${vessels.length} results`, { count: vessels.length })}

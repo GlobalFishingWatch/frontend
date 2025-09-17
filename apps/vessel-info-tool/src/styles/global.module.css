@@ -55,8 +55,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: inherit;
-  max-width: none;
   font-size: 1.4rem;
   text-transform: capitalize;
   align-content: center;
