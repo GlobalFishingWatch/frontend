@@ -3,7 +3,7 @@ locals {
   location         = "us-central1"
   project          = "gfw-int-infrastructure"
   ui_name          = "ui-${var.app_name}"
-  cloudrun_name    = "${var.short_environment != "pro" ? "${var.short_environment}-" : ""}${local.ui_name}${var.app_suffix}"
+  cloudrun_name    = var.cloudrun_name != "" ? var.cloudrun_name : "${var.short_environment != "pro" ? "${var.short_environment}-" : ""}${local.ui_name}${var.app_suffix}"
   cache_repository = "frontend-dependencies-cache"
   cache_env = [
     "PROJECT=${local.project}",
@@ -104,26 +104,26 @@ resource "google_cloudbuild_trigger" "trigger" {
     }
 
     step {
-      id   = "deploy-cloud-run"
-      name = "gcr.io/cloud-builders/gcloud"
+      id         = "deploy-cloud-run"
+      name       = "gcr.io/cloud-builders/gcloud"
+      entrypoint = "bash"
       args = [
-        "run",
-        "deploy",
-        "${local.cloudrun_name}",
-        "--project",
-        "${var.project_id}",
-        "--image",
-        "${var.docker_image}",
-        "--region",
-        "us-central1",
-        "--allow-unauthenticated",
-        "--platform",
-        "managed",
-        "--set-env-vars",
-        "${join(",", var.set_env_vars)}",
-        "${length(var.set_secrets) > 0 ? "--set-secrets=${join(",", var.set_secrets)}" : "--clear-secrets"}",
-        "--service-account", "${var.service_account}",
-        "--labels", "${join(",", [for k, v in var.labels : "${k}=${v}"])}",
+        "-c",
+        <<-EOF
+          CLOUDRUN_NAME="${local.cloudrun_name}"
+          CLOUDRUN_NAME=$${CLOUDRUN_NAME//\\//-}
+
+          gcloud run deploy "$$CLOUDRUN_NAME" \
+            --project "${var.project_id}" \
+            --image "${var.docker_image}" \
+            --region us-central1 \
+            --allow-unauthenticated \
+            --platform managed \
+            --set-env-vars "${join(",", var.set_env_vars)}" \
+            ${length(var.set_secrets) > 0 ? "--set-secrets=${join(",", var.set_secrets)}" : "--clear-secrets"} \
+            --service-account "${var.service_account}" \
+            --labels "${join(",", [for k, v in var.labels : "${k}=${v}"])}"
+        EOF
       ]
     }
 
@@ -142,8 +142,11 @@ resource "google_cloudbuild_trigger" "trigger" {
       args = [
         "-c",
         <<-EOF
+          CLOUDRUN_NAME="${local.cloudrun_name}"
+          CLOUDRUN_NAME=$${CLOUDRUN_NAME//\\//-}
+
           gcloud --project ${var.project_id} \
-           run revisions list --service ${local.cloudrun_name} --region us-central1 \
+           run revisions list --service "$$CLOUDRUN_NAME" --region us-central1 \
            --format="value(metadata.name)" \
            --sort-by="~metadata.creationTimestamp" | tail -n +4 | xargs -n1 \
             -r gcloud --project ${var.project_id} run revisions delete --quiet --region us-central1
