@@ -1,6 +1,5 @@
-import { uniq, uniqBy } from 'es-toolkit'
+import { isEqual, uniq, uniqBy } from 'es-toolkit'
 import get from 'lodash/get'
-import isEqual from 'lodash/isEqual'
 
 import type {
   GearType,
@@ -81,12 +80,7 @@ export const getVesselIdentities = (
       ].sort((a, b) => (a.transmissionDateTo > b.transmissionDateTo ? -1 : 1))
 
   const uniqueIdentities = allIdentities.reduce((acc, current) => {
-    const isDuplicate = acc.some(
-      (item) =>
-        item.id === current.id &&
-        isEqual(item.transmissionDateFrom, current.transmissionDateFrom) &&
-        isEqual(item.transmissionDateTo, current.transmissionDateTo)
-    )
+    const isDuplicate = acc.some((item) => isEqual(item, current))
 
     if (!isDuplicate) {
       acc.push(current)
