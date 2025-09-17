@@ -111,7 +111,7 @@ resource "google_cloudbuild_trigger" "trigger" {
         "-c",
         <<-EOF
           CLOUDRUN_NAME="${local.cloudrun_name}"
-          CLOUDRUN_NAME=$${CLOUDRUN_NAME//\\//-}
+          CLOUDRUN_NAME=$${CLOUDRUN_NAME//\//-}
 
           gcloud run deploy "$$CLOUDRUN_NAME" \
             --project "${var.project_id}" \
@@ -143,7 +143,7 @@ resource "google_cloudbuild_trigger" "trigger" {
         "-c",
         <<-EOF
           CLOUDRUN_NAME="${local.cloudrun_name}"
-          CLOUDRUN_NAME=$${CLOUDRUN_NAME//\\//-}
+          CLOUDRUN_NAME=$${CLOUDRUN_NAME//\//-}
 
           gcloud --project ${var.project_id} \
            run revisions list --service "$$CLOUDRUN_NAME" --region us-central1 \
