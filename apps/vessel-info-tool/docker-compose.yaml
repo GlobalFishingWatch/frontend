@@ -1,0 +1,15 @@
+services:
+  vessel-info-tool:
+    build:
+      context: ../../dist/apps/vessel-info-tool
+      dockerfile: ../../../apps/vessel-info-tool/Dockerfile
+      target: production
+    container_name: vessel-info-tool
+    ports:
+      - 3000:80
+    env_file:
+      - .env
+    environment:
+      - PORT=80
+      - BASIC_AUTH="off"
+      - API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
