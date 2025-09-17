@@ -77,21 +77,23 @@ const VesselIdentitySelector = () => {
           const identityId = getVesselIdentityId(identity)
           return (
             <Tooltip key={identityId} content={t('vessel.selectIdentity')}>
-              <li
-                className={cx(styles.icon, {
-                  [styles.selected]: identityId === getVesselIdentityId(currentIdentity),
-                })}
-                onClick={() =>
-                  setIdentityId(
-                    identityId,
-                    identity.transmissionDateFrom,
-                    identity.transmissionDateTo
-                  )
-                }
-              >
-                <span className={styles.dates}>
-                  {start} - {end}
-                </span>
+              <li>
+                <button
+                  className={cx(styles.icon, {
+                    [styles.selected]: identityId === getVesselIdentityId(currentIdentity),
+                  })}
+                  onClick={() =>
+                    setIdentityId(
+                      identityId,
+                      identity.transmissionDateFrom,
+                      identity.transmissionDateTo
+                    )
+                  }
+                >
+                  <span className={styles.dates}>
+                    {start} - {end}
+                  </span>
+                </button>
               </li>
             </Tooltip>
           )
