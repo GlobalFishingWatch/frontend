@@ -1,4 +1,4 @@
-import isEqual from 'lodash/isEqual'
+import { isEqual } from 'es-toolkit'
 import { createSelectorCreator, lruMemoize } from 'reselect'
 
 /**

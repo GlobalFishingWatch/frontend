@@ -46,14 +46,15 @@ const VesselIdentitySelector = () => {
     ?.filter((i) => i.identitySource === identitySource)
     .findIndex((i) => i.id === currentIdentity.id)
 
-  const setIdentityId = (identityId: string) => {
+  const setIdentityId = (identityId: string, from: string, to: string) => {
     if (identitySource === VesselIdentitySourceEnum.SelfReported) {
       dispatchQueryParams({ vesselSelfReportedId: identityId })
     } else {
       dispatchQueryParams({ vesselRegistryId: identityId })
     }
-    const start = formatI18nDate(currentIdentity.transmissionDateFrom)
-    const end = formatI18nDate(currentIdentity.transmissionDateTo)
+
+    const start = formatI18nDate(from)
+    const end = formatI18nDate(to)
     trackEvent({
       category: TrackCategory.VesselProfile,
       action: `change_timeperiod_${identitySource}_tab`,
@@ -76,15 +77,23 @@ const VesselIdentitySelector = () => {
           const identityId = getVesselIdentityId(identity)
           return (
             <Tooltip key={identityId} content={t('vessel.selectIdentity')}>
-              <li
-                className={cx(styles.icon, {
-                  [styles.selected]: identityId === getVesselIdentityId(currentIdentity),
-                })}
-                onClick={() => setIdentityId(identityId)}
-              >
-                <span className={styles.dates}>
-                  {start} - {end}
-                </span>
+              <li>
+                <button
+                  className={cx(styles.icon, {
+                    [styles.selected]: identityId === getVesselIdentityId(currentIdentity),
+                  })}
+                  onClick={() =>
+                    setIdentityId(
+                      identityId,
+                      identity.transmissionDateFrom,
+                      identity.transmissionDateTo
+                    )
+                  }
+                >
+                  <span className={styles.dates}>
+                    {start} - {end}
+                  </span>
+                </button>
               </li>
             </Tooltip>
           )
