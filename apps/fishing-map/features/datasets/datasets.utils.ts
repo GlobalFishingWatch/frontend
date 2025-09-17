@@ -1,7 +1,6 @@
 import { checkExistPermissionInList } from 'auth-middleware/src/utils'
-import { uniq } from 'es-toolkit'
+import { lowerCase, uniq } from 'es-toolkit'
 import intersection from 'lodash/intersection'
-import lowerCase from 'lodash/lowerCase'
 
 import type {
   Dataset,

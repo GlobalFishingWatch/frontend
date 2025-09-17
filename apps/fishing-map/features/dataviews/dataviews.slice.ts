@@ -1,7 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { uniqBy } from 'es-toolkit'
-import kebabCase from 'lodash/kebabCase'
+import { kebabCase, uniqBy } from 'es-toolkit'
 import { stringify } from 'qs'
 
 import {
@@ -10,7 +9,7 @@ import {
   parseAPIErrorMessage,
   parseAPIErrorStatus,
 } from '@globalfishingwatch/api-client'
-import type { APIPagination,Dataview } from '@globalfishingwatch/api-types'
+import type { APIPagination, Dataview } from '@globalfishingwatch/api-types'
 
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV } from 'data/config'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'

@@ -1,5 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import lowerCase from 'lodash/lowerCase'
+import { lowerCase } from 'es-toolkit'
 
 import { t } from 'features/i18n/i18n'
 import { capitalize } from 'utils/shared'
@@ -37,7 +37,7 @@ const titleReducer = (_: any, action: PayloadAction<{ category?: string }>) => {
       return `${PREFIX} | ${t('analysis.title')}`
     case WORKSPACE:
     case WORKSPACES_LIST: {
-      const parsedCategory = capitalize(lowerCase(action.payload.category))
+      const parsedCategory = capitalize(lowerCase(action.payload.category || ''))
       return `${PREFIX} | ${parsedCategory}`
     }
     default:
