@@ -5,6 +5,7 @@ import type { TrackSegment } from '@globalfishingwatch/api-types'
 import { parseCoords } from '../coordinates'
 import { getUTCDate } from '../dates'
 import { normalizePropertiesKeys } from '../schema'
+import { COORDINATES_PROPERTIES_ID } from '../segments/segments-to-geojson'
 import type { SegmentColumns } from '../types'
 
 type Args = SegmentColumns & {
@@ -76,7 +77,7 @@ export const listToTrackSegments = ({
                 {
                   properties: lineProperties,
                   // We need the property at the root level for sidebar lines leyend
-                  coordinateProperties: properties,
+                  [COORDINATES_PROPERTIES_ID]: properties,
                   latitude: coords.latitude as number,
                   longitude: coords.longitude as number,
                   ...(startTimeMs && { timestamp: startTimeMs }),

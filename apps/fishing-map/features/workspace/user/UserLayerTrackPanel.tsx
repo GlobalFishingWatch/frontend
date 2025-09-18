@@ -69,7 +69,7 @@ const getFeatureTimeExtent = (
   feature: UserTrackFeature,
   timestampProperty = COORDINATE_PROPERTY_TIMESTAMP
 ) => {
-  const times = feature.properties.coordinateProperties[timestampProperty]
+  const times = feature.properties.coordinateProperties?.[timestampProperty]
   if (!times || !times.length) {
     return null
   }

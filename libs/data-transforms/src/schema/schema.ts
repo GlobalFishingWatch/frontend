@@ -12,6 +12,7 @@ import type {
 } from '@globalfishingwatch/api-types'
 
 import { parseCoords } from '../coordinates'
+import { COORDINATES_PROPERTIES_ID } from '../segments/segments-to-geojson'
 
 import { GUESS_COLUMN_DICT } from './guess-columns'
 
@@ -21,10 +22,20 @@ type GetFieldSchemaParams = {
 }
 const MAX_SCHEMA_ENUM_VALUES = 100
 
+export const getSchemaIdClean = (id: string | string[]) => {
+  if (Array.isArray(id)) {
+    return id.map((d) => snakeCase(d))
+  }
+  // TODO review how backend handles characters like -
+  // so we can parse the same here or before uploading the dataset
+  return id === COORDINATES_PROPERTIES_ID ? id : snakeCase(id)
+}
+
 export const normalizePropertiesKeys = (object: Record<string, any> | null) => {
   return Object.entries(object || {}).reduce(
     (acc, [key, value]) => {
-      acc[snakeCase(key)] = value
+      const normalizedKey = getSchemaIdClean(key) as string
+      acc[normalizedKey] = value
       return acc
     },
     {} as Record<string, any>
@@ -98,15 +109,6 @@ export const getFieldSchema = (
     return schema
   }
   return null
-}
-
-export const getSchemaIdClean = (id: string | string[]) => {
-  if (Array.isArray(id)) {
-    return id.map((d) => snakeCase(d))
-  }
-  // TODO review how backend handles characters like -
-  // so we can parse the same here or before uploading the dataset
-  return snakeCase(id)
 }
 
 export const getDatasetSchemaClean = (schema: Dataset['schema']): Dataset['schema'] => {
