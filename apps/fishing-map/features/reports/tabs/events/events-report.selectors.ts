@@ -187,25 +187,33 @@ export const selectEventsPortsData = createSelector(
   }
 )
 
-export const selectEventsStatsData = createSelector(
+export const selectEventsStats = createSelector(
   [selectReportEventsStatsApiSlice, selectFetchEventsStatsParams],
   (reportEventsStatsApi, params) => {
     if (!params) {
       return
     }
-    return selectReportEventsStats(params)({ reportEventsStatsApi })?.data
+    return selectReportEventsStats(params)({ reportEventsStatsApi })
   }
 )
 
-export const selectEventsPortsStatsData = createSelector(
+export const selectEventsStatsData = createSelector([selectEventsStats], (stats) => {
+  return stats?.data
+})
+
+export const selectEventsPortsStats = createSelector(
   [selectReportEventsStatsApiSlice, selectFetchEventsPortsStatsParams],
   (reportEventsStatsApi, params) => {
     if (!params) {
       return
     }
-    return selectReportEventsPorts(params)({ reportEventsStatsApi })?.data
+    return selectReportEventsPorts(params)({ reportEventsStatsApi })
   }
 )
+
+export const selectEventsPortsStatsData = createSelector([selectEventsPortsStats], (stats) => {
+  return stats?.data
+})
 
 export const selectEventsStatsValueKeys = createSelector(
   [selectActiveReportDataviews],
