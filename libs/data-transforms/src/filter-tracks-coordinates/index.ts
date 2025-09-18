@@ -9,7 +9,10 @@ import type {
 } from 'geojson'
 import isEqual from 'lodash/isEqual'
 
-import { COORDINATE_PROPERTY_TIMESTAMP } from '../segments/segments-to-geojson'
+import {
+  COORDINATE_PROPERTY_TIMESTAMP,
+  COORDINATES_PROPERTIES_ID,
+} from '../segments/segments-to-geojson'
 
 import { isNumeric } from './utils'
 
@@ -43,11 +46,11 @@ type MultiLineCoordinateProperties = Record<string, [(string | number)[]]>
 type CoordinateProperties = LineCoordinateProperties | MultiLineCoordinateProperties
 type CoordinatesAccumulator = {
   coordinates: Position[][]
-  coordinateProperties: CoordinateProperties
+  [COORDINATES_PROPERTIES_ID]: CoordinateProperties
 }
 
 type GetCoordinatePropertyValueParams = {
-  coordinateProperties: CoordinateProperties
+  [COORDINATES_PROPERTIES_ID]: CoordinateProperties
   coordinateIndex: number
   multiLineStringIndex?: number
   id: string
@@ -170,7 +173,7 @@ const getFilteredCoordinates = ({
 
       return filteredCoordinates
     },
-    { coordinates: [], coordinateProperties: {} } as CoordinatesAccumulator
+    { coordinates: [], [COORDINATES_PROPERTIES_ID]: {} } as CoordinatesAccumulator
   )
   return filteredLines
 }
@@ -229,13 +232,16 @@ export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertie
             return filteredFeatures
           }
 
-          const coordinateProperties = filters.reduce((acc, { id }) => {
-            const properties = filteredLines.flatMap(
-              (line) => (line.coordinateProperties as MultiLineCoordinateProperties)[id]
-            )
-            acc[id] = properties
-            return acc
-          }, {} as Record<string, (string | number)[][]>)
+          const coordinateProperties = filters.reduce(
+            (acc, { id }) => {
+              const properties = filteredLines.flatMap(
+                (line) => (line.coordinateProperties as MultiLineCoordinateProperties)[id]
+              )
+              acc[id] = properties
+              return acc
+            },
+            {} as Record<string, (string | number)[][]>
+          )
 
           filteredFeatures.push({
             type: 'Feature',
@@ -245,7 +251,7 @@ export const filterTrackByCoordinateProperties: FilterTrackByCoordinatePropertie
             } as MultiLineString,
             properties: {
               ...feature.properties,
-              coordinateProperties,
+              [COORDINATES_PROPERTIES_ID]: coordinateProperties,
             } as GeoJsonProperties,
           })
         } else if (includeNonTemporalFeatures) {

@@ -1,9 +1,10 @@
 import { lineString } from '@turf/helpers'
-import type { Feature, FeatureCollection, LineString, MultiLineString,Position } from 'geojson'
+import type { Feature, FeatureCollection, LineString, MultiLineString, Position } from 'geojson'
 
-import type { TrackPoint,TrackSegment } from '@globalfishingwatch/api-types'
+import type { TrackPoint, TrackSegment } from '@globalfishingwatch/api-types'
 
 export const COORDINATE_PROPERTY_TIMESTAMP = 'times'
+export const COORDINATES_PROPERTIES_ID = 'coordinateProperties'
 
 const segmentsToFeatures = (segment: TrackSegment | TrackSegment[]): Feature<LineString>[] => {
   // This checks converts always to bi-dimensional array
@@ -18,17 +19,20 @@ const segmentsToFeatures = (segment: TrackSegment | TrackSegment[]): Feature<Lin
     const times = segment.map((point) => point.timestamp)
     const speeds = segment.map((point) => point.speed)
     const elevations = segment.map((point) => point.elevation)
-    const coordinateProperties = segment?.reduce((acc, point) => {
-      const properties = point.coordinateProperties || {}
-      Object.keys(properties).forEach((key) => {
-        if (key === 'timestamp') return
-        if (!acc[key]) {
-          acc[key] = []
-        }
-        acc[key].push(properties[key])
-      })
-      return acc
-    }, {} as Record<string, (string | number)[]>)
+    const coordinateProperties = segment?.reduce(
+      (acc, point) => {
+        const properties = point.coordinateProperties || {}
+        Object.keys(properties).forEach((key) => {
+          if (key === 'timestamp') return
+          if (!acc[key]) {
+            acc[key] = []
+          }
+          acc[key].push(properties[key])
+        })
+        return acc
+      },
+      {} as Record<string, (string | number)[]>
+    )
     const feature: Feature<LineString> = {
       type: 'Feature',
       geometry: {
@@ -40,7 +44,7 @@ const segmentsToFeatures = (segment: TrackSegment | TrackSegment[]): Feature<Lin
       properties: {
         id: segment[0]?.id,
         ...(segment[0].properties && { ...segment[0].properties }),
-        coordinateProperties: {
+        [COORDINATES_PROPERTIES_ID]: {
           [COORDINATE_PROPERTY_TIMESTAMP]: times.some((time) => !!time) ? times : undefined,
           speed: speeds.some((speed) => !!speed) ? speeds : undefined,
           elevation: elevations.some((elevation) => !!elevation) ? elevations : undefined,
@@ -88,7 +92,7 @@ export const geoJSONToSegments = (
                 : lineString(line, {
                     color: multiline.properties?.color,
                     id: multiline.properties?.id,
-                    coordinateProperties:
+                    [COORDINATES_PROPERTIES_ID]:
                       coordinateProperties &&
                       Object.keys(coordinateProperties || {}).reduce(
                         (acc, prop) => ({
@@ -103,7 +107,7 @@ export const geoJSONToSegments = (
         })
       : geoJSON.features
   return lineStringGeoJSONFeatures.map((feature) => {
-    const coordinateProperties = feature.properties?.coordinateProperties
+    const coordinateProperties = feature.properties?.[COORDINATES_PROPERTIES_ID]
     const timestamps = feature.properties?.coordinateProperties?.times || []
     const id = feature.properties?.id
     const color = feature.properties?.color
@@ -113,7 +117,7 @@ export const geoJSONToSegments = (
       : coordinates
     const segment = segmentCoordinates.map((coordinate, i) => {
       const point: TrackPoint = {
-        coordinateProperties: Object.keys(coordinateProperties || {}).reduce(
+        [COORDINATES_PROPERTIES_ID]: Object.keys(coordinateProperties || {}).reduce(
           (acc, prop) => ({
             ...acc,
             [prop]: coordinateProperties?.[prop]?.[i],
