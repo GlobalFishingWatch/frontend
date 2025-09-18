@@ -1,4 +1,11 @@
-import type { DefaultProps, Layer, LayerContext, LayersList, PickingInfo } from '@deck.gl/core'
+import type {
+  DefaultProps,
+  Layer,
+  LayerContext,
+  LayersList,
+  PickingInfo,
+  UpdateParameters,
+} from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
@@ -59,6 +66,7 @@ type FourwingsClustersTileLayerState = {
   clusters?: FourwingsClusterFeature[]
   points?: FourwingsPointFeature[]
   radiusScale?: ScalePower<number, number>
+  currentClustersZoom?: number
 }
 
 const defaultProps: DefaultProps<FourwingsClustersLayerProps> = {
@@ -144,6 +152,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       error: '',
       data: [],
       viewportLoaded: false,
+      currentClustersZoom: undefined,
       clusterIndex: new Supercluster({
         radius: 70,
         maxZoom: 24,
@@ -154,7 +163,28 @@ export class FourwingsClustersLayer extends CompositeLayer<
     }
   }
 
-  // updateState({ props, oldProps, context }: UpdateParameters<this>) { }
+  _isIndividualPoints = (data: FourwingsPointFeature[]) => {
+    return this.clusterMode === 'positions' && data.length < MAX_INDIVIDUAL_POINTS
+  }
+
+  updateState({ props, oldProps, context, changeFlags }: UpdateParameters<this>) {
+    const { zoom } = context.viewport
+    const { data, currentClustersZoom } = this.state
+    const zoomDiff =
+      currentClustersZoom !== undefined ? Math.round(zoom) - Math.round(currentClustersZoom) : 0
+
+    if (Math.abs(zoomDiff) >= 1 && data.length > 0 && !this._isIndividualPoints(data)) {
+      const { clusters, points, radiusScale } = this._getClustersByZoom(Math.round(zoom))
+      this.setState({
+        clusters: clusters,
+        points: points,
+        radiusScale: radiusScale,
+        currentClustersZoom: Math.round(zoom),
+      })
+    }
+
+    super.updateState({ props, oldProps, context, changeFlags })
+  }
 
   _onLayerError = (error: Error) => {
     console.warn(error.message)
@@ -221,29 +251,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     return { ...info, object }
   }
 
-  _onViewportLoad = (tiles: Tile2DHeader[]) => {
-    const { zoom } = this.context.viewport
-    const data: FourwingsPointFeature[] = tiles.flatMap((tile) => {
-      return this.clusterMode === 'positions'
-        ? (tile.content || []).map((feature: FourwingsPointFeature) =>
-            transformTileCoordsToWGS84(feature, tile.bbox as GeoBoundingBox, this.context.viewport)
-          )
-        : tile.content || []
-    })
-
-    if (this.clusterMode === 'positions' && data.length < MAX_INDIVIDUAL_POINTS) {
-      requestAnimationFrame(() => {
-        this.setState({
-          data,
-          viewportLoaded: true,
-          points: data,
-          clusters: undefined,
-          radiusScale: undefined,
-        })
-      })
-      return
-    }
-    this.state.clusterIndex.load(data)
+  _getClustersByZoom = (zoom: number) => {
     const allClusters = this.state.clusterIndex.getClusters([-180, -85, 180, 85], Math.round(zoom))
     const clusters: FourwingsClusterFeature[] = []
     const points: FourwingsPointFeature[] = []
@@ -261,15 +269,44 @@ export class FourwingsClustersLayer extends CompositeLayer<
     const radiusScale = scaleSqrt()
       .domain([1, counts.length ? max(counts) : 1])
       .range([MIN_CLUSTER_RADIUS, MAX_CLUSTER_RADIUS])
-    requestAnimationFrame(() => {
-      this.setState({
-        data,
-        viewportLoaded: true,
-        clusters,
-        points,
-        radiusScale,
-      })
+
+    return { clusters, points, radiusScale }
+  }
+
+  _onViewportLoad = (tiles: Tile2DHeader[]) => {
+    const { zoom } = this.context.viewport
+    const data: FourwingsPointFeature[] = tiles.flatMap((tile) => {
+      return this.clusterMode === 'positions'
+        ? (tile.content || []).map((feature: FourwingsPointFeature) =>
+            transformTileCoordsToWGS84(feature, tile.bbox as GeoBoundingBox, this.context.viewport)
+          )
+        : tile.content || []
     })
+    if (this._isIndividualPoints(data)) {
+      requestAnimationFrame(() => {
+        this.setState({
+          data,
+          viewportLoaded: true,
+          points: data,
+          clusters: undefined,
+          radiusScale: undefined,
+        })
+      })
+    } else {
+      this.state.clusterIndex.load(data)
+      const currentClustersZoom = Math.round(zoom)
+      const { clusters, points, radiusScale } = this._getClustersByZoom(currentClustersZoom)
+      requestAnimationFrame(() => {
+        this.setState({
+          data,
+          viewportLoaded: true,
+          currentClustersZoom,
+          clusters,
+          points,
+          radiusScale,
+        })
+      })
+    }
   }
 
   _fetchClusters = async (
