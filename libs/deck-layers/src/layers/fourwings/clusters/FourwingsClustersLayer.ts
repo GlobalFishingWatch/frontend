@@ -99,6 +99,7 @@ const ICON_MAPPING: Record<FourwingsClusterEventType, any> = {
 const CLUSTER_LAYER_ID = 'clusters'
 const POINTS_LAYER_ID = 'points'
 const MAX_INDIVIDUAL_POINTS = 1000
+const MAX_CLUSTER_EXPANSION_ZOOM = 20
 
 export function getFourwingsGeolocation(
   clusterMaxZoomLevels: ClusterMaxZoomLevelConfig,
@@ -152,7 +153,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       error: '',
       data: [],
       viewportLoaded: false,
-      currentClustersZoom: undefined,
+      currentClustersZoom: Math.round(context.viewport.zoom),
       clusterIndex: new Supercluster({
         radius: 70,
         maxZoom: 24,
@@ -164,23 +165,36 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   _isIndividualPoints = (data: FourwingsPointFeature[]) => {
-    return this.clusterMode === 'positions' && data.length < MAX_INDIVIDUAL_POINTS
+    const { zoom } = this.context.viewport
+    return this.clusterMode === 'positions'
+      ? data.length < MAX_INDIVIDUAL_POINTS || zoom >= MAX_CLUSTER_EXPANSION_ZOOM - 1
+      : false
   }
 
   updateState({ props, oldProps, context, changeFlags }: UpdateParameters<this>) {
     const { zoom } = context.viewport
-    const { data, currentClustersZoom } = this.state
+    const { data, currentClustersZoom, clusters, clusterIndex } = this.state
     const zoomDiff =
       currentClustersZoom !== undefined ? Math.round(zoom) - Math.round(currentClustersZoom) : 0
 
-    if (Math.abs(zoomDiff) >= 1 && data.length > 0 && !this._isIndividualPoints(data)) {
-      const { clusters, points, radiusScale } = this._getClustersByZoom(Math.round(zoom))
-      this.setState({
-        clusters: clusters,
-        points: points,
-        radiusScale: radiusScale,
-        currentClustersZoom: Math.round(zoom),
-      })
+    if (Math.abs(zoomDiff) >= 1 && data.length > 0) {
+      if (this._isIndividualPoints(data)) {
+        if (clusters !== undefined) {
+          this.setState({
+            points: data,
+            clusters: undefined,
+            radiusScale: undefined,
+          })
+        }
+      } else if (clusterIndex !== undefined) {
+        const { clusters, points, radiusScale } = this._getClustersByZoom(Math.round(zoom))
+        this.setState({
+          clusters: clusters,
+          points: points,
+          radiusScale: radiusScale,
+          currentClustersZoom: Math.round(zoom),
+        })
+      }
     }
 
     super.updateState({ props, oldProps, context, changeFlags })
@@ -203,28 +217,37 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }): FourwingsClusterPickingInfo => {
     let expansionZoom: number | undefined
     let expansionBounds: Bbox | undefined
+    const { zoom } = this.context.viewport
     if ((this.state.clusterIndex as any)?.points?.length && info.object?.properties.cluster_id) {
       const points = this.state.clusterIndex.getLeaves(info.object?.properties.cluster_id, Infinity)
       const areAllPointsInSameCell =
         points?.length > 0 &&
+        points[0]?.properties?.cellNum !== undefined &&
         points.every((p) => p.properties.cellNum === points[0].properties.cellNum)
+
       if (!areAllPointsInSameCell) {
-        expansionZoom = Math.min(
+        let newExpansionZoom = Math.min(
           this.state.clusterIndex.getClusterExpansionZoom(info.object?.properties.cluster_id),
-          this.props.maxZoom
+          MAX_CLUSTER_EXPANSION_ZOOM
         )
-        const bounds = points.reduce(
-          (acc, point) => {
-            return [
-              Math.min(acc[0], point.properties.cellBounds?.[0]),
-              Math.min(acc[1], point.properties.cellBounds?.[1]),
-              Math.max(acc[2], point.properties.cellBounds?.[2]),
-              Math.max(acc[3], point.properties.cellBounds?.[3]),
-            ] as Bbox
-          },
-          [Infinity, Infinity, -Infinity, -Infinity] as Bbox
-        )
-        expansionBounds = bounds
+        newExpansionZoom = newExpansionZoom > zoom ? newExpansionZoom : Math.round(zoom) + 0.5
+        if (newExpansionZoom <= MAX_CLUSTER_EXPANSION_ZOOM) {
+          expansionZoom = newExpansionZoom
+        }
+        if (points[0]?.properties?.cellBounds) {
+          const bounds = points.reduce(
+            (acc, point) => {
+              return [
+                Math.min(acc[0], point.properties.cellBounds?.[0]),
+                Math.min(acc[1], point.properties.cellBounds?.[1]),
+                Math.max(acc[2], point.properties.cellBounds?.[2]),
+                Math.max(acc[3], point.properties.cellBounds?.[3]),
+              ] as Bbox
+            },
+            [Infinity, Infinity, -Infinity, -Infinity] as Bbox
+          )
+          expansionBounds = bounds
+        }
       }
     }
     const object = {
@@ -252,6 +275,9 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   _getClustersByZoom = (zoom: number) => {
+    if (!this.state.clusterIndex) {
+      return { clusters: undefined, points: undefined, radiusScale: undefined }
+    }
     const allClusters = this.state.clusterIndex.getClusters([-180, -85, 180, 85], Math.round(zoom))
     const clusters: FourwingsClusterFeature[] = []
     const points: FourwingsPointFeature[] = []
