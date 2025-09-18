@@ -76,6 +76,7 @@ module "preview-dev" {
   short_environment = "dev"
   app_name          = local.app_name
   app_suffix        = "-preview-bot"
+  cloudrun_name     = "fishing-map-$${BRANCH_NAME}"
   docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-preview-bot-dev"
   service_account   = local.service_account.dev
   labels = {

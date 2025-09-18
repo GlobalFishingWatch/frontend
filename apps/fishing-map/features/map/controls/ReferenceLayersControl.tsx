@@ -57,7 +57,8 @@ const ReferenceLayersControl = () => {
       const isReportAreaLayer = reportAreaDataviews.some((d) => d.id === id)
       if (layer && !isReportAreaLayer) {
         upsertDataviewInstance({
-          ...layer,
+          id: layer.dataview.id,
+          dataviewId: layer.dataview.dataviewId,
           config: { visible },
         })
       }

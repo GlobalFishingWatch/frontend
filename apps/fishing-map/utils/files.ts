@@ -1,6 +1,5 @@
+import { capitalize, lowerCase } from 'es-toolkit'
 import type { FeatureCollection } from 'geojson'
-import capitalize from 'lodash/capitalize'
-import lowerCase from 'lodash/lowerCase'
 
 import type {
   DatasetConfigurationSourceFormat,
@@ -10,6 +9,9 @@ import type { JSZipObject } from '@globalfishingwatch/data-transforms'
 import { isZipFile, zipToFiles } from '@globalfishingwatch/data-transforms'
 
 export function getFileName(file: File): string {
+  if (!file?.name) {
+    return ''
+  }
   const name =
     file.name.lastIndexOf('.') > 0 ? file.name.slice(0, file.name.lastIndexOf('.')) : file.name
   return capitalize(lowerCase(name))

@@ -47,7 +47,7 @@ export default function ReportSummaryEvents() {
 
     const activityUnit = eventType
       ? t(`event.${eventType.toLowerCase()}`, {
-          defaultValue: lowerCase(eventType),
+          defaultValue: lowerCase(eventType || ''),
           count: totalStatsEvents,
         }).toLowerCase()
       : ''
