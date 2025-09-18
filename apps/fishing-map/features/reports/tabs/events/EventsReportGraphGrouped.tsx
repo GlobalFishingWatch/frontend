@@ -295,7 +295,10 @@ export default function EventsReportGraphGrouped({
   }
 
   return (
-    <div ref={containerRef} className={cx(styles.graph, styles.groupBy)}>
+    <div
+      ref={containerRef}
+      className={cx(styles.graph, styles.groupBy, { [styles.paddingTop]: isIndividualSupported })}
+    >
       {isIndividualSupported && (
         <EventsReportDownload
           dataviews={dataviews}

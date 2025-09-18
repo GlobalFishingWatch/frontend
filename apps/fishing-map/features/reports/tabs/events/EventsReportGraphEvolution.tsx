@@ -181,7 +181,10 @@ export default function EventsReportGraphEvolution({
   }
 
   return (
-    <div ref={containerRef} className={cx(styles.graph, styles.evolution)}>
+    <div
+      ref={containerRef}
+      className={cx(styles.graph, styles.evolution, { [styles.paddingTop]: isIndividualSupported })}
+    >
       {isIndividualSupported && (
         <EventsReportDownload
           dataviews={dataviews}

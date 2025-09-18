@@ -5,6 +5,10 @@
   position: relative;
 }
 
+.paddingTop {
+  padding-top: 2rem;
+}
+
 .graph svg {
   overflow: visible;
 }
