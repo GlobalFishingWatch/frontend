@@ -19,6 +19,8 @@ import {
   YearlyTransmissionsTimeline,
 } from '@globalfishingwatch/ui-components'
 
+import I18nDate from '../i18n/i18nDate'
+
 import styles from '../../styles/global.module.css'
 
 interface ExpandableRowProps {
@@ -32,6 +34,14 @@ function ExpandableRow({ rowId }: ExpandableRowProps) {
   const isSmallScreen = useSmallScreen()
   const [highlightedYear, setHighlightedYear] = useState<number>()
   const [trackBbox, setTrackBbox] = useState<Bbox>()
+
+  const navigate = () => {
+    let url = ''
+    if (!vesselMatch) url = 'https://globalfishingwatch.org/map'
+    else
+      url = `https://globalfishingwatch.org/map/fishing-activity/default-public/vessel/${vesselMatch.selfReportedInfo[0].id}/`
+    window.open(url, '_blank')
+  }
 
   const onYearHover = useCallback((year?: number) => {
     setHighlightedYear(year)
@@ -74,8 +84,8 @@ function ExpandableRow({ rowId }: ExpandableRowProps) {
 
   return (
     <div className="!w-screen sticky left-0 !px-[6rem] !py-[3rem]">
-      <div className="grid [grid-template-columns:repeat(3,minmax(max-content,min-content))] gap-4">
-        <div className="flex flex-col">
+      <div className="grid [grid-template-columns:repeat(3,minmax(max-content,min-content))] gap-16">
+        <div className="flex flex-col max-h-[125px]">
           {!isSmallScreen && (
             <TrackFootprint
               vesselIds={[vesselMatch.selfReportedInfo[0].id]}
@@ -88,12 +98,13 @@ function ExpandableRow({ rowId }: ExpandableRowProps) {
         <div className="flex flex-col items-start justify-between">
           <h4 className="font-semibold mb-2">{t('expanded_row.title', 'Vessel Viewer')}</h4>
           {transmissionDateFrom && transmissionDateTo && (
-            <div>
+            <div className={styles.expanded}>
               <span className="whitespace-nowrap">
                 {hasPositions
                   ? `${positionsCounter} ${t('expanded_row.transmission_other', 'transmissions')} ${t('expanded_row.from', 'from')} `
                   : `${upperFirst(t('expanded_row.from', 'from'))} `}
-                {transmissionDateFrom} {t('expanded_row.to', 'to')} {transmissionDateTo}
+                <I18nDate date={transmissionDateFrom} /> {t('expanded_row.to')}{' '}
+                <I18nDate date={transmissionDateTo} />
               </span>
 
               <YearlyTransmissionsTimeline
@@ -106,7 +117,7 @@ function ExpandableRow({ rowId }: ExpandableRowProps) {
               />
             </div>
           )}
-          <Button className={styles.downloadButton} size="medium" onClick={() => {}}>
+          <Button className={styles.downloadButton} size="medium" onClick={navigate}>
             {t('expanded_row.see_more', 'See more')}
           </Button>
         </div>

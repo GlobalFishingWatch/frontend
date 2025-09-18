@@ -85,3 +85,7 @@
   border: none;
   background: none;
 }
+
+.expanded > div {
+  min-width: 50vw;
+}
