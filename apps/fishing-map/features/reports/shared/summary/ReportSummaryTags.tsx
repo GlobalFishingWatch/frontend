@@ -10,6 +10,7 @@ import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
 import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
+import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
@@ -34,6 +35,7 @@ export default function ReportSummaryTags({ dataview }: LayerPanelProps) {
 
   const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
   const hasFilterSelected = filtersAllowed.some((filter) => filter.optionsSelected.length > 0)
+  const hasSourceSelected = getSourcesSelectedInDataview(dataview)?.length > 0
 
   return (
     <div className={styles.row}>
@@ -60,6 +62,7 @@ export default function ReportSummaryTags({ dataview }: LayerPanelProps) {
       <Fragment>
         {(reportCategory === ReportCategory.Activity ||
           reportCategory === ReportCategory.Detections ||
+          reportCategory === ReportCategory.Events ||
           reportCategory === ReportCategory.Others) && (
           <Fragment>
             <DatasetFilterSource dataview={dataview} className={styles.tag} />
@@ -73,7 +76,7 @@ export default function ReportSummaryTags({ dataview }: LayerPanelProps) {
                   className={styles.tag}
                 />
               ))
-            ) : (
+            ) : hasSourceSelected ? null : (
               <label>{t('selects.allSelected')}</label>
             )}
           </Fragment>

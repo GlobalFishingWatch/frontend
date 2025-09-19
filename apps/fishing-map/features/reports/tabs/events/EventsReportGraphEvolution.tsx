@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import { groupBy } from 'es-toolkit'
@@ -7,20 +7,18 @@ import { DateTime } from 'luxon'
 
 import { type ApiEvent, DatasetTypes, type EventType } from '@globalfishingwatch/api-types'
 import { formatDateForInterval, getISODateByInterval } from '@globalfishingwatch/data-transforms'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
-import type {
-  BaseResponsiveTimeseriesProps,
-  ResponsiveVisualizationData,
-} from '@globalfishingwatch/responsive-visualizations'
+import type { BaseResponsiveTimeseriesProps } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveTimeseries } from '@globalfishingwatch/responsive-visualizations'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import i18n from 'features/i18n/i18n'
 import { formatTooltipValue } from 'features/reports/report-area/area-reports.utils'
 import { useFetchEventReportGraphEvents } from 'features/reports/tabs/events/events-report.hooks'
+import type { EventsReportGraphProps } from 'features/reports/tabs/events/events-report.types'
+import EventsReportDownload from 'features/reports/tabs/events/EventsReportDownload'
 import { getUTCDateTime } from 'utils/dates'
 import { getTimeLabels } from 'utils/events'
 import { formatInfoField, upperFirst } from 'utils/info'
@@ -133,7 +131,6 @@ const formatDateTicks: BaseResponsiveTimeseriesProps['tickLabelFormatter'] = (
   const date = getUTCDateTime(tick).setLocale(i18n.language)
   return formatDateForInterval(date, timeChunkInterval)
 }
-
 export default function EventsReportGraphEvolution({
   dataviews,
   includes,
@@ -143,16 +140,7 @@ export default function EventsReportGraphEvolution({
   data,
   valueKeys,
   eventType,
-}: {
-  dataviews?: UrlDataviewInstance[]
-  includes?: string[]
-  color?: string
-  end: string
-  start: string
-  data: ResponsiveVisualizationData<'aggregated'>
-  valueKeys: string[]
-  eventType?: EventType
-}) {
+}: EventsReportGraphProps) {
   const containerRef = React.useRef<HTMLDivElement>(null)
 
   const startMillis = DateTime.fromISO(start).toMillis()
@@ -160,6 +148,7 @@ export default function EventsReportGraphEvolution({
   const interval = getFourwingsInterval(startMillis, endMillis)
   const includesMemo = useMemoCompare(includes)
   const fetchEventsData = useFetchEventReportGraphEvents()
+  const [isIndividualSupported, setIsIndividualSupported] = useState(false)
 
   const datasetId = dataviews?.[0]?.datasets?.find((d) => d.type === DatasetTypes.Events)?.id
 
@@ -176,11 +165,12 @@ export default function EventsReportGraphEvolution({
 
   const getIndividualData = useCallback(async () => {
     if (!dataviews?.length || !datasetId) {
+      setIsIndividualSupported(false)
       return []
     }
     const data = await fetchEventsData({ dataviews, start, end, includes: includesMemo })
     const groupedData = groupBy(data, (item) => getISODateByInterval(item.start, interval))
-
+    setIsIndividualSupported(true)
     return Object.entries(groupedData)
       .map(([date, events]) => ({ date, values: events }))
       .sort((a, b) => a.date.localeCompare(b.date))
@@ -191,7 +181,18 @@ export default function EventsReportGraphEvolution({
   }
 
   return (
-    <div ref={containerRef} className={cx(styles.graph, styles.evolution)}>
+    <div
+      ref={containerRef}
+      className={cx(styles.graph, styles.evolution, { [styles.paddingTop]: isIndividualSupported })}
+    >
+      {isIndividualSupported && (
+        <EventsReportDownload
+          dataviews={dataviews}
+          start={start}
+          end={end}
+          className={styles.download}
+        />
+      )}
       <ResponsiveTimeseries
         start={start}
         end={end}

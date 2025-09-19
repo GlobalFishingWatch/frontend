@@ -126,7 +126,7 @@ export const isSupportedReportDataview = (
   if (!category || !config?.visible || !config?.type) {
     return false
   }
-  if (config?.type === DataviewType.FourwingsTileCluster && isGlobalReportsEnabled) {
+  if (config?.type === DataviewType.FourwingsTileCluster && !isGlobalReportsEnabled) {
     return false
   }
   if (category === DataviewCategory.User) {

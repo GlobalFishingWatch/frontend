@@ -1,5 +1,5 @@
 import { IS_PRODUCTION_WORKSPACE_ENV, PATH_BASENAME } from 'data/config'
-import type { WorkspaceReportLink } from 'data/highlighted-workspaces/fishing-activity'
+import type { WorkspaceReportLink } from 'data/highlighted-workspaces/reports'
 
 import type workspaceTranslations from '../../public/locales/source/workspaces.json'
 

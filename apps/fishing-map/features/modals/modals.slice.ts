@@ -14,7 +14,7 @@ type ModalId =
   | 'createWorkspace'
   | 'workspaceGenerator'
 
-type LayerLibraryMode = DataviewCategory | false
+export type LayerLibraryMode = DataviewCategory | false
 export type DatasetUploadStyle = 'default' | 'transparent'
 export type DatasetUploadConfig = {
   id?: string
