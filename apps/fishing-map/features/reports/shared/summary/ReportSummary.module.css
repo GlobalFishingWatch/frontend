@@ -21,6 +21,7 @@
   padding-top: var(--space-XS);
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-M);
 }
 
