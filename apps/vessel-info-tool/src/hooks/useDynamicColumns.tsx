@@ -87,7 +87,7 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
 
           return (
             <div className="flex items-center justify-between p-2">
-              <span>
+              <span className="min-w-0 text-ellipsis overflow-hidden whitespace-nowrap">
                 {!globalFilter ? (
                   <span>{value}</span>
                 ) : (

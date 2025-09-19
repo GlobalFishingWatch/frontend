@@ -30,10 +30,10 @@ export function DynamicTable({ data, tableContainerRef }: DynamicTableProps) {
 
   const columns = useDynamicColumns(data)
   const columnPinning = {
-    left: ['select', (columns[1] as any)?.accessorKey],
+    left: ['select', (columns[1] as any)?.id],
   }
   const [expanded, setExpanded] = useState<ExpandedState>({})
-  const [sorting, setSorting] = useState<SortingState>([(columns[1] as any)?.accessorKey])
+  const [sorting, setSorting] = useState<SortingState>([(columns[1] as any)?.id])
   const [selected, setSelected] = useState<RowSelectionState>(
     selectedRows
       ? Array.isArray(selectedRows)
@@ -43,15 +43,19 @@ export function DynamicTable({ data, tableContainerRef }: DynamicTableProps) {
   )
 
   useEffect(() => {
-    if (Object.keys(selected).length > 0) {
-      navigate({
-        search: (prev) => ({
+    navigate({
+      search: (prev) => {
+        if (Object.keys(selected).length === 0) {
+          const { selectedRows, ...rest } = prev
+          return rest
+        }
+        return {
           ...prev,
           selectedRows: Object.keys(selected).join(','),
-        }),
-      })
-    }
-  }, [selected])
+        }
+      },
+    })
+  }, [selected, navigate])
 
   const table = useReactTable({
     data: data,
@@ -167,9 +171,7 @@ export function DynamicTable({ data, tableContainerRef }: DynamicTableProps) {
                             width: column.getSize(),
                             zIndex: column.getIsPinned() ? 1 : 0,
                             backgroundColor: column.getIsPinned()
-                              ? row.getIsExpanded() && column.id !== 'select'
-                                ? 'var(--color-brand)'
-                                : 'rgba(229, 240, 242, 0.95)'
+                              ? 'rgba(229, 240, 242, 0.95)'
                               : undefined,
                           }}
                         >
@@ -180,9 +182,7 @@ export function DynamicTable({ data, tableContainerRef }: DynamicTableProps) {
                   </div>
 
                   {row.getIsExpanded() && (
-                    <div className="expanded-content bg-[var(--color-brand)]">
-                      {renderExpandedRow({ row })}
-                    </div>
+                    <div className="!bg-[var(--color-brand)]">{renderExpandedRow({ row })}</div>
                   )}
                 </div>
               </td>

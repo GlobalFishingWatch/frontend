@@ -1,45 +1,4 @@
-import type flags from 'data/iccat/flags'
-import type gearTypes from 'data/iccat/gearType'
-import type vesselType from 'data/iccat/vesselType'
-
-export interface ICCATVessel {
-  ICCATSerialNo: string
-  NatRegNo: string
-  IntRegNo: string
-  IRNoType: 'IMO'
-  IRCS: string
-  VesselNameCur: string
-  VesselNamePrv?: string
-  FlagCurCd: typeof flags
-  FlagPrvCd?: typeof flags
-  // owner: {
-  //   OwOpEntityID: string
-  //   OwOpName: string
-  //   OwOpAddrs: string
-  //   OwOpCity: string
-  //   OwOpZipCd: string
-  //   OwOpCtry: typeof flags
-  //   OwOpEmail?: string
-  //   OwOpTel?: string
-  // }
-  IsscfvID: typeof vesselType
-  IsscfgID: typeof gearTypes
-  LengthM: number
-  LenType: 'LOA'
-  Tonnage: number
-  TonType: 'GT' | 'GRT'
-  CarCapacity: number
-  CCapUnitCd: 'm3' //| 'cf' for cubic feet if needed in future
-
-  //optional fields
-  ExternalMark?: string
-  YrBuilt?: string
-  ShipyNat?: typeof flags
-  HomePort?: string
-  DepthM?: number
-  EngineHP?: number
-  VMSSysCd?: string
-}
+import type { ICCATVessel } from './iccat'
 
 export interface SPRFMOVessel {
   'Current Vessel Flag (3-alpha code)': string
@@ -73,16 +32,19 @@ export type MissingFieldsTableType = {
   fallbackValue?: string
 }
 
-export function checkMissingMandatoryFields(data: Record<string, any>[]): MissingFieldsTableType[] {
+export function checkMissingMandatoryFields(
+  data: (ICCATVessel | SPRFMOVessel)[]
+): MissingFieldsTableType[] {
   if (data.length === 0) return []
-  const keys = Object.keys(data[0]) as (keyof (ICCATVessel | SPRFMOVessel))[]
+  const keys = Object.keys(data[0])
+  console.log('🚀 ~ checkMissingMandatoryFields ~ keys:', keys)
 
   return keys
     .map((field) => {
       let emptyRows = 0
 
       for (const row of data) {
-        const value = row[field]
+        const value = row[field as keyof (ICCATVessel | SPRFMOVessel)]
         if (value === undefined || value === null || value === '') {
           emptyRows++
         }
@@ -91,7 +53,7 @@ export function checkMissingMandatoryFields(data: Record<string, any>[]): Missin
       if (emptyRows > 0) {
         return {
           field: field as string,
-          format: typeof data[0][field],
+          format: typeof data[0][field as keyof (ICCATVessel | SPRFMOVessel)],
           emptyRows: emptyRows === data.length ? 'All' : emptyRows,
           fallbackValue: loadFallbackValue(field as string),
         }

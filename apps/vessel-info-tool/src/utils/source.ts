@@ -1,6 +1,6 @@
 import type { Vessel } from '@/types/vessel.types'
 
-import { brazilToICCAT, panamaToICCAT } from './conversion'
+import { brazilToICCAT, panamaToICCAT } from './iccat'
 
 export function normalizeKey(key: string): string {
   return key
@@ -10,13 +10,13 @@ export function normalizeKey(key: string): string {
     .replace(/[^a-z0-9]/g, '')
 }
 
-export function identifySourceSystem(data: Record<string, keyof Vessel>[]) {
-  if (data.length === 0) return null
+export function identifySourceSystem(data: Vessel) {
+  if (!data) return null
 
   const normalizedBrazilKeys = Object.keys(brazilToICCAT).map(normalizeKey)
   const normalizedPanamaKeys = Object.keys(panamaToICCAT).map(normalizeKey)
 
-  const inputKeys = Object.keys(data[0]).map(normalizeKey)
+  const inputKeys = Object.keys(data).map(normalizeKey)
 
   const brazilMatches = inputKeys.filter((k) => normalizedBrazilKeys.includes(k)).length
 

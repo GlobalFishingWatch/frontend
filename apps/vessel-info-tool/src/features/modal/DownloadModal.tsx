@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Route } from '@/routes/_auth/index'
 import type { Vessel } from '@/types/vessel.types'
 import { RFMO } from '@/types/vessel.types'
-import { parseVessels } from '@/utils/conversion'
+import { parseVessels } from '@/utils/iccat'
 import { checkMissingMandatoryFields } from '@/utils/validations'
 import { handleExportICCATVessels } from '@/utils/vessels'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
@@ -41,7 +41,7 @@ const DownloadModal: React.FC<DownloadModalProps> = ({
   if (!selectedIds || selectedIds.length === 0) return null
   const vessels = data.filter((vessel) => selectedIds.includes(vessel.id))
 
-  const parsed = parseVessels(vessels, 'panama', selectedRFMO.id as RFMO)
+  const parsed = parseVessels(vessels)
   const report = checkMissingMandatoryFields(parsed)
 
   const handleDownload = async () => {
@@ -78,12 +78,12 @@ const DownloadModal: React.FC<DownloadModalProps> = ({
             label={t('modal.submissionFormat', 'Submission format')}
           />
         </>
-        {report.length && (
+        {report.length ? (
           <div className="flex flex-col gap-6">
             {t('modal.fields_minimal', 'The following fields are missing in the registry data')}
             <FieldsTable fields={report} />
           </div>
-        )}
+        ) : null}
         <div className="flex justify-end">
           <Button className={styles.downloadButton} onClick={handleDownload} disabled={isLoading}>
             {isLoading ? 'Downloading...' : 'Download'}

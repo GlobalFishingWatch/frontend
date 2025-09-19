@@ -43,7 +43,7 @@
   --gradient: linear-gradient(180deg, var(--color-gradient) 0, var(--color-white) 70rem);
   --color-map-background: #002457;
   --color-highlight-blue: #6aecf9;
-  --color-brand: #163e8910;
+  --color-brand: #163e8905;
 
   /* ENCOUNTER STATUS COLORS */
   --color-encounter-status-pending: rgba(175, 187, 202);
