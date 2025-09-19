@@ -2,20 +2,16 @@ import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { groupBy } from 'es-toolkit'
 
-import { type VesselGroupInsightResponse } from '@globalfishingwatch/api-types'
 import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectVGRFootprintDataview } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
 import VesselGroupReportVesselsIndividualTooltip from 'features/reports/shared/vessels/ReportVesselsIndividualTooltip'
 import VesselGraphLink from 'features/reports/shared/vessels/VesselGraphLink'
-import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
-import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
-import { formatInfoField } from 'utils/info'
-import { weightedMean } from 'utils/statistics'
+import { COVERAGE_GRAPH_BUCKETS } from 'features/reports/tabs/vessel-group-insights/vessel-group-report-insights.utils'
 
 import styles from './VGRInsightCoverageGraph.module.css'
 
@@ -31,59 +27,15 @@ const CustomTick = (props: any) => {
   )
 }
 
-const COVERAGE_GRAPH_BUCKETS: Record<string, number> = {
-  '≤20%': 20,
-  '21-40%': 40,
-  '41-60%': 60,
-  '61-80%': 80,
-  '≥81%': 100,
-}
-const CoverageGraphBuckets = Object.keys(COVERAGE_GRAPH_BUCKETS)
-function parseCoverageGraphValueBucket(value: number) {
-  return (
-    CoverageGraphBuckets.find((key) => value < COVERAGE_GRAPH_BUCKETS[key]) ||
-    CoverageGraphBuckets[CoverageGraphBuckets.length - 1]
-  )
-}
-
-function getDataByCoverage(
-  data: VesselGroupInsightResponse['coverage'],
-  vessels: VesselGroupVesselIdentity[]
-): Record<string, any[]> {
-  if (!data) return {}
-  const groupedData: Record<string, any> = {}
-  data.forEach((d) => {
-    const vessel = vessels.find((v) => v.vesselId === d.vesselId)
-    const { relationId } = vessel || {}
-    if (!relationId) return
-    if (!groupedData[relationId]) {
-      groupedData[relationId] = {
-        name: relationId,
-        vessel,
-        values: [d.percentage],
-        counts: [parseInt(d.blocks)],
-      }
-    } else {
-      groupedData[relationId].values.push(d.percentage)
-      groupedData[relationId].counts.push(parseInt(d.blocks))
-    }
-  })
-
-  const dataByCoverage = Object.values(groupedData).map((d) => ({
-    name: d.name,
-    vessel: d.vessel,
-    value: parseCoverageGraphValueBucket(weightedMean(d.values, d.counts)),
-    originalValue: weightedMean(d.values, d.counts),
-  }))
-
-  return groupBy(dataByCoverage, (entry) => entry.value!)
+function getDataByCoverage(vessels: ReportTableVessel[]): Record<string, any[]> {
+  if (!vessels?.length) return {}
+  return groupBy(vessels, (entry) => entry.coverageBucket!)
 }
 
 function parseCoverageGraphAggregatedData(
-  data: VesselGroupInsightResponse['coverage'],
-  vessels: VesselGroupVesselIdentity[]
+  vessels: ReportTableVessel[]
 ): ResponsiveVisualizationData<'aggregated'> {
-  const groupedDataByCoverage = getDataByCoverage(data, vessels)
+  const groupedDataByCoverage = getDataByCoverage(vessels)
   return Object.keys(COVERAGE_GRAPH_BUCKETS).map((key) => ({
     label: key,
     value: groupedDataByCoverage[key]?.length || 0,
@@ -91,21 +43,15 @@ function parseCoverageGraphAggregatedData(
 }
 
 function parseCoverageGraphIndividualData(
-  data: VesselGroupInsightResponse['coverage'],
-  vessels: VesselGroupVesselIdentity[]
+  vessels: ReportTableVessel[]
 ): ResponsiveVisualizationData<'individual'> {
-  const groupedDataByCoverage = getDataByCoverage(data, vessels)
+  const groupedDataByCoverage = getDataByCoverage(vessels)
   return Object.keys(COVERAGE_GRAPH_BUCKETS).map((key) => ({
     label: key,
-    values: (groupedDataByCoverage[key] || []).map((d) => {
-      const vessel = getSearchIdentityResolved(d.vessel.identity)
+    values: (groupedDataByCoverage[key] || []).map((vessel) => {
       return {
-        shipName: formatInfoField(vessel.shipname, 'shipname'),
-        ssvid: vessel.ssvid,
-        flagTranslated: formatInfoField(vessel.flag, 'flag'),
-        vesselType: formatInfoField(vessel.shiptypes, 'shiptypes'),
-        geartype: formatInfoField(vessel.geartypes, 'geartypes'),
-        value: d.originalValue,
+        ...vessel,
+        value: vessel.coverage,
       }
     }),
   }))
@@ -114,21 +60,21 @@ function parseCoverageGraphIndividualData(
 export default function VesselGroupReportInsightCoverageGraph({
   data,
 }: {
-  data: VesselGroupInsightResponse['coverage']
+  data: ReportTableVessel[]
 }) {
-  const vesselGroup = useSelector(selectVGRData)
-
   const getIndividualData = useCallback(async () => {
-    if (vesselGroup?.vessels.length) {
-      return parseCoverageGraphIndividualData(data, vesselGroup.vessels)
-    } else return []
-  }, [data, vesselGroup?.vessels])
+    if (data && data.length) {
+      return parseCoverageGraphIndividualData(data)
+    }
+    return []
+  }, [data])
 
   const getAggregatedData = useCallback(async () => {
-    if (vesselGroup?.vessels.length) {
-      return parseCoverageGraphAggregatedData(data, vesselGroup.vessels)
-    } else return []
-  }, [data, vesselGroup?.vessels])
+    if (data && data.length) {
+      return parseCoverageGraphAggregatedData(data)
+    }
+    return []
+  }, [data])
 
   const reportDataview = useSelector(selectVGRFootprintDataview)
   return (

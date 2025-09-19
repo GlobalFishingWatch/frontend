@@ -6,6 +6,7 @@ import { selectReportVesselGraph } from 'features/reports/reports.selectors'
 import { type ReportVesselsSubCategory } from 'features/reports/reports.types'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
+import VesselGroupReportInsightCoverage from 'features/reports/tabs/vessel-group-insights/VGRInsightCoverage'
 
 import {
   selectReportVesselsGraphAggregatedData,
@@ -33,7 +34,7 @@ function ReportVessels({
 }) {
   const aggregatedData = useSelector(selectReportVesselsGraphAggregatedData)
   const individualData = useSelector(selectReportVesselsGraphIndividualData)
-  const property = useSelector(selectReportVesselGraph)
+  const reportVesselGraph = useSelector(selectReportVesselGraph)
   const filter = useSelector(selectReportVesselFilter)
   const vessels = useSelector(selectReportVesselsPaginated)
   const valueKeys = useSelector(selectReportVesselsGraphDataKeys)
@@ -48,13 +49,17 @@ function ReportVessels({
         <ReportVesselsPlaceholder showGraphHeader={false} />
       ) : (
         <Fragment>
-          <ReportVesselsGraph
-            data={aggregatedData!}
-            individualData={individualData}
-            aggregatedValueKey={valueKeys}
-            color={color}
-            property={property as ReportVesselsSubCategory}
-          />
+          {reportVesselGraph === 'coverage' ? (
+            <VesselGroupReportInsightCoverage />
+          ) : (
+            <ReportVesselsGraph
+              data={aggregatedData!}
+              individualData={individualData}
+              aggregatedValueKey={valueKeys}
+              color={color}
+              property={reportVesselGraph as ReportVesselsSubCategory}
+            />
+          )}
           <ReportVesselsFilter filter={filter} />
           <ReportVesselsTable
             activityUnit={activityUnit}

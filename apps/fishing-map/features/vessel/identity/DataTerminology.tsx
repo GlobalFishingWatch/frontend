@@ -5,7 +5,7 @@ import cx from 'classnames'
 import htmlParse from 'html-react-parser'
 
 import type { IconButtonSize, IconButtonType } from '@globalfishingwatch/ui-components'
-import { Icon, Modal, Spinner } from '@globalfishingwatch/ui-components'
+import { Icon, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
@@ -18,10 +18,11 @@ import styles from './DataTerminology.module.css'
 interface ModalProps {
   containerClassName?: string
   className?: string
-  title?: string
+  title?: string | React.ReactNode
   size?: IconButtonSize
   type?: IconButtonType
   terminologyKey: keyof I18nNamespaces['data-terminology']
+  tooltip?: string
 }
 
 const DataTerminology: React.FC<ModalProps> = ({
@@ -29,6 +30,7 @@ const DataTerminology: React.FC<ModalProps> = ({
   className,
   containerClassName,
   title,
+  tooltip,
 }): React.ReactElement<any> => {
   const { t } = useTranslation(['translations', 'data-terminology'])
   const [showModal, setShowModal] = useState(false)
@@ -51,9 +53,11 @@ const DataTerminology: React.FC<ModalProps> = ({
 
   return (
     <Fragment>
-      <span role="button" onClick={onClick} tabIndex={0}>
-        <Icon icon="info" className={cx(styles.infoButton, className)} />
-      </span>
+      <Tooltip content={tooltip}>
+        <span role="button" onClick={onClick} tabIndex={0}>
+          <Icon icon="info" className={cx(styles.infoButton, className)} />
+        </span>
+      </Tooltip>
       <Modal
         appSelector="__next"
         isOpen={showModal}

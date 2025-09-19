@@ -136,6 +136,14 @@
   border-bottom: var(--border);
 }
 
+.vesselsTable tr.noBorderBottom td {
+  border-bottom: none;
+}
+
+.vesselsTable tr.noBorderTop td {
+  border-top: none;
+}
+
 .vesselsTable tr.border:not(:last-child) td {
   border-bottom: 1px solid var(--color-secondary-blue);
 }
@@ -161,4 +169,10 @@
   align-items: flex-end;
   justify-content: flex-end;
   margin-right: 0;
+}
+
+.searchLinkText {
+  display: flex;
+  align-items: center;
+  gap: var(--space-S);
 }

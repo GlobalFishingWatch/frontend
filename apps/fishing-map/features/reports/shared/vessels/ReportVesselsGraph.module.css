@@ -52,3 +52,7 @@
   top: 6px;
   z-index: 10;
 }
+
+.experimental {
+  color: var(--color-danger-red);
+}

@@ -39,7 +39,7 @@ export type ReportDetectionsSubCategory =
   | `${DatasetSubCategory.Viirs}`
   | `${DatasetSubCategory.Sentinel2}`
 export type ReportEventsSubCategory = EventType
-export type ReportVesselsSubCategory = ReportVesselGraph | 'source'
+export type ReportVesselsSubCategory = ReportVesselGraph | 'source' | 'coverage'
 
 export type AnyReportSubCategory =
   | ReportActivitySubCategory
