@@ -35,8 +35,8 @@ const logoutUser = async () => {
 export const useUser = () => {
   const accessToken = typeof window === 'undefined' ? null : getAccessTokenFromUrl()
   const queryResult = useQuery(['user'], () => fetchUser(accessToken), {})
-  const token = GFWAPI.getToken()
-  const refreshToken = GFWAPI.getRefreshToken()
+  const token = GFWAPI.token
+  const refreshToken = GFWAPI.refreshToken
   const { data: user } = queryResult
 
   const authorized = useMemo(() => {

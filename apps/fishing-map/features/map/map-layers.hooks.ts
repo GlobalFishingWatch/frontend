@@ -184,7 +184,7 @@ export const useGlobalConfigConnect = () => {
       start,
       end,
       debug,
-      token: GFWAPI.getToken(),
+      token: GFWAPI.token,
       bivariateDataviews,
       activityVisualizationMode,
       detectionsVisualizationMode,
