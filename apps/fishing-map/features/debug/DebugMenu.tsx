@@ -75,16 +75,6 @@ const DebugMenu: React.FC = () => {
         <p>Don't send any thinning param to tracks API to debug original resolution</p>
         {isGFWDeveloper && (
           <Fragment>
-            <div className={styles.header}>
-              <Switch
-                id="option_global_reports"
-                active={featureFlags.globalReports}
-                onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.GlobalReports))}
-              />
-              <label htmlFor="option_global_reports">
-                <strong>Feature flag:</strong> Global reports
-              </label>
-            </div>
             <p>Activates the global reports feature: aka CVP</p>
             <div className={styles.header}>
               <Switch

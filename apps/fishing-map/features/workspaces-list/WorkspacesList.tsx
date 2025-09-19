@@ -9,7 +9,6 @@ import type { ReportWorkspaceId } from 'data/highlighted-workspaces/reports'
 import { REPORT_IDS } from 'data/highlighted-workspaces/reports'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { fetchWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { HOME, REPORT, WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
@@ -32,7 +31,6 @@ function WorkspacesList() {
   const highlightedWorkspacesIds = useSelector(selectCurrentHighlightedWorkspacesIds)
   const highlightedWorkspaces = useSelector(selectCurrentHighlightedWorkspaces)
   const validCategory = useSelector(isValidLocationCategory)
-  const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
 
   useEffect(() => {
     if (highlightedWorkspacesIds.length) {
@@ -82,7 +80,7 @@ function WorkspacesList() {
             reports,
             img,
           } = highlightedWorkspace
-          if (!visible || !isGlobalReportsEnabled) {
+          if (!visible) {
             return null
           }
 

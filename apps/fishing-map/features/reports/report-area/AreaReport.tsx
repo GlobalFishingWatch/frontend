@@ -12,10 +12,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimebarSelectedEnvId } from 'features/app/selectors/app.timebar.selectors'
 import { selectReportLayersVisible } from 'features/dataviews/selectors/dataviews.selectors'
-import {
-  selectIsGlobalReportsEnabled,
-  selectIsOthersReportEnabled,
-} from 'features/debug/debug.selectors'
+import { selectIsOthersReportEnabled } from 'features/debug/debug.selectors'
 import {
   useFetchReportArea,
   useFitAreaInViewport,
@@ -80,7 +77,6 @@ export default function Report() {
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
   const reportArea = useSelector(selectReportArea)
   const hasReportBuffer = useSelector(selectHasReportBuffer)
-  const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
   const isOthersReportEnabled = useSelector(selectIsOthersReportEnabled)
   const reportDataviews = useSelector(selectReportLayersVisible)
   const timebarSelectedEnvId = useSelector(selectTimebarSelectedEnvId)
@@ -97,14 +93,10 @@ export default function Report() {
       id: ReportCategory.Detections,
       title: t('common.detections'),
     },
-    ...(isGlobalReportsEnabled
-      ? [
-          {
-            id: ReportCategory.Events,
-            title: t('common.events'),
-          },
-        ]
-      : []),
+    {
+      id: ReportCategory.Events,
+      title: t('common.events'),
+    },
     {
       id: ReportCategory.Environment,
       title: t('common.environment'),
