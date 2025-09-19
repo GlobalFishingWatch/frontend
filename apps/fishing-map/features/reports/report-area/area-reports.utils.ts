@@ -118,15 +118,9 @@ export const isUserContextDataviewReportSupported = (dataview: Dataview | UrlDat
   return getDatasetConfigurationProperty({ dataset, property: 'geometryType' }) === 'points'
 }
 
-export const isSupportedReportDataview = (
-  dataview: Dataview | UrlDataviewInstance,
-  isGlobalReportsEnabled: boolean
-) => {
+export const isSupportedReportDataview = (dataview: Dataview | UrlDataviewInstance) => {
   const { category, config } = dataview
   if (!category || !config?.visible || !config?.type) {
-    return false
-  }
-  if (config?.type === DataviewType.FourwingsTileCluster && !isGlobalReportsEnabled) {
     return false
   }
   if (category === DataviewCategory.User) {
