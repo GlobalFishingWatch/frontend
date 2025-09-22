@@ -44,7 +44,7 @@ export const Search = ({ data }: { data: Vessel[] }) => {
         <InputText
           className={isFilterOpen ? 'w-full' : 'w-[70%]'}
           onChange={(e) => setLocalValue(e.target.value)}
-          value={localValue}
+          value={localValue ?? ''}
           type="search"
           onCleanButtonClick={() => setLocalValue(undefined)}
           placeholder={t('search.placeholderGlobal', 'Search all data..')}

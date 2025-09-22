@@ -6,7 +6,7 @@ import escapeRegExp from 'lodash/escapeRegExp'
 import type { Vessel } from '@/types/vessel.types'
 import { generateFilterConfigs } from '@/utils/filters'
 import { normalizeKey } from '@/utils/source'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
 import styles from '../styles/global.module.css'
 
@@ -91,28 +91,30 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
 
           return (
             <div className="flex items-center justify-between p-2">
-              <span className="min-w-0 text-ellipsis overflow-hidden whitespace-nowrap">
-                {!globalFilter ? (
-                  <span>{value}</span>
-                ) : (
-                  value
-                    .split(regex)
-                    .filter((part) => part)
-                    .map((part, i) =>
-                      regex.test(part) ? (
-                        <mark
-                          style={{ backgroundColor: 'var(--color-highlight-blue)' }}
-                          className="inline-block"
-                          key={i}
-                        >
-                          {part}
-                        </mark>
-                      ) : (
-                        <span key={i}>{part}</span>
+              <Tooltip content={value}>
+                <span className="min-w-0 text-ellipsis overflow-hidden whitespace-nowrap">
+                  {!globalFilter ? (
+                    <span>{value}</span>
+                  ) : (
+                    value
+                      .split(regex)
+                      .filter((part) => part)
+                      .map((part, i) =>
+                        regex.test(part) ? (
+                          <mark
+                            style={{ backgroundColor: 'var(--color-highlight-blue)' }}
+                            className="inline-block"
+                            key={i}
+                          >
+                            {part}
+                          </mark>
+                        ) : (
+                          <span key={i}>{part}</span>
+                        )
                       )
-                    )
-                )}
-              </span>
+                  )}
+                </span>
+              </Tooltip>
               {index === 0 && (
                 <IconButton
                   {...{
