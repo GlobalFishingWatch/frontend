@@ -21,8 +21,8 @@ function Footer({
   return (
     <div>
       <div className={styles.footer}>
-        {/* add action request selector */}
-        {/* add import file button */}
+        {/* add action request selector - for ICCAT */}
+        {/* add import new file button */}
         {children}
         <Button
           className={styles.downloadButton}

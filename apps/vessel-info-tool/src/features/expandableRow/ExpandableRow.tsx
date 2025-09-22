@@ -161,7 +161,7 @@ function ExpandableRow({ rowId }: ExpandableRowProps) {
             </a>
             {/* https://www.iattc.org/en-US/Management/Vessel-register?vesselno=18597
             https://globalrecord.fao.org/vessels/view/0469f642-b37d-4da5-9691-673d62bed9f0
-             */}
+            https://sprfmo.org/vessels/335 */}
           </div>
         </div>
       </div>

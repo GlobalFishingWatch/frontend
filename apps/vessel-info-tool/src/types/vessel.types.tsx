@@ -55,28 +55,47 @@ export interface ICCATOwner {
 }
 
 export interface SPRFMOVessel {
-  'Current Vessel Flag (3-alpha code)': string
-  'Vessel Name': string
-  'Vessel registration number': string
-  'International radio call sign (if any)'?: string
-  'UVI (Unique Vessel Identifier)/ IMO Number (if allocated)'?: string
-  'Previous names (if known)': string
-  'Port of registry': string
-  'Previous flag (if any)': string
-  'Type of vessel (ISSCFV code)': string
-  'Type of fishing method (ISSCFG code)': string
-  'Length (m)': number
-  'Length Type': string
-  'Gross Tonnage (GT)': number
-  'Power of main engine(s) (kW)': number
-  'Hold capacity (m3)': number
-  'Name of owner(s)': string
-  'Address of owner(s)': string
-  'Flag Authorisation Start Date (YYYY-MON-DD)': string
-  'Flag Authorisation End Date (YYYY-MON-DD)': string
-  '3 recent photographs supplied? (y/n)': 'y' | 'n'
-  'Vessel communication types and identification': string
-  'VMS system (brand, model etc)': string
+  currentVesselFlag: string // 3-alpha code
+  vesselName: string
+  vesselRegistrationNumber: string
+  internationalRadioCallSign?: string
+  uviOrImoNumber?: string
+  previousNames?: string
+  portOfRegistry?: string
+  previousFlag?: string
+  vesselTypeCode?: string // ISSCFV
+  fishingMethodCode?: string // ISSCFG
+  yearBuilt?: number
+  placeBuilt?: string
+  lengthMeters?: number
+  lengthType?: string //“LOA”, “LBP”
+  mouldedDepthMeters?: number
+  beamMeters?: number
+  grossTonnageGt?: number
+  grossRegisterTonnageGrt?: number
+  enginePowerKw?: number
+  holdCapacityM3?: number
+  ownerName?: string
+  ownerAddress?: string
+  operatorName?: string
+  operatorAddress?: string
+  flagAuthStartDate?: string // YYYY-MON-DD
+  flagAuthEndDate?: string // YYYY-MON-DD
+  recentPhotographsSupplied?: boolean
+  freezerType?: string
+  numberOfFreezerUnits?: number
+  freezingCapacityTonsPerDay?: number
+  communicationTypes?: string
+  vmsSystem?: string
+  externalMarkings?: string
+  fishProcessingTypes?: string
+  electronics?: string
+  licenseOwner?: string
+  licenseOwnerAddress?: string
+  vesselMaster?: string
+  vesselMasterNationality?: string
+  fishingMaster?: string
+  fishingMasterNationality?: string
 }
 
 export type ExportableVessel = Vessel | ICCATVessel | SPRFMOVessel | Record<string, any>
