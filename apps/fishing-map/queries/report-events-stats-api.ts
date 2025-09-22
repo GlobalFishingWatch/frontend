@@ -18,6 +18,7 @@ export type BaseReportEventsVesselsParamsFilters = {
   encounter_type?: string
   confidence?: number
   flag?: string[]
+  type?: string[]
   minDuration?: number
   maxDuration?: number
   next_port_id?: string
@@ -92,6 +93,7 @@ export function parseEventsFilters(filters: BaseReportEventsVesselsParamsFilters
     ...(filters.confidence && { confidences: filters.confidence }),
     ...(filters.encounter_type && { 'encounter-types': filters.encounter_type }),
     ...(filters.flag && { flags: filters.flag }),
+    ...(filters.type && { 'vessel-types': filters.type }),
     ...(filters.maxDuration && { 'max-duration': filters.maxDuration }),
     ...(filters.minDuration && { 'min-duration': filters.minDuration }),
     ...(filters.next_port_id && { 'next-port-ids': filters.next_port_id }),
