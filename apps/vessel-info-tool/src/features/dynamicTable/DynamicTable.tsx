@@ -28,7 +28,7 @@ export function DynamicTable({ data, tableContainerRef }: DynamicTableProps) {
   const { selectedRows, rfmo, globalSearch, columnFilters } = Route.useSearch()
   const navigate = Route.useNavigate()
 
-  const columns = useDynamicColumns(data)
+  const { columns } = useDynamicColumns(data)
   const columnPinning = {
     left: ['select', (columns[1] as any)?.id],
   }

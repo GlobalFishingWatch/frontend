@@ -1,15 +1,17 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useDynamicColumns } from '@/hooks/useDynamicColumns'
 import { Route } from '@/routes/_auth/index'
 import type { FilterState, Vessel } from '@/types/vessel.types'
-import { generateFilterConfigs } from '@/utils/filters.gen'
+import { generateFilterConfigs } from '@/utils/filters'
 import type { MultiSelectOption } from '@globalfishingwatch/api-client'
 import { InputText, MultiSelect, SliderRange } from '@globalfishingwatch/ui-components'
 
 const DynamicFilters = ({ originalData }: { originalData: Vessel[] }) => {
   const { t } = useTranslation()
-  const filterConfigs = useMemo(() => generateFilterConfigs(originalData), [originalData])
+  const { filterConfigs } = useDynamicColumns(originalData)
+
   const navigate = Route.useNavigate()
   const searchQuery = Route.useSearch()
 
@@ -36,7 +38,7 @@ const DynamicFilters = ({ originalData }: { originalData: Vessel[] }) => {
     })
   }
 
-  const onFilterChange = (id: string, option: MultiSelectOption) => {
+  const onSelectFilterChange = (id: string, option: MultiSelectOption) => {
     navigate({
       search: (prev) => {
         if (!prev.columnFilters) return { ...prev, columnFilters: [{ id, value: option.label }] }
@@ -48,6 +50,23 @@ const DynamicFilters = ({ originalData }: { originalData: Vessel[] }) => {
           columnFilters: [
             ...prev.columnFilters.filter((filter) => filter.id !== id),
             { id, value: typeof option.label === 'string' ? option.label : '' },
+          ],
+        }
+      },
+    })
+  }
+
+  const onRangeFilterChange = (id: string, value: [number, number]) => {
+    navigate({
+      search: (prev) => {
+        if (!prev.columnFilters) return { ...prev, columnFilters: [{ id, value }] }
+
+        if (prev.columnFilters.find((filter) => filter.id === id)?.value === value) return prev
+        return {
+          ...prev,
+          columnFilters: [
+            ...prev.columnFilters.filter((filter) => filter.id !== id),
+            { id, value },
           ],
         }
       },
@@ -83,7 +102,7 @@ const DynamicFilters = ({ originalData }: { originalData: Vessel[] }) => {
                 id: value,
                 label: value,
               }))}
-              onSelect={(option) => onFilterChange(filter.id, option)}
+              onSelect={(option) => onSelectFilterChange(filter.id, option)}
               onCleanClick={() => clearColumnFilter(filter.id)}
             />
           </div>
@@ -105,23 +124,30 @@ const DynamicFilters = ({ originalData }: { originalData: Vessel[] }) => {
           </div>
         )
 
-      case 'number':
+      case 'number': {
+        if (!filter.numberConfig) return null
+
+        const selected = getSelectedValues(filter.id)
+        const numberRange: [number, number] =
+          !selected || selected.length === 0
+            ? [filter.numberConfig.min, filter.numberConfig.max]
+            : (selected as [number, number])
+
         return (
-          filter.numberConfig && (
-            <div key={filter.id} className="flex flex-col">
-              <label className="block truncate text-sm mb-1 w-full" title={filter.label}>
-                {filter.label}
-              </label>
-              <SliderRange
-                initialRange={[filter.numberConfig.min, filter.numberConfig.max]}
-                onChange={(value) => updateFilterValue(filter.id, value)}
-                config={filter.numberConfig}
-                thumbsSize="mini"
-                showInputs
-              />
-            </div>
-          )
+          <div key={filter.id} className="flex flex-col">
+            <label className="block truncate text-sm mb-1 w-full" title={filter.label}>
+              {filter.label}
+            </label>
+            <SliderRange
+              initialRange={numberRange}
+              onChange={(value) => onRangeFilterChange(filter.id, [value[0], value[1]])}
+              config={filter.numberConfig}
+              thumbsSize="mini"
+              showInputs
+            />
+          </div>
         )
+      }
       default:
         return null
     }

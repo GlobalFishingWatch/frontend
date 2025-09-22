@@ -1,9 +1,10 @@
 import type { HTMLProps } from 'react'
 import { useEffect, useMemo, useRef } from 'react'
-import type { Row, Table } from '@tanstack/react-table'
+import { filterFns, type Row, type Table } from '@tanstack/react-table'
 import escapeRegExp from 'lodash/escapeRegExp'
 
 import type { Vessel } from '@/types/vessel.types'
+import { generateFilterConfigs } from '@/utils/filters'
 import { normalizeKey } from '@/utils/source'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
@@ -37,11 +38,11 @@ function IndeterminateCheckbox({
 
 export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
   return useMemo(() => {
-    if (!data.length) return []
+    if (!data.length) return { columns: [], filterConfigs: [] }
 
-    const keys = Object.keys(data[0]).filter((k) => k !== undefined && k !== null && k !== 'id')
+    const filterConfigs = generateFilterConfigs(data)
 
-    return [
+    const columns = [
       {
         id: 'select',
         header: ({ table }: { table: Table<T> }) => (
@@ -66,10 +67,11 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
         enableColumnFilter: false,
         size: 50,
       },
-      ...keys.map((key, index) => ({
-        id: normalizeKey(key),
-        accessorKey: key || `col_${index}`,
-        header: key,
+      ...filterConfigs.map((key, index) => ({
+        id: key.id,
+        accessorKey: key.label || `col_${index}`,
+        header: key.label,
+        filterFn: key.type === 'number' ? filterFns.inNumberRange : filterFns.includesString,
         size: 200,
         cell: ({
           table,
@@ -124,5 +126,7 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
         },
       })),
     ]
+
+    return { columns, filterConfigs }
   }, [data])
 }

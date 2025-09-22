@@ -42,6 +42,9 @@ export const generateFilterConfigs = (data: any[]): FilterState[] => {
 
     let type: FilterState['type']
     switch (true) {
+      case key === 'IMO':
+        type = 'text'
+        break
       case valueSet.size <= 1:
         type = ''
         break
@@ -76,7 +79,6 @@ export const generateFilterConfigs = (data: any[]): FilterState[] => {
               })),
           }
         : type === 'number' &&
-          key !== 'IMO' &&
           key !== 'id' && {
             numberConfig: {
               min: Math.min(...valuesArray.map(Number)),
@@ -90,49 +92,4 @@ export const generateFilterConfigs = (data: any[]): FilterState[] => {
 
     return filterState
   })
-}
-
-export const applyFilters = (data: any[], filterConfigs: FilterState[], globalFilter: string) => {
-  let result = data
-
-  if (globalFilter.trim()) {
-    const searchTerm = globalFilter.toLowerCase().trim()
-    result = result.filter((row) => {
-      return Object.values(row).some((value) => String(value).toLowerCase().includes(searchTerm))
-    })
-  }
-
-  result = result.filter((row) => {
-    return filterConfigs.every((filterState) => {
-      const { id, type, value } = filterState
-
-      if (!value) return true
-
-      const cellValue = String(row[id])
-      const numValue = Number(cellValue)
-      const filterNum = Number(value)
-      const dateValue = new Date(cellValue).toDateString()
-      const filterDate = new Date(value).toDateString()
-
-      switch (type) {
-        case 'select':
-          if (Array.isArray(value) && value.length === 0) return true
-          return Array.isArray(value) ? value.includes(cellValue) : value === cellValue
-
-        case 'text':
-          return cellValue.toLowerCase().includes(String(value).toLowerCase())
-
-        case 'number':
-          return !isNaN(numValue) && !isNaN(filterNum) && numValue === filterNum
-
-        case 'date':
-          return dateValue === filterDate
-
-        default:
-          return true
-      }
-    })
-  })
-
-  return result
 }
