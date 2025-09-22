@@ -64,6 +64,8 @@ export const generateFilterConfigs = (data: any[]): FilterState[] => {
         type = 'select'
     }
 
+    const numberValues = valuesArray.map(Number)
+
     const filterState: FilterState = {
       id: normalizeKey(key),
       label: key,
@@ -81,11 +83,9 @@ export const generateFilterConfigs = (data: any[]): FilterState[] => {
         : type === 'number' &&
           key !== 'id' && {
             numberConfig: {
-              min: Math.min(...valuesArray.map(Number)),
-              max: Math.max(...valuesArray.map(Number)),
-              steps: Array.from(valueSet)
-                .map(Number)
-                .sort((a, b) => a - b),
+              min: Math.floor(Math.min(...numberValues)),
+              max: Math.ceil(Math.max(...numberValues)),
+              steps: numberValues.slice().sort((a, b) => a - b),
             },
           }),
     }
