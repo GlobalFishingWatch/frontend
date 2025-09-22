@@ -49,11 +49,7 @@ const convertGearType = (type: string) => {
   return ''
 }
 
-const generateOwnerList = (data: Vessel[]): ICCATOwner[] => {
-  const ownerField = Object.keys(data[0]).find(
-    (key) => key.toLowerCase().includes('owner') || key.toLowerCase().includes('proprietario')
-  )
-
+const generateOwnerList = (data: Vessel[], ownerField?: string): ICCATOwner[] => {
   if (!ownerField) return []
 
   const owners = data.reduce((acc: ICCATOwner[], vessel) => {
@@ -75,7 +71,10 @@ export const parseVessels = async (data: Vessel[]) => {
   const sourceSystem = identifySourceSystem(data[0])
   if (!sourceSystem) throw new Error('Unable to identify source system')
   const sourceMap = sourceSystem === 'brazil' ? brazilToICCAT : panamaToICCAT
-  const ownerList = generateOwnerList(data)
+  const ownerField = Object.keys(data[0]).find(
+    (key) => key.toLowerCase().includes('owner') || key.toLowerCase().includes('proprietario')
+  )
+  const ownerList = generateOwnerList(data, ownerField)
   const prevVesselList = await fetchPrevICCATVessels(sourceSystem)
 
   const iccatVessels = data.map((row) => {
@@ -98,7 +97,9 @@ export const parseVessels = async (data: Vessel[]) => {
       VesselNamePrv: prevVessel?.VesselName || undefined,
       FlagCurCd: flag,
       FlagPrvCd: prevVessel?.FlagVesCode || prevVessel?.FlagRepCode || undefined,
-      OwnerID: ownerList.find((owner) => owner.OwOpName === row['OwOpName'])?.OwOpEntityID ?? '',
+      OwnerID: ownerField
+        ? ownerList.find((owner) => owner.OwOpName === row[ownerField])?.OwOpEntityID
+        : undefined,
       IsscfvID: normalizedRow['IsscfvID'],
       IsscfgID: normalizedRow['IsscfgID'],
       LengthM: normalizedRow['LengthM'] ?? undefined,
@@ -218,7 +219,7 @@ export const handleExportICCATVessels = async (
     fillInUserInfo(vesselWorksheet, user)
 
     writeToSheet(vesselWorksheet, 23, vessels) // fill in vessel information
-    writeToSheet(ownersWorksheet, 20, owners) // fill in owner sheet
+    writeToSheet(ownersWorksheet, 19, owners) // fill in owner sheet
 
     //fill in authorization sheet
 
