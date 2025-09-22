@@ -5,7 +5,7 @@ import type { ColumnFiltersState } from '@tanstack/react-table'
 
 import { DynamicTable } from '@/features/dynamicTable/DynamicTable'
 import Footer from '@/features/footer/Footer'
-import SidebarHeader from '@/features/header/SidebarHeader'
+import Header from '@/features/header/Header'
 import DownloadModal from '@/features/modal/DownloadModal'
 import OptionsMenu from '@/features/options/OptionsMenu'
 import Profile from '@/features/profile/Profile'
@@ -50,11 +50,11 @@ function Home() {
 
   return (
     <div className="fixed inset-0 flex flex-col overflow-hidden">
-      <SidebarHeader>
+      <Header>
         <Search data={vessels} />
         <OptionsMenu />
         <Profile />
-      </SidebarHeader>
+      </Header>
       <div className="flex-1 relative overflow-auto" ref={tableContainerRef}>
         {containerEl && <DynamicTable data={vessels} tableContainerRef={containerEl} />}
       </div>
