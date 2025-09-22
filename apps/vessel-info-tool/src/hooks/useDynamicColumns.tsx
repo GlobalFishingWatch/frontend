@@ -40,7 +40,9 @@ export function useDynamicColumns<T extends Record<string, any>>(data: T[]) {
   return useMemo(() => {
     if (!data.length) return { columns: [], filterConfigs: [] }
 
-    const filterConfigs = generateFilterConfigs(data)
+    const filterConfigs = generateFilterConfigs(data).filter(
+      (k) => k !== undefined && k !== null && k.id !== 'id'
+    )
 
     const columns = [
       {
