@@ -16,7 +16,7 @@ const VESSEL_SEARCH_DATASETS = [
 ]
 
 export const fetchVessels = createServerFn().handler(async () => {
-  const res = await fetch('/api/vessels/scraped')
+  const res = await fetch('/api/vessels/br_registry')
   if (!res.ok) {
     if (res.status === 404) {
       throw notFound()

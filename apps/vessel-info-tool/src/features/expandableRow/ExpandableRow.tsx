@@ -6,7 +6,7 @@ import type { FeatureCollection } from 'geojson'
 
 import type { Vessel } from '@/types/vessel.types'
 import { getVesselsFromAPI } from '@/utils/vessels'
-import { DatasetTypes, type IdentityVessel, type Locale } from '@globalfishingwatch/api-types'
+import { type IdentityVessel, type Locale } from '@globalfishingwatch/api-types'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { geoJSONToSegments, segmentsToBbox } from '@globalfishingwatch/data-transforms'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
@@ -71,12 +71,21 @@ function ExpandableRow({ rowId }: ExpandableRowProps) {
 
   if (isLoading)
     return (
-      <div className="!w-screen sticky left-0 !px-[6rem] !py-[3rem]">
+      <div className="!w-screen sticky left-0 !px-[6rem] !py-[3rem] h-[180px]">
         <Spinner />
       </div>
     )
   if (!vesselMatch) {
-    return <div>{t('expanded_row.not_found')}</div>
+    return (
+      <div className="!w-screen sticky left-0 !px-[6rem] !py-[3rem] h-[180px] flex items-center gap-16">
+        <img
+          src="/vessel-search-no-results.svg"
+          className="!flex-shrink-0 max-h-full"
+          alt={t('expanded_row.not_found_alt', 'No results found')}
+        />
+        <p>{t('expanded_row.not_found')}</p>
+      </div>
+    )
   }
   const { ssvid, transmissionDateFrom, transmissionDateTo, positionsCounter } =
     vesselMatch.selfReportedInfo[0]
@@ -150,6 +159,9 @@ function ExpandableRow({ rowId }: ExpandableRowProps) {
               Triton
               <Icon icon="external-link" type="default" />
             </a>
+            {/* https://www.iattc.org/en-US/Management/Vessel-register?vesselno=18597
+            https://globalrecord.fao.org/vessels/view/0469f642-b37d-4da5-9691-673d62bed9f0
+             */}
           </div>
         </div>
       </div>

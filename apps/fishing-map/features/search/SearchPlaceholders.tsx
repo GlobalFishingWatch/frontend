@@ -7,7 +7,7 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
 import VesselSearchImage from 'assets/images/vessel-search.svg'
-import VesselSearchNoSesultsImage from 'assets/images/vessel-search-no-results.svg'
+import VesselSearchNoResultsImage from 'assets/images/vessel-search-no-results.svg'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { selectSearchDatasetsNotGuestAllowedLabels } from 'features/search/search.selectors'
 import { selectSearchStatus } from 'features/search/search.slice'
@@ -36,7 +36,7 @@ export function SearchNoResultsState({ className = '' }: SearchPlaceholderProps)
   return (
     <SearchPlaceholder className={className}>
       <div className={styles.container}>
-        <VesselSearchNoSesultsImage />
+        <VesselSearchNoResultsImage />
         <p>
           {t(
             'search.noResults',
