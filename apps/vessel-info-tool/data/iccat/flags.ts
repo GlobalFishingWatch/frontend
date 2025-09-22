@@ -142,7 +142,7 @@ const flags = [
     alias: 'Caribisch Nederland',
   },
   {
-    id: 'BRA',
+    id: 'BR',
     label: 'Brazil',
     alias: 'Brasil',
   },

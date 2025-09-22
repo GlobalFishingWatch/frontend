@@ -4,8 +4,7 @@ import ExcelJS from 'exceljs'
 import type { ExportableVessel, ICCATOwner, ICCATVessel, Vessel } from '@/types/vessel.types'
 import type { UserData } from '@globalfishingwatch/api-types'
 
-import type gearTypes from 'data/iccat/gearType'
-import type vesselType from 'data/iccat/vesselType'
+import flags from 'data/iccat/flags'
 
 import { identifySourceSystem } from './source'
 
@@ -191,7 +190,7 @@ const fillInUserInfo = (worksheet: ExcelJS.Worksheet, user: UserData) => {
   worksheet.getCell('B5').value = user.firstName + ' ' + user.lastName
   worksheet.getCell('B6').value = user.organization //reportingAgency
   // worksheet.getCell('B7').value = user.address
-  worksheet.getCell('B10').value = user.country // reportingFlag
+  worksheet.getCell('B10').value = flags.find((f) => f.id === user.country)?.label ?? ''
   worksheet.getCell('G5').value = user.email
   // worksheet.getCell('G6').value = user.phone
   worksheet.getCell('B12').value = '3. Full revision of vessel record'
@@ -211,7 +210,6 @@ export const handleExportICCATVessels = async (
     const vesselWorksheet = workbook.getWorksheet(workbook.worksheets[0]?.name)
     const authorizationsWorksheet = workbook.getWorksheet(workbook.worksheets[1]?.name)
     const ownersWorksheet = workbook.getWorksheet(workbook.worksheets[2]?.name)
-    console.log('🚀 ~ handleExportICCATVessels ~ workbook.worksheets:', workbook.worksheets)
 
     if (!vesselWorksheet || !ownersWorksheet || !authorizationsWorksheet) {
       throw new Error('Worksheet not found')

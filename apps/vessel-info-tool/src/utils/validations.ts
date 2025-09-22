@@ -12,7 +12,6 @@ export function checkMissingMandatoryFields(
 ): MissingFieldsTableType[] {
   if (data.length === 0) return []
   const keys = Object.keys(data[0])
-  console.log('🚀 ~ checkMissingMandatoryFields ~ keys:', keys)
 
   return keys
     .map((field) => {
