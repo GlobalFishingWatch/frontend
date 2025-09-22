@@ -5,7 +5,7 @@ import { Route } from '@/routes/_auth/index'
 import type { ICCATOwner, ICCATVessel, Vessel } from '@/types/vessel.types'
 import { RFMO } from '@/types/vessel.types'
 import { handleExportICCATVessels, parseVessels } from '@/utils/iccat'
-import type { MissingFieldsTableType } from '@/utils/validations';
+import type { MissingFieldsTableType } from '@/utils/validations'
 import { checkMissingMandatoryFields } from '@/utils/validations'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, Modal, Select } from '@globalfishingwatch/ui-components'
@@ -92,7 +92,7 @@ const DownloadModal: React.FC<DownloadModalProps> = ({
           label={t('modal.submissionFormat', 'Submission format')}
         />
         {report.length ? (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 max-h-[70vh] overflow-y-scroll">
             {t('modal.fields_minimal', 'The following fields are missing in the registry data')}
             <FieldsTable fields={report} />
           </div>
