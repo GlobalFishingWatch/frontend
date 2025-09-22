@@ -14,6 +14,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { ServerRoute as ApiVesselsFileNameServerRouteImport } from './routes/api/vessels/$fileName'
+import { ServerRoute as ApiIccatSourceServerRouteImport } from './routes/api/iccat/$source'
 
 const rootServerRouteImport = createServerRootRoute()
 
@@ -32,6 +33,11 @@ const ApiVesselsFileNameServerRoute =
     path: '/api/vessels/$fileName',
     getParentRoute: () => rootServerRouteImport,
   } as any)
+const ApiIccatSourceServerRoute = ApiIccatSourceServerRouteImport.update({
+  id: '/api/iccat/$source',
+  path: '/api/iccat/$source',
+  getParentRoute: () => rootServerRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthIndexRoute
@@ -56,24 +62,28 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
 }
 export interface FileServerRoutesByFullPath {
+  '/api/iccat/$source': typeof ApiIccatSourceServerRoute
   '/api/vessels/$fileName': typeof ApiVesselsFileNameServerRoute
 }
 export interface FileServerRoutesByTo {
+  '/api/iccat/$source': typeof ApiIccatSourceServerRoute
   '/api/vessels/$fileName': typeof ApiVesselsFileNameServerRoute
 }
 export interface FileServerRoutesById {
   __root__: typeof rootServerRouteImport
+  '/api/iccat/$source': typeof ApiIccatSourceServerRoute
   '/api/vessels/$fileName': typeof ApiVesselsFileNameServerRoute
 }
 export interface FileServerRouteTypes {
   fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths: '/api/vessels/$fileName'
+  fullPaths: '/api/iccat/$source' | '/api/vessels/$fileName'
   fileServerRoutesByTo: FileServerRoutesByTo
-  to: '/api/vessels/$fileName'
-  id: '__root__' | '/api/vessels/$fileName'
+  to: '/api/iccat/$source' | '/api/vessels/$fileName'
+  id: '__root__' | '/api/iccat/$source' | '/api/vessels/$fileName'
   fileServerRoutesById: FileServerRoutesById
 }
 export interface RootServerRouteChildren {
+  ApiIccatSourceServerRoute: typeof ApiIccatSourceServerRoute
   ApiVesselsFileNameServerRoute: typeof ApiVesselsFileNameServerRoute
 }
 
@@ -104,6 +114,13 @@ declare module '@tanstack/react-start/server' {
       preLoaderRoute: typeof ApiVesselsFileNameServerRouteImport
       parentRoute: typeof rootServerRouteImport
     }
+    '/api/iccat/$source': {
+      id: '/api/iccat/$source'
+      path: '/api/iccat/$source'
+      fullPath: '/api/iccat/$source'
+      preLoaderRoute: typeof ApiIccatSourceServerRouteImport
+      parentRoute: typeof rootServerRouteImport
+    }
   }
 }
 
@@ -124,6 +141,7 @@ export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
 const rootServerRouteChildren: RootServerRouteChildren = {
+  ApiIccatSourceServerRoute: ApiIccatSourceServerRoute,
   ApiVesselsFileNameServerRoute: ApiVesselsFileNameServerRoute,
 }
 export const serverRouteTree = rootServerRouteImport

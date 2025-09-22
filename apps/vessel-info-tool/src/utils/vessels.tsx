@@ -1,7 +1,6 @@
 import { notFound } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { uniqBy } from 'es-toolkit'
-import ExcelJS from 'exceljs'
 import { stringify } from 'qs'
 
 import type { Vessel } from '@/types/vessel.types'
@@ -15,60 +14,6 @@ const VESSEL_SEARCH_DATASETS = [
   // 'public-panama-vessel-identity-fishing:v20211126',
   // 'public-panama-vessel-identity-non-fishing:v20211126', //check if public contains imo or switch to private
 ]
-
-export const handleExportICCATVessels = async (vessels: Vessel[] | Record<string, any>) => {
-  try {
-    const templateResponse = await fetch('./data/templates/iccat-template.xlsx')
-    const templateBuffer = await templateResponse.arrayBuffer()
-
-    const workbook = new ExcelJS.Workbook()
-    await workbook.xlsx.load(templateBuffer)
-    const worksheetName = workbook.worksheets[0]?.name
-    const worksheet = workbook.getWorksheet(worksheetName)
-
-    if (!worksheet) {
-      throw new Error('Worksheet not found')
-    }
-
-    const headerRow = worksheet.getRow(23)
-    const headers: { [key: string]: number } = {}
-
-    headerRow.eachCell((cell, colNumber) => {
-      if (cell.value) {
-        headers[String(cell.value)] = colNumber
-      }
-    })
-
-    vessels.forEach((vessel: { [key: string]: any }, index: number) => {
-      const row = worksheet.getRow(24 + index)
-
-      Object.keys(vessel).forEach((field: string) => {
-        const colIndex = headers[field]
-        if (colIndex) {
-          const cell = row.getCell(colIndex)
-          cell.value = vessel[field]
-        }
-      })
-    })
-
-    const outputBuffer = await workbook.xlsx.writeBuffer()
-
-    const blob = new Blob([outputBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    })
-
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = 'iccat-vessels.xlsx'
-    link.click()
-
-    URL.revokeObjectURL(url)
-  } catch (error) {
-    console.error('Error exporting ICCAT vessels from buffer:', error)
-    throw error
-  }
-}
 
 export const fetchVessels = createServerFn().handler(async () => {
   const res = await fetch('/api/vessels/scraped')

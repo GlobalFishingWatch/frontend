@@ -1,29 +1,4 @@
-import type { ICCATVessel } from './iccat'
-
-export interface SPRFMOVessel {
-  'Current Vessel Flag (3-alpha code)': string
-  'Vessel Name': string
-  'Vessel registration number': string
-  'International radio call sign (if any)'?: string
-  'UVI (Unique Vessel Identifier)/ IMO Number (if allocated)'?: string
-  'Previous names (if known)': string
-  'Port of registry': string
-  'Previous flag (if any)': string
-  'Type of vessel (ISSCFV code)': string
-  'Type of fishing method (ISSCFG code)': string
-  'Length (m)': number
-  'Length Type': string
-  'Gross Tonnage (GT)': number
-  'Power of main engine(s) (kW)': number
-  'Hold capacity (m3)': number
-  'Name of owner(s)': string
-  'Address of owner(s)': string
-  'Flag Authorisation Start Date (YYYY-MON-DD)': string
-  'Flag Authorisation End Date (YYYY-MON-DD)': string
-  '3 recent photographs supplied? (y/n)': 'y' | 'n'
-  'Vessel communication types and identification': string
-  'VMS system (brand, model etc)': string
-}
+import type { ICCATVessel, SPRFMOVessel } from '@/types/vessel.types'
 
 export type MissingFieldsTableType = {
   field: string

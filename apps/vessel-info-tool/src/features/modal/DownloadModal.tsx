@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Route } from '@/routes/_auth/index'
-import type { Vessel } from '@/types/vessel.types'
+import type { ICCATOwner, ICCATVessel, Vessel } from '@/types/vessel.types'
 import { RFMO } from '@/types/vessel.types'
-import { parseVessels } from '@/utils/iccat'
+import { handleExportICCATVessels, parseVessels } from '@/utils/iccat'
+import type { MissingFieldsTableType } from '@/utils/validations';
 import { checkMissingMandatoryFields } from '@/utils/validations'
-import { handleExportICCATVessels } from '@/utils/vessels'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, Modal, Select } from '@globalfishingwatch/ui-components'
 
@@ -29,6 +29,7 @@ const DownloadModal: React.FC<DownloadModalProps> = ({
 }) => {
   const { t } = useTranslation()
   const searchQuery = Route.useSearch()
+  const { user } = Route.useLoaderData()
 
   const rfmoOptions: SelectOption[] = Object.values(RFMO).map((rfmo) => ({
     id: rfmo,
@@ -36,18 +37,32 @@ const DownloadModal: React.FC<DownloadModalProps> = ({
   }))
   const [isLoading, setIsLoading] = useState(false)
   const [selectedRFMO, setSelectedRFMO] = useState<SelectOption>(rfmoOptions[0])
+  const [report, setReport] = useState<MissingFieldsTableType[]>([])
+  const [parsed, setParsed] = useState<{
+    iccatVessels: ICCATVessel[]
+    ownerList: ICCATOwner[]
+  }>({ iccatVessels: [], ownerList: [] })
 
-  const selectedIds = searchQuery.selectedRows
-  if (!selectedIds || selectedIds.length === 0) return null
-  const vessels = data.filter((vessel) => selectedIds.includes(vessel.id))
+  useEffect(() => {
+    const fetchData = async () => {
+      const selectedIds = searchQuery.selectedRows
+      if (!selectedIds || selectedIds.length === 0) return
+      const vessels = data.filter((vessel) => selectedIds.includes(vessel.id))
+      const parsedData = await parseVessels(vessels)
+      if (parsedData) {
+        setParsed(parsedData)
+        const report = checkMissingMandatoryFields(parsedData.iccatVessels)
+        setReport(report)
+      }
+    }
 
-  const parsed = parseVessels(vessels)
-  const report = checkMissingMandatoryFields(parsed)
+    fetchData()
+  }, [isOpen])
 
-  const handleDownload = async () => {
+  const handleDownload = () => {
     try {
       setIsLoading(true)
-      handleExportICCATVessels(parsed)
+      handleExportICCATVessels(parsed.iccatVessels, parsed.ownerList, user)
       onClose()
     } catch (error) {
       console.error('Download failed:', error)
@@ -69,15 +84,13 @@ const DownloadModal: React.FC<DownloadModalProps> = ({
     >
       <div className="flex flex-col gap-8 !pt-10">
         <h2>{t('modal.download', 'Download')}</h2>
-        <>
-          <Select
-            type="secondary"
-            options={rfmoOptions}
-            onSelect={(option) => setSelectedRFMO(option)}
-            selectedOption={selectedRFMO}
-            label={t('modal.submissionFormat', 'Submission format')}
-          />
-        </>
+        <Select
+          type="secondary"
+          options={rfmoOptions}
+          onSelect={(option) => setSelectedRFMO(option)}
+          selectedOption={selectedRFMO}
+          label={t('modal.submissionFormat', 'Submission format')}
+        />
         {report.length ? (
           <div className="flex flex-col gap-6">
             {t('modal.fields_minimal', 'The following fields are missing in the registry data')}

@@ -1,51 +1,13 @@
-import type { Vessel } from '@/types/vessel.types'
+import { notFound } from '@tanstack/react-router'
+import ExcelJS from 'exceljs'
 
-import type flags from 'data/iccat/flags'
+import type { ExportableVessel, ICCATOwner, ICCATVessel, Vessel } from '@/types/vessel.types'
+import type { UserData } from '@globalfishingwatch/api-types'
+
 import type gearTypes from 'data/iccat/gearType'
 import type vesselType from 'data/iccat/vesselType'
 
-import { identifySourceSystem, normalizeKey } from './source'
-
-export interface ICCATVessel {
-  ICCATSerialNo: string
-  NatRegNo: string
-  IntRegNo: string
-  IRNoType: 'IMO'
-  IRCS: string
-  VesselNameCur: string
-  VesselNamePrv?: string
-  FlagCurCd: typeof flags
-  FlagPrvCd?: typeof flags
-  OwnerID?: string // link to ICCATOwner.OwOpEntityID
-  IsscfvID: typeof vesselType
-  IsscfgID: typeof gearTypes
-  LengthM: number
-  LenType: 'LOA'
-  Tonnage: number
-  TonType: 'GT' | 'GRT'
-  CarCapacity: number
-  CCapUnitCd: 'm3' //| 'cf' for cubic feet if needed in future
-
-  //optional fields
-  ExternalMark?: string
-  YrBuilt?: string
-  ShipyNat?: typeof flags
-  HomePort?: string
-  DepthM?: number
-  EngineHP?: number
-  VMSSysCd?: string
-}
-
-export interface ICCATOwner {
-  OwOpEntityID: string // Insert consecutive number. This number should be transposed to Form CP01-A, (owner /operator ID fields) for each vessel owned or operated by this person/company.
-  OwOpName: string
-  OwOpAddrs: string
-  OwOpCity: string
-  OwOpZipCd: string
-  OwOpCtry: typeof flags
-  OwOpEmail?: string
-  OwOpTel?: string
-}
+import { identifySourceSystem } from './source'
 
 export const brazilToICCAT: Record<string, string> = {
   'Nome da Embarcação': 'VesselNameCur',
@@ -75,38 +37,49 @@ export const panamaToICCAT: Record<string, string> = {
   'NATIONAL REGISTER NUMBER / PATENTE DE NAVEGACION': 'NatRegNo',
   'LENGHT / ESLORA': 'LengthM',
   'GROSS TONNAGE / TONELAJE DE REGISTRO BRUTO (TRB)': 'Tonnage',
-  'HOLD CAPACITY (M3) / CAPACIDAD DE BODEGA (M3)': 'CarCapacity',
+  'HOLD CAPACITY (M3) / CAPACIDAD DE BODEGA (M 3 )': 'CarCapacity',
 }
 
-const getPrevICCATVessel = (imo: string): ICCATVessel | undefined => {
-  // Implement logic to retrieve the previous ICCAT vessel ID
-  return undefined
-}
-
-const convertVesselType = (type: string): typeof vesselType => {
+const convertVesselType = (type: string) => {
   // Implement conversion logic
-  return type as typeof vesselType
+  return ''
 }
 
-const convertGearType = (type: string): typeof gearTypes => {
+const convertGearType = (type: string) => {
   // Implement conversion logic
-  return type as typeof gearTypes
+  return ''
 }
 
 const generateOwnerList = (data: Vessel[]): ICCATOwner[] => {
-  // Implement logic to generate owner list
-  return []
+  const ownerField = Object.keys(data[0]).find(
+    (key) => key.toLowerCase().includes('owner') || key.toLowerCase().includes('proprietario')
+  )
+
+  if (!ownerField) return []
+
+  const owners = data.reduce((acc: ICCATOwner[], vessel) => {
+    const existingOwner = acc.find((owner) => owner.OwOpName === vessel[ownerField])
+    if (!existingOwner) {
+      acc.push({
+        OwOpEntityID: String(acc.length + 1),
+        OwOpName: vessel[ownerField],
+      })
+    }
+    return acc
+  }, [])
+  return owners
 }
 
-export const parseVessels = (data: Vessel[]): ICCATVessel[] => {
-  if (!data.length) return []
+export const parseVessels = async (data: Vessel[]) => {
+  if (!data.length) return null
 
   const sourceSystem = identifySourceSystem(data[0])
-  console.log('🚀 ~ parseVessels ~ sourceSystem:', sourceSystem)
+  if (!sourceSystem) throw new Error('Unable to identify source system')
   const sourceMap = sourceSystem === 'brazil' ? brazilToICCAT : panamaToICCAT
   const ownerList = generateOwnerList(data)
+  const prevVesselList = await fetchPrevICCATVessels(sourceSystem)
 
-  return data.map((row) => {
+  const iccatVessels = data.map((row) => {
     const normalizedRow: Record<string, any> = {}
     for (const [key, value] of Object.entries(row)) {
       const mappedKey = sourceMap[key] ?? key
@@ -114,8 +87,7 @@ export const parseVessels = (data: Vessel[]): ICCATVessel[] => {
     }
 
     const flag = sourceSystem === 'brazil' ? 'BRA' : 'PAN'
-
-    const prevVessel = getPrevICCATVessel(row.IMO)
+    const prevVessel = prevVesselList.find((vessel) => vessel.IntRegNo === String(row.IMO))
 
     const vessel: ICCATVessel = {
       ICCATSerialNo: prevVessel?.ICCATSerialNo ?? '',
@@ -124,10 +96,10 @@ export const parseVessels = (data: Vessel[]): ICCATVessel[] => {
       IRNoType: 'IMO',
       IRCS: normalizedRow['IRCS'] ?? undefined,
       VesselNameCur: normalizedRow['VesselNameCur'] ?? undefined,
-      VesselNamePrv: prevVessel?.VesselNameCur ?? undefined,
-      FlagCurCd: normalizedRow['FlagCurCd'] ?? flag,
-      FlagPrvCd: prevVessel?.FlagCurCd ?? undefined,
-      OwnerID: ownerList.find((owner) => owner.OwOpName === row['OwOpName'])?.OwOpEntityID,
+      VesselNamePrv: prevVessel?.VesselName || undefined,
+      FlagCurCd: flag,
+      FlagPrvCd: prevVessel?.FlagVesCode || prevVessel?.FlagRepCode || undefined,
+      OwnerID: ownerList.find((owner) => owner.OwOpName === row['OwOpName'])?.OwOpEntityID ?? '',
       IsscfvID: normalizedRow['IsscfvID'],
       IsscfgID: normalizedRow['IsscfgID'],
       LengthM: normalizedRow['LengthM'] ?? undefined,
@@ -144,9 +116,143 @@ export const parseVessels = (data: Vessel[]): ICCATVessel[] => {
       HomePort: normalizedRow['HomePort'],
       DepthM: normalizedRow['DepthM'] ? Number(normalizedRow['DepthM']) : undefined,
       EngineHP: normalizedRow['EngineHP'] ? Number(normalizedRow['EngineHP']) : undefined,
-      VMSSysCd: normalizedRow['VMSSysCd'],
+      VMSSysCd: normalizedRow['VMSSysCd'] ?? 'NO-VMS',
     }
 
     return vessel
   })
+  return { iccatVessels, ownerList }
+}
+
+enum AuthorizationCategories {
+  P20m = 'Positive list (LOA >= 20 meters)',
+  SWO = 'sworfish',
+  ALB = 'albacore',
+  TROP = 'BET/YFT/SKJ', // authorized to fish for any of the three major tropical species: bigeye, yellowfin, skipjack
+  Carr = 'carrier',
+  BFEo = 'E-BFT Other', // towing, support, auxiliary vessels, regardless of size
+}
+
+type Authorization = {
+  category: AuthorizationCategories
+  DtFrom: string // YYYY-MON-DD
+  DtTo: string // YYYY-MON-DD
+  RM: 'AUTO' | 'EXPL' // Renewal(auto/explicit)
+  fishType?: 'SWO' | 'ALB' | 'TROP'
+}
+
+const generateAuthorizations = (data: Vessel[]) => {
+  // check if all vessels are greater than 20m, if not, let user know which ones are <20m
+  const under20mVessels = data.filter((vessel) => vessel.LengthM < 20)
+  if (under20mVessels.length) {
+    alert(
+      'The following vessels are under 20m:' +
+        under20mVessels.map((v) => v.VesselNameCur).join(', ')
+    )
+    // remove? btn
+  }
+  // Start date cannot be more than 45 days before submission of form.
+  const startDate = new Date() // permission date from
+  startDate.setDate(startDate.getDate() - 45)
+
+  // separate vessels into categories
+  // Implement logic to generate authorizations
+  return []
+}
+
+const writeToSheet = (
+  worksheet: ExcelJS.Worksheet,
+  rowStart: number,
+  vessels: ExportableVessel[]
+) => {
+  const headerRow = worksheet.getRow(rowStart)
+  const headers: { [key: string]: number } = {}
+
+  headerRow.eachCell((cell, colNumber) => {
+    if (cell.value) {
+      headers[String(cell.value)] = colNumber
+    }
+  })
+
+  vessels.forEach((vessel: { [key: string]: any }, index: number) => {
+    const row = worksheet.getRow(rowStart + 1 + index)
+
+    Object.keys(vessel).forEach((field: string) => {
+      const colIndex = headers[field]
+      if (colIndex) {
+        const cell = row.getCell(colIndex)
+        cell.value = vessel[field]
+      }
+    })
+  })
+}
+
+const fillInUserInfo = (worksheet: ExcelJS.Worksheet, user: UserData) => {
+  worksheet.getCell('B5').value = user.firstName + ' ' + user.lastName
+  worksheet.getCell('B6').value = user.organization //reportingAgency
+  // worksheet.getCell('B7').value = user.address
+  worksheet.getCell('B10').value = user.country // reportingFlag
+  worksheet.getCell('G5').value = user.email
+  // worksheet.getCell('G6').value = user.phone
+  worksheet.getCell('B12').value = '3. Full revision of vessel record'
+}
+
+export const handleExportICCATVessels = async (
+  vessels: ExportableVessel[],
+  owners: ICCATOwner[],
+  user: UserData
+) => {
+  try {
+    const templateResponse = await fetch('./data/templates/iccat-template.xlsx')
+    const templateBuffer = await templateResponse.arrayBuffer()
+
+    const workbook = new ExcelJS.Workbook()
+    await workbook.xlsx.load(templateBuffer)
+    const vesselWorksheet = workbook.getWorksheet(workbook.worksheets[0]?.name)
+    const authorizationsWorksheet = workbook.getWorksheet(workbook.worksheets[1]?.name)
+    const ownersWorksheet = workbook.getWorksheet(workbook.worksheets[2]?.name)
+    console.log('🚀 ~ handleExportICCATVessels ~ workbook.worksheets:', workbook.worksheets)
+
+    if (!vesselWorksheet || !ownersWorksheet || !authorizationsWorksheet) {
+      throw new Error('Worksheet not found')
+    }
+
+    fillInUserInfo(vesselWorksheet, user)
+
+    writeToSheet(vesselWorksheet, 23, vessels) // fill in vessel information
+    writeToSheet(ownersWorksheet, 20, owners) // fill in owner sheet
+
+    //fill in authorization sheet
+
+    const outputBuffer = await workbook.xlsx.writeBuffer()
+
+    const blob = new Blob([outputBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    })
+
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'iccat-vessels.xlsx'
+    link.click()
+
+    URL.revokeObjectURL(url)
+  } catch (error) {
+    console.error('Error exporting ICCAT vessels from buffer:', error)
+    throw error
+  }
+}
+
+export const fetchPrevICCATVessels = async (source: string) => {
+  const res = await fetch(`/api/iccat/${source}`)
+  if (!res.ok) {
+    if (res.status === 404) {
+      throw notFound()
+    }
+
+    throw new Error('Failed to fetch post')
+  }
+
+  const vessels = (await res.json()) as ICCATVessel[]
+  return vessels
 }
