@@ -34,10 +34,16 @@ const TurningTidesModal: React.FC = () => {
     onCreateClick,
   } = useBigQueryModal()
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId) as TurningTidesWorkspaceId
+  const [selectedCountry, setSelectedCountry] = useState<TurningTidesWorkspaceId | undefined>(
+    CountryOptions.find(({ id }) => id === currentWorkspaceId)?.id
+  )
+
+  const selectedCountryOption = CountryOptions.find(({ id }) => id === selectedCountry)
 
   const hasQuery = query !== ''
   const disableCheckCost = !hasQuery
-  const disableCreation = !runCostChecked || name === '' || disableCheckCost || error !== ''
+  const disableCreation =
+    !runCostChecked || name === '' || disableCheckCost || error !== '' || !selectedCountryOption
 
   const handleCreateClick = () => {
     onCreateClick({
@@ -47,13 +53,10 @@ const TurningTidesModal: React.FC = () => {
       unit: 'hours',
       visualisationMode: '4wings',
       aggregationOperation: FourwingsAggregationOperation.Sum,
+      relatedDatasets: selectedCountryOption?.relatedDatasets,
       ttl: 0,
     })
   }
-  const [selectedCountry, setSelectedCountry] = useState<TurningTidesWorkspaceId | undefined>(
-    CountryOptions.find(({ id }) => id === currentWorkspaceId)?.id
-  )
-
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -69,7 +72,7 @@ const TurningTidesModal: React.FC = () => {
           placeholder={t('selects.placeholder')}
           options={CountryOptions}
           containerClassName={styles.input}
-          selectedOption={CountryOptions.find(({ id }) => id === selectedCountry)}
+          selectedOption={selectedCountryOption}
           onSelect={(selected) => {
             setSelectedCountry(selected.id)
           }}
@@ -79,7 +82,7 @@ const TurningTidesModal: React.FC = () => {
         <label>
           {t('bigQuery.query')}{' '}
           <span className={styles.lowercase}>
-            Ensure id, lat, lon, timestamp and value are all present
+            (ensure vessel_id as id, lat, lon, timestamp and value are all present)
           </span>
         </label>
         <div>
@@ -121,7 +124,11 @@ const TurningTidesModal: React.FC = () => {
         <Button
           disabled={disableCreation || creationStatus === AsyncReducerStatus.Loading}
           tooltip={
-            error ? t('bigQuery.queryError') : disableCreation ? t('bigQuery.validationError') : ''
+            error
+              ? t('bigQuery.queryError')
+              : disableCreation
+                ? 'Query, name, country and checking creation cost are required'
+                : ''
           }
           loading={creationStatus === AsyncReducerStatus.Loading}
           onClick={handleCreateClick}

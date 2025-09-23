@@ -135,8 +135,8 @@ const bigQuerySlice = createSlice({
       }
     },
     setBigQueryMode: (state, action: PayloadAction<{ mode?: BigQueryMode; active?: boolean }>) => {
-      state.mode = action.payload.mode || state.mode
-      state.active = action.payload.active || state.active
+      state.mode = action.payload.mode ?? state.mode
+      state.active = action.payload.active ?? state.active
       if (!state.active) {
         state.runCostStatus = AsyncReducerStatus.Idle
       }

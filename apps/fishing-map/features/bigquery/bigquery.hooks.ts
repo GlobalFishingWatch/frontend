@@ -48,26 +48,19 @@ export function useBigQueryModal() {
     }
   }
 
-  const onCreateClick = async ({
-    name,
-    unit,
-    createAsPublic,
-    query,
-    visualisationMode,
-    aggregationOperation,
-  }: CreateBigQueryDataset & { aggregationOperation?: FourwingsAggregationOperation | null }) => {
-    const action = await dispatch(
-      createBigQueryDatasetThunk({ name, unit, createAsPublic, query, visualisationMode })
-    )
+  const onCreateClick = async (
+    params: CreateBigQueryDataset & { aggregationOperation?: FourwingsAggregationOperation | null }
+  ) => {
+    const action = await dispatch(createBigQueryDatasetThunk(params))
     if (
-      (visualisationMode === '4wings' ? aggregationOperation !== null : true) &&
+      (params.visualisationMode === '4wings' ? params.aggregationOperation !== null : true) &&
       createBigQueryDatasetThunk.fulfilled.match(action)
     ) {
-      const dataset = action.payload.payload as Dataset
+      const dataset = action.payload?.payload as Dataset
       const dataviewInstance =
-        visualisationMode === '4wings'
+        params.visualisationMode === '4wings'
           ? getBigQuery4WingsDataviewInstance(dataset.id, {
-              aggregationOperation: aggregationOperation as FourwingsAggregationOperation,
+              aggregationOperation: params.aggregationOperation as FourwingsAggregationOperation,
             })
           : getBigQueryEventsDataviewInstance(dataset.id)
       addNewDataviewInstances([dataviewInstance])
