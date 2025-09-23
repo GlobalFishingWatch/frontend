@@ -1,4 +1,4 @@
-import type { TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { _TileLoadProps } from '@deck.gl/geo-layers'
 import type { LoaderOptions } from '@loaders.gl/loader-utils'
 import type { Feature, Point, Polygon } from 'geojson'
 
@@ -22,7 +22,7 @@ type FourwingsAggregationOperation = 'sum' | 'avg'
 export type ParseFourwingsOptions = {
   cols: number[]
   rows: number[]
-  tile?: TileLoadProps
+  tile?: _TileLoadProps
   bufferedStartDate: number
   initialTimeRange?: {
     start: number
