@@ -6,7 +6,7 @@ import cx from 'classnames'
 import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
 import { Button, Icon, InputText, Select, SwitchRow } from '@globalfishingwatch/ui-components'
 
-import { CountryOptions } from 'features/bigquery/turning-tides.config'
+import { CountryOptions, TURNING_TIDES_TTL_DAYS } from 'features/bigquery/turning-tides.config'
 import type { TurningTidesWorkspaceId } from 'features/track-correction/track-correction.config'
 import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -54,9 +54,10 @@ const TurningTidesModal: React.FC = () => {
       visualisationMode: '4wings',
       aggregationOperation: FourwingsAggregationOperation.Sum,
       relatedDatasets: selectedCountryOption?.relatedDatasets,
-      ttl: 0,
+      ttl: TURNING_TIDES_TTL_DAYS,
     })
   }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
