@@ -1,8 +1,10 @@
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { kebabCase } from 'es-toolkit'
 import type { RootState } from 'reducers'
 
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
+import type { RelatedDataset } from '@globalfishingwatch/api-types'
 
 import { fetchDatasetByIdThunk } from 'features/datasets/datasets.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -14,9 +16,10 @@ type RunCostResponse = {
   totalBytesPretty: string
 }
 
-type CreateBigQueryDataset = {
+export type CreateBigQueryDataset = {
   query: string
   visualisationMode: BigQueryVisualisation | null
+  relatedDatasets?: RelatedDataset[]
   name: string
   unit?: string
   ttl?: number
@@ -58,7 +61,15 @@ type CreateBigQueryDatasetResponse = {
 export const createBigQueryDatasetThunk = createAsyncThunk(
   'bigQuery/createDataset',
   async (
-    { query, name, unit, createAsPublic = true, visualisationMode }: CreateBigQueryDataset,
+    {
+      query,
+      name,
+      unit,
+      createAsPublic = true,
+      ttl,
+      relatedDatasets = [],
+      visualisationMode,
+    }: CreateBigQueryDataset,
     { dispatch, rejectWithValue }
   ) => {
     try {
@@ -74,8 +85,8 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
             unit: unit || (visualisationMode === '4wings' ? '' : 'event'),
             category: visualisationMode === '4wings' ? 'activity' : 'event',
             subcategory,
-            relatedDatasets: [], // TODO: add related datasets
-            // ttl: 365, // TODO: larger TTL only for turning-tides datasets
+            relatedDatasets,
+            ...(ttl !== undefined && { ttl }),
             public: createAsPublic,
           } as any,
         }
@@ -88,7 +99,9 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
   }
 )
 
+export type BigQueryMode = 'default' | 'turning-tides'
 interface BigQueryState {
+  mode: BigQueryMode
   active: boolean
   creationStatus: AsyncReducerStatus
   runCostStatus: AsyncReducerStatus
@@ -96,6 +109,7 @@ interface BigQueryState {
 }
 
 const initialState: BigQueryState = {
+  mode: 'default',
   active: false,
   creationStatus: AsyncReducerStatus.Idle,
   runCostStatus: AsyncReducerStatus.Idle,
@@ -106,9 +120,26 @@ const bigQuerySlice = createSlice({
   name: 'bigQuery',
   initialState,
   reducers: {
-    toggleBigQueryMenu: (state) => {
+    toggleBigQueryModal: (state) => {
       state.active = !state.active
-      state.runCostStatus = AsyncReducerStatus.Idle
+      state.mode = 'default'
+      if (!state.active) {
+        state.runCostStatus = AsyncReducerStatus.Idle
+      }
+    },
+    toggleTurningTidesModal: (state) => {
+      state.active = !state.active
+      state.mode = 'turning-tides'
+      if (!state.active) {
+        state.runCostStatus = AsyncReducerStatus.Idle
+      }
+    },
+    setBigQueryMode: (state, action: PayloadAction<{ mode?: BigQueryMode; active?: boolean }>) => {
+      state.mode = action.payload.mode || state.mode
+      state.active = action.payload.active || state.active
+      if (!state.active) {
+        state.runCostStatus = AsyncReducerStatus.Idle
+      }
     },
   },
   extraReducers: (builder) => {
@@ -143,9 +174,13 @@ const bigQuerySlice = createSlice({
   },
 })
 
-export const { toggleBigQueryMenu } = bigQuerySlice.actions
+export const { setBigQueryMode, toggleBigQueryModal, toggleTurningTidesModal } =
+  bigQuerySlice.actions
 
-export const selectBigQueryActive = (state: RootState) => state.bigQuery.active
+export const selectBigQueryActive = (state: RootState) =>
+  state.bigQuery.active && state.bigQuery.mode === 'default'
+export const selectTurningTidesActive = (state: RootState) =>
+  state.bigQuery.active && state.bigQuery.mode === 'turning-tides'
 export const selectRunCost = (state: RootState) => state.bigQuery.runCost
 export const selectRunCostStatus = (state: RootState) => state.bigQuery.runCostStatus
 export const selectCreationStatus = (state: RootState) => state.bigQuery.creationStatus

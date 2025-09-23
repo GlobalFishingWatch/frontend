@@ -11,7 +11,13 @@ import { ROOT_DOM_ELEMENT } from 'data/config'
 import { WorkspaceCategory } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { selectBigQueryActive, toggleBigQueryMenu } from 'features/bigquery/bigquery.slice'
+import {
+  selectBigQueryActive,
+  selectTurningTidesActive,
+  setBigQueryMode,
+  toggleBigQueryModal,
+  toggleTurningTidesModal,
+} from 'features/bigquery/bigquery.slice'
 import {
   FeatureFlag,
   selectDebugActive,
@@ -44,8 +50,12 @@ const NewDataset = dynamic(
   () => import(/* webpackChunkName: "NewDataset" */ 'features/datasets/upload/NewDataset')
 )
 
-const BigQueryMenu = dynamic(
-  () => import(/* webpackChunkName: "BigQueryMenu" */ 'features/bigquery/BigQuery')
+const BigQueryModal = dynamic(
+  () => import(/* webpackChunkName: "BigQueryModal" */ 'features/bigquery/BigQueryModal')
+)
+
+const TurningTidesModal = dynamic(
+  () => import(/* webpackChunkName: "TurningTidesModal" */ 'features/bigquery/TurningTidesModal')
 )
 
 const LayerLibrary = dynamic(
@@ -94,8 +104,14 @@ const EditorMenuConfig = {
 
 const BigQueryMenuConfig = {
   key: 'b',
-  dispatchToggle: toggleBigQueryMenu,
+  dispatchToggle: toggleBigQueryModal,
   selectMenuActive: selectBigQueryActive,
+}
+
+const TurningTidesMenuConfig = {
+  key: 't',
+  dispatchToggle: toggleTurningTidesModal,
+  selectMenuActive: selectTurningTidesActive,
 }
 
 const ResetWorkspaceConfig = {
@@ -115,6 +131,7 @@ const AppModals = () => {
   const [debugActive, dispatchToggleDebugMenu] = useSecretMenu(DebugMenuConfig)
   const [editorActive, dispatchToggleEditorMenu] = useSecretMenu(EditorMenuConfig)
   const [bigqueryActive, dispatchBigQueryMenu] = useSecretMenu(BigQueryMenuConfig)
+  const [turningTidesActive, dispatchTurningTidesMenu] = useSecretMenu(TurningTidesMenuConfig)
 
   const workspaceGeneratorConfig = useMemo(
     () => ({
@@ -193,21 +210,37 @@ const AppModals = () => {
           <EditorMenu />
         </Modal>
       )}
-      {(isGFWUser || jacUser) && (
-        <Modal
-          appSelector={ROOT_DOM_ELEMENT}
-          title={
-            <Fragment>
-              Big query datasets creation 🧠
-              <GFWOnly userGroup="gfw" />
-            </Fragment>
-          }
-          isOpen={bigqueryActive && !anyAppModalOpen}
-          onClose={dispatchBigQueryMenu}
-          contentClassName={styles.bqModal}
-        >
-          <BigQueryMenu />
-        </Modal>
+      {(isGFWUser || jacUser) && (bigqueryActive || turningTidesActive) && !anyAppModalOpen && (
+        <Fragment>
+          <Modal
+            appSelector={ROOT_DOM_ELEMENT}
+            title={
+              <Fragment>
+                Big query datasets creation 🧠
+                <GFWOnly userGroup="gfw" />
+              </Fragment>
+            }
+            isOpen={bigqueryActive}
+            onClose={dispatchBigQueryMenu}
+            contentClassName={styles.bqModal}
+          >
+            <BigQueryModal />
+          </Modal>
+          <Modal
+            appSelector={ROOT_DOM_ELEMENT}
+            title={
+              <Fragment>
+                Turning tides datasets creation 🌊
+                <GFWOnly userGroup="gfw" />
+              </Fragment>
+            }
+            isOpen={turningTidesActive}
+            onClose={dispatchTurningTidesMenu}
+            contentClassName={styles.bqModal}
+          >
+            <TurningTidesModal />
+          </Modal>
+        </Fragment>
       )}
       {isGFWUser && (
         <Modal

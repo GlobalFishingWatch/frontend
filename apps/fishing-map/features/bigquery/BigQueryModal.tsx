@@ -1,10 +1,7 @@
 import { Fragment, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import type { ParsedAPIError } from '@globalfishingwatch/api-client'
-import type { Dataset } from '@globalfishingwatch/api-types'
 import type { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
 import {
   Button,
@@ -15,87 +12,55 @@ import {
   Tooltip,
 } from '@globalfishingwatch/ui-components'
 
-import { useAppDispatch } from 'features/app/app.hooks'
 import { AggregationOptions, VisualisationOptions } from 'features/bigquery/bigquery.config'
-import {
-  getBigQuery4WingsDataviewInstance,
-  getBigQueryEventsDataviewInstance,
-} from 'features/dataviews/dataviews.utils'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import type { BigQueryVisualisation } from 'features/bigquery/bigquery.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import type { BigQueryVisualisation } from './bigquery.slice'
-import {
-  createBigQueryDatasetThunk,
-  fetchBigQueryRunCostThunk,
-  selectCreationStatus,
-  selectRunCost,
-  selectRunCostStatus,
-  toggleBigQueryMenu,
-} from './bigquery.slice'
+import { useBigQueryModal } from './bigquery.hooks'
 
 import styles from './BigQuery.module.css'
 
-const BigQueryMenu: React.FC = () => {
-  const dispatch = useAppDispatch()
+const BigQueryModal: React.FC = () => {
   const { t } = useTranslation()
-  const runCost = useSelector(selectRunCost)
-  const runCostStatus = useSelector(selectRunCostStatus)
-  const creationStatus = useSelector(selectCreationStatus)
+
   const [name, setName] = useState('')
   const [unit, setUnit] = useState('')
-  const [error, setError] = useState('')
   const [visualisationMode, setVisualisationMode] = useState<BigQueryVisualisation | null>(null)
   const [aggregationOperation, setAggregationOperation] =
     useState<FourwingsAggregationOperation | null>(null)
-  const [runCostChecked, setRunCostChecked] = useState(false)
-  const [createAsPublic, setCreateAsPublic] = useState(true)
-  const { addNewDataviewInstances } = useDataviewInstancesConnect()
-  const [query, setQuery] = useState('')
+
+  const {
+    error,
+    runCost,
+    runCostStatus,
+    runCostChecked,
+    createAsPublic,
+    setCreateAsPublic,
+    query,
+    setQuery,
+    creationStatus,
+    onRunCostClick,
+    onCreateClick,
+  } = useBigQueryModal()
 
   const currentVisualisationMode = VisualisationOptions.find(({ id }) => id === visualisationMode)
-
-  const onRunCostClick = async () => {
-    setRunCostChecked(false)
-    if (error) {
-      setError('')
-    }
-    const action = await dispatch(fetchBigQueryRunCostThunk({ query }))
-    if (fetchBigQueryRunCostThunk.fulfilled.match(action)) {
-      setRunCostChecked(true)
-    } else {
-      const error = action.payload as ParsedAPIError
-      setError(error.message)
-    }
-  }
-
-  const onCreateClick = async () => {
-    const action = await dispatch(
-      createBigQueryDatasetThunk({ name, unit, createAsPublic, query, visualisationMode })
-    )
-    if (
-      (visualisationMode === '4wings' ? aggregationOperation !== null : true) &&
-      createBigQueryDatasetThunk.fulfilled.match(action)
-    ) {
-      const dataset = action.payload.payload as Dataset
-      const dataviewInstance =
-        visualisationMode === '4wings'
-          ? getBigQuery4WingsDataviewInstance(dataset.id, {
-              aggregationOperation: aggregationOperation as FourwingsAggregationOperation,
-            })
-          : getBigQueryEventsDataviewInstance(dataset.id)
-      addNewDataviewInstances([dataviewInstance])
-      dispatch(toggleBigQueryMenu())
-    } else {
-      const error = action.payload as ParsedAPIError
-      setError(error.message)
-    }
-  }
-
   const hasQuery = query !== ''
   const disableCheckCost =
     !hasQuery || !visualisationMode || (visualisationMode === '4wings' && !aggregationOperation)
   const disableCreation = !runCostChecked || name === '' || disableCheckCost || error !== ''
+
+  const handleCreateClick = () => {
+    if (visualisationMode) {
+      onCreateClick({
+        name,
+        unit,
+        createAsPublic,
+        query,
+        visualisationMode,
+        aggregationOperation,
+      })
+    }
+  }
 
   return (
     <div className={styles.container}>
@@ -191,7 +156,7 @@ const BigQueryMenu: React.FC = () => {
             error ? t('bigQuery.queryError') : disableCreation ? t('bigQuery.validationError') : ''
           }
           loading={creationStatus === AsyncReducerStatus.Loading}
-          onClick={onCreateClick}
+          onClick={handleCreateClick}
         >
           {t('bigQuery.create')}
         </Button>
@@ -200,4 +165,4 @@ const BigQueryMenu: React.FC = () => {
   )
 }
 
-export default BigQueryMenu
+export default BigQueryModal
