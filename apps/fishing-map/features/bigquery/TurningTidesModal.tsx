@@ -1,10 +1,14 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { FourwingsAggregationOperation } from '@globalfishingwatch/deck-layers'
-import { Button, Icon, InputText, SwitchRow } from '@globalfishingwatch/ui-components'
+import { Button, Icon, InputText, Select, SwitchRow } from '@globalfishingwatch/ui-components'
 
+import { CountryOptions } from 'features/bigquery/turning-tides.config'
+import type { TurningTidesWorkspaceId } from 'features/track-correction/track-correction.config'
+import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { useBigQueryModal } from './bigquery.hooks'
@@ -29,6 +33,7 @@ const TurningTidesModal: React.FC = () => {
     onRunCostClick,
     onCreateClick,
   } = useBigQueryModal()
+  const currentWorkspaceId = useSelector(selectCurrentWorkspaceId) as TurningTidesWorkspaceId
 
   const hasQuery = query !== ''
   const disableCheckCost = !hasQuery
@@ -45,6 +50,9 @@ const TurningTidesModal: React.FC = () => {
       ttl: 0,
     })
   }
+  const [selectedCountry, setSelectedCountry] = useState<TurningTidesWorkspaceId | undefined>(
+    CountryOptions.find(({ id }) => id === currentWorkspaceId)?.id
+  )
 
   return (
     <div className={styles.container}>
@@ -55,6 +63,16 @@ const TurningTidesModal: React.FC = () => {
           label="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+        />
+        <Select
+          label={'Country'}
+          placeholder={t('selects.placeholder')}
+          options={CountryOptions}
+          containerClassName={styles.input}
+          selectedOption={CountryOptions.find(({ id }) => id === selectedCountry)}
+          onSelect={(selected) => {
+            setSelectedCountry(selected.id)
+          }}
         />
       </div>
       <div className={styles.row}>
