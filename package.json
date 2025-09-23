@@ -202,7 +202,7 @@
     "@swc/cli": "0.7.8",
     "@swc/core": "1.13.1",
     "@swc/helpers": "0.5.17",
-    "@tailwindcss/vite": "4.1.1",
+    "@tailwindcss/vite": "^4.1.13",
     "@tanstack/router-devtools": "1.129.8",
     "@tanstack/router-vite-plugin": "1.129.8",
     "@testing-library/jest-dom": "6.6.3",

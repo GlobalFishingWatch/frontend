@@ -43,6 +43,25 @@ export interface ICCATVessel {
   VMSSysCd?: string
 }
 
+export interface PrevICCATVessel {
+  // previous vessel data type from ICCAT database
+  VesselName?: string
+  FlagVesCode?: string
+  FlagRepCode?: string
+  ICCATSerialNo?: string
+  NatRegNo?: string
+  IntRegNo?: string
+  IRNoType?: 'IMO'
+  IRCS?: string
+  IsscfvID?: string
+  IsscfgID?: string
+  LengthM?: number
+  LenType?: 'LOA'
+  Tonnage?: number
+  TonType?: 'GT' | 'GRT'
+  CarCapacity?: number
+}
+
 export interface ICCATOwner {
   OwOpEntityID: string // Insert consecutive number. This number should be transposed to Form CP01-A, (owner /operator ID fields) for each vessel owned or operated by this person/company.
   OwOpName: string

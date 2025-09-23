@@ -1,7 +1,13 @@
 import { notFound } from '@tanstack/react-router'
 import ExcelJS from 'exceljs'
 
-import type { ExportableVessel, ICCATOwner, ICCATVessel, Vessel } from '@/types/vessel.types'
+import type {
+  ExportableVessel,
+  ICCATOwner,
+  ICCATVessel,
+  PrevICCATVessel,
+  Vessel,
+} from '@/types/vessel.types'
 import type { UserData } from '@globalfishingwatch/api-types'
 
 import flags from 'data/iccat/flags'
@@ -75,7 +81,7 @@ export const parseVessels = async (data: Vessel[]) => {
     (key) => key.toLowerCase().includes('owner') || key.toLowerCase().includes('proprietario')
   )
   const ownerList = generateOwnerList(data, ownerField)
-  const prevVesselList = await fetchPrevICCATVessels(sourceSystem)
+  const prevVesselList: PrevICCATVessel[] = await fetchPrevICCATVessels(sourceSystem)
 
   const iccatVessels = data.map((row) => {
     const normalizedRow: Record<string, any> = {}
