@@ -1,3 +1,4 @@
+import { sub } from '@math.gl/core/dist/gl-matrix/mat3'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { kebabCase } from 'es-toolkit'
@@ -24,6 +25,7 @@ export type CreateBigQueryDataset = {
   unit?: string
   ttl?: number
   createAsPublic?: boolean
+  subcategory?: 'user' | 'user-interactive'
 }
 
 export const fetchBigQueryRunCostThunk = createAsyncThunk(
@@ -67,6 +69,7 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
       unit,
       createAsPublic = true,
       ttl,
+      subcategory,
       relatedDatasets = [],
       visualisationMode,
     }: CreateBigQueryDataset,
@@ -74,7 +77,7 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
   ) => {
     try {
       const hasUserInteraction = query.includes('vessel_id')
-      const subcategory = hasUserInteraction ? 'user-interactive' : 'user'
+      const subcategoryFallback = hasUserInteraction ? 'user-interactive' : 'user'
       const { id } = await GFWAPI.fetch<CreateBigQueryDatasetResponse>(
         `/4wings/bq/create-temporal-dataset`,
         {
@@ -84,7 +87,7 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
             name: kebabCase(name),
             unit: unit || (visualisationMode === '4wings' ? '' : 'event'),
             category: visualisationMode === '4wings' ? 'activity' : 'event',
-            subcategory,
+            subcategory: subcategory || subcategoryFallback,
             relatedDatasets,
             ...(ttl !== undefined && { ttl }),
             public: createAsPublic,

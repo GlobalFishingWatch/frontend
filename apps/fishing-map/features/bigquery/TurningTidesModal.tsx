@@ -52,6 +52,7 @@ const TurningTidesModal: React.FC = () => {
       query,
       unit: 'hours',
       visualisationMode: '4wings',
+      subcategory: 'user-interactive',
       aggregationOperation: FourwingsAggregationOperation.Sum,
       relatedDatasets: selectedCountryOption?.relatedDatasets,
       ttl: TURNING_TIDES_TTL_DAYS,

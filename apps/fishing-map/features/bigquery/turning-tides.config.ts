@@ -16,11 +16,11 @@ export const CountryOptions: {
     relatedDatasets: [
       {
         id: 'private-bra-onyxsat-vessel-identity-fishing:v20211126',
-        type: DatasetTypes.Vessels,
+        type: DatasetTypes.Vessels, //"vessels:v1"
       },
       {
         id: 'private-bra-onyxsat-vessel-identity-non-fishing:v20211126',
-        type: DatasetTypes.Vessels,
+        type: DatasetTypes.Vessels, //"vessels:v1"
       },
     ],
   },
@@ -30,11 +30,11 @@ export const CountryOptions: {
     relatedDatasets: [
       {
         id: 'public-chile-vessel-identity-fishing:v20211126',
-        type: DatasetTypes.Vessels,
+        type: DatasetTypes.Vessels, //"vessels:v1"
       },
       {
         id: 'public-chile-vessel-identity-non-fishing:v20211126',
-        type: DatasetTypes.Vessels,
+        type: DatasetTypes.Vessels, //"vessels:v1"
       },
     ],
   },
@@ -44,7 +44,7 @@ export const CountryOptions: {
     relatedDatasets: [
       {
         id: 'private-peru-vessel-identity-fishing:v20211126',
-        type: DatasetTypes.Vessels,
+        type: DatasetTypes.Vessels, //"vessels:v1"
       },
     ],
   },
