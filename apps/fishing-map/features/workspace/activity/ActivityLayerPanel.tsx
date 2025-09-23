@@ -15,6 +15,7 @@ import { SAR_DATAVIEW_SLUG } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
+import { TURNING_TIDES_DESCRIPTION_PREFIX } from 'features/bigquery/turning-tides.config'
 import {
   getDatasetTitleByDataview,
   getSchemaFiltersInDataview,
@@ -25,24 +26,27 @@ import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slic
 import { useActivityDataviewId } from 'features/map/map-layers.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAuxiliaryLayer'
+import TurningTidesTags from 'features/workspace/activity/TurningTidesTags'
 import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import LayerProperties from 'features/workspace/shared/LayerProperties'
 import MapLegend from 'features/workspace/shared/MapLegend'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
 import DatasetSchemaField from '../shared/DatasetSchemaField'
 import DatasetFilterSource from '../shared/DatasetSourceField'
 import InfoModal from '../shared/InfoModal'
-import Filters from '../shared/LayerFilters'
+import LayerFilters from '../shared/LayerFilters'
 import LayerSwitch from '../shared/LayerSwitch'
 import OutOfTimerangeDisclaimer from '../shared/OutOfBoundsDisclaimer'
 import Remove from '../shared/Remove'
 import Title from '../shared/Title'
 
 import { isDefaultActivityDataview, isDefaultDetectionsDataview } from './activity.utils'
+import TurningTidesFilters from './TurningTidesFilters'
 
 import activityStyles from './ActivitySection.module.css'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
@@ -71,6 +75,7 @@ function ActivityLayerPanel({
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const hintsDismissed = useSelector(selectHintsDismissed)
   const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
+  const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
   const dataviewId = useActivityDataviewId(dataview)
@@ -161,8 +166,13 @@ function ActivityLayerPanel({
   }
 
   const datasetTitle = getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
+  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
+  const isTurningTidesDataset =
+    dataset?.subcategory === 'user-interactive' &&
+    dataset.description?.startsWith(TURNING_TIDES_DESCRIPTION_PREFIX)
   const hasDatasetAvailable =
     getDatasetConfigByDatasetType(dataview, DatasetTypes.Fourwings) !== undefined
+  const showTurningTidesFilters = isTurningTidesDataset && isTurningTidesWorkspace
 
   const showFilters = isDefaultActivityDataview(dataview) || isDefaultDetectionsDataview(dataview)
   const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
@@ -216,7 +226,16 @@ function ActivityLayerPanel({
                 <ExpandedContainer
                   onClickOutside={closeExpandedContainer}
                   visible={filterOpen}
-                  component={<Filters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />}
+                  component={
+                    showTurningTidesFilters ? (
+                      <TurningTidesFilters
+                        dataview={dataview}
+                        onConfirmCallback={onToggleFilterOpen}
+                      />
+                    ) : (
+                      <LayerFilters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />
+                    )
+                  }
                 >
                   <div className={styles.filterButtonWrapper}>
                     <IconButton
@@ -334,6 +353,7 @@ function ActivityLayerPanel({
                   {filtersAllowed.map(({ id, label }) => (
                     <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
                   ))}
+                  {showTurningTidesFilters && <TurningTidesTags dataview={dataview} />}
                 </div>
               </div>
               <div className={activityStyles.legendContainer}>
