@@ -8,6 +8,7 @@ import type {
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
 import {
+  getSchemaIdClean,
   kmlToGeoJSON,
   listToTrackSegments,
   pointsGeojsonToNormalizedGeojson,
@@ -133,6 +134,9 @@ export async function getDatasetParsed(
         download: false,
         dynamicTyping: true,
         header: true,
+        transformHeader: (header) => {
+          return getSchemaIdClean(header) as string
+        },
       })
       return data as DataList
     } else if (fileType === 'KML') {

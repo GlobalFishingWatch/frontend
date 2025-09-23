@@ -294,6 +294,7 @@ interface Resources {
       errorTooComplex: 'We cannot create a dynamic report for this area as the boundary information is complex. Please simplify your area of interest - by uploading a new layer or drawing your layer on the map - and try the report again to resolve.'
       evolution: 'Evolution'
       globally: 'globally'
+      groupByCoverage: 'by coverage'
       groupByEEZ: 'By EEZ'
       groupByFAO: 'By FAO'
       groupByFlag: 'by flag'
@@ -1544,7 +1545,7 @@ interface Resources {
       saveForLater: 'Save for later'
       saveForLaterTooltip: "You'll find the group in the activity layers filters or your user panel button"
       searchLimit: 'Search is limited up to {{limit}} vessels'
-      searchLink: "Need to add more vessels to the group? Go to search, select results and click 'Add to vessel group'."
+      searchLink: 'Search to add more vessels to this group'
       searchNotFound: 'No vessels found'
       searchVesselsRequired: 'Search for vessels to create a vessel group'
       summary: 'This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>'
@@ -1674,23 +1675,6 @@ interface Resources {
     }
   }
   workspaces: {
-    'fishing-activity': {
-      'default-public': {
-        name: 'Global fishing activity'
-        description: 'Monitor vessel-based human activity at sea in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries.'
-        cta: 'Explore the map'
-      }
-      'carrier-portal-public': {
-        name: 'Carrier Vessel Portal'
-        description: 'Verify transshipments, track vessels and identify frequently-visited ports to gain a better understanding of carrier vessel activities needed to strengthen transparency and accelerate transshipment reform.'
-        cta: 'Explore the carrier vessel portal'
-      }
-      'deep-sea-mining-public': {
-        name: 'Deep Sea Mining Watch'
-        description: 'Deep Sea Mining Watch aims to increase transparency in the nascent industry of seabed mining for critical minerals by highlighting historical and ongoing vessel activity in high seas areas that are currently slated for mineral exploration. '
-        cta: 'Explore the portal'
-      }
-    }
     reports: {
       'carrier-portal-report': {
         name: 'Carrier Vessel Portal'

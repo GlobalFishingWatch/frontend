@@ -33,6 +33,7 @@ import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.s
 import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import CreateWorkspaceModal from 'features/workspace/save/WorkspaceCreateModal'
 import EditWorkspaceModal from 'features/workspace/save/WorkspaceEditModal'
+import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
 import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'routes/routes'
@@ -109,6 +110,7 @@ const AppModals = () => {
   const readOnly = useSelector(selectReadOnly)
   const isGFWUser = useSelector(selectIsGFWUser)
   const jacUser = useSelector(selectIsJACUser)
+  const isWorkspaceReady = useSelector(selectIsWorkspaceReady)
   const dispatch = useAppDispatch()
   const [debugActive, dispatchToggleDebugMenu] = useSecretMenu(DebugMenuConfig)
   const [editorActive, dispatchToggleEditorMenu] = useSecretMenu(EditorMenuConfig)
@@ -224,7 +226,7 @@ const AppModals = () => {
       <CreateWorkspaceModal />
       {downloadActivityAreaKey && <DownloadActivityModal />}
       {downloadTrackModalOpen && <DownloadTrackModal />}
-      {!readOnly && (
+      {!readOnly && isWorkspaceReady && (
         <Fragment>
           {/* Please don't judge this piece of code, it is needed to avoid race-conditions in the useLocalStorage internal hook */}
           {welcomePopupContentKey === 'vessel-profile' && <Welcome contentKey="vessel-profile" />}

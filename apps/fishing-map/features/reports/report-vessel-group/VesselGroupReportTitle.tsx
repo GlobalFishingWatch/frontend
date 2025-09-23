@@ -10,12 +10,12 @@ import { Button, Icon } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
+import { selectUserIsVesselGroupOwner } from 'features/reports/report-vessel-group/vessel-group-report.selectors'
 import VGRTitlePlaceholder from 'features/reports/shared/placeholders/VGRTitlePlaceholder'
 import {
   selectReportVesselGroupFlags,
   selectReportVesselGroupTimeRange,
 } from 'features/reports/shared/vessels/report-vessels.selectors'
-import { selectUserData } from 'features/user/selectors/user.selectors'
 // import { getEventLabel } from 'utils/analytics'
 // import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
@@ -25,6 +25,7 @@ import {
   setVesselGroupModalVessels,
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
+import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
@@ -38,8 +39,7 @@ export default function VesselGroupReportTitle() {
   const reportStatus = useSelector(selectVGRStatus)
   const timeRange = useSelector(selectReportVesselGroupTimeRange)
   const flags = useSelector(selectReportVesselGroupFlags)
-  const userData = useSelector(selectUserData)
-  const userIsVesselGroupOwner = userData?.id === vesselGroup?.ownerId
+  const userIsVesselGroupOwner = useSelector(selectUserIsVesselGroupOwner)
   const loading = reportStatus === AsyncReducerStatus.Loading
 
   const onEditClick = useCallback(() => {
@@ -104,7 +104,7 @@ export default function VesselGroupReportTitle() {
         </a>
 
         <div className={styles.actions}>
-          {userIsVesselGroupOwner && (
+          <LoginButtonWrapper tooltip="">
             <Button
               type="border-secondary"
               size="small"
@@ -113,10 +113,11 @@ export default function VesselGroupReportTitle() {
               disabled={loading}
               tooltip={t('vesselGroup.edit')}
             >
-              <p>{t('common.edit')}</p>
+              {userIsVesselGroupOwner ? <p>{t('common.edit')}</p> : <p>{t('common.save')}</p>}
               <Icon icon="edit" type="default" />
             </Button>
-          )}
+          </LoginButtonWrapper>
+
           {/* <Button
             type="border-secondary"
             size="small"

@@ -1,7 +1,16 @@
+import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import Sticky from 'react-sticky-el'
 
+import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { trackEvent } from '@globalfishingwatch/react-hooks'
+import { IconButton } from '@globalfishingwatch/ui-components'
+
+import { TrackCategory } from 'features/app/analytics.hooks'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { setModalOpen } from 'features/modals/modals.slice'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import ReportSummaryActivity from 'features/reports/shared/summary/ReportSummaryActivity'
@@ -19,12 +28,33 @@ type ReportSummaryProps = {
 
 export const PROPERTIES_EXCLUDED = ['flag', 'geartype']
 
+const categoryToDataviewMap: Partial<Record<ReportCategory, DataviewCategory>> = {
+  [ReportCategory.Activity]: DataviewCategory.Activity,
+  [ReportCategory.Detections]: DataviewCategory.Detections,
+  [ReportCategory.Events]: DataviewCategory.Events,
+  [ReportCategory.VesselGroup]: DataviewCategory.VesselGroups,
+  [ReportCategory.Others]: DataviewCategory.Context,
+  [ReportCategory.Environment]: DataviewCategory.Environment,
+}
+
 export default function ReportSummary({
   activityUnit,
   reportStatus = AsyncReducerStatus.Finished,
 }: ReportSummaryProps) {
+  const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const reportCategory = useSelector(selectReportCategory)
   const dataviews = useSelector(selectActiveReportDataviews)
+
+  const onAddLayerClick = useCallback(() => {
+    trackEvent({
+      category: TrackCategory.Analysis,
+      action: `Open panel to add a report layer`,
+    })
+
+    const open = categoryToDataviewMap[reportCategory] || false
+    dispatch(setModalOpen({ id: 'layerLibrary', open }))
+  }, [dispatch, reportCategory])
 
   return (
     <div className={styles.summaryWrapper}>
@@ -48,6 +78,14 @@ export default function ReportSummary({
             {dataviews?.map((dataview) => (
               <ReportSummaryTags key={dataview.id} dataview={dataview} />
             ))}
+            <IconButton
+              icon="plus"
+              type="border"
+              size="medium"
+              tooltip={t('layer.add')}
+              tooltipPlacement="top"
+              onClick={onAddLayerClick}
+            />
           </div>
         </Sticky>
       )}

@@ -6,13 +6,14 @@ import type { ScaleLinear } from 'd3-scale'
 import { scaleLinear } from 'd3-scale'
 import type { Feature, GeoJsonProperties, Geometry } from 'geojson'
 
+import { isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
+
 import {
   COLOR_HIGHLIGHT_FILL,
   COLOR_HIGHLIGHT_LINE,
   COLOR_TRANSPARENT,
   DEFAULT_BACKGROUND_COLOR,
   getColorRampByOpacitySteps,
-  getFeatureInFilters,
   getFetchLoadOptions,
   getLayerGroupOffset,
   getMVTSublayerProps,
@@ -109,7 +110,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
     if (
       hasSublayerFilters(sublayer) &&
       !supportDataFilterExtension(sublayer) &&
-      !getFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
+      !isFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
     ) {
       return COLOR_TRANSPARENT
     }
@@ -120,7 +121,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
     if (
       hasSublayerFilters(sublayer) &&
       !supportDataFilterExtension(sublayer) &&
-      !getFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
+      !isFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
     ) {
       return 0
     }
@@ -134,7 +135,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
     if (
       hasSublayerFilters(sublayer) &&
       !supportDataFilterExtension(sublayer) &&
-      !getFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
+      !isFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
     ) {
       return COLOR_TRANSPARENT
     }
@@ -154,7 +155,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
     if (
       hasSublayerFilters(sublayer) &&
       !supportDataFilterExtension(sublayer) &&
-      !getFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
+      !isFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
     ) {
       return COLOR_TRANSPARENT
     }

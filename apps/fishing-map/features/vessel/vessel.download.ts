@@ -1,5 +1,3 @@
-import get from 'lodash/get'
-
 import type {
   RegistryExtraFieldValue,
   VesselRegistryAuthorization,
@@ -9,20 +7,8 @@ import type {
 
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
-import { getUTCDateTime } from 'utils/dates'
+import { type CsvConfig, objectArrayToCSV, parseCSVDate, parseCSVList } from 'utils/csv'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
-
-type CsvConfig = {
-  label: string
-  accessor: string | string[]
-  transform?: (value: any) => any
-}
-
-const parseCSVString = (string: string | number) => {
-  return string?.toString()?.replaceAll(',', '-')
-}
-const parseCSVDate = (date: number) => getUTCDateTime(date).toISO()
-const parseCSVList = (value: string[]) => value?.join('|')
 
 const parseRegistryOwners = (owners: VesselRegistryOwner[]) => {
   return parseCSVList(
@@ -46,26 +32,6 @@ const parseRegistryAuthorizations = (authorizations: VesselRegistryAuthorization
       return `${authorization.sourceCode} (${authorization.dateFrom}-${authorization.dateTo})`
     })
   )
-}
-
-const objectArrayToCSV = (
-  data: unknown[],
-  csvConfig: CsvConfig[],
-  getter = get as (any: any, path: string) => any
-) => {
-  const keys = csvConfig.map((c) => c.label).join(',')
-  const values = data.map((d) => {
-    return csvConfig
-      .map(({ accessor, transform }) => {
-        const value = Array.isArray(accessor)
-          ? accessor.map((a) => getter(d, a)).filter(Boolean)[0]
-          : getter(d, accessor)
-        const transformedValue = transform ? transform(value) : value
-        return transformedValue ? parseCSVString(transformedValue) : ''
-      })
-      .join(',')
-  })
-  return [keys, values.join('\n')].join('\n')
 }
 
 const VESSEL_CSV_CONFIG: CsvConfig[] = [

@@ -4,17 +4,11 @@ import type { Entries } from 'type-fest'
 import type { WorkspaceViewport } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-import type {
-  FishingMapWorkspace,
-  WorkspaceReportLink,
-} from 'data/highlighted-workspaces/fishing-activity'
-import { FISHING_MAP_WORKSPACES } from 'data/highlighted-workspaces/fishing-activity'
 import type { MarineManagerWorkspace } from 'data/highlighted-workspaces/marine-manager'
 import { MARINE_MANAGER_WORKSPACES } from 'data/highlighted-workspaces/marine-manager'
-import type { ReportWorkspace } from 'data/highlighted-workspaces/reports'
+import type { ReportWorkspace, WorkspaceReportLink } from 'data/highlighted-workspaces/reports'
 import { REPORTS_INDEX } from 'data/highlighted-workspaces/reports'
 import { WorkspaceCategory } from 'data/workspaces'
-import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { t } from 'features/i18n/i18n'
 import type { ReportCategory } from 'features/reports/reports.types'
 import {
@@ -53,15 +47,14 @@ export type HighlightedWorkspaces = {
 }
 
 export const selectHighlightedWorkspaces = createSelector(
-  [selectLanguage, selectIsGlobalReportsEnabled],
-  (locale, isGlobalReportsEnabled): HighlightedWorkspaces[] => {
+  [selectLanguage],
+  (locale): HighlightedWorkspaces[] => {
     const WORKSPACES_BY_CATEGORY: Record<
       HighlightedWorkspaceCategory,
-      (MarineManagerWorkspace | FishingMapWorkspace | ReportWorkspace)[]
+      (MarineManagerWorkspace | ReportWorkspace)[]
     > = {
-      'fishing-activity': FISHING_MAP_WORKSPACES,
       'marine-manager': MARINE_MANAGER_WORKSPACES,
-      reports: isGlobalReportsEnabled ? REPORTS_INDEX : [],
+      reports: REPORTS_INDEX,
     }
     return (Object.entries(WORKSPACES_BY_CATEGORY) as Entries<typeof WORKSPACES_BY_CATEGORY>).map(
       ([category, workspaces]) => {

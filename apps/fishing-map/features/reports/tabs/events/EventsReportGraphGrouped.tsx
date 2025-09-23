@@ -1,13 +1,12 @@
 import type { ReactElement } from 'react'
-import React, { Fragment, useCallback } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import { type ApiEvent, type EventType } from '@globalfishingwatch/api-types'
+import type { ApiEvent } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
-import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 
@@ -27,6 +26,8 @@ import {
   useGetEventReportGraphLabel,
 } from 'features/reports/tabs/events/events-report.hooks'
 import { selectEventsGraphDatasetAreaId } from 'features/reports/tabs/events/events-report.selectors'
+import type { EventsReportGraphProps } from 'features/reports/tabs/events/events-report.types'
+import EventsReportDownload from 'features/reports/tabs/events/EventsReportDownload'
 import { EventsReportIndividualGraphTooltip } from 'features/reports/tabs/events/EventsReportGraphEvolution'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { WORKSPACE_REPORT } from 'routes/routes'
@@ -218,27 +219,21 @@ export default function EventsReportGraphGrouped({
   valueKeys,
   graphType,
   eventType,
-}: {
-  dataviews: UrlDataviewInstance[]
-  includes?: string[]
-  color?: string
-  end: string
-  start: string
-  data: ResponsiveVisualizationData<'aggregated'>
-  valueKeys: string[]
-  graphType?: ReportEventsGraph
-  eventType?: EventType
-}) {
+}: EventsReportGraphProps) {
   const { t } = useTranslation()
   const containerRef = React.useRef<HTMLDivElement>(null)
   const includesMemo = useMemoCompare(includes)
   const fetchEventsData = useFetchEventReportGraphEvents()
-
+  const [isIndividualSupported, setIsIndividualSupported] = useState(false)
   const getAggregatedData = useCallback(async () => data, [data])
 
   const getIndividualData = useCallback(async () => {
+    if (!dataviews?.length) {
+      setIsIndividualSupported(false)
+      return []
+    }
     const data = await fetchEventsData({ dataviews, start, end, includes: includesMemo })
-
+    setIsIndividualSupported(true)
     const groupedData = data.reduce(
       (acc, event) => {
         const regions = []
@@ -295,12 +290,23 @@ export default function EventsReportGraphGrouped({
     icon = <PortVisitIcon />
   }
 
-  if (!data.length) {
+  if (!data.length || !dataviews?.length) {
     return null
   }
 
   return (
-    <div ref={containerRef} className={cx(styles.graph, styles.groupBy)}>
+    <div
+      ref={containerRef}
+      className={cx(styles.graph, styles.groupBy, { [styles.paddingTop]: isIndividualSupported })}
+    >
+      {isIndividualSupported && (
+        <EventsReportDownload
+          dataviews={dataviews}
+          start={start}
+          end={end}
+          className={styles.download}
+        />
+      )}
       <ResponsiveBarChart
         color={color}
         getIndividualData={getIndividualData}
@@ -309,9 +315,11 @@ export default function EventsReportGraphGrouped({
         barValueFormatter={(value: any) => {
           return formatI18nNumber(value).toString()
         }}
-        barLabel={<ReportGraphTick graphType={graphType} dataview={dataviews[0]} />}
+        barLabel={<ReportGraphTick graphType={graphType} dataview={dataviews?.[0]} />}
         individualTooltip={<EventsReportIndividualGraphTooltip eventType={eventType} />}
-        aggregatedTooltip={<AggregatedGraphTooltip graphType={graphType} dataview={dataviews[0]} />}
+        aggregatedTooltip={
+          <AggregatedGraphTooltip graphType={graphType} dataview={dataviews?.[0]} />
+        }
         individualIcon={icon}
       />
     </div>

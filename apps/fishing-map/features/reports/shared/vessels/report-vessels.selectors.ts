@@ -13,6 +13,7 @@ import {
   selectReportDataviewsWithPermissions,
 } from 'features/reports/report-area/area-reports.selectors'
 import { getVesselsFiltered } from 'features/reports/report-area/area-reports.utils'
+import { selectVGRCoverageInsightData } from 'features/reports/report-vessel-group/vessel-group-report.selectors'
 import {
   selectReportVesselFilter,
   selectReportVesselPage,
@@ -28,6 +29,7 @@ import {
 } from 'features/reports/shared/utils/reports.utils'
 import { REPORT_FILTER_PROPERTIES } from 'features/reports/shared/vessels/report-vessels.config'
 import { selectReportVesselsList } from 'features/reports/tabs/activity/vessels/report-activity-vessels.selectors'
+import { parseCoverageGraphValueBucket } from 'features/reports/tabs/vessel-group-insights/vessel-group-report-insights.utils'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
 import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
 import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
@@ -38,6 +40,7 @@ import {
   getVesselGearTypeLabel,
   getVesselShipTypeLabel,
 } from 'utils/info'
+import { weightedMean } from 'utils/statistics'
 
 import { selectVGRVessels } from '../../report-vessel-group/vessel-group-report.slice'
 import { selectEventsVessels } from '../../tabs/events/events-report.selectors'
@@ -103,8 +106,8 @@ export const selectReportVesselsByCategory = createSelector(
 )
 
 export const selectReportVessels = createSelector(
-  [selectReportVesselsByCategory],
-  (vessels): ReportTableVessel[] | null => {
+  [selectReportVesselsByCategory, selectVGRCoverageInsightData],
+  (vessels, coverageInsightData): ReportTableVessel[] | null => {
     if (!vessels?.length) {
       return null
     }
@@ -113,6 +116,16 @@ export const selectReportVessels = createSelector(
       // Vessels have identity when coming from events or vessel groups
       if (identity) {
         const reportVessel = vessel as VesselGroupVessel
+        const coverages = coverageInsightData?.coverage?.filter(
+          (d) => d.vesselId === reportVessel.vesselId || d.vesselId === reportVessel.relationId
+        )
+        const coverage =
+          coverages && coverages.length
+            ? weightedMean(
+                coverages.flatMap((d) => d.percentage ?? []),
+                coverages.flatMap((d) => parseInt(d.blocks) ?? [])
+              )
+            : -1
         const { shipname, ...vesselData } = getSearchIdentityResolved(identity!)
         const source = getVesselSource(identity)
         const vesselType = getVesselShipTypeLabel(vesselData) || EMPTY_FIELD_PLACEHOLDER
@@ -129,6 +142,8 @@ export const selectReportVessels = createSelector(
           shipName: formatInfoField(shipname, 'shipname') as string,
           vesselType,
           geartype,
+          value: coverage,
+          coverageBucket: parseCoverageGraphValueBucket(coverage),
           ssvid: getVesselProperty(identity, 'ssvid', {
             identitySource: VesselIdentitySourceEnum.SelfReported,
           }),
@@ -265,7 +280,6 @@ export const selectReportVesselsOrdered = createSelector(
   ],
   (vessels, property, direction) => {
     if (!vessels?.length) return []
-
     return vessels.toSorted((a, b) => {
       // First compare by value
       const valueA = a.value || 0

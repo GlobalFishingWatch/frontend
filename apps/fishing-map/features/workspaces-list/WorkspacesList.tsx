@@ -5,12 +5,10 @@ import cx from 'classnames'
 import type { To } from 'redux-first-router-link'
 import Link from 'redux-first-router-link'
 
-import { LEGACY_CVP_WORKSPACE_ID } from 'data/highlighted-workspaces/fishing-activity'
 import type { ReportWorkspaceId } from 'data/highlighted-workspaces/reports'
 import { REPORT_IDS } from 'data/highlighted-workspaces/reports'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { fetchWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { HOME, REPORT, WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
@@ -33,7 +31,6 @@ function WorkspacesList() {
   const highlightedWorkspacesIds = useSelector(selectCurrentHighlightedWorkspacesIds)
   const highlightedWorkspaces = useSelector(selectCurrentHighlightedWorkspaces)
   const validCategory = useSelector(isValidLocationCategory)
-  const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
 
   useEffect(() => {
     if (highlightedWorkspacesIds.length) {
@@ -83,8 +80,7 @@ function WorkspacesList() {
             reports,
             img,
           } = highlightedWorkspace
-          const isLegacyCVPWorkspace = id === LEGACY_CVP_WORKSPACE_ID
-          if (!visible || (isLegacyCVPWorkspace && isGlobalReportsEnabled)) {
+          if (!visible) {
             return null
           }
 
@@ -126,31 +122,20 @@ function WorkspacesList() {
               replaceQuery: true,
             }
           }
+
           return (
             <li key={id || name} className={cx(styles.workspace)}>
-              {isLegacyCVPWorkspace ? (
-                <a href="https://globalfishingwatch.org/carrier-portal" target="_blank">
-                  <img className={styles.image} alt={name} src={img} />
-                </a>
-              ) : (
-                <Link
-                  to={linkTo}
-                  onClick={() => onWorkspaceClick(highlightedWorkspace)}
-                  className={styles.imageLink}
-                >
-                  <img className={styles.image} alt={name} src={img} />
-                </Link>
-              )}
+              <Link
+                to={linkTo}
+                onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                className={styles.imageLink}
+              >
+                <img className={styles.image} alt={name} src={img} />
+              </Link>
               <div className={styles.info}>
-                {isLegacyCVPWorkspace ? (
-                  <a href="https://globalfishingwatch.org/carrier-portal" target="_blank">
-                    <h3 className={styles.title}>{name}</h3>
-                  </a>
-                ) : (
-                  <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
-                    <h3 className={styles.title}>{name}</h3>
-                  </Link>
-                )}
+                <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
+                  <h3 className={styles.title}>{name}</h3>
+                </Link>
                 {description && (
                   <p
                     className={styles.description}
@@ -160,23 +145,13 @@ function WorkspacesList() {
                   ></p>
                 )}
                 <div className={styles.linksContainer}>
-                  {isLegacyCVPWorkspace ? (
-                    <a
-                      href="https://globalfishingwatch.org/carrier-portal"
-                      className={styles.link}
-                      target="_blank"
-                    >
-                      {cta}
-                    </a>
-                  ) : (
-                    <Link
-                      to={linkTo}
-                      onClick={() => onWorkspaceClick(highlightedWorkspace)}
-                      className={styles.link}
-                    >
-                      {cta}
-                    </Link>
-                  )}
+                  <Link
+                    to={linkTo}
+                    onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                    className={styles.link}
+                  >
+                    {cta}
+                  </Link>
                   {reports?.map(({ id: reportId, key }) => {
                     const reportLink = reportId
                       ? {

@@ -1261,7 +1261,7 @@
       },
       "next_port_id": "next_port_id",
       "type": {
-        "keyword": "type",
+        "keyword": "Vessel types",
         "enum": {
           "CARGO": "CARGO",
           "DISCREPANCY": "DISCREPANCY",
@@ -1311,7 +1311,7 @@
         }
       },
       "type": {
-        "keyword": "type",
+        "keyword": "Vessel type",
         "enum": {
           "CARGO": "CARGO",
           "DISCREPANCY": "DISCREPANCY",

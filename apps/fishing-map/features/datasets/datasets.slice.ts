@@ -1,8 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { uniq, uniqBy, without } from 'es-toolkit'
-import kebabCase from 'lodash/kebabCase'
-import memoize from 'lodash/memoize'
+import { kebabCase, memoize, uniq, uniqBy, without } from 'es-toolkit'
 import { stringify } from 'qs'
 
 import {
@@ -106,7 +104,7 @@ export const getDatasetByIdsThunk = createAsyncThunk(
       console.warn(e)
       return rejectWithValue({
         status: parseAPIErrorStatus(e),
-        message: `${id} - ${parseAPIErrorMessage(e)}`,
+        message: `${ids.join(', ')} - ${parseAPIErrorMessage(e)}`,
       })
     }
   }
@@ -276,7 +274,7 @@ export const upsertDatasetThunk = createAsyncThunk<
       // need to be lowercase
       const propertyToInclude = (dataset.configuration?.propertyToInclude as string)?.toLowerCase()
       const suffix = addIdSuffix ? `-${Date.now()}` : ''
-      const generatedId = dataset.id || `${kebabCase(dataset.name)}${suffix}`
+      const generatedId = dataset.id || `${kebabCase(dataset.name || '')}${suffix}`
       const id = createAsPublic ? `${PUBLIC_SUFIX}-${generatedId}` : generatedId
       const { id: originalId, ...rest } = dataset
       const isPatchDataset = originalId !== undefined

@@ -1,7 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { uniqBy } from 'es-toolkit'
-import memoize from 'lodash/memoize'
+import { memoize, uniqBy } from 'es-toolkit'
 import { stringify } from 'qs'
 
 import type { FetchOptions, ParsedAPIError } from '@globalfishingwatch/api-client'
@@ -105,7 +104,7 @@ export const fetchVesselGroupByIdThunk = createAsyncThunk(
   async (vesselGroupId: string, { rejectWithValue }) => {
     try {
       if (vesselGroupId) {
-        const vesselGroup = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${id}`)
+        const vesselGroup = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${vesselGroupId}`)
         return vesselGroup
       }
     } catch (e: any) {

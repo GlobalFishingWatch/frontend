@@ -9,6 +9,8 @@ import type { RootState } from 'reducers'
 import type { InsightType } from '@globalfishingwatch/api-types'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { selectVGRData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 
 export const COVERAGE_INSIGHT_ID = 'COVERAGE' as InsightType
@@ -44,32 +46,63 @@ export const selectFetchVesselGroupReportFlagChangeParams =
   selectFetchVGRParamsByInsight(FLAG_CHANGE_INSIGHT_ID)
 export const selectFetchVesselGroupReportMOUParams = selectFetchVGRParamsByInsight(MOU_INSIGHT_ID)
 
-export const selectVGRInsightDataById = (
-  selector: (state: RootState) => VesselGroupInsightParams
-) => {
+export const selectVGRInsightById = (selector: (state: RootState) => VesselGroupInsightParams) => {
   return createSelector(
     [selectVesselGroupInsightApiSlice, selector],
     (vesselInsightApi, params) => {
-      return selectVesselGroupInsight(params)({ vesselInsightApi })?.data
+      return selectVesselGroupInsight(params)({ vesselInsightApi })
     }
   )
 }
 
-export const selectVGRGapInsightData = selectVGRInsightDataById(
-  selectFetchVesselGroupReportGapParams
-)
-export const selectVGRCoverageInsightData = selectVGRInsightDataById(
+export const selectVGRGapInsight = selectVGRInsightById(selectFetchVesselGroupReportGapParams)
+
+export const selectVGRGapInsightData = createSelector([selectVGRGapInsight], (gapInsight) => {
+  return gapInsight?.data
+})
+
+export const selectVGRCoverageInsight = selectVGRInsightById(
   selectFetchVesselGroupReportCoverageParams
 )
-export const selectVGRFishingInsightData = selectVGRInsightDataById(
+
+export const selectVGRCoverageInsightData = createSelector(
+  [selectVGRCoverageInsight],
+  (coverageInsight) => {
+    return coverageInsight?.data
+  }
+)
+export const selectVGRFishingInsight = selectVGRInsightById(
   selectFetchVesselGroupReportFishingParams
 )
-export const selectVGRIUUInsightData = selectVGRInsightDataById(
-  selectFetchVesselGroupReportIUUParams
+export const selectVGRFishingInsightData = createSelector(
+  [selectVGRFishingInsight],
+  (fishingInsight) => {
+    return fishingInsight?.data
+  }
 )
-export const selectVGRFlagChangeInsightData = selectVGRInsightDataById(
+export const selectVGRIUUInsight = selectVGRInsightById(selectFetchVesselGroupReportFishingParams)
+export const selectVGRIUUInsightData = createSelector([selectVGRIUUInsight], (iuuInsight) => {
+  return iuuInsight?.data
+})
+export const selectVGRFlagChangeInsight = selectVGRInsightById(
   selectFetchVesselGroupReportFlagChangeParams
 )
-export const selectVGRMOUInsightData = selectVGRInsightDataById(
-  selectFetchVesselGroupReportMOUParams
+export const selectVGRFlagChangeInsightData = createSelector(
+  [selectVGRFlagChangeInsight],
+  (flagChangeInsight) => {
+    return flagChangeInsight?.data
+  }
+)
+export const selectVGRMOUInsight = selectVGRInsightById(
+  selectFetchVesselGroupReportFlagChangeParams
+)
+export const selectVGRMOUInsightData = createSelector([selectVGRMOUInsight], (mouInsight) => {
+  return mouInsight?.data
+})
+
+export const selectUserIsVesselGroupOwner = createSelector(
+  [selectUserData, selectVGRData],
+  (userData, vesselGroup) => {
+    return userData?.id === vesselGroup?.ownerId
+  }
 )

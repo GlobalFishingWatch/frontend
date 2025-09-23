@@ -1,8 +1,8 @@
 {
   "fishing-map": {
-    "cloudbuildTaskDevId": "ui-fishing-map-autodeploy",
-    "cloudbuildTaskStagingId": "ui-fishing-map-autodeploy-staging",
-    "cloudbuildTaskProId": "ui-fishing-map-autodeploy-pro",
+    "cloudbuildTaskDevId": "ui-fishing-map-dev-preview-bot",
+    "cloudbuildTaskStagingId": "ui-fishing-map-sta-preview-bot",
+    "cloudbuildTaskProId": "ui-fishing-map-pro-preview-bot",
     "auto": false,
     "watch": ["apps/fishing-map/**/*", "yarn.lock"]
   }

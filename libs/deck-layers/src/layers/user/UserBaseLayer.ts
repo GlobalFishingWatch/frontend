@@ -6,8 +6,9 @@ import type { GeoBoundingBox, TileLayerProps } from '@deck.gl/geo-layers'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import type { Entries } from 'type-fest'
 
+import { isFeatureInFilter, isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
+
 import type { DeckLayerProps } from '../../types'
-import { getFeatureInFilters, isFeatureInFilter } from '../../utils'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
 import type { ContextFeature, ContextSubLayerConfig } from '../context'
 import {
@@ -105,7 +106,7 @@ export abstract class UserBaseLayer<
     if (hasSublayerFilters(sublayers?.[0])) {
       if (
         !supportDataFilterExtension(sublayers?.[0]) &&
-        !getFeatureInFilters(object, filters, sublayers?.[0].filterOperators)
+        !isFeatureInFilters(object, filters, sublayers?.[0].filterOperators)
       ) {
         return { ...info, object: undefined }
       }

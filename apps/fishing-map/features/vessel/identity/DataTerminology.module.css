@@ -78,3 +78,14 @@
 .content > *:nth-last-child(1) {
   padding-bottom: var(--space-XL);
 }
+
+.flex {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}
+
+.experimental {
+  color: red;
+  font: var(--font-XS);
+}

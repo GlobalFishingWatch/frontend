@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
@@ -70,6 +71,30 @@ function VesselGroupReportVesselsGraphSelector() {
                     title={t('vesselGroupReport.sources')}
                     terminologyKey="sources"
                     className={styles.dataTerminology}
+                  />
+                )}
+              </span>
+            ),
+            disabled: loading,
+          },
+          {
+            id: 'coverage' as ReportVesselsSubCategory,
+            label: (
+              <span>
+                {t('analysis.groupByCoverage')}
+                {selectedOptionId === 'coverage' && (
+                  <DataTerminology
+                    size="tiny"
+                    type="default"
+                    title={
+                      <span>
+                        {t('vessel.insights.coverage')}
+                        <span className={styles.experimental}>(Experimental)</span>
+                      </span>
+                    }
+                    terminologyKey="insightsCoverage"
+                    tooltip={t('common.experimental')}
+                    className={cx(styles.dataTerminology, styles.experimental)}
                   />
                 )}
               </span>

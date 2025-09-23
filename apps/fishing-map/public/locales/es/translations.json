@@ -33,6 +33,7 @@
     "errorTooComplex": "No podemos crear un informe dinámico para esta área, ya que la información sobre los límites es compleja. Por favor, simplifique su área de interés subiendo una nueva capa o dibujando su capa en el mapa, e intente solicitar nuevamente el informe para resolverla.",
     "evolution": "evolución",
     "globally": "globalmente",
+    "groupByCoverage": "by coverage",
     "groupByEEZ": "Por ZEE",
     "groupByFAO": "Por FAO",
     "groupByFlag": "por bandera",

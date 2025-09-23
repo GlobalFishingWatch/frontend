@@ -13,7 +13,7 @@ import {
   useReportAreaCenter,
   useVesselGroupBounds,
 } from 'features/reports/report-area/area-reports.hooks'
-import { selectReportCategory } from 'features/reports/reports.selectors'
+import { selectReportCategory, selectReportVesselGraph } from 'features/reports/reports.selectors'
 import ReportVessels from 'features/reports/shared/vessels/ReportVessels'
 import EventsReport from 'features/reports/tabs/events/EventsReport'
 import VesselGroupReportInsights from 'features/reports/tabs/vessel-group-insights/VGRInsights'
@@ -51,6 +51,7 @@ function VesselGroupReport() {
   const reportCategory = useSelector(selectReportCategory)
   const reportDataview = useSelector(selectVGRFootprintDataview)
   const timeRange = useSelector(selectReportVesselGroupTimeRange)
+  const reportVesselGraph = useSelector(selectReportVesselGraph)
   const userData = useSelector(selectUserData)
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
@@ -113,7 +114,13 @@ function VesselGroupReport() {
       {
         id: ReportCategory.VesselGroup,
         title: t('common.vessels'),
-        content: <ReportVessels loading={loading} color={reportDataview?.config?.color} />,
+        content: (
+          <ReportVessels
+            loading={loading}
+            color={reportDataview?.config?.color}
+            activityUnit={reportVesselGraph === 'coverage' ? 'coverage' : undefined}
+          />
+        ),
       },
       {
         id: ReportCategory.VesselGroupInsights,
@@ -131,7 +138,7 @@ function VesselGroupReport() {
         content: <EventsReport />,
       },
     ],
-    [t, reportDataview?.config?.color, loading]
+    [t, loading, reportDataview?.config?.color, reportVesselGraph]
   )
 
   const isOwnedByUser = vesselGroup?.ownerId === userData?.id

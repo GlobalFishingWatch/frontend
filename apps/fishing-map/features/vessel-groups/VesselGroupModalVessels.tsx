@@ -1,6 +1,7 @@
-import { useCallback, useMemo } from 'react'
+import { Fragment, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import type { Locale } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip, TransmissionsTimeline } from '@globalfishingwatch/ui-components'
@@ -11,8 +12,12 @@ import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nDate from 'features/i18n/i18nDate'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
+import type { VesselIdentityProperty } from 'features/vessel/vessel.utils'
 import { getSearchIdentityResolved, isFieldLoginRequired } from 'features/vessel/vessel.utils'
-import { getVesselGroupUniqVessels } from 'features/vessel-groups/vessel-groups.utils'
+import {
+  getVesselGroupUniqVessels,
+  groupVesselGroupVessels,
+} from 'features/vessel-groups/vessel-groups.utils'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselGearTypeLabel } from 'utils/info'
 
 import type { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
@@ -27,11 +32,13 @@ type VesselGroupVesselRowProps = {
   vessel: VesselGroupVesselIdentity
   className?: string
   onRemoveClick: (vessel: VesselGroupVesselIdentity) => void
+  hiddenProperties?: VesselIdentityProperty[]
 }
 function VesselGroupVesselRow({
   vessel,
   onRemoveClick,
   className = '',
+  hiddenProperties = [],
 }: VesselGroupVesselRowProps) {
   const { t, i18n } = useTranslation()
   const {
@@ -50,8 +57,8 @@ function VesselGroupVesselRow({
 
   return (
     <tr className={className}>
-      <td>{ssvid || EMPTY_FIELD_PLACEHOLDER}</td>
-      <td>{imo || EMPTY_FIELD_PLACEHOLDER}</td>
+      <td>{hiddenProperties.includes('ssvid') ? '' : ssvid || EMPTY_FIELD_PLACEHOLDER}</td>
+      <td>{hiddenProperties.includes('imo') ? '' : imo || EMPTY_FIELD_PLACEHOLDER}</td>
       <td>{vesselName}</td>
       <td>
         <span>{flag ? t(`flags:${flag as string}` as any) : EMPTY_FIELD_PLACEHOLDER}</span>
@@ -96,13 +103,15 @@ function VesselGroupVesselRow({
   )
 }
 
+const GROUP_BY_PROPERTY = 'ssvid'
 function VesselGroupVessels() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const vesselGroupVessels = useSelector(selectVesselGroupModalVessels)
 
-  const uniqVesselGroupVessels = useMemo(() => {
-    return getVesselGroupUniqVessels(vesselGroupVessels)
+  const uniqVesselGroupVesselsByProperty = useMemo(() => {
+    const uniqVesselGroupVessels = getVesselGroupUniqVessels(vesselGroupVessels)
+    return groupVesselGroupVessels(uniqVesselGroupVessels, { property: GROUP_BY_PROPERTY })
   }, [vesselGroupVessels])
 
   const onVesselRemoveClick = useCallback(
@@ -136,16 +145,32 @@ function VesselGroupVessels() {
         </tr>
       </thead>
       <tbody>
-        {uniqVesselGroupVessels?.map((vessel) => {
-          if (!vessel.identity) {
+        {Object.values(uniqVesselGroupVesselsByProperty).map((vessels) => {
+          if (!vessels.length) {
             return null
           }
+          const mainVessel = vessels[0]
+          const otherVessels = vessels.slice(1)
+          const hasOtherVessels = otherVessels.length > 0
           return (
-            <VesselGroupVesselRow
-              key={`${vessel?.vesselId}-${vessel.dataset}`}
-              vessel={vessel}
-              onRemoveClick={(vessel) => onVesselRemoveClick(vessel)}
-            />
+            <Fragment key={`${mainVessel?.vesselId}-${mainVessel.dataset}`}>
+              <VesselGroupVesselRow
+                key={`${mainVessel?.vesselId}-${mainVessel.dataset}`}
+                vessel={mainVessel}
+                onRemoveClick={(vessel) => onVesselRemoveClick(vessel)}
+                className={hasOtherVessels ? styles.noBorderBottom : ''}
+              />
+              {hasOtherVessels &&
+                otherVessels.map((otherVessel) => (
+                  <VesselGroupVesselRow
+                    key={`${otherVessel?.vesselId}-${otherVessel.dataset}`}
+                    vessel={otherVessel}
+                    onRemoveClick={(vessel) => onVesselRemoveClick(vessel)}
+                    className={cx(styles.noBorderTop)}
+                    hiddenProperties={[GROUP_BY_PROPERTY]}
+                  />
+                ))}
+            </Fragment>
           )
         })}
       </tbody>

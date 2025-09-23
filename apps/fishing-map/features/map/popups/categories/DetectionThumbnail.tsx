@@ -73,7 +73,7 @@ const drawEnhancedImageToCanvas = ({
   const stretchedData = stretchHistogram(imageData.data, 0.1)
 
   // Create new ImageData with stretched values
-  const newImageData = new ImageData(stretchedData, canvas.width, canvas.height)
+  const newImageData = new ImageData(stretchedData as any, canvas.width, canvas.height)
   ctx.putImageData(newImageData, 0, 0)
 }
 

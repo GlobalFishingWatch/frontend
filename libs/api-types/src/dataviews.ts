@@ -7,11 +7,13 @@ export type ColorCyclingType = 'fill' | 'line'
 export const INCLUDE_FILTER_ID = 'include'
 export const EXCLUDE_FILTER_ID = 'exclude'
 export type FilterOperator = typeof INCLUDE_FILTER_ID | typeof EXCLUDE_FILTER_ID
+export type FilterOperators = Record<string, FilterOperator>
 
 export enum DataviewType {
   Annotation = 'ANNOTATION',
   Background = 'BACKGROUND',
   Basemap = 'BASEMAP',
+  BasemapImage = 'BASEMAP_IMAGE',
   BasemapLabels = 'BASEMAP_LABELS',
   CartoPolygons = 'CARTO_POLYGONS',
   Context = 'CONTEXT',
@@ -146,6 +148,9 @@ export interface DataviewConfig<Type = DataviewType> {
   pickable?: boolean
   trackThinningZoomConfig?: Record<number, string>
   includeWithoutEndDate?: boolean
+
+  /** Tile size for basemap image layer */
+  tileSize?: number
 }
 
 export interface DataviewDatasetConfigParam {

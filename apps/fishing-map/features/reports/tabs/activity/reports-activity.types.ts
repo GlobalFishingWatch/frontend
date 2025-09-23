@@ -5,4 +5,4 @@ export type ReportTimeComparisonValues = {
   compareEnd: string
 }
 
-export type ReportActivityUnit = 'hour' | 'detection' | 'numEvents'
+export type ReportActivityUnit = 'hour' | 'detection' | 'numEvents' | 'coverage'

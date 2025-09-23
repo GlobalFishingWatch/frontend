@@ -1,6 +1,7 @@
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import {
+  BaseMapImageLayer,
   BaseMapLabelsLayer,
   BaseMapLayer,
   BathymetryContourLayer,
@@ -24,7 +25,11 @@ import type {
 } from '../types/dataviews'
 import type { ResolverGlobalConfig } from '../types/resolvers'
 
-import { resolveDeckBasemapLabelsLayerProps, resolveDeckBasemapLayerProps } from './basemap'
+import {
+  resolveDeckBasemapImageLayerProps,
+  resolveDeckBasemapLabelsLayerProps,
+  resolveDeckBasemapLayerProps,
+} from './basemap'
 import { resolveDeckBathymetryContourLayerProps } from './bathymetry-contour'
 import { resolveDeckFourwingsClustersLayerProps } from './clusters'
 import { resolveDeckContextLayerProps } from './context'
@@ -56,6 +61,10 @@ export const dataviewToDeckLayer = (
   if (dataview.config?.type === DataviewType.Basemap) {
     const deckLayerProps = resolveDeckBasemapLayerProps(dataview, layerConfig)
     return new BaseMapLayer(deckLayerProps)
+  }
+  if (dataview.config?.type === DataviewType.BasemapImage) {
+    const deckLayerProps = resolveDeckBasemapImageLayerProps(dataview, layerConfig)
+    return new BaseMapImageLayer(deckLayerProps)
   }
   if (dataview.config?.type === DataviewType.BasemapLabels) {
     const deckLayerProps = resolveDeckBasemapLabelsLayerProps(dataview, layerConfig)

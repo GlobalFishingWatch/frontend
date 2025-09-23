@@ -11,6 +11,7 @@ import type {
   GearType,
   IdentityVessel,
   RegistryExtraFields,
+  RegistryExtraFieldValue,
   Resource,
   SelfReportedInfo,
   VesselCombinedSourcesInfo,
@@ -51,7 +52,6 @@ export type VesselDataIdentity = (SelfReportedInfo | VesselRegistryInfo) & {
   shiptypes?: VesselType[]
   registrySource?: string
   hasComplianceInfo?: boolean
-  iuuStatus?: string
   extraFields?: RegistryExtraFields[]
 }
 // Merges and plain all the identities of a vessel

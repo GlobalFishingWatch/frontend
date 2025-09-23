@@ -7,9 +7,9 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton, TagList } from '@globalfishingwatch/ui-components'
 
 import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
-import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
+import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
@@ -23,7 +23,6 @@ type LayerPanelProps = {
 
 export default function ReportSummaryTags({ dataview }: LayerPanelProps) {
   const { t } = useTranslation()
-  const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
   const reportCategory = useSelector(selectReportCategory)
 
   const [filtersUIOpen, setFiltersUIOpen] = useState(false)
@@ -34,32 +33,32 @@ export default function ReportSummaryTags({ dataview }: LayerPanelProps) {
 
   const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
   const hasFilterSelected = filtersAllowed.some((filter) => filter.optionsSelected.length > 0)
+  const hasSourceSelected = getSourcesSelectedInDataview(dataview)?.length > 0
 
   return (
     <div className={styles.row}>
       <div className={styles.actionsContainer}>
         <span className={styles.dot} style={{ color: dataview.config?.color }} />
-        {isGlobalReportsEnabled && (
-          <ExpandedContainer
-            onClickOutside={onToggleFiltersUIOpen}
-            visible={filtersUIOpen}
-            className={styles.expandedContainer}
-            component={<Filters dataview={dataview} onConfirmCallback={onToggleFiltersUIOpen} />}
-          >
-            <IconButton
-              icon={filtersUIOpen ? 'filter-on' : 'filter-off'}
-              size="small"
-              onClick={onToggleFiltersUIOpen}
-              className={cx(styles.printHidden, styles.filterButton)}
-              tooltip={filtersUIOpen ? t('layer.filterClose') : t('layer.filterOpen')}
-              tooltipPlacement="top"
-            />
-          </ExpandedContainer>
-        )}
+        <ExpandedContainer
+          onClickOutside={onToggleFiltersUIOpen}
+          visible={filtersUIOpen}
+          className={styles.expandedContainer}
+          component={<Filters dataview={dataview} onConfirmCallback={onToggleFiltersUIOpen} />}
+        >
+          <IconButton
+            icon={filtersUIOpen ? 'filter-on' : 'filter-off'}
+            size="small"
+            onClick={onToggleFiltersUIOpen}
+            className={cx(styles.printHidden, styles.filterButton)}
+            tooltip={filtersUIOpen ? t('layer.filterClose') : t('layer.filterOpen')}
+            tooltipPlacement="top"
+          />
+        </ExpandedContainer>
       </div>
       <Fragment>
         {(reportCategory === ReportCategory.Activity ||
           reportCategory === ReportCategory.Detections ||
+          reportCategory === ReportCategory.Events ||
           reportCategory === ReportCategory.Others) && (
           <Fragment>
             <DatasetFilterSource dataview={dataview} className={styles.tag} />
@@ -73,7 +72,7 @@ export default function ReportSummaryTags({ dataview }: LayerPanelProps) {
                   className={styles.tag}
                 />
               ))
-            ) : (
+            ) : hasSourceSelected ? null : (
               <label>{t('selects.allSelected')}</label>
             )}
           </Fragment>

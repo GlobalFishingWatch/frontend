@@ -30,6 +30,12 @@ variable "app_suffix" {
   default     = ""
 }
 
+variable "cloudrun_name" {
+  description = "The name of the Cloud Run service"
+  type        = string
+  default     = ""
+}
+
 variable "short_environment" {
   description = "The short name of the environment (dev, sta, pro)"
   type        = string

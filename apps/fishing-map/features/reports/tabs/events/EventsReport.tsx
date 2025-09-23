@@ -50,8 +50,8 @@ function EventsReport() {
   const { start, end } = useSelector(selectTimeRange)
   const vesselDatasets = useSelector(selectVesselsDatasets)
   const datasetsWithoutRelatedEvents = useSelector(selectVGRVesselDatasetsWithoutEventsRelated)
-  const params = useSelector(selectFetchEventsVesselsParams)
-  const statsParams = useSelector(selectFetchEventsStatsParams)
+  const fetchEventsVesselsParams = useSelector(selectFetchEventsVesselsParams)
+  const fetchEventsStatsParams = useSelector(selectFetchEventsStatsParams)
   const totalEvents = useSelector(selectTotalStatsEvents)
   const reportLoadVessels = useSelector(selectReportLoadVessels)
   const showSubsectionSelector = activeReportSubCategories && activeReportSubCategories.length > 1
@@ -61,13 +61,19 @@ function EventsReport() {
   const { dispatchQueryParams } = useLocationConnect()
   const { updateReportHash, reportOutdated } = useReportHash()
 
-  const { status: vessselStatus } = useGetReportEventsVesselsQuery(params as GetReportEventParams, {
-    skip: !params || !timerangeSupported || reportOutdated,
-  })
+  const { status: vessselStatus } = useGetReportEventsVesselsQuery(
+    fetchEventsVesselsParams as GetReportEventParams,
+    {
+      skip: !fetchEventsVesselsParams || !timerangeSupported || reportOutdated,
+    }
+  )
 
-  const { error: statsError, status: statsStatus } = useGetReportEventsStatsQuery(statsParams, {
-    skip: !eventsDataview,
-  })
+  const { error: statsError, status: statsStatus } = useGetReportEventsStatsQuery(
+    fetchEventsStatsParams,
+    {
+      skip: !eventsDataview,
+    }
+  )
 
   useEffect(() => {
     if (reportLoadVessels && eventsDataview) {

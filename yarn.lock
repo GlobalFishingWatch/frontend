@@ -3238,7 +3238,7 @@ __metadata:
     d3-shape: "npm:3.2.0"
     decompress: "npm:4.2.1"
     downshift: "npm:9.0.10"
-    es-toolkit: "npm:1.39.7"
+    es-toolkit: "npm:1.39.10"
     esbuild: "npm:0.25.8"
     eslint: "npm:9.31.0"
     eslint-config-next: "npm:15.4.2"
@@ -22276,15 +22276,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"es-toolkit@npm:1.39.7":
-  version: 1.39.7
-  resolution: "es-toolkit@npm:1.39.7"
+"es-toolkit@npm:1.39.10":
+  version: 1.39.10
+  resolution: "es-toolkit@npm:1.39.10"
   dependenciesMeta:
     "@trivago/prettier-plugin-sort-imports@4.3.0":
       unplugged: true
     prettier-plugin-sort-re-exports@0.0.1:
       unplugged: true
-  checksum: 10/19e95de0e6b1fb80cf8e68783270d6a230ce4c310bfa6af8a86bfefa1f67d5b31c129cdc10c2eb2b41181fed17a2258a8f28371378eee0ab9bd027dd19bc7b9d
+  checksum: 10/e29686bda6131825a4974ae15892d68c33a8e686b634614ebc3bc15c5d0f85f7533fca8613708f01a54b8b9b379794258b6edf3db47d626546477029d1faabbc
   languageName: node
   linkType: hard
 

@@ -5,27 +5,9 @@ import { toast } from 'react-toastify'
 import type { FeatureFlag } from 'features/debug/debug.slice'
 import { selectDebugActive, selectFeatureFlags } from 'features/debug/debug.slice'
 
-import styles from './DebugMenu.module.css'
-
 function FeatureFlagsToast({ featureFlags }: { featureFlags: FeatureFlag[] }) {
   if (featureFlags.length === 0) {
     return null
-  }
-  if (featureFlags.length === 1 && featureFlags[0] === 'globalReports') {
-    return (
-      <p>
-        Welcome! You're using the <strong>beta version of Global Reports</strong>. <br />
-        <a
-          className={styles.link}
-          href="https://global-fishing-watch.canny.io/2025-global-reports-feedback"
-          target="_blank"
-        >
-          {' '}
-          We’d love your feedback{' '}
-        </a>{' '}
-        a to help shape the public release.
-      </p>
-    )
   }
   return <p>⚠️ You are using the following beta features: {featureFlags.join(', ')} </p>
 }

@@ -27,7 +27,7 @@ function EventReportPorts() {
   const { t } = useTranslation()
   const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const statsParams = useSelector(selectFetchEventsPortsStatsParams)
+  const fetchEventsPortsStatsParams = useSelector(selectFetchEventsPortsStatsParams)
   const reportEventsPortsPaginated = useSelector(selectReportEventsPortsPaginated)
   const reportEventsPortsFilter = useSelector(selectReportEventsPortsFilter)
   const pagination = useSelector(selectReportEventsPortsPagination)
@@ -37,7 +37,7 @@ function EventReportPorts() {
   const [debouncedQuery] = useDebounce(query, 200)
   const { updateReportHash, reportOutdated } = useReportHash()
 
-  const { status } = useGetReportEventsStatsQuery(statsParams, {
+  const { status } = useGetReportEventsStatsQuery(fetchEventsPortsStatsParams, {
     skip: !eventsDataview || reportOutdated,
   })
 

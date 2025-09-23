@@ -3,7 +3,6 @@ import { uniq } from 'es-toolkit'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 
-import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import {
   getReportCategoryFromDataview,
   getReportSubCategoryFromDataview,
@@ -24,11 +23,9 @@ import {
 import { selectDataviewInstancesResolved } from './dataviews.resolvers.selectors'
 
 export const selectActiveSupportedReportDataviews = createSelector(
-  [selectDataviewInstancesResolved, selectIsGlobalReportsEnabled],
-  (dataviews, isGlobalReportsEnabled) => {
-    return dataviews.filter((dataview) =>
-      isSupportedReportDataview(dataview, isGlobalReportsEnabled)
-    )
+  [selectDataviewInstancesResolved],
+  (dataviews) => {
+    return dataviews.filter((dataview) => isSupportedReportDataview(dataview))
   }
 )
 

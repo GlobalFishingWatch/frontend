@@ -4,6 +4,7 @@
 export enum LayerGroup {
   Background = 'background', // Solid bg color
   Basemap = 'basemap', // Satellite tiles
+  BasemapImage = 'basemapImage', // Satellite tiles
   OutlinePolygonsBackground = 'outlinePolygonsBackground', // Polygons  that need to be rendered below landmass
   Bathymetry = 'bathymetry', // 4Wings Bathymetry layer
   HeatmapStatic = 'heatmapStatic', // Fill/gradient-based heatmaps
@@ -27,6 +28,7 @@ export const LAYER_GROUP_ORDER = [
   LayerGroup.Basemap,
   LayerGroup.OutlinePolygonsBackground,
   LayerGroup.Bathymetry,
+  LayerGroup.BasemapImage,
   LayerGroup.HeatmapStatic,
   LayerGroup.Heatmap,
   LayerGroup.HeatmapFootprint,
