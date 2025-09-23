@@ -916,7 +916,7 @@ interface Resources {
       }
     }
     'public-chile-vessel-identity-fishing': {
-      name: 'Chile VMS (Non fishing Vessels)'
+      name: 'Chile VMS (Fishing Vessels)'
       description: 'Dataset for VMS Chile (Public)'
     }
     'public-chile-vessel-identity-non-fishing': {
@@ -968,7 +968,7 @@ interface Resources {
     }
     'public-ecuador-fishing-effort': {
       name: 'Ecuador VMS'
-      description: 'Description pending'
+      description: 'Dataset for VMS Ecuador fishing effort'
       schema: {
         speed: 'speed'
         bearing: 'bearing'
