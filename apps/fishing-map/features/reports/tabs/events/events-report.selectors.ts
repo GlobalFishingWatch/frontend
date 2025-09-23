@@ -9,7 +9,7 @@ import {
   selectReportEventsVessels,
 } from 'queries/report-events-stats-api'
 
-import type { DataviewDatasetFilter } from '@globalfishingwatch/api-types'
+import type { DataviewDatasetFilter, FilterOperators } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
@@ -130,6 +130,10 @@ export const selectFetchEventsVesselsParams = createSelector(
       return filter
     })
 
+    const filtersOperators = eventsDataviews?.map((dataview) => {
+      return dataview.config?.filterOperators || ({} as FilterOperators)
+    })
+
     return {
       start,
       end,
@@ -140,6 +144,7 @@ export const selectFetchEventsVesselsParams = createSelector(
       bufferUnit,
       bufferOperation,
       filters,
+      filtersOperators,
       datasets,
     } as GetReportEventParams
   }
