@@ -2,6 +2,7 @@ import { DatasetTypes, type RelatedDataset } from '@globalfishingwatch/api-types
 
 import type { TurningTidesWorkspaceId } from 'features/track-correction/track-correction.config'
 
+export const TURNING_TIDES_DESCRIPTION_PREFIX = 'Turning Tides'
 export const TURNING_TIDES_TTL_DAYS = 365 * 2
 
 export type TurningTidesCountryOption = (typeof CountryOptions)[number]

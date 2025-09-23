@@ -19,6 +19,7 @@ type RunCostResponse = {
 
 export type CreateBigQueryDataset = {
   query: string
+  description?: string
   visualisationMode: BigQueryVisualisation | null
   relatedDatasets?: RelatedDataset[]
   name: string
@@ -69,6 +70,7 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
       unit,
       createAsPublic = true,
       ttl,
+      description,
       subcategory,
       relatedDatasets = [],
       visualisationMode,
@@ -90,6 +92,7 @@ export const createBigQueryDatasetThunk = createAsyncThunk(
             subcategory: subcategory || subcategoryFallback,
             relatedDatasets,
             ...(ttl !== undefined && { ttl }),
+            ...(description !== undefined && { description }),
             public: createAsPublic,
           } as any,
         }
