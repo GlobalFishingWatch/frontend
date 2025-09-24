@@ -52,8 +52,10 @@ export default function ReportSummary({
       action: `Open panel to add a report layer`,
     })
 
-    const open = categoryToDataviewMap[reportCategory] || false
-    dispatch(setModalOpen({ id: 'layerLibrary', open }))
+    const open = categoryToDataviewMap[reportCategory]
+    if (open) {
+      dispatch(setModalOpen({ id: 'layerLibrary', open, singleCategory: true }))
+    }
   }, [dispatch, reportCategory])
 
   return (
