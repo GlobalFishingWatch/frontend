@@ -3,7 +3,10 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 import { DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  mergeWorkspaceUrlDataviewInstances,
+  type UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import type { ColorRampId } from '@globalfishingwatch/deck-layers'
 
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
@@ -25,7 +28,7 @@ import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/data
 import {
   getVesselGroupActivityDataviewInstance,
   getVesselGroupDataviewInstance,
-  getVesselGroupEventsDataviewInstances,
+  getVesselGroupEventsDataviewInstance,
 } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS } from 'features/reports/reports.config'
 import {
@@ -190,9 +193,23 @@ export const selectVGRDataviewInstancesInjected = createSelector(
           'port_visit',
         ]
         eventsReportSubCategories.forEach((category) => {
-          dataviewInstancesInjected.push(
-            ...getVesselGroupEventsDataviewInstances(reportVesselGroupId, category)
+          const eventsDataviewInstance = getVesselGroupEventsDataviewInstance(
+            reportVesselGroupId,
+            category
           )
+          if (eventsDataviewInstance) {
+            const urlDataviewInstance = workspaceDataviewInstancesMerged?.find(
+              (dataview) => dataview.id === eventsDataviewInstance.id
+            )
+            const mergedDataviewInstance = urlDataviewInstance
+              ? (mergeWorkspaceUrlDataviewInstances(
+                  [eventsDataviewInstance],
+                  [urlDataviewInstance]
+                )?.[0] as UrlDataviewInstance)
+              : eventsDataviewInstance
+
+            dataviewInstancesInjected.push(mergedDataviewInstance)
+          }
         })
       }
     }
