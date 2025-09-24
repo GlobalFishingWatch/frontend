@@ -17,6 +17,7 @@ export enum TrackCategory {
   Analysis = 'analysis',
   DataDownloads = 'data_downloads',
   EnvironmentalData = 'environmental_data',
+  GlobalReports = 'global_reports',
   HelpHints = 'help_hints',
   I18n = 'internationalization',
   ReferenceLayer = 'reference_layer',

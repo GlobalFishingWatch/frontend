@@ -5,14 +5,17 @@ import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { ReportCategory } from 'features/reports/reports.types'
 import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
+import { getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
 
@@ -29,6 +32,19 @@ function EventsLayerSection(): React.ReactElement<any> | null {
   const onAddLayerClick = useCallback(() => {
     dispatch(setModalOpen({ id: 'layerLibrary', open: DataviewCategory.Events }))
   }, [dispatch])
+
+  const onToggleLayer = useCallback(
+    (dataview: UrlDataviewInstance) => () => {
+      const isVisible = dataview?.config?.visible ?? false
+      const action = isVisible ? 'disable' : 'enable'
+      trackEvent({
+        category: TrackCategory.ActivityData,
+        action: `Toggle ${dataview.category} layer`,
+        label: getEventLabel([action, dataview.id]),
+      })
+    },
+    []
+  )
 
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
@@ -52,7 +68,7 @@ function EventsLayerSection(): React.ReactElement<any> | null {
       <SortableContext items={dataviews}>
         {dataviews?.map((dataview) => (
           <LayerPanelContainer key={dataview.id} dataview={dataview}>
-            <LayerPanel dataview={dataview} />
+            <LayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
           </LayerPanelContainer>
         ))}
       </SortableContext>
