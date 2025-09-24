@@ -30,6 +30,10 @@
   background-color: currentcolor;
 }
 
+.dotReference {
+  display: inline-flex;
+}
+
 .filters {
   display: flex;
   gap: var(--space-S);
@@ -45,4 +49,8 @@
 
 .tag {
   margin-right: 0.5rem;
+}
+
+.pointer {
+  cursor: pointer;
 }
