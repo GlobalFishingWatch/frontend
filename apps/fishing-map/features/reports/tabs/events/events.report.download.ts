@@ -49,7 +49,6 @@ export const PORT_VISIT_REPORT_EVENTS_CSV_CONFIG = [
 ]
 
 export const parseReportEventsToCSV = (events: ApiEvent[], eventType?: EventType) => {
-  console.log('🚀 ~ parseReportEventsToCSV ~ events:', events)
   const type = eventType || events[0].type
   const config =
     type === EventTypes.Encounter

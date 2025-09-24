@@ -23,6 +23,7 @@ import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import Filters from 'features/workspace/shared/LayerFilters'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 
 import styles from './ReportSummaryTags.module.css'
 
@@ -34,6 +35,7 @@ export default function ReportSummaryTags({ dataview }: LayerPanelProps) {
   const { t } = useTranslation()
   const reportCategory = useSelector(selectReportCategory)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
 
   const [filtersUIOpen, setFiltersUIOpen] = useState(false)
   const [colorOpen, setColorOpen] = useState(false)
@@ -55,7 +57,10 @@ export default function ReportSummaryTags({ dataview }: LayerPanelProps) {
     })
   }
 
-  const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+  const { filtersAllowed: schemaFiltersAllowed } = getSchemaFiltersInDataview(dataview)
+  const filtersAllowed = isVesselGroupReportLocation
+    ? schemaFiltersAllowed.filter((filter) => filter.id !== 'vessel-groups')
+    : schemaFiltersAllowed
   const hasFilterSelected = filtersAllowed.some((filter) => filter.optionsSelected.length > 0)
   const hasSourceSelected = getSourcesSelectedInDataview(dataview)?.length > 0
   const colorType =
