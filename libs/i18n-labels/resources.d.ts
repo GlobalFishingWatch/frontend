@@ -281,7 +281,7 @@ interface Resources {
     }
     'private-costa-rica-presence': {
       name: 'Vessel Presence Costa Rica VMS'
-      description: 'Description pending'
+      description: 'Dataset for VMS Costa Rica presence'
       schema: {
         fleet: {
           keyword: 'fleet'
@@ -309,7 +309,7 @@ interface Resources {
     }
     'private-ecuador-presence': {
       name: 'Vessel Presence Ecuador VMS'
-      description: 'Description pending'
+      description: 'Dataset for VMS Ecuador presence'
       schema: {
         speed: 'speed'
         bearing: 'bearing'
@@ -933,7 +933,7 @@ interface Resources {
     }
     'public-costa-rica-fishing-effort': {
       name: 'Costa Rica VMS'
-      description: 'Description pending'
+      description: 'Dataset for VMS Costa Rica fishing effort'
       schema: {
         fleet: {
           keyword: 'fleet'
@@ -996,7 +996,7 @@ interface Resources {
     }
     'public-ecuador-presence': {
       name: 'Ecuador VMS'
-      description: 'Description pending'
+      description: 'Dataset for VMS Ecuador presence'
       schema: {
         speed: 'speed'
         bearing: 'bearing'
@@ -1707,7 +1707,7 @@ interface Resources {
     }
     'public-mexico-fishing-effort': {
       name: 'Mexico VMS'
-      description: 'Description pending'
+      description: 'Dataset for VMS Mexico fishing effort'
       schema: {
         speed: 'speed'
         bearing: 'bearing'
@@ -1728,7 +1728,7 @@ interface Resources {
     }
     'public-mexico-presence': {
       name: 'Mexico VMS'
-      description: 'Description pending'
+      description: 'Dataset for VMS Mexico presence'
       schema: {
         speed: 'speed'
         bearing: 'bearing'
@@ -1824,7 +1824,7 @@ interface Resources {
     }
     'public-norway-presence': {
       name: 'Norway VMS'
-      description: 'Description pending'
+      description: 'Dataset for VMS Norway presence'
       schema: {
         speed: 'speed'
         bearing: 'bearing'
