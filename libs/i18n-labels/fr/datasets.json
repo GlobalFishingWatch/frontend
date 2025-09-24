@@ -915,7 +915,7 @@
     }
   },
   "public-chile-vessel-identity-fishing": {
-    "name": "VMS Chili (navires non pêche)",
+    "name": "Chile VMS (Fishing Vessels)",
     "description": "Jeu de données pour VMS Chili (public)"
   },
   "public-chile-vessel-identity-non-fishing": {
