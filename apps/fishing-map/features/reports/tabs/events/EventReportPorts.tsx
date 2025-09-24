@@ -25,7 +25,8 @@ import styles from './EventReportPorts.module.css'
 
 function EventReportPorts() {
   const { t } = useTranslation()
-  const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
+  const eventsDataviews = useSelector(selectActiveReportDataviews)
+  const eventsDataview = eventsDataviews?.[0]
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const fetchEventsPortsStatsParams = useSelector(selectFetchEventsPortsStatsParams)
   const reportEventsPortsPaginated = useSelector(selectReportEventsPortsPaginated)
@@ -69,6 +70,9 @@ function EventReportPorts() {
           ? eventsDataview.config?.filters?.next_port_id?.filter((id: string) => id !== portId)
           : [...(eventsDataview.config?.filters?.next_port_id || []), portId],
       },
+    }
+    if (newDataviewConfig.filters.next_port_id.length === 0) {
+      newDataviewConfig.filters.next_port_id = undefined
     }
     upsertDataviewInstance({
       id: eventsDataview.id,

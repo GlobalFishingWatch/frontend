@@ -28,7 +28,10 @@ type ModalsOpenState = {
   feedback: boolean
   vesselCorrection: boolean
   screenshot: boolean
-  layerLibrary: LayerLibraryMode
+  layerLibrary: {
+    open: LayerLibraryMode
+    singleCategory: boolean
+  }
   editWorkspace: boolean
   createWorkspace: boolean
   datasetUpload: { open: boolean } & DatasetUploadConfig
@@ -39,7 +42,10 @@ const initialState: ModalsOpenState = {
   feedback: false,
   vesselCorrection: false,
   screenshot: false,
-  layerLibrary: false,
+  layerLibrary: {
+    open: false,
+    singleCategory: false,
+  },
   editWorkspace: false,
   createWorkspace: false,
   datasetUpload: {
@@ -57,11 +63,16 @@ const modals = createSlice({
   reducers: {
     setModalOpen: (
       state,
-      action: PayloadAction<{ id: ModalId; open: boolean | LayerLibraryMode }>
+      action: PayloadAction<{
+        id: ModalId
+        open: boolean | LayerLibraryMode
+        singleCategory?: boolean
+      }>
     ) => {
-      const { id, open } = action.payload
+      const { id, open, singleCategory } = action.payload
       if (id === 'layerLibrary') {
-        state[id] = open as LayerLibraryMode
+        state[id].open = open as LayerLibraryMode
+        state[id].singleCategory = singleCategory ?? false
       } else if (id === 'datasetUpload') {
         state[id].open = open as boolean
       } else {
@@ -77,8 +88,11 @@ const modals = createSlice({
 export const { setModalOpen, setDatasetUploadConfig } = modals.actions
 
 export const selectFeedbackModalOpen = (state: RootState) => state.modals.feedback
-export const selectLayerLibraryModal = (state: RootState) => state.modals.layerLibrary
-export const selectLayerLibraryModalOpen = (state: RootState) => state.modals.layerLibrary !== false
+export const selectLayerLibraryModal = (state: RootState) => state.modals.layerLibrary.open
+export const selectLayerLibraryModalOpen = (state: RootState) =>
+  state.modals.layerLibrary.open !== false
+export const selectLayerLibraryUniqueCategory = (state: RootState) =>
+  state.modals.layerLibrary.singleCategory
 export const selectWorkspaceGeneratorModalOpen = (state: RootState) =>
   state.modals.workspaceGenerator
 export const selectDatasetUploadModalConfig = (state: RootState) => state.modals.datasetUpload

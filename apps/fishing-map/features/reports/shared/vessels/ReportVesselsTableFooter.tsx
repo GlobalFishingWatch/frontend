@@ -85,7 +85,11 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
           ...(extendedFields && { 'GFW gear type': vessel.geartype }),
           ...(activityUnit && {
             [`Total ${reportSubCategory} ${reportUnit}s`]:
-              reportVesselGraph === 'coverage' && vessel.value !== -1 ? vessel.value : undefined,
+              reportVesselGraph === 'coverage'
+                ? vessel.value !== -1
+                  ? vessel.value
+                  : undefined
+                : vessel.value,
           }),
           vesselId: vessel.id,
           dataset: vessel.datasetId,
