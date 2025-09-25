@@ -14,7 +14,8 @@
         "main": "libs/dataviews-client/src/index.ts",
         "outputPath": "dist/libs/dataviews-client",
         "project": "libs/dataviews-client/package.json",
-        "tsConfig": "libs/dataviews-client/tsconfig.lib.json"
+        "tsConfig": "libs/dataviews-client/tsconfig.lib.json",
+        "useLegacyTypescriptPlugin": false
       }
     },
     "publish": {

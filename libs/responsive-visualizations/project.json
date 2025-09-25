@@ -11,6 +11,7 @@
       "options": {
         "outputPath": "dist/libs/responsive-visualizations",
         "tsConfig": "libs/responsive-visualizations/tsconfig.lib.json",
+        "useLegacyTypescriptPlugin": false,
         "project": "libs/responsive-visualizations/package.json",
         "extractCss": false,
         "entryFile": "libs/responsive-visualizations/src/index.ts",

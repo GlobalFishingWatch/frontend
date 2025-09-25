@@ -14,7 +14,8 @@
         "main": "libs/ocean-areas/src/index.ts",
         "outputPath": "dist/libs/ocean-areas",
         "project": "libs/ocean-areas/package.json",
-        "tsConfig": "libs/ocean-areas/tsconfig.lib.json"
+        "tsConfig": "libs/ocean-areas/tsconfig.lib.json",
+        "useLegacyTypescriptPlugin": false
       }
     },
     "publish": {
