@@ -1,11 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { getWorkspaceIssues } from 'server/api/track-corrections/get-all'
+import { createNewIssue } from 'server/api/track-corrections/post-new'
 
 import type {
   TrackCorrection,
   TrackCorrectionComment,
 } from 'features/track-correction/track-correction.slice'
-import { getWorkspaceIssues } from 'pages/api/track-corrections/[workspaceId]/_issues/get-all'
-import { createNewIssue } from 'pages/api/track-corrections/[workspaceId]/_issues/post-new'
 
 export type ErrorAPIResponse = {
   success: boolean

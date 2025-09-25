@@ -1,8 +1,7 @@
 import { MastraClient } from '@mastra/client-js'
 import type { StorageThreadType } from '@mastra/core'
 import type { NextApiRequest, NextApiResponse } from 'next'
-
-import { getWorkspaceConfig } from './_get-workspace-url'
+import { getWorkspaceConfig } from 'server/api/workspaces-generator'
 
 const MASTRA_API_URL = process.env.NEXT_MASTRA_API_URL
 const WORKSPACES_AGENT_ID = process.env.NEXT_WORKSPACES_AGENT_ID
