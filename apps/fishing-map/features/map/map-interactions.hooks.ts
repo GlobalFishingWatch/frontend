@@ -541,10 +541,10 @@ export const useMapCursor = () => {
         const isCountryClusterMode = (hoverFeatures as FourwingsClusterPickingObject[]).some(
           (f) => f.clusterMode === 'country'
         )
-        if (!isCluster && !isCountryClusterMode) {
-          return 'pointer'
+        if (areClusterTilesLoading) {
+          return 'wait'
         }
-        return areClusterTilesLoading ? 'wait' : 'zoom-in'
+        return !isCluster && !isCountryClusterMode ? 'pointer' : 'zoom-in'
       }
       if (isMapAnnotating || isErrorNotificationEditing || rulersEditing) {
         return 'crosshair'
