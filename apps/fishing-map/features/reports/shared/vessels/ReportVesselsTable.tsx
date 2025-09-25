@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -12,6 +12,7 @@ import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
+import { selectVGRCoverageInsight } from 'features/reports/report-vessel-group/vessel-group-report.selectors'
 import { EMPTY_API_VALUES } from 'features/reports/reports.config'
 import {
   selectReportVesselsOrderDirection,
@@ -60,6 +61,7 @@ export default function ReportVesselsTable({
   const isAnyAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const reportCategory = useSelector(selectReportCategory)
   const orderDirection = useSelector(selectReportVesselsOrderDirection)
+  const vGRCoverageInsight = useSelector(selectVGRCoverageInsight)
   const datasetsDownloadNotSupported = getDatasetsReportNotSupported(
     dataviews,
     userData?.permissions || []
@@ -148,7 +150,9 @@ export default function ReportVesselsTable({
                 ? t('common.hour_other')
                 : activityUnit === 'detection'
                   ? t('common.detection_other')
-                  : t('common.event_other')}
+                  : activityUnit === 'coverage'
+                    ? t('vessel.insights.coverage')
+                    : t('common.event_other')}
             </div>
           )}
           {vessels?.map((vessel, i) => {
@@ -247,8 +251,13 @@ export default function ReportVesselsTable({
                 {activityUnit && (
                   <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
                     {values.length &&
-                      values.map((v) =>
-                        v.value ? (
+                      values.map((v) => {
+                        if (activityUnit === 'coverage' && vGRCoverageInsight?.isLoading) {
+                          return <Spinner key={id} size="tiny" />
+                        }
+                        return (
+                          activityUnit === 'coverage' ? v.value !== -1 : v.value !== undefined
+                        ) ? (
                           <Fragment key={v.value}>
                             {v.color && dataviews?.length > 1 && (
                               <span
@@ -258,12 +267,13 @@ export default function ReportVesselsTable({
                             )}
                             <span className={styles.value}>
                               <I18nNumber number={v.value} />
+                              {activityUnit === 'coverage' ? '%' : ''}
                             </span>
                           </Fragment>
                         ) : (
                           EMPTY_FIELD_PLACEHOLDER
                         )
-                      )}
+                      })}
                   </div>
                 )}
               </Fragment>

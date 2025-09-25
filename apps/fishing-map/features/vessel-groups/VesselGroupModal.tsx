@@ -25,6 +25,7 @@ import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.i
 import UserGuideLink from 'features/help/UserGuideLink'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import { selectUserIsVesselGroupOwner } from 'features/reports/report-vessel-group/vessel-group-report.selectors'
 import {
   fetchVesselGroupReportThunk,
   resetVesselGroupReportData,
@@ -48,10 +49,10 @@ import {
 } from 'features/workspace/workspace.hook'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
-import { type ROUTE_TYPES, SEARCH, WORKSPACE_SEARCH } from 'routes/routes'
+import { type ROUTE_TYPES, SEARCH, VESSEL_GROUP_REPORT, WORKSPACE_SEARCH } from 'routes/routes'
 import { updateLocation } from 'routes/routes.actions'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import { selectIsVesselGroupReportLocation, selectLocationQuery } from 'routes/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -101,6 +102,7 @@ function VesselGroupModal(): React.ReactElement<any> {
   const confirmationMode = useSelector(selectVesselGroupConfirmationMode)
   const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
   const editingVesselGroupId = useSelector(selectVesselGroupEditId)
+  const userIsVesselGroupOwner = useSelector(selectUserIsVesselGroupOwner)
   const vesselGroupVesselsToSearch = useSelector(selectVesselGroupsModalSearchIds)
   const editingVesselGroup = useSelector(selectVesselGroupById(editingVesselGroupId as string))
   const searchVesselStatus = useSelector(selectVesselGroupSearchStatus)
@@ -126,6 +128,7 @@ function VesselGroupModal(): React.ReactElement<any> {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
+  const query = useSelector(selectLocationQuery)
   const datasetsWithoutRelatedEvents = useSelector(
     selectVesselGroupModalDatasetsWithoutEventsRelated
   )
@@ -251,7 +254,7 @@ function VesselGroupModal(): React.ReactElement<any> {
       setButtonLoading(navigateToWorkspace ? 'saveAndSeeInWorkspace' : 'save')
       const vessels: VesselGroupVessel[] = getVesselGroupUniqVessels(vesselGroupVessels)
       let dispatchedAction
-      if (editingVesselGroupId) {
+      if (editingVesselGroupId && userIsVesselGroupOwner) {
         const vesselGroup: UpdateVesselGroupThunkParams = {
           id: editingVesselGroupId,
           name: groupName,
@@ -279,7 +282,19 @@ function VesselGroupModal(): React.ReactElement<any> {
         const dataviewInstance = !isVesselGroupInWorkspace
           ? getVesselGroupDataviewInstance(vesselGroupId)
           : undefined
-        if (navigateToWorkspace && dataviewInstance) {
+
+        if (isVesselGroupReportLocation && vesselGroupId !== editingVesselGroupId) {
+          dispatch(
+            updateLocation(VESSEL_GROUP_REPORT, {
+              payload: {
+                category: workspace?.category,
+                workspaceId: workspace?.id,
+                vesselGroupId: vesselGroupId,
+              },
+              query,
+            })
+          )
+        } else if (navigateToWorkspace && dataviewInstance) {
           if (workspaceToNavigate) {
             const { type, ...rest } = workspaceToNavigate
             const { query, payload } = rest
@@ -331,12 +346,16 @@ function VesselGroupModal(): React.ReactElement<any> {
     [
       vesselGroupVessels,
       editingVesselGroupId,
+      userIsVesselGroupOwner,
       groupName,
       dispatch,
       createAsPublic,
       vesselGroupsInWorkspace,
       isVesselGroupReportLocation,
       close,
+      workspace?.category,
+      workspace?.id,
+      query,
       workspaceToNavigate,
       searchQuery,
       upsertDataviewInstance,
@@ -435,13 +454,10 @@ function VesselGroupModal(): React.ReactElement<any> {
           )}
           {editingVesselGroup && hasVesselGroupsVessels && (
             <p className={styles.searchLink}>
-              {t('vesselGroup.searchLink')}
-              <IconButton
-                size="small"
-                icon="external-link"
-                className={styles.link}
-                onClick={onSearchClick}
-              />
+              <span className={styles.searchLinkText}>
+                {t('vesselGroup.searchLink')}
+                <IconButton size="small" icon="search" type="border" onClick={onSearchClick} />
+              </span>
             </p>
           )}
         </div>

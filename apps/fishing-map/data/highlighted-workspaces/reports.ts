@@ -10,6 +10,10 @@ import { ReportCategory } from 'features/reports/reports.types'
 import type workspaceTranslations from '../../public/locales/source/workspaces.json'
 
 export type ReportWorkspaceId = keyof (typeof workspaceTranslations)['reports']
+export type WorkspaceReportLink = {
+  id: string
+  key?: string // Using analysis.see as default
+}
 export type ReportWorkspace = {
   id: ReportWorkspaceId
   img: string

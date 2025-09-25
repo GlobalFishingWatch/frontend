@@ -96,15 +96,18 @@ export const selectReportCategory = createSelector(
 )
 
 export const selectReportUnit = createSelector(
-  [selectReportCategory],
-  (reportCategory): 'hour' | 'detection' | 'event' | '%' | undefined => {
+  [selectReportCategory, selectReportVesselsSubCategory],
+  (reportCategory, reportVesselsSubCategory): 'hour' | 'detection' | 'event' | '%' | undefined => {
     if (reportCategory === ReportCategory.Activity) {
       return 'hour'
     } else if (reportCategory === ReportCategory.Detections) {
       return 'detection'
     } else if (reportCategory === ReportCategory.Events) {
       return 'event'
-    } else if (reportCategory === ReportCategory.VesselGroupInsights) {
+    } else if (
+      (reportCategory === ReportCategory.VesselGroup && reportVesselsSubCategory === 'coverage') ||
+      reportCategory === ReportCategory.VesselGroupInsights
+    ) {
       // Used for VGR insights coverage graph
       return '%'
     }

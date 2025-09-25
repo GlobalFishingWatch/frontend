@@ -44,7 +44,7 @@ import i18n, { t } from 'features/i18n/i18n'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
-import { getPorts } from 'utils/ports'
+import { getPorts, getPortsByIds } from 'utils/ports'
 import { capitalize, sortFields } from 'utils/shared'
 
 import styles from '../vessel-groups/VesselGroupModal.module.css'
@@ -908,6 +908,17 @@ const getSchemaOptionsSelectedInDataview = (
     ]
   }
 
+  if (schema === 'next_port_id' && dataview.config?.filters?.next_port_id) {
+    const ports = getPortsByIds(dataview.config?.filters?.next_port_id || [])
+    if (ports.length) {
+      return ports
+    }
+    const nextPortIds = Array.isArray(dataview.config?.filters?.next_port_id)
+      ? dataview.config?.filters?.next_port_id
+      : [dataview.config?.filters?.next_port_id]
+    return nextPortIds.map((id) => ({ id, label: id }))
+  }
+
   return options?.filter((option) => {
     const filterValues = dataview.config?.filters?.[schema] as string | string[]
     return Array.isArray(filterValues)
@@ -923,7 +934,6 @@ export const getSchemaFilterOperationInDataview = (
   if (
     schema === 'vessel-groups' ||
     schema === 'neural_vessel_type' ||
-    dataview.category === DataviewCategory.Events ||
     dataview.category === DataviewCategory.Context
   ) {
     return

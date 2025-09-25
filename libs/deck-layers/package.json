@@ -13,7 +13,7 @@
     "@deck.gl/mesh-layers": "^9.0.35",
     "@deck.gl/react": "^9.0.35",
     "@math.gl/core": "4.x",
-    "@globalfishingwatch/api-client": "^6.0.5",
+    "@globalfishingwatch/api-client": "^7.0.0",
     "@globalfishingwatch/api-types": "^8.0.3",
     "@globalfishingwatch/deck-loaders": "^0.1.3",
     "@globalfishingwatch/dataviews-client": "^16.x",

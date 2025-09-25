@@ -19,7 +19,10 @@ import { BATHYMETRY_CONTOUR_DATAVIEW_PREFIX } from 'features/dataviews/dataviews
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import LayerLibraryItem from 'features/layer-library/LayerLibraryItem'
 import LayerLibraryUserPanel from 'features/layer-library/LayerLibraryUserPanel'
-import { selectLayerLibraryModal } from 'features/modals/modals.slice'
+import {
+  selectLayerLibraryModal,
+  selectLayerLibraryUniqueCategory,
+} from 'features/modals/modals.slice'
 import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { upperFirst } from 'utils/info'
@@ -35,6 +38,7 @@ const LayerLibrary: FC = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryElements, setCategoryElements] = useState<HTMLElement[]>([])
   const initialCategory = useSelector(selectLayerLibraryModal)
+  const layerLibraryUniqueCategory = useSelector(selectLayerLibraryUniqueCategory)
   const debugOptions = useSelector(selectDebugOptions)
   const isGFWUser = useSelector(selectIsGFWUser)
   const guestUser = useSelector(selectIsGuestUser)
@@ -94,12 +98,18 @@ const LayerLibrary: FC = () => {
     return layers
   }, [dataviews, debugOptions.experimentalLayers, t])
 
-  const uniqCategories = useMemo(
-    () => uniq(layersResolved.map(({ category }) => category)),
-    [layersResolved]
-  )
+  const uniqCategories = useMemo(() => {
+    if (layerLibraryUniqueCategory) {
+      const layerResolved = layersResolved.find(({ category }) => category === initialCategory)
+      return layerResolved ? [layerResolved.category] : []
+    }
+    return uniq(layersResolved.map(({ category }) => category))
+  }, [layersResolved])
 
   const extendedCategories = useMemo(() => {
+    if (layerLibraryUniqueCategory) {
+      return [...uniqCategories.map((category) => ({ category, subcategories: [] }))]
+    }
     const userSubcategories = [] as UserSubcategory[]
     if (userGeometries.tracks?.length) userSubcategories.push(DataviewCategory.UserTracks)
     if (userGeometries.polygons?.length) userSubcategories.push(DataviewCategory.UserPolygons)
@@ -115,6 +125,10 @@ const LayerLibrary: FC = () => {
       },
     ]
   }, [uniqCategories, userGeometries])
+
+  const allCategories = useMemo(() => {
+    return extendedCategories.map(({ category }) => category)
+  }, [extendedCategories])
 
   const scrollToCategory = useCallback(
     ({
@@ -319,8 +333,12 @@ const LayerLibrary: FC = () => {
               })}
             </Fragment>
           ))}
-          <LayerLibraryVesselGroupPanel searchQuery={searchQuery} />
-          <LayerLibraryUserPanel searchQuery={searchQuery} />
+          {allCategories.includes(DataviewCategory.VesselGroups) && (
+            <LayerLibraryVesselGroupPanel searchQuery={searchQuery} />
+          )}
+          {allCategories.includes(DataviewCategory.User) && (
+            <LayerLibraryUserPanel searchQuery={searchQuery} />
+          )}
         </ul>
       ) : (
         <div className={styles.spinnerContainer}>

@@ -44,20 +44,12 @@ export type FetchOptions<T = unknown> = Partial<Omit<RequestInit, 'body'>> & {
   local?: boolean
 }
 
-interface LibConfig {
-  version?: ApiVersion
-  debug?: boolean
-  baseUrl?: string
-}
-
 const isClientSide = typeof window !== 'undefined'
 
 export type RequestStatus = 'idle' | 'refreshingToken' | 'logging' | 'downloading'
 export class GFW_API_CLASS {
   debug: boolean
-  token = ''
   apiVersion: ApiVersion
-  refreshToken = ''
   baseUrl: string
   storageKeys: {
     token: string
@@ -77,10 +69,9 @@ export class GFW_API_CLASS {
     this.debug = debug
     this.baseUrl = baseUrl
     this.apiVersion = version
-    this.storageKeys = { token: tokenStorageKey, refreshToken: refreshTokenStorageKey }
-    if (isClientSide) {
-      this.setToken(localStorage.getItem(tokenStorageKey) || '')
-      this.setRefreshToken(localStorage.getItem(refreshTokenStorageKey) || '')
+    this.storageKeys = {
+      token: tokenStorageKey,
+      refreshToken: refreshTokenStorageKey,
     }
     this.logging = null
 
@@ -89,12 +80,44 @@ export class GFW_API_CLASS {
     }
   }
 
-  getBaseUrl() {
-    return this.baseUrl
+  get token() {
+    if (isClientSide) {
+      return localStorage.getItem(this.storageKeys.token) || ''
+    }
+    return ''
   }
 
-  getStatus() {
-    return this.status
+  private set token(token: string) {
+    if (isClientSide) {
+      if (token) {
+        localStorage.setItem(this.storageKeys.token, token)
+      } else {
+        localStorage.removeItem(this.storageKeys.token)
+      }
+    }
+    if (this.debug) {
+      console.log('GFWAPI: updated token with', token)
+    }
+  }
+
+  get refreshToken() {
+    if (isClientSide) {
+      return localStorage.getItem(this.storageKeys.refreshToken) || ''
+    }
+    return ''
+  }
+
+  private set refreshToken(refreshToken: string) {
+    if (isClientSide) {
+      if (refreshToken) {
+        localStorage.setItem(this.storageKeys.refreshToken, refreshToken)
+      } else {
+        localStorage.removeItem(this.storageKeys.refreshToken)
+      }
+    }
+    if (this.debug) {
+      console.log('GFWAPI: updated refreshToken with', refreshToken)
+    }
   }
 
   getRegisterUrl(callbackUrl: string, { client = 'gfw', locale = '' } = {}) {
@@ -123,59 +146,12 @@ export class GFW_API_CLASS {
       debug: this.debug,
       baseUrl: this.baseUrl,
       storageKeys: this.storageKeys,
-      token: this.getToken(),
-      refreshToken: this.getRefreshToken(),
+      token: this.token,
+      refreshToken: this.refreshToken,
     }
   }
 
-  setDefaultApiVersion(version: ApiVersion) {
-    this.apiVersion = version
-  }
-
-  setConfig(config: LibConfig) {
-    const { debug = this.debug, baseUrl = this.baseUrl, version = this.apiVersion } = config
-    this.debug = debug
-    this.baseUrl = baseUrl
-    this.apiVersion = version
-  }
-
-  getToken() {
-    return this.token
-  }
-
-  setToken(token: string) {
-    this.token = token
-    if (isClientSide) {
-      if (token) {
-        localStorage.setItem(this.storageKeys.token, token)
-      } else {
-        localStorage.removeItem(this.storageKeys.token)
-      }
-    }
-    if (this.debug) {
-      console.log('GFWAPI: updated token with', token)
-    }
-  }
-
-  getRefreshToken() {
-    return this.refreshToken
-  }
-
-  setRefreshToken(refreshToken: string) {
-    this.refreshToken = refreshToken
-    if (isClientSide) {
-      if (refreshToken) {
-        localStorage.setItem(this.storageKeys.refreshToken, refreshToken)
-      } else {
-        localStorage.removeItem(this.storageKeys.refreshToken)
-      }
-    }
-    if (this.debug) {
-      console.log('GFWAPI: updated refreshToken with', refreshToken)
-    }
-  }
-
-  async getTokensWithAccessToken(accessToken: string): Promise<UserTokens> {
+  private async getTokensWithAccessToken(accessToken: string): Promise<UserTokens> {
     return fetch(
       this.generateUrl(`/${AUTH_PATH}/tokens?access-token=${accessToken}`, { absolute: true })
     )
@@ -183,7 +159,7 @@ export class GFW_API_CLASS {
       .then(parseJSON)
   }
 
-  async getTokenWithRefreshToken(
+  private async getTokenWithRefreshToken(
     refreshToken: string
   ): Promise<{ token: string; refreshToken: string }> {
     return fetch(this.generateUrl(`/${AUTH_PATH}/tokens/reload`, { absolute: true }), {
@@ -199,14 +175,13 @@ export class GFW_API_CLASS {
     if (this.status !== 'refreshingToken') {
       this.status = 'refreshingToken'
       try {
-        const refreshToken = this.getRefreshToken()
-        if (!refreshToken) {
+        if (!this.refreshToken) {
           throw new Error('No refresh token')
         }
-        const refreshResponse = await this.getTokenWithRefreshToken(refreshToken)
+        const refreshResponse = await this.getTokenWithRefreshToken(this.refreshToken)
         const { token, refreshToken: newRefreshToken } = refreshResponse
-        this.setToken(token)
-        this.setRefreshToken(newRefreshToken)
+        this.token = token
+        this.refreshToken = newRefreshToken
         this.status = 'idle'
         return refreshResponse
       } catch (e: any) {
@@ -258,7 +233,10 @@ export class GFW_API_CLASS {
       })
   }
 
-  async _internalFetch<T = Record<string, unknown> | Blob | ArrayBuffer | Response, Body = unknown>(
+  private async _internalFetch<
+    T = Record<string, unknown> | Blob | ArrayBuffer | Response,
+    Body = unknown,
+  >(
     url: string,
     options: FetchOptions<Body> = {},
     refreshRetries = 0,
@@ -302,7 +280,7 @@ export class GFW_API_CLASS {
               email: process.env.REACT_APP_LOCAL_API_USER_EMAIL,
             }),
           }),
-          Authorization: `Bearer ${this.getToken()}`,
+          Authorization: `Bearer ${this.token}`,
         }
         const fetchUrl = isUrlAbsolute(url) ? url : this.baseUrl + url
         const data = await fetch(fetchUrl, {
@@ -441,7 +419,7 @@ export class GFW_API_CLASS {
   }
 
   async login(params: LoginParams): Promise<UserData> {
-    const { accessToken = null, refreshToken = this.getRefreshToken() } = params
+    const { accessToken = null, refreshToken = this.refreshToken } = params
     this.status = 'logging'
     // eslint-disable-next-line no-async-promise-executor
     this.logging = new Promise(async (resolve, reject) => {
@@ -451,13 +429,13 @@ export class GFW_API_CLASS {
         }
         try {
           const tokens = await this.getTokensWithAccessToken(accessToken)
-          this.setToken(tokens.token)
-          this.setRefreshToken(tokens.refreshToken)
+          this.token = tokens.token
+          this.refreshToken = tokens.refreshToken
           if (this.debug) {
             console.log(`GFWAPI: access-token valid, tokens ready`)
           }
         } catch (e: any) {
-          if (!this.getToken() && !this.getRefreshToken()) {
+          if (!this.token && !this.refreshToken) {
             const msg = getIsUnauthorizedError(e)
               ? 'Invalid access token'
               : 'Error trying to generate tokens'
@@ -471,7 +449,7 @@ export class GFW_API_CLASS {
         }
       }
 
-      if (this.getToken()) {
+      if (this.token) {
         if (this.debug) {
           console.log(`GFWAPI: Trying to get user with current token`)
         }
@@ -497,8 +475,8 @@ export class GFW_API_CLASS {
         try {
           const { token, refreshToken: newRefreshToken } =
             await this.getTokenWithRefreshToken(refreshToken)
-          this.setToken(token)
-          this.setRefreshToken(newRefreshToken)
+          this.token = token
+          this.refreshToken = newRefreshToken
           if (this.debug) {
             console.log(`GFWAPI: Refresh token OK, fetching user`)
           }
@@ -536,11 +514,11 @@ export class GFW_API_CLASS {
       }
       await this._internalFetch(`/${AUTH_PATH}/logout`, {
         headers: {
-          'refresh-token': this.getRefreshToken(),
+          'refresh-token': this.refreshToken,
         },
       })
-      this.setToken('')
-      this.setRefreshToken('')
+      this.token = ''
+      this.refreshToken = ''
       if (this.debug) {
         console.log(`GFWAPI: Logout invalid session api OK`)
       }

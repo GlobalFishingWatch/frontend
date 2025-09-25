@@ -61,10 +61,10 @@ export const getVesselIdFromInstanceId = (dataviewInstanceId: string) => {
 }
 
 export const getIsVesselDataviewInstanceId = (dataviewInstanceId: string) =>
-  dataviewInstanceId.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX)
+  dataviewInstanceId?.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX)
 
 export const getIsEncounteredVesselDataviewInstanceId = (dataviewInstanceId: string) =>
-  dataviewInstanceId.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
+  dataviewInstanceId?.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
 
 export const getVesselDataviewInstanceId = (vesselId: string) =>
   `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}`

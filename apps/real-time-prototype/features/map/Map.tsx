@@ -46,10 +46,10 @@ const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement<any
   const deckRef = useRef<DeckGLRef>(null)
   const basemapLayer = useBasemapLayer()
   const contextLayer = useContextsLayer()
-  const tracksLayer = useTracksLayer({ token: GFWAPI.getToken(), lastUpdate })
+  const tracksLayer = useTracksLayer({ token: GFWAPI.token, lastUpdate })
   const { addTrackSublayer, sublayers } = useTracksSublayers()
   const latestPositionsLayer = useLatestPositionsLayer({
-    token: GFWAPI.getToken(),
+    token: GFWAPI.token,
     lastUpdate,
     vessels: sublayers,
     showLatestPositions,
@@ -70,7 +70,7 @@ const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement<any
               fetch: {
                 method: 'GET',
                 headers: {
-                  Authorization: `Bearer ${GFWAPI.getToken()}`,
+                  Authorization: `Bearer ${GFWAPI.token}`,
                 },
               },
             },
@@ -101,7 +101,7 @@ const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement<any
             fetch: {
               method: 'GET',
               headers: {
-                Authorization: `Bearer ${GFWAPI.getToken()}`,
+                Authorization: `Bearer ${GFWAPI.token}`,
               },
             },
           },

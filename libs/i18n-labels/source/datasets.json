@@ -280,7 +280,7 @@
   },
   "private-costa-rica-presence": {
     "name": "Vessel Presence Costa Rica VMS",
-    "description": "Description pending",
+    "description": "Dataset for VMS Costa Rica presence",
     "schema": {
       "fleet": {
         "keyword": "fleet",
@@ -308,7 +308,7 @@
   },
   "private-ecuador-presence": {
     "name": "Vessel Presence Ecuador VMS",
-    "description": "Description pending",
+    "description": "Dataset for VMS Ecuador presence",
     "schema": {
       "speed": "speed",
       "bearing": "bearing",
@@ -915,7 +915,7 @@
     }
   },
   "public-chile-vessel-identity-fishing": {
-    "name": "Chile VMS (Non fishing Vessels)",
+    "name": "Chile VMS (Fishing Vessels)",
     "description": "Dataset for VMS Chile (Public)"
   },
   "public-chile-vessel-identity-non-fishing": {
@@ -932,7 +932,7 @@
   },
   "public-costa-rica-fishing-effort": {
     "name": "Costa Rica VMS",
-    "description": "Description pending",
+    "description": "Dataset for VMS Costa Rica fishing effort",
     "schema": {
       "fleet": {
         "keyword": "fleet",
@@ -967,7 +967,7 @@
   },
   "public-ecuador-fishing-effort": {
     "name": "Ecuador VMS",
-    "description": "Description pending",
+    "description": "Dataset for VMS Ecuador fishing effort",
     "schema": {
       "speed": "speed",
       "bearing": "bearing",
@@ -995,7 +995,7 @@
   },
   "public-ecuador-presence": {
     "name": "Ecuador VMS",
-    "description": "Description pending",
+    "description": "Dataset for VMS Ecuador presence",
     "schema": {
       "speed": "speed",
       "bearing": "bearing",
@@ -1706,7 +1706,7 @@
   },
   "public-mexico-fishing-effort": {
     "name": "Mexico VMS",
-    "description": "Description pending",
+    "description": "Dataset for VMS Mexico fishing effort",
     "schema": {
       "speed": "speed",
       "bearing": "bearing",
@@ -1727,7 +1727,7 @@
   },
   "public-mexico-presence": {
     "name": "Mexico VMS",
-    "description": "Description pending",
+    "description": "Dataset for VMS Mexico presence",
     "schema": {
       "speed": "speed",
       "bearing": "bearing",
@@ -1823,7 +1823,7 @@
   },
   "public-norway-presence": {
     "name": "Norway VMS",
-    "description": "Description pending",
+    "description": "Dataset for VMS Norway presence",
     "schema": {
       "speed": "speed",
       "bearing": "bearing"

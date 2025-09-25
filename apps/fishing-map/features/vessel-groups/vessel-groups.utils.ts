@@ -1,4 +1,4 @@
-import { uniq, uniqBy } from 'es-toolkit'
+import { groupBy, uniq, uniqBy } from 'es-toolkit'
 
 import type { IdentityVessel, VesselGroup, VesselGroupVessel } from '@globalfishingwatch/api-types'
 import { SelfReportedSource, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -59,6 +59,19 @@ export const getVesselGroupUniqVessels = (
     }),
     (v) => v.vesselId
   )
+}
+
+export const groupVesselGroupVessels = (
+  vessels: VesselGroupVesselIdentity[] | null,
+  { property = 'ssvid' } = {} as { property: 'imo' | 'ssvid' }
+): Record<string, VesselGroupVesselIdentity[]> => {
+  if (!vessels) {
+    return {} as Record<string, VesselGroupVesselIdentity[]>
+  }
+  return groupBy(vessels, (vessel) => {
+    const propertyValue = getVesselProperty(vessel.identity!, property)
+    return propertyValue || vessel.vesselId
+  })
 }
 
 export const mergeVesselGroupVesselIdentities = (

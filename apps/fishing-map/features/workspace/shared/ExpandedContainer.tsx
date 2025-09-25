@@ -22,6 +22,7 @@ interface ExpandedContainerProps {
   component: React.ReactElement<any>
   className?: string
   arrowClassName?: string
+  referenceClassName?: string
   onClickOutside: () => void
   overflowDOMId?: string | null
 }
@@ -32,6 +33,7 @@ function ExpandedContainer({
   component,
   onClickOutside,
   className = '',
+  referenceClassName = '',
   overflowDOMId = SCROLL_CONTAINER_DOM_ID,
 }: ExpandedContainerProps) {
   const [isOpen, setIsOpen] = useState(visible)
@@ -92,7 +94,7 @@ function ExpandedContainer({
 
   return (
     <Fragment>
-      <div ref={refs.setReference} {...getReferenceProps()}>
+      <div ref={refs.setReference} {...getReferenceProps()} className={referenceClassName}>
         {children}
       </div>
       {isOpen && (

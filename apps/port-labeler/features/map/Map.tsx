@@ -31,7 +31,7 @@ const transformRequest: (...args: any[]) => RequestParameters = (
   const response: RequestParameters = { url }
   if (resourceType === 'Tile' && url.includes('globalfishingwatch')) {
     response.headers = {
-      Authorization: 'Bearer ' + GFWAPI.getToken(),
+      Authorization: 'Bearer ' + GFWAPI.token,
     }
   }
   return response

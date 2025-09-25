@@ -183,6 +183,7 @@ export function useReportAreaBounds() {
       }
     }
     return {
+      id: reportArea?.id,
       loaded:
         reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
           ? true
@@ -205,12 +206,15 @@ export function useReportAreaBounds() {
 
 export function useReportAreaInViewport() {
   const viewState = useMapViewState()
-  const { bbox } = useReportAreaBounds()
+  const { id, bbox } = useReportAreaBounds()
   const areaCenter = useReportAreaCenter(bbox as Bbox)
   return (
     viewState?.latitude === areaCenter?.latitude &&
     viewState?.longitude === areaCenter?.longitude &&
-    viewState?.zoom === areaCenter?.zoom
+    // This is needed because depending of the viewport the zoom can't go to the same value as the area center
+    (id === ENTIRE_WORLD_REPORT_AREA_ID
+      ? viewState?.zoom <= Math.floor(areaCenter?.zoom)
+      : viewState?.zoom === areaCenter?.zoom)
   )
 }
 

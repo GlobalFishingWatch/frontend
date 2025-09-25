@@ -27,4 +27,6 @@ export type ReportTableVessel = {
   // In some cases the vessel can be duplicated,
   // so we merge the properties and keep the individual values
   values?: ReportVesselValues
+  // Only available for vessels group vessels when tab is coverage insight to avoid overloading the api
+  coverageBucket?: string
 }

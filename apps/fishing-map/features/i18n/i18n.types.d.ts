@@ -1192,6 +1192,7 @@ interface Resources {
       reduce_issue_timerange: 'Looks like your time range is a bit long for reporting. To keep things accurate and fast, may we narrow it to 14 days?'
       replyPlaceholder: 'Write a reply'
       resolveAndClose: 'Resolve and close issue'
+      selectAtLeastOneVessel: 'Select at least one vessel'
       title: 'Track correction panel'
       version: 'Version'
     }
@@ -1675,23 +1676,6 @@ interface Resources {
     }
   }
   workspaces: {
-    'fishing-activity': {
-      'default-public': {
-        name: 'Global fishing activity'
-        description: 'Monitor vessel-based human activity at sea in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries.'
-        cta: 'Explore the map'
-      }
-      'carrier-portal-public': {
-        name: 'Carrier Vessel Portal'
-        description: 'Verify transshipments, track vessels and identify frequently-visited ports to gain a better understanding of carrier vessel activities needed to strengthen transparency and accelerate transshipment reform.'
-        cta: 'Explore the carrier vessel portal'
-      }
-      'deep-sea-mining-public': {
-        name: 'Deep Sea Mining Watch'
-        description: 'Deep Sea Mining Watch aims to increase transparency in the nascent industry of seabed mining for critical minerals by highlighting historical and ongoing vessel activity in high seas areas that are currently slated for mineral exploration. '
-        cta: 'Explore the portal'
-      }
-    }
     reports: {
       'carrier-portal-report': {
         name: 'Carrier Vessel Portal'

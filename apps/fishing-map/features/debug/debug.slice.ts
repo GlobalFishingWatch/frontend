@@ -3,7 +3,6 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { RootState } from 'reducers'
 
 export enum FeatureFlag {
-  GlobalReports = 'globalReports',
   WorkspaceGenerator = 'workspaceGenerator',
   OthersReport = 'othersReport',
 }
@@ -30,7 +29,6 @@ interface DebugState {
 const initialState: DebugState = {
   active: false,
   featureFlags: {
-    globalReports: false,
     workspaceGenerator: false,
     othersReport: false,
   },

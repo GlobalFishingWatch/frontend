@@ -58,5 +58,12 @@
     "types/**/*.d.ts",
     "features/**/*.d.ts"
   ],
-  "exclude": ["node_modules", "jest.config.ts", ".next", "exported"]
+  "exclude": [
+    "node_modules",
+    "jest.config.ts",
+    ".next",
+    "exported",
+    "**/resources.d.ts",
+    "**/i18n.types.d.ts"
+  ]
 }

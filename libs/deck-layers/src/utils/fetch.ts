@@ -4,7 +4,7 @@ export function getFetchLoadOptions(extraOptions = {}) {
   return {
     fetch: {
       headers: {
-        Authorization: `Bearer ${GFWAPI.getToken()}`,
+        Authorization: `Bearer ${GFWAPI.token}`,
       },
       ...extraOptions,
     },

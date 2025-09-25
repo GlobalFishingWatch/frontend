@@ -10,7 +10,6 @@ import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 import { EVENTS_COLORS } from 'data/config'
 import { getHasVesselProfileInstance } from 'features/dataviews/dataviews.utils'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
-import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
@@ -33,7 +32,6 @@ const AUTH_AREAS = ['CCSBT', 'IATTC', 'ICCAT', 'IOTC', 'NPFC', 'SPRFMO', 'WCPFC'
 const EventDetail = ({ event }: ActivityContentProps) => {
   const { t } = useTranslation()
   const { getEventDurationDescription } = useActivityEventTranslations()
-  const isGlobalReportsEnabled = useSelector(selectIsGlobalReportsEnabled)
   const vesselProfileEncounterLayer = useVesselProfileEncounterLayer()
   const workspaceDataviewInstancesMerged = useSelector(selectWorkspaceDataviewInstancesMerged)
 
@@ -106,7 +104,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
           <label className={styles.fieldLabel}>{t('eventInfo.medianSpeedKnots')}</label>
           <span>{event.encounter?.medianSpeedKnots?.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
-        {isGlobalReportsEnabled && <PortVisitedAfterField nextPort={event.vessel.nextPort} />}
+        <PortVisitedAfterField nextPort={event.vessel.nextPort} />
         <div className={styles.divider} />
         <label className={styles.blockLabel}>{t('eventInfo.encounteredVesselName')}</label>
         <li>
@@ -152,90 +150,89 @@ const EventDetail = ({ event }: ActivityContentProps) => {
             {t('eventInfo.trackDisclaimer')}
           </div>
         )}
-        {isGlobalReportsEnabled && (
-          <Fragment>
-            <div className={styles.divider} />
-            <table className={styles.authTable}>
-              <thead>
-                <tr>
-                  <th>
-                    <label>
-                      {t('eventInfo.authorization')}
-                      <DataTerminology
-                        title={t('eventInfo.authorization')}
-                        terminologyKey="authorization"
-                      />
-                    </label>
-                  </th>
-                  {authAreas?.map((rfmo) => {
-                    return <th key={rfmo}>{rfmo}</th>
-                  })}
-                </tr>
-              </thead>
-              <tbody>
-                {authAreas?.length && authAreas.length > 0 ? (
-                  <Fragment>
-                    <tr>
-                      <td>{formatInfoField(event.vessel.name, 'shipname')}</td>
-                      {authAreas?.map((rfmo) => {
-                        const mainVesselAuth = event.vessel.publicAuthorizations?.find(
+
+        <Fragment>
+          <div className={styles.divider} />
+          <table className={styles.authTable}>
+            <thead>
+              <tr>
+                <th>
+                  <label>
+                    {t('eventInfo.authorization')}
+                    <DataTerminology
+                      title={t('eventInfo.authorization')}
+                      terminologyKey="authorization"
+                    />
+                  </label>
+                </th>
+                {authAreas?.map((rfmo) => {
+                  return <th key={rfmo}>{rfmo}</th>
+                })}
+              </tr>
+            </thead>
+            <tbody>
+              {authAreas?.length && authAreas.length > 0 ? (
+                <Fragment>
+                  <tr>
+                    <td>{formatInfoField(event.vessel.name, 'shipname')}</td>
+                    {authAreas?.map((rfmo) => {
+                      const mainVesselAuth = event.vessel.publicAuthorizations?.find(
+                        (auth) => auth.rfmo === rfmo
+                      )
+                      return (
+                        <td key={rfmo}>
+                          {mainVesselAuth?.hasPubliclyListedAuthorization === 'true' ? (
+                            <span className={styles.tick}>
+                              <IconButton
+                                icon="tick"
+                                size="tiny"
+                                type="solid"
+                                className={styles.disabled}
+                              />
+                            </span>
+                          ) : (
+                            <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
+                          )}
+                        </td>
+                      )
+                    })}
+                  </tr>
+                  <tr>
+                    <td>{formatInfoField(name, 'shipname')}</td>
+                    {authAreas?.map((rfmo) => {
+                      const secondaryVesselAuth =
+                        event.encounter?.vessel?.publicAuthorizations?.find(
                           (auth) => auth.rfmo === rfmo
                         )
-                        return (
-                          <td key={rfmo}>
-                            {mainVesselAuth?.hasPubliclyListedAuthorization === 'true' ? (
-                              <span className={styles.tick}>
-                                <IconButton
-                                  icon="tick"
-                                  size="tiny"
-                                  type="solid"
-                                  className={styles.disabled}
-                                />
-                              </span>
-                            ) : (
-                              <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
-                            )}
-                          </td>
-                        )
-                      })}
-                    </tr>
-                    <tr>
-                      <td>{formatInfoField(name, 'shipname')}</td>
-                      {authAreas?.map((rfmo) => {
-                        const secondaryVesselAuth =
-                          event.encounter?.vessel?.publicAuthorizations?.find(
-                            (auth) => auth.rfmo === rfmo
-                          )
-                        return (
-                          <td key={rfmo}>
-                            {secondaryVesselAuth?.hasPubliclyListedAuthorization === 'true' ? (
-                              <span className={styles.tick}>
-                                <IconButton
-                                  icon="tick"
-                                  size="tiny"
-                                  type="solid"
-                                  className={styles.disabled}
-                                />
-                              </span>
-                            ) : (
-                              <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
-                            )}
-                          </td>
-                        )
-                      })}
-                    </tr>
-                  </Fragment>
-                ) : (
-                  <tr>
-                    <td>
-                      <p className={styles.secondary}>{t('eventInfo.authorizationEmpty')}</p>
-                    </td>
+                      return (
+                        <td key={rfmo}>
+                          {secondaryVesselAuth?.hasPubliclyListedAuthorization === 'true' ? (
+                            <span className={styles.tick}>
+                              <IconButton
+                                icon="tick"
+                                size="tiny"
+                                type="solid"
+                                className={styles.disabled}
+                              />
+                            </span>
+                          ) : (
+                            <span className={styles.secondary}>{EMPTY_FIELD_PLACEHOLDER}</span>
+                          )}
+                        </td>
+                      )
+                    })}
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </Fragment>
-        )}
+                </Fragment>
+              ) : (
+                <tr>
+                  <td>
+                    <p className={styles.secondary}>{t('eventInfo.authorizationEmpty')}</p>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </Fragment>
       </ul>
     )
   } else if (event.type === EventTypes.Fishing) {
@@ -262,7 +259,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
           <label className={styles.fieldLabel}>{t('eventInfo.averageSpeedKnots')}</label>
           <span>{event.loitering?.averageSpeedKnots.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
-        {isGlobalReportsEnabled && <PortVisitedAfterField nextPort={event.vessel.nextPort} />}
+        <PortVisitedAfterField nextPort={event.vessel.nextPort} />
       </ul>
     )
   } else if (event.type === EventTypes.Port) {

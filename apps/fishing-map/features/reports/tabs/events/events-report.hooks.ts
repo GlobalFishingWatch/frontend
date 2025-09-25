@@ -107,7 +107,10 @@ export function useFetchEventReportGraphEvents() {
         return d.status === 'fulfilled' && !(d.value as any).error
           ? d.value.entries.flatMap((event) => {
               const eventColor = dataviews[index]?.config?.color || color
-              return { ...event, color: eventColor }
+              const datasetId = dataviews[index]?.datasets?.find(
+                (d) => d.type === DatasetTypes.Events
+              )?.id
+              return { ...event, color: eventColor, datasetId }
             })
           : []
       })

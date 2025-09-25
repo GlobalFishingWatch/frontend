@@ -11,7 +11,13 @@ import { ROOT_DOM_ELEMENT } from 'data/config'
 import { WorkspaceCategory } from 'data/workspaces'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { selectBigQueryActive, toggleBigQueryMenu } from 'features/bigquery/bigquery.slice'
+import {
+  selectBigQueryActive,
+  selectTurningTidesActive,
+  setBigQueryMode,
+  toggleBigQueryModal,
+  toggleTurningTidesModal,
+} from 'features/bigquery/bigquery.slice'
 import {
   FeatureFlag,
   selectDebugActive,
@@ -33,6 +39,7 @@ import { selectIsGFWUser, selectIsJACUser } from 'features/user/selectors/user.s
 import { selectVesselGroupModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import CreateWorkspaceModal from 'features/workspace/save/WorkspaceCreateModal'
 import EditWorkspaceModal from 'features/workspace/save/WorkspaceEditModal'
+import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
 import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'routes/routes'
@@ -43,8 +50,12 @@ const NewDataset = dynamic(
   () => import(/* webpackChunkName: "NewDataset" */ 'features/datasets/upload/NewDataset')
 )
 
-const BigQueryMenu = dynamic(
-  () => import(/* webpackChunkName: "BigQueryMenu" */ 'features/bigquery/BigQuery')
+const BigQueryModal = dynamic(
+  () => import(/* webpackChunkName: "BigQueryModal" */ 'features/bigquery/BigQueryModal')
+)
+
+const TurningTidesModal = dynamic(
+  () => import(/* webpackChunkName: "TurningTidesModal" */ 'features/bigquery/TurningTidesModal')
 )
 
 const LayerLibrary = dynamic(
@@ -93,8 +104,14 @@ const EditorMenuConfig = {
 
 const BigQueryMenuConfig = {
   key: 'b',
-  dispatchToggle: toggleBigQueryMenu,
+  dispatchToggle: toggleBigQueryModal,
   selectMenuActive: selectBigQueryActive,
+}
+
+const TurningTidesMenuConfig = {
+  key: 't',
+  dispatchToggle: toggleTurningTidesModal,
+  selectMenuActive: selectTurningTidesActive,
 }
 
 const ResetWorkspaceConfig = {
@@ -109,10 +126,12 @@ const AppModals = () => {
   const readOnly = useSelector(selectReadOnly)
   const isGFWUser = useSelector(selectIsGFWUser)
   const jacUser = useSelector(selectIsJACUser)
+  const isWorkspaceReady = useSelector(selectIsWorkspaceReady)
   const dispatch = useAppDispatch()
   const [debugActive, dispatchToggleDebugMenu] = useSecretMenu(DebugMenuConfig)
   const [editorActive, dispatchToggleEditorMenu] = useSecretMenu(EditorMenuConfig)
   const [bigqueryActive, dispatchBigQueryMenu] = useSecretMenu(BigQueryMenuConfig)
+  const [turningTidesActive, dispatchTurningTidesMenu] = useSecretMenu(TurningTidesMenuConfig)
 
   const workspaceGeneratorConfig = useMemo(
     () => ({
@@ -191,21 +210,37 @@ const AppModals = () => {
           <EditorMenu />
         </Modal>
       )}
-      {(isGFWUser || jacUser) && (
-        <Modal
-          appSelector={ROOT_DOM_ELEMENT}
-          title={
-            <Fragment>
-              Big query datasets creation 🧠
-              <GFWOnly userGroup="gfw" />
-            </Fragment>
-          }
-          isOpen={bigqueryActive && !anyAppModalOpen}
-          onClose={dispatchBigQueryMenu}
-          contentClassName={styles.bqModal}
-        >
-          <BigQueryMenu />
-        </Modal>
+      {(isGFWUser || jacUser) && (bigqueryActive || turningTidesActive) && !anyAppModalOpen && (
+        <Fragment>
+          <Modal
+            appSelector={ROOT_DOM_ELEMENT}
+            title={
+              <Fragment>
+                Big query datasets creation 🧠
+                <GFWOnly userGroup="gfw" />
+              </Fragment>
+            }
+            isOpen={bigqueryActive}
+            onClose={dispatchBigQueryMenu}
+            contentClassName={styles.bqModal}
+          >
+            <BigQueryModal />
+          </Modal>
+          <Modal
+            appSelector={ROOT_DOM_ELEMENT}
+            title={
+              <Fragment>
+                Turning tides datasets creation 🌊
+                <GFWOnly userGroup="gfw" />
+              </Fragment>
+            }
+            isOpen={turningTidesActive}
+            onClose={dispatchTurningTidesMenu}
+            contentClassName={styles.bqModal}
+          >
+            <TurningTidesModal />
+          </Modal>
+        </Fragment>
       )}
       {isGFWUser && (
         <Modal
@@ -224,7 +259,7 @@ const AppModals = () => {
       <CreateWorkspaceModal />
       {downloadActivityAreaKey && <DownloadActivityModal />}
       {downloadTrackModalOpen && <DownloadTrackModal />}
-      {!readOnly && (
+      {!readOnly && isWorkspaceReady && (
         <Fragment>
           {/* Please don't judge this piece of code, it is needed to avoid race-conditions in the useLocalStorage internal hook */}
           {welcomePopupContentKey === 'vessel-profile' && <Welcome contentKey="vessel-profile" />}

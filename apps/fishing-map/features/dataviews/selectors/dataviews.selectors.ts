@@ -40,7 +40,6 @@ import {
   selectDataviewInstancesMergedOrdered,
   selectDataviewInstancesResolved,
 } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { selectIsGlobalReportsEnabled } from 'features/debug/debug.selectors'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
 import { isSupportedReportDataview } from 'features/reports/report-area/area-reports.utils'
@@ -240,14 +239,14 @@ export const selectActiveTemporalgridDataviews: (
 )
 
 export const selectReportLayersVisible = createSelector(
-  [selectAllDataviewInstancesResolved, selectIsGlobalReportsEnabled],
-  (allDataviewInstancesResolved, isGlobalReportsEnabled) => {
+  [selectAllDataviewInstancesResolved],
+  (allDataviewInstancesResolved) => {
     return allDataviewInstancesResolved?.filter((dataview) => {
       const isVisible = dataview.config?.visible === true
       if (!isVisible) {
         return false
       }
-      return isSupportedReportDataview(dataview, isGlobalReportsEnabled)
+      return isSupportedReportDataview(dataview)
     })
   }
 )

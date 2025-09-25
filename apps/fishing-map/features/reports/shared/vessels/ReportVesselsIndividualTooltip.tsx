@@ -18,7 +18,7 @@ const ReportVesselsIndividualTooltip = ({ data }: { data?: ReportTableVessel }) 
     <div>
       <div className={styles.title}>
         <p className={styles.name}>{data.shipName}</p>
-        {data.value && (
+        {data.value && data.value !== -1 && (
           <p className={styles.value}>
             <I18nNumber number={data.value} />{' '}
             {reportUnit &&
