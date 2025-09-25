@@ -213,7 +213,7 @@ export function useReportAreaInViewport() {
     viewState?.longitude === areaCenter?.longitude &&
     // This is needed because depending of the viewport the zoom can't go to the same value as the area center
     (id === ENTIRE_WORLD_REPORT_AREA_ID
-      ? viewState?.zoom <= Math.floor(areaCenter?.zoom)
+      ? Math.floor(viewState?.zoom) <= Math.floor(areaCenter?.zoom)
       : viewState?.zoom === areaCenter?.zoom)
   )
 }
