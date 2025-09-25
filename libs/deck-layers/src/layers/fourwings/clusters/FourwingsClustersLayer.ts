@@ -254,7 +254,8 @@ export class FourwingsClustersLayer extends CompositeLayer<
       ...(info.object || ({} as FourwingsClusterFeature)),
       id: this.getClusterId(info.object),
       ...(this.clusterMode === 'positions' &&
-        info.object?.properties.id && {
+        info.object?.properties.id &&
+        this.state.viewportLoaded && {
           eventId: info.object?.properties.id,
         }),
       color: this.props.color,
@@ -275,7 +276,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   _getClustersByZoom = (zoom: number) => {
-    if (!this.state.clusterIndex) {
+    if (!this.state.clusterIndex?.getClusters) {
       return { clusters: undefined, points: undefined, radiusScale: undefined }
     }
     const allClusters = this.state.clusterIndex.getClusters([-180, -85, 180, 85], Math.round(zoom))
