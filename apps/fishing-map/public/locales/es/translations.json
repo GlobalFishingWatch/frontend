@@ -698,7 +698,7 @@
     "editDraw": "Editar dibujo",
     "editPointHint": "Haga clic en el punto para ajustar sus coordenadas",
     "editPolygonHint": "Haga clic en las esquinas del polígono para ajustar sus coordenadas",
-    "elevation": "Elevation",
+    "elevation": "Elevación",
     "filterClose": "Cerrar los filtros",
     "filterOpen": "Abrir los filtros",
     "filtersConfirmAbort": "¿Desea aplicar los cambios realizados a la capa?",
@@ -851,18 +851,18 @@
     "selected": "seleccionado"
   },
   "time": {
-    "ago": "{{time}} ago",
-    "days": "{{count}} day",
-    "days_plural": "{{count}} days",
-    "hours": "{{count}} hour",
-    "hours_plural": "{{count}} hours",
-    "minutes": "{{count}} minute",
-    "minutes_plural": "{{count}} minutes",
-    "months": "{{count}} month",
-    "months_plural": "{{count}} months",
-    "now": "now",
-    "weeks": "{{count}} week",
-    "weeks_plural": "{{count}} weeks"
+    "ago": "hace {{time}}",
+    "days": "{{count}} día",
+    "days_plural": "{{count}} días",
+    "hours": "{{count}} hora",
+    "hours_plural": "{{count}} horas",
+    "minutes": "{{count}} minuto",
+    "minutes_plural": "{{count}} minutos",
+    "months": "{{count}} mes",
+    "months_plural": "{{count}} meses",
+    "now": "ahora",
+    "weeks": "{{count}} semana",
+    "weeks_plural": "{{count}} semanas"
   },
   "timebar": {
     "disablePlaybackVesselGroups": "La animación no está soportada con capas de grupo de buques activadas",
@@ -892,57 +892,57 @@
     "maxPointsVisualizationExceeded": "Se ha superado la visualización máxima de puntos, cambiando al modo de mapa de calor."
   },
   "trackCorrection": {
-    "adjustDisclaimer": "Adjust your time range to cover as precisely as possible the activity you are reporting on.",
-    "badLink": "The issue you are trying to access was not found. Close this panel to view the list of all issues.",
-    "comment": "Comment",
+    "adjustDisclaimer": "Ajuste su intervalo de tiempo para cubrir con la mayor precisión posible la actividad en la que está reportando.",
+    "badLink": "La corrección a la que intentas acceder no se encontró. Cierra este panel para ver la lista de todas las correciones.",
+    "comment": "Comentar",
     "commentPlaceholder": "Add a comment...",
-    "commentRequired": "Your feedback is required to submit a correction",
-    "commentResolve": "Resolve",
-    "confirm": "Confirm",
-    "confirmAs": "Confirm as",
-    "confirmed": "This issue has already been verified by specialists",
-    "falseNegative": "False negative",
-    "falsePositive": "False positive",
-    "issue": "Issue {{issueId}}",
-    "issueType": "Type of issue",
-    "logAnIssue": "Log an activity issue",
-    "loginRequired": "To suggest and view this correction, you must <1>log in</1>.",
-    "mapTooltip": "{{vesselName}} reported as {{type}} on {{date}} ",
-    "markAsResolved": "Mark as resolved",
-    "newIssue": "New issue",
-    "other": "Other",
-    "reduce_issue_timerange": "Looks like your time range is a bit long for reporting. To keep things accurate and fast, may we narrow it to 14 days?",
-    "replyPlaceholder": "Write a reply",
-    "resolveAndClose": "Resolve and close issue",
-    "selectAtLeastOneVessel": "Select at least one vessel",
-    "title": "Track correction panel",
-    "version": "Version"
+    "commentRequired": "El comentario es necesario para presentar una corrección",
+    "commentResolve": "Resolver",
+    "confirm": "Confirmar",
+    "confirmAs": "Confirmar como",
+    "confirmed": "La correción ya ha sido verificada por especialistas",
+    "falseNegative": "False negativo",
+    "falsePositive": "Falso positivo",
+    "issue": "Correción {{issueId}}",
+    "issueType": "Tipo de correción",
+    "logAnIssue": "Registrar un problema de actividad",
+    "loginRequired": "Para sugerir y ver esta corrección, debes <1>iniciar sesión</1>.",
+    "mapTooltip": "{{vesselName}} reportado como {{type}} en {{date}} ",
+    "markAsResolved": "Marcar como resuelta",
+    "newIssue": "Nueva correción",
+    "other": "Otro",
+    "reduce_issue_timerange": "Parece que tu intervalo de tiempo es un poco largo para reportar. Para mantener las cosas precisas y rápidas, ¿puedes reducirlas a 14 días?",
+    "replyPlaceholder": "Escribir respuesta",
+    "resolveAndClose": "Resolver y cerrar correción",
+    "selectAtLeastOneVessel": "Seleccione al menos una embarcación",
+    "title": "Panel de corrección",
+    "version": "versión"
   },
   "user": {
     "badges": {
       "ambassador": {
-        "description": "Like manta rays, gracefully gliding through the ocean and connecting different parts of the marine ecosystem, you create harmonious connections between our products and their real-world applications.",
-        "title": "Ambassador"
+        "description": "Al igual que las mantarrayas, que se deslizan con gracia por el océano y conectan distintas partes del ecosistema marino, tú creas conexiones armoniosas entre nuestros productos y sus aplicaciones en el mundo real.",
+        "title": "Embajador"
       },
       "fixer": {
-        "description": "Like an octopus, incredibly intelligent and skillful, you can tackle problems from all angles, always finding a solution and providing support.",
-        "title": "Fixer"
+        "description": "Como un pulpo, increíblemente inteligente y hábil, puedes abordar los problemas desde todos los ángulos, encontrando siempre una solución y brindando apoyo.",
+        "title": "Arreglador"
       },
       "impactReporter": {
-        "description": "Like a whale in song, you amplify the voices of impact, bringing stories to life and helping everyone hear the difference being made.",
-        "title": "Impact reporter"
+        "description": "Como una ballena en su canto, amplificas las voces de impacto, dando vida a las historias y ayudando a todos a escuchar la diferencia que se está logrando.",
+        "title": "Reportero de Impacto"
       },
       "presenter": {
-        "description": "Like seahorses, known for their captivating beauty, you can charm an audience, making our products shine and sparking interest.",
-        "title": "Presenter"
+        "description": "Al igual que los caballitos de mar, conocidos por su cautivadora belleza, puedes encantar a una audiencia, haciendo que nuestros productos brillen y despertar interés.",
+        "title": "Presentador"
       },
       "teacher": {
-        "description": "Like a turtle, patient and wise, with your calm and steady expertise you ensure others learn and grow.",
-        "title": "Teacher"
+        "description": "Como una tortuga, paciente y sabia, con tu experiencia serena y constante aseguras que los demás aprendan y crezcan.",
+        "title": "Profesor"
       }
     },
     "datasets": "Conjuntos de datos del usuario",
-    "gfwBadges": "GFW Badges",
+    "gfwBadges": "Insignias GFW",
     "groupMissing": "¿Perteneces a un grupo de usuarios que no aparece aquí? <2>Solicitar acceso</2>",
     "groups": "Grupos",
     "info": "Información de usuario",
@@ -988,7 +988,7 @@
     "dataset": "Fuente",
     "depthM": "Profundidad (m)",
     "donor": "Embarcación donante",
-    "exitTrackCorrection": "Exit activity issue (track correction) panel to be able to navigate to the vessel profile",
+    "exitTrackCorrection": "Salir del panel de actividad (corrección de pistas) para poder navegar al perfil del buque",
     "extraInfo": "Solicitar información adicional en",
     "extraInfoTooltip": "TMT tiene información adicional relacionada con el historial de cumplimiento y/o la lista de IUU",
     "firstTransmissionDate": "Fecha primera transmisión",
@@ -1058,8 +1058,8 @@
       "tuna_purse_seines": "Red de cerco atunera",
       "well_boat": "Barco vivero"
     },
-    "gfw_geartypes": "GFW Gear type",
-    "gfw_shiptypes": "GFW Vessel type",
+    "gfw_geartypes": "Arte de pesca GFW",
+    "gfw_shiptypes": "Tipo de embarcación GFW",
     "goToImage": "Ir a la imagen {{number}}",
     "grossTonnage": "Tonelaje",
     "grossTonnageRange": "Rango de tonelaje bruto",
@@ -1070,7 +1070,7 @@
     "infoSource": "Fuente de la Información",
     "infoSources": {
       "both": "Registro y AIS",
-      "gfw-source": "GFW Source",
+      "gfw-source": "Fuente GFW",
       "registry": "Registro",
       "selfReported": "Autodeclarado"
     },
@@ -1154,11 +1154,11 @@
     "Other": "Otro",
     "owner": "Propietario",
     "owners": "Propietarios",
-    "recordId": "Record ID",
+    "recordId": "ID de registro",
     "registeredGearType": "Arte de pesca registrado",
     "registryGeartype": "Registry Gear Type",
     "registryOperator": "Operador",
-    "registryOwners": "Registry owners",
+    "registryOwners": "Propietarios en el registro",
     "registryPublicAuthorizations": "Autorizaciones",
     "registrySources": "Fuentes",
     "removeAllVessels": "Eliminar toda embarcación",
@@ -1199,8 +1199,8 @@
     "unmatched": "Sin coincidencia con AIS",
     "vessel_type": "Tipos de embarcaciones",
     "vesselCorrection": {
-      "analystComments": "Analyst comments",
-      "commentPlaceholder": "Please provide supportive source reference(s) to your correction and describe your correction rationale.",
+      "analystComments": "Comentarios del analista",
+      "commentPlaceholder": "Por favor, proporcione la(s) referencia(s) de fuente que respaldan su corrección y describa la justificación.",
       "currentValue": "Valor actual",
       "field": "Campo",
       "insuficientData": "Por favor, rellene todos los campos obligatorios",
@@ -1266,7 +1266,7 @@
     "searchLink": "¿Necesitas añadir más buques al grupo? Ve a buscar, selecciona los resultados y haz clic en 'Agregar al grupo'.",
     "searchNotFound": "No se han encontrado resultados",
     "searchVesselsRequired": "Buscar buques para crear un grupo de buques",
-    "summary": "This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>",
+    "summary": "Este grupo contiene <strong>{{vessels}} embarcaciones</strong> de <strong>{{flags}} flags</strong> activas desde <strong>{{start}}</strong> hasta <strong>{{end}}</strong>",
     "tooManyVessels_one": "El número máximo de embarcaciones es {{count}}",
     "tooManyVessels_other": "El número máximo de embarcaciones es {{count}}",
     "updateRequired": "Actualización requerida",

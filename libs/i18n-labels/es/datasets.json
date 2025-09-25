@@ -1181,15 +1181,15 @@
       },
       "next_port_id": "next_port_id",
       "encounter_type": {
-        "keyword": "encounter_type",
+        "keyword": "Tipo de embarcaciones",
         "enum": {
-          "CARRIER-FISHING": "CARRIER-FISHING",
-          "SUPPORT-FISHING": "SUPPORT-FISHING",
-          "FISHING-CARRIER": "FISHING-CARRIER",
-          "FISHING-BUNKER": "FISHING-BUNKER",
-          "FISHING-FISHING": "FISHING-FISHING",
-          "CARRIER-BUNKER": "CARRIER-BUNKER",
-          "FISHING-SUPPORT": "FISHING-SUPPORT"
+          "CARRIER-FISHING": "Embarcación de transporte <> Pesca",
+          "SUPPORT-FISHING": "Soporte <> Pesca",
+          "FISHING-CARRIER": "Pesca <> Embarcación de transporte",
+          "FISHING-BUNKER": "Pesca <> Aprovisionamiento",
+          "FISHING-FISHING": "Pesca <> Pesca",
+          "CARRIER-BUNKER": "Embarcación de transporte <> Aprovisionamiento",
+          "FISHING-SUPPORT": "Fishing <> Soporte"
         }
       }
     }
