@@ -56,7 +56,7 @@ export function AggregatedBarChart({
                 {index === valueKeys.length - 1 && (
                   <LabelList
                     position="top"
-                    valueAccessor={({ value }: { value: [number, number] }) => {
+                    valueAccessor={({ value }: { value: any }) => {
                       return barValueFormatter?.(value[1]) || value[1]
                     }}
                   />
@@ -72,7 +72,7 @@ export function AggregatedBarChart({
           >
             <LabelList
               position="top"
-              valueAccessor={({ value }: { value: [number, number] }) => {
+              valueAccessor={({ value }: { value: any }) => {
                 return barValueFormatter?.(value[1]) || value[1]
               }}
             />
