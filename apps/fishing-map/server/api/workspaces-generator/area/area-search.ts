@@ -1,6 +1,5 @@
 import { matchSorter } from 'match-sorter'
-
-import type { AreaParams } from 'pages/api/workspaces-generator/_get-workspace-url/types'
+import type { AreaParams } from 'server/api/workspaces-generator/types'
 
 import eez from './data/eez.json'
 import fao from './data/fao.json'

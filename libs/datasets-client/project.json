@@ -14,7 +14,8 @@
         "main": "libs/datasets-client/src/index.ts",
         "outputPath": "dist/libs/datasets-client",
         "project": "libs/datasets-client/package.json",
-        "tsConfig": "libs/datasets-client/tsconfig.lib.json"
+        "tsConfig": "libs/datasets-client/tsconfig.lib.json",
+        "useLegacyTypescriptPlugin": false
       }
     },
     "publish": {

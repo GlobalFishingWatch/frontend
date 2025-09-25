@@ -27,6 +27,7 @@
         "project": "libs/i18n-labels/package.json",
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "tsConfig": "libs/i18n-labels/tsconfig.lib.json",
+        "useLegacyTypescriptPlugin": false,
         "assets": [
           {
             "glob": "libs/i18n-labels/README.md",
