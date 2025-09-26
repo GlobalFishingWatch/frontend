@@ -14,7 +14,8 @@
         "main": "libs/api-client/src/index.ts",
         "outputPath": "dist/libs/api-client",
         "project": "libs/api-client/package.json",
-        "tsConfig": "libs/api-client/tsconfig.lib.json"
+        "tsConfig": "libs/api-client/tsconfig.lib.json",
+        "useLegacyTypescriptPlugin": false
       }
     },
     "publish": {

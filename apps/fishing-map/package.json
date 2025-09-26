@@ -15,9 +15,9 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "devDependencies": {
-    "@lingual/i18n-check": "^0.8.4",
+    "@lingual/i18n-check": "^0.8.7",
     "i18next-parser": "9.3.0",
-    "i18next-resources-for-ts": "1.6.0",
+    "i18next-resources-for-ts": "1.7.4",
     "prettier": "3.6.2",
     "source-map-explorer": "2.5.3"
   },

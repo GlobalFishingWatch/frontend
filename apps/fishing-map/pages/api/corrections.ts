@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { loadSpreadsheetDoc } from 'server/api/utils/spreadsheets'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
 import type { InfoCorrectionSendFormat } from 'features/vessel/vesselCorrection/VesselCorrection.types'
-import { loadSpreadsheetDoc } from 'pages/api/_utils/spreadsheets'
 
 const IDENTITY_REVIEW_SPREADSHEET_ID = process.env.NEXT_IDENTITY_REVIEW_SPREADSHEET_ID || ''
 

@@ -14,7 +14,8 @@
         "main": "libs/deck-loaders/src/index.ts",
         "outputPath": "dist/libs/deck-loaders",
         "project": "libs/deck-loaders/package.json",
-        "tsConfig": "libs/deck-loaders/tsconfig.lib.json"
+        "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
+        "useLegacyTypescriptPlugin": false
       }
     },
     "dist:workers": {

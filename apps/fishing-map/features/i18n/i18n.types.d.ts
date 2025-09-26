@@ -13,14 +13,14 @@ interface Resources {
     insightsMOUList: '<h2>Overview</h2> <p> This insight tracks and details when the AIS information on a vessel\'s identity indicates a flag record matching a flag on the Tokyo and/or Paris MOU Black or Grey lists based on the unique MMSI identity, and your time range of interest. Adjust the end date of the time bar to present date to show the current vessel flag status; Extend time range to track historical changes. </p> <h2>Caveats</h2> <ul> <li>This insight is populated based on information on flags with which a vessel is associated over time. The change in flags is identified through the vessel’s AIS transmitted MMSI, and does not consider registry information at this time.  </li> <li>This insight relies on matching AIS based data with registries. Vessels that do not have a matching identity will not be considered for this insight analysis, given the AIS records cannot be linked without the registry link. </li> <li>The <a href="https://www.tokyo-mou.org/" target="_blank" rel="noopener noreferrer nofollow">Tokyo</a> and <a href="https://parismou.org/" target="_blank" rel="noopener noreferrer nofollow">Paris</a> MOU lists are a United Nations International Maritime Organization’s (IMO) mechanism. This means non-member states to the UN are not considered by the data owner, thus will never appear on the Black or Grey lists.</li> <li>The <a href="https://www.tokyo-mou.org/" target="_blank" rel="noopener noreferrer nofollow">Tokyo</a> and <a href="https://parismou.org/" target="_blank" rel="noopener noreferrer nofollow">Paris</a> MOU lists have been obtained consistently by Global Fishing Watch since mid-2021, and the insight is based on flag identity on and after 2021, not before.</li> <li>The data is maintained on an annual basis and in alignment with the MOU publication cycle every July.</li> <li>While every attempt is made to ensure the insight provided is accurate and up-to-date, this cannot be guaranteed, particularly on any changes outside of the annual data update cycle.</li> </ul> <h2>Learn more</h2> <a href="https://globalfishingwatch.org/research-project-disabled-signals/" target="_blank" rel="noopener noreferrer nofollow">Learn more about our work on transmission gaps. </a>'
     insightsVesselGroups: '<h2>Overview</h2> <p> The vessel group Insights tab offers a set of indicators that aggregate important information on member vessel’s known activity (based on AIS) and authorizations sourced from public registries. The objective is to support users in due diligence review, risk-based assessment and inform decision making and operational planning. Insights offer key characteristic information of a vessel and indicate potential or opportunity of a vessel engaged in illegal, unreported and unregulated (IUU) fishing, thus requiring further investigation. </p> <p> Vessel insights shall be treated with caution. All references to activity events, including fishing, encounters, loitering, AIS gap and port visit should be understood in the context of Global Fishing Watch\'s algorithms, which are best efforts to determine apparent vessel activity based on AIS data collected via satellites and terrestrial receivers. </p> <h2>Caveats</h2> <ul> <li>The insights presented are from over 40 public registries with more consistent data inputs and calculation from January 1, 2020. We recommend adjusting the time range from 2020 onwards.</li> <li>AIS data and generally public registries vary in completeness, accuracy and quality. It is possible that some events are not identified. </li> <li>It is also possible that some events are identified but are incorrect or do not indicate actual activity. </li> <li>Global Fishing Watch qualifies all designations of events, including synonyms of event terms such as "fishing effort," "fishing" or "fishing activity," as apparent rather than certain. </li> <li>Any/all Global Fishing Watch information about apparent events should be considered an estimate and must be relied upon solely at your own risk. </li> <li>Global Fishing Watch is constantly improving processes to make sure event algorithms and designations are as accurate as possible.</li> </ul>'
     loitering: '<h2>Overview</h2>\n<ul>\n  <li>Loitering events are recorded when one vessel shows signs of potential encounters, or meeting another vessel at sea, but there is no second vessel detected. </li>\n  <li>Loitering events are based on speed and distance from shore.</li>\n  <li>A loitering event is recorded when a vessel travels at an average speed of less than 2 knots over 20 nautical miles (37.04 kilometers) from shore. </li>\n  <li>There may be many reasons a loitering event is recorded, so results should be interpreted with caution. </li>\n</ul>\n<h2>Caveats</h2>\n<ul>\n  <li>There may be many reasons a vessel slows down away from shore.</li>\n  <li>Loitering events are indicative, and the vessel may not be meeting any other vessels at the time of the event.</li>\n  <li>Other events in which a vessel may remain fairly stationary or moving slowly include maintenance, poor weather or waiting for owner instruction.</li>\n  <li>Loitering events for fishing vessels may be associated with normal fishing behavior, as fishing vessels often move slowly during fishing operations.</li>\n  <li>Due to the individual definitions of loitering events and encounter events, it is possible for a loitering event to overlap with an encounter event, representing the same activity, or the loitering event may encompass one or more encounter events. </li>\n  <li>If transmission data is poor, the average location can be inconsistent with the vessel track and the event may appear slightly alongside the track.</li>\n</ul>'
-    owner: '<h2>Overview</h2> <ul> <li>Owner information is obtained from publicly shared vessel registry information and scientific research on vessel ownership (Carmine et al. 2020).</li> <li>Where available, the owner’s flag is included in the bracket. The owner flag is based on the known registered address of the company or individual that owns the vessel unless the owner flag is explicitly provided in public data sources.</li> <li>Ownership data focuses primarily on vessels that tend to operate on the high seas and vessels that are assigned an IMO number.</li> </ul> <h2>Caveats</h2> <ul> <li>Owner information is not available for all vessels.</li> <li>Owner information may be different from the known operator.</li> <li>There may be situations where a company is registered in one location, but an owner lives in another.</li> <li>The actual time of ownership transfer may be different from the time when the ownership change is registered.</li> <li>Owner information may be formatted differently across data sources.</li> <li>Global Fishing Watch applies machine learning to clean, process and aggregate owner data into usable formats, during which there may be the possibility of data formatting changes or data degradation.</li> <li>In the data, an owner is assigned to a vessel identity. We assume that a vessel identity changes (e.g. vessel name or flag) when its owner changes.</li> <li>Our ownership data does not distinguish between registered and beneficial ownership. Beneficial ownership refers to identifying and understanding the individuals or entities who ultimately derive economic benefits or exercise control over a vessel, regardless of the registered/legal ownership structure. </li> </ul> <p> We are working to include more information from public sources and provide different levels of ownership information. If there are public sources you would like to see represented in our data, please use the feedback button on the left to provide more information. </p>'
     operator: '<h2>Overview</h2> <ul> <li> Vessel “operators” is a generic data point or term referring to different types of operational role a company may play in relation to a vessel. </li> <li> The <a href="https://www.tm-tracking.org/fisheries-analytical-capacity-tool" target="_blank" rel="noopener noreferrer nofollow">TMT database</a> is the only source used to populate information on the known operators of a vessel at present. TMT uses a range of sources, including RFMO authorized vessel lists, other vessel databases, national sources and other sources of intelligence to obtain operator information, where available. </li> </ul> <h2>Caveats</h2> <ul> <li>Operator information is not available for all vessels.</li> <li>Operator information may be different from the known owner.</li> <li> Operator information and data formatting may be different from one source to another. </li> <li> Operator role and activity coverage may be defined differently from one source to another. </li> <li> There may be situations where a company is registered in one location, but the operator or known owner lives in another. </li> <li> The actual time of operator transfer may be different from the time when operator change is registered. </li> <li> Global Fishing Watch applies machine learning to clean, process and aggregate operator data into usable formats, during which there may be the possibility of data formatting changes or data degradation. </li> </ul> <p> We are working to include more information from public sources and provide different levels of vessel operator and ownership information. If there are public sources you would like to see represented in our data, please use the feedback button on the left to provide more information. </p>'
+    owner: '<h2>Overview</h2> <ul> <li>Owner information is obtained from publicly shared vessel registry information and scientific research on vessel ownership (Carmine et al. 2020).</li> <li>Where available, the owner’s flag is included in the bracket. The owner flag is based on the known registered address of the company or individual that owns the vessel unless the owner flag is explicitly provided in public data sources.</li> <li>Ownership data focuses primarily on vessels that tend to operate on the high seas and vessels that are assigned an IMO number.</li> </ul> <h2>Caveats</h2> <ul> <li>Owner information is not available for all vessels.</li> <li>Owner information may be different from the known operator.</li> <li>There may be situations where a company is registered in one location, but an owner lives in another.</li> <li>The actual time of ownership transfer may be different from the time when the ownership change is registered.</li> <li>Owner information may be formatted differently across data sources.</li> <li>Global Fishing Watch applies machine learning to clean, process and aggregate owner data into usable formats, during which there may be the possibility of data formatting changes or data degradation.</li> <li>In the data, an owner is assigned to a vessel identity. We assume that a vessel identity changes (e.g. vessel name or flag) when its owner changes.</li> <li>Our ownership data does not distinguish between registered and beneficial ownership. Beneficial ownership refers to identifying and understanding the individuals or entities who ultimately derive economic benefits or exercise control over a vessel, regardless of the registered/legal ownership structure. </li> </ul> <p> We are working to include more information from public sources and provide different levels of ownership information. If there are public sources you would like to see represented in our data, please use the feedback button on the left to provide more information. </p>'
     port_visit: "<h2>Overview</h2>\n<ul>\n  <li>Movements in and out of a port are automatically detected by Global Fishing Watch and categorized according to four distinct types of events: port entry, port stop, port gap (i.e. a gap in AIS transmission while in port) and port exit. </li>\n  <li>These port-related events are combined into port visit events.</li>\n  <li>Port visits are shown when AIS transmissions indicate a vessel is: <ul>\n      <li>Within 3 kilometers from an anchorage point at the port entry;</li>\n      <li>Within 4 kilometers from a port exit; and,</li>\n      <li>Has a “port gap” with no AIS transmission of 4 hours or more, to account for vessels turning off their AIS when at port; or, </li>\n      <li>A “port stop” which is measured as beginning with a speed of less than 0.2 knots that increases to a speed of over 0.5 knots.</li>\n    </ul>\n  </li>\n  <li>Port stops are included to differentiate between port visits and coastal transits.</li>\n</ul>\n<h2>Caveats</h2>\n<ul>\n  <li>Only ‘high confidence’ port visits are shown on the Global Fishing Watch map. This is determined when a vessel is identified with AIS that has a port entry, stop or gap, and exit from the port. </li>\n  <li>Global Fishing Watch has currently excluded lower confidence port visits that can be caused by “noisy” or incomplete AIS transmission and suggest port visits when they didn’t occur.</li>\n  <li>Global Fishing Watch anchorages dataset may not include all true anchorages, and therefore some port visits may be missing from events.</li>\n</ul>\n<h2>Learn more</h2>\n<ul>\n  <a href='https://globalfishingwatch.org/datasets-and-code-anchorages/'>Learn more about anchorages, ports and voyages.</a></li>"
     registryInfo: '<h2>Overview</h2> <ul> <li>Where possible, Global Fishing Watch matches self-reported identity data with public vessel registry sources to allow cross-checking of information.</li> <li>In addition to self-reported identity data, Global Fishing Watch and TMT gather, clean and combine vessel identity information from an extensive list of public registries. These registries include regional and national sources. <a target="_blank" rel="noopener noreferrer nofollow" href="https://globalfishingwatch.org/our-apis/documentation#vessel-api-registry-codes-data-sources">View the full list of registries we collate data from.</a></li> <li>When we are able to match identity information from one or many public registries to information transmitted by a vessel, this enables stakeholders to track changes to movement and identity throughout the vessel’s life - from construction to scrapping.</li> <li>Viewing a vessel\'s activity in the context of its broader history – identity, activity, current and historic authorizations – creates opportunities to see new types of vessel insights and behavioral patterns.</li> </ul> <h2>Caveats</h2> <ul> <li>Vessel registry information is not globally representative<ul> <li>The quantity and quality of our collected registry data vary by flag State, thereby introducing some uneven degrees of information about vessel identity.</li> <li>Global Fishing Watch works to offset the lack of public registry data by complementing with other data sources and advocating for transparency in regional and national fora. <a href=\'https://globalfishingwatch.org/transparency/\'>Learn more about our Transparency work.</a></li> <li>We continue to find and add more public sources of information as an increasing number of initiatives help make more vessel identity data publicly available.</li> <li>Our vessel identity data includes a higher proportion of larger vessels, in particular vessels greater than 24 meters in length and vessels operating in international waters. This is because larger vessels and vessels that operate outside of national waters, are more likely registered to regional or global public vessel registries and more likely to be mandated to use AIS, Automatic Identification tracking System.</li> <li>With a few exceptions, most registries do not provide sufficient identity data for smaller vessels - defined here as vessels less than 15 meters in length.</li> <li>Additionally, due to their size, these small vessels are often not required to use AIS, meaning we are unable to ascertain AIS-based identity information for them.</li> </ul> </li> <li>Identifying unique vessels accurately is challenging<ul> <li>A vessel in our data is generally identified by an Maritime Mobile Service Identity (MMSI) number transmitted as part of their AIS messages assigned to a vessel identity.</li> <li>While many vessels use their unique MMSIs for the entire duration of our data (2012 to the present), vessel identities—including MMSI numbers, callsign, ship name and flag—associated with some vessel hulls change over time.</li> <li>For example, an MMSI may change when a vessel changes its flag State.</li> <li>Sometimes we can track a vessel through identity changes by using its IMO number, which are permanent unique identifiers that follow a vessel throughout its life, from construction to scrapping.</li> <li>For other vessels, however, we are currently unable to provide a complete track of identity changes due to lack of available information.</li> <li>We are working towards identifying links between vessel identities associated with the same vessel hulls to share in the future.</li> </ul> </li> </ul> <h2>Learn more</h2><a target="_blank" rel="noopener noreferrer nofollow" href="https://globalfishingwatch.org/datasets-and-code-vessel-identity/">Global Fishing Watch’s vessel identity and characterization process</a>'
     registrySources: '<h2>Overview</h2> <ul> <li>Global Fishing Watch and TMT gather, clean and combine vessel identity information from an extensive list of registries to match with the AIS self-reported identity data.</li> <li>Vessel identity data is extracted from registries available either in the public domain or from authorities and researchers, including registries from regional fisheries management organizations, national registries, and lists compiled by expert analysts. Each of the lists has been obtained regularly since early 2019 and supplemented, when possible, with historical data up to 2012 to provide snapshots of a registry and its vessels over time.</li> <li>Where available, we collected information on vessel identity, vessel characteristics, operator and owner name, owner nationality, and fishing authorization. The major sources of data are <a href="https://globalfishingwatch.org/our-apis/documentation#vessel-api-registry-codes-data-sources" target="_blank" rel="noopener noreferrer nofollow">accessible here</a></li> </ul> <h2>Caveats</h2> <ul> <li>Global Fishing Watch and <a href="https://www.tm-tracking.org/fisheries-analytical-capacity-tool/" target="_blank" rel="noopener noreferrer nofollow">TMT data</a> are brought together and may include data from some of the same sources, for example ‘CCSBT’ and ‘TMT_CCSBT’. </li> <li>GFW and TMT have some differences in when data started being collected and the frequency data is obtained, allowing source data to be cross compared to create a most complete record for the vessel’s history with overlapping sources.</li> <li>‘TMT_National’ data sources include information from a variety of national sources.</li> <li>‘TMT_Other official’ includes data from official sources that do not fall into the RFMO or national categories.</li> <li>‘TMT_Other’ data sources include data from a range of sources, gathered in the course of TMT’s analytical work.</li> </ul>'
     selfReported: "<h2>Overview</h2>\n<ul>\n  <li>Automatic identification system (AIS) devices are a type of GPS tracking device that vessels use while at sea.</li>\n  <li>AIS messages contain two types of information: positional messages which contain the vessel's GPS location, course, heading and speed; and static messages which contain the vessel's identity information including vessel name, IRCS, IMO, shiptype, dimensions and destination.</li>\n  <li>VMS messages include positional messages, and similar identity information as well as VMS identification information used by governments.</li> \n  <li>Global Fishing Watch produces its vessel activity data based on positional messages transmitted by vessels through their automatic identification system (AIS), transmitted alongside self-reported identity data.</li>\n</ul>\n<h2>Limitations</h2>\n<ul>\n  <li>The AIS information contained in the static AIS message is manually entered in the vessel's AIS transmitter device.</li>\n  <li>This manually entered information is referred to as being ‘self-reported’ and as such, is susceptible to containing errors and can be changed by the vessel operator.</li>\n  <li>“Identity spoofing” - inaccurate information on AIS</li>\n  <li>Lasty, a fraction of vessels engage in behaviors that make their AIS data unreliable, such as by simultaneously broadcasting the same maritime mobile service identity (MMSI) as another vessel or generic MMSIs, commonly referred to as “identity spoofing”.</li>\n  <li>A small group of actors may transmit inaccurate information on AIS to hide their identity and make their monitoring control and surveillance more challenging. Examples of this include vessels transmitting information appearing to be another ‘known’ vessel that might be authorised in the area observed or transmitting misleading vessel type information e.g. a vessel type ‘pleasure’ for a fishing vessel to make them receive less attention.</li>\n  <li>Our map and downloadable datasets omit these vessels in order to remove misleading information, as we continue to pursue ways to identify and correct the dataset for these behaviors.</li>\n</ul>"
-    sources: '<h2>Overview</h2> <p> Global Fishing Watch uses self-reported automatic identification system (AIS) data to match vessel identities transmitted with public vessel registry sources to allow cross-checking of information. The ‘Sources’ field indicates the vessel identity data we have for each vessel, to determine and analyze vessel activity, characteristics and generate insights. </p> <p> The source variations and their explanation are as follows: </p> <ul> <li>Registry + self-reported AIS: Global Fishing Watch is able to match AIS identity values with Registry values.</li> <li>AIS only: Vessel identity data derives solely from self-reported AIS data.</li> <li>VMS [specific country]: Vessel identity data derives directly from a specific country (e.g. VMS Belize). </li> </ul> <h2>Caveats</h2> <ul> <li>Global Fishing Watch determines vessel event activities such as ‘apparent fishing’, ‘encounter’, ‘loitering’ and ‘AIS off events’ using vessel identity, type, location, speed, direction information transmitted through AIS data source. </li> <li>VMS tracks are not used to consider vessel event activities.   </li> </ul> <h2>Learn more</h2> <p> <a target="_blank" rel="noopener noreferrer nofollow" href="https://globalfishingwatch.org/datasets-and-code-vessel-identity/">Global Fishing Watch’s vessel identity and characterization process</a> </p>'
     shiptype: '<h2>Overview</h2>\n<ul>\n<li>To determine vessel type, Global Fishing Watch (GFW) combines publicly shared vessel registry information with the results of a machine learning model that analyzes vessel activity patterns.</li>\n<li>Our machine learning model is trained using the vessel identification information from vessel registries as described above. The model learned to distinguish vessel type from the movements of vessels with a known type.</li>\n<li>The inferred value from our machine learning model is used along with aggregated registry information (matched through MMSI and time range) to estimate a most likely vessel type.</li>\n<li>Global Fishing Watch has developed a carrier database that is curated using a combination of sources, including: major RFMO vessel registry lists, publicly available national registries, the International Maritime Organization (IMO) unique identifier, and a machine learning model, as well as web and search images.</li>\n<li>The fishing vessels include vessels that were identified using vessel registry databasesand estimated classification using a machine learning model.</li>\n</ul>\n<h2>How is vessel type determined in the Global Fishing Watch platform?</h2>\n</ul>\n<img src=\'https://globalfishingwatch.org/wp-content/uploads/Diagram-Vessel-type-and-gear-type-determinations.png\' alt=\'Diagram showing how Global Fishing Watch determines GFW vessel type and GFW gear type data fields\' />\n</ul>\n<h2>Caveats</h2>\n<ul>\n<li>Vessel registry information is not globally representative</li>\n<ul>\n<li>The quantity and quality of our collected registry data vary by flag State, thereby introducing some uneven degrees of information about vessel identity.</li>\n<li>Global Fishing Watch works to offset the lack of public registry data by complementing with other data sources and advocating for transparency in regional and national fora. <a href="https://globalfishingwatch.org/transparency/" target="_blank" rel="noopener">Learn more about our Transparency work</a></li>\n<li>We continue to find more public sources of information as an increasing number of initiatives help make more vessel identity data publicly available.</li>\n</ul>\n<li>Lack of smaller vessels</li>\n<ul>\n<li>Our vessel identity data tend to include larger vessels, in particular vessels greater than 24 meters long, since larger vessels are more likely registered to regional or global public vessel registries.</li>\n<li>Apart from a few national level registries that include small vessels&mdash;those less than 15 meters&mdash;most registries do not provide sufficient identity data for smaller vessels.</li>\n<li>Additionally, these small vessels are unlikely to use AIS due to lack of regulation, therefore, we are unable to ascertain AIS-based identity information for them.</li>\n</ul>\n<li>Identifying unique vessels accurately is challenging</li>\n<ul>\n<li>While a vast majority of vessels, in particular fishing vessels, use their unique MMSIs for the entire duration of our data (2012 to the present), vessel identities&mdash;including MMSI numbers&mdash;associated with some vessel hulls change over time when a vessel changes its name or flag State, or it comes under new operation or ownership.</li>\n<li>Such changes can be tracked through IMO numbers, which are permanent unique identifiers that follow a vessel from construction to scrapping.</li>\n<li>For other vessels, however, we are currently unable to provide a complete track of identity changes due to lack of available information.</li>\n<li>We work toward identifying links between vessel identities associated with the same vessel hulls to share such information in the future.</li>\n</ul>\n<li>Conflicts between sources can occur leading to discrepancies</li>\n<ul>\n<li>If a vessel completes different activities or the main purpose of a vessel changes, this may lead to errors in the vessel type classification.&nbsp;</li>\n<li>A vessel may appear as Discrepancy if registry information describes a vessel as non-fishing, but our machine learning model infers fishing, or vice versa.</li>\n</ul>\n<li>Identity spoofing</li>\n<ul>\n<li>Lastly, a fraction of vessels engage in behaviors that make their AIS data unreliable, such as by simultaneously broadcasting the same MMSI as another vessel, commonly referred to as identity spoofing.</li>\n<li>Our map and downloadable datasets omit these vessels in order to remove misleading information, as we continue to pursue ways to identify and correct the dataset for these behaviors.</li>\n</ul>'
+    sources: '<h2>Overview</h2> <p> Global Fishing Watch uses self-reported automatic identification system (AIS) data to match vessel identities transmitted with public vessel registry sources to allow cross-checking of information. The ‘Sources’ field indicates the vessel identity data we have for each vessel, to determine and analyze vessel activity, characteristics and generate insights. </p> <p> The source variations and their explanation are as follows: </p> <ul> <li>Registry + self-reported AIS: Global Fishing Watch is able to match AIS identity values with Registry values.</li> <li>AIS only: Vessel identity data derives solely from self-reported AIS data.</li> <li>VMS [specific country]: Vessel identity data derives directly from a specific country (e.g. VMS Belize). </li> </ul> <h2>Caveats</h2> <ul> <li>Global Fishing Watch determines vessel event activities such as ‘apparent fishing’, ‘encounter’, ‘loitering’ and ‘AIS off events’ using vessel identity, type, location, speed, direction information transmitted through AIS data source. </li> <li>VMS tracks are not used to consider vessel event activities.   </li> </ul> <h2>Learn more</h2> <p> <a target="_blank" rel="noopener noreferrer nofollow" href="https://globalfishingwatch.org/datasets-and-code-vessel-identity/">Global Fishing Watch’s vessel identity and characterization process</a> </p>'
     vessels: '<h2>Overview</h2> <p> This vessel group profile provides aggregate and recent vessel identity information from automatic identification system (AIS) data sources. If a vessel has multiple historical identities, only the most recent identity is used to generate the group profile analysis. </p> <p> To determine vessel type, Global Fishing Watch combines publicly shared vessel registry information with the results of a machine learning model that analyzes vessel activity patterns. </p> <h2>Caveats</h2> <ul> <li> While Global Fishing Watch matches vessel AIS data with over 40 public registries to validate vessel identity, the vessel list and identity information in this profile analysis does not currently include registry nor VMS derived identity information, to avoid duplicative and/or conflicting information. </li> <li> While every attempt is made to ensure vessel identity presented in the vessel group report is accurate and up-to-date, this cannot be guaranteed. </li> <li> In the individual vessel profile and at the individual vessel track level, cross-check on any difference in vessel identity information between ‘Registry’, ‘VMS’ and/or ‘AIS’ sources. </li> </ul> <h2>Learn more</h2> <a target="_blank" rel="noopener noreferrer nofollow" href="https://globalfishingwatch.org/datasets-and-code-vessel-identity/" >Global Fishing Watch’s vessel identity and characterization process</a >'
   }
   'help-hints': {
@@ -267,8 +267,8 @@ interface Resources {
       beforeAfterDate: 'date'
       beforeAfterRange: 'between the {{duration}} before and after {{compareStart}}'
       buffer: 'Buffer area'
-      bufferedArea: '{{value}} {{unit}} buffered area'
       bufferOperationLabel: 'Analysis area'
+      bufferedArea: '{{value}} {{unit}} buffered area'
       change: 'Change'
       clickToFilterBy: 'Click to filter by:'
       clickToSeeAreaReport: 'Click to see the {{area}} report'
@@ -276,9 +276,9 @@ interface Resources {
       confirmRemove: 'Are you sure you want to permanently delete this report?'
       createReportHelp: 'To explore how activity and environmental data changes over time, you can create a dynamic report containing analysis for any area. Dynamic reports offer a rapid way to access and understand more information about any ocean area, exclusive economic zone, marine protected area or area of interest. Dynamic reports help you understand how much activity is happening in each area, including which vessels and flag States are active.'
       createReportHelpLink: 'Learn more.'
+      dataSource: 'Data Source'
       datasetsNotAllowed: 'Vessels are not included from the following sources:'
       datasetsNotAllowedAll: 'None of your datasets are allowed to be used in reports'
-      dataSource: 'Data Source'
       deleteBuffer: 'Delete current buffer'
       difference: 'buffer only'
       disclaimer: 'The data shown above should be taken as an estimate.'
@@ -340,8 +340,8 @@ interface Resources {
       summaryEvents: '<strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> had <strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>'
       summaryEventsNoVessels: '<strong>{{activityQuantity}} {{activityUnit}}</strong> {{area}} between <strong>{{start}}</strong> and <strong>{{end}}</strong>'
       summaryNoVessels: '<strong>{{activityQuantity}}</strong> {{activityUnit}} <strong>{{activityType}}</strong> in the area between <strong>{{start}}</strong> and <strong>{{end}}</strong>'
-      timeoutError: 'This is taking more than expected, please wait'
       timeRangeTooLong: 'Reports are only supported for time ranges up to one year.'
+      timeoutError: 'This is taking more than expected, please wait'
       title: 'Report'
       unknown: 'Other'
       unknownProperty: 'Unknown'
@@ -363,6 +363,7 @@ interface Resources {
       visualisationEvents: 'Events (clusters)'
     }
     common: {
+      Events: 'Events'
       active: 'Active'
       active_after: 'Active after'
       active_before: 'Active before'
@@ -397,9 +398,9 @@ interface Resources {
       country_other: 'countries'
       dataTerminology: 'Terminology'
       date: 'Date'
+      dateRange: 'between {{start}} and {{end}}'
       date_one: 'Date'
       date_other: 'Dates'
-      dateRange: 'between {{start}} and {{end}}'
       days: 'Day'
       days_one: 'Day'
       days_other: 'days'
@@ -413,17 +414,16 @@ interface Resources {
       dismiss: 'Dismiss'
       edit: 'Edit'
       environment: 'Environment'
-      event_one: 'event'
-      event_other: 'events'
       eventLabels: {
         encounter: 'encounter'
         loitering: 'loitering'
         port_visit: 'port visit'
       }
+      event_one: 'event'
+      event_other: 'events'
       events: 'Events'
       events_one: 'Event'
       events_other: 'Events'
-      Events: 'Events'
       exclude: 'Exclude'
       excluded: 'Excluded'
       experimental: 'Experimental'
@@ -436,8 +436,8 @@ interface Resources {
       from: 'from'
       geartype: 'Gear type'
       global: 'Global'
-      globally: 'globally'
       globalReport: 'Global report'
+      globally: 'globally'
       help: 'Help'
       hideAllHelpHints: 'Dismiss all'
       hideHelpHint: 'Dismiss'
@@ -478,11 +478,11 @@ interface Resources {
       navigateBackTo: 'Go back to {{section}}'
       none: 'None'
       of: 'of'
+      onScreen: 'on screen'
       onlyMe: 'Only me'
       onlyVisibleForGFW: 'Only visible for GFW users'
       onlyVisibleForGFWShort: 'GFW Only'
       onlyVisibleForJAC: 'Only visible for JAC users'
-      onScreen: 'on screen'
       optional: 'Optional'
       or: 'or'
       others: 'Others'
@@ -534,14 +534,14 @@ interface Resources {
       userGuide: 'User Guide'
       value: 'value'
       vessel: 'Vessel'
-      vessel_one: 'Vessel'
-      vessel_other: 'Vessels'
       vesselGroups: 'Vessel groups'
       vesselId: 'Vessel id'
       vesselPresence: 'Vessel presence'
+      vessel_one: 'Vessel'
+      vessel_other: 'Vessels'
       vessels: 'Vessels'
-      view_layer: 'View the layer'
       viewIn: 'View in'
+      view_layer: 'View the layer'
       viirs: 'Night light detections (VIIRS)'
       visibleValues: 'Visible values'
       visits: 'Visits'
@@ -674,10 +674,10 @@ interface Resources {
       timeEnd: '{{geometryType}} end'
       timePeriodType: 'Time filter'
       timePeriodTypePlaceholder: 'Choose to filter your dataset by a specific timestamp or a time range'
+      timeStart: '{{geometryType}} start'
       timerangeEndHelp: 'Select the property that defines the start of the date range of the {{geometryType}} to filter them with the time bar'
       timerangeStartHelp: 'Select the property that defines the start of the time range of the {{geometryType}} to visualize your dataset with the time bar'
       timestampHelp: 'Select the property that defines the date and time of the {{geometryType}} to visualize your dataset with the time bar'
-      timeStart: '{{geometryType}} start'
       tracks: {
         filters: 'Track filters'
         filtersHelp: 'Select properties (or fields) of this dataset to be able to dynamically filter the tracks in the sidebar'
@@ -722,8 +722,8 @@ interface Resources {
       dataPortal: 'See data download portal'
       datasetsNotAllowed: "You don't have permissions to download the following datasets:"
       descriptionReport: 'You can download a list of the activity or a heat map bitmap for this area in different formats'
-      downloadOptions: 'Download options'
       doYouNeedAnAPI: 'Does your application need continuous data?'
+      downloadOptions: 'Download options'
       errorConcurrentReport: 'Your account is currently loading an analysis report, please wait for the report to finish before downloading data'
       eventsDownload: 'Download events'
       eventsDownloadLogin: 'Register and login to download vessel events (it is free and takes 2 minutes)'
@@ -805,30 +805,30 @@ interface Resources {
       dayAbbreviated_other: '{{count}}d'
       during: 'during'
       encounter: 'Encounter'
-      encounter_one: 'Encounter event'
-      encounter_other: 'Encounter events'
       encounterAction: 'had an encounter with'
       encounterActionWith: 'had an encounter with {{vessel}} starting at {{start}} for {{duration}}'
       encounterActionWithVessels: 'had an encounter with {{encounterVessel}} starting at {{start}} for {{duration}}'
       encounterActionWithVesselsPin: 'had an encounter with <pin></pin>{{encounterVessel}} starting at {{start}} for {{duration}}'
       encounterAnotherVessel: 'another vessel'
+      encounter_one: 'Encounter event'
+      encounter_other: 'Encounter events'
       encountersShort: 'Encounters'
       events: 'events'
       fishing: 'Fishing'
-      fishing_other: 'Fishing events'
       fishingAction: 'Fishing started at {{start}} for {{duration}}'
       fishingActionIn: 'Fishing in {{regionName}}'
+      fishing_other: 'Fishing events'
       gap: 'AIS Off event'
-      gap_other: 'AIS Off events'
       gapActionIn: 'Likely disabling in {{regionName}}'
+      gap_other: 'AIS Off events'
       hourAbbreviated: '{{count}}h'
       hourAbbreviated_one: '{{count}}h'
       hourAbbreviated_other: '{{count}}h'
       loitering: 'Loitering'
-      loitering_one: 'Loitering event'
-      loitering_other: 'Loitering events'
       loiteringAction: 'Loitering started at {{start}} for {{duration}}'
       loiteringActionIn: 'Loitering in {{regionName}}'
+      loitering_one: 'Loitering event'
+      loitering_other: 'Loitering events'
       minuteAbbreviated: "{{count}}'"
       minuteAbbreviated_one: "{{count}}'"
       minuteAbbreviated_other: "{{count}}'"
@@ -838,20 +838,20 @@ interface Resources {
       noData: 'No data available'
       notInCVP: 'Event not available.'
       port: 'Port'
-      port_one: 'Port'
-      port_other: 'Ports'
+      portAction: 'Docked started at {{start}} for {{duration}}'
+      portAt: 'Docked at {{port}} started at {{start}} for {{duration}}'
       port_entryActionIn: 'Entered port {{port}}'
       port_exitActionIn: 'Exited port {{port}}'
+      port_one: 'Port'
+      port_other: 'Ports'
       port_visit: 'Port visit'
-      port_visit_one: 'Port visit'
-      port_visit_other: 'Port visits'
       port_visitAction: 'Docked for'
       port_visitActionIn: 'Visited port {{port}}'
+      port_visit_one: 'Port visit'
+      port_visit_other: 'Port visits'
       port_visitedAfter: 'Port visited after'
       port_visitedAfterFilter: 'Filter events by port visited after'
       port_visitedAfterRemove: 'Remove port filter'
-      portAction: 'Docked started at {{start}} for {{duration}}'
-      portAt: 'Docked at {{port}} started at {{start}} for {{duration}}'
       seeInCVP: 'See in carrier vessel portal'
       unknown: 'Unknown event'
       yearAbbreviated: '{{count}}y'
@@ -873,9 +873,9 @@ interface Resources {
       medianSpeedKnots: 'median speed (knots)'
       mmsi: 'MMSI'
       name: 'Vessel name'
+      portVisitedAfter: 'Port visited after'
       port_entry: 'Port entry'
       port_exit: 'Port exit'
-      portVisitedAfter: 'Port visited after'
       speed: 'speed'
       ssvid: 'ssvid'
       start: 'Start'
@@ -912,10 +912,10 @@ interface Resources {
       requestAnImprovement: 'Request an improvement'
       role: 'Role'
       roles: {
+        GFW: 'Global Fishing Watch staff'
         analyst: 'Analyst'
         fisheries: 'Fisheries enforcement or compliance officer'
         general: 'General public'
-        GFW: 'Global Fishing Watch staff'
         journalist: 'Journalist'
         navy: 'Navy or coast guard'
         ngo: 'Non-governmental organization'
@@ -933,6 +933,7 @@ interface Resources {
       supportBy: 'Supported by'
     }
     layer: {
+      REALM: 'REALM'
       activityFitBounds: 'Center view on activity'
       add: 'Add layer'
       areas: {
@@ -944,9 +945,9 @@ interface Resources {
         rfmo: 'RFMOs'
       }
       areasOnScreen: 'Areas on the map'
-      color_change: 'Change color'
       colorSelectCustom: 'Select custom color'
       colorSelectPredefined: 'Select predefined color'
+      color_change: 'Change color'
       distance_from_port_km: 'Port Buffer'
       drawAddPoint: 'Add a point'
       drawAddPolygon: 'Add a geometry'
@@ -962,9 +963,9 @@ interface Resources {
       elevation: 'Elevation'
       filterClose: 'Close filters'
       filterOpen: 'Open filters'
+      filterValues: 'Filter values'
       filtersConfirmAbort: 'Do you want to apply the changes made to the layer?'
       filtersDisabled: 'Other filters ({{filters}}) are available depending on the sources selected'
-      filterValues: 'Filter values'
       flagState_one: 'Flag'
       flagState_other: 'Flags'
       fleet_other: 'Fleets'
@@ -985,7 +986,6 @@ interface Resources {
       }
       propertiesChange: 'Change properties'
       radiance: 'Radiance'
-      REALM: 'REALM'
       remove: 'Remove layer'
       removeAllLayers: 'Remove all layers'
       removePoint: 'Remove point'
@@ -1008,11 +1008,11 @@ interface Resources {
       toggleVisibility: 'Toggle layer visibility'
       type: 'Type'
       user_track_fit_bounds: 'Change view and time range to see the entire track'
+      vesselGroup: 'Vessel Group'
       vessel_fit_bounds: 'Center map on vessel track'
       vessel_fit_bounds_out_of_timerange: 'The track has no activity in your selected time range. Change the time range to fit this track?'
       vessel_group_fit_bounds: 'Center map on vessel group'
       vessel_info_correction: 'Suggest a correction'
-      vesselGroup: 'Vessel Group'
     }
     map: {
       annotationPlaceholder: 'Type something here'
@@ -1038,10 +1038,10 @@ interface Resources {
       positionsDisabled: 'A more detailed visualization is available in areas with less activity, please zoom in or reduce your time range to see it'
       referenceLayersClose: 'Close reference layers'
       referenceLayersOpen: 'Open reference layers'
-      rulers_add: 'Measure distance'
       rulersDelete: 'Delete all measures'
       rulersHover: 'Drag to move or click to see more'
       rulersStop: 'Stop measures'
+      rulers_add: 'Measure distance'
       screenshotArea: {
         map: 'Only map'
         withTimebar: 'With timebar'
@@ -1093,17 +1093,17 @@ interface Resources {
       result_one: 'result'
       result_other: 'results'
       searching: 'Searching more than 100K vessels ...'
-      seeing: 'Seeing'
       seeVesselsOnMap: 'See vessels on map'
       seeVesselsOnMap_one: 'See {{count}} vessel on map'
       seeVesselsOnMap_other: 'See {{count}} vessels on map'
+      seeing: 'Seeing'
       selectVessel: 'Select vessel'
       selectVesselResults: 'Select results to see vessels on map'
       suggestion: 'Did you mean'
       title: 'Search'
       vesselAlreadyInWorkspace: 'This vessel is already in your workspace'
-      vessels: 'Search vessels'
       vesselSelected: 'Vessel selected'
+      vessels: 'Search vessels'
     }
     selects: {
       allSelected: 'All'
@@ -1230,6 +1230,7 @@ interface Resources {
       vesselSearch: 'Vessel Search'
     }
     vessel: {
+      Other: 'Other'
       activityByType: 'Activity by type'
       activityByVoyages: 'Timeline by voyages'
       addToWorkspace: 'Add vessel to workspace'
@@ -1257,11 +1258,8 @@ interface Resources {
       flag: 'Flag'
       flag_other: 'Flags'
       fleet: 'Fleet'
-      geartype: 'Gear type'
-      geartype_other: 'Gear types'
       gearType: 'Gear Type'
       gearType_short: 'gear'
-      geartypes: 'Gear types'
       gearTypes: {
         bunker: 'Bunker'
         bunker_or_tanker: 'Bunker or Tanker'
@@ -1319,6 +1317,9 @@ interface Resources {
         tuna_purse_seines: 'Tuna purse seine'
         well_boat: 'Well boat'
       }
+      geartype: 'Gear type'
+      geartype_other: 'Gear types'
+      geartypes: 'Gear types'
       gfw_geartypes: 'GFW Gear type'
       gfw_shiptypes: 'GFW Vessel type'
       goToImage: 'Go to image {{number}}'
@@ -1336,41 +1337,9 @@ interface Resources {
         selfReported: 'Self reported'
       }
       insights: {
-        countries: {
-          paris: 'Paris'
-          tokyo: 'Tokyo'
-        }
-        coverage: 'AIS Coverage'
-        disclaimerTimeRangeBeforeMinYear: 'Insights available from 1 January {{year}} onwards. Adjust your time range to view insights.'
-        errorPermisions: 'This insight is restricted to limited account users, contact us at support@globalfishingwatch.org for more details'
-        fishing: 'Fishing Events'
-        fishingEventsInNoTakeMpas: '{{count}} fishing events detected in no-take MPAs'
-        fishingEventsInNoTakeMpas_one: '{{count}} fishing events detected in no-take MPAs'
-        fishingEventsInNoTakeMpas_other: '{{count}} fishing events detected in no-take MPAs'
-        fishingEventsInNoTakeMpasEmpty: 'No fishing events detected in no-take MPAs'
-        fishingEventsInRfmoWithoutKnownAuthorization: '{{count}} fishing events detected outside known RFMO authorized areas'
-        fishingEventsInRfmoWithoutKnownAuthorization_one: '{{count}} fishing events detected outside known RFMO authorized areas'
-        fishingEventsInRfmoWithoutKnownAuthorization_other: '{{count}} fishing events detected outside known RFMO authorized areas'
-        fishingEventsInRfmoWithoutKnownAuthorizationEmpty: 'No fishing events detected outside known RFMO authorized areas'
-        flagChanges: 'Flag changes'
-        flagChangesCount: '{{count}} flag changes'
-        flagChangesCount_one: '{{count}} flag changes'
-        flagChangesCount_other: '{{count}} flag changes'
-        flagChangesEmpty: 'No flag changes'
-        gaps: 'AIS Off Events'
-        gapsEvents: '{{count}} AIS Off events detected'
-        gapsEvents_one: '{{count}} AIS Off events detected'
-        gapsEvents_other: '{{count}} AIS Off events detected'
-        gapsEventsEmpty: 'No AIS Off events detected'
-        gapsSeeLess: 'See less'
-        gapsSeeMore: 'See more'
         IUU: 'RFMO IUU Vessel List'
         IUUBlackListsCount: 'The vessel is present on an RFMO IUU vessel list'
         IUUBlackListsEmpty: 'The vessel is not present on an RFMO IUU vessel list'
-        list: {
-          black: 'black'
-          grey: 'grey'
-        }
         MOULists: 'Tokyo and Paris MOU Lists'
         MOUListsEmpty: 'Flying under a flag/flags not present on the Tokyo or Paris MOU black or grey lists'
         MOUParisBlackListsCount: 'Flag present on the Paris MOU black list ({{flags}})'
@@ -1381,14 +1350,46 @@ interface Resources {
         MOUTokyoGreyListsCount: 'Flag present on the Tokyo MOU grey list ({{flags}})'
         MOUTokyoListsCount: 'Flag present on the Tokyo MOU black or grey list ({{flags}})'
         MOUTokyoListsPreviousAppearance: 'Previously flew under another flag on the Tokyo MOU black or grey lists'
+        countries: {
+          paris: 'Paris'
+          tokyo: 'Tokyo'
+        }
+        coverage: 'AIS Coverage'
+        disclaimerTimeRangeBeforeMinYear: 'Insights available from 1 January {{year}} onwards. Adjust your time range to view insights.'
+        errorPermisions: 'This insight is restricted to limited account users, contact us at support@globalfishingwatch.org for more details'
+        fishing: 'Fishing Events'
+        fishingEventsInNoTakeMpas: '{{count}} fishing events detected in no-take MPAs'
+        fishingEventsInNoTakeMpasEmpty: 'No fishing events detected in no-take MPAs'
+        fishingEventsInNoTakeMpas_one: '{{count}} fishing events detected in no-take MPAs'
+        fishingEventsInNoTakeMpas_other: '{{count}} fishing events detected in no-take MPAs'
+        fishingEventsInRfmoWithoutKnownAuthorization: '{{count}} fishing events detected outside known RFMO authorized areas'
+        fishingEventsInRfmoWithoutKnownAuthorizationEmpty: 'No fishing events detected outside known RFMO authorized areas'
+        fishingEventsInRfmoWithoutKnownAuthorization_one: '{{count}} fishing events detected outside known RFMO authorized areas'
+        fishingEventsInRfmoWithoutKnownAuthorization_other: '{{count}} fishing events detected outside known RFMO authorized areas'
+        flagChanges: 'Flag changes'
+        flagChangesCount: '{{count}} flag changes'
+        flagChangesCount_one: '{{count}} flag changes'
+        flagChangesCount_other: '{{count}} flag changes'
+        flagChangesEmpty: 'No flag changes'
+        gaps: 'AIS Off Events'
+        gapsEvents: '{{count}} AIS Off events detected'
+        gapsEventsEmpty: 'No AIS Off events detected'
+        gapsEvents_one: '{{count}} AIS Off events detected'
+        gapsEvents_other: '{{count}} AIS Off events detected'
+        gapsSeeLess: 'See less'
+        gapsSeeMore: 'See more'
+        list: {
+          black: 'black'
+          grey: 'grey'
+        }
         sectionTitle: 'Vessel insights between {{start}} and {{end}}'
       }
       lastTransmissionDate: 'Last transmission date'
       length: 'Length'
       lengthM: 'Length (m)'
       lengthRange: 'Length range'
-      license_category: 'License category'
       licenseCode: 'License code'
+      license_category: 'License category'
       linkToVessel: 'Check the vessel profile here'
       loading: 'Loading vessel track'
       loadingInfo: 'Loading vessel info'
@@ -1397,22 +1398,21 @@ interface Resources {
       matricula: 'Matricula'
       mmsi: 'MMSI'
       nationalId: 'National ID'
-      neural_vessel_type: 'SAR vessel type'
       neuralVesselType: 'Neural vessel type'
+      neural_vessel_type: 'SAR vessel type'
       noActivityData: 'There is no activity information for this vessel'
       noEncountersInTimeRange: 'There are no encounters fully contained in your timerange.'
       noEncountersVisible: 'Please turn on encounter events visibility.'
       noEventsIn: 'No event in your timerange happened in any {{regionType}}'
       noEventsinTimeRange: 'There are no events fully contained in your timerange.'
       noOwnersMatch: "We can't find other vessels with this owner"
-      notMatched: 'No data matched'
       noTrackAvailable: 'There is no track available'
-      noVoyagesinTimeRange: 'There are no voyages fully contained in your timerange.'
       noVoyagesWithoutPorts: 'Please turn on port visits visibility'
+      noVoyagesinTimeRange: 'There are no voyages fully contained in your timerange.'
+      notMatched: 'No data matched'
       onScreen: 'Vessels on screen'
       operator: 'Operator'
       origin: 'Origin'
-      Other: 'Other'
       owner: 'Owner'
       owners: 'Owners'
       recordId: 'Record ID'
@@ -1443,22 +1443,21 @@ interface Resources {
       source_short: 'Source'
       ssvid: 'Ssvid (MMSI)'
       summary: '{{events}} {{voyages}} between <strong>{{timerangeStart}}</strong> and <strong>{{timerangeEnd}}</strong>'
-      target_species: 'Target species'
       targetSpecies: 'Target species'
+      target_species: 'Target species'
       title: 'Vessel profile'
       toggleAllVessels: 'Toggle all vessels visibility'
       tonnageGt: 'Tonnage (Gt)'
       trackLogin: 'One of your selected sources requires you to <1>log in</1> to see vessel tracks and events'
       trackResolution: '<0>Login</0> to see more detailed vessel tracks (free, 2 minutes)'
-      transmission_other: 'Transmissions'
       transmissionDateFrom: 'Timeframe Date Start'
-      transmissionDates: 'Transmission dates'
       transmissionDateTo: 'Timeframe Date End'
+      transmissionDates: 'Transmission dates'
+      transmission_other: 'Transmissions'
       type: 'Type'
       unknownRegionEvents: 'Outside {{regionType}} areas'
       unkwownVesselByGeartype: 'Unknown {{gearType}}'
       unmatched: 'unmatched'
-      vessel_type: 'Vessel type'
       vesselCorrection: {
         analystComments: 'Analyst comments'
         commentPlaceholder: 'Please provide supportive source reference(s) to your correction and describe your correction rationale.'
@@ -1486,6 +1485,7 @@ interface Resources {
         support: 'Support'
         unknown: 'Other'
       }
+      vessel_type: 'Vessel type'
       voyage_one: 'voyage'
       voyage_other: 'voyages'
       widthRange: 'Width range'
@@ -1540,6 +1540,15 @@ interface Resources {
     vesselGroupReport: {
       clickToSee: 'Click to analyse vessel group and see report'
       insights: {
+        IUUBlackListsCount: '{{vessels}} vessels are present on a RFMO IUU vessel list'
+        IUUBlackListsCount_one: '{{vessels}} vessel is present on a RFMO IUU vessel list'
+        IUUBlackListsCount_other: '{{vessels}} vessels are present on a RFMO IUU vessel list'
+        IUUBlackListsEmpty: 'No vessels are present on a RFMO IUU vessel list'
+        MOULists: 'MOU Lists'
+        MOUListsCount: '{{vessels}} vessels operated under a flag present on the {{list}} list'
+        MOUListsCount_one: '{{vessels}} vessel operated under a flag present on the {{list}} list'
+        MOUListsCount_other: '{{vessels}} vessels operated under a flag present on the {{list}} list'
+        MOUListsEmpty: 'No vessels flying under a flag present on the {{country}} MOU black or grey lists'
         fishingEventsError: 'There was an error loading the fishing events'
         fishingInNoTakeMpas_one: '{{count}} fishing event from {{vessels}} vessels detected in no-take MPAs'
         fishingInNoTakeMpas_other: '{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs'
@@ -1551,15 +1560,6 @@ interface Resources {
         flagChangesEmpty: 'There are no vessels with flag changes'
         gaps_one: '{{count}} AIS Off Event from {{vessels}} vessels detected'
         gaps_other: '{{count}} AIS Off Event from {{vessels}} vessels detected'
-        IUUBlackListsCount: '{{vessels}} vessels are present on a RFMO IUU vessel list'
-        IUUBlackListsCount_one: '{{vessels}} vessel is present on a RFMO IUU vessel list'
-        IUUBlackListsCount_other: '{{vessels}} vessels are present on a RFMO IUU vessel list'
-        IUUBlackListsEmpty: 'No vessels are present on a RFMO IUU vessel list'
-        MOULists: 'MOU Lists'
-        MOUListsCount: '{{vessels}} vessels operated under a flag present on the {{list}} list'
-        MOUListsCount_one: '{{vessels}} vessel operated under a flag present on the {{list}} list'
-        MOUListsCount_other: '{{vessels}} vessels operated under a flag present on the {{list}} list'
-        MOUListsEmpty: 'No vessels flying under a flag present on the {{country}} MOU black or grey lists'
         title: 'Vessel group insights'
       }
       linkDisabled: 'This vessel group needs to be updated to latest available data'
@@ -1623,9 +1623,9 @@ interface Resources {
       remove: 'Remove workspace'
       save: 'Save the current workspace'
       saveAs: 'Save as a new workspace'
-      saved: "The current workspace has been saved and it's available in your profile."
       saveLogin: 'Register and log in to save workspaces (free, 2 minutes)'
       saveOwnerOnly: 'This workspace can only be edited by its creator'
+      saved: "The current workspace has been saved and it's available in your profile."
       sharePrivateDisclaimer: 'This workspace contains datasets that require special permissions'
       sharePrivatePermissionsRequired: 'permissions required'
       siteDescription: {
@@ -1650,93 +1650,93 @@ interface Resources {
     }
   }
   workspaces: {
-    reports: {
-      'carrier-portal-report': {
-        name: 'Carrier Vessel Portal'
-        description: 'Verify transshipments, track vessels and identify frequently-visited ports to gain a better understanding of carrier vessel activities needed to strengthen transparency and accelerate transshipment reform.'
-        cta: 'Explore the carrier vessel portal'
-      }
-      'activity-report': {
-        name: 'Global Vessel Activity'
-        description: 'Monitor Apparent Fishing Effort and Vessel Presence in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries.'
-      }
-      'detections-report': {
-        name: 'Global Dark Vessel Detections'
-        description: 'Synthetic aperture radar (SAR) can detect at-sea vessels and structures in any weather conditions. The night lights detections (VIIRS) shows vessels at sea that satellites have detected by the light they emit at night.'
-      }
-      'events-report': {
-        name: 'Global Vessel Events'
-        description: 'Global activity on vessel events based on automatic identification system (AIS) , including encounters between two vessels, loitering and port visits.'
-      }
-    }
     'marine-manager': {
       'ascension-public': {
-        name: 'Ascension Island'
         description: 'Ascension Island is located in the middle of the Atlantic Ocean. In 2019,  all 445,000 square kilometers (171,800 square miles) of Ascension’s waters were designated as a marine protected area.'
-      }
-      'fiji-public': {
-        name: 'Fiji'
-        description: 'Located in the South Pacific, the Republic of Fiji consists of 322 islands and has an exclusive economic zone of over 1.2 million square kilometers (460,000 square miles).'
-      }
-      'galapagos-public': {
-        name: 'Galápagos'
-        description: 'A UNESCO World Heritage site, Galápagos Marine Reserve covers 133,000 square kilometers (51,300 square miles) of Pacific Ocean off the coast of South America.'
-      }
-      'guyana-public': {
-        name: 'Guyana'
-        description: 'Guyana’s exclusive economic zone is located off the northeastern coast of South America and covers 137,000 square kilometers (52,800 square miles) of ocean. '
-      }
-      'micronesia-public': {
-        name: 'Federated States of Micronesia'
-        description: 'Composed of 607 islands, the four states of the Federated States of Micronesia (Yap, Chuuk, Pohnpei, and Kosrae) have an exclusive economic zone of over 2.6 million square kilometers (1 million square miles).'
-      }
-      'maldives-public': {
-        name: 'Maldives'
-        description: 'The Republic of Maldives is an archipelago located in the Indian Ocean and has the seventh largest reef system in the world. Maldives has an exclusive economic zone that covers an area of nearly 1 million square kilometers (385,000 square miles).'
-      }
-      'niue-public': {
-        name: 'Niue'
-        description: 'Niue is located in the central Pacific Ocean and the Moana Mahu marine protected area covers 40 percent of Niue’s exclusive economic zone, covering 127,000 square kilometers (49,000 square miles).'
-      }
-      'palau-public': {
-        name: 'Palau'
-        description: 'The Republic of Palau is a group of islands located in the Western Pacific Ocean. In 2020, Palau fully protected 80% of its exclusive economic zone to form the Palau National Marine Sanctuary, representing 475,077 square kilometers (183,000 square miles), by closing these waters to all forms of extractive activities, including fishing. '
-      }
-      'tristan-public': {
-        name: 'Tristan da Cunha'
-        description: 'Tristan da Cunha is a remote island in the South Atlantic Ocean. In 2020, the Tristan da Cunha community designated 90 percent of its 690,000 square kilometer (266,400 square mile) ocean zone for marine protection.'
-      }
-      'mediterranean-public': {
-        name: 'Mediterranean and Black Sea'
-        description: 'The Mediterranean and Black Sea cover almost 3 million square kilometers (1.1 million square miles) of ocean between Europe and Africa. '
+        name: 'Ascension Island'
       }
       'cmar_core_mpas-public': {
-        name: 'CMAR core MPAs'
         description: 'Initiated in 2004, the Eastern Tropical Pacific Marine Conservation Corridor is a regional conservation and sustainable use initiative of the governments of Colombia, Costa Rica, Ecuador and Panama that seeks the proper management of biodiversity and marine and coastal resources through ecosystem management and the establishment of joint regional government strategies. All supported by civil society, international cooperation and non-governmental organizations, anchored in ten core MPAs in the Pacific ocean EEZs of the four countries.'
-      }
-      'costa_rica_1-public': {
-        name: 'Costa Rica'
-        description: 'Cocos Island National Park is a fully protected area spanning nearly 55,000 square kilometers. Bicentennial Marine Managed Area which surrounds Cocos Island National Park is 106,000 square kilometers.'
+        name: 'CMAR core MPAs'
       }
       'colombia_3-public': {
-        name: 'Colombia'
         description: 'Colombia has created and managed MPAs along its Pacific and Caribbean coasts spanning Yurupari-Malpelo Integrated Management District, where the fully protected Malpelo Sanctuary of Fauna and Flora is nested, Lomas and Colinas, Gorgona, and Cabo Manglares in the Pacific Ocean, as well as Beata and Corales de Profundidad in the Caribbean Sea. '
+        name: 'Colombia'
       }
-      'panama_1-public': {
-        name: 'Panama'
-        description: 'Marine protected areas in Panama total just over 98,000 square kilometers (approximately 38,000 square miles), which include Coiba National Park, a UNESCO World Heritage Site that is a coastal marine protected area off the southwest coast, and the Coiba Ridge Managed Resource Area.'
+      'costa_rica_1-public': {
+        description: 'Cocos Island National Park is a fully protected area spanning nearly 55,000 square kilometers. Bicentennial Marine Managed Area which surrounds Cocos Island National Park is 106,000 square kilometers.'
+        name: 'Costa Rica'
       }
-      'reserva_de_la_biosfera_cmar-public': {
-        name: 'CMAR core MPAs'
-        description: 'Initiated in 2004, the Eastern Tropical Pacific Marine Corridor is a voluntary regional cooperative effort to protect one of the most productive and biodiverse ecosystems.'
+      'fiji-public': {
+        description: 'Located in the South Pacific, the Republic of Fiji consists of 322 islands and has an exclusive economic zone of over 1.2 million square kilometers (460,000 square miles).'
+        name: 'Fiji'
+      }
+      'galapagos-public': {
+        description: 'A UNESCO World Heritage site, Galápagos Marine Reserve covers 133,000 square kilometers (51,300 square miles) of Pacific Ocean off the coast of South America.'
+        name: 'Galápagos'
       }
       'galapagos_and_hermandad-public': {
-        name: 'Galapagos and Hermandad'
         description: 'Galápagos Marine Reserve covers 133,000 square kilometers (51,300 square miles) of Pacific Ocean off the coast of South America. The Galápagos Marine Reserve was expanded with the creation of the Hermandad Marine Reserve to cover an additional 60,000 square kilometers (23,000 square miles).'
+        name: 'Galapagos and Hermandad'
+      }
+      'guyana-public': {
+        description: 'Guyana’s exclusive economic zone is located off the northeastern coast of South America and covers 137,000 square kilometers (52,800 square miles) of ocean. '
+        name: 'Guyana'
+      }
+      'maldives-public': {
+        description: 'The Republic of Maldives is an archipelago located in the Indian Ocean and has the seventh largest reef system in the world. Maldives has an exclusive economic zone that covers an area of nearly 1 million square kilometers (385,000 square miles).'
+        name: 'Maldives'
+      }
+      'mediterranean-public': {
+        description: 'The Mediterranean and Black Sea cover almost 3 million square kilometers (1.1 million square miles) of ocean between Europe and Africa. '
+        name: 'Mediterranean and Black Sea'
+      }
+      'micronesia-public': {
+        description: 'Composed of 607 islands, the four states of the Federated States of Micronesia (Yap, Chuuk, Pohnpei, and Kosrae) have an exclusive economic zone of over 2.6 million square kilometers (1 million square miles).'
+        name: 'Federated States of Micronesia'
+      }
+      'niue-public': {
+        description: 'Niue is located in the central Pacific Ocean and the Moana Mahu marine protected area covers 40 percent of Niue’s exclusive economic zone, covering 127,000 square kilometers (49,000 square miles).'
+        name: 'Niue'
+      }
+      'palau-public': {
+        description: 'The Republic of Palau is a group of islands located in the Western Pacific Ocean. In 2020, Palau fully protected 80% of its exclusive economic zone to form the Palau National Marine Sanctuary, representing 475,077 square kilometers (183,000 square miles), by closing these waters to all forms of extractive activities, including fishing. '
+        name: 'Palau'
+      }
+      'panama_1-public': {
+        description: 'Marine protected areas in Panama total just over 98,000 square kilometers (approximately 38,000 square miles), which include Coiba National Park, a UNESCO World Heritage Site that is a coastal marine protected area off the southwest coast, and the Coiba Ridge Managed Resource Area.'
+        name: 'Panama'
+      }
+      'reserva_de_la_biosfera_cmar-public': {
+        description: 'Initiated in 2004, the Eastern Tropical Pacific Marine Corridor is a voluntary regional cooperative effort to protect one of the most productive and biodiverse ecosystems.'
+        name: 'CMAR core MPAs'
       }
       'revillagigedo-public': {
-        name: 'Revillagigedo'
         description: 'Centered on four volcanic islands south of Mexico’s Baja California peninsula, Revillagigedo National Park was created in 2017 and spans 148,000 square kilometers.'
+        name: 'Revillagigedo'
+      }
+      'tristan-public': {
+        description: 'Tristan da Cunha is a remote island in the South Atlantic Ocean. In 2020, the Tristan da Cunha community designated 90 percent of its 690,000 square kilometer (266,400 square mile) ocean zone for marine protection.'
+        name: 'Tristan da Cunha'
+      }
+    }
+    reports: {
+      'activity-report': {
+        description: 'Monitor Apparent Fishing Effort and Vessel Presence in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries.'
+        name: 'Global Vessel Activity'
+      }
+      'carrier-portal-report': {
+        cta: 'Explore the carrier vessel portal'
+        description: 'Verify transshipments, track vessels and identify frequently-visited ports to gain a better understanding of carrier vessel activities needed to strengthen transparency and accelerate transshipment reform.'
+        name: 'Carrier Vessel Portal'
+      }
+      'detections-report': {
+        description: 'Synthetic aperture radar (SAR) can detect at-sea vessels and structures in any weather conditions. The night lights detections (VIIRS) shows vessels at sea that satellites have detected by the light they emit at night.'
+        name: 'Global Dark Vessel Detections'
+      }
+      'events-report': {
+        description: 'Global activity on vessel events based on automatic identification system (AIS) , including encounters between two vessels, loitering and port visits.'
+        name: 'Global Vessel Events'
       }
     }
   }
