@@ -186,7 +186,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
             radiusScale: undefined,
           })
         }
-      } else if (clusterIndex !== undefined) {
+      } else if (clusterIndex !== undefined && (clusterIndex as any).points?.length > 0) {
         const { clusters, points, radiusScale } = this._getClustersByZoom(Math.round(zoom))
         this.setState({
           clusters: clusters,
@@ -219,35 +219,42 @@ export class FourwingsClustersLayer extends CompositeLayer<
     let expansionBounds: Bbox | undefined
     const { zoom } = this.context.viewport
     if ((this.state.clusterIndex as any)?.points?.length && info.object?.properties.cluster_id) {
-      const points = this.state.clusterIndex.getLeaves(info.object?.properties.cluster_id, Infinity)
-      const areAllPointsInSameCell =
-        points?.length > 0 &&
-        points[0]?.properties?.cellNum !== undefined &&
-        points.every((p) => p.properties.cellNum === points[0].properties.cellNum)
-
-      if (!areAllPointsInSameCell) {
-        let newExpansionZoom = Math.min(
-          this.state.clusterIndex.getClusterExpansionZoom(info.object?.properties.cluster_id),
-          MAX_CLUSTER_EXPANSION_ZOOM
+      try {
+        const points = this.state.clusterIndex.getLeaves(
+          info.object?.properties.cluster_id,
+          Infinity
         )
-        newExpansionZoom = newExpansionZoom > zoom ? newExpansionZoom : Math.round(zoom) + 0.5
-        if (newExpansionZoom <= MAX_CLUSTER_EXPANSION_ZOOM) {
-          expansionZoom = newExpansionZoom
-        }
-        if (points[0]?.properties?.cellBounds) {
-          const bounds = points.reduce(
-            (acc, point) => {
-              return [
-                Math.min(acc[0], point.properties.cellBounds?.[0]),
-                Math.min(acc[1], point.properties.cellBounds?.[1]),
-                Math.max(acc[2], point.properties.cellBounds?.[2]),
-                Math.max(acc[3], point.properties.cellBounds?.[3]),
-              ] as Bbox
-            },
-            [Infinity, Infinity, -Infinity, -Infinity] as Bbox
+        const areAllPointsInSameCell =
+          points?.length > 0 &&
+          points[0]?.properties?.cellNum !== undefined &&
+          points.every((p) => p.properties.cellNum === points[0].properties.cellNum)
+
+        if (!areAllPointsInSameCell) {
+          let newExpansionZoom = Math.min(
+            this.state.clusterIndex.getClusterExpansionZoom(info.object?.properties.cluster_id),
+            MAX_CLUSTER_EXPANSION_ZOOM
           )
-          expansionBounds = bounds
+          newExpansionZoom = newExpansionZoom > zoom ? newExpansionZoom : Math.round(zoom) + 0.5
+          if (newExpansionZoom <= MAX_CLUSTER_EXPANSION_ZOOM) {
+            expansionZoom = newExpansionZoom
+          }
+          if (points[0]?.properties?.cellBounds) {
+            const bounds = points.reduce(
+              (acc, point) => {
+                return [
+                  Math.min(acc[0], point.properties.cellBounds?.[0]),
+                  Math.min(acc[1], point.properties.cellBounds?.[1]),
+                  Math.max(acc[2], point.properties.cellBounds?.[2]),
+                  Math.max(acc[3], point.properties.cellBounds?.[3]),
+                ] as Bbox
+              },
+              [Infinity, Infinity, -Infinity, -Infinity] as Bbox
+            )
+            expansionBounds = bounds
+          }
         }
+      } catch (error) {
+        console.warn('Cluster ID not found in current object:', info.object, error)
       }
     }
     const object = {
@@ -276,28 +283,37 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   _getClustersByZoom = (zoom: number) => {
-    if (!this.state.clusterIndex?.getClusters) {
+    if (!this.state.clusterIndex || !(this.state.clusterIndex as any).points?.length) {
       return { clusters: undefined, points: undefined, radiusScale: undefined }
     }
-    const allClusters = this.state.clusterIndex.getClusters([-180, -85, 180, 85], Math.round(zoom))
-    const clusters: FourwingsClusterFeature[] = []
-    const points: FourwingsPointFeature[] = []
 
-    if (allClusters.length) {
-      allClusters.forEach((f) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        f.properties.value > 1
-          ? clusters.push(f as FourwingsClusterFeature)
-          : points.push(f as FourwingsPointFeature)
-      })
+    try {
+      const allClusters = this.state.clusterIndex.getClusters(
+        [-180, -85, 180, 85],
+        Math.round(zoom)
+      )
+      const clusters: FourwingsClusterFeature[] = []
+      const points: FourwingsPointFeature[] = []
+
+      if (allClusters.length) {
+        allClusters.forEach((f) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+          f.properties.value > 1
+            ? clusters.push(f as FourwingsClusterFeature)
+            : points.push(f as FourwingsPointFeature)
+        })
+      }
+
+      const counts = clusters.map((cluster) => cluster.properties.value)
+      const radiusScale = scaleSqrt()
+        .domain([1, counts.length ? max(counts) : 1])
+        .range([MIN_CLUSTER_RADIUS, MAX_CLUSTER_RADIUS])
+
+      return { clusters, points, radiusScale }
+    } catch (error) {
+      console.warn('Error getting clusters by zoom:', error)
+      return { clusters: undefined, points: undefined, radiusScale: undefined }
     }
-
-    const counts = clusters.map((cluster) => cluster.properties.value)
-    const radiusScale = scaleSqrt()
-      .domain([1, counts.length ? max(counts) : 1])
-      .range([MIN_CLUSTER_RADIUS, MAX_CLUSTER_RADIUS])
-
-    return { clusters, points, radiusScale }
   }
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
