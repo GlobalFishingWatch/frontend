@@ -223,7 +223,7 @@ export const useClickedEventConnect = () => {
         (f) => f.category === DataviewCategory.Events && isTilesClusterLayer(f)
       ) as SliceExtendedClusterPickingObject
 
-      if (tileClusterFeature) {
+      if (tileClusterFeature && !areTilesClusterLoading) {
         const dataset = eventsDataviews?.find((d) => d.id === tileClusterFeature?.layerId)
           ?.datasets?.[0]
         if (!getIsBQEditorDataset(dataset!)) {
@@ -232,7 +232,7 @@ export const useClickedEventConnect = () => {
         }
       }
     },
-    [dispatch, eventsDataviews, setInteractionPromises]
+    [dispatch, eventsDataviews, setInteractionPromises, areTilesClusterLoading]
   )
 
   const handleVesselEventInteraction = useCallback(
@@ -301,6 +301,9 @@ export const useClickedEventConnect = () => {
       ) as FourwingsClusterPickingObject
 
       if (clusterFeature) {
+        if (areTilesClusterLoading) {
+          return
+        }
         if (clusterFeature.clusterMode === 'country') {
           const dataview = eventsDataviews?.find((d) => d.id === clusterFeature.layerId)
           const maxZoomLevel = dataview?.config?.clusterMaxZoomLevels?.country || event.zoom!
