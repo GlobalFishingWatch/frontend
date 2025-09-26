@@ -1952,6 +1952,14 @@
     "name": "crwdns69196:0crwdne69196:0",
     "description": "crwdns69198:0crwdne69198:0"
   },
+  "public-ports": {
+    "name": "crwdns106608:0crwdne106608:0",
+    "description": "crwdns106610:0crwdne106610:0",
+    "schema": {
+      "name": "crwdns106612:0crwdne106612:0",
+      "port_id": "crwdns106614:0crwdne106614:0"
+    }
+  },
   "public-presence-viirs-match-prototype": {
     "name": "crwdns67325:0crwdne67325:0",
     "description": "crwdns67327:0crwdne67327:0",

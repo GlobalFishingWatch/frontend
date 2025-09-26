@@ -10,11 +10,14 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { InputText } from '@globalfishingwatch/ui-components'
 
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { t as trans } from 'features/i18n/i18n'
+import { ReportCategory } from 'features/reports/reports.types'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { useOceanAreas } from 'hooks/ocean-areas'
-import { WORKSPACE_REPORT } from 'routes/routes'
+import { PORT_REPORT, WORKSPACE_REPORT } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectLocationQuery } from 'routes/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
@@ -37,6 +40,7 @@ function AreaReportSearch() {
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
   const [selectedItem, setSelectedItem] = useState<OceanArea | null>(null)
   const [inputSearch, setInputSearch] = useState<string>('')
+  const workspace = useSelector(selectWorkspace)
   const dataviews = useSelector(selectContextAreasDataviews)
   const query = useSelector(selectLocationQuery)
   const { searchOceanAreas } = useOceanAreas()
@@ -87,13 +91,31 @@ function AreaReportSearch() {
               return d
             })
           : [...(query.dataviewInstances || []), { id: dataview.id, config: { visible: true } }]
-        dispatchLocation(WORKSPACE_REPORT, {
-          payload: { datasetId, areaId: area.properties.area },
-          query: {
-            ...query,
-            dataviewInstances,
-          },
-        })
+        if (area.properties?.type === 'port') {
+          dispatchLocation(PORT_REPORT, {
+            payload: {
+              category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+              workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+              portId: area.properties.area,
+            },
+            query: {
+              ...query,
+              reportCategory: ReportCategory.Events,
+              portsReportName: area.properties.name,
+              portsReportCountry: area.properties.area?.toString().split('-')[0]?.toUpperCase(),
+              portsReportDatasetId: datasetId,
+              dataviewInstances,
+            },
+          })
+        } else {
+          dispatchLocation(WORKSPACE_REPORT, {
+            payload: { datasetId, areaId: area.properties.area },
+            query: {
+              ...query,
+              dataviewInstances,
+            },
+          })
+        }
       }
     } else {
       console.warn('No dataset found for area', area)
