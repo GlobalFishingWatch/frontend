@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -6,6 +6,7 @@ import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
@@ -51,6 +52,13 @@ function EncounterTooltipRow({
   loading,
 }: EncounterTooltipRowProps) {
   const { t } = useTranslation()
+
+  const seeEncounterClick = useCallback(() => {
+    trackEvent({
+      category: TrackCategory.GlobalReports,
+      action: `Clicked see encounter event`,
+    })
+  }, [])
 
   const event = parseEncounterEvent(feature.event)
   const interval = getFourwingsInterval(feature.startTime, feature.endTime)
@@ -173,7 +181,12 @@ function EncounterTooltipRow({
                           showTooltip={false}
                           className={styles.btnLarge}
                         >
-                          <Button target="_blank" size="small" className={styles.btnLarge}>
+                          <Button
+                            target="_blank"
+                            size="small"
+                            className={styles.btnLarge}
+                            onClick={seeEncounterClick}
+                          >
                             {t('common.seeMore')}
                           </Button>
                         </VesselLink>

@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -6,6 +6,7 @@ import cx from 'classnames'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
@@ -38,6 +39,13 @@ function PortVisitEventTooltipRow({
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const { datasetId, event, color } = feature
   const title = getDatasetLabel({ id: datasetId! })
+
+  const seePortReportClick = useCallback(() => {
+    trackEvent({
+      category: TrackCategory.GlobalReports,
+      action: `Clicked see port report`,
+    })
+  }, [])
 
   return (
     <div className={styles.popupSection}>
@@ -79,7 +87,10 @@ function PortVisitEventTooltipRow({
             )}
             {event?.port && !isPortReportLocation && (
               <PortsReportLink port={event.port}>
-                <Button className={cx(styles.portCTA, styles.rowMarginTop)}>
+                <Button
+                  className={cx(styles.portCTA, styles.rowMarginTop)}
+                  onClick={seePortReportClick}
+                >
                   {t('portsReport.seePortReport')} {event.port.name && `(${event.port.name})`}
                 </Button>
               </PortsReportLink>
