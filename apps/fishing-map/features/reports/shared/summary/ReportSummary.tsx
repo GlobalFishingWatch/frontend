@@ -83,7 +83,7 @@ export default function ReportSummary({
             <IconButton
               icon="plus"
               type="border"
-              size="medium"
+              size="small"
               tooltip={t('layer.add')}
               tooltipPlacement="top"
               onClick={onAddLayerClick}
