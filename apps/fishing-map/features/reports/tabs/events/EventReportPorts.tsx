@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -7,6 +7,7 @@ import { useDebounce } from 'use-debounce'
 
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
 
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
 import { selectReportEventsPortsFilter } from 'features/reports/reports.config.selectors'
@@ -60,6 +61,14 @@ function EventReportPorts() {
     dispatchQueryParams({ reportEventsPortsPage: pagination.page + 1 })
   }
 
+  const seePortsClick = useCallback(() => {
+    updateReportHash()
+    trackEvent({
+      category: TrackCategory.GlobalReports,
+      action: `Clicked see ports after events`,
+    })
+  }, [updateReportHash])
+
   const onTogglePortFilter = (portId: string) => {
     const isPortInFilter = eventsDataview.config?.filters?.next_port_id?.includes(portId)
     const newDataviewConfig = {
@@ -86,7 +95,7 @@ function EventReportPorts() {
       <ReportVesselsPlaceholder animate={false} showGraph={false} showSearch={false}>
         <div className={cx(styles.cover, styles.center, styles.top)}>
           <p>{t('eventsReport.newTimeRangePorts')}</p>
-          <Button onClick={updateReportHash}>{t('eventsReport.seePorts')}</Button>
+          <Button onClick={seePortsClick}>{t('eventsReport.seePorts')}</Button>
         </div>
       </ReportVesselsPlaceholder>
     )
