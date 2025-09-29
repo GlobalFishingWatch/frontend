@@ -6,12 +6,16 @@ import cx from 'classnames'
 import type { UseComboboxStateChange } from 'downshift'
 import { useCombobox } from 'downshift'
 
+import type { Dataview } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { InputText } from '@globalfishingwatch/ui-components'
 
+import { OCEAN_AREAS_DATAVIEWS } from 'data/dataviews'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
+import { getDataviewInstanceFromDataview } from 'features/dataviews/dataviews.utils'
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { t as trans } from 'features/i18n/i18n'
 import { ReportCategory } from 'features/reports/reports.types'
@@ -43,7 +47,8 @@ function AreaReportSearch() {
   const [selectedItem, setSelectedItem] = useState<OceanArea | null>(null)
   const [inputSearch, setInputSearch] = useState<string>('')
   const workspace = useSelector(selectWorkspace)
-  const dataviews = useSelector(selectContextAreasDataviews)
+  const contextAreasDataviews = useSelector(selectContextAreasDataviews)
+  const allDataviews = useSelector(selectAllDataviews)
   const query = useSelector(selectLocationQuery)
   const { searchOceanAreas } = useOceanAreas()
   const { dispatchLocation } = useLocationConnect()
@@ -72,13 +77,24 @@ function AreaReportSearch() {
   }
 
   const navigateToAreaReport = (area: OceanArea) => {
-    const dataview = dataviews?.find((dataview) => dataview.slug?.includes(area.properties?.type))
-    if (dataview) {
+    let dataview: Dataview | UrlDataviewInstance | undefined = contextAreasDataviews?.find(
+      (dataview) => dataview.slug?.includes(area.properties?.type)
+    )
+    let dataviewInstance = (query.dataviewInstances || []).find(
+      (d: UrlDataviewInstance) => d.id === dataview?.id
+    )
+    if (!dataviewInstance) {
+      dataview = allDataviews.find(
+        (dataview) =>
+          OCEAN_AREAS_DATAVIEWS.includes(dataview.slug as any) &&
+          dataview.slug?.includes(area.properties?.type)
+      )
+      dataviewInstance = getDataviewInstanceFromDataview(dataview as Dataview)
+    }
+
+    if (dataview && dataviewInstance) {
       const datasetId = dataview.datasetsConfig?.[0]?.datasetId
       if (datasetId) {
-        const dataviewInstance = (query.dataviewInstances || []).find(
-          (d: UrlDataviewInstance) => d.id === dataview.id
-        )
         const dataviewInstances = dataviewInstance
           ? query.dataviewInstances.map((d: UrlDataviewInstance) => {
               if (d.id === dataviewInstance.id) {
@@ -118,9 +134,11 @@ function AreaReportSearch() {
             },
           })
         }
+      } else {
+        console.warn('No datasetId found for area', area)
       }
     } else {
-      console.warn('No dataset found for area', area)
+      console.warn('No dataview or dataviewInstance found for area', area)
     }
   }
 
