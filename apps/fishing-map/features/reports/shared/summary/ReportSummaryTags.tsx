@@ -29,9 +29,10 @@ import styles from './ReportSummaryTags.module.css'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
+  allowDelete?: boolean
 }
 
-export default function ReportSummaryTags({ dataview }: LayerPanelProps) {
+export default function ReportSummaryTags({ dataview, allowDelete = false }: LayerPanelProps) {
   const { t } = useTranslation()
   const reportCategory = useSelector(selectReportCategory)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -118,7 +119,11 @@ export default function ReportSummaryTags({ dataview }: LayerPanelProps) {
           reportCategory === ReportCategory.Events ||
           reportCategory === ReportCategory.Others) && (
           <Fragment>
-            <DatasetFilterSource dataview={dataview} className={styles.tag} />
+            <DatasetFilterSource
+              dataview={dataview}
+              className={styles.tag}
+              allowDelete={allowDelete}
+            />
             {hasFilterSelected ? (
               filtersAllowed.map(({ id, label }) => (
                 <DatasetSchemaField

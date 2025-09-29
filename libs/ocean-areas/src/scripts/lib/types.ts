@@ -1,6 +1,6 @@
 import type { Feature } from 'geojson'
 
-export type AreaType = 'eez' | 'mpa' | 'fao' | 'rfmo' | 'ports'
+export type AreaType = 'eez' | 'mpa' | 'fao' | 'rfmo' | 'port'
 
 export type AreaConfig = {
   type: AreaType

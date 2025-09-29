@@ -1252,14 +1252,6 @@
     "name": "Loitering Events (AIS)",
     "description": "<h2>Overview</h2> <h3> Loitering events identify when a vessel is operating away from shore while moving at low speeds. Loitering events highlight when a vessel is behaving in a manner consistent with a potential encounter event (i.e. stationary or drifting slowly at sea) but no encountering vessel is visible on AIS. As such, these should not be considered indicators of likely encounter events, but rather periods of time when undetected encounters could have potentially occurred. </h3> <ul> <p>Global Fishing Watch classifies an event as a loitering event when:</p> <li> The vessel is located more than 20 nautical miles (37.04 kilometers) from shore, and </li> <li>Maintains an average speed of less than 2 knots,</li> <li>For a continuous period of at least 1 hour.</li> </ul> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of a rule-based algorithm being applied to AIS positional data. Loitering events should be cross-verified with other sources of information (like RFMO transshipment records) when possible. </li> <li> Vessels in loitering events may not be meeting any other vessels at the time of the event. Other events in which a vessel may remain fairly stationary or moving slowly while at sea include: maintenance, losing vessel power, idling during poor weather, waiting outside of port for permission to dock, normal fishing behavior, and more. </li> <li> Due to the individual definitions of loitering events, fishing events, and encounter events, it is possible for a single vessel movement pattern to trigger multiple event types. </li> <li> A loitering event position may not align exactly with the vessel’s tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within that event. As a result it is possible the vessel never occupied that precise location during the event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> Learn more about considerations of using AIS data by looking at the <a href=\"https://globalfishingwatch.org/data-documentation/apparent-fishing-events-ais/\" >AIS limitations section in the Apparent fishing events (AIS) data documentation.</a >. </p>",
     "schema": {
-      "duration": {
-        "keyword": "duration",
-        "enum": {
-          "0": "0",
-          "48": "48"
-        }
-      },
-      "next_port_id": "next_port_id",
       "type": {
         "keyword": "type",
         "enum": {
@@ -1273,7 +1265,15 @@
           "SEISMIC_VESSEL": "SEISMIC_VESSEL",
           "SUPPORT": "SUPPORT"
         }
-      }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id"
     }
   },
   "public-global-nitrate": {
@@ -1303,13 +1303,6 @@
     "name": "Visites de ports (AIS)",
     "description": "<h2>Overview</h2> <ul> <p> Global Fishing Watch detects vessel movements in and out of ports and classifies them into four distinct port event types: </p> <li>Port entry</li> <li>Port stop</li> <li>Port gap (a gap in AIS transmission while in port)</li> <li>Port exit</li> </ul> <p> These events are grouped to form port visit events, which represent a vessel’s presence at port based on AIS activity patterns. </p> <p> In the Global Fishing Watch map, only high-confidence port visits are shown. A port visit is determined with high confidence when a vessel is detected with a port entry, stop or gap, and exit. More specifically: </p> <p>A port visit is shown on the map when AIS data shows a vessel:</p> <ul> <li>Entering within 3 kilometers of an anchorage point at the port entry,</li> <li>Exiting within 4 kilometers of a known port exit, and either:</li> <ul> <li> Experiencing a port gap (i.e. no AIS transmissions for 4 hours or more, which may indicate AIS was turned off while in port), or </li> <li> Undergoing a port stop, where the vessel’s speed drops below 0.2 knots and later increases above 0.5 knots. </li> </ul> </ul> <p> Port stops are used to distinguish actual port visits from coastal transits. </p> <h2>Caveats</h2> <ul> <li> Lower-confidence port visits—often caused by noisy, sparse, or incomplete AIS transmissions—are currently excluded from the map. Lower-confidence port visits, while sometimes legitimate, can falsely suggest a port visit that did not occur. </li> <li> Ongoing port visits will not be identified on the map, as a port exit is required by definition for high-confidence port visits to be detected. </li> <li> Additionally, note that the Global Fishing Watch anchorages dataset may not capture all actual anchorage locations, which could lead to missing port events. Refer to the learn more section for a full list of anchorages. </li> <li> Global Fishing Watch recommends to verify port visits, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> <a href=\"https://globalfishingwatch.org/datasets-and-code-anchorages/\" >Learn more about anchorages, ports and voyages.</a > </p> <p> Learn more about considerations of using AIS data by looking at the <a href=\"https://globalfishingwatch.org/data-documentation/apparent-fishing-events-ais/\" >AIS limitations section in the Apparent fishing events (AIS) data documentation.</a >.",
     "schema": {
-      "duration": {
-        "keyword": "duration",
-        "enum": {
-          "2": "2",
-          "48": "48"
-        }
-      },
       "type": {
         "keyword": "type",
         "enum": {
@@ -1322,6 +1315,13 @@
           "PASSENGER": "PASSENGER",
           "SEISMIC_VESSEL": "SEISMIC_VESSEL",
           "SUPPORT": "SUPPORT"
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "2": "2",
+          "48": "48"
         }
       }
     }

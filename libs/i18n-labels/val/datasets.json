@@ -1252,14 +1252,6 @@
     "name": "crwdns66397:0crwdne66397:0",
     "description": "crwdns106622:0crwdne106622:0",
     "schema": {
-      "duration": {
-        "keyword": "crwdns84620:0crwdne84620:0",
-        "enum": {
-          "0": "crwdns84622:0crwdne84622:0",
-          "48": "crwdns84624:0crwdne84624:0"
-        }
-      },
-      "next_port_id": "crwdns84626:0crwdne84626:0",
       "type": {
         "keyword": "crwdns84452:0crwdne84452:0",
         "enum": {
@@ -1273,7 +1265,15 @@
           "SEISMIC_VESSEL": "crwdns84468:0crwdne84468:0",
           "SUPPORT": "crwdns84470:0crwdne84470:0"
         }
-      }
+      },
+      "duration": {
+        "keyword": "crwdns84620:0crwdne84620:0",
+        "enum": {
+          "0": "crwdns84622:0crwdne84622:0",
+          "48": "crwdns84624:0crwdne84624:0"
+        }
+      },
+      "next_port_id": "crwdns84626:0crwdne84626:0"
     }
   },
   "public-global-nitrate": {
@@ -1303,13 +1303,6 @@
     "name": "crwdns83804:0crwdne83804:0",
     "description": "crwdns106624:0crwdne106624:0",
     "schema": {
-      "duration": {
-        "keyword": "crwdns84628:0crwdne84628:0",
-        "enum": {
-          "2": "crwdns84630:0crwdne84630:0",
-          "48": "crwdns84632:0crwdne84632:0"
-        }
-      },
       "type": {
         "keyword": "crwdns84472:0crwdne84472:0",
         "enum": {
@@ -1322,6 +1315,13 @@
           "PASSENGER": "crwdns84486:0crwdne84486:0",
           "SEISMIC_VESSEL": "crwdns84488:0crwdne84488:0",
           "SUPPORT": "crwdns84490:0crwdne84490:0"
+        }
+      },
+      "duration": {
+        "keyword": "crwdns84628:0crwdne84628:0",
+        "enum": {
+          "2": "crwdns84630:0crwdne84630:0",
+          "48": "crwdns84632:0crwdne84632:0"
         }
       }
     }

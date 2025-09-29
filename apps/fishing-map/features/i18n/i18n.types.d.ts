@@ -943,6 +943,7 @@ interface Resources {
         fao: 'FAO'
         mpa: 'MPA'
         mpa_other: 'MPAs (WDPA)'
+        port: 'Port'
         rfmo: 'RFMOs'
       }
       areasOnScreen: 'Areas on the map'

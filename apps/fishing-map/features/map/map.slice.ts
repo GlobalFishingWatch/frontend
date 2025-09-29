@@ -83,6 +83,7 @@ export type ExtendedFeatureByVesselEventPort = {
   id?: string
   name?: string
   country?: string
+  flag?: string
   datasetId?: string
 }
 export type ExtendedFeatureByVesselEvent = {

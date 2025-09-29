@@ -200,6 +200,21 @@ export const reportEventsStatsApi = createApi({
           return baseQuery({ url, signal }) as Promise<{ data: ReportEventsStatsResponse }>
         })
         const settledPromises = await Promise.allSettled(promises)
+
+        const errorPromise = settledPromises.find(
+          (p) => p.status === 'rejected' || (p.status === 'fulfilled' && (p.value as any)?.error)
+        )
+
+        if (errorPromise) {
+          const error =
+            errorPromise?.status === 'rejected'
+              ? errorPromise.reason
+              : (errorPromise?.value as any)?.error
+          return {
+            error,
+          }
+        }
+
         const data = settledPromises.map((d) => {
           return d.status === 'fulfilled' && !(d.value as any).error
             ? (d.value as { data: ReportEventsStatsResponse }).data
@@ -221,6 +236,21 @@ export const reportEventsStatsApi = createApi({
           return baseQuery({ url, signal }) as Promise<{ data: ReportEventsVesselsResponse }>
         })
         const settledPromises = await Promise.allSettled(promises)
+
+        const errorPromise = settledPromises.find(
+          (p) => p.status === 'rejected' || (p.status === 'fulfilled' && (p.value as any)?.error)
+        )
+
+        if (errorPromise) {
+          const error =
+            errorPromise?.status === 'rejected'
+              ? errorPromise.reason
+              : (errorPromise?.value as any)?.error
+          return {
+            error,
+          }
+        }
+
         const data = settledPromises.map((d) => {
           return d.status === 'fulfilled' && !(d.value as any).error
             ? (d.value as { data: ReportEventsVesselsResponse }).data

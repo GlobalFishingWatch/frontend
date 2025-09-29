@@ -680,6 +680,7 @@
       "fao": "Zonas de pesca de la FAO",
       "mpa": "AMP",
       "mpa_other": "AMP (WDPA)",
+      "port": "Port",
       "rfmo": "OROP"
     },
     "areasOnScreen": "Áreas en pantalla",

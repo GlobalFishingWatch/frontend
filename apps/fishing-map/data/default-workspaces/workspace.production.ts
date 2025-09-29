@@ -26,7 +26,7 @@ import {
   FISHING_DATAVIEW_SLUG_VMS,
   FIXED_SAR_INFRASTRUCTURE,
   GRATICULES_DATAVIEW_SLUG,
-  PORTS_DATAVIEW_SLUG,
+  // PORTS_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
   SENTINEL2_DATAVIEW_SLUG,
@@ -167,14 +167,14 @@ const workspace: Workspace<WorkspaceState> = {
       },
       dataviewId: FIXED_SAR_INFRASTRUCTURE,
     },
-    {
-      id: PORTS_LAYER_ID,
-      config: {
-        visible: false,
-        color: '#9AEEFF',
-      },
-      dataviewId: PORTS_DATAVIEW_SLUG,
-    },
+    // {
+    //   id: PORTS_LAYER_ID,
+    //   config: {
+    //     visible: false,
+    //     color: '#9AEEFF',
+    //   },
+    //   dataviewId: PORTS_DATAVIEW_SLUG,
+    // },
     {
       id: BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
       config: {
