@@ -97,7 +97,7 @@ function convertPortsToGeoJSON(inputPath: string, outputPath: string): void {
 }
 
 // Main execution
-const inputFile = './src/scripts/ports-jose.json'
+const inputFile = './src/scripts/all-ports.json'
 const outputFile = './src/scripts/all-ports.geo.json'
 
 convertPortsToGeoJSON(inputFile, outputFile)
