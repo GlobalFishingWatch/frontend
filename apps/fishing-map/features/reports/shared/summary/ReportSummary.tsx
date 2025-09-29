@@ -78,7 +78,11 @@ export default function ReportSummary({
         <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
           <div className={styles.tagsContainer}>
             {dataviews?.map((dataview) => (
-              <ReportSummaryTags key={dataview.id} dataview={dataview} />
+              <ReportSummaryTags
+                key={dataview.id}
+                dataview={dataview}
+                allowDelete={dataviews.length > 1}
+              />
             ))}
             <IconButton
               icon="plus"
