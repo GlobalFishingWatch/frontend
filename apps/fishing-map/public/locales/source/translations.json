@@ -680,8 +680,8 @@
       "fao": "FAO",
       "mpa": "MPA",
       "mpa_other": "MPAs (WDPA)",
-      "rfmo": "RFMOs",
-      "port": "Port"
+      "port": "Port",
+      "rfmo": "RFMOs"
     },
     "areasOnScreen": "Areas on the map",
     "color_change": "Change color",
