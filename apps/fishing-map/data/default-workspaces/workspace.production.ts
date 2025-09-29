@@ -1,4 +1,3 @@
-// import { HIGHLIGHT_DATAVIEW_INSTANCE_ID } from 'features/workspace/highlight-panel/highlight-panel.content'
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 
@@ -18,6 +17,8 @@ import {
   BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
   BASEMAP_LABELS_DATAVIEW_SLUG,
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
@@ -25,6 +26,7 @@ import {
   FISHING_DATAVIEW_SLUG_VMS,
   FIXED_SAR_INFRASTRUCTURE,
   GRATICULES_DATAVIEW_SLUG,
+  PORTS_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
   SENTINEL2_DATAVIEW_SLUG,
@@ -33,8 +35,10 @@ import {
 import {
   BATHYMETRY_DATAVIEW_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
+  LOITERING_EVENTS_SOURCE_ID,
+  PORT_VISITS_EVENTS_SOURCE_ID,
 } from 'features/dataviews/dataviews.utils'
-import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/map/map.config'
+import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID, PORTS_LAYER_ID } from 'features/map/map.config'
 import type { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
@@ -128,9 +132,23 @@ const workspace: Workspace<WorkspaceState> = {
       },
     },
     {
+      id: LOITERING_EVENTS_SOURCE_ID,
+      dataviewId: CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
+      config: {
+        visible: false,
+      },
+    },
+    {
+      id: PORT_VISITS_EVENTS_SOURCE_ID,
+      dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+      config: {
+        visible: false,
+      },
+    },
+    {
       id: 'context-layer-graticules',
       config: {
-        visible: true,
+        visible: false,
       },
       dataviewId: GRATICULES_DATAVIEW_SLUG,
     },
@@ -148,6 +166,14 @@ const workspace: Workspace<WorkspaceState> = {
         colorRamp: 'seance',
       },
       dataviewId: FIXED_SAR_INFRASTRUCTURE,
+    },
+    {
+      id: PORTS_LAYER_ID,
+      config: {
+        visible: false,
+        color: '#9AEEFF',
+      },
+      dataviewId: PORTS_DATAVIEW_SLUG,
     },
     {
       id: BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
