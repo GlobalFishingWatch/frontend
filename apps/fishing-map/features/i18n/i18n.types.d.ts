@@ -647,8 +647,8 @@ interface Resources {
       fieldNumericPlaceholder: 'Select a numerical field from your dataset'
       fieldPlaceholder: 'Select a field from your dataset'
       invalidDatesFeatures: "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter."
+      noFilters: 'datasetUpload.noFilters'
       none: 'None'
-      noFilters: 'No filters available. To have filters your file must have at least one property/field with 2 or more different values'
       optionalFields: 'Optional fields'
       point: {
         coordinates: 'Point coordinates'
