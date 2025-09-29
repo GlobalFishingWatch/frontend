@@ -118,25 +118,21 @@ export function useDatasetMetadataOptions(
     type?: DatasetSchemaType
   })[] = useMemo(() => {
     const options = datasetMetadata?.schema
-      ? Object.keys(datasetMetadata.schema).flatMap((field) => {
-          const schema = datasetMetadata.schema?.[field]
+      ? Object.entries(datasetMetadata.schema).flatMap(([field, schema]) => {
           if (
             (schemaTypes.length > 0 && !schemaTypes.includes(schema?.type as DatasetSchemaType)) ||
             DISCARDED_FIELDS.includes(field)
           ) {
             return []
           }
-          const isEnumAllowed =
-            schema?.type === 'boolean' ||
-            (schema?.type === 'string' && schema?.enum && schema?.enum?.length > 0)
-          const isRangeAllowed = schema?.type === 'range' && schema.enum?.length === 2
-          return isEnumAllowed || isRangeAllowed
-            ? {
-                id: field,
-                label: <DatasetFieldLabel field={field} fieldSchema={schema} />,
-                type: schema?.type,
-              }
-            : []
+          // const isEnumAllowed =
+          //   schema?.type === 'boolean' ||
+          //   (schema?.type === 'string' && schema?.enum && schema?.enum?.length > 0)
+          return {
+            id: field,
+            label: <DatasetFieldLabel field={field} fieldSchema={schema} />,
+            type: schema?.type,
+          }
         })
       : []
     return options
