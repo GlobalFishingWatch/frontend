@@ -1960,6 +1960,10 @@
       "port_id": "crwdns106614:0crwdne106614:0"
     }
   },
+  "public-ports-v1": {
+    "name": "crwdns106616:0crwdne106616:0",
+    "description": "crwdns106618:0crwdne106618:0"
+  },
   "public-presence-viirs-match-prototype": {
     "name": "crwdns67325:0crwdne67325:0",
     "description": "crwdns67327:0crwdne67327:0",
