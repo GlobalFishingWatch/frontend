@@ -407,6 +407,7 @@ export function useReportTitle() {
       return t('common.globalReport')
     }
     let areaName: string | JSX.Element = getReportAreaStringByLocale(report?.name, i18n.language)
+
     if (!areaName) {
       if (areaDataviews?.length > 1) {
         const datasets = areaDataviews.flatMap((d) => d.datasets?.[0] || [])

@@ -209,8 +209,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
       <div className={cx(styles.row, styles.border)}>
         <h1 className={styles.title} data-test="report-title">
           {reportTitle}
-
-          {reportAreaSpace && (
+          {reportAreaSpace !== null && reportAreaSpace !== 0 && (
             <span className={styles.secondary}> {formatI18nNumber(reportAreaSpace)} km²</span>
           )}
         </h1>
