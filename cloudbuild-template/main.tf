@@ -72,7 +72,7 @@ resource "google_cloudbuild_trigger" "trigger" {
     step {
       id       = "build-app"
       name     = "node:24"
-      script   = "yarn nx run ${var.app_name}:build --parallel"
+      script   = "NODE_OPTIONS='--max-old-space-size=8192 --max-semi-space-size=1024' yarn nx run ${var.app_name}:build --parallel --verbose"
       wait_for = ["install-yarn"]
       env      = var.set_env_vars_build
     }
