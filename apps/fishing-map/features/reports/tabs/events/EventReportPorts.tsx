@@ -10,6 +10,7 @@ import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
+import PortsReportLink from 'features/reports/report-port/PortsReportLink'
 import { selectReportEventsPortsFilter } from 'features/reports/reports.config.selectors'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import { useReportHash } from 'features/reports/tabs/events/events-report.hooks'
@@ -156,7 +157,7 @@ function EventReportPorts() {
                             : t('event.port_visitedAfterFilter')
                         }
                       />
-                      {port.name}
+                      <PortsReportLink port={port}>{port.name}</PortsReportLink>
                     </div>
                     <div className={cx({ [styles.border]: !isLastRow })}>{port.country}</div>
                     <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
