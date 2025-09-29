@@ -680,6 +680,7 @@
       "fao": "FAO",
       "mpa": "AMP",
       "mpa_other": "MPAs (WDPA)",
+      "port": "Port",
       "rfmo": "RFMOs"
     },
     "areasOnScreen": "Áreas na tela",

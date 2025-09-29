@@ -680,6 +680,7 @@
       "fao": "FAO",
       "mpa": "AMP",
       "mpa_other": "AMP (WDPA)",
+      "port": "Port",
       "rfmo": "ORGP"
     },
     "areasOnScreen": "Zones à l'écran",
