@@ -82,6 +82,7 @@ const AreaTick = ({ y, payload }: any) => {
 
 const AreaTooltip = ({ payload }: any) => {
   const { t } = useTranslation()
+
   return (
     <div className={styles.tooltipContainer}>
       <ul>
@@ -104,6 +105,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const events = useSelector(selectVesselEventsFilteredByTimerange)
+  console.log('🚀 ~ AreaTooltip ~ events:', events)
   const vesselArea = useSelector(selectVesselAreaSubsection)
   const eventsGrouped = useSelector(selectEventsGroupedByArea)
   const eventsGroupedWithoutUnknown = eventsGrouped.filter((group) => group.region !== UNKNOWN_AREA)
@@ -111,6 +113,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
   const vesselColor = useSelector(selectVesselProfileColor)
   const eventTypes = useSelector(selectVesselEventTypes)
   const [graphWidth, setGraphWidth] = useState(getSidebarContentWidth())
+  console.log('🚀 ~ AreaTooltip ~ eventTypes:', eventTypes)
   const areaDataview = VESSEL_PROFILE_DATAVIEWS_INSTANCES.find((d) => d.dataviewId === vesselArea)
   const eventsLoading = useVesselProfileEventsLoading()
   const [modalDataWarningOpen, setModalDataWarningOpen] = useState(false)
@@ -252,7 +255,9 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
                   {index === eventTypes.length - 1 && (
                     <LabelList
                       position="right"
-                      valueAccessor={(entry: any) => formatI18nNumber(entry.total)}
+                      valueAccessor={(entry: any) => {
+                        return formatI18nNumber(entry?.payload?.total)
+                      }}
                       className={styles.count}
                     />
                   )}
