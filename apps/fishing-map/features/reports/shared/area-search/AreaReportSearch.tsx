@@ -21,6 +21,7 @@ import { PORT_REPORT, WORKSPACE_REPORT } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectLocationQuery } from 'routes/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
+import { formatInfoField, upperFirst } from 'utils/info'
 
 import styles from './AreaReportSearch.module.css'
 
@@ -28,9 +29,10 @@ const MAX_RESULTS_NUMBER = 10
 
 const getItemLabel = (item: OceanArea | null) => {
   if (!item) return ''
-  return `${item.properties?.name} (${trans(
+  const name = item.properties?.name ? formatInfoField(item.properties?.name, 'name') : ''
+  return `${name} (${trans(
     `layer.areas.${item.properties?.type}` as any,
-    item.properties?.type.toUpperCase()
+    upperFirst(item.properties?.type)
   )})`
 }
 

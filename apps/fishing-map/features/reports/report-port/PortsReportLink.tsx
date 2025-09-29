@@ -80,7 +80,7 @@ function PortsReportLink({ children, port, tooltip }: PortsReportLinkProps) {
           ...query,
           reportCategory: ReportCategory.Events,
           portsReportName: port.name,
-          portsReportCountry: port.country,
+          portsReportCountry: port.country || port.flag,
           portsReportDatasetId: port.datasetId,
           dataviewInstances,
         },
