@@ -225,6 +225,8 @@ function NewTrackDataset({
     }
   }, [datasetMetadata, geojson, onConfirm, sourceData, t, isEditing])
 
+  const filterOptions = isCSVFile ? numericFiltersFieldsOptions : filtersFieldsOptions
+
   if (processingData) {
     return (
       <div className={styles.processingData}>
@@ -345,28 +347,32 @@ function NewTrackDataset({
           editable={!loading}
           infoTooltip={t('datasetUpload.tracks.nameHelp')}
         />
-        <MultiSelect
-          label={t('datasetUpload.tracks.filters')}
-          placeholder={
-            fieldsAllowed.length > 0
-              ? fieldsAllowed.join(', ')
-              : t('datasetUpload.fieldMultiplePlaceholder')
-          }
-          direction="top"
-          disabled={loading}
-          options={isCSVFile ? numericFiltersFieldsOptions : filtersFieldsOptions}
-          selectedOptions={getSelectedOption(fieldsAllowed) as MultiSelectOption[]}
-          onSelect={(newFilter: MultiSelectOption) => {
-            setDatasetMetadata({ fieldsAllowed: [...fieldsAllowed, newFilter.id] })
-          }}
-          onRemove={(_: MultiSelectOption, rest: MultiSelectOption[]) => {
-            setDatasetMetadata({ fieldsAllowed: rest.map((f: MultiSelectOption) => f.id) })
-          }}
-          onCleanClick={() => {
-            setDatasetMetadata({ fieldsAllowed: [] })
-          }}
-          infoTooltip={t('datasetUpload.tracks.filtersHelp')}
-        />
+        {filterOptions.length ? (
+          <MultiSelect
+            label={t('datasetUpload.tracks.filters')}
+            placeholder={
+              !filterOptions.length
+                ? t('datasetUpload.noFilters')
+                : fieldsAllowed.length > 0
+                  ? fieldsAllowed.join(', ')
+                  : t('datasetUpload.fieldMultiplePlaceholder')
+            }
+            direction="top"
+            disabled={loading || !filterOptions.length}
+            options={filterOptions as MultiSelectOption[]}
+            selectedOptions={getSelectedOption(fieldsAllowed) as MultiSelectOption[]}
+            onSelect={(newFilter: MultiSelectOption) => {
+              setDatasetMetadata({ fieldsAllowed: [...fieldsAllowed, newFilter.id] })
+            }}
+            onRemove={(_: MultiSelectOption, rest: MultiSelectOption[]) => {
+              setDatasetMetadata({ fieldsAllowed: rest.map((f: MultiSelectOption) => f.id) })
+            }}
+            onCleanClick={() => {
+              setDatasetMetadata({ fieldsAllowed: [] })
+            }}
+            infoTooltip={t('datasetUpload.tracks.filtersHelp')}
+          />
+        ) : null}
         <SwitchRow
           className={styles.saveAsPublic}
           label={t('dataset.uploadPublic')}

@@ -125,14 +125,17 @@ export function useDatasetMetadataOptions(
           ) {
             return []
           }
-          // const isEnumAllowed =
-          //   schema?.type === 'boolean' ||
-          //   (schema?.type === 'string' && schema?.enum && schema?.enum?.length > 0)
-          return {
-            id: field,
-            label: <DatasetFieldLabel field={field} fieldSchema={schema} />,
-            type: schema?.type,
-          }
+          const isEnumAllowed =
+            schema?.type === 'boolean' ||
+            (schema?.type === 'string' && schema?.enum && schema?.enum?.length > 0)
+          const isRangeAllowed = schema?.type === 'range' && schema.enum?.length === 2
+          return isEnumAllowed || isRangeAllowed
+            ? {
+                id: field,
+                label: <DatasetFieldLabel field={field} fieldSchema={schema} />,
+                type: schema?.type,
+              }
+            : []
         })
       : []
     return options
