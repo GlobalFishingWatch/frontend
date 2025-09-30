@@ -6,6 +6,7 @@ import type {
   ICCATOwner,
   ICCATVessel,
   PrevICCATVessel,
+  SPRFMOVessel,
   Vessel,
 } from '@/types/vessel.types'
 import type { UserData } from '@globalfishingwatch/api-types'
@@ -193,11 +194,15 @@ const writeToSheet = (
   })
 }
 
+const getFlagLabel = (flagCode: string) => {
+  return flags.find((f) => f.id === flagCode)?.label ?? flagCode
+}
+
 const fillInUserInfo = (worksheet: ExcelJS.Worksheet, user: UserData) => {
   worksheet.getCell('B5').value = user.firstName + ' ' + user.lastName
   worksheet.getCell('B6').value = user.organization //reportingAgency
   // worksheet.getCell('B7').value = user.address
-  worksheet.getCell('B10').value = flags.find((f) => f.id === user.country)?.label ?? ''
+  worksheet.getCell('B10').value = getFlagLabel(user.country ?? '')
   worksheet.getCell('G5').value = user.email
   // worksheet.getCell('G6').value = user.phone
   worksheet.getCell('B12').value = '3. Full revision of vessel record'
@@ -238,7 +243,7 @@ export const handleExportICCATVessels = async (
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = 'iccat-vessels.xlsx'
+    link.download = `CP01_${getFlagLabel(user.country ?? ((vessels[0] as ICCATVessel).FlagCurCd || (vessels[0] as SPRFMOVessel).currentVesselFlag))}_${new Date().toISOString().slice(0, 10)}.xlsx`
     link.click()
 
     URL.revokeObjectURL(url)
