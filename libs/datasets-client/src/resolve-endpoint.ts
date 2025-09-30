@@ -25,7 +25,7 @@ export const resolveEndpoint = (
   let url = endpoint.pathTemplate
   datasetConfig.params?.forEach((param) => {
     const datasetConfigurationId = camelCase(param.id) as keyof typeof dataset.configuration
-    const value = param.value || dataset.configuration?.[datasetConfigurationId]
+    const value = param.value ?? dataset.configuration?.[datasetConfigurationId]
     url = url.replace(`{{${param.id}}}`, value as string)
   })
 
