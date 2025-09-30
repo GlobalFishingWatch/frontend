@@ -209,7 +209,7 @@ export const handleExportICCATVessels = async (
   user: UserData
 ) => {
   try {
-    const templateResponse = await fetch('./data/templates/iccat-template.xlsx')
+    const templateResponse = await fetch('/templates/iccat-template.xlsx')
     const templateBuffer = await templateResponse.arrayBuffer()
 
     const workbook = new ExcelJS.Workbook()
