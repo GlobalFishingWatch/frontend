@@ -8,15 +8,11 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createServerRootRoute } from '@tanstack/react-start/server'
-
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
-import { ServerRoute as ApiVesselsFileNameServerRouteImport } from './routes/api/vessels/$fileName'
-import { ServerRoute as ApiIccatSourceServerRouteImport } from './routes/api/iccat/$source'
-
-const rootServerRouteImport = createServerRootRoute()
+import { Route as ApiVesselsFileNameRouteImport } from './routes/api/vessels/$fileName'
+import { Route as ApiIccatSourceRouteImport } from './routes/api/iccat/$source'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
@@ -27,64 +23,51 @@ const AuthIndexRoute = AuthIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthRoute,
 } as any)
-const ApiVesselsFileNameServerRoute =
-  ApiVesselsFileNameServerRouteImport.update({
-    id: '/api/vessels/$fileName',
-    path: '/api/vessels/$fileName',
-    getParentRoute: () => rootServerRouteImport,
-  } as any)
-const ApiIccatSourceServerRoute = ApiIccatSourceServerRouteImport.update({
+const ApiVesselsFileNameRoute = ApiVesselsFileNameRouteImport.update({
+  id: '/api/vessels/$fileName',
+  path: '/api/vessels/$fileName',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiIccatSourceRoute = ApiIccatSourceRouteImport.update({
   id: '/api/iccat/$source',
   path: '/api/iccat/$source',
-  getParentRoute: () => rootServerRouteImport,
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthIndexRoute
+  '/api/iccat/$source': typeof ApiIccatSourceRoute
+  '/api/vessels/$fileName': typeof ApiVesselsFileNameRoute
 }
 export interface FileRoutesByTo {
   '/': typeof AuthIndexRoute
+  '/api/iccat/$source': typeof ApiIccatSourceRoute
+  '/api/vessels/$fileName': typeof ApiVesselsFileNameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteWithChildren
   '/_auth/': typeof AuthIndexRoute
+  '/api/iccat/$source': typeof ApiIccatSourceRoute
+  '/api/vessels/$fileName': typeof ApiVesselsFileNameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/api/iccat/$source' | '/api/vessels/$fileName'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/_auth' | '/_auth/'
+  to: '/' | '/api/iccat/$source' | '/api/vessels/$fileName'
+  id:
+    | '__root__'
+    | '/_auth'
+    | '/_auth/'
+    | '/api/iccat/$source'
+    | '/api/vessels/$fileName'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
-}
-export interface FileServerRoutesByFullPath {
-  '/api/iccat/$source': typeof ApiIccatSourceServerRoute
-  '/api/vessels/$fileName': typeof ApiVesselsFileNameServerRoute
-}
-export interface FileServerRoutesByTo {
-  '/api/iccat/$source': typeof ApiIccatSourceServerRoute
-  '/api/vessels/$fileName': typeof ApiVesselsFileNameServerRoute
-}
-export interface FileServerRoutesById {
-  __root__: typeof rootServerRouteImport
-  '/api/iccat/$source': typeof ApiIccatSourceServerRoute
-  '/api/vessels/$fileName': typeof ApiVesselsFileNameServerRoute
-}
-export interface FileServerRouteTypes {
-  fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths: '/api/iccat/$source' | '/api/vessels/$fileName'
-  fileServerRoutesByTo: FileServerRoutesByTo
-  to: '/api/iccat/$source' | '/api/vessels/$fileName'
-  id: '__root__' | '/api/iccat/$source' | '/api/vessels/$fileName'
-  fileServerRoutesById: FileServerRoutesById
-}
-export interface RootServerRouteChildren {
-  ApiIccatSourceServerRoute: typeof ApiIccatSourceServerRoute
-  ApiVesselsFileNameServerRoute: typeof ApiVesselsFileNameServerRoute
+  ApiIccatSourceRoute: typeof ApiIccatSourceRoute
+  ApiVesselsFileNameRoute: typeof ApiVesselsFileNameRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -103,23 +86,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexRouteImport
       parentRoute: typeof AuthRoute
     }
-  }
-}
-declare module '@tanstack/react-start/server' {
-  interface ServerFileRoutesByPath {
     '/api/vessels/$fileName': {
       id: '/api/vessels/$fileName'
       path: '/api/vessels/$fileName'
       fullPath: '/api/vessels/$fileName'
-      preLoaderRoute: typeof ApiVesselsFileNameServerRouteImport
-      parentRoute: typeof rootServerRouteImport
+      preLoaderRoute: typeof ApiVesselsFileNameRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/iccat/$source': {
       id: '/api/iccat/$source'
       path: '/api/iccat/$source'
       fullPath: '/api/iccat/$source'
-      preLoaderRoute: typeof ApiIccatSourceServerRouteImport
-      parentRoute: typeof rootServerRouteImport
+      preLoaderRoute: typeof ApiIccatSourceRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -136,14 +115,18 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
+  ApiIccatSourceRoute: ApiIccatSourceRoute,
+  ApiVesselsFileNameRoute: ApiVesselsFileNameRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-const rootServerRouteChildren: RootServerRouteChildren = {
-  ApiIccatSourceServerRoute: ApiIccatSourceServerRoute,
-  ApiVesselsFileNameServerRoute: ApiVesselsFileNameServerRoute,
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
 }
-export const serverRouteTree = rootServerRouteImport
-  ._addFileChildren(rootServerRouteChildren)
-  ._addFileTypes<FileServerRouteTypes>()

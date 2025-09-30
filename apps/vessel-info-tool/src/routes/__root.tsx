@@ -1,5 +1,7 @@
 import * as React from 'react'
+import { TanStackDevtools } from '@tanstack/react-devtools'
 import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
+import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import { DefaultCatchBoundary } from '@/features/router/DefaultCatchBoundary'
 import { NotFound } from '@/features/router/NotFound'
@@ -58,6 +60,17 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <div id="root">{children}</div>
+        <TanStackDevtools
+          config={{
+            position: 'bottom-left',
+          }}
+          plugins={[
+            {
+              name: 'Tanstack Router',
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+          ]}
+        />
         <Scripts />
       </body>
     </html>

@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises'
 
+import { createFileRoute } from '@tanstack/react-router'
 import { json } from '@tanstack/react-start'
-import { createServerFileRoute } from '@tanstack/react-start/server'
 
 function parseCsv(csv: string): any[] {
   const [headerLine, ...lines] = csv.split(/\r?\n/).filter(Boolean)
@@ -35,11 +35,15 @@ function parseCsv(csv: string): any[] {
   })
 }
 
-export const ServerRoute = createServerFileRoute('/api/iccat/$source').methods({
-  GET: async ({ params }) => {
-    const source = params.source
-    const csv = await readFile(`./data/iccat/${source}_active_ICCAT.csv`, 'utf-8')
-    const data = parseCsv(csv)
-    return json(data)
+export const Route = createFileRoute('/api/iccat/$source')({
+  server: {
+    handlers: {
+      GET: async ({ params }) => {
+        const source = params.source
+        const csv = await readFile(`./data/iccat/${source}_active_ICCAT.csv`, 'utf-8')
+        const data = parseCsv(csv)
+        return json(data)
+      },
+    },
   },
 })
