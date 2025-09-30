@@ -20,6 +20,20 @@
   justify-content: space-between;
 }
 
+.rowColumn {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+@media only screen and (width <= 1240px) {
+  .row {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+}
+
 .row + .row {
   padding-top: 0;
 }
@@ -59,6 +73,41 @@
 
 .secondary {
   color: var(--color-secondary-blue);
+}
+
+.actionsContainer {
+  display: flex;
+  gap: var(--space-S);
+}
+
+.actionsContainerColumn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-S);
+  flex-direction: row;
+  flex: 1;
+  width: 100%;
+}
+
+.areaReportSearchColumn {
+  flex: 1;
+  width: 100%;
+}
+
+@media only screen and (width <= 1240px) {
+  .areaReportSearch {
+    flex: 1;
+    width: 100%;
+  }
+
+  .actionsContainer {
+    display: flex;
+    align-items: center;
+    gap: var(--space-S);
+    flex-direction: row;
+    flex: 1;
+    width: 100%;
+  }
 }
 
 .actions {

@@ -40,7 +40,7 @@ const getItemLabel = (item: OceanArea | null) => {
   )})`
 }
 
-function AreaReportSearch() {
+function AreaReportSearch({ className }: { className?: string }) {
   const { t, i18n } = useTranslation()
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
@@ -188,7 +188,11 @@ function AreaReportSearch() {
 
   return (
     <div
-      className={cx(styles.inputContainer, { [styles.open]: isOpen && areasMatching.length > 0 })}
+      className={cx(
+        styles.inputContainer,
+        { [styles.open]: isOpen && areasMatching.length > 0 },
+        className
+      )}
     >
       <div className={styles.comboContainer}>
         <InputText
