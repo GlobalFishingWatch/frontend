@@ -17,6 +17,7 @@ import ReportSummaryActivity from 'features/reports/shared/summary/ReportSummary
 import ReportSummaryEvents from 'features/reports/shared/summary/ReportSummaryEvents'
 import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
 import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
+import { selectIsPortReportLocation } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './ReportSummary.module.css'
@@ -45,6 +46,7 @@ export default function ReportSummary({
   const dispatch = useAppDispatch()
   const reportCategory = useSelector(selectReportCategory)
   const dataviews = useSelector(selectActiveReportDataviews)
+  const isPortReportLocation = useSelector(selectIsPortReportLocation)
 
   const onAddLayerClick = useCallback(() => {
     trackEvent({
@@ -84,14 +86,16 @@ export default function ReportSummary({
                 allowDelete={dataviews.length > 1}
               />
             ))}
-            <IconButton
-              icon="plus"
-              type="border"
-              size="small"
-              tooltip={t('layer.add')}
-              tooltipPlacement="top"
-              onClick={onAddLayerClick}
-            />
+            {!isPortReportLocation && (
+              <IconButton
+                icon="plus"
+                type="border"
+                size="small"
+                tooltip={t('layer.add')}
+                tooltipPlacement="top"
+                onClick={onAddLayerClick}
+              />
+            )}
           </div>
         </Sticky>
       )}
