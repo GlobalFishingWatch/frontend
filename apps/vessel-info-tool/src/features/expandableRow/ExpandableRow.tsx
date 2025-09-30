@@ -170,7 +170,7 @@ function ExpandableRow({ rowId }: ExpandableRowProps) {
 }
 
 export const renderExpandedRow = ({ row }: { row: Row<Vessel> }) => {
-  const rowId = row.id || row.original.imo
+  const rowId = row.original.IMO
   if (!rowId) {
     return <p>No vessel ID available</p>
   }
