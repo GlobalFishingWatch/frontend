@@ -77,38 +77,41 @@ function AreaReportSearch({ className }: { className?: string }) {
   }
 
   const navigateToAreaReport = (area: OceanArea) => {
-    let dataview: Dataview | UrlDataviewInstance | undefined = contextAreasDataviews?.find(
-      (dataview) => dataview.slug?.includes(area.properties?.type)
-    )
-    let dataviewInstance = (query.dataviewInstances || []).find(
-      (d: UrlDataviewInstance) => d.id === dataview?.id
-    )
-    if (!dataviewInstance) {
-      dataview = allDataviews.find(
+    const dataview: Dataview | UrlDataviewInstance | undefined =
+      contextAreasDataviews?.find((dataview) => dataview.slug?.includes(area.properties?.type)) ||
+      allDataviews.find(
         (dataview) =>
           OCEAN_AREAS_DATAVIEWS.includes(dataview.slug as any) &&
           dataview.slug?.includes(area.properties?.type)
       )
-      dataviewInstance = getDataviewInstanceFromDataview(dataview as Dataview)
-    }
 
-    if (dataview && dataviewInstance) {
+    if (dataview) {
       const datasetId = dataview.datasetsConfig?.[0]?.datasetId
       if (datasetId) {
-        const dataviewInstances = dataviewInstance
-          ? query.dataviewInstances.map((d: UrlDataviewInstance) => {
-              if (d.id === dataviewInstance.id) {
-                return {
-                  ...d,
-                  config: {
-                    ...d.config,
-                    visible: true,
-                  },
-                }
+        const dataviewInstance = (query.dataviewInstances || []).find(
+          (d: UrlDataviewInstance) => d.id === dataview?.id
+        )
+        let dataviewInstances: UrlDataviewInstance[] = []
+        if (dataviewInstance) {
+          dataviewInstances = (query.dataviewInstances || []).map((d: UrlDataviewInstance) => {
+            if (d.id === dataviewInstance.id) {
+              return {
+                ...d,
+                config: {
+                  ...d.config,
+                  visible: true,
+                },
               }
-              return d
-            })
-          : [...(query.dataviewInstances || []), { id: dataview.id, config: { visible: true } }]
+            }
+            return d
+          })
+        } else {
+          const newDataviewInstance = getDataviewInstanceFromDataview(dataview as Dataview)
+          dataviewInstances = [
+            ...(query.dataviewInstances || []),
+            { ...newDataviewInstance, config: { visible: true } },
+          ]
+        }
         if (area.properties?.type === 'port') {
           dispatchLocation(PORT_REPORT, {
             payload: {
@@ -138,7 +141,7 @@ function AreaReportSearch({ className }: { className?: string }) {
         console.warn('No datasetId found for area', area)
       }
     } else {
-      console.warn('No dataview or dataviewInstance found for area', area)
+      console.warn('No dataview found for area', area)
     }
   }
 
