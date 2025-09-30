@@ -449,12 +449,12 @@ export function useReportTitle() {
                 propertyValue && typeof propertyValue === 'string'
                   ? propertyValue
                   : getDatasetLabel(dataset)
+              areaName = areaName.replace('Exclusive Economic Zone', 'EEZ')
             }
           }
         }
       }
     }
-
     if (!urlBufferValue) {
       return areaName
     }

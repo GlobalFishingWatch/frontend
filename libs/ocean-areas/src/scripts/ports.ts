@@ -7,7 +7,7 @@ prepare({
   path: 'ports',
   bucketFolder: 'public-ports-v1',
   skipDownload: true,
-  geometryMode: 'bbox',
+  geometryMode: 'point',
   propertiesMapping: {
     area: 'id',
     name: 'name',
