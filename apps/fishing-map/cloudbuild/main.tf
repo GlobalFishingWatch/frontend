@@ -104,40 +104,6 @@ module "preview-dev" {
   set_secrets = local.generate_secrets.dev
 }
 
-
-module "carrier-portal" {
-  source            = "../../../cloudbuild-template"
-  project_id        = "gfw-development"
-  short_environment = "dev"
-  app_name          = local.app_name
-  app_suffix        = "-cvp"
-  docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-cvp-dev"
-  service_account   = local.service_account.dev
-  labels = {
-    environment      = "develop"
-    resource_creator = "engineering"
-    project          = "frontend"
-  }
-  push_config = {
-    branch  = "fishing-map/carrier-portal-vessel-profile"
-    trigger = "branch"
-  }
-  set_env_vars_build = [
-    "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
-    "NEXT_PUBLIC_API_VERSION=v3",
-    "NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
-    "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
-    "NEXT_PUBLIC_USE_LOCAL_DATASETS=true",
-    "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=true",
-    "NEXT_PUBLIC_WORKSPACE_ENV=development",
-    "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366"
-  ]
-  set_env_vars = [
-    "BASIC_AUTH=off",
-  ]
-  set_secrets = local.generate_secrets.dev
-}
-
 module "random-forest" {
   source            = "../../../cloudbuild-template"
   project_id        = "gfw-development"

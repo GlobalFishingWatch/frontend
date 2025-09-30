@@ -1,13 +1,14 @@
-import type {
-  TrackCorrection,
-  TrackCorrectionComment,
-} from 'features/track-correction/track-correction.slice'
-import { loadSpreadsheetDocByWorkspace } from 'pages/api/_utils/spreadsheets'
 import {
   COMMENTS_SPREADSHEET_TITLE,
   getSheetTab,
   ISSUES_SPREADSHEET_TITLE,
-} from 'pages/api/track-corrections/[workspaceId]/_issues/utils'
+} from 'server/api/track-corrections/utils'
+import { loadSpreadsheetDocByWorkspace } from 'server/api/utils/spreadsheets'
+
+import type {
+  TrackCorrection,
+  TrackCorrectionComment,
+} from 'features/track-correction/track-correction.slice'
 
 export async function createNewIssue(
   issueBody: TrackCorrection,

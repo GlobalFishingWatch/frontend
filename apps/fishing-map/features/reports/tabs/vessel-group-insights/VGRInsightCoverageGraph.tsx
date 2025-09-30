@@ -48,11 +48,8 @@ function parseCoverageGraphIndividualData(
   const groupedDataByCoverage = getDataByCoverage(vessels)
   return Object.keys(COVERAGE_GRAPH_BUCKETS).map((key) => ({
     label: key,
-    values: (groupedDataByCoverage[key] || []).map((vessel) => {
-      return {
-        ...vessel,
-        value: vessel.coverage,
-      }
+    values: (groupedDataByCoverage[key] || []).sort((a, b) => {
+      return a.value - b.value
     }),
   }))
 }

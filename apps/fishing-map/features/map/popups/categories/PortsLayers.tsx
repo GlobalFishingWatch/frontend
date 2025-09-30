@@ -31,14 +31,14 @@ function PortsTooltipSection({ features, showFeaturesDetails = false }: PortsLay
                 <h3 className={styles.popupSectionTitle}>{t('event.port_other')}</h3>
               )}
               {featureByType.map((feature) => {
-                const { port_id, name, flag } = feature.properties
+                const { id, name, flag } = feature.properties
                 const port: ExtendedFeatureByVesselEventPort = {
-                  id: port_id,
+                  id,
                   name,
                   country: flag,
                 }
                 return (
-                  <div className={styles.row} key={port_id}>
+                  <div className={styles.row} key={id}>
                     <span className={styles.rowText}>
                       {`${formatInfoField(name, 'port')} (${formatInfoField(flag, 'flag')})`}
                     </span>

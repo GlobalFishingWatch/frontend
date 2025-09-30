@@ -142,7 +142,7 @@
   "port-visits": {
     "description": "La lista de puertos se define a partir del conjunto de datos obtenidos por Global Fishing Watch sobre fondeaderos. Se trata de una base de datos global que identifica lugares de fondeo donde se congregan las embarcaciones. Este conjunto de datos incluye más de 160.000 puntos de fondeo individuales, que se agrupan en aproximadamente 32.000 puertos. ",
     "moreInfoLink": "",
-    "name": "Visitas al Puerto (AIS)"
+    "name": "Visitas a puerto (AIS)"
   },
   "presence": {
     "description": "La capa de presencia analiza los datos del sistema de identificación automática (AIS) recopilados de buques identificados por nuestra investigación. La presencia está determinada por la toma de posiciones transmitidas por el AIS del buque y se despliegan como un mapa del calor. ",

@@ -183,6 +183,7 @@ export function useReportAreaBounds() {
       }
     }
     return {
+      id: reportArea?.id,
       loaded:
         reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
           ? true
@@ -205,12 +206,15 @@ export function useReportAreaBounds() {
 
 export function useReportAreaInViewport() {
   const viewState = useMapViewState()
-  const { bbox } = useReportAreaBounds()
+  const { id, bbox } = useReportAreaBounds()
   const areaCenter = useReportAreaCenter(bbox as Bbox)
   return (
     viewState?.latitude === areaCenter?.latitude &&
     viewState?.longitude === areaCenter?.longitude &&
-    viewState?.zoom === areaCenter?.zoom
+    // This is needed because depending of the viewport the zoom can't go to the same value as the area center
+    (id === ENTIRE_WORLD_REPORT_AREA_ID
+      ? Math.floor(viewState?.zoom) <= Math.floor(areaCenter?.zoom)
+      : viewState?.zoom === areaCenter?.zoom)
   )
 }
 
@@ -403,6 +407,7 @@ export function useReportTitle() {
       return t('common.globalReport')
     }
     let areaName: string | JSX.Element = getReportAreaStringByLocale(report?.name, i18n.language)
+
     if (!areaName) {
       if (areaDataviews?.length > 1) {
         const datasets = areaDataviews.flatMap((d) => d.datasets?.[0] || [])
@@ -444,12 +449,12 @@ export function useReportTitle() {
                 propertyValue && typeof propertyValue === 'string'
                   ? propertyValue
                   : getDatasetLabel(dataset)
+              areaName = areaName.replace('Exclusive Economic Zone', 'EEZ')
             }
           }
         }
       }
     }
-
     if (!urlBufferValue) {
       return areaName
     }

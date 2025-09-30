@@ -14,7 +14,8 @@
         "main": "libs/deck-layer-composer/src/index.ts",
         "outputPath": "dist/libs/deck-layer-composer",
         "project": "libs/deck-layer-composer/package.json",
-        "tsConfig": "libs/deck-layer-composer/tsconfig.lib.json"
+        "tsConfig": "libs/deck-layer-composer/tsconfig.lib.json",
+        "useLegacyTypescriptPlugin": false
       }
     },
     "publish": {

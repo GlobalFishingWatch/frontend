@@ -1,9 +1,7 @@
+import { COMMENTS_SPREADSHEET_TITLE, getSheetTab } from 'server/api/track-corrections/utils'
+import { loadSpreadsheetDocByWorkspace } from 'server/api/utils/spreadsheets'
+
 import type { TrackCorrectionComment } from 'features/track-correction/track-correction.slice'
-import { loadSpreadsheetDocByWorkspace } from 'pages/api/_utils/spreadsheets'
-import {
-  COMMENTS_SPREADSHEET_TITLE,
-  getSheetTab,
-} from 'pages/api/track-corrections/[workspaceId]/_issues/utils'
 
 export async function addCommentToIssue(
   issueId: string,

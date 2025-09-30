@@ -11,6 +11,7 @@ import { EVENTS_COLORS } from 'data/config'
 import { getHasVesselProfileInstance } from 'features/dataviews/dataviews.utils'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
+import PortsReportLink from 'features/reports/report-port/PortsReportLink'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
@@ -77,9 +78,14 @@ const EventDetail = ({ event }: ActivityContentProps) => {
       <li>
         <label className={styles.fieldLabel}>{t('eventInfo.portVisitedAfter')}</label>
         <span>
-          {nextPort?.id
-            ? `${formatInfoField(nextPort.name || nextPort.id, 'port')} (${formatInfoField(nextPort.flag, 'flag')})`
-            : EMPTY_FIELD_PLACEHOLDER}
+          {nextPort?.id ? (
+            <PortsReportLink port={nextPort}>
+              {formatInfoField(nextPort.name || nextPort.id, 'port')} (
+              {formatInfoField(nextPort.flag, 'flag')})
+            </PortsReportLink>
+          ) : (
+            EMPTY_FIELD_PLACEHOLDER
+          )}
         </span>
       </li>
     )

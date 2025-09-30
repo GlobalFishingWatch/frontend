@@ -32,9 +32,10 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type EventsLayerPanelProps = {
   dataview: UrlDataviewInstance
+  onToggle?: () => void
 }
 
-function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactElement<any> {
+function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const layerActive = dataview?.config?.visible ?? true
   const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
@@ -80,6 +81,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
     })
     setColorOpen(false)
   }
+
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
   }
@@ -106,6 +108,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
           className={styles.switch}
           disabled={hasDeprecatedDataviewInstances}
           dataview={dataview}
+          onToggle={onToggle}
         />
         <Title
           title={title}
@@ -113,6 +116,7 @@ function EventsLayerPanel({ dataview }: EventsLayerPanelProps): React.ReactEleme
           classNameActive={styles.active}
           dataview={dataview}
           toggleVisibility={!hasDeprecatedDataviewInstances}
+          onToggle={onToggle}
         />
         <div
           className={cx(

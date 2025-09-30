@@ -72,10 +72,17 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
     }
   }, [dispatch, userData])
 
-  const onCategoryClick = useCallback(() => {
-    setMapCoordinates(DEFAULT_WORKSPACE_LIST_VIEWPORT)
-    dispatchClickedEvent(null)
-  }, [setMapCoordinates, dispatchClickedEvent])
+  const onCategoryClick = useCallback(
+    (category: WorkspaceCategory) => {
+      setMapCoordinates(DEFAULT_WORKSPACE_LIST_VIEWPORT)
+      dispatchClickedEvent(null)
+      trackEvent({
+        category: TrackCategory.General,
+        action: `clicked on ${category}`,
+      })
+    },
+    [setMapCoordinates, dispatchClickedEvent]
+  )
 
   const onSearchClick = useCallback(() => {
     trackEvent({
@@ -160,7 +167,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
                     ...getLinkToCategory(category as WorkspaceCategory),
                     query: {},
                   }}
-                  onClick={onCategoryClick}
+                  onClick={() => onCategoryClick(category as WorkspaceCategory)}
                 >
                   <Icon icon={`category-${category}` as IconType} />
                 </Link>

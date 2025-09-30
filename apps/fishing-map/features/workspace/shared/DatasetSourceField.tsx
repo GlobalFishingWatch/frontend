@@ -7,17 +7,25 @@ import { TagList } from '@globalfishingwatch/ui-components'
 
 import { dataviewWithPrivateDatasets } from 'features/dataviews/dataviews.utils'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type DatasetFilterSourceProps = {
   dataview: UrlDataviewInstance
   hideColor?: boolean
+  allowDelete?: boolean
   className?: string
 }
 
-function DatasetFilterSource({ dataview, hideColor, className = '' }: DatasetFilterSourceProps) {
+function DatasetFilterSource({
+  dataview,
+  hideColor,
+  className = '',
+  allowDelete = false,
+}: DatasetFilterSourceProps) {
   const { t } = useTranslation()
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const sourcesSelected: TagItem[] = getSourcesSelectedInDataview(dataview)
   const nonVmsSources = sourcesSelected.filter((source) => !source.label.includes('VMS'))
   const vmsSources = sourcesSelected.filter((source) => source.label.includes('VMS'))
@@ -38,6 +46,12 @@ function DatasetFilterSource({ dataview, hideColor, className = '' }: DatasetFil
     return null
   }
 
+  const onRemoveFilterClick = () => {
+    if (allowDelete) {
+      upsertDataviewInstance({ id: dataview.id, deleted: true })
+    }
+  }
+
   return (
     <div className={cx(styles.filter, className)} data-test="source-tags">
       <label>{t('layer.source')}</label>
@@ -45,6 +59,7 @@ function DatasetFilterSource({ dataview, hideColor, className = '' }: DatasetFil
       <TagList
         testId="source-tag-item"
         tags={sourcesSelected}
+        onRemove={allowDelete ? onRemoveFilterClick : undefined}
         color={hideColor ? undefined : dataview.config?.color}
         className={cx(styles.tagList, {
           [styles.hidden]: mergedSourceOptions?.length > 0,
@@ -54,6 +69,7 @@ function DatasetFilterSource({ dataview, hideColor, className = '' }: DatasetFil
         <TagList
           tags={mergedSourceOptions}
           color={hideColor ? undefined : dataview.config?.color}
+          onRemove={allowDelete ? onRemoveFilterClick : undefined}
           className={styles.mergedTagList}
         />
       )}

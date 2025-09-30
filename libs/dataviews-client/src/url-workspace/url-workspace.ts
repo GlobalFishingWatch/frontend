@@ -126,6 +126,7 @@ const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
   zoom: (zoom) => parseFloat(zoom),
   reportVesselPage: parseIntNumber,
   reportResultsPerPage: parseIntNumber,
+  reportEventsPortsPage: parseIntNumber,
   vGRVesselPage: parseIntNumber,
   vGRVesselsResultsPerPage: parseIntNumber,
   vGREventsVesselPage: parseIntNumber,

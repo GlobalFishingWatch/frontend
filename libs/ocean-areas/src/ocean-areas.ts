@@ -4,6 +4,7 @@ import distance from '@turf/distance'
 import explode from '@turf/explode'
 import { point as turfPoint } from '@turf/helpers'
 import nearest from '@turf/nearest-point'
+import { uniqBy } from 'es-toolkit'
 import type { Feature, FeatureCollection, Geometry } from 'geojson'
 import { matchSorter } from 'match-sorter'
 
@@ -95,7 +96,7 @@ export const searchOceanAreas = async (
       bounds: bbox(feature as any) as OceanAreaBBox,
     },
   }))
-  return areas
+  return uniqBy(areas, (a) => a.properties?.name)
 }
 
 interface LatLon {

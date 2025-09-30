@@ -1,14 +1,15 @@
-import type {
-  TrackCorrection,
-  TrackCorrectionComment,
-} from 'features/track-correction/track-correction.slice'
-import { loadSpreadsheetDocByWorkspace } from 'pages/api/_utils/spreadsheets'
 import {
   COMMENTS_SPREADSHEET_TITLE,
   ISSUES_SPREADSHEET_TITLE,
   parseIssueComment,
   parseIssueRow,
-} from 'pages/api/track-corrections/[workspaceId]/_issues/utils'
+} from 'server/api/track-corrections/utils'
+import { loadSpreadsheetDocByWorkspace } from 'server/api/utils/spreadsheets'
+
+import type {
+  TrackCorrection,
+  TrackCorrectionComment,
+} from 'features/track-correction/track-correction.slice'
 
 export async function getWorkspaceIssues(
   workspaceId: string,

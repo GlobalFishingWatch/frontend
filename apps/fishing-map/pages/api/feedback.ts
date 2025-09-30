@@ -1,8 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { loadSpreadsheetDoc } from 'server/api/utils/spreadsheets'
 
 import type { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-
-import { loadSpreadsheetDoc } from 'pages/api/_utils/spreadsheets'
 
 const FEEDBACK_SPREADSHEET_ID = process.env.NEXT_FEEDBACK_SPREADSHEET_ID || ''
 const ERRORS_SPREADSHEET_ID = process.env.NEXT_MAP_ERRORS_SPREADSHEET_ID || ''
