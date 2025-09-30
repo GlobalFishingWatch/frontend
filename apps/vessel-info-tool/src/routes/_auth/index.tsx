@@ -13,14 +13,11 @@ import Search from '@/features/search/Search'
 import type { RFMO, TableSearchParams } from '@/types/vessel.types'
 import { fetchVessels } from '@/utils/vessels'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { UserData } from '@globalfishingwatch/api-types'
 
 export const Route = createFileRoute('/_auth/')({
   ssr: false,
-  loader: async () => {
-    const user = await GFWAPI.fetchUser()
-    const vessels = await fetchVessels()
-    return { user, vessels }
-  },
+  loader: async () => fetchVessels(),
   loaderDeps: () => ({}),
   validateSearch: (search: Record<string, unknown>): Partial<TableSearchParams> => {
     const { selectedRows, rfmo, globalSearch, columnFilters } = search
@@ -35,12 +32,13 @@ export const Route = createFileRoute('/_auth/')({
 })
 
 function Home() {
-  const { vessels } = Route.useLoaderData()
+  const vessels = Route.useLoaderData()
   const { t } = useTranslation()
 
   const [isDownloadModalOpen, setIsDownloadModalOpen] = useState(false)
   const tableContainerRef = useRef<HTMLDivElement>(null)
   const [containerEl, setContainerEl] = useState<HTMLDivElement | null>(null)
+  const [user, setUser] = useState<UserData | null>(null)
 
   useEffect(() => {
     if (tableContainerRef.current) {
@@ -48,12 +46,21 @@ function Home() {
     }
   }, [])
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const user = await GFWAPI.fetchUser()
+      setUser(user)
+    }
+
+    fetchUserData()
+  }, [])
+
   return (
     <div className="fixed inset-0 flex flex-col overflow-hidden">
       <Header>
         <Search data={vessels} />
         <OptionsMenu />
-        <Profile />
+        <Profile user={user} />
       </Header>
       <div className="flex-1 relative overflow-auto" ref={tableContainerRef}>
         {containerEl && <DynamicTable data={vessels} tableContainerRef={containerEl} />}

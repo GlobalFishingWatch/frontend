@@ -3,13 +3,17 @@ import { useTranslation } from 'react-i18next'
 
 import { Route } from '@/routes/_auth/index'
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import type { UserData } from '@globalfishingwatch/api-types'
 import { Button } from '@globalfishingwatch/ui-components'
 
 import styles from './Profile.module.css'
 
-export const Profile = () => {
+type ProfileProps = {
+  user: UserData | null
+}
+
+export const Profile = ({ user }: ProfileProps) => {
   const { t } = useTranslation()
-  const { user } = Route.useLoaderData()
 
   const handleLogoutClick = useCallback(() => {
     GFWAPI.logout().then(() => {
