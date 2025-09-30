@@ -82,6 +82,7 @@ const AreaTick = ({ y, payload }: any) => {
 
 const AreaTooltip = ({ payload }: any) => {
   const { t } = useTranslation()
+
   return (
     <div className={styles.tooltipContainer}>
       <ul>
@@ -252,7 +253,9 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
                   {index === eventTypes.length - 1 && (
                     <LabelList
                       position="right"
-                      valueAccessor={(entry: any) => formatI18nNumber(entry.total)}
+                      valueAccessor={(entry: any) => {
+                        return formatI18nNumber(entry?.payload?.total)
+                      }}
                       className={styles.count}
                     />
                   )}

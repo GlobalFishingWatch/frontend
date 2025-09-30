@@ -1,7 +1,8 @@
 import type { Feature } from 'geojson'
 
-export type AreaType = 'eez' | 'mpa' | 'fao' | 'rfmo'
+export type AreaType = 'eez' | 'mpa' | 'fao' | 'rfmo' | 'port'
 
+export type AreaGeometryMode = 'bbox' | 'simplify' | 'point'
 export type AreaConfig = {
   type: AreaType
   path: string
@@ -11,7 +12,7 @@ export type AreaConfig = {
     area: string
     name: string
   }
-  geometryMode?: 'bbox' | 'simplify'
+  geometryMode?: AreaGeometryMode
   filter?: (area: Feature) => boolean
   limitBy?: (areas: Feature[]) => Feature[]
 }

@@ -148,16 +148,12 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
       },
     ],
   },
-  ...(IS_DEVELOPMENT_ENV
-    ? ([
-        {
-          id: PORTS_LAYER_ID,
-          dataviewId: PORTS_DATAVIEW_SLUG,
-          previewImageUrl: `${PATH_BASENAME}/images/layer-library/ports.jpg`,
-          config: {
-            color: '#9AEEFF',
-          },
-        },
-      ] as LibraryLayerConfig[])
-    : []),
+  {
+    id: PORTS_LAYER_ID,
+    dataviewId: PORTS_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/ports.jpg`,
+    config: {
+      color: '#9AEEFF',
+    },
+  },
 ]

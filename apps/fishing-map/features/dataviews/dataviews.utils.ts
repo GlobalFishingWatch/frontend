@@ -54,7 +54,7 @@ export function dataviewHasVesselGroupId(dataview: UrlDataviewInstance, vesselGr
 }
 
 export const getVesselIdFromInstanceId = (dataviewInstanceId: string) => {
-  const prefix = dataviewInstanceId.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
+  const prefix = dataviewInstanceId?.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
     ? VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX
     : VESSEL_DATAVIEW_INSTANCE_PREFIX
   return dataviewInstanceId.split(prefix)[1]

@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -66,6 +66,14 @@ export default function ReportVesselsTable({
     dataviews,
     userData?.permissions || []
   )
+
+  const redirectToVesselProfile = useCallback((shipName: string) => {
+    trackEvent({
+      category: TrackCategory.GlobalReports,
+      action: `redirect to vessel profile`,
+      label: shipName,
+    })
+  }, [])
 
   const onFilterClick = (reportVesselFilter: any) => {
     dispatchQueryParams({ reportVesselFilter, reportVesselPage: 0 })
@@ -208,6 +216,7 @@ export default function ReportVesselsTable({
                         vesselId={id}
                         datasetId={vessel.datasetId}
                         query={{ vesselIdentitySource: VesselIdentitySourceEnum.SelfReported }}
+                        onClick={() => redirectToVesselProfile(shipName)}
                       >
                         {shipName}
                       </VesselLink>

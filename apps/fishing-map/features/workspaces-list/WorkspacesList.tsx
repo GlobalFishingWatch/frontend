@@ -8,6 +8,7 @@ import Link from 'redux-first-router-link'
 import type { ReportWorkspaceId } from 'data/highlighted-workspaces/reports'
 import { REPORT_IDS } from 'data/highlighted-workspaces/reports'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { fetchWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
@@ -40,6 +41,12 @@ function WorkspacesList() {
 
   const onWorkspaceClick = useCallback(
     (workspace: HighlightedWorkspace) => {
+      trackEvent({
+        category: TrackCategory.GlobalReports,
+        action: `Clicked highlighted ${workspace.reportCategory} workspace`,
+        label: workspace.name,
+      })
+
       if (workspace.viewport) {
         setMapCoordinates(workspace.viewport)
       }

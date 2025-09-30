@@ -32,7 +32,8 @@
         "outputPath": "dist/libs/timebar",
         "project": "libs/timebar/package.json",
         "rollupConfig": "libs/timebar/rollup.config.js",
-        "tsConfig": "libs/timebar/tsconfig.lib.json"
+        "tsConfig": "libs/timebar/tsconfig.lib.json",
+        "useLegacyTypescriptPlugin": false
       }
     },
     "publish": {

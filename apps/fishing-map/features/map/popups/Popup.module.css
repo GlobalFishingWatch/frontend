@@ -193,7 +193,7 @@
 
 .list > li {
   max-width: 50rem;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .strong {
@@ -263,6 +263,7 @@
 
 .inlineBtn {
   transform: translateY(0.4rem);
+  height: 2rem;
 }
 
 .secondary {

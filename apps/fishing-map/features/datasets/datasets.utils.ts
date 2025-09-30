@@ -44,7 +44,7 @@ import i18n, { t } from 'features/i18n/i18n'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
-import { getPorts } from 'utils/ports'
+import { getPorts, getPortsByIds } from 'utils/ports'
 import { capitalize, sortFields } from 'utils/shared'
 
 import styles from '../vessel-groups/VesselGroupModal.module.css'
@@ -906,6 +906,17 @@ const getSchemaOptionsSelectedInDataview = (
         label: max,
       },
     ]
+  }
+
+  if (schema === 'next_port_id' && dataview.config?.filters?.next_port_id) {
+    const ports = getPortsByIds(dataview.config?.filters?.next_port_id || [])
+    if (ports.length) {
+      return ports
+    }
+    const nextPortIds = Array.isArray(dataview.config?.filters?.next_port_id)
+      ? dataview.config?.filters?.next_port_id
+      : [dataview.config?.filters?.next_port_id]
+    return nextPortIds.map((id) => ({ id, label: id }))
   }
 
   return options?.filter((option) => {

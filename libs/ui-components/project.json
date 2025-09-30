@@ -11,6 +11,7 @@
       "options": {
         "outputPath": "dist/libs/ui-components",
         "tsConfig": "libs/ui-components/tsconfig.lib.json",
+        "useLegacyTypescriptPlugin": false,
         "project": "libs/ui-components/package.json",
         "extractCss": false,
         "entryFile": "libs/ui-components/src/index.ts",

@@ -20,7 +20,8 @@
         "main": "libs/pbf-decoders/index.ts",
         "outputPath": "dist/libs/pbf-decoders",
         "project": "libs/pbf-decoders/package.json",
-        "tsConfig": "libs/pbf-decoders/tsconfig.lib.json"
+        "tsConfig": "libs/pbf-decoders/tsconfig.lib.json",
+        "useLegacyTypescriptPlugin": false
       }
     },
     "publish": {

@@ -142,7 +142,7 @@
   "port-visits": {
     "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. The dataset contains over 160,000 individual anchorage locations, which are further grouped into nearly 32,000 ports. ",
     "moreInfoLink": "",
-    "name": "Port Visits (AIS)"
+    "name": "Port visits (AIS)"
   },
   "presence": {
     "description": "The presence layer analyzes automatic identification system (AIS) data collected from vessels that our research has identified. The presence is determined by taking positions transmitted by the vessel’s AIS and is displayed as a heatmap. ",

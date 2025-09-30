@@ -1,6 +1,7 @@
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { PATH_BASENAME } from 'data/config'
+import { SENTINEL2_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
 import {
   // CARRIER_PORTAL_DATAVIEW_INSTANCES,
   REPORT_DATAVIEW_INSTANCES,
@@ -39,7 +40,17 @@ export const REPORTS_INDEX: ReportWorkspace[] = [
     id: 'detections-report',
     reportCategory: ReportCategory.Detections,
     img: `${PATH_BASENAME}/images/highlighted-workspaces/report-detections.jpg`,
-    dataviewInstances: REPORT_DATAVIEW_INSTANCES,
+    dataviewInstances: REPORT_DATAVIEW_INSTANCES.map((dataview) => ({
+      ...dataview,
+      config: {
+        ...dataview.config,
+        ...(dataview.id === SENTINEL2_DATAVIEW_INSTANCE_ID && {
+          filters: {
+            matched: [false],
+          },
+        }),
+      },
+    })),
   },
   {
     id: 'events-report',

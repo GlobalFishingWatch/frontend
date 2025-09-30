@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -7,8 +7,10 @@ import { useDebounce } from 'use-debounce'
 
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
 
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import I18nNumber from 'features/i18n/i18nNumber'
+import PortsReportLink from 'features/reports/report-port/PortsReportLink'
 import { selectReportEventsPortsFilter } from 'features/reports/reports.config.selectors'
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import { useReportHash } from 'features/reports/tabs/events/events-report.hooks'
@@ -25,7 +27,8 @@ import styles from './EventReportPorts.module.css'
 
 function EventReportPorts() {
   const { t } = useTranslation()
-  const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
+  const eventsDataviews = useSelector(selectActiveReportDataviews)
+  const eventsDataview = eventsDataviews?.[0]
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const fetchEventsPortsStatsParams = useSelector(selectFetchEventsPortsStatsParams)
   const reportEventsPortsPaginated = useSelector(selectReportEventsPortsPaginated)
@@ -60,6 +63,14 @@ function EventReportPorts() {
     dispatchQueryParams({ reportEventsPortsPage: pagination.page + 1 })
   }
 
+  const seePortsClick = useCallback(() => {
+    updateReportHash()
+    trackEvent({
+      category: TrackCategory.GlobalReports,
+      action: `Clicked see ports after events`,
+    })
+  }, [updateReportHash])
+
   const onTogglePortFilter = (portId: string) => {
     const isPortInFilter = eventsDataview.config?.filters?.next_port_id?.includes(portId)
     const newDataviewConfig = {
@@ -69,6 +80,9 @@ function EventReportPorts() {
           ? eventsDataview.config?.filters?.next_port_id?.filter((id: string) => id !== portId)
           : [...(eventsDataview.config?.filters?.next_port_id || []), portId],
       },
+    }
+    if (newDataviewConfig.filters.next_port_id.length === 0) {
+      newDataviewConfig.filters.next_port_id = undefined
     }
     upsertDataviewInstance({
       id: eventsDataview.id,
@@ -86,7 +100,7 @@ function EventReportPorts() {
       <ReportVesselsPlaceholder animate={false} showGraph={false} showSearch={false}>
         <div className={cx(styles.cover, styles.center, styles.top)}>
           <p>{t('eventsReport.newTimeRangePorts')}</p>
-          <Button onClick={updateReportHash}>{t('eventsReport.seePorts')}</Button>
+          <Button onClick={seePortsClick}>{t('eventsReport.seePorts')}</Button>
         </div>
       </ReportVesselsPlaceholder>
     )
@@ -143,7 +157,7 @@ function EventReportPorts() {
                             : t('event.port_visitedAfterFilter')
                         }
                       />
-                      {port.name}
+                      <PortsReportLink port={port}>{port.name}</PortsReportLink>
                     </div>
                     <div className={cx({ [styles.border]: !isLastRow })}>{port.country}</div>
                     <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>

@@ -1,5 +1,6 @@
 import { memo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import type { UseComboboxStateChange } from 'downshift'
 import { useCombobox } from 'downshift'
@@ -8,11 +9,13 @@ import type { Point } from 'geojson'
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
 import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 
-import { BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES } from 'data/default-workspaces/context-layers'
+import { OCEAN_AREAS_DATAVIEWS } from 'data/dataviews'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
+import { getDataviewInstanceFromDataview } from 'features/dataviews/dataviews.utils'
+import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import Hint from 'features/help/Hint'
 import { setHintDismissed } from 'features/help/hints.slice'
-import { PORTS_LAYER_ID } from 'features/map/map.config'
 import { useMapSetViewState } from 'features/map/map-viewport.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useOceanAreas } from 'hooks/ocean-areas'
@@ -30,6 +33,8 @@ const MapSearch = () => {
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const contextAreasDataviews = useSelector(selectContextAreasDataviews)
+  const allDataviews = useSelector(selectAllDataviews)
   const { searchOceanAreas } = useOceanAreas()
 
   const fitBounds = useMapFitBounds()
@@ -39,9 +44,7 @@ const MapSearch = () => {
     const bounds = selectedItem?.properties.bounds as Bbox
     const areaDataview =
       selectedItem?.properties?.type &&
-      BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES.find((d) =>
-        d.id.includes(selectedItem?.properties?.type)
-      )
+      contextAreasDataviews.find((d) => d.id.includes(selectedItem?.properties?.type))
     if (areaDataview) {
       upsertDataviewInstance({
         id: areaDataview.id,
@@ -49,6 +52,21 @@ const MapSearch = () => {
           visible: true,
         },
       })
+    } else {
+      const dataview = allDataviews.find(
+        (dataview) =>
+          OCEAN_AREAS_DATAVIEWS.includes(dataview.slug as any) &&
+          dataview.slug?.includes(selectedItem?.properties?.type || '')
+      )
+      if (dataview) {
+        const dataviewInstance = getDataviewInstanceFromDataview(dataview)
+        if (dataviewInstance) {
+          upsertDataviewInstance({
+            ...dataviewInstance,
+            config: { visible: true },
+          })
+        }
+      }
     }
     if (selectedItem?.properties.type === 'port') {
       const [longitude, latitude] = (selectedItem.geometry as Point).coordinates
@@ -56,12 +74,6 @@ const MapSearch = () => {
         latitude,
         longitude,
         zoom: 12,
-      })
-      upsertDataviewInstance({
-        id: PORTS_LAYER_ID,
-        config: {
-          visible: true,
-        },
       })
     } else if (bounds) {
       fitBounds(bounds, { fitZoom: true })

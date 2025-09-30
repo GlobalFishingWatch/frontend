@@ -18,9 +18,11 @@ const BASE_REPORT_EVENTS_CSV_CONFIG: CsvConfig[] = [
   { label: 'latitude', accessor: 'position.lat' },
   { label: 'longitude', accessor: 'position.lon' },
   { label: 'vesselId', accessor: 'vessel.id' },
+  { label: 'vesselMMSI', accessor: 'vessel.ssvid' },
   { label: 'vesselName', accessor: 'vessel.name' },
   { label: 'vesselFlag', accessor: 'vessel.flag' },
   { label: 'vesselType', accessor: 'vessel.type' },
+  { label: 'dataset', accessor: 'datasetId' },
 ]
 
 export const ENCOUNTER_REPORT_EVENTS_CSV_CONFIG = [
@@ -28,6 +30,9 @@ export const ENCOUNTER_REPORT_EVENTS_CSV_CONFIG = [
   { label: 'encounteredVesselName', accessor: 'encounter.vessel.name' },
   { label: 'encounteredVesselFlag', accessor: 'encounter.vessel.flag' },
   { label: 'encounteredVesselType', accessor: 'encounter.vessel.type' },
+  { label: 'nextPortVisitID', accessor: 'encounter.vessel.nextPort.id' },
+  { label: 'nextPortVisitFlag', accessor: 'encounter.vessel.nextPort.flag' },
+  { label: 'nextPortVisitName', accessor: 'encounter.vessel.nextPort.name' },
 ]
 
 export const PORT_VISIT_REPORT_EVENTS_CSV_CONFIG = [

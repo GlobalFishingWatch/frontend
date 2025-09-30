@@ -4,10 +4,12 @@ import simplify from '@turf/simplify'
 import truncate from '@turf/truncate'
 import type { Feature, MultiPolygon, Polygon } from 'geojson'
 
+import type { AreaGeometryMode } from './types'
+
 export function simplifyArea(
   feature: Feature,
   idProperty?: string,
-  geometryMode: 'bbox' | 'simplify' = 'simplify'
+  geometryMode: AreaGeometryMode = 'simplify'
 ) {
   if (!feature.geometry || !('coordinates' in feature.geometry)) {
     return null
@@ -27,6 +29,17 @@ export function simplifyArea(
   } as Feature<Polygon | MultiPolygon>
 
   try {
+    if (geometryMode === 'point') {
+      return {
+        type: 'Feature',
+        properties: area.properties,
+        geometry: {
+          type: 'Point',
+          coordinates: [area.geometry.coordinates[0], area.geometry.coordinates[1]],
+        },
+      }
+    }
+
     if (geometryMode === 'bbox') {
       return {
         type: 'Feature',
