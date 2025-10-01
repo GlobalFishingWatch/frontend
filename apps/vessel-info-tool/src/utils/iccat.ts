@@ -194,7 +194,7 @@ const writeToSheet = (
   })
 }
 
-const getFlagLabel = (flagCode: string) => {
+export const getFlagLabel = (flagCode: string) => {
   return flags.find((f) => f.id === flagCode)?.label ?? flagCode
 }
 

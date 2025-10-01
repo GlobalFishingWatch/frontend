@@ -60,17 +60,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <div id="root">{children}</div>
-        <TanStackDevtools
-          config={{
-            position: 'bottom-left',
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-          ]}
-        />
         <Scripts />
       </body>
     </html>

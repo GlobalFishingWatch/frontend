@@ -15,19 +15,21 @@ const VESSEL_SEARCH_DATASETS = [
   // 'public-panama-vessel-identity-non-fishing:v20211126', //check if public contains imo or switch to private
 ]
 
-export const fetchVessels = createServerFn().handler(async () => {
-  const res = await fetch('/api/vessels/scraped')
-  if (!res.ok) {
-    if (res.status === 404) {
-      throw notFound()
+export const fetchVessels = createServerFn()
+  .inputValidator((data: { source: string }) => data)
+  .handler(async ({ data }) => {
+    const res = await fetch(`/api/vessels/${data.source}`)
+    if (!res.ok) {
+      if (res.status === 404) {
+        throw notFound()
+      }
+
+      throw new Error('Failed to fetch post')
     }
 
-    throw new Error('Failed to fetch post')
-  }
-
-  const vessels = (await res.json()) as Vessel[]
-  return vessels
-})
+    const vessels = (await res.json()) as Vessel[]
+    return vessels
+  })
 
 export const getVesselsFromAPI = async ({ id }: { id: string }) => {
   const datasetsResponse = await GFWAPI.fetch<Response>(

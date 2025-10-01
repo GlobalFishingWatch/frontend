@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Route } from '@/routes/_auth/index'
+import { Route } from '@/routes/_auth/$source'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 import { Button } from '@globalfishingwatch/ui-components'

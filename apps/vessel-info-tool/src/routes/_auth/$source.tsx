@@ -15,9 +15,9 @@ import { fetchVessels } from '@/utils/vessels'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 
-export const Route = createFileRoute('/_auth/')({
+export const Route = createFileRoute('/_auth/$source')({
   ssr: false,
-  loader: async () => fetchVessels(),
+  loader: async ({ params }) => fetchVessels({ data: { source: params.source } }),
   loaderDeps: () => ({}),
   validateSearch: (search: Record<string, unknown>): Partial<TableSearchParams> => {
     const { selectedRows, rfmo, globalSearch, columnFilters } = search
@@ -55,8 +55,6 @@ function Home() {
     fetchUserData()
   }, [])
 
-  if (!vessels || !user) return
-
   return (
     <div className="fixed inset-0 flex flex-col overflow-hidden">
       <Header>
@@ -70,12 +68,14 @@ function Home() {
       <Footer downloadClick={() => setIsDownloadModalOpen(true)}>
         {t('footer.results', `${vessels.length} results`, { count: vessels.length })}
       </Footer>
-      <DownloadModal
-        isOpen={isDownloadModalOpen}
-        onClose={() => setIsDownloadModalOpen(false)}
-        data={vessels}
-        user={user}
-      />
+      {user && (
+        <DownloadModal
+          isOpen={isDownloadModalOpen}
+          onClose={() => setIsDownloadModalOpen(false)}
+          data={vessels}
+          user={user}
+        />
+      )}
     </div>
   )
 }

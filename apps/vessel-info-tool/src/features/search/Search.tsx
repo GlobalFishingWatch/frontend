@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Route } from '@/routes/_auth/index'
+import { Route } from '@/routes/_auth/$source'
 import type { Vessel } from '@/types/vessel.types'
 import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 

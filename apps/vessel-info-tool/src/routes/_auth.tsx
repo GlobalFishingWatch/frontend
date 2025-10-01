@@ -15,6 +15,6 @@ function LoginWrapper() {
   if (!login.logged) {
     return <Spinner />
   }
-
+  // redirect to getFlagLabel(login.user.country)
   return <Outlet />
 }

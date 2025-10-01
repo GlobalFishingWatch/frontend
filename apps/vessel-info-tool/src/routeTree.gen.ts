@@ -10,7 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/_auth'
-import { Route as AuthIndexRouteImport } from './routes/_auth/index'
+import { Route as AuthSourceRouteImport } from './routes/_auth/$source'
 import { Route as ApiVesselsFileNameRouteImport } from './routes/api/vessels/$fileName'
 import { Route as ApiIccatSourceRouteImport } from './routes/api/iccat/$source'
 
@@ -18,9 +18,9 @@ const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthIndexRoute = AuthIndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AuthSourceRoute = AuthSourceRouteImport.update({
+  id: '/$source',
+  path: '/$source',
   getParentRoute: () => AuthRoute,
 } as any)
 const ApiVesselsFileNameRoute = ApiVesselsFileNameRouteImport.update({
@@ -35,31 +35,31 @@ const ApiIccatSourceRoute = ApiIccatSourceRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthIndexRoute
+  '/$source': typeof AuthSourceRoute
   '/api/iccat/$source': typeof ApiIccatSourceRoute
   '/api/vessels/$fileName': typeof ApiVesselsFileNameRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof AuthIndexRoute
+  '/$source': typeof AuthSourceRoute
   '/api/iccat/$source': typeof ApiIccatSourceRoute
   '/api/vessels/$fileName': typeof ApiVesselsFileNameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteWithChildren
-  '/_auth/': typeof AuthIndexRoute
+  '/_auth/$source': typeof AuthSourceRoute
   '/api/iccat/$source': typeof ApiIccatSourceRoute
   '/api/vessels/$fileName': typeof ApiVesselsFileNameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/iccat/$source' | '/api/vessels/$fileName'
+  fullPaths: '/$source' | '/api/iccat/$source' | '/api/vessels/$fileName'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/iccat/$source' | '/api/vessels/$fileName'
+  to: '/$source' | '/api/iccat/$source' | '/api/vessels/$fileName'
   id:
     | '__root__'
     | '/_auth'
-    | '/_auth/'
+    | '/_auth/$source'
     | '/api/iccat/$source'
     | '/api/vessels/$fileName'
   fileRoutesById: FileRoutesById
@@ -79,11 +79,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth/': {
-      id: '/_auth/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthIndexRouteImport
+    '/_auth/$source': {
+      id: '/_auth/$source'
+      path: '/$source'
+      fullPath: '/$source'
+      preLoaderRoute: typeof AuthSourceRouteImport
       parentRoute: typeof AuthRoute
     }
     '/api/vessels/$fileName': {
@@ -104,11 +104,11 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthRouteChildren {
-  AuthIndexRoute: typeof AuthIndexRoute
+  AuthSourceRoute: typeof AuthSourceRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
-  AuthIndexRoute: AuthIndexRoute,
+  AuthSourceRoute: AuthSourceRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)

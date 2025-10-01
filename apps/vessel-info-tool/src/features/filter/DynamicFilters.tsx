@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 
 import { useDynamicColumns } from '@/hooks/useDynamicColumns'
-import { Route } from '@/routes/_auth/index'
+import { Route } from '@/routes/_auth/$source'
 import type { FilterState, Vessel } from '@/types/vessel.types'
 import type { MultiSelectOption } from '@globalfishingwatch/api-client'
 import { InputText, MultiSelect, SliderRange } from '@globalfishingwatch/ui-components'
