@@ -32,62 +32,59 @@ function convertPortsToGeoJSON(inputPath: string, outputPath: string): void {
   try {
     console.log(`Reading ports data from: ${inputPath}`)
 
-    // Read the input JSON file
     const rawData = fs.readFileSync(inputPath, 'utf-8')
     const ports: PortData[] = JSON.parse(rawData)
 
     console.log(`Found ${ports.length} ports`)
+    let invalidPorts = 0
 
-    // Convert to GeoJSON format
-    const features: GeoJSONFeature[] = ports
-      .map((port) => {
-        // Validate port data
-        if (!port.port_id || !port.lat || !port.lon) {
-          console.warn(`Missing required data for port:`, port)
-          return null
-        }
+    const features: GeoJSONFeature[] = ports.flatMap((port) => {
+      if (!port.port_id || !port.lat || !port.lon || !port.name || !port.flag) {
+        invalidPorts++
+        return []
+      }
 
-        const lat = parseFloat(port.lat)
-        const lon = parseFloat(port.lon)
+      const lat = parseFloat(port.lat)
+      const lon = parseFloat(port.lon)
 
-        // Validate coordinates
-        if (isNaN(lat) || isNaN(lon)) {
-          console.warn(
-            `Invalid coordinates for port ${port.port_id}: lat=${port.lat}, lon=${port.lon}`
-          )
-          return null
-        }
+      if (isNaN(lat) || isNaN(lon)) {
+        console.warn(
+          `Invalid coordinates for port ${port.port_id}: lat=${port.lat}, lon=${port.lon}`
+        )
+        return []
+      }
 
-        if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
-          console.warn(`Coordinates out of range for port ${port.port_id}: lat=${lat}, lon=${lon}`)
-          return null
-        }
+      if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+        console.warn(`Coordinates out of range for port ${port.port_id}: lat=${lat}, lon=${lon}`)
+        return []
+      }
 
-        return {
-          type: 'Feature',
-          properties: {
-            type: 'port',
-            id: port.port_id,
-            name: port.name,
-            flag: port.flag || 'UNK',
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: [lon, lat], // GeoJSON uses [longitude, latitude] order
-          },
-        }
-      })
-      .filter((feature): feature is GeoJSONFeature => feature !== null)
+      return {
+        type: 'Feature',
+        properties: {
+          type: 'port',
+          id: port.port_id,
+          name: port.name,
+          flag: port.flag || 'UNK',
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: [lon, lat],
+        },
+      }
+    })
+
+    if (invalidPorts > 0) {
+      console.error(`Ports with missing data (id, name, flag, lat, lon): ${invalidPorts}`)
+    }
 
     console.log(`Successfully converted ${features.length} ports to GeoJSON`)
 
-    // Create GeoJSON object
     const geoJSON: GeoJSON = {
       type: 'FeatureCollection',
       features,
     }
 
-    // Write to output file
     fs.writeFileSync(outputPath, JSON.stringify(geoJSON, null, 2))
     console.log(`GeoJSON written to: ${outputPath}`)
   } catch (error) {
@@ -96,7 +93,6 @@ function convertPortsToGeoJSON(inputPath: string, outputPath: string): void {
   }
 }
 
-// Main execution
 const inputFile = './src/scripts/all-ports.json'
 const outputFile = './src/scripts/all-ports.geo.json'
 
