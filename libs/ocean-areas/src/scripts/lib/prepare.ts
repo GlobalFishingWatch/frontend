@@ -87,9 +87,10 @@ export async function prepare(
           console.error(`\r[${type}] Name not found ${propertiesMapping.name}`, areaData.properties)
           continue
         }
+        const flag = areaData.properties?.[propertiesMapping.flag!]
         const finalArea = {
           ...simplifiedArea,
-          properties: { type, area, name },
+          properties: { type, area, name, ...(flag && { flag }) },
         }
         const jsonLine = JSON.stringify(finalArea)
         if (fileIndex === 1) {
