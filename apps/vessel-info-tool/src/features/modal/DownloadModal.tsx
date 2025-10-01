@@ -7,6 +7,7 @@ import { RFMO } from '@/types/vessel.types'
 import { handleExportICCATVessels, parseVessels } from '@/utils/iccat'
 import type { MissingFieldsTableType } from '@/utils/validations'
 import { checkMissingMandatoryFields } from '@/utils/validations'
+import type { UserData } from '@globalfishingwatch/api-types'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Button, Modal, Select } from '@globalfishingwatch/ui-components'
 
@@ -19,6 +20,7 @@ interface DownloadModalProps {
   onClose: () => void
   title?: string
   data: Vessel[]
+  user: UserData
 }
 
 const DownloadModal: React.FC<DownloadModalProps> = ({
@@ -26,10 +28,10 @@ const DownloadModal: React.FC<DownloadModalProps> = ({
   onClose,
   title = 'Download',
   data,
+  user,
 }) => {
   const { t } = useTranslation()
   const searchQuery = Route.useSearch()
-  const { user } = Route.useLoaderData()
 
   const rfmoOptions: SelectOption[] = Object.values(RFMO).map((rfmo) => ({
     id: rfmo,

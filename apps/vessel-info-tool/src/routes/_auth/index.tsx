@@ -55,6 +55,8 @@ function Home() {
     fetchUserData()
   }, [])
 
+  if (!vessels || !user) return
+
   return (
     <div className="fixed inset-0 flex flex-col overflow-hidden">
       <Header>
@@ -72,6 +74,7 @@ function Home() {
         isOpen={isDownloadModalOpen}
         onClose={() => setIsDownloadModalOpen(false)}
         data={vessels}
+        user={user}
       />
     </div>
   )
