@@ -381,6 +381,7 @@
     "fieldNumericPlaceholder": "Selecione um campo numérico do seu conjunto de dados",
     "fieldPlaceholder": "Selecione um campo do seu conjunto de dados",
     "invalidDatesFeatures": "Alguns de seus {{featureType}} não contêm uma data válida. Eles não aparecerão no mapa, independentemente do filtro de tempo.",
+    "noFilters": "To add filters to your dataset, your file must have at least one property with more than 2 distinct values.",
     "none": "Nenhum",
     "optionalFields": "Campos opcionais",
     "point": {

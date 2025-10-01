@@ -265,16 +265,16 @@ export function MultiSelect(props: MultiSelectProps) {
                 <IconButton icon="info" size="tiny" className={styles.infoIcon} />
               </Tooltip>
             )}
+            {disabled && disabledMsg && (
+              <IconButton
+                size="small"
+                type="warning"
+                icon="warning"
+                tooltip={disabledMsg}
+                className={multiSelectStyles.iconWarning}
+              />
+            )}
           </label>
-        )}
-        {disabled && disabledMsg && (
-          <IconButton
-            size="small"
-            type="warning"
-            icon="warning"
-            tooltip={disabledMsg}
-            className={multiSelectStyles.iconWarning}
-          />
         )}
       </div>
       <div
@@ -290,6 +290,7 @@ export function MultiSelect(props: MultiSelectProps) {
               ref: inputRef,
             })}
             data-test={`${testId}-input`}
+            disabled={disabled}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder={

@@ -43,7 +43,7 @@ function ReportVessels({
     <div className={styles.container}>
       <div className={styles.titleRow}>
         {title && <label className={styles.blockTitle}>{title}</label>}
-        <ReportVesselsGraphSelector />
+        <ReportVesselsGraphSelector loading={loading} />
       </div>
       {loading ? (
         <ReportVesselsPlaceholder showGraphHeader={false} />

@@ -37,10 +37,11 @@ export function AggregatedBarChart({
         {data && <Tooltip content={customTooltip} />}
         {Array.isArray(valueKeys) ? (
           valueKeys.map((valueKey, index) => {
-            const isValueObject = typeof data?.[0]?.[valueKey] === 'object'
+            const value = data?.[index]?.[valueKey]
+            const isValueObject = typeof value === 'object'
             const dataKey = isValueObject ? `${valueKey}.value` : valueKey
             const barColor = isValueObject
-              ? (data[0][valueKey] as ResponsiveVisualizationAggregatedObjectValue).color || color
+              ? (value as ResponsiveVisualizationAggregatedObjectValue)?.color || color
               : color
             return (
               <Bar

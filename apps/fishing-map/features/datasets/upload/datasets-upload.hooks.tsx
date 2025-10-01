@@ -118,8 +118,7 @@ export function useDatasetMetadataOptions(
     type?: DatasetSchemaType
   })[] = useMemo(() => {
     const options = datasetMetadata?.schema
-      ? Object.keys(datasetMetadata.schema).flatMap((field) => {
-          const schema = datasetMetadata.schema?.[field]
+      ? Object.entries(datasetMetadata.schema).flatMap(([field, schema]) => {
           if (
             (schemaTypes.length > 0 && !schemaTypes.includes(schema?.type as DatasetSchemaType)) ||
             DISCARDED_FIELDS.includes(field)
