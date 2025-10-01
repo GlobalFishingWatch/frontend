@@ -22,15 +22,15 @@ export default defineConfig({
   },
 
   plugins: [
+    tanstackRouter({
+      target: 'react',
+      autoCodeSplitting: true,
+    }),
     react(),
     svgr({
       include: ['**/*.svg', '**/*.svg?react'],
     }),
     nxViteTsPaths(),
-    tanstackRouter({
-      target: 'react',
-      autoCodeSplitting: true,
-    }),
     viteStaticCopy({
       targets: [
         {

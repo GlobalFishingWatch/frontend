@@ -84,3 +84,11 @@ label .secondary {
   list-style: disc;
   margin-left: var(--space-S);
 }
+
+.bold {
+  font-weight: 500;
+}
+
+.lowercase {
+  text-transform: lowercase;
+}
