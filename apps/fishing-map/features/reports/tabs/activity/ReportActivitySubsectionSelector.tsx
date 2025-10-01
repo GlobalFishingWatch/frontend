@@ -29,7 +29,7 @@ function ReportActivitySubsectionSelector() {
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
-  const subsection = useSelector(selectReportSubCategory)
+  const reportSubCategory = useSelector(selectReportSubCategory)
   const hasFishingDataviews = useSelector(selectHasFishingDataviews)
   const hasPresenceDataviews = useSelector(selectHasPresenceDataviews)
   const hasViirsDataviews = useSelector(selectHasViirsDataviews)
@@ -85,7 +85,7 @@ function ReportActivitySubsectionSelector() {
   const onSelectSubsection = (
     option: ChoiceOption<ReportActivitySubCategory | ReportDetectionsSubCategory>
   ) => {
-    if (subsection !== option.id) {
+    if (reportSubCategory !== option.id) {
       const queryParam =
         reportCategory === ReportCategory.Activity
           ? 'reportActivitySubCategory'
@@ -100,7 +100,9 @@ function ReportActivitySubsectionSelector() {
     }
   }
 
-  const selectedOption = subsection ? options.find((o) => o.id === subsection) : options[0]
+  const selectedOption = reportSubCategory
+    ? options.find((o) => o.id === reportSubCategory)
+    : options[0]
 
   return (
     <Choice
