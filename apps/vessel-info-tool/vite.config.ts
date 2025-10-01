@@ -33,7 +33,6 @@ export default defineConfig({
     }),
     nxViteTsPaths(),
     tanstackStart({
-      customViteReactPlugin: true,
       spa: {
         enabled: true,
       },
