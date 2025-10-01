@@ -36,6 +36,21 @@ function convertPortsToGeoJSON(inputPath: string, outputPath: string): void {
         return []
       }
 
+      // Remove names that contain only numbers
+      if (/^\d+$/.test(name)) {
+        return []
+      }
+
+      // Remove hexadecimal/alphanumeric code names (like 35b288c5, 342c1fc1, etc.)
+      if (/^[0-9a-f]+$/i.test(name) && name.length >= 6) {
+        return []
+      }
+
+      // Remove ISO code + number pattern (like USA-1739, CHN-125, etc.)
+      if (/^[A-Z]{3}-\d+$/i.test(name)) {
+        return []
+      }
+
       return { id: area, name, flag }
     })
 
