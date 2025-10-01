@@ -11,6 +11,7 @@ export type AreaConfig = {
   propertiesMapping: {
     area: string
     name: string
+    flag?: string
   }
   geometryMode?: AreaGeometryMode
   filter?: (area: Feature) => boolean
