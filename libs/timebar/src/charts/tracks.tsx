@@ -82,7 +82,9 @@ const Tracks = ({ data }: { data: TimebarChartData }) => {
                     style={{
                       backgroundColor: chunk.props?.color || track.color,
                       top: track.props?.segmentsOffsetY
-                        ? (track.y || 0) - 5 * (i - (track.chunks.length - 1) / 2)
+                        ? track.chunks.length > 8
+                          ? (track.y || 0) + (i % 3)
+                          : (track.y || 0) - 5 * (i - (track.chunks.length - 1) / 2)
                         : track.y,
                       left: chunk.x,
                       width: chunk.width,
