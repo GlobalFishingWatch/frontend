@@ -88,6 +88,9 @@ function EventReportPorts() {
       id: eventsDataview.id,
       config: newDataviewConfig,
     })
+    setTimeout(() => {
+      dispatchQueryParams({ reportEventsPortsPage: 0 })
+    }, 100)
   }
 
   const hasLessPortsThanAPage =
