@@ -42,6 +42,7 @@ export type UserPermissionValue =
   | 'vessel-group'
   | 'workspace'
   | BADGES_PERMISSIONS
+  | string
 
 export type UserPermissionAction =
   | 'read'

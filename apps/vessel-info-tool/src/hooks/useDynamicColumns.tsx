@@ -5,7 +5,6 @@ import escapeRegExp from 'lodash/escapeRegExp'
 
 import type { Vessel } from '@/types/vessel.types'
 import { generateFilterConfigs } from '@/utils/filters'
-import { normalizeKey } from '@/utils/source'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
 import styles from '../styles/global.module.css'

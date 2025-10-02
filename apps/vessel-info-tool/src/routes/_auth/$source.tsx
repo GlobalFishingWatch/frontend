@@ -11,13 +11,15 @@ import OptionsMenu from '@/features/options/OptionsMenu'
 import Profile from '@/features/profile/Profile'
 import Search from '@/features/search/Search'
 import type { RFMO, TableSearchParams } from '@/types/vessel.types'
+import type { UserPermissionValues } from '@/utils/source'
 import { fetchVessels } from '@/utils/vessels'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 
 export const Route = createFileRoute('/_auth/$source')({
   ssr: false,
-  loader: async ({ params }) => fetchVessels({ data: { source: params.source } }),
+  loader: async ({ params }) =>
+    fetchVessels({ data: { source: params.source as UserPermissionValues } }),
   loaderDeps: () => ({}),
   validateSearch: (search: Record<string, unknown>): Partial<TableSearchParams> => {
     const { selectedRows, rfmo, globalSearch, columnFilters } = search

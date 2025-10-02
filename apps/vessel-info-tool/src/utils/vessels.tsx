@@ -9,6 +9,8 @@ import type { APIPagination, Dataset, IdentityVessel } from '@globalfishingwatch
 import { DatasetTypes, EndpointId } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
+import type { UserPermissionValues } from './source'
+
 const VESSEL_SEARCH_DATASETS = [
   'public-global-vessel-identity:v3.0',
   // 'public-panama-vessel-identity-fishing:v20211126',
@@ -16,9 +18,9 @@ const VESSEL_SEARCH_DATASETS = [
 ]
 
 export const fetchVessels = createServerFn()
-  .inputValidator((data: { source: string }) => data)
+  .inputValidator((data: { source: UserPermissionValues }) => data)
   .handler(async ({ data }) => {
-    const res = await fetch(`/api/vessels/${data.source}`)
+    const res = await fetch(`/api/vessels/${data.source}_registry`)
     if (!res.ok) {
       if (res.status === 404) {
         throw notFound()

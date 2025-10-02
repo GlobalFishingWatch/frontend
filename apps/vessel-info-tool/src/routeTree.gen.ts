@@ -9,14 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as AuthSourceRouteImport } from './routes/_auth/$source'
 import { Route as ApiVesselsFileNameRouteImport } from './routes/api/vessels/$fileName'
 import { Route as ApiIccatSourceRouteImport } from './routes/api/iccat/$source'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthIndexRoute = AuthIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthSourceRoute = AuthSourceRouteImport.update({
   id: '/$source',
@@ -35,49 +47,82 @@ const ApiIccatSourceRoute = ApiIccatSourceRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/login': typeof LoginRoute
   '/$source': typeof AuthSourceRoute
+  '/': typeof AuthIndexRoute
   '/api/iccat/$source': typeof ApiIccatSourceRoute
   '/api/vessels/$fileName': typeof ApiVesselsFileNameRoute
 }
 export interface FileRoutesByTo {
+  '/login': typeof LoginRoute
   '/$source': typeof AuthSourceRoute
+  '/': typeof AuthIndexRoute
   '/api/iccat/$source': typeof ApiIccatSourceRoute
   '/api/vessels/$fileName': typeof ApiVesselsFileNameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteWithChildren
+  '/login': typeof LoginRoute
   '/_auth/$source': typeof AuthSourceRoute
+  '/_auth/': typeof AuthIndexRoute
   '/api/iccat/$source': typeof ApiIccatSourceRoute
   '/api/vessels/$fileName': typeof ApiVesselsFileNameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/$source' | '/api/iccat/$source' | '/api/vessels/$fileName'
+  fullPaths:
+    | '/login'
+    | '/$source'
+    | '/'
+    | '/api/iccat/$source'
+    | '/api/vessels/$fileName'
   fileRoutesByTo: FileRoutesByTo
-  to: '/$source' | '/api/iccat/$source' | '/api/vessels/$fileName'
+  to:
+    | '/login'
+    | '/$source'
+    | '/'
+    | '/api/iccat/$source'
+    | '/api/vessels/$fileName'
   id:
     | '__root__'
     | '/_auth'
+    | '/login'
     | '/_auth/$source'
+    | '/_auth/'
     | '/api/iccat/$source'
     | '/api/vessels/$fileName'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
+  LoginRoute: typeof LoginRoute
   ApiIccatSourceRoute: typeof ApiIccatSourceRoute
   ApiVesselsFileNameRoute: typeof ApiVesselsFileNameRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_auth': {
       id: '/_auth'
       path: ''
       fullPath: ''
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_auth/': {
+      id: '/_auth/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthIndexRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_auth/$source': {
       id: '/_auth/$source'
@@ -105,16 +150,19 @@ declare module '@tanstack/react-router' {
 
 interface AuthRouteChildren {
   AuthSourceRoute: typeof AuthSourceRoute
+  AuthIndexRoute: typeof AuthIndexRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthSourceRoute: AuthSourceRoute,
+  AuthIndexRoute: AuthIndexRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
+  LoginRoute: LoginRoute,
   ApiIccatSourceRoute: ApiIccatSourceRoute,
   ApiVesselsFileNameRoute: ApiVesselsFileNameRoute,
 }

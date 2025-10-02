@@ -1,13 +1,17 @@
 import * as React from 'react'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
+import {
+  createRootRoute,
+  createRootRouteWithContext,
+  HeadContent,
+  Scripts,
+} from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import { DefaultCatchBoundary } from '@/features/router/DefaultCatchBoundary'
 import { NotFound } from '@/features/router/NotFound'
 import appCss from '@/styles/app.css?url'
 import baseCss from '@/styles/base.css?url'
-import { seo } from '@/utils/seo'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -19,9 +23,7 @@ export const Route = createRootRoute({
         name: 'viewport',
         content: 'width=device-width, initial-scale=1',
       },
-      ...seo({
-        title: 'Interoperability tool | Vessel info tool',
-      }),
+      // title: 'Interoperability tool | Vessel info tool',
     ],
     links: [
       { rel: 'stylesheet', href: appCss },

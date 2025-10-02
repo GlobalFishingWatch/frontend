@@ -13,8 +13,6 @@ import type { UserData } from '@globalfishingwatch/api-types'
 
 import flags from 'data/iccat/flags'
 
-import { identifySourceSystem } from './source'
-
 export const brazilToICCAT: Record<string, string> = {
   'Nome da Embarcação': 'VesselNameCur',
   'Número de Inscrição no RGP (PPP ou RAEP)': 'IntRegNo',
@@ -72,10 +70,9 @@ const generateOwnerList = (data: Vessel[], ownerField?: string): ICCATOwner[] =>
   return owners
 }
 
-export const parseVessels = async (data: Vessel[]) => {
+export const parseVessels = async (data: Vessel[], sourceSystem: string) => {
   if (!data.length) return null
 
-  const sourceSystem = identifySourceSystem(data[0])
   if (!sourceSystem) throw new Error('Unable to identify source system')
   const sourceMap = sourceSystem === 'brazil' ? brazilToICCAT : panamaToICCAT
   const ownerField = Object.keys(data[0]).find(

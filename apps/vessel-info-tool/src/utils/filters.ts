@@ -1,6 +1,6 @@
 import type { FilterState } from '@/types/vessel.types'
 
-import { normalizeKey } from './source'
+import { normalizeKey } from './validations'
 
 export const generateFilterConfigs = (data: any[]): FilterState[] => {
   const valuesMap: Record<string, Set<string>> = {}
