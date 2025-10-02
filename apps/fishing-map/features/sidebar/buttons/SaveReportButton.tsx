@@ -6,10 +6,12 @@ import dynamic from 'next/dynamic'
 import { WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { useAppDispatch } from 'features/app/app.hooks'
 import { selectCurrentReport } from 'features/reports/reports.selectors'
 import { selectReportsStatus } from 'features/reports/reports.slice'
 import { useClipboardNotification } from 'features/sidebar/sidebar.hooks'
 import { selectWorkspace, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { setWorkspace } from 'features/workspace/workspace.slice'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { REPORT } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -25,6 +27,7 @@ const NewReportModal = dynamic(
 function SaveReportButton() {
   const { t } = useTranslation()
   const workspace = useSelector(selectWorkspace)
+  const dispatch = useAppDispatch()
   const report = useSelector(selectCurrentReport)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const reportStatus = useSelector(selectReportsStatus)
@@ -39,10 +42,15 @@ function SaveReportButton() {
   const onSaveCreateReport = useCallback(
     (report: any) => {
       copyToClipboard(window.location.href)
-      dispatchLocation(REPORT, { payload: { reportId: report?.id } })
+      dispatchLocation(
+        REPORT,
+        { payload: { reportId: report?.id }, query: {} },
+        { replaceQuery: true }
+      )
+      dispatch(setWorkspace(report.workspace))
       onCloseCreateReport()
     },
-    [copyToClipboard, dispatchLocation, onCloseCreateReport]
+    [copyToClipboard, dispatch, dispatchLocation, onCloseCreateReport]
   )
 
   const onSaveClick = async () => {

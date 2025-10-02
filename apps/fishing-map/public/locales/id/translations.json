@@ -381,6 +381,7 @@
     "fieldNumericPlaceholder": "Pilih bidang numerik dari dataset Anda",
     "fieldPlaceholder": "Pilih bidang dari dataset Anda",
     "invalidDatesFeatures": "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
+    "noFilters": "To add filters to your dataset, your file must have at least one property with more than 2 distinct values.",
     "none": "Tidak ada",
     "optionalFields": "Bidang opsional",
     "point": {

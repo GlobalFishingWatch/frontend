@@ -1,5 +1,3 @@
-import type { Feature } from 'geojson'
-
 import { prepare } from './lib/prepare'
 
 prepare({
@@ -11,5 +9,6 @@ prepare({
   propertiesMapping: {
     area: 'id',
     name: 'name',
+    flag: 'flag',
   },
 })

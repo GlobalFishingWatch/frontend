@@ -1597,7 +1597,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.22.6, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.8, @babel/runtime@npm:^7.24.5, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.26.10, @babel/runtime@npm:^7.27.0, @babel/runtime@npm:^7.27.6, @babel/runtime@npm:^7.28.2, @babel/runtime@npm:^7.28.3, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.22.6, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.8, @babel/runtime@npm:^7.24.5, @babel/runtime@npm:^7.25.0, @babel/runtime@npm:^7.26.10, @babel/runtime@npm:^7.27.0, @babel/runtime@npm:^7.27.6, @babel/runtime@npm:^7.28.2, @babel/runtime@npm:^7.28.3, @babel/runtime@npm:^7.28.4, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.28.4
   resolution: "@babel/runtime@npm:7.28.4"
   checksum: 10/6c9a70452322ea80b3c9b2a412bcf60771819213a67576c8cec41e88a95bb7bf01fc983754cda35dc19603eef52df22203ccbf7777b9d6316932f9fb77c25163
@@ -5125,34 +5125,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@luma.gl/constants@npm:9.1.10, @luma.gl/constants@npm:~9.1.9":
+"@luma.gl/constants@npm:9.1.10":
   version: 9.1.10
   resolution: "@luma.gl/constants@npm:9.1.10"
   checksum: 10/f094cd5fa64eb7e8be8912d5411895529566e6101fe398aa201c669e91c74f069eb6adc969190cf824351762dfb758e47f109734ad41dfdd11357819e21e648b
   languageName: node
   linkType: hard
 
-"@luma.gl/constants@npm:^9.1.0":
-  version: 9.2.2
-  resolution: "@luma.gl/constants@npm:9.2.2"
-  checksum: 10/a54e6008eeb7d32e49fc0cf3cd5d2f4b1135efc37d929d8a3ea97f0f3b2640cf45b763fb85adaf1709b1394a21e77c427f3eb80be7997341e50ff6a7834ac414
-  languageName: node
-  linkType: hard
-
-"@luma.gl/core@npm:^9.1.0":
-  version: 9.2.2
-  resolution: "@luma.gl/core@npm:9.2.2"
-  dependencies:
-    "@math.gl/types": "npm:^4.1.0"
-    "@probe.gl/env": "npm:^4.0.8"
-    "@probe.gl/log": "npm:^4.0.8"
-    "@probe.gl/stats": "npm:^4.0.8"
-    "@types/offscreencanvas": "npm:^2019.6.4"
-  checksum: 10/99a04153682e3e46de6ea8168beeda289baa13bf58acfce0444c9ab076906fb7b880608210c54cafcc9f20ed9d95d205a6d619fb294922045be0469981a8664d
-  languageName: node
-  linkType: hard
-
-"@luma.gl/core@npm:~9.1.9":
+"@luma.gl/core@npm:9.1.10":
   version: 9.1.10
   resolution: "@luma.gl/core@npm:9.1.10"
   dependencies:
@@ -5165,22 +5145,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@luma.gl/engine@npm:^9.1.0":
-  version: 9.2.2
-  resolution: "@luma.gl/engine@npm:9.2.2"
-  dependencies:
-    "@math.gl/core": "npm:^4.1.0"
-    "@math.gl/types": "npm:^4.1.0"
-    "@probe.gl/log": "npm:^4.0.8"
-    "@probe.gl/stats": "npm:^4.0.8"
-  peerDependencies:
-    "@luma.gl/core": ~9.2.0
-    "@luma.gl/shadertools": ~9.2.0
-  checksum: 10/bfd147ba058d88c6e09681e23a543d007e7713f3631e64c4dcc36dc725aa8219545994101a6a62807d9ba2111fc1e141fd21c0d50620e9b637018e178424d78a
-  languageName: node
-  linkType: hard
-
-"@luma.gl/engine@npm:~9.1.9":
+"@luma.gl/engine@npm:9.1.10":
   version: 9.1.10
   resolution: "@luma.gl/engine@npm:9.1.10"
   dependencies:
@@ -5195,7 +5160,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@luma.gl/gltf@npm:~9.1.9":
+"@luma.gl/gltf@npm:9.1.10":
   version: 9.1.10
   resolution: "@luma.gl/gltf@npm:9.1.10"
   dependencies:
@@ -5210,7 +5175,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@luma.gl/shadertools@npm:~9.1.9":
+"@luma.gl/shadertools@npm:9.1.10":
   version: 9.1.10
   resolution: "@luma.gl/shadertools@npm:9.1.10"
   dependencies:
@@ -5223,7 +5188,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@luma.gl/webgl@npm:~9.1.9":
+"@luma.gl/webgl@npm:9.1.10":
   version: 9.1.10
   resolution: "@luma.gl/webgl@npm:9.1.10"
   dependencies:
@@ -6182,26 +6147,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/types@npm:^7.4.6":
-  version: 7.4.6
-  resolution: "@mui/types@npm:7.4.6"
+"@mui/types@npm:^7.4.6, @mui/types@npm:^7.4.7":
+  version: 7.4.7
+  resolution: "@mui/types@npm:7.4.7"
   dependencies:
-    "@babel/runtime": "npm:^7.28.3"
+    "@babel/runtime": "npm:^7.28.4"
   peerDependencies:
     "@types/react": ^17.0.0 || ^18.0.0 || ^19.0.0
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10/6263ef077332b75e01c1b347339f100f8743d8135efdee4a6c167ce70c69ca29d9face54c53395cbc1c8a8f5453fe8ef3f4457842cf0c05318f6ef6cde44456e
+  checksum: 10/a3636f2b39e69502867d460e9a571b0070bdc8df4c5ffd4e9078a908176f968800e809b4a708ba630957b6635535be2e21fa1734c684825dc857642a31c3a94d
   languageName: node
   linkType: hard
 
 "@mui/utils@npm:^7.3.2":
-  version: 7.3.2
-  resolution: "@mui/utils@npm:7.3.2"
+  version: 7.3.3
+  resolution: "@mui/utils@npm:7.3.3"
   dependencies:
-    "@babel/runtime": "npm:^7.28.3"
-    "@mui/types": "npm:^7.4.6"
+    "@babel/runtime": "npm:^7.28.4"
+    "@mui/types": "npm:^7.4.7"
     "@types/prop-types": "npm:^15.7.15"
     clsx: "npm:^2.1.1"
     prop-types: "npm:^15.8.1"
@@ -6212,7 +6177,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 10/defcebcb8e49cdbdf271e49066d78046d2d25d4c8177176a6c5d3368fe85e6a280c7be71dbf356b434863d96d69236956afe6a4a47bc394de6aeecfa8bc24fda
+  checksum: 10/6309f1eab55487cd653d110fbe51fd102608724ba893d58076474126ccbbfa36e0b2843f1fd99be33ea534b284ab5d546563f03b5f43e509afe62ba93ba76951
   languageName: node
   linkType: hard
 
@@ -21687,7 +21652,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-cypress@npm:5.1.1, eslint-plugin-cypress@npm:5.x":
+"eslint-plugin-cypress@npm:5.1.1":
   version: 5.1.1
   resolution: "eslint-plugin-cypress@npm:5.1.1"
   dependencies:
@@ -21695,6 +21660,17 @@ __metadata:
   peerDependencies:
     eslint: ">=9"
   checksum: 10/1b395d615069f0bafc8f2c8b36f304a48f8db794c1570318de3f2fee1f33524cc57af6c85f09e41b11209e4b130801de3d430a141d83a3ebad895e4424c889e8
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-cypress@npm:5.x":
+  version: 5.2.0
+  resolution: "eslint-plugin-cypress@npm:5.2.0"
+  dependencies:
+    globals: "npm:^16.2.0"
+  peerDependencies:
+    eslint: ">=9"
+  checksum: 10/4701b3e6b6bfba21fdfdabb3551e066d683faf1e0f38d943cb51a2faa409a1bce4e489c6dbcac2bf2a8e498f96059da3c61d41193a0a4d792269fd9c2728f42f
   languageName: node
   linkType: hard
 
@@ -26663,12 +26639,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jiti@npm:2.6.0, jiti@npm:^2.5.1":
+"jiti@npm:2.6.0":
   version: 2.6.0
   resolution: "jiti@npm:2.6.0"
   bin:
     jiti: lib/jiti-cli.mjs
   checksum: 10/060d18642a1cad09c1f1337a99e520e9b94b2db9f5a5026cdb36938392884f923fb4a571075ac0b361f0328e4b48af3f99961bb7578e5b1945ec97fb0b9057dc
+  languageName: node
+  linkType: hard
+
+"jiti@npm:^2.5.1":
+  version: 2.6.1
+  resolution: "jiti@npm:2.6.1"
+  bin:
+    jiti: lib/jiti-cli.mjs
+  checksum: 10/8cd72c5fd03a0502564c3f46c49761090f6dadead21fa191b73535724f095ad86c2fa89ee6fe4bc3515337e8d406cc8fb2d37b73fa0c99a34584bac35cd4a4de
   languageName: node
   linkType: hard
 
@@ -37615,7 +37600,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:7.1.7, vite@npm:^5.0.0 || ^6.0.0 || ^7.0.0-0, vite@npm:^7.1.7":
+"vite@npm:7.1.7, vite@npm:^7.1.7":
   version: 7.1.7
   resolution: "vite@npm:7.1.7"
   dependencies:
@@ -37667,6 +37652,61 @@ __metadata:
   bin:
     vite: bin/vite.js
   checksum: 10/824703387717e1c90fac2e263021bf8ed5cddd5ac14f8c6ee80e54f8351be579869950438accb6daeb1e238f2108fddbadf98ec3cf8b0442f1fd8a25fb0ecab3
+  languageName: node
+  linkType: hard
+
+"vite@npm:^5.0.0 || ^6.0.0 || ^7.0.0-0":
+  version: 7.1.8
+  resolution: "vite@npm:7.1.8"
+  dependencies:
+    esbuild: "npm:^0.25.0"
+    fdir: "npm:^6.5.0"
+    fsevents: "npm:~2.3.3"
+    picomatch: "npm:^4.0.3"
+    postcss: "npm:^8.5.6"
+    rollup: "npm:^4.43.0"
+    tinyglobby: "npm:^0.2.15"
+  peerDependencies:
+    "@types/node": ^20.19.0 || >=22.12.0
+    jiti: ">=1.21.0"
+    less: ^4.0.0
+    lightningcss: ^1.21.0
+    sass: ^1.70.0
+    sass-embedded: ^1.70.0
+    stylus: ">=0.54.8"
+    sugarss: ^5.0.0
+    terser: ^5.16.0
+    tsx: ^4.8.1
+    yaml: ^2.4.2
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  peerDependenciesMeta:
+    "@types/node":
+      optional: true
+    jiti:
+      optional: true
+    less:
+      optional: true
+    lightningcss:
+      optional: true
+    sass:
+      optional: true
+    sass-embedded:
+      optional: true
+    stylus:
+      optional: true
+    sugarss:
+      optional: true
+    terser:
+      optional: true
+    tsx:
+      optional: true
+    yaml:
+      optional: true
+  bin:
+    vite: bin/vite.js
+  checksum: 10/76b71d0f97204a1490fe7c0c630850f2aec36c4896e145b41cf31fa9360f41271452942ed036b1af8e0e18e17e07a09352f3e2c24d1654d668f0ad97ef54fe9f
   languageName: node
   linkType: hard
 

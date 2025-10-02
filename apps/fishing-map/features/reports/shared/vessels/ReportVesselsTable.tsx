@@ -260,14 +260,14 @@ export default function ReportVesselsTable({
                 {activityUnit && (
                   <div className={cx({ [styles.border]: !isLastRow }, styles.right)}>
                     {values.length &&
-                      values.map((v) => {
+                      values.map((v, index) => {
                         if (activityUnit === 'coverage' && vGRCoverageInsight?.isLoading) {
                           return <Spinner key={id} size="tiny" />
                         }
                         return (
                           activityUnit === 'coverage' ? v.value !== -1 : v.value !== undefined
                         ) ? (
-                          <Fragment key={v.value}>
+                          <Fragment key={`${v.value}-${index}`}>
                             {v.color && dataviews?.length > 1 && (
                               <span
                                 className={styles.dot}

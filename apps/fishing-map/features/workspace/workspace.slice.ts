@@ -475,6 +475,11 @@ const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
   reducers: {
+    setWorkspace: (state, action: PayloadAction<Workspace<AnyWorkspaceState>>) => {
+      if (action.payload && Object.keys(action.payload).length) {
+        state.data = action.payload
+      }
+    },
     setWorkspaceProperty: (
       state,
       action: PayloadAction<{ key: keyof Workspace<WorkspaceState, string>; value: string }>
@@ -577,6 +582,7 @@ const workspaceSlice = createSlice({
 })
 
 export const {
+  setWorkspace,
   setWorkspaceProperty,
   setWorkspacePassword,
   setWorkspaceSuggestSave,
