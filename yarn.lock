@@ -3490,7 +3490,7 @@ __metadata:
     geojson: "npm:0.5.0"
     geokdbush: "npm:^2.0.1"
     gl-matrix: "npm:3.4.4"
-    google-auth-library: "npm:10.3.0"
+    google-auth-library: "npm:10.4.0"
     google-spreadsheet: "npm:5.0.2"
     has: "npm:1.0.4"
     html-react-parser: "npm:5.2.6"
@@ -23043,16 +23043,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"gaxios@npm:6.6.0":
-  version: 6.6.0
-  resolution: "gaxios@npm:6.6.0"
+"gaxios@npm:^6.1.1":
+  version: 6.7.1
+  resolution: "gaxios@npm:6.7.1"
   dependencies:
     extend: "npm:^3.0.2"
     https-proxy-agent: "npm:^7.0.1"
     is-stream: "npm:^2.0.0"
     node-fetch: "npm:^2.6.9"
     uuid: "npm:^9.0.1"
-  checksum: 10/9f035590374fd168e7bb3ddda369fc8bd487f16a2308fde18284ccc0f685d0af4ac5e3e38d680a8c6342a9000fbf9d77ce691ee110dbed2feebb659e729c640a
+  checksum: 10/c85599162208884eadee91215ebbfa1faa412551df4044626cb561300e15193726e8f23d63b486533e066dadad130f58ed872a23acab455238d8d48b531a0695
   languageName: node
   linkType: hard
 
@@ -23064,19 +23064,6 @@ __metadata:
     https-proxy-agent: "npm:^7.0.1"
     node-fetch: "npm:^3.3.2"
   checksum: 10/9e5fa8b458c318a95d4dff0f6ac187a1b8933fb1de5b376b7098b27dfc5bf6025b62c87ed20bdae0496ae73a279834bc6b974c28849a674deed0089f2ba57b98
-  languageName: node
-  linkType: hard
-
-"gaxios@patch:gaxios@npm%3A6.6.0#~/.yarn/patches/gaxios-npm-6.6.0-778b1daba0.patch":
-  version: 6.6.0
-  resolution: "gaxios@patch:gaxios@npm%3A6.6.0#~/.yarn/patches/gaxios-npm-6.6.0-778b1daba0.patch::version=6.6.0&hash=c59c1a"
-  dependencies:
-    extend: "npm:^3.0.2"
-    https-proxy-agent: "npm:^7.0.1"
-    is-stream: "npm:^2.0.0"
-    node-fetch: "npm:^2.6.9"
-    uuid: "npm:^9.0.1"
-  checksum: 10/102133fd94a145401a5fbb03a28331ade97aa872034abb6d9d438de8b0e9633b8bc8bbd49ecd6f7a12cf765e75b8944d331cd852ad618ef04fa04aa3477b4d5e
   languageName: node
   linkType: hard
 
@@ -23626,9 +23613,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"google-auth-library@npm:10.3.0":
-  version: 10.3.0
-  resolution: "google-auth-library@npm:10.3.0"
+"google-auth-library@npm:10.4.0":
+  version: 10.4.0
+  resolution: "google-auth-library@npm:10.4.0"
   dependencies:
     base64-js: "npm:^1.3.0"
     ecdsa-sig-formatter: "npm:^1.0.11"
@@ -23637,7 +23624,7 @@ __metadata:
     google-logging-utils: "npm:^1.0.0"
     gtoken: "npm:^8.0.0"
     jws: "npm:^4.0.0"
-  checksum: 10/c6fc50b90d9de8faf6c02388671255d4cce86ac9065b2c3bddef109e226fc975988e155a501bc3a77191da4a717dc030871bbcaad61506f51b7c13923f6c9de0
+  checksum: 10/90cd221490fad77ebcf6a25e349b7fcee221f46178d41c1a59774b801a63323dff15b7e2371f5fd5d9f51f7757e6fb88ff0efdbff85dfa73db5a37830e1c0b38
   languageName: node
   linkType: hard
 
