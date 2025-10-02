@@ -5,5 +5,12 @@
     "cloudbuildTaskProId": "ui-fishing-map-pro-preview-bot",
     "auto": false,
     "watch": ["apps/fishing-map/**/*", "yarn.lock"]
+  },
+  "vessel-info-tool": {
+    "cloudbuildTaskDevId": "ui-vessel-info-tool-dev-preview-bot",
+    "cloudbuildTaskStagingId": "ui-vessel-info-tool-sta-preview-bot",
+    "cloudbuildTaskProId": "ui-vessel-info-tool-pro-preview-bot",
+    "auto": false,
+    "watch": ["apps/vessel-info-tool/**/*", "yarn.lock"]
   }
 }

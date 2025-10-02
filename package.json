@@ -292,7 +292,13 @@
     "gaxios@npm:^6.1.1": "patch:gaxios@npm%3A6.6.0#~/.yarn/patches/gaxios-npm-6.6.0-778b1daba0.patch",
     "gl-matrix": "3.3.0",
     "node-fetch": "2.7.0",
-    "stylus": "0.0.1-security"
+    "stylus": "0.0.1-security",
+    "@luma.gl/constants": "9.1.10",
+    "@luma.gl/core": "9.1.10",
+    "@luma.gl/engine": "9.1.10",
+    "@luma.gl/shadertools": "9.1.10",
+    "@luma.gl/webgl": "9.1.10",
+    "@luma.gl/gltf": "9.1.10"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -303,5 +309,5 @@
       "stylelint --fix"
     ]
   },
-  "packageManager": "yarn@4.9.2"
+  "packageManager": "yarn@4.10.3"
 }

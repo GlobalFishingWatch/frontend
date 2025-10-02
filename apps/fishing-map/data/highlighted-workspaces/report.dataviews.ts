@@ -37,6 +37,7 @@ const REPORT_DATAVIEW_INSTANCES_IDS: string[] = [
 export const REPORT_DATAVIEW_INSTANCES: UrlDataviewInstance[] = REPORT_DATAVIEW_INSTANCES_IDS.map(
   (id) => ({
     id,
+    origin: 'report',
     config: {
       visible: true,
     },
