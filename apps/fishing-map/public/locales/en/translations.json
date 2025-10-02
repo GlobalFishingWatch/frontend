@@ -381,6 +381,7 @@
     "fieldNumericPlaceholder": "Select a numerical field from your dataset",
     "fieldPlaceholder": "Select a field from your dataset",
     "invalidDatesFeatures": "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
+    "noFilters": "To add filters to your dataset, your file must have at least one property with more than 2 distinct values.",
     "none": "None",
     "optionalFields": "Optional fields",
     "point": {

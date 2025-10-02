@@ -83,7 +83,13 @@ export function ProjectForm({
         </span>
       </div>
       <div className={styles.projectEditProperty}>
-        <label>BQ Query </label>
+        <label>
+          BQ Query{' '}
+          <span className={styles.lowercase}>
+            (data needs to be stored in:
+            <span className={styles.bold}>world-fishing-827.api_labeller</span>)
+          </span>
+        </label>
         <textarea
           className={styles.textArea}
           name="Text1"

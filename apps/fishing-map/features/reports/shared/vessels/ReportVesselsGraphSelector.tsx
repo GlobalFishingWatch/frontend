@@ -6,7 +6,6 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { selectVGRStatus } from 'features/reports/report-vessel-group/vessel-group-report.slice'
 import {
   REPORT_VESSELS_GRAPH_FLAG,
   REPORT_VESSELS_GRAPH_GEARTYPE,
@@ -21,18 +20,15 @@ import type { ReportVesselGraph, ReportVesselsSubCategory } from 'features/repor
 import { ReportCategory } from 'features/reports/reports.types'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { useLocationConnect } from 'routes/routes.hook'
-import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './ReportVesselsGraph.module.css'
 
-function VesselGroupReportVesselsGraphSelector() {
+function ReportVesselsGraphSelector({ loading }: { loading?: boolean }) {
   const { t } = useTranslation()
   const reportCategory = useSelector(selectReportCategory)
   const reportSubCategory = useSelector(selectReportSubCategory)
   const { dispatchQueryParams } = useLocationConnect()
-  const vesselGroupReportStatus = useSelector(selectVGRStatus)
   const selectedOptionId = useSelector(selectReportVesselGraph)
-  const loading = vesselGroupReportStatus === AsyncReducerStatus.Loading
   const options: ChoiceOption<ReportVesselGraph | ReportVesselsSubCategory>[] = [
     {
       id: REPORT_VESSELS_GRAPH_FLAG,
@@ -135,4 +131,4 @@ function VesselGroupReportVesselsGraphSelector() {
   )
 }
 
-export default VesselGroupReportVesselsGraphSelector
+export default ReportVesselsGraphSelector

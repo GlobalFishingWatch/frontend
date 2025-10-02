@@ -381,6 +381,7 @@
     "fieldNumericPlaceholder": "crwdns82690:0crwdne82690:0",
     "fieldPlaceholder": "crwdns82686:0crwdne82686:0",
     "invalidDatesFeatures": "crwdns83420:0{{featureType}}crwdne83420:0",
+    "noFilters": "crwdns106632:0crwdne106632:0",
     "none": "crwdns82700:0crwdne82700:0",
     "optionalFields": "crwdns82692:0crwdne82692:0",
     "point": {

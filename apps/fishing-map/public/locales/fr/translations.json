@@ -381,6 +381,7 @@
     "fieldNumericPlaceholder": "Sélectionnez un champ numérique dans votre jeu de données",
     "fieldPlaceholder": "Sélectionnez un champ dans votre jeu de données",
     "invalidDatesFeatures": "Certains de vos {{featureType}} ne contiennent pas de date valide. Ils n'apparaîtront pas sur la carte, quel que soit le filtre temporel.",
+    "noFilters": "To add filters to your dataset, your file must have at least one property with more than 2 distinct values.",
     "none": "Aucun",
     "optionalFields": "Options de champs supplémentaires",
     "point": {

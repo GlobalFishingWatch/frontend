@@ -45,6 +45,36 @@ module "develop" {
   ]
 }
 
+module "preview-dev" {
+  source            = "../../../cloudbuild-template"
+  project_id        = "gfw-development"
+  short_environment = "dev"
+  app_name          = local.app_name
+  app_suffix        = "-preview-bot"
+  cloudrun_name     = "vessel-info-tool-$${BRANCH_NAME}"
+  docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-preview-bot-dev"
+  service_account   = local.service_account.dev
+  labels = {
+    environment      = "develop"
+    resource_creator = "engineering"
+    project          = "frontend"
+  }
+  push_config = {
+    branch = "develop"
+  }
+  set_env_vars_build = [
+    "API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
+    "API_VERSION=v3",
+  ]
+  set_env_vars = [
+    "BASIC_AUTH=Restricted",
+    "BASIC_AUTH_USER=gfw-vessel",
+  ]
+  set_secrets = [
+    "BASIC_AUTH_PASS=${local.secrets_path.dev}/BASIC_AUTH_PASS_VESSEL_INFO_TOOL",
+  ]
+}
+
 
 module "staging" {
   source            = "../../../cloudbuild-template"

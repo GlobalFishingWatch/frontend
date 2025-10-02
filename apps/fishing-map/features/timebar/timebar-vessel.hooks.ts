@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { atom, useAtom, useAtomValue } from 'jotai'
 
+import type { TrackSegment } from '@globalfishingwatch/api-types'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
@@ -27,6 +28,10 @@ import { getEventDescription } from 'utils/events'
 
 const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
   return chunk.props?.id || null
+}
+
+const hasUniqueChunks = (segments: TrackSegment[]) => {
+  return segments[0].some((segment) => segment.id)
 }
 
 export const hasTracksWithNoData = (tracks = [] as VesselTrackAtom) => {
@@ -78,7 +83,6 @@ export const useTimebarVesselTracks = () => {
   const [tracks, setVesselTracks] = useAtom(vesselTracksAtom)
 
   const trackLayers = useTimebarLayers()
-
   const tracksLoaded = useMemo(
     () =>
       trackLayers
@@ -147,19 +151,23 @@ export const useTimebarVesselTracks = () => {
               ? instance.getVesselTracksLayersLoaded()
               : instance.isLoaded
           const status = loaded ? ResourceStatus.Finished : ResourceStatus.Loading
+
+          const segments =
+            instance instanceof VesselLayer
+              ? instance.getVesselTrackSegments()
+              : instance.getSegments()
+
           const trackGraphData: TimebarChartItem<{ color: string }> = {
             id: instance.id,
             color: instance.getColor(),
             chunks: [] as TimebarChartChunk<{ color: string }>[],
             status,
-            props: { segmentsOffsetY: instance instanceof UserTracksLayer },
+            props: {
+              segmentsOffsetY: instance instanceof UserTracksLayer && hasUniqueChunks(segments),
+            },
             getHighlighterLabel: getUserTrackHighlighterLabel,
             getHighlighterIcon: 'vessel',
           }
-          const segments =
-            instance instanceof VesselLayer
-              ? instance.getVesselTrackSegments()
-              : instance.getSegments()
 
           if (segments?.length && status === ResourceStatus.Finished) {
             trackGraphData.chunks = segments?.map((segment) => {

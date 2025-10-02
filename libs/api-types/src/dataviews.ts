@@ -242,7 +242,7 @@ export interface Dataview<Type = any, Category = DataviewCategory> {
   datasetsConfig?: DataviewDatasetConfig[]
 }
 
-export type DataviewInstanceOrigin = 'workspace' | 'vesselProfile'
+export type DataviewInstanceOrigin = 'workspace' | 'vesselProfile' | 'report'
 export interface DataviewInstance<Type = any>
   extends Partial<Omit<Dataview<Type>, 'id' | 'config'>> {
   id: string
