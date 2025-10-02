@@ -8,6 +8,7 @@ import type {
   UserPermission,
 } from '@globalfishingwatch/api-types'
 
+import { getCookie, removeCookie, setCookie } from './utils/cookies'
 import { getIsUnauthorizedError, isAuthError, parseAPIError } from './utils/errors'
 import { parseJSON, processStatus } from './utils/parse'
 import { isUrlAbsolute } from './utils/url'
@@ -82,7 +83,7 @@ export class GFW_API_CLASS {
 
   get token() {
     if (isClientSide) {
-      return localStorage.getItem(this.storageKeys.token) || ''
+      return getCookie(this.storageKeys.token) || ''
     }
     return ''
   }
@@ -90,9 +91,13 @@ export class GFW_API_CLASS {
   private set token(token: string) {
     if (isClientSide) {
       if (token) {
-        localStorage.setItem(this.storageKeys.token, token)
+        setCookie(this.storageKeys.token, token, {
+          secure: true,
+          sameSite: 'lax',
+          maxAge: 60 * 30, // 30 minutes
+        })
       } else {
-        localStorage.removeItem(this.storageKeys.token)
+        removeCookie(this.storageKeys.token)
       }
     }
     if (this.debug) {
@@ -102,7 +107,7 @@ export class GFW_API_CLASS {
 
   get refreshToken() {
     if (isClientSide) {
-      return localStorage.getItem(this.storageKeys.refreshToken) || ''
+      return getCookie(this.storageKeys.refreshToken) || ''
     }
     return ''
   }
@@ -110,9 +115,13 @@ export class GFW_API_CLASS {
   private set refreshToken(refreshToken: string) {
     if (isClientSide) {
       if (refreshToken) {
-        localStorage.setItem(this.storageKeys.refreshToken, refreshToken)
+        setCookie(this.storageKeys.refreshToken, refreshToken, {
+          secure: true,
+          sameSite: 'lax',
+          maxAge: 60 * 60 * 24 * 15, // 15 days
+        })
       } else {
-        localStorage.removeItem(this.storageKeys.refreshToken)
+        removeCookie(this.storageKeys.refreshToken)
       }
     }
     if (this.debug) {
@@ -229,7 +238,7 @@ export class GFW_API_CLASS {
           return true
         })
       })
-      .catch((e) => {
+      .catch(() => {
         this.status = 'idle'
         return false
       })
@@ -260,7 +269,7 @@ export class GFW_API_CLASS {
         // and don't wait for the login request itselft
         try {
           await this.logging
-        } catch (e: any) {
+        } catch {
           if (this.debug) {
             console.log(`Fetch resource executed without login headers in url: ${url}`)
           }
@@ -299,7 +308,7 @@ export class GFW_API_CLASS {
               case 'default':
                 return res
               case 'json':
-                return parseJSON(res).catch((e) => {
+                return parseJSON(res).catch(() => {
                   // When an error occurs while parsing and
                   // http response is no content, returns an
                   // empty response instead of an raising error
@@ -319,11 +328,11 @@ export class GFW_API_CLASS {
                       return track.data
                     })
                   })
-                } catch (e: any) {
+                } catch (error: any) {
                   console.warn(
                     '@globalfishingwatch/pbf-decoders is a mandatory external dependency when using vessel response decoding'
                   )
-                  throw e
+                  throw error
                 }
               }
               default:
@@ -351,8 +360,8 @@ export class GFW_API_CLASS {
                 console.warn(`GFWAPI: Error fetching ${url}`, err)
               }
               if (isClientSide) {
-                localStorage.removeItem(this.storageKeys.token)
-                localStorage.removeItem(this.storageKeys.refreshToken)
+                removeCookie(this.storageKeys.token)
+                removeCookie(this.storageKeys.refreshToken)
               }
               e.refreshError = true
               throw parseAPIError(e)
@@ -376,14 +385,14 @@ export class GFW_API_CLASS {
           throw parseAPIError(e)
         }
       }
-    } catch (e: any) {
+    } catch (error: any) {
       if (this.debug) {
-        console.warn(`GFWAPI: Error fetching ${url}`, e)
+        console.warn(`GFWAPI: Error fetching ${url}`, error)
       }
       if (responseType === 'default') {
-        throw e
+        throw error
       }
-      throw parseAPIError(e)
+      throw parseAPIError(error)
     }
   }
 
@@ -525,7 +534,7 @@ export class GFW_API_CLASS {
         console.log(`GFWAPI: Logout invalid session api OK`)
       }
       return true
-    } catch (e: any) {
+    } catch {
       if (this.debug) {
         console.warn(`GFWAPI: Logout invalid session fail`)
       }
