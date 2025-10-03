@@ -42,6 +42,7 @@ export type UserPermissionValue =
   | 'vessel-group'
   | 'workspace'
   | BADGES_PERMISSIONS
+  | string
 
 export type UserPermissionAction =
   | 'read'
@@ -56,6 +57,12 @@ export interface UserPermission {
   type: UserPermissionType
   value: UserPermissionValue
   action: UserPermissionAction
+}
+
+export const MOCK_USER_PERMISSION: UserPermission = {
+  type: 'application',
+  value: 'fishing-map',
+  action: 'read',
 }
 
 export interface UserGroup {
