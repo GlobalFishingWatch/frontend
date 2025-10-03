@@ -8,7 +8,7 @@ import type {
   UserPermission,
 } from '@globalfishingwatch/api-types'
 
-import { getCookie, removeCookie, setCookie } from './utils/cookies'
+import { getCookie, parseCookies, removeCookie, setCookie } from './utils/cookies'
 import { getIsUnauthorizedError, isAuthError, parseAPIError } from './utils/errors'
 import { parseJSON, processStatus } from './utils/parse'
 import { isUrlAbsolute } from './utils/url'
@@ -82,23 +82,18 @@ export class GFW_API_CLASS {
   }
 
   get token() {
-    if (isClientSide) {
-      return getCookie(this.storageKeys.token) || ''
-    }
-    return ''
+    return getCookie(this.storageKeys.token) || ''
   }
 
   private set token(token: string) {
-    if (isClientSide) {
-      if (token) {
-        setCookie(this.storageKeys.token, token, {
-          secure: true,
-          sameSite: 'lax',
-          maxAge: 60 * 30, // 30 minutes
-        })
-      } else {
-        removeCookie(this.storageKeys.token)
-      }
+    if (token) {
+      setCookie(this.storageKeys.token, token, {
+        secure: true,
+        sameSite: 'lax',
+        maxAge: 60 * 30, // 30 minutes
+      })
+    } else {
+      removeCookie(this.storageKeys.token)
     }
     if (this.debug) {
       console.log('GFWAPI: updated token with', token)
@@ -106,24 +101,20 @@ export class GFW_API_CLASS {
   }
 
   get refreshToken() {
-    if (isClientSide) {
-      return getCookie(this.storageKeys.refreshToken) || ''
-    }
-    return ''
+    return getCookie(this.storageKeys.refreshToken) || ''
   }
 
   private set refreshToken(refreshToken: string) {
-    if (isClientSide) {
-      if (refreshToken) {
-        setCookie(this.storageKeys.refreshToken, refreshToken, {
-          secure: true,
-          sameSite: 'lax',
-          maxAge: 60 * 60 * 24 * 15, // 15 days
-        })
-      } else {
-        removeCookie(this.storageKeys.refreshToken)
-      }
+    if (refreshToken) {
+      setCookie(this.storageKeys.refreshToken, refreshToken, {
+        secure: true,
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 15, // 15 days
+      })
+    } else {
+      removeCookie(this.storageKeys.refreshToken)
     }
+
     if (this.debug) {
       console.log('GFWAPI: updated refreshToken with', refreshToken)
     }
@@ -178,6 +169,20 @@ export class GFW_API_CLASS {
     })
       .then(processStatus)
       .then(parseJSON)
+  }
+
+  private async getTokenFromCookies(key: string, opts?: { request?: Request }) {
+    if (typeof window !== 'undefined' && !opts?.request) {
+      return getCookie(key) || ''
+    }
+
+    // Server-side
+    if (opts?.request) {
+      const cookies = parseCookies(opts.request.headers.get('cookie'))
+      return cookies[key] || ''
+    }
+
+    return ''
   }
 
   async refreshAPIToken() {
@@ -359,10 +364,8 @@ export class GFW_API_CLASS {
               if (this.debug) {
                 console.warn(`GFWAPI: Error fetching ${url}`, err)
               }
-              if (isClientSide) {
-                removeCookie(this.storageKeys.token)
-                removeCookie(this.storageKeys.refreshToken)
-              }
+              removeCookie(this.storageKeys.token)
+              removeCookie(this.storageKeys.refreshToken)
               e.refreshError = true
               throw parseAPIError(e)
             }

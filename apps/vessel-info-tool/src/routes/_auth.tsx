@@ -1,20 +1,39 @@
-import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start'
 
-import { useGFWLogin, useGFWLoginRedirect } from '@globalfishingwatch/react-hooks'
+import { UserPermissionValues } from '@/utils/source'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { Spinner } from '@globalfishingwatch/ui-components'
 
-export const Route = createFileRoute('/_auth')({
-  ssr: false,
-  component: () => <LoginWrapper />,
+export const loginFn = createServerFn({ method: 'POST' }).handler(async () => {
+  const user = await GFWAPI.fetchUser()
+  console.log('🚀 ~ user:', user)
+  if (!user) {
+    throw redirect({ to: '/login' })
+  }
+
+  const userGroups = user?.permissions.filter(
+    (p) => p.type === 'user-group' && p.value in UserPermissionValues
+  )
+  console.log('🚀 ~ userGroups:', userGroups)
+
+  if (userGroups?.length === 1) {
+    const group = userGroups[0].value
+    throw redirect({ to: '/$source', params: { source: group } })
+  } else if (userGroups?.length > 1) {
+    throw redirect({ to: '/' })
+  }
+  // const session = await useAppSession()
+  // await session.update({
+  //   user: user,
+  // })
 })
 
-function LoginWrapper() {
-  const login = useGFWLogin()
-  useGFWLoginRedirect(login)
-
-  if (!login.logged) {
-    return <Spinner />
-  }
-  // redirect to getFlagLabel(login.user.country)
-  return <Outlet />
-}
+export const Route = createFileRoute('/_auth')({
+  //component: () => <LoginWrapper />,
+  beforeLoad: () => {
+    loginFn()
+  },
+  pendingComponent: () => <Spinner />,
+  component: () => <Outlet />,
+})
