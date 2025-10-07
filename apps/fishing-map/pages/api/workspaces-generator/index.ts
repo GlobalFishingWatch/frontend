@@ -38,10 +38,27 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<WorkspaceGeneratorResponse>
 ) {
-  if (!WORKSPACES_AGENT_ID || !workspacesAgent) {
+  if (!WORKSPACES_AGENT_ID) {
+    console.error('WORKSPACES_AGENT_ID environment variable is not set')
     return res.status(500).json({
       success: false,
-      error: 'Internal server error',
+      error: 'Agent ID not configured',
+    })
+  }
+
+  if (!MASTRA_API_URL) {
+    console.error('NEXT_MASTRA_API_URL environment variable is not set')
+    return res.status(500).json({
+      success: false,
+      error: 'Mastra API URL not configured',
+    })
+  }
+
+  if (!workspacesAgent) {
+    console.error('Failed to initialize workspaces agent with ID:', WORKSPACES_AGENT_ID)
+    return res.status(500).json({
+      success: false,
+      error: 'Failed to initialize agent',
     })
   }
 
@@ -76,7 +93,7 @@ export default async function handler(
       const memoryThread = mastra.getMemoryThread(threadId, WORKSPACES_AGENT_ID!)
       try {
         thread = await memoryThread.get()
-      } catch (e) {
+      } catch (_: any) {
         thread = { id: threadId } as StorageThreadType
       }
     }
