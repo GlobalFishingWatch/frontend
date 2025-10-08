@@ -1,4 +1,4 @@
-import { getAreaWorkspaceConfig } from './area/area-workspace'
+import { getAreaWorkspaceConfig, getGlobalReportWorkspaceConfig } from './area/area-workspace'
 import { getPortWorkspaceConfig } from './port/port-workspace'
 import { getVesselWorkspaceConfig } from './vessel/vessel-workspace'
 import type { ConfigurationParams } from './types'
@@ -17,6 +17,11 @@ export async function getWorkspaceConfig(configuration: ConfigurationParams) {
   const areaWorkspace = await getAreaWorkspaceConfig(configuration)
   if (areaWorkspace) {
     return areaWorkspace
+  }
+
+  const globalReportWorkspace = await getGlobalReportWorkspaceConfig(configuration)
+  if (globalReportWorkspace) {
+    return globalReportWorkspace
   }
 
   return
