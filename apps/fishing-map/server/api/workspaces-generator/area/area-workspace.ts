@@ -83,7 +83,7 @@ function getAreaReportCategoryConfig(configuration: ConfigurationParams) {
 
 function getAreaReportDataviewInstances(
   configuration: ConfigurationParams,
-  areaMatched: AreaSearchResult
+  areaMatched?: AreaSearchResult
 ): UrlDataviewInstance[] {
   const filters = {
     ...(configuration.filters?.flags && {
@@ -109,7 +109,7 @@ function getAreaReportDataviewInstances(
       },
     }
   })
-  if (areaMatched.type && AREA_DATAVIEW_BY_TYPE[areaMatched.type]) {
+  if (areaMatched && areaMatched.type && AREA_DATAVIEW_BY_TYPE[areaMatched.type]) {
     dataviewInstances.push({
       id: AREA_DATAVIEW_BY_TYPE[areaMatched.type],
       config: {
@@ -144,6 +144,28 @@ export async function getAreaWorkspaceConfig(configuration: ConfigurationParams)
     }))
     return {
       label: 'Area reports',
+      links,
+    }
+  }
+}
+
+export async function getGlobalReportWorkspaceConfig(configuration: ConfigurationParams) {
+  if (configuration.dataset) {
+    const reportParams: AnyWorkspaceState = {
+      ...getSharedWorkspaceParams(configuration),
+      ...getAreaReportCategoryConfig(configuration),
+      dataviewInstances: getAreaReportDataviewInstances(configuration),
+      timebarVisualisation: TimebarVisualisations.HeatmapActivity,
+      reportLoadVessels: true,
+    }
+    const links = [
+      {
+        url: `/map/${DEFAULT_WORKSPACE}/report?${stringifyWorkspace(reportParams)}`,
+        message: `${upperFirst(configuration.dataset || '')} in Global report ${getDateRangeLabel(configuration)}`,
+      },
+    ]
+    return {
+      label: 'Global report',
       links,
     }
   }
