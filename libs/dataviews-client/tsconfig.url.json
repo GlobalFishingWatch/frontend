@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "incremental": true,
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "jsx": "preserve",
+    "lib": ["es2020", "dom", "esnext"],
+    "module": "es2022",
+    "target": "es6",
+    "moduleResolution": "node",
+    "noPropertyAccessFromIndexSignature": false,
+    "resolveJsonModule": true,
+    "rootDir": "../../",
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "outDir": "../../dist/libs/dataviews-client/url-workspace-bundle",
+    "paths": {
+      "@globalfishingwatch/api-types": ["../../libs/api-types/src/index.ts"]
+    }
+  },
+  "include": ["src/url-workspace/**/*.ts", "src/types.ts"],
+  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
+}
