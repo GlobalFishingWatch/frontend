@@ -499,7 +499,6 @@
   },
   "errors": {
     "areaLoad": "crwdns83658:0crwdne83658:0",
-    "contactUs": "crwdns60075:0crwdne60075:0",
     "datasetNotFound": "crwdns60077:0crwdne60077:0",
     "datasetNotValid": "crwdns60079:0crwdne60079:0",
     "datasetShapefileMultiple": "crwdns60081:0crwdne60081:0",
@@ -519,6 +518,7 @@
     "privateView": "crwdns60099:0crwdne60099:0",
     "profileEvents": "crwdns69362:0crwdne69362:0",
     "profileLogin": "crwdns69364:0crwdne69364:0",
+    "reportError": "crwdns106634:0crwdne106634:0",
     "reportLogin": "crwdns60101:0crwdne60101:0",
     "requestAccess": "crwdns60103:0crwdne60103:0",
     "searchLogin": "crwdns69366:0crwdne69366:0",
