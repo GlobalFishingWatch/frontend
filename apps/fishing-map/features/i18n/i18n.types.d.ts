@@ -1737,10 +1737,6 @@ interface Resources {
         description: 'Synthetic aperture radar (SAR) can detect at-sea vessels and structures in any weather conditions. The night lights detections (VIIRS) shows vessels at sea that satellites have detected by the light they emit at night.'
         name: 'Global Dark Vessel Detections'
       }
-      'environment-report': {
-        description: 'Global environmental data based on global bathymetry and sea surface temperature data.'
-        name: 'Global Environmental Data'
-      }
       'events-report': {
         description: 'Global activity on vessel events based on automatic identification system (AIS) , including encounters between two vessels, loitering and port visits.'
         name: 'Global Vessel Events'

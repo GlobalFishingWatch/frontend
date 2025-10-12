@@ -11,6 +11,7 @@ import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
+import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { fetchWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { HOME, REPORT, WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
 import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
@@ -50,8 +51,11 @@ function WorkspacesList() {
       if (workspace.viewport) {
         setMapCoordinates(workspace.viewport)
       }
+      if (REPORT_IDS.includes(workspace.id as ReportWorkspaceId) && workspace.reports?.length) {
+        dispatch(fetchReportsThunk(workspace.reports.map((report) => report.id)))
+      }
     },
-    [setMapCoordinates]
+    [dispatch, setMapCoordinates]
   )
 
   if (!validCategory) {
