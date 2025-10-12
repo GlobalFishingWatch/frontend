@@ -761,7 +761,6 @@ interface Resources {
     }
     errors: {
       areaLoad: 'There was an error loading the report area'
-      contactUs: 'Please <1>contact us</1> to report the problem.'
       datasetNotFound: 'Dataset not found'
       datasetNotValid: 'There seems to be something wrong with your file'
       datasetShapefileMultiple: 'Shapefiles containing multiple components (mutiple file names) are not supported yet'
@@ -781,6 +780,7 @@ interface Resources {
       privateView: 'This is a private workspace.'
       profileEvents: 'There was an error requesting the vessel events.'
       profileLogin: 'Login to see this vessel'
+      reportError: 'Report the problem'
       reportLogin: 'Register or log in to see the active vessels in this area (free, 2 minutes)'
       requestAccess: 'Request access'
       searchLogin: 'Login to search vessels'
