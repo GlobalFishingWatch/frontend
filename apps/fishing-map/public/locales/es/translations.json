@@ -499,7 +499,6 @@
   },
   "errors": {
     "areaLoad": "Ha habido un error al cargar el área del reporte",
-    "contactUs": "Por favor <1>póngase en contacto con nosotros</1> para informar del problema.",
     "datasetNotFound": "No se pudo encontrar esos datos",
     "datasetNotValid": "Parece que algo falló en tu archivo",
     "datasetShapefileMultiple": "Los archivos de forma que contienen múltiples componentes (nombres de archivos múltiples) aún no están soportados",
@@ -519,6 +518,7 @@
     "privateView": "Esta es una vista privada",
     "profileEvents": "Se ha producido un error al cargar los eventos de la embarcación.",
     "profileLogin": "Inicia sesión para ver este buque",
+    "reportError": "Report the problem",
     "reportLogin": "Inicia sesión para ver las embarcaciones activas en el área (gratis, 2 minutos)",
     "requestAccess": "Solicitar acceso",
     "searchLogin": "Login para buscar embarcaciones",
