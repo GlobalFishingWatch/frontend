@@ -24,6 +24,8 @@ import {
 import { isNumeric } from '@globalfishingwatch/data-transforms'
 import { removeDatasetVersion, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
+import type { UrlDataviewInstance } from './types'
+
 export function isActivityDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.Activity &&
@@ -104,11 +106,6 @@ export function getMergedDataviewId(dataviews: UrlDataviewInstance[]) {
     return 'EMPTY_DATAVIEW'
   }
   return dataviews.map((d) => d.id).join(',')
-}
-
-export type UrlDataviewInstance<T = DataviewType> = Omit<DataviewInstance<T>, 'dataviewId'> & {
-  dataviewId?: Dataview['id'] | Dataview['slug'] // making this optional as sometimes we just need to reference the id
-  deleted?: boolean // needed when you want to override from url an existing workspace config
 }
 
 export const FILTER_OPERATOR_SQL: Record<FilterOperator, string> = {
