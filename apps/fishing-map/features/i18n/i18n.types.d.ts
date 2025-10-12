@@ -761,7 +761,6 @@ interface Resources {
     }
     errors: {
       areaLoad: 'There was an error loading the report area'
-      contactUs: 'Please <1>contact us</1> to report the problem.'
       datasetNotFound: 'Dataset not found'
       datasetNotValid: 'There seems to be something wrong with your file'
       datasetShapefileMultiple: 'Shapefiles containing multiple components (mutiple file names) are not supported yet'
@@ -781,6 +780,7 @@ interface Resources {
       privateView: 'This is a private workspace.'
       profileEvents: 'There was an error requesting the vessel events.'
       profileLogin: 'Login to see this vessel'
+      reportError: 'Report the problem'
       reportLogin: 'Register or log in to see the active vessels in this area (free, 2 minutes)'
       requestAccess: 'Request access'
       searchLogin: 'Login to search vessels'
@@ -1736,6 +1736,10 @@ interface Resources {
       'detections-report': {
         description: 'Synthetic aperture radar (SAR) can detect at-sea vessels and structures in any weather conditions. The night lights detections (VIIRS) shows vessels at sea that satellites have detected by the light they emit at night.'
         name: 'Global Dark Vessel Detections'
+      }
+      'environment-report': {
+        description: 'Global environmental data based on global bathymetry and sea surface temperature data.'
+        name: 'Global Environmental Data'
       }
       'events-report': {
         description: 'Global activity on vessel events based on automatic identification system (AIS) , including encounters between two vessels, loitering and port visits.'
