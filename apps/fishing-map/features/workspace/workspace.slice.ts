@@ -119,12 +119,13 @@ export const getDefaultWorkspace = () => {
 type FetchWorkspacesThunkParams = {
   workspaceId: string
   password?: string
+  reportId?: string
 }
 
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
   async (
-    { workspaceId, password }: FetchWorkspacesThunkParams,
+    { workspaceId, password, reportId: reportIdParam }: FetchWorkspacesThunkParams,
     { signal, dispatch, getState, rejectWithValue }: any
   ) => {
     const state = getState() as any
@@ -134,7 +135,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const userGroups = selectUserGroups(state)
     const gfwUser = selectIsGFWUser(state)
     const privateUserGroups = selectPrivateUserGroups(state)
-    const reportId = selectReportId(state)
+    const reportId = reportIdParam || selectReportId(state)
     let workspaceReportId = null
     try {
       let workspace: Workspace<any> | null = null
