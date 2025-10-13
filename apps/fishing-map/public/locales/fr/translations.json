@@ -499,7 +499,6 @@
   },
   "errors": {
     "areaLoad": "Une erreur s'est produite lors du chargement de la zone du rapport.",
-    "contactUs": "Veuillez <1>nous contacter</1> pour signaler le problème.",
     "datasetNotFound": "Jeu de données introuvable",
     "datasetNotValid": "Il semble y avoir un problème avec votre fichier",
     "datasetShapefileMultiple": "Les shapefiles contenant plusieurs composants (plusieurs noms de fichiers) ne sont pas encore pris en charge",
@@ -519,6 +518,7 @@
     "privateView": "Ceci est une vue privée",
     "profileEvents": "Une erreur s'est produite lors de la demande de visualisation des événements du navire.",
     "profileLogin": "Connectez-vous pour voir ce navire",
+    "reportError": "Signaler le problème",
     "reportLogin": "Connectez-vous pour voir les navires actifs dans la zone",
     "requestAccess": "Demander l'accès",
     "searchLogin": "Connectez-vous pour rechercher des navires",

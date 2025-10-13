@@ -499,7 +499,6 @@
   },
   "errors": {
     "areaLoad": "There was an error loading the report area",
-    "contactUs": "Harap <1> hubungi kami </1> untuk melaporkan masalah tersebut.",
     "datasetNotFound": "Dataset tidak ditemukan",
     "datasetNotValid": "Tampaknya ada yang salah dengan file Anda",
     "datasetShapefileMultiple": "Shapefile yang berisi banyak komponen (nama file banyak) belum didukung",
@@ -519,6 +518,7 @@
     "privateView": "Ini adalah tampilan pribadi",
     "profileEvents": "Terjadi kesalahan saat meminta info peristiwa kapal.",
     "profileLogin": "Masuk untuk melihat kapal ini",
+    "reportError": "Melaporkan masalah tersebut",
     "reportLogin": "Masuk untuk melihat kapal yang aktif di area ini",
     "requestAccess": "Meminta akses",
     "searchLogin": "Masuk untuk mencari kapal",
