@@ -127,14 +127,13 @@ function App() {
     ((locationType === WORKSPACE_REPORT || isAnyVesselLocation) &&
       currentWorkspaceId !== urlWorkspaceId)
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
-  const hasWorkspaceReportIdChanged =
-    locationType === WORKSPACE_REPORT && currentReportId !== reportId
+  const hasWorkspaceReportIdChanged = locationType === REPORT && currentReportId !== reportId
 
   useEffect(() => {
     let action: any
     let actionResolved = false
     const fetchWorkspace = async () => {
-      action = dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId as string }))
+      action = dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId as string, reportId }))
       const resolvedAction = await action
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
         const workspace = resolvedAction.payload as Workspace
@@ -159,7 +158,13 @@ function App() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLogged, homeNeedsFetch, locationNeedsFetch, hasWorkspaceIdChanged])
+  }, [
+    userLogged,
+    homeNeedsFetch,
+    locationNeedsFetch,
+    hasWorkspaceIdChanged,
+    hasWorkspaceReportIdChanged,
+  ])
 
   useLayoutEffect(() => {
     if (isAreaReportLocation) {
