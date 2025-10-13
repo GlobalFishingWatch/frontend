@@ -51,11 +51,8 @@ function WorkspacesList() {
       if (workspace.viewport) {
         setMapCoordinates(workspace.viewport)
       }
-      if (REPORT_IDS.includes(workspace.id as ReportWorkspaceId) && workspace.reports?.length) {
-        dispatch(fetchReportsThunk(workspace.reports.map((report) => report.id)))
-      }
     },
-    [dispatch, setMapCoordinates]
+    [setMapCoordinates]
   )
 
   if (!validCategory) {

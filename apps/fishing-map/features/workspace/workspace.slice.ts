@@ -1,5 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, isRejected } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
 
 import type { FetchOptions } from '@globalfishingwatch/api-client'
@@ -116,13 +116,14 @@ export const getDefaultWorkspace = () => {
 
 type FetchWorkspacesThunkParams = {
   workspaceId: string
+  reportId?: string
   password?: string
 }
 
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
   async (
-    { workspaceId, password }: FetchWorkspacesThunkParams,
+    { workspaceId, reportId: reportIdParam, password }: FetchWorkspacesThunkParams,
     { signal, dispatch, getState, rejectWithValue }: any
   ) => {
     const state = getState() as any
@@ -132,7 +133,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const userGroups = selectUserGroups(state)
     const gfwUser = selectIsGFWUser(state)
     const privateUserGroups = selectPrivateUserGroups(state)
-    const reportId = selectReportId(state)
+    const reportId = reportIdParam || selectReportId(state)
     try {
       let workspace: Workspace<any> | null = null
       if (locationType === REPORT) {
@@ -152,7 +153,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           if (resolvedAction.payload?.status === 401) {
             return rejectWithValue({ error: { status: 401, message: 'Private report' } })
           }
-          throw new Error('Error fetching report')
+          if (!isRejected(resolvedAction)) {
+            throw new Error('Error fetching report')
+          }
         }
         // TODO fetch report and use the workspace within it
       } else if (workspaceId && workspaceId !== DEFAULT_WORKSPACE_ID) {
