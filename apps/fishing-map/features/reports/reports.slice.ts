@@ -38,9 +38,9 @@ export const fetchReportsThunk = createAsyncThunk(
       const loadedReportIds = Object.keys(state.reports.entities || {})
       const idsToFetch = ids?.length ? ids.filter((id) => !loadedReportIds.includes(id)) : []
 
-      if (idsToFetch?.length > 0) {
+      if (ids.length === 0 || idsToFetch?.length > 0) {
         const reportsParams = {
-          ...(idsToFetch?.length ? { ids: idsToFetch } : { 'logged-user': true }),
+          ...(ids?.length ? { ids: idsToFetch } : { 'logged-user': true }),
           ...DEFAULT_PAGINATION_PARAMS,
         }
         const reportsResponse = await GFWAPI.fetch<APIPagination<Report>>(
@@ -58,12 +58,8 @@ export const fetchReportsThunk = createAsyncThunk(
   },
   {
     condition: (ids, { getState }) => {
-      const state = getState() as ReportsSliceState
-      const status = state.reports.status
-
-      if (status === AsyncReducerStatus.Loading || !ids?.length) {
-        return false
-      }
+      const status = (getState() as ReportsSliceState).reports.status
+      return status !== AsyncReducerStatus.Loading
     },
   }
 )

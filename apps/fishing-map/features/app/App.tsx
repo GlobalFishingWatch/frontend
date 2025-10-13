@@ -21,7 +21,6 @@ import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import AppModals from 'features/modals/Modals'
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { selectReportAreaBounds } from 'features/reports/reports.config.selectors'
-import { selectCurrentReport } from 'features/reports/reports.selectors'
 import Sidebar from 'features/sidebar/Sidebar'
 import { useFetchTrackCorrections } from 'features/track-correction/track-correction.hooks'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
@@ -31,6 +30,7 @@ import {
   isWorkspacePasswordProtected,
   selectCurrentWorkspaceId,
   selectWorkspaceCustomStatus,
+  selectWorkspaceReportId,
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
@@ -107,7 +107,7 @@ function App() {
 
   const locationType = useSelector(selectLocationType)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
-  const currentReportId = useSelector(selectCurrentReport)?.id
+  const currentReportId = useSelector(selectWorkspaceReportId)
   const reportId = useSelector(selectReportId)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
   const userLogged = useSelector(selectIsUserLogged)
@@ -134,7 +134,7 @@ function App() {
     let action: any
     let actionResolved = false
     const fetchWorkspace = async () => {
-      action = dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId as string, reportId }))
+      action = dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId as string }))
       const resolvedAction = await action
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
         const workspace = resolvedAction.payload as Workspace
