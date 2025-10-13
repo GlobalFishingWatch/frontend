@@ -19,6 +19,7 @@ import { getDataviewInstanceFromDataview } from 'features/dataviews/dataviews.ut
 import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { t as trans } from 'features/i18n/i18n'
 import { ReportCategory } from 'features/reports/reports.types'
+import { useResetReportTimeseries } from 'features/reports/reports-timeseries.hooks'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { useOceanAreas } from 'hooks/ocean-areas'
 import { PORT_REPORT, WORKSPACE_REPORT } from 'routes/routes'
@@ -51,6 +52,7 @@ function AreaReportSearch({ className }: { className?: string }) {
   const allDataviews = useSelector(selectAllDataviews)
   const query = useSelector(selectLocationQuery)
   const { searchOceanAreas } = useOceanAreas()
+  const resetReportTimeseries = useResetReportTimeseries()
   const { dispatchLocation } = useLocationConnect()
 
   const updateMatchingAreas = async (inputValue: string) => {
@@ -88,6 +90,7 @@ function AreaReportSearch({ className }: { className?: string }) {
     if (dataview) {
       const datasetId = dataview.datasetsConfig?.[0]?.datasetId
       if (datasetId) {
+        resetReportTimeseries()
         const dataviewInstance = (query.dataviewInstances || []).find(
           (d: UrlDataviewInstance) => d.id === dataview?.id
         )

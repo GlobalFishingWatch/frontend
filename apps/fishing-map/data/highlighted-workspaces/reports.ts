@@ -3,6 +3,7 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { PATH_BASENAME } from 'data/config'
 import { SENTINEL2_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
 import {
+  ENVIRONMENT_REPORT_DATAVIEW_INSTANCES,
   // CARRIER_PORTAL_DATAVIEW_INSTANCES,
   REPORT_DATAVIEW_INSTANCES,
 } from 'data/highlighted-workspaces/report.dataviews'
@@ -57,6 +58,12 @@ export const REPORTS_INDEX: ReportWorkspace[] = [
     reportCategory: ReportCategory.Events,
     img: `${PATH_BASENAME}/images/highlighted-workspaces/report-events.jpg`,
     dataviewInstances: REPORT_DATAVIEW_INSTANCES,
+  },
+  {
+    id: 'environment-report',
+    reportCategory: ReportCategory.Environment,
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/report-environment.jpg`,
+    dataviewInstances: ENVIRONMENT_REPORT_DATAVIEW_INSTANCES,
   },
 ]
 

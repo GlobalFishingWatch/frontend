@@ -36,6 +36,24 @@ export const BATHYMETRY_DATAVIEW_INSTANCE: Omit<LibraryLayerConfig, 'previewImag
   ],
 }
 
+export const SEA_SURFACE_TEMPERATURE_DATAVIEW_INSTANCE: Omit<
+  LibraryLayerConfig,
+  'previewImageUrl'
+> = {
+  id: 'sst',
+  dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
+  config: {
+    color: '#FF6854',
+    colorRamp: 'red',
+  },
+  datasetsConfig: [
+    {
+      ...heatmapDatasetConfig,
+      datasetId: 'public-global-sst:v20231213',
+    },
+  ],
+}
+
 export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   // {
   //   id: 'gee-water-temperature',
@@ -168,19 +186,8 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
     ],
   },
   {
-    id: 'sst',
-    dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
+    ...SEA_SURFACE_TEMPERATURE_DATAVIEW_INSTANCE,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/temperature.jpg`,
-    config: {
-      color: '#FF6854',
-      colorRamp: 'red',
-    },
-    datasetsConfig: [
-      {
-        ...heatmapDatasetConfig,
-        datasetId: 'public-global-sst:v20231213',
-      },
-    ],
   },
   {
     id: 'sst-anomalies',

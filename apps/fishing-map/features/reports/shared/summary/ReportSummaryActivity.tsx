@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { sum } from 'es-toolkit'
@@ -17,6 +17,8 @@ import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks
 import {
   useReportFeaturesLoading,
   useReportFilteredTimeSeries,
+  useReportStateAtom,
+  useReportTimeseriesHash,
 } from 'features/reports/reports-timeseries.hooks'
 import ReportSummaryPlaceholder from 'features/reports/shared/placeholders/ReportSummaryPlaceholder'
 import { getHasAllSourcesInCommon } from 'features/reports/shared/summary/report-summary.utils'
@@ -52,6 +54,8 @@ export default function ReportSummaryActivity({
   const reportVessels = useSelector(selectReportVesselsNumber)
   const timeseriesLoading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
+  const reportTimeseriesHash = useReportTimeseriesHash()
+  const reportState = useReportStateAtom()
   const reportHours = useSelector(selectReportVesselsHours) as number
   const dataviews = useSelector(selectActiveReportDataviews)
   const reportRequestHash = useSelector(selectReportRequestHash)
@@ -64,10 +68,20 @@ export default function ReportSummaryActivity({
     })
   const timeCompareTimeDescription = useTimeCompareTimeDescription()
 
+  useEffect(() => {
+    console.log('🚀 ~ ReportSummaryActivity ~ reportTimeseriesHash:', reportTimeseriesHash)
+  }, [reportTimeseriesHash])
+
+  useEffect(() => {
+    console.log('🚀 ~ ReportSummaryActivity ~ reportState:', reportState.isLoading)
+  }, [reportState.isLoading])
+
   const hasAllSourcesInCommon = getHasAllSourcesInCommon(dataviews)
 
   const activitySummary = useMemo(() => {
-    if (!dataviews.length || !layersTimeseriesFiltered?.length) return
+    if (!dataviews.length || !layersTimeseriesFiltered?.length || reportTimeseriesHash === '') {
+      return
+    }
 
     if (timeCompareTimeDescription) {
       return timeCompareTimeDescription
@@ -161,6 +175,8 @@ export default function ReportSummaryActivity({
     }
   }, [
     dataviews,
+    layersTimeseriesFiltered,
+    reportTimeseriesHash,
     timeCompareTimeDescription,
     reportCategory,
     t,
@@ -168,7 +184,6 @@ export default function ReportSummaryActivity({
     reportStatus,
     reportOutdated,
     timeseriesLoading,
-    layersTimeseriesFiltered,
     reportVessels,
     i18n.language,
     activityUnit,

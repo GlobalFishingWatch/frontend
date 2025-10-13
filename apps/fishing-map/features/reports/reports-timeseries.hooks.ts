@@ -1,7 +1,7 @@
-import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
-import { atom, useAtom, useAtomValue } from 'jotai'
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import type { DateTimeUnit } from 'luxon'
 import memoizeOne from 'memoize-one'
 
@@ -86,6 +86,7 @@ export type ReportGraphStats = Record<string, FourwingsReportGraphStats | Points
 interface ReportState {
   isLoading: boolean
   timeseries: ReportGraphProps[] | undefined
+  timeseriesHash: string
   featuresFiltered: FilteredPolygons[][] | undefined
   stats: ReportGraphStats | undefined
 }
@@ -93,6 +94,7 @@ interface ReportState {
 const initialReportState: ReportState = {
   isLoading: false,
   timeseries: undefined,
+  timeseriesHash: '',
   featuresFiltered: undefined,
   stats: undefined,
 }
@@ -173,10 +175,13 @@ const useReportTimeseries = (
 
   useLayoutEffect(() => {
     reportStateCacheHash.current = ''
+    const isLoading = reportCategory && reportCategory !== 'events' && reportCategory !== 'others'
+    console.log('🚀 ~ useLayoutEffect ~ isLoading:', isLoading)
     setReportState((prev) => ({
       ...prev,
       ...initialReportState,
-      isLoading: reportCategory && reportCategory !== 'events' && reportCategory !== 'others',
+      timeseriesHash: '',
+      isLoading,
     }))
     // We want to clean the reportState when any of these params changes to avoid using old data until it loads
   }, [
@@ -213,7 +218,7 @@ const useReportTimeseries = (
       if (!area?.geometry) {
         return
       }
-
+      console.log('🚀 ~ processFeatures ~ isLoading: true')
       setReportState((prev) => ({ ...prev, isLoading: true }))
       try {
         const featuresFiltered: FilteredPolygons[][] = []
@@ -248,12 +253,13 @@ const useReportTimeseries = (
           featuresFiltered,
           instances,
         })
-
+        console.log('🚀 ~ processFeatures ~ isLoading: false')
         setReportState((prev) => ({
           ...prev,
           isLoading: false,
           featuresFiltered,
           timeseries,
+          timeseriesHash: reportStateCacheHash.current,
         }))
       } catch (error) {
         console.error('Error processing features:', error)
@@ -314,6 +320,10 @@ export const useComputeReportTimeSeries = () => {
   useReportTimeseries(reportLayers)
 }
 
+export const useReportStateAtom = () => {
+  return useAtomValue(reportStateAtom)
+}
+
 export const useReportTimeSeriesErrors = () => {
   const { featuresFiltered } = useAtomValue(reportStateAtom)
   return featuresFiltered?.map((f) => f.flatMap((ff) => ff.error || []).join(','))
@@ -357,4 +367,20 @@ export const useReportFilteredTimeSeries = () => {
 
 export const useReportFilteredFeatures = () => {
   return useAtomValue(reportStateAtom)?.featuresFiltered
+}
+
+export const useReportTimeseriesHash = () => {
+  return useAtomValue(reportStateAtom)?.timeseriesHash
+}
+
+export const useResetReportTimeseries = () => {
+  const setReportState = useSetAtom(reportStateAtom)
+  return useCallback(
+    (state = {} as Partial<ReportState>) => {
+      setReportState((prev) => {
+        return { ...prev, ...initialReportState, ...state }
+      })
+    },
+    [setReportState]
+  )
 }

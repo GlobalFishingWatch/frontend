@@ -9,6 +9,10 @@ import {
   VMS_DATAVIEW_INSTANCE_ID,
 } from 'data/dataviews'
 import {
+  BATHYMETRY_DATAVIEW_INSTANCE,
+  SEA_SURFACE_TEMPERATURE_DATAVIEW_INSTANCE,
+} from 'data/layer-library/layers-environment'
+import {
   ENCOUNTER_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
@@ -43,3 +47,17 @@ export const REPORT_DATAVIEW_INSTANCES: UrlDataviewInstance[] = REPORT_DATAVIEW_
     },
   })
 )
+
+export const ENVIRONMENT_REPORT_DATAVIEW_INSTANCES: UrlDataviewInstance[] = [
+  ...([AIS_DATAVIEW_INSTANCE_ID, VMS_DATAVIEW_INSTANCE_ID].map((id) => ({
+    id,
+    origin: 'report',
+    config: {
+      visible: false,
+    },
+  })) as UrlDataviewInstance[]),
+  ...([BATHYMETRY_DATAVIEW_INSTANCE, SEA_SURFACE_TEMPERATURE_DATAVIEW_INSTANCE].map((dataview) => ({
+    ...dataview,
+    origin: 'report',
+  })) as UrlDataviewInstance[]),
+]

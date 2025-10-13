@@ -16,6 +16,10 @@
     "events-report": {
       "name": "Global Vessel Events",
       "description": "Global activity on vessel events based on automatic identification system (AIS) , including encounters between two vessels, loitering and port visits."
+    },
+    "environment-report": {
+      "name": "Global Environmental Data",
+      "description": "Global environmental data based on global bathymetry and sea surface temperature data."
     }
   },
   "marine-manager": {
