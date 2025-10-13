@@ -164,7 +164,10 @@ export const selectReportActivityFlatten = createSelector(
     return reportDatasets.flatMap((dataset, index) =>
       Object.entries(dataset).flatMap(([datasetId, vessels]) => {
         const activityDataset = datasets.find((d) => d.id === datasetId)
-        const dataview = dataviews[index]
+        const dataview =
+          dataviews.find((dataview) =>
+            dataview.datasets?.some((dataset) => dataset.id === datasetId)
+          ) || dataviews[index]
         if (!dataview) {
           console.warn('Missing dataview for report dataset:', dataset)
           return EMPTY_ARRAY
