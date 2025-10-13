@@ -37,6 +37,7 @@ import {
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectIsStandaloneReportLocation } from 'routes/routes.selectors'
 import type { BufferOperation, BufferUnit } from 'types'
 
 import { useFitAreaInViewport, useHighlightReportArea, useReportTitle } from '../area-reports.hooks'
@@ -64,6 +65,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const urlBufferValue = useSelector(selectReportBufferValue)
   const urlBufferUnit = useSelector(selectReportBufferUnit)
   const urlBufferOperation = useSelector(selectReportBufferOperation)
+  const isStandaloneReportLocation = useSelector(selectIsStandaloneReportLocation)
 
   const handleBufferUnitChange = useCallback(
     (option: ChoiceOption<BufferUnit>) => {
@@ -204,6 +206,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
     )
   }
   const hasLongTitle = typeof reportTitle === 'string' && reportTitle.length > 60
+  const showAreaReportSearch = !isStandaloneReportLocation
 
   return (
     <div className={styles.container}>
@@ -222,11 +225,13 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
           <a className={styles.reportLink} href={window.location.href}>
             {t('analysis.linkToReport')}
           </a>
-          <AreaReportSearch
-            className={cx(styles.areaReportSearch, {
-              [styles.areaReportSearchColumn]: hasLongTitle,
-            })}
-          />
+          {showAreaReportSearch && (
+            <AreaReportSearch
+              className={cx(styles.areaReportSearch, {
+                [styles.areaReportSearchColumn]: hasLongTitle,
+              })}
+            />
+          )}
           <div className={styles.actions}>
             {!isGlobalReport && (
               <Popover
