@@ -1520,8 +1520,8 @@
       "matched": {
         "keyword": "matched",
         "enum": {
-          "true": "true",
-          "false": "false"
+          "true": "AIS Matched",
+          "false": "AIS Unmatched"
         }
       },
       "radiance": {
