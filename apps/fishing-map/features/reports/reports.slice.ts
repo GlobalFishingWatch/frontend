@@ -32,26 +32,38 @@ const fetchReportByIdThunk = createAsyncThunk(
 
 export const fetchReportsThunk = createAsyncThunk(
   'reports/fetch',
-  async (ids: string[], { signal, rejectWithValue }) => {
+  async (ids: string[], { signal, rejectWithValue, getState }) => {
     try {
-      const reportsParams = {
-        ...(ids?.length ? { ids } : { 'logged-user': true }),
-        ...DEFAULT_PAGINATION_PARAMS,
+      const state = getState() as ReportsSliceState
+      const loadedReportIds = Object.keys(state.reports.entities || {})
+      const idsToFetch = ids?.length ? ids.filter((id) => !loadedReportIds.includes(id)) : []
+
+      if (idsToFetch?.length > 0) {
+        const reportsParams = {
+          ...(idsToFetch?.length ? { ids: idsToFetch } : { 'logged-user': true }),
+          ...DEFAULT_PAGINATION_PARAMS,
+        }
+        const reportsResponse = await GFWAPI.fetch<APIPagination<Report>>(
+          `/reports?${stringify(reportsParams, { arrayFormat: 'comma' })}`,
+          { signal }
+        )
+        return reportsResponse?.entries
+      } else {
+        return ids.map((id) => state.reports.entities[id])
       }
-      const reportsResponse = await GFWAPI.fetch<APIPagination<Report>>(
-        `/reports?${stringify(reportsParams, { arrayFormat: 'comma' })}`,
-        { signal }
-      )
-      return reportsResponse?.entries
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue(parseAPIError(e))
     }
   },
   {
-    condition: (_, { getState }) => {
-      const status = (getState() as ReportsSliceState).reports.status
-      return status !== AsyncReducerStatus.Loading
+    condition: (ids, { getState }) => {
+      const state = getState() as ReportsSliceState
+      const status = state.reports.status
+
+      if (status === AsyncReducerStatus.Loading || !ids?.length) {
+        return false
+      }
     },
   }
 )
