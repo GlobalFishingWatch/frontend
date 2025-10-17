@@ -217,82 +217,86 @@ function UserPanel({
             styles.hideUntilHovered
           )}
         >
-          {layerActive && isUserLayer && !isBQEditorLayer && (
-            <IconButton
-              icon="edit"
-              size="small"
-              disabled={dataview.datasets?.[0]?.status === DatasetStatus.Importing}
-              tooltip={datasetGeometryType === 'draw' ? t('layer.editDraw') : t('dataset.edit')}
-              tooltipPlacement="top"
-              onClick={onEditClick}
-            />
+          {layerActive && !error && (
+            <>
+              {isUserLayer && !isBQEditorLayer && (
+                <IconButton
+                  icon="edit"
+                  size="small"
+                  disabled={dataview.datasets?.[0]?.status === DatasetStatus.Importing}
+                  tooltip={datasetGeometryType === 'draw' ? t('layer.editDraw') : t('dataset.edit')}
+                  tooltipPlacement="top"
+                  onClick={onEditClick}
+                />
+              )}
+              <Fragment>
+                <LayerProperties
+                  dataview={dataview}
+                  open={propertiesOpen}
+                  disabled={hasFeaturesColoredByField}
+                  onColorClick={changeColor}
+                  onThicknessClick={changeThickness}
+                  onToggleClick={onToggleColorOpen}
+                  onClickOutside={closeExpandedContainer}
+                  colorType={
+                    dataview.config?.type === DataviewType.HeatmapStatic ||
+                    dataview.config?.type === DataviewType.HeatmapAnimated
+                      ? 'fill'
+                      : 'line'
+                  }
+                  properties={
+                    dataview?.config?.type === DataviewType.UserContext
+                      ? POLYGON_PROPERTIES
+                      : POINT_PROPERTIES
+                  }
+                />
+              </Fragment>
+              {datasetGeometryType === 'tracks' && (
+                <FitBounds
+                  hasError={error !== undefined}
+                  layer={instance as UserTracksLayer}
+                  disabled={layerLoading}
+                />
+              )}
+              {hasSchemaFilters &&
+                !HIDDEN_DATAVIEW_FILTERS.includes(dataview.dataviewId as string) && (
+                  <ExpandedContainer
+                    visible={filterOpen}
+                    onClickOutside={closeExpandedContainer}
+                    component={
+                      <Filters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />
+                    }
+                  >
+                    <div className={styles.filterButtonWrapper}>
+                      <IconButton
+                        icon={filterOpen ? 'filter-on' : 'filter-off'}
+                        size="small"
+                        onClick={onToggleFilterOpen}
+                        tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
+                        tooltipPlacement="top"
+                      />
+                    </div>
+                  </ExpandedContainer>
+                )}
+            </>
           )}
-          {layerActive && (
-            <Fragment>
-              <LayerProperties
-                dataview={dataview}
-                open={propertiesOpen}
-                disabled={hasFeaturesColoredByField}
-                onColorClick={changeColor}
-                onThicknessClick={changeThickness}
-                onToggleClick={onToggleColorOpen}
-                onClickOutside={closeExpandedContainer}
-                colorType={
-                  dataview.config?.type === DataviewType.HeatmapStatic ||
-                  dataview.config?.type === DataviewType.HeatmapAnimated
-                    ? 'fill'
-                    : 'line'
-                }
-                properties={
-                  dataview?.config?.type === DataviewType.UserContext
-                    ? POLYGON_PROPERTIES
-                    : POINT_PROPERTIES
-                }
-              />
-            </Fragment>
-          )}
-          {layerActive && datasetGeometryType === 'tracks' && (
-            <FitBounds
-              hasError={error !== undefined}
-              layer={instance as UserTracksLayer}
-              disabled={layerLoading}
-            />
-          )}
-          {layerActive &&
-            hasSchemaFilters &&
-            !HIDDEN_DATAVIEW_FILTERS.includes(dataview.dataviewId as string) && (
-              <ExpandedContainer
-                visible={filterOpen}
-                onClickOutside={closeExpandedContainer}
-                component={<Filters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />}
-              >
-                <div className={styles.filterButtonWrapper}>
-                  <IconButton
-                    icon={filterOpen ? 'filter-on' : 'filter-off'}
-                    size="small"
-                    onClick={onToggleFilterOpen}
-                    tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
-                    tooltipPlacement="top"
-                  />
-                </div>
-              </ExpandedContainer>
-            )}
-          {<InfoModal dataview={dataview} />}
+          <InfoModal dataview={dataview} />
           <Remove
             dataview={dataview}
             loading={layerLoading && dataset?.status !== DatasetStatus.Importing}
           />
-          {items.length > 1 && (
-            <IconButton
-              size="small"
-              ref={setActivatorNodeRef}
-              {...listeners}
-              icon={error ? 'warning' : 'drag'}
-              type={error ? 'warning' : 'default'}
-              tooltip={error ? error : ''}
-              className={styles.dragger}
-            />
-          )}
+          {items.length > 1 ||
+            (error && (
+              <IconButton
+                size="small"
+                ref={setActivatorNodeRef}
+                {...listeners}
+                icon={error ? 'warning' : 'drag'}
+                type={error ? 'warning' : 'default'}
+                tooltip={error ? error : ''}
+                className={styles.dragger}
+              />
+            ))}
         </div>
         <IconButton
           icon={layerActive ? (error ? 'warning' : 'more') : undefined}

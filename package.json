@@ -296,7 +296,13 @@
     "@luma.gl/engine": "9.1.10",
     "@luma.gl/shadertools": "9.1.10",
     "@luma.gl/webgl": "9.1.10",
-    "@luma.gl/gltf": "9.1.10"
+    "@luma.gl/gltf": "9.1.10",
+    "@deck.gl/core": "9.1.14",
+    "@deck.gl/extensions": "9.1.14",
+    "@deck.gl/geo-layers": "9.1.14",
+    "@deck.gl/layers": "9.1.14",
+    "@deck.gl/mesh-layers": "9.1.14",
+    "@deck.gl/react": "9.1.14"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

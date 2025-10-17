@@ -128,52 +128,57 @@ const InfoModal = ({
   }
 
   return (
-    <Fragment>
-      <IconButton
-        icon={datasetError ? 'warning' : 'info'}
-        type={datasetError ? 'warning' : 'default'}
-        size="small"
-        loading={datasetImporting}
-        className={className}
-        tooltip={tooltip}
-        tooltipPlacement="top"
-        onClick={handleClick}
-      />
-      {options && options.length > 0 && modalInfoOpen && (
-        <Modal
-          appSelector={ROOT_DOM_ELEMENT}
-          title={
-            <div className={styles.titleContainer}>
-              <span className={styles.title}>{isSingleTab ? options[0].label : dataview.name}</span>
-              {userGuideLink && <UserGuideLink section={userGuideLink} />}
-            </div>
-          }
-          isOpen={modalInfoOpen}
-          onClose={onModalClose}
-          contentClassName={styles.modalContent}
-        >
-          {!isSingleTab && (
-            <div className={styles.sourceSelector}>
-              {options.length <= 3 ? (
-                <Choice
-                  options={options}
-                  activeOption={activeTab?.id}
-                  onSelect={(option) => setActiveTab(option as ChoiceOption)}
-                  size="medium"
-                />
-              ) : (
-                <Select
-                  options={options}
-                  selectedOption={activeTab as SelectOption}
-                  onSelect={(option) => setActiveTab(option as SelectOption)}
-                />
-              )}
-            </div>
-          )}
-          {selectedDataset && <InfoModalContent dataset={selectedDataset} />}
-        </Modal>
-      )}
-    </Fragment>
+    options &&
+    options.length > 0 && (
+      <Fragment>
+        <IconButton
+          icon={datasetError ? 'warning' : 'info'}
+          type={datasetError ? 'warning' : 'default'}
+          size="small"
+          loading={datasetImporting}
+          className={className}
+          tooltip={tooltip}
+          tooltipPlacement="top"
+          onClick={handleClick}
+        />
+        {modalInfoOpen && (
+          <Modal
+            appSelector={ROOT_DOM_ELEMENT}
+            title={
+              <div className={styles.titleContainer}>
+                <span className={styles.title}>
+                  {isSingleTab ? options[0].label : dataview.name}
+                </span>
+                {userGuideLink && <UserGuideLink section={userGuideLink} />}
+              </div>
+            }
+            isOpen={modalInfoOpen}
+            onClose={onModalClose}
+            contentClassName={styles.modalContent}
+          >
+            {!isSingleTab && (
+              <div className={styles.sourceSelector}>
+                {options.length <= 3 ? (
+                  <Choice
+                    options={options}
+                    activeOption={activeTab?.id}
+                    onSelect={(option) => setActiveTab(option as ChoiceOption)}
+                    size="medium"
+                  />
+                ) : (
+                  <Select
+                    options={options}
+                    selectedOption={activeTab as SelectOption}
+                    onSelect={(option) => setActiveTab(option as SelectOption)}
+                  />
+                )}
+              </div>
+            )}
+            {selectedDataset && <InfoModalContent dataset={selectedDataset} />}
+          </Modal>
+        )}
+      </Fragment>
+    )
   )
 }
 

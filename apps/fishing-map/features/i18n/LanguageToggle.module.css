@@ -50,6 +50,10 @@
   display: flex;
 }
 
+.open {
+  display: flex;
+}
+
 .language {
   width: calc(100%);
   color: var(--color-secondary-blue);

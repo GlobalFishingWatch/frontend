@@ -47,18 +47,19 @@ const InsightFlagChanges = ({
       ) : (
         <div>
           <p>
-            {flagsChanges?.valuesInThePeriod.length !== 0 ? (
+            {flagsChanges?.valuesInThePeriod.length !== 0 ||
+            flagsChanges?.totalTimesListed !== 0 ? (
               <span>
                 {t('vessel.insights.flagChangesCount', {
-                  count: flagsChanges?.valuesInThePeriod.length,
+                  count: flagsChanges?.valuesInThePeriod.length || flagsChanges?.totalTimesListed,
                 })}{' '}
-                (
-                {listAsSentence(
-                  flagsChanges?.valuesInThePeriod.map(
-                    (v) => formatInfoField(v.value, 'flag') as string
-                  ) || []
-                )}
-                )
+                {flagsChanges?.valuesInThePeriod.length
+                  ? listAsSentence(
+                      flagsChanges?.valuesInThePeriod.map(
+                        (v) => formatInfoField(v.value, 'flag') as string
+                      ) || []
+                    )
+                  : ''}
               </span>
             ) : (
               <span className={styles.secondary}>{t('vessel.insights.flagChangesEmpty')}</span>

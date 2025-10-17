@@ -1,5 +1,9 @@
 const flags = [
   {
+    id: '',
+    label: 'Unflagged',
+  },
+  {
     id: 'ABW',
     label: 'Aruba',
   },

@@ -52,7 +52,7 @@ export const useSaveWorkspaceTimerange = (workspace: AppWorkspace) => {
     workspace?.state?.daysFromLatest ? 'dynamic' : 'static'
   )
   const defaultDaysFromLatest = workspace?.state?.daysFromLatest || DEFAULT_DAYS_FROM_LATEST
-  const [daysFromLatest, setDaysFromLatest] = useState<number | undefined>(defaultDaysFromLatest)
+  const [daysFromLatest, setDaysFromLatest] = useState<number | undefined>(undefined)
 
   const handleTimeRangeChange = useCallback(
     (option: SelectOption<WorkspaceTimeRangeMode>, workspaceName: string) => {
