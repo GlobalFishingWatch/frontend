@@ -121,7 +121,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 ? DetectionsTooltipRow
                 : ActivityTooltipRow
             const interactionStatus =
-              featureCategory === DataviewCategory.Detections
+              uniqPositionFeatures.length > 0
                 ? detectionsInteractionStatus
                 : activityInteractionStatus
             const interactionError =
