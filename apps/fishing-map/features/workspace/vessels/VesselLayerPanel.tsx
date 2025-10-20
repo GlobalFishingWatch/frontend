@@ -284,7 +284,7 @@ function VesselLayerPanel({
             {trackDatasetId && (
               <VesselDownload
                 dataview={dataview}
-                vesselIds={[vesselId]}
+                vesselIds={[vesselId, ...(dataview.config?.relatedVesselIds || [])]}
                 vesselTitle={vesselLabel || t('common.unknownVessel')}
                 datasetId={trackDatasetId}
               />
