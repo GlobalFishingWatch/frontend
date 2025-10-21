@@ -1,0 +1,43 @@
+{
+  "include": ["**/*.ts", "**/*.tsx", "**/*.csv"],
+  "compilerOptions": {
+    "outDir": "../../dist/apps/vessel-info-tool",
+    "strict": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "target": "ES2022",
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@globalfishingwatch/api-client": ["../../libs/api-client/src/index.ts"],
+      "@globalfishingwatch/api-types": ["../../libs/api-types/src/index.ts"],
+      "@globalfishingwatch/data-transforms": ["../../libs/data-transforms/src/index.ts"],
+      "@globalfishingwatch/data-transforms/*": ["../../libs/data-transforms/src/*"],
+      "@globalfishingwatch/datasets-client": ["../../libs/datasets-client/src/index.ts"],
+      "@globalfishingwatch/dataviews-client": ["../../libs/dataviews-client/src/index.ts"],
+      "@globalfishingwatch/deck-layer-composer": ["../../libs/deck-layer-composer/src/index.ts"],
+      "@globalfishingwatch/deck-layers": ["../../libs/deck-layers/src/index.ts"],
+      "@globalfishingwatch/deck-loaders": ["../../libs/deck-loaders/src/index.ts"],
+      "@globalfishingwatch/i18n-labels": ["../../libs/i18n-labels/index.ts"],
+      "@globalfishingwatch/i18n-labels/*": ["../../libs/i18n-labels/*"],
+      "@globalfishingwatch/ocean-areas": ["../../libs/ocean-areas/src/index.ts"],
+      "@globalfishingwatch/pbf-decoders": ["../../libs/pbf-decoders/index.ts"],
+      "@globalfishingwatch/react-hooks": ["../../libs/react-hooks/src/index.ts"],
+      "@globalfishingwatch/responsive-visualizations": [
+        "../../libs/responsive-visualizations/src/index.ts"
+      ],
+      "@globalfishingwatch/timebar": ["../../libs/timebar/src/index.ts"],
+      "@globalfishingwatch/ui-components": ["../../libs/ui-components/src/index.ts"]
+    },
+    "noEmit": true
+  },
+  "extends": "../../tsconfig.base.json"
+}
