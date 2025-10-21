@@ -62,6 +62,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
         },
       })
     }
+    setIsLanguageMenuOpen(false)
   }
 
   return (
