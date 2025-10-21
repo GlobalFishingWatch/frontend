@@ -129,11 +129,20 @@ export function useDatasetMetadataOptions(
             schema?.type === 'boolean' ||
             (schema?.type === 'string' && schema?.enum && schema?.enum?.length > 0)
           const isRangeAllowed = schema?.type === 'range' && schema.enum?.length === 2
+          const isMaxValuesExceeded = schema.enum?.[0] === 'maximum values exceeded'
           return isEnumAllowed || isRangeAllowed
             ? {
                 id: field,
-                label: <DatasetFieldLabel field={field} fieldSchema={schema} />,
+                label: (
+                  <DatasetFieldLabel
+                    field={
+                      field + (isMaxValuesExceeded ? ' (max values exceeded for filtering)' : '')
+                    }
+                    fieldSchema={schema}
+                  />
+                ),
                 type: schema?.type,
+                disableSelection: isMaxValuesExceeded,
               }
             : []
         })

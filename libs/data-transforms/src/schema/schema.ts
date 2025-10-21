@@ -97,7 +97,9 @@ export const getFieldSchema = (
           schema.enum = [valuesOrdered[0], valuesOrdered[valuesOrdered.length - 1]]
         } else {
           const stringEnumSupported = values.length < maxSchemaEnumValues
-          schema.enum = stringEnumSupported ? values.map((v) => v.toString()) : []
+          schema.enum = stringEnumSupported
+            ? values.map((v) => v.toString())
+            : ['maximum values exceeded']
         }
       } else if (schema.type === 'range' || schema.type === 'coordinate') {
         const numericalValues = values.filter((v) => !isNaN(v))
