@@ -134,8 +134,8 @@ type MapState = {
   currentActivityRequestId: string
   apiEventStatus: AsyncReducerStatus
   apiEventError: string
-  apiDetectionStatus: AsyncReducerStatus
-  apiDetectionError: string
+  apiDetectionPositionsStatus: AsyncReducerStatus
+  apiDetectionPositionsError: string
   currentDetectionRequestId: string
 }
 
@@ -148,8 +148,8 @@ const initialState: MapState = {
   currentActivityRequestId: '',
   apiEventStatus: AsyncReducerStatus.Idle,
   apiEventError: '',
-  apiDetectionStatus: AsyncReducerStatus.Idle,
-  apiDetectionError: '',
+  apiDetectionPositionsStatus: AsyncReducerStatus.Idle,
+  apiDetectionPositionsError: '',
   currentDetectionRequestId: '',
 }
 
@@ -784,12 +784,12 @@ const slice = createSlice({
       }
     })
     builder.addCase(fetchDetectionThumbnailsThunk.pending, (state, action) => {
-      state.apiDetectionStatus = AsyncReducerStatus.Loading
-      state.apiDetectionError = ''
+      state.apiDetectionPositionsStatus = AsyncReducerStatus.Loading
+      state.apiDetectionPositionsError = ''
       state.currentDetectionRequestId = action.meta.requestId
     })
     builder.addCase(fetchDetectionThumbnailsThunk.fulfilled, (state, action) => {
-      state.apiDetectionStatus = AsyncReducerStatus.Finished
+      state.apiDetectionPositionsStatus = AsyncReducerStatus.Finished
       state.currentDetectionRequestId = ''
       if (state?.clicked?.features?.length && action.payload?.thumbnails?.length) {
         state.clicked.features = state.clicked.features.flatMap((feature, i) => {
@@ -806,18 +806,18 @@ const slice = createSlice({
     })
     builder.addCase(fetchDetectionThumbnailsThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
-        state.apiDetectionStatus =
+        state.apiDetectionPositionsStatus =
           state.currentDetectionRequestId !== action.meta.requestId
             ? AsyncReducerStatus.Loading
             : AsyncReducerStatus.Idle
       } else {
-        state.apiDetectionStatus = AsyncReducerStatus.Error
+        state.apiDetectionPositionsStatus = AsyncReducerStatus.Error
         if (action.error.message) {
-          state.apiDetectionError = action.error.message
+          state.apiDetectionPositionsError = action.error.message
         }
       }
     })
-    builder.addCase(fetchClusterEventThunk.pending, (state, action) => {
+    builder.addCase(fetchClusterEventThunk.pending, (state) => {
       state.apiEventStatus = AsyncReducerStatus.Loading
       state.apiEventError = ''
     })
@@ -841,7 +841,7 @@ const slice = createSlice({
         }
       }
     })
-    builder.addCase(fetchBQEventThunk.pending, (state, action) => {
+    builder.addCase(fetchBQEventThunk.pending, (state) => {
       state.apiEventStatus = AsyncReducerStatus.Loading
     })
     builder.addCase(fetchBQEventThunk.fulfilled, (state, action) => {
@@ -870,10 +870,10 @@ export const selectActivityInteractionStatus = (state: { map: MapState }) =>
   state.map.apiActivityStatus
 export const selectActivityInteractionError = (state: { map: MapState }) =>
   state.map.apiActivityError
-export const selectDetectionsInteractionStatus = (state: { map: MapState }) =>
-  state.map.apiDetectionStatus
-export const selectDetectionsInteractionError = (state: { map: MapState }) =>
-  state.map.apiDetectionError
+export const selectDetectionPositionsInteractionStatus = (state: { map: MapState }) =>
+  state.map.apiDetectionPositionsStatus
+export const selectDetectionPositionsInteractionError = (state: { map: MapState }) =>
+  state.map.apiDetectionPositionsError
 export const selectApiEventStatus = (state: { map: MapState }) => state.map.apiEventStatus
 export const selectApiEventError = (state: { map: MapState }) => state.map.apiEventError
 
