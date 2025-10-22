@@ -34,6 +34,7 @@ import {
   useTimebarEnvironmentConnect,
   useTimebarVisualisationConnect,
 } from 'features/timebar/timebar.hooks'
+import { selectHasChangedSettingsOnce } from 'features/timebar/timebar.slice'
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
 import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
@@ -80,6 +81,8 @@ export default function Report() {
   const isOthersReportEnabled = useSelector(selectIsOthersReportEnabled)
   const reportDataviews = useSelector(selectReportLayersVisible)
   const timebarSelectedEnvId = useSelector(selectTimebarSelectedEnvId)
+  const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
+
   const dataviewCategories = useMemo(
     () => uniq(reportDataviews?.map((d) => getReportCategoryFromDataview(d)) || []),
     [reportDataviews]
@@ -167,8 +170,8 @@ export default function Report() {
   )
 
   useEffect(() => {
-    setTimebarVisualizationByCategory(reportCategory)
-  }, [reportCategory, setTimebarVisualizationByCategory])
+    if (!hasChangedSettingsOnce) setTimebarVisualizationByCategory(reportCategory)
+  }, [hasChangedSettingsOnce, reportCategory, setTimebarVisualizationByCategory])
 
   const handleTabClick = (option: Tab<ReportCategory>) => {
     if (option.id !== reportCategory) {
