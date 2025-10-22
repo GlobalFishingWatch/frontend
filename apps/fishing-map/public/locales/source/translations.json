@@ -377,7 +377,7 @@
         "noPolygonData": "No polygon data found in the shapefile"
       }
     },
-    "fieldMultiplePlaceholder": "datasetUpload.fieldMultiplePlaceholder",
+    "fieldMultiplePlaceholder": "Select one or more fields from your dataset'",
     "fieldNumericPlaceholder": "Select a numerical field from your dataset",
     "fieldPlaceholder": "Select a field from your dataset",
     "invalidDatesFeatures": "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter.",
