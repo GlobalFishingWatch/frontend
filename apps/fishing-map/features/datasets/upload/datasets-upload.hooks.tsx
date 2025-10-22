@@ -7,6 +7,7 @@ import type {
   DatasetSchemaItem,
   DatasetSchemaType,
 } from '@globalfishingwatch/api-types'
+import { MAX_SCHEMA_ENUM_VALUES_EXCEEDED } from '@globalfishingwatch/data-transforms'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 
@@ -129,7 +130,7 @@ export function useDatasetMetadataOptions(
             schema?.type === 'boolean' ||
             (schema?.type === 'string' && schema?.enum && schema?.enum?.length > 0)
           const isRangeAllowed = schema?.type === 'range' && schema.enum?.length === 2
-          const isMaxValuesExceeded = schema.enum?.[0] === 'maximum values exceeded'
+          const isMaxValuesExceeded = schema.enum?.[0] === MAX_SCHEMA_ENUM_VALUES_EXCEEDED
           return isEnumAllowed || isRangeAllowed
             ? {
                 id: field,
