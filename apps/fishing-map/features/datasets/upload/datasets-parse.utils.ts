@@ -8,6 +8,7 @@ import type {
   DatasetGeometryType,
 } from '@globalfishingwatch/api-types'
 import {
+  fixTextEncoding,
   getSchemaIdClean,
   kmlToGeoJSON,
   listToTrackSegments,
@@ -122,9 +123,9 @@ export async function getDatasetParsed(
           }
           fileText = await csvFile.async('string')
         } else {
-          fileText = await file.text()
+          fileText = await readBlobAs(file, 'text')
         }
-      } catch (e) {
+      } catch {
         throw new Error('datasetUpload.errors.csv.invalidData')
       }
       if (!fileText) {
@@ -135,7 +136,7 @@ export async function getDatasetParsed(
         dynamicTyping: true,
         header: true,
         transformHeader: (header) => {
-          return getSchemaIdClean(header) as string
+          return getSchemaIdClean(fixTextEncoding(header)) as string
         },
       })
       return data as DataList
@@ -143,7 +144,7 @@ export async function getDatasetParsed(
       const geoJson = await kmlToGeoJSON(file, type)
       return validateFeatures(geoJson, type)
     }
-    const fileText = await file.text()
+    const fileText = await readBlobAs(file, 'text')
     return validatedGeoJSON(fileText, type)
   } catch (e: any) {
     console.error(e)
