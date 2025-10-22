@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import type { MultiSelectOption } from '@globalfishingwatch/api-client'
 import type {
@@ -7,7 +8,10 @@ import type {
   DatasetSchemaItem,
   DatasetSchemaType,
 } from '@globalfishingwatch/api-types'
-import { MAX_SCHEMA_ENUM_VALUES_EXCEEDED } from '@globalfishingwatch/data-transforms'
+import {
+  MAX_SCHEMA_ENUM_VALUES,
+  MAX_SCHEMA_ENUM_VALUES_EXCEEDED,
+} from '@globalfishingwatch/data-transforms'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 
@@ -83,6 +87,7 @@ export function useDatasetMetadataOptions(
   datasetMetadata?: DatasetMetadata,
   schemaTypes = [] as DatasetSchemaType[]
 ) {
+  const { t } = useTranslation()
   const fieldsOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
     if (!datasetMetadata?.schema) return []
 
@@ -137,13 +142,21 @@ export function useDatasetMetadataOptions(
                 label: (
                   <DatasetFieldLabel
                     field={
-                      field + (isMaxValuesExceeded ? ' (max values exceeded for filtering)' : '')
+                      field +
+                      (isMaxValuesExceeded
+                        ? ` - ${t('datasetUpload.maxValuesExceededForFiltering', { max: MAX_SCHEMA_ENUM_VALUES })}`
+                        : '')
                     }
                     fieldSchema={schema}
                   />
                 ),
                 type: schema?.type,
                 disableSelection: isMaxValuesExceeded,
+                tooltip: isMaxValuesExceeded
+                  ? t('datasetUpload.maxValuesExceededForFilteringTooltip', {
+                      max: MAX_SCHEMA_ENUM_VALUES,
+                    })
+                  : undefined,
               }
             : []
         })
@@ -163,7 +176,7 @@ export function useDatasetMetadataOptions(
         )
       })
       .sort(sortFields)
-  }, [datasetMetadata, schemaTypes])
+  }, [datasetMetadata, schemaTypes, t])
 
   return useMemo(
     () => ({ fieldsOptions, getSelectedOption, filtersFieldsOptions }),
