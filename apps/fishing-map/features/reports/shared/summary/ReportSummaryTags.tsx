@@ -17,6 +17,7 @@ import {
 import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
+import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
@@ -36,6 +37,7 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
   const { t } = useTranslation()
   const reportCategory = useSelector(selectReportCategory)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const vesselGroupsOptions = useVesselGroupsOptions()
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
 
   const [filtersUIOpen, setFiltersUIOpen] = useState(false)
@@ -58,7 +60,9 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
     })
   }
 
-  const { filtersAllowed: schemaFiltersAllowed } = getSchemaFiltersInDataview(dataview)
+  const { filtersAllowed: schemaFiltersAllowed } = getSchemaFiltersInDataview(dataview, {
+    vesselGroups: vesselGroupsOptions,
+  })
   const filtersAllowed = isVesselGroupReportLocation
     ? schemaFiltersAllowed.filter((filter) => filter.id !== 'vessel-groups')
     : schemaFiltersAllowed
