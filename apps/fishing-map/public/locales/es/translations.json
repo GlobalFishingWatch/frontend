@@ -381,6 +381,8 @@
     "fieldNumericPlaceholder": "Seleccione un campo numérico de su conjunto de datos",
     "fieldPlaceholder": "Seleccione un campo de su conjunto de datos",
     "invalidDatesFeatures": "Algunas de sus {{featureType}} no contienen una fecha válida. No aparecerán en el mapa independientemente del filtro de tiempo utilizado.",
+    "maxValuesExceededForFiltering": "Maximum values exceeded for filtering ({{max}})",
+    "maxValuesExceededForFilteringTooltip": "This field has too many unique values ({{max}}+). Consider grouping or categorizing your data to enable filtering.",
     "noFilters": "To add filters to your dataset, your file must have at least one property with more than 2 distinct values.",
     "none": "Ninguna",
     "optionalFields": "Campos opcionales",
