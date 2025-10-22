@@ -639,10 +639,12 @@ interface Resources {
           noPolygonData: 'No polygon data found in the shapefile'
         }
       }
-      fieldMultiplePlaceholder: 'Select one or more fields from your dataset'
+      fieldMultiplePlaceholder: 'datasetUpload.fieldMultiplePlaceholder'
       fieldNumericPlaceholder: 'Select a numerical field from your dataset'
       fieldPlaceholder: 'Select a field from your dataset'
       invalidDatesFeatures: "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter."
+      maxValuesExceededForFiltering: 'Maximum values exceeded for filtering ({{max}})'
+      maxValuesExceededForFilteringTooltip: 'This field has too many unique values ({{max}}+). Consider grouping or categorizing your data to enable filtering.'
       noFilters: 'To add filters to your dataset, your file must have at least one property with more than 2 distinct values.'
       none: 'None'
       optionalFields: 'Optional fields'

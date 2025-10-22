@@ -22,7 +22,6 @@ import {
 } from '@globalfishingwatch/deck-layers'
 
 import { POPUP_CATEGORY_ORDER } from 'data/config'
-import { SKYLIGHT_PROTOTYPE_DATASET_ID } from 'data/workspaces'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { PORTS_LAYER_ID } from 'features/map/map.config'
@@ -53,8 +52,8 @@ import {
   selectActivityInteractionStatus,
   selectApiEventError,
   selectApiEventStatus,
-  selectDetectionsInteractionError,
-  selectDetectionsInteractionStatus,
+  selectDetectionPositionsInteractionError,
+  selectDetectionPositionsInteractionStatus,
 } from '../map.slice'
 
 import CurrentsTooltipRow from './categories/CurrentsLayers'
@@ -77,8 +76,8 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
   const activityInteractionStatus = useSelector(selectActivityInteractionStatus)
   const activityInteractionError = useSelector(selectActivityInteractionError)
-  const detectionsInteractionStatus = useSelector(selectDetectionsInteractionStatus)
-  const detectionsInteractionError = useSelector(selectDetectionsInteractionError)
+  const detectionPositionsInteractionStatus = useSelector(selectDetectionPositionsInteractionStatus)
+  const detectionPositionsInteractionError = useSelector(selectDetectionPositionsInteractionError)
   const apiEventStatus = useSelector(selectApiEventStatus)
   const apiEventError = useSelector(selectApiEventError)
   if (!mapViewport || !interaction || !interaction.features?.length) return null
@@ -116,27 +115,22 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const heatmapFeatures = (features as SliceExtendedFourwingsPickingObject[]).filter(
               (feature) => feature.visualizationMode?.includes('heatmap')
             )
-            const TooltipComponent =
-              featureCategory === DataviewCategory.Detections
-                ? DetectionsTooltipRow
-                : ActivityTooltipRow
-            const interactionStatus =
-              featureCategory === DataviewCategory.Detections
-                ? detectionsInteractionStatus
-                : activityInteractionStatus
-            const interactionError =
-              featureCategory === DataviewCategory.Detections
-                ? detectionsInteractionError
-                : activityInteractionError
+            const isDetectionsCategory = featureCategory === DataviewCategory.Detections
+            const isPositionInteraction = uniqPositionFeatures.length > 0
+            const TooltipComponent = isDetectionsCategory
+              ? DetectionsTooltipRow
+              : ActivityTooltipRow
             return (
               <Fragment key={featureCategory}>
-                <PositionsTooltipSection
-                  key={featureCategory}
-                  features={uniqPositionFeatures}
-                  showFeaturesDetails={type === 'click'}
-                  loading={interactionStatus === AsyncReducerStatus.Loading}
-                  error={interactionError}
-                />
+                {isPositionInteraction && (
+                  <PositionsTooltipSection
+                    key={featureCategory}
+                    features={uniqPositionFeatures}
+                    showFeaturesDetails={type === 'click'}
+                    loading={detectionPositionsInteractionStatus === AsyncReducerStatus.Loading}
+                    error={detectionPositionsInteractionError}
+                  />
+                )}
                 {heatmapFeatures.map((feature, i) => {
                   if (feature.comparisonMode === FourwingsComparisonMode.TimeCompare) {
                     return (
@@ -149,19 +143,14 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                   }
                   return feature.sublayers?.map((sublayer, j) => {
                     const dataview = dataviews.find((d) => d.id === sublayer.id)
-                    const isSkylighPrototype = sublayer.datasets.some(
-                      (d) => d === SKYLIGHT_PROTOTYPE_DATASET_ID
-                    )
                     return (
                       <TooltipComponent
                         key={`${i}-${j}`}
-                        loading={
-                          (isSkylighPrototype ? activityInteractionStatus : interactionStatus) ===
-                          AsyncReducerStatus.Loading
-                        }
+                        loading={activityInteractionStatus === AsyncReducerStatus.Loading}
                         error={
-                          interactionStatus === AsyncReducerStatus.Error
-                            ? interactionError || t('errors.genericShort', 'Something went wrong')
+                          activityInteractionError === AsyncReducerStatus.Error
+                            ? activityInteractionError ||
+                              t('errors.genericShort', 'Something went wrong')
                             : undefined
                         }
                         feature={{

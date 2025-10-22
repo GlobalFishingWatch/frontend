@@ -146,6 +146,7 @@ export function MultiSelect(props: MultiSelectProps) {
 
   const handleChange = useCallback(
     (option: MultiSelectOption) => {
+      if (option.disableSelection) return
       if (selectedOptions !== null && isItemSelected(selectedOptions, option)) {
         handleRemove(option)
       } else {
@@ -364,6 +365,7 @@ export function MultiSelect(props: MultiSelectProps) {
                         className={cx(styles.optionItem, {
                           [styles.highlight]: highlight,
                           [item.className || '']: item.className,
+                          [styles.notAllowed]: item.disableSelection,
                         })}
                         {...getItemProps({ item, index: virtualRow.index })}
                       >

@@ -20,23 +20,25 @@ function getExtent(array: number[], colorBy: 'speed' | 'elevation') {
       Math.max(values[0], MAX_DEPTH_VALUE),
     ]
   }
-  let filteredValues = array
-  // Remove speed outliers
-  if (values.length > 4) {
-    // find quartiles
-    if ((values.length / 4) % 1 === 0) {
-      q1 = (1 / 2) * (values[values.length / 4] + values[values.length / 4 + 1])
-      q3 = (1 / 2) * (values[values.length * (3 / 4)] + values[values.length * (3 / 4) + 1])
-    } else {
-      q1 = values[Math.floor(values.length / 4 + 1)]
-      q3 = values[Math.ceil(values.length * (3 / 4) + 1)]
-    }
+  const filteredValues = array
+  // important values were missing in the speed legend, so removing outlier filtering for now
 
-    const iqr = q3 - q1
-    const minValue = q1 - iqr * 1.25
-    const maxValue = q3 + iqr * 1.25
-    filteredValues = values.filter((x) => x >= minValue && x <= maxValue)
-  }
+  // Remove speed outliers
+  // if (values.length > 4) {
+  //   // find quartiles
+  //   if ((values.length / 4) % 1 === 0) {
+  //     q1 = (1 / 2) * (values[values.length / 4] + values[values.length / 4 + 1])
+  //     q3 = (1 / 2) * (values[values.length * (3 / 4)] + values[values.length * (3 / 4) + 1])
+  //   } else {
+  //     q1 = values[Math.floor(values.length / 4 + 1)]
+  //     q3 = values[Math.ceil(values.length * (3 / 4) + 1)]
+  //   }
+
+  //   const iqr = q3 - q1
+  //   const minValue = q1 - iqr * 1.25
+  //   const maxValue = q3 + iqr * 1.25
+  //   filteredValues = values.filter((x) => x >= minValue && x <= maxValue)
+  // }
 
   return [
     Math.max(filteredValues[0], MIN_SPEED_VALUE),
