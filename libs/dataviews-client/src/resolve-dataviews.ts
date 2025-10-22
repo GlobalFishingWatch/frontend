@@ -494,8 +494,12 @@ export function resolveDataviews(
         return []
       }
       const config = {
-        ...dataview.config,
-        ...dataviewInstance.config,
+        ...(dataview.config || {}),
+        ...(dataviewInstance.config || {}),
+        filters: {
+          ...(dataview.config?.filters || {}),
+          ...(dataviewInstance.config?.filters || {}),
+        },
       }
       config.visible = config?.visible ?? true
       // Ensure the datasetConfig is defined in the base template dataview
