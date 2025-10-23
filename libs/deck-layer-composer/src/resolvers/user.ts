@@ -1,5 +1,6 @@
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
+import { COORDINATE_PROPERTY_TIMESTAMP } from '@globalfishingwatch/data-transforms'
 import {
   findDatasetByType,
   getDatasetConfiguration,
@@ -29,17 +30,18 @@ export const getUserContexTimeFilterProps = ({
   dataset: Dataset
   start: string
   end: string
-}): Partial<UserPolygonsLayerProps | UserPointsLayerProps> => {
-  if (!start && !end) {
-    return {}
+}): Partial<UserPolygonsLayerProps | UserPointsLayerProps> | undefined => {
+  if (!dataset || (!start && !end)) {
+    return
   }
+
   const timeFilterType = getDatasetConfigurationProperty({
     dataset,
     property: 'timeFilterType',
   })
 
   if (!timeFilterType) {
-    return {}
+    return
   }
 
   const startTimeProperty = getDatasetConfigurationProperty({
@@ -141,9 +143,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
     console.error('No dataset found for user layer', dataview)
   }
 
-  const timeFilters = baseDataset
-    ? getUserContexTimeFilterProps({ dataset: baseDataset, start, end })
-    : {}
+  const timeFilters = getUserContexTimeFilterProps({ dataset: baseDataset!, start, end })
   if (baseDataset?.source === DRAW_DATASET_SOURCE) {
     const geometryType = getDatasetConfigurationProperty({
       dataset: baseDataset,
@@ -193,7 +193,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
   return {
     ...baseLayerProps,
     layers,
-    ...timeFilters,
+    ...(timeFilters || {}),
     highlightedFeatures: highlightedFeatures as UserLayerPickingObject[],
     ...(dataview.config?.maxZoom && { maxZoom: dataview.config.maxZoom }),
   } as DeckLayerProps<BaseUserLayerProps>
