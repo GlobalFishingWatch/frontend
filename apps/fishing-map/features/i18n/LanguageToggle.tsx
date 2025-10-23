@@ -12,6 +12,7 @@ import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selector
 import { CROWDIN_IN_CONTEXT_LANG, LocaleLabels } from 'features/i18n/i18n'
 import { selectHasEditTranslationsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import useClickedOutside from 'hooks/use-clicked-outside'
 import { Locale } from 'types'
 
 import styles from './LanguageToggle.module.css'
@@ -28,21 +29,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
   const { i18n } = useTranslation()
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false)
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement
-      if (
-        isLanguageMenuOpen &&
-        !target.closest(`.${styles.languageBtn}`) &&
-        !target.closest(`.${styles.languages}`)
-      ) {
-        setIsLanguageMenuOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [isLanguageMenuOpen])
+  const expandedContainerRef = useClickedOutside(() => setIsLanguageMenuOpen(false))
 
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const hasEditTranslationsPermissions = useSelector(selectHasEditTranslationsPermissions)
@@ -66,7 +53,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
   }
 
   return (
-    <div className={cx(styles.languageToggle, className)}>
+    <div className={cx(styles.languageToggle, className)} ref={expandedContainerRef}>
       <div className={styles.languageBtn}>
         <IconButton
           icon={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'language'}
