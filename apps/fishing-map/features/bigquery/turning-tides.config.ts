@@ -49,4 +49,14 @@ export const CountryOptions: {
       },
     ],
   },
+  {
+    id: 'tt_ais-public',
+    label: 'AIS',
+    relatedDatasets: [
+      {
+        id: 'public-global-vessel-identity:v3.0',
+        type: DatasetTypes.Vessels, //"vessels:v1"
+      },
+    ],
+  },
 ]

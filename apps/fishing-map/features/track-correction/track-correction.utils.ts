@@ -9,10 +9,10 @@ const CUSTOM_TURNING_TIDES_DATASET_PROPERTIES: Record<
   TurningTidesWorkspaceId,
   VesselIdentityProperty[]
 > = {
-  // 'turning_tides_testing-user-public': ['ssvid'],
   'tt-brazil-public': ['codMarinha'],
   'tt-chile-public': ['matricula'],
   'tt-peru-public': ['nationalId'],
+  'tt_ais-public': ['ssvid'],
 }
 
 const CUSTOM_TURNING_TIDES_SOURCECODE_PROPERTIES: Record<string, VesselIdentityProperty[]> = {

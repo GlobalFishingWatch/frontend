@@ -14,7 +14,7 @@ locals {
     sta = "frontend-sta@gfw-development.iam.gserviceaccount.com"
     pro = "frontend-pro@gfw-production.iam.gserviceaccount.com"
   }
-
+  // Ensure it is prefixed with FISHING_MAP_ in the secrets manager
   secrets = [
     "BASIC_AUTH_PASS",
     "NEXT_FEEDBACK_SPREADSHEET_ID",
@@ -27,6 +27,7 @@ locals {
     "NEXT_TURNING_TIDES_BRAZIL_ID",
     "NEXT_TURNING_TIDES_CHILE_ID",
     "NEXT_TURNING_TIDES_PERU_ID",
+    "NEXT_TURNING_TIDES_AIS_ID",
     "NEXT_WORKSPACES_AGENT_ID",
   ]
 
