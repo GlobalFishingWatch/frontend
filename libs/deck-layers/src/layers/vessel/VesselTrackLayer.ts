@@ -288,7 +288,7 @@ export class VesselTrackLayer<DataT = any, ExtraProps = Record<string, unknown>>
       `,
       // Drop the segments outside of the time window
       'fs:#main-start': /*glsl*/ `
-        if (vTime < track.startTime || vTime > track.endTime) {
+        if (vTime <= track.startTime || vTime >= track.endTime) {
           discard;
         }
       `,
