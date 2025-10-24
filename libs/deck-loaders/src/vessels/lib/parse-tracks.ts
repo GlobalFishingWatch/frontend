@@ -20,7 +20,7 @@ function getExtent(array: number[], colorBy: 'speed' | 'elevation') {
       Math.max(values[0], MAX_DEPTH_VALUE),
     ]
   }
-  const filteredValues = array
+  const filteredValues = values
   // important values were missing in the speed legend, so removing outlier filtering for now
 
   // Remove speed outliers
