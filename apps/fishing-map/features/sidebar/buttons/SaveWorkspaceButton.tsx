@@ -72,7 +72,7 @@ function SaveWorkspaceButton() {
           className="print-hidden"
           onClick={onSaveAsClick}
           testId="save-workspace-button"
-          tooltip={t('analysis.save')}
+          tooltip={t('workspace.save')}
           tooltipPlacement="bottom"
         />
       </LoginButtonWrapper>
@@ -115,7 +115,7 @@ function SaveWorkspaceButton() {
               size="medium"
               className="print-hidden"
               onClick={() => setSaveWorkspaceTooltipOpen(true)}
-              tooltip={t('analysis.save')}
+              tooltip={t('workspace.save')}
               tooltipPlacement="bottom"
             />
           </LoginButtonWrapper>
