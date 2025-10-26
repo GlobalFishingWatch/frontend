@@ -950,6 +950,7 @@ interface Resources {
         rfmo: 'RFMOs'
       }
       areasOnScreen: 'Areas on the map'
+      closePolygonHint: 'Double click, press enter, or click the first point to close the polygon'
       colorSelectCustom: 'Select custom color'
       colorSelectPredefined: 'Select predefined color'
       color_change: 'Change color'
@@ -957,6 +958,7 @@ interface Resources {
       drawAddPoint: 'Add a point'
       drawAddPolygon: 'Add a geometry'
       drawDelete: 'Delete selection'
+      drawHint: 'Click on the map to start drawing'
       drawPoints: 'Draw points'
       drawPointsLogin: 'Register and login to draw a point or group of points (free, 2 minutes)'
       drawPolygon: 'Draw a custom reference layer'

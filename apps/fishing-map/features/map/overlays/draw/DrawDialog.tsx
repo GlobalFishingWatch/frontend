@@ -55,6 +55,7 @@ function MapDraw() {
   const mapDrawEditGeometry = useSelector(selectDatasetAreasById(mapDrawEditDataset?.id || ''))
   const drawLayer = useDrawLayerInstance()
   const drawFeatures = drawLayer?.getData()
+  const isDrawing = (drawLayer?.getClickSequence() ?? 0) > 0
   const drawFeaturesIndexes = drawLayer?.getSelectedFeatureIndexes() || []
   const hasOverlappingFeatures = drawLayer?.getHasOverlappingFeatures()
 
@@ -202,28 +203,39 @@ function MapDraw() {
     saveTooltip = t('layer.geometryError')
   }
 
-  let placeholderMessage: string =
-    mapDrawingMode === 'points' ? t('layer.editPointHint') : t('layer.editPolygonHint')
-  if (error) {
-    placeholderMessage = error
-  } else if (hasOverlappingFeatures) {
-    placeholderMessage = t('layer.geometryError')
+  let placeholderMessage: string = ''
+
+  switch (true) {
+    case !!error:
+      placeholderMessage = error
+      break
+    case hasOverlappingFeatures:
+      placeholderMessage = t('layer.geometryError')
+      break
+    case hasFeaturesDrawn:
+      placeholderMessage =
+        mapDrawingMode === 'points' ? t('layer.editPointHint') : t('layer.editPolygonHint')
+      break
+    case isDrawing && mapDrawingMode === 'polygons':
+      placeholderMessage = t('layer.closePolygonHint')
+      break
+    default:
+      placeholderMessage = t('layer.drawHint', 'Click on the map to start drawing')
+      break
   }
+
   return (
     <div className={cx(styles.container, { [styles.hidden]: !isMapDrawing })}>
-      {((drawFeatures?.features && drawFeatures?.features?.length > 0) ||
-        hasOverlappingFeatures) && (
-        <div className={cx(styles.hint, { [styles.warning]: error || hasOverlappingFeatures })}>
-          <IconButton
-            size="small"
-            className={styles.hintIcon}
-            type={error || hasOverlappingFeatures ? 'warning' : 'border'}
-            icon={error || hasOverlappingFeatures ? 'warning' : 'help'}
-            onClick={error || hasOverlappingFeatures ? undefined : () => {}}
-          />
-          {placeholderMessage}
-        </div>
-      )}
+      <div className={cx(styles.hint, { [styles.warning]: error || hasOverlappingFeatures })}>
+        <IconButton
+          size="small"
+          className={styles.hintIcon}
+          type={error || hasOverlappingFeatures ? 'warning' : 'border'}
+          icon={error || hasOverlappingFeatures ? 'warning' : 'help'}
+          onClick={error || hasOverlappingFeatures ? undefined : () => {}}
+        />
+        {placeholderMessage}
+      </div>
       <InputText
         label={t('layer.name')}
         labelClassName={styles.layerLabel}
