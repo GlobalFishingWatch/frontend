@@ -327,7 +327,6 @@ interface Resources {
       save: 'Save this report'
       savePublic: 'Allow other users to see this report'
       savePublicDisabled: "This report can't be shared publicly because it contains private data"
-      saveTitle: 'Save this report'
       searchHelp: "Use commas to search by multiple fields, '|' to include one query or another and '-' before a search term to exclude vessels."
       searchHelpExamples: 'e.g. "flag:china, gear:trawlers", "-spain", "cargo|passenger"...'
       searchPlaceholder: 'Filter vessels by name, MMSI, flag or gear type'
