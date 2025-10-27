@@ -191,6 +191,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
           createDispatchedAction = await dispatch(
             createReportThunk({
               name,
+              description: 'Auto generated report for feedback',
               datasetId: reportAreaIds?.datasetId,
               areaId: reportAreaIds?.areaId?.toString(),
               workspace: workspaceReport,
@@ -203,8 +204,14 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
           (createWorkspaceThunk.fulfilled.match(createDispatchedAction) ||
             createReportThunk.fulfilled.match(createDispatchedAction))
         ) {
-          const workspace = createDispatchedAction.payload as Workspace | Report['workspace']
-          url = window.location.origin + PATH_BASENAME + `/${workspace?.category}/${workspace?.id}`
+          if (isWorkspaceLocation) {
+            const workspace = createDispatchedAction.payload as Workspace
+            url =
+              window.location.origin + PATH_BASENAME + `/${workspace?.category}/${workspace?.id}`
+          } else if (isAreaReportLocation) {
+            const report = createDispatchedAction.payload as Report
+            url = window.location.origin + PATH_BASENAME + `/report/${report?.id}`
+          }
         } else {
           console.error('Error creating feedback workspace, using default url to feedback sheet.')
         }

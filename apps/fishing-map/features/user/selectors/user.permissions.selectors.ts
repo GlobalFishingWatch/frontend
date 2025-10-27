@@ -91,7 +91,11 @@ export const selectUserReports = createSelector(
   [selectUserData, selectAllReports],
   (userData, reports) => {
     return orderBy(
-      reports?.filter((report) => report.ownerId === userData?.id),
+      reports?.filter(
+        (report) =>
+          report.ownerId === userData?.id &&
+          !report.name.startsWith(AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX)
+      ),
       ['createdAt'],
       ['desc']
     )
