@@ -125,7 +125,7 @@ export default function VesselGroupReportTitle() {
             onClick={onPrintClick}
             disabled={loading}
           >
-            <p>{t('analysis.print ')}</p>
+            <p>{t('analysis.print')}</p>
             <Icon icon="print" type="default" />
           </Button> */}
         </div>
