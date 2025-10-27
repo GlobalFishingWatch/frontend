@@ -65,7 +65,6 @@
     "save": "Enregistrer ce rapport",
     "savePublic": "Autoriser d'autres utilisateurs à voir ce rapport",
     "savePublicDisabled": "Ce rapport ne peut pas être partagé publiquement, car il contient des données privées",
-    "saveTitle": "Enregistrer ce rapport",
     "searchHelp": "Utilisez des virgules pour effectuer une recherche sur plusieurs champs, '|' pour inclure une requête ou une autre et '-' avant un terme de recherche pour exclure des navires.",
     "searchHelpExamples": "par exemple \"pavillon:chine, engin:chalutier\", \"-espagne\", \"fret|passager\"...",
     "searchPlaceholder": "Filtrer les navires par nom, MMSI, pavillon ou type d'engin",
@@ -687,6 +686,7 @@
       "rfmo": "ORGP"
     },
     "areasOnScreen": "Zones à l'écran",
+    "closePolygonHint": "Press enter or click the first point to close the polygon",
     "color_change": "Modifier la couleur",
     "colorSelectCustom": "Select custom color",
     "colorSelectPredefined": "Select predefined color",
@@ -694,6 +694,7 @@
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",
+    "drawHint": "Click on the map to start drawing",
     "drawPoints": "Dessiner des points",
     "drawPointsLogin": "Register and login to draw a point or group of points (free, 2 minutes)",
     "drawPolygon": "Dessiner un calque",
