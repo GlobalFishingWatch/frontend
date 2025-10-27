@@ -7,7 +7,7 @@ import { scaleLinear } from 'd3-scale'
 import styles from './slider.module.css'
 
 export type SliderThumbsSize = 'default' | 'small' | 'mini'
-type SliderConfig = {
+export type SliderConfig = {
   step?: number
   steps: number[]
   min: number
