@@ -65,7 +65,6 @@
     "save": "crwdns59639:0crwdne59639:0",
     "savePublic": "crwdns59643:0crwdne59643:0",
     "savePublicDisabled": "crwdns59645:0crwdne59645:0",
-    "saveTitle": "crwdns59641:0crwdne59641:0",
     "searchHelp": "crwdns59633:0crwdne59633:0",
     "searchHelpExamples": "crwdns59635:0crwdne59635:0",
     "searchPlaceholder": "crwdns59637:0crwdne59637:0",
@@ -687,6 +686,7 @@
       "rfmo": "crwdns69424:0crwdne69424:0"
     },
     "areasOnScreen": "crwdns60265:0crwdne60265:0",
+    "closePolygonHint": "crwdns106640:0crwdne106640:0",
     "color_change": "crwdns60267:0crwdne60267:0",
     "colorSelectCustom": "crwdns84111:0crwdne84111:0",
     "colorSelectPredefined": "crwdns84113:0crwdne84113:0",
@@ -694,6 +694,7 @@
     "drawAddPoint": "crwdns84014:0crwdne84014:0",
     "drawAddPolygon": "crwdns84016:0crwdne84016:0",
     "drawDelete": "crwdns84018:0crwdne84018:0",
+    "drawHint": "crwdns106642:0crwdne106642:0",
     "drawPoints": "crwdns83614:0crwdne83614:0",
     "drawPointsLogin": "crwdns84317:0crwdne84317:0",
     "drawPolygon": "crwdns60269:0crwdne60269:0",
