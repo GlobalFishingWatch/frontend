@@ -55,7 +55,7 @@ export const TimeFieldsGroup = ({
     (selected: SelectOption) => {
       setDatasetMetadataConfig({ timeFilterType: selected.id === 'none' ? undefined : selected.id })
       if (selected.id === 'none') {
-        setDatasetMetadataConfig({ startTime: '', endTime: '' })
+        setDatasetMetadataConfig({ timestamp: undefined, startTime: '', endTime: '' })
       }
       if (selected.id === 'date') {
         setDatasetMetadataConfig({ endTime: '' })

@@ -1,20 +1,13 @@
 import type {
   DataviewDatasetConfig,
   DataviewDatasetConfigParam,
-  Resource} from '@globalfishingwatch/api-types';
-import {
-  DatasetTypes,
-  DataviewType,
-  EndpointId
+  Resource,
 } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewType, EndpointId } from '@globalfishingwatch/api-types'
 import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
-import type {
-  UrlDataviewInstance} from '../resolve-dataviews';
-import {
-  getDatasetConfigByDatasetType,
-  getDatasetConfigsByDatasetType
-} from '../resolve-dataviews'
+import { getDatasetConfigByDatasetType, getDatasetConfigsByDatasetType } from '../resolve-dataviews'
+import type { UrlDataviewInstance } from '../types'
 
 export type GetDatasetConfigCallback = (
   datasetConfig: DataviewDatasetConfig[],

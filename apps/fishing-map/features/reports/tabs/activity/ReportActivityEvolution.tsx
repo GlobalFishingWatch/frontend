@@ -46,14 +46,20 @@ const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => 
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 
-const ReportActivityEvolution: React.FC<{
+const ReportActivityEvolution = ({
+  data,
+  start,
+  end,
+}: {
   data: ComparisonGraphProps
   start: string
   end: string
-}> = ({ data, start, end }) => {
+}) => {
+  const colors = (data.sublayers || []).map((sublayer) => sublayer?.legend?.color)?.join(',')
   const dataFormated = useMemo(
     () => formatEvolutionData(data, { start, end, timeseriesInterval: data?.interval }),
-    [data, end, start]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [data, end, start, colors]
   )
   const domain = useMemo(() => {
     if (start && end && data?.interval) {

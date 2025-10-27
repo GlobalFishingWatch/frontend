@@ -327,7 +327,6 @@ interface Resources {
       save: 'Save this report'
       savePublic: 'Allow other users to see this report'
       savePublicDisabled: "This report can't be shared publicly because it contains private data"
-      saveTitle: 'Save this report'
       searchHelp: "Use commas to search by multiple fields, '|' to include one query or another and '-' before a search term to exclude vessels."
       searchHelpExamples: 'e.g. "flag:china, gear:trawlers", "-spain", "cargo|passenger"...'
       searchPlaceholder: 'Filter vessels by name, MMSI, flag or gear type'
@@ -648,6 +647,8 @@ interface Resources {
       fieldNumericPlaceholder: 'Select a numerical field from your dataset'
       fieldPlaceholder: 'Select a field from your dataset'
       invalidDatesFeatures: "Some of your {{featureType}} don't contain a valid date. They won't appear on the map regardless of time filter."
+      maxValuesExceededForFiltering: 'Maximum values exceeded for filtering ({{max}})'
+      maxValuesExceededForFilteringTooltip: 'This field has too many unique values ({{max}}+). Consider grouping or categorizing your data to enable filtering.'
       noFilters: 'To add filters to your dataset, your file must have at least one property with more than 2 distinct values.'
       none: 'None'
       optionalFields: 'Optional fields'
@@ -767,7 +768,6 @@ interface Resources {
     }
     errors: {
       areaLoad: 'There was an error loading the report area'
-      contactUs: 'Please <1>contact us</1> to report the problem.'
       datasetNotFound: 'Dataset not found'
       datasetNotValid: 'There seems to be something wrong with your file'
       datasetShapefileMultiple: 'Shapefiles containing multiple components (mutiple file names) are not supported yet'
@@ -787,6 +787,7 @@ interface Resources {
       privateView: 'This is a private workspace.'
       profileEvents: 'There was an error requesting the vessel events.'
       profileLogin: 'Login to see this vessel'
+      reportError: 'Report the problem'
       reportLogin: 'Register or log in to see the active vessels in this area (free, 2 minutes)'
       requestAccess: 'Request access'
       searchLogin: 'Login to search vessels'
@@ -963,6 +964,7 @@ interface Resources {
         rfmo: 'RFMOs'
       }
       areasOnScreen: 'Areas on the map'
+      closePolygonHint: 'Press enter or click the first point to close the polygon'
       colorSelectCustom: 'Select custom color'
       colorSelectPredefined: 'Select predefined color'
       color_change: 'Change color'
@@ -970,6 +972,7 @@ interface Resources {
       drawAddPoint: 'Add a point'
       drawAddPolygon: 'Add a geometry'
       drawDelete: 'Delete selection'
+      drawHint: 'Click on the map to start drawing'
       drawPoints: 'Draw points'
       drawPointsLogin: 'Register and login to draw a point or group of points (free, 2 minutes)'
       drawPolygon: 'Draw a custom reference layer'

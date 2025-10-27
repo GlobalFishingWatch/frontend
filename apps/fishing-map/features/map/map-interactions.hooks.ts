@@ -189,21 +189,21 @@ export const useClickedEventConnect = () => {
       if (!event?.features) {
         return
       }
-      const detectionFeatures = (event.features as FourwingsPositionsPickingObject[]).filter(
-        (feature) => {
-          if (feature?.sublayers?.every((sublayer) => !sublayer.visible)) {
-            return false
-          }
-          const hasVesselInteraction = SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
-            feature.category as DataviewCategory
-          )
-          const isPositions = feature.visualizationMode === 'positions'
-          return hasVesselInteraction && isPositions
+      const detectionPositionFeatures = (
+        event.features as FourwingsPositionsPickingObject[]
+      ).filter((feature) => {
+        if (feature?.sublayers?.every((sublayer) => !sublayer.visible)) {
+          return false
         }
-      )
-      if (detectionFeatures?.length) {
+        const hasVesselInteraction = SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION.includes(
+          feature.category as DataviewCategory
+        )
+        const isPositions = feature.visualizationMode === 'positions'
+        return hasVesselInteraction && isPositions
+      })
+      if (detectionPositionFeatures?.length) {
         const detectionsPositionPromise = dispatch(
-          fetchDetectionThumbnailsThunk({ detectionFeatures })
+          fetchDetectionThumbnailsThunk({ detectionFeatures: detectionPositionFeatures })
         )
         setInteractionPromises((prev) => ({
           ...prev,

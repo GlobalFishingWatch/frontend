@@ -160,11 +160,13 @@ export const routerWorkspaceMiddleware: Middleware =
             : currentHistoryNavigation
           const updatedHistoryNavigation = historyNavigation.map((navigation) => {
             if ([...WORKSPACE_ROUTES, ...REPORT_ROUTES].includes(lastHistoryNavigation.type)) {
-              const dataviewInstancesWithoutReport = (
-                newAction.query?.dataviewInstances || []
-              ).filter((dataviewInstance) => {
-                return dataviewInstance.origin !== 'report'
-              })
+              const dataviewInstancesWithoutReport = WORKSPACE_ROUTES.includes(
+                lastHistoryNavigation.type
+              )
+                ? (newAction.query?.dataviewInstances || []).filter((dataviewInstance) => {
+                    return dataviewInstance.origin !== 'report'
+                  })
+                : newAction.query?.dataviewInstances || []
               return {
                 ...navigation,
                 query: {

@@ -49,7 +49,7 @@ export const fetchReportsThunk = createAsyncThunk(
     }
   },
   {
-    condition: (_, { getState }) => {
+    condition: (ids, { getState }) => {
       const status = (getState() as ReportsSliceState).reports.status
       return status !== AsyncReducerStatus.Loading
     },

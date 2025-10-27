@@ -153,7 +153,7 @@ export function readBlobAs(blob: Blob, format: 'text' | 'arrayBuffer'): any {
       }
     }
     if (format === 'text') {
-      reader.readAsText(blob)
+      reader.readAsText(blob, 'UTF-8')
     } else {
       reader.readAsArrayBuffer(blob)
     }

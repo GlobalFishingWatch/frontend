@@ -13,7 +13,9 @@
 }
 
 .container {
-  width: var(--sidebar-width);
+  max-width: var(--sidebar-width);
+  max-height: 95vh;
+  overflow: auto;
 }
 
 .img {
@@ -22,7 +24,6 @@
   width: 100%;
   vertical-align: middle;
   min-height: 18rem;
-  min-width: 32rem;
   background-color: var(--color-terthiary-blue);
 }
 

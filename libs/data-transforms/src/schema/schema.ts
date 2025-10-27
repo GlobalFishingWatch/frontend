@@ -20,7 +20,9 @@ type GetFieldSchemaParams = {
   includeEnum?: boolean
   maxSchemaEnumValues?: number
 }
-const MAX_SCHEMA_ENUM_VALUES = 100
+
+export const MAX_SCHEMA_ENUM_VALUES = 100
+export const MAX_SCHEMA_ENUM_VALUES_EXCEEDED = 'maximum values exceeded'
 
 export const getSchemaIdClean = (id: string | string[]) => {
   if (Array.isArray(id)) {
@@ -97,7 +99,9 @@ export const getFieldSchema = (
           schema.enum = [valuesOrdered[0], valuesOrdered[valuesOrdered.length - 1]]
         } else {
           const stringEnumSupported = values.length < maxSchemaEnumValues
-          schema.enum = stringEnumSupported ? values.map((v) => v.toString()) : []
+          schema.enum = stringEnumSupported
+            ? values.map((v) => v.toString())
+            : [MAX_SCHEMA_ENUM_VALUES_EXCEEDED]
         }
       } else if (schema.type === 'range' || schema.type === 'coordinate') {
         const numericalValues = values.filter((v) => !isNaN(v))

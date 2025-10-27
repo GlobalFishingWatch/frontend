@@ -31,7 +31,7 @@ const getUserTrackHighlighterLabel = ({ chunk }: HighlighterCallbackFnArgs) => {
 }
 
 const hasUniqueChunks = (segments: TrackSegment[]) => {
-  return segments[0].some((segment) => segment.id)
+  return segments?.[0]?.some((segment) => segment.id)
 }
 
 export const hasTracksWithNoData = (tracks = [] as VesselTrackAtom) => {

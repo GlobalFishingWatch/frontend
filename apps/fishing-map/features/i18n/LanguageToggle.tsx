@@ -1,10 +1,10 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import Script from 'next/script'
 
-import { Icon } from '@globalfishingwatch/ui-components'
+import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { IS_DEVELOPMENT_ENV } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -12,6 +12,7 @@ import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selector
 import { CROWDIN_IN_CONTEXT_LANG, LocaleLabels } from 'features/i18n/i18n'
 import { selectHasEditTranslationsPermissions } from 'features/user/selectors/user.permissions.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import useClickedOutside from 'hooks/use-clicked-outside'
 import { Locale } from 'types'
 
 import styles from './LanguageToggle.module.css'
@@ -26,6 +27,10 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
   className = '',
 }: LanguageToggleProps) => {
   const { i18n } = useTranslation()
+  const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false)
+
+  const expandedContainerRef = useClickedOutside(() => setIsLanguageMenuOpen(false))
+
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const hasEditTranslationsPermissions = useSelector(selectHasEditTranslationsPermissions)
   const basemapDataviewInstance = useSelector(selectBasemapLabelsDataviewInstance)
@@ -44,16 +49,22 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
         },
       })
     }
+    setIsLanguageMenuOpen(false)
   }
+
   return (
-    <div className={cx(styles.languageToggle, className)}>
+    <div className={cx(styles.languageToggle, className)} ref={expandedContainerRef}>
       <div className={styles.languageBtn}>
-        <Icon
+        <IconButton
           icon={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'language'}
           type={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'default'}
+          onClick={(e) => {
+            e.stopPropagation()
+            setIsLanguageMenuOpen(!isLanguageMenuOpen)
+          }}
         />
       </div>
-      <ul className={cx(styles.languages, styles[position])}>
+      <ul className={cx(styles.languages, styles[position], { [styles.open]: isLanguageMenuOpen })}>
         {IS_DEVELOPMENT_ENV && (
           <li>
             <button

@@ -24,6 +24,7 @@ import type { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 export const selectWorkspace = (state: RootState) => state.workspace?.data
+export const selectWorkspaceReportId = (state: RootState) => state.workspace?.reportId
 export const selectWorkspacePassword = (state: RootState) => state.workspace?.password
 export const selectSuggestWorkspaceSave = (state: RootState) => state.workspace?.suggestSave
 export const selectWorkspaceError = (state: RootState) => state.workspace?.error
