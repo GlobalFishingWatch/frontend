@@ -687,6 +687,7 @@
       "rfmo": "RFMOs"
     },
     "areasOnScreen": "Areas on the map",
+    "closePolygonHint": "Press enter or click the first point to close the polygon",
     "color_change": "Change color",
     "colorSelectCustom": "Select custom color",
     "colorSelectPredefined": "Select predefined color",
@@ -694,6 +695,7 @@
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",
+    "drawHint": "Click on the map to start drawing",
     "drawPoints": "Draw points",
     "drawPointsLogin": "Register and login to draw a point or group of points (free, 2 minutes)",
     "drawPolygon": "Draw a custom reference layer",
