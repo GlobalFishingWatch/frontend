@@ -217,7 +217,10 @@ function MapDraw() {
         mapDrawingMode === 'points' ? t('layer.editPointHint') : t('layer.editPolygonHint')
       break
     case isDrawing && mapDrawingMode === 'polygons':
-      placeholderMessage = t('layer.closePolygonHint')
+      placeholderMessage = t(
+        'layer.closePolygonHint',
+        'Press enter or click the first point to close the polygon'
+      )
       break
     default:
       placeholderMessage = t('layer.drawHint', 'Click on the map to start drawing')
@@ -268,7 +271,7 @@ function MapDraw() {
         />
         <div className={styles.actionButtons}>
           <Button className={styles.button} type="secondary" onClick={closeDraw}>
-            {t('common.dismiss')}
+            {t('common.cancel')}
           </Button>
           <Button
             className={styles.button}

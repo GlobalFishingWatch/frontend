@@ -950,7 +950,7 @@ interface Resources {
         rfmo: 'RFMOs'
       }
       areasOnScreen: 'Areas on the map'
-      closePolygonHint: 'Double click, press enter, or click the first point to close the polygon'
+      closePolygonHint: 'Press enter or click the first point to close the polygon'
       colorSelectCustom: 'Select custom color'
       colorSelectPredefined: 'Select predefined color'
       color_change: 'Change color'
