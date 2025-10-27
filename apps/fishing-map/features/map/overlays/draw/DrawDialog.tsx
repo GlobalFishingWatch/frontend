@@ -197,8 +197,6 @@ function MapDraw() {
     saveTooltip = t('layer.nameLengthError', {
       count: MIN_DATASET_NAME_LENGTH,
     })
-    // } else if (!hasFeaturesDrawn) {
-    //   saveTooltip = t('layer.geometryRequired')
   } else if (hasOverlappingFeatures) {
     saveTooltip = t('layer.geometryError')
   }
@@ -247,20 +245,24 @@ function MapDraw() {
         onChange={onInputChange}
         className={styles.input}
       />
-      <IconButton
-        icon={mapDrawingMode === 'points' ? 'add-point' : 'add-polygon'}
-        tooltip={mapDrawingMode === 'points' ? t('layer.drawAddPoint') : t('layer.drawAddPolygon')}
-        onClick={onAddPolygonClick}
-      />
-      <IconButton
-        type="warning"
-        icon="delete"
-        disabled={!drawFeaturesIndexes.length}
-        tooltip={
-          !drawFeaturesIndexes.length ? t('layer.selectPolygonToRemove') : t('layer.drawDelete')
-        }
-        onClick={drawLayer?.deleteSelectedFeature}
-      />
+      <div className={cx(styles.flex, styles.iconsWrapper)}>
+        <IconButton
+          icon={mapDrawingMode === 'points' ? 'add-point' : 'add-polygon'}
+          tooltip={
+            mapDrawingMode === 'points' ? t('layer.drawAddPoint') : t('layer.drawAddPolygon')
+          }
+          onClick={onAddPolygonClick}
+        />
+        <IconButton
+          type="warning"
+          icon="delete"
+          disabled={!drawFeaturesIndexes.length}
+          tooltip={
+            !drawFeaturesIndexes.length ? t('layer.selectPolygonToRemove') : t('layer.drawDelete')
+          }
+          onClick={drawLayer?.deleteSelectedFeature}
+        />
+      </div>
       <div className={styles.buttonsContainer}>
         <SwitchRow
           className={styles.saveAsPublic}

@@ -7,6 +7,7 @@
   background-color: var(--color-off-white);
   display: flex;
   align-items: flex-end;
+  justify-content: space-between;
   z-index: 100;
 }
 
@@ -62,8 +63,10 @@
   margin-left: var(--space-M);
 }
 
+.input,
 .input input {
-  width: max-content !important;
+  min-width: 30rem;
+  width: 100%;
 }
 
 .popupContent {
@@ -88,8 +91,32 @@
 
 .buttonsContainer {
   margin-left: var(--space-L);
+  min-width: 34rem;
+  max-width: 60%;
 }
 
 .saveAsPublic {
   margin-bottom: var(--space-S);
+}
+
+@media (width <= 800px) {
+  .container {
+    flex-direction: column;
+    min-width: 90%;
+  }
+
+  .input input {
+    min-width: 100%;
+  }
+
+  .buttonsContainer {
+    margin-left: 0;
+    margin-top: var(--space-S);
+    max-width: 100%;
+  }
+
+  .iconsWrapper {
+    position: absolute;
+    top: 10px;
+  }
 }
