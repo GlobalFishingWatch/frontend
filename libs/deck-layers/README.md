@@ -49,6 +49,18 @@ nx build deck-layers
 nx publish deck-layers
 ```
 
+## Development
+
+### Generate Icon Atlas
+
+To generate the icon atlas (spritesheet) and JSON mapping file from individual PNG icons:
+
+```bash
+node scripts/generate-icon-atlas.js
+```
+
+This script combines all PNG images from the `icons/` directory into a single spritesheet (`icon-atlas.png`) and generates a JSON mapping file (`icon-atlas.json`) with icon coordinates.
+
 ## Dependencies
 
 Core dependencies:
