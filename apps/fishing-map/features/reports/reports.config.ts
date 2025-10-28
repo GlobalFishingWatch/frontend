@@ -28,6 +28,7 @@ export const REPORT_VESSELS_GRAPH_FLAG = 'flag' as const
 export const REPORT_ACTIVITY_GRAPH_EVOLUTION = 'evolution' as const
 export const REPORT_ACTIVITY_GRAPH_BEFORE_AFTER = 'beforeAfter' as const
 export const REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON = 'periodComparison' as const
+export const REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON = 'datasetComparison' as const
 
 // EVENTS GRAPH
 export const REPORT_EVENTS_GRAPH_EVOLUTION = 'evolution' as const
