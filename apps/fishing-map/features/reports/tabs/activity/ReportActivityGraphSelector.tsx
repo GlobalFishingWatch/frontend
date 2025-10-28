@@ -33,9 +33,11 @@ export default function ReportActivityGraphSelector({
   const { t } = useTranslation()
   const fitAreaInViewport = useFitAreaInViewport()
   const dataviews = useSelector(selectActiveReportDataviews)
-  const areAllFiltersEqual = dataviews.every(
-    (d) => d.config?.filter === dataviews[0].config?.filter
-  )
+  const areAllFiltersEqual = dataviews.every((d) => {
+    const filter = d.config?.filter ?? ''
+    const firstFilter = dataviews[0].config?.filter ?? ''
+    return filter === firstFilter
+  })
 
   const options: SelectOption<ReportActivityGraph>[] = [
     {

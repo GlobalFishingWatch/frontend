@@ -65,7 +65,6 @@
     "save": "Guardar este informe",
     "savePublic": "Permitir que otros usuarios vean este informe",
     "savePublicDisabled": "Este informe no puede ser compartido públicamente ya que contiene datos privados",
-    "saveTitle": "Guardar este informe",
     "searchHelp": "Utilice comas para buscar por varios campos, '|' para incluir una consulta u otra y '-' antes de un término de búsqueda para excluir embarcaciones.",
     "searchHelpExamples": "e.g. \"flag:china, gear:trawlers\", \"-spain\", \"cargo|passenger\"...",
     "searchPlaceholder": "Filtrar embarcaciones por nombre, MMSI, bandera o arte de pesca",
@@ -687,6 +686,7 @@
       "rfmo": "OROP"
     },
     "areasOnScreen": "Áreas en pantalla",
+    "closePolygonHint": "Press enter or click the first point to close the polygon",
     "color_change": "Cambiar el color",
     "colorSelectCustom": "Selecciona un color personalizado",
     "colorSelectPredefined": "Selecciona color predefinido",
@@ -694,6 +694,7 @@
     "drawAddPoint": "Añadir un punto",
     "drawAddPolygon": "Añadir una geometría",
     "drawDelete": "Borrar selección",
+    "drawHint": "Click on the map to start drawing",
     "drawPoints": "Dibujar puntos",
     "drawPointsLogin": "Regístrate e inicia sesión para dibujar un punto o grupo de puntos (gratis, 2 minutos)",
     "drawPolygon": "Dibujar una capa",

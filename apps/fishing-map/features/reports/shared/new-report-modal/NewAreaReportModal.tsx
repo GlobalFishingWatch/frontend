@@ -161,7 +161,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
-      title={report?.id ? t('analysis.editTitle') : t('analysis.saveTitle')}
+      title={report?.id ? t('analysis.editTitle') : t('analysis.save')}
       isOpen={isOpen}
       shouldCloseOnEsc
       contentClassName={styles.modal}

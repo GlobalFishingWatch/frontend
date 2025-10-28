@@ -328,7 +328,6 @@ interface Resources {
       save: 'Save this report'
       savePublic: 'Allow other users to see this report'
       savePublicDisabled: "This report can't be shared publicly because it contains private data"
-      saveTitle: 'Save this report'
       searchHelp: "Use commas to search by multiple fields, '|' to include one query or another and '-' before a search term to exclude vessels."
       searchHelpExamples: 'e.g. "flag:china, gear:trawlers", "-spain", "cargo|passenger"...'
       searchPlaceholder: 'Filter vessels by name, MMSI, flag or gear type'
@@ -966,6 +965,7 @@ interface Resources {
         rfmo: 'RFMOs'
       }
       areasOnScreen: 'Areas on the map'
+      closePolygonHint: 'Press enter or click the first point to close the polygon'
       colorSelectCustom: 'Select custom color'
       colorSelectPredefined: 'Select predefined color'
       color_change: 'Change color'
@@ -973,6 +973,7 @@ interface Resources {
       drawAddPoint: 'Add a point'
       drawAddPolygon: 'Add a geometry'
       drawDelete: 'Delete selection'
+      drawHint: 'Click on the map to start drawing'
       drawPoints: 'Draw points'
       drawPointsLogin: 'Register and login to draw a point or group of points (free, 2 minutes)'
       drawPolygon: 'Draw a custom reference layer'

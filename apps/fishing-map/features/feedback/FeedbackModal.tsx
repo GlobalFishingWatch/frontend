@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import type { Workspace } from '@globalfishingwatch/api-types'
+import type { Report, Workspace } from '@globalfishingwatch/api-types'
 import {
   DataviewType,
   WORKSPACE_PRIVATE_ACCESS,
@@ -20,11 +20,15 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectActiveDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
+import { createReportThunk } from 'features/reports/reports.slice'
+import { getWorkspaceReport } from 'features/reports/shared/new-report-modal/NewAreaReportModal'
 import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { parseUpsertWorkspace } from 'features/workspace/workspace.utils'
 import { createWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
+import { selectIsAnyAreaReportLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
 
 import styles from './FeedbackModal.module.css'
 
@@ -84,6 +88,10 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
   const userGroups = useSelector(selectUserGroupsClean)
   const guestUser = useSelector(selectIsGuestUser)
   const currentWorkspace = useSelector(selectWorkspaceWithCurrentState)
+  const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
+  const reportAreaIds = useSelector(selectReportAreaIds)
+
+  const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
 
   const initialFeedbackState = {
     date: new Date().toISOString(),
@@ -166,20 +174,44 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
     setLoading(true)
     try {
       let url = window.location.href
-
+      const name = `${AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX}-${Date.now()}`
       if (!guestUser) {
-        const createWorkspaceAction = await dispatch(
-          createWorkspaceThunk({
-            ...parseUpsertWorkspace(currentWorkspace),
-            name: `${AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX}-${Date.now()}`,
-            viewAccess: WORKSPACE_PUBLIC_ACCESS,
-            editAccess: WORKSPACE_PRIVATE_ACCESS,
-          })
-        )
-
-        if (createWorkspaceThunk.fulfilled.match(createWorkspaceAction)) {
-          const workspace = createWorkspaceAction.payload as Workspace
-          url = window.location.origin + PATH_BASENAME + `/${workspace?.category}/${workspace?.id}`
+        let createDispatchedAction
+        if (isWorkspaceLocation) {
+          createDispatchedAction = await dispatch(
+            createWorkspaceThunk({
+              ...parseUpsertWorkspace(currentWorkspace),
+              name,
+              viewAccess: WORKSPACE_PUBLIC_ACCESS,
+              editAccess: WORKSPACE_PRIVATE_ACCESS,
+            })
+          )
+        } else if (isAreaReportLocation && reportAreaIds) {
+          const workspaceReport = getWorkspaceReport(currentWorkspace)
+          createDispatchedAction = await dispatch(
+            createReportThunk({
+              name,
+              description: 'Auto generated report for feedback',
+              datasetId: reportAreaIds?.datasetId,
+              areaId: reportAreaIds?.areaId?.toString(),
+              workspace: workspaceReport,
+              public: true,
+            })
+          )
+        }
+        if (
+          createDispatchedAction &&
+          (createWorkspaceThunk.fulfilled.match(createDispatchedAction) ||
+            createReportThunk.fulfilled.match(createDispatchedAction))
+        ) {
+          if (isWorkspaceLocation) {
+            const workspace = createDispatchedAction.payload as Workspace
+            url =
+              window.location.origin + PATH_BASENAME + `/${workspace?.category}/${workspace?.id}`
+          } else if (isAreaReportLocation) {
+            const report = createDispatchedAction.payload as Report
+            url = window.location.origin + PATH_BASENAME + `/report/${report?.id}`
+          }
         } else {
           console.error('Error creating feedback workspace, using default url to feedback sheet.')
         }

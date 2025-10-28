@@ -65,7 +65,6 @@
     "save": "Salvar este relatório",
     "savePublic": "Permitir que outros usuários visualizem este relatório",
     "savePublicDisabled": "Este relatório não pode ser compartilhado publicamente porque contém dados privados",
-    "saveTitle": "Salvar este relatório",
     "searchHelp": "Use vírgulas para pesquisar por vários campos, \"|\" para incluir uma consulta ou outra e \"-\" antes de um termo de pesquisa para excluir embarcações.",
     "searchHelpExamples": "ex: \"bandeira:china, petrecho:arrastões\", \"-espanha\", \"carga|passageiro\"...",
     "searchPlaceholder": "Filtre embarcações por nome, MMSI, bandeira ou tipo de petrecho",
@@ -687,6 +686,7 @@
       "rfmo": "RFMOs"
     },
     "areasOnScreen": "Áreas na tela",
+    "closePolygonHint": "Press enter or click the first point to close the polygon",
     "color_change": "Alterar cor",
     "colorSelectCustom": "Select custom color",
     "colorSelectPredefined": "Select predefined color",
@@ -694,6 +694,7 @@
     "drawAddPoint": "Add a point",
     "drawAddPolygon": "Add a geometry",
     "drawDelete": "Delete selection",
+    "drawHint": "Click on the map to start drawing",
     "drawPoints": "Desenhar pontos",
     "drawPointsLogin": "Register and login to draw a point or group of points (free, 2 minutes)",
     "drawPolygon": "Desenhe uma camada",

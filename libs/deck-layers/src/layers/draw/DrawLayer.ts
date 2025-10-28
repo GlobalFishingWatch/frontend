@@ -1,7 +1,7 @@
 import type { LayerContext, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import type { EditAction,FeatureCollection } from '@deck.gl-community/editable-layers'
+import type { EditAction, FeatureCollection } from '@deck.gl-community/editable-layers'
 import {
   CompositeMode,
   EditableGeoJsonLayer,
@@ -12,7 +12,7 @@ import kinks from '@turf/kinks'
 import type { Feature, Point, Polygon, Position } from 'geojson'
 
 import type { DeckLayerCategory } from '../../types'
-import { COLOR_HIGHLIGHT_LINE, getLayerGroupOffset,LayerGroup } from '../../utils'
+import { COLOR_HIGHLIGHT_LINE, getLayerGroupOffset, LayerGroup } from '../../utils'
 
 import type { DrawLayerMode } from './draw.modes'
 import {
@@ -149,6 +149,10 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
       ) ||
       false
     )
+  }
+
+  getClickSequence = () => {
+    return this.state?.mode?.getClickSequence()?.length || 0
   }
 
   getSelectedFeatureIndexes = () => {

@@ -3,7 +3,7 @@
   position: relative;
   color: var(--color-secondary-blue);
   transition: color 200ms ease-in;
-  page-break-inside: avoid;
+  break-inside: avoid;
 }
 
 .actions {
@@ -93,6 +93,12 @@
 
 .authTable {
   width: 100%;
+}
+
+.authTable th,
+.authTable td {
+  text-align: left;
+  vertical-align: middle;
 }
 
 .tick {
