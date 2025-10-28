@@ -1,9 +1,9 @@
-import type { Color, LayerProps, PickingInfo, UpdateParameters } from '@deck.gl/core'
+import type { Color, LayerProps, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { DataFilterExtension } from '@deck.gl/extensions'
 import bbox from '@turf/bbox'
 import bboxPolygon from '@turf/bbox-polygon'
-import { bearingToAzimuth, featureCollection, point } from '@turf/helpers'
+import { featureCollection, point } from '@turf/helpers'
 import { rhumbBearing } from '@turf/turf'
 import type { BBox, Position } from 'geojson'
 import { extent } from 'simple-statistics'
@@ -19,16 +19,8 @@ import {
 } from '@globalfishingwatch/deck-loaders'
 
 import type { DeckLayerProps } from '../../types'
-import {
-  BLEND_BACKGROUND,
-  getFetchLoadOptions,
-  getLayerGroupOffset,
-  LayerGroup,
-  VESSEL_SPRITE_ICON_MAPPING,
-} from '../../utils'
-import { deckToHexColor, hexToDeckColor } from '../../utils/colors'
-import { LabelLayer } from '../labels/LabelLayer'
-import { PATH_BASENAME } from '../layers.config'
+import { getFetchLoadOptions, getLayerGroupOffset, LayerGroup } from '../../utils'
+import { deckToHexColor } from '../../utils/colors'
 
 import {
   DEFAULT_FISHING_EVENT_COLOR,
@@ -53,16 +45,16 @@ import type { GetSegmentsFromDataParams } from './vessel.utils'
 import { getEvents, getVesselResourceChunks } from './vessel.utils'
 import type { _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselEventsLayer } from './VesselEventsLayer'
-import { VesselPositionLayer } from './VesselPositionLayer'
-import type { _VesselTrackLayerProps } from './VesselTrackLayer'
-import { VesselTrackLayerComposite } from './VesselTrackLayerComposite'
+import { VesselTrackPositionLayer } from './VesselPositionLayer'
+import type { VesselTrackLayerProps } from './VesselTrackLayer'
+import { VesselTrackLayer } from './VesselTrackLayer'
 
 export type VesselEventsLayerProps = Omit<_VesselEventsLayerProps, 'type'> & {
   events: VesselDeckLayersEvent[]
 }
 
 export type VesselLayerProps = DeckLayerProps<
-  _VesselTrackLayerProps & VesselEventsLayerProps & _VesselLayerProps
+  VesselTrackLayerProps & VesselEventsLayerProps & _VesselLayerProps
 >
 
 type VesselLayerState = {
@@ -109,13 +101,19 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     }
 
     if (
-      info.sourceLayer instanceof VesselTrackLayerComposite ||
-      info.sourceLayer instanceof VesselPositionLayer
+      info.sourceLayer instanceof VesselTrackLayer ||
+      info.sourceLayer instanceof VesselTrackPositionLayer
     ) {
       const { timestamp, speed, depth, course } =
-        info.sourceLayer instanceof VesselTrackLayerComposite
+        info.sourceLayer instanceof VesselTrackLayer
           ? (info.object as VesselTrackProperties)
           : (info.object as VesselPositionProperties).properties
+      const interactionType =
+        (info.object as VesselPositionProperties)?.interactionType !== undefined
+          ? (info.object as VesselTrackProperties)?.interactionType
+          : info.sourceLayer instanceof VesselTrackPositionLayer
+            ? 'point'
+            : 'segment'
       return {
         ...info,
         object: {
@@ -125,7 +123,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           speed,
           depth,
           course,
-          interactionType: info.sourceLayer instanceof VesselPositionLayer ? 'point' : 'segment',
+          interactionType,
         } as VesselTrackPickingObject,
       }
     }
@@ -163,7 +161,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
     end: string
     trackUrl: string
     zoom: number
-    trackThinningZoomConfig?: _VesselTrackLayerProps['trackThinningZoomConfig']
+    trackThinningZoomConfig?: VesselTrackLayerProps['trackThinningZoomConfig']
   }) {
     const trackUrlObject = new URL(trackUrl)
     trackUrlObject.searchParams.append('start-date', start)
@@ -212,6 +210,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       maxElevationFilter,
       trackGraphExtent,
       colorBy,
+      trackVisualizationMode,
     } = this.props
 
     if (!trackUrl || !visible) {
@@ -225,7 +224,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         return []
       }
       const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}`
-      return new VesselTrackLayerComposite(
+      return new VesselTrackLayer(
         this.getSubLayerProps({
           id: chunkId,
           visible,
@@ -239,6 +238,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           loadOptions: {
             ...getFetchLoadOptions(),
           },
+          visualizationMode: trackVisualizationMode,
           trackGraphExtent,
           type: TRACK_LAYER_TYPE,
           loaders: [VesselTrackLoader],
@@ -262,7 +262,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           maxElevationFilter,
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Track, params),
           onError: (e: any) => this.onSublayerError('track', e),
-        } as _VesselTrackLayerProps)
+        } as VesselTrackLayerProps)
       )
     })
   }
@@ -344,17 +344,35 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       visible,
       highlightStartTime,
       highlightEndTime,
-      hoveredTime,
+      hoveredFeature,
       color,
       name,
       showVesselIcon,
     } = this.props
     const trackData = this.getVesselTrackData()
-    const start = highlightStartTime || hoveredTime
-    const end = highlightEndTime || hoveredTime
+
+    if (hoveredFeature?.interactionType === 'point') {
+      return [
+        new VesselTrackPositionLayer(
+          this.getSubLayerProps({
+            visible,
+            data: [hoveredFeature],
+            getColor: color,
+            name,
+            iconSize: 18,
+            iconBorder: true,
+            highlightStartTime,
+          })
+        ),
+      ]
+    }
+
+    const start = highlightStartTime || hoveredFeature?.timestamp
+    const end = highlightEndTime || hoveredFeature?.timestamp
     if (!visible || !trackData?.length || !end || !start || !showVesselIcon) {
       return []
     }
+
     const highlightCenter = end - (end - start) / 2
     let timestampIndex = -1
     const chunkIndex = trackData.findIndex((chunk) => {
@@ -399,58 +417,15 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
 
     if (!centerPoint) return []
     return [
-      new VesselPositionLayer(
+      new VesselTrackPositionLayer(
         this.getSubLayerProps({
-          id: 'vessel-position-bg',
+          visible,
           data: [centerPoint],
-          iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
-          iconMapping: VESSEL_SPRITE_ICON_MAPPING,
-          getIcon: () => 'vessel',
-          getPosition: (d: any) => d.geometry.coordinates,
-          getAngle: (d: any) => 360 - bearingToAzimuth(d.properties.course),
-          getColor: hexToDeckColor(BLEND_BACKGROUND),
-          getSize: 18,
-          pickable: true,
-          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
-        })
-      ),
-      new VesselPositionLayer(
-        this.getSubLayerProps({
-          id: 'vessel-position',
-          data: [centerPoint],
-          iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
-          iconMapping: VESSEL_SPRITE_ICON_MAPPING,
-          getIcon: () => 'vessel',
-          getPosition: (d: any) => d.geometry.coordinates,
-          getAngle: (d: any) => 360 - bearingToAzimuth(d.properties.course),
           getColor: color,
-          getSize: 15,
-          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
+          name,
+          highlightStartTime,
         })
       ),
-      new VesselPositionLayer(
-        this.getSubLayerProps({
-          id: 'vessel-position-hg',
-          data: [centerPoint],
-          iconAtlas: `${PATH_BASENAME}/vessel-sprite.png`,
-          iconMapping: VESSEL_SPRITE_ICON_MAPPING,
-          getIcon: () => 'vesselHighlight',
-          getPosition: (d: any) => d.geometry.coordinates,
-          getAngle: (d: any) => 360 - bearingToAzimuth(d.properties.course),
-          getColor: [255, 255, 255, 255],
-          getSize: 15,
-          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
-        })
-      ),
-      ...(name && highlightStartTime
-        ? [
-            new LabelLayer({
-              id: `${this.props.id}-vessel-position-label`,
-              data: [centerPoint],
-              getText: () => name,
-            }),
-          ]
-        : []),
     ]
   }
 
@@ -463,9 +438,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   getTrackLayers() {
-    return this.getSubLayers().filter((l) =>
-      l.id.includes(TRACK_LAYER_TYPE)
-    ) as VesselTrackLayerComposite[]
+    return this.getSubLayers().filter((l) => l.id.includes(TRACK_LAYER_TYPE)) as VesselTrackLayer[]
   }
 
   getEventLayers() {

@@ -1,4 +1,4 @@
-import type { Loader, LoaderWithParser } from '@loaders.gl/loader-utils'
+import type { Loader, LoaderOptions, LoaderWithParser } from '@loaders.gl/loader-utils'
 
 import packageJson from '../../package.json'
 import { PATH_BASENAME } from '../loaders.config'
@@ -9,6 +9,16 @@ import { parseTrack } from './lib/parse-tracks'
  * Worker loader for the Vessel Track DECKGL format
  */
 
+export type VesselTrackLoaderOptions = LoaderOptions & {
+  'vessel-tracks': { workerUrl?: string }
+}
+
+const defaultOptions: VesselTrackLoaderOptions = {
+  'vessel-tracks': {
+    workerUrl: `${PATH_BASENAME}/workers/vessel-tracks-worker.js`,
+  },
+}
+
 export const VesselTrackWorkerLoader: Loader = {
   id: 'vessel-tracks',
   name: 'gfw-vessel-tracks',
@@ -17,12 +27,8 @@ export const VesselTrackWorkerLoader: Loader = {
   version: packageJson?.version,
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
-  worker: true,
-  options: {
-    'vessel-tracks': {
-      workerUrl: `${PATH_BASENAME}/workers/vessel-tracks-worker.js`,
-    },
-  },
+  worker: false,
+  options: defaultOptions,
 }
 
 /**
