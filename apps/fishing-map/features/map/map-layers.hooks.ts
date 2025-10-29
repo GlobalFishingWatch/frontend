@@ -140,6 +140,7 @@ export const useGlobalConfigConnect = () => {
   const trackGraphExtent = useTimebarTracksGraphExtent()
   const hoverFeatures = useMapHoverInteraction()?.features
   const debug = useSelector(selectDebugOptions)?.debug
+  const vesselsAsPositions = useSelector(selectDebugOptions)?.vesselsAsPositions
 
   const highlightedTime = useMemo(() => {
     if (
@@ -184,6 +185,7 @@ export const useGlobalConfigConnect = () => {
       start,
       end,
       debug,
+      vesselTrackVisualizationMode: vesselsAsPositions ? 'positions' : 'track',
       token: GFWAPI.token,
       bivariateDataviews,
       activityVisualizationMode,
@@ -209,6 +211,7 @@ export const useGlobalConfigConnect = () => {
     start,
     end,
     debug,
+    vesselsAsPositions,
     bivariateDataviews,
     activityVisualizationMode,
     detectionsVisualizationMode,

@@ -16,6 +16,7 @@ export enum DebugOption {
   ExperimentalLayers = 'experimentalLayers',
   AreasOnScreen = 'areasOnScreen',
   DataTerminologyIframe = 'dataTerminologyIframe',
+  VesselsAsPositions = 'vesselsAsPositions',
 }
 
 type DebugOptions = Record<DebugOption, boolean>
@@ -41,6 +42,7 @@ const initialState: DebugState = {
     dataTerminologyIframe: false,
     experimentalLayers: false,
     areasOnScreen: false,
+    vesselsAsPositions: false,
   },
 }
 

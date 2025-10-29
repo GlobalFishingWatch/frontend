@@ -73,9 +73,18 @@ const DebugMenu: React.FC = () => {
           <label htmlFor="option_thinning">Track thinning</label>
         </div>
         <p>Don't send any thinning param to tracks API to debug original resolution</p>
+        <div className={styles.header}>
+          <Switch
+            id="option_vessels_as_positions"
+            active={debugOptions.vesselsAsPositions}
+            disabled={isTurningTidesWorkspace}
+            onClick={() => dispatch(toggleOption(DebugOption.VesselsAsPositions))}
+          />
+          <label htmlFor="option_vessels_as_positions">Tracks positions</label>
+        </div>
+        <p>Show vessel position icons on top of the track lines</p>
         {isGFWDeveloper && (
           <Fragment>
-            <p>Activates the global reports feature: aka CVP</p>
             <div className={styles.header}>
               <Switch
                 id="option_others_reports"

@@ -13,6 +13,7 @@ export type FourwingsSublayerConfig = {
   colorRamp?: string
   filter?: DataviewConfig['filter']
   filters?: DataviewConfig['filters']
+  filterIds?: DataviewConfig['filterIds']
   vesselGroups?: DataviewConfig['vessel-groups']
   /** Needed to update the layer when the vessel group is edited */
   vesselGroupsLength?: number

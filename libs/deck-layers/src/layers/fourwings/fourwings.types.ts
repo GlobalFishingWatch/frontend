@@ -52,6 +52,8 @@ export type FourwingsDeckSublayer = {
   value?: number
   unit?: string
   filter?: string
+  // Used only blue-planet workspace to be able to show only one detection by id
+  filterIds?: string[]
   positionProperties?: string[]
   vesselGroups?: string | string[]
   vesselGroupsLength?: number

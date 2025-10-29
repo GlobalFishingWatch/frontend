@@ -68,6 +68,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
       label: sublayer?.datasets?.[0]?.name,
       unit: units[0]!,
       filter: sublayer?.filter,
+      filterIds: sublayer?.filterIds,
       vesselGroups: sublayer?.vesselGroups,
       vesselGroupsLength: sublayer?.vesselGroupsLength,
       extentStart,
