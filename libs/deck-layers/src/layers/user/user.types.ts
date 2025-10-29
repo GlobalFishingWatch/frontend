@@ -1,4 +1,5 @@
-import type { Accessor, PickingInfo } from '@deck.gl/core'
+import type { Accessor, LayerExtension, PickingInfo } from '@deck.gl/core'
+import type { DataFilterExtensionProps } from '@deck.gl/extensions'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import type { Feature, Geometry } from 'geojson'
 
@@ -6,6 +7,12 @@ import type { TimeFilterType } from '@globalfishingwatch/api-types'
 
 import type { DeckLayerProps, DeckPickingObject } from '../../types'
 import type { ContextLayerConfig } from '../context'
+
+export type FilterExtensionProps = {
+  extensions: LayerExtension<unknown>[]
+  filterRange: DataFilterExtensionProps['filterRange']
+  getFilterValue: DataFilterExtensionProps['getFilterValue']
+}
 
 export type BaseUserLayerProps = {
   id: string

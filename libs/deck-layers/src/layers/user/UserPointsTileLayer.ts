@@ -156,7 +156,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   _getPointRadius = (d: GeoJsonProperties, { sublayer }: ContextSublayerCallbackParams) => {
     if (
       hasSublayerFilters(sublayer) &&
-      !supportDataFilterExtension(sublayer) &&
+      !supportDataFilterExtension(sublayer, this._getTimeFilterProps()) &&
       !isFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
     ) {
       return 0
@@ -236,7 +236,6 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     const { layers, pickable, maxPointSize, maxZoom } = this.props
     const zoom = this._getZoomLevel()
     const highlightedFeatures = this._getHighlightedFeatures()
-    const timefilterProps = this._getTimeFilterProps()
     const renderLayers: Layer[] = layers.map((layer) => {
       return new TileLayer<TileLayerProps<UserLayerFeature>>({
         id: `${layer.id}-base-layer`,
@@ -248,7 +247,6 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
         },
         onTileError: this._onLayerError,
         onViewportLoad: this.props.onViewportLoad,
-        ...timefilterProps,
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,
@@ -256,8 +254,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
           }
           return layer.sublayers.map((sublayer) => {
             const filtersHash = getContextFiltersHash(sublayer.filters)
-            const sublayerFilterExtensionProps = this._getSublayerFilterExtensionProps(sublayer)
-            const hasFilters = Object.keys(sublayerFilterExtensionProps).length > 0
+            const { extensionFilterProps, updateTrigger } = this._getExtensionFilterProps(sublayer)
             return [
               new ScatterplotLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
                 id: `${props.id}-${sublayer.dataviewId}-points`,
@@ -268,7 +265,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
                 stroked: true,
                 radiusUnits: 'pixels',
                 getPosition: this._getPosition,
-                ...sublayerFilterExtensionProps,
+                ...extensionFilterProps,
                 getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Default, params),
                 getRadius: (d) => this._getPointRadius(d, { layer, sublayer }),
                 lineWidthUnits: 'pixels',
@@ -279,9 +276,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
                 updateTriggers: {
                   getFillColor: [sublayer.color],
                   getRadius: [filtersHash, zoom],
-                  ...(hasFilters && {
-                    getFilterValue: [filtersHash],
-                  }),
+                  ...updateTrigger,
                 },
               }),
             ]
