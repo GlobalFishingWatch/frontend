@@ -1,4 +1,5 @@
 import { DEFAULT_ID_PROPERTY } from '../../utils'
+import { type FilterExtensionProps, getFilterExtensionSize } from '../user'
 
 import type {
   ContextFeature,
@@ -38,8 +39,14 @@ export function hasSublayerFilters(sublayer: ContextSubLayerConfig) {
 // If categorySize is 1: 128 categories
 // If categorySize is 2: 64 categories per dimension
 // If categorySize is 3 or 4: 32 categories per dimension
-export function supportDataFilterExtension(sublayer: ContextSubLayerConfig) {
-  if (getValidSublayerFilters(sublayer).length > 4) {
+export function supportDataFilterExtension(
+  sublayer: ContextSubLayerConfig,
+  timeFilterExtensionProps?: FilterExtensionProps
+) {
+  const timeFilterSize = timeFilterExtensionProps
+    ? getFilterExtensionSize(timeFilterExtensionProps)
+    : 0
+  if (getValidSublayerFilters(sublayer).length + timeFilterSize > 4) {
     console.warn(
       'Filters for more than 4 categories are not supported by deck.gl, using CPU based filter as fallback'
     )

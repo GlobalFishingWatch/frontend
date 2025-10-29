@@ -24,7 +24,11 @@ import {
   rgbaStringToComponents,
 } from '../../utils'
 import type { ContextSublayerCallbackParams } from '../context/context.types'
-import { hasSublayerFilters, supportDataFilterExtension } from '../context/context.utils'
+import {
+  getContextFiltersHash,
+  hasSublayerFilters,
+  supportDataFilterExtension,
+} from '../context/context.utils'
 
 import type { UserLayerFeature, UserPolygonsLayerProps } from './user.types'
 import { DEFAULT_USER_TILES_MAX_ZOOM } from './user.utils'
@@ -109,7 +113,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   _getLineColor = (d: GeoJsonProperties, { sublayer }: ContextSublayerCallbackParams): Color => {
     if (
       hasSublayerFilters(sublayer) &&
-      !supportDataFilterExtension(sublayer) &&
+      !supportDataFilterExtension(sublayer, this._getTimeFilterProps()) &&
       !isFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
     ) {
       return COLOR_TRANSPARENT
@@ -120,7 +124,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   _getLineWidth = (d: GeoJsonProperties, { sublayer }: ContextSublayerCallbackParams): number => {
     if (
       hasSublayerFilters(sublayer) &&
-      !supportDataFilterExtension(sublayer) &&
+      !supportDataFilterExtension(sublayer, this._getTimeFilterProps()) &&
       !isFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
     ) {
       return 0
@@ -134,7 +138,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   ): Color => {
     if (
       hasSublayerFilters(sublayer) &&
-      !supportDataFilterExtension(sublayer) &&
+      !supportDataFilterExtension(sublayer, this._getTimeFilterProps()) &&
       !isFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
     ) {
       return COLOR_TRANSPARENT
@@ -154,7 +158,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   ): Color => {
     if (
       hasSublayerFilters(sublayer) &&
-      !supportDataFilterExtension(sublayer) &&
+      !supportDataFilterExtension(sublayer, this._getTimeFilterProps()) &&
       !isFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
     ) {
       return COLOR_TRANSPARENT
@@ -183,7 +187,6 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
 
     const highlightedFeatures = this._getHighlightedFeatures()
     const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined
-    const filterProps = this._getTimeFilterProps()
     return layers.map((layer) => {
       return new TileLayer<TileLayerProps<UserLayerFeature>>({
         id: `${layer.id}-base-layer`,
@@ -195,24 +198,20 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
         },
         onTileError: this._onLayerError,
         onViewportLoad: this.props.onViewportLoad,
-        ...filterProps,
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,
             ...getMVTSublayerProps({ tile: props.tile, extensions: props.extensions }),
           }
           return layer.sublayers.map((sublayer) => {
-            const filtersHash = Object.values(sublayer.filters || {})
-              .flatMap((value) => value || [])
-              .join('')
-            const sublayerFilterExtensionProps = this._getSublayerFilterExtensionProps(sublayer)
-            const hasFilters = Object.keys(sublayerFilterExtensionProps).length > 0
+            const filtersHash = getContextFiltersHash(sublayer.filters)
+            const { extensionFilterProps, updateTrigger } = this._getExtensionFilterProps(sublayer)
             return [
               new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
                 id: `${props.id}-highlight-fills`,
                 stroked: false,
                 pickable: pickable,
-                ...sublayerFilterExtensionProps,
+                ...extensionFilterProps,
                 getPolygonOffset: (params) =>
                   getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),
                 getFillColor: (d) =>
@@ -221,9 +220,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
                     : this._getFillColor(d, { layer, sublayer }),
                 updateTriggers: {
                   getFillColor: [highlightedFeatures, filtersHash, sublayer.color],
-                  ...(hasFilters && {
-                    getFilterValue: [filtersHash],
-                  }),
+                  ...updateTrigger,
                 },
               }),
               new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
@@ -231,16 +228,14 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
                 lineWidthMinPixels: 0,
                 lineWidthUnits: 'pixels',
                 filled: false,
-                ...sublayerFilterExtensionProps,
+                ...extensionFilterProps,
                 getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.CustomLayer, params),
                 getLineColor: hexToDeckColor(sublayer.color),
                 getLineWidth: sublayer.thickness || 1,
                 updateTriggers: {
                   getLineColor: [filtersHash, sublayer.color],
                   getLineWidth: [filtersHash, sublayer.thickness],
-                  ...(hasFilters && {
-                    getFilterValue: [filtersHash],
-                  }),
+                  ...updateTrigger,
                 },
               }),
               new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
@@ -251,7 +246,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
                 lineJointRounded: true,
                 lineCapRounded: true,
                 visible: highlightedFeatures && highlightedFeatures?.length > 0,
-                ...sublayerFilterExtensionProps,
+                ...extensionFilterProps,
                 getPolygonOffset: (params) =>
                   getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
                 getLineWidth: (d) =>
@@ -259,9 +254,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
                 getLineColor: DEFAULT_BACKGROUND_COLOR,
                 updateTriggers: {
                   getLineWidth: [highlightedFeatures],
-                  ...(hasFilters && {
-                    getFilterValue: [filtersHash],
-                  }),
+                  ...updateTrigger,
                 },
               }),
               new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
@@ -272,7 +265,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
                 lineJointRounded: true,
                 lineCapRounded: true,
                 visible: highlightedFeatures && highlightedFeatures?.length > 0,
-                ...sublayerFilterExtensionProps,
+                ...extensionFilterProps,
                 getPolygonOffset: (params) =>
                   getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
                 getLineWidth: (d) =>
@@ -280,9 +273,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
                 getLineColor: COLOR_HIGHLIGHT_LINE,
                 updateTriggers: {
                   getLineWidth: [highlightedFeatures],
-                  ...(hasFilters && {
-                    getFilterValue: [filtersHash],
-                  }),
+                  ...updateTrigger,
                 },
               }),
             ]

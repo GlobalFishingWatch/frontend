@@ -55,7 +55,7 @@ const ReportActivityEvolution = ({
   start: string
   end: string
 }) => {
-  const colors = (data.sublayers || []).map((sublayer) => sublayer?.legend?.color)?.join(',')
+  const colors = (data?.sublayers || []).map((sublayer) => sublayer?.legend?.color)?.join(',')
   const dataFormated = useMemo(
     () => formatEvolutionData(data, { start, end, timeseriesInterval: data?.interval }),
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -2,6 +2,8 @@ import type { Feature, Point } from 'geojson'
 
 import type { FourwingsFeature, FourwingsStaticFeature } from '@globalfishingwatch/deck-loaders'
 
+import type { FilterExtensionProps } from './user.types'
+
 export const POINT_SIZES_DEFAULT_RANGE = [3, 15]
 export const DEFAULT_USER_TILES_MAX_ZOOM = 9
 
@@ -34,4 +36,13 @@ export function isFeatureInRange(
     (typeof featureEnd === 'string' ? parseInt(featureEnd) : featureEnd) >= startTime &&
     (typeof featureStart === 'string' ? parseInt(featureStart) : featureStart) < endTime
   )
+}
+
+export function getFilterExtensionSize(filterExtensionProps: FilterExtensionProps): number {
+  const hasFilters = Object.keys(filterExtensionProps).length > 0
+  return hasFilters
+    ? filterExtensionProps.filterRange && Array.isArray(filterExtensionProps.filterRange[0])
+      ? (filterExtensionProps.filterRange as [number, number][]).length
+      : 1
+    : 0
 }
