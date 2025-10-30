@@ -10,7 +10,10 @@ import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspace
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
-import { selectHasReportLayersVisible } from 'features/dataviews/selectors/dataviews.selectors'
+import {
+  getIsDataviewReportSupported,
+  selectReportLayersVisible,
+} from 'features/dataviews/selectors/dataviews.selectors'
 import { DEFAULT_POINT_BUFFER_VALUE } from 'features/reports/report-area/area-reports.config'
 import { DEFAULT_BUFFER_OPERATION, DEFAULT_BUFFER_UNIT } from 'features/reports/reports.config'
 import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
@@ -36,7 +39,11 @@ type ContextLayerReportLinkProps = {
 const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProps) => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const hasAnalysableLayer = useSelector(selectHasReportLayersVisible)
+  const reportLayersVisible = useSelector(selectReportLayersVisible)
+  const isDataviewReportAnalysable = getIsDataviewReportSupported(
+    reportLayersVisible!,
+    feature?.layerId
+  )
   const workspace = useSelector(selectWorkspace)
   const isSidebarOpen = useSelector(selectSidebarOpen)
   const isPointFeature = (feature?.geometry as any)?.type === 'Point'
@@ -49,11 +56,11 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
   const isSameArea = isSameAreaId && isSameDataset
   const addAreaToReport = reportAreaDataset && reportAreaId && !isSameArea
 
-  if (!hasAnalysableLayer || isSameArea) {
+  if (!isDataviewReportAnalysable || isSameArea) {
     return (
       <IconButton
         icon="analysis"
-        disabled={!hasAnalysableLayer}
+        disabled={!isDataviewReportAnalysable}
         size="small"
         tooltip={isSameArea ? '' : t('common.analysisNotAvailable')}
       />

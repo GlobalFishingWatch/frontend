@@ -40,6 +40,7 @@ import {
   selectDataviewInstancesMergedOrdered,
   selectDataviewInstancesResolved,
 } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectIsOthersReportEnabled } from 'features/debug/debug.selectors'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
 import { isSupportedReportDataview } from 'features/reports/report-area/area-reports.utils'
@@ -239,11 +240,18 @@ export const selectActiveTemporalgridDataviews: (
 )
 
 export const selectReportLayersVisible = createSelector(
-  [selectAllDataviewInstancesResolved],
-  (allDataviewInstancesResolved) => {
+  [selectAllDataviewInstancesResolved, selectIsOthersReportEnabled],
+  (allDataviewInstancesResolved, isOthersReportEnabled) => {
     return allDataviewInstancesResolved?.filter((dataview) => {
       const isVisible = dataview.config?.visible === true
       if (!isVisible) {
+        return false
+      }
+      if (
+        !isOthersReportEnabled &&
+        (dataview.category === DataviewCategory.User ||
+          dataview.category === DataviewCategory.Context)
+      ) {
         return false
       }
       return isSupportedReportDataview(dataview)
@@ -258,12 +266,17 @@ export const selectEnvironmentReportLayersVisible = createSelector(
   }
 )
 
-export const selectHasReportLayersVisible = createSelector(
-  [selectReportLayersVisible],
-  (reportLayersVisible) => {
-    return reportLayersVisible && reportLayersVisible.length > 0
+export const getIsDataviewReportSupported = (
+  reportLayers: (DataviewInstance | UrlDataviewInstance)[],
+  currentDataviewId?: string
+) => {
+  if (!reportLayers) {
+    return false
   }
-)
+  return reportLayers
+    ?.filter((dataview) => isSupportedReportDataview(dataview))
+    .some((dataview) => dataview.id !== currentDataviewId)
+}
 
 export const selectActiveDataviews = createSelector(
   [
