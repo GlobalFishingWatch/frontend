@@ -161,11 +161,13 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
     ] as LayersList
 
     if (visualizationMode === 'positions' && this.state.points?.length) {
-      const positions = this.state.points.flatMap((point) => {
+      const pointsLength = this.state.points.length
+      const positions = this.state.points.flatMap((point, index) => {
         if (
           !point.timestamp ||
-          point.timestamp < this.props.startTime ||
-          point.timestamp > this.props.endTime
+          point.timestamp <= this.props.startTime ||
+          point.timestamp >= this.props.endTime ||
+          index === pointsLength - 1
         ) {
           return []
         }
