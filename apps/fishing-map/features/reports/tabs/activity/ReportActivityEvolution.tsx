@@ -2,16 +2,7 @@ import React, { useMemo } from 'react'
 import max from 'lodash/max'
 import min from 'lodash/min'
 import { DateTime } from 'luxon'
-import {
-  Area,
-  CartesianGrid,
-  ComposedChart,
-  Line,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
+import { Area, CartesianGrid, ComposedChart, Line, Tooltip, XAxis, YAxis } from 'recharts'
 
 import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
@@ -81,63 +72,63 @@ const ReportActivityEvolution = ({
     ? (max(dataFormated.flatMap(({ range }) => range[0][1])) as number)
     : 0
 
-  const domainPadding = (dataMax - dataMin) / 10
+  const basePadding = (dataMax - dataMin) / 10
+  const safePadding = basePadding === 0 ? Math.max(1, Math.abs(dataMax) * 0.1) : basePadding
   const paddedDomain: [number, number] = [
-    Math.max(0, Math.floor(dataMin - domainPadding)),
-    Math.ceil(dataMax + domainPadding),
+    Math.max(0, Math.floor(dataMin - safePadding)),
+    Math.ceil(dataMax + safePadding),
   ]
 
   return (
     <div className={styles.graph} data-test="report-activity-evolution">
-      <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={dataFormated} margin={graphMargin}>
-          <CartesianGrid vertical={false} syncWithTicks />
-          <XAxis
-            domain={domain}
-            dataKey="date"
-            minTickGap={10}
-            tickFormatter={(tick: string) => formatDateTicks(tick, data?.interval)}
-            axisLine={paddedDomain[0] === 0}
+      <ComposedChart responsive width="100%" height="100%" data={dataFormated} margin={graphMargin}>
+        <CartesianGrid vertical={false} syncWithTicks />
+        <XAxis
+          domain={domain}
+          dataKey="date"
+          minTickGap={10}
+          interval="preserveStartEnd"
+          tickFormatter={(tick: string) => formatDateTicks(tick, data?.interval)}
+          axisLine={paddedDomain[0] === 0}
+        />
+        <YAxis
+          scale="linear"
+          domain={paddedDomain}
+          interval="preserveEnd"
+          tickFormatter={tickFormatter}
+          axisLine={false}
+          tickLine={false}
+        />
+        {dataFormated?.length && (
+          <Tooltip content={<EvolutionGraphTooltip timeChunkInterval={data?.interval} />} />
+        )}
+        {data?.sublayers.map(({ id, legend }, index) => (
+          <Line
+            key={`${id}-${index}-line`}
+            name="line"
+            type="monotone"
+            dataKey={(data) => data.avg?.[index]}
+            unit={legend?.unit}
+            dot={false}
+            isAnimationActive={false}
+            stroke={getContrastSafeLineColor(legend?.color as string)}
+            strokeWidth={2}
           />
-          <YAxis
-            scale="linear"
-            domain={paddedDomain}
-            interval="preserveEnd"
-            tickFormatter={tickFormatter}
-            axisLine={false}
-            tickLine={false}
+        ))}
+        {data?.sublayers.map(({ id, legend }, index) => (
+          <Area
+            key={`${id}-${index}-area`}
+            name="area"
+            type="monotone"
+            dataKey={(data) => data.range?.[index]}
+            activeDot={false}
+            fill={legend?.color}
+            stroke="none"
+            fillOpacity={0.2}
+            isAnimationActive={false}
           />
-          {dataFormated?.length && (
-            <Tooltip content={<EvolutionGraphTooltip timeChunkInterval={data?.interval} />} />
-          )}
-          {data?.sublayers.map(({ id, legend }, index) => (
-            <Line
-              key={`${id}-${index}-line`}
-              name="line"
-              type="monotone"
-              dataKey={(data) => data.avg?.[index]}
-              unit={legend?.unit}
-              dot={false}
-              isAnimationActive={false}
-              stroke={getContrastSafeLineColor(legend?.color as string)}
-              strokeWidth={2}
-            />
-          ))}
-          {data?.sublayers.map(({ id, legend }, index) => (
-            <Area
-              key={`${id}-${index}-area`}
-              name="area"
-              type="monotone"
-              dataKey={(data) => data.range?.[index]}
-              activeDot={false}
-              fill={legend?.color}
-              stroke="none"
-              fillOpacity={0.2}
-              isAnimationActive={false}
-            />
-          ))}
-        </ComposedChart>
-      </ResponsiveContainer>
+        ))}
+      </ComposedChart>
     </div>
   )
 }

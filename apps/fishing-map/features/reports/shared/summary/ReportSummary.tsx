@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import Sticky from 'react-sticky-el'
+import cx from 'classnames'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { trackEvent } from '@globalfishingwatch/react-hooks'
@@ -78,7 +79,7 @@ export default function ReportSummary({
       )}
       {dataviews?.length > 0 && (
         <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
-          <div className={styles.tagsContainer}>
+          <div className={cx(styles.tagsContainer, styles.tagsContainerBorder)}>
             {dataviews?.map((dataview) => (
               <ReportSummaryTags
                 key={dataview.id}
