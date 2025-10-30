@@ -53,6 +53,10 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
   maxZoom: DEFAULT_USER_TILES_MAX_ZOOM,
 }
 
+type GetUserPointsDataParams = {
+  includeNonTemporalFeatures?: boolean
+}
+
 type UserPointsLayerState = UserBaseLayerState & {
   error: string
   scale?: ScalePower<number, number, never>
@@ -189,14 +193,15 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
         : []
     })
   }
-
-  getData = (): Feature<Point>[] => {
+  getData = ({
+    includeNonTemporalFeatures = false,
+  }: GetUserPointsDataParams = {}): Feature<Point>[] => {
     // TODO: support multiple sublayers
     const data = this._getData().flatMap((feature) => {
       const values: number[] = []
       this.props.layers?.[0]?.sublayers?.forEach((sublayer) => {
         const matchesTimeFilter = isFeatureInRange(feature, this.props as IsFeatureInRangeParams)
-        if (matchesTimeFilter) {
+        if (includeNonTemporalFeatures || matchesTimeFilter) {
           if (hasSublayerFilters(sublayer)) {
             // TODO: support getting values from certain property instead of just counting the points
             values.push(

@@ -20,7 +20,7 @@
   padding-top: var(--space-XS);
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-M);
 }
 

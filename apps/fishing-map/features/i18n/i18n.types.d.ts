@@ -490,6 +490,8 @@ interface Resources {
       password: 'password'
       permissions: 'permissions required'
       plus: 'plus'
+      points_one: 'point'
+      points_other: 'points'
       polygon: 'Polygon'
       presence: 'Vessel presence'
       previously: 'Previously'
