@@ -178,7 +178,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   _getData = (): Feature<Point>[] => {
-    const roundedZoom = Math.round(this.context.viewport.zoom)
+    const roundedZoom = Math.floor(this.context.viewport.zoom)
     return (this.getLayer()?.state.tileset?.tiles || []).flatMap((tile) => {
       return tile.content && tile.zoom === roundedZoom
         ? tile.content.flatMap((feature: any) => {
