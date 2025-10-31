@@ -9,7 +9,7 @@ RUN yarn set version 4.10.3
 COPY . .
 RUN yarn install --immutable --inline-builds
 
-FROM alpine AS deps
+FROM node:24-alpine AS deps
 
 WORKDIR /dependencies
 
