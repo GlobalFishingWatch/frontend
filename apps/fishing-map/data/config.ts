@@ -49,6 +49,8 @@ export const VALID_PASSWORD = 'VALID_WORKSPACE_PASSWORD'
 
 export const LAYER_LIBRARY_ID_SEPARATOR = '__'
 
+export const DATASET_COMPARISON_SUFFIX = 'dataset-comparison'
+
 const DEFAULT_DATA_DELAY_DAYS = 3
 // used when no url data and no workspace data
 export const LAST_DATA_UPDATE = DateTime.fromObject(

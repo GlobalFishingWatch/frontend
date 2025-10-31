@@ -89,6 +89,7 @@ export const DEFAULT_REPORT_STATE: Required<ReportState> = {
   // Activity
   reportActivityGraph: REPORT_ACTIVITY_GRAPH_EVOLUTION,
   reportTimeComparison: undefined,
+  reportComparisonDataviewIds: undefined,
   // Events
   reportEventsGraph: REPORT_EVENTS_GRAPH_EVOLUTION,
   reportEventsPortsFilter: undefined,

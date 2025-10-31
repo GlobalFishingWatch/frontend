@@ -111,6 +111,7 @@ export type ReportActivityTimeComparison = {
 export type ReportActivityState = {
   reportActivityGraph: ReportActivityGraph
   reportTimeComparison: ReportActivityTimeComparison | undefined
+  reportComparisonDataviewIds: string[] | undefined
 }
 
 export type ReportEventsState = {

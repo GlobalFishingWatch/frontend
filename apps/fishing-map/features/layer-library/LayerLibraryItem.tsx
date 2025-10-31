@@ -66,7 +66,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
       usedColors
     )
     const supportsColorChange = !LAYER_LIBRARY_EVENTS_IDS.includes(id)
-    const apiDataview = allDataviews.find((d) => d.id === dataviewId)
+    const apiDataview = allDataviews.find((d) => d.slug === dataviewId)
     if (!apiDataview) {
       setLoading(true)
       const action = dispatch(fetchDataviewsByIdsThunk([dataviewId]))

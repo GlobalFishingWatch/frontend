@@ -11,6 +11,7 @@ import {
   isUserContextDataviewReportSupported,
 } from 'features/reports/report-area/area-reports.utils'
 import { isVesselGroupActivityDataview } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 
 import { dataviewHasVesselGroupId } from '../dataviews.utils'
@@ -40,6 +41,13 @@ export const selectEnvironmentalDataviews = selectDataviewInstancesByCategory(
 )
 export const selectActiveEnvironmentalDataviews = selectActiveDataviewInstancesByCategory(
   DataviewCategory.Environment
+)
+
+export const selectReportComparisonDataviews = createSelector(
+  [selectDataviewInstancesResolved, selectReportComparisonDataviewIds],
+  (dataviews, reportComparisonDataviewIds): UrlDataviewInstance<DataviewType>[] => {
+    return dataviews?.filter((dataview) => reportComparisonDataviewIds?.includes(dataview?.id))
+  }
 )
 
 export const selectEventsDataviews = selectDataviewInstancesByCategory(DataviewCategory.Events)
