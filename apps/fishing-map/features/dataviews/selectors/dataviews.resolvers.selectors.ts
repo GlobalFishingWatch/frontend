@@ -26,6 +26,7 @@ import {
 } from 'features/dataviews/dataviews.utils'
 import { selectDataviewInstancesInjected } from 'features/dataviews/selectors/dataviews.injected.selectors'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
 import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
 import {
@@ -187,8 +188,14 @@ export const selectDataviewsResources = createSelector(
 
 const defaultDataviewResolved: UrlDataviewInstance[] = []
 export const selectDataviewInstancesResolved = createDeepEqualSelector(
-  [selectDataviewsResources, selectResources, selectIsAnyVesselLocation, selectCurrentVesselEvent],
-  (dataviewsResources, resources, isAnyVesselLocation, currentVesselEvent) => {
+  [
+    selectDataviewsResources,
+    selectResources,
+    selectIsAnyVesselLocation,
+    selectCurrentVesselEvent,
+    selectDebugOptions,
+  ],
+  (dataviewsResources, resources, isAnyVesselLocation, currentVesselEvent, debugOptions) => {
     if (!dataviewsResources?.dataviews) {
       return defaultDataviewResolved
     }
@@ -206,10 +213,12 @@ export const selectDataviewInstancesResolved = createDeepEqualSelector(
         ...dataview,
         config: {
           ...dataview.config,
-          name: formatInfoField(
-            getVesselProperty(infoResource.data as IdentityVessel, 'shipname'),
-            'shipname'
-          ),
+          name: debugOptions?.bluePlanetMode
+            ? ''
+            : formatInfoField(
+                getVesselProperty(infoResource.data as IdentityVessel, 'shipname'),
+                'shipname'
+              ),
           ...(hasCurrentEvent && {
             highlightEventStartTime: getUTCDateTime(currentVesselEvent.start).toISO()!,
             highlightEventEndTime: getUTCDateTime(currentVesselEvent.end).toISO()!,

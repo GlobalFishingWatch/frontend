@@ -17,8 +17,9 @@ import {
   FeatureFlag,
   selectDebugOptions,
   selectFeatureFlags,
+  setDebugOption,
+  toggleDebugOption,
   toggleFeatureFlag,
-  toggleOption,
 } from './debug.slice'
 
 import styles from './DebugMenu.module.css'
@@ -49,7 +50,7 @@ const DebugMenu: React.FC = () => {
           <Switch
             id="option_map_stats"
             active={debugOptions.mapStats}
-            onClick={() => dispatch(toggleOption(DebugOption.MapStats))}
+            onClick={() => dispatch(toggleDebugOption(DebugOption.MapStats))}
           />
           <label htmlFor="option_map_stats">Map stats</label>
         </div>
@@ -58,7 +59,7 @@ const DebugMenu: React.FC = () => {
           <Switch
             id="option_debug"
             active={debugOptions.debug}
-            onClick={() => dispatch(toggleOption(DebugOption.Debug))}
+            onClick={() => dispatch(toggleDebugOption(DebugOption.Debug))}
           />
           <label htmlFor="option_debug">Debug tiles</label>
         </div>
@@ -68,7 +69,7 @@ const DebugMenu: React.FC = () => {
             id="option_thinning"
             active={isTurningTidesWorkspace ? false : debugOptions.thinning}
             disabled={isTurningTidesWorkspace}
-            onClick={() => dispatch(toggleOption(DebugOption.Thinning))}
+            onClick={() => dispatch(toggleDebugOption(DebugOption.Thinning))}
           />
           <label htmlFor="option_thinning">Track thinning</label>
         </div>
@@ -77,12 +78,32 @@ const DebugMenu: React.FC = () => {
           <Switch
             id="option_vessels_as_positions"
             active={debugOptions.vesselsAsPositions}
-            disabled={isTurningTidesWorkspace}
-            onClick={() => dispatch(toggleOption(DebugOption.VesselsAsPositions))}
+            onClick={() => dispatch(toggleDebugOption(DebugOption.VesselsAsPositions))}
           />
           <label htmlFor="option_vessels_as_positions">Tracks positions</label>
         </div>
         <p>Show vessel position icons on top of the track lines</p>
+        <div className={styles.header}>
+          <Switch
+            id="option_blue_planet_mode"
+            active={debugOptions.bluePlanetMode}
+            onClick={() => {
+              dispatch(toggleDebugOption(DebugOption.BluePlanetMode))
+              if (!debugOptions.bluePlanetMode) {
+                dispatch(setDebugOption({ option: DebugOption.VesselsAsPositions, value: true }))
+              }
+            }}
+          />
+          <label htmlFor="option_blue_planet_mode">Blue planet mode</label>
+        </div>
+        <p>
+          Set the workspace to blue planet mode with the following features:
+          <ul>
+            <li>see gaps icons in the map</li>
+            <li>blur vessel names in the sidebar and remove from map tooltips</li>
+            <li>remove unmatched detections label in tooltip</li>
+          </ul>
+        </p>
         {isGFWDeveloper && (
           <Fragment>
             <div className={styles.header}>
@@ -100,7 +121,7 @@ const DebugMenu: React.FC = () => {
               <Switch
                 id="option_data_terminology_iframe"
                 active={debugOptions.dataTerminologyIframe}
-                onClick={() => dispatch(toggleOption(DebugOption.DataTerminologyIframe))}
+                onClick={() => dispatch(toggleDebugOption(DebugOption.DataTerminologyIframe))}
               />
               <label htmlFor="option_data_terminology_iframe">
                 <strong>Feature flag:</strong> Data terminology iframe
@@ -111,7 +132,7 @@ const DebugMenu: React.FC = () => {
               <Switch
                 id="option_areas_on_screen"
                 active={debugOptions.areasOnScreen}
-                onClick={() => dispatch(toggleOption(DebugOption.AreasOnScreen))}
+                onClick={() => dispatch(toggleDebugOption(DebugOption.AreasOnScreen))}
               />
               <label htmlFor="option_areas_on_screen">
                 <strong>Feature flag:</strong> Areas on screen
@@ -122,7 +143,7 @@ const DebugMenu: React.FC = () => {
               <Switch
                 id="dataset_relationship"
                 active={debugOptions.datasetRelationship}
-                onClick={() => dispatch(toggleOption(DebugOption.DatasetRelationship))}
+                onClick={() => dispatch(toggleDebugOption(DebugOption.DatasetRelationship))}
               />
               <label htmlFor="dataset_relationship">Debug dataset relationship</label>
               {debugOptions.datasetRelationship && (
@@ -142,7 +163,7 @@ const DebugMenu: React.FC = () => {
               <Switch
                 id="option_disable_dataset_hash"
                 active={debugOptions.addDatasetIdHash}
-                onClick={() => dispatch(toggleOption(DebugOption.DatasetIdHash))}
+                onClick={() => dispatch(toggleDebugOption(DebugOption.DatasetIdHash))}
               />
               <label htmlFor="option_disable_dataset_hash">Include dataset hash in IDs</label>
             </div>
@@ -153,7 +174,7 @@ const DebugMenu: React.FC = () => {
                   <Switch
                     id="option_currents_layer"
                     active={debugOptions.experimentalLayers}
-                    onClick={() => dispatch(toggleOption(DebugOption.ExperimentalLayers))}
+                    onClick={() => dispatch(toggleDebugOption(DebugOption.ExperimentalLayers))}
                   />
                   <label htmlFor="option_currents_layer">Experimental layers</label>
                 </div>
