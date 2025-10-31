@@ -76,7 +76,7 @@ export const TEMPLATE_USER_TRACK_SLUG = 'user-track' as const
 export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-v-3' as const
 export const TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG = 'vessel-track-only-v-3' as const
 export const TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_BRAZIL =
-  'private-bra-fishing-map-vessel-track-v-3' as const
+  'private-bra-fishing-map-vessel-track-v-4' as const
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = 'default-context-layer' as const
 export const TEMPLATE_POINTS_DATAVIEW_SLUG = 'default-points-layer' as const
 export const TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG = 'gfw-environmental-layer' as const
