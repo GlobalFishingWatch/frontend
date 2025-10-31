@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import max from 'lodash/max'
 import min from 'lodash/min'
 import { DateTime } from 'luxon'
@@ -19,25 +19,13 @@ import { getContrastSafeLineColor } from '@globalfishingwatch/responsive-visuali
 
 import i18n from 'features/i18n/i18n'
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
-import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
+import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import { formatEvolutionData } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { getUTCDateTime } from 'utils/dates'
 
 import EvolutionGraphTooltip from './EvolutionGraphTooltip'
 
 import styles from './ReportActivityEvolution.module.css'
-
-interface ComparisonGraphProps {
-  timeseries: ComparisonGraphData[]
-  sublayers: {
-    id: string
-    legend: {
-      color?: string
-      unit?: string
-    }
-  }[]
-  interval: FourwingsInterval
-}
 
 const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => {
   const date = getUTCDateTime(tick).setLocale(i18n.language)
@@ -51,7 +39,7 @@ const ReportActivityEvolution = ({
   start,
   end,
 }: {
-  data: ComparisonGraphProps
+  data: ReportGraphProps
   start: string
   end: string
 }) => {

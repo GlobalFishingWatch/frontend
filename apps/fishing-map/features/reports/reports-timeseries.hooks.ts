@@ -16,6 +16,7 @@ import {
   getFourwingsInterval,
 } from '@globalfishingwatch/deck-loaders'
 
+import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
 import {
@@ -41,8 +42,9 @@ import {
 } from 'features/reports/reports-timeseries.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
-interface EvolutionGraphData {
+export interface EvolutionGraphData {
   date: string
+  compareDate?: string
   min: number[]
   max: number[]
 }
@@ -106,7 +108,9 @@ export function useTimeseriesStats() {
 export const useReportInstances = () => {
   const currentCategory = useSelector(selectReportCategory)
   const currentCategoryDataviews = useSelector(selectActiveReportDataviews)
+  const reportComparisonDataviews = useSelector(selectReportComparisonDataviews)
   let ids = ['']
+
   if (currentCategoryDataviews?.length > 0) {
     if (
       currentCategory === ReportCategory.Activity ||
@@ -119,6 +123,9 @@ export const useReportInstances = () => {
       )
     } else {
       ids = currentCategoryDataviews.map((dataview) => dataview.id)
+    }
+    if (reportComparisonDataviews?.length > 0) {
+      ids.push(reportComparisonDataviews[0].id)
     }
   }
   const reportLayerInstances = useGetDeckLayers<FourwingsLayer>(ids)

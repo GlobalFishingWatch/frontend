@@ -30,7 +30,8 @@
 }
 
 .select {
-  min-width: 18rem;
+  min-width: 20rem;
+  width: min-content;
 }
 
 .disclaimer + .disclaimer {

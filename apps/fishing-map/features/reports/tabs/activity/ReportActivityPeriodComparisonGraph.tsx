@@ -20,6 +20,7 @@ import { selectLatestAvailableDataDate } from 'features/app/selectors/app.select
 import i18n, { t } from 'features/i18n/i18n'
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
 import { selectReportTimeComparison } from 'features/reports/reports.config.selectors'
+import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import { getUTCDateTime } from 'utils/dates'
 
 import PeriodComparisonGraphTooltip, {
@@ -30,25 +31,6 @@ import PeriodComparisonGraphTooltip, {
 } from './PeriodComparisonGraphTooltip'
 
 import styles from './ReportActivityEvolution.module.css'
-
-export interface ComparisonGraphData {
-  date: string
-  compareDate?: string
-  min: number[]
-  max: number[]
-}
-
-interface ComparisonGraphProps {
-  timeseries: ComparisonGraphData[]
-  sublayers: {
-    id: string
-    legend: {
-      color?: string
-      unit?: string
-    }
-  }[]
-  interval: FourwingsInterval
-}
 
 const formatDateTicks = (tick: number, start: string, timeChunkInterval: FourwingsInterval) => {
   if (!tick || !start) {
@@ -71,11 +53,11 @@ const formatDateTicks = (tick: number, start: string, timeChunkInterval: Fourwin
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 
 const ReportActivityPeriodComparisonGraph = (props: {
-  data: ComparisonGraphProps
+  data: ReportGraphProps
   start: string
   end: string
 }) => {
-  const { start, end, data = {} as ComparisonGraphProps } = props
+  const { start, end, data = {} as ReportGraphProps } = props
   const { interval, timeseries, sublayers } = data
   const timeComparison = useSelector(selectReportTimeComparison)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)

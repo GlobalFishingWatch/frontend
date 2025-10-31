@@ -21,10 +21,12 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
-import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
+import type {
+  EvolutionGraphData,
+  ReportGraphProps,
+} from 'features/reports/reports-timeseries.hooks'
 import type { TimeSeries } from 'features/reports/reports-timeseries-shared.utils'
 import { frameTimeseriesToDateTimeseries } from 'features/reports/reports-timeseries-shared.utils'
-import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
 import type { TimeRange } from 'features/timebar/timebar.slice'
 import { getGraphDataFromFourwingsHeatmap } from 'features/timebar/timebar.utils'
 
@@ -124,7 +126,7 @@ export const fourwingsFeaturesToTimeseries = (
           : valuesContainedAndOverlapping.length > 0
             ? new Array(values.length).fill(0)
             : values,
-      } as ComparisonGraphData
+      } as EvolutionGraphData
     })
     return featureToTimeseries
   })
@@ -276,4 +278,40 @@ export const formatEvolutionData = (
     .filter((d) => {
       return !isNaN(d.avg[0])
     })
+}
+
+export const formatComparisonEvolutionData = (dataArray: ReportGraphProps[]) => {
+  if (!dataArray || dataArray.length < 2) {
+    return []
+  }
+
+  const [data1, data2] = dataArray
+
+  if (!data1?.timeseries || !data2?.timeseries) {
+    return []
+  }
+
+  const data2Map = new Map(data2.timeseries.map((item) => [item.date, item]))
+
+  return data1.timeseries
+    .map(({ date, min, max }) => {
+      const data2Item = data2Map.get(date)
+      if (!data2Item) {
+        return null
+      }
+      const range = [
+        ...min.map((m, i) => [m, max[i]]),
+        ...data2Item.min.map((m, i) => [m, data2Item.max[i]]),
+      ]
+      const avg = [
+        ...min.map((m, i) => (m + max[i]) / 2),
+        ...data2Item.min.map((m, i) => (m + data2Item.max[i]) / 2),
+      ]
+      return {
+        date: new Date(date).getTime(),
+        range,
+        avg,
+      }
+    })
+    .filter((d) => d !== null && !isNaN(d.avg[0]))
 }

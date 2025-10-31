@@ -33,7 +33,9 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
 import ReportActivityBeforeAfterGraph from './ReportActivityBeforeAfterGraph'
-import ReportActivityDatasetComparisonGraph from './ReportActivityDatasetComparisonGraph'
+import ReportActivityDatasetComparisonGraph, {
+  type ReportActivityDatasetComparisonProps,
+} from './ReportActivityDatasetComparisonGraph'
 import ReportActivityEvolution from './ReportActivityEvolution'
 
 import styles from './ReportActivity.module.css'
@@ -50,11 +52,16 @@ const SELECTORS_BY_TYPE: Record<ReportActivityGraph, React.FC | null> = {
   periodComparison: ReportActivityPeriodComparison,
   datasetComparison: null,
 }
-const GRAPH_BY_TYPE: Record<ReportActivityGraph, React.FC<ReportActivityProps> | null> = {
+
+const GRAPH_BY_TYPE: Record<
+  ReportActivityGraph,
+  React.FC<ReportActivityProps> | React.FC<ReportActivityDatasetComparisonProps> | null
+> = {
   evolution: ReportActivityEvolution,
   beforeAfter: ReportActivityBeforeAfterGraph,
   periodComparison: ReportActivityPeriodComparisonGraph,
-  datasetComparison: ReportActivityDatasetComparisonGraph,
+  datasetComparison:
+    ReportActivityDatasetComparisonGraph as React.FC<ReportActivityDatasetComparisonProps>,
 }
 
 export default function ReportActivity() {
@@ -111,17 +118,21 @@ export default function ReportActivity() {
           {hasError && t('errors.layerLoading')}
           {/* : t('analysis.noDataByArea')} */}
         </ReportActivityPlaceholder>
+      ) : reportActivityGraph === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON ? (
+        <ReportActivityDatasetComparisonGraph
+          start={start}
+          end={end}
+          data={layersTimeseriesFiltered}
+        />
       ) : (
         <GraphComponent
           start={
-            reportActivityGraph === REPORT_ACTIVITY_GRAPH_EVOLUTION ||
-            reportActivityGraph === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON
+            reportActivityGraph === REPORT_ACTIVITY_GRAPH_EVOLUTION
               ? start
               : timeComparisonValues?.start
           }
           end={
-            reportActivityGraph === REPORT_ACTIVITY_GRAPH_EVOLUTION ||
-            reportActivityGraph === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON
+            reportActivityGraph === REPORT_ACTIVITY_GRAPH_EVOLUTION
               ? end
               : timeComparisonValues?.end
           }
