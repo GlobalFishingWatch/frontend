@@ -4,6 +4,7 @@
 
 # Production image, copy all the files and run next
 FROM us-central1-docker.pkg.dev/gfw-int-infrastructure/devops/frontend-dependencies:latest
+
 ENV NODE_PATH=/dependencies/node_modules/
 
 WORKDIR /app

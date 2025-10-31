@@ -1,5 +1,5 @@
 # Use official Node.js LTS image
-FROM node:24 AS builder
+FROM node:24-slim AS builder
 
 # Set working directory
 WORKDIR /dependencies
@@ -9,7 +9,7 @@ RUN yarn set version 4.10.3
 COPY . .
 RUN yarn install --immutable --inline-builds
 
-FROM node:24-alpine AS deps
+FROM node:24-slim AS deps
 
 WORKDIR /dependencies
 
