@@ -228,6 +228,8 @@
     "password": "mot de passe",
     "permissions": "autorisations requises",
     "plus": "plus",
+    "points_one": "point",
+    "points_other": "points",
     "polygon": "Polygone",
     "presence": "Présence",
     "previously": "Précédemment",
@@ -500,6 +502,7 @@
   },
   "errors": {
     "areaLoad": "Une erreur s'est produite lors du chargement de la zone du rapport.",
+    "areaOutOfTime": "The report area is out of the current time range",
     "datasetNotFound": "Jeu de données introuvable",
     "datasetNotValid": "Il semble y avoir un problème avec votre fichier",
     "datasetShapefileMultiple": "Les shapefiles contenant plusieurs composants (plusieurs noms de fichiers) ne sont pas encore pris en charge",
