@@ -22,7 +22,7 @@ import { getUTCDateTime } from '@globalfishingwatch/deck-layers'
 import type { ResolvedContextDataviewInstance } from '../types/dataviews'
 import type { DeckResolverFunction } from '../types/resolvers'
 
-export const getUserContexTimeFilterProps = ({
+export const getUserContextTimeFilterProps = ({
   dataset,
   start,
   end,
@@ -143,7 +143,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
     console.error('No dataset found for user layer', dataview)
   }
 
-  const timeFilters = getUserContexTimeFilterProps({ dataset: baseDataset!, start, end })
+  const timeFilters = getUserContextTimeFilterProps({ dataset: baseDataset!, start, end })
   if (baseDataset?.source === DRAW_DATASET_SOURCE) {
     const geometryType = getDatasetConfigurationProperty({
       dataset: baseDataset,

@@ -16,6 +16,7 @@ export const LAST_REPORTS_STORAGE_KEY = 'lastReports'
 
 export const ENTIRE_WORLD_REPORT_AREA_ID = 'region-world'
 export const ENTIRE_WORLD_REPORT_AREA_BOUNDS = [-180, -90, 180, 90] as Bbox
+export const OUT_OF_TIME_REPORT_AREA_ID = 'region-out-of-time-range'
 
 export const ENTIRE_WORLD_REPORT_AREA: Area<AreaGeometry> = {
   id: ENTIRE_WORLD_REPORT_AREA_ID,

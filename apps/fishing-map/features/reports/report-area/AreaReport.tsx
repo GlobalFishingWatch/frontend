@@ -13,6 +13,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimebarSelectedEnvId } from 'features/app/selectors/app.timebar.selectors'
 import { selectReportLayersVisible } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectIsOthersReportEnabled } from 'features/debug/debug.selectors'
+import { OUT_OF_TIME_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
 import {
   useFetchReportArea,
   useFitAreaInViewport,
@@ -198,6 +199,10 @@ export default function Report() {
 
   if (!reportCategory) {
     return <Spinner />
+  }
+
+  if (reportArea?.id === OUT_OF_TIME_REPORT_AREA_ID) {
+    return <ErrorPlaceholder title={t('errors.areaOutOfTime')}></ErrorPlaceholder>
   }
 
   return (

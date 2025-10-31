@@ -1,9 +1,10 @@
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Sticky from 'react-sticky-el'
+import cx from 'classnames'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 
 import { selectOthersActiveReportDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -38,6 +39,11 @@ function ReportOthers() {
         const dataset = dataview.datasets?.find(
           (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
         )
+        const timeFilterType = getDatasetConfigurationProperty({
+          dataset,
+          property: 'timeFilterType',
+        })
+        const hasTimeFilter = timeFilterType === 'dateRange' || timeFilterType === 'date'
         const title = getDatasetNameTranslated(dataset)
         const unit =
           dataset?.unit && dataset.unit !== 'TBD' && dataset.unit !== 'NA'
@@ -47,18 +53,23 @@ function ReportOthers() {
           ? getStatsValue(timeseriesStats[dataview.id], 'total')
           : undefined
 
+        const StatsComponent = timeseriesStats?.[dataview.id] ? (
+          <p className={cx(styles.summary)}>
+            <Fragment>
+              {total !== undefined && (
+                <span>
+                  {total} {t('common.points', { count: total })}
+                </span>
+              )}{' '}
+              {t('common.between')} <strong>{formatI18nDate(start)}</strong> {t('common.and')}{' '}
+              <strong>{formatI18nDate(end)}</strong>
+            </Fragment>
+          </p>
+        ) : null
         return (
           <div key={dataview.id} className={styles.container}>
-            <p className={styles.summary}>
-              <strong>{title}</strong> {unit && <span>({unit})</span>} <br />
-              {timeseriesStats?.[dataview.id] && (
-                <Fragment>
-                  {total !== undefined && <span>{total}</span>} {t('common.between')}{' '}
-                  <strong>{formatI18nDate(start)}</strong> {t('common.and')}{' '}
-                  <strong>{formatI18nDate(end)}</strong>
-                </Fragment>
-              )}
-            </p>
+            <h2 className={styles.title}>{title}</h2> {unit && <span>({unit})</span>}
+            {hasTimeFilter && StatsComponent}
             {dataviews?.length > 0 && (
               <div className={summaryStyles.tagsContainer}>
                 {dataviews?.map((d) => (
@@ -66,11 +77,14 @@ function ReportOthers() {
                 ))}
               </div>
             )}
-            <ReportActivityEvolution
-              start={start}
-              end={end}
-              data={layersTimeseriesFiltered?.[index]}
-            />
+            {!hasTimeFilter && StatsComponent}
+            {hasTimeFilter && (
+              <ReportActivityEvolution
+                start={start}
+                end={end}
+                data={layersTimeseriesFiltered?.[index]}
+              />
+            )}
           </div>
         )
       })}
