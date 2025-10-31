@@ -228,6 +228,8 @@
     "password": "password",
     "permissions": "permissions required",
     "plus": "plus",
+    "points_one": "point",
+    "points_other": "points",
     "polygon": "Poligon",
     "presence": "Kehadiran",
     "previously": "Sebelumnya",
@@ -500,6 +502,7 @@
   },
   "errors": {
     "areaLoad": "There was an error loading the report area",
+    "areaOutOfTime": "The report area is out of the current time range",
     "datasetNotFound": "Dataset tidak ditemukan",
     "datasetNotValid": "Tampaknya ada yang salah dengan file Anda",
     "datasetShapefileMultiple": "Shapefile yang berisi banyak komponen (nama file banyak) belum didukung",

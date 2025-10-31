@@ -228,6 +228,8 @@
     "password": "crwdns83226:0crwdne83226:0",
     "permissions": "crwdns83820:0crwdne83820:0",
     "plus": "crwdns69308:0crwdne69308:0",
+    "points_one": "crwdns106644:0crwdne106644:0",
+    "points_other": "crwdns106646:0crwdne106646:0",
     "polygon": "crwdns70226:0crwdne70226:0",
     "presence": "crwdns59845:0crwdne59845:0",
     "previously": "crwdns69350:0crwdne69350:0",
@@ -500,6 +502,7 @@
   },
   "errors": {
     "areaLoad": "crwdns83658:0crwdne83658:0",
+    "areaOutOfTime": "crwdns106648:0crwdne106648:0",
     "datasetNotFound": "crwdns60077:0crwdne60077:0",
     "datasetNotValid": "crwdns60079:0crwdne60079:0",
     "datasetShapefileMultiple": "crwdns60081:0crwdne60081:0",
