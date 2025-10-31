@@ -228,6 +228,8 @@
     "password": "senha",
     "permissions": "permissões necessárias",
     "plus": "plus",
+    "points_one": "point",
+    "points_other": "points",
     "polygon": "Polígono",
     "presence": "Presença",
     "previously": "Anteriormente",
@@ -500,6 +502,7 @@
   },
   "errors": {
     "areaLoad": "Ocorreu um erro ao carregar a área do relatório",
+    "areaOutOfTime": "The report area is out of the current time range",
     "datasetNotFound": "Dataset não encontrado",
     "datasetNotValid": "Parece haver algo errado com o seu arquivo",
     "datasetShapefileMultiple": "Shapefiles contendo vários componentes (nomes de arquivos multiplos) ainda não são suportados",
