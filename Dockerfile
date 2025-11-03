@@ -2,7 +2,7 @@
 FROM node:24-slim AS builder
 
 # Set working directory
-WORKDIR /dependencies
+WORKDIR /app
 
 # Install dependencies using Yarn
 RUN yarn set version 4.10.3
@@ -11,6 +11,7 @@ RUN yarn install --immutable --inline-builds
 
 FROM node:24-slim AS deps
 
-WORKDIR /dependencies
+WORKDIR /app
 
-COPY --from=builder /dependencies/node_modules /dependencies/node_modules
+COPY --from=builder /app/node_modules /app/node_modules
+COPY --from=builder /app/.yarn /app/.yarn
