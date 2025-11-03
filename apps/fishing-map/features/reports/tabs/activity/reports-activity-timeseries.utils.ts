@@ -292,26 +292,30 @@ export const formatComparisonEvolutionData = (dataArray: ReportGraphProps[]) => 
   }
 
   const data2Map = new Map(data2.timeseries.map((item) => [item.date, item]))
+  const processDataset = (minValues: number[], maxValues: number[]) => {
+    const ranges = minValues.map((minVal, index) => [minVal, maxValues[index]] as [number, number])
+    const averages = minValues.map((minVal, index) => (minVal + maxValues[index]) / 2)
+    return { ranges, averages }
+  }
 
   return data1.timeseries
-    .map(({ date, min, max }) => {
+    .map(({ date, min: data1Min, max: data1Max }) => {
       const data2Item = data2Map.get(date)
       if (!data2Item) {
         return null
       }
-      const range = [
-        ...min.map((m, i) => [m, max[i]]),
-        ...data2Item.min.map((m, i) => [m, data2Item.max[i]]),
-      ]
-      const avg = [
-        ...min.map((m, i) => (m + max[i]) / 2),
-        ...data2Item.min.map((m, i) => (m + data2Item.max[i]) / 2),
-      ]
+
+      const data1Processed = processDataset(data1Min, data1Max)
+      const data2Processed = processDataset(data2Item.min, data2Item.max)
+
+      const range = [...data1Processed.ranges, ...data2Processed.ranges]
+      const avg = [...data1Processed.averages, ...data2Processed.averages]
+
       return {
-        date: new Date(date).getTime(),
+        date: getUTCDateTime(date).toMillis(),
         range,
         avg,
       }
     })
-    .filter((d) => d !== null && !isNaN(d.avg[0]))
+    .filter((d): d is NonNullable<typeof d> => d !== null && !isNaN(d.avg[0]))
 }

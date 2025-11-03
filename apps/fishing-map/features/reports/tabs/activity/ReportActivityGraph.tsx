@@ -11,10 +11,7 @@ import {
   selectReportAreaStatus,
   selectTimeComparisonValues,
 } from 'features/reports/report-area/area-reports.selectors'
-import {
-  REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON,
-  REPORT_ACTIVITY_GRAPH_EVOLUTION,
-} from 'features/reports/reports.config'
+import { REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON } from 'features/reports/reports.config'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
@@ -25,6 +22,7 @@ import {
   useReportTimeSeriesErrors,
 } from 'features/reports/reports-timeseries.hooks'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
+import { isTimeComparisonGraph } from 'features/reports/shared/utils/reports.utils'
 import ReportActivityGraphSelector from 'features/reports/tabs/activity/ReportActivityGraphSelector'
 import ReportActivityPeriodComparison from 'features/reports/tabs/activity/ReportActivityPeriodComparison'
 import ReportActivityPeriodComparisonGraph from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
@@ -123,16 +121,8 @@ export default function ReportActivity() {
         </ReportActivityPlaceholder>
       ) : (
         <GraphComponent
-          start={
-            reportActivityGraph === REPORT_ACTIVITY_GRAPH_EVOLUTION
-              ? start
-              : timeComparisonValues?.start
-          }
-          end={
-            reportActivityGraph === REPORT_ACTIVITY_GRAPH_EVOLUTION
-              ? end
-              : timeComparisonValues?.end
-          }
+          start={isTimeComparisonGraph(reportActivityGraph) ? timeComparisonValues?.start : start}
+          end={isTimeComparisonGraph(reportActivityGraph) ? timeComparisonValues?.end : end}
           data={isDatasetComparison ? layersTimeseriesFiltered : layersTimeseriesFiltered?.[0]}
         />
       )}

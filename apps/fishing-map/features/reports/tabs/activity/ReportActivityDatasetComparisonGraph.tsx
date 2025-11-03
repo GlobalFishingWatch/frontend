@@ -1,6 +1,4 @@
 import { useMemo } from 'react'
-import max from 'lodash/max'
-import min from 'lodash/min'
 import { DateTime } from 'luxon'
 import {
   CartesianGrid,
@@ -44,36 +42,25 @@ const ReportActivityDatasetComparisonGraph = ({
   start,
   end,
 }: ReportActivityDatasetComparisonProps) => {
-  console.log('🚀 ~ ReportActivityDatasetComparisonGraph ~ data:', data)
-  const colors = data.map((layer) => layer.sublayers[0]?.legend?.color)?.join(',')
-  const dataFormated = useMemo(() => formatComparisonEvolutionData(data), [colors])
-  console.log('🚀 ~ ReportActivityDatasetComparisonGraph ~ dataFormated:', dataFormated)
+  const interval = data[0]?.interval
+  const dataFormated = useMemo(() => formatComparisonEvolutionData(data), [data])
 
   const domain = useMemo(() => {
-    if (start && end && data[0]?.interval) {
+    if (start && end && interval) {
       const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
-        .minus({ [data[0]?.interval]: 1 })
+        .minus({ [interval]: 1 })
         .toISO() as string
       return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
     }
-  }, [start, end, data[0]?.interval])
+    return undefined
+  }, [start, end, interval])
 
-  if (!dataFormated || !domain) {
+  if (!dataFormated || !domain || !dataFormated[0]) {
     return null
   }
 
-  const dataMin: number = dataFormated.length
-    ? (min(dataFormated.filter((d) => d !== null).flatMap(({ range }) => range[0][0])) as number)
-    : 0
-  const dataMax: number = dataFormated.length
-    ? (max(dataFormated.filter((d) => d !== null).flatMap(({ range }) => range[0][1])) as number)
-    : 0
-
-  const domainPadding = (dataMax - dataMin) / 10
-  const paddedDomain: [number, number] = [
-    Math.max(0, Math.floor(dataMin - domainPadding)),
-    Math.ceil(dataMax + domainPadding),
-  ]
+  const leftAxisColor = getContrastSafeLineColor(data[0].sublayers[0].legend?.color as string)
+  const rightAxisColor = getContrastSafeLineColor(data[1].sublayers[0].legend?.color as string)
 
   return (
     <div className={styles.graph} data-test="report-activity-dataset-comparison">
@@ -85,41 +72,50 @@ const ReportActivityDatasetComparisonGraph = ({
             dataKey="date"
             minTickGap={10}
             tickFormatter={(tick: string) => formatDateTicks(tick, data[0]?.interval)}
-            axisLine={paddedDomain[0] === 0}
           />
-
-          {data.map((layer) => {
-            return layer?.sublayers.map(({ id, legend }, index) => {
-              const strokeColor = getContrastSafeLineColor(legend?.color as string)
+          <YAxis
+            yAxisId="left"
+            scale="linear"
+            interval="preserveEnd"
+            tickFormatter={tickFormatter}
+            tick={{ stroke: leftAxisColor, strokeWidth: 0.5 }}
+            axisLine={{ stroke: leftAxisColor }}
+            tickLine={false}
+            orientation="left"
+          />
+          <YAxis
+            yAxisId="right"
+            scale="linear"
+            interval="preserveEnd"
+            tickFormatter={tickFormatter}
+            tick={{ stroke: rightAxisColor, strokeWidth: 0.5 }}
+            axisLine={{ stroke: rightAxisColor }}
+            tickLine={false}
+            orientation="right"
+          />
+          {data.flatMap((layer, layerIndex) =>
+            layer.sublayers.map((sublayer, sublayerIndex) => {
+              const globalIndex =
+                layerIndex === 0 ? sublayerIndex : data[1].sublayers.length + sublayerIndex
+              const yAxisId = layerIndex === 0 ? 'left' : 'right'
+              const strokeColor = getContrastSafeLineColor(sublayer.legend?.color as string)
               return (
-                <>
-                  <YAxis
-                    scale="linear"
-                    domain={paddedDomain}
-                    interval="preserveEnd"
-                    tickFormatter={tickFormatter}
-                    tick={{ stroke: strokeColor, strokeWidth: 0.5 }}
-                    axisLine={{ stroke: strokeColor }}
-                    tickLine={false}
-                    orientation={index % 2 === 0 ? 'left' : 'right'}
-                    yAxisId={index % 2 === 0 ? 'left' : 'right'}
-                  />
-                  <Line
-                    key={`${id}-${index}-line`}
-                    yAxisId={index % 2 === 0 ? 'left' : 'right'}
-                    name="line"
-                    type="monotone"
-                    dataKey={(data) => data.avg?.[index]}
-                    unit={legend?.unit}
-                    dot={false}
-                    isAnimationActive={false}
-                    stroke={strokeColor}
-                    strokeWidth={2}
-                  />
-                </>
+                <Line
+                  key={`${sublayer.id}-${layerIndex}-${sublayerIndex}-line`}
+                  yAxisId={yAxisId}
+                  name="line"
+                  type="monotone"
+                  dataKey={(data) => data.avg?.[globalIndex]}
+                  unit={sublayer.legend?.unit}
+                  dot={false}
+                  isAnimationActive={false}
+                  stroke={strokeColor}
+                  strokeWidth={2}
+                />
               )
             })
-          })}
+          )}
+
           {dataFormated?.length && (
             <Tooltip content={<EvolutionGraphTooltip timeChunkInterval={data[0]?.interval} />} />
           )}
