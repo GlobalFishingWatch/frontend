@@ -48,6 +48,7 @@ export const getVesselResourceChunks = (start: number, end: number) => {
 export type GetSegmentsFromDataParams = {
   includeMiddlePoints?: boolean
   includeCoordinates?: boolean
+  normalizeCrossingAntimeridian?: boolean
   startTime?: number
   endTime?: number
 }
@@ -58,6 +59,7 @@ export const getSegmentsFromData = memoize(
     {
       includeMiddlePoints = false,
       includeCoordinates = false,
+      normalizeCrossingAntimeridian = false,
       startTime,
       endTime,
     } = {} as GetSegmentsFromDataParams
@@ -77,10 +79,28 @@ export const getSegmentsFromData = memoize(
     const speedSize = (data as VesselTrackData).attributes.getSpeed?.size
     const elevationSize = (data as VesselTrackData).attributes.getElevation?.size
 
+    let crossesAntimeridian = false
+    if (normalizeCrossingAntimeridian && includeCoordinates) {
+      let minLon = Infinity
+      let maxLon = -Infinity
+      for (let i = 0; i < positions.length; i += pathSize) {
+        const lon = positions[i]
+        if (lon < minLon) minLon = lon
+        if (lon > maxLon) maxLon = lon
+      }
+      crossesAntimeridian = maxLon - minLon > 180
+    }
+
     const getPointByIndex = (index: number) => {
+      let longitude = positions[index * pathSize]
+
+      if (normalizeCrossingAntimeridian && crossesAntimeridian && longitude < 0) {
+        longitude = longitude + 360
+      }
+
       return {
         ...(includeCoordinates && {
-          longitude: positions[index * pathSize],
+          longitude,
           latitude: positions[index * pathSize + 1],
         }),
 
@@ -141,10 +161,17 @@ export const getSegmentsFromData = memoize(
         (!endTime || finalSegmentTimestamp < endTime) &&
         !lastSegmentPointIncluded
       ) {
+        let finalLongitude: number
+
         if (isLastSegment) {
+          finalLongitude = positions[positions.length - pathSize]
+          if (normalizeCrossingAntimeridian && crossesAntimeridian && finalLongitude < 0) {
+            finalLongitude = finalLongitude + 360
+          }
+
           points.push({
             ...(includeCoordinates && {
-              longitude: positions[positions.length - pathSize],
+              longitude: finalLongitude,
               latitude: positions[positions.length - 1],
             }),
             timestamp: finalSegmentTimestamp,
@@ -152,9 +179,13 @@ export const getSegmentsFromData = memoize(
             ...(elevationSize && { elevation: elevations?.[elevations.length - 1] || 0 }),
           })
         } else {
+          finalLongitude = positions[nextSegmentIndex * pathSize]
+          if (normalizeCrossingAntimeridian && crossesAntimeridian && finalLongitude < 0) {
+            finalLongitude = finalLongitude + 360
+          }
           points.push({
             ...(includeCoordinates && {
-              longitude: positions[nextSegmentIndex * pathSize],
+              longitude: finalLongitude,
               latitude: positions[nextSegmentIndex * pathSize + 1],
             }),
             timestamp: finalSegmentTimestamp,
