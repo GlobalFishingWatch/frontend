@@ -126,7 +126,7 @@ export const useReportInstances = () => {
       ids = currentCategoryDataviews.map((dataview) => dataview.id)
     }
     if (reportComparisonDataviews?.length > 0) {
-      ids.push(reportComparisonDataviews[0].id)
+      ids.push(...reportComparisonDataviews.map((dataview) => dataview.id))
     }
   }
   const reportLayerInstances = useGetDeckLayers<FourwingsLayer>(ids)

@@ -31,7 +31,6 @@ import {
   selectActiveEventsDataviews,
   selectActiveVesselsDataviews,
   selectOthersActiveReportDataviews,
-  selectReportComparisonDataviews,
   selectVGReportActivityDataviews,
   selectVGRFootprintDataview,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -111,7 +110,6 @@ const EMPTY_ARRAY = [] as DataviewInstance[]
 export const selectActiveReportDataviews = createDeepEqualSelector(
   [
     selectReportCategory,
-    // selectReportComparisonDataviews,
     selectActiveActivityDataviews,
     selectActiveDetectionsDataviews,
     selectActiveHeatmapEnvironmentalDataviews,
@@ -123,7 +121,6 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
   ],
   (
     reportCategory,
-    // reportDatasetComparisonDataviews = EMPTY_ARRAY,
     activityDataviews = EMPTY_ARRAY,
     detectionsDataviews = EMPTY_ARRAY,
     environmentalDataviews = EMPTY_ARRAY,
@@ -133,31 +130,22 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     isVesselGroupReportLocation,
     othersActiveReportDataviews
   ) => {
-    const getDataviewsForCategory = (category: ReportCategory) => {
-      if (category === ReportCategory.Activity) {
-        return isVesselGroupReportLocation ? vesselGroupDataviews : activityDataviews
-      }
-      if (category === ReportCategory.Detections) {
-        return detectionsDataviews
-      }
-      if (category === ReportCategory.Events) {
-        return eventsDataviews
-      }
-      if (category === ReportCategory.VesselGroup) {
-        return vGRFootprintDataview ? [vGRFootprintDataview] : EMPTY_ARRAY
-      }
-      if (category === ReportCategory.Others) {
-        return othersActiveReportDataviews
-      }
-      return environmentalDataviews
+    if (reportCategory === ReportCategory.Activity) {
+      return isVesselGroupReportLocation ? vesselGroupDataviews : activityDataviews
     }
-    const primaryDataviews = getDataviewsForCategory(reportCategory)
-
-    // if (reportDatasetComparisonDataviews.length) {
-    //   return [...primaryDataviews, ...reportDatasetComparisonDataviews]
-    // }
-
-    return primaryDataviews
+    if (reportCategory === ReportCategory.Detections) {
+      return detectionsDataviews
+    }
+    if (reportCategory === ReportCategory.Events) {
+      return eventsDataviews
+    }
+    if (reportCategory === ReportCategory.VesselGroup) {
+      return vGRFootprintDataview ? [vGRFootprintDataview] : EMPTY_ARRAY
+    }
+    if (reportCategory === ReportCategory.Others) {
+      return othersActiveReportDataviews
+    }
+    return environmentalDataviews
   }
 )
 
