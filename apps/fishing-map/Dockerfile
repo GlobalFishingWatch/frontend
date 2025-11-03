@@ -3,9 +3,7 @@
 #################################################################################
 
 # Production image, copy all the files and run next
-FROM dependencies
-
-# ENV NODE_PATH=/dependencies/node_modules/
+FROM us-central1-docker.pkg.dev/gfw-int-infrastructure/devops/frontend-dependencies:latest
 
 WORKDIR /app
 
