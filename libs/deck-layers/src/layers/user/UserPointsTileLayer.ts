@@ -92,9 +92,15 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
 
   get cacheHash(): string {
     const { startTime, endTime } = this.props
-    const filters = this.props.layers?.[0]?.sublayers?.[0]?.filters || {}
-    const filtersHash = getContextFiltersHash(filters)
-    return `${startTime}-${endTime}-${filtersHash}`
+    const filters =
+      this.props.layers?.flatMap((layer) =>
+        layer.sublayers.flatMap((sublayer) => sublayer.filters || {})
+      ) || {}
+    const filtersHash =
+      filters.length > 0
+        ? filters.reduce((acc, filter) => `${acc}-${getContextFiltersHash(filter)}`, '')
+        : ''
+    return `${startTime}-${endTime}${filtersHash}`
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {

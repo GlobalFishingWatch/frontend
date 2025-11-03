@@ -180,6 +180,7 @@ const useReportTimeseries = (
       isLoading: reportCategory && reportCategory !== 'events' && reportCategory !== 'others',
     }))
     // We want to clean the reportState when any of these params changes to avoid using old data until it loads
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     area,
     interval,
@@ -189,7 +190,6 @@ const useReportTimeseries = (
     reportBufferHash,
     instancesChunkHash,
     timeComparisonHash,
-    setReportState,
   ])
 
   useEffect(() => {
