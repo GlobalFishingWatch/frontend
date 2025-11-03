@@ -33,6 +33,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
 import ReportActivityBeforeAfterGraph from './ReportActivityBeforeAfterGraph'
+import ReportActivityDatasetComparison from './ReportActivityDatasetComparison'
 import ReportActivityDatasetComparisonGraph, {
   type ReportActivityDatasetComparisonProps,
 } from './ReportActivityDatasetComparisonGraph'
@@ -50,7 +51,7 @@ const SELECTORS_BY_TYPE: Record<ReportActivityGraph, React.FC | null> = {
   evolution: null,
   beforeAfter: ReportActivityBeforeAfter,
   periodComparison: ReportActivityPeriodComparison,
-  datasetComparison: null,
+  datasetComparison: ReportActivityDatasetComparison,
 }
 
 const GRAPH_BY_TYPE: Record<
@@ -102,7 +103,7 @@ export default function ReportActivity() {
     !loading && layersTimeseriesFiltered?.length
       ? layersTimeseriesFiltered.every((data) => data?.timeseries?.length === 0)
       : false
-
+  const isDatasetComparison = reportActivityGraph === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON
   return (
     <div className={styles.container}>
       {showSelectors && (
@@ -111,6 +112,8 @@ export default function ReportActivity() {
           <ReportActivityGraphSelector loading={loading} />
         </div>
       )}
+      {/* Dataset Comparison Selectors needs to go above the graph instead of time comparison selectors */}
+      {showSelectors && SelectorsComponent && isDatasetComparison && <SelectorsComponent />}
       {loading || reportAreaStatus !== AsyncReducerStatus.Finished ? (
         <ReportActivityPlaceholder showHeader={!showSelectors} />
       ) : isEmptyData || hasError ? (
@@ -118,12 +121,6 @@ export default function ReportActivity() {
           {hasError && t('errors.layerLoading')}
           {/* : t('analysis.noDataByArea')} */}
         </ReportActivityPlaceholder>
-      ) : reportActivityGraph === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON ? (
-        <ReportActivityDatasetComparisonGraph
-          start={start}
-          end={end}
-          data={layersTimeseriesFiltered}
-        />
       ) : (
         <GraphComponent
           start={
@@ -136,10 +133,10 @@ export default function ReportActivity() {
               ? end
               : timeComparisonValues?.end
           }
-          data={layersTimeseriesFiltered?.[0]}
+          data={isDatasetComparison ? layersTimeseriesFiltered : layersTimeseriesFiltered?.[0]}
         />
       )}
-      {showSelectors && SelectorsComponent && <SelectorsComponent />}
+      {showSelectors && SelectorsComponent && !isDatasetComparison && <SelectorsComponent />}
       {!loading && (
         <Fragment>
           <div className={styles.disclaimer}>

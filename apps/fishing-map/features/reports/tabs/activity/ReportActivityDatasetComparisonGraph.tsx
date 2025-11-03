@@ -1,6 +1,4 @@
 import { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import max from 'lodash/max'
 import min from 'lodash/min'
 import { DateTime } from 'luxon'
@@ -17,29 +15,15 @@ import {
 import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getContrastSafeLineColor } from '@globalfishingwatch/responsive-visualizations'
-import type { SelectOption } from '@globalfishingwatch/ui-components'
-import { Select } from '@globalfishingwatch/ui-components'
 
-import { DATASET_COMPARISON_SUFFIX, LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
-import { LAYERS_LIBRARY_ENVIRONMENT } from 'data/layer-library/layers-environment'
-import { TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG } from 'data/workspaces'
-import { useAppDispatch } from 'features/app/app.hooks'
 import i18n from 'features/i18n/i18n'
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
-import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
-import {
-  formatComparisonEvolutionData,
-  formatEvolutionData,
-} from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useLocationConnect } from 'routes/routes.hook'
+import { formatComparisonEvolutionData } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { getUTCDateTime } from 'utils/dates'
 
 import EvolutionGraphTooltip from './EvolutionGraphTooltip'
-import { resetReportData } from './reports-activity.slice'
 
-import activityStyles from './ReportActivity.module.css'
 import styles from './ReportActivityEvolution.module.css'
 
 const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => {
@@ -60,24 +44,7 @@ const ReportActivityDatasetComparisonGraph = ({
   start,
   end,
 }: ReportActivityDatasetComparisonProps) => {
-  const { t } = useTranslation('layer-library')
-  const { dispatchQueryParams } = useLocationConnect()
-  const dispatch = useAppDispatch()
-
-  const comparedDataset = useSelector(selectReportComparisonDataviewIds)
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
-
-  const environmentalLayerOptions = useMemo(() => {
-    return LAYERS_LIBRARY_ENVIRONMENT.filter(
-      (layer) => layer?.dataviewId === TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG
-    ).flatMap((layer) => {
-      return {
-        id: layer?.id || '',
-        label: t(`${layer.id}.name`),
-      }
-    })
-  }, [t])
-
+  console.log('🚀 ~ ReportActivityDatasetComparisonGraph ~ data:', data)
   const colors = data.map((layer) => layer.sublayers[0]?.legend?.color)?.join(',')
   const dataFormated = useMemo(() => formatComparisonEvolutionData(data), [colors])
   console.log('🚀 ~ ReportActivityDatasetComparisonGraph ~ dataFormated:', dataFormated)
@@ -108,57 +75,8 @@ const ReportActivityDatasetComparisonGraph = ({
     Math.ceil(dataMax + domainPadding),
   ]
 
-  const onSelect = (option: SelectOption) => {
-    dispatch(resetReportData())
-    const layerConfig = LAYERS_LIBRARY_ENVIRONMENT.find((layer) => layer.id === option.id)
-    if (!layerConfig) return
-    const dataviewID = `${option.id}${LAYER_LIBRARY_ID_SEPARATOR}${DATASET_COMPARISON_SUFFIX}`
-    const { category, dataviewId, datasetsConfig, config } = layerConfig
-    upsertDataviewInstance({
-      id: dataviewID,
-      category,
-      dataviewId,
-      datasetsConfig,
-      config: {
-        ...config,
-        visible: true,
-      },
-    })
-    dispatchQueryParams({
-      reportComparisonDataviewIds: [dataviewID],
-    })
-  }
-
-  const selectedDataview = comparedDataset?.map((id) => id.split(LAYER_LIBRARY_ID_SEPARATOR)[0])
-  const selectedComparedDataset = environmentalLayerOptions.find((layer) =>
-    selectedDataview?.includes(layer.id)
-  )
-
   return (
     <div className={styles.graph} data-test="report-activity-dataset-comparison">
-      <div className={activityStyles.titleRow}>
-        <Select
-          options={data.map((layer) => ({
-            id: layer.sublayers[0].id,
-            label: layer.sublayers[0].id || '',
-          }))}
-          onSelect={onSelect} //implement later to change main dataset
-          selectedOption={
-            data[0]?.sublayers[0] && {
-              id: data[0].sublayers[0].id,
-              label: data[0].sublayers[0].id || '',
-            }
-          }
-          disabled
-          className={activityStyles.select}
-        />
-        <Select
-          options={environmentalLayerOptions}
-          selectedOption={selectedComparedDataset}
-          onSelect={onSelect}
-          className={activityStyles.select}
-        />
-      </div>
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={dataFormated} margin={graphMargin}>
           <CartesianGrid vertical={false} syncWithTicks />
