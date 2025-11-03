@@ -9,7 +9,8 @@ import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
 import { groupContextDataviews, useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
-import type { FourwingsLayer, UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
+import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import { UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
 import {
   type FourwingsFeature,
   type FourwingsInterval,
@@ -225,7 +226,14 @@ const useReportTimeseries = (
       try {
         const featuresFiltered: FilteredPolygons[][] = []
         for (const instance of instances) {
-          const features = instance?.getData?.() as FourwingsFeature[]
+          const isUserPointsTileLayer = instance instanceof UserPointsTileLayer
+          const features = instance?.getData?.(
+            isUserPointsTileLayer
+              ? {
+                  includeNonTemporalFeatures: true,
+                }
+              : {}
+          ) as FourwingsFeature[]
 
           const error = instance?.getError?.()
           if (error || !features?.length) {

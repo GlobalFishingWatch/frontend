@@ -30,6 +30,7 @@ import {
 } from 'features/datasets/datasets.utils'
 import { getVesselIdFromInstanceId } from 'features/dataviews/dataviews.utils'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
@@ -127,6 +128,7 @@ function VesselLayerPanel({
   // const vesselInstance = useMapVesselLayer(dataview.id)
   const gfwUser = useSelector(selectIsGFWUser)
   const trackDatasetId = dataview.datasets?.find((rld) => rld.type === DatasetTypes.Tracks)?.id
+  const bluePlanetMode = useSelector(selectDebugOptions)?.bluePlanetMode
 
   const infoResource: Resource<IdentityVessel> = useSelector(
     selectResourceByUrl<IdentityVessel>(infoUrl)
@@ -229,7 +231,7 @@ function VesselLayerPanel({
           getVesselTitle()
         ) : (
           <VesselLink
-            className={styles.link}
+            className={cx(styles.link, { [styles.blur]: bluePlanetMode })}
             vesselId={vesselId}
             datasetId={dataset?.id}
             tooltip={<div>{identitiesSummary}</div>}

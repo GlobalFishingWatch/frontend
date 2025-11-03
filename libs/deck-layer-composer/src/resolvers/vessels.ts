@@ -40,6 +40,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     endTime: endTime,
     startTime: startTime,
     showVesselIcon: dataview.config?.showVesselIcon ?? true,
+    trackVisualizationMode: globalConfig.vesselTrackVisualizationMode || 'track',
     ...(dataview.config?.highlightEventStartTime && {
       highlightEventStartTime: getUTCDateTime(dataview.config.highlightEventStartTime).toMillis(),
     }),
@@ -64,11 +65,9 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     }),
     visibleEvents: visibleEvents,
     highlightEventIds,
-    hoveredTime: (
-      globalConfig.highlightedFeatures?.find(
-        (f) => f.layerId === dataview.id
-      ) as VesselTrackPickingObject
-    )?.timestamp,
+    hoveredFeature: globalConfig.highlightedFeatures?.find(
+      (f) => f.layerId === dataview.id
+    ) as VesselTrackPickingObject,
     ...(dataview.config?.filters?.['speed']?.length && {
       minSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][0]),
       maxSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][1]),

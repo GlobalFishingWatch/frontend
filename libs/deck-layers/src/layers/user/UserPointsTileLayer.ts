@@ -53,6 +53,10 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
   maxZoom: DEFAULT_USER_TILES_MAX_ZOOM,
 }
 
+type GetUserPointsDataParams = {
+  includeNonTemporalFeatures?: boolean
+}
+
 type UserPointsLayerState = UserBaseLayerState & {
   error: string
   scale?: ScalePower<number, number, never>
@@ -156,7 +160,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   _getPointRadius = (d: GeoJsonProperties, { sublayer }: ContextSublayerCallbackParams) => {
     if (
       hasSublayerFilters(sublayer) &&
-      !supportDataFilterExtension(sublayer) &&
+      !supportDataFilterExtension(sublayer, this._getTimeFilterProps()) &&
       !isFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
     ) {
       return 0
@@ -189,14 +193,15 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
         : []
     })
   }
-
-  getData = (): Feature<Point>[] => {
+  getData = ({
+    includeNonTemporalFeatures = false,
+  }: GetUserPointsDataParams = {}): Feature<Point>[] => {
     // TODO: support multiple sublayers
     const data = this._getData().flatMap((feature) => {
       const values: number[] = []
       this.props.layers?.[0]?.sublayers?.forEach((sublayer) => {
         const matchesTimeFilter = isFeatureInRange(feature, this.props as IsFeatureInRangeParams)
-        if (matchesTimeFilter) {
+        if (includeNonTemporalFeatures || matchesTimeFilter) {
           if (hasSublayerFilters(sublayer)) {
             // TODO: support getting values from certain property instead of just counting the points
             values.push(
@@ -236,7 +241,6 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     const { layers, pickable, maxPointSize, maxZoom } = this.props
     const zoom = this._getZoomLevel()
     const highlightedFeatures = this._getHighlightedFeatures()
-    const timefilterProps = this._getTimeFilterProps()
     const renderLayers: Layer[] = layers.map((layer) => {
       return new TileLayer<TileLayerProps<UserLayerFeature>>({
         id: `${layer.id}-base-layer`,
@@ -248,7 +252,6 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
         },
         onTileError: this._onLayerError,
         onViewportLoad: this.props.onViewportLoad,
-        ...timefilterProps,
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,
@@ -256,8 +259,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
           }
           return layer.sublayers.map((sublayer) => {
             const filtersHash = getContextFiltersHash(sublayer.filters)
-            const sublayerFilterExtensionProps = this._getSublayerFilterExtensionProps(sublayer)
-            const hasFilters = Object.keys(sublayerFilterExtensionProps).length > 0
+            const { extensionFilterProps, updateTrigger } = this._getExtensionFilterProps(sublayer)
             return [
               new ScatterplotLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
                 id: `${props.id}-${sublayer.dataviewId}-points`,
@@ -268,7 +270,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
                 stroked: true,
                 radiusUnits: 'pixels',
                 getPosition: this._getPosition,
-                ...sublayerFilterExtensionProps,
+                ...extensionFilterProps,
                 getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Default, params),
                 getRadius: (d) => this._getPointRadius(d, { layer, sublayer }),
                 lineWidthUnits: 'pixels',
@@ -279,9 +281,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
                 updateTriggers: {
                   getFillColor: [sublayer.color],
                   getRadius: [filtersHash, zoom],
-                  ...(hasFilters && {
-                    getFilterValue: [filtersHash],
-                  }),
+                  ...updateTrigger,
                 },
               }),
             ]

@@ -80,6 +80,8 @@ export interface DataviewConfig<Type = DataviewType> {
   filter?: string
   /** Record with id filter as key and filters as values */
   filters?: DataviewDatasetFilter
+  /** Used to filter the positions by id */
+  filterIds?: string[]
   'vessel-groups'?: string[]
   filterOperators?: Record<string, FilterOperator>
   /** Min value for filters in environmental layers to perform frontend data filtering */

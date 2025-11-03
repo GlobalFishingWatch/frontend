@@ -22,11 +22,17 @@ export function getIsActivityPositionMatched(feature: FourwingsPositionFeature) 
     (feature.properties.id && feature.properties.id.length > 0)
   )
 }
+
 export function getIsDetectionsPositionMatched(feature: FourwingsPositionFeature) {
   return (
     (feature.properties.shipname && feature.properties.shipname.length > 0) ||
     (feature.properties.vessel_id && feature.properties.vessel_id.length > 0)
   )
+}
+
+export function getIsFeatureInFilterIds(feature: FourwingsPositionFeature, ids?: string[]) {
+  if (!ids || ids.length === 0) return true
+  return ids.includes(feature.properties.id)
 }
 
 export function filteredPositionsByViewport<T extends FourwingsPositionFeature | Feature<Point>>(

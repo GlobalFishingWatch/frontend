@@ -18,6 +18,7 @@ import {
   selectActiveVesselsDataviews,
   selectCustomUserDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import { setClickedEvent } from 'features/map/map.slice'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
@@ -61,6 +62,7 @@ function VesselTracksTooltipRow({
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
   const { start, end } = useSelector(selectTimeRange)
   const diffDays = getUTCDateTime(end).diff(getUTCDateTime(start), 'days').days
+  const bluePlanetMode = useSelector(selectDebugOptions)?.bluePlanetMode
 
   const onReportClick = useCallback(() => {
     if (diffDays > 14) {
@@ -109,7 +111,7 @@ function VesselTracksTooltipRow({
     <div className={styles.row} key={feature.id}>
       <div className={styles.rowText}>
         <p>
-          {!showFeaturesDetails && formatInfoField(feature.title, 'shipname')}{' '}
+          {!showFeaturesDetails && !bluePlanetMode && formatInfoField(feature.title, 'shipname')}{' '}
           {interactionType === 'point' && feature.timestamp && (
             <span className={cx({ [styles.secondary]: !showFeaturesDetails })}>
               <I18nDate date={feature.timestamp} format={DateTime.DATETIME_MED} />
@@ -162,6 +164,7 @@ function VesselTracksTooltipSection({
     () => [...trackDataviews, ...userDataviews],
     [trackDataviews, userDataviews]
   )
+  const bluePlanetMode = useSelector(selectDebugOptions)?.bluePlanetMode
 
   return (
     <Fragment>
@@ -181,7 +184,9 @@ function VesselTracksTooltipSection({
               style={{ color, transform: `rotate(${-45 + featureByType[0].course!}deg)` }}
             />
             <div className={styles.popupSectionContent}>
-              {showFeaturesDetails && <h3 className={styles.popupSectionTitle}>{rowTitle}</h3>}
+              {showFeaturesDetails && !bluePlanetMode && (
+                <h3 className={styles.popupSectionTitle}>{rowTitle}</h3>
+              )}
               {featureByType.map((feature) => {
                 return (
                   <VesselTracksTooltipRow

@@ -6,9 +6,12 @@ import { APP_NAME } from 'data/config'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import {
   selectActivityCategory,
+  selectActivityVisualizationMode,
   selectAreMapAnnotationsVisible,
   selectAreMapRulersVisible,
   selectBivariateDataviews,
+  selectDetectionsVisualizationMode,
+  selectEnvironmentVisualizationMode,
   selectMapAnnotations,
   selectMapRulers,
   selectSidebarOpen,
@@ -148,7 +151,9 @@ const selectWorkspaceAppState = createSelector(
     selectVisibleEvents,
     selectWorkspaceReportState,
     selectDaysFromLatest,
-    selectWorkspaceReportState,
+    selectActivityVisualizationMode,
+    selectDetectionsVisualizationMode,
+    selectEnvironmentVisualizationMode,
   ],
   (
     activityCategory,
@@ -163,7 +168,10 @@ const selectWorkspaceAppState = createSelector(
     timebarVisualisation,
     visibleEvents,
     reportState,
-    daysFromLatest
+    daysFromLatest,
+    activityVisualizationMode,
+    detectionsVisualizationMode,
+    environmentVisualizationMode
   ) => {
     return {
       activityCategory,
@@ -177,6 +185,9 @@ const selectWorkspaceAppState = createSelector(
       timebarSelectedEnvId,
       timebarVisualisation,
       visibleEvents,
+      activityVisualizationMode,
+      detectionsVisualizationMode,
+      environmentVisualizationMode,
       ...reportState,
       daysFromLatest,
     }

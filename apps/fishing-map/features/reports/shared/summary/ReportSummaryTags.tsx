@@ -23,6 +23,7 @@ import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import Filters from 'features/workspace/shared/LayerFilters'
+import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 
@@ -74,6 +75,8 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
       ? 'fill'
       : 'line'
 
+  const showSchemaFilters = filtersAllowed.some(showSchemaFilter)
+
   return (
     <div className={styles.row}>
       <div className={styles.actionsContainer}>
@@ -101,21 +104,23 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
             style={{ color: dataview.config?.color }}
           />
         </ExpandedContainer>
-        <ExpandedContainer
-          onClickOutside={onToggleFiltersUIOpen}
-          visible={filtersUIOpen}
-          className={styles.expandedContainer}
-          component={<Filters dataview={dataview} onConfirmCallback={onToggleFiltersUIOpen} />}
-        >
-          <IconButton
-            icon={filtersUIOpen ? 'filter-on' : 'filter-off'}
-            size="small"
-            onClick={onToggleFiltersUIOpen}
-            className={cx(styles.printHidden, styles.filterButton)}
-            tooltip={filtersUIOpen ? t('layer.filterClose') : t('layer.filterOpen')}
-            tooltipPlacement="top"
-          />
-        </ExpandedContainer>
+        {showSchemaFilters && (
+          <ExpandedContainer
+            onClickOutside={onToggleFiltersUIOpen}
+            visible={filtersUIOpen}
+            className={styles.expandedContainer}
+            component={<Filters dataview={dataview} onConfirmCallback={onToggleFiltersUIOpen} />}
+          >
+            <IconButton
+              icon={filtersUIOpen ? 'filter-on' : 'filter-off'}
+              size="small"
+              onClick={onToggleFiltersUIOpen}
+              className={cx(styles.printHidden, styles.filterButton)}
+              tooltip={filtersUIOpen ? t('layer.filterClose') : t('layer.filterOpen')}
+              tooltipPlacement="top"
+            />
+          </ExpandedContainer>
+        )}
       </div>
       <Fragment>
         {(reportCategory === ReportCategory.Activity ||

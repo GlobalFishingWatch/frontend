@@ -7,6 +7,7 @@ import type {
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
   VesselsColorByProperty,
+  VesselTrackVisualizationMode,
 } from '@globalfishingwatch/deck-layers'
 import type { VesselTrackGraphExtent } from '@globalfishingwatch/deck-loaders'
 
@@ -24,6 +25,7 @@ export type ResolverGlobalConfig = {
   activityVisualizationMode?: FourwingsVisualizationMode
   detectionsVisualizationMode?: FourwingsVisualizationMode
   environmentVisualizationMode?: typeof HEATMAP_ID | typeof HEATMAP_LOW_RES_ID
+  vesselTrackVisualizationMode?: VesselTrackVisualizationMode
   onPositionsMaxPointsError?: (layer: FourwingsLayer, maxPoints: number) => void
   // TODO review if we can move this to each own dataview
   compareStart?: string

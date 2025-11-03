@@ -16,6 +16,8 @@ export enum DebugOption {
   ExperimentalLayers = 'experimentalLayers',
   AreasOnScreen = 'areasOnScreen',
   DataTerminologyIframe = 'dataTerminologyIframe',
+  VesselsAsPositions = 'vesselsAsPositions',
+  BluePlanetMode = 'bluePlanetMode',
 }
 
 type DebugOptions = Record<DebugOption, boolean>
@@ -41,6 +43,8 @@ const initialState: DebugState = {
     dataTerminologyIframe: false,
     experimentalLayers: false,
     areasOnScreen: false,
+    vesselsAsPositions: false,
+    bluePlanetMode: false,
   },
 }
 
@@ -51,8 +55,13 @@ const debugSlice = createSlice({
     toggleDebugMenu: (state) => {
       state.active = !state.active
     },
-    toggleOption: (state, action: PayloadAction<DebugOption>) => {
+    toggleDebugOption: (state, action: PayloadAction<DebugOption>) => {
       state.options[action.payload] = !state.options[action.payload]
+    },
+    setDebugOption: (state, action: PayloadAction<{ option: DebugOption; value: boolean }>) => {
+      if (action.payload.option) {
+        state.options[action.payload.option] = action.payload.value
+      }
     },
     toggleFeatureFlag: (state, action: PayloadAction<FeatureFlag>) => {
       state.featureFlags[action.payload] = !state.featureFlags[action.payload]
@@ -60,7 +69,8 @@ const debugSlice = createSlice({
   },
 })
 
-export const { toggleDebugMenu, toggleOption, toggleFeatureFlag } = debugSlice.actions
+export const { toggleDebugMenu, toggleDebugOption, setDebugOption, toggleFeatureFlag } =
+  debugSlice.actions
 
 export const selectDebugActive = (state: RootState) => state.debug.active
 export const selectDebugOptions = (state: RootState) => state.debug.options

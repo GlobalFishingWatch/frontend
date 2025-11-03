@@ -112,6 +112,7 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
     colorRamp: config.colorRamp as string,
     visible: config.visible,
     filter: config.filter,
+    filterIds: config.filterIds,
     vesselGroups: config['vessel-groups'],
     vesselGroupsLength: dataview.vesselGroup?.vessels?.length,
     maxZoom,

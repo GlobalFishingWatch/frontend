@@ -17,6 +17,7 @@ import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import DetectionThumbnailImage from 'features/map/popups/categories/DetectionThumbnail'
 import VesselLink from 'features/vessel/VesselLink'
@@ -49,6 +50,7 @@ function DetectionThumbnails({
 function PositionsRow({ loading, error, feature, showFeaturesDetails }: PositionsRowProps) {
   const { t } = useTranslation()
   const allDatasets = useSelector(selectAllDatasets)
+  const bluePlanetMode = useSelector(selectDebugOptions)?.bluePlanetMode
   const dataviewInstances = useSelector(selectAllDataviewInstancesResolved)
   const featureDataview = dataviewInstances?.find((instance) => instance.id === feature.layerId)
   const thumbnailsDatasetId = getRelatedDatasetByType(
@@ -103,13 +105,15 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
               />
             )}
             <span>
-              <span className={popupStyles.marginRight}>
-                {isPositionMatched ? (
-                  <VesselLink vesselId={vesselId}>{shipname}</VesselLink>
-                ) : (
-                  <span>{shipname}</span>
-                )}
-              </span>
+              {!bluePlanetMode && (
+                <span className={popupStyles.marginRight}>
+                  {isPositionMatched ? (
+                    <VesselLink vesselId={vesselId}>{shipname}</VesselLink>
+                  ) : (
+                    <span>{shipname}</span>
+                  )}
+                </span>
+              )}
               {feature.properties.stime && (
                 <span className={popupStyles.secondary}>
                   {' '}

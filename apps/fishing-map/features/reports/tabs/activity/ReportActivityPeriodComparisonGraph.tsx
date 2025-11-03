@@ -7,7 +7,6 @@ import {
   ComposedChart,
   Line,
   ReferenceLine,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
@@ -144,94 +143,92 @@ const ReportActivityPeriodComparisonGraph = (props: {
 
   return (
     <div className={styles.graph}>
-      <ResponsiveContainer width="100%" height={'100%'}>
-        <ComposedChart data={range} margin={graphMargin}>
-          <CartesianGrid vertical={false} />
-          <XAxis
-            domain={[getUTCDateTime(start)?.toMillis(), getUTCDateTime(end)?.toMillis()]}
-            dataKey="date"
-            interval="preserveStartEnd"
-            tickFormatter={(tick: number) => formatDateTicks(tick, start, interval)}
-            scale={'time'}
-            type={'number'}
-          />
-          <YAxis
-            scale="linear"
-            interval="preserveEnd"
-            tickFormatter={tickFormatter}
-            axisLine={false}
-            tickLine={false}
-            tickCount={4}
-          />
-          <Tooltip
-            content={
-              <PeriodComparisonGraphTooltip
-                timeChunkInterval={interval}
-                offsetedLastDataUpdate={offsetedLastDataUpdate}
-              />
-            }
-          />
-          <Area
-            key={`decrease-area`}
-            name="area"
-            type="step"
-            dataKey={(data) => data.rangeDecrease}
-            activeDot={false}
-            fill={COLOR_DECREASE}
-            stroke="none"
-            fillOpacity={0.2}
-            isAnimationActive={false}
-          />
-          <Area
-            key={`increase-area`}
-            name="area"
-            type="step"
-            dataKey={(data) => data.rangeIncrease}
-            activeDot={false}
-            fill={COLOR_INCREASE}
-            stroke="none"
-            fillOpacity={0.2}
-            isAnimationActive={false}
-          />
-          <Line
-            key={`${BASELINE}_bg`}
-            name={BASELINE}
-            data={baseline}
-            dataKey={(data) => data.zero}
-            dot={false}
-            isAnimationActive={false}
-            stroke={COLOR_GRADIENT}
-            strokeWidth={2}
-          />
-          <Line
-            key={BASELINE}
-            name={BASELINE}
-            data={baseline}
-            dataKey={(data) => data.zero}
-            dot={false}
-            unit={unit}
-            isAnimationActive={false}
-            stroke="rgb(111, 138, 182)"
-            strokeDasharray="2 4"
-            strokeWidth={2}
-          />
-          <Line
-            key={DIFFERENCE}
-            name={DIFFERENCE}
-            type="step"
-            data={difference}
-            dataKey={(data) => data.difference}
-            unit={unit}
-            dot={false}
-            isAnimationActive={false}
-            stroke={COLOR_PRIMARY_BLUE}
-            strokeWidth={2}
-          />
-          {offsetedLastDataUpdate && offsetedLastDataUpdate < lastDate && (
-            <ReferenceLine x={offsetedLastDataUpdate} stroke={COLOR_PRIMARY_BLUE} />
-          )}
-        </ComposedChart>
-      </ResponsiveContainer>
+      <ComposedChart responsive width="100%" height="100%" data={range} margin={graphMargin}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          domain={[getUTCDateTime(start)?.toMillis(), getUTCDateTime(end)?.toMillis()]}
+          dataKey="date"
+          interval="preserveStartEnd"
+          tickFormatter={(tick: number) => formatDateTicks(tick, start, interval)}
+          scale={'time'}
+          type={'number'}
+        />
+        <YAxis
+          scale="linear"
+          interval="preserveEnd"
+          tickFormatter={tickFormatter}
+          axisLine={false}
+          tickLine={false}
+          tickCount={4}
+        />
+        <Tooltip
+          content={
+            <PeriodComparisonGraphTooltip
+              timeChunkInterval={interval}
+              offsetedLastDataUpdate={offsetedLastDataUpdate}
+            />
+          }
+        />
+        <Area
+          key={`decrease-area`}
+          name="area"
+          type="step"
+          dataKey={(data) => data.rangeDecrease}
+          activeDot={false}
+          fill={COLOR_DECREASE}
+          stroke="none"
+          fillOpacity={0.2}
+          isAnimationActive={false}
+        />
+        <Area
+          key={`increase-area`}
+          name="area"
+          type="step"
+          dataKey={(data) => data.rangeIncrease}
+          activeDot={false}
+          fill={COLOR_INCREASE}
+          stroke="none"
+          fillOpacity={0.2}
+          isAnimationActive={false}
+        />
+        <Line
+          key={`${BASELINE}_bg`}
+          name={BASELINE}
+          data={baseline}
+          dataKey={(data) => data.zero}
+          dot={false}
+          isAnimationActive={false}
+          stroke={COLOR_GRADIENT}
+          strokeWidth={2}
+        />
+        <Line
+          key={BASELINE}
+          name={BASELINE}
+          data={baseline}
+          dataKey={(data) => data.zero}
+          dot={false}
+          unit={unit}
+          isAnimationActive={false}
+          stroke="rgb(111, 138, 182)"
+          strokeDasharray="2 4"
+          strokeWidth={2}
+        />
+        <Line
+          key={DIFFERENCE}
+          name={DIFFERENCE}
+          type="step"
+          data={difference}
+          dataKey={(data) => data.difference}
+          unit={unit}
+          dot={false}
+          isAnimationActive={false}
+          stroke={COLOR_PRIMARY_BLUE}
+          strokeWidth={2}
+        />
+        {offsetedLastDataUpdate && offsetedLastDataUpdate < lastDate && (
+          <ReferenceLine x={offsetedLastDataUpdate} stroke={COLOR_PRIMARY_BLUE} />
+        )}
+      </ComposedChart>
     </div>
   )
 }

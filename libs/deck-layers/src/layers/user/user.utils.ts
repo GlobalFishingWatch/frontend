@@ -1,6 +1,9 @@
 import type { Feature, Point } from 'geojson'
 
+import type { TimeFilterType } from '@globalfishingwatch/api-types'
 import type { FourwingsFeature, FourwingsStaticFeature } from '@globalfishingwatch/deck-loaders'
+
+import type { FilterExtensionProps } from './user.types'
 
 export const POINT_SIZES_DEFAULT_RANGE = [3, 15]
 export const DEFAULT_USER_TILES_MAX_ZOOM = 9
@@ -20,18 +23,31 @@ export type IsFeatureInRangeParams = {
   endTime: number
   startTimeProperty: string
   endTimeProperty?: string
+  timeFilterType?: TimeFilterType
 }
 export function isFeatureInRange(
   feature: Feature<Point> | FourwingsFeature | FourwingsStaticFeature,
-  { startTime, endTime, startTimeProperty, endTimeProperty }: IsFeatureInRangeParams
+  { startTime, endTime, startTimeProperty, endTimeProperty, timeFilterType }: IsFeatureInRangeParams
 ) {
-  if (!startTime || !endTime) {
+  if (!feature || !startTime || !endTime) {
     return false
   }
   const featureStart = ((feature.properties as any)?.[startTimeProperty] as number) || 0
-  const featureEnd = ((feature.properties as any)?.[endTimeProperty!] as number) || Infinity
+  const featureEnd =
+    ((feature.properties as any)?.[endTimeProperty!] as number) || timeFilterType === 'date'
+      ? featureStart
+      : Infinity
   return (
     (typeof featureEnd === 'string' ? parseInt(featureEnd) : featureEnd) >= startTime &&
     (typeof featureStart === 'string' ? parseInt(featureStart) : featureStart) < endTime
   )
+}
+
+export function getFilterExtensionSize(filterExtensionProps: FilterExtensionProps): number {
+  const hasFilters = Object.keys(filterExtensionProps).length > 0
+  return hasFilters
+    ? filterExtensionProps.filterRange && Array.isArray(filterExtensionProps.filterRange[0])
+      ? (filterExtensionProps.filterRange as [number, number][]).length
+      : 1
+    : 0
 }

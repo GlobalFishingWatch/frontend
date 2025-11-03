@@ -14,7 +14,7 @@ import { getUTCDateTime } from '../../utils'
 
 import { VESSEL_GRAPH_COLORS } from './vessel.config'
 import type { VesselEventsLayer } from './VesselEventsLayer'
-import type { VesselsColorByProperty } from './VesselTrackLayer'
+import type { VesselsColorByProperty } from './VesselTrackPathLayer'
 
 export const FIRST_YEAR_OF_DATA = 2012
 export const CURRENT_YEAR = DateTime.now().year

@@ -155,6 +155,7 @@ function UserPanel({
 
   const isUserLayer = !guestUser && dataset?.ownerId === userId
   const isBQEditorLayer = getIsBQEditorDataset(dataset)
+  const showSortHandler = items.length > 1
 
   if (!dataset) {
     const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
@@ -285,18 +286,17 @@ function UserPanel({
             dataview={dataview}
             loading={layerLoading && dataset?.status !== DatasetStatus.Importing}
           />
-          {items.length > 1 ||
-            (error && (
-              <IconButton
-                size="small"
-                ref={setActivatorNodeRef}
-                {...listeners}
-                icon={error ? 'warning' : 'drag'}
-                type={error ? 'warning' : 'default'}
-                tooltip={error ? error : ''}
-                className={styles.dragger}
-              />
-            ))}
+          {showSortHandler && (
+            <IconButton
+              size="small"
+              ref={setActivatorNodeRef}
+              {...listeners}
+              icon={error ? 'warning' : 'drag'}
+              type={error ? 'warning' : 'default'}
+              tooltip={error ? error : ''}
+              className={error ? styles.disabled : styles.dragger}
+            />
+          )}
         </div>
         <IconButton
           icon={layerActive ? (error ? 'warning' : 'more') : undefined}

@@ -495,6 +495,8 @@ interface Resources {
       password: 'password'
       permissions: 'permissions required'
       plus: 'plus'
+      points_one: 'point'
+      points_other: 'points'
       polygon: 'Polygon'
       presence: 'Vessel presence'
       previously: 'Previously'
@@ -769,6 +771,7 @@ interface Resources {
     }
     errors: {
       areaLoad: 'There was an error loading the report area'
+      areaOutOfTime: 'The report area is out of the current time range'
       datasetNotFound: 'Dataset not found'
       datasetNotValid: 'There seems to be something wrong with your file'
       datasetShapefileMultiple: 'Shapefiles containing multiple components (mutiple file names) are not supported yet'
