@@ -1,5 +1,4 @@
 import type { ReactElement } from 'react'
-import React from 'react'
 import { BarChart, XAxis } from 'recharts'
 
 import type { ResponsiveVisualizationValue } from '../../types'
@@ -30,8 +29,8 @@ export function IndividualBarChart({
   return (
     <BarChart
       responsive
-      width={500}
-      height={300}
+      width="100%"
+      height="100%"
       data={data}
       margin={{
         top: 15,
