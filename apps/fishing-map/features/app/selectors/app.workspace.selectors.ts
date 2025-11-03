@@ -37,6 +37,7 @@ import {
   selectReportActivityGraph,
   selectReportActivitySubCategorySelector,
   selectReportAreaBounds,
+  selectReportComparisonDataviewIds,
   selectReportDetectionsSubCategorySelector,
   selectReportEventsGraph,
   selectReportEventsPortsFilter,
@@ -82,6 +83,7 @@ const selectWorkspaceReportState = createSelector(
     selectReportEventsPortsFilter,
     selectReportEventsPortsPage,
     selectReportEventsPortsResultsPerPage,
+    selectReportComparisonDataviewIds,
   ],
   (
     reportActivityGraph,
@@ -107,7 +109,8 @@ const selectWorkspaceReportState = createSelector(
     reportEventsGraph,
     reportEventsPortsFilter,
     reportEventsPortsPage,
-    reportEventsPortsResultsPerPage
+    reportEventsPortsResultsPerPage,
+    reportComparisonDataviewIds
   ) => ({
     ...(reportActivityGraph && { reportActivityGraph }),
     ...(reportAreaBounds && { reportAreaBounds }),
@@ -133,6 +136,7 @@ const selectWorkspaceReportState = createSelector(
     ...(reportEventsPortsFilter && { reportEventsPortsFilter }),
     ...(reportEventsPortsPage && { reportEventsPortsPage }),
     ...(reportEventsPortsResultsPerPage && { reportEventsPortsResultsPerPage }),
+    ...(reportComparisonDataviewIds && { reportComparisonDataviewIds }),
   })
 )
 
