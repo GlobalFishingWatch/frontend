@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
+import { uniqBy } from 'es-toolkit'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { TagItem } from '@globalfishingwatch/ui-components'
@@ -21,10 +22,15 @@ function TurningTidesTags({ dataview }: LayerFiltersProps) {
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
-  const vesselsTags = dataview.config?.filters?.id?.map((id: string) => ({
-    id: id.replace(VESSEL_LAYER_PREFIX, ''),
-    label: vesselDataviews.find((v) => v.id.includes(id))?.config?.name || id,
-  }))
+  const vesselsTags = uniqBy(
+    (dataview.config?.filters?.id || []).map((id: string) => ({
+      id: id.replace(VESSEL_LAYER_PREFIX, ''),
+      label:
+        vesselDataviews.find((v) => v.id.includes(id) || v.config?.relatedVesselIds?.includes(id))
+          ?.config?.name || id,
+    })),
+    (t: TagItem) => t.label
+  )
 
   const onRemoveFilterClick = (tag: TagItem, tags: TagItem[]) => {
     upsertDataviewInstance({
@@ -32,7 +38,7 @@ function TurningTidesTags({ dataview }: LayerFiltersProps) {
       config: {
         filters: {
           ...(dataview.config?.filters || {}),
-          id: tags.length ? tags.map((t) => t.id) : undefined,
+          id: tags?.length ? tags.map((t) => t.id) : undefined,
         },
       },
     })
