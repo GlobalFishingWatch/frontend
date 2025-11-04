@@ -126,7 +126,7 @@ const EXPERIMENTAL_FIELDS_BY_SCHEMA: { [key in SupportedDatasetSchema]?: string[
 
 type SchemaCompatibilityOperation = 'every' | 'some'
 type SchemaOriginParam = keyof Pick<IdentityVessel, 'selfReportedInfo' | 'registryInfo'> | 'all'
-type GetSchemaInDataviewParams = {
+export type GetSchemaInDataviewParams = {
   fieldsToInclude?: SupportedDatasetSchema[]
   vesselGroups?: MultiSelectOption[]
   compatibilityOperation?: SchemaCompatibilityOperation

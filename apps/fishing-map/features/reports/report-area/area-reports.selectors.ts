@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { FeatureCollection, MultiPolygon } from 'geojson'
+import type { Feature, FeatureCollection, MultiPolygon } from 'geojson'
 import { t } from 'i18next'
 
 import { type Dataset, DataviewCategory, type ReportVessel } from '@globalfishingwatch/api-types'
@@ -244,21 +244,26 @@ const selectCurrentReportAreaFilteredByTime = createSelector(
           end: timeRange.end,
         })
       : undefined
-    if (!timeFilterProps || !timeRange) {
+    if (!timeFilterProps || !timeRange || !currentReportArea?.data) {
       return currentReportArea
     }
     if (
-      isFeatureInRange(currentReportArea?.data as any, timeFilterProps as IsFeatureInRangeParams)
+      currentReportArea?.data &&
+      currentReportArea?.status === AsyncReducerStatus.Finished &&
+      !isFeatureInRange(
+        currentReportArea?.data as Feature<any>,
+        timeFilterProps as IsFeatureInRangeParams
+      )
     ) {
-      return currentReportArea
+      return {
+        data: {
+          id: OUT_OF_TIME_REPORT_AREA_ID,
+          name: currentReportArea?.data?.name,
+        } as Area<AreaGeometry>,
+        status: AsyncReducerStatus.Finished,
+      }
     }
-    return {
-      data: {
-        id: OUT_OF_TIME_REPORT_AREA_ID,
-        name: currentReportArea?.data?.name,
-      } as Area<AreaGeometry>,
-      status: AsyncReducerStatus.Finished,
-    }
+    return currentReportArea
   }
 )
 

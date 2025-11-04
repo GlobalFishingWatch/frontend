@@ -303,6 +303,7 @@ interface Resources {
       groupByRFMO: 'By RFMO'
       groupBySource: 'by source'
       groupByVesseltype: 'by vessel type'
+      insideYourArea: 'inside your area'
       kilometers: 'kilometers'
       linkToReport: 'Check the dynamic report here'
       nauticalmiles: 'nautical miles'

@@ -1,0 +1,41 @@
+import { useCallback } from 'react'
+import { useSelector } from 'react-redux'
+
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+
+import type { GetSchemaInDataviewParams } from 'features/datasets/datasets.utils'
+import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
+import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
+import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
+import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+
+function getHasDataviewSchemaFilters(
+  dataview: UrlDataviewInstance,
+  { isVesselGroupReportLocation = false, vesselGroups = [] } = {} as {
+    isVesselGroupReportLocation?: boolean
+    vesselGroups?: GetSchemaInDataviewParams['vesselGroups']
+  }
+) {
+  const { filtersAllowed: schemaFiltersAllowed } = getSchemaFiltersInDataview(dataview, {
+    vesselGroups,
+  })
+  const filtersAllowed = isVesselGroupReportLocation
+    ? schemaFiltersAllowed.filter((filter) => filter.id !== 'vessel-groups')
+    : schemaFiltersAllowed
+  return filtersAllowed.some(showSchemaFilter)
+}
+
+export function useGetHasDataviewSchemaFilters() {
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const vesselGroupsOptions = useVesselGroupsOptions()
+
+  return useCallback(
+    (dataview: UrlDataviewInstance) => {
+      return getHasDataviewSchemaFilters(dataview, {
+        isVesselGroupReportLocation: isVesselGroupReportLocation,
+        vesselGroups: vesselGroupsOptions,
+      })
+    },
+    [isVesselGroupReportLocation, vesselGroupsOptions]
+  )
+}
