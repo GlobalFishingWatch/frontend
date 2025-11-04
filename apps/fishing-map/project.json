@@ -38,7 +38,7 @@
       "options": {
         "commands": [
           "nx ts i18n-labels",
-          "nx i18n:ts fishing-map",
+          "nx i18n fishing-map",
           "nx clean-locales fishing-map",
           "nx prepare-loaders fishing-map",
           "nx serve i18n-labels",
@@ -72,23 +72,10 @@
         "commands": ["rimraf dist/apps/fishing-map", "rimraf .next"]
       }
     },
-    "i18n:extract": {
-      "executor": "nx:run-script",
-      "options": {
-        "script": "i18n:extract"
-      }
-    },
-    "i18n:ts": {
-      "executor": "nx:run-script",
-      "options": {
-        "script": "i18n:ts"
-      }
-    },
     "i18n": {
-      "executor": "nx:run-commands",
+      "executor": "nx:run-script",
       "options": {
-        "commands": ["nx i18n:extract fishing-map", "nx i18n:ts fishing-map"],
-        "parallel": false
+        "script": "i18n"
       }
     },
     "prepare-serve": {
