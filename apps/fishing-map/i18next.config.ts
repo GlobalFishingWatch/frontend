@@ -42,7 +42,7 @@ export default defineConfig({
       'workspaces:*',
     ],
     generateBasePluralForms: false,
-    disablePlurals: false,
+    disablePlurals: true,
   },
 
   // TypeScript type generation
