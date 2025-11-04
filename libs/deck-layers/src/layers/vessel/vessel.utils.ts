@@ -4,6 +4,7 @@ import memoize from 'lodash/memoize'
 import { DateTime } from 'luxon'
 
 import type { ApiEvent, EventTypes, EventVessel, TrackSegment } from '@globalfishingwatch/api-types'
+import { wrapLongitudes } from '@globalfishingwatch/data-transforms'
 import type {
   UserTrackBinaryData,
   VesselTrackData,
@@ -48,6 +49,7 @@ export const getVesselResourceChunks = (start: number, end: number) => {
 export type GetSegmentsFromDataParams = {
   includeMiddlePoints?: boolean
   includeCoordinates?: boolean
+  normalizeCrossingAntimeridian?: boolean
   startTime?: number
   endTime?: number
 }
@@ -77,10 +79,21 @@ export const getSegmentsFromData = memoize(
     const speedSize = (data as VesselTrackData).attributes.getSpeed?.size
     const elevationSize = (data as VesselTrackData).attributes.getElevation?.size
 
+    let wrappedLongitudes: number[] | undefined
+    if (includeCoordinates) {
+      const longitudes: number[] = []
+      for (let i = 0; i < positions.length; i += pathSize) {
+        longitudes.push(positions[i])
+      }
+      wrappedLongitudes = wrapLongitudes(longitudes)
+    }
+
     const getPointByIndex = (index: number) => {
+      const longitude = wrappedLongitudes ? wrappedLongitudes[index] : positions[index * pathSize]
+
       return {
         ...(includeCoordinates && {
-          longitude: positions[index * pathSize],
+          longitude,
           latitude: positions[index * pathSize + 1],
         }),
 
@@ -141,10 +154,17 @@ export const getSegmentsFromData = memoize(
         (!endTime || finalSegmentTimestamp < endTime) &&
         !lastSegmentPointIncluded
       ) {
+        let finalLongitude: number
+
         if (isLastSegment) {
+          const lastIndex = (positions.length - pathSize) / pathSize
+          finalLongitude = wrappedLongitudes
+            ? wrappedLongitudes[lastIndex]
+            : positions[positions.length - pathSize]
+
           points.push({
             ...(includeCoordinates && {
-              longitude: positions[positions.length - pathSize],
+              longitude: finalLongitude,
               latitude: positions[positions.length - 1],
             }),
             timestamp: finalSegmentTimestamp,
@@ -152,9 +172,12 @@ export const getSegmentsFromData = memoize(
             ...(elevationSize && { elevation: elevations?.[elevations.length - 1] || 0 }),
           })
         } else {
+          finalLongitude = wrappedLongitudes
+            ? wrappedLongitudes[nextSegmentIndex]
+            : positions[nextSegmentIndex * pathSize]
           points.push({
             ...(includeCoordinates && {
-              longitude: positions[nextSegmentIndex * pathSize],
+              longitude: finalLongitude,
               latitude: positions[nextSegmentIndex * pathSize + 1],
             }),
             timestamp: finalSegmentTimestamp,
