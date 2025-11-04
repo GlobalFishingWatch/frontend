@@ -81,7 +81,9 @@ export type FourwingsReportGraphStats = {
 export type PointsReportGraphStats = {
   type: 'points'
   total: number
+  values: number[]
 }
+
 export type ReportGraphStats = Record<string, FourwingsReportGraphStats | PointsReportGraphStats>
 
 interface ReportState {
@@ -227,7 +229,6 @@ const useReportTimeseries = (
                 }
               : {}
           ) as FourwingsFeature[]
-
           const error = instance?.getError?.()
           if (error || !features?.length) {
             featuresFiltered.push([{ contained: [], overlapping: [], error }])

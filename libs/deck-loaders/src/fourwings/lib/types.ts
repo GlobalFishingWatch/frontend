@@ -53,12 +53,13 @@ export type FourwingsClustersLoaderOptions = LoaderOptions & {
   fourwingsClusters?: ParseFourwingsClustersOptions
 }
 
+export type FourwingsFeatureValues = number[][]
 export type FourwingsFeatureProperties = {
   id?: string
   initialValues: Record<string, number[]>
   startOffsets: number[]
-  dates: number[][]
-  values: number[][]
+  dates: FourwingsFeatureValues
+  values: FourwingsFeatureValues
   cellId: number
   cellNum: number
   col: number
