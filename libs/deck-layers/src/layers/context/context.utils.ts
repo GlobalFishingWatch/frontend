@@ -1,5 +1,6 @@
 import { DEFAULT_ID_PROPERTY } from '../../utils'
-import { type FilterExtensionProps, getFilterExtensionSize } from '../user'
+import type { FilterExtensionProps } from '../user/user.types'
+import { getFilterExtensionSize } from '../user/user.utils'
 
 import type {
   ContextFeature,
