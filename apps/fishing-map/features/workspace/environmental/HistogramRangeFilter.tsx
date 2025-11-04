@@ -61,7 +61,7 @@ function HistogramRangeFilter({ dataview, onSelect }: HistogramRangeFilterProps)
   return (
     <div className={styles.container}>
       <div className={styles.histogram}>
-        <BarChart responsive width={150} height={40} data={histogram}>
+        <BarChart responsive width="100%" height={40} data={histogram}>
           <Bar dataKey="data" fill="#C7D8DC" />
         </BarChart>
       </div>

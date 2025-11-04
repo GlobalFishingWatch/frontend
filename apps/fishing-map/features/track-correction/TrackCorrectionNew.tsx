@@ -95,7 +95,6 @@ const TrackCorrectionNew = () => {
         const trackCorrectionSegments = vesselLayer?.instance?.getVesselTrackSegments({
           includeMiddlePoints: true,
           includeCoordinates: true,
-          normalizeCrossingAntimeridian: true,
           startTime: getUTCDateTime(trackCorrectionTimerange.start).toMillis(),
           endTime: getUTCDateTime(trackCorrectionTimerange.end).toMillis(),
         })
