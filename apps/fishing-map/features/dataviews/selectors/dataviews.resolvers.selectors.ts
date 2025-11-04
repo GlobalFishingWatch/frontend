@@ -26,7 +26,7 @@ import {
 } from 'features/dataviews/dataviews.utils'
 import { selectDataviewInstancesInjected } from 'features/dataviews/selectors/dataviews.injected.selectors'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
-import { selectDebugOptions } from 'features/debug/debug.slice'
+import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
 import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
 import {
@@ -214,7 +214,7 @@ export const selectDataviewInstancesResolved = createDeepEqualSelector(
         config: {
           ...dataview.config,
           name: debugOptions?.bluePlanetMode
-            ? ''
+            ? FAKE_VESSEL_NAME
             : formatInfoField(
                 getVesselProperty(infoResource.data as IdentityVessel, 'shipname'),
                 'shipname'

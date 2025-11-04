@@ -49,7 +49,6 @@ export const getVesselResourceChunks = (start: number, end: number) => {
 export type GetSegmentsFromDataParams = {
   includeMiddlePoints?: boolean
   includeCoordinates?: boolean
-  normalizeCrossingAntimeridian?: boolean
   startTime?: number
   endTime?: number
 }
