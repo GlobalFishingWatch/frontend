@@ -4,6 +4,7 @@ import memoize from 'lodash/memoize'
 import { DateTime } from 'luxon'
 
 import type { ApiEvent, EventTypes, EventVessel, TrackSegment } from '@globalfishingwatch/api-types'
+import { wrapLongitudes } from '@globalfishingwatch/data-transforms'
 import type {
   UserTrackBinaryData,
   VesselTrackData,
@@ -59,7 +60,6 @@ export const getSegmentsFromData = memoize(
     {
       includeMiddlePoints = false,
       includeCoordinates = false,
-      normalizeCrossingAntimeridian = false,
       startTime,
       endTime,
     } = {} as GetSegmentsFromDataParams
@@ -79,24 +79,17 @@ export const getSegmentsFromData = memoize(
     const speedSize = (data as VesselTrackData).attributes.getSpeed?.size
     const elevationSize = (data as VesselTrackData).attributes.getElevation?.size
 
-    let crossesAntimeridian = false
-    if (normalizeCrossingAntimeridian && includeCoordinates) {
-      let minLon = Infinity
-      let maxLon = -Infinity
+    let wrappedLongitudes: number[] | undefined
+    if (includeCoordinates) {
+      const longitudes: number[] = []
       for (let i = 0; i < positions.length; i += pathSize) {
-        const lon = positions[i]
-        if (lon < minLon) minLon = lon
-        if (lon > maxLon) maxLon = lon
+        longitudes.push(positions[i])
       }
-      crossesAntimeridian = maxLon - minLon > 180
+      wrappedLongitudes = wrapLongitudes(longitudes)
     }
 
     const getPointByIndex = (index: number) => {
-      let longitude = positions[index * pathSize]
-
-      if (normalizeCrossingAntimeridian && crossesAntimeridian && longitude < 0) {
-        longitude = longitude + 360
-      }
+      const longitude = wrappedLongitudes ? wrappedLongitudes[index] : positions[index * pathSize]
 
       return {
         ...(includeCoordinates && {
@@ -164,10 +157,10 @@ export const getSegmentsFromData = memoize(
         let finalLongitude: number
 
         if (isLastSegment) {
-          finalLongitude = positions[positions.length - pathSize]
-          if (normalizeCrossingAntimeridian && crossesAntimeridian && finalLongitude < 0) {
-            finalLongitude = finalLongitude + 360
-          }
+          const lastIndex = (positions.length - pathSize) / pathSize
+          finalLongitude = wrappedLongitudes
+            ? wrappedLongitudes[lastIndex]
+            : positions[positions.length - pathSize]
 
           points.push({
             ...(includeCoordinates && {
@@ -179,10 +172,9 @@ export const getSegmentsFromData = memoize(
             ...(elevationSize && { elevation: elevations?.[elevations.length - 1] || 0 }),
           })
         } else {
-          finalLongitude = positions[nextSegmentIndex * pathSize]
-          if (normalizeCrossingAntimeridian && crossesAntimeridian && finalLongitude < 0) {
-            finalLongitude = finalLongitude + 360
-          }
+          finalLongitude = wrappedLongitudes
+            ? wrappedLongitudes[nextSegmentIndex]
+            : positions[nextSegmentIndex * pathSize]
           points.push({
             ...(includeCoordinates && {
               longitude: finalLongitude,
