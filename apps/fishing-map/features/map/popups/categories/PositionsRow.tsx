@@ -17,7 +17,7 @@ import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { selectDebugOptions } from 'features/debug/debug.slice'
+import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import DetectionThumbnailImage from 'features/map/popups/categories/DetectionThumbnail'
 import VesselLink from 'features/vessel/VesselLink'
@@ -105,15 +105,15 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
               />
             )}
             <span>
-              {!bluePlanetMode && (
-                <span className={popupStyles.marginRight}>
-                  {isPositionMatched ? (
-                    <VesselLink vesselId={vesselId}>{shipname}</VesselLink>
-                  ) : (
-                    <span>{shipname}</span>
-                  )}
-                </span>
-              )}
+              <span className={popupStyles.marginRight}>
+                {isPositionMatched ? (
+                  <VesselLink vesselId={vesselId}>
+                    {bluePlanetMode ? FAKE_VESSEL_NAME : shipname}
+                  </VesselLink>
+                ) : (
+                  <span>{bluePlanetMode ? FAKE_VESSEL_NAME : shipname}</span>
+                )}
+              </span>
               {feature.properties.stime && (
                 <span className={popupStyles.secondary}>
                   {' '}

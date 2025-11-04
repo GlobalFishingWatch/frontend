@@ -30,7 +30,7 @@ import {
 } from 'features/datasets/datasets.utils'
 import { getVesselIdFromInstanceId } from 'features/dataviews/dataviews.utils'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectDebugOptions } from 'features/debug/debug.slice'
+import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
@@ -203,6 +203,8 @@ function VesselLayerPanel({
   const getVesselTitle = (): ReactNode => {
     if (infoLoading) return t('vessel.loadingInfo')
     if (infoError) return t('common.unknownVessel')
+    if (bluePlanetMode) return FAKE_VESSEL_NAME
+
     if (dataview?.datasetsConfig?.some((d) => isGFWOnlyDataset({ id: d.datasetId })))
       return (
         <Fragment>
@@ -231,7 +233,7 @@ function VesselLayerPanel({
           getVesselTitle()
         ) : (
           <VesselLink
-            className={cx(styles.link, { [styles.blur]: bluePlanetMode })}
+            className={cx(styles.link)}
             vesselId={vesselId}
             datasetId={dataset?.id}
             tooltip={<div>{identitiesSummary}</div>}
