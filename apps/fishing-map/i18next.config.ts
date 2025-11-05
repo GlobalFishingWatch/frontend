@@ -33,6 +33,7 @@ export default defineConfig({
     ],
     generateBasePluralForms: false,
     disablePlurals: false,
+    primaryLanguage: 'en',
   },
 
   // TypeScript type generation
