@@ -429,7 +429,7 @@ function LayerFilters({
       {showSourceFilter && (
         <MultiSelect
           testId="activity-filters"
-          label={t('layer.source_other') as string}
+          label={t('layer.sources') as string}
           placeholder={getPlaceholderBySelections({
             selection: sourcesSelected.map(({ id }) => id),
             options: allSourceOptions,

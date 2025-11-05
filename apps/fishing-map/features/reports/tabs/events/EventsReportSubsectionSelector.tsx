@@ -36,7 +36,7 @@ function VesselGroupReportEventsSubsectionSelector() {
       ? [
           {
             id: 'loitering' as ReportEventsSubCategory,
-            label: t('event.loitering_other'),
+            label: t('event.loitering', { count: 2 }),
           },
         ]
       : []),
@@ -45,7 +45,7 @@ function VesselGroupReportEventsSubsectionSelector() {
     //   ? [
     //       {
     //         id: 'gap' as ReportEventsSubCategory,
-    //         label: t('event.gap_other'),
+    //         label: t('event.gap'),
     //         disabled: true,
     //         tooltip: t('common.comingSoon'),
     //         tooltipPlacement: 'top' as TooltipPlacement,
@@ -56,7 +56,7 @@ function VesselGroupReportEventsSubsectionSelector() {
       ? [
           {
             id: 'port_visit' as ReportEventsSubCategory,
-            label: t('event.port_visit_other'),
+            label: t('event.port_visit', { count: 2 }),
             tooltipPlacement: 'top' as TooltipPlacement,
           },
         ]

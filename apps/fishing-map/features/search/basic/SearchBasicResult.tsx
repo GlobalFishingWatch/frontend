@@ -320,7 +320,7 @@ function SearchBasicResult({
               <div className={cx(styles.property, styles.fullWidth)}>
                 <span>
                   {hasPositions
-                    ? `${formatI18nNumber(positionsCounter)} ${t('vessel.transmission_other')} ${t('common.from')} `
+                    ? `${formatI18nNumber(positionsCounter)} ${t('vessel.transmissions')} ${t('common.from')} `
                     : `${upperFirst(t('common.from'))} `}
                   <I18nDate date={transmissionDateFrom} /> {t('common.to')}{' '}
                   <I18nDate date={transmissionDateTo} />

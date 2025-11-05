@@ -202,7 +202,7 @@ function SearchAdvancedFilters() {
         sourceOptions &&
         sourceOptions.length > 0 && (
           <MultiSelect
-            label={t('layer.source_other')}
+            label={t('layer.sources')}
             placeholder={getPlaceholderBySelections({ selection: sources, options: sourceOptions })}
             options={sourceOptions}
             selectedOptions={sourceOptions.filter((f) => sources?.includes(f.id))}

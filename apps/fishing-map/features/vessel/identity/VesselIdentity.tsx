@@ -169,7 +169,7 @@ const VesselIdentity = () => {
             </div>
           )}
           <div className={styles.twoCells}>
-            <label>{t('common.date_other')}</label>
+            <label>{t('common.date', { count: 2 })}</label>
             <div className={styles.timerange}>
               <VesselIdentityField
                 value={`${formatI18nDate(vesselIdentity.transmissionDateFrom)} - ${formatI18nDate(

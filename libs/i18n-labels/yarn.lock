@@ -16,19 +16,19 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@globalfishingwatch/i18n-labels@workspace:."
   dependencies:
-    i18next-resources-for-ts: "npm:1.6.0"
+    i18next-resources-for-ts: "npm:1.7.4"
   languageName: unknown
   linkType: soft
 
-"i18next-resources-for-ts@npm:1.6.0":
-  version: 1.6.0
-  resolution: "i18next-resources-for-ts@npm:1.6.0"
+"i18next-resources-for-ts@npm:1.7.4":
+  version: 1.7.4
+  resolution: "i18next-resources-for-ts@npm:1.7.4"
   dependencies:
     "@babel/runtime": "npm:^7.27.0"
     yaml: "npm:^2.7.1"
   bin:
     i18next-resources-for-ts: bin/i18next-resources-for-ts.js
-  checksum: 10/e6f98c606adc4c31e7f757dded5cf609042f515bb32ce8bd4609e3bd09ea06a0a8ff2ff07cdf888b605ad295df7b3ebdfa0936c01566ff08944f7978331d5b65
+  checksum: 10/02ce71939dc6f38672d3b33281367ad7f2c52623371fd88fc1d0033eac5a6385ef45fed49c7a49e5bac0f9a8a97cdc95ec3ee1c68f26cc75dcbdcb5b525ca6cc
   languageName: node
   linkType: hard
 

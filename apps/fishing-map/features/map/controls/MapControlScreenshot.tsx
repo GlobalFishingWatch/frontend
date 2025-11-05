@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import type { Entries } from 'type-fest'
 
 import { isPrintSupported } from '@globalfishingwatch/react-hooks'
 import type { MAIN_DOM_ID, SelectOption } from '@globalfishingwatch/ui-components'
@@ -42,10 +43,12 @@ const MapControlScreenshot = ({
 
   const SCREENSHOT_AREA_OPTIONS: SelectOption<ScrenshotDOMArea>[] = useMemo(
     () =>
-      Object.entries(ScrenshotAreaIds).map(([key, value]) => ({
-        id: value as ScrenshotDOMArea,
-        label: t(`map.screenshotArea.${key}`, key),
-      })),
+      (Object.entries(ScrenshotAreaIds) as Entries<typeof ScrenshotAreaIds>).map(
+        ([key, value]) => ({
+          id: value as ScrenshotDOMArea,
+          label: t(`map.screenshotArea.${key}`, key),
+        })
+      ),
     [t]
   )
 

@@ -129,7 +129,7 @@ export default function ReportVesselsTable({
           </div>
           <div className={styles.header}>{t('vessel.mmsi')}</div>
           <div className={styles.header}>
-            {t('layer.flagState_one')}
+            {t('layer.flagState')}
             {allowSorting && (
               <IconButton
                 size="tiny"
@@ -155,12 +155,12 @@ export default function ReportVesselsTable({
           {activityUnit && (
             <div className={cx(styles.header, styles.right)}>
               {activityUnit === 'hour'
-                ? t('common.hour_other')
+                ? t('common.hours')
                 : activityUnit === 'detection'
-                  ? t('common.detection_other')
+                  ? t('common.detections')
                   : activityUnit === 'coverage'
                     ? t('vessel.insights.coverage')
-                    : t('common.event_other')}
+                    : t('common.events')}
             </div>
           )}
           {vessels?.map((vessel, i) => {

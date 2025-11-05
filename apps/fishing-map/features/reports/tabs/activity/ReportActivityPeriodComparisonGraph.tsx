@@ -59,12 +59,8 @@ const formatDateTicks = (tick: number, start: string, timeChunkInterval: Fourwin
   if (!diff.length('hours') && !diff.length('days')) return ''
 
   return timeChunkInterval === 'HOUR'
-    ? `${diff.length('hours').toFixed()} ${
-        diff.length('hours') === 1 ? t('common.hour_one') : t('common.hour_other')
-      }`
-    : `${diff.length('days').toFixed()} ${
-        diff.length('days') === 1 ? t('common.days_one') : t('common.days_other')
-      }`
+    ? `${diff.length('hours').toFixed()} ${t('common.hour', { count: diff.length('hours') })}`
+    : `${diff.length('days').toFixed()} ${t('common.days', { count: diff.length('days') })}`
 }
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }

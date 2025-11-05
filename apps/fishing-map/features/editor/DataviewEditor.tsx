@@ -202,7 +202,7 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
       />
       {!isEditingDataview && (
         <MultiSelect
-          label={`${t('dataset.title_other')} *`}
+          label={`${t('dataset.title')} *`}
           placeholder={
             dataviewDatasets.length > 0
               ? dataviewDatasets.map(({ id }) => id).join(', ')

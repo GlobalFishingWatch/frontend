@@ -30,7 +30,7 @@ const TimebarClusterEventsGraph = () => {
       if (!value || !value.value) return ''
       const labels = [
         formatNumber(value.value),
-        t('common.event', { count: value.value }).toLocaleLowerCase(),
+        t('common.events', { count: value.value }).toLocaleLowerCase(),
         t('common.onScreen'),
       ]
 

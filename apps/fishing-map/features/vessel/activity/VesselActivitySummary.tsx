@@ -69,7 +69,7 @@ export const VesselActivitySummary = () => {
   )
 
   const summary = t('vessel.summary', {
-    events: `<strong>${formatI18nNumber(events?.length as number)}</strong> ${t('common.event', {
+    events: `<strong>${formatI18nNumber(events?.length as number)}</strong> ${t('common.events', {
       count: events?.length,
     })}`,
     voyages:
@@ -115,7 +115,7 @@ export const VesselActivitySummary = () => {
                           return (
                             <li key={id}>
                               {getRegionNamesByType(regionType, [id])[0] || id} (
-                              {<I18nNumber number={count} />} {t('common.event', { count })})
+                              {<I18nNumber number={count} />} {t('common.events', { count })})
                             </li>
                           )
                         })}
@@ -188,7 +188,8 @@ export const VesselActivitySummary = () => {
                     {active && eventType === EventTypes.Fishing && fishingHours !== 0 && (
                       <span>
                         (
-                        <I18nNumber number={fishingHours} /> {t('common.hour_other')})
+                        <I18nNumber number={fishingHours} />{' '}
+                        {t('common.hour', { count: fishingHours })})
                       </span>
                     )}
                     {eventType === EventTypes.Port && threeMostVisitedPortCountries.length > 0 && (
