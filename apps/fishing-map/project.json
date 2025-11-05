@@ -74,37 +74,13 @@
         "commands": ["rimraf dist/apps/fishing-map", "rimraf .next"]
       }
     },
-    "i18n:extract": {
-      "executor": "nx:run-script",
-      "defaultConfiguration": "build",
-      "configurations": {
-        "watch": {
-          "script": "i18n:extract -- --watch"
-        },
-        "build": {
-          "script": "i18n:extract"
-        }
-      }
-    },
-    "i18n:types": {
-      "executor": "nx:run-script",
-      "defaultConfiguration": "build",
-      "configurations": {
-        "watch": {
-          "script": "i18n:ts -- --watch"
-        },
-        "build": {
-          "script": "i18n:ts"
-        }
-      }
-    },
     "i18n": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
           "nx i18n:extract fishing-map",
           "nx i18n:types fishing-map",
-          "nx i18n:ts:fix fishing-map"
+          "nx i18n:types:fix fishing-map"
         ],
         "parallel": false
       }

@@ -15,15 +15,13 @@ export default defineConfig({
   locales: ['source'],
   extract: {
     input: foldersToExtract.map((folder) => `./${folder}/**/*.{js,jsx,ts,tsx}`),
-    ignore: ['**/*.md', '**/*.css', '**/*.css.module', '**/*.scss', '**/*.sass', '**/*.less'],
+    ignore: ['**/*.md', '**/*.css', '**/*.css.module'],
     output: 'public/locales/{{language}}/{{namespace}}.json',
     defaultNS: 'translations',
     sort: true,
     keySeparator: '.',
     nsSeparator: ':',
     contextSeparator: '_',
-    functions: ['t', '*.t', 'i18next.t'],
-    transComponents: ['Trans'],
     preservePatterns: [
       'datasetUpload.errors.*',
       'feedback.features.*',
@@ -36,7 +34,6 @@ export default defineConfig({
       'vesselGroupReport.insights.*',
       'workspace.categories.*',
       'workspace.siteDescription.*',
-      // Namespaces, but not working yet... workaround discarding changes into the package.json file
       'data-terminology:*',
       'layer-library:*',
       'workspaces:*',

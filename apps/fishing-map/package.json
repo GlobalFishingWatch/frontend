@@ -9,12 +9,14 @@
     "i18n": "nx i18n:extract fishing-map && nx i18n:ts fishing-map",
     "i18n:status": "i18next-cli status",
     "i18n:extract": "i18next-cli extract",
-    "i18n:ts:fix": "prettier --write ./features/i18n/i18n.types.d.ts",
-    "i18n:ts": "i18next-cli types",
+    "i18n:extract:watch": "i18next-cli extract --watch",
+    "i18n:types:fix": "prettier --write ./features/i18n/i18n.types.d.ts",
+    "i18n:types": "i18next-cli types",
+    "i18n:types:watch": "i18next-cli types --watch",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "devDependencies": {
-    "i18next-cli": "^1.20.4",
+    "i18next-cli": "^1.21.0",
     "prettier": "3.6.2",
     "source-map-explorer": "2.5.3"
   },

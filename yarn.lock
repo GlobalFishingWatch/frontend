@@ -3385,7 +3385,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@globalfishingwatchapp/fishing-map@workspace:apps/fishing-map"
   dependencies:
-    i18next-cli: "npm:^1.20.4"
+    i18next-cli: "npm:^1.21.0"
     prettier: "npm:3.6.2"
     source-map-explorer: "npm:2.5.3"
   languageName: unknown
@@ -24091,9 +24091,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-cli@npm:^1.20.4":
-  version: 1.20.4
-  resolution: "i18next-cli@npm:1.20.4"
+"i18next-cli@npm:^1.21.0":
+  version: 1.21.0
+  resolution: "i18next-cli@npm:1.21.0"
   dependencies:
     "@swc/core": "npm:1.13.19"
     chalk: "npm:5.6.2"
@@ -24110,7 +24110,7 @@ __metadata:
     swc-walk: "npm:1.0.0"
   bin:
     i18next-cli: dist/esm/cli.js
-  checksum: 10/d8cfd2736222293fc04600d920c33fe3173287b4cbfb3c2f25b1f64d0db750f19994a8103f8c66ea9a989cafae99d64e20117ab2f551e27ab2d782b084a33478
+  checksum: 10/14533859e5a3ee86afe82d09ac89e9e35e2b36033815db07fc72405b4891179c593aadddbaef039675b017610a6ad209a9dbc547084831c3b64e2e3ef5bdec79
   languageName: node
   linkType: hard
 
