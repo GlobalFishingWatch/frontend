@@ -2,10 +2,14 @@ const translations = 'workaround_for_different_plural_rules'
 
 // Translations with _many suffix
 // t('common.area_many')
+// t('common.country_many')
+// t('common.date_many')
+// t('common.days_many')
 // t('common.detection_many')
 // t('common.events_many')
 // t('common.hour_many')
 // t('common.latestDays_many')
+// t('common.months_many')
 // t('common.points_many')
 // t('common.vessel_many')
 // t('download.trackRemaining_many')
