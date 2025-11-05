@@ -95,7 +95,7 @@ function VesselsTable({
         <table className={cx(styles.vesselsTable)} data-test={testId}>
           <thead>
             <tr>
-              <th colSpan={hasPinColumn ? 2 : 1}>{t('common.vessel_other')}</th>
+              <th colSpan={hasPinColumn ? 2 : 1}>{t('common.vessels')}</th>
               <th>{t('vessel.flag')}</th>
               {!linkToSkylight && (
                 <th>{isPresenceActivity ? t('vessel.type') : t('vessel.gearType_short')}</th>
@@ -104,9 +104,9 @@ function VesselsTable({
               {isHoursProperty && <th>{t('vessel.source_short')}</th>}
               {showValue && (
                 <th className={isHoursProperty ? styles.vesselsTableHeaderRight : ''}>
-                  {feature?.unit === 'hours' && t('common.hour_other')}
-                  {feature?.unit === 'days' && t('common.days_other')}
-                  {feature?.unit === 'detections' && t('common.detection_other')}
+                  {feature?.unit === 'hours' && t('common.hours')}
+                  {feature?.unit === 'days' && t('common.days')}
+                  {feature?.unit === 'detections' && t('common.detections')}
                 </th>
               )}
             </tr>

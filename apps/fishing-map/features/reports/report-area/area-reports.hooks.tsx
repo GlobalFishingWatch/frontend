@@ -416,7 +416,7 @@ export function useReportTitle() {
           <Tooltip content={reportArea?.name}>
             <span
               className={styles.reportTitleTooltip}
-            >{`${areaDataviews.length > 1 ? `${areaDataviews.length} ` : ''}${uniqDatasetLabels.length > 1 ? t('common.area_other') : uniqDatasetLabels[0]}`}</span>
+            >{`${areaDataviews.length > 1 ? `${areaDataviews.length} ` : ''}${uniqDatasetLabels.length > 1 ? t('common.areas') : uniqDatasetLabels[0]}`}</span>
           </Tooltip>
         )
       } else {

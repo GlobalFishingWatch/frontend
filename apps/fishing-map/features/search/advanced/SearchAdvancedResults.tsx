@@ -300,7 +300,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             return <I18nNumber number={positionsCounter} />
           }
         },
-        header: t('vessel.transmission_other'),
+        header: t('vessel.transmissions'),
       },
     ]
   }, [

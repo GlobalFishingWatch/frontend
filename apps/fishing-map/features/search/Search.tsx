@@ -223,7 +223,7 @@ function Search() {
             <I18nNumber number={searchResults.length} />
             {` ${t('common.of')} `}
             <I18nNumber number={searchResultsPagination.total} />
-            {` ${t('search.result_other')} ${
+            {` ${t('search.results')} ${
               vesselsSelected.length !== 0
                 ? `(${vesselsSelected.length} ${t('selects.selected')})`
                 : ''

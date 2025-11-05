@@ -52,12 +52,12 @@ const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transformation> 
   minutes: {
     in: (v) => parseFloat(v) / 60,
     out: (v) => parseFloat(v) * 60,
-    getLabel: () => t('common.hour_other'),
+    getLabel: () => t('common.hours'),
   },
   hours: {
     in: (v) => parseInt(v),
     out: (v) => parseInt(v),
-    getLabel: () => t('common.hour_other'),
+    getLabel: () => t('common.hours'),
   },
   km: {
     getLabel: () => t('common.km'),

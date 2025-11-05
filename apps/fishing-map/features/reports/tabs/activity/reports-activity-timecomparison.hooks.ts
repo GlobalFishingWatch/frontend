@@ -106,11 +106,11 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
     () => [
       {
         id: 'days',
-        label: t('common.days_other'),
+        label: t('common.days', { count: 2 }),
       },
       {
         id: 'months',
-        label: t('common.months_other'),
+        label: t('common.months', { count: 2 }),
       },
     ],
     [t]
@@ -257,10 +257,9 @@ export const useTimeCompareTimeDescription = (addPrefix = true) => {
     format: DateTime.DATE_MED_WITH_WEEKDAY,
   })
 
-  const durationTypeLabel: string =
-    parseInt(timeComparison?.duration as any) === 1
-      ? t(`common.${timeComparison?.durationType}_one`)
-      : t(`common.${timeComparison?.durationType}_other`)
+  const durationTypeLabel: string = t(`common.${timeComparison?.durationType}`, {
+    count: parseInt(timeComparison?.duration as any),
+  })
   const durationLabel = [timeComparison?.duration, durationTypeLabel].join(' ')
 
   let label: string =
