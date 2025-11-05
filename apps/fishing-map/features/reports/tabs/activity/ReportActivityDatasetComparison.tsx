@@ -25,8 +25,8 @@ const ReportActivityDatasetComparison = () => {
   const dispatch = useAppDispatch()
 
   const reportDataviews = useSelector(selectActiveReportDataviews)
-  const comparedDataset = useSelector(selectReportComparisonDataviewIds)
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const comparisonDatasets = useSelector(selectReportComparisonDataviewIds)
+  const { upsertDataviewInstance, removeDataviewInstance } = useDataviewInstancesConnect()
 
   const environmentalLayerOptions = useMemo(() => {
     return LAYERS_LIBRARY_ENVIRONMENT.filter(
@@ -49,6 +49,7 @@ const ReportActivityDatasetComparison = () => {
     if (!layerConfig) return
     const dataviewID = `${option.id}${LAYER_LIBRARY_ID_SEPARATOR}${DATASET_COMPARISON_SUFFIX}`
     const { category, dataviewId, datasetsConfig, config } = layerConfig
+    removeDataviewInstance(comparisonDatasets.compare)
     upsertDataviewInstance({
       id: dataviewID,
       category,

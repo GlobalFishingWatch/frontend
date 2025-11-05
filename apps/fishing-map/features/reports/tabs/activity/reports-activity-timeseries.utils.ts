@@ -20,6 +20,7 @@ import type {
   FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
 
+import { DATASET_COMPARISON_SUFFIX } from 'data/config'
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type {
   EvolutionGraphData,
@@ -318,4 +319,12 @@ export const formatComparisonEvolutionData = (dataArray: ReportGraphProps[]) => 
       }
     })
     .filter((d): d is NonNullable<typeof d> => d !== null && !isNaN(d.avg[0]))
+}
+
+export function cleanDatasetComparisonDataviewInstances(
+  dataviewInstances: (UrlDataviewInstance | DataviewInstance)[] = []
+) {
+  return dataviewInstances?.filter(
+    (dataviewInstance) => !dataviewInstance.id.includes(DATASET_COMPARISON_SUFFIX)
+  )
 }

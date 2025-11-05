@@ -44,6 +44,7 @@ import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/datav
 import { cleanPortClusterDataviewFromReport } from 'features/reports/report-port/ports-report.utils'
 import { DEFAULT_REPORT_STATE } from 'features/reports/reports.config'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
+import { cleanDatasetComparisonDataviewInstances } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
 import {
   selectIsGFWUser,
@@ -476,9 +477,10 @@ export function cleanReportQuery(query: QueryParams) {
       },
       {} as Record<string, undefined>
     ),
-
     ...(query?.dataviewInstances?.length && {
-      dataviewInstances: query?.dataviewInstances?.map(cleanPortClusterDataviewFromReport),
+      dataviewInstances: cleanDatasetComparisonDataviewInstances(
+        query?.dataviewInstances?.map(cleanPortClusterDataviewFromReport)
+      ),
     }),
   }
 }
