@@ -10,7 +10,7 @@
     "ts": "yarn ts:generate && yarn ts:lint"
   },
   "devDependencies": {
-    "i18next-resources-for-ts": "1.6.0"
+    "i18next-resources-for-ts": "1.7.4"
   },
   "files": [
     "en",
