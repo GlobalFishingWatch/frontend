@@ -8,12 +8,13 @@
     "start": "next start",
     "i18n": "nx i18n:extract fishing-map && nx i18n:ts fishing-map",
     "i18n:status": "i18next-cli status",
-    "i18n:extract": "i18next-cli extract && git checkout -- public/locales/source/data-terminology.json public/locales/source/layer-library.json public/locales/source/workspaces.json",
-    "i18n:ts": "i18next-cli types && prettier --write ./features/i18n/i18n.types.d.ts",
+    "i18n:extract": "i18next-cli extract",
+    "i18n:ts:fix": "prettier --write ./features/i18n/i18n.types.d.ts",
+    "i18n:ts": "i18next-cli types",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "devDependencies": {
-    "i18next-cli": "^1.14.0",
+    "i18next-cli": "^1.20.4",
     "prettier": "3.6.2",
     "source-map-explorer": "2.5.3"
   },

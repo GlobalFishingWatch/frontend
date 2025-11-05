@@ -3284,7 +3284,7 @@ __metadata:
     html-react-parser: "npm:5.2.6"
     html2canvas: "npm:1.4.1"
     husky: "npm:9.1.7"
-    i18next: "npm:25.5.3"
+    i18next: "npm:25.6.0"
     i18next-browser-languagedetector: "npm:8.2.0"
     i18next-http-backend: "npm:3.0.2"
     i18next-resources-for-ts: "npm:^1.7.4"
@@ -3331,7 +3331,7 @@ __metadata:
     react-fps: "npm:1.0.6"
     react-ga4: "npm:2.1.0"
     react-hot-keys: "npm:2.7.3"
-    react-i18next: "npm:16.0.0"
+    react-i18next: "npm:16.2.4"
     react-image-gallery: "npm:1.4.0"
     react-map-gl: "npm:7.1.9"
     react-markdown: "npm:10.1.0"
@@ -3385,7 +3385,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@globalfishingwatchapp/fishing-map@workspace:apps/fishing-map"
   dependencies:
-    i18next-cli: "npm:^1.14.0"
+    i18next-cli: "npm:^1.20.4"
     prettier: "npm:3.6.2"
     source-map-explorer: "npm:2.5.3"
   languageName: unknown
@@ -3679,7 +3679,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@inquirer/ansi@npm:^1.0.0, @inquirer/ansi@npm:^1.0.1":
+"@inquirer/ansi@npm:^1.0.1":
   version: 1.0.1
   resolution: "@inquirer/ansi@npm:1.0.1"
   checksum: 10/0dda65720736f3e730715f3778e0e90f039ebd1382c277495a4d1cdbd2b2863095aa7291cd8ea7d3c0618bdee04a375db6e10a7bae5fb904df0b632a1c7774f9
@@ -3719,7 +3719,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@inquirer/core@npm:^10.2.2, @inquirer/core@npm:^10.3.0":
+"@inquirer/core@npm:^10.3.0":
   version: 10.3.0
   resolution: "@inquirer/core@npm:10.3.0"
   dependencies:
@@ -3840,7 +3840,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@inquirer/prompts@npm:^7.8.6":
+"@inquirer/prompts@npm:^7.9.0":
   version: 7.9.0
   resolution: "@inquirer/prompts@npm:7.9.0"
   dependencies:
@@ -3914,7 +3914,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@inquirer/type@npm:^3.0.8, @inquirer/type@npm:^3.0.9":
+"@inquirer/type@npm:^3.0.9":
   version: 3.0.9
   resolution: "@inquirer/type@npm:3.0.9"
   peerDependencies:
@@ -18332,10 +18332,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:14.0.1":
-  version: 14.0.1
-  resolution: "commander@npm:14.0.1"
-  checksum: 10/783115e9403caeca29c0fcbd4e0358f70c67760e4e4933f3453fcdd5ddba2ec44173c8da5213d7ce5e404f51c7e71203a42c548164dbe27b668b32a8981577f1
+"commander@npm:14.0.2, commander@npm:^14.0.1":
+  version: 14.0.2
+  resolution: "commander@npm:14.0.2"
+  checksum: 10/2d202db5e5f9bb770112a3c1579b893d17ac6f6d932183077308bdd96d0f87f0bbe6a68b5b9ed2cf3b2514be6bb7de637480703c0e2db9741ee1b383237deb26
   languageName: node
   linkType: hard
 
@@ -18357,13 +18357,6 @@ __metadata:
   version: 12.1.0
   resolution: "commander@npm:12.1.0"
   checksum: 10/cdaeb672d979816853a4eed7f1310a9319e8b976172485c2a6b437ed0db0a389a44cfb222bfbde772781efa9f215bdd1b936f80d6b249485b465c6cb906e1f93
-  languageName: node
-  linkType: hard
-
-"commander@npm:^14.0.1":
-  version: 14.0.2
-  resolution: "commander@npm:14.0.2"
-  checksum: 10/2d202db5e5f9bb770112a3c1579b893d17ac6f6d932183077308bdd96d0f87f0bbe6a68b5b9ed2cf3b2514be6bb7de637480703c0e2db9741ee1b383237deb26
   languageName: node
   linkType: hard
 
@@ -24098,26 +24091,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-cli@npm:^1.14.0":
-  version: 1.14.0
-  resolution: "i18next-cli@npm:1.14.0"
+"i18next-cli@npm:^1.20.4":
+  version: 1.20.4
+  resolution: "i18next-cli@npm:1.20.4"
   dependencies:
     "@swc/core": "npm:1.13.19"
     chalk: "npm:5.6.2"
     chokidar: "npm:4.0.3"
-    commander: "npm:14.0.1"
+    commander: "npm:14.0.2"
     execa: "npm:9.6.0"
     glob: "npm:11.0.3"
     i18next-resources-for-ts: "npm:1.7.4"
-    inquirer: "npm:12.9.6"
+    inquirer: "npm:12.10.0"
     jiti: "npm:2.6.1"
     jsonc-parser: "npm:3.3.1"
-    minimatch: "npm:10.0.3"
+    minimatch: "npm:10.1.1"
     ora: "npm:9.0.0"
     swc-walk: "npm:1.0.0"
   bin:
     i18next-cli: dist/esm/cli.js
-  checksum: 10/b706992ba8330a03af14843440e54361f47bc2ae256b8db414d601bdf6b5d19f89eb86ba63790f0aaa06ec37cb110dc29f381cf342f842202316f2d92dea9f79
+  checksum: 10/d8cfd2736222293fc04600d920c33fe3173287b4cbfb3c2f25b1f64d0db750f19994a8103f8c66ea9a989cafae99d64e20117ab2f551e27ab2d782b084a33478
   languageName: node
   linkType: hard
 
@@ -24142,9 +24135,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:25.5.3":
-  version: 25.5.3
-  resolution: "i18next@npm:25.5.3"
+"i18next@npm:25.6.0":
+  version: 25.6.0
+  resolution: "i18next@npm:25.6.0"
   dependencies:
     "@babel/runtime": "npm:^7.27.6"
   peerDependencies:
@@ -24152,7 +24145,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/eb7312b3261af4477b7e4d09ec1636372a79a8f81bb5ac9531bbb9aa498ca07f337f9ec2c89507f0d895ce6c0b1352a2ea4fbe47f665ab4feba3df2de79cbeab
+  checksum: 10/3eaa354f7028ff6051e4294c09bf518183c6653c019cfeed73fc4504786b3a474c3b55ed6b9832e122ba2538167b3eb85ae71fdd6423fb9ec9ebe2156b061d66
   languageName: node
   linkType: hard
 
@@ -24395,14 +24388,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"inquirer@npm:12.9.6":
-  version: 12.9.6
-  resolution: "inquirer@npm:12.9.6"
+"inquirer@npm:12.10.0":
+  version: 12.10.0
+  resolution: "inquirer@npm:12.10.0"
   dependencies:
-    "@inquirer/ansi": "npm:^1.0.0"
-    "@inquirer/core": "npm:^10.2.2"
-    "@inquirer/prompts": "npm:^7.8.6"
-    "@inquirer/type": "npm:^3.0.8"
+    "@inquirer/ansi": "npm:^1.0.1"
+    "@inquirer/core": "npm:^10.3.0"
+    "@inquirer/prompts": "npm:^7.9.0"
+    "@inquirer/type": "npm:^3.0.9"
     mute-stream: "npm:^2.0.0"
     run-async: "npm:^4.0.5"
     rxjs: "npm:^7.8.2"
@@ -24411,7 +24404,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/node":
       optional: true
-  checksum: 10/bcac231b3eba055aa16dbdb60ba6d7bfe66109be654bfb19f92095f703af07fc01528f716e86ec62f7bf7bd17b4e21ad4bb32b677cf42075dee04568afe9686b
+  checksum: 10/ed24f3fa202cd8b8fa05c56c8f42c202be7c24d621d968937ea2e298e1d06192979568706587fd243144e1ed55d248ba5c6a27b2c7ee6926864faad532d8572f
   languageName: node
   linkType: hard
 
@@ -27988,12 +27981,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:10.0.3, minimatch@npm:^10.0.3":
-  version: 10.0.3
-  resolution: "minimatch@npm:10.0.3"
+"minimatch@npm:10.1.1":
+  version: 10.1.1
+  resolution: "minimatch@npm:10.1.1"
   dependencies:
     "@isaacs/brace-expansion": "npm:^5.0.0"
-  checksum: 10/d5b8b2538b367f2cfd4aeef27539fddeee58d1efb692102b848e4a968a09780a302c530eb5aacfa8c57f7299155fb4b4e85219ad82664dcef5c66f657111d9b8
+  checksum: 10/110f38921ea527022e90f7a5f43721838ac740d0a0c26881c03b57c261354fb9a0430e40b2c56dfcea2ef3c773768f27210d1106f1f2be19cde3eea93f26f45e
   languageName: node
   linkType: hard
 
@@ -28003,6 +27996,15 @@ __metadata:
   dependencies:
     brace-expansion: "npm:^2.0.1"
   checksum: 10/c81b47d28153e77521877649f4bab48348d10938df9e8147a58111fe00ef89559a2938de9f6632910c4f7bf7bb5cd81191a546167e58d357f0cfb1e18cecc1c5
+  languageName: node
+  linkType: hard
+
+"minimatch@npm:^10.0.3":
+  version: 10.0.3
+  resolution: "minimatch@npm:10.0.3"
+  dependencies:
+    "@isaacs/brace-expansion": "npm:^5.0.0"
+  checksum: 10/d5b8b2538b367f2cfd4aeef27539fddeee58d1efb692102b848e4a968a09780a302c530eb5aacfa8c57f7299155fb4b4e85219ad82664dcef5c66f657111d9b8
   languageName: node
   linkType: hard
 
@@ -31282,12 +31284,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-i18next@npm:16.0.0":
-  version: 16.0.0
-  resolution: "react-i18next@npm:16.0.0"
+"react-i18next@npm:16.2.4":
+  version: 16.2.4
+  resolution: "react-i18next@npm:16.2.4"
   dependencies:
     "@babel/runtime": "npm:^7.27.6"
     html-parse-stringify: "npm:^3.0.1"
+    use-sync-external-store: "npm:^1.6.0"
   peerDependencies:
     i18next: ">= 25.5.2"
     react: ">= 16.8.0"
@@ -31299,7 +31302,7 @@ __metadata:
       optional: true
     typescript:
       optional: true
-  checksum: 10/3579b5bd6ee286363b6b0316e8536c81033b62bce1792ca1822a6490cc9ad5bd62c9fc5e7e7ab1dad2de6eff6e34e63d0af810839c5ab73d5369c57497d81936
+  checksum: 10/804f460f78be11522363f19d8944e12e4a6ad676b85480708f43cd20a62771ab97947d05635109de486569b8391e44c521975834bc0a69e4578d3bd00968606f
   languageName: node
   linkType: hard
 
@@ -36041,7 +36044,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"use-sync-external-store@npm:^1.2.2, use-sync-external-store@npm:^1.4.0, use-sync-external-store@npm:^1.5.0":
+"use-sync-external-store@npm:^1.2.2, use-sync-external-store@npm:^1.4.0, use-sync-external-store@npm:^1.5.0, use-sync-external-store@npm:^1.6.0":
   version: 1.6.0
   resolution: "use-sync-external-store@npm:1.6.0"
   peerDependencies:
