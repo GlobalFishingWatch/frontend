@@ -1,35 +1,46 @@
-import { defineConfig } from 'i18next-cli';
+import { defineConfig } from 'i18next-cli'
+
+const foldersToExtract = [
+  'data',
+  'features',
+  'hooks',
+  'pages',
+  'routes',
+  'server',
+  'types',
+  'utils',
+]
 
 export default defineConfig({
-  "locales": [
-    "source"
-  ],
-  "extract": {
-    "input": [
-      "./data/**/*",
-      "./pages/**/*",
-      "./features/**/*",
-      "./routes/**/*",
-      "./utils/**/*",
-      "[!node_modules][!public]*/**/*.{js,jsx,ts,tsx}"
+  locales: ['source'],
+  extract: {
+    input: foldersToExtract.map((folder) => `./${folder}/**/*.{js,jsx,ts,tsx}`),
+    ignore: ['**/*.md', '**/*.css', '**/*.css.module'],
+    output: 'public/locales/{{language}}/{{namespace}}.json',
+    defaultNS: 'translations',
+    sort: true,
+    keySeparator: '.',
+    nsSeparator: ':',
+    contextSeparator: '_',
+    preservePatterns: [
+      // API dynamic properties
+      'datasetUpload.errors.*',
+      'vesselGroupReport.insights.*',
+      // Namespaces controlled by hand
+      'data-terminology:*',
+      'layer-library:*',
+      'workspaces:*',
     ],
-    "output": "public/locales/{{language}}/{{namespace}}.json",
-    "defaultNS": "translations",
-    "keySeparator": ".",
-    "nsSeparator": ":",
-    "contextSeparator": "_",
-    "functions": [
-      "t",
-      "*.t"
-    ],
-    "transComponents": [
-      "Trans"
-    ]
+    generateBasePluralForms: false,
+    disablePlurals: false,
+    primaryLanguage: 'en',
   },
-  "types": {
-    "input": [
-      "locales/{{language}}/{{namespace}}.json"
-    ],
-    "output": "src/types/i18next.d.ts"
-  }
-});
+
+  // TypeScript type generation
+  types: {
+    input: ['public/locales/source/*.json'],
+    output: './features/i18n/i18next.d.ts',
+    resourcesFile: './features/i18n/i18n.types.d.ts',
+    enableSelector: true, // Enable type-safe key selection
+  },
+})

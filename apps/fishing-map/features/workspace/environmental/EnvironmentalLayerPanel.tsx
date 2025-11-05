@@ -68,8 +68,8 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   const datasetFields: { field: SupportedEnvDatasetSchema; label: string }[] = useMemo(
     () => [
       { field: 'type', label: t('layer.type') },
-      { field: 'flag', label: t('layer.flagState_other') },
-      { field: 'vessel_type', label: t('vessel.vesselType_other') },
+      { field: 'flag', label: t('layer.flagState') },
+      { field: 'vessel_type', label: t('vessel.vesselType') },
       { field: 'speed', label: t('layer.speed') },
       { field: 'Height', label: t('layer.height') },
       { field: 'REALM', label: t('layer.REALM') },

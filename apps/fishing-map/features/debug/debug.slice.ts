@@ -20,6 +20,8 @@ export enum DebugOption {
   BluePlanetMode = 'bluePlanetMode',
 }
 
+export const FAKE_VESSEL_NAME = 'vessel:387609'
+
 type DebugOptions = Record<DebugOption, boolean>
 
 interface DebugState {

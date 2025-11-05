@@ -28,6 +28,10 @@
   border-bottom: var(--border);
 }
 
+.tagsContainerNoFilters {
+  padding-bottom: var(--space-XS);
+}
+
 .sticky {
   background-color: var(--color-white);
   z-index: 2;

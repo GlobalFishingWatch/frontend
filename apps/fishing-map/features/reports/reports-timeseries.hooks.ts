@@ -83,7 +83,9 @@ export type FourwingsReportGraphStats = {
 export type PointsReportGraphStats = {
   type: 'points'
   total: number
+  values: number[]
 }
+
 export type ReportGraphStats = Record<string, FourwingsReportGraphStats | PointsReportGraphStats>
 
 interface ReportState {
@@ -187,6 +189,7 @@ const useReportTimeseries = (
       isLoading: reportCategory && reportCategory !== 'events' && reportCategory !== 'others',
     }))
     // We want to clean the reportState when any of these params changes to avoid using old data until it loads
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     area,
     interval,
@@ -196,7 +199,6 @@ const useReportTimeseries = (
     reportBufferHash,
     instancesChunkHash,
     timeComparisonHash,
-    setReportState,
   ])
 
   useEffect(() => {
@@ -234,7 +236,6 @@ const useReportTimeseries = (
                 }
               : {}
           ) as FourwingsFeature[]
-
           const error = instance?.getError?.()
           if (error || !features?.length) {
             featuresFiltered.push([{ contained: [], overlapping: [], error }])

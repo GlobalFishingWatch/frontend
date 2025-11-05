@@ -66,7 +66,7 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
   return (
     <div className={styles.views}>
       <div className={styles.viewsHeader}>
-        <label>{t('workspace.title_other')}</label>
+        <label>{t('workspace.titlePlural')}</label>
       </div>
       {editWorkspace && (
         <Modal

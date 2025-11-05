@@ -158,13 +158,13 @@ function VesselsFromPositions() {
                 {fourwingsActivityLayer?.instance && !fourwingsDetectionsLayer?.instance && (
                   <span>
                     <I18nNumber number={Math.round(vessel.value)} />{' '}
-                    {index === 0 && ` ${t('common.hour_other')}`}
+                    {index === 0 && ` ${t('common.hours')}`}
                   </span>
                 )}
                 {fourwingsDetectionsLayer?.instance && !fourwingsActivityLayer?.instance && (
                   <span>
                     <I18nNumber number={Math.round(vessel.value)} />{' '}
-                    {index === 0 && ` ${t('common.detection_other').toLowerCase()}`}
+                    {index === 0 && ` ${t('common.detections').toLowerCase()}`}
                   </span>
                 )}
               </div>

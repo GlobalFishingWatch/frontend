@@ -38,9 +38,16 @@ function TurningTidesFilters({
   const vesselOptionsSelected = vesselsOptions.filter((d) => vesselsSelected.includes(d.id))
 
   const onConfirmFilters = () => {
+    const allVesselsSelected = vesselDataviews.flatMap((dataview) => {
+      const id = dataview.id.replace(VESSEL_LAYER_PREFIX, '')
+      if (vesselsSelected.includes(id)) {
+        return [id, ...(dataview.config?.relatedVesselIds || [])]
+      }
+      return []
+    })
     upsertDataviewInstance({
       id: dataview.id,
-      config: { filters: { id: vesselsSelected.length ? vesselsSelected : undefined } },
+      config: { filters: { id: allVesselsSelected.length ? allVesselsSelected : undefined } },
     })
     if (onConfirmCallback) {
       onConfirmCallback()

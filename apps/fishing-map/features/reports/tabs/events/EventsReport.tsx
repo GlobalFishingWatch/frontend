@@ -132,7 +132,7 @@ function EventsReport() {
       <div className={styles.disclaimer}>
         <Icon icon="warning" type="warning" />
         {t('vesselGroup.disclaimerFeaturesNotAvailable', {
-          features: t('common.Events'),
+          features: t('common.events'),
           datasets: Array.from(datasetsWithoutRelatedEvents)
             .map((d) => getDatasetLabel(d))
             .join(', '),

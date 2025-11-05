@@ -45,13 +45,13 @@ function User() {
       },
       {
         id: UserTab.Workspaces,
-        title: t('workspace.title_other'),
+        title: t('workspace.titlePlural'),
         testId: 'user-workspace',
         content: <UserWorkspaces />,
       },
       {
         id: UserTab.Datasets,
-        title: t('dataset.title_other'),
+        title: t('dataset.title'),
         content: <UserDatasets />,
       },
       {

@@ -25,8 +25,10 @@ export const getTimeAgo = (date: number | DateTime, t: TFunction) => {
   const hours = Math.floor(diff.hours)
   const minutes = Math.floor(diff.minutes)
 
-  const translateWithPlural = (keyBase: string, count: number) =>
-    t(`time.${keyBase}${count !== 1 ? '_plural' : ''}` as any, { count })
+  const translateWithPlural = (
+    keyBase: 'days' | 'hours' | 'minutes' | 'months' | 'weeks',
+    count: number
+  ) => t(`time.${keyBase}`, { count })
 
   if (days >= 30) {
     const months = Math.floor(days / 30)

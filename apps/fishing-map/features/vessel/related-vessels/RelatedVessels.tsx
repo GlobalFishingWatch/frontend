@@ -27,7 +27,7 @@ const RelatedVessels = () => {
     () => [
       {
         id: 'encounters',
-        label: t('event.encounter_other'),
+        label: t('event.encountersShort'),
       },
       {
         id: 'owners',

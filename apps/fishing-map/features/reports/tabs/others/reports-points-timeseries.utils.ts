@@ -83,7 +83,13 @@ export const getPointsTimeseries = ({ features, instance }: GetPointsTimeseriesP
     return {
       timeseries: [],
       interval: 'MONTH',
-      sublayers: [],
+      sublayers: sublayers.map((sublayer) => ({
+        id: sublayer.id,
+        legend: {
+          color: sublayer.color,
+          unit: '',
+        },
+      })),
     } as ReportGraphProps
   }
 
@@ -102,24 +108,34 @@ export const getPointsTimeseries = ({ features, instance }: GetPointsTimeseriesP
 export const getPointsTimeseriesStats = ({ features, instance }: GetPointsTimeseriesParams) => {
   const { startTime, endTime, startTimeProperty, endTimeProperty } = instance.props || {}
 
-  return {
-    type: 'points' as const,
-    total: features?.reduce((acc, { contained }) => {
-      if (!contained) {
-        return acc
-      }
-      if (!startTime && !endTime && !startTimeProperty && !endTimeProperty) {
-        return acc + contained.length
-      }
-      const filteredPoints = contained.filter((feature) => {
-        return isFeatureInRange(feature, {
-          startTime: startTime!,
-          endTime: endTime!,
-          startTimeProperty: startTimeProperty!,
-          endTimeProperty,
+  const values = features?.reduce((acc, { contained }) => {
+    if (contained) {
+      const filteredPoints =
+        startTime && endTime && (startTimeProperty || endTimeProperty)
+          ? contained.filter((feature) => {
+              return isFeatureInRange(feature, {
+                startTime: startTime!,
+                endTime: endTime!,
+                startTimeProperty: startTimeProperty!,
+                endTimeProperty,
+              })
+            })
+          : contained
+      filteredPoints.forEach((feature) => {
+        feature.properties?.values?.forEach((value: number, index: number) => {
+          if (!acc[index]) {
+            acc[index] = 0
+          }
+          acc[index] += value
         })
       })
-      return acc + filteredPoints.length
-    }, 0),
+    }
+    return acc
+  }, [] as number[])
+
+  return {
+    type: 'points' as const,
+    total: values.reduce((acc, value) => acc + value, 0),
+    values,
   }
 }

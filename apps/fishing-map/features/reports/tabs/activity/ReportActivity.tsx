@@ -311,7 +311,7 @@ function ActivityReport() {
                 ? undefined
                 : reportCategory === ReportCategory.Detections
                   ? t('common.matchedVessels')
-                  : t('common.vessel_other')
+                  : t('common.vessels')
             }
             activityUnit={
               isVesselGroupReportLocation

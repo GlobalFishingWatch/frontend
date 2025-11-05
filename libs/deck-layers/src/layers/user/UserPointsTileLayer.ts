@@ -92,9 +92,15 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
 
   get cacheHash(): string {
     const { startTime, endTime } = this.props
-    const filters = this.props.layers?.[0]?.sublayers?.[0]?.filters || {}
-    const filtersHash = getContextFiltersHash(filters)
-    return `${startTime}-${endTime}-${filtersHash}`
+    const filters =
+      this.props.layers?.flatMap((layer) =>
+        layer.sublayers.flatMap((sublayer) => sublayer.filters || {})
+      ) || {}
+    const filtersHash =
+      filters.length > 0
+        ? filters.reduce((acc, filter) => `${acc}-${getContextFiltersHash(filter)}`, '')
+        : ''
+    return `${startTime}-${endTime}${filtersHash}`
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
@@ -178,6 +184,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   _getData = (): Feature<Point>[] => {
+    // Use Math.round() to match deck.gl's tile zoom selection logic
     const roundedZoom = Math.round(this.context.viewport.zoom)
     return (this.getLayer()?.state.tileset?.tiles || []).flatMap((tile) => {
       return tile.content && tile.zoom === roundedZoom
@@ -196,19 +203,18 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   getData = ({
     includeNonTemporalFeatures = false,
   }: GetUserPointsDataParams = {}): Feature<Point>[] => {
-    // TODO: support multiple sublayers
     const data = this._getData().flatMap((feature) => {
-      const values: number[] = []
-      this.props.layers?.[0]?.sublayers?.forEach((sublayer) => {
+      const values = new Array(this.props.layers?.[0]?.sublayers?.length).fill(0)
+      this.props.layers?.[0]?.sublayers?.forEach((sublayer, index) => {
         const matchesTimeFilter = isFeatureInRange(feature, this.props as IsFeatureInRangeParams)
         if (includeNonTemporalFeatures || matchesTimeFilter) {
           if (hasSublayerFilters(sublayer)) {
             // TODO: support getting values from certain property instead of just counting the points
-            values.push(
-              isFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators) ? 1 : 0
-            )
+            values[index] = isFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators)
+              ? 1
+              : 0
           } else {
-            values.push(1)
+            values[index] = 1
           }
         }
       })

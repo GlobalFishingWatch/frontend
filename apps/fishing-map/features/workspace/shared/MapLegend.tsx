@@ -21,7 +21,7 @@ const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
   }
   let label =
     legend.unit === 'hours'
-      ? tFn('common.hour_other', 'hours').toLowerCase()
+      ? tFn('common.hours', 'hours').toLowerCase()
       : legend.unit === 'detections'
         ? tFn('common.detections', 'detections').toLowerCase()
         : legend.label

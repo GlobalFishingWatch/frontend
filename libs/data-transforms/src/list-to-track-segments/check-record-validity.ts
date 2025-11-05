@@ -6,6 +6,8 @@ type Args = SegmentColumns & {
   record: Record<string, any>
 }
 
+type RecordValidationErrors = 'latitude' | 'longitude' | 'timestamp'
+
 export const checkRecordValidity = ({
   record: dirtyRecord,
   latitude,
@@ -13,7 +15,7 @@ export const checkRecordValidity = ({
   timestamp,
 }: Args) => {
   const record = normalizePropertiesKeys(dirtyRecord)
-  const errors = [] as string[]
+  const errors: RecordValidationErrors[] = []
   if (Number.isNaN(parseInt(record[latitude])) || record[latitude] > 90 || record[latitude] < -90) {
     errors.push('latitude')
   }
