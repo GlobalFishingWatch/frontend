@@ -77,11 +77,7 @@
     "i18n": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "nx i18n:extract fishing-map",
-          "nx i18n:types fishing-map",
-          "nx i18n:types:fix fishing-map"
-        ],
+        "commands": ["nx i18n:extract fishing-map", "nx i18n:types fishing-map"],
         "parallel": false
       }
     },
