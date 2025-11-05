@@ -63,7 +63,7 @@ resource "google_cloudbuild_trigger" "dependencies-base-image-trigger" {
     }
 
     substitutions = {
-      _IMAGE_NAME = "us-central1-docker.pkg.dev/gfw-int-infrastructure/devops/frontend-dependencies" # Temporal: Testing only, should change to different repo
+      _IMAGE_NAME = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies"
       _TAG_NAME   = "latest"
     }
 
