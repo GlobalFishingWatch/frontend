@@ -8,14 +8,15 @@
     "start": "next start",
     "i18n": "nx i18n:extract fishing-map && nx i18n:ts fishing-map",
     "i18n:status": "i18next-cli status",
-    "i18n:extract": "LC_ALL=en_US.UTF-8 i18next-cli extract",
-    "i18n:extract:watch": "LC_ALL=en_US.UTF-8 i18next-cli extract --watch",
+    "i18n:extract": "cross-env LC_ALL=en_US.UTF-8 i18next-cli extract",
+    "i18n:extract:watch": "cross-env LC_ALL=en_US.UTF-8 i18next-cli extract --watch",
     "i18n:types:fix": "prettier --write ./features/i18n/i18n.types.d.ts",
     "i18n:types": "i18next-cli types",
     "i18n:types:watch": "i18next-cli types --watch",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "devDependencies": {
+    "cross-env": "^10.1.0",
     "i18next-cli": "^1.21.0",
     "prettier": "3.6.2",
     "source-map-explorer": "2.5.3"
