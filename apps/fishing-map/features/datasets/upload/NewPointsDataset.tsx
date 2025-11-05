@@ -201,7 +201,7 @@ function NewPointDataset({
       if (sourceData) {
         const config = getDatasetConfiguration(datasetMetadata)
         if (fileTypeResult?.fileType === 'CSV' && (!config?.latitude || !config?.longitude)) {
-          const fields = ['latitude', 'longitude'].map((f) => t(`common.${f}` as any, f))
+          const fields = (['latitude', 'longitude'] as const).map((f) => t(`common.${f}`, f))
           error = t('dataset.requiredFields', {
             fields,
           })

@@ -22,7 +22,7 @@ const TIME_FILTER_OPTIONS: TimeFilterTypeOption[] = ['none', 'date', 'dateRange'
 const getTimeFilterOptions = (
   filterOptions = TIME_FILTER_OPTIONS
 ): SelectOption<TimeFilterTypeOption>[] => {
-  return filterOptions.map((id) => ({ id, label: t(`datasetUpload.${id}`, id as string) }))
+  return filterOptions.map((id) => ({ id, label: t(`datasetUpload.${id}`, id) }))
 }
 
 type TimeFieldsGroupProps = {

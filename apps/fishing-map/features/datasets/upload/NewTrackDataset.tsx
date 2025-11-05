@@ -195,7 +195,7 @@ function NewTrackDataset({
       const config = getDatasetConfiguration(datasetMetadata)
       if (sourceData) {
         if (!config?.latitude || !config?.longitude) {
-          const fields = ['latitude', 'longitude'].map((f) => t(`common.${f}` as any, f))
+          const fields = (['latitude', 'longitude'] as const).map((f) => t(`common.${f}`, f))
           error = t('dataset.requiredFields', {
             fields,
           })
@@ -205,7 +205,7 @@ function NewTrackDataset({
             ...config,
           } as any)
           if (errors.length) {
-            const fields = errors.map((error) => t(`common.${error}` as any, error)).join(',')
+            const fields = errors.map((error) => t(`common.${error}`, error)).join(',')
             error = t('errors.fields', {
               fields,
             })

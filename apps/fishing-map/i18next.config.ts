@@ -23,23 +23,16 @@ export default defineConfig({
     nsSeparator: ':',
     contextSeparator: '_',
     preservePatterns: [
+      // API dynamic properties
       'datasetUpload.errors.*',
-      'feedback.features.*',
-      'feedback.roles.*',
-      'layer.areas.*',
-      'time.*',
-      'user.badges.*',
-      'vessel.gearTypes.*',
-      'vessel.vesselTypes.*',
       'vesselGroupReport.insights.*',
-      'workspace.categories.*',
-      'workspace.siteDescription.*',
+      // Namespaces controlled by hand
       'data-terminology:*',
       'layer-library:*',
       'workspaces:*',
     ],
     generateBasePluralForms: false,
-    disablePlurals: true,
+    disablePlurals: false,
   },
 
   // TypeScript type generation

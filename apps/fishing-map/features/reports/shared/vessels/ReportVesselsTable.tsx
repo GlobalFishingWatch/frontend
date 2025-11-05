@@ -160,7 +160,7 @@ export default function ReportVesselsTable({
                   ? t('common.detection_other')
                   : activityUnit === 'coverage'
                     ? t('vessel.insights.coverage')
-                    : t('common.event_other')}
+                    : t('common.events_other')}
             </div>
           )}
           {vessels?.map((vessel, i) => {
