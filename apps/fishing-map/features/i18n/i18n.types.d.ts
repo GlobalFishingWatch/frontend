@@ -374,7 +374,7 @@ interface Resources {
       anyoneWithThePassword: 'Anyone with the password'
       apparentFishing: 'Apparent fishing effort'
       applyToAll: 'Apply to all'
-      area: 'area' | 'areas'
+      area: 'area' | '' | 'areas'
       average: 'average'
       averageAbbreviated: 'avg.'
       back: 'back'
@@ -397,7 +397,7 @@ interface Resources {
       days: 'Day' | 'Day' | 'days'
       delete: 'Delete'
       description: 'Description'
-      detection: 'Detections' | 'detections' | 'Detections'
+      detection: 'Detections' | 'detections' | '' | 'Detections'
       detections: 'Detections'
       dismiss: 'Dismiss'
       edit: 'Edit'
@@ -407,7 +407,7 @@ interface Resources {
         loitering: 'loitering'
         port_visit: 'port visit'
       }
-      events: 'Events' | 'Event' | 'Events'
+      events: 'Events' | 'Event' | '' | 'Events'
       exclude: 'Exclude'
       excluded: 'Excluded'
       experimental: 'Experimental'
@@ -423,13 +423,13 @@ interface Resources {
       hideAllHelpHints: 'Dismiss all'
       hideHelpHint: 'Dismiss'
       hints: 'Need help? Look for these dots'
-      hour: 'Hour' | 'Hour' | 'hours'
+      hour: 'Hour' | 'Hour' | '' | 'hours'
       in: 'in'
       include: 'Include'
       insights: 'Insights'
       km: 'km'
       knots: 'knots'
-      latestDays: 'Latest {{count}} day' | 'Latest {{count}} days'
+      latestDays: 'Latest {{count}} day' | '' | 'Latest {{count}} days'
       latitude: 'Latitude'
       layerLibrary: 'Layer Library'
       layerList: 'Layer list'
@@ -462,7 +462,7 @@ interface Resources {
       password: 'password'
       permissions: 'permissions required'
       plus: 'plus'
-      points: 'point' | 'points'
+      points: 'point' | '' | 'points'
       presence: 'Vessel presence'
       previously: 'Previously'
       report: 'Report'
@@ -502,7 +502,7 @@ interface Resources {
       user: 'User'
       userGuide: 'User Guide'
       value: 'value'
-      vessel: 'Vessel' | 'Vessel' | 'Vessels'
+      vessel: 'Vessel' | 'Vessel' | '' | 'Vessels'
       vesselGroups: 'Vessel groups'
       vesselId: 'Vessel id'
       vesselPresence: 'Vessel presence'
@@ -699,6 +699,7 @@ interface Resources {
       trackNotAllowed: "You don't have permissions to download tracks from this source"
       trackRemaining:
         | 'You can download {{count}} more track today'
+        | ''
         | 'You can download {{count}} more tracks today'
       yearly: 'Year'
       yearlyNotAvailable: 'Your time range is shorter than 1 year'
@@ -737,9 +738,9 @@ interface Resources {
       workspaceNotFound: 'The workspace you requested was not found.'
     }
     event: {
-      dayAbbreviated: '{{count}}d' | '{{count}}d' | '{{count}}d'
+      dayAbbreviated: '{{count}}d' | '{{count}}d' | '' | '{{count}}d'
       during: 'during'
-      encounter: 'Encounter' | 'Encounter event' | 'Encounter events'
+      encounter: 'Encounter' | 'Encounter event' | '' | 'Encounter events'
       encounterAction: 'had an encounter with'
       encounterActionWith: 'had an encounter with {{vessel}} starting at {{start}} for {{duration}}'
       encounterActionWithVessels: 'had an encounter with {{encounterVessel}} starting at {{start}} for {{duration}}'
@@ -752,26 +753,26 @@ interface Resources {
       fishingActionIn: 'Fishing in {{regionName}}'
       gap: 'AIS Off event' | 'AIS Off events'
       gapActionIn: 'Likely disabling in {{regionName}}'
-      hourAbbreviated: '{{count}}h' | '{{count}}h' | '{{count}}h'
-      loitering: 'Loitering' | 'Loitering event' | 'Loitering events'
+      hourAbbreviated: '{{count}}h' | '{{count}}h' | '' | '{{count}}h'
+      loitering: 'Loitering' | 'Loitering event' | '' | 'Loitering events'
       loiteringAction: 'Loitering started at {{start}} for {{duration}}'
       loiteringActionIn: 'Loitering in {{regionName}}'
-      minuteAbbreviated: "{{count}}'" | "{{count}}'" | "{{count}}'"
-      monthAbbreviated: '{{count}}m' | '{{count}}m' | '{{count}}m'
+      minuteAbbreviated: "{{count}}'" | "{{count}}'" | '' | "{{count}}'"
+      monthAbbreviated: '{{count}}m' | '{{count}}m' | '' | '{{count}}m'
       noData: 'No data available'
-      port: 'Port' | 'Port' | 'Ports'
+      port: 'Port' | 'Port' | '' | 'Ports'
       portAction: 'Docked started at {{start}} for {{duration}}'
       portAt: 'Docked at {{port}} started at {{start}} for {{duration}}'
       port_entryActionIn: 'Entered port {{port}}'
       port_exitActionIn: 'Exited port {{port}}'
-      port_visit: 'Port visit' | 'Port visit' | 'Port visits'
+      port_visit: 'Port visit' | 'Port visit' | '' | 'Port visits'
       port_visitAction: 'Docked for'
       port_visitActionIn: 'Visited port {{port}}'
       port_visitedAfter: 'Port visited after'
       port_visitedAfterFilter: 'Filter events by port visited after'
       port_visitedAfterRemove: 'Remove port filter'
       unknown: 'Unknown event'
-      yearAbbreviated: '{{count}}y' | '{{count}}y' | '{{count}}y'
+      yearAbbreviated: '{{count}}y' | '{{count}}y' | '' | '{{count}}y'
     }
     eventInfo: {
       authorization: 'authorization'
@@ -890,6 +891,7 @@ interface Resources {
       name: 'Layer name'
       nameLengthError:
         | 'Layer name requires at least {{count}} characters'
+        | ''
         | 'Layer name requires at least {{count}} characters'
       nameRequired: 'Layer name is required'
       next_port_id: 'Next port'
@@ -991,6 +993,7 @@ interface Resources {
       mainQueryLabel: 'Name, IMO, MMSI or call sign'
       minCharacters:
         | 'Please type at least {{count}} character'
+        | ''
         | 'Please type at least {{count}} characters'
       missingSources: "won't appear unless you <1>log in</1>"
       noResults: "Can't find the vessel you are looking for? Try using MMSI, IMO or call sign."
@@ -1251,17 +1254,19 @@ interface Resources {
         fishing: 'Fishing Events'
         fishingEventsInNoTakeMpas:
           | '{{count}} fishing events detected in no-take MPAs'
+          | ''
           | '{{count}} fishing events detected in no-take MPAs'
         fishingEventsInNoTakeMpasEmpty: 'No fishing events detected in no-take MPAs'
         fishingEventsInRfmoWithoutKnownAuthorization:
           | '{{count}} fishing events detected outside known RFMO authorized areas'
+          | ''
           | '{{count}} fishing events detected outside known RFMO authorized areas'
         fishingEventsInRfmoWithoutKnownAuthorizationEmpty: 'No fishing events detected outside known RFMO authorized areas'
         flagChanges: 'Flag changes'
-        flagChangesCount: '{{count}} flag changes' | '{{count}} flag changes'
+        flagChangesCount: '{{count}} flag changes' | '' | '{{count}} flag changes'
         flagChangesEmpty: 'No flag changes'
         gaps: 'AIS Off Events'
-        gapsEvents: '{{count}} AIS Off events detected' | '{{count}} AIS Off events detected'
+        gapsEvents: '{{count}} AIS Off events detected' | '' | '{{count}} AIS Off events detected'
         gapsEventsEmpty: 'No AIS Off events detected'
         gapsSeeLess: 'See less'
         gapsSeeMore: 'See more'
@@ -1360,7 +1365,7 @@ interface Resources {
         unknown: 'Other'
       }
       vessel_type: 'Vessel type'
-      voyage: 'voyage' | 'voyages'
+      voyage: 'voyage' | '' | 'voyages'
       widthRange: 'Width range'
     }
     vesselGroup: {
@@ -1381,7 +1386,7 @@ interface Resources {
       idField: 'ID field'
       idsPlaceholder: 'Type here or paste a list of {{field}} separated by commas, spaces or line breaks'
       insightSectionTitle: 'Vessel group insights between {{start}} and {{end}}'
-      label: '{{name}} ({{count}} IDs)' | '{{name}} ({{count}} IDs)'
+      label: '{{name}} ({{count}} IDs)' | '' | '{{name}} ({{count}} IDs)'
       loadingInfo: 'Loading vessel group info'
       loginToAdd: 'Login to add to group'
       missingParam: 'Vessel group {{param}} is mandatory'
@@ -1399,6 +1404,7 @@ interface Resources {
       summary: 'This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>'
       tooManyVessels:
         | 'Maximum number of vessels is {{count}}'
+        | ''
         | 'Maximum number of vessels is {{count}}'
       updateRequired: 'Update required'
       uploadPublic: 'Allow other users to see this vessel group when you share a workspace'
@@ -1449,12 +1455,15 @@ interface Resources {
       insights: {
         fishingInNoTakeMpas:
           | '{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs'
+          | ''
           | '{{count}} fishing events from {{vessels}} vessels detected in no-take MPAs'
         fishingInRfmoWithoutKnownAuthorization:
           | '{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas'
+          | ''
           | '{{count}} fishing events from {{vessels}} vessels detected outside known RFMO authorized areas'
         gaps:
           | '{{count}} AIS Off Event from {{vessels}} vessels detected'
+          | ''
           | '{{count}} AIS Off Event from {{vessels}} vessels detected'
       }
     }
