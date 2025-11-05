@@ -12,7 +12,10 @@ import {
   selectTimeComparisonValues,
 } from 'features/reports/report-area/area-reports.selectors'
 import { REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON } from 'features/reports/reports.config'
-import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
+import {
+  selectReportActivityGraph,
+  selectReportComparisonDataviewIds,
+} from 'features/reports/reports.config.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import {
@@ -102,6 +105,9 @@ export default function ReportActivity() {
       ? layersTimeseriesFiltered.every((data) => data?.timeseries?.length === 0)
       : false
   const isDatasetComparison = reportActivityGraph === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON
+  const comparisonDataviewIds = useSelector(selectReportComparisonDataviewIds)
+  const comparedDataset = comparisonDataviewIds?.compare
+
   return (
     <div className={styles.container}>
       {showSelectors && (
@@ -112,12 +118,15 @@ export default function ReportActivity() {
       )}
       {/* Dataset Comparison Selectors needs to go above the graph instead of time comparison selectors */}
       {showSelectors && SelectorsComponent && isDatasetComparison && <SelectorsComponent />}
-      {loading || reportAreaStatus !== AsyncReducerStatus.Finished ? (
+      {isDatasetComparison && !comparedDataset ? (
+        <ReportActivityPlaceholder showHeader={false}>
+          {t('analysis.chooseDatasetsToCompare', 'Please choose a dataset to compare with')}
+        </ReportActivityPlaceholder>
+      ) : loading || reportAreaStatus !== AsyncReducerStatus.Finished ? (
         <ReportActivityPlaceholder showHeader={!showSelectors} />
       ) : isEmptyData || hasError ? (
         <ReportActivityPlaceholder showHeader={false} animate={false}>
-          {hasError && t('errors.layerLoading')}
-          {/* : t('analysis.noDataByArea')} */}
+          {hasError ? t('errors.layerLoading') : isEmptyData && t('analysis.noDataByArea')}
         </ReportActivityPlaceholder>
       ) : (
         <GraphComponent
