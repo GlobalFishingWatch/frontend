@@ -93,8 +93,7 @@
   "generators": {
     "@nx/next": {
       "application": {
-        "style": "css",
-        "linter": "eslint"
+        "style": "css"
       }
     },
     "@nx/react": {
@@ -153,6 +152,5 @@
     ]
   },
   "defaultBase": "develop",
-  "nxCloudId": "674f20939c6a380ef261e1ee",
-  "nxCloudAccessToken": ""
+  "nxCloudId": "674f20939c6a380ef261e1ee"
 }
