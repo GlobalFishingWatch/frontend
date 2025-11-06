@@ -9,7 +9,7 @@
     "bufferedArea": "{{value}} {{unit}} buffered area",
     "bufferOperationLabel": "Analysis area",
     "change": "Change",
-    "chooseDatasetsToCompare": "Choose datasets to compare",
+    "chooseDatasetsToCompare": "Choose a dataset to compare",
     "clickToFilterBy": "Click to filter by:",
     "clickToSeeAreaReport": "Click to see the {{area}} report",
     "confirmRemove": "Are you sure you want to permanently delete this report?",

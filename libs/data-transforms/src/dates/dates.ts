@@ -113,8 +113,11 @@ export const formatDateForInterval = (
     case 'HOUR':
       formattedTick = dateTime.toLocaleString(DateTime.DATETIME_MED)
       break
+    // case 'WEEKDAY':
+    //   formattedTick = dateTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
+    //   break
     default:
-      formattedTick = dateTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
+      formattedTick = dateTime.toLocaleString(DateTime.DATE_MED)
       break
   }
   return formattedTick
