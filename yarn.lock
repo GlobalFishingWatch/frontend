@@ -3394,7 +3394,6 @@ __metadata:
   dependencies:
     cross-env: "npm:^10.1.0"
     i18next-cli: "npm:^1.21.0"
-    prettier: "npm:3.6.2"
     source-map-explorer: "npm:2.5.3"
   languageName: unknown
   linkType: soft
