@@ -46,7 +46,13 @@ export const selectActiveEnvironmentalDataviews = selectActiveDataviewInstancesB
 export const selectReportComparisonDataviews = createSelector(
   [selectDataviewInstancesResolved, selectReportComparisonDataviewIds],
   (dataviews, reportComparisonDataviewIds): UrlDataviewInstance<DataviewType>[] => {
-    return dataviews?.filter((dataview) => reportComparisonDataviewIds?.includes(dataview?.id))
+    const mainDataview = dataviews?.find(
+      (dataview) => reportComparisonDataviewIds?.main === dataview?.id
+    )
+    const comparedDataview = dataviews?.find(
+      (dataview) => reportComparisonDataviewIds?.compare === dataview?.id
+    )
+    return [mainDataview, comparedDataview].filter((d) => d !== undefined)
   }
 )
 

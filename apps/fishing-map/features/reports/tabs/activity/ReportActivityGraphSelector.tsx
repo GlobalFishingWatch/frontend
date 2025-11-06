@@ -74,6 +74,11 @@ export default function ReportActivityGraphSelector({
         option.id === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON
       ) {
         resetReportTimecomparison()
+        if (option.id === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON) {
+          dispatchQueryParams({
+            reportComparisonDataviewIds: { main: dataviews[0]?.id, compare: '' },
+          })
+        }
       } else {
         setReportTimecomparison(option.id)
       }

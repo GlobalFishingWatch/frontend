@@ -39,8 +39,42 @@ const ReportActivityDatasetComparison = () => {
     })
   }, [t])
 
+  const mainDatasetOptions = reportDataviews.map((dataview) => ({
+    id: dataview.id,
+    label: (
+      <div className={styles.datasetOption}>
+        <circle className={styles.dot} style={{ color: dataview.config?.color }} />
+        {getDatasetTitleByDataview(dataview, { showPrivateIcon: false })}
+      </div>
+    ),
+  }))
+  const selectedMainDataset =
+    mainDatasetOptions.find((opt) => opt.id === comparisonDatasets?.main) || mainDatasetOptions[0]
+  const selectedComparedDataviewId = comparisonDatasets?.compare?.split(
+    LAYER_LIBRARY_ID_SEPARATOR
+  )[0]
+  const selectedComparisonDatasets = environmentalLayerOptions.find(
+    (layer) => layer.id === selectedComparedDataviewId
+  )
+
+  useEffect(() => {
+    if (selectedMainDataset.id && selectedMainDataset.id !== comparisonDatasets?.main) {
+      dispatchQueryParams({
+        reportComparisonDataviewIds: {
+          main: selectedMainDataset.id,
+          compare: comparisonDatasets?.compare,
+        },
+      })
+    }
+  }, [selectedMainDataset.id])
+
   const onMainSelect = (option: SelectOption) => {
-    console.log('🚀 ~ TODO: implement main dataset selection ~ option:', option)
+    dispatchQueryParams({
+      reportComparisonDataviewIds: {
+        main: option.id,
+        compare: comparisonDatasets?.compare,
+      },
+    })
   }
 
   const onCompareSelect = (option: SelectOption) => {
@@ -49,7 +83,9 @@ const ReportActivityDatasetComparison = () => {
     if (!layerConfig) return
     const dataviewID = `${option.id}${LAYER_LIBRARY_ID_SEPARATOR}${DATASET_COMPARISON_SUFFIX}`
     const { category, dataviewId, datasetsConfig, config } = layerConfig
+    if (comparisonDatasets?.compare) {
     removeDataviewInstance(comparisonDatasets.compare)
+    }
     upsertDataviewInstance({
       id: dataviewID,
       category,
@@ -60,21 +96,14 @@ const ReportActivityDatasetComparison = () => {
         visible: true,
       },
     })
+
     dispatchQueryParams({
-      reportComparisonDataviewIds: [dataviewID],
+      reportComparisonDataviewIds: {
+        main: comparisonDatasets?.main || mainDatasetOptions[0]?.id,
+        compare: dataviewID,
+      },
     })
   }
-
-  // TODO: implement main dataset selection
-  const mainDatasetOptions = reportDataviews.map((dataview) => ({
-    id: dataview.id,
-    label: getDatasetTitleByDataview(dataview, { showPrivateIcon: false }),
-  }))
-  const selectedMainDataset = mainDatasetOptions[0]
-  const selectedDataview = comparedDataset?.map((id) => id.split(LAYER_LIBRARY_ID_SEPARATOR)[0])
-  const selectedComparedDataset = environmentalLayerOptions.find((layer) =>
-    selectedDataview?.includes(layer.id)
-  )
 
   return (
     <div className={activityStyles.titleRow}>
@@ -87,7 +116,7 @@ const ReportActivityDatasetComparison = () => {
       />
       <Select
         options={environmentalLayerOptions}
-        selectedOption={selectedComparedDataset}
+        selectedOption={selectedComparisonDatasets}
         onSelect={onCompareSelect}
         className={activityStyles.select}
       />

@@ -42,8 +42,33 @@ const ReportActivityDatasetComparisonGraph = ({
   start,
   end,
 }: ReportActivityDatasetComparisonProps) => {
+const { t } = useTranslation()
+  const comparisonDatasets = useSelector(selectReportComparisonDataviewIds)
+
   const interval = data[0]?.interval
-  const dataFormated = useMemo(() => formatComparisonEvolutionData(data), [data])
+  const filteredData = useMemo(() => {
+    return data.map((dataview) => {
+      const subLayerIndex = dataview.sublayers.findIndex((sublayer) => {
+        return sublayer.id === comparisonDatasets?.main
+      })
+      if (subLayerIndex === -1) {
+        return dataview
+      }
+      const filteredSublayers = dataview.sublayers.filter((_, index) => index === subLayerIndex)
+      const filteredTimeSeries = dataview.timeseries.map((timeserie) => {
+        return {
+          ...timeserie,
+          min: [timeserie.min?.[subLayerIndex]],
+          max: [timeserie.max?.[subLayerIndex]],
+        }
+      })
+      return { ...dataview, sublayers: filteredSublayers, timeseries: filteredTimeSeries }
+    })
+  }, [data, comparisonDatasets?.main])
+
+  const dataFormated = useMemo(() => {
+    return formatComparisonEvolutionData(filteredData)
+  }, [filteredData])
 
   const domain = useMemo(() => {
     if (start && end && interval) {
@@ -93,10 +118,10 @@ const ReportActivityDatasetComparisonGraph = ({
             tickLine={false}
             orientation="right"
           />
-          {data.flatMap((layer, layerIndex) =>
+          {filteredData.flatMap((layer, layerIndex) =>
             layer.sublayers.map((sublayer, sublayerIndex) => {
               const globalIndex =
-                layerIndex === 0 ? sublayerIndex : data[1].sublayers.length + sublayerIndex
+                layerIndex === 0 ? sublayerIndex : filteredData[1].sublayers.length + sublayerIndex
               const yAxisId = layerIndex === 0 ? 'left' : 'right'
               const strokeColor = getContrastSafeLineColor(sublayer.legend?.color as string)
               return (

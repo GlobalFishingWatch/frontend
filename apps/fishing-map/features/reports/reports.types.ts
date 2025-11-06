@@ -108,10 +108,15 @@ export type ReportActivityTimeComparison = {
   durationType: 'days' | 'months'
 }
 
+export type ReportComparisonDataviews = {
+  main: string
+  compare: string | undefined
+}
+
 export type ReportActivityState = {
   reportActivityGraph: ReportActivityGraph
   reportTimeComparison: ReportActivityTimeComparison | undefined
-  reportComparisonDataviewIds: string[] | undefined
+  reportComparisonDataviewIds: ReportComparisonDataviews | undefined
 }
 
 export type ReportEventsState = {
