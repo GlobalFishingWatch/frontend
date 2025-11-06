@@ -25,7 +25,7 @@ resource "google_cloudbuild_trigger" "dependencies-base-image-trigger" {
     owner = "GlobalFishingWatch"
     name  = "frontend"
     push {
-      branch = "^main$"
+      branch = "^develop$"
     }
   }
 
