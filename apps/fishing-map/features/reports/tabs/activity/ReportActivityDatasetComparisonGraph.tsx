@@ -1,4 +1,6 @@
 import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import {
   CartesianGrid,
@@ -10,26 +12,20 @@ import {
   YAxis,
 } from 'recharts'
 
-import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getContrastSafeLineColor } from '@globalfishingwatch/responsive-visualizations'
 
-import i18n from 'features/i18n/i18n'
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
+import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
-import { formatComparisonEvolutionData } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
-import { getUTCDateTime } from 'utils/dates'
+import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
+import {
+  formatComparisonEvolutionData,
+  formatDateTicks,
+} from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 
 import EvolutionGraphTooltip from './EvolutionGraphTooltip'
 
 import styles from './ReportActivityEvolution.module.css'
-
-const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => {
-  const date = getUTCDateTime(tick).setLocale(i18n.language)
-  return formatDateForInterval(date, timeChunkInterval)
-}
-
-const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 
 export type ReportActivityDatasetComparisonProps = {
   data: ReportGraphProps[]
@@ -42,7 +38,7 @@ const ReportActivityDatasetComparisonGraph = ({
   start,
   end,
 }: ReportActivityDatasetComparisonProps) => {
-const { t } = useTranslation()
+  const { t } = useTranslation()
   const comparisonDatasets = useSelector(selectReportComparisonDataviewIds)
 
   const interval = data[0]?.interval
@@ -70,7 +66,7 @@ const { t } = useTranslation()
     return formatComparisonEvolutionData(filteredData)
   }, [filteredData])
 
-  const domain = useMemo(() => {
+  const xDomain = useMemo(() => {
     if (start && end && interval) {
       const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
         .minus({ [interval]: 1 })
@@ -80,20 +76,36 @@ const { t } = useTranslation()
     return undefined
   }, [start, end, interval])
 
-  if (!dataFormated || !domain || !dataFormated[0]) {
+  if (data.some((d) => !d.timeseries || d.timeseries.length === 0))
+    return (
+      <ReportActivityPlaceholder showHeader={false} animate={false}>
+        {t('analysis.noDataByArea')}
+      </ReportActivityPlaceholder>
+    )
+
+  if (!dataFormated || !xDomain || !dataFormated[0]) {
     return null
   }
 
-  const leftAxisColor = getContrastSafeLineColor(data[0].sublayers[0].legend?.color as string)
-  const rightAxisColor = getContrastSafeLineColor(data[1].sublayers[0].legend?.color as string)
+  const leftAxisColor = getContrastSafeLineColor(
+    filteredData[0].sublayers[0].legend?.color as string
+  )
+  const rightAxisColor = getContrastSafeLineColor(
+    filteredData[1].sublayers[0].legend?.color as string
+  )
+
+  const rightAxisDomain = [
+    Math.min(...dataFormated.map((d) => d.avg?.[1] || 0)),
+    Math.max(...dataFormated.map((d) => d.avg?.[1] || 0)),
+  ]
 
   return (
     <div className={styles.graph} data-test="report-activity-dataset-comparison">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={dataFormated} margin={graphMargin}>
+        <LineChart data={dataFormated}>
           <CartesianGrid vertical={false} syncWithTicks />
           <XAxis
-            domain={domain}
+            domain={xDomain}
             dataKey="date"
             minTickGap={10}
             tickFormatter={(tick: string) => formatDateTicks(tick, data[0]?.interval)}
@@ -117,6 +129,7 @@ const { t } = useTranslation()
             axisLine={{ stroke: rightAxisColor }}
             tickLine={false}
             orientation="right"
+            domain={rightAxisDomain}
           />
           {filteredData.flatMap((layer, layerIndex) =>
             layer.sublayers.map((sublayer, sublayerIndex) => {
@@ -140,7 +153,6 @@ const { t } = useTranslation()
               )
             })
           )}
-
           {dataFormated?.length && (
             <Tooltip content={<EvolutionGraphTooltip timeChunkInterval={data[0]?.interval} />} />
           )}

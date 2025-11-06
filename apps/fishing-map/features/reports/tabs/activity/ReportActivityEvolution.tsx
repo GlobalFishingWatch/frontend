@@ -4,24 +4,18 @@ import min from 'lodash/min'
 import { DateTime } from 'luxon'
 import { Area, CartesianGrid, ComposedChart, Line, Tooltip, XAxis, YAxis } from 'recharts'
 
-import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getContrastSafeLineColor } from '@globalfishingwatch/responsive-visualizations'
 
-import i18n from 'features/i18n/i18n'
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
-import { formatEvolutionData } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
-import { getUTCDateTime } from 'utils/dates'
+import {
+  formatDateTicks,
+  formatEvolutionData,
+} from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 
 import EvolutionGraphTooltip from './EvolutionGraphTooltip'
 
 import styles from './ReportActivityEvolution.module.css'
-
-const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => {
-  const date = getUTCDateTime(tick).setLocale(i18n.language)
-  return formatDateForInterval(date, timeChunkInterval)
-}
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 

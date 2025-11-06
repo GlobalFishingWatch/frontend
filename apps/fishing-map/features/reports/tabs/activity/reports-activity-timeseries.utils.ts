@@ -2,7 +2,9 @@ import type { DateTimeUnit, DurationUnit } from 'luxon'
 import { DateTime, Duration } from 'luxon'
 import { max, mean, min } from 'simple-statistics'
 
-import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import type { DataviewInstance } from '@globalfishingwatch/api-types'
+import { formatDateForInterval, getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type {
   FourwingsAggregationOperation,
   FourwingsDeckSublayer,
@@ -21,6 +23,7 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 
 import { DATASET_COMPARISON_SUFFIX } from 'data/config'
+import i18n from 'features/i18n/i18n'
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type {
   EvolutionGraphData,
@@ -212,6 +215,11 @@ export const getFourwingsTimeseriesStats = ({
     }
   }
   return
+}
+
+export const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => {
+  const date = getUTCDateTime(tick).setLocale(i18n.language)
+  return formatDateForInterval(date, timeChunkInterval)
 }
 
 export const formatEvolutionData = (
