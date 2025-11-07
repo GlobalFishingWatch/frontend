@@ -26,8 +26,6 @@ export type ReportActivityDatasetComparisonProps = {
   end: string
 }
 
-const graphMargin = { top: 10, right: -10, left: -10, bottom: -10 }
-
 const filterDataBySublayer = (data: ReportGraphProps[], mainDatasetId?: string) => {
   return data.map((dataview) => {
     const subLayerIndex = dataview.sublayers.findIndex((sublayer) => sublayer.id === mainDatasetId)
@@ -119,7 +117,18 @@ const ReportActivityDatasetComparisonGraph = ({
 
   return (
     <div className={styles.graph} data-test="report-activity-dataset-comparison">
-      <ComposedChart responsive width="100%" height="100%" data={dataFormated} margin={graphMargin}>
+      <ComposedChart
+        responsive
+        width="100%"
+        height="100%"
+        data={dataFormated}
+        margin={{
+          top: 10,
+          right: comparisonDatasets?.compare ? -30 : 5,
+          left: -20,
+          bottom: -10,
+        }}
+      >
         <CartesianGrid vertical={true} syncWithTicks />
         <XAxis
           domain={xDomain}
