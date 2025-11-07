@@ -15,28 +15,9 @@
   justify-content: space-between;
 }
 
-.selectorsRow {
-  margin-top: var(--space-S);
-}
-
 .blockTitle {
   color: var(--color-primary-blue);
   line-height: 2.8rem;
-}
-
-.dot {
-  width: 1rem;
-  height: 1rem;
-  border-radius: 0.5rem;
-  border: var(--border);
-  display: inline-flex;
-  background-color: currentcolor;
-}
-
-.datasetOption {
-  display: flex;
-  align-items: center;
-  gap: var(--space-S);
 }
 
 .disclaimer {
@@ -49,8 +30,7 @@
 }
 
 .select {
-  min-width: 20rem;
-  width: min-content;
+  min-width: 18rem;
 }
 
 .disclaimer + .disclaimer {

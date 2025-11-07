@@ -123,11 +123,7 @@ export default function ReportActivity() {
       )}
       {/* Dataset Comparison Selectors needs to go above the graph instead of time comparison selectors */}
       {showSelectors && SelectorsComponent && isDatasetComparison && <SelectorsComponent />}
-      {isDatasetComparison && !comparedDataset ? (
-        <ReportActivityPlaceholder showHeader={false}>
-          {t('analysis.chooseDatasetsToCompare', 'Please choose a dataset to compare with')}
-        </ReportActivityPlaceholder>
-      ) : loading || mapLoading || reportAreaStatus !== AsyncReducerStatus.Finished ? (
+      {loading || mapLoading || reportAreaStatus !== AsyncReducerStatus.Finished ? (
         <ReportActivityPlaceholder showHeader={!showSelectors} />
       ) : isEmptyData || hasError ? (
         <ReportActivityPlaceholder showHeader={false} animate={false}>

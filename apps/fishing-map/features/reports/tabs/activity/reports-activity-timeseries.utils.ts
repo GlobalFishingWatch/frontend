@@ -289,7 +289,7 @@ export const formatEvolutionData = (
     })
 }
 
-export const formatComparisonEvolutionData = (dataArray: ReportGraphProps[]) => {
+export const formatComparisonData = (dataArray: ReportGraphProps[]) => {
   if (!dataArray || dataArray.length < 2) {
     return []
   }

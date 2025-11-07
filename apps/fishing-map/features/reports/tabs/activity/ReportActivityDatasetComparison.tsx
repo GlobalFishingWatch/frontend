@@ -15,52 +15,60 @@ import { selectReportComparisonDataviewIds } from 'features/reports/reports.conf
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { useLocationConnect } from 'routes/routes.hook'
 
-import styles from './ReportActivity.module.css'
+import styles from './ReportActivityDatasetComparison.module.css'
+
+const createDatasetOption = (id: string, label: string, color?: string): SelectOption => ({
+  id,
+  label: (
+    <div className={styles.datasetOption}>
+      <span className={styles.dot} style={{ color }} />
+      {label}
+    </div>
+  ),
+})
 
 const ReportActivityDatasetComparison = () => {
-  const { t } = useTranslation('layer-library')
+  const { t } = useTranslation(['layer-library', 'translations'])
   const { dispatchQueryParams } = useLocationConnect()
+  const { upsertDataviewInstance, removeDataviewInstance } = useDataviewInstancesConnect()
 
   const reportDataviews = useSelector(selectActiveReportDataviews)
   const comparisonDatasets = useSelector(selectReportComparisonDataviewIds)
-  const { upsertDataviewInstance, removeDataviewInstance } = useDataviewInstancesConnect()
 
   const environmentalLayerOptions = useMemo(() => {
     return LAYERS_LIBRARY_ENVIRONMENT.filter(
       (layer) => layer?.dataviewId === TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG
-    ).flatMap((layer) => {
-      return {
-        id: layer?.id || '',
-        label: (
-          <div className={styles.datasetOption}>
-            <span className={styles.dot} style={{ color: layer.config?.color }} />
-            {t(`${layer.id}.name`)}
-          </div>
-        ),
-      }
-    })
+    ).map((layer) =>
+      createDatasetOption(layer?.id || '', t(`layer-library:${layer.id}.name`), layer.config?.color)
+    )
   }, [t])
 
-  const mainDatasetOptions = reportDataviews.map((dataview) => ({
-    id: dataview.id,
-    label: (
-      <div className={styles.datasetOption}>
-        <span className={styles.dot} style={{ color: dataview.config?.color }} />
-        {getDatasetTitleByDataview(dataview, { showPrivateIcon: false })}
-      </div>
-    ),
-  }))
-  const selectedMainDataset =
-    mainDatasetOptions.find((opt) => opt.id === comparisonDatasets?.main) || mainDatasetOptions[0]
-  const selectedComparedDataviewId = comparisonDatasets?.compare?.split(
-    LAYER_LIBRARY_ID_SEPARATOR
-  )[0]
-  const selectedComparisonDatasets = environmentalLayerOptions.find(
-    (layer) => layer.id === selectedComparedDataviewId
+  const mainDatasetOptions = useMemo(
+    () =>
+      reportDataviews.map((dataview) =>
+        createDatasetOption(
+          dataview.id,
+          getDatasetTitleByDataview(dataview, { showPrivateIcon: false }),
+          dataview.config?.color
+        )
+      ),
+    [reportDataviews]
   )
 
+  const selectedMainDataset = useMemo(
+    () =>
+      mainDatasetOptions.find((opt) => opt.id === comparisonDatasets?.main) ||
+      mainDatasetOptions[0],
+    [mainDatasetOptions, comparisonDatasets?.main]
+  )
+
+  const selectedComparisonDataset = useMemo(() => {
+    const selectedId = comparisonDatasets?.compare?.split(LAYER_LIBRARY_ID_SEPARATOR)[0]
+    return environmentalLayerOptions.find((layer) => layer.id === selectedId)
+  }, [environmentalLayerOptions, comparisonDatasets?.compare])
+
   useEffect(() => {
-    if (selectedMainDataset.id && selectedMainDataset.id !== comparisonDatasets?.main) {
+    if (selectedMainDataset?.id && selectedMainDataset.id !== comparisonDatasets?.main) {
       dispatchQueryParams({
         reportComparisonDataviewIds: {
           main: selectedMainDataset.id,
@@ -68,7 +76,12 @@ const ReportActivityDatasetComparison = () => {
         },
       })
     }
-  }, [selectedMainDataset.id])
+  }, [
+    selectedMainDataset?.id,
+    comparisonDatasets?.main,
+    comparisonDatasets?.compare,
+    dispatchQueryParams,
+  ])
 
   const onMainSelect = (option: SelectOption) => {
     dispatchQueryParams({
@@ -82,11 +95,14 @@ const ReportActivityDatasetComparison = () => {
   const onCompareSelect = (option: SelectOption) => {
     const layerConfig = LAYERS_LIBRARY_ENVIRONMENT.find((layer) => layer.id === option.id)
     if (!layerConfig) return
+
     const dataviewID = `${option.id}${LAYER_LIBRARY_ID_SEPARATOR}${DATASET_COMPARISON_SUFFIX}`
     const { category, dataviewId, datasetsConfig, config } = layerConfig
+
     if (comparisonDatasets?.compare) {
       removeDataviewInstance(comparisonDatasets.compare)
     }
+
     upsertDataviewInstance({
       id: dataviewID,
       category,
@@ -110,16 +126,17 @@ const ReportActivityDatasetComparison = () => {
     <div className={cx([styles.titleRow, styles.selectorsRow])}>
       <Select
         options={mainDatasetOptions}
-        onSelect={onMainSelect} //implement later to change main dataset
+        onSelect={onMainSelect}
         selectedOption={selectedMainDataset}
         disabled={mainDatasetOptions.length <= 1}
         className={styles.select}
       />
       <Select
         options={environmentalLayerOptions}
-        selectedOption={selectedComparisonDatasets}
+        selectedOption={selectedComparisonDataset}
         onSelect={onCompareSelect}
         className={styles.select}
+        placeholder={t('translations:analysis.selectDatasetPlaceholder')}
       />
     </div>
   )
