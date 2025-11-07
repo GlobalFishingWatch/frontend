@@ -50,7 +50,7 @@ resource "google_cloudbuild_trigger" "trigger" {
         "-t",
         var.docker_image,
         "-f",
-        "apps/fishing-map/Dockerfile",
+        "apps/${var.app_name}/Dockerfile",
         ".",
       ]
     }
