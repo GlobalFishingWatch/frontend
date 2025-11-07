@@ -51,6 +51,7 @@ import {
   selectIsIndexLocation,
   selectIsUserLocation,
   selectIsWorkspaceLocation,
+  selectVesselsMaxTimeGapHours,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -141,6 +142,7 @@ export const useGlobalConfigConnect = () => {
   const hoverFeatures = useMapHoverInteraction()?.features
   const debug = useSelector(selectDebugOptions)?.debug
   const vesselsAsPositions = useSelector(selectDebugOptions)?.vesselsAsPositions
+  const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
 
   const highlightedTime = useMemo(() => {
     if (
@@ -195,6 +197,7 @@ export const useGlobalConfigConnect = () => {
       highlightedTime,
       visibleEvents,
       vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
+      vesselsMaxTimeGapHours,
       highlightedFeatures,
       trackGraphExtent,
       onPositionsMaxPointsError,
@@ -216,14 +219,15 @@ export const useGlobalConfigConnect = () => {
     activityVisualizationMode,
     detectionsVisualizationMode,
     environmentVisualizationMode,
+    highlightEventIds,
     highlightedTime,
     visibleEvents,
     vesselsTimebarGraph,
+    vesselsMaxTimeGapHours,
     highlightedFeatures,
-    highlightEventIds,
+    trackGraphExtent,
     onPositionsMaxPointsError,
     showTimeComparison,
-    trackGraphExtent,
     timeComparisonValues,
   ])
 }

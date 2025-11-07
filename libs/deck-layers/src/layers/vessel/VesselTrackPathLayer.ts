@@ -88,6 +88,10 @@ export type _VesselTrackPathLayerProps<DataT = any> = {
    * @default 999999999999999
    */
   maxElevationFilter?: number
+  /**
+   * The maximum time gap in hours to split the track into segments
+   */
+  maxTimeGapHours?: number
   // /**
   //  * Color to be used as a highlight path
   //  * @default [255, 255, 255, 255]

@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { InputText, Switch } from '@globalfishingwatch/ui-components'
@@ -10,7 +11,8 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectIsGFWDeveloper, selectIsGFWTestGroup } from 'features/user/selectors/user.selectors'
 import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectLocationQuery, selectVesselsMaxTimeGapHours } from 'routes/routes.selectors'
 
 import {
   DebugOption,
@@ -26,11 +28,13 @@ import styles from './DebugMenu.module.css'
 
 const DebugMenu: React.FC = () => {
   const dispatch = useAppDispatch()
+  const { dispatchQueryParams } = useLocationConnect()
   const isGFWDeveloper = useSelector(selectIsGFWDeveloper)
   const isGFWTestGroup = useSelector(selectIsGFWTestGroup)
   const debugOptions = useSelector(selectDebugOptions)
   const featureFlags = useSelector(selectFeatureFlags)
   const locationQuery = useSelector(selectLocationQuery)
+  const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
   const [datasetId, setDatasetId] = useState<string>('')
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
@@ -83,6 +87,17 @@ const DebugMenu: React.FC = () => {
           <label htmlFor="option_vessels_as_positions">Tracks positions</label>
         </div>
         <p>Show vessel position icons on top of the track lines</p>
+        {debugOptions.vesselsAsPositions && (
+          <InputText
+            type="number"
+            label="Vessels max time gap hours"
+            value={vesselsMaxTimeGapHours}
+            className={cx(styles.inputShort, styles.input)}
+            onChange={(e) =>
+              dispatchQueryParams({ vesselsMaxTimeGapHours: Number(e.target.value) })
+            }
+          />
+        )}
         <div className={styles.header}>
           <Switch
             id="option_blue_planet_mode"

@@ -22,8 +22,8 @@ import {
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimebarVisualisationConnect } from 'features/timebar/timebar.hooks'
-import { MAX_TIME_GAP_HOURS } from 'features/vessel/vessel.config'
 import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
+import { selectVesselsMaxTimeGapHours } from 'routes/routes.selectors'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { getEventDescription } from 'utils/events'
 
@@ -80,6 +80,7 @@ export const useTimebarVesselTracksData = () => {
 type VesselTrackAtom = TimebarChartData<any>
 export const useTimebarVesselTracks = () => {
   const { timebarVisualisation } = useTimebarVisualisationConnect()
+  const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
   const timebarGraph = useSelector(selectTimebarGraph)
   const vesselsAsPositions = useSelector(selectDebugOptions)?.vesselsAsPositions
   const [tracks, setVesselTracks] = useAtom(vesselTracksAtom)
@@ -158,7 +159,7 @@ export const useTimebarVesselTracks = () => {
               ? instance.getVesselTrackSegments({
                   ...(vesselsAsPositions && {
                     includeMiddlePoints: true,
-                    maxTimeGapHours: MAX_TIME_GAP_HOURS,
+                    maxTimeGapHours: vesselsMaxTimeGapHours,
                   }),
                 })
               : instance.getSegments()

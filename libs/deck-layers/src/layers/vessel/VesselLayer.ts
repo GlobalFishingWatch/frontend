@@ -212,6 +212,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       trackGraphExtent,
       colorBy,
       trackVisualizationMode,
+      maxTimeGapHours,
     } = this.props
 
     if (!trackUrl || !visible) {
@@ -238,6 +239,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           }),
           loadOptions: {
             ...getFetchLoadOptions(),
+            'vessel-tracks': {
+              maxTimeGapHours,
+            },
           },
           visualizationMode: trackVisualizationMode,
           trackGraphExtent,

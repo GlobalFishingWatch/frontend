@@ -35,6 +35,7 @@ export type ResolverGlobalConfig = {
   highlightEventIds?: string[]
   visibleEvents: EventTypes[]
   vesselsColorBy: VesselsColorByProperty
+  vesselsMaxTimeGapHours?: number
   highlightedFeatures?: DeckLayerPickingObject[]
 }
 

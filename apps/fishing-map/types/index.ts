@@ -58,6 +58,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   timebarSelectedVGId?: string
   timebarVisualisation?: TimebarVisualisations
   vesselsColorBy?: VesselsColorByProperty
+  vesselsMaxTimeGapHours?: number
   visibleEvents?: VisibleEvents
 }
 
