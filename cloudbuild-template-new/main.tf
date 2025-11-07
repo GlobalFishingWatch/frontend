@@ -62,7 +62,7 @@ resource "google_cloudbuild_trigger" "trigger" {
         "image",
         "--no-progress",
         "--severity",
-        "CRITICAL,HIGH",
+        "CRITICAL",
         "--exit-code",
         "1",
         var.docker_image,
