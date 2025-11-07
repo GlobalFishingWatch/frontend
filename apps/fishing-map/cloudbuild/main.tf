@@ -68,7 +68,8 @@ module "develop" {
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
   ]
-  set_secrets = local.generate_secrets.dev
+  set_secrets  = local.generate_secrets.dev
+  machine_type = "E2_HIGHCPU_8"
 }
 
 module "preview-dev" {
