@@ -10,6 +10,7 @@ import {
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 
+import { DATASET_COMPARISON_SUFFIX } from 'data/config'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_DATAVIEW_SLUGS } from 'data/workspaces'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
@@ -245,6 +246,9 @@ export const selectReportLayersVisible = createSelector(
     return allDataviewInstancesResolved?.filter((dataview) => {
       const isVisible = dataview.config?.visible === true
       if (!isVisible) {
+        return false
+      }
+      if (dataview.id.includes(DATASET_COMPARISON_SUFFIX)) {
         return false
       }
       if (
