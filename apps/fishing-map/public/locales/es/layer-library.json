@@ -80,9 +80,9 @@
     "name": "High seas pockets"
   },
   "loitering": {
-    "description": "El merodeo ocurre cuando una embarcación individual exhibe un comportamiento que podría indicar un posible encuentro. Este se calcula utilizando datos del sistema de identificación automática (AIS), que incluyen la velocidad de la embarcación, el tiempo que permanece en una ubicación específica y la distancia desde la costa. El merodeo se identifica cuando una embarcación mantiene una velocidad promedio inferior a dos nudos mientras se encuentra, en promedio, a más de 20 millas náuticas de la costa. Para minimizar el ruido en el portal de buques de transporte, únicamente se muestran los eventos de merodeo que superan una hora de duración.",
+    "description": "Eventos a la deriva ocurre cuando una embarcación individual exhibe un comportamiento que podría indicar un posible encuentro. Este se calcula utilizando datos del sistema de identificación automática (AIS), que incluyen la velocidad de la embarcación, el tiempo que permanece en una ubicación específica y la distancia desde la costa. Eventos a la deriva se identifica cuando una embarcación mantiene una velocidad promedio inferior a dos nudos mientras se encuentra, en promedio, a más de 20 millas náuticas de la costa. Para minimizar el ruido en el portal de buques de transporte, únicamente se muestran los eventos a la deriva que superan una hora de duración.",
     "moreInfoLink": "",
-    "name": "Eventos de merodeo (AIS)"
+    "name": "Eventos a la deriva (AIS)"
   },
   "mangroves": {
     "description": "Los manglares son árboles o arbustos que pueden sobrevivir en ambientes salinos y normalmente crecen dentro de la zona intermareal de las regiones tropicales y subtropicales. Considerados hábitats de carbono azul, los bosques de manglares mejoran la calidad del agua, estabilizan y protegen las costas y proporcionan protección para aves, animales y organismos marinos. Este conjunto de datos utiliza imágenes satelitales de observación de la tierra para mostrar la distribución global de manglares.  ",
