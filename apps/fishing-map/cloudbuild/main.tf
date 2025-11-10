@@ -108,7 +108,7 @@ module "preview-dev" {
 }
 
 module "random-forest" {
-  source            = "../../../cloudbuild-template"
+  source            = "../../../cloudbuild-template-new"
   project_id        = "gfw-development"
   short_environment = "dev"
   app_name          = local.app_name
@@ -142,7 +142,7 @@ module "random-forest" {
 }
 
 module "staging" {
-  source            = "../../../cloudbuild-template"
+  source            = "../../../cloudbuild-template-new"
   project_id        = "gfw-development"
   short_environment = "sta"
   app_name          = local.app_name
@@ -175,7 +175,7 @@ module "staging" {
 }
 
 module "production" {
-  source            = "../../../cloudbuild-template"
+  source            = "../../../cloudbuild-template-new"
   project_id        = "gfw-production"
   short_environment = "pro"
   description       = "Deploy to production when pushing new tag @gfw/fishing-map@x.x.x"
