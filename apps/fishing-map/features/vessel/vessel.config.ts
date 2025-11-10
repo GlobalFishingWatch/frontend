@@ -9,7 +9,6 @@ import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 
 import type { VesselProfileState } from './vessel.types'
 
-// Aggregate segments by time gap in hours
 export const DEFAULT_VESSEL_IDENTITY_DATASET = 'public-global-vessel-identity'
 export const DEFAULT_VESSEL_IDENTITY_VERSION = 'v3.0'
 export const DEFAULT_VESSEL_IDENTITY_ID = `${DEFAULT_VESSEL_IDENTITY_DATASET}:${DEFAULT_VESSEL_IDENTITY_VERSION}`

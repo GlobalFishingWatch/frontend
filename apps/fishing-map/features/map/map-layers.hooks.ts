@@ -183,24 +183,24 @@ export const useGlobalConfigConnect = () => {
 
   return useMemo(() => {
     let globalConfig: ResolverGlobalConfig = {
-      zoom: viewState.zoom,
-      start,
-      end,
-      debug,
-      vesselTrackVisualizationMode: vesselsAsPositions ? 'positions' : 'track',
-      token: GFWAPI.token,
-      bivariateDataviews,
       activityVisualizationMode,
+      bivariateDataviews,
+      debug,
       detectionsVisualizationMode,
+      end,
       environmentVisualizationMode,
-      highlightEventIds,
-      highlightedTime,
-      visibleEvents,
-      vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
-      vesselsMaxTimeGapHours,
       highlightedFeatures,
-      trackGraphExtent,
+      highlightedTime,
+      highlightEventIds,
       onPositionsMaxPointsError,
+      start,
+      token: GFWAPI.token,
+      trackGraphExtent,
+      vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
+      vesselTrackVisualizationMode: vesselsAsPositions ? 'positions' : 'track',
+      ...(vesselsAsPositions === true && { vesselsMaxTimeGapHours }),
+      visibleEvents,
+      zoom: viewState.zoom,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {

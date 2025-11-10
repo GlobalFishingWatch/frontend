@@ -153,14 +153,13 @@ export const parseTrack = (
       const shouldSplit = lastTimestamp !== undefined && timestamp - lastTimestamp > maxTimeGapMs
 
       if (shouldSplit) {
-        // End current segment and start gap segment (boundary point already added)
+        // End current segment (boundary point pointIdx - 1 was already added as normal)
         if (segmentPointCount > 0) {
           newStartIndices.push(newPath.length / pathSize)
         }
 
         // Create gap segment: duplicate boundary point (last point of previous segment)
         const boundaryPointIdx = pointIdx - 1
-
         for (let i = 0; i < pathSize; i++) {
           newPath.push(originalPath[boundaryPointIdx * pathSize + i])
         }
@@ -173,7 +172,7 @@ export const parseTrack = (
         }
         newGaps.push(1) // Mark as gap segment
 
-        // Add duplicated current point (first point after gap, last point of gap segment)
+        // Add current point as the end of gap segment
         for (let i = 0; i < pathSize; i++) {
           newPath.push(originalPath[pointIdx * pathSize + i])
         }
@@ -189,7 +188,7 @@ export const parseTrack = (
         // End gap segment, start new normal segment
         newStartIndices.push(newPath.length / pathSize)
 
-        // Add current point again (duplicated from gap segment end, first point of new segment)
+        // Add current point as first point of new normal segment (duplicate for normal segment)
         for (let i = 0; i < pathSize; i++) {
           newPath.push(originalPath[pointIdx * pathSize + i])
         }
@@ -223,7 +222,6 @@ export const parseTrack = (
     }
   }
 
-  // Convert arrays to Float32Arrays
   const newPathArray = new Float32Array(newPath)
   const newTimestampsArray = new Float32Array(newTimestamps)
   const newSpeedsArray = newSpeeds.length > 0 ? new Float32Array(newSpeeds) : getSpeedValues
@@ -231,7 +229,6 @@ export const parseTrack = (
     newElevations.length > 0 ? new Float32Array(newElevations) : getElevationValues
   const newGapsArray = new Float32Array(newGaps)
 
-  // Recalculate extents
   const speedExtent = getExtent(Array.from(newSpeedsArray) as any, 'speed')
   const elevationExtent = getExtent(Array.from(newElevationsArray) as any, 'elevation')
 

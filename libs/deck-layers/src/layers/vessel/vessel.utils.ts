@@ -70,6 +70,7 @@ export const getSegmentsFromData = memoize(
     const timestamps = data.attributes?.getTimestamp?.value
     const speeds = (data as VesselTrackData).attributes?.getSpeed?.value
     const elevations = (data as VesselTrackData).attributes?.getElevation?.value
+    const gaps = (data as VesselTrackData).attributes?.getGap?.value
 
     if (!positions?.length || !timestamps.length) {
       return []
@@ -79,6 +80,7 @@ export const getSegmentsFromData = memoize(
     const timestampSize = data.attributes.getTimestamp?.size
     const speedSize = (data as VesselTrackData).attributes.getSpeed?.size
     const elevationSize = (data as VesselTrackData).attributes.getElevation?.size
+    const gapSize = (data as VesselTrackData).attributes?.getGap?.size || 1
     const maxTimeGapMs = maxTimeGapHours ? maxTimeGapHours * 3600000 : undefined
 
     let wrappedLongitudes: number[] | undefined
@@ -109,217 +111,82 @@ export const getSegmentsFromData = memoize(
       }
     }
 
-    if (maxTimeGapHours) {
-      // Use time-based splitting approach when maxTimeGapHours is provided
-      const allSegments: TrackSegment[] = []
-      let currentSegment: TrackSegment = []
-      let lastTimestamp: number | undefined
+    const isGapPoint = (index: number): boolean => {
+      if (!gaps || !maxTimeGapMs) return false
+      return gaps[index * gapSize] === 1
+    }
 
-      const addPointToSegment = (point: ReturnType<typeof getPointByIndex>) => {
-        if (
-          maxTimeGapMs &&
-          lastTimestamp !== undefined &&
-          point.timestamp - lastTimestamp > maxTimeGapMs
-        ) {
-          // Time gap exceeds threshold, split segment
-          if (currentSegment.length > 0) {
-            // Push current segment (without the point) and start new one with the point
-            allSegments.push(currentSegment)
-            currentSegment = [point] // Point starts new segment (excluded from previous)
-          } else {
-            // Current segment is empty, just add the point
-            currentSegment.push(point)
-          }
-        } else {
-          currentSegment.push(point)
-        }
-        lastTimestamp = point.timestamp
-      }
-
-      const finalizeCurrentSegment = () => {
-        if (currentSegment.length > 0) {
-          allSegments.push(currentSegment)
-          currentSegment = []
+    const isGapSegment = (segmentStart: number, segmentEnd: number, isLast: boolean): boolean => {
+      if (!gaps || !maxTimeGapMs) return false
+      // For the last segment, calculate the correct end point index
+      const actualSegmentEnd = isLast ? timestamps.length / timestampSize : segmentEnd
+      // Check if all points in the segment are gap points
+      for (let index = segmentStart; index < actualSegmentEnd; index++) {
+        if (!isGapPoint(index)) {
+          return false
         }
       }
-
-      for (let i = 0; i < segmentsIndexes.length; i++) {
-        const segmentIndex = segmentsIndexes[i]
-        const isLastSegment = i === segmentsIndexes.length - 1
-        const nextSegmentIndex = segmentsIndexes[i + 1] || timestamps.length - 1
-        const initialSegmentTimestamp = timestamps[segmentIndex * timestampSize]
-        const finalSegmentTimestamp = isLastSegment
-          ? timestamps[timestamps.length - 1]
-          : timestamps[nextSegmentIndex * timestampSize - 1]
-
-        let firstSegmentPointIncluded = false
-        let lastSegmentPointIncluded = false
-
-        // Add initial segment point
-        if (
-          (!startTime || initialSegmentTimestamp > startTime) &&
-          (!endTime || initialSegmentTimestamp < endTime)
-        ) {
-          firstSegmentPointIncluded = true
-          addPointToSegment(getPointByIndex(segmentIndex))
-        }
-
-        // Add middle points if requested
-        if (includeMiddlePoints && segmentIndex + 1 < nextSegmentIndex) {
-          for (let index = segmentIndex + 1; index < nextSegmentIndex; index++) {
-            const timestamp = timestamps[index * timestampSize]
-            if ((!startTime || timestamp > startTime) && (!endTime || timestamp < endTime)) {
-              if (!firstSegmentPointIncluded) {
-                const previousPoint = getPointByIndex(index - 1)
-                addPointToSegment(previousPoint)
-                firstSegmentPointIncluded = true
-              }
-              addPointToSegment(getPointByIndex(index))
-            } else if (
-              firstSegmentPointIncluded &&
-              !lastSegmentPointIncluded &&
-              timestamp > endTime
-            ) {
-              const nextPoint = getPointByIndex(index)
-              addPointToSegment(nextPoint)
-              lastSegmentPointIncluded = true
-            }
-          }
-        }
-
-        // Add final segment point
-        if (
-          (!startTime || finalSegmentTimestamp > startTime) &&
-          (!endTime || finalSegmentTimestamp < endTime) &&
-          !lastSegmentPointIncluded
-        ) {
-          let finalLongitude: number
-          let finalPoint: ReturnType<typeof getPointByIndex>
-
-          if (isLastSegment) {
-            const lastIndex = (positions.length - pathSize) / pathSize
-            finalLongitude = wrappedLongitudes
-              ? wrappedLongitudes[lastIndex]
-              : positions[positions.length - pathSize]
-
-            finalPoint = {
-              ...(includeCoordinates && {
-                longitude: finalLongitude,
-                latitude: positions[positions.length - 1],
-              }),
-              timestamp: finalSegmentTimestamp,
-              ...(speedSize && { speed: speeds?.[speeds.length - 1] || 0 }),
-              ...(elevationSize && { elevation: elevations?.[elevations.length - 1] || 0 }),
-            }
-          } else {
-            finalLongitude = wrappedLongitudes
-              ? wrappedLongitudes[nextSegmentIndex]
-              : positions[nextSegmentIndex * pathSize]
-            finalPoint = {
-              ...(includeCoordinates && {
-                longitude: finalLongitude,
-                latitude: positions[nextSegmentIndex * pathSize + 1],
-              }),
-              timestamp: finalSegmentTimestamp,
-              ...(speedSize && { speed: speeds?.[nextSegmentIndex * speedSize - 1] || 0 }),
-              ...(elevationSize && {
-                elevation: elevations?.[nextSegmentIndex * elevationSize - 1] || 0,
-              }),
-            }
-          }
-          addPointToSegment(finalPoint)
-        }
-
-        // Don't finalize at original segment boundaries when time-based splitting is enabled
-        // Time gaps will naturally create segment breaks, and we'll finalize at the end
-      }
-
-      // Finalize any remaining segment
-      finalizeCurrentSegment()
-      return allSegments
+      return true
     }
 
     const segments = segmentsIndexes.map((segmentIndex, i, segmentsIndexes) => {
       const points = [] as TrackSegment
       const isLastSegment = i === segmentsIndexes.length - 1
-      const nextSegmentIndex = segmentsIndexes[i + 1] || timestamps.length - 1
-      const initialSegmentTimestamp = timestamps[segmentIndex * timestampSize]
-      const finalSegmentTimestamp = isLastSegment
-        ? timestamps[timestamps.length - 1]
-        : timestamps[nextSegmentIndex * timestampSize - 1]
+      const nextSegmentIndex = segmentsIndexes[i + 1] || timestamps.length / timestampSize
 
-      let firstSegmentPointIncluded = false
-      let lastSegmentPointIncluded = false
-      if (
-        (!startTime || initialSegmentTimestamp > startTime) &&
-        (!endTime || initialSegmentTimestamp < endTime)
-      ) {
-        firstSegmentPointIncluded = true
-
-        points.push(getPointByIndex(segmentIndex))
+      // Skip gap segments entirely
+      if (maxTimeGapMs && gaps && isGapSegment(segmentIndex, nextSegmentIndex, isLastSegment)) {
+        return points
       }
 
-      if (includeMiddlePoints && segmentIndex + 1 < nextSegmentIndex) {
-        for (let index = segmentIndex + 1; index < nextSegmentIndex; index++) {
-          const timestamp = timestamps[index * timestampSize]
-          if ((!startTime || timestamp > startTime) && (!endTime || timestamp < endTime)) {
-            if (!firstSegmentPointIncluded) {
-              const previousPoint = getPointByIndex(index - 1)
-              points.push(previousPoint)
-              firstSegmentPointIncluded = true
-            }
-            points.push(getPointByIndex(index))
-          } else if (
-            firstSegmentPointIncluded &&
-            !lastSegmentPointIncluded &&
-            timestamp > endTime
-          ) {
-            const nextPoint = getPointByIndex(index)
-            points.push(nextPoint)
-            lastSegmentPointIncluded = true
+      // Check if previous segment was a gap segment (to avoid duplicate boundary points)
+      const previousSegmentIsGap =
+        maxTimeGapMs &&
+        gaps &&
+        i > 0 &&
+        segmentsIndexes[i - 1] !== undefined &&
+        isGapSegment(segmentsIndexes[i - 1], segmentIndex, false)
+
+      // Calculate the actual end index for this segment (exclusive)
+      const segmentEndIndex = isLastSegment ? timestamps.length / timestampSize : nextSegmentIndex
+
+      // Process all points in the segment, skipping gap points
+      for (let pointIndex = segmentIndex; pointIndex < segmentEndIndex; pointIndex++) {
+        // Skip gap points - these are in gap segments and should never be included
+        if (isGapPoint(pointIndex)) {
+          continue
+        }
+
+        const timestamp = timestamps[pointIndex * timestampSize]
+
+        // Apply time filtering
+        if (startTime && timestamp <= startTime) {
+          continue
+        }
+        if (endTime && timestamp >= endTime) {
+          continue
+        }
+
+        // When includeMiddlePoints is true, add all non-gap points
+        // When includeMiddlePoints is false, only add boundary points
+        if (includeMiddlePoints) {
+          points.push(getPointByIndex(pointIndex))
+        } else {
+          // Only add boundary points when includeMiddlePoints is false
+          const isFirstPoint = pointIndex === segmentIndex
+          const isLastPoint = pointIndex === segmentEndIndex - 1
+
+          // Add the point if:
+          // - it's the first point of the segment (but skip if previous segment was a gap, as it's a duplicate), OR
+          // - it's the last point of the segment (always add, as it's the original)
+          // When previous segment is a gap, the first point is a duplicate that's also in the gap segment
+          // The last point is always the original (any duplicate would be in the next gap segment and marked as gap=1)
+          if ((isFirstPoint && !previousSegmentIsGap) || isLastPoint) {
+            points.push(getPointByIndex(pointIndex))
           }
         }
       }
 
-      if (
-        (!startTime || finalSegmentTimestamp > startTime) &&
-        (!endTime || finalSegmentTimestamp < endTime) &&
-        !lastSegmentPointIncluded
-      ) {
-        let finalLongitude: number
-
-        if (isLastSegment) {
-          const lastIndex = (positions.length - pathSize) / pathSize
-          finalLongitude = wrappedLongitudes
-            ? wrappedLongitudes[lastIndex]
-            : positions[positions.length - pathSize]
-
-          points.push({
-            ...(includeCoordinates && {
-              longitude: finalLongitude,
-              latitude: positions[positions.length - 1],
-            }),
-            timestamp: finalSegmentTimestamp,
-            ...(speedSize && { speed: speeds?.[speeds.length - 1] || 0 }),
-            ...(elevationSize && { elevation: elevations?.[elevations.length - 1] || 0 }),
-          })
-        } else {
-          finalLongitude = wrappedLongitudes
-            ? wrappedLongitudes[nextSegmentIndex]
-            : positions[nextSegmentIndex * pathSize]
-          points.push({
-            ...(includeCoordinates && {
-              longitude: finalLongitude,
-              latitude: positions[nextSegmentIndex * pathSize + 1],
-            }),
-            timestamp: finalSegmentTimestamp,
-            ...(speedSize && { speed: speeds?.[nextSegmentIndex * speedSize - 1] || 0 }),
-            ...(elevationSize && {
-              elevation: elevations?.[nextSegmentIndex * elevationSize - 1] || 0,
-            }),
-          })
-        }
-      }
       return points
     })
     return segments

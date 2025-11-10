@@ -82,7 +82,12 @@ const DebugMenu: React.FC = () => {
           <Switch
             id="option_vessels_as_positions"
             active={debugOptions.vesselsAsPositions}
-            onClick={() => dispatch(toggleDebugOption(DebugOption.VesselsAsPositions))}
+            onClick={() => {
+              dispatch(toggleDebugOption(DebugOption.VesselsAsPositions))
+              if (!debugOptions.vesselsAsPositions) {
+                dispatchQueryParams({ vesselsMaxTimeGapHours: undefined })
+              }
+            }}
           />
           <label htmlFor="option_vessels_as_positions">Tracks positions</label>
         </div>
