@@ -27,23 +27,37 @@ export type ReportActivityDatasetComparisonProps = {
   end: string
 }
 
-const filterDataBySublayer = (data: ReportGraphProps[], mainDatasetId?: string) => {
-  return data.map((dataview) => {
-    const subLayerIndex = dataview.sublayers.findIndex((sublayer) => sublayer.id === mainDatasetId)
+const filterDataBySublayer = (
+  data: ReportGraphProps[],
+  mainDatasetId?: string,
+  compareDatasetId?: string
+) => {
+  return data
+    .map((dataview) => {
+      const subLayerIndex = dataview.sublayers.findIndex(
+        (sublayer) => sublayer.id === mainDatasetId
+      )
 
-    if (subLayerIndex === -1) {
-      return dataview
-    }
+      if (subLayerIndex === -1) {
+        const compareSublayer = dataview.sublayers.find(
+          (sublayer) => sublayer.id === compareDatasetId
+        )
+        if (compareSublayer) {
+          return dataview
+        }
+        return
+      }
 
-    const filteredSublayers = dataview.sublayers.filter((_, index) => index === subLayerIndex)
-    const filteredTimeSeries = dataview.timeseries.map((timeserie) => ({
-      ...timeserie,
-      min: [timeserie.min?.[subLayerIndex]],
-      max: [timeserie.max?.[subLayerIndex]],
-    }))
+      const filteredSublayers = dataview.sublayers.filter((_, index) => index === subLayerIndex)
+      const filteredTimeSeries = dataview.timeseries.map((timeserie) => ({
+        ...timeserie,
+        min: [timeserie.min?.[subLayerIndex]],
+        max: [timeserie.max?.[subLayerIndex]],
+      }))
 
-    return { ...dataview, sublayers: filteredSublayers, timeseries: filteredTimeSeries }
-  })
+      return { ...dataview, sublayers: filteredSublayers, timeseries: filteredTimeSeries }
+    })
+    .filter(Boolean) as ReportGraphProps[]
 }
 
 const calculateXDomain = (start: string, end: string, interval?: string) => {
@@ -76,10 +90,9 @@ const ReportActivityDatasetComparisonGraph = ({
 
   const interval = data[0]?.interval
 
-  const filteredData = useMemo(
-    () => filterDataBySublayer(data, comparisonDatasets?.main),
-    [data, comparisonDatasets?.main]
-  )
+  const filteredData = useMemo(() => {
+    return filterDataBySublayer(data, comparisonDatasets?.main, comparisonDatasets?.compare)
+  }, [data, comparisonDatasets?.main, comparisonDatasets?.compare])
 
   const dataFormated = useMemo(
     () =>
