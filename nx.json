@@ -93,8 +93,7 @@
   "generators": {
     "@nx/next": {
       "application": {
-        "style": "css",
-        "linter": "eslint"
+        "style": "css"
       }
     },
     "@nx/react": {
@@ -116,7 +115,6 @@
   "release": {
     "projects": ["!linting", "libs/*", "!libs/i18n-labels", "!apps/*"],
     "projectsRelationship": "independent",
-    "releaseTagPattern": "@gfw/{projectName}@{version}",
     "changelog": {
       "projectChangelogs": {
         "createRelease": "github",
@@ -131,6 +129,9 @@
     "git": {
       "commit": false,
       "tag": false
+    },
+    "releaseTag": {
+      "pattern": "@gfw/{projectName}@{version}"
     }
   },
   "namedInputs": {
@@ -151,6 +152,5 @@
     ]
   },
   "defaultBase": "develop",
-  "nxCloudId": "",
-  "nxCloudAccessToken": ""
+  "nxCloudId": "674f20939c6a380ef261e1ee"
 }

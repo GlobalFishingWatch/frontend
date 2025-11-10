@@ -130,6 +130,7 @@ const nextConfig: NextConfig = {
   //   position: 'top-left',
   // },
   devIndicators: false,
+  allowedDevOrigins: ['local.globalfishingwatch.org'],
   turbopack: {
     rules: {
       '*.svg': {
@@ -139,7 +140,9 @@ const nextConfig: NextConfig = {
     },
   },
   serverExternalPackages: ['@mastra/*'],
+  reactCompiler: true,
   experimental: {
+    turbopackFileSystemCacheForDev: true,
     esmExternals: true,
     optimizePackageImports: [
       '@globalfishingwatch/api-client',
@@ -168,8 +171,11 @@ const configWithNx = withNx({ ...nextConfig, nx: { svgr: false } })
 // const configWithNx = withNx(withBundleAnalyzer({ ...nextConfig, nx: { svgr: false } }))
 
 module.exports = async (...args: any) => {
+  const config = await configWithNx(...args)
+  // Remove eslint option as it's no longer supported in Next.js 16
+  const { eslint, ...restConfig } = config
   return {
-    ...(await configWithNx(...args)),
+    ...restConfig,
     //...
   }
 }
