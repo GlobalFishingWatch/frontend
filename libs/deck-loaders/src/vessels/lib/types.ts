@@ -26,6 +26,7 @@ export type VesselTrackData = {
     getTimestamp: { value: Float32Array; size: number }
     getSpeed: { value: Float32Array; size: number; extent: VesselTrackGraphExtent }
     getElevation: { value: Float32Array; size: number; extent: VesselTrackGraphExtent }
+    getGap?: { value: Float32Array; size: number }
   }
 }
 
