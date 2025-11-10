@@ -105,7 +105,7 @@ export function DetectionThumbnail({ id, data, scale }: DetectionThumbnailProps)
   const bluePlanetMode = useSelector(selectDebugOptions)?.bluePlanetMode
   if (bluePlanetMode && STATIC_IMAGES_IDS.some((staticId) => id.startsWith(staticId))) {
     return (
-      <div className={cx(styles.imgContainer)}>
+      <div className={cx(styles.staticImgContainer)}>
         <img
           className={styles.staticImg}
           src={`${PATH_BASENAME}/images/blue-planet/${id.replace('_RGB', '')}`}

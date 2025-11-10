@@ -5,6 +5,13 @@
   height: 30rem;
 }
 
+.staticImgContainer {
+  position: relative;
+  display: block;
+  width: 38rem;
+  height: 38rem;
+}
+
 .img {
   position: absolute;
   width: 30rem;
@@ -15,8 +22,8 @@
 }
 
 .staticImg {
-  width: 30rem;
-  height: 30rem;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 

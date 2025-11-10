@@ -55,7 +55,7 @@ const initialState: DebugState = {
     experimentalLayers: false,
     areasOnScreen: false,
     vesselsAsPositions: false,
-    bluePlanetMode: true,
+    bluePlanetMode: false,
   },
 }
 
