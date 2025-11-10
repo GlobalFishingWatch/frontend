@@ -123,8 +123,15 @@ const DebugMenu: React.FC = () => {
         <p>
           Set the workspace to blue planet mode with the following features:
           <ul>
-            <li>see gaps icons in the map</li>
-            <li>fake vessel names in the sidebar and map tooltips</li>
+            <li>
+              see gaps icons into the map (only in this{' '}
+              <a href="https://globalfishingwatch.org/map/fishing-activity/blue_testing_ja-public">
+                workspace
+              </a>
+              )
+            </li>
+            <li>blur vessel names in the sidebar and remove from map tooltips</li>
+            <li>remove year data from timebar and tooltip</li>
             <li>remove unmatched detections label in tooltip</li>
           </ul>
         </p>

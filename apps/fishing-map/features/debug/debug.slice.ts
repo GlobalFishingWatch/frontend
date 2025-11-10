@@ -1,5 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
+import type { DateTimeFormatOptions } from 'luxon'
 import type { RootState } from 'reducers'
 
 export enum FeatureFlag {
@@ -30,6 +31,14 @@ interface DebugState {
   options: DebugOptions
 }
 
+export const BLUE_PLANET_MODE_DATE_FORMAT: DateTimeFormatOptions = {
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+  hour12: true,
+}
+
 const initialState: DebugState = {
   active: false,
   featureFlags: {
@@ -46,7 +55,7 @@ const initialState: DebugState = {
     experimentalLayers: false,
     areasOnScreen: false,
     vesselsAsPositions: false,
-    bluePlanetMode: false,
+    bluePlanetMode: true,
   },
 }
 

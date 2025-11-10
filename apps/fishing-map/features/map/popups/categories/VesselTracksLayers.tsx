@@ -18,7 +18,7 @@ import {
   selectActiveVesselsDataviews,
   selectCustomUserDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { selectDebugOptions } from 'features/debug/debug.slice'
+import { BLUE_PLANET_MODE_DATE_FORMAT, selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import { setClickedEvent } from 'features/map/map.slice'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
@@ -114,7 +114,11 @@ function VesselTracksTooltipRow({
           {!showFeaturesDetails && !bluePlanetMode && formatInfoField(feature.title, 'shipname')}{' '}
           {interactionType === 'point' && feature.timestamp && (
             <span className={cx({ [styles.secondary]: !showFeaturesDetails })}>
-              <I18nDate date={feature.timestamp} format={DateTime.DATETIME_MED} />
+              <I18nDate
+                date={feature.timestamp}
+                format={bluePlanetMode ? BLUE_PLANET_MODE_DATE_FORMAT : DateTime.DATETIME_MED}
+                showUTCLabel={bluePlanetMode}
+              />
             </span>
           )}
         </p>

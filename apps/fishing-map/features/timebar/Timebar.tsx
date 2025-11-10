@@ -28,6 +28,7 @@ import {
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { BLUE_PLANET_MODE_DATE_FORMAT, selectDebugOptions } from 'features/debug/debug.slice'
 import Hint from 'features/help/Hint'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -86,6 +87,7 @@ const TimebarHighlighterWrapper = ({
   const visualizationMode = useSelector(selectTimebarSelectedVisualizationMode)
   const { start, end } = useTimerangeConnect()
   const interval = getFourwingsInterval(start, end)
+  const bluePlanetMode = useSelector(selectDebugOptions)?.bluePlanetMode
 
   const onHighlightChunks = useCallback(
     (chunks?: HighlightedChunks) => {
@@ -102,6 +104,12 @@ const TimebarHighlighterWrapper = ({
   // Return precise chunk frame extent
   const activityDateCallback = useCallback(
     (timestamp: number) => {
+      if (bluePlanetMode) {
+        return formatI18nDate(timestamp, {
+          format: BLUE_PLANET_MODE_DATE_FORMAT,
+          showUTCLabel: true,
+        })
+      }
       const dateLabel = formatI18nDate(timestamp, {
         format: DateTime.DATETIME_MED,
         showUTCLabel: true,
