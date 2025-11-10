@@ -2,8 +2,6 @@ import React, { Fragment, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
-
 import UserGuideLink from 'features/help/UserGuideLink'
 import {
   useFitAreaInViewport,
@@ -14,10 +12,7 @@ import {
   selectTimeComparisonValues,
 } from 'features/reports/report-area/area-reports.selectors'
 import { REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON } from 'features/reports/reports.config'
-import {
-  selectReportActivityGraph,
-  selectReportComparisonDataviewIds,
-} from 'features/reports/reports.config.selectors'
+import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import {
@@ -97,8 +92,6 @@ export default function ReportActivity() {
     [reportActivityGraph]
   )
 
-  const mapLoading = useIsDeckLayersLoading()
-
   const loading = useReportFeaturesLoading()
   const reportAreaStatus = useSelector(selectReportAreaStatus)
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
@@ -110,8 +103,6 @@ export default function ReportActivity() {
       ? layersTimeseriesFiltered.every((data) => data?.timeseries?.length === 0)
       : false
   const isDatasetComparison = reportActivityGraph === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON
-  const comparisonDataviewIds = useSelector(selectReportComparisonDataviewIds)
-  const comparedDataset = comparisonDataviewIds?.compare
 
   return (
     <div className={styles.container}>
@@ -123,7 +114,7 @@ export default function ReportActivity() {
       )}
       {/* Dataset Comparison Selectors needs to go above the graph instead of time comparison selectors */}
       {showSelectors && SelectorsComponent && isDatasetComparison && <SelectorsComponent />}
-      {loading || mapLoading || reportAreaStatus !== AsyncReducerStatus.Finished ? (
+      {loading || reportAreaStatus !== AsyncReducerStatus.Finished ? (
         <ReportActivityPlaceholder showHeader={!showSelectors} />
       ) : isEmptyData || hasError ? (
         <ReportActivityPlaceholder showHeader={false} animate={false}>
