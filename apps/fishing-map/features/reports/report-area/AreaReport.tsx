@@ -183,7 +183,6 @@ export default function Report() {
         reportCategory: option.id,
         reportVesselPage: 0,
         reportComparisonDataviewIds: undefined,
-        reportActivityGraph: REPORT_ACTIVITY_GRAPH_EVOLUTION,
       })
 
       fitAreaInViewport()

@@ -78,6 +78,8 @@ export default function ReportActivityGraphSelector({
           dispatchQueryParams({
             reportComparisonDataviewIds: { main: dataviews[0]?.id, compare: '' },
           })
+        } else {
+          dispatchQueryParams({ reportComparisonDataviewIds: undefined })
         }
       } else {
         setReportTimecomparison(option.id)
