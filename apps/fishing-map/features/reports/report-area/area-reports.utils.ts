@@ -120,7 +120,7 @@ export const isUserContextDataviewReportSupported = (dataview: Dataview | UrlDat
 
 export const isSupportedReportDataview = (dataview: Dataview | UrlDataviewInstance) => {
   const { category, config } = dataview
-  if (!category || !config?.visible || !config?.type) {
+  if (!category || !config?.type) {
     return false
   }
   if (category === DataviewCategory.User) {

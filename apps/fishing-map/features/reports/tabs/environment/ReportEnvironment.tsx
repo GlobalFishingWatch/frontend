@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -23,11 +23,12 @@ import {
 } from 'features/reports/reports-timeseries.hooks'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportStatsPlaceholder from 'features/reports/shared/placeholders/ReportStatsPlaceholder'
-import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
-import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivityEvolution'
 import ReportCurrentsGraph from 'features/reports/tabs/activity/ReportCurrentsGraph'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { upperFirst } from 'utils/info'
+
+import ReportActivityDatasetComparison from '../activity/ReportActivityDatasetComparison'
+import ReportActivityDatasetComparisonGraph from '../activity/ReportActivityDatasetComparisonGraph'
 
 import styles from './ReportEnvironment.module.css'
 
@@ -46,90 +47,90 @@ function ReportEnvironment() {
 
   if (!environmentalDataviews?.length) return null
 
+  const isDynamic = environmentalDataviews[0]?.config?.type === DataviewType.HeatmapAnimated
+  const { min, mean, max } =
+    (timeseriesStats?.[environmentalDataviews[0]?.id] as FourwingsReportGraphStats) || {}
+  const isCurrents = environmentalDataviews[0]?.config?.type === DataviewType.Currents
+  const dataset = environmentalDataviews[0]?.datasets?.find(
+    (d) => d.type === DatasetTypes.Fourwings
+  )
+  const title = getDatasetNameTranslated(dataset)
+  const index = 0
+  const hasError =
+    layersTimeseriesErrors?.[index] !== undefined && layersTimeseriesErrors?.[index] !== ''
+  const isLoading = loading || layersTimeseriesFiltered?.[index]?.mode === 'loading'
+  const unit = dataset?.unit
+
   return (
-    <Fragment>
-      {environmentalDataviews.map((dataview, index) => {
-        const isDynamic = dataview.config?.type === DataviewType.HeatmapAnimated
-        const { min, mean, max } =
-          (timeseriesStats?.[dataview.id] as FourwingsReportGraphStats) || {}
-        const isCurrents = dataview.config?.type === DataviewType.Currents
-        const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-        const title = getDatasetNameTranslated(dataset)
-        const hasError =
-          layersTimeseriesErrors?.[index] !== undefined && layersTimeseriesErrors?.[index] !== ''
-        const isLoading = loading || layersTimeseriesFiltered?.[index]?.mode === 'loading'
-        const unit = dataset?.unit
-        return (
-          <div key={dataview.id} className={styles.container}>
-            <p className={styles.summary}>
-              {dataset?.configuration?.function === 'AVG' && (
-                <span>{upperFirst(t('common.average'))} </span>
-              )}
-              <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
-              {(isDynamic || isCurrents) && (
-                <Fragment>
-                  {t('common.between')} <strong>{formatI18nDate(start)}</strong> {t('common.and')}{' '}
-                  <strong>{formatI18nDate(end)}</strong>
-                </Fragment>
-              )}
-            </p>
-            <ReportSummaryTags key={dataview.id} dataview={dataview} />
-            {isDynamic || isCurrents ? (
-              isLoading || !layersTimeseriesFiltered?.[index] || hasError ? (
-                <ReportActivityPlaceholder showHeader={false}>
-                  {hasError && <p className={styles.errorMessage}>{t('errors.layerLoading')}</p>}
-                </ReportActivityPlaceholder>
-              ) : isCurrents && layersFilteredFeatures?.[index] ? (
-                <Fragment>
-                  <ReportCurrentsGraph
-                    color={dataview.config?.color}
-                    data={layersFilteredFeatures?.[index]}
-                  />
-                  {/* TODO: add this graph when we calculate the currents timeseries properly */}
-                  {/* <ReportActivityEvolution
+    <div key={environmentalDataviews[0]?.id} className={styles.container}>
+      <p className={styles.summary}>
+        {dataset?.configuration?.function === 'AVG' && (
+          <span>{upperFirst(t('common.average'))} </span>
+        )}
+        <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
+        {(isDynamic || isCurrents) && (
+          <Fragment>
+            {t('common.between')} <strong>{formatI18nDate(start)}</strong> {t('common.and')}{' '}
+            <strong>{formatI18nDate(end)}</strong>
+          </Fragment>
+        )}
+      </p>
+      {isDynamic || isCurrents ? (
+        isLoading || !layersTimeseriesFiltered?.[index] || hasError ? (
+          <ReportActivityPlaceholder showHeader={false}>
+            {hasError && <p className={styles.errorMessage}>{t('errors.layerLoading')}</p>}
+          </ReportActivityPlaceholder>
+        ) : isCurrents && layersFilteredFeatures?.[index] ? (
+          <Fragment>
+            <ReportCurrentsGraph
+              color={environmentalDataviews[0]?.config?.color}
+              data={layersFilteredFeatures?.[index]}
+            />
+            {/* TODO: add this graph when we calculate the currents timeseries properly */}
+            {/* <ReportActivityEvolution
                     start={timerange.start}
                     end={timerange.end}
                     data={layersTimeseriesFiltered?.[index]}
                   /> */}
-                </Fragment>
-              ) : (
-                <ReportActivityEvolution
-                  start={start}
-                  end={end}
-                  data={layersTimeseriesFiltered?.[index]}
-                />
-              )
-            ) : null}
-            {isLoading ? (
-              <ReportStatsPlaceholder />
-            ) : min !== undefined && mean !== undefined && max !== undefined ? (
-              <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
-                {isDynamic
-                  ? t('analysis.statsDisclaimerDynamic', {
-                      interval: t(`common.${interval.toLowerCase()}s` as any, {
-                        count: 1,
-                      }).toLowerCase(),
-                      min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
-                      max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
-                      unit,
-                    })
-                  : t('analysis.statsDisclaimerStatic', {
-                      min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
-                      max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
-                      mean: formatI18nNumber(mean, { maximumFractionDigits: 2 }),
-                      unit,
-                    })}{' '}
-                {dataset?.source && (
-                  <span>
-                    {t('analysis.dataSource')}: {htmlParse(dataset.source)}
-                  </span>
-                )}
-              </p>
-            ) : null}
-          </div>
+          </Fragment>
+        ) : (
+          <>
+            <ReportActivityDatasetComparison />
+            <ReportActivityDatasetComparisonGraph
+              start={start}
+              end={end}
+              data={layersTimeseriesFiltered}
+            />
+          </>
         )
-      })}
-    </Fragment>
+      ) : null}
+      {isLoading ? (
+        <ReportStatsPlaceholder />
+      ) : min !== undefined && mean !== undefined && max !== undefined ? (
+        <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
+          {isDynamic
+            ? t('analysis.statsDisclaimerDynamic', {
+                interval: t(`common.${interval.toLowerCase()}s` as any, {
+                  count: 1,
+                }).toLowerCase(),
+                min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
+                max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
+                unit,
+              })
+            : t('analysis.statsDisclaimerStatic', {
+                min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
+                max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
+                mean: formatI18nNumber(mean, { maximumFractionDigits: 2 }),
+                unit,
+              })}{' '}
+          {dataset?.source && (
+            <span>
+              {t('analysis.dataSource')}: {htmlParse(dataset.source)}
+            </span>
+          )}
+        </p>
+      ) : null}
+    </div>
   )
 }
 

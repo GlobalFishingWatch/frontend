@@ -45,6 +45,8 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { TimebarVisualisations } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
+import { REPORT_ACTIVITY_GRAPH_EVOLUTION } from '../reports.config'
+
 import styles from 'features/reports/report-area/AreaReport.module.css'
 
 const ReportActivity = dynamic(
@@ -177,7 +179,13 @@ export default function Report() {
   const handleTabClick = (option: Tab<ReportCategory>) => {
     if (option.id !== reportCategory) {
       dispatch(resetReportData())
-      dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
+      dispatchQueryParams({
+        reportCategory: option.id,
+        reportVesselPage: 0,
+        reportComparisonDataviewIds: undefined,
+        reportActivityGraph: REPORT_ACTIVITY_GRAPH_EVOLUTION,
+      })
+
       fitAreaInViewport()
       trackEvent({
         category: TrackCategory.Analysis,

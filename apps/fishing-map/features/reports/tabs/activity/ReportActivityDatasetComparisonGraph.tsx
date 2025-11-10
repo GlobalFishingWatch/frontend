@@ -116,6 +116,8 @@ const ReportActivityDatasetComparisonGraph = ({
   const leftAxisColor = getContrastSafeLineColor(
     filteredData[0].sublayers[0].legend?.color as string
   )
+  const leftAxisDomain = calculateYAxisDomain(dataFormated, 0)
+
   const rightAxisColor =
     comparisonDatasets?.compare &&
     getContrastSafeLineColor(filteredData[1].sublayers[0].legend?.color as string)
@@ -151,6 +153,7 @@ const ReportActivityDatasetComparisonGraph = ({
           axisLine={{ stroke: leftAxisColor }}
           tickLine={false}
           orientation="left"
+          domain={leftAxisDomain || [0, 'auto']}
         />
         {comparisonDatasets?.compare && rightAxisDomain && (
           <YAxis

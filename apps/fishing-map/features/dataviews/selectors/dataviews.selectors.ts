@@ -131,22 +131,28 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     isVesselGroupReportLocation,
     othersActiveReportDataviews
   ) => {
-    if (reportCategory === ReportCategory.Activity) {
-      return isVesselGroupReportLocation ? vesselGroupDataviews : activityDataviews
+    let dataviews: UrlDataviewInstance<DataviewType>[] = []
+    switch (reportCategory) {
+      case ReportCategory.Activity:
+        dataviews = isVesselGroupReportLocation ? vesselGroupDataviews : activityDataviews
+        break
+      case ReportCategory.Detections:
+        dataviews = detectionsDataviews
+        break
+      case ReportCategory.Events:
+        dataviews = eventsDataviews
+        break
+      case ReportCategory.VesselGroup:
+        dataviews = vGRFootprintDataview ? [vGRFootprintDataview] : EMPTY_ARRAY
+        break
+      case ReportCategory.Others:
+        dataviews = othersActiveReportDataviews
+        break
+      default:
+        dataviews = environmentalDataviews
+        break
     }
-    if (reportCategory === ReportCategory.Detections) {
-      return detectionsDataviews
-    }
-    if (reportCategory === ReportCategory.Events) {
-      return eventsDataviews
-    }
-    if (reportCategory === ReportCategory.VesselGroup) {
-      return vGRFootprintDataview ? [vGRFootprintDataview] : EMPTY_ARRAY
-    }
-    if (reportCategory === ReportCategory.Others) {
-      return othersActiveReportDataviews
-    }
-    return environmentalDataviews
+    return dataviews?.filter((dataview) => !dataview.id.includes(DATASET_COMPARISON_SUFFIX))
   }
 )
 
