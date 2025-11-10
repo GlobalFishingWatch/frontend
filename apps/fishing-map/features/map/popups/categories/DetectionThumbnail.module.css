@@ -14,6 +14,12 @@
   z-index: 0;
 }
 
+.staticImg {
+  width: 30rem;
+  height: 30rem;
+  object-fit: cover;
+}
+
 .canvas {
   position: absolute;
   width: 30rem;

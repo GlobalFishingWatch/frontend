@@ -38,6 +38,7 @@ import type {
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
 
+import { PATH_BASENAME } from 'data/config'
 import {
   fetchDatasetByIdThunk,
   getDatasetByIdsThunk,
@@ -679,10 +680,12 @@ export const fetchDetectionThumbnailsThunk = createAsyncThunk<
           )?.id
           const thumbnailDataset = selectDatasetById(thumbnailDatasetId as string)(state)
           if (thumbnailDataset) {
+            const detectionId = detectionFeature.properties?.id
+
             const datasetConfig = {
               datasetId: thumbnailDataset.id,
               endpoint: EndpointId.Thumbnails,
-              params: [{ id: 'id', value: detectionFeature.properties?.id }],
+              params: [{ id: 'id', value: detectionId }],
             }
             const url = resolveEndpoint(thumbnailDataset, datasetConfig)
             if (url) {

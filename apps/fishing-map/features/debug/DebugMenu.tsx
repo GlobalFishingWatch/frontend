@@ -83,8 +83,6 @@ const DebugMenu: React.FC = () => {
             id="option_vessels_as_positions"
             active={debugOptions.vesselsAsPositions}
             onClick={() => {
-              console.log('🚀 ~ DebugMenu ~ vesselsMaxTimeGapHours:', vesselsMaxTimeGapHours)
-              console.log('🚀 ~ DebugMenu ~ debugOptions:', debugOptions)
               dispatch(toggleDebugOption(DebugOption.VesselsAsPositions))
               if (debugOptions.vesselsAsPositions) {
                 dispatchQueryParams({ vesselsMaxTimeGapHours: undefined })

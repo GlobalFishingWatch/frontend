@@ -48,7 +48,7 @@ function DetectionThumbnails({
   if (!detection) {
     return null
   }
-  return <DetectionThumbnailImage data={detection.data} scale={scale} />
+  return <DetectionThumbnailImage id={detection.name} data={detection.data} scale={scale} />
 }
 
 function PositionsRow({ loading, error, feature, showFeaturesDetails }: PositionsRowProps) {
