@@ -9,6 +9,7 @@ import { IconButton, Radio } from '@globalfishingwatch/ui-components'
 
 import AreaIcon from 'assets/icons/timebar-area.svg'
 import TrackDepthIcon from 'assets/icons/timebar-track-depth.svg'
+import TrackPositionsIcon from 'assets/icons/timebar-track-positions.svg'
 import TrackSpeedIcon from 'assets/icons/timebar-track-speed.svg'
 import TracksIcon from 'assets/icons/timebar-tracks.svg'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -22,6 +23,7 @@ import {
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
@@ -76,6 +78,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const hasSomeVesselLayer = activeVesselsDataviews?.length > 0
+  const vesselsAsPositions = useSelector(selectDebugOptions)?.vesselsAsPositions
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const { timebarSelectedVGId, dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
@@ -125,22 +128,14 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
       label: `${TimebarVisualisations.Vessel} - ${TimebarGraphs.None}`,
     })
   }
-  const setVesselGraphSpeed = () => {
+
+  const setVesselGraph = (timebarGraph: TimebarGraphs) => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
-    dispatchTimebarGraph(TimebarGraphs.Speed)
+    dispatchTimebarGraph(timebarGraph)
     trackEvent({
       category: TrackCategory.Timebar,
       action: 'select_timebar_settings',
-      label: `${TimebarVisualisations.Vessel} - ${TimebarGraphs.Speed}`,
-    })
-  }
-  const setVesselGraphDepth = () => {
-    dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
-    dispatchTimebarGraph(TimebarGraphs.Depth)
-    trackEvent({
-      category: TrackCategory.Timebar,
-      action: 'select_timebar_settings',
-      label: `${TimebarVisualisations.Vessel} - ${TimebarGraphs.Depth}`,
+      label: `${TimebarVisualisations.Vessel} - ${timebarGraph}`,
     })
   }
 
@@ -258,7 +253,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
             <Radio
               label={
                 <Icon
-                  SvgIcon={TracksIcon}
+                  SvgIcon={vesselsAsPositions ? TrackPositionsIcon : TracksIcon}
                   label={t('timebarSettings.tracks')}
                   color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                   disabled={!activeTrackDataviews?.length}
@@ -291,7 +286,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                 timebarGraph === TimebarGraphs.Speed
               }
               tooltip={getVesselGraphTooltip('speed')}
-              onClick={setVesselGraphSpeed}
+              onClick={() => setVesselGraph(TimebarGraphs.Speed)}
             />
             <Radio
               label={
@@ -308,7 +303,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                 timebarGraph === TimebarGraphs.Depth
               }
               tooltip={getVesselGraphTooltip('depth')}
-              onClick={setVesselGraphDepth}
+              onClick={() => setVesselGraph(TimebarGraphs.Depth)}
             />
             {activeEnvironmentalDataviews.map((envDataview) => {
               const dataset = envDataview.datasets?.find(

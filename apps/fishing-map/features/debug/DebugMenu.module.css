@@ -15,6 +15,14 @@
   font-weight: 500;
 }
 
+.padding {
+  padding-left: var(--space-S);
+}
+
+.inputShort {
+  width: 24rem;
+}
+
 .editor {
   margin-top: 1rem;
   width: 100%;

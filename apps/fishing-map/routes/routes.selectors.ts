@@ -204,6 +204,7 @@ export const selectIsIndexLocation = createSelector(
 export const selectUserTab = selectQueryParam('userTab')
 export const selectUrlMapZoomQuery = selectQueryParam('zoom')
 export const selectTrackCorrectionId = selectQueryParam('trackCorrectionId')
+export const selectVesselsMaxTimeGapHours = selectQueryParam('vesselsMaxTimeGapHours')
 
 const selectUrlMapLatitudeQuery = selectQueryParam('latitude')
 const selectUrlMapLongitudeQuery = selectQueryParam('longitude')
