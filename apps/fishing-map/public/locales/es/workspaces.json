@@ -71,8 +71,8 @@
   },
   "reports": {
     "activity-report": {
-      "description": "Monitor Apparent Fishing Effort and Vessel Presence in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries.",
-      "name": "Global Vessel Activity"
+      "description": "Monitorear el esfuerzo pesquero aparente y la presencia de buques casi en tiempo real basándose en datos del AIS global y del VMS de nuestros países socios.",
+      "name": "Actividad Global de Buques"
     },
     "carrier-portal-report": {
       "cta": "Explore the carrier vessel portal",
