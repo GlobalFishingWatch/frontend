@@ -51,6 +51,7 @@ import {
   selectIsIndexLocation,
   selectIsUserLocation,
   selectIsWorkspaceLocation,
+  selectVesselsMaxTimeGapHours,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -141,6 +142,7 @@ export const useGlobalConfigConnect = () => {
   const hoverFeatures = useMapHoverInteraction()?.features
   const debug = useSelector(selectDebugOptions)?.debug
   const vesselsAsPositions = useSelector(selectDebugOptions)?.vesselsAsPositions
+  const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
 
   const highlightedTime = useMemo(() => {
     if (
@@ -181,23 +183,24 @@ export const useGlobalConfigConnect = () => {
 
   return useMemo(() => {
     let globalConfig: ResolverGlobalConfig = {
-      zoom: viewState.zoom,
-      start,
-      end,
-      debug,
-      vesselTrackVisualizationMode: vesselsAsPositions ? 'positions' : 'track',
-      token: GFWAPI.token,
-      bivariateDataviews,
       activityVisualizationMode,
+      bivariateDataviews,
+      debug,
       detectionsVisualizationMode,
+      end,
       environmentVisualizationMode,
-      highlightEventIds,
-      highlightedTime,
-      visibleEvents,
-      vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
       highlightedFeatures,
-      trackGraphExtent,
+      highlightedTime,
+      highlightEventIds,
       onPositionsMaxPointsError,
+      start,
+      token: GFWAPI.token,
+      trackGraphExtent,
+      vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
+      vesselTrackVisualizationMode: vesselsAsPositions ? 'positions' : 'track',
+      ...(vesselsAsPositions === true && { vesselsMaxTimeGapHours }),
+      visibleEvents,
+      zoom: viewState.zoom,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {
@@ -216,14 +219,15 @@ export const useGlobalConfigConnect = () => {
     activityVisualizationMode,
     detectionsVisualizationMode,
     environmentVisualizationMode,
+    highlightEventIds,
     highlightedTime,
     visibleEvents,
     vesselsTimebarGraph,
+    vesselsMaxTimeGapHours,
     highlightedFeatures,
-    highlightEventIds,
+    trackGraphExtent,
     onPositionsMaxPointsError,
     showTimeComparison,
-    trackGraphExtent,
     timeComparisonValues,
   ])
 }

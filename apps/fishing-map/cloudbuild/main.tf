@@ -40,7 +40,7 @@ locals {
 }
 
 module "develop" {
-  source            = "../../../cloudbuild-template"
+  source            = "../../../cloudbuild-template-new"
   project_id        = "gfw-development"
   short_environment = "dev"
   app_name          = local.app_name
@@ -68,7 +68,8 @@ module "develop" {
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
   ]
-  set_secrets = local.generate_secrets.dev
+  set_secrets  = local.generate_secrets.dev
+  machine_type = "E2_HIGHCPU_8"
 }
 
 module "preview-dev" {
@@ -89,6 +90,7 @@ module "preview-dev" {
     branch = "develop"
   }
   set_env_vars_build = [
+    "NX_CLOUD_ACCESS_TOKEN=${local.secrets_path.dev}/FRONTEND_NX_CLOUD_ACCESS_TOKEN",
     "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
     "NEXT_PUBLIC_API_VERSION=v3",
     "NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",

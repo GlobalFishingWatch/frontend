@@ -79,9 +79,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   get cacheHash(): string {
-    const { color } = this.props
+    const { color, maxTimeGapHours } = this.props
     const filters = this.getFilters()
-    return `${color.join('')}-${Object.values(filters).filter(Boolean).join('-')}`
+    return `${color.join('')}-${Object.values(filters).filter(Boolean).join('-')}-${maxTimeGapHours}`
   }
 
   getPickingInfo = ({
@@ -212,6 +212,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       trackGraphExtent,
       colorBy,
       trackVisualizationMode,
+      maxTimeGapHours,
     } = this.props
 
     if (!trackUrl || !visible) {
@@ -224,7 +225,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       if (!start || !end) {
         return []
       }
-      const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}`
+      const chunkId = `${TRACK_LAYER_TYPE}-${start}-${end}-${maxTimeGapHours}`
       return new VesselTrackLayer(
         this.getSubLayerProps({
           id: chunkId,
@@ -238,6 +239,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           }),
           loadOptions: {
             ...getFetchLoadOptions(),
+            'vessel-tracks': {
+              maxTimeGapHours,
+            },
           },
           visualizationMode: trackVisualizationMode,
           trackGraphExtent,

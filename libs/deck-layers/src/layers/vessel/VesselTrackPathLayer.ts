@@ -88,6 +88,10 @@ export type _VesselTrackPathLayerProps<DataT = any> = {
    * @default 999999999999999
    */
   maxElevationFilter?: number
+  /**
+   * The maximum time gap in hours to split the track into segments
+   */
+  maxTimeGapHours?: number
   // /**
   //  * Color to be used as a highlight path
   //  * @default [255, 255, 255, 255]
@@ -99,6 +103,7 @@ export type _VesselTrackPathLayerProps<DataT = any> = {
   getTimestamp?: AccessorFunction<DataT, NumericArray>
   getSpeed?: AccessorFunction<DataT, NumericArray>
   getElevation?: AccessorFunction<DataT, NumericArray>
+  getGap?: AccessorFunction<DataT, NumericArray>
   /**
    * Callback on data changed to update
    */
@@ -162,6 +167,7 @@ const defaultProps: DefaultProps<VesselTrackPathLayerProps> = {
   getTimestamp: { type: 'accessor', value: (d) => d },
   getSpeed: { type: 'accessor', value: (d) => d },
   getElevation: { type: 'accessor', value: (d) => d },
+  getGap: { type: 'accessor', value: () => [0] },
   onDataChange: { type: 'function', value: () => {} },
   getColor: { type: 'accessor', value: () => [255, 255, 255, 100] },
   // getHighlightColor: { type: 'accessor', value: DEFAULT_HIGHLIGHT_COLOR_RGBA },
@@ -258,20 +264,26 @@ export class VesselTrackPathLayer<
 
   getShaders() {
     const shaders = super.getShaders()
+    const attributeManager = this.getAttributeManager()
+    const hasSpeedAttribute = attributeManager?.getAttributes()?.speeds !== undefined
+    const hasElevationAttribute = attributeManager?.getAttributes()?.elevations !== undefined
     shaders.modules = [...(shaders.modules || []), trackLayerUniforms]
     shaders.inject = {
       'vs:#decl': /*glsl*/ `
         in float instanceTimestamps;
-        in float instanceSpeeds;
-        in float instanceElevations;
+        ${hasSpeedAttribute ? 'in float instanceSpeeds;' : ''}
+        ${hasElevationAttribute ? 'in float instanceElevations;' : ''}
+        in float instanceGaps;
         out float vTime;
         out float vSpeed;
         out float vElevation;
+        out float vGap;
         `,
       'vs:DECKGL_FILTER_SIZE': /*glsl*/ `
         vTime = instanceTimestamps;
-        vSpeed = instanceSpeeds;
-        vElevation = instanceElevations;
+        ${hasSpeedAttribute ? 'vSpeed = instanceSpeeds;' : 'vSpeed = 0.0;'}
+        ${hasElevationAttribute ? 'vElevation = instanceElevations;' : 'vElevation = 0.0;'}
+        vGap = instanceGaps;
         if (vTime > track.highlightEventStartTime && vTime < track.highlightEventEndTime) {
           size *= 4.0;
         }
@@ -285,6 +297,7 @@ export class VesselTrackPathLayer<
         in float vTime;
         in float vSpeed;
         in float vElevation;
+        in float vGap;
       `,
       // Drop the segments outside of the time window
       'fs:#main-start': /*glsl*/ `
@@ -317,6 +330,11 @@ export class VesselTrackPathLayer<
           }
         }
 
+        // Render gap segments with 0.25 opacity
+        if (vGap > 0.5) {
+          color.a = 0.25;
+        }
+
         // TODO how can we fade the rest of the track?
         // if(vTime <= track.highlightEventStartTime || vTime >= track.highlightEventEndTime) {
         //   color.a = 0.25;
@@ -344,23 +362,68 @@ export class VesselTrackPathLayer<
         },
       })
       attributeManager.addInstanced({
-        speeds: {
+        gaps: {
           size: 1,
-          accessor: 'getSpeed',
+          accessor: 'getGap',
           shaderAttributes: {
-            instanceSpeeds: {},
+            instanceGaps: {},
           },
         },
       })
-      attributeManager.addInstanced({
-        elevations: {
-          size: 1,
-          accessor: 'getElevation',
-          shaderAttributes: {
-            instanceElevations: {},
+    }
+    this.setState({ hasSpeedAttribute: false, hasElevationAttribute: false })
+  }
+
+  updateState(params: any) {
+    super.updateState(params)
+    const { props, oldProps } = params
+    const attributeManager = this.getAttributeManager()
+    const colorBy = props.colorBy
+    const oldColorBy = oldProps?.colorBy
+
+    // Update attributes when colorBy changes or on initial mount
+    // to avoid Too many attributes (instancePickingColors) error
+    if (attributeManager && (colorBy !== oldColorBy || oldProps === undefined)) {
+      const needsSpeed = colorBy === 'speed'
+      const needsElevation = colorBy === 'elevation'
+      const hasCurrentSpeed = (this.state as any)?.hasSpeedAttribute || false
+      const hasCurrentElevation = (this.state as any)?.hasElevationAttribute || false
+
+      if (needsSpeed && !hasCurrentSpeed) {
+        attributeManager.addInstanced({
+          speeds: {
+            size: 1,
+            accessor: 'getSpeed',
+            shaderAttributes: {
+              instanceSpeeds: {},
+            },
           },
-        },
-      })
+        })
+        this.setState({ hasSpeedAttribute: true })
+        this.setNeedsRedraw()
+      } else if (!needsSpeed && hasCurrentSpeed) {
+        attributeManager.remove(['speeds'])
+        this.setState({ hasSpeedAttribute: false })
+        this.setNeedsRedraw()
+      }
+
+      if (needsElevation && !hasCurrentElevation) {
+        attributeManager.addInstanced({
+          elevations: {
+            size: 1,
+            accessor: 'getElevation',
+            shaderAttributes: {
+              instanceElevations: {},
+            },
+          },
+        })
+        this.setState({ hasElevationAttribute: true })
+        this.setNeedsRedraw()
+      } else if (!needsElevation && hasCurrentElevation) {
+        attributeManager.remove(['elevations'])
+        this.setState({ hasElevationAttribute: false })
+        this.setNeedsRedraw()
+      }
     }
   }
 

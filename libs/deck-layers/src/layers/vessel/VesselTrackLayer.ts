@@ -92,13 +92,45 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
         includeCoordinates: true,
         startTime: this.props.startTime,
         endTime: this.props.endTime,
+        maxTimeGapHours: this.props.maxTimeGapHours,
       })
       if (segments?.length) {
         const points = segments.flatMap((segment) => (segment.length ? segment : []))
-        // Parse points to add course
-        const pointsWithCourse = points.map((point, index) => {
-          if (index < points.length - 1) {
-            const nextPoint = points[index + 1]
+
+        // Filter out gap points
+        const data = this.props.data as VesselTrackData
+        const gaps = data?.attributes?.getGap?.value
+        const timestamps = data?.attributes?.getTimestamp?.value
+        const gapSize = data?.attributes?.getGap?.size || 1
+        const timestampSize = data?.attributes?.getTimestamp?.size || 1
+        const maxTimeGapMs = this.props.maxTimeGapHours
+          ? this.props.maxTimeGapHours * 3600000
+          : undefined
+
+        // Create a map of timestamp to point index for efficient lookup
+        const timestampToIndexMap = new Map<number, number>()
+        if (gaps && maxTimeGapMs && timestamps) {
+          for (let i = 0; i < timestamps.length; i += timestampSize) {
+            const timestamp = timestamps[i]
+            const pointIndex = i / timestampSize
+            timestampToIndexMap.set(timestamp, pointIndex)
+          }
+        }
+
+        const isGapPoint = (point: TrackPoint): boolean => {
+          if (!gaps || !maxTimeGapMs || !point.timestamp) return false
+          const pointIndex = timestampToIndexMap.get(point.timestamp)
+          if (pointIndex === undefined) return false
+          return gaps[pointIndex * gapSize] === 1
+        }
+
+        const pointsWithoutGaps = points.filter((point) => !isGapPoint(point))
+        const pointsWithCourse = pointsWithoutGaps.flatMap((point, index) => {
+          if (index < pointsWithoutGaps.length - 1) {
+            const nextPoint = pointsWithoutGaps[index + 1]
+            if (nextPoint.latitude === point.latitude && nextPoint.longitude === point.longitude) {
+              return []
+            }
             if (point.longitude && point.latitude && nextPoint?.longitude && nextPoint?.latitude) {
               try {
                 const course = rhumbBearing(
@@ -107,8 +139,10 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
                 )
                 return { ...point, course }
               } catch {
-                return { ...point, course: 0 }
+                return []
               }
+            } else {
+              return []
             }
           }
           return { ...point, course: 0 }

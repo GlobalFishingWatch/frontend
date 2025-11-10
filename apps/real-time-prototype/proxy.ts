@@ -9,7 +9,7 @@ export const config = {
   matcher: '/',
 }
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const basicAuth = req.headers.get('authorization')
   const url = req.nextUrl
   if (!basicAuthEnabled) return NextResponse.next()
