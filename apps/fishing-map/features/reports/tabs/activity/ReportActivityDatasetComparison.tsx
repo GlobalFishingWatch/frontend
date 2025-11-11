@@ -13,10 +13,12 @@ import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { resolveLibraryLayers } from 'features/layer-library/LayerLibrary'
-import { isSupportedReportDataview } from 'features/reports/report-area/area-reports.utils'
+import { isSupportedComparisonDataview } from 'features/reports/report-area/area-reports.utils'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 
 import styles from './ReportActivityDatasetComparison.module.css'
 
@@ -36,29 +38,25 @@ const ReportActivityDatasetComparison = () => {
   const { upsertDataviewInstance, removeDataviewInstance } = useDataviewInstancesConnect()
 
   const reportDataviews = useSelector(selectActiveReportDataviews)
+  const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
+  const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
+
   const comparisonDatasets = useSelector(selectReportComparisonDataviewIds)
   const allDataviews = useSelector(selectAllDataviews)
 
   const layersResolved = useMemo(() => {
-    const activeDataview = reportDataviews.map((dv) => dv.slug)
-    return resolveLibraryLayers(
-      allDataviews.filter(
-        (layer) =>
-          // TO do: filter out same subcategories dataviews
-          !activeDataview.includes(layer.slug) &&
-          layer.slug !== TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG && // for removing bathymetry from comparison
-          layer.category !== DataviewCategory.Events
-      ),
-      false,
-      t
-    )
-  }, [allDataviews, reportDataviews, t])
+    return resolveLibraryLayers(allDataviews, false, t)
+  }, [allDataviews, t])
 
   const allLayerOptions = useMemo(() => {
     return layersResolved
-      ?.filter((layer) => isSupportedReportDataview(layer.dataview))
+      ?.filter(
+        (layer) =>
+          isSupportedComparisonDataview(layer.dataview) &&
+          !reportDataviews.find((dv) => dv.id.split(LAYER_LIBRARY_ID_SEPARATOR)[0] === layer.id)
+      )
       .map((layer) => createDatasetOption(layer?.id, layer?.name || '', layer.config?.color))
-  }, [layersResolved])
+  }, [layersResolved, reportDataviews])
 
   const mainDatasetOptions = useMemo(
     () =>
@@ -81,7 +79,7 @@ const ReportActivityDatasetComparison = () => {
 
   const selectedComparisonDataset = useMemo(() => {
     const selectedId = comparisonDatasets?.compare?.split(LAYER_LIBRARY_ID_SEPARATOR)[0]
-    return allLayerOptions.find((layer) => layer.id === selectedId)
+    return selectedId ? allLayerOptions.find((layer) => layer.id.includes(selectedId)) : undefined
   }, [allLayerOptions, comparisonDatasets?.compare])
 
   useEffect(() => {
@@ -116,25 +114,32 @@ const ReportActivityDatasetComparison = () => {
     const dataviewID = `${option.id}${LAYER_LIBRARY_ID_SEPARATOR}${DATASET_COMPARISON_SUFFIX}`
     const { category, dataviewId, datasetsConfig, config } = layerConfig
 
-    if (comparisonDatasets?.compare) {
+    if (comparisonDatasets?.compare?.includes(DATASET_COMPARISON_SUFFIX)) {
       removeDataviewInstance(comparisonDatasets.compare)
     }
-    //to do: check if dataview already exists before upserting
-    upsertDataviewInstance({
-      id: dataviewID,
-      category,
-      dataviewId,
-      datasetsConfig,
-      config: {
-        ...config,
-        visible: true,
-      },
-    })
+
+    const existingDataview =
+      workspaceDataviewInstances.find((dv) => dv.dataviewId === dataviewId && dv.config?.visible) ||
+      urlDataviewInstances.find((dv) => dv.id.includes(option.id))
+
+    if (!existingDataview)
+      upsertDataviewInstance({
+        id: dataviewID,
+        category,
+        dataviewId,
+        datasetsConfig,
+        config: {
+          ...config,
+          visible: true,
+        },
+      })
+
+    const newDataview = existingDataview ? existingDataview.id : dataviewID
 
     dispatchQueryParams({
       reportComparisonDataviewIds: {
         main: comparisonDatasets?.main || mainDatasetOptions[0]?.id,
-        compare: dataviewID,
+        compare: newDataview,
       },
     })
   }

@@ -97,6 +97,12 @@ const SUPPORTED_REPORT_TYPES = [
   DataviewType.FourwingsTileCluster,
   DataviewType.Currents,
 ]
+const SUPPORTED_COMPARISON_CATEGORIES = [
+  DataviewCategory.Activity,
+  DataviewCategory.Detections,
+  DataviewCategory.Environment,
+]
+const SUPPORTED_COMPARISON_TYPES = [DataviewType.HeatmapAnimated, DataviewType.FourwingsTileCluster]
 
 export const isContextDataviewReportSupported = (dataview: Dataview | UrlDataviewInstance) => {
   if (dataview.category !== DataviewCategory.Context) {
@@ -120,7 +126,7 @@ export const isUserContextDataviewReportSupported = (dataview: Dataview | UrlDat
 
 export const isSupportedReportDataview = (dataview: Dataview | UrlDataviewInstance) => {
   const { category, config } = dataview
-  if (!category || !config?.type) {
+  if (!category || !config?.visible || !config?.type) {
     return false
   }
   if (category === DataviewCategory.User) {
@@ -131,6 +137,17 @@ export const isSupportedReportDataview = (dataview: Dataview | UrlDataviewInstan
   }
   return (
     SUPPORTED_REPORT_CATEGORIES.includes(category) && SUPPORTED_REPORT_TYPES.includes(config?.type)
+  )
+}
+
+export const isSupportedComparisonDataview = (dataview: Dataview | UrlDataviewInstance) => {
+  const { category, config } = dataview
+  if (!category || !config?.type) {
+    return false
+  }
+  return (
+    SUPPORTED_COMPARISON_CATEGORIES.includes(category) &&
+    SUPPORTED_COMPARISON_TYPES.includes(config?.type)
   )
 }
 
