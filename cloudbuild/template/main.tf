@@ -49,10 +49,9 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
     }
 
     step {
-      id       = "Deploy to Cloud Run"
-      name     = "gcr.io/cloud-builders/gcloud"
-      script   = file("${path.module}/scripts/deploy-cloud-run.sh")
-      wait_for = ["get-affected"]
+      id     = "Deploy to Cloud Run"
+      name   = "gcr.io/cloud-builders/gcloud"
+      script = file("${path.module}/scripts/deploy-cloud-run.sh")
       env = [
         "BRANCH=${var.branch_name}",
         "SHORT_ENV=${var.short_environment}",
