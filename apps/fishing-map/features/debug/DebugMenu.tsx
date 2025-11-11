@@ -116,9 +116,13 @@ const DebugMenu: React.FC = () => {
               max={24}
               value={vesselsMaxTimeGapHours}
               className={cx(styles.inputShort, styles.input)}
-              onChange={(e) =>
-                dispatchQueryParams({ vesselsMaxTimeGapHours: Number(e.target.value) })
-              }
+              onChange={(e) => {
+                const value = Number(e.target.value)
+                // Validate input: must be a valid number between 0 and 24
+                if (!isNaN(value) && value >= 0 && value <= 24) {
+                  dispatchQueryParams({ vesselsMaxTimeGapHours: value })
+                }
+              }}
             />
           )}
         </div>

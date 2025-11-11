@@ -82,16 +82,15 @@ export const getSegmentsFromData = memoize(
     const elevationSize = (data as VesselTrackData).attributes.getElevation?.size
     const gapSize = (data as VesselTrackData).attributes?.getGap?.size || 1
     const maxTimeGapMs = maxTimeGapHours ? maxTimeGapHours * 3600000 : undefined
+    const hasGapSupport = !!(gaps && maxTimeGapMs)
+    const totalPoints = timestamps.length / timestampSize
 
-    let wrappedLongitudes: number[] | undefined
-    if (includeCoordinates) {
-      const longitudes: number[] = []
-      for (let i = 0; i < positions.length; i += pathSize) {
-        longitudes.push(positions[i])
-      }
-      wrappedLongitudes = wrapLongitudes(longitudes)
-    }
+    // Pre-compute wrapped longitudes if needed
+    const wrappedLongitudes = includeCoordinates
+      ? wrapLongitudes(Array.from({ length: totalPoints }, (_, i) => positions[i * pathSize]))
+      : undefined
 
+    // Helper to get point data by index
     const getPointByIndex = (index: number) => {
       const longitude = wrappedLongitudes ? wrappedLongitudes[index] : positions[index * pathSize]
 
@@ -100,107 +99,83 @@ export const getSegmentsFromData = memoize(
           longitude,
           latitude: positions[index * pathSize + 1],
         }),
-
         timestamp: timestamps[index * timestampSize],
-        ...(speedSize && {
-          speed: speeds?.[index * speedSize] || 0,
-        }),
-        ...(elevationSize && {
-          elevation: elevations?.[index * elevationSize] || 0,
-        }),
+        ...(speedSize && { speed: speeds?.[index * speedSize] || 0 }),
+        ...(elevationSize && { elevation: elevations?.[index * elevationSize] || 0 }),
       }
     }
 
+    // Helper to check if a point is a gap point
     const isGapPoint = (index: number): boolean => {
-      if (!gaps || !maxTimeGapMs) return false
-      return gaps[index * gapSize] === 1
+      if (!hasGapSupport || !gaps) return false
+      const gapIndex = index * gapSize
+      return gapIndex < gaps.length && gaps[gapIndex] === 1
     }
 
-    const isGapSegment = (segmentStart: number, segmentEnd: number, isLast: boolean): boolean => {
-      if (!gaps || !maxTimeGapMs) return false
-      // For the last segment, calculate the correct end point index
-      const actualSegmentEnd = isLast ? timestamps.length / timestampSize : segmentEnd
-      // Check if all points in the segment are gap points
-      for (let index = segmentStart; index < actualSegmentEnd; index++) {
-        if (!isGapPoint(index)) {
-          return false
-        }
+    // Helper to check if a segment is entirely gap points
+    const isGapSegment = (segmentStart: number, segmentEnd: number): boolean => {
+      if (!hasGapSupport) return false
+      for (let index = segmentStart; index < segmentEnd; index++) {
+        if (!isGapPoint(index)) return false
       }
       return true
     }
 
-    // Track if we've already included the first point after endTime across all segments (for course calculation)
+    const isTimestampInRange = (timestamp: number, isFirstAfterEndTime: boolean): boolean => {
+      if (startTime && timestamp <= startTime && !isFirstAfterEndTime) return false
+      if (endTime && timestamp >= endTime && !isFirstAfterEndTime) return false
+      return true
+    }
+
+    // Track if we've already included the first point after endTime (for course calculation)
     let firstPointAfterEndTimeIncluded = false
 
-    const segments = segmentsIndexes.map((segmentIndex, i, segmentsIndexes) => {
+    const segments = segmentsIndexes.map((segmentIndex, i) => {
       const points = [] as TrackSegment
       const isLastSegment = i === segmentsIndexes.length - 1
-      const nextSegmentIndex = segmentsIndexes[i + 1] || timestamps.length / timestampSize
+      const nextSegmentIndex = segmentsIndexes[i + 1] ?? totalPoints
+      const segmentEndIndex = isLastSegment ? totalPoints : nextSegmentIndex
 
       // Skip gap segments entirely
-      if (maxTimeGapMs && gaps && isGapSegment(segmentIndex, nextSegmentIndex, isLastSegment)) {
+      if (hasGapSupport && isGapSegment(segmentIndex, segmentEndIndex)) {
         return points
       }
 
-      // Check if previous segment was a gap segment (to avoid duplicate boundary points)
+      // Check if previous segment was a gap (to avoid duplicate boundary points)
       const previousSegmentIsGap =
-        maxTimeGapMs &&
-        gaps &&
         i > 0 &&
+        hasGapSupport &&
         segmentsIndexes[i - 1] !== undefined &&
-        isGapSegment(segmentsIndexes[i - 1], segmentIndex, false)
+        isGapSegment(segmentsIndexes[i - 1], segmentIndex)
 
-      // Calculate the actual end index for this segment (exclusive)
-      const segmentEndIndex = isLastSegment ? timestamps.length / timestampSize : nextSegmentIndex
-
-      // Process all points in the segment, skipping gap points
       for (let pointIndex = segmentIndex; pointIndex < segmentEndIndex; pointIndex++) {
-        // Skip gap points - these are in gap segments and should never be included
-        if (isGapPoint(pointIndex)) {
-          continue
-        }
+        if (isGapPoint(pointIndex)) continue
 
         const timestamp = timestamps[pointIndex * timestampSize]
-
-        // Check if this is the first point after endTime (needed for course calculation)
-        const isFirstPointAfterEndTime =
+        const isFirstAfterEndTime =
           endTime && timestamp >= endTime && !firstPointAfterEndTimeIncluded
 
-        // Always include the first point after endTime to ensure course can be calculated
-        if (startTime && timestamp <= startTime && !isFirstPointAfterEndTime) {
-          continue
-        }
-        if (endTime && timestamp >= endTime && !isFirstPointAfterEndTime) {
-          continue
-        }
+        if (!isTimestampInRange(timestamp, isFirstAfterEndTime)) continue
 
-        if (isFirstPointAfterEndTime) {
+        if (isFirstAfterEndTime) {
           firstPointAfterEndTimeIncluded = true
         }
 
-        // When includeMiddlePoints is true, add all non-gap points
-        // When includeMiddlePoints is false, only add boundary points
-        // Always include the first point after endTime (needed for course calculation)
-        if (includeMiddlePoints || isFirstPointAfterEndTime) {
+        const isFirstPoint = pointIndex === segmentIndex
+        const isLastPoint = pointIndex === segmentEndIndex - 1
+        if (
+          includeMiddlePoints ||
+          isFirstAfterEndTime ||
+          (isFirstPoint && !previousSegmentIsGap) ||
+          isLastPoint
+        ) {
           points.push(getPointByIndex(pointIndex))
-        } else {
-          // Only add boundary points when includeMiddlePoints is false
-          const isFirstPoint = pointIndex === segmentIndex
-          const isLastPoint = pointIndex === segmentEndIndex - 1
-
-          // Add the point if:
-          // - it's the first point of the segment (but skip if previous segment was a gap, as it's a duplicate), OR
-          // - it's the last point of the segment (always add, as it's the original)
-          // When previous segment is a gap, the first point is a duplicate that's also in the gap segment
-          // The last point is always the original (any duplicate would be in the next gap segment and marked as gap=1)
-          if ((isFirstPoint && !previousSegmentIsGap) || isLastPoint) {
-            points.push(getPointByIndex(pointIndex))
-          }
         }
       }
 
       return points
     })
+
     return segments
   },
   (data, params) => {
