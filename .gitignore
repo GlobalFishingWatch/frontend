@@ -94,6 +94,8 @@ typings/
 
 # Next.js build output
 .next
+# Next.js auto-generated TypeScript declarations
+**/next-env.d.ts
 
 # Nuxt.js build / generate output
 .nuxt
