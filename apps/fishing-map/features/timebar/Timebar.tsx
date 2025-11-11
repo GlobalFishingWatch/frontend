@@ -149,18 +149,13 @@ const TimebarHighlighterWrapper = ({
     },
     [interval]
   )
-  const bluePlanetCallback = useCallback(
-    (timestamp: number) => {
-      if (bluePlanetMode) {
-        return formatI18nDate(timestamp, {
-          format: BLUE_PLANET_MODE_DATE_FORMAT,
-          showUTCLabel: true,
-        })
-      }
-      return undefined
-    },
-    [bluePlanetMode]
-  )
+
+  const bluePlanetCallback = useCallback((timestamp: number) => {
+    return formatI18nDate(timestamp, {
+      format: BLUE_PLANET_MODE_DATE_FORMAT,
+      showUTCLabel: true,
+    })
+  }, [])
 
   const formatDate = useMemo(
     () =>
@@ -168,8 +163,16 @@ const TimebarHighlighterWrapper = ({
       timebarVisualisation === TimebarVisualisations.HeatmapDetections ||
       visualizationMode !== 'positions'
         ? activityDateCallback
-        : bluePlanetCallback,
-    [timebarVisualisation, visualizationMode, activityDateCallback, bluePlanetCallback]
+        : bluePlanetMode
+          ? bluePlanetCallback
+          : undefined,
+    [
+      timebarVisualisation,
+      visualizationMode,
+      activityDateCallback,
+      bluePlanetMode,
+      bluePlanetCallback,
+    ]
   )
 
   return highlightedTime ? (
