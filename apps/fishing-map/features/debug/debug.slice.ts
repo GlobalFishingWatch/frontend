@@ -19,6 +19,7 @@ export enum DebugOption {
   DataTerminologyIframe = 'dataTerminologyIframe',
   VesselsAsPositions = 'vesselsAsPositions',
   BluePlanetMode = 'bluePlanetMode',
+  VesselsMaxTimeGapHours = 'vesselsMaxTimeGapHours',
 }
 
 export const FAKE_VESSEL_NAME = 'vessel:387609'
@@ -55,6 +56,7 @@ const initialState: DebugState = {
     experimentalLayers: false,
     areasOnScreen: false,
     vesselsAsPositions: false,
+    vesselsMaxTimeGapHours: false,
     bluePlanetMode: false,
   },
 }
