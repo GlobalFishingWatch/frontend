@@ -55,7 +55,7 @@
         "commands": [
           "nx dist:workers deck-loaders",
           "make-dir apps/fishing-map/public/workers",
-          "shx cp -R dist/libs/deck-loaders/workers/**/*.js apps/fishing-map/public/workers/"
+          "shx cp -R dist/libs/deck-loaders/workers/**/*.js apps/fishing-map/public/workers/ || true"
         ],
         "parallel": false
       }
