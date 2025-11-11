@@ -12,7 +12,6 @@ import { selectReportComparisonDataviewIds } from 'features/reports/reports.conf
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 import {
-  formatComparisonData,
   formatDateTicks,
   formatEvolutionData,
 } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
@@ -88,22 +87,20 @@ const ReportActivityDatasetComparisonGraph = ({
   const comparisonDatasets = useSelector(selectReportComparisonDataviewIds)
   const mapLoading = useIsDeckLayersLoading()
 
-  const interval = data[0]?.interval
-
   const filteredData = useMemo(() => {
     return filterDataBySublayer(data, comparisonDatasets?.main, comparisonDatasets?.compare)
   }, [data, comparisonDatasets?.main, comparisonDatasets?.compare])
 
+  const interval = filteredData[0]?.interval
+
   const dataFormated = useMemo(
     () =>
-      comparisonDatasets?.compare
-        ? formatComparisonData(filteredData)
-        : formatEvolutionData(filteredData[0], {
-            start,
-            end,
-            timeseriesInterval: filteredData[0]?.interval,
-          }),
-    [comparisonDatasets?.compare, end, filteredData, start]
+      formatEvolutionData(filteredData[0], filteredData[1], {
+        start,
+        end,
+        timeseriesInterval: interval,
+      }),
+    [end, filteredData, interval, start]
   )
 
   const xDomain = useMemo(() => calculateXDomain(start, end, interval), [start, end, interval])
@@ -132,8 +129,9 @@ const ReportActivityDatasetComparisonGraph = ({
   const leftAxisDomain = calculateYAxisDomain(dataFormated, 0)
 
   const rightAxisColor =
-    comparisonDatasets?.compare &&
-    getContrastSafeLineColor(filteredData[1].sublayers[0].legend?.color as string)
+    comparisonDatasets?.compare && filteredData[1]
+      ? getContrastSafeLineColor(filteredData[1].sublayers[0].legend?.color as string)
+      : undefined
   const rightAxisDomain = comparisonDatasets?.compare && calculateYAxisDomain(dataFormated, 1)
 
   return (

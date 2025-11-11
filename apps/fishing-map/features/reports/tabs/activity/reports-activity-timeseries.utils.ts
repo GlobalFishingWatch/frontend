@@ -224,6 +224,7 @@ export const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterv
 
 export const formatEvolutionData = (
   data: ReportGraphProps,
+  comparedData?: ReportGraphProps,
   { start, end, timeseriesInterval } = {} as {
     start: string
     end: string
@@ -253,15 +254,23 @@ export const formatEvolutionData = (
       .map((_, i) => {
         const date = getUTCDateTime(startMillis).plus({ [timeseriesInterval]: i })
         const dataValue = data.timeseries.find((item) => date.toISO()?.startsWith(item.date))
-        if (!dataValue) {
-          return {
-            date: date.toMillis(),
-            range: emptyData,
-            avg: emptyData,
-          }
-        }
-        const range = dataValue.min.map((m, i) => [m, dataValue.max[i]])
-        const avg = dataValue.min.map((m, i) => (m + dataValue.max[i] || 0) / 2)
+        const comparedDataValue = comparedData?.timeseries.find((item) =>
+          date.toISO()?.startsWith(item.date)
+        )
+
+        const processTimeseries = (value: typeof dataValue | undefined) =>
+          value
+            ? {
+                range: value.min.map((m, i) => [m, value.max[i]]),
+                avg: value.min.map((m, i) => (m + value.max[i]) / 2),
+              }
+            : { range: emptyData, avg: emptyData }
+
+        const dataProcessed = processTimeseries(dataValue)
+        const comparedProcessed = processTimeseries(comparedDataValue)
+
+        const range = [...dataProcessed.range, ...comparedProcessed.range].flat()
+        const avg = [...dataProcessed.avg, ...comparedProcessed.avg].flat()
 
         return {
           date: date.toMillis(),
@@ -287,46 +296,6 @@ export const formatEvolutionData = (
     .filter((d) => {
       return !isNaN(d.avg[0])
     })
-}
-
-export const formatComparisonData = (dataArray: ReportGraphProps[]) => {
-  if (!dataArray || dataArray.length < 2) {
-    return []
-  }
-
-  const [data1, data2] = dataArray
-
-  if (!data1?.timeseries || !data2?.timeseries) {
-    return []
-  }
-
-  const data2Map = new Map(data2.timeseries.map((item) => [item.date, item]))
-  const processDataset = (minValues: number[], maxValues: number[]) => {
-    const ranges = minValues.map((minVal, index) => [minVal, maxValues[index]] as [number, number])
-    const averages = minValues.map((minVal, index) => (minVal + maxValues[index]) / 2)
-    return { ranges, averages }
-  }
-
-  return data1.timeseries
-    .map(({ date, min: data1Min, max: data1Max }) => {
-      const data2Item = data2Map.get(date)
-      if (!data2Item) {
-        return null
-      }
-
-      const data1Processed = processDataset(data1Min, data1Max)
-      const data2Processed = processDataset(data2Item.min, data2Item.max)
-
-      const range = [...data1Processed.ranges, ...data2Processed.ranges]
-      const avg = [...data1Processed.averages, ...data2Processed.averages]
-
-      return {
-        date: getUTCDateTime(date).toMillis(),
-        range,
-        avg,
-      }
-    })
-    .filter((d): d is NonNullable<typeof d> => d !== null && !isNaN(d.avg[0]))
 }
 
 export function cleanDatasetComparisonDataviewInstances(
