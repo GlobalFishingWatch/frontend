@@ -27,56 +27,29 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
   service_account = "projects/${local.project}/serviceAccounts/cloudbuild@gfw-int-infrastructure.iam.gserviceaccount.com"
   build {
     step {
-      id       = "fetch"
-      name     = "gcr.io/cloud-builders/git"
-      args     = ["fetch", "--unshallow", "--no-tags"]
-      wait_for = ["-"]
+      id   = "Fetch"
+      name = "gcr.io/cloud-builders/git"
+      args = ["fetch", "--unshallow", "--no-tags"]
     }
 
     step {
-      id         = "compute-cache-key"
-      name       = "gcr.io/cloud-builders/gcloud"
-      entrypoint = "bash"
-      args = [
-        "-c",
-        "echo $(cat yarn.lock cloudbuild-template/scripts/install-yarn.sh | sha256sum | cut -d' ' -f1) > /workspace/cache-key"
-      ]
-      wait_for = ["-"]
+      id     = "Install Dependencies"
+      name   = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest"
+      script = <<-EOF
+        cp -R /app/node_modules /app/.yarn ./
+        yarn set version 4.10.3
+        yarn install --immutable --inline-builds
+      EOF
     }
 
     step {
-      id       = "restore-cache"
-      name     = "gcr.io/cloud-builders/gcloud"
-      script   = file("../cloudbuild-template/scripts/restore-cache.sh")
-      wait_for = ["compute-cache-key"]
-      env      = local.cache_env
+      id     = "Get Affected"
+      name   = "node:24"
+      script = file("${path.module}/scripts/affected-apps.sh")
     }
 
     step {
-      id       = "install-yarn"
-      name     = "node:24"
-      script   = file("../cloudbuild-template/scripts/install-yarn.sh")
-      wait_for = ["restore-cache"]
-    }
-
-
-    step {
-      id       = "save-cache"
-      name     = "gcr.io/cloud-builders/gcloud"
-      script   = file("../cloudbuild-template/scripts/save-cache.sh")
-      wait_for = ["install-yarn"]
-      env      = local.cache_env
-    }
-
-    step {
-      id       = "get-affected"
-      name     = "node:24"
-      script   = file("${path.module}/scripts/affected-apps.sh")
-      wait_for = ["save-cache"]
-    }
-
-    step {
-      id       = "deploy-cloud-run"
+      id       = "Deploy to Cloud Run"
       name     = "gcr.io/cloud-builders/gcloud"
       script   = file("${path.module}/scripts/deploy-cloud-run.sh")
       wait_for = ["get-affected"]
@@ -88,7 +61,8 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
     }
 
     options {
-      logging = "CLOUD_LOGGING_ONLY"
+      logging      = "CLOUD_LOGGING_ONLY"
+      machine_type = "E2_HIGHCPU_8"
     }
 
     timeout = "1800s"
