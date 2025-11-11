@@ -52,10 +52,10 @@ const ReportActivityDatasetComparison = () => {
       ?.filter(
         (layer) =>
           isSupportedComparisonDataview(layer.dataview) &&
-          !reportDataviews.find((dv) => dv.id.split(LAYER_LIBRARY_ID_SEPARATOR)[0] === layer.id)
+          comparisonDatasets?.main?.split(LAYER_LIBRARY_ID_SEPARATOR)[0] !== layer.id
       )
       .map((layer) => createDatasetOption(layer?.id, layer?.name || '', layer.config?.color))
-  }, [layersResolved, reportDataviews])
+  }, [layersResolved, comparisonDatasets?.main])
 
   const mainDatasetOptions = useMemo(
     () =>
@@ -111,7 +111,7 @@ const ReportActivityDatasetComparison = () => {
     if (!layerConfig) return
 
     const dataviewID = `${option.id}${LAYER_LIBRARY_ID_SEPARATOR}${DATASET_COMPARISON_SUFFIX}`
-    const { category, dataviewId, datasetsConfig, config } = layerConfig
+    const { dataviewId, datasetsConfig, config } = layerConfig
 
     if (comparisonDatasets?.compare?.includes(DATASET_COMPARISON_SUFFIX)) {
       removeDataviewInstance(comparisonDatasets.compare)
