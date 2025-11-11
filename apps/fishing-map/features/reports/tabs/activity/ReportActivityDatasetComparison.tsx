@@ -8,7 +8,6 @@ import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
 import { DATASET_COMPARISON_SUFFIX, LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
-import { TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG } from 'data/workspaces'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
@@ -119,13 +118,14 @@ const ReportActivityDatasetComparison = () => {
     }
 
     const existingDataview =
-      workspaceDataviewInstances.find((dv) => dv.dataviewId === dataviewId && dv.config?.visible) ||
-      urlDataviewInstances.find((dv) => dv.id.includes(option.id))
+      workspaceDataviewInstances.find(
+        (dv) => dv.dataviewId === dataviewId && dv.config?.visible && !dv.deleted
+      ) || urlDataviewInstances.find((dv) => dv.id.includes(option.id))
 
     if (!existingDataview)
       upsertDataviewInstance({
         id: dataviewID,
-        category,
+        category: DataviewCategory.Comparison,
         dataviewId,
         datasetsConfig,
         config: {

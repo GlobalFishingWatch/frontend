@@ -12,6 +12,7 @@ import {
   getMergedDataviewId,
   isActivityDataview,
   isAnyContextDataview,
+  isComparisonDataview,
   isDetectionsDataview,
   isEnvironmentalDataview,
   isHeatmapCurrentsDataview,
@@ -371,6 +372,10 @@ const DATAVIEW_GROUPS_CONFIG = [
   { key: 'activityDataviews' as const, test: isActivityDataview },
   { key: 'detectionDataviews' as const, test: isDetectionsDataview },
   { key: 'environmentalDataviews' as const, test: isEnvironmentalDataview },
+  {
+    key: 'comparisonDataviews' as const,
+    test: isComparisonDataview,
+  },
   { key: 'staticDataviews' as const, test: isHeatmapStaticDataview },
   { key: 'currentsDataviews' as const, test: isHeatmapCurrentsDataview },
   { key: 'vesselGroupDataview' as const, test: isVesselGroupDataview },
@@ -414,6 +419,7 @@ export function getDataviewsResolved(
     userHeatmapDataviews = [],
     contextDataviews = [],
     otherDataviews = [],
+    comparisonDataviews = [],
   } = getDataviewsGrouped(dataviews)
 
   const singleHeatmapDataview =
@@ -447,6 +453,11 @@ export function getDataviewsResolved(
         visualizationMode: params.environmentVisualizationMode,
       }) || []
   )
+  const mergedComparisonDataview = comparisonDataviews?.length
+    ? getFourwingsDataviewsResolved(comparisonDataviews, {
+        ...params,
+      })
+    : []
   const staticDataviewsParsed = staticDataviews.flatMap((d) => {
     let visualizationMode = undefined
     if (d.category === DataviewCategory.Environment) {
@@ -503,6 +514,7 @@ export function getDataviewsResolved(
     ...currentsDataviewsParsed,
     ...environmentalDataviewsParsed,
     ...vesselGroupDataviewParsed,
+    ...mergedComparisonDataview,
     ...mergedDetectionsDataview,
     ...mergedActivityDataview,
     ...vesselTrackDataviewsParsed,

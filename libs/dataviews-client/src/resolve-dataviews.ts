@@ -40,6 +40,12 @@ export function isDetectionsDataview(dataview: UrlDataviewInstance) {
   )
 }
 
+export function isComparisonDataview(dataview: UrlDataviewInstance) {
+  return (
+    dataview.category === DataviewCategory.Comparison && dataview.id?.endsWith('dataset-comparison')
+  )
+}
+
 export function isVesselGroupDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.VesselGroups &&
