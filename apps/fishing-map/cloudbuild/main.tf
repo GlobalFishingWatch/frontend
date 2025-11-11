@@ -73,7 +73,7 @@ module "develop" {
 }
 
 module "preview-dev" {
-  source            = "../../../cloudbuild-template"
+  source            = "../../../cloudbuild-template-new"
   project_id        = "gfw-development"
   short_environment = "dev"
   app_name          = local.app_name
