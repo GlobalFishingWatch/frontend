@@ -44,7 +44,7 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
 
     step {
       id     = "Get Affected"
-      name   = "node:24"
+      name   = "node:24-slim"
       script = file("${path.module}/scripts/affected-apps.sh")
     }
 
