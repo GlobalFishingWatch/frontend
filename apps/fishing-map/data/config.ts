@@ -6,6 +6,8 @@ import type { AppState, WorkspaceState } from '../types'
 import { TimebarGraphs, TimebarVisualisations, UserTab } from '../types'
 import { getUTCDateTime } from '../utils/dates'
 
+export { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/dataviews-client'
+
 export const ROOT_DOM_ELEMENT = '__next'
 
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
@@ -48,8 +50,6 @@ export const PRIVATE_PASSWORD_ICON = '🔐'
 export const VALID_PASSWORD = 'VALID_WORKSPACE_PASSWORD'
 
 export const LAYER_LIBRARY_ID_SEPARATOR = '__'
-
-export const DATASET_COMPARISON_SUFFIX = 'dataset-comparison'
 
 const DEFAULT_DATA_DELAY_DAYS = 3
 // used when no url data and no workspace data
