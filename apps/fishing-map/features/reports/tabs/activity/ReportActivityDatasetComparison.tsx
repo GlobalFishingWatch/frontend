@@ -8,6 +8,7 @@ import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
 import { DATASET_COMPARISON_SUFFIX, LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
+import { useAppDispatch } from 'features/app/app.hooks'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
@@ -16,9 +17,14 @@ import { resolveLibraryLayers } from 'features/layer-library/LayerLibrary'
 import { isSupportedComparisonDataview } from 'features/reports/report-area/area-reports.utils'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
 import { selectReportSubCategory } from 'features/reports/reports.selectors'
-import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
+import { updateLocation } from 'routes/routes.actions'
 import { useLocationConnect } from 'routes/routes.hook'
-import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+import {
+  selectLocationPayload,
+  selectLocationQuery,
+  selectLocationType,
+  selectUrlDataviewInstances,
+} from 'routes/routes.selectors'
 
 import styles from './ReportActivityDatasetComparison.module.css'
 
@@ -35,12 +41,15 @@ const createDatasetOption = (id: string, label: string, color?: string): SelectO
 const ReportActivityDatasetComparison = () => {
   const { t } = useTranslation(['layer-library', 'translations'])
   const { dispatchQueryParams } = useLocationConnect()
-  const { upsertDataviewInstance, removeDataviewInstance } = useDataviewInstancesConnect()
+  const dispatch = useAppDispatch()
 
   const reportDataviews = useSelector(selectActiveReportDataviews)
   const reportSubcategory = useSelector(selectReportSubCategory)
   // const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
-  // const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
+  const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
+  const locationPayload = useSelector(selectLocationPayload)
+  const locationQuery = useSelector(selectLocationQuery)
+  const locationType = useSelector(selectLocationType)
 
   const comparisonDatasets = useSelector(selectReportComparisonDataviewIds)
   const allDataviews = useSelector(selectAllDataviews)
@@ -122,18 +131,11 @@ const ReportActivityDatasetComparison = () => {
     const dataviewID = `${option.id}${LAYER_LIBRARY_ID_SEPARATOR}${DATASET_COMPARISON_SUFFIX}`
     const { dataviewId, datasetsConfig, config } = layerConfig
 
-    if (comparisonDatasets?.compare?.includes(DATASET_COMPARISON_SUFFIX)) {
-      removeDataviewInstance(comparisonDatasets.compare)
-    }
+    const newDataviewInstances = urlDataviewInstances.filter(
+      (dv) => dv.id !== comparisonDatasets?.compare
+    )
 
-    // const existingDataview =
-    //   workspaceDataviewInstances.find(
-    //     (dv) => dv.dataviewId === dataviewId && dv.config?.visible && !dv.deleted
-    //   ) || urlDataviewInstances.find((dv) => dv.id.includes(option.id) && !dv.deleted)
-    // const newDataview = existingDataview ? existingDataview.id : dataviewID
-
-    // if (!existingDataview)
-    upsertDataviewInstance({
+    newDataviewInstances.push({
       id: dataviewID,
       category: DataviewCategory.Comparison,
       dataviewId,
@@ -143,13 +145,19 @@ const ReportActivityDatasetComparison = () => {
         visible: true,
       },
     })
-
-    dispatchQueryParams({
-      reportComparisonDataviewIds: {
-        main: comparisonDatasets?.main || mainDatasetOptions[0]?.id,
-        compare: dataviewID,
-      },
-    })
+    dispatch(
+      updateLocation(locationType, {
+        payload: locationPayload,
+        query: {
+          ...locationQuery,
+          reportComparisonDataviewIds: {
+            main: comparisonDatasets?.main || mainDatasetOptions[0]?.id,
+            compare: dataviewID,
+          },
+          dataviewInstances: newDataviewInstances,
+        },
+      })
+    )
   }
 
   return (

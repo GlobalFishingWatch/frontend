@@ -621,6 +621,5 @@ export function resolveDataviews(
     return dataviewInstance
   })
 
-  console.log('🚀 ~ resolveDataviews ~ dataviewInstancesResolved:', dataviewInstancesResolved)
   return dataviewInstancesResolved
 }
