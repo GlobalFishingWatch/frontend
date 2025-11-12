@@ -182,7 +182,6 @@ export default function Report() {
       dispatchQueryParams({
         reportCategory: option.id,
         reportVesselPage: 0,
-        reportComparisonDataviewIds: undefined,
       })
 
       fitAreaInViewport()

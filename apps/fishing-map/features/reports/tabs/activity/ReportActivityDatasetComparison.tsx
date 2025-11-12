@@ -55,25 +55,29 @@ const ReportActivityDatasetComparison = () => {
   const allDataviews = useSelector(selectAllDataviews)
   const allDatasets = useSelector(selectAllDatasets)
 
-  const layersResolved = useMemo(() => {
+  const allLayersResolved = useMemo(() => {
     return resolveLibraryLayers(allDataviews, false, t)
   }, [allDataviews, t])
 
-  const allLayerOptions = useMemo(() => {
-    return layersResolved
-      ?.filter((layer) => {
-        const datasetId = layer.dataview.datasetsConfig?.[0]?.datasetId
-        const dataset = allDatasets.find((dataset) => dataset.id === datasetId)
-        if (!dataset || dataset?.subcategory === reportSubcategory) {
-          return false
-        }
-        return (
-          isSupportedComparisonDataview(layer.dataview) &&
-          comparisonDatasets?.main?.split(LAYER_LIBRARY_ID_SEPARATOR)[0] !== layer.id
-        )
-      })
-      .map((layer) => createDatasetOption(layer?.id, layer?.name || '', layer.config?.color))
-  }, [layersResolved, comparisonDatasets?.main, allDatasets, reportSubcategory])
+  const layersResolved = useMemo(() => {
+    return allLayersResolved?.filter((layer) => {
+      const datasetId = layer.dataview.datasetsConfig?.[0]?.datasetId
+      const dataset = allDatasets.find((dataset) => dataset.id === datasetId)
+      if (!dataset || dataset?.subcategory === reportSubcategory) {
+        return false
+      }
+      return (
+        isSupportedComparisonDataview(layer.dataview) &&
+        comparisonDatasets?.main?.split(LAYER_LIBRARY_ID_SEPARATOR)[0] !== layer.id
+      )
+    })
+  }, [allLayersResolved, comparisonDatasets?.main, allDatasets, reportSubcategory])
+
+  const layerOptions = useMemo(() => {
+    return layersResolved.map((layer) =>
+      createDatasetOption(layer?.id, layer?.name || '', layer.config?.color)
+    )
+  }, [layersResolved])
 
   const mainDatasetOptions = useMemo(
     () =>
@@ -95,9 +99,12 @@ const ReportActivityDatasetComparison = () => {
   )
 
   const selectedComparisonDataset = useMemo(() => {
+    const allLayerOptions = allLayersResolved.map((layer) =>
+      createDatasetOption(layer?.id, layer?.name || '', layer.config?.color)
+    )
     const selectedId = comparisonDatasets?.compare?.split(LAYER_LIBRARY_ID_SEPARATOR)[0]
     return selectedId ? allLayerOptions.find((layer) => layer.id.includes(selectedId)) : undefined
-  }, [allLayerOptions, comparisonDatasets?.compare])
+  }, [allLayersResolved, comparisonDatasets?.compare])
 
   useEffect(() => {
     if (selectedMainDataset?.id && selectedMainDataset.id !== comparisonDatasets?.main) {
@@ -170,7 +177,7 @@ const ReportActivityDatasetComparison = () => {
         className={styles.select}
       />
       <Select
-        options={allLayerOptions}
+        options={layerOptions}
         selectedOption={selectedComparisonDataset}
         onSelect={onCompareSelect}
         className={styles.select}
