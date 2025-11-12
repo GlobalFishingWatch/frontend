@@ -8,7 +8,7 @@ import { DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
 import { getAvailableIntervalsInDataviews } from '@globalfishingwatch/deck-layer-composer'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
+import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
@@ -40,7 +40,7 @@ function ReportEnvironment() {
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const layersFilteredFeatures = useReportFilteredFeatures()
   const timeseriesStats = useTimeseriesStats()
-  const environmentalDataviews = useSelector(selectActiveReportDataviews)
+  const environmentalDataviews = useSelector(selectReportComparisonDataviews)
   const allAvailableIntervals = getAvailableIntervalsInDataviews(environmentalDataviews)
   const interval = getFourwingsInterval(start, end, allAvailableIntervals)
   const layersTimeseriesErrors = useReportTimeSeriesErrors()
