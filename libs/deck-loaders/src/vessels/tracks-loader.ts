@@ -3,7 +3,7 @@ import type { Loader, LoaderOptions, LoaderWithParser } from '@loaders.gl/loader
 import packageJson from '../../package.json'
 import { PATH_BASENAME } from '../loaders.config'
 
-// import type { VesselTrackLoaderParams } from './lib/parse-tracks'
+import type { VesselTrackLoaderParams } from './lib/parse-tracks'
 import { parseTrack } from './lib/parse-tracks'
 import type { VesselTrackData } from './lib/types'
 
@@ -12,10 +12,7 @@ import type { VesselTrackData } from './lib/types'
  */
 
 export type VesselTrackLoaderOptions = LoaderOptions & {
-  // 'vessel-tracks'?: VesselTrackLoaderParams & {
-  //   workerUrl?: string
-  // }
-  'vessel-tracks'?: {
+  'vessel-tracks'?: VesselTrackLoaderParams & {
     workerUrl?: string
   }
 }
@@ -34,7 +31,7 @@ export const VesselTrackWorkerLoader: Loader<VesselTrackData, any, VesselTrackLo
   version: packageJson?.version,
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
-  worker: false,
+  worker: true,
   options: defaultOptions,
 }
 
@@ -44,7 +41,9 @@ export const VesselTrackWorkerLoader: Loader<VesselTrackData, any, VesselTrackLo
 
 export const VesselTrackLoader: LoaderWithParser = {
   ...VesselTrackWorkerLoader,
-  parse: async (arrayBuffer, options?: VesselTrackLoaderOptions) => parseTrack(arrayBuffer),
-  parseSync: (arrayBuffer, options?: VesselTrackLoaderOptions) => parseTrack(arrayBuffer),
+  parse: async (arrayBuffer, options?: VesselTrackLoaderOptions) =>
+    parseTrack(arrayBuffer, options?.['vessel-tracks']),
+  parseSync: (arrayBuffer, options?: VesselTrackLoaderOptions) =>
+    parseTrack(arrayBuffer, options?.['vessel-tracks']),
   binary: true,
 }

@@ -519,7 +519,7 @@ export const fetchClusterEventThunk = createAsyncThunk(
           .slice(0, MAX_TOOLTIP_LIST)
           .map((v) => v.id)
         const vesselsInfo = await fetchVesselInfo(infoDatasets, vesselIds, signal)
-        const vessels = (interactionResponse as FourwingsEventsInteraction[])!.flatMap(
+        const vessels = (interactionResponse as FourwingsEventsInteraction[])?.flatMap(
           (interaction) => {
             const vesselInfo = vesselsInfo?.find((vesselInfo) => {
               const vesselInfoIds = vesselInfo.selfReportedInfo?.map((s) => s.id)

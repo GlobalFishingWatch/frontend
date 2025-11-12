@@ -141,7 +141,7 @@ export const useGlobalConfigConnect = () => {
   const trackGraphExtent = useTimebarTracksGraphExtent()
   const hoverFeatures = useMapHoverInteraction()?.features
   const debug = useSelector(selectDebugOptions)?.debug
-  const vesselsAsPositions = useSelector(selectDebugOptions)?.vesselsAsPositions
+  const debugOptions = useSelector(selectDebugOptions)
   const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
 
   const highlightedTime = useMemo(() => {
@@ -197,8 +197,9 @@ export const useGlobalConfigConnect = () => {
       token: GFWAPI.token,
       trackGraphExtent,
       vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
-      vesselTrackVisualizationMode: vesselsAsPositions ? 'positions' : 'track',
-      ...(vesselsAsPositions === true && { vesselsMaxTimeGapHours }),
+      vesselTrackVisualizationMode: debugOptions.vesselsAsPositions ? 'positions' : 'track',
+      ...(debugOptions.vesselsAsPositions &&
+        debugOptions.vesselsMaxTimeGapHours && { vesselsMaxTimeGapHours }),
       visibleEvents,
       zoom: viewState.zoom,
     }
@@ -214,7 +215,7 @@ export const useGlobalConfigConnect = () => {
     start,
     end,
     debug,
-    vesselsAsPositions,
+    debugOptions,
     bivariateDataviews,
     activityVisualizationMode,
     detectionsVisualizationMode,
