@@ -914,6 +914,7 @@ interface Resources {
       "speed": "Speed",
       "statsHelp": "The number of vessels and flags is calculated for your current filters and time range globally. Some double counting may occur.",
       "statsHelpDetection": "The number of detections is calculated for your current filters and time range globally. Some double counting may occur.",
+      "timeGraphFiltersDisabled": "Filters aren't supported in time graphs",
       "toggleCombinationMode": {
         "combine": "Combine layers",
         "split": "Split layers"
