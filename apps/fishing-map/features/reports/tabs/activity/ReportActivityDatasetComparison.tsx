@@ -8,13 +8,14 @@ import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
 import { DATASET_COMPARISON_SUFFIX, LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
+import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { resolveLibraryLayers } from 'features/layer-library/LayerLibrary'
 import { isSupportedComparisonDataview } from 'features/reports/report-area/area-reports.utils'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
-import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectReportSubCategory } from 'features/reports/reports.selectors'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
@@ -37,11 +38,13 @@ const ReportActivityDatasetComparison = () => {
   const { upsertDataviewInstance, removeDataviewInstance } = useDataviewInstancesConnect()
 
   const reportDataviews = useSelector(selectActiveReportDataviews)
+  const reportSubcategory = useSelector(selectReportSubCategory)
   // const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
   // const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
 
   const comparisonDatasets = useSelector(selectReportComparisonDataviewIds)
   const allDataviews = useSelector(selectAllDataviews)
+  const allDatasets = useSelector(selectAllDatasets)
 
   const layersResolved = useMemo(() => {
     return resolveLibraryLayers(allDataviews, false, t)
@@ -49,13 +52,19 @@ const ReportActivityDatasetComparison = () => {
 
   const allLayerOptions = useMemo(() => {
     return layersResolved
-      ?.filter(
-        (layer) =>
+      ?.filter((layer) => {
+        const datasetId = layer.dataview.datasetsConfig?.[0]?.datasetId
+        const dataset = allDatasets.find((dataset) => dataset.id === datasetId)
+        if (!dataset || dataset?.subcategory === reportSubcategory) {
+          return false
+        }
+        return (
           isSupportedComparisonDataview(layer.dataview) &&
           comparisonDatasets?.main?.split(LAYER_LIBRARY_ID_SEPARATOR)[0] !== layer.id
-      )
+        )
+      })
       .map((layer) => createDatasetOption(layer?.id, layer?.name || '', layer.config?.color))
-  }, [layersResolved, comparisonDatasets?.main])
+  }, [layersResolved, comparisonDatasets?.main, allDatasets, reportSubcategory])
 
   const mainDatasetOptions = useMemo(
     () =>
