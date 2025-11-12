@@ -37,8 +37,8 @@ const ReportActivityDatasetComparison = () => {
   const { upsertDataviewInstance, removeDataviewInstance } = useDataviewInstancesConnect()
 
   const reportDataviews = useSelector(selectActiveReportDataviews)
-  const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
-  const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
+  // const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
+  // const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
 
   const comparisonDatasets = useSelector(selectReportComparisonDataviewIds)
   const allDataviews = useSelector(selectAllDataviews)
@@ -117,29 +117,28 @@ const ReportActivityDatasetComparison = () => {
       removeDataviewInstance(comparisonDatasets.compare)
     }
 
-    const existingDataview =
-      workspaceDataviewInstances.find(
-        (dv) => dv.dataviewId === dataviewId && dv.config?.visible && !dv.deleted
-      ) || urlDataviewInstances.find((dv) => dv.id.includes(option.id))
+    // const existingDataview =
+    //   workspaceDataviewInstances.find(
+    //     (dv) => dv.dataviewId === dataviewId && dv.config?.visible && !dv.deleted
+    //   ) || urlDataviewInstances.find((dv) => dv.id.includes(option.id) && !dv.deleted)
+    // const newDataview = existingDataview ? existingDataview.id : dataviewID
 
-    if (!existingDataview)
-      upsertDataviewInstance({
-        id: dataviewID,
-        category: DataviewCategory.Comparison,
-        dataviewId,
-        datasetsConfig,
-        config: {
-          ...config,
-          visible: true,
-        },
-      })
-
-    const newDataview = existingDataview ? existingDataview.id : dataviewID
+    // if (!existingDataview)
+    upsertDataviewInstance({
+      id: dataviewID,
+      category: DataviewCategory.Comparison,
+      dataviewId,
+      datasetsConfig,
+      config: {
+        ...config,
+        visible: true,
+      },
+    })
 
     dispatchQueryParams({
       reportComparisonDataviewIds: {
         main: comparisonDatasets?.main || mainDatasetOptions[0]?.id,
-        compare: newDataview,
+        compare: dataviewID,
       },
     })
   }

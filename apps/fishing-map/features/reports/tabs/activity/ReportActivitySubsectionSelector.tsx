@@ -90,7 +90,7 @@ function ReportActivitySubsectionSelector() {
         reportCategory === ReportCategory.Activity
           ? 'reportActivitySubCategory'
           : 'reportDetectionsSubCategory'
-      dispatchQueryParams({ [queryParam]: option.id })
+      dispatchQueryParams({ [queryParam]: option.id, reportComparisonDataviewIds: undefined })
       fitAreaInViewport()
       dispatch(resetReportData())
       trackEvent({

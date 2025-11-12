@@ -2,6 +2,8 @@ import React, { Fragment, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
+
 import UserGuideLink from 'features/help/UserGuideLink'
 import {
   useFitAreaInViewport,
@@ -82,6 +84,7 @@ export default function ReportActivity() {
   const { start, end } = useTimerangeConnect()
   const reportActivityGraph = useSelector(selectReportActivityGraph)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
+  const mapLoading = useIsDeckLayersLoading()
 
   const SelectorsComponent = useMemo(
     () => SELECTORS_BY_TYPE[reportActivityGraph],
@@ -114,7 +117,7 @@ export default function ReportActivity() {
       )}
       {/* Dataset Comparison Selectors needs to go above the graph instead of time comparison selectors */}
       {showSelectors && SelectorsComponent && isDatasetComparison && <SelectorsComponent />}
-      {loading || reportAreaStatus !== AsyncReducerStatus.Finished ? (
+      {loading || mapLoading || reportAreaStatus !== AsyncReducerStatus.Finished ? (
         <ReportActivityPlaceholder showHeader={!showSelectors} />
       ) : isEmptyData || hasError ? (
         <ReportActivityPlaceholder showHeader={false} animate={false}>
