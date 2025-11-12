@@ -136,7 +136,7 @@ const ReportActivityDatasetComparison = () => {
     if (!layerConfig) return
 
     const dataviewID = `${option.id}${LAYER_LIBRARY_ID_SEPARATOR}${DATASET_COMPARISON_SUFFIX}`
-    const { dataviewId, datasetsConfig, config } = layerConfig
+    const { category, dataviewId, datasetsConfig, config } = layerConfig
 
     const newDataviewInstances = urlDataviewInstances.filter(
       (dv) => dv.id !== comparisonDatasets?.compare
@@ -144,7 +144,8 @@ const ReportActivityDatasetComparison = () => {
 
     newDataviewInstances.push({
       id: dataviewID,
-      category: DataviewCategory.Comparison,
+      origin: 'comparison',
+      category,
       dataviewId,
       datasetsConfig,
       config: {
