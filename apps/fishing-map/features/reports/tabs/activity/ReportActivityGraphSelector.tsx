@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
+import { DATASET_COMPARISON_SUFFIX } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
@@ -15,8 +16,10 @@ import {
 } from 'features/reports/reports.config'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
+import { REPORT_ACTIVITY_GRAPH_TIME_OPTIONS } from 'features/reports/shared/utils/reports.utils'
 import { useSetReportTimeComparison } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
+import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 
 import styles from './ReportActivity.module.css'
 
@@ -38,6 +41,7 @@ export default function ReportActivityGraphSelector({
     const firstFilter = dataviews[0].config?.filter ?? ''
     return filter === firstFilter
   })
+  const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
 
   const options: SelectOption<ReportActivityGraph>[] = [
     {
@@ -69,20 +73,32 @@ export default function ReportActivityGraphSelector({
   const onSelect = (option: SelectOption<ReportActivityGraph>) => {
     if (selectedReportActivityGraph !== option.id) {
       fitAreaInViewport()
-      if (
-        option.id === REPORT_ACTIVITY_GRAPH_EVOLUTION ||
-        option.id === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON
-      ) {
+      const isEvolutionOrDatasetComparison = !REPORT_ACTIVITY_GRAPH_TIME_OPTIONS.includes(option.id)
+
+      const filteredDataviewInstances = urlDataviewInstances.filter(
+        (dv) => !dv.id.includes(DATASET_COMPARISON_SUFFIX)
+      )
+
+      if (isEvolutionOrDatasetComparison) {
         resetReportTimecomparison()
-        if (option.id === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON) {
-          dispatchQueryParams({
-            reportComparisonDataviewIds: { main: dataviews[0]?.id, compare: '' },
-          })
-        } else {
-          dispatchQueryParams({ reportComparisonDataviewIds: undefined })
-        }
+
+        const reportComparisonDataviewIds =
+          option.id === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON
+            ? { main: dataviews[0]?.id, compare: '' }
+            : undefined
+
+        dispatchQueryParams({
+          reportComparisonDataviewIds,
+          ...(option.id === REPORT_ACTIVITY_GRAPH_EVOLUTION && {
+            dataviewInstances: filteredDataviewInstances,
+          }),
+        })
       } else {
         setReportTimecomparison(option.id)
+        dispatchQueryParams({
+          reportComparisonDataviewIds: undefined,
+          dataviewInstances: filteredDataviewInstances,
+        })
       }
       trackEvent({
         category: TrackCategory.Analysis,

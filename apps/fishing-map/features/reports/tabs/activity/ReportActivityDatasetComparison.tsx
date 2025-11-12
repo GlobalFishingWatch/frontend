@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
@@ -45,7 +44,6 @@ const ReportActivityDatasetComparison = () => {
 
   const reportDataviews = useSelector(selectActiveReportDataviews)
   const reportSubcategory = useSelector(selectReportSubCategory)
-  // const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
   const locationPayload = useSelector(selectLocationPayload)
   const locationQuery = useSelector(selectLocationQuery)
