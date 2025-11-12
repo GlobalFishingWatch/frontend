@@ -1,5 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
+import type { DateTimeFormatOptions } from 'luxon'
 import type { RootState } from 'reducers'
 
 export enum FeatureFlag {
@@ -18,6 +19,7 @@ export enum DebugOption {
   DataTerminologyIframe = 'dataTerminologyIframe',
   VesselsAsPositions = 'vesselsAsPositions',
   BluePlanetMode = 'bluePlanetMode',
+  VesselsMaxTimeGapHours = 'vesselsMaxTimeGapHours',
 }
 
 export const FAKE_VESSEL_NAME = 'vessel:387609'
@@ -28,6 +30,14 @@ interface DebugState {
   active: boolean
   featureFlags: Record<FeatureFlag, boolean>
   options: DebugOptions
+}
+
+export const BLUE_PLANET_MODE_DATE_FORMAT: DateTimeFormatOptions = {
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit',
+  hour12: true,
 }
 
 const initialState: DebugState = {
@@ -46,6 +56,7 @@ const initialState: DebugState = {
     experimentalLayers: false,
     areasOnScreen: false,
     vesselsAsPositions: false,
+    vesselsMaxTimeGapHours: false,
     bluePlanetMode: false,
   },
 }

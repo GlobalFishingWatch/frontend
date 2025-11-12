@@ -144,7 +144,7 @@ const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
     return drawing
   },
   dataviewInstances: (dataviewInstances: AnyDataviewInstance[]) => {
-    return dataviewInstances.map(parseDataviewInstance)
+    return dataviewInstances.flatMap((dv) => (dv ? parseDataviewInstance(dv) : []))
   },
 }
 

@@ -83,30 +83,50 @@ const DebugMenu: React.FC = () => {
             id="option_vessels_as_positions"
             active={debugOptions.vesselsAsPositions}
             onClick={() => {
-              console.log('🚀 ~ DebugMenu ~ vesselsMaxTimeGapHours:', vesselsMaxTimeGapHours)
-              console.log('🚀 ~ DebugMenu ~ debugOptions:', debugOptions)
               dispatch(toggleDebugOption(DebugOption.VesselsAsPositions))
               if (debugOptions.vesselsAsPositions) {
-                dispatchQueryParams({ vesselsMaxTimeGapHours: undefined })
-              } else if (!vesselsMaxTimeGapHours) {
-                dispatchQueryParams({ vesselsMaxTimeGapHours: 3 })
+                dispatch(
+                  setDebugOption({ option: DebugOption.VesselsMaxTimeGapHours, value: false })
+                )
               }
             }}
           />
           <label htmlFor="option_vessels_as_positions">Tracks positions</label>
         </div>
         <p>Show vessel position icons on top of the track lines</p>
-        {debugOptions.vesselsAsPositions && (
-          <InputText
-            type="number"
-            label="Vessels max time gap hours"
-            value={vesselsMaxTimeGapHours}
-            className={cx(styles.inputShort, styles.input)}
-            onChange={(e) =>
-              dispatchQueryParams({ vesselsMaxTimeGapHours: Number(e.target.value) })
-            }
+        <div className={styles.header}>
+          <Switch
+            id="option_vessels_max_time_gap_hours"
+            active={debugOptions.vesselsMaxTimeGapHours}
+            onClick={() => {
+              dispatch(toggleDebugOption(DebugOption.VesselsMaxTimeGapHours))
+              if (debugOptions.vesselsMaxTimeGapHours) {
+                dispatchQueryParams({ vesselsMaxTimeGapHours: undefined })
+              } else {
+                dispatch(setDebugOption({ option: DebugOption.VesselsAsPositions, value: true }))
+                dispatchQueryParams({ vesselsMaxTimeGapHours: 3 })
+              }
+            }}
           />
-        )}
+          <label htmlFor="option_vessels_max_time_gap_hours">Vessels max time gap hours</label>
+          {debugOptions.vesselsMaxTimeGapHours && (
+            <InputText
+              type="number"
+              min={0}
+              max={24}
+              value={vesselsMaxTimeGapHours}
+              className={cx(styles.inputShort, styles.input)}
+              onChange={(e) => {
+                const value = Number(e.target.value)
+                // Validate input: must be a valid number between 0 and 24
+                if (!isNaN(value) && value >= 0 && value <= 24) {
+                  dispatchQueryParams({ vesselsMaxTimeGapHours: value })
+                }
+              }}
+            />
+          )}
+        </div>
+        <p>Split tracks into segments with a maximum time gap in hours</p>
         <div className={styles.header}>
           <Switch
             id="option_blue_planet_mode"
@@ -123,8 +143,15 @@ const DebugMenu: React.FC = () => {
         <p>
           Set the workspace to blue planet mode with the following features:
           <ul>
-            <li>see gaps icons in the map</li>
-            <li>fake vessel names in the sidebar and map tooltips</li>
+            <li>
+              see gaps icons into the map (only in this{' '}
+              <a href="https://globalfishingwatch.org/map/fishing-activity/blue_testing_ja-public">
+                workspace
+              </a>
+              )
+            </li>
+            <li>blur vessel names in the sidebar and remove from map tooltips</li>
+            <li>remove year data from timebar and tooltip</li>
             <li>remove unmatched detections label in tooltip</li>
           </ul>
         </p>

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { IconButton, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -226,7 +226,13 @@ export default function ReportVesselsTable({
                   )}
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
-                  <span>{ssvid || EMPTY_FIELD_PLACEHOLDER}</span>
+                  {ssvid?.length > 16 ? (
+                    <Tooltip content={ssvid} className={styles.tooltip}>
+                      <span>{ssvid.slice(0, 16) + '...'}</span>
+                    </Tooltip>
+                  ) : (
+                    <span>{ssvid || EMPTY_FIELD_PLACEHOLDER}</span>
+                  )}
                 </div>
                 <div
                   role="button"

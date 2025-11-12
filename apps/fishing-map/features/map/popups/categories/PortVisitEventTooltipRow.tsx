@@ -85,7 +85,7 @@ function PortVisitEventTooltipRow({
                 vesselProperty="events"
               />
             )}
-            {event?.port && !isPortReportLocation && (
+            {event?.port?.id && !isPortReportLocation && (
               <PortsReportLink port={event.port}>
                 <Button
                   className={cx(styles.portCTA, styles.rowMarginTop)}

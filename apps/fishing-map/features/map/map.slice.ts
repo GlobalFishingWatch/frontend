@@ -38,6 +38,7 @@ import type {
   VesselEventPickingObject,
 } from '@globalfishingwatch/deck-layers'
 
+import { PATH_BASENAME } from 'data/config'
 import {
   fetchDatasetByIdThunk,
   getDatasetByIdsThunk,
@@ -518,7 +519,7 @@ export const fetchClusterEventThunk = createAsyncThunk(
           .slice(0, MAX_TOOLTIP_LIST)
           .map((v) => v.id)
         const vesselsInfo = await fetchVesselInfo(infoDatasets, vesselIds, signal)
-        const vessels = (interactionResponse as FourwingsEventsInteraction[])!.flatMap(
+        const vessels = (interactionResponse as FourwingsEventsInteraction[])?.flatMap(
           (interaction) => {
             const vesselInfo = vesselsInfo?.find((vesselInfo) => {
               const vesselInfoIds = vesselInfo.selfReportedInfo?.map((s) => s.id)
@@ -679,10 +680,12 @@ export const fetchDetectionThumbnailsThunk = createAsyncThunk<
           )?.id
           const thumbnailDataset = selectDatasetById(thumbnailDatasetId as string)(state)
           if (thumbnailDataset) {
+            const detectionId = detectionFeature.properties?.id
+
             const datasetConfig = {
               datasetId: thumbnailDataset.id,
               endpoint: EndpointId.Thumbnails,
-              params: [{ id: 'id', value: detectionFeature.properties?.id }],
+              params: [{ id: 'id', value: detectionId }],
             }
             const url = resolveEndpoint(thumbnailDataset, datasetConfig)
             if (url) {

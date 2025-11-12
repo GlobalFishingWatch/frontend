@@ -9,6 +9,8 @@ export const MIN_DEPTH_VALUE = 0
 export const MAX_DEPTH_VALUE = -6000
 
 function getExtent(array: number[], colorBy: 'speed' | 'elevation') {
+  let q1
+  let q3
   const values = array.filter(Boolean).sort((a, b) => a - b)
 
   if (colorBy === 'elevation') {
@@ -132,6 +134,26 @@ export const parseTrack = (
   const newGaps: number[] = []
   const newStartIndices: number[] = [0]
 
+  function addPoint(pointIdx: number, timestamp: number, isGap: boolean) {
+    for (let i = 0; i < pathSize; i++) {
+      newPath.push(originalPath[pointIdx * pathSize + i])
+    }
+    newTimestamps.push(timestamp)
+    if (speedSize > 0) {
+      newSpeeds.push(getSpeedValues[pointIdx * speedSize] || 0)
+    }
+    if (elevationSize > 0) {
+      newElevations.push(getElevationValues[pointIdx * elevationSize] || 0)
+    }
+    newGaps.push(isGap ? 1 : 0)
+  }
+
+  function startNewSegment() {
+    if (newPath.length > 0) {
+      newStartIndices.push(newPath.length / pathSize)
+    }
+  }
+
   for (let segIdx = 0; segIdx < originalStartIndices.length; segIdx++) {
     const segmentStart = originalStartIndices[segIdx]
     const segmentEnd =
@@ -140,8 +162,8 @@ export const parseTrack = (
         : defaultAttributesLength
 
     // Add start index for new original segment (except first one)
-    if (segIdx > 0 && newPath.length > 0) {
-      newStartIndices.push(newPath.length / pathSize)
+    if (segIdx > 0) {
+      startNewSegment()
     }
 
     let segmentPointCount = 0
@@ -153,68 +175,33 @@ export const parseTrack = (
       const shouldSplit = lastTimestamp !== undefined && timestamp - lastTimestamp > maxTimeGapMs
 
       if (shouldSplit) {
-        // End current segment (boundary point pointIdx - 1 was already added as normal)
+        // End current segment
         if (segmentPointCount > 0) {
-          newStartIndices.push(newPath.length / pathSize)
+          startNewSegment()
         }
 
-        // Create gap segment: duplicate boundary point (last point of previous segment)
+        // Gap segment strategy: When a time gap exceeds maxTimeGapHours, we create a gap segment
+        // that visually represents the discontinuity. The strategy involves:
+        // 1. Duplicate the last point of the previous segment as the start of the gap segment
+        // 2. Mark the current point as the end of the gap segment (both marked as gap points)
+        // 3. Duplicate the current point again as the start of the new normal segment
+        // This ensures proper rendering boundaries while clearly marking the gap region.
         const boundaryPointIdx = pointIdx - 1
-        for (let i = 0; i < pathSize; i++) {
-          newPath.push(originalPath[boundaryPointIdx * pathSize + i])
-        }
-        newTimestamps.push(originalTimestamps[boundaryPointIdx * timestampSize])
-        if (speedSize > 0) {
-          newSpeeds.push(getSpeedValues[boundaryPointIdx * speedSize] || 0)
-        }
-        if (elevationSize > 0) {
-          newElevations.push(getElevationValues[boundaryPointIdx * elevationSize] || 0)
-        }
-        newGaps.push(1) // Mark as gap segment
+        addPoint(boundaryPointIdx, originalTimestamps[boundaryPointIdx * timestampSize], true)
 
         // Add current point as the end of gap segment
-        for (let i = 0; i < pathSize; i++) {
-          newPath.push(originalPath[pointIdx * pathSize + i])
-        }
-        newTimestamps.push(timestamp)
-        if (speedSize > 0) {
-          newSpeeds.push(getSpeedValues[pointIdx * speedSize] || 0)
-        }
-        if (elevationSize > 0) {
-          newElevations.push(getElevationValues[pointIdx * elevationSize] || 0)
-        }
-        newGaps.push(1) // Mark as gap segment
+        addPoint(pointIdx, timestamp, true)
 
         // End gap segment, start new normal segment
-        newStartIndices.push(newPath.length / pathSize)
+        startNewSegment()
 
         // Add current point as first point of new normal segment (duplicate for normal segment)
-        for (let i = 0; i < pathSize; i++) {
-          newPath.push(originalPath[pointIdx * pathSize + i])
-        }
-        newTimestamps.push(timestamp)
-        if (speedSize > 0) {
-          newSpeeds.push(getSpeedValues[pointIdx * speedSize] || 0)
-        }
-        if (elevationSize > 0) {
-          newElevations.push(getElevationValues[pointIdx * elevationSize] || 0)
-        }
-        newGaps.push(0) // Normal segment
+        addPoint(pointIdx, timestamp, false)
 
         segmentPointCount = 1
       } else {
         // Add point normally
-        for (let i = 0; i < pathSize; i++) {
-          newPath.push(originalPath[pointIdx * pathSize + i])
-        }
-        newTimestamps.push(timestamp)
-        if (speedSize > 0) {
-          newSpeeds.push(getSpeedValues[pointIdx * speedSize] || 0)
-        }
-        if (elevationSize > 0) {
-          newElevations.push(getElevationValues[pointIdx * elevationSize] || 0)
-        }
-        newGaps.push(0) // Normal segment
+        addPoint(pointIdx, timestamp, false)
         segmentPointCount++
       }
 

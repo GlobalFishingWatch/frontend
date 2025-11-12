@@ -17,7 +17,11 @@ import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
+import {
+  BLUE_PLANET_MODE_DATE_FORMAT,
+  FAKE_VESSEL_NAME,
+  selectDebugOptions,
+} from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import DetectionThumbnailImage from 'features/map/popups/categories/DetectionThumbnail'
 import VesselLink from 'features/vessel/VesselLink'
@@ -44,7 +48,7 @@ function DetectionThumbnails({
   if (!detection) {
     return null
   }
-  return <DetectionThumbnailImage data={detection.data} scale={scale} />
+  return <DetectionThumbnailImage id={detection.name} data={detection.data} scale={scale} />
 }
 
 function PositionsRow({ loading, error, feature, showFeaturesDetails }: PositionsRowProps) {
@@ -117,7 +121,11 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
               {feature.properties.stime && (
                 <span className={popupStyles.secondary}>
                   {' '}
-                  <I18nDate date={feature.properties.stime * 1000} format={DateTime.DATETIME_MED} />
+                  <I18nDate
+                    date={feature.properties.stime * 1000}
+                    format={bluePlanetMode ? BLUE_PLANET_MODE_DATE_FORMAT : DateTime.DATETIME_MED}
+                    showUTCLabel={bluePlanetMode}
+                  />
                 </span>
               )}
             </span>

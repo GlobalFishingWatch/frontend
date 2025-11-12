@@ -45,14 +45,17 @@ resource "google_cloudbuild_trigger" "trigger" {
     step {
       id   = "Build Image"
       name = "gcr.io/cloud-builders/docker"
-      args = [
-        "build",
-        "-t",
-        var.docker_image,
-        "-f",
-        "apps/${var.app_name}/Dockerfile",
-        ".",
-      ]
+      args = concat(
+        [
+          "build",
+          "-t",
+          var.docker_image,
+          "-f",
+          "apps/${var.app_name}/Dockerfile",
+        ],
+        flatten([for env_var in var.set_env_vars_build : ["--build-arg", env_var]]),
+        ["."]
+      )
     }
 
     step {

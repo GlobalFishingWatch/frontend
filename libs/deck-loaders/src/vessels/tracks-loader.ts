@@ -31,7 +31,7 @@ export const VesselTrackWorkerLoader: Loader<VesselTrackData, any, VesselTrackLo
   version: packageJson?.version,
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
-  worker: false,
+  worker: true,
   options: defaultOptions,
 }
 

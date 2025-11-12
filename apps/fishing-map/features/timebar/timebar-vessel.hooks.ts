@@ -82,7 +82,7 @@ export const useTimebarVesselTracks = () => {
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
   const timebarGraph = useSelector(selectTimebarGraph)
-  const vesselsAsPositions = useSelector(selectDebugOptions)?.vesselsAsPositions
+  const debugOptions = useSelector(selectDebugOptions)
   const [tracks, setVesselTracks] = useAtom(vesselTracksAtom)
 
   const trackLayers = useTimebarLayers()
@@ -157,8 +157,11 @@ export const useTimebarVesselTracks = () => {
           const segments =
             instance instanceof VesselLayer
               ? instance.getVesselTrackSegments({
-                  ...(vesselsAsPositions && {
+                  ...((debugOptions?.vesselsAsPositions ||
+                    debugOptions?.vesselsMaxTimeGapHours) && {
                     includeMiddlePoints: true,
+                  }),
+                  ...(debugOptions?.vesselsMaxTimeGapHours && {
                     maxTimeGapHours: vesselsMaxTimeGapHours,
                   }),
                 })
