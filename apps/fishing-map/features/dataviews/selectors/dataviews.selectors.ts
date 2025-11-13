@@ -152,7 +152,7 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
         dataviews = environmentalDataviews
         break
     }
-    return dataviews?.filter((dataview) => !dataview.id.includes(DATASET_COMPARISON_SUFFIX))
+    return dataviews
   }
 )
 

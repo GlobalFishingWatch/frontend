@@ -2,7 +2,10 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import type { DataviewType } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  DATASET_COMPARISON_SUFFIX,
+  type UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { groupContextDataviews } from '@globalfishingwatch/deck-layer-composer'
 
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
@@ -31,7 +34,10 @@ export const selectActiveDataviewInstancesByCategory = (category?: DataviewCateg
   return createSelector(
     [selectDataviewInstancesResolvedVisible],
     (dataviews): UrlDataviewInstance<DataviewType>[] => {
-      return dataviews?.filter((dataview) => dataview.category === category)
+      return dataviews?.filter(
+        (dataview) =>
+          dataview.category === category && !dataview.id.includes(DATASET_COMPARISON_SUFFIX)
+      )
     }
   )
 }
