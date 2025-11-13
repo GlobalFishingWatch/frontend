@@ -22,8 +22,7 @@ ENV NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=$NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
 COPY . .
 
 RUN yarn install --immutable --inline-builds && \
-  yarn nx reset && \
-  NODE_OPTIONS='--max-old-space-size=8192 --max-semi-space-size=1024' yarn nx run api-portal:build
+  yarn nx run api-portal:build
 
 
 # Production image, copy all the files and run next
