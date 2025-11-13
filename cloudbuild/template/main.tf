@@ -27,59 +27,21 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
   service_account = "projects/${local.project}/serviceAccounts/cloudbuild@gfw-int-infrastructure.iam.gserviceaccount.com"
   build {
     step {
-      id       = "fetch"
-      name     = "gcr.io/cloud-builders/git"
-      args     = ["fetch", "--unshallow", "--no-tags"]
-      wait_for = ["-"]
+      id   = "Fetch"
+      name = "gcr.io/cloud-builders/git"
+      args = ["fetch", "--unshallow", "--no-tags"]
     }
 
     step {
-      id         = "compute-cache-key"
-      name       = "gcr.io/cloud-builders/gcloud"
-      entrypoint = "bash"
-      args = [
-        "-c",
-        "echo $(cat yarn.lock cloudbuild-template/scripts/install-yarn.sh | sha256sum | cut -d' ' -f1) > /workspace/cache-key"
-      ]
-      wait_for = ["-"]
+      id     = "Get Affected"
+      name   = "node:24-slim"
+      script = file("${path.module}/scripts/affected-apps.sh")
     }
 
     step {
-      id       = "restore-cache"
-      name     = "gcr.io/cloud-builders/gcloud"
-      script   = file("../cloudbuild-template/scripts/restore-cache.sh")
-      wait_for = ["compute-cache-key"]
-      env      = local.cache_env
-    }
-
-    step {
-      id       = "install-yarn"
-      name     = "node:24"
-      script   = file("../cloudbuild-template/scripts/install-yarn.sh")
-      wait_for = ["restore-cache"]
-    }
-
-
-    step {
-      id       = "save-cache"
-      name     = "gcr.io/cloud-builders/gcloud"
-      script   = file("../cloudbuild-template/scripts/save-cache.sh")
-      wait_for = ["install-yarn"]
-      env      = local.cache_env
-    }
-
-    step {
-      id       = "get-affected"
-      name     = "node:24"
-      script   = file("${path.module}/scripts/affected-apps.sh")
-      wait_for = ["save-cache"]
-    }
-
-    step {
-      id       = "deploy-cloud-run"
-      name     = "gcr.io/cloud-builders/gcloud"
-      script   = file("${path.module}/scripts/deploy-cloud-run.sh")
-      wait_for = ["get-affected"]
+      id     = "Deploy to Cloud Run"
+      name   = "gcr.io/cloud-builders/gcloud"
+      script = file("${path.module}/scripts/deploy-cloud-run.sh")
       env = [
         "BRANCH=${var.branch_name}",
         "SHORT_ENV=${var.short_environment}",

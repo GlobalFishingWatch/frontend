@@ -140,7 +140,7 @@ const nextConfig: NextConfig = {
     },
   },
   serverExternalPackages: ['@mastra/*'],
-  reactCompiler: true,
+  // reactCompiler: true,
   experimental: {
     turbopackFileSystemCacheForDev: true,
     esmExternals: true,
