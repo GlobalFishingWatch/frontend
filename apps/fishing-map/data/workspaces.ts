@@ -77,6 +77,12 @@ export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-v-3' as c
 export const TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG = 'vessel-track-only-v-3' as const
 export const TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_BRAZIL =
   'private-bra-fishing-map-vessel-track-v-4' as const
+export const TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_CHILE =
+  'private-chl-fishing-map-vessel-track-v-4' as const
+export const TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_PANAMA =
+  'private-panama-fishing-map-vessel-track-v-4' as const
+export const TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_PERU =
+  'private-per-fishing-map-vessel-track-v-4' as const
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = 'default-context-layer' as const
 export const TEMPLATE_POINTS_DATAVIEW_SLUG = 'default-points-layer' as const
 export const TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG = 'gfw-environmental-layer' as const
@@ -102,6 +108,9 @@ export const TEMPLATE_DATAVIEW_SLUGS = [
 
 export const PRIVATE_TEMPLATE_VESSEL_DATAVIEW_SLUGS: Partial<Record<UserGroup, string>> = {
   brazil: TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_BRAZIL,
+  chile: TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_CHILE,
+  panama: TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_PANAMA,
+  peru: TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_PERU,
 }
 
 export const DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS = [
