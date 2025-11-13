@@ -128,7 +128,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
         })
       }
       return reportDataviews.filter((dataview) => {
-        if (reportComparisonDataviewIds?.compare?.includes(dataview.id)) return true
+        if (reportComparisonDataviewIds?.compare === dataview.id) return true
         if (
           dataview.category === DataviewCategory.Activity ||
           dataview.category === DataviewCategory.Detections
