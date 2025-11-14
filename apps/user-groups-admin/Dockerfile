@@ -8,6 +8,21 @@ ENV BASIC_AUTH_USER $BASIC_AUTH_USER
 ENV BASIC_AUTH_PASS $BASIC_AUTH_PASS
 RUN htpasswd -Bbn "$BASIC_AUTH_USER" "$BASIC_AUTH_PASS" > /home/.htpasswd
 
+FROM us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest AS builder
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+
+ARG API_GATEWAY
+ENV API_GATEWAY=$API_GATEWAY
+
+COPY . .
+
+RUN yarn install --immutable --inline-builds && \
+  yarn nx run user-groups-admin:build
+
 #################################################################################
 # Actual application to run
 #################################################################################
@@ -15,10 +30,10 @@ RUN htpasswd -Bbn "$BASIC_AUTH_USER" "$BASIC_AUTH_PASS" > /home/.htpasswd
 # https://github.com/alpinelinux/docker-alpine/issues/182
 FROM nginx:stable-alpine as production
 
-COPY ./nginx.conf /etc/nginx/nginx.template
+COPY --from=builder /app/dist/apps/user-groups-admin/nginx.conf /etc/nginx/nginx.template
 COPY --from=htpasswd /home/.htpasswd /home/.htpasswd
 RUN cat /home/.htpasswd >> /etc/nginx/.htpasswd
-COPY ./entrypoint.sh entrypoint.sh
-COPY ./ /usr/share/nginx/www/
+COPY --from=builder /app/dist/apps/user-groups-admin/entrypoint.sh entrypoint.sh
+COPY --from=builder /app/dist/apps/user-groups-admin/ /usr/share/nginx/www/
 ENTRYPOINT ["./entrypoint.sh"]
 
