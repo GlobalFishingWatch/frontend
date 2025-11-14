@@ -6,10 +6,7 @@ FROM us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:lat
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV NX_DAEMON=false
-ENV NX_PARALLEL=1
-ENV NX_ISOLATE_PLUGINS=false
-ENV NEXT_TELEMETRY_DISABLED=1
+
 
 ARG NEXT_PUBLIC_API_GATEWAY
 ARG NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID

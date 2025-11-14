@@ -16,10 +16,7 @@ FROM us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:lat
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV NX_DAEMON=false
-ENV NX_PARALLEL=1
-ENV NX_ISOLATE_PLUGINS=false
-ENV NEXT_TELEMETRY_DISABLED=1
+
 
 ARG API_GATEWAY
 ENV API_GATEWAY=$API_GATEWAY
