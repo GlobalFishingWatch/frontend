@@ -12,6 +12,7 @@ import {
   getMergedDataviewId,
   isActivityDataview,
   isAnyContextDataview,
+  isComparisonDataview,
   isDetectionsDataview,
   isEnvironmentalDataview,
   isHeatmapCurrentsDataview,
@@ -368,6 +369,10 @@ export function getComparisonMode(
 }
 
 const DATAVIEW_GROUPS_CONFIG = [
+  {
+    key: 'comparisonDataviews' as const,
+    test: isComparisonDataview,
+  },
   { key: 'activityDataviews' as const, test: isActivityDataview },
   { key: 'detectionDataviews' as const, test: isDetectionsDataview },
   { key: 'environmentalDataviews' as const, test: isEnvironmentalDataview },
@@ -414,6 +419,7 @@ export function getDataviewsResolved(
     userHeatmapDataviews = [],
     contextDataviews = [],
     otherDataviews = [],
+    comparisonDataviews = [],
   } = getDataviewsGrouped(dataviews)
 
   const singleHeatmapDataview =
@@ -423,6 +429,11 @@ export function getDataviewsResolved(
   const detectionsComparisonMode = getComparisonMode(detectionDataviews, params)
 
   // If activity heatmap animated generators found, merge them into one generator with multiple sublayers
+  const mergedComparisonDataview = comparisonDataviews?.length
+    ? getFourwingsDataviewsResolved(comparisonDataviews, {
+        ...params,
+      })
+    : []
   const mergedActivityDataview = activityDataviews?.length
     ? getFourwingsDataviewsResolved(activityDataviews, {
         ...params,
@@ -447,6 +458,7 @@ export function getDataviewsResolved(
         visualizationMode: params.environmentVisualizationMode,
       }) || []
   )
+
   const staticDataviewsParsed = staticDataviews.flatMap((d) => {
     let visualizationMode = undefined
     if (d.category === DataviewCategory.Environment) {
@@ -503,6 +515,7 @@ export function getDataviewsResolved(
     ...currentsDataviewsParsed,
     ...environmentalDataviewsParsed,
     ...vesselGroupDataviewParsed,
+    ...mergedComparisonDataview,
     ...mergedDetectionsDataview,
     ...mergedActivityDataview,
     ...vesselTrackDataviewsParsed,

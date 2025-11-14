@@ -3,6 +3,7 @@ import { uniq } from 'es-toolkit'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 
+import { DATASET_COMPARISON_SUFFIX } from 'data/config'
 import {
   getReportCategoryFromDataview,
   getReportSubCategoryFromDataview,
@@ -41,9 +42,11 @@ export const selectActiveReportSubCategoriesByCategory = <R = AnyReportSubCatego
 ) =>
   createSelector([selectActiveSupportedReportDataviews], (dataviews): R[] => {
     return uniq(
-      dataviews.flatMap((d) =>
-        d.category === dataviewCategory ? getReportSubCategoryFromDataview(d) || [] : []
-      ) as R[]
+      dataviews
+        .filter((dv) => !dv.id.includes(DATASET_COMPARISON_SUFFIX))
+        .flatMap((d) =>
+          d.category === dataviewCategory ? getReportSubCategoryFromDataview(d) || [] : []
+        ) as R[]
     )
   })
 

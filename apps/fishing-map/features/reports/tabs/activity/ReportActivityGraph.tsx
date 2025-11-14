@@ -2,6 +2,8 @@ import React, { Fragment, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
+
 import UserGuideLink from 'features/help/UserGuideLink'
 import {
   useFitAreaInViewport,
@@ -11,6 +13,7 @@ import {
   selectReportAreaStatus,
   selectTimeComparisonValues,
 } from 'features/reports/report-area/area-reports.selectors'
+import { REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON } from 'features/reports/reports.config'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
@@ -21,6 +24,7 @@ import {
   useReportTimeSeriesErrors,
 } from 'features/reports/reports-timeseries.hooks'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
+import { isTimeComparisonGraph } from 'features/reports/shared/utils/reports.utils'
 import ReportActivityGraphSelector from 'features/reports/tabs/activity/ReportActivityGraphSelector'
 import ReportActivityPeriodComparison from 'features/reports/tabs/activity/ReportActivityPeriodComparison'
 import ReportActivityPeriodComparisonGraph from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
@@ -29,6 +33,10 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import ReportActivityBeforeAfter from './ReportActivityBeforeAfter'
 import ReportActivityBeforeAfterGraph from './ReportActivityBeforeAfterGraph'
+import ReportActivityDatasetComparison from './ReportActivityDatasetComparison'
+import ReportActivityDatasetComparisonGraph, {
+  type ReportActivityDatasetComparisonProps,
+} from './ReportActivityDatasetComparisonGraph'
 import ReportActivityEvolution from './ReportActivityEvolution'
 
 import styles from './ReportActivity.module.css'
@@ -43,11 +51,18 @@ const SELECTORS_BY_TYPE: Record<ReportActivityGraph, React.FC | null> = {
   evolution: null,
   beforeAfter: ReportActivityBeforeAfter,
   periodComparison: ReportActivityPeriodComparison,
+  datasetComparison: ReportActivityDatasetComparison,
 }
-const GRAPH_BY_TYPE: Record<ReportActivityGraph, React.FC<ReportActivityProps> | null> = {
+
+const GRAPH_BY_TYPE: Record<
+  ReportActivityGraph,
+  React.FC<ReportActivityProps> | React.FC<ReportActivityDatasetComparisonProps> | null
+> = {
   evolution: ReportActivityEvolution,
   beforeAfter: ReportActivityBeforeAfterGraph,
   periodComparison: ReportActivityPeriodComparisonGraph,
+  datasetComparison:
+    ReportActivityDatasetComparisonGraph as React.FC<ReportActivityDatasetComparisonProps>,
 }
 
 export default function ReportActivity() {
@@ -69,6 +84,7 @@ export default function ReportActivity() {
   const { start, end } = useTimerangeConnect()
   const reportActivityGraph = useSelector(selectReportActivityGraph)
   const timeComparisonValues = useSelector(selectTimeComparisonValues)
+  const mapLoading = useIsDeckLayersLoading()
 
   const SelectorsComponent = useMemo(
     () => SELECTORS_BY_TYPE[reportActivityGraph],
@@ -78,6 +94,7 @@ export default function ReportActivity() {
     () => GRAPH_BY_TYPE[reportActivityGraph] as any,
     [reportActivityGraph]
   )
+
   const loading = useReportFeaturesLoading()
   const reportAreaStatus = useSelector(selectReportAreaStatus)
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
@@ -88,6 +105,7 @@ export default function ReportActivity() {
     !loading && layersTimeseriesFiltered?.length
       ? layersTimeseriesFiltered.every((data) => data?.timeseries?.length === 0)
       : false
+  const isDatasetComparison = reportActivityGraph === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON
 
   return (
     <div className={styles.container}>
@@ -97,21 +115,22 @@ export default function ReportActivity() {
           <ReportActivityGraphSelector loading={loading} />
         </div>
       )}
-      {loading || reportAreaStatus !== AsyncReducerStatus.Finished ? (
+      {/* Dataset Comparison Selectors needs to go above the graph instead of time comparison selectors */}
+      {showSelectors && SelectorsComponent && isDatasetComparison && <SelectorsComponent />}
+      {loading || mapLoading || reportAreaStatus !== AsyncReducerStatus.Finished ? (
         <ReportActivityPlaceholder showHeader={!showSelectors} />
       ) : isEmptyData || hasError ? (
         <ReportActivityPlaceholder showHeader={false} animate={false}>
-          {hasError && t('errors.layerLoading')}
-          {/* : t('analysis.noDataByArea')} */}
+          {hasError ? t('errors.layerLoading') : isEmptyData && t('analysis.noDataByArea')}
         </ReportActivityPlaceholder>
       ) : (
         <GraphComponent
-          start={reportActivityGraph === 'evolution' ? start : timeComparisonValues?.start}
-          end={reportActivityGraph === 'evolution' ? end : timeComparisonValues?.end}
-          data={layersTimeseriesFiltered?.[0]}
+          start={isTimeComparisonGraph(reportActivityGraph) ? timeComparisonValues?.start : start}
+          end={isTimeComparisonGraph(reportActivityGraph) ? timeComparisonValues?.end : end}
+          data={isDatasetComparison ? layersTimeseriesFiltered : layersTimeseriesFiltered?.[0]}
         />
       )}
-      {showSelectors && SelectorsComponent && <SelectorsComponent />}
+      {showSelectors && SelectorsComponent && !isDatasetComparison && <SelectorsComponent />}
       {!loading && (
         <Fragment>
           <div className={styles.disclaimer}>

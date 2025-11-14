@@ -26,6 +26,8 @@ import { removeDatasetVersion, resolveEndpoint } from '@globalfishingwatch/datas
 
 import type { UrlDataviewInstance } from './types'
 
+export const DATASET_COMPARISON_SUFFIX = 'dataset-comparison'
+
 export function isActivityDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.Activity &&
@@ -38,6 +40,10 @@ export function isDetectionsDataview(dataview: UrlDataviewInstance) {
     dataview.category === DataviewCategory.Detections &&
     dataview.config?.type === DataviewType.HeatmapAnimated
   )
+}
+
+export function isComparisonDataview(dataview: UrlDataviewInstance) {
+  return dataview.origin === 'comparison' && dataview.id?.endsWith(DATASET_COMPARISON_SUFFIX)
 }
 
 export function isVesselGroupDataview(dataview: UrlDataviewInstance) {

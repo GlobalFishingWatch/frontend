@@ -11,8 +11,11 @@ import {
   EMPTY_API_VALUES,
   MAX_CATEGORIES,
   OTHERS_CATEGORY_LABEL,
+  REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
+  REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
 } from 'features/reports/reports.config'
 import type {
+  ReportActivityGraph,
   ReportCategory,
   ReportVesselGraph,
   ReportVesselsSubCategory,
@@ -217,4 +220,13 @@ export function getVesselIndividualGroupedData(
       values: restOfGroups.flatMap((group) => group.values),
     },
   ] as VesselVisualizationData
+}
+
+export const REPORT_ACTIVITY_GRAPH_TIME_OPTIONS: ReportActivityGraph[] = [
+  REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
+  REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
+]
+
+export function isTimeComparisonGraph(graph: ReportActivityGraph) {
+  return REPORT_ACTIVITY_GRAPH_TIME_OPTIONS.includes(graph)
 }
