@@ -7,7 +7,6 @@ import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 type DateTimeParseFunction = { (timestamp: string, opts: DateTimeOptions | undefined): DateTime }
 
 export const getUTCDate = (timestamp: string | number = Date.now()) => {
-  // it could receive a timestamp as a string
   const millis = toNumber(timestamp)
   if (typeof timestamp === 'number' || !isNaN(millis))
     return DateTime.fromMillis(millis, { zone: 'UTC' }).toJSDate()
@@ -16,6 +15,7 @@ export const getUTCDate = (timestamp: string | number = Date.now()) => {
     DateTime.fromISO,
     DateTime.fromSQL,
     DateTime.fromRFC2822,
+    (s: string, opts: any) => DateTime.fromFormat(s, 'M/d/yyyy', opts),
   ]
   let result
   for (let index = 0; index < tryParseMethods.length; index++) {
@@ -26,12 +26,11 @@ export const getUTCDate = (timestamp: string | number = Date.now()) => {
         return result.toJSDate()
       }
     } catch (e) {
-      return new Date('Invalid Date')
+      continue
     }
   }
   return new Date('Invalid Date')
 }
-
 export type SupportedDateType = string | number | Date
 export const getUTCDateTime = (d: SupportedDateType): DateTime => {
   if (!d || (typeof d !== 'string' && typeof d !== 'number' && typeof d !== 'object')) {
