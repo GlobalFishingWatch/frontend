@@ -295,13 +295,19 @@ export const aggregateCellTimeseries = (
 
 export const EMPTY_CELL_COLOR: Color = [0, 0, 0, 0]
 
-export function getFourwingsChunk(
-  minDate: number,
-  maxDate: number,
+export function getFourwingsChunk({
+  start,
+  end,
+  availableIntervals,
+  chunksBuffer,
+}: {
+  start: number
+  end: number
   availableIntervals?: FourwingsInterval[]
-) {
-  const interval = getFourwingsInterval(minDate, maxDate, availableIntervals)
-  return getChunkByInterval(minDate, maxDate, interval)
+  chunksBuffer?: number
+}): FourwingsChunk {
+  const interval = getFourwingsInterval(start, end, availableIntervals)
+  return getChunkByInterval({ start, end, interval, chunksBuffer })
 }
 
 type FourwingsIntervalFrames = {
@@ -395,7 +401,11 @@ export const getTileDataCache = ({
   compareEnd?: number
 }): FourwingsHeatmapTilesCache => {
   const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
-  const { start, end, bufferedStart } = getFourwingsChunk(startTime, endTime, availableIntervals)
+  const { start, end, bufferedStart } = getFourwingsChunk({
+    start: startTime,
+    end: endTime,
+    availableIntervals,
+  })
   return {
     zoom,
     start,

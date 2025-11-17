@@ -96,7 +96,12 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     const offset: number[] = []
     const noDataValue: number[] = []
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
-    const chunk = getFourwingsChunk(startTime, endTime, availableIntervals)
+    const chunk = getFourwingsChunk({
+      start: startTime,
+      end: endTime,
+      availableIntervals,
+      chunksBuffer: 0,
+    })
 
     const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
       const url = getDataUrlBySublayer({
