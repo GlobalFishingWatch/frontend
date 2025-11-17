@@ -332,6 +332,7 @@ interface Resources {
       "see": "See report",
       "seeGlobal": "See global report",
       "seeVessels": "See vessels",
+      "selectAggregationProperty": "Select a property to analyze",
       "share": "Share report",
       "statsDisclaimerDynamic": "During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.",
       "statsDisclaimerStatic": "The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.",

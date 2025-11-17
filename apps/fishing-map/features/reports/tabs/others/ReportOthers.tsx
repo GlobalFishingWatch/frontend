@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -6,7 +6,10 @@ import cx from 'classnames'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
+import type { SelectOption } from '@globalfishingwatch/ui-components'
+import { Select } from '@globalfishingwatch/ui-components'
 
+import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
 import { selectOthersActiveReportDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
@@ -23,6 +26,7 @@ import { useGetHasDataviewSchemaFilters } from 'features/reports/shared/summary/
 import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
 import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivityEvolution'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
 import styles from './ReportOthers.module.css'
 import summaryStyles from 'features/reports/shared/summary/ReportSummary.module.css'
@@ -36,6 +40,7 @@ function ReportOthers() {
   const getHasDataviewSchemaFilters = useGetHasDataviewSchemaFilters()
   const timeseriesStats = useTimeseriesStats()
   const otherDataviews = useSelector(selectOthersActiveReportDataviewsGrouped)
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   if (!Object.keys(otherDataviews)?.length) return null
 
@@ -46,6 +51,27 @@ function ReportOthers() {
         const dataset = dataview.datasets?.find(
           (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
         )
+
+        const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+
+        const numberFields = filtersAllowed.filter(
+          (filter) => filter.type === 'range' || filter.type === 'number'
+        )
+
+        const selectOptions = numberFields.map((field) => ({ id: field.id, label: field.id }))
+
+        const onSelectAggregatedProperty = (option: SelectOption) => {
+          const newDataviewConfig = {
+            aggregateByProperty: option.id.toString(),
+          }
+          const newDataview = { id: dataview.id, config: newDataviewConfig }
+          upsertDataviewInstance(newDataview)
+        }
+
+        const selectedProperty = selectOptions.find(
+          (option) => option.id === dataview.config?.aggregateByProperty
+        )
+
         const mergedDataviewId = getMergedDataviewId(dataviews)
         const timeFilterType = getDatasetConfigurationProperty({
           dataset,
@@ -99,19 +125,28 @@ function ReportOthers() {
               </Fragment>
             </p>
           ) : null
+
         return (
           <div key={mergedDataviewId} className={styles.container}>
             <h2 className={styles.title}>{title}</h2> {unit && <span>({unit})</span>}
             {hasTimeFilter ? timeseriesLoading ? <ReportStatsPlaceholder /> : StatsComponent : null}
             {dataviews?.length > 0 && (
-              <div
-                className={cx(summaryStyles.tagsContainer, {
-                  [summaryStyles.tagsContainerNoFilters]: !hasDataviewSchemaFilters,
-                })}
-              >
-                {dataviews?.map((d) => (
-                  <ReportSummaryTags key={d.id} dataview={d} />
-                ))}
+              <div className={styles.selectContainer}>
+                <div
+                  className={cx(summaryStyles.tagsContainer, {
+                    [summaryStyles.tagsContainerNoFilters]: !hasDataviewSchemaFilters,
+                  })}
+                >
+                  {dataviews?.map((d) => (
+                    <ReportSummaryTags key={d.id} dataview={d} />
+                  ))}
+                </div>
+                <Select
+                  options={selectOptions}
+                  selectedOption={selectedProperty}
+                  onSelect={onSelectAggregatedProperty}
+                  placeholder={t('analysis.selectAggregationProperty')}
+                />{' '}
               </div>
             )}
             {hasTimeFilter ? (

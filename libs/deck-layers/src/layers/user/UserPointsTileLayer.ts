@@ -55,6 +55,7 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
 
 type GetUserPointsDataParams = {
   includeNonTemporalFeatures?: boolean
+  aggregateByProperty?: string
 }
 
 type UserPointsLayerState = UserBaseLayerState & {
@@ -206,15 +207,19 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     const data = this._getData().flatMap((feature) => {
       const values = new Array(this.props.layers?.[0]?.sublayers?.length).fill(0)
       this.props.layers?.[0]?.sublayers?.forEach((sublayer, index) => {
+        const { aggregateByProperty } = sublayer
         const matchesTimeFilter = isFeatureInRange(feature, this.props as IsFeatureInRangeParams)
         if (includeNonTemporalFeatures || matchesTimeFilter) {
           if (hasSublayerFilters(sublayer)) {
-            // TODO: support getting values from certain property instead of just counting the points
             values[index] = isFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators)
-              ? 1
+              ? aggregateByProperty
+                ? Number(feature.properties?.[aggregateByProperty])
+                : 1
               : 0
           } else {
-            values[index] = 1
+            values[index] = aggregateByProperty
+              ? Number(feature.properties?.[aggregateByProperty])
+              : 1
           }
         }
       })
