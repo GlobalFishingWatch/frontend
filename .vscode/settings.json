@@ -34,11 +34,35 @@
   // ----------------------------------------------
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.tsserver.maxTsServerMemory": 8192,
+  "typescript.tsserver.watchOptions": {
+    "excludeDirectories": [
+      "**/node_modules",
+      "**/.next",
+      "**/dist",
+      "**/.nx",
+      "**/.yarn",
+      "**/coverage",
+      "**/.turbo",
+      "**/build",
+      "**/out",
+      "**/exported",
+      "**/tmp",
+      "**/cypress",
+      "**/e2e"
+    ]
+  },
+  "typescript.suggest.autoImports": true,
   "editor.rulers": [140],
   "files.exclude": {
     "**/.git": true,
     "**/build": true,
-    "**/coverage": true
+    "**/coverage": true,
+    "**/.next": true,
+    "**/dist": true,
+    "**/.nx": true,
+    "**/.turbo": true,
+    "**/node_modules": true
   },
   "editor.formatOnSave": true, // auto format the file on each save
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
