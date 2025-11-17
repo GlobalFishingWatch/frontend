@@ -100,10 +100,10 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       start: startTime,
       end: endTime,
       availableIntervals,
-      chunksBuffer: 0,
+      // chunksBuffer: 0,
     })
 
-    const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
+    const getSublayerData: any = async (sublayer: FourwingsDeckSublayer, sublayerIndex: number) => {
       const url = getDataUrlBySublayer({
         tile,
         chunk,
@@ -118,20 +118,20 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       if (response.status >= 400 && response.status !== 404) {
         throw new Error(response.statusText)
       }
-      if (response.headers.get('X-columns') && !cols[0]) {
-        cols[0] = parseInt(response.headers.get('X-columns') as string)
+      if (response.headers.get('X-columns') && !cols[sublayerIndex]) {
+        cols[sublayerIndex] = parseInt(response.headers.get('X-columns') as string)
       }
-      if (response.headers.get('X-rows') && !rows[0]) {
-        rows[0] = parseInt(response.headers.get('X-rows') as string)
+      if (response.headers.get('X-rows') && !rows[sublayerIndex]) {
+        rows[sublayerIndex] = parseInt(response.headers.get('X-rows') as string)
       }
-      if (response.headers.get('X-scale') && !scale[0]) {
-        scale[0] = parseFloat(response.headers.get('X-scale') as string)
+      if (response.headers.get('X-scale') && !scale[sublayerIndex]) {
+        scale[sublayerIndex] = parseFloat(response.headers.get('X-scale') as string)
       }
-      if (response.headers.get('X-offset') && !offset[0]) {
-        offset[0] = parseInt(response.headers.get('X-offset') as string)
+      if (response.headers.get('X-offset') && !offset[sublayerIndex]) {
+        offset[sublayerIndex] = parseInt(response.headers.get('X-offset') as string)
       }
-      if (response.headers.get('X-empty-value') && !noDataValue[0]) {
-        noDataValue[0] = parseInt(response.headers.get('X-empty-value') as string)
+      if (response.headers.get('X-empty-value') && !noDataValue[sublayerIndex]) {
+        noDataValue[sublayerIndex] = parseInt(response.headers.get('X-empty-value') as string)
       }
       return await response.arrayBuffer()
     }
@@ -157,27 +157,30 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
     })
 
-    const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
-      worker: true,
-      fourwings: {
-        sublayers: 1,
-        cols,
-        rows,
-        scale,
-        offset,
-        noDataValue,
-        bufferedStartDate: chunk.bufferedStart,
-        initialTimeRange: {
-          start: startTime,
-          end: endTime,
-        },
-        interval,
-        tile,
-        buffersLength: settledPromises.map((p) =>
-          p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
-        ),
-      } as ParseFourwingsOptions,
-    })
+    const data = await parse(
+      arrayBuffers.filter(Boolean) as ArrayBuffer[],
+      FourwingsVectorsLoader,
+      {
+        worker: true,
+        fourwingsVectors: {
+          cols,
+          rows,
+          scale,
+          offset,
+          noDataValue,
+          bufferedStartDate: chunk.bufferedStart,
+          initialTimeRange: {
+            start: startTime,
+            end: endTime,
+          },
+          interval,
+          tile,
+          buffersLength: settledPromises.map((p) =>
+            p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
+          ),
+        } as ParseFourwingsVectorsOptions,
+      }
+    )
 
     return data
   }
@@ -298,6 +301,6 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
 
   getChunk = () => {
     const { startTime, endTime, availableIntervals } = this.props
-    return getFourwingsChunk(startTime, endTime, availableIntervals)
+    return getFourwingsChunk({ start: startTime, end: endTime, availableIntervals })
   }
 }

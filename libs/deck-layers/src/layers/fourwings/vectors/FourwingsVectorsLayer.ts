@@ -23,9 +23,13 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsHeatmapLayerP
   timeRangeKey!: string
   startFrame!: number
   endFrame!: number
+  // Maximum expected velocity in m/s for normalization
+  private static readonly MAX_VELOCITY = 5.0
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
+    this.startFrame = 0
+    this.endFrame = 0
   }
 
   getPickingInfo = ({ info }: { info: PickingInfo<FourwingsFeature> }) => {
@@ -74,54 +78,80 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsHeatmapLayerP
   }
 
   getVelocity = (feature: FourwingsFeature, { target }: { target: number }) => {
-    const forces = feature.properties.values[0].map((value, i) => {
-      const u = value
-      const v = feature.properties.values[1][i]
-      return Math.sqrt(u * u + v * v)
-    })
-    const [force] = aggregateCell({
-      // TODO:currents get U instead of by index
-      cellValues: [forces],
-      aggregationOperation: FourwingsAggregationOperation.Avg,
-      startFrame: this.startFrame,
-      endFrame: this.endFrame,
-      cellStartOffsets: feature.properties.startOffsets,
-    })
-    if (force) {
-      target = force
-      if (!feature.aggregatedValues) {
-        feature.aggregatedValues = []
-      }
-      feature.aggregatedValues[0] = force
+    const velocities = feature.properties.velocities
+    if (
+      !velocities ||
+      velocities.length === 0 ||
+      this.startFrame === undefined ||
+      this.endFrame === undefined
+    ) {
+      target = 0
       return target
     }
-    target = 0
+
+    let aggregatedVelocity = aggregateSublayerValues(
+      sliceCellValues({
+        values: velocities,
+        startFrame: this.startFrame,
+        endFrame: this.endFrame,
+        startOffset: feature.properties.startOffsets[0] ?? 0,
+      }),
+      FourwingsAggregationOperation.Avg
+    )
+
+    if (!Number.isFinite(aggregatedVelocity) || aggregatedVelocity < 0) {
+      aggregatedVelocity = 0
+    }
+    const normalizedVelocity = Math.min(
+      aggregatedVelocity / FourwingsVectorsLayer.MAX_VELOCITY,
+      1.0
+    )
+
+    target = normalizedVelocity
+
+    if (!feature.aggregatedValues) {
+      feature.aggregatedValues = []
+    }
+    feature.aggregatedValues[0] = normalizedVelocity
+
     return target
   }
 
   getDirection = (feature: FourwingsFeature, { target }: { target: number }) => {
-    const angles = feature.properties.values[1].map((value, i) =>
-      Math.round((90 - RAD_TO_DEG * Math.atan2(value, feature.properties.values[0][i])) % 360)
-    )
-
-    const [angle] = aggregateCell({
-      // TODO:currents get U instead of by index
-      cellValues: [angles],
-      aggregationOperation: FourwingsAggregationOperation.AvgDegrees,
-      startFrame: this.startFrame,
-      endFrame: this.endFrame,
-      cellStartOffsets: feature.properties.startOffsets,
-    })
-
-    if (angle) {
-      target = angle
-      if (!feature.aggregatedValues) {
-        feature.aggregatedValues = []
-      }
-      feature.aggregatedValues[1] = angle
+    const directions = feature.properties.directions
+    if (
+      !directions ||
+      directions.length === 0 ||
+      this.startFrame === undefined ||
+      this.endFrame === undefined
+    ) {
+      target = 0
       return target
     }
-    target = 0
+    const slicedDirections = sliceCellValues({
+      values: directions,
+      startFrame: this.startFrame,
+      endFrame: this.endFrame,
+      startOffset: feature.properties.startOffsets[1] ?? 0,
+    })
+    let aggregatedDirection = aggregateSublayerValues(
+      slicedDirections,
+      FourwingsAggregationOperation.AvgDegrees
+    )
+
+    if (!Number.isFinite(aggregatedDirection)) {
+      aggregatedDirection = 0
+    }
+    const normalizedDirection = ((aggregatedDirection % 360) + 360) % 360
+
+    target = normalizedDirection
+
+    // Store in aggregatedValues for compatibility with picking info
+    if (!feature.aggregatedValues) {
+      feature.aggregatedValues = []
+    }
+    feature.aggregatedValues[1] = normalizedDirection
+
     return target
   }
 
