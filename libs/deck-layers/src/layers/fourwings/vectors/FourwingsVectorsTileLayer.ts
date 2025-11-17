@@ -9,14 +9,15 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import type {
   FourwingsFeature,
   FourwingsInterval,
-  ParseFourwingsOptions,
+  ParseFourwingsVectorsOptions,
 } from '@globalfishingwatch/deck-loaders'
-import { FourwingsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { FourwingsVectorsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { HEATMAP_API_TILES_URL } from '../fourwings.config'
 import type {
   BaseFourwingsLayerProps,
   FourwingsDeckSublayer,
+  FourwingsDeckVectorSublayer,
   FourwingsPickingObject,
   FourwingsVisualizationMode,
 } from '../fourwings.types'
@@ -29,34 +30,38 @@ import {
   getZoomOffsetByResolution,
 } from '../heatmap/fourwings-heatmap.utils'
 
-import { FourwingsCurrentsLayer } from './FourwingsCurrentsLayer'
+import { FourwingsVectorsLayer } from './FourwingsVectorsLayer'
 
-export type FourwingsCurrentsTileLayerState = {
+export type FourwingsVectorsTileLayerState = {
   error: string
   tilesCache: FourwingsHeatmapTilesCache
 }
 
-export type _FourwingsCurrentsTileLayerProps<DataT = FourwingsFeature> = BaseFourwingsLayerProps & {
+export type _FourwingsVectorsTileLayerProps<DataT = FourwingsFeature> = Omit<
+  BaseFourwingsLayerProps,
+  'sublayers'
+> & {
   data?: DataT
   availableIntervals?: FourwingsInterval[]
   highlightedFeatures?: FourwingsPickingObject[]
   visualizationMode: FourwingsVisualizationMode
+  sublayers: FourwingsDeckVectorSublayer[]
 }
 
-export type FourwingsCurrentsTileLayerProps = _FourwingsCurrentsTileLayerProps &
+export type FourwingsVectorsTileLayerProps = _FourwingsVectorsTileLayerProps &
   Partial<TileLayerProps>
 
-const defaultProps: DefaultProps<FourwingsCurrentsTileLayerProps> = {
+const defaultProps: DefaultProps<FourwingsVectorsTileLayerProps> = {
   maxRequests: 100,
   debounceTime: 500,
   tilesUrl: HEATMAP_API_TILES_URL,
 }
 
-export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrentsTileLayerProps> {
-  static layerName = 'FourwingsCurrentsTileLayer'
+export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTileLayerProps> {
+  static layerName = 'FourwingsVectorsTileLayer'
   static defaultProps = defaultProps
   initialBinsLoad = false
-  state!: FourwingsCurrentsTileLayerState
+  state!: FourwingsVectorsTileLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
@@ -83,7 +88,8 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
 
   _fetchTimeseriesTileData: any = async (tile: TileLoadProps) => {
     const { startTime, endTime, sublayers, tilesUrl, extentStart, availableIntervals } = this.props
-    const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
+    // Ensure 'u' (eastward) direction always goes first
+    const vectorLayers = sublayers.sort((a, b) => (a.direction === 'u' ? -1 : 1))
     const cols: number[] = []
     const rows: number[] = []
     const scale: number[] = []
@@ -91,6 +97,7 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
     const noDataValue: number[] = []
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const chunk = getFourwingsChunk(startTime, endTime, availableIntervals)
+
     const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
       const url = getDataUrlBySublayer({
         tile,
@@ -124,7 +131,7 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
       return await response.arrayBuffer()
     }
 
-    const promises = visibleSublayers.map(getSublayerData) as Promise<ArrayBuffer>[]
+    const promises = vectorLayers.map(getSublayerData) as Promise<ArrayBuffer>[]
     const settledPromises = await Promise.allSettled(promises)
 
     const hasChunkError = settledPromises.some(
@@ -184,15 +191,7 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
     const dataCache = Object.values(tilesCache || {}).join(',')
     const sublayersIds = this.props.sublayers?.map((s) => s.id).join(',')
     const sublayersDatasets = this.props.sublayers?.flatMap((s) => s.datasets || []).join(',')
-    const sublayersFilters = this.props.sublayers?.flatMap((s) => s.filter || []).join(',')
-    const sublayersVesselGroups = this.props.sublayers?.map((s) => s.vesselGroups || []).join(',')
-    return [
-      dataCache,
-      sublayersIds,
-      sublayersDatasets,
-      sublayersFilters,
-      sublayersVesselGroups,
-    ].join('-')
+    return [dataCache, sublayersIds, sublayersDatasets].join('-')
   }
 
   updateState({ props }: UpdateParameters<this>) {
@@ -251,7 +250,7 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
           getTileData: [cacheKey],
         },
         renderSubLayers: (props: any) => {
-          return new FourwingsCurrentsLayer(props)
+          return new FourwingsVectorsLayer(props)
         },
       })
     )

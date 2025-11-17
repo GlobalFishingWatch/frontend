@@ -52,7 +52,7 @@ function ReportEnvironment() {
         const isDynamic = dataview.config?.type === DataviewType.HeatmapAnimated
         const { min, mean, max } =
           (timeseriesStats?.[dataview.id] as FourwingsReportGraphStats) || {}
-        const isCurrents = dataview.config?.type === DataviewType.Currents
+        const isCurrents = dataview.config?.type === DataviewType.FourwingsVector
         const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
         const title = getDatasetNameTranslated(dataset)
         const hasError =

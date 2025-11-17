@@ -17,7 +17,7 @@ const defaultProps: DefaultProps<CurrentsLayerProps> = {
   getDirection: { type: 'accessor', value: (d: any) => d.direction || 0 },
 }
 
-export default class CurrentsLayer<
+export default class VectorsLayer<
   DataT = unknown,
   ExtraPropsT extends object = object,
 > extends ScatterplotLayer<ExtraPropsT & Required<_CurrentsLayerProps<DataT>>> {
@@ -83,11 +83,16 @@ export default class CurrentsLayer<
           }
         `,
         'vs:DECKGL_FILTER_SIZE': `
-          size.xy *= mix(0.5, 1.0, instanceVelocity);
-          size.xy = rotate_by_angle(size.xy, instanceDirections);
+          // Clamp velocity to [0, 1] range to prevent invalid shader calculations
+          float clampedVelocity = clamp(instanceVelocity, 0.0, 1.0);
+          size.xy *= mix(0.5, 1.0, clampedVelocity);
+          // Clamp direction to valid range and normalize
+          float normalizedDirection = mod(instanceDirections, 360.0);
+          size.xy = rotate_by_angle(size.xy, normalizedDirection);
         `,
         'vs:#main-end': `
-          vVelocity = instanceVelocity;
+          // Pass clamped velocity to fragment shader
+          vVelocity = clamp(instanceVelocity, 0.0, 1.0);
         `,
         'fs:#decl': `
           in float vVelocity;
@@ -95,7 +100,9 @@ export default class CurrentsLayer<
         'fs:DECKGL_FILTER_COLOR': `
           float minOpacity = 0.2;
           float maxOpacity = 1.5;
-          float speedFactor = mix(minOpacity, maxOpacity, vVelocity);
+          // Clamp velocity to [0, 1] range to prevent invalid opacity calculations
+          float clampedVelocity = clamp(vVelocity, 0.0, 1.0);
+          float speedFactor = mix(minOpacity, maxOpacity, clampedVelocity);
           color.a *= mix(minOpacity, maxOpacity, geometry.uv.y) * speedFactor;
         `,
       },

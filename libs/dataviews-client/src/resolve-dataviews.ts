@@ -89,8 +89,8 @@ export function isHeatmapStaticDataview(dataview: UrlDataviewInstance) {
   return dataview?.config?.type === DataviewType.HeatmapStatic
 }
 
-export function isHeatmapCurrentsDataview(dataview: UrlDataviewInstance) {
-  return dataview?.config?.type === DataviewType.Currents
+export function isHeatmapVectorsDataview(dataview: UrlDataviewInstance) {
+  return dataview?.config?.type === DataviewType.FourwingsVector
 }
 
 export function isEnvironmentalDataview(dataview: UrlDataviewInstance) {
