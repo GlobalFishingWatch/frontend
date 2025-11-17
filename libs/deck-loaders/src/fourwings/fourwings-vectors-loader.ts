@@ -3,9 +3,9 @@ import type { Loader, LoaderWithParser } from '@loaders.gl/loader-utils'
 import packageJson from '../../package.json'
 import { PATH_BASENAME } from '../loaders.config'
 
-import { NO_DATA_VALUE } from './lib/parse-fourwings'
 import { parseFourwingsVectors } from './lib/parse-fourwings-vectors'
 import type { FourwingsVectorsLoaderOptions, ParseFourwingsVectorsOptions } from './lib/types'
+import { baseFourwingsLoaderOptions } from './fourwings-loader'
 
 /**
  * Worker loader for the 4wings cluster tile format
@@ -17,21 +17,13 @@ export const FourwingsVectorsWorkerLoader: Loader = {
   version: packageJson?.version,
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
-  worker: true,
+  worker: false,
   category: 'geometry',
   options: {
     fourwingsVectors: {
+      ...(baseFourwingsLoaderOptions as ParseFourwingsVectorsOptions),
       workerUrl: `${PATH_BASENAME}/workers/fourwings-vectors-worker.js`,
-      cols: [113],
-      rows: [53],
-      scale: [1],
-      offset: [0],
-      interval: 'HOUR',
-      noDataValue: [NO_DATA_VALUE],
-      tile: undefined,
       temporalAggregation: false,
-      bufferedStartDate: 0,
-      buffersLength: [],
     } as ParseFourwingsVectorsOptions,
   } as FourwingsVectorsLoaderOptions,
 }
