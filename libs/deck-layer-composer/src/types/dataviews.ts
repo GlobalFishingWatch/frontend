@@ -4,6 +4,7 @@ import type {
   DataviewContexLayerConfig,
   DataviewInstance,
 } from '@globalfishingwatch/api-types'
+import type { FourwingsDeckVectorSublayer } from '@globalfishingwatch/deck-layers'
 
 export type FourwingsSublayerConfig = {
   id: string

@@ -14,8 +14,8 @@ import {
   isAnyContextDataview,
   isDetectionsDataview,
   isEnvironmentalDataview,
-  isHeatmapCurrentsDataview,
   isHeatmapStaticDataview,
+  isHeatmapVectorsDataview,
   isTrackDataview,
   isUserHeatmapDataview,
   isUserTrackDataview,
@@ -51,9 +51,9 @@ export const getDataviewAvailableIntervals = (
 ): FourwingsInterval[] => {
   const allDatasets = dataview.datasets?.length
     ? dataview.datasets
-    : ((dataview as ResolvedFourwingsDataviewInstance)?.config?.sublayers || [])?.flatMap(
+    : (((dataview as ResolvedFourwingsDataviewInstance)?.config?.sublayers || [])?.flatMap(
         (sublayer) => sublayer.datasets || []
-      )
+      ) as Dataset[])
   const fourwingsDatasets = allDatasets?.filter(
     (dataset) => dataset.type === DatasetTypes.Fourwings
   )
@@ -376,7 +376,7 @@ const DATAVIEW_GROUPS_CONFIG = [
   { key: 'detectionDataviews' as const, test: isDetectionsDataview },
   { key: 'environmentalDataviews' as const, test: isEnvironmentalDataview },
   { key: 'staticDataviews' as const, test: isHeatmapStaticDataview },
-  { key: 'currentsDataviews' as const, test: isHeatmapCurrentsDataview },
+  { key: 'vectorsDataviews' as const, test: isHeatmapVectorsDataview },
   { key: 'vesselGroupDataview' as const, test: isVesselGroupDataview },
   { key: 'userHeatmapDataviews' as const, test: isUserHeatmapDataview },
   { key: 'vesselTrackDataviews' as const, test: isTrackDataview },
@@ -412,7 +412,7 @@ export function getDataviewsResolved(
     detectionDataviews = [],
     environmentalDataviews = [],
     staticDataviews = [],
-    currentsDataviews = [],
+    vectorsDataviews = [],
     vesselGroupDataview = [],
     vesselTrackDataviews = [],
     userHeatmapDataviews = [],
@@ -468,7 +468,7 @@ export function getDataviewsResolved(
       }) || []
     )
   })
-  const currentsDataviewsParsed = currentsDataviews.flatMap((dataview) => {
+  const vectorsDataviewsParsed = vectorsDataviews.flatMap((dataview) => {
     return {
       ...dataview,
       config: { ...dataview.config, visualizationMode: params.environmentVisualizationMode },
@@ -506,7 +506,7 @@ export function getDataviewsResolved(
   const dataviewsMerged = [
     ...otherDataviews,
     ...staticDataviewsParsed,
-    ...currentsDataviewsParsed,
+    ...vectorsDataviewsParsed,
     ...environmentalDataviewsParsed,
     ...vesselGroupDataviewParsed,
     ...mergedDetectionsDataview,

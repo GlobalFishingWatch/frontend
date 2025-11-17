@@ -19,7 +19,11 @@ import {
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
 } from '../fourwings.config'
-import type { FourwingsDeckSublayer, FourwingsVisualizationMode } from '../fourwings.types'
+import type {
+  FourwingsDeckSublayer,
+  FourwingsDeckVectorSublayer,
+  FourwingsVisualizationMode,
+} from '../fourwings.types'
 
 import type {
   AggregateCellParams,
@@ -168,7 +172,7 @@ type GetDataUrlByChunk = {
     id: string
   }
   chunk: FourwingsChunk
-  sublayer: FourwingsDeckSublayer
+  sublayer: FourwingsDeckSublayer | FourwingsDeckVectorSublayer
   filter?: string
   vesselGroups?: string[]
   tilesUrl?: string
@@ -183,9 +187,9 @@ export const getDataUrlBySublayer = ({
   extentStart,
 }: // extentEnd,
 GetDataUrlByChunk) => {
-  const vesselGroup = Array.isArray(sublayer.vesselGroups)
-    ? sublayer.vesselGroups[0]
-    : sublayer.vesselGroups
+  const vesselGroup = Array.isArray((sublayer as FourwingsDeckSublayer).vesselGroups)
+    ? (sublayer as FourwingsDeckSublayer).vesselGroups?.[0]
+    : (sublayer as FourwingsDeckSublayer).vesselGroups
   const start = extentStart && extentStart > chunk.start ? extentStart : chunk.bufferedStart
   const tomorrow = DateTime.now().toUTC().endOf('day').plus({ millisecond: 1 }).toMillis()
   // const end = extentEnd && extentEnd < chunk.end ? extentEnd : chunk.bufferedEnd
@@ -196,7 +200,9 @@ GetDataUrlByChunk) => {
     interval: chunk.interval,
     'temporal-aggregation': false,
     datasets: [sublayer.datasets.join(',')],
-    ...(sublayer.filter && { filters: [sublayer.filter] }),
+    ...((sublayer as FourwingsDeckSublayer).filter && {
+      filters: [(sublayer as FourwingsDeckSublayer).filter],
+    }),
     ...(vesselGroup && { 'vessel-groups': [vesselGroup] }),
     ...(chunk.interval !== 'YEAR' && {
       'date-range': [getISODateFromTS(start < end ? start : end), getISODateFromTS(end)].join(','),

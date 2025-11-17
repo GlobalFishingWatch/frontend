@@ -3,25 +3,23 @@ import { CompositeLayer } from '@deck.gl/core'
 import { SolidPolygonLayer } from '@deck.gl/layers'
 
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import {
-  FourwingsAggregationOperation,
-  getLayerGroupOffset,
-  HEATMAP_ID,
-  LayerGroup,
-} from '@globalfishingwatch/deck-layers'
+import { getLayerGroupOffset, HEATMAP_ID, LayerGroup } from '@globalfishingwatch/deck-layers'
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 
 import { COLOR_TRANSPARENT, hexToDeckColor } from '../../../utils'
 import type { FourwingsHeatmapLayerProps, FourwingsHeatmapPickingObject } from '../fourwings.types'
-import { aggregateCell, getIntervalFrames } from '../heatmap/fourwings-heatmap.utils'
+import { FourwingsAggregationOperation } from '../heatmap/fourwings-heatmap.types'
+import {
+  aggregateSublayerValues,
+  getIntervalFrames,
+  sliceCellValues,
+} from '../heatmap/fourwings-heatmap.utils'
 
-import CurrentsLayer from './CurrentsLayer'
+import VectorsLayer from './VectorsLayer'
 
-const RAD_TO_DEG = 180 / Math.PI
-
-export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
-  static layerName = 'FourwingsCurrentsLayer'
+export class FourwingsVectorsLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
+  static layerName = 'FourwingsVectorsLayer'
   timeRangeKey!: string
   startFrame!: number
   endFrame!: number
@@ -53,7 +51,7 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
       ...(info.object || ({} as FourwingsFeature)),
       layerId: this.root.id,
       category: category || DataviewCategory.Environment,
-      subcategory: subcategory || DataviewType.Currents,
+      subcategory: subcategory || DataviewType.FourwingsVector,
       id: id,
       title: id,
       tile: tile.index,
@@ -148,7 +146,7 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
     this.endFrame = endFrame
 
     return [
-      new CurrentsLayer(
+      new VectorsLayer(
         this.props,
         this.getSubLayerProps({
           id: `fourwings-tile`,
@@ -180,7 +178,7 @@ export class FourwingsCurrentsLayer extends CompositeLayer<FourwingsHeatmapLayer
       new SolidPolygonLayer(
         this.props,
         this.getSubLayerProps({
-          id: `fourwings-currents-interaction`,
+          id: `fourwings-vectors-interaction`,
           pickable: true,
           material: false,
           _normalize: false,
