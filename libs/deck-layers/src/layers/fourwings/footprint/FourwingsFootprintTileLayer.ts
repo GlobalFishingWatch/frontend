@@ -83,7 +83,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     const { startTime, endTime, sublayers, availableIntervals, tilesUrl, extentStart } = this.props
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
-    const chunk = getFourwingsChunk(startTime, endTime, availableIntervals)
+    const chunk = getFourwingsChunk({ start: startTime, end: endTime, availableIntervals })
     this.setState({ rampDirty: true })
     const cols: number[] = []
     const rows: number[] = []
@@ -190,7 +190,11 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     compareEnd?: number
   }): FourwingsHeatmapTilesCache => {
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
-    const { start, end, bufferedStart } = getFourwingsChunk(startTime, endTime, availableIntervals)
+    const { start, end, bufferedStart } = getFourwingsChunk({
+      start: startTime,
+      end: endTime,
+      availableIntervals,
+    })
     const zoom = Math.round(this.context.viewport.zoom)
     return { zoom, start, end, bufferedStart, interval, compareStart, compareEnd }
   }
@@ -347,7 +351,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
 
   getChunk = () => {
     const { startTime, endTime, availableIntervals } = this.props
-    return getFourwingsChunk(startTime, endTime, availableIntervals)
+    return getFourwingsChunk({ start: startTime, end: endTime, availableIntervals })
   }
 
   getColorDomain = () => {

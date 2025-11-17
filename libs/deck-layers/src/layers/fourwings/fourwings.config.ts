@@ -67,17 +67,23 @@ export const getDateInIntervalResolution = (date: number, interval: FourwingsInt
 
 export const CHUNKS_BUFFER = 1
 // TODO: validate if worth to make this dynamic for the playback
-export const getChunkByInterval = (
-  start: number,
-  end: number,
+export const getChunkByInterval = ({
+  start,
+  end,
+  interval,
+  chunksBuffer = CHUNKS_BUFFER,
+}: {
+  start: number
+  end: number
   interval: FourwingsInterval
-): FourwingsChunk => {
+  chunksBuffer?: number
+}): FourwingsChunk => {
   const intervalUnit = LIMITS_BY_INTERVAL[interval]?.unit
   if (!intervalUnit) {
     return { id: 'full-time-range', interval, start, end, bufferedStart: start, bufferedEnd: end }
   }
   const startDate = getUTCDateTime(start).startOf(intervalUnit as any)
-  const bufferedStartDate = startDate.minus({ [intervalUnit]: CHUNKS_BUFFER })
+  const bufferedStartDate = startDate.minus({ [intervalUnit]: chunksBuffer })
   const now = DateTime.now().toUTC().startOf('day')
   const endDateInterval = interval.toLowerCase() as 'month' | 'day' | 'hour'
   let endDate = getUTCDateTime(end)
@@ -87,7 +93,7 @@ export const getChunkByInterval = (
       endDate[endDateInterval] > 1 ? (intervalUnit as typeof endDateInterval) : endDateInterval
     )
     .plus({ millisecond: 1 })
-  const bufferedEndDate = endDate.plus({ [intervalUnit]: CHUNKS_BUFFER })
+  const bufferedEndDate = endDate.plus({ [intervalUnit]: chunksBuffer })
   return {
     id: `${intervalUnit}-chunk`,
     interval,
