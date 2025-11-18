@@ -1,5 +1,9 @@
 import { DatasetTypes, EndpointId } from '@globalfishingwatch/api-types'
-import { getDatasetsExtent, resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfigurationProperty,
+  getDatasetsExtent,
+  resolveEndpoint,
+} from '@globalfishingwatch/datasets-client'
 import type {
   FourwingsDeckVectorSublayer,
   FourwingsPickingObject,
@@ -41,14 +45,12 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
     (dataview.config?.visualizationMode as FourwingsVisualizationMode) || 'heatmap'
   const availableIntervals = getDataviewAvailableIntervals(dataview)
 
-  const allVisibleDatasets = (dataview.config?.sublayers || []).flatMap((sublayer) =>
-    sublayer.visible
-      ? sublayer.datasets.filter((dataset) => dataset.type === DatasetTypes.Fourwings)
-      : []
-  )
-  const { extentStart, extentEnd } = getDatasetsExtent<string>(allVisibleDatasets)
+  const datasets =
+    dataview.datasets?.filter((dataset) => dataset.type === DatasetTypes.Fourwings) || []
+  const { extentStart, extentEnd } = getDatasetsExtent<string>(datasets)
 
-  const dataset = allVisibleDatasets?.[0]
+  const dataset = datasets?.[0]
+  const maxVelocity = getDatasetConfigurationProperty({ dataset, property: 'max' })
 
   const tilesUrl = dataset
     ? resolveEndpoint(
@@ -76,6 +78,7 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
     visualizationMode,
     sublayers,
     maxZoom: 8,
+    maxVelocity,
     highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
     visible: dataview.config?.visible ?? true,
     availableIntervals,

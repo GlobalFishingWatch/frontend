@@ -56,9 +56,9 @@ import {
   selectDetectionPositionsInteractionStatus,
 } from '../map.slice'
 
-import CurrentsTooltipRow from './categories/CurrentsLayers'
 import ReportBufferTooltip from './categories/ReportBufferLayers'
 import UserContextTooltipSection from './categories/UserContextLayers'
+import VectorsTooltipRow from './categories/VectorsLayers'
 
 import styles from './Popup.module.css'
 
@@ -227,7 +227,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             return (
               <Fragment key={featureCategory}>
                 {vectorsFeatures.map((currentsFeature) => (
-                  <CurrentsTooltipRow
+                  <VectorsTooltipRow
                     key={currentsFeature.id}
                     feature={currentsFeature}
                     showFeaturesDetails={type === 'click'}

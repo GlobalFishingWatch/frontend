@@ -240,7 +240,6 @@ export const parseFourwingsVectors = (
   const featuresMap = new Pbf(datasetsBuffer).readFields(getCellTimeseries, parseData).features
 
   const features = Array.from(featuresMap.values())
-  console.log('🚀 ~ parseFourwingsVectors ~ features:', features)
 
   return features
 }

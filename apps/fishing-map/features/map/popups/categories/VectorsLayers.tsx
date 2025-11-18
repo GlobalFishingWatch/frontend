@@ -8,7 +8,7 @@ import I18nNumber from 'features/i18n/i18nNumber'
 
 import popupStyles from '../Popup.module.css'
 
-type CurrentsTooltipRowProps = {
+type VectorsTooltipRowProps = {
   feature: FourwingsHeatmapPickingObject
   loading?: boolean
   error?: string
@@ -19,10 +19,9 @@ function metersPerSecondToKnots(speedInMps: number): number {
   return speedInMps * 1.94384 // Convert m/s to knots
 }
 
-function CurrentsTooltipRow({ feature, showFeaturesDetails }: CurrentsTooltipRowProps) {
+function VectorsTooltipRow({ feature, showFeaturesDetails }: VectorsTooltipRowProps) {
   const { t } = useTranslation()
-  const angle = feature.sublayers.find((s) => s.id.includes('currents-vo'))?.value
-  const speed = feature.sublayers.find((s) => s.id.includes('currents-uo'))?.value
+  const [speed, angle] = feature.aggregatedValues || []
 
   if (!angle || !speed) {
     return null
@@ -52,4 +51,4 @@ function CurrentsTooltipRow({ feature, showFeaturesDetails }: CurrentsTooltipRow
   )
 }
 
-export default CurrentsTooltipRow
+export default VectorsTooltipRow

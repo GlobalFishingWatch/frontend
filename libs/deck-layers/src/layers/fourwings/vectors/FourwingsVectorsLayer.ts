@@ -8,7 +8,7 @@ import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 
 import { COLOR_TRANSPARENT, hexToDeckColor } from '../../../utils'
-import type { FourwingsHeatmapLayerProps, FourwingsHeatmapPickingObject } from '../fourwings.types'
+import type { FourwingsHeatmapPickingObject, FourwingsVectorsLayerProps } from '../fourwings.types'
 import { FourwingsAggregationOperation } from '../heatmap/fourwings-heatmap.types'
 import {
   aggregateSublayerValues,
@@ -18,13 +18,11 @@ import {
 
 import VectorsLayer from './VectorsLayer'
 
-export class FourwingsVectorsLayer extends CompositeLayer<FourwingsHeatmapLayerProps> {
+export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerProps> {
   static layerName = 'FourwingsVectorsLayer'
   timeRangeKey!: string
   startFrame!: number
   endFrame!: number
-  // Maximum expected velocity in m/s for normalization
-  private static readonly MAX_VELOCITY = 5.0
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
@@ -78,86 +76,69 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsHeatmapLayerP
   }
 
   getVelocity = (feature: FourwingsFeature, { target }: { target: number }) => {
-    const velocities = feature.properties.velocities
-    if (
-      !velocities ||
-      velocities.length === 0 ||
-      this.startFrame === undefined ||
-      this.endFrame === undefined
-    ) {
-      target = 0
-      return target
-    }
-
-    let aggregatedVelocity = aggregateSublayerValues(
-      sliceCellValues({
-        values: velocities,
-        startFrame: this.startFrame,
-        endFrame: this.endFrame,
-        startOffset: feature.properties.startOffsets[0] ?? 0,
-      }),
-      FourwingsAggregationOperation.Avg
-    )
-
-    if (!Number.isFinite(aggregatedVelocity) || aggregatedVelocity < 0) {
-      aggregatedVelocity = 0
-    }
-    const normalizedVelocity = Math.min(
-      aggregatedVelocity / FourwingsVectorsLayer.MAX_VELOCITY,
-      1.0
-    )
-
-    target = normalizedVelocity
-
     if (!feature.aggregatedValues) {
       feature.aggregatedValues = []
     }
-    feature.aggregatedValues[0] = normalizedVelocity
+
+    const value =
+      feature.properties.velocities &&
+      feature.properties.velocities.length > 0 &&
+      this.startFrame !== undefined &&
+      this.endFrame !== undefined
+        ? aggregateSublayerValues(
+            sliceCellValues({
+              values: feature.properties.velocities,
+              startFrame: this.startFrame,
+              endFrame: this.endFrame,
+              startOffset: feature.properties.startOffsets[0] ?? 0,
+            }),
+            FourwingsAggregationOperation.Avg
+          )
+        : 0
+
+    feature.aggregatedValues[0] = value
+    target = value
 
     return target
   }
 
   getDirection = (feature: FourwingsFeature, { target }: { target: number }) => {
-    const directions = feature.properties.directions
-    if (
-      !directions ||
-      directions.length === 0 ||
-      this.startFrame === undefined ||
-      this.endFrame === undefined
-    ) {
-      target = 0
-      return target
-    }
-    const slicedDirections = sliceCellValues({
-      values: directions,
-      startFrame: this.startFrame,
-      endFrame: this.endFrame,
-      startOffset: feature.properties.startOffsets[1] ?? 0,
-    })
-    let aggregatedDirection = aggregateSublayerValues(
-      slicedDirections,
-      FourwingsAggregationOperation.AvgDegrees
-    )
-
-    if (!Number.isFinite(aggregatedDirection)) {
-      aggregatedDirection = 0
-    }
-    const normalizedDirection = ((aggregatedDirection % 360) + 360) % 360
-
-    target = normalizedDirection
-
-    // Store in aggregatedValues for compatibility with picking info
     if (!feature.aggregatedValues) {
       feature.aggregatedValues = []
     }
-    feature.aggregatedValues[1] = normalizedDirection
+
+    const value =
+      feature.properties.directions &&
+      feature.properties.directions.length > 0 &&
+      this.startFrame !== undefined &&
+      this.endFrame !== undefined
+        ? aggregateSublayerValues(
+            sliceCellValues({
+              values: feature.properties.directions,
+              startFrame: this.startFrame,
+              endFrame: this.endFrame,
+              startOffset: feature.properties.startOffsets[1] ?? 0,
+            }),
+            FourwingsAggregationOperation.AvgDegrees
+          )
+        : 0
+
+    feature.aggregatedValues[1] = value
+    target = value
 
     return target
   }
 
   renderLayers() {
-    const { data, endTime, startTime, tilesCache, zoomOffset, availableIntervals, sublayers } =
-      this.props
+    const {
+      data,
+      endTime,
+      startTime,
+      tilesCache,
+      zoomOffset = 0,
+      availableIntervals,
+      sublayers,
+    } = this.props
     const color = hexToDeckColor(sublayers?.[0]?.color || '#ffffff')
 
     if (!data || !tilesCache) {
@@ -175,6 +156,12 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsHeatmapLayerP
     this.startFrame = startFrame
     this.endFrame = endFrame
 
+    const baseRadius = zoomOffset < 0 ? 200 : 300
+    const zoomScale = Math.pow(
+      2,
+      Math.abs(Math.round(this.context.viewport.zoom + (zoomOffset || 0)) - 12)
+    )
+
     return [
       new VectorsLayer(
         this.props,
@@ -183,11 +170,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsHeatmapLayerP
           data,
           getFillColor: color,
           getRadius: (d: FourwingsFeature) => {
-            return (
-              160 *
-              ((90 - Math.abs(d.coordinates[1]) / 1.03) / 90) *
-              Math.pow(2, Math.abs(Math.round(this.context.viewport.zoom + (zoomOffset || 0)) - 12))
-            )
+            return baseRadius * zoomScale * ((90 - Math.abs(d.coordinates[1]) / 1.03) / 90)
           },
           stroked: false,
           positionFormat: 'XY',
@@ -197,6 +180,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsHeatmapLayerP
           getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
           getVelocity: this.getVelocity,
           getDirection: this.getDirection,
+          maxVelocity: this.props.maxVelocity,
           getPosition: (d: FourwingsFeature) => {
             return [
               (d.coordinates[0] + d.coordinates[2]) / 2,
