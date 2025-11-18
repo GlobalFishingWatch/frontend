@@ -42,6 +42,7 @@ export type _FourwingsVectorsTileLayerProps<DataT = FourwingsFeature> = Omit<
   'sublayers'
 > & {
   data?: DataT
+  maxVelocity?: number
   availableIntervals?: FourwingsInterval[]
   highlightedFeatures?: FourwingsPickingObject[]
   visualizationMode: FourwingsVisualizationMode
@@ -54,6 +55,7 @@ export type FourwingsVectorsTileLayerProps = _FourwingsVectorsTileLayerProps &
 const defaultProps: DefaultProps<FourwingsVectorsTileLayerProps> = {
   maxRequests: 100,
   debounceTime: 500,
+  maxVelocity: 5,
   tilesUrl: HEATMAP_API_TILES_URL,
 }
 
@@ -61,6 +63,8 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   static layerName = 'FourwingsVectorsTileLayer'
   static defaultProps = defaultProps
   initialBinsLoad = false
+  // Disable extra chunks buffer to avoid loading a lot of extra data
+  chunksBuffer = 0
   state!: FourwingsVectorsTileLayerState
 
   initializeState(context: LayerContext) {
@@ -72,6 +76,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
         startTime: this.props.startTime,
         endTime: this.props.endTime,
         availableIntervals: this.props.availableIntervals,
+        chunksBuffer: this.chunksBuffer,
       }),
     }
   }
@@ -100,7 +105,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       start: startTime,
       end: endTime,
       availableIntervals,
-      // chunksBuffer: 0,
+      chunksBuffer: this.chunksBuffer,
     })
 
     const getSublayerData: any = async (sublayer: FourwingsDeckSublayer, sublayerIndex: number) => {
@@ -239,7 +244,6 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
 
     const cacheKey = this._getTileDataCacheKey()
     const resolution = getResolutionByVisualizationMode(visualizationMode)
-
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
@@ -249,6 +253,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
         minZoom: 0,
         onTileError: this._onLayerError,
         maxZoom: maxZoom || 8,
+        refinementStrategy: 'no-overlap',
         zoomOffset: getZoomOffsetByResolution(resolution!, zoom),
         opacity: 1,
         maxRequests,

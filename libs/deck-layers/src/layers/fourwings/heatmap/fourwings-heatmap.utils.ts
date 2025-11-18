@@ -53,7 +53,8 @@ export function aggregateSublayerValues(
     const cosSum = radians.reduce((acc, rad) => acc + Math.cos(rad), 0)
 
     const avgRad = Math.atan2(sinSum, cosSum)
-    return avgRad * (180 / Math.PI)
+    const avgDeg = avgRad * (180 / Math.PI)
+    return ((avgDeg % 360) + 360) % 360
   }
   return values.reduce((acc: number, value = 0) => {
     return acc + value
@@ -393,6 +394,7 @@ export const getTileDataCache = ({
   availableIntervals,
   compareStart,
   compareEnd,
+  chunksBuffer,
 }: {
   zoom: number
   startTime: number
@@ -400,12 +402,14 @@ export const getTileDataCache = ({
   availableIntervals?: FourwingsInterval[]
   compareStart?: number
   compareEnd?: number
+  chunksBuffer?: number
 }): FourwingsHeatmapTilesCache => {
   const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
   const { start, end, bufferedStart } = getFourwingsChunk({
     start: startTime,
     end: endTime,
     availableIntervals,
+    chunksBuffer,
   })
   return {
     zoom,
