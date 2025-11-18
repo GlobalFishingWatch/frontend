@@ -91,6 +91,7 @@ export default class VectorsLayer<
           in float instanceDirections;
           in float instanceVelocity;
           out float vVelocity;
+          out float vNormalizedVelocity;
 
           vec2 rotate_by_angle(vec2 vertex, float angle) {
             float angle_radian = angle * PI / 180.0;
@@ -108,29 +109,73 @@ export default class VectorsLayer<
           }
           // Normalize velocity by maxVelocity and clamp to [0, 1] range
           float normalizedVelocity = clamp(instanceVelocity / vectors.maxVelocity, 0.0, 1.0);
-          // Use a tighter size range to reduce overlap (0.4 to 0.8 instead of 0.5 to 1.0)
-          size.xy *= mix(0.4, 0.8, normalizedVelocity);
+
+          // Compress values above 40% of maxVelocity to have similar size
+          // Values above 0.4 are compressed into a narrow range [0.4, 1.0] -> [0.75, 1.0]
+          float compressedVelocity;
+          if (normalizedVelocity <= 0.4) {
+            // Linear mapping for values 0-40%: [0, 0.4] -> [0, 0.75]
+            compressedVelocity = normalizedVelocity * (0.75 / 0.4);
+          } else {
+            // Compressed mapping for values 40-100%: [0.4, 1.0] -> [0.75, 1.0]
+            float t = (normalizedVelocity - 0.4) / 0.6; // normalize to [0, 1] for the upper range
+            compressedVelocity = mix(0.75, 1.0, t);
+          }
+
+          // Base size is similar for all triangles (length)
+          float baseLength = 0.5;
+
+          // Width varies with velocity: lower velocities are narrower
+          // Use a power curve to make lower velocities more narrow
+          float widthFactor = pow(compressedVelocity, 0.5);
+          float baseWidth = mix(0.3, 0.7, widthFactor);
+
+          // Apply: x-axis (width) varies, y-axis (length) is more constant
+          size.x *= baseWidth;
+          size.y *= baseLength;
+
           // Clamp direction to valid range and normalize
           float normalizedDirection = mod(instanceDirections, 360.0);
           size.xy = rotate_by_angle(size.xy, normalizedDirection);
         `,
         'vs:#main-end': `
           // Normalize velocity by maxVelocity and pass to fragment shader (only if valid)
-          vVelocity = instanceVelocity > 0.0 ? clamp(instanceVelocity / vectors.maxVelocity, 0.0, 1.0) : 0.0;
+          // Apply same compression as in size calculation for consistency
+          float normalizedVelocity = instanceVelocity > 0.0 ? clamp(instanceVelocity / vectors.maxVelocity, 0.0, 1.0) : 0.0;
+          vNormalizedVelocity = normalizedVelocity; // Pass original for brightness boost calculation
+          if (normalizedVelocity <= 0.4) {
+            vVelocity = normalizedVelocity * (0.75 / 0.4);
+          } else {
+            float t = (normalizedVelocity - 0.4) / 0.6;
+            vVelocity = mix(0.75, 1.0, t);
+          }
         `,
         'fs:#decl': `
           in float vVelocity;
+          in float vNormalizedVelocity;
         `,
         'fs:DECKGL_FILTER_COLOR': `
           // Don't render if velocity is invalid or zero
           if (vVelocity <= 0.0) {
             discard;
           }
-          float minOpacity = 0.5;
+
+          // Base opacity based on velocity (already compressed in vertex shader)
+          // Values above 40% will have similar opacity due to compression
+          float minOpacity = 0.25;
           float maxOpacity = 0.9;
-          // Velocity is already normalized to [0, 1] range in vertex shader
-          float speedFactor = mix(minOpacity, maxOpacity, vVelocity);
-          color.a *= mix(minOpacity, maxOpacity, geometry.uv.y) * speedFactor;
+          float baseSpeedOpacity = mix(minOpacity, maxOpacity, vVelocity);
+
+
+          // Apply gradient along triangle using geometry.uv
+          // For triangle: base is at lower y (0), tip is at higher y (1)
+          // Create a smooth gradient that makes the tip more visible
+          float gradientFactor = mix(0.4, 1.0, geometry.uv.y);
+
+          // Combine velocity-based opacity with brightness boost and gradient
+          color.a *= baseSpeedOpacity * gradientFactor;
+          // Clamp to valid range
+          color.a = clamp(color.a, 0.0, 1.0);
         `,
       },
     }
