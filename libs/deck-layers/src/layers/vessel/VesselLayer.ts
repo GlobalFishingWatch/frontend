@@ -243,6 +243,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
               maxTimeGapHours,
             },
           },
+          maxTimeGapHours,
           visualizationMode: trackVisualizationMode,
           trackGraphExtent,
           type: TRACK_LAYER_TYPE,
