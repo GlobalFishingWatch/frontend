@@ -101,7 +101,12 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
       filters.length > 0
         ? filters.reduce((acc, filter) => `${acc}-${getContextFiltersHash(filter)}`, '')
         : ''
-    return `${startTime}-${endTime}${filtersHash}`
+    const aggregatedProperty =
+      this.props.layers?.flatMap((layer) =>
+        layer.sublayers.flatMap((sublayer) => sublayer.aggregateByProperty || [])
+      ) || []
+
+    return `${startTime}-${endTime}${filtersHash}${aggregatedProperty.join(',')}`
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {

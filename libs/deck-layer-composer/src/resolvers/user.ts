@@ -189,8 +189,8 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
           filters: {
             ...allFilters,
             ...(sublayer.filters || {}),
-            ...(sublayer.aggregateByProperty && { [sublayer.aggregateByProperty]: '' }),
           },
+          aggregateByProperty: sublayer.aggregateByProperty,
         }
       }),
     }
