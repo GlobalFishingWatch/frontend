@@ -42,69 +42,47 @@ resource "google_cloudbuild_trigger" "trigger" {
 
   service_account = "projects/${local.project}/serviceAccounts/cloudbuild@gfw-int-infrastructure.iam.gserviceaccount.com"
   build {
+    step {
+      id   = "Build Image"
+      name = "gcr.io/cloud-builders/docker"
+      args = concat(
+        [
+          "build",
+          "-t",
+          var.docker_image,
+          "-f",
+          "apps/${var.app_name}/Dockerfile",
+        ],
+        flatten([for env_var in var.set_env_vars_build : ["--build-arg", env_var]]),
+        ["."]
+      )
+    }
 
     step {
-      id         = "compute-cache-key"
-      name       = "gcr.io/cloud-builders/gcloud"
-      entrypoint = "bash"
+      id   = "Search for Vulnerabilities"
+      name = "aquasec/trivy:latest"
       args = [
-        "-c",
-        "echo $(cat yarn.lock cloudbuild-template/scripts/install-yarn.sh | sha256sum | cut -d' ' -f1) > /workspace/cache-key"
-      ]
-      wait_for = ["-"]
-    }
-
-    step {
-      id       = "restore-cache"
-      name     = "gcr.io/cloud-builders/gcloud"
-      script   = file("${path.module}/scripts/restore-cache.sh")
-      wait_for = ["compute-cache-key"]
-      env      = local.cache_env
-    }
-
-    step {
-      id       = "install-yarn"
-      name     = "node:24"
-      script   = file("${path.module}/scripts/install-yarn.sh")
-      wait_for = ["restore-cache"]
-    }
-
-    step {
-      id       = "build-app"
-      name     = "node:24"
-      script   = "NODE_OPTIONS='--max-old-space-size=8192 --max-semi-space-size=1024' yarn nx run ${var.app_name}:build --parallel --verbose"
-      wait_for = ["install-yarn"]
-      env      = var.set_env_vars_build
-    }
-
-    step {
-      id         = "pull-image"
-      name       = "gcr.io/cloud-builders/docker"
-      entrypoint = "bash"
-      args = [
-        "-c",
-        "docker pull ${var.docker_image} || exit 0"
-      ]
-      wait_for = ["build-app"]
-    }
-
-    step {
-      id       = "build-image"
-      name     = "gcr.io/kaniko-project/executor:debug"
-      wait_for = ["pull-image"]
-      args = [
-        "--destination=${var.docker_image}",
-        "--build-arg", "APP_NAME=${var.app_name}",
-        "--target", "production",
-        "-f", "./apps/${var.app_name}/Dockerfile",
-        "-c", "./dist/apps/${var.app_name}",
-        "--cache=true",
-        "--cache-repo=${var.docker_image}-cache"
+        "image",
+        "--no-progress",
+        "--severity",
+        "CRITICAL",
+        "--exit-code",
+        "1",
+        var.docker_image,
       ]
     }
 
     step {
-      id         = "deploy-cloud-run"
+      id   = "Push Image"
+      name = "gcr.io/cloud-builders/docker"
+      args = [
+        "push",
+        var.docker_image,
+      ]
+    }
+
+    step {
+      id         = "Deploy Cloud Run"
       name       = "gcr.io/cloud-builders/gcloud"
       entrypoint = "bash"
       args = [
@@ -128,15 +106,7 @@ resource "google_cloudbuild_trigger" "trigger" {
     }
 
     step {
-      id       = "save-cache"
-      name     = "gcr.io/cloud-builders/gcloud"
-      script   = file("${path.module}/scripts/save-cache.sh")
-      wait_for = ["build-app"]
-      env      = local.cache_env
-    }
-
-    step {
-      id         = "clean revisions"
+      id         = "Clean Revisions"
       name       = "gcr.io/cloud-builders/gcloud"
       entrypoint = "bash"
       args = [
