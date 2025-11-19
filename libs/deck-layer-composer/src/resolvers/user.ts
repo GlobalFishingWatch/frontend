@@ -183,10 +183,16 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
         dataview.config?.pickable !== undefined
           ? dataview.config?.pickable
           : !dataset.configuration?.disableInteraction,
-      sublayers: layer.sublayers.map((sublayer) => ({
-        ...sublayer,
-        filters: { ...allFilters, ...(sublayer.filters || {}) },
-      })),
+      sublayers: layer.sublayers.map((sublayer) => {
+        return {
+          ...sublayer,
+          filters: {
+            ...allFilters,
+            ...(sublayer.filters || {}),
+            ...(sublayer.aggregateByProperty && { [sublayer.aggregateByProperty]: '' }),
+          },
+        }
+      }),
     }
   })
 

@@ -210,17 +210,15 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
         const { aggregateByProperty } = sublayer
         const matchesTimeFilter = isFeatureInRange(feature, this.props as IsFeatureInRangeParams)
         if (includeNonTemporalFeatures || matchesTimeFilter) {
-          if (hasSublayerFilters(sublayer)) {
-            values[index] = isFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators)
-              ? aggregateByProperty
-                ? Number(feature.properties?.[aggregateByProperty])
-                : 1
-              : 0
-          } else {
-            values[index] = aggregateByProperty
-              ? Number(feature.properties?.[aggregateByProperty])
+          const matchesFilters = hasSublayerFilters(sublayer)
+            ? isFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators)
+            : true
+
+          values[index] = matchesFilters
+            ? aggregateByProperty
+              ? Number(feature.properties?.[aggregateByProperty] ?? 0)
               : 1
-          }
+            : 0
         }
       })
       if (values.every((value) => value === 0)) {

@@ -52,17 +52,23 @@ function ReportOthers() {
           (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
         )
 
-        const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
-
-        const numberFields = filtersAllowed.filter(
-          (filter) => filter.type === 'range' || filter.type === 'number'
-        )
-
-        const selectOptions = numberFields.map((field) => ({ id: field.id, label: field.id }))
+        const selectOptions = dataset?.schema
+          ? Object.entries(dataset.schema)
+              .filter(([, filter]) => filter.type === 'range' || filter.type === 'number')
+              .map(([key]) => ({ id: key, label: key }))
+          : []
 
         const onSelectAggregatedProperty = (option: SelectOption) => {
           const newDataviewConfig = {
             aggregateByProperty: option.id.toString(),
+          }
+          const newDataview = { id: dataview.id, config: newDataviewConfig }
+          upsertDataviewInstance(newDataview)
+        }
+
+        const onClearSelection = () => {
+          const newDataviewConfig = {
+            aggregateByProperty: undefined,
           }
           const newDataview = { id: dataview.id, config: newDataviewConfig }
           upsertDataviewInstance(newDataview)
@@ -141,12 +147,15 @@ function ReportOthers() {
                     <ReportSummaryTags key={d.id} dataview={d} />
                   ))}
                 </div>
-                <Select
-                  options={selectOptions}
-                  selectedOption={selectedProperty}
-                  onSelect={onSelectAggregatedProperty}
-                  placeholder={t('analysis.selectAggregationProperty')}
-                />{' '}
+                {selectOptions.length > 0 && (
+                  <Select
+                    options={selectOptions}
+                    selectedOption={selectedProperty}
+                    onSelect={onSelectAggregatedProperty}
+                    placeholder={t('analysis.selectAggregationProperty')}
+                    onCleanClick={onClearSelection}
+                  />
+                )}
               </div>
             )}
             {hasTimeFilter ? (
