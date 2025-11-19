@@ -77,6 +77,7 @@ function ReportOthers() {
         const selectedProperty = selectOptions.find(
           (option) => option.id === dataview.config?.aggregateByProperty
         )
+        const hasAggregateByProperty = Boolean(dataview.config?.aggregateByProperty)
 
         const mergedDataviewId = getMergedDataviewId(dataviews)
         const timeFilterType = getDatasetConfigurationProperty({
@@ -102,7 +103,10 @@ function ReportOthers() {
             <p className={cx(styles.summary)}>
               <Fragment>
                 <span>
-                  {totalValue} {t('common.points', { count: totalValue })}
+                  {totalValue.toFixed(2)}{' '}
+                  {hasAggregateByProperty
+                    ? t('common.aggregatedBy', { property: dataview.config?.aggregateByProperty })
+                    : t('common.points', { count: totalValue })}
                 </span>{' '}
                 {statsValues && statsValues?.length > 1 && (
                   <Fragment>

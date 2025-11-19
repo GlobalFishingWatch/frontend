@@ -367,6 +367,7 @@ interface Resources {
       "active_after": "Active after",
       "active_before": "Active before",
       "activity": "Activity",
+      "aggregatedBy": " - Total sum of {{property}}",
       "aka": "a.k.a.",
       "analysis": "Create an analysis for this area",
       "analysisAddArea": "Add area to the analysis",
