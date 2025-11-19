@@ -1,10 +1,10 @@
 import type { Dispatch } from 'redux'
-import type { Options,RoutesMap } from 'redux-first-router';
-import { connectRoutes,NOT_FOUND, redirect } from 'redux-first-router'
+import type { Options, RoutesMap } from 'redux-first-router'
+import { connectRoutes, NOT_FOUND, redirect } from 'redux-first-router'
 
 export const PATH_BASENAME =
   process.env.NEXT_PUBLIC_URL || process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production'
-    ? '/map'
+    ? '/port-labeler'
     : ''
 
 export const HOME = 'HOME'
