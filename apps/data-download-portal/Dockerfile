@@ -11,14 +11,29 @@
 #################################################################################
 # Actual application to run
 #################################################################################
+FROM us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest AS builder
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+
+ARG API_GATEWAY
+ENV API_GATEWAY=$API_GATEWAY
+
+COPY . .
+
+RUN yarn install --immutable --inline-builds && \
+  yarn nx run data-download-portal:build
+
 # Using stable version that uses alpine 3.14 to fix build errors
 # https://github.com/alpinelinux/docker-alpine/issues/182
 FROM nginx:stable-alpine as production
-
-COPY ./nginx.conf /etc/nginx/nginx.template
+RUN apk update && apk upgrade libxml2
+COPY --from=builder /app/dist/apps/data-download-portal/nginx.conf /etc/nginx/nginx.template
 # COPY --from=htpasswd /home/.htpasswd /home/.htpasswd
 # RUN cat /home/.htpasswd >> /etc/nginx/.htpasswd
-COPY ./entrypoint.sh entrypoint.sh
-COPY ./ /usr/share/nginx/www/
+COPY --from=builder /app/dist/apps/data-download-portal/entrypoint.sh ./entrypoint.sh
+COPY --from=builder /app/dist/apps/data-download-portal/ /usr/share/nginx/www/
 ENTRYPOINT ["./entrypoint.sh"]
 

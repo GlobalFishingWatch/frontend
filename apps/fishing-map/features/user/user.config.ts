@@ -43,6 +43,7 @@ export const PRIVATE_SEARCH_DATASET_BY_GROUP: Record<UserGroup, string[]> = {
   ],
   peru: ['private-peru-vessel-identity-fishing:v20211126'],
   'papua new guinea': ['private-png-fishing-identity-vessels:v20230210'],
+  chile: [],
   'ssf-aruna': [],
   'ssf-rare': [],
   'ssf-ipnlf': [],
