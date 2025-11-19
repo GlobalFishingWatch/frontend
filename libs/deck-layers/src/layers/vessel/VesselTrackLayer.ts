@@ -182,12 +182,13 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
               highlightEventEndTime: undefined,
               hoveredTime: undefined,
               colorBy: undefined,
+              maxTimeGapHours: undefined,
             }),
           ]
         : []),
       new VesselTrackPathLayer<VesselTrackData, { type: VesselDataType }>({
         ...props,
-        id: `${id}-track`,
+        id: `${id}-${props.colorBy}-${props.maxTimeGapHours}-track`,
         data: data as VesselTrackData,
         getWidth: 1.5,
         hoveredTime: props.hoveredFeature?.timestamp,

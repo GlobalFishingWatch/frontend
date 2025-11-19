@@ -264,16 +264,17 @@ export class VesselTrackPathLayer<
 
   getShaders() {
     const shaders = super.getShaders()
-    const attributeManager = this.getAttributeManager()
-    const hasSpeedAttribute = attributeManager?.getAttributes()?.speeds !== undefined
-    const hasElevationAttribute = attributeManager?.getAttributes()?.elevations !== undefined
+    const colorBy = this.props.colorBy
+    const hasSpeedAttribute = colorBy === 'speed'
+    const hasElevationAttribute = colorBy === 'elevation'
+    const hasGapAttribute = this.props.maxTimeGapHours
     shaders.modules = [...(shaders.modules || []), trackLayerUniforms]
     shaders.inject = {
       'vs:#decl': /*glsl*/ `
         in float instanceTimestamps;
         ${hasSpeedAttribute ? 'in float instanceSpeeds;' : ''}
         ${hasElevationAttribute ? 'in float instanceElevations;' : ''}
-        in float instanceGaps;
+        ${hasGapAttribute ? 'in float instanceGaps;' : ''}
         out float vTime;
         out float vSpeed;
         out float vElevation;
@@ -283,7 +284,7 @@ export class VesselTrackPathLayer<
         vTime = instanceTimestamps;
         ${hasSpeedAttribute ? 'vSpeed = instanceSpeeds;' : 'vSpeed = 0.0;'}
         ${hasElevationAttribute ? 'vElevation = instanceElevations;' : 'vElevation = 0.0;'}
-        vGap = instanceGaps;
+        ${hasGapAttribute ? 'vGap = instanceGaps;' : 'vGap = 0.0;'}
         if (vTime > track.highlightEventStartTime && vTime < track.highlightEventEndTime) {
           size *= 4.0;
         }
@@ -348,9 +349,42 @@ export class VesselTrackPathLayer<
     return shaders
   }
 
+  getPropsInstancedAttributes() {
+    return {
+      ...(this.props.colorBy === 'elevation' && {
+        elevations: {
+          size: 1,
+          accessor: 'getElevation',
+          shaderAttributes: {
+            instanceElevations: {},
+          },
+        },
+      }),
+      ...(this.props.colorBy === 'speed' && {
+        speeds: {
+          size: 1,
+          accessor: 'getSpeed',
+          shaderAttributes: {
+            instanceSpeeds: {},
+          },
+        },
+      }),
+      ...(this.props.maxTimeGapHours && {
+        gaps: {
+          size: 1,
+          accessor: 'getGap',
+          shaderAttributes: {
+            instanceGaps: {},
+          },
+        },
+      }),
+    }
+  }
+
   initializeState() {
     super.initializeState()
     const attributeManager = this.getAttributeManager()
+
     if (attributeManager) {
       attributeManager.addInstanced({
         timestamps: {
@@ -360,70 +394,8 @@ export class VesselTrackPathLayer<
             instanceTimestamps: {},
           },
         },
+        ...this.getPropsInstancedAttributes(),
       })
-      attributeManager.addInstanced({
-        gaps: {
-          size: 1,
-          accessor: 'getGap',
-          shaderAttributes: {
-            instanceGaps: {},
-          },
-        },
-      })
-    }
-    this.setState({ hasSpeedAttribute: false, hasElevationAttribute: false })
-  }
-
-  updateState(params: any) {
-    super.updateState(params)
-    const { props, oldProps } = params
-    const attributeManager = this.getAttributeManager()
-    const colorBy = props.colorBy
-    const oldColorBy = oldProps?.colorBy
-
-    // Update attributes when colorBy changes or on initial mount
-    // to avoid Too many attributes (instancePickingColors) error
-    if (attributeManager && (colorBy !== oldColorBy || oldProps === undefined)) {
-      const needsSpeed = colorBy === 'speed'
-      const needsElevation = colorBy === 'elevation'
-      const hasCurrentSpeed = (this.state as any)?.hasSpeedAttribute || false
-      const hasCurrentElevation = (this.state as any)?.hasElevationAttribute || false
-
-      if (needsSpeed && !hasCurrentSpeed) {
-        attributeManager.addInstanced({
-          speeds: {
-            size: 1,
-            accessor: 'getSpeed',
-            shaderAttributes: {
-              instanceSpeeds: {},
-            },
-          },
-        })
-        this.setState({ hasSpeedAttribute: true })
-        this.setNeedsRedraw()
-      } else if (!needsSpeed && hasCurrentSpeed) {
-        attributeManager.remove(['speeds'])
-        this.setState({ hasSpeedAttribute: false })
-        this.setNeedsRedraw()
-      }
-
-      if (needsElevation && !hasCurrentElevation) {
-        attributeManager.addInstanced({
-          elevations: {
-            size: 1,
-            accessor: 'getElevation',
-            shaderAttributes: {
-              instanceElevations: {},
-            },
-          },
-        })
-        this.setState({ hasElevationAttribute: true })
-        this.setNeedsRedraw()
-      } else if (!needsElevation && hasCurrentElevation) {
-        attributeManager.remove(['elevations'])
-        this.setState({ hasElevationAttribute: false })
-        this.setNeedsRedraw()
-      }
     }
   }
 
