@@ -13,7 +13,7 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import { FourwingsVectorsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import { HEATMAP_API_TILES_URL } from '../fourwings.config'
+import { FOURWINGS_TILE_SIZE, HEATMAP_API_TILES_URL } from '../fourwings.config'
 import type {
   BaseFourwingsLayerProps,
   FourwingsDeckSublayer,
@@ -248,7 +248,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       this.props,
       this.getSubLayerProps({
         id: `tiles-${visualizationMode}`,
-        tileSize: 512,
+        tileSize: FOURWINGS_TILE_SIZE,
         tilesCache,
         minZoom: 0,
         onTileError: this._onLayerError,

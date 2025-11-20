@@ -33,6 +33,7 @@ import {
 import {
   DYNAMIC_RAMP_CHANGE_THRESHOLD,
   FOURWINGS_MAX_ZOOM,
+  FOURWINGS_TILE_SIZE,
   HEATMAP_API_TILES_URL,
   MAX_POSITIONS_PER_TILE_SUPPORTED,
   MAX_RAMP_VALUES,
@@ -695,7 +696,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       this.props,
       this.getSubLayerProps({
         id: `tiles-${resolution}`,
-        tileSize: 512,
+        tileSize: FOURWINGS_TILE_SIZE,
         colorDomain,
         colorRanges,
         comparisonMode,

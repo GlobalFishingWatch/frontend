@@ -17,6 +17,7 @@ import { FourwingsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-
 
 import {
   FOURWINGS_MAX_ZOOM,
+  FOURWINGS_TILE_SIZE,
   HEATMAP_API_TILES_URL,
   MAX_POSITIONS_PER_TILE_SUPPORTED,
 } from '../fourwings.config'
@@ -247,7 +248,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
       this.props,
       this.getSubLayerProps({
         id: `tiles-footprint`,
-        tileSize: 512,
+        tileSize: FOURWINGS_TILE_SIZE,
         tilesCache,
         minZoom: 0,
         onTileError: this._onLayerError,
