@@ -74,12 +74,11 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        // Apply headers to all routes
-        source: '/:path*',
+        source: '/:any*',
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "frame-ancestors 'self' https://globalfishingwatch.org/",
+            value: 'frame-ancestors *',
           },
         ],
       },
