@@ -74,11 +74,11 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: '/:any*',
+        source: '/(.*)',
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: 'frame-ancestors *',
+            value: 'frame-ancestors https://* http://*',
           },
         ],
       },
