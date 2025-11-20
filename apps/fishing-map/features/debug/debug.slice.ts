@@ -10,7 +10,7 @@ export enum FeatureFlag {
 
 export enum DebugOption {
   DatasetRelationship = 'datasetRelationship',
-  Debug = 'debug',
+  DebugTiles = 'debugTiles',
   MapStats = 'mapStats',
   Thinning = 'thinning',
   DatasetIdHash = 'addDatasetIdHash',
@@ -48,7 +48,7 @@ const initialState: DebugState = {
   },
   options: {
     datasetRelationship: false,
-    debug: false,
+    debugTiles: false,
     mapStats: false,
     thinning: true,
     addDatasetIdHash: true,
