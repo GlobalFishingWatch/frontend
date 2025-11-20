@@ -71,6 +71,20 @@ const nextConfig: NextConfig = {
         ]
       : []
   },
+  async headers() {
+    return [
+      {
+        // Apply headers to all routes
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: "frame-ancestors 'self' https://globalfishingwatch.org/",
+          },
+        ],
+      },
+    ]
+  },
   webpack: function (config, options) {
     config.resolve.fallback = {
       ...config.resolve.fallback,
