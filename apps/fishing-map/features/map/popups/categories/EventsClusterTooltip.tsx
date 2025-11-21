@@ -3,25 +3,25 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import ClusterTooltipRow from 'features/map/popups/categories/ClusterEventTooltipRow'
+import EventsClusterTooltipRow from 'features/map/popups/categories/EventsClusterTooltipRow'
 
 import type { SliceExtendedClusterPickingObject } from '../../map.slice'
 
 import styles from '../Popup.module.css'
 
-type ClusterTooltipProps = {
+type EventsClusterTooltipProps = {
   features: SliceExtendedClusterPickingObject[]
   showFeaturesDetails: boolean
   loading?: boolean
   error?: string
 }
 
-export function ClusterTooltip({
+export function EventsClusterTooltip({
   features,
   showFeaturesDetails,
   loading,
   error,
-}: ClusterTooltipProps) {
+}: EventsClusterTooltipProps) {
   const { t } = useTranslation()
   if (showFeaturesDetails && features.length > 1) {
     const feature = {
@@ -34,7 +34,7 @@ export function ClusterTooltip({
     const moreFeatures = features.slice(1)
     return (
       <Fragment>
-        <ClusterTooltipRow
+        <EventsClusterTooltipRow
           feature={feature}
           showFeaturesDetails={showFeaturesDetails}
           loading={loading}
@@ -57,7 +57,7 @@ export function ClusterTooltip({
           count: f?.properties?.value || 1,
         }
         return (
-          <ClusterTooltipRow
+          <EventsClusterTooltipRow
             key={f.id}
             feature={feature}
             showFeaturesDetails={showFeaturesDetails}
@@ -70,4 +70,4 @@ export function ClusterTooltip({
   )
 }
 
-export default ClusterTooltip
+export default EventsClusterTooltip
