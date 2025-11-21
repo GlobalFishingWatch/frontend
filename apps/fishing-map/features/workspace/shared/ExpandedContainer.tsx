@@ -25,6 +25,7 @@ interface ExpandedContainerProps {
   referenceClassName?: string
   onClickOutside: () => void
   overflowDOMId?: string | null
+  disabled?: boolean
 }
 
 function ExpandedContainer({
@@ -35,8 +36,10 @@ function ExpandedContainer({
   className = '',
   referenceClassName = '',
   overflowDOMId = SCROLL_CONTAINER_DOM_ID,
+  disabled = false,
 }: ExpandedContainerProps) {
-  const [isOpen, setIsOpen] = useState(visible)
+  const [isOpen, setIsOpen] = useState(disabled ? false : visible)
+
   const arrowRef = useRef(null)
 
   const overflowMiddlware: Middleware = {
@@ -65,8 +68,9 @@ function ExpandedContainer({
     },
   }
   const { refs, floatingStyles, context } = useFloating({
-    open: isOpen,
+    open: disabled ? false : isOpen,
     onOpenChange: (nextOpen, event, reason) => {
+      if (disabled) return
       setIsOpen(nextOpen)
       if (reason === 'escape-key' || reason === 'outside-press') {
         onClickOutside?.()
@@ -82,11 +86,15 @@ function ExpandedContainer({
   })
 
   useEffect(() => {
+    if (disabled) {
+      setIsOpen(false)
+      return
+    }
     if (visible !== isOpen) {
       setIsOpen(visible)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible])
+  }, [visible, disabled])
 
   const click = useClick(context)
   const dismiss = useDismiss(context)

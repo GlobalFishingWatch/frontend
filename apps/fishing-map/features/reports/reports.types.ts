@@ -3,6 +3,7 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 
 import type {
   REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
+  REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON,
   REPORT_ACTIVITY_GRAPH_EVOLUTION,
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
   REPORT_EVENTS_GRAPH_EVOLUTION,
@@ -90,6 +91,7 @@ export type ReportActivityGraph =
   | typeof REPORT_ACTIVITY_GRAPH_EVOLUTION
   | typeof REPORT_ACTIVITY_GRAPH_BEFORE_AFTER
   | typeof REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON
+  | typeof REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON
 
 // REPORT EVENTS
 export type ReportEventsGraph =
@@ -106,9 +108,15 @@ export type ReportActivityTimeComparison = {
   durationType: 'days' | 'months'
 }
 
+export type ReportComparisonDataviews = {
+  main: string
+  compare: string | undefined
+}
+
 export type ReportActivityState = {
   reportActivityGraph: ReportActivityGraph
   reportTimeComparison: ReportActivityTimeComparison | undefined
+  reportComparisonDataviewIds: ReportComparisonDataviews | undefined
 }
 
 export type ReportEventsState = {

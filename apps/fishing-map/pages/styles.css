@@ -73,7 +73,7 @@ body:has(.printing) {
   width: 4rem;
 }
 
-.recharts-cartesian-axis-line,
+/* .recharts-cartesian-axis-line, */
 .recharts-cartesian-axis-tick-line {
   stroke: var(--color-secondary-blue);
 }

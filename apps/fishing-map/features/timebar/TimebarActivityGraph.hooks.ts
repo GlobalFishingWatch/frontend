@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useEffectEvent, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
@@ -85,7 +85,7 @@ export const useHeatmapActivityGraph = () => {
     ]
   )
 
-  useEffect(() => {
+  const onViewportDataChange = useEffectEvent(() => {
     if (loaded) {
       if (visualizationMode === 'positions') {
         const viewportData = instance?.getViewportData?.()
@@ -98,6 +98,10 @@ export const useHeatmapActivityGraph = () => {
         setFourwingsHeatmapData(viewportData as [number[], number[]][][])
       }
     }
+  })
+
+  useEffect(() => {
+    onViewportDataChange()
   }, [
     loaded,
     id,
@@ -107,5 +111,8 @@ export const useHeatmapActivityGraph = () => {
     instance?.props.maxVisibleValue,
   ])
 
-  return useMemo(() => ({ loading: !loaded, heatmapActivity: data }), [data, loaded])
+  return useMemo(
+    () => ({ loading: !loaded, heatmapActivity: data, dataviews }),
+    [data, loaded, dataviews]
+  )
 }

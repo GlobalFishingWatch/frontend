@@ -1,39 +1,21 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import max from 'lodash/max'
 import min from 'lodash/min'
 import { DateTime } from 'luxon'
 import { Area, CartesianGrid, ComposedChart, Line, Tooltip, XAxis, YAxis } from 'recharts'
 
-import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getContrastSafeLineColor } from '@globalfishingwatch/responsive-visualizations'
 
-import i18n from 'features/i18n/i18n'
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
-import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
-import { formatEvolutionData } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
-import { getUTCDateTime } from 'utils/dates'
+import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
+import {
+  formatDateTicks,
+  formatEvolutionData,
+} from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 
 import EvolutionGraphTooltip from './EvolutionGraphTooltip'
 
 import styles from './ReportActivityEvolution.module.css'
-
-interface ComparisonGraphProps {
-  timeseries: ComparisonGraphData[]
-  sublayers: {
-    id: string
-    legend: {
-      color?: string
-      unit?: string
-    }
-  }[]
-  interval: FourwingsInterval
-}
-
-const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => {
-  const date = getUTCDateTime(tick).setLocale(i18n.language)
-  return formatDateForInterval(date, timeChunkInterval)
-}
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 
@@ -42,13 +24,13 @@ const ReportActivityEvolution = ({
   start,
   end,
 }: {
-  data: ComparisonGraphProps
+  data: ReportGraphProps
   start: string
   end: string
 }) => {
   const colors = (data?.sublayers || []).map((sublayer) => sublayer?.legend?.color)?.join(',')
   const dataFormated = useMemo(
-    () => formatEvolutionData(data, { start, end, timeseriesInterval: data?.interval }),
+    () => formatEvolutionData(data),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data, end, start, colors]
   )

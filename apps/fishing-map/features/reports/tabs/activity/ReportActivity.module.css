@@ -29,6 +29,10 @@
   color: var(--color-secondary-blue);
 }
 
+.select {
+  min-width: 18rem;
+}
+
 .disclaimer + .disclaimer {
   margin-top: var(--space-XS);
 }
