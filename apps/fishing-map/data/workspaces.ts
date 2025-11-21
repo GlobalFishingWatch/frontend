@@ -67,13 +67,14 @@ export const FISHING_DATAVIEW_SLUG_VMS = `${FISHING_DATAVIEW_SLUG_PREFIX}-vms-v-
 export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG = 'encounter-cluster-events-v-3' as const
 export const CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG = 'loitering-cluster-events-v-3' as const
 export const CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG = 'port-visit-cluster-events-v-3' as const
+export const CLUSTER_GAPS_EVENTS_DATAVIEW_SLUG = 'gaps-cluster-events-v-3' as const
 export const VIIRS_MATCH_DATAVIEW_SLUG = 'viirs-match-v-3' as const
 export const VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG = 'viirs-match-skylight-v-3' as const
 export const SAR_DATAVIEW_SLUG = 'sar-v-3' as const
 export const SENTINEL2_DATAVIEW_SLUG = 'sentinel-2-v-3' as const
 export const PRESENCE_DATAVIEW_SLUG = 'presence-activity-v-3' as const
 export const TEMPLATE_USER_TRACK_SLUG = 'user-track' as const
-export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-v-3' as const
+export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-v-3-gaps' as const
 export const TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG = 'vessel-track-only-v-3' as const
 export const TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_BRAZIL =
   'private-bra-fishing-map-vessel-track-v-4' as const
