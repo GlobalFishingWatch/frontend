@@ -124,6 +124,15 @@ export const getEventDescription = ({
       description = t('event.fishingAction', time)
       descriptionGeneric = t('event.fishing')
       break
+    case EventTypes.Gap:
+      description = t('event.gapAction', time)
+      descriptionGeneric = t('event.gap')
+      break
+    // TODO: check with API inconsistency between 'gap' and 'gaps'
+    case 'gaps' as any:
+      description = t('event.gapAction', time)
+      descriptionGeneric = t('event.gap')
+      break
     default:
       description = t('event.unknown')
       descriptionGeneric = t('event.unknown')

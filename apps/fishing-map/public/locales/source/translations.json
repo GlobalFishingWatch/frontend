@@ -530,6 +530,7 @@
     "gap": "AIS Off event",
     "gap_one": "AIS Off event",
     "gap_other": "AIS Off events",
+    "gapAction": "AIS Off event started at {{start}} for {{duration}}",
     "gapActionIn": "Likely disabling in {{regionName}}",
     "hourAbbreviated": "{{count}}h",
     "hourAbbreviated_one": "{{count}}h",

@@ -568,7 +568,6 @@ export const fetchClusterEventThunk = createAsyncThunk(
           const url = resolveEndpoint(eventsDataset, datasetConfig)
           if (url) {
             const clusterEvent = await GFWAPI.fetch<ApiEvent>(url, { signal })
-            console.log('🚀 ~ clusterEvent:', clusterEvent)
             if (!clusterEvent) {
               return rejectWithValue(`No event found for id: ${eventId}`)
             }

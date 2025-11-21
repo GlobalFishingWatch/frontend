@@ -752,6 +752,7 @@ interface Resources {
       "fishingAction": "Fishing started at {{start}} for {{duration}}",
       "fishingActionIn": "Fishing in {{regionName}}",
       "gap": "AIS Off event" | "AIS Off event" | "AIS Off events",
+      "gapAction": "AIS Off event started at {{start}} for {{duration}}",
       "gapActionIn": "Likely disabling in {{regionName}}",
       "hourAbbreviated": "{{count}}h" | "{{count}}h" | "{{count}}h" | "{{count}}h",
       "loitering": "Loitering" | "Loitering event" | "Loitering events" | "Loitering events",

@@ -58,6 +58,7 @@
   height: 8px;
 }
 
+.gap > .icon,
 .encounter > .icon,
 .loitering > .icon,
 .port_visit > .icon {
@@ -85,6 +86,10 @@
 
 .port_visit > .icon {
   background-image: var(--portIcon);
+}
+
+.gap > .icon {
+  background-image: var(--gapIcon);
 }
 
 :global(.printing) .eventsLegend {
