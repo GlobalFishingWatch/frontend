@@ -8,12 +8,13 @@ import { hexToDeckColor } from '../../utils'
 export const TRACK_LAYER_TYPE = 'track'
 export const EVENT_LAYER_TYPE = 'event'
 
-type EventShape = 'circle' | 'square' | 'diamond' | 'diamondStroke'
+type EventShape = 'circle' | 'square' | 'diamond' | 'diamondStroke' | 'x'
 export const SHAPES_ORDINALS: Record<EventShape, number> = {
   circle: 0,
   square: 1,
   diamond: 2,
   diamondStroke: 3,
+  x: 4,
 }
 
 export const EVENT_SHAPES: Record<EventTypes, number> = {
@@ -21,7 +22,7 @@ export const EVENT_SHAPES: Record<EventTypes, number> = {
   loitering: SHAPES_ORDINALS.diamondStroke,
   port_visit: SHAPES_ORDINALS.square,
   fishing: SHAPES_ORDINALS.circle,
-  gap: SHAPES_ORDINALS.circle,
+  gap: SHAPES_ORDINALS.x,
 }
 
 export const EVENTS_COLORS: Record<string, Color> = {
@@ -29,6 +30,7 @@ export const EVENTS_COLORS: Record<string, Color> = {
   loitering: hexToDeckColor('#cfa9f9'),
   port_visit: hexToDeckColor('#99EEFF'),
   highlight: hexToDeckColor('#ffffff'),
+  gaps: hexToDeckColor('#f45d5e'),
 }
 
 export const DEFAULT_FISHING_EVENT_COLOR = [255, 255, 255] as Color
