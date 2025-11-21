@@ -244,6 +244,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
 
     const cacheKey = this._getTileDataCacheKey()
     const resolution = getResolutionByVisualizationMode(visualizationMode)
+    const zoomOffset = getZoomOffsetByResolution(resolution!, zoom)
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
@@ -254,7 +255,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
         onTileError: this._onLayerError,
         maxZoom: maxZoom || 8,
         refinementStrategy: 'never',
-        zoomOffset: getZoomOffsetByResolution(resolution!, zoom) - 1,
+        zoomOffset,
         opacity: 1,
         maxRequests,
         debounceTime,

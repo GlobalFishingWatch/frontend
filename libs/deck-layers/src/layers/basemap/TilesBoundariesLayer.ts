@@ -42,7 +42,6 @@ export class TilesBoundariesLayer extends CompositeLayer<TilesBoundariesLayerPro
       getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Label, params),
       zoomOffset: getZoomOffsetByResolution(resolution!, this.context.viewport.zoom),
       renderSubLayers: (props: any) => {
-        console.log('🚀 ~ renderLayers ~ props:', props)
         const {
           bbox: { west, south, east, north },
         } = props.tile
