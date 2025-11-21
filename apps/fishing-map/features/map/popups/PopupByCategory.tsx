@@ -56,9 +56,9 @@ import {
   selectDetectionPositionsInteractionStatus,
 } from '../map.slice'
 
-import CurrentsTooltipRow from './categories/CurrentsLayers'
 import ReportBufferTooltip from './categories/ReportBufferLayers'
 import UserContextTooltipSection from './categories/UserContextLayers'
+import VectorsTooltipRow from './categories/VectorsLayers'
 
 import styles from './Popup.module.css'
 
@@ -210,8 +210,8 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const contextFeatures = (features as UserLayerPickingObject[]).filter(
               (feature) => feature.subcategory === DataviewType.UserContext
             )
-            const currentsFeatures = (features as FourwingsHeatmapPickingObject[])
-              .filter((feature) => feature.subcategory === DataviewType.Currents)
+            const vectorsFeatures = (features as FourwingsHeatmapPickingObject[])
+              .filter((feature) => feature.subcategory === DataviewType.FourwingsVector)
               .map((feature) => ({
                 ...feature,
                 // TODO translate this
@@ -222,12 +222,12 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             ).filter(
               (feature) =>
                 feature.subcategory !== DataviewType.UserContext &&
-                feature.subcategory !== DataviewType.Currents
+                feature.subcategory !== DataviewType.FourwingsVector
             )
             return (
               <Fragment key={featureCategory}>
-                {currentsFeatures.map((currentsFeature) => (
-                  <CurrentsTooltipRow
+                {vectorsFeatures.map((currentsFeature) => (
+                  <VectorsTooltipRow
                     key={currentsFeature.id}
                     feature={currentsFeature}
                     showFeaturesDetails={type === 'click'}

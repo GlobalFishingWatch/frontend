@@ -61,6 +61,13 @@ export type FourwingsDeckSublayer = {
   extentEnd?: number
 }
 
+export type FourwingsVectorDirection = 'u' | 'v'
+export type FourwingsDeckVectorSublayer = {
+  id: FourwingsSublayerId
+  datasets: FourwingsDatasetId[]
+  direction: FourwingsVectorDirection
+}
+
 export type BaseFourwingsLayerProps = DeckLayerProps<{
   startTime: number
   endTime: number

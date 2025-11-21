@@ -95,7 +95,7 @@ const SUPPORTED_REPORT_TYPES = [
   DataviewType.HeatmapAnimated,
   DataviewType.HeatmapStatic,
   DataviewType.FourwingsTileCluster,
-  DataviewType.Currents,
+  DataviewType.FourwingsVector,
 ]
 
 export const isContextDataviewReportSupported = (dataview: Dataview | UrlDataviewInstance) => {

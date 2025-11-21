@@ -18,7 +18,11 @@ import {
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
 } from '../fourwings.config'
-import type { FourwingsDeckSublayer, FourwingsVisualizationMode } from '../fourwings.types'
+import type {
+  FourwingsDeckSublayer,
+  FourwingsDeckVectorSublayer,
+  FourwingsVisualizationMode,
+} from '../fourwings.types'
 
 import type {
   AggregateCellParams,
@@ -48,7 +52,8 @@ export function aggregateSublayerValues(
     const cosSum = radians.reduce((acc, rad) => acc + Math.cos(rad), 0)
 
     const avgRad = Math.atan2(sinSum, cosSum)
-    return avgRad * (180 / Math.PI)
+    const avgDeg = avgRad * (180 / Math.PI)
+    return ((avgDeg % 360) + 360) % 360
   }
   return values.reduce((acc: number, value = 0) => {
     return acc + value
@@ -167,7 +172,7 @@ type GetDataUrlByChunk = {
     id: string
   }
   chunk: FourwingsChunk
-  sublayer: FourwingsDeckSublayer
+  sublayer: FourwingsDeckSublayer | FourwingsDeckVectorSublayer
   filter?: string
   vesselGroups?: string[]
   tilesUrl?: string
@@ -182,9 +187,9 @@ export const getDataUrlBySublayer = ({
   extentStart,
 }: // extentEnd,
 GetDataUrlByChunk) => {
-  const vesselGroup = Array.isArray(sublayer.vesselGroups)
-    ? sublayer.vesselGroups[0]
-    : sublayer.vesselGroups
+  const vesselGroup = Array.isArray((sublayer as FourwingsDeckSublayer).vesselGroups)
+    ? (sublayer as FourwingsDeckSublayer).vesselGroups?.[0]
+    : (sublayer as FourwingsDeckSublayer).vesselGroups
   const start = extentStart && extentStart > chunk.start ? extentStart : chunk.bufferedStart
   const tomorrow = DateTime.now().toUTC().endOf('day').plus({ millisecond: 1 }).toMillis()
   // const end = extentEnd && extentEnd < chunk.end ? extentEnd : chunk.bufferedEnd
@@ -195,7 +200,9 @@ GetDataUrlByChunk) => {
     interval: chunk.interval,
     'temporal-aggregation': false,
     datasets: [sublayer.datasets.join(',')],
-    ...(sublayer.filter && { filters: [sublayer.filter] }),
+    ...((sublayer as FourwingsDeckSublayer).filter && {
+      filters: [(sublayer as FourwingsDeckSublayer).filter],
+    }),
     ...(vesselGroup && { 'vessel-groups': [vesselGroup] }),
     ...(chunk.interval !== 'YEAR' && {
       'date-range': [getISODateFromTS(start < end ? start : end), getISODateFromTS(end)].join(','),
@@ -289,13 +296,19 @@ export const aggregateCellTimeseries = (
 
 export const EMPTY_CELL_COLOR: Color = [0, 0, 0, 0]
 
-export function getFourwingsChunk(
-  minDate: number,
-  maxDate: number,
+export function getFourwingsChunk({
+  start,
+  end,
+  availableIntervals,
+  chunksBuffer,
+}: {
+  start: number
+  end: number
   availableIntervals?: FourwingsInterval[]
-) {
-  const interval = getFourwingsInterval(minDate, maxDate, availableIntervals)
-  return getChunkByInterval(minDate, maxDate, interval)
+  chunksBuffer?: number
+}): FourwingsChunk {
+  const interval = getFourwingsInterval(start, end, availableIntervals)
+  return getChunkByInterval({ start, end, interval, chunksBuffer })
 }
 
 type FourwingsIntervalFrames = {
@@ -380,6 +393,7 @@ export const getTileDataCache = ({
   availableIntervals,
   compareStart,
   compareEnd,
+  chunksBuffer,
 }: {
   zoom: number
   startTime: number
@@ -387,9 +401,15 @@ export const getTileDataCache = ({
   availableIntervals?: FourwingsInterval[]
   compareStart?: number
   compareEnd?: number
+  chunksBuffer?: number
 }): FourwingsHeatmapTilesCache => {
   const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
-  const { start, end, bufferedStart } = getFourwingsChunk(startTime, endTime, availableIntervals)
+  const { start, end, bufferedStart } = getFourwingsChunk({
+    start: startTime,
+    end: endTime,
+    availableIntervals,
+    chunksBuffer,
+  })
   return {
     zoom,
     start,

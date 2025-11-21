@@ -61,11 +61,11 @@ const DebugMenu: React.FC = () => {
         <p>Show fps and memory stats</p>
         <div className={styles.header}>
           <Switch
-            id="option_debug"
-            active={debugOptions.debug}
-            onClick={() => dispatch(toggleDebugOption(DebugOption.Debug))}
+            id="option_debug_tiles"
+            active={debugOptions.debugTiles}
+            onClick={() => dispatch(toggleDebugOption(DebugOption.DebugTiles))}
           />
-          <label htmlFor="option_debug">Debug tiles</label>
+          <label htmlFor="option_debug_tiles">Debug tiles</label>
         </div>
         <p>Displays info on tiles useful for debugging.</p>
         <div className={styles.header}>
