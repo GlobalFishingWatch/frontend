@@ -18,6 +18,7 @@ import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveEventsDataviews,
+  selectActiveUserPointsDataviews,
   selectActiveVesselGroupDataviews,
   selectActiveVesselsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -75,6 +76,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   )
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
+  const activeUserPointsDataviews = useSelector(selectActiveUserPointsDataviews)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const hasSomeVesselLayer = activeVesselsDataviews?.length > 0
@@ -228,6 +230,22 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   tooltip={detectionsTooltipLabel}
                   onClick={() => setTimebarSectionActive(TimebarVisualisations.Events)}
                 />
+                {activeUserPointsDataviews.length > 0 && (
+                  <Radio
+                    label={
+                      <Icon
+                        SvgIcon={AreaIcon}
+                        label={t('common.others')}
+                        color={activeUserPointsDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
+                        disabled={!activeUserPointsDataviews?.length}
+                      />
+                    }
+                    // disabled={!activeUserPointsDataviews?.length}
+                    active={timebarVisualisation === TimebarVisualisations.Points}
+                    tooltip={t('timebarSettings.showOthers')}
+                    onClick={() => setTimebarSectionActive(TimebarVisualisations.Points)}
+                  />
+                )}
                 {activeVesselGroupDataviews.map((vgDataview) => {
                   return (
                     <Radio

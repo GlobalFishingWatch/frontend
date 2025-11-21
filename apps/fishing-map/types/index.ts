@@ -108,6 +108,7 @@ export enum TimebarVisualisations {
   Vessel = 'vessel',
   VesselGroup = 'vesselGroup',
   Environment = 'environment',
+  Points = 'points',
 }
 
 type VisibleEvents = EventType[] | 'all' | 'none'

@@ -244,6 +244,10 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return filteredPositionsByViewport(this.getData(), this.context.viewport)
   }
 
+  getColor() {
+    return this.props.layers?.[0]?.sublayers?.[0]?.color
+  }
+
   _onLayerError = (error: Error) => {
     if (!error.message.includes('404')) {
       this.setState({ error: error.message })

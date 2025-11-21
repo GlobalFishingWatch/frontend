@@ -164,6 +164,79 @@ export function getGraphDataFromPoints(
   return Object.values(data)
 }
 
+export function getTimebarChunksFromPoints(
+  features: Feature<Point>[],
+  {
+    start,
+    end,
+    interval,
+    startTimeProperty,
+    endTimeProperty,
+  }: Pick<GetGraphDataFromFourwingsFeaturesParams, 'start' | 'end' | 'interval'> & {
+    startTimeProperty: string
+    endTimeProperty?: string
+  }
+): { start: number; end: number; values: Feature<Point>[] }[] {
+  if (!features?.length || !start || !end) {
+    return []
+  }
+
+  const chunks: Record<number, { start: number; end: number; values: Feature<Point>[] }> = {}
+  const now = DateTime.now().toUTC().toMillis()
+  let date = getUTCDateTime(start)
+    .startOf(interval as DateTimeUnit)
+    .toMillis()
+
+  const startDate = getUTCDateTime(start)
+  const endDate = getUTCDateTime(end ? end : now)
+
+  const intervalDiff = Math.ceil(
+    Object.values(
+      endDate
+        .diff(startDate, interval.toLowerCase() as DurationUnit, {
+          conversionAccuracy: 'longterm',
+        })
+        .toObject()
+    )[0]
+  )
+  const endPlusOne = getUTCDateTime(start)
+    .plus({ [interval]: intervalDiff })
+    .toMillis()
+
+  while (date <= endPlusOne) {
+    const dateToUse = date > now ? now : date
+    const nextDate = getUTCDateTime(date)
+      .plus({ [interval]: 1 })
+      .toMillis()
+    chunks[dateToUse] = {
+      start: dateToUse,
+      end: nextDate,
+      values: [],
+    }
+    date = nextDate
+  }
+
+  Object.keys(chunks).forEach((dateString) => {
+    const date = parseInt(dateString)
+    const chunk = chunks[date]
+
+    features.forEach((feature) => {
+      if (
+        isFeatureInRange(feature, {
+          startTime: chunk.start,
+          endTime: chunk.end,
+          startTimeProperty,
+          endTimeProperty,
+        })
+      ) {
+        chunk.values.push(feature)
+      }
+    })
+  })
+
+  return Object.values(chunks).filter((chunk) => chunk.values.length > 0)
+}
+
 export function getGraphDataFromFourwingsHeatmap(
   features: FourwingsFeature[] | FourwingsValuesAndDatesFeature[] | Feature<Point>[],
   {
