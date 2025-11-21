@@ -1,7 +1,8 @@
 import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { DateTime } from 'luxon'
 
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { GapEvent, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
@@ -22,22 +23,6 @@ import type {
 
 import styles from '../Popup.module.css'
 
-const parseEncounterEvent = (
-  event: ExtendedFeatureSingleEvent | undefined
-): ExtendedFeatureSingleEvent | undefined => {
-  if (!event) return event
-  return {
-    ...event,
-    vessel: event.vessel,
-    ...(event.encounter && {
-      encounter: {
-        ...event.encounter,
-        vessel: event.encounter?.vessel,
-      },
-    }),
-  }
-}
-
 type EventsGapTooltipRowProps = {
   feature: SliceExtendedClusterPickingObject<ExtendedFeatureSingleEvent>
   showFeaturesDetails: boolean
@@ -53,21 +38,23 @@ function EventsGapTooltipRow({
 }: EventsGapTooltipRowProps) {
   const { t } = useTranslation()
 
-  const seeEncounterClick = useCallback(() => {
+  const seeGapEventClick = useCallback(() => {
     trackEvent({
       category: TrackCategory.GlobalReports,
-      action: `Clicked see encounter event`,
+      action: `Clicked see gap event`,
     })
   }, [])
 
-  const event = parseEncounterEvent(feature.event)
+  const event = feature.event || ({} as ExtendedFeatureSingleEvent)
+
   const interval = getFourwingsInterval(feature.startTime, feature.endTime)
   const title = feature.title || getDatasetLabel({ id: feature.datasetId! })
-  const timestamp = feature.properties.stime
+  const gapStart = feature.properties.stime
     ? feature.properties.stime * 1000
     : event?.start
       ? getUTCDateTime(event?.start as string).toMillis()
       : undefined
+  const gapEnd = event?.end ? getUTCDateTime(event?.end as string).toMillis() : undefined
 
   return (
     <div className={styles.popupSection}>
@@ -79,12 +66,16 @@ function EventsGapTooltipRow({
           feature.count && (
             <div className={styles.row}>
               <span className={styles.rowText}>
-                <I18nNumber number={feature.count} />{' '}
-                {t('event.encounter', { count: feature.count })}
-                {!feature.properties.cluster && timestamp && interval && (
+                <I18nNumber number={feature.count} /> {t('event.gap', { count: feature.count })}
+                {!feature.properties.cluster && gapStart && interval && (
                   <span className={styles.rowTextSecondary}>
                     {' '}
-                    <I18nDate date={timestamp} />
+                    <I18nDate date={gapStart} />
+                    {gapEnd && (
+                      <Fragment>
+                        - <I18nDate date={gapEnd} />
+                      </Fragment>
+                    )}
                   </span>
                 )}
               </span>
@@ -94,7 +85,17 @@ function EventsGapTooltipRow({
         {showFeaturesDetails && (
           <div className={styles.row}>
             <div className={styles.rowContainer}>
-              {timestamp && <span className={styles.rowText}>{<I18nDate date={timestamp} />}</span>}
+              {gapStart && (
+                <span className={styles.rowText}>
+                  <I18nDate date={gapStart} format={DateTime.DATETIME_MED} />
+                  {gapEnd && (
+                    <Fragment>
+                      {' - '}
+                      <I18nDate date={gapEnd} format={DateTime.DATETIME_MED} />
+                    </Fragment>
+                  )}
+                </span>
+              )}
               {loading ? (
                 <Spinner className={styles.eventSpinner} inline size="small" />
               ) : (
@@ -133,40 +134,6 @@ function EventsGapTooltipRow({
                             </div>
                           </div>
                         )}
-                        {event.encounter?.vessel && (
-                          <div className={styles.row}>
-                            <div className={styles.rowColum}>
-                              <span className={styles.rowTitle}>
-                                {t(
-                                  `vessel.vesselTypes.${event.encounter.vessel.type}`,
-                                  event.encounter.vessel.type
-                                )}
-                              </span>
-                              <div className={styles.centered}>
-                                <span className={styles.rowText}>
-                                  <VesselLink
-                                    vesselId={event.encounter.vessel?.id}
-                                    datasetId={event.encounter.vessel?.dataset}
-                                    query={{
-                                      vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-                                      vesselSelfReportedId: event.encounter.vessel?.id,
-                                    }}
-                                  >
-                                    {formatInfoField(event.encounter.vessel?.name, 'shipname')}
-                                  </VesselLink>
-                                </span>
-                                {(event.encounter?.vessel as ExtendedEventVessel).dataset && (
-                                  <VesselPin
-                                    vesselToResolve={{
-                                      ...event.encounter.vessel,
-                                      datasetId: event.encounter.vessel.dataset,
-                                    }}
-                                  />
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        )}
                       </div>
                       <div className={styles.row}>
                         <VesselLink
@@ -185,7 +152,7 @@ function EventsGapTooltipRow({
                             target="_blank"
                             size="small"
                             className={styles.btnLarge}
-                            onClick={seeEncounterClick}
+                            onClick={seeGapEventClick}
                           >
                             {t('common.seeMore')}
                           </Button>

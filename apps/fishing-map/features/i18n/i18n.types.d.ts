@@ -751,7 +751,7 @@ interface Resources {
       "fishing": "Fishing" | "Fishing events",
       "fishingAction": "Fishing started at {{start}} for {{duration}}",
       "fishingActionIn": "Fishing in {{regionName}}",
-      "gap": "AIS Off event",
+      "gap": "AIS Off event" | "AIS Off event" | "AIS Off events",
       "gapActionIn": "Likely disabling in {{regionName}}",
       "hourAbbreviated": "{{count}}h" | "{{count}}h" | "{{count}}h" | "{{count}}h",
       "loitering": "Loitering" | "Loitering event" | "Loitering events" | "Loitering events",
