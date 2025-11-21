@@ -17,6 +17,7 @@ import {
   BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
   BASEMAP_LABELS_DATAVIEW_SLUG,
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_GAPS_EVENTS_DATAVIEW_SLUG,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
@@ -36,6 +37,7 @@ import {
 import {
   BATHYMETRY_DATAVIEW_PREFIX,
   ENCOUNTER_EVENTS_SOURCE_ID,
+  GAPS_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
 } from 'features/dataviews/dataviews.utils'
@@ -139,6 +141,13 @@ const workspace: Workspace<WorkspaceState> = {
         visible: false,
       },
     },
+    // {
+    //   id: GAPS_EVENTS_SOURCE_ID,
+    //   dataviewId: CLUSTER_GAPS_EVENTS_DATAVIEW_SLUG,
+    //   config: {
+    //     visible: false,
+    //   },
+    // },
     {
       id: PORT_VISITS_EVENTS_SOURCE_ID,
       dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
