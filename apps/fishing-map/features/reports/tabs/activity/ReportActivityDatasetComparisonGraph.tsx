@@ -73,8 +73,8 @@ const calculateXDomain = (start: string, end: string, interval?: string) => {
 
 const calculateYAxisDomain = (data: any[], index: number) => {
   return [
-    Math.min(...data.map((d) => d.avg?.[index] || 0)),
-    Math.max(...data.map((d) => d.avg?.[index] || 0)),
+    Math.min(...data.map((d) => d.avg?.[index])),
+    Math.max(...data.map((d) => d.avg?.[index])),
   ]
 }
 
@@ -164,7 +164,9 @@ const ReportActivityDatasetComparisonGraph = ({
           axisLine={{ stroke: leftAxisColor }}
           tickLine={false}
           orientation="left"
-          domain={leftAxisDomain || [0, 'auto']}
+          domain={
+            leftAxisDomain[1] === 0 ? (rightAxisDomain ? rightAxisDomain : [0, 1]) : leftAxisDomain
+          }
         />
         {comparisonDatasets?.compare && rightAxisDomain && (
           <YAxis
