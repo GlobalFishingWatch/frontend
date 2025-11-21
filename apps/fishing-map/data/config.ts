@@ -124,7 +124,7 @@ export const EVENTS_COLORS: Record<string, string> = {
   loitering: '#cfa9f9',
   port_visit: '#99EEFF',
   fishing: '#6075A7',
-  // fishing: '#C6D5E2',
+  gap: '#f45d5e',
   fishingLabels: '#163f89',
 }
 
