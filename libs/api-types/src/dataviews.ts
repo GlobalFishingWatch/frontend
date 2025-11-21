@@ -107,6 +107,9 @@ export interface DataviewConfig<Type = DataviewType> {
     mean: number
   }
 
+  /** Used to store the property for aggregating user datasets values in report */
+  aggregateByProperty?: string
+
   /** Used to store the vessel name */
   name?: string
   event?:

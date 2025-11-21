@@ -55,6 +55,7 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
 
 type GetUserPointsDataParams = {
   includeNonTemporalFeatures?: boolean
+  aggregateByProperty?: string
 }
 
 type UserPointsLayerState = UserBaseLayerState & {
@@ -100,7 +101,12 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
       filters.length > 0
         ? filters.reduce((acc, filter) => `${acc}-${getContextFiltersHash(filter)}`, '')
         : ''
-    return `${startTime}-${endTime}${filtersHash}`
+    const aggregatedProperty =
+      this.props.layers?.flatMap((layer) =>
+        layer.sublayers.flatMap((sublayer) => sublayer.aggregateByProperty || [])
+      ) || []
+
+    return `${startTime}-${endTime}${filtersHash}${aggregatedProperty.join(',')}`
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
@@ -206,16 +212,18 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     const data = this._getData().flatMap((feature) => {
       const values = new Array(this.props.layers?.[0]?.sublayers?.length).fill(0)
       this.props.layers?.[0]?.sublayers?.forEach((sublayer, index) => {
+        const { aggregateByProperty } = sublayer
         const matchesTimeFilter = isFeatureInRange(feature, this.props as IsFeatureInRangeParams)
         if (includeNonTemporalFeatures || matchesTimeFilter) {
-          if (hasSublayerFilters(sublayer)) {
-            // TODO: support getting values from certain property instead of just counting the points
-            values[index] = isFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators)
-              ? 1
-              : 0
-          } else {
-            values[index] = 1
-          }
+          const matchesFilters = hasSublayerFilters(sublayer)
+            ? isFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators)
+            : true
+
+          values[index] = matchesFilters
+            ? aggregateByProperty
+              ? Number(feature.properties?.[aggregateByProperty] ?? 0)
+              : 1
+            : 0
         }
       })
       if (values.every((value) => value === 0)) {
@@ -234,6 +242,10 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
 
   getViewportData = () => {
     return filteredPositionsByViewport(this.getData(), this.context.viewport)
+  }
+
+  getColor() {
+    return this.props.layers?.[0]?.sublayers?.[0]?.color
   }
 
   _onLayerError = (error: Error) => {

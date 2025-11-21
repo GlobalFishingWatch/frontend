@@ -407,7 +407,6 @@ export function useReportTitle() {
       return t('common.globalReport')
     }
     let areaName: string | JSX.Element = getReportAreaStringByLocale(report?.name, i18n.language)
-
     if (!areaName) {
       if (areaDataviews?.length > 1) {
         const datasets = areaDataviews.flatMap((d) => d.datasets?.[0] || [])
@@ -459,22 +458,28 @@ export function useReportTitle() {
       return areaName
     }
     if (areaName && urlBufferOperation === 'difference') {
-      return `${urlBufferValue} ${t(`analysis.${urlBufferUnit}` as any, urlBufferUnit)} ${t(
-        `analysis.around`,
-        'around'
-      )} ${areaName}`
+      return (
+        <>
+          {urlBufferValue} {t(`analysis.${urlBufferUnit}` as any, urlBufferUnit)}{' '}
+          {t(`analysis.around`, 'around')} {areaName}
+        </>
+      )
     }
     if (areaName && urlBufferOperation === 'dissolve') {
       if (urlBufferValue > 0) {
-        return `${areaName} ${t('common.and')} ${urlBufferValue} ${t(
-          `analysis.${urlBufferUnit}` as any,
-          urlBufferUnit
-        )} ${t('analysis.around')}`
+        return (
+          <>
+            {areaName} {t('common.and')} {urlBufferValue}{' '}
+            {t(`analysis.${urlBufferUnit}` as any, urlBufferUnit)} {t('analysis.around')}
+          </>
+        )
       } else {
-        return `${areaName} ${t('common.minus')} ${Math.abs(urlBufferValue)} ${t(
-          `analysis.${urlBufferUnit}` as any,
-          urlBufferUnit
-        )}`
+        return (
+          <>
+            {areaName} {t('common.minus')} {Math.abs(urlBufferValue)}{' '}
+            {t(`analysis.${urlBufferUnit}` as any, urlBufferUnit)}
+          </>
+        )
       }
     }
     return ''

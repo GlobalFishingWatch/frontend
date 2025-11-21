@@ -66,6 +66,7 @@ import {
 } from './timebar.selectors'
 import { selectHighlightedTime, setHighlightedTime } from './timebar.slice'
 import TimebarActivityGraph from './TimebarActivityGraph'
+import TimebarPointsGraph from './TimebarPointsGraph'
 import TimebarSettings from './TimebarSettings'
 
 import styles from './Timebar.module.css'
@@ -448,6 +449,7 @@ const TimebarWrapper = () => {
           <TimebarActivityGraph visualisation={timebarVisualisation} />
         )}
         {timebarVisualisation === TimebarVisualisations.Vessel && tracksComponents}
+        {timebarVisualisation === TimebarVisualisations.Points && <TimebarPointsGraph />}
         {timebarVisualisation === TimebarVisualisations.Events && <TimebarClusterEventsGraph />}
         <TimebarHighlighterWrapper
           showTooltip={isMouseInside || isMouseClicked}

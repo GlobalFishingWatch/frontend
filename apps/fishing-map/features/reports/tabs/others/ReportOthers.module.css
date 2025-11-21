@@ -8,6 +8,11 @@
   z-index: 1;
 }
 
+.selectContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
 .title {
   font: var(--font-M-bold);
 }

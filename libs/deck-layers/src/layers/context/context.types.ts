@@ -35,6 +35,7 @@ export type ContextSubLayerConfig = {
   thickness?: number
   filters?: ContextLayerConfigFilter
   filterOperators?: FilterOperators
+  aggregateByProperty?: string
 }
 export type ContextLayerConfig<Id = string> = {
   id: Id
