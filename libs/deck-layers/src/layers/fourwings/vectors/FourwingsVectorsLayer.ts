@@ -156,10 +156,10 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
     this.startFrame = startFrame
     this.endFrame = endFrame
 
-    const baseRadius = zoomOffset < 0 ? 200 : 300
+    const baseRadius = zoomOffset < 0 ? 100 : 200
     const zoomScale = Math.pow(
       2,
-      Math.abs(Math.round(this.context.viewport.zoom + (zoomOffset || 0)) - 12)
+      Math.abs(Math.round(this.props.tile.zoom + (zoomOffset || 0)) - 12)
     )
 
     return [
