@@ -19,7 +19,8 @@ export const getEventColors = ({ type }: { type: ApiEvent['type'] }) => {
   //   colorKey = `${colorKey}${event.encounter?.authorizationStatus}`
   // }
   const color = EVENTS_COLORS[colorKey]
-  const colorLabels = EVENTS_COLORS[`${colorKey}Labels`]
+  const labelsKey = `${colorKey}Labels` as keyof typeof EVENTS_COLORS
+  const colorLabels = EVENTS_COLORS[labelsKey]
   return {
     color,
     colorLabels,
