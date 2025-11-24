@@ -59,6 +59,7 @@
 }
 
 .gap > .icon,
+.gaps > .icon,
 .encounter > .icon,
 .loitering > .icon,
 .port_visit > .icon {
@@ -88,7 +89,8 @@
   background-image: var(--portIcon);
 }
 
-.gap > .icon {
+.gap > .icon,
+.gaps > .icon {
   background-image: var(--gapIcon);
 }
 

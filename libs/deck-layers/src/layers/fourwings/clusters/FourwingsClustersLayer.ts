@@ -526,27 +526,11 @@ export class FourwingsClustersLayer extends CompositeLayer<
         getIcon: () => eventType,
         getColor: this._getColor,
         getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
-        pickable: eventType !== EventTypes.Gap,
+        pickable: true,
         updateTriggers: {
           getColor: [highlightedFeatures],
         },
       }),
-      // Invisible picking layer for gap events to provide larger clickable area
-      // otherwise clicking in the X it not straight forward
-      ...(eventType === EventTypes.Gap && points
-        ? [
-            new ScatterplotLayer({
-              id: `${this.props.id}-${POINTS_LAYER_ID}-picking-buffer`,
-              data: points,
-              getPosition: this._getPosition,
-              getRadius: () => 12,
-              getFillColor: [0, 0, 0, 0],
-              radiusUnits: 'pixels',
-              getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Cluster, params),
-              pickable: true,
-            }),
-          ]
-        : []),
       new ScatterplotLayer({
         id: `${this.props.id}-${CLUSTER_LAYER_ID}`,
         data: clusters,
