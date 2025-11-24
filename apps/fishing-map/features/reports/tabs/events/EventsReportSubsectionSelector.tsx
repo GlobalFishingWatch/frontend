@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import { EventTypes } from '@globalfishingwatch/api-types'
 import type { ChoiceOption, TooltipPlacement } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
 
@@ -23,39 +24,35 @@ function VesselGroupReportEventsSubsectionSelector() {
   const loading = vesselGroupReportStatus === AsyncReducerStatus.Loading
 
   const options: ChoiceOption<ReportEventsSubCategory>[] = [
-    ...(activeReportSubCategories?.includes('encounter')
+    ...(activeReportSubCategories?.includes(EventTypes.Encounter)
       ? [
           {
-            id: 'encounter' as ReportEventsSubCategory,
+            id: EventTypes.Encounter,
             label: t('event.encountersShort'),
             disabled: loading,
           },
         ]
       : []),
-    ...(activeReportSubCategories?.includes('loitering')
+    ...(activeReportSubCategories?.includes(EventTypes.Loitering)
       ? [
           {
-            id: 'loitering' as ReportEventsSubCategory,
+            id: EventTypes.Loitering,
             label: t('event.loitering', { count: 2 }),
           },
         ]
       : []),
-    // TODO:CVP2 add gap events
-    // ...(activeReportSubCategories?.includes('gap')
-    //   ? [
-    //       {
-    //         id: 'gap' as ReportEventsSubCategory,
-    //         label: t('event.gap'),
-    //         disabled: true,
-    //         tooltip: t('common.comingSoon'),
-    //         tooltipPlacement: 'top' as TooltipPlacement,
-    //       },
-    //     ]
-    //   : []),
-    ...(activeReportSubCategories?.includes('port_visit')
+    ...(activeReportSubCategories?.includes(EventTypes.Gap)
       ? [
           {
-            id: 'port_visit' as ReportEventsSubCategory,
+            id: EventTypes.Gap,
+            label: t('event.gap'),
+          },
+        ]
+      : []),
+    ...(activeReportSubCategories?.includes(EventTypes.Port)
+      ? [
+          {
+            id: EventTypes.Port,
             label: t('event.port_visit', { count: 2 }),
             tooltipPlacement: 'top' as TooltipPlacement,
           },

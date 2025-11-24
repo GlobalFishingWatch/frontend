@@ -1,4 +1,4 @@
-import { DataviewType } from '@globalfishingwatch/api-types'
+import { DataviewType, EventTypes } from '@globalfishingwatch/api-types'
 
 import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
 import {
@@ -60,7 +60,7 @@ export function EventsClusterTooltipRow({
         />
       )
     }
-    if (feature.layerId.includes('encounter') || feature.layerId.includes('encounters')) {
+    if (feature.layerId.includes(EventTypes.Encounter) || feature.layerId.includes('encounters')) {
       return (
         <EventsEncounterTooltipRow
           key={key}
@@ -71,7 +71,7 @@ export function EventsClusterTooltipRow({
         />
       )
     }
-    if (feature.layerId.includes('gap') || feature.layerId.includes('gaps')) {
+    if (feature.layerId.includes(EventTypes.Gap)) {
       return (
         <EventsGapTooltipRow
           key={key}
