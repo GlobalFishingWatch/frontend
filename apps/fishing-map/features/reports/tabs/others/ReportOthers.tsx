@@ -103,7 +103,7 @@ function ReportOthers() {
             <p className={cx(styles.summary)}>
               <Fragment>
                 <span>
-                  {totalValue.toFixed(2)}{' '}
+                  {totalValue % 1 === 0 ? totalValue.toString() : totalValue.toFixed(2)}{' '}
                   {hasAggregateByProperty
                     ? t('common.aggregatedBy', { property: dataview.config?.aggregateByProperty })
                     : t('common.points', { count: totalValue })}
