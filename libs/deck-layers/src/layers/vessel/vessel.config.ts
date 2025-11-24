@@ -19,18 +19,19 @@ export const SHAPES_ORDINALS: Record<EventShape, number> = {
 
 export const EVENT_SHAPES: Record<EventTypes, number> = {
   [EventTypes.Encounter]: SHAPES_ORDINALS.diamond,
-  [EventTypes.Loitering]: SHAPES_ORDINALS.diamondStroke,
-  [EventTypes.Port]: SHAPES_ORDINALS.square,
   [EventTypes.Fishing]: SHAPES_ORDINALS.circle,
   [EventTypes.Gap]: SHAPES_ORDINALS.x,
+  [EventTypes.Loitering]: SHAPES_ORDINALS.diamondStroke,
+  [EventTypes.Port]: SHAPES_ORDINALS.square,
 }
 
-export const EVENTS_COLORS: Record<string, Color> = {
-  encounter: hexToDeckColor('#FAE9A0'),
-  loitering: hexToDeckColor('#cfa9f9'),
-  port_visit: hexToDeckColor('#99EEFF'),
+export const EVENTS_COLORS: Record<EventTypes | 'highlight', Color> = {
+  [EventTypes.Encounter]: hexToDeckColor('#FAE9A0'),
+  [EventTypes.Fishing]: hexToDeckColor('#ffffff'),
+  [EventTypes.Gap]: hexToDeckColor('#f45d5e'),
+  [EventTypes.Loitering]: hexToDeckColor('#cfa9f9'),
+  [EventTypes.Port]: hexToDeckColor('#99EEFF'),
   highlight: hexToDeckColor('#ffffff'),
-  gaps: hexToDeckColor('#f45d5e'),
 }
 
 export const DEFAULT_FISHING_EVENT_COLOR = [255, 255, 255] as Color
