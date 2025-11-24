@@ -571,11 +571,9 @@ export const fetchClusterEventThunk = createAsyncThunk(
             if (!clusterEvent) {
               return rejectWithValue(`No event found for id: ${eventId}`)
             }
-            // TODO: check with API the inconsistency between 'gap' and 'gaps'
             if (
-              clusterEvent.type === 'encounter' ||
-              clusterEvent.type === 'gap' ||
-              clusterEvent.type === ('gaps' as any)
+              clusterEvent.type === EventTypes.Encounter ||
+              clusterEvent.type === EventTypes.Gap
             ) {
               // Workaround to grab information about each vessel dataset
               // will need discuss with API team to scale this for other types

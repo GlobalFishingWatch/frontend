@@ -39,10 +39,6 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
   getShape: {
     type: 'accessor',
     value: (d) => {
-      // TODO: check with API inconsistency between 'gap' and 'gaps'
-      if (d.type === 'gap' || d.type === 'gaps') {
-        return EVENT_SHAPES.gap
-      }
       return EVENT_SHAPES[d.type as EventTypes] ?? EVENT_SHAPES.fishing
     },
   },
