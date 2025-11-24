@@ -1,7 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 
-import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import type { DataviewType } from '@globalfishingwatch/api-types'
+import { DataviewCategory } from '@globalfishingwatch/api-types'
+import {
+  isUserPointsDataview,
+  type UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { groupContextDataviews } from '@globalfishingwatch/deck-layer-composer'
 
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
@@ -94,7 +98,7 @@ export const selectActiveCustomUserDataviews = selectActiveDataviewInstancesByCa
 export const selectActiveUserPointsDataviews = createSelector(
   [selectActiveCustomUserDataviews],
   (dataviews) => {
-    return dataviews.filter((dataview) => dataview.config?.type === DataviewType.UserPoints)
+    return dataviews.filter(isUserPointsDataview)
   }
 )
 
