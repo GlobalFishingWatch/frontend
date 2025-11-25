@@ -24,6 +24,7 @@ import {
   selectBivariateDataviews,
   selectDetectionsVisualizationMode,
   selectEnvironmentVisualizationMode,
+  selectVesselGroupsVisualizationMode,
 } from 'features/app/selectors/app.selectors'
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
 import {
@@ -135,6 +136,7 @@ export const useGlobalConfigConnect = () => {
   const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const environmentVisualizationMode = useSelector(selectEnvironmentVisualizationMode)
+  const vesselGroupsVisualizationMode = useSelector(selectVesselGroupsVisualizationMode)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
   const clickedFeatures = useSelector(selectClickedEvent)
@@ -196,6 +198,7 @@ export const useGlobalConfigConnect = () => {
       start,
       token: GFWAPI.token,
       trackGraphExtent,
+      vesselGroupsVisualizationMode,
       vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
       vesselTrackVisualizationMode: debugOptions.vesselsAsPositions ? 'positions' : 'track',
       ...(debugOptions.vesselsAsPositions &&
@@ -225,6 +228,7 @@ export const useGlobalConfigConnect = () => {
     visibleEvents,
     vesselsTimebarGraph,
     vesselsMaxTimeGapHours,
+    vesselGroupsVisualizationMode,
     highlightedFeatures,
     trackGraphExtent,
     onPositionsMaxPointsError,

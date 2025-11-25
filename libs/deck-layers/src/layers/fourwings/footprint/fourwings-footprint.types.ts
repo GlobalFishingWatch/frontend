@@ -6,6 +6,7 @@ import type { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/de
 import type {
   BaseFourwingsLayerProps,
   FourwingsHeatmapPickingObject,
+  FourwingsHeatmapResolution,
   FourwingsHeatmapTilesCache,
 } from '../fourwings.types'
 
@@ -13,6 +14,7 @@ export type _FourwingsFootprintTileLayerProps<DataT = FourwingsFeature> =
   BaseFourwingsLayerProps & {
     data?: DataT
     color?: string
+    resolution?: FourwingsHeatmapResolution
     availableIntervals?: FourwingsInterval[]
     highlightedFeatures?: FourwingsHeatmapPickingObject[]
   }
