@@ -27,6 +27,7 @@ export const HEATMAP_STATIC_ID = `${HEATMAP_ID}-static`
 export const POSITIONS_ID = 'positions'
 export const HEATMAP_STATIC_PROPERTY_ID = 'count'
 export const FOOTPRINT_ID = 'footprint'
+export const FOOTPRINT_HIGH_RES_ID = `${FOOTPRINT_ID}-high-res`
 
 export const SUPPORTED_POSITION_PROPERTIES = [/*'speed',*/ 'bearing', 'shipname', 'vessel_id']
 
