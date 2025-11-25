@@ -1,13 +1,15 @@
 import type { LayerContext, LayersList, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import { SolidPolygonLayer } from '@deck.gl/layers'
+import { PathStyleExtension } from '@deck.gl/extensions'
+import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
+import type { Feature } from 'geojson'
 
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { getLayerGroupOffset, HEATMAP_ID, LayerGroup } from '@globalfishingwatch/deck-layers'
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 
-import { COLOR_TRANSPARENT, hexToDeckColor } from '../../../utils'
+import { COLOR_HIGHLIGHT_LINE, COLOR_TRANSPARENT, hexToDeckColor } from '../../../utils'
 import type { FourwingsHeatmapPickingObject, FourwingsVectorsLayerProps } from '../fourwings.types'
 import { FourwingsAggregationOperation } from '../heatmap/fourwings-heatmap.types'
 import {
@@ -156,12 +158,6 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
     this.startFrame = startFrame
     this.endFrame = endFrame
 
-    const baseRadius = zoomOffset < 0 ? 100 : 200
-    const zoomScale = Math.pow(
-      2,
-      Math.abs(Math.round(this.props.tile.zoom + (zoomOffset || 0)) - 12)
-    )
-
     return [
       new VectorsLayer(
         this.props,
@@ -170,8 +166,14 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
           data,
           getFillColor: color,
           getRadius: (d: FourwingsFeature) => {
-            return baseRadius * zoomScale * ((90 - Math.abs(d.coordinates[1]) / 1.03) / 90)
+            // Calculate cell size to ensure arrow covers the cell
+            const cellWidth = d.coordinates[2] - d.coordinates[0]
+            const cellHeight = d.coordinates[5] - d.coordinates[1]
+            const latitude = (d.coordinates[1] + d.coordinates[5]) / 2
+            const metersPerDegreeLon = 111000 * Math.cos((latitude * Math.PI) / 180)
+            return Math.min(cellWidth * metersPerDegreeLon, cellHeight * 111000) * 1.5
           },
+          radiusUnits: 'meters',
           stroked: false,
           positionFormat: 'XY',
           filled: true,
@@ -189,6 +191,31 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
           },
         })
       ),
+      ...(this.props.debugTiles
+        ? [
+            new PathLayer(
+              this.props,
+              this.getSubLayerProps({
+                pickable: false,
+                material: false,
+                _normalize: false,
+                positionFormat: 'XY',
+                id: `fourwings-cell-borders`,
+                widthUnits: 'pixels',
+                widthMinPixels: 1,
+                getPath: (feature: FourwingsFeature | Feature) =>
+                  (feature as FourwingsFeature).coordinates
+                    ? (feature as FourwingsFeature).coordinates
+                    : (feature as Feature<any>).geometry.coordinates[0].flat(),
+                getColor: [255, 255, 255, 50],
+                getOffset: 0.5,
+                getPolygonOffset: (params: any) =>
+                  getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+                extensions: [new PathStyleExtension({ offset: true })],
+              })
+            ),
+          ]
+        : []),
       new SolidPolygonLayer(
         this.props,
         this.getSubLayerProps({

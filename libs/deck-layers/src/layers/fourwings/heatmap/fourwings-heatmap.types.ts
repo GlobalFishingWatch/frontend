@@ -143,6 +143,8 @@ export type FourwingsVectorsLayerProps = FourwingsHeatmapTileLayerProps & {
   data: FourwingsFeature[]
   maxVelocity?: number
   tilesCache: FourwingsHeatmapTilesCache
+  debugTiles?: boolean
+  // highlightedFeatures?: FourwingsPickingObject[]
 }
 
 export type _FourwingsHeatmapStaticLayerProps = Omit<

@@ -20,7 +20,7 @@ import { getDataviewAvailableIntervals } from './dataviews'
 export const resolveDeckVectorsLayerProps: DeckResolverFunction<
   FourwingsVectorsTileLayerProps,
   ResolvedFourwingsDataviewInstance
-> = (dataview, { start, end, highlightedFeatures }): FourwingsVectorsTileLayerProps => {
+> = (dataview, { start, end, highlightedFeatures, debugTiles }): FourwingsVectorsTileLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
 
@@ -76,6 +76,7 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
     category: dataview.category!,
     subcategory: dataview.config?.type,
     visualizationMode,
+    debugTiles,
     sublayers,
     maxZoom: 8,
     maxVelocity,

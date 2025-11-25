@@ -42,6 +42,7 @@ export type _FourwingsVectorsTileLayerProps<DataT = FourwingsFeature> = Omit<
   'sublayers'
 > & {
   data?: DataT
+  debugTiles?: boolean
   maxVelocity?: number
   availableIntervals?: FourwingsInterval[]
   highlightedFeatures?: FourwingsPickingObject[]
@@ -243,8 +244,8 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     const { visualizationMode, maxRequests, debounceTime, maxZoom } = this.props
 
     const cacheKey = this._getTileDataCacheKey()
-    const resolution = getResolutionByVisualizationMode(visualizationMode)
-    const zoomOffset = getZoomOffsetByResolution(resolution!, zoom)
+    const zoomOffset = zoom < 0.5 ? 0 : zoom < 1.5 ? -1 : -2
+
     return new TileLayer(
       this.props,
       this.getSubLayerProps({

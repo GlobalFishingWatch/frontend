@@ -41,8 +41,23 @@ export default class VectorsLayer<
   static layerName: string = 'CurrentsLayer'
 
   protected _getModel() {
-    // Define the vertices of a single triangle
-    const positions = new Float32Array([-0.5, -0.5, 0.5, -0.5, 0.0, 0.5])
+    // Define the vertices of an arrow shape based
+    const positions = new Float32Array([
+      // Left triangle (tip to bottom-left via notch)
+      0.0,
+      0.5, // top tip
+      -0.5,
+      -0.5, // bottom left
+      0.0,
+      -0.286, // notch point
+      // Right triangle (tip to bottom-right via notch)
+      0.0,
+      0.5, // top tip
+      0.0,
+      -0.286, // notch point
+      0.5,
+      -0.5, // bottom right
+    ])
 
     return new Model(this.context.device, {
       ...this.getShaders(),
@@ -110,20 +125,13 @@ export default class VectorsLayer<
           // Normalize velocity by maxVelocity and clamp to [0, 1] range
           float normalizedVelocity = clamp(instanceVelocity / vectors.maxVelocity, 0.0, 1.0);
 
-          // Compress values above 40% of maxVelocity to have similar size
-          // Values above 0.4 are compressed into a narrow range [0.4, 1.0] -> [0.75, 1.0]
-          float compressedVelocity;
-          if (normalizedVelocity <= 0.4) {
-            // Linear mapping for values 0-40%: [0, 0.4] -> [0, 0.75]
-            compressedVelocity = normalizedVelocity * (0.75 / 0.4);
-          } else {
-            // Compressed mapping for values 40-100%: [0.4, 1.0] -> [0.75, 1.0]
-            float t = (normalizedVelocity - 0.4) / 0.6; // normalize to [0, 1] for the upper range
-            compressedVelocity = mix(0.75, 1.0, t);
-          }
+          // Apply exponential scale: values above 0.6-0.7 approach full velocity
+          // Using exponential function: 1.0 - exp(-k * normalizedVelocity)
+          // k=5.0 ensures values at 0.6-0.7 map to ~0.95-0.97 (near full velocity)
+          float compressedVelocity = 1.0 - exp(-5.0 * normalizedVelocity);
 
           // Base size is similar for all triangles (length)
-          float baseLength = 0.5;
+          float baseLength = 0.65;
 
           // Width varies with velocity: lower velocities are narrower
           // Use a power curve to make lower velocities more narrow
@@ -140,15 +148,11 @@ export default class VectorsLayer<
         `,
         'vs:#main-end': `
           // Normalize velocity by maxVelocity and pass to fragment shader (only if valid)
-          // Apply same compression as in size calculation for consistency
+          // Apply same exponential scale as in size calculation for consistency
           float normalizedVelocity = instanceVelocity > 0.0 ? clamp(instanceVelocity / vectors.maxVelocity, 0.0, 1.0) : 0.0;
           vNormalizedVelocity = normalizedVelocity; // Pass original for brightness boost calculation
-          if (normalizedVelocity <= 0.4) {
-            vVelocity = normalizedVelocity * (0.75 / 0.4);
-          } else {
-            float t = (normalizedVelocity - 0.4) / 0.6;
-            vVelocity = mix(0.75, 1.0, t);
-          }
+          // Apply exponential scale: values above 0.6-0.7 (3-3.5 out of 5) approach full velocity
+          vVelocity = 1.0 - exp(-5.0 * normalizedVelocity);
         `,
         'fs:#decl': `
           in float vVelocity;
@@ -156,15 +160,18 @@ export default class VectorsLayer<
         `,
         'fs:DECKGL_FILTER_COLOR': `
           // Don't render if velocity is invalid or zero
-          if (vVelocity <= 0.0) {
+          if (vNormalizedVelocity <= 0.0) {
             discard;
           }
 
-          // Base opacity based on velocity (already compressed in vertex shader)
-          // Values above 40% will have similar opacity due to compression
-          float minOpacity = 0.25;
-          float maxOpacity = 0.9;
-          float baseSpeedOpacity = mix(minOpacity, maxOpacity, vVelocity);
+          // Base opacity based on velocity using exponential scale
+          // Apply exponential scale: values above 0.6-0.7 (3-3.5 out of 5) approach full opacity
+          // Using exponential function: 1.0 - exp(-k * normalizedVelocity)
+          // k=5.0 ensures values at 0.6-0.7 map to ~0.95-0.97 (near full opacity)
+          float exponentialVelocity = 1.0 - exp(-5.0 * vNormalizedVelocity);
+          float minOpacity = 0.1;
+          float maxOpacity = 1.0;
+          float baseSpeedOpacity = mix(minOpacity, maxOpacity, exponentialVelocity);
 
 
           // Apply gradient along triangle using geometry.uv
