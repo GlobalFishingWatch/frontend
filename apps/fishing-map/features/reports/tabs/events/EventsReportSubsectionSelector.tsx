@@ -41,14 +41,18 @@ function VesselGroupReportEventsSubsectionSelector() {
           },
         ]
       : []),
-    ...(activeReportSubCategories?.includes(EventTypes.Gap)
-      ? [
-          {
-            id: EventTypes.Gap,
-            label: t('event.gap'),
-          },
-        ]
-      : []),
+    // TODO:CVP2 add gap events
+    // ...(activeReportSubCategories?.includes('gap')
+    //   ? [
+    //       {
+    //         id: 'gap' as ReportEventsSubCategory,
+    //         label: t('event.gap'),
+    //         disabled: true,
+    //         tooltip: t('common.comingSoon'),
+    //         tooltipPlacement: 'top' as TooltipPlacement,
+    //       },
+    //     ]
+    //   : []),
     ...(activeReportSubCategories?.includes(EventTypes.Port)
       ? [
           {
