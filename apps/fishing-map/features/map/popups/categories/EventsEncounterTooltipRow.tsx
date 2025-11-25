@@ -109,28 +109,30 @@ function EncounterTooltipRow({
                                 {t(`vessel.vesselTypes.${event.vessel.type}`, event.vessel.type)}
                               </p>
                             )}
-                            <div className={styles.centered}>
-                              <span className={styles.rowText}>
-                                <VesselLink
-                                  vesselId={event.vessel.id}
-                                  datasetId={event.vessel.dataset}
-                                  query={{
-                                    vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-                                    vesselSelfReportedId: event.vessel.id,
-                                  }}
-                                >
-                                  {formatInfoField(event.vessel?.name, 'shipname')}
-                                </VesselLink>
-                              </span>
-                              {(event.vessel as ExtendedEventVessel).dataset && (
-                                <VesselPin
-                                  vesselToResolve={{
-                                    ...event.vessel,
-                                    datasetId: event.vessel.dataset,
-                                  }}
-                                />
-                              )}
-                            </div>
+                            {event.vessel && (
+                              <div className={styles.centered}>
+                                <span className={styles.rowText}>
+                                  <VesselLink
+                                    vesselId={event.vessel.id}
+                                    datasetId={event.vessel.dataset}
+                                    query={{
+                                      vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                                      vesselSelfReportedId: event.vessel.id,
+                                    }}
+                                  >
+                                    {formatInfoField(event.vessel?.name, 'shipname')}
+                                  </VesselLink>
+                                </span>
+                                {(event.vessel as ExtendedEventVessel).dataset && (
+                                  <VesselPin
+                                    vesselToResolve={{
+                                      ...event.vessel,
+                                      datasetId: event.vessel.dataset,
+                                    }}
+                                  />
+                                )}
+                              </div>
+                            )}
                           </div>
                         )}
                         {event.encounter?.vessel && (
@@ -168,29 +170,31 @@ function EncounterTooltipRow({
                           </div>
                         )}
                       </div>
-                      <div className={styles.row}>
-                        <VesselLink
-                          vesselId={event.vessel.id}
-                          datasetId={event.vessel.dataset}
-                          query={{
-                            vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-                            vesselSelfReportedId: event.vessel.id,
-                          }}
-                          eventId={event.id ? event.id.split('.')[0] : undefined}
-                          eventType={'encounter'}
-                          showTooltip={false}
-                          className={styles.btnLarge}
-                        >
-                          <Button
-                            target="_blank"
-                            size="small"
+                      {event.vessel && (
+                        <div className={styles.row}>
+                          <VesselLink
+                            vesselId={event.vessel.id}
+                            datasetId={event.vessel.dataset}
+                            query={{
+                              vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                              vesselSelfReportedId: event.vessel.id,
+                            }}
+                            eventId={event.id ? event.id.split('.')[0] : undefined}
+                            eventType={'encounter'}
+                            showTooltip={false}
                             className={styles.btnLarge}
-                            onClick={seeEncounterClick}
                           >
-                            {t('common.seeMore')}
-                          </Button>
-                        </VesselLink>
-                      </div>
+                            <Button
+                              target="_blank"
+                              size="small"
+                              className={styles.btnLarge}
+                              onClick={seeEncounterClick}
+                            >
+                              {t('common.seeMore')}
+                            </Button>
+                          </VesselLink>
+                        </div>
+                      )}
                     </Fragment>
                   ) : error ? (
                     <p className={styles.error}>{error}</p>

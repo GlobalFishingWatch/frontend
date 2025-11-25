@@ -68,6 +68,10 @@ export const selectEnvironmentVisualizationMode = selectWorkspaceStateProperty(
   'environmentVisualizationMode'
 )
 
+export const selectVesselGroupsVisualizationMode = selectWorkspaceStateProperty(
+  'vesselGroupsVisualizationMode'
+)
+
 export const selectMapRulersVisible = createSelector(
   [selectMapRulers, selectAreMapRulersVisible],
   (rulers, areMapRulersVisible): RulerData[] => {

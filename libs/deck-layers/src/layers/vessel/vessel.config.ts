@@ -1,7 +1,7 @@
 import type { Color } from '@deck.gl/core'
 
 import { ThinningLevels } from '@globalfishingwatch/api-client'
-import type { EventTypes } from '@globalfishingwatch/api-types'
+import { EventTypes } from '@globalfishingwatch/api-types'
 
 import { hexToDeckColor } from '../../utils'
 
@@ -18,19 +18,20 @@ export const SHAPES_ORDINALS: Record<EventShape, number> = {
 }
 
 export const EVENT_SHAPES: Record<EventTypes, number> = {
-  encounter: SHAPES_ORDINALS.diamond,
-  loitering: SHAPES_ORDINALS.diamondStroke,
-  port_visit: SHAPES_ORDINALS.square,
-  fishing: SHAPES_ORDINALS.circle,
-  gap: SHAPES_ORDINALS.x,
+  [EventTypes.Encounter]: SHAPES_ORDINALS.diamond,
+  [EventTypes.Fishing]: SHAPES_ORDINALS.circle,
+  [EventTypes.Gap]: SHAPES_ORDINALS.x,
+  [EventTypes.Loitering]: SHAPES_ORDINALS.diamondStroke,
+  [EventTypes.Port]: SHAPES_ORDINALS.square,
 }
 
-export const EVENTS_COLORS: Record<string, Color> = {
-  encounter: hexToDeckColor('#FAE9A0'),
-  loitering: hexToDeckColor('#cfa9f9'),
-  port_visit: hexToDeckColor('#99EEFF'),
+export const EVENTS_COLORS: Record<EventTypes | 'highlight', Color> = {
+  [EventTypes.Encounter]: hexToDeckColor('#FAE9A0'),
+  [EventTypes.Fishing]: hexToDeckColor('#ffffff'),
+  [EventTypes.Gap]: hexToDeckColor('#f45d5e'),
+  [EventTypes.Loitering]: hexToDeckColor('#cfa9f9'),
+  [EventTypes.Port]: hexToDeckColor('#99EEFF'),
   highlight: hexToDeckColor('#ffffff'),
-  gaps: hexToDeckColor('#f45d5e'),
 }
 
 export const DEFAULT_FISHING_EVENT_COLOR = [255, 255, 255] as Color

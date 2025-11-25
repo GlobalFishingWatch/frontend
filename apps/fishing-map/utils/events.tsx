@@ -19,7 +19,8 @@ export const getEventColors = ({ type }: { type: ApiEvent['type'] }) => {
   //   colorKey = `${colorKey}${event.encounter?.authorizationStatus}`
   // }
   const color = EVENTS_COLORS[colorKey]
-  const colorLabels = EVENTS_COLORS[`${colorKey}Labels`]
+  const labelsKey = `${colorKey}Labels` as keyof typeof EVENTS_COLORS
+  const colorLabels = EVENTS_COLORS[labelsKey]
   return {
     color,
     colorLabels,
@@ -125,11 +126,6 @@ export const getEventDescription = ({
       descriptionGeneric = t('event.fishing')
       break
     case EventTypes.Gap:
-      description = t('event.gapAction', time)
-      descriptionGeneric = t('event.gap')
-      break
-    // TODO: check with API inconsistency between 'gap' and 'gaps'
-    case 'gaps' as any:
       description = t('event.gapAction', time)
       descriptionGeneric = t('event.gap')
       break

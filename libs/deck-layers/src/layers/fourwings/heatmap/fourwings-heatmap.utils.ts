@@ -12,6 +12,7 @@ import { CONFIG_BY_INTERVAL, getFourwingsInterval } from '@globalfishingwatch/de
 
 import { getUTCDateTime } from '../../../utils'
 import {
+  FOOTPRINT_HIGH_RES_ID,
   getChunkByInterval,
   HEATMAP_API_TILES_URL,
   HEATMAP_HIGH_RES_ID,
@@ -347,7 +348,7 @@ export function filterCells(value: any, index: number, minValue?: number, maxVal
 export const getResolutionByVisualizationMode = (
   visualizationMode?: FourwingsVisualizationMode
 ) => {
-  if (visualizationMode === HEATMAP_HIGH_RES_ID) {
+  if (visualizationMode === HEATMAP_HIGH_RES_ID || visualizationMode === FOOTPRINT_HIGH_RES_ID) {
     return 'high'
   } else if (visualizationMode === HEATMAP_LOW_RES_ID) {
     return 'low'
