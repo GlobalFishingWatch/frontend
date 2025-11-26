@@ -92,12 +92,6 @@ function ReportOthers() {
         const totalValue = timeseriesStats?.[mergedDataviewId]
           ? getStatsValue(timeseriesStats[mergedDataviewId], 'total')
           : undefined
-        const formattedTotalValue =
-          totalValue !== undefined
-            ? totalValue % 1 === 0
-              ? totalValue.toString()
-              : totalValue.toFixed(2)
-            : undefined
         const statsValues = timeseriesStats?.[mergedDataviewId]
           ? getStatsValue(timeseriesStats[mergedDataviewId], 'values')
           : undefined
@@ -107,7 +101,7 @@ function ReportOthers() {
         const hasDataviewSchemaFilters = dataviews.some((d) => getHasDataviewSchemaFilters(d))
 
         const StatsComponent =
-          formattedTotalValue !== undefined ? (
+          totalValue !== undefined ? (
             <p className={cx(styles.summary)}>
               <Fragment>
                 <span>
@@ -116,7 +110,7 @@ function ReportOthers() {
                   {hasAggregateByProperty &&
                     ' ' +
                       t('common.aggregatedBy', {
-                        total: formatI18nNumber(formattedTotalValue),
+                        total: formatI18nNumber(totalValue),
                         property: dataview.config?.aggregateByProperty,
                       })}{' '}
                   {t('analysis.insideYourArea')}
