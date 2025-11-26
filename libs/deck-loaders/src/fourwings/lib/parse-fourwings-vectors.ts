@@ -3,7 +3,7 @@ import Pbf from 'pbf'
 
 import type { BBox } from '../helpers/cells'
 import { generateUniqueId, getCellCoordinates, getCellProperties } from '../helpers/cells'
-import { CONFIG_BY_INTERVAL, getTimeRangeKey } from '../helpers/time'
+import { CONFIG_BY_INTERVAL } from '../helpers/time'
 
 import type {
   FourwingsFeature,
@@ -20,7 +20,7 @@ export const CELL_END_INDEX = 2
 export const CELL_VALUES_START_INDEX = 3
 const RAD_TO_DEG = 180 / Math.PI
 
-export const getCellTimeseries = (
+export const getCellVectorValues = (
   _: unknown,
   data: {
     features: Map<number, FourwingsFeature>
@@ -34,7 +34,6 @@ export const getCellTimeseries = (
   const {
     bufferedStartDate,
     interval,
-    initialTimeRange,
     scale,
     offset,
     noDataValue,
@@ -44,15 +43,7 @@ export const getCellTimeseries = (
     buffersLength,
   } = data.options || ({} as ParseFourwingsVectorsOptions)
 
-  const aggregationOperation = 'avg'
   const tileStartFrame = CONFIG_BY_INTERVAL[interval].getIntervalFrame(bufferedStartDate)
-  const timeRangeStartFrame =
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.start as number) -
-    tileStartFrame
-  const timeRangeEndFrame =
-    CONFIG_BY_INTERVAL[interval].getIntervalFrame(initialTimeRange?.end as number) - tileStartFrame
-
-  const timeRangeKey = getTimeRangeKey(timeRangeStartFrame, timeRangeEndFrame)
 
   const tileBBox: BBox = [
     (tile?.bbox as GeoBoundingBox).west,
@@ -102,16 +93,15 @@ export const getCellTimeseries = (
             properties: {
               col,
               row,
-              // values array not needed for vectors, but required by type - using empty array
+              // not needed for vectors, but required by types
               values: [],
+              initialValues: {},
               // Single dates array shared by both sublayers (U and V have same time steps)
               // Store in dates[0], dates[1] will remain empty
               dates: [new Array(numTimeSteps)],
               cellId: generateUniqueId(tile!.index.x, tile!.index.y, cellNum),
               cellNum,
               startOffsets: new Array(sublayersLength),
-              initialValues: { [timeRangeKey]: new Array(sublayersLength) },
-              // Initialize velocity and direction arrays for vector calculations
               velocities: new Array(numTimeSteps),
               directions: new Array(numTimeSteps),
             },
@@ -136,7 +126,6 @@ export const getCellTimeseries = (
 
         // calculate how many values are in the tile
         const numCellValues = endFrame - startFrame + 1
-        const numValuesBySubLayer = new Array(sublayersLength).fill(0)
         const sublayerScale = scale?.[subLayerIndex] ?? SCALE_VALUE
         const sublayerOffset = offset?.[subLayerIndex] ?? OFFSET_VALUE
         const sublayerNoDataValue = noDataValue?.[subLayerIndex] ?? NO_DATA_VALUE
@@ -148,7 +137,6 @@ export const getCellTimeseries = (
             if (!currentFeature.properties.startOffsets[subLayerIndex]) {
               // create properties for this sublayer if the feature dind't have it already
               currentFeature.properties.startOffsets[subLayerIndex] = startFrame
-              currentFeature.properties.initialValues[timeRangeKey][subLayerIndex] = 0
             }
             const timeStepIndex = Math.floor(j)
             const scaledValue = cellValue * sublayerScale - sublayerOffset
@@ -159,13 +147,6 @@ export const getCellTimeseries = (
                 startFrame + tileStartFrame + j
               )
             }
-
-            // sum current value to the initialValue for this sublayer
-            if (j + startFrame >= timeRangeStartFrame && j + startFrame < timeRangeEndFrame) {
-              currentFeature.properties.initialValues[timeRangeKey][subLayerIndex] += scaledValue
-              numValuesBySubLayer[subLayerIndex] = numValuesBySubLayer[subLayerIndex] + 1
-            }
-
             // Store U values temporarily when processing first sublayer
             if (subLayerIndex === 0) {
               const uValues = data.uValuesByCell.get(cellNum)
@@ -173,7 +154,6 @@ export const getCellTimeseries = (
                 uValues[timeStepIndex] = scaledValue
               }
             }
-
             // Calculate velocity and direction when processing the second sublayer
             // Convention: subLayerIndex 0 is U (eastward), subLayerIndex 1 is V (northward)
             // This assumes vectors always have exactly 2 sublayers
@@ -204,11 +184,6 @@ export const getCellTimeseries = (
             }
           }
         }
-        if (aggregationOperation === 'avg') {
-          currentFeature.properties.initialValues[timeRangeKey][subLayerIndex] =
-            currentFeature.properties.initialValues[timeRangeKey][subLayerIndex] /
-            numValuesBySubLayer[subLayerIndex]
-        }
 
         // resseting indexInCell to start with the new cell
         indexInCell = -1
@@ -231,13 +206,14 @@ export const parseFourwingsVectors = (
   if (!vectorsOptions || !vectorsOptions?.buffersLength?.length) {
     return []
   }
+
   const parseData = {
     options: vectorsOptions,
     features: new Map<number, FourwingsFeature>(),
     uValuesByCell: new Map<number, number[]>(),
   }
 
-  const featuresMap = new Pbf(datasetsBuffer).readFields(getCellTimeseries, parseData).features
+  const featuresMap = new Pbf(datasetsBuffer).readFields(getCellVectorValues, parseData).features
 
   const features = Array.from(featuresMap.values())
 
