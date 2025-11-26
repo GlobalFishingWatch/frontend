@@ -137,6 +137,7 @@ export const getPointsTimeseriesStats = ({ features, instance }: GetPointsTimese
   return {
     type: 'points' as const,
     total: values?.reduce((acc, value) => acc + value, 0),
+    count: features[0].contained.length,
     values,
   }
 }

@@ -9,9 +9,8 @@ import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
-import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
 import { selectOthersActiveReportDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import {
   useComputeReportTimeSeries,
@@ -93,21 +92,35 @@ function ReportOthers() {
         const totalValue = timeseriesStats?.[mergedDataviewId]
           ? getStatsValue(timeseriesStats[mergedDataviewId], 'total')
           : undefined
+        const formattedTotalValue =
+          totalValue !== undefined
+            ? totalValue % 1 === 0
+              ? totalValue.toString()
+              : totalValue.toFixed(2)
+            : undefined
         const statsValues = timeseriesStats?.[mergedDataviewId]
           ? getStatsValue(timeseriesStats[mergedDataviewId], 'values')
+          : undefined
+        const statsCounts = timeseriesStats?.[mergedDataviewId]
+          ? getStatsValue(timeseriesStats[mergedDataviewId], 'count')
           : undefined
         const hasDataviewSchemaFilters = dataviews.some((d) => getHasDataviewSchemaFilters(d))
 
         const StatsComponent =
-          totalValue !== undefined ? (
+          formattedTotalValue !== undefined ? (
             <p className={cx(styles.summary)}>
               <Fragment>
                 <span>
-                  {totalValue % 1 === 0 ? totalValue.toString() : totalValue.toFixed(2)}{' '}
-                  {hasAggregateByProperty
-                    ? t('common.aggregatedBy', { property: dataview.config?.aggregateByProperty })
-                    : t('common.points', { count: totalValue })}
-                </span>{' '}
+                  {statsCounts}
+                  {' ' + t('common.points', { count: totalValue })}
+                  {hasAggregateByProperty &&
+                    ' ' +
+                      t('common.aggregatedBy', {
+                        total: formatI18nNumber(formattedTotalValue),
+                        property: dataview.config?.aggregateByProperty,
+                      })}{' '}
+                  {t('analysis.insideYourArea')}
+                </span>
                 {statsValues && statsValues?.length > 1 && (
                   <Fragment>
                     (
@@ -123,14 +136,6 @@ function ReportOthers() {
                     ))}
                     ){' '}
                   </Fragment>
-                )}
-                {hasTimeFilter ? (
-                  <span>
-                    {t('common.between')} <strong>{formatI18nDate(start)}</strong> {t('common.and')}{' '}
-                    <strong>{formatI18nDate(end)}</strong>
-                  </span>
-                ) : (
-                  <span>{t('analysis.insideYourArea')}</span>
                 )}
               </Fragment>
             </p>
