@@ -63,6 +63,31 @@ div.modalContent {
   padding-bottom: var(--space-XL);
 }
 
+.content table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: var(--box-shadow);
+  margin-top: var(--space-M);
+  margin-bottom: var(--space-S);
+  background-color: var(--color-white);
+}
+
+.content th {
+  color: white;
+  padding: var(--space-S);
+  text-align: left;
+  font-weight: bold;
+}
+
+.content td {
+  padding: 10px;
+  border-bottom: var(--border);
+}
+
+.content tr:hover {
+  background-color: var(--color-off-white);
+}
+
 .subtitle {
   font: var(--font-S);
   text-transform: uppercase;
