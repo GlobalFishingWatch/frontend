@@ -58,6 +58,13 @@ export function getUserContextLayerLabel(
   if (!label || (typeof label === 'string' && /^[[{]/.test(label?.trim()))) {
     return getDatasetLabel(dataset)
   }
+
+  // Check if the label is a timestamp after the year 2012
+  const timestamp = Number(label)
+  if (!isNaN(timestamp) && timestamp > 1325376000000) {
+    return formatI18nDate(timestamp)
+  }
+
   return label
 }
 
