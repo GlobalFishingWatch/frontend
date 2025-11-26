@@ -1,4 +1,5 @@
-import type { Accessor, DefaultProps, LayerDataSource, LayerProps } from '@deck.gl/core'
+import type { Accessor, DefaultProps, LayerDataSource } from '@deck.gl/core'
+import type { ScatterplotLayerProps } from '@deck.gl/layers'
 import { ScatterplotLayer } from '@deck.gl/layers'
 import { Geometry, Model } from '@luma.gl/engine'
 
@@ -9,7 +10,8 @@ type _VectorsLayerProps<DataT> = {
   maxVelocity?: number
 }
 
-export type VectorsLayerProps<DataT = unknown> = _VectorsLayerProps<DataT> & LayerProps
+export type VectorsLayerProps<DataT = unknown> = _VectorsLayerProps<DataT> &
+  ScatterplotLayerProps<DataT>
 
 const defaultProps: DefaultProps<VectorsLayerProps> = {
   data: { type: 'data', value: [] },
@@ -130,15 +132,17 @@ export default class VectorsLayer<
           // k=5.0 ensures values at 0.6-0.7 map to ~0.95-0.97 (near full velocity)
           float compressedVelocity = 1.0 - exp(-5.0 * normalizedVelocity);
 
-          // Base size is similar for all triangles (length)
-          float baseLength = 0.65;
+          // Length varies with velocity: lower velocities are shorter
+          // Use a power curve to make lower velocities shorter
+          float lengthFactor = pow(compressedVelocity, 0.5);
+          float baseLength = mix(0.3, 0.65, lengthFactor);
 
           // Width varies with velocity: lower velocities are narrower
           // Use a power curve to make lower velocities more narrow
           float widthFactor = pow(compressedVelocity, 0.5);
           float baseWidth = mix(0.3, 0.7, widthFactor);
 
-          // Apply: x-axis (width) varies, y-axis (length) is more constant
+          // Apply: both x-axis (width) and y-axis (length) vary with velocity
           size.x *= baseWidth;
           size.y *= baseLength;
 
