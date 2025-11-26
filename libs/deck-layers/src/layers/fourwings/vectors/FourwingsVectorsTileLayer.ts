@@ -229,6 +229,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
             startTime,
             endTime,
             availableIntervals,
+            chunksBuffer: this.chunksBuffer,
           }),
         })
       })
