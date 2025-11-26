@@ -1,15 +1,51 @@
-import { TimebarTracks } from '@globalfishingwatch/timebar'
+import { useCallback } from 'react'
+import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
-import { useTimebarPoints } from './timebar-vessel.hooks'
+import type { HighlighterCallbackFn, HighlighterCallbackFnArgs } from '@globalfishingwatch/timebar'
+import { TimebarStackedActivity } from '@globalfishingwatch/timebar'
+
+import { selectActiveUserPointsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { t } from 'features/i18n/i18n'
+import { formatNumber } from 'utils/info'
+
+import { useTimebarPoints } from './TimebarPointsGraph.hooks'
+
+import styles from './Timebar.module.css'
 
 const TimebarPointsGraph = () => {
-  const points = useTimebarPoints()
+  const { loading, points, dataviews } = useTimebarPoints()
+  const activeDataviews = useSelector(selectActiveUserPointsDataviews)
 
-  if (!points || points.length === 0) {
+  const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
+    ({ value }: HighlighterCallbackFnArgs) => {
+      if (!value || !value.value) return ''
+      const labels = [
+        formatNumber(value.value),
+        t('common.points', { count: value.value }).toLocaleLowerCase(),
+        t('common.onScreen'),
+      ]
+
+      return labels.join(' ')
+    },
+    []
+  )
+
+  if (!points || points.length === 0 || !activeDataviews?.length) {
     return null
   }
 
-  return <TimebarTracks key="tracks" data={points} />
+  return (
+    <div className={cx({ [styles.loading]: loading })}>
+      <TimebarStackedActivity
+        key="points"
+        timeseries={points}
+        dataviews={dataviews}
+        highlighterCallback={getActivityHighlighterLabel}
+        highlighterIconCallback="dots"
+      />
+    </div>
+  )
 }
 
 export default TimebarPointsGraph

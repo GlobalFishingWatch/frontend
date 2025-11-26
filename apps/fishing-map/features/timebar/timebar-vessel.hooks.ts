@@ -5,8 +5,7 @@ import { atom, useAtom, useAtomValue } from 'jotai'
 import type { TrackSegment } from '@globalfishingwatch/api-types'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
-import { UserPointsTileLayer, UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
-import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
 import type {
   HighlighterCallbackFnArgs,
   TimebarChartChunk,
@@ -16,7 +15,6 @@ import type {
 } from '@globalfishingwatch/timebar'
 
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
-import { selectActiveUserPointsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   selectTimebarTrackDataviews,
   selectVesselsDataviews,
@@ -24,7 +22,6 @@ import {
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimebarVisualisationConnect } from 'features/timebar/timebar.hooks'
-import { getTimebarChunksFromPoints } from 'features/timebar/timebar.utils'
 import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
 import { selectVesselsMaxTimeGapHours } from 'routes/routes.selectors'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
@@ -422,141 +419,4 @@ export const useTimebarVesselEvents = () => {
   }, [vesselsWithEventsLoaded, timebarGraph, visibleEvents, eventsColor, timebarVisualisation])
 
   return timebarVesselEvents
-}
-
-const pointsAtom = atom<PointsAtom | undefined>(undefined)
-export const useTimebarPointsData = () => {
-  return useAtomValue(pointsAtom)
-}
-
-type PointsAtom = TimebarChartData<any>
-export const useTimebarPoints = () => {
-  const [points, setPoints] = useAtom(pointsAtom)
-
-  const dataviews = useSelector(selectActiveUserPointsDataviews)
-  const ids = useMemo(() => (dataviews?.length ? dataviews.map((d) => d.id) : []), [dataviews])
-
-  const userPointsLayers = useGetDeckLayers<UserPointsTileLayer>(ids).filter(
-    (layer) => layer.instance instanceof UserPointsTileLayer
-  )
-
-  const pointsLoaded = useMemo(
-    () =>
-      userPointsLayers.flatMap((v) => {
-        const loaded = v.instance.isLoaded
-        return loaded ? v.id : []
-      }),
-    [userPointsLayers]
-  )
-
-  const pointsColorHash = useMemo(
-    () =>
-      userPointsLayers
-        .flatMap((v) => {
-          const color = v.instance.getColor()
-          const cacheHash =
-            'cacheHash' in v.instance && v.instance.cacheHash
-              ? (v.instance.cacheHash as string)
-              : ''
-          if (!color && !cacheHash) {
-            return []
-          }
-          return `${color}-${cacheHash}`
-        })
-        .join(','),
-    [userPointsLayers]
-  )
-
-  useEffect(() => {
-    if (userPointsLayers?.length) {
-      setPoints((points) => {
-        if (!points?.length) {
-          return points
-        }
-        return points.map((point, index) => {
-          if (!userPointsLayers[index]) {
-            return point
-          }
-          const color = userPointsLayers[index]?.instance?.getColor()
-          return {
-            ...point,
-            color,
-            chunks: point.chunks.map((chunk) => {
-              return {
-                ...chunk,
-                color,
-              }
-            }),
-          }
-        })
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pointsColorHash])
-
-  useEffect(() => {
-    const processPoints = async () => {
-      if (userPointsLayers?.length) {
-        const pointsPromises = userPointsLayers.map(async ({ instance }) => {
-          const loaded = instance.isLoaded
-          const status = loaded ? ResourceStatus.Finished : ResourceStatus.Loading
-          const segments = instance?.getData({
-            includeNonTemporalFeatures: true,
-          })
-
-          const pointsGraphData: TimebarChartItem<{ color: string }> = {
-            id: instance.id,
-            color: instance.getColor(),
-            chunks: [] as TimebarChartChunk<{ color: string }>[],
-            status,
-            props: {
-              segmentsOffsetY: false,
-            },
-            getHighlighterLabel: getUserTrackHighlighterLabel,
-            getHighlighterIcon: 'vessel',
-          }
-
-          if (segments?.length && status === ResourceStatus.Finished) {
-            const { startTime, endTime, startTimeProperty, endTimeProperty } = instance.props
-
-            if (startTime && endTime && startTimeProperty) {
-              const interval = getFourwingsInterval(startTime, endTime)
-
-              const chunks = getTimebarChunksFromPoints(segments, {
-                start: startTime,
-                end: endTime,
-                interval: interval || 'MONTH',
-                startTimeProperty,
-                endTimeProperty,
-              })
-
-              const color = instance.getColor()
-              pointsGraphData.chunks = chunks.map((chunk) => ({
-                start: chunk.start,
-                end: chunk.end,
-                props: { color },
-                values: chunk.values.map((feature) => ({
-                  timestamp: feature.properties?.[startTimeProperty] || 0,
-                  value: 1,
-                })),
-              })) as TimebarChartChunk<{ color: string }>[]
-            }
-          }
-          return pointsGraphData
-        })
-
-        const points = await Promise.all(pointsPromises)
-        setPoints(points as any)
-      } else {
-        setPoints(undefined)
-      }
-    }
-
-    requestAnimationFrame(() => {
-      processPoints()
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pointsLoaded, userPointsLayers])
-
-  return points
 }

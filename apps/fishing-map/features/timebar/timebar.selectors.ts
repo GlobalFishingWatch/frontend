@@ -19,8 +19,8 @@ import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveEventsDataviews,
+  selectActiveUserPointsDataviews,
   selectActiveVesselGroupDataviews,
-  selectCustomUserDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
@@ -40,7 +40,7 @@ export const selectActiveActivityDataviewsByVisualisation = (
       selectActiveEventsDataviews,
       selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
       selectActiveVesselGroupDataviews,
-      selectCustomUserDataviews,
+      selectActiveUserPointsDataviews,
       selectTimebarSelectedEnvId,
       selectTimebarSelectedVGId,
     ],
