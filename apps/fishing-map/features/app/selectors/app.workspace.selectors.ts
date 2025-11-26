@@ -15,6 +15,7 @@ import {
   selectMapAnnotations,
   selectMapRulers,
   selectSidebarOpen,
+  selectVesselGroupsVisualizationMode,
   selectVisibleEvents,
 } from 'features/app/selectors/app.selectors'
 import {
@@ -158,6 +159,7 @@ const selectWorkspaceAppState = createSelector(
     selectActivityVisualizationMode,
     selectDetectionsVisualizationMode,
     selectEnvironmentVisualizationMode,
+    selectVesselGroupsVisualizationMode,
   ],
   (
     activityCategory,
@@ -175,7 +177,8 @@ const selectWorkspaceAppState = createSelector(
     daysFromLatest,
     activityVisualizationMode,
     detectionsVisualizationMode,
-    environmentVisualizationMode
+    environmentVisualizationMode,
+    vesselGroupsVisualizationMode
   ) => {
     return {
       activityCategory,
@@ -192,6 +195,7 @@ const selectWorkspaceAppState = createSelector(
       activityVisualizationMode,
       detectionsVisualizationMode,
       environmentVisualizationMode,
+      vesselGroupsVisualizationMode,
       ...reportState,
       daysFromLatest,
     }

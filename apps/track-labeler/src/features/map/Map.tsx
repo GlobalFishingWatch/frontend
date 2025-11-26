@@ -43,7 +43,7 @@ const MapComponent = (): React.ReactElement<any> => {
   const setViewState = useMapSetViewState()
   const viewState = useMapViewState()
   const actionShortcuts = useSelector(getActionShortcuts)
-  const legengLabels = useSelector(selectLegendLabels)
+  const legendLabels = useSelector(selectLegendLabels)
   const { onMapClick } = useMapClick()
   const { dispatchHiddenLabels, hiddenLabels } = useHiddenLabelsConnect()
 
@@ -148,8 +148,8 @@ const MapComponent = (): React.ReactElement<any> => {
       />
 
       <div className={styles.legendContainer}>
-        {legengLabels &&
-          legengLabels.map((legend) => (
+        {legendLabels &&
+          legendLabels.map((legend) => (
             // eslint-disable-next-line jsx-a11y/no-static-element-interactions
             <div
               key={legend.id}

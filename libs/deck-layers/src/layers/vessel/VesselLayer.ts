@@ -243,6 +243,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
               maxTimeGapHours,
             },
           },
+          maxTimeGapHours,
           visualizationMode: trackVisualizationMode,
           trackGraphExtent,
           type: TRACK_LAYER_TYPE,
@@ -323,7 +324,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
               if (d.type === EventTypes.Fishing) {
                 return singleTrack ? DEFAULT_FISHING_EVENT_COLOR : color
               }
-              return EVENTS_COLORS[d.type]
+              return EVENTS_COLORS[d.type as EventTypes]
             },
             radiusUnits: 'pixels',
             getRadius: (d: any) => {

@@ -105,7 +105,10 @@ const TracksEvents = ({
           } else if (useTrackColor || event.type === 'fishing') {
             color = trackEvents.color as string
           }
-          const eventSizeByType = Math.min(eventSize, event.type === 'fishing' ? 5 : 15)
+          const eventSizeByType = Math.min(
+            eventSize,
+            event.type === 'fishing' ? 5 : event.type === 'gaps' ? 10 : 15
+          )
           const borderSize = eventSizeByType >= 10 ? 1.5 : 1
           return (
             <div

@@ -11,6 +11,7 @@ import type {
   FourwingsPositionsPickingObject,
 } from './positions/fourwings-positions.types'
 import type {
+  FOOTPRINT_HIGH_RES_ID,
   FOOTPRINT_ID,
   HEATMAP_HIGH_RES_ID,
   HEATMAP_ID,
@@ -29,6 +30,7 @@ export type FourwingsVisualizationMode =
   | typeof HEATMAP_LOW_RES_ID
   | typeof POSITIONS_ID
   | typeof FOOTPRINT_ID
+  | typeof FOOTPRINT_HIGH_RES_ID
 
 export type GetViewportDataParams = {
   onlyValuesAndDates?: boolean

@@ -19,6 +19,10 @@
   },
   "plugins": [
     {
+      "plugin": "@nx/js",
+      "options": {}
+    },
+    {
       "plugin": "@nx/eslint/plugin",
       "options": {
         "targetName": "lint"

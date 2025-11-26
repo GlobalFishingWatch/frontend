@@ -47,6 +47,7 @@ type UserSliceState = { user: UserState }
 export type UserGroup =
   | 'belize'
   | 'brazil'
+  | 'chile'
   | 'costa rica'
   | 'ecuador'
   | 'panama'
@@ -55,6 +56,7 @@ export type UserGroup =
   | 'ssf-aruna'
   | 'ssf-rare'
   | 'ssf-ipnlf'
+
 export const USER_GROUP_WORKSPACE: Partial<Record<UserGroup, string>> = {
   'costa rica': 'costa_rica',
   'papua new guinea': 'papua_new_guinea',

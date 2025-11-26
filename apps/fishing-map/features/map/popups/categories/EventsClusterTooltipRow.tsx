@@ -1,15 +1,17 @@
-import { DataviewType } from '@globalfishingwatch/api-types'
+import { DataviewType, EventTypes } from '@globalfishingwatch/api-types'
 
 import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
 import {
   ENCOUNTER_EVENTS_SOURCES,
+  GAPS_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
 } from 'features/dataviews/dataviews.utils'
-import ClusterEventTooltipRow from 'features/map/popups/categories/ClusterEventRow'
-import GenericClusterTooltipRow from 'features/map/popups/categories/ClusterGenericTooltipRow'
-import EncounterTooltipRow from 'features/map/popups/categories/EncounterTooltipRow'
-import PortVisitEventTooltipRow from 'features/map/popups/categories/PortVisitEventTooltipRow'
+import EventsClusterRow from 'features/map/popups/categories/EventsClusterRow'
+import EventsEncounterTooltipRow from 'features/map/popups/categories/EventsEncounterTooltipRow'
+import EventsGapTooltipRow from 'features/map/popups/categories/EventsGapTooltipRow'
+import EventsGenericClusterTooltipRow from 'features/map/popups/categories/EventsGenericClusterTooltipRow'
+import EventsPortVisitTooltipRow from 'features/map/popups/categories/EventsPortVisitTooltipRow'
 import { VESSEL_GROUP_EVENTS_DATAVIEW_IDS } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 
 import type {
@@ -18,7 +20,7 @@ import type {
   SliceExtendedClusterPickingObject,
 } from '../../map.slice'
 
-type ClusterTooltipRowProps = {
+type EventsClusterTooltipRowProps = {
   feature: SliceExtendedClusterPickingObject
   showFeaturesDetails: boolean
   error?: string
@@ -30,15 +32,16 @@ const GFW_CLUSTER_LAYERS = [
   ...ENCOUNTER_EVENTS_SOURCES,
   PORT_VISITS_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,
+  GAPS_EVENTS_SOURCE_ID,
   ...VESSEL_GROUP_EVENTS_DATAVIEW_IDS,
 ]
 
-export function ClusterTooltipRow({
+export function EventsClusterTooltipRow({
   feature,
   showFeaturesDetails,
   loading,
   error,
-}: ClusterTooltipRowProps) {
+}: EventsClusterTooltipRowProps) {
   const isGFWCluster = GFW_CLUSTER_LAYERS.some((source) => {
     const id = feature.layerId.split(LAYER_LIBRARY_ID_SEPARATOR)[0]
     return feature.subcategory === DataviewType.FourwingsTileCluster && id.includes(source)
@@ -48,7 +51,7 @@ export function ClusterTooltipRow({
   if (isGFWCluster) {
     if (feature.layerId.includes('port')) {
       return (
-        <PortVisitEventTooltipRow
+        <EventsPortVisitTooltipRow
           key={key}
           loading={loading}
           error={error}
@@ -57,9 +60,20 @@ export function ClusterTooltipRow({
         />
       )
     }
-    if (feature.layerId.includes('encounter') || feature.layerId.includes('encounters')) {
+    if (feature.layerId.includes(EventTypes.Encounter) || feature.layerId.includes('encounters')) {
       return (
-        <EncounterTooltipRow
+        <EventsEncounterTooltipRow
+          key={key}
+          loading={loading}
+          error={error}
+          feature={eventFeature}
+          showFeaturesDetails={showFeaturesDetails}
+        />
+      )
+    }
+    if (feature.layerId.includes(EventTypes.Gap)) {
+      return (
+        <EventsGapTooltipRow
           key={key}
           loading={loading}
           error={error}
@@ -69,7 +83,7 @@ export function ClusterTooltipRow({
       )
     }
     return (
-      <ClusterEventTooltipRow
+      <EventsClusterRow
         key={key}
         loading={loading}
         error={error}
@@ -79,7 +93,7 @@ export function ClusterTooltipRow({
     )
   }
   return (
-    <GenericClusterTooltipRow
+    <EventsGenericClusterTooltipRow
       key={key}
       error={error}
       loading={loading}
@@ -89,4 +103,4 @@ export function ClusterTooltipRow({
   )
 }
 
-export default ClusterTooltipRow
+export default EventsClusterTooltipRow

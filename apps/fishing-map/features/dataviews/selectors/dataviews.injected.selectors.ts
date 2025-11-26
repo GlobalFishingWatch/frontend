@@ -187,10 +187,10 @@ export const selectVGRDataviewInstancesInjected = createSelector(
       }
       if (reportCategory === 'events') {
         const eventsReportSubCategories: ReportEventsSubCategory[] = [
-          'encounter',
-          'loitering',
-          'gap',
-          'port_visit',
+          EventTypes.Encounter,
+          EventTypes.Loitering,
+          EventTypes.Gap,
+          EventTypes.Port,
         ]
         eventsReportSubCategories.forEach((category) => {
           const eventsDataviewInstance = getVesselGroupEventsDataviewInstance(

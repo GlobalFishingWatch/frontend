@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 
-import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import type { EventType } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType, EventTypes } from '@globalfishingwatch/api-types'
 
 import type { AppState, WorkspaceState } from '../types'
 import { TimebarGraphs, TimebarVisualisations, UserTab } from '../types'
@@ -106,6 +107,7 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   daysFromLatest: undefined,
   detectionsVisualizationMode: 'heatmap',
   environmentVisualizationMode: 'heatmap-low-res',
+  vesselGroupsVisualizationMode: 'footprint',
   mapAnnotationsVisible: true,
   mapRulersVisible: true,
   readOnly: false,
@@ -117,16 +119,24 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   visibleEvents: 'all',
 }
 
-export const EVENTS_COLORS: Record<string, string> = {
+export type EncounterAuthorizedEventType =
+  | 'encounterauthorized'
+  | 'encounterauthorizedLabels'
+  | 'encounterpartially'
+  | 'encounterunmatched'
+export const EVENTS_COLORS: Record<
+  EventType | EncounterAuthorizedEventType | 'fishingLabels',
+  string
+> = {
   encounterauthorized: '#FAE9A0',
   encounterauthorizedLabels: '#DCC76D',
   encounterpartially: '#F59E84',
   encounterunmatched: '#CE2C54',
-  encounter: '#FAE9A0',
-  loitering: '#cfa9f9',
-  port_visit: '#99EEFF',
-  fishing: '#6075A7',
-  // fishing: '#C6D5E2',
+  [EventTypes.Encounter]: '#FAE9A0',
+  [EventTypes.Loitering]: '#cfa9f9',
+  [EventTypes.Port]: '#99EEFF',
+  [EventTypes.Fishing]: '#6075A7',
+  [EventTypes.Gap]: '#f45d5e',
   fishingLabels: '#163f89',
 }
 

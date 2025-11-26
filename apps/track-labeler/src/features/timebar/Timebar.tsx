@@ -102,6 +102,10 @@ const TimebarWrapper = () => {
     end,
   })
 
+  useEffect(() => {
+    setLocalRange({ start, end })
+  }, [start, end])
+
   const highlightedTime = useSelector(selectHighlightedTime)
   const highlightedEvent = useSelector(selectHighlightedEvent)
   const { filterMode } = useTimebarModeConnect()
