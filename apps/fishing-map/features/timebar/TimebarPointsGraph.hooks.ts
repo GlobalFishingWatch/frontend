@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 
+import { DatasetStatus } from '@globalfishingwatch/api-types'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import {
   getAvailableIntervalsInDataviews,
@@ -29,13 +30,17 @@ export const useTimebarPoints = () => {
   const dataviewIds = useMemo(() => dataviews?.map(({ id }) => id), [dataviews])
   const userPointsLayers = useGetDeckLayers<UserPointsTileLayer>(dataviewIds)
 
+  const datasetImporting = dataviews?.some(
+    (dv) => dv.datasets?.[0].status === DatasetStatus.Importing
+  )
+
   const viewportChangeHash = useMemo(() => {
     if (!viewport) return ''
     return [viewport.zoom, viewport.latitude, viewport.longitude].map((v) => v.toFixed(2)).join(',')
   }, [viewport])
 
-  const loaded = userPointsLayers?.length
-    ? userPointsLayers.every(({ instance }) => instance.isLoaded)
+  const loaded = dataviews?.length
+    ? userPointsLayers.every(({ instance }) => instance.isLoaded) && !datasetImporting
     : false
 
   const instances = useMemo(() => {
