@@ -17,7 +17,7 @@ export const FourwingsVectorsWorkerLoader: Loader = {
   version: packageJson?.version,
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
-  worker: true,
+  worker: false,
   category: 'geometry',
   options: {
     fourwingsVectors: {
