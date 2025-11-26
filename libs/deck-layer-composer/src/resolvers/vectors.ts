@@ -29,7 +29,7 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
       return {
         id: dataview.id,
         datasets: [datasetConfig.datasetId],
-        direction: 'u',
+        direction: datasetConfig.datasetId.includes('uo') ? 'u' : 'v',
       }
     }
   )
