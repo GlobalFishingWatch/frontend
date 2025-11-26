@@ -19,15 +19,12 @@ import type {
   FourwingsDeckSublayer,
   FourwingsDeckVectorSublayer,
   FourwingsPickingObject,
-  FourwingsVisualizationMode,
 } from '../fourwings.types'
 import type { FourwingsHeatmapTilesCache } from '../heatmap/fourwings-heatmap.types'
 import {
   getDataUrlBySublayer,
   getFourwingsChunk,
-  getResolutionByVisualizationMode,
   getTileDataCache,
-  getZoomOffsetByResolution,
 } from '../heatmap/fourwings-heatmap.utils'
 
 import { FourwingsVectorsLayer } from './FourwingsVectorsLayer'
@@ -46,10 +43,10 @@ export type _FourwingsVectorsTileLayerProps<DataT = FourwingsFeature> = Omit<
   maxVelocity?: number
   availableIntervals?: FourwingsInterval[]
   highlightedFeatures?: FourwingsPickingObject[]
-  visualizationMode: FourwingsVisualizationMode
   sublayers: FourwingsDeckVectorSublayer[]
 }
 
+// TODO: decide if we intergrate it into the generic FourwingsLayer
 export type FourwingsVectorsTileLayerProps = _FourwingsVectorsTileLayerProps &
   Partial<TileLayerProps>
 
@@ -236,28 +233,32 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     }
   }
 
+  getZoomOffset = () => {
+    const { zoom } = this.context.viewport
+    return zoom < 0.5 ? 0 : zoom < 1.5 ? -1 : -2
+  }
+
   renderLayers(): Layer<Record<string, unknown>> | LayersList {
     const { zoom } = this.context.viewport
     if (zoom === undefined) {
       return []
     }
     const { tilesCache } = this.state
-    const { visualizationMode, maxRequests, debounceTime, maxZoom } = this.props
+    const { maxRequests, debounceTime, maxZoom } = this.props
 
     const cacheKey = this._getTileDataCacheKey()
-    const zoomOffset = zoom < 0.5 ? 0 : zoom < 1.5 ? -1 : -2
 
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
-        id: `tiles-${visualizationMode}`,
+        id: `tiles-vectors`,
         tileSize: FOURWINGS_TILE_SIZE,
         tilesCache,
         minZoom: 0,
         onTileError: this._onLayerError,
         maxZoom: maxZoom || 8,
         refinementStrategy: 'never',
-        zoomOffset,
+        zoomOffset: this.getZoomOffset(),
         opacity: 1,
         maxRequests,
         debounceTime,
@@ -284,8 +285,6 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   getTilesData({ aggregated } = {} as { aggregated?: boolean }) {
     const layer = this.getLayerInstance()
     if (layer) {
-      const resolution = getResolutionByVisualizationMode(this.props.visualizationMode)
-      const offset = getZoomOffsetByResolution(resolution!, this.context.viewport.zoom)
       const roudedZoom = Math.round(this.context.viewport.zoom)
       return layer
         .getSubLayers()
@@ -296,7 +295,9 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
           if (l.props.tile.zoom === l.props.maxZoom) {
             return l.getData({ aggregated })
           }
-          return l.props.tile.zoom === roudedZoom + offset ? l.getData({ aggregated }) : []
+          return l.props.tile.zoom === roudedZoom + this.getZoomOffset()
+            ? l.getData({ aggregated })
+            : []
         })
         .filter((t) => t.length > 0) as FourwingsFeature[][]
     }

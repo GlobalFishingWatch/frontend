@@ -8,7 +8,6 @@ import type {
   FourwingsDeckVectorSublayer,
   FourwingsPickingObject,
   FourwingsVectorsTileLayerProps,
-  FourwingsVisualizationMode,
 } from '@globalfishingwatch/deck-layers'
 import { getUTCDateTime } from '@globalfishingwatch/deck-layers'
 
@@ -41,8 +40,6 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
     maxZoomLevels.push(dataview.config?.maxZoom)
   }
 
-  const visualizationMode =
-    (dataview.config?.visualizationMode as FourwingsVisualizationMode) || 'heatmap'
   const availableIntervals = getDataviewAvailableIntervals(dataview)
 
   const datasets =
@@ -75,7 +72,6 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
     endTime,
     category: dataview.category!,
     subcategory: dataview.config?.type,
-    visualizationMode,
     debugTiles,
     sublayers,
     maxZoom: 8,
