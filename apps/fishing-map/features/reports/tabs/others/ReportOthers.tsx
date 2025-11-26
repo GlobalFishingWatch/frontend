@@ -6,6 +6,7 @@ import cx from 'classnames'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
+import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
@@ -40,6 +41,7 @@ function ReportOthers() {
   const timeseriesStats = useTimeseriesStats()
   const otherDataviews = useSelector(selectOthersActiveReportDataviewsGrouped)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const mapLoading = useIsDeckLayersLoading()
 
   if (!Object.keys(otherDataviews)?.length) return null
 
@@ -138,8 +140,12 @@ function ReportOthers() {
         return (
           <div key={mergedDataviewId} className={styles.container}>
             <h2 className={styles.title}>{title}</h2> {unit && <span>({unit})</span>}
-            {hasTimeFilter ? timeseriesLoading ? <ReportStatsPlaceholder /> : StatsComponent : null}
-            {dataviews?.length > 0 && (
+            {hasTimeFilter && (timeseriesLoading || mapLoading) ? (
+              <ReportStatsPlaceholder />
+            ) : (
+              StatsComponent
+            )}
+            {dataviews?.length > 0 && !mapLoading && (
               <div className={styles.selectContainer}>
                 <div
                   className={cx(summaryStyles.tagsContainer, {
@@ -150,7 +156,7 @@ function ReportOthers() {
                     <ReportSummaryTags key={d.id} dataview={d} />
                   ))}
                 </div>
-                {selectOptions.length > 0 && (
+                {selectOptions.length > 0 && statsCounts !== 0 && (
                   <Select
                     options={selectOptions}
                     selectedOption={selectedProperty}
@@ -161,8 +167,9 @@ function ReportOthers() {
                 )}
               </div>
             )}
-            {hasTimeFilter ? (
-              timeseriesLoading ? (
+            {hasTimeFilter &&
+              statsCounts !== 0 &&
+              (timeseriesLoading || mapLoading ? (
                 <ReportActivityPlaceholder showHeader={false} />
               ) : (
                 <ReportActivityEvolution
@@ -170,12 +177,7 @@ function ReportOthers() {
                   end={end}
                   data={layersTimeseriesFiltered?.[index]}
                 />
-              )
-            ) : timeseriesLoading ? (
-              <ReportStatsPlaceholder />
-            ) : (
-              StatsComponent
-            )}
+              ))}
           </div>
         )
       })}
