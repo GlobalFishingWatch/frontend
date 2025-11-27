@@ -1,67 +1,70 @@
-import { Fragment } from 'react'
+import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import htmlParse from 'html-react-parser'
 
-import { DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
+import type { DataviewType } from '@globalfishingwatch/api-types'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { isEnvironmentalDataview } from '@globalfishingwatch/dataviews-client'
 import { getAvailableIntervalsInDataviews } from '@globalfishingwatch/deck-layer-composer'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
-import type { FourwingsReportGraphStats } from 'features/reports/reports-timeseries.hooks'
+import type {
+  FourwingsReportGraphStats,
+  ReportGraphProps,
+} from 'features/reports/reports-timeseries.hooks'
 import {
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
-  useReportFilteredFeatures,
   useReportFilteredTimeSeries,
   useReportTimeSeriesErrors,
   useTimeseriesStats,
 } from 'features/reports/reports-timeseries.hooks'
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportStatsPlaceholder from 'features/reports/shared/placeholders/ReportStatsPlaceholder'
-import ReportCurrentsGraph from 'features/reports/tabs/activity/ReportCurrentsGraph'
+import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { upperFirst } from 'utils/info'
 
-import ReportActivityDatasetComparison from '../activity/ReportActivityDatasetComparison'
-import ReportActivityDatasetComparisonGraph from '../activity/ReportActivityDatasetComparisonGraph'
-
 import styles from './ReportEnvironment.module.css'
 
-function ReportEnvironmentComparisonGraph() {
+function ReportEnvironmentGraph({
+  GraphComponent,
+  dataview,
+  data,
+  index = 0,
+  isLoading = false,
+}: {
+  GraphComponent: React.ComponentType<any>
+  dataview: UrlDataviewInstance<DataviewType>
+  data: ReportGraphProps | ReportGraphProps[]
+  isLoading?: boolean
+  index?: number
+}) {
   useComputeReportTimeSeries()
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
-  const loading = useReportFeaturesLoading()
-  const layersTimeseriesFiltered = useReportFilteredTimeSeries()
-  const layersFilteredFeatures = useReportFilteredFeatures()
   const timeseriesStats = useTimeseriesStats()
-  const environmentalDataviews = useSelector(selectReportComparisonDataviews)
-  const allAvailableIntervals = getAvailableIntervalsInDataviews(environmentalDataviews)
+  const allAvailableIntervals = getAvailableIntervalsInDataviews([dataview])
   const interval = getFourwingsInterval(start, end, allAvailableIntervals)
   const layersTimeseriesErrors = useReportTimeSeriesErrors()
+  const isDynamic = isEnvironmentalDataview(dataview) // checks for animated heatmaps
 
-  if (!environmentalDataviews?.length) return null
+  if (!dataview) return null
 
-  const isDynamic = environmentalDataviews[0]?.config?.type === DataviewType.HeatmapAnimated
-  const { min, mean, max } =
-    (timeseriesStats?.[environmentalDataviews[0]?.id] as FourwingsReportGraphStats) || {}
-  const dataset = environmentalDataviews[0]?.datasets?.find(
-    (d) => d.type === DatasetTypes.Fourwings
-  )
+  const { min, mean, max } = (timeseriesStats?.[dataview.id] as FourwingsReportGraphStats) || {}
+  const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
   const title = getDatasetNameTranslated(dataset)
-  const index = 0
   const hasError =
     layersTimeseriesErrors?.[index] !== undefined && layersTimeseriesErrors?.[index] !== ''
-  const isLoading = loading || layersTimeseriesFiltered?.[index]?.mode === 'loading'
   const unit = dataset?.unit
 
   return (
-    <div key={environmentalDataviews[0]?.id} className={styles.container}>
+    <div className={styles.container}>
       <p className={styles.summary}>
         {dataset?.configuration?.function === 'AVG' && (
           <span>{upperFirst(t('common.average'))} </span>
@@ -74,19 +77,13 @@ function ReportEnvironmentComparisonGraph() {
           </Fragment>
         )}
       </p>
-      {isLoading || !layersTimeseriesFiltered?.[index] || hasError ? (
+      <ReportSummaryTags key={dataview.id} dataview={dataview} />
+      {isLoading || hasError ? (
         <ReportActivityPlaceholder showHeader={false}>
           {hasError && <p className={styles.errorMessage}>{t('errors.layerLoading')}</p>}
         </ReportActivityPlaceholder>
       ) : (
-        <>
-          <ReportActivityDatasetComparison />
-          <ReportActivityDatasetComparisonGraph
-            start={start}
-            end={end}
-            data={layersTimeseriesFiltered}
-          />
-        </>
+        <GraphComponent start={start} end={end} data={data} />
       )}
       {isLoading ? (
         <ReportStatsPlaceholder />
@@ -118,4 +115,4 @@ function ReportEnvironmentComparisonGraph() {
   )
 }
 
-export default ReportEnvironmentComparisonGraph
+export default ReportEnvironmentGraph

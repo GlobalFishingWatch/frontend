@@ -296,6 +296,7 @@ interface Resources {
       "errorTooComplex": "We cannot create a dynamic report for this area as the boundary information is complex. Please simplify your area of interest - by uploading a new layer or drawing your layer on the map - and try the report again to resolve.",
       "evolution": "Evolution",
       "globally": "globally",
+      "graphSelector": "Choose a graph visualization mode",
       "groupByCoverage": "by coverage",
       "groupByEEZ": "By EEZ",
       "groupByFAO": "By FAO",

@@ -3,6 +3,10 @@
   border-bottom: var(--border);
 }
 
+.graphContainer {
+  padding: var(--space-M) var(--space-M);
+}
+
 .titleRow {
   width: 100%;
   display: flex;
