@@ -240,7 +240,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                         disabled={!activeUserPointsDataviews?.length}
                       />
                     }
-                    // disabled={!activeUserPointsDataviews?.length}
+                    disabled={!activeUserPointsDataviews?.length}
                     active={timebarVisualisation === TimebarVisualisations.Points}
                     tooltip={t('timebarSettings.showOthers')}
                     onClick={() => setTimebarSectionActive(TimebarVisualisations.Points)}
