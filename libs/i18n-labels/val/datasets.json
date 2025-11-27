@@ -1629,6 +1629,16 @@
     "name": "crwdns106766:0crwdne106766:0",
     "description": "crwdns106768:0crwdne106768:0",
     "schema": {
+      "layer": {
+        "keyword": "crwdns106806:0crwdne106806:0",
+        "enum": {
+          "CFC Reserved Areas": "crwdns106808:0crwdne106808:0",
+          "CFC Exploration Areas": "crwdns106810:0crwdne106810:0",
+          "PMN Reserved Areas": "crwdns106812:0crwdne106812:0",
+          "PMN Exploration Areas": "crwdns106814:0crwdne106814:0",
+          "PMS Exploration Areas": "crwdns106816:0crwdne106816:0"
+        }
+      },
       "contract": {
         "keyword": "crwdns93736:0crwdne93736:0",
         "enum": {
