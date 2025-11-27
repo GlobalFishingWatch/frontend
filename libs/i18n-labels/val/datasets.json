@@ -1626,8 +1626,8 @@
     "description": "crwdns66767:0crwdne66767:0"
   },
   "public-isa-areas-contractor": {
-    "name": "crwdns93732:0crwdne93732:0",
-    "description": "crwdns106764:0crwdne106764:0",
+    "name": "crwdns106766:0crwdne106766:0",
+    "description": "crwdns106768:0crwdne106768:0",
     "schema": {
       "contract": {
         "keyword": "crwdns93736:0crwdne93736:0",
@@ -1665,6 +1665,36 @@
           "BGRPMS1": "crwdns93798:0crwdne93798:0",
           "COMRAPMN1": "crwdns93800:0crwdne93800:0",
           "PMNReserved": "crwdns93802:0crwdne93802:0"
+        }
+      }
+    }
+  },
+  "public-isa-layers": {
+    "name": "crwdns106770:0crwdne106770:0",
+    "description": "crwdns106772:0crwdne106772:0",
+    "schema": {
+      "label": {
+        "keyword": "crwdns106774:0crwdne106774:0",
+        "enum": {
+          "CFC Reserved Areas": "crwdns106776:0crwdne106776:0",
+          "PMN Exploration Areas": "crwdns106778:0crwdne106778:0",
+          "PMS Exploration Areas": "crwdns106780:0crwdne106780:0",
+          "PMN Reserved Areas": "crwdns106782:0crwdne106782:0",
+          "Areas of particular environmental interest within the Clarion-Clipperton Zone": "crwdns106784:0crwdne106784:0",
+          "Clarion-Clipperton Zone management area": "crwdns106786:0crwdne106786:0",
+          "CFC Exploration Areas": "crwdns106788:0crwdne106788:0"
+        }
+      },
+      "layer": {
+        "keyword": "crwdns106790:0crwdne106790:0",
+        "enum": {
+          "GIS-CCZ-Management-Areas — CCZ_Management_Areas.shp copy": "crwdns106792:0crwdne106792:0",
+          "ISAwebsite_APEIs — ISAwebsite_APEIs Dissolved": "crwdns106794:0crwdne106794:0",
+          "ISAwebsite_fclContractAreasCRFC — ISAwebsite_fclContractAreasCRFC Dissolved": "crwdns106796:0crwdne106796:0",
+          "ISAwebsite_fclContractAreasCRFCres — ISAwebsite_fclContractAreasCRFCres Dissolved": "crwdns106798:0crwdne106798:0",
+          "ISAwebsite_fclContractAreasPMN — ISAwebsite_fclContractAreasPMN Dissolved": "crwdns106800:0crwdne106800:0",
+          "ISAwebsite_fclContractAreasPMNres — ISAwebsite_fclContractAreasPMNres Dissolved": "crwdns106802:0crwdne106802:0",
+          "ISAwebsite_fclContractAreasPMS — ISAwebsite_fclContractAreasPMS Dissolved": "crwdns106804:0crwdne106804:0"
         }
       }
     }
