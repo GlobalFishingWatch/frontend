@@ -244,6 +244,7 @@ export function getContextDataviewsResolved(
     const uniqLayers = uniqBy(layers, (l) => l.id)
 
     const mergedDataviewConfig: ResolvedContextDataviewInstance['config'] = {
+      visible: dataviews[0]?.config?.visible ?? true,
       type: dataviews[0]?.config?.type as DataviewType,
       ...(isUserTrackDataview(dataviews[0]) && {
         singleTrack: hasSingleUserTrackDataview,

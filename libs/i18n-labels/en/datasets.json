@@ -1626,11 +1626,21 @@
     "description": "50 nm around the Tristan Archipelago and 40nm around Gough (8% of EEZ)"
   },
   "public-isa-areas-contractor": {
-    "name": "ISA Areas by contract ID",
+    "name": "ISA Areas by Contractor",
     "description": "<h2>ISA Contractor Information</h2> <table> <thead> <tr> <th>Contractor ID</th> <th>Preferred Contractor Name</th> <th>Nationality</th> </tr> </thead> <tbody> <tr> <td>BGRPMN1</td> <td> Federal Institute for Geosciences and Natural Resources of Germany - PMN </td> <td>Germany</td> </tr> <tr> <td>BGRPMS1</td> <td> Federal Institute for Geosciences and Natural Resources of Germany - PMS </td> <td>Germany</td> </tr> <tr> <td>BMJPMN1</td> <td>Blue Minerals Jamaica Limited (BMJ) - PMN</td> <td>Jamaica</td> </tr> <tr> <td>BPHDCPMN1</td> <td>Beijing Pioneer Hi-Tech Development Corporation - PMN</td> <td>China</td> </tr> <tr> <td>BrazilCRFC1</td> <td>Companhia de Pesquisa de Recursos Minerais S.A. - CRFC</td> <td>Brazil</td> </tr> <tr> <td>CIICPMN1</td> <td>Cook Islands Investment Corporation - PMN</td> <td>Cook Islands</td> </tr> <tr> <td>CMMPMN1</td> <td>China Minmetals Corporation - PMN</td> <td>China</td> </tr> <tr> <td>COMRACRFC1</td> <td> China Ocean Mineral Resources Research and Development Association - CRFC </td> <td>China</td> </tr> <tr> <td>COMRAPMN1</td> <td> China Ocean Mineral Resources Research and Development Association - PMN </td> <td>China</td> </tr> <tr> <td>COMRAPMS1</td> <td> China Ocean Mineral Resources Research and Development Association - PMS </td> <td>China</td> </tr> <tr> <td>DORDPMN1</td> <td>Deep Ocean Resources Development Co. Ltd. - PMN</td> <td>Japan</td> </tr> <tr> <td>GSRPMN1</td> <td>Global Sea Mineral Resources NV - PMN</td> <td>Belgium</td> </tr> <tr> <td>IFREMERPMN1</td> <td> Institut français de recherche pour l'exploitation de la mer - PMN </td> <td>France</td> </tr> <tr> <td>IFREMERPMS1</td> <td> Institut français de recherche pour l'exploitation de la mer - PMS </td> <td>France</td> </tr> <tr> <td>IndiaPMN1</td> <td>Government of India - PMN</td> <td>India</td> </tr> <tr> <td>IndiaPMS1</td> <td>Government of India - PMS</td> <td>India</td> </tr> <tr> <td>IOMPMN1</td> <td>Interoceanmetal Joint Organization - PMN</td> <td>Poland</td> </tr> <tr> <td>KOREACRFC1</td> <td>Government of the Republic of Korea - CRFC</td> <td>Korea</td> </tr> <tr> <td>KOREAPMN1</td> <td>Government of the Republic of Korea - PMN</td> <td>Korea</td> </tr> <tr> <td>KOREAPMS1</td> <td>Government of the Republic of Korea - PMS</td> <td>Korea</td> </tr> <tr> <td>MARAWAPMN1</td> <td>Marawa Research and Exploration Ltd. - PMN</td> <td>Kiribati</td> </tr> <tr> <td>NORIPMN1</td> <td>Nauru Ocean Resources Inc. - PMN</td> <td>Nauru</td> </tr> <tr> <td>OMSPMN1</td> <td>Ocean Mineral Singapore Pte. Ltd. - PMN</td> <td>Singapore</td> </tr> <tr> <td>POLPMS1</td> <td>Government of the Republic of Poland - PMS</td> <td>Poland</td> </tr> <tr> <td>RUSFEDPMS1</td> <td>Government of the Russian Federation - PMS</td> <td>Russia</td> </tr> <tr> <td>RUSMNRCRFC1</td> <td> Ministry of Natural resources and environment of the russian federation - CRFC </td> <td>Russia</td> </tr> <tr> <td>TOMLPMN1</td> <td>Tonga Offshore Mining Limited - PMN</td> <td>Tonga</td> </tr> <tr> <td>UKSRLPMN1</td> <td>UK Seabed Resources Ltd. - I - PMN</td> <td>UK</td> </tr> <tr> <td>UKSRLPMN2</td> <td>UK Seabed Resources Ltd. - II - PMN</td> <td>UK</td> </tr> <tr> <td>YUZHPMN1</td> <td>Yuzhmorgeologiya - PMN</td> <td>Russia</td> </tr> </tbody> </table>",
     "schema": {
+      "layer": {
+        "keyword": "Resource Area",
+        "enum": {
+          "CFC Reserved Areas": "CFC Reserved Areas",
+          "CFC Exploration Areas": "CFC Exploration Areas",
+          "PMN Reserved Areas": "PMN Reserved Areas",
+          "PMN Exploration Areas": "PMN Exploration Areas",
+          "PMS Exploration Areas": "PMS Exploration Areas"
+        }
+      },
       "contract": {
-        "keyword": "contract",
+        "keyword": "Contractor ID",
         "enum": {
           "BrazilCRFC1": "BrazilCRFC1",
           "BGRPMN1": "BGRPMN1",
@@ -1665,6 +1675,36 @@
           "BGRPMS1": "BGRPMS1",
           "COMRAPMN1": "COMRAPMN1",
           "PMNReserved": "PMNReserved"
+        }
+      }
+    }
+  },
+  "public-isa-layers": {
+    "name": "ISA Areas by Resource Type",
+    "description": "ISA Areas",
+    "schema": {
+      "label": {
+        "keyword": "Resource Area",
+        "enum": {
+          "CFC Reserved Areas": "CFC Reserved Areas",
+          "PMN Exploration Areas": "PMN Exploration Areas",
+          "PMS Exploration Areas": "PMS Exploration Areas",
+          "PMN Reserved Areas": "PMN Reserved Areas",
+          "Areas of particular environmental interest within the Clarion-Clipperton Zone": "Areas of particular environmental interest within the Clarion-Clipperton Zone",
+          "Clarion-Clipperton Zone management area": "Clarion-Clipperton Zone management area",
+          "CFC Exploration Areas": "CFC Exploration Areas"
+        }
+      },
+      "layer": {
+        "keyword": "layer",
+        "enum": {
+          "GIS-CCZ-Management-Areas — CCZ_Management_Areas.shp copy": "GIS-CCZ-Management-Areas — CCZ_Management_Areas.shp copy",
+          "ISAwebsite_APEIs — ISAwebsite_APEIs Dissolved": "ISAwebsite_APEIs — ISAwebsite_APEIs Dissolved",
+          "ISAwebsite_fclContractAreasCRFC — ISAwebsite_fclContractAreasCRFC Dissolved": "ISAwebsite_fclContractAreasCRFC — ISAwebsite_fclContractAreasCRFC Dissolved",
+          "ISAwebsite_fclContractAreasCRFCres — ISAwebsite_fclContractAreasCRFCres Dissolved": "ISAwebsite_fclContractAreasCRFCres — ISAwebsite_fclContractAreasCRFCres Dissolved",
+          "ISAwebsite_fclContractAreasPMN — ISAwebsite_fclContractAreasPMN Dissolved": "ISAwebsite_fclContractAreasPMN — ISAwebsite_fclContractAreasPMN Dissolved",
+          "ISAwebsite_fclContractAreasPMNres — ISAwebsite_fclContractAreasPMNres Dissolved": "ISAwebsite_fclContractAreasPMNres — ISAwebsite_fclContractAreasPMNres Dissolved",
+          "ISAwebsite_fclContractAreasPMS — ISAwebsite_fclContractAreasPMS Dissolved": "ISAwebsite_fclContractAreasPMS — ISAwebsite_fclContractAreasPMS Dissolved"
         }
       }
     }
