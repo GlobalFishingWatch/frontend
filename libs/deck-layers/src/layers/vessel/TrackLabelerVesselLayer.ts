@@ -37,7 +37,7 @@ export class TrackLabelerVesselLayer extends CompositeLayer<TrackLabelerVesselLa
         id: `${this.props.id}-vessel-icons`,
         data,
         pickable: true,
-        iconAtlas: `${PATH_BASENAME}` + (iconAtlasUrl || '/vessel-sprite.png'),
+        iconAtlas: iconAtlasUrl || `${PATH_BASENAME} /vessel-sprite.png`,
         iconMapping: VESSEL_SPRITE_ICON_MAPPING,
         getIcon: () => 'vessel',
         getAngle: (d: any) => d.course,
