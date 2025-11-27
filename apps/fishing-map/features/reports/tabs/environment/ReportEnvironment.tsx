@@ -9,9 +9,8 @@ import { getAvailableIntervalsInDataviews } from '@globalfishingwatch/deck-layer
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
-import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
+import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import type { FourwingsReportGraphStats } from 'features/reports/reports-timeseries.hooks'
 import {
   useComputeReportTimeSeries,
@@ -25,10 +24,11 @@ import ReportActivityPlaceholder from 'features/reports/shared/placeholders/Repo
 import ReportStatsPlaceholder from 'features/reports/shared/placeholders/ReportStatsPlaceholder'
 import ReportCurrentsGraph from 'features/reports/tabs/activity/ReportCurrentsGraph'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { upperFirst } from 'utils/info'
 
-import ReportActivityDatasetComparison from '../activity/ReportActivityDatasetComparison'
-import ReportActivityDatasetComparisonGraph from '../activity/ReportActivityDatasetComparisonGraph'
+import ReportActivityGraphSelector from '../activity/ReportActivityGraphSelector'
+
+import ReportEnvironmentComparisonGraph from './ReportEnvironmentComparisonGraph'
+import ReportEnvironmentEvolutionGraph from './ReportEnvironmentEvolutionGraph'
 
 import styles from './ReportEnvironment.module.css'
 
@@ -44,6 +44,7 @@ function ReportEnvironment() {
   const allAvailableIntervals = getAvailableIntervalsInDataviews(environmentalDataviews)
   const interval = getFourwingsInterval(start, end, allAvailableIntervals)
   const layersTimeseriesErrors = useReportTimeSeriesErrors()
+  const reportGraphType = useSelector(selectReportActivityGraph)
 
   if (!environmentalDataviews?.length) return null
 
@@ -54,7 +55,6 @@ function ReportEnvironment() {
   const dataset = environmentalDataviews[0]?.datasets?.find(
     (d) => d.type === DatasetTypes.Fourwings
   )
-  const title = getDatasetNameTranslated(dataset)
   const index = 0
   const hasError =
     layersTimeseriesErrors?.[index] !== undefined && layersTimeseriesErrors?.[index] !== ''
@@ -62,25 +62,22 @@ function ReportEnvironment() {
   const unit = dataset?.unit
 
   return (
-    <div key={environmentalDataviews[0]?.id} className={styles.container}>
-      <p className={styles.summary}>
-        {dataset?.configuration?.function === 'AVG' && (
-          <span>{upperFirst(t('common.average'))} </span>
+    <div className={styles.container}>
+      <div className={styles.titleRow}>
+        <label className={styles.blockTitle}>{t('common.environment')}</label>
+        <ReportActivityGraphSelector loading={loading} />
+      </div>
+      <div>
+        {reportGraphType === 'evolution' ? (
+          <ReportEnvironmentEvolutionGraph />
+        ) : (
+          <ReportEnvironmentComparisonGraph />
         )}
-        <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
-        {(isDynamic || isCurrents) && (
-          <Fragment>
-            {t('common.between')} <strong>{formatI18nDate(start)}</strong> {t('common.and')}{' '}
-            <strong>{formatI18nDate(end)}</strong>
-          </Fragment>
-        )}
-      </p>
-      {isDynamic || isCurrents ? (
-        isLoading || !layersTimeseriesFiltered?.[index] || hasError ? (
+        {isLoading || !layersTimeseriesFiltered?.[index] || hasError ? (
           <ReportActivityPlaceholder showHeader={false}>
             {hasError && <p className={styles.errorMessage}>{t('errors.layerLoading')}</p>}
           </ReportActivityPlaceholder>
-        ) : isCurrents && layersFilteredFeatures?.[index] ? (
+        ) : (isDynamic || isCurrents) && layersFilteredFeatures?.[index] ? (
           <Fragment>
             <ReportCurrentsGraph
               color={environmentalDataviews[0]?.config?.color}
@@ -93,43 +90,34 @@ function ReportEnvironment() {
                     data={layersTimeseriesFiltered?.[index]}
                   /> */}
           </Fragment>
-        ) : (
-          <>
-            <ReportActivityDatasetComparison />
-            <ReportActivityDatasetComparisonGraph
-              start={start}
-              end={end}
-              data={layersTimeseriesFiltered}
-            />
-          </>
-        )
-      ) : null}
-      {isLoading ? (
-        <ReportStatsPlaceholder />
-      ) : min !== undefined && mean !== undefined && max !== undefined ? (
-        <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
-          {isDynamic
-            ? t('analysis.statsDisclaimerDynamic', {
-                interval: t(`common.${interval.toLowerCase()}s` as any, {
-                  count: 1,
-                }).toLowerCase(),
-                min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
-                max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
-                unit,
-              })
-            : t('analysis.statsDisclaimerStatic', {
-                min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
-                max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
-                mean: formatI18nNumber(mean, { maximumFractionDigits: 2 }),
-                unit,
-              })}{' '}
-          {dataset?.source && (
-            <span>
-              {t('analysis.dataSource')}: {htmlParse(dataset.source)}
-            </span>
-          )}
-        </p>
-      ) : null}
+        ) : null}
+        {isLoading ? (
+          <ReportStatsPlaceholder />
+        ) : min !== undefined && mean !== undefined && max !== undefined ? (
+          <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
+            {isDynamic
+              ? t('analysis.statsDisclaimerDynamic', {
+                  interval: t(`common.${interval.toLowerCase()}s` as any, {
+                    count: 1,
+                  }).toLowerCase(),
+                  min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
+                  max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
+                  unit,
+                })
+              : t('analysis.statsDisclaimerStatic', {
+                  min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
+                  max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
+                  mean: formatI18nNumber(mean, { maximumFractionDigits: 2 }),
+                  unit,
+                })}{' '}
+            {dataset?.source && (
+              <span>
+                {t('analysis.dataSource')}: {htmlParse(dataset.source)}
+              </span>
+            )}
+          </p>
+        ) : null}
+      </div>
     </div>
   )
 }

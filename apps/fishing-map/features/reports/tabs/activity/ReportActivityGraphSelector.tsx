@@ -15,13 +15,17 @@ import {
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
 } from 'features/reports/reports.config'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
-import type { ReportActivityGraph } from 'features/reports/reports.types'
+import { selectReportCategory } from 'features/reports/reports.selectors'
+import { type ReportActivityGraph, ReportCategory } from 'features/reports/reports.types'
 import { REPORT_ACTIVITY_GRAPH_TIME_OPTIONS } from 'features/reports/shared/utils/reports.utils'
 import { useSetReportTimeComparison } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 
 import styles from './ReportActivity.module.css'
+
+export const isEvolutionOrDatasetComparison = (id: ReportActivityGraph) =>
+  !REPORT_ACTIVITY_GRAPH_TIME_OPTIONS.includes(id)
 
 type ReportActivityGraphSelectorProps = {
   loading: boolean
@@ -42,6 +46,7 @@ export default function ReportActivityGraphSelector({
     return filter === firstFilter
   })
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
+  const activeCategory = useSelector(selectReportCategory)
 
   const options: SelectOption<ReportActivityGraph>[] = [
     {
@@ -70,16 +75,21 @@ export default function ReportActivityGraphSelector({
     },
   ]
 
+  const filteredOptions = options.filter((option) => {
+    if (activeCategory === ReportCategory.Environment) {
+      return isEvolutionOrDatasetComparison(option.id)
+    } else return true
+  })
+
   const onSelect = (option: SelectOption<ReportActivityGraph>) => {
     if (selectedReportActivityGraph !== option.id) {
       fitAreaInViewport()
-      const isEvolutionOrDatasetComparison = !REPORT_ACTIVITY_GRAPH_TIME_OPTIONS.includes(option.id)
 
       const filteredDataviewInstances = urlDataviewInstances.filter(
         (dv) => !dv.id.includes(DATASET_COMPARISON_SUFFIX)
       )
 
-      if (isEvolutionOrDatasetComparison) {
+      if (isEvolutionOrDatasetComparison(option.id)) {
         resetReportTimecomparison()
 
         const reportComparisonDataviewIds =
@@ -114,7 +124,7 @@ export default function ReportActivityGraphSelector({
 
   return (
     <Select
-      options={options}
+      options={filteredOptions}
       selectedOption={selectedOption}
       onSelect={onSelect}
       containerClassName={styles.select}
