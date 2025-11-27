@@ -46,6 +46,7 @@ export const useTrackLabelerDeckLayer = () => {
       id: 'track-points',
       data: pointsData || [],
       pickable: true,
+      iconAtlasUrl: 'src/assets/images/vessel-sprite.png',
       highlightedTime,
       visibleLabels,
       getColor: (d) => hexToDeckColor(d.color, 0.8),
