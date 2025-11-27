@@ -24,7 +24,11 @@ import Supercluster from 'supercluster'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { ClusterMaxZoomLevelConfig, FourwingsGeolocation } from '@globalfishingwatch/api-types'
+import {
+  type ClusterMaxZoomLevelConfig,
+  EventTypes,
+  type FourwingsGeolocation,
+} from '@globalfishingwatch/api-types'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
@@ -81,19 +85,19 @@ const GEOLOCATION_PRIORITY: FourwingsGeolocation[] = ['country', 'port', 'defaul
 
 const ICON_SIZE: Record<FourwingsClusterEventType, number> = {
   user: 16,
-  encounter: 16,
-  loitering: 16,
-  gap: 14,
-  port_visit: 12,
+  [EventTypes.Encounter]: 16,
+  [EventTypes.Loitering]: 16,
+  [EventTypes.Gap]: 14,
+  [EventTypes.Port]: 12,
 }
 const MIN_CLUSTER_RADIUS = 12
 const MAX_CLUSTER_RADIUS = 30
 const ICON_MAPPING: Record<FourwingsClusterEventType, any> = {
-  encounter: { x: 0, y: 0, width: 36, height: 36, mask: true },
-  gap: { x: 40, y: 0, width: 36, height: 36, mask: true },
   user: { x: 40, y: 0, width: 36, height: 36, mask: true },
-  port_visit: { x: 80, y: 0, width: 36, height: 36, mask: true },
-  loitering: { x: 120, y: 0, width: 36, height: 36, mask: true },
+  [EventTypes.Encounter]: { x: 0, y: 0, width: 36, height: 36, mask: true },
+  [EventTypes.Gap]: { x: 160, y: 2, width: 32, height: 32, mask: true },
+  [EventTypes.Port]: { x: 80, y: 0, width: 36, height: 36, mask: true },
+  [EventTypes.Loitering]: { x: 120, y: 0, width: 36, height: 36, mask: true },
 }
 
 const CLUSTER_LAYER_ID = 'clusters'

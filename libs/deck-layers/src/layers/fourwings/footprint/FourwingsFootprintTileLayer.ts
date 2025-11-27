@@ -31,6 +31,7 @@ import {
   aggregateCellTimeseries,
   getDataUrlBySublayer,
   getFourwingsChunk,
+  getZoomOffsetByResolution,
 } from '../heatmap/fourwings-heatmap.utils'
 
 import type {
@@ -235,6 +236,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList {
     const { tilesCache } = this.state
+    const { resolution = 'default' } = this.props
     const cacheKey = this._getTileDataCacheKey()
 
     return new TileLayer(
@@ -246,7 +248,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
         minZoom: 0,
         onTileError: this._onLayerError,
         maxZoom: FOURWINGS_MAX_ZOOM,
-        zoomOffset: 0,
+        zoomOffset: getZoomOffsetByResolution(resolution, this.context.viewport.zoom),
         opacity: 1,
         maxRequests: this.props.maxRequests,
         debounceTime: this.props.debounceTime,

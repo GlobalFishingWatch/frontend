@@ -27,11 +27,11 @@ import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors
 import { PORTS_LAYER_ID } from 'features/map/map.config'
 import { useMapViewport } from 'features/map/map-viewport.hooks'
 import ActivityTooltipRow from 'features/map/popups/categories/ActivityLayers'
-import ClusterEventTooltip from 'features/map/popups/categories/ClusterEventTooltip'
 import ComparisonRow from 'features/map/popups/categories/ComparisonRow'
 import ContextTooltipSection from 'features/map/popups/categories/ContextLayers'
 import DetectionsTooltipRow from 'features/map/popups/categories/DetectionsLayers'
 import EnvironmentTooltipSection from 'features/map/popups/categories/EnvironmentLayers'
+import EventsClusterTooltip from 'features/map/popups/categories/EventsClusterTooltip'
 import PortsTooltipSection from 'features/map/popups/categories/PortsLayers'
 import PositionsTooltipSection from 'features/map/popups/categories/PositionsTooltipSection'
 import RulerTooltip from 'features/map/popups/categories/RulerTooltip'
@@ -193,7 +193,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
           }
           case DataviewCategory.Events: {
             return (
-              <ClusterEventTooltip
+              <EventsClusterTooltip
                 key={featureCategory}
                 features={features as SliceExtendedClusterPickingObject[]}
                 showFeaturesDetails={type === 'click'}

@@ -3,18 +3,25 @@ import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 
 import type { EventType } from '@globalfishingwatch/api-types'
+import { EventTypes } from '@globalfishingwatch/api-types'
 
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 
-const ALL_EVENT_TYPES: EventType[] = ['fishing', 'loitering', 'encounter', 'port_visit']
+const ALL_EVENT_TYPES = [
+  EventTypes.Fishing,
+  EventTypes.Loitering,
+  EventTypes.Encounter,
+  EventTypes.Port,
+  EventTypes.Gap,
+]
 
 export const useVisibleVesselEvents = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const currentVisibleEvents = useSelector(selectVisibleEvents)
 
   const setVesselEventVisibility = useCallback(
-    ({ event, visible }: { event: EventType; visible: boolean }) => {
+    ({ event, visible }: { event: EventTypes | EventType; visible: boolean }) => {
       if (visible) {
         const visibleEvents: any =
           currentVisibleEvents === 'all'
@@ -32,7 +39,7 @@ export const useVisibleVesselEvents = () => {
               : currentVisibleEvents
         const visibleEvents = currentVisibleEventsTypes.filter(
           (eventType) => event !== eventType
-        ) as EventType[]
+        ) as EventTypes[]
         dispatchQueryParams({
           visibleEvents: visibleEvents?.length ? visibleEvents : 'none',
         })

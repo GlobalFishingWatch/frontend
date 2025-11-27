@@ -31,72 +31,28 @@ resource "google_cloudbuild_trigger" "i18n-labels-stable" {
 
   service_account = "projects/${local.project}/serviceAccounts/cloudbuild@gfw-int-infrastructure.iam.gserviceaccount.com"
   build {
-    step {
-      id         = "compute-cache-key"
-      name       = "gcr.io/cloud-builders/gcloud"
-      entrypoint = "bash"
-      args = [
-        "-c",
-        "echo $(sha256sum yarn.lock | cut -d' ' -f1) > /workspace/cache-key"
-      ]
-      wait_for = ["-"]
-    }
 
     step {
-      id       = "restore-cache"
-      name     = "gcr.io/cloud-builders/gcloud"
-      script   = file("../../../cloudbuild-template/scripts/restore-cache.sh")
-      wait_for = ["compute-cache-key"]
-      env      = local.cache_env
-    }
+      id         = "Setup Auth and Publish Stable"
+      name       = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest"
+      script     = <<-EOF
+        cd /app/
+        cp -r /workspace/* .
+        
+        echo "--- Publishing i18n-labels stable ---"
 
-    step {
-      id       = "install-yarn"
-      name     = "node:24"
-      script   = file("../../../cloudbuild-template/scripts/install-yarn.sh")
-      wait_for = ["restore-cache"]
-    }
+        echo "//registry.npmjs.org/:_authToken=$$NODE_AUTH_TOKEN" > .npmrc
+        npx nx run i18n-labels:"publish:stable"
 
-    step {
-      id         = "setup auth to npmjs"
-      name       = "node:24"
-      entrypoint = "bash"
-      args = [
-        "-c",
-        "echo \"//registry.npmjs.org/:_authToken=$$NODE_AUTH_TOKEN\" > .npmrc"
-      ]
-      wait_for   = ["install-yarn"]
+        echo "--- Purging i18n-labels stable ---"
+        apt-get update && apt install curl -y
+        npx nx run i18n-labels:"purge:stable"
+
+      EOF
       secret_env = ["NODE_AUTH_TOKEN"]
-    }
-
-    step {
-      id         = "i18n-labels publish stable"
-      name       = "node:24"
-      entrypoint = "npx"
-      args       = ["nx", "publish:stable", "i18n-labels"]
-      wait_for   = ["setup auth to npmjs"]
       env = [
         "NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN"
       ]
-    }
-
-    step {
-      id         = "i18n-labels purge stable"
-      name       = "node:24"
-      entrypoint = "npx"
-      args       = ["nx", "purge:stable", "i18n-labels"]
-      wait_for   = ["i18n-labels publish stable"]
-      env = [
-        "NX_CLOUD_AUTH_TOKEN=$_NX_CLOUD_AUTH_TOKEN"
-      ]
-    }
-
-    step {
-      id       = "save-cache"
-      name     = "gcr.io/cloud-builders/gcloud"
-      script   = file("../../../cloudbuild-template/scripts/save-cache.sh")
-      wait_for = ["i18n-labels purge stable"]
-      env      = local.cache_env
     }
 
     options {

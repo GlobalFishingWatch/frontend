@@ -48,6 +48,7 @@ const icons = [
   'event-fishing',
   'event-gap-end',
   'event-gap',
+  'event-gaps',
   'event-legend-encounter',
   'event-legend-fishing',
   'event-legend-loitering',

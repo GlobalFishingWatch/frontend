@@ -17,7 +17,7 @@ locals {
 }
 
 module "develop" {
-  source            = "../../../cloudbuild-template-new"
+  source            = "../../../cloudbuild-template"
   project_id        = "gfw-development"
   short_environment = "dev"
   app_name          = local.app_name
@@ -47,7 +47,7 @@ module "develop" {
 }
 
 module "staging" {
-  source            = "../../../cloudbuild-template-new"
+  source            = "../../../cloudbuild-template"
   project_id        = "gfw-development"
   short_environment = "sta"
   app_name          = local.app_name
@@ -77,7 +77,7 @@ module "staging" {
 }
 
 module "production" {
-  source            = "../../../cloudbuild-template-new"
+  source            = "../../../cloudbuild-template"
   project_id        = "gfw-production"
   short_environment = "pro"
   app_name          = local.app_name

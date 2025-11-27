@@ -89,7 +89,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   get positions() {
-    const filterIds = this.props.sublayers.flatMap((sublayer) => sublayer.filterIds)
+    const filterIds = this.props.sublayers.flatMap((sublayer) => sublayer.filterIds || [])
     return filterIds.length
       ? this.state.positions.filter((p: FourwingsPositionFeature) =>
           filterIds.includes(p.properties.id as string)

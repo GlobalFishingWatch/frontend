@@ -22,6 +22,8 @@ import {
   isVesselGroupDataview,
 } from '@globalfishingwatch/dataviews-client'
 import type {
+  FOOTPRINT_HIGH_RES_ID,
+  FOOTPRINT_ID,
   FourwingsVisualizationMode,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
@@ -242,6 +244,7 @@ export function getContextDataviewsResolved(
     const uniqLayers = uniqBy(layers, (l) => l.id)
 
     const mergedDataviewConfig: ResolvedContextDataviewInstance['config'] = {
+      visible: dataviews[0]?.config?.visible ?? true,
       type: dataviews[0]?.config?.type as DataviewType,
       ...(isUserTrackDataview(dataviews[0]) && {
         singleTrack: hasSingleUserTrackDataview,
@@ -294,6 +297,7 @@ type ResolverGlobalConfig = {
   activityVisualizationMode?: FourwingsVisualizationMode
   detectionsVisualizationMode?: FourwingsVisualizationMode
   environmentVisualizationMode?: typeof HEATMAP_ID | typeof HEATMAP_LOW_RES_ID
+  vesselGroupsVisualizationMode?: typeof FOOTPRINT_ID | typeof FOOTPRINT_HIGH_RES_ID
   // TODO review if we can move this to each own dataview
   compareStart?: string
   compareEnd?: string
@@ -476,7 +480,9 @@ export function getDataviewsResolved(
     return (
       getFourwingsDataviewsResolved(d, {
         visualizationMode:
-          comparisonMode === FourwingsComparisonMode.TimeCompare ? 'heatmap' : 'footprint',
+          comparisonMode === FourwingsComparisonMode.TimeCompare
+            ? 'heatmap'
+            : params.vesselGroupsVisualizationMode || 'footprint',
         colorRampWhiteEnd: false,
         comparisonMode,
       }) || []

@@ -7,59 +7,12 @@ import type { NextConfig } from 'next'
 // const withBundleAnalyzer = require('@next/bundle-analyzer')({
 //   enabled: true, //process.env.ANALYZE === 'true' || process.env.NODE_ENV === 'development',
 // })
+const basePath = process.env.NEXT_PUBLIC_URL || '/api-portal'
 
-const basePath = process.env.NEXT_PUBLIC_URL || '/map'
-
-const IS_PRODUCTION =
-  process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'production' ||
-  process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'staging' ||
-  process.env.NODE_ENV === 'production'
-
-function patchWasmModuleImport(
-  config: {
-    experiments: any
-    optimization: { moduleIds: string }
-    module: { rules: { test: RegExp; type: string }[] }
-    output: { webassemblyModuleFilename: string }
-  },
-  isServer: boolean
-) {
-  config.experiments = Object.assign(config.experiments || {}, {
-    asyncWebAssembly: true,
-    // syncWebAssembly: true,
-  })
-
-  config.optimization.moduleIds = 'named'
-
-  config.module.rules.push({
-    test: /\.wasm$/,
-    type: 'webassembly/async',
-  })
-
-  // TODO: improve this function -> track https://github.com/vercel/next.js/issues/25852
-  if (isServer) {
-    config.output.webassemblyModuleFilename = './../static/wasm/[modulehash].wasm'
-  } else {
-    config.output.webassemblyModuleFilename = 'static/wasm/[modulehash].wasm'
-  }
-}
+const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
 const nextConfig: NextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: '/api/:path*',
-      },
-      // Rewrite everything to `pages/index`
-      {
-        source: '/:any*',
-        destination: '/',
-      },
-    ]
-  },
   async redirects() {
-    // Redirect everything in / root to basePath if defined
     return basePath !== ''
       ? [
           {
@@ -74,11 +27,11 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: '/(.*)',
+        source: '/:path*',
         headers: [
           {
-            key: 'Content-Security-Policy',
-            value: 'frame-ancestors https://* http://*',
+            key: 'x-robots-tag',
+            value: 'noindex',
           },
         ],
       },
@@ -129,7 +82,6 @@ const nextConfig: NextConfig = {
         cwd: process.cwd(),
       })
     )
-    patchWasmModuleImport(config, options.isServer)
     return config
   },
   // productionBrowserSourceMaps: true,
@@ -153,7 +105,7 @@ const nextConfig: NextConfig = {
     },
   },
   serverExternalPackages: ['@mastra/*'],
-  // reactCompiler: true,
+  reactCompiler: true,
   experimental: {
     turbopackFileSystemCacheForDev: true,
     esmExternals: true,
