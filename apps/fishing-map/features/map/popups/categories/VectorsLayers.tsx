@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import type { FourwingsHeatmapPickingObject } from '@globalfishingwatch/deck-layers'
 import { Icon } from '@globalfishingwatch/ui-components'
 
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
 
 import popupStyles from '../Popup.module.css'
@@ -26,6 +27,9 @@ function VectorsTooltipRow({ feature, showFeaturesDetails }: VectorsTooltipRowPr
   if (!angle || !speed) {
     return null
   }
+  const title = getDatasetLabel({
+    id: feature.sublayers?.[0]?.datasets?.[0],
+  })
   return (
     <Fragment>
       <div className={popupStyles.popupSection}>
@@ -37,8 +41,8 @@ function VectorsTooltipRow({ feature, showFeaturesDetails }: VectorsTooltipRowPr
           />
         </span>
         <div className={popupStyles.popupSectionContent}>
-          {showFeaturesDetails && feature.title && (
-            <h3 className={popupStyles.popupSectionTitle}>{feature.title}</h3>
+          {showFeaturesDetails && title && (
+            <h3 className={popupStyles.popupSectionTitle}>{title}</h3>
           )}
           {speed && (
             <span>

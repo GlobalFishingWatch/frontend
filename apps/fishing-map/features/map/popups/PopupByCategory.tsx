@@ -210,13 +210,9 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
             const contextFeatures = (features as UserLayerPickingObject[]).filter(
               (feature) => feature.subcategory === DataviewType.UserContext
             )
-            const vectorsFeatures = (features as FourwingsHeatmapPickingObject[])
-              .filter((feature) => feature.subcategory === DataviewType.FourwingsVector)
-              .map((feature) => ({
-                ...feature,
-                // TODO translate this
-                title: 'Currents',
-              }))
+            const vectorsFeatures = (features as FourwingsHeatmapPickingObject[]).filter(
+              (feature) => feature.subcategory === DataviewType.FourwingsVector
+            )
             const environmentalFeatures = (
               features as SliceExtendedFourwingsPickingObject[]
             ).filter(

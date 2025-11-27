@@ -187,9 +187,6 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
           (d.coordinates[1] + d.coordinates[5]) / 2,
         ]
       },
-      updateTriggers: {
-        getVelocity: [highlightedFeatures],
-      },
     }
 
     return [

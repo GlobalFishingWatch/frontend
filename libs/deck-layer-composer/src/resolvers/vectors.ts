@@ -27,6 +27,7 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
     (datasetConfig) => {
       return {
         id: dataview.id,
+        color: dataview.config?.color,
         datasets: [datasetConfig.datasetId],
         direction: datasetConfig.datasetId.includes('uo') ? 'u' : 'v',
       }
