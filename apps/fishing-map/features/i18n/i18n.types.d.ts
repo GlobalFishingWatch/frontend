@@ -1304,7 +1304,7 @@ interface Resources {
       "sectionRelatedVessel": "Related vessels",
       "sectionRelatedVessels": "Related vessels",
       "sectionSummary": "Summary",
-      "selectIdentity": "See the identity for this dates",
+      "selectIdentity": "See the identity for these dates",
       "share": "Share vessel",
       "shipname": "Name",
       "shiptype": "Vessel type",
