@@ -11,6 +11,7 @@ import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
 import { selectOthersActiveReportDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import {
@@ -116,6 +117,13 @@ function ReportOthers() {
                         property: dataview.config?.aggregateByProperty,
                       })}{' '}
                   {t('analysis.insideYourArea')}
+                  {hasTimeFilter && (
+                    <>
+                      {' '}
+                      {t('common.between')} <strong>{formatI18nDate(start)}</strong>{' '}
+                      {t('common.and')} <strong>{formatI18nDate(end)}</strong>
+                    </>
+                  )}
                 </span>
                 {statsValues && statsValues?.length > 1 && (
                   <Fragment>
