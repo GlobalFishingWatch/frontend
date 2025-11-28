@@ -108,7 +108,7 @@ function ReportOthers() {
               <Fragment>
                 <span>
                   {statsCounts}
-                  {' ' + t('common.points', { count: totalValue })}
+                  {' ' + t('common.points', { count: statsCounts })}
                   {hasAggregateByProperty &&
                     ' ' +
                       t('common.aggregatedBy', {
@@ -152,7 +152,7 @@ function ReportOthers() {
                     <ReportSummaryTags key={d.id} dataview={d} />
                   ))}
                 </div>
-                {selectOptions.length > 0 && statsCounts !== 0 && (
+                {(selectedProperty || (selectOptions.length > 0 && statsCounts !== 0)) && (
                   <Select
                     options={selectOptions}
                     selectedOption={selectedProperty}

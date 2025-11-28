@@ -219,11 +219,12 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
             ? isFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators)
             : true
 
-          values[index] = matchesFilters
-            ? aggregateByProperty
-              ? Number(feature.properties?.[aggregateByProperty] ?? 0)
-              : 1
-            : 0
+          values[index] =
+            matchesFilters && matchesTimeFilter
+              ? aggregateByProperty
+                ? Number(feature.properties?.[aggregateByProperty] ?? 0)
+                : 1
+              : 0
         }
       })
       if (values.every((value) => value === 0)) {
