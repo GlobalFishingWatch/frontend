@@ -1,5 +1,6 @@
 import type { Feature, Point } from 'geojson'
 
+import type { TimeFilterType } from '@globalfishingwatch/api-types'
 import {
   type ContextSubLayerConfig,
   type FourwingsDeckSublayer,
@@ -21,6 +22,7 @@ export type PointsFeaturesToTimeseriesParams = {
   interval: FourwingsInterval
   startTimeProperty: string
   endTimeProperty?: string
+  timeFilterType?: TimeFilterType
   sublayers: (FourwingsDeckSublayer | ContextSubLayerConfig)[]
 }
 
@@ -107,7 +109,8 @@ export const getPointsTimeseries = ({ features, instance }: GetPointsTimeseriesP
 }
 
 export const getPointsTimeseriesStats = ({ features, instance }: GetPointsTimeseriesParams) => {
-  const { startTime, endTime, startTimeProperty, endTimeProperty } = instance.props || {}
+  const { startTime, endTime, startTimeProperty, endTimeProperty, timeFilterType } =
+    instance.props || {}
 
   const values = features?.reduce((acc, { contained }) => {
     if (contained) {
@@ -119,6 +122,7 @@ export const getPointsTimeseriesStats = ({ features, instance }: GetPointsTimese
                 endTime: endTime!,
                 startTimeProperty: startTimeProperty!,
                 endTimeProperty,
+                timeFilterType,
               })
             })
           : contained

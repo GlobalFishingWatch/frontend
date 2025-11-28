@@ -52,7 +52,15 @@ export const useTimebarPoints = () => {
       instancesData: { data: FourwingsPointFeature[]; params: PointsFeaturesToTimeseriesParams }[]
     ) => {
       const allTimeseriesData = instancesData.map(({ data: viewportData, params }) => {
-        const { start, end, sublayers, startTimeProperty, endTimeProperty, interval } = params
+        const {
+          start,
+          end,
+          sublayers,
+          startTimeProperty,
+          endTimeProperty,
+          interval,
+          timeFilterType,
+        } = params
         return getGraphDataFromPoints(viewportData, {
           start: start,
           end: end,
@@ -60,6 +68,7 @@ export const useTimebarPoints = () => {
           sublayersLength: sublayers.length,
           startTimeProperty: startTimeProperty,
           endTimeProperty: endTimeProperty,
+          timeFilterType: timeFilterType,
         })
       })
 
@@ -99,7 +108,7 @@ export const useTimebarPoints = () => {
   useEffect(() => {
     if (loaded && instances.length > 0) {
       const instancesData = instances.map((instance) => {
-        const { startTime, endTime, startTimeProperty, endTimeProperty, layers } =
+        const { startTime, endTime, startTimeProperty, endTimeProperty, layers, timeFilterType } =
           instance?.props || {}
         const allAvailableIntervals = getAvailableIntervalsInDataviews(dataviews)
         const { interval } = getFourwingsChunk(
@@ -128,6 +137,7 @@ export const useTimebarPoints = () => {
             start: startTime,
             end: endTime,
             interval: interval || 'MONTH',
+            timeFilterType: timeFilterType,
           } as PointsFeaturesToTimeseriesParams,
         }
       })

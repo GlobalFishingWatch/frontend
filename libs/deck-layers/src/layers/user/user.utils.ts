@@ -34,10 +34,12 @@ export function isFeatureInRange(
   }
   const featureStart = ((feature.properties as any)?.[startTimeProperty] as number) || 0
   const featureEnd =
-    timeFilterType !== 'dateRange' ||
+    timeFilterType === 'dateRange' ||
     (endTimeProperty && ((feature.properties as any)?.[endTimeProperty] as number))
-      ? featureStart
-      : Infinity
+      ? ((feature.properties as any)?.[endTimeProperty!] as number)
+      : timeFilterType === 'date' || !endTimeProperty
+        ? featureStart
+        : Infinity
   return (
     (typeof featureEnd === 'string' ? parseInt(featureEnd) : featureEnd) >= startTime &&
     (typeof featureStart === 'string' ? parseInt(featureStart) : featureStart) < endTime

@@ -15,6 +15,8 @@ import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 import type { FourwingsFeaturesToTimeseriesParams } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { getUTCDateTime } from 'utils/dates'
 
+import type { TimeFilterType } from '../../../../libs/api-types/src/datasets'
+
 type GetGraphDataFromFourwingsFeaturesParams = Pick<
   FourwingsFeaturesToTimeseriesParams,
   | 'start'
@@ -121,10 +123,12 @@ export function getGraphDataFromPoints(
     sublayersLength,
     startTimeProperty,
     endTimeProperty,
+    timeFilterType,
   }: Pick<GetGraphDataFromFourwingsFeaturesParams, 'start' | 'end' | 'interval'> & {
     sublayersLength: number
     startTimeProperty: string
     endTimeProperty?: string
+    timeFilterType?: TimeFilterType
   }
 ): ActivityTimeseriesFrame[] {
   if (!features?.length || !start || !end) {
@@ -148,6 +152,7 @@ export function getGraphDataFromPoints(
           endTime: nextDate,
           startTimeProperty,
           endTimeProperty,
+          timeFilterType,
         })
       ) {
         if (values?.length) {
