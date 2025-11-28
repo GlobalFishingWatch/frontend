@@ -140,12 +140,8 @@ function ReportOthers() {
         return (
           <div key={mergedDataviewId} className={styles.container}>
             <h2 className={styles.title}>{title}</h2> {unit && <span>({unit})</span>}
-            {hasTimeFilter && (timeseriesLoading || mapLoading) ? (
-              <ReportStatsPlaceholder />
-            ) : (
-              StatsComponent
-            )}
-            {dataviews?.length > 0 && !mapLoading && (
+            {hasTimeFilter && timeseriesLoading ? <ReportStatsPlaceholder /> : StatsComponent}
+            {dataviews?.length > 0 && (
               <div className={styles.selectContainer}>
                 <div
                   className={cx(summaryStyles.tagsContainer, {
@@ -168,9 +164,10 @@ function ReportOthers() {
               </div>
             )}
             {hasTimeFilter &&
-              statsCounts !== 0 &&
-              (timeseriesLoading || mapLoading ? (
-                <ReportActivityPlaceholder showHeader={false} />
+              (timeseriesLoading || mapLoading || statsCounts === 0 ? (
+                <ReportActivityPlaceholder showHeader={false}>
+                  {statsCounts === 0 && t('analysis.noDataByArea')}
+                </ReportActivityPlaceholder>
               ) : (
                 <ReportActivityEvolution
                   start={start}
