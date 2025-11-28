@@ -12,6 +12,7 @@ import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/da
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID } from 'features/map/map.config'
+import { isTimestampNumber } from 'utils/dates'
 
 import { useContextInteractions } from './ContextLayers.hooks'
 import ContextLayersRow from './ContextLayersRow'
@@ -59,9 +60,9 @@ export function getUserContextLayerLabel(
     return getDatasetLabel(dataset)
   }
 
-  // Check if the label is a timestamp after the year 2012
+  // Check if the label is a timestamp after the year 2000
   const timestamp = Number(label)
-  if (!isNaN(timestamp) && timestamp > 1325376000000) {
+  if (!isNaN(timestamp) && isTimestampNumber(timestamp)) {
     return formatI18nDate(timestamp)
   }
 
