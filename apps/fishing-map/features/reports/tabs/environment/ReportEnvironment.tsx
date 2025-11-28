@@ -16,9 +16,9 @@ import ReportCurrentsGraph from 'features/reports/tabs/activity/ReportCurrentsGr
 import ReportActivityDatasetComparison from '../activity/ReportActivityDatasetComparison'
 import ReportActivityDatasetComparisonGraph from '../activity/ReportActivityDatasetComparisonGraph'
 import ReportActivityEvolution from '../activity/ReportActivityEvolution'
-import ReportActivityGraphSelector from '../activity/ReportActivityGraphSelector'
 
 import ReportEnvironmentGraph from './ReportEnvironmentGraph'
+import ReportEnvironmentGraphSelector from './ReportEnvironmentGraphSelector'
 
 import styles from './ReportEnvironment.module.css'
 
@@ -37,10 +37,7 @@ function ReportEnvironment() {
 
   return (
     <div className={styles.graphContainer}>
-      <div className={styles.container}>
-        <label className={styles.blockTitle}>{t('analysis.graphSelector')}</label>
-        <ReportActivityGraphSelector loading={loading} />
-      </div>
+      <ReportEnvironmentGraphSelector />
       <div>
         {reportGraphType === 'evolution' ? (
           environmentalDataviews.map((dataview, index) => {

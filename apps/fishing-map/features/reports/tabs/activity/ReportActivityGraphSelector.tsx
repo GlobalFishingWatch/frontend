@@ -46,7 +46,6 @@ export default function ReportActivityGraphSelector({
     return filter === firstFilter
   })
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
-  const activeCategory = useSelector(selectReportCategory)
 
   const options: SelectOption<ReportActivityGraph>[] = [
     {
@@ -74,12 +73,6 @@ export default function ReportActivityGraphSelector({
       disabled: loading,
     },
   ]
-
-  const filteredOptions = options.filter((option) => {
-    if (activeCategory === ReportCategory.Environment) {
-      return isEvolutionOrDatasetComparison(option.id)
-    } else return true
-  })
 
   const onSelect = (option: SelectOption<ReportActivityGraph>) => {
     if (selectedReportActivityGraph !== option.id) {
@@ -124,7 +117,7 @@ export default function ReportActivityGraphSelector({
 
   return (
     <Select
-      options={filteredOptions}
+      options={options}
       selectedOption={selectedOption}
       onSelect={onSelect}
       containerClassName={styles.select}
