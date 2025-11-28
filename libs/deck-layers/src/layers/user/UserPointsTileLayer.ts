@@ -54,6 +54,7 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
 }
 
 type GetUserPointsDataParams = {
+  skipTemporalFilter?: boolean
   includeNonTemporalFeatures?: boolean
   aggregateByProperty?: string
 }
@@ -207,13 +208,16 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     })
   }
   getData = ({
+    skipTemporalFilter = false,
     includeNonTemporalFeatures = false,
   }: GetUserPointsDataParams = {}): Feature<Point>[] => {
     const data = this._getData().flatMap((feature) => {
       const values = new Array(this.props.layers?.[0]?.sublayers?.length).fill(0)
       this.props.layers?.[0]?.sublayers?.forEach((sublayer, index) => {
         const { aggregateByProperty } = sublayer
-        const matchesTimeFilter = isFeatureInRange(feature, this.props as IsFeatureInRangeParams)
+        const matchesTimeFilter = skipTemporalFilter
+          ? true
+          : isFeatureInRange(feature, this.props as IsFeatureInRangeParams)
         if (includeNonTemporalFeatures || matchesTimeFilter) {
           const matchesFilters = hasSublayerFilters(sublayer)
             ? isFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators)
@@ -241,8 +245,8 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return data
   }
 
-  getViewportData = () => {
-    return filteredPositionsByViewport(this.getData(), this.context.viewport)
+  getViewportData = (params: GetUserPointsDataParams = {}) => {
+    return filteredPositionsByViewport(this.getData(params), this.context.viewport)
   }
 
   getColor() {

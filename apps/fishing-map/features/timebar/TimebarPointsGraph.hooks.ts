@@ -8,7 +8,7 @@ import {
   useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
 import type { UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
-import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
+import { getFeatureTimeRange, getFourwingsChunk } from '@globalfishingwatch/deck-layers'
 import type { FourwingsPointFeature } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 
@@ -29,6 +29,8 @@ export const useTimebarPoints = () => {
   const timerange = useTimerangeConnect()
   const dataviewIds = useMemo(() => dataviews?.map(({ id }) => id), [dataviews])
   const userPointsLayers = useGetDeckLayers<UserPointsTileLayer>(dataviewIds)
+  const start = getUTCDate(timerange.start).getTime()
+  const end = getUTCDate(timerange.end).getTime()
 
   const datasetImporting = dataviews?.some(
     (dv) => dv.datasets?.[0].status === DatasetStatus.Importing
@@ -47,7 +49,7 @@ export const useTimebarPoints = () => {
     return userPointsLayers?.map(({ instance }) => instance)
   }, [userPointsLayers])
 
-  const setFourwingsPositionsData = useCallback(
+  const setFourwingsPointsData = useCallback(
     async (
       instancesData: { data: FourwingsPointFeature[]; params: PointsFeaturesToTimeseriesParams }[]
     ) => {
@@ -61,6 +63,7 @@ export const useTimebarPoints = () => {
           interval,
           timeFilterType,
         } = params
+
         return getGraphDataFromPoints(viewportData, {
           start: start,
           end: end,
@@ -108,17 +111,24 @@ export const useTimebarPoints = () => {
   useEffect(() => {
     if (loaded && instances.length > 0) {
       const instancesData = instances.map((instance) => {
-        const { startTime, endTime, startTimeProperty, endTimeProperty, layers, timeFilterType } =
-          instance?.props || {}
+        const { startTimeProperty, endTimeProperty, layers, timeFilterType } = instance?.props || {}
+
         const allAvailableIntervals = getAvailableIntervalsInDataviews(dataviews)
-        const { interval } = getFourwingsChunk(
-          startTime || getUTCDate(timerange.start).getTime(),
-          endTime || getUTCDate(timerange.end).getTime(),
-          allAvailableIntervals
-        )
+        const { interval } = getFourwingsChunk(start, end, allAvailableIntervals)
+
+        let featureStartTime: number = Infinity
+        let featureEndTime: number = -Infinity
 
         const viewportData =
-          instance?.getViewportData?.().map((feature) => {
+          instance?.getViewportData?.({ skipTemporalFilter: true }).map((feature) => {
+            const { featureStart, featureEnd } = getFeatureTimeRange(feature, {
+              startTimeProperty: startTimeProperty || '',
+              endTimeProperty: endTimeProperty || '',
+              timeFilterType,
+            })
+            featureStartTime = Math.min(featureStartTime, featureStart)
+            featureEndTime = Math.max(featureEndTime, featureEnd)
+
             return {
               ...feature,
               properties: {
@@ -134,15 +144,15 @@ export const useTimebarPoints = () => {
             startTimeProperty: startTimeProperty,
             endTimeProperty,
             sublayers: layers.flatMap((l) => l.sublayers) || [],
-            start: startTime,
-            end: endTime,
+            start: featureStartTime,
+            end: featureEndTime,
             interval: interval || 'MONTH',
             timeFilterType: timeFilterType,
           } as PointsFeaturesToTimeseriesParams,
         }
       })
 
-      setFourwingsPositionsData(instancesData)
+      setFourwingsPointsData(instancesData)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, instances, dataviewIds, viewportChangeHash])
