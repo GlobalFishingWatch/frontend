@@ -84,6 +84,7 @@ export type PointsReportGraphStats = {
   type: 'points'
   total: number
   values: number[]
+  count: number
 }
 
 export type ReportGraphStats = Record<string, FourwingsReportGraphStats | PointsReportGraphStats>

@@ -259,6 +259,11 @@ interface Resources {
       "description": "TODO: description",
       "moreInfoLink": "",
       "name": "Night light detections (VIIRS Skylight)"
+    },
+    "winds": {
+      "description": "TODO",
+      "moreInfoLink": "",
+      "name": "Winds"
     }
   },
   "translations": {
@@ -333,6 +338,7 @@ interface Resources {
       "see": "See report",
       "seeGlobal": "See global report",
       "seeVessels": "See vessels",
+      "selectAggregationProperty": "Select a property to analyze",
       "selectDatasetPlaceholder": "Select a dataset to compare",
       "share": "Share report",
       "statsDisclaimerDynamic": "During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.",
@@ -368,6 +374,7 @@ interface Resources {
       "active_after": "Active after",
       "active_before": "Active before",
       "activity": "Activity",
+      "aggregatedBy": "with a total sum of {{total}} {{property}}",
       "aka": "a.k.a.",
       "analysis": "Create an analysis for this area",
       "analysisAddArea": "Add area to the analysis",
@@ -734,6 +741,7 @@ interface Resources {
       "trackLoading": "There was an error loading the vessel track.",
       "trackSegmentIdFields": "Grouping by this field doesn't generate valid tracks",
       "uploadError": "There was an error uploading your dataset.",
+      "userDataError": "There was an error loading your user data. Please try again or contact support.",
       "vesselGroupReportLogin": "Login to see the vessels active",
       "vesselLoading": "There was an error loading the vessel details.",
       "workspaceLoad": "There was an error loading the workspace. Please try again.",
@@ -753,7 +761,7 @@ interface Resources {
       "fishing": "Fishing" | "Fishing events",
       "fishingAction": "Fishing started at {{start}} for {{duration}}",
       "fishingActionIn": "Fishing in {{regionName}}",
-      "gap": "AIS Off event" | "AIS Off event" | "" | "AIS Off events",
+      "gap": "AIS Off event" | "AIS Off event" | "AIS Off events",
       "gapAction": "AIS Off event started at {{start}} for {{duration}}",
       "gapActionIn": "Likely disabling in {{regionName}}",
       "hourAbbreviated": "{{count}}h" | "{{count}}h" | "{{count}}h" | "{{count}}h",
@@ -1047,6 +1055,7 @@ interface Resources {
       "showDetections": "Show detections graph",
       "showGraphDepth": "Show track depth graph",
       "showGraphSpeed": "Show track speed graph",
+      "showOthers": "Show your uploaded points",
       "showTracks": "Show tracks graph",
       "title": "Timebar settings",
       "tracks": "Tracks",
@@ -1307,7 +1316,7 @@ interface Resources {
       "sectionRelatedVessel": "Related vessels",
       "sectionRelatedVessels": "Related vessels",
       "sectionSummary": "Summary",
-      "selectIdentity": "See the identity for this dates",
+      "selectIdentity": "See the identity for these dates",
       "share": "Share vessel",
       "shipname": "Name",
       "shiptype": "Vessel type",

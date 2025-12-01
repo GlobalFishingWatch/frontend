@@ -21,7 +21,6 @@ export function getPortClusterDataviewForReport(
       ...dataview,
       config: {
         ...restConfig,
-        visible: true,
         ...(newClusterMaxZoomLevels && { clusterMaxZoomLevels: newClusterMaxZoomLevels }),
         filters: {
           ...(restFilters || {}),

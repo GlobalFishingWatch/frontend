@@ -17,7 +17,7 @@ export enum DataviewType {
   BasemapLabels = 'BASEMAP_LABELS',
   CartoPolygons = 'CARTO_POLYGONS',
   Context = 'CONTEXT',
-  Currents = 'CURRENTS',
+  FourwingsVector = 'FOURWINGS_VECTORS',
   FourwingsTileCluster = 'FOURWINGS_TILE_CLUSTER',
   GL = 'GL',
   Graticules = 'GRATICULES',
@@ -106,6 +106,9 @@ export interface DataviewConfig<Type = DataviewType> {
     min: number
     mean: number
   }
+
+  /** Used to store the property for aggregating user datasets values in report */
+  aggregateByProperty?: string
 
   /** Used to store the vessel name */
   name?: string

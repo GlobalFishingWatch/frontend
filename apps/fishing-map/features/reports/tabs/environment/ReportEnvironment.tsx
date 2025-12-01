@@ -1,21 +1,19 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
-import { isHeatmapCurrentsDataview } from '@globalfishingwatch/dataviews-client'
-
 import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import {
   useReportFeaturesLoading,
-  useReportFilteredFeatures,
+  // useReportFilteredFeatures,
   useReportFilteredTimeSeries,
 } from 'features/reports/reports-timeseries.hooks'
-import ReportCurrentsGraph from 'features/reports/tabs/activity/ReportCurrentsGraph'
+import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivityEvolution'
 
+// import ReportVectorGraphTooltip from 'features/reports/tabs/activity/ReportVectorGraphTooltip'
 import ReportActivityDatasetComparison from '../activity/ReportActivityDatasetComparison'
 import ReportActivityDatasetComparisonGraph from '../activity/ReportActivityDatasetComparisonGraph'
-import ReportActivityEvolution from '../activity/ReportActivityEvolution'
 
 import ReportEnvironmentGraph from './ReportEnvironmentGraph'
 import ReportEnvironmentGraphSelector from './ReportEnvironmentGraphSelector'
@@ -26,8 +24,9 @@ function ReportEnvironment() {
   const { t } = useTranslation()
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
-  const layersFilteredFeatures = useReportFilteredFeatures()
   const comparisonDataviews = useSelector(selectReportComparisonDataviews)
+  // const layersFilteredFeatures = useReportFilteredFeatures()
+  // const timeseriesStats = useTimeseriesStats()
   const environmentalDataviews = useSelector(selectActiveReportDataviews)
   const reportGraphType = useSelector(selectReportActivityGraph)
 
@@ -75,7 +74,7 @@ function ReportEnvironment() {
                   start={timerange.start}
                   end={timerange.end}
                   data={layersTimeseriesFiltered?.[0]}
-                /> 
+                />
           </Fragment>
         ) : null} */}
       </div>

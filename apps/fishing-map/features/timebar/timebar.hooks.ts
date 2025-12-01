@@ -18,6 +18,7 @@ import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveEventsDataviews,
+  selectActiveUserPointsDataviews,
   selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
@@ -267,6 +268,7 @@ export const useTimebarVisualisation = () => {
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeEventsDataviews = useSelector(selectActiveEventsDataviews)
   const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
+  const activeUserPointsDataviews = useSelector(selectActiveUserPointsDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeEnvDataviews = useSelector(selectActiveHeatmapEnvironmentalDataviewsWithoutStatic)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
@@ -275,6 +277,7 @@ export const useTimebarVisualisation = () => {
   const prevActiveHeatmapDataviewsNum = usePrevious(activeActivityDataviews.length)
   const prevActiveDetectionsDataviewsNum = usePrevious(activeDetectionsDataviews.length)
   const prevActiveVesselGroupDataviewsNum = usePrevious(activeVesselGroupDataviews.length)
+  const prevActiveUserPointsDataviews = usePrevious(activeUserPointsDataviews.length)
   const prevActiveTrackDataviewsNum = usePrevious(activeTrackDataviews.length)
   const prevactiveEnvDataviewsNum = usePrevious(activeEnvDataviews.length)
   const prevActiveEventsDataviewsNum = usePrevious(activeEventsDataviews.length)
@@ -287,6 +290,8 @@ export const useTimebarVisualisation = () => {
         !activeDetectionsDataviews?.length) ||
       (timebarVisualisation === TimebarVisualisations.VesselGroup &&
         !activeVesselGroupDataviews?.length) ||
+      (timebarVisualisation === TimebarVisualisations.Points &&
+        !activeUserPointsDataviews?.length) ||
       (timebarVisualisation === TimebarVisualisations.Vessel && !activeTrackDataviews?.length) ||
       (timebarVisualisation === TimebarVisualisations.Environment && !activeEnvDataviews?.length) ||
       (timebarVisualisation === TimebarVisualisations.Events && !activeEventsDataviews?.length)
@@ -297,6 +302,8 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapDetections, true)
       } else if (activeVesselGroupDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup, true)
+      } else if (activeUserPointsDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Points, true)
       } else if (activeTrackDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       } else if (activeEnvDataviews?.length) {
@@ -316,6 +323,8 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup, true)
       } else if (activeTrackDataviews.length >= 1 && prevActiveTrackDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
+      } else if (activeUserPointsDataviews.length >= 1 && prevActiveUserPointsDataviews === 0) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Points, true)
       } else if (activeEnvDataviews.length === 1 && prevactiveEnvDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
       } else if (activeEventsDataviews.length === 1 && prevActiveEventsDataviewsNum === 0) {
@@ -327,6 +336,7 @@ export const useTimebarVisualisation = () => {
     activeActivityDataviews,
     activeDetectionsDataviews,
     activeVesselGroupDataviews,
+    activeUserPointsDataviews,
     activeTrackDataviews,
     activeEnvDataviews,
     hasChangedSettingsOnce,

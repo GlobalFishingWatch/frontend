@@ -60,3 +60,8 @@ export const getDateLabel = (date: number, t: TFunction) => {
     DateTime.DATETIME_FULL
   )} (${getTimeAgo(DateTime.fromMillis(date, { zone: 'utc' }), t)})`
 }
+
+export const isTimestampNumber = (value: number) => {
+  // Consider timestamps from year 2000 (946684800000) to year 3000 (32503680000000)
+  return value > 946684800000 && value < 32503680000000
+}

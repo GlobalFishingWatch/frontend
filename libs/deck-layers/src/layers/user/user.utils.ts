@@ -25,6 +25,26 @@ export type IsFeatureInRangeParams = {
   endTimeProperty?: string
   timeFilterType?: TimeFilterType
 }
+
+export function getFeatureTimeRange(
+  feature: Feature<Point> | FourwingsFeature | FourwingsStaticFeature,
+  {
+    startTimeProperty,
+    endTimeProperty,
+    timeFilterType,
+  }: Pick<IsFeatureInRangeParams, 'startTimeProperty' | 'endTimeProperty' | 'timeFilterType'>
+) {
+  const featureStart = ((feature.properties as any)?.[startTimeProperty] as number) || 0
+  const featureEnd =
+    timeFilterType === 'dateRange' ||
+    (endTimeProperty && ((feature.properties as any)?.[endTimeProperty] as number))
+      ? ((feature.properties as any)?.[endTimeProperty!] as number)
+      : timeFilterType === 'date' || !endTimeProperty
+        ? featureStart
+        : Infinity
+  return { featureStart, featureEnd }
+}
+
 export function isFeatureInRange(
   feature: Feature<Point> | FourwingsFeature | FourwingsStaticFeature,
   { startTime, endTime, startTimeProperty, endTimeProperty, timeFilterType }: IsFeatureInRangeParams
@@ -32,11 +52,12 @@ export function isFeatureInRange(
   if (!feature || !startTime || !endTime) {
     return false
   }
-  const featureStart = ((feature.properties as any)?.[startTimeProperty] as number) || 0
-  const featureEnd =
-    ((feature.properties as any)?.[endTimeProperty!] as number) || timeFilterType === 'date'
-      ? featureStart
-      : Infinity
+  const { featureStart, featureEnd } = getFeatureTimeRange(feature, {
+    startTimeProperty,
+    endTimeProperty,
+    timeFilterType,
+  })
+
   return (
     (typeof featureEnd === 'string' ? parseInt(featureEnd) : featureEnd) >= startTime &&
     (typeof featureStart === 'string' ? parseInt(featureStart) : featureStart) < endTime

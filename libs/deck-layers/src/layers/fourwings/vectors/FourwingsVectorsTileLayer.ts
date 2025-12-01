@@ -9,54 +9,62 @@ import { GFWAPI } from '@globalfishingwatch/api-client'
 import type {
   FourwingsFeature,
   FourwingsInterval,
-  ParseFourwingsOptions,
+  ParseFourwingsVectorsOptions,
 } from '@globalfishingwatch/deck-loaders'
-import { FourwingsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
+import { FourwingsVectorsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import { HEATMAP_API_TILES_URL } from '../fourwings.config'
+import { FOURWINGS_TILE_SIZE, HEATMAP_API_TILES_URL, VECTORS_MAX_ZOOM } from '../fourwings.config'
 import type {
   BaseFourwingsLayerProps,
   FourwingsDeckSublayer,
+  FourwingsDeckVectorSublayer,
   FourwingsPickingObject,
-  FourwingsVisualizationMode,
 } from '../fourwings.types'
 import type { FourwingsHeatmapTilesCache } from '../heatmap/fourwings-heatmap.types'
 import {
   getDataUrlBySublayer,
   getFourwingsChunk,
-  getResolutionByVisualizationMode,
   getTileDataCache,
-  getZoomOffsetByResolution,
 } from '../heatmap/fourwings-heatmap.utils'
 
-import { FourwingsCurrentsLayer } from './FourwingsCurrentsLayer'
+import { FourwingsVectorsLayer } from './FourwingsVectorsLayer'
 
-export type FourwingsCurrentsTileLayerState = {
+export type FourwingsVectorsTileLayerState = {
   error: string
   tilesCache: FourwingsHeatmapTilesCache
 }
 
-export type _FourwingsCurrentsTileLayerProps<DataT = FourwingsFeature> = BaseFourwingsLayerProps & {
+export type _FourwingsVectorsTileLayerProps<DataT = FourwingsFeature> = Omit<
+  BaseFourwingsLayerProps,
+  'sublayers'
+> & {
   data?: DataT
+  debugTiles?: boolean
+  maxVelocity?: number
   availableIntervals?: FourwingsInterval[]
   highlightedFeatures?: FourwingsPickingObject[]
-  visualizationMode: FourwingsVisualizationMode
+  sublayers: FourwingsDeckVectorSublayer[]
 }
 
-export type FourwingsCurrentsTileLayerProps = _FourwingsCurrentsTileLayerProps &
+// TODO: decide if we intergrate it into the generic FourwingsLayer
+export type FourwingsVectorsTileLayerProps = _FourwingsVectorsTileLayerProps &
   Partial<TileLayerProps>
 
-const defaultProps: DefaultProps<FourwingsCurrentsTileLayerProps> = {
+const defaultProps: DefaultProps<FourwingsVectorsTileLayerProps> = {
   maxRequests: 100,
   debounceTime: 500,
+  maxVelocity: 5,
+  maxZoom: VECTORS_MAX_ZOOM,
   tilesUrl: HEATMAP_API_TILES_URL,
 }
 
-export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrentsTileLayerProps> {
-  static layerName = 'FourwingsCurrentsTileLayer'
+export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTileLayerProps> {
+  static layerName = 'FourwingsVectorsTileLayer'
   static defaultProps = defaultProps
   initialBinsLoad = false
-  state!: FourwingsCurrentsTileLayerState
+  // Disable extra chunks buffer to avoid loading a lot of extra data
+  chunksBuffer = 0
+  state!: FourwingsVectorsTileLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
@@ -67,6 +75,7 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
         startTime: this.props.startTime,
         endTime: this.props.endTime,
         availableIntervals: this.props.availableIntervals,
+        chunksBuffer: this.chunksBuffer,
       }),
     }
   }
@@ -83,15 +92,22 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
 
   _fetchTimeseriesTileData: any = async (tile: TileLoadProps) => {
     const { startTime, endTime, sublayers, tilesUrl, extentStart, availableIntervals } = this.props
-    const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
+    // Ensure 'u' (eastward) direction always goes first
+    const vectorLayers = sublayers.sort((a, b) => (a.direction === 'u' ? -1 : 1))
     const cols: number[] = []
     const rows: number[] = []
     const scale: number[] = []
     const offset: number[] = []
     const noDataValue: number[] = []
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
-    const chunk = getFourwingsChunk(startTime, endTime, availableIntervals)
-    const getSublayerData: any = async (sublayer: FourwingsDeckSublayer) => {
+    const chunk = getFourwingsChunk({
+      start: startTime,
+      end: endTime,
+      availableIntervals,
+      chunksBuffer: this.chunksBuffer,
+    })
+
+    const getSublayerData: any = async (sublayer: FourwingsDeckSublayer, sublayerIndex: number) => {
       const url = getDataUrlBySublayer({
         tile,
         chunk,
@@ -106,25 +122,25 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
       if (response.status >= 400 && response.status !== 404) {
         throw new Error(response.statusText)
       }
-      if (response.headers.get('X-columns') && !cols[0]) {
-        cols[0] = parseInt(response.headers.get('X-columns') as string)
+      if (response.headers.get('X-columns') && !cols[sublayerIndex]) {
+        cols[sublayerIndex] = parseInt(response.headers.get('X-columns') as string)
       }
-      if (response.headers.get('X-rows') && !rows[0]) {
-        rows[0] = parseInt(response.headers.get('X-rows') as string)
+      if (response.headers.get('X-rows') && !rows[sublayerIndex]) {
+        rows[sublayerIndex] = parseInt(response.headers.get('X-rows') as string)
       }
-      if (response.headers.get('X-scale') && !scale[0]) {
-        scale[0] = parseFloat(response.headers.get('X-scale') as string)
+      if (response.headers.get('X-scale') && !scale[sublayerIndex]) {
+        scale[sublayerIndex] = parseFloat(response.headers.get('X-scale') as string)
       }
-      if (response.headers.get('X-offset') && !offset[0]) {
-        offset[0] = parseInt(response.headers.get('X-offset') as string)
+      if (response.headers.get('X-offset') && !offset[sublayerIndex]) {
+        offset[sublayerIndex] = parseInt(response.headers.get('X-offset') as string)
       }
-      if (response.headers.get('X-empty-value') && !noDataValue[0]) {
-        noDataValue[0] = parseInt(response.headers.get('X-empty-value') as string)
+      if (response.headers.get('X-empty-value') && !noDataValue[sublayerIndex]) {
+        noDataValue[sublayerIndex] = parseInt(response.headers.get('X-empty-value') as string)
       }
       return await response.arrayBuffer()
     }
 
-    const promises = visibleSublayers.map(getSublayerData) as Promise<ArrayBuffer>[]
+    const promises = vectorLayers.map(getSublayerData) as Promise<ArrayBuffer>[]
     const settledPromises = await Promise.allSettled(promises)
 
     const hasChunkError = settledPromises.some(
@@ -145,27 +161,30 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
       return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
     })
 
-    const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
-      worker: true,
-      fourwings: {
-        sublayers: 1,
-        cols,
-        rows,
-        scale,
-        offset,
-        noDataValue,
-        bufferedStartDate: chunk.bufferedStart,
-        initialTimeRange: {
-          start: startTime,
-          end: endTime,
-        },
-        interval,
-        tile,
-        buffersLength: settledPromises.map((p) =>
-          p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
-        ),
-      } as ParseFourwingsOptions,
-    })
+    const data = await parse(
+      arrayBuffers.filter(Boolean) as ArrayBuffer[],
+      FourwingsVectorsLoader,
+      {
+        worker: true,
+        fourwingsVectors: {
+          cols,
+          rows,
+          scale,
+          offset,
+          noDataValue,
+          bufferedStartDate: chunk.bufferedStart,
+          initialTimeRange: {
+            start: startTime,
+            end: endTime,
+          },
+          interval,
+          tile,
+          buffersLength: settledPromises.map((p) =>
+            p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
+          ),
+        } as ParseFourwingsVectorsOptions,
+      }
+    )
 
     return data
   }
@@ -184,15 +203,7 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
     const dataCache = Object.values(tilesCache || {}).join(',')
     const sublayersIds = this.props.sublayers?.map((s) => s.id).join(',')
     const sublayersDatasets = this.props.sublayers?.flatMap((s) => s.datasets || []).join(',')
-    const sublayersFilters = this.props.sublayers?.flatMap((s) => s.filter || []).join(',')
-    const sublayersVesselGroups = this.props.sublayers?.map((s) => s.vesselGroups || []).join(',')
-    return [
-      dataCache,
-      sublayersIds,
-      sublayersDatasets,
-      sublayersFilters,
-      sublayersVesselGroups,
-    ].join('-')
+    return [dataCache, sublayersIds, sublayersDatasets].join('-')
   }
 
   updateState({ props }: UpdateParameters<this>) {
@@ -216,10 +227,16 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
             startTime,
             endTime,
             availableIntervals,
+            chunksBuffer: this.chunksBuffer,
           }),
         })
       })
     }
+  }
+
+  getZoomOffset = () => {
+    const { zoom } = this.context.viewport
+    return zoom < 0.5 ? 0 : zoom < 1.5 ? -1 : -2
   }
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList {
@@ -228,21 +245,21 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
       return []
     }
     const { tilesCache } = this.state
-    const { visualizationMode, maxRequests, debounceTime, maxZoom } = this.props
+    const { maxRequests, debounceTime, maxZoom } = this.props
 
     const cacheKey = this._getTileDataCacheKey()
-    const resolution = getResolutionByVisualizationMode(visualizationMode)
 
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
-        id: `tiles-${visualizationMode}`,
-        tileSize: 512,
+        id: `tiles-vectors`,
+        tileSize: FOURWINGS_TILE_SIZE,
         tilesCache,
         minZoom: 0,
         onTileError: this._onLayerError,
         maxZoom: maxZoom || 8,
-        zoomOffset: getZoomOffsetByResolution(resolution!, zoom),
+        refinementStrategy: 'never',
+        zoomOffset: this.getZoomOffset(),
         opacity: 1,
         maxRequests,
         debounceTime,
@@ -251,7 +268,7 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
           getTileData: [cacheKey],
         },
         renderSubLayers: (props: any) => {
-          return new FourwingsCurrentsLayer(props)
+          return new FourwingsVectorsLayer(props)
         },
       })
     )
@@ -263,14 +280,16 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
   }
 
   getFourwingsLayers() {
-    return this.props.sublayers
+    return [this.props.sublayers[0]]
+  }
+
+  getAggregationOperation() {
+    return 'avg'
   }
 
   getTilesData({ aggregated } = {} as { aggregated?: boolean }) {
     const layer = this.getLayerInstance()
     if (layer) {
-      const resolution = getResolutionByVisualizationMode(this.props.visualizationMode)
-      const offset = getZoomOffsetByResolution(resolution!, this.context.viewport.zoom)
       const roudedZoom = Math.round(this.context.viewport.zoom)
       return layer
         .getSubLayers()
@@ -281,7 +300,9 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
           if (l.props.tile.zoom === l.props.maxZoom) {
             return l.getData({ aggregated })
           }
-          return l.props.tile.zoom === roudedZoom + offset ? l.getData({ aggregated }) : []
+          return l.props.tile.zoom === roudedZoom + this.getZoomOffset()
+            ? l.getData({ aggregated })
+            : []
         })
         .filter((t) => t.length > 0) as FourwingsFeature[][]
     }
@@ -294,6 +315,6 @@ export class FourwingsCurrentsTileLayer extends CompositeLayer<FourwingsCurrents
 
   getChunk = () => {
     const { startTime, endTime, availableIntervals } = this.props
-    return getFourwingsChunk(startTime, endTime, availableIntervals)
+    return getFourwingsChunk({ start: startTime, end: endTime, availableIntervals })
   }
 }

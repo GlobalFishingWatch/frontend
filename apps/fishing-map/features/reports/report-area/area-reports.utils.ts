@@ -16,7 +16,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { getFeatureBuffer, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import type { Area, AreaGeometry } from 'features/areas/areas.slice'
@@ -95,7 +95,7 @@ const SUPPORTED_REPORT_TYPES = [
   DataviewType.HeatmapAnimated,
   DataviewType.HeatmapStatic,
   DataviewType.FourwingsTileCluster,
-  DataviewType.Currents,
+  DataviewType.FourwingsVector,
 ]
 const SUPPORTED_COMPARISON_CATEGORIES = [
   DataviewCategory.Activity,
@@ -336,4 +336,18 @@ export function getVesselsFiltered<Vessel = ReportVesselWithDatasets | ReportTab
       return uniqMatched
     }
   }, vessels) as Vessel[]
+}
+
+export function cleanAggregateByPropertyDataviewFromReport(dataview: UrlDataviewInstance) {
+  if (!dataview.config?.aggregateByProperty) {
+    return dataview
+  }
+
+  return {
+    ...dataview,
+    config: {
+      ...dataview.config,
+      aggregateByProperty: undefined,
+    },
+  }
 }

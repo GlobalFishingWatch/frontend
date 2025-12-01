@@ -142,7 +142,6 @@ export const useGlobalConfigConnect = () => {
   const clickedFeatures = useSelector(selectClickedEvent)
   const trackGraphExtent = useTimebarTracksGraphExtent()
   const hoverFeatures = useMapHoverInteraction()?.features
-  const debug = useSelector(selectDebugOptions)?.debug
   const debugOptions = useSelector(selectDebugOptions)
   const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
 
@@ -187,7 +186,7 @@ export const useGlobalConfigConnect = () => {
     let globalConfig: ResolverGlobalConfig = {
       activityVisualizationMode,
       bivariateDataviews,
-      debug,
+      debugTiles: debugOptions?.debugTiles,
       detectionsVisualizationMode,
       end,
       environmentVisualizationMode,
@@ -217,7 +216,6 @@ export const useGlobalConfigConnect = () => {
     viewState.zoom,
     start,
     end,
-    debug,
     debugOptions,
     bivariateDataviews,
     activityVisualizationMode,
