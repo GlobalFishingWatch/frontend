@@ -58,29 +58,8 @@ export const resolveLibraryLayers = (
       },
     }
   })
+
   if (experimentalLayers) {
-    layers.push({
-      id: 'currents',
-      dataviewId: CURRENTS_DATAVIEW_SLUG,
-      category: DataviewCategory.Environment,
-      name: t('layer-library:currents.name'),
-      description: t('layer-library:currents.description'),
-      moreInfoLink: '',
-      previewImageUrl: `${PATH_BASENAME}/images/layer-library/currents.jpg`,
-      dataview: {} as any,
-    })
-
-    layers.push({
-      id: 'winds',
-      dataviewId: WINDS_DATAVIEW_SLUG,
-      category: DataviewCategory.Environment,
-      name: t('layer-library:currents.name'),
-      description: t('layer-library:currents.description'),
-      moreInfoLink: '',
-      previewImageUrl: `${PATH_BASENAME}/images/layer-library/currents.jpg`,
-      dataview: {} as any,
-    })
-
     layers.push({
       id: BATHYMETRY_CONTOUR_DATAVIEW_PREFIX,
       dataviewId: BATHYMETRY_CONTOUR_DATAVIEW_SLUG,
