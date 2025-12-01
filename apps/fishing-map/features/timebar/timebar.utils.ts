@@ -200,30 +200,32 @@ export function getGraphDataFromFourwingsHeatmap(
 
   if (areFourwingsFeatures) {
     ;(features as FourwingsFeature[]).forEach((feature) => {
-      const { dates, values } = feature.properties
+      const { dates, values, velocities } = feature.properties
       if (dates) {
         dates.forEach((sublayerDates, sublayerIndex) => {
-          const valueArray = values[sublayerIndex]
-          if (hasMinVisibleValue || hasMaxVisibleValue) {
-            sublayerDates.forEach((sublayerDate, dateIndex) => {
-              const sublayerDateData = data[sublayerDate]
-              if (
-                sublayerDateData &&
-                (!minVisibleValue || valueArray[dateIndex] >= minVisibleValue) &&
-                (!maxVisibleValue || valueArray[dateIndex] <= maxVisibleValue)
-              ) {
-                sublayerDateData[sublayerIndex] += valueArray[dateIndex]
-                sublayerDateData.count![sublayerIndex]++
-              }
-            })
-          } else {
-            sublayerDates.forEach((sublayerDate, dateIndex) => {
-              const sublayerDateData = data[sublayerDate]
-              if (sublayerDateData) {
-                sublayerDateData[sublayerIndex] += valueArray[dateIndex]
-                sublayerDateData.count![sublayerIndex]++
-              }
-            })
+          const valueArray = values[sublayerIndex] || velocities
+          if (valueArray && valueArray.length) {
+            if (hasMinVisibleValue || hasMaxVisibleValue) {
+              sublayerDates.forEach((sublayerDate, dateIndex) => {
+                const sublayerDateData = data[sublayerDate]
+                if (
+                  sublayerDateData &&
+                  (!minVisibleValue || valueArray[dateIndex] >= minVisibleValue) &&
+                  (!maxVisibleValue || valueArray[dateIndex] <= maxVisibleValue)
+                ) {
+                  sublayerDateData[sublayerIndex] += valueArray[dateIndex]
+                  sublayerDateData.count![sublayerIndex]++
+                }
+              })
+            } else {
+              sublayerDates.forEach((sublayerDate, dateIndex) => {
+                const sublayerDateData = data[sublayerDate]
+                if (sublayerDateData) {
+                  sublayerDateData[sublayerIndex] += valueArray[dateIndex]
+                  sublayerDateData.count![sublayerIndex]++
+                }
+              })
+            }
           }
         })
       }

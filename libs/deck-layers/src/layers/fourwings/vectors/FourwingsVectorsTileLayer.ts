@@ -279,7 +279,11 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   getFourwingsLayers() {
-    return this.props.sublayers
+    return [this.props.sublayers[0]]
+  }
+
+  getAggregationOperation() {
+    return 'avg'
   }
 
   getTilesData({ aggregated } = {} as { aggregated?: boolean }) {

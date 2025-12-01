@@ -131,6 +131,10 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     return this.props.visualizationMode || HEATMAP_ID
   }
 
+  getAggregationOperation() {
+    return this.props.aggregationOperation
+  }
+
   getChunk() {
     if (this.isHeatmapVisualizationMode && !this.props.static) {
       return (this.getLayer() as FourwingsHeatmapTileLayer)?.getChunk()
