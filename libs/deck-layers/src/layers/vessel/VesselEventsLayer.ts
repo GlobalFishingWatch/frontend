@@ -38,7 +38,9 @@ const defaultProps: DefaultProps<VesselEventsLayerProps> = {
   onDataChange: { type: 'function', value: () => {} },
   getShape: {
     type: 'accessor',
-    value: (d) => EVENT_SHAPES[d.type as EventTypes] ?? EVENT_SHAPES.fishing,
+    value: (d) => {
+      return EVENT_SHAPES[d.type as EventTypes] ?? EVENT_SHAPES.fishing
+    },
   },
   getStart: { type: 'accessor', value: (d) => d.start },
   getEnd: { type: 'accessor', value: (d) => d.end },
@@ -128,9 +130,11 @@ export class VesselEventsLayer<
         const int SHAPE_SQUARE = ${SHAPES_ORDINALS.square};
         const int SHAPE_DIAMOND = ${SHAPES_ORDINALS.diamond};
         const int SHAPE_DIAMOND_STROKE = ${SHAPES_ORDINALS.diamondStroke};
+        const int SHAPE_X = ${SHAPES_ORDINALS.x};
       `,
       'fs:DECKGL_FILTER_COLOR': /*glsl*/ `
         vec2 uv = abs(geometry.uv);
+        vec2 uvOriginal = geometry.uv;
         int shape = int(vShape);
         if(vStart < events.highlightEndTime && vEnd > events.highlightStartTime) {
           color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
@@ -145,6 +149,13 @@ export class VesselEventsLayer<
           };
         } else if (shape == SHAPE_DIAMOND_STROKE) {
           if (uv.x + uv.y > 1.0 || uv.x + uv.y < 0.7) {
+            color = vec4(0,0,0,0);
+          }
+        } else if (shape == SHAPE_X) {
+          float d1 = abs(uvOriginal.x - uvOriginal.y) / sqrt(2.0);
+          float d2 = abs(uvOriginal.x + uvOriginal.y) / sqrt(2.0);
+          float lineWidth = 0.15;
+          if (d1 > lineWidth && d2 > lineWidth) {
             color = vec4(0,0,0,0);
           }
         }

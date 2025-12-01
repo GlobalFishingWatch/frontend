@@ -17,7 +17,7 @@ export enum DataviewType {
   BasemapLabels = 'BASEMAP_LABELS',
   CartoPolygons = 'CARTO_POLYGONS',
   Context = 'CONTEXT',
-  Currents = 'CURRENTS',
+  FourwingsVector = 'FOURWINGS_VECTORS',
   FourwingsTileCluster = 'FOURWINGS_TILE_CLUSTER',
   GL = 'GL',
   Graticules = 'GRATICULES',

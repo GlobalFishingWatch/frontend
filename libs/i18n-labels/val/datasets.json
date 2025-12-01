@@ -739,6 +739,10 @@
     "name": "crwdns65549:0crwdne65549:0",
     "description": "crwdns65551:0crwdne65551:0"
   },
+  "public-bathymetry-contour": {
+    "name": "crwdns106818:0crwdne106818:0",
+    "description": "crwdns106820:0crwdne106820:0"
+  },
   "public-belize-fishing-effort": {
     "name": "crwdns65553:0crwdne65553:0",
     "description": "crwdns65555:0crwdne65555:0",
@@ -870,6 +874,105 @@
     "name": "crwdns69052:0crwdne69052:0",
     "description": "crwdns69054:0crwdne69054:0"
   },
+  "public-cfc-exploration-areas-individual": {
+    "name": "crwdns106822:0crwdne106822:0",
+    "description": "crwdns106824:0crwdne106824:0",
+    "schema": {
+      "status": "crwdns106826:0crwdne106826:0",
+      "act_date": {
+        "keyword": "crwdns106828:0crwdne106828:0",
+        "enum": {
+          "1447023600000": "crwdns106830:0crwdne106830:0",
+          "1697752800000": "crwdns106832:0crwdne106832:0"
+        }
+      },
+      "area_key": "crwdns108524:0crwdne108524:0",
+      "blk_cell": "crwdns108120:0crwdne108120:0",
+      "blk_orig": {
+        "keyword": "crwdns108122:0crwdne108122:0",
+        "enum": {}
+      },
+      "sub_area": "crwdns108124:0crwdne108124:0",
+      "area_km_2": {
+        "keyword": "crwdns108126:0crwdne108126:0",
+        "enum": {
+          "0.99879855": "crwdns108128:0crwdne108128:0",
+          "20.0156525": "crwdns108130:0crwdne108130:0"
+        }
+      },
+      "area_type": "crwdns108132:0crwdne108132:0",
+      "clst_orig": {
+        "keyword": "crwdns108134:0crwdne108134:0",
+        "enum": {
+          "978303600000": "crwdns108136:0crwdne108136:0",
+          "999295200000": "crwdns108138:0crwdne108138:0"
+        }
+      },
+      "cluster_id": {
+        "keyword": "crwdns108140:0crwdne108140:0",
+        "enum": {
+          "NR": "crwdns108142:0crwdne108142:0",
+          "KC-1": "crwdns108144:0crwdne108144:0",
+          "KC-2": "crwdns108146:0crwdne108146:0",
+          "KC-3": "crwdns108148:0crwdne108148:0",
+          "KC-4": "crwdns108150:0crwdne108150:0",
+          "KC-5": "crwdns108152:0crwdne108152:0",
+          "KC-6": "crwdns108154:0crwdne108154:0",
+          "KC-7": "crwdns108156:0crwdne108156:0",
+          "KC-8": "crwdns108158:0crwdne108158:0",
+          "KC-9": "crwdns108160:0crwdne108160:0",
+          "NA": "crwdns108162:0crwdne108162:0"
+        }
+      },
+      "blk_cell_id": {
+        "keyword": "crwdns108164:0crwdne108164:0",
+        "enum": {}
+      },
+      "contract_id": {
+        "keyword": "crwdns108166:0crwdne108166:0",
+        "enum": {
+          "KOREACRFC1": "crwdns108168:0crwdne108168:0",
+          "COMRACRFC1": "crwdns108170:0crwdne108170:0",
+          "BrazilCRFC1": "crwdns108172:0crwdne108172:0",
+          "JOGMECCRFC1": "crwdns108174:0crwdne108174:0",
+          "RUSMNRCRFC1": "crwdns108176:0crwdne108176:0"
+        }
+      }
+    }
+  },
+  "public-cfc-reserved-areas-individual": {
+    "name": "crwdns108178:0crwdne108178:0",
+    "description": "crwdns108180:0crwdne108180:0",
+    "schema": {
+      "status": "crwdns108182:0crwdne108182:0",
+      "act_date": {
+        "keyword": "crwdns108184:0crwdne108184:0",
+        "enum": {
+          "1425942000000": "crwdns108186:0crwdne108186:0"
+        }
+      },
+      "area_key": "crwdns108526:0crwdne108526:0",
+      "blk_cell": "crwdns108490:0crwdne108490:0",
+      "blk_orig": {
+        "keyword": "crwdns108492:0crwdne108492:0",
+        "enum": {}
+      },
+      "sub_area": "crwdns108494:0crwdne108494:0",
+      "area_km_2": "crwdns108496:0crwdne108496:0",
+      "area_type": "crwdns108498:0crwdne108498:0",
+      "cluster_id": "crwdns108500:0crwdne108500:0",
+      "blk_cell_id": {
+        "keyword": "crwdns108502:0crwdne108502:0",
+        "enum": {}
+      },
+      "contract_id": {
+        "keyword": "crwdns108504:0crwdne108504:0",
+        "enum": {
+          "CRFCReserved": "crwdns108506:0crwdne108506:0"
+        }
+      }
+    }
+  },
   "public-chile-all-vessels": {
     "name": "crwdns65837:0crwdne65837:0",
     "description": "crwdns65839:0crwdne65839:0"
@@ -921,6 +1024,15 @@
   "public-chile-vessel-identity-non-fishing": {
     "name": "crwdns69082:0crwdne69082:0",
     "description": "crwdns69084:0crwdne69084:0"
+  },
+  "public-clarion-clipperton-zone-isa-claim-areas": {
+    "name": "crwdns108528:0crwdne108528:0",
+    "description": "crwdns108530:0crwdne108530:0",
+    "schema": {
+      "type": "crwdns108532:0crwdne108532:0",
+      "label": "crwdns108534:0crwdne108534:0",
+      "contractor": "crwdns108536:0crwdne108536:0"
+    }
   },
   "public-cold-water-corals": {
     "name": "crwdns65927:0crwdne65927:0",
@@ -1163,6 +1275,14 @@
   "public-global-chlorophyl": {
     "name": "crwdns66205:0crwdne66205:0",
     "description": "crwdns83012:0crwdne83012:0"
+  },
+  "public-global-currents-uo": {
+    "name": "crwdns108508:0crwdne108508:0",
+    "description": "crwdns108510:0crwdne108510:0"
+  },
+  "public-global-currents-vo": {
+    "name": "crwdns108512:0crwdne108512:0",
+    "description": "crwdns108514:0crwdne108514:0"
   },
   "public-global-encounters-events-carriers-fishing": {
     "name": "crwdns66209:0crwdne66209:0",
@@ -1577,6 +1697,14 @@
     "name": "crwdns66605:0crwdne66605:0",
     "description": "crwdns66607:0crwdne66607:0"
   },
+  "public-global-winds-uo": {
+    "name": "crwdns108516:0crwdne108516:0",
+    "description": "crwdns108518:0crwdne108518:0"
+  },
+  "public-global-winds-vo": {
+    "name": "crwdns108520:0crwdne108520:0",
+    "description": "crwdns108522:0crwdne108522:0"
+  },
   "public-graticules": {
     "name": "crwdns66609:0crwdne66609:0",
     "description": "crwdns66611:0crwdne66611:0"
@@ -1596,6 +1724,15 @@
   "public-high-seas-pockets": {
     "name": "crwdns66625:0crwdne66625:0",
     "description": "crwdns93808:0crwdne93808:0"
+  },
+  "public-indian-ocean-isa-claim-areas": {
+    "name": "crwdns108538:0crwdne108538:0",
+    "description": "crwdns108540:0crwdne108540:0",
+    "schema": {
+      "type": "crwdns108542:0crwdne108542:0",
+      "label": "crwdns108544:0crwdne108544:0",
+      "contractor": "crwdns108546:0crwdne108546:0"
+    }
   },
   "public-indonesia-fishing-effort": {
     "name": "crwdns66629:0crwdne66629:0",
@@ -1626,9 +1763,19 @@
     "description": "crwdns66767:0crwdne66767:0"
   },
   "public-isa-areas-contractor": {
-    "name": "crwdns93732:0crwdne93732:0",
-    "description": "crwdns93734:0crwdne93734:0",
+    "name": "crwdns106766:0crwdne106766:0",
+    "description": "crwdns106768:0crwdne106768:0",
     "schema": {
+      "layer": {
+        "keyword": "crwdns106806:0crwdne106806:0",
+        "enum": {
+          "CFC Reserved Areas": "crwdns106808:0crwdne106808:0",
+          "CFC Exploration Areas": "crwdns106810:0crwdne106810:0",
+          "PMN Reserved Areas": "crwdns106812:0crwdne106812:0",
+          "PMN Exploration Areas": "crwdns106814:0crwdne106814:0",
+          "PMS Exploration Areas": "crwdns106816:0crwdne106816:0"
+        }
+      },
       "contract": {
         "keyword": "crwdns93736:0crwdne93736:0",
         "enum": {
@@ -1665,6 +1812,36 @@
           "BGRPMS1": "crwdns93798:0crwdne93798:0",
           "COMRAPMN1": "crwdns93800:0crwdne93800:0",
           "PMNReserved": "crwdns93802:0crwdne93802:0"
+        }
+      }
+    }
+  },
+  "public-isa-layers": {
+    "name": "crwdns106770:0crwdne106770:0",
+    "description": "crwdns106772:0crwdne106772:0",
+    "schema": {
+      "label": {
+        "keyword": "crwdns106774:0crwdne106774:0",
+        "enum": {
+          "CFC Reserved Areas": "crwdns106776:0crwdne106776:0",
+          "PMN Exploration Areas": "crwdns106778:0crwdne106778:0",
+          "PMS Exploration Areas": "crwdns106780:0crwdne106780:0",
+          "PMN Reserved Areas": "crwdns106782:0crwdne106782:0",
+          "Areas of particular environmental interest within the Clarion-Clipperton Zone": "crwdns106784:0crwdne106784:0",
+          "Clarion-Clipperton Zone management area": "crwdns106786:0crwdne106786:0",
+          "CFC Exploration Areas": "crwdns106788:0crwdne106788:0"
+        }
+      },
+      "layer": {
+        "keyword": "crwdns106790:0crwdne106790:0",
+        "enum": {
+          "GIS-CCZ-Management-Areas — CCZ_Management_Areas.shp copy": "crwdns106792:0crwdne106792:0",
+          "ISAwebsite_APEIs — ISAwebsite_APEIs Dissolved": "crwdns106794:0crwdne106794:0",
+          "ISAwebsite_fclContractAreasCRFC — ISAwebsite_fclContractAreasCRFC Dissolved": "crwdns106796:0crwdne106796:0",
+          "ISAwebsite_fclContractAreasCRFCres — ISAwebsite_fclContractAreasCRFCres Dissolved": "crwdns106798:0crwdne106798:0",
+          "ISAwebsite_fclContractAreasPMN — ISAwebsite_fclContractAreasPMN Dissolved": "crwdns106800:0crwdne106800:0",
+          "ISAwebsite_fclContractAreasPMNres — ISAwebsite_fclContractAreasPMNres Dissolved": "crwdns106802:0crwdne106802:0",
+          "ISAwebsite_fclContractAreasPMS — ISAwebsite_fclContractAreasPMS Dissolved": "crwdns106804:0crwdne106804:0"
         }
       }
     }
@@ -1748,6 +1925,15 @@
     "name": "crwdns69130:0crwdne69130:0",
     "description": "crwdns69132:0crwdne69132:0"
   },
+  "public-mid-atlantic-isa-claim-areas": {
+    "name": "crwdns108548:0crwdne108548:0",
+    "description": "crwdns108550:0crwdne108550:0",
+    "schema": {
+      "type": "crwdns108552:0crwdne108552:0",
+      "label": "crwdns108554:0crwdne108554:0",
+      "contractor": "crwdns108556:0crwdne108556:0"
+    }
+  },
   "public-mp-as-mp-atlas": {
     "name": "crwdns84730:0crwdne84730:0",
     "description": "crwdns84732:0crwdne84732:0"
@@ -1798,6 +1984,15 @@
   "public-no-take-zone-1618836692786": {
     "name": "crwdns66869:0crwdne66869:0",
     "description": "crwdns66871:0crwdne66871:0"
+  },
+  "public-northwest-pacific-isa-claim-areas": {
+    "name": "crwdns108558:0crwdne108558:0",
+    "description": "crwdns108560:0crwdne108560:0",
+    "schema": {
+      "type": "crwdns108562:0crwdne108562:0",
+      "label": "crwdns108564:0crwdne108564:0",
+      "contractor": "crwdns108566:0crwdne108566:0"
+    }
   },
   "public-norway-fishing-effort": {
     "name": "crwdns66873:0crwdne66873:0",
@@ -1924,6 +2119,199 @@
   "public-peru-vessel-identity-fishing": {
     "name": "crwdns69184:0crwdne69184:0",
     "description": "crwdns69186:0crwdne69186:0"
+  },
+  "public-pmn-exploration-areas-individual": {
+    "name": "crwdns108568:0crwdne108568:0",
+    "description": "crwdns108570:0crwdne108570:0",
+    "schema": {
+      "status": "crwdns108572:0crwdne108572:0",
+      "remarks": {
+        "keyword": "crwdns108574:0crwdne108574:0",
+        "enum": {
+          "xx": "crwdns108576:0crwdne108576:0",
+          "Total exploration area of GSR (PMN) is 41,468.91606 sq.km": "crwdns108578:0crwdne108578:0",
+          "Total exploration area of IOM (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns108580:0crwdne108580:0",
+          "Total exploration area of Yuzhmorgeologiya (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns108582:0crwdne108582:0",
+          "Total exploration area of Korea (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns108584:0crwdne108584:0",
+          "Total exploration area of COMRA (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns108586:0crwdne108586:0",
+          "Total exploration area of DORD (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns108588:0crwdne108588:0",
+          "Total exploration area of IFREMER (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns108590:0crwdne108590:0",
+          "Total exploration area of India (PMN) is 75,000 sq.km, AreaKM2 was calculated by ISA": "crwdns108592:0crwdne108592:0",
+          "Total exploration area of GSR (PMN) is 76,728 sq.km; AreaKM2 was calculated by ISA": "crwdns108594:0crwdne108594:0",
+          "Total exploration area of MARAWA (PMN) is 74,990 sq.km; AreaKM2 was calculated by ISA": "crwdns108596:0crwdne108596:0",
+          "Total exploration area of CIIC (PMN) is 71,937 sq.km; AreaKM2 was calcualted by ISA": "crwdns108598:0crwdne108598:0"
+        }
+      },
+      "act_date": {
+        "keyword": "crwdns108600:0crwdne108600:0",
+        "enum": {
+          "985816800000": "crwdns108602:0crwdne108602:0",
+          "1717970400000": "crwdns108604:0crwdne108604:0"
+        }
+      },
+      "area_key": "crwdns108606:0crwdne108606:0",
+      "blk_cell": "crwdns108608:0crwdne108608:0",
+      "blk_orig": "crwdns108610:0crwdne108610:0",
+      "sub_area": "crwdns108612:0crwdne108612:0",
+      "area_km_2": {
+        "keyword": "crwdns108614:0crwdne108614:0",
+        "enum": {
+          "74919": "crwdns108616:0crwdne108616:0",
+          "2182.876": "crwdns108618:0crwdne108618:0"
+        }
+      },
+      "area_type": "crwdns108620:0crwdne108620:0",
+      "clst_orig": "crwdns108622:0crwdne108622:0",
+      "cluster_id": "crwdns108624:0crwdne108624:0",
+      "blk_cell_id": "crwdns108626:0crwdne108626:0",
+      "contract_id": {
+        "keyword": "crwdns108628:0crwdne108628:0",
+        "enum": {
+          "KOREAPMN1": "crwdns108630:0crwdne108630:0",
+          "IOMPMN1": "crwdns108632:0crwdne108632:0",
+          "DORDPMN1": "crwdns108634:0crwdne108634:0",
+          "BMJPMN1": "crwdns108636:0crwdne108636:0",
+          "IndiaPMN1": "crwdns108638:0crwdne108638:0",
+          "TOMLPMN1": "crwdns108640:0crwdne108640:0",
+          "IFREMERPMN1": "crwdns108642:0crwdne108642:0",
+          "BGRPMN1": "crwdns108644:0crwdne108644:0",
+          "BPHDCPMN1": "crwdns108646:0crwdne108646:0",
+          "UKSRLPMN2": "crwdns108648:0crwdne108648:0",
+          "UKSRLPMN1": "crwdns108650:0crwdne108650:0",
+          "YUZHPMN1": "crwdns108652:0crwdne108652:0",
+          "CIICPMN1": "crwdns108654:0crwdne108654:0",
+          "OMSPMN1": "crwdns108656:0crwdne108656:0",
+          "GSRPMN1": "crwdns108658:0crwdne108658:0",
+          "MARAWAPMN1": "crwdns108660:0crwdne108660:0",
+          "CMMPMN1": "crwdns108662:0crwdne108662:0",
+          "NORIPMN1": "crwdns108664:0crwdne108664:0",
+          "COMRAPMN1": "crwdns108666:0crwdne108666:0"
+        }
+      }
+    }
+  },
+  "public-pmn-reserved-areas-individual": {
+    "name": "crwdns108668:0crwdne108668:0",
+    "description": "crwdns108670:0crwdne108670:0",
+    "schema": {
+      "status": "crwdns108672:0crwdne108672:0",
+      "remarks": {
+        "keyword": "crwdns108674:0crwdne108674:0",
+        "enum": {
+          "Origin:INDIA": "crwdns108676:0crwdne108676:0",
+          "Origin:COMRA": "crwdns108678:0crwdne108678:0",
+          "Origin:Yuzhmorgeologia": "crwdns108680:0crwdne108680:0",
+          "Origin:DORD": "crwdns108682:0crwdne108682:0",
+          "Origin:IFREMER": "crwdns108684:0crwdne108684:0",
+          "Origin:Government of the Republic of Korea": "crwdns108686:0crwdne108686:0",
+          "Origin:IOM": "crwdns108688:0crwdne108688:0",
+          "Origin:BGR": "crwdns108690:0crwdne108690:0",
+          "Origin:UKSRL-ll": "crwdns108692:0crwdne108692:0"
+        }
+      },
+      "act_date": {
+        "keyword": "crwdns108694:0crwdne108694:0",
+        "enum": {
+          "988322400000": "crwdns108696:0crwdne108696:0",
+          "1617487200000": "crwdns108698:0crwdne108698:0"
+        }
+      },
+      "area_key": "crwdns108700:0crwdne108700:0",
+      "blk_cell": "crwdns108702:0crwdne108702:0",
+      "blk_orig": {
+        "keyword": "crwdns108704:0crwdne108704:0",
+        "enum": {
+          "983401200000": "crwdns108706:0crwdne108706:0",
+          "986076000000": "crwdns108708:0crwdne108708:0"
+        }
+      },
+      "sub_area": "crwdns108710:0crwdne108710:0",
+      "area_km_2": {
+        "keyword": "crwdns108712:0crwdne108712:0",
+        "enum": {
+          "150000": "crwdns108714:0crwdne108714:0",
+          "1032.952": "crwdns108716:0crwdne108716:0"
+        }
+      },
+      "area_type": "crwdns108718:0crwdne108718:0",
+      "clst_orig": "crwdns108720:0crwdne108720:0",
+      "cluster_id": "crwdns108722:0crwdne108722:0",
+      "blk_cell_id": "crwdns108724:0crwdne108724:0",
+      "contract_id": {
+        "keyword": "crwdns108726:0crwdne108726:0",
+        "enum": {
+          "BPHDCPMN1": "crwdns108728:0crwdne108728:0",
+          "PMNReserved": "crwdns108730:0crwdne108730:0"
+        }
+      }
+    }
+  },
+  "public-pms-exploration-areas-individual": {
+    "name": "crwdns108732:0crwdne108732:0",
+    "description": "crwdns108734:0crwdne108734:0",
+    "schema": {
+      "status": "crwdns108736:0crwdne108736:0",
+      "act_date": {
+        "keyword": "crwdns108738:0crwdne108738:0",
+        "enum": {
+          "1474840800000": "crwdns108740:0crwdne108740:0",
+          "1698098400000": "crwdns108742:0crwdne108742:0"
+        }
+      },
+      "area_key": "crwdns108744:0crwdne108744:0",
+      "blk_cell": "crwdns108746:0crwdne108746:0",
+      "blk_orig": {
+        "keyword": "crwdns108748:0crwdne108748:0",
+        "enum": {}
+      },
+      "sub_area": "crwdns108750:0crwdne108750:0",
+      "area_km_2": {
+        "keyword": "crwdns108752:0crwdne108752:0",
+        "enum": {
+          "1": "crwdns108754:0crwdne108754:0",
+          "101": "crwdns108756:0crwdne108756:0"
+        }
+      },
+      "area_type": "crwdns108758:0crwdne108758:0",
+      "clst_orig": {
+        "keyword": "crwdns108760:0crwdne108760:0",
+        "enum": {
+          "A": "crwdns108762:0crwdne108762:0",
+          "B": "crwdns108764:0crwdne108764:0",
+          "C": "crwdns108766:0crwdne108766:0",
+          "D": "crwdns108768:0crwdne108768:0",
+          "E": "crwdns108770:0crwdne108770:0"
+        }
+      },
+      "cluster_id": {
+        "keyword": "crwdns108772:0crwdne108772:0",
+        "enum": {
+          "NR": "crwdns108774:0crwdne108774:0",
+          "A": "crwdns108776:0crwdne108776:0",
+          "B": "crwdns108778:0crwdne108778:0",
+          "C": "crwdns108780:0crwdne108780:0",
+          "D": "crwdns108782:0crwdne108782:0",
+          "E": "crwdns108784:0crwdne108784:0",
+          "NA": "crwdns108786:0crwdne108786:0"
+        }
+      },
+      "blk_cell_id": {
+        "keyword": "crwdns108788:0crwdne108788:0",
+        "enum": {}
+      },
+      "contract_id": {
+        "keyword": "crwdns108790:0crwdne108790:0",
+        "enum": {
+          "KOREAPMS1": "crwdns108792:0crwdne108792:0",
+          "COMRAPMS1": "crwdns108794:0crwdne108794:0",
+          "IFREMERPMS1": "crwdns108796:0crwdne108796:0",
+          "POLPMS1": "crwdns108798:0crwdne108798:0",
+          "RUSFEDPMS1": "crwdns108800:0crwdne108800:0",
+          "BGRPMS1": "crwdns108802:0crwdne108802:0",
+          "IndiaPMS1": "crwdns108804:0crwdne108804:0"
+        }
+      }
+    }
   },
   "public-png-fishing-effort": {
     "name": "crwdns67261:0crwdne67261:0",
@@ -2150,6 +2538,14 @@
           "8000": "crwdns82920:0crwdne82920:0"
         }
       }
+    }
+  },
+  "public-south-atlantic-isa-claim-areas": {
+    "name": "crwdns108806:0crwdne108806:0",
+    "description": "crwdns108808:0crwdne108808:0",
+    "schema": {
+      "label": "crwdns108810:0crwdne108810:0",
+      "contractor": "crwdns108812:0crwdne108812:0"
     }
   },
   "public-tristan-seamounts-200-1618586314138": {

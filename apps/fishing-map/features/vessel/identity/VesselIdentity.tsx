@@ -300,7 +300,7 @@ const VesselIdentity = () => {
           <label>{t('common.viewIn')}</label>
           <div className={styles.externalToolLinks}>
             <a
-              href={`https://www.marinetraffic.com/${i18n.language}/ais/details/ships/mmsi:${vesselIdentity?.ssvid}`}
+              href={`https://www.marinetraffic.com/${i18n.language}/data/?asset_type=vessels&mmsi=${vesselIdentity?.ssvid}`}
               target="_blank"
               onClick={() => {
                 trackEvent({

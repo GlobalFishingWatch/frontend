@@ -24,6 +24,7 @@ import {
   selectBivariateDataviews,
   selectDetectionsVisualizationMode,
   selectEnvironmentVisualizationMode,
+  selectVesselGroupsVisualizationMode,
 } from 'features/app/selectors/app.selectors'
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
 import {
@@ -135,12 +136,12 @@ export const useGlobalConfigConnect = () => {
   const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const environmentVisualizationMode = useSelector(selectEnvironmentVisualizationMode)
+  const vesselGroupsVisualizationMode = useSelector(selectVesselGroupsVisualizationMode)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
   const clickedFeatures = useSelector(selectClickedEvent)
   const trackGraphExtent = useTimebarTracksGraphExtent()
   const hoverFeatures = useMapHoverInteraction()?.features
-  const debug = useSelector(selectDebugOptions)?.debug
   const debugOptions = useSelector(selectDebugOptions)
   const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
 
@@ -185,7 +186,7 @@ export const useGlobalConfigConnect = () => {
     let globalConfig: ResolverGlobalConfig = {
       activityVisualizationMode,
       bivariateDataviews,
-      debug,
+      debugTiles: debugOptions?.debugTiles,
       detectionsVisualizationMode,
       end,
       environmentVisualizationMode,
@@ -196,6 +197,7 @@ export const useGlobalConfigConnect = () => {
       start,
       token: GFWAPI.token,
       trackGraphExtent,
+      vesselGroupsVisualizationMode,
       vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
       vesselTrackVisualizationMode: debugOptions.vesselsAsPositions ? 'positions' : 'track',
       ...(debugOptions.vesselsAsPositions &&
@@ -214,7 +216,6 @@ export const useGlobalConfigConnect = () => {
     viewState.zoom,
     start,
     end,
-    debug,
     debugOptions,
     bivariateDataviews,
     activityVisualizationMode,
@@ -225,6 +226,7 @@ export const useGlobalConfigConnect = () => {
     visibleEvents,
     vesselsTimebarGraph,
     vesselsMaxTimeGapHours,
+    vesselGroupsVisualizationMode,
     highlightedFeatures,
     trackGraphExtent,
     onPositionsMaxPointsError,

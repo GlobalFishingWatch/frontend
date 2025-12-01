@@ -71,6 +71,19 @@ const nextConfig: NextConfig = {
         ]
       : []
   },
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: 'frame-ancestors https://* http://*',
+          },
+        ],
+      },
+    ]
+  },
   webpack: function (config, options) {
     config.resolve.fallback = {
       ...config.resolve.fallback,

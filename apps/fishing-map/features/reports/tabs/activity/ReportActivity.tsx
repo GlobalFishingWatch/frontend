@@ -18,7 +18,10 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReportLoadVessels } from 'features/app/selectors/app.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
+import {
+  getDatasetsReportNotSupported,
+  getIsBQEditorDataset,
+} from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -117,6 +120,9 @@ function ActivityReport() {
   const concurrentReportError = getIsConcurrentError(statusError!)
   const isSameWorkspaceReport =
     concurrentReportError && window?.location.href === lastReport?.workspaceUrl
+  const isBQEditorDataset = dataviews.some((dataview) =>
+    dataview.datasets?.some((dataset) => getIsBQEditorDataset(dataset))
+  )
 
   const isTimeoutError = getIsTimeoutError(statusError!)
   useEffect(() => {
@@ -238,6 +244,15 @@ function ActivityReport() {
   ])
 
   const ReportComponent = useMemo(() => {
+    if (isBQEditorDataset) {
+      return (
+        <ReportVesselsPlaceholder animate={false} className="print-hidden">
+          <div className={cx(styles.cover, styles.center, styles.top)}>
+            Reports for BQ editor datasets are not supported yet.
+          </div>
+        </ReportVesselsPlaceholder>
+      )
+    }
     if (workspaceStatus === AsyncReducerStatus.Loading) {
       return <ReportVesselsPlaceholder className="print-hidden" />
     }
@@ -302,6 +317,7 @@ function ActivityReport() {
         </ReportVesselsPlaceholder>
       )
     }
+
     if (reportLoaded) {
       return hasVessels ? (
         <Fragment>
@@ -344,6 +360,7 @@ function ActivityReport() {
 
     return <ReportVesselsPlaceholder animate={false} className="print-hidden" />
   }, [
+    isBQEditorDataset,
     workspaceStatus,
     timerangeTooLong,
     reportError,

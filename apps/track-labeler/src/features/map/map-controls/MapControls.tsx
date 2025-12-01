@@ -6,7 +6,7 @@ import formatcoords from 'formatcoords'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
-import { Icon, IconButton, MiniGlobe, Tooltip } from '@globalfishingwatch/ui-components'
+import { Icon, IconButton, MiniGlobe } from '@globalfishingwatch/ui-components'
 
 import { CONTEXT_LAYERS_IDS } from '../../../data/config'
 import Rulers from '../../../features/rulers/Rulers'

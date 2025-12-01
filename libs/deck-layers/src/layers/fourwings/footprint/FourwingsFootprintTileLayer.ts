@@ -17,6 +17,7 @@ import { FourwingsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-
 
 import {
   FOURWINGS_MAX_ZOOM,
+  FOURWINGS_TILE_SIZE,
   HEATMAP_API_TILES_URL,
   MAX_POSITIONS_PER_TILE_SUPPORTED,
 } from '../fourwings.config'
@@ -31,6 +32,7 @@ import {
   aggregateCellTimeseries,
   getDataUrlBySublayer,
   getFourwingsChunk,
+  getZoomOffsetByResolution,
 } from '../heatmap/fourwings-heatmap.utils'
 
 import type {
@@ -82,7 +84,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     const { startTime, endTime, sublayers, availableIntervals, tilesUrl, extentStart } = this.props
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
-    const chunk = getFourwingsChunk(startTime, endTime, availableIntervals)
+    const chunk = getFourwingsChunk({ start: startTime, end: endTime, availableIntervals })
     this.setState({ rampDirty: true })
     const cols: number[] = []
     const rows: number[] = []
@@ -189,7 +191,11 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     compareEnd?: number
   }): FourwingsHeatmapTilesCache => {
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
-    const { start, end, bufferedStart } = getFourwingsChunk(startTime, endTime, availableIntervals)
+    const { start, end, bufferedStart } = getFourwingsChunk({
+      start: startTime,
+      end: endTime,
+      availableIntervals,
+    })
     const zoom = Math.round(this.context.viewport.zoom)
     return { zoom, start, end, bufferedStart, interval, compareStart, compareEnd }
   }
@@ -235,18 +241,19 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList {
     const { tilesCache } = this.state
+    const { resolution = 'default' } = this.props
     const cacheKey = this._getTileDataCacheKey()
 
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
         id: `tiles-footprint`,
-        tileSize: 512,
+        tileSize: FOURWINGS_TILE_SIZE,
         tilesCache,
         minZoom: 0,
         onTileError: this._onLayerError,
         maxZoom: FOURWINGS_MAX_ZOOM,
-        zoomOffset: 0,
+        zoomOffset: getZoomOffsetByResolution(resolution, this.context.viewport.zoom),
         opacity: 1,
         maxRequests: this.props.maxRequests,
         debounceTime: this.props.debounceTime,
@@ -345,7 +352,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
 
   getChunk = () => {
     const { startTime, endTime, availableIntervals } = this.props
-    return getFourwingsChunk(startTime, endTime, availableIntervals)
+    return getFourwingsChunk({ start: startTime, end: endTime, availableIntervals })
   }
 
   getColorDomain = () => {

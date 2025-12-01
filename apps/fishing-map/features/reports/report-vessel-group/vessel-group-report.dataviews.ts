@@ -1,5 +1,5 @@
 import type { DataviewInstance, DataviewType } from '@globalfishingwatch/api-types'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { type ColorRampId, HEATMAP_COLORS_BY_ID } from '@globalfishingwatch/deck-layers'
 
@@ -43,7 +43,7 @@ export type VesselGroupEventsDataviewId =
 export const VESSEL_GROUP_ENCOUNTER_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}encounter`
 export const VESSEL_GROUP_LOITERING_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}loitering`
 export const VESSEL_GROUP_PORT_VISITS_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}port_visit`
-export const VESSEL_GROUP_GAPS_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}gap`
+export const VESSEL_GROUP_GAPS_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}gaps`
 
 export const VESSEL_GROUP_EVENTS_DATAVIEW_IDS: VesselGroupEventsDataviewId[] = [
   VESSEL_GROUP_ENCOUNTER_EVENTS_ID,
@@ -57,10 +57,10 @@ export const DATAVIEW_ID_BY_VESSEL_GROUP_EVENTS: Record<
   VGReportEventsSubCategory,
   VesselGroupEventsDataviewId
 > = {
-  encounter: VESSEL_GROUP_ENCOUNTER_EVENTS_ID,
-  loitering: VESSEL_GROUP_LOITERING_EVENTS_ID,
-  port_visit: VESSEL_GROUP_PORT_VISITS_EVENTS_ID,
-  gap: VESSEL_GROUP_GAPS_EVENTS_ID,
+  [EventTypes.Encounter]: VESSEL_GROUP_ENCOUNTER_EVENTS_ID,
+  [EventTypes.Loitering]: VESSEL_GROUP_LOITERING_EVENTS_ID,
+  [EventTypes.Port]: VESSEL_GROUP_PORT_VISITS_EVENTS_ID,
+  [EventTypes.Gap]: VESSEL_GROUP_GAPS_EVENTS_ID,
 }
 
 type GetReportVesselGroupVisibleDataviewsParams = {

@@ -14,14 +14,16 @@ import {
   isAnyContextDataview,
   isDetectionsDataview,
   isEnvironmentalDataview,
-  isHeatmapCurrentsDataview,
   isHeatmapStaticDataview,
+  isHeatmapVectorsDataview,
   isTrackDataview,
   isUserHeatmapDataview,
   isUserTrackDataview,
   isVesselGroupDataview,
 } from '@globalfishingwatch/dataviews-client'
 import type {
+  FOOTPRINT_HIGH_RES_ID,
+  FOOTPRINT_ID,
   FourwingsVisualizationMode,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
@@ -49,9 +51,9 @@ export const getDataviewAvailableIntervals = (
 ): FourwingsInterval[] => {
   const allDatasets = dataview.datasets?.length
     ? dataview.datasets
-    : ((dataview as ResolvedFourwingsDataviewInstance)?.config?.sublayers || [])?.flatMap(
+    : (((dataview as ResolvedFourwingsDataviewInstance)?.config?.sublayers || [])?.flatMap(
         (sublayer) => sublayer.datasets || []
-      )
+      ) as Dataset[])
   const fourwingsDatasets = allDatasets?.filter(
     (dataset) => dataset.type === DatasetTypes.Fourwings
   )
@@ -242,6 +244,7 @@ export function getContextDataviewsResolved(
     const uniqLayers = uniqBy(layers, (l) => l.id)
 
     const mergedDataviewConfig: ResolvedContextDataviewInstance['config'] = {
+      visible: dataviews[0]?.config?.visible ?? true,
       type: dataviews[0]?.config?.type as DataviewType,
       ...(isUserTrackDataview(dataviews[0]) && {
         singleTrack: hasSingleUserTrackDataview,
@@ -295,6 +298,7 @@ type ResolverGlobalConfig = {
   activityVisualizationMode?: FourwingsVisualizationMode
   detectionsVisualizationMode?: FourwingsVisualizationMode
   environmentVisualizationMode?: typeof HEATMAP_ID | typeof HEATMAP_LOW_RES_ID
+  vesselGroupsVisualizationMode?: typeof FOOTPRINT_ID | typeof FOOTPRINT_HIGH_RES_ID
   // TODO review if we can move this to each own dataview
   compareStart?: string
   compareEnd?: string
@@ -373,7 +377,7 @@ const DATAVIEW_GROUPS_CONFIG = [
   { key: 'detectionDataviews' as const, test: isDetectionsDataview },
   { key: 'environmentalDataviews' as const, test: isEnvironmentalDataview },
   { key: 'staticDataviews' as const, test: isHeatmapStaticDataview },
-  { key: 'currentsDataviews' as const, test: isHeatmapCurrentsDataview },
+  { key: 'vectorsDataviews' as const, test: isHeatmapVectorsDataview },
   { key: 'vesselGroupDataview' as const, test: isVesselGroupDataview },
   { key: 'userHeatmapDataviews' as const, test: isUserHeatmapDataview },
   { key: 'vesselTrackDataviews' as const, test: isTrackDataview },
@@ -409,7 +413,7 @@ export function getDataviewsResolved(
     detectionDataviews = [],
     environmentalDataviews = [],
     staticDataviews = [],
-    currentsDataviews = [],
+    vectorsDataviews = [],
     vesselGroupDataview = [],
     vesselTrackDataviews = [],
     userHeatmapDataviews = [],
@@ -465,7 +469,7 @@ export function getDataviewsResolved(
       }) || []
     )
   })
-  const currentsDataviewsParsed = currentsDataviews.flatMap((dataview) => {
+  const vectorsDataviewsParsed = vectorsDataviews.flatMap((dataview) => {
     return {
       ...dataview,
       config: { ...dataview.config, visualizationMode: params.environmentVisualizationMode },
@@ -477,7 +481,9 @@ export function getDataviewsResolved(
     return (
       getFourwingsDataviewsResolved(d, {
         visualizationMode:
-          comparisonMode === FourwingsComparisonMode.TimeCompare ? 'heatmap' : 'footprint',
+          comparisonMode === FourwingsComparisonMode.TimeCompare
+            ? 'heatmap'
+            : params.vesselGroupsVisualizationMode || 'footprint',
         colorRampWhiteEnd: false,
         comparisonMode,
       }) || []
@@ -501,7 +507,7 @@ export function getDataviewsResolved(
   const dataviewsMerged = [
     ...otherDataviews,
     ...staticDataviewsParsed,
-    ...currentsDataviewsParsed,
+    ...vectorsDataviewsParsed,
     ...environmentalDataviewsParsed,
     ...vesselGroupDataviewParsed,
     ...mergedDetectionsDataview,

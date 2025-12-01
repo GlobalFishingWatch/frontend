@@ -63,7 +63,7 @@ interface Resources {
     "dsm-isa-leasing-areas": {
       "description": "These represent the areas currently leased by the International Seabed Authority (ISA) for exploration of polymetallic nodules, polymetallic sulfides, and cobalt-rich ferromanganese crusts in the high seas. Each polygon represents a 15-year contract with a mining contractor and sponsoring country for the exploration of minerals. None of these areas are currently leased for exploitation (i.e. commercial mining), though these are the same regions that will be mined if exploitation contracts are ever approved by the ISA. The ISA is the intergovernmental United Nations body that is tasked with both protecting the international seabed alongside managing any mineral-resources-related activity in the area.",
       "moreInfoLink": "",
-      "name": "ISA leasing areas"
+      "name": "ISA License Areas"
     },
     "eez": {
       "description": "Exclusive economic zones (EEZs) extend up to 200 nautical miles from a country's coast. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11.",
@@ -259,6 +259,11 @@ interface Resources {
       "description": "TODO: description",
       "moreInfoLink": "",
       "name": "Night light detections (VIIRS Skylight)"
+    },
+    "winds": {
+      "description": "TODO",
+      "moreInfoLink": "",
+      "name": "Winds"
     }
   },
   "translations": {
@@ -734,6 +739,7 @@ interface Resources {
       "trackLoading": "There was an error loading the vessel track.",
       "trackSegmentIdFields": "Grouping by this field doesn't generate valid tracks",
       "uploadError": "There was an error uploading your dataset.",
+      "userDataError": "There was an error loading your user data. Please try again or contact support.",
       "vesselGroupReportLogin": "Login to see the vessels active",
       "vesselLoading": "There was an error loading the vessel details.",
       "workspaceLoad": "There was an error loading the workspace. Please try again.",
@@ -753,7 +759,8 @@ interface Resources {
       "fishing": "Fishing" | "Fishing events",
       "fishingAction": "Fishing started at {{start}} for {{duration}}",
       "fishingActionIn": "Fishing in {{regionName}}",
-      "gap": "AIS Off event",
+      "gap": "AIS Off event" | "AIS Off event" | "AIS Off events",
+      "gapAction": "AIS Off event started at {{start}} for {{duration}}",
       "gapActionIn": "Likely disabling in {{regionName}}",
       "hourAbbreviated": "{{count}}h" | "{{count}}h" | "{{count}}h" | "{{count}}h",
       "loitering": "Loitering" | "Loitering event" | "Loitering events" | "Loitering events",
@@ -1306,7 +1313,7 @@ interface Resources {
       "sectionRelatedVessel": "Related vessels",
       "sectionRelatedVessels": "Related vessels",
       "sectionSummary": "Summary",
-      "selectIdentity": "See the identity for this dates",
+      "selectIdentity": "See the identity for these dates",
       "share": "Share vessel",
       "shipname": "Name",
       "shiptype": "Vessel type",
