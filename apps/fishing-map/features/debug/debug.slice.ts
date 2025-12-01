@@ -5,7 +5,6 @@ import type { RootState } from 'reducers'
 
 export enum FeatureFlag {
   WorkspaceGenerator = 'workspaceGenerator',
-  OthersReport = 'othersReport',
 }
 
 export enum DebugOption {
@@ -44,7 +43,6 @@ const initialState: DebugState = {
   active: false,
   featureFlags: {
     workspaceGenerator: false,
-    othersReport: false,
   },
   options: {
     datasetRelationship: false,

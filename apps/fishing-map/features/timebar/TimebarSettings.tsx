@@ -24,7 +24,6 @@ import {
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectIsOthersReportEnabled } from 'features/debug/debug.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
@@ -82,7 +81,6 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const hasSomeVesselLayer = activeVesselsDataviews?.length > 0
   const vesselsAsPositions = useSelector(selectDebugOptions)?.vesselsAsPositions
-  const othersReportEnabled = useSelector(selectIsOthersReportEnabled)
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
   const { timebarSelectedVGId, dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
@@ -232,7 +230,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   tooltip={detectionsTooltipLabel}
                   onClick={() => setTimebarSectionActive(TimebarVisualisations.Events)}
                 />
-                {othersReportEnabled && activeUserPointsDataviews.length > 0 && (
+                {activeUserPointsDataviews.length > 0 && (
                   <Radio
                     label={
                       <Icon
