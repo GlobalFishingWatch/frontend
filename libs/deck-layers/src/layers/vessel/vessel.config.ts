@@ -8,13 +8,14 @@ import { hexToDeckColor } from '../../utils'
 export const TRACK_LAYER_TYPE = 'track'
 export const EVENT_LAYER_TYPE = 'event'
 
-type EventShape = 'circle' | 'square' | 'diamond' | 'diamondStroke' | 'x'
+type EventShape = 'circle' | 'square' | 'diamond' | 'diamondStroke' | 'x' | 'plus'
 export const SHAPES_ORDINALS: Record<EventShape, number> = {
   circle: 0,
   square: 1,
   diamond: 2,
   diamondStroke: 3,
   x: 4,
+  plus: 5,
 }
 
 export const EVENT_SHAPES: Record<EventTypes, number> = {

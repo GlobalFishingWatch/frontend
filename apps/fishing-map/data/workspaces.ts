@@ -75,6 +75,7 @@ export const SENTINEL2_DATAVIEW_SLUG = 'sentinel-2-v-4' as const
 export const PRESENCE_DATAVIEW_SLUG = 'presence-activity-v-4' as const
 export const TEMPLATE_USER_TRACK_SLUG = 'user-track' as const
 export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-v-4' as const
+// export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-v-3-gaps' as const
 export const TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG = 'vessel-track-only-v-4' as const
 export const TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_BRAZIL =
   'private-bra-fishing-map-vessel-track-v-4' as const

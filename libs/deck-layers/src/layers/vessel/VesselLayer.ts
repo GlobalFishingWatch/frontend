@@ -1,6 +1,5 @@
-import type { Color, LayerProps, PickingInfo } from '@deck.gl/core'
+import type { LayerProps, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import { DataFilterExtension } from '@deck.gl/extensions'
 import bbox from '@turf/bbox'
 import bboxPolygon from '@turf/bbox-polygon'
 import { featureCollection, point } from '@turf/helpers'
@@ -9,9 +8,9 @@ import type { BBox, Position } from 'geojson'
 import { extent } from 'simple-statistics'
 
 import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
-import { DataviewCategory, DataviewType, EventTypes } from '@globalfishingwatch/api-types'
+import type { EventTypes } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { type Bbox, getUTCDateTime } from '@globalfishingwatch/data-transforms'
-import type { VesselDeckLayersEventData } from '@globalfishingwatch/deck-loaders'
 import {
   getVesselGraphExtentClamped,
   VesselEventsLoader,
@@ -23,9 +22,7 @@ import { getFetchLoadOptions, getLayerGroupOffset, LayerGroup } from '../../util
 import { deckToHexColor } from '../../utils/colors'
 
 import {
-  DEFAULT_FISHING_EVENT_COLOR,
   EVENT_LAYER_TYPE,
-  EVENTS_COLORS,
   TRACK_DEFAULT_THINNING,
   TRACK_DEFAULT_THINNING_CONFIG,
   TRACK_LAYER_TYPE,
@@ -274,18 +271,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   _getVesselEventLayers(): VesselEventsLayer[] {
-    const {
-      visible,
-      visibleEvents,
-      startTime,
-      endTime,
-      highlightEventIds,
-      events,
-      highlightStartTime,
-      highlightEndTime,
-      singleTrack,
-      color,
-    } = this.props
+    const { visible, visibleEvents, events } = this.props
     if (!visible) {
       return []
     }
@@ -296,51 +282,24 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       if (!visible) {
         return []
       }
-      return chunks.map(({ start, end }) => {
+      return chunks.flatMap(({ start, end }) => {
         const chunkId = `${EVENT_LAYER_TYPE}-${type}-${start}-${end}`
         const eventUrl = new URL(url as string)
         eventUrl.searchParams.append('start-date', start as string)
         eventUrl.searchParams.append('end-date', end as string)
-        return new VesselEventsLayer<VesselDeckLayersEventData[]>(
-          this.getSubLayerProps({
-            id: chunkId,
-            data: eventUrl.toString(),
-            loadOptions: {
-              ...getFetchLoadOptions(),
-            },
-            visible,
-            type,
-            onError: (e: any) => this.onSublayerError(type, e),
-            loaders: [VesselEventsLoader],
-            pickable: true,
-            highlightStartTime,
-            highlightEndTime,
-            name: this.props.name,
-            color,
-            vesselId: this.props.id.replace('vessel-', ''),
-            getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
-            getFillColor: (d: any): Color => {
-              if (highlightEventIds?.includes(d.id)) return DEFAULT_FISHING_EVENT_COLOR
-              if (d.type === EventTypes.Fishing) {
-                return singleTrack ? DEFAULT_FISHING_EVENT_COLOR : color
-              }
-              return EVENTS_COLORS[d.type as EventTypes]
-            },
-            radiusUnits: 'pixels',
-            getRadius: (d: any) => {
-              return d.type === EventTypes.Fishing ? 3 : 6
-            },
-            getFilterValue: (d: VesselDeckLayersEventData) => [d.start, d.end],
-            filterRange: [
-              [Number.MIN_SAFE_INTEGER, endTime] as any,
-              [startTime, Number.MAX_SAFE_INTEGER],
-            ],
-            extensions: [new DataFilterExtension({ filterSize: 2 })],
-            updateTriggers: {
-              getFillColor: [color, highlightEventIds],
-            },
-          })
-        )
+
+        return new VesselEventsLayer({
+          ...this.props,
+          id: chunkId,
+          data: eventUrl.toString(),
+          type,
+          visible,
+          loadOptions: {
+            ...getFetchLoadOptions(),
+          },
+          loaders: [VesselEventsLoader],
+          onError: (e: any) => this.onSublayerError(type, e),
+        })
       })
     })
   }
