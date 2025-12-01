@@ -14,6 +14,7 @@
     "confirmRemove": "¿Está seguro de que desea eliminar permanentemente este reporte?",
     "createReportHelp": "Para explorar cómo cambian los datos ambientales y de actividad a lo largo del tiempo, puede crear un análisis reporte dinámico que incluye análisis para cualquier área.\nLos reportes dinámicos ofrecen una forma rápida de acceder y comprender más información sobre cualquier área oceánica, zona económica exclusiva, área marina protegida o área de interés. Los reportes dinámicos lo ayudan a comprender cuánta actividad está ocurriendo en un área, incluidos qué embarcaciones y Estados del pabellón están activos.",
     "createReportHelpLink": "Ver más.",
+    "datasetComparison": "Data comparison",
     "datasetsNotAllowed": "No se han incluido embarcaciones de las siguientes fuentes:",
     "datasetsNotAllowedAll": "Ninguno de sus conjuntos de datos pueden ser usados en informes",
     "dataSource": "Fuente de datos",
@@ -70,6 +71,7 @@
     "seeGlobal": "Ver informe global",
     "seeVessels": "Ver embarcaciones",
     "selectAggregationProperty": "Select a property to analyze",
+    "selectDatasetPlaceholder": "Select a dataset to compare",
     "share": "Compartir informe",
     "statsDisclaimerDynamic": "Durante este tiempo, los valores mínimos y máximos de cualquier {{interval}} y lugar dados dentro de su área fueron {{min}} {{unit}} y {{max}} {{unit}}.",
     "statsDisclaimerStatic": "El valor promedio de su área es {{mean}} {{unit}}. El mínimo y el máximo son {{min}} {{unit}} y {{max}} {{unit}}.",
@@ -719,6 +721,7 @@
     "speed": "Velocidad",
     "statsHelp": "El número de embarcaciones y banderas se calcula para sus filtros actuales y rango de tiempo a nivel mundial. Puede ocurrir conteo doble.",
     "statsHelpDetection": "El número de detecciones se calcula para sus filtros actuales y el rango de tiempo en todo el mundo. Puede ocurrir un recuento doble.",
+    "timeGraphFiltersDisabled": "Filters aren't supported in time graphs",
     "toggleCombinationMode": {
       "combine": "Combinar las capas",
       "split": "Separar las capas"
