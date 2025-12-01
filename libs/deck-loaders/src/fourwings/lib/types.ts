@@ -16,7 +16,7 @@ export type TileCell = Cell & {
   coordinates: [number[]]
 }
 
-export type FourwingsInterval = 'YEAR' | 'MONTH' | 'DAY' | 'HOUR'
+export type FourwingsInterval = 'YEAR' | 'MONTH' | 'DAY' | 'HOUR' // | 'WEEKDAY'
 type FourwingsAggregationOperation = 'sum' | 'avg'
 
 export type ParseFourwingsOptions = {

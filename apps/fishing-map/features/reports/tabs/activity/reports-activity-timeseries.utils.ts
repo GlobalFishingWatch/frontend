@@ -2,7 +2,9 @@ import type { DateTimeUnit, DurationUnit } from 'luxon'
 import { DateTime, Duration } from 'luxon'
 import { max, mean, min } from 'simple-statistics'
 
-import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import type { DataviewInstance } from '@globalfishingwatch/api-types'
+import { formatDateForInterval, getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type {
   FourwingsAggregationOperation,
   FourwingsDeckSublayer,
@@ -20,11 +22,15 @@ import type {
   FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
 
+import { DATASET_COMPARISON_SUFFIX } from 'data/config'
+import i18n from 'features/i18n/i18n'
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
-import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
+import type {
+  EvolutionGraphData,
+  ReportGraphProps,
+} from 'features/reports/reports-timeseries.hooks'
 import type { TimeSeries } from 'features/reports/reports-timeseries-shared.utils'
 import { frameTimeseriesToDateTimeseries } from 'features/reports/reports-timeseries-shared.utils'
-import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
 import type { TimeRange } from 'features/timebar/timebar.slice'
 import { getGraphDataFromFourwingsHeatmap } from 'features/timebar/timebar.utils'
 
@@ -124,7 +130,7 @@ export const fourwingsFeaturesToTimeseries = (
           : valuesContainedAndOverlapping.length > 0
             ? new Array(values.length).fill(0)
             : values,
-      } as ComparisonGraphData
+      } as EvolutionGraphData
     })
     return featureToTimeseries
   })
@@ -211,8 +217,14 @@ export const getFourwingsTimeseriesStats = ({
   return
 }
 
+export const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => {
+  const date = getUTCDateTime(tick).setLocale(i18n.language)
+  return formatDateForInterval(date, timeChunkInterval)
+}
+
 export const formatEvolutionData = (
   data: ReportGraphProps,
+  comparedData?: ReportGraphProps,
   { start, end, timeseriesInterval } = {} as {
     start: string
     end: string
@@ -242,15 +254,23 @@ export const formatEvolutionData = (
       .map((_, i) => {
         const date = getUTCDateTime(startMillis).plus({ [timeseriesInterval]: i })
         const dataValue = data.timeseries.find((item) => date.toISO()?.startsWith(item.date))
-        if (!dataValue) {
-          return {
-            date: date.toMillis(),
-            range: emptyData,
-            avg: emptyData,
-          }
-        }
-        const range = dataValue.min.map((m, i) => [m, dataValue.max[i]])
-        const avg = dataValue.min.map((m, i) => (m + dataValue.max[i] || 0) / 2)
+        const comparedDataValue = comparedData?.timeseries.find((item) =>
+          date.toISO()?.startsWith(item.date)
+        )
+
+        const processTimeseries = (value: typeof dataValue | undefined) =>
+          value
+            ? {
+                range: value.min.map((m, i) => [m, value.max[i]]),
+                avg: value.min.map((m, i) => (m + value.max[i]) / 2),
+              }
+            : { range: emptyData, avg: emptyData }
+
+        const dataProcessed = processTimeseries(dataValue)
+        const comparedProcessed = processTimeseries(comparedDataValue)
+
+        const range = [...dataProcessed.range, ...comparedProcessed.range].flat()
+        const avg = [...dataProcessed.avg, ...comparedProcessed.avg].flat()
 
         return {
           date: date.toMillis(),
@@ -276,4 +296,12 @@ export const formatEvolutionData = (
     .filter((d) => {
       return !isNaN(d.avg[0])
     })
+}
+
+export function cleanDatasetComparisonDataviewInstances(
+  dataviewInstances: (UrlDataviewInstance | DataviewInstance)[] = []
+) {
+  return dataviewInstances?.filter(
+    (dataviewInstance) => !dataviewInstance.id.includes(DATASET_COMPARISON_SUFFIX)
+  )
 }

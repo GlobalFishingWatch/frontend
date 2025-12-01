@@ -79,7 +79,7 @@ export default function ReportSummaryActivity({
     const datasetTitle = sameTitleDataviews
       ? datasetTitles?.[0]
       : reportCategory === ReportCategory.Activity
-        ? `${t('common.of')} <strong>${t('common.activity').toLowerCase()}</strong>`
+        ? `<strong>${t('common.activity').toLowerCase()}</strong>`
         : undefined
 
     if (

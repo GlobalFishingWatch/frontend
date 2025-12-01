@@ -113,8 +113,8 @@ export const useTimebarPoints = () => {
       const instancesData = instances.map((instance) => {
         const { startTimeProperty, endTimeProperty, layers, timeFilterType } = instance?.props || {}
 
-        const allAvailableIntervals = getAvailableIntervalsInDataviews(dataviews)
-        const { interval } = getFourwingsChunk(start, end, allAvailableIntervals)
+        const availableIntervals = getAvailableIntervalsInDataviews(dataviews)
+        const { interval } = getFourwingsChunk({ start, end, availableIntervals })
 
         let featureStartTime: number = Infinity
         let featureEndTime: number = -Infinity

@@ -13,7 +13,6 @@ import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import { frameTimeseriesToDateTimeseries } from 'features/reports/reports-timeseries-shared.utils'
-import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
 import { getGraphDataFromPoints } from 'features/timebar/timebar.utils'
 
 export type PointsFeaturesToTimeseriesParams = {
@@ -65,7 +64,7 @@ export const pointsFeaturesToTimeseries = (
         date,
         min: values,
         max: values,
-      } as ComparisonGraphData
+      } as ReportGraphProps['timeseries'][number]
     })
     return featureToTimeseries
   })

@@ -11,7 +11,10 @@ import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimebarSelectedEnvId } from 'features/app/selectors/app.timebar.selectors'
-import { selectReportLayersVisible } from 'features/dataviews/selectors/dataviews.selectors'
+import {
+  selectActiveReportDataviews,
+  selectReportLayersVisible,
+} from 'features/dataviews/selectors/dataviews.selectors'
 import { selectIsOthersReportEnabled } from 'features/debug/debug.selectors'
 import { OUT_OF_TIME_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
 import {
@@ -44,6 +47,8 @@ import WorkspaceError from 'features/workspace/WorkspaceError'
 import { useLocationConnect } from 'routes/routes.hook'
 import { TimebarVisualisations } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
+
+import { selectReportComparisonDataviewIds } from '../reports.config.selectors'
 
 import styles from 'features/reports/report-area/AreaReport.module.css'
 
@@ -83,6 +88,8 @@ export default function Report() {
   const reportDataviews = useSelector(selectReportLayersVisible)
   const timebarSelectedEnvId = useSelector(selectTimebarSelectedEnvId)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
+  const activeDataviews = useSelector(selectActiveReportDataviews)
+  const reportComparisonDataviewIds = useSelector(selectReportComparisonDataviewIds)
 
   const dataviewCategories = useMemo(
     () => uniq(reportDataviews?.map((d) => getReportCategoryFromDataview(d)) || []),
@@ -145,6 +152,18 @@ export default function Report() {
     }
   }, [highlightArea, reportArea, hasReportBuffer])
 
+  useEffect(() => {
+    if (
+      reportCategory === ReportCategory.Environment &&
+      activeDataviews.length > 0 &&
+      !reportComparisonDataviewIds?.main
+    ) {
+      dispatchQueryParams({
+        reportComparisonDataviewIds: { main: activeDataviews[0].id, compare: '' },
+      })
+    }
+  }, [activeDataviews, dispatchQueryParams, reportCategory, reportComparisonDataviewIds?.main])
+
   const setTimebarVisualizationByCategory = useCallback(
     (category: ReportCategory) => {
       if (
@@ -177,7 +196,11 @@ export default function Report() {
   const handleTabClick = (option: Tab<ReportCategory>) => {
     if (option.id !== reportCategory) {
       dispatch(resetReportData())
-      dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
+      dispatchQueryParams({
+        reportCategory: option.id,
+        reportVesselPage: 0,
+      })
+
       fitAreaInViewport()
       trackEvent({
         category: TrackCategory.Analysis,

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { cloneElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import max from 'lodash/max'
 import min from 'lodash/min'
 import { DateTime } from 'luxon'
@@ -14,35 +14,17 @@ import {
   YAxis,
 } from 'recharts'
 
-import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getContrastSafeLineColor } from '@globalfishingwatch/responsive-visualizations'
 
-import i18n from 'features/i18n/i18n'
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
+import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import EvolutionGraphTooltip from 'features/reports/tabs/activity/EvolutionGraphTooltip'
-import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
-import { formatEvolutionData } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
-import { getUTCDateTime } from 'utils/dates'
+import {
+  formatDateTicks,
+  formatEvolutionData,
+} from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 
 import styles from './ReportActivityEvolution.module.css'
-
-interface ComparisonGraphProps {
-  timeseries: ComparisonGraphData[]
-  sublayers: {
-    id: string
-    legend: {
-      color?: string
-      unit?: string
-    }
-  }[]
-  interval: FourwingsInterval
-}
-
-const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => {
-  const date = getUTCDateTime(tick).setLocale(i18n.language)
-  return formatDateForInterval(date, timeChunkInterval)
-}
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 
@@ -60,7 +42,7 @@ const ReportActivityEvolution = ({
   TooltipContent,
   onClickTooltip = false,
 }: {
-  data: ComparisonGraphProps
+  data: ReportGraphProps
   start: string
   end: string
   TooltipContent?: ReactNode
@@ -72,7 +54,7 @@ const ReportActivityEvolution = ({
 
   const colors = (data?.sublayers || []).map((sublayer) => sublayer?.legend?.color)?.join(',')
   const dataFormated = useMemo(
-    () => formatEvolutionData(data, { start, end, timeseriesInterval: data?.interval }),
+    () => formatEvolutionData(data),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data, end, start, colors]
   )
@@ -197,7 +179,7 @@ const ReportActivityEvolution = ({
               }
 
               const tooltipContent = TooltipContent ? (
-                React.cloneElement(TooltipContent as React.ReactElement, { ...tooltipProps })
+                cloneElement(TooltipContent as React.ReactElement, { ...tooltipProps })
               ) : (
                 <EvolutionGraphTooltip {...tooltipProps} timeChunkInterval={data?.interval} />
               )

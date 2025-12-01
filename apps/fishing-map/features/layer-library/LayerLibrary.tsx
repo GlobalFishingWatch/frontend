@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
 
+import type { Dataview } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 
@@ -37,6 +38,66 @@ import styles from './LayerLibrary.module.css'
 
 type UserSubcategory = DataviewCategory | 'bigQuery'
 
+export const resolveLibraryLayers = (
+  dataviews: Dataview<any, DataviewCategory>[],
+  experimentalLayers: boolean,
+  t: any
+): LibraryLayer[] => {
+  const layers = LIBRARY_LAYERS.flatMap((layer) => {
+    const dataview = dataviews.find((d) => d.slug === layer.dataviewId)
+    if (!dataview) return []
+    return {
+      ...layer,
+      name: t(`layer-library:${layer.id}.name`),
+      description: t(`layer-library:${layer.id}.description`),
+      moreInfoLink: t(`layer-library:${layer.id}.moreInfoLink`),
+      category: (layer.category || dataview.category) as DataviewCategory,
+      dataview: {
+        ...dataview,
+        datasetsConfig: [...(dataview.datasetsConfig || []), ...(layer.datasetsConfig || [])],
+      },
+    }
+  })
+  if (experimentalLayers) {
+    layers.push({
+      id: 'currents',
+      dataviewId: CURRENTS_DATAVIEW_SLUG,
+      category: DataviewCategory.Environment,
+      name: t('layer-library:currents.name'),
+      description: t('layer-library:currents.description'),
+      moreInfoLink: '',
+      previewImageUrl: `${PATH_BASENAME}/images/layer-library/currents.jpg`,
+      dataview: {} as any,
+    })
+
+    layers.push({
+      id: 'winds',
+      dataviewId: WINDS_DATAVIEW_SLUG,
+      category: DataviewCategory.Environment,
+      name: t('layer-library:currents.name'),
+      description: t('layer-library:currents.description'),
+      moreInfoLink: '',
+      previewImageUrl: `${PATH_BASENAME}/images/layer-library/currents.jpg`,
+      dataview: {} as any,
+    })
+
+    layers.push({
+      id: BATHYMETRY_CONTOUR_DATAVIEW_PREFIX,
+      dataviewId: BATHYMETRY_CONTOUR_DATAVIEW_SLUG,
+      config: {
+        color: '#ffffff',
+      },
+      category: DataviewCategory.Environment,
+      name: t('layer-library:bathymetry-contour.name'),
+      description: t('layer-library:bathymetry-contour.description'),
+      moreInfoLink: '',
+      previewImageUrl: `${PATH_BASENAME}/images/layer-library/bathymetry-contour.jpg`,
+      dataview: {} as any,
+    })
+  }
+  return layers
+}
+
 const LayerLibrary: FC = () => {
   const { t, ready } = useTranslation(['translations', 'layer-library'])
   const [searchQuery, setSearchQuery] = useState('')
@@ -57,61 +118,10 @@ const LayerLibrary: FC = () => {
 
   const dataviews = useSelector(selectAllDataviews)
 
-  const layersResolved: LibraryLayer[] = useMemo(() => {
-    const layers = LIBRARY_LAYERS.flatMap((layer) => {
-      const dataview = dataviews.find((d) => d.slug === layer.dataviewId)
-      if (!dataview) return []
-      return {
-        ...layer,
-        name: t(`layer-library:${layer.id}.name`),
-        description: t(`layer-library:${layer.id}.description`),
-        moreInfoLink: t(`layer-library:${layer.id}.moreInfoLink`),
-        category: (layer.category || dataview.category) as DataviewCategory,
-        dataview: {
-          ...dataview,
-          datasetsConfig: [...(dataview.datasetsConfig || []), ...(layer.datasetsConfig || [])],
-        },
-      }
-    })
-    if (debugOptions.experimentalLayers) {
-      layers.push({
-        id: 'currents',
-        dataviewId: CURRENTS_DATAVIEW_SLUG,
-        category: DataviewCategory.Environment,
-        name: t('layer-library:currents.name'),
-        description: t('layer-library:currents.description'),
-        moreInfoLink: '',
-        previewImageUrl: `${PATH_BASENAME}/images/layer-library/currents.jpg`,
-        dataview: {} as any,
-      })
-
-      layers.push({
-        id: 'winds',
-        dataviewId: WINDS_DATAVIEW_SLUG,
-        category: DataviewCategory.Environment,
-        name: t('layer-library:currents.name'),
-        description: t('layer-library:currents.description'),
-        moreInfoLink: '',
-        previewImageUrl: `${PATH_BASENAME}/images/layer-library/currents.jpg`,
-        dataview: {} as any,
-      })
-
-      layers.push({
-        id: BATHYMETRY_CONTOUR_DATAVIEW_PREFIX,
-        dataviewId: BATHYMETRY_CONTOUR_DATAVIEW_SLUG,
-        config: {
-          color: '#ffffff',
-        },
-        category: DataviewCategory.Environment,
-        name: t('layer-library:bathymetry-contour.name'),
-        description: t('layer-library:bathymetry-contour.description'),
-        moreInfoLink: '',
-        previewImageUrl: `${PATH_BASENAME}/images/layer-library/bathymetry-contour.jpg`,
-        dataview: {} as any,
-      })
-    }
-    return layers
-  }, [dataviews, debugOptions.experimentalLayers, t])
+  const layersResolved: LibraryLayer[] = useMemo(
+    () => resolveLibraryLayers(dataviews, debugOptions.experimentalLayers, t),
+    [dataviews, debugOptions.experimentalLayers, t]
+  )
 
   const uniqCategories = useMemo(() => {
     if (layerLibraryUniqueCategory) {

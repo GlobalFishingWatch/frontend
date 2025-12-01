@@ -12,36 +12,17 @@ import {
   YAxis,
 } from 'recharts'
 
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import i18n from 'features/i18n/i18n'
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
 import { selectReportTimeComparison } from 'features/reports/reports.config.selectors'
 import type { ReportActivityTimeComparison } from 'features/reports/reports.types'
+import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import { getUTCDateTime } from 'utils/dates'
 
 import BeforeAfterGraphTooltip from './BeforeAfterGraphTooltip'
 
 import styles from './ReportActivityEvolution.module.css'
-
-interface ComparisonGraphData {
-  date: string
-  min: number[]
-  max: number[]
-}
-
-interface ComparisonGraphProps {
-  timeseries: ComparisonGraphData[]
-  sublayers: {
-    id: string
-    legend: {
-      color?: string
-      unit?: string
-    }
-  }[]
-  interval: FourwingsInterval
-}
 
 const formatDateTicks = (tick: number, timeComparison: ReportActivityTimeComparison) => {
   if (!timeComparison) return ''
@@ -69,11 +50,11 @@ const formatDateTicks = (tick: number, timeComparison: ReportActivityTimeCompari
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 
 const ReportActivityBeforeAfterGraph: React.FC<{
-  data: ComparisonGraphProps
+  data: ReportGraphProps
   start: string
   end: string
 }> = (props) => {
-  const { start, end, data = {} as ComparisonGraphProps } = props
+  const { start, end, data = {} as ReportGraphProps } = props
   const { timeseries, sublayers, interval } = data
   const timeComparison = useSelector(selectReportTimeComparison)
 
