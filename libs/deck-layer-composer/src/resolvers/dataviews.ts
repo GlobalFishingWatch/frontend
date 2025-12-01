@@ -262,6 +262,7 @@ export function getContextDataviewsResolved(
               thickness: dataview.config?.thickness,
               filters: dataview.config?.filters,
               filterOperators: dataview.config?.filterOperators,
+              aggregateByProperty: dataview.config?.aggregateByProperty,
             }
           }),
         }

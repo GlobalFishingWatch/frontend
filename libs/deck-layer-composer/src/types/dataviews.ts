@@ -4,6 +4,7 @@ import type {
   DataviewContexLayerConfig,
   DataviewInstance,
 } from '@globalfishingwatch/api-types'
+import { type ContextSubLayerConfig } from '@globalfishingwatch/deck-layers'
 
 export type FourwingsSublayerConfig = {
   id: string
@@ -27,18 +28,10 @@ export type ResolvedFourwingsDataviewInstance = Omit<DataviewInstance, 'dataview
   }
 }
 
-export type ContextSublayerConfig = {
-  id: string
-  dataviewId: string
-  color: string
-  thickness?: number
-  filters?: DataviewConfig['filters']
-}
-
 export type ResolvedContextDataviewInstance = Omit<DataviewInstance, 'dataviewId' | 'config'> & {
   config: Omit<DataviewConfig, 'layers'> & {
     layers: (DataviewContexLayerConfig & {
-      sublayers: ContextSublayerConfig[]
+      sublayers: ContextSubLayerConfig[]
     })[]
   }
 }

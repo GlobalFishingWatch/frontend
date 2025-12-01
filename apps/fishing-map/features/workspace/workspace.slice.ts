@@ -41,6 +41,7 @@ import {
 } from 'features/datasets/datasets.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import { getVesselDataviewInstanceDatasetConfig } from 'features/dataviews/dataviews.utils'
+import { cleanAggregateByPropertyDataviewFromReport } from 'features/reports/report-area/area-reports.utils'
 import { cleanPortClusterDataviewFromReport } from 'features/reports/report-port/ports-report.utils'
 import { DEFAULT_REPORT_STATE } from 'features/reports/reports.config'
 import { fetchReportsThunk } from 'features/reports/reports.slice'
@@ -478,7 +479,9 @@ export function cleanReportQuery(query: QueryParams) {
     ),
 
     ...(query?.dataviewInstances?.length && {
-      dataviewInstances: query?.dataviewInstances?.map(cleanPortClusterDataviewFromReport),
+      dataviewInstances: query?.dataviewInstances?.map((dI) =>
+        cleanPortClusterDataviewFromReport(cleanAggregateByPropertyDataviewFromReport(dI))
+      ),
     }),
   }
 }

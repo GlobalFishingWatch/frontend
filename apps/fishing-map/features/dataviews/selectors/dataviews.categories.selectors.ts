@@ -2,7 +2,10 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import type { DataviewType } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  isUserPointsDataview,
+  type UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { groupContextDataviews } from '@globalfishingwatch/deck-layer-composer'
 
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
@@ -87,6 +90,17 @@ export const selectActiveContextAreasDataviews = selectDataviewInstancesByCatego
 )
 
 export const selectCustomUserDataviews = selectDataviewInstancesByCategory(DataviewCategory.User)
+
+export const selectActiveCustomUserDataviews = selectActiveDataviewInstancesByCategory(
+  DataviewCategory.User
+)
+
+export const selectActiveUserPointsDataviews = createSelector(
+  [selectActiveCustomUserDataviews],
+  (dataviews) => {
+    return dataviews.filter(isUserPointsDataview)
+  }
+)
 
 export const selectCustomUserDataviewsGrouped = createSelector(
   [selectCustomUserDataviews],
