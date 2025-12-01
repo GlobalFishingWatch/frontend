@@ -12,7 +12,11 @@ import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 import { PATH_BASENAME } from 'data/config'
 import type { LibraryLayer } from 'data/layer-library'
 import { LIBRARY_LAYERS } from 'data/layer-library'
-import { BATHYMETRY_CONTOUR_DATAVIEW_SLUG, CURRENTS_DATAVIEW_SLUG } from 'data/workspaces'
+import {
+  BATHYMETRY_CONTOUR_DATAVIEW_SLUG,
+  CURRENTS_DATAVIEW_SLUG,
+  WINDS_DATAVIEW_SLUG,
+} from 'data/workspaces'
 import { groupDatasetsByGeometryType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { BATHYMETRY_CONTOUR_DATAVIEW_PREFIX } from 'features/dataviews/dataviews.utils'
@@ -73,6 +77,17 @@ const LayerLibrary: FC = () => {
       layers.push({
         id: 'currents',
         dataviewId: CURRENTS_DATAVIEW_SLUG,
+        category: DataviewCategory.Environment,
+        name: t('layer-library:currents.name'),
+        description: t('layer-library:currents.description'),
+        moreInfoLink: '',
+        previewImageUrl: `${PATH_BASENAME}/images/layer-library/currents.jpg`,
+        dataview: {} as any,
+      })
+
+      layers.push({
+        id: 'winds',
+        dataviewId: WINDS_DATAVIEW_SLUG,
         category: DataviewCategory.Environment,
         name: t('layer-library:currents.name'),
         description: t('layer-library:currents.description'),

@@ -259,6 +259,11 @@ interface Resources {
       "description": "TODO: description",
       "moreInfoLink": "",
       "name": "Night light detections (VIIRS Skylight)"
+    },
+    "winds": {
+      "description": "TODO",
+      "moreInfoLink": "",
+      "name": "Winds"
     }
   },
   "translations": {
