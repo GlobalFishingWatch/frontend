@@ -113,8 +113,12 @@ export const PRIVATE_TEMPLATE_VESSEL_DATAVIEW_SLUGS: Partial<Record<UserGroup, s
   peru: TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_PERU,
 }
 
+export const DEFAULT_FISHING_DATASET_ID = 'public-global-fishing-effort:v4.0'
+export const DEFAULT_PRESENCE_DATASET_ID = 'public-global-presence:v4.0'
+export const DEFAULT_IDENTITY_DATASET_ID = 'public-global-vessel-identity:v4.0'
+
 export const DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS = [
-  'public-global-presence:v3.0',
+  DEFAULT_PRESENCE_DATASET_ID,
   'public-chile-presence:v20211126',
   'public-panama-presence:v20211126',
   'public-norway-presence:v20220112',

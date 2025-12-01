@@ -20,6 +20,7 @@ import {
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
+  DEFAULT_FISHING_DATASET_ID,
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
   FISHING_DATAVIEW_SLUG_AIS,
@@ -64,7 +65,7 @@ const workspace: Workspace<WorkspaceState> = {
       id: AIS_DATAVIEW_INSTANCE_ID,
       config: {
         visible: true,
-        datasets: ['public-global-fishing-effort:v3.0'],
+        datasets: [DEFAULT_FISHING_DATASET_ID],
         filters: {
           distance_from_port_km: '3',
         },

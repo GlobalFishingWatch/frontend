@@ -1,6 +1,7 @@
 import { PATH_BASENAME } from 'data/config'
 import type { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
+  DEFAULT_FISHING_DATASET_ID,
   FISHING_DATAVIEW_SLUG_AIS,
   FISHING_DATAVIEW_SLUG_VMS,
   PRESENCE_DATAVIEW_SLUG,
@@ -14,7 +15,7 @@ export const LAYERS_LIBRARY_ACTIVITY: LibraryLayerConfig[] = [
     config: {
       color: '#00FFBC',
       colorRamp: 'teal',
-      datasets: ['public-global-fishing-effort:v3.0'],
+      datasets: [DEFAULT_FISHING_DATASET_ID],
       filters: {
         distance_from_port_km: '3',
       },
