@@ -84,9 +84,9 @@ export const SAR_DATAVIEW_SLUG = `sar-v-${PIPE_DATASET_VERSION}` as const
 export const SENTINEL2_DATAVIEW_SLUG = `sentinel-2-v-${PIPE_DATASET_VERSION}` as const
 export const PRESENCE_DATAVIEW_SLUG = `presence-activity-v-${PIPE_DATASET_VERSION}` as const
 export const TEMPLATE_USER_TRACK_SLUG = `user-track` as const
+// export const TEMPLATE_VESSEL_DATAVIEW_SLUG = `fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
 export const TEMPLATE_VESSEL_DATAVIEW_SLUG =
-  `fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
-// export const TEMPLATE_VESSEL_DATAVIEW_SLUG = `fishing-map-vessel-track-v-${BASE_DATASETS_VERSION}-gaps` as const
+  `fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}-gaps` as const
 export const TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG =
   `vessel-track-only-v-${PIPE_DATASET_VERSION}` as const
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = `default-context-layer` as const
