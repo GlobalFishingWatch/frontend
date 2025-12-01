@@ -13,7 +13,7 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import { FourwingsVectorsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import { FOURWINGS_TILE_SIZE, HEATMAP_API_TILES_URL } from '../fourwings.config'
+import { FOURWINGS_TILE_SIZE, HEATMAP_API_TILES_URL, VECTORS_MAX_ZOOM } from '../fourwings.config'
 import type {
   BaseFourwingsLayerProps,
   FourwingsDeckSublayer,
@@ -54,6 +54,7 @@ const defaultProps: DefaultProps<FourwingsVectorsTileLayerProps> = {
   maxRequests: 100,
   debounceTime: 500,
   maxVelocity: 5,
+  maxZoom: VECTORS_MAX_ZOOM,
   tilesUrl: HEATMAP_API_TILES_URL,
 }
 

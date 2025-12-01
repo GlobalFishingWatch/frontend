@@ -34,13 +34,6 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
     }
   )
 
-  const maxZoomLevels = (dataview.config?.sublayers || [])?.flatMap(({ maxZoom }) =>
-    maxZoom !== undefined ? (maxZoom as number) : []
-  )
-  if (dataview.config?.maxZoom !== undefined) {
-    maxZoomLevels.push(dataview.config?.maxZoom)
-  }
-
   const availableIntervals = getDataviewAvailableIntervals(dataview)
 
   const datasets =
@@ -75,7 +68,7 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
     subcategory: dataview.config?.type,
     debugTiles,
     sublayers,
-    maxZoom: 8,
+    maxZoom: dataview.config?.maxZoom,
     maxVelocity,
     highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
     visible: dataview.config?.visible ?? true,
