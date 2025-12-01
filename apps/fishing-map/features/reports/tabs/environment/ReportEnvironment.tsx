@@ -16,7 +16,7 @@ import type { FourwingsReportGraphStats } from 'features/reports/reports-timeser
 import {
   useComputeReportTimeSeries,
   useReportFeaturesLoading,
-  useReportFilteredFeatures,
+  // useReportFilteredFeatures,
   useReportFilteredTimeSeries,
   useReportTimeSeriesErrors,
   useTimeseriesStats,
@@ -25,7 +25,7 @@ import ReportActivityPlaceholder from 'features/reports/shared/placeholders/Repo
 import ReportStatsPlaceholder from 'features/reports/shared/placeholders/ReportStatsPlaceholder'
 import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
 import ReportActivityEvolution from 'features/reports/tabs/activity/ReportActivityEvolution'
-import ReportCurrentsGraph from 'features/reports/tabs/activity/ReportCurrentsGraph'
+// import ReportVectorGraphTooltip from 'features/reports/tabs/activity/ReportVectorGraphTooltip'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { upperFirst } from 'utils/info'
 
@@ -37,7 +37,7 @@ function ReportEnvironment() {
   const { start, end } = useTimerangeConnect()
   const loading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
-  const layersFilteredFeatures = useReportFilteredFeatures()
+  // const layersFilteredFeatures = useReportFilteredFeatures()
   const timeseriesStats = useTimeseriesStats()
   const environmentalDataviews = useSelector(selectActiveReportDataviews)
   const allAvailableIntervals = getAvailableIntervalsInDataviews(environmentalDataviews)
@@ -52,7 +52,7 @@ function ReportEnvironment() {
         const isDynamic = dataview.config?.type === DataviewType.HeatmapAnimated
         const { min, mean, max } =
           (timeseriesStats?.[dataview.id] as FourwingsReportGraphStats) || {}
-        const isCurrents = dataview.config?.type === DataviewType.Currents
+        const isVectorLayer = dataview.config?.type === DataviewType.FourwingsVector
         const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
         const title = getDatasetNameTranslated(dataset)
         const hasError =
@@ -66,7 +66,7 @@ function ReportEnvironment() {
                 <span>{upperFirst(t('common.average'))} </span>
               )}
               <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
-              {(isDynamic || isCurrents) && (
+              {(isDynamic || isVectorLayer) && (
                 <Fragment>
                   {t('common.between')} <strong>{formatI18nDate(start)}</strong> {t('common.and')}{' '}
                   <strong>{formatI18nDate(end)}</strong>
@@ -74,25 +74,24 @@ function ReportEnvironment() {
               )}
             </p>
             <ReportSummaryTags key={dataview.id} dataview={dataview} />
-            {isDynamic || isCurrents ? (
+            {isDynamic || isVectorLayer ? (
               isLoading || !layersTimeseriesFiltered?.[index] || hasError ? (
                 <ReportActivityPlaceholder showHeader={false}>
                   {hasError && <p className={styles.errorMessage}>{t('errors.layerLoading')}</p>}
                 </ReportActivityPlaceholder>
-              ) : isCurrents && layersFilteredFeatures?.[index] ? (
-                <Fragment>
-                  <ReportCurrentsGraph
-                    color={dataview.config?.color}
-                    data={layersFilteredFeatures?.[index]}
-                  />
-                  {/* TODO: add this graph when we calculate the currents timeseries properly */}
-                  {/* <ReportActivityEvolution
-                    start={timerange.start}
-                    end={timerange.end}
-                    data={layersTimeseriesFiltered?.[index]}
-                  /> */}
-                </Fragment>
-              ) : (
+              ) : isVectorLayer ? null : (
+                // ) : isVectorLayer && layersFilteredFeatures?.[index] ? (
+                //   <ReportActivityEvolution
+                //     start={start}
+                //     end={end}
+                //     onClickTooltip={isVectorLayer}
+                //     // TooltipContent={
+                //     //   isVectorLayer ? (
+                //     //     <ReportVectorGraphTooltip data={layersFilteredFeatures?.[index]} />
+                //     //   ) : undefined
+                //     // }
+                //     data={layersTimeseriesFiltered?.[index]}
+                //   />
                 <ReportActivityEvolution
                   start={start}
                   end={end}

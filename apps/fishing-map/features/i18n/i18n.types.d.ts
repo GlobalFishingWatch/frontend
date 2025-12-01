@@ -259,6 +259,11 @@ interface Resources {
       "description": "TODO: description",
       "moreInfoLink": "",
       "name": "Night light detections (VIIRS Skylight)"
+    },
+    "winds": {
+      "description": "TODO",
+      "moreInfoLink": "",
+      "name": "Winds"
     }
   },
   "translations": {
@@ -732,6 +737,7 @@ interface Resources {
       "trackLoading": "There was an error loading the vessel track.",
       "trackSegmentIdFields": "Grouping by this field doesn't generate valid tracks",
       "uploadError": "There was an error uploading your dataset.",
+      "userDataError": "There was an error loading your user data. Please try again or contact support.",
       "vesselGroupReportLogin": "Login to see the vessels active",
       "vesselLoading": "There was an error loading the vessel details.",
       "workspaceLoad": "There was an error loading the workspace. Please try again.",
