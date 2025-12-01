@@ -322,6 +322,10 @@ export function getVesselsFiltered<Vessel = ReportVesselWithDatasets | ReportTab
 }
 
 export function cleanAggregateByPropertyDataviewFromReport(dataview: UrlDataviewInstance) {
+  if (!dataview.config?.aggregateByProperty) {
+    return dataview
+  }
+
   return {
     ...dataview,
     config: {
