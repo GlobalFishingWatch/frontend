@@ -14,6 +14,7 @@
     "confirmRemove": "Tem certeza de que deseja excluir este relatório permanentemente?",
     "createReportHelp": "Para explorar como os dados ambientais e de atividades mudam ao longo do tempo, você pode criar um relatório dinâmico contendo análises para qualquer área. Os relatórios dinâmicos oferecem uma maneira rápida de acessar e compreender mais informações sobre qualquer área oceânica, zona econômica exclusiva, área marinha protegida ou área de interesse. Os relatórios dinâmicos ajudam a compreender quanta atividade está acontecendo em cada área, inclusive quais embarcações e estados de bandeira estão ativos.",
     "createReportHelpLink": "Saber mais.",
+    "datasetComparison": "Data comparison",
     "datasetsNotAllowed": "As embarcações não estão incluídas nas seguintes fontes:",
     "datasetsNotAllowedAll": "Nenhum de seus conjuntos de dados pode ser usado em relatórios",
     "dataSource": "Fonte de dados",
@@ -70,6 +71,7 @@
     "seeGlobal": "See global report",
     "seeVessels": "Ver embarcações",
     "selectAggregationProperty": "Select a property to analyze",
+    "selectDatasetPlaceholder": "Select a dataset to compare",
     "share": "Compartilhar relatório",
     "statsDisclaimerDynamic": "Durante esse período, os valores mínimo e máximo em qualquer {{interval}} e local dentro de sua área foram {{min}} {{unit}} e {{max}} {{unit}}.",
     "statsDisclaimerStatic": "O valor médio para a sua área é de {{mean}} {{unit}}. O mínimo e o máximo são {{min}} {{unit}} e {{max}} {{unit}}.",
@@ -719,6 +721,7 @@
     "speed": "Velocidade",
     "statsHelp": "O número de embarcações e estados de banderia é calculado para seus filtros atuais e intervalo de tempo globalmente. Algumas contagens em dobro podem ocorrer.",
     "statsHelpDetection": "O número de embarcações e estados de banderia é calculado para seus filtros atuais e intervalo de tempo globalmente. Algumas contagens em dobro podem ocorrer.",
+    "timeGraphFiltersDisabled": "Filters aren't supported in time graphs",
     "toggleCombinationMode": {
       "combine": "Combinar camadas",
       "split": "Separar camadas"
