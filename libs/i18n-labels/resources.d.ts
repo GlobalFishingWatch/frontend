@@ -876,7 +876,7 @@ interface Resources {
       name: 'Brazil Open Tuna VMS (Fishing vessels)'
     }
     'public-cfc-exploration-areas-individual': {
-      description: 'CFC exploration areas individual'
+      description: 'Cobalt-rich ferromanganese crusts are often found along the tops and edges of seamounts, knolls, and plateaus at depths ranging between 800 meters to 2500+ meters. These crusts can contain cobalt, nickel, manganese, and rare earth elements. Proposed methods for mining cobalt-rich ferromanganese crusts include grinding and entirely removing the crust from the host rock – which are inhabited by marine biodiversity – then delivering the resulting slurry to the surface. For cobalt-rich ferromanganese crusts, the exploration area allocated to each contractor is 3,000 square kilometres and consists of 150 blocks. Each block is no greater than 20 square kilometres.'
       name: 'CFC Exploration Areas'
       schema: {
         act_date: {
@@ -942,7 +942,7 @@ interface Resources {
       }
     }
     'public-cfc-reserved-areas-individual': {
-      description: 'CFC Reserved Areas individual'
+      description: 'Cobalt-rich ferromanganese crusts are often found along the tops and edges of seamounts, knolls, and plateaus at depths ranging between 800 meters to 2500+ meters. These crusts can contain cobalt, nickel, manganese, and rare earth elements. Proposed methods for mining cobalt-rich ferromanganese crusts include grinding and entirely removing the crust from the host rock – which are inhabited by marine biodiversity – then delivering the resulting slurry to the surface. Reserved Areas under the International Seabed Authority are a critical mechanism to ensure developing countries have access to deep-sea mineral resources in the future. These areas are typically contributed by developed States when they apply for exploration rights.'
       name: 'CFC Reserved Areas'
       schema: {
         act_date: {
@@ -2122,7 +2122,7 @@ interface Resources {
       name: 'Peru VMS (Fishing Vessels)'
     }
     'public-pmn-exploration-areas-individual': {
-      description: 'PMN Exploration Areas individual'
+      description: 'Polymetallic nodules occur across abyssal plains. These nodules can be found at depths from 3000 meters to 6500 meters with high abundance in the Pacific Ocean and the Central Indian Ocean Basin. Nodules form at a rate of 1-3 millimeters per million years as metals from the surrounding water precipitate onto small particles, such as a grain of sand or a fragment of a shell, forming habitat for unique and poorly understood biodiversity. They are primarily composed of manganese, nickel, cobalt, copper, and rare earth elements. Exploration Areas under the International Seabed Authority are areas licensed for exploration of mineral resources to particular States and associated contractors. 75,000 square kilometers are allocated to each contractor for polymetallic nodule Exploration Areas.'
       name: 'PMN Exploration Areas'
       schema: {
         act_date: {
@@ -2192,7 +2192,7 @@ interface Resources {
       }
     }
     'public-pmn-reserved-areas-individual': {
-      description: 'PMN Reserved Areas individual'
+      description: 'Polymetallic nodules occur across abyssal plains. These nodules can be found at depths from 3000 meters to 6500 meters with high abundance in the Pacific Ocean and the Central Indian Ocean Basin. Nodules form at a rate of 1-3 millimeters per million years as metals from the surrounding water precipitate onto small particles, such as a grain of sand or a fragment of a shell, forming habitat for unique and poorly understood biodiversity. They are primarily composed of manganese, nickel, cobalt, copper, and rare earth elements. Reserved Areas under the International Seabed Authority are a critical mechanism to ensure developing countries have access to deep-sea mineral resources in the future. These areas are typically contributed by developed States when they apply for exploration rights.'
       name: 'PMN Reserved Areas'
       schema: {
         act_date: {
@@ -2248,7 +2248,7 @@ interface Resources {
       }
     }
     'public-pms-exploration-areas-individual': {
-      description: 'PMS Exploration Areas individual'
+      description: 'Polymetallic sulphides, or seafloor massive sulphides, are formed at hydrothermal vents near mid-ocean ridges and back-arc basins between approximately 1,000 and 4,000 meters in depth. They are formed when superheated, mineral-rich fluids from the Earth’s mantle are rapidly cooled by deep water. Rapid cooling results in dissolved metals in the fluid precipitating as metal sulfides. These sulfides and surrounding polymetallic muds can contain copper, zinc, silver, and gold. For polymetallic sulphides, the exploration area allocated to each contractor is 10,000 square kilometres and consists of 100 blocks. Each block is no greater than 100 square kilometres.'
       name: 'PMS Exploration Areas'
       schema: {
         act_date: {
