@@ -256,12 +256,6 @@ export const selectReportLayersVisible = createSelector(
       if (dataview.id.includes(DATASET_COMPARISON_SUFFIX)) {
         return false
       }
-      if (
-        dataview.category === DataviewCategory.User ||
-        dataview.category === DataviewCategory.Context
-      ) {
-        return false
-      }
       return isSupportedReportDataview(dataview)
     })
   }
