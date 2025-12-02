@@ -102,11 +102,7 @@ export const selectActiveActivityAndDetectionsDataviews = createSelector(
 export const selectActiveHeatmapEnvironmentalDataviews = createSelector(
   [selectActiveEnvironmentalDataviews],
   (dataviews) => {
-    return dataviews.filter(
-      (dv) =>
-        dv.datasets?.every((ds) => ds.type === DatasetTypes.Fourwings) &&
-        !isHeatmapVectorsDataview(dv)
-    )
+    return dataviews.filter((dv) => dv.datasets?.every((ds) => ds.type === DatasetTypes.Fourwings))
   }
 )
 
