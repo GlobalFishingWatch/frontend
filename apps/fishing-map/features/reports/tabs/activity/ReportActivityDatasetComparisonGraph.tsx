@@ -105,11 +105,15 @@ const ReportActivityDatasetComparisonGraph = ({
 
   const dataFormated = useMemo(
     () =>
-      formatEvolutionData(filteredData[0], filteredData[1], {
-        start,
-        end,
-        timeseriesInterval: interval,
-      }),
+      formatEvolutionData(
+        filteredData[0],
+        {
+          start,
+          end,
+          timeseriesInterval: interval,
+        },
+        filteredData[1]
+      ),
     [end, filteredData, interval, start]
   )
 

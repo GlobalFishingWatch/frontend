@@ -224,12 +224,12 @@ export const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterv
 
 export const formatEvolutionData = (
   data: ReportGraphProps,
-  comparedData?: ReportGraphProps,
   { start, end, timeseriesInterval } = {} as {
     start: string
     end: string
     timeseriesInterval: FourwingsInterval
-  }
+  },
+  comparedData?: ReportGraphProps
 ) => {
   if (!data?.timeseries) {
     return []
@@ -249,26 +249,14 @@ export const formatEvolutionData = (
       )
     )
 
-    let lastKnownComparedValue: EvolutionGraphData | undefined = undefined
-
-    if (comparedData?.interval === 'MONTH') {
-      lastKnownComparedValue = comparedData?.timeseries[0]
-    }
+    let lastKnownComparedValue: EvolutionGraphData | undefined =
+      comparedData && comparedData?.timeseries[0]
 
     return Array(intervalDiff)
       .fill(0)
       .map((_, i) => {
         const date = getUTCDateTime(startMillis).plus({ [timeseriesInterval]: i })
         const dataValue = data.timeseries.find((item) => date.toISO()?.startsWith(item.date))
-        let comparedDataValue = comparedData?.timeseries.find((item) =>
-          date.toISO()?.startsWith(item.date)
-        )
-
-        if (comparedDataValue && comparedData?.interval === 'MONTH') {
-          lastKnownComparedValue = comparedDataValue
-        } else if (lastKnownComparedValue) {
-          comparedDataValue = lastKnownComparedValue
-        }
 
         const processTimeseries = (value: typeof dataValue) =>
           value
@@ -279,10 +267,26 @@ export const formatEvolutionData = (
             : { range: emptyData, avg: emptyData }
 
         const dataProcessed = processTimeseries(dataValue)
-        const comparedProcessed = processTimeseries(comparedDataValue)
+        let range
+        let avg
 
-        const range = [...dataProcessed.range, ...comparedProcessed.range].flat()
-        const avg = [...dataProcessed.avg, ...comparedProcessed.avg].flat()
+        if (comparedData) {
+          let comparedDataValue = comparedData?.timeseries.find((item) =>
+            date.toISO()?.startsWith(item.date)
+          )
+          if (comparedDataValue && comparedData?.interval === 'MONTH') {
+            lastKnownComparedValue = comparedDataValue
+          } else {
+            comparedDataValue = lastKnownComparedValue
+          }
+
+          const comparedProcessed = processTimeseries(comparedDataValue)
+          range = [...dataProcessed.range, ...comparedProcessed.range].flat()
+          avg = [...dataProcessed.avg, ...comparedProcessed.avg].flat()
+        } else {
+          range = dataProcessed.range
+          avg = dataProcessed.avg
+        }
 
         return {
           date: date.toMillis(),

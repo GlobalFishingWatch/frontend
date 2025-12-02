@@ -53,19 +53,25 @@ const ReportActivityEvolution = ({
   const chartRef = useRef<HTMLDivElement>(null)
 
   const colors = (data?.sublayers || []).map((sublayer) => sublayer?.legend?.color)?.join(',')
-  const dataFormated = useMemo(
-    () => formatEvolutionData(data),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, end, start, colors]
-  )
   const domain = useMemo(() => {
     if (start && end && data?.interval) {
       const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
-        .minus({ [data?.interval]: 1 })
+        .plus({ [data?.interval]: 1 })
         .toISO() as string
       return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
     }
   }, [start, end, data?.interval])
+
+  const dataFormated = useMemo(
+    () =>
+      formatEvolutionData(data, {
+        start: domain ? new Date(domain[0]).toISOString() : start,
+        end: domain ? new Date(domain[1]).toISOString() : end,
+        timeseriesInterval: data?.interval,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [data, end, start, colors]
+  )
 
   const handleTooltipChange = useCallback(
     (tooltipProps: any) => {
