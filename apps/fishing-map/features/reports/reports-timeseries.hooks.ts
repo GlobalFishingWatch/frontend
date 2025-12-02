@@ -146,7 +146,6 @@ const useReportTimeseries = (
   const [reportState, setReportState] = useAtom(reportStateAtom)
   const filterCellsByPolygon = useFilterCellsByPolygonWorker()
   const area = useSelector(selectReportArea)
-  const isAreaInViewport = useReportAreaInViewport()
   const { start, end } = useTimerangeConnect()
   const interval = getFourwingsInterval(start, end)
   const reportTitle = useReportTitle()
@@ -175,7 +174,7 @@ const useReportTimeseries = (
     () => reportLayers.map((l) => l.instance),
     // We need to update the instances when the instancesChunkHash or the reportBufferHash changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [reportLayers, instancesChunkHash, reportBufferHash, isAreaInViewport]
+    [reportLayers, instancesChunkHash, reportBufferHash]
   )
 
   const isLoaded = reportLayers?.length
@@ -280,18 +279,10 @@ const useReportTimeseries = (
         }))
       }
     }
-    if (isLoaded && isAreaInViewport && reportStateCacheHash.current !== '') {
+    if (isLoaded && reportStateCacheHash.current !== '') {
       processFeatures()
     }
-  }, [
-    area?.geometry,
-    area?.id,
-    isLoaded,
-    instances,
-    isAreaInViewport,
-    filterCellsByPolygon,
-    setReportState,
-  ])
+  }, [area?.geometry, area?.id, isLoaded, instances, filterCellsByPolygon, setReportState])
 
   useEffect(() => {
     const processFeatureStats = () => {
@@ -304,23 +295,10 @@ const useReportTimeseries = (
       setReportState((prev) => ({ ...prev, stats }))
     }
 
-    if (
-      isLoaded &&
-      isAreaInViewport &&
-      reportState.featuresFiltered &&
-      reportStateCacheHash.current !== ''
-    ) {
+    if (isLoaded && reportState.featuresFiltered && reportStateCacheHash.current !== '') {
       processFeatureStats()
     }
-  }, [
-    isLoaded,
-    instances,
-    isAreaInViewport,
-    reportState?.featuresFiltered,
-    setReportState,
-    start,
-    end,
-  ])
+  }, [isLoaded, instances, reportState?.featuresFiltered, setReportState, start, end])
 
   return reportState
 }
