@@ -249,16 +249,28 @@ export const formatEvolutionData = (
       )
     )
 
+    let lastKnownComparedValue: EvolutionGraphData | undefined = undefined
+
+    if (comparedData?.interval === 'MONTH') {
+      lastKnownComparedValue = comparedData?.timeseries[0]
+    }
+
     return Array(intervalDiff)
       .fill(0)
       .map((_, i) => {
         const date = getUTCDateTime(startMillis).plus({ [timeseriesInterval]: i })
         const dataValue = data.timeseries.find((item) => date.toISO()?.startsWith(item.date))
-        const comparedDataValue = comparedData?.timeseries.find((item) =>
+        let comparedDataValue = comparedData?.timeseries.find((item) =>
           date.toISO()?.startsWith(item.date)
         )
 
-        const processTimeseries = (value: typeof dataValue | undefined) =>
+        if (comparedDataValue) {
+          lastKnownComparedValue = comparedDataValue
+        } else if (lastKnownComparedValue) {
+          comparedDataValue = lastKnownComparedValue
+        }
+
+        const processTimeseries = (value: typeof dataValue) =>
           value
             ? {
                 range: value.min.map((m, i) => [m, value.max[i]]),
