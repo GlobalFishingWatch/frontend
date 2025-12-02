@@ -276,7 +276,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
         <PortVisitedAfterField nextPort={event.vessel.nextPort} />
       </ul>
     )
-  } else if (event.type === EventTypes.Port) {
+  } else if (event.type === EventTypes.Port || event.type === EventTypes.Gap) {
     return (
       <ul className={styles.detailContainer}>
         <TimeFields event={event} />
