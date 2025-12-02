@@ -14,7 +14,6 @@ import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import {
   selectBigQueryActive,
   selectTurningTidesActive,
-  setBigQueryMode,
   toggleBigQueryModal,
   toggleTurningTidesModal,
 } from 'features/bigquery/bigquery.slice'
@@ -31,6 +30,7 @@ import { selectAnyAppModalOpen, selectWelcomeModalKey } from 'features/modals/mo
 import {
   selectDatasetUploadModalOpen,
   selectLayerLibraryModalOpen,
+  selectTypeformModalOpen,
   selectWorkspaceGeneratorModalOpen,
   setModalOpen,
 } from 'features/modals/modals.slice'
@@ -89,6 +89,10 @@ const Welcome = dynamic(() => import(/* webpackChunkName: "Welcome" */ 'features
 
 const VesselGroupModal = dynamic(
   () => import(/* webpackChunkName: "VesselGroup" */ 'features/vessel-groups/VesselGroupModal')
+)
+
+const TypeformModal = dynamic(
+  () => import(/* webpackChunkName: "TypeformModal" */ 'features/feedback/TypeformModal')
 )
 
 const DebugMenuConfig = {
@@ -151,6 +155,7 @@ const AppModals = () => {
   const isDatasetUploadModalOpen = useSelector(selectDatasetUploadModalOpen)
   const isLayerLibraryModalOpen = useSelector(selectLayerLibraryModalOpen)
   const downloadTrackModalOpen = useSelector(selectDownloadTrackModalOpen)
+  const typeformModalOpen = useSelector(selectTypeformModalOpen)
   const anyAppModalOpen = useSelector(selectAnyAppModalOpen)
   const welcomePopupContentKey = useSelector(selectWelcomeModalKey)
 
@@ -181,6 +186,12 @@ const AppModals = () => {
       >
         <LayerLibrary />
       </Modal>
+      {typeformModalOpen && (
+        <TypeformModal
+          isOpen={typeformModalOpen}
+          onClose={() => dispatch(setModalOpen({ id: 'typeform', open: false }))}
+        />
+      )}
       {isGFWUser && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
