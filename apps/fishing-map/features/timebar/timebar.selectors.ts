@@ -10,6 +10,7 @@ import {
 } from 'features/app/selectors/app.selectors'
 import {
   selectTimebarSelectedEnvId,
+  selectTimebarSelectedUserId,
   selectTimebarSelectedVGId,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
@@ -20,6 +21,7 @@ import {
   selectActiveDetectionsDataviews,
   selectActiveEventsDataviews,
   selectActiveUserPointsDataviews,
+  selectActiveUserPointsWithTimeRangeDataviews,
   selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
@@ -172,5 +174,12 @@ export const selectTimebarSelectedVisualizationMode = createSelector(
     if (timebarDataviews[0]?.category === DataviewCategory.Detections) {
       return detectionsVisualizationMode
     }
+  }
+)
+
+export const selectTimebarUserDataviewsSelected = createSelector(
+  [selectActiveUserPointsWithTimeRangeDataviews, selectTimebarSelectedUserId],
+  (dataviews, timebarSelectedUserId) => {
+    return dataviews.filter((dataview) => dataview.id === timebarSelectedUserId)
   }
 )

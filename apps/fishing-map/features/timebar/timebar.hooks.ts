@@ -11,6 +11,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectTimebarGraph,
   selectTimebarSelectedEnvId,
+  selectTimebarSelectedUserId,
   selectTimebarSelectedVGId,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
@@ -219,8 +220,31 @@ export const useTimebarEnvironmentConnect = () => {
   )
 
   return useMemo(
-    () => ({ timebarSelectedEnvId, dispatchTimebarSelectedEnvId }),
+    () => ({
+      timebarSelectedEnvId,
+      dispatchTimebarSelectedEnvId,
+    }),
     [dispatchTimebarSelectedEnvId, timebarSelectedEnvId]
+  )
+}
+
+export const useTimebarUserPointsConnect = () => {
+  const { dispatchQueryParams } = useLocationConnect()
+  const timebarSelectedUserId = useSelector(selectTimebarSelectedUserId)
+
+  const dispatchTimebarSelectedUserId = useCallback(
+    (timebarSelectedUserId: string) => {
+      dispatchQueryParams({ timebarSelectedUserId })
+    },
+    [dispatchQueryParams]
+  )
+
+  return useMemo(
+    () => ({
+      timebarSelectedUserId,
+      dispatchTimebarSelectedUserId,
+    }),
+    [timebarSelectedUserId, dispatchTimebarSelectedUserId]
   )
 }
 

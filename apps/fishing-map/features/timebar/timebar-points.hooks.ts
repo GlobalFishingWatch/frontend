@@ -13,9 +13,9 @@ import type { FourwingsPointFeature } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
-import { selectActiveUserPointsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import type { PointsFeaturesToTimeseriesParams } from 'features/reports/tabs/others/reports-points-timeseries.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { selectTimebarUserDataviewsSelected } from 'features/timebar/timebar.selectors'
 
 import { getGraphDataFromPoints } from './timebar.utils'
 
@@ -23,9 +23,8 @@ const EMPTY_ACTIVITY_DATA = [] as ActivityTimeseriesFrame[]
 
 export const useTimebarPoints = () => {
   const [data, setData] = useState<ActivityTimeseriesFrame[]>([])
-  const [filteredDataviews, setFilteredDataviews] = useState<typeof dataviews>([])
   const viewport = useSelector(selectViewport)
-  const dataviews = useSelector(selectActiveUserPointsDataviews)
+  const dataviews = useSelector(selectTimebarUserDataviewsSelected)
   const timerange = useTimerangeConnect()
   const dataviewIds = useMemo(() => dataviews?.map(({ id }) => id), [dataviews])
   const userPointsLayers = useGetDeckLayers<UserPointsTileLayer>(dataviewIds)
@@ -100,12 +99,10 @@ export const useTimebarPoints = () => {
         })
       })
 
-      setFilteredDataviews(dataviews.filter((_, index) => instancesWithData.has(index)))
-
       const data = Object.values(mergedData).sort((a, b) => a.date - b.date) || EMPTY_ACTIVITY_DATA
       setData(data)
     },
-    [dataviews]
+    []
   )
 
   useEffect(() => {
@@ -157,8 +154,5 @@ export const useTimebarPoints = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, instances, dataviewIds, viewportChangeHash])
 
-  return useMemo(
-    () => ({ loading: !loaded, points: data, dataviews: filteredDataviews }),
-    [data, loaded, filteredDataviews]
-  )
+  return useMemo(() => ({ loading: !loaded, points: data, dataviews }), [data, loaded, dataviews])
 }

@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
+import { dataviewHasUserPointsTimeRange } from 'features/dataviews/dataviews.utils'
 import { selectOthersActiveReportDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -82,11 +82,7 @@ function ReportOthers() {
         const hasAggregateByProperty = Boolean(dataview.config?.aggregateByProperty)
 
         const mergedDataviewId = getMergedDataviewId(dataviews)
-        const timeFilterType = getDatasetConfigurationProperty({
-          dataset,
-          property: 'timeFilterType',
-        })
-        const hasTimeFilter = timeFilterType === 'dateRange' || timeFilterType === 'date'
+        const hasTimeFilter = dataviewHasUserPointsTimeRange(dataview)
         const title = getDatasetNameTranslated(dataset)
         const unit =
           dataset?.unit && dataset.unit !== 'TBD' && dataset.unit !== 'NA'

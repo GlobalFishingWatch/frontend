@@ -10,7 +10,7 @@ import type { PointsReportGraphStats } from 'features/reports/reports-timeseries
 import { useTimeseriesStats } from 'features/reports/reports-timeseries.hooks'
 import { formatNumber } from 'utils/info'
 
-import { useTimebarPoints } from './TimebarPointsGraph.hooks'
+import { useTimebarPoints } from './timebar-points.hooks'
 
 import styles from './Timebar.module.css'
 
