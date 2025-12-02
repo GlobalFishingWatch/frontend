@@ -1028,7 +1028,7 @@ interface Resources {
     }
     'public-clarion-clipperton-zone-isa-claim-areas': {
       description: 'This area represents the cumulative and contiguous area of the Clarion-Clipperton Zone, a region in the Eastern Pacific that is being targeted for seabed mining and managed by the International Seabed Authority. This region includes claim areas slated for exploration, areas reserved for developing states, and areas protected for environmental interest. The primary resource targeted in this region is polymetallic nodules.'
-      name: 'Clarion-Clipperton Zone ISA Claim Areas'
+      name: 'Clarion-Clipperton Zone ISA License Areas'
       schema: {
         contractor: 'contractor'
         label: 'label'
@@ -1727,8 +1727,8 @@ interface Resources {
       name: 'High seas pockets'
     }
     'public-indian-ocean-isa-claim-areas': {
-      description: 'This layer depicts the ISA claim areas for seabed mining in the Indian Ocean, which primarily contain polymetallic sulfides and polymetallic nodules. Exploration leases in this region are currently held by India, Germany, South Korea, and China.'
-      name: 'Indian Ocean ISA Claim Areas'
+      description: 'This layer depicts the ISA license areas for seabed mining in the Indian Ocean, which primarily contain polymetallic sulfides and polymetallic nodules. Exploration leases in this region are currently held by India, Germany, South Korea, and China.'
+      name: 'Indian Ocean ISA License Areas'
       schema: {
         contractor: 'contractor'
         label: 'label'
@@ -1818,7 +1818,7 @@ interface Resources {
       }
     }
     'public-isa-layers': {
-      description: 'ISA Areas'
+      description: 'This layer shows the areas managed by the International Seabed Authority across all ocean regions and seabed mineral resource types. \n\nExploration areas are those that have been licensed to States or individual contractors sponsored by a State for exploration of mineral resources under a 15-year contract. This enables the contract holder to conduct seabed surveys and environmental studies to assess the resource and region. These are the areas that could ultimately become licensed for exploitation if a State or contractor were to apply for a commercial exploitation permit. \n\nReserved areas are those that have been set aside by the ISA on behalf of developing nations to safeguard opportunity and access to these common heritage resources in the future. \n\nAreas of Particular Environmental Interest (APEI): These areas are protected from future exploitation of mineral resources to safeguard biodiversity and ecosystem health. The Regional Environmental Management Plan (REMP) of the International Seabed Authority initially established nine APEIs, but four more have been added as of December 2021. A total of thirteen APEIs have been designated by the ISA to date, protecting nearly 2 million square kilometers of the Clarion-Clipperton Zone in the Pacific Ocean. \n\nCFC Exploration Areas: Cobalt-rich ferromanganese crust resource areas licensed for exploration under the International Seabed Authority.\n\nCFC Reserved Areas: Cobalt-rich ferromanganese crust resource areas reserved under the International Seabed Authority.\n\nClarion-Clipperton Zone Management Area: This area encompasses the entire management region of the Clarion-Clipperton Zone of the Eastern Pacific Ocean, including all exploration areas, reserved areas, and areas of particular environmental interest. The CCZ spans 4.5 million square kilometers between Hawai’i and Mexico. \n\nPMN Exploration Areas: Polymetallic nodule resource areas licensed for exploration by the International Seabed Authority.\n\n\nPMN Reserved Areas: Polymetallic nodule resource areas reserved under the International Seabed Authority.\n\nPMS Exploration Areas: Polymetallic sulphide resource areas licensed for exploration by the International Seabed Authority.'
       name: 'ISA Areas by Resource Type'
       schema: {
         label: {
@@ -1927,8 +1927,8 @@ interface Resources {
       name: 'Mexico VMS (Fishing vessels)'
     }
     'public-mid-atlantic-isa-claim-areas': {
-      description: 'This layer depicts the ISA claim areas for seabed mining on the Mid-Atlantic Ridge, which contain polymetallic sulfides. Exploration leases in this region are currently held by France, Russia, and Poland.'
-      name: 'Mid-Atlantic ISA Claim Areas'
+      description: 'This layer depicts the ISA license areas for seabed mining on the Mid-Atlantic Ridge, which contain polymetallic sulfides. Exploration leases in this region are currently held by France, Russia, and Poland.'
+      name: 'Mid-Atlantic ISA License Areas'
       schema: {
         contractor: 'contractor'
         label: 'label'
@@ -1987,8 +1987,8 @@ interface Resources {
       name: 'Marine Protection Zone'
     }
     'public-northwest-pacific-isa-claim-areas': {
-      description: 'This layer depicts the ISA claim areas for seabed mining in the Northwestern Pacific, which primarily contain resources from cobalt-rich ferromanganese crusts and polymetallic nodules. Several countries hold exploration leases in this region including China, Japan, Russia, and South Korea.'
-      name: 'Northwest Pacific ISA Claim Areas'
+      description: 'This layer depicts the ISA license areas for seabed mining in the Northwestern Pacific, which primarily contain resources from cobalt-rich ferromanganese crusts and polymetallic nodules. Several countries hold exploration leases in this region including China, Japan, Russia, and South Korea.'
+      name: 'Northwest Pacific ISA License Areas'
       schema: {
         contractor: 'contractor'
         label: 'label'
@@ -2542,8 +2542,8 @@ interface Resources {
       }
     }
     'public-south-atlantic-isa-claim-areas': {
-      description: 'This layer depicts the ISA claim areas for seabed mining in the South Atlantic Ocean, which contain resources cobalt-rich ferromanganese crusts. Brazil is currently the only country holding leases in this region.'
-      name: 'South Atlantic ISA Claim Areas'
+      description: 'This layer depicts the ISA license areas for seabed mining in the South Atlantic Ocean, which contain resources cobalt-rich ferromanganese crusts. Brazil is currently the only country holding leases in this region.'
+      name: 'South Atlantic ISA License Areas'
       schema: {
         contractor: 'contractor'
         label: 'label'
