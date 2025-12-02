@@ -264,7 +264,7 @@ export const formatEvolutionData = (
           date.toISO()?.startsWith(item.date)
         )
 
-        if (comparedDataValue) {
+        if (comparedDataValue && comparedData?.interval === 'MONTH') {
           lastKnownComparedValue = comparedDataValue
         } else if (lastKnownComparedValue) {
           comparedDataValue = lastKnownComparedValue
