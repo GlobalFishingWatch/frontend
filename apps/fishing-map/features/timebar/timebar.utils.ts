@@ -134,7 +134,7 @@ export function getGraphDataFromPoints(
   if (!features?.length || !start || !end) {
     return []
   }
-  const data = getDatesPopulated({ start, end, interval, sublayersLength, count: false })
+  const data = getDatesPopulated({ start, end, interval, sublayersLength })
 
   Object.keys(data).forEach((dateString) => {
     const date = parseInt(dateString)
@@ -158,6 +158,7 @@ export function getGraphDataFromPoints(
         if (values?.length) {
           values.forEach((value, index) => {
             data[date][index] += value
+            data[date].count![index] = (data[date].count![index] || 0) + 1
           })
         } else {
           data[date][layer]++
