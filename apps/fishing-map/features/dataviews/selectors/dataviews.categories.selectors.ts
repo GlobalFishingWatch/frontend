@@ -18,7 +18,7 @@ import { isVesselGroupActivityDataview } from 'features/reports/report-vessel-gr
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 
-import { dataviewHasVesselGroupId } from '../dataviews.utils'
+import { dataviewHasUserPointsTimeRange, dataviewHasVesselGroupId } from '../dataviews.utils'
 
 import { selectDataviewInstancesResolvedVisible } from './dataviews.instances.selectors'
 
@@ -117,6 +117,15 @@ export const selectActiveUserPointsDataviews = createSelector(
   [selectActiveCustomUserDataviews],
   (dataviews) => {
     return dataviews.filter(isUserPointsDataview)
+  }
+)
+
+export const selectActiveUserPointsWithTimeRangeDataviews = createSelector(
+  [selectActiveUserPointsDataviews],
+  (dataviews) => {
+    return dataviews.filter((dataview) => {
+      return dataviewHasUserPointsTimeRange(dataview)
+    })
   }
 )
 
