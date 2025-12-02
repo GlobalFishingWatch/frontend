@@ -71,11 +71,21 @@ const calculateXDomain = (start: string, end: string, interval?: string) => {
   return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
 }
 
-const calculateYAxisDomain = (data: any[], index: number) => {
-  return [
-    Math.min(...data.map((d) => d.avg?.[index])),
-    Math.max(...data.map((d) => d.avg?.[index])),
-  ]
+export const calculateYAxisDomain = (data: any[], index: number): [number, number] => {
+  const values = data.map((d) => d.avg?.[index]).filter((v) => v != null)
+
+  if (values.length === 0) {
+    return [0, 1]
+  }
+
+  const dataMin = Math.min(...values)
+  const dataMax = Math.max(...values)
+
+  const basePadding = (dataMax - dataMin) / 10
+  const safePadding = basePadding === 0 ? Math.max(1, Math.abs(dataMax) * 0.1) : basePadding
+  const paddedDomain: [number, number] = [Math.max(0, dataMin - safePadding), dataMax + safePadding]
+
+  return paddedDomain
 }
 
 const ReportActivityDatasetComparisonGraph = ({

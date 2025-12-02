@@ -127,18 +127,15 @@ const ReportActivityEvolution = ({
   }
 
   const dataMin: number = dataFormated.length
-    ? (min(dataFormated.flatMap(({ range }) => range?.[0]?.[0]).filter((v) => v != null)) ?? 0)
+    ? (min(dataFormated.flatMap(({ range }) => range[0][0])) as number)
     : 0
   const dataMax: number = dataFormated.length
-    ? (max(dataFormated.flatMap(({ range }) => range?.[0]?.[1]).filter((v) => v != null)) ?? 0)
+    ? (max(dataFormated.flatMap(({ range }) => range[0][1])) as number)
     : 0
 
   const basePadding = (dataMax - dataMin) / 10
   const safePadding = basePadding === 0 ? Math.max(1, Math.abs(dataMax) * 0.1) : basePadding
-  const paddedDomain: [number, number] = [
-    Math.max(0, Math.floor(dataMin)),
-    Math.ceil(dataMax + safePadding),
-  ]
+  const paddedDomain: [number, number] = [Math.max(0, dataMin - safePadding), dataMax + safePadding]
 
   return (
     <div
