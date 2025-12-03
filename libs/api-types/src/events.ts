@@ -1,5 +1,3 @@
-import type { JSX } from 'react'
-
 export type PointCoordinate = {
   lat: number
   lon: number
@@ -98,9 +96,8 @@ export enum AuthorizationOptions {
   Partially = 'partially',
   Unmatched = 'unmatched',
 }
+
 export type EncounterEvent<Vessel = EventVessel> = {
-  encounteredVesselAuthorizationStatus: JSX.Element
-  mainVesselAuthorizationStatus: JSX.Element
   /**
    * Median distance to the other vessel across the encounter, in kilometers
    */
