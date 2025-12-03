@@ -26,6 +26,8 @@
     "./src/jest-setup.ts$",
     "./**/jest-setup.ts$",
     ".*\\.spec.jsx?$",
-    ".*\\.test.jsx?$"
+    ".*\\.test.jsx?$",
+    "node_modules/**/*.js$",
+    "dist/**/*.js$"
   ]
 }
