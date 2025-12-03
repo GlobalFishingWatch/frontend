@@ -1,4 +1,4 @@
-export interface VesselGroupVessel {
+export type VesselGroupVessel = {
   dataset: string
   vesselId: string
   relationId: string
@@ -6,7 +6,7 @@ export interface VesselGroupVessel {
   vesselType?: string
 }
 
-export interface VesselGroup {
+export type VesselGroup = {
   id: string
   name: string
   vessels: VesselGroupVessel[]
