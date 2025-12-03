@@ -42,7 +42,6 @@ function ReportOthers() {
   const timeseriesStats = useTimeseriesStats()
   const otherDataviews = useSelector(selectOthersActiveReportDataviewsGrouped)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const mapLoading = useIsDeckLayersLoading()
 
   if (!Object.keys(otherDataviews)?.length) return null
 
@@ -168,7 +167,7 @@ function ReportOthers() {
               </div>
             )}
             {hasTimeFilter &&
-              (timeseriesLoading || mapLoading || statsCounts === 0 ? (
+              (timeseriesLoading || statsCounts === 0 ? (
                 <ReportActivityPlaceholder showHeader={false}>
                   {statsCounts === 0 && t('analysis.noDataByArea')}
                 </ReportActivityPlaceholder>

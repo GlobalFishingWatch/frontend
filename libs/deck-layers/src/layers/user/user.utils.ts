@@ -35,13 +35,24 @@ export function getFeatureTimeRange(
   }: Pick<IsFeatureInRangeParams, 'startTimeProperty' | 'endTimeProperty' | 'timeFilterType'>
 ) {
   const featureStart = ((feature.properties as any)?.[startTimeProperty] as number) || 0
-  const featureEnd =
-    timeFilterType === 'dateRange' ||
-    (endTimeProperty && ((feature.properties as any)?.[endTimeProperty] as number))
-      ? ((feature.properties as any)?.[endTimeProperty!] as number)
-      : timeFilterType === 'date' || !endTimeProperty
-        ? featureStart
-        : Infinity
+  let featureEnd: number
+  switch (timeFilterType) {
+    case 'dateRange':
+      featureEnd =
+        (feature.properties as any)?.[endTimeProperty!] === ''
+          ? Infinity
+          : ((feature.properties as any)?.[endTimeProperty!] as number)
+      break
+    case 'date':
+      featureEnd = featureStart
+      break
+    default:
+      featureEnd = endTimeProperty
+        ? ((feature.properties as any)?.[endTimeProperty] as number) || Infinity
+        : featureStart
+      break
+  }
+
   return { featureStart, featureEnd }
 }
 
