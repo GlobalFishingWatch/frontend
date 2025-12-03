@@ -51,7 +51,7 @@ function getDatesPopulated({
     .toMillis()
 
   const startDate = getUTCDateTime(start)
-  const endDate = getUTCDateTime(end ? end : now)
+  const endDate = getUTCDateTime(end && isFinite(end) ? end : now)
 
   const intervalDiff = Math.ceil(
     Object.values(

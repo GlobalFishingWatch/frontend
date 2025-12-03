@@ -114,7 +114,7 @@ export const selectActiveCustomUserDataviews = selectActiveDataviewInstancesByCa
 )
 
 export const selectActiveUserPointsDataviews = createSelector(
-  [selectActiveCustomUserDataviews],
+  [selectDataviewInstancesResolvedVisible],
   (dataviews) => {
     return dataviews.filter(isUserPointsDataview)
   }
