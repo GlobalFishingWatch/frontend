@@ -52,7 +52,7 @@ export type UserPermissionAction =
   | 'delete-all'
   | string
 
-export interface UserPermission {
+export type UserPermission = {
   type: UserPermissionType
   value: UserPermissionValue
   action: UserPermissionAction
@@ -84,13 +84,13 @@ export interface UserGroup<T = UserGroupId> {
   users?: UserData[]
 }
 
-export interface FutureUserData {
+export type FutureUserData = {
   id: number
   email: string
   groups: UserGroup[]
 }
 
-export interface UserData {
+export type UserData = {
   id: number
   type: string
   groups: string[]

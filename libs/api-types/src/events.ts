@@ -1,6 +1,6 @@
 import type { JSX } from 'react'
 
-export interface PointCoordinate {
+export type PointCoordinate = {
   lat: number
   lon: number
 }
@@ -14,7 +14,7 @@ export enum RegionType {
   highSeas = 'highSeas',
 }
 
-export interface Regions {
+export type Regions = {
   [RegionType.eez]: string[]
   [RegionType.rfmo]: string[]
   [RegionType.mpa]: string[]
@@ -23,7 +23,7 @@ export interface Regions {
   [RegionType.highSeas]?: string[]
 }
 
-export interface GapPosition extends PointCoordinate {
+export type GapPosition = PointCoordinate & {
   regions: Regions
 }
 
@@ -37,7 +37,7 @@ export enum EventTypes {
 
 export type EventType = `${EventTypes}`
 
-export interface EventNextPort {
+export type EventNextPort = {
   id: string
   flag: string
   name: string
@@ -51,17 +51,17 @@ export enum EventVesselTypeEnum {
 
 export type AuthorizationType = 'true' | 'false' | 'pending'
 
-export interface EventAuthorization {
+export type EventAuthorization = {
   isAuthorized: AuthorizationType
   rfmo: string
 }
 
-export interface EventVesselAuthorization {
+export type EventVesselAuthorization = {
   hasPubliclyListedAuthorization: 'true' | 'false'
   rfmo: string
 }
 
-export interface EventVessel {
+export type EventVessel = {
   id: string
   ssvid: string
   dataset: string
@@ -84,7 +84,7 @@ export type RFMOs =
   | 'npfc'
   | 'none'
 
-export interface EncounterEventAuthorizations {
+export type EncounterEventAuthorizations = {
   rfmo: RFMOs
   /**
    * If true, the vessel has authorization to operate by the management organization for this RFMO.
@@ -98,7 +98,7 @@ export enum AuthorizationOptions {
   Partially = 'partially',
   Unmatched = 'unmatched',
 }
-export interface EncounterEvent<Vessel = EventVessel> {
+export type EncounterEvent<Vessel = EventVessel> = {
   encounteredVesselAuthorizationStatus: JSX.Element
   mainVesselAuthorizationStatus: JSX.Element
   /**
@@ -127,14 +127,14 @@ export interface EncounterEvent<Vessel = EventVessel> {
   vesselAuthorizations: { id: string; authorizations: EncounterEventAuthorizations[] }[]
 }
 
-export interface LoiteringEvent {
+export type LoiteringEvent = {
   totalTimeHours: number
   totalDistanceKm: number
   averageDistanceFromShoreKm: number
   averageSpeedKnots: number
 }
 
-export interface PortEvent {
+export type PortEvent = {
   id: string
   name: string
   topDestination: string
@@ -142,7 +142,7 @@ export interface PortEvent {
   position: PointCoordinate
 }
 
-export interface Anchorage {
+export type Anchorage = {
   id: string
   lat: number
   lon: number
@@ -154,7 +154,7 @@ export interface Anchorage {
   distance_from_shore_km: number
 }
 
-export interface PortVisitEvent {
+export type PortVisitEvent = {
   visitId: string
   confidence: number
   durationHrs: number
@@ -163,7 +163,7 @@ export interface PortVisitEvent {
   endAnchorage: Anchorage
 }
 
-export interface GapEvent {
+export type GapEvent = {
   distanceKm: number
   durationHours: number
   intentionalDisabling: boolean
@@ -177,27 +177,27 @@ export interface GapEvent {
   positionsPerDaySatReception: number
 }
 
-export interface GapsEvent {
+export type GapsEvent = {
   latMax: number
   latMin: number
   lonMax: number
   lonMin: number
 }
 
-export interface FishingEvent {
+export type FishingEvent = {
   totalDistanceKm: number
   averageSpeedKnots: number
   averageDurationHours: number
 }
 
-export interface Distances {
+export type Distances = {
   startDistanceFromShoreKm?: number
   endDistanceFromShoreKm: number
   startDistanceFromPortKm?: number
   endDistanceFromPortKm: number
 }
 
-export interface ApiEvent<Vessel = EventVessel> {
+export type ApiEvent<Vessel = EventVessel> = {
   distances?: Distances
   encounter?: EncounterEvent<Vessel>
   end: number | string // Depends on timestamp format API param
@@ -218,7 +218,7 @@ export interface ApiEvent<Vessel = EventVessel> {
   coordinates?: [number, number]
 }
 
-export interface ApiEvents<T = ApiEvent> {
+export type ApiEvents<T = ApiEvent> = {
   entries: T[]
   limit: number | null
   total: number

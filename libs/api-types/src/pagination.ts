@@ -1,4 +1,4 @@
-export interface APIPagination<T = any> {
+export type APIPagination<T = any> = {
   entries: T[]
   metadata: {
     suggestion: string
@@ -11,7 +11,7 @@ export interface APIPagination<T = any> {
   total: number
 }
 
-export interface APIVesselSearchPagination<T = any> {
+export type APIVesselSearchPagination<T = any> = {
   entries: T[]
   limit: number
   metadata: {
