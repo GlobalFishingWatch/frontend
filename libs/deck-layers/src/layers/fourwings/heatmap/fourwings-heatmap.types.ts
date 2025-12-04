@@ -137,6 +137,16 @@ export type FourwingsHeatmapLayerProps = FourwingsHeatmapTileLayerProps & {
   scales: FourwinsTileLayerScale[]
 }
 
+export type FourwingsVectorsLayerProps = FourwingsHeatmapTileLayerProps & {
+  id: string
+  tile: Tile2DHeader
+  data: FourwingsFeature[]
+  maxVelocity?: number
+  tilesCache: FourwingsHeatmapTilesCache
+  debugTiles?: boolean
+  // highlightedFeatures?: FourwingsPickingObject[]
+}
+
 export type _FourwingsHeatmapStaticLayerProps = Omit<
   _FourwingsHeatmapTileLayerProps,
   'data' | 'availableIntervals' | 'comparisonMode' | 'highlightedFeatures'

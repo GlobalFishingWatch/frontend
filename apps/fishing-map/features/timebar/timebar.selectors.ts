@@ -19,6 +19,7 @@ import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveEventsDataviews,
+  selectActiveUserPointsDataviews,
   selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
@@ -39,6 +40,7 @@ export const selectActiveActivityDataviewsByVisualisation = (
       selectActiveEventsDataviews,
       selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
       selectActiveVesselGroupDataviews,
+      selectActiveUserPointsDataviews,
       selectTimebarSelectedEnvId,
       selectTimebarSelectedVGId,
     ],
@@ -48,6 +50,7 @@ export const selectActiveActivityDataviewsByVisualisation = (
       eventsDataviews,
       environmentDataviews,
       vesselGroupDataviews,
+      userDataviews,
       timebarSelectedEnvId,
       timebarSelectedVGId
     ) => {
@@ -66,6 +69,9 @@ export const selectActiveActivityDataviewsByVisualisation = (
 
         if (selectedVGDataview) return [selectedVGDataview]
         else if (vesselGroupDataviews[0]) return [vesselGroupDataviews[0]]
+      }
+      if (timebarVisualisation === TimebarVisualisations.Points) {
+        return userDataviews
       }
       // timebarVisualisation === TimebarVisualisations.Environment
       const selectedEnvDataview =

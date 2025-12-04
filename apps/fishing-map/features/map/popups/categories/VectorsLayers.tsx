@@ -4,11 +4,12 @@ import { useTranslation } from 'react-i18next'
 import type { FourwingsHeatmapPickingObject } from '@globalfishingwatch/deck-layers'
 import { Icon } from '@globalfishingwatch/ui-components'
 
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nNumber from 'features/i18n/i18nNumber'
 
 import popupStyles from '../Popup.module.css'
 
-type CurrentsTooltipRowProps = {
+type VectorsTooltipRowProps = {
   feature: FourwingsHeatmapPickingObject
   loading?: boolean
   error?: string
@@ -19,14 +20,16 @@ function metersPerSecondToKnots(speedInMps: number): number {
   return speedInMps * 1.94384 // Convert m/s to knots
 }
 
-function CurrentsTooltipRow({ feature, showFeaturesDetails }: CurrentsTooltipRowProps) {
+function VectorsTooltipRow({ feature, showFeaturesDetails }: VectorsTooltipRowProps) {
   const { t } = useTranslation()
-  const angle = feature.sublayers.find((s) => s.id.includes('currents-vo'))?.value
-  const speed = feature.sublayers.find((s) => s.id.includes('currents-uo'))?.value
+  const [speed, angle] = feature.aggregatedValues || []
 
   if (!angle || !speed) {
     return null
   }
+  const title = getDatasetLabel({
+    id: feature.sublayers?.[0]?.datasets?.[0],
+  })
   return (
     <Fragment>
       <div className={popupStyles.popupSection}>
@@ -38,8 +41,8 @@ function CurrentsTooltipRow({ feature, showFeaturesDetails }: CurrentsTooltipRow
           />
         </span>
         <div className={popupStyles.popupSectionContent}>
-          {showFeaturesDetails && feature.title && (
-            <h3 className={popupStyles.popupSectionTitle}>{feature.title}</h3>
+          {showFeaturesDetails && title && (
+            <h3 className={popupStyles.popupSectionTitle}>{title}</h3>
           )}
           {speed && (
             <span>
@@ -52,4 +55,4 @@ function CurrentsTooltipRow({ feature, showFeaturesDetails }: CurrentsTooltipRow
   )
 }
 
-export default CurrentsTooltipRow
+export default VectorsTooltipRow

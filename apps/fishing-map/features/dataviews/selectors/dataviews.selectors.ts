@@ -10,6 +10,7 @@ import {
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 
+import { DATASET_COMPARISON_SUFFIX } from 'data/config'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_DATAVIEW_SLUGS } from 'data/workspaces'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
@@ -130,22 +131,28 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     isVesselGroupReportLocation,
     othersActiveReportDataviews
   ) => {
-    if (reportCategory === ReportCategory.Activity) {
-      return isVesselGroupReportLocation ? vesselGroupDataviews : activityDataviews
+    let dataviews: UrlDataviewInstance<DataviewType>[] = []
+    switch (reportCategory) {
+      case ReportCategory.Activity:
+        dataviews = isVesselGroupReportLocation ? vesselGroupDataviews : activityDataviews
+        break
+      case ReportCategory.Detections:
+        dataviews = detectionsDataviews
+        break
+      case ReportCategory.Events:
+        dataviews = eventsDataviews
+        break
+      case ReportCategory.VesselGroup:
+        dataviews = vGRFootprintDataview ? [vGRFootprintDataview] : EMPTY_ARRAY
+        break
+      case ReportCategory.Others:
+        dataviews = othersActiveReportDataviews
+        break
+      default:
+        dataviews = environmentalDataviews
+        break
     }
-    if (reportCategory === ReportCategory.Detections) {
-      return detectionsDataviews
-    }
-    if (reportCategory === ReportCategory.Events) {
-      return eventsDataviews
-    }
-    if (reportCategory === ReportCategory.VesselGroup) {
-      return vGRFootprintDataview ? [vGRFootprintDataview] : EMPTY_ARRAY
-    }
-    if (reportCategory === ReportCategory.Others) {
-      return othersActiveReportDataviews
-    }
-    return environmentalDataviews
+    return dataviews
   }
 )
 
@@ -245,6 +252,9 @@ export const selectReportLayersVisible = createSelector(
     return allDataviewInstancesResolved?.filter((dataview) => {
       const isVisible = dataview.config?.visible === true
       if (!isVisible) {
+        return false
+      }
+      if (dataview.id.includes(DATASET_COMPARISON_SUFFIX)) {
         return false
       }
       if (

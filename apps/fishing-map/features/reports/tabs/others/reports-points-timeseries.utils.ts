@@ -1,5 +1,6 @@
 import type { Feature, Point } from 'geojson'
 
+import type { TimeFilterType } from '@globalfishingwatch/api-types'
 import {
   type ContextSubLayerConfig,
   type FourwingsDeckSublayer,
@@ -12,7 +13,6 @@ import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import { frameTimeseriesToDateTimeseries } from 'features/reports/reports-timeseries-shared.utils'
-import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
 import { getGraphDataFromPoints } from 'features/timebar/timebar.utils'
 
 export type PointsFeaturesToTimeseriesParams = {
@@ -21,6 +21,7 @@ export type PointsFeaturesToTimeseriesParams = {
   interval: FourwingsInterval
   startTimeProperty: string
   endTimeProperty?: string
+  timeFilterType?: TimeFilterType
   sublayers: (FourwingsDeckSublayer | ContextSubLayerConfig)[]
 }
 
@@ -63,7 +64,7 @@ export const pointsFeaturesToTimeseries = (
         date,
         min: values,
         max: values,
-      } as ComparisonGraphData
+      } as ReportGraphProps['timeseries'][number]
     })
     return featureToTimeseries
   })
@@ -107,7 +108,8 @@ export const getPointsTimeseries = ({ features, instance }: GetPointsTimeseriesP
 }
 
 export const getPointsTimeseriesStats = ({ features, instance }: GetPointsTimeseriesParams) => {
-  const { startTime, endTime, startTimeProperty, endTimeProperty } = instance.props || {}
+  const { startTime, endTime, startTimeProperty, endTimeProperty, timeFilterType } =
+    instance.props || {}
 
   const values = features?.reduce((acc, { contained }) => {
     if (contained) {
@@ -119,6 +121,7 @@ export const getPointsTimeseriesStats = ({ features, instance }: GetPointsTimese
                 endTime: endTime!,
                 startTimeProperty: startTimeProperty!,
                 endTimeProperty,
+                timeFilterType,
               })
             })
           : contained
@@ -137,6 +140,7 @@ export const getPointsTimeseriesStats = ({ features, instance }: GetPointsTimese
   return {
     type: 'points' as const,
     total: values?.reduce((acc, value) => acc + value, 0),
+    count: features?.[0]?.contained.length,
     values,
   }
 }

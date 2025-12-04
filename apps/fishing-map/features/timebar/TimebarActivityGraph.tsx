@@ -1,12 +1,10 @@
 import { useCallback } from 'react'
-import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { HighlighterCallbackFn, HighlighterCallbackFnArgs } from '@globalfishingwatch/timebar'
 import { TimebarStackedActivity } from '@globalfishingwatch/timebar'
 
 import { t } from 'features/i18n/i18n'
-import { selectActiveActivityDataviewsByVisualisation } from 'features/timebar/timebar.selectors'
 import { useHeatmapActivityGraph } from 'features/timebar/TimebarActivityGraph.hooks'
 import { TimebarVisualisations } from 'types'
 import { formatNumber } from 'utils/info'
@@ -14,8 +12,7 @@ import { formatNumber } from 'utils/info'
 import styles from './Timebar.module.css'
 
 const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisualisations }) => {
-  const activeDataviews = useSelector(selectActiveActivityDataviewsByVisualisation(visualisation))
-  const { loading, heatmapActivity } = useHeatmapActivityGraph()
+  const { loading, heatmapActivity, dataviews } = useHeatmapActivityGraph()
 
   const getActivityHighlighterLabel: HighlighterCallbackFn = useCallback(
     ({ value, item }: HighlighterCallbackFnArgs) => {
@@ -47,14 +44,14 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
   //     </div>
   //   )
   // }
-  if (!heatmapActivity || !heatmapActivity.length || !activeDataviews?.length) return null
+  if (!heatmapActivity || !heatmapActivity.length || !dataviews?.length) return null
 
   return (
     <div className={cx({ [styles.loading]: loading })}>
       <TimebarStackedActivity
         key="stackedActivity"
         timeseries={heatmapActivity}
-        dataviews={activeDataviews}
+        dataviews={dataviews}
         highlighterCallback={getActivityHighlighterLabel}
         highlighterIconCallback="heatmap"
       />

@@ -259,6 +259,11 @@ interface Resources {
       "description": "TODO: description",
       "moreInfoLink": "",
       "name": "Night light detections (VIIRS Skylight)"
+    },
+    "winds": {
+      "description": "TODO",
+      "moreInfoLink": "",
+      "name": "Winds"
     }
   },
   "translations": {
@@ -278,6 +283,7 @@ interface Resources {
       "createReportHelp": "To explore how activity and environmental data changes over time, you can create a dynamic report containing analysis for any area. Dynamic reports offer a rapid way to access and understand more information about any ocean area, exclusive economic zone, marine protected area or area of interest. Dynamic reports help you understand how much activity is happening in each area, including which vessels and flag States are active.",
       "createReportHelpLink": "Learn more.",
       "dataSource": "Data Source",
+      "datasetComparison": "Data comparison",
       "datasetsNotAllowed": "Vessels are not included from the following sources:",
       "datasetsNotAllowedAll": "None of your datasets are allowed to be used in reports",
       "deleteBuffer": "Delete current buffer",
@@ -332,6 +338,8 @@ interface Resources {
       "see": "See report",
       "seeGlobal": "See global report",
       "seeVessels": "See vessels",
+      "selectAggregationProperty": "Select a property to analyze",
+      "selectDatasetPlaceholder": "Select a dataset to compare",
       "share": "Share report",
       "statsDisclaimerDynamic": "During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.",
       "statsDisclaimerStatic": "The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.",
@@ -366,6 +374,7 @@ interface Resources {
       "active_after": "Active after",
       "active_before": "Active before",
       "activity": "Activity",
+      "aggregatedBy": "with a total sum of {{total}} {{property}}",
       "aka": "a.k.a.",
       "analysis": "Create an analysis for this area",
       "analysisAddArea": "Add area to the analysis",
@@ -732,6 +741,7 @@ interface Resources {
       "trackLoading": "There was an error loading the vessel track.",
       "trackSegmentIdFields": "Grouping by this field doesn't generate valid tracks",
       "uploadError": "There was an error uploading your dataset.",
+      "userDataError": "There was an error loading your user data. Please try again or contact support.",
       "vesselGroupReportLogin": "Login to see the vessels active",
       "vesselLoading": "There was an error loading the vessel details.",
       "workspaceLoad": "There was an error loading the workspace. Please try again.",
@@ -913,6 +923,7 @@ interface Resources {
       "speed": "Speed",
       "statsHelp": "The number of vessels and flags is calculated for your current filters and time range globally. Some double counting may occur.",
       "statsHelpDetection": "The number of detections is calculated for your current filters and time range globally. Some double counting may occur.",
+      "timeGraphFiltersDisabled": "Filters aren't supported in time graphs",
       "toggleCombinationMode": {
         "combine": "Combine layers",
         "split": "Split layers"
@@ -1044,6 +1055,7 @@ interface Resources {
       "showDetections": "Show detections graph",
       "showGraphDepth": "Show track depth graph",
       "showGraphSpeed": "Show track speed graph",
+      "showOthers": "Show your uploaded points",
       "showTracks": "Show tracks graph",
       "title": "Timebar settings",
       "tracks": "Tracks",
@@ -1304,7 +1316,7 @@ interface Resources {
       "sectionRelatedVessel": "Related vessels",
       "sectionRelatedVessels": "Related vessels",
       "sectionSummary": "Summary",
-      "selectIdentity": "See the identity for this dates",
+      "selectIdentity": "See the identity for these dates",
       "share": "Share vessel",
       "shipname": "Name",
       "shiptype": "Vessel type",

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import { DatasetStatus, DatasetTypes } from '@globalfishingwatch/api-types'
+import { DatasetStatus, DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
@@ -82,6 +82,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     [t]
   )
 
+  const isVectorLayer = dataview.config?.type === DataviewType.FourwingsVector
   const layerActive = dataview?.config?.visible ?? true
   const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
 
@@ -122,7 +123,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
       d.type === DatasetTypes.UserTracks ||
       d.type === DatasetTypes.PMTiles
   )
-  const hasLegend = dataset?.type === DatasetTypes.Fourwings
+  const hasLegend = dataset?.type === DatasetTypes.Fourwings && !isVectorLayer
 
   if (!dataset || dataset.status === 'deleted') {
     return <DatasetNotFound dataview={dataview} />

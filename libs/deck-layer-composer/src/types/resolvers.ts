@@ -22,7 +22,7 @@ export type ResolverGlobalConfig = {
   end: string
   zoom?: number
   token?: string
-  debug?: boolean
+  debugTiles?: boolean
   bivariateDataviews: [string, string] | null
   activityVisualizationMode?: FourwingsVisualizationMode
   detectionsVisualizationMode?: FourwingsVisualizationMode

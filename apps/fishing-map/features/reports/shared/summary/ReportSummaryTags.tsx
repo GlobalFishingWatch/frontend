@@ -15,6 +15,7 @@ import {
 } from '@globalfishingwatch/ui-components'
 
 import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
+import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
@@ -26,6 +27,8 @@ import Filters from 'features/workspace/shared/LayerFilters'
 import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+
+import { isTimeComparisonGraph } from '../utils/reports.utils'
 
 import styles from './ReportSummaryTags.module.css'
 
@@ -40,6 +43,7 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const vesselGroupsOptions = useVesselGroupsOptions()
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const selectedReportActivityGraph = useSelector(selectReportActivityGraph)
 
   const [filtersUIOpen, setFiltersUIOpen] = useState(false)
   const [colorOpen, setColorOpen] = useState(false)
@@ -76,6 +80,7 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
       : 'line'
 
   const showSchemaFilters = filtersAllowed.some(showSchemaFilter)
+  const disabledFilters = isTimeComparisonGraph(selectedReportActivityGraph)
 
   return (
     <div className={styles.row}>
@@ -110,14 +115,22 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
             visible={filtersUIOpen}
             className={styles.expandedContainer}
             component={<Filters dataview={dataview} onConfirmCallback={onToggleFiltersUIOpen} />}
+            disabled={disabledFilters}
           >
             <IconButton
               icon={filtersUIOpen ? 'filter-on' : 'filter-off'}
               size="small"
-              onClick={onToggleFiltersUIOpen}
+              onClick={!disabledFilters ? onToggleFiltersUIOpen : undefined}
               className={cx(styles.printHidden, styles.filterButton)}
-              tooltip={filtersUIOpen ? t('layer.filterClose') : t('layer.filterOpen')}
+              tooltip={
+                disabledFilters
+                  ? t('layer.timeGraphFiltersDisabled')
+                  : filtersUIOpen
+                    ? t('layer.filterClose')
+                    : t('layer.filterOpen')
+              }
               tooltipPlacement="top"
+              disabled={disabledFilters}
             />
           </ExpandedContainer>
         )}

@@ -16,7 +16,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { getFeatureBuffer, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import type { Area, AreaGeometry } from 'features/areas/areas.slice'
@@ -95,8 +95,14 @@ const SUPPORTED_REPORT_TYPES = [
   DataviewType.HeatmapAnimated,
   DataviewType.HeatmapStatic,
   DataviewType.FourwingsTileCluster,
-  DataviewType.Currents,
+  DataviewType.FourwingsVector,
 ]
+const SUPPORTED_COMPARISON_CATEGORIES = [
+  DataviewCategory.Activity,
+  DataviewCategory.Detections,
+  DataviewCategory.Environment,
+]
+const SUPPORTED_COMPARISON_TYPES = [DataviewType.HeatmapAnimated, DataviewType.FourwingsTileCluster]
 
 export const isContextDataviewReportSupported = (dataview: Dataview | UrlDataviewInstance) => {
   if (dataview.category !== DataviewCategory.Context) {
@@ -131,6 +137,17 @@ export const isSupportedReportDataview = (dataview: Dataview | UrlDataviewInstan
   }
   return (
     SUPPORTED_REPORT_CATEGORIES.includes(category) && SUPPORTED_REPORT_TYPES.includes(config?.type)
+  )
+}
+
+export const isSupportedComparisonDataview = (dataview: Dataview | UrlDataviewInstance) => {
+  const { category, config } = dataview
+  if (!category || !config?.type) {
+    return false
+  }
+  return (
+    SUPPORTED_COMPARISON_CATEGORIES.includes(category) &&
+    SUPPORTED_COMPARISON_TYPES.includes(config?.type)
   )
 }
 
@@ -319,4 +336,18 @@ export function getVesselsFiltered<Vessel = ReportVesselWithDatasets | ReportTab
       return uniqMatched
     }
   }, vessels) as Vessel[]
+}
+
+export function cleanAggregateByPropertyDataviewFromReport(dataview: UrlDataviewInstance) {
+  if (!dataview.config?.aggregateByProperty) {
+    return dataview
+  }
+
+  return {
+    ...dataview,
+    config: {
+      ...dataview.config,
+      aggregateByProperty: undefined,
+    },
+  }
 }
