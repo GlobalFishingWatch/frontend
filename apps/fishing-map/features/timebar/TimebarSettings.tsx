@@ -353,7 +353,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
             })}
             {activeUserPointsDataviews.map((pointDataview) => {
               const dataset = pointDataview.datasets?.find(
-                (d) => d.type === DatasetTypes.UserContext
+                (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
               )
               const title = t(
                 `datasets:${dataset?.id}.name` as any,
