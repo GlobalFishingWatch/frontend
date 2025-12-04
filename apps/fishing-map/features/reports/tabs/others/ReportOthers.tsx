@@ -38,6 +38,7 @@ function ReportOthers() {
   const { start, end } = useTimerangeConnect()
   const timeseriesLoading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
+  const loading = timeseriesLoading || layersTimeseriesFiltered?.some((d) => d?.mode === 'loading')
   const getHasDataviewSchemaFilters = useGetHasDataviewSchemaFilters()
   const timeseriesStats = useTimeseriesStats()
   const otherDataviews = useSelector(selectOthersActiveReportDataviewsGrouped)
@@ -143,7 +144,7 @@ function ReportOthers() {
         return (
           <div key={mergedDataviewId} className={styles.container}>
             <h2 className={styles.title}>{title}</h2> {unit && <span>({unit})</span>}
-            {hasTimeFilter && timeseriesLoading ? <ReportStatsPlaceholder /> : StatsComponent}
+            {hasTimeFilter && loading ? <ReportStatsPlaceholder /> : StatsComponent}
             {dataviews?.length > 0 && (
               <div className={styles.selectContainer}>
                 <div
@@ -167,9 +168,11 @@ function ReportOthers() {
               </div>
             )}
             {hasTimeFilter &&
-              (timeseriesLoading || statsCounts === 0 ? (
+              (loading ? (
+                <ReportActivityPlaceholder showHeader={false} />
+              ) : statsCounts === 0 ? (
                 <ReportActivityPlaceholder showHeader={false}>
-                  {statsCounts === 0 && t('analysis.noDataByArea')}
+                  {t('analysis.noDataByArea')}
                 </ReportActivityPlaceholder>
               ) : (
                 <ReportActivityEvolution

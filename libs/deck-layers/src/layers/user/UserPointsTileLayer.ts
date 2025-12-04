@@ -56,7 +56,6 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
 type GetUserPointsDataParams = {
   skipTemporalFilter?: boolean
   includeNonTemporalFeatures?: boolean
-  aggregateByProperty?: string
 }
 
 type UserPointsLayerState = UserBaseLayerState & {
