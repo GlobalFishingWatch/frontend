@@ -5,13 +5,20 @@ import { DateTime } from 'luxon'
 import { stringify } from 'qs'
 import { gfwBaseQuery } from 'queries/base'
 
-import type { StatFields, StatsParams, StatType } from '@globalfishingwatch/api-types'
+import {
+  DatasetTypes,
+  EndpointId,
+  type StatFields,
+  type StatsParams,
+  type StatType,
+} from '@globalfishingwatch/api-types'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
+import { getDatasetsExtent, getEndpointByType } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import type { TimeRange } from 'features/timebar/timebar.slice'
 
+// TODO:DR (dataset-refactor) use the new typing for the params
 type FetchDataviewStatsParams = {
   timerange: TimeRange
   dataview: UrlDataviewInstance
@@ -31,11 +38,16 @@ const serializeStatsDataviewKey: SerializeQueryArgs<CustomBaseQueryArg> = ({ que
   ].join('-')
 }
 
+const endpoint = getEndpointByType({
+  type: DatasetTypes.Fourwings,
+  endpoint: EndpointId.FourwingsStats,
+})
+
 // Define a service using a base URL and expected endpoints
 export const dataviewStatsApi = createApi({
   reducerPath: 'dataviewStatsApi',
   baseQuery: gfwBaseQuery({
-    baseUrl: `/4wings/stats`,
+    baseUrl: endpoint.pathTemplate,
   }),
   endpoints: (builder) => ({
     getStatsByDataview: builder.query<StatFields, FetchDataviewStatsParams>({
