@@ -2,9 +2,8 @@ export type EndpointParamType = 'enum' | 'boolean' | 'number' | 'string' | 'sql'
 
 export type EndpointParam = {
   id: string
-  label: string
   type: EndpointParamType
-  enum?: string[]
+  enum?: readonly string[] | string[]
   array?: boolean
   required?: boolean
   description?: string
@@ -19,14 +18,19 @@ export enum EndpointId {
   ContextGeojson = 'temporal-context-geojson',
   Events = 'events',
   EventsDetail = 'events-detail',
+  EventsStats = 'events-stats',
   FourwingsBreaks = '4wings-bins',
   FourwingsInteraction = '4wings-interaction',
-  FourwingsLegend = '4wings-legend',
+  // FourwingsLegend = '4wings-legend',
+  // FourwingsLegendByZoom = '4wings-legend-by-zoom',
+  FourwingsStats = '4wings-stats',
+  // FourwingsStatsCreate = '4wings-stats-create',
   FourwingsTiles = '4wings-tiles',
   Tracks = 'tracks',
   Thumbnails = 'thumbnails',
   PMTiles = 'pm-tiles',
   UserTracks = 'user-tracks-data',
+  // UserTracksTiles = 'user-tracks-tiles',
   Vessel = 'vessel',
   VesselAdvancedSearch = 'advanced-search-vessels',
   VesselList = 'list-vessels',
@@ -40,6 +44,6 @@ export type Endpoint = {
   pathTemplate: string
   downloadable: boolean
   body?: any
-  params: EndpointParam[]
-  query: EndpointParam[]
+  params: readonly EndpointParam[] | EndpointParam[]
+  query: readonly EndpointParam[] | EndpointParam[]
 }

@@ -1,6 +1,6 @@
 import { camelCase } from 'es-toolkit'
 
-import { API_VERSION, GFWAPI } from '@globalfishingwatch/api-client'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import type {
   Dataset,
   DataviewDatasetConfig,
@@ -8,19 +8,28 @@ import type {
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 
-const arrayQueryParams: EndpointParamType[] = ['4wings-datasets', 'sql']
-// Generates an URL by interpolating a dataset endpoint template with a dataview datasetConfig
+import { getEndpointsByDatasetType } from './endpoints'
 
+const arrayQueryParams: EndpointParamType[] = ['sql']
+
+// Generates an URL by interpolating a dataset endpoint template with a dataview datasetConfig
 export const resolveEndpoint = (
   dataset: Dataset,
   datasetConfig = {} as DataviewDatasetConfig,
   { absolute = false } = {} as { absolute: boolean }
 ) => {
-  const endpoint = dataset.endpoints?.find((endpoint) => {
+  // TODO:DR (dataset-refactor) decide if we keep using dataset.endpoints or we use the new getEndpointByType()
+  const endpoints = dataset.endpoints ?? getEndpointsByDatasetType({ type: dataset.type })
+  const endpoint = endpoints?.find((endpoint) => {
     return endpoint.id === datasetConfig.endpoint
   })
 
-  if (!endpoint) return null
+  if (!endpoint) {
+    console.error(
+      `Endpoint not found for dataset ${dataset.type} and endpoint ${datasetConfig.endpoint}`
+    )
+    return null
+  }
 
   let url = endpoint.pathTemplate
   datasetConfig.params?.forEach((param) => {
@@ -43,19 +52,10 @@ export const resolveEndpoint = (
           ? (query.value as string[])
           : [query.value as string]
 
-        // TODO check if we can remove this once map only uses v3 in dev and pro
-        if (
-          endpoint.id === 'list-vessels' &&
-          endpointQuery.id === 'vessel-groups' &&
-          API_VERSION === 'v2'
-        ) {
-          resolvedQuery.set(query.id, queryArray.join(','))
-        } else {
-          queryArray.forEach((queryArrItem, i) => {
-            const queryArrId = `${query.id}[${i}]`
-            resolvedQuery.set(queryArrId, queryArrItem)
-          })
-        }
+        queryArray.forEach((queryArrItem, i) => {
+          const queryArrId = `${query.id}[${i}]`
+          resolvedQuery.set(queryArrId, queryArrItem)
+        })
       } else {
         if (Array.isArray(query.value)) {
           query.value.forEach((queryArrItem, i) => {
@@ -73,8 +73,7 @@ export const resolveEndpoint = (
       !resolvedQuery.toString().includes('datasets') &&
       datasetConfig.datasetId
     ) {
-      const datasetString = API_VERSION === 'v2' ? 'datasets' : 'datasets[0]'
-      resolvedQuery.set(datasetString, datasetConfig.datasetId)
+      resolvedQuery.set('datasets[0]', datasetConfig.datasetId)
     } else if (
       // Also check v3 new single dataset param
       endpoint.query.some((q) => q.id === 'dataset') &&
