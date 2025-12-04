@@ -478,7 +478,7 @@ const TimebarWrapper = () => {
       onMouseUp={onMouseUp}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
+      // style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
       role="toolbar"
     >
       <Timebar
