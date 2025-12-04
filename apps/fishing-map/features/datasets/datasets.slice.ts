@@ -10,12 +10,9 @@ import {
   parseAPIErrorStatus,
 } from '@globalfishingwatch/api-client'
 import type {
-  AnyDatasetConfiguration,
   APIPagination,
   Dataset,
   DatasetsMigration,
-  EndpointId,
-  EndpointParam,
   UploadResponse,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -27,50 +24,6 @@ import { asyncInitialState, createAsyncSlice } from 'utils/async-slice'
 
 export const DATASETS_USER_SOURCE_ID = 'user'
 export const DEPRECATED_DATASETS_HEADER = 'X-Deprecated-Dataset'
-
-type POCDatasetTemplate = Record<
-  string,
-  Partial<Record<EndpointId, { pathTemplate?: string; query?: Partial<EndpointParam>[] }>>
->
-const POC_DATASETS_ENDPOINT_PATH_TEMPLATES: POCDatasetTemplate = {
-  // [DEFAULT_VESSEL_IDENTITY_ID]: {
-  //   [EndpointId.Vessel]: {
-  //     // pathTemplate:
-  //     //   'https://gateway.api.staging.globalfishingwatch.org/prototypes/vessels/{{vesselId}}',
-  //     query: [{ id: 'datasets', array: true }],
-  //   },
-  // },
-}
-
-const parsePOCsDatasets = (dataset: Dataset) => {
-  if (Object.keys(POC_DATASETS_ENDPOINT_PATH_TEMPLATES).some((id) => dataset.id === id)) {
-    const pocDataset = {
-      ...dataset,
-      endpoints: dataset.endpoints?.map((endpoint) => {
-        const endpointConfig = POC_DATASETS_ENDPOINT_PATH_TEMPLATES[dataset.id]?.[endpoint.id]
-        if (endpointConfig) {
-          return {
-            ...endpoint,
-            ...endpointConfig,
-            query: endpoint.query.map((q) => {
-              const queryConfig = endpointConfig.query?.find((qc) => qc.id === q.id)
-              if (queryConfig) {
-                return {
-                  ...q,
-                  ...queryConfig,
-                }
-              }
-              return q
-            }),
-          }
-        }
-        return endpoint
-      }),
-    }
-    return pocDataset
-  }
-  return dataset
-}
 
 export const getDatasetByIdsThunk = createAsyncThunk(
   'datasets/getByIds',
@@ -118,8 +71,8 @@ export const fetchDatasetByIdThunk = createAsyncThunk<
   }
 >('datasets/fetchById', async (id: string, { rejectWithValue }) => {
   try {
-    const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}?include=endpoints&cache=false`)
-    return parsePOCsDatasets(dataset)
+    const dataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}?cache=false`)
+    return dataset
   } catch (e: any) {
     console.warn(e)
     return rejectWithValue({
@@ -150,7 +103,6 @@ const fetchDatasetsFromApi = async (
   const uniqIds = ids?.length ? ids.filter((id) => !existingIds.includes(id)) : []
   const datasetsParams = {
     ...(uniqIds?.length ? { ids: uniqIds } : { 'logged-user': onlyUserDatasets }),
-    include: 'endpoints',
     cache: false,
     ...DEFAULT_PAGINATION_PARAMS,
   }
@@ -223,7 +175,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
       if (Object.keys(datasetsDeprecated).length) {
         dispatch(setDeprecatedDatasets(datasetsDeprecated))
       }
-      return datasets.map(parsePOCsDatasets)
+      return datasets
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue(parseAPIError(e))
