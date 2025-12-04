@@ -12,6 +12,7 @@ import type {
   DatasetFilterType,
 } from './datasets.filters'
 import { EventTypes } from './events'
+import type { ThinningConfig } from './thinning'
 
 export const DATASET_TYPES: ApiDataset['type'][] = Object.values(DatasetTypes)
 
@@ -63,3 +64,14 @@ export const DATASET_CONFIGURATION_CONTEXT_FORMATS: ContextLayerFormat[] = [
 export const DATASET_CONFIGURATION_FUNCTIONS: AggregationFunction[] = ['AVG', 'SUM']
 export const DATASET_CONFIGURATION_INTERVALS: FourwingsInterval[] = ['YEAR', 'MONTH', 'DAY', 'HOUR']
 export const DATASET_CONFIGURATION_BULK_DOWNLOAD_FORMATS: BulkDownloadFormat[] = ['CSV', 'JSON']
+
+export const THINNING_PARAMS: (keyof ThinningConfig)[] = [
+  'distance-fishing',
+  'distance-transit',
+  'bearing-val-fishing',
+  'bearing-val-transit',
+  'change-speed-fishing',
+  'change-speed-transit',
+  'min-accuracy-fishing',
+  'min-accuracy-transit',
+]
