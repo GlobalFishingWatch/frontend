@@ -4,6 +4,8 @@ import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
 import type { RootState } from 'reducers'
 
 import {
+  DatasetTypes,
+  EndpointId,
   EXCLUDE_FILTER_ID,
   type FilterOperator,
   type FilterOperators,
@@ -11,6 +13,7 @@ import {
   type StatsGroupBy,
   type StatsIncludes,
 } from '@globalfishingwatch/api-types'
+import { getEndpointByType } from '@globalfishingwatch/datasets-client'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import type { BufferOperation, BufferUnit } from 'types'
@@ -173,11 +176,15 @@ export function getEventsVesselQuery(params: ReportEventsVesselsParams) {
   }
 }
 
+// TODO:DR (dataset-refactor) use the new typing for the params
+const endpoint = getEndpointByType({
+  type: DatasetTypes.Events,
+  endpoint: EndpointId.EventsStats,
+})
+
 export const reportEventsStatsApi = createApi({
   reducerPath: 'reportEventsStatsApi',
-  baseQuery: gfwBaseQuery({
-    baseUrl: `/events/stats`,
-  }),
+  baseQuery: gfwBaseQuery({ baseUrl: endpoint.pathTemplate }),
   endpoints: (builder) => ({
     getReportEventsStats: builder.query<ReportEventsStatsResponse[], GetReportEventParams>({
       queryFn: async (params, { signal }, extraOptions, baseQuery) => {
