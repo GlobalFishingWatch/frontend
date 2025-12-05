@@ -5,12 +5,11 @@ import cx from 'classnames'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
-import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
 import { dataviewHasUserPointsTimeRange } from 'features/dataviews/dataviews.utils'
-import { selectOthersActiveReportDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectPointsActiveReportDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
@@ -41,7 +40,7 @@ function ReportOthers() {
   const loading = timeseriesLoading || layersTimeseriesFiltered?.some((d) => d?.mode === 'loading')
   const getHasDataviewSchemaFilters = useGetHasDataviewSchemaFilters()
   const timeseriesStats = useTimeseriesStats()
-  const otherDataviews = useSelector(selectOthersActiveReportDataviewsGrouped)
+  const otherDataviews = useSelector(selectPointsActiveReportDataviewsGrouped)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   if (!Object.keys(otherDataviews)?.length) return null
