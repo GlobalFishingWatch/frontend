@@ -4,7 +4,6 @@ import type { DataviewType } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
   DATASET_COMPARISON_SUFFIX,
-  isUserPointsDataview,
   type UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 import { groupContextDataviews } from '@globalfishingwatch/deck-layer-composer'
@@ -113,22 +112,6 @@ export const selectActiveCustomUserDataviews = selectActiveDataviewInstancesByCa
   DataviewCategory.User
 )
 
-export const selectActiveUserPointsDataviews = createSelector(
-  [selectActiveCustomUserDataviews],
-  (dataviews) => {
-    return dataviews.filter(isUserPointsDataview)
-  }
-)
-
-export const selectActiveUserPointsWithTimeRangeDataviews = createSelector(
-  [selectActiveUserPointsDataviews],
-  (dataviews) => {
-    return dataviews.filter((dataview) => {
-      return dataviewHasUserPointsTimeRange(dataview)
-    })
-  }
-)
-
 export const selectCustomUserDataviewsGrouped = createSelector(
   [selectCustomUserDataviews],
   (dataviews) => {
@@ -157,7 +140,7 @@ export const selectVGReportActivityDataviews = createSelector(
   }
 )
 
-export const selectOthersActiveReportDataviews = createSelector(
+export const selectPointsActiveReportDataviews = createSelector(
   [selectContextAreasDataviews, selectCustomUserDataviews],
   (contextDataviews = [], userDataviews = []) => {
     const otherDataviews = [...contextDataviews, ...userDataviews]?.filter((dataview) => {
@@ -172,9 +155,18 @@ export const selectOthersActiveReportDataviews = createSelector(
   }
 )
 
-export const selectOthersActiveReportDataviewsGrouped = createSelector(
-  [selectOthersActiveReportDataviews],
+export const selectPointsActiveReportDataviewsGrouped = createSelector(
+  [selectPointsActiveReportDataviews],
   (otherDataviews = []) => {
     return groupContextDataviews(otherDataviews)
+  }
+)
+
+export const selectActiveUserPointsWithTimeRangeDataviews = createSelector(
+  [selectPointsActiveReportDataviews],
+  (dataviews) => {
+    return dataviews.filter((dataview) => {
+      return dataviewHasUserPointsTimeRange(dataview)
+    })
   }
 )

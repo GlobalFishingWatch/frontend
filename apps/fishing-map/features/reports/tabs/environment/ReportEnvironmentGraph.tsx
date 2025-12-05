@@ -83,24 +83,25 @@ function ReportEnvironmentGraph({
           <Fragment>
             {t('common.between')} <strong>{formatI18nDate(start)}</strong> {t('common.and')}{' '}
             <strong>{formatI18nDate(end)}</strong>
+            <ReportSummaryTags key={dataview.id} dataview={dataview} />
           </Fragment>
         )}
       </p>
-      <ReportSummaryTags key={dataview.id} dataview={dataview} />
-      {isLoading || hasError ? (
-        <ReportActivityPlaceholder showHeader={false}>
-          {hasError && <p className={styles.errorMessage}>{t('errors.layerLoading')}</p>}
-        </ReportActivityPlaceholder>
-      ) : isEmptyData ? (
-        <ReportActivityPlaceholder showHeader={false}>
-          <div className={styles.noDataDisclaimer}>
-            <OutOfTimerangeDisclaimer dataview={dataview} />
-            {t('analysis.noDataByArea')}
-          </div>
-        </ReportActivityPlaceholder>
-      ) : (
-        <GraphComponent start={start} end={end} data={data} />
-      )}
+      {isDynamic &&
+        (isLoading || hasError ? (
+          <ReportActivityPlaceholder showHeader={false}>
+            {hasError && <p className={styles.errorMessage}>{t('errors.layerLoading')}</p>}
+          </ReportActivityPlaceholder>
+        ) : isEmptyData ? (
+          <ReportActivityPlaceholder showHeader={false}>
+            <div className={styles.noDataDisclaimer}>
+              <OutOfTimerangeDisclaimer dataview={dataview} />
+              {t('analysis.noDataByArea')}
+            </div>
+          </ReportActivityPlaceholder>
+        ) : (
+          <GraphComponent start={start} end={end} data={data} />
+        ))}
       {isLoading ? (
         <ReportStatsPlaceholder />
       ) : min !== undefined && mean !== undefined && max !== undefined ? (

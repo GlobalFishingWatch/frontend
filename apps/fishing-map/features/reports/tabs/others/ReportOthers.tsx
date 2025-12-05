@@ -5,12 +5,11 @@ import cx from 'classnames'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
-import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
 import { dataviewHasUserPointsTimeRange } from 'features/dataviews/dataviews.utils'
-import { selectOthersActiveReportDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectPointsActiveReportDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
@@ -38,11 +37,11 @@ function ReportOthers() {
   const { start, end } = useTimerangeConnect()
   const timeseriesLoading = useReportFeaturesLoading()
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
+  const loading = timeseriesLoading || layersTimeseriesFiltered?.some((d) => d?.mode === 'loading')
   const getHasDataviewSchemaFilters = useGetHasDataviewSchemaFilters()
   const timeseriesStats = useTimeseriesStats()
-  const otherDataviews = useSelector(selectOthersActiveReportDataviewsGrouped)
+  const otherDataviews = useSelector(selectPointsActiveReportDataviewsGrouped)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const mapLoading = useIsDeckLayersLoading()
 
   if (!Object.keys(otherDataviews)?.length) return null
 
@@ -144,7 +143,7 @@ function ReportOthers() {
         return (
           <div key={mergedDataviewId} className={styles.container}>
             <h2 className={styles.title}>{title}</h2> {unit && <span>({unit})</span>}
-            {hasTimeFilter && timeseriesLoading ? <ReportStatsPlaceholder /> : StatsComponent}
+            {hasTimeFilter && loading ? <ReportStatsPlaceholder /> : StatsComponent}
             {dataviews?.length > 0 && (
               <div className={styles.selectContainer}>
                 <div
@@ -168,9 +167,11 @@ function ReportOthers() {
               </div>
             )}
             {hasTimeFilter &&
-              (timeseriesLoading || mapLoading || statsCounts === 0 ? (
+              (loading ? (
+                <ReportActivityPlaceholder showHeader={false} />
+              ) : statsCounts === 0 ? (
                 <ReportActivityPlaceholder showHeader={false}>
-                  {statsCounts === 0 && t('analysis.noDataByArea')}
+                  {t('analysis.noDataByArea')}
                 </ReportActivityPlaceholder>
               ) : (
                 <ReportActivityEvolution

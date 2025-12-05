@@ -51,7 +51,7 @@ function getDatesPopulated({
     .toMillis()
 
   const startDate = getUTCDateTime(start)
-  const endDate = getUTCDateTime(end ? end : now)
+  const endDate = getUTCDateTime(end && isFinite(end) ? end : now)
 
   const intervalDiff = Math.ceil(
     Object.values(
@@ -156,6 +156,9 @@ export function getGraphDataFromPoints(
         })
       ) {
         if (values?.length) {
+          if (!data[date].count) {
+            data[date].count = Array(sublayersLength).fill(0)
+          }
           values.forEach((value, index) => {
             data[date][index] += value
             data[date].count![index] = (data[date].count![index] || 0) + 1

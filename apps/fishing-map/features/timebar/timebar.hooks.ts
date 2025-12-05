@@ -19,8 +19,8 @@ import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveEventsDataviews,
-  selectActiveUserPointsDataviews,
   selectActiveVesselGroupDataviews,
+  selectPointsActiveReportDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
@@ -292,7 +292,7 @@ export const useTimebarVisualisation = () => {
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeEventsDataviews = useSelector(selectActiveEventsDataviews)
   const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
-  const activeUserPointsDataviews = useSelector(selectActiveUserPointsDataviews)
+  const activeUserPointsDataviews = useSelector(selectPointsActiveReportDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeEnvDataviews = useSelector(selectActiveHeatmapEnvironmentalDataviewsWithoutStatic)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
