@@ -30,6 +30,7 @@ type LayerPanelProps = {
   label: string
   className?: string
   removeType?: 'visibleValues' | 'filter'
+  onRemove?: (tag: TagItem) => void
 }
 
 function DatasetSchemaField({
@@ -38,6 +39,7 @@ function DatasetSchemaField({
   label,
   className = '',
   removeType = 'filter',
+  onRemove,
 }: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const vesselGroupsOptions = useVesselGroupsOptions()
@@ -111,8 +113,11 @@ function DatasetSchemaField({
           },
         },
       })
+      if (onRemove) {
+        onRemove({ id: field, label: tag.label })
+      }
     },
-    [dataview, field, upsertDataviewInstance]
+    [dataview, field, upsertDataviewInstance, onRemove]
   )
 
   const onRemoveVisibleValuesClick = useCallback(() => {

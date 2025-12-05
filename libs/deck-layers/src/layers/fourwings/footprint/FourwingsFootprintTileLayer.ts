@@ -273,32 +273,30 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     return layer
   }
 
-  getTilesData({ aggregated } = {} as { aggregated?: boolean }) {
+  getTilesData() {
     const layer = this.getLayerInstance()
-    if (layer) {
-      const roundedZoom = Math.round(this.context.viewport.zoom)
-      return layer
-        .getSubLayers()
-        .map((l: any) => {
-          if (!l.props.tile.isVisible) {
-            return []
-          }
-          if (l.props.tile.zoom === l.props.maxZoom) {
-            return l.getData({ aggregated })
-          }
-          return l.props.tile.zoom === roundedZoom ? l.getData({ aggregated }) : []
-        })
-        .filter((t) => t.length > 0) as FourwingsFeature[][]
+    const tiles = layer?.state?.tileset?.selectedTiles ?? []
+
+    if (!layer || !tiles.length) {
+      return [[]] as FourwingsFeature[][]
     }
-    return [[]] as FourwingsFeature[][]
+
+    return tiles.flatMap((tile) => {
+      if (!tile.isSelected || !tile.isVisible || !tile.isLoaded) {
+        return []
+      }
+      const subLayer = tile.layers?.[0] as FourwingsFootprintLayer
+      const data = subLayer?.getData?.() ?? []
+      return data.length ? [data] : []
+    }) as FourwingsFeature[][]
   }
 
-  getData({ aggregated } = {} as { aggregated?: boolean }) {
-    return this.getTilesData({ aggregated }).flat()
+  getData() {
+    return this.getTilesData().flat()
   }
 
-  getIsPositionsAvailable({ aggregated } = {} as { aggregated?: boolean }) {
-    const tilesData = this.getTilesData({ aggregated })
+  getIsPositionsAvailable() {
+    const tilesData = this.getTilesData()
     return !tilesData.some(
       (tileData) =>
         tileData.reduce((acc, feature) => {
