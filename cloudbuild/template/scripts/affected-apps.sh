@@ -1,4 +1,6 @@
 #!/bin/bash
+apt-get update && apt-get install git
+
 # Fetch develop branch to ensure it exists
 git fetch origin develop
 
