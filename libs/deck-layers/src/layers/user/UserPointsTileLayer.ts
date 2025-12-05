@@ -192,8 +192,10 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   _getData = (): Feature<Point>[] => {
     // Use Math.round() to match deck.gl's tile zoom selection logic
     const roundedZoom = Math.round(this.context.viewport.zoom)
+    const zoom =
+      roundedZoom > DEFAULT_USER_TILES_MAX_ZOOM ? DEFAULT_USER_TILES_MAX_ZOOM : roundedZoom
     return (this.getLayer()?.state.tileset?.tiles || []).flatMap((tile) => {
-      return tile.content && tile.zoom === roundedZoom
+      return tile.content && tile.zoom === zoom
         ? tile.content.flatMap((feature: any) => {
             return feature
               ? (transformTileCoordsToWGS84(

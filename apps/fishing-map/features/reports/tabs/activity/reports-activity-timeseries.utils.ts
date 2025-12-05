@@ -198,10 +198,10 @@ export const getFourwingsTimeseriesStats = ({
     })
     const allValues = (features[0].contained as FourwingsFeature[]).flatMap((f) => {
       const values = sliceCellValues({
-        values: f.properties.values?.[0],
+        values: f.properties.values?.[0] || [0],
         startFrame,
         endFrame,
-        startOffset: f.properties.startOffsets?.[0],
+        startOffset: f.properties.startOffsets?.[0] || 0,
       })
       return values || []
     })
