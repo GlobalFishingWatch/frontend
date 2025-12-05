@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { groupBy, upperFirst } from 'es-toolkit'
-import { DateTime } from 'luxon'
 
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
@@ -18,7 +17,7 @@ import {
   selectActiveVesselsDataviews,
   selectCustomUserDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import { BLUE_PLANET_MODE_DATE_FORMAT, selectDebugOptions } from 'features/debug/debug.slice'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import { setClickedEvent } from 'features/map/map.slice'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
@@ -62,7 +61,7 @@ function VesselTracksTooltipRow({
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
   const { start, end } = useSelector(selectTimeRange)
   const diffDays = getUTCDateTime(end).diff(getUTCDateTime(start), 'days').days
-  const bluePlanetMode = useSelector(selectDebugOptions)?.bluePlanetMode
+  const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
 
   const onReportClick = useCallback(() => {
     if (diffDays > 14) {
@@ -111,14 +110,10 @@ function VesselTracksTooltipRow({
     <div className={styles.row} key={feature.id}>
       <div className={styles.rowText}>
         <p>
-          {!showFeaturesDetails && !bluePlanetMode && formatInfoField(feature.title, 'shipname')}{' '}
+          {!showFeaturesDetails && !hideVesselNames && formatInfoField(feature.title, 'shipname')}{' '}
           {interactionType === 'point' && feature.timestamp && (
             <span className={cx({ [styles.secondary]: !showFeaturesDetails })}>
-              <I18nDate
-                date={feature.timestamp}
-                format={bluePlanetMode ? BLUE_PLANET_MODE_DATE_FORMAT : DateTime.DATETIME_MED}
-                showUTCLabel={bluePlanetMode}
-              />
+              <I18nDate date={feature.timestamp} />
             </span>
           )}
         </p>
@@ -168,7 +163,7 @@ function VesselTracksTooltipSection({
     () => [...trackDataviews, ...userDataviews],
     [trackDataviews, userDataviews]
   )
-  const bluePlanetMode = useSelector(selectDebugOptions)?.bluePlanetMode
+  const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
 
   return (
     <Fragment>
@@ -188,7 +183,7 @@ function VesselTracksTooltipSection({
               style={{ color, transform: `rotate(${-45 + featureByType[0].course!}deg)` }}
             />
             <div className={styles.popupSectionContent}>
-              {showFeaturesDetails && !bluePlanetMode && (
+              {showFeaturesDetails && !hideVesselNames && (
                 <h3 className={styles.popupSectionTitle}>{rowTitle}</h3>
               )}
               {featureByType.map((feature) => {

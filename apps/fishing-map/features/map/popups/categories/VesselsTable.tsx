@@ -16,6 +16,7 @@ import {
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import I18nNumber from 'features/i18n/i18nNumber'
 import type {
   ActivityProperty,
@@ -71,6 +72,7 @@ function VesselsTable({
   const { t } = useTranslation()
   const { start, end } = useSelector(selectTimeRange)
   const workspace = useSelector(selectWorkspace)
+  const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
 
   const interactionAllowed = [...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION].includes(
     feature?.category || ''
@@ -116,10 +118,12 @@ function VesselsTable({
               const getVesselPropertyParams = {
                 identitySource: VesselIdentitySourceEnum.SelfReported,
               }
-              const vesselName = formatInfoField(
-                getVesselProperty(vessel, 'shipname', getVesselPropertyParams),
-                'shipname'
-              )
+              const vesselName = hideVesselNames
+                ? FAKE_VESSEL_NAME
+                : formatInfoField(
+                    getVesselProperty(vessel, 'shipname', getVesselPropertyParams),
+                    'shipname'
+                  )
 
               const otherVesselsLabel = vessel
                 ? getVesselOtherNamesLabel(getOtherVesselNames(vessel))
