@@ -156,6 +156,9 @@ export function getGraphDataFromPoints(
         })
       ) {
         if (values?.length) {
+          if (!data[date].count) {
+            data[date].count = Array(sublayersLength).fill(0)
+          }
           values.forEach((value, index) => {
             data[date][index] += value
             data[date].count![index] = (data[date].count![index] || 0) + 1

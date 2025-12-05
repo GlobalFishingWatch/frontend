@@ -116,9 +116,12 @@ export default function ReportSummaryActivity({
         reportStatus === AsyncReducerStatus.Finished &&
         reportHours)
     ) {
-      const formattedTimeseries = formatEvolutionData(
-        (layersTimeseriesFiltered?.[0] || {}) as ReportGraphProps
-      )
+      const firstTimeseries = (layersTimeseriesFiltered?.[0] || {}) as ReportGraphProps
+      const formattedTimeseries = formatEvolutionData(firstTimeseries, {
+        start: timerange?.start,
+        end: timerange?.end,
+        timeseriesInterval: firstTimeseries?.interval,
+      })
       const timeseriesHours = sum(formattedTimeseries?.map((t) => sum(t.avg)) || [])
       const timeseriesMaxHours = sum(
         formattedTimeseries?.map((t) => sum(t.range.map((r) => r[1]))) || []
