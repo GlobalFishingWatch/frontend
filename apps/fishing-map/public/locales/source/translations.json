@@ -536,7 +536,6 @@
     "fishingActionIn": "Fishing in {{regionName}}",
     "gap": "AIS Off event",
     "gap_one": "AIS Off event",
-    "gap_many": "",
     "gap_other": "AIS Off events",
     "gapAction": "AIS Off event started at {{start}} for {{duration}}",
     "gapActionIn": "Likely disabling in {{regionName}}",
