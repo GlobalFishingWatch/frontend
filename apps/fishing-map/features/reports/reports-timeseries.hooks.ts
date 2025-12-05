@@ -20,7 +20,10 @@ import {
 import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
-import { useReportTitle } from 'features/reports/report-area/area-reports.hooks'
+import {
+  useReportAreaInViewport,
+  useReportTitle,
+} from 'features/reports/report-area/area-reports.hooks'
 import {
   selectReportArea,
   selectReportBufferHash,
@@ -146,6 +149,7 @@ const useReportTimeseries = (
   const { start, end } = useTimerangeConnect()
   const interval = getFourwingsInterval(start, end)
   const reportTitle = useReportTitle()
+  const isAreaInViewport = useReportAreaInViewport()
   const reportCategory = useSelector(selectReportCategory)
   const reportSubCategory = useSelector(selectReportSubCategory)
   const timeComparisonHash = useSelector(selectTimeComparisonHash)
@@ -279,10 +283,18 @@ const useReportTimeseries = (
         }))
       }
     }
-    if (isLoaded && reportStateCacheHash.current !== '') {
+    if (isLoaded && isAreaInViewport && reportStateCacheHash.current !== '') {
       processFeatures()
     }
-  }, [area?.geometry, area?.id, isLoaded, instances, filterCellsByPolygon, setReportState])
+  }, [
+    area?.geometry,
+    area?.id,
+    isLoaded,
+    instances,
+    filterCellsByPolygon,
+    setReportState,
+    isAreaInViewport,
+  ])
 
   useEffect(() => {
     const processFeatureStats = () => {
