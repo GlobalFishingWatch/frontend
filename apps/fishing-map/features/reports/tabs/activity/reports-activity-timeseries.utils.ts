@@ -235,6 +235,8 @@ export const formatEvolutionData = (
     return []
   }
   if (start && end && timeseriesInterval) {
+    const isMonthlyComparison =
+      comparedData && comparedData.interval === 'MONTH' && data.interval !== comparedData.interval
     const emptyData = new Array(data.sublayers.length).fill(0)
     const startMillis = getUTCDateTime(start)
       .startOf(timeseriesInterval.toLowerCase() as DateTimeUnit)
@@ -249,8 +251,9 @@ export const formatEvolutionData = (
       )
     )
 
-    let lastKnownComparedValue: EvolutionGraphData | undefined =
-      comparedData && comparedData?.timeseries[0]
+    let lastKnownComparedValue: EvolutionGraphData | undefined = isMonthlyComparison
+      ? comparedData?.timeseries[0]
+      : undefined
 
     return Array(intervalDiff)
       .fill(0)
@@ -274,10 +277,12 @@ export const formatEvolutionData = (
           let comparedDataValue = comparedData?.timeseries.find((item) =>
             date.toISO()?.startsWith(item.date)
           )
-          if (comparedDataValue && comparedData?.interval === 'MONTH') {
-            lastKnownComparedValue = comparedDataValue
-          } else {
-            comparedDataValue = lastKnownComparedValue
+          if (isMonthlyComparison) {
+            if (comparedDataValue) {
+              lastKnownComparedValue = comparedDataValue
+            } else {
+              comparedDataValue = lastKnownComparedValue
+            }
           }
 
           const comparedProcessed = processTimeseries(comparedDataValue)
