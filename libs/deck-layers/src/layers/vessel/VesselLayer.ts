@@ -282,7 +282,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         return []
       }
       return chunks.flatMap(({ start, end }) => {
-        const chunkId = `${EVENT_LAYER_TYPE}-${type}-${start}-${end}`
+        const chunkId = `${this.props.id}-${EVENT_LAYER_TYPE}-${type}-${start}-${end}`
         const eventUrl = new URL(url as string)
         eventUrl.searchParams.append('start-date', start as string)
         eventUrl.searchParams.append('end-date', end as string)
