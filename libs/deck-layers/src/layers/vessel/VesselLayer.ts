@@ -42,7 +42,6 @@ import type { GetSegmentsFromDataParams } from './vessel.utils'
 import { getEvents, getVesselResourceChunks } from './vessel.utils'
 import type { _VesselEventsLayerProps } from './VesselEventsLayer'
 import { VesselEventsLayer } from './VesselEventsLayer'
-import { BluePlanetGapsLayer } from './VesselGapsLayer'
 import { VesselTrackPositionLayer } from './VesselPositionLayer'
 import type { VesselTrackLayerProps } from './VesselTrackLayer'
 import { VesselTrackLayer } from './VesselTrackLayer'
@@ -283,7 +282,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         return []
       }
       return chunks.flatMap(({ start, end }) => {
-        const chunkId = `${EVENT_LAYER_TYPE}-${type}-${start}-${end}`
+        const chunkId = `${this.props.id}-${EVENT_LAYER_TYPE}-${type}-${start}-${end}`
         const eventUrl = new URL(url as string)
         eventUrl.searchParams.append('start-date', start as string)
         eventUrl.searchParams.append('end-date', end as string)
@@ -399,18 +398,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
       ...this._getVesselTrackLayers(),
       ...this._getVesselEventLayers(),
       ...this._getVesselPositionLayer(),
-      ...(this.props.id === 'vessel-b74d3c773-3dd1-776e-7b52-ad277dd85a58' &&
-      this.props.trackVisualizationMode === 'positions'
-        ? [
-            new BluePlanetGapsLayer(
-              this.getSubLayerProps({
-                id: this.props.id,
-                startTime: this.props.startTime,
-                endTime: this.props.endTime,
-              })
-            ),
-          ]
-        : []),
     ]
   }
 

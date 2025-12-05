@@ -9,7 +9,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import type { AreaKeyId } from 'features/areas/areas.slice'
 import { fetchAreaDetailThunk } from 'features/areas/areas.slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { selectContextAreasDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { selectPointsActiveReportDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import { selectLocationAreaId } from 'routes/routes.selectors'
@@ -31,7 +31,7 @@ export const useContextInteractions = () => {
   const dispatch = useAppDispatch()
   const areaId = useSelector(selectLocationAreaId)
   const datasets = useSelector(selectAllDatasets)
-  const dataviews = useSelector(selectContextAreasDataviews)
+  const dataviews = useSelector(selectPointsActiveReportDataviews)
   const { dispatchClickedEvent } = useClickedEventConnect()
   // const fitMapBounds = useMapFitBounds()
 

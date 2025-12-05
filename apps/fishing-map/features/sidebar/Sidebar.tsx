@@ -172,7 +172,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
           id={SCROLL_CONTAINER_DOM_ID}
           className={cx('scrollContainer', styles.scrollContainer)}
           data-test="sidebar-container"
-          style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
+          // style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
         >
           {sidebarComponent}
         </div>

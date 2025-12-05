@@ -55,9 +55,7 @@ const ReportActivityEvolution = ({
   const colors = (data?.sublayers || []).map((sublayer) => sublayer?.legend?.color)?.join(',')
   const domain = useMemo(() => {
     if (start && end && data?.interval) {
-      const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
-        .plus({ [data?.interval]: 1 })
-        .toISO() as string
+      const cleanEnd = DateTime.fromISO(end, { zone: 'utc' }).toISO() as string
       return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
     }
   }, [start, end, data?.interval])

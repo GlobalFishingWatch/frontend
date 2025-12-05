@@ -16,6 +16,7 @@ import { selectLocationQuery, selectVesselsMaxTimeGapHours } from 'routes/routes
 
 import {
   DebugOption,
+  FAKE_VESSEL_NAME,
   FeatureFlag,
   selectDebugOptions,
   selectFeatureFlags,
@@ -129,31 +130,16 @@ const DebugMenu: React.FC = () => {
         <p>Split tracks into segments with a maximum time gap in hours</p>
         <div className={styles.header}>
           <Switch
-            id="option_blue_planet_mode"
-            active={debugOptions.bluePlanetMode}
+            id="option_hide_vessel_names"
+            active={debugOptions.hideVesselNames}
             onClick={() => {
-              dispatch(toggleDebugOption(DebugOption.BluePlanetMode))
-              if (!debugOptions.bluePlanetMode) {
-                dispatch(setDebugOption({ option: DebugOption.VesselsAsPositions, value: true }))
-              }
+              dispatch(toggleDebugOption(DebugOption.HideVesselNames))
             }}
           />
-          <label htmlFor="option_blue_planet_mode">Blue planet mode</label>
+          <label htmlFor="option_hide_vessel_names">Fake vessel names</label>
         </div>
         <p>
-          Set the workspace to blue planet mode with the following features:
-          <ul>
-            <li>
-              see gaps icons into the map (only in this{' '}
-              <a href="https://globalfishingwatch.org/map/fishing-activity/blue_testing_ja-public">
-                workspace
-              </a>
-              )
-            </li>
-            <li>blur vessel names in the sidebar and remove from map tooltips</li>
-            <li>remove year data from timebar and tooltip</li>
-            <li>remove unmatched detections label in tooltip</li>
-          </ul>
+          Replace vessel names with {FAKE_VESSEL_NAME} in the sidebar and remove from map tooltips.
         </p>
         {isGFWDeveloper && (
           <Fragment>

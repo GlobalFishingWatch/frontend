@@ -20,10 +20,7 @@ import {
 import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
-import {
-  useReportAreaInViewport,
-  useReportTitle,
-} from 'features/reports/report-area/area-reports.hooks'
+import { useReportTitle } from 'features/reports/report-area/area-reports.hooks'
 import {
   selectReportArea,
   selectReportBufferHash,
@@ -229,10 +226,13 @@ const useReportTimeseries = (
         const featuresFiltered: FilteredPolygons[][] = []
         for (const instance of instances) {
           const isUserPointsTileLayer = instance instanceof UserPointsTileLayer
+          const hasTimeFilter = instance.props.startTime || instance.props.endTime
+
           const features = instance?.getData?.(
             isUserPointsTileLayer
               ? {
                   includeNonTemporalFeatures: true,
+                  skipTemporalFilter: !hasTimeFilter,
                 }
               : {}
           ) as FourwingsFeature[]

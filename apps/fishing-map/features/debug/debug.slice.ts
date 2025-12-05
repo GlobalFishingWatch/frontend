@@ -17,7 +17,7 @@ export enum DebugOption {
   AreasOnScreen = 'areasOnScreen',
   DataTerminologyIframe = 'dataTerminologyIframe',
   VesselsAsPositions = 'vesselsAsPositions',
-  BluePlanetMode = 'bluePlanetMode',
+  HideVesselNames = 'hideVesselNames',
   VesselsMaxTimeGapHours = 'vesselsMaxTimeGapHours',
 }
 
@@ -29,14 +29,6 @@ interface DebugState {
   active: boolean
   featureFlags: Record<FeatureFlag, boolean>
   options: DebugOptions
-}
-
-export const BLUE_PLANET_MODE_DATE_FORMAT: DateTimeFormatOptions = {
-  month: 'short',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: '2-digit',
-  hour12: true,
 }
 
 const initialState: DebugState = {
@@ -55,7 +47,7 @@ const initialState: DebugState = {
     areasOnScreen: false,
     vesselsAsPositions: false,
     vesselsMaxTimeGapHours: false,
-    bluePlanetMode: false,
+    hideVesselNames: false,
   },
 }
 

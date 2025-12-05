@@ -128,7 +128,7 @@ function VesselLayerPanel({
   // const vesselInstance = useMapVesselLayer(dataview.id)
   const gfwUser = useSelector(selectIsGFWUser)
   const trackDatasetId = dataview.datasets?.find((rld) => rld.type === DatasetTypes.Tracks)?.id
-  const bluePlanetMode = useSelector(selectDebugOptions)?.bluePlanetMode
+  const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
 
   const infoResource: Resource<IdentityVessel> = useSelector(
     selectResourceByUrl<IdentityVessel>(infoUrl)
@@ -203,7 +203,7 @@ function VesselLayerPanel({
   const getVesselTitle = (): ReactNode => {
     if (infoLoading) return t('vessel.loadingInfo')
     if (infoError) return t('common.unknownVessel')
-    if (bluePlanetMode) return FAKE_VESSEL_NAME
+    if (hideVesselNames) return FAKE_VESSEL_NAME
 
     if (dataview?.datasetsConfig?.some((d) => isGFWOnlyDataset({ id: d.datasetId })))
       return (
