@@ -33,7 +33,6 @@ function metersPerSecondToKnots(speedInMps: number): number {
 }
 
 function ReportVectorGraphTooltip(props: EvolutionTooltipContentProps & ReportVectorProps) {
-  console.log('🚀 ~ ReportVectorGraphTooltip ~ props:', props)
   const [tooltip, setTooltip] = useState<TooltipData>(null)
 
   const dataFormated = useMemo(() => {
