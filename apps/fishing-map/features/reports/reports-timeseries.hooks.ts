@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 import { atom, useAtom, useAtomValue } from 'jotai'
@@ -17,6 +17,7 @@ import {
   getFourwingsInterval,
 } from '@globalfishingwatch/deck-loaders'
 
+// import { useTrackDependencyChanges } from '@globalfishingwatch/react-hooks'
 import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
@@ -182,6 +183,39 @@ const useReportTimeseries = (
     ? reportLayers.every(({ instance, loaded }) => instance.isLoaded && loaded)
     : false
 
+  // We can't use the isLoaded state because it's not updated immediately when the instances are loaded
+  // so we use a separate state to track when the instances are ready
+  const [isReady, setIsReady] = useState(false)
+  const latestLoadState = useRef({
+    isLoaded,
+    instancesChunkHash,
+    reportBufferHash,
+  })
+
+  useEffect(() => {
+    latestLoadState.current = { isLoaded, instancesChunkHash, reportBufferHash }
+    let raf: number | undefined
+    setIsReady(false)
+
+    if (isLoaded) {
+      const expectedHash = `${instancesChunkHash}|${reportBufferHash}`
+      raf = requestAnimationFrame(() => {
+        const {
+          isLoaded: latestLoaded,
+          instancesChunkHash: latestHash,
+          reportBufferHash: latestBuffer,
+        } = latestLoadState.current
+        if (latestLoaded && expectedHash === `${latestHash}|${latestBuffer}`) {
+          setIsReady(true)
+        }
+      })
+    }
+
+    return () => {
+      if (raf !== undefined) cancelAnimationFrame(raf)
+    }
+  }, [isLoaded, instancesChunkHash, reportBufferHash])
+
   useLayoutEffect(() => {
     reportStateCacheHash.current = ''
     setReportState((prev) => ({
@@ -204,13 +238,13 @@ const useReportTimeseries = (
 
   useEffect(() => {
     const newHash = area
-      ? `${reportTitle}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${instancesChunkHash}|${isLoaded}|${reportBufferHash}`
+      ? `${reportTitle}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${instancesChunkHash}|${isReady}|${reportBufferHash}`
       : ''
     reportStateCacheHash.current = newHash
   }, [
     area,
     reportTitle,
-    isLoaded,
+    isReady,
     reportCategory,
     reportSubCategory,
     reportGraphMode,
@@ -218,6 +252,17 @@ const useReportTimeseries = (
     instancesChunkHash,
     reportBufferHash,
   ])
+
+  // useTrackDependencyChanges('processFeatures dependencies', {
+  //   'area.geometry': area?.geometry,
+  //   'area.id': area?.id,
+  //   isLoaded,
+  //   isReady,
+  //   instances,
+  //   filterCellsByPolygon,
+  //   setReportState,
+  //   isAreaInViewport,
+  // })
 
   useEffect(() => {
     const processFeatures = async () => {
@@ -283,13 +328,13 @@ const useReportTimeseries = (
         }))
       }
     }
-    if (isLoaded && isAreaInViewport && reportStateCacheHash.current !== '') {
+    if (isReady && isAreaInViewport && reportStateCacheHash.current !== '') {
       processFeatures()
     }
   }, [
     area?.geometry,
     area?.id,
-    isLoaded,
+    isReady,
     instances,
     filterCellsByPolygon,
     setReportState,
@@ -307,10 +352,10 @@ const useReportTimeseries = (
       setReportState((prev) => ({ ...prev, stats }))
     }
 
-    if (isLoaded && reportState.featuresFiltered && reportStateCacheHash.current !== '') {
+    if (isReady && reportState.featuresFiltered && reportStateCacheHash.current !== '') {
       processFeatureStats()
     }
-  }, [isLoaded, instances, reportState?.featuresFiltered, setReportState, start, end])
+  }, [isReady, instances, reportState?.featuresFiltered, setReportState, start, end])
 
   return reportState
 }
