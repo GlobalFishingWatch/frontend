@@ -12,6 +12,7 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectPointsActiveReportDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setDownloadActivityAreaKey } from 'features/download/downloadActivity.slice'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
+import { useSetReportFeaturesLoading } from 'features/reports/reports-timeseries.hooks'
 import { selectLocationAreaId } from 'routes/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
 
@@ -33,6 +34,7 @@ export const useContextInteractions = () => {
   const datasets = useSelector(selectAllDatasets)
   const dataviews = useSelector(selectPointsActiveReportDataviews)
   const { dispatchClickedEvent } = useClickedEventConnect()
+  const setReportFeaturesLoading = useSetReportFeaturesLoading()
   // const fitMapBounds = useMapFitBounds()
 
   const onDownloadClick = useCallback(
@@ -68,14 +70,14 @@ export const useContextInteractions = () => {
     (feature: ContextPickingObject | UserLayerPickingObject) => {
       const { title, value } = feature
       dispatchClickedEvent(null)
-
+      setReportFeaturesLoading(true)
       trackEvent({
         category: TrackCategory.Analysis,
         action: `Open report`,
         label: getEventLabel([title ?? '', value.toString()]),
       })
     },
-    [dispatchClickedEvent]
+    [dispatchClickedEvent, setReportFeaturesLoading]
   )
 
   const onReportClick = useCallback(

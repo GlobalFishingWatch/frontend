@@ -1,7 +1,7 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
-import { atom, useAtom, useAtomValue } from 'jotai'
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import type { DateTimeUnit } from 'luxon'
 import memoizeOne from 'memoize-one'
 
@@ -139,6 +139,16 @@ export const useReportInstances = () => {
 
 export const useReportFeaturesLoading = () => {
   return useAtomValue(reportStateAtom)?.isLoading
+}
+
+export const useSetReportFeaturesLoading = () => {
+  const setReportState = useSetAtom(reportStateAtom)
+  return useCallback(
+    (isLoading: boolean) => {
+      setReportState((prev: ReportState) => ({ ...prev, isLoading }))
+    },
+    [setReportState]
+  )
 }
 
 const useReportTimeseries = (
