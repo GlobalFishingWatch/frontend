@@ -58,6 +58,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   sidebarOpen?: boolean
   timebarGraph?: TimebarGraphs
   timebarSelectedEnvId?: string
+  timebarSelectedUserId?: string
   timebarSelectedVGId?: string
   timebarVisualisation?: TimebarVisualisations
   vesselsColorBy?: VesselsColorByProperty

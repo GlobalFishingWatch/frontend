@@ -11,6 +11,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectTimebarGraph,
   selectTimebarSelectedEnvId,
+  selectTimebarSelectedUserId,
   selectTimebarSelectedVGId,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
@@ -18,8 +19,8 @@ import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveEventsDataviews,
-  selectActiveUserPointsDataviews,
   selectActiveVesselGroupDataviews,
+  selectPointsActiveReportDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
@@ -219,8 +220,31 @@ export const useTimebarEnvironmentConnect = () => {
   )
 
   return useMemo(
-    () => ({ timebarSelectedEnvId, dispatchTimebarSelectedEnvId }),
+    () => ({
+      timebarSelectedEnvId,
+      dispatchTimebarSelectedEnvId,
+    }),
     [dispatchTimebarSelectedEnvId, timebarSelectedEnvId]
+  )
+}
+
+export const useTimebarUserPointsConnect = () => {
+  const { dispatchQueryParams } = useLocationConnect()
+  const timebarSelectedUserId = useSelector(selectTimebarSelectedUserId)
+
+  const dispatchTimebarSelectedUserId = useCallback(
+    (timebarSelectedUserId: string) => {
+      dispatchQueryParams({ timebarSelectedUserId })
+    },
+    [dispatchQueryParams]
+  )
+
+  return useMemo(
+    () => ({
+      timebarSelectedUserId,
+      dispatchTimebarSelectedUserId,
+    }),
+    [timebarSelectedUserId, dispatchTimebarSelectedUserId]
   )
 }
 
@@ -268,7 +292,7 @@ export const useTimebarVisualisation = () => {
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeEventsDataviews = useSelector(selectActiveEventsDataviews)
   const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
-  const activeUserPointsDataviews = useSelector(selectActiveUserPointsDataviews)
+  const activeUserPointsDataviews = useSelector(selectPointsActiveReportDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeEnvDataviews = useSelector(selectActiveHeatmapEnvironmentalDataviewsWithoutStatic)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)

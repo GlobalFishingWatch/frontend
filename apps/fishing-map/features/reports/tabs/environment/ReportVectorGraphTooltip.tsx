@@ -8,7 +8,7 @@ import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type { EvolutionTooltipContentProps } from 'features/reports/tabs/activity/ReportActivityEvolution'
 
-import styles from './ReportActivityEvolution.module.css'
+import styles from '../activity/ReportActivityEvolution.module.css'
 
 export type ReportVectorProps = {
   data: FilteredPolygons[]
@@ -33,7 +33,6 @@ function metersPerSecondToKnots(speedInMps: number): number {
 }
 
 function ReportVectorGraphTooltip(props: EvolutionTooltipContentProps & ReportVectorProps) {
-  console.log('🚀 ~ ReportVectorGraphTooltip ~ props:', props)
   const [tooltip, setTooltip] = useState<TooltipData>(null)
 
   const dataFormated = useMemo(() => {

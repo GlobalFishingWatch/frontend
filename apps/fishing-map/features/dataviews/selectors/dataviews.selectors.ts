@@ -31,7 +31,7 @@ import {
   selectActiveEnvironmentalDataviews,
   selectActiveEventsDataviews,
   selectActiveVesselsDataviews,
-  selectOthersActiveReportDataviews,
+  selectPointsActiveReportDataviews,
   selectVGReportActivityDataviews,
   selectVGRFootprintDataview,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -41,7 +41,6 @@ import {
   selectDataviewInstancesMergedOrdered,
   selectDataviewInstancesResolved,
 } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import { selectIsOthersReportEnabled } from 'features/debug/debug.selectors'
 import { HeatmapDownloadTab } from 'features/download/downloadActivity.config'
 import { selectDownloadActiveTabId } from 'features/download/downloadActivity.slice'
 import { isSupportedReportDataview } from 'features/reports/report-area/area-reports.utils'
@@ -118,7 +117,7 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     selectActiveEventsDataviews,
     selectVGReportActivityDataviews,
     selectIsVesselGroupReportLocation,
-    selectOthersActiveReportDataviews,
+    selectPointsActiveReportDataviews,
   ],
   (
     reportCategory,
@@ -247,21 +246,14 @@ export const selectActiveTemporalgridDataviews: (
 )
 
 export const selectReportLayersVisible = createSelector(
-  [selectAllDataviewInstancesResolved, selectIsOthersReportEnabled],
-  (allDataviewInstancesResolved, isOthersReportEnabled) => {
+  [selectAllDataviewInstancesResolved],
+  (allDataviewInstancesResolved) => {
     return allDataviewInstancesResolved?.filter((dataview) => {
       const isVisible = dataview.config?.visible === true
       if (!isVisible) {
         return false
       }
       if (dataview.id.includes(DATASET_COMPARISON_SUFFIX)) {
-        return false
-      }
-      if (
-        !isOthersReportEnabled &&
-        (dataview.category === DataviewCategory.User ||
-          dataview.category === DataviewCategory.Context)
-      ) {
         return false
       }
       return isSupportedReportDataview(dataview)

@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import { DEFAULT_TIME_RANGE } from 'data/config'
 import {
+  selectActiveUserPointsWithTimeRangeDataviews,
   selectActiveVesselsDataviews,
   selectEnvironmentalDataviews,
   selectVesselGroupDataviews,
@@ -44,6 +45,20 @@ export const selectTimebarSelectedEnvId = createSelector(
   }
 )
 
+const selectTimebarSelectedUserIdSelector = selectWorkspaceStateProperty('timebarSelectedUserId')
+export const selectTimebarSelectedUserId = createSelector(
+  [
+    selectTimebarSelectedUserIdSelector,
+    selectTimebarVisualisation,
+    selectActiveUserPointsWithTimeRangeDataviews,
+  ],
+  (timebarSelectedUserId, timebarVisualisation, userPointsDataviews): string => {
+    if (timebarVisualisation === TimebarVisualisations.Points) {
+      return timebarSelectedUserId || userPointsDataviews[0]?.id
+    }
+    return timebarSelectedUserId
+  }
+)
 const selectTimebarSelectedVGIdSelector = selectWorkspaceStateProperty('timebarSelectedVGId')
 export const selectTimebarSelectedVGId = createSelector(
   [selectTimebarSelectedVGIdSelector, selectTimebarVisualisation, selectVesselGroupDataviews],

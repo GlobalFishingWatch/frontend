@@ -97,12 +97,9 @@ const ReportActivityDatasetComparison = () => {
   )
 
   const selectedComparisonDataset = useMemo(() => {
-    const allLayerOptions = allLayersResolved.map((layer) =>
-      createDatasetOption(layer?.id, layer?.name || '', layer.config?.color)
-    )
     const selectedId = comparisonDatasets?.compare?.split(LAYER_LIBRARY_ID_SEPARATOR)[0]
-    return selectedId ? allLayerOptions.find((layer) => layer.id.includes(selectedId)) : undefined
-  }, [allLayersResolved, comparisonDatasets?.compare])
+    return selectedId ? layerOptions.find((layer) => layer.id === selectedId) : undefined
+  }, [comparisonDatasets?.compare, layerOptions])
 
   useEffect(() => {
     if (selectedMainDataset?.id && selectedMainDataset.id !== comparisonDatasets?.main) {

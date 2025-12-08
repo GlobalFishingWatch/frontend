@@ -67,7 +67,7 @@ export const fourwingsFeaturesToTimeseries = (
       sublayers: sublayers.map((sublayer) => ({
         id: sublayer.id,
         legend: {
-          color: sublayer.color,
+          color: sublayer.color || '#163f89',
           unit: sublayer.unit,
         },
       })),
@@ -160,7 +160,7 @@ export const getFourwingsTimeseries = ({ features, instance }: GetFourwingsTimes
     end: props.comparisonMode === 'timeCompare' ? props.endTime : chunk.bufferedEnd,
     compareStart: props.compareStart,
     compareEnd: props.compareEnd,
-    aggregationOperation: props.aggregationOperation,
+    aggregationOperation: instance.getAggregationOperation(),
     minVisibleValue: props.minVisibleValue,
     maxVisibleValue: props.maxVisibleValue,
     sublayers,
@@ -198,10 +198,10 @@ export const getFourwingsTimeseriesStats = ({
     })
     const allValues = (features[0].contained as FourwingsFeature[]).flatMap((f) => {
       const values = sliceCellValues({
-        values: f.properties.values[0],
+        values: f.properties.values?.[0] || [0],
         startFrame,
         endFrame,
-        startOffset: f.properties.startOffsets[0],
+        startOffset: f.properties.startOffsets?.[0] || 0,
       })
       return values || []
     })
@@ -224,17 +224,19 @@ export const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterv
 
 export const formatEvolutionData = (
   data: ReportGraphProps,
-  comparedData?: ReportGraphProps,
   { start, end, timeseriesInterval } = {} as {
     start: string
     end: string
     timeseriesInterval: FourwingsInterval
-  }
+  },
+  comparedData?: ReportGraphProps
 ) => {
   if (!data?.timeseries) {
     return []
   }
   if (start && end && timeseriesInterval) {
+    const isMonthlyComparison =
+      comparedData && comparedData.interval === 'MONTH' && data.interval !== comparedData.interval
     const emptyData = new Array(data.sublayers.length).fill(0)
     const startMillis = getUTCDateTime(start)
       .startOf(timeseriesInterval.toLowerCase() as DateTimeUnit)
@@ -249,16 +251,17 @@ export const formatEvolutionData = (
       )
     )
 
+    let lastKnownComparedValue: EvolutionGraphData | undefined = isMonthlyComparison
+      ? comparedData?.timeseries[0]
+      : undefined
+
     return Array(intervalDiff)
       .fill(0)
       .map((_, i) => {
         const date = getUTCDateTime(startMillis).plus({ [timeseriesInterval]: i })
         const dataValue = data.timeseries.find((item) => date.toISO()?.startsWith(item.date))
-        const comparedDataValue = comparedData?.timeseries.find((item) =>
-          date.toISO()?.startsWith(item.date)
-        )
 
-        const processTimeseries = (value: typeof dataValue | undefined) =>
+        const processTimeseries = (value: typeof dataValue) =>
           value
             ? {
                 range: value.min.map((m, i) => [m, value.max[i]]),
@@ -267,10 +270,28 @@ export const formatEvolutionData = (
             : { range: emptyData, avg: emptyData }
 
         const dataProcessed = processTimeseries(dataValue)
-        const comparedProcessed = processTimeseries(comparedDataValue)
+        let range
+        let avg
 
-        const range = [...dataProcessed.range, ...comparedProcessed.range].flat()
-        const avg = [...dataProcessed.avg, ...comparedProcessed.avg].flat()
+        if (comparedData) {
+          let comparedDataValue = comparedData?.timeseries.find((item) =>
+            date.toISO()?.startsWith(item.date)
+          )
+          if (isMonthlyComparison) {
+            if (comparedDataValue) {
+              lastKnownComparedValue = comparedDataValue
+            } else {
+              comparedDataValue = lastKnownComparedValue
+            }
+          }
+
+          const comparedProcessed = processTimeseries(comparedDataValue)
+          range = [...dataProcessed.range, ...comparedProcessed.range].flat()
+          avg = [...dataProcessed.avg, ...comparedProcessed.avg].flat()
+        } else {
+          range = dataProcessed.range
+          avg = dataProcessed.avg
+        }
 
         return {
           date: date.toMillis(),

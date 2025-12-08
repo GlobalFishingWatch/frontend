@@ -53,19 +53,23 @@ const ReportActivityEvolution = ({
   const chartRef = useRef<HTMLDivElement>(null)
 
   const colors = (data?.sublayers || []).map((sublayer) => sublayer?.legend?.color)?.join(',')
-  const dataFormated = useMemo(
-    () => formatEvolutionData(data),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, end, start, colors]
-  )
   const domain = useMemo(() => {
     if (start && end && data?.interval) {
-      const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
-        .minus({ [data?.interval]: 1 })
-        .toISO() as string
+      const cleanEnd = DateTime.fromISO(end, { zone: 'utc' }).toISO() as string
       return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
     }
   }, [start, end, data?.interval])
+
+  const dataFormated = useMemo(
+    () =>
+      formatEvolutionData(data, {
+        start: domain ? new Date(domain[0]).toISOString() : start,
+        end: domain ? new Date(domain[1]).toISOString() : end,
+        timeseriesInterval: data?.interval,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [data, end, start, colors]
+  )
 
   const handleTooltipChange = useCallback(
     (tooltipProps: any) => {
@@ -127,18 +131,15 @@ const ReportActivityEvolution = ({
   }
 
   const dataMin: number = dataFormated.length
-    ? (min(dataFormated.flatMap(({ range }) => range?.[0]?.[0]).filter((v) => v != null)) ?? 0)
+    ? (min(dataFormated.flatMap(({ range }) => range[0][0])) as number)
     : 0
   const dataMax: number = dataFormated.length
-    ? (max(dataFormated.flatMap(({ range }) => range?.[0]?.[1]).filter((v) => v != null)) ?? 0)
+    ? (max(dataFormated.flatMap(({ range }) => range[0][1])) as number)
     : 0
 
   const basePadding = (dataMax - dataMin) / 10
   const safePadding = basePadding === 0 ? Math.max(1, Math.abs(dataMax) * 0.1) : basePadding
-  const paddedDomain: [number, number] = [
-    Math.max(0, Math.floor(dataMin)),
-    Math.ceil(dataMax + safePadding),
-  ]
+  const paddedDomain: [number, number] = [Math.max(0, dataMin - safePadding), dataMax + safePadding]
 
   return (
     <div

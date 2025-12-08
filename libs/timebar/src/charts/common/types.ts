@@ -26,6 +26,7 @@ export type TimebarChartValue = {
   timestamp: number
   value?: number
   frame?: number
+  count?: number
 }
 
 export type TimebarChartChunkCluster = {
@@ -39,6 +40,7 @@ export type TimebarChartChunk<T = any> = {
   id?: string | number
   type?: EventTypes
   values?: TimebarChartValue[]
+  count?: [number]
   coordinates?: [number, number]
   x?: number
   width?: number
@@ -91,4 +93,4 @@ export type HighlightedChunks = Partial<Record<ChartType, string[]>>
 
 export type Timeseries = { frame?: number; date: number; [key: number]: number }[]
 
-export type ActivityTimeseriesFrame = { date: number; [key: number]: number }
+export type ActivityTimeseriesFrame = { date: number; count?: number[]; [key: number]: number }

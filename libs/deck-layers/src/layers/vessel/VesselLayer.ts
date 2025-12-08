@@ -75,9 +75,9 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   get cacheHash(): string {
-    const { color, maxTimeGapHours } = this.props
+    const { id, color, maxTimeGapHours } = this.props
     const filters = this.getFilters()
-    return `${color.join('')}-${Object.values(filters).filter(Boolean).join('-')}-${maxTimeGapHours}`
+    return `${id}-${color.join('')}-${Object.values(filters).filter(Boolean).join('-')}-${maxTimeGapHours}`
   }
 
   getPickingInfo = ({

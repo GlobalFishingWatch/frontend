@@ -10,6 +10,7 @@
 
 .selectContainer {
   display: flex;
+  padding-top: var(--space-SM);
   justify-content: space-between;
 }
 

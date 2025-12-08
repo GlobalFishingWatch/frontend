@@ -23,11 +23,18 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
 
+  const datasets =
+    dataview.datasets?.filter((dataset) => dataset.type === DatasetTypes.Fourwings) || []
+  const { extentStart, extentEnd } = getDatasetsExtent<string>(datasets)
+
+  const dataset = datasets?.[0]
+  const maxVelocity = getDatasetConfigurationProperty({ dataset, property: 'max' })
   const sublayers: FourwingsDeckVectorSublayer[] = (dataview.datasetsConfig || [])?.map(
     (datasetConfig) => {
       return {
         id: dataview.id,
         color: dataview.config?.color,
+        unit: dataset.unit,
         datasets: [datasetConfig.datasetId],
         direction: datasetConfig.datasetId.includes('uo') ? 'u' : 'v',
       }
@@ -35,13 +42,6 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
   )
 
   const availableIntervals = getDataviewAvailableIntervals(dataview)
-
-  const datasets =
-    dataview.datasets?.filter((dataset) => dataset.type === DatasetTypes.Fourwings) || []
-  const { extentStart, extentEnd } = getDatasetsExtent<string>(datasets)
-
-  const dataset = datasets?.[0]
-  const maxVelocity = getDatasetConfigurationProperty({ dataset, property: 'max' })
 
   const tilesUrl = dataset
     ? resolveEndpoint(

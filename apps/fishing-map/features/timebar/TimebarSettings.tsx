@@ -18,13 +18,12 @@ import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveEventsDataviews,
-  selectActiveUserPointsDataviews,
+  selectActiveUserPointsWithTimeRangeDataviews,
   selectActiveVesselGroupDataviews,
   selectActiveVesselsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectIsOthersReportEnabled } from 'features/debug/debug.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import useClickedOutside from 'hooks/use-clicked-outside'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
@@ -34,6 +33,7 @@ import { getEventLabel } from 'utils/analytics'
 import {
   useTimebarEnvironmentConnect,
   useTimebarGraphConnect,
+  useTimebarUserPointsConnect,
   useTimebarVesselGroupConnect,
   useTimebarVisualisationConnect,
 } from './timebar.hooks'
@@ -77,14 +77,14 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   )
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
-  const activeUserPointsDataviews = useSelector(selectActiveUserPointsDataviews)
+  const activeUserPointsDataviews = useSelector(selectActiveUserPointsWithTimeRangeDataviews)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const hasSomeVesselLayer = activeVesselsDataviews?.length > 0
   const vesselsAsPositions = useSelector(selectDebugOptions)?.vesselsAsPositions
-  const othersReportEnabled = useSelector(selectIsOthersReportEnabled)
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
+  const { timebarSelectedUserId, dispatchTimebarSelectedUserId } = useTimebarUserPointsConnect()
   const { timebarSelectedVGId, dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
   const { timebarGraph, dispatchTimebarGraph } = useTimebarGraphConnect()
   const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews?.length <= 2
@@ -119,9 +119,24 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
       label: `${TimebarVisualisations.Environment} - ${environmentalDataviewId}`,
     })
   }
+  const setUserPointsActive = (userPointsDataviewId: string) => {
+    dispatchTimebarVisualisation(TimebarVisualisations.Points)
+    dispatchTimebarSelectedUserId(userPointsDataviewId)
+    trackEvent({
+      category: TrackCategory.Timebar,
+      action: 'select_timebar_settings',
+      label: `${TimebarVisualisations.Points} - ${userPointsDataviewId}`,
+    })
+  }
+
   const setVesselGroupActive = (vesselGroupDataviewId: string) => {
     dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup)
     dispatchTimebarSelectedVGId(vesselGroupDataviewId)
+    trackEvent({
+      category: TrackCategory.Timebar,
+      action: 'select_timebar_settings',
+      label: `${TimebarVisualisations.VesselGroup} - ${vesselGroupDataviewId}`,
+    })
   }
   const setVesselActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
@@ -232,22 +247,6 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   tooltip={detectionsTooltipLabel}
                   onClick={() => setTimebarSectionActive(TimebarVisualisations.Events)}
                 />
-                {othersReportEnabled && activeUserPointsDataviews.length > 0 && (
-                  <Radio
-                    label={
-                      <Icon
-                        SvgIcon={AreaIcon}
-                        label={t('common.others')}
-                        color={activeUserPointsDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
-                        disabled={!activeUserPointsDataviews?.length}
-                      />
-                    }
-                    disabled={!activeUserPointsDataviews?.length}
-                    active={timebarVisualisation === TimebarVisualisations.Points}
-                    tooltip={t('timebarSettings.showOthers')}
-                    onClick={() => setTimebarSectionActive(TimebarVisualisations.Points)}
-                  />
-                )}
                 {activeVesselGroupDataviews.map((vgDataview) => {
                   return (
                     <Radio
@@ -349,6 +348,33 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   }
                   tooltip={activityTooltipLabel}
                   onClick={() => setEnvironmentActive(envDataview.id)}
+                />
+              )
+            })}
+            {activeUserPointsDataviews.map((pointDataview) => {
+              const dataset = pointDataview.datasets?.find(
+                (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
+              )
+              const title = t(
+                `datasets:${dataset?.id}.name` as any,
+                dataset?.name || dataset?.id || ''
+              )
+              return (
+                <Radio
+                  key={pointDataview.id}
+                  label={
+                    <Icon
+                      SvgIcon={AreaIcon}
+                      label={title}
+                      color={pointDataview?.config?.color || COLOR_PRIMARY_BLUE}
+                    />
+                  }
+                  active={
+                    timebarVisualisation === TimebarVisualisations.Points &&
+                    timebarSelectedUserId === pointDataview.id
+                  }
+                  tooltip={activityTooltipLabel}
+                  onClick={() => setUserPointsActive(pointDataview.id)}
                 />
               )
             })}

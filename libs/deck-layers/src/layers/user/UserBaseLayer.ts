@@ -36,7 +36,6 @@ type _UserBaseLayerProps =
   | UserTrackLayerProps
   | UserPointsLayerProps
 
-export const POINT_SIZES_DEFAULT_RANGE = [3, 15]
 const defaultProps: DefaultProps<_UserBaseLayerProps> = {
   pickable: true,
   maxRequests: 100,

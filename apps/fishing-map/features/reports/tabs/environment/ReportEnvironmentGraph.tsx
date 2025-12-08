@@ -6,7 +6,10 @@ import htmlParse from 'html-react-parser'
 import type { DataviewType } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { isEnvironmentalDataview } from '@globalfishingwatch/dataviews-client'
+import {
+  isEnvironmentalDataview,
+  isHeatmapVectorsDataview,
+} from '@globalfishingwatch/dataviews-client'
 import { getAvailableIntervalsInDataviews } from '@globalfishingwatch/deck-layer-composer'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
@@ -19,8 +22,6 @@ import type {
 } from 'features/reports/reports-timeseries.hooks'
 import {
   useComputeReportTimeSeries,
-  useReportFeaturesLoading,
-  useReportFilteredTimeSeries,
   useReportTimeSeriesErrors,
   useTimeseriesStats,
 } from 'features/reports/reports-timeseries.hooks'
@@ -28,6 +29,7 @@ import ReportActivityPlaceholder from 'features/reports/shared/placeholders/Repo
 import ReportStatsPlaceholder from 'features/reports/shared/placeholders/ReportStatsPlaceholder'
 import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import OutOfTimerangeDisclaimer from 'features/workspace/shared/OutOfBoundsDisclaimer'
 import { upperFirst } from 'utils/info'
 
 import styles from './ReportEnvironment.module.css'
@@ -63,6 +65,10 @@ function ReportEnvironmentGraph({
     layersTimeseriesErrors?.[index] !== undefined && layersTimeseriesErrors?.[index] !== ''
   const unit = dataset?.unit
 
+  const timeseries = Array.isArray(data) ? data[0]?.timeseries : data?.timeseries
+  const isEmptyData = !timeseries || (Array.isArray(timeseries) && timeseries.length === 0)
+  const isHeatmapVector = isHeatmapVectorsDataview(dataview)
+
   return (
     <div className={styles.container}>
       <p className={styles.summary}>
@@ -70,21 +76,41 @@ function ReportEnvironmentGraph({
           <span>{upperFirst(t('common.average'))} </span>
         )}
         <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
+        {isHeatmapVector && (
+          <p className={styles.dataWarning}>{t('analysis.currentsDataDisclaimer')}</p>
+        )}
         {isDynamic && (
           <Fragment>
             {t('common.between')} <strong>{formatI18nDate(start)}</strong> {t('common.and')}{' '}
             <strong>{formatI18nDate(end)}</strong>
+            <ReportSummaryTags key={dataview.id} dataview={dataview} />
           </Fragment>
         )}
       </p>
-      <ReportSummaryTags key={dataview.id} dataview={dataview} />
-      {isLoading || hasError ? (
-        <ReportActivityPlaceholder showHeader={false}>
-          {hasError && <p className={styles.errorMessage}>{t('errors.layerLoading')}</p>}
-        </ReportActivityPlaceholder>
-      ) : (
-        <GraphComponent start={start} end={end} data={data} />
-      )}
+      {(isDynamic || isHeatmapVector) &&
+        (isLoading || hasError ? (
+          <ReportActivityPlaceholder showHeader={false}>
+            {hasError && <p className={styles.errorMessage}>{t('errors.layerLoading')}</p>}
+          </ReportActivityPlaceholder>
+        ) : isEmptyData ? (
+          <ReportActivityPlaceholder showHeader={false}>
+            <div className={styles.noDataDisclaimer}>
+              <OutOfTimerangeDisclaimer dataview={dataview} />
+              {t('analysis.noDataByArea')}
+            </div>
+          </ReportActivityPlaceholder>
+        ) : (
+          <GraphComponent
+            start={start}
+            end={end}
+            data={data}
+            // TODO: currents and winds
+            // Refactor the ReportVectorGraphTooltip component and pass it here
+            // before it was using the entire timeline but we want to use only the data from the hovered date
+            // onClickTooltip={isHeatmapVector}
+            // TooltipContent={isHeatmapVector ? <span>TODO</span> : undefined}
+          />
+        ))}
       {isLoading ? (
         <ReportStatsPlaceholder />
       ) : min !== undefined && mean !== undefined && max !== undefined ? (

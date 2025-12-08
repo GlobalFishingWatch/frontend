@@ -1,6 +1,10 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import {
+  isEnvironmentalDataview,
+  isHeatmapVectorsDataview,
+} from '@globalfishingwatch/dataviews-client'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
 
@@ -33,6 +37,10 @@ export default function ReportEnvironmentGraphSelector() {
     {
       id: REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON,
       label: t('analysis.datasetComparison'),
+      disabled: dataviews.every(
+        (dv) => isHeatmapVectorsDataview(dv) || !isEnvironmentalDataview(dv)
+      ),
+      tooltip: t('analysis.comparisonNotAvailable'),
     },
   ]
 
