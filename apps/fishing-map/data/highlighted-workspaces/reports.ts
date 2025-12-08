@@ -6,6 +6,7 @@ import {
   // CARRIER_PORTAL_DATAVIEW_INSTANCES,
   REPORT_DATAVIEW_INSTANCES,
 } from 'data/highlighted-workspaces/report.dataviews'
+import { WorkspaceCategory } from 'data/workspaces'
 import { ReportCategory } from 'features/reports/reports.types'
 
 import type workspaceTranslations from '../../public/locales/source/workspaces.json'
@@ -15,29 +16,44 @@ export type WorkspaceReportLink = {
   id: string
   key?: string // Using analysis.see as default
 }
-export type ReportWorkspace = {
-  id: ReportWorkspaceId
-  img: string
-  reportCategory: ReportCategory
-  dataviewInstances?: UrlDataviewInstance[]
-  visible?: boolean
-}
+export type ReportWorkspace =
+  | {
+      id: ReportWorkspaceId
+      img: string
+      category: WorkspaceCategory.FishingActivity
+      reports?: WorkspaceReportLink[]
+      visible?: boolean
+    }
+  | {
+      id: ReportWorkspaceId
+      img: string
+      category: WorkspaceCategory.Reports
+      reportCategory: ReportCategory
+      dataviewInstances?: UrlDataviewInstance[]
+      visible?: boolean
+    }
 
 export const REPORTS_INDEX: ReportWorkspace[] = [
-  // {
-  //   id: 'carrier-portal-report',
-  //   reportCategory: ReportCategory.Events,
-  //   img: `${PATH_BASENAME}/images/highlighted-workspaces/carrier-portal.jpg`,
-  //   dataviewInstances: CARRIER_PORTAL_DATAVIEW_INSTANCES,
-  // },
+  {
+    id: 'deep-sea-mining-public',
+    category: WorkspaceCategory.FishingActivity,
+    reports: [
+      {
+        id: 'deep_sea_mining-public',
+      },
+    ],
+    img: `${PATH_BASENAME}/images/highlighted-workspaces/deep-sea-mining.jpg`,
+  },
   {
     id: 'activity-report',
+    category: WorkspaceCategory.Reports,
     reportCategory: ReportCategory.Activity,
     img: `${PATH_BASENAME}/images/highlighted-workspaces/report-activity.jpg`,
     dataviewInstances: REPORT_DATAVIEW_INSTANCES,
   },
   {
     id: 'detections-report',
+    category: WorkspaceCategory.Reports,
     reportCategory: ReportCategory.Detections,
     img: `${PATH_BASENAME}/images/highlighted-workspaces/report-detections.jpg`,
     dataviewInstances: REPORT_DATAVIEW_INSTANCES.map((dataview) => ({
@@ -54,10 +70,9 @@ export const REPORTS_INDEX: ReportWorkspace[] = [
   },
   {
     id: 'events-report',
+    category: WorkspaceCategory.Reports,
     reportCategory: ReportCategory.Events,
     img: `${PATH_BASENAME}/images/highlighted-workspaces/report-events.jpg`,
     dataviewInstances: REPORT_DATAVIEW_INSTANCES,
   },
 ]
-
-export const REPORT_IDS = REPORTS_INDEX.map(({ id }) => id)

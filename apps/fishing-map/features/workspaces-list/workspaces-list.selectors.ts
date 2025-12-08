@@ -27,7 +27,6 @@ export type HighlightedWorkspaceCategory = keyof typeof workspaceTranslations
 
 export type HighlightedWorkspace = {
   id: string
-  workspaceId?: string
   name: string
   description: string
   cta?: string
