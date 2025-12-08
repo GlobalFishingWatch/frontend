@@ -9,7 +9,7 @@ export const DISSOLVE: BufferOperation = 'dissolve'
 export const DIFFERENCE: BufferOperation = 'difference'
 
 export const DEFAULT_BUFFER_VALUE: number = 50
-export const DEFAULT_POINT_BUFFER_VALUE: number = 20
+export const DEFAULT_POINT_BUFFER_VALUE: number = 5
 
 export type LastReportStorage = { reportUrl: string; workspaceUrl: string }
 export const LAST_REPORTS_STORAGE_KEY = 'lastReports'
