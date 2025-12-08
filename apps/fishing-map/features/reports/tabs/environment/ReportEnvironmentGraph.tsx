@@ -22,8 +22,6 @@ import type {
 } from 'features/reports/reports-timeseries.hooks'
 import {
   useComputeReportTimeSeries,
-  useReportFeaturesLoading,
-  useReportFilteredTimeSeries,
   useReportTimeSeriesErrors,
   useTimeseriesStats,
 } from 'features/reports/reports-timeseries.hooks'
@@ -69,7 +67,7 @@ function ReportEnvironmentGraph({
 
   const timeseries = Array.isArray(data) ? data[0]?.timeseries : data?.timeseries
   const isEmptyData = !timeseries || (Array.isArray(timeseries) && timeseries.length === 0)
-  const isCurrents = isHeatmapVectorsDataview(dataview)
+  const isHeatmapVector = isHeatmapVectorsDataview(dataview)
 
   return (
     <div className={styles.container}>
@@ -78,7 +76,9 @@ function ReportEnvironmentGraph({
           <span>{upperFirst(t('common.average'))} </span>
         )}
         <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
-        {isCurrents && <p className={styles.dataWarning}>{t('analysis.currentsDataDisclaimer')}</p>}
+        {isHeatmapVector && (
+          <p className={styles.dataWarning}>{t('analysis.currentsDataDisclaimer')}</p>
+        )}
         {isDynamic && (
           <Fragment>
             {t('common.between')} <strong>{formatI18nDate(start)}</strong> {t('common.and')}{' '}
@@ -87,7 +87,7 @@ function ReportEnvironmentGraph({
           </Fragment>
         )}
       </p>
-      {isDynamic &&
+      {(isDynamic || isHeatmapVector) &&
         (isLoading || hasError ? (
           <ReportActivityPlaceholder showHeader={false}>
             {hasError && <p className={styles.errorMessage}>{t('errors.layerLoading')}</p>}
@@ -100,7 +100,16 @@ function ReportEnvironmentGraph({
             </div>
           </ReportActivityPlaceholder>
         ) : (
-          <GraphComponent start={start} end={end} data={data} />
+          <GraphComponent
+            start={start}
+            end={end}
+            data={data}
+            // TODO: currents and winds
+            // Refactor the ReportVectorGraphTooltip component and pass it here
+            // before it was using the entire timeline but we want to use only the data from the hovered date
+            // onClickTooltip={isHeatmapVector}
+            // TooltipContent={isHeatmapVector ? <span>TODO</span> : undefined}
+          />
         ))}
       {isLoading ? (
         <ReportStatsPlaceholder />

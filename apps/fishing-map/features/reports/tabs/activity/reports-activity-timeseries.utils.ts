@@ -67,7 +67,7 @@ export const fourwingsFeaturesToTimeseries = (
       sublayers: sublayers.map((sublayer) => ({
         id: sublayer.id,
         legend: {
-          color: sublayer.color,
+          color: sublayer.color || '#163f89',
           unit: sublayer.unit,
         },
       })),
@@ -160,7 +160,7 @@ export const getFourwingsTimeseries = ({ features, instance }: GetFourwingsTimes
     end: props.comparisonMode === 'timeCompare' ? props.endTime : chunk.bufferedEnd,
     compareStart: props.compareStart,
     compareEnd: props.compareEnd,
-    aggregationOperation: props.aggregationOperation,
+    aggregationOperation: instance.getAggregationOperation(),
     minVisibleValue: props.minVisibleValue,
     maxVisibleValue: props.maxVisibleValue,
     sublayers,
