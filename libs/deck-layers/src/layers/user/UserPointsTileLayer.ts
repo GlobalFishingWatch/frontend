@@ -92,7 +92,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   get cacheHash(): string {
-    const { startTime, endTime } = this.props
+    const { id, startTime, endTime } = this.props
     const filters =
       this.props.layers?.flatMap((layer) =>
         layer.sublayers.flatMap((sublayer) => sublayer.filters || {})
@@ -106,7 +106,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
         layer.sublayers.flatMap((sublayer) => sublayer.aggregateByProperty || [])
       ) || []
 
-    return `${startTime}-${endTime}${filtersHash}${aggregatedProperty.join(',')}`
+    return `${id}-${startTime}-${endTime}${filtersHash}${aggregatedProperty.join(',')}`
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
