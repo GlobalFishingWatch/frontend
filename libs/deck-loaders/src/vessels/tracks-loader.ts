@@ -20,6 +20,7 @@ export type VesselTrackLoaderOptions = LoaderOptions & {
 const defaultOptions: VesselTrackLoaderOptions = {
   'vessel-tracks': {
     workerUrl: `${PATH_BASENAME}/workers/vessel-tracks-worker.js`,
+    maxTimeGapHours: undefined,
   },
 }
 

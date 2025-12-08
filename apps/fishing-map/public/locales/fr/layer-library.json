@@ -200,12 +200,12 @@
     "name": "Anomalies de température à surface de la mer"
   },
   "sst-anomalies-max": {
-    "description": "",
+    "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
     "moreInfoLink": "",
     "name": "Anomalies de température à la surface de la mer (max.)"
   },
   "sst-anomalies-min": {
-    "description": "",
+    "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
     "moreInfoLink": "",
     "name": "Anomalies de température à la surface de la mer (min.)"
   },

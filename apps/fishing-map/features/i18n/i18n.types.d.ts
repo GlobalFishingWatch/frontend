@@ -233,17 +233,17 @@ interface Resources {
     "sst-anomalies": {
       "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
       "moreInfoLink": "https://developers.google.com/earth-engine/datasets/catalog/NOAA_CDR_OISST_V2_1",
-      "name": "Sea surface temperature anomalies"
+      "name": "Sea surface temperature anomalies (Mean)"
     },
     "sst-anomalies-max": {
-      "description": "",
+      "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
       "moreInfoLink": "",
-      "name": "Sea surface temperature anomalies (max)"
+      "name": "Sea surface temperature anomalies (Max)"
     },
     "sst-anomalies-min": {
-      "description": "",
+      "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
       "moreInfoLink": "",
-      "name": "Sea surface temperature anomalies (min)"
+      "name": "Sea surface temperature anomalies (Min)"
     },
     "thgt": {
       "description": "Wave height is the vertical distance from the trough (bottom) to the crest (top) of a wave on the sea surface. This dataset uses the significant wave height, which is the average of the highest one-third of all wave heights over a given sample period.",
