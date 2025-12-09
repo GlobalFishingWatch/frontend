@@ -30,7 +30,7 @@ export interface GapPosition extends PointCoordinate {
 export enum EventTypes {
   Encounter = 'encounter',
   Fishing = 'fishing',
-  Gap = 'gaps',
+  Gap = 'gap',
   Port = 'port_visit',
   Loitering = 'loitering',
 }
