@@ -160,7 +160,7 @@
 .children {
   position: absolute;
   inset: 0;
-  top: -3rem;
+  top: 0;
   display: flex;
   align-items: center;
   justify-content: center;

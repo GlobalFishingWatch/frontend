@@ -88,6 +88,11 @@
       "description": "El radar de apertura sintética (SAR) puede detectar embarcaciones y estructuras en el mar en cualquier condición meteorológica. El sistema de detección de luces nocturnas (VIIRS) muestra las embarcaciones en el mar que han sido detectadas por satélites mediante la luz que emiten durante la noche.",
       "name": "Detección Global de Embarcaciones Oscuros"
     },
+    "deep-sea-mining-public": {
+      "cta": "Explore the portal",
+      "description": "The portal continuously maps and monitors vessels engaged in deep-sea mining activities in regions containing International Seabed Authority (ISA) license areas, which span over 1.5 million square kilometers of the international seabed.",
+      "name": "Deep Sea Mining"
+    },
     "events-report": {
       "description": "Actividad global sobre eventos de embarcaciones basada en el sistema de identificación automática (AIS), incluidos encuentros entre dos embarcaciones, eventos a la deriva y visitas a puertos.",
       "name": "Eventos Globales de Embarcaciones"

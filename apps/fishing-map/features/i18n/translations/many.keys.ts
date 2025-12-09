@@ -32,13 +32,13 @@ const translations = 'workaround_for_different_plural_rules'
 // t('vessel.voyage_many')
 // t('vesselGroup.label_many')
 // t('vesselGroup.tooManyVessels_many')
+// t('vesselGroupReport.insights.fishingInNoTakeMpas_many')
+// t('vesselGroupReport.insights.fishingInRfmoWithoutKnownAuthorization_many')
+// t('vesselGroupReport.insights.flagChangesCount_many')
+// t('vesselGroupReport.insights.gaps_many')
+// t('vesselGroupReport.insights.gapsEvents_many')
 // t('vesselGroups.insights.fishingInNoTakeMpas_many')
 // t('vesselGroups.insights.fishingInRfmoWithoutKnownAuthorization_many')
 // t('vesselGroups.insights.gaps_many')
-// t('vesselGroupReport.insights.fishingInNoTakeMpas_many')
-// t('vesselGroupReport.insights.fishingInRfmoWithoutKnownAuthorization_many')
-// t('vesselGroupReport.insights.gaps_many')
-// t('vesselGroupReport.insights.flagChangesCount_many')
-// t('vesselGroupReport.insights.gapsEvents_many')
 
 export default translations

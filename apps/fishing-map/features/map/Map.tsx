@@ -78,7 +78,7 @@ const MapWrapper = () => {
       id={MAP_CONTAINER_ID}
       className={styles.container}
       onMouseLeave={onMouseLeave}
-      style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
+      // style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
     >
       {isPrinting && screenshotAreaId !== ROOT_DOM_ELEMENT && (
         <Logo className={styles.logo} type="invert" />

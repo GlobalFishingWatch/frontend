@@ -6,10 +6,11 @@ import type { FourwingsFeature, FourwingsStaticFeature } from '@globalfishingwat
 
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
+import type { EvolutionTooltipContentProps } from 'features/reports/tabs/activity/ReportActivityEvolution'
 
-import styles from './ReportActivityEvolution.module.css'
+import styles from '../activity/ReportActivityEvolution.module.css'
 
-export type ReportCurrentsProps = {
+export type ReportVectorProps = {
   data: FilteredPolygons[]
   color?: string
 }
@@ -31,29 +32,33 @@ function metersPerSecondToKnots(speedInMps: number): number {
   return speedInMps * 1.94384 // Convert m/s to knots
 }
 
-function ReportCurrentsGraph({ data, color }: ReportCurrentsProps) {
+function ReportVectorGraphTooltip(props: EvolutionTooltipContentProps & ReportVectorProps) {
   const [tooltip, setTooltip] = useState<TooltipData>(null)
 
   const dataFormated = useMemo(() => {
     // Store force sums and counts for each degree bin
     const directions: { [key: number]: { force: number; count: number } } = {}
-    ;(data?.[0].contained as (FourwingsFeature | FourwingsStaticFeature)[]).forEach((feature) => {
-      const rawDirection = -270 - Math.round(feature.aggregatedValues?.[1] || 0)
-      const direction = Math.abs((Math.round(rawDirection / DEGREES_BINNED) * DEGREES_BINNED) % 360)
-      const force = feature.aggregatedValues?.[0] || 0
-      if (!directions[direction]) {
-        directions[direction] = { force: 0, count: 0 }
+    ;(props.data?.[0].contained as (FourwingsFeature | FourwingsStaticFeature)[]).forEach(
+      (feature) => {
+        const rawDirection = -270 - Math.round(feature.aggregatedValues?.[1] || 0)
+        const direction = Math.abs(
+          (Math.round(rawDirection / DEGREES_BINNED) * DEGREES_BINNED) % 360
+        )
+        const force = feature.aggregatedValues?.[0] || 0
+        if (!directions[direction]) {
+          directions[direction] = { force: 0, count: 0 }
+        }
+        directions[direction].force += force
+        directions[direction].count++
       }
-      directions[direction].force += force
-      directions[direction].count++
-    })
+    )
 
     return Object.entries(directions).map(([directionKey, directionValue]) => ({
       direction: parseInt(directionKey),
       force: directionValue.force / directionValue.count,
       count: directionValue.count,
     }))
-  }, [data])
+  }, [props.data])
 
   const polarBars = useMemo(() => {
     if (!dataFormated?.length) return null
@@ -85,12 +90,12 @@ function ReportCurrentsGraph({ data, color }: ReportCurrentsProps) {
           }}
           onMouseLeave={() => setTooltip(null)}
           d={bar.outerRadius(length).startAngle(startAngle).endAngle(endAngle)(d as any) || ''}
-          fill={color}
+          fill={props.color}
           className={styles.curentsArc}
         />
       )
     })
-  }, [color, dataFormated])
+  }, [props.color, dataFormated])
 
   if (!dataFormated?.length) {
     return null
@@ -165,7 +170,7 @@ function ReportCurrentsGraph({ data, color }: ReportCurrentsProps) {
               {tooltip.direction}°
             </text>
             <text x={SIZE / 2} y={SIZE / 2 + 6} textAnchor="middle">
-              {formatI18nNumber((tooltip.count / data?.[0].contained.length) * 100, {
+              {formatI18nNumber((tooltip.count / props.data?.[0].contained.length) * 100, {
                 maximumFractionDigits: 2,
               })}
               % of area
@@ -197,4 +202,4 @@ function ReportCurrentsGraph({ data, color }: ReportCurrentsProps) {
   )
 }
 
-export default ReportCurrentsGraph
+export default ReportVectorGraphTooltip

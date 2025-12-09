@@ -44,8 +44,8 @@ export const useClusterEventsGraph = () => {
 
   const setFourwingsPositionsData = useCallback(
     async (viewportData: FourwingsPointFeature[]) => {
-      const allAvailableIntervals = getAvailableIntervalsInDataviews(dataviews)
-      const { interval } = getFourwingsChunk(start, end, allAvailableIntervals)
+      const availableIntervals = getAvailableIntervalsInDataviews(dataviews)
+      const { interval } = getFourwingsChunk({ start, end, availableIntervals })
       const data =
         getGraphDataFromFourwingsPositions(viewportData, {
           start,

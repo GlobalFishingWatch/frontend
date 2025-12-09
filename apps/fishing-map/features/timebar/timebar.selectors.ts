@@ -10,6 +10,7 @@ import {
 } from 'features/app/selectors/app.selectors'
 import {
   selectTimebarSelectedEnvId,
+  selectTimebarSelectedUserId,
   selectTimebarSelectedVGId,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
@@ -19,7 +20,9 @@ import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveEventsDataviews,
+  selectActiveUserPointsWithTimeRangeDataviews,
   selectActiveVesselGroupDataviews,
+  selectPointsActiveReportDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
@@ -39,6 +42,7 @@ export const selectActiveActivityDataviewsByVisualisation = (
       selectActiveEventsDataviews,
       selectActiveHeatmapEnvironmentalDataviewsWithoutStatic,
       selectActiveVesselGroupDataviews,
+      selectPointsActiveReportDataviews,
       selectTimebarSelectedEnvId,
       selectTimebarSelectedVGId,
     ],
@@ -48,6 +52,7 @@ export const selectActiveActivityDataviewsByVisualisation = (
       eventsDataviews,
       environmentDataviews,
       vesselGroupDataviews,
+      userDataviews,
       timebarSelectedEnvId,
       timebarSelectedVGId
     ) => {
@@ -66,6 +71,9 @@ export const selectActiveActivityDataviewsByVisualisation = (
 
         if (selectedVGDataview) return [selectedVGDataview]
         else if (vesselGroupDataviews[0]) return [vesselGroupDataviews[0]]
+      }
+      if (timebarVisualisation === TimebarVisualisations.Points) {
+        return userDataviews
       }
       // timebarVisualisation === TimebarVisualisations.Environment
       const selectedEnvDataview =
@@ -166,5 +174,12 @@ export const selectTimebarSelectedVisualizationMode = createSelector(
     if (timebarDataviews[0]?.category === DataviewCategory.Detections) {
       return detectionsVisualizationMode
     }
+  }
+)
+
+export const selectTimebarUserDataviewsSelected = createSelector(
+  [selectActiveUserPointsWithTimeRangeDataviews, selectTimebarSelectedUserId],
+  (dataviews, timebarSelectedUserId) => {
+    return dataviews.filter((dataview) => dataview.id === timebarSelectedUserId)
   }
 )
