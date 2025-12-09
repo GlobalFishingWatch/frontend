@@ -58,7 +58,6 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   renderLayers(): Layer<Record<string, unknown>> | LayersList {
     const visualizationMode = this.getMode()
     const resolution = getResolutionByVisualizationMode(visualizationMode)
-
     if (visualizationMode === POSITIONS_ID) {
       const PositionsLayerClass = this.getSubLayerClass('positions', FourwingsPositionsTileLayer)
       return new PositionsLayerClass(
