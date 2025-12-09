@@ -2,7 +2,10 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import type { DataviewType } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  DATASET_COMPARISON_SUFFIX,
+  type UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { groupContextDataviews } from '@globalfishingwatch/deck-layer-composer'
 
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
@@ -11,9 +14,10 @@ import {
   isUserContextDataviewReportSupported,
 } from 'features/reports/report-area/area-reports.utils'
 import { isVesselGroupActivityDataview } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 
-import { dataviewHasVesselGroupId } from '../dataviews.utils'
+import { dataviewHasUserPointsTimeRange, dataviewHasVesselGroupId } from '../dataviews.utils'
 
 import { selectDataviewInstancesResolvedVisible } from './dataviews.instances.selectors'
 
@@ -30,7 +34,10 @@ export const selectActiveDataviewInstancesByCategory = (category?: DataviewCateg
   return createSelector(
     [selectDataviewInstancesResolvedVisible],
     (dataviews): UrlDataviewInstance<DataviewType>[] => {
-      return dataviews?.filter((dataview) => dataview.category === category)
+      return dataviews?.filter(
+        (dataview) =>
+          dataview.category === category && !dataview.id.includes(DATASET_COMPARISON_SUFFIX)
+      )
     }
   )
 }
@@ -40,6 +47,19 @@ export const selectEnvironmentalDataviews = selectDataviewInstancesByCategory(
 )
 export const selectActiveEnvironmentalDataviews = selectActiveDataviewInstancesByCategory(
   DataviewCategory.Environment
+)
+
+export const selectReportComparisonDataviews = createSelector(
+  [selectDataviewInstancesResolved, selectReportComparisonDataviewIds],
+  (dataviews, reportComparisonDataviewIds): UrlDataviewInstance<DataviewType>[] => {
+    const mainDataview = dataviews?.find(
+      (dataview) => reportComparisonDataviewIds?.main === dataview?.id
+    )
+    const comparedDataview = dataviews?.find(
+      (dataview) => reportComparisonDataviewIds?.compare === dataview?.id
+    )
+    return [mainDataview, comparedDataview].filter((d) => d !== undefined)
+  }
 )
 
 export const selectEventsDataviews = selectDataviewInstancesByCategory(DataviewCategory.Events)
@@ -88,6 +108,10 @@ export const selectActiveContextAreasDataviews = selectDataviewInstancesByCatego
 
 export const selectCustomUserDataviews = selectDataviewInstancesByCategory(DataviewCategory.User)
 
+export const selectActiveCustomUserDataviews = selectActiveDataviewInstancesByCategory(
+  DataviewCategory.User
+)
+
 export const selectCustomUserDataviewsGrouped = createSelector(
   [selectCustomUserDataviews],
   (dataviews) => {
@@ -116,7 +140,7 @@ export const selectVGReportActivityDataviews = createSelector(
   }
 )
 
-export const selectOthersActiveReportDataviews = createSelector(
+export const selectPointsActiveReportDataviews = createSelector(
   [selectContextAreasDataviews, selectCustomUserDataviews],
   (contextDataviews = [], userDataviews = []) => {
     const otherDataviews = [...contextDataviews, ...userDataviews]?.filter((dataview) => {
@@ -131,9 +155,18 @@ export const selectOthersActiveReportDataviews = createSelector(
   }
 )
 
-export const selectOthersActiveReportDataviewsGrouped = createSelector(
-  [selectOthersActiveReportDataviews],
+export const selectPointsActiveReportDataviewsGrouped = createSelector(
+  [selectPointsActiveReportDataviews],
   (otherDataviews = []) => {
     return groupContextDataviews(otherDataviews)
+  }
+)
+
+export const selectActiveUserPointsWithTimeRangeDataviews = createSelector(
+  [selectPointsActiveReportDataviews],
+  (dataviews) => {
+    return dataviews.filter((dataview) => {
+      return dataviewHasUserPointsTimeRange(dataview)
+    })
   }
 )

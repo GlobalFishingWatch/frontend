@@ -33,6 +33,7 @@ import {
 import {
   DYNAMIC_RAMP_CHANGE_THRESHOLD,
   FOURWINGS_MAX_ZOOM,
+  FOURWINGS_TILE_SIZE,
   HEATMAP_API_TILES_URL,
   MAX_POSITIONS_PER_TILE_SUPPORTED,
   MAX_RAMP_VALUES,
@@ -489,7 +490,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const { colorDomain, colorRanges } = this.state
     const visibleSublayers = sublayers.filter((sublayer) => sublayer.visible)
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
-    const chunk = getFourwingsChunk(startTime, endTime, availableIntervals)
+    const chunk = getFourwingsChunk({ start: startTime, end: endTime, availableIntervals })
     this.setState({ rampDirty: true })
     const cols: number[] = []
     const rows: number[] = []
@@ -695,7 +696,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       this.props,
       this.getSubLayerProps({
         id: `tiles-${resolution}`,
-        tileSize: 512,
+        tileSize: FOURWINGS_TILE_SIZE,
         colorDomain,
         colorRanges,
         comparisonMode,
@@ -725,33 +726,30 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     return layer
   }
 
-  getTilesData({ aggregated } = {} as { aggregated?: boolean }) {
+  getTilesData() {
     const layer = this.getLayerInstance()
-    if (layer) {
-      const offset = getZoomOffsetByResolution(this.props.resolution!, this.context.viewport.zoom)
-      const roundedZoom = Math.round(this.context.viewport.zoom)
-      return layer
-        .getSubLayers()
-        .map((l: any) => {
-          if (!l.props.tile.isVisible) {
-            return []
-          }
-          if (l.props.tile.zoom === l.props.maxZoom) {
-            return l.getData({ aggregated })
-          }
-          return l.props.tile.zoom === roundedZoom + offset ? l.getData({ aggregated }) : []
-        })
-        .filter((t) => t.length > 0) as FourwingsFeature[][]
+    const tiles = layer?.state?.tileset?.selectedTiles ?? []
+
+    if (!layer || !tiles.length) {
+      return [[]] as FourwingsFeature[][]
     }
-    return [[]] as FourwingsFeature[][]
+
+    return tiles.flatMap((tile) => {
+      if (!tile.isSelected || !tile.isVisible || !tile.isLoaded) {
+        return []
+      }
+      const subLayer = tile.layers?.[0] as FourwingsHeatmapLayer
+      const data = subLayer?.getData?.() ?? []
+      return data.length ? [data] : []
+    })
   }
 
-  getData({ aggregated } = {} as { aggregated?: boolean }) {
-    return this.getTilesData({ aggregated }).flat()
+  getData() {
+    return this.getTilesData().flat()
   }
 
-  getIsPositionsAvailable({ aggregated } = {} as { aggregated?: boolean }) {
-    const tilesData = this.getTilesData({ aggregated })
+  getIsPositionsAvailable() {
+    const tilesData = this.getTilesData()
     return !tilesData.some(
       (tileData) =>
         tileData.reduce((acc, feature) => {
@@ -809,7 +807,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
 
   getChunk = () => {
     const { startTime, endTime, availableIntervals } = this.props
-    return getFourwingsChunk(startTime, endTime, availableIntervals)
+    return getFourwingsChunk({ start: startTime, end: endTime, availableIntervals })
   }
 
   getColorDomain = () => {

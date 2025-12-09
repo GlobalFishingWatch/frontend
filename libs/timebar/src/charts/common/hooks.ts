@@ -209,6 +209,7 @@ export const useTimeseriesToChartData = (
         return {
           timestamp: frame.date,
           value: frame[dataviewIndex],
+          count: frame.count ? frame.count[dataviewIndex] : undefined,
         }
       })
       const chunk: TimebarChartChunk = {

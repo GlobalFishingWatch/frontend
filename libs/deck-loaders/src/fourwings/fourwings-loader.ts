@@ -6,6 +6,21 @@ import { PATH_BASENAME } from '../loaders.config'
 import { NO_DATA_VALUE, OFFSET_VALUE, parseFourwings, SCALE_VALUE } from './lib/parse-fourwings'
 import type { FourwingsLoaderOptions, ParseFourwingsOptions } from './lib/types'
 
+export const baseFourwingsLoaderOptions: FourwingsLoaderOptions = {
+  sublayers: 1,
+  cols: [113],
+  rows: [53],
+  scale: [SCALE_VALUE],
+  offset: [OFFSET_VALUE],
+  noDataValue: [NO_DATA_VALUE],
+  bufferedStartDate: 0,
+  interval: 'DAY',
+  aggregationOperation: 'sum',
+  buffersLength: [],
+  initialTimeRange: undefined,
+  tile: undefined,
+}
+
 /**
  * Worker loader for the 4wings tile format
  */
@@ -20,19 +35,8 @@ export const FourwingsWorkerLoader: Loader = {
   category: 'geometry',
   options: {
     fourwings: {
+      ...baseFourwingsLoaderOptions,
       workerUrl: `${PATH_BASENAME}/workers/fourwings-worker.js`,
-      sublayers: 1,
-      cols: [113],
-      rows: [53],
-      scale: [SCALE_VALUE],
-      offset: [OFFSET_VALUE],
-      noDataValue: [NO_DATA_VALUE],
-      bufferedStartDate: 0,
-      initialTimeRange: undefined,
-      tile: undefined,
-      interval: 'DAY',
-      aggregationOperation: 'sum',
-      buffersLength: [],
     } as ParseFourwingsOptions,
   } as FourwingsLoaderOptions,
 }

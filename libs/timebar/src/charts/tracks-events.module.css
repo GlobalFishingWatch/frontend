@@ -111,18 +111,19 @@
 }
 
 .gaps {
-  height: 0;
-  background: transparent;
   box-sizing: border-box;
   display: inline-block;
   z-index: 1;
+  height: var(--border-size);
+  background: var(--background-color);
+  opacity: 0.6;
 }
 
 .gaps::before,
 .gaps::after {
   content: '';
   position: absolute;
-  left: 50%;
+  left: 0;
   top: 50%;
   width: calc(var(--size) * 0.8);
   height: var(--border-size);
@@ -140,7 +141,7 @@
 
 .gaps:hover,
 .gaps.highlighted {
-  background: transparent;
+  opacity: 1;
 }
 
 .gaps:hover::before,

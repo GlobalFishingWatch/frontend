@@ -1,8 +1,8 @@
 import { useEffect, useMemo } from 'react'
-import { debounce } from 'es-toolkit'
+import { debounce, uniq } from 'es-toolkit'
 import { atom, useAtom, useSetAtom } from 'jotai'
 
-import type { DataviewInstance } from '@globalfishingwatch/api-types'
+import { DataviewCategory, type DataviewInstance } from '@globalfishingwatch/api-types'
 import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import { TilesBoundariesLayer } from '@globalfishingwatch/deck-layers'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
@@ -41,8 +41,25 @@ export function useDeckLayerComposer({
         return []
       }
     })
-    if (memoGlobalConfig.debug) {
-      return [...deckLayers, new TilesBoundariesLayer()]
+    if (memoGlobalConfig.debugTiles) {
+      const uniqueVisualizationModes = uniq([
+        dataviewsMergedSorted.filter((d) => d.category === DataviewCategory.Activity).length
+          ? memoGlobalConfig.activityVisualizationMode
+          : undefined,
+        dataviewsMergedSorted.filter((d) => d.category === DataviewCategory.Detections).length
+          ? memoGlobalConfig.detectionsVisualizationMode
+          : undefined,
+        dataviewsMergedSorted.filter((d) => d.category === DataviewCategory.Environment).length
+          ? memoGlobalConfig.environmentVisualizationMode
+          : undefined,
+      ]).filter((v) => v !== undefined)
+      return [
+        ...deckLayers,
+        ...uniqueVisualizationModes.map(
+          (visualizationMode, index) =>
+            new TilesBoundariesLayer({ id: index.toString(), visualizationMode })
+        ),
+      ]
     }
     return deckLayers
   }, [memoDataviews, memoGlobalConfig])

@@ -30,7 +30,7 @@ export interface GapPosition extends PointCoordinate {
 export enum EventTypes {
   Encounter = 'encounter',
   Fishing = 'fishing',
-  Gap = 'gap',
+  Gap = 'gaps',
   Port = 'port_visit',
   Loitering = 'loitering',
 }
@@ -177,6 +177,13 @@ export interface GapEvent {
   positionsPerDaySatReception: number
 }
 
+export interface GapsEvent {
+  latMax: number
+  latMin: number
+  lonMax: number
+  lonMin: number
+}
+
 export interface FishingEvent {
   totalDistanceKm: number
   averageSpeedKnots: number
@@ -196,6 +203,7 @@ export interface ApiEvent<Vessel = EventVessel> {
   end: number | string // Depends on timestamp format API param
   fishing?: FishingEvent
   gap?: GapEvent
+  gaps?: GapsEvent
   id: string
   key?: string
   loitering?: LoiteringEvent

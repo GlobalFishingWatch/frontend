@@ -1,5 +1,6 @@
 import { DatasetTypes, type RelatedDataset } from '@globalfishingwatch/api-types'
 
+import { DEFAULT_IDENTITY_DATASET_ID } from 'data/workspaces'
 import type { TurningTidesWorkspaceId } from 'features/track-correction/track-correction.config'
 
 export const TURNING_TIDES_DESCRIPTION_PREFIX = 'Turning Tides'
@@ -54,7 +55,7 @@ export const CountryOptions: {
     label: 'AIS',
     relatedDatasets: [
       {
-        id: 'public-global-vessel-identity:v3.0',
+        id: DEFAULT_IDENTITY_DATASET_ID,
         type: DatasetTypes.Vessels, //"vessels:v1"
       },
     ],

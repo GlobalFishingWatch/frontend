@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 
 import type { ApiEvent } from '@globalfishingwatch/api-types'
 
-import type { VesselDeckLayersEventData } from './types';
+import type { VesselDeckLayersEventData } from './types'
 import { EVENTS_COLORS } from './types'
 
 function decodeEventsBuffer(arrayBuffer: ArrayBuffer) {
@@ -17,7 +17,7 @@ export function parseEvents(arrayBuffer: ArrayBuffer): VesselDeckLayersEventData
     return {
       ...attributes,
       type,
-      coordinates: [event.position.lon, event.position.lat],
+      coordinates: [position.lon, position.lat],
       start: DateTime.fromISO(start as string, { zone: 'utc' }).toMillis(),
       end: DateTime.fromISO(end as string, { zone: 'utc' }).toMillis(),
       props: {

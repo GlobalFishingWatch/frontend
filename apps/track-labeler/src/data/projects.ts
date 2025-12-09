@@ -1,4 +1,4 @@
-import type { Label } from '../types';
+import type { Label } from '../types'
 import { ActionType } from '../types'
 
 import { Field } from './models'
@@ -27,26 +27,32 @@ export const PROJECTS: any = {
       {
         id: ActionType.dredging,
         name: 'Dredging',
+        color: '#FC9B98',
       },
       {
         id: ActionType.nondredging,
         name: 'Non Dredging',
+        color: '#B3DF8A',
       },
       {
         id: ActionType.transiting,
         name: 'Transit',
+        color: '#5D88FF',
       },
       {
         id: ActionType.transporting,
         name: 'Transporting',
+        color: '#FF5F00',
       },
       {
         id: ActionType.discharging,
         name: 'Discharging',
+        color: '#6FE9FE',
       },
       {
         id: ActionType.dumping,
         name: 'Dumping',
+        color: '#9966FF',
       },
     ],
     available_filters: [...commonFilters, Field.distanceFromPort],
@@ -117,6 +123,39 @@ export const PROJECTS: any = {
     ],
     available_filters: [Field.speed, Field.elevation],
     display_options: [Field.speed, Field.elevation],
+    permission: {
+      type: 'labeler-project',
+      value: 'longline-tracks',
+      action: 'read',
+    },
+  },
+  '4': {
+    name: 'longline_2021_round_2',
+    dataset: 'public-global-fishing-longliner-tracks:v20201001',
+    labels: [
+      {
+        id: ActionType.setting,
+        name: 'Setting',
+        color: '#FF5F00',
+      },
+      {
+        id: ActionType.hauling,
+        name: 'Hauling',
+        color: '#6FE9FE',
+      },
+      {
+        id: ActionType.other,
+        name: 'Other Activity',
+        color: '#E1B57B',
+      },
+      {
+        id: ActionType.btw_set_haul,
+        name: 'Between Setting and Hauling',
+        color: '#5D88FF',
+      },
+    ],
+    available_filters: [Field.speed, Field.elevation],
+    display_options: [Field.speed],
     permission: {
       type: 'labeler-project',
       value: 'longline-tracks',

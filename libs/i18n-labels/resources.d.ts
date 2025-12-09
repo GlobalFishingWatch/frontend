@@ -740,6 +740,10 @@ interface Resources {
       description: '25 nm buffer around islands recommending shipping diversion'
       name: 'Areas to be Avoided by Cargo Shipping'
     }
+    'public-bathymetry-contour': {
+      description: 'Combination of lines and points that represent the bathymetry contour'
+      name: 'Bathymetry Contour'
+    }
     'public-belize-fishing-effort': {
       description: "Vessel monitoring system (VMS) data is provided by the Belize High Seas Fisheries Unit (BHSFU). Data is collected using Belize's vessel monitoring system via satellites and is published on a three-day delay containing information on vessels’ location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing presence algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques."
       name: 'Belize VMS'
@@ -871,6 +875,105 @@ interface Resources {
       description: 'Dataset for VMS Brazil (Public)'
       name: 'Brazil Open Tuna VMS (Fishing vessels)'
     }
+    'public-cfc-exploration-areas-individual': {
+      description: 'Cobalt-rich ferromanganese crusts are often found along the tops and edges of seamounts, knolls, and plateaus at depths ranging between 800 meters to 2500+ meters. These crusts can contain cobalt, nickel, manganese, and rare earth elements. Proposed methods for mining cobalt-rich ferromanganese crusts include grinding and entirely removing the crust from the host rock – which are inhabited by marine biodiversity – then delivering the resulting slurry to the surface. For cobalt-rich ferromanganese crusts, the exploration area allocated to each contractor is 3,000 square kilometres and consists of 150 blocks. Each block is no greater than 20 square kilometres.'
+      name: 'CFC Exploration Areas'
+      schema: {
+        act_date: {
+          enum: {
+            '1447023600000': '1447023600000'
+            '1697752800000': '1697752800000'
+          }
+          keyword: 'act_date'
+        }
+        area_key: 'area_key'
+        area_km_2: {
+          enum: {
+            '0.99879855': '0.99879855'
+            '20.0156525': '20.0156525'
+          }
+          keyword: 'area_km_2'
+        }
+        area_type: 'area_type'
+        blk_cell: 'blk_cell'
+        blk_cell_id: {
+          enum: {}
+          keyword: 'blk_cell_id'
+        }
+        blk_orig: {
+          enum: {}
+          keyword: 'blk_orig'
+        }
+        clst_orig: {
+          enum: {
+            '978303600000': '978303600000'
+            '999295200000': '999295200000'
+          }
+          keyword: 'clst_orig'
+        }
+        cluster_id: {
+          enum: {
+            'KC-1': 'KC-1'
+            'KC-2': 'KC-2'
+            'KC-3': 'KC-3'
+            'KC-4': 'KC-4'
+            'KC-5': 'KC-5'
+            'KC-6': 'KC-6'
+            'KC-7': 'KC-7'
+            'KC-8': 'KC-8'
+            'KC-9': 'KC-9'
+            NA: 'NA'
+            NR: 'NR'
+          }
+          keyword: 'cluster_id'
+        }
+        contract_id: {
+          enum: {
+            BrazilCRFC1: 'BrazilCRFC1'
+            COMRACRFC1: 'COMRACRFC1'
+            JOGMECCRFC1: 'JOGMECCRFC1'
+            KOREACRFC1: 'KOREACRFC1'
+            RUSMNRCRFC1: 'RUSMNRCRFC1'
+          }
+          keyword: 'contract_id'
+        }
+        status: 'status'
+        sub_area: 'sub_area'
+      }
+    }
+    'public-cfc-reserved-areas-individual': {
+      description: 'Cobalt-rich ferromanganese crusts are often found along the tops and edges of seamounts, knolls, and plateaus at depths ranging between 800 meters to 2500+ meters. These crusts can contain cobalt, nickel, manganese, and rare earth elements. Proposed methods for mining cobalt-rich ferromanganese crusts include grinding and entirely removing the crust from the host rock – which are inhabited by marine biodiversity – then delivering the resulting slurry to the surface. Reserved Areas under the International Seabed Authority are a critical mechanism to ensure developing countries have access to deep-sea mineral resources in the future. These areas are typically contributed by developed States when they apply for exploration rights.'
+      name: 'CFC Reserved Areas'
+      schema: {
+        act_date: {
+          enum: {
+            '1425942000000': '1425942000000'
+          }
+          keyword: 'act_date'
+        }
+        area_key: 'area_key'
+        area_km_2: 'area_km_2'
+        area_type: 'area_type'
+        blk_cell: 'blk_cell'
+        blk_cell_id: {
+          enum: {}
+          keyword: 'blk_cell_id'
+        }
+        blk_orig: {
+          enum: {}
+          keyword: 'blk_orig'
+        }
+        cluster_id: 'cluster_id'
+        contract_id: {
+          enum: {
+            CRFCReserved: 'CRFCReserved'
+          }
+          keyword: 'contract_id'
+        }
+        status: 'status'
+        sub_area: 'sub_area'
+      }
+    }
     'public-chile-all-vessels': {
       description: 'Dataset for VMS Chile (Public)'
       name: 'Chile VMS (all Vessels)'
@@ -922,6 +1025,15 @@ interface Resources {
     'public-chile-vessel-identity-non-fishing': {
       description: 'Dataset for VMS Chile (Public)'
       name: 'Chile VMS (Non fishing Vessels)'
+    }
+    'public-clarion-clipperton-zone-isa-claim-areas': {
+      description: 'This area represents the cumulative and contiguous area of the Clarion-Clipperton Zone, a region in the Eastern Pacific that is being targeted for seabed mining and managed by the International Seabed Authority. This region includes claim areas slated for exploration, areas reserved for developing states, and areas protected for environmental interest. The primary resource targeted in this region is polymetallic nodules.'
+      name: 'Clarion-Clipperton Zone ISA License Areas'
+      schema: {
+        contractor: 'contractor'
+        label: 'label'
+        type: 'type'
+      }
     }
     'public-cold-water-corals': {
       description: 'Buffered at ~1km'
@@ -1164,6 +1276,14 @@ interface Resources {
     'public-global-chlorophyl-min': {
       description: "Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Its concentration in the ocean is used as an index of phytoplankton biomass and, as such, is a key input to primary productivity models. The moderate resolution imaging spectroradiometer (MODIS) instrument aboard NASA's Terra and Aqua satellites measures ocean color every day, from which global chlorophyll-a concentrations are derived. Ocean phytoplankton chemically fix carbon through photosynthesis, taking in dissolved carbon dioxide and producing oxygen. Through this process, marine plants capture about an equal amount of carbon as does photosynthesis by land vegetation. Changes in the amount of phytoplankton indicate the change in productivity of the oceans and provide a key ocean link for global climate change monitoring. Scientists use chlorophyll in modeling Earth's biogeochemical cycles such as the carbon cycle or the nitrogen cycle. Additionally, on short time scales, chlorophyll can be used to trace oceanographic currents, jets, and plumes. The 1 kilometer resolution and nearly daily global coverage of the MODIS data thus allows scientists to observe mesoscale oceanographic features in coastal and estuarine environments, which are of increasing importance in marine science studies. Source: NASA Earth Observations."
       name: 'Chlorophyll-a concentration'
+    }
+    'public-global-currents-uo': {
+      description: 'Currents eastward component'
+      name: 'Currents'
+    }
+    'public-global-currents-vo': {
+      description: 'Currents northward component'
+      name: 'Currents'
     }
     'public-global-encounters-events': {
       description: '<h2>Overview</h2> <h3> Encounter events identify instances where two vessels appear to meet at sea. </h3> <ul> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage. </li> </ul> <ul> <p> Users can filter encounter events by vessel characteristics and context, including: </p> <li>Duration of encounter</li> <li> Vessel flag - Shows encounters where at least one vessel is flagged to the selected country </li> <li> Next port visit after the encounter - Shows encounters where at least one vessel is has visited the selected port(s) </li> <li>Vessel types involved in the encounter</li> <li>User saved vessel group</li> </ul> <ul> <p>Currently displayed encounter types include:</p> <li>Carrier ⇄ Bunker (experimental)</li> <li>Carrier ⇄ Fishing</li> <li>Fishing ⇄ Bunker (experimental)</li> <li>Fishing ⇄ Fishing (experimental)</li> <li>Support ⇄ Fishing</li> </ul> <p> To view more details about a specific encounter—such as its location or the identity of the encountered vessel—click the “See more” icon associated with the event. </p> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of rule-based algorithms being applied to AIS positional data. There are many potential reasons for vessels to meet at sea. Such interactions may include transshipment of catch or supplies, equipment transfers, crew changes, safety-related matters, and more. Encounter data should therefore be viewed as an indicator for review. </li> <li> Encounters that do not meet the specifications of GFW encounter events described above are not included in the map, such as encounters less than two hours and in-port encounters. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. While multiple encounters within such a short timeframe are possible, they remain exceptionally rare. </li> <li> The 500-meter proximity threshold is calculated using implied positions—not raw AIS messages. Since AIS transmissions occur at irregular intervals, vessel positions are estimated by a 10-minute time grid using reported course and speed. Proximity is then calculated based on these estimated positions. Due to this modeling approach, it is possible that vessels identified in an encounter may not have been physically within 500 meters of each other for the entire 2-hour period. </li> <li> Bias in vessel identification and gear classification can result in the unexpected presence or absence of an encounter. Misclassifications in vessel type may occur due to inconsistent or incomplete vessel registry data. Misclassifications can also happen when algorithms struggle to appropriately categorize vessels, for instance, where vessels use several gears (thus changing their behavioral patterns) or when a vessel’s MMSI (maritime mobile service identity) number is used by more than one vessel. </li> <li> An encounter event position may not align exactly with the vessels\' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. As a result it is possible the vessels never occupied that precise location during the encounter event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> You can read more about transshipment behaviour from our <a href="http://globalfishingwatch.org/wp-content/uploads/GlobalViewOfTransshipment_Aug2017.pdf" >report</a > or <a href="https://www.frontiersin.org/articles/10.3389/fmars.2018.00240/full" >scientific publication</a >. </p>'
@@ -1578,6 +1698,14 @@ interface Resources {
       description: "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM"
       name: 'Sea surface temperature'
     }
+    'public-global-winds-uo': {
+      description: 'Winds eastward component'
+      name: 'Winds'
+    }
+    'public-global-winds-vo': {
+      description: 'Winds northward component'
+      name: 'Winds'
+    }
     'public-graticules': {
       description: "Grids or graticules of latitude and longitude at 1, 5, 10 and 30° intervals depending on the zoom level of the map (Source: <a href='https://www.naturalearthdata.com/downloads/110m-physical-vectors/110m-graticules/'_blank'>Natural Earth</a>)."
       name: 'Latitude longitude grids'
@@ -1597,6 +1725,15 @@ interface Resources {
     'public-high-seas-pockets': {
       description: '<p> The United Nations Convention on the Law of the Sea describes the high seas as ‘all parts of the sea that are not included in the exclusive economic zone, in the territorial sea or in the internal waters of a State, or in the archipelagic waters of an archipelagic State.’ High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them. Citation: Flanders Marine Institute (2024). Maritime Boundaries Geodatabase: High Seas, version 2. Available online at <a href="https://www.marineregions.org/" target="_blank" >https://www.marineregions.org/</a >. </p>'
       name: 'High seas pockets'
+    }
+    'public-indian-ocean-isa-claim-areas': {
+      description: 'This layer depicts the ISA license areas for seabed mining in the Indian Ocean, which primarily contain polymetallic sulfides and polymetallic nodules. Exploration leases in this region are currently held by India, Germany, South Korea, and China.'
+      name: 'Indian Ocean ISA License Areas'
+      schema: {
+        contractor: 'contractor'
+        label: 'label'
+        type: 'type'
+      }
     }
     'public-indonesia-fishing-effort': {
       description: 'VMS data for Indonesia is not currently available for the period from July 2020.\n\nVessel monitoring system (VMS) data provided by the Indonesian Government’s Ministry of Maritime Affairs and Fisheries. Data is collected using their VMS via satellites and terrestrial receivers, and contains a vessel identities, gear type, location, speed, direction and more. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) data to identify fishing activity and behaviors. The algorithm classifies each broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. VMS broadcasts data quite differently from AIS and may give different measures of completeness, accuracy and quality. Over time our algorithms will improve across all our broadcast data formats. Global Fishing Watch’s fishing presence algorithm for VMS, as for AIS, is a best effort to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified, or that the heat map may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of AIS vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.'
@@ -1681,7 +1818,7 @@ interface Resources {
       }
     }
     'public-isa-layers': {
-      description: 'ISA Areas'
+      description: 'This layer shows the areas managed by the International Seabed Authority across all ocean regions and seabed mineral resource types. \n\nExploration areas are those that have been licensed to States or individual contractors sponsored by a State for exploration of mineral resources under a 15-year contract. This enables the contract holder to conduct seabed surveys and environmental studies to assess the resource and region. These are the areas that could ultimately become licensed for exploitation if a State or contractor were to apply for a commercial exploitation permit. \n\nReserved areas are those that have been set aside by the ISA on behalf of developing nations to safeguard opportunity and access to these common heritage resources in the future. \n\nAreas of Particular Environmental Interest (APEI): These areas are protected from future exploitation of mineral resources to safeguard biodiversity and ecosystem health. The Regional Environmental Management Plan (REMP) of the International Seabed Authority initially established nine APEIs, but four more have been added as of December 2021. A total of thirteen APEIs have been designated by the ISA to date, protecting nearly 2 million square kilometers of the Clarion-Clipperton Zone in the Pacific Ocean. \n\nCFC Exploration Areas: Cobalt-rich ferromanganese crust resource areas licensed for exploration under the International Seabed Authority.\n\nCFC Reserved Areas: Cobalt-rich ferromanganese crust resource areas reserved under the International Seabed Authority.\n\nClarion-Clipperton Zone Management Area: This area encompasses the entire management region of the Clarion-Clipperton Zone of the Eastern Pacific Ocean, including all exploration areas, reserved areas, and areas of particular environmental interest. The CCZ spans 4.5 million square kilometers between Hawai’i and Mexico. \n\nPMN Exploration Areas: Polymetallic nodule resource areas licensed for exploration by the International Seabed Authority.\n\n\nPMN Reserved Areas: Polymetallic nodule resource areas reserved under the International Seabed Authority.\n\nPMS Exploration Areas: Polymetallic sulphide resource areas licensed for exploration by the International Seabed Authority.'
       name: 'ISA Areas by Resource Type'
       schema: {
         label: {
@@ -1789,6 +1926,15 @@ interface Resources {
       description: 'Dataset for VMS Mexico (Public)'
       name: 'Mexico VMS (Fishing vessels)'
     }
+    'public-mid-atlantic-isa-claim-areas': {
+      description: 'This layer depicts the ISA license areas for seabed mining on the Mid-Atlantic Ridge, which contain polymetallic sulfides. Exploration leases in this region are currently held by France, Russia, and Poland.'
+      name: 'Mid-Atlantic ISA License Areas'
+      schema: {
+        contractor: 'contractor'
+        label: 'label'
+        type: 'type'
+      }
+    }
     'public-mp-as-mp-atlas': {
       description: 'Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably'
       name: 'MPAs (MPAtlas)'
@@ -1839,6 +1985,15 @@ interface Resources {
     'public-no-take-zone-1618836692786': {
       description: '90% of EEZ'
       name: 'Marine Protection Zone'
+    }
+    'public-northwest-pacific-isa-claim-areas': {
+      description: 'This layer depicts the ISA license areas for seabed mining in the Northwestern Pacific, which primarily contain resources from cobalt-rich ferromanganese crusts and polymetallic nodules. Several countries hold exploration leases in this region including China, Japan, Russia, and South Korea.'
+      name: 'Northwest Pacific ISA License Areas'
+      schema: {
+        contractor: 'contractor'
+        label: 'label'
+        type: 'type'
+      }
     }
     'public-norway-fishing-effort': {
       description: 'Vessel monitoring system (VMS) data is provided by the The Norwegian Directorate of Fisheries. Data is collected using Norway’s vessel monitoring system via satellites and is published on a three-day delay containing information on vessels’ location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques'
@@ -1965,6 +2120,199 @@ interface Resources {
     'public-peru-vessel-identity-fishing': {
       description: 'Dataset for VMS Peru (Public)'
       name: 'Peru VMS (Fishing Vessels)'
+    }
+    'public-pmn-exploration-areas-individual': {
+      description: 'Polymetallic nodules occur across abyssal plains. These nodules can be found at depths from 3000 meters to 6500 meters with high abundance in the Pacific Ocean and the Central Indian Ocean Basin. Nodules form at a rate of 1-3 millimeters per million years as metals from the surrounding water precipitate onto small particles, such as a grain of sand or a fragment of a shell, forming habitat for unique and poorly understood biodiversity. They are primarily composed of manganese, nickel, cobalt, copper, and rare earth elements. Exploration Areas under the International Seabed Authority are areas licensed for exploration of mineral resources to particular States and associated contractors. 75,000 square kilometers are allocated to each contractor for polymetallic nodule Exploration Areas.'
+      name: 'PMN Exploration Areas'
+      schema: {
+        act_date: {
+          enum: {
+            '1717970400000': '1717970400000'
+            '985816800000': '985816800000'
+          }
+          keyword: 'act_date'
+        }
+        area_key: 'area_key'
+        area_km_2: {
+          enum: {
+            '2182.876': '2182.876'
+            '74919': '74919'
+          }
+          keyword: 'area_km_2'
+        }
+        area_type: 'area_type'
+        blk_cell: 'blk_cell'
+        blk_cell_id: 'blk_cell_id'
+        blk_orig: 'blk_orig'
+        clst_orig: 'clst_orig'
+        cluster_id: 'cluster_id'
+        contract_id: {
+          enum: {
+            BGRPMN1: 'BGRPMN1'
+            BMJPMN1: 'BMJPMN1'
+            BPHDCPMN1: 'BPHDCPMN1'
+            CIICPMN1: 'CIICPMN1'
+            CMMPMN1: 'CMMPMN1'
+            COMRAPMN1: 'COMRAPMN1'
+            DORDPMN1: 'DORDPMN1'
+            GSRPMN1: 'GSRPMN1'
+            IFREMERPMN1: 'IFREMERPMN1'
+            IOMPMN1: 'IOMPMN1'
+            IndiaPMN1: 'IndiaPMN1'
+            KOREAPMN1: 'KOREAPMN1'
+            MARAWAPMN1: 'MARAWAPMN1'
+            NORIPMN1: 'NORIPMN1'
+            OMSPMN1: 'OMSPMN1'
+            TOMLPMN1: 'TOMLPMN1'
+            UKSRLPMN1: 'UKSRLPMN1'
+            UKSRLPMN2: 'UKSRLPMN2'
+            YUZHPMN1: 'YUZHPMN1'
+          }
+          keyword: 'contract_id'
+        }
+        remarks: {
+          enum: {
+            'Total exploration area of CIIC (PMN) is 71,937 sq.km; AreaKM2 was calcualted by ISA': 'Total exploration area of CIIC (PMN) is 71,937 sq.km; AreaKM2 was calcualted by ISA'
+            'Total exploration area of COMRA (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA': 'Total exploration area of COMRA (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA'
+            'Total exploration area of DORD (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA': 'Total exploration area of DORD (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA'
+            'Total exploration area of GSR (PMN) is 41,468.91606 sq.km': 'Total exploration area of GSR (PMN) is 41,468.91606 sq.km'
+            'Total exploration area of GSR (PMN) is 76,728 sq.km; AreaKM2 was calculated by ISA': 'Total exploration area of GSR (PMN) is 76,728 sq.km; AreaKM2 was calculated by ISA'
+            'Total exploration area of IFREMER (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA': 'Total exploration area of IFREMER (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA'
+            'Total exploration area of IOM (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA': 'Total exploration area of IOM (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA'
+            'Total exploration area of India (PMN) is 75,000 sq.km, AreaKM2 was calculated by ISA': 'Total exploration area of India (PMN) is 75,000 sq.km, AreaKM2 was calculated by ISA'
+            'Total exploration area of Korea (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA': 'Total exploration area of Korea (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA'
+            'Total exploration area of MARAWA (PMN) is 74,990 sq.km; AreaKM2 was calculated by ISA': 'Total exploration area of MARAWA (PMN) is 74,990 sq.km; AreaKM2 was calculated by ISA'
+            'Total exploration area of Yuzhmorgeologiya (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA': 'Total exploration area of Yuzhmorgeologiya (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA'
+            xx: 'xx'
+          }
+          keyword: 'remarks'
+        }
+        status: 'status'
+        sub_area: 'sub_area'
+      }
+    }
+    'public-pmn-reserved-areas-individual': {
+      description: 'Polymetallic nodules occur across abyssal plains. These nodules can be found at depths from 3000 meters to 6500 meters with high abundance in the Pacific Ocean and the Central Indian Ocean Basin. Nodules form at a rate of 1-3 millimeters per million years as metals from the surrounding water precipitate onto small particles, such as a grain of sand or a fragment of a shell, forming habitat for unique and poorly understood biodiversity. They are primarily composed of manganese, nickel, cobalt, copper, and rare earth elements. Reserved Areas under the International Seabed Authority are a critical mechanism to ensure developing countries have access to deep-sea mineral resources in the future. These areas are typically contributed by developed States when they apply for exploration rights.'
+      name: 'PMN Reserved Areas'
+      schema: {
+        act_date: {
+          enum: {
+            '1617487200000': '1617487200000'
+            '988322400000': '988322400000'
+          }
+          keyword: 'act_date'
+        }
+        area_key: 'area_key'
+        area_km_2: {
+          enum: {
+            '1032.952': '1032.952'
+            '150000': '150000'
+          }
+          keyword: 'area_km_2'
+        }
+        area_type: 'area_type'
+        blk_cell: 'blk_cell'
+        blk_cell_id: 'blk_cell_id'
+        blk_orig: {
+          enum: {
+            '983401200000': '983401200000'
+            '986076000000': '986076000000'
+          }
+          keyword: 'blk_orig'
+        }
+        clst_orig: 'clst_orig'
+        cluster_id: 'cluster_id'
+        contract_id: {
+          enum: {
+            BPHDCPMN1: 'BPHDCPMN1'
+            PMNReserved: 'PMNReserved'
+          }
+          keyword: 'contract_id'
+        }
+        remarks: {
+          enum: {
+            'Origin:BGR': 'Origin:BGR'
+            'Origin:COMRA': 'Origin:COMRA'
+            'Origin:DORD': 'Origin:DORD'
+            'Origin:Government of the Republic of Korea': 'Origin:Government of the Republic of Korea'
+            'Origin:IFREMER': 'Origin:IFREMER'
+            'Origin:INDIA': 'Origin:INDIA'
+            'Origin:IOM': 'Origin:IOM'
+            'Origin:UKSRL-ll': 'Origin:UKSRL-ll'
+            'Origin:Yuzhmorgeologia': 'Origin:Yuzhmorgeologia'
+          }
+          keyword: 'remarks'
+        }
+        status: 'status'
+        sub_area: 'sub_area'
+      }
+    }
+    'public-pms-exploration-areas-individual': {
+      description: 'Polymetallic sulphides, or seafloor massive sulphides, are formed at hydrothermal vents near mid-ocean ridges and back-arc basins between approximately 1,000 and 4,000 meters in depth. They are formed when superheated, mineral-rich fluids from the Earth’s mantle are rapidly cooled by deep water. Rapid cooling results in dissolved metals in the fluid precipitating as metal sulfides. These sulfides and surrounding polymetallic muds can contain copper, zinc, silver, and gold. For polymetallic sulphides, the exploration area allocated to each contractor is 10,000 square kilometres and consists of 100 blocks. Each block is no greater than 100 square kilometres.'
+      name: 'PMS Exploration Areas'
+      schema: {
+        act_date: {
+          enum: {
+            '1474840800000': '1474840800000'
+            '1698098400000': '1698098400000'
+          }
+          keyword: 'act_date'
+        }
+        area_key: 'area_key'
+        area_km_2: {
+          enum: {
+            '1': '1'
+            '101': '101'
+          }
+          keyword: 'area_km_2'
+        }
+        area_type: 'area_type'
+        blk_cell: 'blk_cell'
+        blk_cell_id: {
+          enum: {}
+          keyword: 'blk_cell_id'
+        }
+        blk_orig: {
+          enum: {}
+          keyword: 'blk_orig'
+        }
+        clst_orig: {
+          enum: {
+            A: 'A'
+            B: 'B'
+            C: 'C'
+            D: 'D'
+            E: 'E'
+          }
+          keyword: 'clst_orig'
+        }
+        cluster_id: {
+          enum: {
+            A: 'A'
+            B: 'B'
+            C: 'C'
+            D: 'D'
+            E: 'E'
+            NA: 'NA'
+            NR: 'NR'
+          }
+          keyword: 'cluster_id'
+        }
+        contract_id: {
+          enum: {
+            BGRPMS1: 'BGRPMS1'
+            COMRAPMS1: 'COMRAPMS1'
+            IFREMERPMS1: 'IFREMERPMS1'
+            IndiaPMS1: 'IndiaPMS1'
+            KOREAPMS1: 'KOREAPMS1'
+            POLPMS1: 'POLPMS1'
+            RUSFEDPMS1: 'RUSFEDPMS1'
+          }
+          keyword: 'contract_id'
+        }
+        status: 'status'
+        sub_area: 'sub_area'
+      }
     }
     'public-png-fishing-effort': {
       description: "Vessel monitoring system (VMS) data is provided by the The National Fisheries Authority of Papua New Guinea. Data is collected using Papua New Guinea's vessel monitoring (VMS) system via satellites, that contains vessel's identifiers and location, and is published on a five-day delay. Global Fishing Watch infers speed and course for each vessel location and analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity”. It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity”, “fishing” or “fishing effort”, as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing detection algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques"
@@ -2191,6 +2539,14 @@ interface Resources {
           }
           keyword: 'Height'
         }
+      }
+    }
+    'public-south-atlantic-isa-claim-areas': {
+      description: 'This layer depicts the ISA license areas for seabed mining in the South Atlantic Ocean, which contain resources cobalt-rich ferromanganese crusts. Brazil is currently the only country holding leases in this region.'
+      name: 'South Atlantic ISA License Areas'
+      schema: {
+        contractor: 'contractor'
+        label: 'label'
       }
     }
     'public-tristan-seamounts-200-1618586314138': {

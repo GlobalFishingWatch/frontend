@@ -58,6 +58,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   sidebarOpen?: boolean
   timebarGraph?: TimebarGraphs
   timebarSelectedEnvId?: string
+  timebarSelectedUserId?: string
   timebarSelectedVGId?: string
   timebarVisualisation?: TimebarVisualisations
   vesselsColorBy?: VesselsColorByProperty
@@ -111,6 +112,7 @@ export enum TimebarVisualisations {
   Vessel = 'vessel',
   VesselGroup = 'vesselGroup',
   Environment = 'environment',
+  Points = 'points',
 }
 
 type VisibleEvents = EventType[] | 'all' | 'none'
