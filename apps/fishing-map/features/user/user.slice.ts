@@ -9,7 +9,7 @@ import {
 import type { UserData } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
 import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
-import { redirectToLogin } from '@globalfishingwatch/react-hooks'
+import { redirectToLogin, setHistoryNavigation } from '@globalfishingwatch/react-hooks'
 
 import type { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
 import { USER_SETTINGS } from 'data/config'
@@ -106,7 +106,7 @@ export const logoutUserThunk = createAsyncThunk(
   'user/logout',
   async (
     { loginRedirect }: { loginRedirect: boolean } | undefined = { loginRedirect: false },
-    { dispatch }
+    { dispatch, getState }
   ) => {
     try {
       await GFWAPI.logout()
@@ -116,6 +116,9 @@ export const logoutUserThunk = createAsyncThunk(
       console.warn(e)
     }
     if (loginRedirect) {
+      const state = getState() as any
+      const historyNavigation = state.workspace?.historyNavigation || []
+      setHistoryNavigation(historyNavigation)
       redirectToLogin()
     }
   }
