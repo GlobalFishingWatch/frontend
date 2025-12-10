@@ -157,6 +157,35 @@
   }
 }
 
+.waveGraph {
+  z-index: 1;
+}
+
+.wavePath {
+  stroke-dasharray: 650;
+  stroke-dashoffset: 0;
+}
+
+.animateWave .wavePath {
+  animation: drawWave 3s ease-in-out infinite;
+}
+
+@keyframes drawWave {
+  0% {
+    stroke-dashoffset: 650;
+    opacity: 0.1;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0.3;
+  }
+}
+
 .children {
   position: absolute;
   inset: 0;
