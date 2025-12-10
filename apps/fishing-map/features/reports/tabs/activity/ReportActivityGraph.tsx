@@ -83,10 +83,14 @@ export default function ReportActivity() {
   const reportAreaStatus = useSelector(selectReportAreaStatus)
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const layersTimeseriesErrors = useReportTimeSeriesErrors()
-  const hasError = layersTimeseriesErrors?.[0] !== ''
-  const showSelectors = !loading && layersTimeseriesFiltered !== undefined
+
+  const hasError = layersTimeseriesErrors?.length ? layersTimeseriesErrors?.[0] !== '' : false
+  const hasNoData = !layersTimeseriesFiltered || layersTimeseriesFiltered.length === 0
+  const isInitialLoad = loading || hasNoData
+  const showSelectors =
+    !isInitialLoad && layersTimeseriesFiltered !== undefined && layersTimeseriesFiltered.length > 0
   const isEmptyData =
-    !loading && layersTimeseriesFiltered?.length
+    !isInitialLoad && layersTimeseriesFiltered?.length
       ? layersTimeseriesFiltered.every((data) => data?.timeseries?.length === 0)
       : false
   const isDatasetComparison = reportActivityGraph === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON
@@ -133,12 +137,12 @@ export default function ReportActivity() {
       {showSelectors && (
         <div className={styles.titleRow}>
           <label className={styles.blockTitle}>{t('common.activity')}</label>
-          <ReportActivityGraphSelector loading={loading} />
+          <ReportActivityGraphSelector loading={isInitialLoad} />
         </div>
       )}
       {/* Dataset Comparison Selectors needs to go above the graph instead of time comparison selectors */}
       {showSelectors && SelectorsComponent && isDatasetComparison && <SelectorsComponent />}
-      {loading || reportAreaStatus !== AsyncReducerStatus.Finished ? (
+      {isInitialLoad || reportAreaStatus !== AsyncReducerStatus.Finished ? (
         <ReportActivityPlaceholder showHeader={!showSelectors} />
       ) : isEmptyData || hasError ? (
         <ReportActivityPlaceholder showHeader={false} animate={false}>
@@ -148,7 +152,7 @@ export default function ReportActivity() {
         GraphElement
       )}
       {showSelectors && SelectorsComponent && !isDatasetComparison && <SelectorsComponent />}
-      {!loading && (
+      {!isInitialLoad && (
         <Fragment>
           <div className={styles.disclaimer}>
             <UserGuideLink section="analysis" />
