@@ -16,11 +16,11 @@ export const CountryOptions: {
     label: 'Brazil',
     relatedDatasets: [
       {
-        id: 'private-bra-onyxsat-vessel-identity-fishing:v20211126',
+        id: 'public-bra-onyxsat-vessel-identity-fishing:v20211126',
         type: DatasetTypes.Vessels, //"vessels:v1"
       },
       {
-        id: 'private-bra-onyxsat-vessel-identity-non-fishing:v20211126',
+        id: 'public-bra-onyxsat-vessel-identity-non-fishing:v20211126',
         type: DatasetTypes.Vessels, //"vessels:v1"
       },
     ],
@@ -44,7 +44,7 @@ export const CountryOptions: {
     label: 'Peru',
     relatedDatasets: [
       {
-        id: 'private-peru-vessel-identity-fishing:v20211126',
+        id: 'public-peru-vessel-identity-fishing:v20211126',
         type: DatasetTypes.Vessels, //"vessels:v1"
       },
     ],
