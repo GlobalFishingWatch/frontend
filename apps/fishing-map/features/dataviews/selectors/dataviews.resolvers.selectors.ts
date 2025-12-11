@@ -213,7 +213,7 @@ export const selectDataviewInstancesResolved = createDeepEqualSelector(
         ...dataview,
         config: {
           ...dataview.config,
-          name: debugOptions?.bluePlanetMode
+          name: debugOptions?.hideVesselNames
             ? FAKE_VESSEL_NAME
             : formatInfoField(
                 getVesselProperty(infoResource.data as IdentityVessel, 'shipname'),

@@ -147,7 +147,7 @@
     "react-virtualized-auto-sizer": "1.0.26",
     "react-virtuoso": "4.14.1",
     "react-window": "1.8.11",
-    "recharts": "3.3.0",
+    "recharts": "3.5.1",
     "redux-first-router": "2.1.5",
     "redux-first-router-link": "2.1.1",
     "redux-undo": "1.1.1",

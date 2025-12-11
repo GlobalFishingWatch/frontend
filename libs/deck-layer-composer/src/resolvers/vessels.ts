@@ -1,3 +1,5 @@
+import { uniq } from 'es-toolkit'
+
 import { API_GATEWAY, GFWAPI } from '@globalfishingwatch/api-client'
 import type { EventTypes } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -16,10 +18,10 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
 ): VesselLayerProps => {
   const trackUrl = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
   const { start, end, highlightedFeatures, visibleEvents, highlightedTime } = globalConfig
-  const highlightEventIds = [
+  const highlightEventIds = uniq([
     ...(globalConfig.highlightEventIds || []),
     ...(highlightedFeatures || []).map((feature) => feature.id),
-  ]
+  ])
   const strictTimeRange =
     dataview.config?.startDate !== undefined && dataview.config?.endDate !== undefined
   const startTime = getUTCDateTime(

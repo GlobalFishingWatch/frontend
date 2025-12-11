@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
-import { DateTime } from 'luxon'
 
 import type { DetectionThumbnail } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -17,11 +16,7 @@ import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
-import {
-  BLUE_PLANET_MODE_DATE_FORMAT,
-  FAKE_VESSEL_NAME,
-  selectDebugOptions,
-} from 'features/debug/debug.slice'
+import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import DetectionThumbnailImage from 'features/map/popups/categories/DetectionThumbnail'
 import VesselLink from 'features/vessel/VesselLink'
@@ -54,7 +49,7 @@ function DetectionThumbnails({
 function PositionsRow({ loading, error, feature, showFeaturesDetails }: PositionsRowProps) {
   const { t } = useTranslation()
   const allDatasets = useSelector(selectAllDatasets)
-  const bluePlanetMode = useSelector(selectDebugOptions)?.bluePlanetMode
+  const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
   const dataviewInstances = useSelector(selectAllDataviewInstancesResolved)
   const featureDataview = dataviewInstances?.find((instance) => instance.id === feature.layerId)
   const thumbnailsDatasetId = getRelatedDatasetByType(
@@ -112,20 +107,16 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
               <span className={popupStyles.marginRight}>
                 {isPositionMatched ? (
                   <VesselLink vesselId={vesselId}>
-                    {bluePlanetMode ? FAKE_VESSEL_NAME : shipname}
+                    {hideVesselNames ? FAKE_VESSEL_NAME : shipname}
                   </VesselLink>
                 ) : (
-                  <span>{bluePlanetMode ? FAKE_VESSEL_NAME : shipname}</span>
+                  <span>{hideVesselNames ? FAKE_VESSEL_NAME : shipname}</span>
                 )}
               </span>
               {feature.properties.stime && (
                 <span className={popupStyles.secondary}>
                   {' '}
-                  <I18nDate
-                    date={feature.properties.stime * 1000}
-                    format={bluePlanetMode ? BLUE_PLANET_MODE_DATE_FORMAT : DateTime.DATETIME_MED}
-                    showUTCLabel={bluePlanetMode}
-                  />
+                  <I18nDate date={feature.properties.stime * 1000} />
                 </span>
               )}
             </span>

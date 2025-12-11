@@ -54,6 +54,7 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
 }
 
 type GetUserPointsDataParams = {
+  skipTemporalFilter?: boolean
   includeNonTemporalFeatures?: boolean
 }
 
@@ -91,7 +92,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   get cacheHash(): string {
-    const { startTime, endTime } = this.props
+    const { id, startTime, endTime } = this.props
     const filters =
       this.props.layers?.flatMap((layer) =>
         layer.sublayers.flatMap((sublayer) => sublayer.filters || {})
@@ -100,7 +101,12 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
       filters.length > 0
         ? filters.reduce((acc, filter) => `${acc}-${getContextFiltersHash(filter)}`, '')
         : ''
-    return `${startTime}-${endTime}${filtersHash}`
+    const aggregatedProperty =
+      this.props.layers?.flatMap((layer) =>
+        layer.sublayers.flatMap((sublayer) => sublayer.aggregateByProperty || [])
+      ) || []
+
+    return `${id}-${startTime}-${endTime}${filtersHash}${aggregatedProperty.join(',')}`
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
@@ -186,8 +192,10 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   _getData = (): Feature<Point>[] => {
     // Use Math.round() to match deck.gl's tile zoom selection logic
     const roundedZoom = Math.round(this.context.viewport.zoom)
+    const zoom =
+      roundedZoom > DEFAULT_USER_TILES_MAX_ZOOM ? DEFAULT_USER_TILES_MAX_ZOOM : roundedZoom
     return (this.getLayer()?.state.tileset?.tiles || []).flatMap((tile) => {
-      return tile.content && tile.zoom === roundedZoom
+      return tile.content && tile.zoom === zoom
         ? tile.content.flatMap((feature: any) => {
             return feature
               ? (transformTileCoordsToWGS84(
@@ -201,21 +209,27 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     })
   }
   getData = ({
+    skipTemporalFilter = false,
     includeNonTemporalFeatures = false,
   }: GetUserPointsDataParams = {}): Feature<Point>[] => {
     const data = this._getData().flatMap((feature) => {
       const values = new Array(this.props.layers?.[0]?.sublayers?.length).fill(0)
       this.props.layers?.[0]?.sublayers?.forEach((sublayer, index) => {
-        const matchesTimeFilter = isFeatureInRange(feature, this.props as IsFeatureInRangeParams)
+        const { aggregateByProperty } = sublayer
+        const matchesTimeFilter = skipTemporalFilter
+          ? true
+          : isFeatureInRange(feature, this.props as IsFeatureInRangeParams)
         if (includeNonTemporalFeatures || matchesTimeFilter) {
-          if (hasSublayerFilters(sublayer)) {
-            // TODO: support getting values from certain property instead of just counting the points
-            values[index] = isFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators)
-              ? 1
+          const matchesFilters = hasSublayerFilters(sublayer)
+            ? isFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators)
+            : true
+
+          values[index] =
+            matchesFilters && matchesTimeFilter
+              ? aggregateByProperty
+                ? Number(feature.properties?.[aggregateByProperty] ?? 0)
+                : 1
               : 0
-          } else {
-            values[index] = 1
-          }
         }
       })
       if (values.every((value) => value === 0)) {
@@ -232,8 +246,12 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return data
   }
 
-  getViewportData = () => {
-    return filteredPositionsByViewport(this.getData(), this.context.viewport)
+  getViewportData = (params: GetUserPointsDataParams = {}) => {
+    return filteredPositionsByViewport(this.getData(params), this.context.viewport)
+  }
+
+  getColor() {
+    return this.props.layers?.[0]?.sublayers?.[0]?.color
   }
 
   _onLayerError = (error: Error) => {

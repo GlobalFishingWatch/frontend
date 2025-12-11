@@ -233,17 +233,17 @@ interface Resources {
     'sst-anomalies': {
       description: 'The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. '
       moreInfoLink: 'https://developers.google.com/earth-engine/datasets/catalog/NOAA_CDR_OISST_V2_1'
-      name: 'Sea surface temperature anomalies'
+      name: 'Sea surface temperature anomalies (Mean)'
     }
     'sst-anomalies-max': {
-      description: ''
+      description: 'The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. '
       moreInfoLink: ''
-      name: 'Sea surface temperature anomalies (max)'
+      name: 'Sea surface temperature anomalies (Max)'
     }
     'sst-anomalies-min': {
-      description: ''
+      description: 'The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. '
       moreInfoLink: ''
-      name: 'Sea surface temperature anomalies (min)'
+      name: 'Sea surface temperature anomalies (Min)'
     }
     thgt: {
       description: 'Wave height is the vertical distance from the trough (bottom) to the crest (top) of a wave on the sea surface. This dataset uses the significant wave height, which is the average of the highest one-third of all wave heights over a given sample period.'
@@ -260,6 +260,11 @@ interface Resources {
       moreInfoLink: ''
       name: 'Night light detections (VIIRS Skylight)'
     }
+    winds: {
+      description: 'TODO'
+      moreInfoLink: ''
+      name: 'Winds'
+    }
   }
   translations: {
     analysis: {
@@ -274,10 +279,13 @@ interface Resources {
       change: 'Change'
       clickToFilterBy: 'Click to filter by:'
       clickToSeeAreaReport: 'Click to see the {{area}} report'
+      comparisonNotAvailable: 'Comparing datasets is not available for this layer'
       confirmRemove: 'Are you sure you want to permanently delete this report?'
       createReportHelp: 'To explore how activity and environmental data changes over time, you can create a dynamic report containing analysis for any area. Dynamic reports offer a rapid way to access and understand more information about any ocean area, exclusive economic zone, marine protected area or area of interest. Dynamic reports help you understand how much activity is happening in each area, including which vessels and flag States are active.'
       createReportHelpLink: 'Learn more.'
+      currentsDataDisclaimer: 'Currents and winds graph is still under development and may not represent the data accurately.'
       dataSource: 'Data Source'
+      datasetComparison: 'Data comparison'
       datasetsNotAllowed: 'Vessels are not included from the following sources:'
       datasetsNotAllowedAll: 'None of your datasets are allowed to be used in reports'
       deleteBuffer: 'Delete current buffer'
@@ -332,6 +340,8 @@ interface Resources {
       see: 'See report'
       seeGlobal: 'See global report'
       seeVessels: 'See vessels'
+      selectAggregationProperty: 'Select a property to analyze'
+      selectDatasetPlaceholder: 'Select a dataset to compare'
       share: 'Share report'
       statsDisclaimerDynamic: 'During this time, the minimum and maximum values at any given {{interval}} and place inside your area were {{min}} {{unit}} and {{max}} {{unit}}.'
       statsDisclaimerStatic: 'The average value for your area is {{mean}} {{unit}}. The minimum and maximum are {{min}} {{unit}} and {{max}} {{unit}}.'
@@ -366,6 +376,7 @@ interface Resources {
       active_after: 'Active after'
       active_before: 'Active before'
       activity: 'Activity'
+      aggregatedBy: 'with a total sum of {{total}} {{property}}'
       aka: 'a.k.a.'
       analysis: 'Create an analysis for this area'
       analysisAddArea: 'Add area to the analysis'
@@ -735,6 +746,7 @@ interface Resources {
       trackLoading: 'There was an error loading the vessel track.'
       trackSegmentIdFields: "Grouping by this field doesn't generate valid tracks"
       uploadError: 'There was an error uploading your dataset.'
+      userDataError: 'There was an error loading your user data. Please try again or contact support.'
       vesselGroupReportLogin: 'Login to see the vessels active'
       vesselLoading: 'There was an error loading the vessel details.'
       workspaceLoad: 'There was an error loading the workspace. Please try again.'
@@ -754,7 +766,7 @@ interface Resources {
       fishing: 'Fishing' | 'Fishing events'
       fishingAction: 'Fishing started at {{start}} for {{duration}}'
       fishingActionIn: 'Fishing in {{regionName}}'
-      gap: 'AIS Off event' | 'AIS Off event' | 'AIS Off events'
+      gap: 'AIS Off event' | 'AIS Off event' | 'AIS Off events' | 'AIS Off events'
       gapAction: 'AIS Off event started at {{start}} for {{duration}}'
       gapActionIn: 'Likely disabling in {{regionName}}'
       hourAbbreviated: '{{count}}h' | '{{count}}h' | '{{count}}h' | '{{count}}h'
@@ -919,6 +931,7 @@ interface Resources {
       speed: 'Speed'
       statsHelp: 'The number of vessels and flags is calculated for your current filters and time range globally. Some double counting may occur.'
       statsHelpDetection: 'The number of detections is calculated for your current filters and time range globally. Some double counting may occur.'
+      timeGraphFiltersDisabled: "Filters aren't supported in time graphs"
       toggleCombinationMode: {
         combine: 'Combine layers'
         split: 'Split layers'
@@ -1328,7 +1341,7 @@ interface Resources {
       sectionRelatedVessel: 'Related vessels'
       sectionRelatedVessels: 'Related vessels'
       sectionSummary: 'Summary'
-      selectIdentity: 'See the identity for this dates'
+      selectIdentity: 'See the identity for these dates'
       share: 'Share vessel'
       shipname: 'Name'
       shiptype: 'Vessel type'
@@ -1478,60 +1491,134 @@ interface Resources {
           | '{{count}} AIS Off Event from {{vessels}} vessels detected'
           | '{{count}} AIS Off Event from {{vessels}} vessels detected'
       }
-      fieldMultiplePlaceholder: 'Select one or more fields from your dataset'
-      fieldNumericPlaceholder: 'Select a numerical field from your dataset'
-      fieldPlaceholder: 'Select a field from your dataset'
-      maxValuesExceededForFiltering: 'Maximum values exceeded for filtering ({{max}})'
-      maxValuesExceededForFilteringTooltip: 'This field has too many unique values ({{max}}+). Consider grouping or categorizing your data to enable filtering.'
-      noFilters: 'To add filters to your dataset, your file must have at least one property with more than 2 distinct values.'
-      none: 'None'
-      optionalFields: 'Optional fields'
-      point: {
-        coordinates: 'Point coordinates'
+    }
+    workspace: {
+      addLayer: 'Add to workspace'
+      categories: {
+        'fishing-activity': 'Highlighted workspaces'
+        'marine-manager': 'Marine Manager workspaces'
+        reports: 'Highlighted reports'
+        search: 'Vessel search'
       }
-      points: {
-        filters: 'Point filters'
-        filtersHelp: 'Select properties (or fields) of this dataset to be able to dynamically filter the points in the sidebar'
-        name: 'Point label'
-        nameHelp: 'Select a property to add a label to each point on the map'
-        size: 'Point size'
-        sizeHelp: 'Select a numerical property to determine the radius of each point'
-        sizeMax: 'Maximum size'
-        sizeMin: 'Minimum size'
+      confirmRemove: 'Are you sure you want to permanently delete this workspace?'
+      create: 'Create new workspace'
+      edit: 'Edit workspace'
+      editAccess: 'Edit access'
+      editName: 'Edit workspace name'
+      emptyState: 'Your workspaces will appear here.'
+      emptyStateUser: 'Upload custom datasets clicking on the plus icon.'
+      emptyStateVesselGroups: 'Add vessel groups to see group presence and operation footprint.'
+      emptyStateVessels: 'Search for vessels or add them from the map.'
+      list: 'Workspaces list'
+      marineManagerLink: 'See map'
+      migrationDisclaimer: 'Update your workspace to view the latest data and features.'
+      migrationDisclaimerNote: "Note, some vessel identity and activity information may change. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> Learn more.</a>"
+      migrationMaintain: 'Skip'
+      migrationUpdate: 'Update'
+      nameRequired: 'Workspace name is required'
+      noDetectionInFilters: 'No detections match your current filters'
+      noVesselInFilters: 'No vessels match your current filters'
+      passwordIncorrect: 'Invalid password'
+      passwordMinLength: 'Password must be at least 5 characters'
+      passwordProtected: 'This workspace is password protected'
+      passwordRequired: 'Password is required'
+      privateEditAcessInfo: 'Your current view access permissions do not allow for others to edit this workspace'
+      privateTitle: 'Private workspaces'
+      remove: 'Remove workspace'
+      save: 'Save the current workspace'
+      saveAs: 'Save as a new workspace'
+      saveLogin: 'Register and log in to save workspaces (free, 2 minutes)'
+      saveOwnerOnly: 'This workspace can only be edited by its creator'
+      saved: "The current workspace has been saved and it's available in your profile."
+      sharePrivateDisclaimer: 'This workspace contains datasets that require special permissions'
+      siteDescription: {
+        default: 'The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.'
+        'fishing-activity': 'The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.'
+        'marine-manager': 'The portal provides dynamic interactive data on marine traffic, biology and ocean conditions to support marine protected area design and management.'
+        search: 'Search by vessel name or identification code.'
       }
-      polygons: {
-        color: 'Polygon color'
-        colorHelp: 'Select a numerical property to determine the transparency of each polygon'
-        filters: 'Polygon filters'
-        filtersHelp: 'Select properties (or fields) of this dataset to be able to dynamically filter the polygons in the sidebar'
-        name: 'Polygon label'
-        nameHelp: 'Select a property to add a label to each polygon on the map'
-      }
-      processingData: 'Processing data...'
-      time: '{{geometryType}} time'
-      timeEnd: '{{geometryType}} end'
-      timePeriodType: 'Time filter'
-      timePeriodTypePlaceholder: 'Choose to filter your dataset by a specific timestamp or a time range'
-      timeStart: '{{geometryType}} start'
-      timerangeEndHelp: 'Select the property that defines the start of the date range of the {{geometryType}} to filter them with the time bar'
-      timerangeStartHelp: 'Select the property that defines the start of the time range of the {{geometryType}} to visualize your dataset with the time bar'
-      timestampHelp: 'Select the property that defines the date and time of the {{geometryType}} to visualize your dataset with the time bar'
-      tracks: {
-        filters: 'Track filters'
-        filtersHelp: 'Select properties (or fields) of this dataset to be able to dynamically filter the tracks in the sidebar'
-        lineId: 'Individual line IDs'
-        lineIdHelp: 'Select the property of your dataset that differentiates each track from one another'
-        name: 'Line label'
-        nameHelp: 'Select a property to add a label to each line on the map'
-        segmentId: 'Individual segment IDs'
-        segmentIdHelp: 'Select the property of your dataset that differentiates segments within each track from one another (i.e., voyages)'
+      title: 'Workspace'
+      titlePlural: 'Workspaces'
+      uploadPublicDisabled: "This workspace can't be shared publicly because it contains private datasets"
+      user: 'User workspace'
+      viewAccess: 'View access'
+      wizard: {
+        exploreArea: 'See area'
+        exploreGlobal: 'See global'
+        help: 'You can move the map and update your workspace later'
+        title: 'Setup a marine manager workspace for any area globally'
       }
     }
-    dataview: {
-      'basemap-labels': {
-        dataWarning: 'This platform uses location labels from Natural Earth.'
-        dataWarningDetail: "This platform uses location labels from <a target='_blank' href='https://www.naturalearthdata.com/'> Natural Earth</a>."
-        title: 'Locations'
+  }
+  workspaces: {
+    'marine-manager': {
+      'ascension-public': {
+        description: 'Ascension Island is located in the middle of the Atlantic Ocean. In 2019,  all 445,000 square kilometers (171,800 square miles) of Ascension’s waters were designated as a marine protected area.'
+        name: 'Ascension Island'
+      }
+      'cmar_core_mpas-public': {
+        description: 'Initiated in 2004, the Eastern Tropical Pacific Marine Conservation Corridor is a regional conservation and sustainable use initiative of the governments of Colombia, Costa Rica, Ecuador and Panama that seeks the proper management of biodiversity and marine and coastal resources through ecosystem management and the establishment of joint regional government strategies. All supported by civil society, international cooperation and non-governmental organizations, anchored in ten core MPAs in the Pacific ocean EEZs of the four countries.'
+        name: 'CMAR core MPAs'
+      }
+      'colombia_3-public': {
+        description: 'Colombia has created and managed MPAs along its Pacific and Caribbean coasts spanning Yurupari-Malpelo Integrated Management District, where the fully protected Malpelo Sanctuary of Fauna and Flora is nested, Lomas and Colinas, Gorgona, and Cabo Manglares in the Pacific Ocean, as well as Beata and Corales de Profundidad in the Caribbean Sea. '
+        name: 'Colombia'
+      }
+      'costa_rica_1-public': {
+        description: 'Cocos Island National Park is a fully protected area spanning nearly 55,000 square kilometers. Bicentennial Marine Managed Area which surrounds Cocos Island National Park is 106,000 square kilometers.'
+        name: 'Costa Rica'
+      }
+      'fiji-public': {
+        description: 'Located in the South Pacific, the Republic of Fiji consists of 322 islands and has an exclusive economic zone of over 1.2 million square kilometers (460,000 square miles).'
+        name: 'Fiji'
+      }
+      'galapagos-public': {
+        description: 'A UNESCO World Heritage site, Galápagos Marine Reserve covers 133,000 square kilometers (51,300 square miles) of Pacific Ocean off the coast of South America.'
+        name: 'Galápagos'
+      }
+      'galapagos_and_hermandad-public': {
+        description: 'Galápagos Marine Reserve covers 133,000 square kilometers (51,300 square miles) of Pacific Ocean off the coast of South America. The Galápagos Marine Reserve was expanded with the creation of the Hermandad Marine Reserve to cover an additional 60,000 square kilometers (23,000 square miles).'
+        name: 'Galapagos and Hermandad'
+      }
+      'guyana-public': {
+        description: 'Guyana’s exclusive economic zone is located off the northeastern coast of South America and covers 137,000 square kilometers (52,800 square miles) of ocean. '
+        name: 'Guyana'
+      }
+      'maldives-public': {
+        description: 'The Republic of Maldives is an archipelago located in the Indian Ocean and has the seventh largest reef system in the world. Maldives has an exclusive economic zone that covers an area of nearly 1 million square kilometers (385,000 square miles).'
+        name: 'Maldives'
+      }
+      'mediterranean-public': {
+        description: 'The Mediterranean and Black Sea cover almost 3 million square kilometers (1.1 million square miles) of ocean between Europe and Africa. '
+        name: 'Mediterranean and Black Sea'
+      }
+      'micronesia-public': {
+        description: 'Composed of 607 islands, the four states of the Federated States of Micronesia (Yap, Chuuk, Pohnpei, and Kosrae) have an exclusive economic zone of over 2.6 million square kilometers (1 million square miles).'
+        name: 'Federated States of Micronesia'
+      }
+      'niue-public': {
+        description: 'Niue is located in the central Pacific Ocean and the Moana Mahu marine protected area covers 40 percent of Niue’s exclusive economic zone, covering 127,000 square kilometers (49,000 square miles).'
+        name: 'Niue'
+      }
+      'palau-public': {
+        description: 'The Republic of Palau is a group of islands located in the Western Pacific Ocean. In 2020, Palau fully protected 80% of its exclusive economic zone to form the Palau National Marine Sanctuary, representing 475,077 square kilometers (183,000 square miles), by closing these waters to all forms of extractive activities, including fishing. '
+        name: 'Palau'
+      }
+      'panama_1-public': {
+        description: 'Marine protected areas in Panama total just over 98,000 square kilometers (approximately 38,000 square miles), which include Coiba National Park, a UNESCO World Heritage Site that is a coastal marine protected area off the southwest coast, and the Coiba Ridge Managed Resource Area.'
+        name: 'Panama'
+      }
+      'reserva_de_la_biosfera_cmar-public': {
+        description: 'Initiated in 2004, the Eastern Tropical Pacific Marine Corridor is a voluntary regional cooperative effort to protect one of the most productive and biodiverse ecosystems.'
+        name: 'CMAR core MPAs'
+      }
+      'revillagigedo-public': {
+        description: 'Centered on four volcanic islands south of Mexico’s Baja California peninsula, Revillagigedo National Park was created in 2017 and spans 148,000 square kilometers.'
+        name: 'Revillagigedo'
+      }
+      'tristan-public': {
+        description: 'Tristan da Cunha is a remote island in the South Atlantic Ocean. In 2020, the Tristan da Cunha community designated 90 percent of its 690,000 square kilometer (266,400 square mile) ocean zone for marine protection.'
+        name: 'Tristan da Cunha'
       }
     }
     reports: {

@@ -739,6 +739,10 @@
     "name": "Areas to be Avoided by Cargo Shipping",
     "description": "25 nm buffer around islands recommending shipping diversion"
   },
+  "public-bathymetry-contour": {
+    "name": "Bathymetry Contour",
+    "description": "Combination of lines and points that represent the bathymetry contour"
+  },
   "public-belize-fishing-effort": {
     "name": "Belize VMS",
     "description": "Vessel monitoring system (VMS) data is provided by the Belize High Seas Fisheries Unit (BHSFU). Data is collected using Belize's vessel monitoring system via satellites and is published on a three-day delay containing information on vessels’ location, speed, course, and movement. Global Fishing Watch analyzes this data using the same algorithms developed for automatic identification system (AIS) to identify fishing activity and behaviors. The algorithm classifies each broadcast data point from vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch’s fishing activity heat map. VMS broadcasts data differently from AIS and may give different measures of completeness, accuracy, and quality. Global Fishing Watch is continually improving its algorithms across all broadcast data formats to algorithmically identify “apparent fishing activity.” It is possible that some fishing activity is not identified or that the heat map may show apparent fishing activity when fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies the terms “fishing activity,” “fishing” or “fishing effort,” as apparent rather than certain. Any and all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at the user’s discretion. Global Fishing Watch’s fishing presence algorithms are developed and tested using actual fishing event data collected by observers and is combined with expert analysis of AIS vessel movement data, resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and to improve automated classification techniques.",
@@ -870,6 +874,105 @@
     "name": "Brasil OpenTuna VMS (Embarcações pesqueiras)",
     "description": "Dataset VMS Brasil (Público)"
   },
+  "public-cfc-exploration-areas-individual": {
+    "name": "CFC Exploration Areas",
+    "description": "Cobalt-rich ferromanganese crusts are often found along the tops and edges of seamounts, knolls, and plateaus at depths ranging between 800 meters to 2500+ meters. These crusts can contain cobalt, nickel, manganese, and rare earth elements. Proposed methods for mining cobalt-rich ferromanganese crusts include grinding and entirely removing the crust from the host rock – which are inhabited by marine biodiversity – then delivering the resulting slurry to the surface. For cobalt-rich ferromanganese crusts, the exploration area allocated to each contractor is 3,000 square kilometres and consists of 150 blocks. Each block is no greater than 20 square kilometres.",
+    "schema": {
+      "status": "status",
+      "act_date": {
+        "keyword": "act_date",
+        "enum": {
+          "1447023600000": "1447023600000",
+          "1697752800000": "1697752800000"
+        }
+      },
+      "area_key": "area_key",
+      "blk_cell": "blk_cell",
+      "blk_orig": {
+        "keyword": "blk_orig",
+        "enum": {}
+      },
+      "sub_area": "sub_area",
+      "area_km_2": {
+        "keyword": "area_km_2",
+        "enum": {
+          "0.99879855": "0.99879855",
+          "20.0156525": "20.0156525"
+        }
+      },
+      "area_type": "area_type",
+      "clst_orig": {
+        "keyword": "clst_orig",
+        "enum": {
+          "978303600000": "978303600000",
+          "999295200000": "999295200000"
+        }
+      },
+      "cluster_id": {
+        "keyword": "cluster_id",
+        "enum": {
+          "NR": "NR",
+          "KC-1": "KC-1",
+          "KC-2": "KC-2",
+          "KC-3": "KC-3",
+          "KC-4": "KC-4",
+          "KC-5": "KC-5",
+          "KC-6": "KC-6",
+          "KC-7": "KC-7",
+          "KC-8": "KC-8",
+          "KC-9": "KC-9",
+          "NA": "NA"
+        }
+      },
+      "blk_cell_id": {
+        "keyword": "blk_cell_id",
+        "enum": {}
+      },
+      "contract_id": {
+        "keyword": "contract_id",
+        "enum": {
+          "KOREACRFC1": "KOREACRFC1",
+          "COMRACRFC1": "COMRACRFC1",
+          "BrazilCRFC1": "BrazilCRFC1",
+          "JOGMECCRFC1": "JOGMECCRFC1",
+          "RUSMNRCRFC1": "RUSMNRCRFC1"
+        }
+      }
+    }
+  },
+  "public-cfc-reserved-areas-individual": {
+    "name": "CFC Reserved Areas",
+    "description": "Cobalt-rich ferromanganese crusts are often found along the tops and edges of seamounts, knolls, and plateaus at depths ranging between 800 meters to 2500+ meters. These crusts can contain cobalt, nickel, manganese, and rare earth elements. Proposed methods for mining cobalt-rich ferromanganese crusts include grinding and entirely removing the crust from the host rock – which are inhabited by marine biodiversity – then delivering the resulting slurry to the surface. Reserved Areas under the International Seabed Authority are a critical mechanism to ensure developing countries have access to deep-sea mineral resources in the future. These areas are typically contributed by developed States when they apply for exploration rights.",
+    "schema": {
+      "status": "status",
+      "act_date": {
+        "keyword": "act_date",
+        "enum": {
+          "1425942000000": "1425942000000"
+        }
+      },
+      "area_key": "area_key",
+      "blk_cell": "blk_cell",
+      "blk_orig": {
+        "keyword": "blk_orig",
+        "enum": {}
+      },
+      "sub_area": "sub_area",
+      "area_km_2": "area_km_2",
+      "area_type": "area_type",
+      "cluster_id": "cluster_id",
+      "blk_cell_id": {
+        "keyword": "blk_cell_id",
+        "enum": {}
+      },
+      "contract_id": {
+        "keyword": "contract_id",
+        "enum": {
+          "CRFCReserved": "CRFCReserved"
+        }
+      }
+    }
+  },
   "public-chile-all-vessels": {
     "name": "Chile VMS (all Vessels)",
     "description": "Dataset for VMS Chile (Public)"
@@ -921,6 +1024,15 @@
   "public-chile-vessel-identity-non-fishing": {
     "name": "Chile VMS (Non fishing Vessels)",
     "description": "Dataset for VMS Chile (Public)"
+  },
+  "public-clarion-clipperton-zone-isa-claim-areas": {
+    "name": "Clarion-Clipperton Zone ISA License Areas",
+    "description": "This area represents the cumulative and contiguous area of the Clarion-Clipperton Zone, a region in the Eastern Pacific that is being targeted for seabed mining and managed by the International Seabed Authority. This region includes claim areas slated for exploration, areas reserved for developing states, and areas protected for environmental interest. The primary resource targeted in this region is polymetallic nodules.",
+    "schema": {
+      "type": "type",
+      "label": "label",
+      "contractor": "contractor"
+    }
   },
   "public-cold-water-corals": {
     "name": "Cold Water Corals",
@@ -1163,6 +1275,14 @@
   "public-global-chlorophyl": {
     "name": "Concentração de clorofila-a",
     "description": "<h2>Visão geral</h2>\n<ul>\n<li>A clorofila a é o pigmento captador de luz encontrado em todas as plantas fotossintéticas. O fitoplâncton marinho fixa quimicamente o carbono através da fotossíntese, absorvendo dióxido de carbono dissolvido e produzindo oxigênio. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo a clorofila, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. </li>\n<ul>\n<h2>Fonte</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>"
+  },
+  "public-global-currents-uo": {
+    "name": "Currents",
+    "description": "Currents eastward component"
+  },
+  "public-global-currents-vo": {
+    "name": "Currents",
+    "description": "Currents northward component"
   },
   "public-global-encounters-events-carriers-fishing": {
     "name": "Encounter Events for Carriers-Fishing Vessels (AIS)",
@@ -1577,6 +1697,14 @@
     "name": "Temperatura da superfície do mar",
     "description": "A temperatura da superfície do mar é a temperatura da água na superfície do oceano. O Modelo de Oceano Coordenado Híbrido (HYCOM) é um modelo de coordenadas oceânicas híbrido de dados análoga à pressão híbrida isopycnal-sigma (generalizado). O subconjunto de dados HYCOM hospedados na EE contém as variáveis salinidade, temperatura, velocidade vetorial e altitude. Eles foram interpolados para uma grade uniforme de 0,08 graus de lato/longo entre 70,48°S e 85,48°N. A salinidade, a temperatura e as variáveis de velocidade vetorial foram interpoladas para 40 níveis z-padrão. Fonte: HYCOM"
   },
+  "public-global-winds-uo": {
+    "name": "Winds",
+    "description": "Winds eastward component"
+  },
+  "public-global-winds-vo": {
+    "name": "Winds",
+    "description": "Winds northward component"
+  },
   "public-graticules": {
     "name": "Grades de latitude e longitude",
     "description": "Grids or graticules of latitude and longitude at 1, 5, 10 and 30° intervals depending on the zoom level of the map (Source: <a href='https://www.naturalearthdata.com/downloads/110m-physical-vectors/110m-graticules/'_blank'>Natural Earth</a>)."
@@ -1596,6 +1724,15 @@
   "public-high-seas-pockets": {
     "name": "High seas pockets",
     "description": "<p> The United Nations Convention on the Law of the Sea describes the high seas as ‘all parts of the sea that are not included in the exclusive economic zone, in the territorial sea or in the internal waters of a State, or in the archipelagic waters of an archipelagic State.’ High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them. Citation: Flanders Marine Institute (2024). Maritime Boundaries Geodatabase: High Seas, version 2. Available online at <a href=\"https://www.marineregions.org/\" target=\"_blank\" >https://www.marineregions.org/</a >. </p>"
+  },
+  "public-indian-ocean-isa-claim-areas": {
+    "name": "Indian Ocean ISA License Areas",
+    "description": "This layer depicts the ISA license areas for seabed mining in the Indian Ocean, which primarily contain polymetallic sulfides and polymetallic nodules. Exploration leases in this region are currently held by India, Germany, South Korea, and China.",
+    "schema": {
+      "type": "type",
+      "label": "label",
+      "contractor": "contractor"
+    }
   },
   "public-indonesia-fishing-effort": {
     "name": "Indonesia VMS",
@@ -1681,7 +1818,7 @@
   },
   "public-isa-layers": {
     "name": "ISA Areas by Resource Type",
-    "description": "ISA Areas",
+    "description": "This layer shows the areas managed by the International Seabed Authority across all ocean regions and seabed mineral resource types. \n\nExploration areas are those that have been licensed to States or individual contractors sponsored by a State for exploration of mineral resources under a 15-year contract. This enables the contract holder to conduct seabed surveys and environmental studies to assess the resource and region. These are the areas that could ultimately become licensed for exploitation if a State or contractor were to apply for a commercial exploitation permit. \n\nReserved areas are those that have been set aside by the ISA on behalf of developing nations to safeguard opportunity and access to these common heritage resources in the future. \n\nAreas of Particular Environmental Interest (APEI): These areas are protected from future exploitation of mineral resources to safeguard biodiversity and ecosystem health. The Regional Environmental Management Plan (REMP) of the International Seabed Authority initially established nine APEIs, but four more have been added as of December 2021. A total of thirteen APEIs have been designated by the ISA to date, protecting nearly 2 million square kilometers of the Clarion-Clipperton Zone in the Pacific Ocean. \n\nCFC Exploration Areas: Cobalt-rich ferromanganese crust resource areas licensed for exploration under the International Seabed Authority.\n\nCFC Reserved Areas: Cobalt-rich ferromanganese crust resource areas reserved under the International Seabed Authority.\n\nClarion-Clipperton Zone Management Area: This area encompasses the entire management region of the Clarion-Clipperton Zone of the Eastern Pacific Ocean, including all exploration areas, reserved areas, and areas of particular environmental interest. The CCZ spans 4.5 million square kilometers between Hawai’i and Mexico. \n\nPMN Exploration Areas: Polymetallic nodule resource areas licensed for exploration by the International Seabed Authority.\n\n\nPMN Reserved Areas: Polymetallic nodule resource areas reserved under the International Seabed Authority.\n\nPMS Exploration Areas: Polymetallic sulphide resource areas licensed for exploration by the International Seabed Authority.",
     "schema": {
       "label": {
         "keyword": "label",
@@ -1788,6 +1925,15 @@
     "name": "Mexico VMS (Fishing vessels)",
     "description": "Dataset for VMS Mexico (Public)"
   },
+  "public-mid-atlantic-isa-claim-areas": {
+    "name": "Mid-Atlantic ISA License Areas",
+    "description": "This layer depicts the ISA license areas for seabed mining on the Mid-Atlantic Ridge, which contain polymetallic sulfides. Exploration leases in this region are currently held by France, Russia, and Poland.",
+    "schema": {
+      "type": "type",
+      "label": "label",
+      "contractor": "contractor"
+    }
+  },
   "public-mp-as-mp-atlas": {
     "name": "MPAs (MPAtlas)",
     "description": "Marine protected areas (MPAs) are areas of the ocean set aside for long-term conservation. These can have different levels of protection, and the range of activities allowed or prohibited within their boundaries varies considerably"
@@ -1838,6 +1984,15 @@
   "public-no-take-zone-1618836692786": {
     "name": "Marine Protection Zone",
     "description": "90% of EEZ"
+  },
+  "public-northwest-pacific-isa-claim-areas": {
+    "name": "Northwest Pacific ISA License Areas",
+    "description": "This layer depicts the ISA license areas for seabed mining in the Northwestern Pacific, which primarily contain resources from cobalt-rich ferromanganese crusts and polymetallic nodules. Several countries hold exploration leases in this region including China, Japan, Russia, and South Korea.",
+    "schema": {
+      "type": "type",
+      "label": "label",
+      "contractor": "contractor"
+    }
   },
   "public-norway-fishing-effort": {
     "name": "Norway VMS",
@@ -1964,6 +2119,199 @@
   "public-peru-vessel-identity-fishing": {
     "name": "Peru VMS (Fishing Vessels)",
     "description": "Dataset for VMS Peru (Public)"
+  },
+  "public-pmn-exploration-areas-individual": {
+    "name": "PMN Exploration Areas",
+    "description": "Polymetallic nodules occur across abyssal plains. These nodules can be found at depths from 3000 meters to 6500 meters with high abundance in the Pacific Ocean and the Central Indian Ocean Basin. Nodules form at a rate of 1-3 millimeters per million years as metals from the surrounding water precipitate onto small particles, such as a grain of sand or a fragment of a shell, forming habitat for unique and poorly understood biodiversity. They are primarily composed of manganese, nickel, cobalt, copper, and rare earth elements. Exploration Areas under the International Seabed Authority are areas licensed for exploration of mineral resources to particular States and associated contractors. 75,000 square kilometers are allocated to each contractor for polymetallic nodule Exploration Areas.",
+    "schema": {
+      "status": "status",
+      "remarks": {
+        "keyword": "remarks",
+        "enum": {
+          "xx": "xx",
+          "Total exploration area of GSR (PMN) is 41,468.91606 sq.km": "Total exploration area of GSR (PMN) is 41,468.91606 sq.km",
+          "Total exploration area of IOM (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "Total exploration area of IOM (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA",
+          "Total exploration area of Yuzhmorgeologiya (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "Total exploration area of Yuzhmorgeologiya (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA",
+          "Total exploration area of Korea (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "Total exploration area of Korea (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA",
+          "Total exploration area of COMRA (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "Total exploration area of COMRA (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA",
+          "Total exploration area of DORD (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "Total exploration area of DORD (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA",
+          "Total exploration area of IFREMER (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "Total exploration area of IFREMER (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA",
+          "Total exploration area of India (PMN) is 75,000 sq.km, AreaKM2 was calculated by ISA": "Total exploration area of India (PMN) is 75,000 sq.km, AreaKM2 was calculated by ISA",
+          "Total exploration area of GSR (PMN) is 76,728 sq.km; AreaKM2 was calculated by ISA": "Total exploration area of GSR (PMN) is 76,728 sq.km; AreaKM2 was calculated by ISA",
+          "Total exploration area of MARAWA (PMN) is 74,990 sq.km; AreaKM2 was calculated by ISA": "Total exploration area of MARAWA (PMN) is 74,990 sq.km; AreaKM2 was calculated by ISA",
+          "Total exploration area of CIIC (PMN) is 71,937 sq.km; AreaKM2 was calcualted by ISA": "Total exploration area of CIIC (PMN) is 71,937 sq.km; AreaKM2 was calcualted by ISA"
+        }
+      },
+      "act_date": {
+        "keyword": "act_date",
+        "enum": {
+          "985816800000": "985816800000",
+          "1717970400000": "1717970400000"
+        }
+      },
+      "area_key": "area_key",
+      "blk_cell": "blk_cell",
+      "blk_orig": "blk_orig",
+      "sub_area": "sub_area",
+      "area_km_2": {
+        "keyword": "area_km_2",
+        "enum": {
+          "74919": "74919",
+          "2182.876": "2182.876"
+        }
+      },
+      "area_type": "area_type",
+      "clst_orig": "clst_orig",
+      "cluster_id": "cluster_id",
+      "blk_cell_id": "blk_cell_id",
+      "contract_id": {
+        "keyword": "contract_id",
+        "enum": {
+          "KOREAPMN1": "KOREAPMN1",
+          "IOMPMN1": "IOMPMN1",
+          "DORDPMN1": "DORDPMN1",
+          "BMJPMN1": "BMJPMN1",
+          "IndiaPMN1": "IndiaPMN1",
+          "TOMLPMN1": "TOMLPMN1",
+          "IFREMERPMN1": "IFREMERPMN1",
+          "BGRPMN1": "BGRPMN1",
+          "BPHDCPMN1": "BPHDCPMN1",
+          "UKSRLPMN2": "UKSRLPMN2",
+          "UKSRLPMN1": "UKSRLPMN1",
+          "YUZHPMN1": "YUZHPMN1",
+          "CIICPMN1": "CIICPMN1",
+          "OMSPMN1": "OMSPMN1",
+          "GSRPMN1": "GSRPMN1",
+          "MARAWAPMN1": "MARAWAPMN1",
+          "CMMPMN1": "CMMPMN1",
+          "NORIPMN1": "NORIPMN1",
+          "COMRAPMN1": "COMRAPMN1"
+        }
+      }
+    }
+  },
+  "public-pmn-reserved-areas-individual": {
+    "name": "PMN Reserved Areas",
+    "description": "Polymetallic nodules occur across abyssal plains. These nodules can be found at depths from 3000 meters to 6500 meters with high abundance in the Pacific Ocean and the Central Indian Ocean Basin. Nodules form at a rate of 1-3 millimeters per million years as metals from the surrounding water precipitate onto small particles, such as a grain of sand or a fragment of a shell, forming habitat for unique and poorly understood biodiversity. They are primarily composed of manganese, nickel, cobalt, copper, and rare earth elements. Reserved Areas under the International Seabed Authority are a critical mechanism to ensure developing countries have access to deep-sea mineral resources in the future. These areas are typically contributed by developed States when they apply for exploration rights.",
+    "schema": {
+      "status": "status",
+      "remarks": {
+        "keyword": "remarks",
+        "enum": {
+          "Origin:INDIA": "Origin:INDIA",
+          "Origin:COMRA": "Origin:COMRA",
+          "Origin:Yuzhmorgeologia": "Origin:Yuzhmorgeologia",
+          "Origin:DORD": "Origin:DORD",
+          "Origin:IFREMER": "Origin:IFREMER",
+          "Origin:Government of the Republic of Korea": "Origin:Government of the Republic of Korea",
+          "Origin:IOM": "Origin:IOM",
+          "Origin:BGR": "Origin:BGR",
+          "Origin:UKSRL-ll": "Origin:UKSRL-ll"
+        }
+      },
+      "act_date": {
+        "keyword": "act_date",
+        "enum": {
+          "988322400000": "988322400000",
+          "1617487200000": "1617487200000"
+        }
+      },
+      "area_key": "area_key",
+      "blk_cell": "blk_cell",
+      "blk_orig": {
+        "keyword": "blk_orig",
+        "enum": {
+          "983401200000": "983401200000",
+          "986076000000": "986076000000"
+        }
+      },
+      "sub_area": "sub_area",
+      "area_km_2": {
+        "keyword": "area_km_2",
+        "enum": {
+          "150000": "150000",
+          "1032.952": "1032.952"
+        }
+      },
+      "area_type": "area_type",
+      "clst_orig": "clst_orig",
+      "cluster_id": "cluster_id",
+      "blk_cell_id": "blk_cell_id",
+      "contract_id": {
+        "keyword": "contract_id",
+        "enum": {
+          "BPHDCPMN1": "BPHDCPMN1",
+          "PMNReserved": "PMNReserved"
+        }
+      }
+    }
+  },
+  "public-pms-exploration-areas-individual": {
+    "name": "PMS Exploration Areas",
+    "description": "Polymetallic sulphides, or seafloor massive sulphides, are formed at hydrothermal vents near mid-ocean ridges and back-arc basins between approximately 1,000 and 4,000 meters in depth. They are formed when superheated, mineral-rich fluids from the Earth’s mantle are rapidly cooled by deep water. Rapid cooling results in dissolved metals in the fluid precipitating as metal sulfides. These sulfides and surrounding polymetallic muds can contain copper, zinc, silver, and gold. For polymetallic sulphides, the exploration area allocated to each contractor is 10,000 square kilometres and consists of 100 blocks. Each block is no greater than 100 square kilometres.",
+    "schema": {
+      "status": "status",
+      "act_date": {
+        "keyword": "act_date",
+        "enum": {
+          "1474840800000": "1474840800000",
+          "1698098400000": "1698098400000"
+        }
+      },
+      "area_key": "area_key",
+      "blk_cell": "blk_cell",
+      "blk_orig": {
+        "keyword": "blk_orig",
+        "enum": {}
+      },
+      "sub_area": "sub_area",
+      "area_km_2": {
+        "keyword": "area_km_2",
+        "enum": {
+          "1": "1",
+          "101": "101"
+        }
+      },
+      "area_type": "area_type",
+      "clst_orig": {
+        "keyword": "clst_orig",
+        "enum": {
+          "A": "A",
+          "B": "B",
+          "C": "C",
+          "D": "D",
+          "E": "E"
+        }
+      },
+      "cluster_id": {
+        "keyword": "cluster_id",
+        "enum": {
+          "NR": "NR",
+          "A": "A",
+          "B": "B",
+          "C": "C",
+          "D": "D",
+          "E": "E",
+          "NA": "NA"
+        }
+      },
+      "blk_cell_id": {
+        "keyword": "blk_cell_id",
+        "enum": {}
+      },
+      "contract_id": {
+        "keyword": "contract_id",
+        "enum": {
+          "KOREAPMS1": "KOREAPMS1",
+          "COMRAPMS1": "COMRAPMS1",
+          "IFREMERPMS1": "IFREMERPMS1",
+          "POLPMS1": "POLPMS1",
+          "RUSFEDPMS1": "RUSFEDPMS1",
+          "BGRPMS1": "BGRPMS1",
+          "IndiaPMS1": "IndiaPMS1"
+        }
+      }
+    }
   },
   "public-png-fishing-effort": {
     "name": "Papua Nova Guiné VMS",
@@ -2190,6 +2538,14 @@
           "8000": "8000"
         }
       }
+    }
+  },
+  "public-south-atlantic-isa-claim-areas": {
+    "name": "South Atlantic ISA License Areas",
+    "description": "This layer depicts the ISA license areas for seabed mining in the South Atlantic Ocean, which contain resources cobalt-rich ferromanganese crusts. Brazil is currently the only country holding leases in this region.",
+    "schema": {
+      "label": "label",
+      "contractor": "contractor"
     }
   },
   "public-tristan-seamounts-200-1618586314138": {

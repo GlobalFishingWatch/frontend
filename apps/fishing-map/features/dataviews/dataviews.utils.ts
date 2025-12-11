@@ -9,7 +9,7 @@ import type {
   DataviewInstanceOrigin,
   DataviewType,
 } from '@globalfishingwatch/api-types'
-import { DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { FourwingsAggregationOperation, getUTCDateTime } from '@globalfishingwatch/deck-layers'
@@ -52,6 +52,18 @@ export const BATHYMETRY_CONTOUR_DATAVIEW_PREFIX = 'bathymetry-contour' as const
 
 export function dataviewHasVesselGroupId(dataview: UrlDataviewInstance, vesselGroupId: string) {
   return dataview.config?.filters?.['vessel-groups']?.includes(vesselGroupId)
+}
+
+export function dataviewHasUserPointsTimeRange(dataview: UrlDataviewInstance) {
+  const dataset = dataview.datasets?.find(
+    (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
+  )
+  const timeFilterType = getDatasetConfigurationProperty({
+    dataset,
+    property: 'timeFilterType',
+  })
+  const hasTimeFilter = timeFilterType === 'dateRange' || timeFilterType === 'date'
+  return hasTimeFilter
 }
 
 export const getVesselIdFromInstanceId = (dataviewInstanceId: string) => {

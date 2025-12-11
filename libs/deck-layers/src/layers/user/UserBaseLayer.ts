@@ -36,7 +36,6 @@ type _UserBaseLayerProps =
   | UserTrackLayerProps
   | UserPointsLayerProps
 
-export const POINT_SIZES_DEFAULT_RANGE = [3, 15]
 const defaultProps: DefaultProps<_UserBaseLayerProps> = {
   pickable: true,
   maxRequests: 100,
@@ -164,6 +163,9 @@ export abstract class UserBaseLayer<
     const { startTimeProperty, endTimeProperty, layers } = this.props
     const valueProperties = layers.flatMap((l) => l.valueProperties || [])
     const filters = layers.flatMap((l) => l.sublayers?.flatMap((s) => Object.keys(s.filters || {})))
+    const aggregatedProperty = layers.flatMap((l) =>
+      l.sublayers?.flatMap((s) => s.aggregateByProperty || [])
+    )
     const stepsPickValue = (this.props as UserPolygonsLayerProps)?.stepsPickValue
     const circleRadiusProperty = (this.props as UserPointsLayerProps)?.circleRadiusProperty
     const tilesUrlObject = new URL(tilesUrl)
@@ -175,6 +177,7 @@ export abstract class UserBaseLayer<
       stepsPickValue || '',
       circleRadiusProperty || '',
       ...filters,
+      ...aggregatedProperty,
     ].filter((p) => !!p)
     const uniqProperties = Array.from(new Set([...properties]))
     if (uniqProperties.length) {

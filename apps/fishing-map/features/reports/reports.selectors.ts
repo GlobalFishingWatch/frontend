@@ -6,7 +6,6 @@ import {
   selectActiveEventsReportSubCategories,
   selectActiveReportCategories,
 } from 'features/dataviews/selectors/dataviews.reports.selectors'
-import { selectIsOthersReportEnabled } from 'features/debug/debug.selectors'
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
 import {
   selectIsVesselGroupReportLocation,
@@ -60,8 +59,8 @@ export const selectReportAreaId = createSelector(
 )
 
 export const selectReportActiveCategories = createSelector(
-  [selectActiveReportCategories, selectIsVesselGroupReportLocation, selectIsOthersReportEnabled],
-  (activeCategories, isVesselGroupReportLocation, isOthersReportEnabled): ReportCategory[] => {
+  [selectActiveReportCategories, selectIsVesselGroupReportLocation],
+  (activeCategories, isVesselGroupReportLocation): ReportCategory[] => {
     if (isVesselGroupReportLocation) {
       return [
         ReportCategory.VesselGroup,
@@ -75,10 +74,8 @@ export const selectReportActiveCategories = createSelector(
       ReportCategory.Detections,
       ReportCategory.Environment,
       ReportCategory.Events,
+      ReportCategory.Others,
     ]
-    if (isOthersReportEnabled) {
-      orderedCategories.push(ReportCategory.Others)
-    }
     return orderedCategories.flatMap((category) =>
       activeCategories.some((a) => a === category) ? category : []
     )

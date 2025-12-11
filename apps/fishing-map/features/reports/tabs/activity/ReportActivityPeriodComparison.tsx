@@ -18,7 +18,7 @@ import { MAX_DAYS_TO_COMPARE, MAX_MONTHS_TO_COMPARE } from './reports-activity.c
 
 import styles from './ReportActivityBeforeAfter.module.css'
 
-export default function ReportActivityGraph() {
+export default function ReportActivityPeriodComparison() {
   const { t } = useTranslation()
   const timeComparison = useSelector(selectReportTimeComparison)
   const dataviews = useSelector(selectActiveActivityAndDetectionsDataviews)

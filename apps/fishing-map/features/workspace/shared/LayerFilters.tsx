@@ -6,7 +6,10 @@ import { debounce } from 'es-toolkit'
 
 import type { FilterOperator } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  isHeatmapVectorsDataview,
+  type UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { HEATMAP_HIGH_RES_ID, HEATMAP_ID } from '@globalfishingwatch/deck-layers'
 import type { MultiSelectOnChange, MultiSelectOption } from '@globalfishingwatch/ui-components'
 import { Button, MultiSelect } from '@globalfishingwatch/ui-components'
@@ -152,7 +155,8 @@ function LayerFilters({
   const allSelected = areAllSourcesSelectedInDataview(dataview)
   const sourcesSelected = allSelected ? [allOption] : getSourcesSelectedInDataview(dataview)
 
-  const showSourceFilter = sourceOptions && sourceOptions?.length > 1
+  const showSourceFilter =
+    sourceOptions && sourceOptions?.length > 1 && !isHeatmapVectorsDataview(dataview)
 
   const { filtersAllowed, filtersDisabled } = getSchemaFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
