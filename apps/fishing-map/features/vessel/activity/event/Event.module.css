@@ -49,6 +49,10 @@
   flex: 1;
 }
 
+.description > * {
+  pointer-events: auto;
+}
+
 .description a {
   text-decoration: none;
 }
