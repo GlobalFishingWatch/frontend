@@ -20,8 +20,8 @@
     "name": "Terumbu karang"
   },
   "currents": {
-    "description": "TODO",
-    "moreInfoLink": "",
+    "description": "Ocean currents are the movement of seawater driven by wind, temperature, salinity, tides, and Earth’s rotation. Ocean currents regulate climate and transport heat, nutrients, and marine species. This dataset shows global ocean surface currents, including speed and direction, providing insight into large-scale circulation patterns.",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description",
     "name": "Currents"
   },
   "dsm-isa-leasing-areas": {
@@ -225,8 +225,8 @@
     "name": "Night light detections (VIIRS Skylight)"
   },
   "winds": {
-    "description": "TODO",
-    "moreInfoLink": "",
-    "name": "Winds"
+    "description": "Wind is the movement of air across the Earth’s surface and plays an important role in shaping weather and ocean conditions. Surface winds help drive ocean circulation and influence mixing at the ocean surface. This dataset shows global wind speed and direction over the ocean.",
+    "moreInfoLink": "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=overview",
+    "name": "Wind"
   }
 }
