@@ -173,16 +173,16 @@
 @keyframes drawWave {
   0% {
     stroke-dashoffset: 2440;
-    opacity: 0.3;
+    opacity: 0.2;
   }
 
   50% {
-    opacity: 0.8;
+    opacity: 0.45;
   }
 
   100% {
     stroke-dashoffset: 0;
-    opacity: 0.3;
+    opacity: 0.2;
   }
 }
 
