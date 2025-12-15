@@ -471,7 +471,7 @@ interface Resources {
       "onlyVisibleForGFWShort": "GFW Only",
       "onlyVisibleForJAC": "Only visible for JAC users",
       "or": "or",
-      "others": "Others",
+      "others": "Points",
       "partnerSites": "Partner sites",
       "password": "password",
       "permissions": "permissions required",
