@@ -162,18 +162,18 @@
 }
 
 .wavePath {
-  stroke-dasharray: 650;
-  stroke-dashoffset: 0;
+  stroke-dasharray: 2440;
+  stroke-dashoffset: 1440;
 }
 
 .animateWave .wavePath {
-  animation: drawWave 3s ease-in-out infinite;
+  animation: drawWave 5s ease-in-out infinite;
 }
 
 @keyframes drawWave {
   0% {
-    stroke-dashoffset: 650;
-    opacity: 0.1;
+    stroke-dashoffset: 2440;
+    opacity: 0.3;
   }
 
   50% {

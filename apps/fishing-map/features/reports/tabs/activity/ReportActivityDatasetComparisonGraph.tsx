@@ -129,7 +129,7 @@ const ReportActivityDatasetComparisonGraph = ({
   }
 
   if (mapLoading) {
-    return <ReportActivityPlaceholder showHeader={false} />
+    return <ReportActivityPlaceholder showHeader={false} loading />
   }
 
   if (!dataFormated || !xDomain || !dataFormated[0]) {

@@ -89,7 +89,7 @@ function ReportEnvironmentGraph({
       </p>
       {(isDynamic || isHeatmapVector) &&
         (isLoading || hasError ? (
-          <ReportActivityPlaceholder showHeader={false}>
+          <ReportActivityPlaceholder showHeader={false} loading={isLoading}>
             {hasError && <p className={styles.errorMessage}>{t('errors.layerLoading')}</p>}
           </ReportActivityPlaceholder>
         ) : isEmptyData ? (

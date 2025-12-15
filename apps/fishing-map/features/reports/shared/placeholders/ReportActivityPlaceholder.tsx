@@ -4,10 +4,12 @@ import styles from './placeholders.module.css'
 
 export default function ReportActivityPlaceholder({
   showHeader = true,
+  loading = false,
   animate = true,
   children = null,
 }: {
   showHeader?: boolean
+  loading?: boolean
   animate?: boolean
   children?: React.ReactNode
 }) {
@@ -82,28 +84,6 @@ export default function ReportActivityPlaceholder({
             className={cx(styles.block, styles.grow, styles.line, { [styles.animate]: animate })}
           />
         </div>
-        {/* Sinusoidal line graph overlay */}
-        <svg
-          className={cx(styles.waveGraph, { [styles.animateWave]: animate })}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: '5rem',
-            right: 0,
-            height: '100%',
-            pointerEvents: 'none',
-          }}
-          preserveAspectRatio="none"
-          viewBox="5 0 1440 260"
-        >
-          <path
-            d="M0,256L24,229.3C48,203,96,149,144,138.7C192,128,240,160,288,149.3C336,139,384,85,432,96C480,107,528,181,576,176C624,171,672,85,720,80C768,75,816,149,864,154.7C912,160,960,96,1008,90.7C1056,85,1104,139,1152,160C1200,181,1248,171,1296,154.7C1344,139,1392,117,1416,106.7L1440,96L1440,320L1416,320C1392,320,1344,320,1296,320C1248,320,1200,320,1152,320C1104,320,1056,320,1008,320C960,320,912,320,864,320C816,320,768,320,720,320C672,320,624,320,576,320C528,320,480,320,432,320C384,320,336,320,288,320C240,320,192,320,144,320C96,320,48,320,24,320L0,320Z"
-            fill="none"
-            stroke="rgba(var(--primary-blue-rgb), 0.6)"
-            strokeWidth="1.8"
-            className={styles.wavePath}
-          />
-        </svg>
       </div>
       <div style={{ marginLeft: '3rem' }} className={cx(styles.flex, styles.spaceBetween)}>
         <div
@@ -126,8 +106,28 @@ export default function ReportActivityPlaceholder({
           style={{ width: '5rem' }}
           className={cx(styles.block, styles.S, { [styles.animate]: animate })}
         />
+        {loading && (
+          <svg
+            className={cx(styles.waveGraph, styles.children, { [styles.animateWave]: animate })}
+            style={{
+              height: '100%',
+              width: '100%',
+              pointerEvents: 'none',
+            }}
+            viewBox="0 0 1040 320"
+          >
+            <path
+              fill="none"
+              stroke="rgba(var(--primary-blue-rgb), 0.6)"
+              strokeWidth="1.8"
+              className={styles.wavePath}
+              d="M0,288L9.6,256C19.2,224,38,160,58,117.3C76.8,75,96,53,115,64C134.4,75,154,117,173,133.3C192,149,211,139,230,160C249.6,181,269,235,288,229.3C307.2,224,326,160,346,160C364.8,160,384,224,403,213.3C422.4,203,442,117,461,69.3C480,21,499,11,518,58.7C537.6,107,557,213,576,245.3C595.2,277,614,235,634,202.7C652.8,171,672,149,691,128C710.4,107,730,85,749,69.3C768,53,787,43,806,37.3C825.6,32,845,32,864,69.3C883.2,107,902,181,922,208C940.8,235,960,213,979,218.7C998.4,224,1018,256,1037,250.7C1056,245,1075,203,1094,197.3C1113.6,192,1133,224,1152,224C1171.2,224,1190,192,1210,176C1228.8,160,1248,160,1267,144C1286.4,128,1306,96,1325,85.3C1344,75,1363,85,1382,122.7C1401.6,160,1421,224,1430,256L1440,288"
+            ></path>
+          </svg>
+        )}
       </div>
       {children && <div className={styles.children}>{children}</div>}
+      {/* Sinusoidal line graph overlay */}
     </div>
   )
 }
