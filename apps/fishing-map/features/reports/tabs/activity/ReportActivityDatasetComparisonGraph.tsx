@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { CartesianGrid, ComposedChart, Line, Tooltip, XAxis, YAxis } from 'recharts'
+import { CartesianGrid, ComposedChart, Label, Legend, Line, Tooltip, XAxis, YAxis } from 'recharts'
 
 import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
 import { getContrastSafeLineColor } from '@globalfishingwatch/responsive-visualizations'
@@ -16,6 +16,7 @@ import {
   formatEvolutionData,
 } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 
+import DataComparisonLegend from './DataComparisonLegend'
 import EvolutionGraphTooltip from './EvolutionGraphTooltip'
 
 import styles from './ReportActivityDatasetComparison.module.css'
@@ -103,19 +104,17 @@ const ReportActivityDatasetComparisonGraph = ({
 
   const interval = filteredData[0]?.interval
 
-  const dataFormated = useMemo(
-    () =>
-      formatEvolutionData(
-        filteredData[0],
-        {
-          start,
-          end,
-          timeseriesInterval: interval,
-        },
-        filteredData[1]
-      ),
-    [end, filteredData, interval, start]
-  )
+  const dataFormated = useMemo(() => {
+    return formatEvolutionData(
+      filteredData[0],
+      {
+        start,
+        end,
+        timeseriesInterval: interval,
+      },
+      filteredData[1]
+    )
+  }, [end, filteredData, interval, start])
 
   const xDomain = useMemo(() => calculateXDomain(start, end, interval), [start, end, interval])
 
@@ -130,7 +129,7 @@ const ReportActivityDatasetComparisonGraph = ({
   }
 
   if (mapLoading) {
-    return <ReportActivityPlaceholder showHeader={false} />
+    return <ReportActivityPlaceholder showHeader={false} loading />
   }
 
   if (!dataFormated || !xDomain || !dataFormated[0]) {
@@ -215,6 +214,12 @@ const ReportActivityDatasetComparisonGraph = ({
             />
           )
         })}
+        <Legend
+          verticalAlign="top"
+          align="center"
+          wrapperStyle={{ width: '100%' }}
+          content={(props) => <DataComparisonLegend {...props} />}
+        />
         {dataFormated.length > 0 && (
           <Tooltip content={<EvolutionGraphTooltip timeChunkInterval={interval} />} />
         )}
