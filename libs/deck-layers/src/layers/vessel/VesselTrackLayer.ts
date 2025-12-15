@@ -92,7 +92,7 @@ export class VesselTrackLayer extends CompositeLayer<VesselTrackLayerProps> {
         includeCoordinates: true,
         startTime: this.props.startTime,
         endTime: this.props.endTime,
-        maxTimeGapHours: this.props.maxTimeGapHours,
+        // maxTimeGapHours: this.props.maxTimeGapHours,
       })
       if (segments?.length) {
         const points = segments.flatMap((segment) => (segment.length ? segment : []))
