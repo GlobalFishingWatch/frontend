@@ -15,7 +15,7 @@ import { selectActiveReportDataviews } from 'features/dataviews/selectors/datavi
 import { resolveLibraryLayers } from 'features/layer-library/LayerLibrary'
 import { isSupportedComparisonDataview } from 'features/reports/report-area/area-reports.utils'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
-import { selectReportSubCategory } from 'features/reports/reports.selectors'
+import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
 import { updateLocation } from 'routes/routes.actions'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
@@ -58,6 +58,7 @@ const ReportActivityDatasetComparison = () => {
   }, [allDataviews, t])
 
   const layersResolved = useMemo(() => {
+    const reportCategory = reportDataviews[0]?.category
     return allLayersResolved?.filter((layer) => {
       const datasetId = layer.dataview.datasetsConfig?.[0]?.datasetId
       const dataset = allDatasets.find((dataset) => dataset.id === datasetId)
@@ -65,11 +66,12 @@ const ReportActivityDatasetComparison = () => {
         return false
       }
       return (
+        layer.dataview.category !== reportCategory &&
         isSupportedComparisonDataview(layer.dataview) &&
         comparisonDatasets?.main?.split(LAYER_LIBRARY_ID_SEPARATOR)[0] !== layer.id
       )
     })
-  }, [allLayersResolved, comparisonDatasets?.main, allDatasets, reportSubcategory])
+  }, [reportDataviews, allLayersResolved, allDatasets, reportSubcategory, comparisonDatasets?.main])
 
   const layerOptions = useMemo(() => {
     return layersResolved.map((layer) =>
