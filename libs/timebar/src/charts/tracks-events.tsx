@@ -123,7 +123,7 @@ const TracksEvents = ({
                 {
                   left: `${event.x}px`,
                   width: `${event.width}px`,
-                  height: event.type === 'gaps' ? `${borderSize}px` : `${eventSizeByType}px`,
+                  height: event.type === 'gap' ? `${borderSize}px` : `${eventSizeByType}px`,
                   '--background-color': color,
                   '--size': `${eventSizeByType}px`,
                   '--border-size': `${borderSize}px`,
