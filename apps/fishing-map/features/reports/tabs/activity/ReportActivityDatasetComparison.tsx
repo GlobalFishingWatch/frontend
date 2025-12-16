@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
@@ -16,6 +17,7 @@ import { resolveLibraryLayers } from 'features/layer-library/LayerLibrary'
 import { isSupportedComparisonDataview } from 'features/reports/report-area/area-reports.utils'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
 import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
+import { ReportCategory } from 'features/reports/reports.types'
 import { updateLocation } from 'routes/routes.actions'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
@@ -62,14 +64,15 @@ const ReportActivityDatasetComparison = () => {
     return allLayersResolved?.filter((layer) => {
       const datasetId = layer.dataview.datasetsConfig?.[0]?.datasetId
       const dataset = allDatasets.find((dataset) => dataset.id === datasetId)
-      if (!dataset || dataset?.subcategory === reportSubcategory) {
+      const isActivitySameCategory =
+        layer.dataview.category === reportCategory && reportCategory === DataviewCategory.Activity
+      if (!dataset || dataset?.subcategory === reportSubcategory || isActivitySameCategory) {
         return false
       }
-      return (
-        layer.dataview.category !== reportCategory &&
-        isSupportedComparisonDataview(layer.dataview) &&
-        comparisonDatasets?.main?.split(LAYER_LIBRARY_ID_SEPARATOR)[0] !== layer.id
-      )
+      if (comparisonDatasets?.main?.split(LAYER_LIBRARY_ID_SEPARATOR)[0] === layer.id) {
+        return false
+      }
+      return isSupportedComparisonDataview(layer.dataview)
     })
   }, [reportDataviews, allLayersResolved, allDatasets, reportSubcategory, comparisonDatasets?.main])
 
