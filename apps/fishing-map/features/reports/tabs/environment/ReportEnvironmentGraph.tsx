@@ -28,6 +28,7 @@ import {
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportStatsPlaceholder from 'features/reports/shared/placeholders/ReportStatsPlaceholder'
 import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
+import ReportVectorGraphTooltip from 'features/reports/tabs/environment/ReportVectorGraphTooltip'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import OutOfTimerangeDisclaimer from 'features/workspace/shared/OutOfBoundsDisclaimer'
 import { upperFirst } from 'utils/info'
@@ -47,6 +48,7 @@ function ReportEnvironmentGraph({
   isLoading?: boolean
   index?: number
 }) {
+  console.log('🚀 ~ ReportEnvironmentGraph ~ data:', data)
   useComputeReportTimeSeries()
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()
@@ -107,8 +109,12 @@ function ReportEnvironmentGraph({
             // TODO: currents and winds
             // Refactor the ReportVectorGraphTooltip component and pass it here
             // before it was using the entire timeline but we want to use only the data from the hovered date
-            // onClickTooltip={isHeatmapVector}
-            // TooltipContent={isHeatmapVector ? <span>TODO</span> : undefined}
+            // freezeTooltipOnClick={isHeatmapVector}
+            TooltipContent={
+              isHeatmapVector ? (
+                <ReportVectorGraphTooltip instanceId={dataview.id} color={dataview.config?.color} />
+              ) : undefined
+            }
           />
         ))}
       {isLoading ? (

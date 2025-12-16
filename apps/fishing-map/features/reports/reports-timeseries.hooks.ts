@@ -297,7 +297,9 @@ const useReportTimeseries = (
           ) as FourwingsFeature[]
           const error = instance?.getError?.()
           if (error || !features?.length) {
-            featuresFiltered.push([{ contained: [], overlapping: [], error }])
+            featuresFiltered.push([
+              { contained: [], overlapping: [], error, instanceId: instance.id },
+            ])
           } else {
             let mode: FilterByPolygonMode = 'cell'
             if (instance.props.category === 'environment') {
@@ -310,11 +312,14 @@ const useReportTimeseries = (
             }
             const filteredInstanceFeatures =
               area.id === ENTIRE_WORLD_REPORT_AREA_ID
-                ? ([{ contained: features, overlapping: [] }] as FilteredPolygons[])
+                ? ([
+                    { contained: features, overlapping: [], instanceId: instance.id },
+                  ] as FilteredPolygons[])
                 : await filterCellsByPolygon({
                     layersCells: [features],
                     polygon: area.geometry!,
                     mode,
+                    instanceId: instance.id,
                   })
             featuresFiltered.push(filteredInstanceFeatures)
           }

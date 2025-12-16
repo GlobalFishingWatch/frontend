@@ -4,6 +4,10 @@
   margin-top: var(--space-S);
 }
 
+.margin {
+  margin-top: var(--space-S);
+}
+
 .graph svg {
   overflow: visible;
 }
@@ -60,4 +64,8 @@
 .labels {
   font: var(--font-S);
   fill: var(--color-secondary-blue);
+}
+
+.cardinalDirection {
+  font: var(--font-XS);
 }
