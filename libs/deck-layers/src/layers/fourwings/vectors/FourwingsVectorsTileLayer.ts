@@ -235,19 +235,20 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   getZoomOffset = () => {
-    const { zoom } = this.context.viewport
+    const zoom = this.context.viewport.zoom
     return zoom < 0.5 ? 0 : zoom < 1.5 ? -1 : -2
   }
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList {
-    const { zoom } = this.context.viewport
-    if (zoom === undefined) {
+    const { zoom, latitude, longitude } = this.context.viewport as any
+    if (zoom === undefined || (latitude === 0 && longitude === 0 && zoom === 0)) {
       return []
     }
     const { tilesCache } = this.state
     const { maxRequests, debounceTime, maxZoom } = this.props
 
     const cacheKey = this._getTileDataCacheKey()
+    const zoomOffset = this.getZoomOffset()
 
     return new TileLayer(
       this.props,
@@ -259,13 +260,13 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
         onTileError: this._onLayerError,
         maxZoom: maxZoom || 8,
         refinementStrategy: 'never',
-        zoomOffset: this.getZoomOffset(),
+        zoomOffset,
         opacity: 1,
         maxRequests,
         debounceTime,
         getTileData: this._getTileData,
         updateTriggers: {
-          getTileData: [cacheKey],
+          getTileData: [cacheKey, zoomOffset],
         },
         renderSubLayers: (props: any) => {
           return new FourwingsVectorsLayer(props)
