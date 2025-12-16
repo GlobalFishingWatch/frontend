@@ -6,6 +6,7 @@ import max from 'lodash/max'
 
 import type { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
+import { PRIMARY_BLUE_COLOR } from 'data/config'
 import i18n from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { formatDate } from 'features/reports/report-area/area-reports.utils'
@@ -43,7 +44,7 @@ function ReportVectorGraphTooltip(
 ) {
   const { t } = useTranslation()
   const [tooltip, setTooltip] = useState<TooltipData>(null)
-  const { instanceId, color, timeChunkInterval, payload } = props
+  const { instanceId, color = PRIMARY_BLUE_COLOR, timeChunkInterval, payload } = props
   const hoveredTime = payload?.[0]?.payload?.date
   const features = useReportFilteredFeatures()
 
