@@ -1,3 +1,5 @@
+import { getContrastSafeLineColor } from '@globalfishingwatch/responsive-visualizations'
+
 import styles from './ReportActivityEvolution.module.css'
 
 export default function DataComparisonLegend(props: any) {
@@ -7,11 +9,11 @@ export default function DataComparisonLegend(props: any) {
     return (
       <div className={styles.legendRow}>
         {payload.map(({ color, payload }: any, index: number) => {
+          const safeColor = getContrastSafeLineColor(color, true)
           return (
-            <div key={index}>
-              <span className={styles.tooltipValueDot} style={{ color }}></span>
+            <span key={index} style={{ color: safeColor, fontWeight: 500 }}>
               {payload.unit}
-            </div>
+            </span>
           )
         })}
       </div>

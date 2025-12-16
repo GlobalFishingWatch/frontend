@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { CartesianGrid, ComposedChart, Label, Legend, Line, Tooltip, XAxis, YAxis } from 'recharts'
+import { CartesianGrid, ComposedChart, Legend, Line, Tooltip, XAxis, YAxis } from 'recharts'
 
 import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
 import { getContrastSafeLineColor } from '@globalfishingwatch/responsive-visualizations'
@@ -217,7 +217,7 @@ const ReportActivityDatasetComparisonGraph = ({
         <Legend
           verticalAlign="top"
           align="center"
-          wrapperStyle={{ width: '100%' }}
+          wrapperStyle={{ width: '100%', left: 0 }}
           content={(props) => <DataComparisonLegend {...props} />}
         />
         {dataFormated.length > 0 && (
