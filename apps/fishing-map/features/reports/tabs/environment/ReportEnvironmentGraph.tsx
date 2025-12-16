@@ -48,7 +48,6 @@ function ReportEnvironmentGraph({
   isLoading?: boolean
   index?: number
 }) {
-  console.log('🚀 ~ ReportEnvironmentGraph ~ data:', data)
   useComputeReportTimeSeries()
   const { t } = useTranslation()
   const { start, end } = useTimerangeConnect()

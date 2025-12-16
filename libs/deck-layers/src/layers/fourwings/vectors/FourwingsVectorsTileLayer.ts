@@ -22,8 +22,8 @@ import type {
 } from '../fourwings.types'
 import type { FourwingsHeatmapTilesCache } from '../heatmap/fourwings-heatmap.types'
 import {
-  getDataUrlBySublayer,
   getFourwingsChunk,
+  getMergedDataUrl,
   getTileDataCache,
 } from '../heatmap/fourwings-heatmap.utils'
 
