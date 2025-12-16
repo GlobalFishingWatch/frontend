@@ -31,9 +31,9 @@ function ensureMinimumContrast(
   return adjustedColor
 }
 
-export const getContrastSafeLineColor = (
+export const getContrastSafeColor = (
   color: string,
-  text: boolean = false,
+  type: 'line' | 'text' = 'line',
   backgroundColor: string = '#F4F9FA'
 ) => {
   if (!color) {
@@ -45,7 +45,7 @@ export const getContrastSafeLineColor = (
   const colorA = new Color(color)
   const colorB = new Color(backgroundColor)
 
-  if (text) {
+  if (type === 'text') {
     const adjustedColor = ensureMinimumContrast(
       colorA,
       colorB,
