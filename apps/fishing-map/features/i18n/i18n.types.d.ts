@@ -1165,7 +1165,7 @@ interface Resources {
       clickToFitMapToEvents: 'Center map on the events inside'
       clickToSeeMore: 'Click to see more information'
       codMarinha: 'Cod Marinha'
-      confirmationClose: 'Do you want to keep this vessel in your workspace?'
+      confirmationClose: "Do you want to keep this vessel in your workspace? Press 'Ok' to keep or 'Cancel' to exit vessel profile and remove it."
       dataset: 'Source'
       depthM: 'Depth (m)'
       exitTrackCorrection: 'Exit activity issue (track correction) panel to be able to navigate to the vessel profile'
