@@ -126,24 +126,15 @@ function TrackSlider({
   const endTime = getUTCDateTime(end).toMillis()
 
   useEffect(() => {
-    if (!start || !end) {
+    if (rangeStartTime && rangeEndTime) {
       dispatch(
         setTrackCorrectionTimerange({
-          start: getUTCDateTime(rangeStartTime!).toISO() ?? start,
-          end: getUTCDateTime(rangeEndTime!).toISO() ?? end,
+          start: getUTCDateTime(rangeStartTime!).toISO() as string,
+          end: getUTCDateTime(rangeEndTime!).toISO() as string,
         })
       )
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, rangeStartTime, rangeEndTime])
-
-  const throttledHighlightTime = useMemo(
-    () =>
-      throttle(({ start, end }: { start: string; end: string }) => {
-        dispatch(setTrackCorrectionTimerange({ start, end }))
-      }, 300),
-    [dispatch]
-  )
 
   const findNearestPoint = useCallback(
     (date: DateTime) => {
