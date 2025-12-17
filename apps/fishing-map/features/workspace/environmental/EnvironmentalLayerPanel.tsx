@@ -123,7 +123,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
       d.type === DatasetTypes.UserTracks ||
       d.type === DatasetTypes.PMTiles
   )
-  const hasLegend = dataset?.type === DatasetTypes.Fourwings && !isVectorLayer
+  const hasLegend = dataset?.type === DatasetTypes.Fourwings
 
   if (!dataset || dataset.status === 'deleted') {
     return <DatasetNotFound dataview={dataview} />

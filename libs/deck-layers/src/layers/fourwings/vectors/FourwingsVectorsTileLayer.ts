@@ -2,10 +2,12 @@ import type { DefaultProps, Layer, LayerContext, LayersList, UpdateParameters } 
 import { CompositeLayer } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
-import type { TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { parse } from '@loaders.gl/core'
+import { debounce } from 'es-toolkit'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type {
   FourwingsFeature,
   FourwingsInterval,
@@ -13,17 +15,28 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import { FourwingsVectorsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import { FOURWINGS_TILE_SIZE, HEATMAP_API_TILES_URL, VECTORS_MAX_ZOOM } from '../fourwings.config'
+import { hexToRgbaString, removeOutliers } from '../../../utils'
+import {
+  DYNAMIC_RAMP_VECTOR_CHANGE_THRESHOLD,
+  FOURWINGS_TILE_SIZE,
+  HEATMAP_API_TILES_URL,
+  MAX_RAMP_VALUES,
+  VECTORS_MAX_ZOOM,
+} from '../fourwings.config'
 import type {
   BaseFourwingsLayerProps,
   FourwingsDeckVectorSublayer,
   FourwingsPickingObject,
+  GetViewportDataParams,
 } from '../fourwings.types'
 import type { FourwingsHeatmapTilesCache } from '../heatmap/fourwings-heatmap.types'
+import { FourwingsAggregationOperation } from '../heatmap/fourwings-heatmap.types'
 import {
   getFourwingsChunk,
+  getIntervalFrames,
   getMergedDataUrl,
   getTileDataCache,
+  sliceCellValues,
 } from '../heatmap/fourwings-heatmap.utils'
 
 import { FourwingsVectorsLayer } from './FourwingsVectorsLayer'
@@ -31,6 +44,9 @@ import { FourwingsVectorsLayer } from './FourwingsVectorsLayer'
 export type FourwingsVectorsTileLayerState = {
   error: string
   tilesCache: FourwingsHeatmapTilesCache
+  maxVelocity: number
+  rampDirty: boolean
+  viewportLoaded: boolean
 }
 
 export type _FourwingsVectorsTileLayerProps<DataT = FourwingsFeature> = Omit<
@@ -39,7 +55,6 @@ export type _FourwingsVectorsTileLayerProps<DataT = FourwingsFeature> = Omit<
 > & {
   data?: DataT
   debugTiles?: boolean
-  maxVelocity?: number
   availableIntervals?: FourwingsInterval[]
   highlightedFeatures?: FourwingsPickingObject[]
   sublayers: FourwingsDeckVectorSublayer[]
@@ -52,7 +67,6 @@ export type FourwingsVectorsTileLayerProps = _FourwingsVectorsTileLayerProps &
 const defaultProps: DefaultProps<FourwingsVectorsTileLayerProps> = {
   maxRequests: 100,
   debounceTime: 500,
-  maxVelocity: 5,
   maxZoom: VECTORS_MAX_ZOOM,
   tilesUrl: HEATMAP_API_TILES_URL,
 }
@@ -76,7 +90,14 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
         availableIntervals: this.props.availableIntervals,
         chunksBuffer: this.chunksBuffer,
       }),
+      maxVelocity: 0,
+      rampDirty: false,
+      viewportLoaded: false,
     }
+  }
+
+  get isLoaded(): boolean {
+    return super.isLoaded && !this.state.rampDirty && this.state.viewportLoaded
   }
 
   getError(): string {
@@ -87,6 +108,97 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     console.warn(error.message)
     this.setState({ error: error.message })
     return true
+  }
+
+  _calculateMaxVelocity = (): number => {
+    const { startTime, endTime, availableIntervals } = this.props
+    const currentZoomData = this.getData()
+    if (!currentZoomData.length) {
+      return this.state.maxVelocity
+    }
+
+    const { startFrame, endFrame } = getIntervalFrames({
+      startTime,
+      endTime,
+      availableIntervals,
+      bufferedStart:
+        getTileDataCache({
+          zoom: Math.round(this.context.viewport.zoom),
+          startTime: this.props.startTime,
+          endTime: this.props.endTime,
+          availableIntervals: this.props.availableIntervals,
+          chunksBuffer: this.chunksBuffer,
+        })?.bufferedStart || 0,
+    })
+
+    const dataSample =
+      currentZoomData.length > MAX_RAMP_VALUES
+        ? currentZoomData.filter(
+            (d, i) => i % Math.ceil(currentZoomData.length / MAX_RAMP_VALUES) === 0
+          )
+        : currentZoomData
+
+    const allVelocities = dataSample.flatMap((feature) => {
+      if (!feature.properties?.velocities || !feature.properties.velocities.length) {
+        return []
+      }
+      const slicedValues = sliceCellValues({
+        values: feature.properties.velocities,
+        startFrame,
+        endFrame,
+        startOffset: feature.properties.startOffsets?.[0] ?? 0,
+      })
+      return slicedValues.filter(Boolean)
+    })
+
+    if (!allVelocities.length) {
+      return this.state.maxVelocity
+    }
+
+    const dataFiltered = removeOutliers({
+      allValues: allVelocities,
+      aggregationOperation: FourwingsAggregationOperation.Avg,
+    })
+
+    if (!dataFiltered.length) {
+      return this.state.maxVelocity
+    }
+
+    const sorted = [...dataFiltered].sort((a, b) => a - b)
+    return sorted[sorted.length - 1] || 1
+  }
+
+  updateMaxVelocity = debounce(
+    () => {
+      requestAnimationFrame(() => {
+        const { maxVelocity: oldMaxVelocity } = this.state
+        const newMaxVelocity = this._calculateMaxVelocity()
+        let avgChange = Infinity
+
+        if (oldMaxVelocity && oldMaxVelocity > 0) {
+          const change = (Math.abs(newMaxVelocity - oldMaxVelocity) / oldMaxVelocity) * 100
+          avgChange = change
+        }
+
+        if (avgChange > DYNAMIC_RAMP_VECTOR_CHANGE_THRESHOLD || !oldMaxVelocity) {
+          this.setState({
+            maxVelocity: newMaxVelocity,
+            rampDirty: false,
+            viewportLoaded: true,
+          })
+        } else {
+          this.setState({ rampDirty: false, viewportLoaded: true })
+        }
+      })
+    },
+    (defaultProps.debounceTime as number) + 1
+  )
+
+  _onViewportLoad = (tiles: Tile2DHeader[]) => {
+    this.updateMaxVelocity()
+    if (this.props.onViewportLoad) {
+      this.props.onViewportLoad(tiles)
+    }
   }
 
   _fetchTimeseriesTileData: any = async (tile: TileLoadProps) => {
@@ -101,6 +213,8 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       availableIntervals,
       chunksBuffer: this.chunksBuffer,
     })
+
+    this.setState({ rampDirty: true })
 
     const url = getMergedDataUrl({
       tile,
@@ -191,13 +305,23 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     const zoom = Math.round(this.context.viewport.zoom)
     const isStartOutRange = startTime < tilesCache.start
     const isEndOutRange = endTime > tilesCache.end
+    const isDifferentZoom = zoom !== tilesCache.zoom
     // TODO debug why not re-rendering on out of range
     // TODO debug why re-renders when not needed
     const needsCacheKeyUpdate =
       isStartOutRange ||
       isEndOutRange ||
       getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
-      zoom !== tilesCache.zoom
+      isDifferentZoom
+
+    if (isDifferentZoom) {
+      requestAnimationFrame(() => {
+        this.setState({
+          viewportLoaded: false,
+        })
+      })
+    }
+
     if (needsCacheKeyUpdate) {
       requestAnimationFrame(() => {
         this.setState({
@@ -223,7 +347,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     if (zoom === undefined || (latitude === 0 && longitude === 0 && zoom === 0)) {
       return []
     }
-    const { tilesCache } = this.state
+    const { tilesCache, maxVelocity } = this.state
     const { maxRequests, debounceTime, maxZoom } = this.props
 
     const cacheKey = this._getTileDataCacheKey()
@@ -247,8 +371,12 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
         updateTriggers: {
           getTileData: [cacheKey, zoomOffset],
         },
+        onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {
-          return new FourwingsVectorsLayer(props)
+          return new FourwingsVectorsLayer({
+            ...props,
+            maxVelocity,
+          })
         },
       })
     )
@@ -292,5 +420,39 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   getChunk = () => {
     const { startTime, endTime, availableIntervals } = this.props
     return getFourwingsChunk({ start: startTime, end: endTime, availableIntervals })
+  }
+
+  getViewportData(params = {} as GetViewportDataParams) {
+    const data = this.getData()
+    const { viewport } = this.context
+    const [west, north] = viewport.unproject([0, 0])
+    const [east, south] = viewport.unproject([viewport.width, viewport.height])
+    if (data?.length) {
+      const dataFiltered = filterFeaturesByBounds({
+        features: data,
+        bounds: { north, south, west, east },
+        ...params,
+      })
+      return dataFiltered as FourwingsFeature[]
+    }
+    return []
+  }
+
+  getMaxVelocity = () => {
+    return this.state.maxVelocity
+  }
+
+  getVisualizationMode = () => {
+    return 'vectors'
+  }
+
+  getColorScale = () => {
+    return {
+      colorDomain: [0, this.state.maxVelocity],
+      colorRange: [
+        hexToRgbaString(this.props.sublayers[0].color, 0),
+        hexToRgbaString(this.props.sublayers[0].color, 1),
+      ],
+    }
   }
 }

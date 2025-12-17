@@ -2,6 +2,7 @@ import type {
   DeckLayerCategory,
   DeckLayerSubcategory,
   FourwingsDeckSublayer,
+  FourwingsDeckVectorSublayer,
   FourwingsTileLayerColorDomain,
   FourwingsTileLayerColorRange,
 } from '@globalfishingwatch/deck-layers'
@@ -21,6 +22,7 @@ export enum LegendType {
   ColorRamp = 'colorramp',
   ColorRampDiscrete = 'colorramp-discrete',
   Solid = 'solid',
+  Symbols = 'symbols',
   Bivariate = 'bivariate',
 }
 
@@ -38,7 +40,7 @@ export type DeckLegend = {
   loading?: boolean
   currentValues?: number[]
   divergent?: boolean
-  sublayers: FourwingsDeckSublayer[]
+  sublayers: (FourwingsDeckSublayer | FourwingsDeckVectorSublayer)[]
 }
 
 export interface DeckLegendBivariate extends DeckLegend {

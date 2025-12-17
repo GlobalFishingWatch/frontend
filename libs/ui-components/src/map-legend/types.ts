@@ -1,7 +1,10 @@
+import type { IconType } from '../icon'
+
 export enum LegendType {
   ColorRamp = 'colorramp',
   ColorRampDiscrete = 'colorramp-discrete',
   Solid = 'solid',
+  Symbols = 'symbols',
   Bivariate = 'bivariate',
 }
 
@@ -18,6 +21,14 @@ type BaseLegend = {
 export type UILegendSolid = BaseLegend & {
   type: LegendType.Solid
   color: string
+  currentValue?: number
+}
+
+export type UILegendSymbols = BaseLegend & {
+  type: LegendType.Symbols
+  symbol?: IconType
+  values?: number[]
+  colors?: string[]
   currentValue?: number
 }
 

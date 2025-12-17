@@ -1,9 +1,5 @@
 import { DatasetTypes, EndpointId } from '@globalfishingwatch/api-types'
-import {
-  getDatasetConfigurationProperty,
-  getDatasetsExtent,
-  resolveEndpoint,
-} from '@globalfishingwatch/datasets-client'
+import { getDatasetsExtent, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type {
   FourwingsDeckVectorSublayer,
   FourwingsPickingObject,
@@ -28,12 +24,11 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
   const { extentStart, extentEnd } = getDatasetsExtent<string>(datasets)
 
   const dataset = datasets?.[0]
-  const maxVelocity = getDatasetConfigurationProperty({ dataset, property: 'max' })
   const sublayers: FourwingsDeckVectorSublayer[] = (dataview.datasetsConfig || [])?.map(
     (datasetConfig) => {
       return {
         id: dataview.id,
-        color: dataview.config?.color,
+        color: dataview.config?.color || '#163f89',
         unit: dataset.unit,
         datasets: [datasetConfig.datasetId],
         direction: datasetConfig.datasetId.includes('uo') ? 'u' : 'v',
@@ -69,7 +64,6 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
     debugTiles,
     sublayers,
     maxZoom: dataview.config?.maxZoom,
-    maxVelocity,
     highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
     visible: dataview.config?.visible ?? true,
     availableIntervals,
