@@ -16,8 +16,7 @@ import { selectActiveReportDataviews } from 'features/dataviews/selectors/datavi
 import { resolveLibraryLayers } from 'features/layer-library/LayerLibrary'
 import { isSupportedComparisonDataview } from 'features/reports/report-area/area-reports.utils'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
-import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
-import { ReportCategory } from 'features/reports/reports.types'
+import { selectReportSubCategory } from 'features/reports/reports.selectors'
 import { updateLocation } from 'routes/routes.actions'
 import { useLocationConnect } from 'routes/routes.hook'
 import {

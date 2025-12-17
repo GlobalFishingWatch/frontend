@@ -5,7 +5,7 @@ import { DateTime } from 'luxon'
 import { CartesianGrid, ComposedChart, Legend, Line, Tooltip, XAxis, YAxis } from 'recharts'
 
 import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
-import { getContrastSafeLineColor } from '@globalfishingwatch/responsive-visualizations'
+import { getContrastSafeColor } from '@globalfishingwatch/responsive-visualizations'
 
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
@@ -136,14 +136,12 @@ const ReportActivityDatasetComparisonGraph = ({
     return null
   }
 
-  const leftAxisColor = getContrastSafeLineColor(
-    filteredData[0].sublayers[0].legend?.color as string
-  )
+  const leftAxisColor = getContrastSafeColor(filteredData[0].sublayers[0].legend?.color as string)
   const leftAxisDomain = calculateYAxisDomain(dataFormated, 0)
 
   const rightAxisColor =
     comparisonDatasets?.compare && filteredData[1]
-      ? getContrastSafeLineColor(filteredData[1].sublayers[0].legend?.color as string)
+      ? getContrastSafeColor(filteredData[1].sublayers[0].legend?.color as string)
       : undefined
   const rightAxisDomain = comparisonDatasets?.compare && calculateYAxisDomain(dataFormated, 1)
 
@@ -197,7 +195,7 @@ const ReportActivityDatasetComparisonGraph = ({
         {filteredData.map((layer, layerIndex) => {
           const sublayer = layer.sublayers[0]
           const yAxisId = layerIndex === 0 ? 'left' : 'right'
-          const strokeColor = getContrastSafeLineColor(sublayer.legend?.color as string)
+          const strokeColor = getContrastSafeColor(sublayer.legend?.color as string)
 
           return (
             <Line
