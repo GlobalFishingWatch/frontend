@@ -1,4 +1,4 @@
-import { getContrastSafeLineColor } from '@globalfishingwatch/responsive-visualizations'
+import { getContrastSafeColor } from '@globalfishingwatch/responsive-visualizations'
 
 import styles from './ReportActivityEvolution.module.css'
 
@@ -9,7 +9,7 @@ export default function DataComparisonLegend(props: any) {
     return (
       <div className={styles.legendRow}>
         {payload.map(({ color, payload }: any, index: number) => {
-          const safeColor = getContrastSafeLineColor(color, true)
+          const safeColor = getContrastSafeColor(color, 'text')
           return (
             <span key={index} style={{ color: safeColor, fontWeight: 500 }}>
               {payload.unit}

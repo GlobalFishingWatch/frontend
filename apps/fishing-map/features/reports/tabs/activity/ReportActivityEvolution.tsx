@@ -14,7 +14,7 @@ import {
   YAxis,
 } from 'recharts'
 
-import { getContrastSafeLineColor } from '@globalfishingwatch/responsive-visualizations'
+import { getContrastSafeColor } from '@globalfishingwatch/responsive-visualizations'
 
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
@@ -229,7 +229,7 @@ const ReportActivityEvolution = ({
             unit={legend?.unit}
             dot={false}
             isAnimationActive={false}
-            stroke={getContrastSafeLineColor(legend?.color as string)}
+            stroke={getContrastSafeColor(legend?.color as string)}
             strokeWidth={2}
           />
         ))}
