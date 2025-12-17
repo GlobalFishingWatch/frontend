@@ -961,7 +961,7 @@
     "clickToFitMapToEvents": "Centralizar mapa nos eventos",
     "clickToSeeMore": "Clique para ver mais informações",
     "codMarinha": "Cod Marinha",
-    "confirmationClose": "Do you want to keep this vessel in your workspace?",
+    "confirmationClose": "Do you want to keep this vessel in your workspace? Press 'Ok' to keep or 'Cancel' to exit vessel profile and remove it.",
     "dataset": "Fonte",
     "depthM": "Profundidade (M)",
     "exitTrackCorrection": "Exit activity issue (track correction) panel to be able to navigate to the vessel profile",
