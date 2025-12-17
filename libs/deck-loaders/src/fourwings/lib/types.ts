@@ -47,7 +47,7 @@ export type ParseFourwingsClustersOptions = Omit<
 
 export type ParseFourwingsVectorsOptions = Omit<
   ParseFourwingsOptions,
-  'aggregationOperation' | 'sublayers'
+  'aggregationOperation' | 'sublayers' | 'buffersLength'
 >
 
 export type FourwingsLoaderOptions = LoaderOptions & {

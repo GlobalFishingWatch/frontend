@@ -16,7 +16,6 @@ import { FourwingsVectorsLoader, getFourwingsInterval } from '@globalfishingwatc
 import { FOURWINGS_TILE_SIZE, HEATMAP_API_TILES_URL, VECTORS_MAX_ZOOM } from '../fourwings.config'
 import type {
   BaseFourwingsLayerProps,
-  FourwingsDeckSublayer,
   FourwingsDeckVectorSublayer,
   FourwingsPickingObject,
 } from '../fourwings.types'
@@ -92,13 +91,9 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
 
   _fetchTimeseriesTileData: any = async (tile: TileLoadProps) => {
     const { startTime, endTime, sublayers, tilesUrl, extentStart, availableIntervals } = this.props
+    const sublayerIndex = 0
     // Ensure 'u' (eastward) direction always goes first
-    const vectorLayers = sublayers.sort((a, b) => (a.direction === 'u' ? -1 : 1))
-    const cols: number[] = []
-    const rows: number[] = []
-    const scale: number[] = []
-    const offset: number[] = []
-    const noDataValue: number[] = []
+    const vectorLayers = sublayers.sort((a) => (a.direction === 'u' ? -1 : 1))
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
     const chunk = getFourwingsChunk({
       start: startTime,
@@ -107,84 +102,68 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       chunksBuffer: this.chunksBuffer,
     })
 
-    const getSublayerData: any = async (sublayer: FourwingsDeckSublayer, sublayerIndex: number) => {
-      const url = getDataUrlBySublayer({
-        tile,
-        chunk,
-        sublayer,
-        tilesUrl,
-        extentStart,
-      }) as string
-      const response = await GFWAPI.fetch<Response>(url!, {
-        signal: tile.signal,
-        responseType: 'default',
-      })
-      if (response.status >= 400 && response.status !== 404) {
-        throw new Error(response.statusText)
-      }
-      if (response.headers.get('X-columns') && !cols[sublayerIndex]) {
-        cols[sublayerIndex] = parseInt(response.headers.get('X-columns') as string)
-      }
-      if (response.headers.get('X-rows') && !rows[sublayerIndex]) {
-        rows[sublayerIndex] = parseInt(response.headers.get('X-rows') as string)
-      }
-      if (response.headers.get('X-scale') && !scale[sublayerIndex]) {
-        scale[sublayerIndex] = parseFloat(response.headers.get('X-scale') as string)
-      }
-      if (response.headers.get('X-offset') && !offset[sublayerIndex]) {
-        offset[sublayerIndex] = parseInt(response.headers.get('X-offset') as string)
-      }
-      if (response.headers.get('X-empty-value') && !noDataValue[sublayerIndex]) {
-        noDataValue[sublayerIndex] = parseInt(response.headers.get('X-empty-value') as string)
-      }
-      return await response.arrayBuffer()
-    }
+    const url = getMergedDataUrl({
+      tile,
+      chunk,
+      sublayers: vectorLayers,
+      mergeSublayerDatasets: false,
+      tilesUrl,
+      extentStart,
+    }) as string
 
-    const promises = vectorLayers.map(getSublayerData) as Promise<ArrayBuffer>[]
-    const settledPromises = await Promise.allSettled(promises)
+    const response = await GFWAPI.fetch<Response>(url, {
+      signal: tile.signal,
+      responseType: 'default',
+    })
 
-    const hasChunkError = settledPromises.some(
-      (p) => p.status === 'rejected' && p.reason.status !== 404
-    )
-    if (hasChunkError) {
-      const error =
-        (settledPromises.find((p) => p.status === 'rejected' && p.reason.statusText) as any)?.reason
-          .statuxText || 'Error loading chunk'
-      throw new Error(error)
+    if (response.status >= 400 && response.status !== 404) {
+      throw new Error(response.statusText)
     }
 
     if (tile.signal?.aborted) {
       return null
     }
 
-    const arrayBuffers = settledPromises.flatMap((d) => {
-      return d.status === 'fulfilled' && d.value !== undefined ? d.value : []
-    })
+    const cols: number[] = []
+    const rows: number[] = []
+    const scale: number[] = []
+    const offset: number[] = []
+    const noDataValue: number[] = []
+    if (response.headers.get('X-columns') && !cols[sublayerIndex]) {
+      cols[sublayerIndex] = parseInt(response.headers.get('X-columns') as string)
+    }
+    if (response.headers.get('X-rows') && !rows[sublayerIndex]) {
+      rows[sublayerIndex] = parseInt(response.headers.get('X-rows') as string)
+    }
+    if (response.headers.get('X-scale') && !scale[sublayerIndex]) {
+      scale[sublayerIndex] = parseFloat(response.headers.get('X-scale') as string)
+    }
+    if (response.headers.get('X-offset') && !offset[sublayerIndex]) {
+      offset[sublayerIndex] = parseInt(response.headers.get('X-offset') as string)
+    }
+    if (response.headers.get('X-empty-value') && !noDataValue[sublayerIndex]) {
+      noDataValue[sublayerIndex] = parseInt(response.headers.get('X-empty-value') as string)
+    }
 
-    const data = await parse(
-      arrayBuffers.filter(Boolean) as ArrayBuffer[],
-      FourwingsVectorsLoader,
-      {
-        worker: true,
-        fourwingsVectors: {
-          cols,
-          rows,
-          scale,
-          offset,
-          noDataValue,
-          bufferedStartDate: chunk.bufferedStart,
-          initialTimeRange: {
-            start: startTime,
-            end: endTime,
-          },
-          interval,
-          tile,
-          buffersLength: settledPromises.map((p) =>
-            p.status === 'fulfilled' && p.value !== undefined ? p.value.byteLength : 0
-          ),
-        } as ParseFourwingsVectorsOptions,
-      }
-    )
+    const arrayBuffer = await response.arrayBuffer()
+
+    const data = await parse(arrayBuffer, FourwingsVectorsLoader, {
+      worker: true,
+      fourwingsVectors: {
+        cols,
+        rows,
+        scale,
+        offset,
+        noDataValue,
+        bufferedStartDate: chunk.bufferedStart,
+        initialTimeRange: {
+          start: startTime,
+          end: endTime,
+        },
+        interval,
+        tile,
+      } as ParseFourwingsVectorsOptions,
+    })
 
     return data
   }

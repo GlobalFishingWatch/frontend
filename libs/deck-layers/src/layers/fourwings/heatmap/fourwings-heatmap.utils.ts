@@ -225,6 +225,7 @@ type GetMergedDataUrlParams = {
   sublayers: (FourwingsDeckSublayer | FourwingsDeckVectorSublayer)[]
   tilesUrl?: string
   extentStart?: number
+  mergeSublayerDatasets?: boolean
 }
 
 export const getMergedDataUrl = ({
@@ -232,12 +233,11 @@ export const getMergedDataUrl = ({
   chunk,
   sublayers,
   tilesUrl = HEATMAP_API_TILES_URL,
+  mergeSublayerDatasets = true,
   extentStart,
 }: GetMergedDataUrlParams) => {
   // Merge all unique datasets from all sublayers
-  const allDatasets = Array.from(
-    new Set(sublayers.flatMap((sublayer) => sublayer.datasets))
-  )
+  const allDatasets = Array.from(new Set(sublayers.flatMap((sublayer) => sublayer.datasets)))
 
   // Get vessel group from first sublayer (vectors typically have same config for U and V)
   const firstSublayer = sublayers[0] as FourwingsDeckSublayer
@@ -256,7 +256,9 @@ export const getMergedDataUrl = ({
     format: '4WINGS',
     interval: chunk.interval,
     'temporal-aggregation': false,
-    datasets: [allDatasets.join(',')],
+    datasets: mergeSublayerDatasets
+      ? [allDatasets.join(',')]
+      : sublayers.map((sublayer) => sublayer.datasets.join(',')),
     ...(filter && {
       filters: [filter],
     }),
