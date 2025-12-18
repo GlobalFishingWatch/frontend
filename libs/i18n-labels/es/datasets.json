@@ -1276,10 +1276,6 @@
     "name": "Concentración de clorofila-a",
     "description": "<h2>Resumen</h2>\n<ul>\n<li>La clorofila a es el pigmento cosechador de luz que se encuentra en todas las plantas fotosintéticas. El fitoplancton marino fija el carbono químicamente a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo la clorofila, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. </li>\n<ul>\n<h2>Fuente</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>"
   },
-  "public-global-currents-uo": {
-    "name": "Currents",
-    "description": "Currents eastward component"
-  },
   "public-global-currents-vo": {
     "name": "Currents",
     "description": "Currents northward component"
@@ -1696,10 +1692,6 @@
   "public-global-water-temperature": {
     "name": "Temperatura de la superficie del mar",
     "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM"
-  },
-  "public-global-winds-uo": {
-    "name": "Winds",
-    "description": "Winds eastward component"
   },
   "public-global-winds-vo": {
     "name": "Winds",
