@@ -46,20 +46,39 @@
 }
 
 .symbols {
+  width: max-content;
+}
+
+.symbolsContainer {
+  display: flex;
+  gap: var(--space-S);
+}
+
+.symbol {
+  position: relative;
+}
+
+.valuesContainer {
   display: flex;
   justify-content: space-between;
+  font: var(--font-XS);
+  opacity: var(--opacity-secondary);
+  padding-left: var(--space-XS);
 }
 
-.symbols .symbol {
-  transform: scale(0.4);
+.symbolBackground {
+  color: var(--color-map-background);
 }
 
-.symbols span:nth-child(2) .symbol {
-  transform: scale(0.8);
+.symbolColor {
+  position: absolute;
+  inset: 0;
 }
 
-.symbols span:nth-child(3) .symbol {
-  transform: scale(1.2);
+.legendLabel {
+  font: var(--font-S);
+  opacity: var(--opacity-secondary);
+  width: max-content;
 }
 
 .currentValue {

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import cx from 'classnames'
 
 import { Icon } from '../icon'
@@ -14,24 +14,39 @@ type SymbolsLegendProps = {
 }
 
 export function SymbolsLegend({ layer, className }: SymbolsLegendProps) {
-  const { symbol = 'vector-arrow', label, colors, values } = (layer || {}) as UILegendSymbols
+  const { symbol = 'vector-arrow', label, unit, values, colors } = (layer || {}) as UILegendSymbols
+  console.log('🚀 ~ SymbolsLegend ~ values:', values)
+  console.log('🚀 ~ SymbolsLegend ~ colors:', colors)
   return (
     <div className={cx(styles.row, className)}>
-      {label && <p>{label}</p>}
+      {label && <p className={styles.legendLabel}>{label}</p>}
+
       {values && values.length > 0 && (
         <div className={styles.symbols}>
-          <span>
-            {formatLegendValue({ number: values[0], roundValues: false })}
-            <Icon icon={symbol} className={styles.symbol} />
-          </span>
-          <span>
-            {formatLegendValue({ number: values[1] / 2, roundValues: true })}
-            <Icon icon={symbol} className={styles.symbol} />
-          </span>
-          <span>
-            <Icon icon={symbol} className={styles.symbol} />≥
-            {formatLegendValue({ number: values[1], roundValues: values[1] > 5 })}
-          </span>
+          <div className={styles.symbolsContainer}>
+            {colors?.map((color, index) => (
+              <div key={color} className={styles.symbol}>
+                <Icon
+                  icon={symbol}
+                  className={styles.symbolBackground}
+                  style={{ transform: `scale(${(index + 1) * (1 / colors.length) + 0.2})` }}
+                />
+                <Icon
+                  icon={symbol}
+                  className={styles.symbolColor}
+                  style={{ transform: `scale(${(index + 1) * (1 / colors.length) + 0.2})`, color }}
+                />
+              </div>
+            ))}
+          </div>
+          <div className={styles.valuesContainer}>
+            <span className={styles.valueLabel}>
+              {formatLegendValue({ number: values[0], roundValues: false })}
+            </span>
+            <span className={styles.valueLabel}>
+              {formatLegendValue({ number: values[values.length - 1], roundValues: false })}
+            </span>
+          </div>
         </div>
       )}
     </div>

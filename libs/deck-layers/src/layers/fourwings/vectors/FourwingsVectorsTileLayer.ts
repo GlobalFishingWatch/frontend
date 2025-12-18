@@ -476,9 +476,16 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
 
   getColorScale = () => {
     return {
-      colorDomain: [0, this.state.maxVelocity],
+      colorDomain: [
+        this.state.maxVelocity * 0.25,
+        this.state.maxVelocity * 0.5,
+        this.state.maxVelocity * 0.75,
+        this.state.maxVelocity,
+      ],
       colorRange: [
-        hexToRgbaString(this.props.sublayers[0].color, 0),
+        hexToRgbaString(this.props.sublayers[0].color, 0.25),
+        hexToRgbaString(this.props.sublayers[0].color, 0.5),
+        hexToRgbaString(this.props.sublayers[0].color, 0.75),
         hexToRgbaString(this.props.sublayers[0].color, 1),
       ],
     }
