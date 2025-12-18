@@ -32,14 +32,16 @@ function VectorsTooltipRow({ feature, showFeaturesDetails }: VectorsTooltipRowPr
     }
     return acc
   }, '')
+
+  const color = feature.sublayers?.[0]?.color as string
   return (
     <Fragment>
       <div className={popupStyles.popupSection}>
         <span style={{ transform: `rotate(${angle})` }}>
           <Icon
-            icon="vessel"
+            icon="vector-arrow"
             className={popupStyles.layerIcon}
-            style={{ color: feature.color, transform: `rotate(${angle - 45}deg)` }}
+            style={{ color, transform: `rotate(${angle}deg)` }}
           />
         </span>
         <div className={popupStyles.popupSectionContent}>
