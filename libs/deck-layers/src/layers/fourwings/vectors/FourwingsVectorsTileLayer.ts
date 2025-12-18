@@ -103,6 +103,12 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     return super.isLoaded && !this.state.rampDirty && this.state.viewportLoaded
   }
 
+  get cacheHash(): string {
+    const { id, startTime, endTime } = this.props
+    const colors = Array.from(new Set(this.props.sublayers.map((s) => s.color))).join(',')
+    return `${id}-${startTime}-${endTime}-${colors}`
+  }
+
   getError(): string {
     return this.state.error
   }
@@ -475,6 +481,12 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   getColorScale = () => {
+    if (!this.state.maxVelocity) {
+      return {
+        colorDomain: [],
+        colorRange: [],
+      }
+    }
     return {
       colorDomain: [
         this.state.maxVelocity * 0.25,

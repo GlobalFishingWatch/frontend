@@ -14,13 +14,10 @@ type SymbolsLegendProps = {
 }
 
 export function SymbolsLegend({ layer, className }: SymbolsLegendProps) {
-  const { symbol = 'vector-arrow', label, unit, values, colors } = (layer || {}) as UILegendSymbols
-  console.log('🚀 ~ SymbolsLegend ~ values:', values)
-  console.log('🚀 ~ SymbolsLegend ~ colors:', colors)
+  const { symbol = 'vector-arrow', label, values, colors } = (layer || {}) as UILegendSymbols
   return (
     <div className={cx(styles.row, className)}>
       {label && <p className={styles.legendLabel}>{label}</p>}
-
       {values && values.length > 0 && (
         <div className={styles.symbols}>
           <div className={styles.symbolsContainer}>
@@ -44,7 +41,7 @@ export function SymbolsLegend({ layer, className }: SymbolsLegendProps) {
               {formatLegendValue({ number: values[0], roundValues: false })}
             </span>
             <span className={styles.valueLabel}>
-              {formatLegendValue({ number: values[values.length - 1], roundValues: false })}
+              ≥{formatLegendValue({ number: values[values.length - 1], roundValues: false })}
             </span>
           </div>
         </div>
