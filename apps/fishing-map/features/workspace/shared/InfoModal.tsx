@@ -39,17 +39,21 @@ const InfoModal = ({
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const dataset = dataview.datasets?.[0]
   const isHeatmapVector = isHeatmapVectorsDataview(dataview)
-
   const options = useMemo(() => {
     const uniqDatasets = dataview.datasets ? uniqBy(dataview.datasets, (dataset) => dataset.id) : []
     let vectorDatasetAdded = false // Vector dataviews needs two datasets to render the vector layer.
     return uniqDatasets
       .flatMap((dataset) => {
+        const labelString = getDatasetLabel(dataset)
         if (isHeatmapVector) {
-          if (vectorDatasetAdded) {
+          if (labelString !== dataset.id) {
+            if (vectorDatasetAdded) {
+              return []
+            }
+            vectorDatasetAdded = true
+          } else {
             return []
           }
-          vectorDatasetAdded = true
         }
         if (dataview.config?.type === DataviewType.Track) {
           const datasetConfig = dataview.datasetsConfig?.find(
@@ -68,7 +72,7 @@ const InfoModal = ({
         return {
           id: dataset.id,
           label: <DatasetLabel dataset={dataset} />,
-          labelString: getDatasetLabel(dataset),
+          labelString,
         }
       })
       .sort((a, b) => a.labelString.localeCompare(b.labelString))
