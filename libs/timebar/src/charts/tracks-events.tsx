@@ -107,7 +107,7 @@ const TracksEvents = ({
           }
           const eventSizeByType = Math.min(
             eventSize,
-            event.type === 'fishing' ? 5 : event.type === 'gap' ? 10 : 15
+            event.type === 'fishing' ? 5 : event.type === 'gaps' ? 10 : 15
           )
           const borderSize = eventSizeByType >= 10 ? 1.5 : 1
           return (
@@ -123,7 +123,7 @@ const TracksEvents = ({
                 {
                   left: `${event.x}px`,
                   width: `${event.width}px`,
-                  height: event.type === 'gap' ? `${borderSize}px` : `${eventSizeByType}px`,
+                  height: event.type === 'gaps' ? `${borderSize}px` : `${eventSizeByType}px`,
                   '--background-color': color,
                   '--size': `${eventSizeByType}px`,
                   '--border-size': `${borderSize}px`,
