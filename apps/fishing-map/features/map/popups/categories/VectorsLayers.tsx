@@ -24,9 +24,14 @@ function VectorsTooltipRow({ feature, showFeaturesDetails }: VectorsTooltipRowPr
   if (!angle || !speed) {
     return null
   }
-  const title = getDatasetLabel({
-    id: feature.sublayers?.[0]?.datasets?.[0],
-  })
+
+  const title = feature.sublayers.reduce((acc, { datasets }) => {
+    const label = getDatasetLabel({ id: datasets[0] })
+    if (label !== datasets[0]) {
+      return label
+    }
+    return acc
+  }, '')
   return (
     <Fragment>
       <div className={popupStyles.popupSection}>
