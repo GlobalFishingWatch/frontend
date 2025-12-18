@@ -61,10 +61,6 @@
       "dependsOn": ["^build", "^dist"],
       "inputs": ["production", "^production"]
     },
-    "@nx/vite:test": {
-      "cache": true,
-      "inputs": ["default", "^production"]
-    },
     "@nx/vite:build": {
       "cache": true,
       "dependsOn": ["^build"],
@@ -92,6 +88,10 @@
     },
     "prepare-loaders": {
       "cache": true
+    },
+    "@nx/vitest:test": {
+      "cache": true,
+      "inputs": ["default", "^production"]
     }
   },
   "generators": {

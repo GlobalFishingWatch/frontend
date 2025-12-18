@@ -3,6 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/fishing-map",
   "projectType": "application",
+  "tags": [],
   "targets": {
     "deploy": {
       "executor": "nx:run-commands",
@@ -131,12 +132,12 @@
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
+      "executor": "nx:run-commands",
       "outputs": ["{workspaceRoot}/coverage/apps/fishing-map"],
       "options": {
-        "jestConfig": "apps/fishing-map/jest.config.ts"
+        "command": "vitest run --config=vitest.config.mts",
+        "cwd": "apps/fishing-map"
       }
     }
-  },
-  "tags": []
+  }
 }
