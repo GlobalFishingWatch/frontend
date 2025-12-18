@@ -32,9 +32,9 @@ import type {
 import type { FourwingsHeatmapTilesCache } from '../heatmap/fourwings-heatmap.types'
 import { FourwingsAggregationOperation } from '../heatmap/fourwings-heatmap.types'
 import {
+  getDataUrl,
   getFourwingsChunk,
   getIntervalFrames,
-  getMergedDataUrl,
   getTileDataCache,
   sliceCellValues,
 } from '../heatmap/fourwings-heatmap.utils'
@@ -221,16 +221,25 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     // Ensure 'u' (eastward) direction always goes first
     const vectorLayers = sublayers.sort((a) => (a.direction === 'u' ? -1 : 1))
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
-    const chunk = getFourwingsChunk({
-      start: startTime,
-      end: endTime,
-      availableIntervals,
-      chunksBuffer: this.chunksBuffer,
-    })
+    const chunk = temporalAggregation
+      ? {
+          id: `${startTime}-${endTime}-${interval}-${temporalAggregation}`,
+          interval,
+          start: startTime,
+          end: endTime,
+          bufferedStart: startTime,
+          bufferedEnd: endTime,
+        }
+      : getFourwingsChunk({
+          start: startTime,
+          end: endTime,
+          availableIntervals,
+          chunksBuffer: this.chunksBuffer,
+        })
 
     this.setState({ rampDirty: true })
 
-    const url = getMergedDataUrl({
+    const url = getDataUrl({
       tile,
       chunk,
       sublayers: vectorLayers,

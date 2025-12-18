@@ -59,7 +59,7 @@ import {
   aggregateCellTimeseries,
   compareCell,
   filterCells,
-  getDataUrlBySublayer,
+  getDataUrl,
   getFourwingsChunk,
   getIntervalFrames,
   getTileDataCache,
@@ -401,7 +401,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       sublayer: FourwingsDeckSublayer & { chunk: FourwingsChunk },
       sublayerIndex: number
     ) => {
-      const url = getDataUrlBySublayer({
+      const url = getDataUrl({
         tile,
         chunk: sublayer.chunk,
         sublayer,
@@ -498,7 +498,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const offset: number[] = []
     const noDataValue: number[] = []
     const getSublayerData = async (sublayer: FourwingsDeckSublayer, sublayerIndex: number) => {
-      const url = getDataUrlBySublayer({
+      const url = getDataUrl({
         tile,
         chunk,
         sublayer,
