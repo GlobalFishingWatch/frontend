@@ -29,7 +29,7 @@ export function SymbolsLegend({ layer, className }: SymbolsLegendProps) {
             <Icon icon={symbol} className={styles.symbol} />
           </span>
           <span>
-            <Icon icon={symbol} className={styles.symbol} />
+            <Icon icon={symbol} className={styles.symbol} />≥
             {formatLegendValue({ number: values[1], roundValues: values[1] > 5 })}
           </span>
         </div>

@@ -28,7 +28,7 @@ export const getCellVectorValues = (
   },
   pbf: Pbf
 ) => {
-  const { bufferedStartDate, interval, scale, offset, noDataValue, tile, cols, rows } =
+  const { bufferedStartDate, interval, scale, offset, noDataValue, tile, cols, rows, unit } =
     data.options || ({} as ParseFourwingsVectorsOptions)
 
   const tileStartFrame = CONFIG_BY_INTERVAL[interval].getIntervalFrame(bufferedStartDate)
@@ -132,8 +132,19 @@ export const getCellVectorValues = (
 
           // Calculate velocity and direction if both values are valid
           if (u !== undefined && v !== undefined && !isNaN(u) && !isNaN(v)) {
-            // Calculate velocity: sqrt(u^2 + v^2)
-            feature.properties.velocities![timeStepIndex] = Math.sqrt(u * u + v * v)
+            // Calculate velocity: sqrt(u^2 + v^2) in m/s (base unit)
+            let velocity = Math.sqrt(u * u + v * v)
+
+            if (unit === 'knots') {
+              // Convert m/s to knots: 1 m/s = 1.943844 knots
+              velocity = velocity * 1.943844
+            } else if (unit === 'km/h') {
+              // Convert m/s to km/h: 1 m/s = 3.6 km/h
+              velocity = velocity * 3.6
+            }
+            // If unit is 'mps' or undefined, velocity is already in m/s
+
+            feature.properties.velocities![timeStepIndex] = velocity
 
             // Calculate direction: (90 - atan2(v, u) * 180/π) % 360
             const angleRad = Math.atan2(v, u)

@@ -44,11 +44,11 @@ export type ParseFourwingsClustersOptions = Omit<
 > & {
   temporalAggregation?: boolean
 }
-
+export type FourwingsVectorsUnit = 'knots' | 'm/s' | 'km/h'
 export type ParseFourwingsVectorsOptions = Omit<
   ParseFourwingsOptions,
   'aggregationOperation' | 'sublayers' | 'buffersLength'
->
+> & { unit?: FourwingsVectorsUnit }
 
 export type FourwingsLoaderOptions = LoaderOptions & {
   fourwings?: ParseFourwingsOptions
