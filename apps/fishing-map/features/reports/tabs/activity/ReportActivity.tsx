@@ -28,11 +28,9 @@ import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { LastReportStorage } from 'features/reports/report-area/area-reports.config'
 import { LAST_REPORTS_STORAGE_KEY } from 'features/reports/report-area/area-reports.config'
 import { useFetchReportVessel } from 'features/reports/report-area/area-reports.hooks'
-import {
-  selectReportDataviewsWithPermissions,
-  selectTimeComparisonValues,
-} from 'features/reports/report-area/area-reports.selectors'
+import { selectReportDataviewsWithPermissions } from 'features/reports/report-area/area-reports.selectors'
 import { parseReportUrl } from 'features/reports/report-area/area-reports.utils'
+import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import {
   selectActiveReportSubCategories,
   selectReportAreaId,
@@ -89,7 +87,7 @@ function ActivityReport() {
   const dispatchTimeoutRef = useRef<NodeJS.Timeout>(undefined)
   const hasVessels = useSelector(selectHasReportVessels)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const timeComparisonValues = useSelector(selectTimeComparisonValues)
+  const reportActivityGraph = useSelector(selectReportActivityGraph)
   const reportLoadVessels = useSelector(selectReportLoadVessels)
   const { dispatchQueryParams } = useLocationConnect()
 
@@ -270,7 +268,7 @@ function ActivityReport() {
       return ReportVesselError
     }
 
-    if (timeComparisonValues) {
+    if (reportActivityGraph !== 'evolution') {
       return (
         <ReportVesselsPlaceholder animate={false} className="print-hidden">
           <div className={cx(styles.cover, styles.center, styles.top)}>
@@ -366,7 +364,7 @@ function ActivityReport() {
     reportError,
     reportLoading,
     reportDataviews?.length,
-    timeComparisonValues,
+    reportActivityGraph,
     reportOutdated,
     reportStatus,
     hasAuthError,
