@@ -1276,10 +1276,6 @@
     "name": "Concentração de clorofila-a",
     "description": "<h2>Visão geral</h2>\n<ul>\n<li>A clorofila a é o pigmento captador de luz encontrado em todas as plantas fotossintéticas. O fitoplâncton marinho fixa quimicamente o carbono através da fotossíntese, absorvendo dióxido de carbono dissolvido e produzindo oxigênio. Este conjunto de dados é composto por parâmetros biogeoquímicos, incluindo a clorofila, sobre o oceano global exibido com uma resolução horizontal de 1/4 de grau. </li>\n<ul>\n<h2>Fonte</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>"
   },
-  "public-global-currents-uo": {
-    "name": "Currents",
-    "description": "Currents eastward component"
-  },
   "public-global-currents-vo": {
     "name": "Currents",
     "description": "Currents northward component"
@@ -1696,10 +1692,6 @@
   "public-global-water-temperature": {
     "name": "Temperatura da superfície do mar",
     "description": "A temperatura da superfície do mar é a temperatura da água na superfície do oceano. O Modelo de Oceano Coordenado Híbrido (HYCOM) é um modelo de coordenadas oceânicas híbrido de dados análoga à pressão híbrida isopycnal-sigma (generalizado). O subconjunto de dados HYCOM hospedados na EE contém as variáveis salinidade, temperatura, velocidade vetorial e altitude. Eles foram interpolados para uma grade uniforme de 0,08 graus de lato/longo entre 70,48°S e 85,48°N. A salinidade, a temperatura e as variáveis de velocidade vetorial foram interpoladas para 40 níveis z-padrão. Fonte: HYCOM"
-  },
-  "public-global-winds-uo": {
-    "name": "Winds",
-    "description": "Winds eastward component"
   },
   "public-global-winds-vo": {
     "name": "Winds",
