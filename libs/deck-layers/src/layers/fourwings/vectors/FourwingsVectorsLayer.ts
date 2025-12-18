@@ -44,6 +44,8 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
       category,
       subcategory,
       availableIntervals,
+      minVisibleValue,
+      maxVisibleValue,
     } = this.props
 
     const { interval } = getIntervalFrames({
@@ -71,7 +73,14 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
         ...sublayer,
         value: info.object?.aggregatedValues?.[i],
       }))
-      if (!object.sublayers?.filter(({ value }) => value).length) {
+      if (
+        !object.sublayers?.filter(
+          ({ value }) =>
+            value &&
+            (minVisibleValue === undefined || value >= minVisibleValue) &&
+            (maxVisibleValue === undefined || value <= maxVisibleValue)
+        ).length
+      ) {
         return { ...info, object: undefined }
       }
     }
@@ -79,52 +88,74 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
   }
 
   getVelocity = (feature: FourwingsFeature, { target }: { target: number }) => {
+    const { temporalAggregation } = this.props
     if (!feature.aggregatedValues) {
       feature.aggregatedValues = []
     }
 
-    const value =
-      feature.properties.velocities &&
-      feature.properties.velocities.length > 0 &&
-      this.startFrame !== undefined &&
-      this.endFrame !== undefined
-        ? aggregateSublayerValues(
-            sliceCellValues({
-              values: feature.properties.velocities,
-              startFrame: this.startFrame,
-              endFrame: this.endFrame,
-              startOffset: feature.properties.startOffsets[0] ?? 0,
-            }),
-            FourwingsAggregationOperation.Avg
-          )
-        : 0
-
+    let value = 0
+    if (temporalAggregation) {
+      value = feature.properties.velocities?.[0] ?? 0
+    } else {
+      value =
+        feature.properties.velocities &&
+        feature.properties.velocities.length > 0 &&
+        this.startFrame !== undefined &&
+        this.endFrame !== undefined
+          ? aggregateSublayerValues(
+              sliceCellValues({
+                values: feature.properties.velocities,
+                startFrame: this.startFrame,
+                endFrame: this.endFrame,
+                startOffset: feature.properties.startOffsets[0] ?? 0,
+              }),
+              FourwingsAggregationOperation.Avg
+            )
+          : 0
+    }
     feature.aggregatedValues[0] = value
+
+    const { minVisibleValue, maxVisibleValue } = this.props
+    if (
+      value &&
+      ((minVisibleValue !== undefined && value < minVisibleValue) ||
+        (maxVisibleValue !== undefined && value > maxVisibleValue))
+    ) {
+      target = 0
+      return target
+    }
+
     target = value
 
     return target
   }
 
   getDirection = (feature: FourwingsFeature, { target }: { target: number }) => {
+    const { temporalAggregation } = this.props
     if (!feature.aggregatedValues) {
       feature.aggregatedValues = []
     }
 
-    const value =
-      feature.properties.directions &&
-      feature.properties.directions.length > 0 &&
-      this.startFrame !== undefined &&
-      this.endFrame !== undefined
-        ? aggregateSublayerValues(
-            sliceCellValues({
-              values: feature.properties.directions,
-              startFrame: this.startFrame,
-              endFrame: this.endFrame,
-              startOffset: feature.properties.startOffsets[1] ?? 0,
-            }),
-            FourwingsAggregationOperation.AvgDegrees
-          )
-        : 0
+    let value = 0
+    if (temporalAggregation) {
+      value = feature.properties.directions?.[0] ?? 0
+    } else {
+      value =
+        feature.properties.directions &&
+        feature.properties.directions.length > 0 &&
+        this.startFrame !== undefined &&
+        this.endFrame !== undefined
+          ? aggregateSublayerValues(
+              sliceCellValues({
+                values: feature.properties.directions,
+                startFrame: this.startFrame,
+                endFrame: this.endFrame,
+                startOffset: feature.properties.startOffsets[1] ?? 0,
+              }),
+              FourwingsAggregationOperation.AvgDegrees
+            )
+          : 0
+    }
 
     feature.aggregatedValues[1] = value
     target = value
@@ -141,6 +172,8 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
       highlightedFeatures,
       availableIntervals,
       sublayers,
+      minVisibleValue,
+      maxVisibleValue,
     } = this.props
     const color = hexToDeckColor(sublayers?.[0]?.color || '#ffffff')
 
@@ -186,6 +219,9 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
           (d.coordinates[0] + d.coordinates[2]) / 2,
           (d.coordinates[1] + d.coordinates[5]) / 2,
         ]
+      },
+      updateTriggers: {
+        getVelocity: [startTime, endTime, minVisibleValue, maxVisibleValue],
       },
     }
 

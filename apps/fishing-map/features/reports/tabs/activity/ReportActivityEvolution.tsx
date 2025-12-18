@@ -40,13 +40,13 @@ const ReportActivityEvolution = ({
   start,
   end,
   TooltipContent,
-  onClickTooltip = false,
+  freezeTooltipOnClick = false,
 }: {
   data: ReportGraphProps
   start: string
   end: string
   TooltipContent?: ReactNode
-  onClickTooltip?: boolean
+  freezeTooltipOnClick?: boolean
 }) => {
   const [fixedTooltip, setFixedTooltip] = useState<EvolutionTooltipContentProps | null>(null)
   const hoverTooltipRef = useRef<EvolutionTooltipContentProps | null>(null)
@@ -80,7 +80,7 @@ const ReportActivityEvolution = ({
         hoverTooltipRef.current = {
           active: true,
           payload: tooltipProps.payload,
-          position: tooltipProps.coordinate,
+          position: tooltipProps.position,
           label: tooltipProps.label,
         }
       } else {
@@ -102,14 +102,14 @@ const ReportActivityEvolution = ({
   }, [])
 
   const handleChartClick = useCallback(() => {
-    if (onClickTooltip) {
+    if (freezeTooltipOnClick) {
       if (!fixedTooltip && hoverTooltipRef.current?.active && hoverTooltipRef.current?.payload) {
         setFixedTooltip(hoverTooltipRef.current)
       } else if (fixedTooltip) {
         setFixedTooltip(null)
       }
     }
-  }, [fixedTooltip, onClickTooltip])
+  }, [fixedTooltip, freezeTooltipOnClick])
 
   const handleClickOutside = useCallback((event: MouseEvent) => {
     if (chartRef.current && !chartRef.current.contains(event.target as Node)) {
@@ -175,20 +175,22 @@ const ReportActivityEvolution = ({
                 return null
               }
 
-              if (tooltipProps && !fixedTooltip) {
-                handleTooltipChange(tooltipProps)
-              }
-
               const tooltipContent = TooltipContent ? (
-                cloneElement(TooltipContent as React.ReactElement, { ...tooltipProps })
+                cloneElement(TooltipContent as React.ReactElement, {
+                  ...tooltipProps,
+                  timeChunkInterval: data?.interval,
+                })
               ) : (
                 <EvolutionGraphTooltip {...tooltipProps} timeChunkInterval={data?.interval} />
               )
 
-              if (!onClickTooltip) {
+              if (!freezeTooltipOnClick) {
                 return tooltipContent
               }
 
+              if (tooltipProps && !fixedTooltip) {
+                handleTooltipChange(tooltipProps)
+              }
               return (
                 <div
                   role="button"

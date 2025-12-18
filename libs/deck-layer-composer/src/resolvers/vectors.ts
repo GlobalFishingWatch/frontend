@@ -1,9 +1,5 @@
 import { DatasetTypes, EndpointId } from '@globalfishingwatch/api-types'
-import {
-  getDatasetConfigurationProperty,
-  getDatasetsExtent,
-  resolveEndpoint,
-} from '@globalfishingwatch/datasets-client'
+import { getDatasetsExtent, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type {
   FourwingsDeckVectorSublayer,
   FourwingsPickingObject,
@@ -19,7 +15,10 @@ import { getDataviewAvailableIntervals } from './dataviews'
 export const resolveDeckVectorsLayerProps: DeckResolverFunction<
   FourwingsVectorsTileLayerProps,
   ResolvedFourwingsDataviewInstance
-> = (dataview, { start, end, highlightedFeatures, debugTiles }): FourwingsVectorsTileLayerProps => {
+> = (
+  dataview,
+  { start, end, highlightedFeatures, debugTiles, vectorsTemporalAggregation }
+): FourwingsVectorsTileLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
 
@@ -28,12 +27,11 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
   const { extentStart, extentEnd } = getDatasetsExtent<string>(datasets)
 
   const dataset = datasets?.[0]
-  const maxVelocity = getDatasetConfigurationProperty({ dataset, property: 'max' })
   const sublayers: FourwingsDeckVectorSublayer[] = (dataview.datasetsConfig || [])?.map(
     (datasetConfig) => {
       return {
         id: dataview.id,
-        color: dataview.config?.color,
+        color: dataview.config?.color || '#163f89',
         unit: dataset.unit,
         datasets: [datasetConfig.datasetId],
         direction: datasetConfig.datasetId.includes('uo') ? 'u' : 'v',
@@ -69,10 +67,12 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
     debugTiles,
     sublayers,
     maxZoom: dataview.config?.maxZoom,
-    maxVelocity,
     highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
     visible: dataview.config?.visible ?? true,
     availableIntervals,
+    minVisibleValue: dataview.config?.minVisibleValue,
+    maxVisibleValue: dataview.config?.maxVisibleValue,
+    temporalAggregation: vectorsTemporalAggregation,
     ...(tilesUrl && { tilesUrl }),
     ...(extentStart && { extentStart: getUTCDateTime(extentStart).toMillis() }),
     ...(extentEnd && { extentEnd: getUTCDateTime(extentEnd).toMillis() }),

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useEffectEvent, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
@@ -175,6 +175,7 @@ export const useMigrateWorkspaceToast = () => {
   const dispatch = useAppDispatch()
   const hasDeprecatedDataviews = useSelector(selectHasDeprecatedDataviewInstances)
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
+  const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const report = useSelector(selectCurrentReport)
   const isReportOwner = useSelector(selectIsReportOwner)
   const isAnyAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
@@ -233,12 +234,18 @@ export const useMigrateWorkspaceToast = () => {
     </div>
   )
 
+  const onDeprecatedDataviewsChange = useEffectEvent(() => {
+    console.warn('Deprecated datasets:')
+    console.log(deprecatedDatasets)
+  })
+
   useEffect(() => {
     if (hasDeprecatedDataviews) {
       toastId.current = toast(<ToastContent loading={false} />, {
         toastId: 'migrateWorkspace',
         autoClose: false,
       })
+      onDeprecatedDataviewsChange()
       return () => {
         closeToast()
       }

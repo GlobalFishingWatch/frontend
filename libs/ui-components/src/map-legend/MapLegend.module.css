@@ -41,11 +41,25 @@
 .ramp::after {
   content: '';
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   border: var(--border);
+}
+
+.symbols {
+  display: flex;
+  justify-content: space-between;
+}
+
+.symbols .symbol {
+  transform: scale(0.4);
+}
+
+.symbols span:nth-child(2) .symbol {
+  transform: scale(0.8);
+}
+
+.symbols span:nth-child(3) .symbol {
+  transform: scale(1.2);
 }
 
 .currentValue {
@@ -56,7 +70,9 @@
   z-index: 1;
   background-color: var(--color-primary-blue);
   transform: translateX(-50%);
-  transition: left 0.1s linear, transform 0.1s linear;
+  transition:
+    left 0.1s linear,
+    transform 0.1s linear;
   line-height: 1;
   filter: var(--filter-drop-shadow);
 }

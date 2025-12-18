@@ -125,6 +125,7 @@ const icons = [
   'unep-logo',
   'upload',
   'user',
+  'vector-arrow',
   'vessel-disabled',
   'vessel',
   'vessel-group',

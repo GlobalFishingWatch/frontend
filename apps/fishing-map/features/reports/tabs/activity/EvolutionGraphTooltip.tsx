@@ -5,7 +5,7 @@ import { getUTCDateTime } from 'utils/dates'
 
 import styles from './ReportActivityEvolution.module.css'
 
-const formatTooltipValue = (value: number, payload: any, unit: string) => {
+export const formatEvolutionTooltipValue = (value: number, payload: any, unit: string) => {
   if (value === undefined || !payload?.range) {
     return null
   }
@@ -41,7 +41,7 @@ export default function EvolutionGraphTooltip(props: any) {
               return (
                 <li key={index} className={styles.tooltipValue}>
                   <span className={styles.tooltipValueDot} style={{ color }}></span>
-                  {formatTooltipValue(value, payload, unit)}
+                  {formatEvolutionTooltipValue(value, payload, unit)}
                 </li>
               )
             })}
