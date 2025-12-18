@@ -13,6 +13,7 @@ const basepath = process.env.NODE_ENV === 'production' ? '/data-download' : ''
 const router = createRouter({
   routeTree,
   basepath,
+  trailingSlash: 'always',
 })
 
 // Register the router instance for type safety
