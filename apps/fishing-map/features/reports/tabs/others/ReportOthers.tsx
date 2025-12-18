@@ -168,7 +168,7 @@ function ReportOthers() {
             )}
             {hasTimeFilter &&
               (loading ? (
-                <ReportActivityPlaceholder showHeader={false} />
+                <ReportActivityPlaceholder showHeader={false} loading />
               ) : statsCounts === 0 ? (
                 <ReportActivityPlaceholder showHeader={false}>
                   {t('analysis.noDataByArea')}

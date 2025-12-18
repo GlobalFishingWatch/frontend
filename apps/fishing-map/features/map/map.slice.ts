@@ -301,7 +301,6 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
         const sublayersVesselsIdsResponse = await GFWAPI.fetch<
           APIPagination<ExtendedFeatureVessel[]>
         >(interactionUrl, { signal })
-        console.log('🚀 ~ sublayersVesselsIdsResponse:', sublayersVesselsIdsResponse)
 
         const sublayersVesselsIds = sublayersVesselsIdsResponse.entries.map((sublayer) =>
           sublayer.flatMap((vessel) => {
@@ -315,7 +314,6 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
             return { ...rest, id: id || vessel_id }
           })
         )
-        console.log('🚀 ~ sublayersVesselsIds:', sublayersVesselsIds)
 
         let startingIndex = 0
         const vesselsBySource: ExtendedFeatureVessel[][][] = featuresDataviews.map((dataview) => {

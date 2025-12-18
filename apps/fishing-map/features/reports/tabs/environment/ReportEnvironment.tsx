@@ -1,5 +1,10 @@
 import { useSelector } from 'react-redux'
 
+import {
+  isEnvironmentalDataview,
+  isHeatmapVectorsDataview,
+} from '@globalfishingwatch/dataviews-client'
+
 import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
@@ -28,7 +33,11 @@ function ReportEnvironment() {
 
   return (
     <div className={styles.graphContainer}>
-      <ReportEnvironmentGraphSelector />
+      {environmentalDataviews.every(
+        (dv) => isHeatmapVectorsDataview(dv) || !isEnvironmentalDataview(dv)
+      ) ? null : (
+        <ReportEnvironmentGraphSelector />
+      )}
       <div>
         {reportGraphType === 'evolution' ? (
           environmentalDataviews.map((dataview, index) => {

@@ -155,7 +155,7 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ['@mastra/*'],
   // reactCompiler: true,
   experimental: {
-    turbopackFileSystemCacheForDev: true,
+    turbopackFileSystemCacheForDev: false,
     esmExternals: true,
     optimizePackageImports: [
       '@globalfishingwatch/api-client',

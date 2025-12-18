@@ -19,6 +19,13 @@
   align-items: center;
 }
 
+.legendRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: var(--space-S);
+}
+
 .tooltipLabel {
   color: var(--color-secondary-blue);
 }

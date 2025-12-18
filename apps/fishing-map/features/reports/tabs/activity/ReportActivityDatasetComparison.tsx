@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
@@ -58,18 +59,21 @@ const ReportActivityDatasetComparison = () => {
   }, [allDataviews, t])
 
   const layersResolved = useMemo(() => {
+    const reportCategory = reportDataviews[0]?.category
     return allLayersResolved?.filter((layer) => {
       const datasetId = layer.dataview.datasetsConfig?.[0]?.datasetId
       const dataset = allDatasets.find((dataset) => dataset.id === datasetId)
-      if (!dataset || dataset?.subcategory === reportSubcategory) {
+      const isActivitySameCategory =
+        layer.dataview.category === reportCategory && reportCategory === DataviewCategory.Activity
+      if (!dataset || dataset?.subcategory === reportSubcategory || isActivitySameCategory) {
         return false
       }
-      return (
-        isSupportedComparisonDataview(layer.dataview) &&
-        comparisonDatasets?.main?.split(LAYER_LIBRARY_ID_SEPARATOR)[0] !== layer.id
-      )
+      if (comparisonDatasets?.main?.split(LAYER_LIBRARY_ID_SEPARATOR)[0] === layer.id) {
+        return false
+      }
+      return isSupportedComparisonDataview(layer.dataview)
     })
-  }, [allLayersResolved, comparisonDatasets?.main, allDatasets, reportSubcategory])
+  }, [reportDataviews, allLayersResolved, allDatasets, reportSubcategory, comparisonDatasets?.main])
 
   const layerOptions = useMemo(() => {
     return layersResolved.map((layer) =>
