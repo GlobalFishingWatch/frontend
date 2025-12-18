@@ -308,6 +308,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     const isStartOutRange = startTime < tilesCache.start
     const isEndOutRange = endTime > tilesCache.end
     const isDifferentZoom = zoom !== tilesCache.zoom
+
     // TODO debug why not re-rendering on out of range
     // TODO debug why re-renders when not needed
     const needsCacheKeyUpdate =
