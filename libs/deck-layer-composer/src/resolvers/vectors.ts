@@ -67,6 +67,8 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
     highlightedFeatures: highlightedFeatures as FourwingsPickingObject[],
     visible: dataview.config?.visible ?? true,
     availableIntervals,
+    minVisibleValue: dataview.config?.minVisibleValue,
+    maxVisibleValue: dataview.config?.maxVisibleValue,
     ...(tilesUrl && { tilesUrl }),
     ...(extentStart && { extentStart: getUTCDateTime(extentStart).toMillis() }),
     ...(extentEnd && { extentEnd: getUTCDateTime(extentEnd).toMillis() }),

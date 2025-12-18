@@ -44,6 +44,8 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
       category,
       subcategory,
       availableIntervals,
+      minVisibleValue,
+      maxVisibleValue,
     } = this.props
 
     const { interval } = getIntervalFrames({
@@ -71,7 +73,14 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
         ...sublayer,
         value: info.object?.aggregatedValues?.[i],
       }))
-      if (!object.sublayers?.filter(({ value }) => value).length) {
+      if (
+        !object.sublayers?.filter(
+          ({ value }) =>
+            value &&
+            (minVisibleValue === undefined || value >= minVisibleValue) &&
+            (maxVisibleValue === undefined || value <= maxVisibleValue)
+        ).length
+      ) {
         return { ...info, object: undefined }
       }
     }
@@ -100,6 +109,17 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
         : 0
 
     feature.aggregatedValues[0] = value
+
+    const { minVisibleValue, maxVisibleValue } = this.props
+    if (
+      value &&
+      ((minVisibleValue !== undefined && value < minVisibleValue) ||
+        (maxVisibleValue !== undefined && value > maxVisibleValue))
+    ) {
+      target = 0
+      return target
+    }
+
     target = value
 
     return target
@@ -141,6 +161,8 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
       highlightedFeatures,
       availableIntervals,
       sublayers,
+      minVisibleValue,
+      maxVisibleValue,
     } = this.props
     const color = hexToDeckColor(sublayers?.[0]?.color || '#ffffff')
 
@@ -186,6 +208,9 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
           (d.coordinates[0] + d.coordinates[2]) / 2,
           (d.coordinates[1] + d.coordinates[5]) / 2,
         ]
+      },
+      updateTriggers: {
+        getVelocity: [startTime, endTime, minVisibleValue, maxVisibleValue],
       },
     }
 

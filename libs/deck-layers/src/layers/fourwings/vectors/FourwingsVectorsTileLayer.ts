@@ -58,6 +58,8 @@ export type _FourwingsVectorsTileLayerProps<DataT = FourwingsFeature> = Omit<
   availableIntervals?: FourwingsInterval[]
   highlightedFeatures?: FourwingsPickingObject[]
   sublayers: FourwingsDeckVectorSublayer[]
+  minVisibleValue?: number
+  maxVisibleValue?: number
 }
 
 // TODO: decide if we intergrate it into the generic FourwingsLayer
@@ -370,12 +372,16 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
         getTileData: this._getTileData,
         updateTriggers: {
           getTileData: [cacheKey, zoomOffset],
+          renderSubLayers: [maxVelocity],
         },
         onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props: any) => {
           return new FourwingsVectorsLayer({
             ...props,
+            visible: maxVelocity > 0,
             maxVelocity,
+            minVisibleValue: this.props.minVisibleValue,
+            maxVisibleValue: this.props.maxVisibleValue,
           })
         },
       })
