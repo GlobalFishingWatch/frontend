@@ -1276,10 +1276,6 @@
     "name": "Concentration en chloriphylle a",
     "description": "<h2>Sommaire</h2>\n<ul>\n<li>La chlorophylle-a est le pigment assimilateur de lumière que l'on retrouve dans toutes les plantes photosynthétiques. Le phytoplancton marin fixe chimiquement le carbone par photosynthèse en absorbant du dioxyde de carbone dissous et en produisant de l'oxygène. Ce jeu de données est composé de paramètres biogéochimiques, y compris la chlorophylle, affichés sur l'océan global avec une résolution horizontale de 1/4 degré. </li>\n<ul>\n<h2>La Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>"
   },
-  "public-global-currents-uo": {
-    "name": "Currents",
-    "description": "Currents eastward component"
-  },
   "public-global-currents-vo": {
     "name": "Currents",
     "description": "Currents northward component"
@@ -1696,10 +1692,6 @@
   "public-global-water-temperature": {
     "name": "Températiure de la surface de la mer",
     "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM"
-  },
-  "public-global-winds-uo": {
-    "name": "Winds",
-    "description": "Winds eastward component"
   },
   "public-global-winds-vo": {
     "name": "Winds",
