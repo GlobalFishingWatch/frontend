@@ -216,6 +216,66 @@ GetDataUrlByChunk) => {
   return getURLFromTemplate(url, tile)
 }
 
+type GetMergedDataUrlParams = {
+  tile: {
+    index: TileIndex
+    id: string
+  }
+  chunk: FourwingsChunk
+  sublayers: (FourwingsDeckSublayer | FourwingsDeckVectorSublayer)[]
+  tilesUrl?: string
+  extentStart?: number
+  mergeSublayerDatasets?: boolean
+  temporalAggregation?: boolean
+}
+
+export const getMergedDataUrl = ({
+  tile,
+  chunk,
+  sublayers,
+  tilesUrl = HEATMAP_API_TILES_URL,
+  mergeSublayerDatasets = true,
+  temporalAggregation = false,
+  extentStart,
+}: GetMergedDataUrlParams) => {
+  // Merge all unique datasets from all sublayers
+  const allDatasets = Array.from(new Set(sublayers.flatMap((sublayer) => sublayer.datasets)))
+
+  // Get vessel group from first sublayer (vectors typically have same config for U and V)
+  const firstSublayer = sublayers[0] as FourwingsDeckSublayer
+  const vesselGroup = Array.isArray(firstSublayer.vesselGroups)
+    ? firstSublayer.vesselGroups?.[0]
+    : firstSublayer.vesselGroups
+
+  // Get filter from first sublayer (vectors typically have same filter for U and V)
+  const filter = firstSublayer.filter
+
+  const start = extentStart && extentStart > chunk.start ? extentStart : chunk.bufferedStart
+  const tomorrow = DateTime.now().toUTC().endOf('day').plus({ millisecond: 1 }).toMillis()
+  const end = tomorrow && tomorrow < chunk.end ? tomorrow : chunk.bufferedEnd
+
+  const params = {
+    format: '4WINGS',
+    interval: chunk.interval,
+    'temporal-aggregation': temporalAggregation,
+    datasets: mergeSublayerDatasets
+      ? [allDatasets.join(',')]
+      : sublayers.map((sublayer) => sublayer.datasets.join(',')),
+    ...(filter && {
+      filters: [filter],
+    }),
+    ...(vesselGroup && { 'vessel-groups': [vesselGroup] }),
+    ...(chunk.interval !== 'YEAR' && {
+      'date-range': [getISODateFromTS(start < end ? start : end), getISODateFromTS(end)].join(','),
+    }),
+  }
+  const url = `${tilesUrl}?${stringify(params, {
+    arrayFormat: 'indices',
+  })}`
+
+  return getURLFromTemplate(url, tile)
+}
+
 export interface Bounds {
   north: number
   south: number

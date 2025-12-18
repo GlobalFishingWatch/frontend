@@ -1276,10 +1276,6 @@
     "name": "crwdns66205:0crwdne66205:0",
     "description": "crwdns83012:0crwdne83012:0"
   },
-  "public-global-currents-uo": {
-    "name": "crwdns108508:0crwdne108508:0",
-    "description": "crwdns108510:0crwdne108510:0"
-  },
   "public-global-currents-vo": {
     "name": "crwdns108512:0crwdne108512:0",
     "description": "crwdns108514:0crwdne108514:0"
@@ -1696,10 +1692,6 @@
   "public-global-water-temperature": {
     "name": "crwdns66605:0crwdne66605:0",
     "description": "crwdns66607:0crwdne66607:0"
-  },
-  "public-global-winds-uo": {
-    "name": "crwdns108516:0crwdne108516:0",
-    "description": "crwdns108518:0crwdne108518:0"
   },
   "public-global-winds-vo": {
     "name": "crwdns108520:0crwdne108520:0",

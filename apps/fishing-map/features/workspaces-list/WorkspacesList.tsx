@@ -5,13 +5,10 @@ import cx from 'classnames'
 import type { To } from 'redux-first-router-link'
 import Link from 'redux-first-router-link'
 
-import type { ReportWorkspaceId } from 'data/highlighted-workspaces/reports'
-import { REPORT_IDS } from 'data/highlighted-workspaces/reports'
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
-import { fetchReportsThunk } from 'features/reports/reports.slice'
 import { fetchWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { HOME, REPORT, WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
 import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
@@ -100,7 +97,7 @@ function WorkspacesList() {
               query: {},
               replaceQuery: true,
             }
-          } else if (REPORT_IDS.includes(id as ReportWorkspaceId)) {
+          } else if (highlightedWorkspace.category === WorkspaceCategory.Reports) {
             linkTo = {
               type: WORKSPACE_REPORT,
               payload: {
@@ -120,8 +117,11 @@ function WorkspacesList() {
             linkTo = {
               type: WORKSPACE,
               payload: {
-                category: locationCategory,
-                workspaceId: highlightedWorkspace.workspaceId || id,
+                category:
+                  highlightedWorkspace.category ||
+                  locationCategory ||
+                  WorkspaceCategory.FishingActivity,
+                workspaceId: id,
               },
               query: {
                 ...(dataviewInstances?.length && { dataviewInstances }),

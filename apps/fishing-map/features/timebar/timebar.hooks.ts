@@ -11,6 +11,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectTimebarGraph,
   selectTimebarSelectedEnvId,
+  selectTimebarSelectedUserId,
   selectTimebarSelectedVGId,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
@@ -18,7 +19,7 @@ import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveEventsDataviews,
-  selectActiveUserPointsDataviews,
+  selectActiveUserPointsWithTimeRangeDataviews,
   selectActiveVesselGroupDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
@@ -219,8 +220,31 @@ export const useTimebarEnvironmentConnect = () => {
   )
 
   return useMemo(
-    () => ({ timebarSelectedEnvId, dispatchTimebarSelectedEnvId }),
+    () => ({
+      timebarSelectedEnvId,
+      dispatchTimebarSelectedEnvId,
+    }),
     [dispatchTimebarSelectedEnvId, timebarSelectedEnvId]
+  )
+}
+
+export const useTimebarUserPointsConnect = () => {
+  const { dispatchQueryParams } = useLocationConnect()
+  const timebarSelectedUserId = useSelector(selectTimebarSelectedUserId)
+
+  const dispatchTimebarSelectedUserId = useCallback(
+    (timebarSelectedUserId: string) => {
+      dispatchQueryParams({ timebarSelectedUserId })
+    },
+    [dispatchQueryParams]
+  )
+
+  return useMemo(
+    () => ({
+      timebarSelectedUserId,
+      dispatchTimebarSelectedUserId,
+    }),
+    [timebarSelectedUserId, dispatchTimebarSelectedUserId]
   )
 }
 
@@ -268,7 +292,7 @@ export const useTimebarVisualisation = () => {
   const activeDetectionsDataviews = useSelector(selectActiveDetectionsDataviews)
   const activeEventsDataviews = useSelector(selectActiveEventsDataviews)
   const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
-  const activeUserPointsDataviews = useSelector(selectActiveUserPointsDataviews)
+  const activeUserPointsDataviews = useSelector(selectActiveUserPointsWithTimeRangeDataviews)
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeEnvDataviews = useSelector(selectActiveHeatmapEnvironmentalDataviewsWithoutStatic)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
@@ -277,7 +301,7 @@ export const useTimebarVisualisation = () => {
   const prevActiveHeatmapDataviewsNum = usePrevious(activeActivityDataviews.length)
   const prevActiveDetectionsDataviewsNum = usePrevious(activeDetectionsDataviews.length)
   const prevActiveVesselGroupDataviewsNum = usePrevious(activeVesselGroupDataviews.length)
-  const prevActiveUserPointsDataviews = usePrevious(activeUserPointsDataviews.length)
+  const prevActiveUserPointsDataviewsNum = usePrevious(activeUserPointsDataviews.length)
   const prevActiveTrackDataviewsNum = usePrevious(activeTrackDataviews.length)
   const prevactiveEnvDataviewsNum = usePrevious(activeEnvDataviews.length)
   const prevActiveEventsDataviewsNum = usePrevious(activeEventsDataviews.length)
@@ -290,11 +314,10 @@ export const useTimebarVisualisation = () => {
         !activeDetectionsDataviews?.length) ||
       (timebarVisualisation === TimebarVisualisations.VesselGroup &&
         !activeVesselGroupDataviews?.length) ||
-      (timebarVisualisation === TimebarVisualisations.Points &&
-        !activeUserPointsDataviews?.length) ||
       (timebarVisualisation === TimebarVisualisations.Vessel && !activeTrackDataviews?.length) ||
       (timebarVisualisation === TimebarVisualisations.Environment && !activeEnvDataviews?.length) ||
-      (timebarVisualisation === TimebarVisualisations.Events && !activeEventsDataviews?.length)
+      (timebarVisualisation === TimebarVisualisations.Events && !activeEventsDataviews?.length) ||
+      (timebarVisualisation === TimebarVisualisations.Points && !activeUserPointsDataviews?.length)
     ) {
       if (activeActivityDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapActivity, true)
@@ -302,14 +325,14 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.HeatmapDetections, true)
       } else if (activeVesselGroupDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup, true)
-      } else if (activeUserPointsDataviews?.length) {
-        dispatchTimebarVisualisation(TimebarVisualisations.Points, true)
       } else if (activeTrackDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
       } else if (activeEnvDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
       } else if (activeEventsDataviews?.length) {
         dispatchTimebarVisualisation(TimebarVisualisations.Events, true)
+      } else if (activeUserPointsDataviews?.length) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Points, true)
       }
     } else if (!hasChangedSettingsOnce) {
       if (activeActivityDataviews.length === 1 && prevActiveHeatmapDataviewsNum === 0) {
@@ -323,12 +346,12 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup, true)
       } else if (activeTrackDataviews.length >= 1 && prevActiveTrackDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.Vessel, true)
-      } else if (activeUserPointsDataviews.length >= 1 && prevActiveUserPointsDataviews === 0) {
-        dispatchTimebarVisualisation(TimebarVisualisations.Points, true)
       } else if (activeEnvDataviews.length === 1 && prevactiveEnvDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.Environment, true)
       } else if (activeEventsDataviews.length === 1 && prevActiveEventsDataviewsNum === 0) {
         dispatchTimebarVisualisation(TimebarVisualisations.Events, true)
+      } else if (activeUserPointsDataviews.length >= 1 && prevActiveUserPointsDataviewsNum === 0) {
+        dispatchTimebarVisualisation(TimebarVisualisations.Points, true)
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

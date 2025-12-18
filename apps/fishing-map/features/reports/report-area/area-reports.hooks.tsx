@@ -100,6 +100,14 @@ export const useHighlightReportArea = () => {
 }
 
 const defaultParams = {} as FitBoundsParams
+const LAT_LON_TOLERANCE = 1e-6
+const ZOOM_TOLERANCE = 1e-3
+
+const isClose = (a?: number, b?: number, tolerance = LAT_LON_TOLERANCE) => {
+  if (a === undefined || b === undefined || a === null || b === null) return false
+  return Math.abs(a - b) <= tolerance
+}
+
 export function useReportAreaCenter(bounds?: Bbox, params = defaultParams) {
   return useMemo(() => {
     if (!bounds) return null
@@ -195,35 +203,41 @@ export function useReportAreaBounds() {
     isVesselGroupReportLocation,
     portBbox,
     portLoaded,
-    reportArea?.bounds,
-    reportArea?.geometry?.bbox,
-    reportArea?.id,
+    reportArea,
     reportAreaStatus,
     vesselGroupBbox,
     vesselGroupLoaded,
   ])
 }
 
-export function useReportAreaInViewport() {
+const isAreaCenterInViewport = (
+  viewState: ReturnType<typeof useMapViewState>,
+  areaCenter: ReturnType<typeof useReportAreaCenter>,
+  id?: string
+) =>
+  !!viewState &&
+  !!areaCenter &&
+  isClose(viewState.latitude, areaCenter.latitude) &&
+  isClose(viewState.longitude, areaCenter.longitude) &&
+  // This is needed because depending of the viewport size the zoom can't go to the same value as the area center
+  (id === ENTIRE_WORLD_REPORT_AREA_ID
+    ? Math.floor(viewState?.zoom) <= Math.floor(areaCenter?.zoom)
+    : isClose(viewState?.zoom, areaCenter?.zoom, ZOOM_TOLERANCE))
+
+export function useReportAreaInViewport(params = defaultParams) {
   const viewState = useMapViewState()
   const { id, bbox } = useReportAreaBounds()
-  const areaCenter = useReportAreaCenter(bbox as Bbox)
-  return (
-    viewState?.latitude === areaCenter?.latitude &&
-    viewState?.longitude === areaCenter?.longitude &&
-    // This is needed because depending of the viewport the zoom can't go to the same value as the area center
-    (id === ENTIRE_WORLD_REPORT_AREA_ID
-      ? Math.floor(viewState?.zoom) <= Math.floor(areaCenter?.zoom)
-      : viewState?.zoom === areaCenter?.zoom)
-  )
+  const areaCenter = useReportAreaCenter(bbox as Bbox, params)
+  return isAreaCenterInViewport(viewState, areaCenter, id)
 }
 
 export function useFitAreaInViewport(params = defaultParams) {
   const setMapCoordinates = useSetMapCoordinates()
   const deckMap = useDeckMap()
-  const { bbox } = useReportAreaBounds()
+  const viewState = useMapViewState()
+  const { id, bbox } = useReportAreaBounds()
   const areaCenter = useReportAreaCenter(bbox as Bbox, params)
-  const areaInViewport = useReportAreaInViewport()
+  const areaInViewport = isAreaCenterInViewport(viewState, areaCenter, id)
   return useCallback(() => {
     if (!areaInViewport && areaCenter && deckMap) {
       setMapCoordinates(areaCenter)

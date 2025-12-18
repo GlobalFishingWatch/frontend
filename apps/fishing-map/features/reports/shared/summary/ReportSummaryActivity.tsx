@@ -37,6 +37,7 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 import { listAsSentence } from 'utils/shared'
 
 export const PROPERTIES_EXCLUDED = ['flag', 'geartype']
+const HOUR_ROUNDING_THRESHOLD = 5
 
 export default function ReportSummaryActivity({
   activityUnit,
@@ -115,9 +116,12 @@ export default function ReportSummaryActivity({
         reportStatus === AsyncReducerStatus.Finished &&
         reportHours)
     ) {
-      const formattedTimeseries = formatEvolutionData(
-        (layersTimeseriesFiltered?.[0] || {}) as ReportGraphProps
-      )
+      const firstTimeseries = (layersTimeseriesFiltered?.[0] || {}) as ReportGraphProps
+      const formattedTimeseries = formatEvolutionData(firstTimeseries, {
+        start: timerange?.start,
+        end: timerange?.end,
+        timeseriesInterval: firstTimeseries?.interval,
+      })
       const timeseriesHours = sum(formattedTimeseries?.map((t) => sum(t.avg)) || [])
       const timeseriesMaxHours = sum(
         formattedTimeseries?.map((t) => sum(t.range.map((r) => r[1]))) || []
@@ -125,9 +129,14 @@ export default function ReportSummaryActivity({
       const timeseriesImprecision = ((timeseriesMaxHours - timeseriesHours) / timeseriesHours) * 100
       let activityQuantity =
         !timeseriesLoading && layersTimeseriesFiltered?.[0]
-          ? `<span>${formatI18nNumber(timeseriesHours.toFixed(), {
-              locale: i18n.language as Locale,
-            })}</span>`
+          ? `<span>${formatI18nNumber(
+              timeseriesHours > HOUR_ROUNDING_THRESHOLD
+                ? timeseriesHours.toFixed()
+                : timeseriesHours,
+              {
+                locale: i18n.language as Locale,
+              }
+            )}</span>`
           : 0
       if (
         reportCategory === ReportCategory.Detections &&

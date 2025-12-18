@@ -209,12 +209,11 @@ const getInteractionEndpointDatasetConfig = (
     datasetConfig.query?.push({ id: 'filters', value: filters })
   }
 
-  const vesselGroups = featuresDataviews.flatMap((dv) => dv.config?.['vessel-groups'] || [])
+  const vesselGroups = featuresDataviews.flatMap((dv) => dv.config?.['vessel-groups'] || '')
 
   if (vesselGroups.length) {
     datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups })
   }
-
   return { featuresDataviews, fourWingsDataset, datasetConfig }
 }
 
@@ -376,7 +375,6 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
         const sublayersIds = heatmapFeatures.flatMap(
           (feature) => feature.sublayers?.map((sublayer) => sublayer.id) || ''
         )
-
         const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
           const activityProperty = heatmapProperties?.[i] || 'hours'
           return {

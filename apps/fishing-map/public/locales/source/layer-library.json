@@ -20,8 +20,8 @@
     "name": "Coral reefs"
   },
   "currents": {
-    "description": "TODO",
-    "moreInfoLink": "",
+    "description": "Ocean currents are the movement of seawater driven by wind, temperature, salinity, tides, and Earth’s rotation. Ocean currents regulate climate and transport heat, nutrients, and marine species. This dataset shows global ocean surface currents, including speed and direction, providing insight into large-scale circulation patterns.",
+    "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description",
     "name": "Currents"
   },
   "dsm-isa-leasing-areas": {
@@ -197,17 +197,17 @@
   "sst-anomalies": {
     "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
     "moreInfoLink": "https://developers.google.com/earth-engine/datasets/catalog/NOAA_CDR_OISST_V2_1",
-    "name": "Sea surface temperature anomalies"
+    "name": "Sea surface temperature anomalies (Mean)"
   },
   "sst-anomalies-max": {
-    "description": "",
+    "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
     "moreInfoLink": "",
-    "name": "Sea surface temperature anomalies (max)"
+    "name": "Sea surface temperature anomalies (Max)"
   },
   "sst-anomalies-min": {
-    "description": "",
+    "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
     "moreInfoLink": "",
-    "name": "Sea surface temperature anomalies (min)"
+    "name": "Sea surface temperature anomalies (Min)"
   },
   "thgt": {
     "description": "Wave height is the vertical distance from the trough (bottom) to the crest (top) of a wave on the sea surface. This dataset uses the significant wave height, which is the average of the highest one-third of all wave heights over a given sample period.",
@@ -225,8 +225,8 @@
     "name": "Night light detections (VIIRS Skylight)"
   },
   "winds": {
-    "description": "TODO",
-    "moreInfoLink": "",
-    "name": "Winds"
+    "description": "Wind is the movement of air across the Earth’s surface and plays an important role in shaping weather and ocean conditions. Surface winds help drive ocean circulation and influence mixing at the ocean surface. This dataset shows global wind speed and direction over the ocean.",
+    "moreInfoLink": "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=overview",
+    "name": "Wind"
   }
 }

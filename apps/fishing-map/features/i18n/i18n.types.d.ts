@@ -56,8 +56,8 @@ interface Resources {
       "name": "Coral reefs"
     },
     "currents": {
-      "description": "TODO",
-      "moreInfoLink": "",
+      "description": "Ocean currents are the movement of seawater driven by wind, temperature, salinity, tides, and Earth’s rotation. Ocean currents regulate climate and transport heat, nutrients, and marine species. This dataset shows global ocean surface currents, including speed and direction, providing insight into large-scale circulation patterns.",
+      "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description",
       "name": "Currents"
     },
     "dsm-isa-leasing-areas": {
@@ -233,17 +233,17 @@ interface Resources {
     "sst-anomalies": {
       "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
       "moreInfoLink": "https://developers.google.com/earth-engine/datasets/catalog/NOAA_CDR_OISST_V2_1",
-      "name": "Sea surface temperature anomalies"
+      "name": "Sea surface temperature anomalies (Mean)"
     },
     "sst-anomalies-max": {
-      "description": "",
+      "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
       "moreInfoLink": "",
-      "name": "Sea surface temperature anomalies (max)"
+      "name": "Sea surface temperature anomalies (Max)"
     },
     "sst-anomalies-min": {
-      "description": "",
+      "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
       "moreInfoLink": "",
-      "name": "Sea surface temperature anomalies (min)"
+      "name": "Sea surface temperature anomalies (Min)"
     },
     "thgt": {
       "description": "Wave height is the vertical distance from the trough (bottom) to the crest (top) of a wave on the sea surface. This dataset uses the significant wave height, which is the average of the highest one-third of all wave heights over a given sample period.",
@@ -261,9 +261,9 @@ interface Resources {
       "name": "Night light detections (VIIRS Skylight)"
     },
     "winds": {
-      "description": "TODO",
-      "moreInfoLink": "",
-      "name": "Winds"
+      "description": "Wind is the movement of air across the Earth’s surface and plays an important role in shaping weather and ocean conditions. Surface winds help drive ocean circulation and influence mixing at the ocean surface. This dataset shows global wind speed and direction over the ocean.",
+      "moreInfoLink": "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=overview",
+      "name": "Wind"
     }
   },
   "translations": {
@@ -279,9 +279,11 @@ interface Resources {
       "change": "Change",
       "clickToFilterBy": "Click to filter by:",
       "clickToSeeAreaReport": "Click to see the {{area}} report",
+      "comparisonNotAvailable": "Comparing datasets is not available for this layer",
       "confirmRemove": "Are you sure you want to permanently delete this report?",
       "createReportHelp": "To explore how activity and environmental data changes over time, you can create a dynamic report containing analysis for any area. Dynamic reports offer a rapid way to access and understand more information about any ocean area, exclusive economic zone, marine protected area or area of interest. Dynamic reports help you understand how much activity is happening in each area, including which vessels and flag States are active.",
       "createReportHelpLink": "Learn more.",
+      "currentsDataDisclaimer": "Currents and winds graph is still under development and may not represent the data accurately.",
       "dataSource": "Data Source",
       "datasetComparison": "Data comparison",
       "datasetsNotAllowed": "Vessels are not included from the following sources:",
@@ -392,6 +394,10 @@ interface Resources {
       "bathymetry_disclaimer": "Depth shown on map is a cell average — actual depth at clicked point may vary.",
       "between": "between",
       "cancel": "Cancel",
+      "cardinalEast": "E",
+      "cardinalNorth": "N",
+      "cardinalSouth": "S",
+      "cardinalWest": "W",
       "category": "Category",
       "comingSoon": "Coming soon",
       "confidence": "confidence",
@@ -410,6 +416,7 @@ interface Resources {
       "description": "Description",
       "detection": "Detections" | "detections" | "detections" | "Detections",
       "detections": "Detections",
+      "directions": "Directions",
       "dismiss": "Dismiss",
       "edit": "Edit",
       "environment": "Environment",
@@ -440,6 +447,7 @@ interface Resources {
       "include": "Include",
       "insights": "Insights",
       "km": "km",
+      "km/h": "km/h",
       "knots": "knots",
       "latestDays": "Latest {{count}} day" | "Latest {{count}} days" | "Latest {{count}} days",
       "latitude": "Latitude",
@@ -452,6 +460,7 @@ interface Resources {
       "login": "Log in",
       "logout": "Log out",
       "longitude": "Longitude",
+      "m/s": "m/s",
       "map": "Map",
       "matchedVessels": "Matched vessels",
       "meters": "meters",
@@ -761,7 +770,7 @@ interface Resources {
       "fishing": "Fishing" | "Fishing events",
       "fishingAction": "Fishing started at {{start}} for {{duration}}",
       "fishingActionIn": "Fishing in {{regionName}}",
-      "gap": "AIS Off event" | "AIS Off event" | "AIS Off events",
+      "gap": "AIS Off event" | "AIS Off event" | "AIS Off events" | "AIS Off events",
       "gapAction": "AIS Off event started at {{start}} for {{duration}}",
       "gapActionIn": "Likely disabling in {{regionName}}",
       "hourAbbreviated": "{{count}}h" | "{{count}}h" | "{{count}}h" | "{{count}}h",
@@ -1055,7 +1064,6 @@ interface Resources {
       "showDetections": "Show detections graph",
       "showGraphDepth": "Show track depth graph",
       "showGraphSpeed": "Show track speed graph",
-      "showOthers": "Show your uploaded points",
       "showTracks": "Show tracks graph",
       "title": "Timebar settings",
       "tracks": "Tracks",
@@ -1152,7 +1160,7 @@ interface Resources {
       "clickToFitMapToEvents": "Center map on the events inside",
       "clickToSeeMore": "Click to see more information",
       "codMarinha": "Cod Marinha",
-      "confirmationClose": "Do you want to keep this vessel in your workspace?",
+      "confirmationClose": "Do you want to keep this vessel in your workspace? Press 'Ok' to keep or 'Cancel' to exit vessel profile and remove it.",
       "dataset": "Source",
       "depthM": "Depth (m)",
       "exitTrackCorrection": "Exit activity issue (track correction) panel to be able to navigate to the vessel profile",
@@ -1578,6 +1586,11 @@ interface Resources {
         "cta": "Explore the carrier vessel portal",
         "description": "Verify transshipments, track vessels and identify frequently-visited ports to gain a better understanding of carrier vessel activities needed to strengthen transparency and accelerate transshipment reform.",
         "name": "Carrier Vessel Portal"
+      },
+      "deep-sea-mining-public": {
+        "cta": "Explore the portal",
+        "description": "The portal continuously maps and monitors vessels engaged in deep-sea mining activities in regions containing International Seabed Authority (ISA) license areas, which span over 1.5 million square kilometers of the international seabed.",
+        "name": "Deep Sea Mining Watch"
       },
       "detections-report": {
         "description": "Synthetic aperture radar (SAR) can detect at-sea vessels and structures in any weather conditions. The night lights detections (VIIRS) shows vessels at sea that satellites have detected by the light they emit at night.",

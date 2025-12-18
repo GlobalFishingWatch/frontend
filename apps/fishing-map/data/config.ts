@@ -84,6 +84,7 @@ export const DEFAULT_PAGINATION_PARAMS = {
 }
 
 export const BUFFER_PREVIEW_COLOR = '#F95E5E'
+export const PRIMARY_BLUE_COLOR = '#163f89'
 
 export const FIRST_YEAR_OF_DATA = 2012
 
@@ -137,7 +138,7 @@ export const EVENTS_COLORS: Record<
   [EventTypes.Port]: '#99EEFF',
   [EventTypes.Fishing]: '#6075A7',
   [EventTypes.Gap]: '#f45d5e',
-  fishingLabels: '#163f89',
+  fishingLabels: PRIMARY_BLUE_COLOR,
 }
 
 export const POPUP_CATEGORY_ORDER = [

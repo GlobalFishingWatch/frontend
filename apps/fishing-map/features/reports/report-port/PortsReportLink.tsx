@@ -61,6 +61,7 @@ function PortsReportLink({ children, port, tooltip }: PortsReportLinkProps) {
       return getPortClusterDataviewForReport(instance, {
         portId: port.id,
         clusterMaxZoomLevels: { default: 20 },
+        visible: true,
       })
     })
     dataviewInstances.push(...parsedInstances)

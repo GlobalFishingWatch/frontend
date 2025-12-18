@@ -2,10 +2,10 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
-import { CartesianGrid, ComposedChart, Line, Tooltip, XAxis, YAxis } from 'recharts'
+import { CartesianGrid, ComposedChart, Legend, Line, Tooltip, XAxis, YAxis } from 'recharts'
 
 import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
-import { getContrastSafeLineColor } from '@globalfishingwatch/responsive-visualizations'
+import { getContrastSafeColor } from '@globalfishingwatch/responsive-visualizations'
 
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
@@ -16,6 +16,7 @@ import {
   formatEvolutionData,
 } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 
+import DataComparisonLegend from './DataComparisonLegend'
 import EvolutionGraphTooltip from './EvolutionGraphTooltip'
 
 import styles from './ReportActivityDatasetComparison.module.css'
@@ -71,11 +72,21 @@ const calculateXDomain = (start: string, end: string, interval?: string) => {
   return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
 }
 
-const calculateYAxisDomain = (data: any[], index: number) => {
-  return [
-    Math.min(...data.map((d) => d.avg?.[index])),
-    Math.max(...data.map((d) => d.avg?.[index])),
-  ]
+export const calculateYAxisDomain = (data: any[], index: number): [number, number] => {
+  const values = data.map((d) => d.avg?.[index]).filter((v) => v != null)
+
+  if (values.length === 0) {
+    return [0, 1]
+  }
+
+  const dataMin = Math.min(...values)
+  const dataMax = Math.max(...values)
+
+  const basePadding = (dataMax - dataMin) / 10
+  const safePadding = basePadding === 0 ? Math.max(1, Math.abs(dataMax) * 0.1) : basePadding
+  const paddedDomain: [number, number] = [Math.max(0, dataMin - safePadding), dataMax + safePadding]
+
+  return paddedDomain
 }
 
 const ReportActivityDatasetComparisonGraph = ({
@@ -93,15 +104,17 @@ const ReportActivityDatasetComparisonGraph = ({
 
   const interval = filteredData[0]?.interval
 
-  const dataFormated = useMemo(
-    () =>
-      formatEvolutionData(filteredData[0], filteredData[1], {
+  const dataFormated = useMemo(() => {
+    return formatEvolutionData(
+      filteredData[0],
+      {
         start,
         end,
         timeseriesInterval: interval,
-      }),
-    [end, filteredData, interval, start]
-  )
+      },
+      filteredData[1]
+    )
+  }, [end, filteredData, interval, start])
 
   const xDomain = useMemo(() => calculateXDomain(start, end, interval), [start, end, interval])
 
@@ -116,21 +129,19 @@ const ReportActivityDatasetComparisonGraph = ({
   }
 
   if (mapLoading) {
-    return <ReportActivityPlaceholder showHeader={false} />
+    return <ReportActivityPlaceholder showHeader={false} loading />
   }
 
   if (!dataFormated || !xDomain || !dataFormated[0]) {
     return null
   }
 
-  const leftAxisColor = getContrastSafeLineColor(
-    filteredData[0].sublayers[0].legend?.color as string
-  )
+  const leftAxisColor = getContrastSafeColor(filteredData[0].sublayers[0].legend?.color as string)
   const leftAxisDomain = calculateYAxisDomain(dataFormated, 0)
 
   const rightAxisColor =
     comparisonDatasets?.compare && filteredData[1]
-      ? getContrastSafeLineColor(filteredData[1].sublayers[0].legend?.color as string)
+      ? getContrastSafeColor(filteredData[1].sublayers[0].legend?.color as string)
       : undefined
   const rightAxisDomain = comparisonDatasets?.compare && calculateYAxisDomain(dataFormated, 1)
 
@@ -184,7 +195,7 @@ const ReportActivityDatasetComparisonGraph = ({
         {filteredData.map((layer, layerIndex) => {
           const sublayer = layer.sublayers[0]
           const yAxisId = layerIndex === 0 ? 'left' : 'right'
-          const strokeColor = getContrastSafeLineColor(sublayer.legend?.color as string)
+          const strokeColor = getContrastSafeColor(sublayer.legend?.color as string)
 
           return (
             <Line
@@ -201,6 +212,12 @@ const ReportActivityDatasetComparisonGraph = ({
             />
           )
         })}
+        <Legend
+          verticalAlign="top"
+          align="center"
+          wrapperStyle={{ width: '100%', left: 0 }}
+          content={(props) => <DataComparisonLegend {...props} />}
+        />
         {dataFormated.length > 0 && (
           <Tooltip content={<EvolutionGraphTooltip timeChunkInterval={interval} />} />
         )}

@@ -5,7 +5,6 @@ import type { RootState } from 'reducers'
 
 export enum FeatureFlag {
   WorkspaceGenerator = 'workspaceGenerator',
-  OthersReport = 'othersReport',
 }
 
 export enum DebugOption {
@@ -18,7 +17,7 @@ export enum DebugOption {
   AreasOnScreen = 'areasOnScreen',
   DataTerminologyIframe = 'dataTerminologyIframe',
   VesselsAsPositions = 'vesselsAsPositions',
-  BluePlanetMode = 'bluePlanetMode',
+  HideVesselNames = 'hideVesselNames',
   VesselsMaxTimeGapHours = 'vesselsMaxTimeGapHours',
 }
 
@@ -32,19 +31,10 @@ interface DebugState {
   options: DebugOptions
 }
 
-export const BLUE_PLANET_MODE_DATE_FORMAT: DateTimeFormatOptions = {
-  month: 'short',
-  day: 'numeric',
-  hour: 'numeric',
-  minute: '2-digit',
-  hour12: true,
-}
-
 const initialState: DebugState = {
   active: false,
   featureFlags: {
     workspaceGenerator: false,
-    othersReport: false,
   },
   options: {
     datasetRelationship: false,
@@ -57,7 +47,7 @@ const initialState: DebugState = {
     areasOnScreen: false,
     vesselsAsPositions: false,
     vesselsMaxTimeGapHours: false,
-    bluePlanetMode: false,
+    hideVesselNames: false,
   },
 }
 

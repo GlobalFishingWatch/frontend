@@ -9,7 +9,7 @@ import type {
   DataviewInstanceOrigin,
   DataviewType,
 } from '@globalfishingwatch/api-types'
-import { DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { FourwingsAggregationOperation, getUTCDateTime } from '@globalfishingwatch/deck-layers'
@@ -33,7 +33,7 @@ const ENCOUNTER_EVENTS_30MIN_SOURCE_ID = 'proto-global-encounters-events-30min'
 export const PORT_VISITS_EVENTS_SOURCE_ID = 'port-visits'
 export const PORT_VISITS_REPORT_DATAVIEW_ID = `${PORT_VISITS_EVENTS_SOURCE_ID}-report`
 export const LOITERING_EVENTS_SOURCE_ID = 'loitering'
-export const GAPS_EVENTS_SOURCE_ID = 'gaps'
+export const GAPS_EVENTS_SOURCE_ID = 'gap'
 export const VESSEL_GROUP_DATAVIEW_PREFIX = `vessel-group-`
 export const BIG_QUERY_PREFIX = 'bq-'
 export const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`
@@ -52,6 +52,18 @@ export const BATHYMETRY_CONTOUR_DATAVIEW_PREFIX = 'bathymetry-contour' as const
 
 export function dataviewHasVesselGroupId(dataview: UrlDataviewInstance, vesselGroupId: string) {
   return dataview.config?.filters?.['vessel-groups']?.includes(vesselGroupId)
+}
+
+export function dataviewHasUserPointsTimeRange(dataview: UrlDataviewInstance) {
+  const dataset = dataview.datasets?.find(
+    (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
+  )
+  const timeFilterType = getDatasetConfigurationProperty({
+    dataset,
+    property: 'timeFilterType',
+  })
+  const hasTimeFilter = timeFilterType === 'dateRange' || timeFilterType === 'date'
+  return hasTimeFilter
 }
 
 export const getVesselIdFromInstanceId = (dataviewInstanceId: string) => {

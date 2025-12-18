@@ -144,6 +144,7 @@ export type FourwingsVectorsLayerProps = FourwingsHeatmapTileLayerProps & {
   maxVelocity?: number
   tilesCache: FourwingsHeatmapTilesCache
   debugTiles?: boolean
+  temporalAggregation?: boolean
   // highlightedFeatures?: FourwingsPickingObject[]
 }
 

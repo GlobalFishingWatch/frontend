@@ -18,6 +18,7 @@ import { cleanReportQuery } from 'features/workspace/workspace.slice'
 import type { ROUTE_TYPES } from 'routes/routes'
 import { HOME, WORKSPACE } from 'routes/routes'
 import {
+  selectIsAnySearchLocation,
   selectIsAnyWorkspaceReportLocation,
   selectIsVesselLocation,
   selectIsWorkspaceVesselLocation,
@@ -33,6 +34,7 @@ function NavigationWorkspaceButton() {
   const dispatch = useAppDispatch()
   const isVesselLocation = useSelector(selectIsVesselLocation)
   const isWorkspaceVesselLocation = useSelector(selectIsWorkspaceVesselLocation)
+  const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
   const isAnyWorkspaceReportLocation = useSelector(selectIsAnyWorkspaceReportLocation)
   const workspaceId = useSelector(selectWorkspaceId)
@@ -44,7 +46,7 @@ function NavigationWorkspaceButton() {
     dispatch(resetVesselState())
   }, [dispatch])
 
-  if (!workspaceId && isVesselLocation) {
+  if (isSearchLocation || (!workspaceId && isVesselLocation)) {
     const linkTo = {
       type: HOME,
       query: {},

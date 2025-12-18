@@ -33,6 +33,7 @@ export default function ReportEnvironmentGraphSelector() {
     {
       id: REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON,
       label: t('analysis.datasetComparison'),
+      tooltip: t('analysis.comparisonNotAvailable'),
     },
   ]
 
