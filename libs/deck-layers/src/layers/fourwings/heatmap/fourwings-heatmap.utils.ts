@@ -226,6 +226,7 @@ type GetMergedDataUrlParams = {
   tilesUrl?: string
   extentStart?: number
   mergeSublayerDatasets?: boolean
+  temporalAggregation?: boolean
 }
 
 export const getMergedDataUrl = ({
@@ -234,6 +235,7 @@ export const getMergedDataUrl = ({
   sublayers,
   tilesUrl = HEATMAP_API_TILES_URL,
   mergeSublayerDatasets = true,
+  temporalAggregation = false,
   extentStart,
 }: GetMergedDataUrlParams) => {
   // Merge all unique datasets from all sublayers
@@ -255,7 +257,7 @@ export const getMergedDataUrl = ({
   const params = {
     format: '4WINGS',
     interval: chunk.interval,
-    'temporal-aggregation': false,
+    'temporal-aggregation': temporalAggregation,
     datasets: mergeSublayerDatasets
       ? [allDatasets.join(',')]
       : sublayers.map((sublayer) => sublayer.datasets.join(',')),

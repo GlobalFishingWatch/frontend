@@ -60,6 +60,7 @@ export type _FourwingsVectorsTileLayerProps<DataT = FourwingsFeature> = Omit<
   sublayers: FourwingsDeckVectorSublayer[]
   minVisibleValue?: number
   maxVisibleValue?: number
+  temporalAggregation?: boolean
 }
 
 // TODO: decide if we intergrate it into the generic FourwingsLayer
@@ -113,7 +114,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   _calculateMaxVelocity = (): number => {
-    const { startTime, endTime, availableIntervals } = this.props
+    const { startTime, endTime, availableIntervals, temporalAggregation } = this.props
     const currentZoomData = this.getData()
     if (!currentZoomData.length) {
       return this.state.maxVelocity
@@ -143,6 +144,9 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     const allVelocities = dataSample.flatMap((feature) => {
       if (!feature.properties?.velocities || !feature.properties.velocities.length) {
         return []
+      }
+      if (temporalAggregation) {
+        return feature.properties.velocities
       }
       const slicedValues = sliceCellValues({
         values: feature.properties.velocities,
@@ -204,7 +208,15 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   _fetchTimeseriesTileData: any = async (tile: TileLoadProps) => {
-    const { startTime, endTime, sublayers, tilesUrl, extentStart, availableIntervals } = this.props
+    const {
+      startTime,
+      endTime,
+      sublayers,
+      tilesUrl,
+      extentStart,
+      availableIntervals,
+      temporalAggregation,
+    } = this.props
     const sublayerIndex = 0
     // Ensure 'u' (eastward) direction always goes first
     const vectorLayers = sublayers.sort((a) => (a.direction === 'u' ? -1 : 1))
@@ -225,6 +237,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       mergeSublayerDatasets: false,
       tilesUrl,
       extentStart,
+      temporalAggregation,
     }) as string
 
     const response = await GFWAPI.fetch<Response>(url, {
@@ -277,6 +290,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
           end: endTime,
         },
         interval,
+        temporalAggregation,
         tile,
       } as ParseFourwingsVectorsOptions,
     })
@@ -381,8 +395,6 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
             ...props,
             visible: maxVelocity > 0,
             maxVelocity,
-            minVisibleValue: this.props.minVisibleValue,
-            maxVisibleValue: this.props.maxVisibleValue,
           })
         },
       })

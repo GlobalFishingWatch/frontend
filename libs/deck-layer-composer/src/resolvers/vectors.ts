@@ -15,7 +15,10 @@ import { getDataviewAvailableIntervals } from './dataviews'
 export const resolveDeckVectorsLayerProps: DeckResolverFunction<
   FourwingsVectorsTileLayerProps,
   ResolvedFourwingsDataviewInstance
-> = (dataview, { start, end, highlightedFeatures, debugTiles }): FourwingsVectorsTileLayerProps => {
+> = (
+  dataview,
+  { start, end, highlightedFeatures, debugTiles, vectorsTemporalAggregation }
+): FourwingsVectorsTileLayerProps => {
   const startTime = start ? getUTCDateTime(start).toMillis() : 0
   const endTime = end ? getUTCDateTime(end).toMillis() : Infinity
 
@@ -69,6 +72,7 @@ export const resolveDeckVectorsLayerProps: DeckResolverFunction<
     availableIntervals,
     minVisibleValue: dataview.config?.minVisibleValue,
     maxVisibleValue: dataview.config?.maxVisibleValue,
+    temporalAggregation: vectorsTemporalAggregation,
     ...(tilesUrl && { tilesUrl }),
     ...(extentStart && { extentStart: getUTCDateTime(extentStart).toMillis() }),
     ...(extentEnd && { extentEnd: getUTCDateTime(extentEnd).toMillis() }),
