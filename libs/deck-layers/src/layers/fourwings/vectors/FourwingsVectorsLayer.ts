@@ -210,7 +210,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
       filled: true,
       billboard: false,
       antialiasing: true,
-      getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Heatmap, params),
+      getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.CustomLayer, params),
       getVelocity: this.getVelocity as any,
       getDirection: this.getDirection as any,
       maxVelocity: this.props.maxVelocity,
