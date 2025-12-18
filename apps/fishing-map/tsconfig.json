@@ -10,7 +10,8 @@
       "@vitest/browser/matchers",
       "next",
       "@vitest/browser-playwright",
-      "vitest-browser-react"
+      "vitest-browser-react",
+      "vitest"
     ],
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -71,6 +72,7 @@
     ".next",
     "exported",
     "**/resources.d.ts",
-    "**/i18n.types.d.ts"
+    "**/i18n.types.d.ts",
+    "**/__traces__/**"
   ]
 }

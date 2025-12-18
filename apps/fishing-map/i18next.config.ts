@@ -15,7 +15,15 @@ export default defineConfig({
   locales: ['source'],
   extract: {
     input: foldersToExtract.map((folder) => `./${folder}/**/*.{js,jsx,ts,tsx}`),
-    ignore: ['**/*.md', '**/*.css', '**/*.css.module'],
+    ignore: [
+      '**/*.md',
+      '**/*.css',
+      '**/*.css.module',
+      '**/*.test.*',
+      '**/*.spec.*',
+      '**/test-results/**',
+      '**/__traces__/**',
+    ],
     output: 'public/locales/{{language}}/{{namespace}}.json',
     defaultNS: 'translations',
     sort: true,

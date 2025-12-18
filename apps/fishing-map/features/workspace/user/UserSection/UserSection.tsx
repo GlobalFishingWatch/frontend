@@ -25,9 +25,8 @@ import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { getEventLabel } from 'utils/analytics'
 
-import LayerPanelContainer from '../shared/LayerPanelContainer'
-
-import LayerPanel from './UserLayerPanel'
+import LayerPanelContainer from '../../shared/LayerPanelContainer'
+import LayerPanel from '../UserLayerPanel'
 
 import styles from 'features/workspace/shared/Sections.module.css'
 
@@ -49,7 +48,7 @@ export function RegisterOrLoginToUpload() {
   )
 }
 
-function UserSection(): React.ReactElement<any> {
+export function UserSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const { dispatchSetMapDrawing } = useMapDrawConnect()
   const guestUser = useSelector(selectIsGuestUser)

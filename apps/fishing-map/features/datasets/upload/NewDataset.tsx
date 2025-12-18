@@ -19,7 +19,7 @@ import { selectDataviewInstancesMerged } from 'features/dataviews/selectors/data
 import UserGuideLink from 'features/help/UserGuideLink'
 import type { DatasetUploadStyle } from 'features/modals/modals.slice'
 import { selectIsGuestUser, selectIsUserExpired } from 'features/user/selectors/user.selectors'
-import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection'
+import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection/UserSection'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import { selectLocationType } from 'routes/routes.selectors'

@@ -31,7 +31,7 @@ import type { WelcomeLocalStorageKey } from 'features/welcome/Welcome'
 import { DEEP_SEA_MINING_POPUP } from 'features/welcome/Welcome'
 import DetectionsSection from 'features/workspace/detections/DetectionsSection'
 import { useHideLegacyActivityCategoryDataviews } from 'features/workspace/legacy-activity-category.hook'
-import UserSection from 'features/workspace/user/UserSection'
+import UserSection from 'features/workspace/user/UserSection/UserSection'
 import {
   selectIsWorkspacePasswordRequired,
   selectWorkspace,
