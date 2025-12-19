@@ -392,7 +392,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
-        id: `tiles-vectors`,
+        id: `tiles-vectors-${zoomOffset}`,
         tileSize: FOURWINGS_TILE_SIZE,
         tilesCache,
         minZoom: 0,
