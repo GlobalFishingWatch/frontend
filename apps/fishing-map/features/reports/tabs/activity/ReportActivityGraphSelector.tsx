@@ -78,7 +78,7 @@ export default function ReportActivityGraphSelector({
     if (selectedReportActivityGraph !== option.id) {
       fitAreaInViewport()
 
-      const filteredDataviewInstances = urlDataviewInstances.filter(
+      const filteredDataviewInstances = (urlDataviewInstances || []).filter(
         (dv) => !dv.id.includes(DATASET_COMPARISON_SUFFIX)
       )
 
