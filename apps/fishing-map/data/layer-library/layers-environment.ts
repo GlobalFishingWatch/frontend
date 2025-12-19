@@ -47,7 +47,7 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   {
     id: 'winds',
     dataviewId: WINDS_DATAVIEW_SLUG,
-    previewImageUrl: `${PATH_BASENAME}/images/layer-library/currents.jpg`,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/winds.jpg`,
   },
   // {
   //   id: 'gee-water-temperature',

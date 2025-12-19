@@ -65,7 +65,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
       FILL_DATAVIEWS.includes(dataview.config?.type) ? 'fill' : 'line',
       usedColors
     )
-    const supportsColorChange = !LAYER_LIBRARY_EVENTS_IDS.includes(id)
+    const supportsColorChange = ![...LAYER_LIBRARY_EVENTS_IDS, 'currents', 'winds'].includes(id)
     const apiDataview = allDataviews.find((d) => d.slug === dataviewId || d.id === dataviewId)
     if (!apiDataview) {
       setLoading(true)

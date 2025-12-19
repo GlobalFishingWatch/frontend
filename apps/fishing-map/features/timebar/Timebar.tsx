@@ -27,7 +27,10 @@ import {
   selectTimebarGraph,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
-import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import {
+  selectHasDeprecatedDataviewInstances,
+  selectHasVectorDataviews,
+} from 'features/dataviews/selectors/dataviews.instances.selectors'
 import Hint from 'features/help/Hint'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -186,6 +189,7 @@ const TimebarWrapper = () => {
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
+  const hasVectorDataviews = useSelector(selectHasVectorDataviews)
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
@@ -459,8 +463,14 @@ const TimebarWrapper = () => {
       role="toolbar"
     >
       <Timebar
-        disablePlayback={vesselGroupsFiltering}
-        disabledPlaybackTooltip={t('timebar.disablePlaybackVesselGroups')}
+        disablePlayback={vesselGroupsFiltering || hasVectorDataviews}
+        disabledPlaybackTooltip={
+          vesselGroupsFiltering
+            ? t('timebar.disablePlaybackVesselGroups')
+            : hasVectorDataviews
+              ? t('timebar.disablePlaybackVectors')
+              : undefined
+        }
         showPlayback={!isReportLocation}
         labels={labels}
         start={start}
