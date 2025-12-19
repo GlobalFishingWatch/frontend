@@ -65,6 +65,7 @@ const InfoModal = ({
         } else if (
           !showAllDatasets &&
           dataview.config?.datasets &&
+          dataview.config?.datasets?.length > 0 &&
           !dataview.config?.datasets?.includes(dataset.id)
         ) {
           return []
