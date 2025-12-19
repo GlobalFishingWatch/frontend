@@ -854,6 +854,7 @@
     "weeks_other": "{{count}} weeks"
   },
   "timebar": {
+    "disablePlaybackVectors": "Playback of currents or winds layers is not supported",
     "disablePlaybackVesselGroups": "La animación no está soportada con capas de grupo de buques activadas",
     "fitOnThisDates": "Ajustar rango de tiempo a estas fechas",
     "focusOnThisDay": "Ajustar rango de tiempo a este día",
