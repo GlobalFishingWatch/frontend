@@ -854,6 +854,7 @@
     "weeks_other": "crwdns106714:0{{count}}crwdne106714:0"
   },
   "timebar": {
+    "disablePlaybackVectors": "crwdns108860:0crwdne108860:0",
     "disablePlaybackVesselGroups": "crwdns84050:0crwdne84050:0",
     "fitOnThisDates": "crwdns60411:0crwdne60411:0",
     "focusOnThisDay": "crwdns60413:0crwdne60413:0",
