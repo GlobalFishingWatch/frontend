@@ -412,6 +412,7 @@ export const getTileDataCache = ({
   compareStart,
   compareEnd,
   chunksBuffer,
+  temporalAggregation,
 }: {
   zoom: number
   startTime: number
@@ -420,6 +421,7 @@ export const getTileDataCache = ({
   compareStart?: number
   compareEnd?: number
   chunksBuffer?: number
+  temporalAggregation?: boolean
 }): FourwingsHeatmapTilesCache => {
   const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
   const { start, end, bufferedStart } = getFourwingsChunk({
@@ -436,5 +438,6 @@ export const getTileDataCache = ({
     interval,
     compareStart,
     compareEnd,
+    temporalAggregation,
   }
 }

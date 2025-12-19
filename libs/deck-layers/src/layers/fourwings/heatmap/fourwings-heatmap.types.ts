@@ -113,6 +113,7 @@ export type FourwingsHeatmapTilesCache = {
   interval: FourwingsInterval
   compareStart?: number
   compareEnd?: number
+  temporalAggregation?: boolean
 }
 
 export type FourwinsTileLayerScale = ScaleLinear<FourwingsColorObject, FourwingsColorObject, never>

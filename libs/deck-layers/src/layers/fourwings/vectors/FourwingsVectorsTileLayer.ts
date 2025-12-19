@@ -92,6 +92,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
         endTime: this.props.endTime,
         availableIntervals: this.props.availableIntervals,
         chunksBuffer: this.chunksBuffer,
+        temporalAggregation: this.props.temporalAggregation,
       }),
       maxVelocity: 0,
       rampDirty: false,
@@ -331,18 +332,20 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   updateState({ props }: UpdateParameters<this>) {
-    const { startTime, endTime, availableIntervals } = props
+    const { startTime, endTime, availableIntervals, temporalAggregation } = props
     const { tilesCache } = this.state
     const zoom = Math.round(this.context.viewport.zoom)
     const isStartOutRange = startTime < tilesCache.start
     const isEndOutRange = endTime > tilesCache.end
     const isDifferentZoom = zoom !== tilesCache.zoom
+    const isDifferentTemporalAggregation = temporalAggregation !== tilesCache.temporalAggregation
 
     // TODO debug why not re-rendering on out of range
     // TODO debug why re-renders when not needed
     const needsCacheKeyUpdate =
       isStartOutRange ||
       isEndOutRange ||
+      isDifferentTemporalAggregation ||
       getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
       isDifferentZoom
 
@@ -363,6 +366,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
             endTime,
             availableIntervals,
             chunksBuffer: this.chunksBuffer,
+            temporalAggregation,
           }),
         })
       })
