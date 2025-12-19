@@ -1046,6 +1046,7 @@ interface Resources {
       "weeks": "{{count}} week" | "{{count}} weeks"
     },
     "timebar": {
+      "disablePlaybackVectors": "Playback of currents or winds layers is not supported",
       "disablePlaybackVesselGroups": "Playback of vessel group layers is not supported",
       "fitOnThisDates": "Fit time range to these dates",
       "focusOnThisDay": "Focus time range on this day",
