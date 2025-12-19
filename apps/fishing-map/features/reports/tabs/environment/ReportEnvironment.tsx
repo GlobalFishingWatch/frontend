@@ -33,11 +33,11 @@ function ReportEnvironment() {
 
   return (
     <div className={styles.graphContainer}>
-      {environmentalDataviews.every(
-        (dv) => isHeatmapVectorsDataview(dv) || !isEnvironmentalDataview(dv)
-      ) ? null : (
+      {environmentalDataviews.some(
+        (dv) => isEnvironmentalDataview(dv) || isHeatmapVectorsDataview(dv)
+      ) ? (
         <ReportEnvironmentGraphSelector />
-      )}
+      ) : null}
       <div>
         {reportGraphType === 'evolution' ? (
           environmentalDataviews.map((dataview, index) => {
