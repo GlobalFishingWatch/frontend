@@ -27,6 +27,8 @@ export async function createNewIssue(
       ...issueBody,
       issueId: `=HYPERLINK("${issueBody.workspaceLink}", "${commentBody.issueId}")`,
       createdBy: `=HYPERLINK("mailto:${issueBody.userEmail}", "${commentBody.user}")`,
+      startDate: `=GET_LATEST_STARTDATE(${issueBody.issueId})`,
+      endDate: `=GET_LATEST_ENDDATE(${issueBody.issueId})`,
       comments: `=LINKTOCOMMENTS(${issueBody.issueId})`,
       lastUpdated: `=GET_LAST_UPDATED(${issueBody.issueId})`,
       resolved: `=GET_IS_RESOLVED(${issueBody.issueId})`,
