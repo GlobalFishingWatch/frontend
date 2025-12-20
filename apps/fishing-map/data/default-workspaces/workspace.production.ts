@@ -158,15 +158,15 @@ const workspace: Workspace<WorkspaceState> = {
       config: { visible: false },
     },
     ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,
-    {
-      id: OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID,
-      config: {
-        visible: false,
-        color: '#8E24A9',
-        colorRamp: 'seance',
-      },
-      dataviewId: FIXED_SAR_INFRASTRUCTURE,
-    },
+    // {
+    //   id: OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID,
+    //   config: {
+    //     visible: false,
+    //     color: '#8E24A9',
+    //     colorRamp: 'seance',
+    //   },
+    //   dataviewId: FIXED_SAR_INFRASTRUCTURE,
+    // },
     // {
     //   id: PORTS_LAYER_ID,
     //   config: {

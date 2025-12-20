@@ -231,13 +231,13 @@ function Workspace() {
           </Sticky>
         )}
       <ActivitySection />
-      <DetectionsSection />
       <EventsSection />
-      <VesselGroupSection />
+      <DetectionsSection />
       <VesselsSection />
+      <VesselGroupSection />
       <EnvironmentalSection />
-      <ContextAreaSection />
       <UserSection />
+      <ContextAreaSection />
     </DndContext>
   )
 }
