@@ -8,7 +8,7 @@ import {
   useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
 import type { UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
-import { getFeatureTimeRange, getFourwingsChunk } from '@globalfishingwatch/deck-layers'
+import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
 import type { FourwingsPointFeature } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 
@@ -44,9 +44,27 @@ export const useTimebarPoints = () => {
     ? userPointsLayers.every(({ instance }) => instance.isLoaded) && !datasetImporting
     : false
 
+  const availableIntervals = getAvailableIntervalsInDataviews(dataviews)
+  const { interval, bufferedStart, bufferedEnd } = getFourwingsChunk({
+    start,
+    end,
+    availableIntervals,
+  })
+
+  const instanceCacheHash = useMemo(() => {
+    if (!userPointsLayers[0]?.instance) return ''
+
+    const { startTimeProperty, endTimeProperty, layers, timeFilterType } =
+      userPointsLayers[0]?.instance?.props || {}
+    const { filtersHash = '', aggregatedPropertyHash = '' } = userPointsLayers[0]?.instance || {}
+
+    return `${bufferedStart}-${bufferedEnd}-${interval}-${startTimeProperty}-${endTimeProperty}-${layers.length}-${timeFilterType}-${filtersHash}-${aggregatedPropertyHash}`
+  }, [userPointsLayers, bufferedStart, bufferedEnd, interval])
+
   const instance = useMemo(() => {
     return userPointsLayers[0]?.instance
-  }, [userPointsLayers])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [instanceCacheHash])
 
   const setFourwingsPointsData = useCallback(
     async (data: FourwingsPointFeature[], params: PointsFeaturesToTimeseriesParams) => {
@@ -60,7 +78,7 @@ export const useTimebarPoints = () => {
         timeFilterType,
       } = params
 
-      setData(
+      const result =
         getGraphDataFromPoints(data, {
           start: start,
           end: end,
@@ -70,7 +88,7 @@ export const useTimebarPoints = () => {
           endTimeProperty: endTimeProperty,
           timeFilterType: timeFilterType,
         }) || EMPTY_ACTIVITY_DATA
-      )
+      setData(result)
     },
     []
   )
@@ -78,38 +96,15 @@ export const useTimebarPoints = () => {
   useEffect(() => {
     if (loaded && instance) {
       const { startTimeProperty, endTimeProperty, layers, timeFilterType } = instance?.props || {}
-
-      const availableIntervals = getAvailableIntervalsInDataviews(dataviews)
-      const { interval } = getFourwingsChunk({ start, end, availableIntervals })
-
-      let featureStartTime: number = Infinity
-      let featureEndTime: number = -Infinity
-
       const viewportData =
-        instance?.getViewportData?.({ skipTemporalFilter: true }).map((feature) => {
-          const { featureStart, featureEnd } = getFeatureTimeRange(feature, {
-            startTimeProperty: startTimeProperty || '',
-            endTimeProperty: endTimeProperty || '',
-            timeFilterType,
-          })
-          featureStartTime = Math.min(featureStartTime, featureStart)
-          featureEndTime = Math.max(featureEndTime, featureEnd)
-
-          return {
-            ...feature,
-            properties: {
-              ...feature.properties,
-              layer: 0,
-            } as any,
-          } as FourwingsPointFeature
-        }) || []
+        (instance?.getViewportData?.({ skipTemporalFilter: true }) as FourwingsPointFeature[]) || []
 
       const params = {
         startTimeProperty: startTimeProperty,
         endTimeProperty,
         sublayers: layers.flatMap((l) => l.sublayers) || [],
-        start: featureStartTime,
-        end: featureEndTime,
+        start: bufferedStart,
+        end: bufferedEnd,
         interval: interval || 'MONTH',
         timeFilterType: timeFilterType,
       } as PointsFeaturesToTimeseriesParams
@@ -118,7 +113,7 @@ export const useTimebarPoints = () => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded, instance, dataviewIds, viewportChangeHash])
+  }, [loaded, dataviewIds, viewportChangeHash, instance])
 
   return useMemo(() => ({ loading: !loaded, points: data, dataviews }), [data, loaded, dataviews])
 }
