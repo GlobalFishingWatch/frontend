@@ -17,6 +17,7 @@ import { selectUserContextDatasets } from 'features/user/selectors/user.permissi
 import { getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
+import Sections from '../shared/Sections'
 
 import LayerPanel from './ContextAreaLayerPanel'
 
@@ -60,10 +61,11 @@ function ContextAreaSection(): React.ReactElement<any> {
     []
   )
   return (
-    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={styles.header}>
-        <h2 className={cx('print-hidden', styles.sectionTitle)}>{t('common.context_areas')}</h2>
-        {!readOnly && (
+    <Sections
+      title={t('common.context_areas')}
+      hasVisibleDataviews={hasVisibleDataviews}
+      headerOptions={
+        !readOnly ? (
           <IconButton
             icon="plus"
             type="border"
@@ -73,8 +75,9 @@ function ContextAreaSection(): React.ReactElement<any> {
             className="print-hidden"
             onClick={onAdd}
           />
-        )}
-      </div>
+        ) : null
+      }
+    >
       <SortableContext items={allDataviews.flat()}>
         {allDataviews.map((dataviews) => {
           if (!dataviews?.length) return null
@@ -94,7 +97,7 @@ function ContextAreaSection(): React.ReactElement<any> {
           ))
         })}
       </SortableContext>
-    </div>
+    </Sections>
   )
 }
 

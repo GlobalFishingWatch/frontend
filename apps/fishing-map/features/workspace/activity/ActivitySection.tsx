@@ -23,6 +23,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
+import Sections from '../shared/Sections'
 
 import { useVisualizationsOptions } from './activity.hooks'
 import LayerPanel from './ActivityLayerPanel'
@@ -105,13 +106,10 @@ function ActivitySection(): React.ReactElement<any> {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   return (
-    <div
-      data-test="activity-section"
-      className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews }, 'hover-target')}
-    >
-      <div className={cx(styles.header, 'print-hidden')}>
-        <h2 className={styles.sectionTitle}>{t('common.activity')}</h2>
-        {!readOnly && (
+    <Sections
+      title={t('common.activity')}
+      headerOptions={
+        !readOnly ? (
           <div className={cx(styles.sectionButtons)}>
             <VisualisationChoice
               options={visualizationOptions}
@@ -130,8 +128,10 @@ function ActivitySection(): React.ReactElement<any> {
               onClick={() => onAddLayerClick()}
             />
           </div>
-        )}
-      </div>
+        ) : null
+      }
+      hasVisibleDataviews={hasVisibleDataviews}
+    >
       {dataviews?.map((dataview, index) => {
         const isLastElement = index === dataviews?.length - 1
         const isVisible = dataview?.config?.visible ?? false
@@ -168,7 +168,7 @@ function ActivitySection(): React.ReactElement<any> {
           </Fragment>
         )
       })}
-    </div>
+    </Sections>
   )
 }
 

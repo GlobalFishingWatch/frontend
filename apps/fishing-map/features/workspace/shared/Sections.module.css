@@ -61,6 +61,22 @@
   transition: var(--transition);
 }
 
+.containerCollapsed .content {
+  display: none;
+}
+
+.containerCollapsed .sectionButtons {
+  display: none;
+}
+
+.containerCollapsed .header {
+  cursor: pointer;
+}
+
+.containerExpanded .header {
+  cursor: pointer;
+}
+
 .container:hover .sectionButtonsSecondary {
   opacity: 1;
 }

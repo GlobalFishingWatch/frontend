@@ -13,7 +13,6 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { useAddDataset } from 'features/datasets/datasets.hook'
 import { selectCustomUserDataviewsGrouped } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import Hint from 'features/help/Hint'
@@ -26,6 +25,7 @@ import LocalStorageLoginLink from 'routes/LoginLink'
 import { getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
+import Sections from '../shared/Sections'
 
 import LayerPanel from './UserLayerPanel'
 
@@ -56,7 +56,6 @@ function UserSection(): React.ReactElement<any> {
   const dispatch = useAppDispatch()
   const isSmallScreen = useSmallScreen()
 
-  const readOnly = useSelector(selectReadOnly)
   const dataviewsGrouped = useSelector(selectCustomUserDataviewsGrouped)
   const allDataviews = Object.values(dataviewsGrouped)
   const dataviews = allDataviews.flat()
@@ -112,75 +111,72 @@ function UserSection(): React.ReactElement<any> {
     []
   )
   return (
-    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={cx(styles.header, 'print-hidden')}>
-        <h2 className={styles.sectionTitle}>{t('user.datasets')}</h2>
-        {!readOnly && (
-          <Fragment>
-            {!isSmallScreen && (
-              <div className={styles.relative}>
-                <Hint id="userContextLayers" />
-                <UserLoggedIconButton
-                  icon="upload"
-                  type="border"
-                  size="medium"
-                  onClick={onUploadClick}
-                  tooltip={t('dataset.upload')}
-                  tooltipPlacement="top"
-                  loginTooltip={t('download.eventsDownloadLogin')}
-                />
-              </div>
-            )}
-            <UserLoggedIconButton
-              icon="draw"
-              type="border"
-              size="medium"
-              tooltip={t('layer.drawPolygon')}
-              tooltipPlacement="top"
-              onClick={() => onDrawClick('polygons')}
-              loginTooltip={t('download.eventsDownloadLogin')}
-            />
-            <UserLoggedIconButton
-              icon="draw-points"
-              type="border"
-              size="medium"
-              tooltip={t('layer.drawPoints')}
-              tooltipPlacement="top"
-              onClick={() => onDrawClick('points')}
-              loginTooltip={t('download.eventsDownloadLogin')}
-            />
-            <IconButton
-              icon="plus"
-              type="border"
-              size="medium"
-              tooltip={t('dataset.addUser')}
-              tooltipPlacement="top"
-              onClick={onAddClick}
-            />
-          </Fragment>
-        )}
-      </div>
-      <Fragment>
-        <SortableContext items={allDataviews.flat()}>
-          {allDataviews.map((dataviews) => {
-            if (!dataviews?.length) return null
-            const visibleDataviews = dataviews.filter(
-              (dataview) => dataview.config?.visible !== false
-            )
-            return dataviews?.map((dataview) => (
-              <LayerPanelContainer key={dataview.id} dataview={dataview}>
-                <LayerPanel
-                  dataview={dataview}
-                  onToggle={onToggleLayer(dataview)}
-                  mergedDataviewId={
-                    visibleDataviews?.length > 0 ? getMergedDataviewId(visibleDataviews) : undefined
-                  }
-                />
-              </LayerPanelContainer>
-            ))
-          })}
-        </SortableContext>
-
+    <Sections
+      title={t('user.datasets')}
+      hasVisibleDataviews={hasVisibleDataviews}
+      headerOptions={
+        <Fragment>
+          {!isSmallScreen && (
+            <div className={styles.relative}>
+              <Hint id="userContextLayers" />
+              <UserLoggedIconButton
+                icon="upload"
+                type="border"
+                size="medium"
+                onClick={onUploadClick}
+                tooltip={t('dataset.upload')}
+                tooltipPlacement="top"
+                loginTooltip={t('download.eventsDownloadLogin')}
+              />
+            </div>
+          )}
+          <UserLoggedIconButton
+            icon="draw"
+            type="border"
+            size="medium"
+            tooltip={t('layer.drawPolygon')}
+            tooltipPlacement="top"
+            onClick={() => onDrawClick('polygons')}
+            loginTooltip={t('download.eventsDownloadLogin')}
+          />
+          <UserLoggedIconButton
+            icon="draw-points"
+            type="border"
+            size="medium"
+            tooltip={t('layer.drawPoints')}
+            tooltipPlacement="top"
+            onClick={() => onDrawClick('points')}
+            loginTooltip={t('download.eventsDownloadLogin')}
+          />
+          <IconButton
+            icon="plus"
+            type="border"
+            size="medium"
+            tooltip={t('dataset.addUser')}
+            tooltipPlacement="top"
+            onClick={onAddClick}
+          />
+        </Fragment>
+      }
+    >
+      <SortableContext items={allDataviews.flat()}>
+        {allDataviews.map((dataviews) => {
+          if (!dataviews?.length) return null
+          const visibleDataviews = dataviews.filter(
+            (dataview) => dataview.config?.visible !== false
+          )
+          return dataviews?.map((dataview) => (
+            <LayerPanelContainer key={dataview.id} dataview={dataview}>
+              <LayerPanel
+                dataview={dataview}
+                onToggle={onToggleLayer(dataview)}
+                mergedDataviewId={
+                  visibleDataviews?.length > 0 ? getMergedDataviewId(visibleDataviews) : undefined
+                }
+              />
+            </LayerPanelContainer>
+          ))
+        })}
         {guestUser ? (
           <div className={cx(styles.emptyStateBig, 'print-hidden')}>
             <RegisterOrLoginToUpload />
@@ -190,8 +186,8 @@ function UserSection(): React.ReactElement<any> {
             {t('workspace.emptyStateUser')}
           </div>
         ) : null}
-      </Fragment>
-    </div>
+      </SortableContext>
+    </Sections>
   )
 }
 

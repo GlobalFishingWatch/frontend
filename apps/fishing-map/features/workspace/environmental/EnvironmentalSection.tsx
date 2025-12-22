@@ -28,6 +28,7 @@ import { selectLocationCategory } from 'routes/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
+import Sections from '../shared/Sections'
 
 import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
 
@@ -82,10 +83,11 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
   }
 
   return (
-    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews }, 'hover-target')}>
-      <div className={cx(styles.header, 'print-hidden')}>
-        <h2 className={styles.sectionTitle}>{t('common.environment')}</h2>
-        {!readOnly && (
+    <Sections
+      title={t('common.environment')}
+      hasVisibleDataviews={hasVisibleDataviews}
+      headerOptions={
+        !readOnly ? (
           <div className={styles.sectionButtons}>
             <VisualisationChoice
               options={visualizationOptions}
@@ -106,39 +108,43 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
               onClick={onAddClick}
             />
           </div>
+        ) : null
+      }
+    >
+      <>
+        {' '}
+        <SortableContext items={dataviewsMinusBathymetry}>
+          {dataviewsMinusBathymetry.length > 0
+            ? dataviewsMinusBathymetry?.map((dataview) => (
+                <LayerPanelContainer key={dataview.id} dataview={dataview}>
+                  <EnvironmentalLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
+                </LayerPanelContainer>
+              ))
+            : null}
+        </SortableContext>
+        {bathymetryDataviews.length > 0 &&
+          bathymetryDataviews.map((bathymetryDataview) => (
+            <LayerPanelContainer key={bathymetryDataview.id} dataview={bathymetryDataview}>
+              <EnvironmentalLayerPanel
+                dataview={bathymetryDataview}
+                onToggle={onToggleLayer(bathymetryDataview)}
+              />
+            </LayerPanelContainer>
+          ))}
+        {locationCategory === WorkspaceCategory.MarineManager && (
+          <div className={cx(styles.surveyLink, 'print-hidden')}>
+            <a
+              href={t('feedback.marineManagerDatasetsSurveyLink') as string}
+              target="_blank"
+              rel="noreferrer"
+              className={styles.link}
+            >
+              {t('feedback.marineManagerDatasetsSurvey')}
+            </a>
+          </div>
         )}
-      </div>
-      <SortableContext items={dataviewsMinusBathymetry}>
-        {dataviewsMinusBathymetry.length > 0
-          ? dataviewsMinusBathymetry?.map((dataview) => (
-              <LayerPanelContainer key={dataview.id} dataview={dataview}>
-                <EnvironmentalLayerPanel dataview={dataview} onToggle={onToggleLayer(dataview)} />
-              </LayerPanelContainer>
-            ))
-          : null}
-      </SortableContext>
-      {bathymetryDataviews.length > 0 &&
-        bathymetryDataviews.map((bathymetryDataview) => (
-          <LayerPanelContainer key={bathymetryDataview.id} dataview={bathymetryDataview}>
-            <EnvironmentalLayerPanel
-              dataview={bathymetryDataview}
-              onToggle={onToggleLayer(bathymetryDataview)}
-            />
-          </LayerPanelContainer>
-        ))}
-      {locationCategory === WorkspaceCategory.MarineManager && (
-        <div className={cx(styles.surveyLink, 'print-hidden')}>
-          <a
-            href={t('feedback.marineManagerDatasetsSurveyLink') as string}
-            target="_blank"
-            rel="noreferrer"
-            className={styles.link}
-          >
-            {t('feedback.marineManagerDatasetsSurvey')}
-          </a>
-        </div>
-      )}
-    </div>
+      </>
+    </Sections>
   )
 }
 

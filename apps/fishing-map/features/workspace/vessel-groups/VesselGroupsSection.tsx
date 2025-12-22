@@ -21,6 +21,8 @@ import {
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
+import Sections from '../shared/Sections'
+
 import VesselGroupLayerPanel from './VesselGroupsLayerPanel'
 
 import styles from 'features/workspace/shared/Sections.module.css'
@@ -58,32 +60,36 @@ function VesselGroupSection(): React.ReactElement<any> {
   }, [dispatch, userDatasets.length])
 
   return (
-    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={cx('print-hidden', styles.header)}>
-        <h2 className={styles.sectionTitle}>{t('vesselGroup.vesselGroups')}</h2>
-        {!readOnly && (
-          <div
-            className={cx(styles.sectionButtons, styles.sectionButtonsSecondary, 'print-hidden')}
-          >
-            <UserLoggedIconButton
-              type="border"
-              icon="vessel-group"
-              size="medium"
-              tooltip={t('vesselGroup.createNewGroup')}
-              tooltipPlacement="top"
-              onClick={onAddVesselGroupClick}
-            />
-          </div>
-        )}
-        <IconButton
-          icon="plus"
-          type="border"
-          size="medium"
-          tooltip={t('vesselGroup.addToWorkspace')}
-          tooltipPlacement="top"
-          onClick={onAddClick}
-        />
-      </div>
+    <Sections
+      hasVisibleDataviews={hasVisibleDataviews}
+      title={t('vesselGroup.vesselGroups')}
+      headerOptions={
+        <>
+          {!readOnly && (
+            <div
+              className={cx(styles.sectionButtons, styles.sectionButtonsSecondary, 'print-hidden')}
+            >
+              <UserLoggedIconButton
+                type="border"
+                icon="vessel-group"
+                size="medium"
+                tooltip={t('vesselGroup.createNewGroup')}
+                tooltipPlacement="top"
+                onClick={onAddVesselGroupClick}
+              />
+            </div>
+          )}
+          <IconButton
+            icon="plus"
+            type="border"
+            size="medium"
+            tooltip={t('vesselGroup.addToWorkspace')}
+            tooltipPlacement="top"
+            onClick={onAddClick}
+          />
+        </>
+      }
+    >
       <SortableContext items={dataviews}>
         {dataviews.length > 0 ? (
           dataviews?.map((dataview) => {
@@ -110,7 +116,7 @@ function VesselGroupSection(): React.ReactElement<any> {
           </div>
         )}
       </SortableContext>
-    </div>
+    </Sections>
   )
 }
 
