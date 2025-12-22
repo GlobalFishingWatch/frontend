@@ -1,4 +1,4 @@
-import type { DataviewInstance } from './dataviews'
+import type { DataviewCategory, DataviewInstance } from './dataviews'
 
 export type ApiAppName = 'fishing-map' | 'marine-manager'
 
@@ -39,6 +39,7 @@ export interface Workspace<State = unknown, Category = string> {
   ownerId?: number
   ownerType?: OwnerType
   createdAt?: string
+  collapsedSections?: DataviewCategory[]
 }
 
 export type WorkspaceUpsert<State = unknown, Category = string> = Omit<

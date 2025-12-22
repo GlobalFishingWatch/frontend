@@ -1,13 +1,17 @@
 import type { JSX } from 'react'
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
+import type { DataviewCategory } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
+
+import { selectWorkspace } from '../workspace.selectors'
 
 import styles from 'features/workspace/shared/Sections.module.css'
 
 interface SectionsProps {
-  id?: string
+  id?: DataviewCategory
   title: string | JSX.Element
   hasVisibleDataviews: boolean
   children: JSX.Element | JSX.Element[]
@@ -21,7 +25,9 @@ function Sections({
   children,
   headerOptions,
 }: SectionsProps): React.ReactElement<any> {
-  const [collapsed, setCollapsed] = useState(false)
+  const workspace = useSelector(selectWorkspace)
+  const collapsedSections = workspace?.collapsedSections || []
+  const [collapsed, setCollapsed] = useState(id ? collapsedSections.includes(id) : false)
 
   return (
     <div

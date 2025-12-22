@@ -112,6 +112,8 @@ function UserSection(): React.ReactElement<any> {
   )
   return (
     <Sections
+      id={DataviewCategory.User}
+      data-testid="user-section"
       title={t('user.datasets')}
       hasVisibleDataviews={hasVisibleDataviews}
       headerOptions={

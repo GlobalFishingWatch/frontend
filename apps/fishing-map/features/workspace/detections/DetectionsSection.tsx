@@ -104,6 +104,8 @@ function DetectionsSection(): React.ReactElement<any> {
 
   return (
     <Sections
+      id={DataviewCategory.Detections}
+      data-testid="detections-section"
       title={t('common.detections')}
       hasVisibleDataviews={hasVisibleDataviews}
       headerOptions={

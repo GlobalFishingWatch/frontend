@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
-import cx from 'classnames'
 
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { getMergedDataviewId, type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -20,8 +19,6 @@ import LayerPanelContainer from '../shared/LayerPanelContainer'
 import Sections from '../shared/Sections'
 
 import LayerPanel from './ContextAreaLayerPanel'
-
-import styles from 'features/workspace/shared/Sections.module.css'
 
 function ContextAreaSection(): React.ReactElement<any> {
   const { t } = useTranslation()
@@ -62,6 +59,8 @@ function ContextAreaSection(): React.ReactElement<any> {
   )
   return (
     <Sections
+      id={DataviewCategory.Context}
+      data-testid="context-areas-section"
       title={t('common.context_areas')}
       hasVisibleDataviews={hasVisibleDataviews}
       headerOptions={

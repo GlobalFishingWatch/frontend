@@ -107,6 +107,8 @@ function ActivitySection(): React.ReactElement<any> {
 
   return (
     <Sections
+      id={DataviewCategory.Activity}
+      data-testid="activity-section"
       title={t('common.activity')}
       headerOptions={
         !readOnly ? (

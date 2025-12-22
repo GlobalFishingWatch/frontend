@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
 
-import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, ResourceStatus } from '@globalfishingwatch/api-types'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { IconButton, Switch } from '@globalfishingwatch/ui-components'
 
@@ -177,7 +177,7 @@ function VesselsSection(): React.ReactElement<any> {
 
   return (
     <Sections
-      id="vessels"
+      id={DataviewCategory.Vessels}
       data-testid="vessels-section"
       hasVisibleDataviews={hasVisibleDataviews}
       title={

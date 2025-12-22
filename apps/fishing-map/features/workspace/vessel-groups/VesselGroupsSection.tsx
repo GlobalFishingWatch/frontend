@@ -61,6 +61,8 @@ function VesselGroupSection(): React.ReactElement<any> {
 
   return (
     <Sections
+      id={DataviewCategory.VesselGroups}
+      data-testid="vessel-groups-section"
       hasVisibleDataviews={hasVisibleDataviews}
       title={t('vesselGroup.vesselGroups')}
       headerOptions={

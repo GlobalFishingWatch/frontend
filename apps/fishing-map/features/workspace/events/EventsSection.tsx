@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
@@ -49,6 +49,8 @@ function EventsLayerSection(): React.ReactElement<any> | null {
 
   return (
     <Sections
+      id={DataviewCategory.Events}
+      data-testid="events-section"
       title={t('common.events')}
       headerOptions={
         !readOnly ? (

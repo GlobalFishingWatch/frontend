@@ -24,7 +24,6 @@ import {
   DEFAULT_WORKSPACE_ID,
   FISHING_DATAVIEW_SLUG_AIS,
   FISHING_DATAVIEW_SLUG_VMS,
-  FIXED_SAR_INFRASTRUCTURE,
   GRATICULES_DATAVIEW_SLUG,
   // PORTS_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
@@ -38,7 +37,6 @@ import {
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
 } from 'features/dataviews/dataviews.utils'
-import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID, PORTS_LAYER_ID } from 'features/map/map.config'
 import type { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {

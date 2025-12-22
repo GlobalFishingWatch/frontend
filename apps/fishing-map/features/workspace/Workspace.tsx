@@ -236,8 +236,8 @@ function Workspace() {
       <VesselsSection />
       <VesselGroupSection />
       <EnvironmentalSection />
-      <UserSection />
       <ContextAreaSection />
+      <UserSection />
     </DndContext>
   )
 }

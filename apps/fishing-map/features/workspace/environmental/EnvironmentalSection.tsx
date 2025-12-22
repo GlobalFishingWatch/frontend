@@ -84,6 +84,8 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
 
   return (
     <Sections
+      id={DataviewCategory.Environment}
+      data-testid="environment-section"
       title={t('common.environment')}
       hasVisibleDataviews={hasVisibleDataviews}
       headerOptions={
@@ -112,7 +114,6 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
       }
     >
       <>
-        {' '}
         <SortableContext items={dataviewsMinusBathymetry}>
           {dataviewsMinusBathymetry.length > 0
             ? dataviewsMinusBathymetry?.map((dataview) => (

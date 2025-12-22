@@ -1,5 +1,9 @@
 import type { Workspace } from '@globalfishingwatch/api-types'
-import { WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
+import {
+  DataviewCategory,
+  WORKSPACE_PRIVATE_ACCESS,
+  WORKSPACE_PUBLIC_ACCESS,
+} from '@globalfishingwatch/api-types'
 
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
 import {
@@ -55,6 +59,7 @@ const workspace: Workspace<WorkspaceState> = {
   public: true,
   state: {},
   ownerId: 0,
+  collapsedSections: [DataviewCategory.Vessels, DataviewCategory.VesselGroups],
   dataviewInstances: [
     {
       id: DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
