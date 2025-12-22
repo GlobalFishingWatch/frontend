@@ -343,16 +343,17 @@ function VesselLayerPanel({
               tooltip={t('vessel.loadingInfo')}
             />
           )}
-          {infoError && (
-            <IconButton
-              size="small"
-              icon="warning"
-              type="warning"
-              disabled
-              tooltip={`${t('errors.vesselLoading')} (${vesselId})`}
-              tooltipPlacement="top"
-            />
-          )}
+          {infoError ||
+            (trackError && (
+              <IconButton
+                size="small"
+                icon="warning"
+                type="warning"
+                disabled
+                tooltip={`${t('errors.vesselLoading')} (${vesselId})`}
+                tooltipPlacement="top"
+              />
+            ))}
         </div>
         <IconButton
           icon={layerActive ? (infoError || trackError ? 'warning' : 'more') : undefined}
