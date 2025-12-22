@@ -91,22 +91,29 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return super.isLoaded
   }
 
-  get cacheHash(): string {
-    const { id, startTime, endTime } = this.props
+  get filtersHash(): string {
     const filters =
       this.props.layers?.flatMap((layer) =>
         layer.sublayers.flatMap((sublayer) => sublayer.filters || {})
       ) || {}
-    const filtersHash =
-      filters.length > 0
-        ? filters.reduce((acc, filter) => `${acc}-${getContextFiltersHash(filter)}`, '')
-        : ''
+    return filters.length > 0
+      ? filters.reduce((acc, filter) => `${acc}-${getContextFiltersHash(filter)}`, '')
+      : ''
+  }
+
+  get aggregatedPropertyHash(): string {
     const aggregatedProperty =
       this.props.layers?.flatMap((layer) =>
         layer.sublayers.flatMap((sublayer) => sublayer.aggregateByProperty || [])
       ) || []
+    return aggregatedProperty.length > 0
+      ? aggregatedProperty.reduce((acc, property) => `${acc}-${property}`, '')
+      : ''
+  }
 
-    return `${id}-${startTime}-${endTime}${filtersHash}${aggregatedProperty.join(',')}`
+  get cacheHash(): string {
+    const { id, startTime, endTime } = this.props
+    return `${id}-${startTime}-${endTime}${this.filtersHash}${this.aggregatedPropertyHash}`
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
