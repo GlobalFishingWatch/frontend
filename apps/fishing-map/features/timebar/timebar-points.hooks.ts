@@ -8,7 +8,7 @@ import {
   useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
 import type { UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
-import { getFeatureTimeRange, getFourwingsChunk } from '@globalfishingwatch/deck-layers'
+import { getFourwingsChunk } from '@globalfishingwatch/deck-layers'
 import type { FourwingsPointFeature } from '@globalfishingwatch/deck-loaders'
 import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 
