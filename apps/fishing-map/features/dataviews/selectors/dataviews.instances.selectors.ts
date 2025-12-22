@@ -183,7 +183,6 @@ const selectDataviewInstancesByType = (type: DataviewType) => {
 }
 
 export const selectTrackDataviews = selectDataviewInstancesByType(DataviewType.Track)
-
 export const selectTimebarTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(
     (d) => d.config?.visible && !getIsEncounteredVesselDataviewInstanceId(d.id)
@@ -242,5 +241,20 @@ export const selectActiveTrackDataviews = createDeepEqualSelector(
       }
       return config?.visible
     })
+  }
+)
+
+export const selectVectorDataviews = selectDataviewInstancesByType(DataviewType.FourwingsVector)
+export const selectActiveVectorDataviews = createDeepEqualSelector(
+  [selectVectorDataviews],
+  (dataviews) => {
+    return dataviews?.filter((dv) => dv.config?.visible)
+  }
+)
+
+export const selectHasVectorDataviews = createSelector(
+  [selectActiveVectorDataviews],
+  (vectorDataviews) => {
+    return vectorDataviews?.length > 0
   }
 )

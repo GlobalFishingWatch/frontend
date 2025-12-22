@@ -30,7 +30,7 @@ import type {
 import { FourwingsAggregationOperation } from '../fourwings.types'
 import {
   aggregateCellTimeseries,
-  getDataUrlBySublayer,
+  getDataUrl,
   getFourwingsChunk,
   getZoomOffsetByResolution,
 } from '../heatmap/fourwings-heatmap.utils'
@@ -92,7 +92,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     const offset: number[] = []
     const noDataValue: number[] = []
     const getSublayerData: any = async (sublayer: FourwingsDeckSublayer, sublayerIndex: number) => {
-      const url = getDataUrlBySublayer({
+      const url = getDataUrl({
         tile,
         chunk,
         sublayer,

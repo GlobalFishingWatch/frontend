@@ -32,9 +32,9 @@ import type {
 import type { FourwingsHeatmapTilesCache } from '../heatmap/fourwings-heatmap.types'
 import { FourwingsAggregationOperation } from '../heatmap/fourwings-heatmap.types'
 import {
+  getDataUrl,
   getFourwingsChunk,
   getIntervalFrames,
-  getMergedDataUrl,
   getTileDataCache,
   sliceCellValues,
 } from '../heatmap/fourwings-heatmap.utils'
@@ -92,6 +92,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
         endTime: this.props.endTime,
         availableIntervals: this.props.availableIntervals,
         chunksBuffer: this.chunksBuffer,
+        temporalAggregation: this.props.temporalAggregation,
       }),
       maxVelocity: 0,
       rampDirty: false,
@@ -101,6 +102,12 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
 
   get isLoaded(): boolean {
     return super.isLoaded && !this.state.rampDirty && this.state.viewportLoaded
+  }
+
+  get cacheHash(): string {
+    const { id, startTime, endTime } = this.props
+    const colors = Array.from(new Set(this.props.sublayers.map((s) => s.color))).join(',')
+    return `${id}-${startTime}-${endTime}-${colors}`
   }
 
   getError(): string {
@@ -221,16 +228,25 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     // Ensure 'u' (eastward) direction always goes first
     const vectorLayers = sublayers.sort((a) => (a.direction === 'u' ? -1 : 1))
     const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
-    const chunk = getFourwingsChunk({
-      start: startTime,
-      end: endTime,
-      availableIntervals,
-      chunksBuffer: this.chunksBuffer,
-    })
+    const chunk = temporalAggregation
+      ? {
+          id: `${startTime}-${endTime}-${interval}-${temporalAggregation}`,
+          interval,
+          start: startTime,
+          end: endTime,
+          bufferedStart: startTime,
+          bufferedEnd: endTime,
+        }
+      : getFourwingsChunk({
+          start: startTime,
+          end: endTime,
+          availableIntervals,
+          chunksBuffer: this.chunksBuffer,
+        })
 
     this.setState({ rampDirty: true })
 
-    const url = getMergedDataUrl({
+    const url = getDataUrl({
       tile,
       chunk,
       sublayers: vectorLayers,
@@ -316,18 +332,20 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   updateState({ props }: UpdateParameters<this>) {
-    const { startTime, endTime, availableIntervals } = props
+    const { startTime, endTime, availableIntervals, temporalAggregation } = props
     const { tilesCache } = this.state
     const zoom = Math.round(this.context.viewport.zoom)
     const isStartOutRange = startTime < tilesCache.start
     const isEndOutRange = endTime > tilesCache.end
     const isDifferentZoom = zoom !== tilesCache.zoom
+    const isDifferentTemporalAggregation = temporalAggregation !== tilesCache.temporalAggregation
 
     // TODO debug why not re-rendering on out of range
     // TODO debug why re-renders when not needed
     const needsCacheKeyUpdate =
       isStartOutRange ||
       isEndOutRange ||
+      isDifferentTemporalAggregation ||
       getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
       isDifferentZoom
 
@@ -348,6 +366,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
             endTime,
             availableIntervals,
             chunksBuffer: this.chunksBuffer,
+            temporalAggregation,
           }),
         })
       })
@@ -373,7 +392,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     return new TileLayer(
       this.props,
       this.getSubLayerProps({
-        id: `tiles-vectors`,
+        id: `tiles-vectors-${zoomOffset}`,
         tileSize: FOURWINGS_TILE_SIZE,
         tilesCache,
         minZoom: 0,
@@ -466,10 +485,23 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   getColorScale = () => {
+    if (!this.state.maxVelocity) {
+      return {
+        colorDomain: [],
+        colorRange: [],
+      }
+    }
     return {
-      colorDomain: [0, this.state.maxVelocity],
+      colorDomain: [
+        this.state.maxVelocity * 0.25,
+        this.state.maxVelocity * 0.5,
+        this.state.maxVelocity * 0.75,
+        this.state.maxVelocity,
+      ],
       colorRange: [
-        hexToRgbaString(this.props.sublayers[0].color, 0),
+        hexToRgbaString(this.props.sublayers[0].color, 0.25),
+        hexToRgbaString(this.props.sublayers[0].color, 0.5),
+        hexToRgbaString(this.props.sublayers[0].color, 0.75),
         hexToRgbaString(this.props.sublayers[0].color, 1),
       ],
     }

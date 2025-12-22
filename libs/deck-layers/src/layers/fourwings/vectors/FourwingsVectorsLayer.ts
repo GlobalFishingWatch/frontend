@@ -1,7 +1,7 @@
 import type { LayerContext, LayersList, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import { PathLayer } from '@deck.gl/layers'
+import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
 import type { Feature } from 'geojson'
 
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
@@ -9,7 +9,7 @@ import { getLayerGroupOffset, HEATMAP_ID, LayerGroup } from '@globalfishingwatch
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 
-import { hexToDeckColor } from '../../../utils'
+import { COLOR_TRANSPARENT, hexToDeckColor } from '../../../utils'
 import type { FourwingsHeatmapPickingObject, FourwingsVectorsLayerProps } from '../fourwings.types'
 import { FourwingsAggregationOperation } from '../heatmap/fourwings-heatmap.types'
 import {
@@ -210,7 +210,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
       filled: true,
       billboard: false,
       antialiasing: true,
-      getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
+      getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.CustomLayer, params),
       getVelocity: this.getVelocity as any,
       getDirection: this.getDirection as any,
       maxVelocity: this.props.maxVelocity,
@@ -226,11 +226,26 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
     }
 
     return [
+      new SolidPolygonLayer(
+        this.props,
+        this.getSubLayerProps({
+          id: `fourwings-vectors-interactive`,
+          data,
+          pickable: true,
+          material: false,
+          _normalize: false,
+          positionFormat: 'XY',
+          getPickingInfo: this.getPickingInfo,
+          getFillColor: () => COLOR_TRANSPARENT,
+          getPolygon: (d: FourwingsFeature) => d.coordinates,
+          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
+        })
+      ),
       new VectorsLayer(
         this.props,
         this.getSubLayerProps({
           ...vectorLayerProps,
-          pickable: true,
+          pickable: false,
         })
       ),
       ...(highlightedFeatures && highlightedFeatures?.length > 0

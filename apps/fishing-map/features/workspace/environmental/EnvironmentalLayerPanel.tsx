@@ -82,7 +82,6 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     [t]
   )
 
-  const isVectorLayer = dataview.config?.type === DataviewType.FourwingsVector
   const layerActive = dataview?.config?.visible ?? true
   const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
 

@@ -24,8 +24,8 @@ const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
       ? tFn('common.hours', 'hours').toLowerCase()
       : legend.unit === 'detections'
         ? tFn('common.detections', 'detections').toLowerCase()
-        : legend.unit === 'knots'
-          ? tFn('layer.speed', 'speed').toLowerCase()
+        : legend.unit === 'm/s'
+          ? tFn('common.m/s', 'm/s').toLowerCase()
           : legend.label
 
   if (legend.label?.includes('²')) {
