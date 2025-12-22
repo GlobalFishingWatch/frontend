@@ -58,6 +58,7 @@
     "@nebula.gl/overlays": "1.0.4",
     "@reduxjs/toolkit": "2.9.0",
     "@researchgate/react-intersection-observer": "1.3.5",
+    "@sentry/nextjs": "^10",
     "@tanstack/react-router": "1.132.6",
     "@tanstack/react-virtual": "^3.13.12",
     "@tmcw/togeojson": "7.1.2",
