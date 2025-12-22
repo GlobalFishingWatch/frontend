@@ -78,7 +78,6 @@ export const useTimebarPoints = () => {
         timeFilterType,
       } = params
 
-      const perfStart = performance.now()
       const result =
         getGraphDataFromPoints(data, {
           start: start,
@@ -89,10 +88,6 @@ export const useTimebarPoints = () => {
           endTimeProperty: endTimeProperty,
           timeFilterType: timeFilterType,
         }) || EMPTY_ACTIVITY_DATA
-      const perfEnd = performance.now()
-      console.log(
-        `⏱️ getGraphDataFromPoints took ${(perfEnd - perfStart).toFixed(2)}ms for ${data.length} features`
-      )
       setData(result)
     },
     []
