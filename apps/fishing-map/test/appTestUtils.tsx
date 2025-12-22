@@ -5,8 +5,8 @@ import { render as vitestRender } from 'vitest-browser-react'
 
 import { fetchUserThunk } from 'features/user/user.slice'
 
-import type { AppStore } from './store'
-import { makeStore } from './store'
+import type { AppStore } from '../store'
+import { makeStore } from '../store'
 
 interface AppRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   store?: AppStore

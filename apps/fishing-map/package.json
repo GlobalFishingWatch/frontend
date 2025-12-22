@@ -13,7 +13,8 @@
     "i18n:types": "i18next-cli types",
     "i18n:types:watch": "i18next-cli types --watch",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "test": "npx vitest"
+    "test": "npx vitest",
+    "test:e2e": "npx playwright test"
   },
   "devDependencies": {
     "cross-env": "^10.1.0",

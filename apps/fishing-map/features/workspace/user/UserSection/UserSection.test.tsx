@@ -1,4 +1,4 @@
-import { render, withGuestUser } from 'appTestUtils'
+import { render, withGuestUser } from 'test/appTestUtils'
 import { describe, expect, it } from 'vitest'
 
 import { makeStore } from 'store'

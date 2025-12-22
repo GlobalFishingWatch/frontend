@@ -34,12 +34,12 @@ export default defineConfig({
       'vitest-example/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       '/apps/fishing-map/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
     ],
-    reporters: ['default'],
+    reporters: ['html', 'default'],
     coverage: {
       reportsDirectory: '../../coverage/apps/fishing-map',
       provider: 'v8' as const,
     },
-    setupFiles: './vitest.setup.ts',
+    setupFiles: './test/vitest.setup.ts',
     browser: {
       enabled: true,
       provider: playwright(),

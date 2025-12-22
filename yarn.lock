@@ -3510,6 +3510,7 @@ __metadata:
     "@nx/vitest": "npm:22.2.6"
     "@nx/web": "npm:22.0.3"
     "@nx/workspace": "npm:22.0.3"
+    "@playwright/test": "npm:^1.57.0"
     "@reduxjs/toolkit": "npm:2.9.0"
     "@researchgate/react-intersection-observer": "npm:1.3.5"
     "@rollup/plugin-dynamic-import-vars": "npm:2.1.5"
@@ -9036,6 +9037,17 @@ __metadata:
   version: 0.2.9
   resolution: "@pkgr/core@npm:0.2.9"
   checksum: 10/bb2fb86977d63f836f8f5b09015d74e6af6488f7a411dcd2bfdca79d76b5a681a9112f41c45bdf88a9069f049718efc6f3900d7f1de66a2ec966068308ae517f
+  languageName: node
+  linkType: hard
+
+"@playwright/test@npm:^1.57.0":
+  version: 1.57.0
+  resolution: "@playwright/test@npm:1.57.0"
+  dependencies:
+    playwright: "npm:1.57.0"
+  bin:
+    playwright: cli.js
+  checksum: 10/07f5ba4841b2db1dea70d821004c5156b692488e13523c096ce3487d30f95f34ccf30ba6467ece60c86faac27ae382213b7eacab48a695550981b2e811e5e579
   languageName: node
   linkType: hard
 
