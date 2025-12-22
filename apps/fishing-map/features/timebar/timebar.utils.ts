@@ -136,16 +136,29 @@ export function getGraphDataFromPoints(
   }
   const data = getDatesPopulated({ start, end, interval, sublayersLength })
 
-  Object.keys(data).forEach((dateString) => {
+  // Pre-calculate all date boundaries once
+  const dateBoundaries = Object.keys(data).map((dateString) => {
     const date = parseInt(dateString)
     const nextDate = getUTCDateTime(date)
       .plus({ [interval]: 1 })
       .toMillis()
-    features.forEach((feature) => {
-      const { layer = 0, values } = (feature?.properties || {}) as {
-        values: number[]
-        layer?: number
-      }
+    return { date, nextDate }
+  })
+
+  // Iterate features first (instead of dates) to reduce complexity from O(dates × features) to O(features × relevant_dates)
+  features.forEach((feature) => {
+    const properties = feature?.properties
+    if (!properties) return
+
+    const { layer = 0, values } = properties as {
+      values?: number[]
+      layer?: number
+    }
+
+    // Check each date boundary to see if this feature falls within it
+    for (let i = 0; i < dateBoundaries.length; i++) {
+      const { date, nextDate } = dateBoundaries[i]
+
       if (
         isFeatureInRange(feature, {
           startTime: date,
@@ -155,19 +168,20 @@ export function getGraphDataFromPoints(
           timeFilterType,
         })
       ) {
+        const dateData = data[date]
+
         if (values?.length) {
-          if (!data[date].count) {
-            data[date].count = Array(sublayersLength).fill(0)
+          // Values array processing
+          for (let index = 0; index < values.length; index++) {
+            dateData[index] += values[index]
+            dateData.count![index]++
           }
-          values.forEach((value, index) => {
-            data[date][index] += value
-            data[date].count![index] = (data[date].count![index] || 0) + 1
-          })
         } else {
-          data[date][layer]++
+          // Simple layer increment
+          dateData[layer]++
         }
       }
-    })
+    }
   })
 
   return Object.values(data)
