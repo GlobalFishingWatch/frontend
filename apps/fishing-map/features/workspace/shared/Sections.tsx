@@ -42,6 +42,7 @@ function Sections({
           icon={collapsed ? 'arrow-right' : 'arrow-down'}
           type="default"
           size="small"
+          className={styles.collapseButton}
           onClick={() => setCollapsed(!collapsed)}
         />
         <span className={styles.sectionTitle} onClick={() => setCollapsed(!collapsed)}>

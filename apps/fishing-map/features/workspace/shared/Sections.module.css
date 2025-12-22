@@ -61,6 +61,11 @@
   transition: var(--transition);
 }
 
+.collapseButton {
+  display: none;
+  transition: var(--transition);
+}
+
 .containerCollapsed .content {
   display: none;
 }
@@ -79,6 +84,10 @@
 
 .container:hover .sectionButtonsSecondary {
   opacity: 1;
+}
+
+.container:hover .collapseButton {
+  display: block;
 }
 
 .emptyState,
