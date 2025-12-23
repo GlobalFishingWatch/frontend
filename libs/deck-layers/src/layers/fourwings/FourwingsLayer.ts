@@ -44,8 +44,18 @@ export type FourwingsLayerProps = Omit<
   highlightedFeatures?: FourwingsPickingObject[]
 }
 
+type AnyFourwingsLayer =
+  | FourwingsPositionsTileLayer
+  | FourwingsHeatmapTileLayer
+  | FourwingsFootprintTileLayer
+  | FourwingsHeatmapStaticLayer
+
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
   static layerName = 'FourwingsLayer'
+
+  get cacheHash(): string {
+    return (this.getSubLayers() as AnyFourwingsLayer[])?.map((layer) => layer.cacheHash).join('-')
+  }
 
   get isHeatmapVisualizationMode(): boolean {
     return (
@@ -55,7 +65,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     )
   }
 
-  renderLayers(): Layer<Record<string, unknown>> | LayersList {
+  renderLayers(): AnyFourwingsLayer {
     const visualizationMode = this.getMode()
     const resolution = getResolutionByVisualizationMode(visualizationMode)
     if (visualizationMode === POSITIONS_ID) {

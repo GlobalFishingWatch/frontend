@@ -1,14 +1,18 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { atom, useAtom, useAtomValue } from 'jotai'
 import type { DateTimeUnit } from 'luxon'
 import memoizeOne from 'memoize-one'
 
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
-import { groupContextDataviews, useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
+import {
+  getLayersStateHashAtom,
+  groupContextDataviews,
+  useGetDeckLayers,
+} from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import { UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
 import {
@@ -16,7 +20,9 @@ import {
   type FourwingsInterval,
   getFourwingsInterval,
 } from '@globalfishingwatch/deck-loaders'
+import { useTrackDependencyChanges } from '@globalfishingwatch/react-hooks'
 
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 // import { useTrackDependencyChanges } from '@globalfishingwatch/react-hooks'
 import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
@@ -141,15 +147,15 @@ export const useReportFeaturesLoading = () => {
   return useAtomValue(reportStateAtom)?.isLoading
 }
 
-export const useSetReportFeaturesLoading = () => {
-  const setReportState = useSetAtom(reportStateAtom)
-  return useCallback(
-    (isLoading: boolean) => {
-      setReportState((prev: ReportState) => ({ ...prev, isLoading }))
-    },
-    [setReportState]
-  )
-}
+// Memoized function to extract instances to prevent unnecessary re-renders
+// layersStateHash is used as a cache key to ensure memoizeOne detects changes
+const getInstancesFromLayers = memoizeOne(
+  (
+    reportLayers: DeckLayerAtom<FourwingsLayer | UserPointsTileLayer>[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    layersStateHash: string
+  ) => reportLayers.map((l) => l.instance)
+)
 
 const useReportTimeseries = (
   reportLayers: DeckLayerAtom<FourwingsLayer | UserPointsTileLayer>[]
@@ -157,7 +163,7 @@ const useReportTimeseries = (
   const [reportState, setReportState] = useAtom(reportStateAtom)
   const filterCellsByPolygon = useFilterCellsByPolygonWorker()
   const area = useSelector(selectReportArea)
-  const { start, end } = useTimerangeConnect()
+  const { start, end } = useSelector(selectTimeRange)
   const interval = getFourwingsInterval(start, end)
   const reportTitle = useReportTitle()
   const isAreaInViewport = useReportAreaInViewport()
@@ -167,121 +173,75 @@ const useReportTimeseries = (
   const reportGraph = useSelector(selectReportActivityGraph)
   const reportBufferHash = useSelector(selectReportBufferHash)
   const reportGraphMode = getReportGraphMode(reportGraph)
-  const reportStateCacheHash = useRef('')
 
-  const instancesChunkHash = reportLayers
-    ?.flatMap(({ instance }) => {
-      if ('cacheHash' in instance && instance.cacheHash) {
-        return instance.cacheHash
-      }
-      if ('getChunk' in instance && instance.getChunk) {
-        const { bufferedStart, bufferedEnd, interval } = instance.getChunk()
-        return `${instance.id}-${interval}-${bufferedStart}-${bufferedEnd}`
-      }
-      return `${instance.id}`
-    })
-    .join(',')
+  const layerIds = useMemo(() => reportLayers.map((l) => l.id), [reportLayers])
+  const layerIdsHash = layerIds.join(',')
 
-  const instances = useMemo(
-    () => reportLayers.map((l) => l.instance),
-    // We need to update the instances when the instancesChunkHash or the reportBufferHash changes
+  const layersStateHashAtom = useMemo(
+    () => getLayersStateHashAtom(layerIds),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [reportLayers, instancesChunkHash, reportBufferHash]
+    [layerIdsHash]
   )
 
-  const isLoaded = reportLayers?.length
-    ? reportLayers.every(({ instance, loaded }) => instance.isLoaded && loaded)
-    : false
+  const layersStateHash = useAtomValue(layersStateHashAtom)
 
-  // TODO: review if this is needed and how can we improve it
-  // We can't use the isLoaded state because it's not updated immediately when the instances are loaded
-  // so we use a separate state to track when the instances are ready
-  const [isReady, setIsReady] = useState(false)
-  const latestLoadState = useRef({
-    isLoaded,
-    instancesChunkHash,
-    reportBufferHash,
-  })
+  const instances = useMemo(
+    () => getInstancesFromLayers(reportLayers, layersStateHash),
+    [reportLayers, layersStateHash]
+  )
 
-  useEffect(() => {
-    latestLoadState.current = { isLoaded, instancesChunkHash, reportBufferHash }
-    let raf: number | undefined
-    setIsReady(false)
+  const isLoaded = useMemo(
+    () =>
+      reportLayers.length > 0 &&
+      reportLayers.every(({ instance, loaded }) => instance.isLoaded && loaded),
+    [reportLayers]
+  )
 
-    if (isLoaded) {
-      const expectedHash = `${instancesChunkHash}|${reportBufferHash}`
-      raf = requestAnimationFrame(() => {
-        const {
-          isLoaded: latestLoaded,
-          instancesChunkHash: latestHash,
-          reportBufferHash: latestBuffer,
-        } = latestLoadState.current
-        if (latestLoaded && expectedHash === `${latestHash}|${latestBuffer}`) {
-          setIsReady(true)
-        }
-      })
-    }
+  // Create processing hash to detect when we need to reprocess
+  const processingHash = useMemo(() => {
+    // Only return empty if we truly have no area or no layers at all
+    // isLoaded can be temporarily false during layer transitions
+    if (!area || reportLayers.length === 0) return ''
 
-    return () => {
-      if (raf !== undefined) cancelAnimationFrame(raf)
-    }
-  }, [isLoaded, instancesChunkHash, reportBufferHash])
-
-  useLayoutEffect(() => {
-    reportStateCacheHash.current = ''
-    setReportState((prev) => ({
-      ...prev,
-      ...initialReportState,
-      isLoading: reportCategory && reportCategory !== 'events' && reportCategory !== 'others',
-    }))
-    // We want to clean the reportState when any of these params changes to avoid using old data until it loads
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    area,
-    interval,
-    reportCategory,
-    reportSubCategory,
-    reportGraphMode,
-    reportBufferHash,
-    instancesChunkHash,
-    timeComparisonHash,
-  ])
-
-  useEffect(() => {
-    const newHash = area
-      ? `${reportTitle}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${instancesChunkHash}|${isReady}|${reportBufferHash}`
-      : ''
-    reportStateCacheHash.current = newHash
+    const titleHash = typeof reportTitle === 'string' ? reportTitle : reportTitle?.props.content
+    // Include isLoaded in the hash so processing runs when layers finish loading
+    return `${titleHash}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${layersStateHash}|${reportBufferHash}|${isLoaded}`
   }, [
     area,
     reportTitle,
-    isReady,
     reportCategory,
     reportSubCategory,
     reportGraphMode,
     timeComparisonHash,
-    instancesChunkHash,
+    layersStateHash,
     reportBufferHash,
+    isLoaded,
+    reportLayers.length,
   ])
 
-  // useTrackDependencyChanges('processFeatures dependencies', {
-  //   'area.geometry': area?.geometry,
-  //   'area.id': area?.id,
-  //   isLoaded,
-  //   isReady,
-  //   instances,
-  //   filterCellsByPolygon,
-  //   setReportState,
-  //   isAreaInViewport,
-  // })
+  const lastProcessedHash = useRef('')
+
+  useTrackDependencyChanges('processFeatures dependencies', {
+    processingHash,
+  })
 
   useEffect(() => {
+    if (
+      !processingHash ||
+      processingHash === lastProcessedHash.current ||
+      !isAreaInViewport ||
+      !isLoaded
+    ) {
+      return
+    }
+
     const processFeatures = async () => {
       if (!area?.geometry) {
         return
       }
 
       setReportState((prev) => ({ ...prev, isLoading: true }))
+
       try {
         const featuresFiltered: FilteredPolygons[][] = []
         for (const instance of instances) {
@@ -296,6 +256,7 @@ const useReportTimeseries = (
                 }
               : {}
           ) as FourwingsFeature[]
+
           const error = instance?.getError?.()
           if (error || !features?.length) {
             featuresFiltered.push([
@@ -311,6 +272,7 @@ const useReportTimeseries = (
             ) {
               mode = 'point'
             }
+
             const filteredInstanceFeatures =
               area.id === ENTIRE_WORLD_REPORT_AREA_ID
                 ? ([
@@ -325,6 +287,7 @@ const useReportTimeseries = (
             featuresFiltered.push(filteredInstanceFeatures)
           }
         }
+
         const timeseries = getTimeseries({
           featuresFiltered,
           instances,
@@ -336,42 +299,69 @@ const useReportTimeseries = (
           featuresFiltered,
           timeseries,
         }))
+
+        lastProcessedHash.current = processingHash
       } catch (error) {
         console.error('Error processing features:', error)
         setReportState((prev) => ({
           ...prev,
           ...initialReportState,
         }))
+        lastProcessedHash.current = ''
       }
     }
-    if (isReady && isAreaInViewport && reportStateCacheHash.current !== '') {
-      processFeatures()
-    }
+
+    processFeatures()
   }, [
-    area?.geometry,
-    area?.id,
-    isReady,
+    processingHash,
+    area,
     instances,
     filterCellsByPolygon,
     setReportState,
     isAreaInViewport,
+    isLoaded,
   ])
 
   useEffect(() => {
-    const processFeatureStats = () => {
-      const stats = getTimeseriesStats({
-        instances,
-        featuresFiltered: reportState.featuresFiltered!,
-        start,
-        end,
-      })
-      setReportState((prev) => ({ ...prev, stats }))
+    const { featuresFiltered } = reportState
+    if (!featuresFiltered || !instances.length) {
+      return
     }
 
-    if (isReady && reportState.featuresFiltered && reportStateCacheHash.current !== '') {
-      processFeatureStats()
-    }
-  }, [isReady, instances, reportState?.featuresFiltered, setReportState, start, end])
+    const stats = getTimeseriesStats({
+      instances,
+      featuresFiltered,
+      start,
+      end,
+    })
+
+    setReportState((prev) => ({ ...prev, stats }))
+    // Only stats needs to recalculate on start and end changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reportState.featuresFiltered, instances, start, end, setReportState])
+
+  // Reset state when critical parameters change
+  useEffect(() => {
+    const shouldShowLoading =
+      reportCategory && reportCategory !== 'events' && reportCategory !== 'others'
+    setReportState((prev) => ({
+      ...prev,
+      ...initialReportState,
+      isLoading:
+        reportLayers.length > 0 &&
+        (shouldShowLoading || processingHash !== lastProcessedHash.current),
+    }))
+    lastProcessedHash.current = ''
+  }, [
+    area,
+    interval,
+    reportCategory,
+    reportSubCategory,
+    reportGraphMode,
+    reportLayers.length,
+    setReportState,
+    processingHash,
+  ])
 
   return reportState
 }

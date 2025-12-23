@@ -58,3 +58,16 @@ const isDeckLayersLoadingAtom = atom((get) => {
 export const useIsDeckLayersLoading = () => {
   return useAtomValue(isDeckLayersLoadingAtom)
 }
+
+// Derived atom to track layer state changes for specific layers
+export const getLayersStateHashAtom = (layerIds: string[]) =>
+  atom((get) => {
+    const layersState = get(deckLayersStateAtom)
+    return layerIds
+      .map((id) => {
+        const state = layersState[id]
+        return state ? `${id}:${state.loaded}:${state.cacheHash || ''}` : ''
+      })
+      .filter(Boolean)
+      .join('|')
+  })

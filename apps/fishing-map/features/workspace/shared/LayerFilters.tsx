@@ -467,11 +467,17 @@ function LayerFilters({
       })}
       <div className={cx(styles.footer, { [styles.spaceBetween]: showApplyToAll })}>
         {showApplyToAll && (
-          <Button type="secondary" onClick={() => onConfirmFilters({ applyToAll: true })}>
+          <Button
+            type="secondary"
+            disabled={!newDataviewInstanceConfig}
+            onClick={() => onConfirmFilters({ applyToAll: true })}
+          >
             {t('common.applyToAll')}
           </Button>
         )}
-        <Button onClick={() => onConfirmFilters()}>{t('common.confirm')}</Button>
+        <Button disabled={!newDataviewInstanceConfig} onClick={() => onConfirmFilters()}>
+          {t('common.confirm')}
+        </Button>
       </div>
       {filtersDisabled.length >= 1 && (
         <p className={styles.filtersDisabled}>

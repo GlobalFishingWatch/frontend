@@ -5,7 +5,7 @@ import cx from 'classnames'
 
 import { DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { ColorBarOption, TagItem } from '@globalfishingwatch/ui-components'
+import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import {
   ColorBar,
   FillColorBarOptions,
