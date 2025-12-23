@@ -17,6 +17,8 @@ import { type ReportActivityGraph } from 'features/reports/reports.types'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 
+import styles from './ReportEnvironment.module.css'
+
 export default function ReportEnvironmentGraphSelector() {
   const { dispatchQueryParams } = useLocationConnect()
   const selectedReportActivityGraph = useSelector(selectReportActivityGraph)
@@ -69,6 +71,13 @@ export default function ReportEnvironmentGraphSelector() {
     : options[0]
 
   return (
-    <Choice size="small" options={options} activeOption={selectedOption?.id} onSelect={onSelect} />
+    <div className={styles.graphSelectorContainer}>
+      <Choice
+        size="small"
+        options={options}
+        activeOption={selectedOption?.id}
+        onSelect={onSelect}
+      />
+    </div>
   )
 }

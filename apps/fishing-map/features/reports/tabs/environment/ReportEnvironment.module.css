@@ -3,8 +3,18 @@
   border-bottom: var(--border);
 }
 
+.graphSelectorContainer {
+  padding: var(--space-M) var(--space-M) 0 var(--space-M);
+}
+
 .graphContainer {
   padding: var(--space-M) var(--space-M);
+}
+
+.addLayerContainer {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--space-M);
 }
 
 .titleRow {
