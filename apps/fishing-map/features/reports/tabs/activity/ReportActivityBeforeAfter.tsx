@@ -83,40 +83,36 @@ export default function ReportActivityBeforeAfter() {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.timeSelection}>
-        <div className={styles.dateWrapper}>
-          <InputDate
-            label={t('analysis.beforeAfterDate')}
-            onChange={trackAndChangeDate}
-            value={timeComparison?.compareStart}
-            min={MIN_DATE}
-            max={MAX_DATE}
+    <div className={styles.timeSelection}>
+      <div className={styles.dateWrapper}>
+        <InputDate
+          label={t('analysis.beforeAfterDate')}
+          onChange={trackAndChangeDate}
+          value={timeComparison?.compareStart}
+          min={MIN_DATE}
+          max={MAX_DATE}
+        />
+      </div>
+      <div className={styles.durationWrapper}>
+        <InputText
+          label={t('analysis.periodComparisonDuration')}
+          value={timeComparison?.duration}
+          type="number"
+          onChange={trackAndChangeDuration}
+          className={styles.duration}
+          min={1}
+          max={
+            timeComparison?.durationType === 'months' ? MAX_MONTHS_TO_COMPARE : MAX_DAYS_TO_COMPARE
+          }
+        />
+        {durationTypeOption && (
+          <Select
+            options={durationTypeOptions}
+            onSelect={trackAndChangeDurationType}
+            className={styles.durationType}
+            selectedOption={durationTypeOption}
           />
-        </div>
-        <div className={styles.durationWrapper}>
-          <InputText
-            label={t('analysis.periodComparisonDuration')}
-            value={timeComparison?.duration}
-            type="number"
-            onChange={trackAndChangeDuration}
-            className={styles.duration}
-            min={1}
-            max={
-              timeComparison?.durationType === 'months'
-                ? MAX_MONTHS_TO_COMPARE
-                : MAX_DAYS_TO_COMPARE
-            }
-          />
-          {durationTypeOption && (
-            <Select
-              options={durationTypeOptions}
-              onSelect={trackAndChangeDurationType}
-              className={styles.durationType}
-              selectedOption={durationTypeOption}
-            />
-          )}
-        </div>
+        )}
       </div>
     </div>
   )

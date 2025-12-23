@@ -11,5 +11,9 @@
 .histogram {
   position: absolute;
   height: 4rem;
-  top: 1rem;
+  top: 1.4rem;
+}
+
+.sliderLabel {
+  text-transform: none;
 }

@@ -3,6 +3,7 @@ import { DataviewCategory } from '@globalfishingwatch/api-types'
 
 import type {
   REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
+  REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON,
   REPORT_ACTIVITY_GRAPH_EVOLUTION,
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
   REPORT_EVENTS_GRAPH_EVOLUTION,
@@ -28,6 +29,15 @@ export enum ReportCategory {
 }
 export type ReportCategoryState = {
   reportCategory: ReportCategory | undefined
+}
+
+export const categoryToDataviewMap: Partial<Record<ReportCategory, DataviewCategory>> = {
+  [ReportCategory.Activity]: DataviewCategory.Activity,
+  [ReportCategory.Detections]: DataviewCategory.Detections,
+  [ReportCategory.Events]: DataviewCategory.Events,
+  [ReportCategory.VesselGroup]: DataviewCategory.VesselGroups,
+  [ReportCategory.Others]: DataviewCategory.Context,
+  [ReportCategory.Environment]: DataviewCategory.Environment,
 }
 
 // REPORT SUBCATEGORIES
@@ -90,6 +100,7 @@ export type ReportActivityGraph =
   | typeof REPORT_ACTIVITY_GRAPH_EVOLUTION
   | typeof REPORT_ACTIVITY_GRAPH_BEFORE_AFTER
   | typeof REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON
+  | typeof REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON
 
 // REPORT EVENTS
 export type ReportEventsGraph =
@@ -106,9 +117,15 @@ export type ReportActivityTimeComparison = {
   durationType: 'days' | 'months'
 }
 
+export type ReportComparisonDataviews = {
+  main: string
+  compare: string | undefined
+}
+
 export type ReportActivityState = {
   reportActivityGraph: ReportActivityGraph
   reportTimeComparison: ReportActivityTimeComparison | undefined
+  reportComparisonDataviewIds: ReportComparisonDataviews | undefined
 }
 
 export type ReportEventsState = {

@@ -36,6 +36,10 @@ export default defineConfig({
           src: '../../config/entrypoint.sh',
           dest: '',
         },
+        {
+          src: './src/assets/**/*',
+          dest: 'assets',
+        },
       ],
     }),
   ],

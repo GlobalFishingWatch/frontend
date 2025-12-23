@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import dynamic from 'next/dynamic'
@@ -16,8 +17,9 @@ import { fetchResourceThunk } from 'features/resources/resources.slice'
 import { SCROLL_CONTAINER_DOM_ID } from 'features/sidebar/sidebar.utils'
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
 import TrackCorrection from 'features/track-correction/TrackCorrection'
-import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
+import { selectIsUserLogged, selectUserStatus } from 'features/user/selectors/user.selectors'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
+import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnySearchLocation,
@@ -27,6 +29,7 @@ import {
   selectIsVesselGroupReportLocation,
   selectIsWorkspacesListLocation,
 } from 'routes/routes.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 import CategoryTabs from './CategoryTabs'
 import SidebarHeader from './SidebarHeader'
@@ -62,6 +65,7 @@ type SidebarProps = {
 }
 
 function Sidebar({ onMenuClick }: SidebarProps) {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
@@ -76,6 +80,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const isPrinting = useSelector(selectScreenshotModalOpen)
+  const userStatus = useSelector(selectUserStatus)
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
 
   useEffect(() => {
@@ -103,6 +108,10 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   }, [dispatch, dataviewsResources])
 
   const sidebarComponent = useMemo(() => {
+    if (userStatus === AsyncReducerStatus.Error) {
+      return <ErrorPlaceholder title={t('errors.userDataError')} />
+    }
+
     if (!isUserLogged) {
       return <Spinner />
     }
@@ -141,6 +150,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
 
     return <Workspace />
   }, [
+    userStatus,
     isUserLogged,
     isUserLocation,
     isTrackCorrectionOpen,
@@ -162,7 +172,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
           id={SCROLL_CONTAINER_DOM_ID}
           className={cx('scrollContainer', styles.scrollContainer)}
           data-test="sidebar-container"
-          style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
+          // style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
         >
           {sidebarComponent}
         </div>

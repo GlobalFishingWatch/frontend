@@ -8,6 +8,7 @@ import type {
 import {
   FourwingsComparisonMode,
   FourwingsLayer,
+  FourwingsVectorsTileLayer,
   getBivariateRampLegend,
   POSITIONS_ID,
   rgbaToString,
@@ -26,7 +27,13 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
   const deckLayers = get(deckLayersAtom)
   const deckLayerHoverFeatures = get(deckHoverInteractionAtom)
   return deckLayers.flatMap((layer) => {
-    if (!layer.instance || !(layer.instance instanceof FourwingsLayer)) {
+    if (
+      !layer.instance ||
+      !(
+        layer.instance instanceof FourwingsLayer ||
+        layer.instance instanceof FourwingsVectorsTileLayer
+      )
+    ) {
       return []
     }
     const interaction = (deckLayerHoverFeatures?.features as FourwingsPickingObject[])?.find(
@@ -37,7 +44,12 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
     const unit = layer.instance.props.sublayers?.[0]?.unit
     let label = layer.instance.props.sublayers?.[0]?.unit || ''
     let gridAreaM: number | undefined
-    if ((label === 'hours' || label === 'detections') && visualizationMode !== POSITIONS_ID) {
+    if (layer.instance instanceof FourwingsVectorsTileLayer) {
+      label = 'speed'
+    } else if (
+      (label === 'hours' || label === 'detections') &&
+      visualizationMode !== POSITIONS_ID
+    ) {
       const gridZoom = Math.round(
         Math.min(
           layer.instance.context?.viewport?.zoom + layer.instance.getZoomOffset(),
@@ -51,26 +63,33 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
       label = `${label} / ${gridAreaFormatted}²`
     }
 
+    const type =
+      layer.instance instanceof FourwingsVectorsTileLayer
+        ? LegendType.Symbols
+        : layer.instance.props.comparisonMode === FourwingsComparisonMode.Bivariate
+          ? LegendType.Bivariate
+          : LegendType.ColorRampDiscrete
+    const ranges =
+      layer.instance instanceof FourwingsVectorsTileLayer
+        ? (colorRange as string[])
+        : layer.instance.props.comparisonMode === FourwingsComparisonMode.Bivariate
+          ? getBivariateRampLegend(
+              layer.instance.props.sublayers.map((sublayer) => sublayer.colorRamp as ColorRampId)
+            )
+          : (colorRange || []).map((range) =>
+              (range as FourwingsColorObject[]).map((color) => rgbaToString(color))
+            )
+
     return {
       id: layer.id,
       category: layer.instance.props.category,
       subcategory: layer.instance.props.subcategory,
       unit,
       gridArea: gridAreaM,
-      type:
-        layer.instance.props.comparisonMode === FourwingsComparisonMode.Bivariate
-          ? LegendType.Bivariate
-          : LegendType.ColorRampDiscrete,
-      sublayers: layer.instance.props.sublayers,
+      type,
       domain: colorDomain,
-      ranges:
-        layer.instance.props.comparisonMode === FourwingsComparisonMode.Bivariate
-          ? getBivariateRampLegend(
-              layer.instance.props.sublayers.map((sublayer) => sublayer.colorRamp as ColorRampId)
-            )
-          : (colorRange || []).map((range) =>
-              (range as FourwingsColorObject[]).map((color) => rgbaToString(color))
-            ),
+      sublayers: layer.instance.props.sublayers,
+      ranges,
       currentValues: (interaction as FourwingsPickingObject)?.sublayers?.map(
         (s) => s.value as number
       ),

@@ -1,65 +1,130 @@
-import React, { useMemo } from 'react'
+import type { ReactNode } from 'react'
+import { cloneElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import max from 'lodash/max'
 import min from 'lodash/min'
 import { DateTime } from 'luxon'
-import { Area, CartesianGrid, ComposedChart, Line, Tooltip, XAxis, YAxis } from 'recharts'
+import {
+  Area,
+  CartesianGrid,
+  ComposedChart,
+  Line,
+  ReferenceLine,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts'
 
-import { formatDateForInterval } from '@globalfishingwatch/data-transforms'
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
-import { getContrastSafeLineColor } from '@globalfishingwatch/responsive-visualizations'
+import { getContrastSafeColor } from '@globalfishingwatch/responsive-visualizations'
 
-import i18n from 'features/i18n/i18n'
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
-import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
-import { formatEvolutionData } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
-import { getUTCDateTime } from 'utils/dates'
-
-import EvolutionGraphTooltip from './EvolutionGraphTooltip'
+import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
+import EvolutionGraphTooltip from 'features/reports/tabs/activity/EvolutionGraphTooltip'
+import {
+  formatDateTicks,
+  formatEvolutionData,
+} from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 
 import styles from './ReportActivityEvolution.module.css'
 
-interface ComparisonGraphProps {
-  timeseries: ComparisonGraphData[]
-  sublayers: {
-    id: string
-    legend: {
-      color?: string
-      unit?: string
-    }
-  }[]
-  interval: FourwingsInterval
-}
-
-const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => {
-  const date = getUTCDateTime(tick).setLocale(i18n.language)
-  return formatDateForInterval(date, timeChunkInterval)
-}
-
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
+
+export type EvolutionTooltipContentProps = {
+  active: boolean
+  payload?: any[]
+  position?: { x: number; y: number }
+  label?: string
+}
 
 const ReportActivityEvolution = ({
   data,
   start,
   end,
+  TooltipContent,
+  freezeTooltipOnClick = false,
 }: {
-  data: ComparisonGraphProps
+  data: ReportGraphProps
   start: string
   end: string
+  TooltipContent?: ReactNode
+  freezeTooltipOnClick?: boolean
 }) => {
+  const [fixedTooltip, setFixedTooltip] = useState<EvolutionTooltipContentProps | null>(null)
+  const hoverTooltipRef = useRef<EvolutionTooltipContentProps | null>(null)
+  const chartRef = useRef<HTMLDivElement>(null)
+
   const colors = (data?.sublayers || []).map((sublayer) => sublayer?.legend?.color)?.join(',')
-  const dataFormated = useMemo(
-    () => formatEvolutionData(data, { start, end, timeseriesInterval: data?.interval }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data, end, start, colors]
-  )
   const domain = useMemo(() => {
     if (start && end && data?.interval) {
-      const cleanEnd = DateTime.fromISO(end, { zone: 'utc' })
-        .minus({ [data?.interval]: 1 })
-        .toISO() as string
+      const cleanEnd = DateTime.fromISO(end, { zone: 'utc' }).toISO() as string
       return [new Date(start).getTime(), new Date(cleanEnd).getTime()]
     }
   }, [start, end, data?.interval])
+
+  const dataFormated = useMemo(
+    () =>
+      formatEvolutionData(data, {
+        start: domain ? new Date(domain[0]).toISOString() : start,
+        end: domain ? new Date(domain[1]).toISOString() : end,
+        timeseriesInterval: data?.interval,
+      }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [data, end, start, colors]
+  )
+
+  const handleTooltipChange = useCallback(
+    (tooltipProps: any) => {
+      if (fixedTooltip) {
+        return
+      }
+      if (tooltipProps?.active && tooltipProps?.payload) {
+        hoverTooltipRef.current = {
+          active: true,
+          payload: tooltipProps.payload,
+          position: tooltipProps.position,
+          label: tooltipProps.label,
+        }
+      } else {
+        hoverTooltipRef.current = null
+      }
+    },
+    [fixedTooltip]
+  )
+
+  const handleTooltipClick = useCallback((tooltipProps: any) => {
+    if (tooltipProps?.active && tooltipProps?.payload) {
+      setFixedTooltip({
+        active: true,
+        payload: tooltipProps.payload,
+        position: tooltipProps.coordinate,
+        label: tooltipProps.label,
+      })
+    }
+  }, [])
+
+  const handleChartClick = useCallback(() => {
+    if (freezeTooltipOnClick) {
+      if (!fixedTooltip && hoverTooltipRef.current?.active && hoverTooltipRef.current?.payload) {
+        setFixedTooltip(hoverTooltipRef.current)
+      } else if (fixedTooltip) {
+        setFixedTooltip(null)
+      }
+    }
+  }, [fixedTooltip, freezeTooltipOnClick])
+
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (chartRef.current && !chartRef.current.contains(event.target as Node)) {
+      setFixedTooltip(null)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (fixedTooltip) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside)
+      }
+    }
+  }, [fixedTooltip, handleClickOutside])
 
   if (!dataFormated || !domain) {
     return null
@@ -74,13 +139,17 @@ const ReportActivityEvolution = ({
 
   const basePadding = (dataMax - dataMin) / 10
   const safePadding = basePadding === 0 ? Math.max(1, Math.abs(dataMax) * 0.1) : basePadding
-  const paddedDomain: [number, number] = [
-    Math.max(0, Math.floor(dataMin - safePadding)),
-    Math.ceil(dataMax + safePadding),
-  ]
+  const paddedDomain: [number, number] = [Math.max(0, dataMin - safePadding), dataMax + safePadding]
 
   return (
-    <div className={styles.graph} data-test="report-activity-evolution">
+    <div
+      className={styles.graph}
+      data-test="report-activity-evolution"
+      ref={chartRef}
+      onClick={handleChartClick}
+      role="button"
+      tabIndex={0}
+    >
       <ComposedChart responsive width="100%" height="100%" data={dataFormated} margin={graphMargin}>
         <CartesianGrid vertical={false} syncWithTicks />
         <XAxis
@@ -100,7 +169,58 @@ const ReportActivityEvolution = ({
           tickLine={false}
         />
         {dataFormated?.length && (
-          <Tooltip content={<EvolutionGraphTooltip timeChunkInterval={data?.interval} />} />
+          <Tooltip
+            content={(tooltipProps: any) => {
+              if (!tooltipProps) {
+                return null
+              }
+
+              const tooltipContent = TooltipContent ? (
+                cloneElement(TooltipContent as React.ReactElement, {
+                  ...tooltipProps,
+                  timeChunkInterval: data?.interval,
+                })
+              ) : (
+                <EvolutionGraphTooltip {...tooltipProps} timeChunkInterval={data?.interval} />
+              )
+
+              if (!freezeTooltipOnClick) {
+                return tooltipContent
+              }
+
+              if (tooltipProps && !fixedTooltip) {
+                handleTooltipChange(tooltipProps)
+              }
+              return (
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onMouseDown={(e) => {
+                    e.stopPropagation()
+                    if (tooltipProps) {
+                      handleTooltipClick(tooltipProps)
+                    }
+                  }}
+                >
+                  {tooltipContent}
+                </div>
+              )
+            }}
+            active={fixedTooltip ? fixedTooltip.active : undefined}
+            position={
+              fixedTooltip?.position
+                ? { x: fixedTooltip.position.x, y: fixedTooltip.position.y }
+                : undefined
+            }
+            cursor={fixedTooltip ? false : true}
+          />
+        )}
+        {fixedTooltip?.label && (
+          <ReferenceLine
+            x={new Date(fixedTooltip.label).getTime()}
+            stroke="#163f89"
+            strokeDasharray="3 3"
+          />
         )}
         {data?.sublayers.map(({ id, legend }, index) => (
           <Line
@@ -111,7 +231,7 @@ const ReportActivityEvolution = ({
             unit={legend?.unit}
             dot={false}
             isAnimationActive={false}
-            stroke={getContrastSafeLineColor(legend?.color as string)}
+            stroke={getContrastSafeColor(legend?.color as string)}
             strokeWidth={2}
           />
         ))}

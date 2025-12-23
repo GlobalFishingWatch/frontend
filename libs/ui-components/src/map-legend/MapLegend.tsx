@@ -4,7 +4,14 @@ import cx from 'classnames'
 import { BivariateLegend } from './Bivariate'
 import { ColorRampLegend } from './ColorRamp'
 import { SolidLegend } from './Solid'
-import type { UILegend, UILegendBivariate, UILegendColorRamp, UILegendSolid } from './types'
+import { SymbolsLegend } from './Symbols'
+import type {
+  UILegend,
+  UILegendBivariate,
+  UILegendColorRamp,
+  UILegendSolid,
+  UILegendSymbols,
+} from './types'
 
 import styles from './MapLegend.module.css'
 
@@ -28,6 +35,9 @@ export function MapLegend({
   roundValues,
 }: MapLegendProps) {
   // TODO: include user context and categorical options
+  if (layer.type === 'symbols') {
+    return <SymbolsLegend layer={layer as UILegendSymbols} className={className} />
+  }
   if (layer.type === 'solid') {
     return <SolidLegend layer={layer as UILegendSolid} className={className} />
   }

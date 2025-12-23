@@ -30,6 +30,7 @@ type LayerPanelProps = {
   label: string
   className?: string
   removeType?: 'visibleValues' | 'filter'
+  onRemove?: (tag: TagItem) => void
 }
 
 function DatasetSchemaField({
@@ -38,6 +39,7 @@ function DatasetSchemaField({
   label,
   className = '',
   removeType = 'filter',
+  onRemove,
 }: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const vesselGroupsOptions = useVesselGroupsOptions()
@@ -81,10 +83,10 @@ function DatasetSchemaField({
     const maxToCompare = dataviewWithHistogramFilter ? max : filterConfig?.options[1].label
     if (minLabel.toString() === minToCompare?.toString()) {
       const maxValueLabel = getValueLabelByUnit(maxLabel, { unit })
-      range = `< ${maxValueLabel}`
+      range = `≤ ${maxValueLabel}`
     } else if (maxLabel.toString() === maxToCompare?.toString()) {
       const minValueLabel = getValueLabelByUnit(minLabel, { unit })
-      range = `> ${minValueLabel}`
+      range = `≥ ${minValueLabel}`
     } else {
       const minValueLabel = getValueLabelByUnit(minLabel, { unit, unitLabel: false })
       const maxValueLabel = getValueLabelByUnit(maxLabel, { unit })
@@ -111,8 +113,11 @@ function DatasetSchemaField({
           },
         },
       })
+      if (onRemove) {
+        onRemove({ id: field, label: tag.label })
+      }
     },
-    [dataview, field, upsertDataviewInstance]
+    [dataview, field, upsertDataviewInstance, onRemove]
   )
 
   const onRemoveVisibleValuesClick = useCallback(() => {

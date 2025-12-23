@@ -3,6 +3,18 @@
   border-bottom: var(--border);
 }
 
+.graphContainer {
+  padding: var(--space-M) var(--space-M);
+}
+
+.titleRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 2rem;
+}
+
 .summary {
   font: var(--font-L);
   color: var(--color-secondary-blue);
@@ -29,4 +41,17 @@
 .errorMessage {
   border-color: var(--color-danger-red);
   color: var(--color-danger-red);
+}
+
+.noDataDisclaimer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+}
+
+.dataWarning {
+  color: var(--color-danger-red);
+  opacity: var(--opacity-secondary);
+  font: var(--font-S);
+  width: 100%;
 }

@@ -1,5 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSelector, createSlice } from '@reduxjs/toolkit'
+import { uniq } from 'es-toolkit'
 import type { RootState } from 'reducers'
 
 export type TimeRange = {
@@ -65,7 +66,7 @@ export const selectHighlightedEvents = createSelector(
   selectHoveredHighlightedEvents,
   (selectedEvent, hoveredEvents = []) => {
     if (selectedEvent) {
-      return [selectedEvent, ...hoveredEvents]
+      return uniq([selectedEvent, ...hoveredEvents])
     }
     return hoveredEvents
   }

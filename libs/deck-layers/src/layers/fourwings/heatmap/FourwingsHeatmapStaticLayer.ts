@@ -288,25 +288,33 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   _getLayerDataInWGS84(layer: any) {
+    if (!layer) {
+      return []
+    }
     return layer.props.tile?.dataInWGS84?.map((f: FourwingsStaticFeature) => ({
       ...f,
       coordinates: f.geometry.coordinates[0].flat(),
-    }))
+    })) as FourwingsStaticFeature[]
+  }
+
+  getTilesData() {
+    const layer = this.getLayerInstance()
+    const tiles = layer?.state?.tileset?.selectedTiles ?? []
+
+    if (!tiles.length) {
+      return [] as FourwingsStaticFeature[]
+    }
+
+    return tiles
+      .filter((tile) => tile.isSelected && tile.isVisible && tile.isLoaded)
+      .flatMap((tile) => {
+        const subLayer = tile.layers?.[0]
+        return this._getLayerDataInWGS84(subLayer) ?? []
+      })
   }
 
   getData() {
-    const layer = this.getLayerInstance()
-    if (layer) {
-      const offset = getZoomOffsetByResolution(this.props.resolution!, this.context.viewport.zoom)
-      const roundedZoom = Math.round(this.context.viewport.zoom)
-      return layer.getSubLayers().flatMap((l: any) => {
-        if (l.props.tile.zoom === l.props.maxZoom) {
-          return this._getLayerDataInWGS84(l)
-        }
-        return l.props.tile.zoom === roundedZoom + offset ? this._getLayerDataInWGS84(l) : []
-      }) as FourwingsStaticFeature[]
-    }
-    return [] as FourwingsStaticFeature[]
+    return this.getTilesData()
   }
 
   getViewportData(params = {} as GetViewportDataParams) {

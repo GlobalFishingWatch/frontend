@@ -3,9 +3,11 @@ import { LayerGroup } from '@globalfishingwatch/deck-layers'
 import { PATH_BASENAME } from 'data/config'
 import type { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
+  CURRENTS_DATAVIEW_SLUG,
   TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
   TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
   TEMPLATE_HEATMAP_STATIC_DATAVIEW_SLUG,
+  WINDS_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { BATHYMETRY_DATAVIEW_PREFIX } from 'features/dataviews/dataviews.utils'
 
@@ -37,6 +39,16 @@ export const BATHYMETRY_DATAVIEW_INSTANCE: Omit<LibraryLayerConfig, 'previewImag
 }
 
 export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
+  {
+    id: 'currents',
+    dataviewId: CURRENTS_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/currents.jpg`,
+  },
+  {
+    id: 'winds',
+    dataviewId: WINDS_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/winds.jpg`,
+  },
   // {
   //   id: 'gee-water-temperature',
   //   dataviewId: GLOBAL_WATER_TEMPERATURE_DATAVIEW_SLUG,

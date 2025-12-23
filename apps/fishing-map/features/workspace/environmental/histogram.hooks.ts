@@ -4,7 +4,10 @@ import { bin, scaleLinear } from 'd3'
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  isHeatmapVectorsDataview,
+  type UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
@@ -20,12 +23,15 @@ export const useDataviewHistogram = (dataview: UrlDataviewInstance) => {
   const dataset = dataview.datasets?.find(
     (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserContext
   ) as Dataset
+  const isHeatmapVector = isHeatmapVectorsDataview(dataview)
   const [histogram, setHistogram] = useState<any>()
 
   const updateHistogram = useCallback(
     (features: FourwingsFeature[]) => {
       if (features && features.length) {
-        const rawData = features.flatMap((f) => f.aggregatedValues || [])
+        const rawData = features.flatMap((f) =>
+          isHeatmapVector ? f.aggregatedValues?.[0] || [] : f.aggregatedValues || []
+        )
         const layerRange = getEnvironmentalDatasetRange(dataset)
         const data = rawData.filter((d) => {
           const matchesMin = layerRange.min !== undefined ? d >= layerRange.min : true
@@ -42,7 +48,7 @@ export const useDataviewHistogram = (dataview: UrlDataviewInstance) => {
         }
       }
     },
-    [dataset]
+    [dataset, isHeatmapVector]
   )
   useEffect(() => {
     if (sourcesLoaded) {

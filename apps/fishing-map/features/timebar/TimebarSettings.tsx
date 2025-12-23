@@ -18,6 +18,7 @@ import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
   selectActiveEventsDataviews,
+  selectActiveUserPointsWithTimeRangeDataviews,
   selectActiveVesselGroupDataviews,
   selectActiveVesselsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -32,6 +33,7 @@ import { getEventLabel } from 'utils/analytics'
 import {
   useTimebarEnvironmentConnect,
   useTimebarGraphConnect,
+  useTimebarUserPointsConnect,
   useTimebarVesselGroupConnect,
   useTimebarVisualisationConnect,
 } from './timebar.hooks'
@@ -75,12 +77,14 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   )
   const activeTrackDataviews = useSelector(selectActiveTrackDataviews)
   const activeVesselGroupDataviews = useSelector(selectActiveVesselGroupDataviews)
+  const activeUserPointsDataviews = useSelector(selectActiveUserPointsWithTimeRangeDataviews)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
   const activeVesselsDataviews = useSelector(selectActiveVesselsDataviews)
   const hasSomeVesselLayer = activeVesselsDataviews?.length > 0
   const vesselsAsPositions = useSelector(selectDebugOptions)?.vesselsAsPositions
   const { timebarVisualisation, dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { timebarSelectedEnvId, dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
+  const { timebarSelectedUserId, dispatchTimebarSelectedUserId } = useTimebarUserPointsConnect()
   const { timebarSelectedVGId, dispatchTimebarSelectedVGId } = useTimebarVesselGroupConnect()
   const { timebarGraph, dispatchTimebarGraph } = useTimebarGraphConnect()
   const timebarGraphEnabled = activeVesselsDataviews && activeVesselsDataviews?.length <= 2
@@ -115,9 +119,24 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
       label: `${TimebarVisualisations.Environment} - ${environmentalDataviewId}`,
     })
   }
+  const setUserPointsActive = (userPointsDataviewId: string) => {
+    dispatchTimebarVisualisation(TimebarVisualisations.Points)
+    dispatchTimebarSelectedUserId(userPointsDataviewId)
+    trackEvent({
+      category: TrackCategory.Timebar,
+      action: 'select_timebar_settings',
+      label: `${TimebarVisualisations.Points} - ${userPointsDataviewId}`,
+    })
+  }
+
   const setVesselGroupActive = (vesselGroupDataviewId: string) => {
     dispatchTimebarVisualisation(TimebarVisualisations.VesselGroup)
     dispatchTimebarSelectedVGId(vesselGroupDataviewId)
+    trackEvent({
+      category: TrackCategory.Timebar,
+      action: 'select_timebar_settings',
+      label: `${TimebarVisualisations.VesselGroup} - ${vesselGroupDataviewId}`,
+    })
   }
   const setVesselActive = () => {
     dispatchTimebarVisualisation(TimebarVisualisations.Vessel)
@@ -329,6 +348,33 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   }
                   tooltip={activityTooltipLabel}
                   onClick={() => setEnvironmentActive(envDataview.id)}
+                />
+              )
+            })}
+            {activeUserPointsDataviews.map((pointDataview) => {
+              const dataset = pointDataview.datasets?.find(
+                (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
+              )
+              const title = t(
+                `datasets:${dataset?.id}.name` as any,
+                dataset?.name || dataset?.id || ''
+              )
+              return (
+                <Radio
+                  key={pointDataview.id}
+                  label={
+                    <Icon
+                      SvgIcon={AreaIcon}
+                      label={title}
+                      color={pointDataview?.config?.color || COLOR_PRIMARY_BLUE}
+                    />
+                  }
+                  active={
+                    timebarVisualisation === TimebarVisualisations.Points &&
+                    timebarSelectedUserId === pointDataview.id
+                  }
+                  tooltip={activityTooltipLabel}
+                  onClick={() => setUserPointsActive(pointDataview.id)}
                 />
               )
             })}
