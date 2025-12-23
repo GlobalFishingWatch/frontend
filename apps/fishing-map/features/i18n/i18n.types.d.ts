@@ -521,6 +521,7 @@ interface Resources {
       "whatsNewWithNewVersion": "We've made some changes since you last visited the map. Click to learn more"
     },
     "dataset": {
+      "VIIRSDelayDisclaimer": "VIIRS nighttime light data is available with a ~3-month ingestion delay.",
       "addContext": "Add reference layer",
       "addEnvironmental": "Add environmental dataset",
       "addUser": "Add an uploaded dataset",
