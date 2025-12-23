@@ -6,6 +6,19 @@
   "tags": [],
   "implicitDependencies": ["fishing-map"],
   "targets": {
+    "e2e:local": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "playwright test --config=playwright.config.mts",
+        "cwd": "apps/fishing-map-e2e"
+      },
+      "dependsOn": [
+        {
+          "projects": "fishing-map",
+          "target": "serve"
+        }
+      ]
+    },
     "e2e": {
       "executor": "nx:run-commands",
       "options": {
