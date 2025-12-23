@@ -6,7 +6,7 @@
     },
     "cmar_core_mpas-public": {
       "description": "Iniciado en 2004, el Corredor de Conservación Marítima del Pacífico Tropical Oriental es una iniciativa regional de conservación y uso sostenible de los gobiernos de Colombia, Costa Rica, Ecuador y Panamá que buscan el manejo adecuado de la biodiversidad y de los recursos marinos y costeros a través del manejo de los ecosistemas y el establecimiento de estrategias conjuntas del gobierno regional. Todos ellos apoyados por la sociedad civil, la cooperación internacional y las organizaciones no gubernamentales, envueltas en diez MPAs centrales en las ZEE del Océano Pacífico de los cuatro países.",
-      "name": "CMAR core MPAs"
+      "name": "AMP núcleo del CMAR"
     },
     "colombia_3-public": {
       "description": "Colombia ha creado y gestionado AMP a lo largo de sus costas del Pacífico y el Caribe que abarcan el Distrito de Manejo Integrado Yuruparí-Malpelo, donde se encuentra el Santuario de Fauna y Flora de Malpelo, totalmente protegido, Lomas y Colinas, Gorgona y Cabo Manglares en el Océano Pacífico, así como Beata y Corales de Profundidad en el mar Caribe. ",
@@ -22,7 +22,7 @@
     },
     "galapagos_and_hermandad-public": {
       "description": "La Reserva Marina de Galápagos cubre 133.000 kilómetros cuadrados del océano Pacífico frente a la costa de América del Sur. La Reserva Marina de Galápagos se amplió con la creación de la Reserva Marina Hermandad para cubrir 60.000 kilómetros cuadrados adicionales.",
-      "name": "Galapagos and Hermandad"
+      "name": "Galapagos y Hermandad"
     },
     "galapagos-public": {
       "description": "La Reserva Marina de Galápagos, declarada por la UNESCO \"Patrimonio Natural de la Humanidad\", cubre 133,000 kilómetros cuadrados (51,300 millas cuadradas) del Océano Pacífico frente a las costas de América del Sur.",
@@ -54,7 +54,7 @@
     },
     "panama_1-public": {
       "description": "Las áreas marinas protegidas en Panamá suman un poco más de 98.000 kilómetros cuadrados, que incluyen el Parque Nacional Coiba, declarado Patrimonio de la Humanidad por la UNESCO, y que es un área marina costera protegida frente a la costa suroeste del país, y el Área de Recursos Administrados de Cordillera de Coiba.",
-      "name": "Panama"
+      "name": "Panamá"
     },
     "reserva_de_la_biosfera_cmar-public": {
       "description": "Iniciado en 2004, el Corredor Marino del Pacífico Este Tropical es un esfuerzo cooperativo regional voluntario para proteger uno de los ecosistemas más productivos y biodiversos del mundo.",
@@ -75,13 +75,13 @@
       "name": "Actividad Global de Embarcaciones"
     },
     "carrier-portal-report": {
-      "cta": "Explore the carrier vessel portal",
-      "description": "Verify transshipments, track vessels and identify frequently-visited ports to gain a better understanding of carrier vessel activities needed to strengthen transparency and accelerate transshipment reform.",
-      "name": "Carrier Vessel Portal"
+      "cta": "Explorar carrier vessel portal",
+      "description": "Verifica transbordos, rastrea embarcaciones e identifica puertos frecuentemente visitados para obtener un mejor conocimiento sobre las actividades de las embarcaciones de transporte necesario para fortalecer la transparencia y acelerar la reforma del transbordo.",
+      "name": "Carrier vessel portal"
     },
     "deep-sea-mining-public": {
-      "cta": "Explore the portal",
-      "description": "The portal continuously maps and monitors vessels engaged in deep-sea mining activities in regions containing International Seabed Authority (ISA) license areas, which span over 1.5 million square kilometers of the international seabed.",
+      "cta": "Explorar portal",
+      "description": "El portal mapea y monitorea continuamente las embarcaciones que realizan actividades de exploracion de minerales en el fondo marino en regiones que contienen zonas autorizadas de la Autoridad Internacional de los Fondos Marinos (ISA), que abarcan más de 1,5 millones de kilómetros cuadrados del fondo marino internacional.",
       "name": "Deep Sea Mining Watch"
     },
     "detections-report": {
