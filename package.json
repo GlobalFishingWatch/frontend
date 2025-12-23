@@ -10,6 +10,8 @@
     "affected": "nx show projects --affected --base=origin/develop~1 --exclude='linting,port-labeler,real-time-prototype,*-e2e,libs/*' --plain > affected-apps.txt",
     "affected:libs": "nx show projects --affected --base=origin/develop~1 --exclude='apps/*' --plain > affected-libs.txt",
     "postinstall": "husky",
+    "nx:latest": "nx migrate latest",
+    "nx:migrations": "nx migrate --run-migrations",
     "knip": "NX_DAEMON=false knip",
     "knip:fix": "NX_DAEMON=false knip --fix",
     "clean": "yarn clean:cache && yarn clean:deps",
