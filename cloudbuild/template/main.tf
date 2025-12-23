@@ -33,6 +33,16 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
     }
 
     step {
+      id     = "Install Dependencies"
+      name   = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest"
+      script = <<-EOF
+        cp -R /app/node_modules /app/.yarn ./
+        yarn set version 4.10.3
+        yarn install --immutable --inline-builds
+      EOF
+    }
+
+    step {
       id     = "Get Affected"
       name   = "node:24-slim"
       script = file("${path.module}/scripts/affected-apps.sh")
@@ -50,7 +60,8 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
     }
 
     options {
-      logging = "CLOUD_LOGGING_ONLY"
+      logging      = "CLOUD_LOGGING_ONLY"
+      machine_type = "E2_HIGHCPU_8"
     }
 
     timeout = "1800s"

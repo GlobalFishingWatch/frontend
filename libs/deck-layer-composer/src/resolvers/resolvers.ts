@@ -7,8 +7,8 @@ import {
   BathymetryContourLayer,
   ContextLayer,
   FourwingsClustersLayer,
-  FourwingsCurrentsTileLayer,
   FourwingsLayer,
+  FourwingsVectorsTileLayer,
   GraticulesLayer,
   PolygonsLayer,
   UserContextTileLayer,
@@ -33,7 +33,6 @@ import {
 import { resolveDeckBathymetryContourLayerProps } from './bathymetry-contour'
 import { resolveDeckFourwingsClustersLayerProps } from './clusters'
 import { resolveDeckContextLayerProps } from './context'
-import { resolveDeckCurrentsLayerProps } from './currents'
 import { resolveDeckFourwingsLayerProps } from './fourwings'
 import { resolveDeckGraticulesLayerProps } from './graticules'
 import { resolveDeckPolygonsLayerProps } from './polygons'
@@ -42,6 +41,7 @@ import {
   resolveDeckUserPointsLayerProps,
   resolveDeckUserTracksLayerProps,
 } from './user'
+import { resolveDeckVectorsLayerProps } from './vectors'
 import { resolveDeckVesselLayerProps } from './vessels'
 import { resolveDeckWorkspacesLayerProps } from './workspaces'
 
@@ -89,12 +89,12 @@ export const dataviewToDeckLayer = (
     const layer = new FourwingsLayer(deckLayerProps)
     return layer
   }
-  if (dataview.config?.type === DataviewType.Currents) {
-    const deckLayerProps = resolveDeckCurrentsLayerProps(
+  if (dataview.config?.type === DataviewType.FourwingsVector) {
+    const deckLayerProps = resolveDeckVectorsLayerProps(
       dataview as ResolvedFourwingsDataviewInstance,
       layerConfig
     )
-    const layer = new FourwingsCurrentsTileLayer(deckLayerProps)
+    const layer = new FourwingsVectorsTileLayer(deckLayerProps)
     return layer
   }
   if (dataview.config?.type === DataviewType.Context) {

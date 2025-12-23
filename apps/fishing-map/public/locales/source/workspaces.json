@@ -82,7 +82,7 @@
     "deep-sea-mining-public": {
       "cta": "Explore the portal",
       "description": "The portal continuously maps and monitors vessels engaged in deep-sea mining activities in regions containing International Seabed Authority (ISA) license areas, which span over 1.5 million square kilometers of the international seabed.",
-      "name": "Deep Sea Mining Watch "
+      "name": "Deep Sea Mining Watch"
     },
     "detections-report": {
       "description": "Synthetic aperture radar (SAR) can detect at-sea vessels and structures in any weather conditions. The night lights detections (VIIRS) shows vessels at sea that satellites have detected by the light they emit at night.",

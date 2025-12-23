@@ -49,6 +49,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
+  selectIsAnyReportLocation,
   selectIsIndexLocation,
   selectIsUserLocation,
   selectIsWorkspaceLocation,
@@ -142,9 +143,9 @@ export const useGlobalConfigConnect = () => {
   const clickedFeatures = useSelector(selectClickedEvent)
   const trackGraphExtent = useTimebarTracksGraphExtent()
   const hoverFeatures = useMapHoverInteraction()?.features
-  const debug = useSelector(selectDebugOptions)?.debug
   const debugOptions = useSelector(selectDebugOptions)
   const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
+  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
 
   const highlightedTime = useMemo(() => {
     if (
@@ -187,7 +188,7 @@ export const useGlobalConfigConnect = () => {
     let globalConfig: ResolverGlobalConfig = {
       activityVisualizationMode,
       bivariateDataviews,
-      debug,
+      debugTiles: debugOptions?.debugTiles,
       detectionsVisualizationMode,
       end,
       environmentVisualizationMode,
@@ -200,6 +201,7 @@ export const useGlobalConfigConnect = () => {
       trackGraphExtent,
       vesselGroupsVisualizationMode,
       vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
+      vectorsTemporalAggregation: isAnyReportLocation ? false : true,
       vesselTrackVisualizationMode: debugOptions.vesselsAsPositions ? 'positions' : 'track',
       ...(debugOptions.vesselsAsPositions &&
         debugOptions.vesselsMaxTimeGapHours && { vesselsMaxTimeGapHours }),
@@ -217,9 +219,9 @@ export const useGlobalConfigConnect = () => {
     viewState.zoom,
     start,
     end,
-    debug,
     debugOptions,
     bivariateDataviews,
+    isAnyReportLocation,
     activityVisualizationMode,
     detectionsVisualizationMode,
     environmentVisualizationMode,

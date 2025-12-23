@@ -8,6 +8,7 @@ import { DateTime } from 'luxon'
 import type { TrackSegment } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 
+import { PRIMARY_BLUE_COLOR } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import I18nDate from 'features/i18n/i18nDate'
 import {
@@ -27,7 +28,7 @@ type SegmentsTimelineProps = Omit<TrackSliderProps, 'onTimerangeChange'> & {
 
 function TrackSegmentsTimeline({
   segments,
-  color = '#163f89',
+  color = PRIMARY_BLUE_COLOR,
   width = 333,
   height = 30,
   rangeStartTime,
@@ -112,7 +113,7 @@ type TrackSliderProps = {
 
 function TrackSlider({
   segments,
-  color = '#163f89',
+  color = PRIMARY_BLUE_COLOR,
   rangeStartTime,
   rangeEndTime,
   onTimerangeChange,

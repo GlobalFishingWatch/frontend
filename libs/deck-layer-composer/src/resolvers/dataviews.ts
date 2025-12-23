@@ -12,10 +12,11 @@ import {
   getMergedDataviewId,
   isActivityDataview,
   isAnyContextDataview,
+  isComparisonDataview,
   isDetectionsDataview,
   isEnvironmentalDataview,
-  isHeatmapCurrentsDataview,
   isHeatmapStaticDataview,
+  isHeatmapVectorsDataview,
   isTrackDataview,
   isUserHeatmapDataview,
   isUserTrackDataview,
@@ -51,9 +52,9 @@ export const getDataviewAvailableIntervals = (
 ): FourwingsInterval[] => {
   const allDatasets = dataview.datasets?.length
     ? dataview.datasets
-    : ((dataview as ResolvedFourwingsDataviewInstance)?.config?.sublayers || [])?.flatMap(
+    : (((dataview as ResolvedFourwingsDataviewInstance)?.config?.sublayers || [])?.flatMap(
         (sublayer) => sublayer.datasets || []
-      )
+      ) as Dataset[])
   const fourwingsDatasets = allDatasets?.filter(
     (dataset) => dataset.type === DatasetTypes.Fourwings
   )
@@ -262,6 +263,7 @@ export function getContextDataviewsResolved(
               thickness: dataview.config?.thickness,
               filters: dataview.config?.filters,
               filterOperators: dataview.config?.filterOperators,
+              aggregateByProperty: dataview.config?.aggregateByProperty,
             }
           }),
         }
@@ -321,6 +323,7 @@ const DATAVIEWS_LAYER_ORDER: DataviewType[] = [
   DataviewType.HeatmapStatic,
   DataviewType.Heatmap,
   DataviewType.HeatmapAnimated,
+  DataviewType.FourwingsVector,
   DataviewType.FourwingsTileCluster,
   DataviewType.Track,
   DataviewType.VesselEvents,
@@ -372,11 +375,15 @@ export function getComparisonMode(
 }
 
 const DATAVIEW_GROUPS_CONFIG = [
+  {
+    key: 'comparisonDataviews' as const,
+    test: isComparisonDataview,
+  },
   { key: 'activityDataviews' as const, test: isActivityDataview },
   { key: 'detectionDataviews' as const, test: isDetectionsDataview },
   { key: 'environmentalDataviews' as const, test: isEnvironmentalDataview },
   { key: 'staticDataviews' as const, test: isHeatmapStaticDataview },
-  { key: 'currentsDataviews' as const, test: isHeatmapCurrentsDataview },
+  { key: 'vectorsDataviews' as const, test: isHeatmapVectorsDataview },
   { key: 'vesselGroupDataview' as const, test: isVesselGroupDataview },
   { key: 'userHeatmapDataviews' as const, test: isUserHeatmapDataview },
   { key: 'vesselTrackDataviews' as const, test: isTrackDataview },
@@ -412,12 +419,13 @@ export function getDataviewsResolved(
     detectionDataviews = [],
     environmentalDataviews = [],
     staticDataviews = [],
-    currentsDataviews = [],
+    vectorsDataviews = [],
     vesselGroupDataview = [],
     vesselTrackDataviews = [],
     userHeatmapDataviews = [],
     contextDataviews = [],
     otherDataviews = [],
+    comparisonDataviews = [],
   } = getDataviewsGrouped(dataviews)
 
   const singleHeatmapDataview =
@@ -427,6 +435,11 @@ export function getDataviewsResolved(
   const detectionsComparisonMode = getComparisonMode(detectionDataviews, params)
 
   // If activity heatmap animated generators found, merge them into one generator with multiple sublayers
+  const mergedComparisonDataview = comparisonDataviews?.length
+    ? getFourwingsDataviewsResolved(comparisonDataviews, {
+        ...params,
+      })
+    : []
   const mergedActivityDataview = activityDataviews?.length
     ? getFourwingsDataviewsResolved(activityDataviews, {
         ...params,
@@ -451,6 +464,7 @@ export function getDataviewsResolved(
         visualizationMode: params.environmentVisualizationMode,
       }) || []
   )
+
   const staticDataviewsParsed = staticDataviews.flatMap((d) => {
     let visualizationMode = undefined
     if (d.category === DataviewCategory.Environment) {
@@ -468,7 +482,7 @@ export function getDataviewsResolved(
       }) || []
     )
   })
-  const currentsDataviewsParsed = currentsDataviews.flatMap((dataview) => {
+  const vectorsDataviewsParsed = vectorsDataviews.flatMap((dataview) => {
     return {
       ...dataview,
       config: { ...dataview.config, visualizationMode: params.environmentVisualizationMode },
@@ -506,9 +520,10 @@ export function getDataviewsResolved(
   const dataviewsMerged = [
     ...otherDataviews,
     ...staticDataviewsParsed,
-    ...currentsDataviewsParsed,
+    ...vectorsDataviewsParsed,
     ...environmentalDataviewsParsed,
     ...vesselGroupDataviewParsed,
+    ...mergedComparisonDataview,
     ...mergedDetectionsDataview,
     ...mergedActivityDataview,
     ...vesselTrackDataviewsParsed,

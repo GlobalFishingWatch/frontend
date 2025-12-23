@@ -8,6 +8,12 @@
   z-index: 1;
 }
 
+.selectContainer {
+  display: flex;
+  padding-top: var(--space-SM);
+  justify-content: space-between;
+}
+
 .title {
   font: var(--font-M-bold);
 }

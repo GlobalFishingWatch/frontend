@@ -93,13 +93,18 @@ export const rgbaToString = ({ r, g, b, a = 1 }: RGBA) => {
   return `rgba(${r}, ${g}, ${b}, ${a})`
 }
 
+export const rgbToRgbString = ({ r, g, b }: { r: number; g: number; b: number }) => {
+  return `${r}, ${g}, ${b}`
+}
+
 export const hexToRgbString = (hex: string) => {
   const color = hexToRgb(hex)
   return rgbToRgbString(color)
 }
 
-export const rgbToRgbString = ({ r, g, b }: { r: number; g: number; b: number }) => {
-  return `${r}, ${g}, ${b}`
+export const hexToRgbaString = (hex: string, opacity = 1) => {
+  const color = hexToRgb(hex)
+  return rgbaToString({ ...color, a: opacity })
 }
 
 export const hexToComponents = (hex: string): [number, number, number] => {

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useEffectEvent, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
@@ -39,8 +39,8 @@ export const useHeatmapActivityGraph = () => {
   const start = getUTCDate(timerange.start).getTime()
   const end = getUTCDate(timerange.end).getTime()
   const id = dataviews?.length ? getMergedDataviewId(dataviews) : ''
-  const allAvailableIntervals = getAvailableIntervalsInDataviews(dataviews)
-  const chunk = getFourwingsChunk(start, end, allAvailableIntervals)
+  const availableIntervals = getAvailableIntervalsInDataviews(dataviews)
+  const chunk = getFourwingsChunk({ start, end, availableIntervals })
   const fourwingsActivityLayer = useGetDeckLayer<FourwingsLayer>(id)
   const { loaded, instance } = fourwingsActivityLayer || {}
 
@@ -85,7 +85,7 @@ export const useHeatmapActivityGraph = () => {
     ]
   )
 
-  useEffect(() => {
+  const onViewportDataChange = useEffectEvent(() => {
     if (loaded) {
       if (visualizationMode === 'positions') {
         const viewportData = instance?.getViewportData?.()
@@ -98,6 +98,10 @@ export const useHeatmapActivityGraph = () => {
         setFourwingsHeatmapData(viewportData as [number[], number[]][][])
       }
     }
+  })
+
+  useEffect(() => {
+    onViewportDataChange()
   }, [
     loaded,
     id,
@@ -107,5 +111,8 @@ export const useHeatmapActivityGraph = () => {
     instance?.props.maxVisibleValue,
   ])
 
-  return useMemo(() => ({ loading: !loaded, heatmapActivity: data }), [data, loaded])
+  return useMemo(
+    () => ({ loading: !loaded, heatmapActivity: data, dataviews }),
+    [data, loaded, dataviews]
+  )
 }
