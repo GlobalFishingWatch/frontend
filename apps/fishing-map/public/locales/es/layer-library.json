@@ -1,11 +1,11 @@
 {
   "bathymetry": {
-    "description": "La batimetría es la medición de la profundidad del agua y proporciona detalles de las características físicas del fondo del océano. Este conjunto de datos de cuadrícula batimétrica es un modelo global continuo que proporciona datos de elevación para el océano en metros en una cuadrícula con intervalos de 15 arco segundos. ",
+    "description": "La batimetría mide la profundidad del agua y proporciona detalles sobre las características físicas del fondo marino. Este conjunto de datos de cuadrícula batimétrica es un modelo de terreno global continuo que proporciona datos de elevación del océano en metros con una resolución de 15 segundos de arco.",
     "moreInfoLink": "https://www.gebco.net/data-products/gridded-bathymetry-data/gebco2023-grid",
     "name": "Batimetría"
   },
   "bathymetry-contour": {
-    "description": "Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This contour dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second resolution.",
+    "description": "La batimetría mide la profundidad del agua y proporciona detalles sobre las características físicas del fondo marino. Este conjunto de datos de contorno es un modelo de terreno global continuo que proporciona datos de elevación del océano en metros con una resolución de 15 segundos de arco.",
     "moreInfoLink": "https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO2022",
     "name": "Bathymetry contour"
   },
