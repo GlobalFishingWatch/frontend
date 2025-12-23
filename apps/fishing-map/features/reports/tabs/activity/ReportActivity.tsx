@@ -388,7 +388,9 @@ function ActivityReport() {
           <ReportActivitySubsectionSelector />
         </div>
       )}
-      <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
+      {!isVesselGroupReportLocation && (
+        <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
+      )}
       <ReportActivityGraph />
       {ReportComponent}
     </Fragment>
