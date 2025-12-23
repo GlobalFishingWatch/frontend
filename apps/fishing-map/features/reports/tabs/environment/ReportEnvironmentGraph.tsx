@@ -77,9 +77,6 @@ function ReportEnvironmentGraph({
           <span>{upperFirst(t('common.average'))} </span>
         )}
         <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
-        {isHeatmapVector && (
-          <p className={styles.dataWarning}>{t('analysis.currentsDataDisclaimer')}</p>
-        )}
         {isDynamic && (
           <Fragment>
             {t('common.between')} <strong>{formatI18nDate(start)}</strong> {t('common.and')}{' '}

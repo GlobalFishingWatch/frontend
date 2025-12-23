@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import Sticky from 'react-sticky-el'
 import cx from 'classnames'
 
-import { DataviewCategory } from '@globalfishingwatch/api-types'
 import { trackEvent } from '@globalfishingwatch/react-hooks'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
@@ -13,7 +12,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { selectReportCategory } from 'features/reports/reports.selectors'
-import { ReportCategory } from 'features/reports/reports.types'
+import { categoryToDataviewMap, ReportCategory } from 'features/reports/reports.types'
 import ReportSummaryActivity from 'features/reports/shared/summary/ReportSummaryActivity'
 import ReportSummaryEvents from 'features/reports/shared/summary/ReportSummaryEvents'
 import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
@@ -29,15 +28,6 @@ type ReportSummaryProps = {
 }
 
 export const PROPERTIES_EXCLUDED = ['flag', 'geartype']
-
-const categoryToDataviewMap: Partial<Record<ReportCategory, DataviewCategory>> = {
-  [ReportCategory.Activity]: DataviewCategory.Activity,
-  [ReportCategory.Detections]: DataviewCategory.Detections,
-  [ReportCategory.Events]: DataviewCategory.Events,
-  [ReportCategory.VesselGroup]: DataviewCategory.VesselGroups,
-  [ReportCategory.Others]: DataviewCategory.Context,
-  [ReportCategory.Environment]: DataviewCategory.Environment,
-}
 
 export default function ReportSummary({
   activityUnit,
