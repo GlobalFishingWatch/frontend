@@ -6,8 +6,8 @@
   },
   "bathymetry-contour": {
     "description": "La batimetría mide la profundidad del agua y proporciona detalles sobre las características físicas del fondo marino. Este conjunto de datos de contorno es un modelo de terreno global continuo que proporciona datos de elevación del océano en metros con una resolución de 15 segundos de arco.",
-    "moreInfoLink": "https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO2022",
-    "name": "Bathymetry contour"
+    "moreInfoLink": "",
+    "name": "Contorno de batimetría"
   },
   "chlorophyl": {
     "description": "La clorofila a es el pigmento cosechador de luz que se encuentra en todas las plantas fotosintéticas. El fitoplancton marino fija el carbono químicamente a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo la clorofila, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
@@ -20,14 +20,14 @@
     "name": "Arrecifes de coral"
   },
   "currents": {
-    "description": "Ocean currents are the movement of seawater driven by wind, temperature, salinity, tides, and Earth’s rotation. Ocean currents regulate climate and transport heat, nutrients, and marine species. This dataset shows global ocean surface currents, including speed and direction, providing insight into large-scale circulation patterns.",
+    "description": "Las corrientes oceánicas son el movimiento del agua de mar impulsado por el viento, la temperatura, la salinidad, las mareas y la rotación de la Tierra. Las corrientes oceánicas regulan el clima y transportan calor, nutrientes y especies marinas. Este conjunto de datos muestra las corrientes superficiales oceánicas globales, incluyendo su velocidad y dirección, lo que proporciona información sobre los patrones de circulación a gran escala.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description",
-    "name": "Currents"
+    "name": "Corrientes"
   },
   "dsm-isa-leasing-areas": {
-    "description": "These represent the areas currently leased by the International Seabed Authority (ISA) for exploration of polymetallic nodules, polymetallic sulfides, and cobalt-rich ferromanganese crusts in the high seas. Each polygon represents a 15-year contract with a mining contractor and sponsoring country for the exploration of minerals. None of these areas are currently leased for exploitation (i.e. commercial mining), though these are the same regions that will be mined if exploitation contracts are ever approved by the ISA. The ISA is the intergovernmental United Nations body that is tasked with both protecting the international seabed alongside managing any mineral-resources-related activity in the area.",
+    "description": "Estas representan las áreas actualmente arrendadas por la Autoridad Internacional de los Fondos Marinos (ISA) para la exploración de nódulos polimetálicos, sulfuros polimetálicos y costras de ferromanganeso ricas en cobalto en alta mar. Cada polígono representa un contrato de 15 años con un contratista minero y un país patrocinador para la exploración de minerales. Ninguna de estas áreas está actualmente arrendada para su explotación (es decir, minería comercial), aunque estas son las mismas regiones que serán explotadas si la ISA aprueba los contratos de explotación. La ISA es el organismo intergubernamental de las Naciones Unidas encargado de proteger el fondo marino internacional junto con la gestión de cualquier actividad relacionada con los recursos minerales en la zona.",
     "moreInfoLink": "",
-    "name": "ISA License Areas"
+    "name": "Zonas Autorizadas ISA"
   },
   "eez": {
     "description": "Las zonas económicas exclusivas (ZEE) se extienden hasta 200 millas náuticas desde la costa de un país. Instituto Marino de Flandes (2019). Conjunto de datos geográficos de Límites Marinos: Límites Marinos y Zonas Económicas Exclusivas (200NM), versión 11.",
@@ -227,6 +227,6 @@
   "winds": {
     "description": "Wind is the movement of air across the Earth’s surface and plays an important role in shaping weather and ocean conditions. Surface winds help drive ocean circulation and influence mixing at the ocean surface. This dataset shows global wind speed and direction over the ocean.",
     "moreInfoLink": "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=overview",
-    "name": "Wind"
+    "name": "Viento"
   }
 }
