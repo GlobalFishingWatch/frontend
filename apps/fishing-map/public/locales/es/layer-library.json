@@ -100,9 +100,9 @@
     "name": "MPAs (WDPA)"
   },
   "mpatlas": {
-    "description": "MPAs vary greatly in their status in the process of becoming an MPA and the impact of human activities. MPAtlas applies The MPA Guide, a science-based tool that identifies different types of MPAs and connects them to the outcome they are likely to achieve.",
+    "description": "Las AMP varían considerablemente en cuanto a su estatus en el proceso de convertirse en una AMP y en el impacto de las actividades humanas. MPAtlas aplica la Guía de AMP, una herramienta con base científica que identifica diferentes tipos de AMP y los relaciona con el resultado que es probable que logre.",
     "moreInfoLink": "https://mpatlas.org",
-    "name": "MPAs (MPAtlas)"
+    "name": "AMP (MPAtlas)"
   },
   "nitrate": {
     "description": "El nitrato es requerido por las plantas marinas para su fotosíntesis y es un nutriente importante para la productividad del océano, pero las altas concentraciones pueden ser un indicador de contaminación. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el nitrato, sobre el océano global mostrado con una resolución horizontal de 1/4 grados.   ",
@@ -120,9 +120,9 @@
     "name": "Concentración de oxígeno (O2)"
   },
   "paa-duke": {
-    "description": "This global Preferential Access Area (PAA) database was built with data for 44 countries identified by the Illuminating Hidden Harvests (IHH) initiative following Basurto et al. (2023) and the FAOLEX database.",
+    "description": "Esta base de datos global de Áreas de Acceso Preferencial (AAP) se construyó con datos para 44 países identificados por la iniciativa Illuminating Hidden Harvests (IHH) siguiendo a Basurto et al. (2023) y la base de datos FAOLEX.",
     "moreInfoLink": "https://research.repository.duke.edu/concern/datasets/79407z51r",
-    "name": "Preferential Access Areas for Small-Scale Fishing"
+    "name": "Áreas de acceso preferencial para la pesca de pequeña escala"
   },
   "ph": {
     "description": "La acidez del océano se mide con el pH. El aumento de la absorción de dióxido de carbono ha reducido el pH del océano, lo que ha dado lugar a la acidificación del océano, lo cual puede tener un impacto amplio en los organismos marinos. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el pH, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
@@ -135,12 +135,12 @@
     "name": "Concentración de fosfato (PO4)"
   },
   "port-locations": {
-    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
+    "description": "Los puertos se basan en el conjunto de datos de fondeaderos de Global Fishing Watch, una base de datos global de lugares de fondeo donde se congregan las embarcaciones. Esta capa incluye los puertos con un nombre conocido.",
     "moreInfoLink": "",
     "name": "Puertos"
   },
   "port-visits": {
-    "description": "La lista de puertos se define a partir del conjunto de datos obtenidos por Global Fishing Watch sobre fondeaderos. Se trata de una base de datos global que identifica lugares de fondeo donde se congregan las embarcaciones. Este conjunto de datos incluye más de 160.000 puntos de fondeo individuales, que se agrupan en aproximadamente 32.000 puertos. ",
+    "description": "Los puertos se basan en el conjunto de datos de fondeaderos de Global Fishing Watch, una base de datos global de lugares de fondeo donde se congregan las embarcaciones. Este conjunto de datos incluye más de 160.000 puntos de fondeo individuales, que se agrupan en aproximadamente 32.000 puertos. ",
     "moreInfoLink": "",
     "name": "Visitas a puerto (AIS)"
   },
