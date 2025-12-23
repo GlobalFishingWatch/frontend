@@ -89,6 +89,14 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
   const showSchemaFilters = filtersAllowed.some(showSchemaFilter)
   const disabledFilters = isTimeComparisonGraph(selectedReportActivityGraph)
 
+  if (
+    reportCategory === ReportCategory.Environment &&
+    !dataview.config?.minVisibleValue &&
+    !dataview.config?.maxVisibleValue
+  ) {
+    return null
+  }
+
   return (
     <div className={styles.row}>
       <div className={styles.actionsContainer}>
@@ -178,17 +186,7 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
               label={t('common.visibleValues')}
               removeType="visibleValues"
             />
-          ) : (
-            <div className={styles.filter}>
-              <label>{t('common.visibleValues')}</label>
-              <TagList
-                tags={[{ id: 'all', label: t('selects.allSelected') }]}
-                color={dataview.config?.color}
-                className={styles.tagList}
-                onRemove={onTagRemoveClick}
-              />
-            </div>
-          )
+          ) : null
         ) : null}
       </Fragment>
     </div>
