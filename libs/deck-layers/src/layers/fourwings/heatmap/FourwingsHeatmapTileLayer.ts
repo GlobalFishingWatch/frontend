@@ -106,6 +106,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     return super.isLoaded && !this.state.rampDirty && this.state.viewportLoaded
   }
 
+  get cacheHash(): string {
+    return this._getTileDataCacheKey()
+  }
+
   getError(): string {
     return this.state.error
   }

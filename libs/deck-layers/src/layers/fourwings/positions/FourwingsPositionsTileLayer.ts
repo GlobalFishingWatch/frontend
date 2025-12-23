@@ -88,6 +88,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return super.isLoaded && !this.state.viewportDirty && this.state.viewportLoaded
   }
 
+  get cacheHash(): string {
+    return ''
+  }
+
   get positions() {
     const filterIds = this.props.sublayers.flatMap((sublayer) => sublayer.filterIds || [])
     return filterIds.length
