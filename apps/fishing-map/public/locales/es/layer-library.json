@@ -35,9 +35,9 @@
     "name": "ZEE"
   },
   "eez-areas-12nm": {
-    "description": "Territorial seas are a belt of coastal waters extending at most 12 nautical miles (22.2 km; 13.8 mi) from the baseline (usually the mean low-water mark) of a coastal state.",
+    "description": "El mar territorial es una franja de aguas costeras que se extiende como máximo 12 millas náuticas (22,2 km; 13,8 millas) de la línea de base (generalmente la marca media de bajamar) de un estado costero.",
     "moreInfoLink": "https://www.marineregions.org/downloads.php",
-    "name": "Territorial Seas (12 nautical miles)"
+    "name": "Mares territoriales (12 millas náuticas)"
   },
   "encounters": {
     "description": "Identificados de los datos AIS como lugares donde dos buques, un transportador y uno pesquero, estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media menor a 2 nudos mientras se encontraban a mas de 10 km de un anclaje costero.",
@@ -60,9 +60,9 @@
     "name": "Esfuerzo de pesca aparente (VMS)"
   },
   "gfcm-fao": {
-    "description": "In the Mediterranean and the Black Sea, 1,760,000 square kilometers of sea habitats are protected by ten fisheries restricted areas established by the GFCM, in which some specific fishing activities are temporarily or permanently banned or restricted.",
+    "description": "En el Mediterráneo y el Mar Negro, 1.760.000 kilómetros cuadrados de hábitats marinos están protegidos por diez zonas restringidas de pesca establecidas por la CGPM, en las que algunas actividades pesqueras específicas están prohibidas o restringidas de forma temporal o permanentemente.",
     "moreInfoLink": "https://www.fao.org/gfcm/data/maps/fras/ru",
-    "name": "GFCM Fisheries Restricted Areas"
+    "name": "Áreas restringidas de pesca de la CGPM"
   },
   "graticules": {
     "description": "Rejillas o cuadrículas de latitud y longitud en intervalos de 1, 5, 10 y 30° dependiendo del nivel de acercamiento del mapa",
@@ -75,9 +75,9 @@
     "name": "Alta mar"
   },
   "high-seas-pockets": {
-    "description": "High Seas pockets are areas totally enclosed by EEZs that are beyond Exclusive Economic Zones (EEZ). These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
+    "description": "Los bosillos (pockets) de alta mar son áreas totalmente delimitadas por ZEE que se encuentran fuera de las Zonas Económicas Exclusivas (ZEE). Estas zonas pueden ser difíciles de distinguir de las múltiples jurisdicciones de ZEE que las rodean, por lo que tenemos una capa que las resalta.",
     "moreInfoLink": "https://www.marineregions.org/downloads.php",
-    "name": "High seas pockets"
+    "name": "Bolsillos (pockets) de alta mar"
   },
   "loitering": {
     "description": "Eventos a la deriva ocurre cuando una embarcación individual exhibe un comportamiento que podría indicar un posible encuentro. Este se calcula utilizando datos del sistema de identificación automática (AIS), que incluyen la velocidad de la embarcación, el tiempo que permanece en una ubicación específica y la distancia desde la costa. Eventos a la deriva se identifica cuando una embarcación mantiene una velocidad promedio inferior a dos nudos mientras se encuentra, en promedio, a más de 20 millas náuticas de la costa. Para minimizar el ruido en el portal de buques de transporte, únicamente se muestran los eventos a la deriva que superan una hora de duración.",
