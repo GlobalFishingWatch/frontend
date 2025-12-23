@@ -157,6 +157,64 @@
   }
 }
 
+.waveGraph {
+  z-index: 1;
+}
+
+.wavePath {
+  stroke-dasharray: 2440;
+  stroke-dashoffset: 2440;
+  opacity: 0;
+}
+
+.animateWave .wavePath {
+  animation: cycleAndDrawWave 25s ease-in-out infinite;
+}
+
+.animateWave .wavePath0 {
+  animation-delay: 0s;
+}
+
+.animateWave .wavePath1 {
+  animation-delay: 5s;
+}
+
+.animateWave .wavePath2 {
+  animation-delay: 10s;
+}
+
+.animateWave .wavePath3 {
+  animation-delay: 15s;
+}
+
+.animateWave .wavePath4 {
+  animation-delay: 20s;
+}
+
+@keyframes cycleAndDrawWave {
+  0%,
+  18%,
+  100% {
+    opacity: 0;
+    stroke-dashoffset: 2440;
+  }
+
+  2% {
+    opacity: 0.2;
+    stroke-dashoffset: 2440;
+  }
+
+  14% {
+    opacity: 0.45;
+    stroke-dashoffset: 0;
+  }
+
+  16% {
+    opacity: 0.2;
+    stroke-dashoffset: 0;
+  }
+}
+
 .children {
   position: absolute;
   inset: 0;

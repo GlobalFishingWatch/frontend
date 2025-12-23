@@ -24,6 +24,7 @@ export const FourwingsVectorsWorkerLoader: Loader = {
       ...(baseFourwingsLoaderOptions as ParseFourwingsVectorsOptions),
       workerUrl: `${PATH_BASENAME}/workers/fourwings-vectors-worker.js`,
       temporalAggregation: false,
+      unit: 'm/s',
     } as ParseFourwingsVectorsOptions,
   } as FourwingsVectorsLoaderOptions,
 }

@@ -22,7 +22,7 @@ import type {
   FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
 
-import { DATASET_COMPARISON_SUFFIX } from 'data/config'
+import { DATASET_COMPARISON_SUFFIX, PRIMARY_BLUE_COLOR } from 'data/config'
 import i18n from 'features/i18n/i18n'
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type {
@@ -67,7 +67,7 @@ export const fourwingsFeaturesToTimeseries = (
       sublayers: sublayers.map((sublayer) => ({
         id: sublayer.id,
         legend: {
-          color: sublayer.color || '#163f89',
+          color: sublayer.color || PRIMARY_BLUE_COLOR,
           unit: sublayer.unit,
         },
       })),

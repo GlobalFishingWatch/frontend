@@ -28,6 +28,7 @@ import {
 import ReportActivityPlaceholder from 'features/reports/shared/placeholders/ReportActivityPlaceholder'
 import ReportStatsPlaceholder from 'features/reports/shared/placeholders/ReportStatsPlaceholder'
 import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
+import ReportVectorGraphTooltip from 'features/reports/tabs/environment/ReportVectorGraphTooltip'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import OutOfTimerangeDisclaimer from 'features/workspace/shared/OutOfBoundsDisclaimer'
 import { upperFirst } from 'utils/info'
@@ -76,9 +77,6 @@ function ReportEnvironmentGraph({
           <span>{upperFirst(t('common.average'))} </span>
         )}
         <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
-        {isHeatmapVector && (
-          <p className={styles.dataWarning}>{t('analysis.currentsDataDisclaimer')}</p>
-        )}
         {isDynamic && (
           <Fragment>
             {t('common.between')} <strong>{formatI18nDate(start)}</strong> {t('common.and')}{' '}
@@ -89,7 +87,7 @@ function ReportEnvironmentGraph({
       </p>
       {(isDynamic || isHeatmapVector) &&
         (isLoading || hasError ? (
-          <ReportActivityPlaceholder showHeader={false}>
+          <ReportActivityPlaceholder showHeader={false} loading={isLoading}>
             {hasError && <p className={styles.errorMessage}>{t('errors.layerLoading')}</p>}
           </ReportActivityPlaceholder>
         ) : isEmptyData ? (
@@ -107,8 +105,12 @@ function ReportEnvironmentGraph({
             // TODO: currents and winds
             // Refactor the ReportVectorGraphTooltip component and pass it here
             // before it was using the entire timeline but we want to use only the data from the hovered date
-            // onClickTooltip={isHeatmapVector}
-            // TooltipContent={isHeatmapVector ? <span>TODO</span> : undefined}
+            // freezeTooltipOnClick={isHeatmapVector}
+            TooltipContent={
+              isHeatmapVector ? (
+                <ReportVectorGraphTooltip instanceId={dataview.id} color={dataview.config?.color} />
+              ) : undefined
+            }
           />
         ))}
       {isLoading ? (

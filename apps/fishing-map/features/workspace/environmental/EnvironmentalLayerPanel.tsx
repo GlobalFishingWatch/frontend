@@ -82,7 +82,6 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
     [t]
   )
 
-  const isVectorLayer = dataview.config?.type === DataviewType.FourwingsVector
   const layerActive = dataview?.config?.visible ?? true
   const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
 
@@ -123,7 +122,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
       d.type === DatasetTypes.UserTracks ||
       d.type === DatasetTypes.PMTiles
   )
-  const hasLegend = dataset?.type === DatasetTypes.Fourwings && !isVectorLayer
+  const hasLegend = dataset?.type === DatasetTypes.Fourwings
 
   if (!dataset || dataset.status === 'deleted') {
     return <DatasetNotFound dataview={dataview} />

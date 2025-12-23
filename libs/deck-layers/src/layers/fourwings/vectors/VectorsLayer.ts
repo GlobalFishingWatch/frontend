@@ -127,36 +127,24 @@ export default class VectorsLayer<
           // Normalize velocity by maxVelocity and clamp to [0, 1] range
           float normalizedVelocity = clamp(instanceVelocity / vectors.maxVelocity, 0.0, 1.0);
 
-          // Apply exponential scale: values above 0.6-0.7 approach full velocity
-          // Using exponential function: 1.0 - exp(-k * normalizedVelocity)
-          // k=5.0 ensures values at 0.6-0.7 map to ~0.95-0.97 (near full velocity)
-          float compressedVelocity = 1.0 - exp(-5.0 * normalizedVelocity);
+          // Use a simple power curve for size scaling (makes lower velocities smaller)
+          float sizeFactor = pow(normalizedVelocity, 0.7);
+          float baseLength = mix(0.2, 0.65, sizeFactor);
+          float baseWidth = mix(0.2, 0.45, sizeFactor);
 
-          // Length varies with velocity: lower velocities are shorter
-          // Use a power curve to make lower velocities shorter
-          float lengthFactor = pow(compressedVelocity, 0.5);
-          float baseLength = mix(0.3, 0.65, lengthFactor);
-
-          // Width varies with velocity: lower velocities are narrower
-          // Use a power curve to make lower velocities more narrow
-          float widthFactor = pow(compressedVelocity, 0.5);
-          float baseWidth = mix(0.3, 0.7, widthFactor);
-
-          // Apply: both x-axis (width) and y-axis (length) vary with velocity
+          // Apply size scaling
           size.x *= baseWidth;
           size.y *= baseLength;
 
-          // Clamp direction to valid range and normalize
+          // Rotate by direction
           float normalizedDirection = mod(instanceDirections, 360.0);
           size.xy = rotate_by_angle(size.xy, normalizedDirection);
         `,
         'vs:#main-end': `
-          // Normalize velocity by maxVelocity and pass to fragment shader (only if valid)
-          // Apply same exponential scale as in size calculation for consistency
+          // Normalize velocity and pass to fragment shader
           float normalizedVelocity = instanceVelocity > 0.0 ? clamp(instanceVelocity / vectors.maxVelocity, 0.0, 1.0) : 0.0;
-          vNormalizedVelocity = normalizedVelocity; // Pass original for brightness boost calculation
-          // Apply exponential scale: values above 0.6-0.7 (3-3.5 out of 5) approach full velocity
-          vVelocity = 1.0 - exp(-5.0 * normalizedVelocity);
+          vNormalizedVelocity = normalizedVelocity;
+          vVelocity = normalizedVelocity;
         `,
         'fs:#decl': `
           in float vVelocity;
@@ -168,24 +156,16 @@ export default class VectorsLayer<
             discard;
           }
 
-          // Base opacity based on velocity using exponential scale
-          // Apply exponential scale: values above 0.6-0.7 (3-3.5 out of 5) approach full opacity
-          // Using exponential function: 1.0 - exp(-k * normalizedVelocity)
-          // k=5.0 ensures values at 0.6-0.7 map to ~0.95-0.97 (near full opacity)
-          float exponentialVelocity = 1.0 - exp(-5.0 * vNormalizedVelocity);
+          // Opacity based on normalized velocity (already normalized by dynamic maxVelocity)
           float minOpacity = 0.1;
           float maxOpacity = 1.0;
-          float baseSpeedOpacity = mix(minOpacity, maxOpacity, exponentialVelocity);
+          float baseSpeedOpacity = mix(minOpacity, maxOpacity, vVelocity);
 
+          // Apply gradient along triangle (tip more visible than base)
+          float gradientFactor = mix(0.8, 1.4, geometry.uv.y);
 
-          // Apply gradient along triangle using geometry.uv
-          // For triangle: base is at lower y (0), tip is at higher y (1)
-          // Create a smooth gradient that makes the tip more visible
-          float gradientFactor = mix(0.4, 1.0, geometry.uv.y);
-
-          // Combine velocity-based opacity with brightness boost and gradient
+          // Combine velocity-based opacity with gradient
           color.a *= baseSpeedOpacity * gradientFactor;
-          // Clamp to valid range
           color.a = clamp(color.a, 0.0, 1.0);
         `,
       },

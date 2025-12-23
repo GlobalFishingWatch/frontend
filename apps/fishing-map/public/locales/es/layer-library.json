@@ -1,13 +1,13 @@
 {
   "bathymetry": {
-    "description": "La batimetría es la medición de la profundidad del agua y proporciona detalles de las características físicas del fondo del océano. Este conjunto de datos de cuadrícula batimétrica es un modelo global continuo que proporciona datos de elevación para el océano en metros en una cuadrícula con intervalos de 15 arco segundos. ",
+    "description": "La batimetría mide la profundidad del agua y proporciona detalles sobre las características físicas del fondo marino. Este conjunto de datos de cuadrícula batimétrica es un modelo de terreno global continuo que proporciona datos de elevación del océano en metros con una resolución de 15 segundos de arco.",
     "moreInfoLink": "https://www.gebco.net/data-products/gridded-bathymetry-data/gebco2023-grid",
     "name": "Batimetría"
   },
   "bathymetry-contour": {
-    "description": "Bathymetry is the measurement of water depth and provides details of the physical features of the ocean floor. This contour dataset is a continuous global terrain model that provides elevation data for the ocean in meters on a 15 arc-second resolution.",
-    "moreInfoLink": "https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO2022",
-    "name": "Bathymetry contour"
+    "description": "La batimetría mide la profundidad del agua y proporciona detalles sobre las características físicas del fondo marino. Este conjunto de datos de contorno es un modelo de terreno global continuo que proporciona datos de elevación del océano en metros con una resolución de 15 segundos de arco.",
+    "moreInfoLink": "",
+    "name": "Contorno de batimetría"
   },
   "chlorophyl": {
     "description": "La clorofila a es el pigmento cosechador de luz que se encuentra en todas las plantas fotosintéticas. El fitoplancton marino fija el carbono químicamente a través de la fotosíntesis, tomando el dióxido de carbono disuelto y produciendo oxígeno. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo la clorofila, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
@@ -20,14 +20,14 @@
     "name": "Arrecifes de coral"
   },
   "currents": {
-    "description": "Ocean currents are the movement of seawater driven by wind, temperature, salinity, tides, and Earth’s rotation. Ocean currents regulate climate and transport heat, nutrients, and marine species. This dataset shows global ocean surface currents, including speed and direction, providing insight into large-scale circulation patterns.",
+    "description": "Las corrientes oceánicas son el movimiento del agua de mar impulsado por el viento, la temperatura, la salinidad, las mareas y la rotación de la Tierra. Las corrientes oceánicas regulan el clima y transportan calor, nutrientes y especies marinas. Este conjunto de datos muestra las corrientes superficiales oceánicas globales, incluyendo su velocidad y dirección, lo que proporciona información sobre los patrones de circulación a gran escala.",
     "moreInfoLink": "https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description",
-    "name": "Currents"
+    "name": "Corrientes"
   },
   "dsm-isa-leasing-areas": {
-    "description": "These represent the areas currently leased by the International Seabed Authority (ISA) for exploration of polymetallic nodules, polymetallic sulfides, and cobalt-rich ferromanganese crusts in the high seas. Each polygon represents a 15-year contract with a mining contractor and sponsoring country for the exploration of minerals. None of these areas are currently leased for exploitation (i.e. commercial mining), though these are the same regions that will be mined if exploitation contracts are ever approved by the ISA. The ISA is the intergovernmental United Nations body that is tasked with both protecting the international seabed alongside managing any mineral-resources-related activity in the area.",
+    "description": "Estas representan las áreas actualmente arrendadas por la Autoridad Internacional de los Fondos Marinos (ISA) para la exploración de nódulos polimetálicos, sulfuros polimetálicos y costras de ferromanganeso ricas en cobalto en alta mar. Cada polígono representa un contrato de 15 años con un contratista minero y un país patrocinador para la exploración de minerales. Ninguna de estas áreas está actualmente arrendada para su explotación (es decir, minería comercial), aunque estas son las mismas regiones que serán explotadas si la ISA aprueba los contratos de explotación. La ISA es el organismo intergubernamental de las Naciones Unidas encargado de proteger el fondo marino internacional junto con la gestión de cualquier actividad relacionada con los recursos minerales en la zona.",
     "moreInfoLink": "",
-    "name": "ISA License Areas"
+    "name": "Zonas Autorizadas ISA"
   },
   "eez": {
     "description": "Las zonas económicas exclusivas (ZEE) se extienden hasta 200 millas náuticas desde la costa de un país. Instituto Marino de Flandes (2019). Conjunto de datos geográficos de Límites Marinos: Límites Marinos y Zonas Económicas Exclusivas (200NM), versión 11.",
@@ -35,9 +35,9 @@
     "name": "ZEE"
   },
   "eez-areas-12nm": {
-    "description": "Territorial seas are a belt of coastal waters extending at most 12 nautical miles (22.2 km; 13.8 mi) from the baseline (usually the mean low-water mark) of a coastal state.",
+    "description": "El mar territorial es una franja de aguas costeras que se extiende como máximo 12 millas náuticas (22,2 km; 13,8 millas) de la línea de base (generalmente la marca media de bajamar) de un estado costero.",
     "moreInfoLink": "https://www.marineregions.org/downloads.php",
-    "name": "Territorial Seas (12 nautical miles)"
+    "name": "Mares territoriales (12 millas náuticas)"
   },
   "encounters": {
     "description": "Identificados de los datos AIS como lugares donde dos buques, un transportador y uno pesquero, estuvieron a 500 metros durante al menos 2 horas y viajando a una velocidad media menor a 2 nudos mientras se encontraban a mas de 10 km de un anclaje costero.",
@@ -60,9 +60,9 @@
     "name": "Esfuerzo de pesca aparente (VMS)"
   },
   "gfcm-fao": {
-    "description": "In the Mediterranean and the Black Sea, 1,760,000 square kilometers of sea habitats are protected by ten fisheries restricted areas established by the GFCM, in which some specific fishing activities are temporarily or permanently banned or restricted.",
+    "description": "En el Mediterráneo y el Mar Negro, 1.760.000 kilómetros cuadrados de hábitats marinos están protegidos por diez zonas restringidas de pesca establecidas por la CGPM, en las que algunas actividades pesqueras específicas están prohibidas o restringidas de forma temporal o permanentemente.",
     "moreInfoLink": "https://www.fao.org/gfcm/data/maps/fras/ru",
-    "name": "GFCM Fisheries Restricted Areas"
+    "name": "Áreas restringidas de pesca de la CGPM"
   },
   "graticules": {
     "description": "Rejillas o cuadrículas de latitud y longitud en intervalos de 1, 5, 10 y 30° dependiendo del nivel de acercamiento del mapa",
@@ -75,9 +75,9 @@
     "name": "Alta mar"
   },
   "high-seas-pockets": {
-    "description": "High Seas pockets are areas totally enclosed by EEZs that are beyond Exclusive Economic Zones (EEZ). These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
+    "description": "Los bosillos (pockets) de alta mar son áreas totalmente delimitadas por ZEE que se encuentran fuera de las Zonas Económicas Exclusivas (ZEE). Estas zonas pueden ser difíciles de distinguir de las múltiples jurisdicciones de ZEE que las rodean, por lo que tenemos una capa que las resalta.",
     "moreInfoLink": "https://www.marineregions.org/downloads.php",
-    "name": "High seas pockets"
+    "name": "Bolsillos (pockets) de alta mar"
   },
   "loitering": {
     "description": "Eventos a la deriva ocurre cuando una embarcación individual exhibe un comportamiento que podría indicar un posible encuentro. Este se calcula utilizando datos del sistema de identificación automática (AIS), que incluyen la velocidad de la embarcación, el tiempo que permanece en una ubicación específica y la distancia desde la costa. Eventos a la deriva se identifica cuando una embarcación mantiene una velocidad promedio inferior a dos nudos mientras se encuentra, en promedio, a más de 20 millas náuticas de la costa. Para minimizar el ruido en el portal de buques de transporte, únicamente se muestran los eventos a la deriva que superan una hora de duración.",
@@ -100,9 +100,9 @@
     "name": "MPAs (WDPA)"
   },
   "mpatlas": {
-    "description": "MPAs vary greatly in their status in the process of becoming an MPA and the impact of human activities. MPAtlas applies The MPA Guide, a science-based tool that identifies different types of MPAs and connects them to the outcome they are likely to achieve.",
+    "description": "Las AMP varían considerablemente en cuanto a su estatus en el proceso de convertirse en una AMP y en el impacto de las actividades humanas. MPAtlas aplica la Guía de AMP, una herramienta con base científica que identifica diferentes tipos de AMP y los relaciona con el resultado que es probable que logre.",
     "moreInfoLink": "https://mpatlas.org",
-    "name": "MPAs (MPAtlas)"
+    "name": "AMP (MPAtlas)"
   },
   "nitrate": {
     "description": "El nitrato es requerido por las plantas marinas para su fotosíntesis y es un nutriente importante para la productividad del océano, pero las altas concentraciones pueden ser un indicador de contaminación. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el nitrato, sobre el océano global mostrado con una resolución horizontal de 1/4 grados.   ",
@@ -120,9 +120,9 @@
     "name": "Concentración de oxígeno (O2)"
   },
   "paa-duke": {
-    "description": "This global Preferential Access Area (PAA) database was built with data for 44 countries identified by the Illuminating Hidden Harvests (IHH) initiative following Basurto et al. (2023) and the FAOLEX database.",
+    "description": "Esta base de datos global de Áreas de Acceso Preferencial (AAP) se construyó con datos para 44 países identificados por la iniciativa Illuminating Hidden Harvests (IHH) siguiendo a Basurto et al. (2023) y la base de datos FAOLEX.",
     "moreInfoLink": "https://research.repository.duke.edu/concern/datasets/79407z51r",
-    "name": "Preferential Access Areas for Small-Scale Fishing"
+    "name": "Áreas de acceso preferencial para la pesca de pequeña escala"
   },
   "ph": {
     "description": "La acidez del océano se mide con el pH. El aumento de la absorción de dióxido de carbono ha reducido el pH del océano, lo que ha dado lugar a la acidificación del océano, lo cual puede tener un impacto amplio en los organismos marinos. Este conjunto de datos está compuesto por parámetros biogeoquímicos, incluyendo el pH, sobre el océano global mostrado con una resolución horizontal de 1/4 grados. ",
@@ -135,12 +135,12 @@
     "name": "Concentración de fosfato (PO4)"
   },
   "port-locations": {
-    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
+    "description": "Los puertos se basan en el conjunto de datos de fondeaderos de Global Fishing Watch, una base de datos global de lugares de fondeo donde se congregan las embarcaciones. Esta capa incluye los puertos con un nombre conocido.",
     "moreInfoLink": "",
-    "name": "Ports"
+    "name": "Puertos"
   },
   "port-visits": {
-    "description": "La lista de puertos se define a partir del conjunto de datos obtenidos por Global Fishing Watch sobre fondeaderos. Se trata de una base de datos global que identifica lugares de fondeo donde se congregan las embarcaciones. Este conjunto de datos incluye más de 160.000 puntos de fondeo individuales, que se agrupan en aproximadamente 32.000 puertos. ",
+    "description": "Los puertos se basan en el conjunto de datos de fondeaderos de Global Fishing Watch, una base de datos global de lugares de fondeo donde se congregan las embarcaciones. Este conjunto de datos incluye más de 160.000 puntos de fondeo individuales, que se agrupan en aproximadamente 32.000 puertos. ",
     "moreInfoLink": "",
     "name": "Visitas a puerto (AIS)"
   },
@@ -180,9 +180,9 @@
     "name": "Montes submarinos"
   },
   "sentinel2": {
-    "description": "This layer shows vessels detected using optical satellite imagery collected by the European Space Agency’s Sentinel-2 satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths.",
+    "description": "Esta capa muestra las embarcaciones detectadas mediante imágenes satelitales ópticas recopiladas por los satélites Sentinel-2 de la Agencia Espacial Europea. Las imágenes ópticas son similares a las fotografías aéreas de alta calidad desde el espacio, utilizando la luz solar reflejada en longitudes de ondas visibles e infrarrojas cercanas.",
     "moreInfoLink": "",
-    "name": "Imagery detections (Optical)"
+    "name": "Detecciones de imágenes (Ópticas)"
   },
   "species": {
     "description": "TODO",
@@ -200,12 +200,12 @@
     "name": "Anomalías de temperatura de la superficie del mar"
   },
   "sst-anomalies-max": {
-    "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
+    "description": "La anomalía de la temperatura de la superficie del mar es la diferencia entre la temperatura diaria de la superficie del mar y la media climatológica de 30 años. Las anomalías de la temperatura de la superficie del mar pueden afectar la distribución y los hábitats de las especies y pueden representar eventos transitorios o ciclos climáticos específicos, como El Niño y La Niña, que afectan los patrones climáticos globales. En el mapa, un número positivo representa una temperatura más cálida que el promedio. ",
     "moreInfoLink": "",
     "name": "Anomalías de temperatura de la superficie del mar (máx.)"
   },
   "sst-anomalies-min": {
-    "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
+    "description": "La anomalía de la temperatura de la superficie del mar es la diferencia entre la temperatura diaria de la superficie del mar y la media climatológica de 30 años. Las anomalías de la temperatura de la superficie del mar pueden afectar la distribución y los hábitats de las especies y pueden representar eventos transitorios o ciclos climáticos específicos, como El Niño y La Niña, que afectan los patrones climáticos globales. En el mapa, un número positivo representa una temperatura más cálida que el promedio. ",
     "moreInfoLink": "",
     "name": "Anomalías de temperatura de la superficie del mar (mín.)"
   },
@@ -220,13 +220,13 @@
     "name": "Detección de luz nocturna"
   },
   "viirs-skylight": {
-    "description": "TODO: description",
+    "description": "TODO: descripción",
     "moreInfoLink": "",
-    "name": "Night light detections (VIIRS Skylight)"
+    "name": "Detección de luz nocturna (VIIRS Skylight)"
   },
   "winds": {
-    "description": "Wind is the movement of air across the Earth’s surface and plays an important role in shaping weather and ocean conditions. Surface winds help drive ocean circulation and influence mixing at the ocean surface. This dataset shows global wind speed and direction over the ocean.",
+    "description": "El viento es el movimiento del aire sobre la superficie terrestre y desempeña un papel importante en la configuración del clima y las condiciones oceánicas. Los vientos superficiales impulsan la circulación oceánica e influyen en la mezcla en la superficie oceánica. Este conjunto de datos muestra la velocidad y dirección global del viento sobre el océano.",
     "moreInfoLink": "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=overview",
-    "name": "Wind"
+    "name": "Viento"
   }
 }

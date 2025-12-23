@@ -9,9 +9,10 @@ export function isPortClusterDataviewForReport(dataview: UrlDataviewInstance) {
 
 export function getPortClusterDataviewForReport(
   dataview: UrlDataviewInstance,
-  { portId, clusterMaxZoomLevels: newClusterMaxZoomLevels } = {} as {
+  { portId, clusterMaxZoomLevels: newClusterMaxZoomLevels, visible = false } = {} as {
     portId?: string
     clusterMaxZoomLevels?: ClusterMaxZoomLevelConfig
+    visible?: boolean
   }
 ) {
   if (isPortClusterDataviewForReport(dataview)) {
@@ -21,6 +22,7 @@ export function getPortClusterDataviewForReport(
       ...dataview,
       config: {
         ...restConfig,
+        visible,
         ...(newClusterMaxZoomLevels && { clusterMaxZoomLevels: newClusterMaxZoomLevels }),
         filters: {
           ...(restFilters || {}),

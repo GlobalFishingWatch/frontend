@@ -113,6 +113,7 @@ export type FourwingsHeatmapTilesCache = {
   interval: FourwingsInterval
   compareStart?: number
   compareEnd?: number
+  temporalAggregation?: boolean
 }
 
 export type FourwinsTileLayerScale = ScaleLinear<FourwingsColorObject, FourwingsColorObject, never>
@@ -144,6 +145,7 @@ export type FourwingsVectorsLayerProps = FourwingsHeatmapTileLayerProps & {
   maxVelocity?: number
   tilesCache: FourwingsHeatmapTilesCache
   debugTiles?: boolean
+  temporalAggregation?: boolean
   // highlightedFeatures?: FourwingsPickingObject[]
 }
 

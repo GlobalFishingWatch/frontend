@@ -1,7 +1,7 @@
 import type { LayerContext, LayersList, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import { PathLayer } from '@deck.gl/layers'
+import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
 import type { Feature } from 'geojson'
 
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
@@ -9,7 +9,7 @@ import { getLayerGroupOffset, HEATMAP_ID, LayerGroup } from '@globalfishingwatch
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 
-import { hexToDeckColor } from '../../../utils'
+import { COLOR_TRANSPARENT, hexToDeckColor } from '../../../utils'
 import type { FourwingsHeatmapPickingObject, FourwingsVectorsLayerProps } from '../fourwings.types'
 import { FourwingsAggregationOperation } from '../heatmap/fourwings-heatmap.types'
 import {
@@ -44,6 +44,8 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
       category,
       subcategory,
       availableIntervals,
+      minVisibleValue,
+      maxVisibleValue,
     } = this.props
 
     const { interval } = getIntervalFrames({
@@ -71,7 +73,14 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
         ...sublayer,
         value: info.object?.aggregatedValues?.[i],
       }))
-      if (!object.sublayers?.filter(({ value }) => value).length) {
+      if (
+        !object.sublayers?.filter(
+          ({ value }) =>
+            value &&
+            (minVisibleValue === undefined || value >= minVisibleValue) &&
+            (maxVisibleValue === undefined || value <= maxVisibleValue)
+        ).length
+      ) {
         return { ...info, object: undefined }
       }
     }
@@ -79,52 +88,74 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
   }
 
   getVelocity = (feature: FourwingsFeature, { target }: { target: number }) => {
+    const { temporalAggregation } = this.props
     if (!feature.aggregatedValues) {
       feature.aggregatedValues = []
     }
 
-    const value =
-      feature.properties.velocities &&
-      feature.properties.velocities.length > 0 &&
-      this.startFrame !== undefined &&
-      this.endFrame !== undefined
-        ? aggregateSublayerValues(
-            sliceCellValues({
-              values: feature.properties.velocities,
-              startFrame: this.startFrame,
-              endFrame: this.endFrame,
-              startOffset: feature.properties.startOffsets[0] ?? 0,
-            }),
-            FourwingsAggregationOperation.Avg
-          )
-        : 0
-
+    let value = 0
+    if (temporalAggregation) {
+      value = feature.properties.velocities?.[0] ?? 0
+    } else {
+      value =
+        feature.properties.velocities &&
+        feature.properties.velocities.length > 0 &&
+        this.startFrame !== undefined &&
+        this.endFrame !== undefined
+          ? aggregateSublayerValues(
+              sliceCellValues({
+                values: feature.properties.velocities,
+                startFrame: this.startFrame,
+                endFrame: this.endFrame,
+                startOffset: feature.properties.startOffsets[0] ?? 0,
+              }),
+              FourwingsAggregationOperation.Avg
+            )
+          : 0
+    }
     feature.aggregatedValues[0] = value
+
+    const { minVisibleValue, maxVisibleValue } = this.props
+    if (
+      value &&
+      ((minVisibleValue !== undefined && value < minVisibleValue) ||
+        (maxVisibleValue !== undefined && value > maxVisibleValue))
+    ) {
+      target = 0
+      return target
+    }
+
     target = value
 
     return target
   }
 
   getDirection = (feature: FourwingsFeature, { target }: { target: number }) => {
+    const { temporalAggregation } = this.props
     if (!feature.aggregatedValues) {
       feature.aggregatedValues = []
     }
 
-    const value =
-      feature.properties.directions &&
-      feature.properties.directions.length > 0 &&
-      this.startFrame !== undefined &&
-      this.endFrame !== undefined
-        ? aggregateSublayerValues(
-            sliceCellValues({
-              values: feature.properties.directions,
-              startFrame: this.startFrame,
-              endFrame: this.endFrame,
-              startOffset: feature.properties.startOffsets[1] ?? 0,
-            }),
-            FourwingsAggregationOperation.AvgDegrees
-          )
-        : 0
+    let value = 0
+    if (temporalAggregation) {
+      value = feature.properties.directions?.[0] ?? 0
+    } else {
+      value =
+        feature.properties.directions &&
+        feature.properties.directions.length > 0 &&
+        this.startFrame !== undefined &&
+        this.endFrame !== undefined
+          ? aggregateSublayerValues(
+              sliceCellValues({
+                values: feature.properties.directions,
+                startFrame: this.startFrame,
+                endFrame: this.endFrame,
+                startOffset: feature.properties.startOffsets[1] ?? 0,
+              }),
+              FourwingsAggregationOperation.AvgDegrees
+            )
+          : 0
+    }
 
     feature.aggregatedValues[1] = value
     target = value
@@ -141,6 +172,8 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
       highlightedFeatures,
       availableIntervals,
       sublayers,
+      minVisibleValue,
+      maxVisibleValue,
     } = this.props
     const color = hexToDeckColor(sublayers?.[0]?.color || '#ffffff')
 
@@ -177,7 +210,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
       filled: true,
       billboard: false,
       antialiasing: true,
-      getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
+      getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.CustomLayer, params),
       getVelocity: this.getVelocity as any,
       getDirection: this.getDirection as any,
       maxVelocity: this.props.maxVelocity,
@@ -187,14 +220,32 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
           (d.coordinates[1] + d.coordinates[5]) / 2,
         ]
       },
+      updateTriggers: {
+        getVelocity: [startTime, endTime, minVisibleValue, maxVisibleValue],
+      },
     }
 
     return [
+      new SolidPolygonLayer(
+        this.props,
+        this.getSubLayerProps({
+          id: `fourwings-vectors-interactive`,
+          data,
+          pickable: true,
+          material: false,
+          _normalize: false,
+          positionFormat: 'XY',
+          getPickingInfo: this.getPickingInfo,
+          getFillColor: () => COLOR_TRANSPARENT,
+          getPolygon: (d: FourwingsFeature) => d.coordinates,
+          getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.HeatmapStatic, params),
+        })
+      ),
       new VectorsLayer(
         this.props,
         this.getSubLayerProps({
           ...vectorLayerProps,
-          pickable: true,
+          pickable: false,
         })
       ),
       ...(highlightedFeatures && highlightedFeatures?.length > 0

@@ -20,50 +20,193 @@ export const CELL_END_INDEX = 2
 export const CELL_VALUES_START_INDEX = 3
 const RAD_TO_DEG = 180 / Math.PI
 
+// Unit conversion constants
+const MPS_TO_KNOTS = 1.943844
+const MPS_TO_KMH = 3.6
+
+// Helper type for vector processing context
+type VectorProcessingContext = {
+  scale: number
+  offset: number
+  noDataValue: number
+  unit?: 'knots' | 'm/s' | 'km/h'
+}
+
+// Process a single u/v value pair from PBF
+function processVectorValue(
+  rawValue: number,
+  context: VectorProcessingContext
+): number | undefined {
+  if (rawValue === context.noDataValue) {
+    return undefined
+  }
+  return rawValue * context.scale - context.offset
+}
+
+// Calculate velocity from u and v components
+function calculateVelocity(u: number, v: number, unit?: 'knots' | 'm/s' | 'km/h'): number {
+  // Calculate velocity: sqrt(u^2 + v^2) in m/s (base unit)
+  const velocity = Math.sqrt(u * u + v * v)
+
+  if (unit === 'knots') {
+    return velocity * MPS_TO_KNOTS
+  }
+  if (unit === 'km/h') {
+    return velocity * MPS_TO_KMH
+  }
+  // If unit is 'mps' or undefined, velocity is already in m/s
+  return velocity
+}
+
+// Calculate direction from u and v components
+function calculateDirection(u: number, v: number): number {
+  // Calculate direction: (90 - atan2(v, u) * 180/π) % 360
+  const angleRad = Math.atan2(v, u)
+  const angleDeg = (90 - angleRad * RAD_TO_DEG) % 360
+  // Normalize to 0-360 range
+  return Math.round(angleDeg < 0 ? angleDeg + 360 : angleDeg)
+}
+
+// Process u/v values and calculate velocity/direction
+function processVectorComponents(
+  uValue: number,
+  vValue: number,
+  context: VectorProcessingContext
+): { velocity: number; direction: number } | null {
+  const u = processVectorValue(uValue, context)
+  const v = processVectorValue(vValue, context)
+
+  if (u === undefined || v === undefined || isNaN(u) || isNaN(v)) {
+    return null
+  }
+
+  return {
+    velocity: calculateVelocity(u, v, context.unit),
+    direction: calculateDirection(u, v),
+  }
+}
+
+// Extract vector processing context from options
+function getVectorContext(options: ParseFourwingsVectorsOptions): VectorProcessingContext {
+  return {
+    scale: options.scale?.[0] ?? SCALE_VALUE,
+    offset: options.offset?.[0] ?? OFFSET_VALUE,
+    noDataValue: options.noDataValue?.[0] ?? NO_DATA_VALUE,
+    unit: options.unit,
+  }
+}
+
+// Create tile bounding box from tile data
+function createTileBBox(tile: ParseFourwingsVectorsOptions['tile']): BBox {
+  const bbox = tile?.bbox as GeoBoundingBox
+  return [bbox.west, bbox.south, bbox.east, bbox.north]
+}
+
+// Create a new feature for a cell
+function createFeature(
+  cellNum: number,
+  tileBBox: BBox,
+  cols: number[],
+  rows: number[],
+  tile: ParseFourwingsVectorsOptions['tile'],
+  subLayerIndex: number,
+  numTimeSteps: number = 1
+): FourwingsFeature {
+  const { col, row } = getCellProperties(tileBBox, cellNum, cols[subLayerIndex])
+  const sublayersLength = 2
+
+  return {
+    coordinates: getCellCoordinates({
+      cellIndex: cellNum,
+      cols: cols[subLayerIndex],
+      rows: rows[subLayerIndex],
+      tileBBox,
+    }),
+    properties: {
+      col,
+      row,
+      // not needed for vectors, but required by types
+      values: [],
+      initialValues: {},
+      dates: numTimeSteps > 1 ? [new Array(numTimeSteps)] : [],
+      cellId: generateUniqueId(tile!.index.x, tile!.index.y, cellNum),
+      cellNum,
+      startOffsets: new Array(sublayersLength),
+      velocities: new Array(numTimeSteps),
+      directions: new Array(numTimeSteps),
+    },
+  }
+}
+
+export const getCellVectorValuesAggregated = (
+  _: unknown,
+  data: {
+    features: Map<number, FourwingsFeature>
+    options?: ParseFourwingsVectorsOptions
+  },
+  pbf: Pbf
+) => {
+  const options = data.options || ({} as ParseFourwingsVectorsOptions)
+  const { tile, cols, rows } = options
+
+  if (!tile || !cols || !rows) {
+    return
+  }
+
+  const tileBBox = createTileBBox(tile)
+  const context = getVectorContext(options)
+  const end = pbf.readPackedEnd()
+  const subLayerIndex = 0
+
+  while (pbf.pos < end) {
+    const cellNum = pbf.readVarint()
+    const uValue = pbf.readVarint()
+    const vValue = pbf.readVarint()
+
+    let feature = data.features.get(cellNum)
+    if (!feature) {
+      feature = createFeature(cellNum, tileBBox, cols, rows, tile, subLayerIndex, 1)
+      data.features.set(cellNum, feature)
+    }
+
+    const result = processVectorComponents(uValue, vValue, context)
+    if (result) {
+      feature.properties.velocities![0] = result.velocity
+      feature.properties.directions![0] = result.direction
+    }
+  }
+}
+
 export const getCellVectorValues = (
   _: unknown,
   data: {
     features: Map<number, FourwingsFeature>
     options?: ParseFourwingsVectorsOptions
-    // Temporary storage for first sublayer (U) values until we process second sublayer (V) to calculate vectors
-    // Map<cellNum, U values[]>
-    uValuesByCell: Map<number, number[]>
   },
   pbf: Pbf
 ) => {
-  const {
-    bufferedStartDate,
-    interval,
-    scale,
-    offset,
-    noDataValue,
-    tile,
-    cols,
-    rows,
-    buffersLength,
-  } = data.options || ({} as ParseFourwingsVectorsOptions)
+  const options = data.options || ({} as ParseFourwingsVectorsOptions)
+  const { bufferedStartDate, interval, tile, cols, rows } = options
 
-  const tileStartFrame = CONFIG_BY_INTERVAL[interval].getIntervalFrame(bufferedStartDate)
+  if (!tile || !cols || !rows || !interval || bufferedStartDate === undefined) {
+    return
+  }
 
-  const tileBBox: BBox = [
-    (tile?.bbox as GeoBoundingBox).west,
-    (tile?.bbox as GeoBoundingBox).south,
-    (tile?.bbox as GeoBoundingBox).east,
-    (tile?.bbox as GeoBoundingBox).north,
-  ]
+  const intervalConfig = CONFIG_BY_INTERVAL[interval]
+  const tileStartFrame = intervalConfig.getIntervalFrame(bufferedStartDate)
+  const getIntervalTimestamp = intervalConfig.getIntervalTimestamp
+  const tileBBox = createTileBBox(tile)
+  const context = getVectorContext(options)
 
-  const getIntervalTimestamp = CONFIG_BY_INTERVAL[interval].getIntervalTimestamp
-  const sublayersLength = buffersLength.length
   let cellNum = 0
   let startFrame = 0
   let endFrame = 0
   let indexInCell = 0
-  let subLayerIndex = 0
-  let subLayerBreak = buffersLength[subLayerIndex]
   const end = pbf.readPackedEnd()
+  const subLayerIndex = 0
+
   while (pbf.pos < end) {
     const value = pbf.readVarint()
-
     switch (indexInCell) {
       // this number defines the cell index
       case CELL_NUM_INDEX:
@@ -78,34 +221,14 @@ export const getCellVectorValues = (
       // this number defines the cell end frame
       case CELL_END_INDEX: {
         endFrame = value - tileStartFrame
-        let feature = data.features.get(cellNum)
         const numTimeSteps = endFrame - startFrame + 1
+
+        let feature = data.features.get(cellNum)
         if (!feature) {
           // add the feature if previous sublayers didn't contain data for it
-          const { col, row } = getCellProperties(tileBBox, cellNum, cols[subLayerIndex])
-          feature = {
-            coordinates: getCellCoordinates({
-              cellIndex: cellNum,
-              cols: cols[subLayerIndex],
-              rows: rows[subLayerIndex],
-              tileBBox,
-            }),
-            properties: {
-              col,
-              row,
-              // not needed for vectors, but required by types
-              values: [],
-              initialValues: {},
-              // Single dates array shared by both sublayers (U and V have same time steps)
-              // Store in dates[0], dates[1] will remain empty
-              dates: [new Array(numTimeSteps)],
-              cellId: generateUniqueId(tile!.index.x, tile!.index.y, cellNum),
-              cellNum,
-              startOffsets: new Array(sublayersLength),
-              velocities: new Array(numTimeSteps),
-              directions: new Array(numTimeSteps),
-            },
-          }
+          feature = createFeature(cellNum, tileBBox, cols, rows, tile, subLayerIndex, numTimeSteps)
+          // Single dates array shared by both sublayers (U and V have same time steps)
+          feature.properties.dates = [new Array(numTimeSteps)]
           data.features.set(cellNum, feature)
         } else {
           // Ensure velocities and directions arrays exist even if feature was created in previous sublayer
@@ -115,84 +238,37 @@ export const getCellVectorValues = (
           }
         }
 
-        // At this point, feature is guaranteed to be defined
-        const currentFeature = feature!
-
-        // Initialize first sublayer (U) values array for this cell if it doesn't exist yet
-        // This ensures array exists even if some values are no-data
-        if (subLayerIndex === 0 && !data.uValuesByCell.has(cellNum)) {
-          data.uValuesByCell.set(cellNum, new Array(numTimeSteps))
+        // Set start offsets for both sublayers
+        if (!feature.properties.startOffsets[0]) {
+          feature.properties.startOffsets[0] = startFrame
+        }
+        if (!feature.properties.startOffsets[1]) {
+          feature.properties.startOffsets[1] = startFrame
         }
 
-        // calculate how many values are in the tile
-        const numCellValues = endFrame - startFrame + 1
-        const sublayerScale = scale?.[subLayerIndex] ?? SCALE_VALUE
-        const sublayerOffset = offset?.[subLayerIndex] ?? OFFSET_VALUE
-        const sublayerNoDataValue = noDataValue?.[subLayerIndex] ?? NO_DATA_VALUE
+        // U and V values are interleaved: U0, V0, U1, V1, U2, V2, ...
+        for (let timeStepIndex = 0; timeStepIndex < numTimeSteps; timeStepIndex++) {
+          const uValue = pbf.readVarint()
+          const vValue = pbf.readVarint()
 
-        // Rest of the processing using currentFeature directly
-        for (let j = 0; j < numCellValues; j++) {
-          const cellValue = pbf.readVarint()
-          if (cellValue !== sublayerNoDataValue) {
-            if (!currentFeature.properties.startOffsets[subLayerIndex]) {
-              // create properties for this sublayer if the feature dind't have it already
-              currentFeature.properties.startOffsets[subLayerIndex] = startFrame
-            }
-            const timeStepIndex = Math.floor(j)
-            const scaledValue = cellValue * sublayerScale - sublayerOffset
+          feature.properties.dates[0][timeStepIndex] = getIntervalTimestamp(
+            startFrame + tileStartFrame + timeStepIndex
+          )
 
-            // add current date to the shared dates array (only populate once when processing first sublayer)
-            if (subLayerIndex === 0) {
-              currentFeature.properties.dates[0][timeStepIndex] = getIntervalTimestamp(
-                startFrame + tileStartFrame + j
-              )
-            }
-            // Store U values temporarily when processing first sublayer
-            if (subLayerIndex === 0) {
-              const uValues = data.uValuesByCell.get(cellNum)
-              if (uValues) {
-                uValues[timeStepIndex] = scaledValue
-              }
-            }
-            // Calculate velocity and direction when processing the second sublayer
-            // Convention: subLayerIndex 0 is U (eastward), subLayerIndex 1 is V (northward)
-            // This assumes vectors always have exactly 2 sublayers
-            // When processing subLayerIndex 1, we should already have all values from subLayerIndex 0
-            if (sublayersLength === 2 && subLayerIndex === 1) {
-              const uValues = data.uValuesByCell.get(cellNum)
-              if (uValues) {
-                const u = uValues[timeStepIndex]
-                const v = scaledValue
-
-                // Skip if either value is invalid or missing
-                if (u !== undefined && v !== undefined && !isNaN(u) && !isNaN(v)) {
-                  // Calculate velocity: sqrt(u^2 + v^2)
-                  currentFeature.properties.velocities![timeStepIndex] = Math.sqrt(u * u + v * v)
-
-                  // Calculate direction: (90 - atan2(v, u) * 180/π) % 360
-                  const angleRad = Math.atan2(v, u)
-                  const angleDeg = (90 - angleRad * RAD_TO_DEG) % 360
-                  // Normalize to 0-360 range
-                  currentFeature.properties.directions![timeStepIndex] = Math.round(
-                    angleDeg < 0 ? angleDeg + 360 : angleDeg
-                  )
-                } else {
-                  currentFeature.properties.velocities![timeStepIndex] = 0
-                  currentFeature.properties.directions![timeStepIndex] = 0
-                }
-              }
-            }
+          const result = processVectorComponents(uValue, vValue, context)
+          if (result) {
+            feature.properties.velocities![timeStepIndex] = result.velocity
+            feature.properties.directions![timeStepIndex] = result.direction
+          } else {
+            feature.properties.velocities![timeStepIndex] = 0
+            feature.properties.directions![timeStepIndex] = 0
           }
         }
 
-        // resseting indexInCell to start with the new cell
+        // resetting indexInCell to start with the next cell
         indexInCell = -1
         break
       }
-    }
-    if (pbf.pos >= subLayerBreak) {
-      subLayerIndex++
-      subLayerBreak += buffersLength[subLayerIndex]
     }
     indexInCell++
   }
@@ -203,17 +279,19 @@ export const parseFourwingsVectors = (
   options?: FourwingsVectorsLoaderOptions
 ) => {
   const vectorsOptions = options?.fourwingsVectors
-  if (!vectorsOptions || !vectorsOptions?.buffersLength?.length) {
+  if (!vectorsOptions) {
     return []
   }
 
   const parseData = {
     options: vectorsOptions,
     features: new Map<number, FourwingsFeature>(),
-    uValuesByCell: new Map<number, number[]>(),
   }
 
-  const featuresMap = new Pbf(datasetsBuffer).readFields(getCellVectorValues, parseData).features
+  const featuresMap = new Pbf(datasetsBuffer).readFields(
+    vectorsOptions.temporalAggregation ? getCellVectorValuesAggregated : getCellVectorValues,
+    parseData
+  ).features
 
   const features = Array.from(featuresMap.values())
 

@@ -95,7 +95,7 @@ function EventsReport() {
       (datasetAreasId && datasetAreas?.status !== AsyncReducerStatus.Finished) ||
       isLoadingStats
     ) {
-      return <ReportActivityPlaceholder showHeader={false} />
+      return <ReportActivityPlaceholder showHeader={false} loading />
     }
     if (noEvents) {
       return (

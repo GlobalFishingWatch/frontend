@@ -1276,10 +1276,6 @@
     "name": "dan Konsentrasi Klorofil-a",
     "description": "<h2>Overview</h2>\n<ul>\n<li>Chlorophyll-a is the light-harvesting pigment found in all photosynthetic plants. Marine phytoplankton chemically fix carbon through photosynthesis by taking in dissolved carbon dioxide and producing oxygen. This dataset is comprised of biogeochemical parameters, including chlorophyll, over the global ocean displayed with a 1/4 degree horizontal resolution.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00015'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00015.</a></li>"
   },
-  "public-global-currents-uo": {
-    "name": "Currents",
-    "description": "Currents eastward component"
-  },
   "public-global-currents-vo": {
     "name": "Currents",
     "description": "Currents northward component"
@@ -1696,10 +1692,6 @@
   "public-global-water-temperature": {
     "name": "Suhu permukaan laut",
     "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM"
-  },
-  "public-global-winds-uo": {
-    "name": "Winds",
-    "description": "Winds eastward component"
   },
   "public-global-winds-vo": {
     "name": "Winds",

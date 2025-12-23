@@ -40,6 +40,7 @@ export type ResolverGlobalConfig = {
   vesselsColorBy: VesselsColorByProperty
   vesselsMaxTimeGapHours?: number
   highlightedFeatures?: DeckLayerPickingObject[]
+  vectorsTemporalAggregation?: boolean
 }
 
 export type DeckResolverFunction<

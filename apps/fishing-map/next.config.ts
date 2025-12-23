@@ -1,6 +1,7 @@
 import { join } from 'path'
 
 import withNx from '@nx/next/plugins/with-nx'
+import { withSentryConfig } from '@sentry/nextjs'
 import CircularDependencyPlugin from 'circular-dependency-plugin'
 import type { NextConfig } from 'next'
 
@@ -155,7 +156,7 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ['@mastra/*'],
   // reactCompiler: true,
   experimental: {
-    turbopackFileSystemCacheForDev: true,
+    turbopackFileSystemCacheForDev: false,
     esmExternals: true,
     optimizePackageImports: [
       '@globalfishingwatch/api-client',
@@ -183,12 +184,53 @@ const nextConfig: NextConfig = {
 const configWithNx = withNx({ ...nextConfig, nx: { svgr: false } })
 // const configWithNx = withNx(withBundleAnalyzer({ ...nextConfig, nx: { svgr: false } }))
 
+const configWithSentry = withSentryConfig(configWithNx, {
+  // For all available options, see:
+  // https://www.npmjs.com/package/@sentry/webpack-plugin#options
+
+  org: 'global-fishing-watch',
+
+  project: 'frontend',
+
+  // Only print logs for uploading source maps in CI
+  silent: !process.env.CI,
+
+  // For all available options, see:
+  // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
+
+  // Upload a larger set of source maps for prettier stack traces (increases build time)
+  widenClientFileUpload: true,
+
+  // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
+  // This can increase your server load as well as your hosting bill.
+  // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
+  // side errors will fail.
+  tunnelRoute: '/monitoring',
+
+  webpack: {
+    // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
+    // See the following for more information:
+    // https://docs.sentry.io/product/crons/
+    // https://vercel.com/docs/cron-jobs
+    automaticVercelMonitors: true,
+
+    // Tree-shaking options for reducing bundle size
+    treeshake: {
+      // Automatically tree-shake Sentry logger statements to reduce bundle size
+      removeDebugLogging: true,
+    },
+  },
+})
+
 module.exports = async (...args: any) => {
-  const config = await configWithNx(...args)
+  const config = await configWithSentry(...args)
   // Remove eslint option as it's no longer supported in Next.js 16
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { eslint, ...restConfig } = config
   return {
     ...restConfig,
     //...
   }
 }
+
+export default module.exports

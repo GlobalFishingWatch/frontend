@@ -83,10 +83,10 @@ function DatasetSchemaField({
     const maxToCompare = dataviewWithHistogramFilter ? max : filterConfig?.options[1].label
     if (minLabel.toString() === minToCompare?.toString()) {
       const maxValueLabel = getValueLabelByUnit(maxLabel, { unit })
-      range = `< ${maxValueLabel}`
+      range = `≤ ${maxValueLabel}`
     } else if (maxLabel.toString() === maxToCompare?.toString()) {
       const minValueLabel = getValueLabelByUnit(minLabel, { unit })
-      range = `> ${minValueLabel}`
+      range = `≥ ${minValueLabel}`
     } else {
       const minValueLabel = getValueLabelByUnit(minLabel, { unit, unitLabel: false })
       const maxValueLabel = getValueLabelByUnit(maxLabel, { unit })
