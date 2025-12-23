@@ -7,7 +7,8 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   root: '.',
   cacheDir: '../../node_modules/.vite/apps/fishing-map',
-  plugins: [react(), nxViteTsPaths()],
+  // NOTE: this any is needed to prevent vite from complaining about the plugins array type, vite 6 fixes this but we need to stick to vite 7 for now due to nx compatibility
+  plugins: [react(), nxViteTsPaths()] as any,
   resolve: {
     alias: {
       data: path.resolve(__dirname, './data'),
@@ -21,6 +22,7 @@ export default defineConfig({
       middlewares: path.resolve(__dirname, './middlewares'),
       store: path.resolve(__dirname, './store'),
       appTestUtils: path.resolve(__dirname, './appTestUtils'),
+      test: path.resolve(__dirname, './test'),
     },
   },
   define: {
