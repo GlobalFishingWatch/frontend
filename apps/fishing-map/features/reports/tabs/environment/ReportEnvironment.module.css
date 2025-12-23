@@ -4,11 +4,12 @@
 }
 
 .graphSelectorContainer {
-  padding: var(--space-M) var(--space-M) 0 var(--space-M);
+  padding: var(--space-M);
+  padding-bottom: 0;
 }
 
-.graphContainer {
-  padding: var(--space-M) var(--space-M);
+.comparisonContainer {
+  padding: var(--space-S) var(--space-M) 0;
 }
 
 .addLayerContainer {

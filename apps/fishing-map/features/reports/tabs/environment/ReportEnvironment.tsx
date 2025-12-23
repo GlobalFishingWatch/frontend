@@ -77,23 +77,29 @@ function ReportEnvironment() {
             )
           })
         ) : (
-          <div className={styles.graphContainer}>
-            <ReportActivityDatasetComparison />
-            <ReportEnvironmentGraph
-              dataview={comparisonDataviews[0]}
-              GraphComponent={ReportActivityDatasetComparisonGraph}
-              data={layersTimeseriesFiltered}
-              isLoading={loading || layersTimeseriesFiltered?.some((d) => d?.mode === 'loading')}
-            />
-          </div>
+          <Fragment>
+            <div className={styles.comparisonContainer}>
+              <ReportActivityDatasetComparison />
+            </div>
+            <div className={styles.graphContainer}>
+              <ReportEnvironmentGraph
+                dataview={comparisonDataviews[0]}
+                GraphComponent={ReportActivityDatasetComparisonGraph}
+                data={layersTimeseriesFiltered}
+                isLoading={loading || layersTimeseriesFiltered?.some((d) => d?.mode === 'loading')}
+              />
+            </div>
+          </Fragment>
         )}
       </div>
-      <div className={cx(styles.addLayerContainer)}>
-        <Button type="border-secondary" size="medium" onClick={onAddLayerClick}>
-          <Icon icon="plus" />
-          {t('layer.add')}
-        </Button>
-      </div>
+      {reportGraphType === 'evolution' && (
+        <div className={cx(styles.addLayerContainer)}>
+          <Button type="border-secondary" size="medium" onClick={onAddLayerClick}>
+            <Icon icon="plus" />
+            {t('layer.add')}
+          </Button>
+        </div>
+      )}
     </Fragment>
   )
 }
