@@ -15,7 +15,6 @@
     "confirmRemove": "¿Está seguro de que desea eliminar permanentemente este reporte?",
     "createReportHelp": "Para explorar cómo cambian los datos ambientales y de actividad a lo largo del tiempo, puede crear un análisis reporte dinámico que incluye análisis para cualquier área.\nLos reportes dinámicos ofrecen una forma rápida de acceder y comprender más información sobre cualquier área oceánica, zona económica exclusiva, área marina protegida o área de interés. Los reportes dinámicos lo ayudan a comprender cuánta actividad está ocurriendo en un área, incluidos qué embarcaciones y Estados del pabellón están activos.",
     "createReportHelpLink": "Ver más.",
-    "currentsDataDisclaimer": "El gráfico de corrientes y vientos aún está en desarrollo y es posible que no represente los datos con precisión.",
     "datasetComparison": "Comparación de datos",
     "datasetsNotAllowed": "No se han incluido embarcaciones de las siguientes fuentes:",
     "datasetsNotAllowedAll": "Ninguno de sus conjuntos de datos pueden ser usados en informes",
