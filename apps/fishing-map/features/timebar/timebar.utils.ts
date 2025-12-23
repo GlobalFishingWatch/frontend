@@ -2,7 +2,7 @@ import type { Feature, Point } from 'geojson'
 import type { DateTimeUnit, DurationUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
-import { getDateInIntervalResolution, isFeatureInRange } from '@globalfishingwatch/deck-layers'
+import { getDateInIntervalResolution, getFeatureTimeRange } from '@globalfishingwatch/deck-layers'
 import type {
   FourwingsFeature,
   FourwingsInterval,
@@ -136,38 +136,107 @@ export function getGraphDataFromPoints(
   }
   const data = getDatesPopulated({ start, end, interval, sublayersLength })
 
-  Object.keys(data).forEach((dateString) => {
+  const dateBoundaries = Object.keys(data).map((dateString) => {
     const date = parseInt(dateString)
     const nextDate = getUTCDateTime(date)
       .plus({ [interval]: 1 })
       .toMillis()
-    features.forEach((feature) => {
-      const { layer = 0, values } = (feature?.properties || {}) as {
-        values: number[]
-        layer?: number
+    return { date, nextDate }
+  })
+  const boundaryStartDates = dateBoundaries.map(({ date }) => date)
+  const firstBoundaryStart = boundaryStartDates[0]
+  const lastBoundaryEnd = dateBoundaries[dateBoundaries.length - 1].nextDate
+
+  const findOverlappingIndex = ({
+    timestamp,
+    isFirst,
+  }: {
+    timestamp: number
+    isFirst: boolean
+  }) => {
+    if (isFirst) {
+      if (timestamp < firstBoundaryStart) {
+        return 0
       }
-      if (
-        isFeatureInRange(feature, {
-          startTime: date,
-          endTime: nextDate,
-          startTimeProperty,
-          endTimeProperty,
-          timeFilterType,
-        })
-      ) {
-        if (values?.length) {
-          if (!data[date].count) {
-            data[date].count = Array(sublayersLength).fill(0)
-          }
-          values.forEach((value, index) => {
-            data[date][index] += value
-            data[date].count![index] = (data[date].count![index] || 0) + 1
-          })
+    } else {
+      if (timestamp >= lastBoundaryEnd) {
+        return dateBoundaries.length - 1
+      }
+    }
+    let low = 0
+    let high = dateBoundaries.length - 1
+    let result = -1
+    while (low <= high) {
+      const mid = (low + high) >> 1
+      if (isFirst) {
+        if (dateBoundaries[mid].nextDate > timestamp) {
+          result = mid
+          high = mid - 1
         } else {
-          data[date][layer]++
+          low = mid + 1
+        }
+      } else {
+        if (dateBoundaries[mid].date <= timestamp) {
+          result = mid
+          low = mid + 1
+        } else {
+          high = mid - 1
         }
       }
-    })
+    }
+    return result
+  }
+
+  features.forEach((feature) => {
+    const properties = feature?.properties
+    if (!properties) return
+
+    const { featureStart: featureStartRaw, featureEnd: featureEndRaw } = getFeatureTimeRange(
+      feature,
+      {
+        startTimeProperty,
+        endTimeProperty,
+        timeFilterType,
+      }
+    )
+    const featureStart =
+      typeof featureStartRaw === 'string' ? parseInt(featureStartRaw) : (featureStartRaw as number)
+    const featureEnd =
+      typeof featureEndRaw === 'string' ? parseInt(featureEndRaw) : (featureEndRaw as number)
+
+    if (featureEnd < firstBoundaryStart || featureStart >= lastBoundaryEnd) {
+      return
+    }
+
+    const startIndex = findOverlappingIndex({ timestamp: featureStart, isFirst: true })
+    const endIndex = findOverlappingIndex({ timestamp: featureEnd, isFirst: false })
+
+    if (startIndex === -1 || endIndex === -1 || startIndex > endIndex) {
+      return
+    }
+
+    const { layer = 0, values } = properties as {
+      values?: number[]
+      layer?: number
+    }
+
+    for (let i = startIndex; i <= endIndex; i++) {
+      const { date, nextDate } = dateBoundaries[i]
+
+      if (featureEnd < date || featureStart >= nextDate) {
+        continue
+      }
+
+      const dateData = data[date]
+      if (values?.length) {
+        for (let index = 0; index < values.length; index++) {
+          dateData[index] += values[index]
+          dateData.count![index]++
+        }
+      } else {
+        dateData[layer]++
+      }
+    }
   })
 
   return Object.values(data)

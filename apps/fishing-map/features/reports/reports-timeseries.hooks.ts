@@ -193,6 +193,7 @@ const useReportTimeseries = (
     ? reportLayers.every(({ instance, loaded }) => instance.isLoaded && loaded)
     : false
 
+  // TODO: review if this is needed and how can we improve it
   // We can't use the isLoaded state because it's not updated immediately when the instances are loaded
   // so we use a separate state to track when the instances are ready
   const [isReady, setIsReady] = useState(false)

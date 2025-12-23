@@ -31,6 +31,15 @@ export type ReportCategoryState = {
   reportCategory: ReportCategory | undefined
 }
 
+export const categoryToDataviewMap: Partial<Record<ReportCategory, DataviewCategory>> = {
+  [ReportCategory.Activity]: DataviewCategory.Activity,
+  [ReportCategory.Detections]: DataviewCategory.Detections,
+  [ReportCategory.Events]: DataviewCategory.Events,
+  [ReportCategory.VesselGroup]: DataviewCategory.VesselGroups,
+  [ReportCategory.Others]: DataviewCategory.Context,
+  [ReportCategory.Environment]: DataviewCategory.Environment,
+}
+
 // REPORT SUBCATEGORIES
 export type ReportActivitySubCategory =
   | `${DatasetSubCategory.Fishing}`
