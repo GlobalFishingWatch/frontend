@@ -137,7 +137,7 @@
   "port-locations": {
     "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
     "moreInfoLink": "",
-    "name": "Ports"
+    "name": "Puertos"
   },
   "port-visits": {
     "description": "La lista de puertos se define a partir del conjunto de datos obtenidos por Global Fishing Watch sobre fondeaderos. Se trata de una base de datos global que identifica lugares de fondeo donde se congregan las embarcaciones. Este conjunto de datos incluye más de 160.000 puntos de fondeo individuales, que se agrupan en aproximadamente 32.000 puertos. ",
@@ -180,9 +180,9 @@
     "name": "Montes submarinos"
   },
   "sentinel2": {
-    "description": "This layer shows vessels detected using optical satellite imagery collected by the European Space Agency’s Sentinel-2 satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths.",
+    "description": "Esta capa muestra las embarcaciones detectadas mediante imágenes satelitales ópticas recopiladas por los satélites Sentinel-2 de la Agencia Espacial Europea. Las imágenes ópticas son similares a las fotografías aéreas de alta calidad desde el espacio, utilizando la luz solar reflejada en longitudes de ondas visibles e infrarrojas cercanas.",
     "moreInfoLink": "",
-    "name": "Imagery detections (Optical)"
+    "name": "Detecciones de imágenes (Ópticas)"
   },
   "species": {
     "description": "TODO",
@@ -200,12 +200,12 @@
     "name": "Anomalías de temperatura de la superficie del mar"
   },
   "sst-anomalies-max": {
-    "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
+    "description": "La anomalía de la temperatura de la superficie del mar es la diferencia entre la temperatura diaria de la superficie del mar y la media climatológica de 30 años. Las anomalías de la temperatura de la superficie del mar pueden afectar la distribución y los hábitats de las especies y pueden representar eventos transitorios o ciclos climáticos específicos, como El Niño y La Niña, que afectan los patrones climáticos globales. En el mapa, un número positivo representa una temperatura más cálida que el promedio. ",
     "moreInfoLink": "",
     "name": "Anomalías de temperatura de la superficie del mar (máx.)"
   },
   "sst-anomalies-min": {
-    "description": "The sea surface temperature anomaly is the difference between the daily sea surface temperature and the 30-year climatological mean. Sea surface temperature anomalies can impact the range and habitats of species and may represent transient events or specific climate cycles like El Niño and La Niña that effect weather patterns globally. Within the map, a positive number represents a warmer temperature than the average. ",
+    "description": "La anomalía de la temperatura de la superficie del mar es la diferencia entre la temperatura diaria de la superficie del mar y la media climatológica de 30 años. Las anomalías de la temperatura de la superficie del mar pueden afectar la distribución y los hábitats de las especies y pueden representar eventos transitorios o ciclos climáticos específicos, como El Niño y La Niña, que afectan los patrones climáticos globales. En el mapa, un número positivo representa una temperatura más cálida que el promedio. ",
     "moreInfoLink": "",
     "name": "Anomalías de temperatura de la superficie del mar (mín.)"
   },
@@ -220,12 +220,12 @@
     "name": "Detección de luz nocturna"
   },
   "viirs-skylight": {
-    "description": "TODO: description",
+    "description": "TODO: descripción",
     "moreInfoLink": "",
-    "name": "Night light detections (VIIRS Skylight)"
+    "name": "Detección de luz nocturna (VIIRS Skylight)"
   },
   "winds": {
-    "description": "Wind is the movement of air across the Earth’s surface and plays an important role in shaping weather and ocean conditions. Surface winds help drive ocean circulation and influence mixing at the ocean surface. This dataset shows global wind speed and direction over the ocean.",
+    "description": "El viento es el movimiento del aire sobre la superficie terrestre y desempeña un papel importante en la configuración del clima y las condiciones oceánicas. Los vientos superficiales impulsan la circulación oceánica e influyen en la mezcla en la superficie oceánica. Este conjunto de datos muestra la velocidad y dirección global del viento sobre el océano.",
     "moreInfoLink": "https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=overview",
     "name": "Viento"
   }
