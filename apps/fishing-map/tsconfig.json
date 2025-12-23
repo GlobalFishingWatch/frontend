@@ -64,8 +64,7 @@
     "eslint.config.js",
     "types/**/*.d.ts",
     "features/**/*.d.ts",
-    "vitest.config.mts",
-    "playwright.config.mts"
+    "vitest.config.mts"
   ],
   "exclude": [
     "node_modules",

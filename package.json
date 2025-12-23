@@ -246,6 +246,7 @@
     "baseline-browser-mapping": "^2.9.5",
     "circular-dependency-plugin": "5.2.2",
     "decompress": "4.2.1",
+    "dotenv": "17.2.3",
     "esbuild": "0.25.10",
     "eslint": "9.36.0",
     "eslint-config-next": "16.0.1",

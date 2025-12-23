@@ -138,13 +138,6 @@
         "command": "vitest run --config=vitest.config.mts",
         "cwd": "apps/fishing-map"
       }
-    },
-    "test-e2e": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "playwright test --config=playwright.config.mts",
-        "cwd": "apps/fishing-map"
-      }
     }
   }
 }
