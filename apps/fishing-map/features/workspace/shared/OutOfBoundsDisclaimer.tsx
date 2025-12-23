@@ -7,6 +7,7 @@ import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { LAST_DATA_UPDATE } from 'data/config'
+import { VIIRS_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
 import {
   getActiveDatasetsInActivityDataviews,
   getDatasetsInDataviews,
@@ -43,6 +44,17 @@ const OutOfTimerangeDisclaimer = ({
       format: 'isoString',
     })
   }, [dataview])
+
+  const isVIIRSLayer = dataview.id.includes(VIIRS_DATAVIEW_INSTANCE_ID)
+  if (isVIIRSLayer) {
+    return (
+      <span className={cx(styles.dataWarning, styles.error, className)}>
+        <span className={cx(styles.dataWarning, styles.error, className)}>
+          {t('dataset.VIIRSDelayDisclaimer')}.
+        </span>
+      </span>
+    )
+  }
 
   if (validate === 'start') {
     if (!extentStart) {
