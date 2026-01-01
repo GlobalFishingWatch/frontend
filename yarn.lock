@@ -3362,7 +3362,7 @@ __metadata:
     prettier-eslint: "npm:16.4.2"
     protobufjs: "npm:7.5.4"
     purgecss: "npm:7.0.2"
-    qs: "npm:6.14.0"
+    qs: "npm:6.14.1"
     rc-slider: "npm:11.1.9"
     react: "npm:19.2.0"
     react-aria-components: "npm:1.12.2"
@@ -31622,7 +31622,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:6.14.0, qs@npm:^6.14.0, qs@npm:^6.4.0, qs@npm:~6.14.0":
+"qs@npm:6.14.1":
+  version: 6.14.1
+  resolution: "qs@npm:6.14.1"
+  dependencies:
+    side-channel: "npm:^1.1.0"
+  checksum: 10/34b5ab00a910df432d55180ef39c1d1375e550f098b5ec153b41787f1a6a6d7e5f9495593c3b112b77dbc6709d0ae18e55b82847a4c2bbbb0de1e8ccbb1794c5
+  languageName: node
+  linkType: hard
+
+"qs@npm:^6.14.0, qs@npm:^6.4.0, qs@npm:~6.14.0":
   version: 6.14.0
   resolution: "qs@npm:6.14.0"
   dependencies:
