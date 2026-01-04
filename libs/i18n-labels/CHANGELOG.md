@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.2.264](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.263...i18n-labels@1.2.264) (2025-10-22)
+
+
+
+## [1.2.263](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.262...i18n-labels@1.2.263) (2025-10-20)
+
+
+### Bug Fixes
+
+* label id on hover ([f087d96](https://github.com/GlobalFishingWatch/frontend/commit/f087d96eddc2b0b6a15fc579dbda1ce0cfe02af8))
+
+
+
 ## [1.2.262](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.261...i18n-labels@1.2.262) (2025-09-29)
 
 

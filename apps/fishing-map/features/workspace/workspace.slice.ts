@@ -1,5 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, isRejected } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
 
 import type { FetchOptions } from '@globalfishingwatch/api-client'
@@ -87,6 +87,7 @@ interface WorkspaceSliceState {
   customStatus: AsyncReducerStatus
   error: AsyncError
   data: Workspace<AnyWorkspaceState> | null
+  reportId: string | null
   password: string | typeof VALID_PASSWORD
   historyNavigation: LastWorkspaceVisited[]
 }
@@ -97,6 +98,7 @@ const initialState: WorkspaceSliceState = {
   customStatus: AsyncReducerStatus.Idle,
   error: {} as AsyncError,
   data: null,
+  reportId: null,
   password: '',
   historyNavigation: [],
 }
@@ -117,12 +119,13 @@ export const getDefaultWorkspace = () => {
 type FetchWorkspacesThunkParams = {
   workspaceId: string
   password?: string
+  reportId?: string
 }
 
 export const fetchWorkspaceThunk = createAsyncThunk(
   'workspace/fetch',
   async (
-    { workspaceId, password }: FetchWorkspacesThunkParams,
+    { workspaceId, password, reportId: reportIdParam }: FetchWorkspacesThunkParams,
     { signal, dispatch, getState, rejectWithValue }: any
   ) => {
     const state = getState() as any
@@ -132,7 +135,8 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const userGroups = selectUserGroups(state)
     const gfwUser = selectIsGFWUser(state)
     const privateUserGroups = selectPrivateUserGroups(state)
-    const reportId = selectReportId(state)
+    const reportId = reportIdParam || selectReportId(state)
+    let workspaceReportId = null
     try {
       let workspace: Workspace<any> | null = null
       if (locationType === REPORT) {
@@ -140,6 +144,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         const resolvedAction = await action
         if (fetchReportsThunk.fulfilled.match(resolvedAction)) {
           workspace = resolvedAction.payload?.[0]?.workspace as Workspace
+          workspaceReportId = resolvedAction.payload?.[0]?.id
           if (!workspace) {
             return rejectWithValue({
               error: {
@@ -152,7 +157,9 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           if (resolvedAction.payload?.status === 401) {
             return rejectWithValue({ error: { status: 401, message: 'Private report' } })
           }
-          throw new Error('Error fetching report')
+          if (!isRejected(resolvedAction)) {
+            throw new Error('Error fetching report')
+          }
         }
         // TODO fetch report and use the workspace within it
       } else if (workspaceId && workspaceId !== DEFAULT_WORKSPACE_ID) {
@@ -304,7 +311,12 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         ...workspace,
         dataviewInstances: workspace?.dataviewInstances.map(parseLegacyDataviewInstanceConfig),
       }
-      return { ...migratedWorkspace, startAt: startAt.toISO(), endAt: endAt.toISO() }
+      return {
+        ...migratedWorkspace,
+        startAt: startAt.toISO(),
+        endAt: endAt.toISO(),
+        workspaceReportId,
+      }
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue({ error: parseAPIError(e) })
@@ -534,10 +546,11 @@ const workspaceSlice = createSlice({
     })
     builder.addCase(fetchWorkspaceThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
-      const payload = action.payload as any
-      if (payload) {
-        state.data = payload
+      const { workspaceReportId, ...data } = action.payload
+      if (data) {
+        state.data = data
       }
+      state.reportId = workspaceReportId
     })
     builder.addCase(fetchWorkspaceThunk.rejected, (state, action) => {
       if (action.payload) {

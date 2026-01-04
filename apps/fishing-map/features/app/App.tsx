@@ -30,6 +30,7 @@ import {
   isWorkspacePasswordProtected,
   selectCurrentWorkspaceId,
   selectWorkspaceCustomStatus,
+  selectWorkspaceReportId,
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
@@ -56,6 +57,7 @@ import {
   selectIsVesselLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
+  selectReportId,
   selectWorkspaceId,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -105,6 +107,8 @@ function App() {
 
   const locationType = useSelector(selectLocationType)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
+  const currentReportId = useSelector(selectWorkspaceReportId)
+  const reportId = useSelector(selectReportId)
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
   const userLogged = useSelector(selectIsUserLogged)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
@@ -123,12 +127,13 @@ function App() {
     ((locationType === WORKSPACE_REPORT || isAnyVesselLocation) &&
       currentWorkspaceId !== urlWorkspaceId)
   const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
+  const hasWorkspaceReportIdChanged = locationType === REPORT && currentReportId !== reportId
 
   useEffect(() => {
     let action: any
     let actionResolved = false
     const fetchWorkspace = async () => {
-      action = dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId as string }))
+      action = dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId as string, reportId }))
       const resolvedAction = await action
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
         const workspace = resolvedAction.payload as Workspace
@@ -141,7 +146,7 @@ function App() {
     if (
       userLogged &&
       workspaceCustomStatus !== AsyncReducerStatus.Loading &&
-      (homeNeedsFetch || locationNeedsFetch || hasWorkspaceIdChanged)
+      (homeNeedsFetch || locationNeedsFetch || hasWorkspaceIdChanged || hasWorkspaceReportIdChanged)
     ) {
       // TODO Can we arrive in a situation where no workspace is ever loaded?
       // In that case static timerange will need to be set manually
@@ -153,7 +158,13 @@ function App() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userLogged, homeNeedsFetch, locationNeedsFetch, hasWorkspaceIdChanged])
+  }, [
+    userLogged,
+    homeNeedsFetch,
+    locationNeedsFetch,
+    hasWorkspaceIdChanged,
+    hasWorkspaceReportIdChanged,
+  ])
 
   useLayoutEffect(() => {
     if (isAreaReportLocation) {

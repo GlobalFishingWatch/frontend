@@ -9,7 +9,9 @@ import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
 import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
@@ -75,6 +77,7 @@ const VesselLink = ({
   const vesselInfoDataId = useSelector(selectVesselInfoDataId)
   const workspaceCategory = useSelector(selectCurrentWorkspaceCategory)
   const vesselDataviews = useSelector(selectVesselsDataviews)
+  const vesselTemplateDataviews = useSelector(selectVesselTemplateDataviews)
   const dispatch = useDispatch()
   const vesselId = vesselIdProp || identity?.id
   const vesselDatasetId = datasetId || DEFAULT_VESSEL_IDENTITY_ID
@@ -113,35 +116,42 @@ const VesselLink = ({
   const dataviewInstanceToUpdateId = vesselDataviews.find(
     (instance) => instance.id.includes(vesselId) || instance.id === dataviewId
   )?.id
-  let dataviewInstances = locationQuery?.dataviewInstances
+  let dataviewInstances = locationQuery?.dataviewInstances || []
   if (dataviewInstanceToUpdateId) {
     // When coming from a saved workspace the vessel instance might not be in the url yet
-    dataviewInstances = locationQuery?.dataviewInstances?.some(
+    const isInWorkspace = dataviewInstances?.some(
       ({ id }: DataviewInstance) => id === dataviewInstanceToUpdateId
     )
-      ? locationQuery?.dataviewInstances?.map((instance: DataviewInstance) => {
-          const matches = instance.id === dataviewInstanceToUpdateId
-          if (matches) {
-            return {
-              ...instance,
-              config: {
-                ...instance.config,
-                visible: true,
-              },
-              deleted: false,
-            }
-          }
-          return instance
-        })
-      : [
-          ...(locationQuery?.dataviewInstances || []),
-          {
-            id: dataviewInstanceToUpdateId,
+    if (isInWorkspace) {
+      dataviewInstances = dataviewInstances?.map((instance: DataviewInstance) => {
+        const matches = instance.id === dataviewInstanceToUpdateId
+        if (matches) {
+          return {
+            ...instance,
             config: {
+              ...instance.config,
               visible: true,
             },
+            deleted: false,
+          }
+        }
+        return instance
+      })
+    } else {
+      dataviewInstances = [
+        ...dataviewInstances,
+        {
+          ...getVesselDataviewInstance({
+            vessel: { id: vesselId },
+            datasets: { info: vesselDatasetId },
+            vesselTemplateDataviews,
+          }),
+          config: {
+            visible: true,
           },
-        ]
+        },
+      ]
+    }
   }
 
   return isTrackCorrectionOpen ? (

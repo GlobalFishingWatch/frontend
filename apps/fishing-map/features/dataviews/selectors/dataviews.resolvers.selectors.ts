@@ -217,6 +217,6 @@ export const selectDataviewInstancesResolved = createDeepEqualSelector(
         },
       } as UrlDataviewInstance
     })
-    return dataviews
+    return dataviews as UrlDataviewInstance[]
   }
 )

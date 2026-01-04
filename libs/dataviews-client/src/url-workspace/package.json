@@ -1,0 +1,16 @@
+{
+  "name": "@globalfishingwatch/url-workspace",
+  "version": "0.0.1",
+  "description": "URL workspace utilities for Global Fishing Watch applications",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
+  "license": "MIT",
+  "main": "./url-workspace.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
+  },
+  "dependencies": {}
+}

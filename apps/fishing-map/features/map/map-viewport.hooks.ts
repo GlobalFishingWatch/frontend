@@ -21,7 +21,10 @@ export const useMapSetViewState = () => {
   return useMemo(
     () =>
       throttle((coordinates: Partial<ViewStateMap<MapView>>) => {
-        setViewState((prev) => ({ ...prev, ...coordinates }))
+        const cleanCoordinates = Object.fromEntries(
+          Object.entries(coordinates).filter(([key, value]) => value !== undefined)
+        )
+        setViewState((prev) => ({ ...prev, ...cleanCoordinates }))
       }, 1),
     [setViewState]
   )
@@ -38,8 +41,11 @@ export function useSetMapCoordinates() {
       if (!isTransitioning) {
         setMapViewState(coordinates)
         if (deckMap) {
+          const viewState = Object.fromEntries(
+            Object.entries(coordinates).filter(([key, value]) => value !== undefined)
+          ) as ViewStateMap<MapView>
           // Can't find why this is needed to properly update the view state
-          deckMap.setProps({ viewState: coordinates as ViewStateMap<MapView> })
+          deckMap.setProps({ viewState })
         }
       }
     },

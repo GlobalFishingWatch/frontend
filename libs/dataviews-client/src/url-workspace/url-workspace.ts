@@ -4,9 +4,7 @@ import isString from 'lodash/isString'
 import transform from 'lodash/transform'
 import { parse, stringify } from 'qs'
 
-import type { DataviewInstance } from '@globalfishingwatch/api-types'
-
-import type { UrlDataviewInstance } from '..'
+import type { AnyDataviewInstance, UrlDataviewInstance } from '../types'
 
 import {
   migrateEventsLegacyDatasets,
@@ -21,8 +19,8 @@ export type Dictionary<Value> = Record<string, Value>
  */
 export type BaseUrlWorkspace = {
   activityCategory?: string // legacy
-  dataviewInstances?: Partial<UrlDataviewInstance[]>
-  dataviewInstancesOrder?: UrlDataviewInstance['id'][]
+  dataviewInstances?: Partial<AnyDataviewInstance[]>
+  dataviewInstancesOrder?: AnyDataviewInstance['id'][]
   latitude?: number
   longitude?: number
   zoom?: number
@@ -145,7 +143,7 @@ const BASE_URL_TO_OBJECT_TRANSFORMATION: Record<string, (value: any) => any> = {
     }
     return drawing
   },
-  dataviewInstances: (dataviewInstances: UrlDataviewInstance[]) => {
+  dataviewInstances: (dataviewInstances: AnyDataviewInstance[]) => {
     return dataviewInstances.map(parseDataviewInstance)
   },
 }
@@ -244,7 +242,7 @@ const deepDetokenizeValues = (obj: Dictionary<any>) => {
 }
 
 export const parseLegacyDataviewInstanceConfig = (
-  dataviewInstance: UrlDataviewInstance | DataviewInstance
+  dataviewInstance: AnyDataviewInstance
 ): UrlDataviewInstance => {
   return {
     ...dataviewInstance,

@@ -1,3 +1,4 @@
+import { getUTCDate } from '../dates'
 import { normalizePropertiesKeys } from '../schema'
 import type { SegmentColumns } from '../types'
 
@@ -24,7 +25,7 @@ export const checkRecordValidity = ({
     errors.push('longitude')
   }
   if (timestamp) {
-    const d = new Date(record[timestamp])
+    const d = getUTCDate(record[timestamp])
     if (!(d instanceof Date) || isNaN(d.getTime()) || d.getTime() <= 1) {
       errors.push('timestamp')
     }

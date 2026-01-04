@@ -18,6 +18,15 @@
         "useLegacyTypescriptPlugin": false
       }
     },
+    "bundle-url-workspace": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/dist/libs/dataviews-client/url-workspace-bundle"],
+      "dependsOn": [],
+      "options": {
+        "commands": ["node libs/dataviews-client/esbuild.url.ts"],
+        "cwd": "."
+      }
+    },
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": ["dist"],

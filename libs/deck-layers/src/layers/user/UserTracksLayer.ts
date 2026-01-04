@@ -7,7 +7,10 @@ import { parse } from '@loaders.gl/core'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { TrackSegment } from '@globalfishingwatch/api-types'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
-import { geoJSONToSegments } from '@globalfishingwatch/data-transforms'
+import {
+  COORDINATE_PROPERTY_TIMESTAMP,
+  geoJSONToSegments,
+} from '@globalfishingwatch/data-transforms'
 import type {
   UserTrackBinaryData,
   UserTrackFeature,
@@ -174,7 +177,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       const object = {
         id: this.props.id,
         value: layer.valueProperties?.length
-          ? feature?.properties.coordinateProperties[layer.valueProperties[0]][info.index]
+          ? feature?.properties.coordinateProperties[layer.valueProperties[0]]?.[info.index]
           : undefined,
         title: getContextId(feature as ContextFeature, layer.idProperty) || info.index,
         color,
@@ -228,6 +231,9 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       ...loadOptions,
       userTracks: {
         filters: filters,
+        includeCoordinateProperties: this.props.timeFilterType
+          ? [COORDINATE_PROPERTY_TIMESTAMP]
+          : [],
       },
     }
     const { data, binary } = await parse(response, UserTrackLoader, userTracksLoadOptions)

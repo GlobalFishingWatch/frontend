@@ -130,7 +130,7 @@ const VesselIdentity = () => {
   const source = vesselIdentity?.sourceCode
 
   const identityFields = useMemo(() => {
-    const customIdentityFields = CUSTOM_VMS_IDENTITY_FIELD_GROUPS[source[0]]
+    const customIdentityFields = CUSTOM_VMS_IDENTITY_FIELD_GROUPS[source?.[0]]
     return customIdentityFields?.length
       ? [...IDENTITY_FIELD_GROUPS[identitySource], ...customIdentityFields]
       : IDENTITY_FIELD_GROUPS[identitySource]

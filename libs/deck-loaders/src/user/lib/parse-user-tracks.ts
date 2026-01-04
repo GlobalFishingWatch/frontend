@@ -17,6 +17,7 @@ function arrayBufferToJson(arrayBuffer: ArrayBuffer) {
 export type ParseUserTrackParams = {
   filters: Record<string, any>
   workerUrl?: string
+  includeCoordinateProperties?: string[]
 }
 
 const COORDINATE_PROPERTY_TIMESTAMP = 'times'
@@ -32,7 +33,9 @@ export const parseUserTrack = (
   const data = filterTrackByCoordinateProperties(rawData, {
     filters: params.filters,
     includeNonTemporalFeatures: true,
-    includeCoordinateProperties: [COORDINATE_PROPERTY_TIMESTAMP],
+    includeCoordinateProperties: params.includeCoordinateProperties || [
+      COORDINATE_PROPERTY_TIMESTAMP,
+    ],
   })
 
   const length = data.features.reduce((acc, feature) => {

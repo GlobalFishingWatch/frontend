@@ -225,7 +225,8 @@ function NewTrackDataset({
     }
   }, [datasetMetadata, geojson, onConfirm, sourceData, t, isEditing])
 
-  const filterOptions = isCSVFile ? numericFiltersFieldsOptions : filtersFieldsOptions
+  // const filterOptions = isCSVFile ? numericFiltersFieldsOptions : filtersFieldsOptions
+  const filterOptions = filtersFieldsOptions
 
   if (processingData) {
     return (
@@ -358,7 +359,7 @@ function NewTrackDataset({
           }
           direction="top"
           disabled={loading || !filterOptions.length}
-          disabledMsg={t('datasetUpload.noFilters')}
+          disabledMsg={!loading ? t('datasetUpload.noFilters') : undefined}
           options={filterOptions as MultiSelectOption[]}
           selectedOptions={getSelectedOption(fieldsAllowed) as MultiSelectOption[]}
           onSelect={(newFilter: MultiSelectOption) => {

@@ -523,7 +523,7 @@ export class GFW_API_CLASS {
       if (this.debug) {
         console.log(`GFWAPI: Logout - tokens cleaned`)
       }
-      await this._internalFetch(`/${AUTH_PATH}/logout`, {
+      await this._internalFetch(`/${API_VERSION}/${AUTH_PATH}/logout`, {
         headers: {
           'refresh-token': this.refreshToken,
         },

@@ -112,11 +112,14 @@ function AreaReportSearch({ className }: { className?: string }) {
             { ...newDataviewInstance, config: { visible: true } },
           ]
         }
+        const workspacePayload = {
+          category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+          workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+        }
         if (area.properties?.type === 'port') {
           dispatchLocation(PORT_REPORT, {
             payload: {
-              category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-              workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+              ...workspacePayload,
               portId: area.properties.area,
             },
             query: {
@@ -130,7 +133,7 @@ function AreaReportSearch({ className }: { className?: string }) {
           })
         } else {
           dispatchLocation(WORKSPACE_REPORT, {
-            payload: { datasetId, areaId: area.properties.area },
+            payload: { ...workspacePayload, datasetId, areaId: area.properties.area },
             query: {
               ...query,
               dataviewInstances,
