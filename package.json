@@ -306,7 +306,7 @@
     "@deck.gl/layers": "9.1.14",
     "@deck.gl/mesh-layers": "9.1.14",
     "@deck.gl/react": "9.1.14",
-    "recharts": "3.3.0"
+    "require-in-the-middle": "8.0.1"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
