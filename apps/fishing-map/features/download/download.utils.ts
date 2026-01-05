@@ -9,7 +9,6 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 
 import { REPORT_DAYS_LIMIT } from 'data/config'
 import { getActiveDatasetsInDataview, getDatasetSchemaItem } from 'features/datasets/datasets.utils'
-import dataviews from 'features/dataviews/dataviews.mock'
 import { getUTCDateTime } from 'utils/dates'
 
 import {
