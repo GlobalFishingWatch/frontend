@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
   isEnvironmentalDataview,
   isHeatmapVectorsDataview,
@@ -73,6 +74,7 @@ function ReportEnvironment() {
                 data={layersTimeseriesFiltered?.[index]}
                 isLoading={loading || layersTimeseriesFiltered?.[index]?.mode === 'loading'}
                 index={index}
+                removeEmptyValues={dataview.category === DataviewCategory.Environment}
               />
             )
           })
