@@ -22,6 +22,8 @@ export type BADGES_PERMISSIONS =
   | 'gfw-ambassador-badge'
   | 'gfw-impact-reporter-badge'
 
+export type COUNTRY_PERMISSIONS = 'Brazil' | 'Panama'
+
 export type UserPermissionType =
   | 'application'
   | 'dataset'
@@ -42,6 +44,7 @@ export type UserPermissionValue =
   | 'vessel-group'
   | 'workspace'
   | BADGES_PERMISSIONS
+  | COUNTRY_PERMISSIONS
 
 export type UserPermissionAction =
   | 'read'
@@ -56,6 +59,12 @@ export interface UserPermission {
   type: UserPermissionType
   value: UserPermissionValue
   action: UserPermissionAction
+}
+
+export const MOCK_USER_PERMISSION: UserPermission = {
+  type: 'application',
+  value: 'fishing-map',
+  action: 'read',
 }
 
 export interface UserGroup {

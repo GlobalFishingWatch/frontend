@@ -1,0 +1,22 @@
+{
+  "search": {
+    "placeholderGlobal": "Pesquisar em todos os dados..",
+    "placeholder": "Pesquisar",
+    "noResults": "Nenhum resultado encontrado",
+    "typeaValue": "Digite um valor"
+  },
+  "footer": {
+    "download": "Baixar tudo",
+    "results": "{{count}} resultados",
+    "select_rows": "Selecione embarcações para poder baixar"
+  },
+  "expanded_row": {
+    "title": "Vessel Viewer",
+    "see_more": "Ver mais",
+    "to": "de",
+    "from": "à",
+    "transmission_other": "transmissões",
+    "external_links": "Links Externos",
+    "not_found": "Não foi possível encontrar informações sobre o navio"
+  }
+}

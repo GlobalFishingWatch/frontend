@@ -1,0 +1,949 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="385" height="308">
+  <defs>
+    <linearGradient id="linearGradient-1" x1="54.2%" x2="67%" y1="45.3%" y2="57.2%">
+      <stop offset="0%" stop-color="#CCE1FF"/>
+      <stop offset="100%" stop-color="#FBFDFD" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-2" x1="34.5%" x2="42.3%" y1="51.1%" y2="59.6%">
+      <stop offset="0%" stop-color="#80A9F8"/>
+      <stop offset="100%" stop-color="#EDF5FE" stop-opacity=".2"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-3" x1="64%" x2="25.9%" y1="41.2%" y2="55.3%">
+      <stop offset="0%" stop-color="#B4CBF3"/>
+      <stop offset="100%" stop-color="#DBE6F9"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-19" x1="100%" x2="3.6%" y1="16.6%" y2="88.2%">
+      <stop offset="0%" stop-color="#22447E"/>
+      <stop offset="100%" stop-color="#07214C"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-20" x1="100%" x2="17.6%" y1="39.5%" y2="64.8%">
+      <stop offset="0%" stop-color="#0D2F69"/>
+      <stop offset="72.7%" stop-color="#032259"/>
+      <stop offset="100%" stop-color="#22447E"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-21" x1="93.9%" x2="9.2%" y1="34.2%" y2="64%">
+      <stop offset="0%" stop-color="#22447E" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#18418B"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-22" x1="82.4%" x2="19.9%" y1="5.7%" y2="89.2%">
+      <stop offset="0%" stop-color="#22447E" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#18418B"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-23" x1="82.4%" x2="20%" y1="5.7%" y2="89.2%">
+      <stop offset="0%" stop-color="#22447E" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#18418B"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-24" x1="0%" x2="100%" y1="52.4%" y2="52.4%">
+      <stop offset="0%" stop-color="#EEF4FF"/>
+      <stop offset="100%" stop-color="#AAC5F6"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-25" x1="0%" x2="100%" y1="52.4%" y2="52.4%">
+      <stop offset="0%" stop-color="#F0F6FF"/>
+      <stop offset="100%" stop-color="#C1D7FF"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-26" x1="0%" x2="100%" y1="52.4%" y2="52.4%">
+      <stop offset="0%" stop-color="#AAC5F6"/>
+      <stop offset="100%" stop-color="#EEF4FF"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-27" x1="54.2%" x2="67%" y1="45.4%" y2="57.1%">
+      <stop offset="0%" stop-color="#CCE1FF"/>
+      <stop offset="100%" stop-color="#FBFDFD" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-28" x1="34.5%" x2="42.3%" y1="51.1%" y2="59.5%">
+      <stop offset="0%" stop-color="#80A9F8"/>
+      <stop offset="100%" stop-color="#EDF5FE" stop-opacity=".2"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-29" x1="92.1%" x2="-24.3%" y1="37.1%" y2="72.5%">
+      <stop offset="0%" stop-color="#22447E" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#18418B"/>
+      <stop offset="100%" stop-color="#18418B"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-30" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#5F7DB9"/>
+      <stop offset="100%" stop-color="#98B1E3"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-31" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#98B1E3"/>
+      <stop offset="100%" stop-color="#5F7DB9"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-32" x1="184.1%" x2="9.2%" y1="6.7%" y2="63.1%">
+      <stop offset="0%" stop-color="#22447E" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#18418B"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-33" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#6082C7"/>
+      <stop offset="100%" stop-color="#2E4E91"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-34" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#C3D5FA"/>
+      <stop offset="100%" stop-color="#87A3DA"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-35" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#6082C7"/>
+      <stop offset="100%" stop-color="#2E4E91"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-36" x1="94.2%" x2="9%" y1="6.2%" y2="100%">
+      <stop offset="0%" stop-color="#22447E"/>
+      <stop offset="100%" stop-color="#07214C"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-37" x1="103.5%" x2="7.6%" y1="32.5%" y2="63.8%">
+      <stop offset="0%" stop-color="#22447E" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#18418B"/>
+      <stop offset="100%" stop-color="#18418B"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-38" x1="92.1%" x2="7.6%" y1="37%" y2="63.8%">
+      <stop offset="0%" stop-color="#22447E" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#18418B"/>
+      <stop offset="100%" stop-color="#18418B"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-39" x1="28.6%" x2="40.1%" y1="80%" y2="17.3%">
+      <stop offset="0%" stop-color="#84AFE4"/>
+      <stop offset="100%" stop-color="#4C77C4"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-40" x1="28.6%" x2="40.1%" y1="80%" y2="17.3%">
+      <stop offset="0%" stop-color="#4882C6"/>
+      <stop offset="100%" stop-color="#4C77C4"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-41" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#C3D5FA"/>
+      <stop offset="100%" stop-color="#87A3DA"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-42" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#C2D1F1"/>
+      <stop offset="100%" stop-color="#9BB3E2"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-43" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#C3D5FA"/>
+      <stop offset="100%" stop-color="#87A3DA"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-44" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#C2D1F1"/>
+      <stop offset="100%" stop-color="#9BB3E2"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-45" x1="100%" x2="17.6%" y1="41.6%" y2="61.9%">
+      <stop offset="0%" stop-color="#0D2F69"/>
+      <stop offset="72.7%" stop-color="#032259"/>
+      <stop offset="100%" stop-color="#22447E"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-46" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#3C67B4"/>
+      <stop offset="100%" stop-color="#18418B"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-47" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#7795CB"/>
+      <stop offset="100%" stop-color="#5E7AAE"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-48" x1="54.2%" x2="67%" y1="45.1%" y2="57.5%">
+      <stop offset="0%" stop-color="#CCE1FF"/>
+      <stop offset="100%" stop-color="#FBFDFD" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-49" x1="34.5%" x2="42.3%" y1="51%" y2="58.7%">
+      <stop offset="0%" stop-color="#80A9F8"/>
+      <stop offset="100%" stop-color="#EDF5FE" stop-opacity=".2"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-50" x1="100%" x2="17.6%" y1="39.9%" y2="64.2%">
+      <stop offset="0%" stop-color="#0D2F69"/>
+      <stop offset="72.7%" stop-color="#032259"/>
+      <stop offset="100%" stop-color="#22447E"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-51" x1="6.4%" x2="30.4%" y1="100%" y2="100%">
+      <stop offset="0%" stop-color="#7092CE"/>
+      <stop offset="100%" stop-color="#486CAD"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-52" x1="66.8%" x2="44.2%" y1="41.2%" y2="59.1%">
+      <stop offset="0%" stop-color="#22447E" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#18418B"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-53" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#98B1E3"/>
+      <stop offset="100%" stop-color="#5F7DB9"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-54" x1="75.7%" x2="48.8%" y1="40.5%" y2="48.1%">
+      <stop offset="0%" stop-color="#22447E" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#18418B"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-55" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#98B1E3"/>
+      <stop offset="100%" stop-color="#5F7DB9"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-56" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#5F7DB9"/>
+      <stop offset="100%" stop-color="#98B1E3"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-57" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#5F7DB9"/>
+      <stop offset="100%" stop-color="#98B1E3"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-58" x1="107.1%" x2="-24.3%" y1="30.6%" y2="73.5%">
+      <stop offset="0%" stop-color="#22447E" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#18418B"/>
+      <stop offset="100%" stop-color="#18418B"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-59" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#5F7DB9"/>
+      <stop offset="100%" stop-color="#98B1E3"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-60" x1="84.7%" x2="9.2%" y1="36.9%" y2="64.7%">
+      <stop offset="0%" stop-color="#22447E" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#18418B"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-61" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#5F7DB9"/>
+      <stop offset="100%" stop-color="#98B1E3"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-62" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#98B1E3"/>
+      <stop offset="100%" stop-color="#5F7DB9"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-63" x1="84.7%" x2="9.2%" y1="36.9%" y2="64.7%">
+      <stop offset="0%" stop-color="#22447E" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#18418B"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-64" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#5F7DB9"/>
+      <stop offset="100%" stop-color="#98B1E3"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-65" x1="184.1%" x2="9.2%" y1="6.7%" y2="63.1%">
+      <stop offset="0%" stop-color="#22447E" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#18418B"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-66" x1="32%" x2="78.5%" y1="75.8%" y2="75.8%">
+      <stop offset="0%" stop-color="#F0F6FF"/>
+      <stop offset="100%" stop-color="#C1D7FF"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-67" x1="74.2%" x2="55.9%" y1="83.1%" y2="96.9%">
+      <stop offset="0%" stop-color="#F95D5D"/>
+      <stop offset="100%" stop-color="#BC2020"/>
+    </linearGradient>
+    <linearGradient id="linearGradient-68" x1="95.1%" x2="61%" y1="77.7%" y2="89.3%">
+      <stop offset="0%" stop-color="#F95D5D"/>
+      <stop offset="100%" stop-color="#BC2020"/>
+    </linearGradient>
+    <pattern id="pattern-5" width="1.5" height="2.1" x="44.5" y="56.3" patternUnits="userSpaceOnUse">
+      <use xlink:href="#image-6" transform="scale(.1)"/>
+    </pattern>
+    <pattern id="pattern-8" width="1.5" height="2.1" x="52" y="60.6" patternUnits="userSpaceOnUse">
+      <use xlink:href="#image-9" transform="scale(.1)"/>
+    </pattern>
+    <pattern id="pattern-11" width="1.5" height="2.1" x="59.7" y="65" patternUnits="userSpaceOnUse">
+      <use xlink:href="#image-12" transform="scale(.1)"/>
+    </pattern>
+    <pattern id="pattern-14" width="1.5" height="2.1" x="67.2" y="69.3" patternUnits="userSpaceOnUse">
+      <use xlink:href="#image-15" transform="scale(.1)"/>
+    </pattern>
+    <pattern id="pattern-17" width="1.5" height="2.1" x="74.8" y="62.5" patternUnits="userSpaceOnUse">
+      <use xlink:href="#image-18" transform="scale(.1)"/>
+    </pattern>
+    <path id="path-4" d="M46 67.6v-9.2l7.5 4.3V72z"/>
+    <path id="path-7" d="M53.5 72v-9.3l7.7 4.4v9.3z"/>
+    <path id="path-10" d="M61.2 76.4v-9.3l7.5 4.3v9.3z"/>
+    <path id="path-13" d="M68.7 80.7v-9.3l7.6 4.4V85z"/>
+    <path id="path-16" d="M95.4 73.8 76.3 85v-9.2l19.1-11.2z"/>
+  </defs>
+  <g id="Search" fill="none" fill-rule="evenodd" stroke="none" stroke-width="1">
+    <g id="search---basic-copy-3" transform="translate(-551 -318)">
+      <g id="Group-29" transform="translate(551.2 318.7)">
+        <g id="Group-27" opacity=".5">
+          <g id="vessel" transform="translate(224.1 80.9)">
+            <path id="Path-10" fill="url(#linearGradient-1)" d="M160.3 64.3c.4-6.4-.6-10.9-3-13.6-2.4-2.7-24 9-64.7 34.9L53 107.2l-32.6 3.4c-2.6 2.7-4 5.2-4 7.5s1.1 7.8 3.2 16.4a89.5 89.5 0 0 0 47.2-13c13.6-8.5 44.8-27.6 93.6-57.2Z"/>
+            <path id="Path-10-Copy" fill="url(#linearGradient-2)" d="M159 53.5c-.2-.7-.8-1.6-1.7-2.8-.1-.3-21.7 11.3-64.7 34.9L53 107.2l-32.6 3.4c-2.6 2.7-4 5.2-4 7.5 0 1.6.6 4.8 1.6 9.6.4 2 28.3-4.4 48.8-17.1L159 53.5Z"/>
+            <path id="Path-8-Copy" fill="url(#linearGradient-3)" d="m141.7 40.6-30.6-18.5 18.4-12 30.6 19.2z"/>
+            <path id="Path-6-Copy" fill="#83ACF6" d="m145.4 47.5-34.3-19.2-72.7 43.1 26.4 22.3z"/>
+            <g id="Group-8" transform="translate(90 41.1)">
+              <path id="Path-7-Copy-41" fill="#6D96E0" d="M17.3 0 0 10.2 13.6 18 30.9 7.8z"/>
+              <path id="Path-7-Copy-50" fill="#18418B" d="M4.5 7.6 0 10.2 13.6 18l4.5-2.5z" opacity=".2"/>
+              <path id="Path-7-Copy-51" fill="#9DBFFC" d="M17.3 0v7l7.6 4.3 6-3.5z"/>
+              <path id="Path-7-Copy-48" fill="#18418B" d="M17.3 0 0 10.2l6.1 3.5L17.3 7z"/>
+            </g>
+            <path id="Path-6" fill="#22447E" d="M111.1 24.7v3.6L38.4 71.4l-.8-3.3z"/>
+            <path id="Path-7-Copy-41" fill="#18418B" d="M93.6 66.1 74.3 77.5l7.5 4.3 19.3-11.3z" opacity=".2"/>
+            <path id="Path-7-Copy-42" fill="#18418B" d="M40.7 68.1 30.4 74l31.9 19.7 10.3-5.9-9.9-6.1-1.5 1-12-7.4 1.5-1z" opacity=".2"/>
+            <path id="Path-4-Copy" fill="#8DB6FF" d="M64.8 87.4C46.6 102.6 25 104 0 91.2l2.3.6c10.6-11.7 20.4-20 29.2-24.6l33.3 20.2Z"/>
+            <g id="Group-5" transform="translate(22.1 83.5)">
+              <path id="Path-7-Copy-11" fill="#DBE6F9" d="M2.4 0 0 1.3l8.7 5.3 2.4-1.3z"/>
+              <path id="Path-7-Copy-17" fill="#F0F6FF" d="M0 2.3v-1l8.7 5.3v.9z"/>
+              <path id="Path-7-Copy-18" fill="#C1D7FF" d="M11.1 6.2v-.9L8.7 6.6v.9z"/>
+            </g>
+            <g id="Group-5-Copy" transform="translate(26.2 72.5)">
+              <path id="Path-7-Copy-11" fill="#719AE4" d="M2.4 0 0 1.3l8.7 5.3 2.4-1.3z"/>
+              <path id="Path-7-Copy-17" fill="#9DBFFC" d="M0 2.3v-1l8.7 5.3v.9z"/>
+              <path id="Path-7-Copy-18" fill="#18418B" d="M11.1 6.2v-.9L8.7 6.6v.9z"/>
+            </g>
+            <g id="Group-5-Copy-2" transform="translate(40.1 81.2)">
+              <path id="Path-7-Copy-11" fill="#719AE4" d="M2.4 0 0 1.3l8.7 5.3 2.4-1.3z"/>
+              <path id="Path-7-Copy-17" fill="#9DBFFC" d="M0 2.3v-1l8.7 5.3v.9z"/>
+              <path id="Path-7-Copy-18" fill="#18418B" d="M11.1 6.2v-.9L8.7 6.6v.9z"/>
+            </g>
+            <path id="Path-5-Copy" fill="#436EBB" d="M66.7 85.7v3.1l-13.4-8.4v-2.9z"/>
+            <g id="Path-7">
+              <use xlink:href="#path-4" fill="#90B3F1"/>
+              <use xlink:href="#path-4" fill="url(#pattern-5)" style="mix-blend-mode:multiply"/>
+            </g>
+            <g id="Path-7-Copy-2">
+              <use xlink:href="#path-7" fill="#F9FBFF"/>
+              <use xlink:href="#path-7" fill="url(#pattern-8)" style="mix-blend-mode:multiply"/>
+            </g>
+            <path id="Path-7-Copy-11" fill="#416AB4" d="m135.3 0-5.1 2.7 4.4 2.7 5-2.6z"/>
+            <path id="Path-7-Copy-19" fill="#163F89" d="m135.1 1-3.2 1.7 2.8 1.7 3.2-1.6z"/>
+            <path id="Path-7-Copy-11" fill="#416AB4" d="m149.2 8.8-5.1 2.7 4.4 2.7 5.1-2.6z"/>
+            <path id="Path-7-Copy-19" fill="#163F89" d="m149.1 9.9-3.2 1.6 2.7 1.7 3.2-1.6z"/>
+            <path id="Path-7-Copy-15" fill="#3C67B4" d="M144.1 29.7V11.5l4.4 2.7v18.3z"/>
+            <path id="Path-7-Copy-40" fill="#18418B" d="M144.1 29.7V19l4.4 2.8v10.7z" opacity=".2"/>
+            <path id="Path-7-Copy-13" fill="#18418B" d="M139.6 17.5V2.8l-5 2.6v14.8z"/>
+            <path id="Path-7-Copy-47" fill="#FFF" d="M139.6 6.8v-2l-5 2.7v2z" opacity=".3"/>
+            <path id="Path-7-Copy-16" fill="#18418B" d="M153.6 30.9V11.6l-5.1 2.6v19.4z"/>
+            <path id="Path-7-Copy-49" fill="#FFF" d="M144.1 15.8v-2l4.4 2.8v2z" opacity=".3"/>
+            <path id="Path-7-Copy-47" fill="#FFF" d="M153.6 15.8v-1.9l-5.1 2.7v2z" opacity=".3"/>
+            <g id="Path-7-Copy-5">
+              <use xlink:href="#path-10" fill="#9ABBF5"/>
+              <use xlink:href="#path-10" fill="url(#pattern-11)" style="mix-blend-mode:multiply"/>
+            </g>
+            <g id="Path-7-Copy-7">
+              <use xlink:href="#path-13" fill="#F0F5FF"/>
+              <use xlink:href="#path-13" fill="url(#pattern-14)" style="mix-blend-mode:multiply"/>
+            </g>
+            <g id="Path-7-Copy-10">
+              <use xlink:href="#path-16" fill="#BFD3F8"/>
+              <use xlink:href="#path-16" fill="url(#pattern-17)" style="mix-blend-mode:multiply"/>
+            </g>
+            <path id="Path-8" fill="#4069B3" d="m141.7 40.6-30.6-18.5v6.2l30.6 19.2z"/>
+            <path id="Path-7-Copy-44" fill="#C1D7FF" d="M132.7 14.2v-1.9l-15.1 9.3v1.9z"/>
+            <path id="Path-7-Copy-45" fill="#F0F6FF" d="M113.9 21.2v-1.9l3.7 2.3v1.9z"/>
+            <path id="Path-7-Copy-46" fill="#DBE6F9" d="m129.1 10-15.2 9.3 3.7 2.3 15.1-9.3z"/>
+            <path id="Path-7-Copy-15" fill="#3C67B4" d="M130.2 12V2.7l4.4 2.7v9.3z"/>
+            <path id="Path-7-Copy-55" fill="#18418B" d="M130.2 12v-1.4l4.4 2.8v1.3z" opacity=".2"/>
+            <g id="Group-2" transform="translate(119.7 7.7)">
+              <path id="Path-7-Copy-21" fill="#F0F6FF" d="M2.4 14.3V6l19.8 11.8v8.3z"/>
+              <path id="Path-7-Copy-5" fill="#6790DA" d="M3 9.9V7.8l1.8 1v2.1z"/>
+              <path id="Path-7-Copy-22" fill="#6790DA" d="M3 13.4v-2.1l1.8 1v2.1z"/>
+              <path id="Path-7-Copy-24" fill="#6790DA" d="M10.2 14.2v-2.1l1.7 1v2.1z"/>
+              <path id="Path-7-Copy-29" fill="#6790DA" d="M10.2 17.7v-2.2l1.7 1.1v2.1z"/>
+              <path id="Path-7-Copy-14" fill="#6790DA" d="M5.4 11.4V9.2l1.7 1.1v2.1z"/>
+              <path id="Path-7-Copy-30" fill="#6790DA" d="M5.4 14.8v-2.1l1.7 1v2.2z"/>
+              <path id="Path-7-Copy-25" fill="#6790DA" d="M12.5 15.6v-2.1l1.8 1v2.2z"/>
+              <path id="Path-7-Copy-31" fill="#6790DA" d="M12.5 19.1V17l1.8 1v2.1z"/>
+              <path id="Path-7-Copy-27" fill="#6790DA" d="M17.3 18.5v-2.1l1.7 1v2.1z"/>
+              <path id="Path-7-Copy-32" fill="#6790DA" d="M17.3 21.9v-2.1l1.7 1.1V23z"/>
+              <path id="Path-7-Copy-23" fill="#6790DA" d="M7.8 12.7v-2.1l1.7 1.1v2.1z"/>
+              <path id="Path-7-Copy-33" fill="#6790DA" d="M7.8 16.2v-2.1l1.7 1v2.2z"/>
+              <path id="Path-7-Copy-26" fill="#6790DA" d="M14.9 17v-2.1l1.8 1v2.2z"/>
+              <path id="Path-7-Copy-34" fill="#6790DA" d="M14.9 20.5v-2.1l1.8 1v2.1z"/>
+              <path id="Path-7-Copy-28" fill="#6790DA" d="M19.7 19.9v-2.2l1.7 1.1v2.1z"/>
+              <path id="Path-7-Copy-35" fill="#6790DA" d="M19.7 23.3v-2.1l1.7 1v2.2z"/>
+              <path id="Path-7-Copy-20" fill="#D3E3FF" d="M27.1 23.1v-7.9l-4.9 2.6v8.3z"/>
+              <path id="Path-7-Copy-39" fill="#18418B" d="M27.1 21.3v-6.7l-4.9 2.6v3.1z" opacity=".2"/>
+              <path id="Path-7-Copy-38" fill="#18418B" d="M2.4 8.5V5.4l19.8 11.8v3.1z" opacity=".2"/>
+              <path id="Path-7-Copy-11" fill="#DBE6F9" d="M4.9 0 0 2.6l25.1 15.2 4.9-2.6z"/>
+              <path id="Path-7-Copy-17" fill="#F0F6FF" d="M0 4.5V2.6l25.1 15.2v1.9z"/>
+              <path id="Path-7-Copy-18" fill="#C1D7FF" d="M30 17v-1.8l-4.9 2.6v1.9z"/>
+            </g>
+            <path id="Path-7-Copy-49" fill="#FFF" d="M130.2 6.8v-2l4.4 2.7v2z" opacity=".3"/>
+            <path id="Path-4" fill="url(#linearGradient-19)" d="M31.5 64.3A103.2 103.2 0 0 0 0 91.2l2.3.6c10.6-11.7 20.4-20 29.2-24.6v-3Z"/>
+            <path id="Path-7-Copy-36" fill="#C1D7FF" d="M158.7 29.2v-1.9l-15.2 9.4v1.8z"/>
+            <path id="Path-7-Copy-37" fill="#F0F6FF" d="M139.9 36.2v-1.9l3.6 2.4v1.8z"/>
+            <path id="Path-7-Copy-43" fill="#DBE6F9" d="m155 25-15.1 9.3 3.6 2.4 15.2-9.4z"/>
+            <path id="Path-5" fill="#436EBB" d="M39.7 69.3v2.9l-8.2-5v-2.9z"/>
+            <path id="Path-2" fill="url(#linearGradient-20)" d="M66.7 85.7v5.5l75-43.7v-6.9l18.4-11.3c.5 10.1-.4 17.2-2.8 21.4l-90.6 54C36.6 120 14.4 115.4 0 91.2a80.9 80.9 0 0 0 66.7-5.5Z"/>
+            <path id="Path-2-Copy" fill="#8CB5FF" d="m66.7 97.6 92.9-53.9c-.5 3-1.3 5.2-2.3 7l-90.6 54c-22.6 11.7-41 11.8-55.3.2a66 66 0 0 0 55.3-7.3Z" opacity=".5"/>
+            <path id="Path-7-Copy" fill="#719AE4" d="M65.1 47.1 46 58.4l7.5 4.3 19.1-11.2z"/>
+            <path id="Path-7-Copy-3" fill="#DEE8FB" d="M72.6 51.5 53.5 62.7l7.7 4.4 19.1-11.2z"/>
+            <path id="Path-7-Copy-4" fill="#719AE4" d="M80.3 55.8 61.2 67l7.5 4.4 19.1-11.3z"/>
+            <path id="Path-7-Copy-9" fill="#DEE8FB" d="M87.8 60.2 68.7 71.4l7.6 4.4 19.1-11.2z"/>
+            <path id="Path-7-Copy-52" fill="url(#linearGradient-21)" d="M119.1 55.1 99.9 66.5l2.2 1.5 19.3-11.3z" opacity=".2"/>
+            <path id="Path-7-Copy-53" fill="url(#linearGradient-21)" d="M94.7 40.1 75.5 51.4l2.2 1.5L97 41.6z" opacity=".2"/>
+            <path id="Path-7-Copy-54" fill="url(#linearGradient-22)" d="m117.5 18.4-2.4 1.5v2l-2.2 1.3v6.3l-7.8 4.5 2.3 1.6 7.9-4.7-.1-6.2 2.2-1.3v-2l2.4-1.4z" opacity=".2"/>
+            <path id="Path-7-Copy-54" fill="url(#linearGradient-23)" d="m142.5 32.9-2.4 1.5v2l-2.6 1.6v6.7l-8 4.5 2.3 1.5 7.9-4.4.2-.1v-6.7l2.5-1.6v-2l2.4-1.5z" opacity=".2"/>
+            <g id="Group-6-Copy-3" transform="translate(66.1 21.6)">
+              <path id="Oval-Copy-12" fill="url(#linearGradient-24)" d="M15.7 19c.4 0 .8-.4.8-1L14.4 0C14-.6 13.3-.7 13 0l2.1 18c0 .6.2 1 .6 1Z" transform="rotate(30 14.7 9.3)"/>
+              <path id="Line" stroke="#719AE4" stroke-linecap="round" stroke-width=".5" d="M18.2 1 9.9 5.9"/>
+              <path id="Oval-Copy-11" fill="url(#linearGradient-25)" d="M10.6 31.7c.9 0 1.7-.5 1.7-1v-26c-.7 0-2.8-.4-3 0v26c0 .5.4 1 1.3 1Z"/>
+              <path id="Line-Copy" stroke="#719AE4" stroke-linecap="round" stroke-width=".5" d="m9.9 5.9-8.8 5.3"/>
+              <path id="Oval-Copy-13" fill="url(#linearGradient-26)" d="M3.1 20c.4 0 .7-.3.7-.9l4.6-9.7c-.3 0-1.1-.6-1.2-.2l-4.7 10c0 .5.2.9.6.9Z" transform="scale(-1 1) rotate(30 0 -5.7)"/>
+              <path id="Oval-Copy-10" fill="#E3ECF9" d="M10.8 5.5c.8 0 1.5-.3 1.5-1 0-.5-.5-.8-1.5-.8-.7 0-1.2.2-1.4.5l-.2.4c0 .6.7 1 1.6 1Z"/>
+              <path id="Oval-Copy-14" fill="#F0F6FF" d="M.7 11.6c.3 0 .7-.2.7-.5 0-.2-.2-.4-.6-.4-.3 0-.5.1-.6.3v.2c0 .2.1.4.5.4Z" transform="rotate(-44 .8 11.2)"/>
+            </g>
+            <g id="Group-6-Copy-2" transform="translate(95.7 4.2)">
+              <path id="Oval-Copy-12" fill="url(#linearGradient-24)" d="M15.7 19c.4 0 .8-.4.8-1L14.4 0C14-.6 13.3-.7 13 0l2.1 18c0 .6.2 1 .6 1Z" transform="rotate(30 14.7 9.3)"/>
+              <path id="Line" stroke="#719AE4" stroke-linecap="round" stroke-width=".5" d="M18.2 1 9.9 5.9"/>
+              <path id="Oval-Copy-11" fill="url(#linearGradient-25)" d="M10.6 31.7c.9 0 1.7-.5 1.7-1v-26c-.7 0-2.8-.4-3 0v26c0 .5.4 1 1.3 1Z"/>
+              <path id="Line-Copy" stroke="#719AE4" stroke-linecap="round" stroke-width=".5" d="m9.9 5.9-8.8 5.3"/>
+              <path id="Oval-Copy-13" fill="url(#linearGradient-26)" d="M3.1 20c.4 0 .7-.3.7-.9l4.6-9.7c-.3 0-1.1-.6-1.2-.2l-4.7 10c0 .5.2.9.6.9Z" transform="scale(-1 1) rotate(30 0 -5.7)"/>
+              <path id="Oval-Copy-10" fill="#E3ECF9" d="M10.8 5.5c.8 0 1.5-.3 1.5-1 0-.5-.5-.8-1.5-.8-.7 0-1.2.2-1.4.5l-.2.4c0 .6.7 1 1.6 1Z"/>
+              <path id="Oval-Copy-14" fill="#F0F6FF" d="M.7 11.6c.3 0 .7-.2.7-.5 0-.2-.2-.4-.6-.4-.3 0-.5.1-.6.3v.2c0 .2.1.4.5.4Z" transform="rotate(-44 .8 11.2)"/>
+            </g>
+            <g id="Group-6" transform="translate(90.5 36.6)">
+              <path id="Oval-Copy-12" fill="url(#linearGradient-24)" d="M15.7 19c.4 0 .8-.4.8-1L14.4 0C14-.6 13.3-.7 13 0l2.1 18c0 .6.2 1 .6 1Z" transform="rotate(30 14.7 9.3)"/>
+              <path id="Line" stroke="#719AE4" stroke-linecap="round" stroke-width=".5" d="M18.2 1 9.9 5.9"/>
+              <path id="Oval-Copy-11" fill="url(#linearGradient-25)" d="M10.6 31.7c.9 0 1.7-.5 1.7-1v-26c-.7 0-2.8-.4-3 0v26c0 .5.4 1 1.3 1Z"/>
+              <path id="Line-Copy" stroke="#719AE4" stroke-linecap="round" stroke-width=".5" d="m9.9 5.9-8.8 5.3"/>
+              <path id="Oval-Copy-13" fill="url(#linearGradient-26)" d="M3.1 20c.4 0 .7-.3.7-.9l4.6-9.7c-.3 0-1.1-.6-1.2-.2l-4.7 10c0 .5.2.9.6.9Z" transform="scale(-1 1) rotate(30 0 -5.7)"/>
+              <path id="Oval-Copy-10" fill="#E3ECF9" d="M10.8 5.5c.8 0 1.5-.3 1.5-1 0-.5-.5-.8-1.5-.8-.7 0-1.2.2-1.4.5l-.2.4c0 .6.7 1 1.6 1Z"/>
+              <path id="Oval-Copy-14" fill="#F0F6FF" d="M.7 11.6c.3 0 .7-.2.7-.5 0-.2-.2-.4-.6-.4-.3 0-.5.1-.6.3v.2c0 .2.1.4.5.4Z" transform="rotate(-44 .8 11.2)"/>
+            </g>
+            <g id="Group-6-Copy" transform="translate(120.1 19.2)">
+              <path id="Oval-Copy-12" fill="url(#linearGradient-24)" d="M15.7 19c.4 0 .8-.4.8-1L14.4 0C14-.6 13.3-.7 13 0l2.1 18c0 .6.2 1 .6 1Z" transform="rotate(30 14.7 9.3)"/>
+              <path id="Line" stroke="#719AE4" stroke-linecap="round" stroke-width=".5" d="M18.2 1 9.9 5.9"/>
+              <path id="Oval-Copy-11" fill="url(#linearGradient-25)" d="M10.6 31.7c.9 0 1.7-.5 1.7-1v-26c-.7 0-2.8-.4-3 0v26c0 .5.4 1 1.3 1Z"/>
+              <path id="Line-Copy" stroke="#719AE4" stroke-linecap="round" stroke-width=".5" d="m9.9 5.9-8.8 5.3"/>
+              <path id="Oval-Copy-13" fill="url(#linearGradient-26)" d="M3.1 20c.4 0 .7-.3.7-.9l4.6-9.7c-.3 0-1.1-.6-1.2-.2l-4.7 10c0 .5.2.9.6.9Z" transform="scale(-1 1) rotate(30 0 -5.7)"/>
+              <path id="Oval-Copy-10" fill="#E3ECF9" d="M10.8 5.5c.8 0 1.5-.3 1.5-1 0-.5-.5-.8-1.5-.8-.7 0-1.2.2-1.4.5l-.2.4c0 .6.7 1 1.6 1Z"/>
+              <path id="Oval-Copy-14" fill="#F0F6FF" d="M.7 11.6c.3 0 .7-.2.7-.5 0-.2-.2-.4-.6-.4-.3 0-.5.1-.6.3v.2c0 .2.1.4.5.4Z" transform="rotate(-44 .8 11.2)"/>
+            </g>
+          </g>
+          <g id="Group-24" transform="translate(0 124.2)">
+            <path id="Path-10" fill="url(#linearGradient-27)" d="M152.5 102c.3-5.9-.6-10-2.8-12.6-2.2-2.5-23.6 8.9-64 34.1l-36.8 20-30.2 3.1c-2.4 2.5-3.6 4.8-3.6 7 0 2.1 1 7.2 3 15.2 16.4-.2 31-4.2 43.6-12a8220 8220 0 0 1 90.8-54.8Z"/>
+            <path id="Path-10-Copy" fill="url(#linearGradient-28)" d="M151.2 92c-.1-.6-.7-1.5-1.5-2.6-.1-.3-21.5 11-64 34.1l-36.8 20-30.2 3.1c-2.4 2.5-3.6 4.8-3.6 7 0 1.5.5 4.4 1.5 8.8.4 1.9 26.2-4 45-15.8L151.3 92Z"/>
+            <path id="Path-6-Copy" fill="#A9C6F7" d="m151.8 79.1-30.6-18.9-85.6 50.2 26.8 20.7z"/>
+            <g id="Group-11" transform="translate(89.1 73.7)">
+              <path id="Path-7-Copy-11" fill="#22447E" d="M17.1 0 0 10.2l9.3 5.9L26.5 5.8z"/>
+              <path id="Path-7-Copy-99" fill="#A9C6F7" d="M17.1 0 0 10.2l4.1 2.6 13-7.8z" opacity=".2"/>
+              <path id="Path-7-Copy-100" fill="#A9C6F7" d="m17.1 0 9.4 5.8-4.2 2.6L17.1 5z" opacity=".4"/>
+            </g>
+            <g id="Group-11-Copy-4" transform="translate(100.8 80.8)">
+              <path id="Path-7-Copy-11" fill="#22447E" d="M17.1 0 0 10.2l9.3 5.9L26.5 5.8z"/>
+              <path id="Path-7-Copy-99" fill="#A9C6F7" d="M17.1 0 0 10.2l4.1 2.6 13-7.8z" opacity=".2"/>
+              <path id="Path-7-Copy-100" fill="#A9C6F7" d="m17.1 0 9.4 5.8-4.2 2.6L17.1 5z" opacity=".4"/>
+            </g>
+            <path id="Path-7-Copy-41" fill="#18418B" d="m59.3 98.9-24.1 14.2 25.2 15 24.1-14.2z" opacity=".2"/>
+            <path id="Path-6" fill="#22447E" d="M121.2 58.1v2.2l-62.5 37-2.6-.9z"/>
+            <path id="Path-6-Copy-2" fill="#4266A2" d="M121.2 58.2v2.1l30.9 19.3v-2.2z"/>
+            <g id="Group-19" transform="translate(69.2)">
+              <path id="Path-7-Copy-90" fill="url(#linearGradient-29)" d="M43 81.6 17 96.1l1.2.8 26.1-14.6z" opacity=".2"/>
+              <path id="Path-7-Copy-69" fill="url(#linearGradient-30)" d="M10.9 96.2c-.5.3-2.3-1.4-2.4-1a39.5 39.5 0 0 0 .2 3l.6.6 4.2 2.4c1.7 1 3.7 1 5.3 0 .6-.3 1-1 1-1.6v-2c-.2-.3-2.4.3-2.6.2l-2.5-.8c-1.7-1-2.2-1.7-3.8-.8Z" transform="matrix(-1 0 0 1 28.2 0)"/>
+              <path id="Path-7-Copy-70" fill="#A9BFEE" d="M9.3 93.7a1.7 1.7 0 0 0 0 3l4.2 2.4c1.7 1 3.7 1 5.3 0a1.7 1.7 0 0 0 0-3l-4.1-2.4c-1.7-1-3.7-1-5.4 0Z" transform="matrix(-1 0 0 1 28.2 0)"/>
+              <g id="Group-18" fill="url(#linearGradient-31)" transform="rotate(46 -12.6 57)">
+                <path id="Rectangle-Copy-12" d="M0 .5C0 .2.2 0 .5 0s.5.2.6.6L6 39c-.2.3-.5.5-.7.5-.2 0-.4-.2-.6-.5L0 .5Z"/>
+              </g>
+              <path id="Line-3" stroke="#4B71B3" stroke-linecap="round" stroke-linejoin="round" stroke-width=".7" d="M37.3 34.9V27l-24 .7"/>
+              <path id="Path-7-Copy-52" fill="url(#linearGradient-32)" d="m18.2 93.4-4.9 2.7 1.2.8 4.9-2.7c-.1-.1-.2-.3-.5-.4l-.7-.4Z" opacity=".2"/>
+              <path id="Rectangle" fill="url(#linearGradient-33)" d="M12 22.5h2.6v74.7c-.4.4-.9.5-1.3.5-.5 0-.9-.1-1.3-.5V22.5Z"/>
+              <path id="Line-3-Copy-2" stroke="#92ABDE" stroke-linecap="round" stroke-width="1.4" d="M22.1 34.2 4.8 23.7"/>
+              <path id="Line-3-Copy-6" stroke="#92ABDE" stroke-linecap="round" stroke-width=".7" d="m17.8 39.9-8.7-5.3"/>
+              <path id="Line-3-Copy-7" stroke="#92ABDE" stroke-linecap="round" stroke-width=".7" d="m17.8 49.1-8.7-5.2"/>
+              <path id="Line-3-Copy-8" stroke="#92ABDE" stroke-linecap="round" stroke-width=".7" d="m17.8 58.4-8.7-5.3"/>
+              <path id="Line-3-Copy-9" stroke="#92ABDE" stroke-linecap="round" stroke-width=".7" d="m17.8 67.6-8.7-5.2"/>
+              <path id="Line-3-Copy-10" stroke="#92ABDE" stroke-linecap="round" stroke-width=".7" d="m17.8 67.6-8.7-5.2"/>
+              <path id="Line-3-Copy-11" stroke="#92ABDE" stroke-linecap="round" stroke-width=".7" d="m17.8 76.8-8.7-5.2"/>
+              <path id="Line-3-Copy-12" stroke="#92ABDE" stroke-linecap="round" stroke-width=".7" d="m17.8 86.1-8.7-5.3"/>
+              <path id="Line-3-Copy-13" stroke="#92ABDE" stroke-linecap="round" stroke-width=".7" d="m17.8 95.3-8.7-5.2"/>
+              <path id="Rectangle-Copy-11" fill="url(#linearGradient-34)" d="M10.3 19h6v7.8c0 .5-1 1-3 1s-3-.5-3-1V19Z"/>
+              <path id="Oval-Copy-6" fill="#D0DFFF" d="M13.3 20c1.7 0 3-.5 3-1 0-.6-1.3-1-3-1s-3 .4-3 1c0 .5 1.3 1 3 1Z"/>
+              <path id="Line-3-Copy" stroke="#4B71B3" stroke-linecap="round" stroke-width=".7" d="m0 88.9 7.5-63.5"/>
+              <path id="Rectangle-Copy-5" fill="url(#linearGradient-35)" d="M12.6.2H14v19l-.7.2c-.2 0-.5-.1-.7-.3V.2Z"/>
+              <path id="Oval-Copy-5" fill="#A9BFEE" d="M13.3.5c.4 0 .7-.1.7-.3 0-.1-.3-.2-.7-.2-.4 0-.7.1-.7.2 0 .2.3.3.7.3Z"/>
+            </g>
+            <path id="Path-4-Copy" fill="#A9C6F7" d="M63 129.7C46 143.7 26 145 3 133.2l2 .6A105.6 105.6 0 0 1 32.2 111L63 129.7Z"/>
+            <path id="Path-4" fill="url(#linearGradient-36)" d="M17.4 111.5C11 116.3 5.4 122 0 128.7l9 3.4c3.7-4.3 6.6-7.4 8.8-9.2 2.3-2 2.1-5.7-.4-11.4Z"/>
+            <g id="Group-21-Copy" transform="translate(118.7 61.7)">
+              <path id="Path-7-Copy-93" fill="url(#linearGradient-37)" d="M17.6 10.8 11.8 14l1.2.8 5.8-3.3z" opacity=".2"/>
+              <path id="Path-7-Copy-95" fill="url(#linearGradient-38)" d="M11.5 6.9 5.7 10l1.2.8 5.9-3.2z" opacity=".2"/>
+              <path id="Path-7-Copy-94" fill="#18418B" fill-opacity=".5" d="M19.4 11.2 12.5 15l1.2.8 7-3.9z" opacity=".2"/>
+              <path id="Path-7-Copy-98" fill="#18418B" fill-opacity=".5" d="m18.4 13.2-2.1 1.2.9.6 2.3-1.3z" opacity=".2"/>
+              <path id="Path-7-Copy-97" fill="#18418B" fill-opacity=".5" d="M10.9 8.7 8.8 9.9l5.1 2.9 2.2-1.2z" opacity=".2"/>
+              <path id="Path-7-Copy-96" fill="#18418B" fill-opacity=".5" d="m10.2 6.2-7 3.8 1.2.8 7-3.9z" opacity=".2"/>
+              <path id="Path-31-Copy-20" fill="url(#linearGradient-39)" d="M2.7 1.6c.8-.6 2.8 0 3.4.8.2.3.3.6.3 1v.4c0 2-1 4-2.7 5.2a2 2 0 0 1-1.4.3C1.5 9.2.6 8.6.3 8c-.2-.3-.3-.6-.3-1V7c0-2.1 1-4.1 2.7-5.3Z"/>
+              <path id="Path-31-Copy-21" fill="#214D9D" d="M3.6 2a1.7 1.7 0 0 1 2.8 1.4v.4c0 2-1 4-2.7 5.2A1.8 1.8 0 0 1 .9 7.5v-.2c0-2.1 1-4.1 2.7-5.3Z"/>
+              <path id="Path-3" fill="#4C77C4" d="m9.6 8.6-2.8 8.5 1.1.7 2.8-8.9z"/>
+              <path id="Path-3-Copy-2" fill="#4C77C4" d="M3.7 4.5.9 13.1l1.1.6 2.8-8.9z"/>
+              <path id="Path-3-Copy" fill="#18418B" d="m10.5 8.9 2.5 5.9-5.1 3z"/>
+              <path id="Path-3-Copy-3" fill="#18418B" d="m4.7 4.8 2.4 5.9-5.1 3z"/>
+              <path id="Path-31-Copy-22" fill="#3C67B4" d="M4.3 4.1c.5 0 6.7 4 7.7 4.3l.1.4V9c0 .8-.4 1.6-1 2.1l-.6.1c-.3 0-7.4-4.5-7.5-4.7l-.2-.4c0-1 .5-2 1.5-2Z"/>
+              <path id="Path-31-Copy-9" fill="url(#linearGradient-39)" d="M10.4 6.1c.8-.5 2.8 0 3.3.8.3.3.4.6.4 1v.4c0 2.1-1 4-2.8 5.2a2 2 0 0 1-1.3.3c-.8 0-1.7-.6-2-1.1-.2-.3-.3-.7-.3-1v-.3c0-2 1-4 2.7-5.3Z"/>
+              <path id="Path-31-Copy-13" fill="#214D9D" d="M11.3 6.5A1.7 1.7 0 0 1 14.1 8v.4c0 2.1-1 4-2.8 5.2a1.8 1.8 0 0 1-2.7-1.4v-.3c0-2 1-4 2.7-5.3Z"/>
+              <path id="Path-31-Copy-19" fill="#3C67B4" d="M11.6 8.4c.3-.2 1.1 0 1.4.3l.1.4v.2c0 .9-.4 1.6-1.1 2.1-.1.1-.3.2-.5.1-.4 0-.7-.2-.8-.4l-.2-.4v-.1c0-.9.4-1.7 1.1-2.2Z"/>
+              <path id="Path-31-Copy-18" fill="#18418B" d="M12.2 8.7a.7.7 0 0 1 1 .5v.2c0 .8-.3 1.6-1 2A.7.7 0 0 1 11 11v-.1c0-.9.4-1.7 1-2.1Z"/>
+            </g>
+            <g id="Group-21-Copy-2" transform="translate(66.3 92.6)">
+              <path id="Path-7-Copy-93" fill="url(#linearGradient-37)" d="M17.6 10.8 11.8 14l1.2.8 5.8-3.3z" opacity=".2"/>
+              <path id="Path-7-Copy-95" fill="url(#linearGradient-38)" d="M11.5 6.9 5.7 10l1.2.8 5.9-3.2z" opacity=".2"/>
+              <path id="Path-7-Copy-94" fill="#18418B" fill-opacity=".5" d="M19.4 11.2 12.5 15l1.2.8 7-3.9z" opacity=".2"/>
+              <path id="Path-7-Copy-98" fill="#18418B" fill-opacity=".5" d="m18.4 13.2-2.1 1.2.9.6 2.3-1.3z" opacity=".2"/>
+              <path id="Path-7-Copy-97" fill="#18418B" fill-opacity=".5" d="M10.9 8.7 8.8 9.9l5.1 2.9 2.2-1.2z" opacity=".2"/>
+              <path id="Path-7-Copy-96" fill="#18418B" fill-opacity=".5" d="m10.2 6.2-7 3.8 1.2.8 7-3.9z" opacity=".2"/>
+              <path id="Path-31-Copy-20" fill="url(#linearGradient-40)" d="M2.7 1.6c.8-.6 2.8 0 3.4.8.2.3.3.6.3 1v.4c0 2-1 4-2.7 5.2a2 2 0 0 1-1.4.3C1.5 9.2.6 8.6.3 8c-.2-.3-.3-.6-.3-1V7c0-2.1 1-4.1 2.7-5.3Z"/>
+              <path id="Path-31-Copy-21" fill="#214D9D" d="M3.6 2a1.7 1.7 0 0 1 2.8 1.4v.4c0 2-1 4-2.7 5.2A1.8 1.8 0 0 1 .9 7.5v-.2c0-2.1 1-4.1 2.7-5.3Z"/>
+              <path id="Path-3" fill="#4C77C4" d="m9.6 8.6-2.8 8.5 1.1.7 2.8-8.9z"/>
+              <path id="Path-3-Copy-2" fill="#4C77C4" d="M3.7 4.5.9 13.1l1.1.6 2.8-8.9z"/>
+              <path id="Path-3-Copy" fill="#18418B" d="m10.5 8.9 2.5 5.9-5.1 3z"/>
+              <path id="Path-3-Copy-3" fill="#18418B" d="m4.7 4.8 2.4 5.9-5.1 3z"/>
+              <path id="Path-31-Copy-22" fill="#3C67B4" d="M4.3 4.1c.5 0 6.7 4 7.7 4.3l.1.4V9c0 .8-.4 1.6-1 2.1l-.6.1c-.3 0-7.4-4.5-7.5-4.7l-.2-.4c0-1 .5-2 1.5-2Z"/>
+              <path id="Path-31-Copy-9" fill="url(#linearGradient-40)" d="M10.4 6.1c.8-.5 2.8 0 3.3.8.3.3.4.6.4 1v.4c0 2.1-1 4-2.8 5.2a2 2 0 0 1-1.3.3c-.8 0-1.7-.6-2-1.1-.2-.3-.3-.7-.3-1v-.3c0-2 1-4 2.7-5.3Z"/>
+              <path id="Path-31-Copy-13" fill="#214D9D" d="M11.3 6.5A1.7 1.7 0 0 1 14.1 8v.4c0 2.1-1 4-2.8 5.2a1.8 1.8 0 0 1-2.7-1.4v-.3c0-2 1-4 2.7-5.3Z"/>
+              <path id="Path-31-Copy-19" fill="#3C67B4" d="M11.6 8.4c.3-.2 1.1 0 1.4.3l.1.4v.2c0 .9-.4 1.6-1.1 2.1-.1.1-.3.2-.5.1-.4 0-.7-.2-.8-.4l-.2-.4v-.1c0-.9.4-1.7 1.1-2.2Z"/>
+              <path id="Path-31-Copy-18" fill="#18418B" d="M12.2 8.7a.7.7 0 0 1 1 .5v.2c0 .8-.3 1.6-1 2A.7.7 0 0 1 11 11v-.1c0-.9.4-1.7 1-2.1Z"/>
+            </g>
+            <g id="Group-17" transform="translate(15.2 79.1)">
+              <path id="Path-31-Copy-7" fill="#BBCBE2" d="m35.9 35.5 20.8-12-20.2-11.6-21 11.6z"/>
+              <path id="Path-31-Copy-8" fill="#D3E3FF" d="m35.9 35.5 20.8-12 .2 18.6-21 12.4z"/>
+              <path id="Path-31-Copy-15" fill="#8CABE2" d="m47.9 9.3 2-1.1.2 15.5-5 2.6z"/>
+              <path id="Path-31-Copy-14" fill="#C1D8FE" d="m47.9 9.3-.9-.6-3 16.8 1.1.8z"/>
+              <path id="Path-31-Copy-17" fill="#8CABE2" d="m38.7 3.8 2-1.2.1 15.5-5 2.6z"/>
+              <path id="Path-7-Copy-41" fill="#18418B" d="m31 14.9-23.7 14 19.6 11.6 24.3-13.8z" opacity=".2"/>
+              <path id="Path-31-Copy-16" fill="#C1D8FE" d="m38.7 3.8-1-.6-3 16.8 1.1.7z"/>
+              <path id="Path-31-Copy-4" fill="#D3E3FF" d="m20.4 32.5 20.8-12 .4 30.1-19.7 10.7-1.5-21.5z"/>
+              <path id="Path-31-Copy-23" fill="#B1D2EE" d="m22 43.2-1.6-5.3 20.8-11.7v6.1z"/>
+              <path id="Path-7-Copy-72" fill="#5477AB" d="m22.4 34.7 5.8 3.4-1 3.3-4.8-2.9z" opacity=".5" transform="matrix(-1 0 0 1 50.6 0)"/>
+              <path id="Path-31" fill="#E4EDF7" d="m20.4 32.5 20.8-12L21 8.9 0 20.5z"/>
+              <path id="Rectangle-Copy-11" fill="url(#linearGradient-41)" d="M19.4 27.5H23v1.3c0 .3-.6.7-1.8.7-1.2 0-1.8-.4-1.8-.7v-1.3Z"/>
+              <path id="Rectangle-Copy-13" fill="url(#linearGradient-41)" d="M4.8 19h3.6v1.3c0 .3-.6.6-1.8.6-1.1 0-1.8-.3-1.8-.6v-1.4Z"/>
+              <path id="Oval-Copy-6" fill="#D0DFFF" d="M21.2 28c1 0 1.8-.2 1.8-.5 0-.4-.8-.7-1.8-.7s-1.8.3-1.8.7c0 .3.8.6 1.8.6Z"/>
+              <path id="Oval-Copy-9" fill="#D0DFFF" d="M6.6 19.5c1 0 1.8-.2 1.8-.6 0-.3-.8-.6-1.8-.6s-1.8.3-1.8.6c0 .4.8.6 1.8.6Z"/>
+              <path id="Path-31-Copy-10" fill="#A9C6F7" d="m49.5 9 2.4-1.3L38.6 0l-2.3 1.3z"/>
+              <path id="Path-31-Copy-11" fill="#8CABE2" d="m49.5 9 2.4-1.3V9l-2.4 1.3z"/>
+              <path id="Path-31-Copy-12" fill="#C1D8FE" d="M49.5 9 36.3 1.3v1.3l13.2 7.7z"/>
+              <path id="Path-31-Copy" fill="#F0F6FF" d="M20.4 32.5v5.4L.2 26.3 0 20.5z"/>
+              <path id="Path-31-Copy-2" fill="#C1DAE7" d="m22 43.2-1.6-5.3L.2 26.3l1.4 4.9z"/>
+              <path id="Path-31-Copy-5" fill="#829BC0" d="m19.7 41.2-1.2-3.7-7.1-4.1 1.1 3.6z" opacity=".5"/>
+              <path id="Path-31-Copy-6" fill="#829BC0" d="m10.7 36.1-1.1-3.7-7.1-4.1 1.1 3.6z" opacity=".5"/>
+              <path id="Path-31-Copy-3" fill="#F0F6FF" d="m22 43.2-.1 18.1L1.6 49.7V31.2z"/>
+            </g>
+            <path id="Line-3-Copy-4" stroke="#4B71B3" stroke-linecap="round" stroke-width=".7" d="m21.8 98.1 11.1-16.5 43.8-56.2"/>
+            <path id="Line-3-Copy-5" stroke="#4B71B3" stroke-linecap="round" stroke-width=".7" d="m36.4 106.6 3.5-20.8 49-53.1 10.9 75.7"/>
+            <path id="Rectangle" fill="url(#linearGradient-42)" d="M35.8 81.7h1v17a1 1 0 0 1-.4.2 1 1 0 0 1-.6-.2v-17Z"/>
+            <path id="Line-3-Copy-2" stroke="#B3C8F2" stroke-linecap="round" stroke-width=".7" d="m39.9 85.8-7-4.2"/>
+            <path id="Rectangle-Copy-11" fill="url(#linearGradient-43)" d="M35.5 80.8h1.7V83c0 .2-.3.3-.8.3-.6 0-.9-.1-.9-.3v-2.2Z"/>
+            <path id="Oval-Copy-6" fill="#D0DFFF" d="M36.4 81.1c.4 0 .8-.1.8-.3 0-.1-.4-.3-.8-.3-.5 0-.9.2-.9.3 0 .2.4.3.9.3Z"/>
+            <path id="Rectangle-Copy-5" fill="url(#linearGradient-44)" d="M36 73.3h.6v7.5l-.2.1H36v-7.6Z"/>
+            <path id="Oval-Copy-5" fill="#A9BFEE" d="m36.4 73.4.2-.1-.2-.1H36c0 .1.1.2.3.2Z"/>
+            <path id="Path-2" fill="url(#linearGradient-45)" d="m61.7 130.3 90.5-52.6c.5 4-.3 7.9-2.5 11.7l-88 51.8c-27.9 14-48.4 9.9-61.7-12.5 22.3 4.7 37.3 5.3 45.2 1.8a19 19 0 0 1 16.5-.2Z"/>
+            <path id="Path-2-Copy" fill="#8CB5FF" d="m61.7 134.6 90-51.6c-.4 2.6-1 4.8-2 6.4l-88 51.8c-21 10.8-38 10.9-51.2.2a61 61 0 0 0 51.2-6.8Z" opacity=".5"/>
+            <g id="Group-25" stroke-width=".7" transform="translate(94.7 34.4)">
+              <path id="Line-3" stroke="#4B71B3" stroke-linecap="round" d="M11.8.4.1 20.8"/>
+              <path id="Line-3-Copy-14" stroke="#4B71B3" stroke-linecap="round" d="m11.8.4 11.9 20.4"/>
+              <path id="Path-32" fill="#A9C6F7" fill-opacity=".3" stroke="#4B71B3" d="M11.7 12.4c1.7 4.8 6 6.9 12 8.4-1.7 3.5-8.8 8.1-12 5.6C7.9 29 1.7 24.3 0 20.8c5-.8 9.8-3.6 11.7-8.4Z"/>
+              <g id="Group-23" stroke-linecap="round" stroke-linejoin="round" transform="translate(4.4 17.7)">
+                <g id="Group-22" stroke="#A9C6F7" transform="rotate(167 6.1 3.4)">
+                  <path id="Line-4" d="M6.3 2.3h1.1"/>
+                  <path id="Line-4-Copy" d="M4.5 1.5h1.1"/>
+                  <path id="Line-4-Copy-2" d="m1 3.4.5-.3"/>
+                  <path id="Line-4-Copy-3" d="m4.4 2.4 1.2-.8"/>
+                  <path id="Line-4-Copy-4" d="m1.5 2.2.8.6"/>
+                  <path id="Line-4-Copy-5" d="m2.4 1.1.8-.6"/>
+                  <path id="Line-4-Copy-6" d="M2.8 2v.7"/>
+                  <path id="Line-4-Copy-7" d="M6 1.2v.7"/>
+                  <path id="Line-4-Copy-8" d="m3.9 1.6.4.8"/>
+                  <path id="Line-4-Copy-9" d="m.5 1.6.5.7"/>
+                </g>
+                <g id="Group-21" stroke="#6483B9" transform="rotate(-113 6.2 1.8)">
+                  <path id="Line-4-Copy-19" d="M4.5 2.3h.8"/>
+                  <path id="Line-4-Copy-18" d="M3.2 1.5H4"/>
+                  <path id="Line-4-Copy-17" d="m.7 3.4.4-.3"/>
+                  <path id="Line-4-Copy-16" d="m3.2 2.4.8-.8"/>
+                  <path id="Line-4-Copy-15" d="m1.1 2.2.6.6"/>
+                  <path id="Line-4-Copy-14" d="m1.7 1.1.6-.6"/>
+                  <path id="Line-4-Copy-13" d="M2 2v.7"/>
+                  <path id="Line-4-Copy-12" d="M4.3 1.2v.7"/>
+                  <path id="Line-4-Copy-11" d="m2.8 1.6.3.8"/>
+                  <path id="Line-4-Copy-10" d="m.4 1.6.3.7"/>
+                </g>
+                <g id="Group-22-Copy" stroke="#A9C6F7" transform="rotate(127 5.7 4.3)">
+                  <path id="Line-4" d="M6.3 2.3h1.1"/>
+                  <path id="Line-4-Copy" d="M4.5 1.5h1.1"/>
+                  <path id="Line-4-Copy-2" d="m1 3.4.5-.3"/>
+                  <path id="Line-4-Copy-3" d="m4.4 2.4 1.2-.8"/>
+                  <path id="Line-4-Copy-4" d="m1.5 2.2.8.6"/>
+                  <path id="Line-4-Copy-5" d="m2.4 1.1.8-.6"/>
+                  <path id="Line-4-Copy-6" d="M2.8 2v.7"/>
+                  <path id="Line-4-Copy-7" d="M6 1.2v.7"/>
+                  <path id="Line-4-Copy-8" d="m3.9 1.6.4.8"/>
+                  <path id="Line-4-Copy-9" d="m.5 1.6.5.7"/>
+                </g>
+                <g id="Group-21-Copy-3" stroke="#6483B9" transform="rotate(-153 5.6 2.8)">
+                  <path id="Line-4-Copy-19" d="M4.5 2.3h.8"/>
+                  <path id="Line-4-Copy-18" d="M3.2 1.5H4"/>
+                  <path id="Line-4-Copy-17" d="m.7 3.4.4-.3"/>
+                  <path id="Line-4-Copy-16" d="m3.2 2.4.8-.8"/>
+                  <path id="Line-4-Copy-15" d="m1.1 2.2.6.6"/>
+                  <path id="Line-4-Copy-14" d="m1.7 1.1.6-.6"/>
+                  <path id="Line-4-Copy-13" d="M2 2v.7"/>
+                  <path id="Line-4-Copy-12" d="M4.3 1.2v.7"/>
+                  <path id="Line-4-Copy-11" d="m2.8 1.6.3.8"/>
+                  <path id="Line-4-Copy-10" d="m.4 1.6.3.7"/>
+                </g>
+                <g id="Group-22-Copy-2" stroke="#A9C6F7" transform="rotate(77 4.4 6.4)">
+                  <path id="Line-4" d="M6.3 2.3h1.1"/>
+                  <path id="Line-4-Copy" d="M4.5 1.5h1.1"/>
+                  <path id="Line-4-Copy-2" d="m1 3.4.5-.3"/>
+                  <path id="Line-4-Copy-3" d="m4.4 2.4 1.2-.8"/>
+                  <path id="Line-4-Copy-4" d="m1.5 2.2.8.6"/>
+                  <path id="Line-4-Copy-5" d="m2.4 1.1.8-.6"/>
+                  <path id="Line-4-Copy-6" d="M2.8 2v.7"/>
+                  <path id="Line-4-Copy-7" d="M6 1.2v.7"/>
+                  <path id="Line-4-Copy-8" d="m3.9 1.6.4.8"/>
+                  <path id="Line-4-Copy-9" d="m.5 1.6.5.7"/>
+                </g>
+                <g id="Group-21-Copy-4" stroke="#6483B9" transform="rotate(157 6.7 4.9)">
+                  <path id="Line-4-Copy-19" d="M4.5 2.3h.8"/>
+                  <path id="Line-4-Copy-18" d="M3.2 1.5H4"/>
+                  <path id="Line-4-Copy-17" d="m.7 3.4.4-.3"/>
+                  <path id="Line-4-Copy-16" d="m3.2 2.4.8-.8"/>
+                  <path id="Line-4-Copy-15" d="m1.1 2.2.6.6"/>
+                  <path id="Line-4-Copy-14" d="m1.7 1.1.6-.6"/>
+                  <path id="Line-4-Copy-13" d="M2 2v.7"/>
+                  <path id="Line-4-Copy-12" d="M4.3 1.2v.7"/>
+                  <path id="Line-4-Copy-11" d="m2.8 1.6.3.8"/>
+                  <path id="Line-4-Copy-10" d="m.4 1.6.3.7"/>
+                </g>
+                <g id="Group-22-Copy-5" stroke="#A9C6F7" transform="rotate(167 7 4.8)">
+                  <path id="Line-4" d="M6.3 2.3h1.1"/>
+                  <path id="Line-4-Copy" d="M4.5 1.5h1.1"/>
+                  <path id="Line-4-Copy-2" d="m1 3.4.5-.3"/>
+                  <path id="Line-4-Copy-3" d="m4.4 2.4 1.2-.8"/>
+                  <path id="Line-4-Copy-4" d="m1.5 2.2.8.6"/>
+                  <path id="Line-4-Copy-5" d="m2.4 1.1.8-.6"/>
+                  <path id="Line-4-Copy-6" d="M2.8 2v.7"/>
+                  <path id="Line-4-Copy-7" d="M6 1.2v.7"/>
+                  <path id="Line-4-Copy-8" d="m3.9 1.6.4.8"/>
+                  <path id="Line-4-Copy-9" d="m.5 1.6.5.7"/>
+                </g>
+                <g id="Group-21-Copy-7" stroke="#6483B9" transform="rotate(-23 15.4 -8)">
+                  <path id="Line-4-Copy-19" d="M4.5 2.3h.8"/>
+                  <path id="Line-4-Copy-18" d="M3.2 1.5H4"/>
+                  <path id="Line-4-Copy-17" d="m.7 3.4.4-.3"/>
+                  <path id="Line-4-Copy-16" d="m3.2 2.4.8-.8"/>
+                  <path id="Line-4-Copy-15" d="m1.1 2.2.6.6"/>
+                  <path id="Line-4-Copy-14" d="m1.7 1.1.6-.6"/>
+                  <path id="Line-4-Copy-13" d="M2 2v.7"/>
+                  <path id="Line-4-Copy-12" d="M4.3 1.2v.7"/>
+                  <path id="Line-4-Copy-11" d="m2.8 1.6.3.8"/>
+                  <path id="Line-4-Copy-10" d="m.4 1.6.3.7"/>
+                </g>
+                <g id="Group-22-Copy-4" stroke="#A9C6F7" transform="rotate(147 5.7 4.5)">
+                  <path id="Line-4" d="M6.3 2.3h1.1"/>
+                  <path id="Line-4-Copy" d="M4.5 1.5h1.1"/>
+                  <path id="Line-4-Copy-2" d="m1 3.4.5-.3"/>
+                  <path id="Line-4-Copy-3" d="m4.4 2.4 1.2-.8"/>
+                  <path id="Line-4-Copy-4" d="m1.5 2.2.8.6"/>
+                  <path id="Line-4-Copy-5" d="m2.4 1.1.8-.6"/>
+                  <path id="Line-4-Copy-6" d="M2.8 2v.7"/>
+                  <path id="Line-4-Copy-7" d="M6 1.2v.7"/>
+                  <path id="Line-4-Copy-8" d="m3.9 1.6.4.8"/>
+                  <path id="Line-4-Copy-9" d="m.5 1.6.5.7"/>
+                </g>
+                <g id="Group-21-Copy-6" stroke="#6483B9" transform="rotate(-153 7.4 2.4)">
+                  <path id="Line-4-Copy-19" d="M4.5 2.3h.8"/>
+                  <path id="Line-4-Copy-18" d="M3.2 1.5H4"/>
+                  <path id="Line-4-Copy-17" d="m.7 3.4.4-.3"/>
+                  <path id="Line-4-Copy-16" d="m3.2 2.4.8-.8"/>
+                  <path id="Line-4-Copy-15" d="m1.1 2.2.6.6"/>
+                  <path id="Line-4-Copy-14" d="m1.7 1.1.6-.6"/>
+                  <path id="Line-4-Copy-13" d="M2 2v.7"/>
+                  <path id="Line-4-Copy-12" d="M4.3 1.2v.7"/>
+                  <path id="Line-4-Copy-11" d="m2.8 1.6.3.8"/>
+                  <path id="Line-4-Copy-10" d="m.4 1.6.3.7"/>
+                </g>
+                <g id="Group-22-Copy-3" stroke="#A9C6F7" transform="rotate(-3 75.6 -84.3)">
+                  <path id="Line-4" d="M6.3 2.3h1.1"/>
+                  <path id="Line-4-Copy" d="M4.5 1.5h1.1"/>
+                  <path id="Line-4-Copy-2" d="m1 3.4.5-.3"/>
+                  <path id="Line-4-Copy-3" d="m4.4 2.4 1.2-.8"/>
+                  <path id="Line-4-Copy-4" d="m1.5 2.2.8.6"/>
+                  <path id="Line-4-Copy-5" d="m2.4 1.1.8-.6"/>
+                  <path id="Line-4-Copy-6" d="M2.8 2v.7"/>
+                  <path id="Line-4-Copy-7" d="M6 1.2v.7"/>
+                  <path id="Line-4-Copy-8" d="m3.9 1.6.4.8"/>
+                  <path id="Line-4-Copy-9" d="m.5 1.6.5.7"/>
+                </g>
+                <g id="Group-21-Copy-5" stroke="#6483B9" transform="rotate(157 4.5 3.8)">
+                  <path id="Line-4-Copy-19" d="M4.5 2.3h.8"/>
+                  <path id="Line-4-Copy-18" d="M3.2 1.5H4"/>
+                  <path id="Line-4-Copy-17" d="m.7 3.4.4-.3"/>
+                  <path id="Line-4-Copy-16" d="m3.2 2.4.8-.8"/>
+                  <path id="Line-4-Copy-15" d="m1.1 2.2.6.6"/>
+                  <path id="Line-4-Copy-14" d="m1.7 1.1.6-.6"/>
+                  <path id="Line-4-Copy-13" d="M2 2v.7"/>
+                  <path id="Line-4-Copy-12" d="M4.3 1.2v.7"/>
+                  <path id="Line-4-Copy-11" d="m2.8 1.6.3.8"/>
+                  <path id="Line-4-Copy-10" d="m.4 1.6.3.7"/>
+                </g>
+                <g id="Group-22-Copy-11" stroke="#A9C6F7" transform="translate(1 2.4)">
+                  <path id="Line-4" d="M6.3 2.3h1.1"/>
+                  <path id="Line-4-Copy" d="M4.5 1.5h1.1"/>
+                  <path id="Line-4-Copy-2" d="m1 3.4.5-.3"/>
+                  <path id="Line-4-Copy-3" d="m4.4 2.4 1.2-.8"/>
+                  <path id="Line-4-Copy-4" d="m1.5 2.2.8.6"/>
+                  <path id="Line-4-Copy-5" d="m2.4 1.1.8-.6"/>
+                  <path id="Line-4-Copy-6" d="M2.8 2v.7"/>
+                  <path id="Line-4-Copy-7" d="M6 1.2v.7"/>
+                  <path id="Line-4-Copy-8" d="m3.9 1.6.4.8"/>
+                  <path id="Line-4-Copy-9" d="m.5 1.6.5.7"/>
+                </g>
+                <g id="Group-21-Copy-13" stroke="#6483B9" transform="rotate(80 1.7 4.1)">
+                  <path id="Line-4-Copy-19" d="M4.5 2.3h.8"/>
+                  <path id="Line-4-Copy-18" d="M3.2 1.5H4"/>
+                  <path id="Line-4-Copy-17" d="m.7 3.4.4-.3"/>
+                  <path id="Line-4-Copy-16" d="m3.2 2.4.8-.8"/>
+                  <path id="Line-4-Copy-15" d="m1.1 2.2.6.6"/>
+                  <path id="Line-4-Copy-14" d="m1.7 1.1.6-.6"/>
+                  <path id="Line-4-Copy-13" d="M2 2v.7"/>
+                  <path id="Line-4-Copy-12" d="M4.3 1.2v.7"/>
+                  <path id="Line-4-Copy-11" d="m2.8 1.6.3.8"/>
+                  <path id="Line-4-Copy-10" d="m.4 1.6.3.7"/>
+                </g>
+                <g id="Group-22-Copy-10" stroke="#A9C6F7" transform="rotate(-40 7.8 1.8)">
+                  <path id="Line-4" d="M6.3 2.3h1.1"/>
+                  <path id="Line-4-Copy" d="M4.5 1.5h1.1"/>
+                  <path id="Line-4-Copy-2" d="m1 3.4.5-.3"/>
+                  <path id="Line-4-Copy-3" d="m4.4 2.4 1.2-.8"/>
+                  <path id="Line-4-Copy-4" d="m1.5 2.2.8.6"/>
+                  <path id="Line-4-Copy-5" d="m2.4 1.1.8-.6"/>
+                  <path id="Line-4-Copy-6" d="M2.8 2v.7"/>
+                  <path id="Line-4-Copy-7" d="M6 1.2v.7"/>
+                  <path id="Line-4-Copy-8" d="m3.9 1.6.4.8"/>
+                  <path id="Line-4-Copy-9" d="m.5 1.6.5.7"/>
+                </g>
+                <g id="Group-21-Copy-12" stroke="#6483B9" transform="rotate(40 -.5 5)">
+                  <path id="Line-4-Copy-19" d="M4.5 2.3h.8"/>
+                  <path id="Line-4-Copy-18" d="M3.2 1.5H4"/>
+                  <path id="Line-4-Copy-17" d="m.7 3.4.4-.3"/>
+                  <path id="Line-4-Copy-16" d="m3.2 2.4.8-.8"/>
+                  <path id="Line-4-Copy-15" d="m1.1 2.2.6.6"/>
+                  <path id="Line-4-Copy-14" d="m1.7 1.1.6-.6"/>
+                  <path id="Line-4-Copy-13" d="M2 2v.7"/>
+                  <path id="Line-4-Copy-12" d="M4.3 1.2v.7"/>
+                  <path id="Line-4-Copy-11" d="m2.8 1.6.3.8"/>
+                  <path id="Line-4-Copy-10" d="m.4 1.6.3.7"/>
+                </g>
+                <g id="Group-22-Copy-9" stroke="#A9C6F7" transform="rotate(-90 6 3)">
+                  <path id="Line-4" d="M6.3 2.3h1.1"/>
+                  <path id="Line-4-Copy" d="M4.5 1.5h1.1"/>
+                  <path id="Line-4-Copy-2" d="m1 3.4.5-.3"/>
+                  <path id="Line-4-Copy-3" d="m4.4 2.4 1.2-.8"/>
+                  <path id="Line-4-Copy-4" d="m1.5 2.2.8.6"/>
+                  <path id="Line-4-Copy-5" d="m2.4 1.1.8-.6"/>
+                  <path id="Line-4-Copy-6" d="M2.8 2v.7"/>
+                  <path id="Line-4-Copy-7" d="M6 1.2v.7"/>
+                  <path id="Line-4-Copy-8" d="m3.9 1.6.4.8"/>
+                  <path id="Line-4-Copy-9" d="m.5 1.6.5.7"/>
+                </g>
+                <g id="Group-21-Copy-11" stroke="#6483B9" transform="rotate(-10 28.8 -23.7)">
+                  <path id="Line-4-Copy-19" d="M4.5 2.3h.8"/>
+                  <path id="Line-4-Copy-18" d="M3.2 1.5H4"/>
+                  <path id="Line-4-Copy-17" d="m.7 3.4.4-.3"/>
+                  <path id="Line-4-Copy-16" d="m3.2 2.4.8-.8"/>
+                  <path id="Line-4-Copy-15" d="m1.1 2.2.6.6"/>
+                  <path id="Line-4-Copy-14" d="m1.7 1.1.6-.6"/>
+                  <path id="Line-4-Copy-13" d="M2 2v.7"/>
+                  <path id="Line-4-Copy-12" d="M4.3 1.2v.7"/>
+                  <path id="Line-4-Copy-11" d="m2.8 1.6.3.8"/>
+                  <path id="Line-4-Copy-10" d="m.4 1.6.3.7"/>
+                </g>
+                <g id="Group-22-Copy-8" stroke="#A9C6F7" transform="translate(2.8 4.9)">
+                  <path id="Line-4" d="M6.3 2.3h1.1"/>
+                  <path id="Line-4-Copy" d="M4.5 1.5h1.1"/>
+                  <path id="Line-4-Copy-2" d="m1 3.4.5-.3"/>
+                  <path id="Line-4-Copy-3" d="m4.4 2.4 1.2-.8"/>
+                  <path id="Line-4-Copy-4" d="m1.5 2.2.8.6"/>
+                  <path id="Line-4-Copy-5" d="m2.4 1.1.8-.6"/>
+                  <path id="Line-4-Copy-6" d="M2.8 2v.7"/>
+                  <path id="Line-4-Copy-7" d="M6 1.2v.7"/>
+                  <path id="Line-4-Copy-8" d="m3.9 1.6.4.8"/>
+                  <path id="Line-4-Copy-9" d="m.5 1.6.5.7"/>
+                </g>
+                <g id="Group-21-Copy-10" stroke="#6483B9" transform="rotate(170 3.3 4)">
+                  <path id="Line-4-Copy-19" d="M4.5 2.3h.8"/>
+                  <path id="Line-4-Copy-18" d="M3.2 1.5H4"/>
+                  <path id="Line-4-Copy-17" d="m.7 3.4.4-.3"/>
+                  <path id="Line-4-Copy-16" d="m3.2 2.4.8-.8"/>
+                  <path id="Line-4-Copy-15" d="m1.1 2.2.6.6"/>
+                  <path id="Line-4-Copy-14" d="m1.7 1.1.6-.6"/>
+                  <path id="Line-4-Copy-13" d="M2 2v.7"/>
+                  <path id="Line-4-Copy-12" d="M4.3 1.2v.7"/>
+                  <path id="Line-4-Copy-11" d="m2.8 1.6.3.8"/>
+                  <path id="Line-4-Copy-10" d="m.4 1.6.3.7"/>
+                </g>
+                <g id="Group-22-Copy-7" stroke="#A9C6F7" transform="rotate(-20 14.8 1)">
+                  <path id="Line-4" d="M6.3 2.3h1.1"/>
+                  <path id="Line-4-Copy" d="M4.5 1.5h1.1"/>
+                  <path id="Line-4-Copy-2" d="m1 3.4.5-.3"/>
+                  <path id="Line-4-Copy-3" d="m4.4 2.4 1.2-.8"/>
+                  <path id="Line-4-Copy-4" d="m1.5 2.2.8.6"/>
+                  <path id="Line-4-Copy-5" d="m2.4 1.1.8-.6"/>
+                  <path id="Line-4-Copy-6" d="M2.8 2v.7"/>
+                  <path id="Line-4-Copy-7" d="M6 1.2v.7"/>
+                  <path id="Line-4-Copy-8" d="m3.9 1.6.4.8"/>
+                  <path id="Line-4-Copy-9" d="m.5 1.6.5.7"/>
+                </g>
+                <g id="Group-21-Copy-9" stroke="#6483B9" transform="rotate(40 1.3 10)">
+                  <path id="Line-4-Copy-19" d="M4.5 2.3h.8"/>
+                  <path id="Line-4-Copy-18" d="M3.2 1.5H4"/>
+                  <path id="Line-4-Copy-17" d="m.7 3.4.4-.3"/>
+                  <path id="Line-4-Copy-16" d="m3.2 2.4.8-.8"/>
+                  <path id="Line-4-Copy-15" d="m1.1 2.2.6.6"/>
+                  <path id="Line-4-Copy-14" d="m1.7 1.1.6-.6"/>
+                  <path id="Line-4-Copy-13" d="M2 2v.7"/>
+                  <path id="Line-4-Copy-12" d="M4.3 1.2v.7"/>
+                  <path id="Line-4-Copy-11" d="m2.8 1.6.3.8"/>
+                  <path id="Line-4-Copy-10" d="m.4 1.6.3.7"/>
+                </g>
+                <g id="Group-22-Copy-6" stroke="#A9C6F7" transform="rotate(-170 4.6 3.7)">
+                  <path id="Line-4" d="M6.3 2.3h1.1"/>
+                  <path id="Line-4-Copy" d="M4.5 1.5h1.1"/>
+                  <path id="Line-4-Copy-2" d="m1 3.4.5-.3"/>
+                  <path id="Line-4-Copy-3" d="m4.4 2.4 1.2-.8"/>
+                  <path id="Line-4-Copy-4" d="m1.5 2.2.8.6"/>
+                  <path id="Line-4-Copy-5" d="m2.4 1.1.8-.6"/>
+                  <path id="Line-4-Copy-6" d="M2.8 2v.7"/>
+                  <path id="Line-4-Copy-7" d="M6 1.2v.7"/>
+                  <path id="Line-4-Copy-8" d="m3.9 1.6.4.8"/>
+                  <path id="Line-4-Copy-9" d="m.5 1.6.5.7"/>
+                </g>
+                <g id="Group-21-Copy-8" stroke="#6483B9" transform="rotate(-10 19.4 1.7)">
+                  <path id="Line-4-Copy-19" d="M4.5 2.3h.8"/>
+                  <path id="Line-4-Copy-18" d="M3.2 1.5H4"/>
+                  <path id="Line-4-Copy-17" d="m.7 3.4.4-.3"/>
+                  <path id="Line-4-Copy-16" d="m3.2 2.4.8-.8"/>
+                  <path id="Line-4-Copy-15" d="m1.1 2.2.6.6"/>
+                  <path id="Line-4-Copy-14" d="m1.7 1.1.6-.6"/>
+                  <path id="Line-4-Copy-13" d="M2 2v.7"/>
+                  <path id="Line-4-Copy-12" d="M4.3 1.2v.7"/>
+                  <path id="Line-4-Copy-11" d="m2.8 1.6.3.8"/>
+                  <path id="Line-4-Copy-10" d="m.4 1.6.3.7"/>
+                </g>
+              </g>
+              <path id="Line-3-Copy-15" stroke="#4B71B3" stroke-linecap="round" d="M11.7.4v25.9"/>
+            </g>
+            <g id="Group-20" transform="translate(137.2 68.7)">
+              <path id="Combined-Shape" fill="url(#linearGradient-46)" d="M4.2.7v5.5c0 .4-.7.8-2 .8C.7 7 0 6.6 0 6.2V.7c0 .4 1 .8 2.1.8s2-.3 2.1-.7Z"/>
+              <path id="Path" fill="url(#linearGradient-47)" d="M4.2 5.3v-1c0 .3-.7.7-2 .7C.7 5 0 4.6 0 4.3v1c0 .4 1 .7 2.1.7s2-.3 2.1-.7Z"/>
+              <path id="Path-Copy" fill="url(#linearGradient-47)" d="M4.2 2.7v-1c0 .3-.7.7-2 .7C.7 2.4 0 2 0 1.7v1c0 .4 1 .7 2.1.7s2-.3 2.1-.7Z"/>
+              <path id="Oval-Copy-6" fill="#416AB4" d="M2.1 1.5c1.2 0 2.1-.4 2.1-.8s-.9-.7-2-.7C1 0 0 .3 0 .7c0 .4 1 .8 2.1.8Z"/>
+            </g>
+            <g id="Group-20-Copy" transform="translate(142.4 71.7)">
+              <path id="Combined-Shape" fill="url(#linearGradient-46)" d="M4.2.7v5.5c0 .4-.7.8-2 .8C.7 7 0 6.6 0 6.2V.7c0 .4 1 .8 2.1.8s2-.3 2.1-.7Z"/>
+              <path id="Path" fill="url(#linearGradient-47)" d="M4.2 5.3v-1c0 .3-.7.7-2 .7C.7 5 0 4.6 0 4.3v1c0 .4 1 .7 2.1.7s2-.3 2.1-.7Z"/>
+              <path id="Path-Copy" fill="url(#linearGradient-47)" d="M4.2 2.7v-1c0 .3-.7.7-2 .7C.7 2.4 0 2 0 1.7v1c0 .4 1 .7 2.1.7s2-.3 2.1-.7Z"/>
+              <path id="Oval-Copy-6" fill="#416AB4" d="M2.1 1.5c1.2 0 2.1-.4 2.1-.8s-.9-.7-2-.7C1 0 0 .3 0 .7c0 .4 1 .8 2.1.8Z"/>
+            </g>
+            <path id="Line-3-Copy-3" stroke="#4B71B3" stroke-linecap="round" stroke-width=".7" d="m71.9 98.4 9.2-70.2"/>
+          </g>
+          <g id="Group-16" transform="translate(108.3)">
+            <path id="Path-10" fill="url(#linearGradient-48)" d="M175.5 68.7c.5-9-1.2-13.6-5-14-3.7-.3-27.4 12.2-71.2 37.3l-44.5 24.3-35.5 1.4c-2.5 4-4 8.8-4.6 14.6-.9 8.7-1.5 15.8 2.8 18 4.2 2.3 29.9-3.8 52.8-18 15.2-9.5 50.3-30.7 105.2-63.6Z"/>
+            <path id="Path-10-Copy" fill="url(#linearGradient-49)" d="M174.2 57.5c-.9-1.9-2.3-2.8-4.3-2.7-1.2-1-24.7 11.5-70.6 37.2l-44.5 24.3-34.7.8c-3.2 3.3-5.1 9.4-5.7 18.5-.1 2.3 26.8 4 55.9-15.6 19.3-13 54-33.9 103.9-62.5Z"/>
+            <path id="Path-28-Copy-2" fill="#A9C6F7" d="m41.2 102.9-14.3 10.5-18.7-1.1-5.5-4-2.3-6 7.2-12 4.6-4.1z"/>
+            <g id="Group-11" transform="translate(7.3 98)">
+              <path id="Path-7-Copy-11" fill="#DBE6F9" d="M2.3 0 0 1.3l8.3 5.2 2.3-1.4z"/>
+              <path id="Path-7-Copy-17" fill="#F0F6FF" d="M0 2.2v-.9l8.3 5.2v.9z"/>
+              <path id="Path-7-Copy-18" fill="#C1D7FF" d="M10.6 6v-.9L8.3 6.5v.9z"/>
+            </g>
+            <path id="Path-29" fill="#092451" d="m12.2 86.2-.5-1.6c-10.7 10.6-14 18.3-10 23 .6.7 2.7 1.7 3.8 2.1l-2.3-1.9c-3.6-4.2-.6-11.4 9-21.6Z"/>
+            <path id="Path-27" fill="url(#linearGradient-50)" d="M174.3 30.9v14.5L49.7 115.5c-7.5 4.3-18 5.5-31.6 3.9-8.8-4.7-14.6-9-17.3-13 2.9 5.9 32 1.7 40.4-3.5l8 .5L174.3 31Z"/>
+            <path id="Path-27-Copy" fill="url(#linearGradient-51)" d="M168.8 55.7c3-1.9 4.8-5.3 5.5-10.3L49.7 115.5c-7.5 4.3-18 5.5-31.6 3.9 11 6.5 23.3 7 36.9 1.6 73-41.6 110.9-63.4 113.8-65.3Z"/>
+            <path id="Path-28" fill="#A9C6F7" d="M174.3 30.9 49.2 103.4l-29-17 125.1-72.3z"/>
+            <path id="Path-7-Copy-21" fill="#F0F6FF" d="m122.7 34.7 2-14.5 19.6 11.6-1.9 14.5z"/>
+            <path id="Path-7-Copy-73" fill="#DDE8F5" d="m149.8 5.7-25.1 14.5 19.6 11.6 25.1-14.5z"/>
+            <path id="Path-7-Copy-35" fill="#6790DA" d="m124.2 28.6.4-2.3 18.1 10.6-.3 2.4z"/>
+            <path id="Path-7-Copy-71" fill="#6790DA" d="m124.9 24.5.3-2.4 18.2 10.7-.4 2.4z"/>
+            <path id="Path-7-Copy-20" fill="#C0D3E9" d="M169.4 30.7V17.3l-25.1 14.5-1.9 14.5z"/>
+            <path id="Path-7-Copy-76" fill="#F0F6FF" d="M128.6 19.1v-5.3l17.7 10.4v5.4z"/>
+            <path id="Path-7-Copy-75" fill="#6790DA" d="M129.1 18.2V16l16.3 9.6v2.2z"/>
+            <path id="Path-7-Copy-74" fill="#D3E3FF" d="m164.6 13.6-18.3 10.6v5.4l12.2-7 6.1-3.6z"/>
+            <path id="Path-7-Copy-39" fill="#18418B" d="m152.1 26.2.9.6 16.4-9.5-4.8-2.9-18.3 10.8v2.4z" opacity=".2"/>
+            <path id="Path-7-Copy-80" fill="#18418B" d="M128.6 17.3v-2.5l17.7 10.4v2.4z" opacity=".2"/>
+            <path id="Path-7-Copy-78" fill="#F0F6FF" d="M127.4 15.6v-3L145.1 23v3z"/>
+            <path id="Path-7-Copy-79" fill="#D2E0F3" d="m148.1.9-20.7 11.7L145.1 23l20.7-11.6z"/>
+            <path id="Path-7-Copy-11" fill="#416AB4" d="m152 0-4 2.1 7.5 4.5 4-2.2z"/>
+            <path id="Path-7-Copy-19" fill="#163F89" d="m151.9.8-2.5 1.3 6.1 3.6 2.6-1.3z"/>
+            <path id="Path-7-Copy-15" fill="#3C67B4" d="M148 7.3V2.1l7.5 4.5v5.1z"/>
+            <path id="Path-7-Copy-16" fill="#18418B" d="M159.5 9.5V4.4l-4 2.2v5.1z"/>
+            <path id="Path-7-Copy-49" fill="#FFF" d="M148 5.6V4l7.5 4.4V10z" opacity=".3"/>
+            <path id="Path-7-Copy-47" fill="#FFF" d="M159.5 7.8V6.3l-4 2.1V10z" opacity=".3"/>
+            <path id="Path-7-Copy-77" fill="#C0D3E9" d="M165.8 11.4 145.1 23v3l12.2-7 8.5-4.9z"/>
+            <g id="Group-15" fill="#829BC0" transform="rotate(-2 1069.9 -4271.9)">
+              <circle id="Oval" cx=".5" cy="4.3" r="1"/>
+              <circle id="Oval-Copy-2" cx="2.8" cy="2.8" r="1"/>
+              <circle id="Oval-Copy-3" cx="5.2" cy="1.6" r="1"/>
+              <circle id="Oval-Copy-4" cx="7.5" cy=".5" r="1"/>
+            </g>
+            <g id="Group-15-Copy" fill="#829BC0" transform="rotate(-2 673 -4656.6)">
+              <circle id="Oval" cx=".5" cy="3.1" r="1"/>
+              <circle id="Oval-Copy-2" cx="2.8" cy="1.6" r="1"/>
+              <circle id="Oval-Copy-3" cx="5.2" cy=".5" r="1"/>
+            </g>
+            <path id="Path-28-Copy" fill="#9AB8E8" d="m41.2 102.9 8 .5-29-17-8-.2z"/>
+            <path id="Path-7-Copy-89" fill="url(#linearGradient-52)" d="m31.3 86-2.6 1.7a1.2 1.2 0 0 0 .2 2l3 1.6c.4.2.9.1 1.2-.1l3.2-2.1a.6.6 0 0 0 0-1l-3.7-2.2c-.4-.3-1-.2-1.3 0Z" opacity=".2"/>
+            <path id="Path-7-Copy-56" fill="url(#linearGradient-53)" d="M29.4 87.6c-.3.1-1.3-.8-1.3-.5a52 52 0 0 0 .1 2.2c0 .2.2.3.4.4l2.2 1.3c1 .5 2 .5 3 0 .3-.2.5-.6.4-1v-1.7l-1.4.2-1.3-.5c-1-.5-1.2-1-2.1-.4Z"/>
+            <path id="Path-7-Copy-12" fill="#DBE6F9" d="M28.6 86.2a1 1 0 0 0 0 1.7l2.2 1.3c1 .5 2 .5 3 0a1 1 0 0 0 0-1.7l-2.3-1.3a3 3 0 0 0-3 0Z"/>
+            <g id="Group-11-Copy" transform="translate(62.3 77.2)">
+              <path id="Path-7-Copy-11" fill="#DBE6F9" d="M2.3 0 0 1.3l8.3 5.2 2.3-1.4z"/>
+              <path id="Path-7-Copy-17" fill="#F0F6FF" d="M0 2.2v-.9l8.3 5.2v.9z"/>
+              <path id="Path-7-Copy-18" fill="#C1D7FF" d="M10.6 6v-.9L8.3 6.5v.9z"/>
+            </g>
+            <g id="Group-11-Copy-2" transform="translate(92 61.3)">
+              <path id="Path-7-Copy-11" fill="#DBE6F9" d="M2.3 0 0 1.3l8.3 5.2 2.3-1.4z"/>
+              <path id="Path-7-Copy-17" fill="#F0F6FF" d="M0 2.2v-.9l8.3 5.2v.9z"/>
+              <path id="Path-7-Copy-18" fill="#C1D7FF" d="M10.6 6v-.9L8.3 6.5v.9z"/>
+            </g>
+            <g id="Group-11-Copy-3" transform="translate(120.3 45.4)">
+              <path id="Path-7-Copy-11" fill="#DBE6F9" d="M2.3 0 0 1.3l8.3 5.2 2.3-1.4z"/>
+              <path id="Path-7-Copy-17" fill="#F0F6FF" d="M0 2.2v-.9l8.3 5.2v.9z"/>
+              <path id="Path-7-Copy-18" fill="#C1D7FF" d="M10.6 6v-.9L8.3 6.5v.9z"/>
+            </g>
+            <path id="Path-7-Copy-87" fill="url(#linearGradient-54)" d="m77.7 57.7-8 4.2a7.2 7.2 0 0 0-.4 12.5 21 21 0 0 0 21.5.3L99 70a7 7 0 0 0 0-12 22.3 22.3 0 0 0-21.4-.2Z" opacity=".2"/>
+            <path id="Path-7-Copy-88" fill="url(#linearGradient-54)" d="m49.4 72.8-8 4.2a7.2 7.2 0 0 0-.4 12.5 21 21 0 0 0 21.5.3l8.3-4.8a7 7 0 0 0 0-12 22.3 22.3 0 0 0-21.4-.2Z" opacity=".2"/>
+            <path id="Path-7-Copy-90" fill="#18418B" d="M121.3 52.3 62 85.9l.8.6 59.3-33.7z" opacity=".1"/>
+            <path id="Path-7-Copy-91" fill="#18418B" d="M116.5 44 57.3 77.7l.7.5 59.4-33.7z" opacity=".1"/>
+            <path id="Path-7-Copy-92" fill="#18418B" d="M119.5 44 60.2 77.7l.8.5 59.3-33.7z" opacity=".1"/>
+            <path id="Path-30-Copy" fill="url(#linearGradient-55)" d="m59.6 91 .8-.4a6.3 6.3 0 0 0 3.3-5.8v-9.7l-27.4.4V85a6.3 6.3 0 0 0 3.1 5.5 20.4 20.4 0 0 0 20.2.4Z"/>
+            <path id="Path-30-Copy-2" fill="url(#linearGradient-55)" d="m89.2 75.7.8-.5a6.3 6.3 0 0 0 3.3-5.7v-9.8l-27.4.4v9.6a6.3 6.3 0 0 0 3 5.5 20.4 20.4 0 0 0 20.3.5Z"/>
+            <path id="Path-30" fill="#A9C6F7" d="m59.6 81.6.8-.5a6.3 6.3 0 0 0 .1-11 21 21 0 0 0-19.9-.5l-.8.4a6.4 6.4 0 0 0-.4 11.1 20.4 20.4 0 0 0 20.2.5Z"/>
+            <path id="Path-30-Copy-3" fill="#A9C6F7" d="m89.2 66.2.8-.4a6.3 6.3 0 0 0 0-11 21 21 0 0 0-19.8-.6l-.8.4a6.4 6.4 0 0 0-.4 11.2 20.4 20.4 0 0 0 20.2.4Z"/>
+            <path id="Path-7-Copy-52" fill="url(#linearGradient-54)" d="m107.7 40.6-8 4.3a7.2 7.2 0 0 0-.5 12.4 21 21 0 0 0 21.6.3l8.3-4.8a7 7 0 0 0-.1-12 22.3 22.3 0 0 0-21.3-.2Z" opacity=".2"/>
+            <path id="Path-30-Copy-5" fill="url(#linearGradient-55)" d="m118.7 58.5.8-.4a6.3 6.3 0 0 0 3.3-5.8v-9.7l-27.4.3v9.6a6.3 6.3 0 0 0 3.1 5.6 20.4 20.4 0 0 0 20.2.4Z"/>
+            <path id="Path-30-Copy-4" fill="#A9C6F7" d="m118.7 49 .8-.4a6.3 6.3 0 0 0 .2-11 21 21 0 0 0-20-.6l-.7.4a6.4 6.4 0 0 0-.5 11.2 20.4 20.4 0 0 0 20.2.4Z"/>
+            <path id="Path-7-Copy-62" fill="url(#linearGradient-56)" d="M39.3 74c-.3.2-1.6-1-1.7-.7a33.1 33.1 0 0 0 .2 2.2l.5.5 3 1.7c1.1.6 2.6.6 3.7 0 .5-.3.7-.7.7-1.2v-1.6c-.2-.2-1.7.3-1.9.2l-1.7-.6c-1.2-.7-1.6-1.2-2.8-.5Z" transform="matrix(-1 0 0 1 83.3 0)"/>
+            <path id="Path-7-Copy-61" fill="#DBE6F9" d="M38.3 72.2a1.2 1.2 0 0 0 0 2.2l3 1.7c1.1.6 2.6.6 3.7 0a1.2 1.2 0 0 0 0-2.2l-3-1.7a3.8 3.8 0 0 0-3.7 0Z" transform="matrix(-1 0 0 1 83.3 0)"/>
+            <path id="Path-7-Copy-64" fill="url(#linearGradient-57)" d="M50.6 80.2c-.2.1-.9-.5-.9-.3a48.6 48.6 0 0 0 0 1.7l.3.2 1.5.9a2 2 0 0 0 1.9 0l.3-.6v-1.4h-.9l-.9-.2c-.6-.3-.8-.6-1.3-.3Z" transform="matrix(-1 0 0 1 103.4 0)"/>
+            <path id="Path-7-Copy-65" fill="url(#linearGradient-57)" d="M117.7 41c-.1.1-.8-.5-.8-.3a48.6 48.6 0 0 0 0 1.7l.3.2 1.5.9a2 2 0 0 0 1.9 0l.3-.6v-1.4h-1l-.8-.2c-.6-.3-.8-.6-1.4-.3Z" transform="matrix(-1 0 0 1 237.8 0)"/>
+            <path id="Path-7-Copy-90" fill="url(#linearGradient-58)" d="M19.4 90.4 14.7 93l.8.5 4.7-2.7z" opacity=".2"/>
+            <path id="Path-7-Copy-69" fill="url(#linearGradient-59)" d="M10.7 93.1c-.3.2-1.4-1-1.5-.6a25.3 25.3 0 0 0 .1 1.9l.5.4 2.6 1.5c1 .6 2.4.6 3.4 0 .4-.2.6-.6.6-1V94c0-.2-1.4.2-1.6.1l-1.6-.5c-1-.6-1.4-1-2.5-.5Z" transform="matrix(-1 0 0 1 25.6 0)"/>
+            <path id="Path-7-Copy-63" fill="#DBE6F9" d="M50 79.3a.6.6 0 0 0 0 1.1l1.5.9a2 2 0 0 0 1.9 0 .6.6 0 0 0 0-1.1l-1.5-.9a2 2 0 0 0-1.9 0Z" transform="matrix(-1 0 0 1 103.4 0)"/>
+            <path id="Path-7-Copy-66" fill="#DBE6F9" d="M117.2 40.1a.6.6 0 0 0 0 1.1l1.5.9a2 2 0 0 0 1.9 0 .6.6 0 0 0 0-1.1L119 40a2 2 0 0 0-1.9 0Z" transform="matrix(-1 0 0 1 237.8 0)"/>
+            <path id="Path-7-Copy-70" fill="#DBE6F9" d="M9.8 91.5a1.1 1.1 0 0 0 0 2l2.6 1.5c1 .6 2.4.6 3.4 0a1.1 1.1 0 0 0 0-2l-2.6-1.5c-1-.6-2.4-.6-3.4 0Z" transform="matrix(-1 0 0 1 25.6 0)"/>
+            <path id="Path-7-Copy-52" fill="url(#linearGradient-60)" d="m141 47.1-4.5 2.7a.7.7 0 0 0 0 1.2c.5.4 1.2.4 1.8 0l4.5-2.7a.7.7 0 0 0 0-1.1c-.5-.4-1.2-.4-1.8 0Z" opacity=".2"/>
+            <path id="Path-7-Copy-68" fill="url(#linearGradient-61)" d="M135.6 47c-.2 0-1-.7-1-.5a242.7 242.7 0 0 0 .1 3.8l.3.3 1.8 1c.7.4 1.5.4 2.2 0 .3-.1.4-.4.4-.7v-3.4c0-.1-1 .2-1 0l-1.1-.3c-.7-.4-1-.7-1.7-.3Z" transform="matrix(-1 0 0 1 274 0)"/>
+            <path id="Path-7-Copy-67" fill="#DBE6F9" d="M135 45.9a.7.7 0 0 0 0 1.3l1.8 1c.7.4 1.5.4 2.2 0a.7.7 0 0 0 0-1.3l-1.7-1c-.7-.4-1.6-.4-2.3 0Z" transform="matrix(-1 0 0 1 274 0)"/>
+            <path id="Path-7-Copy-59" fill="url(#linearGradient-62)" d="M107.8 35.2c-.2.2-1.2-.8-1.3-.5a23.7 23.7 0 0 0 .1 1.6l.4.4 2.3 1.3c.9.5 2 .5 2.9 0 .3-.2.5-.5.5-.9V36c-.1-.1-1.3.3-1.4.2l-1.4-.5c-.9-.5-1.2-.9-2-.4Z"/>
+            <path id="Path-7-Copy-60" fill="#DBE6F9" d="M107 33.9a1 1 0 0 0 0 1.6l2.3 1.3c.9.5 2 .5 2.9 0a1 1 0 0 0 0-1.6l-2.3-1.3a3 3 0 0 0-3 0Z"/>
+            <path id="Line-2-Copy" stroke="#849ED4" stroke-linecap="round" stroke-width=".6" d="M43.9 74.5 110.7 36"/>
+            <path id="Line-2" stroke="#E6EEF9" stroke-linecap="round" stroke-width=".6" d="m43.7 74.1 66.8-38.5"/>
+            <path id="Line-2-Copy-9" stroke="#849ED4" stroke-linecap="round" stroke-width=".6" d="m42.1 73.3 66.8-38.5"/>
+            <path id="Line-2-Copy-4" stroke="#E6EEF9" stroke-linecap="round" stroke-width=".6" d="m41.9 72.9 66.8-38.4"/>
+            <path id="Line-2-Copy-11" stroke="#849ED4" stroke-linecap="round" stroke-width=".6" d="M52.2 79.8 119 41.3"/>
+            <path id="Line-2-Copy-10" stroke="#E6EEF9" stroke-linecap="round" stroke-width=".6" d="M51.9 79.4 118.8 41"/>
+            <path id="Line-2-Copy-13" stroke="#849ED4" stroke-linecap="round" stroke-width=".6" d="m54.3 98 81.2-47.2"/>
+            <path id="Line-2-Copy-12" stroke="#E6EEF9" stroke-linecap="round" stroke-width=".6" d="m54.1 97.6 81.2-47.2"/>
+            <path id="Path-7-Copy-89" fill="url(#linearGradient-63)" d="m58.1 93.1-8.2 5a1.3 1.3 0 0 0 0 2c1 .7 2.3.7 3.3.1l8.2-4.8a1.3 1.3 0 0 0 0-2.2c-1-.6-2.3-.7-3.3 0Z" opacity=".2"/>
+            <path id="Path-7-Copy-57" fill="url(#linearGradient-64)" d="M48.8 93.5c-.3.2-1.6-1-1.7-.7a404.5 404.5 0 0 0 .2 6.4l.4.4 3 1.7c1.2.7 2.6.7 3.8 0 .4-.2.7-.7.6-1.1v-5.8c0-.1-1.6.3-1.8.2l-1.8-.6c-1.1-.6-1.5-1.2-2.7-.5Z" transform="matrix(-1 0 0 1 102.3 0)"/>
+            <path id="Path-7-Copy-58" fill="#DBE6F9" d="M47.7 91.7a1.2 1.2 0 0 0 0 2.2l3 1.7c1.2.6 2.6.6 3.8 0a1.2 1.2 0 0 0 0-2.2l-3-1.7a3.8 3.8 0 0 0-3.8 0Z" transform="matrix(-1 0 0 1 102.2 0)"/>
+            <path id="Path-7-Copy-52" fill="url(#linearGradient-65)" d="m15.4 91.3-3 1.7.7.5 3-1.7s0-.2-.2-.2l-.5-.3Z" opacity=".2"/>
+            <g id="Group-12" transform="translate(12 76.7)">
+              <path id="Rectangle" fill="url(#linearGradient-66)" d="M0 .2h1.2v16.6a1 1 0 0 1-.6.2 1 1 0 0 1-.6-.2V.2Z"/>
+              <circle id="Oval" cx=".6" cy=".2" r="1" fill="#DBE6F9"/>
+            </g>
+            <path id="Path-7-Copy-72" fill="#829BC0" d="m145.5 26.9 9.1 5.3.1 2.5-9.1-5.3z" opacity=".5" transform="matrix(-1 0 0 1 300.2 0)"/>
+            <path id="Path-7-Copy-62" fill="url(#linearGradient-56)" d="M133.4 9.5c-.3.2-1.7-1-1.7-.7a33.1 33.1 0 0 0 .1 2.2l.5.5 3 1.7c1.1.7 2.6.7 3.8 0 .4-.2.6-.7.6-1.2v-1.5c-.1-.2-1.6.2-1.8.1l-1.8-.5c-1.2-.7-1.5-1.2-2.7-.6Z" transform="matrix(-1 0 0 1 271.4 0)"/>
+            <path id="Path-7-Copy-61" fill="#A6BEE8" d="M132.3 7.7a1.2 1.2 0 0 0 0 2.2l3 1.7c1.1.7 2.6.7 3.8 0a1.2 1.2 0 0 0 0-2.2l-3-1.6a3.8 3.8 0 0 0-3.8 0Z" transform="matrix(-1 0 0 1 271.4 0)"/>
+          </g>
+          <g id="Group-26" transform="rotate(-20 512.6 -415.9)">
+            <path id="Combined-Shape" fill="#A40808" d="M13.3 18c9-7.6 21-10 33-7.6A32 32 0 0 0 25 17.7c-15.2 12.7-15.2 37.8 0 56 15.3 18.2 40 22.6 55.2 9.8 5.6-4.7 9.2-11 10.7-18.2a38.5 38.5 0 0 1-13.3 29.4c-17.7 14.8-46.5 9.7-64.3-11.4C-4.4 62-4.5 32.9 13.3 18Z"/>
+            <path id="Combined-Shape" fill="#A40808" d="M20.5 12.2C38.2-2.6 66.9 2.5 84.7 23.7c17.8 21.1 17.8 50.3 0 65.2-9 7.6-21 10-32.9 7.7A32 32 0 0 0 73 89.2c15.3-12.7 15.2-37.8 0-56-15.3-18.1-40-22.5-55.2-9.8-5.6 4.7-9.1 11.1-10.6 18.2a38.5 38.5 0 0 1 13.3-29.4Z"/>
+            <path id="Combined-Shape" fill="#FB5F5F" d="M20.5 12.2C38.2-2.6 66.9 2.5 84.7 23.7c17.8 21.1 17.8 50.3 0 65.2-17.6 14.9-46.4 9.8-64.2-11.4-17.7-21.2-17.8-50.4 0-65.3Zm4.5 5.5c-15.2 12.7-15.2 37.8 0 56 15.3 18.2 40 22.6 55.2 9.8 15.3-12.8 15.2-37.9 0-56C64.9 9.3 40.2 4.9 25 17.7Z"/>
+            <ellipse id="Oval-Copy-7" cx="51.7" cy="51.5" fill="#B3C8ED" opacity=".3" rx="33.1" ry="39.5" transform="rotate(-40 51.7 51.5)"/>
+            <g id="Group-28" fill="#FFF" transform="rotate(12 -75.9 263.2)">
+              <ellipse id="Oval" cx="4.3" cy="3.1" rx="3.8" ry="2.2" transform="rotate(16 4.3 3.1)"/>
+              <ellipse id="Oval-Copy-15" cx="10.9" cy="5.3" rx="1.9" ry="1.7" transform="rotate(16 11 5.3)"/>
+            </g>
+            <path id="Path-34" fill="#A40808" d="m68.6 110 11.8.3 4-6.6 1.3-3c-3 .2-6 1.3-9.4 3.3-3.2 2-5.8 4-7.7 6Z"/>
+            <path id="Path-33" fill="url(#linearGradient-67)" d="M85.7 100.7 117 157a67.4 67.4 0 0 1-17.1 9.5L68.6 110c3-.7 6-1.9 8.9-3.4 2.8-1.5 5.6-3.5 8.2-6Z"/>
+            <path id="Path-33-Copy" fill="url(#linearGradient-68)" d="m78.7 93.8 4.4 8.3a47.2 47.2 0 0 1-12 6.7l-4.4-8.5a30.2 30.2 0 0 0 12-6.5Z"/>
+          </g>
+        </g>
+        <circle id="Oval" cx="194.8" cy="153.4" r="21.9" fill="#FA5E5E" stroke="#163F89" stroke-opacity=".1"/>
+        <g id="?" fill="#FFF" fill-rule="nonzero" transform="translate(188.4 141)">
+          <path id="Shape" d="M4.5 16.9c0-1.3.1-2.3.4-3 .3-.7.8-1.5 1.6-2.4l2-2.2c1-1 1.4-2 1.4-3.2 0-1.1-.3-2-.9-2.6-.5-.6-1.4-1-2.5-1-1 0-2 .3-2.6 1-.6.5-1 1.3-1 2.2H0c0-1.7.6-3 1.8-4.1C3 .6 4.6 0 6.5 0c2 0 3.5.5 4.7 1.6 1 1 1.6 2.5 1.6 4.4 0 1.9-.8 3.7-2.5 5.5l-1.8 1.7c-.7.8-1.1 2-1.1 3.7h-3Zm-.2 5c0-.5.2-.9.5-1.2.3-.3.7-.5 1.3-.5.5 0 1 .2 1.3.5.3.3.4.7.4 1.2s-.1.8-.4 1.2c-.3.3-.8.4-1.3.4-.6 0-1-.1-1.3-.4-.3-.4-.5-.7-.5-1.2Z"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

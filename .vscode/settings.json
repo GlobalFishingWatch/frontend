@@ -73,7 +73,9 @@
   },
   "search.exclude": {
     ".yarn": true,
-    "**/dist": true
+    "**/dist": true,
+    "**/.output": true,
+    "**/routeTree.gen.ts": true
   },
   "eslint.experimental.useFlatConfig": true,
   "nxConsole.generateAiAgentRules": true

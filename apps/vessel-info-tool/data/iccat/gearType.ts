@@ -1,0 +1,27 @@
+const gearTypes = [
+  { cod: 'PS', name: 'With purse lines (purse seines)', group: 'SURROUNDING NET' },
+  { cod: 'SB', name: 'Beach seines', group: 'SEINE NET' },
+  { cod: 'TB', name: 'Bottom trawls', group: 'TRAWL NET' },
+  { cod: 'TM', name: 'Midwater trawls', group: 'TRAWL NET' },
+  { cod: 'DRB', name: 'Boat dredges', group: 'DREDGE' },
+  { cod: 'LNP', name: 'Portable hand lift nets', group: 'LIFT NET' },
+  { cod: 'FCN', name: 'Cast nets', group: 'FALLING GEAR' },
+  { cod: 'GNS', name: 'Set Gillnets', group: 'GILLNET AND ENTANGLING NET' },
+  { cod: 'GND', name: 'Driftnets', group: 'GILLNET AND ENTANGLING NET' },
+  { cod: 'FPN', name: 'Stationary uncovered pound nets', group: 'TRAP' },
+  { cod: 'LHP', name: 'Handline and pole-lines (hand operated)', group: 'HOOKS AND LINES' },
+  { cod: 'LHM', name: 'Handline and pole-lines (mechanized)', group: 'HOOKS AND LINES' },
+  { cod: 'LLS', name: 'Set longlines', group: 'HOOKS AND LINES' },
+  { cod: 'LLD', name: 'Drifting longlines', group: 'HOOKS AND LINES' },
+  { cod: 'LL', name: 'Longlines (not specified)', group: 'HOOKS AND LINES (longlines)' },
+  { cod: 'LTL', name: 'Trolling lines', group: 'HOOKS AND LINES (trolling)' },
+  { cod: 'LX', name: 'Hooks and lines', group: 'HOOKS AND LINES' },
+  { cod: 'HAR', name: 'Harpoons', group: 'GRAPPLING AND WOUNDLING' },
+  { cod: 'HMX', name: 'Harvesting machines', group: 'HARVESTING MACHINE' },
+  { cod: 'MIS', name: 'Miscellaneouss gear', group: 'MISCELLANEUS GEAR' },
+  { cod: 'RG', name: 'Recreational fishing gear', group: 'RECREATIONAL FISHING GEAR' },
+  { cod: 'NAP', name: 'Not applicable (not a fishing vessel)', group: 'NOT APPLICABLE' },
+  { cod: 'NK', name: 'Gear not know or not specified', group: 'GEAR NOT KNOWN' },
+]
+
+export default gearTypes

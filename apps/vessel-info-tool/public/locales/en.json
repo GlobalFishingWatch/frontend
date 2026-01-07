@@ -1,0 +1,25 @@
+{
+  "profile": {
+    "logout": "Log out"
+  },
+  "search": {
+    "placeholderGlobal": "Search all data..",
+    "placeholder": "Search",
+    "noResults": "No results found",
+    "typeaValue": "Type a value"
+  },
+  "footer": {
+    "download": "Download all",
+    "results": "{{count}} results",
+    "select_rows": "Select vessels to download"
+  },
+  "expanded_row": {
+    "title": "Vessel Viewer",
+    "see_more": "See more",
+    "to": "to",
+    "from": "from",
+    "transmission_other": "transmissions",
+    "external_links": "External Links",
+    "not_found": "Couldn't find vessel information"
+  }
+}

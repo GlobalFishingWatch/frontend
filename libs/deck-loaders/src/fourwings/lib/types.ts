@@ -22,7 +22,7 @@ type FourwingsAggregationOperation = 'sum' | 'avg'
 export type ParseFourwingsOptions = {
   cols: number[]
   rows: number[]
-  tile?: TileLoadProps
+  tile?: _TileLoadProps
   bufferedStartDate: number
   initialTimeRange?: {
     start: number

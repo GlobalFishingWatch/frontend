@@ -1,5 +1,9 @@
 export default {
-  extends: ['stylelint-config-standard', 'stylelint-config-css-modules'],
+  extends: [
+    'stylelint-config-standard',
+    'stylelint-config-css-modules',
+    'stylelint-config-tailwindcss',
+  ],
   rules: {
     'alpha-value-notation': 'number',
     'value-keyword-case': [

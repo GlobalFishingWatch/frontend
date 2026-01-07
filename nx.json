@@ -40,7 +40,8 @@
         "typecheckTargetName": "typecheck",
         "buildDepsTargetName": "build-deps",
         "watchDepsTargetName": "watch-deps"
-      }
+      },
+      "exclude": ["**/vessel-info-tool/**"]
     }
   ],
   "targetDefaults": {

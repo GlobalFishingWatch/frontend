@@ -12,9 +12,8 @@ import qs from 'qs'
 import { GFWAPI, THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import { TrackField } from '@globalfishingwatch/api-types'
 import { segmentsToGeoJSON, trackValueArrayToSegments } from '@globalfishingwatch/data-transforms'
+import { useOnScreen, useScreenDPI } from '@globalfishingwatch/react-hooks'
 import { Icon, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
-
-import { useOnScreen, useScreenDPI } from 'hooks/screen.hooks'
 
 import styles from './TrackFootprint.module.css'
 
@@ -23,6 +22,7 @@ type TrackFootprintProps = {
   trackDatasetId?: string
   highlightedYear?: number
   onDataLoad?: (data: FeatureCollection) => void
+  className?: string
 }
 
 const FOOTPRINT_WIDTH = 300
@@ -36,11 +36,12 @@ const TRACK_FOOTPRINT_QUERY = {
   format: 'VALUE_ARRAY',
 }
 
-function TrackFootprint({
+export function TrackFootprint({
   vesselIds,
   trackDatasetId,
   highlightedYear,
   onDataLoad,
+  className,
 }: TrackFootprintProps) {
   const { t } = useTranslation()
   const [trackData, setTrackData] = useState<FeatureCollection<Geometry, GeoJsonProperties>>()
@@ -203,7 +204,7 @@ function TrackFootprint({
 
   return (
     <Tooltip content={error && t('vessel.noTrackAvailable')}>
-      <div className={styles.map}>
+      <div className={cx(styles.map, className)}>
         <canvas
           className={cx(styles.canvas, { [styles.faint]: highlightedYear })}
           width={footprintWidth}
@@ -224,5 +225,3 @@ function TrackFootprint({
     </Tooltip>
   )
 }
-
-export default TrackFootprint

@@ -1,0 +1,91 @@
+.footer {
+  display: flex;
+  align-items: center;
+  border-top: var(--border);
+  height: var(--header-height);
+  width: 100vw;
+  justify-content: space-between;
+  padding: var(--space-S) var(--space-M);
+}
+
+.sticky {
+  position: fixed;
+  background-color: var(--color-white);
+  z-index: 3;
+  bottom: 0;
+}
+
+.downloadButton {
+  padding-left: 6rem;
+  padding-right: 6rem;
+}
+
+.checkbox {
+  appearance: none;
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid #d1d5db;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+}
+
+.checkbox:checked {
+  background-color: rgba(22, 63, 137, 0.8);
+  border-color: rgba(22, 63, 137, 0.1);
+}
+
+.checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.tbody {
+  box-shadow: inset 0 1px 8px 0 rgba(22, 63, 137, 0.1);
+}
+
+.th {
+  margin: 0;
+  padding: 0.8rem 1.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 1.4rem;
+  text-transform: capitalize;
+  align-content: center;
+  box-shadow: -1px 0 0 0 inset rgba(22, 63, 137, 0.1);
+}
+
+.td {
+  margin: 0;
+  padding: 0.8rem 1.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: inherit;
+  max-width: none;
+  font-size: 1.4rem;
+  border: 1px solid rgba(22, 63, 137, 0.1);
+  text-transform: capitalize;
+  align-content: center;
+}
+
+.inputTd {
+  background-color: var(--color-terthiary-blue);
+  border: 1px solid rgba(22, 63, 137, 0.1);
+  align-content: center;
+}
+
+.inputTd input {
+  border: none;
+  background: none;
+}
+
+.expanded > div {
+  min-width: 50vw;
+}
