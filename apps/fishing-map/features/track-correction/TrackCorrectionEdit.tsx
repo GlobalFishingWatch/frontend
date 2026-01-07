@@ -8,6 +8,7 @@ import { Button, Icon, InputText } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { getVesselDataviewInstanceId } from 'features/dataviews/dataviews.utils'
 import I18nDate from 'features/i18n/i18nDate'
 import {
   createCommentThunk,
@@ -55,16 +56,19 @@ const TrackCorrectionEdit = () => {
   const trackCorrectionTimerange = useSelector(selectTrackCorrectionTimerange)
 
   const trackCorrectionVesselDataviewId = useSelector(selectTrackCorrectionVesselDataviewId)
-
   const { dataview, vesselInfoResource, vesselLayer } = useGetVesselInfoByDataviewId(
-    trackCorrectionVesselDataviewId || 'vessel-' + currentTrackCorrectionIssue!.vesselId
+    trackCorrectionVesselDataviewId
   )
   const vesselInfo = vesselInfoResource?.data
   const userData = useSelector(selectUserData)
 
   useEffect(() => {
-    if (!trackCorrectionVesselDataviewId) {
-      dispatch(setTrackCorrectionDataviewId('vessel-' + currentTrackCorrectionIssue!.vesselId))
+    if (!trackCorrectionVesselDataviewId && currentTrackCorrectionIssue!.vesselId) {
+      dispatch(
+        setTrackCorrectionDataviewId(
+          getVesselDataviewInstanceId(currentTrackCorrectionIssue!.vesselId)
+        )
+      )
     }
   }, [trackCorrectionVesselDataviewId, currentTrackCorrectionIssue, dispatch])
 
