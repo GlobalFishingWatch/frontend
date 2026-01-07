@@ -8,7 +8,6 @@ import type {
 } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { PathLayer, TextLayer } from '@deck.gl/layers'
-import type { PathGeometry } from '@deck.gl/layers/dist/path-layer/path'
 import type { GeoJsonProperties } from 'geojson'
 
 import {
@@ -105,7 +104,7 @@ export class GraticulesLayer<PropsT = Record<string, unknown>> extends Composite
         id: `${this.props.id}-lines`,
         data: data,
         widthUnits: 'pixels',
-        getPath: (d) => d.geometry.coordinates as PathGeometry,
+        getPath: (d) => d.geometry.coordinates as Position[],
         getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Overlay, params),
         getWidth: this._getLineWidth,
         getColor: hexToDeckColor(color, 0.3),

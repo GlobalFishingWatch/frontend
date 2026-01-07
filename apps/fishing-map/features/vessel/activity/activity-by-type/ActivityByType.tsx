@@ -131,7 +131,7 @@ function ActivityByType() {
           defaultItemHeight={EVENT_HEIGHT}
           groupCounts={groupCounts}
           increaseViewportBy={EVENT_HEIGHT * 4}
-          customScrollParent={getScrollElement()}
+          customScrollParent={getScrollElement() as HTMLElement}
           onWheel={handleScroll}
           rangeChanged={handleScroll}
           groupContent={(index) => {

@@ -100,8 +100,7 @@
       "options": {
         "buildTarget": "fishing-map:build",
         "dev": true,
-        "port": 3003,
-        "turbo": true
+        "port": 3003
       },
       "configurations": {
         "production": {
