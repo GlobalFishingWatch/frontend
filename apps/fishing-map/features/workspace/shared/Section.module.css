@@ -62,7 +62,7 @@
 }
 
 .collapseButton {
-  display: none;
+  opacity: 0;
   transition: var(--transition);
 }
 
@@ -71,6 +71,11 @@
 }
 
 .containerCollapsed .sectionButtons {
+  visibility: hidden;
+  width: 0;
+}
+
+.containerCollapsed .actionButtons {
   display: none;
 }
 
@@ -87,7 +92,7 @@
 }
 
 .container:hover .collapseButton {
-  display: block;
+  opacity: var(--opacity-secondary);
 }
 
 .emptyState,

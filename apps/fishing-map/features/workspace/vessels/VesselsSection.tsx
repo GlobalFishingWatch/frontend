@@ -193,6 +193,7 @@ function VesselsSection(): React.ReactElement<any> {
                   e.stopPropagation()
                 }
               }}
+              className={styles.actionButtons}
             >
               <Switch
                 className="print-hidden"
@@ -205,7 +206,7 @@ function VesselsSection(): React.ReactElement<any> {
             </span>
           )}{' '}
           {t('common.vessels')}
-          {dataviews.length > 1 ? ` (${dataviews.length})` : ''}
+          {` (${dataviews.length})`}
         </>
       }
       headerOptions={

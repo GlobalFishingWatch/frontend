@@ -48,16 +48,16 @@ function Section({
       })}
     >
       <div className={cx(styles.header, 'print-hidden')}>
-        <IconButton
-          icon={collapsed ? 'arrow-right' : 'arrow-down'}
-          type="default"
-          size="small"
-          className={styles.collapseButton}
-          onClick={onCollapse}
-        />
         <span className={styles.sectionTitle} onClick={onCollapse}>
           {title}
         </span>
+        <IconButton
+          icon={collapsed ? 'section-expand' : 'section-collapse'}
+          type="default"
+          size="small"
+          className={cx({ [styles.collapseButton]: !collapsed })}
+          onClick={onCollapse}
+        />
         {headerOptions}
       </div>
       <div className={styles.content}>{children} </div>
