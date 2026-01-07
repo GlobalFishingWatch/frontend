@@ -16,7 +16,7 @@ import { selectUserContextDatasets } from 'features/user/selectors/user.permissi
 import { getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
-import Sections from '../shared/Sections'
+import Section from '../shared/Section'
 
 import LayerPanel from './ContextAreaLayerPanel'
 
@@ -58,7 +58,7 @@ function ContextAreaSection(): React.ReactElement<any> {
     []
   )
   return (
-    <Sections
+    <Section
       id={DataviewCategory.Context}
       data-testid="context-areas-section"
       title={t('common.context_areas')}
@@ -96,7 +96,7 @@ function ContextAreaSection(): React.ReactElement<any> {
           ))
         })}
       </SortableContext>
-    </Sections>
+    </Section>
   )
 }
 

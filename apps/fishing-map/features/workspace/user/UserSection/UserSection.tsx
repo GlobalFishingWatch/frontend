@@ -22,13 +22,13 @@ import { selectUserContextDatasets } from 'features/user/selectors/user.permissi
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import LayerPanelContainer from 'features/workspace/shared/LayerPanelContainer'
-import Sections from 'features/workspace/shared/Sections'
+import Section from 'features/workspace/shared/Section'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { getEventLabel } from 'utils/analytics'
 
 import LayerPanel from '../UserLayerPanel'
 
-import styles from 'features/workspace/shared/Sections.module.css'
+import styles from 'features/workspace/shared/Section.module.css'
 
 export function RegisterOrLoginToUpload() {
   return (
@@ -110,7 +110,7 @@ export function UserSection(): React.ReactElement<any> {
     []
   )
   return (
-    <Sections
+    <Section
       id={DataviewCategory.User}
       data-testid="user-section"
       title={t('user.datasets')}
@@ -188,7 +188,7 @@ export function UserSection(): React.ReactElement<any> {
           </div>
         ) : null}
       </SortableContext>
-    </Sections>
+    </Section>
   )
 }
 

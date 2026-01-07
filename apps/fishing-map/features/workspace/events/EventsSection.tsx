@@ -18,11 +18,11 @@ import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
 import { getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
-import Sections from '../shared/Sections'
+import Section from '../shared/Section'
 
 import LayerPanel from './EventsLayerPanel'
 
-import styles from 'features/workspace/shared/Sections.module.css'
+import styles from 'features/workspace/shared/Section.module.css'
 
 function EventsLayerSection(): React.ReactElement<any> | null {
   const { t } = useTranslation()
@@ -48,7 +48,7 @@ function EventsLayerSection(): React.ReactElement<any> | null {
   )
 
   return (
-    <Sections
+    <Section
       id={DataviewCategory.Events}
       data-testid="events-section"
       title={t('common.events')}
@@ -79,7 +79,7 @@ function EventsLayerSection(): React.ReactElement<any> | null {
           </LayerPanelContainer>
         ))}
       </SortableContext>
-    </Sections>
+    </Section>
   )
 }
 

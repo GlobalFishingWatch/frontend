@@ -1,33 +1,43 @@
 import type { JSX } from 'react'
-import { useState } from 'react'
+import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
+import { uniq } from 'es-toolkit'
 
 import type { DataviewCategory } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import { selectWorkspace } from '../workspace.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
 
-import styles from 'features/workspace/shared/Sections.module.css'
+import { selectCollapsedSections } from '../workspace.selectors'
 
-interface SectionsProps {
-  id?: DataviewCategory
+import styles from 'features/workspace/shared/Section.module.css'
+
+interface SectionProps {
+  id: DataviewCategory
   title: string | JSX.Element
   hasVisibleDataviews: boolean
   children: JSX.Element | JSX.Element[]
   headerOptions: JSX.Element | JSX.Element[] | null
 }
 
-function Sections({
+function Section({
   id,
   title,
   hasVisibleDataviews,
   children,
   headerOptions,
-}: SectionsProps): React.ReactElement<any> {
-  const workspace = useSelector(selectWorkspace)
-  const collapsedSections = workspace?.collapsedSections || []
-  const [collapsed, setCollapsed] = useState(id ? collapsedSections.includes(id) : false)
+}: SectionProps): React.ReactElement<any> {
+  const { dispatchQueryParams } = useLocationConnect()
+  const collapsedSections = useSelector(selectCollapsedSections)
+  const collapsed = collapsedSections.includes(id)
+
+  const onCollapse = useCallback(() => {
+    const newCollapsedSections = collapsed
+      ? collapsedSections.filter((section) => section !== id)
+      : [...collapsedSections, id]
+    dispatchQueryParams({ collapsedSections: uniq(newCollapsedSections) })
+  }, [collapsed, collapsedSections, dispatchQueryParams, id])
 
   return (
     <div
@@ -43,9 +53,9 @@ function Sections({
           type="default"
           size="small"
           className={styles.collapseButton}
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={onCollapse}
         />
-        <span className={styles.sectionTitle} onClick={() => setCollapsed(!collapsed)}>
+        <span className={styles.sectionTitle} onClick={onCollapse}>
           {title}
         </span>
         {headerOptions}
@@ -55,4 +65,4 @@ function Sections({
   )
 }
 
-export default Sections
+export default Section

@@ -21,11 +21,11 @@ import {
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import Sections from '../shared/Sections'
+import Section from '../shared/Section'
 
 import VesselGroupLayerPanel from './VesselGroupsLayerPanel'
 
-import styles from 'features/workspace/shared/Sections.module.css'
+import styles from 'features/workspace/shared/Section.module.css'
 
 // Use this when needs to highlight a section instead of a dataview
 // const MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION = {
@@ -60,7 +60,7 @@ function VesselGroupSection(): React.ReactElement<any> {
   }, [dispatch, userDatasets.length])
 
   return (
-    <Sections
+    <Section
       id={DataviewCategory.VesselGroups}
       data-testid="vessel-groups-section"
       hasVisibleDataviews={hasVisibleDataviews}
@@ -118,7 +118,7 @@ function VesselGroupSection(): React.ReactElement<any> {
           </div>
         )}
       </SortableContext>
-    </Sections>
+    </Section>
   )
 }
 

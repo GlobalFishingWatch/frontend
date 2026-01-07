@@ -231,8 +231,8 @@ function Workspace() {
           </Sticky>
         )}
       <ActivitySection />
-      <EventsSection />
       <DetectionsSection />
+      <EventsSection />
       <VesselsSection />
       <VesselGroupSection />
       <EnvironmentalSection />

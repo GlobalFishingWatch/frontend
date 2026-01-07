@@ -28,11 +28,11 @@ import { selectLocationCategory } from 'routes/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
-import Sections from '../shared/Sections'
+import Section from '../shared/Section'
 
 import EnvironmentalLayerPanel from './EnvironmentalLayerPanel'
 
-import styles from 'features/workspace/shared/Sections.module.css'
+import styles from 'features/workspace/shared/Section.module.css'
 
 function EnvironmentalLayerSection(): React.ReactElement<any> | null {
   const { t } = useTranslation()
@@ -83,7 +83,7 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
   }
 
   return (
-    <Sections
+    <Section
       id={DataviewCategory.Environment}
       data-testid="environment-section"
       title={t('common.environment')}
@@ -145,7 +145,7 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
           </div>
         )}
       </>
-    </Sections>
+    </Section>
   )
 }
 

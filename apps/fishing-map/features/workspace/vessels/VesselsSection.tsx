@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
@@ -43,14 +43,14 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getVesselShipNameLabel } from 'utils/info'
 
-import Sections from '../shared/Sections'
+import Section from '../shared/Section'
 
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'
 import VesselTracksLegend from './VesselTracksLegend'
 
-import styles from 'features/workspace/shared/Sections.module.css'
+import styles from 'features/workspace/shared/Section.module.css'
 
 const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: string) => {
   return resources[
@@ -80,7 +80,7 @@ function VesselsSection(): React.ReactElement<any> {
   const readOnly = useSelector(selectReadOnly)
   const resources = useSelector(selectResources)
   const { dispatchQueryParams } = useLocationConnect()
-  const sortOrder = useRef<'ASC' | 'DESC' | 'DEFAULT'>('DEFAULT')
+  const [sortOrder, setSortOrder] = useState<'ASC' | 'DESC' | 'DEFAULT'>('DEFAULT')
 
   const onToggleAllVessels = useCallback(() => {
     upsertDataviewInstance(
@@ -123,7 +123,8 @@ function VesselsSection(): React.ReactElement<any> {
   )
 
   const onSetSortOrderClick = useCallback(() => {
-    sortOrder.current = sortOrder.current === 'ASC' ? 'DESC' : 'ASC'
+    const newSortOrder = sortOrder === 'ASC' ? 'DESC' : 'ASC'
+    setSortOrder(newSortOrder)
     const dataviewsSortedIds = dataviews
       .sort((a, b) => {
         const aResource = getVesselResourceByDataviewId(resources, a.id)
@@ -131,7 +132,7 @@ function VesselsSection(): React.ReactElement<any> {
         const aVesselLabel = aResource ? getVesselShipNameLabel(aResource.data) : ''
         const bVesselLabel = bResource ? getVesselShipNameLabel(bResource.data) : ''
         if (!aVesselLabel || !bVesselLabel) return 0
-        if (sortOrder.current === 'ASC') {
+        if (newSortOrder === 'ASC') {
           return aVesselLabel < bVesselLabel ? -1 : 1
         } else {
           return aVesselLabel < bVesselLabel ? 1 : -1
@@ -139,7 +140,7 @@ function VesselsSection(): React.ReactElement<any> {
       })
       .map((d) => d.id)
     dispatchQueryParams({ dataviewInstancesOrder: dataviewsSortedIds })
-  }, [dataviews, dispatchQueryParams, resources])
+  }, [dataviews, dispatchQueryParams, resources, sortOrder])
 
   const onSearchClick = useCallback(() => {
     trackEvent({
@@ -176,7 +177,7 @@ function VesselsSection(): React.ReactElement<any> {
       })
 
   return (
-    <Sections
+    <Section
       id={DataviewCategory.Vessels}
       data-testid="vessels-section"
       hasVisibleDataviews={hasVisibleDataviews}
@@ -230,11 +231,9 @@ function VesselsSection(): React.ReactElement<any> {
               )}
               {dataviews.length > 1 && (
                 <IconButton
-                  icon={sortOrder.current === 'DESC' ? 'sort-asc' : 'sort-desc'}
+                  icon={sortOrder === 'DESC' ? 'sort-asc' : 'sort-desc'}
                   size="medium"
-                  tooltip={
-                    sortOrder.current === 'DESC' ? t('vessel.sortAsc') : t('vessel.sortDesc')
-                  }
+                  tooltip={sortOrder === 'DESC' ? t('vessel.sortAsc') : t('vessel.sortDesc')}
                   tooltipPlacement="top"
                   onClick={onSetSortOrderClick}
                 />
@@ -298,7 +297,7 @@ function VesselsSection(): React.ReactElement<any> {
         {!hasDeprecatedDataviewInstances && <VesselEventsLegend dataviews={dataviews} />}
         <VesselsFromPositions />
       </>
-    </Sections>
+    </Section>
   )
 }
 

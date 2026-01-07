@@ -39,7 +39,6 @@ export interface Workspace<State = unknown, Category = string> {
   ownerId?: number
   ownerType?: OwnerType
   createdAt?: string
-  collapsedSections?: DataviewCategory[]
 }
 
 export type WorkspaceUpsert<State = unknown, Category = string> = Omit<

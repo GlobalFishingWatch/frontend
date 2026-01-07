@@ -23,13 +23,13 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
-import Sections from '../shared/Sections'
+import Section from '../shared/Section'
 
 import { useVisualizationsOptions } from './activity.hooks'
 import LayerPanel from './ActivityLayerPanel'
 
 import activityStyles from './ActivitySection.module.css'
-import styles from 'features/workspace/shared/Sections.module.css'
+import styles from 'features/workspace/shared/Section.module.css'
 
 function ActivitySection(): React.ReactElement<any> {
   const { t } = useTranslation()
@@ -106,7 +106,7 @@ function ActivitySection(): React.ReactElement<any> {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   return (
-    <Sections
+    <Section
       id={DataviewCategory.Activity}
       data-testid="activity-section"
       title={t('common.activity')}
@@ -170,7 +170,7 @@ function ActivitySection(): React.ReactElement<any> {
           </Fragment>
         )
       })}
-    </Sections>
+    </Section>
   )
 }
 

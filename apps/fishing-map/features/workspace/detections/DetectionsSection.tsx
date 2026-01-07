@@ -25,10 +25,10 @@ import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/ana
 import { useVisualizationsOptions } from '../activity/activity.hooks'
 import LayerPanel from '../activity/ActivityLayerPanel'
 import LayerPanelContainer from '../shared/LayerPanelContainer'
-import Sections from '../shared/Sections'
+import Section from '../shared/Section'
 
 import activityStyles from '../activity/ActivitySection.module.css'
-import styles from 'features/workspace/shared/Sections.module.css'
+import styles from 'features/workspace/shared/Section.module.css'
 
 function DetectionsSection(): React.ReactElement<any> {
   const { t } = useTranslation()
@@ -103,7 +103,7 @@ function DetectionsSection(): React.ReactElement<any> {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   return (
-    <Sections
+    <Section
       id={DataviewCategory.Detections}
       data-testid="detections-section"
       title={t('common.detections')}
@@ -164,7 +164,7 @@ function DetectionsSection(): React.ReactElement<any> {
           </Fragment>
         )
       })}
-    </Sections>
+    </Section>
   )
 }
 
