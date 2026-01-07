@@ -20,8 +20,8 @@ import {
   type FourwingsInterval,
   getFourwingsInterval,
 } from '@globalfishingwatch/deck-loaders'
-import { useTrackDependencyChanges } from '@globalfishingwatch/react-hooks'
 
+// import { useTrackDependencyChanges } from '@globalfishingwatch/react-hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 // import { useTrackDependencyChanges } from '@globalfishingwatch/react-hooks'
 import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -164,7 +164,10 @@ const useReportTimeseries = (
   const filterCellsByPolygon = useFilterCellsByPolygonWorker()
   const area = useSelector(selectReportArea)
   const { start, end } = useSelector(selectTimeRange)
-  const interval = getFourwingsInterval(start, end)
+  const availableIntervals = uniq(
+    reportLayers.flatMap((layer) => layer.instance.props.availableIntervals as FourwingsInterval[])
+  )
+  const interval = getFourwingsInterval(start, end, availableIntervals)
   const reportTitle = useReportTitle()
   const isAreaInViewport = useReportAreaInViewport()
   const reportCategory = useSelector(selectReportCategory)
@@ -221,9 +224,9 @@ const useReportTimeseries = (
 
   const lastProcessedHash = useRef('')
 
-  useTrackDependencyChanges('processFeatures dependencies', {
-    processingHash,
-  })
+  // useTrackDependencyChanges('processFeatures dependencies', {
+  //   processingHash,
+  // })
 
   useEffect(() => {
     if (
