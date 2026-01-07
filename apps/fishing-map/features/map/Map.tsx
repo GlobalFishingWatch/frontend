@@ -14,7 +14,6 @@ import { ROOT_DOM_ELEMENT } from 'data/config'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import MapControls from 'features/map/controls/MapControls'
 import { selectScreenshotAreaId } from 'features/map/controls/screenshot.slice'
-import DeckGLWrapper from 'features/map/DeckGLWrapper'
 import ErrorNotificationDialog from 'features/map/overlays/error-notification/ErrorNotification'
 import MapPopups from 'features/map/popups/MapPopups'
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
@@ -40,6 +39,14 @@ const DrawDialog = dynamic(
   () => import(/* webpackChunkName: "DrawDialog" */ './overlays/draw/DrawDialog')
 )
 const Hint = dynamic(() => import(/* webpackChunkName: "Hint" */ 'features/help/Hint'))
+
+const DeckGLWrapper = dynamic(
+  () => import(/* webpackChunkName: "DeckGLWrapper" */ './DeckGLWrapper'),
+  {
+    ssr: false,
+    loading: () => null,
+  }
+)
 
 const MapWrapper = () => {
   useUpdateViewStateUrlParams()

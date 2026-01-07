@@ -1,7 +1,6 @@
 import { COORDINATE_SYSTEM } from '@deck.gl/core'
 import { ClipExtension } from '@deck.gl/extensions'
-import type { TileLayerProps } from '@deck.gl/geo-layers'
-import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { _Tile2DHeader as Tile2DHeader, TileLayerProps } from '@deck.gl/geo-layers'
 import { Matrix4 } from '@math.gl/core'
 
 import type { ContextPickingObject } from '../layers/context'

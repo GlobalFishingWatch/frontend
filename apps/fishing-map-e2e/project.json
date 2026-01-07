@@ -6,86 +6,24 @@
   "tags": [],
   "implicitDependencies": ["fishing-map"],
   "targets": {
-    "test": {
+    "e2e:local": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx serve i18n-labels", "nx e2e fishing-map-e2e --verbose"],
-        "parallel": true
-      }
-    },
-    "test:watch": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["nx serve i18n-labels", "nx e2e fishing-map-e2e --watch"],
-        "parallel": true
-      }
-    },
-    "test-pr": {
-      "executor": "@nx/cypress:cypress",
-      "options": {
-        "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
-        "testingType": "e2e"
-      }
-    },
-    "test-env": {
-      "executor": "@nx/cypress:cypress",
-      "options": {
-        "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
-        "testingType": "e2e"
-      }
-    },
-    "test-env:watch": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["nx e2e fishing-map-e2e --watch"],
-        "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
-        "testingType": "e2e"
-      }
-    },
-    "test-production": {
-      "executor": "@nx/cypress:cypress",
-      "options": {
-        "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
-        "baseUrl": "https://globalfishingwatch.org/map",
-        "testingType": "e2e"
-      }
-    },
-    "test-develop": {
-      "executor": "@nx/cypress:cypress",
-      "options": {
-        "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
-        "baseUrl": "https://fishing-map.dev.globalfishingwatch.org/map",
-        "testingType": "e2e"
-      }
-    },
-    "test-staging": {
-      "executor": "@nx/cypress:cypress",
-      "options": {
-        "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
-        "baseUrl": "https://fishing-map.staging.globalfishingwatch.org/map",
-        "testingType": "e2e"
-      }
-    },
-    "test-staging:watch": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["nx e2e fishing-map-e2e --watch"],
-        "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
-        "baseUrl": "https://fishing-map.staging.globalfishingwatch.org/map",
-        "testingType": "e2e"
-      }
+        "command": "playwright test --config=playwright.config.mts",
+        "cwd": "apps/fishing-map-e2e"
+      },
+      "dependsOn": [
+        {
+          "projects": "fishing-map",
+          "target": "serve"
+        }
+      ]
     },
     "e2e": {
-      "executor": "@nx/cypress:cypress",
+      "executor": "nx:run-commands",
       "options": {
-        "cypressConfig": "apps/fishing-map-e2e/cypress.config.ts",
-        "devServerTarget": "fishing-map:serve",
-        "testingType": "e2e"
-      },
-      "configurations": {
-        "production": {
-          "devServerTarget": "fishing-map:serve:production"
-        }
+        "command": "playwright test --config=playwright.config.mts",
+        "cwd": "apps/fishing-map-e2e"
       }
     }
   }

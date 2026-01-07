@@ -21,13 +21,12 @@ import { setModalOpen } from 'features/modals/modals.slice'
 import { selectUserContextDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
+import LayerPanelContainer from 'features/workspace/shared/LayerPanelContainer'
+import Sections from 'features/workspace/shared/Sections'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { getEventLabel } from 'utils/analytics'
 
-import LayerPanelContainer from '../shared/LayerPanelContainer'
-import Sections from '../shared/Sections'
-
-import LayerPanel from './UserLayerPanel'
+import LayerPanel from '../UserLayerPanel'
 
 import styles from 'features/workspace/shared/Sections.module.css'
 
@@ -49,7 +48,7 @@ export function RegisterOrLoginToUpload() {
   )
 }
 
-function UserSection(): React.ReactElement<any> {
+export function UserSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const { dispatchSetMapDrawing } = useMapDrawConnect()
   const guestUser = useSelector(selectIsGuestUser)

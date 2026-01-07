@@ -12,11 +12,13 @@
     "i18n:extract:watch": "cross-env LC_ALL=en_US.UTF-8 i18next-cli extract --watch",
     "i18n:types": "i18next-cli types",
     "i18n:types:watch": "i18next-cli types --watch",
-    "analyze": "source-map-explorer 'build/static/js/*.js'"
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "test": "npx vitest",
+    "test:e2e": "npx playwright test"
   },
   "devDependencies": {
     "cross-env": "^10.1.0",
-    "i18next-cli": "^1.21.0",
+    "i18next-cli": "^1.34.1",
     "source-map-explorer": "2.5.3"
   },
   "browserslist": [

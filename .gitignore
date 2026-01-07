@@ -148,3 +148,13 @@ terraform.tfstate.backup
 
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
+
+
+# Vitest traces
+__traces__
+.vitest-attachments
+
+# Playwright test artifacts
+test-results/
+.playwright/
+playwright-report/

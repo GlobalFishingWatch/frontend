@@ -1,6 +1,6 @@
 import type { Accessor, LayerExtension, PickingInfo } from '@deck.gl/core'
 import type { DataFilterExtensionProps } from '@deck.gl/extensions'
-import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { _Tile2DHeader as Tile2DHeader } from '@deck.gl/geo-layers'
 import type { Feature, Geometry } from 'geojson'
 
 import type { TimeFilterType } from '@globalfishingwatch/api-types'
