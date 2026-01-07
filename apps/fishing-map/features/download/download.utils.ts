@@ -8,6 +8,7 @@ import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 
 import { REPORT_DAYS_LIMIT } from 'data/config'
+import { PRESENCE_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
 import { getActiveDatasetsInDataview, getDatasetSchemaItem } from 'features/datasets/datasets.utils'
 import { getUTCDateTime } from 'utils/dates'
 
@@ -35,8 +36,10 @@ export function getSupportedGroupByOptions(
   if (!options?.length) {
     return []
   }
-  const hasPresenceDataview = dataviews.some((dataview) =>
-    dataview.id.includes(DatasetSubCategory.Presence)
+  const hasPresenceDataview = dataviews.some(
+    (dataview) =>
+      dataview.id.includes(DatasetSubCategory.Presence) ||
+      dataview.id.includes(PRESENCE_DATAVIEW_INSTANCE_ID)
   )
 
   const mmsiSupported = vesselDatasets.every((dataset) => {

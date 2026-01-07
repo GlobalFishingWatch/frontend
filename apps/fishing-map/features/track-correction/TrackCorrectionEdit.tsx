@@ -1,6 +1,4 @@
-import { constants } from 'buffer'
-
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
@@ -10,8 +8,6 @@ import { Button, Icon, InputText } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { getVesselDataview } from 'features/dataviews/dataviews.utils'
-import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import {
   createCommentThunk,
@@ -59,15 +55,19 @@ const TrackCorrectionEdit = () => {
   const trackCorrectionTimerange = useSelector(selectTrackCorrectionTimerange)
 
   const trackCorrectionVesselDataviewId = useSelector(selectTrackCorrectionVesselDataviewId)
-  if (!trackCorrectionVesselDataviewId)
-    dispatch(setTrackCorrectionDataviewId('vessel-' + currentTrackCorrectionIssue!.vesselId))
 
   const { dataview, vesselInfoResource, vesselLayer } = useGetVesselInfoByDataviewId(
     trackCorrectionVesselDataviewId || 'vessel-' + currentTrackCorrectionIssue!.vesselId
   )
-
   const vesselInfo = vesselInfoResource?.data
   const userData = useSelector(selectUserData)
+
+  useEffect(() => {
+    if (!trackCorrectionVesselDataviewId) {
+      dispatch(setTrackCorrectionDataviewId('vessel-' + currentTrackCorrectionIssue!.vesselId))
+    }
+  }, [trackCorrectionVesselDataviewId, currentTrackCorrectionIssue, dispatch])
+
   const trackData = useMemo(() => {
     return vesselLayer?.instance
       ?.getVesselTrackSegments({
