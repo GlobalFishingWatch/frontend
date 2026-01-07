@@ -1,8 +1,7 @@
 import type { DefaultProps, Layer, LayerContext, LayersList, UpdateParameters } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import type { TileLayerProps } from '@deck.gl/geo-layers'
+import type { _TileLoadProps as TileLoadProps, TileLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
-import type { TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { parse } from '@loaders.gl/core'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'

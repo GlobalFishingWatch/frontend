@@ -1,6 +1,5 @@
 import type { Accessor, Color, PickingInfo } from '@deck.gl/core'
-import type { TileLayerProps } from '@deck.gl/geo-layers'
-import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { _Tile2DHeader as Tile2DHeader, TileLayerProps } from '@deck.gl/geo-layers'
 
 import type { DeckLayerProps, DeckPickingObject } from '../../types'
 import type { ContextFeature } from '../context'

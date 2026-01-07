@@ -1,5 +1,5 @@
 import type { Color, PickingInfo } from '@deck.gl/core'
-import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { _Tile2DHeader as Tile2DHeader } from '@deck.gl/geo-layers'
 
 import type { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
 

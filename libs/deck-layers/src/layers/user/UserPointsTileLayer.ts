@@ -6,9 +6,8 @@ import type {
   Position,
   UpdateParameters,
 } from '@deck.gl/core'
-import type { TileLayerProps } from '@deck.gl/geo-layers'
+import type { GeoBoundingBox, TileLayerProps } from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
-import type { GeoBoundingBox } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { ScatterplotLayer } from '@deck.gl/layers'
 import type { ScalePower } from 'd3-scale'
 import { scaleSqrt } from 'd3-scale'
