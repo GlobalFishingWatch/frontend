@@ -111,6 +111,8 @@ const icons = [
   'satellite',
   'save',
   'search',
+  'section-collapse',
+  'section-expand',
   'settings',
   'share',
   'skip',

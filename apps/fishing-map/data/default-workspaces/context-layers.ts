@@ -23,21 +23,6 @@ export const BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES: DataviewInstance[] = [
     dataviewId: EEZ_DATAVIEW_SLUG,
   },
   {
-    id: FAO_AREAS_DATAVIEW_INSTANCE_ID,
-    config: {
-      visible: false,
-    },
-    dataviewId: FAO_AREAS_DATAVIEW_SLUG,
-  },
-  {
-    id: RFMO_DATAVIEW_INSTANCE_ID,
-    config: {
-      color: '#6b67e5',
-      visible: false,
-    },
-    dataviewId: RFMO_DATAVIEW_SLUG,
-  },
-  {
     id: MPA_DATAVIEW_INSTANCE_ID,
     config: {
       color: '#1AFF6B',
@@ -46,11 +31,12 @@ export const BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES: DataviewInstance[] = [
     dataviewId: MPA_DATAVIEW_SLUG,
   },
   {
-    id: 'context-layer-high-seas',
+    id: RFMO_DATAVIEW_INSTANCE_ID,
     config: {
+      color: '#6b67e5',
       visible: false,
     },
-    dataviewId: HIGH_SEAS_DATAVIEW_SLUG,
+    dataviewId: RFMO_DATAVIEW_SLUG,
   },
 ]
 

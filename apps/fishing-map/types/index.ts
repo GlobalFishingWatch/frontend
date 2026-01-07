@@ -1,4 +1,4 @@
-import type { EventType } from '@globalfishingwatch/api-types'
+import type { DataviewCategory, EventType } from '@globalfishingwatch/api-types'
 import type { BaseUrlWorkspace, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type {
   DrawFeatureType,
@@ -44,11 +44,11 @@ type BivariateDataviews = [string, string] | null
 export interface WorkspaceState extends BaseUrlWorkspace {
   activityVisualizationMode?: FourwingsVisualizationMode
   bivariateDataviews?: BivariateDataviews
+  collapsedSections?: DataviewCategory[]
   dataviewInstances?: UrlDataviewInstance[]
   daysFromLatest?: number // use latest day as endAt minus the number of days set here
   detectionsVisualizationMode?: FourwingsVisualizationMode
   environmentVisualizationMode?: typeof HEATMAP_ID | typeof HEATMAP_LOW_RES_ID
-  vesselGroupsVisualizationMode?: typeof FOOTPRINT_ID | typeof FOOTPRINT_HIGH_RES_ID
   mapAnnotations?: MapAnnotation[]
   mapAnnotationsVisible?: boolean
   mapRulers?: RulerData[]
@@ -61,6 +61,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   timebarSelectedUserId?: string
   timebarSelectedVGId?: string
   timebarVisualisation?: TimebarVisualisations
+  vesselGroupsVisualizationMode?: typeof FOOTPRINT_ID | typeof FOOTPRINT_HIGH_RES_ID
   vesselsColorBy?: VesselsColorByProperty
   vesselsMaxTimeGapHours?: number
   visibleEvents?: VisibleEvents

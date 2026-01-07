@@ -73,7 +73,6 @@ const TrackCorrectionNew = () => {
     (issueId: string) => ({
       issueId,
       user: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
-      userEmail: userData?.email || '',
       date: new Date().toISOString(),
       comment: issueComment,
       datasetVersion: 1,
@@ -133,8 +132,8 @@ const TrackCorrectionNew = () => {
           ssvid: vesselInfo?.selfReportedInfo?.[0]?.ssvid || '',
           vesselName: vesselInfo ? getVesselShipNameLabel(vesselInfo) : dataview?.config?.name,
           userEmail: userData?.email || '',
-          startDate: trackCorrectionTimerange.start,
-          endDate: trackCorrectionTimerange.end,
+          startDate_original: trackCorrectionTimerange.start,
+          endDate_original: trackCorrectionTimerange.end,
           workspaceLink: window.location.href.replace(
             'trackCorrectionId=new',
             `trackCorrectionId=${issueId}`

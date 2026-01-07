@@ -18,10 +18,11 @@ import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
 import { getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
+import Section from '../shared/Section'
 
 import LayerPanel from './EventsLayerPanel'
 
-import styles from 'features/workspace/shared/Sections.module.css'
+import styles from 'features/workspace/shared/Section.module.css'
 
 function EventsLayerSection(): React.ReactElement<any> | null {
   const { t } = useTranslation()
@@ -47,10 +48,12 @@ function EventsLayerSection(): React.ReactElement<any> | null {
   )
 
   return (
-    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={cx(styles.header, 'print-hidden')}>
-        <h2 className={styles.sectionTitle}>{t('common.events')}</h2>
-        {!readOnly && (
+    <Section
+      id={DataviewCategory.Events}
+      data-testid="events-section"
+      title={t('common.events')}
+      headerOptions={
+        !readOnly ? (
           <div className={cx(styles.sectionButtons)}>
             {hasVisibleDataviews && <GlobalReportLink reportCategory={ReportCategory.Events} />}
             <IconButton
@@ -59,12 +62,16 @@ function EventsLayerSection(): React.ReactElement<any> | null {
               size="medium"
               tooltip={t('layer.add')}
               tooltipPlacement="top"
-              onClick={() => onAddLayerClick()}
+              onClick={(e) => {
+                e.stopPropagation()
+                onAddLayerClick()
+              }}
             />
           </div>
-        )}
-      </div>
-
+        ) : null
+      }
+      hasVisibleDataviews={hasVisibleDataviews}
+    >
       <SortableContext items={dataviews}>
         {dataviews?.map((dataview) => (
           <LayerPanelContainer key={dataview.id} dataview={dataview}>
@@ -72,7 +79,7 @@ function EventsLayerSection(): React.ReactElement<any> | null {
           </LayerPanelContainer>
         ))}
       </SortableContext>
-    </div>
+    </Section>
   )
 }
 

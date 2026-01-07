@@ -233,8 +233,8 @@ function Workspace() {
       <ActivitySection />
       <DetectionsSection />
       <EventsSection />
-      <VesselGroupSection />
       <VesselsSection />
+      <VesselGroupSection />
       <EnvironmentalSection />
       <ContextAreaSection />
       <UserSection />
