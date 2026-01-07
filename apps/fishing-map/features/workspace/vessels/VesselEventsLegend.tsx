@@ -17,7 +17,7 @@ import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events
 import { upperFirst } from 'utils/info'
 
 import layerStyles from './VesselEventsLegend.module.css'
-import styles from 'features/workspace/shared/Sections.module.css'
+import styles from 'features/workspace/shared/Section.module.css'
 
 type VesselEventsLegendProps = {
   dataviews: UrlDataviewInstance[]

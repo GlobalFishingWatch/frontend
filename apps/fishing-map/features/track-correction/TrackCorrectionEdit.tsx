@@ -1,17 +1,22 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 
+import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { Button, Icon, InputText } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { getVesselDataviewInstanceId } from 'features/dataviews/dataviews.utils'
 import I18nDate from 'features/i18n/i18nDate'
 import {
   createCommentThunk,
   fetchTrackIssuesThunk,
+  selectTrackCorrectionTimerange,
   selectTrackCorrectionVesselDataviewId,
   selectTrackIssueComment,
+  setTrackCorrectionDataviewId,
   setTrackIssueComment,
 } from 'features/track-correction/track-correction.slice'
 import { selectCurrentTrackCorrectionIssue } from 'features/track-correction/track-selection.selectors'
@@ -25,6 +30,7 @@ import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors
 import { getVesselShipNameLabel } from 'utils/info'
 
 import TrackCommentsList from './TrackCommentsList'
+import TrackSlider from './TrackSlider'
 
 import styles from './TrackCorrection.module.css'
 
@@ -40,39 +46,78 @@ const TrackCorrectionEdit = () => {
   const issueComment = useSelector(selectTrackIssueComment)
   const isGFWUser = useSelector(selectIsGFWUser)
   const isGuestUser = useSelector(selectIsGuestUser)
+  const { start, end } = useSelector(selectTimeRange)
 
   const workspaceId = useSelector(selectCurrentWorkspaceId)
 
   const currentTrackCorrectionIssue = useSelector(selectCurrentTrackCorrectionIssue)
   const [isCommenting, setIsCommenting] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const trackCorrectionTimerange = useSelector(selectTrackCorrectionTimerange)
 
   const trackCorrectionVesselDataviewId = useSelector(selectTrackCorrectionVesselDataviewId)
-  const { dataview, vesselInfoResource } = useGetVesselInfoByDataviewId(
+  const { dataview, vesselInfoResource, vesselLayer } = useGetVesselInfoByDataviewId(
     trackCorrectionVesselDataviewId
   )
   const vesselInfo = vesselInfoResource?.data
   const userData = useSelector(selectUserData)
 
+  useEffect(() => {
+    if (!trackCorrectionVesselDataviewId && currentTrackCorrectionIssue!.vesselId) {
+      dispatch(
+        setTrackCorrectionDataviewId(
+          getVesselDataviewInstanceId(currentTrackCorrectionIssue!.vesselId)
+        )
+      )
+    }
+  }, [trackCorrectionVesselDataviewId, currentTrackCorrectionIssue, dispatch])
+
+  const trackData = useMemo(() => {
+    return vesselLayer?.instance
+      ?.getVesselTrackSegments({
+        includeMiddlePoints: true,
+        startTime: getUTCDateTime(start).toMillis(),
+        endTime: getUTCDateTime(end).toMillis(),
+      })
+      .filter((segment) => segment.length > 0)
+  }, [vesselLayer?.instance, start, end])
+
   const buildCommentBody = useCallback(
-    (issueId: string, action: ActionType) => ({
-      issueId,
-      user: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
-      userEmail: userData?.email || '',
-      date: new Date().toISOString(),
-      comment:
-        issueComment !== ''
-          ? issueComment
-          : action === ActionType.Confirm
-            ? 'Confirmed'
-            : action === ActionType.Resolve
-              ? 'Resolved'
-              : 'No comment provided',
-      datasetVersion: 1,
-      marksAsResolved: action === ActionType.Resolve,
-      confirmed: action === ActionType.Confirm,
-    }),
-    [userData, issueComment]
+    (issueId: string, action: ActionType) => {
+      return {
+        issueId,
+        user: currentTrackCorrectionIssue?.comments?.[0]?.user || 'User not found',
+        reviewer: (userData?.firstName || '') + ' ' + (userData?.lastName || '') || 'Anonymous',
+        date: new Date().toISOString(),
+        comment:
+          issueComment !== ''
+            ? issueComment
+            : action === ActionType.Confirm
+              ? 'Confirmed'
+              : action === ActionType.Resolve
+                ? 'Resolved'
+                : 'No comment provided',
+        datasetVersion: 1,
+        marksAsResolved: action === ActionType.Resolve,
+        confirmed: action === ActionType.Confirm,
+        ...(currentTrackCorrectionIssue?.startDate !== trackCorrectionTimerange.start && {
+          startDate_corrected: trackCorrectionTimerange.start,
+        }),
+        ...(currentTrackCorrectionIssue?.endDate !== trackCorrectionTimerange.end && {
+          endDate_corrected: trackCorrectionTimerange.end,
+        }),
+      }
+    },
+    [
+      currentTrackCorrectionIssue?.comments,
+      currentTrackCorrectionIssue?.startDate,
+      currentTrackCorrectionIssue?.endDate,
+      userData?.firstName,
+      userData?.lastName,
+      issueComment,
+      trackCorrectionTimerange.start,
+      trackCorrectionTimerange.end,
+    ]
   )
 
   const onConfirmClick = useCallback(
@@ -122,6 +167,9 @@ const TrackCorrectionEdit = () => {
   )
 
   if (isGuestUser || !userData || !currentTrackCorrectionIssue) return null
+  if (!currentTrackCorrectionIssue?.startDate || !currentTrackCorrectionIssue?.endDate) {
+    return <p> {t('trackCorrection.invalidIssueDates')}</p>
+  }
 
   return (
     <Fragment>
@@ -139,19 +187,31 @@ const TrackCorrectionEdit = () => {
             {' - '} {currentTrackCorrectionIssue.issueId}
           </h2>
           <h2>{t(`trackCorrection.${currentTrackCorrectionIssue.type}`)}</h2>
-          <label>
-            <I18nDate
-              date={currentTrackCorrectionIssue.startDate}
-              format={DateTime.DATETIME_MED}
-              showUTCLabel={false}
-            />
-            {' - '}
-            <I18nDate
-              date={currentTrackCorrectionIssue.endDate}
-              format={DateTime.DATETIME_MED}
-              showUTCLabel={false}
-            />
-          </label>
+          {currentTrackCorrectionIssue.confirmed ? (
+            <label>
+              <I18nDate
+                date={currentTrackCorrectionIssue.startDate}
+                format={DateTime.DATETIME_MED}
+                showUTCLabel={false}
+              />
+              {' - '}
+              <I18nDate
+                date={currentTrackCorrectionIssue.endDate}
+                format={DateTime.DATETIME_MED}
+                showUTCLabel={false}
+              />
+            </label>
+          ) : (
+            <div>
+              <label>{t('common.newTimerange')}</label>
+              <TrackSlider
+                rangeStartTime={getUTCDateTime(currentTrackCorrectionIssue.startDate).toMillis()}
+                rangeEndTime={getUTCDateTime(currentTrackCorrectionIssue.endDate).toMillis()}
+                segments={trackData ?? []}
+                // color={vesselColor}
+              />
+            </div>
+          )}
         </div>
         <TrackCommentsList track={currentTrackCorrectionIssue} />
         {!currentTrackCorrectionIssue.resolved && (

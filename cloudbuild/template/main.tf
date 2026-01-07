@@ -37,7 +37,7 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
       name   = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest"
       script = <<-EOF
         cp -R /app/node_modules /app/.yarn ./
-        yarn set version 4.10.3
+        yarn set version 4.12.0
         yarn install --immutable --inline-builds
       EOF
     }

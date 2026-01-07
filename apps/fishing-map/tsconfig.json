@@ -5,7 +5,14 @@
     "allowJs": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["node", "jest"],
+    "types": [
+      "node",
+      "@vitest/browser/matchers",
+      "next",
+      "@vitest/browser-playwright",
+      "vitest-browser-react",
+      "vitest"
+    ],
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
@@ -16,7 +23,7 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "skipLibCheck": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "paths": {
       "@globalfishingwatch/api-client": ["../../libs/api-client/src/index.ts"],
       "@globalfishingwatch/api-types": ["../../libs/api-types/src/index.ts"],
@@ -56,7 +63,8 @@
     "../../dist/apps/fishing-map/.next/types/**/*.ts",
     "eslint.config.js",
     "types/**/*.d.ts",
-    "features/**/*.d.ts"
+    "features/**/*.d.ts",
+    "vitest.config.mts"
   ],
   "exclude": [
     "node_modules",
@@ -64,6 +72,7 @@
     ".next",
     "exported",
     "**/resources.d.ts",
-    "**/i18n.types.d.ts"
+    "**/i18n.types.d.ts",
+    "**/__traces__/**"
   ]
 }

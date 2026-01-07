@@ -1,8 +1,11 @@
 import type { DefaultProps, Layer, LayerContext, LayersList, UpdateParameters } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import type { TileLayerProps } from '@deck.gl/geo-layers'
+import type {
+  _Tile2DHeader as Tile2DHeader,
+  _TileLoadProps as TileLoadProps,
+  TileLayerProps,
+} from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
-import type { Tile2DHeader, TileLoadProps } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { parse } from '@loaders.gl/core'
 import { scaleLinear } from 'd3-scale'
 import { debounce, sum } from 'es-toolkit'

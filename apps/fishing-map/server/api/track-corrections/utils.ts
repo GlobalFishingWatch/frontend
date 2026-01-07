@@ -19,10 +19,13 @@ export function parseIssueComment(
     issueId: row.get('issueId'),
     comment: row.get('comment'),
     user: row.get('user'),
+    reviewer: row.get('reviewer'),
     date: row.get('date'),
     datasetVersion: row.get('datasetVersion'),
     marksAsResolved: parseIssueResolved(row.get('marksAsResolved')),
     confirmed: parseIssueResolved(row.get('confirmed')),
+    startDate_corrected: row.get('startDate_corrected'),
+    endDate_corrected: row.get('endDate_corrected'),
   }
 }
 

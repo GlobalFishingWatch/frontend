@@ -8,9 +8,12 @@ import type {
   UpdateParameters,
 } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import type { MVTLayerProps } from '@deck.gl/geo-layers'
+import type {
+  _Tile2DHeader as Tile2DHeader,
+  GeoBoundingBox,
+  MVTLayerProps,
+} from '@deck.gl/geo-layers'
 import { MVTLayer } from '@deck.gl/geo-layers'
-import type { GeoBoundingBox, Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
 import { IconLayer } from '@deck.gl/layers'
 import { parse } from '@loaders.gl/core'
 import { groupBy, orderBy } from 'es-toolkit'

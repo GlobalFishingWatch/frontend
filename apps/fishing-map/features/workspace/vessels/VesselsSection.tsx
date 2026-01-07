@@ -1,10 +1,10 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
 
-import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, ResourceStatus } from '@globalfishingwatch/api-types'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
 import { IconButton, Switch } from '@globalfishingwatch/ui-components'
 
@@ -43,12 +43,14 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getVesselShipNameLabel } from 'utils/info'
 
+import Section from '../shared/Section'
+
 import VesselEventsLegend from './VesselEventsLegend'
 import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'
 import VesselTracksLegend from './VesselTracksLegend'
 
-import styles from 'features/workspace/shared/Sections.module.css'
+import styles from 'features/workspace/shared/Section.module.css'
 
 const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: string) => {
   return resources[
@@ -78,7 +80,7 @@ function VesselsSection(): React.ReactElement<any> {
   const readOnly = useSelector(selectReadOnly)
   const resources = useSelector(selectResources)
   const { dispatchQueryParams } = useLocationConnect()
-  const sortOrder = useRef<'ASC' | 'DESC' | 'DEFAULT'>('DEFAULT')
+  const [sortOrder, setSortOrder] = useState<'ASC' | 'DESC' | 'DEFAULT'>('DEFAULT')
 
   const onToggleAllVessels = useCallback(() => {
     upsertDataviewInstance(
@@ -121,7 +123,8 @@ function VesselsSection(): React.ReactElement<any> {
   )
 
   const onSetSortOrderClick = useCallback(() => {
-    sortOrder.current = sortOrder.current === 'ASC' ? 'DESC' : 'ASC'
+    const newSortOrder = sortOrder === 'ASC' ? 'DESC' : 'ASC'
+    setSortOrder(newSortOrder)
     const dataviewsSortedIds = dataviews
       .sort((a, b) => {
         const aResource = getVesselResourceByDataviewId(resources, a.id)
@@ -129,7 +132,7 @@ function VesselsSection(): React.ReactElement<any> {
         const aVesselLabel = aResource ? getVesselShipNameLabel(aResource.data) : ''
         const bVesselLabel = bResource ? getVesselShipNameLabel(bResource.data) : ''
         if (!aVesselLabel || !bVesselLabel) return 0
-        if (sortOrder.current === 'ASC') {
+        if (newSortOrder === 'ASC') {
           return aVesselLabel < bVesselLabel ? -1 : 1
         } else {
           return aVesselLabel < bVesselLabel ? 1 : -1
@@ -137,7 +140,7 @@ function VesselsSection(): React.ReactElement<any> {
       })
       .map((d) => d.id)
     dispatchQueryParams({ dataviewInstancesOrder: dataviewsSortedIds })
-  }, [dataviews, dispatchQueryParams, resources])
+  }, [dataviews, dispatchQueryParams, resources, sortOrder])
 
   const onSearchClick = useCallback(() => {
     trackEvent({
@@ -174,109 +177,128 @@ function VesselsSection(): React.ReactElement<any> {
       })
 
   return (
-    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={cx(styles.header)}>
-        {dataviews.length > 1 && (
-          <Switch
-            className="print-hidden"
-            active={someVesselsVisible}
-            disabled={hasDeprecatedDataviewInstances}
-            onClick={onToggleAllVessels}
-            tooltip={t('vessel.toggleAllVessels')}
-            tooltipPlacement="top"
-          />
-        )}
-        <h2 className={styles.sectionTitle}>
+    <Section
+      id={DataviewCategory.Vessels}
+      data-testid="vessels-section"
+      hasVisibleDataviews={hasVisibleDataviews}
+      title={
+        <>
+          {dataviews.length > 1 && (
+            <span
+              role="button"
+              tabIndex={0}
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.stopPropagation()
+                }
+              }}
+              className={styles.actionButtons}
+            >
+              <Switch
+                className="print-hidden"
+                active={someVesselsVisible}
+                disabled={hasDeprecatedDataviewInstances}
+                onClick={onToggleAllVessels}
+                tooltip={t('vessel.toggleAllVessels')}
+                tooltipPlacement="top"
+              />
+            </span>
+          )}{' '}
           {t('common.vessels')}
-          <span className="print-hidden">
-            {dataviews.length > 1 ? ` (${dataviews.length})` : ''}
-          </span>
-        </h2>
-
-        {!readOnly && (
-          <div
-            className={cx(styles.sectionButtons, styles.sectionButtonsSecondary, 'print-hidden')}
-          >
-            {activeDataviews.length > 0 && (
-              <VesselGroupAddButton
-                vessels={vesselsToVesselGroup}
-                onAddToVesselGroup={onAddToVesselGroupClick}
-              >
-                <UserLoggedIconButton
-                  icon={'add-to-vessel-group'}
-                  loading={areVesselsLoading || isVesselGroupUpdating}
-                  disabled={areVesselsLoading || isVesselGroupUpdating}
+          {` (${dataviews.length})`}
+        </>
+      }
+      headerOptions={
+        <>
+          {!readOnly && (
+            <div
+              className={cx(styles.sectionButtons, styles.sectionButtonsSecondary, 'print-hidden')}
+            >
+              {activeDataviews.length > 0 && (
+                <VesselGroupAddButton
+                  vessels={vesselsToVesselGroup}
+                  onAddToVesselGroup={onAddToVesselGroupClick}
+                >
+                  <UserLoggedIconButton
+                    icon={'add-to-vessel-group'}
+                    loading={areVesselsLoading || isVesselGroupUpdating}
+                    disabled={areVesselsLoading || isVesselGroupUpdating}
+                    size="medium"
+                    tooltip={t('vesselGroup.addVisibleVessels')}
+                    tooltipPlacement="top"
+                  />
+                </VesselGroupAddButton>
+              )}
+              {dataviews.length > 1 && (
+                <IconButton
+                  icon={sortOrder === 'DESC' ? 'sort-asc' : 'sort-desc'}
                   size="medium"
-                  tooltip={t('vesselGroup.addVisibleVessels')}
+                  tooltip={sortOrder === 'DESC' ? t('vessel.sortAsc') : t('vessel.sortDesc')}
                   tooltipPlacement="top"
+                  onClick={onSetSortOrderClick}
                 />
-              </VesselGroupAddButton>
-            )}
-            {dataviews.length > 1 && (
-              <IconButton
-                icon={sortOrder.current === 'DESC' ? 'sort-asc' : 'sort-desc'}
-                size="medium"
-                tooltip={sortOrder.current === 'DESC' ? t('vessel.sortAsc') : t('vessel.sortDesc')}
-                tooltipPlacement="top"
-                onClick={onSetSortOrderClick}
-              />
-            )}
-            {dataviews.length > 0 && (
-              <IconButton
-                icon="delete"
-                size="medium"
-                tooltip={t('vessel.removeAllVessels')}
-                tooltipPlacement="top"
-                onClick={onDeleteAllClick}
-              />
-            )}
-          </div>
-        )}
-        <IconButton
-          icon="search"
-          type="border"
-          size="medium"
-          testId="search-vessels-open"
-          disabled={!searchAllowed || hasDeprecatedDataviewInstances}
-          className="print-hidden"
-          tooltip={searchAllowed ? t('search.vessels') : t('search.notAllowed')}
-          tooltipPlacement="top"
-          onClick={onSearchClick}
-        />
-      </div>
-      {hasVisibleDataviews && <VesselTracksLegend />}
-      <SortableContext items={dataviews}>
-        {dataviews.length > 0 ? (
-          dataviews?.map((dataview) => (
-            <VesselLayerPanel
-              key={dataview.id}
-              dataview={dataview}
-              showApplyToAll={dataviews.length > 1}
-            />
-          ))
-        ) : (
-          <div className={styles.emptyState}>{t('workspace.emptyStateVessels')}</div>
-        )}
-      </SortableContext>
-      {activeDataviews.length > 0 && guestUser && !hasDeprecatedDataviewInstances && (
-        <p className={cx(styles.disclaimer, 'print-hidden')}>
-          {hasVesselsWithNoTrack ? (
-            <Trans i18nKey="vessel.trackLogin">
-              One of your selected sources requires you to
-              <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink> to see
-              vessel tracks and events
-            </Trans>
-          ) : (
-            <Trans i18nKey="vessel.trackResolution">
-              <LocalStorageLoginLink className={styles.link}>Login</LocalStorageLoginLink> to see
-              more detailed vessel tracks (free, 2 minutes)
-            </Trans>
+              )}
+              {dataviews.length > 0 && (
+                <IconButton
+                  icon="delete"
+                  size="medium"
+                  tooltip={t('vessel.removeAllVessels')}
+                  tooltipPlacement="top"
+                  onClick={onDeleteAllClick}
+                />
+              )}
+            </div>
           )}
-        </p>
-      )}
-      {!hasDeprecatedDataviewInstances && <VesselEventsLegend dataviews={dataviews} />}
-      <VesselsFromPositions />
-    </div>
+          <IconButton
+            icon="search"
+            type="border"
+            size="medium"
+            testId="search-vessels-open"
+            disabled={!searchAllowed || hasDeprecatedDataviewInstances}
+            className="print-hidden"
+            tooltip={searchAllowed ? t('search.vessels') : t('search.notAllowed')}
+            tooltipPlacement="top"
+            onClick={onSearchClick}
+          />
+        </>
+      }
+    >
+      <>
+        {hasVisibleDataviews && <VesselTracksLegend />}
+        <SortableContext items={dataviews}>
+          {dataviews.length > 0 ? (
+            dataviews?.map((dataview) => (
+              <VesselLayerPanel
+                key={dataview.id}
+                dataview={dataview}
+                showApplyToAll={dataviews.length > 1}
+              />
+            ))
+          ) : (
+            <div className={styles.emptyState}>{t('workspace.emptyStateVessels')}</div>
+          )}
+        </SortableContext>
+        {activeDataviews.length > 0 && guestUser && !hasDeprecatedDataviewInstances && (
+          <p className={cx(styles.disclaimer, 'print-hidden')}>
+            {hasVesselsWithNoTrack ? (
+              <Trans i18nKey="vessel.trackLogin">
+                One of your selected sources requires you to
+                <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink> to see
+                vessel tracks and events
+              </Trans>
+            ) : (
+              <Trans i18nKey="vessel.trackResolution">
+                <LocalStorageLoginLink className={styles.link}>Login</LocalStorageLoginLink> to see
+                more detailed vessel tracks (free, 2 minutes)
+              </Trans>
+            )}
+          </p>
+        )}
+        {!hasDeprecatedDataviewInstances && <VesselEventsLegend dataviews={dataviews} />}
+        <VesselsFromPositions />
+      </>
+    </Section>
   )
 }
 

@@ -12,6 +12,8 @@ import { getUTCString } from '../../utils/dates'
 import { sortByLastUpdated, sortDatasets } from '../../utils/sorting'
 import { getHighlightedText } from '../../utils/text'
 
+import { Route as DatasetsDatasetIdRoute } from './../../../src/routes/datasets.$datasetId'
+
 import styles from './home.module.css'
 
 function HomePage() {
@@ -27,6 +29,7 @@ function HomePage() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true)
     GFWAPI.fetch<Dataset[]>(`/download/datasets`)
       .then((data) => {
@@ -72,10 +75,10 @@ function HomePage() {
         </div>
       </TopBar>
       <div className={styles.cardsContainer}>
-        {!logged ? (
-          <>Log in to view the datasets</>
-        ) : loading ? (
+        {loading ? (
           <Loader />
+        ) : !logged ? (
+          <>Log in to view the datasets</>
         ) : (
           filteredDatasets &&
           filteredDatasets.map((dataset) => {
@@ -83,7 +86,7 @@ function HomePage() {
             return (
               <Link
                 key={name}
-                to="/datasets/$datasetId"
+                to={DatasetsDatasetIdRoute.to}
                 params={{ datasetId: id }}
                 className={styles.card}
               >
