@@ -7,14 +7,14 @@ import type {
   UpdateParameters,
 } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import type { TileLayerProps } from '@deck.gl/geo-layers'
-import { TileLayer } from '@deck.gl/geo-layers'
 // import { CollisionFilterExtension } from '@deck.gl/extensions'
 import type {
+  _Tile2DHeader as Tile2DHeader,
+  _TileLoadProps as TileLoadProps,
   GeoBoundingBox,
-  Tile2DHeader,
-  TileLoadProps,
-} from '@deck.gl/geo-layers/dist/tileset-2d'
+  TileLayerProps,
+} from '@deck.gl/geo-layers'
+import { TileLayer } from '@deck.gl/geo-layers'
 import { IconLayer, ScatterplotLayer, TextLayer } from '@deck.gl/layers'
 import { parse } from '@loaders.gl/core'
 import type { ScalePower } from 'd3-scale'

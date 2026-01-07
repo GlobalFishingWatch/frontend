@@ -1,4 +1,4 @@
-import type { _TileLoadProps } from '@deck.gl/geo-layers'
+import type { _TileLoadProps as TileLoadProps } from '@deck.gl/geo-layers'
 import type { LoaderOptions } from '@loaders.gl/loader-utils'
 import type { Feature, Point, Polygon } from 'geojson'
 

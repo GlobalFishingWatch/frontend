@@ -1,5 +1,7 @@
 import { parse } from 'protobufjs'
 
+// TODO: catchup with backed to update to edition 2024
+// as protobufjs 8.0.0 now supports it
 const proto = `
 syntax = "proto3";
 package vessels;

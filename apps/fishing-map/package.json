@@ -17,14 +17,9 @@
     "test:e2e": "npx playwright test"
   },
   "devDependencies": {
-    "@lingual/i18n-check": "^0.8.9",
     "cross-env": "^10.1.0",
-    "i18next-cli": "^1.21.0",
-    "i18next-parser": "9.3.0",
-    "i18next-resources-for-ts": "1.7.4",
-    "prettier": "3.6.2",
-    "source-map-explorer": "2.5.3",
-    "stylelint-config-tailwindcss": "^1.0.0"
+    "i18next-cli": "^1.34.1",
+    "source-map-explorer": "2.5.3"
   },
   "browserslist": [
     ">0.1%",

@@ -28,7 +28,7 @@ export class BaseMap extends CompositeLayer<BaseMapLayerProps> {
           ...rest,
           image: data,
           bounds: [west, south, east, north],
-        })
+        } as any)
       },
     })
   }

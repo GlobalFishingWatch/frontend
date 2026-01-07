@@ -2,7 +2,11 @@ import Color from 'colorjs.io'
 
 function relativeLuminance(color: Color): number {
   const [r, g, b] = color.to('srgb-linear').coords
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+  // Handle null values (representing 'none' in colorjs.io v0.6.0+)
+  const rVal = r ?? 0
+  const gVal = g ?? 0
+  const bVal = b ?? 0
+  return 0.2126 * rVal + 0.7152 * gVal + 0.0722 * bVal
 }
 
 function contrastWCAG(colorA: Color, colorB: Color): number {
@@ -23,7 +27,7 @@ function ensureMinimumContrast(
   const adjustedColor = color.clone()
   let contrast = contrastFn(adjustedColor, backgroundColor)
 
-  while (contrast < minContrast && adjustedColor.oklch.l > 0) {
+  while (contrast < minContrast && (adjustedColor.oklch.l ?? 0) > 0) {
     adjustFn(adjustedColor, 0.02)
     contrast = contrastFn(adjustedColor, backgroundColor)
   }
@@ -52,7 +56,8 @@ export const getContrastSafeColor = (
       minContrastText,
       contrastWCAG,
       (c, amount) => {
-        c.oklch.l = Math.max(0, c.oklch.l - amount)
+        const currentL = c.oklch.l ?? 0
+        c.oklch.l = Math.max(0, currentL - amount)
       }
     )
     return adjustedColor.toString()
