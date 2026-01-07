@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
-import { redirectToLogin } from '@globalfishingwatch/react-hooks'
+import { redirectToLogin, setHistoryNavigation } from '@globalfishingwatch/react-hooks'
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Spinner, Tabs } from '@globalfishingwatch/ui-components'
 
@@ -11,6 +11,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchAllDatasetsThunk } from 'features/datasets/datasets.slice'
 import { selectIsUserLogged, selectUserData } from 'features/user/selectors/user.selectors'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
+import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import {
   // fetchDefaultWorkspaceThunk,
@@ -34,6 +35,7 @@ function User() {
   const userLogged = useSelector(selectIsUserLogged)
   const userData = useSelector(selectUserData)
   const userTab = useSelector(selectUserTab)
+  const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
   const { dispatchQueryParams } = useLocationConnect()
 
   const userTabs = useMemo(() => {
@@ -45,13 +47,13 @@ function User() {
       },
       {
         id: UserTab.Workspaces,
-        title: t('workspace.title_other'),
+        title: t('workspace.titlePlural'),
         testId: 'user-workspace',
         content: <UserWorkspaces />,
       },
       {
         id: UserTab.Datasets,
-        title: t('dataset.title_other'),
+        title: t('dataset.title'),
         content: <UserDatasets />,
       },
       {
@@ -93,9 +95,10 @@ function User() {
 
   useEffect(() => {
     if (userData?.type === GUEST_USER_TYPE) {
+      setHistoryNavigation(workspaceHistoryNavigation)
       redirectToLogin()
     }
-  }, [userData?.type])
+  }, [userData?.type, workspaceHistoryNavigation])
 
   if (!userLogged || !userData) return null
 

@@ -5,6 +5,7 @@ import cx from 'classnames'
 import styles from './DetectionThumbnail.module.css'
 
 type DetectionThumbnailProps = {
+  id: string
   data: string
   scale?: number
 }

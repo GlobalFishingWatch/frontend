@@ -9,7 +9,7 @@ import {
 import type { UserData } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
 import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
-import { redirectToLogin } from '@globalfishingwatch/react-hooks'
+import { redirectToLogin, setHistoryNavigation } from '@globalfishingwatch/react-hooks'
 
 import type { PREFERRED_FOURWINGS_VISUALISATION_MODE } from 'data/config'
 import { USER_SETTINGS } from 'data/config'
@@ -47,6 +47,7 @@ type UserSliceState = { user: UserState }
 export type UserGroup =
   | 'belize'
   | 'brazil'
+  | 'chile'
   | 'costa rica'
   | 'ecuador'
   | 'panama'
@@ -55,6 +56,7 @@ export type UserGroup =
   | 'ssf-aruna'
   | 'ssf-rare'
   | 'ssf-ipnlf'
+
 export const USER_GROUP_WORKSPACE: Partial<Record<UserGroup, string>> = {
   'costa rica': 'costa_rica',
   'papua new guinea': 'papua_new_guinea',
@@ -104,7 +106,7 @@ export const logoutUserThunk = createAsyncThunk(
   'user/logout',
   async (
     { loginRedirect }: { loginRedirect: boolean } | undefined = { loginRedirect: false },
-    { dispatch }
+    { dispatch, getState }
   ) => {
     try {
       await GFWAPI.logout()
@@ -114,6 +116,9 @@ export const logoutUserThunk = createAsyncThunk(
       console.warn(e)
     }
     if (loginRedirect) {
+      const state = getState() as any
+      const historyNavigation = state.workspace?.historyNavigation || []
+      setHistoryNavigation(historyNavigation)
       redirectToLogin()
     }
   }

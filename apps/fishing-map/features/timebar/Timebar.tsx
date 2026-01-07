@@ -27,7 +27,10 @@ import {
   selectTimebarGraph,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
-import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import {
+  selectHasDeprecatedDataviewInstances,
+  selectHasVectorDataviews,
+} from 'features/dataviews/selectors/dataviews.instances.selectors'
 import Hint from 'features/help/Hint'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -65,6 +68,7 @@ import {
 } from './timebar.selectors'
 import { selectHighlightedTime, setHighlightedTime } from './timebar.slice'
 import TimebarActivityGraph from './TimebarActivityGraph'
+import TimebarPointsGraph from './TimebarPointsGraph'
 import TimebarSettings from './TimebarSettings'
 
 import styles from './Timebar.module.css'
@@ -185,6 +189,7 @@ const TimebarWrapper = () => {
   const { isMapDrawing } = useMapDrawConnect()
   const showTimeComparison = useSelector(selectShowTimeComparison)
   const vesselGroupsFiltering = useSelector(selectIsVessselGroupsFiltering)
+  const hasVectorDataviews = useSelector(selectHasVectorDataviews)
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
   const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
@@ -425,6 +430,7 @@ const TimebarWrapper = () => {
           <TimebarActivityGraph visualisation={timebarVisualisation} />
         )}
         {timebarVisualisation === TimebarVisualisations.Vessel && tracksComponents}
+        {timebarVisualisation === TimebarVisualisations.Points && <TimebarPointsGraph />}
         {timebarVisualisation === TimebarVisualisations.Events && <TimebarClusterEventsGraph />}
         <TimebarHighlighterWrapper
           showTooltip={isMouseInside || isMouseClicked}
@@ -453,12 +459,18 @@ const TimebarWrapper = () => {
       onMouseUp={onMouseUp}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
+      // style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
       role="toolbar"
     >
       <Timebar
-        disablePlayback={vesselGroupsFiltering}
-        disabledPlaybackTooltip={t('timebar.disablePlaybackVesselGroups')}
+        disablePlayback={vesselGroupsFiltering || hasVectorDataviews}
+        disabledPlaybackTooltip={
+          vesselGroupsFiltering
+            ? t('timebar.disablePlaybackVesselGroups')
+            : hasVectorDataviews
+              ? t('timebar.disablePlaybackVectors')
+              : undefined
+        }
         showPlayback={!isReportLocation}
         labels={labels}
         start={start}

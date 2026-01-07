@@ -101,7 +101,7 @@ export const selectProjectColors = createSelector([selectProject], (project): Tr
   const projectColors = project.labels.reduce(
     (previous, current) => ({
       ...previous,
-      [current.id]: current.color,
+      [current.id]: current.color ?? TRACK_COLORS[current.id],
     }),
     {}
   )

@@ -14,6 +14,7 @@
 
 .row {
   flex: 1;
+  flex-wrap: wrap;
   gap: var(--space-S);
   display: flex;
   align-items: center;
@@ -41,7 +42,7 @@
 .title {
   font: var(--font-L);
   font-size: 2.2rem;
-  flex: 1;
+  flex-grow: 1;
 }
 
 .description {
@@ -78,6 +79,7 @@
 .actionsContainer {
   display: flex;
   gap: var(--space-S);
+  margin-left: auto;
 }
 
 .actionsContainerColumn {

@@ -4,6 +4,7 @@ import type { Feature, MultiPolygon, Point, Polygon } from 'geojson'
 import type { FourwingsFeature, FourwingsStaticFeature } from '@globalfishingwatch/deck-loaders'
 
 export type FilteredPolygons = {
+  instanceId: string
   contained: (FourwingsFeature | FourwingsStaticFeature | Feature<Point>)[]
   overlapping: (FourwingsFeature | FourwingsStaticFeature | Feature<Point>)[]
   error?: string
@@ -21,11 +22,13 @@ function isCellInPolygon(cellGeometry: FourwingsFeature, polygon: Polygon) {
 
 export type FilterByPolygonMode = 'cell' | 'cellCenter' | 'point'
 export type FilterByPolygomParams = {
+  instanceId: string
   layersCells: (FourwingsFeature | Feature<Point>)[][]
   polygon: Polygon | MultiPolygon
   mode?: FilterByPolygonMode
 }
 export function filterByPolygon({
+  instanceId,
   layersCells,
   polygon,
   mode = 'cell',
@@ -81,7 +84,7 @@ export function filterByPolygon({
         }
         return acc
       },
-      { contained: [] as FourwingsFeature[], overlapping: [] as FourwingsFeature[] }
+      { contained: [] as FourwingsFeature[], overlapping: [] as FourwingsFeature[], instanceId }
     )
   })
   return filtered

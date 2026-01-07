@@ -16,7 +16,7 @@ const MARGIN_BOTTOM = 20
 const MARGIN_TOP = 5
 
 const getSubLayers = (timeseries: Timeseries) =>
-  Object.keys(timeseries?.[0]).filter((k) => k !== 'date')
+  Object.keys(timeseries?.[0]).filter((k) => k !== 'date' && k !== 'count')
 
 const getPathContainers = (
   timeseries: Timeseries,

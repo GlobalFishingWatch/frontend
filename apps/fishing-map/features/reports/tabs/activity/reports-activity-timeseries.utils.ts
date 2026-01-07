@@ -2,7 +2,9 @@ import type { DateTimeUnit, DurationUnit } from 'luxon'
 import { DateTime, Duration } from 'luxon'
 import { max, mean, min } from 'simple-statistics'
 
-import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import type { DataviewInstance } from '@globalfishingwatch/api-types'
+import { formatDateForInterval, getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type {
   FourwingsAggregationOperation,
   FourwingsDeckSublayer,
@@ -20,11 +22,15 @@ import type {
   FourwingsStaticFeature,
 } from '@globalfishingwatch/deck-loaders'
 
+import { DATASET_COMPARISON_SUFFIX, PRIMARY_BLUE_COLOR } from 'data/config'
+import i18n from 'features/i18n/i18n'
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
-import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
+import type {
+  EvolutionGraphData,
+  ReportGraphProps,
+} from 'features/reports/reports-timeseries.hooks'
 import type { TimeSeries } from 'features/reports/reports-timeseries-shared.utils'
 import { frameTimeseriesToDateTimeseries } from 'features/reports/reports-timeseries-shared.utils'
-import type { ComparisonGraphData } from 'features/reports/tabs/activity/ReportActivityPeriodComparisonGraph'
 import type { TimeRange } from 'features/timebar/timebar.slice'
 import { getGraphDataFromFourwingsHeatmap } from 'features/timebar/timebar.utils'
 
@@ -61,7 +67,7 @@ export const fourwingsFeaturesToTimeseries = (
       sublayers: sublayers.map((sublayer) => ({
         id: sublayer.id,
         legend: {
-          color: sublayer.color,
+          color: sublayer.color || PRIMARY_BLUE_COLOR,
           unit: sublayer.unit,
         },
       })),
@@ -124,7 +130,7 @@ export const fourwingsFeaturesToTimeseries = (
           : valuesContainedAndOverlapping.length > 0
             ? new Array(values.length).fill(0)
             : values,
-      } as ComparisonGraphData
+      } as EvolutionGraphData
     })
     return featureToTimeseries
   })
@@ -154,7 +160,7 @@ export const getFourwingsTimeseries = ({ features, instance }: GetFourwingsTimes
     end: props.comparisonMode === 'timeCompare' ? props.endTime : chunk.bufferedEnd,
     compareStart: props.compareStart,
     compareEnd: props.compareEnd,
-    aggregationOperation: props.aggregationOperation,
+    aggregationOperation: instance.getAggregationOperation(),
     minVisibleValue: props.minVisibleValue,
     maxVisibleValue: props.maxVisibleValue,
     sublayers,
@@ -192,10 +198,10 @@ export const getFourwingsTimeseriesStats = ({
     })
     const allValues = (features[0].contained as FourwingsFeature[]).flatMap((f) => {
       const values = sliceCellValues({
-        values: f.properties.values[0],
+        values: f.properties.values?.[0] || [0],
         startFrame,
         endFrame,
-        startOffset: f.properties.startOffsets[0],
+        startOffset: f.properties.startOffsets?.[0] || 0,
       })
       return values || []
     })
@@ -211,18 +217,26 @@ export const getFourwingsTimeseriesStats = ({
   return
 }
 
+export const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterval) => {
+  const date = getUTCDateTime(tick).setLocale(i18n.language)
+  return formatDateForInterval(date, timeChunkInterval)
+}
+
 export const formatEvolutionData = (
   data: ReportGraphProps,
   { start, end, timeseriesInterval } = {} as {
     start: string
     end: string
     timeseriesInterval: FourwingsInterval
-  }
+  },
+  comparedData?: ReportGraphProps
 ) => {
   if (!data?.timeseries) {
     return []
   }
   if (start && end && timeseriesInterval) {
+    const isMonthlyComparison =
+      comparedData && comparedData.interval === 'MONTH' && data.interval !== comparedData.interval
     const emptyData = new Array(data.sublayers.length).fill(0)
     const startMillis = getUTCDateTime(start)
       .startOf(timeseriesInterval.toLowerCase() as DateTimeUnit)
@@ -237,20 +251,47 @@ export const formatEvolutionData = (
       )
     )
 
+    let lastKnownComparedValue: EvolutionGraphData | undefined = isMonthlyComparison
+      ? comparedData?.timeseries[0]
+      : undefined
+
     return Array(intervalDiff)
       .fill(0)
       .map((_, i) => {
         const date = getUTCDateTime(startMillis).plus({ [timeseriesInterval]: i })
         const dataValue = data.timeseries.find((item) => date.toISO()?.startsWith(item.date))
-        if (!dataValue) {
-          return {
-            date: date.toMillis(),
-            range: emptyData,
-            avg: emptyData,
+
+        const processTimeseries = (value: typeof dataValue) =>
+          value
+            ? {
+                range: value.min.map((m, i) => [m, value.max[i]]),
+                avg: value.min.map((m, i) => (m + value.max[i]) / 2),
+              }
+            : { range: emptyData, avg: emptyData }
+
+        const dataProcessed = processTimeseries(dataValue)
+        let range
+        let avg
+
+        if (comparedData) {
+          let comparedDataValue = comparedData?.timeseries.find((item) =>
+            date.toISO()?.startsWith(item.date)
+          )
+          if (isMonthlyComparison) {
+            if (comparedDataValue) {
+              lastKnownComparedValue = comparedDataValue
+            } else {
+              comparedDataValue = lastKnownComparedValue
+            }
           }
+
+          const comparedProcessed = processTimeseries(comparedDataValue)
+          range = [...dataProcessed.range, ...comparedProcessed.range].flat()
+          avg = [...dataProcessed.avg, ...comparedProcessed.avg].flat()
+        } else {
+          range = dataProcessed.range
+          avg = dataProcessed.avg
         }
-        const range = dataValue.min.map((m, i) => [m, dataValue.max[i]])
-        const avg = dataValue.min.map((m, i) => (m + dataValue.max[i] || 0) / 2)
 
         return {
           date: date.toMillis(),
@@ -276,4 +317,12 @@ export const formatEvolutionData = (
     .filter((d) => {
       return !isNaN(d.avg[0])
     })
+}
+
+export function cleanDatasetComparisonDataviewInstances(
+  dataviewInstances: (UrlDataviewInstance | DataviewInstance)[] = []
+) {
+  return dataviewInstances?.filter(
+    (dataviewInstance) => !dataviewInstance.id.includes(DATASET_COMPARISON_SUFFIX)
+  )
 }

@@ -12,7 +12,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimebarSelectedEnvId } from 'features/app/selectors/app.timebar.selectors'
 import { selectReportLayersVisible } from 'features/dataviews/selectors/dataviews.selectors'
-import { selectIsOthersReportEnabled } from 'features/debug/debug.selectors'
+import { OUT_OF_TIME_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
 import {
   useFetchReportArea,
   useFitAreaInViewport,
@@ -78,7 +78,6 @@ export default function Report() {
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
   const reportArea = useSelector(selectReportArea)
   const hasReportBuffer = useSelector(selectHasReportBuffer)
-  const isOthersReportEnabled = useSelector(selectIsOthersReportEnabled)
   const reportDataviews = useSelector(selectReportLayersVisible)
   const timebarSelectedEnvId = useSelector(selectTimebarSelectedEnvId)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
@@ -104,14 +103,10 @@ export default function Report() {
       id: ReportCategory.Environment,
       title: t('common.environment'),
     },
-    ...(isOthersReportEnabled
-      ? [
-          {
-            id: ReportCategory.Others,
-            title: t('common.others'),
-          },
-        ]
-      : []),
+    {
+      id: ReportCategory.Others,
+      title: t('common.others'),
+    },
   ]
   const filteredCategoryTabs = categoryTabs.flatMap((tab) => {
     if (!dataviewCategories.includes(tab.id)) {
@@ -176,7 +171,11 @@ export default function Report() {
   const handleTabClick = (option: Tab<ReportCategory>) => {
     if (option.id !== reportCategory) {
       dispatch(resetReportData())
-      dispatchQueryParams({ reportCategory: option.id, reportVesselPage: 0 })
+      dispatchQueryParams({
+        reportCategory: option.id,
+        reportVesselPage: 0,
+      })
+
       fitAreaInViewport()
       trackEvent({
         category: TrackCategory.Analysis,
@@ -198,6 +197,10 @@ export default function Report() {
 
   if (!reportCategory) {
     return <Spinner />
+  }
+
+  if (reportArea?.id === OUT_OF_TIME_REPORT_AREA_ID) {
+    return <ErrorPlaceholder title={t('errors.areaOutOfTime')}></ErrorPlaceholder>
   }
 
   return (

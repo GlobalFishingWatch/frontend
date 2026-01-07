@@ -11,6 +11,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { selectSuggestWorkspaceSave } from 'features/workspace/workspace.selectors'
+import { setWorkspaceHistoryNavigation } from 'features/workspace/workspace.slice'
 import {
   selectIsRouteWithWorkspace,
   selectLocationPayload,
@@ -46,7 +47,7 @@ export const useBeforeUnload = () => {
 }
 
 export const useReplaceLoginUrl = () => {
-  const { redirectUrl, cleanRedirectUrl } = useLoginRedirect()
+  const { redirectUrl, historyNavigation, cleanRedirectUrl } = useLoginRedirect()
   const dispatch = useAppDispatch()
   const locationPayload = useSelector(selectLocationPayload)
   const locationType = useSelector(selectLocationType)
@@ -70,12 +71,18 @@ export const useReplaceLoginUrl = () => {
           replaceQuery: true,
         })
       )
+
+      if (historyNavigation && historyNavigation.length > 0) {
+        dispatch(setWorkspaceHistoryNavigation(historyNavigation))
+      }
+
       cleanRedirectUrl()
     }
     return () => {
       // ensures the localStorage is clean when the app is unmounted
       cleanRedirectUrl()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 }
 

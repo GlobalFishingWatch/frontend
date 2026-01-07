@@ -9,25 +9,28 @@ export const BUFFERED_ANTIMERIDIAN_LON = 179.5
 // Used to normalize longitudes to avoid antimeridian issues
 export const BUFFERED_ANTIMERIDIAN_NORMALIZED = 180.1
 
-export const wrapBBoxLongitudes = (bbox: Bbox) => {
+export const wrapLongitudes = (longitudes: number[]) => {
   // Hack for renderers like mapbox gl or leaflet to fix antimeridian issues
   // https://macwright.org/2016/09/26/the-180th-meridian.html ("Using longitudes above and below 180 and -180**")
   let currentLon: number
   let lonOffset = 0
-  return bbox.map((coordinate, index) => {
-    if (index === 0 || index === 2) {
-      if (currentLon) {
-        if (coordinate - currentLon < -180) {
-          lonOffset += 360
-        } else if (coordinate - currentLon > 180) {
-          lonOffset -= 360
-        }
+  return longitudes.map((coordinate) => {
+    if (currentLon) {
+      if (coordinate - currentLon < -180) {
+        lonOffset += 360
+      } else if (coordinate - currentLon > 180) {
+        lonOffset -= 360
       }
-      currentLon = coordinate
-      return coordinate + lonOffset
     }
-    return coordinate
-  }) as Bbox
+    currentLon = coordinate
+    return coordinate + lonOffset
+  })
+}
+
+export const wrapBBoxLongitudes = (bbox: Bbox): Bbox => {
+  const [minX, minY, maxX, maxY] = bbox
+  const [wrappedMinX, wrappedMaxX] = wrapLongitudes([minX, maxX])
+  return [wrappedMinX, minY, wrappedMaxX, maxY]
 }
 
 export const wrapPointLongitudes = (features: Feature<Point>[]) => {

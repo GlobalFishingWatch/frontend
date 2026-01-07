@@ -16,6 +16,7 @@ export const getUTCDate = (timestamp: string | number = Date.now()) => {
     DateTime.fromISO,
     DateTime.fromSQL,
     DateTime.fromRFC2822,
+    (s: string, opts: any) => DateTime.fromFormat(s, 'M/d/yyyy', opts),
   ]
   let result
   for (let index = 0; index < tryParseMethods.length; index++) {
@@ -31,7 +32,6 @@ export const getUTCDate = (timestamp: string | number = Date.now()) => {
   }
   return new Date('Invalid Date')
 }
-
 export type SupportedDateType = string | number | Date
 export const getUTCDateTime = (d: SupportedDateType): DateTime => {
   if (!d || (typeof d !== 'string' && typeof d !== 'number' && typeof d !== 'object')) {
@@ -113,8 +113,11 @@ export const formatDateForInterval = (
     case 'HOUR':
       formattedTick = dateTime.toLocaleString(DateTime.DATETIME_MED)
       break
+    // case 'WEEKDAY':
+    //   formattedTick = dateTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
+    //   break
     default:
-      formattedTick = dateTime.toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY)
+      formattedTick = dateTime.toLocaleString(DateTime.DATE_MED)
       break
   }
   return formattedTick

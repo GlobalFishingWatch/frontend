@@ -4,7 +4,10 @@ import { uniqBy } from 'es-toolkit'
 
 import { DatasetStatus, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { getVesselIdFromDatasetConfig } from '@globalfishingwatch/dataviews-client'
+import {
+  getVesselIdFromDatasetConfig,
+  isHeatmapVectorsDataview,
+} from '@globalfishingwatch/dataviews-client'
 import type { ChoiceOption, SelectOption } from '@globalfishingwatch/ui-components'
 import { Choice, IconButton, Modal, Select } from '@globalfishingwatch/ui-components'
 
@@ -35,11 +38,23 @@ const InfoModal = ({
   const { t } = useTranslation()
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const dataset = dataview.datasets?.[0]
-
+  const isHeatmapVector = isHeatmapVectorsDataview(dataview)
   const options = useMemo(() => {
     const uniqDatasets = dataview.datasets ? uniqBy(dataview.datasets, (dataset) => dataset.id) : []
+    let vectorDatasetAdded = false // Vector dataviews needs two datasets to render the vector layer.
     return uniqDatasets
       .flatMap((dataset) => {
+        const labelString = getDatasetLabel(dataset)
+        if (isHeatmapVector) {
+          if (labelString !== dataset.id) {
+            if (vectorDatasetAdded) {
+              return []
+            }
+            vectorDatasetAdded = true
+          } else {
+            return []
+          }
+        }
         if (dataview.config?.type === DataviewType.Track) {
           const datasetConfig = dataview.datasetsConfig?.find(
             (datasetConfig) => datasetConfig.datasetId === dataset.id
@@ -50,6 +65,7 @@ const InfoModal = ({
         } else if (
           !showAllDatasets &&
           dataview.config?.datasets &&
+          dataview.config?.datasets?.length > 0 &&
           !dataview.config?.datasets?.includes(dataset.id)
         ) {
           return []
@@ -57,12 +73,12 @@ const InfoModal = ({
         return {
           id: dataset.id,
           label: <DatasetLabel dataset={dataset} />,
-          labelString: getDatasetLabel(dataset),
+          labelString,
         }
       })
       .sort((a, b) => a.labelString.localeCompare(b.labelString))
     // Updating options when t changes to ensure the content is updated on lang change
-  }, [dataview, showAllDatasets])
+  }, [dataview, showAllDatasets, isHeatmapVector])
 
   const [activeTab, setActiveTab] = useState<SelectOption | undefined>(options?.[0])
   const handleClick = useCallback(

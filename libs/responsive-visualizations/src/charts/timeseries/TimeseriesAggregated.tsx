@@ -1,20 +1,12 @@
 import { format } from 'd3-format'
 import max from 'lodash/max'
 import min from 'lodash/min'
-import {
-  CartesianGrid,
-  ComposedChart,
-  Line,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
+import { CartesianGrid, ComposedChart, Line, Tooltip, XAxis, YAxis } from 'recharts'
 
 import { getResponsiveVisualizationItemValue } from '../../lib/density'
 import type { ResponsiveVisualizationAggregatedObjectValue } from '../../types'
 import type { TimeseriesByTypeProps } from '../types'
-import { getContrastSafeLineColor } from '../utils'
+import { getContrastSafeColor } from '../utils'
 
 import { useFullTimeseries, useTimeseriesDomain } from './timeseries.hooks'
 
@@ -66,57 +58,55 @@ export function AggregatedTimeseries({
   }
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
-      <ComposedChart data={fullTimeseries} margin={graphMargin}>
-        <CartesianGrid vertical={false} syncWithTicks />
-        <XAxis
-          domain={domain}
-          dataKey={dateKey}
-          interval="equidistantPreserveStart"
-          tickFormatter={(tick: string) => tickLabelFormatter?.(tick, timeseriesInterval) || tick}
-          axisLine={paddedDomain[0] === 0}
+    <ComposedChart responsive width="100%" height="100%" data={fullTimeseries} margin={graphMargin}>
+      <CartesianGrid vertical={false} syncWithTicks />
+      <XAxis
+        domain={domain}
+        dataKey={dateKey}
+        interval="equidistantPreserveStart"
+        tickFormatter={(tick: string) => tickLabelFormatter?.(tick, timeseriesInterval) || tick}
+        axisLine={paddedDomain[0] === 0}
+      />
+      <YAxis
+        scale="linear"
+        domain={paddedDomain}
+        interval="preserveEnd"
+        tickFormatter={tickFormatter}
+        axisLine={false}
+        tickLine={false}
+      />
+      {data?.length && customTooltip ? <Tooltip content={customTooltip} /> : null}
+      {Array.isArray(valueKeys) ? (
+        valueKeys.map((valueKey) => {
+          const isValueObject = typeof data?.[0]?.[valueKey] === 'object'
+          const dataKey = isValueObject ? `${valueKey}.value` : valueKey
+          const lineColor = isValueObject
+            ? (data[0][valueKey] as ResponsiveVisualizationAggregatedObjectValue).color || color
+            : color
+          return (
+            <Line
+              key={valueKey}
+              name="line"
+              type="monotone"
+              dataKey={dataKey}
+              dot={false}
+              isAnimationActive={false}
+              stroke={getContrastSafeColor(lineColor)}
+              strokeWidth={2}
+            />
+          )
+        })
+      ) : (
+        <Line
+          name="line"
+          type="monotone"
+          dataKey={valueKeys}
+          dot={false}
+          isAnimationActive={false}
+          stroke={getContrastSafeColor(color)}
+          strokeWidth={2}
         />
-        <YAxis
-          scale="linear"
-          domain={paddedDomain}
-          interval="preserveEnd"
-          tickFormatter={tickFormatter}
-          axisLine={false}
-          tickLine={false}
-        />
-        {data?.length && customTooltip ? <Tooltip content={customTooltip} /> : null}
-        {Array.isArray(valueKeys) ? (
-          valueKeys.map((valueKey) => {
-            const isValueObject = typeof data?.[0]?.[valueKey] === 'object'
-            const dataKey = isValueObject ? `${valueKey}.value` : valueKey
-            const lineColor = isValueObject
-              ? (data[0][valueKey] as ResponsiveVisualizationAggregatedObjectValue).color || color
-              : color
-            return (
-              <Line
-                key={valueKey}
-                name="line"
-                type="monotone"
-                dataKey={dataKey}
-                dot={false}
-                isAnimationActive={false}
-                stroke={getContrastSafeLineColor(lineColor)}
-                strokeWidth={2}
-              />
-            )
-          })
-        ) : (
-          <Line
-            name="line"
-            type="monotone"
-            dataKey={valueKeys}
-            dot={false}
-            isAnimationActive={false}
-            stroke={getContrastSafeLineColor(color)}
-            strokeWidth={2}
-          />
-        )}
-      </ComposedChart>
-    </ResponsiveContainer>
+      )}
+    </ComposedChart>
   )
 }

@@ -20,6 +20,7 @@ export type FormatLegendValueParams = {
   isFirst?: boolean
   isLast?: boolean
   divergent?: boolean
+  decimals?: number
 }
 export const formatLegendValue = ({
   number,
@@ -27,20 +28,23 @@ export const formatLegendValue = ({
   isFirst,
   isLast,
   divergent,
+  decimals = DECIMALS,
 }: FormatLegendValueParams) => {
   if (typeof number !== 'number') {
     console.warn('Value not valid be fixed parsed, returning original value', number)
     return number
   }
-  let formattedValue = roundValues ? number.toFixed(0) : number.toFixed(DECIMALS)
+  let formattedValue = roundValues ? number.toFixed(0) : number.toFixed(decimals)
   if (number === 0) formattedValue = '0'
   else if (Math.abs(number) >= 1000000000)
-    formattedValue = `${(number / 1000000000).toFixed(DECIMALS).replace(/\.?0+$/, '')}B`
+    formattedValue = `${(number / 1000000000).toFixed(decimals).replace(/\.?0+$/, '')}B`
   else if (Math.abs(number) >= 1000000)
-    formattedValue = `${(number / 1000000).toFixed(DECIMALS).replace(/\.?0+$/, '')}M`
+    formattedValue = `${(number / 1000000).toFixed(decimals).replace(/\.?0+$/, '')}M`
   else if (Math.abs(number) >= 1000)
     formattedValue = `${(number / 1000).toFixed(1).replace(/\.?0+$/, '')}K`
-  else if (Math.abs(number) < 1) formattedValue = number.toFixed(DECIMALS).toString()
+  else if (Math.abs(number) < 1) {
+    formattedValue = number.toFixed(decimals).replace(/\.?0+$/, '')
+  }
 
   if (divergent && number > 0 && !isLast) {
     formattedValue = ['+', formattedValue].join('')

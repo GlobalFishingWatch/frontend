@@ -29,7 +29,7 @@ const USER_GUIDE_SECTIONS_EN: Record<UserGuideSection, string> = {
   uploadPolygons: '#Uploading data',
   uploadTracks: '#Uploading data',
   uploadPoints: '#Uploading data',
-  analysis: '#Analysis',
+  analysis: '#Analysis and dynamic reports',
   downloadActivity: '#Downloading data',
   vesselSearch: '#Vessel search',
   vesselGroups: '#Vessel groups',
@@ -46,7 +46,7 @@ const USER_GUIDE_SECTIONS_ES: Record<UserGuideSection, string> = {
   uploadPolygons: '#Carga de datos',
   uploadTracks: '#Carga de datos',
   uploadPoints: '#Carga de datos',
-  analysis: '#Análisis',
+  analysis: '#Análisis y reportes dinámicos',
   downloadActivity: '#Descarga de datos',
   vesselSearch: '#Búsqueda de embarcaciones',
   vesselGroups: '#Grupos de embarcaciones',
@@ -77,7 +77,7 @@ function UserGuideLink({ section, className }: UserGuideLinkProps) {
       <IconButton size="small" icon="help" className={styles.icon} />{' '}
       <div>
         <label className={styles.label}>{t('userGuide.title')}</label>
-        <span>{t(`userGuide.${section}` as any)}</span>
+        <span>{t(`userGuide.${section}`)}</span>
       </div>
     </a>
   )

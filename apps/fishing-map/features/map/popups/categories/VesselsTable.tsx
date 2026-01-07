@@ -16,6 +16,7 @@ import {
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import I18nNumber from 'features/i18n/i18nNumber'
 import type {
   ActivityProperty,
@@ -71,6 +72,7 @@ function VesselsTable({
   const { t } = useTranslation()
   const { start, end } = useSelector(selectTimeRange)
   const workspace = useSelector(selectWorkspace)
+  const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
 
   const interactionAllowed = [...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION].includes(
     feature?.category || ''
@@ -95,7 +97,7 @@ function VesselsTable({
         <table className={cx(styles.vesselsTable)} data-test={testId}>
           <thead>
             <tr>
-              <th colSpan={hasPinColumn ? 2 : 1}>{t('common.vessel_other')}</th>
+              <th colSpan={hasPinColumn ? 2 : 1}>{t('common.vessels')}</th>
               <th>{t('vessel.flag')}</th>
               {!linkToSkylight && (
                 <th>{isPresenceActivity ? t('vessel.type') : t('vessel.gearType_short')}</th>
@@ -104,9 +106,9 @@ function VesselsTable({
               {isHoursProperty && <th>{t('vessel.source_short')}</th>}
               {showValue && (
                 <th className={isHoursProperty ? styles.vesselsTableHeaderRight : ''}>
-                  {feature?.unit === 'hours' && t('common.hour_other')}
-                  {feature?.unit === 'days' && t('common.days_other')}
-                  {feature?.unit === 'detections' && t('common.detection_other')}
+                  {feature?.unit === 'hours' && t('common.hours')}
+                  {feature?.unit === 'days' && t('common.days')}
+                  {feature?.unit === 'detections' && t('common.detections')}
                 </th>
               )}
             </tr>
@@ -116,10 +118,12 @@ function VesselsTable({
               const getVesselPropertyParams = {
                 identitySource: VesselIdentitySourceEnum.SelfReported,
               }
-              const vesselName = formatInfoField(
-                getVesselProperty(vessel, 'shipname', getVesselPropertyParams),
-                'shipname'
-              )
+              const vesselName = hideVesselNames
+                ? FAKE_VESSEL_NAME
+                : formatInfoField(
+                    getVesselProperty(vessel, 'shipname', getVesselPropertyParams),
+                    'shipname'
+                  )
 
               const otherVesselsLabel = vessel
                 ? getVesselOtherNamesLabel(getOtherVesselNames(vessel))

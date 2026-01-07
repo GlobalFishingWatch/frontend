@@ -209,12 +209,11 @@ const getInteractionEndpointDatasetConfig = (
     datasetConfig.query?.push({ id: 'filters', value: filters })
   }
 
-  const vesselGroups = featuresDataviews.flatMap((dv) => dv.config?.['vessel-groups'] || [])
+  const vesselGroups = featuresDataviews.flatMap((dv) => dv.config?.['vessel-groups'] || '')
 
   if (vesselGroups.length) {
     datasetConfig.query?.push({ id: 'vessel-groups', value: vesselGroups })
   }
-
   return { featuresDataviews, fourWingsDataset, datasetConfig }
 }
 
@@ -376,7 +375,6 @@ export const fetchHeatmapInteractionThunk = createAsyncThunk<
         const sublayersIds = heatmapFeatures.flatMap(
           (feature) => feature.sublayers?.map((sublayer) => sublayer.id) || ''
         )
-
         const sublayersVessels: SublayerVessels[] = vesselsBySource.map((sublayerVessels, i) => {
           const activityProperty = heatmapProperties?.[i] || 'hours'
           return {
@@ -439,6 +437,7 @@ export const fetchClusterEventThunk = createAsyncThunk(
       let interactionId = eventFeature.id
       let interactionResponse: FourwingsEventsInteraction[] | undefined
       let eventId: string | undefined = eventFeature.eventId
+
       if (!eventId && interactionId && eventsDataset && eventFeature.properties.tile) {
         const start = getUTCDate(eventFeature?.startTime).toISOString()
         const end = getUTCDate(eventFeature?.endTime).toISOString()
@@ -518,7 +517,7 @@ export const fetchClusterEventThunk = createAsyncThunk(
           .slice(0, MAX_TOOLTIP_LIST)
           .map((v) => v.id)
         const vesselsInfo = await fetchVesselInfo(infoDatasets, vesselIds, signal)
-        const vessels = (interactionResponse as FourwingsEventsInteraction[])!.flatMap(
+        const vessels = (interactionResponse as FourwingsEventsInteraction[])?.flatMap(
           (interaction) => {
             const vesselInfo = vesselsInfo?.find((vesselInfo) => {
               const vesselInfoIds = vesselInfo.selfReportedInfo?.map((s) => s.id)
@@ -570,30 +569,39 @@ export const fetchClusterEventThunk = createAsyncThunk(
             if (!clusterEvent) {
               return rejectWithValue(`No event found for id: ${eventId}`)
             }
-            if (clusterEvent.type === 'encounter') {
+            if (
+              clusterEvent.type === EventTypes.Encounter ||
+              clusterEvent.type === EventTypes.Gap
+            ) {
               // Workaround to grab information about each vessel dataset
               // will need discuss with API team to scale this for other types
-              const isACarrierTheMainVessel =
-                clusterEvent.vessel.type === EventVesselTypeEnum.Carrier
-              const fishingVessel = isACarrierTheMainVessel
-                ? clusterEvent.encounter?.vessel
-                : clusterEvent.vessel
-              const carrierVessel = isACarrierTheMainVessel
-                ? clusterEvent.vessel
-                : clusterEvent.encounter?.vessel
+              let vessels = []
+              if (clusterEvent.type === 'encounter') {
+                const isACarrierTheMainVessel =
+                  clusterEvent.vessel.type === EventVesselTypeEnum.Carrier
+                const fishingVessel = isACarrierTheMainVessel
+                  ? clusterEvent.encounter?.vessel
+                  : clusterEvent.vessel
+                const carrierVessel = isACarrierTheMainVessel
+                  ? clusterEvent.vessel
+                  : clusterEvent.encounter?.vessel
+                vessels = [fishingVessel, carrierVessel]
+              } else {
+                vessels = [clusterEvent.vessel]
+              }
               let vesselsInfo: IdentityVessel[] = []
               const vesselsDatasets = dataview?.datasets
                 ?.flatMap((d) => d.relatedDatasets || [])
                 .filter((d) => d?.type === DatasetTypes.Vessels)
 
-              if (vesselsDatasets?.length && fishingVessel && carrierVessel) {
+              if (vesselsDatasets?.length && vessels.length) {
                 const vesselDataset = selectDatasetById(vesselsDatasets[0].id)(state) as Dataset
                 const vesselsDatasetConfig = {
                   datasetId: vesselDataset.id,
                   endpoint: EndpointId.VesselList,
                   params: [],
                   query: [
-                    { id: 'ids', value: [fishingVessel.id, carrierVessel.id] },
+                    { id: 'ids', value: vessels.flatMap((v) => v?.id || []) },
                     { id: 'datasets', value: vesselsDatasets.map((d) => d.id) },
                   ],
                 }
@@ -604,38 +612,50 @@ export const fetchClusterEventThunk = createAsyncThunk(
                   }).then((r) => r.entries)
                 }
               }
-              const fishingVesselDataset =
-                vesselsInfo.find(
-                  (v) =>
-                    getVesselProperty(v, 'id', {
-                      identitySource: VesselIdentitySourceEnum.SelfReported,
-                    }) === fishingVessel?.id
-                )?.dataset || ''
-              const carrierVesselDataset =
-                vesselsInfo.find(
-                  (v) =>
-                    getVesselProperty(v, 'id', {
-                      identitySource: VesselIdentitySourceEnum.SelfReported,
-                    }) === carrierVessel?.id
-                )?.dataset || ''
-              const carrierExtendedVessel: ExtendedEventVessel = {
-                ...(carrierVessel as EventVessel),
-                dataset: carrierVesselDataset,
-              }
-              const fishingExtendedVessel: ExtendedEventVessel = {
-                ...(fishingVessel as EventVessel),
-                dataset: fishingVesselDataset,
-              }
-              return {
-                ...clusterEvent,
-                vessel: carrierExtendedVessel,
-                ...(clusterEvent.encounter && {
-                  encounter: {
-                    ...clusterEvent.encounter,
-                    vessel: fishingExtendedVessel,
+              if (clusterEvent.type === 'encounter') {
+                const fishingVesselDataset =
+                  vesselsInfo.find(
+                    (v) =>
+                      getVesselProperty(v, 'id', {
+                        identitySource: VesselIdentitySourceEnum.SelfReported,
+                      }) === vessels[0]?.id
+                  )?.dataset || ''
+                const carrierVesselDataset =
+                  vesselsInfo.find(
+                    (v) =>
+                      getVesselProperty(v, 'id', {
+                        identitySource: VesselIdentitySourceEnum.SelfReported,
+                      }) === vessels[1]?.id
+                  )?.dataset || ''
+
+                const fishingExtendedVessel: ExtendedEventVessel = {
+                  ...(vessels[0] as EventVessel),
+                  dataset: fishingVesselDataset,
+                }
+                const carrierExtendedVessel: ExtendedEventVessel = {
+                  ...(vessels[1] as EventVessel),
+                  dataset: carrierVesselDataset,
+                }
+                return {
+                  ...clusterEvent,
+                  vessel: carrierExtendedVessel,
+                  ...(clusterEvent.encounter && {
+                    encounter: {
+                      ...clusterEvent.encounter,
+                      vessel: fishingExtendedVessel,
+                    },
+                  }),
+                  dataset: eventsDataset,
+                }
+              } else {
+                return {
+                  ...clusterEvent,
+                  vessel: {
+                    ...(vessels[0] as EventVessel),
+                    dataset: vesselsInfo?.[0]?.dataset,
                   },
-                }),
-                dataset: eventsDataset,
+                  dataset: eventsDataset,
+                }
               }
             }
             return { ...clusterEvent, dataset: eventsDataset }
@@ -679,10 +699,12 @@ export const fetchDetectionThumbnailsThunk = createAsyncThunk<
           )?.id
           const thumbnailDataset = selectDatasetById(thumbnailDatasetId as string)(state)
           if (thumbnailDataset) {
+            const detectionId = detectionFeature.properties?.id
+
             const datasetConfig = {
               datasetId: thumbnailDataset.id,
               endpoint: EndpointId.Thumbnails,
-              params: [{ id: 'id', value: detectionFeature.properties?.id }],
+              params: [{ id: 'id', value: detectionId }],
             }
             const url = resolveEndpoint(thumbnailDataset, datasetConfig)
             if (url) {

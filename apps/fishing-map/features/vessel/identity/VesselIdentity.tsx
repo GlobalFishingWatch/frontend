@@ -169,7 +169,7 @@ const VesselIdentity = () => {
             </div>
           )}
           <div className={styles.twoCells}>
-            <label>{t('common.date_other')}</label>
+            <label>{t('common.date', { count: 2 })}</label>
             <div className={styles.timerange}>
               <VesselIdentityField
                 value={`${formatI18nDate(vesselIdentity.transmissionDateFrom)} - ${formatI18nDate(
@@ -300,7 +300,7 @@ const VesselIdentity = () => {
           <label>{t('common.viewIn')}</label>
           <div className={styles.externalToolLinks}>
             <a
-              href={`https://www.marinetraffic.com/${i18n.language}/ais/details/ships/mmsi:${vesselIdentity?.ssvid}`}
+              href={`https://www.marinetraffic.com/${i18n.language}/data/?asset_type=vessels&mmsi=${vesselIdentity?.ssvid}`}
               target="_blank"
               onClick={() => {
                 trackEvent({
@@ -326,7 +326,7 @@ const VesselIdentity = () => {
               <Icon icon="external-link" type="default" />
             </a>
             <a
-              href={`https://app.triton.fish/search?name=${vesselIdentity?.ssvid}`}
+              href={`https://app.triton.fish/search?${vesselIdentity?.imo ? `imo=${vesselIdentity.imo}` : `name=${vesselIdentity?.ssvid}`}`}
               target="_blank"
               onClick={() => {
                 trackEvent({
@@ -336,6 +336,19 @@ const VesselIdentity = () => {
               }}
             >
               Triton
+              <Icon icon="external-link" type="default" />
+            </a>
+            <a
+              href={`https://cravt.imcsnet.org/browse-vessels?keywords=${vesselIdentity?.imo || vesselIdentity?.callsign || vesselIdentity?.shipname || vesselIdentity?.nShipname}`}
+              target="_blank"
+              onClick={() => {
+                trackEvent({
+                  category: TrackCategory.VesselProfile,
+                  action: 'click_cravt_link',
+                })
+              }}
+            >
+              CRAVT
               <Icon icon="external-link" type="default" />
             </a>
           </div>

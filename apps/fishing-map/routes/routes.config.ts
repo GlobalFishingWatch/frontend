@@ -20,6 +20,7 @@ export const REPLACE_URL_PARAMS: QueryParam[] = [
   'activityVisualizationMode',
   'detectionsVisualizationMode',
   'environmentVisualizationMode',
+  'vesselGroupsVisualizationMode',
   'mapAnnotationsVisible',
   'mapRulersVisible',
   'vesselDatasetId',

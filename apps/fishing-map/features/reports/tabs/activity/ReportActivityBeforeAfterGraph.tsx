@@ -7,42 +7,22 @@ import {
   ComposedChart,
   Line,
   ReferenceLine,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts'
-
-import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import i18n from 'features/i18n/i18n'
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
 import { selectReportTimeComparison } from 'features/reports/reports.config.selectors'
 import type { ReportActivityTimeComparison } from 'features/reports/reports.types'
+import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import { getUTCDateTime } from 'utils/dates'
 
 import BeforeAfterGraphTooltip from './BeforeAfterGraphTooltip'
 
 import styles from './ReportActivityEvolution.module.css'
-
-interface ComparisonGraphData {
-  date: string
-  min: number[]
-  max: number[]
-}
-
-interface ComparisonGraphProps {
-  timeseries: ComparisonGraphData[]
-  sublayers: {
-    id: string
-    legend: {
-      color?: string
-      unit?: string
-    }
-  }[]
-  interval: FourwingsInterval
-}
 
 const formatDateTicks = (tick: number, timeComparison: ReportActivityTimeComparison) => {
   if (!timeComparison) return ''
@@ -70,11 +50,11 @@ const formatDateTicks = (tick: number, timeComparison: ReportActivityTimeCompari
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 
 const ReportActivityBeforeAfterGraph: React.FC<{
-  data: ComparisonGraphProps
+  data: ReportGraphProps
   start: string
   end: string
 }> = (props) => {
-  const { start, end, data = {} as ComparisonGraphProps } = props
+  const { start, end, data = {} as ReportGraphProps } = props
   const { timeseries, sublayers, interval } = data
   const timeComparison = useSelector(selectReportTimeComparison)
 
@@ -136,50 +116,48 @@ const ReportActivityBeforeAfterGraph: React.FC<{
 
   return (
     <div className={styles.graph}>
-      <ResponsiveContainer width="100%" height={'100%'}>
-        <ComposedChart data={range} margin={graphMargin}>
-          <CartesianGrid vertical={false} />
-          <XAxis
-            domain={[getUTCDateTime(start)?.toMillis(), getUTCDateTime(end)?.toMillis()]}
-            dataKey="date"
-            interval="preserveStartEnd"
-            tickFormatter={(tick: number) => formatDateTicks(tick, timeComparison)}
-            scale={'time'}
-            type={'number'}
-            ticks={ticks}
-          />
-          <YAxis
-            scale="linear"
-            interval="preserveEnd"
-            tickFormatter={tickFormatter}
-            axisLine={false}
-            tickLine={false}
-            tickCount={4}
-          />
-          <ReferenceLine x={dtStart?.toMillis()} stroke={COLOR_PRIMARY_BLUE} />
-          <Tooltip content={<BeforeAfterGraphTooltip timeChunkInterval={interval} />} />
-          <Line
-            name="line"
-            type="monotone"
-            dataKey="avg"
-            unit={unit}
-            dot={false}
-            isAnimationActive={false}
-            stroke={COLOR_PRIMARY_BLUE}
-            strokeWidth={2}
-          />
-          <Area
-            name="area"
-            type="monotone"
-            dataKey="range"
-            activeDot={false}
-            fill={COLOR_PRIMARY_BLUE}
-            stroke="none"
-            fillOpacity={0.2}
-            isAnimationActive={false}
-          />
-        </ComposedChart>
-      </ResponsiveContainer>
+      <ComposedChart responsive width="100%" height="100%" data={range} margin={graphMargin}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          domain={[getUTCDateTime(start)?.toMillis(), getUTCDateTime(end)?.toMillis()]}
+          dataKey="date"
+          interval="preserveStartEnd"
+          tickFormatter={(tick: number) => formatDateTicks(tick, timeComparison)}
+          scale={'time'}
+          type={'number'}
+          ticks={ticks}
+        />
+        <YAxis
+          scale="linear"
+          interval="preserveEnd"
+          tickFormatter={tickFormatter}
+          axisLine={false}
+          tickLine={false}
+          tickCount={4}
+        />
+        <ReferenceLine x={dtStart?.toMillis()} stroke={COLOR_PRIMARY_BLUE} />
+        <Tooltip content={<BeforeAfterGraphTooltip timeChunkInterval={interval} />} />
+        <Line
+          name="line"
+          type="monotone"
+          dataKey="avg"
+          unit={unit}
+          dot={false}
+          isAnimationActive={false}
+          stroke={COLOR_PRIMARY_BLUE}
+          strokeWidth={2}
+        />
+        <Area
+          name="area"
+          type="monotone"
+          dataKey="range"
+          activeDot={false}
+          fill={COLOR_PRIMARY_BLUE}
+          stroke="none"
+          fillOpacity={0.2}
+          isAnimationActive={false}
+        />
+      </ComposedChart>
     </div>
   )
 }

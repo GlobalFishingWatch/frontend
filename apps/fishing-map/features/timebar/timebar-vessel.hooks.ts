@@ -15,14 +15,15 @@ import type {
 } from '@globalfishingwatch/timebar'
 
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
-import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import {
   selectTimebarTrackDataviews,
   selectVesselsDataviews,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectDebugOptions } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimebarVisualisationConnect } from 'features/timebar/timebar.hooks'
 import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
+import { selectVesselsMaxTimeGapHours } from 'routes/routes.selectors'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { getEventDescription } from 'utils/events'
 
@@ -79,7 +80,9 @@ export const useTimebarVesselTracksData = () => {
 type VesselTrackAtom = TimebarChartData<any>
 export const useTimebarVesselTracks = () => {
   const { timebarVisualisation } = useTimebarVisualisationConnect()
+  const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
   const timebarGraph = useSelector(selectTimebarGraph)
+  const debugOptions = useSelector(selectDebugOptions)
   const [tracks, setVesselTracks] = useAtom(vesselTracksAtom)
 
   const trackLayers = useTimebarLayers()
@@ -151,10 +154,17 @@ export const useTimebarVesselTracks = () => {
               ? instance.getVesselTracksLayersLoaded()
               : instance.isLoaded
           const status = loaded ? ResourceStatus.Finished : ResourceStatus.Loading
-
           const segments =
             instance instanceof VesselLayer
-              ? instance.getVesselTrackSegments()
+              ? instance.getVesselTrackSegments({
+                  ...((debugOptions?.vesselsAsPositions ||
+                    debugOptions?.vesselsMaxTimeGapHours) && {
+                    includeMiddlePoints: true,
+                  }),
+                  ...(debugOptions?.vesselsMaxTimeGapHours && {
+                    maxTimeGapHours: vesselsMaxTimeGapHours,
+                  }),
+                })
               : instance.getSegments()
 
           const trackGraphData: TimebarChartItem<{ color: string }> = {
@@ -205,7 +215,6 @@ const getTrackGraphElevationighlighterLabel = ({ value }: HighlighterCallbackFnA
 export const useTimebarVesselTracksGraph = () => {
   const { timebarVisualisation } = useTimebarVisualisationConnect()
   const timebarGraph = useSelector(selectTimebarGraph)
-  const activeVesselDataviews = useSelector(selectActiveVesselsDataviews)
   const [tracksGraph, setVesselTracksGraph] = useAtom(vesselTracksGraphAtom)
   const trackLayers = useTimebarLayers()
 

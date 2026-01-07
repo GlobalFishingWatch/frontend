@@ -28,6 +28,7 @@ interface SliderRangeProps {
   //static for now for the VIIRS release
   histogram?: boolean
   showInputs?: boolean
+  labelClassName?: string
 }
 type Precision = 'high' | 'mid' | 'low'
 
@@ -74,6 +75,7 @@ export function SliderRange(props: SliderRangeProps) {
     histogram,
     thumbsSize = 'default',
     showInputs = false,
+    labelClassName,
   } = props
   const { min = MIN, max = MAX } = config as SliderRangeConfig
   const precisionConfig =
@@ -140,7 +142,7 @@ export function SliderRange(props: SliderRangeProps) {
   return (
     <div className={className}>
       {label && (
-        <label className={styles.label}>
+        <label className={cx(styles.label, labelClassName)}>
           {label}
           {onCleanClick && !areDefaultValues && (
             <IconButton size="small" icon="delete" onClick={onCleanClick} />

@@ -55,6 +55,7 @@ import {
   filteredPositionsByViewport,
   getIsActivityPositionMatched,
   getIsDetectionsPositionMatched,
+  getIsFeatureInFilterIds,
 } from './fourwings-positions.utils'
 
 type FourwingsPositionsTileLayerState = {
@@ -85,6 +86,15 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 
   get isLoaded(): boolean {
     return super.isLoaded && !this.state.viewportDirty && this.state.viewportLoaded
+  }
+
+  get positions() {
+    const filterIds = this.props.sublayers.flatMap((sublayer) => sublayer.filterIds || [])
+    return filterIds.length
+      ? this.state.positions.filter((p: FourwingsPositionFeature) =>
+          filterIds.includes(p.properties.id as string)
+        )
+      : this.state.positions
   }
 
   getError(): string {
@@ -135,13 +145,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       (context.viewport as any)?.latitude?.toFixed(1),
       context.viewport?.zoom?.toFixed(1),
     ].join(',')
+    const positions = this.positions
     if (viewportHash !== this.state.lastViewport) {
       this.updateViewportDirty()
       this.setState({ lastViewport: viewportHash })
-      const positionsInViewport = filteredPositionsByViewport(
-        this.state.positions,
-        this.context.viewport
-      )
+      const positionsInViewport = filteredPositionsByViewport(positions, this.context.viewport)
       const lastPositions = this._getLatestVesselPositions(positionsInViewport)
       this.setState({ lastPositions })
     }
@@ -155,7 +163,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         )
         this.setState({ colorScale: { ...this.state.colorScale, colorRange } })
       } else {
-        this.setState({ colorScale: this._getColorRamp(this.state.positions) })
+        this.setState({ colorScale: this._getColorRamp(positions) })
       }
     }
     const highlightedFeatureIds = new Set<string>()
@@ -221,6 +229,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     ) {
       return COLOR_HIGHLIGHT_LINE
     }
+
+    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+      return COLOR_TRANSPARENT
+    }
+
     const sublayerColorRange = colorRange[d.properties.layer] as FourwingsColorObject[]
     const colorIndex =
       colorDomain.length === 1
@@ -244,6 +257,9 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getIsHighlightedVessel(d: FourwingsPositionFeature) {
+    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+      return false
+    }
     return (
       this.state.highlightedVesselIds.has(d.properties?.id) ||
       this.state.highlightedFeatureIds.has(d.properties?.id)
@@ -251,10 +267,16 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getHighlightColor = (d: FourwingsPositionFeature): Color => {
+    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+      return COLOR_TRANSPARENT
+    }
     return [255, 255, 255, this._getIsHighlightedVessel(d) ? 255 : 0]
   }
 
   _getIconSize = (d: FourwingsPositionFeature): number => {
+    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+      return 0
+    }
     if (this._canShowVesselIcon(d)) {
       return this._getIsHighlightedVessel(d) ? 22 : 15
     } else {
@@ -267,10 +289,18 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   _getLabelColor = (d: FourwingsPositionFeature): Color => {
+    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+      return COLOR_TRANSPARENT
+    }
+
     return [255, 255, 255, this._getIsHighlightedVessel(d) ? 255 : 120]
   }
 
   _getVesselLabel = (d: FourwingsPositionFeature): string => {
+    if (!getIsFeatureInFilterIds(d, this.props.sublayers[d.properties.layer]?.filterIds)) {
+      return ''
+    }
+
     const label = cleanVesselShipname(d.properties?.shipname)
     return label?.length <= MAX_LABEL_LENGTH ? label : `${label.slice(0, MAX_LABEL_LENGTH)}...`
   }
@@ -465,11 +495,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   getViewportData = () => {
-    return filteredPositionsByViewport(this.state.positions, this.context.viewport)
+    return filteredPositionsByViewport(this.positions, this.context.viewport)
   }
 
   getData() {
-    return this.state.positions
+    return this.positions
   }
 
   getColorDomain() {

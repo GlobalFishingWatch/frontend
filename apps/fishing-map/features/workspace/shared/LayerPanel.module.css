@@ -131,6 +131,10 @@
   cursor: not-allowed;
 }
 
+.blur {
+  filter: blur(6px);
+}
+
 .drag {
   opacity: 1;
   transition: opacity 100ms linear;

@@ -8,6 +8,7 @@ import { DateTime } from 'luxon'
 import type { TrackSegment } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 
+import { PRIMARY_BLUE_COLOR } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import I18nDate from 'features/i18n/i18nDate'
 import {
@@ -27,7 +28,7 @@ type SegmentsTimelineProps = Omit<TrackSliderProps, 'onTimerangeChange'> & {
 
 function TrackSegmentsTimeline({
   segments,
-  color = '#163f89',
+  color = PRIMARY_BLUE_COLOR,
   width = 333,
   height = 30,
   rangeStartTime,
@@ -112,7 +113,7 @@ type TrackSliderProps = {
 
 function TrackSlider({
   segments,
-  color = '#163f89',
+  color = PRIMARY_BLUE_COLOR,
   rangeStartTime,
   rangeEndTime,
   onTimerangeChange,
@@ -126,24 +127,15 @@ function TrackSlider({
   const endTime = getUTCDateTime(end).toMillis()
 
   useEffect(() => {
-    if (!start || !end) {
+    if (rangeStartTime && rangeEndTime) {
       dispatch(
         setTrackCorrectionTimerange({
-          start: getUTCDateTime(rangeStartTime!).toISO() ?? start,
-          end: getUTCDateTime(rangeEndTime!).toISO() ?? end,
+          start: getUTCDateTime(rangeStartTime!).toISO() as string,
+          end: getUTCDateTime(rangeEndTime!).toISO() as string,
         })
       )
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, rangeStartTime, rangeEndTime])
-
-  const throttledHighlightTime = useMemo(
-    () =>
-      throttle(({ start, end }: { start: string; end: string }) => {
-        dispatch(setTrackCorrectionTimerange({ start, end }))
-      }, 300),
-    [dispatch]
-  )
 
   const findNearestPoint = useCallback(
     (date: DateTime) => {

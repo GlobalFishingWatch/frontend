@@ -7,7 +7,6 @@ import {
   ComposedChart,
   Line,
   ReferenceLine,
-  ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
@@ -20,6 +19,7 @@ import { selectLatestAvailableDataDate } from 'features/app/selectors/app.select
 import i18n, { t } from 'features/i18n/i18n'
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
 import { selectReportTimeComparison } from 'features/reports/reports.config.selectors'
+import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import { getUTCDateTime } from 'utils/dates'
 
 import PeriodComparisonGraphTooltip, {
@@ -31,25 +31,6 @@ import PeriodComparisonGraphTooltip, {
 
 import styles from './ReportActivityEvolution.module.css'
 
-export interface ComparisonGraphData {
-  date: string
-  compareDate?: string
-  min: number[]
-  max: number[]
-}
-
-interface ComparisonGraphProps {
-  timeseries: ComparisonGraphData[]
-  sublayers: {
-    id: string
-    legend: {
-      color?: string
-      unit?: string
-    }
-  }[]
-  interval: FourwingsInterval
-}
-
 const formatDateTicks = (tick: number, start: string, timeChunkInterval: FourwingsInterval) => {
   if (!tick || !start) {
     return ''
@@ -60,22 +41,18 @@ const formatDateTicks = (tick: number, start: string, timeChunkInterval: Fourwin
   if (!diff.length('hours') && !diff.length('days')) return ''
 
   return timeChunkInterval === 'HOUR'
-    ? `${diff.length('hours').toFixed()} ${
-        diff.length('hours') === 1 ? t('common.hour_one') : t('common.hour_other')
-      }`
-    : `${diff.length('days').toFixed()} ${
-        diff.length('days') === 1 ? t('common.days_one') : t('common.days_other')
-      }`
+    ? `${diff.length('hours').toFixed()} ${t('common.hour', { count: diff.length('hours') })}`
+    : `${diff.length('days').toFixed()} ${t('common.days', { count: diff.length('days') })}`
 }
 
 const graphMargin = { top: 0, right: 0, left: -20, bottom: -10 }
 
 const ReportActivityPeriodComparisonGraph = (props: {
-  data: ComparisonGraphProps
+  data: ReportGraphProps
   start: string
   end: string
 }) => {
-  const { start, end, data = {} as ComparisonGraphProps } = props
+  const { start, end, data = {} as ReportGraphProps } = props
   const { interval, timeseries, sublayers } = data
   const timeComparison = useSelector(selectReportTimeComparison)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
@@ -162,94 +139,92 @@ const ReportActivityPeriodComparisonGraph = (props: {
 
   return (
     <div className={styles.graph}>
-      <ResponsiveContainer width="100%" height={'100%'}>
-        <ComposedChart data={range} margin={graphMargin}>
-          <CartesianGrid vertical={false} />
-          <XAxis
-            domain={[getUTCDateTime(start)?.toMillis(), getUTCDateTime(end)?.toMillis()]}
-            dataKey="date"
-            interval="preserveStartEnd"
-            tickFormatter={(tick: number) => formatDateTicks(tick, start, interval)}
-            scale={'time'}
-            type={'number'}
-          />
-          <YAxis
-            scale="linear"
-            interval="preserveEnd"
-            tickFormatter={tickFormatter}
-            axisLine={false}
-            tickLine={false}
-            tickCount={4}
-          />
-          <Tooltip
-            content={
-              <PeriodComparisonGraphTooltip
-                timeChunkInterval={interval}
-                offsetedLastDataUpdate={offsetedLastDataUpdate}
-              />
-            }
-          />
-          <Area
-            key={`decrease-area`}
-            name="area"
-            type="step"
-            dataKey={(data) => data.rangeDecrease}
-            activeDot={false}
-            fill={COLOR_DECREASE}
-            stroke="none"
-            fillOpacity={0.2}
-            isAnimationActive={false}
-          />
-          <Area
-            key={`increase-area`}
-            name="area"
-            type="step"
-            dataKey={(data) => data.rangeIncrease}
-            activeDot={false}
-            fill={COLOR_INCREASE}
-            stroke="none"
-            fillOpacity={0.2}
-            isAnimationActive={false}
-          />
-          <Line
-            key={`${BASELINE}_bg`}
-            name={BASELINE}
-            data={baseline}
-            dataKey={(data) => data.zero}
-            dot={false}
-            isAnimationActive={false}
-            stroke={COLOR_GRADIENT}
-            strokeWidth={2}
-          />
-          <Line
-            key={BASELINE}
-            name={BASELINE}
-            data={baseline}
-            dataKey={(data) => data.zero}
-            dot={false}
-            unit={unit}
-            isAnimationActive={false}
-            stroke="rgb(111, 138, 182)"
-            strokeDasharray="2 4"
-            strokeWidth={2}
-          />
-          <Line
-            key={DIFFERENCE}
-            name={DIFFERENCE}
-            type="step"
-            data={difference}
-            dataKey={(data) => data.difference}
-            unit={unit}
-            dot={false}
-            isAnimationActive={false}
-            stroke={COLOR_PRIMARY_BLUE}
-            strokeWidth={2}
-          />
-          {offsetedLastDataUpdate && offsetedLastDataUpdate < lastDate && (
-            <ReferenceLine x={offsetedLastDataUpdate} stroke={COLOR_PRIMARY_BLUE} />
-          )}
-        </ComposedChart>
-      </ResponsiveContainer>
+      <ComposedChart responsive width="100%" height="100%" data={range} margin={graphMargin}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          domain={[getUTCDateTime(start)?.toMillis(), getUTCDateTime(end)?.toMillis()]}
+          dataKey="date"
+          interval="preserveStartEnd"
+          tickFormatter={(tick: number) => formatDateTicks(tick, start, interval)}
+          scale={'time'}
+          type={'number'}
+        />
+        <YAxis
+          scale="linear"
+          interval="preserveEnd"
+          tickFormatter={tickFormatter}
+          axisLine={false}
+          tickLine={false}
+          tickCount={4}
+        />
+        <Tooltip
+          content={
+            <PeriodComparisonGraphTooltip
+              timeChunkInterval={interval}
+              offsetedLastDataUpdate={offsetedLastDataUpdate}
+            />
+          }
+        />
+        <Area
+          key={`decrease-area`}
+          name="area"
+          type="step"
+          dataKey={(data) => data.rangeDecrease}
+          activeDot={false}
+          fill={COLOR_DECREASE}
+          stroke="none"
+          fillOpacity={0.2}
+          isAnimationActive={false}
+        />
+        <Area
+          key={`increase-area`}
+          name="area"
+          type="step"
+          dataKey={(data) => data.rangeIncrease}
+          activeDot={false}
+          fill={COLOR_INCREASE}
+          stroke="none"
+          fillOpacity={0.2}
+          isAnimationActive={false}
+        />
+        <Line
+          key={`${BASELINE}_bg`}
+          name={BASELINE}
+          data={baseline}
+          dataKey={(data) => data.zero}
+          dot={false}
+          isAnimationActive={false}
+          stroke={COLOR_GRADIENT}
+          strokeWidth={2}
+        />
+        <Line
+          key={BASELINE}
+          name={BASELINE}
+          data={baseline}
+          dataKey={(data) => data.zero}
+          dot={false}
+          unit={unit}
+          isAnimationActive={false}
+          stroke="rgb(111, 138, 182)"
+          strokeDasharray="2 4"
+          strokeWidth={2}
+        />
+        <Line
+          key={DIFFERENCE}
+          name={DIFFERENCE}
+          type="step"
+          data={difference}
+          dataKey={(data) => data.difference}
+          unit={unit}
+          dot={false}
+          isAnimationActive={false}
+          stroke={COLOR_PRIMARY_BLUE}
+          strokeWidth={2}
+        />
+        {offsetedLastDataUpdate && offsetedLastDataUpdate < lastDate && (
+          <ReferenceLine x={offsetedLastDataUpdate} stroke={COLOR_PRIMARY_BLUE} />
+        )}
+      </ComposedChart>
     </div>
   )
 }

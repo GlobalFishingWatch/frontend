@@ -368,7 +368,7 @@ function VesselGroupModal(): React.ReactElement<any> {
     : searchIdField === '' || !vesselGroupVesselsToSearch?.length || !sourcesSelected?.length
   const confirmButtonDisabled =
     loading || hasVesselsOverflow || !searchVesselGroupsVesselsAllowed || missesRequiredParams
-  let confirmButtonTooltip = hasVesselsOverflow
+  let confirmButtonTooltip: string = hasVesselsOverflow
     ? t('vesselGroup.tooManyVessels', {
         count: MAX_VESSEL_GROUP_VESSELS,
       })
@@ -433,7 +433,7 @@ function VesselGroupModal(): React.ReactElement<any> {
           {!fullModalLoading && !hasVesselGroupsVessels && (
             <Fragment>
               <MultiSelect
-                label={t('layer.source_other')}
+                label={t('layer.sources')}
                 placeholder={getPlaceholderBySelections({
                   selection: sourcesSelected.map(({ id }) => id),
                   options: sourceOptions,
@@ -478,7 +478,7 @@ function VesselGroupModal(): React.ReactElement<any> {
       <div className={styles.modalFooter}>
         {vesselGroupVessels && vesselGroupVessels?.length > 0 && (
           <label>
-            {t('common.vessel_other')}:{' '}
+            {t('common.vessel', { count: vesselGroupVessels.length })}:{' '}
             {getVesselGroupVesselsCount({ vessels: vesselGroupVessels } as VesselGroup)}
           </label>
         )}

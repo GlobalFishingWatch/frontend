@@ -18,18 +18,19 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReportLoadVessels } from 'features/app/selectors/app.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import { getDatasetsReportNotSupported } from 'features/datasets/datasets.utils'
+import {
+  getDatasetsReportNotSupported,
+  getIsBQEditorDataset,
+} from 'features/datasets/datasets.utils'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { getDownloadReportSupported } from 'features/download/download.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { LastReportStorage } from 'features/reports/report-area/area-reports.config'
 import { LAST_REPORTS_STORAGE_KEY } from 'features/reports/report-area/area-reports.config'
 import { useFetchReportVessel } from 'features/reports/report-area/area-reports.hooks'
-import {
-  selectReportDataviewsWithPermissions,
-  selectTimeComparisonValues,
-} from 'features/reports/report-area/area-reports.selectors'
+import { selectReportDataviewsWithPermissions } from 'features/reports/report-area/area-reports.selectors'
 import { parseReportUrl } from 'features/reports/report-area/area-reports.utils'
+import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import {
   selectActiveReportSubCategories,
   selectReportAreaId,
@@ -86,7 +87,7 @@ function ActivityReport() {
   const dispatchTimeoutRef = useRef<NodeJS.Timeout>(undefined)
   const hasVessels = useSelector(selectHasReportVessels)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const timeComparisonValues = useSelector(selectTimeComparisonValues)
+  const reportActivityGraph = useSelector(selectReportActivityGraph)
   const reportLoadVessels = useSelector(selectReportLoadVessels)
   const { dispatchQueryParams } = useLocationConnect()
 
@@ -117,6 +118,9 @@ function ActivityReport() {
   const concurrentReportError = getIsConcurrentError(statusError!)
   const isSameWorkspaceReport =
     concurrentReportError && window?.location.href === lastReport?.workspaceUrl
+  const isBQEditorDataset = dataviews.some((dataview) =>
+    dataview.datasets?.some((dataset) => getIsBQEditorDataset(dataset))
+  )
 
   const isTimeoutError = getIsTimeoutError(statusError!)
   useEffect(() => {
@@ -238,6 +242,15 @@ function ActivityReport() {
   ])
 
   const ReportComponent = useMemo(() => {
+    if (isBQEditorDataset) {
+      return (
+        <ReportVesselsPlaceholder animate={false} className="print-hidden">
+          <div className={cx(styles.cover, styles.center, styles.top)}>
+            Reports for BQ editor datasets are not supported yet.
+          </div>
+        </ReportVesselsPlaceholder>
+      )
+    }
     if (workspaceStatus === AsyncReducerStatus.Loading) {
       return <ReportVesselsPlaceholder className="print-hidden" />
     }
@@ -255,7 +268,7 @@ function ActivityReport() {
       return ReportVesselError
     }
 
-    if (timeComparisonValues) {
+    if (reportActivityGraph !== 'evolution') {
       return (
         <ReportVesselsPlaceholder animate={false} className="print-hidden">
           <div className={cx(styles.cover, styles.center, styles.top)}>
@@ -302,6 +315,7 @@ function ActivityReport() {
         </ReportVesselsPlaceholder>
       )
     }
+
     if (reportLoaded) {
       return hasVessels ? (
         <Fragment>
@@ -311,7 +325,7 @@ function ActivityReport() {
                 ? undefined
                 : reportCategory === ReportCategory.Detections
                   ? t('common.matchedVessels')
-                  : t('common.vessel_other')
+                  : t('common.vessels')
             }
             activityUnit={
               isVesselGroupReportLocation
@@ -344,12 +358,13 @@ function ActivityReport() {
 
     return <ReportVesselsPlaceholder animate={false} className="print-hidden" />
   }, [
+    isBQEditorDataset,
     workspaceStatus,
     timerangeTooLong,
     reportError,
     reportLoading,
     reportDataviews?.length,
-    timeComparisonValues,
+    reportActivityGraph,
     reportOutdated,
     reportStatus,
     hasAuthError,

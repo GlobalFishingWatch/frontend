@@ -23,7 +23,9 @@ type VesselEventsLegendProps = {
   dataviews: UrlDataviewInstance[]
 }
 
-function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.ReactElement<any> | null {
+function VesselEventsLegend({
+  dataviews,
+}: VesselEventsLegendProps): React.ReactElement<any> | null {
   const { t } = useTranslation()
   const currentVisibleEvents = useSelector(selectVisibleEvents)
   const { setVesselEventVisibility } = useVisibleVesselEvents()
@@ -52,8 +54,8 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
         currentVisibleEvents === 'all'
           ? true
           : currentVisibleEvents === 'none'
-          ? false
-          : currentVisibleEvents.includes(eventType)
+            ? false
+            : currentVisibleEvents.includes(eventType)
       return {
         datasetId: dataset.id,
         active,
@@ -102,6 +104,7 @@ function VesselEventsLegend({ dataviews }: VesselEventsLegendProps): React.React
                       '--encounterIcon': `url(${PATH_BASENAME}/images/event-encounter.svg)`,
                       '--loiteringIcon': `url(${PATH_BASENAME}/images/event-loitering.svg)`,
                       '--portIcon': `url(${PATH_BASENAME}/images/event-port.svg)`,
+                      '--gapIcon': `url(${PATH_BASENAME}/images/event-gap.svg)`,
                     } as React.CSSProperties
                   }
                 />

@@ -17,7 +17,7 @@ export enum DataviewType {
   BasemapLabels = 'BASEMAP_LABELS',
   CartoPolygons = 'CARTO_POLYGONS',
   Context = 'CONTEXT',
-  Currents = 'CURRENTS',
+  FourwingsVector = 'FOURWINGS_VECTORS',
   FourwingsTileCluster = 'FOURWINGS_TILE_CLUSTER',
   GL = 'GL',
   Graticules = 'GRATICULES',
@@ -80,6 +80,8 @@ export interface DataviewConfig<Type = DataviewType> {
   filter?: string
   /** Record with id filter as key and filters as values */
   filters?: DataviewDatasetFilter
+  /** Used to filter the positions by id */
+  filterIds?: string[]
   'vessel-groups'?: string[]
   filterOperators?: Record<string, FilterOperator>
   /** Min value for filters in environmental layers to perform frontend data filtering */
@@ -104,6 +106,9 @@ export interface DataviewConfig<Type = DataviewType> {
     min: number
     mean: number
   }
+
+  /** Used to store the property for aggregating user datasets values in report */
+  aggregateByProperty?: string
 
   /** Used to store the vessel name */
   name?: string
@@ -242,7 +247,7 @@ export interface Dataview<Type = any, Category = DataviewCategory> {
   datasetsConfig?: DataviewDatasetConfig[]
 }
 
-export type DataviewInstanceOrigin = 'workspace' | 'vesselProfile' | 'report'
+export type DataviewInstanceOrigin = 'workspace' | 'vesselProfile' | 'report' | 'comparison'
 export interface DataviewInstance<Type = any>
   extends Partial<Omit<Dataview<Type>, 'id' | 'config'>> {
   id: string

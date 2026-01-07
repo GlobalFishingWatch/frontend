@@ -1,7 +1,7 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { center } from '@turf/center'
+import { centerOfMass } from '@turf/center-of-mass'
 import type { Feature, Point } from 'geojson'
 
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
@@ -99,7 +99,7 @@ const TrackCorrectionNew = () => {
           endTime: getUTCDateTime(trackCorrectionTimerange.end).toMillis(),
         })
 
-        const middlePoint = center({
+        const middlePoint = centerOfMass({
           type: 'FeatureCollection',
           features: trackCorrectionSegments.flatMap((segment) =>
             segment.length
@@ -116,6 +116,10 @@ const TrackCorrectionNew = () => {
               : []
           ),
         })
+
+        if (middlePoint.geometry.coordinates[0] > 180) {
+          middlePoint.geometry.coordinates[0] -= 360
+        }
 
         const issueId = Date.now().toString()
         const customVesselProperties = getCustomVesselPropertiesByWorkspaceId(

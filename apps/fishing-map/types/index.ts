@@ -2,6 +2,8 @@ import type { EventType } from '@globalfishingwatch/api-types'
 import type { BaseUrlWorkspace, UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type {
   DrawFeatureType,
+  FOOTPRINT_HIGH_RES_ID,
+  FOOTPRINT_ID,
   FourwingsVisualizationMode,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
@@ -46,6 +48,7 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   daysFromLatest?: number // use latest day as endAt minus the number of days set here
   detectionsVisualizationMode?: FourwingsVisualizationMode
   environmentVisualizationMode?: typeof HEATMAP_ID | typeof HEATMAP_LOW_RES_ID
+  vesselGroupsVisualizationMode?: typeof FOOTPRINT_ID | typeof FOOTPRINT_HIGH_RES_ID
   mapAnnotations?: MapAnnotation[]
   mapAnnotationsVisible?: boolean
   mapRulers?: RulerData[]
@@ -55,9 +58,11 @@ export interface WorkspaceState extends BaseUrlWorkspace {
   sidebarOpen?: boolean
   timebarGraph?: TimebarGraphs
   timebarSelectedEnvId?: string
+  timebarSelectedUserId?: string
   timebarSelectedVGId?: string
   timebarVisualisation?: TimebarVisualisations
   vesselsColorBy?: VesselsColorByProperty
+  vesselsMaxTimeGapHours?: number
   visibleEvents?: VisibleEvents
 }
 
@@ -107,6 +112,7 @@ export enum TimebarVisualisations {
   Vessel = 'vessel',
   VesselGroup = 'vesselGroup',
   Environment = 'environment',
+  Points = 'points',
 }
 
 type VisibleEvents = EventType[] | 'all' | 'none'

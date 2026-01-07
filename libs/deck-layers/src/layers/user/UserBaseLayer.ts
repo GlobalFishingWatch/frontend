@@ -1,9 +1,10 @@
-import type { DefaultProps, LayerContext, LayerExtension, PickingInfo } from '@deck.gl/core'
+import type { DefaultProps, LayerContext, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { DataFilterExtensionProps } from '@deck.gl/extensions'
 import { ClipExtension, DataFilterExtension } from '@deck.gl/extensions'
 import type { GeoBoundingBox, TileLayerProps } from '@deck.gl/geo-layers'
 import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type { GeoJsonProperties } from 'geojson'
 import type { Entries } from 'type-fest'
 
 import { isFeatureInFilter, isFeatureInFilters } from '@globalfishingwatch/deck-loaders'
@@ -20,6 +21,7 @@ import {
 
 import type {
   BaseUserLayerProps,
+  FilterExtensionProps,
   UserLayerFeature,
   UserLayerPickingInfo,
   UserLayerPickingObject,
@@ -27,14 +29,13 @@ import type {
   UserPolygonsLayerProps,
   UserTrackLayerProps,
 } from './user.types'
-import { getPropertiesList } from './user.utils'
+import { getFilterExtensionSize, getPropertiesList } from './user.utils'
 
 type _UserBaseLayerProps =
   | (TileLayerProps & UserPointsLayerProps)
   | UserTrackLayerProps
   | UserPointsLayerProps
 
-export const POINT_SIZES_DEFAULT_RANGE = [3, 15]
 const defaultProps: DefaultProps<_UserBaseLayerProps> = {
   pickable: true,
   maxRequests: 100,
@@ -51,6 +52,7 @@ export type UserBaseLayerState = {
 }
 
 type UserBaseLayerProps = DeckLayerProps<BaseUserLayerProps>
+
 export abstract class UserBaseLayer<
   PropsT extends UserBaseLayerProps,
 > extends CompositeLayer<PropsT> {
@@ -105,7 +107,7 @@ export abstract class UserBaseLayer<
 
     if (hasSublayerFilters(sublayers?.[0])) {
       if (
-        !supportDataFilterExtension(sublayers?.[0]) &&
+        !supportDataFilterExtension(sublayers?.[0], this._getTimeFilterProps()) &&
         !isFeatureInFilters(object, filters, sublayers?.[0].filterOperators)
       ) {
         return { ...info, object: undefined }
@@ -161,6 +163,9 @@ export abstract class UserBaseLayer<
     const { startTimeProperty, endTimeProperty, layers } = this.props
     const valueProperties = layers.flatMap((l) => l.valueProperties || [])
     const filters = layers.flatMap((l) => l.sublayers?.flatMap((s) => Object.keys(s.filters || {})))
+    const aggregatedProperty = layers.flatMap((l) =>
+      l.sublayers?.flatMap((s) => s.aggregateByProperty || [])
+    )
     const stepsPickValue = (this.props as UserPolygonsLayerProps)?.stepsPickValue
     const circleRadiusProperty = (this.props as UserPointsLayerProps)?.circleRadiusProperty
     const tilesUrlObject = new URL(tilesUrl)
@@ -172,6 +177,7 @@ export abstract class UserBaseLayer<
       stepsPickValue || '',
       circleRadiusProperty || '',
       ...filters,
+      ...aggregatedProperty,
     ].filter((p) => !!p)
     const uniqProperties = Array.from(new Set([...properties]))
     if (uniqProperties.length) {
@@ -183,22 +189,22 @@ export abstract class UserBaseLayer<
     return decodeURI(tilesUrlObject.toString())
   }
 
-  _getTimeFilterProps() {
+  _getTimeFilterProps(): FilterExtensionProps {
     const { startTime, endTime, startTimeProperty, endTimeProperty, timeFilterType } = this.props
     if (!timeFilterType || (!startTime && !endTime && !startTimeProperty && !endTimeProperty)) {
-      return {}
+      return {} as ReturnType<typeof this._getTimeFilterProps>
     }
     // https://deck.gl/docs/api-reference/extensions/data-filter-extension#limitations
     // When using very large filter values, most commonly Epoch timestamps, 32-bit float representation could lead to an error margin of >1 minute.
     const offsetPrecision = 1000 * 60 * 30 // 30 minutes
-    const startMatchRange = [0, endTime! - offsetPrecision]
-    const endMatchRange = [startTime!, INFINITY_TIMERANGE_LIMIT]
+    const startMatchRange = [0, endTime! - offsetPrecision] as [number, number]
+    const endMatchRange = [startTime!, INFINITY_TIMERANGE_LIMIT] as [number, number]
     if (timeFilterType === 'date') {
       if (startTimeProperty) {
         return {
           getFilterValue: (d: UserLayerFeature) =>
             parseInt(d.properties[startTimeProperty as string]),
-          filterRange: [startTime, endTime],
+          filterRange: [startTime!, endTime!],
           extensions: [new DataFilterExtension({ filterSize: 1 })],
         }
       }
@@ -232,17 +238,10 @@ export abstract class UserBaseLayer<
         }
       }
     }
-    return {}
+    return {} as ReturnType<typeof this._getTimeFilterProps>
   }
 
-  _getSublayerFilterExtensionProps(
-    sublayer: ContextSubLayerConfig,
-    { clip = true } = {} as { clip?: boolean }
-  ): {
-    extensions: LayerExtension<unknown>[]
-    filterRange: DataFilterExtensionProps['filterRange']
-    getFilterValue: DataFilterExtensionProps['getFilterValue']
-  } {
+  _getSublayerFilterExtensionProps(sublayer: ContextSubLayerConfig): FilterExtensionProps {
     if (hasSublayerFilters(sublayer) && supportDataFilterExtension(sublayer)) {
       const filterEntries = Object.entries(getValidSublayerFilters(sublayer)) as Entries<
         typeof sublayer.filters
@@ -251,7 +250,6 @@ export abstract class UserBaseLayer<
 
       return {
         extensions: [
-          ...(clip ? [new ClipExtension()] : []),
           new DataFilterExtension({
             filterSize: filterEntries.length as DataFilterExtension['opts']['filterSize'],
           }),
@@ -268,5 +266,119 @@ export abstract class UserBaseLayer<
       }
     }
     return {} as ReturnType<typeof this._getSublayerFilterExtensionProps>
+  }
+
+  _combineFilterExtensionProps(
+    timeFilterExtensionProps: ReturnType<typeof this._getTimeFilterProps>,
+    filterExtensionProps: ReturnType<typeof this._getSublayerFilterExtensionProps>
+  ): FilterExtensionProps {
+    const hasFilters = Object.keys(filterExtensionProps).length > 0
+    const hasTimeFilter = Object.keys(timeFilterExtensionProps).length > 0
+    const timeFilterSize = getFilterExtensionSize(timeFilterExtensionProps)
+    const sublayerFilterSize = getFilterExtensionSize(filterExtensionProps)
+
+    const combinedFilterSize = Math.min(timeFilterSize + sublayerFilterSize, 4) as 1 | 2 | 3 | 4
+
+    let combinedGetFilterValue: DataFilterExtensionProps['getFilterValue'] | undefined = undefined
+    if (hasFilters || hasTimeFilter) {
+      combinedGetFilterValue = (d: GeoJsonProperties) => {
+        const timeFilterValue = hasTimeFilter
+          ? (
+              timeFilterExtensionProps.getFilterValue as (d: GeoJsonProperties) => number | number[]
+            )(d)
+          : null
+        const sublayerFilterValue = hasFilters
+          ? (filterExtensionProps.getFilterValue as (d: GeoJsonProperties) => number | number[])(d)
+          : null
+
+        const values: number[] = []
+        if (hasTimeFilter) {
+          if (Array.isArray(timeFilterValue)) {
+            values.push(...timeFilterValue)
+          } else if (timeFilterValue !== null && timeFilterValue !== undefined) {
+            values.push(timeFilterValue)
+          }
+        }
+        if (hasFilters) {
+          if (Array.isArray(sublayerFilterValue)) {
+            values.push(...sublayerFilterValue)
+          } else if (sublayerFilterValue !== null && sublayerFilterValue !== undefined) {
+            values.push(sublayerFilterValue)
+          }
+        }
+
+        return combinedFilterSize === 1 ? values[0] : values
+      }
+    }
+
+    let combinedFilterRange: DataFilterExtensionProps['filterRange'] = undefined
+    if (hasFilters || hasTimeFilter) {
+      const ranges: [number, number][] = []
+      if (hasTimeFilter && timeFilterExtensionProps.filterRange) {
+        const timeRange = timeFilterExtensionProps.filterRange
+        if (Array.isArray(timeRange[0])) {
+          ranges.push(...(timeRange as [number, number][]))
+        } else {
+          ranges.push(timeRange as [number, number])
+        }
+      }
+      if (hasFilters && filterExtensionProps.filterRange) {
+        const sublayerRange = filterExtensionProps.filterRange
+        if (Array.isArray(sublayerRange[0])) {
+          ranges.push(...(sublayerRange as [number, number][]))
+        } else {
+          ranges.push(sublayerRange as [number, number])
+        }
+      }
+      combinedFilterRange = combinedFilterSize === 1 ? ranges[0] : ranges
+    }
+
+    const combinedExtensions = [
+      ...(combinedFilterSize > 0
+        ? [new DataFilterExtension({ filterSize: combinedFilterSize })]
+        : []),
+    ]
+
+    return {
+      extensions: combinedExtensions,
+      filterRange: combinedFilterRange,
+      getFilterValue: combinedGetFilterValue,
+    }
+  }
+
+  _getExtensionFilterProps(
+    sublayer: ContextSubLayerConfig,
+    { clip = true } = {} as { clip?: boolean }
+  ): {
+    extensionFilterProps: FilterExtensionProps
+    updateTrigger: { getFilterValue?: (number | string)[] }
+  } {
+    const timefilterProps = this._getTimeFilterProps()
+    const filtersHash = Object.values(sublayer.filters || {})
+      .flatMap((value) => value || [])
+      .join('')
+    const sublayerFilterExtensionProps = this._getSublayerFilterExtensionProps(sublayer)
+    const hasFilters = Object.keys(sublayerFilterExtensionProps).length > 0
+    const hasTimeFilter = Object.keys(timefilterProps).length > 0
+    const combinedExtensions = this._combineFilterExtensionProps(
+      timefilterProps,
+      sublayerFilterExtensionProps
+    )
+
+    if (clip) {
+      combinedExtensions.extensions.push(new ClipExtension())
+    }
+
+    const updateTrigger =
+      hasFilters || hasTimeFilter
+        ? {
+            getFilterValue: [
+              ...(hasFilters ? [filtersHash] : []),
+              ...(hasTimeFilter ? [this.props.startTime!, this.props.endTime!] : []),
+            ],
+          }
+        : {}
+
+    return { extensionFilterProps: combinedExtensions, updateTrigger }
   }
 }

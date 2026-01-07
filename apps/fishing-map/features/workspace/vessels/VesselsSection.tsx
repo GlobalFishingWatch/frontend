@@ -187,7 +187,7 @@ function VesselsSection(): React.ReactElement<any> {
           />
         )}
         <h2 className={styles.sectionTitle}>
-          {t('common.vessel_other')}
+          {t('common.vessels')}
           <span className="print-hidden">
             {dataviews.length > 1 ? ` (${dataviews.length})` : ''}
           </span>

@@ -25,8 +25,10 @@ export const getTimeAgo = (date: number | DateTime, t: TFunction) => {
   const hours = Math.floor(diff.hours)
   const minutes = Math.floor(diff.minutes)
 
-  const translateWithPlural = (keyBase: string, count: number) =>
-    t(`time.${keyBase}${count !== 1 ? '_plural' : ''}` as any, { count })
+  const translateWithPlural = (
+    keyBase: 'days' | 'hours' | 'minutes' | 'months' | 'weeks',
+    count: number
+  ) => t(`time.${keyBase}`, { count })
 
   if (days >= 30) {
     const months = Math.floor(days / 30)
@@ -57,4 +59,9 @@ export const getDateLabel = (date: number, t: TFunction) => {
   return `${DateTime.fromMillis(date, { zone: 'utc' }).toLocaleString(
     DateTime.DATETIME_FULL
   )} (${getTimeAgo(DateTime.fromMillis(date, { zone: 'utc' }), t)})`
+}
+
+export const isTimestampNumber = (value: number) => {
+  // Consider timestamps from year 2000 (946684800000) to year 3000 (32503680000000)
+  return value > 946684800000 && value < 32503680000000
 }

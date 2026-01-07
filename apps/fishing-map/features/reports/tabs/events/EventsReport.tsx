@@ -95,7 +95,7 @@ function EventsReport() {
       (datasetAreasId && datasetAreas?.status !== AsyncReducerStatus.Finished) ||
       isLoadingStats
     ) {
-      return <ReportActivityPlaceholder showHeader={false} />
+      return <ReportActivityPlaceholder showHeader={false} loading />
     }
     if (noEvents) {
       return (
@@ -132,7 +132,7 @@ function EventsReport() {
       <div className={styles.disclaimer}>
         <Icon icon="warning" type="warning" />
         {t('vesselGroup.disclaimerFeaturesNotAvailable', {
-          features: t('common.Events'),
+          features: t('common.events'),
           datasets: Array.from(datasetsWithoutRelatedEvents)
             .map((d) => getDatasetLabel(d))
             .join(', '),

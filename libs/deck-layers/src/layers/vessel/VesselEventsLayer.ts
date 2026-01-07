@@ -1,178 +1,119 @@
-import type { AccessorFunction, ChangeFlags, DefaultProps, Position } from '@deck.gl/core'
-import type { ScatterplotLayerProps } from '@deck.gl/layers'
-import { ScatterplotLayer } from '@deck.gl/layers'
+import { type Color, CompositeLayer } from '@deck.gl/core'
+import { DataFilterExtension } from '@deck.gl/extensions'
+import { PathLayer } from '@deck.gl/layers'
 
-import type { EventTypes } from '@globalfishingwatch/api-types'
+import { EventTypes } from '@globalfishingwatch/api-types'
+import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '@globalfishingwatch/deck-layers'
+import type { VesselDeckLayersEventData } from '@globalfishingwatch/deck-loaders'
+import { EVENTS_COLORS } from '@globalfishingwatch/deck-loaders'
 
-import { DEFAULT_HIGHLIGHT_COLOR_VEC, EVENT_SHAPES, SHAPES_ORDINALS } from './vessel.config'
+import { DEFAULT_FISHING_EVENT_COLOR, SHAPES_ORDINALS } from './vessel.config'
+import type { _VesselEventIconLayerProps, VesselEventIconLayerProps } from './VesselEventIconLayer'
+import { VesselEventIconLayer } from './VesselEventIconLayer'
 
-export type _VesselEventsLayerProps<DataT = any> = {
+export type _VesselEventsLayerProps = Omit<
+  _VesselEventIconLayerProps<VesselDeckLayersEventData[]>,
+  'data'
+> & {
+  id: string
+  data: string
   type: EventTypes
-  filterRange?: number[]
-  visibleEvents?: EventTypes[]
-  highlightEventIds?: string[]
-  highlightStartTime?: number
-  highlightEndTime?: number
-  getShape?: AccessorFunction<DataT, number>
-  getStart?: AccessorFunction<DataT, number>
-  getEnd?: AccessorFunction<DataT, number>
-  getPosition?: AccessorFunction<DataT, Position> | Position
-  getFilterValue?: AccessorFunction<DataT, number>
-  getPickingInfo?: AccessorFunction<DataT, string>
-  onDataChange?: (dataChange: ChangeFlags['dataChanged']) => void
+  singleTrack: boolean
+  startTime: number
+  endTime: number
+  highlightEventIds: string[]
+  highlightStartTime: number
+  highlightEndTime: number
+  color: Color
 }
 
-export type VesselEventsLayerProps<DataT = any> = _VesselEventsLayerProps<DataT> &
-  ScatterplotLayerProps<DataT>
-
-const defaultProps: DefaultProps<VesselEventsLayerProps> = {
-  filled: { type: 'accessor', value: true },
-  opacity: { type: 'accessor', value: 0.8 },
-  stroked: { type: 'accessor', value: false },
-  filterRange: { type: 'accessor', value: [] },
-  radiusScale: { type: 'accessor', value: 1 },
-  radiusMinPixels: { type: 'accessor', value: 2 },
-  radiusMaxPixels: { type: 'accessor', value: 10 },
-  lineWidthMinPixels: { type: 'accessor', value: 1 },
-  onDataLoad: { type: 'function', value: () => {} },
-  onDataChange: { type: 'function', value: () => {} },
-  getShape: {
-    type: 'accessor',
-    value: (d) => EVENT_SHAPES[d.type as EventTypes] ?? EVENT_SHAPES.fishing,
-  },
-  getStart: { type: 'accessor', value: (d) => d.start },
-  getEnd: { type: 'accessor', value: (d) => d.end },
-  getFillColor: { type: 'accessor', value: (d) => [255, 255, 255] },
-  getPosition: { type: 'accessor', value: (d) => d.coordinates },
-  getPickingInfo: { type: 'accessor', value: ({ info }) => info },
-  visibleEvents: { type: 'accessor', value: [] },
-}
-
-const uniformBlock = `
-  uniform eventsUniforms {
-    uniform float highlightStartTime;
-    uniform float highlightEndTime;
-  } events;
-`
-
-const eventsLayerUniforms = {
-  name: 'events',
-  vs: uniformBlock,
-  fs: uniformBlock,
-  uniformTypes: {
-    highlightStartTime: 'f32',
-    highlightEndTime: 'f32',
-  },
-}
-
-export class VesselEventsLayer<
-  DataT = any,
-  ExtraProps = Record<string, unknown>,
-> extends ScatterplotLayer<DataT, VesselEventsLayerProps & ExtraProps> {
+export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
   static layerName = 'VesselEventsLayer'
-  static defaultProps = defaultProps
 
-  initializeState() {
-    super.initializeState()
-    const attributeManager = this.getAttributeManager()
-    if (attributeManager) {
-      attributeManager.addInstanced({
-        instanceShapes: {
-          size: 1,
-          accessor: 'getShape',
+  renderLayers() {
+    const { id, type, singleTrack, highlightEventIds, color, startTime, endTime } = this.props
+
+    const baseLayerProps: VesselEventIconLayerProps = {
+      ...this.props,
+      id: `${id}-points`,
+      data: this.props.data,
+      name: this.props.name,
+      vesselId: this.props.id.replace('vessel-', ''),
+      getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
+      getFillColor: (d: any): Color => {
+        if (highlightEventIds?.includes(d.id)) return DEFAULT_FISHING_EVENT_COLOR
+        if (d.type === EventTypes.Fishing) {
+          return singleTrack ? DEFAULT_FISHING_EVENT_COLOR : color
+        }
+        return hexToDeckColor(EVENTS_COLORS[d.type as EventTypes])
+      },
+      radiusUnits: 'pixels',
+      getRadius: (d: any) => {
+        return d.type === EventTypes.Fishing ? 3 : 6
+      },
+    }
+
+    const chunkLayers: (VesselEventIconLayer | PathLayer)[] = [
+      new VesselEventIconLayer({
+        ...baseLayerProps,
+        pickable: true,
+        getFilterValue: (d: VesselDeckLayersEventData) => [d.start, d.end],
+        filterRange: [
+          [Number.MIN_SAFE_INTEGER, endTime] as any,
+          [startTime, Number.MAX_SAFE_INTEGER],
+        ],
+        extensions: [new DataFilterExtension({ filterSize: 2 })],
+        updateTriggers: {
+          getFillColor: [color, highlightEventIds],
+          getFilterValue: [endTime, startTime],
         },
-        start: {
-          size: 1,
-          accessor: 'getStart',
-          shaderAttributes: {
-            instanceStart: {},
+      }),
+    ]
+    if (type === EventTypes.Gap) {
+      chunkLayers.push(
+        new VesselEventIconLayer({
+          ...baseLayerProps,
+          id: `${id}-gap`,
+          pickable: false,
+          getShape: SHAPES_ORDINALS.plus,
+          getFilterCategory: (d: VesselDeckLayersEventData): string => {
+            return d.id ?? ''
           },
-        },
-        end: {
-          size: 1,
-          accessor: 'getEnd',
-          shaderAttributes: {
-            instanceEnd: {},
+          filterCategories: highlightEventIds,
+          extensions: [
+            new DataFilterExtension({
+              categorySize: 1,
+            }),
+          ],
+          getPosition: (d: VesselDeckLayersEventData) => {
+            return d.gaps ? [d.gaps.lonMax, d.gaps.latMax] : (undefined as any)
           },
-        },
-      })
+          updateTriggers: {
+            getFillColor: [color, highlightEventIds],
+            getFilterCategory: [highlightEventIds],
+          },
+        })
+      )
+      chunkLayers.push(
+        new PathLayer({
+          id: `${id}-line`,
+          data: baseLayerProps.data,
+          getColor: DEFAULT_FISHING_EVENT_COLOR,
+          getPath: (d: VesselDeckLayersEventData) =>
+            d.gaps ? [d.coordinates, [d.gaps.lonMax, d.gaps.latMax]] : [],
+          getWidth: 2,
+          widthUnits: 'pixels',
+          pickable: false,
+          getFilterCategory: (d: VesselDeckLayersEventData) => d.id,
+          filterCategories: highlightEventIds,
+          extensions: [
+            new DataFilterExtension({
+              categorySize: 1,
+            }),
+          ],
+        })
+      )
     }
-  }
-
-  getShaders() {
-    const shaders = super.getShaders()
-    shaders.modules = [...(shaders.modules || []), eventsLayerUniforms]
-    shaders.inject = {
-      'vs:#decl': /*glsl*/ `
-        in float instanceShapes;
-        in float instanceId;
-        in float instanceStart;
-        in float instanceEnd;
-
-        out float vStart;
-        out float vEnd;
-        out float vShape;
-      `,
-      'vs:#main-end': /*glsl*/ `
-        vShape = instanceShapes;
-        vStart = instanceStart;
-        vEnd = instanceEnd;
-        if(vStart < events.highlightEndTime && vEnd > events.highlightStartTime) {
-          gl_Position.z = 1.0;
-        }
-      `,
-      'fs:#decl': /*glsl*/ `
-        in float vShape;
-        in float vStart;
-        in float vEnd;
-        const int SHAPE_SQUARE = ${SHAPES_ORDINALS.square};
-        const int SHAPE_DIAMOND = ${SHAPES_ORDINALS.diamond};
-        const int SHAPE_DIAMOND_STROKE = ${SHAPES_ORDINALS.diamondStroke};
-      `,
-      'fs:DECKGL_FILTER_COLOR': /*glsl*/ `
-        vec2 uv = abs(geometry.uv);
-        int shape = int(vShape);
-        if(vStart < events.highlightEndTime && vEnd > events.highlightStartTime) {
-          color = vec4(${DEFAULT_HIGHLIGHT_COLOR_VEC.join(',')});
-        }
-        if (shape == SHAPE_SQUARE) {
-          if (uv.x > 0.7 || uv.y > 0.7) {
-            color = vec4(0,0,0,0);
-          };
-        } else if (shape == SHAPE_DIAMOND) {
-          if (uv.x + uv.y > 1.0) {
-            color = vec4(0,0,0,0);
-          };
-        } else if (shape == SHAPE_DIAMOND_STROKE) {
-          if (uv.x + uv.y > 1.0 || uv.x + uv.y < 0.7) {
-            color = vec4(0,0,0,0);
-          }
-        }
-      `,
-    }
-    return shaders
-  }
-
-  // updateState(params: UpdateParameters<any>) {
-  //   super.updateState(params)
-  //   const { dataChanged } = params.changeFlags
-  //   if (dataChanged !== false && this.props.onDataChange) {
-  //     this.props.onDataChange(dataChanged)
-  //   }
-  // }
-
-  draw(params: any) {
-    const { highlightStartTime, highlightEndTime } = this.props
-
-    if (this.state.model) {
-      this.state.model.shaderInputs.setProps({
-        events: {
-          highlightStartTime: highlightStartTime ? highlightStartTime : 0,
-          highlightEndTime: highlightEndTime ? highlightEndTime : 0,
-        },
-      })
-    }
-
-    super.draw(params)
+    return chunkLayers
   }
 }

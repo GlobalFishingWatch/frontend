@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { IconButton, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { GLOBAL_VESSELS_DATASET_ID } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -129,7 +129,7 @@ export default function ReportVesselsTable({
           </div>
           <div className={styles.header}>{t('vessel.mmsi')}</div>
           <div className={styles.header}>
-            {t('layer.flagState_one')}
+            {t('layer.flagState')}
             {allowSorting && (
               <IconButton
                 size="tiny"
@@ -155,12 +155,12 @@ export default function ReportVesselsTable({
           {activityUnit && (
             <div className={cx(styles.header, styles.right)}>
               {activityUnit === 'hour'
-                ? t('common.hour_other')
+                ? t('common.hours')
                 : activityUnit === 'detection'
-                  ? t('common.detection_other')
+                  ? t('common.detections')
                   : activityUnit === 'coverage'
                     ? t('vessel.insights.coverage')
-                    : t('common.event_other')}
+                    : t('common.events')}
             </div>
           )}
           {vessels?.map((vessel, i) => {
@@ -226,7 +226,13 @@ export default function ReportVesselsTable({
                   )}
                 </div>
                 <div className={cx({ [styles.border]: !isLastRow })}>
-                  <span>{ssvid || EMPTY_FIELD_PLACEHOLDER}</span>
+                  {ssvid?.length > 16 ? (
+                    <Tooltip content={ssvid} className={styles.tooltip}>
+                      <span>{ssvid.slice(0, 16) + '...'}</span>
+                    </Tooltip>
+                  ) : (
+                    <span>{ssvid || EMPTY_FIELD_PLACEHOLDER}</span>
+                  )}
                 </div>
                 <div
                   role="button"

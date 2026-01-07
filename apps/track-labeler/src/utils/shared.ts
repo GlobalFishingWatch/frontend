@@ -1,4 +1,5 @@
 import type { BBox } from 'geojson'
+import { DateTime } from 'luxon'
 
 import type { TrackInterface } from '../features/vessels/vessels.slice'
 
@@ -11,6 +12,14 @@ export const isFiniteBbox = (bbox: BBox): boolean => {
   return bbox.length === bbox.filter((coord) => Number.isFinite(coord)).length
 }
 
+export const formatedDate = (timestamp: number | null | undefined) => {
+  if (timestamp) {
+    const date = DateTime.fromMillis(timestamp, { zone: 'UTC' })
+    return [date.toLocaleString(DateTime.DATETIME_MED), 'UTC'].join(' ')
+  }
+
+  return ''
+}
 export const findPreviousTimestamp = (timestamps: number[], timestamp: number): number => {
   const index = timestamps.indexOf(timestamp)
   if (index === 0 || index === timestamps.length - 1) {

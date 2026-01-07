@@ -18,6 +18,7 @@ import {
   getReportVesselGroupVisibleDataviews,
   isVesselGroupActivityDataview,
 } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
 import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectCurrentVesselEvent } from 'features/vessel/selectors/vessel.selectors'
@@ -63,6 +64,7 @@ export const selectHasDeprecatedDataviewInstances = createSelector(
 export const selectDataviewInstancesResolvedVisible = createSelector(
   [
     selectHasDeprecatedDataviewInstances,
+    selectReportComparisonDataviewIds,
     selectDataviewInstancesResolved,
     selectIsAnyReportLocation,
     selectReportCategory,
@@ -76,6 +78,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
   ],
   (
     hasDeprecatedDataviewInstances,
+    reportComparisonDataviewIds,
     dataviews = [],
     isAnyReportLocation,
     reportCategory,
@@ -125,6 +128,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
         })
       }
       return reportDataviews.filter((dataview) => {
+        if (reportComparisonDataviewIds?.compare === dataview.id) return true
         if (
           dataview.category === DataviewCategory.Activity ||
           dataview.category === DataviewCategory.Detections
@@ -179,7 +183,6 @@ const selectDataviewInstancesByType = (type: DataviewType) => {
 }
 
 export const selectTrackDataviews = selectDataviewInstancesByType(DataviewType.Track)
-
 export const selectTimebarTrackDataviews = createSelector([selectTrackDataviews], (dataviews) => {
   return dataviews?.filter(
     (d) => d.config?.visible && !getIsEncounteredVesselDataviewInstanceId(d.id)
@@ -238,5 +241,20 @@ export const selectActiveTrackDataviews = createDeepEqualSelector(
       }
       return config?.visible
     })
+  }
+)
+
+export const selectVectorDataviews = selectDataviewInstancesByType(DataviewType.FourwingsVector)
+export const selectActiveVectorDataviews = createDeepEqualSelector(
+  [selectVectorDataviews],
+  (dataviews) => {
+    return dataviews?.filter((dv) => dv.config?.visible)
+  }
+)
+
+export const selectHasVectorDataviews = createSelector(
+  [selectActiveVectorDataviews],
+  (vectorDataviews) => {
+    return vectorDataviews?.length > 0
   }
 )

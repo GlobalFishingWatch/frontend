@@ -62,9 +62,7 @@ function ContextAreaSection(): React.ReactElement<any> {
   return (
     <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
       <div className={styles.header}>
-        <h2 className={cx('print-hidden', styles.sectionTitle)}>
-          {t('common.context_area_other')}
-        </h2>
+        <h2 className={cx('print-hidden', styles.sectionTitle)}>{t('common.context_areas')}</h2>
         {!readOnly && (
           <IconButton
             icon="plus"

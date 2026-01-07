@@ -24,6 +24,7 @@ import {
   selectBivariateDataviews,
   selectDetectionsVisualizationMode,
   selectEnvironmentVisualizationMode,
+  selectVesselGroupsVisualizationMode,
 } from 'features/app/selectors/app.selectors'
 import { selectTimebarGraph } from 'features/app/selectors/app.timebar.selectors'
 import {
@@ -48,9 +49,11 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
+  selectIsAnyReportLocation,
   selectIsIndexLocation,
   selectIsUserLocation,
   selectIsWorkspaceLocation,
+  selectVesselsMaxTimeGapHours,
 } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -134,12 +137,15 @@ export const useGlobalConfigConnect = () => {
   const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
   const environmentVisualizationMode = useSelector(selectEnvironmentVisualizationMode)
+  const vesselGroupsVisualizationMode = useSelector(selectVesselGroupsVisualizationMode)
   const visibleEvents = useSelector(selectWorkspaceVisibleEventsArray)
   const vesselsTimebarGraph = useSelector(selectTimebarGraph)
   const clickedFeatures = useSelector(selectClickedEvent)
   const trackGraphExtent = useTimebarTracksGraphExtent()
   const hoverFeatures = useMapHoverInteraction()?.features
-  const debug = useSelector(selectDebugOptions)?.debug
+  const debugOptions = useSelector(selectDebugOptions)
+  const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
+  const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
 
   const highlightedTime = useMemo(() => {
     if (
@@ -180,22 +186,27 @@ export const useGlobalConfigConnect = () => {
 
   return useMemo(() => {
     let globalConfig: ResolverGlobalConfig = {
-      zoom: viewState.zoom,
-      start,
-      end,
-      debug,
-      token: GFWAPI.token,
-      bivariateDataviews,
       activityVisualizationMode,
+      bivariateDataviews,
+      debugTiles: debugOptions?.debugTiles,
       detectionsVisualizationMode,
+      end,
       environmentVisualizationMode,
-      highlightEventIds,
-      highlightedTime,
-      visibleEvents,
-      vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
       highlightedFeatures,
-      trackGraphExtent,
+      highlightedTime,
+      highlightEventIds,
       onPositionsMaxPointsError,
+      start,
+      token: GFWAPI.token,
+      trackGraphExtent,
+      vesselGroupsVisualizationMode,
+      vesselsColorBy: vesselsTimebarGraph === 'none' ? 'track' : vesselsTimebarGraph,
+      vectorsTemporalAggregation: isAnyReportLocation ? false : true,
+      vesselTrackVisualizationMode: debugOptions.vesselsAsPositions ? 'positions' : 'track',
+      ...(debugOptions.vesselsAsPositions &&
+        debugOptions.vesselsMaxTimeGapHours && { vesselsMaxTimeGapHours }),
+      visibleEvents,
+      zoom: viewState.zoom,
     }
     if (showTimeComparison && timeComparisonValues) {
       globalConfig = {
@@ -208,19 +219,22 @@ export const useGlobalConfigConnect = () => {
     viewState.zoom,
     start,
     end,
-    debug,
+    debugOptions,
     bivariateDataviews,
+    isAnyReportLocation,
     activityVisualizationMode,
     detectionsVisualizationMode,
     environmentVisualizationMode,
+    highlightEventIds,
     highlightedTime,
     visibleEvents,
     vesselsTimebarGraph,
+    vesselsMaxTimeGapHours,
+    vesselGroupsVisualizationMode,
     highlightedFeatures,
-    highlightEventIds,
+    trackGraphExtent,
     onPositionsMaxPointsError,
     showTimeComparison,
-    trackGraphExtent,
     timeComparisonValues,
   ])
 }

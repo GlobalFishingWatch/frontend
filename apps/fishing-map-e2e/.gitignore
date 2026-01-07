@@ -1,2 +1,4 @@
 downloads/
 test-results.xml
+playwright-report/
+test-results/

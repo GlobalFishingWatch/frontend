@@ -21,10 +21,12 @@ const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
   }
   let label =
     legend.unit === 'hours'
-      ? tFn('common.hour_other', 'hours').toLowerCase()
+      ? tFn('common.hours', 'hours').toLowerCase()
       : legend.unit === 'detections'
         ? tFn('common.detections', 'detections').toLowerCase()
-        : legend.label
+        : legend.unit === 'm/s'
+          ? tFn('common.m/s', 'm/s').toLowerCase()
+          : legend.label
 
   if (legend.label?.includes('²')) {
     const isSquareKm = (legend.gridArea as number) > 50000
@@ -52,6 +54,7 @@ const MapLegendWrapper = ({
   const dataviewId = useActivityDataviewId(dataview)
   const deckLegend = getLegendLabelTranslated(useGetDeckLayerLegend(dataviewId))
   const isBivariate = deckLegend?.type === LegendType.Bivariate
+  const isSymbols = deckLegend?.type === LegendType.Symbols
   const legendSublayerIndex = deckLegend?.sublayers?.findIndex(
     (sublayer) => sublayer.id === dataview.id
   )
@@ -65,12 +68,13 @@ const MapLegendWrapper = ({
     return showPlaceholder ? <MapLegendPlaceholder /> : null
   }
 
-  const colors = isBivariate
-    ? (deckLegend.ranges as string[])
-    : (deckLegend.ranges[legendSublayerIndex] as string[])
+  const colors =
+    isBivariate || isSymbols
+      ? (deckLegend.ranges as string[])
+      : (deckLegend.ranges[legendSublayerIndex] as string[])
   const uiLegend: UILegend = {
     id: deckLegend.id,
-    type: isBivariate ? LegendType.Bivariate : LegendType.ColorRampDiscrete,
+    type: deckLegend?.type,
     values: deckLegend.domain as number[],
     colors,
     currentValue: isBivariate

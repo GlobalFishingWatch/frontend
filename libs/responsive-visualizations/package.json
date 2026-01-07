@@ -18,6 +18,6 @@
     "luxon": "3.x",
     "react-dom": "18.x",
     "react": "18.x",
-    "recharts": "2.x"
+    "recharts": "3.x"
   }
 }

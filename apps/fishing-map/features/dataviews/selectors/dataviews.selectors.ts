@@ -10,6 +10,7 @@ import {
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 
+import { DATASET_COMPARISON_SUFFIX } from 'data/config'
 import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_DATAVIEW_SLUGS } from 'data/workspaces'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
@@ -30,7 +31,7 @@ import {
   selectActiveEnvironmentalDataviews,
   selectActiveEventsDataviews,
   selectActiveVesselsDataviews,
-  selectOthersActiveReportDataviews,
+  selectPointsActiveReportDataviews,
   selectVGReportActivityDataviews,
   selectVGRFootprintDataview,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -116,7 +117,7 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     selectActiveEventsDataviews,
     selectVGReportActivityDataviews,
     selectIsVesselGroupReportLocation,
-    selectOthersActiveReportDataviews,
+    selectPointsActiveReportDataviews,
   ],
   (
     reportCategory,
@@ -129,22 +130,28 @@ export const selectActiveReportDataviews = createDeepEqualSelector(
     isVesselGroupReportLocation,
     othersActiveReportDataviews
   ) => {
-    if (reportCategory === ReportCategory.Activity) {
-      return isVesselGroupReportLocation ? vesselGroupDataviews : activityDataviews
+    let dataviews: UrlDataviewInstance<DataviewType>[] = []
+    switch (reportCategory) {
+      case ReportCategory.Activity:
+        dataviews = isVesselGroupReportLocation ? vesselGroupDataviews : activityDataviews
+        break
+      case ReportCategory.Detections:
+        dataviews = detectionsDataviews
+        break
+      case ReportCategory.Events:
+        dataviews = eventsDataviews
+        break
+      case ReportCategory.VesselGroup:
+        dataviews = vGRFootprintDataview ? [vGRFootprintDataview] : EMPTY_ARRAY
+        break
+      case ReportCategory.Others:
+        dataviews = othersActiveReportDataviews
+        break
+      default:
+        dataviews = environmentalDataviews
+        break
     }
-    if (reportCategory === ReportCategory.Detections) {
-      return detectionsDataviews
-    }
-    if (reportCategory === ReportCategory.Events) {
-      return eventsDataviews
-    }
-    if (reportCategory === ReportCategory.VesselGroup) {
-      return vGRFootprintDataview ? [vGRFootprintDataview] : EMPTY_ARRAY
-    }
-    if (reportCategory === ReportCategory.Others) {
-      return othersActiveReportDataviews
-    }
-    return environmentalDataviews
+    return dataviews
   }
 )
 
@@ -246,6 +253,9 @@ export const selectReportLayersVisible = createSelector(
       if (!isVisible) {
         return false
       }
+      if (dataview.id.includes(DATASET_COMPARISON_SUFFIX)) {
+        return false
+      }
       return isSupportedReportDataview(dataview)
     })
   }
@@ -258,12 +268,17 @@ export const selectEnvironmentReportLayersVisible = createSelector(
   }
 )
 
-export const selectHasReportLayersVisible = createSelector(
-  [selectReportLayersVisible],
-  (reportLayersVisible) => {
-    return reportLayersVisible && reportLayersVisible.length > 0
+export const getIsDataviewReportSupported = (
+  reportLayers: (DataviewInstance | UrlDataviewInstance)[],
+  currentDataviewId?: string
+) => {
+  if (!reportLayers) {
+    return false
   }
-)
+  return reportLayers
+    ?.filter((dataview) => isSupportedReportDataview(dataview))
+    .some((dataview) => dataview.id !== currentDataviewId)
+}
 
 export const selectActiveDataviews = createSelector(
   [

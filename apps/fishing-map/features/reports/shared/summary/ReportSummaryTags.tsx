@@ -5,7 +5,7 @@ import cx from 'classnames'
 
 import { DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import type { ColorBarOption } from '@globalfishingwatch/ui-components'
+import type { ColorBarOption, TagItem } from '@globalfishingwatch/ui-components'
 import {
   ColorBar,
   FillColorBarOptions,
@@ -15,6 +15,8 @@ import {
 } from '@globalfishingwatch/ui-components'
 
 import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
+import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
+import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
@@ -23,8 +25,11 @@ import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import DatasetFilterSource from 'features/workspace/shared/DatasetSourceField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import Filters from 'features/workspace/shared/LayerFilters'
+import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+
+import { isTimeComparisonGraph } from '../utils/reports.utils'
 
 import styles from './ReportSummaryTags.module.css'
 
@@ -39,6 +44,8 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const vesselGroupsOptions = useVesselGroupsOptions()
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const selectedReportActivityGraph = useSelector(selectReportActivityGraph)
+  const fitAreaInViewport = useFitAreaInViewport()
 
   const [filtersUIOpen, setFiltersUIOpen] = useState(false)
   const [colorOpen, setColorOpen] = useState(false)
@@ -60,12 +67,17 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
     })
   }
 
+  const onTagRemoveClick = () => {
+    fitAreaInViewport()
+  }
+
   const { filtersAllowed: schemaFiltersAllowed } = getSchemaFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
   })
   const filtersAllowed = isVesselGroupReportLocation
     ? schemaFiltersAllowed.filter((filter) => filter.id !== 'vessel-groups')
     : schemaFiltersAllowed
+
   const hasFilterSelected = filtersAllowed.some((filter) => filter.optionsSelected.length > 0)
   const hasSourceSelected = getSourcesSelectedInDataview(dataview)?.length > 0
   const colorType =
@@ -73,6 +85,9 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
     dataview.config?.type === DataviewType.HeatmapAnimated
       ? 'fill'
       : 'line'
+
+  const showSchemaFilters = filtersAllowed.some(showSchemaFilter)
+  const disabledFilters = isTimeComparisonGraph(selectedReportActivityGraph)
 
   return (
     <div className={styles.row}>
@@ -101,21 +116,31 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
             style={{ color: dataview.config?.color }}
           />
         </ExpandedContainer>
-        <ExpandedContainer
-          onClickOutside={onToggleFiltersUIOpen}
-          visible={filtersUIOpen}
-          className={styles.expandedContainer}
-          component={<Filters dataview={dataview} onConfirmCallback={onToggleFiltersUIOpen} />}
-        >
-          <IconButton
-            icon={filtersUIOpen ? 'filter-on' : 'filter-off'}
-            size="small"
-            onClick={onToggleFiltersUIOpen}
-            className={cx(styles.printHidden, styles.filterButton)}
-            tooltip={filtersUIOpen ? t('layer.filterClose') : t('layer.filterOpen')}
-            tooltipPlacement="top"
-          />
-        </ExpandedContainer>
+        {showSchemaFilters && (
+          <ExpandedContainer
+            onClickOutside={onToggleFiltersUIOpen}
+            visible={filtersUIOpen}
+            className={styles.expandedContainer}
+            component={<Filters dataview={dataview} onConfirmCallback={onToggleFiltersUIOpen} />}
+            disabled={disabledFilters}
+          >
+            <IconButton
+              icon={filtersUIOpen ? 'filter-on' : 'filter-off'}
+              size="small"
+              onClick={!disabledFilters ? onToggleFiltersUIOpen : undefined}
+              className={cx(styles.printHidden, styles.filterButton)}
+              tooltip={
+                disabledFilters
+                  ? t('layer.timeGraphFiltersDisabled')
+                  : filtersUIOpen
+                    ? t('layer.filterClose')
+                    : t('layer.filterOpen')
+              }
+              tooltipPlacement="top"
+              disabled={disabledFilters}
+            />
+          </ExpandedContainer>
+        )}
       </div>
       <Fragment>
         {(reportCategory === ReportCategory.Activity ||
@@ -136,6 +161,7 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
                   field={id}
                   label={label}
                   className={styles.tag}
+                  onRemove={onTagRemoveClick}
                 />
               ))
             ) : hasSourceSelected ? null : (
@@ -159,6 +185,7 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
                 tags={[{ id: 'all', label: t('selects.allSelected') }]}
                 color={dataview.config?.color}
                 className={styles.tagList}
+                onRemove={onTagRemoveClick}
               />
             </div>
           )

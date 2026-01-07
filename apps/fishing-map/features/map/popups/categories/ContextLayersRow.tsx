@@ -44,7 +44,9 @@ const ContextLayersRow = ({
       <span className={styles.rowText}>{parsedLabel}</span>
       {showFeaturesDetails && (
         <div className={styles.rowActions}>
-          {handleDownloadClick && <ContextLayerDownloadPopupButton onClick={handleDownloadClick} />}
+          {handleDownloadClick && (
+            <ContextLayerDownloadPopupButton feature={feature} onClick={handleDownloadClick} />
+          )}
           {handleReportClick && !isTrackCorrectionOpen && (
             <ContextLayerReportLink feature={feature} onClick={handleReportClick} />
           )}

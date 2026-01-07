@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Bar, BarChart, ResponsiveContainer } from 'recharts'
+import { Bar, BarChart } from 'recharts'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -61,16 +61,15 @@ function HistogramRangeFilter({ dataview, onSelect }: HistogramRangeFilterProps)
   return (
     <div className={styles.container}>
       <div className={styles.histogram}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart width={150} height={40} data={histogram}>
-            <Bar dataKey="data" fill="#C7D8DC" />
-          </BarChart>
-        </ResponsiveContainer>
+        <BarChart responsive width="100%" height={40} data={histogram}>
+          <Bar dataKey="data" fill="#C7D8DC" />
+        </BarChart>
       </div>
       <SliderRange
         className={styles.slider}
+        labelClassName={styles.sliderLabel}
         initialRange={[minSliderValue, maxSliderValue]}
-        label={t('layer.filterValues')}
+        label={`${t('layer.filterValues').toUpperCase()}${dataset?.unit ? ` (${dataset?.unit})` : ''}`}
         config={sliderConfig}
         onChange={onSliderChange}
         histogram={false}

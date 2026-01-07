@@ -11,6 +11,7 @@ import type {
   FourwingsPositionsPickingObject,
 } from './positions/fourwings-positions.types'
 import type {
+  FOOTPRINT_HIGH_RES_ID,
   FOOTPRINT_ID,
   HEATMAP_HIGH_RES_ID,
   HEATMAP_ID,
@@ -29,6 +30,7 @@ export type FourwingsVisualizationMode =
   | typeof HEATMAP_LOW_RES_ID
   | typeof POSITIONS_ID
   | typeof FOOTPRINT_ID
+  | typeof FOOTPRINT_HIGH_RES_ID
 
 export type GetViewportDataParams = {
   onlyValuesAndDates?: boolean
@@ -52,11 +54,22 @@ export type FourwingsDeckSublayer = {
   value?: number
   unit?: string
   filter?: string
+  // Used only blue-planet workspace to be able to show only one detection by id
+  filterIds?: string[]
   positionProperties?: string[]
   vesselGroups?: string | string[]
   vesselGroupsLength?: number
   extentStart?: number
   extentEnd?: number
+}
+
+export type FourwingsVectorDirection = 'u' | 'v'
+export type FourwingsDeckVectorSublayer = {
+  id: FourwingsSublayerId
+  color: string
+  datasets: FourwingsDatasetId[]
+  direction: FourwingsVectorDirection
+  unit?: string
 }
 
 export type BaseFourwingsLayerProps = DeckLayerProps<{

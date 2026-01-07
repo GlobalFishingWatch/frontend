@@ -53,6 +53,11 @@ const defaultProps: DefaultProps<_UserPointsLayerProps> = {
   maxZoom: DEFAULT_USER_TILES_MAX_ZOOM,
 }
 
+type GetUserPointsDataParams = {
+  skipTemporalFilter?: boolean
+  includeNonTemporalFeatures?: boolean
+}
+
 type UserPointsLayerState = UserBaseLayerState & {
   error: string
   scale?: ScalePower<number, number, never>
@@ -86,11 +91,29 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return super.isLoaded
   }
 
+  get filtersHash(): string {
+    const filters =
+      this.props.layers?.flatMap((layer) =>
+        layer.sublayers.flatMap((sublayer) => sublayer.filters || {})
+      ) || {}
+    return filters.length > 0
+      ? filters.reduce((acc, filter) => `${acc}-${getContextFiltersHash(filter)}`, '')
+      : ''
+  }
+
+  get aggregatedPropertyHash(): string {
+    const aggregatedProperty =
+      this.props.layers?.flatMap((layer) =>
+        layer.sublayers.flatMap((sublayer) => sublayer.aggregateByProperty || [])
+      ) || []
+    return aggregatedProperty.length > 0
+      ? aggregatedProperty.reduce((acc, property) => `${acc}-${property}`, '')
+      : ''
+  }
+
   get cacheHash(): string {
-    const { startTime, endTime } = this.props
-    const filters = this.props.layers?.[0]?.sublayers?.[0]?.filters || {}
-    const filtersHash = getContextFiltersHash(filters)
-    return `${startTime}-${endTime}-${filtersHash}`
+    const { id, startTime, endTime } = this.props
+    return `${id}-${startTime}-${endTime}${this.filtersHash}${this.aggregatedPropertyHash}`
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
@@ -156,7 +179,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   _getPointRadius = (d: GeoJsonProperties, { sublayer }: ContextSublayerCallbackParams) => {
     if (
       hasSublayerFilters(sublayer) &&
-      !supportDataFilterExtension(sublayer) &&
+      !supportDataFilterExtension(sublayer, this._getTimeFilterProps()) &&
       !isFeatureInFilters(d, sublayer.filters, sublayer.filterOperators)
     ) {
       return 0
@@ -174,9 +197,12 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   _getData = (): Feature<Point>[] => {
+    // Use Math.round() to match deck.gl's tile zoom selection logic
     const roundedZoom = Math.round(this.context.viewport.zoom)
+    const zoom =
+      roundedZoom > DEFAULT_USER_TILES_MAX_ZOOM ? DEFAULT_USER_TILES_MAX_ZOOM : roundedZoom
     return (this.getLayer()?.state.tileset?.tiles || []).flatMap((tile) => {
-      return tile.content && tile.zoom === roundedZoom
+      return tile.content && tile.zoom === zoom
         ? tile.content.flatMap((feature: any) => {
             return feature
               ? (transformTileCoordsToWGS84(
@@ -189,22 +215,28 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
         : []
     })
   }
-
-  getData = (): Feature<Point>[] => {
-    // TODO: support multiple sublayers
+  getData = ({
+    skipTemporalFilter = false,
+    includeNonTemporalFeatures = false,
+  }: GetUserPointsDataParams = {}): Feature<Point>[] => {
     const data = this._getData().flatMap((feature) => {
-      const values: number[] = []
-      this.props.layers?.[0]?.sublayers?.forEach((sublayer) => {
-        const matchesTimeFilter = isFeatureInRange(feature, this.props as IsFeatureInRangeParams)
-        if (matchesTimeFilter) {
-          if (hasSublayerFilters(sublayer)) {
-            // TODO: support getting values from certain property instead of just counting the points
-            values.push(
-              isFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators) ? 1 : 0
-            )
-          } else {
-            values.push(1)
-          }
+      const values = new Array(this.props.layers?.[0]?.sublayers?.length).fill(0)
+      this.props.layers?.[0]?.sublayers?.forEach((sublayer, index) => {
+        const { aggregateByProperty } = sublayer
+        const matchesTimeFilter = skipTemporalFilter
+          ? true
+          : isFeatureInRange(feature, this.props as IsFeatureInRangeParams)
+        if (includeNonTemporalFeatures || matchesTimeFilter) {
+          const matchesFilters = hasSublayerFilters(sublayer)
+            ? isFeatureInFilters(feature, sublayer.filters, sublayer.filterOperators)
+            : true
+
+          values[index] =
+            matchesFilters && matchesTimeFilter
+              ? aggregateByProperty
+                ? Number(feature.properties?.[aggregateByProperty] ?? 0)
+                : 1
+              : 0
         }
       })
       if (values.every((value) => value === 0)) {
@@ -221,8 +253,12 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return data
   }
 
-  getViewportData = () => {
-    return filteredPositionsByViewport(this.getData(), this.context.viewport)
+  getViewportData = (params: GetUserPointsDataParams = {}) => {
+    return filteredPositionsByViewport(this.getData(params), this.context.viewport)
+  }
+
+  getColor() {
+    return this.props.layers?.[0]?.sublayers?.[0]?.color
   }
 
   _onLayerError = (error: Error) => {
@@ -236,7 +272,6 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     const { layers, pickable, maxPointSize, maxZoom } = this.props
     const zoom = this._getZoomLevel()
     const highlightedFeatures = this._getHighlightedFeatures()
-    const timefilterProps = this._getTimeFilterProps()
     const renderLayers: Layer[] = layers.map((layer) => {
       return new TileLayer<TileLayerProps<UserLayerFeature>>({
         id: `${layer.id}-base-layer`,
@@ -248,7 +283,6 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
         },
         onTileError: this._onLayerError,
         onViewportLoad: this.props.onViewportLoad,
-        ...timefilterProps,
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,
@@ -256,8 +290,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
           }
           return layer.sublayers.map((sublayer) => {
             const filtersHash = getContextFiltersHash(sublayer.filters)
-            const sublayerFilterExtensionProps = this._getSublayerFilterExtensionProps(sublayer)
-            const hasFilters = Object.keys(sublayerFilterExtensionProps).length > 0
+            const { extensionFilterProps, updateTrigger } = this._getExtensionFilterProps(sublayer)
             return [
               new ScatterplotLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
                 id: `${props.id}-${sublayer.dataviewId}-points`,
@@ -268,7 +301,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
                 stroked: true,
                 radiusUnits: 'pixels',
                 getPosition: this._getPosition,
-                ...sublayerFilterExtensionProps,
+                ...extensionFilterProps,
                 getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Default, params),
                 getRadius: (d) => this._getPointRadius(d, { layer, sublayer }),
                 lineWidthUnits: 'pixels',
@@ -279,9 +312,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
                 updateTriggers: {
                   getFillColor: [sublayer.color],
                   getRadius: [filtersHash, zoom],
-                  ...(hasFilters && {
-                    getFilterValue: [filtersHash],
-                  }),
+                  ...updateTrigger,
                 },
               }),
             ]

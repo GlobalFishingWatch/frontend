@@ -37,7 +37,7 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
             query: { ...DEFAULT_WORKSPACE_LIST_VIEWPORT },
             replaceQuery: true,
           }}
-          data-test={testId}
+          data-testid={testId}
         >
           {userData ? initials : <Icon icon="user" className="print-hidden" />}
         </Link>

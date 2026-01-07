@@ -12,16 +12,19 @@ import {
   getMergedDataviewId,
   isActivityDataview,
   isAnyContextDataview,
+  isComparisonDataview,
   isDetectionsDataview,
   isEnvironmentalDataview,
-  isHeatmapCurrentsDataview,
   isHeatmapStaticDataview,
+  isHeatmapVectorsDataview,
   isTrackDataview,
   isUserHeatmapDataview,
   isUserTrackDataview,
   isVesselGroupDataview,
 } from '@globalfishingwatch/dataviews-client'
 import type {
+  FOOTPRINT_HIGH_RES_ID,
+  FOOTPRINT_ID,
   FourwingsVisualizationMode,
   HEATMAP_ID,
   HEATMAP_LOW_RES_ID,
@@ -49,9 +52,9 @@ export const getDataviewAvailableIntervals = (
 ): FourwingsInterval[] => {
   const allDatasets = dataview.datasets?.length
     ? dataview.datasets
-    : ((dataview as ResolvedFourwingsDataviewInstance)?.config?.sublayers || [])?.flatMap(
+    : (((dataview as ResolvedFourwingsDataviewInstance)?.config?.sublayers || [])?.flatMap(
         (sublayer) => sublayer.datasets || []
-      )
+      ) as Dataset[])
   const fourwingsDatasets = allDatasets?.filter(
     (dataset) => dataset.type === DatasetTypes.Fourwings
   )
@@ -112,6 +115,7 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
     colorRamp: config.colorRamp as string,
     visible: config.visible,
     filter: config.filter,
+    filterIds: config.filterIds,
     vesselGroups: config['vessel-groups'],
     vesselGroupsLength: dataview.vesselGroup?.vessels?.length,
     maxZoom,
@@ -241,6 +245,7 @@ export function getContextDataviewsResolved(
     const uniqLayers = uniqBy(layers, (l) => l.id)
 
     const mergedDataviewConfig: ResolvedContextDataviewInstance['config'] = {
+      visible: dataviews[0]?.config?.visible ?? true,
       type: dataviews[0]?.config?.type as DataviewType,
       ...(isUserTrackDataview(dataviews[0]) && {
         singleTrack: hasSingleUserTrackDataview,
@@ -258,6 +263,7 @@ export function getContextDataviewsResolved(
               thickness: dataview.config?.thickness,
               filters: dataview.config?.filters,
               filterOperators: dataview.config?.filterOperators,
+              aggregateByProperty: dataview.config?.aggregateByProperty,
             }
           }),
         }
@@ -293,6 +299,7 @@ type ResolverGlobalConfig = {
   activityVisualizationMode?: FourwingsVisualizationMode
   detectionsVisualizationMode?: FourwingsVisualizationMode
   environmentVisualizationMode?: typeof HEATMAP_ID | typeof HEATMAP_LOW_RES_ID
+  vesselGroupsVisualizationMode?: typeof FOOTPRINT_ID | typeof FOOTPRINT_HIGH_RES_ID
   // TODO review if we can move this to each own dataview
   compareStart?: string
   compareEnd?: string
@@ -316,6 +323,7 @@ const DATAVIEWS_LAYER_ORDER: DataviewType[] = [
   DataviewType.HeatmapStatic,
   DataviewType.Heatmap,
   DataviewType.HeatmapAnimated,
+  DataviewType.FourwingsVector,
   DataviewType.FourwingsTileCluster,
   DataviewType.Track,
   DataviewType.VesselEvents,
@@ -367,11 +375,15 @@ export function getComparisonMode(
 }
 
 const DATAVIEW_GROUPS_CONFIG = [
+  {
+    key: 'comparisonDataviews' as const,
+    test: isComparisonDataview,
+  },
   { key: 'activityDataviews' as const, test: isActivityDataview },
   { key: 'detectionDataviews' as const, test: isDetectionsDataview },
   { key: 'environmentalDataviews' as const, test: isEnvironmentalDataview },
   { key: 'staticDataviews' as const, test: isHeatmapStaticDataview },
-  { key: 'currentsDataviews' as const, test: isHeatmapCurrentsDataview },
+  { key: 'vectorsDataviews' as const, test: isHeatmapVectorsDataview },
   { key: 'vesselGroupDataview' as const, test: isVesselGroupDataview },
   { key: 'userHeatmapDataviews' as const, test: isUserHeatmapDataview },
   { key: 'vesselTrackDataviews' as const, test: isTrackDataview },
@@ -407,12 +419,13 @@ export function getDataviewsResolved(
     detectionDataviews = [],
     environmentalDataviews = [],
     staticDataviews = [],
-    currentsDataviews = [],
+    vectorsDataviews = [],
     vesselGroupDataview = [],
     vesselTrackDataviews = [],
     userHeatmapDataviews = [],
     contextDataviews = [],
     otherDataviews = [],
+    comparisonDataviews = [],
   } = getDataviewsGrouped(dataviews)
 
   const singleHeatmapDataview =
@@ -422,6 +435,11 @@ export function getDataviewsResolved(
   const detectionsComparisonMode = getComparisonMode(detectionDataviews, params)
 
   // If activity heatmap animated generators found, merge them into one generator with multiple sublayers
+  const mergedComparisonDataview = comparisonDataviews?.length
+    ? getFourwingsDataviewsResolved(comparisonDataviews, {
+        ...params,
+      })
+    : []
   const mergedActivityDataview = activityDataviews?.length
     ? getFourwingsDataviewsResolved(activityDataviews, {
         ...params,
@@ -446,6 +464,7 @@ export function getDataviewsResolved(
         visualizationMode: params.environmentVisualizationMode,
       }) || []
   )
+
   const staticDataviewsParsed = staticDataviews.flatMap((d) => {
     let visualizationMode = undefined
     if (d.category === DataviewCategory.Environment) {
@@ -463,7 +482,7 @@ export function getDataviewsResolved(
       }) || []
     )
   })
-  const currentsDataviewsParsed = currentsDataviews.flatMap((dataview) => {
+  const vectorsDataviewsParsed = vectorsDataviews.flatMap((dataview) => {
     return {
       ...dataview,
       config: { ...dataview.config, visualizationMode: params.environmentVisualizationMode },
@@ -475,7 +494,9 @@ export function getDataviewsResolved(
     return (
       getFourwingsDataviewsResolved(d, {
         visualizationMode:
-          comparisonMode === FourwingsComparisonMode.TimeCompare ? 'heatmap' : 'footprint',
+          comparisonMode === FourwingsComparisonMode.TimeCompare
+            ? 'heatmap'
+            : params.vesselGroupsVisualizationMode || 'footprint',
         colorRampWhiteEnd: false,
         comparisonMode,
       }) || []
@@ -499,9 +520,10 @@ export function getDataviewsResolved(
   const dataviewsMerged = [
     ...otherDataviews,
     ...staticDataviewsParsed,
-    ...currentsDataviewsParsed,
+    ...vectorsDataviewsParsed,
     ...environmentalDataviewsParsed,
     ...vesselGroupDataviewParsed,
+    ...mergedComparisonDataview,
     ...mergedDetectionsDataview,
     ...mergedActivityDataview,
     ...vesselTrackDataviewsParsed,

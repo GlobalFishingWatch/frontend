@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { InputText, Switch } from '@globalfishingwatch/ui-components'
@@ -10,26 +11,31 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectIsGFWDeveloper, selectIsGFWTestGroup } from 'features/user/selectors/user.selectors'
 import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { useLocationConnect } from 'routes/routes.hook'
+import { selectLocationQuery, selectVesselsMaxTimeGapHours } from 'routes/routes.selectors'
 
 import {
   DebugOption,
+  FAKE_VESSEL_NAME,
   FeatureFlag,
   selectDebugOptions,
   selectFeatureFlags,
+  setDebugOption,
+  toggleDebugOption,
   toggleFeatureFlag,
-  toggleOption,
 } from './debug.slice'
 
 import styles from './DebugMenu.module.css'
 
 const DebugMenu: React.FC = () => {
   const dispatch = useAppDispatch()
+  const { dispatchQueryParams } = useLocationConnect()
   const isGFWDeveloper = useSelector(selectIsGFWDeveloper)
   const isGFWTestGroup = useSelector(selectIsGFWTestGroup)
   const debugOptions = useSelector(selectDebugOptions)
   const featureFlags = useSelector(selectFeatureFlags)
   const locationQuery = useSelector(selectLocationQuery)
+  const vesselsMaxTimeGapHours = useSelector(selectVesselsMaxTimeGapHours)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
   const [datasetId, setDatasetId] = useState<string>('')
   const dataviews = useSelector(selectAllDataviewInstancesResolved) as UrlDataviewInstance[]
@@ -49,18 +55,18 @@ const DebugMenu: React.FC = () => {
           <Switch
             id="option_map_stats"
             active={debugOptions.mapStats}
-            onClick={() => dispatch(toggleOption(DebugOption.MapStats))}
+            onClick={() => dispatch(toggleDebugOption(DebugOption.MapStats))}
           />
           <label htmlFor="option_map_stats">Map stats</label>
         </div>
         <p>Show fps and memory stats</p>
         <div className={styles.header}>
           <Switch
-            id="option_debug"
-            active={debugOptions.debug}
-            onClick={() => dispatch(toggleOption(DebugOption.Debug))}
+            id="option_debug_tiles"
+            active={debugOptions.debugTiles}
+            onClick={() => dispatch(toggleDebugOption(DebugOption.DebugTiles))}
           />
-          <label htmlFor="option_debug">Debug tiles</label>
+          <label htmlFor="option_debug_tiles">Debug tiles</label>
         </div>
         <p>Displays info on tiles useful for debugging.</p>
         <div className={styles.header}>
@@ -68,30 +74,80 @@ const DebugMenu: React.FC = () => {
             id="option_thinning"
             active={isTurningTidesWorkspace ? false : debugOptions.thinning}
             disabled={isTurningTidesWorkspace}
-            onClick={() => dispatch(toggleOption(DebugOption.Thinning))}
+            onClick={() => dispatch(toggleDebugOption(DebugOption.Thinning))}
           />
           <label htmlFor="option_thinning">Track thinning</label>
         </div>
         <p>Don't send any thinning param to tracks API to debug original resolution</p>
+        <div className={styles.header}>
+          <Switch
+            id="option_vessels_as_positions"
+            active={debugOptions.vesselsAsPositions}
+            onClick={() => {
+              dispatch(toggleDebugOption(DebugOption.VesselsAsPositions))
+              if (debugOptions.vesselsAsPositions) {
+                dispatch(
+                  setDebugOption({ option: DebugOption.VesselsMaxTimeGapHours, value: false })
+                )
+              }
+            }}
+          />
+          <label htmlFor="option_vessels_as_positions">Tracks positions</label>
+        </div>
+        <p>Show vessel position icons on top of the track lines</p>
+        <div className={styles.header}>
+          <Switch
+            id="option_vessels_max_time_gap_hours"
+            active={debugOptions.vesselsMaxTimeGapHours}
+            onClick={() => {
+              dispatch(toggleDebugOption(DebugOption.VesselsMaxTimeGapHours))
+              if (debugOptions.vesselsMaxTimeGapHours) {
+                dispatchQueryParams({ vesselsMaxTimeGapHours: undefined })
+              } else {
+                dispatch(setDebugOption({ option: DebugOption.VesselsAsPositions, value: true }))
+                dispatchQueryParams({ vesselsMaxTimeGapHours: 3 })
+              }
+            }}
+          />
+          <label htmlFor="option_vessels_max_time_gap_hours">Vessels max time gap hours</label>
+          {debugOptions.vesselsMaxTimeGapHours && (
+            <InputText
+              type="number"
+              min={0}
+              max={24}
+              value={vesselsMaxTimeGapHours}
+              className={cx(styles.inputShort, styles.input)}
+              onChange={(e) => {
+                const value = Number(e.target.value)
+                // Validate input: must be a valid number between 0 and 24
+                if (!isNaN(value) && value >= 0 && value <= 24) {
+                  dispatchQueryParams({ vesselsMaxTimeGapHours: value })
+                }
+              }}
+            />
+          )}
+        </div>
+        <p>Split tracks into segments with a maximum time gap in hours</p>
+        <div className={styles.header}>
+          <Switch
+            id="option_hide_vessel_names"
+            active={debugOptions.hideVesselNames}
+            onClick={() => {
+              dispatch(toggleDebugOption(DebugOption.HideVesselNames))
+            }}
+          />
+          <label htmlFor="option_hide_vessel_names">Fake vessel names</label>
+        </div>
+        <p>
+          Replace vessel names with {FAKE_VESSEL_NAME} in the sidebar and remove from map tooltips.
+        </p>
         {isGFWDeveloper && (
           <Fragment>
-            <p>Activates the global reports feature: aka CVP</p>
-            <div className={styles.header}>
-              <Switch
-                id="option_others_reports"
-                active={featureFlags.othersReport}
-                onClick={() => dispatch(toggleFeatureFlag(FeatureFlag.OthersReport))}
-              />
-              <label htmlFor="option_others_reports">
-                <strong>Feature flag:</strong> Others reports
-              </label>
-            </div>
-            <p>Activates the context points reports feature</p>
             <div className={styles.header}>
               <Switch
                 id="option_data_terminology_iframe"
                 active={debugOptions.dataTerminologyIframe}
-                onClick={() => dispatch(toggleOption(DebugOption.DataTerminologyIframe))}
+                onClick={() => dispatch(toggleDebugOption(DebugOption.DataTerminologyIframe))}
               />
               <label htmlFor="option_data_terminology_iframe">
                 <strong>Feature flag:</strong> Data terminology iframe
@@ -102,7 +158,7 @@ const DebugMenu: React.FC = () => {
               <Switch
                 id="option_areas_on_screen"
                 active={debugOptions.areasOnScreen}
-                onClick={() => dispatch(toggleOption(DebugOption.AreasOnScreen))}
+                onClick={() => dispatch(toggleDebugOption(DebugOption.AreasOnScreen))}
               />
               <label htmlFor="option_areas_on_screen">
                 <strong>Feature flag:</strong> Areas on screen
@@ -113,7 +169,7 @@ const DebugMenu: React.FC = () => {
               <Switch
                 id="dataset_relationship"
                 active={debugOptions.datasetRelationship}
-                onClick={() => dispatch(toggleOption(DebugOption.DatasetRelationship))}
+                onClick={() => dispatch(toggleDebugOption(DebugOption.DatasetRelationship))}
               />
               <label htmlFor="dataset_relationship">Debug dataset relationship</label>
               {debugOptions.datasetRelationship && (
@@ -133,7 +189,7 @@ const DebugMenu: React.FC = () => {
               <Switch
                 id="option_disable_dataset_hash"
                 active={debugOptions.addDatasetIdHash}
-                onClick={() => dispatch(toggleOption(DebugOption.DatasetIdHash))}
+                onClick={() => dispatch(toggleDebugOption(DebugOption.DatasetIdHash))}
               />
               <label htmlFor="option_disable_dataset_hash">Include dataset hash in IDs</label>
             </div>
@@ -144,7 +200,7 @@ const DebugMenu: React.FC = () => {
                   <Switch
                     id="option_currents_layer"
                     active={debugOptions.experimentalLayers}
-                    onClick={() => dispatch(toggleOption(DebugOption.ExperimentalLayers))}
+                    onClick={() => dispatch(toggleDebugOption(DebugOption.ExperimentalLayers))}
                   />
                   <label htmlFor="option_currents_layer">Experimental layers</label>
                 </div>

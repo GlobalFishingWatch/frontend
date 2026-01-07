@@ -1,91 +1,96 @@
 {
-  "reports": {
-    "carrier-portal-report": {
-      "name": "Carrier Vessel Portal",
-      "description": "Verify transshipments, track vessels and identify frequently-visited ports to gain a better understanding of carrier vessel activities needed to strengthen transparency and accelerate transshipment reform.",
-      "cta": "Explore the carrier vessel portal"
-    },
-    "activity-report": {
-      "name": "Global Vessel Activity",
-      "description": "Monitor Apparent Fishing Effort and Vessel Presence in near real-time based on global automatic identification system (AIS) and vessel monitoring system (VMS) data from our partner countries."
-    },
-    "detections-report": {
-      "name": "Global Dark Vessel Detections",
-      "description": "Synthetic aperture radar (SAR) can detect at-sea vessels and structures in any weather conditions. The night lights detections (VIIRS) shows vessels at sea that satellites have detected by the light they emit at night."
-    },
-    "events-report": {
-      "name": "Global Vessel Events",
-      "description": "Global activity on vessel events based on automatic identification system (AIS) , including encounters between two vessels, loitering and port visits."
-    }
-  },
   "marine-manager": {
     "ascension-public": {
-      "name": "Ascension",
-      "description": "La Isla Ascensión está situada en medio del Océano Atlántico. En 2019, los 445.000 kilómetros cuadrados (171.800 millas cuadradas) de las aguas de Ascensión fueron designadas como área marina protegida."
-    },
-    "fiji-public": {
-      "name": "Fiji",
-      "description": "Situada en el Pacífico Sur, la República de Fiji consta de 322 islas y tiene una zona económica exclusiva de más de 1,2 millones de kilómetros cuadrados (460.000 millas cuadradas)."
-    },
-    "galapagos-public": {
-      "name": "Galápagos",
-      "description": "La Reserva Marina de Galápagos, declarada por la UNESCO \"Patrimonio Natural de la Humanidad\", cubre 133,000 kilómetros cuadrados (51,300 millas cuadradas) del Océano Pacífico frente a las costas de América del Sur."
-    },
-    "guyana-public": {
-      "name": "Guyana",
-      "description": "La zona económica exclusiva de Guyana esta ubicada frente a la costa noreste de América del Sur y cubre 137.000 kilómetros cuadrados (52.800 millas cuadradas) de océano. "
-    },
-    "micronesia-public": {
-      "name": "Estados Federados de Micronesia",
-      "description": "Compuesto por 607 islas, los cuatro estados de los Estados Federados de Micronesia (Yap, Chuuk, Pohnpei y Kosrae) tienen una zona económica exclusiva de más de 2,6 millones de kilómetros cuadrados (1 millón de millas cuadradas)."
-    },
-    "maldives-public": {
-      "name": "República de Maldivas",
-      "description": "La República de Maldivas es un archipiélago ubicado en el Océano Índico y tiene el séptimo sistema de arrecifes más grande del mundo. Maldivas tiene una zona económica exclusiva que cubre un área de casi 1 millón de kilómetros cuadrados (385.000 millas cuadradas)."
-    },
-    "niue-public": {
-      "name": "Niue",
-      "description": "Niue está situada en el Océano Pacífico central y el área marina protegida de Moana Mahu cubre el 40 por ciento de la zona económica exclusiva de Niue, cubriendo 127.000 kilómetros cuadrados (49.000 millas cuadradas)."
-    },
-    "palau-public": {
-      "name": "Palau",
-      "description": "La República de Palau es un grupo de islas situadas en el océano Pacífico occidental. En 2020, Palau protegió completamente el 80% de su zona económica exclusiva para formar el Santuario Marino Nacional de Palau, que representa 475.077 kilómetros cuadrados (183.000 millas cuadradas), cerrando estas aguas a todas las formas de actividades extractivas, incluida la pesca. "
-    },
-    "tristan-public": {
-      "name": "Tristan da Cunha",
-      "description": "Tristan da Cunha es una isla remota en el Océano Atlántico Sur. En 2020, la comunidad de Tristan da Cunha designó el 90 por ciento de su zona oceánica de 690.000 kilómetros cuadrados (266.400 millas cuadradas) para la protección marina."
-    },
-    "mediterranean-public": {
-      "name": "Mediterráneo y Mar Negro",
-      "description": "El Mediterráneo y el Mar Negro ocupan casi 3 millones de kilómetros cuadrados (1,1 millones de millas cuadradas) de océano entre Europa y África. "
+      "description": "La Isla Ascensión está situada en medio del Océano Atlántico. En 2019, los 445.000 kilómetros cuadrados (171.800 millas cuadradas) de las aguas de Ascensión fueron designadas como área marina protegida.",
+      "name": "Ascension"
     },
     "cmar_core_mpas-public": {
-      "name": "CMAR core MPAs",
-      "description": "Iniciado en 2004, el Corredor de Conservación Marítima del Pacífico Tropical Oriental es una iniciativa regional de conservación y uso sostenible de los gobiernos de Colombia, Costa Rica, Ecuador y Panamá que buscan el manejo adecuado de la biodiversidad y de los recursos marinos y costeros a través del manejo de los ecosistemas y el establecimiento de estrategias conjuntas del gobierno regional. Todos ellos apoyados por la sociedad civil, la cooperación internacional y las organizaciones no gubernamentales, envueltas en diez MPAs centrales en las ZEE del Océano Pacífico de los cuatro países."
-    },
-    "costa_rica_1-public": {
-      "name": "Costa Rica",
-      "description": "El Parque Nacional Isla del Coco es un área totalmente protegida que abarca casi 55.000 kilómetros cuadrados. El Área Marina de Manejo del Bicentenario que rodea el Parque Nacional Isla del Coco tiene 106.000 kilómetros cuadrados."
+      "description": "Iniciado en 2004, el Corredor de Conservación Marítima del Pacífico Tropical Oriental es una iniciativa regional de conservación y uso sostenible de los gobiernos de Colombia, Costa Rica, Ecuador y Panamá que buscan el manejo adecuado de la biodiversidad y de los recursos marinos y costeros a través del manejo de los ecosistemas y el establecimiento de estrategias conjuntas del gobierno regional. Todos ellos apoyados por la sociedad civil, la cooperación internacional y las organizaciones no gubernamentales, envueltas en diez MPAs centrales en las ZEE del Océano Pacífico de los cuatro países.",
+      "name": "AMP núcleo del CMAR"
     },
     "colombia_3-public": {
-      "name": "Colombia",
-      "description": "Colombia ha creado y gestionado AMP a lo largo de sus costas del Pacífico y el Caribe que abarcan el Distrito de Manejo Integrado Yuruparí-Malpelo, donde se encuentra el Santuario de Fauna y Flora de Malpelo, totalmente protegido, Lomas y Colinas, Gorgona y Cabo Manglares en el Océano Pacífico, así como Beata y Corales de Profundidad en el mar Caribe. "
+      "description": "Colombia ha creado y gestionado AMP a lo largo de sus costas del Pacífico y el Caribe que abarcan el Distrito de Manejo Integrado Yuruparí-Malpelo, donde se encuentra el Santuario de Fauna y Flora de Malpelo, totalmente protegido, Lomas y Colinas, Gorgona y Cabo Manglares en el Océano Pacífico, así como Beata y Corales de Profundidad en el mar Caribe. ",
+      "name": "Colombia"
     },
-    "panama_1-public": {
-      "name": "Panama",
-      "description": "Las áreas marinas protegidas en Panamá suman un poco más de 98.000 kilómetros cuadrados, que incluyen el Parque Nacional Coiba, declarado Patrimonio de la Humanidad por la UNESCO, y que es un área marina costera protegida frente a la costa suroeste del país, y el Área de Recursos Administrados de Cordillera de Coiba."
+    "costa_rica_1-public": {
+      "description": "El Parque Nacional Isla del Coco es un área totalmente protegida que abarca casi 55.000 kilómetros cuadrados. El Área Marina de Manejo del Bicentenario que rodea el Parque Nacional Isla del Coco tiene 106.000 kilómetros cuadrados.",
+      "name": "Costa Rica"
     },
-    "reserva_de_la_biosfera_cmar-public": {
-      "name": "AMPs núcleo del CMAR",
-      "description": "Iniciado en 2004, el Corredor Marino del Pacífico Este Tropical es un esfuerzo cooperativo regional voluntario para proteger uno de los ecosistemas más productivos y biodiversos del mundo."
+    "fiji-public": {
+      "description": "Situada en el Pacífico Sur, la República de Fiji consta de 322 islas y tiene una zona económica exclusiva de más de 1,2 millones de kilómetros cuadrados (460.000 millas cuadradas).",
+      "name": "Fiji"
     },
     "galapagos_and_hermandad-public": {
-      "name": "Galapagos and Hermandad",
-      "description": "La Reserva Marina de Galápagos cubre 133.000 kilómetros cuadrados del océano Pacífico frente a la costa de América del Sur. La Reserva Marina de Galápagos se amplió con la creación de la Reserva Marina Hermandad para cubrir 60.000 kilómetros cuadrados adicionales."
+      "description": "La Reserva Marina de Galápagos cubre 133.000 kilómetros cuadrados del océano Pacífico frente a la costa de América del Sur. La Reserva Marina de Galápagos se amplió con la creación de la Reserva Marina Hermandad para cubrir 60.000 kilómetros cuadrados adicionales.",
+      "name": "Galapagos y Hermandad"
+    },
+    "galapagos-public": {
+      "description": "La Reserva Marina de Galápagos, declarada por la UNESCO \"Patrimonio Natural de la Humanidad\", cubre 133,000 kilómetros cuadrados (51,300 millas cuadradas) del Océano Pacífico frente a las costas de América del Sur.",
+      "name": "Galápagos"
+    },
+    "guyana-public": {
+      "description": "La zona económica exclusiva de Guyana esta ubicada frente a la costa noreste de América del Sur y cubre 137.000 kilómetros cuadrados (52.800 millas cuadradas) de océano. ",
+      "name": "Guyana"
+    },
+    "maldives-public": {
+      "description": "La República de Maldivas es un archipiélago ubicado en el Océano Índico y tiene el séptimo sistema de arrecifes más grande del mundo. Maldivas tiene una zona económica exclusiva que cubre un área de casi 1 millón de kilómetros cuadrados (385.000 millas cuadradas).",
+      "name": "República de Maldivas"
+    },
+    "mediterranean-public": {
+      "description": "El Mediterráneo y el Mar Negro ocupan casi 3 millones de kilómetros cuadrados (1,1 millones de millas cuadradas) de océano entre Europa y África. ",
+      "name": "Mediterráneo y Mar Negro"
+    },
+    "micronesia-public": {
+      "description": "Compuesto por 607 islas, los cuatro estados de los Estados Federados de Micronesia (Yap, Chuuk, Pohnpei y Kosrae) tienen una zona económica exclusiva de más de 2,6 millones de kilómetros cuadrados (1 millón de millas cuadradas).",
+      "name": "Estados Federados de Micronesia"
+    },
+    "niue-public": {
+      "description": "Niue está situada en el Océano Pacífico central y el área marina protegida de Moana Mahu cubre el 40 por ciento de la zona económica exclusiva de Niue, cubriendo 127.000 kilómetros cuadrados (49.000 millas cuadradas).",
+      "name": "Niue"
+    },
+    "palau-public": {
+      "description": "La República de Palau es un grupo de islas situadas en el océano Pacífico occidental. En 2020, Palau protegió completamente el 80% de su zona económica exclusiva para formar el Santuario Marino Nacional de Palau, que representa 475.077 kilómetros cuadrados (183.000 millas cuadradas), cerrando estas aguas a todas las formas de actividades extractivas, incluida la pesca. ",
+      "name": "Palau"
+    },
+    "panama_1-public": {
+      "description": "Las áreas marinas protegidas en Panamá suman un poco más de 98.000 kilómetros cuadrados, que incluyen el Parque Nacional Coiba, declarado Patrimonio de la Humanidad por la UNESCO, y que es un área marina costera protegida frente a la costa suroeste del país, y el Área de Recursos Administrados de Cordillera de Coiba.",
+      "name": "Panamá"
+    },
+    "reserva_de_la_biosfera_cmar-public": {
+      "description": "Iniciado en 2004, el Corredor Marino del Pacífico Este Tropical es un esfuerzo cooperativo regional voluntario para proteger uno de los ecosistemas más productivos y biodiversos del mundo.",
+      "name": "AMPs núcleo del CMAR"
     },
     "revillagigedo-public": {
-      "name": "Revillagigedo",
-      "description": "En medio de cuatro islas volcánicas al sur de la península de Baja California en México, el Parque Nacional Revillagigedo fue creado en 2017 y abarca 148.000 kilómetros cuadrados."
+      "description": "En medio de cuatro islas volcánicas al sur de la península de Baja California en México, el Parque Nacional Revillagigedo fue creado en 2017 y abarca 148.000 kilómetros cuadrados.",
+      "name": "Revillagigedo"
+    },
+    "tristan-public": {
+      "description": "Tristan da Cunha es una isla remota en el Océano Atlántico Sur. En 2020, la comunidad de Tristan da Cunha designó el 90 por ciento de su zona oceánica de 690.000 kilómetros cuadrados (266.400 millas cuadradas) para la protección marina.",
+      "name": "Tristan da Cunha"
+    }
+  },
+  "reports": {
+    "activity-report": {
+      "description": "Monitorear el esfuerzo pesquero aparente y la presencia de embarcaciones casi en tiempo real basándose en datos del AIS global y del VMS de nuestros países socios.",
+      "name": "Actividad Global de Embarcaciones"
+    },
+    "carrier-portal-report": {
+      "cta": "Explorar carrier vessel portal",
+      "description": "Verifica transbordos, rastrea embarcaciones e identifica puertos frecuentemente visitados para obtener un mejor conocimiento sobre las actividades de las embarcaciones de transporte necesario para fortalecer la transparencia y acelerar la reforma del transbordo.",
+      "name": "Carrier vessel portal"
+    },
+    "deep-sea-mining-public": {
+      "cta": "Explorar portal",
+      "description": "El portal mapea y monitorea continuamente las embarcaciones que realizan actividades de exploracion de minerales en el fondo marino en regiones que contienen zonas autorizadas de la Autoridad Internacional de los Fondos Marinos (ISA), que abarcan más de 1,5 millones de kilómetros cuadrados del fondo marino internacional.",
+      "name": "Deep Sea Mining Watch"
+    },
+    "detections-report": {
+      "description": "El radar de apertura sintética (SAR) puede detectar embarcaciones y estructuras en el mar en cualquier condición meteorológica. El sistema de detección de luces nocturnas (VIIRS) muestra las embarcaciones en el mar que han sido detectadas por satélites mediante la luz que emiten durante la noche.",
+      "name": "Detección Global de Embarcaciones Oscuros"
+    },
+    "events-report": {
+      "description": "Actividad global sobre eventos de embarcaciones basada en el sistema de identificación automática (AIS), incluidos encuentros entre dos embarcaciones, eventos a la deriva y visitas a puertos.",
+      "name": "Eventos Globales de Embarcaciones"
     }
   }
 }

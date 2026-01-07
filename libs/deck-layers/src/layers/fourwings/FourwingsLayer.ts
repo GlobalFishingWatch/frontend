@@ -19,7 +19,7 @@ import { FourwingsHeatmapStaticLayer } from './heatmap/FourwingsHeatmapStaticLay
 import { FourwingsHeatmapTileLayer } from './heatmap/FourwingsHeatmapTileLayer'
 import type { FourwingsPositionsTileLayerProps } from './positions/fourwings-positions.types'
 import { FourwingsPositionsTileLayer } from './positions/FourwingsPositionsTileLayer'
-import { FOOTPRINT_ID, HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
+import { FOOTPRINT_HIGH_RES_ID, FOOTPRINT_ID, HEATMAP_ID, POSITIONS_ID } from './fourwings.config'
 import type {
   FourwingsPickingObject,
   FourwingsVisualizationMode,
@@ -57,6 +57,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList {
     const visualizationMode = this.getMode()
+    const resolution = getResolutionByVisualizationMode(visualizationMode)
     if (visualizationMode === POSITIONS_ID) {
       const PositionsLayerClass = this.getSubLayerClass('positions', FourwingsPositionsTileLayer)
       return new PositionsLayerClass(
@@ -67,17 +68,17 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
         })
       )
     }
-    if (visualizationMode === FOOTPRINT_ID) {
+    if (visualizationMode === FOOTPRINT_ID || visualizationMode === FOOTPRINT_HIGH_RES_ID) {
       const FootprintLayerClass = this.getSubLayerClass('footprint', FourwingsFootprintTileLayer)
       return new FootprintLayerClass(
         this.props,
         this.getSubLayerProps({
-          id: POSITIONS_ID,
+          id: visualizationMode,
+          resolution,
           onViewportLoad: this.props.onViewportLoad,
         })
       )
     }
-    const resolution = getResolutionByVisualizationMode(visualizationMode)
     const HeatmapLayerClass = this.props.static
       ? this.getSubLayerClass(resolution, FourwingsHeatmapStaticLayer)
       : this.getSubLayerClass(resolution, FourwingsHeatmapTileLayer)
@@ -127,6 +128,10 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   getVisualizationMode() {
     return this.props.visualizationMode || HEATMAP_ID
+  }
+
+  getAggregationOperation() {
+    return this.props.aggregationOperation
   }
 
   getChunk() {

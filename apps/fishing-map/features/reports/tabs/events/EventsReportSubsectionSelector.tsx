@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import { EventTypes } from '@globalfishingwatch/api-types'
 import type { ChoiceOption, TooltipPlacement } from '@globalfishingwatch/ui-components'
 import { Choice } from '@globalfishingwatch/ui-components'
 
@@ -23,20 +24,20 @@ function VesselGroupReportEventsSubsectionSelector() {
   const loading = vesselGroupReportStatus === AsyncReducerStatus.Loading
 
   const options: ChoiceOption<ReportEventsSubCategory>[] = [
-    ...(activeReportSubCategories?.includes('encounter')
+    ...(activeReportSubCategories?.includes(EventTypes.Encounter)
       ? [
           {
-            id: 'encounter' as ReportEventsSubCategory,
+            id: EventTypes.Encounter,
             label: t('event.encountersShort'),
             disabled: loading,
           },
         ]
       : []),
-    ...(activeReportSubCategories?.includes('loitering')
+    ...(activeReportSubCategories?.includes(EventTypes.Loitering)
       ? [
           {
-            id: 'loitering' as ReportEventsSubCategory,
-            label: t('event.loitering_other'),
+            id: EventTypes.Loitering,
+            label: t('event.loitering', { count: 2 }),
           },
         ]
       : []),
@@ -45,18 +46,18 @@ function VesselGroupReportEventsSubsectionSelector() {
     //   ? [
     //       {
     //         id: 'gap' as ReportEventsSubCategory,
-    //         label: t('event.gap_other'),
+    //         label: t('event.gap'),
     //         disabled: true,
     //         tooltip: t('common.comingSoon'),
     //         tooltipPlacement: 'top' as TooltipPlacement,
     //       },
     //     ]
     //   : []),
-    ...(activeReportSubCategories?.includes('port_visit')
+    ...(activeReportSubCategories?.includes(EventTypes.Port)
       ? [
           {
-            id: 'port_visit' as ReportEventsSubCategory,
-            label: t('event.port_visit_other'),
+            id: EventTypes.Port,
+            label: t('event.port_visit', { count: 2 }),
             tooltipPlacement: 'top' as TooltipPlacement,
           },
         ]

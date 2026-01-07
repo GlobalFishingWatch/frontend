@@ -1,12 +1,16 @@
 import { createSelector } from '@reduxjs/toolkit'
-import type { FeatureCollection, MultiPolygon } from 'geojson'
+import type { Feature, FeatureCollection, MultiPolygon } from 'geojson'
 import { t } from 'i18next'
 
 import { type Dataset, DataviewCategory, type ReportVessel } from '@globalfishingwatch/api-types'
 import type { BufferOperation, BufferUnit } from '@globalfishingwatch/data-transforms'
 import { getGeometryDissolved, wrapGeometryBbox } from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getUserContextTimeFilterProps } from '@globalfishingwatch/deck-layer-composer'
+import type { IsFeatureInRangeParams } from '@globalfishingwatch/deck-layers'
+import { isFeatureInRange } from '@globalfishingwatch/deck-layers'
 
+import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import type { Area, AreaGeometry } from 'features/areas/areas.slice'
 import { selectAreas } from 'features/areas/areas.slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
@@ -16,6 +20,7 @@ import { selectActiveReportDataviews } from 'features/dataviews/selectors/datavi
 import {
   ENTIRE_WORLD_REPORT_AREA,
   ENTIRE_WORLD_REPORT_AREA_ID,
+  OUT_OF_TIME_REPORT_AREA_ID,
 } from 'features/reports/report-area/area-reports.config'
 import {
   getBufferedArea,
@@ -228,13 +233,53 @@ const selectCurrentReportArea = createSelector(
   }
 )
 
-const selectReportAreaData = createSelector([selectCurrentReportArea], (reportArea) => {
-  return reportArea?.data
-})
+const selectCurrentReportAreaFilteredByTime = createSelector(
+  [selectCurrentReportArea, selectReportDatasetId, selectAllDatasets, selectTimeRange],
+  (currentReportArea, reportDatasetId, datasets, timeRange) => {
+    const dataset = datasets.find((d) => d.id === reportDatasetId)
+    const timeFilterProps = dataset
+      ? getUserContextTimeFilterProps({
+          dataset,
+          start: timeRange.start,
+          end: timeRange.end,
+        })
+      : undefined
+    if (!timeFilterProps || !timeRange || !currentReportArea?.data) {
+      return currentReportArea
+    }
+    if (
+      currentReportArea?.data &&
+      currentReportArea?.status === AsyncReducerStatus.Finished &&
+      !isFeatureInRange(
+        currentReportArea?.data as Feature<any>,
+        timeFilterProps as IsFeatureInRangeParams
+      )
+    ) {
+      return {
+        data: {
+          id: OUT_OF_TIME_REPORT_AREA_ID,
+          name: currentReportArea?.data?.name,
+        } as Area<AreaGeometry>,
+        status: AsyncReducerStatus.Finished,
+      }
+    }
+    return currentReportArea
+  }
+)
 
-const selectReportAreaApiStatus = createSelector([selectCurrentReportArea], (reportArea) => {
-  return reportArea?.status
-})
+const selectReportAreaData = createSelector(
+  [selectCurrentReportAreaFilteredByTime],
+  (reportArea) => {
+    return reportArea?.data
+  }
+)
+
+const selectReportAreaApiStatus = createSelector(
+  [selectCurrentReportAreaFilteredByTime],
+  (reportArea) => {
+    return reportArea?.status
+  }
+)
 
 export const selectReportAreaName = createSelector(
   [

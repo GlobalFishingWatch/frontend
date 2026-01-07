@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
-import { DateTime } from 'luxon'
 
 import type { DetectionThumbnail } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -17,6 +16,7 @@ import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
+import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'
 import DetectionThumbnailImage from 'features/map/popups/categories/DetectionThumbnail'
 import VesselLink from 'features/vessel/VesselLink'
@@ -43,12 +43,13 @@ function DetectionThumbnails({
   if (!detection) {
     return null
   }
-  return <DetectionThumbnailImage data={detection.data} scale={scale} />
+  return <DetectionThumbnailImage id={detection.name} data={detection.data} scale={scale} />
 }
 
 function PositionsRow({ loading, error, feature, showFeaturesDetails }: PositionsRowProps) {
   const { t } = useTranslation()
   const allDatasets = useSelector(selectAllDatasets)
+  const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
   const dataviewInstances = useSelector(selectAllDataviewInstancesResolved)
   const featureDataview = dataviewInstances?.find((instance) => instance.id === feature.layerId)
   const thumbnailsDatasetId = getRelatedDatasetByType(
@@ -105,15 +106,17 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
             <span>
               <span className={popupStyles.marginRight}>
                 {isPositionMatched ? (
-                  <VesselLink vesselId={vesselId}>{shipname}</VesselLink>
+                  <VesselLink vesselId={vesselId}>
+                    {hideVesselNames ? FAKE_VESSEL_NAME : shipname}
+                  </VesselLink>
                 ) : (
-                  <span>{shipname}</span>
+                  <span>{hideVesselNames ? FAKE_VESSEL_NAME : shipname}</span>
                 )}
               </span>
               {feature.properties.stime && (
                 <span className={popupStyles.secondary}>
                   {' '}
-                  <I18nDate date={feature.properties.stime * 1000} format={DateTime.DATETIME_MED} />
+                  <I18nDate date={feature.properties.stime * 1000} />
                 </span>
               )}
             </span>

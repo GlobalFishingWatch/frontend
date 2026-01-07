@@ -4,6 +4,7 @@ import memoize from 'lodash/memoize'
 import { DateTime } from 'luxon'
 
 import type { ApiEvent, EventTypes, EventVessel, TrackSegment } from '@globalfishingwatch/api-types'
+import { wrapLongitudes } from '@globalfishingwatch/data-transforms'
 import type {
   UserTrackBinaryData,
   VesselTrackData,
@@ -14,7 +15,7 @@ import { getUTCDateTime } from '../../utils'
 
 import { VESSEL_GRAPH_COLORS } from './vessel.config'
 import type { VesselEventsLayer } from './VesselEventsLayer'
-import type { VesselsColorByProperty } from './VesselTrackLayer'
+import type { VesselsColorByProperty } from './VesselTrackPathLayer'
 
 export const FIRST_YEAR_OF_DATA = 2012
 export const CURRENT_YEAR = DateTime.now().year
@@ -50,6 +51,7 @@ export type GetSegmentsFromDataParams = {
   includeCoordinates?: boolean
   startTime?: number
   endTime?: number
+  maxTimeGapHours?: number
 }
 
 export const getSegmentsFromData = memoize(
@@ -60,6 +62,7 @@ export const getSegmentsFromData = memoize(
       includeCoordinates = false,
       startTime,
       endTime,
+      maxTimeGapHours,
     } = {} as GetSegmentsFromDataParams
   ): TrackSegment[] => {
     const segmentsIndexes = data.startIndices
@@ -67,6 +70,7 @@ export const getSegmentsFromData = memoize(
     const timestamps = data.attributes?.getTimestamp?.value
     const speeds = (data as VesselTrackData).attributes?.getSpeed?.value
     const elevations = (data as VesselTrackData).attributes?.getElevation?.value
+    const gaps = (data as VesselTrackData).attributes?.getGap?.value
 
     if (!positions?.length || !timestamps.length) {
       return []
@@ -76,97 +80,102 @@ export const getSegmentsFromData = memoize(
     const timestampSize = data.attributes.getTimestamp?.size
     const speedSize = (data as VesselTrackData).attributes.getSpeed?.size
     const elevationSize = (data as VesselTrackData).attributes.getElevation?.size
+    const gapSize = (data as VesselTrackData).attributes?.getGap?.size || 1
+    const maxTimeGapMs = maxTimeGapHours ? maxTimeGapHours * 3600000 : undefined
+    const hasGapSupport = !!(gaps && maxTimeGapMs)
+    const totalPoints = timestamps.length / timestampSize
 
+    // Pre-compute wrapped longitudes if needed
+    const wrappedLongitudes = includeCoordinates
+      ? wrapLongitudes(Array.from({ length: totalPoints }, (_, i) => positions[i * pathSize]))
+      : undefined
+
+    // Helper to get point data by index
     const getPointByIndex = (index: number) => {
+      const longitude = wrappedLongitudes ? wrappedLongitudes[index] : positions[index * pathSize]
+
       return {
         ...(includeCoordinates && {
-          longitude: positions[index * pathSize],
+          longitude,
           latitude: positions[index * pathSize + 1],
         }),
-
         timestamp: timestamps[index * timestampSize],
-        ...(speedSize && {
-          speed: speeds?.[index * speedSize] || 0,
-        }),
-        ...(elevationSize && {
-          elevation: elevations?.[index * elevationSize] || 0,
-        }),
+        ...(speedSize && { speed: speeds?.[index * speedSize] || 0 }),
+        ...(elevationSize && { elevation: elevations?.[index * elevationSize] || 0 }),
       }
     }
 
-    const segments = segmentsIndexes.map((segmentIndex, i, segmentsIndexes) => {
+    // Helper to check if a point is a gap point
+    const isGapPoint = (index: number): boolean => {
+      if (!hasGapSupport || !gaps) return false
+      const gapIndex = index * gapSize
+      return gapIndex < gaps.length && gaps[gapIndex] === 1
+    }
+
+    // Helper to check if a segment is entirely gap points
+    const isGapSegment = (segmentStart: number, segmentEnd: number): boolean => {
+      if (!hasGapSupport) return false
+      for (let index = segmentStart; index < segmentEnd; index++) {
+        if (!isGapPoint(index)) return false
+      }
+      return true
+    }
+
+    const isTimestampInRange = (timestamp: number, isFirstAfterEndTime: boolean): boolean => {
+      if (startTime && timestamp <= startTime && !isFirstAfterEndTime) return false
+      if (endTime && timestamp >= endTime && !isFirstAfterEndTime) return false
+      return true
+    }
+
+    // Track if we've already included the first point after endTime (for course calculation)
+    let firstPointAfterEndTimeIncluded = false
+
+    const segments = segmentsIndexes.map((segmentIndex, i) => {
       const points = [] as TrackSegment
       const isLastSegment = i === segmentsIndexes.length - 1
-      const nextSegmentIndex = segmentsIndexes[i + 1] || timestamps.length - 1
-      const initialSegmentTimestamp = timestamps[segmentIndex * timestampSize]
-      const finalSegmentTimestamp = isLastSegment
-        ? timestamps[timestamps.length - 1]
-        : timestamps[nextSegmentIndex * timestampSize - 1]
+      const nextSegmentIndex = segmentsIndexes[i + 1] ?? totalPoints
+      const segmentEndIndex = isLastSegment ? totalPoints : nextSegmentIndex
 
-      let firstSegmentPointIncluded = false
-      let lastSegmentPointIncluded = false
-      if (
-        (!startTime || initialSegmentTimestamp > startTime) &&
-        (!endTime || initialSegmentTimestamp < endTime)
-      ) {
-        firstSegmentPointIncluded = true
-
-        points.push(getPointByIndex(segmentIndex))
+      // Skip gap segments entirely
+      if (hasGapSupport && isGapSegment(segmentIndex, segmentEndIndex)) {
+        return points
       }
 
-      if (includeMiddlePoints && segmentIndex + 1 < nextSegmentIndex) {
-        for (let index = segmentIndex + 1; index < nextSegmentIndex; index++) {
-          const timestamp = timestamps[index / timestampSize]
-          if ((!startTime || timestamp > startTime) && (!endTime || timestamp < endTime)) {
-            if (!firstSegmentPointIncluded) {
-              const previousPoint = getPointByIndex(index - 1)
-              points.push(previousPoint)
-              firstSegmentPointIncluded = true
-            }
-            points.push(getPointByIndex(index))
-          } else if (
-            firstSegmentPointIncluded &&
-            !lastSegmentPointIncluded &&
-            timestamp > endTime
-          ) {
-            const nextPoint = getPointByIndex(index)
-            points.push(nextPoint)
-            lastSegmentPointIncluded = true
-          }
+      // Check if previous segment was a gap (to avoid duplicate boundary points)
+      const previousSegmentIsGap =
+        i > 0 &&
+        hasGapSupport &&
+        segmentsIndexes[i - 1] !== undefined &&
+        isGapSegment(segmentsIndexes[i - 1], segmentIndex)
+
+      for (let pointIndex = segmentIndex; pointIndex < segmentEndIndex; pointIndex++) {
+        if (isGapPoint(pointIndex)) continue
+
+        const timestamp = timestamps[pointIndex * timestampSize]
+        const isFirstAfterEndTime =
+          endTime && timestamp >= endTime && !firstPointAfterEndTimeIncluded
+
+        if (!isTimestampInRange(timestamp, isFirstAfterEndTime)) continue
+
+        if (isFirstAfterEndTime) {
+          firstPointAfterEndTimeIncluded = true
+        }
+
+        const isFirstPoint = pointIndex === segmentIndex
+        const isLastPoint = pointIndex === segmentEndIndex - 1
+        if (
+          includeMiddlePoints ||
+          isFirstAfterEndTime ||
+          (isFirstPoint && !previousSegmentIsGap) ||
+          isLastPoint
+        ) {
+          points.push(getPointByIndex(pointIndex))
         }
       }
 
-      if (
-        (!startTime || finalSegmentTimestamp > startTime) &&
-        (!endTime || finalSegmentTimestamp < endTime) &&
-        !lastSegmentPointIncluded
-      ) {
-        if (isLastSegment) {
-          points.push({
-            ...(includeCoordinates && {
-              longitude: positions[positions.length - pathSize],
-              latitude: positions[positions.length - 1],
-            }),
-            timestamp: finalSegmentTimestamp,
-            ...(speedSize && { speed: speeds?.[speeds.length - 1] || 0 }),
-            ...(elevationSize && { elevation: elevations?.[elevations.length - 1] || 0 }),
-          })
-        } else {
-          points.push({
-            ...(includeCoordinates && {
-              longitude: positions[nextSegmentIndex * pathSize],
-              latitude: positions[nextSegmentIndex * pathSize + 1],
-            }),
-            timestamp: finalSegmentTimestamp,
-            ...(speedSize && { speed: speeds?.[nextSegmentIndex * speedSize - 1] || 0 }),
-            ...(elevationSize && {
-              elevation: elevations?.[nextSegmentIndex * elevationSize - 1] || 0,
-            }),
-          })
-        }
-      }
       return points
     })
+
     return segments
   },
   (data, params) => {

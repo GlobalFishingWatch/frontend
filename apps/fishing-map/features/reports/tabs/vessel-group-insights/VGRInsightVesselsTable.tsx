@@ -21,7 +21,7 @@ const VesselGroupReportInsightVesselTable = ({
     <div className={styles.vesselsTable}>
       <div className={styles.header}>{t('common.name')}</div>
       <div className={styles.header}>{t('vessel.mmsi')}</div>
-      <div className={styles.header}>{t('layer.flagState_one')}</div>
+      <div className={styles.header}>{t('layer.flagState')}</div>
       <div className={styles.header}>{t('vessel.geartype')}</div>
 
       {vessels.map((vessel, i) => {

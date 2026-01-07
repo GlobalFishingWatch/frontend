@@ -36,7 +36,7 @@ function DatasetFilterSource({
       ...nonVmsSources,
       {
         id: 'vms-grouped',
-        label: `VMS (${vmsSources.length} ${t('common.country_other')})`,
+        label: `VMS (${vmsSources.length} ${t('common.country', { count: 2 })})`,
         tooltip: vmsSources.map((source) => source.label).join(', '),
       },
     ]

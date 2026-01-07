@@ -4,6 +4,10 @@
   margin-top: var(--space-S);
 }
 
+.margin {
+  margin-top: var(--space-S);
+}
+
 .graph svg {
   overflow: visible;
 }
@@ -17,6 +21,13 @@
 .tooltipRow {
   display: flex;
   align-items: center;
+}
+
+.legendRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: var(--space-S);
 }
 
 .tooltipLabel {
@@ -53,4 +64,8 @@
 .labels {
   font: var(--font-S);
   fill: var(--color-secondary-blue);
+}
+
+.cardinalDirection {
+  font: var(--font-XS);
 }

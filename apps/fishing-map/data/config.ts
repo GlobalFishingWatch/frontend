@@ -1,10 +1,13 @@
 import { DateTime } from 'luxon'
 
-import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import type { EventType } from '@globalfishingwatch/api-types'
+import { DataviewCategory, DataviewType, EventTypes } from '@globalfishingwatch/api-types'
 
 import type { AppState, WorkspaceState } from '../types'
 import { TimebarGraphs, TimebarVisualisations, UserTab } from '../types'
 import { getUTCDateTime } from '../utils/dates'
+
+export { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/dataviews-client'
 
 export const ROOT_DOM_ELEMENT = '__next'
 
@@ -81,6 +84,7 @@ export const DEFAULT_PAGINATION_PARAMS = {
 }
 
 export const BUFFER_PREVIEW_COLOR = '#F95E5E'
+export const PRIMARY_BLUE_COLOR = '#163f89'
 
 export const FIRST_YEAR_OF_DATA = 2012
 
@@ -104,6 +108,7 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   daysFromLatest: undefined,
   detectionsVisualizationMode: 'heatmap',
   environmentVisualizationMode: 'heatmap-low-res',
+  vesselGroupsVisualizationMode: 'footprint',
   mapAnnotationsVisible: true,
   mapRulersVisible: true,
   readOnly: false,
@@ -115,17 +120,25 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   visibleEvents: 'all',
 }
 
-export const EVENTS_COLORS: Record<string, string> = {
+export type EncounterAuthorizedEventType =
+  | 'encounterauthorized'
+  | 'encounterauthorizedLabels'
+  | 'encounterpartially'
+  | 'encounterunmatched'
+export const EVENTS_COLORS: Record<
+  EventType | EncounterAuthorizedEventType | 'fishingLabels',
+  string
+> = {
   encounterauthorized: '#FAE9A0',
   encounterauthorizedLabels: '#DCC76D',
   encounterpartially: '#F59E84',
   encounterunmatched: '#CE2C54',
-  encounter: '#FAE9A0',
-  loitering: '#cfa9f9',
-  port_visit: '#99EEFF',
-  fishing: '#6075A7',
-  // fishing: '#C6D5E2',
-  fishingLabels: '#163f89',
+  [EventTypes.Encounter]: '#FAE9A0',
+  [EventTypes.Loitering]: '#cfa9f9',
+  [EventTypes.Port]: '#99EEFF',
+  [EventTypes.Fishing]: '#6075A7',
+  [EventTypes.Gap]: '#f45d5e',
+  fishingLabels: PRIMARY_BLUE_COLOR,
 }
 
 export const POPUP_CATEGORY_ORDER = [

@@ -57,26 +57,35 @@ export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas' as const
 export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas' as const
 export const PORTS_FOOTPRINT_DATAVIEW_SLUG = 'ports-footprint' as const
 export const CURRENTS_DATAVIEW_SLUG = 'currents' as const
+export const WINDS_DATAVIEW_SLUG = 'winds' as const
 export const BATHYMETRY_CONTOUR_DATAVIEW_SLUG = 'bathymetry-contour' as const
 
 export const FISHING_DATAVIEW_SLUG_PREFIX = 'apparent-fishing-effort' as const
 // Workspaces dataviews
-export const FISHING_DATAVIEW_SLUG_ALL = `${FISHING_DATAVIEW_SLUG_PREFIX}-v-3` as const
-export const FISHING_DATAVIEW_SLUG_AIS = `${FISHING_DATAVIEW_SLUG_PREFIX}-ais-v-3` as const
-export const FISHING_DATAVIEW_SLUG_VMS = `${FISHING_DATAVIEW_SLUG_PREFIX}-vms-v-3` as const
-export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG = 'encounter-cluster-events-v-3' as const
-export const CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG = 'loitering-cluster-events-v-3' as const
-export const CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG = 'port-visit-cluster-events-v-3' as const
-export const VIIRS_MATCH_DATAVIEW_SLUG = 'viirs-match-v-3' as const
-export const VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG = 'viirs-match-skylight-v-3' as const
-export const SAR_DATAVIEW_SLUG = 'sar-v-3' as const
-export const SENTINEL2_DATAVIEW_SLUG = 'sentinel-2-v-3' as const
-export const PRESENCE_DATAVIEW_SLUG = 'presence-activity-v-3' as const
+export const FISHING_DATAVIEW_SLUG_ALL = `${FISHING_DATAVIEW_SLUG_PREFIX}-v-4` as const
+export const FISHING_DATAVIEW_SLUG_AIS = `${FISHING_DATAVIEW_SLUG_PREFIX}-ais-v-4` as const
+export const FISHING_DATAVIEW_SLUG_VMS = `${FISHING_DATAVIEW_SLUG_PREFIX}-vms-v-4` as const
+export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG = 'encounter-cluster-events-v-4' as const
+export const CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG = 'loitering-cluster-events-v-4' as const
+export const CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG = 'port-visit-cluster-events-v-4' as const
+export const CLUSTER_GAPS_EVENTS_DATAVIEW_SLUG = 'gaps-cluster-events-v-3' as const
+export const VIIRS_MATCH_DATAVIEW_SLUG = 'viirs-match-v-4' as const
+export const VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG = 'viirs-match-skylight-v-4' as const
+export const SAR_DATAVIEW_SLUG = 'sar-v-4' as const
+export const SENTINEL2_DATAVIEW_SLUG = 'sentinel-2-v-4' as const
+export const PRESENCE_DATAVIEW_SLUG = 'presence-activity-v-4' as const
 export const TEMPLATE_USER_TRACK_SLUG = 'user-track' as const
-export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-v-3' as const
-export const TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG = 'vessel-track-only-v-3' as const
+export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-v-4' as const
+// export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-v-3-gaps' as const
+export const TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG = 'vessel-track-only-v-4' as const
 export const TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_BRAZIL =
-  'private-bra-fishing-map-vessel-track-v-3' as const
+  'private-bra-fishing-map-vessel-track-v-4' as const
+export const TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_CHILE =
+  'private-chl-fishing-map-vessel-track-v-4' as const
+export const TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_PANAMA =
+  'private-panama-fishing-map-vessel-track-v-4' as const
+export const TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_PERU =
+  'private-per-fishing-map-vessel-track-v-4' as const
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = 'default-context-layer' as const
 export const TEMPLATE_POINTS_DATAVIEW_SLUG = 'default-points-layer' as const
 export const TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG = 'gfw-environmental-layer' as const
@@ -102,10 +111,17 @@ export const TEMPLATE_DATAVIEW_SLUGS = [
 
 export const PRIVATE_TEMPLATE_VESSEL_DATAVIEW_SLUGS: Partial<Record<UserGroup, string>> = {
   brazil: TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_BRAZIL,
+  chile: TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_CHILE,
+  panama: TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_PANAMA,
+  peru: TEMPLATE_VESSEL_DATAVIEW_SLUG_VMS_PERU,
 }
 
+export const DEFAULT_FISHING_DATASET_ID = 'public-global-fishing-effort:v4.0'
+export const DEFAULT_PRESENCE_DATASET_ID = 'public-global-presence:v4.0'
+export const DEFAULT_IDENTITY_DATASET_ID = 'public-global-vessel-identity:v4.0'
+
 export const DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS = [
-  'public-global-presence:v3.0',
+  DEFAULT_PRESENCE_DATASET_ID,
   'public-chile-presence:v20211126',
   'public-panama-presence:v20211126',
   'public-norway-presence:v20220112',
@@ -157,6 +173,8 @@ const ENVIRONMENT_DATAVIEWS = [
   GLOBAL_WATER_TEMPERATURE_DATAVIEW_SLUG,
   GLOBAL_SALINITY_DATAVIEW_SLUG,
   GLOBAL_CHLOROPHYL_DATAVIEW_SLUG,
+  CURRENTS_DATAVIEW_SLUG,
+  WINDS_DATAVIEW_SLUG,
 ]
 
 export const DEFAULT_DATAVIEW_SLUGS = [

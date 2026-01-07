@@ -21,6 +21,8 @@ export const debugDatasetsInDataviews = (
         })
         console.warn(`${d} loaded because of is included in dataview: ${dataview?.id}`)
       })
+    } else {
+      console.warn(`${datasetId} dataview not found`)
     }
   }
 }
@@ -39,6 +41,8 @@ export const debugRelatedDatasets = (datasets: Dataset[], datasetId: string) => 
         console.warn(
           `${datasetId} loaded because of is included as related dataset in: ${originalDataset.id}`
         )
+      } else {
+        console.warn(`${datasetId} dataset relationship not found`)
       }
     }
   }

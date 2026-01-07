@@ -19,6 +19,7 @@ locals {
     "BASIC_AUTH_PASS",
     "NEXT_FEEDBACK_SPREADSHEET_ID",
     "NEXT_GFW_API_KEY",
+    "NEXT_SENTRY_AUTH_TOKEN",
     "NEXT_IDENTITY_REVIEW_SPREADSHEET_ID",
     "NEXT_MAP_ERRORS_SPREADSHEET_ID",
     "NEXT_MASTRA_API_URL",
@@ -68,7 +69,8 @@ module "develop" {
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
   ]
-  set_secrets = local.generate_secrets.dev
+  set_secrets  = local.generate_secrets.dev
+  machine_type = "E2_HIGHCPU_8"
 }
 
 module "preview-dev" {
@@ -89,6 +91,7 @@ module "preview-dev" {
     branch = "develop"
   }
   set_env_vars_build = [
+    "NX_CLOUD_ACCESS_TOKEN=${local.secrets_path.dev}/FRONTEND_NX_CLOUD_ACCESS_TOKEN",
     "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
     "NEXT_PUBLIC_API_VERSION=v3",
     "NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
@@ -197,7 +200,7 @@ module "production" {
     "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GTM-WXTMN69",
     "NEXT_PUBLIC_USE_LOCAL_DATASETS=false",
     "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=false",
-    "NEXT_PUBLIC_WORKSPACE_ENV=staging",
+    "NEXT_PUBLIC_WORKSPACE_ENV=production",
     "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366"
   ]
   set_env_vars = [

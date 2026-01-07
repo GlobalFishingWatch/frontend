@@ -30,6 +30,7 @@ import {
 } from 'features/datasets/datasets.utils'
 import { getVesselIdFromInstanceId } from 'features/dataviews/dataviews.utils'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
@@ -127,6 +128,7 @@ function VesselLayerPanel({
   // const vesselInstance = useMapVesselLayer(dataview.id)
   const gfwUser = useSelector(selectIsGFWUser)
   const trackDatasetId = dataview.datasets?.find((rld) => rld.type === DatasetTypes.Tracks)?.id
+  const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
 
   const infoResource: Resource<IdentityVessel> = useSelector(
     selectResourceByUrl<IdentityVessel>(infoUrl)
@@ -201,6 +203,8 @@ function VesselLayerPanel({
   const getVesselTitle = (): ReactNode => {
     if (infoLoading) return t('vessel.loadingInfo')
     if (infoError) return t('common.unknownVessel')
+    if (hideVesselNames) return FAKE_VESSEL_NAME
+
     if (dataview?.datasetsConfig?.some((d) => isGFWOnlyDataset({ id: d.datasetId })))
       return (
         <Fragment>
@@ -229,7 +233,7 @@ function VesselLayerPanel({
           getVesselTitle()
         ) : (
           <VesselLink
-            className={styles.link}
+            className={cx(styles.link)}
             vesselId={vesselId}
             datasetId={dataset?.id}
             tooltip={<div>{identitiesSummary}</div>}
@@ -281,53 +285,55 @@ function VesselLayerPanel({
           })}
         >
           <Fragment>
-            {trackDatasetId && (
-              <VesselDownload
-                dataview={dataview}
-                vesselIds={[vesselId, ...(dataview.config?.relatedVesselIds || [])]}
-                vesselTitle={vesselLabel || t('common.unknownVessel')}
-                datasetId={trackDatasetId}
-              />
-            )}
-            {layerActive && (
-              <LayerProperties
-                dataview={dataview}
-                open={colorOpen}
-                onColorClick={changeTrackColor}
-                onToggleClick={onToggleColorOpen}
-                onClickOutside={closeExpandedContainer}
-              />
-            )}
-            {layerActive && !infoLoading && !trackError && (
-              <FitBounds
-                hasError={trackError}
-                layer={vesselLayer?.instance}
-                infoResource={infoResource}
-                disabled={trackLoading}
-              />
-            )}
-            {layerActive && (
-              <ExpandedContainer
-                visible={filterOpen}
-                onClickOutside={closeExpandedContainer}
-                component={
-                  <Filters
+            {!infoLoading && !(infoError || trackError) && (
+              <>
+                {trackDatasetId && (
+                  <VesselDownload
                     dataview={dataview}
-                    onConfirmCallback={onToggleFilterOpen}
-                    showApplyToAll={showApplyToAll}
+                    vesselIds={[vesselId, ...(dataview.config?.relatedVesselIds || [])]}
+                    vesselTitle={vesselLabel || t('common.unknownVessel')}
+                    datasetId={trackDatasetId}
                   />
-                }
-              >
-                <div className={styles.filterButtonWrapper}>
-                  <IconButton
-                    icon={filterOpen ? 'filter-on' : 'filter-off'}
-                    size="small"
-                    onClick={onToggleFilterOpen}
-                    tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
-                    tooltipPlacement="top"
-                  />
-                </div>
-              </ExpandedContainer>
+                )}
+                {layerActive && (
+                  <>
+                    <LayerProperties
+                      dataview={dataview}
+                      open={colorOpen}
+                      onColorClick={changeTrackColor}
+                      onToggleClick={onToggleColorOpen}
+                      onClickOutside={closeExpandedContainer}
+                    />
+                    <FitBounds
+                      hasError={trackError}
+                      layer={vesselLayer?.instance}
+                      infoResource={infoResource}
+                      disabled={trackLoading}
+                    />
+                    <ExpandedContainer
+                      visible={filterOpen}
+                      onClickOutside={closeExpandedContainer}
+                      component={
+                        <Filters
+                          dataview={dataview}
+                          onConfirmCallback={onToggleFilterOpen}
+                          showApplyToAll={showApplyToAll}
+                        />
+                      }
+                    >
+                      <div className={styles.filterButtonWrapper}>
+                        <IconButton
+                          icon={filterOpen ? 'filter-on' : 'filter-off'}
+                          size="small"
+                          onClick={onToggleFilterOpen}
+                          tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
+                          tooltipPlacement="top"
+                        />
+                      </div>
+                    </ExpandedContainer>
+                  </>
+                )}
+              </>
             )}
             <Remove dataview={dataview} />
           </Fragment>
@@ -339,7 +345,7 @@ function VesselLayerPanel({
               tooltip={t('vessel.loadingInfo')}
             />
           )}
-          {infoError && (
+          {(infoError || trackError) && (
             <IconButton
               size="small"
               icon="warning"
@@ -347,6 +353,15 @@ function VesselLayerPanel({
               disabled
               tooltip={`${t('errors.vesselLoading')} (${vesselId})`}
               tooltipPlacement="top"
+            />
+          )}
+          {items.length > 1 && (
+            <IconButton
+              size="small"
+              ref={setActivatorNodeRef}
+              {...listeners}
+              icon="drag"
+              className={styles.dragger}
             />
           )}
         </div>
@@ -357,15 +372,6 @@ function VesselLayerPanel({
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />
-        {items.length > 1 && (
-          <IconButton
-            size="small"
-            ref={setActivatorNodeRef}
-            {...listeners}
-            icon="drag"
-            className={styles.dragger}
-          />
-        )}
       </div>
       {hasSchemaFilterSelection && layerActive && (
         <div className={styles.propertiesNoPaddingBlock}>

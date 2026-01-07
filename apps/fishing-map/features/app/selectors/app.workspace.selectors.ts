@@ -6,12 +6,16 @@ import { APP_NAME } from 'data/config'
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import {
   selectActivityCategory,
+  selectActivityVisualizationMode,
   selectAreMapAnnotationsVisible,
   selectAreMapRulersVisible,
   selectBivariateDataviews,
+  selectDetectionsVisualizationMode,
+  selectEnvironmentVisualizationMode,
   selectMapAnnotations,
   selectMapRulers,
   selectSidebarOpen,
+  selectVesselGroupsVisualizationMode,
   selectVisibleEvents,
 } from 'features/app/selectors/app.selectors'
 import {
@@ -34,6 +38,7 @@ import {
   selectReportActivityGraph,
   selectReportActivitySubCategorySelector,
   selectReportAreaBounds,
+  selectReportComparisonDataviewIds,
   selectReportDetectionsSubCategorySelector,
   selectReportEventsGraph,
   selectReportEventsPortsFilter,
@@ -79,6 +84,7 @@ const selectWorkspaceReportState = createSelector(
     selectReportEventsPortsFilter,
     selectReportEventsPortsPage,
     selectReportEventsPortsResultsPerPage,
+    selectReportComparisonDataviewIds,
   ],
   (
     reportActivityGraph,
@@ -104,7 +110,8 @@ const selectWorkspaceReportState = createSelector(
     reportEventsGraph,
     reportEventsPortsFilter,
     reportEventsPortsPage,
-    reportEventsPortsResultsPerPage
+    reportEventsPortsResultsPerPage,
+    reportComparisonDataviewIds
   ) => ({
     ...(reportActivityGraph && { reportActivityGraph }),
     ...(reportAreaBounds && { reportAreaBounds }),
@@ -130,6 +137,7 @@ const selectWorkspaceReportState = createSelector(
     ...(reportEventsPortsFilter && { reportEventsPortsFilter }),
     ...(reportEventsPortsPage && { reportEventsPortsPage }),
     ...(reportEventsPortsResultsPerPage && { reportEventsPortsResultsPerPage }),
+    ...(reportComparisonDataviewIds && { reportComparisonDataviewIds }),
   })
 )
 
@@ -148,7 +156,10 @@ const selectWorkspaceAppState = createSelector(
     selectVisibleEvents,
     selectWorkspaceReportState,
     selectDaysFromLatest,
-    selectWorkspaceReportState,
+    selectActivityVisualizationMode,
+    selectDetectionsVisualizationMode,
+    selectEnvironmentVisualizationMode,
+    selectVesselGroupsVisualizationMode,
   ],
   (
     activityCategory,
@@ -163,7 +174,11 @@ const selectWorkspaceAppState = createSelector(
     timebarVisualisation,
     visibleEvents,
     reportState,
-    daysFromLatest
+    daysFromLatest,
+    activityVisualizationMode,
+    detectionsVisualizationMode,
+    environmentVisualizationMode,
+    vesselGroupsVisualizationMode
   ) => {
     return {
       activityCategory,
@@ -177,6 +192,10 @@ const selectWorkspaceAppState = createSelector(
       timebarSelectedEnvId,
       timebarVisualisation,
       visibleEvents,
+      activityVisualizationMode,
+      detectionsVisualizationMode,
+      environmentVisualizationMode,
+      vesselGroupsVisualizationMode,
       ...reportState,
       daysFromLatest,
     }

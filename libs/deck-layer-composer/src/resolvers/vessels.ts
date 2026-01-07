@@ -1,3 +1,5 @@
+import { uniq } from 'es-toolkit'
+
 import { API_GATEWAY, GFWAPI } from '@globalfishingwatch/api-client'
 import type { EventTypes } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -16,10 +18,10 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
 ): VesselLayerProps => {
   const trackUrl = resolveDataviewDatasetResource(dataview, DatasetTypes.Tracks)?.url
   const { start, end, highlightedFeatures, visibleEvents, highlightedTime } = globalConfig
-  const highlightEventIds = [
+  const highlightEventIds = uniq([
     ...(globalConfig.highlightEventIds || []),
     ...(highlightedFeatures || []).map((feature) => feature.id),
-  ]
+  ])
   const strictTimeRange =
     dataview.config?.startDate !== undefined && dataview.config?.endDate !== undefined
   const startTime = getUTCDateTime(
@@ -40,6 +42,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     endTime: endTime,
     startTime: startTime,
     showVesselIcon: dataview.config?.showVesselIcon ?? true,
+    trackVisualizationMode: globalConfig.vesselTrackVisualizationMode || 'track',
     ...(dataview.config?.highlightEventStartTime && {
       highlightEventStartTime: getUTCDateTime(dataview.config.highlightEventStartTime).toMillis(),
     }),
@@ -55,6 +58,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     trackGraphExtent: globalConfig.trackGraphExtent,
     color: hexToDeckColor(dataview.config?.color as string),
     colorBy: globalConfig.vesselsColorBy,
+    maxTimeGapHours: globalConfig.vesselsMaxTimeGapHours,
     events: resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
       const eventType = resource.dataset?.subcategory as EventTypes
       return {
@@ -64,11 +68,9 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     }),
     visibleEvents: visibleEvents,
     highlightEventIds,
-    hoveredTime: (
-      globalConfig.highlightedFeatures?.find(
-        (f) => f.layerId === dataview.id
-      ) as VesselTrackPickingObject
-    )?.timestamp,
+    hoveredFeature: globalConfig.highlightedFeatures?.find(
+      (f) => f.layerId === dataview.id
+    ) as VesselTrackPickingObject,
     ...(dataview.config?.filters?.['speed']?.length && {
       minSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][0]),
       maxSpeedFilter: parseFloat(dataview.config?.filters?.['speed'][1]),

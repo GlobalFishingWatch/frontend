@@ -16,7 +16,7 @@ export type TileCell = Cell & {
   coordinates: [number[]]
 }
 
-export type FourwingsInterval = 'YEAR' | 'MONTH' | 'DAY' | 'HOUR'
+export type FourwingsInterval = 'YEAR' | 'MONTH' | 'DAY' | 'HOUR' // | 'WEEKDAY'
 type FourwingsAggregationOperation = 'sum' | 'avg'
 
 export type ParseFourwingsOptions = {
@@ -44,6 +44,11 @@ export type ParseFourwingsClustersOptions = Omit<
 > & {
   temporalAggregation?: boolean
 }
+export type FourwingsVectorsUnit = 'knots' | 'm/s' | 'km/h'
+export type ParseFourwingsVectorsOptions = Omit<
+  ParseFourwingsOptions,
+  'aggregationOperation' | 'sublayers' | 'buffersLength'
+> & { unit?: FourwingsVectorsUnit; temporalAggregation?: boolean }
 
 export type FourwingsLoaderOptions = LoaderOptions & {
   fourwings?: ParseFourwingsOptions
@@ -53,16 +58,23 @@ export type FourwingsClustersLoaderOptions = LoaderOptions & {
   fourwingsClusters?: ParseFourwingsClustersOptions
 }
 
+export type FourwingsVectorsLoaderOptions = LoaderOptions & {
+  fourwingsVectors?: ParseFourwingsVectorsOptions
+}
+
+export type FourwingsFeatureValues = number[][]
 export type FourwingsFeatureProperties = {
   id?: string
   initialValues: Record<string, number[]>
   startOffsets: number[]
-  dates: number[][]
-  values: number[][]
+  dates: FourwingsFeatureValues
+  values: FourwingsFeatureValues
   cellId: number
   cellNum: number
   col: number
   row: number
+  velocities?: number[]
+  directions?: number[]
 }
 
 export type FourwingsPositionFeatureProperties = {

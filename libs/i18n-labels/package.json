@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/i18n-labels",
-  "version": "1.2.264",
+  "version": "1.2.278",
   "main": "./index.js",
   "module": "./index.mjs",
   "typings": "./index.d.ts",
@@ -10,7 +10,7 @@
     "ts": "yarn ts:generate && yarn ts:lint"
   },
   "devDependencies": {
-    "i18next-resources-for-ts": "1.6.0"
+    "i18next-resources-for-ts": "1.7.4"
   },
   "files": [
     "en",
