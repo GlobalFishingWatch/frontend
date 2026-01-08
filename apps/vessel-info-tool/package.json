@@ -9,7 +9,11 @@
     "serve": "node .output/server/index.mjs"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-start": "^1.145.11",
+    "exceljs": "^4.4.0",
     "typescript": "^5.9.3",
-    "vite": "7.1.8"
+    "vite": "7.1.8",
+    "vite-tsconfig-paths": "^6.0.3"
   }
 }

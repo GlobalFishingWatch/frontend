@@ -17,6 +17,9 @@ export default defineConfig({
     commonjsOptions: {
       transformMixedEsModules: true,
     },
+    rollupOptions: {
+      external: ['exceljs'],
+    },
   },
   server: {
     port: 3000,
