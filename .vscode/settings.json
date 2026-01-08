@@ -55,14 +55,15 @@
   "typescript.suggest.autoImports": true,
   "editor.rulers": [140],
   "files.exclude": {
+    "**/dist": false,
+    "**/node_modules": false,
     "**/.git": true,
     "**/build": true,
     "**/coverage": true,
+    "**/.tanstack": true,
     "**/.next": true,
-    "**/dist": true,
     "**/.nx": true,
-    "**/.turbo": true,
-    "**/node_modules": true
+    "**/.turbo": true
   },
   "editor.formatOnSave": true, // auto format the file on each save
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
@@ -73,7 +74,14 @@
   },
   "search.exclude": {
     ".yarn": true,
-    "**/dist": true
+    "**/dist": true,
+    "**/.git": true,
+    "**/build": true,
+    "**/coverage": true,
+    "**/.tanstack": true,
+    "**/.next": true,
+    "**/.nx": true,
+    "**/.turbo": true
   },
   "eslint.experimental.useFlatConfig": true,
   "nxConsole.generateAiAgentRules": true
