@@ -1,8 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc",
+    "outDir": "../../dist/libs/datasets-client",
+    "declarationDir": "../../dist/libs/datasets-client",
+    "rootDir": ".",
     "declaration": true,
+    "composite": true,
+    "incremental": false,
     "types": ["node"]
   },
   "include": ["src/**/*.ts"],

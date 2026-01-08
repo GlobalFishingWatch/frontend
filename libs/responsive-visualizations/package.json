@@ -12,6 +12,7 @@
   "scripts": {},
   "main": "./index.cjs",
   "module": "./index.js",
+  "types": "./index.d.ts",
   "dependencies": {
     "@globalfishingwatch/api-types": "^8.0.3",
     "classnames": "2.x",

@@ -4,24 +4,24 @@
   "sourceRoot": "libs/pbf-decoders/src",
   "projectType": "library",
   "targets": {
-    "dist": {
+    "build": {
       "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
       "options": {
         "assets": [
           {
             "glob": "libs/pbf-decoders/decoders",
             "input": ".",
             "output": "."
-          }
+          },
+          { "glob": "**/*", "input": "libs/pbf-decoders/decoders", "output": "decoders" }
         ],
-        "compiler": "swc",
+        "compiler": "tsc",
         "format": ["esm", "cjs"],
         "main": "libs/pbf-decoders/index.ts",
         "outputPath": "dist/libs/pbf-decoders",
         "project": "libs/pbf-decoders/package.json",
-        "tsConfig": "libs/pbf-decoders/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false
+        "tsConfig": "libs/pbf-decoders/tsconfig.lib.json"
       }
     },
     "publish": {

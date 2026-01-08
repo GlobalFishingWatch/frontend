@@ -1,8 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc",
+    "outDir": "../../dist/libs/pbf-decoders",
+    "declarationDir": "../../dist/libs/pbf-decoders",
+    "rootDir": ".",
     "declaration": true,
+    "composite": true,
+    "incremental": false,
     "types": ["node"]
   },
   "include": ["decoders/**/*.ts", "index.ts"],

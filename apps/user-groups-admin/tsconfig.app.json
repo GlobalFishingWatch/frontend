@@ -19,5 +19,19 @@
     "src/**/*.spec.jsx",
     "src/**/*.test.jsx"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
+  "references": [
+    {
+      "path": "../../libs/api-types"
+    },
+    {
+      "path": "../../libs/api-client"
+    },
+    {
+      "path": "../../libs/ui-components"
+    },
+    {
+      "path": "../../libs/react-hooks"
+    }
+  ]
 }

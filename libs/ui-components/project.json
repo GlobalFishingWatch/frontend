@@ -5,13 +5,12 @@
   "projectType": "library",
   "tags": [],
   "targets": {
-    "dist": {
+    "build": {
       "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
       "options": {
         "outputPath": "dist/libs/ui-components",
         "tsConfig": "libs/ui-components/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false,
         "project": "libs/ui-components/package.json",
         "extractCss": false,
         "entryFile": "libs/ui-components/src/index.ts",

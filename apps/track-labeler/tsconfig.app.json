@@ -22,5 +22,34 @@
     "src/**/*.spec.jsx",
     "src/**/*.test.jsx"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
+  "references": [
+    {
+      "path": "../../libs/i18n-labels"
+    },
+    {
+      "path": "../../libs/data-transforms"
+    },
+    {
+      "path": "../../libs/deck-layer-composer"
+    },
+    {
+      "path": "../../libs/dataviews-client"
+    },
+    {
+      "path": "../../libs/api-client"
+    },
+    {
+      "path": "../../libs/deck-layers"
+    },
+    {
+      "path": "../../libs/api-types"
+    },
+    {
+      "path": "../../libs/timebar"
+    },
+    {
+      "path": "../../libs/ui-components"
+    }
+  ]
 }

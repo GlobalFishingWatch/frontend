@@ -74,5 +74,6 @@
     "**/resources.d.ts",
     "**/i18n.types.d.ts",
     "**/__traces__/**"
-  ]
+  ],
+  "references": []
 }

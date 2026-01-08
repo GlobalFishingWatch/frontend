@@ -3,6 +3,7 @@
   "version": "0.1.7",
   "main": "./index.cjs",
   "module": "./index.js",
+  "types": "./index.d.ts",
   "dependencies": {
     "@deck.gl-community/editable-layers": "9.1.1",
     "@deck.gl-community/layers": "9.1.1",

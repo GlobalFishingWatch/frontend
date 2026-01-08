@@ -4,18 +4,17 @@
   "sourceRoot": "libs/dataviews-client/src",
   "projectType": "library",
   "targets": {
-    "dist": {
+    "build": {
       "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
       "options": {
         "assets": [],
-        "compiler": "swc",
+        "compiler": "tsc",
         "format": ["esm", "cjs"],
         "main": "libs/dataviews-client/src/index.ts",
         "outputPath": "dist/libs/dataviews-client",
         "project": "libs/dataviews-client/package.json",
-        "tsConfig": "libs/dataviews-client/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false
+        "tsConfig": "libs/dataviews-client/tsconfig.lib.json"
       }
     },
     "bundle-url-workspace": {

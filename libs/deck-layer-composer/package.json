@@ -3,6 +3,7 @@
   "version": "0.1.13",
   "main": "./index.cjs",
   "module": "./index.js",
+  "types": "./index.d.ts",
   "dependencies": {
     "@globalfishingwatch/api-client": "^7.0.0",
     "@globalfishingwatch/api-types": "^8.0.3",

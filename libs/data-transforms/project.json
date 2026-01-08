@@ -4,18 +4,17 @@
   "sourceRoot": "libs/data-transforms/src",
   "projectType": "library",
   "targets": {
-    "dist": {
+    "build": {
       "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
       "options": {
         "assets": [],
-        "compiler": "swc",
+        "compiler": "tsc",
         "format": ["cjs", "esm"],
         "main": "libs/data-transforms/src/index.ts",
         "outputPath": "dist/libs/data-transforms",
         "project": "libs/data-transforms/package.json",
-        "tsConfig": "libs/data-transforms/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false
+        "tsConfig": "libs/data-transforms/tsconfig.lib.json"
       }
     },
     "publish": {

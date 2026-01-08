@@ -4,18 +4,17 @@
   "sourceRoot": "libs/api-types/src",
   "projectType": "library",
   "targets": {
-    "dist": {
+    "build": {
       "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
       "options": {
         "assets": [],
-        "compiler": "swc",
+        "compiler": "tsc",
         "format": ["esm", "cjs"],
         "main": "libs/api-types/src/index.ts",
         "outputPath": "dist/libs/api-types",
         "project": "libs/api-types/package.json",
-        "tsConfig": "libs/api-types/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false
+        "tsConfig": "libs/api-types/tsconfig.lib.json"
       }
     },
     "publish": {

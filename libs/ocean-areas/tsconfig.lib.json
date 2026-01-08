@@ -1,8 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc",
+    "outDir": "../../dist/libs/ocean-areas",
+    "declarationDir": "../../dist/libs/ocean-areas",
+    "rootDir": ".",
     "declaration": true,
+    "composite": true,
+    "incremental": false,
     "types": ["node"]
   },
   "include": ["src/**/*.ts"],

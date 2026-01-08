@@ -1,8 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc",
+    "outDir": "../../dist/libs/i18n-labels",
+    "declarationDir": "../../dist/libs/i18n-labels",
+    "rootDir": ".",
     "declaration": true,
+    "composite": true,
+    "incremental": false,
     "types": ["node"]
   },
   "include": ["source/**/*.json", "index.ts"],

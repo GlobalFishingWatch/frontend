@@ -1,8 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc",
+    "outDir": "../../dist/libs/ui-components",
+    "declarationDir": "../../dist/libs/ui-components",
+    "rootDir": ".",
     "declaration": true,
+    "composite": true,
+    "incremental": false,
     "types": ["node", "@nx/react/typings/cssmodule.d.ts", "@nx/react/typings/image.d.ts"]
   },
   "exclude": [

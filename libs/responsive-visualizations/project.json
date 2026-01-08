@@ -5,13 +5,12 @@
   "projectType": "library",
   "tags": [],
   "targets": {
-    "dist": {
+    "build": {
       "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
       "options": {
         "outputPath": "dist/libs/responsive-visualizations",
         "tsConfig": "libs/responsive-visualizations/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false,
         "project": "libs/responsive-visualizations/package.json",
         "extractCss": false,
         "entryFile": "libs/responsive-visualizations/src/index.ts",
