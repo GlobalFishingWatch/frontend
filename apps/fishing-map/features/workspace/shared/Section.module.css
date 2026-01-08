@@ -51,6 +51,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-XS);
+  min-height: calc(var(--size-SM) + 0.2rem);
 }
 
 .sectionButtons {
@@ -74,8 +75,7 @@
 }
 
 .containerCollapsed .sectionButtons {
-  visibility: hidden;
-  width: 0;
+  display: none;
 }
 
 .actionButtons {
@@ -88,8 +88,7 @@
   display: none;
 }
 
-.containerCollapsed .header,
-.containerExpanded .header {
+.containerCollapsed .header {
   cursor: pointer;
 }
 

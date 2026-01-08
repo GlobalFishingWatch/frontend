@@ -28,3 +28,7 @@
 .button {
   white-space: nowrap;
 }
+
+.tooltipContainer {
+  display: inline-flex;
+}
