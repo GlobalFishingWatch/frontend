@@ -7,6 +7,8 @@
     "declaration": true,
     "composite": true,
     "incremental": false,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "types": ["node", "@nx/react/typings/cssmodule.d.ts", "@nx/react/typings/image.d.ts"]
   },
   "exclude": [
@@ -20,5 +22,16 @@
     "src/**/*.spec.jsx",
     "src/**/*.test.jsx"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
+  "references": [
+    {
+      "path": "../react-hooks/tsconfig.lib.json"
+    },
+    {
+      "path": "../api-client/tsconfig.lib.json"
+    },
+    {
+      "path": "../api-types/tsconfig.lib.json"
+    }
+  ]
 }

@@ -27,7 +27,7 @@
             "output": "."
           }
         ],
-        "format": ["esm", "cjs"],
+        "format": ["esm"],
         "main": "libs/timebar/src/index.ts",
         "outputPath": "dist/libs/timebar",
         "project": "libs/timebar/package.json",

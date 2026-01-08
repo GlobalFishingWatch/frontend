@@ -10,7 +10,7 @@
       "options": {
         "assets": [],
         "compiler": "tsc",
-        "format": ["esm", "cjs"],
+        "format": ["esm"],
         "main": "libs/dataviews-client/src/index.ts",
         "outputPath": "dist/libs/dataviews-client",
         "project": "libs/dataviews-client/package.json",

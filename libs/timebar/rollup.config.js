@@ -1,9 +1,12 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-const nrwlConfig = require('@nx/react/plugins/bundle-rollup')
-const svgr = require('@svgr/rollup')
+import { createRequire } from 'module'
+
+import nrwlConfig from '@nx/react/plugins/bundle-rollup'
+import svgr from '@svgr/rollup'
+
+const require = createRequire(import.meta.url)
 const pkg = require('./package.json')
 
-module.exports = (config) => {
+export default (config) => {
   nrwlConfig(config)
   return {
     ...config,

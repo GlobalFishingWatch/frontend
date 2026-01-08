@@ -1,8 +1,13 @@
 {
   "name": "@globalfishingwatch/deck-layers",
   "version": "0.1.7",
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./index.esm.js",
+      "types": "./index.d.ts"
+    }
+  },
   "types": "./index.d.ts",
   "dependencies": {
     "@deck.gl-community/editable-layers": "9.1.1",

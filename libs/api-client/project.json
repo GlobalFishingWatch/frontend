@@ -10,7 +10,7 @@
       "options": {
         "assets": [],
         "compiler": "tsc",
-        "format": ["esm", "cjs"],
+        "format": ["esm"],
         "main": "libs/api-client/src/index.ts",
         "outputPath": "dist/libs/api-client",
         "project": "libs/api-client/package.json",

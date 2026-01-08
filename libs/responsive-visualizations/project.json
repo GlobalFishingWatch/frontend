@@ -15,7 +15,7 @@
         "extractCss": false,
         "entryFile": "libs/responsive-visualizations/src/index.ts",
         "external": ["countryflag"],
-        "format": ["esm", "cjs"],
+        "format": ["esm"],
         "rollupConfig": "libs/responsive-visualizations/rollup.config.js",
         "assets": [
           {

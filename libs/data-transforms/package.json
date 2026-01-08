@@ -3,8 +3,13 @@
   "version": "3.0.5",
   "license": "MIT",
   "description": "Utils to decode various data formats",
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./index.esm.js",
+      "types": "./index.d.ts"
+    }
+  },
   "types": "./index.d.ts",
   "dependencies": {
     "@globalfishingwatch/api-types": "^8.0.3",

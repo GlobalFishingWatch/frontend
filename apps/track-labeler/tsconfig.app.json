@@ -25,31 +25,31 @@
   "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
   "references": [
     {
-      "path": "../../libs/i18n-labels"
+      "path": "../../libs/i18n-labels/tsconfig.lib.json"
     },
     {
-      "path": "../../libs/data-transforms"
+      "path": "../../libs/data-transforms/tsconfig.lib.json"
     },
     {
-      "path": "../../libs/deck-layer-composer"
+      "path": "../../libs/deck-layer-composer/tsconfig.lib.json"
     },
     {
-      "path": "../../libs/dataviews-client"
+      "path": "../../libs/dataviews-client/tsconfig.lib.json"
     },
     {
-      "path": "../../libs/api-client"
+      "path": "../../libs/api-client/tsconfig.lib.json"
     },
     {
-      "path": "../../libs/deck-layers"
+      "path": "../../libs/deck-layers/tsconfig.lib.json"
     },
     {
-      "path": "../../libs/api-types"
+      "path": "../../libs/api-types/tsconfig.lib.json"
     },
     {
-      "path": "../../libs/timebar"
+      "path": "../../libs/timebar/tsconfig.lib.json"
     },
     {
-      "path": "../../libs/ui-components"
+      "path": "../../libs/ui-components/tsconfig.lib.json"
     }
   ]
 }

@@ -10,7 +10,7 @@
       "options": {
         "assets": [],
         "compiler": "tsc",
-        "format": ["esm", "cjs"],
+        "format": ["esm"],
         "main": "libs/datasets-client/src/index.ts",
         "outputPath": "dist/libs/datasets-client",
         "project": "libs/datasets-client/package.json",

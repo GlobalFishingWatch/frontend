@@ -12,8 +12,13 @@
   "scripts": {
     "prerender": "ts-node -P tsconfig.node.json src/header/render-html.tsx"
   },
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./index.esm.js",
+      "types": "./index.d.ts"
+    }
+  },
   "types": "./index.d.ts",
   "dependencies": {
     "@floating-ui/react": "0.x",

@@ -9,8 +9,14 @@
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./index.esm.js",
+      "types": "./index.d.ts"
+    }
+  },
+  "types": "./index.d.ts",
   "dependencies": {
     "@globalfishingwatch/api-types": "^8.0.3",
     "@globalfishingwatch/pbf-decoders": "^3.0.5",

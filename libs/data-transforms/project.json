@@ -10,7 +10,7 @@
       "options": {
         "assets": [],
         "compiler": "tsc",
-        "format": ["cjs", "esm"],
+        "format": ["esm"],
         "main": "libs/data-transforms/src/index.ts",
         "outputPath": "dist/libs/data-transforms",
         "project": "libs/data-transforms/package.json",

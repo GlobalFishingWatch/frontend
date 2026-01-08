@@ -17,7 +17,7 @@
           { "glob": "**/*", "input": "libs/pbf-decoders/decoders", "output": "decoders" }
         ],
         "compiler": "tsc",
-        "format": ["esm", "cjs"],
+        "format": ["esm"],
         "main": "libs/pbf-decoders/index.ts",
         "outputPath": "dist/libs/pbf-decoders",
         "project": "libs/pbf-decoders/package.json",

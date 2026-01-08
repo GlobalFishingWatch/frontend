@@ -15,7 +15,7 @@
         "extractCss": false,
         "entryFile": "libs/ui-components/src/index.ts",
         "external": ["countryflag"],
-        "format": ["esm", "cjs"],
+        "format": ["esm"],
         "rollupConfig": "libs/ui-components/rollup.config.js",
         "assets": [
           {

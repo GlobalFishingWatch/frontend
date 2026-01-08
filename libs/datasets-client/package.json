@@ -4,8 +4,13 @@
   "description": "",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./index.esm.js",
+      "types": "./index.d.ts"
+    }
+  },
   "types": "./index.d.ts",
   "repository": {
     "type": "git",

@@ -10,7 +10,7 @@
       "options": {
         "assets": [],
         "compiler": "tsc",
-        "format": ["esm", "cjs"],
+        "format": ["esm"],
         "main": "libs/deck-layers/src/index.ts",
         "outputPath": "dist/libs/deck-layers",
         "project": "libs/deck-layers/package.json",

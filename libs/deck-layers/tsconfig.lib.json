@@ -7,8 +7,24 @@
     "declaration": true,
     "composite": true,
     "incremental": false,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "types": ["node"]
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
+  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"],
+  "references": [
+    {
+      "path": "../data-transforms/tsconfig.lib.json"
+    },
+    {
+      "path": "../deck-loaders/tsconfig.lib.json"
+    },
+    {
+      "path": "../api-types/tsconfig.lib.json"
+    },
+    {
+      "path": "../api-client/tsconfig.lib.json"
+    }
+  ]
 }
