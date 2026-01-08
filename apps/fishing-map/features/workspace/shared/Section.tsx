@@ -42,7 +42,7 @@ function Section({
   }, [collapsed, collapsedSections, dispatchQueryParams, id])
 
   return (
-    <div
+    <section
       className={cx(styles.container, {
         'print-hidden': !hasVisibleDataviews,
         [styles.containerCollapsed]: collapsed,
@@ -50,9 +50,9 @@ function Section({
       })}
     >
       <div className={cx(styles.header, 'print-hidden')}>
-        <span className={styles.sectionTitle} onClick={onCollapse}>
+        <h2 className={styles.sectionTitle} onClick={onCollapse}>
           {title}
-        </span>
+        </h2>
         <IconButton
           icon={collapsed ? 'section-expand' : 'section-collapse'}
           type="default"
@@ -63,7 +63,7 @@ function Section({
         {headerOptions}
       </div>
       {!collapsed && <div className={styles.content}>{children}</div>}
-    </div>
+    </section>
   )
 }
 

@@ -48,6 +48,9 @@
   margin: 0;
   text-transform: uppercase;
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
 }
 
 .sectionButtons {
@@ -75,16 +78,27 @@
   width: 0;
 }
 
+.actionButtons {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
 .containerCollapsed .actionButtons {
   display: none;
 }
 
-.containerCollapsed .header {
+.containerCollapsed .header,
+.containerExpanded .header {
   cursor: pointer;
 }
 
-.containerExpanded .header {
-  cursor: pointer;
+.containerCollapsed .layersCount {
+  display: inline;
+}
+
+.containerExpanded .layersCount {
+  display: none;
 }
 
 .container:hover .sectionButtonsSecondary {

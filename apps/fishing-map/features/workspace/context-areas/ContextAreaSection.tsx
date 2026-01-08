@@ -20,6 +20,8 @@ import Section from '../shared/Section'
 
 import LayerPanel from './ContextAreaLayerPanel'
 
+import styles from 'features/workspace/shared/Section.module.css'
+
 function ContextAreaSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -28,7 +30,8 @@ function ContextAreaSection(): React.ReactElement<any> {
   const dataviewsGrouped = useSelector(selectContextAreasDataviewsGrouped)
   const allDataviews = Object.values(dataviewsGrouped)
   const dataviews = allDataviews.flat()
-  const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
+  const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
+  const hasVisibleDataviews = visibleDataviews.length >= 1
 
   const userDatasets = useSelector(selectUserContextDatasets)
 
@@ -61,7 +64,14 @@ function ContextAreaSection(): React.ReactElement<any> {
     <Section
       id={DataviewCategory.Context}
       data-testid="context-areas-section"
-      title={t('common.context_areas')}
+      title={
+        <span>
+          {t('common.context_areas')}
+          {hasVisibleDataviews && (
+            <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
+          )}
+        </span>
+      }
       hasVisibleDataviews={hasVisibleDataviews}
       headerOptions={
         !readOnly ? (

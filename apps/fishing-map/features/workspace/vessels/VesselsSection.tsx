@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
@@ -74,7 +74,8 @@ function VesselsSection(): React.ReactElement<any> {
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vesselTracksData = useTimebarVesselTracksData()
   const hasVesselsWithNoTrack = hasTracksWithNoData(vesselTracksData)
-  const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
+  const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
+  const hasVisibleDataviews = visibleDataviews.length >= 1
   const searchAllowed = useSelector(isBasicSearchAllowed)
   const someVesselsVisible = activeDataviews.length > 0
   const readOnly = useSelector(selectReadOnly)
@@ -182,7 +183,7 @@ function VesselsSection(): React.ReactElement<any> {
       data-testid="vessels-section"
       hasVisibleDataviews={hasVisibleDataviews}
       title={
-        <>
+        <Fragment>
           {dataviews.length > 1 && (
             <span
               role="button"
@@ -206,8 +207,10 @@ function VesselsSection(): React.ReactElement<any> {
             </span>
           )}{' '}
           {t('common.vessels')}
-          {` (${dataviews.length})`}
-        </>
+          {hasVisibleDataviews && (
+            <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
+          )}
+        </Fragment>
       }
       headerOptions={
         <>
