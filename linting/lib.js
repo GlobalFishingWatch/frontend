@@ -64,6 +64,8 @@ export const config = {
   rules: {
     ...reactPlugin.configs['jsx-runtime'].rules,
     ...reactHooksPlugin.configs.recommended.rules,
+    'react-hooks/preserve-manual-memoization': 'warn',
+    'react-hooks/set-state-in-effect': 'warn',
     'import/default': 0,
     'import/no-unresolved': 0,
     'import/no-named-as-default': 0,

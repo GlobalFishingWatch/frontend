@@ -71,6 +71,8 @@ module.exports = tseslint.config({
     ...reactHooksPlugin.configs.recommended.rules,
     ...nextPlugin.configs.recommended.rules,
     ...nextPlugin.configs['core-web-vitals'].rules,
+    'react-hooks/preserve-manual-memoization': 'warn',
+    'react-hooks/set-state-in-effect': 'warn',
     'import/default': 0,
     'import/no-unresolved': 0,
     'import/no-named-as-default': 0,
