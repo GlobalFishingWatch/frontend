@@ -38,7 +38,7 @@
         },
         "outputPath": "dist/libs/deck-loaders/workers",
         "generateExportsField": true,
-        "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
+        "tsConfig": "libs/deck-loaders/tsconfig.workers.json",
         "watch": false,
         "target": "esnext",
         "platform": "browser",
