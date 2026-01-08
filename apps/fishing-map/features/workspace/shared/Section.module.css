@@ -61,8 +61,38 @@
   transition: var(--transition);
 }
 
+.collapseButton {
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.containerCollapsed .content {
+  display: none;
+}
+
+.containerCollapsed .sectionButtons {
+  visibility: hidden;
+  width: 0;
+}
+
+.containerCollapsed .actionButtons {
+  display: none;
+}
+
+.containerCollapsed .header {
+  cursor: pointer;
+}
+
+.containerExpanded .header {
+  cursor: pointer;
+}
+
 .container:hover .sectionButtonsSecondary {
   opacity: 1;
+}
+
+.container:hover .collapseButton {
+  opacity: var(--opacity-secondary);
 }
 
 .emptyState,

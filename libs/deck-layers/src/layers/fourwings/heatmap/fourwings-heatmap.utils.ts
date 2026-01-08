@@ -1,5 +1,5 @@
 import type { Color } from '@deck.gl/core'
-import type { TileIndex } from '@deck.gl/geo-layers/dist/tileset-2d/types'
+import type { _TileLoadProps as TileLoadProps } from '@deck.gl/geo-layers'
 import { DateTime } from 'luxon'
 import { stringify } from 'qs'
 
@@ -140,7 +140,7 @@ function stringHash(s: string): number {
 export function getURLFromTemplate(
   template: string | string[],
   tile: {
-    index: TileIndex
+    index: TileLoadProps['index']
     id: string
   }
 ): string {
@@ -169,7 +169,7 @@ export function getURLFromTemplate(
 
 type GetDataUrlParams = {
   tile: {
-    index: TileIndex
+    index: TileLoadProps['index']
     id: string
   }
   chunk: FourwingsChunk

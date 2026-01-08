@@ -2,8 +2,11 @@ import type { DefaultProps, LayerContext, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { DataFilterExtensionProps } from '@deck.gl/extensions'
 import { ClipExtension, DataFilterExtension } from '@deck.gl/extensions'
-import type { GeoBoundingBox, TileLayerProps } from '@deck.gl/geo-layers'
-import type { Tile2DHeader } from '@deck.gl/geo-layers/dist/tileset-2d'
+import type {
+  _Tile2DHeader as Tile2DHeader,
+  GeoBoundingBox,
+  TileLayerProps,
+} from '@deck.gl/geo-layers'
 import type { GeoJsonProperties } from 'geojson'
 import type { Entries } from 'type-fest'
 

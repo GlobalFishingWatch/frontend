@@ -104,11 +104,11 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   ...DEFAULT_VIEWPORT,
   activityVisualizationMode: 'heatmap',
   bivariateDataviews: null,
+  collapsedSections: [],
   dataviewInstances: undefined,
   daysFromLatest: undefined,
   detectionsVisualizationMode: 'heatmap',
   environmentVisualizationMode: 'heatmap-low-res',
-  vesselGroupsVisualizationMode: 'footprint',
   mapAnnotationsVisible: true,
   mapRulersVisible: true,
   readOnly: false,
@@ -117,6 +117,7 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   timebarGraph: TimebarGraphs.None,
   timebarVisualisation: TimebarVisualisations.HeatmapActivity,
   userTab: UserTab.Info,
+  vesselGroupsVisualizationMode: 'footprint',
   visibleEvents: 'all',
 }
 

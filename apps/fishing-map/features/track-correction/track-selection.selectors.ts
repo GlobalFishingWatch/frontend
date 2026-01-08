@@ -54,7 +54,12 @@ export const selectTrackCorrectionIssues = createSelector(
   [selectAllTrackCorrectionIssues, selectTimeRange],
   (trackCorrectionIssues, timeRange) => {
     return trackCorrectionIssues?.filter((issue) => {
-      return issue.startDate >= timeRange.start && issue.endDate <= timeRange.end
+      return (
+        issue.startDate &&
+        issue.endDate &&
+        issue.startDate >= timeRange.start &&
+        issue.endDate <= timeRange.end
+      )
     })
   }
 )

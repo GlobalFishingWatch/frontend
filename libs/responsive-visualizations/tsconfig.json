@@ -4,7 +4,8 @@
     "allowJs": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true
+    "strict": true,
+    "moduleResolution": "bundler"
   },
   "files": [],
   "include": [],

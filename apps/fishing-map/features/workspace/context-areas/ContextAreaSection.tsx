@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
-import cx from 'classnames'
 
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { getMergedDataviewId, type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -17,10 +16,9 @@ import { selectUserContextDatasets } from 'features/user/selectors/user.permissi
 import { getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
+import Section from '../shared/Section'
 
 import LayerPanel from './ContextAreaLayerPanel'
-
-import styles from 'features/workspace/shared/Sections.module.css'
 
 function ContextAreaSection(): React.ReactElement<any> {
   const { t } = useTranslation()
@@ -60,10 +58,13 @@ function ContextAreaSection(): React.ReactElement<any> {
     []
   )
   return (
-    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={styles.header}>
-        <h2 className={cx('print-hidden', styles.sectionTitle)}>{t('common.context_areas')}</h2>
-        {!readOnly && (
+    <Section
+      id={DataviewCategory.Context}
+      data-testid="context-areas-section"
+      title={t('common.context_areas')}
+      hasVisibleDataviews={hasVisibleDataviews}
+      headerOptions={
+        !readOnly ? (
           <IconButton
             icon="plus"
             type="border"
@@ -73,8 +74,9 @@ function ContextAreaSection(): React.ReactElement<any> {
             className="print-hidden"
             onClick={onAdd}
           />
-        )}
-      </div>
+        ) : null
+      }
+    >
       <SortableContext items={allDataviews.flat()}>
         {allDataviews.map((dataviews) => {
           if (!dataviews?.length) return null
@@ -94,7 +96,7 @@ function ContextAreaSection(): React.ReactElement<any> {
           ))
         })}
       </SortableContext>
-    </div>
+    </Section>
   )
 }
 
