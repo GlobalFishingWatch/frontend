@@ -7,6 +7,7 @@ import { uniq } from 'es-toolkit'
 import type { DataviewCategory } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
+import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 
 import { selectCollapsedSections } from '../workspace.selectors'
@@ -30,7 +31,8 @@ function Section({
 }: SectionProps): React.ReactElement<any> {
   const { dispatchQueryParams } = useLocationConnect()
   const collapsedSections = useSelector(selectCollapsedSections)
-  const collapsed = collapsedSections.includes(id)
+  const screenshotModalOpen = useSelector(selectScreenshotModalOpen)
+  const collapsed = screenshotModalOpen ? false : collapsedSections.includes(id)
 
   const onCollapse = useCallback(() => {
     const newCollapsedSections = collapsed
@@ -60,7 +62,7 @@ function Section({
         />
         {headerOptions}
       </div>
-      <div className={styles.content}>{children} </div>
+      {!collapsed && <div className={styles.content}>{children}</div>}
     </div>
   )
 }
