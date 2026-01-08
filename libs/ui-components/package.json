@@ -17,6 +17,7 @@
   "dependencies": {
     "@floating-ui/react": "0.x",
     "@globalfishingwatch/api-types": "^8.0.3",
+    "@globalfishingwatch/api-client": "^7.0.0",
     "countryflag": "5.x",
     "d3-format": "3.x",
     "d3-geo": "3.x",

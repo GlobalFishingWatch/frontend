@@ -7,6 +7,7 @@
   "main": "./index.cjs",
   "module": "./index.js",
   "dependencies": {
+    "@globalfishingwatch/api-client": "^7.0.0",
     "@globalfishingwatch/api-types": "^8.0.3",
     "@globalfishingwatch/dataviews-client": "^17.0.7",
     "@globalfishingwatch/deck-loaders": "^0.1.3",
