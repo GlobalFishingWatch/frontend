@@ -101,6 +101,7 @@ function ExpandableRow({ rowId }: ExpandableRowProps) {
               trackDatasetId={vesselMatch.track}
               highlightedYear={highlightedYear}
               onDataLoad={onTrackFootprintLoad}
+              errorMsg={t('vessel.noTrackAvailable')}
             />
           )}
         </div>

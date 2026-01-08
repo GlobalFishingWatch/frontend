@@ -344,6 +344,7 @@ function SearchBasicResult({
             trackDatasetId={track}
             highlightedYear={highlightedYear}
             onDataLoad={onTrackFootprintLoad}
+            errorMsg={t('vessel.noTrackAvailable')}
           />
         )}
       </div>

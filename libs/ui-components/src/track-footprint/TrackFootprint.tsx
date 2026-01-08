@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import area from '@turf/area'
 import bbox from '@turf/bbox'
 import bboxPolygon from '@turf/bbox-polygon'
@@ -23,6 +22,7 @@ type TrackFootprintProps = {
   highlightedYear?: number
   onDataLoad?: (data: FeatureCollection) => void
   className?: string
+  errorMsg?: string
 }
 
 const FOOTPRINT_WIDTH = 300
@@ -42,8 +42,8 @@ export function TrackFootprint({
   highlightedYear,
   onDataLoad,
   className,
+  errorMsg = 'No track data available',
 }: TrackFootprintProps) {
-  const { t } = useTranslation()
   const [trackData, setTrackData] = useState<FeatureCollection<Geometry, GeoJsonProperties>>()
   const [lastPosition, setLastPosition] = useState<Point>()
   const [error, setError] = useState(false)
@@ -56,7 +56,7 @@ export function TrackFootprint({
   const footprintWidth = FOOTPRINT_WIDTH * densityMultiplier
   const footprintHeight = FOOTPRINT_HEIGHT * densityMultiplier
   const fullContext = fullCanvasRef.current?.getContext('2d')
-  const highlightContext = highlightCanvasRef.current?.getContext('2d')
+  const highlightContext = useMemo(() => highlightCanvasRef.current?.getContext('2d'), [])
 
   const projection = useMemo(
     () =>
@@ -203,7 +203,7 @@ export function TrackFootprint({
   ])
 
   return (
-    <Tooltip content={error && t('vessel.noTrackAvailable')}>
+    <Tooltip content={error && errorMsg}>
       <div className={cx(styles.map, className)}>
         <canvas
           className={cx(styles.canvas, { [styles.faint]: highlightedYear })}
