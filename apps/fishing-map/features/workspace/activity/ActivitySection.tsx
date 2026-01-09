@@ -110,6 +110,7 @@ function ActivitySection(): React.ReactElement<any> {
     <Section
       id={DataviewCategory.Activity}
       data-testid="activity-section"
+      className="hover-target"
       title={
         <span>
           {t('common.activity')}

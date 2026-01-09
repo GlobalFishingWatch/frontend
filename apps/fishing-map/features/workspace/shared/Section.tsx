@@ -21,6 +21,7 @@ interface SectionProps {
   hasVisibleDataviews: boolean
   children: JSX.Element | JSX.Element[]
   headerOptions: JSX.Element | JSX.Element[] | null
+  className?: string
 }
 
 function Section({
@@ -29,6 +30,7 @@ function Section({
   hasVisibleDataviews,
   children,
   headerOptions,
+  className,
 }: SectionProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
@@ -45,11 +47,15 @@ function Section({
 
   return (
     <section
-      className={cx(styles.container, {
-        'print-hidden': !hasVisibleDataviews,
-        [styles.containerCollapsed]: collapsed,
-        [styles.containerExpanded]: !collapsed,
-      })}
+      className={cx(
+        styles.container,
+        {
+          'print-hidden': !hasVisibleDataviews,
+          [styles.containerCollapsed]: collapsed,
+          [styles.containerExpanded]: !collapsed,
+        },
+        className
+      )}
     >
       <div className={cx(styles.header, 'print-hidden')}>
         <Tooltip content={collapsed ? t('common.expandSection') : ''} placement="top-start">
