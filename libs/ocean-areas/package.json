@@ -5,10 +5,11 @@
   "exports": {
     ".": {
       "import": "./index.esm.js",
-      "types": "./index.d.ts"
+      "types": "./src/index.d.ts"
     }
   },
-  "types": "./index.d.ts",
+  "main": "./index.esm.js",
+  "types": "./src/index.d.ts",
   "scripts": {
     "mpas": "ts-node -P tsconfig.json src/scripts/mpas.ts",
     "fao": "ts-node -P tsconfig.json src/scripts/fao.ts",
@@ -31,9 +32,10 @@
     "@turf/nearest-point": "7.x",
     "@turf/simplify": "7.x",
     "@turf/truncate": "7.x",
+    "dotenv": "17.x",
+    "es-toolkit": "1.x",
     "geojson": "0.x",
-    "lodash": "4.x",
-    "match-sorter": "6.x"
+    "match-sorter": "8.x"
   },
   "devDependencies": {
     "@types/lodash": "4.x",

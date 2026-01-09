@@ -3,10 +3,10 @@
   "compilerOptions": {
     "outDir": "../../dist/libs/timebar",
     "declarationDir": "../../dist/libs/timebar",
-    "rootDir": ".",
+    "rootDir": "src",
     "declaration": true,
-    "composite": true,
-    "incremental": false,
+
+    "tsBuildInfoFile": "../../.nx/tsbuildinfo/timebar.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node", "@nx/react/typings/cssmodule.d.ts", "@nx/react/typings/image.d.ts"]
@@ -22,28 +22,5 @@
     "src/**/*.spec.jsx",
     "src/**/*.test.jsx"
   ],
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "references": [
-    {
-      "path": "../deck-layers/tsconfig.lib.json"
-    },
-    {
-      "path": "../data-transforms/tsconfig.lib.json"
-    },
-    {
-      "path": "../ui-components/tsconfig.lib.json"
-    },
-    {
-      "path": "../deck-loaders/tsconfig.lib.json"
-    },
-    {
-      "path": "../dataviews-client/tsconfig.lib.json"
-    },
-    {
-      "path": "../api-types/tsconfig.lib.json"
-    },
-    {
-      "path": "../api-client/tsconfig.lib.json"
-    }
-  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }

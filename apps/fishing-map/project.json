@@ -44,7 +44,6 @@
           "nx run fishing-map:i18n:types:watch",
           "nx clean-locales fishing-map",
           "nx prepare-loaders fishing-map",
-          "nx watch-deps fishing-map",
           "nx serve i18n-labels",
           "nx serve fishing-map --hostname=0.0.0.0"
         ],

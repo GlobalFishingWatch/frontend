@@ -7,17 +7,21 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./index.esm.js",
+      "import": "./index.js",
       "types": "./index.d.ts"
     }
   },
+  "main": "./index.js",
   "types": "./index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
   "dependencies": {
+    "@globalfishingwatch/api-client": "^7.0.0",
     "@globalfishingwatch/api-types": "^8.0.3",
-    "d3-scale": "4.x"
+    "d3-scale": "4.x",
+    "es-toolkit": "1.x",
+    "luxon": "3.x"
   }
 }

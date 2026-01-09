@@ -5,12 +5,12 @@ import { PathLayer, SolidPolygonLayer } from '@deck.gl/layers'
 import type { Feature } from 'geojson'
 
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import { getLayerGroupOffset, HEATMAP_ID, LayerGroup } from '@globalfishingwatch/deck-layers'
 import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 
-import { COLOR_TRANSPARENT, hexToDeckColor } from '../../../utils'
+import { COLOR_TRANSPARENT, getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../../utils'
 import type { FourwingsHeatmapPickingObject, FourwingsVectorsLayerProps } from '../fourwings.types'
+import { HEATMAP_ID } from '../fourwings.config'
 import { FourwingsAggregationOperation } from '../heatmap/fourwings-heatmap.types'
 import {
   aggregateSublayerValues,

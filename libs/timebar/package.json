@@ -7,29 +7,34 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./index.esm.js",
+      "import": "./index.js",
       "types": "./index.d.ts"
     }
   },
+  "main": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "@globalfishingwatch/api-client": "^7.0.0",
+    "@deck.gl/core": "9.x",
+    "@deck.gl/layers": "9.x",
+    "@deck.gl/react": "9.x",
     "@globalfishingwatch/api-types": "^8.0.3",
+    "@globalfishingwatch/data-transforms": "^3.0.5",
     "@globalfishingwatch/dataviews-client": "^17.0.7",
+    "@globalfishingwatch/deck-layers": "^0.1.7",
     "@globalfishingwatch/deck-loaders": "^0.1.3",
     "@globalfishingwatch/ui-components": "^14.0.9",
     "classnames": "2.x",
     "d3-array": "3.x",
     "d3-scale": "4.x",
     "d3-shape": "3.x",
+    "jotai": "2.x",
     "lodash": "4.x",
     "luxon": "3.x",
     "memoize-one": "6.x",
-    "react-dom": "18.x",
-    "react": "18.x",
-    "simple-statistics": "7.x",
+    "react": "19.x",
+    "react-dom": "19.x",
+    "resize-observer-polyfill": "1.x",
     "use-debounce": "10.x",
-    "jotai": "2.x",
-    "resize-observer-polyfill": "1.x"
+    "tslib": "2.x"
   }
 }

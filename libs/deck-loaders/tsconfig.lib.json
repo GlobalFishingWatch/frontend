@@ -3,19 +3,14 @@
   "compilerOptions": {
     "outDir": "../../dist/libs/deck-loaders",
     "declarationDir": "../../dist/libs/deck-loaders",
-    "rootDir": ".",
+    "rootDir": "src",
     "declaration": true,
-    "composite": true,
-    "incremental": false,
+
+    "tsBuildInfoFile": "../../.nx/tsbuildinfo/deck-loaders.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"],
-  "references": [
-    {
-      "path": "../api-types/tsconfig.lib.json"
-    }
-  ]
+  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
 }

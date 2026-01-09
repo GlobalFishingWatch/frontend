@@ -3,22 +3,14 @@
   "compilerOptions": {
     "outDir": "../../dist/libs/api-client",
     "declarationDir": "../../dist/libs/api-client",
-    "rootDir": ".",
+    "rootDir": "src",
     "declaration": true,
-    "composite": true,
-    "incremental": false,
+
+    "tsBuildInfoFile": "../../.nx/tsbuildinfo/api-client.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"],
-  "references": [
-    {
-      "path": "../pbf-decoders/tsconfig.lib.json"
-    },
-    {
-      "path": "../api-types/tsconfig.lib.json"
-    }
-  ]
+  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
 }

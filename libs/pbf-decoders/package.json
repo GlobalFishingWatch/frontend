@@ -4,10 +4,11 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./index.esm.js",
+      "import": "./index.js",
       "types": "./index.d.ts"
     }
   },
+  "main": "./index.js",
   "types": "./index.d.ts",
   "scripts": {
     "decoders": "yarn build:prepare && yarn build:pb:vessels:js && yarn build:pb:vessels:ts && yarn build:pb:4wings-tile:js && yarn build:pb:4wings-tile:ts && yarn lint",
@@ -20,7 +21,8 @@
     "prepublish": "yarn build"
   },
   "dependencies": {
-    "long": "x"
+    "long": "5.x",
+    "protobufjs": "^8.0.0"
   },
   "devDependencies": {
     "make-dir-cli": "^4.0.0",

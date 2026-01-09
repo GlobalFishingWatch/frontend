@@ -16,7 +16,7 @@
         "host": "0.0.0.0"
       }
     },
-    "build": {
+    "dist": {
       "executor": "@nx/rollup:rollup",
       "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
       "options": {

@@ -4,17 +4,15 @@
   "sourceRoot": "libs/api-client/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
+    "dist": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "assets": [],
-        "compiler": "tsc",
-        "format": ["esm"],
-        "main": "libs/api-client/src/index.ts",
         "outputPath": "dist/libs/api-client",
-        "project": "libs/api-client/package.json",
-        "tsConfig": "libs/api-client/tsconfig.lib.json"
+        "main": "libs/api-client/src/index.ts",
+        "tsConfig": "libs/api-client/tsconfig.lib.json",
+        "assets": ["libs/api-client/package.json", "libs/api-client/README.md"],
+        "rootDir": "libs/api-client/src"
       }
     },
     "publish": {

@@ -4,17 +4,15 @@
   "sourceRoot": "libs/datasets-client/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
+    "dist": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "assets": [],
-        "compiler": "tsc",
-        "format": ["esm"],
-        "main": "libs/datasets-client/src/index.ts",
         "outputPath": "dist/libs/datasets-client",
-        "project": "libs/datasets-client/package.json",
-        "tsConfig": "libs/datasets-client/tsconfig.lib.json"
+        "main": "libs/datasets-client/src/index.ts",
+        "tsConfig": "libs/datasets-client/tsconfig.lib.json",
+        "assets": ["libs/datasets-client/package.json", "libs/datasets-client/README.md"],
+        "rootDir": "libs/datasets-client/src"
       }
     },
     "publish": {

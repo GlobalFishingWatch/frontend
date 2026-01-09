@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "incremental": true,
+    "tsBuildInfoFile": "../../.nx/tsbuildinfo/dataviews-client-url.tsbuildinfo",
     "declaration": false,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,

@@ -7,19 +7,19 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./index.esm.js",
+      "import": "./index.js",
       "types": "./index.d.ts"
     }
   },
+  "main": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
     "@globalfishingwatch/api-client": "^7.0.0",
     "@globalfishingwatch/api-types": "^8.0.3",
-    "@globalfishingwatch/dataviews-client": "^16.0.0",
-    "@mapbox/tilebelt": "1.x",
+    "es-toolkit": "1.x",
     "lodash": "4.x",
-    "usehooks-ts": "2.x",
-    "react": "18.x",
-    "react-ga4": "2.x"
+    "react": "19.x",
+    "react-ga4": "2.x",
+    "usehooks-ts": "3.x"
   }
 }

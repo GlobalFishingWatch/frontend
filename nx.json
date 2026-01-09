@@ -19,18 +19,8 @@
   },
   "plugins": [
     {
-      "plugin": "@nx/js/typescript",
-      "options": {
-        "typecheck": {
-          "targetName": "typecheck"
-        },
-        "build": {
-          "targetName": "build",
-          "configName": "tsconfig.lib.json",
-          "buildDepsName": "build-deps",
-          "watchDepsName": "watch-deps"
-        }
-      }
+      "plugin": "@nx/js",
+      "options": {}
     },
     {
       "plugin": "@nx/eslint/plugin",
@@ -63,12 +53,12 @@
     },
     "@nx/rollup:rollup": {
       "cache": true,
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "^dist"],
       "inputs": ["production", "^production"]
     },
     "@nx/esbuild:esbuild": {
       "cache": true,
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "^dist"],
       "inputs": ["production", "^production"]
     },
     "@nx/vite:build": {

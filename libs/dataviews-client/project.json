@@ -4,17 +4,15 @@
   "sourceRoot": "libs/dataviews-client/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
+    "dist": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "assets": [],
-        "compiler": "tsc",
-        "format": ["esm"],
-        "main": "libs/dataviews-client/src/index.ts",
         "outputPath": "dist/libs/dataviews-client",
-        "project": "libs/dataviews-client/package.json",
-        "tsConfig": "libs/dataviews-client/tsconfig.lib.json"
+        "main": "libs/dataviews-client/src/index.ts",
+        "tsConfig": "libs/dataviews-client/tsconfig.lib.json",
+        "assets": ["libs/dataviews-client/package.json", "libs/dataviews-client/README.md"],
+        "rootDir": "libs/dataviews-client/src"
       }
     },
     "bundle-url-workspace": {

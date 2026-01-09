@@ -3,7 +3,7 @@ import { CompositeLayer } from '@deck.gl/core'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import type { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
 
-import type { PolygonsLayerProps } from '@globalfishingwatch/deck-layers'
+import type { PolygonsLayerProps } from './polygons.types'
 
 import {
   COLOR_HIGHLIGHT_FILL,

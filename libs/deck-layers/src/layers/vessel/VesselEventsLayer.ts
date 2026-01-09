@@ -3,7 +3,7 @@ import { DataFilterExtension } from '@deck.gl/extensions'
 import { PathLayer } from '@deck.gl/layers'
 
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '@globalfishingwatch/deck-layers'
+import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
 import type { VesselDeckLayersEventData } from '@globalfishingwatch/deck-loaders'
 import { EVENTS_COLORS } from '@globalfishingwatch/deck-loaders'
 

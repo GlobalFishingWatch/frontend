@@ -7,13 +7,15 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./index.esm.js",
+      "import": "./index.js",
       "types": "./index.d.ts"
     }
   },
+  "main": "./index.js",
   "types": "./index.d.ts",
   "dependencies": {
-    "react": "18.x",
-    "geojson": "0.x"
+    "geojson": "0.x",
+    "react": "19.x",
+    "tslib": "2.x"
   }
 }

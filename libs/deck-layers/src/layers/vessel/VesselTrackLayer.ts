@@ -6,13 +6,7 @@ import * as geokdbush from 'geokdbush'
 import KDBush from 'kdbush'
 
 import { DataviewType, type TrackPoint, type TrackSegment } from '@globalfishingwatch/api-types'
-import {
-  COLOR_TRANSPARENT,
-  getLayerGroupOffset,
-  getSegmentsFromData,
-  type GetSegmentsFromDataParams,
-  LayerGroup,
-} from '@globalfishingwatch/deck-layers'
+import { COLOR_TRANSPARENT, getLayerGroupOffset, LayerGroup } from '../../utils'
 import type { VesselTrackData } from '@globalfishingwatch/deck-loaders'
 
 import type {
@@ -25,6 +19,7 @@ import type { VesselTrackPositionFeature } from './VesselPositionLayer'
 import { VesselTrackPositionLayer } from './VesselPositionLayer'
 import type { _VesselTrackPathLayerProps } from './VesselTrackPathLayer'
 import { VesselTrackPathLayer } from './VesselTrackPathLayer'
+import { getSegmentsFromData, type GetSegmentsFromDataParams } from './vessel.utils'
 
 export type VesselTrackLayerProps = Omit<_VesselTrackPathLayerProps, 'hoveredTime'> &
   LayerProps & {

@@ -3,10 +3,10 @@
   "compilerOptions": {
     "outDir": "../../dist/libs/ocean-areas",
     "declarationDir": "../../dist/libs/ocean-areas",
-    "rootDir": ".",
+    "rootDir": "src",
     "declaration": true,
-    "composite": true,
-    "incremental": false,
+
+    "tsBuildInfoFile": "../../.nx/tsbuildinfo/ocean-areas.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]

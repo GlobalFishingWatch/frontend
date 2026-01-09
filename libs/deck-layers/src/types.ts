@@ -1,7 +1,6 @@
 import type { Layer } from '@deck.gl/core'
 
 import type { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import type { PolygonPickingObject } from '@globalfishingwatch/deck-layers'
 
 import type { BaseMapLayer } from './layers/basemap/BasemapLayer'
 import type { ContextPickingInfo, ContextPickingObject } from './layers/context'
@@ -27,6 +26,7 @@ import type {
   VesselTrackPickingObject,
 } from './layers/vessel'
 import type { VesselLayer } from './layers/vessel/VesselLayer'
+import { PolygonPickingObject } from './layers/polygons'
 
 export type DeckLayerCategory = `${DataviewCategory}` | 'rulers' | 'draw'
 export type DeckLayerSubcategory = `${DataviewType}` | 'draw-polygons' | 'draw-points'

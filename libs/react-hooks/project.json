@@ -4,17 +4,15 @@
   "sourceRoot": "libs/react-hooks/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
+    "dist": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "assets": [],
-        "compiler": "tsc",
-        "format": ["esm"],
-        "main": "libs/react-hooks/src/index.ts",
         "outputPath": "dist/libs/react-hooks",
-        "project": "libs/react-hooks/package.json",
-        "tsConfig": "libs/react-hooks/tsconfig.lib.json"
+        "main": "libs/react-hooks/src/index.ts",
+        "tsConfig": "libs/react-hooks/tsconfig.lib.json",
+        "assets": ["libs/react-hooks/package.json", "libs/react-hooks/README.md"],
+        "rootDir": "libs/react-hooks/src"
       }
     },
     "publish": {

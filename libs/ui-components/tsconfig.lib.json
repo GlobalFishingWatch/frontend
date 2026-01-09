@@ -3,10 +3,10 @@
   "compilerOptions": {
     "outDir": "../../dist/libs/ui-components",
     "declarationDir": "../../dist/libs/ui-components",
-    "rootDir": ".",
+    "rootDir": "src",
     "declaration": true,
-    "composite": true,
-    "incremental": false,
+
+    "tsBuildInfoFile": "../../.nx/tsbuildinfo/ui-components.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node", "@nx/react/typings/cssmodule.d.ts", "@nx/react/typings/image.d.ts"]
@@ -22,16 +22,5 @@
     "src/**/*.spec.jsx",
     "src/**/*.test.jsx"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
-  "references": [
-    {
-      "path": "../react-hooks/tsconfig.lib.json"
-    },
-    {
-      "path": "../api-client/tsconfig.lib.json"
-    },
-    {
-      "path": "../api-types/tsconfig.lib.json"
-    }
-  ]
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx", "src/**/*.json"]
 }

@@ -4,17 +4,15 @@
   "sourceRoot": "libs/deck-layer-composer/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
+    "dist": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "assets": [],
-        "compiler": "tsc",
-        "format": ["esm"],
-        "main": "libs/deck-layer-composer/src/index.ts",
         "outputPath": "dist/libs/deck-layer-composer",
-        "project": "libs/deck-layer-composer/package.json",
-        "tsConfig": "libs/deck-layer-composer/tsconfig.lib.json"
+        "main": "libs/deck-layer-composer/src/index.ts",
+        "tsConfig": "libs/deck-layer-composer/tsconfig.lib.json",
+        "assets": ["libs/deck-layer-composer/package.json", "libs/deck-layer-composer/README.md"],
+        "rootDir": "libs/deck-layer-composer/src"
       }
     },
     "publish": {

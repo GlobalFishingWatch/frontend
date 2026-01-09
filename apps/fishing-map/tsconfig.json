@@ -45,7 +45,6 @@
       "@globalfishingwatch/timebar": ["../../libs/timebar/src/index.ts"],
       "@globalfishingwatch/ui-components": ["../../libs/ui-components/src/index.ts"]
     },
-    "incremental": true,
     "strictNullChecks": true,
     "plugins": [
       {
@@ -73,7 +72,19 @@
     "exported",
     "**/resources.d.ts",
     "**/i18n.types.d.ts",
-    "**/__traces__/**"
+    "**/__traces__/**",
+    "../../libs/**/*",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.js",
+    "**/*.spec.jsx",
+    "**/*.test.js",
+    "**/*.test.jsx",
+    "**/__tests__/**",
+    "**/__mocks__/**",
+    "**/coverage/**"
   ],
   "references": []
 }

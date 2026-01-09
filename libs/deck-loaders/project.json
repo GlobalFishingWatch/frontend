@@ -4,17 +4,15 @@
   "sourceRoot": "libs/deck-loaders/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
+    "dist": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "assets": [],
-        "compiler": "tsc",
-        "format": ["esm"],
-        "main": "libs/deck-loaders/src/index.ts",
         "outputPath": "dist/libs/deck-loaders",
-        "project": "libs/deck-loaders/package.json",
-        "tsConfig": "libs/deck-loaders/tsconfig.lib.json"
+        "main": "libs/deck-loaders/src/index.ts",
+        "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
+        "assets": ["libs/deck-loaders/package.json", "libs/deck-loaders/README.md"],
+        "rootDir": "libs/deck-loaders/src"
       }
     },
     "dist:workers": {
