@@ -5,35 +5,30 @@
   "projectType": "library",
   "targets": {
     "dist": {
-      "executor": "@nx/rollup:rollup",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "entryFile": "libs/timebar/src/index.ts",
-        "extractCss": true,
+        "outputPath": "dist/libs/timebar",
+        "main": "libs/timebar/src/index.ts",
+        "tsConfig": "libs/timebar/tsconfig.lib.json",
         "assets": [
           {
-            "glob": "libs/timebar/src/timebar-settings.css",
-            "input": ".",
+            "input": "libs/timebar",
+            "glob": "package.json",
             "output": "."
           },
           {
-            "glob": "libs/timebar/types",
-            "input": ".",
+            "input": "libs/timebar",
+            "glob": "README.md",
             "output": "."
           },
           {
-            "glob": "libs/timebar/index.d.ts",
-            "input": ".",
+            "glob": "**/*.css",
+            "input": "libs/timebar/src",
             "output": "."
           }
         ],
-        "format": ["esm", "cjs"],
-        "main": "libs/timebar/src/index.ts",
-        "outputPath": "dist/libs/timebar",
-        "project": "libs/timebar/package.json",
-        "rollupConfig": "libs/timebar/rollup.config.js",
-        "tsConfig": "libs/timebar/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false
+        "rootDir": "libs/timebar/src"
       }
     },
     "publish": {

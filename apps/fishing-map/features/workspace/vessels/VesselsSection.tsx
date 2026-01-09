@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { Fragment, useCallback, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
@@ -74,7 +74,8 @@ function VesselsSection(): React.ReactElement<any> {
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vesselTracksData = useTimebarVesselTracksData()
   const hasVesselsWithNoTrack = hasTracksWithNoData(vesselTracksData)
-  const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
+  const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
+  const hasVisibleDataviews = visibleDataviews.length >= 1
   const searchAllowed = useSelector(isBasicSearchAllowed)
   const someVesselsVisible = activeDataviews.length > 0
   const readOnly = useSelector(selectReadOnly)
@@ -182,7 +183,7 @@ function VesselsSection(): React.ReactElement<any> {
       data-testid="vessels-section"
       hasVisibleDataviews={hasVisibleDataviews}
       title={
-        <>
+        <Fragment>
           {dataviews.length > 1 && (
             <span
               role="button"
@@ -206,30 +207,30 @@ function VesselsSection(): React.ReactElement<any> {
             </span>
           )}{' '}
           {t('common.vessels')}
-          {` (${dataviews.length})`}
-        </>
+          {hasVisibleDataviews && (
+            <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
+          )}
+        </Fragment>
       }
       headerOptions={
         <>
-          {!readOnly && (
+          {!readOnly && activeDataviews.length > 0 && (
             <div
               className={cx(styles.sectionButtons, styles.sectionButtonsSecondary, 'print-hidden')}
             >
-              {activeDataviews.length > 0 && (
-                <VesselGroupAddButton
-                  vessels={vesselsToVesselGroup}
-                  onAddToVesselGroup={onAddToVesselGroupClick}
-                >
-                  <UserLoggedIconButton
-                    icon={'add-to-vessel-group'}
-                    loading={areVesselsLoading || isVesselGroupUpdating}
-                    disabled={areVesselsLoading || isVesselGroupUpdating}
-                    size="medium"
-                    tooltip={t('vesselGroup.addVisibleVessels')}
-                    tooltipPlacement="top"
-                  />
-                </VesselGroupAddButton>
-              )}
+              <VesselGroupAddButton
+                vessels={vesselsToVesselGroup}
+                onAddToVesselGroup={onAddToVesselGroupClick}
+              >
+                <UserLoggedIconButton
+                  icon={'add-to-vessel-group'}
+                  loading={areVesselsLoading || isVesselGroupUpdating}
+                  disabled={areVesselsLoading || isVesselGroupUpdating}
+                  size="medium"
+                  tooltip={t('vesselGroup.addVisibleVessels')}
+                  tooltipPlacement="top"
+                />
+              </VesselGroupAddButton>
               {dataviews.length > 1 && (
                 <IconButton
                   icon={sortOrder === 'DESC' ? 'sort-asc' : 'sort-desc'}
@@ -239,15 +240,13 @@ function VesselsSection(): React.ReactElement<any> {
                   onClick={onSetSortOrderClick}
                 />
               )}
-              {dataviews.length > 0 && (
-                <IconButton
-                  icon="delete"
-                  size="medium"
-                  tooltip={t('vessel.removeAllVessels')}
-                  tooltipPlacement="top"
-                  onClick={onDeleteAllClick}
-                />
-              )}
+              <IconButton
+                icon="delete"
+                size="medium"
+                tooltip={t('vessel.removeAllVessels')}
+                tooltipPlacement="top"
+                onClick={onDeleteAllClick}
+              />
             </div>
           )}
           <IconButton

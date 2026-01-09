@@ -104,7 +104,7 @@ function VesselGroupListTooltip({ onAddToVesselGroup, ...props }: VesselGroupLis
         </ul>
       }
     >
-      <div>
+      <div className={styles.tooltipContainer}>
         {React.Children.map(children, (child) => {
           if (React.isValidElement(child)) {
             return React.cloneElement(

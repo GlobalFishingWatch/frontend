@@ -35,6 +35,7 @@ function ActivitySection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectActivityDataviews)
+  const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
   const detectionsDataviews = useSelector(selectDetectionsDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
@@ -109,7 +110,15 @@ function ActivitySection(): React.ReactElement<any> {
     <Section
       id={DataviewCategory.Activity}
       data-testid="activity-section"
-      title={t('common.activity')}
+      className="hover-target"
+      title={
+        <span>
+          {t('common.activity')}
+          {hasVisibleDataviews && (
+            <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
+          )}
+        </span>
+      }
       headerOptions={
         !readOnly ? (
           <div className={cx(styles.sectionButtons)}>

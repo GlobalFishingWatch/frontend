@@ -40,7 +40,7 @@
 
 .inputContainer:focus-within {
   z-index: 1;
-  background-color: var(--color-white);
+  background-color: var(--color-gradient);
   position: absolute;
   inset: 0;
   display: block;
@@ -48,8 +48,11 @@
 
 .inputContainer:focus-within .comboContainer,
 .inputContainer:focus-within .comboContainer div,
-.inputContainer:focus-within .comboContainer div input {
+.inputContainer:focus-within .comboContainer div input,
+.inputContainer:focus-within .comboContainer div input:focus-visible {
   height: 100%;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .inputContainer:focus-within .comboContainer div svg {

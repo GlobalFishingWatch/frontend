@@ -224,10 +224,11 @@ export const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterv
 
 export const formatEvolutionData = (
   data: ReportGraphProps,
-  { start, end, timeseriesInterval } = {} as {
+  { start, end, timeseriesInterval, removeEmptyValues } = {} as {
     start: string
     end: string
     timeseriesInterval: FourwingsInterval
+    removeEmptyValues?: boolean
   },
   comparedData?: ReportGraphProps
 ) => {
@@ -260,6 +261,14 @@ export const formatEvolutionData = (
       .map((_, i) => {
         const date = getUTCDateTime(startMillis).plus({ [timeseriesInterval]: i })
         const dataValue = data.timeseries.find((item) => date.toISO()?.startsWith(item.date))
+
+        if (!dataValue && removeEmptyValues) {
+          return {
+            date: date.toMillis(),
+            range: [null],
+            avg: [null],
+          }
+        }
 
         const processTimeseries = (value: typeof dataValue) =>
           value
@@ -300,7 +309,10 @@ export const formatEvolutionData = (
         }
       })
       .filter((d) => {
-        return !isNaN(d.avg[0])
+        if (removeEmptyValues) {
+          return true
+        }
+        return !isNaN(d.avg?.[0] || 0)
       })
   }
 

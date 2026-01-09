@@ -1,8 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc",
+    "outDir": "../../dist/libs/data-transforms",
+    "declarationDir": "../../dist/libs/data-transforms",
+    "rootDir": "src",
     "declaration": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "types": ["node"]
   },
   "include": ["src/**/*.ts"],

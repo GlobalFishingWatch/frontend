@@ -36,9 +36,10 @@ function VesselGroupSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const dataviews = useSelector(selectVesselGroupDataviews)
+  const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
+  const hasVisibleDataviews = visibleDataviews.length >= 1
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
   const vesselGroupsStatusId = useSelector(selectVesselGroupsStatusId)
-  const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const readOnly = useSelector(selectReadOnly)
   const userDatasets = useSelector(selectUserVesselGroups)
 
@@ -64,7 +65,14 @@ function VesselGroupSection(): React.ReactElement<any> {
       id={DataviewCategory.VesselGroups}
       data-testid="vessel-groups-section"
       hasVisibleDataviews={hasVisibleDataviews}
-      title={t('vesselGroup.vesselGroups')}
+      title={
+        <span>
+          {t('vesselGroup.vesselGroups')}
+          {hasVisibleDataviews && (
+            <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
+          )}
+        </span>
+      }
       headerOptions={
         <>
           {!readOnly && (
@@ -81,14 +89,16 @@ function VesselGroupSection(): React.ReactElement<any> {
               />
             </div>
           )}
-          <IconButton
-            icon="plus"
-            type="border"
-            size="medium"
-            tooltip={t('vesselGroup.addToWorkspace')}
-            tooltipPlacement="top"
-            onClick={onAddClick}
-          />
+          <div className={styles.sectionButtons}>
+            <IconButton
+              icon="plus"
+              type="border"
+              size="medium"
+              tooltip={t('vesselGroup.addToWorkspace')}
+              tooltipPlacement="top"
+              onClick={onAddClick}
+            />
+          </div>
         </>
       }
     >

@@ -5,6 +5,7 @@
   "license": "MIT",
   "author": "satellitestudio <contact@satellitestud.io>",
   "private": true,
+  "type": "module",
   "scripts": {
     "release:fishing-map": "nx release --projects='fishing-map' --skip-publish",
     "affected": "nx show projects --affected --base=origin/develop~1 --exclude='linting,port-labeler,real-time-prototype,*-e2e,libs/*' --plain > affected-apps.txt",
@@ -162,7 +163,7 @@
     "shpjs": "6.2.0",
     "simple-statistics": "7.8.8",
     "supercluster": "8.0.1",
-    "tslib": "2.8.1",
+    "tslib": "2.x",
     "type-fest": "^5.3.1",
     "typesafe-actions": "5.1.0",
     "typescript": "5.9.3",

@@ -6,42 +6,30 @@
   "tags": [],
   "targets": {
     "dist": {
-      "executor": "@nx/rollup:rollup",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/responsive-visualizations",
+        "main": "libs/responsive-visualizations/src/index.ts",
         "tsConfig": "libs/responsive-visualizations/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false,
-        "project": "libs/responsive-visualizations/package.json",
-        "extractCss": false,
-        "entryFile": "libs/responsive-visualizations/src/index.ts",
-        "external": ["countryflag"],
-        "format": ["esm", "cjs"],
-        "rollupConfig": "libs/responsive-visualizations/rollup.config.js",
         "assets": [
           {
-            "glob": "libs/responsive-visualizations/README.md",
-            "input": ".",
+            "input": "libs/responsive-visualizations",
+            "glob": "package.json",
             "output": "."
           },
           {
-            "glob": "libs/responsive-visualizations/src/base.css",
-            "input": ".",
+            "input": "libs/responsive-visualizations",
+            "glob": "README.md",
             "output": "."
           },
           {
-            "glob": "libs/responsive-visualizations/src/header/html",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "libs/responsive-visualizations/src/icon/icons",
-            "input": ".",
+            "glob": "**/*.css",
+            "input": "libs/responsive-visualizations/src",
             "output": "."
           }
         ],
-        "styles": "libs/responsive-visualizations/src/base.css",
-        "updateBuildableProjectDepsInPackageJson": true
+        "rootDir": "libs/responsive-visualizations/src"
       }
     },
     "publish": {

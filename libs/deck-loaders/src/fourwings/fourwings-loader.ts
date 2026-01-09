@@ -1,7 +1,7 @@
 import type { Loader, LoaderWithParser } from '@loaders.gl/loader-utils'
 
-import packageJson from '../../package.json'
 import { PATH_BASENAME } from '../loaders.config'
+import { VERSION } from '../version'
 
 import { NO_DATA_VALUE, OFFSET_VALUE, parseFourwings, SCALE_VALUE } from './lib/parse-fourwings'
 import type { FourwingsLoaderOptions, ParseFourwingsOptions } from './lib/types'
@@ -28,7 +28,7 @@ export const FourwingsWorkerLoader: Loader = {
   name: 'fourwings tiles',
   id: 'fourwings',
   module: 'fourwings',
-  version: packageJson?.version,
+  version: VERSION,
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
   worker: true,

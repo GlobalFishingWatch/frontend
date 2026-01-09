@@ -13,7 +13,11 @@ import {
   useReportAreaCenter,
   useVesselGroupBounds,
 } from 'features/reports/report-area/area-reports.hooks'
-import { selectReportCategory, selectReportVesselGraph } from 'features/reports/reports.selectors'
+import {
+  selectReportCategory,
+  selectReportSubCategory,
+  selectReportVesselGraph,
+} from 'features/reports/reports.selectors'
 import ReportVessels from 'features/reports/shared/vessels/ReportVessels'
 import EventsReport from 'features/reports/tabs/events/EventsReport'
 import VesselGroupReportInsights from 'features/reports/tabs/vessel-group-insights/VGRInsights'
@@ -30,10 +34,15 @@ import { TimebarVisualisations } from 'types'
 import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
+import { DatasetSubCategory } from '../../../../../libs/api-types/src/datasets'
 import { ReportCategory } from '../reports.types'
 import { selectReportVesselGroupTimeRange } from '../shared/vessels/report-vessels.selectors'
 import ReportActivity from '../tabs/activity/ReportActivity'
 
+import {
+  VESSEL_GROUP_FISHING_ACTIVITY_ID,
+  VESSEL_GROUP_PRESENCE_ACTIVITY_ID,
+} from './vessel-group-report.dataviews'
 import { useEditVesselGroupModal, useFetchVesselGroupReport } from './vessel-group-report.hooks'
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportError from './VesselGroupReportError'
@@ -50,6 +59,7 @@ function VesselGroupReport() {
   const reportStatus = useSelector(selectVGRStatus)
   const reportCategory = useSelector(selectReportCategory)
   const reportDataview = useSelector(selectVGRFootprintDataview)
+  const reportSubcategory = useSelector(selectReportSubCategory)
   const timeRange = useSelector(selectReportVesselGroupTimeRange)
   const reportVesselGraph = useSelector(selectReportVesselGraph)
   const userData = useSelector(selectUserData)
@@ -93,6 +103,13 @@ function VesselGroupReport() {
 
   const changeTab = useCallback(
     (tab: Tab<ReportCategory>) => {
+      if (tab.id === ReportCategory.Activity) {
+        if (reportSubcategory === DatasetSubCategory.Presence) {
+          dispatchTimebarSelectedVGId(VESSEL_GROUP_PRESENCE_ACTIVITY_ID)
+        } else {
+          dispatchTimebarSelectedVGId(VESSEL_GROUP_FISHING_ACTIVITY_ID)
+        }
+      }
       dispatchQueryParams({ reportCategory: tab.id })
       trackEvent({
         category: TrackCategory.VesselGroupReport,
@@ -104,7 +121,16 @@ function VesselGroupReport() {
         fitAreaInViewport()
       }
     },
-    [dispatchQueryParams, fitAreaInViewport, timeRange, vesselGroup]
+    [
+      dispatchQueryParams,
+      dispatchTimebarSelectedVGId,
+      fitAreaInViewport,
+      reportSubcategory,
+      timeRange?.end,
+      timeRange?.start,
+      vesselGroup?.id,
+      vesselGroup?.vessels?.length,
+    ]
   )
 
   const loading = reportStatus === AsyncReducerStatus.Loading

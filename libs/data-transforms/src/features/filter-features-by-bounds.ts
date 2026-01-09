@@ -40,7 +40,6 @@ export const filterFeaturesByBounds = ({
   features,
   bounds,
   onlyValuesAndDates = false,
-  sampleData = false,
 }: {
   features:
     | GeoJSONFeature[]
@@ -49,7 +48,6 @@ export const filterFeaturesByBounds = ({
     | FourwingsPointFeature[]
   bounds: Bounds
   onlyValuesAndDates?: boolean
-  sampleData?: boolean
 }) => {
   if (!bounds || !features?.length) {
     return []
@@ -58,11 +56,7 @@ export const filterFeaturesByBounds = ({
   const rightWorldCopy = east >= 180
   const leftWorldCopy = west <= -180
 
-  const featuresToCheck = sampleData
-    ? sample(features as any[], Math.min(features.length, MAX_FEATURES_TO_CHECK), Math.random)
-    : features
-
-  return featuresToCheck.flatMap((f) => {
+  return features.flatMap((f) => {
     if (!f) {
       return []
     }

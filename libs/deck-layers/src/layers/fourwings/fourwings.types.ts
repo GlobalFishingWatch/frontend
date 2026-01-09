@@ -34,7 +34,6 @@ export type FourwingsVisualizationMode =
 
 export type GetViewportDataParams = {
   onlyValuesAndDates?: boolean
-  sampleData?: boolean
 }
 
 export type FourwingsColorObject = { r: number; g: number; b: number; a: number }

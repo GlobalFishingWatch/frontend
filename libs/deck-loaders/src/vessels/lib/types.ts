@@ -1,15 +1,14 @@
-import type { ApiEvent } from '@globalfishingwatch/api-types'
-import { EventTypes } from '@globalfishingwatch/api-types'
+import type { ApiEvent, EventTypes } from '@globalfishingwatch/api-types'
 
-export const EVENTS_COLORS: Record<EventTypes | 'partially' | 'unmatched' | 'port', string> = {
+export const EVENTS_COLORS: Record<`${EventTypes}` | 'partially' | 'unmatched' | 'port', string> = {
   partially: '#F59E84',
   unmatched: '#CE2C54',
   port: '#99EEFF',
-  [EventTypes.Encounter]: '#FAE9A0',
-  [EventTypes.Loitering]: '#cfa9f9',
-  [EventTypes.Port]: '#99EEFF',
-  [EventTypes.Fishing]: '#ffffff',
-  [EventTypes.Gap]: '#f95e5e',
+  encounter: '#FAE9A0',
+  loitering: '#cfa9f9',
+  port_visit: '#99EEFF',
+  fishing: '#ffffff',
+  gap: '#f95e5e',
 }
 
 export type VesselTrackGraphExtent = [number, number]
