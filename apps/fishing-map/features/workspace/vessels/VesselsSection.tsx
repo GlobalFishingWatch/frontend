@@ -214,25 +214,23 @@ function VesselsSection(): React.ReactElement<any> {
       }
       headerOptions={
         <>
-          {!readOnly && (
+          {!readOnly && activeDataviews.length > 0 && (
             <div
               className={cx(styles.sectionButtons, styles.sectionButtonsSecondary, 'print-hidden')}
             >
-              {activeDataviews.length > 0 && (
-                <VesselGroupAddButton
-                  vessels={vesselsToVesselGroup}
-                  onAddToVesselGroup={onAddToVesselGroupClick}
-                >
-                  <UserLoggedIconButton
-                    icon={'add-to-vessel-group'}
-                    loading={areVesselsLoading || isVesselGroupUpdating}
-                    disabled={areVesselsLoading || isVesselGroupUpdating}
-                    size="medium"
-                    tooltip={t('vesselGroup.addVisibleVessels')}
-                    tooltipPlacement="top"
-                  />
-                </VesselGroupAddButton>
-              )}
+              <VesselGroupAddButton
+                vessels={vesselsToVesselGroup}
+                onAddToVesselGroup={onAddToVesselGroupClick}
+              >
+                <UserLoggedIconButton
+                  icon={'add-to-vessel-group'}
+                  loading={areVesselsLoading || isVesselGroupUpdating}
+                  disabled={areVesselsLoading || isVesselGroupUpdating}
+                  size="medium"
+                  tooltip={t('vesselGroup.addVisibleVessels')}
+                  tooltipPlacement="top"
+                />
+              </VesselGroupAddButton>
               {dataviews.length > 1 && (
                 <IconButton
                   icon={sortOrder === 'DESC' ? 'sort-asc' : 'sort-desc'}
@@ -242,15 +240,13 @@ function VesselsSection(): React.ReactElement<any> {
                   onClick={onSetSortOrderClick}
                 />
               )}
-              {dataviews.length > 0 && (
-                <IconButton
-                  icon="delete"
-                  size="medium"
-                  tooltip={t('vessel.removeAllVessels')}
-                  tooltipPlacement="top"
-                  onClick={onDeleteAllClick}
-                />
-              )}
+              <IconButton
+                icon="delete"
+                size="medium"
+                tooltip={t('vessel.removeAllVessels')}
+                tooltipPlacement="top"
+                onClick={onDeleteAllClick}
+              />
             </div>
           )}
           <IconButton

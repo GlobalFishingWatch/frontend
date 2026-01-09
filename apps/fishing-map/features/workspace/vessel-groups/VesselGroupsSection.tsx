@@ -89,14 +89,16 @@ function VesselGroupSection(): React.ReactElement<any> {
               />
             </div>
           )}
-          <IconButton
-            icon="plus"
-            type="border"
-            size="medium"
-            tooltip={t('vesselGroup.addToWorkspace')}
-            tooltipPlacement="top"
-            onClick={onAddClick}
-          />
+          <div className={styles.sectionButtons}>
+            <IconButton
+              icon="plus"
+              type="border"
+              size="medium"
+              tooltip={t('vesselGroup.addToWorkspace')}
+              tooltipPlacement="top"
+              onClick={onAddClick}
+            />
+          </div>
         </>
       }
     >

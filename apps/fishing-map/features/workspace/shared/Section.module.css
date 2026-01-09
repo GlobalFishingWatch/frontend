@@ -20,10 +20,6 @@
   gap: var(--space-XS);
 }
 
-.content {
-  padding: var(--space-XS) var(--space-S);
-}
-
 .row {
   display: flex;
   align-items: center;

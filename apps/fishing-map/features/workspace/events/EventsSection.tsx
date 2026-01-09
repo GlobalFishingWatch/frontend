@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
-import cx from 'classnames'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -62,7 +61,7 @@ function EventsLayerSection(): React.ReactElement<any> | null {
       }
       headerOptions={
         !readOnly ? (
-          <div className={cx(styles.sectionButtons)}>
+          <div className={styles.sectionButtons}>
             {hasVisibleDataviews && <GlobalReportLink reportCategory={ReportCategory.Events} />}
             <IconButton
               icon="plus"

@@ -75,15 +75,17 @@ function ContextAreaSection(): React.ReactElement<any> {
       hasVisibleDataviews={hasVisibleDataviews}
       headerOptions={
         !readOnly ? (
-          <IconButton
-            icon="plus"
-            type="border"
-            size="medium"
-            tooltip={t('dataset.addContext')}
-            tooltipPlacement="top"
-            className="print-hidden"
-            onClick={onAdd}
-          />
+          <div className={styles.sectionButtons}>
+            <IconButton
+              icon="plus"
+              type="border"
+              size="medium"
+              tooltip={t('dataset.addContext')}
+              tooltipPlacement="top"
+              className="print-hidden"
+              onClick={onAdd}
+            />
+          </div>
         ) : null
       }
     >

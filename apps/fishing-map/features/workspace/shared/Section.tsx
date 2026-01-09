@@ -85,7 +85,7 @@ function Section({
         )}
         {headerOptions}
       </div>
-      {!collapsed && <div className={styles.content}>{children}</div>}
+      {!collapsed && children}
     </section>
   )
 }
