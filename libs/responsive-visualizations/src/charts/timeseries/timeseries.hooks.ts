@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import type { DateTimeUnit, DurationUnit } from 'luxon'
 
-import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import type { ResponsiveVisualizationData } from '../../types'

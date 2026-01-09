@@ -7,5 +7,10 @@
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
-  }
+  },
+  "references": [
+    {
+      "path": "./tsconfig.lib.json"
+    }
+  ]
 }

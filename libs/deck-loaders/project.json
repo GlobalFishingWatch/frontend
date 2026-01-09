@@ -4,8 +4,15 @@
   "sourceRoot": "libs/deck-loaders/src",
   "projectType": "library",
   "targets": {
+    "generate-version": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node libs/deck-loaders/scripts/generate-version.mjs"
+      }
+    },
     "dist": {
       "executor": "@nx/js:tsc",
+      "dependsOn": ["generate-version"],
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/deck-loaders",
