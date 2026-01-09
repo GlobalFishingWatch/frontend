@@ -1,7 +1,6 @@
 import type { Layer } from '@deck.gl/core'
 
 import type { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import type { PolygonPickingObject } from '@globalfishingwatch/deck-layers'
 
 import type { BaseMapLayer } from './layers/basemap/BasemapLayer'
 import type { ContextPickingInfo, ContextPickingObject } from './layers/context'
@@ -17,6 +16,7 @@ import type {
 import type { FourwingsLayer } from './layers/fourwings/FourwingsLayer'
 import type { PMTilePickingInfo, PMTilePickingObject } from './layers/pm-tiles/pm-tiles.types'
 import type { PMTilesLayer } from './layers/pm-tiles/PMTilesLayer'
+import type { PolygonPickingObject } from './layers/polygons'
 import type { RulerPickingInfo, RulerPickingObject } from './layers/rulers'
 import type { RulersLayer } from './layers/rulers/RulersLayer'
 import type { UserLayerPickingObject } from './layers/user'

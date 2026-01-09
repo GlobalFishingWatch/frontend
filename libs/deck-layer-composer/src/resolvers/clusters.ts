@@ -56,7 +56,6 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
 
   if (!dataset || !datasetId) {
     console.warn('No datasetId found for dataview', dataview)
-    return {} as FourwingsClustersLayerProps
   }
 
   const datasetConfig = {
@@ -94,11 +93,11 @@ export const resolveDeckFourwingsClustersLayerProps: DeckResolverFunction<
     startTime,
     endTime,
     visible: dataview.config?.visible ?? true,
-    tilesUrl: resolveEndpoint(dataset, datasetConfig, { absolute: true }) || '',
+    tilesUrl: dataset ? resolveEndpoint(dataset, datasetConfig, { absolute: true }) || '' : '',
     clusterMaxZoomLevels: dataview.config?.clusterMaxZoomLevels,
     highlightedFeatures,
     maxZoom: FOURWINGS_MAX_ZOOM,
     temporalAggregation: dataview.config?.eventsTemporalAggregation,
-    eventType: dataset.subcategory as FourwingsClusterEventType,
+    eventType: dataset?.subcategory as FourwingsClusterEventType,
   }
 }

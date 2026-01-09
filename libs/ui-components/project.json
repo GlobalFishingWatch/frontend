@@ -6,42 +6,40 @@
   "tags": [],
   "targets": {
     "dist": {
-      "executor": "@nx/rollup:rollup",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/ui-components",
+        "main": "libs/ui-components/src/index.ts",
         "tsConfig": "libs/ui-components/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false,
-        "project": "libs/ui-components/package.json",
-        "extractCss": false,
-        "entryFile": "libs/ui-components/src/index.ts",
-        "external": ["countryflag"],
-        "format": ["esm", "cjs"],
-        "rollupConfig": "libs/ui-components/rollup.config.js",
         "assets": [
           {
-            "glob": "libs/ui-components/README.md",
-            "input": ".",
+            "input": "libs/ui-components",
+            "glob": "package.json",
             "output": "."
           },
           {
-            "glob": "libs/ui-components/src/base.css",
-            "input": ".",
+            "input": "libs/ui-components",
+            "glob": "README.md",
             "output": "."
           },
           {
-            "glob": "libs/ui-components/src/header/html",
-            "input": ".",
+            "glob": "**/*.css",
+            "input": "libs/ui-components/src",
             "output": "."
           },
           {
-            "glob": "libs/ui-components/src/icon/icons",
-            "input": ".",
+            "glob": "**/*.svg",
+            "input": "libs/ui-components/src",
+            "output": "."
+          },
+          {
+            "glob": "**/*.{jpg,jpeg,png,gif,webp}",
+            "input": "libs/ui-components/src",
             "output": "."
           }
         ],
-        "styles": "libs/ui-components/src/base.css",
-        "updateBuildableProjectDepsInPackageJson": true
+        "rootDir": "libs/ui-components/src"
       }
     },
     "publish": {

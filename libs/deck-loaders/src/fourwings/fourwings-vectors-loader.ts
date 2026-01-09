@@ -1,7 +1,7 @@
 import type { Loader, LoaderWithParser } from '@loaders.gl/loader-utils'
 
-import packageJson from '../../package.json'
 import { PATH_BASENAME } from '../loaders.config'
+import { VERSION } from '../version'
 
 import { parseFourwingsVectors } from './lib/parse-fourwings-vectors'
 import type { FourwingsVectorsLoaderOptions, ParseFourwingsVectorsOptions } from './lib/types'
@@ -14,7 +14,7 @@ export const FourwingsVectorsWorkerLoader: Loader = {
   name: 'fourwings vectors',
   id: 'fourwingsVectors',
   module: 'fourwingsVectors',
-  version: packageJson?.version,
+  version: VERSION,
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
   worker: false,

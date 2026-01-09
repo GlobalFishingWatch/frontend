@@ -12,23 +12,34 @@
   "scripts": {
     "prerender": "ts-node -P tsconfig.node.json src/header/render-html.tsx"
   },
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "types": "./index.d.ts"
+    }
+  },
+  "main": "./index.js",
+  "types": "./index.d.ts",
   "dependencies": {
     "@floating-ui/react": "0.x",
     "@globalfishingwatch/api-types": "^8.0.3",
-    "countryflag": "5.x",
+    "@globalfishingwatch/react-hooks": "^17.0.9",
+    "@tanstack/react-virtual": "3.x",
+    "@types/topojson-specification": "1.x",
+    "classnames": "2.x",
     "d3-format": "3.x",
     "d3-geo": "3.x",
     "d3-scale": "4.x",
-    "match-sorter": "6.x",
-    "downshift": "8.x",
-    "classnames": "2.x",
-    "react-dom": "18.x",
-    "react": "18.x",
-    "react-range": "1.x",
+    "downshift": "9.x",
+    "luxon": "3.x",
+    "match-sorter": "8.x",
+    "react": "19.x",
+    "react-aria-components": "1.x",
+    "react-dom": "19.x",
     "react-modal": "3.x",
+    "react-range": "1.x",
     "topojson-client": "3.x",
-    "luxon": "3.x"
+    "tslib": "2.x"
   }
 }

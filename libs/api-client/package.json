@@ -9,13 +9,21 @@
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "types": "./index.d.ts"
+    }
+  },
+  "main": "./index.js",
+  "types": "./index.d.ts",
   "dependencies": {
     "@globalfishingwatch/api-types": "^8.0.3",
     "@globalfishingwatch/pbf-decoders": "^3.0.5",
     "file-saver": "2.x",
     "lodash": "4.x",
-    "react": "18.x"
+    "react": "19.x",
+    "tslib": "2.x"
   }
 }

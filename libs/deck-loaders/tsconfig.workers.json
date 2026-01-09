@@ -1,14 +1,15 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/libs/react-hooks",
-    "declarationDir": "../../dist/libs/react-hooks",
-    "rootDir": "src",
-    "declaration": true,
+    "outDir": "../../dist/libs/deck-loaders",
+    "rootDir": ".",
+    "declaration": false,
+    "composite": false,
+    "incremental": false,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
 }

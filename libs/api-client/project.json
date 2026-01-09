@@ -5,17 +5,25 @@
   "projectType": "library",
   "targets": {
     "dist": {
-      "executor": "@nx/rollup:rollup",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "assets": [],
-        "compiler": "swc",
-        "format": ["esm", "cjs"],
-        "main": "libs/api-client/src/index.ts",
         "outputPath": "dist/libs/api-client",
-        "project": "libs/api-client/package.json",
+        "main": "libs/api-client/src/index.ts",
         "tsConfig": "libs/api-client/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false
+        "assets": [
+          {
+            "input": "libs/api-client",
+            "glob": "package.json",
+            "output": "."
+          },
+          {
+            "input": "libs/api-client",
+            "glob": "README.md",
+            "output": "."
+          }
+        ],
+        "rootDir": "libs/api-client/src"
       }
     },
     "publish": {

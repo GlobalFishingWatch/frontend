@@ -4,8 +4,15 @@
   "description": "",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "license": "MIT",
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "types": "./index.d.ts"
+    }
+  },
+  "main": "./index.js",
+  "types": "./index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
@@ -15,10 +22,16 @@
     "@globalfishingwatch/api-types": "^8.0.3",
     "@globalfishingwatch/data-transforms": "^3.0.5",
     "@globalfishingwatch/datasets-client": "^3.0.3",
-    "@reduxjs/toolkit": "*",
+    "@nx/vite": "22.x",
+    "@reduxjs/toolkit": "2.x",
+    "es-toolkit": "1.x",
+    "esbuild": "0.x",
     "geojson": "0.x",
     "lodash": "4.x",
     "luxon": "3.x",
-    "qs": "6.x"
+    "qs": "6.x",
+    "vite": "7.x",
+    "tslib": "2.x",
+    "vitest": "4.0.16"
   }
 }
