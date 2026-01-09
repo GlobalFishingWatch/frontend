@@ -13,8 +13,16 @@
         "main": "libs/responsive-visualizations/src/index.ts",
         "tsConfig": "libs/responsive-visualizations/tsconfig.lib.json",
         "assets": [
-          "libs/responsive-visualizations/package.json",
-          "libs/responsive-visualizations/README.md",
+          {
+            "input": "libs/responsive-visualizations",
+            "glob": "package.json",
+            "output": "."
+          },
+          {
+            "input": "libs/responsive-visualizations",
+            "glob": "README.md",
+            "output": "."
+          },
           {
             "glob": "**/*.css",
             "input": "libs/responsive-visualizations/src",

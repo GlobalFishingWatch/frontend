@@ -5,8 +5,6 @@
     "declarationDir": "../../dist/libs/data-transforms",
     "rootDir": "src",
     "declaration": true,
-
-    "tsBuildInfoFile": "../../.nx/tsbuildinfo/data-transforms.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]

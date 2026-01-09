@@ -11,7 +11,18 @@
         "outputPath": "dist/libs/api-types",
         "main": "libs/api-types/src/index.ts",
         "tsConfig": "libs/api-types/tsconfig.lib.json",
-        "assets": ["libs/api-types/package.json", "libs/api-types/README.md"],
+        "assets": [
+          {
+            "input": "libs/api-types",
+            "glob": "package.json",
+            "output": "."
+          },
+          {
+            "input": "libs/api-types",
+            "glob": "README.md",
+            "output": "."
+          }
+        ],
         "rootDir": "libs/api-types/src"
       }
     },

@@ -18,7 +18,18 @@
         "outputPath": "dist/libs/deck-loaders",
         "main": "libs/deck-loaders/src/index.ts",
         "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
-        "assets": ["libs/deck-loaders/package.json", "libs/deck-loaders/README.md"],
+        "assets": [
+          {
+            "input": "libs/deck-loaders",
+            "glob": "package.json",
+            "output": "."
+          },
+          {
+            "input": "libs/deck-loaders",
+            "glob": "README.md",
+            "output": "."
+          }
+        ],
         "rootDir": "libs/deck-loaders/src"
       }
     },

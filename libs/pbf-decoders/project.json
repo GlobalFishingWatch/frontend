@@ -12,8 +12,16 @@
         "main": "libs/pbf-decoders/index.ts",
         "tsConfig": "libs/pbf-decoders/tsconfig.lib.json",
         "assets": [
-          "libs/pbf-decoders/package.json",
-          "libs/pbf-decoders/README.md",
+          {
+            "input": "libs/pbf-decoders",
+            "glob": "package.json",
+            "output": "."
+          },
+          {
+            "input": "libs/pbf-decoders",
+            "glob": "README.md",
+            "output": "."
+          },
           { "glob": "**/*", "input": "libs/pbf-decoders/decoders", "output": "decoders" }
         ],
         "rootDir": "libs/pbf-decoders"

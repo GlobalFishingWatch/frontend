@@ -5,8 +5,6 @@
     "declarationDir": "../../dist/libs/datasets-client",
     "rootDir": "src",
     "declaration": true,
-
-    "tsBuildInfoFile": "../../.nx/tsbuildinfo/datasets-client.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]

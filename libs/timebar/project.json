@@ -12,8 +12,16 @@
         "main": "libs/timebar/src/index.ts",
         "tsConfig": "libs/timebar/tsconfig.lib.json",
         "assets": [
-          "libs/timebar/package.json",
-          "libs/timebar/README.md",
+          {
+            "input": "libs/timebar",
+            "glob": "package.json",
+            "output": "."
+          },
+          {
+            "input": "libs/timebar",
+            "glob": "README.md",
+            "output": "."
+          },
           {
             "glob": "**/*.css",
             "input": "libs/timebar/src",

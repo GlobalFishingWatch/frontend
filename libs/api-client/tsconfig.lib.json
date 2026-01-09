@@ -5,8 +5,6 @@
     "declarationDir": "../../dist/libs/api-client",
     "rootDir": "src",
     "declaration": true,
-
-    "tsBuildInfoFile": "../../.nx/tsbuildinfo/api-client.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]

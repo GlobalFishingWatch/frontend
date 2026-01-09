@@ -11,7 +11,18 @@
         "outputPath": "dist/libs/dataviews-client",
         "main": "libs/dataviews-client/src/index.ts",
         "tsConfig": "libs/dataviews-client/tsconfig.lib.json",
-        "assets": ["libs/dataviews-client/package.json", "libs/dataviews-client/README.md"],
+        "assets": [
+          {
+            "input": "libs/dataviews-client",
+            "glob": "package.json",
+            "output": "."
+          },
+          {
+            "input": "libs/dataviews-client",
+            "glob": "README.md",
+            "output": "."
+          }
+        ],
         "rootDir": "libs/dataviews-client/src"
       }
     },

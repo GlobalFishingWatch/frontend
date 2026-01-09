@@ -11,7 +11,18 @@
         "outputPath": "dist/libs/deck-layer-composer",
         "main": "libs/deck-layer-composer/src/index.ts",
         "tsConfig": "libs/deck-layer-composer/tsconfig.lib.json",
-        "assets": ["libs/deck-layer-composer/package.json", "libs/deck-layer-composer/README.md"],
+        "assets": [
+          {
+            "input": "libs/deck-layer-composer",
+            "glob": "package.json",
+            "output": "."
+          },
+          {
+            "input": "libs/deck-layer-composer",
+            "glob": "README.md",
+            "output": "."
+          }
+        ],
         "rootDir": "libs/deck-layer-composer/src"
       }
     },

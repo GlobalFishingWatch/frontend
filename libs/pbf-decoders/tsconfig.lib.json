@@ -5,8 +5,6 @@
     "declarationDir": "../../dist/libs/pbf-decoders",
     "rootDir": ".",
     "declaration": true,
-
-    "tsBuildInfoFile": "../../.nx/tsbuildinfo/pbf-decoders.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]

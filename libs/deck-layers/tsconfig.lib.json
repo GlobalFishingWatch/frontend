@@ -5,8 +5,6 @@
     "declarationDir": "../../dist/libs/deck-layers",
     "rootDir": "src",
     "declaration": true,
-
-    "tsBuildInfoFile": "../../.nx/tsbuildinfo/deck-layers.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]

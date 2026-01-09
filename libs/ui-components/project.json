@@ -13,8 +13,16 @@
         "main": "libs/ui-components/src/index.ts",
         "tsConfig": "libs/ui-components/tsconfig.lib.json",
         "assets": [
-          "libs/ui-components/package.json",
-          "libs/ui-components/README.md",
+          {
+            "input": "libs/ui-components",
+            "glob": "package.json",
+            "output": "."
+          },
+          {
+            "input": "libs/ui-components",
+            "glob": "README.md",
+            "output": "."
+          },
           {
             "glob": "**/*.css",
             "input": "libs/ui-components/src",

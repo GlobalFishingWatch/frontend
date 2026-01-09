@@ -5,8 +5,6 @@
     "declarationDir": "../../dist/libs/dataviews-client",
     "rootDir": "src",
     "declaration": true,
-
-    "tsBuildInfoFile": "../../.nx/tsbuildinfo/dataviews-client.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]

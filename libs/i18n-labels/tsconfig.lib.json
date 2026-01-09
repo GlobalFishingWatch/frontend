@@ -5,8 +5,6 @@
     "declarationDir": "../../dist/libs/i18n-labels",
     "rootDir": ".",
     "declaration": true,
-
-    "tsBuildInfoFile": "../../.nx/tsbuildinfo/i18n-labels.tsbuildinfo",
     "types": ["node"]
   },
   "include": ["source/**/*.json", "index.ts"],

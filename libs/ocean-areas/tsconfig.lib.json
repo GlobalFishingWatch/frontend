@@ -5,8 +5,6 @@
     "declarationDir": "../../dist/libs/ocean-areas",
     "rootDir": "src",
     "declaration": true,
-
-    "tsBuildInfoFile": "../../.nx/tsbuildinfo/ocean-areas.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]

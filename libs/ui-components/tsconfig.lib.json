@@ -5,8 +5,6 @@
     "declarationDir": "../../dist/libs/ui-components",
     "rootDir": "src",
     "declaration": true,
-
-    "tsBuildInfoFile": "../../.nx/tsbuildinfo/ui-components.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node", "@nx/react/typings/cssmodule.d.ts", "@nx/react/typings/image.d.ts"]
