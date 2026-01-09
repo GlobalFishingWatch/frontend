@@ -108,14 +108,6 @@ export default function ReportActivityPlaceholder({
         {loading && (
           <svg
             className={cx(styles.waveGraph, { [styles.animateWave]: animate })}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: '5rem',
-              width: '100%',
-              height: '100%',
-              pointerEvents: 'none',
-            }}
             preserveAspectRatio="none"
             viewBox="0 0 1440 320"
           >

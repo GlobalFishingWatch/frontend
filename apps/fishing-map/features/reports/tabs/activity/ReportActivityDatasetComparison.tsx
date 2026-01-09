@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import cx from 'classnames'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
@@ -168,19 +167,19 @@ const ReportActivityDatasetComparison = () => {
   }
 
   return (
-    <div className={cx([styles.titleRow, styles.selectorsRow])}>
+    <div className={styles.selectorsRow}>
       <Select
         options={mainDatasetOptions}
         onSelect={onMainSelect}
         selectedOption={selectedMainDataset}
         disabled={mainDatasetOptions.length <= 1}
-        className={styles.select}
+        containerClassName={styles.select}
       />
       <Select
         options={layerOptions}
         selectedOption={selectedComparisonDataset}
         onSelect={onCompareSelect}
-        className={styles.select}
+        containerClassName={styles.select}
         placeholder={t('translations:analysis.selectDatasetPlaceholder')}
       />
     </div>

@@ -40,12 +40,14 @@ const ReportActivityEvolution = ({
   start,
   end,
   TooltipContent,
+  removeEmptyValues = false,
   freezeTooltipOnClick = false,
 }: {
   data: ReportGraphProps
   start: string
   end: string
   TooltipContent?: ReactNode
+  removeEmptyValues?: boolean
   freezeTooltipOnClick?: boolean
 }) => {
   const [fixedTooltip, setFixedTooltip] = useState<EvolutionTooltipContentProps | null>(null)
@@ -61,12 +63,14 @@ const ReportActivityEvolution = ({
   }, [start, end, data?.interval])
 
   const dataFormated = useMemo(
-    () =>
-      formatEvolutionData(data, {
+    () => {
+      return formatEvolutionData(data, {
         start: domain ? new Date(domain[0]).toISOString() : start,
         end: domain ? new Date(domain[1]).toISOString() : end,
         timeseriesInterval: data?.interval,
-      }),
+        removeEmptyValues,
+      })
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data, end, start, colors]
   )
@@ -131,10 +135,10 @@ const ReportActivityEvolution = ({
   }
 
   const dataMin: number = dataFormated.length
-    ? (min(dataFormated.flatMap(({ range }) => range[0][0])) as number)
+    ? (min(dataFormated.flatMap(({ range }) => range?.[0]?.[0])) as number)
     : 0
   const dataMax: number = dataFormated.length
-    ? (max(dataFormated.flatMap(({ range }) => range[0][1])) as number)
+    ? (max(dataFormated.flatMap(({ range }) => range?.[0]?.[1])) as number)
     : 0
 
   const basePadding = (dataMax - dataMin) / 10
@@ -229,7 +233,7 @@ const ReportActivityEvolution = ({
             type="monotone"
             dataKey={(data) => data.avg?.[index]}
             unit={legend?.unit}
-            dot={false}
+            dot={removeEmptyValues}
             isAnimationActive={false}
             stroke={getContrastSafeColor(legend?.color as string)}
             strokeWidth={2}

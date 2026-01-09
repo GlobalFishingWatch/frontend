@@ -49,3 +49,7 @@
 .sticky .tagsContainer span {
   font: var(--font-S);
 }
+
+.sticky button {
+  display: none;
+}
