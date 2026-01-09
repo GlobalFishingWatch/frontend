@@ -56,12 +56,11 @@ function Section({
         },
         className
       )}
+      {...(collapsed && { onClick: onCollapse, role: 'button', tabIndex: 0 })}
     >
       <div className={cx(styles.header, 'print-hidden')}>
         <Tooltip content={collapsed ? t('common.expandSection') : ''} placement="top-start">
-          <h2 className={styles.sectionTitle} onClick={collapsed ? onCollapse : undefined}>
-            {title}
-          </h2>
+          <h2 className={styles.sectionTitle}>{title}</h2>
         </Tooltip>
         {collapsed ? (
           <IconButton

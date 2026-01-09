@@ -1,11 +1,6 @@
 .container {
-  padding-top: var(--space-XS);
-  padding-bottom: var(--space-S);
+  padding-block: var(--space-XS);
   position: relative;
-}
-
-.container ~ .container {
-  padding-top: var(--space-S);
 }
 
 .container:not(:last-of-type) {
@@ -84,7 +79,7 @@
   display: none;
 }
 
-.containerCollapsed .header {
+.containerCollapsed {
   cursor: pointer;
 }
 
