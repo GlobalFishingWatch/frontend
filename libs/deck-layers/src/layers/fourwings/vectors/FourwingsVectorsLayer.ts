@@ -9,8 +9,8 @@ import type { FourwingsFeature } from '@globalfishingwatch/deck-loaders'
 import { getTimeRangeKey } from '@globalfishingwatch/deck-loaders'
 
 import { COLOR_TRANSPARENT, getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../../utils'
-import type { FourwingsHeatmapPickingObject, FourwingsVectorsLayerProps } from '../fourwings.types'
 import { HEATMAP_ID } from '../fourwings.config'
+import type { FourwingsHeatmapPickingObject, FourwingsVectorsLayerProps } from '../fourwings.types'
 import { FourwingsAggregationOperation } from '../heatmap/fourwings-heatmap.types'
 import {
   aggregateSublayerValues,

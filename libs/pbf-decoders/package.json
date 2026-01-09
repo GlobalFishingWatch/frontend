@@ -18,11 +18,12 @@
     "build:pb:vessels:ts": "yarn pbts decoders/vessels.js -o decoders/vessels.d.ts",
     "build:pb:4wings-tile:js": "yarn pbjs proto/4wings-tile.proto -t static-module -w es6 -o decoders/4wings-tile.js",
     "build:pb:4wings-tile:ts": "yarn pbts decoders/4wings-tile.js -o decoders/4wings-tile.d.ts",
-    "prepublish": "yarn build"
+    "prepublish": "yarn decoders"
   },
   "dependencies": {
     "long": "5.x",
-    "protobufjs": "^8.0.0"
+    "protobufjs": "^8.0.0",
+    "tslib": "2.x"
   },
   "devDependencies": {
     "make-dir-cli": "^4.0.0",
@@ -30,7 +31,7 @@
     "pbjs": "0.0.14",
     "pbts-cli": "1.0.3",
     "prettier": "^3.6.2",
-    "protobufjs": "^7.4.0",
-    "protobufjs-cli": "^1.1.3"
+    "protobufjs": "^8.0.0",
+    "protobufjs-cli": "2.0.0"
   }
 }

@@ -18,6 +18,7 @@
     "lodash": "4.x",
     "luxon": "3.x",
     "pbf": "4.x",
-    "protobufjs": "8.x"
+    "protobufjs": "8.x",
+    "tslib": "2.x"
   }
 }

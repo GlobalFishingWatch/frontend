@@ -22,10 +22,14 @@ export default defineConfig([
       '@nx/dependency-checks': [
         'error',
         {
+          buildTargets: ['dist', 'build'],
           ignoredFiles: [
             '{projectRoot}/vite.config.{js,ts,mjs,mts}',
             '{projectRoot}/rollup.config.{js,ts,mjs,mts}',
           ],
+          checkMissingDependencies: true,
+          checkObsoleteDependencies: true,
+          checkVersionMismatches: true,
         },
       ],
     },

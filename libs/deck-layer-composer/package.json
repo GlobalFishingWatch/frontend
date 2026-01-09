@@ -24,6 +24,7 @@
     "geojson": "0.x",
     "jotai": "2.x",
     "luxon": "3.x",
-    "react": "19.x"
+    "react": "19.x",
+    "tslib": "2.x"
   }
 }

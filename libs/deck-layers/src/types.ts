@@ -16,6 +16,7 @@ import type {
 import type { FourwingsLayer } from './layers/fourwings/FourwingsLayer'
 import type { PMTilePickingInfo, PMTilePickingObject } from './layers/pm-tiles/pm-tiles.types'
 import type { PMTilesLayer } from './layers/pm-tiles/PMTilesLayer'
+import type { PolygonPickingObject } from './layers/polygons'
 import type { RulerPickingInfo, RulerPickingObject } from './layers/rulers'
 import type { RulersLayer } from './layers/rulers/RulersLayer'
 import type { UserLayerPickingObject } from './layers/user'
@@ -26,7 +27,6 @@ import type {
   VesselTrackPickingObject,
 } from './layers/vessel'
 import type { VesselLayer } from './layers/vessel/VesselLayer'
-import { PolygonPickingObject } from './layers/polygons'
 
 export type DeckLayerCategory = `${DataviewCategory}` | 'rulers' | 'draw'
 export type DeckLayerSubcategory = `${DataviewType}` | 'draw-polygons' | 'draw-points'
