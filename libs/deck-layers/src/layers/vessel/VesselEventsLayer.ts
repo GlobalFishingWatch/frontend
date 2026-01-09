@@ -93,7 +93,7 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
           },
           getFillColor: (d: VesselDeckLayersEventData) => {
             if (highlightEventIds?.includes(d.id ?? '')) {
-              return hexToDeckColor(EVENTS_COLORS.gap)
+              return hexToDeckColor(EVENTS_COLORS.gaps)
             }
             return COLOR_TRANSPARENT
           },
