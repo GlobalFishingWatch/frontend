@@ -373,6 +373,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       enableTopToolbar={false}
       renderToolbarInternalActions={undefined}
       enableColumnFilters={false}
+      enableColumnResizing
       enablePagination={false}
       enableColumnActions
       enableColumnOrdering
