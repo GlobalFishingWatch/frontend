@@ -187,6 +187,7 @@
 }
 
 .error {
+  opacity: var(--opacity-primary);
   color: var(--color-danger-red);
 }
 
