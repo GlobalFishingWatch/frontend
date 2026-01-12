@@ -114,6 +114,9 @@ function VesselTracksTooltipRow({
           {interactionType === 'point' && feature.timestamp && (
             <span className={cx({ [styles.secondary]: !showFeaturesDetails })}>
               <I18nDate date={feature.timestamp} />
+              {!showFeaturesDetails && feature.speed !== undefined && (
+                <span>{` - ${feature.speed.toFixed(2)} ${t('common.knots', 'knots')}`}</span>
+              )}
             </span>
           )}
         </p>
