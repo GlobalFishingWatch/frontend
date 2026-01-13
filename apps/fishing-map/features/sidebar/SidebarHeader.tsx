@@ -182,7 +182,10 @@ function SidebarHeader() {
             {/* TODO:CVP2 add save report in isAnyReportLocation when this PR https://github.com/GlobalFishingWatch/api-monorepo-node/pull/289 is merged */}
             {isAreaReportLocation && <SaveReportButton />}
             {isWorkspaceLocation && !isTrackCorrectionOpen && <SaveWorkspaceButton />}
-            {(isWorkspaceLocation || isAreaReportLocation || isAnyVesselLocation) &&
+            {(isWorkspaceLocation ||
+              isAreaReportLocation ||
+              isAnyVesselLocation ||
+              isVesselGroupReportLocation) &&
               !isTrackCorrectionOpen && <ShareWorkspaceButton />}
             {isSmallScreen && <LanguageToggle className={styles.lngToggle} position="rightDown" />}
             {isSmallScreen && <UserButton className={styles.userButton} />}
