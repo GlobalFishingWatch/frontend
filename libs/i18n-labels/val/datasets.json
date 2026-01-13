@@ -325,6 +325,21 @@
       }
     }
   },
+  "private-global-gap-ais-off-events": {
+    "name": "crwdns108874:0crwdne108874:0",
+    "description": "crwdns108876:0crwdne108876:0",
+    "schema": {
+      "duration": {
+        "keyword": "crwdns108878:0crwdne108878:0",
+        "enum": {
+          "2": "crwdns108880:0crwdne108880:0",
+          "48": "crwdns108882:0crwdne108882:0"
+        }
+      },
+      "is_closed": "crwdns108884:0crwdne108884:0",
+      "next_port_id": "crwdns108886:0crwdne108886:0"
+    }
+  },
   "private-global-other-vessels": {
     "name": "crwdns64625:0crwdne64625:0",
     "description": "crwdns64627:0crwdne64627:0",
