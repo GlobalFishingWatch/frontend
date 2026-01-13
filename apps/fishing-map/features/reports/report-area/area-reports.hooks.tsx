@@ -227,8 +227,9 @@ const isAreaCenterInViewport = (
 
 export function useReportAreaInViewport(params = defaultParams) {
   const viewState = useMapViewState()
-  const { id, bbox } = useReportAreaBounds()
+  const { id, bbox, loaded } = useReportAreaBounds()
   const areaCenter = useReportAreaCenter(bbox as Bbox, params)
+  if (!loaded) return false
   return isAreaCenterInViewport(viewState, areaCenter, id)
 }
 
@@ -277,6 +278,7 @@ function getSimplificationByDataview(dataview: UrlDataviewInstance | Dataview) {
 export function useFetchReportArea() {
   const dispatch = useAppDispatch()
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const isGlobalReport = useSelector(selectIsGlobalReport)
   const { datasetId, areaId } = useSelector(selectReportAreaIds)
   const status = useSelector(selectDatasetAreaStatus({ datasetId, areaId }))
   const data = useSelector(selectDatasetAreaDetail({ datasetId, areaId }))
@@ -298,8 +300,11 @@ export function useFetchReportArea() {
   }, [areaId, datasetId, dispatch, areaDataviews])
 
   return useMemo(
-    () => ({ status: isVesselGroupReportLocation ? AsyncReducerStatus.Finished : status, data }),
-    [isVesselGroupReportLocation, status, data]
+    () => ({
+      status: isVesselGroupReportLocation || isGlobalReport ? AsyncReducerStatus.Finished : status,
+      data,
+    }),
+    [isVesselGroupReportLocation, isGlobalReport, status, data]
   )
 }
 
