@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { groupBy, upperFirst } from 'es-toolkit'
+import { DateTime } from 'luxon'
 
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
@@ -113,7 +114,7 @@ function VesselTracksTooltipRow({
           {!showFeaturesDetails && !hideVesselNames && formatInfoField(feature.title, 'shipname')}{' '}
           {interactionType === 'point' && feature.timestamp && (
             <span className={cx({ [styles.secondary]: !showFeaturesDetails })}>
-              <I18nDate date={feature.timestamp} />
+              <I18nDate date={feature.timestamp} format={DateTime.DATETIME_MED} />
               {!showFeaturesDetails && feature.speed !== undefined && (
                 <span>{` - ${feature.speed.toFixed(2)} ${t('common.knots', 'knots')}`}</span>
               )}
