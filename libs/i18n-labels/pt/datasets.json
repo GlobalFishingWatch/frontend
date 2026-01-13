@@ -325,6 +325,21 @@
       }
     }
   },
+  "private-global-gap-ais-off-events": {
+    "name": "GAPS Events. (AIS)",
+    "description": "GAPS Events",
+    "schema": {
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "2": "2",
+          "48": "48"
+        }
+      },
+      "is_closed": "is_closed",
+      "next_port_id": "next_port_id"
+    }
+  },
   "private-global-other-vessels": {
     "name": "AIS (Other Vessels)",
     "description": "Other vessels from AIS",
