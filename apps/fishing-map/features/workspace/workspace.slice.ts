@@ -30,8 +30,6 @@ import {
   DEFAULT_WORKSPACE_ID,
   getWorkspaceEnv,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
-  PRIVATE_TEMPLATE_VESSEL_DATAVIEW_SLUGS,
-  PRIVATE_VMS_WORKSPACES_IDS,
   WorkspaceCategory,
 } from 'data/workspaces'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
@@ -202,13 +200,6 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         // Inject dataviews for gfw staff only+
         dataviewIds.push(...ONLY_GFW_STAFF_DATAVIEW_SLUGS)
       }
-
-      Object.entries(PRIVATE_TEMPLATE_VESSEL_DATAVIEW_SLUGS).forEach(([group, dataviewId]) => {
-        const workspaceGroup = PRIVATE_VMS_WORKSPACES_IDS[workspace?.id || '']
-        if (workspaceGroup === group || userGroups.includes(group.toLowerCase())) {
-          dataviewIds.push(dataviewId)
-        }
-      })
 
       const uniqDataviewIds = uniq(dataviewIds) as string[]
 
