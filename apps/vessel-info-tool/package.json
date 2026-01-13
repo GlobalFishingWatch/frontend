@@ -15,5 +15,18 @@
     "typescript": "^5.9.3",
     "vite": "7.1.8",
     "vite-tsconfig-paths": "^6.0.3"
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.cts",
+        "default": "./dist/cjs/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
   }
 }

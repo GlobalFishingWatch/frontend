@@ -35,11 +35,7 @@ export default defineConfig({
       projects: ['./tsconfig.json'],
     }),
     nxViteTsPaths(),
-    tanstackStart({
-      spa: {
-        enabled: true,
-      },
-    }),
+    tanstackStart(),
     tailwindcss(),
     svgr({
       include: ['**/*.svg', '**/*.svg?react'],
