@@ -1,4 +1,4 @@
-import type { Color, Layer, LayersList } from '@deck.gl/core'
+import type { Color } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 
@@ -63,6 +63,14 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
       (this.props.visualizationMode?.includes(HEATMAP_ID) ||
         this.props.visualizationMode?.includes(FOOTPRINT_ID))
     )
+  }
+
+  get debounceTime() {
+    return this.getLayer()?.debounceTime || 0
+  }
+
+  forceUpdate() {
+    this.getLayer()?.forceUpdate?.()
   }
 
   renderLayers(): AnyFourwingsLayer {

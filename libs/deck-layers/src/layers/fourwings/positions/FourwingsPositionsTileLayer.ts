@@ -104,6 +104,17 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       : this.state.positions
   }
 
+  get debounceTime(): number {
+    return this.props.debounceTime || 0
+  }
+
+  forceUpdate() {
+    const layer = this.getLayerInstance()
+    if (layer) {
+      layer.setNeedsUpdate()
+    }
+  }
+
   getError(): string {
     return this.state.error
   }
@@ -202,6 +213,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       visualizationMode: 'positions',
     }
     return { ...info, object }
+  }
+
+  getLayerInstance() {
+    const layer = this.getSubLayers()[0] as MVTLayer
+    return layer
   }
 
   _getColorRamp(positions: FourwingsPositionFeature[]) {
