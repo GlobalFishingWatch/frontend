@@ -51,18 +51,19 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
   const reportAreaDataset = useSelector(selectReportDatasetId)
   const reportAreaId = useSelector(selectReportAreaId)
   const areaId = getAreaIdFromFeature(feature)
-  const isSameAreaId = reportAreaId?.toString() === areaId?.toString()
-  const isSameDataset = feature.datasetId === reportAreaDataset
+  const isSameAreaId = reportAreaId?.split(',').includes(areaId?.toString())
+  const isSameDataset = reportAreaDataset.split(',').includes(feature.datasetId)
   const isSameArea = isSameAreaId && isSameDataset
   const addAreaToReport = reportAreaDataset && reportAreaId && !isSameArea
+  const removeAreaFromReport = reportAreaDataset && reportAreaId && isSameArea
 
-  if (!isDataviewReportAnalysable || isSameArea) {
+  if (!isDataviewReportAnalysable && !addAreaToReport && !removeAreaFromReport) {
     return (
       <IconButton
         icon="analysis"
         disabled={!isDataviewReportAnalysable}
         size="small"
-        tooltip={isSameArea ? '' : t('common.analysisNotAvailable')}
+        tooltip={t('common.analysisNotAvailable')}
       />
     )
   }
@@ -106,6 +107,21 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
       areaId: [reportAreaId, areaId].join(','),
     },
   }
+  const areaIndex = reportAreaId?.split(',').indexOf(areaId?.toString())
+  const removeReportLinkTo = {
+    ...reportLinkTo,
+    payload: {
+      ...reportLinkTo.payload,
+      datasetId: reportAreaDataset
+        .split(',')
+        .filter((id, index) => index !== areaIndex)
+        .join(','),
+      areaId: reportAreaId
+        .split(',')
+        .filter((id, index) => index !== areaIndex)
+        .join(','),
+    },
+  }
 
   return (
     <Fragment>
@@ -122,6 +138,16 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
           <IconButton
             icon="add-polygon-to-analysis"
             tooltip={t('common.analysisAddArea')}
+            testId="add-analysis"
+            size="small"
+          />
+        </Link>
+      )}
+      {removeAreaFromReport && (
+        <Link className={styles.workspaceLink} to={removeReportLinkTo} onClick={onReportClick}>
+          <IconButton
+            icon="remove-polygon-from-analysis"
+            tooltip={t('common.analysisRemoveArea')}
             testId="add-analysis"
             size="small"
           />
