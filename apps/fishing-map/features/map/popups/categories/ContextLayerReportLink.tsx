@@ -55,7 +55,8 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
   const isSameDataset = reportAreaDataset.split(',').includes(feature.datasetId)
   const isSameArea = isSameAreaId && isSameDataset
   const addAreaToReport = reportAreaDataset && reportAreaId && !isSameArea
-  const removeAreaFromReport = reportAreaDataset && reportAreaId && isSameArea
+  const removeAreaFromReport =
+    reportAreaDataset && reportAreaId && isSameArea && reportAreaId.split(',').length > 1
 
   if (!isDataviewReportAnalysable && !addAreaToReport && !removeAreaFromReport) {
     return (
