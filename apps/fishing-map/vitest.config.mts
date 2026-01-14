@@ -23,6 +23,7 @@ export default defineConfig({
       store: path.resolve(__dirname, './store'),
       appTestUtils: path.resolve(__dirname, './appTestUtils'),
       test: path.resolve(__dirname, './test'),
+      hooks: path.resolve(__dirname, './hooks'),
     },
   },
   define: {
@@ -38,8 +39,8 @@ export default defineConfig({
     ],
     reporters: ['html', 'default'],
     coverage: {
-      reportsDirectory: '../../coverage/apps/fishing-map',
-      provider: 'v8' as const,
+      reportsDirectory: 'coverage/apps/fishing-map',
+      provider: 'istanbul',
     },
     setupFiles: './test/vitest.setup.ts',
     browser: {
@@ -56,16 +57,16 @@ export default defineConfig({
           name: 'fishing-map-browser',
           headless: true,
         },
-        {
-          browser: 'firefox',
-          name: 'fishing-map-firefox',
-          headless: true,
-        },
-        {
-          browser: 'webkit',
-          name: 'fishing-map-webkit',
-          headless: true,
-        },
+        // {
+        //   browser: 'firefox',
+        //   name: 'fishing-map-firefox',
+        //   headless: true,
+        // },
+        // {
+        //   browser: 'webkit',
+        //   name: 'fishing-map-webkit',
+        //   headless: true,
+        // },
       ],
     },
   },

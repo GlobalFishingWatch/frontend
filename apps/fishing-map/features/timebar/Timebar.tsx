@@ -207,6 +207,7 @@ const TimebarWrapper = () => {
   const [bookmark, setBookmark] = useState<{ start: string; end: string } | null>(null)
   const onBookmarkChange = useCallback(
     (start: string, end: string) => {
+      console.log('🚀 ~ TimebarWrapper ~ start:', start)
       if (!start || !end) {
         trackEvent({
           category: TrackCategory.Timebar,
@@ -260,6 +261,7 @@ const TimebarWrapper = () => {
 
   const onChange: TimebarProps['onChange'] = useCallback(
     (e) => {
+      console.log('🚀 ~ TimebarWrapper ~ e:', e)
       if (e.start !== start || e.end !== end) {
         const gaActions: Record<string, string> = {
           TIME_RANGE_SELECTOR: 'Configure timerange using calendar option',

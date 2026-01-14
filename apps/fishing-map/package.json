@@ -17,6 +17,7 @@
     "test:e2e": "npx playwright test"
   },
   "devDependencies": {
+    "@vitest/coverage-istanbul": "4.0.7",
     "cross-env": "^10.1.0",
     "i18next-cli": "^1.34.1",
     "source-map-explorer": "2.5.3"

@@ -220,7 +220,6 @@
     "@types/functional-red-black-tree": "1.0.6",
     "@types/geojson": "7946.0.16",
     "@types/geokdbush": "^1.1.5",
-    "@types/jest": "30.0.0",
     "@types/json2csv": "5.0.7",
     "@types/lodash": "4.17.21",
     "@types/luxon": "3.7.1",

@@ -91,6 +91,7 @@ export const useSetTimerange = () => {
 
   const setTimerange = useCallback(
     (timerange: TimeRange) => {
+      console.log('🚀 ~ useSetTimerange ~ isWorkspaceMapReady:', isWorkspaceMapReady)
       setAtomTimerange((timerangeAtom) => {
         if (
           (timerange.start !== timerangeAtom?.start || timerange.end !== timerangeAtom.end) &&
