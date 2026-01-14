@@ -86,17 +86,64 @@ export const useHighlightReportArea = () => {
   const areaDataviews = useSelector(selectReportAreaDataviews)
   const ids = areaDataviews?.map((d) => d.id) || defaultIds
   const areaLayers = useGetDeckLayers<ContextLayer>(ids)
+  const areaLayersRef = useRef(areaLayers)
+  const pendingAreaRef = useRef<ContextFeature | null | undefined>(undefined)
+  const rafIdRef = useRef<number | null>(null)
 
-  return useCallback(
-    (area?: ContextFeature) => {
-      areaLayers.forEach((areaLayer) => {
-        if (isDeckLayerReady(areaLayer.instance) && areaLayer?.instance?.setHighlightedFeatures) {
-          areaLayer.instance.setHighlightedFeatures(area ? [area] : [])
-        }
-      })
-    },
-    [areaLayers]
-  )
+  // Keep areaLayersRef in sync
+  useEffect(() => {
+    areaLayersRef.current = areaLayers
+  }, [areaLayers])
+
+  // Cleanup RAF on unmount
+  useEffect(() => {
+    return () => {
+      if (rafIdRef.current !== null) {
+        cancelAnimationFrame(rafIdRef.current)
+      }
+    }
+  }, [])
+
+  return useCallback((area?: ContextFeature) => {
+    pendingAreaRef.current = area ?? null
+
+    const applyHighlight = () => {
+      const layers = areaLayersRef.current
+      const areaToHighlight = pendingAreaRef.current
+
+      if (areaToHighlight === undefined) {
+        // Already applied, stop the loop
+        rafIdRef.current = null
+        return
+      }
+
+      if (layers.length === 0) {
+        rafIdRef.current = requestAnimationFrame(applyHighlight)
+        return
+      }
+
+      const allReady = layers.every(
+        (areaLayer) =>
+          isDeckLayerReady(areaLayer.instance) && areaLayer?.instance?.setHighlightedFeatures
+      )
+
+      if (allReady) {
+        layers.forEach((areaLayer) => {
+          areaLayer.instance.setHighlightedFeatures(areaToHighlight ? [areaToHighlight] : [])
+        })
+        pendingAreaRef.current = undefined
+        rafIdRef.current = null
+      } else {
+        rafIdRef.current = requestAnimationFrame(applyHighlight)
+      }
+    }
+
+    if (rafIdRef.current !== null) {
+      cancelAnimationFrame(rafIdRef.current)
+    }
+
+    applyHighlight()
+  }, [])
 }
 
 const defaultParams = {} as FitBoundsParams
