@@ -192,16 +192,16 @@ export const fetchWorkspaceThunk = createAsyncThunk(
       const dataviewIds = [
         // Load extra dataviews here when needed for gfwUsers
         ...DEFAULT_DATAVIEW_SLUGS,
-        ...(workspace?.dataviewInstances || []).map(({ dataviewId }) => dataviewId),
-        ...(urlDataviewInstances || []).map(({ dataviewId }) => dataviewId),
+        ...(workspace?.dataviewInstances || []).map(({ dataviewId }) => dataviewId as string),
+        ...(urlDataviewInstances || []).flatMap(({ dataviewId }) => (dataviewId as string) || []),
       ].filter(Boolean)
 
       if (gfwUser && ONLY_GFW_STAFF_DATAVIEW_SLUGS.length) {
-        // Inject dataviews for gfw staff only+
+        // Inject dataviews for gfw staff only
         dataviewIds.push(...ONLY_GFW_STAFF_DATAVIEW_SLUGS)
       }
 
-      const uniqDataviewIds = uniq(dataviewIds) as string[]
+      const uniqDataviewIds = uniq(dataviewIds)
 
       let dataviews: Dataview[] = []
       if (uniqDataviewIds?.length) {
