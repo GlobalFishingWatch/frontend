@@ -119,8 +119,8 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return this.props.debounceTime || 0
   }
 
-  forceUpdate() {
-    this.setNeedsUpdate()
+  forceRender() {
+    this.setNeedsRedraw()
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {

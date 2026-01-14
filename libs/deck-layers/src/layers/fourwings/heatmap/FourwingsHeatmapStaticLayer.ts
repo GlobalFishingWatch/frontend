@@ -14,7 +14,7 @@ import { MVTLayer } from '@deck.gl/geo-layers'
 import { PathLayer } from '@deck.gl/layers'
 import { scaleLinear } from 'd3-scale'
 import { debounce } from 'es-toolkit'
-import type { Feature, Geometry, Polygon } from 'geojson'
+import type { Feature, Geometry } from 'geojson'
 import { stringify } from 'qs'
 
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
@@ -106,11 +106,8 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     return this.state.error
   }
 
-  forceUpdate() {
-    const layer = this.getLayerInstance()
-    if (layer) {
-      layer.setNeedsUpdate()
-    }
+  forceRender() {
+    this.setNeedsRedraw?.()
   }
 
   _calculateColorDomain = () => {
@@ -141,6 +138,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
         scales: [scaleLinear(colorDomain, colorRanges)],
         rampDirty: false,
       })
+      this.forceRender()
     }
   }
 

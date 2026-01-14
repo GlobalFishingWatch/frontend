@@ -69,8 +69,8 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     return this.getLayer()?.debounceTime || 0
   }
 
-  forceUpdate() {
-    this.getLayer()?.forceUpdate?.()
+  forceRender() {
+    this.getLayer()?.forceRender?.()
   }
 
   renderLayers(): AnyFourwingsLayer {

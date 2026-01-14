@@ -9,7 +9,6 @@ import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
 import {
-  deckLayerInstancesAtom,
   getLayersStateHashAtom,
   groupContextDataviews,
   isDeckLayerReady,
@@ -22,11 +21,8 @@ import {
   type FourwingsInterval,
   getFourwingsInterval,
 } from '@globalfishingwatch/deck-loaders'
-import { useTrackDependencyChanges } from '@globalfishingwatch/react-hooks'
 
-// import { useTrackDependencyChanges } from '@globalfishingwatch/react-hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-// import { useTrackDependencyChanges } from '@globalfishingwatch/react-hooks'
 import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
@@ -196,53 +192,27 @@ const useReportTimeseries = (
     [reportLayers, layersStateHash]
   )
 
-  // const layerInstances = useAtomValue(deckLayerInstancesAtom)
-  // const afterRenderInstance = reportLayers?.[0]?.instance
-  // const layerInstance = layerInstances?.[2]
-  // if (afterRenderInstance && layerInstance) {
-  //   if (afterRenderInstance.count !== layerInstance.count) {
-  //     console.log('🚀 ~ useReportTimeseries ~ afterRenderInstance:', afterRenderInstance.isLoaded)
-  //     console.log('🚀 ~ useReportTimeseries ~ layerInstance:', layerInstance.isLoaded)
-  //     debugger
-  //   }
-  // }
-  // const debouncedTime = Math.max(...reportLayers.map(({ instance }) => instance.debounceTime || 0))
-  const isLoaded = useMemo(() => {
-    const isLoaded =
-      reportLayers.length > 0 &&
-      reportLayers.every(({ instance, loaded }) => loaded && instance.isLoaded)
-    // console.log('🚀 ~ useReportTimeseries ~ reportLayers:', reportLayers)
-    return isLoaded
-  }, [reportLayers])
-  // const isAtomLoaded = useMemo(() => {
-  //   const isLoaded = reportLayers.length > 0 && reportLayers.every(({ instance, loaded }) => loaded)
-  //   // console.log('🚀 ~ useReportTimeseries ~ reportLayers:', reportLayers)
-  //   return isLoaded
-  // }, [reportLayers])
-  // useTrackDependencyChanges('isLoaded', { isLoaded })
-  // useTrackDependencyChanges('isAtomLoaded', { isAtomLoaded })
-  // console.log('🚀 ~ useReportTimeseries ~ reportLayers:', reportLayers)
-  // console.log('🚀 ~ useReportTimeseries ~ isLoaded:', isLoaded)
   const reportLayersLength = reportLayers.length
   const titleHash = typeof reportTitle === 'string' ? reportTitle : reportTitle?.props.content
 
-  const isReady = useMemo(() => {
-    return reportLayers.length > 0
+  const isLoaded =
+    reportLayers.length > 0
+      ? reportLayers.every(({ instance, loaded }) => loaded && instance.isLoaded)
+      : false
+
+  const isReady =
+    reportLayers.length > 0
       ? reportLayers.every(({ instance }) => isDeckLayerReady(instance))
       : false
-  }, [reportLayers])
-  // console.log('🚀 ~ useReportTimeseries ~ isReady:', isReady)
-  useTrackDependencyChanges('isReady', { isReady })
 
   const onAreaChange = useEffectEvent(() => {
     reportLayers.forEach((layer) => {
-      layer.instance?.forceUpdate?.()
+      layer.instance?.forceRender?.()
     })
   })
 
   useLayoutEffect(() => {
-    // onAreaChange()
-    // setNeedsDataUpdate(true)
+    onAreaChange()
   }, [area?.id])
 
   // Create processing hash to detect when we need to reprocess
@@ -310,7 +280,6 @@ const useReportTimeseries = (
       setReportState((prev) => {
         return { ...prev, isLoading: true }
       })
-      console.log('🚀 ~ PROCESSFEATURES')
 
       try {
         const featuresFiltered: FilteredPolygons[][] = []
@@ -409,10 +378,6 @@ const useReportTimeseries = (
     // Only stats needs to recalculate on start and end changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportState.featuresFiltered, instances, start, end, setReportState])
-
-  useTrackDependencyChanges('report state', {
-    reportStateLoading: reportState.isLoading,
-  })
 
   return reportState
 }

@@ -117,11 +117,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     return this.props.debounceTime || 0
   }
 
-  forceUpdate() {
-    const layer = this.getLayerInstance()
-    if (layer) {
-      layer.setNeedsUpdate()
-    }
+  forceRender() {
+    this.setNeedsRedraw?.()
   }
 
   getError(): string {
@@ -319,6 +316,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       } else {
         this.setState({ rampDirty: false, viewportLoaded: true })
       }
+      this.forceRender()
     })
   }, 500)
 
@@ -663,6 +661,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
           scales,
           rampDirty: false,
         })
+        this.forceRender()
       })
     }
 

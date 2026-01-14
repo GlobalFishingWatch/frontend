@@ -168,6 +168,10 @@ export class FourwingsClustersLayer extends CompositeLayer<
     }
   }
 
+  forceRender() {
+    this.setNeedsRedraw?.()
+  }
+
   _isIndividualPoints = (data: FourwingsPointFeature[]) => {
     const { zoom } = this.context.viewport
     return this.clusterMode === 'positions'
@@ -338,6 +342,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
           clusters: undefined,
           radiusScale: undefined,
         })
+        this.forceRender()
       })
     } else {
       this.state.clusterIndex.load(data)
@@ -352,6 +357,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
           points,
           radiusScale,
         })
+        this.forceRender()
       })
     }
   }
