@@ -9,8 +9,10 @@ import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
 import {
+  deckLayerInstancesAtom,
   getLayersStateHashAtom,
   groupContextDataviews,
+  isDeckLayerReady,
   useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
@@ -193,15 +195,44 @@ const useReportTimeseries = (
     () => getInstancesFromLayers(reportLayers, layersStateHash),
     [reportLayers, layersStateHash]
   )
+
+  // const layerInstances = useAtomValue(deckLayerInstancesAtom)
+  // const afterRenderInstance = reportLayers?.[0]?.instance
+  // const layerInstance = layerInstances?.[2]
+  // if (afterRenderInstance && layerInstance) {
+  //   if (afterRenderInstance.count !== layerInstance.count) {
+  //     console.log('🚀 ~ useReportTimeseries ~ afterRenderInstance:', afterRenderInstance.isLoaded)
+  //     console.log('🚀 ~ useReportTimeseries ~ layerInstance:', layerInstance.isLoaded)
+  //     debugger
+  //   }
+  // }
   // const debouncedTime = Math.max(...reportLayers.map(({ instance }) => instance.debounceTime || 0))
   const isLoaded = useMemo(() => {
     const isLoaded =
       reportLayers.length > 0 &&
-      reportLayers.every(({ instance, loaded }) => instance.isLoaded && loaded)
+      reportLayers.every(({ instance, loaded }) => loaded && instance.isLoaded)
+    // console.log('🚀 ~ useReportTimeseries ~ reportLayers:', reportLayers)
     return isLoaded
   }, [reportLayers])
+  // const isAtomLoaded = useMemo(() => {
+  //   const isLoaded = reportLayers.length > 0 && reportLayers.every(({ instance, loaded }) => loaded)
+  //   // console.log('🚀 ~ useReportTimeseries ~ reportLayers:', reportLayers)
+  //   return isLoaded
+  // }, [reportLayers])
+  // useTrackDependencyChanges('isLoaded', { isLoaded })
+  // useTrackDependencyChanges('isAtomLoaded', { isAtomLoaded })
+  // console.log('🚀 ~ useReportTimeseries ~ reportLayers:', reportLayers)
+  // console.log('🚀 ~ useReportTimeseries ~ isLoaded:', isLoaded)
   const reportLayersLength = reportLayers.length
   const titleHash = typeof reportTitle === 'string' ? reportTitle : reportTitle?.props.content
+
+  const isReady = useMemo(() => {
+    return reportLayers.length > 0
+      ? reportLayers.every(({ instance }) => isDeckLayerReady(instance))
+      : false
+  }, [reportLayers])
+  // console.log('🚀 ~ useReportTimeseries ~ isReady:', isReady)
+  useTrackDependencyChanges('isReady', { isReady })
 
   const onAreaChange = useEffectEvent(() => {
     reportLayers.forEach((layer) => {
@@ -210,7 +241,7 @@ const useReportTimeseries = (
   })
 
   useLayoutEffect(() => {
-    onAreaChange()
+    // onAreaChange()
     // setNeedsDataUpdate(true)
   }, [area?.id])
 
@@ -221,7 +252,7 @@ const useReportTimeseries = (
     if (!area || !titleHash || reportLayersLength === 0) return ''
 
     // Include isLoaded in the hash so processing runs when layers finish loading
-    return `${titleHash}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${layersStateHash}|${reportBufferHash}|${isLoaded}`
+    return `${titleHash}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${layersStateHash}|${reportBufferHash}`
   }, [
     area,
     titleHash,
@@ -232,7 +263,6 @@ const useReportTimeseries = (
     timeComparisonHash,
     layersStateHash,
     reportBufferHash,
-    isLoaded,
   ])
 
   const lastProcessedHash = useRef('')
@@ -266,10 +296,11 @@ const useReportTimeseries = (
 
   useEffect(() => {
     if (
+      !isReady ||
+      !isLoaded ||
       !processingHash ||
       processingHash === lastProcessedHash.current ||
       !isAreaInViewport ||
-      !isLoaded ||
       !area?.geometry
     ) {
       return
@@ -279,7 +310,7 @@ const useReportTimeseries = (
       setReportState((prev) => {
         return { ...prev, isLoading: true }
       })
-      // console.log('🚀 ~ PROCESSFEATURES')
+      console.log('🚀 ~ PROCESSFEATURES')
 
       try {
         const featuresFiltered: FilteredPolygons[][] = []
@@ -358,6 +389,7 @@ const useReportTimeseries = (
     setReportState,
     isAreaInViewport,
     isLoaded,
+    isReady,
   ])
 
   useEffect(() => {
@@ -378,16 +410,9 @@ const useReportTimeseries = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportState.featuresFiltered, instances, start, end, setReportState])
 
-  // useTrackDependencyChanges('reset report state', {
-  //   area,
-  //   interval,
-  //   reportCategory,
-  //   reportSubCategory,
-  //   reportGraphMode,
-  //   setReportState,
-  //   processingHash,
-  //   reportState,
-  // })
+  useTrackDependencyChanges('report state', {
+    reportStateLoading: reportState.isLoading,
+  })
 
   return reportState
 }
