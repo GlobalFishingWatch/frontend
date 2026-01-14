@@ -4,7 +4,7 @@ import { featureCollection, point } from '@turf/helpers'
 import { bboxPolygon } from '@turf/turf'
 import type { Point, Polygon, Position } from 'geojson'
 
-import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
+import { type DeckLayerAtom, isDeckLayerReady } from '@globalfishingwatch/deck-layer-composer'
 import type { VesselLayer } from '@globalfishingwatch/deck-layers'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
@@ -23,7 +23,7 @@ export function useVesselEventBounds(vesselLayer: DeckLayerAtom<VesselLayer>) {
       if (!event) {
         return
       }
-      if (vesselLayer?.instance) {
+      if (isDeckLayerReady(vesselLayer?.instance) && vesselLayer?.instance) {
         const trackBounds = vesselLayer.instance.getVesselTrackBounds({
           startDate: event.start,
           endDate: event.end,

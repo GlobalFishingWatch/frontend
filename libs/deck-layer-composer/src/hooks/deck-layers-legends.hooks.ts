@@ -1,5 +1,6 @@
 import { atom, useAtomValue } from 'jotai'
 
+import { isDeckLayerReady } from '@globalfishingwatch/deck-layer-composer'
 import type {
   ColorRampId,
   FourwingsColorObject,
@@ -27,7 +28,9 @@ export const deckLayersLegendsAtom = atom<DeckLegendAtom[]>((get) => {
   const deckLayers = get(deckLayersAtom)
   const deckLayerHoverFeatures = get(deckHoverInteractionAtom)
   return deckLayers.flatMap((layer) => {
+    const isReady = isDeckLayerReady(layer.instance)
     if (
+      !isReady ||
       !layer.instance ||
       !(
         layer.instance instanceof FourwingsLayer ||

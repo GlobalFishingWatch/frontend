@@ -4,7 +4,7 @@ import { atom, useAtom, useAtomValue } from 'jotai'
 
 import type { TrackSegment } from '@globalfishingwatch/api-types'
 import { ResourceStatus } from '@globalfishingwatch/api-types'
-import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
+import { isDeckLayerReady, useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import { UserTracksLayer, VesselLayer } from '@globalfishingwatch/deck-layers'
 import type {
   HighlighterCallbackFnArgs,
@@ -94,7 +94,7 @@ export const useTimebarVesselTracks = () => {
             v.instance instanceof VesselLayer
               ? v.instance.getVesselTracksLayersLoaded()
               : v.instance.isLoaded
-          return loaded ? v.id : []
+          return isDeckLayerReady(v.instance) && loaded ? v.id : []
         })
         .join(','),
     [trackLayers]
@@ -103,6 +103,9 @@ export const useTimebarVesselTracks = () => {
     () =>
       trackLayers
         .flatMap((v) => {
+          if (!isDeckLayerReady(v.instance)) {
+            return []
+          }
           const color = v.instance.getColor()
           const cacheHash =
             'cacheHash' in v.instance && v.instance.cacheHash
@@ -149,6 +152,9 @@ export const useTimebarVesselTracks = () => {
     requestAnimationFrame(() => {
       if (trackLayers?.length && timebarVisualisation === TimebarVisualisations.Vessel) {
         const vesselTracks = trackLayers.flatMap(({ instance }) => {
+          if (!isDeckLayerReady(instance)) {
+            return []
+          }
           const loaded =
             instance instanceof VesselLayer
               ? instance.getVesselTracksLayersLoaded()
@@ -222,6 +228,9 @@ export const useTimebarVesselTracksGraph = () => {
     () =>
       trackLayers
         .flatMap((v) => {
+          if (!isDeckLayerReady(v.instance)) {
+            return []
+          }
           return v.instance instanceof VesselLayer
             ? v.instance.getVesselTracksLayersLoaded()
             : v.instance.isLoaded
@@ -232,7 +241,10 @@ export const useTimebarVesselTracksGraph = () => {
     [trackLayers]
   )
   const tracksColor = useMemo(
-    () => trackLayers.flatMap((v) => v.instance.getColor()).join(','),
+    () =>
+      trackLayers
+        .flatMap((v) => (isDeckLayerReady(v.instance) ? v.instance.getColor() : []))
+        .join(','),
     [trackLayers]
   )
 
@@ -271,6 +283,9 @@ export const useTimebarVesselTracksGraph = () => {
         timebarVisualisation === TimebarVisualisations.Vessel
       ) {
         const vesselTracks = trackLayers.flatMap(({ instance }) => {
+          if (!isDeckLayerReady(instance)) {
+            return []
+          }
           const loaded =
             instance instanceof VesselLayer
               ? instance.getVesselTracksLayersLoaded()
@@ -328,7 +343,11 @@ export const useTimebarVesselTracksGraph = () => {
   const tracksFiltersHash = useMemo(() => {
     return trackLayers
       .flatMap(({ instance }) => [
-        instance instanceof VesselLayer ? Object.values(instance.getFilters()).filter(Boolean) : [],
+        isDeckLayerReady(instance)
+          ? instance instanceof VesselLayer
+            ? Object.values(instance.getFilters()).filter(Boolean)
+            : []
+          : [],
       ])
       .join(',')
   }, [trackLayers])
@@ -337,7 +356,7 @@ export const useTimebarVesselTracksGraph = () => {
     setVesselTracksGraph((tracksGraph) => {
       return tracksGraph?.map((graph) => {
         const trackLayerInstance = trackLayers.find(
-          (layer) => layer.instance?.id === graph.id
+          (layer) => isDeckLayerReady(layer.instance) && layer.instance?.id === graph.id
         )?.instance
         if (!trackLayerInstance) {
           return graph
@@ -379,7 +398,7 @@ export const useTimebarVesselEvents = () => {
     [vessels]
   )
   const eventsColor = useMemo(
-    () => vessels.flatMap((v) => v.instance.getColor()).join(','),
+    () => vessels.flatMap((v) => (v.ready ? v.instance.getColor() : [])).join(','),
     [vessels]
   )
 
@@ -394,7 +413,8 @@ export const useTimebarVesselEvents = () => {
         const vesselEvents: TimebarChartData<any> = vessels.map(({ instance }) => {
           const isVesselLayer = instance instanceof VesselLayer
           const loaded = isVesselLayer ? instance.getVesselTracksLayersLoaded() : instance.isLoaded
-          const status = loaded ? ResourceStatus.Finished : ResourceStatus.Loading
+          const status =
+            isDeckLayerReady(instance) && loaded ? ResourceStatus.Finished : ResourceStatus.Loading
           return {
             id: instance.id,
             color: instance.getColor(),

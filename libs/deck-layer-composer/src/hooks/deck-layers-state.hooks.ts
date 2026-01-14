@@ -3,6 +3,38 @@ import { atom, useAtomValue, useSetAtom } from 'jotai'
 
 import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 
+// Type extension for internal deck.gl layer properties not exposed in public types
+type LayerWithInternals = AnyDeckLayer & {
+  internalState: unknown | null
+  isComposite: boolean
+  getSubLayers?: () => unknown[]
+}
+
+export function isDeckLayerReady(layer: AnyDeckLayer) {
+  if (!layer) {
+    return false
+  }
+  // A layer is ready when it has been initialized (internalState is set during _initialize())
+  // This is more reliable than checking lifecycle string values because:
+  // - lifecycle can be 'INITIALIZED' (after first init) OR 'MATCHED' (after state transfer)
+  // - internalState is null until _initialize() runs
+  // - internalState is transferred when a layer is matched with an existing one
+  // See: node_modules/@deck.gl/core/src/lib/layer-manager.ts lines 360-378
+  const layerInternal = layer as LayerWithInternals
+  if (layerInternal.internalState === null) {
+    return false
+  }
+  // For CompositeLayer (like FourwingsLayer), sublayers are only populated in _postUpdate()
+  // which runs AFTER initialization. We need to wait for sublayers to be rendered
+  // before the layer's methods (getColorScale, getZoomOffset, etc.) are safe to call.
+  // See: node_modules/@deck.gl/core/src/lib/composite-layer.ts lines 252-264
+  if (layerInternal.isComposite && typeof layerInternal.getSubLayers === 'function') {
+    const subLayers = layerInternal.getSubLayers()
+    return Array.isArray(subLayers) && subLayers.length > 0
+  }
+  return true
+}
+
 // Atom used to have all the layer instances loading state available
 type DeckLayerLoaded = {
   loaded: boolean

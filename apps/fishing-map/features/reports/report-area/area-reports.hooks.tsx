@@ -13,7 +13,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
+import { isDeckLayerReady, useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextFeature, ContextLayer } from '@globalfishingwatch/deck-layers'
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Tooltip } from '@globalfishingwatch/ui-components'
@@ -90,7 +90,7 @@ export const useHighlightReportArea = () => {
   return useCallback(
     (area?: ContextFeature) => {
       areaLayers.forEach((areaLayer) => {
-        if (areaLayer?.instance?.setHighlightedFeatures) {
+        if (isDeckLayerReady(areaLayer.instance) && areaLayer?.instance?.setHighlightedFeatures) {
           areaLayer.instance.setHighlightedFeatures(area ? [area] : [])
         }
       })

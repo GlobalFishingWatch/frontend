@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import {
   getAvailableIntervalsInDataviews,
+  isDeckLayerReady,
   useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsClustersLayer } from '@globalfishingwatch/deck-layers'
@@ -35,7 +36,7 @@ export const useClusterEventsGraph = () => {
   }, [viewport])
 
   const loaded = clusterEventsLayers?.length
-    ? clusterEventsLayers.every(({ instance }) => instance.isLoaded)
+    ? clusterEventsLayers.every(({ instance }) => isDeckLayerReady(instance) && instance.isLoaded)
     : false
 
   const instances = useMemo(() => {
