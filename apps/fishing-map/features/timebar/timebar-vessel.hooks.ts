@@ -398,7 +398,8 @@ export const useTimebarVesselEvents = () => {
     [vessels]
   )
   const eventsColor = useMemo(
-    () => vessels.flatMap((v) => (v.ready ? v.instance.getColor() : [])).join(','),
+    () =>
+      vessels.flatMap((v) => (isDeckLayerReady(v.instance) ? v.instance.getColor() : [])).join(','),
     [vessels]
   )
 
