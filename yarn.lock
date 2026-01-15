@@ -2938,6 +2938,7 @@ __metadata:
     "@types/redux-first-router": "npm:2.1.12"
     "@types/redux-first-router-link": "npm:1.4.9"
     "@types/shpjs": "npm:3.4.7"
+    "@types/suncalc": "npm:^1.9.2"
     "@types/topojson-client": "npm:3.1.5"
     "@vitejs/plugin-react": "npm:5.1.2"
     "@vitest/browser": "npm:4.0.16"
@@ -3070,6 +3071,7 @@ __metadata:
     stylelint: "npm:16.26.1"
     stylelint-config-css-modules: "npm:4.5.1"
     stylelint-config-standard: "npm:39.0.1"
+    suncalc: "npm:^1.9.0"
     supercluster: "npm:8.0.1"
     ts-jest: "npm:29.4.6"
     ts-node: "npm:10.9.2"
@@ -15675,6 +15677,13 @@ __metadata:
   version: 2.0.3
   resolution: "@types/stack-utils@npm:2.0.3"
   checksum: 10/72576cc1522090fe497337c2b99d9838e320659ac57fa5560fcbdcbafcf5d0216c6b3a0a8a4ee4fdb3b1f5e3420aa4f6223ab57b82fef3578bec3206425c6cf5
+  languageName: node
+  linkType: hard
+
+"@types/suncalc@npm:^1.9.2":
+  version: 1.9.2
+  resolution: "@types/suncalc@npm:1.9.2"
+  checksum: 10/3a2d3b48b5097b7dadc8f0782e5a47805fdf64b0d93d00dc51feb5a61117306dc78fd99f424afee9c9b263a0c38fe66644e50a823febbf6db578e61dcd41ccac
   languageName: node
   linkType: hard
 
@@ -34003,6 +34012,13 @@ __metadata:
   version: 4.2.0
   resolution: "stylis@npm:4.2.0"
   checksum: 10/58359185275ef1f39c339ae94e598168aa6bb789f6cf0d52e726c1e7087a94e9c17f0385a28d34483dec1ffc2c75670ec714dc5603d99c3124ec83bc2b0a0f42
+  languageName: node
+  linkType: hard
+
+"suncalc@npm:^1.9.0":
+  version: 1.9.0
+  resolution: "suncalc@npm:1.9.0"
+  checksum: 10/ba24acf67a421fd96f1137d905540ec445834e8965573888c9fd4d7b94d6825051c8a6fcb11c9a4f1fb64042d3ddd51cdc992f0b7a5436714dd5faab18715d92
   languageName: node
   linkType: hard
 
