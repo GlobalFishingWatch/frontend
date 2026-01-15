@@ -16,8 +16,8 @@ import { fetchVessels } from '@/utils/vessels'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { UserData } from '@globalfishingwatch/api-types'
 
-export const Route = createFileRoute('/_auth/$source')({
-  ssr: false,
+export const Route = createFileRoute('/_authed/$source')({
+  // ssr: false,
   loader: async ({ params }) =>
     fetchVessels({ data: { source: params.source as UserPermissionValues } }),
   loaderDeps: () => ({}),
@@ -48,21 +48,21 @@ function Home() {
     }
   }, [])
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const user = await GFWAPI.fetchUser()
-      setUser(user)
-    }
+  // useEffect(() => {
+  //   const fetchUserData = async () => {
+  //     const user = await GFWAPI.fetchUser()
+  //     setUser(user)
+  //   }
 
-    fetchUserData()
-  }, [])
+  //   fetchUserData()
+  // }, [])
 
   return (
     <div className="fixed inset-0 flex flex-col overflow-hidden">
       <Header>
         <Search data={vessels} />
         <OptionsMenu />
-        <Profile user={user} />
+        {/* <Profile user={user} /> */}
       </Header>
       <div className="flex-1 relative overflow-auto" ref={tableContainerRef}>
         {containerEl && <DynamicTable data={vessels} tableContainerRef={containerEl} />}

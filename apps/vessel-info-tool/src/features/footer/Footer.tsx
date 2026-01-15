@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import { Route } from '@/routes/_auth/$source'
+import { Route } from '@/routes/_authed/$source'
 import { Button } from '@globalfishingwatch/ui-components'
 
 import styles from '../../styles/global.module.css'

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { Route } from '@/routes/_auth/$source'
+import { Route } from '@/routes/_authed/$source'
 import type { ICCATOwner, ICCATVessel, Vessel } from '@/types/vessel.types'
 import { RFMO } from '@/types/vessel.types'
 import { handleExportICCATVessels, parseVessels } from '@/utils/iccat'

@@ -67,7 +67,7 @@ export class GFW_API_CLASS {
     tokenStorageKey = USER_TOKEN_STORAGE_KEY,
     refreshTokenStorageKey = USER_REFRESH_TOKEN_STORAGE_KEY,
   } = {}) {
-    this.debug = debug
+    this.debug = true
     this.baseUrl = baseUrl
     this.apiVersion = version
     this.storageKeys = {
@@ -89,6 +89,7 @@ export class GFW_API_CLASS {
   }
 
   private set token(token: string) {
+    console.log('🚀 ~ GFW_API_CLASS ~ token ~ isClientSide:', isClientSide)
     if (isClientSide) {
       if (token) {
         setCookie(this.storageKeys.token, token, {

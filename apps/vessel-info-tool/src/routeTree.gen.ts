@@ -9,25 +9,38 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AuthRouteImport } from './routes/_auth'
-import { Route as AuthIndexRouteImport } from './routes/_auth/index'
-import { Route as AuthSourceRouteImport } from './routes/_auth/$source'
+import { Route as LogoutRouteImport } from './routes/logout'
+import { Route as LoginErrorRouteImport } from './routes/login-error'
+import { Route as AuthedIndexRouteImport } from './routes/_authed/index'
+import { Route as AuthCallbackRouteImport } from './routes/auth/callback'
+import { Route as AuthedSourceRouteImport } from './routes/_authed/$source'
 import { Route as ApiVesselsFileNameRouteImport } from './routes/api/vessels/$fileName'
 import { Route as ApiIccatSourceRouteImport } from './routes/api/iccat/$source'
 
-const AuthRoute = AuthRouteImport.update({
-  id: '/_auth',
+const LogoutRoute = LogoutRouteImport.update({
+  id: '/logout',
+  path: '/logout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthIndexRoute = AuthIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AuthRoute,
+const LoginErrorRoute = LoginErrorRouteImport.update({
+  id: '/login-error',
+  path: '/login-error',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AuthSourceRoute = AuthSourceRouteImport.update({
-  id: '/$source',
+const AuthedIndexRoute = AuthedIndexRouteImport.update({
+  id: '/_authed/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthedSourceRoute = AuthedSourceRouteImport.update({
+  id: '/_authed/$source',
   path: '/$source',
-  getParentRoute: () => AuthRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiVesselsFileNameRoute = ApiVesselsFileNameRouteImport.update({
   id: '/api/vessels/$fileName',
@@ -41,67 +54,109 @@ const ApiIccatSourceRoute = ApiIccatSourceRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/$source': typeof AuthSourceRoute
-  '/': typeof AuthIndexRoute
+  '/login-error': typeof LoginErrorRoute
+  '/logout': typeof LogoutRoute
+  '/$source': typeof AuthedSourceRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/': typeof AuthedIndexRoute
   '/api/iccat/$source': typeof ApiIccatSourceRoute
   '/api/vessels/$fileName': typeof ApiVesselsFileNameRoute
 }
 export interface FileRoutesByTo {
-  '/$source': typeof AuthSourceRoute
-  '/': typeof AuthIndexRoute
+  '/login-error': typeof LoginErrorRoute
+  '/logout': typeof LogoutRoute
+  '/$source': typeof AuthedSourceRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/': typeof AuthedIndexRoute
   '/api/iccat/$source': typeof ApiIccatSourceRoute
   '/api/vessels/$fileName': typeof ApiVesselsFileNameRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_auth': typeof AuthRouteWithChildren
-  '/_auth/$source': typeof AuthSourceRoute
-  '/_auth/': typeof AuthIndexRoute
+  '/login-error': typeof LoginErrorRoute
+  '/logout': typeof LogoutRoute
+  '/_authed/$source': typeof AuthedSourceRoute
+  '/auth/callback': typeof AuthCallbackRoute
+  '/_authed/': typeof AuthedIndexRoute
   '/api/iccat/$source': typeof ApiIccatSourceRoute
   '/api/vessels/$fileName': typeof ApiVesselsFileNameRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/$source' | '/' | '/api/iccat/$source' | '/api/vessels/$fileName'
+  fullPaths:
+    | '/login-error'
+    | '/logout'
+    | '/$source'
+    | '/auth/callback'
+    | '/'
+    | '/api/iccat/$source'
+    | '/api/vessels/$fileName'
   fileRoutesByTo: FileRoutesByTo
-  to: '/$source' | '/' | '/api/iccat/$source' | '/api/vessels/$fileName'
+  to:
+    | '/login-error'
+    | '/logout'
+    | '/$source'
+    | '/auth/callback'
+    | '/'
+    | '/api/iccat/$source'
+    | '/api/vessels/$fileName'
   id:
     | '__root__'
-    | '/_auth'
-    | '/_auth/$source'
-    | '/_auth/'
+    | '/login-error'
+    | '/logout'
+    | '/_authed/$source'
+    | '/auth/callback'
+    | '/_authed/'
     | '/api/iccat/$source'
     | '/api/vessels/$fileName'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AuthRoute: typeof AuthRouteWithChildren
+  LoginErrorRoute: typeof LoginErrorRoute
+  LogoutRoute: typeof LogoutRoute
+  AuthedSourceRoute: typeof AuthedSourceRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
+  AuthedIndexRoute: typeof AuthedIndexRoute
   ApiIccatSourceRoute: typeof ApiIccatSourceRoute
   ApiVesselsFileNameRoute: typeof ApiVesselsFileNameRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_auth': {
-      id: '/_auth'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof AuthRouteImport
+    '/logout': {
+      id: '/logout'
+      path: '/logout'
+      fullPath: '/logout'
+      preLoaderRoute: typeof LogoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_auth/': {
-      id: '/_auth/'
+    '/login-error': {
+      id: '/login-error'
+      path: '/login-error'
+      fullPath: '/login-error'
+      preLoaderRoute: typeof LoginErrorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authed/': {
+      id: '/_authed/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof AuthIndexRouteImport
-      parentRoute: typeof AuthRoute
+      preLoaderRoute: typeof AuthedIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_auth/$source': {
-      id: '/_auth/$source'
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authed/$source': {
+      id: '/_authed/$source'
       path: '/$source'
       fullPath: '/$source'
-      preLoaderRoute: typeof AuthSourceRouteImport
-      parentRoute: typeof AuthRoute
+      preLoaderRoute: typeof AuthedSourceRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/vessels/$fileName': {
       id: '/api/vessels/$fileName'
@@ -120,20 +175,12 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AuthRouteChildren {
-  AuthSourceRoute: typeof AuthSourceRoute
-  AuthIndexRoute: typeof AuthIndexRoute
-}
-
-const AuthRouteChildren: AuthRouteChildren = {
-  AuthSourceRoute: AuthSourceRoute,
-  AuthIndexRoute: AuthIndexRoute,
-}
-
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
-  AuthRoute: AuthRouteWithChildren,
+  LoginErrorRoute: LoginErrorRoute,
+  LogoutRoute: LogoutRoute,
+  AuthedSourceRoute: AuthedSourceRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
+  AuthedIndexRoute: AuthedIndexRoute,
   ApiIccatSourceRoute: ApiIccatSourceRoute,
   ApiVesselsFileNameRoute: ApiVesselsFileNameRoute,
 }

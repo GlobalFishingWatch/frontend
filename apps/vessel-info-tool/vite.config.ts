@@ -1,4 +1,4 @@
-// import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin'
+import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import tailwindcss from '@tailwindcss/vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
@@ -6,7 +6,7 @@ import { defineConfig } from 'vite'
 import svgr from 'vite-plugin-svgr'
 import tsConfigPaths from 'vite-tsconfig-paths'
 
-// import { pluginSSRCssModuleFix } from '../../config/vite.plugins'
+import { pluginSSRCssModuleFix } from '../../config/vite.plugins'
 
 export default defineConfig({
   cacheDir: '../../node_modules/.vite/apps/vessel-info-tool',
@@ -22,25 +22,27 @@ export default defineConfig({
     },
   },
   server: {
+    host: true,
     port: 3000,
+    allowedHosts: ['local.globalfishingwatch.org'],
   },
-  define: {
-    'process.env': {
-      API_GATEWAY: process.env.API_GATEWAY,
-      API_VERSION: process.env.API_VERSION,
-    },
-  },
+  // define: {
+  //   'process.env': {
+  //     API_GATEWAY: process.env.API_GATEWAY,
+  //     API_VERSION: process.env.API_VERSION,
+  //   },
+  // },
   plugins: [
+    tanstackStart(),
     tsConfigPaths({
       projects: ['./tsconfig.json'],
     }),
     nxViteTsPaths(),
-    tanstackStart(),
     tailwindcss(),
     svgr({
       include: ['**/*.svg', '**/*.svg?react'],
     }),
-    // nxCopyAssetsPlugin(['*.md']),
-    // pluginSSRCssModuleFix(),
+    nxCopyAssetsPlugin(['*.md']),
+    pluginSSRCssModuleFix(),
   ],
 })
