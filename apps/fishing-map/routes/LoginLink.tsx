@@ -24,7 +24,14 @@ function LocalStorageLoginLink({ children, className = '' }: LocalStorageLoginLi
   }
 
   return (
-    <a ref={ref} href={getLoginUrl()} onClick={onClick} className={className} title="Login">
+    <a
+      ref={ref}
+      href={getLoginUrl()}
+      onClick={onClick}
+      className={className}
+      title="Login"
+      data-testid="login-link"
+    >
       {children}
     </a>
   )
