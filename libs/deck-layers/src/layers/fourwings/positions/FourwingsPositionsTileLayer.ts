@@ -91,6 +91,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return super.isLoaded && !this.state.viewportDirty && this.state.viewportLoaded
   }
 
+  get viewportLoaded(): boolean {
+    return this.state?.viewportLoaded ?? false
+  }
+
   get cacheHash(): string {
     return ''
   }
@@ -521,6 +525,9 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   getData() {
+    if (!this.isLoaded) {
+      return null
+    }
     return this.positions
   }
 

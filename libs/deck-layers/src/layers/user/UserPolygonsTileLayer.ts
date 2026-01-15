@@ -61,6 +61,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
     const colorRange = getColorRampByOpacitySteps(color)
     if (this.props.steps && this.props.steps?.length > 0 && colorRange) {
       this.state = {
+        ...this.state,
         scale: scaleLinear(this.props.steps as number[], colorRange).clamp(true),
         error: '',
       }
@@ -197,7 +198,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
           ...getFetchLoadOptions(),
         },
         onTileError: this._onLayerError,
-        onViewportLoad: this.props.onViewportLoad,
+        onViewportLoad: this.onViewportLoad,
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,

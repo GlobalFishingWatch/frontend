@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef } from 'react'
+import { useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 import { atom, useAtom, useAtomValue } from 'jotai'
@@ -21,6 +21,7 @@ import {
   type FourwingsInterval,
   getFourwingsInterval,
 } from '@globalfishingwatch/deck-loaders'
+import { useTrackDependencyChanges } from '@globalfishingwatch/react-hooks'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -175,6 +176,7 @@ const useReportTimeseries = (
   const reportGraph = useSelector(selectReportActivityGraph)
   const reportBufferHash = useSelector(selectReportBufferHash)
   const reportGraphMode = getReportGraphMode(reportGraph)
+  const isFirstLoad = useRef(true)
 
   const layerIds = useMemo(() => reportLayers.map((l) => l.id), [reportLayers])
   const layerIdsHash = layerIds.join(',')
@@ -195,15 +197,24 @@ const useReportTimeseries = (
   const reportLayersLength = reportLayers.length
   const titleHash = typeof reportTitle === 'string' ? reportTitle : reportTitle?.props.content
 
-  const isLoaded =
-    reportLayers.length > 0
-      ? reportLayers.every(({ instance, loaded }) => loaded && instance.isLoaded)
-      : false
+  const isLoaded = reportLayers.length > 0 && reportLayers.every(({ loaded }) => loaded)
 
-  const isReady =
-    reportLayers.length > 0
-      ? reportLayers.every(({ instance }) => isDeckLayerReady(instance))
-      : false
+  const isReadySync =
+    reportLayers.length > 0 &&
+    reportLayers.every(({ instance }) => isDeckLayerReady(instance) && instance.viewportLoaded)
+
+  // Defer isReady validation to next tick to ensure rendering is complete
+  const [isReady, setIsReady] = useState(false)
+  useEffect(() => {
+    if (!isReadySync) {
+      setIsReady(false)
+      return
+    }
+    const timeoutId = setTimeout(() => {
+      setIsReady(true)
+    }, 10)
+    return () => clearTimeout(timeoutId)
+  }, [isReadySync])
 
   const onAreaChange = useEffectEvent(() => {
     reportLayers.forEach((layer) => {
@@ -213,18 +224,21 @@ const useReportTimeseries = (
 
   useLayoutEffect(() => {
     onAreaChange()
+    isFirstLoad.current = true
   }, [area?.id])
 
   // Create processing hash to detect when we need to reprocess
   const processingHash = useMemo(() => {
-    // Only return empty if we truly have no area or no layers at all
-    // isLoaded can be temporarily false during layer transitions
-    if (!area || !titleHash || reportLayersLength === 0) return ''
+    // Return empty if there is no area or no layers or
+    // needs to wait for first layer load to complete
+    if (!area?.id || !titleHash || reportLayersLength === 0 || (isFirstLoad.current && !isLoaded)) {
+      return ''
+    }
 
-    // Include isLoaded in the hash so processing runs when layers finish loading
-    return `${titleHash}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${layersStateHash}|${reportBufferHash}`
+    return `${area.id}|${titleHash}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${layersStateHash}|${reportBufferHash}`
   }, [
     area,
+    isLoaded,
     titleHash,
     reportLayersLength,
     reportCategory,
@@ -236,6 +250,8 @@ const useReportTimeseries = (
   ])
 
   const lastProcessedHash = useRef('')
+  const processingAbortRef = useRef<AbortController | null>(null)
+
   // Reset state when critical parameters change
   useLayoutEffect(() => {
     if (!isAreaInViewport) {
@@ -264,6 +280,9 @@ const useReportTimeseries = (
     isAreaInViewport,
   ])
 
+  // Track the hash that triggered current processing to avoid aborting on isReady flicker
+  const processingHashRef = useRef<string | null>(null)
+
   useEffect(() => {
     if (
       !isReady ||
@@ -276,6 +295,27 @@ const useReportTimeseries = (
       return
     }
 
+    // Only abort if we're starting processing for a DIFFERENT hash
+    // This prevents aborting when isReady flickers but the hash is the same
+    const hashChanged = processingHashRef.current !== processingHash
+    if (hashChanged && processingAbortRef.current) {
+      processingAbortRef.current.abort()
+    }
+
+    // If we're already processing this exact hash, don't start again
+    if (!hashChanged && processingAbortRef.current) {
+      return
+    }
+
+    processingHashRef.current = processingHash
+    const abortController = new AbortController()
+    processingAbortRef.current = abortController
+
+    // Capture current values to avoid stale closures during async operations
+    const currentHash = processingHash
+    const currentInstances = [...instances]
+    const currentArea = area
+
     const processFeatures = async () => {
       setReportState((prev) => {
         return { ...prev, isLoading: true }
@@ -283,7 +323,12 @@ const useReportTimeseries = (
 
       try {
         const featuresFiltered: FilteredPolygons[][] = []
-        for (const instance of instances) {
+        for (const instance of currentInstances) {
+          // Check for abort before each potentially long operation
+          if (abortController.signal.aborted) {
+            return
+          }
+
           const isUserPointsTileLayer = instance instanceof UserPointsTileLayer
           const hasTimeFilter = instance.props.startTime || instance.props.endTime
 
@@ -312,24 +357,43 @@ const useReportTimeseries = (
               mode = 'point'
             }
 
+            // Check abort before web worker call
+            if (abortController.signal.aborted) {
+              return
+            }
+
             const filteredInstanceFeatures =
-              area.id === ENTIRE_WORLD_REPORT_AREA_ID
+              currentArea.id === ENTIRE_WORLD_REPORT_AREA_ID
                 ? ([
                     { contained: features, overlapping: [], instanceId: instance.id },
                   ] as FilteredPolygons[])
-                : await filterCellsByPolygon({
-                    layersCells: [features],
-                    polygon: area.geometry!,
-                    mode,
-                    instanceId: instance.id,
-                  })
+                : await filterCellsByPolygon(
+                    {
+                      layersCells: [features],
+                      polygon: currentArea.geometry!,
+                      mode,
+                      instanceId: instance.id,
+                    },
+                    abortController.signal
+                  )
+
+            // Check abort after web worker returns (or if aborted during worker execution)
+            if (abortController.signal.aborted) {
+              return
+            }
+
             featuresFiltered.push(filteredInstanceFeatures)
           }
         }
 
+        // Final abort check before state update
+        if (abortController.signal.aborted) {
+          return
+        }
+
         const timeseries = getTimeseries({
           featuresFiltered,
-          instances,
+          instances: currentInstances,
         })
 
         setReportState((prev) => ({
@@ -338,14 +402,27 @@ const useReportTimeseries = (
           featuresFiltered,
           timeseries,
         }))
-        lastProcessedHash.current = processingHash
+        isFirstLoad.current = false
+        lastProcessedHash.current = currentHash
+        processingHashRef.current = null
+        processingAbortRef.current = null
       } catch (error) {
-        console.error('Error processing features:', error)
-        setReportState((prev) => ({
-          ...prev,
-          ...initialReportState,
-        }))
-        lastProcessedHash.current = ''
+        // Ignore AbortError - this is expected when cancelling
+        if (error instanceof DOMException && error.name === 'AbortError') {
+          return
+        }
+        // Only update state if not aborted
+        if (!abortController.signal.aborted) {
+          console.error('Error processing features:', error)
+          setReportState((prev) => ({
+            ...prev,
+            ...initialReportState,
+          }))
+          lastProcessedHash.current = ''
+          isFirstLoad.current = false
+          processingHashRef.current = null
+          processingAbortRef.current = null
+        }
       }
     }
 
@@ -360,6 +437,14 @@ const useReportTimeseries = (
     isLoaded,
     isReady,
   ])
+
+  useEffect(() => {
+    return () => {
+      processingAbortRef.current?.abort()
+      processingAbortRef.current = null
+      processingHashRef.current = null
+    }
+  }, [])
 
   useEffect(() => {
     const { featuresFiltered } = reportState

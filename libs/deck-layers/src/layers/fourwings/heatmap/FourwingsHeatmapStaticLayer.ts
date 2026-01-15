@@ -117,7 +117,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     // OFFSET_VALUE = 0
     const { minVisibleValue, maxVisibleValue } = this.props
     const currentZoomData = this.getData()
-    if (!currentZoomData.length) {
+    if (!currentZoomData?.length) {
       return this.getColorDomain()
     }
     const values = currentZoomData.flatMap((d) => d?.properties?.[HEATMAP_STATIC_PROPERTY_ID] || [])
@@ -324,6 +324,9 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   getData() {
+    if (!this.isLoaded) {
+      return null
+    }
     return this.getTilesData()
   }
 

@@ -107,6 +107,10 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     return super.isLoaded && !this.state.rampDirty && this.state.viewportLoaded
   }
 
+  get viewportLoaded(): boolean {
+    return this.state?.viewportLoaded ?? false
+  }
+
   get cacheHash(): string {
     const { id, startTime, endTime } = this.props
     const colors = Array.from(new Set(this.props.sublayers.map((s) => s.color))).join(',')
@@ -130,7 +134,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   _calculateMaxVelocity = (): number => {
     const { startTime, endTime, availableIntervals, temporalAggregation } = this.props
     const currentZoomData = this.getData()
-    if (!currentZoomData.length) {
+    if (!currentZoomData?.length) {
       return this.state.maxVelocity
     }
 
@@ -357,26 +361,27 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
       isDifferentZoom
 
+    const deferredStateUpdates: Partial<FourwingsVectorsTileLayerState> = {}
+
     if (isDifferentZoom) {
-      requestAnimationFrame(() => {
-        this.setState({
-          viewportLoaded: false,
-        })
-      })
+      deferredStateUpdates.viewportLoaded = false
     }
 
     if (needsCacheKeyUpdate) {
+      deferredStateUpdates.tilesCache = getTileDataCache({
+        zoom,
+        startTime,
+        endTime,
+        availableIntervals,
+        chunksBuffer: this.chunksBuffer,
+        temporalAggregation,
+      })
+    }
+
+    // Apply all deferred state updates in a single callback
+    if (Object.keys(deferredStateUpdates).length > 0) {
       requestAnimationFrame(() => {
-        this.setState({
-          tilesCache: getTileDataCache({
-            zoom,
-            startTime,
-            endTime,
-            availableIntervals,
-            chunksBuffer: this.chunksBuffer,
-            temporalAggregation,
-          }),
-        })
+        this.setState(deferredStateUpdates)
       })
     }
   }
@@ -460,6 +465,9 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   getData() {
+    if (!this.isLoaded) {
+      return null
+    }
     return this.getTilesData().flat()
   }
 
