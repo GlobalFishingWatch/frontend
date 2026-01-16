@@ -121,8 +121,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     return this.props.debounceTime || 0
   }
 
-  forceRender() {
-    this.setNeedsRedraw?.()
+  forceUpdate() {
+    this.setNeedsUpdate?.()
   }
 
   getError(): string {
@@ -320,7 +320,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       } else {
         this.setState({ rampDirty: false, viewportLoaded: true })
       }
-      this.forceRender()
+      this.forceUpdate()
     })
   }, 500)
 
@@ -344,6 +344,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
+    this.setState({ viewportLoaded: true })
+    this.forceUpdate()
     this.updateColorDomain()
     if (this.props.onViewportLoad) {
       this.props.onViewportLoad(tiles)
@@ -683,9 +685,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
       isDifferentZoom
 
-    if (isDifferentZoom) {
-      deferredStateUpdates.viewportLoaded = false
-    }
+    // if (isDifferentZoom) {
+    //   deferredStateUpdates.viewportLoaded = false
+    // }
 
     if (needsCacheKeyUpdate) {
       deferredStateUpdates.tilesCache = getTileDataCache({
@@ -702,7 +704,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     if (Object.keys(deferredStateUpdates).length > 0) {
       requestAnimationFrame(() => {
         this.setState(deferredStateUpdates)
-        this.forceRender()
+        this.forceUpdate()
       })
     }
   }

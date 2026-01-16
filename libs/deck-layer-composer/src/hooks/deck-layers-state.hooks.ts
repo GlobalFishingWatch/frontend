@@ -10,10 +10,28 @@ type LayerWithInternals = AnyDeckLayer & {
   getSubLayers?: () => unknown[]
 }
 
+type LayerWithViewport = AnyDeckLayer & {
+  viewportLoaded?: boolean
+}
+
+// Lifecycle states that indicate a layer is being disposed and should not be used
+const DISPOSED_LIFECYCLE_STATES = [
+  'Discarded. Awaiting garbage collection',
+  'No longer matched. Awaiting garbage collection',
+  'Finalized! Awaiting garbage collection',
+  'Awaiting state',
+]
+
 export function isDeckLayerReady(layer: AnyDeckLayer) {
   if (!layer) {
     return false
   }
+
+  // Check if layer is being disposed - lifecycle indicates layer is no longer active
+  if (DISPOSED_LIFECYCLE_STATES.includes(layer.lifecycle)) {
+    return false
+  }
+
   // A layer is ready when it has been initialized (internalState is set during _initialize())
   // This is more reliable than checking lifecycle string values because:
   // - lifecycle can be 'INITIALIZED' (after first init) OR 'MATCHED' (after state transfer)
@@ -38,6 +56,8 @@ export function isDeckLayerReady(layer: AnyDeckLayer) {
 // Atom used to have all the layer instances loading state available
 type DeckLayerLoaded = {
   loaded: boolean
+  ready: boolean
+  viewportLoaded: boolean
   /**
    * `get cacheHash()` needs to be defined internally into the layer instance and is used
    * to detect if the layer has a change that needs to be reflected in react lifecycle
@@ -59,8 +79,15 @@ export const useSetDeckLayerLoadedState = () => {
         setDeckLayerLoadedState((loadedState) => {
           const newLoadedState = {} as DeckLayerState
           layers.forEach((layer) => {
+            const ready = isDeckLayerReady(layer)
+            const viewportLoaded =
+              'viewportLoaded' in layer
+                ? Boolean((layer as LayerWithViewport).viewportLoaded)
+                : true
             newLoadedState[layer.id] = {
               loaded: layer.isLoaded,
+              ready,
+              viewportLoaded,
               cacheHash: 'cacheHash' in layer && layer.cacheHash ? (layer.cacheHash as string) : '',
             }
           })
@@ -69,6 +96,7 @@ export const useSetDeckLayerLoadedState = () => {
             Object.keys(newLoadedState).some(
               (key) =>
                 newLoadedState[key]?.loaded !== loadedState[key]?.loaded ||
+                newLoadedState[key]?.ready !== loadedState[key]?.ready ||
                 newLoadedState[key]?.cacheHash !== loadedState[key]?.cacheHash
             )
           ) {
@@ -98,7 +126,9 @@ export const getLayersStateHashAtom = (layerIds: string[]) =>
     return layerIds
       .map((id) => {
         const state = layersState[id]
-        return state ? `${id}:${state.loaded}:${state.cacheHash || ''}` : ''
+        return state
+          ? `${id}:${state.loaded}:${state.ready}:${state.viewportLoaded}:${state.cacheHash || ''}`
+          : ''
       })
       .filter(Boolean)
       .join('|')

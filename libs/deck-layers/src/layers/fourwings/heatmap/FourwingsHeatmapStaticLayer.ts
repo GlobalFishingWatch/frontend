@@ -106,8 +106,8 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     return this.state.error
   }
 
-  forceRender() {
-    this.setNeedsRedraw?.()
+  forceUpdate = () => {
+    this.setNeedsUpdate?.()
   }
 
   _calculateColorDomain = () => {
@@ -138,7 +138,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
         scales: [scaleLinear(colorDomain, colorRanges)],
         rampDirty: false,
       })
-      this.forceRender()
+      this.forceUpdate()
     }
   }
 
@@ -147,6 +147,9 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }, 500)
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
+    if (!this.state.viewportLoaded) {
+      this.setState({ viewportLoaded: true })
+    }
     this.debouncedUpdateColorDomain()
     if (this.props.onViewportLoad) {
       this.props.onViewportLoad(tiles)

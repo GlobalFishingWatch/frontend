@@ -199,26 +199,36 @@ const useReportTimeseries = (
 
   const isLoaded = reportLayers.length > 0 && reportLayers.every(({ loaded }) => loaded)
 
-  const isReadySync =
-    reportLayers.length > 0 &&
-    reportLayers.every(({ instance }) => isDeckLayerReady(instance) && instance.viewportLoaded)
+  const isReadySync = useMemo(() => {
+    if (reportLayers.length === 0) return false
+    return reportLayers.every(({ instance }) => {
+      const ready = isDeckLayerReady(instance)
+      // Check viewportLoaded from the actual deck.gl instance, not from the atom
+      const viewportLoaded = (instance as { viewportLoaded?: boolean }).viewportLoaded ?? true
+      return ready && viewportLoaded
+    })
+  }, [reportLayers])
 
-  // Defer isReady validation to next tick to ensure rendering is complete
   const [isReady, setIsReady] = useState(false)
   useEffect(() => {
     if (!isReadySync) {
       setIsReady(false)
       return
     }
+    // Get the max debounceTime from all layers, with a minimum of 100ms
+    const maxDebounce = Math.max(
+      ...reportLayers.map((l) => (l.instance as { debounceTime?: number }).debounceTime || 0),
+      100
+    )
     const timeoutId = setTimeout(() => {
       setIsReady(true)
-    }, 10)
+    }, maxDebounce)
     return () => clearTimeout(timeoutId)
-  }, [isReadySync])
+  }, [isReadySync, reportLayers])
 
   const onAreaChange = useEffectEvent(() => {
     reportLayers.forEach((layer) => {
-      layer.instance?.forceRender?.()
+      layer.instance?.forceUpdate?.()
     })
   })
 
@@ -227,61 +237,62 @@ const useReportTimeseries = (
     isFirstLoad.current = true
   }, [area?.id])
 
-  // Create processing hash to detect when we need to reprocess
-  const processingHash = useMemo(() => {
-    // Return empty if there is no area or no layers or
-    // needs to wait for first layer load to complete
-    if (!area?.id || !titleHash || reportLayersLength === 0 || (isFirstLoad.current && !isLoaded)) {
+  // Semantic hash - parameters that REQUIRE a full reset when changed
+  // These are user-driven changes that invalidate previous results
+  const semanticHash = useMemo(() => {
+    if (!area?.id || !titleHash || reportLayersLength === 0) {
       return ''
     }
-
-    return `${area.id}|${titleHash}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${layersStateHash}|${reportBufferHash}`
+    return `${area.id}|${titleHash}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${reportBufferHash}`
   }, [
-    area,
-    isLoaded,
+    area?.id,
     titleHash,
     reportLayersLength,
     reportCategory,
     reportSubCategory,
     reportGraphMode,
     timeComparisonHash,
-    layersStateHash,
     reportBufferHash,
   ])
 
-  const lastProcessedHash = useRef('')
-  const processingAbortRef = useRef<AbortController | null>(null)
+  // Processing hash - includes layer state for detecting when data might have updated
+  // This triggers reprocessing but NOT a reset of existing data
+  const processingHash = useMemo(() => {
+    // Return empty if semantic hash is empty or needs to wait for first layer load
+    if (!semanticHash || (isFirstLoad.current && !isLoaded)) {
+      return ''
+    }
+    return `${semanticHash}|${layersStateHash}`
+  }, [semanticHash, isLoaded, layersStateHash])
 
-  // Reset state when critical parameters change
+  const lastProcessedHash = useRef('')
+  const lastSemanticHash = useRef('')
+  const processingAbortRef = useRef<AbortController | null>(null)
+  const processingHashRef = useRef<string | null>(null)
+
+  // Reset state ONLY when semantic parameters change (not on every layer state update)
+  // This prevents losing valid timeseries data when deck.gl updates its internal state
   useLayoutEffect(() => {
-    if (!isAreaInViewport) {
+    if (!isAreaInViewport || !semanticHash) {
       return
     }
+
+    // Only reset if semantic parameters actually changed
+    if (semanticHash === lastSemanticHash.current) {
+      return
+    }
+
+    lastSemanticHash.current = semanticHash
     const shouldShowLoading =
       reportCategory && reportCategory !== 'events' && reportCategory !== 'others'
 
     setReportState((prev) => ({
       ...prev,
       ...initialReportState,
-      isLoading:
-        reportLayersLength > 0 &&
-        (shouldShowLoading || processingHash !== lastProcessedHash.current),
+      isLoading: reportLayersLength > 0 && shouldShowLoading,
     }))
     lastProcessedHash.current = ''
-  }, [
-    area,
-    interval,
-    reportCategory,
-    reportSubCategory,
-    reportGraphMode,
-    reportLayersLength,
-    setReportState,
-    processingHash,
-    isAreaInViewport,
-  ])
-
-  // Track the hash that triggered current processing to avoid aborting on isReady flicker
-  const processingHashRef = useRef<string | null>(null)
+  }, [semanticHash, reportCategory, reportLayersLength, setReportState, isAreaInViewport])
 
   useEffect(() => {
     if (
@@ -296,7 +307,6 @@ const useReportTimeseries = (
     }
 
     // Only abort if we're starting processing for a DIFFERENT hash
-    // This prevents aborting when isReady flickers but the hash is the same
     const hashChanged = processingHashRef.current !== processingHash
     if (hashChanged && processingAbortRef.current) {
       processingAbortRef.current.abort()
@@ -307,25 +317,36 @@ const useReportTimeseries = (
       return
     }
 
-    processingHashRef.current = processingHash
     const abortController = new AbortController()
+    processingHashRef.current = processingHash
     processingAbortRef.current = abortController
 
-    // Capture current values to avoid stale closures during async operations
     const currentHash = processingHash
     const currentInstances = [...instances]
-    const currentArea = area
+    const currentArea = { ...area }
 
     const processFeatures = async () => {
-      setReportState((prev) => {
-        return { ...prev, isLoading: true }
-      })
+      const resetProcessing = () => {
+        if (processingHashRef.current !== currentHash) {
+          return
+        }
+        processingHashRef.current = null
+        processingAbortRef.current = null
+      }
+      setReportState((prev) => ({ ...prev, isLoading: true }))
 
       try {
         const featuresFiltered: FilteredPolygons[][] = []
         for (const instance of currentInstances) {
           // Check for abort before each potentially long operation
           if (abortController.signal.aborted) {
+            return
+          }
+
+          const instanceIsLoaded = (instance as { isLoaded?: boolean }).isLoaded
+          if (instanceIsLoaded === false) {
+            // Layer is in transitional state - abort and let the effect re-run
+            // when the layer state updates
             return
           }
 
@@ -377,7 +398,6 @@ const useReportTimeseries = (
                     abortController.signal
                   )
 
-            // Check abort after web worker returns (or if aborted during worker execution)
             if (abortController.signal.aborted) {
               return
             }
@@ -386,8 +406,7 @@ const useReportTimeseries = (
           }
         }
 
-        // Final abort check before state update
-        if (abortController.signal.aborted) {
+        if (abortController.signal.aborted || processingHashRef.current !== currentHash) {
           return
         }
 
@@ -404,15 +423,12 @@ const useReportTimeseries = (
         }))
         isFirstLoad.current = false
         lastProcessedHash.current = currentHash
-        processingHashRef.current = null
-        processingAbortRef.current = null
       } catch (error) {
         // Ignore AbortError - this is expected when cancelling
         if (error instanceof DOMException && error.name === 'AbortError') {
-          return
-        }
-        // Only update state if not aborted
-        if (!abortController.signal.aborted) {
+          isFirstLoad.current = false
+          resetProcessing()
+        } else if (!abortController.signal.aborted) {
           console.error('Error processing features:', error)
           setReportState((prev) => ({
             ...prev,
@@ -420,9 +436,9 @@ const useReportTimeseries = (
           }))
           lastProcessedHash.current = ''
           isFirstLoad.current = false
-          processingHashRef.current = null
-          processingAbortRef.current = null
         }
+      } finally {
+        resetProcessing()
       }
     }
 
@@ -452,14 +468,18 @@ const useReportTimeseries = (
       return
     }
 
-    const stats = getTimeseriesStats({
-      instances,
-      featuresFiltered,
-      start,
-      end,
+    setReportState((prev) => {
+      if (!prev.featuresFiltered || !instances.length) {
+        return prev
+      }
+      const stats = getTimeseriesStats({
+        instances,
+        featuresFiltered: prev.featuresFiltered,
+        start,
+        end,
+      })
+      return { ...prev, stats }
     })
-
-    setReportState((prev) => ({ ...prev, stats }))
     // Only stats needs to recalculate on start and end changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportState.featuresFiltered, instances, start, end, setReportState])

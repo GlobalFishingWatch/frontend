@@ -112,8 +112,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return this.props.debounceTime || 0
   }
 
-  forceRender() {
-    this.setNeedsRedraw?.()
+  forceUpdate = () => {
+    this.setNeedsUpdate?.()
   }
 
   getError(): string {
@@ -155,7 +155,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     }
     this.viewportDirtyTimeout = setTimeout(() => {
       this.setState({ viewportDirty: false })
-      this.forceRender()
+      this.forceUpdate()
     }, 500)
   }
 
@@ -363,7 +363,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         lastPositions,
         colorScale,
       } as FourwingsPositionsTileLayerState)
-      this.forceRender()
+      this.forceUpdate()
     })
     if (this.props.onViewportLoad) {
       return this.props.onViewportLoad(tiles)

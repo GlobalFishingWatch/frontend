@@ -168,8 +168,8 @@ export class FourwingsClustersLayer extends CompositeLayer<
     }
   }
 
-  forceRender() {
-    this.setNeedsRedraw?.()
+  forceUpdate = () => {
+    this.setNeedsUpdate?.()
   }
 
   _isIndividualPoints = (data: FourwingsPointFeature[]) => {
@@ -342,7 +342,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
           clusters: undefined,
           radiusScale: undefined,
         })
-        this.forceRender()
+        this.forceUpdate()
       })
     } else {
       this.state.clusterIndex.load(data)
@@ -357,7 +357,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
           points,
           radiusScale,
         })
-        this.forceRender()
+        this.forceUpdate()
       })
     }
   }

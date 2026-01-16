@@ -121,8 +121,8 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     return this.state.error
   }
 
-  forceRender() {
-    this.setNeedsRedraw?.()
+  forceUpdate = () => {
+    this.setNeedsUpdate?.()
   }
 
   _onLayerError = (error: Error) => {
@@ -213,7 +213,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
         } else {
           this.setState({ rampDirty: false, viewportLoaded: true })
         }
-        this.forceRender()
+        this.forceUpdate()
       })
     },
     (defaultProps.debounceTime as number) + 1
