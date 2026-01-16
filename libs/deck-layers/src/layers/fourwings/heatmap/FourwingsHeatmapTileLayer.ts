@@ -113,6 +113,17 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     return this._getTileDataCacheKey()
   }
 
+  get debounceTime(): number {
+    return this.props.debounceTime || 0
+  }
+
+  forceUpdate() {
+    const layer = this.getLayerInstance()
+    if (layer) {
+      layer.setNeedsUpdate()
+    }
+  }
+
   getError(): string {
     return this.state.error
   }

@@ -58,8 +58,24 @@ export interface UserPermission {
   action: UserPermissionAction
 }
 
-export interface UserGroup {
-  id: number
+export type UserGroupId =
+  | 'belize'
+  | 'brazil'
+  | 'chile'
+  | 'costa rica'
+  | 'ecuador'
+  | 'panama'
+  | 'papua new guinea'
+  | 'peru'
+  | 'ssf-aruna'
+  | 'ssf-rare'
+  | 'ssf-ipnlf'
+  | 'norway'
+  | 'palau'
+  | 'costarica'
+
+export interface UserGroup<T = UserGroupId> {
+  id: T
   name: string
   default: boolean
   createdAt: string

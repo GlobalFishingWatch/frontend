@@ -226,31 +226,6 @@ function VesselLayerPanel({
     )
   }
 
-  const TitleComponentContent = () => (
-    <Fragment>
-      <span className={cx({ [styles.faded]: infoLoading || infoError })}>
-        {hasDeprecatedDataviewInstances ? (
-          getVesselTitle()
-        ) : (
-          <VesselLink
-            className={cx(styles.link)}
-            vesselId={vesselId}
-            datasetId={dataset?.id}
-            tooltip={<div>{identitiesSummary}</div>}
-            query={{
-              vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-              vesselSelfReportedId: vesselId,
-            }}
-            testId="vessel-layer-vessel-name"
-            dataviewId={dataview.id}
-          >
-            {getVesselTitle()}
-          </VesselLink>
-        )}
-      </span>
-    </Fragment>
-  )
-
   return (
     <div
       className={cx(
@@ -272,7 +247,30 @@ function VesselLayerPanel({
           disabled={hasDeprecatedDataviewInstances}
         />
         <Title
-          title={<TitleComponentContent />}
+          title={
+            <Fragment>
+              <span className={cx({ [styles.faded]: infoLoading || infoError })}>
+                {hasDeprecatedDataviewInstances ? (
+                  getVesselTitle()
+                ) : (
+                  <VesselLink
+                    className={cx(styles.link)}
+                    vesselId={vesselId}
+                    datasetId={dataset?.id}
+                    tooltip={<div>{identitiesSummary}</div>}
+                    query={{
+                      vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                      vesselSelfReportedId: vesselId,
+                    }}
+                    testId="vessel-layer-vessel-name"
+                    dataviewId={dataview.id}
+                  >
+                    {getVesselTitle()}
+                  </VesselLink>
+                )}
+              </span>
+            </Fragment>
+          }
           showTooltip={false}
           className={styles.name}
           classNameActive={styles.active}

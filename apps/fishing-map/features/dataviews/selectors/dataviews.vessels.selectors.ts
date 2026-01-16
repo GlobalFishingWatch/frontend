@@ -1,14 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
 
-import {
-  PRIVATE_TEMPLATE_VESSEL_DATAVIEW_SLUGS,
-  TEMPLATE_VESSEL_DATAVIEW_SLUG,
-} from 'data/workspaces'
+import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
+import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/workspaces-vms'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 
 const VESSEL_TRACK_DATAVIEW_TEMPLATES = [
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
-  ...Object.values(PRIVATE_TEMPLATE_VESSEL_DATAVIEW_SLUGS),
+  ...Object.values(VMS_VESSEL_DATAVIEW_SLUGS),
 ]
 
 // Needed another file to avoid circular dependency

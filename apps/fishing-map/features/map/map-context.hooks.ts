@@ -16,6 +16,7 @@ export function useSetMapInstance(mapRef: RefObject<DeckGLRef | null> | undefine
     if (mapRef?.current?.deck) {
       setMapInstance(mapRef?.current?.deck)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapRef?.current])
 }
 

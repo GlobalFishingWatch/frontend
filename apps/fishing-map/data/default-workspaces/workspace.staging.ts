@@ -1,4 +1,3 @@
-// TODO: replace this with production once released
-import workspace from './workspace.development'
+import workspace from './workspace.production'
 
 export default workspace

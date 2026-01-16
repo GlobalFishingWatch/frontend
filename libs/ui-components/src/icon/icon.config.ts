@@ -106,6 +106,7 @@ const icons = [
   'protected-seas-logo',
   'publish',
   'remove-from-map',
+  'remove-polygon-from-analysis',
   'report',
   'ruler',
   'satellite',

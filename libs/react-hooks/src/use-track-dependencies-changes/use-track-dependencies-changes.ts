@@ -8,11 +8,11 @@ export const useTrackDependencyChanges = (label: string, dependencies: Record<st
   useEffect(() => {
     if (process.env.NODE_ENV !== 'development') return
 
-    const changes = entries.reduce<Record<string, { previous: unknown; next: unknown }>>(
+    const changes = entries.reduce<Record<string, { prev: unknown; next: unknown }>>(
       (acc, [name, value], index) => {
         const previous = previousValues.current[index]
         if (!Object.is(previous, value)) {
-          acc[name ?? `dep[${index}]`] = { previous, next: value }
+          acc[name ?? `dep[${index}]`] = { prev: previous, next: value }
         }
         return acc
       },

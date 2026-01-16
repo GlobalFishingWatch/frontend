@@ -1,5 +1,5 @@
 import type { JSX } from 'react'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
@@ -227,8 +227,9 @@ const isAreaCenterInViewport = (
 
 export function useReportAreaInViewport(params = defaultParams) {
   const viewState = useMapViewState()
-  const { id, bbox } = useReportAreaBounds()
+  const { id, bbox, loaded } = useReportAreaBounds()
   const areaCenter = useReportAreaCenter(bbox as Bbox, params)
+  if (!loaded) return false
   return isAreaCenterInViewport(viewState, areaCenter, id)
 }
 
@@ -239,9 +240,27 @@ export function useFitAreaInViewport(params = defaultParams) {
   const { id, bbox } = useReportAreaBounds()
   const areaCenter = useReportAreaCenter(bbox as Bbox, params)
   const areaInViewport = isAreaCenterInViewport(viewState, areaCenter, id)
-  return useCallback(() => {
-    if (!areaInViewport && areaCenter && deckMap) {
+  const pendingFitInAreaRef = useRef(false)
+  const prevDeckMapRef = useRef(deckMap)
+
+  // This ensures the useFitAreaInViewport is triggered when deckMap is not available yet
+  useEffect(() => {
+    const deckMapJustLoaded = !prevDeckMapRef.current && deckMap
+    prevDeckMapRef.current = deckMap
+
+    if (deckMapJustLoaded && pendingFitInAreaRef.current && !areaInViewport && areaCenter) {
+      pendingFitInAreaRef.current = false
       setMapCoordinates(areaCenter)
+    }
+  }, [deckMap, areaInViewport, areaCenter, setMapCoordinates])
+
+  return useCallback(() => {
+    if (!areaInViewport && areaCenter) {
+      if (deckMap) {
+        setMapCoordinates(areaCenter)
+      } else {
+        pendingFitInAreaRef.current = true
+      }
     }
   }, [areaCenter, areaInViewport, deckMap, setMapCoordinates])
 }
@@ -259,6 +278,7 @@ function getSimplificationByDataview(dataview: UrlDataviewInstance | Dataview) {
 export function useFetchReportArea() {
   const dispatch = useAppDispatch()
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const isGlobalReport = useSelector(selectIsGlobalReport)
   const { datasetId, areaId } = useSelector(selectReportAreaIds)
   const status = useSelector(selectDatasetAreaStatus({ datasetId, areaId }))
   const data = useSelector(selectDatasetAreaDetail({ datasetId, areaId }))
@@ -280,8 +300,11 @@ export function useFetchReportArea() {
   }, [areaId, datasetId, dispatch, areaDataviews])
 
   return useMemo(
-    () => ({ status: isVesselGroupReportLocation ? AsyncReducerStatus.Finished : status, data }),
-    [isVesselGroupReportLocation, status, data]
+    () => ({
+      status: isVesselGroupReportLocation || isGlobalReport ? AsyncReducerStatus.Finished : status,
+      data,
+    }),
+    [isVesselGroupReportLocation, isGlobalReport, status, data]
   )
 }
 
@@ -390,17 +413,16 @@ export function usePortsReportAreaFootprintBounds() {
 }
 
 export function usePortsReportAreaFootprintFitBounds() {
-  const deckMap = useDeckMap()
   const { loaded, bbox } = usePortsReportAreaFootprintBounds()
   const fitAreaInViewport = useFitAreaInViewport()
   const bboxHash = bbox ? bbox.join(',') : ''
   // This ensures that the area is in viewport when then area load finishes
   useEffect(() => {
-    if (loaded && bbox?.length && deckMap) {
+    if (loaded && bbox?.length) {
       fitAreaInViewport()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded, bboxHash, deckMap])
+  }, [loaded, bboxHash])
 }
 
 export function useReportTitle() {

@@ -59,7 +59,7 @@
   "typescript.suggest.autoImports": true,
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.suggest.completeFunctionCalls": true,
-  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.disableAutomaticTypeAcquisition": true,
   "editor.rulers": [140],
   "editor.formatOnSave": true, // auto format the file on each save
