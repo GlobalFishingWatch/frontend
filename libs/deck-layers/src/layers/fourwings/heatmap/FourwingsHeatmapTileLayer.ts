@@ -105,12 +105,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
   }
 
-  get isLoaded(): boolean {
-    return super.isLoaded && !this.state.rampDirty && this.state.viewportLoaded
-  }
-
   get cacheHash(): string {
-    return this._getTileDataCacheKey()
+    return `${this._getTileDataCacheKey()}|${this.state.rampDirty}|${this.state.viewportLoaded}`
   }
 
   get debounceTime(): number {

@@ -87,12 +87,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   state!: FourwingsPositionsTileLayerState
   viewportDirtyTimeout!: NodeJS.Timeout
 
-  get isLoaded(): boolean {
-    return super.isLoaded && !this.state.viewportDirty && this.state.viewportLoaded
-  }
-
   get cacheHash(): string {
-    return ''
+    return `${this.state.viewportDirty}|${this.state.viewportLoaded}`
   }
 
   get positions() {

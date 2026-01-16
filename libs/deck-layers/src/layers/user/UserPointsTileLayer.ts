@@ -86,10 +86,6 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     }
   }
 
-  get isLoaded(): boolean {
-    return super.isLoaded
-  }
-
   get filtersHash(): string {
     const filters =
       this.props.layers?.flatMap((layer) =>

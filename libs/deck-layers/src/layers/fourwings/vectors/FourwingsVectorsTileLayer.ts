@@ -103,14 +103,10 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     }
   }
 
-  get isLoaded(): boolean {
-    return super.isLoaded && !this.state.rampDirty && this.state.viewportLoaded
-  }
-
   get cacheHash(): string {
     const { id, startTime, endTime } = this.props
     const colors = Array.from(new Set(this.props.sublayers.map((s) => s.color))).join(',')
-    return `${id}-${startTime}-${endTime}-${colors}`
+    return `${id}-${startTime}-${endTime}-${colors}-${this.state.rampDirty}-${this.state.viewportLoaded}`
   }
 
   getError(): string {

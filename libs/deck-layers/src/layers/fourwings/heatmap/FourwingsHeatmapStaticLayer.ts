@@ -77,12 +77,8 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     }
   }
 
-  get isLoaded(): boolean {
-    return super.isLoaded && !this.state.rampDirty
-  }
-
   get cacheHash(): string {
-    return ''
+    return this.state.rampDirty?.toString() || ''
   }
 
   _getState() {
