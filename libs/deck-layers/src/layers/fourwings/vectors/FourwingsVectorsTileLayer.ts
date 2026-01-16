@@ -348,14 +348,6 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
       isDifferentZoom
 
-    if (isDifferentZoom) {
-      requestAnimationFrame(() => {
-        this.setState({
-          viewportLoaded: false,
-        })
-      })
-    }
-
     if (needsCacheKeyUpdate) {
       requestAnimationFrame(() => {
         this.setState({
