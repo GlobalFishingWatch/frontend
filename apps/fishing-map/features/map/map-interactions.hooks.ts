@@ -12,6 +12,7 @@ import type {
   InteractionEventType,
 } from '@globalfishingwatch/deck-layer-composer'
 import {
+  isDeckLayerReady,
   useGetDeckLayers,
   useMapHoverInteraction,
   useSetMapHoverInteraction,
@@ -80,7 +81,7 @@ const useMapClusterTilesLoading = () => {
   if (!eventsDeckLayers?.length) {
     return false
   }
-  return eventsDeckLayers.some((layer) => !layer.instance.isLoaded)
+  return eventsDeckLayers.some(({ instance }) => !isDeckLayerReady(instance) || !instance.isLoaded)
 }
 
 type InteractionPromise = ThunkDispatch<Promise<any>, any, any> & { abort: any }

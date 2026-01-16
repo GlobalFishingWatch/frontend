@@ -6,7 +6,7 @@ import { t } from 'i18next'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
-import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import { isDeckLayerReady, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import { Collapsable } from '@globalfishingwatch/ui-components'
@@ -75,6 +75,8 @@ function VesselsFromPositions() {
 
   const vessels = useMemo(() => {
     if (
+      isDeckLayerReady(fourwingsActivityLayer?.instance) &&
+      isDeckLayerReady(fourwingsDetectionsLayer?.instance) &&
       fourwingsLayersLoaded &&
       (fourwingsActivityLayer?.instance?.props.visualizationMode === 'positions' ||
         fourwingsDetectionsLayer?.instance?.props.visualizationMode === 'positions')

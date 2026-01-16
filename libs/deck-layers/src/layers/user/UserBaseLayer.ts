@@ -51,10 +51,11 @@ const defaultProps: DefaultProps<_UserBaseLayerProps> = {
 const INFINITY_TIMERANGE_LIMIT = 9999999999999
 
 export type UserBaseLayerState = {
-  highlightedFeatures?: UserLayerPickingObject[]
+  highlightedFeatures: UserLayerPickingObject[]
+  viewportLoaded: boolean
 }
 
-type UserBaseLayerProps = DeckLayerProps<BaseUserLayerProps>
+type UserBaseLayerProps = DeckLayerProps<BaseUserLayerProps & TileLayerProps>
 
 export abstract class UserBaseLayer<
   PropsT extends UserBaseLayerProps,
@@ -63,10 +64,15 @@ export abstract class UserBaseLayer<
   static defaultProps = defaultProps
   state!: UserBaseLayerState
 
+  get viewportLoaded(): boolean {
+    return this.state?.viewportLoaded ?? false
+  }
+
   initializeState(context: LayerContext) {
     super.initializeState(context)
     this.state = {
       highlightedFeatures: [],
+      viewportLoaded: false,
     }
   }
 
@@ -76,6 +82,11 @@ export abstract class UserBaseLayer<
 
   setHighlightedFeatures(highlightedFeatures: ContextFeature[]) {
     this.setState({ highlightedFeatures })
+  }
+
+  onViewportLoad = (tiles: Tile2DHeader[]) => {
+    this.setState({ viewportLoaded: true })
+    this.props.onViewportLoad?.(tiles)
   }
 
   getPickingInfo = ({

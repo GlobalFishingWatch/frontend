@@ -17,7 +17,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
-import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
+import { isDeckLayerReady, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { VesselLayer } from '@globalfishingwatch/deck-layers'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -169,11 +169,12 @@ function VesselLayerPanel({
     setInfoOpen(false)
   }
 
-  const trackLoaded = vesselLayer?.instance?.getVesselTracksLayersLoaded()
-  const trackLayerVisible = vesselLayer?.instance?.props?.visible
+  const isReady = isDeckLayerReady(vesselLayer?.instance)
+  const trackLoaded = isReady && vesselLayer?.instance?.getVesselTracksLayersLoaded()
+  const trackLayerVisible = isReady && vesselLayer?.instance?.props?.visible
   const infoLoading = infoResource?.status === ResourceStatus.Loading
   const infoError = infoResource?.status === ResourceStatus.Error
-  const trackError = vesselLayer?.instance.getVesselLayersError('track')
+  const trackError = isReady && vesselLayer?.instance.getVesselLayersError('track')
   const trackLoading = trackLayerVisible && !trackLoaded && !trackError
 
   const vesselData = infoResource?.data

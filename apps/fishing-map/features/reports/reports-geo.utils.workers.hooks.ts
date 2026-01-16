@@ -44,14 +44,34 @@ export function useFilterCellsByPolygonWorker() {
     }
   }, [])
 
-  const filterByPolygon = useCallback((params: FilterByPolygomParams) => {
-    const promise: Promise<FilteredPolygons[]> = new Promise((resolve, reject) => {
-      const id = idCounter++
-      requests.set(id, { resolve, reject })
-      workerRef.current?.postMessage({ id, params })
-    })
-    return promise
-  }, [])
+  const filterByPolygon = useCallback(
+    (params: FilterByPolygomParams, signal?: AbortSignal): Promise<FilteredPolygons[]> => {
+      return new Promise((resolve, reject) => {
+        // Check if already aborted before starting
+        if (signal?.aborted) {
+          reject(new DOMException('Aborted', 'AbortError'))
+          return
+        }
+
+        const id = idCounter++
+        requests.set(id, { resolve, reject })
+        workerRef.current?.postMessage({ id, params })
+
+        // Listen for abort signal
+        if (signal) {
+          const onAbort = () => {
+            const request = requests.get(id)
+            if (request) {
+              requests.delete(id)
+              reject(new DOMException('Aborted', 'AbortError'))
+            }
+          }
+          signal.addEventListener('abort', onAbort, { once: true })
+        }
+      })
+    },
+    []
+  )
 
   return filterByPolygon
 }

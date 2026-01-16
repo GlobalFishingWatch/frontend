@@ -5,6 +5,7 @@ import { DatasetStatus } from '@globalfishingwatch/api-types'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import {
   getAvailableIntervalsInDataviews,
+  isDeckLayerReady,
   useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
 import type { UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
@@ -41,7 +42,8 @@ export const useTimebarPoints = () => {
   }, [viewport])
 
   const loaded = dataviews?.length
-    ? userPointsLayers.every(({ instance }) => instance.isLoaded) && !datasetImporting
+    ? userPointsLayers.every(({ instance }) => isDeckLayerReady(instance) && instance.isLoaded) &&
+      !datasetImporting
     : false
 
   const availableIntervals = getAvailableIntervalsInDataviews(dataviews)

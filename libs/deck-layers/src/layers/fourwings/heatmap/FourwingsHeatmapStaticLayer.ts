@@ -14,7 +14,7 @@ import { MVTLayer } from '@deck.gl/geo-layers'
 import { PathLayer } from '@deck.gl/layers'
 import { scaleLinear } from 'd3-scale'
 import { debounce } from 'es-toolkit'
-import type { Feature, Geometry, Polygon } from 'geojson'
+import type { Feature, Geometry } from 'geojson'
 import { stringify } from 'qs'
 
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
@@ -106,11 +106,8 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     return this.state.error
   }
 
-  forceUpdate() {
-    const layer = this.getLayerInstance()
-    if (layer) {
-      layer.setNeedsUpdate()
-    }
+  forceUpdate = () => {
+    this.setNeedsUpdate?.()
   }
 
   _calculateColorDomain = () => {
@@ -120,7 +117,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     // OFFSET_VALUE = 0
     const { minVisibleValue, maxVisibleValue } = this.props
     const currentZoomData = this.getData()
-    if (!currentZoomData.length) {
+    if (!currentZoomData?.length) {
       return this.getColorDomain()
     }
     const values = currentZoomData.flatMap((d) => d?.properties?.[HEATMAP_STATIC_PROPERTY_ID] || [])
@@ -141,6 +138,7 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
         scales: [scaleLinear(colorDomain, colorRanges)],
         rampDirty: false,
       })
+      this.forceUpdate()
     }
   }
 
@@ -149,6 +147,9 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }, 500)
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
+    if (!this.state.viewportLoaded) {
+      this.setState({ viewportLoaded: true })
+    }
     this.debouncedUpdateColorDomain()
     if (this.props.onViewportLoad) {
       this.props.onViewportLoad(tiles)
@@ -326,6 +327,9 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   getData() {
+    if (!this.isLoaded) {
+      return null
+    }
     return this.getTilesData()
   }
 

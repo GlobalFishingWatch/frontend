@@ -91,6 +91,10 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return super.isLoaded && !this.state.viewportDirty && this.state.viewportLoaded
   }
 
+  get viewportLoaded(): boolean {
+    return this.state?.viewportLoaded ?? false
+  }
+
   get cacheHash(): string {
     return ''
   }
@@ -108,11 +112,8 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return this.props.debounceTime || 0
   }
 
-  forceUpdate() {
-    const layer = this.getLayerInstance()
-    if (layer) {
-      layer.setNeedsUpdate()
-    }
+  forceUpdate = () => {
+    this.setNeedsUpdate?.()
   }
 
   getError(): string {
@@ -154,6 +155,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     }
     this.viewportDirtyTimeout = setTimeout(() => {
       this.setState({ viewportDirty: false })
+      this.forceUpdate()
     }, 500)
   }
 
@@ -361,6 +363,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
         lastPositions,
         colorScale,
       } as FourwingsPositionsTileLayerState)
+      this.forceUpdate()
     })
     if (this.props.onViewportLoad) {
       return this.props.onViewportLoad(tiles)
@@ -522,6 +525,9 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   }
 
   getData() {
+    if (!this.isLoaded) {
+      return null
+    }
     return this.positions
   }
 

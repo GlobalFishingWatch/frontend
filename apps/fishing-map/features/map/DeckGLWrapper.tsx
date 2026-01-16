@@ -82,7 +82,7 @@ const DeckGLWrapper = () => {
   )
 
   const setDeckLayerLoadedState = useSetDeckLayerLoadedState()
-  const onAfterRenderHandler = useCallback(() => {
+  const updateLayersState = useCallback(() => {
     setDeckLayerLoadedState(layers)
   }, [layers, setDeckLayerLoadedState])
   const layerFilterHandler = useCallback(({ renderPass }: FilterContext) => {
@@ -102,7 +102,8 @@ const DeckGLWrapper = () => {
       ref={deckRef}
       views={MAP_VIEW}
       layers={deckRef ? layers : []}
-      onAfterRender={onAfterRenderHandler}
+      onBeforeRender={updateLayersState}
+      onAfterRender={updateLayersState}
       style={mapStyles}
       getCursor={getCursor}
       layerFilter={layerFilterHandler}

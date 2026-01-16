@@ -109,6 +109,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     return super.isLoaded && !this.state.rampDirty && this.state.viewportLoaded
   }
 
+  get viewportLoaded(): boolean {
+    return this.state?.viewportLoaded ?? false
+  }
+
   get cacheHash(): string {
     return this._getTileDataCacheKey()
   }
@@ -118,10 +122,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   forceUpdate() {
-    const layer = this.getLayerInstance()
-    if (layer) {
-      layer.setNeedsUpdate()
-    }
+    this.setNeedsUpdate?.()
   }
 
   getError(): string {
@@ -159,7 +160,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       availableIntervals,
     } = this.props
     const currentZoomData = this.getData()
-    if (!currentZoomData.length) {
+    if (!currentZoomData?.length) {
       return this.getColorDomain()
     }
 
@@ -319,6 +320,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       } else {
         this.setState({ rampDirty: false, viewportLoaded: true })
       }
+      this.forceUpdate()
     })
   }, 500)
 
@@ -342,6 +344,8 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
+    this.setState({ viewportLoaded: true })
+    this.forceUpdate()
     this.updateColorDomain()
     if (this.props.onViewportLoad) {
       this.props.onViewportLoad(tiles)
@@ -651,19 +655,21 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const newMode = oldProps.comparisonMode && comparisonMode !== oldProps.comparisonMode
     const newVisibleValueLimits =
       minVisibleValue !== oldProps.minVisibleValue || maxVisibleValue !== oldProps.maxVisibleValue
-    if (newMode || sublayersHaveNewColors || newVisibleValueLimits) {
+
+    // Collect all deferred state updates to apply in a single requestAnimationFrame
+    const deferredStateUpdates: Partial<FourwingsTileLayerState> = {}
+
+    const needsColorUpdate = newMode || sublayersHaveNewColors || newVisibleValueLimits
+    if (needsColorUpdate) {
+      // Set rampDirty immediately to prevent rendering with stale colors
       this.setState({ rampDirty: true, colorDomain: [], colorRanges: [], scales: [] })
       const newColorDomain =
         newMode || newVisibleValueLimits ? this._calculateColorDomain() : colorDomain
       const scales = this._getColorScales(newColorDomain, newSublayerColorRanges)
-      requestAnimationFrame(() => {
-        this.setState({
-          colorRanges: newSublayerColorRanges,
-          colorDomain: newColorDomain,
-          scales,
-          rampDirty: false,
-        })
-      })
+      deferredStateUpdates.colorRanges = newSublayerColorRanges
+      deferredStateUpdates.colorDomain = newColorDomain
+      deferredStateUpdates.scales = scales
+      deferredStateUpdates.rampDirty = false
     }
 
     const isStartOutRange = startTime < tilesCache.start
@@ -678,25 +684,27 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       isCompareEndOutRange ||
       getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
       isDifferentZoom
-    if (isDifferentZoom) {
-      requestAnimationFrame(() => {
-        this.setState({
-          viewportLoaded: false,
-        })
+
+    // if (isDifferentZoom) {
+    //   deferredStateUpdates.viewportLoaded = false
+    // }
+
+    if (needsCacheKeyUpdate) {
+      deferredStateUpdates.tilesCache = getTileDataCache({
+        zoom,
+        startTime,
+        endTime,
+        availableIntervals,
+        compareStart,
+        compareEnd,
       })
     }
-    if (needsCacheKeyUpdate) {
+
+    // Apply all deferred state updates in a single callback
+    if (Object.keys(deferredStateUpdates).length > 0) {
       requestAnimationFrame(() => {
-        this.setState({
-          tilesCache: getTileDataCache({
-            zoom,
-            startTime,
-            endTime,
-            availableIntervals,
-            compareStart,
-            compareEnd,
-          }),
-        })
+        this.setState(deferredStateUpdates)
+        this.forceUpdate()
       })
     }
   }
@@ -763,6 +771,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   getData() {
+    if (!this.isLoaded) {
+      return null
+    }
     return this.getTilesData().flat()
   }
 

@@ -77,6 +77,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     } = this.props
     if (circleRadiusRange && circleRadiusRange?.length) {
       this.state = {
+        ...this.state,
         error: '',
         scale: scaleSqrt(circleRadiusRange as [number, number], [
           minPointSize as number,
@@ -119,8 +120,8 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return this.props.debounceTime || 0
   }
 
-  forceUpdate() {
-    this.setNeedsUpdate()
+  forceUpdate = () => {
+    this.setNeedsUpdate?.()
   }
 
   updateState({ props, oldProps }: UpdateParameters<this>) {
@@ -289,7 +290,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
           ...getFetchLoadOptions(),
         },
         onTileError: this._onLayerError,
-        onViewportLoad: this.props.onViewportLoad,
+        onViewportLoad: this.onViewportLoad,
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,

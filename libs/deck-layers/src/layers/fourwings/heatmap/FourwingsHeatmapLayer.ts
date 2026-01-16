@@ -289,29 +289,26 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           },
         })
       ),
-      ...([
-        layerHighlightedFeature
-          ? new PathLayer(
-              this.props,
-              this.getSubLayerProps({
-                pickable: false,
-                material: false,
-                _normalize: false,
-                positionFormat: 'XY',
-                data: [layerHighlightedFeature],
-                id: `fourwings-cell-highlight`,
-                widthUnits: 'pixels',
-                widthMinPixels: 4,
-                getPath: (d: FourwingsFeature) => d.coordinates,
-                getColor: COLOR_HIGHLIGHT_LINE,
-                getOffset: 0.5,
-                getPolygonOffset: (params: any) =>
-                  getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-                extensions: [new PathStyleExtension({ offset: true })],
-              })
-            )
-          : [],
-      ] as LayersList),
+      new PathLayer(
+        this.props,
+        this.getSubLayerProps({
+          pickable: false,
+          material: false,
+          _normalize: false,
+          positionFormat: 'XY',
+          data: layerHighlightedFeature ? [layerHighlightedFeature] : [],
+          visible: layerHighlightedFeature ? true : false,
+          id: `fourwings-cell-highlight`,
+          widthUnits: 'pixels',
+          widthMinPixels: 4,
+          getPath: (d: FourwingsFeature) => d.coordinates,
+          getColor: COLOR_HIGHLIGHT_LINE,
+          getOffset: 0.5,
+          getPolygonOffset: (params: any) =>
+            getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+          extensions: [new PathStyleExtension({ offset: true })],
+        })
+      ),
     ]
   }
 
