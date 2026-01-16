@@ -5,6 +5,7 @@ import { atom, useAtom, useAtomValue } from 'jotai'
 import type { DateTimeUnit } from 'luxon'
 import memoizeOne from 'memoize-one'
 
+import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
@@ -20,7 +21,6 @@ import {
   type FourwingsInterval,
   getFourwingsInterval,
 } from '@globalfishingwatch/deck-loaders'
-import { useTrackDependencyChanges } from '@globalfishingwatch/react-hooks'
 
 // import { useTrackDependencyChanges } from '@globalfishingwatch/react-hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -29,8 +29,9 @@ import { selectReportComparisonDataviews } from 'features/dataviews/selectors/da
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
 import {
+  useReportAreaBounds,
+  useReportAreaCenter,
   useReportAreaInViewport,
-  useReportTitle,
 } from 'features/reports/report-area/area-reports.hooks'
 import {
   selectReportArea,
@@ -169,8 +170,10 @@ const useReportTimeseries = (
     reportLayers.flatMap((layer) => layer.instance.props.availableIntervals as FourwingsInterval[])
   )
   const interval = getFourwingsInterval(start, end, availableIntervals)
-  const reportTitle = useReportTitle()
   const isAreaInViewport = useReportAreaInViewport()
+  const { bbox } = useReportAreaBounds()
+  const areaCenter = useReportAreaCenter(bbox as Bbox)
+  const areaZoom = areaCenter ? Math.round(areaCenter.zoom) : 0
   const reportCategory = useSelector(selectReportCategory)
   const reportSubCategory = useSelector(selectReportSubCategory)
   const timeComparisonHash = useSelector(selectTimeComparisonHash)
@@ -201,7 +204,6 @@ const useReportTimeseries = (
     return isLoaded
   }, [reportLayers])
   const reportLayersLength = reportLayers.length
-  const titleHash = typeof reportTitle === 'string' ? reportTitle : reportTitle?.props.content
 
   const onAreaChange = useEffectEvent(() => {
     reportLayers.forEach((layer) => {
@@ -218,13 +220,12 @@ const useReportTimeseries = (
   const processingHash = useMemo(() => {
     // Only return empty if we truly have no area or no layers at all
     // isLoaded can be temporarily false during layer transitions
-    if (!area || !titleHash || reportLayersLength === 0) return ''
+    if (!area?.id || reportLayersLength === 0) return ''
 
     // Include isLoaded in the hash so processing runs when layers finish loading
-    return `${titleHash}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${layersStateHash}|${reportBufferHash}|${isLoaded}`
+    return `${area.id}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${layersStateHash}|${reportBufferHash}|${isLoaded}`
   }, [
     area,
-    titleHash,
     reportLayersLength,
     reportCategory,
     reportSubCategory,
@@ -264,13 +265,24 @@ const useReportTimeseries = (
     isAreaInViewport,
   ])
 
+  const tilesNotReady = reportLayers.some((layer) => {
+    const sublayer =
+      layer.instance instanceof UserPointsTileLayer ? layer.instance : layer.instance.getLayer()
+    if (!sublayer) return false
+    const layerInstance = sublayer.getLayerInstance?.()
+    return layerInstance?.state?.tileset?.tiles?.some((t) =>
+      t.zoom === areaZoom ? !t.isLoaded : t.isSelected
+    )
+  })
+
   useEffect(() => {
     if (
       !processingHash ||
       processingHash === lastProcessedHash.current ||
       !isAreaInViewport ||
       !isLoaded ||
-      !area?.geometry
+      !area?.geometry ||
+      tilesNotReady
     ) {
       return
     }
@@ -279,7 +291,7 @@ const useReportTimeseries = (
       setReportState((prev) => {
         return { ...prev, isLoading: true }
       })
-      // console.log('🚀 ~ PROCESSFEATURES')
+      console.log('🚀 ~ PROCESSFEATURES')
 
       try {
         const featuresFiltered: FilteredPolygons[][] = []
@@ -358,6 +370,7 @@ const useReportTimeseries = (
     setReportState,
     isAreaInViewport,
     isLoaded,
+    tilesNotReady,
   ])
 
   useEffect(() => {

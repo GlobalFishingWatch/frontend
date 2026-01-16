@@ -194,7 +194,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return this._getPointRadiusValue(d)
   }
 
-  getLayer() {
+  getLayerInstance() {
     // TODO: support multiple sublayers
     return this.getSubLayers()?.[0] as TileLayer<UserLayerFeature>
   }
@@ -208,7 +208,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     const roundedZoom = Math.round(this.context.viewport.zoom)
     const zoom =
       roundedZoom > DEFAULT_USER_TILES_MAX_ZOOM ? DEFAULT_USER_TILES_MAX_ZOOM : roundedZoom
-    return (this.getLayer()?.state.tileset?.tiles || []).flatMap((tile) => {
+    return (this.getLayerInstance()?.state.tileset?.tiles || []).flatMap((tile) => {
       return tile.content && tile.zoom === zoom
         ? tile.content.flatMap((feature: any) => {
             return feature
