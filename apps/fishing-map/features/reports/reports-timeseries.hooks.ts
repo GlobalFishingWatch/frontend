@@ -201,7 +201,6 @@ const useReportTimeseries = (
     return isLoaded
   }, [reportLayers])
   const reportLayersLength = reportLayers.length
-  const titleHash = typeof reportTitle === 'string' ? reportTitle : reportTitle?.props.content
 
   const onAreaChange = useEffectEvent(() => {
     reportLayers.forEach((layer) => {
@@ -218,13 +217,12 @@ const useReportTimeseries = (
   const processingHash = useMemo(() => {
     // Only return empty if we truly have no area or no layers at all
     // isLoaded can be temporarily false during layer transitions
-    if (!area || !titleHash || reportLayersLength === 0) return ''
+    if (!area || reportLayersLength === 0) return ''
 
     // Include isLoaded in the hash so processing runs when layers finish loading
-    return `${titleHash}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${layersStateHash}|${reportBufferHash}|${isLoaded}`
+    return `${area.id}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${layersStateHash}|${reportBufferHash}|${isLoaded}`
   }, [
     area,
-    titleHash,
     reportLayersLength,
     reportCategory,
     reportSubCategory,
@@ -366,14 +364,18 @@ const useReportTimeseries = (
       return
     }
 
-    const stats = getTimeseriesStats({
-      instances,
-      featuresFiltered,
-      start,
-      end,
+    setReportState((prev) => {
+      if (!prev.featuresFiltered || !instances.length) {
+        return prev
+      }
+      const stats = getTimeseriesStats({
+        instances,
+        featuresFiltered: prev.featuresFiltered,
+        start,
+        end,
+      })
+      return { ...prev, stats }
     })
-
-    setReportState((prev) => ({ ...prev, stats }))
     // Only stats needs to recalculate on start and end changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportState.featuresFiltered, instances, start, end, setReportState])
