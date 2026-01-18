@@ -38,6 +38,9 @@
   "typescript.tsserver.useSyntaxServer": "auto",
   "typescript.tsserver.experimental.enableProjectDiagnostics": false,
   "typescript.tsserver.watchOptions": {
+    "watchFile": "useFsEventsOnParentDirectory",
+    "watchDirectory": "useFsEvents",
+    "fallbackPolling": "dynamicPriority",
     "excludeDirectories": [
       "**/node_modules",
       "**/.next",
@@ -87,9 +90,15 @@
     "**/build/**": true,
     "**/dist/**": true,
     "**/.nx/**": true,
+    "**/.yarn/**": true,
     "**/.turbo/**": true,
     "**/coverage/**": true,
-    "**/*.tsbuildinfo": true
+    "**/*.tsbuildinfo": true,
+    "**/out/**": true,
+    "**/exported/**": true,
+    "**/tmp/**": true,
+    "**/cypress/**": true,
+    "**/e2e/**": true
   },
   "search.exclude": {
     ".yarn": true,
