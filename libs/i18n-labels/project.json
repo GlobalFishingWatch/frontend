@@ -18,11 +18,16 @@
     },
     "dist": {
       "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
+      "outputs": [
+        "{options.outputPath}",
+        "{options.outputPath}/src"
+      ],
       "options": {
         "compiler": "tsc",
         "entryFile": "libs/i18n-labels/index.ts",
-        "external": ["react/jsx-runtime"],
+        "external": [
+          "react/jsx-runtime"
+        ],
         "outputPath": "dist/libs/i18n-labels",
         "project": "libs/i18n-labels/package.json",
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
@@ -74,7 +79,9 @@
     },
     "publish:npm": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
+      "dependsOn": [
+        "dist"
+      ],
       "options": {
         "packageRoot": "dist/libs/i18n-labels"
       }
@@ -91,9 +98,15 @@
     "publish": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx publish:npm i18n-labels", "nx purge i18n-labels"],
+        "commands": [
+          "nx publish:npm i18n-labels",
+          "nx purge i18n-labels"
+        ],
         "parallel": false
-      }
+      },
+      "dependsOn": [
+        "dist-package"
+      ]
     },
     "ts": {
       "executor": "nx:run-script",
@@ -104,14 +117,18 @@
     "purge": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["PACKAGE_TAG=latest ./libs/i18n-labels/purge_jsdelivr.sh"],
+        "commands": [
+          "PACKAGE_TAG=latest ./libs/i18n-labels/purge_jsdelivr.sh"
+        ],
         "parallel": false
       }
     },
     "purge:stable": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["PACKAGE_TAG=stable ./libs/i18n-labels/purge_jsdelivr.sh"],
+        "commands": [
+          "PACKAGE_TAG=stable ./libs/i18n-labels/purge_jsdelivr.sh"
+        ],
         "parallel": false
       }
     },
@@ -121,6 +138,18 @@
         "commitMessageFormat": "release: bump ${projectName} to ${version} [skip ci]",
         "releaseAs": "patch",
         "tagPrefix": "{projectName}@"
+      }
+    },
+    "dist-package": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        "dist"
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/libs/i18n-labels/package.json"
+      ],
+      "options": {
+        "command": "node tools/scripts/generate-dist-package.mjs libs/i18n-labels dist/libs/i18n-labels"
       }
     }
   }

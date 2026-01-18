@@ -5,6 +5,7 @@
     "declarationDir": "../../dist/libs/dataviews-client",
     "rootDir": "src",
     "declaration": true,
+    "composite": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]

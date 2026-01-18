@@ -4,6 +4,7 @@
     "outDir": "../../dist/libs/api-types",
     "rootDir": "src",
     "declaration": true,
+    "composite": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]

@@ -5,6 +5,7 @@
     "declarationDir": "../../dist/libs/i18n-labels",
     "rootDir": ".",
     "declaration": true,
+    "composite": true,
     "types": ["node"]
   },
   "include": ["source/**/*.json", "index.ts"],

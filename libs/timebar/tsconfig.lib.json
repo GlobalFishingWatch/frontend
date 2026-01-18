@@ -5,6 +5,7 @@
     "declarationDir": "../../dist/libs/timebar",
     "rootDir": "src",
     "declaration": true,
+    "composite": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node", "@nx/react/typings/cssmodule.d.ts", "@nx/react/typings/image.d.ts"]

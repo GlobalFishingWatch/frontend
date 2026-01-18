@@ -1,9 +1,17 @@
 {
   "name": "@globalfishingwatch/i18n-labels",
+  "description": "i18n label translations for Global Fishing Watch applications",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
   "version": "1.2.285",
-  "main": "./index.js",
-  "module": "./index.mjs",
-  "typings": "./index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "ts:lint": "npx prettier ./resources.d.ts --write",
     "ts:generate": "i18next-resources-for-ts interface -i ./source -o ./resources.d.ts",
@@ -20,5 +28,6 @@
     "pt",
     "source",
     "val"
-  ]
+  ],
+  "dependencies": {}
 }

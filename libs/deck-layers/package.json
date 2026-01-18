@@ -4,12 +4,12 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./index.js",
-      "types": "./index.d.ts"
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
     }
   },
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "dependencies": {
     "@deck.gl-community/editable-layers": "9.1.1",
     "@deck.gl/core": "9.1.15",
@@ -47,7 +47,7 @@
     "sharp": "0.x",
     "simple-statistics": "7.x",
     "supercluster": "8.x",
-    "type-fest": "5.x",
-    "tslib": "2.x"
+    "tslib": "2.x",
+    "type-fest": "5.x"
   }
 }

@@ -24,7 +24,8 @@
   },
   "workspaces": [
     "linting",
-    "apps/fishing-map"
+    "apps/fishing-map",
+    "libs/*"
   ],
   "dependencies": {
     "@deck.gl-community/editable-layers": "9.1.1",

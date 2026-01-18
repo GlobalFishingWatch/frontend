@@ -6,12 +6,16 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./index.js",
-      "types": "./index.d.ts"
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./dates": {
+      "types": "./src/dates/index.ts",
+      "default": "./src/dates/index.ts"
     }
   },
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "dependencies": {
     "@globalfishingwatch/api-types": "^8.0.3",
     "@globalfishingwatch/deck-loaders": "^0.1.3",
@@ -25,9 +29,9 @@
     "jszip": "3.x",
     "lodash": "4.x",
     "luxon": "3.x",
+    "papaparse": "5.5.3",
     "shpjs": "6.x",
     "simple-statistics": "7.x",
-    "papaparse": "5.5.3",
     "tslib": "2.x"
   }
 }

@@ -5,6 +5,7 @@
     "declarationDir": "../../dist/libs/ocean-areas",
     "rootDir": "src",
     "declaration": true,
+    "composite": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]

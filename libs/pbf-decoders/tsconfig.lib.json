@@ -5,6 +5,7 @@
     "declarationDir": "../../dist/libs/pbf-decoders",
     "rootDir": ".",
     "declaration": true,
+    "composite": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]

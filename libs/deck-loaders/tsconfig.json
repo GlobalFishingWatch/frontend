@@ -9,9 +9,11 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "composite": true
   },
   "files": [],
+  "include": [],
   "references": [
     {
       "path": "./tsconfig.lib.json"

@@ -6,7 +6,9 @@
   "targets": {
     "dist": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/libs/data-transforms",
         "main": "libs/data-transforms/src/index.ts",
@@ -28,9 +30,23 @@
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
+      "dependsOn": [
+        "dist-package"
+      ],
       "options": {
         "packageRoot": "dist/libs/data-transforms"
+      }
+    },
+    "dist-package": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        "dist"
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/libs/data-transforms/package.json"
+      ],
+      "options": {
+        "command": "node tools/scripts/generate-dist-package.mjs libs/data-transforms dist/libs/data-transforms"
       }
     }
   },

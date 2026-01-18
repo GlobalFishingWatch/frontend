@@ -5,6 +5,7 @@
     "declarationDir": "../../dist/libs/deck-layer-composer",
     "rootDir": "src",
     "declaration": true,
+    "composite": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]

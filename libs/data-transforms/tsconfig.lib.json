@@ -5,10 +5,12 @@
     "declarationDir": "../../dist/libs/data-transforms",
     "rootDir": "src",
     "declaration": true,
+    "composite": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]
   },
+  "files": ["./vendors.d.ts"],
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
 }

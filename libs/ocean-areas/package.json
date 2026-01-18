@@ -4,12 +4,12 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./index.esm.js",
-      "types": "./src/index.d.ts"
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
     }
   },
-  "main": "./index.esm.js",
-  "types": "./src/index.d.ts",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "scripts": {
     "mpas": "ts-node -P tsconfig.json src/scripts/mpas.ts",
     "fao": "ts-node -P tsconfig.json src/scripts/fao.ts",

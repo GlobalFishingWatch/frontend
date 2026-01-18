@@ -6,7 +6,9 @@
   "targets": {
     "dist": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/libs/timebar",
         "main": "libs/timebar/src/index.ts",
@@ -33,9 +35,23 @@
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
+      "dependsOn": [
+        "dist-package"
+      ],
       "options": {
         "packageRoot": "dist/libs/timebar"
+      }
+    },
+    "dist-package": {
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        "dist"
+      ],
+      "outputs": [
+        "{workspaceRoot}/dist/libs/timebar/package.json"
+      ],
+      "options": {
+        "command": "node tools/scripts/generate-dist-package.mjs libs/timebar dist/libs/timebar"
       }
     }
   },
