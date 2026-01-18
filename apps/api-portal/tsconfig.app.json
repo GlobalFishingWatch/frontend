@@ -1,33 +1,41 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "allowJs": false,
-    "esModuleInterop": false,
+    "jsx": "preserve",
+    "allowJs": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "outDir": "../../dist/out-tsc",
-    "types": [
-      "node",
-      "@nx/react/typings/cssmodule.d.ts",
-      "@nx/react/typings/image.d.ts",
-      "vite/client"
-    ]
+    "types": ["node", "jest"],
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "target": "es5",
+    "baseUrl": ".",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "skipLibCheck": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true
   },
-  "exclude": [
-    "node_modules",
-    ".next",
-    "exported",
-    "src/**/*.spec.ts",
-    "src/**/*.test.ts",
-    "src/**/*.spec.tsx",
-    "src/**/*.test.tsx",
-    "src/**/*.spec.js",
-    "src/**/*.test.js",
-    "src/**/*.spec.jsx",
-    "src/**/*.test.jsx"
+  "include": [
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.ts",
+    "**/*.tsx",
+    "../../dist/apps/api-portal/.next/types/**/*.ts",
+    "eslint.config.mjs",
+    "next-env.d.ts",
+    ".next/types/**/*.ts"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "jest.config.ts", ".next", "exported"],
   "references": [
     {
       "path": "../../libs/api-client/tsconfig.lib.json"
