@@ -24,6 +24,11 @@
     "skipLibCheck": true,
     "module": "esnext",
     "moduleResolution": "bundler",
+    // generating source maps for debug ids for Sentry.
+    "sourceMap": true,
+    "inlineSources": true,
+    "sourceRoot": "/",
+    //
     "paths": {
       "@globalfishingwatch/api-client": ["../../libs/api-client/src/index.ts"],
       "@globalfishingwatch/api-types": ["../../libs/api-types/src/index.ts"],

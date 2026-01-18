@@ -39,13 +39,14 @@ const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }
   }
 
   return (
-    <Link to={reportLinkTo} onClick={handleOnClick}>
+    <Link to={reportLinkTo}>
       <IconButton
         icon="analysis"
         type="border"
         size="medium"
         tooltip={t('analysis.seeGlobal')}
         tooltipPlacement="top"
+        onClick={handleOnClick}
       />
     </Link>
   )

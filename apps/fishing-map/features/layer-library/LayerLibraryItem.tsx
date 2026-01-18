@@ -59,7 +59,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
   const allDataviews = useSelector(selectAllDataviews)
 
   const onAddToWorkspaceClick = async () => {
-    const usedColors = uniq(dataviews.flatMap((dataview) => dataview.config?.color || []))
+    const usedColors = uniq((dataviews || []).flatMap((dataview) => dataview.config?.color || []))
     const isDefaultColorUnused = !usedColors.includes(config?.color as string)
     const firstUnusedColor = getNextColor(
       FILL_DATAVIEWS.includes(dataview.config?.type) ? 'fill' : 'line',
