@@ -13,7 +13,7 @@ import {
   groupContextDataviews,
   useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
-import { FourwingsLayer , UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
+import { FourwingsLayer, UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
 import {
   type FourwingsFeature,
   type FourwingsInterval,
@@ -27,9 +27,7 @@ import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
-import {
-  useReportAreaInViewport,
-} from 'features/reports/report-area/area-reports.hooks'
+import { useReportAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import {
   selectReportArea,
   selectReportBufferHash,
@@ -157,9 +155,7 @@ const getInstancesFromLayers = memoizeOne(
   ) => reportLayers.map((l) => l.instance)
 )
 
-const useReportTimeseries = (
-  reportLayers: DeckLayerAtom<ReportDeckLayer>[]
-) => {
+const useReportTimeseries = (reportLayers: DeckLayerAtom<ReportDeckLayer>[]) => {
   const [reportState, setReportState] = useAtom(reportStateAtom)
   const filterCellsByPolygon = useFilterCellsByPolygonWorker()
   const area = useSelector(selectReportArea)
@@ -192,7 +188,10 @@ const useReportTimeseries = (
     () => getInstancesFromLayers(reportLayers, layersStateHash),
     [reportLayers, layersStateHash]
   )
-  const debouncedTime = Math.max(...reportLayers.map(({ instance }) => instance.debounceTime || 0), 1)
+  const debouncedTime = Math.max(
+    ...reportLayers.map(({ instance }) => instance.debounceTime || 0),
+    1
+  )
   const debouncedAreaId = useDebounce(area?.id, debouncedTime)
 
   const isLoaded = useMemo(() => {
@@ -218,7 +217,7 @@ const useReportTimeseries = (
     reportGraphMode,
     timeComparisonHash,
     layersStateHash,
-    reportBufferHash
+    reportBufferHash,
   ])
 
   // Reset state when critical parameters change
@@ -268,7 +267,10 @@ const useReportTimeseries = (
       try {
         const featuresFiltered: FilteredPolygons[][] = []
         for (const instance of instances) {
-          const viewportLoaded = instance instanceof FourwingsLayer ? instance.getLayer()?.viewportLoaded : instance.viewportLoaded
+          const viewportLoaded =
+            instance instanceof FourwingsLayer
+              ? instance?.getLayer()?.viewportLoaded
+              : instance?.viewportLoaded
           if (instance.isLoaded === false || !viewportLoaded) {
             // Layer is in transitional state - abort and let the effect re-run
             // when the layer state updates

@@ -106,6 +106,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   get cacheHash(): string {
+    if (!this.state) {
+      return ''
+    }
     return `${this._getTileDataCacheKey()}|${this.state.rampDirty}|${this.state.viewportLoaded}`
   }
 
@@ -114,7 +117,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   get viewportLoaded(): boolean {
-    return this.state.viewportLoaded
+    return this.state?.viewportLoaded ?? false
   }
 
   forceUpdate() {
@@ -683,7 +686,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
       isDifferentZoom
 
-      if (needsCacheKeyUpdate) {
+    if (needsCacheKeyUpdate) {
       deferredStateUpdates.tilesCache = getTileDataCache({
         zoom,
         startTime,

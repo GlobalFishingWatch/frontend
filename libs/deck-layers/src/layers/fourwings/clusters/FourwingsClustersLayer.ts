@@ -130,7 +130,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
   state!: FourwingsClustersTileLayerState
 
   get cacheHash(): string {
-    return `${this.state.viewportLoaded}`
+    return `${this.state?.viewportLoaded ?? false}`
   }
 
   get clusterMode(): FourwingsClusterMode {
@@ -266,7 +266,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       id: this.getClusterId(info.object),
       ...(this.clusterMode === 'positions' &&
         info.object?.properties.id &&
-        this.state.viewportLoaded && {
+        this.state?.viewportLoaded && {
           eventId: info.object?.properties.id,
         }),
       color: this.props.color,

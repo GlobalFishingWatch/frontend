@@ -117,7 +117,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
 
   get cacheHash(): string {
     const { id, startTime, endTime } = this.props
-    return `${id}-${startTime}-${endTime}${this.filtersHash}${this.aggregatedPropertyHash}-${this.state.viewportLoaded ?? false}`
+    return `${id}-${startTime}-${endTime}${this.filtersHash}${this.aggregatedPropertyHash}-${this.viewportLoaded}`
   }
 
   get debounceTime(): number {
@@ -125,7 +125,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   get viewportLoaded(): boolean {
-    return this.state.viewportLoaded
+    return this.state?.viewportLoaded ?? false
   }
 
   forceUpdate() {
