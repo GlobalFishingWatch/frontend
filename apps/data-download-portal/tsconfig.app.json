@@ -30,46 +30,13 @@
   "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
   "references": [
     {
-      "path": "../../libs/api-client/tsconfig.lib.json"
-    },
-    {
       "path": "../../libs/api-types/tsconfig.lib.json"
-    },
-    {
-      "path": "../../libs/data-transforms/tsconfig.lib.json"
-    },
-    {
-      "path": "../../libs/datasets-client/tsconfig.lib.json"
-    },
-    {
-      "path": "../../libs/dataviews-client/tsconfig.lib.json"
-    },
-    {
-      "path": "../../libs/deck-layer-composer/tsconfig.lib.json"
-    },
-    {
-      "path": "../../libs/deck-layers/tsconfig.lib.json"
-    },
-    {
-      "path": "../../libs/deck-loaders/tsconfig.lib.json"
-    },
-    {
-      "path": "../../libs/i18n-labels/tsconfig.lib.json"
-    },
-    {
-      "path": "../../libs/ocean-areas/tsconfig.lib.json"
-    },
-    {
-      "path": "../../libs/pbf-decoders/tsconfig.lib.json"
     },
     {
       "path": "../../libs/react-hooks/tsconfig.lib.json"
     },
     {
-      "path": "../../libs/responsive-visualizations/tsconfig.lib.json"
-    },
-    {
-      "path": "../../libs/timebar/tsconfig.lib.json"
+      "path": "../../libs/api-client/tsconfig.lib.json"
     },
     {
       "path": "../../libs/ui-components/tsconfig.lib.json"
