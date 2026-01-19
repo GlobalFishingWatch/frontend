@@ -103,14 +103,18 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     }
   }
 
-  get isLoaded(): boolean {
-    return super.isLoaded && !this.state.rampDirty && this.state.viewportLoaded
-  }
-
   get cacheHash(): string {
     const { id, startTime, endTime } = this.props
     const colors = Array.from(new Set(this.props.sublayers.map((s) => s.color))).join(',')
-    return `${id}-${startTime}-${endTime}-${colors}`
+    return `${id}-${startTime}-${endTime}-${colors}-${this.state.rampDirty}-${this.state.viewportLoaded}`
+  }
+
+  get debounceTime(): number {
+    return this.props.debounceTime || 0
+  }
+
+  get viewportLoaded(): boolean {
+    return this.state.viewportLoaded
   }
 
   getError(): string {
@@ -352,14 +356,6 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
       isDifferentZoom
 
-    if (isDifferentZoom) {
-      requestAnimationFrame(() => {
-        this.setState({
-          viewportLoaded: false,
-        })
-      })
-    }
-
     if (needsCacheKeyUpdate) {
       requestAnimationFrame(() => {
         this.setState({
@@ -433,7 +429,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   getAggregationOperation() {
-    return 'avg'
+    return FourwingsAggregationOperation.Avg
   }
 
   getTilesData() {

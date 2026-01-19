@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
 import { atom, useAtom, useAtomValue } from 'jotai'
@@ -13,13 +13,13 @@ import {
   groupContextDataviews,
   useGetDeckLayers,
 } from '@globalfishingwatch/deck-layer-composer'
-import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
-import { UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
+import { FourwingsLayer , UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
 import {
   type FourwingsFeature,
   type FourwingsInterval,
   getFourwingsInterval,
 } from '@globalfishingwatch/deck-loaders'
+import { useDebounce } from '@globalfishingwatch/react-hooks'
 
 // import { useTrackDependencyChanges } from '@globalfishingwatch/react-hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -29,7 +29,6 @@ import { selectActiveReportDataviews } from 'features/dataviews/selectors/datavi
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'
 import {
   useReportAreaInViewport,
-  useReportTitle,
 } from 'features/reports/report-area/area-reports.hooks'
 import {
   selectReportArea,
@@ -47,6 +46,7 @@ import {
   filterTimeseriesByTimerange,
   getTimeseries,
   getTimeseriesStats,
+  type ReportDeckLayer,
 } from 'features/reports/reports-timeseries.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
@@ -151,14 +151,14 @@ export const useReportFeaturesLoading = () => {
 // layersStateHash is used as a cache key to ensure memoizeOne detects changes
 const getInstancesFromLayers = memoizeOne(
   (
-    reportLayers: DeckLayerAtom<FourwingsLayer | UserPointsTileLayer>[],
+    reportLayers: DeckLayerAtom<ReportDeckLayer>[],
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     layersStateHash: string
   ) => reportLayers.map((l) => l.instance)
 )
 
 const useReportTimeseries = (
-  reportLayers: DeckLayerAtom<FourwingsLayer | UserPointsTileLayer>[]
+  reportLayers: DeckLayerAtom<ReportDeckLayer>[]
 ) => {
   const [reportState, setReportState] = useAtom(reportStateAtom)
   const filterCellsByPolygon = useFilterCellsByPolygonWorker()
@@ -168,7 +168,6 @@ const useReportTimeseries = (
     reportLayers.flatMap((layer) => layer.instance.props.availableIntervals as FourwingsInterval[])
   )
   const interval = getFourwingsInterval(start, end, availableIntervals)
-  const reportTitle = useReportTitle()
   const isAreaInViewport = useReportAreaInViewport()
   const reportCategory = useSelector(selectReportCategory)
   const reportSubCategory = useSelector(selectReportSubCategory)
@@ -186,68 +185,96 @@ const useReportTimeseries = (
     [layerIdsHash]
   )
 
+  const lastProcessedHash = useRef('')
   const layersStateHash = useAtomValue(layersStateHashAtom)
 
   const instances = useMemo(
     () => getInstancesFromLayers(reportLayers, layersStateHash),
     [reportLayers, layersStateHash]
   )
+  const debouncedTime = Math.max(...reportLayers.map(({ instance }) => instance.debounceTime || 0), 1)
+  const debouncedAreaId = useDebounce(area?.id, debouncedTime)
 
-  const isLoaded = useMemo(
-    () =>
+  const isLoaded = useMemo(() => {
+    const isLoaded =
       reportLayers.length > 0 &&
-      reportLayers.every(({ instance, loaded }) => instance.isLoaded && loaded),
-    [reportLayers]
-  )
+      reportLayers.every(({ instance, loaded }) => instance.isLoaded && loaded)
+    return isLoaded
+  }, [reportLayers])
+  const reportLayersLength = reportLayers.length
 
   // Create processing hash to detect when we need to reprocess
   const processingHash = useMemo(() => {
     // Only return empty if we truly have no area or no layers at all
     // isLoaded can be temporarily false during layer transitions
-    if (!area || reportLayers.length === 0) return ''
-
-    const titleHash = typeof reportTitle === 'string' ? reportTitle : reportTitle?.props.content
+    if (!debouncedAreaId || reportLayersLength === 0) return ''
     // Include isLoaded in the hash so processing runs when layers finish loading
-    return `${titleHash}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${layersStateHash}|${reportBufferHash}|${isLoaded}`
+    return `${debouncedAreaId}|${reportCategory}|${reportSubCategory}|${reportGraphMode}|${timeComparisonHash}|${layersStateHash}|${reportBufferHash}`
   }, [
-    area,
-    reportTitle,
+    debouncedAreaId,
+    reportLayersLength,
     reportCategory,
     reportSubCategory,
     reportGraphMode,
     timeComparisonHash,
     layersStateHash,
-    reportBufferHash,
-    isLoaded,
-    reportLayers.length,
+    reportBufferHash
   ])
 
-  const lastProcessedHash = useRef('')
+  // Reset state when critical parameters change
+  useLayoutEffect(() => {
+    if (!isAreaInViewport) {
+      return
+    }
+    const shouldShowLoading =
+      reportCategory && reportCategory !== 'events' && reportCategory !== 'others'
 
-  // useTrackDependencyChanges('processFeatures dependencies', {
-  //   processingHash,
-  // })
+    setReportState((prev) => ({
+      ...prev,
+      ...initialReportState,
+      isLoading:
+        reportLayersLength > 0 &&
+        (shouldShowLoading || processingHash !== lastProcessedHash.current),
+    }))
+    lastProcessedHash.current = ''
+  }, [
+    area,
+    interval,
+    reportCategory,
+    reportSubCategory,
+    reportGraphMode,
+    reportLayersLength,
+    setReportState,
+    processingHash,
+    isAreaInViewport,
+  ])
 
   useEffect(() => {
     if (
       !processingHash ||
       processingHash === lastProcessedHash.current ||
       !isAreaInViewport ||
-      !isLoaded
+      !isLoaded ||
+      !area?.geometry ||
+      !debouncedAreaId
     ) {
       return
     }
 
     const processFeatures = async () => {
-      if (!area?.geometry) {
-        return
-      }
-
-      setReportState((prev) => ({ ...prev, isLoading: true }))
-
+      setReportState((prev) => {
+        return { ...prev, isLoading: true }
+      })
       try {
         const featuresFiltered: FilteredPolygons[][] = []
         for (const instance of instances) {
+          const viewportLoaded = instance instanceof FourwingsLayer ? instance.getLayer()?.viewportLoaded : instance.viewportLoaded
+          if (instance.isLoaded === false || !viewportLoaded) {
+            // Layer is in transitional state - abort and let the effect re-run
+            // when the layer state updates
+            return
+          }
+
           const isUserPointsTileLayer = instance instanceof UserPointsTileLayer
           const hasTimeFilter = instance.props.startTime || instance.props.endTime
 
@@ -302,7 +329,6 @@ const useReportTimeseries = (
           featuresFiltered,
           timeseries,
         }))
-
         lastProcessedHash.current = processingHash
       } catch (error) {
         console.error('Error processing features:', error)
@@ -318,6 +344,7 @@ const useReportTimeseries = (
   }, [
     processingHash,
     area,
+    debouncedAreaId,
     instances,
     filterCellsByPolygon,
     setReportState,
@@ -331,40 +358,21 @@ const useReportTimeseries = (
       return
     }
 
-    const stats = getTimeseriesStats({
-      instances,
-      featuresFiltered,
-      start,
-      end,
+    setReportState((prev) => {
+      if (!prev.featuresFiltered || !instances.length) {
+        return prev
+      }
+      const stats = getTimeseriesStats({
+        instances,
+        featuresFiltered: prev.featuresFiltered,
+        start,
+        end,
+      })
+      return { ...prev, stats }
     })
-
-    setReportState((prev) => ({ ...prev, stats }))
     // Only stats needs to recalculate on start and end changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportState.featuresFiltered, instances, start, end, setReportState])
-
-  // Reset state when critical parameters change
-  useEffect(() => {
-    const shouldShowLoading =
-      reportCategory && reportCategory !== 'events' && reportCategory !== 'others'
-    setReportState((prev) => ({
-      ...prev,
-      ...initialReportState,
-      isLoading:
-        reportLayers.length > 0 &&
-        (shouldShowLoading || processingHash !== lastProcessedHash.current),
-    }))
-    lastProcessedHash.current = ''
-  }, [
-    area,
-    interval,
-    reportCategory,
-    reportSubCategory,
-    reportGraphMode,
-    reportLayers.length,
-    setReportState,
-    processingHash,
-  ])
 
   return reportState
 }

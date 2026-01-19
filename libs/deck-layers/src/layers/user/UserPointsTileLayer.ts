@@ -6,7 +6,11 @@ import type {
   Position,
   UpdateParameters,
 } from '@deck.gl/core'
-import type { GeoBoundingBox, TileLayerProps } from '@deck.gl/geo-layers'
+import type {
+  _Tile2DHeader as Tile2DHeader,
+  GeoBoundingBox,
+  TileLayerProps,
+} from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { ScatterplotLayer } from '@deck.gl/layers'
 import type { ScalePower } from 'd3-scale'
@@ -59,6 +63,7 @@ type GetUserPointsDataParams = {
 
 type UserPointsLayerState = UserBaseLayerState & {
   error: string
+  viewportLoaded: boolean
   scale?: ScalePower<number, number, never>
 }
 export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserBaseLayer<
@@ -77,17 +82,17 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     } = this.props
     if (circleRadiusRange && circleRadiusRange?.length) {
       this.state = {
+        ...this.state,
         error: '',
+        viewportLoaded: false,
         scale: scaleSqrt(circleRadiusRange as [number, number], [
           minPointSize as number,
           maxPointSize as number,
         ]),
       }
+    } else {
+      this.setState({ viewportLoaded: false })
     }
-  }
-
-  get isLoaded(): boolean {
-    return super.isLoaded
   }
 
   get filtersHash(): string {
@@ -112,11 +117,33 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
 
   get cacheHash(): string {
     const { id, startTime, endTime } = this.props
-    return `${id}-${startTime}-${endTime}${this.filtersHash}${this.aggregatedPropertyHash}`
+    return `${id}-${startTime}-${endTime}${this.filtersHash}${this.aggregatedPropertyHash}-${this.state.viewportLoaded ?? false}`
   }
 
-  updateState({ props, oldProps }: UpdateParameters<this>) {
+  get debounceTime(): number {
+    return this.props.debounceTime || 0
+  }
+
+  get viewportLoaded(): boolean {
+    return this.state.viewportLoaded
+  }
+
+  forceUpdate() {
+    this.setNeedsUpdate()
+  }
+
+  _onViewportLoad = (tiles: Tile2DHeader[]) => {
+    this.setState({ viewportLoaded: true })
+    this.props.onViewportLoad?.(tiles)
+  }
+
+  updateState({ props, oldProps, changeFlags }: UpdateParameters<this>) {
     const { minPointSize, maxPointSize, circleRadiusRange } = props
+    const deferredStateUpdates: Partial<UserPointsLayerState> = {}
+
+    if (changeFlags.dataChanged) {
+      deferredStateUpdates.viewportLoaded = false
+    }
 
     const newPointRange =
       circleRadiusRange?.[0] !== oldProps.circleRadiusRange?.[0] ||
@@ -130,10 +157,14 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
           minPointSize as number,
           maxPointSize as number,
         ])
-        this.setState({ scale })
+        deferredStateUpdates.scale = scale
       } else if (this.state.scale) {
-        this.setState({ scale: undefined })
+        deferredStateUpdates.scale = undefined
       }
+    }
+
+    if (Object.keys(deferredStateUpdates).length > 0) {
+      this.setState(deferredStateUpdates)
     }
   }
 
@@ -186,7 +217,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     return this._getPointRadiusValue(d)
   }
 
-  getLayer() {
+  getLayerInstance() {
     // TODO: support multiple sublayers
     return this.getSubLayers()?.[0] as TileLayer<UserLayerFeature>
   }
@@ -200,7 +231,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     const roundedZoom = Math.round(this.context.viewport.zoom)
     const zoom =
       roundedZoom > DEFAULT_USER_TILES_MAX_ZOOM ? DEFAULT_USER_TILES_MAX_ZOOM : roundedZoom
-    return (this.getLayer()?.state.tileset?.tiles || []).flatMap((tile) => {
+    return (this.getLayerInstance()?.state.tileset?.tiles || []).flatMap((tile) => {
       return tile.content && tile.zoom === zoom
         ? tile.content.flatMap((feature: any) => {
             return feature
@@ -281,7 +312,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
           ...getFetchLoadOptions(),
         },
         onTileError: this._onLayerError,
-        onViewportLoad: this.props.onViewportLoad,
+        onViewportLoad: this._onViewportLoad,
         renderSubLayers: (props) => {
           const mvtSublayerProps = {
             ...props,

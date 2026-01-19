@@ -30,6 +30,7 @@
 .content {
   min-height: 9rem;
   padding: var(--space-SM);
+  padding-bottom: 6rem;
 }
 
 .text a {
@@ -44,6 +45,10 @@
   display: flex;
   justify-content: space-between;
   padding: var(--space-S);
+  position: fixed;
+  background-color: var(--color-white);
+  width: 100%;
+  bottom: 0;
 }
 
 .footer .footerBtn,
