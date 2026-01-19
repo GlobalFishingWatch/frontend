@@ -37,6 +37,8 @@
   "typescript.tsserver.maxTsServerMemory": 8192,
   "typescript.tsserver.useSyntaxServer": "auto",
   "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "typescript.tsserver.log": "off",
+  "typescript.tsserver.trace": "off",
   "typescript.tsserver.watchOptions": {
     "watchFile": "useFsEventsOnParentDirectory",
     "watchDirectory": "useFsEvents",
@@ -56,7 +58,13 @@
       "**/cypress",
       "**/e2e"
     ],
-    "excludeFiles": ["**/*.spec.ts", "**/*.spec.tsx", "**/*.test.ts", "**/*.test.tsx"]
+    "excludeFiles": [
+      "**/*.spec.ts",
+      "**/*.spec.tsx",
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "**/*.tsbuildinfo"
+    ]
   },
   "typescript.preferences.includePackageJsonAutoImports": "off",
   "typescript.suggest.autoImports": true,
