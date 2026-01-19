@@ -7,30 +7,27 @@
   "targets": {
     "dist": {
       "executor": "@nx/js:tsc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "libs/responsive-visualizations/dist",
+        "generatePackageJson": false,
         "main": "libs/responsive-visualizations/src/index.ts",
         "tsConfig": "libs/responsive-visualizations/tsconfig.lib.json",
+        "rootDir": "libs/responsive-visualizations/src",
         "assets": [
           {
             "glob": "**/*.css",
             "input": "libs/responsive-visualizations/src",
             "output": "."
           }
-        ],
-        "rootDir": "libs/responsive-visualizations/src"
+        ]
       }
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": [
-        "dist"
-      ],
+      "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "libs/responsive-visualizations/dist"
+        "packageRoot": "libs/responsive-visualizations"
       }
     }
   }

@@ -6,11 +6,10 @@
   "targets": {
     "dist": {
       "executor": "@nx/js:tsc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "libs/api-types/dist",
+        "generatePackageJson": false,
         "main": "libs/api-types/src/index.ts",
         "tsConfig": "libs/api-types/tsconfig.lib.json",
         "rootDir": "libs/api-types/src"
@@ -18,11 +17,9 @@
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": [
-        "dist"
-      ],
+      "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "libs/api-types/dist"
+        "packageRoot": "libs/api-types"
       }
     }
   },

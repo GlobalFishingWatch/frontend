@@ -18,6 +18,10 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
   "dependencies": {
     "@globalfishingwatch/api-types": "^8.0.3",
     "@globalfishingwatch/pbf-decoders": "^3.0.5",

@@ -16,6 +16,10 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
   "dependencies": {
     "@globalfishingwatch/api-types": "^8.0.3",
     "@globalfishingwatch/deck-loaders": "0.1.3",

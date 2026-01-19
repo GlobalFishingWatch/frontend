@@ -10,6 +10,10 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
   "dependencies": {
     "@deck.gl-community/editable-layers": "9.1.1",
     "@deck.gl/core": "9.1.15",

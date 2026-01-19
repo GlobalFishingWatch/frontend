@@ -12,14 +12,11 @@
     },
     "dist": {
       "executor": "@nx/js:tsc",
-      "dependsOn": [
-        "generate-version"
-      ],
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "dependsOn": ["generate-version"],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "libs/deck-loaders/dist",
+        "generatePackageJson": false,
         "main": "libs/deck-loaders/src/index.ts",
         "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
         "rootDir": "libs/deck-loaders/src"
@@ -30,18 +27,15 @@
       "options": {
         "commands": [
           "nx build:workers deck-loaders",
-          "rimraf dist/libs/deck-loaders/workers/libs",
-          "rimraf dist/libs/deck-loaders/workers/package.json"
+          "rimraf libs/deck-loaders/dist/workers/libs",
+          "rimraf libs/deck-loaders/dist/workers/package.json"
         ],
         "parallel": false
       }
     },
     "build:workers": {
       "executor": "@nx/esbuild:esbuild",
-      "outputs": [
-        "{options.outputPath}",
-        "{options.outputPath}/src"
-      ],
+      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
       "options": {
         "main": "libs/deck-loaders/src/**/workers/**.ts",
         "esbuildOptions": {
@@ -62,11 +56,9 @@
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": [
-        "dist"
-      ],
+      "dependsOn": ["dist", "dist:workers"],
       "options": {
-        "packageRoot": "libs/deck-loaders/dist"
+        "packageRoot": "libs/deck-loaders"
       }
     }
   },

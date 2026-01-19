@@ -6,35 +6,20 @@
   "targets": {
     "dist": {
       "executor": "@nx/js:tsc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "libs/api-client/dist",
+        "generatePackageJson": false,
         "main": "libs/api-client/src/index.ts",
         "tsConfig": "libs/api-client/tsconfig.lib.json",
-        // "assets": [
-        //   {
-        //     "input": "libs/api-client",
-        //     "glob": "package.json",
-        //     "output": "."
-        //   },
-        //   {
-        //     "input": "libs/api-client",
-        //     "glob": "README.md",
-        //     "output": "."
-        //   }
-        // ],
         "rootDir": "libs/api-client/src"
       }
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": [
-        "dist"
-      ],
+      "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "libs/api-client/dist"
+        "packageRoot": "libs/api-client"
       }
     }
   },

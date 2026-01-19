@@ -6,11 +6,10 @@
   "targets": {
     "dist": {
       "executor": "@nx/js:tsc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "libs/react-hooks/dist",
+        "generatePackageJson": false,
         "main": "libs/react-hooks/src/index.ts",
         "tsConfig": "libs/react-hooks/tsconfig.lib.json",
         "rootDir": "libs/react-hooks/src"
@@ -18,11 +17,9 @@
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": [
-        "dist"
-      ],
+      "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "libs/react-hooks/dist"
+        "packageRoot": "libs/react-hooks"
       }
     }
   },

@@ -6,11 +6,10 @@
   "targets": {
     "dist": {
       "executor": "@nx/js:tsc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "libs/data-transforms/dist",
+        "generatePackageJson": false,
         "main": "libs/data-transforms/src/index.ts",
         "tsConfig": "libs/data-transforms/tsconfig.lib.json",
         "rootDir": "libs/data-transforms/src"
@@ -18,11 +17,9 @@
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": [
-        "dist"
-      ],
+      "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "libs/data-transforms/dist"
+        "packageRoot": "libs/data-transforms"
       }
     }
   },
