@@ -46,6 +46,7 @@ import {
   filterTimeseriesByTimerange,
   getTimeseries,
   getTimeseriesStats,
+  type ReportDeckLayer,
 } from 'features/reports/reports-timeseries.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 
@@ -150,14 +151,14 @@ export const useReportFeaturesLoading = () => {
 // layersStateHash is used as a cache key to ensure memoizeOne detects changes
 const getInstancesFromLayers = memoizeOne(
   (
-    reportLayers: DeckLayerAtom<FourwingsLayer | UserPointsTileLayer>[],
+    reportLayers: DeckLayerAtom<ReportDeckLayer>[],
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     layersStateHash: string
   ) => reportLayers.map((l) => l.instance)
 )
 
 const useReportTimeseries = (
-  reportLayers: DeckLayerAtom<FourwingsLayer | UserPointsTileLayer>[]
+  reportLayers: DeckLayerAtom<ReportDeckLayer>[]
 ) => {
   const [reportState, setReportState] = useAtom(reportStateAtom)
   const filterCellsByPolygon = useFilterCellsByPolygonWorker()

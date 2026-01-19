@@ -694,7 +694,6 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       })
     }
 
-    // Apply all deferred state updates in a single callback
     if (Object.keys(deferredStateUpdates).length > 0) {
       requestAnimationFrame(() => {
         this.setState(deferredStateUpdates)

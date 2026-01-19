@@ -109,6 +109,14 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     return `${id}-${startTime}-${endTime}-${colors}-${this.state.rampDirty}-${this.state.viewportLoaded}`
   }
 
+  get debounceTime(): number {
+    return this.props.debounceTime || 0
+  }
+
+  get viewportLoaded(): boolean {
+    return this.state.viewportLoaded
+  }
+
   getError(): string {
     return this.state.error
   }
@@ -421,7 +429,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   getAggregationOperation() {
-    return 'avg'
+    return FourwingsAggregationOperation.Avg
   }
 
   getTilesData() {

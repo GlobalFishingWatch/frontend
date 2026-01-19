@@ -1,4 +1,4 @@
-import type { Color } from '@deck.gl/core'
+import type { Color, DefaultProps } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 
@@ -6,10 +6,12 @@ import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import type { FourwingsFootprintTileLayerProps } from './footprint/fourwings-footprint.types'
 import { FourwingsFootprintTileLayer } from './footprint/FourwingsFootprintTileLayer'
-import type {
-  FourwingsChunk,
-  FourwingsHeatmapStaticLayerProps,
-  FourwingsHeatmapTileLayerProps,
+import {
+  FourwingsAggregationOperation,
+  type FourwingsChunk,
+  FourwingsComparisonMode,
+  type FourwingsHeatmapStaticLayerProps,
+  type FourwingsHeatmapTileLayerProps,
 } from './heatmap/fourwings-heatmap.types'
 import {
   getResolutionByVisualizationMode,
@@ -50,8 +52,15 @@ type AnyFourwingsLayer =
   | FourwingsFootprintTileLayer
   | FourwingsHeatmapStaticLayer
 
+
+const defaultProps: DefaultProps<FourwingsLayerProps> = {
+  comparisonMode: FourwingsComparisonMode.Compare,
+  aggregationOperation: FourwingsAggregationOperation.Sum,
+}
+
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
   static layerName = 'FourwingsLayer'
+  static defaultProps = defaultProps
 
   get cacheHash(): string {
     return (this.getSubLayers() as AnyFourwingsLayer[])?.map((layer) => layer.cacheHash).join('-')
@@ -149,7 +158,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getAggregationOperation() {
-    return this.props.aggregationOperation
+    return this.props.aggregationOperation!
   }
 
   getChunk() {
