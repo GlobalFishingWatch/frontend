@@ -113,6 +113,10 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     return this.props.debounceTime || 0
   }
 
+  get viewportLoaded(): boolean {
+    return this.state.viewportLoaded
+  }
+
   forceUpdate() {
     const layer = this.getLayerInstance()
     if (layer) {
@@ -607,6 +611,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     if (tile.signal?.aborted) {
       return null
     }
+    if (this.state.viewportLoaded) {
+      this.setState({ viewportLoaded: false })
+    }
     return this.props.comparisonMode === FourwingsComparisonMode.TimeCompare
       ? this._fetchTimeCompareTileData(tile)
       : this._fetchTimeseriesTileData(tile)
@@ -676,7 +683,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
       isDifferentZoom
 
-    if (needsCacheKeyUpdate) {
+      if (needsCacheKeyUpdate) {
       deferredStateUpdates.tilesCache = getTileDataCache({
         zoom,
         startTime,

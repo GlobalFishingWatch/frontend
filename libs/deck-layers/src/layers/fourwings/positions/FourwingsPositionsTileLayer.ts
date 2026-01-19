@@ -104,6 +104,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return this.props.debounceTime || 0
   }
 
+  get viewportLoaded(): boolean {
+    return this.state.viewportLoaded
+  }
+
+
   forceUpdate() {
     const layer = this.getLayerInstance()
     if (layer) {
