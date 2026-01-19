@@ -7,8 +7,8 @@ test('Map01 - should select a vessel from map tile', async ({ page }) => {
   await page.goto('/')
 
   // close welcome modal
-  await page.getByRole('button', { name: 'Close' }).click()
-  await page.getByText('Dismiss').click()
+  await page.getByTestId('modal-close-button').click()
+  await page.getByText('Dismiss').first().click()
 
   await page.getByText('month').first().click()
 
@@ -19,15 +19,14 @@ test('Map01 - should select a vessel from map tile', async ({ page }) => {
   expect(page.url()).toContain('start=2025-01-01T00%3A00%3A00.000Z')
   expect(page.url()).toContain('end=2026-01-01T00%3A00%3A00.000Z')
 
-  await page.click('#view-mapViewport', { position: { x: 200, y: 200 } })
-
-  expect(page.locator('#map-container').getByText('Apparent fishing effort (AIS)')).toBeVisible()
-
-  expect(page.getByText('388.44 hours')).toBeVisible()
+  await page.click('#view-mapViewport', { position: { x: 8, y: 385 } })
 
   await page.waitForLoadState('networkidle')
+  await page.waitForTimeout(1000)
 
-  expect(page.getByText('Cidade Celestial')).toBeVisible()
+  expect(page.locator('#map-container').getByText('Apparent fishing effort (AIS)')).toBeVisible()
+  expect(page.getByText('1,305.77 hours')).toBeVisible()
+  expect(page.getByText('Rolton')).toBeVisible()
 })
 
 test('Map02 - Filter map by flag ', async ({ page }) => {
@@ -38,7 +37,7 @@ test('Map02 - Filter map by flag ', async ({ page }) => {
 
   // close welcome modal
   await page.getByRole('button', { name: 'Close' }).click()
-  await page.getByText('Dismiss').click()
+  await page.getByText('Dismiss').first().click()
 
   await page.locator('[data-test="activity-layer-panel-ais"]').hover()
   await page.locator('[data-test="activity-layer-panel-ais"]').getByLabel('Open filters').click()
@@ -72,7 +71,11 @@ test('Map03 - Add a layer and filter by vessel type', async ({ page }) => {
   await page.getByRole('button', { name: 'Close' }).click()
   await page.getByText('Dismiss').click()
 
-  await page.locator('[data-test="activity-section"]').getByLabel('Add layer').click()
+  await page
+    .locator('section')
+    .filter({ hasText: 'Activity (2)Apparent fishing' })
+    .getByLabel('Add layer')
+    .click()
 
   await page.getByRole('button', { name: 'Add to workspace' }).nth(2).click()
 
@@ -93,7 +96,7 @@ test('Map03 - Add a layer and filter by vessel type', async ({ page }) => {
 
   await page.click('#view-mapViewport', { position: { x: 5, y: 385 } })
 
-  await page.waitForTimeout(5000)
+  await page.waitForTimeout(2000)
 
   expect(page.locator('#map-container').getByText('Vessel presence')).toBeVisible()
   expect(page.locator('#map-container').getByText('Cargo')).not.toBeVisible()

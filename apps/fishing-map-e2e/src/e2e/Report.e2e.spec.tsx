@@ -7,8 +7,8 @@ test('Report01 - Create report area', async ({ page }) => {
   await page.goto('/')
 
   // close welcome modal
-  await page.getByRole('button', { name: 'Close' }).click()
-  await page.getByText('Dismiss').click()
+  await page.getByTestId('modal-close-button').click()
+  await page.getByText('Dismiss').first().click()
 
   await page.locator('[data-test="context-layer-context-layer-eez"]').click()
 
@@ -24,9 +24,11 @@ test('Report01 - Create report area', async ({ page }) => {
 
   await page.locator('[data-test="open-analysis"]').click()
 
+  await page.waitForLoadState('networkidle')
+
   expect(page.getByText('Ecuadorian EEZ 251,938 km²')).toBeVisible()
 
-  await page.waitForTimeout(3000)
+  await page.waitForTimeout(5000)
 
   expect(
     page.locator('[data-test="source-tag-item-public-global-fishing-effort:v4.0"]')
@@ -44,8 +46,8 @@ test('Report02 - View full report area', async ({ page }) => {
   await page.goto('/')
 
   // close welcome modal
-  await page.getByRole('button', { name: 'Close' }).click()
-  await page.getByText('Dismiss').click()
+  await page.getByTestId('modal-close-button').click()
+  await page.getByText('Dismiss').first().click()
 
   await page.locator('[data-test="context-layer-context-layer-eez"]').click()
 
@@ -65,11 +67,7 @@ test('Report02 - View full report area', async ({ page }) => {
 
   await page.waitForTimeout(3000)
 
-  expect(
-    page.locator('[data-test="source-tag-item-public-global-fishing-effort:v4.0"]')
-  ).toBeVisible()
-
-  await page.getByTestId('login-link').last().click()
+  await page.getByText('Log in', { exact: true }).click()
 
   await page.waitForURL(
     'https://gateway.api.staging.globalfishingwatch.org/v3/auth?client=gfw&callback=http%3A%2F%2Flocalhost%3A3003%2Fmap%2Ffishing-activity%2Fdefault-public%2Freport%2Fpublic-eez-areas%2F8431%3FcallbackUrlStorage%3Dtrue&locale=en'

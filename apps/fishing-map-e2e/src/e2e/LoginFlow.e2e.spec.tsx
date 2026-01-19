@@ -6,12 +6,16 @@ test('Log01 - should allow a user to log in and log out', async ({ page }) => {
 
   await page.goto('/')
 
-  await page.getByRole('button', { name: 'Close' }).click()
+  await page.getByTestId('modal-close-button').click()
   // Click the login button
-  await page.getByTestId('login-link').first().click()
+  await page.getByText('login').click()
+
+  expect(page.url()).toContain(
+    'https://gateway.api.staging.globalfishingwatch.org/v3/auth?client=gfw&callback=http%3A%2F%2Flocalhost%3A3003%2Fmap%2Findex%3FcallbackUrlStorage%3Dtrue&locale=en'
+  )
 
   await page.waitForURL(
-    'https://gateway.api.staging.globalfishingwatch.org/v3/auth?client=gfw&callback=http%3A%2F%2Flocalhost%3A3003%2Fmap%3FcallbackUrlStorage%3Dtrue&locale=en'
+    'https://gateway.api.staging.globalfishingwatch.org/v3/auth?client=gfw&callback=http%3A%2F%2Flocalhost%3A3003%2Fmap%2Findex%3FcallbackUrlStorage%3Dtrue&locale=en'
   )
 
   await page.getByRole('textbox', { name: 'Email' }).fill(process.env.TEST_USER_EMAIL || '')
@@ -20,6 +24,8 @@ test('Log01 - should allow a user to log in and log out', async ({ page }) => {
   await page.getByRole('button', { name: 'Login' }).click()
 
   await page.getByTestId('sidebar-login-icon').click()
+
+  await page.waitForLoadState('networkidle')
 
   expect(page.getByText('Acid Tango')).toBeVisible()
   expect(page.getByText('carlos+q@acidtango.com')).toBeVisible()

@@ -124,6 +124,7 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
                     tooltip={t('workspace.remove')}
                     onClick={() => onDeleteClick(workspace)}
                     testId="remove-workspace-button"
+                    data-testid="remove-workspace-button"
                   />
                 </li>
               )

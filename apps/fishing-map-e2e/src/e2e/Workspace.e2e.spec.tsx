@@ -10,10 +10,10 @@ test('WS01 - Save workspace', async ({ page }) => {
 
   // LOGIN
 
-  await page.getByRole('button', { name: 'Close' }).click()
-  await page.getByText('Dismiss').click()
+  await page.getByTestId('modal-close-button').click()
+  await page.getByText('Dismiss', { exact: true }).first().click()
 
-  await page.getByTestId('login-link').first().click()
+  await page.getByText('login').click()
 
   await page.waitForURL(
     'https://gateway.api.staging.globalfishingwatch.org/v3/auth?client=gfw&callback=http%3A%2F%2Flocalhost%3A3003%2Fmap%2Ffishing-activity%2Fdeep-sea-mining-public%3FcallbackUrlStorage%3Dtrue&locale=en'
@@ -27,6 +27,8 @@ test('WS01 - Save workspace', async ({ page }) => {
   await page.waitForURL(
     'http://localhost:3003/map/fishing-activity/deep-sea-mining-public?zoom=1.4&latitude=-13.322088344162196&longitude=-68.31476421655266&start=2020-04-03T22%3A00%3A00.000Z&end=2021-04-03T22%3A00%3A00.000Z&dvIn[0][id]=context-layer-eez&dvIn[0][cfg][vis]=true'
   )
+
+  await page.waitForLoadState('networkidle')
 
   await page.getByLabel('Save the current workspace').click()
 
@@ -59,7 +61,7 @@ test('WS01 - Save workspace', async ({ page }) => {
     await dialog.accept()
   })
 
-  await page.locator('[data-test="remove-workspace-button"]').click()
+  await page.getByTestId('remove-workspace-button').first().click()
 
   await page.waitForLoadState('networkidle')
 
