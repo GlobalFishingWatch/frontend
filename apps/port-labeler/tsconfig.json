@@ -7,51 +7,6 @@
   "include": [],
   "references": [
     {
-      "path": "../../libs/api-client"
-    },
-    {
-      "path": "../../libs/api-types"
-    },
-    {
-      "path": "../../libs/data-transforms"
-    },
-    {
-      "path": "../../libs/datasets-client"
-    },
-    {
-      "path": "../../libs/dataviews-client"
-    },
-    {
-      "path": "../../libs/deck-layer-composer"
-    },
-    {
-      "path": "../../libs/deck-layers"
-    },
-    {
-      "path": "../../libs/deck-loaders"
-    },
-    {
-      "path": "../../libs/i18n-labels"
-    },
-    {
-      "path": "../../libs/ocean-areas"
-    },
-    {
-      "path": "../../libs/pbf-decoders"
-    },
-    {
-      "path": "../../libs/react-hooks"
-    },
-    {
-      "path": "../../libs/responsive-visualizations"
-    },
-    {
-      "path": "../../libs/timebar"
-    },
-    {
-      "path": "../../libs/ui-components"
-    },
-    {
       "path": "./tsconfig.app.json"
     }
   ]

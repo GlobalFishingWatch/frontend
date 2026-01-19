@@ -5,6 +5,7 @@
     "allowJs": false,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
+    "incremental": true,
     "strict": true,
     "outDir": "../../dist/out-tsc",
     "types": [

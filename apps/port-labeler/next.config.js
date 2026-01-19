@@ -1,18 +1,18 @@
-const { join } = require('path')
-const withNx = require('@nx/next/plugins/with-nx')
-// const CircularDependencyPlugin = require('circular-dependency-plugin')
+import { dirname, join } from 'path'
+import { fileURLToPath } from 'url'
 
-// const { i18n } = require('./next-i18next.config')
+import withNx from '@nx/next/plugins/with-nx.js'
+import process from 'node:process'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+
 const basePath =
   process.env.NEXT_PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/port-labeler' : '')
 
-/**
- * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
- **/
+/** @type {import('@nx/next/plugins/with-nx').WithNxOptions} */
 const nextConfig = {
   async rewrites() {
     return [
-      // Rewrite everything to `pages/index`
       {
         source: '/:any*',
         destination: '/',
@@ -21,7 +21,6 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // Redirect everything in / root to basePath if defined
       ...(basePath !== ''
         ? [
             {
@@ -35,7 +34,7 @@ const nextConfig = {
     ]
   },
   nx: {},
-  webpack: function (config) {
+  webpack(config) {
     config.resolve.alias = {
       ...config.resolve.alias,
       'mapbox-gl': 'maplibre-gl',
@@ -49,13 +48,10 @@ const nextConfig = {
     }
     return config
   },
-  // productionBrowserSourceMaps: true,
   basePath,
   productionBrowserSourceMaps:
     process.env.NEXT_PUBLIC_WORKSPACE_ENV === 'development' ||
     process.env.NODE_ENV === 'development',
-
-  // to deploy on a node server
   output: 'standalone',
   outputFileTracingRoot: join(__dirname, '../../'),
   experimental: {},
@@ -64,9 +60,9 @@ const nextConfig = {
 }
 
 const configWithNx = withNx(nextConfig)
-module.exports = async (...args) => {
+
+export default async (...args) => {
   return {
     ...(await configWithNx(...args)),
-    //...
   }
 }
