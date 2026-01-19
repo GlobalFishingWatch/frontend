@@ -10,21 +10,9 @@
         "{options.outputPath}"
       ],
       "options": {
-        "outputPath": "dist/libs/dataviews-client",
+        "outputPath": "libs/dataviews-client/dist",
         "main": "libs/dataviews-client/src/index.ts",
         "tsConfig": "libs/dataviews-client/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/dataviews-client",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/dataviews-client",
-            "glob": "README.md",
-            "output": "."
-          }
-        ],
         "rootDir": "libs/dataviews-client/src"
       }
     },
@@ -44,22 +32,10 @@
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": [
-        "dist-package"
-      ],
-      "options": {
-        "packageRoot": "dist/libs/dataviews-client"
-      }
-    },
-    "dist-package": {
-      "executor": "nx:run-commands",
-      "dependsOn": [
         "dist"
       ],
-      "outputs": [
-        "{workspaceRoot}/dist/libs/dataviews-client/package.json"
-      ],
       "options": {
-        "command": "node tools/scripts/generate-dist-package.mjs libs/dataviews-client dist/libs/dataviews-client"
+        "packageRoot": "libs/dataviews-client/dist"
       }
     }
   },

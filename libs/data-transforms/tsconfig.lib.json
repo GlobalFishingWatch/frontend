@@ -1,15 +1,24 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/libs/data-transforms",
-    "declarationDir": "../../dist/libs/data-transforms",
+    "outDir": "./dist",
+    "declarationDir": "./dist",
     "rootDir": "src",
     "declaration": true,
     "composite": true,
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]
   },
+  "references": [
+    {
+      "path": "../api-types/tsconfig.lib.json"
+    },
+    {
+      "path": "../deck-loaders/tsconfig.lib.json"
+    }
+  ],
   "files": ["./vendors.d.ts"],
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]

@@ -19,21 +19,9 @@
         "{options.outputPath}"
       ],
       "options": {
-        "outputPath": "dist/libs/deck-loaders",
+        "outputPath": "libs/deck-loaders/dist",
         "main": "libs/deck-loaders/src/index.ts",
         "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/deck-loaders",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/deck-loaders",
-            "glob": "README.md",
-            "output": "."
-          }
-        ],
         "rootDir": "libs/deck-loaders/src"
       }
     },
@@ -57,9 +45,9 @@
       "options": {
         "main": "libs/deck-loaders/src/**/workers/**.ts",
         "esbuildOptions": {
-          "outdir": "dist/libs/deck-loaders/workers"
+          "outdir": "libs/deck-loaders/dist/workers"
         },
-        "outputPath": "dist/libs/deck-loaders/workers",
+        "outputPath": "libs/deck-loaders/dist/workers",
         "generateExportsField": true,
         "tsConfig": "libs/deck-loaders/tsconfig.workers.json",
         "watch": false,
@@ -75,22 +63,10 @@
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": [
-        "dist-package"
-      ],
-      "options": {
-        "packageRoot": "dist/libs/deck-loaders"
-      }
-    },
-    "dist-package": {
-      "executor": "nx:run-commands",
-      "dependsOn": [
         "dist"
       ],
-      "outputs": [
-        "{workspaceRoot}/dist/libs/deck-loaders/package.json"
-      ],
       "options": {
-        "command": "node tools/scripts/generate-dist-package.mjs libs/deck-loaders dist/libs/deck-loaders"
+        "packageRoot": "libs/deck-loaders/dist"
       }
     }
   },

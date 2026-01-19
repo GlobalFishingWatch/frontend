@@ -28,16 +28,11 @@
         "external": [
           "react/jsx-runtime"
         ],
-        "outputPath": "dist/libs/i18n-labels",
+        "outputPath": "libs/i18n-labels/dist",
         "project": "libs/i18n-labels/package.json",
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "tsConfig": "libs/i18n-labels/tsconfig.lib.json",
         "assets": [
-          {
-            "glob": "libs/i18n-labels/README.md",
-            "input": ".",
-            "output": "."
-          },
           {
             "glob": "libs/i18n-labels/en",
             "input": ".",
@@ -83,7 +78,7 @@
         "dist"
       ],
       "options": {
-        "packageRoot": "dist/libs/i18n-labels"
+        "packageRoot": "libs/i18n-labels/dist"
       }
     },
     "publish:stable": {
@@ -105,7 +100,7 @@
         "parallel": false
       },
       "dependsOn": [
-        "dist-package"
+        "dist"
       ]
     },
     "ts": {
@@ -138,18 +133,6 @@
         "commitMessageFormat": "release: bump ${projectName} to ${version} [skip ci]",
         "releaseAs": "patch",
         "tagPrefix": "{projectName}@"
-      }
-    },
-    "dist-package": {
-      "executor": "nx:run-commands",
-      "dependsOn": [
-        "dist"
-      ],
-      "outputs": [
-        "{workspaceRoot}/dist/libs/i18n-labels/package.json"
-      ],
-      "options": {
-        "command": "node tools/scripts/generate-dist-package.mjs libs/i18n-labels dist/libs/i18n-labels"
       }
     }
   }

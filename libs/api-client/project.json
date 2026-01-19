@@ -10,43 +10,31 @@
         "{options.outputPath}"
       ],
       "options": {
-        "outputPath": "dist/libs/api-client",
+        "outputPath": "libs/api-client/dist",
         "main": "libs/api-client/src/index.ts",
         "tsConfig": "libs/api-client/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/api-client",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/api-client",
-            "glob": "README.md",
-            "output": "."
-          }
-        ],
+        // "assets": [
+        //   {
+        //     "input": "libs/api-client",
+        //     "glob": "package.json",
+        //     "output": "."
+        //   },
+        //   {
+        //     "input": "libs/api-client",
+        //     "glob": "README.md",
+        //     "output": "."
+        //   }
+        // ],
         "rootDir": "libs/api-client/src"
       }
     },
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": [
-        "dist-package"
-      ],
-      "options": {
-        "packageRoot": "dist/libs/api-client"
-      }
-    },
-    "dist-package": {
-      "executor": "nx:run-commands",
-      "dependsOn": [
         "dist"
       ],
-      "outputs": [
-        "{workspaceRoot}/dist/libs/api-client/package.json"
-      ],
       "options": {
-        "command": "node tools/scripts/generate-dist-package.mjs libs/api-client dist/libs/api-client"
+        "packageRoot": "libs/api-client/dist"
       }
     }
   },

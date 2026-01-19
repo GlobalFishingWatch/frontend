@@ -16,7 +16,7 @@
           "esm"
         ],
         "main": "libs/ocean-areas/src/index.ts",
-        "outputPath": "dist/libs/ocean-areas",
+        "outputPath": "libs/ocean-areas/dist",
         "project": "libs/ocean-areas/package.json",
         "tsConfig": "libs/ocean-areas/tsconfig.lib.json"
       }
@@ -24,22 +24,10 @@
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": [
-        "dist-package"
-      ],
-      "options": {
-        "packageRoot": "dist/libs/ocean-areas"
-      }
-    },
-    "dist-package": {
-      "executor": "nx:run-commands",
-      "dependsOn": [
         "dist"
       ],
-      "outputs": [
-        "{workspaceRoot}/dist/libs/ocean-areas/package.json"
-      ],
       "options": {
-        "command": "node tools/scripts/generate-dist-package.mjs libs/ocean-areas dist/libs/ocean-areas"
+        "packageRoot": "libs/ocean-areas/dist"
       }
     }
   },

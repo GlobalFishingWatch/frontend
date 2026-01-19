@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "jsx": "preserve",
-    "allowJs": true,
+    "allowJs": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "types": [
@@ -25,6 +25,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo",
     "strictNullChecks": true,
     // generating source maps for debug ids for Sentry.
     "sourceMap": true,
@@ -37,8 +38,6 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "**/*.js",
-    "**/*.jsx",
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "../../dist/apps/fishing-map/.next/types/**/*.ts",

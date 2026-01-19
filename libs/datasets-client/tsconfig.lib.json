@@ -1,15 +1,24 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/libs/datasets-client",
-    "declarationDir": "../../dist/libs/datasets-client",
+    "outDir": "./dist",
+    "declarationDir": "./dist",
     "rootDir": "src",
     "declaration": true,
     "composite": true,
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]
   },
+  "references": [
+    {
+      "path": "../api-client/tsconfig.lib.json"
+    },
+    {
+      "path": "../api-types/tsconfig.lib.json"
+    }
+  ],
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
 }

@@ -11,20 +11,10 @@
         "{options.outputPath}"
       ],
       "options": {
-        "outputPath": "dist/libs/ui-components",
+        "outputPath": "libs/ui-components/dist",
         "main": "libs/ui-components/src/index.ts",
         "tsConfig": "libs/ui-components/tsconfig.lib.json",
         "assets": [
-          {
-            "input": "libs/ui-components",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/ui-components",
-            "glob": "README.md",
-            "output": "."
-          },
           {
             "glob": "**/*.css",
             "input": "libs/ui-components/src",
@@ -47,22 +37,10 @@
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": [
-        "dist-package"
-      ],
-      "options": {
-        "packageRoot": "dist/libs/ui-components"
-      }
-    },
-    "dist-package": {
-      "executor": "nx:run-commands",
-      "dependsOn": [
         "dist"
       ],
-      "outputs": [
-        "{workspaceRoot}/dist/libs/ui-components/package.json"
-      ],
       "options": {
-        "command": "node tools/scripts/generate-dist-package.mjs libs/ui-components dist/libs/ui-components"
+        "packageRoot": "libs/ui-components/dist"
       }
     }
   }

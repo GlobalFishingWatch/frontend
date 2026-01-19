@@ -10,43 +10,19 @@
         "{options.outputPath}"
       ],
       "options": {
-        "outputPath": "dist/libs/react-hooks",
+        "outputPath": "libs/react-hooks/dist",
         "main": "libs/react-hooks/src/index.ts",
         "tsConfig": "libs/react-hooks/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/react-hooks",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/react-hooks",
-            "glob": "README.md",
-            "output": "."
-          }
-        ],
         "rootDir": "libs/react-hooks/src"
       }
     },
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": [
-        "dist-package"
-      ],
-      "options": {
-        "packageRoot": "dist/libs/react-hooks"
-      }
-    },
-    "dist-package": {
-      "executor": "nx:run-commands",
-      "dependsOn": [
         "dist"
       ],
-      "outputs": [
-        "{workspaceRoot}/dist/libs/react-hooks/package.json"
-      ],
       "options": {
-        "command": "node tools/scripts/generate-dist-package.mjs libs/react-hooks dist/libs/react-hooks"
+        "packageRoot": "libs/react-hooks/dist"
       }
     }
   },

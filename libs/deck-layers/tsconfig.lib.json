@@ -1,15 +1,30 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/libs/deck-layers",
-    "declarationDir": "../../dist/libs/deck-layers",
+    "outDir": "./dist",
+    "declarationDir": "./dist",
     "rootDir": "src",
     "declaration": true,
     "composite": true,
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]
   },
+  "references": [
+    {
+      "path": "../api-client/tsconfig.lib.json"
+    },
+    {
+      "path": "../api-types/tsconfig.lib.json"
+    },
+    {
+      "path": "../data-transforms/tsconfig.lib.json"
+    },
+    {
+      "path": "../deck-loaders/tsconfig.lib.json"
+    }
+  ],
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
 }

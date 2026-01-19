@@ -10,43 +10,19 @@
         "{options.outputPath}"
       ],
       "options": {
-        "outputPath": "dist/libs/deck-layer-composer",
+        "outputPath": "libs/deck-layer-composer/dist",
         "main": "libs/deck-layer-composer/src/index.ts",
         "tsConfig": "libs/deck-layer-composer/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/deck-layer-composer",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/deck-layer-composer",
-            "glob": "README.md",
-            "output": "."
-          }
-        ],
         "rootDir": "libs/deck-layer-composer/src"
       }
     },
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": [
-        "dist-package"
-      ],
-      "options": {
-        "packageRoot": "dist/libs/deck-layer-composer"
-      }
-    },
-    "dist-package": {
-      "executor": "nx:run-commands",
-      "dependsOn": [
         "dist"
       ],
-      "outputs": [
-        "{workspaceRoot}/dist/libs/deck-layer-composer/package.json"
-      ],
       "options": {
-        "command": "node tools/scripts/generate-dist-package.mjs libs/deck-layer-composer dist/libs/deck-layer-composer"
+        "packageRoot": "libs/deck-layer-composer/dist"
       }
     }
   },

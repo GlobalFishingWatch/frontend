@@ -1,15 +1,36 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/libs/timebar",
-    "declarationDir": "../../dist/libs/timebar",
+    "outDir": "./dist",
+    "declarationDir": "./dist",
     "rootDir": "src",
     "declaration": true,
     "composite": true,
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node", "@nx/react/typings/cssmodule.d.ts", "@nx/react/typings/image.d.ts"]
   },
+  "references": [
+    {
+      "path": "../api-types/tsconfig.lib.json"
+    },
+    {
+      "path": "../data-transforms/tsconfig.lib.json"
+    },
+    {
+      "path": "../dataviews-client/tsconfig.lib.json"
+    },
+    {
+      "path": "../deck-layers/tsconfig.lib.json"
+    },
+    {
+      "path": "../deck-loaders/tsconfig.lib.json"
+    },
+    {
+      "path": "../ui-components/tsconfig.lib.json"
+    }
+  ],
   "exclude": [
     "jest.config.ts",
     "src/**/*.spec.ts",

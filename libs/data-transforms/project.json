@@ -10,43 +10,19 @@
         "{options.outputPath}"
       ],
       "options": {
-        "outputPath": "dist/libs/data-transforms",
+        "outputPath": "libs/data-transforms/dist",
         "main": "libs/data-transforms/src/index.ts",
         "tsConfig": "libs/data-transforms/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/data-transforms",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/data-transforms",
-            "glob": "README.md",
-            "output": "."
-          }
-        ],
         "rootDir": "libs/data-transforms/src"
       }
     },
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": [
-        "dist-package"
-      ],
-      "options": {
-        "packageRoot": "dist/libs/data-transforms"
-      }
-    },
-    "dist-package": {
-      "executor": "nx:run-commands",
-      "dependsOn": [
         "dist"
       ],
-      "outputs": [
-        "{workspaceRoot}/dist/libs/data-transforms/package.json"
-      ],
       "options": {
-        "command": "node tools/scripts/generate-dist-package.mjs libs/data-transforms dist/libs/data-transforms"
+        "packageRoot": "libs/data-transforms/dist"
       }
     }
   },

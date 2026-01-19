@@ -1,11 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/libs/i18n-labels",
-    "declarationDir": "../../dist/libs/i18n-labels",
+    "outDir": "./dist",
+    "declarationDir": "./dist",
     "rootDir": ".",
     "declaration": true,
     "composite": true,
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
     "types": ["node"]
   },
   "include": ["source/**/*.json", "index.ts"],

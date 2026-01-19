@@ -10,20 +10,10 @@
         "{options.outputPath}"
       ],
       "options": {
-        "outputPath": "dist/libs/pbf-decoders",
-        "main": "libs/pbf-decoders/index.ts",
+        "outputPath": "libs/pbf-decoders/dist",
+        "main": "libs/pbf-decoders/src/index.ts",
         "tsConfig": "libs/pbf-decoders/tsconfig.lib.json",
         "assets": [
-          {
-            "input": "libs/pbf-decoders",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/pbf-decoders",
-            "glob": "README.md",
-            "output": "."
-          },
           {
             "glob": "**/*",
             "input": "libs/pbf-decoders/decoders",
@@ -36,22 +26,10 @@
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": [
-        "dist-package"
-      ],
-      "options": {
-        "packageRoot": "dist/libs/pbf-decoders"
-      }
-    },
-    "dist-package": {
-      "executor": "nx:run-commands",
-      "dependsOn": [
         "dist"
       ],
-      "outputs": [
-        "{workspaceRoot}/dist/libs/pbf-decoders/package.json"
-      ],
       "options": {
-        "command": "node tools/scripts/generate-dist-package.mjs libs/pbf-decoders dist/libs/pbf-decoders"
+        "packageRoot": "libs/pbf-decoders/dist"
       }
     }
   },

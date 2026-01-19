@@ -1,11 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/libs/deck-loaders",
+    "outDir": "./dist",
+    "declarationDir": "./dist",
     "rootDir": ".",
-    "declaration": false,
-    "composite": false,
-    "incremental": false,
+    "declaration": true,
+    "composite": true,
+    "incremental": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]
