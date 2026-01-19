@@ -129,8 +129,8 @@ export class FourwingsClustersLayer extends CompositeLayer<
   static defaultProps = defaultProps
   state!: FourwingsClustersTileLayerState
 
-  get isLoaded(): boolean {
-    return super.isLoaded && this.state.viewportLoaded
+  get cacheHash(): string {
+    return `${this.state.viewportLoaded}`
   }
 
   get clusterMode(): FourwingsClusterMode {
