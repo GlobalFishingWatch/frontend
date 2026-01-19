@@ -2984,6 +2984,7 @@ __metadata:
     i18next-cli: "npm:^1.36.1"
     prettier: "npm:3.8.0"
     rimraf: "npm:6.1.2"
+    tslib: "npm:2.x"
   languageName: unknown
   linkType: soft
 

@@ -82,15 +82,22 @@
     "dist": {
       "dependsOn": ["^dist"],
       "outputs": ["{projectRoot}/dist"],
-      "cache": true
+      "cache": true,
+      "options": {
+        "clean": false
+      }
     },
     "dist:workers": {
       "dependsOn": ["^dist"],
       "outputs": ["{projectRoot}/dist"],
       "cache": true
     },
+    "build-deps": {
+      "dependsOn": ["^dist"]
+    },
     "prepare-loaders": {
-      "cache": true
+      "cache": true,
+      "outputs": ["{projectRoot}/public/workers"]
     },
     "@nx/vitest:test": {
       "cache": true,
