@@ -112,6 +112,7 @@
     "analysis": "Buat analisis untuk area ini",
     "analysisAddArea": "Add area to the analysis",
     "analysisNotAvailable": "Toggle an analyzable layer to create a report for this area",
+    "analysisRemoveArea": "Remove area from the analysis",
     "and": "dan",
     "anyoneWithTheLink": "Anyone with the link",
     "anyoneWithThePassword": "Anyone with the password",
