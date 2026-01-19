@@ -105,16 +105,19 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
   }
 
-  get isLoaded(): boolean {
-    return super.isLoaded && !this.state.rampDirty && this.state.viewportLoaded
-  }
-
   get cacheHash(): string {
-    return this._getTileDataCacheKey()
+    if (!this.state) {
+      return ''
+    }
+    return `${this._getTileDataCacheKey()}|${this.state.rampDirty}|${this.state.viewportLoaded}`
   }
 
   get debounceTime(): number {
     return this.props.debounceTime || 0
+  }
+
+  get viewportLoaded(): boolean {
+    return this.state?.viewportLoaded ?? false
   }
 
   forceUpdate() {
@@ -611,6 +614,9 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     if (tile.signal?.aborted) {
       return null
     }
+    if (this.state.viewportLoaded) {
+      this.setState({ viewportLoaded: false })
+    }
     return this.props.comparisonMode === FourwingsComparisonMode.TimeCompare
       ? this._fetchTimeCompareTileData(tile)
       : this._fetchTimeseriesTileData(tile)
@@ -651,19 +657,20 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     const newMode = oldProps.comparisonMode && comparisonMode !== oldProps.comparisonMode
     const newVisibleValueLimits =
       minVisibleValue !== oldProps.minVisibleValue || maxVisibleValue !== oldProps.maxVisibleValue
-    if (newMode || sublayersHaveNewColors || newVisibleValueLimits) {
+
+    const deferredStateUpdates: Partial<FourwingsTileLayerState> = {}
+
+    const needsColorUpdate = newMode || sublayersHaveNewColors || newVisibleValueLimits
+    if (needsColorUpdate) {
+      // Set rampDirty immediately to prevent rendering with stale colors
       this.setState({ rampDirty: true, colorDomain: [], colorRanges: [], scales: [] })
       const newColorDomain =
         newMode || newVisibleValueLimits ? this._calculateColorDomain() : colorDomain
       const scales = this._getColorScales(newColorDomain, newSublayerColorRanges)
-      requestAnimationFrame(() => {
-        this.setState({
-          colorRanges: newSublayerColorRanges,
-          colorDomain: newColorDomain,
-          scales,
-          rampDirty: false,
-        })
-      })
+      deferredStateUpdates.colorRanges = newSublayerColorRanges
+      deferredStateUpdates.colorDomain = newColorDomain
+      deferredStateUpdates.scales = scales
+      deferredStateUpdates.rampDirty = false
     }
 
     const isStartOutRange = startTime < tilesCache.start
@@ -678,25 +685,21 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
       isCompareEndOutRange ||
       getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
       isDifferentZoom
-    if (isDifferentZoom) {
-      requestAnimationFrame(() => {
-        this.setState({
-          viewportLoaded: false,
-        })
+
+    if (needsCacheKeyUpdate) {
+      deferredStateUpdates.tilesCache = getTileDataCache({
+        zoom,
+        startTime,
+        endTime,
+        availableIntervals,
+        compareStart,
+        compareEnd,
       })
     }
-    if (needsCacheKeyUpdate) {
+
+    if (Object.keys(deferredStateUpdates).length > 0) {
       requestAnimationFrame(() => {
-        this.setState({
-          tilesCache: getTileDataCache({
-            zoom,
-            startTime,
-            endTime,
-            availableIntervals,
-            compareStart,
-            compareEnd,
-          }),
-        })
+        this.setState(deferredStateUpdates)
       })
     }
   }

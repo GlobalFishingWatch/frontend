@@ -108,7 +108,7 @@ export const getContextLink = (feature: ContextPickingObject) => {
     case ContextLayerId.MPA:
     case ContextLayerId.MPANoTake:
     case ContextLayerId.MPARestricted: {
-      const id = feature.properties?.WDPA_PID || feature.id
+      const id = feature.properties?.SITE_PID || feature.properties?.WDPA_PID || feature.id
       return `https://www.protectedplanet.net/${id}`
     }
     case ContextLayerId.MPAtlas: {
@@ -116,7 +116,8 @@ export const getContextLink = (feature: ContextPickingObject) => {
       return id ? `https://mpatlas.org/zones/${id}` : ''
     }
     case ContextLayerId.TunaRfmo: {
-      return RFMO_LINKS[feature.id]
+      const id = feature.properties.ID || feature.id
+      return RFMO_LINKS[id]
     }
     case ContextLayerId.EEZ: {
       const id = feature.properties?.MRGID_EEZ || feature.id
@@ -128,7 +129,7 @@ export const getContextLink = (feature: ContextPickingObject) => {
     }
     case ContextLayerId.FAO: {
       const id = feature.properties?.F_CODE || feature.id
-      return `https://www.fao.org/fishery/en/area/${id}/en`
+      return `https://www.fao.org/fishery/en/area/${id}`
     }
     default:
       return undefined

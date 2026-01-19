@@ -149,6 +149,7 @@ function ReportVectorGraphTooltip(
         {/* Background circles */}
         {new Array(4).fill(0).map((_, i, array) => (
           <circle
+            key={i}
             cx={SIZE / 2}
             cy={SIZE / 2}
             r={INNER_RADIUS + ((RADIUS - INNER_RADIUS) / (array.length - 1)) * i}

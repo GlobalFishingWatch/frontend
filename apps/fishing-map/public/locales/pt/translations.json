@@ -112,6 +112,7 @@
     "analysis": "Criar uma análise para esta área",
     "analysisAddArea": "Adicionar área à análise",
     "analysisNotAvailable": "Toggle an analyzable layer to create a report for this area",
+    "analysisRemoveArea": "Remove area from the analysis",
     "and": "e",
     "anyoneWithTheLink": "Qualquer pessoa com o link",
     "anyoneWithThePassword": "Qualquer pessoa com a senha",

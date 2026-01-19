@@ -325,6 +325,21 @@
       }
     }
   },
+  "private-global-gap-ais-off-events": {
+    "name": "GAPS Events. (AIS)",
+    "description": "GAPS Events",
+    "schema": {
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "2": "2",
+          "48": "48"
+        }
+      },
+      "is_closed": "is_closed",
+      "next_port_id": "next_port_id"
+    }
+  },
   "private-global-other-vessels": {
     "name": "AIS (Other Vessels)",
     "description": "Other vessels from AIS",
@@ -1278,7 +1293,7 @@
   },
   "public-global-currents-vo": {
     "name": "Currents",
-    "description": "Currents northward component"
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Ocean currents are the movement of seawater driven by wind, temperature, salinity, tides, and Earth’s rotation. Ocean currents regulate climate and transport heat, nutrients, and marine species. This dataset shows global ocean surface currents, including speed and direction, providing insight into large-scale circulation patterns</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00016'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00016.</a></li>"
   },
   "public-global-encounters-events-carriers-fishing": {
     "name": "Encounter Events for Carriers-Fishing Vessels (AIS)",
@@ -1694,8 +1709,8 @@
     "description": "A temperatura da superfície do mar é a temperatura da água na superfície do oceano. O Modelo de Oceano Coordenado Híbrido (HYCOM) é um modelo de coordenadas oceânicas híbrido de dados análoga à pressão híbrida isopycnal-sigma (generalizado). O subconjunto de dados HYCOM hospedados na EE contém as variáveis salinidade, temperatura, velocidade vetorial e altitude. Eles foram interpolados para uma grade uniforme de 0,08 graus de lato/longo entre 70,48°S e 85,48°N. A salinidade, a temperatura e as variáveis de velocidade vetorial foram interpoladas para 40 níveis z-padrão. Fonte: HYCOM"
   },
   "public-global-winds-vo": {
-    "name": "Winds",
-    "description": "Winds northward component"
+    "name": "Wind",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Wind is the movement of air across the Earth’s surface and plays an important role in shaping weather and ocean conditions. Surface winds help drive ocean circulation and influence mixing at the ocean surface. This dataset shows global wind speed and direction over the ocean.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://cds.climate.copernicus.eu/datasets/derived-era5-single-levels-daily-statistics?tab=overview'>Copernicus Climate Change Service, Climate Data Store, (2024): ERA5 post-processed daily-statistics on single levels from 1940 to present. Copernicus Climate Change Service (C3S) Climate Data Store (CDS), DOI: 10.24381/cds.4991cf48</a></li>"
   },
   "public-graticules": {
     "name": "Grades de latitude e longitude",
