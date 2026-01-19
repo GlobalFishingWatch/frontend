@@ -104,6 +104,36 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
     ],
   },
   {
+    id: 'immas',
+    dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/immas.jpg`,
+    config: {
+      color: '#00EEFF',
+    },
+    datasetsConfig: [
+      {
+        params: [],
+        endpoint: 'context-tiles',
+        datasetId: 'public-immas',
+      },
+    ],
+  },
+  {
+    id: 'ebsas',
+    dataviewId: TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/ebsas.jpg`,
+    config: {
+      color: '#00EEFF',
+    },
+    datasetsConfig: [
+      {
+        params: [],
+        endpoint: 'context-tiles',
+        datasetId: 'public-ebsas',
+      },
+    ],
+  },
+  {
     id: 'nitrate',
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/nitrate.jpg`,
