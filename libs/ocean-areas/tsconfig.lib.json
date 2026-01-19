@@ -12,5 +12,5 @@
     "types": ["node"]
   },
   "include": ["src/**/*.ts", "src/data/**/*.json", "src/locales/**/*.json"],
-  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts", "src/source/**/*"]
+  "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts", "src/source/**/*", "src/scripts/**/*"]
 }

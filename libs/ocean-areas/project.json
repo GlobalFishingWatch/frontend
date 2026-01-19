@@ -5,29 +5,21 @@
   "projectType": "library",
   "targets": {
     "dist": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "assets": [],
-        "compiler": "tsc",
-        "format": [
-          "esm"
-        ],
-        "main": "libs/ocean-areas/src/index.ts",
         "outputPath": "libs/ocean-areas/dist",
-        "project": "libs/ocean-areas/package.json",
-        "tsConfig": "libs/ocean-areas/tsconfig.lib.json"
+        "generatePackageJson": false,
+        "main": "libs/ocean-areas/src/index.ts",
+        "tsConfig": "libs/ocean-areas/tsconfig.lib.json",
+        "rootDir": "libs/ocean-areas/src"
       }
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": [
-        "dist"
-      ],
+      "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "libs/ocean-areas/dist"
+        "packageRoot": "libs/ocean-areas"
       }
     }
   },
