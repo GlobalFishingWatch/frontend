@@ -17,21 +17,14 @@
       }
     },
     "dist": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": [
-        "{options.outputPath}",
-        "{options.outputPath}/src"
-      ],
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "compiler": "tsc",
-        "entryFile": "libs/i18n-labels/index.ts",
-        "external": [
-          "react/jsx-runtime"
-        ],
         "outputPath": "libs/i18n-labels/dist",
-        "project": "libs/i18n-labels/package.json",
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
+        "generatePackageJson": false,
+        "main": "libs/i18n-labels/index.ts",
         "tsConfig": "libs/i18n-labels/tsconfig.lib.json",
+        "rootDir": "libs/i18n-labels",
         "assets": [
           {
             "glob": "libs/i18n-labels/en",
@@ -74,11 +67,9 @@
     },
     "publish:npm": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": [
-        "dist"
-      ],
+      "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "libs/i18n-labels/dist"
+        "packageRoot": "libs/i18n-labels"
       }
     },
     "publish:stable": {
@@ -93,37 +84,22 @@
     "publish": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "nx publish:npm i18n-labels",
-          "nx purge i18n-labels"
-        ],
+        "commands": ["nx publish:npm i18n-labels", "nx purge i18n-labels"],
         "parallel": false
       },
-      "dependsOn": [
-        "dist"
-      ]
-    },
-    "ts": {
-      "executor": "nx:run-script",
-      "options": {
-        "script": "ts"
-      }
+      "dependsOn": ["dist"]
     },
     "purge": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "PACKAGE_TAG=latest ./libs/i18n-labels/purge_jsdelivr.sh"
-        ],
+        "commands": ["PACKAGE_TAG=latest ./libs/i18n-labels/purge_jsdelivr.sh"],
         "parallel": false
       }
     },
     "purge:stable": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "PACKAGE_TAG=stable ./libs/i18n-labels/purge_jsdelivr.sh"
-        ],
+        "commands": ["PACKAGE_TAG=stable ./libs/i18n-labels/purge_jsdelivr.sh"],
         "parallel": false
       }
     },

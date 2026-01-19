@@ -7,7 +7,9 @@
     "declaration": true,
     "composite": true,
     "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
-    "types": ["node"]
+    "types": ["node"],
+    "module": "ESNext",
+    "moduleResolution": "bundler"
   },
   "include": ["source/**/*.json", "index.ts"],
   "exclude": ["**/*.spec.ts", "**/*.test.ts"]
