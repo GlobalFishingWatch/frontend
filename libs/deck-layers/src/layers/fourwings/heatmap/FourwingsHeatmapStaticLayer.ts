@@ -14,7 +14,7 @@ import { MVTLayer } from '@deck.gl/geo-layers'
 import { PathLayer } from '@deck.gl/layers'
 import { scaleLinear } from 'd3-scale'
 import { debounce } from 'es-toolkit'
-import type { Feature, Geometry, Polygon } from 'geojson'
+import type { Feature, Geometry } from 'geojson'
 import { stringify } from 'qs'
 
 import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
@@ -78,7 +78,11 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   get cacheHash(): string {
-    return this.state.rampDirty?.toString() || ''
+    return this.state?.rampDirty?.toString() || ''
+  }
+
+  get viewportLoaded(): boolean {
+    return this.state?.viewportLoaded ?? false
   }
 
   _getState() {
@@ -149,10 +153,11 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     if (this.props.onViewportLoad) {
       this.props.onViewportLoad(tiles)
     }
+    this.setState({ viewportLoaded: true })
   }
 
   _onTileLoad = () => {
-    this.setState({ rampDirty: true })
+    this.setState({ rampDirty: true, viewportLoaded: false })
   }
 
   getPickingInfo = ({
