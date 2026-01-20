@@ -51,7 +51,8 @@ function ReportVectorGraphTooltip(
   const data = useMemo(() => {
     const featuresFiltered = features?.find((f) => f.some((f) => f.instanceId === instanceId))?.[0]
       ?.contained as FourwingsFeature[]
-    return featuresFiltered.flatMap((f) => {
+
+    return (featuresFiltered || []).flatMap((f) => {
       const dateIndex = f.properties.dates?.[0]?.findIndex((date) => date === hoveredTime)
       if (dateIndex === -1) return []
       return {
