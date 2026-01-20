@@ -29,6 +29,11 @@
     "moreInfoLink": "",
     "name": "Zonas Autorizadas ISA"
   },
+  "ebsas": {
+    "description": "EBSAs are areas of the ocean recognized for their unique ecological and/or biological features, such as essential habitats, food sources or breeding grounds for specific species.",
+    "moreInfoLink": "",
+    "name": "Ecologically or Biologically Significant Marine Areas (EBSAs)"
+  },
   "eez": {
     "description": "Las zonas económicas exclusivas (ZEE) se extienden hasta 200 millas náuticas desde la costa de un país. Instituto Marino de Flandes (2019). Conjunto de datos geográficos de Límites Marinos: Límites Marinos y Zonas Económicas Exclusivas (200NM), versión 11.",
     "moreInfoLink": "",
@@ -78,6 +83,11 @@
     "description": "Los bosillos (pockets) de alta mar son áreas totalmente delimitadas por ZEE que se encuentran fuera de las Zonas Económicas Exclusivas (ZEE). Estas zonas pueden ser difíciles de distinguir de las múltiples jurisdicciones de ZEE que las rodean, por lo que tenemos una capa que las resalta.",
     "moreInfoLink": "https://www.marineregions.org/downloads.php",
     "name": "Bolsillos (pockets) de alta mar"
+  },
+  "immas": {
+    "description": "Important Marine Mammal Areas (IMMAs) are defined as discrete portions of habitat, important to marine mammal species, that have the potential to be delineated and managed for conservation.",
+    "moreInfoLink": "",
+    "name": "Important Marine Mammal Areas (IMMA)"
   },
   "loitering": {
     "description": "Eventos a la deriva ocurre cuando una embarcación individual exhibe un comportamiento que podría indicar un posible encuentro. Este se calcula utilizando datos del sistema de identificación automática (AIS), que incluyen la velocidad de la embarcación, el tiempo que permanece en una ubicación específica y la distancia desde la costa. Eventos a la deriva se identifica cuando una embarcación mantiene una velocidad promedio inferior a dos nudos mientras se encuentra, en promedio, a más de 20 millas náuticas de la costa. Para minimizar el ruido en el portal de buques de transporte, únicamente se muestran los eventos a la deriva que superan una hora de duración.",
