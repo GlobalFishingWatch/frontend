@@ -31,10 +31,10 @@ import styles from './ReportActivityDatasetComparison.module.css'
 const createDatasetOption = (id: string, label: string, color?: string): SelectOption => ({
   id,
   label: (
-    <div className={styles.datasetOption}>
+    <p className={styles.datasetOption}>
       <span className={styles.dot} style={{ color }} />
       {label}
-    </div>
+    </p>
   ),
 })
 
