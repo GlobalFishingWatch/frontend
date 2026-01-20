@@ -78,11 +78,11 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   }
 
   get cacheHash(): string {
-    return this.state.rampDirty?.toString() || ''
+    return this.state?.rampDirty?.toString() || ''
   }
 
   get viewportLoaded(): boolean {
-    return this.state.viewportLoaded
+    return this.state?.viewportLoaded ?? false
   }
 
   _getState() {
