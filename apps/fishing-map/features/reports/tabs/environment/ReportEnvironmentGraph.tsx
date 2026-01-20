@@ -41,12 +41,14 @@ function ReportEnvironmentGraph({
   data,
   index = 0,
   isLoading = false,
+  removeEmptyValues = false,
 }: {
   GraphComponent: React.ComponentType<any>
   dataview: UrlDataviewInstance<DataviewType>
   data: ReportGraphProps | ReportGraphProps[]
   isLoading?: boolean
   index?: number
+  removeEmptyValues?: boolean
 }) {
   useComputeReportTimeSeries()
   const { t } = useTranslation()
@@ -102,6 +104,7 @@ function ReportEnvironmentGraph({
             start={start}
             end={end}
             data={data}
+            removeEmptyValues={removeEmptyValues}
             // TODO: currents and winds
             // Refactor the ReportVectorGraphTooltip component and pass it here
             // before it was using the entire timeline but we want to use only the data from the hovered date

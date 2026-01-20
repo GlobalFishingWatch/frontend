@@ -58,7 +58,8 @@ export function UserSection(): React.ReactElement<any> {
   const dataviewsGrouped = useSelector(selectCustomUserDataviewsGrouped)
   const allDataviews = Object.values(dataviewsGrouped)
   const dataviews = allDataviews.flat()
-  const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
+  const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
+  const hasVisibleDataviews = visibleDataviews.length >= 1
 
   const onAddNewClick = useAddDataset()
 
@@ -113,7 +114,14 @@ export function UserSection(): React.ReactElement<any> {
     <Section
       id={DataviewCategory.User}
       data-testid="user-section"
-      title={t('user.datasets')}
+      title={
+        <span>
+          {t('user.datasets')}
+          {hasVisibleDataviews && (
+            <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
+          )}
+        </span>
+      }
       hasVisibleDataviews={hasVisibleDataviews}
       headerOptions={
         <Fragment>

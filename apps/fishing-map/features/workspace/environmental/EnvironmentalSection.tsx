@@ -38,6 +38,8 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectEnvironmentalDataviews)
+  const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
+  const hasVisibleDataviews = visibleDataviews.length >= 1
   const reportDataviews = useSelector(selectEnvironmentReportLayersVisible)
   const dataviewsMinusBathymetry = dataviews.filter(
     (d) => !isBathymetryDataview(d) && !isBathymetryContourDataview(d)
@@ -46,7 +48,6 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
     (d) => isBathymetryDataview(d) || isBathymetryContourDataview(d)
   )
   const userDatasets = useSelector(selectUserEnvironmentDatasets)
-  const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const hasVisibleReportDataviews = reportDataviews && reportDataviews?.length > 0
   const locationCategory = useSelector(selectLocationCategory)
   const { visualizationOptions, activeVisualizationOption, onVisualizationModeChange } =
@@ -86,7 +87,14 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
     <Section
       id={DataviewCategory.Environment}
       data-testid="environment-section"
-      title={t('common.environment')}
+      title={
+        <span>
+          {t('common.environment')}
+          {hasVisibleDataviews && (
+            <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
+          )}
+        </span>
+      }
       hasVisibleDataviews={hasVisibleDataviews}
       headerOptions={
         !readOnly ? (

@@ -17,7 +17,10 @@ import ReportSummaryActivity from 'features/reports/shared/summary/ReportSummary
 import ReportSummaryEvents from 'features/reports/shared/summary/ReportSummaryEvents'
 import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags'
 import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-activity.types'
-import { selectIsPortReportLocation } from 'routes/routes.selectors'
+import {
+  selectIsPortReportLocation,
+  selectIsVesselGroupReportLocation,
+} from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './ReportSummary.module.css'
@@ -38,6 +41,7 @@ export default function ReportSummary({
   const reportCategory = useSelector(selectReportCategory)
   const dataviews = useSelector(selectActiveReportDataviews)
   const isPortReportLocation = useSelector(selectIsPortReportLocation)
+  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
 
   const onAddLayerClick = useCallback(() => {
     trackEvent({
@@ -77,7 +81,7 @@ export default function ReportSummary({
                 allowDelete={dataviews.length > 1}
               />
             ))}
-            {!isPortReportLocation && (
+            {!isPortReportLocation && !isVesselGroupReportLocation && (
               <IconButton
                 icon="plus"
                 type="border"

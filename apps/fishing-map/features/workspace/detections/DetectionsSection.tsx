@@ -34,6 +34,8 @@ function DetectionsSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectDetectionsDataviews)
+  const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
+  const hasVisibleDataviews = visibleDataviews.length >= 1
   const activityDataviews = useSelector(selectActivityDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
@@ -100,13 +102,20 @@ function DetectionsSection(): React.ReactElement<any> {
     },
     []
   )
-  const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   return (
     <Section
       id={DataviewCategory.Detections}
       data-testid="detections-section"
-      title={t('common.detections')}
+      className="hover-target"
+      title={
+        <span>
+          {t('common.detections')}
+          {hasVisibleDataviews && (
+            <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
+          )}
+        </span>
+      }
       hasVisibleDataviews={hasVisibleDataviews}
       headerOptions={
         !readOnly ? (

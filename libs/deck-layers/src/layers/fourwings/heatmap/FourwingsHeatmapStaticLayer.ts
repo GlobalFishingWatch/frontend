@@ -77,8 +77,8 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     }
   }
 
-  get isLoaded(): boolean {
-    return super.isLoaded && !this.state.rampDirty
+  get cacheHash(): string {
+    return this.state.rampDirty?.toString() || ''
   }
 
   _getState() {
@@ -101,6 +101,14 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
   getError(): string {
     return this.state.error
   }
+
+  forceUpdate() {
+    const layer = this.getLayerInstance()
+    if (layer) {
+      layer.setNeedsUpdate()
+    }
+  }
+
   _calculateColorDomain = () => {
     // TODO use to get the real bin value considering the NO_DATA_VALUE and negatives
     // NO_DATA_VALUE = 0

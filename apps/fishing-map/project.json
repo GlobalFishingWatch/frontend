@@ -39,7 +39,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "nx ts i18n-labels",
+          "nx run i18n-labels:ts",
           "nx run fishing-map:i18n:extract:watch",
           "nx run fishing-map:i18n:types:watch",
           "nx clean-locales fishing-map",

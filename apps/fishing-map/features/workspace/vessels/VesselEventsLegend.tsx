@@ -69,51 +69,49 @@ function VesselEventsLegend({
   }
 
   return (
-    <div className={styles.content}>
-      <ul className={layerStyles.eventsLegendContainer}>
-        {eventTypes.map(({ datasetId, eventType, active }) => {
-          const color =
-            eventType === 'fishing' && tracks.length === 1 ? '#ffffff' : EVENTS_COLORS[eventType]
-          return (
-            <li
-              key={datasetId}
-              className={cx(
-                layerStyles.eventsLegend,
-                { [layerStyles.disabled]: !active },
-                { 'print-hidden': !active }
-              )}
-            >
-              <Switch
-                active={active}
-                onClick={onEventChange}
-                id={eventType}
-                className={layerStyles.eventsLegendSwitch}
-                color={EVENTS_COLORS[eventType]}
+    <ul className={layerStyles.eventsLegendContainer}>
+      {eventTypes.map(({ datasetId, eventType, active }) => {
+        const color =
+          eventType === 'fishing' && tracks.length === 1 ? '#ffffff' : EVENTS_COLORS[eventType]
+        return (
+          <li
+            key={datasetId}
+            className={cx(
+              layerStyles.eventsLegend,
+              { [layerStyles.disabled]: !active },
+              { 'print-hidden': !active }
+            )}
+          >
+            <Switch
+              active={active}
+              onClick={onEventChange}
+              id={eventType}
+              className={layerStyles.eventsLegendSwitch}
+              color={EVENTS_COLORS[eventType]}
+            />
+            <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>
+              {upperFirst(t(`event.${eventType}` as any, eventType) as any)}
+            </label>
+            <div className={cx(layerStyles.iconWrapper, layerStyles[eventType])}>
+              <div
+                className={cx(layerStyles.icon, {
+                  [styles.active]: active,
+                })}
+                style={
+                  {
+                    '--color': color,
+                    '--encounterIcon': `url(${PATH_BASENAME}/images/event-encounter.svg)`,
+                    '--loiteringIcon': `url(${PATH_BASENAME}/images/event-loitering.svg)`,
+                    '--portIcon': `url(${PATH_BASENAME}/images/event-port.svg)`,
+                    '--gapIcon': `url(${PATH_BASENAME}/images/event-gap.svg)`,
+                  } as React.CSSProperties
+                }
               />
-              <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>
-                {upperFirst(t(`event.${eventType}` as any, eventType) as any)}
-              </label>
-              <div className={cx(layerStyles.iconWrapper, layerStyles[eventType])}>
-                <div
-                  className={cx(layerStyles.icon, {
-                    [styles.active]: active,
-                  })}
-                  style={
-                    {
-                      '--color': color,
-                      '--encounterIcon': `url(${PATH_BASENAME}/images/event-encounter.svg)`,
-                      '--loiteringIcon': `url(${PATH_BASENAME}/images/event-loitering.svg)`,
-                      '--portIcon': `url(${PATH_BASENAME}/images/event-port.svg)`,
-                      '--gapIcon': `url(${PATH_BASENAME}/images/event-gap.svg)`,
-                    } as React.CSSProperties
-                  }
-                />
-              </div>
-            </li>
-          )
-        })}
-      </ul>
-    </div>
+            </div>
+          </li>
+        )
+      })}
+    </ul>
   )
 }
 

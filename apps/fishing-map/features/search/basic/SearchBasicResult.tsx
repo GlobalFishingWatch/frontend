@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import type { GetItemPropsOptions } from 'downshift'
-import { uniq, upperFirst } from 'es-toolkit'
+import { lowerFirst, uniq } from 'es-toolkit'
 import type { FeatureCollection } from 'geojson'
 
 import type { Locale } from '@globalfishingwatch/api-types'
@@ -121,6 +121,17 @@ function SearchBasicResult({
       return `${t('vessel.infoSources.selfReported')} (${isPrivateDataset(dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
     return EMPTY_FIELD_PLACEHOLDER
   }, [t, vessel.identities, dataset])
+
+  const transmissionsSource = useMemo(() => {
+    const selfReportedIdentities = vessel.identities.filter(
+      ({ identitySource }) => identitySource === VesselIdentitySourceEnum.SelfReported
+    )
+    const selfReportedIdentitiesSources = uniq(
+      selfReportedIdentities.flatMap(({ sourceCode }) => sourceCode || [])
+    )
+    if (selfReportedIdentities.length) return selfReportedIdentitiesSources.join(', ')
+    return ''
+  }, [vessel.identities])
 
   const selfReportedVesselIds = useMemo(() => {
     const identities = getVesselIdentities(vessel, {
@@ -319,9 +330,8 @@ function SearchBasicResult({
             {transmissionDateFrom && transmissionDateTo && (
               <div className={cx(styles.property, styles.fullWidth)}>
                 <span>
-                  {hasPositions
-                    ? `${formatI18nNumber(positionsCounter)} ${t('vessel.transmissions')} ${t('common.from')} `
-                    : `${upperFirst(t('common.from'))} `}
+                  {hasPositions ? `${formatI18nNumber(positionsCounter)} ` : ''}
+                  {`${transmissionsSource} ${lowerFirst(t('vessel.transmissions'))} ${t('common.from')} `}
                   <I18nDate date={transmissionDateFrom} /> {t('common.to')}{' '}
                   <I18nDate date={transmissionDateTo} />
                 </span>

@@ -29,6 +29,7 @@ import type {
   EvolutionGraphData,
   ReportGraphProps,
 } from 'features/reports/reports-timeseries.hooks'
+import type { ReportFourwingsDeckLayer } from 'features/reports/reports-timeseries.utils'
 import type { TimeSeries } from 'features/reports/reports-timeseries-shared.utils'
 import { frameTimeseriesToDateTimeseries } from 'features/reports/reports-timeseries-shared.utils'
 import type { TimeRange } from 'features/timebar/timebar.slice'
@@ -138,10 +139,10 @@ export const fourwingsFeaturesToTimeseries = (
 
 export type GetFourwingsTimeseriesParams = {
   features: FilteredPolygons[]
-  instance: FourwingsLayer
+  instance: ReportFourwingsDeckLayer
 }
 export const getFourwingsTimeseries = ({ features, instance }: GetFourwingsTimeseriesParams) => {
-  if (instance.props.static || !features || !instance.getChunk) {
+  if ((instance as FourwingsLayer).props.static || !features || !instance.getChunk) {
     // need to add empty timeseries because they are then used by their index
     return {
       timeseries: [],
@@ -151,7 +152,7 @@ export const getFourwingsTimeseries = ({ features, instance }: GetFourwingsTimes
   }
   const chunk = instance.getChunk?.()
   if (!chunk) return
-  const sublayers = instance.getFourwingsLayers()
+  const sublayers = (instance as FourwingsLayer).getFourwingsLayers()
   const props = instance.props as FourwingsLayerProps
   const params: FourwingsFeaturesToTimeseriesParams = {
     staticHeatmap: props.static,
@@ -174,7 +175,7 @@ export const getFourwingsTimeseriesStats = ({
   end,
 }: GetFourwingsTimeseriesParams & TimeRange) => {
   if (features?.[0]?.contained?.length > 0) {
-    if (instance.props.static) {
+    if ((instance as FourwingsLayer).props.static) {
       const allValues = (features[0].contained as FourwingsStaticFeature[]).flatMap((f) => {
         return f.properties?.[HEATMAP_STATIC_PROPERTY_ID] || []
       })
@@ -224,10 +225,11 @@ export const formatDateTicks = (tick: string, timeChunkInterval: FourwingsInterv
 
 export const formatEvolutionData = (
   data: ReportGraphProps,
-  { start, end, timeseriesInterval } = {} as {
+  { start, end, timeseriesInterval, removeEmptyValues } = {} as {
     start: string
     end: string
     timeseriesInterval: FourwingsInterval
+    removeEmptyValues?: boolean
   },
   comparedData?: ReportGraphProps
 ) => {
@@ -260,6 +262,14 @@ export const formatEvolutionData = (
       .map((_, i) => {
         const date = getUTCDateTime(startMillis).plus({ [timeseriesInterval]: i })
         const dataValue = data.timeseries.find((item) => date.toISO()?.startsWith(item.date))
+
+        if (!dataValue && removeEmptyValues) {
+          return {
+            date: date.toMillis(),
+            range: [null],
+            avg: [null],
+          }
+        }
 
         const processTimeseries = (value: typeof dataValue) =>
           value
@@ -300,7 +310,10 @@ export const formatEvolutionData = (
         }
       })
       .filter((d) => {
-        return !isNaN(d.avg[0])
+        if (removeEmptyValues) {
+          return true
+        }
+        return !isNaN(d.avg?.[0] || 0)
       })
   }
 

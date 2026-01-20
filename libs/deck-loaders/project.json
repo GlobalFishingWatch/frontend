@@ -4,18 +4,33 @@
   "sourceRoot": "libs/deck-loaders/src",
   "projectType": "library",
   "targets": {
+    "generate-version": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node libs/deck-loaders/scripts/generate-version.mjs"
+      }
+    },
     "dist": {
-      "executor": "@nx/rollup:rollup",
+      "executor": "@nx/js:tsc",
+      "dependsOn": ["generate-version"],
       "outputs": ["{options.outputPath}"],
       "options": {
-        "assets": [],
-        "compiler": "swc",
-        "format": ["esm", "cjs"],
-        "main": "libs/deck-loaders/src/index.ts",
         "outputPath": "dist/libs/deck-loaders",
-        "project": "libs/deck-loaders/package.json",
+        "main": "libs/deck-loaders/src/index.ts",
         "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false
+        "assets": [
+          {
+            "input": "libs/deck-loaders",
+            "glob": "package.json",
+            "output": "."
+          },
+          {
+            "input": "libs/deck-loaders",
+            "glob": "README.md",
+            "output": "."
+          }
+        ],
+        "rootDir": "libs/deck-loaders/src"
       }
     },
     "dist:workers": {
@@ -31,7 +46,7 @@
     },
     "build:workers": {
       "executor": "@nx/esbuild:esbuild",
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
       "options": {
         "main": "libs/deck-loaders/src/**/workers/**.ts",
         "esbuildOptions": {
@@ -39,7 +54,7 @@
         },
         "outputPath": "dist/libs/deck-loaders/workers",
         "generateExportsField": true,
-        "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
+        "tsConfig": "libs/deck-loaders/tsconfig.workers.json",
         "watch": false,
         "target": "esnext",
         "platform": "browser",

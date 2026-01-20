@@ -18,16 +18,15 @@
     },
     "dist": {
       "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
       "options": {
-        "compiler": "swc",
+        "compiler": "tsc",
         "entryFile": "libs/i18n-labels/index.ts",
         "external": ["react/jsx-runtime"],
         "outputPath": "dist/libs/i18n-labels",
         "project": "libs/i18n-labels/package.json",
         "rollupConfig": "@nx/react/plugins/bundle-rollup",
         "tsConfig": "libs/i18n-labels/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false,
         "assets": [
           {
             "glob": "libs/i18n-labels/README.md",

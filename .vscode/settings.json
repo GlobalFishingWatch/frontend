@@ -32,9 +32,11 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   // ----------------------------------------------
-  "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.tsserver.maxTsServerMemory": 8192,
+  "typescript.tsserver.useSyntaxServer": "auto",
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
   "typescript.tsserver.watchOptions": {
     "excludeDirectories": [
       "**/node_modules",
@@ -50,31 +52,56 @@
       "**/tmp",
       "**/cypress",
       "**/e2e"
-    ]
+    ],
+    "excludeFiles": ["**/*.spec.ts", "**/*.spec.tsx", "**/*.test.ts", "**/*.test.tsx"]
   },
+  "typescript.preferences.includePackageJsonAutoImports": "off",
   "typescript.suggest.autoImports": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.suggest.completeFunctionCalls": true,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.disableAutomaticTypeAcquisition": true,
   "editor.rulers": [140],
-  "files.exclude": {
-    "**/.git": true,
-    "**/build": true,
-    "**/coverage": true,
-    "**/.next": true,
-    "**/dist": true,
-    "**/.nx": true,
-    "**/.turbo": true,
-    "**/node_modules": true
-  },
   "editor.formatOnSave": true, // auto format the file on each save
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "json"],
   "eslint.format.enable": true,
   "eslint.lintTask.enable": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/dist": false,
+    "**/.nx": true,
+    "**/.turbo": true,
+    "**/.tanstack": true
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/.next/**": true,
+    "**/build/**": true,
+    "**/dist/**": true,
+    "**/.nx/**": true,
+    "**/.turbo/**": true,
+    "**/coverage/**": true
+  },
   "search.exclude": {
     ".yarn": true,
-    "**/dist": true
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.tanstack": true,
+    "**/.next": true,
+    "**/.nx": true,
+    "**/.turbo": true,
+    "**/coverage": true
   },
-  "eslint.experimental.useFlatConfig": true,
+  "eslint.useFlatConfig": true,
   "nxConsole.generateAiAgentRules": true
 }

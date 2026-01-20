@@ -6,7 +6,7 @@ import {
   GFWAPI,
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
-import type { UserData } from '@globalfishingwatch/api-types'
+import type { UserData, UserGroupId } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
 import type { FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
 import { redirectToLogin, setHistoryNavigation } from '@globalfishingwatch/react-hooks'
@@ -44,20 +44,7 @@ const initialState: UserState = {
 
 type UserSliceState = { user: UserState }
 
-export type UserGroup =
-  | 'belize'
-  | 'brazil'
-  | 'chile'
-  | 'costa rica'
-  | 'ecuador'
-  | 'panama'
-  | 'papua new guinea'
-  | 'peru'
-  | 'ssf-aruna'
-  | 'ssf-rare'
-  | 'ssf-ipnlf'
-
-export const USER_GROUP_WORKSPACE: Partial<Record<UserGroup, string>> = {
+export const USER_GROUP_WORKSPACE: Partial<Record<UserGroupId, string>> = {
   'costa rica': 'costa_rica',
   'papua new guinea': 'papua_new_guinea',
   'ssf-aruna': 'coastal_fisheries_indonesia',

@@ -1,4 +1,4 @@
-import type { Color, Layer, LayersList } from '@deck.gl/core'
+import type { Color, DefaultProps } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import type { TileLayerProps } from '@deck.gl/geo-layers'
 
@@ -6,10 +6,12 @@ import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import type { FourwingsFootprintTileLayerProps } from './footprint/fourwings-footprint.types'
 import { FourwingsFootprintTileLayer } from './footprint/FourwingsFootprintTileLayer'
-import type {
-  FourwingsChunk,
-  FourwingsHeatmapStaticLayerProps,
-  FourwingsHeatmapTileLayerProps,
+import {
+  FourwingsAggregationOperation,
+  type FourwingsChunk,
+  FourwingsComparisonMode,
+  type FourwingsHeatmapStaticLayerProps,
+  type FourwingsHeatmapTileLayerProps,
 } from './heatmap/fourwings-heatmap.types'
 import {
   getResolutionByVisualizationMode,
@@ -44,8 +46,25 @@ export type FourwingsLayerProps = Omit<
   highlightedFeatures?: FourwingsPickingObject[]
 }
 
+type AnyFourwingsLayer =
+  | FourwingsPositionsTileLayer
+  | FourwingsHeatmapTileLayer
+  | FourwingsFootprintTileLayer
+  | FourwingsHeatmapStaticLayer
+
+
+const defaultProps: DefaultProps<FourwingsLayerProps> = {
+  comparisonMode: FourwingsComparisonMode.Compare,
+  aggregationOperation: FourwingsAggregationOperation.Sum,
+}
+
 export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLayerProps> {
   static layerName = 'FourwingsLayer'
+  static defaultProps = defaultProps
+
+  get cacheHash(): string {
+    return (this.getSubLayers() as AnyFourwingsLayer[])?.map((layer) => layer.cacheHash).join('-')
+  }
 
   get isHeatmapVisualizationMode(): boolean {
     return (
@@ -55,7 +74,15 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
     )
   }
 
-  renderLayers(): Layer<Record<string, unknown>> | LayersList {
+  get debounceTime() {
+    return this.getLayer()?.debounceTime || 0
+  }
+
+  forceUpdate() {
+    this.getLayer()?.forceUpdate?.()
+  }
+
+  renderLayers(): AnyFourwingsLayer {
     const visualizationMode = this.getMode()
     const resolution = getResolutionByVisualizationMode(visualizationMode)
     if (visualizationMode === POSITIONS_ID) {
@@ -131,7 +158,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getAggregationOperation() {
-    return this.props.aggregationOperation
+    return this.props.aggregationOperation!
   }
 
   getChunk() {

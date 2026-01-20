@@ -84,15 +84,12 @@ export default function ReportActivity() {
   const layersTimeseriesFiltered = useReportFilteredTimeSeries()
   const layersTimeseriesErrors = useReportTimeSeriesErrors()
 
-  const hasError = layersTimeseriesErrors?.length ? layersTimeseriesErrors?.[0] !== '' : false
-  const hasNoData = !layersTimeseriesFiltered || layersTimeseriesFiltered.length === 0
-  const isInitialLoad = loading || hasNoData
-  const showSelectors =
-    !isInitialLoad && layersTimeseriesFiltered !== undefined && layersTimeseriesFiltered.length > 0
-  const isEmptyData =
-    !isInitialLoad && layersTimeseriesFiltered?.length
-      ? layersTimeseriesFiltered.every((data) => data?.timeseries?.length === 0)
-      : false
+  // Simplified loading states
+  const hasError = layersTimeseriesErrors?.some((error) => error !== '')
+  const hasData = layersTimeseriesFiltered?.length > 0
+  const isInitialLoad = loading || !hasData
+  const isEmptyData = hasData && layersTimeseriesFiltered.every((data) => !data?.timeseries?.length)
+  const showSelectors = !isInitialLoad
   const isDatasetComparison = reportActivityGraph === REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON
 
   const GraphElement = useMemo(() => {

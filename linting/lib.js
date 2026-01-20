@@ -1,5 +1,6 @@
 // import { includeIgnoreFile } from '@eslint/compat'
 import eslint from '@eslint/js'
+import { defineConfig } from 'eslint/config'
 import prettierConfig from 'eslint-config-prettier'
 import importPlugin from 'eslint-plugin-import'
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y'
@@ -64,6 +65,8 @@ export const config = {
   rules: {
     ...reactPlugin.configs['jsx-runtime'].rules,
     ...reactHooksPlugin.configs.recommended.rules,
+    'react-hooks/preserve-manual-memoization': 'warn',
+    'react-hooks/set-state-in-effect': 'warn',
     'import/default': 0,
     'import/no-unresolved': 0,
     'import/no-named-as-default': 0,
@@ -122,6 +125,7 @@ export const config = {
     '@typescript-eslint/no-explicit-any': 0,
     '@typescript-eslint/camelcase': 0,
     '@typescript-eslint/no-empty-function': 0,
+    '@typescript-eslint/no-empty-object-type': 1,
     '@typescript-eslint/ban-ts-comment': 'warn',
     'jsx-a11y/no-autofocus': 1,
     'jsx-a11y/click-events-have-key-events': 0,
@@ -132,4 +136,4 @@ export const config = {
   },
 }
 
-export default tseslint.config(config)
+export default defineConfig([config])

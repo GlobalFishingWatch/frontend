@@ -9,13 +9,12 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "assets": [],
-        "compiler": "swc",
-        "format": ["esm", "cjs"],
+        "compiler": "tsc",
+        "format": ["esm"],
         "main": "libs/ocean-areas/src/index.ts",
         "outputPath": "dist/libs/ocean-areas",
         "project": "libs/ocean-areas/package.json",
-        "tsConfig": "libs/ocean-areas/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false
+        "tsConfig": "libs/ocean-areas/tsconfig.lib.json"
       }
     },
     "publish": {

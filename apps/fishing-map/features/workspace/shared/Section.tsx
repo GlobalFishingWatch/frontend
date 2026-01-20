@@ -1,12 +1,14 @@
 import type { JSX } from 'react'
 import { useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
 
 import type { DataviewCategory } from '@globalfishingwatch/api-types'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
+import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 
 import { selectCollapsedSections } from '../workspace.selectors'
@@ -19,6 +21,7 @@ interface SectionProps {
   hasVisibleDataviews: boolean
   children: JSX.Element | JSX.Element[]
   headerOptions: JSX.Element | JSX.Element[] | null
+  className?: string
 }
 
 function Section({
@@ -27,10 +30,13 @@ function Section({
   hasVisibleDataviews,
   children,
   headerOptions,
+  className,
 }: SectionProps): React.ReactElement<any> {
+  const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const collapsedSections = useSelector(selectCollapsedSections)
-  const collapsed = collapsedSections.includes(id)
+  const screenshotModalOpen = useSelector(selectScreenshotModalOpen)
+  const collapsed = screenshotModalOpen ? false : collapsedSections.includes(id)
 
   const onCollapse = useCallback(() => {
     const newCollapsedSections = collapsed
@@ -40,28 +46,46 @@ function Section({
   }, [collapsed, collapsedSections, dispatchQueryParams, id])
 
   return (
-    <div
-      className={cx(styles.container, {
-        'print-hidden': !hasVisibleDataviews,
-        [styles.containerCollapsed]: collapsed,
-        [styles.containerExpanded]: !collapsed,
-      })}
+    <section
+      className={cx(
+        styles.container,
+        {
+          'print-hidden': !hasVisibleDataviews,
+          [styles.containerCollapsed]: collapsed,
+          [styles.containerExpanded]: !collapsed,
+        },
+        className
+      )}
+      {...(collapsed && { onClick: onCollapse, role: 'button', tabIndex: 0 })}
     >
       <div className={cx(styles.header, 'print-hidden')}>
-        <span className={styles.sectionTitle} onClick={onCollapse}>
-          {title}
-        </span>
-        <IconButton
-          icon={collapsed ? 'section-expand' : 'section-collapse'}
-          type="default"
-          size="small"
-          className={cx({ [styles.collapseButton]: !collapsed })}
-          onClick={onCollapse}
-        />
+        <Tooltip content={collapsed ? t('common.expandSection') : ''} placement="top-start">
+          <h2 className={styles.sectionTitle}>{title}</h2>
+        </Tooltip>
+        {collapsed ? (
+          <IconButton
+            key="expand"
+            tooltip={t('common.expandSection')}
+            icon={'section-expand'}
+            type="default"
+            size="medium"
+            onClick={onCollapse}
+          />
+        ) : (
+          <IconButton
+            key="collapse"
+            tooltip={t('common.collapseSection')}
+            icon={'section-collapse'}
+            type="default"
+            size="medium"
+            className={styles.collapseButton}
+            onClick={onCollapse}
+          />
+        )}
         {headerOptions}
       </div>
-      <div className={styles.content}>{children} </div>
-    </div>
+      {!collapsed && children}
+    </section>
   )
 }
 

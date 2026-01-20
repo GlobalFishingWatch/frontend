@@ -1,27 +1,30 @@
 {
   "name": "pbf-decoders",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/pbf-decoders/src",
+  "sourceRoot": "libs/pbf-decoders",
   "projectType": "library",
   "targets": {
     "dist": {
-      "executor": "@nx/rollup:rollup",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
+        "outputPath": "dist/libs/pbf-decoders",
+        "main": "libs/pbf-decoders/index.ts",
+        "tsConfig": "libs/pbf-decoders/tsconfig.lib.json",
         "assets": [
           {
-            "glob": "libs/pbf-decoders/decoders",
-            "input": ".",
+            "input": "libs/pbf-decoders",
+            "glob": "package.json",
             "output": "."
-          }
+          },
+          {
+            "input": "libs/pbf-decoders",
+            "glob": "README.md",
+            "output": "."
+          },
+          { "glob": "**/*", "input": "libs/pbf-decoders/decoders", "output": "decoders" }
         ],
-        "compiler": "swc",
-        "format": ["esm", "cjs"],
-        "main": "libs/pbf-decoders/index.ts",
-        "outputPath": "dist/libs/pbf-decoders",
-        "project": "libs/pbf-decoders/package.json",
-        "tsConfig": "libs/pbf-decoders/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false
+        "rootDir": "libs/pbf-decoders"
       }
     },
     "publish": {

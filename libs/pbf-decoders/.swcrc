@@ -18,12 +18,14 @@
     "type": "es6"
   },
   "sourceMaps": true,
+  "inputSourceMap": false,
   "exclude": [
     "jest.config.ts",
     ".*\\.spec.tsx?$",
     ".*\\.test.tsx?$",
     "./src/jest-setup.ts$",
     "./**/jest-setup.ts$",
-    ".*.js$"
+    ".*\\.spec.jsx?$",
+    ".*\\.test.jsx?$"
   ]
 }

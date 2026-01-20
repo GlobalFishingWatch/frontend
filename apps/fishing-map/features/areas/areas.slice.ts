@@ -44,7 +44,12 @@ export interface Area<Geometry = AreaGeometry> {
 }
 export interface DatasetAreaDetail {
   status: AsyncReducerStatus
-  data: Area
+  data: Area | null
+}
+
+export const initialDatasetAreaDetail: DatasetAreaDetail = {
+  status: AsyncReducerStatus.Idle,
+  data: null,
 }
 
 type DatasetAreas = {
@@ -295,10 +300,7 @@ const areasSlice = createSlice({
     resetAreaDetail: (state, action: PayloadAction<{ datasetId: string; areaId: string }>) => {
       const { datasetId, areaId } = action.payload
       if (state[datasetId]?.detail?.[areaId]) {
-        state[datasetId].detail[areaId] = {
-          status: AsyncReducerStatus.Idle,
-          data: {} as Area,
-        }
+        state[datasetId].detail[areaId] = { ...initialDatasetAreaDetail }
       }
     },
   },
@@ -324,7 +326,7 @@ const areasSlice = createSlice({
       const { datasetId, areaId } = action.meta.arg as FetchAreaDetailThunkParam
       state[datasetId].detail[areaId] = {
         status: AsyncReducerStatus.Finished,
-        data: { ...state[datasetId].detail[areaId].data, ...action.payload },
+        data: { ...(state[datasetId].detail[areaId].data || ({} as Area)), ...action.payload },
       }
     })
     builder.addCase(fetchAreaDetailThunk.rejected, (state, action) => {
@@ -379,7 +381,7 @@ export const selectDatasetAreaStatus = memoize(
 )
 export const selectDatasetAreaDetail = memoize(
   ({ datasetId, areaId }: { datasetId: string; areaId: string }) =>
-    createSelector([selectDatasetAreaById(datasetId)], (area): Area => {
+    createSelector([selectDatasetAreaById(datasetId)], (area): Area | null => {
       return area?.detail?.[areaId]?.data
     })
 )

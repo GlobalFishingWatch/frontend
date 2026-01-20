@@ -91,10 +91,7 @@ export const useHeatmapActivityGraph = () => {
         const viewportData = instance?.getViewportData?.()
         setFourwingsPositionsData(viewportData as FourwingsPositionFeature[])
       } else {
-        const viewportData = instance?.getViewportData?.({
-          onlyValuesAndDates: true,
-          sampleData: instance.props.aggregationOperation === 'avg',
-        })
+        const viewportData = instance?.getViewportData?.({ onlyValuesAndDates: true })
         setFourwingsHeatmapData(viewportData as [number[], number[]][][])
       }
     }
