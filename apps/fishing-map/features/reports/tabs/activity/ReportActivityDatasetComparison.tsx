@@ -140,7 +140,6 @@ const ReportActivityDatasetComparison = () => {
     const newDataviewInstances = (urlDataviewInstances || []).filter(
       (dv) => dv.id !== comparisonDatasets?.compare
     )
-
     newDataviewInstances.push({
       id: dataviewID,
       origin: 'comparison',
@@ -157,6 +156,9 @@ const ReportActivityDatasetComparison = () => {
         payload: locationPayload,
         query: {
           ...locationQuery,
+          reportCategory:
+            locationQuery.reportCategory ||
+            reportDataviews.find((dataview) => dataview.id === comparisonDatasets?.main)?.category,
           reportComparisonDataviewIds: {
             main: comparisonDatasets?.main || mainDatasetOptions[0]?.id,
             compare: dataviewID,
