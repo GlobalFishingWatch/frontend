@@ -17,6 +17,7 @@ import { groupDatasetsByGeometryType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { BATHYMETRY_CONTOUR_DATAVIEW_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectDebugOptions } from 'features/debug/debug.slice'
+import { t } from 'features/i18n/i18n'
 import LayerLibraryItem from 'features/layer-library/LayerLibraryItem'
 import LayerLibraryUserPanel from 'features/layer-library/LayerLibraryUserPanel'
 import {
@@ -35,8 +36,7 @@ type UserSubcategory = DataviewCategory | 'bigQuery'
 
 export const resolveLibraryLayers = (
   dataviews: Dataview<any, DataviewCategory>[],
-  experimentalLayers: boolean,
-  t: any
+  experimentalLayers: boolean
 ): LibraryLayer[] => {
   const layers = LIBRARY_LAYERS.flatMap((layer) => {
     const dataview = dataviews.find((d) => d.slug === layer.dataviewId)
@@ -93,8 +93,8 @@ const LayerLibrary: FC = () => {
   const dataviews = useSelector(selectAllDataviews)
 
   const layersResolved: LibraryLayer[] = useMemo(
-    () => resolveLibraryLayers(dataviews, debugOptions.experimentalLayers, t),
-    [dataviews, debugOptions.experimentalLayers, t]
+    () => resolveLibraryLayers(dataviews, debugOptions.experimentalLayers),
+    [dataviews, debugOptions.experimentalLayers]
   )
 
   const uniqCategories = useMemo(() => {

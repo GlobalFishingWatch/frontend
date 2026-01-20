@@ -378,10 +378,6 @@ export function getComparisonMode(
 }
 
 const DATAVIEW_GROUPS_CONFIG = [
-  {
-    key: 'comparisonDataviews' as const,
-    test: isComparisonDataview,
-  },
   { key: 'activityDataviews' as const, test: isActivityDataview },
   { key: 'detectionDataviews' as const, test: isDetectionsDataview },
   { key: 'environmentalDataviews' as const, test: isEnvironmentalDataview },
@@ -393,6 +389,10 @@ const DATAVIEW_GROUPS_CONFIG = [
   {
     key: 'contextDataviews' as const,
     test: isAnyContextDataview,
+  },
+  {
+    key: 'comparisonDataviews' as const,
+    test: isComparisonDataview,
   },
 ]
 

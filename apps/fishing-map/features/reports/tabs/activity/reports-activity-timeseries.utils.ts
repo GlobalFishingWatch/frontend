@@ -65,11 +65,11 @@ export const fourwingsFeaturesToTimeseries = (
   return filteredFeatures.map(({ contained, overlapping }) => {
     const featureToTimeseries: ReportGraphProps = {
       interval,
-      sublayers: sublayers.map((sublayer) => ({
-        id: sublayer.id,
+      sublayers: (sublayers || [])?.map((sublayer) => ({
+        id: sublayer?.id,
         legend: {
-          color: sublayer.color || PRIMARY_BLUE_COLOR,
-          unit: sublayer.unit,
+          color: sublayer?.color || PRIMARY_BLUE_COLOR,
+          unit: sublayer?.unit,
         },
       })),
       timeseries: [],

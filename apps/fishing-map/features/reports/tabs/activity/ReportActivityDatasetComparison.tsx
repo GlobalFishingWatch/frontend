@@ -55,8 +55,8 @@ const ReportActivityDatasetComparison = () => {
   const allDatasets = useSelector(selectAllDatasets)
 
   const allLayersResolved = useMemo(() => {
-    return resolveLibraryLayers(allDataviews, false, t)
-  }, [allDataviews, t])
+    return resolveLibraryLayers(allDataviews, false)
+  }, [allDataviews])
 
   const layersResolved = useMemo(() => {
     const reportCategory = reportDataviews[0]?.category
