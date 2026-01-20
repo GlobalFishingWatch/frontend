@@ -180,6 +180,7 @@ function AreaReportSearch({ className }: { className?: string }) {
       setAreasMatching([])
     }
   }
+  // eslint-disable-next-line react-hooks/refs
   const inputProps = getInputProps({ ref: inputRef })
 
   const handleKeyDown: KeyboardEventHandler = (e) => {
@@ -197,6 +198,7 @@ function AreaReportSearch({ className }: { className?: string }) {
       className={cx(
         styles.inputContainer,
         { [styles.open]: isOpen && areasMatching.length > 0 },
+        'print-hidden',
         className
       )}
     >

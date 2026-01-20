@@ -1,6 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import type { ChangeEvent, FC } from 'react'
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -13,11 +12,7 @@ import { InputText, Spinner } from '@globalfishingwatch/ui-components'
 import { PATH_BASENAME } from 'data/config'
 import type { LibraryLayer } from 'data/layer-library'
 import { LIBRARY_LAYERS } from 'data/layer-library'
-import {
-  BATHYMETRY_CONTOUR_DATAVIEW_SLUG,
-  CURRENTS_DATAVIEW_SLUG,
-  WINDS_DATAVIEW_SLUG,
-} from 'data/workspaces'
+import { BATHYMETRY_CONTOUR_DATAVIEW_SLUG } from 'data/workspaces'
 import { groupDatasetsByGeometryType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { BATHYMETRY_CONTOUR_DATAVIEW_PREFIX } from 'features/dataviews/dataviews.utils'
@@ -80,7 +75,6 @@ export const resolveLibraryLayers = (
 const LayerLibrary: FC = () => {
   const { t, ready } = useTranslation(['translations', 'layer-library'])
   const [searchQuery, setSearchQuery] = useState('')
-  const [categoryElements, setCategoryElements] = useState<HTMLElement[]>([])
   const initialCategory = useSelector(selectLayerLibraryModal)
   const layerLibraryUniqueCategory = useSelector(selectLayerLibraryUniqueCategory)
   const debugOptions = useSelector(selectDebugOptions)
@@ -90,6 +84,7 @@ const LayerLibrary: FC = () => {
     initialCategory || DataviewCategory.Activity
   )
   const [currentSubcategory, setCurrentSubcategory] = useState<UserSubcategory | null>(null)
+  const categoryElementsRef = useRef<HTMLElement[]>([])
   const userDatasets = useSelector(selectUserDatasets)
   const userGeometries = useMemo(() => {
     return groupDatasetsByGeometryType(userDatasets)
@@ -107,8 +102,13 @@ const LayerLibrary: FC = () => {
       const layerResolved = layersResolved.find(({ category }) => category === initialCategory)
       return layerResolved ? [layerResolved.category] : []
     }
-    return uniq(layersResolved.map(({ category }) => category))
-  }, [layersResolved])
+    const categories = uniq(layersResolved.map(({ category }) => category))
+    const eventsIndex = categories.indexOf(DataviewCategory.Events)
+    if (eventsIndex !== -1) {
+      categories.splice(eventsIndex + 1, 0, DataviewCategory.VesselGroups)
+    }
+    return categories
+  }, [layersResolved, layerLibraryUniqueCategory, initialCategory])
 
   const extendedCategories = useMemo(() => {
     if (layerLibraryUniqueCategory) {
@@ -122,13 +122,12 @@ const LayerLibrary: FC = () => {
 
     return [
       ...uniqCategories.map((category) => ({ category, subcategories: [] })),
-      { category: DataviewCategory.VesselGroups, subcategories: [] },
       {
         category: DataviewCategory.User,
         subcategories: userSubcategories,
       },
     ]
-  }, [uniqCategories, userGeometries])
+  }, [uniqCategories, userGeometries, layerLibraryUniqueCategory])
 
   const allCategories = useMemo(() => {
     return extendedCategories.map(({ category }) => category)
@@ -157,7 +156,7 @@ const LayerLibrary: FC = () => {
   )
 
   useEffect(() => {
-    const categoryElements = extendedCategories.flatMap(({ category, subcategories }) => {
+    categoryElementsRef.current = extendedCategories.flatMap(({ category, subcategories }) => {
       const mainElement = document.getElementById(category)
       const subcategoryElements = subcategories
         .map((subcat) => document.getElementById(subcat))
@@ -167,12 +166,10 @@ const LayerLibrary: FC = () => {
         (element): element is HTMLElement => element !== null
       )
     })
-    setCategoryElements(categoryElements)
 
     if (currentCategory) {
       scrollToCategory({ category: currentCategory, smooth: false })
     }
-    // Running only when categoryElements changes as listening to currentCategory blocks the scroll
   }, [extendedCategories])
 
   const filteredLayers = useMemo(
@@ -205,22 +202,18 @@ const LayerLibrary: FC = () => {
     [filteredLayers, uniqCategories]
   )
 
-  const onInputChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setSearchQuery(e.target.value)
-      categoryElements[0]?.scrollIntoView({
-        behavior: 'smooth',
-      })
-    },
-    [categoryElements]
-  )
+  const onInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+    categoryElementsRef.current[0]?.scrollIntoView({
+      behavior: 'smooth',
+    })
+  }, [])
 
   const onLayerListScroll = useCallback(
     (e: React.UIEvent<HTMLElement>) => {
-      if (!categoryElements.length) return
+      if (!categoryElementsRef.current.length) return
 
       const target = e.target as HTMLElement
-
       const topViewport = target.clientHeight / 5
       let newCategory = currentCategory
       let newSubcategory: UserSubcategory | null = null
@@ -248,7 +241,7 @@ const LayerLibrary: FC = () => {
       setCurrentCategory(newCategory)
       setCurrentSubcategory(newSubcategory)
     },
-    [categoryElements, currentCategory]
+    [currentCategory, extendedCategories]
   )
 
   const onCategoryClick = useCallback(
@@ -335,11 +328,12 @@ const LayerLibrary: FC = () => {
                   <LayerLibraryItem key={layer.id} layer={layer} highlightedText={searchQuery} />
                 )
               })}
+              {category === DataviewCategory.Events &&
+                allCategories.includes(DataviewCategory.VesselGroups) && (
+                  <LayerLibraryVesselGroupPanel searchQuery={searchQuery} />
+                )}
             </Fragment>
           ))}
-          {allCategories.includes(DataviewCategory.VesselGroups) && (
-            <LayerLibraryVesselGroupPanel searchQuery={searchQuery} />
-          )}
           {allCategories.includes(DataviewCategory.User) && (
             <LayerLibraryUserPanel searchQuery={searchQuery} />
           )}
