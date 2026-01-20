@@ -50,6 +50,9 @@ export const getDataviewAvailableIntervals = (
   dataview: UrlDataviewInstance | ResolvedFourwingsDataviewInstance,
   defaultIntervals = FOURWINGS_INTERVALS_ORDER
 ): FourwingsInterval[] => {
+  if (dataview.config?.type === DataviewType.HeatmapStatic) {
+    return []
+  }
   const allDatasets = dataview.datasets?.length
     ? dataview.datasets
     : (((dataview as ResolvedFourwingsDataviewInstance)?.config?.sublayers || [])?.flatMap(
