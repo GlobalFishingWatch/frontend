@@ -172,7 +172,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
         return true
       })
     }
-    return visibleDataviews || []
+    return visibleDataviews
   }
 )
 

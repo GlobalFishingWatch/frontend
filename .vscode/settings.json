@@ -100,7 +100,8 @@
     "**/.next": true,
     "**/.nx": true,
     "**/.turbo": true,
-    "**/coverage": true
+    "**/coverage": true,
+    "**/workers": true
   },
   "eslint.useFlatConfig": true,
   "nxConsole.generateAiAgentRules": true

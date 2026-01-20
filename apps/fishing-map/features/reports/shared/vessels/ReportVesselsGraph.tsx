@@ -83,9 +83,11 @@ const ReportBarTooltip = (props: any) => {
                 return null
               }
               if (payload.name === OTHERS_CATEGORY_LABEL && payload.others) {
+                // eslint-disable-next-line react-hooks/immutability
                 otherLabelCounted = true
-                const top = payload.others.slice(0, MAX_CATEGORIES)
-                const restValue = payload.others
+                const top = (payload.others || []).slice(0, MAX_CATEGORIES)
+                const restValue = (payload.others || [])
+                  .slice(MAX_CATEGORIES)
                   .slice(MAX_CATEGORIES)
                   .reduce((acc: number, curr: { value: number }) => {
                     return acc + curr.value
