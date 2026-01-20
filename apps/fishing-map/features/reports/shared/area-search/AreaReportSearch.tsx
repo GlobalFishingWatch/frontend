@@ -197,6 +197,7 @@ function AreaReportSearch({ className }: { className?: string }) {
       className={cx(
         styles.inputContainer,
         { [styles.open]: isOpen && areasMatching.length > 0 },
+        'print-hidden',
         className
       )}
     >

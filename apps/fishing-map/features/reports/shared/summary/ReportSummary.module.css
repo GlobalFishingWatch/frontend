@@ -53,9 +53,3 @@
 .sticky button {
   display: none;
 }
-
-@media print {
-  .addLayerButton {
-    display: none;
-  }
-}

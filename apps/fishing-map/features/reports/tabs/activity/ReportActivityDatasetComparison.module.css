@@ -43,8 +43,4 @@
   .printableTitle {
     display: ruby-text;
   }
-
-  .selectorsRow {
-    display: none;
-  }
 }

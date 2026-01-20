@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
@@ -168,7 +169,7 @@ const ReportActivityDatasetComparison = () => {
 
   return (
     <>
-      <div className={styles.selectorsRow}>
+      <div className={cx(styles.selectorsRow, 'print-hidden')}>
         <Select
           options={mainDatasetOptions}
           onSelect={onMainSelect}

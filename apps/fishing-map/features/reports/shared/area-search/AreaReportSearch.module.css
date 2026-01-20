@@ -80,9 +80,3 @@
 .result:not(:last-child) {
   border-bottom: var(--border);
 }
-
-@media print {
-  .inputContainer {
-    display: none;
-  }
-}
