@@ -60,7 +60,7 @@ export const getCellTimeseries = (
   let startFrame = 0
   let endFrame = 0
   let indexInCell = 0
-  let subLayerIndex = 0
+  let subLayerIndex = buffersLength.findIndex((length) => length > 0)
   let subLayerBreak = buffersLength[subLayerIndex]
   const end = pbf.readPackedEnd()
 
