@@ -36,6 +36,7 @@ function EventsLayerSection(): React.ReactElement<any> | null {
 
   const onToggleLayer = useCallback(
     (dataview: UrlDataviewInstance) => () => {
+      dispatch(setModalOpen({ id: 'typeform', open: true }))
       const isVisible = dataview?.config?.visible ?? false
       const action = isVisible ? 'disable' : 'enable'
       trackEvent({
