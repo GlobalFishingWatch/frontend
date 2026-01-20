@@ -180,7 +180,8 @@ function AreaReportSearch({ className }: { className?: string }) {
       setAreasMatching([])
     }
   }
-  const inputProps = getInputProps()
+  // eslint-disable-next-line react-hooks/refs
+  const inputProps = getInputProps({ ref: inputRef })
 
   const handleKeyDown: KeyboardEventHandler = (e) => {
     if (e.key === 'Escape') {
@@ -197,13 +198,13 @@ function AreaReportSearch({ className }: { className?: string }) {
       className={cx(
         styles.inputContainer,
         { [styles.open]: isOpen && areasMatching.length > 0 },
+        'print-hidden',
         className
       )}
     >
       <div className={styles.comboContainer}>
         <InputText
           {...inputProps}
-          ref={inputRef}
           className={styles.input}
           placeholder={t('map.search')}
           onBlur={onInputBlur}
