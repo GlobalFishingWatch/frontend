@@ -180,7 +180,7 @@ function AreaReportSearch({ className }: { className?: string }) {
       setAreasMatching([])
     }
   }
-  const inputProps = getInputProps({ ref: inputRef })
+  const inputProps = getInputProps()
 
   const handleKeyDown: KeyboardEventHandler = (e) => {
     if (e.key === 'Escape') {
@@ -203,6 +203,7 @@ function AreaReportSearch({ className }: { className?: string }) {
       <div className={styles.comboContainer}>
         <InputText
           {...inputProps}
+          ref={inputRef}
           className={styles.input}
           placeholder={t('map.search')}
           onBlur={onInputBlur}

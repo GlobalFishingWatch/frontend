@@ -221,9 +221,7 @@ export default function Report() {
       ) : reportCategory === ReportCategory.Others ? (
         <ReportOthers />
       ) : (
-        <div>
-          <ReportActivity />
-        </div>
+        <ReportActivity />
       )}
     </Fragment>
   )
