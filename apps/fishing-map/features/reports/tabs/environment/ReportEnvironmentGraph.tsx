@@ -69,7 +69,8 @@ function ReportEnvironmentGraph({
   const unit = dataset?.unit
 
   const timeseries = Array.isArray(data) ? data[0]?.timeseries : data?.timeseries
-  const isEmptyData = !timeseries || (Array.isArray(timeseries) && timeseries.length === 0)
+  const isEmptyData =
+    data !== undefined && (!timeseries || (Array.isArray(timeseries) && timeseries.length === 0))
   const isHeatmapVector = isHeatmapVectorsDataview(dataview)
 
   return (

@@ -113,7 +113,9 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
             )
           : 0
     }
-    feature.aggregatedValues[0] = value
+    if (Array.isArray(feature.aggregatedValues)) {
+      feature.aggregatedValues[0] = value
+    }
 
     const { minVisibleValue, maxVisibleValue } = this.props
     if (
