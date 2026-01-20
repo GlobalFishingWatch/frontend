@@ -326,6 +326,21 @@ interface Resources {
         speed: 'speed'
       }
     }
+    'private-global-gap-ais-off-events': {
+      description: 'GAPS Events'
+      name: 'GAPS Events. (AIS)'
+      schema: {
+        duration: {
+          enum: {
+            '2': '2'
+            '48': '48'
+          }
+          keyword: 'duration'
+        }
+        is_closed: 'is_closed'
+        next_port_id: 'next_port_id'
+      }
+    }
     'private-global-other-vessels': {
       description: 'Other vessels from AIS'
       name: 'AIS (Other Vessels)'
@@ -1278,7 +1293,7 @@ interface Resources {
       name: 'Chlorophyll-a concentration'
     }
     'public-global-currents-vo': {
-      description: 'Currents northward component'
+      description: "<h2>Overview</h2>\n<ul>\n<li>Ocean currents are the movement of seawater driven by wind, temperature, salinity, tides, and Earth’s rotation. Ocean currents regulate climate and transport heat, nutrients, and marine species. This dataset shows global ocean surface currents, including speed and direction, providing insight into large-scale circulation patterns</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00016'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00016.</a></li>"
       name: 'Currents'
     }
     'public-global-encounters-events': {
@@ -1695,8 +1710,8 @@ interface Resources {
       name: 'Sea surface temperature'
     }
     'public-global-winds-vo': {
-      description: 'Winds northward component'
-      name: 'Winds'
+      description: "<h2>Overview</h2>\n<ul>\n<li>Wind is the movement of air across the Earth’s surface and plays an important role in shaping weather and ocean conditions. Surface winds help drive ocean circulation and influence mixing at the ocean surface. This dataset shows global wind speed and direction over the ocean.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://cds.climate.copernicus.eu/datasets/derived-era5-single-levels-daily-statistics?tab=overview'>Copernicus Climate Change Service, Climate Data Store, (2024): ERA5 post-processed daily-statistics on single levels from 1940 to present. Copernicus Climate Change Service (C3S) Climate Data Store (CDS), DOI: 10.24381/cds.4991cf48</a></li>"
+      name: 'Wind'
     }
     'public-graticules': {
       description: "Grids or graticules of latitude and longitude at 1, 5, 10 and 30° intervals depending on the zoom level of the map (Source: <a href='https://www.naturalearthdata.com/downloads/110m-physical-vectors/110m-graticules/'_blank'>Natural Earth</a>)."

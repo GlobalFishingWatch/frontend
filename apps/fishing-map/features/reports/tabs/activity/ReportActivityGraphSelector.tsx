@@ -116,11 +116,14 @@ export default function ReportActivityGraphSelector({
     : options[0]
 
   return (
-    <Select
-      options={options}
-      selectedOption={selectedOption}
-      onSelect={onSelect}
-      containerClassName={styles.select}
-    />
+    <>
+      <p className={styles.printableTitle}>{selectedOption?.label}</p>
+      <Select
+        options={options}
+        selectedOption={selectedOption}
+        onSelect={onSelect}
+        containerClassName={styles.select}
+      />
+    </>
   )
 }

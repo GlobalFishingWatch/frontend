@@ -34,3 +34,17 @@
 .select {
   max-width: calc(50% - 1rem);
 }
+
+.printableTitle {
+  display: none;
+}
+
+@media print {
+  .printableTitle {
+    display: ruby-text;
+  }
+
+  .selectorsRow {
+    display: none;
+  }
+}

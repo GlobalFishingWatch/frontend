@@ -167,22 +167,29 @@ const ReportActivityDatasetComparison = () => {
   }
 
   return (
-    <div className={styles.selectorsRow}>
-      <Select
-        options={mainDatasetOptions}
-        onSelect={onMainSelect}
-        selectedOption={selectedMainDataset}
-        disabled={mainDatasetOptions.length <= 1}
-        containerClassName={styles.select}
-      />
-      <Select
-        options={layerOptions}
-        selectedOption={selectedComparisonDataset}
-        onSelect={onCompareSelect}
-        containerClassName={styles.select}
-        placeholder={t('translations:analysis.selectDatasetPlaceholder')}
-      />
-    </div>
+    <>
+      <div className={styles.selectorsRow}>
+        <Select
+          options={mainDatasetOptions}
+          onSelect={onMainSelect}
+          selectedOption={selectedMainDataset}
+          disabled={mainDatasetOptions.length <= 1}
+          containerClassName={styles.select}
+        />
+        <Select
+          options={layerOptions}
+          selectedOption={selectedComparisonDataset}
+          onSelect={onCompareSelect}
+          containerClassName={styles.select}
+          placeholder={t('translations:analysis.selectDatasetPlaceholder')}
+        />
+      </div>
+      <p className={styles.printableTitle}>
+        {t('translations:analysis.printComparisonSummary')}
+        {selectedMainDataset?.label} {t('translations:common.and')}{' '}
+        {selectedComparisonDataset?.label}
+      </p>
+    </>
   )
 }
 
