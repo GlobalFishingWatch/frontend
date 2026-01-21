@@ -31,10 +31,15 @@ export enum DatasetStatus {
   Importing = 'importing',
 }
 
+export enum DatasetDocumentationStatusTypes {
+  Active = 'Active',
+  Deprecated = 'Deprecated',
+}
+
 export type DatasetDocumentation = {
   type?: string
   enable?: boolean
-  status?: 'Active' | 'Deprecated'
+  status?: DatasetDocumentationStatusTypes
   queries?: string[]
   provider?: string
 }

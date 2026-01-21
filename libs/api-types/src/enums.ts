@@ -1,5 +1,5 @@
-import type { ApiDataset } from './datasets'
-import { DatasetCategory, DatasetStatus, DatasetSubCategory, DatasetTypes } from './datasets'
+import type { ApiDataset} from './datasets';
+import { DatasetCategory, DatasetDocumentationStatusTypes , DatasetStatus, DatasetSubCategory, DatasetTypes } from './datasets'
 import type {
   AggregationFunction,
   BulkDownloadFormat,
@@ -24,6 +24,10 @@ export const DATASET_SUB_CATEGORIES: ApiDataset['subcategory'][] = [
   ...Object.values(DatasetSubCategory),
   ...Object.values(EventTypes),
 ]
+
+export const DATASET_DOCUMENTATION_STATUS_TYPES: DatasetDocumentationStatusTypes[] = Object.values(
+  DatasetDocumentationStatusTypes
+)
 
 export const DATASET_CONFIGURATION_FILTERS: (keyof ApiDataset['filters'])[] = [
   'fourwings',
