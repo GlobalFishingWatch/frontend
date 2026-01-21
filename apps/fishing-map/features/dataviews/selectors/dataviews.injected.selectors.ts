@@ -9,11 +9,13 @@ import {
 } from '@globalfishingwatch/dataviews-client'
 import type { ColorRampId } from '@globalfishingwatch/deck-layers'
 
+import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
 import {
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   PORTS_FOOTPRINT_DATAVIEW_SLUG,
 } from 'data/workspaces'
+import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import {
   dataviewHasVesselGroupId,
   getHasVesselProfileInstance,
@@ -33,6 +35,7 @@ import {
 import { REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS } from 'features/reports/reports.config'
 import {
   selectReportCategorySelector,
+  selectReportComparisonDataviewIds,
   selectReportEventsGraph,
 } from 'features/reports/reports.config.selectors'
 import type {
@@ -284,8 +287,18 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
 
 // Inject the dataview instance for the events graph report by area
 export const selectAreaReportDataviewInstancesInjected = createSelector(
-  [selectReportCategorySelector, selectReportEventsGraph],
-  (reportCategory, reportEventsGraph): UrlDataviewInstance[] | undefined => {
+  [
+    selectReportCategorySelector,
+    selectReportEventsGraph,
+    selectAllDataviews,
+    selectReportComparisonDataviewIds,
+  ],
+  (
+    reportCategory,
+    reportEventsGraph,
+    allDataviews,
+    reportComparisonDataviewIds
+  ): UrlDataviewInstance[] | undefined => {
     const dataviewInstancesInjected = [] as UrlDataviewInstance[]
     const reportAreaDataviewId =
       REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS[
@@ -301,6 +314,30 @@ export const selectAreaReportDataviewInstancesInjected = createSelector(
       }
       dataviewInstancesInjected.push(contextDataviewInstance)
     }
+    if (reportComparisonDataviewIds) {
+      const baseDataview = allDataviews.find(
+        (dataview) =>
+          dataview.slug ===
+          reportComparisonDataviewIds.compare?.split(LAYER_LIBRARY_ID_SEPARATOR)[0]
+      )
+      if (baseDataview) {
+        const dataviewID = reportComparisonDataviewIds.compare
+        const { category, slug, datasetsConfig, config } = baseDataview
+        const compareDataviewInstance = {
+          id: dataviewID,
+          origin: 'comparison',
+          category,
+          dataviewId: slug,
+          datasetsConfig,
+          config: {
+            ...config,
+            visible: true,
+          },
+        } as UrlDataviewInstance
+        dataviewInstancesInjected.push(compareDataviewInstance)
+      }
+    }
+
     return dataviewInstancesInjected
   }
 )

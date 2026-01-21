@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { CartesianGrid, ComposedChart, Legend, Line, Tooltip, XAxis, YAxis } from 'recharts'
 
-import { useIsDeckLayersLoading } from '@globalfishingwatch/deck-layer-composer'
 import { getContrastSafeColor } from '@globalfishingwatch/responsive-visualizations'
 
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
@@ -96,7 +95,6 @@ const ReportActivityDatasetComparisonGraph = ({
 }: ReportActivityDatasetComparisonProps) => {
   const { t } = useTranslation()
   const comparisonDatasets = useSelector(selectReportComparisonDataviewIds)
-  const mapLoading = useIsDeckLayersLoading()
 
   const filteredData = useMemo(() => {
     return filterDataBySublayer(data, comparisonDatasets?.main, comparisonDatasets?.compare)
@@ -126,10 +124,6 @@ const ReportActivityDatasetComparisonGraph = ({
         {t('analysis.noDataByArea')}
       </ReportActivityPlaceholder>
     )
-  }
-
-  if (mapLoading) {
-    return <ReportActivityPlaceholder showHeader={false} loading />
   }
 
   if (!dataFormated || !xDomain || !dataFormated[0]) {

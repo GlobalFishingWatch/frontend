@@ -378,11 +378,26 @@ export function getComparisonMode(
 }
 
 const DATAVIEW_GROUPS_CONFIG = [
-  { key: 'activityDataviews' as const, test: isActivityDataview },
-  { key: 'detectionDataviews' as const, test: isDetectionsDataview },
-  { key: 'environmentalDataviews' as const, test: isEnvironmentalDataview },
-  { key: 'staticDataviews' as const, test: isHeatmapStaticDataview },
-  { key: 'vectorsDataviews' as const, test: isHeatmapVectorsDataview },
+  {
+    key: 'activityDataviews' as const,
+    test: (d: UrlDataviewInstance) => isActivityDataview(d) && !isComparisonDataview(d),
+  },
+  {
+    key: 'detectionDataviews' as const,
+    test: (d: UrlDataviewInstance) => isDetectionsDataview(d) && !isComparisonDataview(d),
+  },
+  {
+    key: 'environmentalDataviews' as const,
+    test: (d: UrlDataviewInstance) => isEnvironmentalDataview(d) && !isComparisonDataview(d),
+  },
+  {
+    key: 'staticDataviews' as const,
+    test: (d: UrlDataviewInstance) => isHeatmapStaticDataview(d) && !isComparisonDataview(d),
+  },
+  {
+    key: 'vectorsDataviews' as const,
+    test: (d: UrlDataviewInstance) => isHeatmapVectorsDataview(d) && !isComparisonDataview(d),
+  },
   { key: 'vesselGroupDataview' as const, test: isVesselGroupDataview },
   { key: 'userHeatmapDataviews' as const, test: isUserHeatmapDataview },
   { key: 'vesselTrackDataviews' as const, test: isTrackDataview },

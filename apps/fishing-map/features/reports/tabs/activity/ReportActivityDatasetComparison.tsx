@@ -8,23 +8,17 @@ import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
 import { DATASET_COMPARISON_SUFFIX, LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
-import { useAppDispatch } from 'features/app/app.hooks'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { resolveLibraryLayers } from 'features/layer-library/LayerLibrary'
+import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import { isSupportedComparisonDataview } from 'features/reports/report-area/area-reports.utils'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
 import { selectReportSubCategory } from 'features/reports/reports.selectors'
-import { updateLocation } from 'routes/routes.actions'
 import { useLocationConnect } from 'routes/routes.hook'
-import {
-  selectLocationPayload,
-  selectLocationQuery,
-  selectLocationType,
-  selectUrlDataviewInstances,
-} from 'routes/routes.selectors'
+import { selectLocationQuery } from 'routes/routes.selectors'
 
 import styles from './ReportActivityDatasetComparison.module.css'
 
@@ -41,18 +35,13 @@ const createDatasetOption = (id: string, label: string, color?: string): SelectO
 const ReportActivityDatasetComparison = () => {
   const { t, ready: i18nReady } = useTranslation(['layer-library', 'translations'])
   const { dispatchQueryParams } = useLocationConnect()
-  const dispatch = useAppDispatch()
-
   const reportDataviews = useSelector(selectActiveReportDataviews)
   const reportSubcategory = useSelector(selectReportSubCategory)
-  const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
-  const locationPayload = useSelector(selectLocationPayload)
   const locationQuery = useSelector(selectLocationQuery)
-  const locationType = useSelector(selectLocationType)
-
   const comparisonDatasets = useSelector(selectReportComparisonDataviewIds)
   const allDataviews = useSelector(selectAllDataviews)
   const allDatasets = useSelector(selectAllDatasets)
+  const fitAreaInViewport = useFitAreaInViewport()
 
   const allLayersResolved = useMemo(() => {
     if (!i18nReady) {
@@ -80,7 +69,7 @@ const ReportActivityDatasetComparison = () => {
 
   const layerOptions = useMemo(() => {
     return layersResolved.map((layer) =>
-      createDatasetOption(layer?.id, layer?.name || '', layer.config?.color)
+      createDatasetOption(layer?.dataviewId as string, layer?.name || '', layer.config?.color)
     )
   }, [layersResolved])
 
@@ -134,42 +123,17 @@ const ReportActivityDatasetComparison = () => {
   }
 
   const onCompareSelect = (option: SelectOption) => {
-    const layerConfig = layersResolved.find((layer) => layer.id === option.id)
-    if (!layerConfig) return
-
     const dataviewID = `${option.id}${LAYER_LIBRARY_ID_SEPARATOR}${DATASET_COMPARISON_SUFFIX}`
-    const { category, dataviewId, datasetsConfig, config } = layerConfig
-
-    const newDataviewInstances = (urlDataviewInstances || []).filter(
-      (dv) => dv.id !== comparisonDatasets?.compare
-    )
-    newDataviewInstances.push({
-      id: dataviewID,
-      origin: 'comparison',
-      category,
-      dataviewId,
-      datasetsConfig,
-      config: {
-        ...config,
-        visible: true,
+    dispatchQueryParams({
+      reportCategory:
+        locationQuery.reportCategory ||
+        reportDataviews.find((dataview) => dataview.id === comparisonDatasets?.main)?.category,
+      reportComparisonDataviewIds: {
+        main: comparisonDatasets?.main || mainDatasetOptions[0]?.id,
+        compare: dataviewID,
       },
     })
-    dispatch(
-      updateLocation(locationType, {
-        payload: locationPayload,
-        query: {
-          ...locationQuery,
-          reportCategory:
-            locationQuery.reportCategory ||
-            reportDataviews.find((dataview) => dataview.id === comparisonDatasets?.main)?.category,
-          reportComparisonDataviewIds: {
-            main: comparisonDatasets?.main || mainDatasetOptions[0]?.id,
-            compare: dataviewID,
-          },
-          dataviewInstances: newDataviewInstances,
-        },
-      })
-    )
+    fitAreaInViewport()
   }
 
   return (
