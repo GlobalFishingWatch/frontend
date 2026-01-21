@@ -102,7 +102,11 @@ const SUPPORTED_COMPARISON_CATEGORIES = [
   DataviewCategory.Detections,
   DataviewCategory.Environment,
 ]
-const SUPPORTED_COMPARISON_TYPES = [DataviewType.HeatmapAnimated, DataviewType.FourwingsTileCluster]
+const SUPPORTED_COMPARISON_TYPES = [
+  DataviewType.HeatmapAnimated,
+  DataviewType.FourwingsVector,
+  DataviewType.FourwingsTileCluster,
+]
 
 export const isContextDataviewReportSupported = (dataview: Dataview | UrlDataviewInstance) => {
   if (dataview.category !== DataviewCategory.Context) {

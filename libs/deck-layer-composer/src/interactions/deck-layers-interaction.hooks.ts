@@ -11,5 +11,10 @@ export const useMapHoverInteraction = () => {
 
 export const useSetMapHoverInteraction = () => {
   const setDeckInteraction = useSetAtom(deckHoverInteractionAtom)
-  return useCallback(setDeckInteraction, [setDeckInteraction])
+  return useCallback(
+    (interaction: InteractionEvent) => {
+      setDeckInteraction(interaction)
+    },
+    [setDeckInteraction]
+  )
 }

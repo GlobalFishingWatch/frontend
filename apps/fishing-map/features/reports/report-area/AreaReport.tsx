@@ -24,12 +24,14 @@ import {
   selectReportAreaStatus,
 } from 'features/reports/report-area/area-reports.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
+import { REPORT_ACTIVITY_GRAPH_EVOLUTION } from 'features/reports/reports.config'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import {
   resetReportData,
   selectReportVesselsStatus,
 } from 'features/reports/tabs/activity/reports-activity.slice'
+import { useSetReportTimeComparison } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
 import {
   useTimebarEnvironmentConnect,
   useTimebarVisualisationConnect,
@@ -75,6 +77,7 @@ export default function Report() {
   const reportAreaError = useSelector(selectReportAreaStatus) === AsyncReducerStatus.Error
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
+  const { resetReportTimecomparison } = useSetReportTimeComparison()
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
   const reportArea = useSelector(selectReportArea)
   const hasReportBuffer = useSelector(selectHasReportBuffer)
@@ -174,7 +177,10 @@ export default function Report() {
       dispatchQueryParams({
         reportCategory: option.id,
         reportVesselPage: 0,
+        reportActivityGraph: REPORT_ACTIVITY_GRAPH_EVOLUTION,
+        reportComparisonDataviewIds: undefined,
       })
+      resetReportTimecomparison()
 
       fitAreaInViewport()
       trackEvent({
@@ -221,9 +227,7 @@ export default function Report() {
       ) : reportCategory === ReportCategory.Others ? (
         <ReportOthers />
       ) : (
-        <div>
-          <ReportActivity />
-        </div>
+        <ReportActivity />
       )}
     </Fragment>
   )

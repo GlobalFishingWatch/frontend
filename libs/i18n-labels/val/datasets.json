@@ -1092,6 +1092,10 @@
     "name": "crwdns65979:0crwdne65979:0",
     "description": "crwdns65981:0crwdne65981:0"
   },
+  "public-ebsas": {
+    "name": "crwdns108892:0crwdne108892:0",
+    "description": "crwdns108894:0crwdne108894:0"
+  },
   "public-ecuador-fishing-effort": {
     "name": "crwdns65983:0crwdne65983:0",
     "description": "crwdns106596:0crwdne106596:0",
@@ -1709,7 +1713,7 @@
     "description": "crwdns66607:0crwdne66607:0"
   },
   "public-global-winds-vo": {
-    "name": "crwdns108520:0crwdne108520:0",
+    "name": "crwdns109000:0crwdne109000:0",
     "description": "crwdns108522:0crwdne108522:0"
   },
   "public-graticules": {
@@ -1731,6 +1735,10 @@
   "public-high-seas-pockets": {
     "name": "crwdns66625:0crwdne66625:0",
     "description": "crwdns93808:0crwdne93808:0"
+  },
+  "public-immas": {
+    "name": "crwdns108948:0crwdne108948:0",
+    "description": "crwdns108950:0crwdne108950:0"
   },
   "public-indian-ocean-isa-claim-areas": {
     "name": "crwdns108538:0crwdne108538:0",

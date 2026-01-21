@@ -26,8 +26,6 @@ import { removeDatasetVersion, resolveEndpoint } from '@globalfishingwatch/datas
 
 import type { UrlDataviewInstance } from './types'
 
-export const DATASET_COMPARISON_SUFFIX = 'dataset-comparison'
-
 export function isActivityDataview(dataview: UrlDataviewInstance) {
   return (
     dataview.category === DataviewCategory.Activity &&
@@ -42,6 +40,8 @@ export function isDetectionsDataview(dataview: UrlDataviewInstance) {
   )
 }
 
+// keep it sync with '@globalfishingwatch/deck-layer-composer' but needed to duplicate to avoid circular dependency
+const DATASET_COMPARISON_SUFFIX = 'dataset-comparison' as const
 export function isComparisonDataview(dataview: UrlDataviewInstance) {
   return dataview.origin === 'comparison' && dataview.id?.endsWith(DATASET_COMPARISON_SUFFIX)
 }

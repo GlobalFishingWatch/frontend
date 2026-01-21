@@ -1,17 +1,18 @@
-const { join } = require('path')
-const withNx = require('@nx/next/plugins/with-nx')
-// const CircularDependencyPlugin = require('circular-dependency-plugin')
+import { dirname, join } from 'path'
+import { fileURLToPath } from 'url'
+
+import withNx from '@nx/next/plugins/with-nx.js'
+import process from 'node:process'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 const basePath = IS_PRODUCTION ? '/map' : ''
 
-/**
- * @type {import('@nx/next/plugins/with-nx').WithNxOptions}
- **/
+/** @type {import('@nx/next/plugins/with-nx').WithNxOptions} */
 const nextConfig = {
   async rewrites() {
     return [
-      // Rewrite everything to `pages/index`
       {
         source: '/:any*',
         destination: '/',
@@ -20,7 +21,6 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // Redirect everything in / root to basePath if defined
       ...(basePath !== ''
         ? [
             {
@@ -34,7 +34,7 @@ const nextConfig = {
     ]
   },
   nx: {},
-  webpack: function (config) {
+  webpack(config) {
     config.resolve.fallback = {
       ...config.resolve.fallback,
       child_process: false,
@@ -42,26 +42,10 @@ const nextConfig = {
       net: false,
       tls: false,
     }
-    // config.optimization.minimize = false
-    // config.plugins.push(
-    //   new CircularDependencyPlugin({
-    //     // exclude detection of files based on a RegExp
-    //     exclude: /node_modules/,
-    //     // add errors to webpack instead of warnings
-    //     failOnError: true,
-    //     // allow import cycles that include an asyncronous import,
-    //     // e.g. via import(/* webpackMode: "weak" */ './file.js')
-    //     allowAsyncCycles: true,
-    //     // set the current working directory for displaying module paths
-    //     cwd: process.cwd(),
-    //   })
-    // )
     return config
   },
-  // productionBrowserSourceMaps: true,
   basePath,
   productionBrowserSourceMaps: !IS_PRODUCTION,
-  // to deploy on a node server
   output: 'standalone',
   outputFileTracingRoot: join(__dirname, '../../'),
   experimental: {},
@@ -70,9 +54,9 @@ const nextConfig = {
 }
 
 const configWithNx = withNx(nextConfig)
-module.exports = async (...args) => {
+
+export default async (...args) => {
   return {
     ...(await configWithNx(...args)),
-    //...
   }
 }

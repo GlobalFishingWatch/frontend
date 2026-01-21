@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
@@ -116,11 +117,14 @@ export default function ReportActivityGraphSelector({
     : options[0]
 
   return (
-    <Select
-      options={options}
-      selectedOption={selectedOption}
-      onSelect={onSelect}
-      containerClassName={styles.select}
-    />
+    <>
+      <p className={styles.printableTitle}>{selectedOption?.label}</p>
+      <Select
+        options={options}
+        selectedOption={selectedOption}
+        onSelect={onSelect}
+        containerClassName={cx(styles.select, 'print-hidden')}
+      />
+    </>
   )
 }

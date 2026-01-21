@@ -11,7 +11,6 @@ import {
   FillColorBarOptions,
   IconButton,
   LineColorBarOptions,
-  TagList,
 } from '@globalfishingwatch/ui-components'
 
 import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'

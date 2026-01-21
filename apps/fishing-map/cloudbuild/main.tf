@@ -63,7 +63,8 @@ module "develop" {
     "NEXT_PUBLIC_USE_LOCAL_DATASETS=false",
     "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=false",
     "NEXT_PUBLIC_WORKSPACE_ENV=development",
-    "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366"
+    "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
+    "NEXT_PUBLIC_PIPE_DATASET_VERSION=4"
   ]
   set_env_vars = [
     "BASIC_AUTH=Restricted",
@@ -99,7 +100,8 @@ module "preview-dev" {
     "NEXT_PUBLIC_USE_LOCAL_DATASETS=true",
     "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=true",
     "NEXT_PUBLIC_WORKSPACE_ENV=development",
-    "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366"
+    "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
+    "NEXT_PUBLIC_PIPE_DATASET_VERSION=4"
   ]
   set_env_vars = [
     "BASIC_AUTH=Restricted",
@@ -126,14 +128,15 @@ module "random-forest" {
     trigger = "branch"
   }
   set_env_vars_build = [
-    "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
+    "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.staging.globalfishingwatch.org",
     "NEXT_PUBLIC_API_VERSION=v3",
     "NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
     "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
     "NEXT_PUBLIC_USE_LOCAL_DATASETS=true",
     "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=true",
     "NEXT_PUBLIC_WORKSPACE_ENV=development",
-    "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366"
+    "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
+    "NEXT_PUBLIC_PIPE_DATASET_VERSION=4"
   ]
   set_env_vars = [
     "BASIC_AUTH=Restricted",
@@ -166,7 +169,8 @@ module "staging" {
     "NEXT_PUBLIC_USE_LOCAL_DATASETS=false",
     "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=false",
     "NEXT_PUBLIC_WORKSPACE_ENV=staging",
-    "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366"
+    "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
+    "NEXT_PUBLIC_PIPE_DATASET_VERSION=4"
   ]
   set_env_vars = [
     "BASIC_AUTH=Restricted",
@@ -201,7 +205,8 @@ module "production" {
     "NEXT_PUBLIC_USE_LOCAL_DATASETS=false",
     "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=false",
     "NEXT_PUBLIC_WORKSPACE_ENV=production",
-    "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366"
+    "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
+    "NEXT_PUBLIC_PIPE_DATASET_VERSION=3"
   ]
   set_env_vars = [
     "BASIC_AUTH=off"

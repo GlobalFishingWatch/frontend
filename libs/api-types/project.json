@@ -8,21 +8,10 @@
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/api-types",
+        "outputPath": "libs/api-types/dist",
+        "generatePackageJson": false,
         "main": "libs/api-types/src/index.ts",
         "tsConfig": "libs/api-types/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/api-types",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/api-types",
-            "glob": "README.md",
-            "output": "."
-          }
-        ],
         "rootDir": "libs/api-types/src"
       }
     },
@@ -30,7 +19,7 @@
       "executor": "@nx/js:release-publish",
       "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "dist/libs/api-types"
+        "packageRoot": "libs/api-types"
       }
     }
   },

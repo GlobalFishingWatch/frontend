@@ -40,10 +40,22 @@ const getPathContainers = (
     .x((d) => overallScale((d as any).data.date))
     .y0((d) => {
       const y0 = y(d[0])
+      const y1 = y(d[1])
+      const value = d[1] - d[0]
+      const height = y1 - y0
+      if (value > 1 && height < 1) {
+        return y0 - (1 - height) / 2
+      }
       return numSubLayers === 1 && y0 < 0 ? Math.min(y0, -1) : y0
     })
     .y1((d) => {
+      const y0 = y(d[0])
       const y1 = y(d[1])
+      const value = d[1] - d[0]
+      const height = y1 - y0
+      if (value > 1 && height < 1) {
+        return y1 + (1 - height) / 2
+      }
       return numSubLayers === 1 && y1 > 0 ? Math.max(y1, 1) : y1
     })
     .curve(curveStepAfter)
@@ -80,8 +92,7 @@ const StackedActivity = ({
   const subLayers = useMemo(() => getSubLayers(timeseries), [timeseries])
   const hasSublayers = subLayers?.length > 0
   const pathContainers = useMemo(() => {
-    const pathContainers = getPathContainers(timeseries, subLayers, graphHeight, overallScale)
-    return pathContainers
+    return getPathContainers(timeseries, subLayers, graphHeight, overallScale)
   }, [timeseries, graphHeight, overallScale, subLayers])
 
   const middleY = graphHeight / 2 - MARGIN_BOTTOM / 2

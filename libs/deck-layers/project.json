@@ -8,21 +8,10 @@
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/deck-layers",
+        "outputPath": "libs/deck-layers/dist",
+        "generatePackageJson": false,
         "main": "libs/deck-layers/src/index.ts",
         "tsConfig": "libs/deck-layers/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/deck-layers",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/deck-layers",
-            "glob": "README.md",
-            "output": "."
-          }
-        ],
         "rootDir": "libs/deck-layers/src"
       }
     },
@@ -30,7 +19,7 @@
       "executor": "@nx/js:release-publish",
       "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "dist/libs/deck-layers"
+        "packageRoot": "libs/deck-layers"
       }
     }
   },

@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 import { FpsView } from 'react-fps'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -8,7 +8,7 @@ import type { Workspace } from '@globalfishingwatch/api-types'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
 
 import menuBgImage from 'assets/images/menubg.jpg'
-import { FIT_BOUNDS_REPORT_PADDING, ROOT_DOM_ELEMENT } from 'data/config'
+import { ROOT_DOM_ELEMENT } from 'data/config'
 import { DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { useDatasetDrag } from 'features/app/drag-dataset.hooks'
 import ErrorBoundary from 'features/app/ErrorBoundary'
@@ -16,11 +16,8 @@ import { useFeatureFlagsToast } from 'features/debug/debug.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { useUserLanguageUpdate } from 'features/i18n/i18n.hooks'
-import { useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import AppModals from 'features/modals/Modals'
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
-import { selectReportAreaBounds } from 'features/reports/reports.config.selectors'
 import Sidebar from 'features/sidebar/Sidebar'
 import { useFetchTrackCorrections } from 'features/track-correction/track-correction.hooks'
 import { selectIsUserLogged } from 'features/user/selectors/user.selectors'
@@ -93,7 +90,6 @@ function App() {
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const vesselLocation = useSelector(selectIsVesselLocation)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
-  const reportAreaBounds = useSelector(selectReportAreaBounds)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
@@ -101,9 +97,6 @@ function App() {
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
   }, [])
-
-  const fitMapBounds = useMapFitBounds()
-  const setMapCoordinates = useSetMapCoordinates()
 
   const locationType = useSelector(selectLocationType)
   const currentWorkspaceId = useSelector(selectCurrentWorkspaceId)
@@ -165,17 +158,6 @@ function App() {
     hasWorkspaceIdChanged,
     hasWorkspaceReportIdChanged,
   ])
-
-  useLayoutEffect(() => {
-    if (isAreaReportLocation) {
-      if (reportAreaBounds) {
-        fitMapBounds(reportAreaBounds, { padding: FIT_BOUNDS_REPORT_PADDING })
-      } else {
-        setMapCoordinates({ latitude: 0, longitude: 0, zoom: 0 })
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   useEffect(() => {
     dispatch(fetchUserThunk({ guest: false }))

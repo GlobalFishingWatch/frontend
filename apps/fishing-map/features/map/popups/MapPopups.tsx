@@ -8,6 +8,7 @@ import PopupWrapper from 'features/map/popups/PopupWrapper'
 
 import { selectClickedEvent } from '../map.slice'
 import { useClickedEventConnect } from '../map-interactions.hooks'
+import { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 
 import PopupByCategory from './PopupByCategory'
 
@@ -26,6 +27,18 @@ function MapPopups() {
     dispatchClickedEvent(null)
     cancelPendingInteractionRequests()
   }, [cancelPendingInteractionRequests, dispatchClickedEvent])
+
+  const onClickOutside = useCallback(
+    (e?: MouseEvent) => {
+      const mapContainer =
+        typeof document !== 'undefined' ? document.getElementById(MAP_CONTAINER_ID) : null
+      if (e && !mapContainer?.contains(e.target as Node)) {
+        dispatchClickedEvent(null)
+        cancelPendingInteractionRequests()
+      }
+    },
+    [cancelPendingInteractionRequests, dispatchClickedEvent]
+  )
 
   return (
     <Fragment>
@@ -49,6 +62,7 @@ function MapPopups() {
           longitude={clickInteraction.longitude}
           className={styles.click}
           onClose={closePopup}
+          onClickOutside={onClickOutside}
         >
           <PopupByCategory interaction={clickInteraction} type="click" />
         </PopupWrapper>
