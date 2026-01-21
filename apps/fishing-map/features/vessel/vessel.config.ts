@@ -4,7 +4,7 @@ import {
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 
-import { PIPE_DATASET_VERSION } from 'data/workspaces'
+import { PIPE_DATASET_ID } from 'data/workspaces.config'
 import type I18nNamespaces from 'features/i18n/i18n.types'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 
@@ -12,7 +12,7 @@ import type { VesselProfileState } from './vessel.types'
 
 export const DEFAULT_VESSEL_IDENTITY_DATASET = 'public-global-vessel-identity' as const
 export const DEFAULT_VESSEL_IDENTITY_ID =
-  `${DEFAULT_VESSEL_IDENTITY_DATASET}:${PIPE_DATASET_VERSION}` as const
+  `${DEFAULT_VESSEL_IDENTITY_DATASET}:${PIPE_DATASET_ID}` as const
 export const INCLUDES_RELATED_SELF_REPORTED_INFO_ID =
   'POTENTIAL_RELATED_SELF_REPORTED_INFO' as const
 export const CACHE_FALSE_PARAM = { id: 'cache', value: 'false' }
