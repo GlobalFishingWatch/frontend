@@ -1,12 +1,12 @@
 import { matchSorter } from 'match-sorter'
 
-import { DATASET_VERSION } from 'data/workspaces'
+import { PIPE_DATASET_VERSION } from 'data/workspaces.config'
 
 import type { PortParams } from '../types'
 
 import allPorts from './data/ports.json'
 
-const PORT_DATASET = `public-global-port-visits-events:v${DATASET_VERSION}.1`
+const PORT_DATASET = `public-global-port-visits-events:v${PIPE_DATASET_VERSION}.1`
 
 const ports = allPorts.filter((port) => port.name)
 
