@@ -127,7 +127,7 @@
     "material-react-table": "3.2.1",
     "memoize-one": "6.0.0",
     "mjolnir.js": "3.0.0",
-    "next": "^16.1.1",
+    "next": "16.1.1",
     "papaparse": "5.5.3",
     "pbf": "4.0.1",
     "protobufjs": "^8.0.0",
@@ -301,6 +301,14 @@
     "vitest-browser-react": "2.0.2"
   },
   "resolutions": {
+    "@jsonjoy.com/fs-core": "4.56.8",
+    "@jsonjoy.com/fs-fsa": "4.56.8",
+    "@jsonjoy.com/fs-node": "4.56.8",
+    "@jsonjoy.com/fs-node-builtins": "4.56.8",
+    "@jsonjoy.com/fs-node-to-fsa": "4.56.8",
+    "@jsonjoy.com/fs-node-utils": "4.56.8",
+    "@jsonjoy.com/fs-print": "4.56.8",
+    "@jsonjoy.com/fs-snapshot": "4.56.8",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "eslint-plugin-react": "7.37.5",
