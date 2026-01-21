@@ -50,7 +50,8 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
       },
       radiusUnits: 'pixels',
       getRadius: (d: any) => {
-        return d.type === EventTypes.Fishing ? 3 : 6
+        const size = d.type === EventTypes.Fishing ? 3 : 6
+        return highlightEventIds?.includes(d.id) ? size * 3 : size
       },
     }
 
@@ -67,6 +68,7 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
         updateTriggers: {
           getFillColor: [color, highlightEventIds],
           getFilterValue: [endTime, startTime],
+          getRadius: [highlightEventIds],
         },
       }),
     ]
@@ -92,6 +94,7 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
           updateTriggers: {
             getFillColor: [color, highlightEventIds],
             getFilterCategory: [highlightEventIds],
+            getRadius: [highlightEventIds],
           },
         })
       )
