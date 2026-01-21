@@ -2879,6 +2879,7 @@ __metadata:
     "@globalfishingwatch/api-types": "npm:^8.0.3"
     "@globalfishingwatch/data-transforms": "npm:^3.0.5"
     "@globalfishingwatch/datasets-client": "npm:^3.0.3"
+    "@globalfishingwatch/deck-layer-composer": "npm:0.1.13"
     "@nx/vite": "npm:22.x"
     "@reduxjs/toolkit": "npm:2.x"
     es-toolkit: "npm:1.x"
@@ -2893,7 +2894,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@globalfishingwatch/deck-layer-composer@workspace:*, @globalfishingwatch/deck-layer-composer@workspace:libs/deck-layer-composer":
+"@globalfishingwatch/deck-layer-composer@npm:0.1.13, @globalfishingwatch/deck-layer-composer@workspace:*, @globalfishingwatch/deck-layer-composer@workspace:libs/deck-layer-composer":
   version: 0.0.0-use.local
   resolution: "@globalfishingwatch/deck-layer-composer@workspace:libs/deck-layer-composer"
   dependencies:
