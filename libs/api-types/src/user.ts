@@ -74,7 +74,7 @@ export type UserGroupId =
   | 'palau'
   | 'costarica'
 
-export type UserGroup<T = UserGroupId> {
+export type UserGroup<T = UserGroupId> = {
   id: T
   name: string
   default: boolean
