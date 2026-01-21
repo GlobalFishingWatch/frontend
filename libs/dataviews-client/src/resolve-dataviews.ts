@@ -23,10 +23,9 @@ import {
 } from '@globalfishingwatch/api-types'
 import { isNumeric } from '@globalfishingwatch/data-transforms'
 import { removeDatasetVersion, resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/deck-layer-composer'
 
 import type { UrlDataviewInstance } from './types'
-
-export const DATASET_COMPARISON_SUFFIX = 'dataset-comparison'
 
 export function isActivityDataview(dataview: UrlDataviewInstance) {
   return (
