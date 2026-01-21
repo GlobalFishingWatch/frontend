@@ -7,8 +7,7 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   root: '.',
   cacheDir: '../../node_modules/.vite/apps/fishing-map',
-  // NOTE: this any is needed to prevent vite from complaining about the plugins array type, vite 6 fixes this but we need to stick to vite 7 for now due to nx compatibility
-  plugins: [react(), nxViteTsPaths()] as any,
+  plugins: [react(), nxViteTsPaths()],
   resolve: {
     alias: {
       data: path.resolve(__dirname, './data'),
@@ -26,6 +25,7 @@ export default defineConfig({
       hooks: path.resolve(__dirname, './hooks'),
     },
   },
+
   define: {
     'process.env.NEXT_PUBLIC_API_GATEWAY': JSON.stringify(process.env.NEXT_PUBLIC_API_GATEWAY),
   },
@@ -37,9 +37,9 @@ export default defineConfig({
       'vitest-example/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       '/apps/fishing-map/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
     ],
-    reporters: ['html', 'default'],
+    reporters: ['default'],
     coverage: {
-      reportsDirectory: 'coverage/apps/fishing-map',
+      reportsDirectory: 'test/coverage/apps/fishing-map',
       provider: 'istanbul',
     },
     setupFiles: './test/vitest.setup.ts',
