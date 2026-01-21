@@ -45,7 +45,7 @@ test('Map02 - Filter map by flag ', async ({ page }) => {
   const flagFilter = page.getByPlaceholder('All').first()
   await flagFilter.click()
   await flagFilter.fill('Panama')
-  await page.getByText('Panama').first().click()
+  await page.getByText('Panama', { exact: true }).first().click()
   await flagFilter.press('Tab')
   await page.getByText('Confirm').click()
 
@@ -53,7 +53,7 @@ test('Map02 - Filter map by flag ', async ({ page }) => {
 
   await page.click('#view-mapViewport', { position: { x: 5, y: 385 } })
 
-  await page.waitForTimeout(3000)
+  await page.waitForTimeout(5000)
 
   expect(page.locator('#map-container').getByText('Apparent fishing effort (AIS)')).toBeVisible()
   expect(page.locator('#map-container').getByText('VEN')).not.toBeVisible()

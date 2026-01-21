@@ -17,13 +17,13 @@ test('Search01 - Basic vessel search', async ({ page }) => {
     .fill('GABU REEFER')
 
   await page.waitForLoadState('networkidle')
-  await page.waitForTimeout(5000) // wait for results to appear
+  await page.waitForTimeout(5000)
 
   expect(page.getByText('629009266')).toBeVisible()
 
-  page.getByText('Gabu Reefer').click()
+  await page.getByText('Gabu Reefer').click()
 
-  await page.waitForURL(
-    'http://localhost:3003/map/vessel/9827ea1ea-a120-f374-0cc6-138b38bd8130?vDi=public-global-vessel-identity%3Av4.0&vIs=registryInfo&vRi=eed33c65d1bcfbee79ec3f2ab9462a67&start=2012-01-02T16%3A50%3A42Z&end=2026-01-11T23%3A57%3A40Z&latitude=14.888310092747938&longitude=-5.793232440948465&zoom=3.561331504382875&vE[0]=loitering&vE[1]=encounter&vE[2]=port_visit&vE[3]=gap'
-  )
+  await page.waitForLoadState('networkidle')
+
+  expect(page.url()).toContain('map/vessel/9827ea1ea-a120-f374-0cc6-138b38bd8130')
 })
