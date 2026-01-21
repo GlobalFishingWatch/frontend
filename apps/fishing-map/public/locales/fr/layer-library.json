@@ -29,6 +29,11 @@
     "moreInfoLink": "",
     "name": "ISA License Areas"
   },
+  "ebsas": {
+    "description": "EBSAs are areas of the ocean recognized for their unique ecological and/or biological features, such as essential habitats, food sources or breeding grounds for specific species.",
+    "moreInfoLink": "",
+    "name": "Ecologically or Biologically Significant Marine Areas (EBSAs)"
+  },
   "eez": {
     "description": "Les zones économiques exclusives (ZEE) s'étendent jusqu'à 200 milles nautiques de la côte d'un pays. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11.",
     "moreInfoLink": "",
@@ -78,6 +83,11 @@
     "description": "High Seas pockets are areas totally enclosed by EEZs that are beyond Exclusive Economic Zones (EEZ). These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
     "moreInfoLink": "https://www.marineregions.org/downloads.php",
     "name": "High seas pockets"
+  },
+  "immas": {
+    "description": "Important Marine Mammal Areas (IMMAs) are defined as discrete portions of habitat, important to marine mammal species, that have the potential to be delineated and managed for conservation.",
+    "moreInfoLink": "",
+    "name": "Important Marine Mammal Areas (IMMA)"
   },
   "loitering": {
     "description": "Un épisode de dérive se produit lorsqu'un navire dstinct présente un comportement indiquant une rencontre potentielle. La déive est estimée à l'aide des données du système d'identification automatique (AIS), notamment la vitesse du navire, le temps passé dans un endroit donné et la distance par rapport à la côte. La dérive se produit lorsqu'un navire se déplace à une vitesse moyenne inférieure à deux nœuds, tout en se trouvant à au moins 20 milles nautiques en moyenne de la côte. Pour réduire le bruit dans le portail des navires de transport, seuls les épisodes de dérive d'une durée supérieure à une heure sont affichés.",

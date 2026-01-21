@@ -146,7 +146,7 @@ export const useClickedEventConnect = () => {
       // get temporal grid clicked features and order them by sublayerindex
       const heatmapFeatures = (event.features as FourwingsHeatmapPickingObject[]).filter(
         (feature) => {
-          const isBigQueryFeature = feature.layerId.startsWith(BIG_QUERY_4WINGS_PREFIX)
+          const isBigQueryFeature = feature?.layerId?.startsWith(BIG_QUERY_4WINGS_PREFIX)
           if (isBigQueryFeature) {
             const dataset = activityDataviews.find((d) => d.id === feature.layerId)?.datasets?.[0]
             const isBigQueryFeatureWithVessels = dataset?.subcategory?.includes('interactive')

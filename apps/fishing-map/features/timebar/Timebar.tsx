@@ -27,10 +27,7 @@ import {
   selectTimebarGraph,
   selectTimebarVisualisation,
 } from 'features/app/selectors/app.timebar.selectors'
-import {
-  selectHasDeprecatedDataviewInstances,
-  selectHasVectorDataviews,
-} from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectHasVectorDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import Hint from 'features/help/Hint'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -192,7 +189,6 @@ const TimebarWrapper = () => {
   const hasVectorDataviews = useSelector(selectHasVectorDataviews)
   const isReportLocation = useSelector(selectIsAnyReportLocation)
   const latestAvailableDataDate = useSelector(selectLatestAvailableDataDate)
-  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const reportAreaLocation = useSelector(selectIsAnyAreaReportLocation)
   const fitAreaInViewport = useFitAreaInViewport()
   const dispatch = useAppDispatch()

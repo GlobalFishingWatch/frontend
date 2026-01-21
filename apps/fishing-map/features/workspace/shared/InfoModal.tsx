@@ -35,25 +35,23 @@ const InfoModal = ({
   onModalStateChange,
   showAllDatasets,
 }: InfoModalProps) => {
-  const { t } = useTranslation()
+  const { t, ready: i18nReady } = useTranslation()
   const [modalInfoOpen, setModalInfoOpen] = useState(false)
   const dataset = dataview.datasets?.[0]
   const isHeatmapVector = isHeatmapVectorsDataview(dataview)
   const options = useMemo(() => {
+    if (!i18nReady) return []
     const uniqDatasets = dataview.datasets ? uniqBy(dataview.datasets, (dataset) => dataset.id) : []
-    let vectorDatasetAdded = false // Vector dataviews needs two datasets to render the vector layer.
+    // Vector dataviews need two datasets to render the vector layer; we only show the first one with translations
+    const firstVectorDatasetIndex = isHeatmapVector
+      ? uniqDatasets.findIndex((d) => d.configuration?.translate === true)
+      : -1
+
     return uniqDatasets
-      .flatMap((dataset) => {
+      .flatMap((dataset, index) => {
         const labelString = getDatasetLabel(dataset)
-        if (isHeatmapVector) {
-          if (labelString !== dataset.id) {
-            if (vectorDatasetAdded) {
-              return []
-            }
-            vectorDatasetAdded = true
-          } else {
-            return []
-          }
+        if (isHeatmapVector && index !== firstVectorDatasetIndex) {
+          return []
         }
         if (dataview.config?.type === DataviewType.Track) {
           const datasetConfig = dataview.datasetsConfig?.find(
@@ -78,7 +76,7 @@ const InfoModal = ({
       })
       .sort((a, b) => a.labelString.localeCompare(b.labelString))
     // Updating options when t changes to ensure the content is updated on lang change
-  }, [dataview, showAllDatasets, isHeatmapVector])
+  }, [dataview, showAllDatasets, isHeatmapVector, i18nReady])
 
   const [activeTab, setActiveTab] = useState<SelectOption | undefined>(options?.[0])
   const handleClick = useCallback(
@@ -108,10 +106,9 @@ const InfoModal = ({
   if (datasetError) {
     tooltip = `${t('errors.uploadError')} - ${dataset?.importLogs}`
   }
-  const selectedDataset = useMemo(
-    () => dataview.datasets?.find((d) => d.id === activeTab?.id),
-    [dataview.datasets, activeTab]
-  )
+  const selectedDataset = useMemo(() => {
+    return dataview.datasets?.find((d) => d.id === activeTab?.id)
+  }, [dataview.datasets, activeTab])
 
   if (dataset?.configuration?.geometryType === 'draw') {
     return datasetImporting || datasetError ? (

@@ -59,7 +59,7 @@
   "typescript.suggest.autoImports": true,
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.suggest.completeFunctionCalls": true,
-  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.disableAutomaticTypeAcquisition": true,
   "editor.rulers": [140],
   "editor.formatOnSave": true, // auto format the file on each save
@@ -88,7 +88,8 @@
     "**/dist/**": true,
     "**/.nx/**": true,
     "**/.turbo/**": true,
-    "**/coverage/**": true
+    "**/coverage/**": true,
+    "**/*.tsbuildinfo": true
   },
   "search.exclude": {
     ".yarn": true,
@@ -100,7 +101,9 @@
     "**/.next": true,
     "**/.nx": true,
     "**/.turbo": true,
-    "**/coverage": true
+    "**/coverage": true,
+    "**/workers": true,
+    "**/*.tsbuildinfo": true
   },
   "eslint.useFlatConfig": true,
   "nxConsole.generateAiAgentRules": true

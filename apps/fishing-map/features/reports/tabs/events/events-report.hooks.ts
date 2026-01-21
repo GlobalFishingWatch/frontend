@@ -6,7 +6,7 @@ import { uniqBy } from 'es-toolkit'
 import { stringify } from 'qs'
 import { parseEventsFilters } from 'queries/report-events-stats-api'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
+import { API_VERSION, GFWAPI } from '@globalfishingwatch/api-client'
 import { type ApiEvent, type APIPagination, DatasetTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
@@ -100,7 +100,7 @@ export function useFetchEventReportGraphEvents() {
           limit: 1000,
           offset: 0,
         }
-        return GFWAPI.fetch<APIPagination<ApiEvent>>(`/v3/events?${stringify(params)}`)
+        return GFWAPI.fetch<APIPagination<ApiEvent>>(`/${API_VERSION}/events?${stringify(params)}`)
       })
       const settledPromises = await Promise.allSettled(promises)
       const data = settledPromises.flatMap((d, index) => {

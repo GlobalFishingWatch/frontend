@@ -65,12 +65,15 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     }
   }
 
-  get isLoaded(): boolean {
-    return super.isLoaded
-  }
-
   get cacheHash(): string {
     return this._getTileDataCacheKey()
+  }
+
+  forceUpdate() {
+    const layer = this.getLayerInstance()
+    if (layer) {
+      layer.setNeedsUpdate()
+    }
   }
 
   getError(): string {
@@ -246,7 +249,6 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     const { tilesCache } = this.state
     const { resolution = 'default' } = this.props
     const cacheKey = this._getTileDataCacheKey()
-    console.log('🚀 ~ renderLayers ~ cacheKey:', cacheKey)
 
     return new TileLayer(
       this.props,

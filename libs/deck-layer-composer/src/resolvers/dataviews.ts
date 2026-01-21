@@ -50,6 +50,9 @@ export const getDataviewAvailableIntervals = (
   dataview: UrlDataviewInstance | ResolvedFourwingsDataviewInstance,
   defaultIntervals = FOURWINGS_INTERVALS_ORDER
 ): FourwingsInterval[] => {
+  if (dataview.config?.type === DataviewType.HeatmapStatic) {
+    return []
+  }
   const allDatasets = dataview.datasets?.length
     ? dataview.datasets
     : (((dataview as ResolvedFourwingsDataviewInstance)?.config?.sublayers || [])?.flatMap(
@@ -375,10 +378,6 @@ export function getComparisonMode(
 }
 
 const DATAVIEW_GROUPS_CONFIG = [
-  {
-    key: 'comparisonDataviews' as const,
-    test: isComparisonDataview,
-  },
   { key: 'activityDataviews' as const, test: isActivityDataview },
   { key: 'detectionDataviews' as const, test: isDetectionsDataview },
   { key: 'environmentalDataviews' as const, test: isEnvironmentalDataview },
@@ -390,6 +389,10 @@ const DATAVIEW_GROUPS_CONFIG = [
   {
     key: 'contextDataviews' as const,
     test: isAnyContextDataview,
+  },
+  {
+    key: 'comparisonDataviews' as const,
+    test: isComparisonDataview,
   },
 ]
 

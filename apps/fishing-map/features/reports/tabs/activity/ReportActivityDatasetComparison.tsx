@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
@@ -30,15 +31,15 @@ import styles from './ReportActivityDatasetComparison.module.css'
 const createDatasetOption = (id: string, label: string, color?: string): SelectOption => ({
   id,
   label: (
-    <div className={styles.datasetOption}>
+    <p className={styles.datasetOption}>
       <span className={styles.dot} style={{ color }} />
       {label}
-    </div>
+    </p>
   ),
 })
 
 const ReportActivityDatasetComparison = () => {
-  const { t } = useTranslation(['layer-library', 'translations'])
+  const { t, ready: i18nReady } = useTranslation(['layer-library', 'translations'])
   const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useAppDispatch()
 
@@ -54,8 +55,11 @@ const ReportActivityDatasetComparison = () => {
   const allDatasets = useSelector(selectAllDatasets)
 
   const allLayersResolved = useMemo(() => {
-    return resolveLibraryLayers(allDataviews, false, t)
-  }, [allDataviews, t])
+    if (!i18nReady) {
+      return []
+    }
+    return resolveLibraryLayers(allDataviews, { experimentalLayers: false })
+  }, [allDataviews, i18nReady])
 
   const layersResolved = useMemo(() => {
     const reportCategory = reportDataviews[0]?.category
@@ -139,7 +143,6 @@ const ReportActivityDatasetComparison = () => {
     const newDataviewInstances = (urlDataviewInstances || []).filter(
       (dv) => dv.id !== comparisonDatasets?.compare
     )
-
     newDataviewInstances.push({
       id: dataviewID,
       origin: 'comparison',
@@ -156,6 +159,9 @@ const ReportActivityDatasetComparison = () => {
         payload: locationPayload,
         query: {
           ...locationQuery,
+          reportCategory:
+            locationQuery.reportCategory ||
+            reportDataviews.find((dataview) => dataview.id === comparisonDatasets?.main)?.category,
           reportComparisonDataviewIds: {
             main: comparisonDatasets?.main || mainDatasetOptions[0]?.id,
             compare: dataviewID,
@@ -167,22 +173,29 @@ const ReportActivityDatasetComparison = () => {
   }
 
   return (
-    <div className={styles.selectorsRow}>
-      <Select
-        options={mainDatasetOptions}
-        onSelect={onMainSelect}
-        selectedOption={selectedMainDataset}
-        disabled={mainDatasetOptions.length <= 1}
-        containerClassName={styles.select}
-      />
-      <Select
-        options={layerOptions}
-        selectedOption={selectedComparisonDataset}
-        onSelect={onCompareSelect}
-        containerClassName={styles.select}
-        placeholder={t('translations:analysis.selectDatasetPlaceholder')}
-      />
-    </div>
+    <>
+      <div className={cx(styles.selectorsRow, 'print-hidden')}>
+        <Select
+          options={mainDatasetOptions}
+          onSelect={onMainSelect}
+          selectedOption={selectedMainDataset}
+          disabled={mainDatasetOptions.length <= 1}
+          containerClassName={styles.select}
+        />
+        <Select
+          options={layerOptions}
+          selectedOption={selectedComparisonDataset}
+          onSelect={onCompareSelect}
+          containerClassName={styles.select}
+          placeholder={t('translations:analysis.selectDatasetPlaceholder')}
+        />
+      </div>
+      <p className={styles.printableTitle}>
+        {t('translations:analysis.printComparisonSummary')}
+        {selectedMainDataset?.label} {t('translations:common.and')}{' '}
+        {selectedComparisonDataset?.label}
+      </p>
+    </>
   )
 }
 

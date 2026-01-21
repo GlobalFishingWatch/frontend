@@ -87,12 +87,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
   state!: FourwingsPositionsTileLayerState
   viewportDirtyTimeout!: NodeJS.Timeout
 
-  get isLoaded(): boolean {
-    return super.isLoaded && !this.state.viewportDirty && this.state.viewportLoaded
-  }
-
   get cacheHash(): string {
-    return ''
+    if (!this.state) {
+      return ''
+    }
+    return `${this.state?.viewportDirty}|${this.viewportLoaded}`
   }
 
   get positions() {
@@ -102,6 +101,21 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
           filterIds.includes(p.properties.id as string)
         )
       : this.state.positions
+  }
+
+  get debounceTime(): number {
+    return this.props.debounceTime || 0
+  }
+
+  get viewportLoaded(): boolean {
+    return this.state?.viewportLoaded ?? false
+  }
+
+  forceUpdate() {
+    const layer = this.getLayerInstance()
+    if (layer) {
+      layer.setNeedsUpdate()
+    }
   }
 
   getError(): string {
@@ -202,6 +216,11 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
       visualizationMode: 'positions',
     }
     return { ...info, object }
+  }
+
+  getLayerInstance() {
+    const layer = this.getSubLayers()[0] as MVTLayer
+    return layer
   }
 
   _getColorRamp(positions: FourwingsPositionFeature[]) {

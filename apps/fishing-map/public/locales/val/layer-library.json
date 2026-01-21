@@ -29,6 +29,11 @@
     "moreInfoLink": "crwdns84223:0crwdne84223:0",
     "name": "crwdns84225:0crwdne84225:0"
   },
+  "ebsas": {
+    "description": "crwdns108986:0crwdne108986:0",
+    "moreInfoLink": "crwdns108988:0crwdne108988:0",
+    "name": "crwdns108990:0crwdne108990:0"
+  },
   "eez": {
     "description": "crwdns82496:0crwdne82496:0",
     "moreInfoLink": "crwdns82498:0crwdne82498:0",
@@ -78,6 +83,11 @@
     "description": "crwdns87870:0crwdne87870:0",
     "moreInfoLink": "crwdns87872:0crwdne87872:0",
     "name": "crwdns87884:0crwdne87884:0"
+  },
+  "immas": {
+    "description": "crwdns108992:0crwdne108992:0",
+    "moreInfoLink": "crwdns108994:0crwdne108994:0",
+    "name": "crwdns108996:0crwdne108996:0"
   },
   "loitering": {
     "description": "crwdns83784:0crwdne83784:0",
