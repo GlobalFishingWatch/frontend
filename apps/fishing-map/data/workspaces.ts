@@ -12,7 +12,7 @@ export const WORKSPACE_ENV =
   (process.env.NODE_ENV as WorkspaceEnv) ||
   'production'
 
-export const DATASET_VERSION = '3'
+export const DATASET_VERSION = '4'
 export const PIPE_DATASET_VERSION = `v${DATASET_VERSION}.0`
 
 export function getWorkspaceEnv(): WorkspaceEnv {
