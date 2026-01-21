@@ -4,22 +4,26 @@
   "description": "",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
-  "type": "module",
-  "module": "./index.js",
-  "types": "./src/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./src/index.d.ts",
-      "import": "./index.js"
-    }
-  },
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
   "dependencies": {
-    "@globalfishingwatch/api-types": "9.0.0-beta.1",
+    "@globalfishingwatch/api-types": "8.0.5",
     "@globalfishingwatch/pbf-decoders": "^3.0.5",
     "file-saver": "2.x",
     "lodash": "4.x",
