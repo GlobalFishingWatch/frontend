@@ -185,7 +185,6 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
 
   renderLayers() {
     const { layers, steps, stepsPickValue, pickable, maxZoom } = this.props
-    console.log('🚀 ~ renderLayers ~ layers:', layers)
 
     const highlightedFeatures = this._getHighlightedFeatures()
     const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined

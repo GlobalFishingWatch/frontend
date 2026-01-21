@@ -72,7 +72,10 @@ export abstract class UserBaseLayer<
   }
 
   _getHighlightedFeatures() {
-    return [...(this.props.highlightedFeatures || []), ...(this.state.highlightedFeatures || [])]
+    return [
+      ...(this.props.highlightedFeatures || []),
+      ...(this.state.highlightedFeatures || []),
+    ].filter(Boolean)
   }
 
   setHighlightedFeatures(highlightedFeatures: ContextFeature[]) {
