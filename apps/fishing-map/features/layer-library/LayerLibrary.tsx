@@ -36,7 +36,11 @@ type UserSubcategory = DataviewCategory | 'bigQuery'
 
 export const resolveLibraryLayers = (
   dataviews: Dataview<any, DataviewCategory>[],
-  experimentalLayers: boolean
+  {
+    experimentalLayers,
+  }: {
+    experimentalLayers: boolean
+  }
 ): LibraryLayer[] => {
   const layers = LIBRARY_LAYERS.flatMap((layer) => {
     const dataview = dataviews.find((d) => d.slug === layer.dataviewId)
@@ -73,7 +77,7 @@ export const resolveLibraryLayers = (
 }
 
 const LayerLibrary: FC = () => {
-  const { t, ready } = useTranslation(['translations', 'layer-library'])
+  const { t, ready: i18nReady } = useTranslation(['translations', 'layer-library'])
   const [searchQuery, setSearchQuery] = useState('')
   const initialCategory = useSelector(selectLayerLibraryModal)
   const layerLibraryUniqueCategory = useSelector(selectLayerLibraryUniqueCategory)
@@ -92,10 +96,14 @@ const LayerLibrary: FC = () => {
 
   const dataviews = useSelector(selectAllDataviews)
 
-  const layersResolved: LibraryLayer[] = useMemo(
-    () => resolveLibraryLayers(dataviews, debugOptions.experimentalLayers),
-    [dataviews, debugOptions.experimentalLayers]
-  )
+  const layersResolved: LibraryLayer[] = useMemo(() => {
+    if (!i18nReady) {
+      return []
+    }
+    return resolveLibraryLayers(dataviews, {
+      experimentalLayers: debugOptions.experimentalLayers,
+    })
+  }, [dataviews, debugOptions.experimentalLayers, i18nReady])
 
   const uniqCategories = useMemo(() => {
     if (layerLibraryUniqueCategory) {
@@ -266,12 +274,12 @@ const LayerLibrary: FC = () => {
             value={searchQuery || ''}
             className={styles.input}
             type="search"
-            disabled={!ready}
+            disabled={!i18nReady}
             placeholder={t('translations:search.title')}
           />
         </div>
         <div className={styles.categories}>
-          {ready &&
+          {i18nReady &&
             extendedCategories.map(({ category, subcategories }) => (
               <div key={category}>
                 <button
@@ -308,7 +316,7 @@ const LayerLibrary: FC = () => {
             ))}
         </div>
       </div>
-      {ready ? (
+      {i18nReady ? (
         <ul className={styles.layerList} onScroll={onLayerListScroll}>
           {uniqCategories.map((category) => (
             <Fragment key={category}>
