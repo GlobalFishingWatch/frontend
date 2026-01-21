@@ -270,7 +270,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }
 
   _getVesselEventLayers(): VesselEventsLayer[] {
-    const { visible, visibleEvents, events } = this.props
+    const { visible, visibleEvents, events, highlightEventIds } = this.props
     if (!visible) {
       return []
     }
@@ -293,6 +293,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           data: eventUrl.toString(),
           type,
           visible,
+          highlightEventIds,
           loadOptions: {
             ...getFetchLoadOptions(),
           },
