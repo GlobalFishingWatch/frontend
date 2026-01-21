@@ -26,13 +26,19 @@
 
 .selectorsRow {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   margin-top: var(--space-S);
 }
 
 .select {
-  width: calc(50% - 1rem);
+  max-width: calc(50% - 1rem);
+  min-width: 25rem;
+}
+
+.select:last-child {
+  margin-left: auto;
 }
 
 .printableTitle {
