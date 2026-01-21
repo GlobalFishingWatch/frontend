@@ -133,10 +133,9 @@ const nextConfig: NextConfig = {
     patchWasmModuleImport(config, options.isServer)
     return config
   },
-  // productionBrowserSourceMaps: true,
   basePath,
   reactStrictMode: true,
-  productionBrowserSourceMaps: true,
+  productionBrowserSourceMaps: !IS_PRODUCTION,
   // to deploy on a node server
   output: 'standalone',
   outputFileTracingRoot: join(__dirname, '../../'),
