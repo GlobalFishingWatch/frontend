@@ -19,7 +19,6 @@
   ],
   "dependencies": {
     "geojson": "0.x",
-    "react": "19.x",
     "tslib": "2.x"
   }
 }
