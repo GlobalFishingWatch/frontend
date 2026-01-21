@@ -4,32 +4,14 @@
   "sourceRoot": "libs/deck-loaders/src",
   "projectType": "library",
   "targets": {
-    "generate-version": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "node libs/deck-loaders/scripts/generate-version.mjs"
-      }
-    },
     "dist": {
       "executor": "@nx/js:tsc",
-      "dependsOn": ["generate-version"],
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/deck-loaders",
+        "outputPath": "libs/deck-loaders/dist",
+        "generatePackageJson": false,
         "main": "libs/deck-loaders/src/index.ts",
         "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/deck-loaders",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/deck-loaders",
-            "glob": "README.md",
-            "output": "."
-          }
-        ],
         "rootDir": "libs/deck-loaders/src"
       }
     },
@@ -38,8 +20,8 @@
       "options": {
         "commands": [
           "nx build:workers deck-loaders",
-          "rimraf dist/libs/deck-loaders/workers/libs",
-          "rimraf dist/libs/deck-loaders/workers/package.json"
+          "rimraf libs/deck-loaders/dist/workers/libs",
+          "rimraf libs/deck-loaders/dist/workers/package.json"
         ],
         "parallel": false
       }
@@ -50,9 +32,9 @@
       "options": {
         "main": "libs/deck-loaders/src/**/workers/**.ts",
         "esbuildOptions": {
-          "outdir": "dist/libs/deck-loaders/workers"
+          "outdir": "libs/deck-loaders/dist/workers"
         },
-        "outputPath": "dist/libs/deck-loaders/workers",
+        "outputPath": "libs/deck-loaders/dist/workers",
         "generateExportsField": true,
         "tsConfig": "libs/deck-loaders/tsconfig.workers.json",
         "watch": false,
@@ -67,9 +49,9 @@
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
+      "dependsOn": ["dist", "dist:workers"],
       "options": {
-        "packageRoot": "dist/libs/deck-loaders"
+        "packageRoot": "libs/deck-loaders"
       }
     }
   },

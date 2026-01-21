@@ -4,12 +4,16 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./index.esm.js",
-      "types": "./src/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
   },
-  "main": "./index.esm.js",
-  "types": "./src/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
   "scripts": {
     "mpas": "ts-node -P tsconfig.json src/scripts/mpas.ts",
     "fao": "ts-node -P tsconfig.json src/scripts/fao.ts",
@@ -19,9 +23,6 @@
     "ports": "ts-node -P tsconfig.json src/scripts/ports.ts",
     "prepare": "yarn mpas && yarn eezs && yarn rfmos && yarn fao && yarn locales"
   },
-  "files": [
-    "src"
-  ],
   "dependencies": {
     "@turf/bbox": "7.x",
     "@turf/bbox-polygon": "7.x",
@@ -35,7 +36,8 @@
     "dotenv": "17.x",
     "es-toolkit": "1.x",
     "geojson": "0.x",
-    "match-sorter": "8.x"
+    "match-sorter": "8.x",
+    "tslib": "2.x"
   },
   "devDependencies": {
     "@types/lodash": "4.x",

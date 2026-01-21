@@ -7,12 +7,16 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./index.js",
-      "types": "./index.d.ts"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
   },
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
   "dependencies": {
     "@deck.gl/core": "9.x",
     "@deck.gl/layers": "9.x",
@@ -34,7 +38,7 @@
     "react": "19.x",
     "react-dom": "19.x",
     "resize-observer-polyfill": "1.x",
-    "use-debounce": "10.x",
-    "tslib": "2.x"
+    "tslib": "2.x",
+    "use-debounce": "10.x"
   }
 }

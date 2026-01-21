@@ -46,6 +46,23 @@ function patchWasmModuleImport(
 }
 
 const nextConfig: NextConfig = {
+  transpilePackages: [
+    '@globalfishingwatch/api-client',
+    '@globalfishingwatch/api-types',
+    '@globalfishingwatch/data-transforms',
+    '@globalfishingwatch/datasets-client',
+    '@globalfishingwatch/dataviews-client',
+    '@globalfishingwatch/deck-layer-composer',
+    '@globalfishingwatch/deck-layers',
+    '@globalfishingwatch/deck-loaders',
+    '@globalfishingwatch/i18n-labels',
+    '@globalfishingwatch/ocean-areas',
+    '@globalfishingwatch/pbf-decoders',
+    '@globalfishingwatch/react-hooks',
+    '@globalfishingwatch/responsive-visualizations',
+    '@globalfishingwatch/timebar',
+    '@globalfishingwatch/ui-components',
+  ],
   async rewrites() {
     return [
       {

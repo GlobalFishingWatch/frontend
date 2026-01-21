@@ -37,7 +37,12 @@
   "typescript.tsserver.maxTsServerMemory": 8192,
   "typescript.tsserver.useSyntaxServer": "auto",
   "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "typescript.tsserver.log": "off",
+  "typescript.tsserver.trace": "off",
   "typescript.tsserver.watchOptions": {
+    "watchFile": "useFsEventsOnParentDirectory",
+    "watchDirectory": "useFsEvents",
+    "fallbackPolling": "dynamicPriority",
     "excludeDirectories": [
       "**/node_modules",
       "**/.next",
@@ -53,7 +58,13 @@
       "**/cypress",
       "**/e2e"
     ],
-    "excludeFiles": ["**/*.spec.ts", "**/*.spec.tsx", "**/*.test.ts", "**/*.test.tsx"]
+    "excludeFiles": [
+      "**/*.spec.ts",
+      "**/*.spec.tsx",
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "**/*.tsbuildinfo"
+    ]
   },
   "typescript.preferences.includePackageJsonAutoImports": "off",
   "typescript.suggest.autoImports": true,
@@ -87,9 +98,15 @@
     "**/build/**": true,
     "**/dist/**": true,
     "**/.nx/**": true,
+    "**/.yarn/**": true,
     "**/.turbo/**": true,
     "**/coverage/**": true,
-    "**/*.tsbuildinfo": true
+    "**/*.tsbuildinfo": true,
+    "**/out/**": true,
+    "**/exported/**": true,
+    "**/tmp/**": true,
+    "**/cypress/**": true,
+    "**/e2e/**": true
   },
   "search.exclude": {
     ".yarn": true,

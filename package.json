@@ -24,7 +24,8 @@
   },
   "workspaces": [
     "linting",
-    "apps/fishing-map"
+    "apps/fishing-map",
+    "libs/*"
   ],
   "dependencies": {
     "@deck.gl-community/editable-layers": "9.1.1",
@@ -281,7 +282,7 @@
     "next-react-memory-stats": "1.0.2",
     "nx": "22.3.3",
     "playwright": "1.57.0",
-    "prettier": "3.7.4",
+    "prettier": "3.8.0",
     "prettier-eslint": "16.4.2",
     "purgecss": "7.0.2",
     "react-fps": "1.0.6",

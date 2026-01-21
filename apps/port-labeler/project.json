@@ -4,6 +4,17 @@
   "sourceRoot": "apps/port-labeler",
   "projectType": "application",
   "targets": {
+    "build-deps": {
+      "executor": "nx:noop",
+      "dependsOn": ["^dist"]
+    },
+    "watch-deps": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx watch --projects port-labeler --includeDependentProjects -- nx build-deps port-labeler"
+      },
+      "continuous": true
+    },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
@@ -24,14 +35,17 @@
     },
     "start": {
       "executor": "nx:run-commands",
+      "dependsOn": ["build-deps"],
       "options": {
         "commands": [
           "nx clean-locales port-labeler",
           "nx serve i18n-labels",
-          "nx serve port-labeler"
+          "nx serve port-labeler",
+          "nx watch-deps port-labeler"
         ],
         "parallel": true
-      }
+      },
+      "continuous": true
     },
     "clean-locales": {
       "executor": "nx:run-commands",

@@ -1,6 +1,12 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "allowJs": false,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "incremental": true,
+    "strict": true,
     "outDir": "../../dist/out-tsc",
     "types": [
       "node",
@@ -22,5 +28,34 @@
     "src/**/*.spec.jsx",
     "src/**/*.test.jsx"
   ],
-  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
+  "references": [
+    {
+      "path": "../../libs/i18n-labels/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/data-transforms/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/deck-layer-composer/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/dataviews-client/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/api-client/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/deck-layers/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/api-types/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/timebar/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/ui-components/tsconfig.lib.json"
+    }
+  ]
 }

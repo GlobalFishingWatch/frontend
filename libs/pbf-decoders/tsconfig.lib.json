@@ -1,10 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/libs/pbf-decoders",
-    "declarationDir": "../../dist/libs/pbf-decoders",
+    "outDir": "./dist",
+    "declarationDir": "./dist",
     "rootDir": ".",
     "declaration": true,
+    "composite": true,
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]
