@@ -88,7 +88,8 @@
     "**/dist/**": true,
     "**/.nx/**": true,
     "**/.turbo/**": true,
-    "**/coverage/**": true
+    "**/coverage/**": true,
+    "**/*.tsbuildinfo": true
   },
   "search.exclude": {
     ".yarn": true,
@@ -101,7 +102,8 @@
     "**/.nx": true,
     "**/.turbo": true,
     "**/coverage": true,
-    "**/workers": true
+    "**/workers": true,
+    "**/*.tsbuildinfo": true
   },
   "eslint.useFlatConfig": true,
   "nxConsole.generateAiAgentRules": true
