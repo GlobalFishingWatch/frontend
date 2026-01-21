@@ -35,7 +35,7 @@ const VesselGroupReportInsightCoverage = ({ skip }: { skip?: boolean }) => {
                 )}
               />
             )}
-            {error && t('analysis.error')}
+            {error && (error.message ?? t('analysis.error'))}
           </Fragment>
         </ReportBarGraphPlaceholder>
       ) : data?.coverage && data?.coverage?.length > 0 ? (
