@@ -88,8 +88,6 @@ export const selectIsWorkspacePasswordRequired = createSelector(
 export const selectIsWorkspaceReady = createSelector(
   [selectIsRouteWithWorkspace, selectWorkspaceStatus, selectIsWorkspacePasswordRequired],
   (isRouteWithWorkspace, workspaceStatus, isWorkspacePasswordRequired) => {
-    console.log('🚀 ~ workspaceStatus:', workspaceStatus)
-    console.log('🚀 ~ selectIsWorkspaceReady ~ isRouteWithWorkspace:', isRouteWithWorkspace)
     return isRouteWithWorkspace
       ? workspaceStatus === AsyncReducerStatus.Finished && !isWorkspacePasswordRequired
       : true

@@ -45,7 +45,6 @@ export function updateLocation(
     skipHistoryNavigation = false,
   } = {} as UpdateLocationOptions
 ) {
-  console.log('🚀 ~ updateLocation ~ type:', type)
   return {
     type,
     query,
@@ -89,7 +88,6 @@ const updateUrlViewport: any = (dispatch: AppDispatch, getState: () => RootState
 
 const updateUrlTimerange: any = (dispatch: AppDispatch, getState: () => RootState) => {
   return (timerange: TimeRange) => {
-    console.log('🚀 ~ updateUrlTimerange ~ timerange:', timerange)
     const state = getState()
     const locationType = selectLocationType(state)
     const payload = selectLocationPayload(state)
