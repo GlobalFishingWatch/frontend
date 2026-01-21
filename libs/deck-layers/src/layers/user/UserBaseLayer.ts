@@ -14,6 +14,7 @@ import { isFeatureInFilter, isFeatureInFilters } from '@globalfishingwatch/deck-
 
 import type { DeckLayerProps } from '../../types'
 import { transformTileCoordsToWGS84 } from '../../utils/coordinates'
+import { DEFAULT_ID_PROPERTY } from '../../utils/layers'
 import type { ContextFeature, ContextSubLayerConfig } from '../context'
 import {
   getContextId,
@@ -84,7 +85,7 @@ export abstract class UserBaseLayer<
     info: PickingInfo<UserLayerFeature, { tile?: Tile2DHeader }>
   }): UserLayerPickingInfo => {
     // TODO: support multiple sublayers
-    const idProperty = this.props.layers[0].idProperty
+    const idProperty = this.props.layers[0].idProperty || DEFAULT_ID_PROPERTY
     const valueProperties = this.props.layers[0].valueProperties || []
     // TODO: once filtered with the filter extension this works as expected
     const sublayers = this.props.layers[0].sublayers
@@ -144,7 +145,7 @@ export abstract class UserBaseLayer<
     const featureCache = new Set()
     const renderedFeatures: UserLayerFeature[] = []
     // TODO: support multiple sublayers
-    const idProperty = this.props.layers[0].idProperty
+    const idProperty = this.props.layers[0].idProperty || DEFAULT_ID_PROPERTY
 
     for (const f of features) {
       const featureId = getContextId(f.object as ContextFeature, idProperty)

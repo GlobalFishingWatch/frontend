@@ -13,6 +13,7 @@ import {
   COLOR_HIGHLIGHT_LINE,
   COLOR_TRANSPARENT,
   DEFAULT_BACKGROUND_COLOR,
+  DEFAULT_ID_PROPERTY,
   getColorRampByOpacitySteps,
   getFetchLoadOptions,
   getLayerGroupOffset,
@@ -96,7 +97,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   ) => {
     const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, {
-      idProperty: layer.idProperty,
+      idProperty: layer.idProperty || DEFAULT_ID_PROPERTY,
       datasetId: layer.datasetId,
     })
       ? Math.max(sublayer.thickness || 1, lineWidth)
@@ -145,7 +146,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
     }
     const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, {
-      idProperty: layer.idProperty,
+      idProperty: layer.idProperty || DEFAULT_ID_PROPERTY,
       datasetId: layer.datasetId,
     })
       ? COLOR_HIGHLIGHT_FILL
@@ -166,7 +167,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
     const highlightedFeatures = this._getHighlightedFeatures()
     if (
       getPickedFeatureToHighlight(d, highlightedFeatures, {
-        idProperty: layer.idProperty,
+        idProperty: layer.idProperty || DEFAULT_ID_PROPERTY,
         datasetId: layer.datasetId,
       })
     ) {
@@ -184,6 +185,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
 
   renderLayers() {
     const { layers, steps, stepsPickValue, pickable, maxZoom } = this.props
+    console.log('🚀 ~ renderLayers ~ layers:', layers)
 
     const highlightedFeatures = this._getHighlightedFeatures()
     const hasColorSteps = steps !== undefined && steps.length > 0 && stepsPickValue !== undefined
