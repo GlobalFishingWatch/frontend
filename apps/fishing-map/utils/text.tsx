@@ -8,7 +8,8 @@ export const getHighlightedText = (
   }
 ) => {
   if (highlight === '') return text
-  const regEscape = (v: string) => (v || '').replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
+  const regEscape = (v: string) =>
+    typeof v === 'string' ? v.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') : ''
   const textChunks = text.split(new RegExp(regEscape(highlight), 'ig'))
   let sliceIdx = 0
   return textChunks.map((chunk, index) => {
