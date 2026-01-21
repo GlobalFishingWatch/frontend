@@ -39,7 +39,7 @@ const createDatasetOption = (id: string, label: string, color?: string): SelectO
 })
 
 const ReportActivityDatasetComparison = () => {
-  const { t } = useTranslation(['layer-library', 'translations'])
+  const { t, ready: i18nReady } = useTranslation(['layer-library', 'translations'])
   const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useAppDispatch()
 
@@ -55,8 +55,11 @@ const ReportActivityDatasetComparison = () => {
   const allDatasets = useSelector(selectAllDatasets)
 
   const allLayersResolved = useMemo(() => {
-    return resolveLibraryLayers(allDataviews, false)
-  }, [allDataviews])
+    if (!i18nReady) {
+      return []
+    }
+    return resolveLibraryLayers(allDataviews, { experimentalLayers: false })
+  }, [allDataviews, i18nReady])
 
   const layersResolved = useMemo(() => {
     const reportCategory = reportDataviews[0]?.category
