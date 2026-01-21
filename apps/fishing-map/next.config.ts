@@ -135,7 +135,8 @@ const nextConfig: NextConfig = {
   },
   basePath,
   reactStrictMode: true,
-  productionBrowserSourceMaps: !IS_PRODUCTION,
+  // Must be true in production for Sentry to find and upload client source maps
+  productionBrowserSourceMaps: true,
   // to deploy on a node server
   output: 'standalone',
   outputFileTracingRoot: join(__dirname, '../../'),
@@ -199,6 +200,10 @@ const configWithSentry = withSentryConfig(configWithNx, {
 
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
+
+  // Use runAfterProductionCompile so Next.js passes the actual distDir (works with Nx's
+  // custom outputPath, e.g. dist/apps/fishing-map/.next). Ensures Sentry finds source maps.
+  useRunAfterProductionCompileHook: true,
 
   // Delete source maps after uploading to Sentry (keeps them private)
   sourcemaps: {
