@@ -16,7 +16,6 @@ import {
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   PORTS_FOOTPRINT_DATAVIEW_SLUG,
 } from 'data/workspaces'
-import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import {
   dataviewHasVesselGroupId,
   getHasVesselProfileInstance,
@@ -288,16 +287,10 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
 
 // Inject the dataview instance for the events graph report by area
 export const selectAreaReportDataviewInstancesInjected = createSelector(
-  [
-    selectReportCategorySelector,
-    selectReportEventsGraph,
-    selectAllDataviews,
-    selectReportComparisonDataviewIds,
-  ],
+  [selectReportCategorySelector, selectReportEventsGraph, selectReportComparisonDataviewIds],
   (
     reportCategory,
     reportEventsGraph,
-    allDataviews,
     reportComparisonDataviewIds
   ): UrlDataviewInstance[] | undefined => {
     const dataviewInstancesInjected = [] as UrlDataviewInstance[]
