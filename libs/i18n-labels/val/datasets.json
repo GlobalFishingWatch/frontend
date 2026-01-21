@@ -1094,55 +1094,7 @@
   },
   "public-ebsas": {
     "name": "crwdns108892:0crwdne108892:0",
-    "description": "crwdns108894:0crwdne108894:0",
-    "schema": {
-      "name": {
-        "keyword": "crwdns108896:0crwdne108896:0",
-        "enum": {
-          "maximum values exceeded": "crwdns108898:0crwdne108898:0"
-        }
-      },
-      "ebsa_id": {
-        "keyword": "crwdns108900:0crwdne108900:0",
-        "enum": {
-          "1": "crwdns108902:0crwdne108902:0",
-          "45": "crwdns108904:0crwdne108904:0"
-        }
-      },
-      "workshop": {
-        "keyword": "crwdns108906:0crwdne108906:0",
-        "enum": {
-          "North Pacific": "crwdns108908:0crwdne108908:0",
-          "South Pacific": "crwdns108910:0crwdne108910:0",
-          "Southern Indian Ocean": "crwdns108912:0crwdne108912:0",
-          "Wider Caribbean and Western MidAtlantic": "crwdns108914:0crwdne108914:0",
-          "Eastern Tropical and Temperate Pacific": "crwdns108916:0crwdne108916:0",
-          "North-West Indian Ocean and Adjacent Gulf Areas": "crwdns108918:0crwdne108918:0",
-          "South East Atlantic": "crwdns108920:0crwdne108920:0",
-          "Arctic": "crwdns108922:0crwdne108922:0",
-          "North-East Atlantic": "crwdns108924:0crwdne108924:0",
-          "North-East Indian Ocean Region": "crwdns108926:0crwdne108926:0",
-          "Seas of East Asia": "crwdns108928:0crwdne108928:0",
-          "Mediterranean": "crwdns108930:0crwdne108930:0",
-          "Northwest Atlantic": "crwdns108932:0crwdne108932:0",
-          "Black Sea and Caspian Sea": "crwdns108934:0crwdne108934:0",
-          "Baltic Sea": "crwdns108936:0crwdne108936:0"
-        }
-      },
-      "global_id": {
-        "keyword": "crwdns108938:0crwdne108938:0",
-        "enum": {
-          "maximum values exceeded": "crwdns108940:0crwdne108940:0"
-        }
-      },
-      "area_mw_km": {
-        "keyword": "crwdns108942:0crwdne108942:0",
-        "enum": {
-          "11135900": "crwdns108944:0crwdne108944:0",
-          "0.953581": "crwdns108946:0crwdne108946:0"
-        }
-      }
-    }
+    "description": "crwdns108894:0crwdne108894:0"
   },
   "public-ecuador-fishing-effort": {
     "name": "crwdns65983:0crwdne65983:0",
@@ -1761,7 +1713,7 @@
     "description": "crwdns66607:0crwdne66607:0"
   },
   "public-global-winds-vo": {
-    "name": "crwdns108520:0crwdne108520:0",
+    "name": "crwdns108998:0crwdne108998:0",
     "description": "crwdns108522:0crwdne108522:0"
   },
   "public-graticules": {
@@ -1786,50 +1738,7 @@
   },
   "public-immas": {
     "name": "crwdns108948:0crwdne108948:0",
-    "description": "crwdns108950:0crwdne108950:0",
-    "schema": {
-      "title": {
-        "keyword": "crwdns108952:0crwdne108952:0",
-        "enum": {
-          "maximum values exceeded": "crwdns108954:0crwdne108954:0"
-        }
-      },
-      "caveat": "crwdns108956:0crwdne108956:0",
-      "status": "crwdns108958:0crwdne108958:0",
-      "details": {
-        "keyword": "crwdns108960:0crwdne108960:0",
-        "enum": {
-          "maximum values exceeded": "crwdns108962:0crwdne108962:0"
-        }
-      },
-      "ident_code": {
-        "keyword": "crwdns108964:0crwdne108964:0",
-        "enum": {
-          "maximum values exceeded": "crwdns108966:0crwdne108966:0"
-        }
-      },
-      "area_square_km": {
-        "keyword": "crwdns108968:0crwdne108968:0",
-        "enum": {
-          "1": "crwdns108970:0crwdne108970:0",
-          "11818614": "crwdns108972:0crwdne108972:0"
-        }
-      },
-      "centroids_point_latitude_centroid": {
-        "keyword": "crwdns108974:0crwdne108974:0",
-        "enum": {
-          "-75.7793": "crwdns108976:0crwdne108976:0",
-          "62.3007": "crwdns108978:0crwdne108978:0"
-        }
-      },
-      "centroids_point_longitude_centroid": {
-        "keyword": "crwdns108980:0crwdne108980:0",
-        "enum": {
-          "-178.4217": "crwdns108982:0crwdne108982:0",
-          "178.7738": "crwdns108984:0crwdne108984:0"
-        }
-      }
-    }
+    "description": "crwdns108950:0crwdne108950:0"
   },
   "public-indian-ocean-isa-claim-areas": {
     "name": "crwdns108538:0crwdne108538:0",

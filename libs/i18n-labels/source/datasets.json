@@ -1094,55 +1094,7 @@
   },
   "public-ebsas": {
     "name": "Ecologically or Biologically Significant Marine Areas (EBSAs)",
-    "description": "<h2>Overview</h2>\n<p>An EBSA is an area of the ocean recognized for its unique ecological and/or biological features, such as essential habitats, food sources or breeding grounds for specific species. The description and mapping of EBSAs is done through a process under the Convention on Biological Diversity (CBD).</p>\n<p>An EBSA is an area that meets at least one of the seven internationally agreed scientific criteria, known as the “EBSA criteria”, which were adopted by the Conference of the Parties to the Convention on Biological Diversity (CBD COP) in 2008. EBSAs included in the CBD EBSA repository undergo formal review and adoption by the CBD COP.</p>\n<p>These areas can vary greatly in size and location, ranging from coastal waters to the high seas and from the ocean surface to the seabed. EBSAs encompass a wide range of species, habitats and oceanographic features, including dynamic and ephemeral phenomena, as well as areas that are important seasonally or throughout the year. EBSAs have included features such as seamounts, hydrothermal vents, coral reefs, migratory corridors, seasonal fish spawning areas and coastal upwellings, among many other types of ecosystems.</p><p>For more details on the EBSA criteria, please see:</p>\n<a href=\"https://www.cbd.int/doc/meetings/mar/ebsaws-2014-01/other/ebsaws-2014-01-azores-brochure-en.pdf\">cbd.int/doc/meetings/mar/ebsaws-2014-01/other/ebsaws-2014-01-azores-brochure-en.pdf</a>\n<ol><li>Uniqueness or rarity</li><li>Special importance for life history stages of species</li><li>Importance for threatened, endangered or declining species and/or habitats</li><li>Vulnerability, fragility, sensitivity or slow recovery</li><li>Biological productivity</li><li>Biological diversity</li><li>Naturalness</li></ol>",
-    "schema": {
-      "name": {
-        "keyword": "name",
-        "enum": {
-          "maximum values exceeded": "maximum values exceeded"
-        }
-      },
-      "ebsa_id": {
-        "keyword": "ebsa_id",
-        "enum": {
-          "1": "1",
-          "45": "45"
-        }
-      },
-      "workshop": {
-        "keyword": "workshop",
-        "enum": {
-          "North Pacific": "North Pacific",
-          "South Pacific": "South Pacific",
-          "Southern Indian Ocean": "Southern Indian Ocean",
-          "Wider Caribbean and Western MidAtlantic": "Wider Caribbean and Western MidAtlantic",
-          "Eastern Tropical and Temperate Pacific": "Eastern Tropical and Temperate Pacific",
-          "North-West Indian Ocean and Adjacent Gulf Areas": "North-West Indian Ocean and Adjacent Gulf Areas",
-          "South East Atlantic": "South East Atlantic",
-          "Arctic": "Arctic",
-          "North-East Atlantic": "North-East Atlantic",
-          "North-East Indian Ocean Region": "North-East Indian Ocean Region",
-          "Seas of East Asia": "Seas of East Asia",
-          "Mediterranean": "Mediterranean",
-          "Northwest Atlantic": "Northwest Atlantic",
-          "Black Sea and Caspian Sea": "Black Sea and Caspian Sea",
-          "Baltic Sea": "Baltic Sea"
-        }
-      },
-      "global_id": {
-        "keyword": "global_id",
-        "enum": {
-          "maximum values exceeded": "maximum values exceeded"
-        }
-      },
-      "area_mw_km": {
-        "keyword": "area_mw_km",
-        "enum": {
-          "11135900": "11135900",
-          "0.953581": "0.953581"
-        }
-      }
-    }
+    "description": "<h2>Overview</h2>\n<p>An EBSA is an area of the ocean recognized for its unique ecological and/or biological features, such as essential habitats, food sources or breeding grounds for specific species. The description and mapping of EBSAs is done through a process under the Convention on Biological Diversity (CBD).</p>\n<p>An EBSA is an area that meets at least one of the seven internationally agreed scientific criteria, known as the “EBSA criteria”, which were adopted by the Conference of the Parties to the Convention on Biological Diversity (CBD COP) in 2008. EBSAs included in the CBD EBSA repository undergo formal review and adoption by the CBD COP.</p>\n<p>These areas can vary greatly in size and location, ranging from coastal waters to the high seas and from the ocean surface to the seabed. EBSAs encompass a wide range of species, habitats and oceanographic features, including dynamic and ephemeral phenomena, as well as areas that are important seasonally or throughout the year. EBSAs have included features such as seamounts, hydrothermal vents, coral reefs, migratory corridors, seasonal fish spawning areas and coastal upwellings, among many other types of ecosystems.</p><p>For more details on the EBSA criteria, please see:</p>\n<a href=\"https://www.cbd.int/doc/meetings/mar/ebsaws-2014-01/other/ebsaws-2014-01-azores-brochure-en.pdf\">cbd.int/doc/meetings/mar/ebsaws-2014-01/other/ebsaws-2014-01-azores-brochure-en.pdf</a>\n<ol><li>Uniqueness or rarity</li><li>Special importance for life history stages of species</li><li>Importance for threatened, endangered or declining species and/or habitats</li><li>Vulnerability, fragility, sensitivity or slow recovery</li><li>Biological productivity</li><li>Biological diversity</li><li>Naturalness</li></ol>"
   },
   "public-ecuador-fishing-effort": {
     "name": "Ecuador VMS",
@@ -1761,7 +1713,7 @@
     "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM"
   },
   "public-global-winds-vo": {
-    "name": "Wind",
+    "name": "Winds",
     "description": "<h2>Overview</h2>\n<ul>\n<li>Wind is the movement of air across the Earth’s surface and plays an important role in shaping weather and ocean conditions. Surface winds help drive ocean circulation and influence mixing at the ocean surface. This dataset shows global wind speed and direction over the ocean.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://cds.climate.copernicus.eu/datasets/derived-era5-single-levels-daily-statistics?tab=overview'>Copernicus Climate Change Service, Climate Data Store, (2024): ERA5 post-processed daily-statistics on single levels from 1940 to present. Copernicus Climate Change Service (C3S) Climate Data Store (CDS), DOI: 10.24381/cds.4991cf48</a></li>"
   },
   "public-graticules": {
@@ -1786,50 +1738,7 @@
   },
   "public-immas": {
     "name": "Important Marine Mammal Areas (IMMA)",
-    "description": "<h2>Overview</h2>\n<p>Important Marine Mammal Areas (IMMAs) are defined as discrete portions of habitat, important to marine mammal species, that have the potential to be delineated and managed for conservation.</p>\n<p>IMMAs are not marine protected areas (MPAs). IMMAs are identified based on scientific expert knowledge, along with peer review, in order to prioritise their consideration for conservation measures by governments, intergovernmental organisations, conservation groups, industry or business, and the general public.</p>\n<p>The IMMA spatial layer aims to attract the attention of policy- and decision-makers to the opportunity, as well as to the need, to ensure the favourable conservation status of marine mammals in specific areas through the implementation of the most appropriate management measures. This can include an MPA designation, shipping or fishing regulations, and/or monitoring. However, IMMAs per se are a scientific knowledge product totally devoid of management implications.</p>\n<p>Please note the following:</p>\n<ul>\n<li>Dedicated efforts to identify IMMAs have not yet covered all of the global ocean but global coverage is anticipated in the near future.</li><li>Waters outside of IMMAs in all areas of the ocean may still be important for the long-term survival and well-being of marine mammals.</li><li>Human activities taking place in marine environments everywhere must be conducted responsibly.</li></ul>",
-    "schema": {
-      "title": {
-        "keyword": "title",
-        "enum": {
-          "maximum values exceeded": "maximum values exceeded"
-        }
-      },
-      "caveat": "caveat",
-      "status": "status",
-      "details": {
-        "keyword": "details",
-        "enum": {
-          "maximum values exceeded": "maximum values exceeded"
-        }
-      },
-      "ident_code": {
-        "keyword": "ident_code",
-        "enum": {
-          "maximum values exceeded": "maximum values exceeded"
-        }
-      },
-      "area_square_km": {
-        "keyword": "area_square_km",
-        "enum": {
-          "1": "1",
-          "11818614": "11818614"
-        }
-      },
-      "centroids_point_latitude_centroid": {
-        "keyword": "centroids_point_latitude_centroid",
-        "enum": {
-          "-75.7793": "-75.7793",
-          "62.3007": "62.3007"
-        }
-      },
-      "centroids_point_longitude_centroid": {
-        "keyword": "centroids_point_longitude_centroid",
-        "enum": {
-          "-178.4217": "-178.4217",
-          "178.7738": "178.7738"
-        }
-      }
-    }
+    "description": "<h2>Overview</h2>\n<p>Important Marine Mammal Areas (IMMAs) are defined as discrete portions of habitat, important to marine mammal species, that have the potential to be delineated and managed for conservation.</p>\n<p>IMMAs are not marine protected areas (MPAs). IMMAs are identified based on scientific expert knowledge, along with peer review, in order to prioritise their consideration for conservation measures by governments, intergovernmental organisations, conservation groups, industry or business, and the general public.</p>\n<p>The IMMA spatial layer aims to attract the attention of policy- and decision-makers to the opportunity, as well as to the need, to ensure the favourable conservation status of marine mammals in specific areas through the implementation of the most appropriate management measures. This can include an MPA designation, shipping or fishing regulations, and/or monitoring. However, IMMAs per se are a scientific knowledge product totally devoid of management implications.</p>\n<p>Please note the following:</p>\n<ul>\n<li>Dedicated efforts to identify IMMAs have not yet covered all of the global ocean but global coverage is anticipated in the near future.</li><li>Waters outside of IMMAs in all areas of the ocean may still be important for the long-term survival and well-being of marine mammals.</li><li>Human activities taking place in marine environments everywhere must be conducted responsibly.</li></ul>"
   },
   "public-indian-ocean-isa-claim-areas": {
     "name": "Indian Ocean ISA License Areas",
