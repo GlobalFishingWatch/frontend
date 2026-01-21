@@ -11,6 +11,7 @@ import type { ColorRampId } from '@globalfishingwatch/deck-layers'
 
 import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
 import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/context-layers'
+import { LIBRARY_LAYERS } from 'data/layer-library'
 import {
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   PORTS_FOOTPRINT_DATAVIEW_SLUG,
@@ -314,23 +315,19 @@ export const selectAreaReportDataviewInstancesInjected = createSelector(
       }
       dataviewInstancesInjected.push(contextDataviewInstance)
     }
-    if (reportComparisonDataviewIds) {
-      const baseDataview = allDataviews.find(
-        (dataview) =>
-          dataview.slug ===
-          reportComparisonDataviewIds.compare?.split(LAYER_LIBRARY_ID_SEPARATOR)[0]
+    if (reportComparisonDataviewIds?.compare) {
+      const compareLayer = LIBRARY_LAYERS?.find(
+        (l) => l.id === reportComparisonDataviewIds.compare?.split(LAYER_LIBRARY_ID_SEPARATOR)[0]
       )
-      if (baseDataview) {
-        const dataviewID = reportComparisonDataviewIds.compare
-        const { category, slug, datasetsConfig, config } = baseDataview
+      if (compareLayer) {
         const compareDataviewInstance = {
-          id: dataviewID,
+          id: reportComparisonDataviewIds.compare,
           origin: 'comparison',
-          category,
-          dataviewId: slug,
-          datasetsConfig,
+          category: compareLayer?.category,
+          dataviewId: compareLayer?.dataviewId,
+          datasetsConfig: compareLayer?.datasetsConfig,
           config: {
-            ...config,
+            ...(compareLayer?.config && { ...compareLayer?.config }),
             visible: true,
           },
         } as UrlDataviewInstance

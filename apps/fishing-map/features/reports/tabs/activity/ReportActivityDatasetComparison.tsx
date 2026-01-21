@@ -69,7 +69,7 @@ const ReportActivityDatasetComparison = () => {
 
   const layerOptions = useMemo(() => {
     return layersResolved.map((layer) =>
-      createDatasetOption(layer?.dataviewId as string, layer?.name || '', layer.config?.color)
+      createDatasetOption(layer?.id as string, layer?.name || '', layer.config?.color)
     )
   }, [layersResolved])
 
