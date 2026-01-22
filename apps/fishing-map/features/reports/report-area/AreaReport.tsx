@@ -46,21 +46,50 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from 'features/reports/report-area/AreaReport.module.css'
 
-const ReportActivity = dynamic(
-  () =>
-    import(/* webpackChunkName: "ReportActivity" */ 'features/reports/tabs/activity/ReportActivity')
+const ReportActivity = dynamic(() =>
+  import(
+    /* webpackChunkName: "ReportActivity" */ 'features/reports/tabs/activity/ReportActivity'
+  ).catch((err) => {
+    // To catch ChunkLoadErrors due to deployment updates
+    if (err instanceof SyntaxError || err.message.includes("Unexpected token '<'")) {
+      console.warn('Detected HTML served as JS. Possible deployment update. Reloading...')
+      window.location.reload()
+    }
+    throw err
+  })
 )
-const ReportEnvironment = dynamic(
-  () =>
-    import(
-      /* webpackChunkName: "ReportEnvironment" */ 'features/reports/tabs/environment/ReportEnvironment'
-    )
+const ReportEnvironment = dynamic(() =>
+  import(
+    /* webpackChunkName: "ReportEnvironment" */ 'features/reports/tabs/environment/ReportEnvironment'
+  ).catch((err) => {
+    if (err instanceof SyntaxError || err.message.includes("Unexpected token '<'")) {
+      console.warn('Detected HTML served as JS. Possible deployment update. Reloading...')
+      window.location.reload()
+    }
+    throw err
+  })
 )
-const ReportOthers = dynamic(
-  () => import(/* webpackChunkName: "ReportOthers" */ 'features/reports/tabs/others/ReportOthers')
+const ReportOthers = dynamic(() =>
+  import(/* webpackChunkName: "ReportOthers" */ 'features/reports/tabs/others/ReportOthers').catch(
+    (err) => {
+      if (err instanceof SyntaxError || err.message.includes("Unexpected token '<'")) {
+        console.warn('Detected HTML served as JS. Possible deployment update. Reloading...')
+        window.location.reload()
+      }
+      throw err
+    }
+  )
 )
-const ReportEvents = dynamic(
-  () => import(/* webpackChunkName: "ReportEvents" */ 'features/reports/tabs/events/EventsReport')
+const ReportEvents = dynamic(() =>
+  import(/* webpackChunkName: "ReportEvents" */ 'features/reports/tabs/events/EventsReport').catch(
+    (err) => {
+      if (err instanceof SyntaxError || err.message.includes("Unexpected token '<'")) {
+        console.warn('Detected HTML served as JS. Possible deployment update. Reloading...')
+        window.location.reload()
+      }
+      throw err
+    }
+  )
 )
 
 export default function Report() {

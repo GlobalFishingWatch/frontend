@@ -58,8 +58,15 @@ const TurningTidesModal = dynamic(
   () => import(/* webpackChunkName: "TurningTidesModal" */ 'features/bigquery/TurningTidesModal')
 )
 
-const LayerLibrary = dynamic(
-  () => import(/* webpackChunkName: "LayerLibrary" */ 'features/layer-library/LayerLibrary')
+const LayerLibrary = dynamic(() =>
+  import('features/layer-library/LayerLibrary').catch((err) => {
+    // To catch ChunkLoadErrors due to deployment updates
+    if (err instanceof SyntaxError || err.message.includes("Unexpected token '<'")) {
+      console.warn('Detected HTML served as JS. Possible deployment update. Reloading...')
+      window.location.reload()
+    }
+    throw err
+  })
 )
 const DebugMenu = dynamic(
   () => import(/* webpackChunkName: "DebugMenu" */ 'features/debug/DebugMenu')
