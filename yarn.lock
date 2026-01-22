@@ -3262,7 +3262,7 @@ __metadata:
     jest-util: "npm:30.2.0"
     jimp: "npm:1.6.0"
     jiti: "npm:2.6.1"
-    jotai: "npm:2.16.1"
+    jotai: "npm:2.16.2"
     jsdom: "npm:~27.4.0"
     jszip: "npm:3.10.1"
     jwt-decode: "npm:4.0.0"
@@ -28268,28 +28268,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jotai@npm:2.16.1":
-  version: 2.16.1
-  resolution: "jotai@npm:2.16.1"
-  peerDependencies:
-    "@babel/core": ">=7.0.0"
-    "@babel/template": ">=7.0.0"
-    "@types/react": ">=17.0.0"
-    react: ">=17.0.0"
-  peerDependenciesMeta:
-    "@babel/core":
-      optional: true
-    "@babel/template":
-      optional: true
-    "@types/react":
-      optional: true
-    react:
-      optional: true
-  checksum: 10/1d2eeab05987eb17ca17d8e5abe7384f07cd6d12c0d6d3f65bb27395b7ad0cc3de2a3333c3050cd9dc306fcbb2020e3d86ca82881ce7c292697be3631aa0c7a7
-  languageName: node
-  linkType: hard
-
-"jotai@npm:2.x":
+"jotai@npm:2.16.2, jotai@npm:2.x":
   version: 2.16.2
   resolution: "jotai@npm:2.16.2"
   peerDependencies:

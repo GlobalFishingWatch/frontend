@@ -115,7 +115,7 @@
     "intersection-observer": "0.12.2",
     "jest-canvas-mock": "2.5.2",
     "jimp": "1.6.0",
-    "jotai": "2.16.1",
+    "jotai": "2.16.2",
     "jszip": "3.10.1",
     "jwt-decode": "4.0.0",
     "kdbush": "^4.0.2",
