@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-export default function useClickedOutside(callback?: () => void) {
+export default function useClickedOutside(callback?: (event?: MouseEvent) => void) {
   const ref = useRef<HTMLDivElement | null>(null)
   const [clickStartCoords, setClickStartCoords] = useState<[number, number] | null>(null)
 
@@ -12,7 +12,7 @@ export default function useClickedOutside(callback?: () => void) {
         event.clientX === clickStartCoords?.[0] &&
         event.clientY === clickStartCoords?.[1]
       ) {
-        callback()
+        callback(event)
         setClickStartCoords(null)
       }
     },

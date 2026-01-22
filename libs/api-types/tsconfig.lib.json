@@ -1,9 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/libs/api-types",
+    "outDir": "./dist",
+    "declarationDir": "./dist",
     "rootDir": "src",
     "declaration": true,
+    "composite": true,
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]

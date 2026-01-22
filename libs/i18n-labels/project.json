@@ -17,22 +17,15 @@
       }
     },
     "dist": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "compiler": "tsc",
-        "entryFile": "libs/i18n-labels/index.ts",
-        "external": ["react/jsx-runtime"],
-        "outputPath": "dist/libs/i18n-labels",
-        "project": "libs/i18n-labels/package.json",
-        "rollupConfig": "@nx/react/plugins/bundle-rollup",
+        "outputPath": "libs/i18n-labels/dist",
+        "generatePackageJson": false,
+        "main": "libs/i18n-labels/index.ts",
         "tsConfig": "libs/i18n-labels/tsconfig.lib.json",
+        "rootDir": "libs/i18n-labels",
         "assets": [
-          {
-            "glob": "libs/i18n-labels/README.md",
-            "input": ".",
-            "output": "."
-          },
           {
             "glob": "libs/i18n-labels/en",
             "input": ".",
@@ -76,7 +69,7 @@
       "executor": "@nx/js:release-publish",
       "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "dist/libs/i18n-labels"
+        "packageRoot": "libs/i18n-labels"
       }
     },
     "publish:stable": {
@@ -93,13 +86,8 @@
       "options": {
         "commands": ["nx publish:npm i18n-labels", "nx purge i18n-labels"],
         "parallel": false
-      }
-    },
-    "ts": {
-      "executor": "nx:run-script",
-      "options": {
-        "script": "ts"
-      }
+      },
+      "dependsOn": ["dist"]
     },
     "purge": {
       "executor": "nx:run-commands",

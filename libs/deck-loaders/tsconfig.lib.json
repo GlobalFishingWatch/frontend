@@ -1,14 +1,21 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/libs/deck-loaders",
-    "declarationDir": "../../dist/libs/deck-loaders",
+    "outDir": "./dist",
+    "declarationDir": "./dist",
     "rootDir": "src",
     "declaration": true,
+    "composite": true,
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"]
   },
+  "references": [
+    {
+      "path": "../api-types/tsconfig.lib.json"
+    }
+  ],
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts", "src/**/*.test.ts"]
 }

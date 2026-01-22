@@ -2,25 +2,34 @@ import { Fragment } from 'react'
 
 export const getHighlightedText = (
   text: string,
-  highlight: string = '',
+  highlight: string | string[] = '',
   styles: {
     readonly [key: string]: string
   }
 ) => {
-  if (highlight === '') return text
-  const regEscape = (v: string) =>
-    typeof v === 'string' ? v.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&') : ''
-  const textChunks = text.split(new RegExp(regEscape(highlight), 'ig'))
-  let sliceIdx = 0
-  return textChunks.map((chunk, index) => {
-    const currentSliceIdx = sliceIdx + chunk.length
-    sliceIdx += chunk.length + highlight.length
+  const highlightTerms = (Array.isArray(highlight) ? highlight : [highlight])
+    .map((term) => term.trim())
+    .filter(Boolean)
+
+  if (highlightTerms.length === 0) return text
+
+  const regEscape = (v: string) => v.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
+
+  const uniqueHighlightTerms = Array.from(
+    new Map(highlightTerms.map((term) => [term.toLowerCase(), term])).values()
+  ).sort((a, b) => b.length - a.length)
+
+  const escapedAlternation = uniqueHighlightTerms.map(regEscape).join('|')
+  if (escapedAlternation === '') return text
+
+  const highlightRegex = new RegExp(`(${escapedAlternation})`, 'ig')
+  const textParts = text.split(highlightRegex)
+
+  return textParts.map((part, index) => {
+    const isMatch = index % 2 === 1
     return (
       <Fragment key={index}>
-        {chunk}
-        {currentSliceIdx < text.length && (
-          <span className={styles.highlighted}>{text.slice(currentSliceIdx, sliceIdx)}</span>
-        )}
+        {isMatch ? <span className={styles.highlighted}>{part}</span> : part}
       </Fragment>
     )
   })

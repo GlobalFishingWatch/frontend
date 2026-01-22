@@ -2,12 +2,10 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import type { DataviewType } from '@globalfishingwatch/api-types'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import {
-  DATASET_COMPARISON_SUFFIX,
-  type UrlDataviewInstance,
-} from '@globalfishingwatch/dataviews-client'
+import { type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { groupContextDataviews } from '@globalfishingwatch/deck-layer-composer'
 
+import { DATASET_COMPARISON_SUFFIX } from 'data/config'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import {
   isContextDataviewReportSupported,

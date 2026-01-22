@@ -4,12 +4,16 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./index.js",
-      "types": "./index.d.ts"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
   },
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
   "dependencies": {
     "@deck.gl/core": "9.x",
     "@globalfishingwatch/api-client": "^7.0.0",
