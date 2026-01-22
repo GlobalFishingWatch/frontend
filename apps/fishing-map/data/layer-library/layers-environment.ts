@@ -229,7 +229,7 @@ export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
     dataviewId: TEMPLATE_HEATMAP_ENVIRONMENT_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/sst-anomalies-max.jpg`,
     config: {
-      color: '##FF6854',
+      color: '#FF6854',
       colorRamp: 'red',
     },
     datasetsConfig: [

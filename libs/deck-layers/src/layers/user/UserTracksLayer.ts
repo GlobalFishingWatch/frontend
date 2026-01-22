@@ -21,6 +21,7 @@ import { UserTrackLoader } from '@globalfishingwatch/deck-loaders'
 import {
   COLOR_HIGHLIGHT_LINE,
   COLOR_TRANSPARENT,
+  DEFAULT_ID_PROPERTY,
   getLayerGroupOffset,
   hexToDeckColor,
   LayerGroup,
@@ -310,7 +311,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
     const currentFeature = this.state.rawData?.features?.[featureIndex]
     const isHighlighted = highlightedFeatures?.some(
       (feature) =>
-        feature.id === currentFeature?.properties?.[layer.idProperty || 'id'] ||
+        feature.id === currentFeature?.properties?.[layer.idProperty || DEFAULT_ID_PROPERTY] ||
         feature.id === currentFeature?.properties?.id
     )
     if (isHighlighted) {

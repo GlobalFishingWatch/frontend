@@ -8,21 +8,10 @@
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/data-transforms",
+        "outputPath": "libs/data-transforms/dist",
+        "generatePackageJson": false,
         "main": "libs/data-transforms/src/index.ts",
         "tsConfig": "libs/data-transforms/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/data-transforms",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/data-transforms",
-            "glob": "README.md",
-            "output": "."
-          }
-        ],
         "rootDir": "libs/data-transforms/src"
       }
     },
@@ -30,7 +19,7 @@
       "executor": "@nx/js:release-publish",
       "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "dist/libs/data-transforms"
+        "packageRoot": "libs/data-transforms"
       }
     }
   },

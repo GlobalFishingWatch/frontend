@@ -7,7 +7,7 @@ import type { AppState, WorkspaceState } from '../types'
 import { TimebarGraphs, TimebarVisualisations, UserTab } from '../types'
 import { getUTCDateTime } from '../utils/dates'
 
-export { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/dataviews-client'
+export { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/deck-layer-composer'
 
 export const ROOT_DOM_ELEMENT = '__next'
 

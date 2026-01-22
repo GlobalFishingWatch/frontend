@@ -8,21 +8,10 @@
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/datasets-client",
+        "outputPath": "libs/datasets-client/dist",
+        "generatePackageJson": false,
         "main": "libs/datasets-client/src/index.ts",
         "tsConfig": "libs/datasets-client/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/datasets-client",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/datasets-client",
-            "glob": "README.md",
-            "output": "."
-          }
-        ],
         "rootDir": "libs/datasets-client/src"
       }
     },
@@ -30,7 +19,7 @@
       "executor": "@nx/js:release-publish",
       "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "dist/libs/datasets-client"
+        "packageRoot": "libs/datasets-client"
       }
     }
   },

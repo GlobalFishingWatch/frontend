@@ -5,6 +5,9 @@
   "projectType": "application",
   "tags": [],
   "targets": {
+    "build-deps": {
+      "dependsOn": ["^dist"]
+    },
     "build": {
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
@@ -22,21 +25,14 @@
       }
     },
     "start": {
-      "executor": "@nx/vite:dev-server",
-      "defaultConfiguration": "development",
+      "executor": "nx:run-commands",
+      "dependsOn": ["build-deps"],
       "options": {
-        "buildTarget": "data-download-portal:build"
+        "commands": ["vite", "nx watch-deps data-download-portal"],
+        "parallel": true,
+        "cwd": "{projectRoot}"
       },
-      "configurations": {
-        "development": {
-          "buildTarget": "data-download-portal:build:development",
-          "hmr": true
-        },
-        "production": {
-          "buildTarget": "data-download-portal:build:production",
-          "hmr": false
-        }
-      }
+      "continuous": true
     },
     "preview": {
       "executor": "@nx/vite:preview-server",

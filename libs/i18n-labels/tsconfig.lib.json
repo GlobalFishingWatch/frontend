@@ -1,11 +1,15 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/libs/i18n-labels",
-    "declarationDir": "../../dist/libs/i18n-labels",
+    "outDir": "./dist",
+    "declarationDir": "./dist",
     "rootDir": ".",
     "declaration": true,
-    "types": ["node"]
+    "composite": true,
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
+    "types": ["node"],
+    "module": "ESNext",
+    "moduleResolution": "bundler"
   },
   "include": ["source/**/*.json", "index.ts"],
   "exclude": ["**/*.spec.ts", "**/*.test.ts"]

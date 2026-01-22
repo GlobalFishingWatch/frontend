@@ -8,21 +8,10 @@
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/react-hooks",
+        "outputPath": "libs/react-hooks/dist",
+        "generatePackageJson": false,
         "main": "libs/react-hooks/src/index.ts",
         "tsConfig": "libs/react-hooks/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/react-hooks",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/react-hooks",
-            "glob": "README.md",
-            "output": "."
-          }
-        ],
         "rootDir": "libs/react-hooks/src"
       }
     },
@@ -30,7 +19,7 @@
       "executor": "@nx/js:release-publish",
       "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "dist/libs/react-hooks"
+        "packageRoot": "libs/react-hooks"
       }
     }
   },
