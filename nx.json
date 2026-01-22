@@ -3,6 +3,9 @@
   "sync": {
     "globalGenerators": ["@nx/js:typescript-sync"]
   },
+  "tui": {
+    "enabled": true
+  },
   "tasksRunnerOptions": {
     "default": {
       "options": {
@@ -56,7 +59,7 @@
     },
     "@nx/esbuild:esbuild": {
       "cache": true,
-      "dependsOn": ["^build", "^dist"],
+      "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
     },
     "@nx/vite:build": {
@@ -74,16 +77,8 @@
       "outputs": ["{projectRoot}/dist"],
       "cache": true
     },
-    "dist": {
-      "dependsOn": ["^dist"],
-      "outputs": ["{projectRoot}/dist"],
-      "cache": true,
-      "options": {
-        "clean": false
-      }
-    },
     "@nx/js:tsc": {
-      "dependsOn": ["^dist"],
+      "dependsOn": ["^build"],
       "outputs": ["{options.outputPath}"],
       "cache": true,
       "options": {
@@ -95,13 +90,8 @@
         "rootDir": "{projectRoot}/src"
       }
     },
-    "dist:workers": {
-      "dependsOn": ["^dist"],
-      "outputs": ["{projectRoot}/dist"],
-      "cache": true
-    },
     "build-deps": {
-      "dependsOn": ["^dist"]
+      "dependsOn": ["^build"]
     },
     "prepare-loaders": {
       "cache": true,

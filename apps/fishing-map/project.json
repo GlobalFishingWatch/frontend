@@ -5,8 +5,12 @@
   "projectType": "application",
   "tags": [],
   "targets": {
-    "build-deps": {
-      "dependsOn": ["^dist"]
+    "watch-deps": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx watch --projects=fishing-map --includeDependentProjects -- nx build \\$NX_PROJECT_NAME --exclude=fishing-map"
+      },
+      "continuous": true
     },
     "deploy": {
       "executor": "nx:run-commands",
@@ -28,17 +32,17 @@
     },
     "build": {
       "executor": "nx:run-commands",
-      "dependsOn": ["^build", "i18n", "prepare-loaders"],
+      "dependsOn": ["build-deps", "i18n", "prepare-loaders"],
       "inputs": ["production", "^production"],
       "outputs": ["{workspaceRoot}/dist/apps/fishing-map"],
       "options": {
-        "commands": ["nx clean-next fishing-map", "nx build:app fishing-map"],
+        "commands": ["rimraf dist/apps/fishing-map", "rimraf .next", "nx build:app fishing-map"],
         "parallel": false
       }
     },
     "start": {
       "executor": "nx:run-commands",
-      "dependsOn": ["build-deps", "clean-locales", "prepare-loaders"],
+      "dependsOn": ["clean-locales", "prepare-loaders"],
       "options": {
         "commands": [
           "nx run i18n-labels:ts",
@@ -54,7 +58,7 @@
     },
     "prepare-loaders": {
       "executor": "nx:run-commands",
-      "dependsOn": ["deck-loaders:dist:workers"],
+      "dependsOn": ["deck-loaders:build:workers"],
       "inputs": ["default", "{workspaceRoot}/libs/deck-loaders/dist/workers/**"],
       "outputs": ["{projectRoot}/public/workers"],
       "options": {
