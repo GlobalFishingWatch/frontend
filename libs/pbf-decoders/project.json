@@ -3,25 +3,23 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/pbf-decoders",
   "projectType": "library",
+  "tags": ["lib"],
   "targets": {
-    "dist": {
+    "build": {
       "executor": "@nx/js:tsc",
       "options": {
         "main": "libs/pbf-decoders/index.ts",
         "rootDir": "libs/pbf-decoders",
         "generatePackageJson": true,
-        "assets": [
-          { "glob": "**/*", "input": "libs/pbf-decoders/decoders", "output": "decoders" }
-        ]
+        "assets": [{ "glob": "**/*", "input": "libs/pbf-decoders/decoders", "output": "decoders" }]
       }
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
+      "dependsOn": ["build"],
       "options": {
         "packageRoot": "libs/pbf-decoders"
       }
     }
-  },
-  "tags": []
+  }
 }

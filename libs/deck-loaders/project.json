@@ -3,11 +3,21 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/deck-loaders/src",
   "projectType": "library",
+  "tags": ["lib"],
   "targets": {
-    "dist": {
+    "build": {
       "executor": "@nx/js:tsc"
     },
-    "dist:workers": {
+    "dev": {
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx run deck-loaders:build",
+        "watch": true
+      },
+      "continuous": true
+    },
+    "build:workers": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
@@ -18,7 +28,7 @@
         "parallel": false
       }
     },
-    "build:workers": {
+    "dist:workers": {
       "executor": "@nx/esbuild:esbuild",
       "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
       "options": {
@@ -46,6 +56,5 @@
         "packageRoot": "libs/deck-loaders"
       }
     }
-  },
-  "tags": []
+  }
 }

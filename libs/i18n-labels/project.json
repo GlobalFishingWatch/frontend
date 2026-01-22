@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/i18n-labels",
   "projectType": "library",
-  "tags": [],
+  "tags": ["lib"],
   "targets": {
     "serve": {
       "executor": "@nx/web:file-server",
@@ -16,7 +16,7 @@
         "host": "0.0.0.0"
       }
     },
-    "dist": {
+    "build": {
       "executor": "@nx/js:tsc",
       "options": {
         "main": "libs/i18n-labels/index.ts",
@@ -35,7 +35,7 @@
     },
     "publish:npm": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
+      "dependsOn": ["build"],
       "options": {
         "packageRoot": "libs/i18n-labels"
       }
@@ -55,7 +55,7 @@
         "commands": ["nx publish:npm i18n-labels", "nx purge i18n-labels"],
         "parallel": false
       },
-      "dependsOn": ["dist"]
+      "dependsOn": ["build"]
     },
     "purge": {
       "executor": "nx:run-commands",

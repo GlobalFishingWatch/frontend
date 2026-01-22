@@ -3,9 +3,19 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/dataviews-client/src",
   "projectType": "library",
+  "tags": ["lib"],
   "targets": {
-    "dist": {
+    "build": {
       "executor": "@nx/js:tsc"
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx run dataviews-client:build",
+        "watch": true
+      },
+      "continuous": true
     },
     "bundle-url-workspace": {
       "executor": "nx:run-commands",
@@ -18,11 +28,10 @@
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
+      "dependsOn": ["build"],
       "options": {
         "packageRoot": "libs/dataviews-client"
       }
     }
-  },
-  "tags": []
+  }
 }

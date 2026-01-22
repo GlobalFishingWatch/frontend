@@ -3,9 +3,9 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ui-components/src",
   "projectType": "library",
-  "tags": [],
+  "tags": ["lib"],
   "targets": {
-    "dist": {
+    "build": {
       "executor": "@nx/js:tsc",
       "options": {
         "assets": [
@@ -19,9 +19,18 @@
         ]
       }
     },
+    "dev": {
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx run ui-components:build",
+        "watch": true
+      },
+      "continuous": true
+    },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
+      "dependsOn": ["build"],
       "options": {
         "packageRoot": "libs/ui-components"
       }
