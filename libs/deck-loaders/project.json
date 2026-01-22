@@ -21,7 +21,7 @@
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "nx build:workers deck-loaders",
+          "nx dist:workers deck-loaders",
           "rimraf libs/deck-loaders/dist/workers/libs",
           "rimraf libs/deck-loaders/dist/workers/package.json"
         ],
