@@ -302,71 +302,69 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
     const { layers, pickable, maxPointSize, maxZoom } = this.props
     const zoom = this._getZoomLevel()
     const highlightedFeatures = this._getHighlightedFeatures()
-    return layers.map((layer) => {
-      return (
-        new TileLayer<TileLayerProps<UserLayerFeature>>({
-          id: `${layer.id}-base-layer`,
-          data: this._getTilesUrl(layer.tilesUrl),
-          loaders: [GFWMVTLoader],
-          maxZoom,
-          loadOptions: {
-            ...getFetchLoadOptions(),
-          },
-          onTileError: this._onLayerError,
-          onViewportLoad: this._onViewportLoad,
-          renderSubLayers: (props) => {
-            const mvtSublayerProps = {
-              ...props,
-              ...getMVTSublayerProps({ tile: props.tile, extensions: props.extensions }),
-            }
-            return layer.sublayers.map((sublayer) => {
-              const filtersHash = getContextFiltersHash(sublayer.filters)
-              const { extensionFilterProps, updateTrigger } =
-                this._getExtensionFilterProps(sublayer)
-              return [
-                new ScatterplotLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-                  id: `${props.id}-${sublayer.dataviewId}-points`,
-                  pickable: pickable,
-                  radiusMinPixels: 0,
-                  radiusMaxPixels: maxPointSize,
-                  filled: true,
-                  stroked: true,
-                  radiusUnits: 'pixels',
-                  getPosition: this._getPosition,
-                  ...extensionFilterProps,
-                  getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Default, params),
-                  getRadius: (d) => this._getPointRadius(d, { layer, sublayer }),
-                  lineWidthUnits: 'pixels',
-                  lineWidthMinPixels: 1,
-                  getLineWidth: 1,
-                  getLineColor: DEFAULT_LINE_COLOR,
-                  getFillColor: hexToDeckColor(sublayer.color, 0.7),
-                  updateTriggers: {
-                    getFillColor: [sublayer.color],
-                    getRadius: [filtersHash, zoom],
-                    ...updateTrigger,
-                  },
-                }),
-              ]
-            })
-          },
-        }),
-        new ScatterplotLayer<GeoJsonProperties, { data: any }>(this.props, {
-          id: `${this.props.id}-highlight-points`,
-          pickable: false,
-          data: highlightedFeatures?.length ? highlightedFeatures : [],
-          visible: highlightedFeatures && highlightedFeatures?.length > 0,
-          radiusMinPixels: 0,
-          radiusMaxPixels: maxPointSize,
-          filled: true,
-          radiusUnits: 'pixels',
-          getPosition: this._getPosition,
-          getPolygonOffset: (params) =>
-            getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-          getRadius: this._getPointRadiusValue,
-          getFillColor: COLOR_HIGHLIGHT_LINE,
-        })
-      )
+    const pointsLayers = layers.map((layer) => {
+      return new TileLayer<TileLayerProps<UserLayerFeature>>({
+        id: `${layer.id}-base-layer`,
+        data: this._getTilesUrl(layer.tilesUrl),
+        loaders: [GFWMVTLoader],
+        maxZoom,
+        loadOptions: {
+          ...getFetchLoadOptions(),
+        },
+        onTileError: this._onLayerError,
+        onViewportLoad: this._onViewportLoad,
+        renderSubLayers: (props) => {
+          const mvtSublayerProps = {
+            ...props,
+            ...getMVTSublayerProps({ tile: props.tile, extensions: props.extensions }),
+          }
+          return layer.sublayers.map((sublayer) => {
+            const filtersHash = getContextFiltersHash(sublayer.filters)
+            const { extensionFilterProps, updateTrigger } = this._getExtensionFilterProps(sublayer)
+            return [
+              new ScatterplotLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
+                id: `${props.id}-${sublayer.dataviewId}-points`,
+                pickable: pickable,
+                radiusMinPixels: 0,
+                radiusMaxPixels: maxPointSize,
+                filled: true,
+                stroked: true,
+                radiusUnits: 'pixels',
+                getPosition: this._getPosition,
+                ...extensionFilterProps,
+                getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Default, params),
+                getRadius: (d) => this._getPointRadius(d, { layer, sublayer }),
+                lineWidthUnits: 'pixels',
+                lineWidthMinPixels: 1,
+                getLineWidth: 1,
+                getLineColor: DEFAULT_LINE_COLOR,
+                getFillColor: hexToDeckColor(sublayer.color, 0.7),
+                updateTriggers: {
+                  getFillColor: [sublayer.color],
+                  getRadius: [filtersHash, zoom],
+                  ...updateTrigger,
+                },
+              }),
+            ]
+          })
+        },
+      })
     })
+    const interactionLayer = new ScatterplotLayer<GeoJsonProperties, { data: any }>(this.props, {
+      id: `${this.props.id}-highlight-points`,
+      pickable: false,
+      data: highlightedFeatures?.length ? highlightedFeatures : [],
+      visible: highlightedFeatures && highlightedFeatures?.length > 0,
+      radiusMinPixels: 0,
+      radiusMaxPixels: maxPointSize,
+      filled: true,
+      radiusUnits: 'pixels',
+      getPosition: this._getPosition,
+      getPolygonOffset: (params) =>
+        getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+      getRadius: this._getPointRadiusValue,
+      getFillColor: COLOR_HIGHLIGHT_LINE,
+    })
+    return [...pointsLayers, interactionLayer]
   }
 }
