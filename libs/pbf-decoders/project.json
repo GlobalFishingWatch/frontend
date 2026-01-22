@@ -6,19 +6,12 @@
   "targets": {
     "dist": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "libs/pbf-decoders/dist",
-        "generatePackageJson": true,
         "main": "libs/pbf-decoders/index.ts",
-        "tsConfig": "libs/pbf-decoders/tsconfig.lib.json",
         "rootDir": "libs/pbf-decoders",
+        "generatePackageJson": true,
         "assets": [
-          {
-            "glob": "**/*",
-            "input": "libs/pbf-decoders/decoders",
-            "output": "decoders"
-          }
+          { "glob": "**/*", "input": "libs/pbf-decoders/decoders", "output": "decoders" }
         ]
       }
     },

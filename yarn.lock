@@ -2974,7 +2974,7 @@ __metadata:
   resolution: "@globalfishingwatch/i18n-labels@workspace:libs/i18n-labels"
   dependencies:
     cross-env: "npm:^10.1.0"
-    i18next-cli: "npm:^1.36.1"
+    i18next-cli: "npm:1.36.1"
     prettier: "npm:3.8.0"
     rimraf: "npm:6.1.2"
     tslib: "npm:2.x"
@@ -3332,7 +3332,7 @@ __metadata:
     supercluster: "npm:8.0.1"
     ts-jest: "npm:29.4.6"
     ts-node: "npm:10.9.2"
-    tslib: "npm:2.x"
+    tslib: "npm:2.3.0"
     type-fest: "npm:^5.3.1"
     typesafe-actions: "npm:5.1.0"
     typescript: "npm:5.9.3"
@@ -26564,7 +26564,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-cli@npm:^1.36.1":
+"i18next-cli@npm:1.36.1, i18next-cli@npm:^1.36.1":
   version: 1.36.1
   resolution: "i18next-cli@npm:1.36.1"
   dependencies:
@@ -37940,6 +37940,13 @@ __metadata:
     minimist: "npm:^1.2.6"
     strip-bom: "npm:^3.0.0"
   checksum: 10/5e55cc2fb6b800eb72011522e10edefccb45b1f9af055681a51354c9b597d1390c6fa9cc356b8c7529f195ac8a90a78190d563159f3a1eed10e01bbd4d01a8ab
+  languageName: node
+  linkType: hard
+
+"tslib@npm:2.3.0":
+  version: 2.3.0
+  resolution: "tslib@npm:2.3.0"
+  checksum: 10/9c55c9abd5ecd94e5fd37573db27e26933fb6c33506431403fb4627dcb8aa9a45b772afa6d05dd2c25dc1de22a213193251e6303742f3bcdc179e523a9295bfd
   languageName: node
   linkType: hard
 

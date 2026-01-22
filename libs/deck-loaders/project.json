@@ -5,15 +5,7 @@
   "projectType": "library",
   "targets": {
     "dist": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "libs/deck-loaders/dist",
-        "generatePackageJson": false,
-        "main": "libs/deck-loaders/src/index.ts",
-        "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
-        "rootDir": "libs/deck-loaders/src"
-      }
+      "executor": "@nx/js:tsc"
     },
     "dist:workers": {
       "executor": "nx:run-commands",

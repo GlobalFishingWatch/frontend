@@ -5,15 +5,7 @@
   "projectType": "library",
   "targets": {
     "dist": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "libs/api-client/dist",
-        "generatePackageJson": false,
-        "main": "libs/api-client/src/index.ts",
-        "tsConfig": "libs/api-client/tsconfig.lib.json",
-        "rootDir": "libs/api-client/src"
-      }
+      "executor": "@nx/js:tsc"
     },
     "publish": {
       "executor": "@nx/js:release-publish",

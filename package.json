@@ -164,7 +164,7 @@
     "shpjs": "6.2.0",
     "simple-statistics": "7.8.8",
     "supercluster": "8.0.1",
-    "tslib": "2.x",
+    "tslib": "2.3.0",
     "type-fest": "^5.3.1",
     "typesafe-actions": "5.1.0",
     "typescript": "5.9.3",

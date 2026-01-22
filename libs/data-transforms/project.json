@@ -5,15 +5,7 @@
   "projectType": "library",
   "targets": {
     "dist": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "libs/data-transforms/dist",
-        "generatePackageJson": false,
-        "main": "libs/data-transforms/src/index.ts",
-        "tsConfig": "libs/data-transforms/tsconfig.lib.json",
-        "rootDir": "libs/data-transforms/src"
-      }
+      "executor": "@nx/js:tsc"
     },
     "publish": {
       "executor": "@nx/js:release-publish",

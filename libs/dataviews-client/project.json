@@ -5,15 +5,7 @@
   "projectType": "library",
   "targets": {
     "dist": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "libs/dataviews-client/dist",
-        "generatePackageJson": false,
-        "main": "libs/dataviews-client/src/index.ts",
-        "tsConfig": "libs/dataviews-client/tsconfig.lib.json",
-        "rootDir": "libs/dataviews-client/src"
-      }
+      "executor": "@nx/js:tsc"
     },
     "bundle-url-workspace": {
       "executor": "nx:run-commands",

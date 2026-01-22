@@ -18,49 +18,17 @@
     },
     "dist": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "libs/i18n-labels/dist",
-        "generatePackageJson": false,
         "main": "libs/i18n-labels/index.ts",
-        "tsConfig": "libs/i18n-labels/tsconfig.lib.json",
         "rootDir": "libs/i18n-labels",
         "assets": [
-          {
-            "glob": "libs/i18n-labels/en",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "libs/i18n-labels/es",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "libs/i18n-labels/fr",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "libs/i18n-labels/id",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "libs/i18n-labels/pt",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "libs/i18n-labels/val",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "libs/i18n-labels/source",
-            "input": ".",
-            "output": "."
-          }
+          { "glob": "libs/i18n-labels/en", "input": ".", "output": "." },
+          { "glob": "libs/i18n-labels/es", "input": ".", "output": "." },
+          { "glob": "libs/i18n-labels/fr", "input": ".", "output": "." },
+          { "glob": "libs/i18n-labels/id", "input": ".", "output": "." },
+          { "glob": "libs/i18n-labels/pt", "input": ".", "output": "." },
+          { "glob": "libs/i18n-labels/val", "input": ".", "output": "." },
+          { "glob": "libs/i18n-labels/source", "input": ".", "output": "." }
         ],
         "updateBuildableProjectDepsInPackageJson": true
       }

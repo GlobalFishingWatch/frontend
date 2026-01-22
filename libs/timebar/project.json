@@ -6,20 +6,8 @@
   "targets": {
     "dist": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "libs/timebar/dist",
-        "generatePackageJson": false,
-        "main": "libs/timebar/src/index.ts",
-        "tsConfig": "libs/timebar/tsconfig.lib.json",
-        "rootDir": "libs/timebar/src",
-        "assets": [
-          {
-            "glob": "**/*.css",
-            "input": "libs/timebar/src",
-            "output": "."
-          }
-        ]
+        "assets": [{ "glob": "**/*.css", "input": "libs/timebar/src", "output": "." }]
       }
     },
     "publish": {

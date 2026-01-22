@@ -5,15 +5,7 @@
   "projectType": "library",
   "targets": {
     "dist": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "libs/ocean-areas/dist",
-        "generatePackageJson": false,
-        "main": "libs/ocean-areas/src/index.ts",
-        "tsConfig": "libs/ocean-areas/tsconfig.lib.json",
-        "rootDir": "libs/ocean-areas/src"
-      }
+      "executor": "@nx/js:tsc"
     },
     "publish": {
       "executor": "@nx/js:release-publish",
