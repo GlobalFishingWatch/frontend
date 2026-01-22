@@ -64,7 +64,7 @@
       "options": {
         "commands": [
           "make-dir apps/fishing-map/public/workers",
-          "shx cp -R libs/deck-loaders/dist/workers/. apps/fishing-map/public/workers/ || true"
+          "shx cp -R libs/deck-loaders/dist/workers/**/*.js apps/fishing-map/public/workers/ || true"
         ],
         "parallel": false
       }
