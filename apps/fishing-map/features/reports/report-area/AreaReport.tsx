@@ -24,14 +24,12 @@ import {
   selectReportAreaStatus,
 } from 'features/reports/report-area/area-reports.selectors'
 import { getReportCategoryFromDataview } from 'features/reports/report-area/area-reports.utils'
-import { REPORT_ACTIVITY_GRAPH_EVOLUTION } from 'features/reports/reports.config'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import {
   resetReportData,
   selectReportVesselsStatus,
 } from 'features/reports/tabs/activity/reports-activity.slice'
-import { useSetReportTimeComparison } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
 import {
   useTimebarEnvironmentConnect,
   useTimebarVisualisationConnect,
@@ -45,53 +43,25 @@ import WorkspaceError from 'features/workspace/WorkspaceError'
 import { useLocationConnect } from 'routes/routes.hook'
 import { TimebarVisualisations } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import dynamicWithRetry from 'utils/dynamic-import'
 
 import styles from 'features/reports/report-area/AreaReport.module.css'
 
-const ReportActivity = dynamic(() =>
-  import(
-    /* webpackChunkName: "ReportActivity" */ 'features/reports/tabs/activity/ReportActivity'
-  ).catch((err) => {
-    // To catch ChunkLoadErrors due to deployment updates
-    if (err instanceof SyntaxError || err.message.includes("Unexpected token '<'")) {
-      console.warn('Detected HTML served as JS. Possible deployment update. Reloading...')
-      window.location.reload()
-    }
-    throw err
-  })
+const ReportActivity = dynamicWithRetry(
+  () =>
+    import(/* webpackChunkName: "ReportActivity" */ 'features/reports/tabs/activity/ReportActivity')
 )
-const ReportEnvironment = dynamic(() =>
-  import(
-    /* webpackChunkName: "ReportEnvironment" */ 'features/reports/tabs/environment/ReportEnvironment'
-  ).catch((err) => {
-    if (err instanceof SyntaxError || err.message.includes("Unexpected token '<'")) {
-      console.warn('Detected HTML served as JS. Possible deployment update. Reloading...')
-      window.location.reload()
-    }
-    throw err
-  })
+const ReportEnvironment = dynamicWithRetry(
+  () =>
+    import(
+      /* webpackChunkName: "ReportEnvironment" */ 'features/reports/tabs/environment/ReportEnvironment'
+    )
 )
-const ReportOthers = dynamic(() =>
-  import(/* webpackChunkName: "ReportOthers" */ 'features/reports/tabs/others/ReportOthers').catch(
-    (err) => {
-      if (err instanceof SyntaxError || err.message.includes("Unexpected token '<'")) {
-        console.warn('Detected HTML served as JS. Possible deployment update. Reloading...')
-        window.location.reload()
-      }
-      throw err
-    }
-  )
+const ReportOthers = dynamicWithRetry(
+  () => import(/* webpackChunkName: "ReportOthers" */ 'features/reports/tabs/others/ReportOthers')
 )
-const ReportEvents = dynamic(() =>
-  import(/* webpackChunkName: "ReportEvents" */ 'features/reports/tabs/events/EventsReport').catch(
-    (err) => {
-      if (err instanceof SyntaxError || err.message.includes("Unexpected token '<'")) {
-        console.warn('Detected HTML served as JS. Possible deployment update. Reloading...')
-        window.location.reload()
-      }
-      throw err
-    }
-  )
+const ReportEvents = dynamicWithRetry(
+  () => import(/* webpackChunkName: "ReportEvents" */ 'features/reports/tabs/events/EventsReport')
 )
 
 export default function Report() {
@@ -106,7 +76,6 @@ export default function Report() {
   const reportAreaError = useSelector(selectReportAreaStatus) === AsyncReducerStatus.Error
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
   const { dispatchTimebarSelectedEnvId } = useTimebarEnvironmentConnect()
-  const { resetReportTimecomparison } = useSetReportTimeComparison()
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
   const reportArea = useSelector(selectReportArea)
   const hasReportBuffer = useSelector(selectHasReportBuffer)
@@ -206,10 +175,7 @@ export default function Report() {
       dispatchQueryParams({
         reportCategory: option.id,
         reportVesselPage: 0,
-        reportActivityGraph: REPORT_ACTIVITY_GRAPH_EVOLUTION,
-        reportComparisonDataviewIds: undefined,
       })
-      resetReportTimecomparison()
 
       fitAreaInViewport()
       trackEvent({
