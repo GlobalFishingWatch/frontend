@@ -23,10 +23,7 @@ export default defineConfig([
         'error',
         {
           buildTargets: ['dist', 'build'],
-          ignoredFiles: [
-            '{projectRoot}/vite.config.{js,ts,mjs,mts}',
-            '{projectRoot}/rollup.config.{js,ts,mjs,mts}',
-          ],
+          ignoredFiles: ['{projectRoot}/vite.config.{js,ts,mjs,mts}'],
           checkMissingDependencies: true,
           checkObsoleteDependencies: true,
           checkVersionMismatches: true,

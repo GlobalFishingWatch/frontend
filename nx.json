@@ -54,11 +54,6 @@
         "eslintConfig": "eslint.config.mjs"
       }
     },
-    "@nx/rollup:rollup": {
-      "cache": true,
-      "dependsOn": ["^build", "^dist"],
-      "inputs": ["production", "^production"]
-    },
     "@nx/esbuild:esbuild": {
       "cache": true,
       "dependsOn": ["^build", "^dist"],
