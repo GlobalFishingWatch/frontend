@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Link from 'redux-first-router-link'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
@@ -9,6 +8,7 @@ import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.
 import type { ReportCategory } from 'features/reports/reports.types'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import Link from 'routes/Link'
 import { WORKSPACE_REPORT } from 'routes/routes'
 import { selectLocationQuery } from 'routes/routes.selectors'
 

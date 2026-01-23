@@ -45,12 +45,12 @@
       "dependsOn": ["clean-locales", "prepare-loaders"],
       "options": {
         "commands": [
-          "nx run i18n-labels:ts",
-          "nx run fishing-map:i18n:extract:watch",
-          "nx run fishing-map:i18n:types:watch",
-          "nx serve i18n-labels",
-          "nx serve fishing-map --hostname=0.0.0.0",
-          "nx watch-deps fishing-map"
+          // "nx run i18n-labels:ts",
+          // "nx run fishing-map:i18n:extract:watch",
+          // "nx run fishing-map:i18n:types:watch",
+          // "nx serve i18n-labels",
+          "nx serve fishing-map --hostname=0.0.0.0"
+          // "nx watch-deps fishing-map"
         ],
         "parallel": true
       },

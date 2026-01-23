@@ -3,7 +3,7 @@
 import React from 'react'
 import { Provider } from 'react-redux'
 // import { appWithTranslation } from 'next-i18next'
-// import { ClickToComponent } from 'click-to-react-component'
+// import { ClickToComponent } from 'click-to-component'
 import type { AppProps } from 'next/app'
 // import dynamic from 'next/dynamic'
 // import { useEffect, useState } from 'react'

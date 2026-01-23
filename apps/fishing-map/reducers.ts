@@ -29,7 +29,7 @@ import vesselGroupsModalReducer from 'features/vessel-groups/vessel-groups-modal
 import workspaceReducer from 'features/workspace/workspace.slice'
 import workspacesReducer from 'features/workspaces-list/workspaces-list.slice'
 import descriptionReducer from 'routes/description.reducer'
-import connectedRoutes from 'routes/routes'
+import locationReducer from 'routes/location.slice'
 import titleReducer from 'routes/title.reducer'
 
 export const rootReducer = combineReducers({
@@ -44,7 +44,7 @@ export const rootReducer = combineReducers({
   downloadTrack: downloadTrackReducer,
   editor: editorReducer,
   hints: hintsReducer,
-  location: connectedRoutes.reducer,
+  location: locationReducer,
   map: mapReducer,
   mapControls: mapControlsReducer,
   modals: modalsReducer,

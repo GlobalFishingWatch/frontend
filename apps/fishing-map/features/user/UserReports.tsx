@@ -1,7 +1,6 @@
 import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Link from 'redux-first-router-link'
 
 import type { Report } from '@globalfishingwatch/api-types'
 import { Locale } from '@globalfishingwatch/api-types'
@@ -18,6 +17,7 @@ import {
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { selectUserReports } from 'features/user/selectors/user.permissions.selectors'
 import { resetWorkspaceSlice } from 'features/workspace/workspace.slice'
+import Link from 'routes/Link'
 import { REPORT } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'

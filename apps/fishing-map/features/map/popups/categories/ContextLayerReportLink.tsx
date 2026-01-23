@@ -1,7 +1,6 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Link from 'redux-first-router-link'
 
 import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -21,6 +20,7 @@ import { resetReportData } from 'features/reports/tabs/activity/reports-activity
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'
+import Link from 'routes/Link'
 import { WORKSPACE_REPORT } from 'routes/routes'
 import { selectLocationQuery } from 'routes/routes.selectors'
 

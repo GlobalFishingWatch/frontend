@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Link from 'redux-first-router-link'
 
 import { Icon, Tooltip } from '@globalfishingwatch/ui-components'
 
@@ -10,6 +9,7 @@ import {
   selectIsUserExpired,
   selectUserData,
 } from 'features/user/selectors/user.selectors'
+import Link from 'routes/Link'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { USER } from 'routes/routes'
 

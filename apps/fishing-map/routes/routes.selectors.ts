@@ -1,11 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { RootState } from 'reducers'
-import type { Query } from 'redux-first-router'
 
 import { WorkspaceCategory } from 'data/workspaces'
 import type { QueryParams, WorkspaceParam } from 'types'
 import { createDeepEqualSelector } from 'utils/selectors'
 
+import type { Query } from './location.slice'
 import type { ROUTE_TYPES } from './routes'
 import {
   PORT_REPORT,
