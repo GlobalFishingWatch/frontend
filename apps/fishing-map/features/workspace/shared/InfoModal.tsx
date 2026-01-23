@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { uniqBy } from 'es-toolkit'
 
@@ -143,7 +143,7 @@ const InfoModal = ({
   return (
     options &&
     options.length > 0 && (
-      <Fragment>
+      <div>
         <IconButton
           icon={datasetError ? 'warning' : 'info'}
           type={datasetError ? 'warning' : 'default'}
@@ -190,7 +190,7 @@ const InfoModal = ({
             {selectedDataset && <InfoModalContent dataset={selectedDataset} />}
           </Modal>
         )}
-      </Fragment>
+      </div>
     )
   )
 }

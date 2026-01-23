@@ -1,5 +1,5 @@
-import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
+import type { DOMNode } from 'html-react-parser';
 import parse from 'html-react-parser'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
@@ -9,6 +9,16 @@ import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 
 import styles from './InfoModal.module.css'
+
+const options = {
+  replace: (domNode: DOMNode) => {
+    // Check if the node is a Text node and has a parent
+    // For fixing google translate crash https://martijnhols.nl/blog/everything-about-google-translate-crashing-react
+    if (domNode.type === 'text' && domNode.data.trim().length > 0) {
+      return <span>{domNode.data}</span>
+    }
+  },
+}
 
 const getDatasetQueriesArray = (dataset: Dataset) => {
   const rawQueries = dataset?.configuration?.documentation?.queries
@@ -27,18 +37,17 @@ const InfoModalContent = ({ dataset }: InfoModalContentProps) => {
   if (!dataset) {
     return null
   }
-
   const description = getDatasetDescriptionTranslated(dataset)
   const queries = getDatasetQueriesArray(dataset)
   return (
-    <Fragment>
-      <p className={styles.content}>
+    <div>
+      <span className={styles.content}>
         {/**
          * For security reasons, we are only parsing html
          * coming from translated descriptions
          **/}
-        {description.length > 0 ? parse(description) : dataset.description}
-      </p>
+        {description.length > 0 ? parse(description, options) : dataset.description}
+      </span>
       {gfwUser && queries && queries?.length > 0 && (
         <div className={styles.content}>
           <div className={styles.queriesContainer}>
@@ -54,7 +63,7 @@ const InfoModalContent = ({ dataset }: InfoModalContentProps) => {
           ))}
         </div>
       )}
-    </Fragment>
+    </div>
   )
 }
 
