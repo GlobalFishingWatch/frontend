@@ -186,7 +186,7 @@ module "production" {
   description       = "Deploy to production when pushing new tag @gfw/fishing-map@x.x.x"
   app_name          = local.app_name
   machine_type      = "E2_HIGHCPU_8"
-  docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-sta"
+  docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-pro"
   service_account   = local.service_account.pro
   labels = {
     environment      = "production"
