@@ -45,6 +45,7 @@ export const FULL_SUFIX = 'full'
 export const USER_SUFIX = 'user'
 export const PRIVATE_SUFIX = 'private'
 export const AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX = 'gfw-feedback-auto-saved'
+export const AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION = 'Auto generated workspace for feedback'
 export const PRIVATE_ICON = '🔒'
 export const PRIVATE_PASSWORD_ICON = '🔐'
 
