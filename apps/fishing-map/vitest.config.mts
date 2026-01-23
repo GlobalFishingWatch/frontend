@@ -4,10 +4,23 @@ import { playwright } from '@vitest/browser-playwright'
 import path from 'path'
 import { defineConfig } from 'vitest/config'
 
+// Plugin to transform SVG imports for testing
+const svgMockPlugin = () => ({
+  name: 'svg-mock',
+  transform(_code: string, id: string) {
+    if (id.endsWith('.svg')) {
+      return {
+        code: 'export default () => null',
+        map: null,
+      }
+    }
+  },
+})
+
 export default defineConfig({
   root: '.',
   cacheDir: '../../node_modules/.vite/apps/fishing-map',
-  plugins: [react(), nxViteTsPaths()],
+  plugins: [react(), nxViteTsPaths(), svgMockPlugin()],
   resolve: {
     alias: {
       data: path.resolve(__dirname, './data'),
