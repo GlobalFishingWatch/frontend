@@ -30,6 +30,7 @@ import {
   selectWorkspaceReportId,
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { RouterReduxConnector } from 'routes/router-redux-connector'
 import {
   HOME,
   PORT_REPORT,
@@ -198,6 +199,7 @@ function App() {
 
   return (
     <Fragment>
+      <RouterReduxConnector />
       <a href="https://globalfishingwatch.org" className="print-only">
         <Logo className={styles.logo} />
       </a>

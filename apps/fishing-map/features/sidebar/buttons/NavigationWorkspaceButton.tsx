@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import Link from 'redux-first-router-link'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
@@ -15,6 +14,7 @@ import { selectTrackCorrectionOpen } from 'features/track-correction/track-selec
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import { resetVesselState } from 'features/vessel/vessel.slice'
 import { cleanReportQuery } from 'features/workspace/workspace.slice'
+import Link from 'routes/Link'
 import type { ROUTE_TYPES } from 'routes/routes'
 import { HOME, WORKSPACE } from 'routes/routes'
 import {

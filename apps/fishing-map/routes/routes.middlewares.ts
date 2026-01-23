@@ -1,6 +1,5 @@
 import type { RootState } from 'reducers'
 import type { Dispatch, Middleware } from 'redux'
-import { NOT_FOUND } from 'redux-first-router'
 
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 
@@ -17,14 +16,42 @@ import type { QueryParam, QueryParams } from 'types'
 import type { ROUTE_TYPES } from './routes'
 import {
   ALL_WORKSPACE_ROUTES,
+  HOME,
+  PORT_REPORT,
+  REPORT,
   REPORT_ROUTES,
-  routesMap,
+  SEARCH,
+  USER,
+  VESSEL,
+  VESSEL_GROUP_REPORT,
   VESSEL_ROUTES,
+  WORKSPACE,
+  WORKSPACE_REPORT,
   WORKSPACE_ROUTES,
+  WORKSPACE_SEARCH,
+  WORKSPACE_VESSEL,
+  WORKSPACES_LIST,
 } from './routes'
 import type { UpdateQueryParamsAction } from './routes.actions'
+// NOT_FOUND constant for backward compatibility
+export const NOT_FOUND = 'NOT_FOUND' as const
 
-const ROUTES_ACTIONS = Object.keys(routesMap)
+// List of all route action types (replaces routesMap keys)
+const ROUTES_ACTIONS = [
+  HOME,
+  USER,
+  SEARCH,
+  REPORT,
+  VESSEL,
+  WORKSPACES_LIST,
+  WORKSPACE,
+  WORKSPACE_SEARCH,
+  WORKSPACE_VESSEL,
+  WORKSPACE_REPORT,
+  VESSEL_GROUP_REPORT,
+  PORT_REPORT,
+  NOT_FOUND,
+]
 
 export const routerQueryMiddleware: Middleware =
   ({ getState }: { getState: () => RootState }) =>
@@ -83,7 +110,7 @@ export const routerWorkspaceMiddleware: Middleware =
     const state = getState() as RootState
     const routerAction = action as UpdateQueryParamsAction
     const { type, query, payload, pathname } = state.location
-    const isRouterAction = ROUTES_ACTIONS.includes(routerAction.type)
+    const isRouterAction = ROUTES_ACTIONS.includes(routerAction.type as string)
     const isNotInitialLoad = type && routerAction.type !== NOT_FOUND && type !== NOT_FOUND
     const newAction: UpdateQueryParamsAction = { ...routerAction }
 

@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import dynamic from 'next/dynamic'
-import Link from 'redux-first-router-link'
 
 import type { IconType } from '@globalfishingwatch/ui-components'
 import { Icon, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
@@ -25,6 +24,7 @@ import { selectUserData } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
 import { selectIsDefaultWorkspace, selectWorkspace } from 'features/workspace/workspace.selectors'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
+import Link from 'routes/Link'
 import { HOME, SEARCH, USER, WORKSPACE_SEARCH, WORKSPACES_LIST } from 'routes/routes'
 import {
   selectIsAnySearchLocation,

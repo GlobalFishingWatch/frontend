@@ -98,6 +98,7 @@ export const useLocationConnect = () => {
       { replaceQuery = false, replaceUrl = false } = {}
     ) => {
       const { query = {}, payload: customPayload = {} } = params
+      // Use updateLocation which handles both TanStack Router navigation and Redux dispatch
       dispatch(
         updateLocation(type, {
           query,
@@ -112,6 +113,7 @@ export const useLocationConnect = () => {
 
   const dispatchQueryParams = useCallback(
     (query: QueryParams, replaceQuery = false) => {
+      // Use updateLocation which handles both TanStack Router navigation and Redux dispatch
       dispatch(updateLocation(locationType, { query, payload, replaceQuery }))
     },
     [dispatch, locationType, payload]

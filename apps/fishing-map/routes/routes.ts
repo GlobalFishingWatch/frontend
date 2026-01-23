@@ -1,12 +1,6 @@
-import type { Dispatch } from '@reduxjs/toolkit'
-import type { Bag, Options, RoutesMap, StateGetter } from 'redux-first-router'
-import { connectRoutes, NOT_FOUND, redirect } from 'redux-first-router'
-
-import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
-
-import { PATH_BASENAME } from 'data/config'
-import { t } from 'features/i18n/i18n'
-import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
+// Redux First Router has been migrated to TanStack Router
+// This file now only exports route constants and types for backward compatibility
+// The actual routing is handled by TanStack Router in router.tsx
 
 export const HOME = 'HOME'
 export const WORKSPACE = 'WORKSPACE'
@@ -60,113 +54,21 @@ export const ROUTES_WITH_WORKSPACES = [
   PORT_REPORT,
 ]
 
-const confirmLeave = (state: any, action: any) => {
-  const suggestWorkspaceSave = state.workspace?.suggestSave === true
-  const isGuestUser = selectIsGuestUser(state)
-  if (
-    !isGuestUser &&
-    !ROUTES_WITH_WORKSPACES.includes(action.type) &&
-    state.location?.type !== action.type &&
-    suggestWorkspaceSave
-  ) {
-    return t((t) => t.common.confirmLeave)
-  }
-}
-
-export const routesMap: RoutesMap = {
-  [HOME]: {
-    path: '/index',
-    confirmLeave,
-  },
-  [USER]: {
-    path: '/user',
-  },
-  [SEARCH]: {
-    path: '/vessel-search',
-  },
-  [REPORT]: {
-    path: '/report/:reportId',
-  },
-  [VESSEL]: {
-    path: '/vessel/:vesselId',
-  },
-  [WORKSPACES_LIST]: {
-    path: '/:category',
-  },
-  [WORKSPACE]: {
-    path: '/:category/:workspaceId?',
-    confirmLeave,
-  },
-  [WORKSPACE_SEARCH]: {
-    path: '/:category/:workspaceId/vessel-search',
-  },
-  [WORKSPACE_VESSEL]: {
-    path: '/:category/:workspaceId/vessel/:vesselId',
-    confirmLeave,
-  },
-  [WORKSPACE_REPORT]: {
-    path: '/:category/:workspaceId/report/:datasetId?/:areaId?',
-    confirmLeave,
-  },
-  [VESSEL_GROUP_REPORT]: {
-    path: '/:category/:workspaceId/vessel-group-report/:vesselGroupId',
-    confirmLeave,
-  },
-  [PORT_REPORT]: {
-    path: '/:category/:workspaceId/ports-report/:portId',
-    confirmLeave,
-  },
-  [NOT_FOUND]: {
-    path: '',
-    thunk: async (dispatch: Dispatch) => {
-      dispatch(redirect({ type: HOME }) as any)
-    },
-  },
-}
-
-const parseAppWorkspace = (queryString: string) => {
-  return parseWorkspace(queryString, {
-    reportAreaBounds: (reportAreaBounds: string[]) =>
-      reportAreaBounds?.map((bound: string) => parseFloat(bound)),
-  })
-}
-
-const routesOptions: Options = {
-  basename: PATH_BASENAME,
-  querySerializer: {
-    stringify: stringifyWorkspace,
-    parse: parseAppWorkspace,
-  },
-  onAfterChange: (dispatch: Dispatch<any>, getState: StateGetter, bag: Bag) => {
-    // prevent error before the the document is initialized
-    if (typeof window !== 'undefined' && document! == null) {
-      ;(document as any)
-        .querySelector('meta[name="description"]')
-        .setAttribute(
-          'content',
-          getState().description
-        )(document as any)
-        .querySelector('meta[property="og:description"]')
-        .setAttribute(
-          'content',
-          getState().description
-        )(document as any)
-        .querySelector('meta[name="twitter:description"]')
-        .setAttribute('content', getState().description)
-    }
-  },
-  displayConfirmLeave: (message, callback) => {
-    if (message) {
-      const openSaveWorkspace = !window.confirm(message)
-      if (typeof window !== 'undefined') {
-        sessionStorage.setItem(SAVE_WORKSPACE_BEFORE_LEAVE_KEY, openSaveWorkspace.toString())
-        window.dispatchEvent(
-          new StorageEvent('session-storage', { key: SAVE_WORKSPACE_BEFORE_LEAVE_KEY })
-        )
-      }
-      callback(!openSaveWorkspace)
-    }
-  },
-}
-
-export default connectRoutes(routesMap, routesOptions)
+// Legacy Redux First Router configuration (no longer used, kept for reference)
+// Routes are now defined in router.tsx using TanStack Router
+//
+// const confirmLeave = (state: any, action: any) => {
+//   const suggestWorkspaceSave = state.workspace?.suggestSave === true
+//   const isGuestUser = selectIsGuestUser(state)
+//   if (
+//     !isGuestUser &&
+//     !ROUTES_WITH_WORKSPACES.includes(action.type) &&
+//     state.location?.type !== action.type &&
+//     suggestWorkspaceSave
+//   ) {
+//     return t('common.confirmLeave')
+//   }
+// }
+//
+// export const routesMap: RoutesMap = { ... }
+// export default connectRoutes(routesMap, routesOptions)

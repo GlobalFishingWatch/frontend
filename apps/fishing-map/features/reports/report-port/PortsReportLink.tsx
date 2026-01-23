@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import Link from 'redux-first-router-link'
 
 import { DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -16,6 +15,7 @@ import {
 import type { ExtendedFeatureByVesselEventPort } from 'features/map/map.slice'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import Link from 'routes/Link'
 import { PORT_REPORT } from 'routes/routes'
 import { selectLocationQuery } from 'routes/routes.selectors'
 

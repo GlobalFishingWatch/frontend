@@ -1,7 +1,6 @@
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Link from 'redux-first-router-link'
 
 import { IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
@@ -17,6 +16,7 @@ import {
   selectWorkspaceListStatus,
   selectWorkspaceListStatusId,
 } from 'features/workspaces-list/workspaces-list.slice'
+import Link from 'routes/Link'
 import { WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getHighlightedText } from 'utils/text'

@@ -3,16 +3,9 @@ import { configureStore } from '@reduxjs/toolkit'
 import { logoutUserMiddleware } from 'middlewares'
 import { queriesApiMiddlewares, queriesApiReducers } from 'queries'
 
-import connectedRoutes from 'routes/routes'
 import routerMiddlewares from 'routes/routes.middlewares'
 
 import { rootReducer } from './reducers'
-
-const {
-  middleware: routerMiddleware,
-  enhancer: routerEnhancer,
-  // initialDispatch,
-} = connectedRoutes
 
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK
 const defaultMiddlewareOptions: any = {
@@ -56,10 +49,8 @@ export const makeStore = () => {
       getDefaultMiddleware(defaultMiddlewareOptions).concat(
         ...queriesApiMiddlewares,
         ...routerMiddlewares,
-        routerMiddleware as Middleware,
         logoutUserMiddleware
       ),
-    enhancers: (getDefaultEnhancers) => [routerEnhancer, ...getDefaultEnhancers()] as any,
     // preloadedState,
   })
 }

@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import Link from 'redux-first-router-link'
 
 import type { DataviewInstance, EventType } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -27,6 +26,7 @@ import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
 } from 'features/workspace/workspace.selectors'
+import Link from 'routes/Link'
 import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
 import {
   selectIsStandaloneSearchLocation,

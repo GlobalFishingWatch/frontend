@@ -1,10 +1,10 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import Link from 'redux-first-router-link'
 
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import Link from 'routes/Link'
 import { VESSEL_GROUP_REPORT } from 'routes/routes'
 import { selectLocationQuery } from 'routes/routes.selectors'
 

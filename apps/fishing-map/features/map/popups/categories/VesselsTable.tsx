@@ -2,7 +2,6 @@ import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import Link from 'redux-first-router-link'
 
 import type { DataviewCategory } from '@globalfishingwatch/api-types'
 import { DatasetSubCategory, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -31,6 +30,7 @@ import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/VesselLayerPanel'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import Link from 'routes/Link'
 import { WORKSPACE_SEARCH } from 'routes/routes'
 import {
   EMPTY_FIELD_PLACEHOLDER,
