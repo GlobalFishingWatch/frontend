@@ -1,7 +1,6 @@
 import { render } from 'test/appTestUtils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import * as workspaceSelectors from 'features/workspace/workspace.selectors'
 import { makeStore } from 'store'
 
 import Timebar from './Timebar'
@@ -37,13 +36,12 @@ describe('Timebar', () => {
       timerange: { start: '2025-01-01', end: '2025-01-02' },
     })
 
-    const { getByTitle } = await render(<Timebar />, {
+    const { getByTestId } = await render(<Timebar />, {
       store,
     })
 
-    const yearButton = getByTitle('See yearly data')
-
-    yearButton.element().dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    const yearButton = getByTestId('interval-btn-year')
+    await yearButton.click()
 
     // Now you can assert on the spy
     expect(onTimebarChangeSpy).toHaveBeenCalledWith(
