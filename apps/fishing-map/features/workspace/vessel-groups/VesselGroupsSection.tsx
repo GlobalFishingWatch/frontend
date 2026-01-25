@@ -21,9 +21,11 @@ import {
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
+import Section from '../shared/Section'
+
 import VesselGroupLayerPanel from './VesselGroupsLayerPanel'
 
-import styles from 'features/workspace/shared/Sections.module.css'
+import styles from 'features/workspace/shared/Section.module.css'
 
 // Use this when needs to highlight a section instead of a dataview
 // const MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION = {
@@ -34,9 +36,10 @@ function VesselGroupSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const dataviews = useSelector(selectVesselGroupDataviews)
+  const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
+  const hasVisibleDataviews = visibleDataviews.length >= 1
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
   const vesselGroupsStatusId = useSelector(selectVesselGroupsStatusId)
-  const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
   const readOnly = useSelector(selectReadOnly)
   const userDatasets = useSelector(selectUserVesselGroups)
 
@@ -58,32 +61,47 @@ function VesselGroupSection(): React.ReactElement<any> {
   }, [dispatch, userDatasets.length])
 
   return (
-    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={cx('print-hidden', styles.header)}>
-        <h2 className={styles.sectionTitle}>{t('vesselGroup.vesselGroups')}</h2>
-        {!readOnly && (
-          <div
-            className={cx(styles.sectionButtons, styles.sectionButtonsSecondary, 'print-hidden')}
-          >
-            <UserLoggedIconButton
+    <Section
+      id={DataviewCategory.VesselGroups}
+      data-testid="vessel-groups-section"
+      hasVisibleDataviews={hasVisibleDataviews}
+      title={
+        <span>
+          {t('vesselGroup.vesselGroups')}
+          {hasVisibleDataviews && (
+            <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
+          )}
+        </span>
+      }
+      headerOptions={
+        <>
+          {!readOnly && (
+            <div
+              className={cx(styles.sectionButtons, styles.sectionButtonsSecondary, 'print-hidden')}
+            >
+              <UserLoggedIconButton
+                type="border"
+                icon="vessel-group"
+                size="medium"
+                tooltip={t('vesselGroup.createNewGroup')}
+                tooltipPlacement="top"
+                onClick={onAddVesselGroupClick}
+              />
+            </div>
+          )}
+          <div className={styles.sectionButtons}>
+            <IconButton
+              icon="plus"
               type="border"
-              icon="vessel-group"
               size="medium"
-              tooltip={t('vesselGroup.createNewGroup')}
+              tooltip={t('vesselGroup.addToWorkspace')}
               tooltipPlacement="top"
-              onClick={onAddVesselGroupClick}
+              onClick={onAddClick}
             />
           </div>
-        )}
-        <IconButton
-          icon="plus"
-          type="border"
-          size="medium"
-          tooltip={t('vesselGroup.addToWorkspace')}
-          tooltipPlacement="top"
-          onClick={onAddClick}
-        />
-      </div>
+        </>
+      }
+    >
       <SortableContext items={dataviews}>
         {dataviews.length > 0 ? (
           dataviews?.map((dataview) => {
@@ -110,7 +128,7 @@ function VesselGroupSection(): React.ReactElement<any> {
           </div>
         )}
       </SortableContext>
-    </div>
+    </Section>
   )
 }
 

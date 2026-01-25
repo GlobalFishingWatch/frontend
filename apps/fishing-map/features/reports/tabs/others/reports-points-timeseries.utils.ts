@@ -5,13 +5,13 @@ import {
   type ContextSubLayerConfig,
   type FourwingsDeckSublayer,
   isFeatureInRange,
-  type UserPointsTileLayer,
 } from '@globalfishingwatch/deck-layers'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
+import type { ReportPointsDeckLayer } from 'features/reports/reports-timeseries.utils'
 import { frameTimeseriesToDateTimeseries } from 'features/reports/reports-timeseries-shared.utils'
 import { getGraphDataFromPoints } from 'features/timebar/timebar.utils'
 
@@ -72,7 +72,7 @@ export const pointsFeaturesToTimeseries = (
 
 export type GetPointsTimeseriesParams = {
   features: FilteredPolygons[]
-  instance: UserPointsTileLayer
+  instance: ReportPointsDeckLayer
 }
 
 export const getPointsTimeseries = ({ features, instance }: GetPointsTimeseriesParams) => {

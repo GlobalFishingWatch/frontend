@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "incremental": true,
+    "tsBuildInfoFile": "../../.nx/tsbuildinfo/dataviews-client-url.tsbuildinfo",
     "declaration": false,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
@@ -22,7 +22,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": false,
     "noImplicitAny": false,
-    "outDir": "../../dist/libs/dataviews-client/url-workspace-bundle",
+    "outDir": "./dist/url-workspace-bundle",
     "paths": {
       "@globalfishingwatch/api-types": ["../../libs/api-types/src/index.ts"]
     }

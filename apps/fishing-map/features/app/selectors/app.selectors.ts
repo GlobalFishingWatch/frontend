@@ -18,7 +18,7 @@ const EMPTY_ARRAY: [] = []
 export const selectLatestAvailableDataDate = createSelector(
   [selectDataviewInstancesResolvedVisible],
   (dataviews) => {
-    const activeDatasets = dataviews.flatMap((dataview) => {
+    const activeDatasets = dataviews?.flatMap((dataview) => {
       if (!dataview || dataview.category === DataviewCategory.Context) {
         return EMPTY_ARRAY
       } else if (

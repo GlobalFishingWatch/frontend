@@ -3,46 +3,29 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/timebar/src",
   "projectType": "library",
+  "tags": ["lib"],
   "targets": {
-    "dist": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
+    "build": {
+      "executor": "@nx/js:tsc",
       "options": {
-        "entryFile": "libs/timebar/src/index.ts",
-        "extractCss": true,
-        "assets": [
-          {
-            "glob": "libs/timebar/src/timebar-settings.css",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "libs/timebar/types",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "libs/timebar/index.d.ts",
-            "input": ".",
-            "output": "."
-          }
-        ],
-        "format": ["esm", "cjs"],
-        "main": "libs/timebar/src/index.ts",
-        "outputPath": "dist/libs/timebar",
-        "project": "libs/timebar/package.json",
-        "rollupConfig": "libs/timebar/rollup.config.js",
-        "tsConfig": "libs/timebar/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false
+        "assets": [{ "glob": "**/*.css", "input": "libs/timebar/src", "output": "." }]
       }
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx run timebar:build",
+        "watch": true
+      },
+      "continuous": true
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
+      "dependsOn": ["build"],
       "options": {
-        "packageRoot": "dist/libs/timebar"
+        "packageRoot": "libs/timebar"
       }
     }
-  },
-  "tags": []
+  }
 }

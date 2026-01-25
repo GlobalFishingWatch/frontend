@@ -61,14 +61,24 @@ export interface UserPermission {
   action: UserPermissionAction
 }
 
-export const MOCK_USER_PERMISSION: UserPermission = {
-  type: 'application',
-  value: 'fishing-map',
-  action: 'read',
-}
+export type UserGroupId =
+  | 'belize'
+  | 'brazil'
+  | 'chile'
+  | 'costa rica'
+  | 'ecuador'
+  | 'panama'
+  | 'papua new guinea'
+  | 'peru'
+  | 'ssf-aruna'
+  | 'ssf-rare'
+  | 'ssf-ipnlf'
+  | 'norway'
+  | 'palau'
+  | 'costarica'
 
-export interface UserGroup {
-  id: number
+export interface UserGroup<T = UserGroupId> {
+  id: T
   name: string
   default: boolean
   createdAt: string

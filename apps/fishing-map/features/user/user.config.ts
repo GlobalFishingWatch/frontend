@@ -1,4 +1,4 @@
-import type { UserGroup } from './user.slice'
+import type { UserGroupId } from '@globalfishingwatch/api-types'
 
 export const GFW_GROUP_ID = 'GFW Staff'
 export const JAC_GROUP_ID = 'Joint Analytical Cell (JAC)'
@@ -22,7 +22,7 @@ export const PRIVATE_SUPPORTED_GROUPS = [
   'SSF-Rare',
 ]
 
-export const PRIVATE_SEARCH_DATASET_BY_GROUP: Record<UserGroup, string[]> = {
+export const PRIVATE_SEARCH_DATASET_BY_GROUP: Record<UserGroupId, string[]> = {
   belize: [
     'private-belize-vessel-identity-fishing:v20220304',
     'private-belize-vessel-identity-non-fishing:v20220304',
@@ -47,4 +47,7 @@ export const PRIVATE_SEARCH_DATASET_BY_GROUP: Record<UserGroup, string[]> = {
   'ssf-aruna': [],
   'ssf-rare': [],
   'ssf-ipnlf': [],
+  norway: [],
+  palau: [],
+  costarica: [],
 }

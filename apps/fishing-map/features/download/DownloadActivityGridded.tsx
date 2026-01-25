@@ -103,8 +103,8 @@ function DownloadActivityGridded() {
   }, [downloadAreaGeometry])
 
   const filteredGroupByOptions: ChoiceOption<GroupBy>[] = useMemo(
-    () => getSupportedGroupByOptions(getGriddedGroupOptions(), vesselDatasets),
-    [vesselDatasets]
+    () => getSupportedGroupByOptions(getGriddedGroupOptions(), vesselDatasets, dataviews),
+    [vesselDatasets, dataviews]
   )
   const [groupBy, setGroupBy] = useState(filteredGroupByOptions[0].id)
 

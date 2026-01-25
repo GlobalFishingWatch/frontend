@@ -12,7 +12,7 @@ import { isFeatureInRange } from '@globalfishingwatch/deck-layers'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import type { Area, AreaGeometry } from 'features/areas/areas.slice'
-import { selectAreas } from 'features/areas/areas.slice'
+import { initialDatasetAreaDetail, selectAreas } from 'features/areas/areas.slice'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getDatasetsReportSupported } from 'features/datasets/datasets.utils'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
@@ -229,7 +229,11 @@ const selectCurrentReportArea = createSelector(
   (areaIds, areas) => {
     if (!areaIds || !areas) return null
     const { datasetId, areaId } = areaIds
-    return areas?.[datasetId]?.detail?.[areaId]
+    const area = areas?.[datasetId]?.detail?.[areaId]
+    if (!area) {
+      return { ...initialDatasetAreaDetail }
+    }
+    return area
   }
 )
 
@@ -375,15 +379,20 @@ export const selectHasReportBuffer = createSelector(
 )
 
 export const selectReportArea = createSelector(
-  [selectReportAreaData, selectHasReportBuffer, selectReportBufferArea, selectIsWorkspaceReady],
-  (area, hasReportBuffer, bufferedArea, isWorkspaceReady) => {
+  [
+    selectCurrentReportAreaFilteredByTime,
+    selectHasReportBuffer,
+    selectReportBufferArea,
+    selectIsWorkspaceReady,
+  ],
+  (reportArea, hasReportBuffer, bufferedArea, isWorkspaceReady) => {
     if (!isWorkspaceReady) {
       return undefined
     }
     if (hasReportBuffer) {
       return bufferedArea
     }
-    return area || ENTIRE_WORLD_REPORT_AREA
+    return reportArea?.data ? reportArea.data : ENTIRE_WORLD_REPORT_AREA
   }
 )
 

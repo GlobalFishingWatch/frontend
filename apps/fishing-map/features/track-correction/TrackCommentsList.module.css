@@ -32,3 +32,8 @@
   opacity: var(--opacity-secondary);
   font-size: small;
 }
+
+.correctedDates {
+  font-size: small;
+  color: var(--color-danger-red);
+}

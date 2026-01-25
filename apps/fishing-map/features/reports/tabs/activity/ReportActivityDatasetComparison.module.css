@@ -14,6 +14,7 @@
   border-radius: 0.5rem;
   border: var(--border);
   display: inline-flex;
+  flex-shrink: 0;
   background-color: currentcolor;
 }
 
@@ -23,31 +24,29 @@
   gap: var(--space-S);
 }
 
-.titleRow {
-  width: 100%;
+.selectorsRow {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-}
-
-.selectorsRow {
   margin-top: var(--space-S);
 }
 
 .select {
+  max-width: calc(50% - 1rem);
   min-width: 25rem;
 }
 
-@media (width <= 1229px) {
-  .select {
-    min-width: auto;
-  }
+.select:last-child {
+  margin-left: auto;
 }
 
-@media (width <= 767px) {
-  .titleRow {
-    justify-content: initial;
-    gap: var(--space-S);
-    display: grid;
+.printableTitle {
+  display: none;
+}
+
+@media print {
+  .printableTitle {
+    display: ruby-text;
   }
 }

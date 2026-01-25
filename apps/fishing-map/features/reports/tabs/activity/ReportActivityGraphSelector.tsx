@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
 
@@ -15,8 +17,7 @@ import {
   REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
 } from 'features/reports/reports.config'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
-import { selectReportCategory } from 'features/reports/reports.selectors'
-import { type ReportActivityGraph, ReportCategory } from 'features/reports/reports.types'
+import { type ReportActivityGraph } from 'features/reports/reports.types'
 import { REPORT_ACTIVITY_GRAPH_TIME_OPTIONS } from 'features/reports/shared/utils/reports.utils'
 import { useSetReportTimeComparison } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
@@ -70,7 +71,7 @@ export default function ReportActivityGraphSelector({
     {
       id: REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON,
       label: t('analysis.datasetComparison'),
-      disabled: loading,
+      disabled: loading || dataviews.some((d) => d.category === DataviewCategory.VesselGroups),
     },
   ]
 
@@ -116,11 +117,14 @@ export default function ReportActivityGraphSelector({
     : options[0]
 
   return (
-    <Select
-      options={options}
-      selectedOption={selectedOption}
-      onSelect={onSelect}
-      containerClassName={styles.select}
-    />
+    <>
+      <p className={styles.printableTitle}>{selectedOption?.label}</p>
+      <Select
+        options={options}
+        selectedOption={selectedOption}
+        onSelect={onSelect}
+        containerClassName={cx(styles.select, 'print-hidden')}
+      />
+    </>
   )
 }

@@ -1,14 +1,13 @@
 import nextPlugin from '@next/eslint-plugin-next'
 import nxPlugin from '@nx/eslint-plugin'
-
-import tseslint from 'typescript-eslint'
+import { defineConfig } from 'eslint/config'
 
 import { config } from './lib.js'
 
 /**
- * @typedef {import('typescript-eslint').ConfigWithExtends} ConfigWithExtends
+ * @typedef {import('eslint').Linter.Config} Config
  */
-const repoConfig = {
+export const repoConfig = {
   ...config,
   plugins: {
     ...config.plugins,
@@ -19,16 +18,7 @@ const repoConfig = {
     ...config.rules,
     ...nextPlugin.configs.recommended.rules,
     ...nextPlugin.configs['core-web-vitals'].rules,
-    '@nx/dependency-checks': [
-      'error',
-      {
-        ignoredFiles: [
-          '{projectRoot}/vite.config.{js,ts,mjs,mts}',
-          '{projectRoot}/rollup.config.{js,ts,mjs,mts}',
-        ],
-      },
-    ],
   },
 }
 
-export default tseslint.config(repoConfig)
+export default defineConfig([repoConfig])

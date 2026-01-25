@@ -1,11 +1,6 @@
 .container {
-  padding-top: var(--space-XS);
-  padding-bottom: var(--space-S);
+  padding-block: var(--space-XS);
   position: relative;
-}
-
-.container ~ .container {
-  padding-top: var(--space-S);
 }
 
 .container:not(:last-of-type) {
@@ -18,10 +13,6 @@
   justify-content: space-between;
   padding: var(--space-XS) var(--space-S);
   gap: var(--space-XS);
-}
-
-.content {
-  padding: var(--space-XS) var(--space-S);
 }
 
 .row {
@@ -48,6 +39,10 @@
   margin: 0;
   text-transform: uppercase;
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+  min-height: calc(var(--size-SM) + 0.2rem);
 }
 
 .sectionButtons {
@@ -61,8 +56,47 @@
   transition: var(--transition);
 }
 
+.collapseButton {
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.containerCollapsed .content {
+  display: none;
+}
+
+.containerCollapsed .sectionButtons {
+  display: none;
+}
+
+.actionButtons {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.containerCollapsed .actionButtons {
+  display: none;
+}
+
+.containerCollapsed {
+  cursor: pointer;
+}
+
+.containerCollapsed .layersCount {
+  display: inline;
+}
+
+.containerExpanded .layersCount {
+  display: none;
+}
+
 .container:hover .sectionButtonsSecondary {
   opacity: 1;
+}
+
+.container:hover .collapseButton {
+  opacity: var(--opacity-secondary);
 }
 
 .emptyState,

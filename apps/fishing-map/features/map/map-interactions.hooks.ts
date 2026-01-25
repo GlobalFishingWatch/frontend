@@ -1,7 +1,6 @@
 import { startTransition, useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import type { DeckProps, PickingInfo } from '@deck.gl/core'
-import type { ThunkDispatch } from '@reduxjs/toolkit'
 import { debounce, throttle } from 'es-toolkit'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
 import type { MjolnirPointerEvent } from 'mjolnir.js'
@@ -83,7 +82,7 @@ const useMapClusterTilesLoading = () => {
   return eventsDeckLayers.some((layer) => !layer.instance.isLoaded)
 }
 
-type InteractionPromise = ThunkDispatch<Promise<any>, any, any> & { abort: any }
+type InteractionPromise = Promise<unknown> & { abort: () => void }
 const initialInteractionPromises = {
   activity: undefined,
   events: undefined,
@@ -146,7 +145,7 @@ export const useClickedEventConnect = () => {
       // get temporal grid clicked features and order them by sublayerindex
       const heatmapFeatures = (event.features as FourwingsHeatmapPickingObject[]).filter(
         (feature) => {
-          const isBigQueryFeature = feature.layerId.startsWith(BIG_QUERY_4WINGS_PREFIX)
+          const isBigQueryFeature = feature?.layerId?.startsWith(BIG_QUERY_4WINGS_PREFIX)
           if (isBigQueryFeature) {
             const dataset = activityDataviews.find((d) => d.id === feature.layerId)?.datasets?.[0]
             const isBigQueryFeatureWithVessels = dataset?.subcategory?.includes('interactive')
@@ -228,7 +227,10 @@ export const useClickedEventConnect = () => {
           ?.datasets?.[0]
         if (!getIsBQEditorDataset(dataset!)) {
           const eventsPromise = dispatch(fetchClusterEventThunk(tileClusterFeature as any))
-          setInteractionPromises((prev) => ({ ...prev, activity: eventsPromise as any }))
+          setInteractionPromises((prev) => ({
+            ...prev,
+            events: eventsPromise as InteractionPromise,
+          }))
         }
       }
     },

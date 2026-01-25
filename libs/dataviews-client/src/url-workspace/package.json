@@ -12,5 +12,21 @@
     "type": "git",
     "url": "git+https://github.com/GlobalFishingWatch/frontend.git"
   },
-  "dependencies": {}
+  "dependencies": {
+    "esbuild": "0.x",
+    "@globalfishingwatch/api-types": "8.x",
+    "@globalfishingwatch/datasets-client": "3.x",
+    "es-toolkit": "1.x",
+    "@globalfishingwatch/data-transforms": "3.x",
+    "@reduxjs/toolkit": "2.x",
+    "geojson": "0.x",
+    "lodash": "4.x",
+    "luxon": "3.x",
+    "@globalfishingwatch/api-client": "7.x",
+    "vitest": "4.x",
+    "qs": "6.x",
+    "@nx/vite": "22.x",
+    "vite": "7.x",
+    "tslib": "2.x"
+  }
 }

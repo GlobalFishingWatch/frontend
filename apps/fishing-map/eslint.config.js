@@ -1,8 +1,12 @@
-const gfwConfig = require('../../eslint.config.js')
+import rootConfig from '../../eslint.config.js'
 
-module.exports = [
-  ...gfwConfig,
+export default [
+  ...rootConfig,
+  // Disable @nx/dependency-checks for fishing-map package.json
   {
-    ignores: ['.next', 'features/i18n/i18n.types.d.ts'],
+    files: ['package.json'],
+    rules: {
+      '@nx/dependency-checks': 'off',
+    },
   },
 ]

@@ -1,13 +1,14 @@
 import { t } from 'i18next'
 
 import type { Dataset, DatasetConfigurationInterval } from '@globalfishingwatch/api-types'
-import { DataviewCategory } from '@globalfishingwatch/api-types'
+import { DatasetSubCategory, DataviewCategory } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 
 import { REPORT_DAYS_LIMIT } from 'data/config'
+import { PRESENCE_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
 import { getActiveDatasetsInDataview, getDatasetSchemaItem } from 'features/datasets/datasets.utils'
 import { getUTCDateTime } from 'utils/dates'
 
@@ -29,11 +30,17 @@ export function getDownloadReportSupported(start: string, end: string) {
 
 export function getSupportedGroupByOptions(
   options: ChoiceOption<GroupBy>[],
-  vesselDatasets: Dataset[]
+  vesselDatasets: Dataset[],
+  dataviews: UrlDataviewInstance[]
 ): ChoiceOption<GroupBy>[] {
   if (!options?.length) {
     return []
   }
+  const hasPresenceDataview = dataviews.some(
+    (dataview) =>
+      dataview.id.includes(DatasetSubCategory.Presence) ||
+      dataview.id.includes(PRESENCE_DATAVIEW_INSTANCE_ID)
+  )
 
   const mmsiSupported = vesselDatasets.every((dataset) => {
     const schemaItem = getDatasetSchemaItem(dataset, 'ssvid')
@@ -45,10 +52,18 @@ export function getSupportedGroupByOptions(
       return {
         ...option,
         disabled: true,
-        tooltip: t(
-          'download.mmsiNotSupported',
-          "The datasets selected don't support grouping by MMSI"
-        ),
+        tooltip: t('download.groupByNotSupported', { property: option.label }),
+        tooltipPlacement: 'top',
+      }
+    }
+    if (
+      hasPresenceDataview &&
+      (option.id === GroupBy.GearType || option.id === GroupBy.FlagAndGearType)
+    ) {
+      return {
+        ...option,
+        disabled: true,
+        tooltip: t('download.groupByNotSupported', { property: option.label }),
         tooltipPlacement: 'top',
       }
     }

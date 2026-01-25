@@ -1,7 +1,7 @@
 import type { Loader, LoaderOptions, LoaderWithParser } from '@loaders.gl/loader-utils'
 
-import packageJson from '../../package.json'
 import { PATH_BASENAME } from '../loaders.config'
+import { VERSION } from '../version'
 
 import type { VesselTrackLoaderParams } from './lib/parse-tracks'
 import { parseTrack } from './lib/parse-tracks'
@@ -29,7 +29,7 @@ export const VesselTrackWorkerLoader: Loader<VesselTrackData, any, VesselTrackLo
   name: 'gfw-vessel-tracks',
   module: 'tracks',
   category: 'geometry',
-  version: packageJson?.version,
+  version: VERSION,
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
   worker: true,

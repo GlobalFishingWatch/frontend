@@ -4,14 +4,15 @@
     "allowJs": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true
+    "strict": true,
+    "composite": true
   },
   "files": [],
   "include": [],
+  "extends": "../../tsconfig.base.json",
   "references": [
     {
       "path": "./tsconfig.lib.json"
     }
-  ],
-  "extends": "../../tsconfig.base.json"
+  ]
 }

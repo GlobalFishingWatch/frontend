@@ -1,7 +1,7 @@
 import type { Loader, LoaderWithParser } from '@loaders.gl/loader-utils'
 
-import packageJson from '../../package.json'
 import { PATH_BASENAME } from '../loaders.config'
+import { VERSION } from '../version'
 
 import { parseEvents } from './lib/parse-events'
 
@@ -12,7 +12,7 @@ export const VesselEventsWorkerLoader: Loader = {
   id: 'vessel-events',
   name: 'gfw-vessel-events',
   module: 'events',
-  version: packageJson.version,
+  version: VERSION,
   extensions: ['json'],
   mimeTypes: ['application/json'],
   worker: true,

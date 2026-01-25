@@ -15,6 +15,7 @@ import {
   COLOR_HIGHLIGHT_LINE,
   COLOR_TRANSPARENT,
   DEFAULT_BACKGROUND_COLOR,
+  DEFAULT_ID_PROPERTY,
   getFetchLoadOptions,
   getLayerGroupOffset,
   getMVTSublayerProps,
@@ -85,7 +86,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
     if (!layer || !sublayer) return 0
     const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, {
-      idProperty: layer.idProperty,
+      idProperty: layer.idProperty || DEFAULT_ID_PROPERTY,
       datasetId: layer.datasetId,
     })
       ? Math.max(sublayer.thickness || 1, lineWidth)
@@ -97,7 +98,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
 
     const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, {
-      idProperty: layer.idProperty,
+      idProperty: layer.idProperty || DEFAULT_ID_PROPERTY,
       datasetId: layer.datasetId,
     })
       ? COLOR_HIGHLIGHT_FILL

@@ -13,10 +13,13 @@ export type TrackCorrectionComment = {
   issueId: string
   comment: string
   user: string
+  reviewer?: string
   date: string
   datasetVersion: number
   marksAsResolved: boolean
   confirmed: boolean
+  startDate_corrected?: string
+  endDate_corrected?: string
 }
 
 export type TrackCorrection = {
@@ -27,8 +30,10 @@ export type TrackCorrection = {
   createdBy?: string
   userEmail?: string
   workspaceLink: string
-  startDate: string
-  endDate: string
+  startDate_original?: string
+  endDate_original?: string
+  startDate?: string
+  endDate?: string
   type: IssueType
   lastUpdated: string
   confirmed: boolean

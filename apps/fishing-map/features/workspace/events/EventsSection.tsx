@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
-import cx from 'classnames'
 
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -18,16 +17,18 @@ import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
 import { getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
+import Section from '../shared/Section'
 
 import LayerPanel from './EventsLayerPanel'
 
-import styles from 'features/workspace/shared/Sections.module.css'
+import styles from 'features/workspace/shared/Section.module.css'
 
 function EventsLayerSection(): React.ReactElement<any> | null {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectEventsDataviews)
-  const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
+  const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
+  const hasVisibleDataviews = visibleDataviews.length >= 1
   const dispatch = useAppDispatch()
   const onAddLayerClick = useCallback(() => {
     dispatch(setModalOpen({ id: 'layerLibrary', open: DataviewCategory.Events }))
@@ -47,11 +48,20 @@ function EventsLayerSection(): React.ReactElement<any> | null {
   )
 
   return (
-    <div className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews })}>
-      <div className={cx(styles.header, 'print-hidden')}>
-        <h2 className={styles.sectionTitle}>{t('common.events')}</h2>
-        {!readOnly && (
-          <div className={cx(styles.sectionButtons)}>
+    <Section
+      id={DataviewCategory.Events}
+      data-testid="events-section"
+      title={
+        <span>
+          {t('common.events')}
+          {hasVisibleDataviews && (
+            <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
+          )}
+        </span>
+      }
+      headerOptions={
+        !readOnly ? (
+          <div className={styles.sectionButtons}>
             {hasVisibleDataviews && <GlobalReportLink reportCategory={ReportCategory.Events} />}
             <IconButton
               icon="plus"
@@ -59,12 +69,16 @@ function EventsLayerSection(): React.ReactElement<any> | null {
               size="medium"
               tooltip={t('layer.add')}
               tooltipPlacement="top"
-              onClick={() => onAddLayerClick()}
+              onClick={(e) => {
+                e.stopPropagation()
+                onAddLayerClick()
+              }}
             />
           </div>
-        )}
-      </div>
-
+        ) : null
+      }
+      hasVisibleDataviews={hasVisibleDataviews}
+    >
       <SortableContext items={dataviews}>
         {dataviews?.map((dataview) => (
           <LayerPanelContainer key={dataview.id} dataview={dataview}>
@@ -72,7 +86,7 @@ function EventsLayerSection(): React.ReactElement<any> | null {
           </LayerPanelContainer>
         ))}
       </SortableContext>
-    </div>
+    </Section>
   )
 }
 

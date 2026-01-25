@@ -29,6 +29,11 @@
     "moreInfoLink": "",
     "name": "ISA License Areas"
   },
+  "ebsas": {
+    "description": "EBSAs are areas of the ocean recognized for their unique ecological and/or biological features, such as essential habitats, food sources or breeding grounds for specific species.",
+    "moreInfoLink": "",
+    "name": "Ecologically or Biologically Significant Marine Areas (EBSAs)"
+  },
   "eez": {
     "description": "Zona ekonomi eksklusif/ZEE (Exclusive economic zones/EEZ) terbentang hingga 200 mil laut dari pantai sebuah negara. Institut Kelautan Flanders (2019). Basis Geodata Batas Maritim: Batas Maritim dan Zona Ekonomi Eksklusif (200NM), versi 11.",
     "moreInfoLink": "",
@@ -78,6 +83,11 @@
     "description": "High Seas pockets are areas totally enclosed by EEZs that are beyond Exclusive Economic Zones (EEZ). These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
     "moreInfoLink": "https://www.marineregions.org/downloads.php",
     "name": "High seas pockets"
+  },
+  "immas": {
+    "description": "Important Marine Mammal Areas (IMMAs) are defined as discrete portions of habitat, important to marine mammal species, that have the potential to be delineated and managed for conservation.",
+    "moreInfoLink": "",
+    "name": "Important Marine Mammal Areas (IMMA)"
   },
   "loitering": {
     "description": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is estimated using automatic identification system (AIS) data, including vessel speed, duration in a given location, and distance from shore. Loitering occurs when a vessel travels at average speed of < two knots, while at least an average of 20 nautical miles from shore. To reduce noise in the carrier vessel portal, only loitering events greater than one hour are shown.",

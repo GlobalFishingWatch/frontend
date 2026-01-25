@@ -48,7 +48,7 @@ export default function VesselGroupReportTitle() {
       dispatch(setVesselGroupModalVessels(vesselGroup.vessels))
       dispatch(setVesselGroupsModalOpen(true))
     }
-  }, [dispatch, vesselGroup?.id, vesselGroup?.vessels])
+  }, [dispatch, vesselGroup])
 
   // const onPrintClick = () => {
   //   window.print()

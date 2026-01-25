@@ -12,6 +12,7 @@ import {
 import { Button, InputText, Modal, Select } from '@globalfishingwatch/ui-components'
 
 import {
+  AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION,
   AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX,
   PATH_BASENAME,
   ROOT_DOM_ELEMENT,
@@ -191,7 +192,7 @@ function FeedbackModal({ isOpen = false, onClose }: FeedbackModalProps) {
           createDispatchedAction = await dispatch(
             createReportThunk({
               name,
-              description: 'Auto generated report for feedback',
+              description: AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION,
               datasetId: reportAreaIds?.datasetId,
               areaId: reportAreaIds?.areaId?.toString(),
               workspace: workspaceReport,
