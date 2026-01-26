@@ -70,16 +70,16 @@ export default defineConfig({
           name: 'fishing-map-browser',
           headless: true,
         },
-        // {
-        //   browser: 'firefox',
-        //   name: 'fishing-map-firefox',
-        //   headless: true,
-        // },
-        // {
-        //   browser: 'webkit',
-        //   name: 'fishing-map-webkit',
-        //   headless: true,
-        // },
+        {
+          browser: 'firefox',
+          name: 'fishing-map-firefox',
+          headless: true,
+        },
+        {
+          browser: 'webkit',
+          name: 'fishing-map-webkit',
+          headless: true,
+        },
       ],
     },
   },
