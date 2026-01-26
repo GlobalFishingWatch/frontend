@@ -73,11 +73,17 @@ export function Modal(props: ModalProps) {
       {header ? (
         <div className={cx(styles.header, headerClassName, { [styles.withTitle]: title })}>
           <h1 className={styles.title}>{title}</h1>
-          <IconButton icon="close" className={closeButtonClassName} onClick={onClose} />
+          <IconButton
+            icon="close"
+            className={closeButtonClassName}
+            onClick={onClose}
+            data-testid="modal-close-button"
+          />
         </div>
       ) : (
         <IconButton
           icon="close"
+          data-testid="modal-close-button"
           onClick={onClose}
           type="border"
           className={cx(styles.closeButtonWithoutHeader, closeButtonClassName)}

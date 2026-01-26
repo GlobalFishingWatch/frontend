@@ -37,7 +37,10 @@
       "executor": "nx:run-commands",
       "dependsOn": ["build-deps"],
       "options": {
-        "commands": ["nx serve real-time-prototype --hostname=0.0.0.0", "nx watch-deps real-time-prototype"],
+        "commands": [
+          "nx serve real-time-prototype --hostname=0.0.0.0",
+          "nx watch-deps real-time-prototype"
+        ],
         "parallel": true
       },
       "continuous": true
