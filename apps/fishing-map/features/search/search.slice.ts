@@ -151,7 +151,8 @@ export const fetchVesselSearchThunk = createAsyncThunk(
 
       const url = resolveEndpoint(dataset, datasetConfig)
       if (url) {
-        const searchResults = await GFWAPI.fetch<APIVesselSearchPagination<IdentityVessel>>(url, {
+        const RFurl = url.replace('identity%3Av4.0', 'identity-vi-653%3Av1.0')
+        const searchResults = await GFWAPI.fetch<APIVesselSearchPagination<IdentityVessel>>(RFurl, {
           signal,
           cache: 'no-cache',
         })
