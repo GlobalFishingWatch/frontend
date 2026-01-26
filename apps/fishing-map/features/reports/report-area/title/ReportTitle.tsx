@@ -9,6 +9,7 @@ import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Button, Icon, IconButton, Popover } from '@globalfishingwatch/ui-components'
 
+import { AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -179,9 +180,11 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   }, [dispatch, dispatchQueryParams, highlightArea, reportArea])
 
   const reportDescription =
-    typeof report?.description === 'string' && report?.description.length
-      ? parse(getReportAreaStringByLocale(report?.description, i18n.language))
-      : report?.description || ''
+    report?.description === AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION
+      ? ''
+      : typeof report?.description === 'string' && report?.description.length
+        ? parse(getReportAreaStringByLocale(report?.description, i18n.language))
+        : report?.description || ''
 
   const reportAreaSpace =
     reportArea?.id !== ENTIRE_WORLD_REPORT_AREA_ID && reportArea?.geometry
