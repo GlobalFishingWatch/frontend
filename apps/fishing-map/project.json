@@ -46,8 +46,7 @@
       "options": {
         "commands": [
           "nx run i18n-labels:ts",
-          "nx run fishing-map:i18n:extract:watch",
-          "nx run fishing-map:i18n:types:watch",
+          "nx run fishing-map:i18n:watch",
           "nx serve i18n-labels",
           "nx serve fishing-map --hostname=0.0.0.0",
           "nx watch-deps fishing-map"
@@ -96,6 +95,14 @@
         "commands": ["nx i18n:extract fishing-map", "nx i18n:types fishing-map"],
         "parallel": false
       }
+    },
+    "i18n:watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["yarn i18n:extract:watch", "yarn i18n:types:watch"],
+        "parallel": true
+      },
+      "continuous": true
     },
     "prepare-serve": {
       "executor": "nx:run-commands",
