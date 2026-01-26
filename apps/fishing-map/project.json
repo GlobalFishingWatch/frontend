@@ -12,46 +12,18 @@
       },
       "continuous": true
     },
-    "deploy": {
+    "prepare-start": {
       "executor": "nx:run-commands",
+      "dependsOn": [
+        "build-deps",
+        "clean-next",
+        "prepare-loaders",
+        "i18n-labels:ts",
+        "i18n-labels:serve"
+      ],
       "options": {
-        "commands": ["nx build fishing-map"],
+        "commands": ["nx run fishing-map:i18n:watch"],
         "parallel": false
-      }
-    },
-    "build:app": {
-      "executor": "@nx/next:build",
-      "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
-      "options": {
-        "outputPath": "dist/apps/fishing-map"
-      },
-      "configurations": {
-        "production": {}
-      }
-    },
-    "build": {
-      "executor": "nx:run-commands",
-      "dependsOn": ["build-deps", "i18n", "prepare-loaders"],
-      "inputs": ["production", "^production"],
-      "outputs": ["{workspaceRoot}/dist/apps/fishing-map"],
-      "options": {
-        "commands": ["rimraf dist/apps/fishing-map", "rimraf .next", "nx build:app fishing-map"],
-        "parallel": false
-      }
-    },
-    "start": {
-      "executor": "nx:run-commands",
-      "dependsOn": ["clean-locales", "prepare-loaders"],
-      "options": {
-        "commands": [
-          "nx run i18n-labels:ts",
-          "nx run fishing-map:i18n:watch",
-          "nx serve i18n-labels",
-          "nx serve fishing-map --hostname=0.0.0.0",
-          "nx watch-deps fishing-map"
-        ],
-        "parallel": true
       },
       "continuous": true
     },
@@ -68,18 +40,15 @@
         "parallel": false
       }
     },
-    "clean-locales": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": ["rimraf dist/apps/fishing-map/public/locales"]
-      }
-    },
     "clean-next": {
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": ["rimraf dist/apps/fishing-map", "rimraf .next"]
+        "commands": [
+          "rimraf dist/apps/fishing-map/public/locales",
+          "rimraf dist/apps/fishing-map",
+          "rimraf .next"
+        ]
       }
     },
     "i18n": {
@@ -104,19 +73,6 @@
       },
       "continuous": true
     },
-    "prepare-serve": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "rimraf server",
-          "make-dir ./server && make-dir server/apps/fishing-map/public && make-dir server/dist/apps/fishing-map/.next/static",
-          "cp -rp ./dist/apps/fishing-map/public/* ./server/apps/fishing-map/public/",
-          "cp -rp ./dist/apps/fishing-map/.next/standalone/* ./server/",
-          "cp -rp ./dist/apps/fishing-map/.next/static/* ./server/dist/apps/fishing-map/.next/static/"
-        ],
-        "parallel": false
-      }
-    },
     "serve": {
       "executor": "@nx/next:server",
       "options": {
@@ -131,25 +87,25 @@
         }
       }
     },
-    "serve:build": {
+    "start": {
       "executor": "nx:run-commands",
+      "dependsOn": ["prepare-start"],
       "options": {
-        "commands": ["node ./server/apps/fishing-map/server.js"],
-        "parallel": false
-      }
+        "commands": ["nx run fishing-map:serve", "nx run fishing-map:watch-deps"],
+        "parallel": true
+      },
+      "continuous": true
     },
-    "prepare:build": {
-      "executor": "nx:run-commands",
+    "build": {
+      "executor": "@nx/next:build",
+      "outputs": ["{workspaceRoot}/dist/apps/fishing-map"],
+      "dependsOn": ["build-deps", "i18n", "prepare-loaders", "clean-next"],
+      "defaultConfiguration": "production",
       "options": {
-        "commands": ["nx build fishing-map --parallel", "nx prepare-serve fishing-map"],
-        "parallel": false
-      }
-    },
-    "build-serve": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": ["nx prepare:build fishing-map", "nx serve:build fishing-map"],
-        "parallel": false
+        "outputPath": "dist/apps/fishing-map"
+      },
+      "configurations": {
+        "production": {}
       }
     },
     "test": {
