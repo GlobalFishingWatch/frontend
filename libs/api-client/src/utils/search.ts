@@ -152,9 +152,12 @@ export const getAdvancedSearchQuery = (
       if (rootObject === 'selfReportedInfo' && field.key === 'geartypes') {
         return `combinedSourcesInfo.geartypes.name ${operator} ${value}`
       }
-      return rootObject
-        ? `${rootObject}.${field.key} ${operator} ${value}`
-        : `${field.key} ${operator} ${value}`
+      const rootObjectPrefix = `${rootObject}.`
+      const query = `${field.key} ${operator} ${value}`
+      if (!rootObject || field.key.includes(rootObjectPrefix)) {
+        return query
+      }
+      return `${rootObjectPrefix}${query}`
     }
     if (Array.isArray(value)) {
       const filter = value
