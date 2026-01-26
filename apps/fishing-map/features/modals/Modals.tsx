@@ -43,6 +43,7 @@ import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
 import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'routes/routes'
+import dynamicWithRetry from 'utils/dynamic-import'
 
 import styles from './Modals.module.css'
 
@@ -58,7 +59,7 @@ const TurningTidesModal = dynamic(
   () => import(/* webpackChunkName: "TurningTidesModal" */ 'features/bigquery/TurningTidesModal')
 )
 
-const LayerLibrary = dynamic(
+const LayerLibrary = dynamicWithRetry(
   () => import(/* webpackChunkName: "LayerLibrary" */ 'features/layer-library/LayerLibrary')
 )
 const DebugMenu = dynamic(

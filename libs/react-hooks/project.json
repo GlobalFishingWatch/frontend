@@ -3,25 +3,26 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/react-hooks/src",
   "projectType": "library",
+  "tags": ["lib"],
   "targets": {
-    "dist": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+    "build": {
+      "executor": "@nx/js:tsc"
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
       "options": {
-        "outputPath": "libs/react-hooks/dist",
-        "generatePackageJson": false,
-        "main": "libs/react-hooks/src/index.ts",
-        "tsConfig": "libs/react-hooks/tsconfig.lib.json",
-        "rootDir": "libs/react-hooks/src"
-      }
+        "command": "nx run react-hooks:build",
+        "watch": true
+      },
+      "continuous": true
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
+      "dependsOn": ["build"],
       "options": {
         "packageRoot": "libs/react-hooks"
       }
     }
-  },
-  "tags": []
+  }
 }
