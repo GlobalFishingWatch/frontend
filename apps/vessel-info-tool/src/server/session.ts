@@ -2,7 +2,7 @@ import { UserData } from '@globalfishingwatch/api-types'
 import { useSession } from '@tanstack/react-start/server'
 
 export function getAppSession() {
-  return useSession<UserData & { accessToken: string; refreshToken: string }>({
+  return useSession<{ user: UserData & { accessToken: string; refreshToken: string } }>({
     name: 'app-session',
     password: process.env.SESSION_SECRET!,
     cookie: {

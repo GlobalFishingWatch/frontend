@@ -1,22 +1,21 @@
-import * as React from 'react'
-import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
 import Header from '@/features/header/Header'
 import OptionsMenu from '@/features/options/OptionsMenu'
 import Profile from '@/features/profile/Profile'
-import Search from '@/features/search/Search'
+import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-router'
+import * as React from 'react'
 
 import { DefaultCatchBoundary } from '@/features/router/DefaultCatchBoundary'
 import { NotFound } from '@/features/router/NotFound'
+import { getAppSession } from '@/server/session'
 import appCss from '@/styles/app.css?url'
 import baseCss from '@/styles/base.css?url'
-import { getCurrentUserFn } from '@/server/auth'
 
 export const Route = createRootRoute({
   beforeLoad: async () => {
-    const user = await getCurrentUserFn()
+    const session = await getAppSession()
 
     return {
-      user,
+      user: session.data.user,
     }
   },
   head: () => ({
@@ -62,6 +61,7 @@ export const Route = createRootRoute({
 function RootDocument({ children }: { children: React.ReactNode }) {
   const context = Route.useRouteContext()
   const user = context.user
+  console.log('🚀 ~ RootDocument ~ user:', user)
 
   return (
     <html lang="en">
@@ -76,7 +76,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               <Profile user={user} />
             </Header>
           ) : null}
-          {children}
+          <Outlet />
         </div>
         <Scripts />
       </body>

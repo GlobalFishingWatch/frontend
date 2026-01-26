@@ -6,7 +6,7 @@ import { loginRedirect } from '@/server/auth'
 export const Route = createFileRoute('/_authed/')({
   beforeLoad: ({ context }) => {
     console.log('🚀 ~ entered _authed route with context:', context)
-    if (!context.user) {
+    if (!context.user || Object.keys(context.user).length === 0) {
       loginRedirect()
     }
 
@@ -17,23 +17,27 @@ export const Route = createFileRoute('/_authed/')({
 
 function VesselsIndexComponent() {
   const { user } = Route.useRouteContext()
-  
-  if (!user) {
+
+  if (!user?.permissions) {
     return null
   }
-  
-  return user.groups.length <= 1 ? (
-    redirect({ to: `/$source`, params: { source: user.groups[0] }, replace: true })
-  ) : (
-    <div>
-      Looks like you have access to more than one registry! Select which to view.
-      {Object.values(UserPermissionValues).map((value) => (
-        <div key={value}>
-          <Link to={`/$source`} params={{ source: value }}>
-            {value.charAt(0).toUpperCase() + value.slice(1)} Registry
-          </Link>
-        </div>
-      ))}
-    </div>
+
+  return user.permissions?.find(
+    (p) => p.value.includes('public-bra') || p.value.includes('private-bra')
   )
+    ? redirect({ to: `/$source`, params: { source: 'brazil' }, replace: true })
+    : redirect({ to: `/$source`, params: { source: 'panama' }, replace: true })
+
+  // ) : (
+  //   <div>
+  //     Looks like you have access to more than one registry! Select which to view.
+  //     {Object.values(UserPermissionValues).map((value) => (
+  //       <div key={value}>
+  //         <Link to={`/$source`} params={{ source: value }}>
+  //           {value.charAt(0).toUpperCase() + value.slice(1)} Registry
+  //         </Link>
+  //       </div>
+  //     ))}
+  //   </div>
+  // )
 }

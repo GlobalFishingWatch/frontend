@@ -21,7 +21,13 @@ export const Route = createFileRoute('/auth/callback')({
             data: { accessToken: authorizationCode },
           })
           await session.clear()
-          await session.update(sessionData)
+          await session.update({
+            user: {
+              ...sessionData,
+              accessToken: authorizationCode,
+              refreshToken: '',
+            },
+          })
         } catch (error) {
           console.log('🚀 ~ error:', error)
           await session.clear()

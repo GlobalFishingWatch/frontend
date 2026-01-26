@@ -59,6 +59,8 @@ export class GFW_API_CLASS {
   maxRefreshRetries = 1
   logging: Promise<UserData> | null
   status: RequestStatus = 'idle'
+  private _token = ''
+  private _refreshToken = ''
 
   constructor({
     debug = DEBUG_API_REQUESTS,
@@ -85,10 +87,11 @@ export class GFW_API_CLASS {
     if (isClientSide) {
       return getCookie(this.storageKeys.token) || ''
     }
-    return ''
+    return this._token
   }
 
   private set token(token: string) {
+    this._token = token
     console.log('🚀 ~ GFW_API_CLASS ~ token ~ isClientSide:', isClientSide)
     if (isClientSide) {
       if (token) {
@@ -110,10 +113,11 @@ export class GFW_API_CLASS {
     if (isClientSide) {
       return getCookie(this.storageKeys.refreshToken) || ''
     }
-    return ''
+    return this._refreshToken
   }
 
   private set refreshToken(refreshToken: string) {
+    this._refreshToken = refreshToken
     if (isClientSide) {
       if (refreshToken) {
         setCookie(this.storageKeys.refreshToken, refreshToken, {
