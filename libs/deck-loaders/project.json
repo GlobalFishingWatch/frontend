@@ -3,30 +3,32 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/deck-loaders/src",
   "projectType": "library",
+  "tags": ["lib"],
   "targets": {
-    "dist": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "libs/deck-loaders/dist",
-        "generatePackageJson": false,
-        "main": "libs/deck-loaders/src/index.ts",
-        "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
-        "rootDir": "libs/deck-loaders/src"
-      }
+    "build": {
+      "executor": "@nx/js:tsc"
     },
-    "dist:workers": {
+    "dev": {
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx run deck-loaders:build",
+        "watch": true
+      },
+      "continuous": true
+    },
+    "build:workers": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "nx build:workers deck-loaders",
+          "nx dist:workers deck-loaders",
           "rimraf libs/deck-loaders/dist/workers/libs",
           "rimraf libs/deck-loaders/dist/workers/package.json"
         ],
         "parallel": false
       }
     },
-    "build:workers": {
+    "dist:workers": {
       "executor": "@nx/esbuild:esbuild",
       "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
       "options": {
@@ -54,6 +56,5 @@
         "packageRoot": "libs/deck-loaders"
       }
     }
-  },
-  "tags": []
+  }
 }

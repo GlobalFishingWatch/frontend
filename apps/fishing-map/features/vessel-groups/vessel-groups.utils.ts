@@ -48,21 +48,21 @@ export const getVesselGroupUniqVessels = (
       if (!identities.length) {
         return []
       }
-      return identities.map((identity) => ({
-        vesselId: identity.id,
-        dataset: identity.dataset as string,
-        relationId: vessel.relationId as string,
-        identity: (vessel.relationId === identity.id
-          ? vessel.identity
-          : undefined) as IdentityVessel,
-      }))
+      return identities
+        .filter((identity) => vessel.relationId === identity.id)
+        .map((identity) => ({
+          vesselId: identity.id,
+          dataset: identity.dataset as string,
+          relationId: vessel.relationId as string,
+          identity: vessel.identity as IdentityVessel,
+        }))
     }),
     (v) => v.vesselId
   )
 }
 
 export const groupVesselGroupVessels = (
-  vessels: VesselGroupVesselIdentity[] | null,
+  vessels: VesselGroupVesselIdentity[],
   { property = 'ssvid' } = {} as { property: 'imo' | 'ssvid' }
 ): Record<string, VesselGroupVesselIdentity[]> => {
   if (!vessels) {
@@ -119,12 +119,13 @@ export const flatVesselGroupSearchVessels = (
       return []
     }
     const relationId = getVesselId(vessel)
-    return identities.map((i) => ({
-      vesselId: i.id,
-      dataset: i.dataset as string,
+    const primaryIdentity = identities.find((i) => i.id === relationId) || identities[0]
+    return {
+      vesselId: primaryIdentity.id,
+      dataset: primaryIdentity.dataset as string,
       relationId,
-      identity: (relationId === i.id ? vessel : undefined) as IdentityVessel,
-    }))
+      identity: vessel,
+    }
   })
 }
 

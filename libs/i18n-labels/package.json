@@ -31,11 +31,11 @@
   },
   "devDependencies": {
     "cross-env": "^10.1.0",
-    "i18next-cli": "^1.36.1",
     "prettier": "3.8.0",
     "rimraf": "6.1.2"
   },
   "dependencies": {
+    "i18next-cli": "1.36.1",
     "tslib": "2.x"
   }
 }

@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/i18n-labels",
   "projectType": "library",
-  "tags": [],
+  "tags": ["lib"],
   "targets": {
     "serve": {
       "executor": "@nx/web:file-server",
@@ -16,58 +16,26 @@
         "host": "0.0.0.0"
       }
     },
-    "dist": {
+    "build": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "libs/i18n-labels/dist",
-        "generatePackageJson": false,
         "main": "libs/i18n-labels/index.ts",
-        "tsConfig": "libs/i18n-labels/tsconfig.lib.json",
         "rootDir": "libs/i18n-labels",
         "assets": [
-          {
-            "glob": "libs/i18n-labels/en",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "libs/i18n-labels/es",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "libs/i18n-labels/fr",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "libs/i18n-labels/id",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "libs/i18n-labels/pt",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "libs/i18n-labels/val",
-            "input": ".",
-            "output": "."
-          },
-          {
-            "glob": "libs/i18n-labels/source",
-            "input": ".",
-            "output": "."
-          }
+          { "glob": "libs/i18n-labels/en", "input": ".", "output": "." },
+          { "glob": "libs/i18n-labels/es", "input": ".", "output": "." },
+          { "glob": "libs/i18n-labels/fr", "input": ".", "output": "." },
+          { "glob": "libs/i18n-labels/id", "input": ".", "output": "." },
+          { "glob": "libs/i18n-labels/pt", "input": ".", "output": "." },
+          { "glob": "libs/i18n-labels/val", "input": ".", "output": "." },
+          { "glob": "libs/i18n-labels/source", "input": ".", "output": "." }
         ],
         "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "publish:npm": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
+      "dependsOn": ["build"],
       "options": {
         "packageRoot": "libs/i18n-labels"
       }
@@ -87,7 +55,7 @@
         "commands": ["nx publish:npm i18n-labels", "nx purge i18n-labels"],
         "parallel": false
       },
-      "dependsOn": ["dist"]
+      "dependsOn": ["build"]
     },
     "purge": {
       "executor": "nx:run-commands",

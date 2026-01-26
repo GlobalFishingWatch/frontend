@@ -3,29 +3,28 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/responsive-visualizations/src",
   "projectType": "library",
-  "tags": [],
+  "tags": ["lib"],
   "targets": {
-    "dist": {
+    "build": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "libs/responsive-visualizations/dist",
-        "generatePackageJson": false,
-        "main": "libs/responsive-visualizations/src/index.ts",
-        "tsConfig": "libs/responsive-visualizations/tsconfig.lib.json",
-        "rootDir": "libs/responsive-visualizations/src",
         "assets": [
-          {
-            "glob": "**/*.css",
-            "input": "libs/responsive-visualizations/src",
-            "output": "."
-          }
+          { "glob": "**/*.css", "input": "libs/responsive-visualizations/src", "output": "." }
         ]
       }
     },
+    "dev": {
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx run responsive-visualizations:build",
+        "watch": true
+      },
+      "continuous": true
+    },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
+      "dependsOn": ["build"],
       "options": {
         "packageRoot": "libs/responsive-visualizations"
       }
