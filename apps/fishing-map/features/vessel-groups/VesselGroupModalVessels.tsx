@@ -66,7 +66,7 @@ function VesselGroupVesselRow({
       <td>
         {isFieldLoginRequired(vesselGearType) ? <VesselIdentityFieldLogin /> : vesselGearType}
       </td>
-      <td>
+      <td translate="no">
         {transmissionDateFrom && transmissionDateTo && (
           <Tooltip
             content={

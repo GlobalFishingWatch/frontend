@@ -31,6 +31,7 @@ import {
   selectUrlDataviewInstances,
   selectVesselId,
 } from 'routes/routes.selectors'
+import { options } from 'utils/html-parser'
 
 import { useDataviewInstancesConnect } from './workspace.hook'
 import { selectIsWorkspaceOwner } from './workspace.selectors'
@@ -215,7 +216,8 @@ export const useMigrateWorkspaceToast = () => {
           t(
             'workspace.migrationDisclaimerNote',
             "Note, some vessel identity and activity information may change. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> Learn more.</a>"
-          )
+          ),
+          options
         )}
       </p>
       <div className={styles.disclaimerFooter}>

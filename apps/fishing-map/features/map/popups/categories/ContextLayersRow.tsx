@@ -6,6 +6,7 @@ import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishin
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
+import { options } from 'utils/html-parser'
 
 import ContextLayerDownloadPopupButton from './ContextLayerDownloadPopupButton'
 import ContextLayerReportLink from './ContextLayerReportLink'
@@ -38,7 +39,7 @@ const ContextLayersRow = ({
   const { t } = useTranslation()
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
 
-  const parsedLabel = typeof label === 'string' ? parse(label) : label
+  const parsedLabel = typeof label === 'string' ? parse(label, options) : label
   return (
     <div className={styles.row} key={id}>
       <span className={styles.rowText}>{parsedLabel}</span>

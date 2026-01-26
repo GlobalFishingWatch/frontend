@@ -15,6 +15,7 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { selectQueryParam } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { options } from 'utils/html-parser'
 
 import styles from './SearchPlaceholders.module.css'
 
@@ -86,7 +87,7 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
               </Trans>
             </p>
           )}
-          <p className={styles.highlighted}>{parse(t('search.learnMore'))}</p>
+          <p className={styles.highlighted}>{parse(t('search.learnMore'), options)}</p>
           <UserGuideLink section="vesselSearch" className={cx(styles.userGuide, styles.center)} />
         </div>
       </div>

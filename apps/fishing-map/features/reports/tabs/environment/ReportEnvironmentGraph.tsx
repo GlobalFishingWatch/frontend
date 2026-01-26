@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import htmlParse from 'html-react-parser'
+import htmlParser from 'html-react-parser'
 
 import type { DataviewType } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -31,6 +31,7 @@ import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags
 import ReportVectorGraphTooltip from 'features/reports/tabs/environment/ReportVectorGraphTooltip'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import OutOfTimerangeDisclaimer from 'features/workspace/shared/OutOfBoundsDisclaimer'
+import { options } from 'utils/html-parser'
 import { upperFirst } from 'utils/info'
 
 import styles from './ReportEnvironment.module.css'
@@ -138,7 +139,7 @@ function ReportEnvironmentGraph({
               })}{' '}
           {dataset?.source && (
             <span>
-              {t('analysis.dataSource')}: {htmlParse(dataset.source)}
+              {t('analysis.dataSource')}: {htmlParser(dataset.source, options)}
             </span>
           )}
         </p>

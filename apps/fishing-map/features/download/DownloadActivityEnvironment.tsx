@@ -41,6 +41,7 @@ import {
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
+import { options } from 'utils/html-parser'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 import { getDownloadReportSupported, getSupportedTemporalResolutions } from './download.utils'
@@ -188,7 +189,7 @@ function DownloadActivityGridded() {
 
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
   const parsedLabel =
-    typeof downloadAreaName === 'string' ? parse(downloadAreaName) : downloadAreaName
+    typeof downloadAreaName === 'string' ? parse(downloadAreaName, options) : downloadAreaName
 
   return (
     <Fragment>

@@ -34,6 +34,7 @@ import {
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { options } from 'utils/html-parser'
 import { listAsSentence } from 'utils/shared'
 
 export const PROPERTIES_EXCLUDED = ['flag', 'geartype']
@@ -186,5 +187,5 @@ export default function ReportSummaryActivity({
     hasAllSourcesInCommon,
   ])
 
-  return activitySummary ? htmlParser(activitySummary) : <ReportSummaryPlaceholder />
+  return activitySummary ? htmlParser(activitySummary, options) : <ReportSummaryPlaceholder />
 }

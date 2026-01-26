@@ -40,6 +40,7 @@ import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/works
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsStandaloneReportLocation } from 'routes/routes.selectors'
 import type { BufferOperation, BufferUnit } from 'types'
+import { options } from 'utils/html-parser'
 
 import { useFitAreaInViewport, useHighlightReportArea, useReportTitle } from '../area-reports.hooks'
 
@@ -183,7 +184,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
     report?.description === AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION
       ? ''
       : typeof report?.description === 'string' && report?.description.length
-        ? parse(getReportAreaStringByLocale(report?.description, i18n.language))
+        ? parse(getReportAreaStringByLocale(report?.description, i18n.language), options)
         : report?.description || ''
 
   const reportAreaSpace =

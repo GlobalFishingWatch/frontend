@@ -10,6 +10,7 @@ import { Icon, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import type I18nNamespaces from 'features/i18n/i18n.types'
+import { options } from 'utils/html-parser'
 
 import { selectVesselSection } from '../vessel.config.selectors'
 
@@ -88,7 +89,7 @@ const DataTerminology: React.FC<ModalProps> = ({
             />
           </Fragment>
         ) : (
-          htmlParse(t(`data-terminology:${terminologyKey}`, terminologyKey))
+          htmlParse(t(`data-terminology:${terminologyKey}`, terminologyKey), options)
         )}
       </Modal>
     </Fragment>

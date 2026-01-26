@@ -30,6 +30,7 @@ import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.select
 import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
 import { DATAVIEWS_WARNING } from 'features/workspace/context-areas/ContextAreaLayerPanel'
 import { useLocationConnect } from 'routes/routes.hook'
+import { options } from 'utils/html-parser'
 
 import type { VesselAreaSubsection } from '../vessel.types'
 import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
@@ -215,7 +216,8 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
                 t(
                   `dataview.${areaDataview?.id}.dataWarningDetail` as any,
                   'This platform uses reference layers (shapefiles) from an external source. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the "+" icon in the left sidebar. Learn more on our <a href="https://globalfishingwatch.org/tutorials/">tutorials</a> and <a href="https://globalfishingwatch.org/help-faqs/">FAQs</a>.'
-                )
+                ),
+                options
               )}
             </Modal>
           </span>
