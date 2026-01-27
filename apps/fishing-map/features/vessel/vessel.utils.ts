@@ -1,7 +1,9 @@
 import { isEqual, uniq, uniqBy } from 'es-toolkit'
+import type { TFunction } from 'i18next'
 import get from 'lodash/get'
 
 import type {
+  Dataset,
   GearType,
   IdentityVessel,
   SelfReportedInfo,
@@ -13,12 +15,16 @@ import type {
 import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { DEFAULT_BREAKPOINT } from '@globalfishingwatch/react-hooks'
 
+import { PRIVATE_ICON } from 'data/config'
+import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import type { VesselLastIdentity } from 'features/search/search.slice'
 import type { TimeRange } from 'features/timebar/timebar.slice'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import type { IdentityVesselData, VesselDataIdentity } from 'features/vessel/vessel.slice'
+import type { IdField } from 'features/vessel-groups/vessel-groups.slice'
+import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 type VesselsParamsSupported = IdentityVessel | IdentityVesselData | ExtendedFeatureVessel
 type GetVesselIdentityParams = { identityId?: string; identitySource?: VesselIdentitySourceEnum }
@@ -250,7 +256,10 @@ export function getRelatedIdentityVesselIds(vessel: VesselsParamsSupported): str
     .flatMap((i) => i.id || [])
 }
 
-export function getSearchIdentityResolved(vessel: VesselsParamsSupported) {
+export function getSearchIdentityResolved(
+  vessel: VesselsParamsSupported,
+  searchIdPrioritized?: IdField
+) {
   const vesselSelfReportedIdentities = getVesselIdentities(vessel, {
     identitySource: VesselIdentitySourceEnum.SelfReported,
   })
@@ -259,6 +268,21 @@ export function getSearchIdentityResolved(vessel: VesselsParamsSupported) {
     const bestMatchIdentity = getBestMatchCriteriaIdentity(vessel)
     if (bestMatchIdentity) {
       vesselData = bestMatchIdentity
+    }
+  }
+  if (searchIdPrioritized) {
+    const identities = getVesselIdentities(vessel)
+    const prioritizedIdentity =
+      identities.find(
+        (i) =>
+          i.identitySource === VesselIdentitySourceEnum.SelfReported && get(i, searchIdPrioritized)
+      ) ||
+      identities.find(
+        (i) => i.identitySource === VesselIdentitySourceEnum.Registry && get(i, searchIdPrioritized)
+      )
+
+    if (prioritizedIdentity) {
+      vesselData = prioritizedIdentity
     }
   }
   // Get first transmission date from all identity sources
@@ -371,4 +395,22 @@ export function formatTransmissionDate(
     return `${formatI18nDate(vesselIdentity.transmissionDateFrom)} - ${formatI18nDate(vesselIdentity.transmissionDateTo)}`
   }
   return `${vesselIdentity.transmissionDateFrom} - ${vesselIdentity.transmissionDateTo}`
+}
+
+export function getIdentitySourceLabel(
+  registryIdentities: VesselDataIdentity[],
+  selfReportedIdentities: VesselDataIdentity[],
+  dataset: Dataset,
+  t: TFunction
+): string {
+  const selfReportedIdentitiesSources = uniq(
+    selfReportedIdentities.flatMap(({ sourceCode }) => sourceCode || [])
+  )
+
+  if (registryIdentities.length && selfReportedIdentities.length)
+    return `${t('vessel.infoSources.both')} (${selfReportedIdentitiesSources.join(', ')})`
+  if (registryIdentities.length) return t('vessel.infoSources.registry')
+  if (selfReportedIdentities.length)
+    return `${t('vessel.infoSources.selfReported')} (${isPrivateDataset(dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
+  return EMPTY_FIELD_PLACEHOLDER
 }

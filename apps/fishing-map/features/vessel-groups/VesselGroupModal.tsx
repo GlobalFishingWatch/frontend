@@ -463,16 +463,12 @@ function VesselGroupModal(): React.ReactElement<any> {
         </div>
         {fullModalLoading ? (
           <Spinner />
+        ) : hasVesselGroupsVessels ? (
+          <div className={styles.vesselsTableContainer}>
+            <VesselGroupVessels searchIdField={searchIdField || 'mmsi'} />
+          </div>
         ) : (
-          <Fragment>
-            {hasVesselGroupsVessels ? (
-              <div className={styles.vesselsTableContainer}>
-                <VesselGroupVessels />
-              </div>
-            ) : (
-              <VesselGroupSearch onError={setError} />
-            )}
-          </Fragment>
+          <VesselGroupSearch onError={setError} />
         )}
       </div>
       <div className={styles.modalFooter}>
