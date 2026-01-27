@@ -6,25 +6,27 @@ import snakeCase from 'lodash/snakeCase'
 
 import type {
   Dataset,
-  DatasetConfigurationUI,
-  DatasetSchemaItem,
-  DatasetSchemaType,
+  DatasetFilter,
+  DatasetFilters,
+  DatasetFilterType,
+  FrontendConfiguration,
 } from '@globalfishingwatch/api-types'
+import { flattenDatasetFilters } from '@globalfishingwatch/datasets-client'
 
 import { parseCoords } from '../coordinates'
 import { COORDINATES_PROPERTIES_ID } from '../segments/segments-to-geojson'
 
 import { GUESS_COLUMN_DICT } from './guess-columns'
 
-type GetFieldSchemaParams = {
+type GetFieldFilterParams = {
   includeEnum?: boolean
-  maxSchemaEnumValues?: number
+  maxFilterEnumValues?: number
 }
 
-export const MAX_SCHEMA_ENUM_VALUES = 100
-export const MAX_SCHEMA_ENUM_VALUES_EXCEEDED = 'maximum values exceeded'
+export const MAX_FILTERS_ENUM_VALUES = 100
+export const MAX_FILTERS_ENUM_VALUES_EXCEEDED = 'maximum values exceeded'
 
-export const getSchemaIdClean = (id: string | string[]) => {
+export const getFilterIdClean = (id: string | string[]) => {
   if (Array.isArray(id)) {
     return id.map((d) => snakeCase(d))
   }
@@ -36,7 +38,7 @@ export const getSchemaIdClean = (id: string | string[]) => {
 export const normalizePropertiesKeys = (object: Record<string, any> | null) => {
   return Object.entries(object || {}).reduce(
     (acc, [key, value]) => {
-      const normalizedKey = getSchemaIdClean(key) as string
+      const normalizedKey = getFilterIdClean(key) as string
       acc[normalizedKey] = value
       return acc
     },
@@ -44,7 +46,7 @@ export const normalizePropertiesKeys = (object: Record<string, any> | null) => {
   )
 }
 
-function getTimestampEnum(values: any[]): DatasetSchemaItem['enum'] {
+function getTimestampEnum(values: any[]): DatasetFilter['enum'] {
   const valuesOrdered = values.sort((a, b) => a - b)
   return [
     new Date(valuesOrdered[0]).getTime(),
@@ -52,79 +54,93 @@ function getTimestampEnum(values: any[]): DatasetSchemaItem['enum'] {
   ]
 }
 
-export const getFieldSchema = (
+export const getFieldFilter = (
   field: string,
   values: any[],
-  { includeEnum, maxSchemaEnumValues = MAX_SCHEMA_ENUM_VALUES } = {} as GetFieldSchemaParams
-): DatasetSchemaItem | null => {
+  { includeEnum, maxFilterEnumValues = MAX_FILTERS_ENUM_VALUES } = {} as GetFieldFilterParams
+): DatasetFilter | null => {
   // As soon as we find a string, there are no compatibility with others
   // this is needed because there are cases where are mixed types in the same column
   const isStringType = values.some((d) => typeof d === 'string')
-  const type = isStringType ? 'string' : (typeof values[0] as DatasetSchemaType | 'object')
+  const type = isStringType ? 'string' : (typeof values[0] as DatasetFilterType | 'object')
   if (type === 'object') {
     if (values[0] instanceof Date) {
-      const schema: DatasetSchemaItem = {
+      const filter: DatasetFilter = {
+        id: field,
+        label: field,
         type: 'timestamp',
       }
       if (includeEnum && values.length > 1) {
-        schema.enum = getTimestampEnum(values)
+        filter.enum = getTimestampEnum(values)
       }
-      return schema
+      return filter
     }
     return null
   }
 
   if (values?.length) {
-    const schema: DatasetSchemaItem = {
-      type:
-        GUESS_COLUMN_DICT.latitude.some((t) => t === field) ||
-        GUESS_COLUMN_DICT.longitude.some((t) => t === field)
-          ? 'coordinate'
-          : type === 'number'
-            ? 'range'
-            : type,
+    const filterType: DatasetFilterType =
+      GUESS_COLUMN_DICT.latitude.some((t) => t === field) ||
+      GUESS_COLUMN_DICT.longitude.some((t) => t === field)
+        ? 'coordinate'
+        : type === 'number'
+          ? 'range'
+          : type === 'boolean'
+            ? 'boolean'
+            : type === 'string'
+              ? 'string'
+              : 'number'
+    const filter: DatasetFilter = {
+      id: field,
+      label: field,
+      type: filterType,
     }
     if (includeEnum && values?.length > 1) {
-      if (schema.type === 'string') {
+      if (filter.type === 'string') {
         const isDates = values.every((d) => !isNaN(Date.parse(d)))
         const isNumeric = values.every((d) => parseCoords(d, d))
         if (isDates) {
-          schema.type = 'timestamp'
-          schema.enum = getTimestampEnum(values)
+          filter.type = 'timestamp'
+          filter.enum = getTimestampEnum(values)
         } else if (isNumeric) {
           const numericalValues = values.filter((v) => !isNaN(Number(v)))
-          if (!numericalValues.length) return schema
+          if (!numericalValues.length) return filter
           const valuesOrdered = numericalValues.sort((a, b) => a - b)
-          schema.type = 'range'
-          schema.enum = [valuesOrdered[0], valuesOrdered[valuesOrdered.length - 1]]
+          filter.type = 'range'
+          filter.enum = [valuesOrdered[0], valuesOrdered[valuesOrdered.length - 1]]
         } else {
-          const stringEnumSupported = values.length < maxSchemaEnumValues
-          schema.enum = stringEnumSupported
+          const stringEnumSupported = values.length < maxFilterEnumValues
+          filter.enum = stringEnumSupported
             ? values.map((v) => v.toString())
-            : [MAX_SCHEMA_ENUM_VALUES_EXCEEDED]
+            : [MAX_FILTERS_ENUM_VALUES_EXCEEDED]
         }
-      } else if (schema.type === 'range' || schema.type === 'coordinate') {
+      } else if (filter.type === 'range' || filter.type === 'coordinate') {
         const numericalValues = values.filter((v) => !isNaN(v))
-        schema.enum = [min(numericalValues), max(numericalValues)]
-      } else if (schema.type === 'boolean') {
-        schema.enum = [true, false]
+        filter.enum = [min(numericalValues), max(numericalValues)]
+      } else if (filter.type === 'boolean') {
+        filter.enum = [true, false]
       }
     }
-    return schema
+    return filter
   }
   return null
 }
 
-export const getDatasetSchemaClean = (schema: Dataset['schema']): Dataset['schema'] => {
-  if (!schema) {
-    return {} as Dataset['schema']
+export const getDatasetFiltersClean = (filters: DatasetFilters): Record<string, DatasetFilter> => {
+  if (!filters || Object.keys(filters).length === 0) {
+    return {}
   }
-  return Object.entries(schema).reduce((acc, [key, value]) => {
-    return { ...acc, [getSchemaIdClean(key) as string]: value }
-  }, {})
+  const flatFilters = flattenDatasetFilters(filters)
+  return Object.entries(flatFilters).reduce(
+    (acc, [key, value]) => {
+      const cleanKey = getFilterIdClean(key) as string
+      return { ...acc, [cleanKey]: { ...value, id: cleanKey, label: value.label || cleanKey } }
+    },
+    {} as Record<string, DatasetFilter>
+  )
 }
 
-const CONFIGURATION_KEYS_TO_CLEAN: (keyof DatasetConfigurationUI)[] = [
+const CONFIGURATION_KEYS_TO_CLEAN: (keyof FrontendConfiguration)[] = [
   'startTime',
   'endTime',
   'timestamp',
@@ -140,74 +156,81 @@ export const getDatasetConfigurationClean = (
   if (!configuration) {
     return {} as Dataset['configuration']
   }
-  const configurationUI = Object.entries(configuration.configurationUI || {}).reduce(
-    (acc, [key, value]) => {
-      const cleanValue = CONFIGURATION_KEYS_TO_CLEAN.includes(key as keyof DatasetConfigurationUI)
-        ? getSchemaIdClean(value)
+  const frontend = Object.entries(configuration.frontend || {}).reduce((acc, [key, value]) => {
+    const cleanValue = CONFIGURATION_KEYS_TO_CLEAN.includes(key as keyof FrontendConfiguration)
+      ? typeof value === 'string' || Array.isArray(value)
+        ? getFilterIdClean(value as string | string[])
         : value
-      return { ...acc, [key]: cleanValue }
-    },
-    {} as DatasetConfigurationUI
-  )
+      : value
+    return { ...acc, [key]: cleanValue }
+  }, {} as FrontendConfiguration)
   return {
     ...(configuration || {}),
-    configurationUI,
-  }
+    frontend,
+  } as Dataset['configuration']
 }
 
-export const getDatasetSchemaFromGeojson = (
+export const getDatasetFiltersFromGeojson = (
   geojson: FeatureCollection,
-  getFieldSchemaParams = {} as GetFieldSchemaParams
-) => {
+  getFieldFilterParams = {} as GetFieldFilterParams
+): Record<string, DatasetFilter> => {
   const fields = geojson?.features?.[0]?.properties && Object.keys(geojson.features[0].properties)
   if (!fields?.length) {
-    return {} as Dataset['schema']
+    return {}
   }
-  const schema: Dataset['schema'] = fields.reduce(
-    (acc: Dataset['schema'], field: string): Dataset['schema'] => {
+  const filters: Record<string, DatasetFilter> = fields.reduce(
+    (acc: Record<string, DatasetFilter>, field: string): Record<string, DatasetFilter> => {
       const uniqDataValues = uniq(geojson.features.flatMap((d) => d.properties?.[field] || []))
-      const schema = getFieldSchema(field, uniqDataValues, getFieldSchemaParams)
-      if (schema) {
-        return { ...acc, [snakeCase(field)]: schema }
+      const filter = getFieldFilter(field, uniqDataValues, getFieldFilterParams)
+      if (filter) {
+        const cleanField = snakeCase(field)
+        return {
+          ...acc,
+          [cleanField]: { ...filter, id: cleanField, label: filter.label || cleanField },
+        }
       }
       return acc
     },
     {}
   )
-  return schema
+  return filters
 }
 
 type ListedData = Record<string, any>[]
-export const getDatasetSchemaFromList = (
+export const getDatasetFiltersFromList = (
   data: ListedData,
-  getFieldSchemaParams = {} as GetFieldSchemaParams
-) => {
+  getFieldFilterParams = {} as GetFieldFilterParams
+): Record<string, DatasetFilter> => {
   const fields = Object.keys(data[0])
   if (!fields?.length) {
-    return {} as Dataset['schema']
+    return {}
   }
-  const schema: Dataset['schema'] = fields.reduce(
-    (acc: Dataset['schema'], field: string): Dataset['schema'] => {
+  const filters: Record<string, DatasetFilter> = fields.reduce(
+    (acc: Record<string, DatasetFilter>, field: string): Record<string, DatasetFilter> => {
       const uniqDataValues = uniq(data.flatMap((d) => d[field] || []))
-      const schema = getFieldSchema(field, uniqDataValues, getFieldSchemaParams)
-      if (schema) {
-        return { ...acc, [snakeCase(field)]: schema }
+      const filter = getFieldFilter(field, uniqDataValues, getFieldFilterParams)
+      if (filter) {
+        const cleanField = snakeCase(field)
+        return {
+          ...acc,
+          [cleanField]: { ...filter, id: cleanField, label: filter.label || cleanField },
+        }
       }
       return acc
     },
     {}
   )
-  return schema
+  return filters
 }
 
-export const getDatasetSchema = (
+export const getDatasetFilters = (
   data: ListedData | FeatureCollection,
-  getFieldSchemaParams = {} as GetFieldSchemaParams
-) => {
+  getFieldFilterParams = {} as GetFieldFilterParams
+): Record<string, DatasetFilter> => {
   if (Array.isArray(data)) {
-    return getDatasetSchemaFromList(data, getFieldSchemaParams)
+    return getDatasetFiltersFromList(data, getFieldFilterParams)
   } else if (data.type === 'FeatureCollection') {
-    return getDatasetSchemaFromGeojson(data, getFieldSchemaParams)
+    return getDatasetFiltersFromGeojson(data, getFieldFilterParams)
   }
-  return {} as Dataset['schema']
+  return {}
 }

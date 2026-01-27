@@ -1,4 +1,6 @@
 export * from './datasets'
+export * from './datasets.configuration'
+export * from './datasets.filters'
 export * from './dataviews'
 export * from './download'
 export * from './downloadActivity'

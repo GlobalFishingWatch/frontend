@@ -1,19 +1,18 @@
 import type { Feature, FeatureCollection, GeoJsonProperties, Point } from 'geojson'
 
-import type { DatasetSchema, DatasetSchemaItem } from '@globalfishingwatch/api-types'
+import type { DatasetFilters } from '@globalfishingwatch/api-types'
+import { flattenDatasetFilters } from '@globalfishingwatch/datasets-client'
 
 import { parseCoords } from '../coordinates'
 import { getUTCDate } from '../dates'
 import { normalizePropertiesKeys } from '../schema'
 import type { PointColumns } from '../types'
 
-export const cleanProperties = (
-  object: GeoJsonProperties,
-  schema: Record<string, DatasetSchema | DatasetSchemaItem> | undefined
-) => {
+export const cleanProperties = (object: GeoJsonProperties, filters: DatasetFilters | undefined) => {
   const result = normalizePropertiesKeys(object)
+  const flatFilters = flattenDatasetFilters(filters)
   for (const property in result) {
-    const propertySchema = schema?.[property]
+    const propertySchema = flatFilters[property]
     if (result[property] !== null) {
       if (propertySchema?.type === 'string') {
         result[property] = String(result[property])
@@ -30,7 +29,7 @@ export const cleanProperties = (
 
 export const pointsListToGeojson = (
   data: Record<string, any>[],
-  { latitude, longitude, id, startTime, endTime, schema }: PointColumns
+  { latitude, longitude, id, startTime, endTime, filters }: PointColumns
 ) => {
   let hasDatesError = false
   const features: Feature<Point>[] = data.flatMap((point, index) => {
@@ -38,7 +37,7 @@ export const pointsListToGeojson = (
     if (!cleanedPoint[latitude] || !cleanedPoint[longitude]) return []
     const coords = parseCoords(cleanedPoint[latitude] as number, cleanedPoint[longitude] as number)
     if (coords) {
-      const cleanedProperties = cleanProperties(cleanedPoint, schema)
+      const cleanedProperties = cleanProperties(cleanedPoint, filters)
       const startTimeMs = startTime
         ? getUTCDate(cleanedPoint[startTime] as string).getTime()
         : undefined
