@@ -110,7 +110,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   get debounceTime(): number {
-    return this.props.debounceTime || 0
+    return this.props.debounceTime ?? 0
   }
 
   get viewportLoaded(): boolean {

@@ -121,15 +121,11 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   get debounceTime(): number {
-    return this.props.debounceTime || 0
+    return this.props.debounceTime ?? 0
   }
 
   get viewportLoaded(): boolean {
     return this.state?.viewportLoaded ?? false
-  }
-
-  forceUpdate() {
-    this.setNeedsUpdate()
   }
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
