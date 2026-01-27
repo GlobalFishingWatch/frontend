@@ -323,7 +323,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
             const { extensionFilterProps, updateTrigger } = this._getExtensionFilterProps(sublayer)
             return [
               new ScatterplotLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-                id: `${props.id}-${sublayer.dataviewId}-points`,
+                id: `${props.id}-${sublayer.dataviewId}-points-${filtersHash}`,
                 pickable: pickable,
                 radiusMinPixels: 0,
                 radiusMaxPixels: maxPointSize,
