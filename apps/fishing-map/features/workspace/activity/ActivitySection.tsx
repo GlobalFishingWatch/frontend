@@ -23,17 +23,19 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
+import Section from '../shared/Section'
 
 import { useVisualizationsOptions } from './activity.hooks'
 import LayerPanel from './ActivityLayerPanel'
 
 import activityStyles from './ActivitySection.module.css'
-import styles from 'features/workspace/shared/Sections.module.css'
+import styles from 'features/workspace/shared/Section.module.css'
 
 function ActivitySection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectActivityDataviews)
+  const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
   const detectionsDataviews = useSelector(selectDetectionsDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
@@ -105,13 +107,20 @@ function ActivitySection(): React.ReactElement<any> {
   const hasVisibleDataviews = dataviews?.some((dataview) => dataview.config?.visible === true)
 
   return (
-    <div
-      data-test="activity-section"
-      className={cx(styles.container, { 'print-hidden': !hasVisibleDataviews }, 'hover-target')}
-    >
-      <div className={cx(styles.header, 'print-hidden')}>
-        <h2 className={styles.sectionTitle}>{t('common.activity')}</h2>
-        {!readOnly && (
+    <Section
+      id={DataviewCategory.Activity}
+      data-testid="activity-section"
+      className="hover-target"
+      title={
+        <span>
+          {t('common.activity')}
+          {hasVisibleDataviews && (
+            <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
+          )}
+        </span>
+      }
+      headerOptions={
+        !readOnly ? (
           <div className={cx(styles.sectionButtons)}>
             <VisualisationChoice
               options={visualizationOptions}
@@ -130,8 +139,10 @@ function ActivitySection(): React.ReactElement<any> {
               onClick={() => onAddLayerClick()}
             />
           </div>
-        )}
-      </div>
+        ) : null
+      }
+      hasVisibleDataviews={hasVisibleDataviews}
+    >
       {dataviews?.map((dataview, index) => {
         const isLastElement = index === dataviews?.length - 1
         const isVisible = dataview?.config?.visible ?? false
@@ -168,7 +179,7 @@ function ActivitySection(): React.ReactElement<any> {
           </Fragment>
         )
       })}
-    </div>
+    </Section>
   )
 }
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
@@ -24,7 +24,7 @@ import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { formatInfoField } from 'utils/info'
 
-import styles from 'features/workspace/shared/Sections.module.css'
+import styles from 'features/workspace/shared/Section.module.css'
 
 const MAX_VESSLES_TO_DISPLAY = 10
 
@@ -36,7 +36,6 @@ type VesselFromPosition = {
 }
 
 function VesselsFromPositions() {
-  const [vessels, setVessels] = useState<VesselFromPosition[]>([])
   const allDatasets = useSelector(selectAllDatasets)
 
   const vesselDataviews = useSelector(selectVesselsDataviews)
@@ -74,7 +73,7 @@ function VesselsFromPositions() {
   const fourwingsLayersLoaded =
     fourwingsLayers.length && fourwingsLayers.every((l) => l?.instance?.isLoaded)
 
-  useEffect(() => {
+  const vessels = useMemo(() => {
     if (
       fourwingsLayersLoaded &&
       (fourwingsActivityLayer?.instance?.props.visualizationMode === 'positions' ||
@@ -115,13 +114,14 @@ function VesselsFromPositions() {
         )
         const vessels = Object.values(vesselsByValue).sort((a, b) => b.value - a.value)
         const vesselsNotAlreadyPinned = vessels.filter((vessel) => !vesselIds.includes(vessel.id))
-        setVessels(vesselsNotAlreadyPinned || [])
+        return vesselsNotAlreadyPinned || []
       } else {
-        setVessels([])
+        return []
       }
     } else {
-      setVessels([])
+      return []
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fourwingsLayers.length, fourwingsLayersLoaded, vesselsHash])
 
   if (!vessels.length) {

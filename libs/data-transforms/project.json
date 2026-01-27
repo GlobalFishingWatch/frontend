@@ -3,28 +3,26 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/data-transforms/src",
   "projectType": "library",
+  "tags": ["lib"],
   "targets": {
-    "dist": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
+    "build": {
+      "executor": "@nx/js:tsc"
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
       "options": {
-        "assets": [],
-        "compiler": "swc",
-        "format": ["cjs", "esm"],
-        "main": "libs/data-transforms/src/index.ts",
-        "outputPath": "dist/libs/data-transforms",
-        "project": "libs/data-transforms/package.json",
-        "tsConfig": "libs/data-transforms/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false
-      }
+        "command": "nx run data-transforms:build",
+        "watch": true
+      },
+      "continuous": true
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
+      "dependsOn": ["build"],
       "options": {
-        "packageRoot": "dist/libs/data-transforms"
+        "packageRoot": "libs/data-transforms"
       }
     }
-  },
-  "tags": []
+  }
 }

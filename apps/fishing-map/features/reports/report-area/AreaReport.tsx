@@ -43,23 +43,24 @@ import WorkspaceError from 'features/workspace/WorkspaceError'
 import { useLocationConnect } from 'routes/routes.hook'
 import { TimebarVisualisations } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import dynamicWithRetry from 'utils/dynamic-import'
 
 import styles from 'features/reports/report-area/AreaReport.module.css'
 
-const ReportActivity = dynamic(
+const ReportActivity = dynamicWithRetry(
   () =>
     import(/* webpackChunkName: "ReportActivity" */ 'features/reports/tabs/activity/ReportActivity')
 )
-const ReportEnvironment = dynamic(
+const ReportEnvironment = dynamicWithRetry(
   () =>
     import(
       /* webpackChunkName: "ReportEnvironment" */ 'features/reports/tabs/environment/ReportEnvironment'
     )
 )
-const ReportOthers = dynamic(
+const ReportOthers = dynamicWithRetry(
   () => import(/* webpackChunkName: "ReportOthers" */ 'features/reports/tabs/others/ReportOthers')
 )
-const ReportEvents = dynamic(
+const ReportEvents = dynamicWithRetry(
   () => import(/* webpackChunkName: "ReportEvents" */ 'features/reports/tabs/events/EventsReport')
 )
 
@@ -221,9 +222,7 @@ export default function Report() {
       ) : reportCategory === ReportCategory.Others ? (
         <ReportOthers />
       ) : (
-        <div>
-          <ReportActivity />
-        </div>
+        <ReportActivity />
       )}
     </Fragment>
   )

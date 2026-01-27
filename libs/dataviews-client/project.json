@@ -3,20 +3,19 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/dataviews-client/src",
   "projectType": "library",
+  "tags": ["lib"],
   "targets": {
-    "dist": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
+    "build": {
+      "executor": "@nx/js:tsc"
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
       "options": {
-        "assets": [],
-        "compiler": "swc",
-        "format": ["esm", "cjs"],
-        "main": "libs/dataviews-client/src/index.ts",
-        "outputPath": "dist/libs/dataviews-client",
-        "project": "libs/dataviews-client/package.json",
-        "tsConfig": "libs/dataviews-client/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false
-      }
+        "command": "nx run dataviews-client:build",
+        "watch": true
+      },
+      "continuous": true
     },
     "bundle-url-workspace": {
       "executor": "nx:run-commands",
@@ -29,11 +28,10 @@
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
+      "dependsOn": ["build"],
       "options": {
-        "packageRoot": "dist/libs/dataviews-client"
+        "packageRoot": "libs/dataviews-client"
       }
     }
-  },
-  "tags": []
+  }
 }

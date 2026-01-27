@@ -1,51 +1,63 @@
+import { getAppSession } from '@/server/session'
+import { GFWAPI } from '@globalfishingwatch/api-client'
 import { redirect } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 
-import { useAppSession } from '@/server/session'
+interface LoginParams {
+  accessToken?: string | null
+  refreshToken?: string | null
+}
 
-// Login server function
+export function loginRedirect() {
+  const baseUrl = process.env.BASE_URL || 'http://local.globalfishingwatch.org:3000'
+  const callback = `${baseUrl}/auth/callback`
+  const loginUrl = GFWAPI.getLoginUrl(callback)
+
+  throw redirect({
+    href: loginUrl,
+    replace: true,
+  })
+  // throw new Response(null, {
+  //   status: 302,
+  //   headers: {
+  //     Location: loginUrl,
+  //   },
+  // })
+}
+
 export const loginFn = createServerFn({ method: 'POST' })
-  .inputValidator((data: { email: string; password: string }) => data)
+  .inputValidator((data: LoginParams) => data)
   .handler(async ({ data }) => {
-    // Verify credentials (replace with your auth logic)
-    const user = await authenticateUser(data.email, data.password)
-
-    if (!user) {
-      return { error: 'Invalid credentials' }
+    const { accessToken } = data
+    if (!accessToken) {
+      throw new Error('Access token is required for login')
     }
 
-    // Create session
-    const session = await useAppSession()
+    const user = await GFWAPI.login({ accessToken })
+
+    const session = await getAppSession()
     await session.update({
-      userId: user.id,
-      email: user.email,
+      user: {
+        ...user,
+        accessToken: accessToken,
+        refreshToken: '',
+      },
     })
 
-    // Redirect to protected area
-    throw redirect({ to: '/dashboard' })
+    return user
   })
 
-// Logout server function
 export const logoutFn = createServerFn({ method: 'POST' }).handler(async () => {
-  const session = await useAppSession()
+  const session = await getAppSession()
+
+  if (session.data.user?.refreshToken) {
+    try {
+      await GFWAPI.logout()
+    } catch (e) {
+      console.warn('Error invalidating session on API', e)
+    }
+  }
+
   await session.clear()
   throw redirect({ to: '/' })
 })
-
-// Get current user
-export const getTokens = createServerFn({ method: 'GET' })
-  .inputValidator((data: string) => data)
-  .handler(async ({ data }) => {
-    const session = await useAppSession(data)
-    const userId = session.get('userId')
-
-    if (!accessToken) {
-      return null
-    }
-
-    if (!userId) {
-      return null
-    }
-
-    return await getUserById(userId)
-  })

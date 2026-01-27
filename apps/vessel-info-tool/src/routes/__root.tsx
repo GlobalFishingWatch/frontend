@@ -1,19 +1,23 @@
+import Header from '@/features/header/Header'
+import OptionsMenu from '@/features/options/OptionsMenu'
+import Profile from '@/features/profile/Profile'
+import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-router'
 import * as React from 'react'
-import { TanStackDevtools } from '@tanstack/react-devtools'
-import {
-  createRootRoute,
-  createRootRouteWithContext,
-  HeadContent,
-  Scripts,
-} from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import { DefaultCatchBoundary } from '@/features/router/DefaultCatchBoundary'
 import { NotFound } from '@/features/router/NotFound'
+import { getAppSession } from '@/server/session'
 import appCss from '@/styles/app.css?url'
 import baseCss from '@/styles/base.css?url'
 
 export const Route = createRootRoute({
+  beforeLoad: async () => {
+    const session = await getAppSession()
+
+    return {
+      user: session.data.user,
+    }
+  },
   head: () => ({
     meta: [
       {
@@ -55,13 +59,25 @@ export const Route = createRootRoute({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const context = Route.useRouteContext()
+  const user = context.user
+  console.log('🚀 ~ RootDocument ~ user:', user)
+
   return (
     <html lang="en">
       <head>
         <HeadContent />
       </head>
       <body>
-        <div id="root">{children}</div>
+        <div id="root">
+          {user ? (
+            <Header>
+              <OptionsMenu />
+              <Profile user={user} />
+            </Header>
+          ) : null}
+          <Outlet />
+        </div>
         <Scripts />
       </body>
     </html>

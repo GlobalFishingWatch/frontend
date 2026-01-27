@@ -70,10 +70,7 @@ module.exports = {
     '@nx/dependency-checks': [
       'error',
       {
-        ignoredFiles: [
-          '{projectRoot}/vite.config.{js,ts,mjs,mts}',
-          '{projectRoot}/rollup.config.{js,ts,mjs,mts}',
-        ],
+        ignoredFiles: ['{projectRoot}/vite.config.{js,ts,mjs,mts}'],
       },
     ],
   },

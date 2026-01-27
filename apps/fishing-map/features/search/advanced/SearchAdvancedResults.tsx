@@ -212,11 +212,13 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       {
         id: 'flag',
         accessorFn: (vessel: IdentityVesselData) => {
-          return (
-            <AdvancedResultCellWithFilter vessel={vessel} column="flag" onClick={fetchResults}>
-              <I18nFlag iso={getVesselProperty(vessel, 'flag')} />
-            </AdvancedResultCellWithFilter>
-          )
+          const flags = uniq(vessel.identities.map((i) => i.flag))
+          return flags.map((f, index) => (
+            <span key={f}>
+              <I18nFlag iso={f} />
+              {index < flags.length - 1 ? ', ' : ''}
+            </span>
+          ))
         },
         header: t('vessel.flag'),
       },
@@ -371,6 +373,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
       enableTopToolbar={false}
       renderToolbarInternalActions={undefined}
       enableColumnFilters={false}
+      enableColumnResizing
       enablePagination={false}
       enableColumnActions
       enableColumnOrdering

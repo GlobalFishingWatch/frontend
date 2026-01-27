@@ -1,7 +1,7 @@
 import type { Loader, LoaderOptions, LoaderWithParser } from '@loaders.gl/loader-utils'
 
-import packageJson from '../../package.json'
 import { PATH_BASENAME } from '../loaders.config'
+import { VERSION } from '../version'
 
 import type { ParseUserTrackParams } from './lib/parse-user-tracks'
 import { parseUserTrack } from './lib/parse-user-tracks'
@@ -19,7 +19,7 @@ export const UserTrackWorkerLoader: Loader<UserTrackData, any, UserTracksLoaderO
   name: 'gfw-user-tracks',
   module: 'tracks',
   category: 'geometry',
-  version: packageJson?.version,
+  version: VERSION,
   extensions: ['*'],
   mimeTypes: ['application/json'],
   worker: true,

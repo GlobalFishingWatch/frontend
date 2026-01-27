@@ -7,7 +7,7 @@ import type { AppState, WorkspaceState } from '../types'
 import { TimebarGraphs, TimebarVisualisations, UserTab } from '../types'
 import { getUTCDateTime } from '../utils/dates'
 
-export { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/dataviews-client'
+export { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/deck-layer-composer'
 
 export const ROOT_DOM_ELEMENT = '__next'
 
@@ -45,6 +45,7 @@ export const FULL_SUFIX = 'full'
 export const USER_SUFIX = 'user'
 export const PRIVATE_SUFIX = 'private'
 export const AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX = 'gfw-feedback-auto-saved'
+export const AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION = 'Auto generated workspace for feedback'
 export const PRIVATE_ICON = '🔒'
 export const PRIVATE_PASSWORD_ICON = '🔐'
 
@@ -104,11 +105,11 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   ...DEFAULT_VIEWPORT,
   activityVisualizationMode: 'heatmap',
   bivariateDataviews: null,
+  collapsedSections: [],
   dataviewInstances: undefined,
   daysFromLatest: undefined,
   detectionsVisualizationMode: 'heatmap',
   environmentVisualizationMode: 'heatmap-low-res',
-  vesselGroupsVisualizationMode: 'footprint',
   mapAnnotationsVisible: true,
   mapRulersVisible: true,
   readOnly: false,
@@ -117,6 +118,7 @@ export const DEFAULT_WORKSPACE: WorkspaceState & AppState = {
   timebarGraph: TimebarGraphs.None,
   timebarVisualisation: TimebarVisualisations.HeatmapActivity,
   userTab: UserTab.Info,
+  vesselGroupsVisualizationMode: 'footprint',
   visibleEvents: 'all',
 }
 

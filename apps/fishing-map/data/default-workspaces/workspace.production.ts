@@ -20,11 +20,12 @@ import {
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   DEFAULT_BASEMAP_DATAVIEW_INSTANCE_ID,
+  DEFAULT_FISHING_DATASET_ID,
   DEFAULT_WORKSPACE_CATEGORY,
   DEFAULT_WORKSPACE_ID,
   FISHING_DATAVIEW_SLUG_AIS,
   FISHING_DATAVIEW_SLUG_VMS,
-  FIXED_SAR_INFRASTRUCTURE,
+  // FIXED_SAR_INFRASTRUCTURE,
   GRATICULES_DATAVIEW_SLUG,
   // PORTS_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
@@ -38,7 +39,7 @@ import {
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
 } from 'features/dataviews/dataviews.utils'
-import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID, PORTS_LAYER_ID } from 'features/map/map.config'
+// import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID, PORTS_LAYER_ID } from 'features/map/map.config'
 import type { WorkspaceState } from 'types'
 
 const workspace: Workspace<WorkspaceState> = {
@@ -64,7 +65,7 @@ const workspace: Workspace<WorkspaceState> = {
       id: AIS_DATAVIEW_INSTANCE_ID,
       config: {
         visible: true,
-        datasets: ['public-global-fishing-effort:v3.0'],
+        datasets: [DEFAULT_FISHING_DATASET_ID],
         filters: {
           distance_from_port_km: '3',
         },
@@ -158,15 +159,15 @@ const workspace: Workspace<WorkspaceState> = {
       config: { visible: false },
     },
     ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,
-    {
-      id: OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID,
-      config: {
-        visible: false,
-        color: '#8E24A9',
-        colorRamp: 'seance',
-      },
-      dataviewId: FIXED_SAR_INFRASTRUCTURE,
-    },
+    // {
+    //   id: OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID,
+    //   config: {
+    //     visible: false,
+    //     color: '#8E24A9',
+    //     colorRamp: 'seance',
+    //   },
+    //   dataviewId: FIXED_SAR_INFRASTRUCTURE,
+    // },
     // {
     //   id: PORTS_LAYER_ID,
     //   config: {

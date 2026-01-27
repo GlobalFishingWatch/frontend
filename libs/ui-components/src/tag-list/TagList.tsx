@@ -39,6 +39,7 @@ export function TagList(props: TagListProps) {
           >
             {tag.label}
           </Tag>
+          <div className={styles.sourceExpanded}>{tag.tooltip as React.ReactNode}</div>
         </li>
       ))}
     </ul>

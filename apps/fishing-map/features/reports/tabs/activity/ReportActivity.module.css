@@ -41,6 +41,10 @@
   text-decoration: underline;
 }
 
+.printableTitle {
+  display: none;
+}
+
 @media print {
   .container {
     border-bottom: none;
@@ -52,5 +56,14 @@
 
   .blockTitle::after {
     content: ' - ';
+  }
+
+  .select {
+    display: none;
+  }
+
+  .printableTitle {
+    display: block;
+    font: var(--font-M);
   }
 }

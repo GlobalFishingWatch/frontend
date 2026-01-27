@@ -29,6 +29,11 @@
     "moreInfoLink": "",
     "name": "ISA License Areas"
   },
+  "ebsas": {
+    "description": "EBSAs are areas of the ocean recognized for their unique ecological and/or biological features, such as essential habitats, food sources or breeding grounds for specific species.",
+    "moreInfoLink": "",
+    "name": "Ecologically or Biologically Significant Marine Areas (EBSAs)"
+  },
   "eez": {
     "description": "As zonas econômicas exclusivas (ZEEs) estendem-se até 200 milhas náuticas da costa de um país. Flanders Marine Institute (2019). Maritime Boundaries Geodatabase: Maritime Boundaries and Exclusive Economic Zones (200NM), version 11.",
     "moreInfoLink": "",
@@ -78,6 +83,11 @@
     "description": "High Seas pockets are areas totally enclosed by EEZs that are beyond Exclusive Economic Zones (EEZ). These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them.",
     "moreInfoLink": "https://www.marineregions.org/downloads.php",
     "name": "High seas pockets"
+  },
+  "immas": {
+    "description": "Important Marine Mammal Areas (IMMAs) are defined as discrete portions of habitat, important to marine mammal species, that have the potential to be delineated and managed for conservation.",
+    "moreInfoLink": "",
+    "name": "Important Marine Mammal Areas (IMMA)"
   },
   "loitering": {
     "description": "Um episódio de deriva é quando uma única embarcação exibe um comportamento indicativo de um evento de encontro potencial. Um episódio de deriva é estimado usando dados do sistema de identificação automática (AIS), incluindo a velocidade da embarcação, a duração em um determinado local e a distância da costa. Deriva ocorre quando uma embarcação viaja a uma velocidade média inferior a dois nós, estando, em média, a pelo menos 20 milhas náuticas da costa. Para reduzir o ruído no portal da embarcação transportadora, apenas eventos de deriva maiores que uma hora são mostrados.",

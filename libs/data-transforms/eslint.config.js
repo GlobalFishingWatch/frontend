@@ -1,3 +1,1 @@
-const gfwConfig = require('../../eslint.config')
-
-module.exports = gfwConfig
+export { default } from '../../eslint.config.js'

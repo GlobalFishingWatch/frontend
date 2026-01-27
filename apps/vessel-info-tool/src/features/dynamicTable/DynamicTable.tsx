@@ -10,7 +10,7 @@ import {
 } from '@tanstack/react-table'
 import { useVirtualizer } from '@tanstack/react-virtual'
 
-import { Route } from '@/routes/_auth/$source'
+import { Route } from '@/routes/_authed/$source'
 import { type Vessel } from '@/types/vessel.types'
 import { Icon } from '@globalfishingwatch/ui-components'
 

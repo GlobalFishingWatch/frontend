@@ -54,7 +54,11 @@ import {
   selectReportVesselsSubCategory,
 } from 'features/reports/reports.config.selectors'
 import { selectReportCategory, selectReportVesselGraph } from 'features/reports/reports.selectors'
-import { selectDaysFromLatest, selectWorkspace } from 'features/workspace/workspace.selectors'
+import {
+  selectCollapsedSections,
+  selectDaysFromLatest,
+  selectWorkspace,
+} from 'features/workspace/workspace.selectors'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { selectLocationCategory } from 'routes/routes.selectors'
 
@@ -85,6 +89,7 @@ const selectWorkspaceReportState = createSelector(
     selectReportEventsPortsPage,
     selectReportEventsPortsResultsPerPage,
     selectReportComparisonDataviewIds,
+    selectCollapsedSections,
   ],
   (
     reportActivityGraph,
@@ -111,7 +116,8 @@ const selectWorkspaceReportState = createSelector(
     reportEventsPortsFilter,
     reportEventsPortsPage,
     reportEventsPortsResultsPerPage,
-    reportComparisonDataviewIds
+    reportComparisonDataviewIds,
+    collapsedSections
   ) => ({
     ...(reportActivityGraph && { reportActivityGraph }),
     ...(reportAreaBounds && { reportAreaBounds }),
@@ -138,6 +144,7 @@ const selectWorkspaceReportState = createSelector(
     ...(reportEventsPortsPage && { reportEventsPortsPage }),
     ...(reportEventsPortsResultsPerPage && { reportEventsPortsResultsPerPage }),
     ...(reportComparisonDataviewIds && { reportComparisonDataviewIds }),
+    ...(collapsedSections && { collapsedSections }),
   })
 )
 

@@ -1,5 +1,5 @@
 import type { TimeRange } from '@globalfishingwatch/deck-layer-composer'
-import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
+import type { FourwingsLayer, FourwingsVectorsTileLayer } from '@globalfishingwatch/deck-layers'
 import { UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
 
 import type { FilteredPolygons } from 'features/reports/reports-geo.utils'
@@ -13,16 +13,20 @@ import {
   getPointsTimeseriesStats,
 } from 'features/reports/tabs/others/reports-points-timeseries.utils'
 
-export type GetTimeseriesParams<T extends FourwingsLayer | UserPointsTileLayer> = {
+export type ReportFourwingsDeckLayer = FourwingsLayer | FourwingsVectorsTileLayer
+export type ReportPointsDeckLayer = UserPointsTileLayer
+export type ReportDeckLayer = ReportFourwingsDeckLayer | ReportPointsDeckLayer
+
+export type GetTimeseriesParams<T extends ReportDeckLayer> = {
   featuresFiltered: FilteredPolygons[][]
   instances: T[]
 }
 
-export const isInstanceOfPointsLayer = (instance: FourwingsLayer | UserPointsTileLayer) => {
+export const isInstanceOfPointsLayer = (instance: ReportDeckLayer) => {
   return instance instanceof UserPointsTileLayer
 }
 
-export const getTimeseries = <T extends FourwingsLayer | UserPointsTileLayer>({
+export const getTimeseries = <T extends ReportDeckLayer>({
   featuresFiltered,
   instances,
 }: GetTimeseriesParams<T>) => {
@@ -50,7 +54,7 @@ export const getTimeseries = <T extends FourwingsLayer | UserPointsTileLayer>({
   return timeseries
 }
 
-export const getTimeseriesStats = <T extends FourwingsLayer | UserPointsTileLayer>({
+export const getTimeseriesStats = <T extends ReportDeckLayer>({
   featuresFiltered,
   instances,
   start,

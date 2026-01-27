@@ -3,8 +3,6 @@ import { CompositeLayer } from '@deck.gl/core'
 import { GeoJsonLayer } from '@deck.gl/layers'
 import type { FeatureCollection, GeoJsonProperties, Geometry } from 'geojson'
 
-import type { PolygonsLayerProps } from '@globalfishingwatch/deck-layers'
-
 import {
   COLOR_HIGHLIGHT_FILL,
   COLOR_HIGHLIGHT_LINE,
@@ -17,7 +15,12 @@ import {
 } from '../../utils'
 import { PREVIEW_BUFFER_GENERATOR_ID } from '../layers.config'
 
-import type { PolygonFeature, PolygonPickingInfo, PolygonPickingObject } from './polygons.types'
+import type {
+  PolygonFeature,
+  PolygonPickingInfo,
+  PolygonPickingObject,
+  PolygonsLayerProps,
+} from './polygons.types'
 
 const defaultProps: DefaultProps<PolygonsLayerProps> = {
   pickable: true,
@@ -41,8 +44,8 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
     this.state = { error: '' }
   }
 
-  get isLoaded(): boolean {
-    return super.isLoaded || this.state.error !== ''
+  get cacheHash(): string {
+    return this.state.error
   }
 
   getPickingInfo = ({ info }: { info: PickingInfo<PolygonFeature> }): PolygonPickingInfo => {

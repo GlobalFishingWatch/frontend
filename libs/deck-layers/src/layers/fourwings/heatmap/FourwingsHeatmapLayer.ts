@@ -254,7 +254,7 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
     this.startFrame = startFrame
     this.endFrame = endFrame
 
-    const layerHighlightedFeature = highlightedFeatures?.find((f) => f.layerId === this.root.id)
+    const layerHighlightedFeatures = highlightedFeatures?.filter((f) => f.layerId === this.root.id)
     return [
       new SolidPolygonLayer(
         this.props,
@@ -289,29 +289,26 @@ export class FourwingsHeatmapLayer extends CompositeLayer<FourwingsHeatmapLayerP
           },
         })
       ),
-      ...([
-        layerHighlightedFeature
-          ? new PathLayer(
-              this.props,
-              this.getSubLayerProps({
-                pickable: false,
-                material: false,
-                _normalize: false,
-                positionFormat: 'XY',
-                data: [layerHighlightedFeature],
-                id: `fourwings-cell-highlight`,
-                widthUnits: 'pixels',
-                widthMinPixels: 4,
-                getPath: (d: FourwingsFeature) => d.coordinates,
-                getColor: COLOR_HIGHLIGHT_LINE,
-                getOffset: 0.5,
-                getPolygonOffset: (params: any) =>
-                  getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
-                extensions: [new PathStyleExtension({ offset: true })],
-              })
-            )
-          : [],
-      ] as LayersList),
+      new PathLayer(
+        this.props,
+        this.getSubLayerProps({
+          pickable: false,
+          material: false,
+          _normalize: false,
+          positionFormat: 'XY',
+          data: layerHighlightedFeatures?.length ? layerHighlightedFeatures : [],
+          visible: layerHighlightedFeatures && layerHighlightedFeatures?.length > 0,
+          id: `fourwings-cell-highlight`,
+          widthUnits: 'pixels',
+          widthMinPixels: 4,
+          getPath: (d: FourwingsFeature) => d.coordinates,
+          getColor: COLOR_HIGHLIGHT_LINE,
+          getOffset: 0.5,
+          getPolygonOffset: (params: any) =>
+            getLayerGroupOffset(LayerGroup.OutlinePolygonsHighlighted, params),
+          extensions: [new PathStyleExtension({ offset: true })],
+        })
+      ),
     ]
   }
 

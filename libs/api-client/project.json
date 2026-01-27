@@ -3,28 +3,26 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/api-client/src",
   "projectType": "library",
+  "tags": ["lib"],
   "targets": {
-    "dist": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
+    "build": {
+      "executor": "@nx/js:tsc"
+    },
+    "dev": {
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
       "options": {
-        "assets": [],
-        "compiler": "swc",
-        "format": ["esm", "cjs"],
-        "main": "libs/api-client/src/index.ts",
-        "outputPath": "dist/libs/api-client",
-        "project": "libs/api-client/package.json",
-        "tsConfig": "libs/api-client/tsconfig.lib.json",
-        "useLegacyTypescriptPlugin": false
-      }
+        "command": "nx run api-client:build",
+        "watch": true
+      },
+      "continuous": true
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
+      "dependsOn": ["build"],
       "options": {
-        "packageRoot": "dist/libs/api-client"
+        "packageRoot": "libs/api-client"
       }
     }
-  },
-  "tags": []
+  }
 }

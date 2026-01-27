@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useState } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { Button } from '@globalfishingwatch/ui-components'

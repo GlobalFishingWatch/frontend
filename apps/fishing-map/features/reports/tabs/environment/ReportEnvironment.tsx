@@ -1,14 +1,15 @@
-import { useCallback } from 'react'
+import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
+import { DataviewCategory } from '@globalfishingwatch/api-types'
 import {
   isEnvironmentalDataview,
   isHeatmapVectorsDataview,
 } from '@globalfishingwatch/dataviews-client'
 import { trackEvent } from '@globalfishingwatch/react-hooks'
-import { IconButton } from '@globalfishingwatch/ui-components'
+import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -56,23 +57,12 @@ function ReportEnvironment() {
   if (!environmentalDataviews?.length && !comparisonDataviews?.length) return null
 
   return (
-    <div className={styles.graphContainer}>
+    <Fragment>
       {environmentalDataviews.some(
         (dv) => isEnvironmentalDataview(dv) || isHeatmapVectorsDataview(dv)
       ) ? (
         <ReportEnvironmentGraphSelector />
       ) : null}
-      <div className={cx(styles.titleRow, styles.marginTop)}>
-        <h2 className={styles.graphTitle}>{t('layer.add')}</h2>
-        <IconButton
-          icon="plus"
-          type="border"
-          size="small"
-          tooltip={t('layer.add')}
-          tooltipPlacement="top"
-          onClick={onAddLayerClick}
-        />
-      </div>
       <div>
         {reportGraphType === 'evolution' ? (
           environmentalDataviews.map((dataview, index) => {
@@ -84,22 +74,35 @@ function ReportEnvironment() {
                 data={layersTimeseriesFiltered?.[index]}
                 isLoading={loading || layersTimeseriesFiltered?.[index]?.mode === 'loading'}
                 index={index}
+                removeEmptyValues={dataview.category === DataviewCategory.Environment}
               />
             )
           })
         ) : (
-          <div className={styles.graphContainer}>
-            <ReportActivityDatasetComparison />
-            <ReportEnvironmentGraph
-              dataview={comparisonDataviews[0]}
-              GraphComponent={ReportActivityDatasetComparisonGraph}
-              data={layersTimeseriesFiltered}
-              isLoading={loading || layersTimeseriesFiltered?.some((d) => d?.mode === 'loading')}
-            />
-          </div>
+          <Fragment>
+            <div className={styles.comparisonContainer}>
+              <ReportActivityDatasetComparison />
+            </div>
+            <div className={styles.graphContainer}>
+              <ReportEnvironmentGraph
+                dataview={comparisonDataviews[0]}
+                GraphComponent={ReportActivityDatasetComparisonGraph}
+                data={layersTimeseriesFiltered}
+                isLoading={loading || layersTimeseriesFiltered?.some((d) => d?.mode === 'loading')}
+              />
+            </div>
+          </Fragment>
         )}
       </div>
-    </div>
+      {reportGraphType === 'evolution' && (
+        <div className={cx(styles.addLayerContainer)}>
+          <Button type="border-secondary" size="medium" onClick={onAddLayerClick}>
+            <Icon icon="plus" />
+            {t('layer.add')}
+          </Button>
+        </div>
+      )}
+    </Fragment>
   )
 }
 

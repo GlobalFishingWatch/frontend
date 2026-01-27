@@ -29,6 +29,7 @@ function HomePage() {
   }
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true)
     GFWAPI.fetch<Dataset[]>(`/download/datasets`)
       .then((data) => {

@@ -371,8 +371,7 @@ function ActivityReport() {
     reportLoaded,
     t,
     ReportVesselError,
-    timerange?.start,
-    timerange?.end,
+    timerange,
     dispatch,
     dispatchFetchReport,
     hasVessels,
@@ -388,7 +387,9 @@ function ActivityReport() {
           <ReportActivitySubsectionSelector />
         </div>
       )}
-      <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
+      {!isVesselGroupReportLocation && (
+        <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
+      )}
       <ReportActivityGraph />
       {ReportComponent}
     </Fragment>

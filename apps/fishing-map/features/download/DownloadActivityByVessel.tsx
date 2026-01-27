@@ -80,8 +80,8 @@ function DownloadActivityByVessel() {
   const bufferOperation = useSelector(selectUrlBufferOperationQuery)
 
   const filteredGroupByOptions = useMemo(
-    () => getSupportedGroupByOptions(getVesselGroupOptions(), vesselDatasets),
-    [vesselDatasets]
+    () => getSupportedGroupByOptions(getVesselGroupOptions(), vesselDatasets, dataviews),
+    [dataviews, vesselDatasets]
   )
   const [groupBy, setGroupBy] = useState(filteredGroupByOptions[0]?.id)
 

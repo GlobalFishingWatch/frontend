@@ -65,8 +65,15 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     }
   }
 
-  get isLoaded(): boolean {
-    return super.isLoaded
+  get cacheHash(): string {
+    return this._getTileDataCacheKey()
+  }
+
+  forceUpdate() {
+    const layer = this.getLayerInstance()
+    if (layer) {
+      layer.setNeedsUpdate()
+    }
   }
 
   getError(): string {

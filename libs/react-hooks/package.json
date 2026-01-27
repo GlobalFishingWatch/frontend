@@ -4,16 +4,27 @@
   "description": "set of react hooks to easily use pure js libraries",
   "author": "satellitestudio <contact@satellitestud.io>",
   "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
-  "main": "./index.cjs",
-  "module": "./index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
   "dependencies": {
     "@globalfishingwatch/api-client": "^7.0.0",
     "@globalfishingwatch/api-types": "^8.0.3",
-    "@globalfishingwatch/dataviews-client": "^16.0.0",
-    "@mapbox/tilebelt": "1.x",
+    "es-toolkit": "1.x",
     "lodash": "4.x",
-    "usehooks-ts": "2.x",
-    "react": "18.x",
-    "react-ga4": "2.x"
+    "react": "19.x",
+    "react-ga4": "2.x",
+    "tslib": "2.x",
+    "usehooks-ts": "3.x"
   }
 }

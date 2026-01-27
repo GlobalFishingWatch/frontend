@@ -129,8 +129,8 @@ export class FourwingsClustersLayer extends CompositeLayer<
   static defaultProps = defaultProps
   state!: FourwingsClustersTileLayerState
 
-  get isLoaded(): boolean {
-    return super.isLoaded && this.state.viewportLoaded
+  get cacheHash(): string {
+    return `${this.state?.viewportLoaded ?? false}`
   }
 
   get clusterMode(): FourwingsClusterMode {
@@ -156,7 +156,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
     this.state = {
       error: '',
       data: [],
-      viewportLoaded: false,
+      viewportLoaded: this.props.tilesUrl ? false : true,
       currentClustersZoom: Math.round(context.viewport.zoom),
       clusterIndex: new Supercluster({
         radius: 70,
@@ -266,7 +266,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
       id: this.getClusterId(info.object),
       ...(this.clusterMode === 'positions' &&
         info.object?.properties.id &&
-        this.state.viewportLoaded && {
+        this.state?.viewportLoaded && {
           eventId: info.object?.properties.id,
         }),
       color: this.props.color,
@@ -499,8 +499,12 @@ export class FourwingsClustersLayer extends CompositeLayer<
   }
 
   renderLayers(): Layer<Record<string, unknown>> | LayersList | null {
-    const { color, tilesUrl, eventType = 'encounter', highlightedFeatures } = this.props
+    const { visible, color, tilesUrl, eventType = 'encounter', highlightedFeatures } = this.props
     const { clusters, points, radiusScale } = this.state
+
+    if (!visible || !tilesUrl) {
+      return []
+    }
 
     return [
       new TileLayer<FourwingsPointFeature, any>(this.props, {

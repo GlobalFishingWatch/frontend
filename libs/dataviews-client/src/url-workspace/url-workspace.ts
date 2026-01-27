@@ -33,6 +33,7 @@ const PARAMS_TO_ABBREVIATED = {
   bivariateDataviews: 'bDV',
   color: 'clr',
   config: 'cfg',
+  collapsedSections: 'cS',
   datasetId: 'dsId',
   datasets: 'dss',
   datasetsConfig: 'dsC',

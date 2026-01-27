@@ -47,6 +47,7 @@ type PopupWrapperProps = {
   showClose?: boolean
   className?: string
   onClose?: () => void
+  onClickOutside?: () => void
   children: React.ReactNode
 }
 
@@ -57,13 +58,14 @@ function PopupWrapper({
   showClose = true,
   className = '',
   onClose,
+  onClickOutside,
   children,
 }: PopupWrapperProps) {
   // Assuming only timeComparison heatmap is visible, so timerange description apply to all
   const mapViewport = useMapViewport()
 
   const arrowRef = useRef<SVGSVGElement>(null)
-  const clickOutsideRef = useClickedOutside(onClose)
+  const clickOutsideRef = useClickedOutside(onClickOutside)
   const { refs, floatingStyles, context } = useFloating({
     whileElementsMounted: autoUpdate,
     placement: 'top',
@@ -74,6 +76,7 @@ function PopupWrapper({
         padding: 10,
       }),
       overflowMiddlware,
+      // eslint-disable-next-line react-hooks/refs
       arrow({
         element: arrowRef,
         padding: -5,
@@ -85,10 +88,12 @@ function PopupWrapper({
   const [left, top] = mapViewport.project([longitude, latitude])
   return (
     <div
+      // eslint-disable-next-line react-hooks/refs
       ref={refs.setReference}
       style={{ position: 'absolute', top, left, zIndex: 2 }}
       className={cx(styles.popup, className)}
     >
+      {/* eslint-disable-next-line react-hooks/refs */}
       <div className={styles.contentWrapper} ref={refs.setFloating} style={floatingStyles}>
         {showArrow && <FloatingArrow fill="white" ref={arrowRef} context={context} />}
         {showClose && onClose !== undefined && (
