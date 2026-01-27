@@ -138,16 +138,16 @@ function NavigationHistoryButton() {
   if (workspaceHistoryNavigation.length) {
     const previousLocation =
       lastWorkspaceVisited.type === VESSEL || lastWorkspaceVisited.type === WORKSPACE_VESSEL
-        ? t('vessel.title')
+        ? t((t) => t.vessel.title)
         : isPreviousLocationReport
-          ? t('analysis.title')
+          ? t((t) => t.analysis.title)
           : isVesselGroupReportLocation
-            ? t('vesselGroup.vesselGroupProfile')
+            ? t((t) => t.vesselGroup.vesselGroupProfile)
             : lastWorkspaceVisited.type === WORKSPACES_LIST
-              ? t('workspace.list')
-              : t('workspace.title')
+              ? t((t) => t.workspace.list)
+              : t((t) => t.workspace.title)
 
-    const tooltip = t('common.navigateBackTo', {
+    const tooltip = t((t) => t.common.navigateBackTo, {
       section: previousLocation.toLocaleLowerCase(),
     })
 

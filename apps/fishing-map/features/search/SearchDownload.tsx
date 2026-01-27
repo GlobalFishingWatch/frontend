@@ -24,7 +24,7 @@ function SearchDownload() {
           mmsi: getVesselProperty(vessel, 'ssvid'),
           imo: getVesselProperty(vessel, 'imo'),
           'call sign': getVesselProperty(vessel, 'callsign'),
-          flag: t(`flags:${getVesselProperty(vessel, 'flag')}` as any),
+          flag: t((t) => t[getVesselProperty(vessel, 'flag')], { ns: 'flags' }),
           'vessel type': getVesselShipTypeLabel({
             shiptypes: getVesselProperty(vessel, 'shiptypes'),
           }),
@@ -79,8 +79,8 @@ function SearchDownload() {
       disabled={vesselsSelected.length <= 0}
       tooltip={
         vesselsSelected.length
-          ? `${t('search.downloadSelected')} (${vesselsSelected.length})`
-          : t('search.downloadDisabled')
+          ? `${t((t) => t.search.downloadSelected)} (${vesselsSelected.length})`
+          : t((t) => t.search.downloadDisabled)
       }
       tooltipPlacement="top"
     />

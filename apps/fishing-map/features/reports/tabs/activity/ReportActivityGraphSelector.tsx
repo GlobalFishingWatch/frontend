@@ -51,26 +51,26 @@ export default function ReportActivityGraphSelector({
   const options: SelectOption<ReportActivityGraph>[] = [
     {
       id: REPORT_ACTIVITY_GRAPH_EVOLUTION,
-      label: t('analysis.evolution'),
+      label: t((t) => t.analysis.evolution),
       disabled: loading,
     },
     {
       id: REPORT_ACTIVITY_GRAPH_BEFORE_AFTER,
-      label: t('analysis.beforeAfter'),
-      tooltip: !areAllFiltersEqual ? t('analysis.noTimeComparisonAllowed') : '',
+      label: t((t) => t.analysis.beforeAfter),
+      tooltip: !areAllFiltersEqual ? t((t) => t.analysis.noTimeComparisonAllowed) : '',
       tooltipPlacement: 'bottom',
       disabled: loading || !areAllFiltersEqual,
     },
     {
       id: REPORT_ACTIVITY_GRAPH_PERIOD_COMPARISON,
-      label: t('analysis.periodComparison'),
-      tooltip: !areAllFiltersEqual ? t('analysis.noTimeComparisonAllowed') : '',
+      label: t((t) => t.analysis.periodComparison),
+      tooltip: !areAllFiltersEqual ? t((t) => t.analysis.noTimeComparisonAllowed) : '',
       tooltipPlacement: 'bottom',
       disabled: loading || !areAllFiltersEqual,
     },
     {
       id: REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON,
-      label: t('analysis.datasetComparison'),
+      label: t((t) => t.analysis.datasetComparison),
       disabled: loading || dataviews.some((d) => d.category === DataviewCategory.VesselGroups),
     },
   ]

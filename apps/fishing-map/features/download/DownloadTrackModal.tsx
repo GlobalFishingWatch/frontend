@@ -88,7 +88,7 @@ function DownloadTrackModal() {
       appSelector={ROOT_DOM_ELEMENT}
       title={
         <Fragment>
-          {t('download.title')} - {t('download.track')}
+          {t((t) => t.download.title)} - {t((t) => t.download.track)}
         </Fragment>
       }
       isOpen={downloadModalOpen}
@@ -98,18 +98,18 @@ function DownloadTrackModal() {
       <div className={styles.container}>
         <div className={styles.info}>
           <div>
-            <label>{t('common.vessel')}</label>
+            <label>{t((t) => t.common.vessel)}</label>
             <Tag>{downloadTrackName || EMPTY_FIELD_PLACEHOLDER}</Tag>
           </div>
           <div>
-            <label>{t('download.timeRange')}</label>
+            <label>{t((t) => t.download.timeRange)}</label>
             <Tag>
               <TimelineDatesRange />
             </Tag>
           </div>
         </div>
         <div>
-          <label>{t('download.format')}</label>
+          <label>{t((t) => t.download.format)}</label>
           <Choice
             options={FORMAT_OPTIONS}
             size="small"
@@ -120,11 +120,11 @@ function DownloadTrackModal() {
         <div className={styles.footer}>
           <p className={cx({ [styles.error]: isDownloadRatioExceeded })}>
             {isDownloadRatioExceeded
-              ? (t('download.trackLimitExceeded', {
+              ? (t((t) => t.download.trackLimitExceeded, {
                   limit: rateLimit?.limit,
                 }) as string)
               : rateLimit?.remaining
-                ? (t('download.trackRemaining', {
+                ? (t((t) => t.download.trackRemaining, {
                     count: rateLimit?.remaining as number,
                   }) as string)
                 : null}
@@ -138,7 +138,7 @@ function DownloadTrackModal() {
             {downloadStatus === AsyncReducerStatus.Finished ? (
               <Icon icon="tick" />
             ) : (
-              t('download.title')
+              t((t) => t.download.title)
             )}
           </Button>
         </div>

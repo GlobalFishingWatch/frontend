@@ -22,7 +22,7 @@ const ReportVesselsIndividualTooltip = ({ data }: { data?: ReportTableVessel }) 
           <p className={styles.value}>
             <I18nNumber number={data.value} />{' '}
             {reportUnit &&
-              t(`common.${reportUnit}`, {
+              t((t: any) => t.common[reportUnit], {
                 count: data.value,
                 defaultValue: reportUnit,
               }).toLowerCase()}
@@ -31,19 +31,19 @@ const ReportVesselsIndividualTooltip = ({ data }: { data?: ReportTableVessel }) 
       </div>
       <div className={styles.properties}>
         <div className={styles.property}>
-          <label>{t('vessel.mmsi')}</label>
+          <label>{t((t) => t.vessel.mmsi)}</label>
           <span>{data.ssvid}</span>
         </div>
         <div className={styles.property}>
-          <label>{t('vessel.flag')}</label>
+          <label>{t((t) => t.vessel.flag)}</label>
           <span>{data.flagTranslated}</span>
         </div>
         <div className={styles.property}>
-          <label>{t('vessel.type')}</label>
+          <label>{t((t) => t.vessel.type)}</label>
           <span>{data.vesselType}</span>
         </div>
       </div>
-      <div className={styles.cta}>{t('vessel.clickToSeeMore')}</div>
+      <div className={styles.cta}>{t((t) => t.vessel.clickToSeeMore)}</div>
     </div>
   )
 }

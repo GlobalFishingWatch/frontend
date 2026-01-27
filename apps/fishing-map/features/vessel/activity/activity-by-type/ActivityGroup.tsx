@@ -29,12 +29,15 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
 
   return (
     <Fragment>
-      <li className={cx(styles.eventGroup, { [styles.open]: expanded })} data-test={`vv-list-${eventType}`}>
+      <li
+        className={cx(styles.eventGroup, { [styles.open]: expanded })}
+        data-test={`vv-list-${eventType}`}
+      >
         <div className={styles.header} onClick={onToggle}>
           <EventIcon type={eventType} />
           <p className={styles.title}>
             <I18nNumber number={quantity} />{' '}
-            {t(`event.${eventType}` as any, eventType, { count: quantity })}
+            {t((t) => t.event[eventType], { defaultValue: eventType, count: quantity })}
           </p>
           <div className={cx(styles.actions, 'print-hidden')}>
             <IconButton icon={expanded ? 'arrow-top' : 'arrow-down'} size="small"></IconButton>

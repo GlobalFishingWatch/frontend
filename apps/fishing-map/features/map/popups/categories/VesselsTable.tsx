@@ -97,18 +97,20 @@ function VesselsTable({
         <table className={cx(styles.vesselsTable)} data-test={testId}>
           <thead>
             <tr>
-              <th colSpan={hasPinColumn ? 2 : 1}>{t('common.vessels')}</th>
-              <th>{t('vessel.flag')}</th>
+              <th colSpan={hasPinColumn ? 2 : 1}>{t((t) => t.common.vessels)}</th>
+              <th>{t((t) => t.vessel.flag)}</th>
               {!linkToSkylight && (
-                <th>{isPresenceActivity ? t('vessel.type') : t('vessel.gearType_short')}</th>
+                <th>
+                  {isPresenceActivity ? t((t) => t.vessel.type) : t((t) => t.vessel.gearType_short)}
+                </th>
               )}
               {/* Disabled for detections to allocate some space for timestamps interaction */}
-              {isHoursProperty && <th>{t('vessel.source_short')}</th>}
+              {isHoursProperty && <th>{t((t) => t.vessel.source_short)}</th>}
               {showValue && (
                 <th className={isHoursProperty ? styles.vesselsTableHeaderRight : ''}>
-                  {feature?.unit === 'hours' && t('common.hours')}
-                  {feature?.unit === 'days' && t('common.days')}
-                  {feature?.unit === 'detections' && t('common.detections')}
+                  {feature?.unit === 'hours' && t((t) => t.common.hours)}
+                  {feature?.unit === 'days' && t((t) => t.common.days)}
+                  {feature?.unit === 'detections' && t((t) => t.common.detections)}
                 </th>
               )}
             </tr>
@@ -180,7 +182,7 @@ function VesselsTable({
                               <IconButton
                                 icon="search"
                                 size="tiny"
-                                tooltip={t('vessel.skylightSearch')}
+                                tooltip={t((t) => t.vessel.skylightSearch)}
                               />
                             </Link>
                             <a
@@ -191,7 +193,7 @@ function VesselsTable({
                               <IconButton
                                 icon="external-link"
                                 size="tiny"
-                                tooltip={t('vessel.skylightLink')}
+                                tooltip={t((t) => t.vessel.skylightLink)}
                               />
                             </a>
                           </span>
@@ -218,11 +220,10 @@ function VesselsTable({
                     )}
                   </td>
                   <td className={styles.columnSpace}>
-                    <Tooltip content={t(`flags:${vesselFlag}` as any)}>
+                    <Tooltip content={t((t) => t[vesselFlag], { ns: 'flags' })}>
                       <span>{vesselFlag || EMPTY_FIELD_PLACEHOLDER}</span>
                     </Tooltip>
                   </td>
-
                   {!linkToSkylight && <td className={styles.columnSpace}>{vesselType}</td>}
                   {isHoursProperty && (
                     <td className={styles.columnSpace}>
@@ -252,7 +253,7 @@ function VesselsTable({
       )}
       {vesselsInfo && vesselsInfo.overflow && (
         <p className={styles.vesselsMore}>
-          + {vesselsInfo.overflowNumber} {t('common.more')}
+          + {vesselsInfo.overflowNumber} {t((t) => t.common.more)}
         </p>
       )}
     </Fragment>

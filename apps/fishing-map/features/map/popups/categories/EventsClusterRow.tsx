@@ -49,7 +49,9 @@ function ClusterEventTooltipRow({
             <div className={styles.row}>
               <span className={styles.rowText}>
                 <I18nNumber number={feature.count} />{' '}
-                {t('event.loitering', { count: feature.count })}
+                {t((t) => t.event.loitering, {
+                  count: feature.count,
+                })}
                 {timestamp && (
                   <span className={styles.rowTextSecondary}>
                     {' '}
@@ -90,7 +92,7 @@ function ClusterEventTooltipRow({
                   </span>
                 </div>
               ) : (
-                t('event.noData')
+                t((t) => t.event.noData)
               )}
             </div>
           )

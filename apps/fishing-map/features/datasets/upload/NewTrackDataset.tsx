@@ -129,8 +129,8 @@ function NewTrackDataset({
           setGeojson(geojson)
           if (startTimeProperty && geojson.metadata?.hasDatesError) {
             setTimeFilterError(
-              t('datasetUpload.errors.invalidDatesFeatures', {
-                featureType: t('dataset.typePoints'),
+              t((t) => t.datasetUpload.errors.invalidDatesFeatures, {
+                featureType: t((t) => t.dataset.typePoints),
               })
             )
           } else {
@@ -162,8 +162,8 @@ function NewTrackDataset({
       setGeojson(geojson)
       if (startTimeProperty && geojson.metadata?.hasDatesError) {
         setTimeFilterError(
-          t('datasetUpload.errors.invalidDatesFeatures', {
-            featureType: t('dataset.typePoints'),
+          t((t) => t.datasetUpload.errors.invalidDatesFeatures, {
+            featureType: t((t) => t.dataset.typePoints),
           })
         )
       } else {
@@ -171,9 +171,9 @@ function NewTrackDataset({
       }
       if (!geojson.features.some((f) => f.geometry.coordinates?.[0]?.length >= 2)) {
         if (lineIdProperty || segmentIdProperty) {
-          setError(t('errors.trackSegmentIdFields'))
+          setError(t((t) => t.errors.trackSegmentIdFields))
         } else {
-          setError(t('errors.trackCoordinateFields'))
+          setError(t((t) => t.errors.trackCoordinateFields))
         }
       } else {
         setError('')
@@ -195,8 +195,10 @@ function NewTrackDataset({
       const config = getDatasetConfiguration(datasetMetadata)
       if (sourceData) {
         if (!config?.latitude || !config?.longitude) {
-          const fields = (['latitude', 'longitude'] as const).map((f) => t(`common.${f}`, f))
-          error = t('dataset.requiredFields', {
+          const fields = (['latitude', 'longitude'] as const).map((f) =>
+            t((t) => t.common[f], { defaultValue: f })
+          )
+          error = t((t) => t.dataset.requiredFields, {
             fields,
           })
         } else {
@@ -205,8 +207,10 @@ function NewTrackDataset({
             ...config,
           } as any)
           if (errors.length) {
-            const fields = errors.map((error) => t(`common.${error}`, error)).join(',')
-            error = t('errors.fields', {
+            const fields = errors
+              .map((error) => t((t: any) => t.common[error], { defaultValue: error }))
+              .join(',')
+            error = t((t) => t.errors.fields, {
               fields,
             })
           }
@@ -232,7 +236,7 @@ function NewTrackDataset({
     return (
       <div className={styles.processingData}>
         <Spinner className={styles.processingDataSpinner} />
-        <p>{t('datasetUpload.processingData')}</p>
+        <p>{t((t) => t.datasetUpload.processingData)}</p>
       </div>
     )
   }
@@ -257,7 +261,7 @@ function NewTrackDataset({
       <div className={styles.content}>
         <InputText
           value={datasetMetadata?.name}
-          label={t('datasetUpload.datasetName')}
+          label={t((t) => t.datasetUpload.datasetName)}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ name: e.target.value })}
           disabled={loading}
@@ -268,7 +272,7 @@ function NewTrackDataset({
             <NewDatasetField
               datasetMetadata={datasetMetadata}
               property="latitude"
-              label={`${t('datasetUpload.point.coordinates')} - ${t('common.latitude')}`}
+              label={`${t((t) => t.datasetUpload.point.coordinates)} - ${t((t) => t.common.latitude)}`}
               editable={!isEditing && !loading}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ latitude: selected.id })
@@ -277,7 +281,7 @@ function NewTrackDataset({
             <NewDatasetField
               datasetMetadata={datasetMetadata}
               property="longitude"
-              label={t('common.longitude')}
+              label={t((t) => t.common.longitude)}
               editable={!isEditing && !loading}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ longitude: selected.id })
@@ -299,7 +303,7 @@ function NewTrackDataset({
             <NewDatasetField
               datasetMetadata={datasetMetadata}
               property="lineId"
-              label={t('datasetUpload.tracks.lineId')}
+              label={t((t) => t.datasetUpload.tracks.lineId)}
               editable={!isEditing && !loading}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ lineId: selected.id })
@@ -308,12 +312,12 @@ function NewTrackDataset({
                 setDatasetMetadata({ fieldsAllowed: [] })
                 setDatasetMetadataConfig({ lineId: '' })
               }}
-              infoTooltip={t('datasetUpload.tracks.lineIdHelp')}
+              infoTooltip={t((t) => t.datasetUpload.tracks.lineIdHelp)}
             />
             <NewDatasetField
               datasetMetadata={datasetMetadata}
               property="segmentId"
-              label={t('datasetUpload.tracks.segmentId')}
+              label={t((t) => t.datasetUpload.tracks.segmentId)}
               editable={!isEditing && !loading}
               onSelect={(selected) => {
                 setDatasetMetadataConfig({ segmentId: selected.id })
@@ -322,15 +326,15 @@ function NewTrackDataset({
                 setDatasetMetadata({ fieldsAllowed: [] })
                 setDatasetMetadataConfig({ segmentId: '' })
               }}
-              infoTooltip={t('datasetUpload.tracks.segmentIdHelp')}
+              infoTooltip={t((t) => t.datasetUpload.tracks.segmentIdHelp)}
             />
           </div>
         )}
       </div>
-      <Collapsable className={styles.optional} label={t('datasetUpload.optionalFields')}>
+      <Collapsable className={styles.optional} label={t((t) => t.datasetUpload.optionalFields)}>
         <InputText
           value={datasetMetadata?.description}
-          label={t('datasetUpload.datasetDescription')}
+          label={t((t) => t.datasetUpload.datasetDescription)}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
           disabled={loading}
@@ -338,7 +342,7 @@ function NewTrackDataset({
         <NewDatasetField
           datasetMetadata={datasetMetadata}
           property="valueProperties"
-          label={t('datasetUpload.tracks.name')}
+          label={t((t) => t.datasetUpload.tracks.name)}
           onSelect={(selected) => {
             setDatasetMetadataConfig({ valueProperties: [selected.id] })
           }}
@@ -346,20 +350,20 @@ function NewTrackDataset({
             setDatasetMetadataConfig({ valueProperties: [] })
           }}
           editable={!loading}
-          infoTooltip={t('datasetUpload.tracks.nameHelp')}
+          infoTooltip={t((t) => t.datasetUpload.tracks.nameHelp)}
         />
         <MultiSelect
-          label={t('datasetUpload.tracks.filters')}
+          label={t((t) => t.datasetUpload.tracks.filters)}
           placeholder={
             !filterOptions.length
-              ? t('datasetUpload.noFilters')
+              ? t((t) => t.datasetUpload.noFilters)
               : fieldsAllowed.length > 0
                 ? fieldsAllowed.join(', ')
-                : t('datasetUpload.fieldMultiplePlaceholder')
+                : t((t) => t.datasetUpload.fieldMultiplePlaceholder)
           }
           direction="top"
           disabled={loading || !filterOptions.length}
-          disabledMsg={!loading ? t('datasetUpload.noFilters') : undefined}
+          disabledMsg={!loading ? t((t) => t.datasetUpload.noFilters) : undefined}
           options={filterOptions as MultiSelectOption[]}
           selectedOptions={getSelectedOption(fieldsAllowed) as MultiSelectOption[]}
           onSelect={(newFilter: MultiSelectOption) => {
@@ -371,11 +375,11 @@ function NewTrackDataset({
           onCleanClick={() => {
             setDatasetMetadata({ fieldsAllowed: [] })
           }}
-          infoTooltip={t('datasetUpload.tracks.filtersHelp')}
+          infoTooltip={t((t) => t.datasetUpload.tracks.filtersHelp)}
         />
         <SwitchRow
           className={styles.saveAsPublic}
-          label={t('dataset.uploadPublic')}
+          label={t((t) => t.dataset.uploadPublic)}
           // disabled={!!mapDrawEditDataset}
           active={isPublic}
           disabled={isEditing || loading}
@@ -393,7 +397,7 @@ function NewTrackDataset({
           disabled={!datasetMetadata || error !== '' || !isValid}
           loading={loading}
         >
-          {t('common.confirm') as string}
+          {t((t) => t.common.confirm) as string}
         </Button>
       </div>
     </div>

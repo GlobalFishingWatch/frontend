@@ -93,8 +93,8 @@ const RelatedEncounterVessels = () => {
       ) : (
         <span className={styles.enptyState}>
           {visibleEvents === 'all' || visibleEvents.includes('encounter')
-            ? t('vessel.noEncountersInTimeRange')
-            : t('vessel.noEncountersVisible')}
+            ? t((t) => t.vessel.noEncountersInTimeRange)
+            : t((t) => t.vessel.noEncountersVisible)}
         </span>
       )}
     </div>

@@ -373,7 +373,7 @@ const TimebarWrapper = () => {
 
   const tracksComponents = useMemo(() => {
     if (hasTrackError) {
-      return <div className={styles.error}>{t('analysis.error')}</div>
+      return <div className={styles.error}>{t((t) => t.analysis.error)}</div>
     } else if (!tracks) {
       return null
     } else if (tracks?.length > MAX_TIMEBAR_VESSELS) {
@@ -381,7 +381,7 @@ const TimebarWrapper = () => {
         <div className={styles.disclaimer}>
           <label className={styles.disclaimerLabel}>
             {upperFirst(
-              t('timebar.maxTracksNumber', {
+              t((t) => t.timebar.maxTracksNumber, {
                 number: MAX_TIMEBAR_VESSELS,
               })
             )}
@@ -462,9 +462,9 @@ const TimebarWrapper = () => {
         disablePlayback={vesselGroupsFiltering || hasVectorDataviews}
         disabledPlaybackTooltip={
           vesselGroupsFiltering
-            ? t('timebar.disablePlaybackVesselGroups')
+            ? t((t) => t.timebar.disablePlaybackVesselGroups)
             : hasVectorDataviews
-              ? t('timebar.disablePlaybackVectors')
+              ? t((t) => t.timebar.disablePlaybackVectors)
               : undefined
         }
         showPlayback={!isReportLocation}

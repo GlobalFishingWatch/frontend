@@ -28,7 +28,6 @@ import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
-import { upperFirst } from 'utils/info'
 import { getHighlightedText } from 'utils/text'
 
 import styles from './LayerLibraryUserPanel.module.css'
@@ -103,7 +102,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
     if (guestUser) {
       return (
         <div className={styles.emptyState}>
-          <Trans i18nKey="dataset.uploadLogin">
+          <Trans i18nKey={(t) => t.dataset.uploadLogin}>
             <a
               className={styles.link}
               href={GFWAPI.getRegisterUrl(
@@ -134,21 +133,20 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
             ([geometryType, layer]) => (
               <ul className={styles.userGeometryList} key={geometryType}>
                 <label id={geometryType} className={styles.categoryLabel}>
-                  {t(`dataset.type${geometryType}`, upperFirst(geometryType))}
+                  {t((t: any) => t.dataset.type[geometryType], { defaultValue: geometryType })}
                 </label>
                 {sortByCreationDate<Dataset>(layer).map((dataset) => {
                   const datasetError = dataset.status === DatasetStatus.Error
                   const datasetImporting = dataset.status === DatasetStatus.Importing
                   const datasetDescription = dataset.description !== dataset.name
-                  let infoTooltip = t(
-                    `layer.seeDescription`,
-                    'Click to see layer description'
-                  ) as string
+                  let infoTooltip = t((t) => t.layer.seeDescription, {
+                    defaultValue: 'Click to see layer description',
+                  }) as string
                   if (datasetImporting) {
-                    infoTooltip = t('dataset.importing')
+                    infoTooltip = t((t) => t.dataset.importing)
                   }
                   if (datasetError) {
-                    infoTooltip = `${t('errors.uploadError')} - ${dataset.importLogs}`
+                    infoTooltip = `${t((t) => t.errors.uploadError)} - ${dataset.importLogs}`
                   }
                   const datasetIcon = getDatasetTypeIcon(dataset)
 
@@ -174,7 +172,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
                           <IconButton
                             icon="view-on-map"
                             onClick={() => onAddToWorkspaceClick(dataset)}
-                            tooltip={t('user.seeDataset')}
+                            tooltip={t((t) => t.user.seeDataset)}
                           />
                         )}
                       </div>
@@ -185,7 +183,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
             )
           )
         ) : (
-          <div className={styles.placeholder}>{t('dataset.emptyState')}</div>
+          <div className={styles.placeholder}>{t((t) => t.dataset.emptyState)}</div>
         )}
       </div>
     )
@@ -195,43 +193,43 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
     <Fragment>
       <div className={styles.titleContainer}>
         <label id={DataviewCategory.User} className={styles.categoryLabel}>
-          {t('common.user')}
+          {t((t) => t.common.user)}
         </label>
-        <LoginButtonWrapper tooltip={t('dataset.uploadLogin')}>
+        <LoginButtonWrapper tooltip={t((t) => t.dataset.uploadLogin)}>
           <IconButton
             icon="upload"
             type="border"
             size="medium"
-            tooltip={t('dataset.upload')}
+            tooltip={t((t) => t.dataset.upload)}
             tooltipPlacement="top"
             className="print-hidden"
             onClick={onUploadClick}
           />
         </LoginButtonWrapper>
-        <LoginButtonWrapper tooltip={t('layer.drawPolygonLogin')}>
+        <LoginButtonWrapper tooltip={t((t) => t.layer.drawPolygonLogin)}>
           <IconButton
             icon="draw"
             type="border"
             size="medium"
-            tooltip={t('layer.drawPolygon')}
+            tooltip={t((t) => t.layer.drawPolygon)}
             tooltipPlacement="top"
             className="print-hidden"
             onClick={() => onDrawClick('polygons')}
           />
         </LoginButtonWrapper>
-        <LoginButtonWrapper tooltip={t('layer.drawPointsLogin')}>
+        <LoginButtonWrapper tooltip={t((t) => t.layer.drawPointsLogin)}>
           <IconButton
             icon="draw-points"
             type="border"
             size="medium"
-            tooltip={t('layer.drawPoints')}
+            tooltip={t((t) => t.layer.drawPoints)}
             tooltipPlacement="top"
             className="print-hidden"
             onClick={() => onDrawClick('points')}
           />
         </LoginButtonWrapper>
       </div>
-
+      {/* eslint-disable-next-line react-hooks/static-components */}
       <SectionComponent />
     </Fragment>
   )

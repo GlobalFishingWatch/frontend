@@ -52,17 +52,17 @@ const LayerProperties = (props: LayerPropertiesProps) => {
       onClickOutside={onClickOutside}
       component={
         <div>
-          {!isOnlyColor && <label>{t('layer.properties.color')}</label>}
+          {!isOnlyColor && <label>{t((t) => t.layer.properties.color)}</label>}
           <ColorBar
             colorBarOptions={colorType === 'line' ? LineColorBarOptions : FillColorBarOptions}
             selectedColor={dataview.config?.color}
             onColorClick={onColorClick}
-            swatchesTooltip={t('layer.colorSelectPredefined')}
-            hueBarTooltip={t('layer.colorSelectCustom')}
+            swatchesTooltip={t((t) => t.layer.colorSelectPredefined)}
+            hueBarTooltip={t((t) => t.layer.colorSelectCustom)}
           />
           {properties.includes('thickness') && (
             <div>
-              <label>{t('layer.properties.thickness')}</label>
+              <label>{t((t) => t.layer.properties.thickness)}</label>
               <ThicknessSelector
                 selectedThickness={dataview.config?.thickness}
                 onThicknessClick={onThicknessClick}
@@ -76,7 +76,7 @@ const LayerProperties = (props: LayerPropertiesProps) => {
         icon={open ? 'color-picker' : 'color-picker-filled'}
         size="small"
         style={open || disabled ? {} : { color: dataview.config?.color }}
-        tooltip={isOnlyColor ? t('layer.color_change') : t('layer.propertiesChange')}
+        tooltip={isOnlyColor ? t((t) => t.layer.color_change) : t((t) => t.layer.propertiesChange)}
         tooltipPlacement="top"
         onClick={onToggleClick}
         className={className}

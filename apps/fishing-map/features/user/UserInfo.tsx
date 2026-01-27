@@ -134,13 +134,13 @@ function UserInfo() {
             disabled={logoutLoading}
             onClick={onLogoutClick}
           >
-            <span>{t('common.logout')}</span>
+            <span>{t((t) => t.common.logout)}</span>
           </Button>
         </div>
-        <label>{t('user.groups')}</label>
+        <label>{t((t) => t.user.groups)}</label>
         {userGroups && <p className={styles.textSpaced}>{userGroups.join(', ')}</p>}
         <p className={styles.missingGroup}>
-          <Trans i18nKey="user.groupMissing">
+          <Trans i18nKey={(t) => t.user.groupMissing}>
             Do you belong to a user group that doesn’t appear here?{' '}
             <a
               className={styles.link}
@@ -153,14 +153,14 @@ function UserInfo() {
         {isGFWUser && (
           <Fragment>
             <div className={styles.row}>
-              <label>{t('user.gfwBadges')}</label>
+              <label>{t((t) => t.user.gfwBadges)}</label>
               <ul className={styles.badges}>
                 {Object.entries(BADGES).map((entry) => {
                   const [badgeKey, badgeInfo] = entry as [Badge, BadgeInfo]
                   return (
                     <li key={badgeKey} className={styles.badge}>
                       {badgeInfo.userHasIt ? (
-                        <Tooltip content={t('common.seeMore')}>
+                        <Tooltip content={t((t) => t.common.seeMore)}>
                           <button
                             onClick={badgeInfo.userHasIt ? () => onBadgeClick(badgeKey) : undefined}
                           >
@@ -178,14 +178,20 @@ function UserInfo() {
             <Modal
               appSelector={ROOT_DOM_ELEMENT}
               isOpen={badgesModalOpen}
-              title={t(`user.badges.${badgeSelected}.title`, '')}
+              title={t((t) => t.user.badges[badgeSelected!].title, {
+                defaultValue: '',
+              })}
               onClose={onBadgeModalClose}
               contentClassName={styles.badgeModalContent}
               shouldCloseOnEsc
             >
               <Fragment>
                 {badgeSelected && <img src={BADGES[badgeSelected].image} alt="" />}
-                <span>{t(`user.badges.${badgeSelected}.description`, '')}</span>
+                <span>
+                  {t((t) => t.user.badges[badgeSelected!].description, {
+                    defaultValue: '',
+                  })}
+                </span>
               </Fragment>
             </Modal>
           </Fragment>

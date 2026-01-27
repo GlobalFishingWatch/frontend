@@ -22,7 +22,10 @@ const TIME_FILTER_OPTIONS: TimeFilterTypeOption[] = ['none', 'date', 'dateRange'
 const getTimeFilterOptions = (
   filterOptions = TIME_FILTER_OPTIONS
 ): SelectOption<TimeFilterTypeOption>[] => {
-  return filterOptions.map((id) => ({ id, label: t(`datasetUpload.${id}`, id) }))
+  return filterOptions.map((id) => ({
+    id,
+    label: t((t) => t.datasetUpload[id], { defaultValue: id }),
+  }))
 }
 
 type TimeFieldsGroupProps = {
@@ -100,16 +103,16 @@ export const TimeFieldsGroup = ({
 
   const translatedGeometryType =
     geometryType === 'tracks'
-      ? t('dataset.typeTracks')
+      ? t((t) => t.dataset.typeTracks)
       : geometryType === 'polygons'
-        ? t('dataset.typePolygons')
-        : t('dataset.typePoints')
+        ? t((t) => t.dataset.typePolygons)
+        : t((t) => t.dataset.typePoints)
 
   return (
     <div className={styles.row}>
       <Choice
-        label={t('datasetUpload.timePeriodType')}
-        infoTooltip={t('datasetUpload.timePeriodTypePlaceholder')}
+        label={t((t) => t.datasetUpload.timePeriodType)}
+        infoTooltip={t((t) => t.datasetUpload.timePeriodTypePlaceholder)}
         activeOption={activeOption}
         options={timeFilterOptions}
         onSelect={onTimeFilterTypeSelect}
@@ -118,23 +121,23 @@ export const TimeFieldsGroup = ({
       />
       {datasetTimeFilterConfiguration && (
         <Select
-          placeholder={t('datasetUpload.fieldPlaceholder')}
+          placeholder={t((t) => t.datasetUpload.fieldPlaceholder)}
           options={fieldsOptions}
           label={
             datasetTimeFilterConfiguration === 'date'
-              ? t('datasetUpload.time', {
+              ? t((t) => t.datasetUpload.time, {
                   geometryType: translatedGeometryType,
                 })
-              : t('datasetUpload.timeStart', {
+              : t((t) => t.datasetUpload.timeStart, {
                   geometryType: translatedGeometryType,
                 })
           }
           infoTooltip={
             datasetTimeFilterConfiguration === 'date'
-              ? t('datasetUpload.timestampHelp', {
+              ? t((t) => t.datasetUpload.timestampHelp, {
                   geometryType: translatedGeometryType,
                 })
-              : t('datasetUpload.timerangeStartHelp', {
+              : t((t) => t.datasetUpload.timerangeStartHelp, {
                   geometryType: translatedGeometryType,
                 })
           }
@@ -160,7 +163,7 @@ export const TimeFieldsGroup = ({
       )}
       {datasetTimeFilterConfiguration === 'dateRange' && (
         <Select
-          placeholder={t('datasetUpload.fieldPlaceholder')}
+          placeholder={t((t) => t.datasetUpload.fieldPlaceholder)}
           options={fieldsOptions}
           direction="top"
           selectedOption={
@@ -171,10 +174,10 @@ export const TimeFieldsGroup = ({
               })?.toString()
             ) as SelectOption
           }
-          label={t('datasetUpload.timeEnd', {
+          label={t((t) => t.datasetUpload.timeEnd, {
             geometryType: translatedGeometryType,
           })}
-          infoTooltip={t('datasetUpload.timerangeEndHelp', {
+          infoTooltip={t((t) => t.datasetUpload.timerangeEndHelp, {
             geometryType: translatedGeometryType,
           })}
           onSelect={onEndSelect}

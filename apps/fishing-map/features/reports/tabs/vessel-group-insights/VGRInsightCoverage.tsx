@@ -29,13 +29,12 @@ const VesselGroupReportInsightCoverage = ({ skip }: { skip?: boolean }) => {
             {(error as ParsedAPIError)?.status === 403 && (
               <Icon
                 icon="private"
-                tooltip={t(
-                  'vessel.insights.errorPermisions',
-                  "You don't have permissions to see this insight"
-                )}
+                tooltip={t((t) => t.vessel.insights.errorPermisions, {
+                  defaultValue: "You don't have permissions to see this insight",
+                })}
               />
             )}
-            {error && (error.message ?? t('analysis.error'))}
+            {error && (error.message ?? t((t) => t.analysis.error))}
           </Fragment>
         </ReportBarGraphPlaceholder>
       ) : data?.coverage && data?.coverage?.length > 0 ? (
@@ -44,7 +43,7 @@ const VesselGroupReportInsightCoverage = ({ skip }: { skip?: boolean }) => {
             <VesselGroupReportInsightCoverageGraph data={vessels} />
           ) : (
             <ReportBarGraphPlaceholder numberOfElements={6} animate={false}>
-              {t('analysis.noVesselDataFiltered')}
+              {t((t) => t.analysis.noVesselDataFiltered)}
             </ReportBarGraphPlaceholder>
           )}
         </Fragment>
