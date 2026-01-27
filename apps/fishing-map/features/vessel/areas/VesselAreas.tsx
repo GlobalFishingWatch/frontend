@@ -66,7 +66,7 @@ const AreaTick = ({ y, payload }: any) => {
 
   return (
     <foreignObject x={0} y={y - 12} width="200" height="40" className={styles.areaContainer}>
-      <Tooltip content={`${t('vessel.clickToFitMapToEvents')} ${areaLabel}`}>
+      <Tooltip content={`${t((t) => t.vessel.clickToFitMapToEvents)} ${areaLabel}`}>
         <span
           onMouseOver={setHighlightEvents}
           onMouseOut={resetHighlightedEvents}
@@ -91,7 +91,10 @@ const AreaTooltip = ({ payload }: any) => {
             <li key={name} className={styles.tooltipValue}>
               <span className={styles.tooltipValueDot} style={{ color }} />
               <I18nNumber number={value} />{' '}
-              {t(`event.${name}`, { defaultValue: name, count: value })}
+              {t((t) => t.event[name], {
+                defaultValue: name,
+                count: value,
+              })}
             </li>
           ) : null
         })}
@@ -129,19 +132,19 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
     () => [
       {
         id: 'eez',
-        label: t('layer.areas.eez'),
+        label: t((t) => t.layer.areas.eez),
       },
       {
         id: 'fao',
-        label: t('layer.areas.fao'),
+        label: t((t) => t.layer.areas.fao),
       },
       {
         id: 'rfmo',
-        label: t('layer.areas.rfmo'),
+        label: t((t) => t.layer.areas.rfmo),
       },
       {
         id: 'mpa',
-        label: t('layer.areas.mpa'),
+        label: t((t) => t.layer.areas.mpa),
       },
     ],
     [t]
@@ -179,7 +182,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
 
   return (
     <div className={styles.container}>
-      <h2 className="print-only">{t('vessel.sectionAreas')}</h2>
+      <h2 className="print-only">{t((t) => t.vessel.sectionAreas)}</h2>
       <div className="print-hidden">
         <VesselActivitySummary />
       </div>
@@ -202,7 +205,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
               className={styles.dataWarningLink}
               onClick={() => setModalDataWarningOpen(!modalDataWarningOpen)}
             >
-              {t('common.learnMore')}
+              {t((t) => t.common.learnMore)}
             </button>
             <Modal
               appSelector={ROOT_DOM_ELEMENT}
@@ -265,8 +268,8 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
             {eventsGroupedUnknown?.total && (
               <p className={styles.unknownRegionEvents}>
                 <span className={styles.unknownRegionEventsTitle}>
-                  {t('vessel.unknownRegionEvents', {
-                    regionType: t(`layer.areas.${vesselArea}`, vesselArea),
+                  {t((t) => t.vessel.unknownRegionEvents, {
+                    regionType: t((t) => t.layer.areas[vesselArea], vesselArea),
                   })}
                 </span>
                 <Tooltip
@@ -276,8 +279,11 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
                       if (key === 'total' || key === 'region') return ''
                       return (
                         <p key={key}>
-                          {t(`event.${key}`, { defaultValue: key, count: value as number })}:{' '}
-                          <I18nNumber number={value} />
+                          {t((t) => t.event[key], {
+                            defaultValue: key,
+                            count: value as number,
+                          })}
+                          : <I18nNumber number={value} />
                         </p>
                       )
                     })}
@@ -290,11 +296,11 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
             )}
           </div>
         ) : events.length === 0 ? (
-          <span className={styles.enptyState}>{t('vessel.noEventsinTimeRange')}</span>
+          <span className={styles.enptyState}>{t((t) => t.vessel.noEventsinTimeRange)}</span>
         ) : (
           <span className={styles.enptyState}>
-            {t('vessel.noEventsIn', {
-              regionType: t(`layer.areas.${vesselArea}`, vesselArea),
+            {t((t) => t.vessel.noEventsIn, {
+              regionType: t((t) => t.layer.areas[vesselArea], vesselArea),
             })}
           </span>
         )}

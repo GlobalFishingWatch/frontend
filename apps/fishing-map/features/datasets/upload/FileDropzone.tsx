@@ -69,13 +69,13 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
         label
       ) : acceptedFiles.length ? (
         <p className={styles.fileText}>
-          {t('dataset.file')}: {acceptedFiles[0].name}
+          {t((t) => t.dataset.file)}: {acceptedFiles[0].name}
         </p>
       ) : isDragActive ? (
-        <p className={styles.fileText}>{t('dataset.dragActive')}</p>
+        <p className={styles.fileText}>{t((t) => t.dataset.dragActive)}</p>
       ) : (
         <p className={styles.fileText}>
-          {t('dataset.dragFileFormatsPlaceholder', {
+          {t((t) => t.dataset.dragFileFormatsPlaceholder, {
             formats: joinTranslatedList(
               fileTypesConfigs.map(({ id }) => t(`dataset.formats.${id}` as any, id as string))
             ),
@@ -84,7 +84,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({
       )}
       {fileRejections.length > 0 && (
         <p className={cx(styles.fileText, styles.warning)}>
-          {t('dataset.onlyFileFormatAllowed', {
+          {t((t) => t.dataset.onlyFileFormatAllowed, {
             formats: joinTranslatedList(filesAcceptedExtensions),
           })}
         </p>

@@ -167,7 +167,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
                   key={index}
                   onClick={() => setCurrentImageIndex(index)}
                   className={`${styles.dot} ${index === currentImageIndex ? styles.activeDot : ''}`}
-                  aria-label={t('vessel.goToImage', {
+                  aria-label={t((t) => t.vessel.goToImage, {
                     number: index + 1,
                   })}
                 />
@@ -189,7 +189,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
           {formatInfoField(shipname, 'shipname')}
           <span className={styles.secondary}>{otherNamesLabel}</span>
           <span className={styles.reportLink}>
-            <a href={window.location.href}>{t('vessel.linkToVessel')}</a>
+            <a href={window.location.href}>{t((t) => t.vessel.linkToVessel)}</a>
           </span>
         </h1>
 
@@ -209,7 +209,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
             className="print-hidden"
             type="border"
             icon="target"
-            tooltip={t('layer.vessel_fit_bounds')}
+            tooltip={t((t) => t.layer.vessel_fit_bounds)}
             tooltipPlacement="bottom"
             size="small"
             disabled={!boundsReady}
@@ -219,7 +219,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
             className="print-hidden"
             type="border"
             icon="print"
-            tooltip={upperFirst(t('analysis.print'))}
+            tooltip={upperFirst(t((t) => t.analysis.print))}
             size="small"
             tooltipPlacement="bottom"
             onClick={onPrintClick}

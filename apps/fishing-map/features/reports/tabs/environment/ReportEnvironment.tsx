@@ -98,7 +98,7 @@ function ReportEnvironment() {
         <div className={cx(styles.addLayerContainer)}>
           <Button type="border-secondary" size="medium" onClick={onAddLayerClick}>
             <Icon icon="plus" />
-            {t('layer.add')}
+            {t((t) => t.layer.add)}
           </Button>
         </div>
       )}

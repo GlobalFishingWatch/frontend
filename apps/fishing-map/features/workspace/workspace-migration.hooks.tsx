@@ -209,13 +209,13 @@ export const useMigrateWorkspaceToast = () => {
 
   const ToastContent = ({ loading = false }: { loading?: boolean }) => (
     <div className={styles.disclaimer}>
-      <p>{t('workspace.migrationDisclaimer')}</p>
+      <p>{t((t) => t.workspace.migrationDisclaimer)}</p>
       <p className={styles.secondary}>
         {parse(
-          t(
-            'workspace.migrationDisclaimerNote',
-            "Note, some vessel identity and activity information may change. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> Learn more.</a>"
-          )
+          t((t) => t.workspace.migrationDisclaimerNote, {
+            defaultValue:
+              "Note, some vessel identity and activity information may change. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> Learn more.</a>",
+          })
         )}
       </p>
       <div className={styles.disclaimerFooter}>
@@ -228,7 +228,7 @@ export const useMigrateWorkspaceToast = () => {
           onClick={updateWorkspace}
           className={styles.updateBtn}
         >
-          {t('workspace.migrationUpdate')}
+          {t((t) => t.workspace.migrationUpdate)}
         </Button>
       </div>
     </div>

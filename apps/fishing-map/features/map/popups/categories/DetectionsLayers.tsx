@@ -80,7 +80,7 @@ function DetectionsTooltipRow({
             {feature?.vessels && showFeaturesDetails && notMatchedDetectionsCount > 0 && (
               <Fragment>
                 {' - '}
-                <I18nNumber number={notMatchedDetectionsCount} /> {t('vessel.unmatched')}{' '}
+                <I18nNumber number={notMatchedDetectionsCount} /> {t((t) => t.vessel.unmatched)}{' '}
                 {notMatchedDetection && <VesselDetectionTimestamps vessel={notMatchedDetection} />}
               </Fragment>
             )}

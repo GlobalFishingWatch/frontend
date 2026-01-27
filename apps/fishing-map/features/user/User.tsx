@@ -42,28 +42,28 @@ function User() {
     const tabs = [
       {
         id: UserTab.Info,
-        title: t('user.info'),
+        title: t((t) => t.user.info),
         content: <UserInfo />,
       },
       {
         id: UserTab.Workspaces,
-        title: t('workspace.titlePlural'),
+        title: t((t) => t.workspace.titlePlural),
         testId: 'user-workspace',
         content: <UserWorkspaces />,
       },
       {
         id: UserTab.Datasets,
-        title: t('dataset.title'),
+        title: t((t) => t.dataset.title),
         content: <UserDatasets />,
       },
       {
         id: UserTab.Reports,
-        title: t('common.reports'),
+        title: t((t) => t.common.reports),
         content: <UserReports />,
       },
       {
         id: UserTab.VesselGroups,
-        title: t('vesselGroup.vesselGroups'),
+        title: t((t) => t.vesselGroup.vesselGroups),
         content: <UserVesselGroups />,
       },
     ]

@@ -88,7 +88,7 @@ const AggregatedGraphTooltip = (props: any) => {
                     ))}
                     {restValue !== 0 && (
                       <li key="others" className={styles.tooltipValue}>
-                        {t('analysis.others')}: {restValue}
+                        {t((t) => t.analysis.others)}: {restValue}
                       </li>
                     )}
                   </Fragment>
@@ -99,7 +99,10 @@ const AggregatedGraphTooltip = (props: any) => {
                   {tooltipPayload.length > 1 && (
                     <span className={styles.tooltipValueDot} style={{ color }}></span>
                   )}
-                  <I18nNumber number={value} /> {t('common.events', { count: value }).toLowerCase()}
+                  <I18nNumber number={value} />{' '}
+                  {t((t) => t.common.events, {
+                    count: value,
+                  }).toLowerCase()}
                 </li>
               )
             })
@@ -170,7 +173,9 @@ const ReportGraphTick = (props: any) => {
     }
   }
 
-  const label = isOtherCategory ? t('analysis.others') : getReportAreaLabel(payload.value) || ''
+  const label = isOtherCategory
+    ? t((t) => t.analysis.others)
+    : getReportAreaLabel(payload.value) || ''
   const labelChunks = label.split(' ')
   const labelChunksClean = [labelChunks[0]]
   labelChunks.slice(1).forEach((chunk: any) => {
@@ -184,8 +189,8 @@ const ReportGraphTick = (props: any) => {
 
   const tooltip =
     graphType === 'byFlag'
-      ? `${t('analysis.clickToFilterBy')} ${label}`
-      : `${t('analysis.clickToSeeAreaReport', {
+      ? `${t((t) => t.analysis.clickToFilterBy)} ${label}`
+      : `${t((t) => t.analysis.clickToSeeAreaReport, {
           area: getReportAreaLabel(payload.value),
         })}`
 
@@ -238,7 +243,7 @@ export default function EventsReportGraphGrouped({
       (acc, event) => {
         const regions = []
         if (graphType === 'byFlag') {
-          regions.push(event.vessel?.flag || t('common.unknownProperty'))
+          regions.push(event.vessel?.flag || t((t) => t.common.unknownProperty))
         }
         if (graphType === 'byRFMO' && event.regions?.rfmo) {
           regions.push(

@@ -51,7 +51,10 @@ export function useRegionNamesByType() {
           (id) =>
             regions
               .find((region) => region.id?.toString() === id)
-              ?.label?.replace('Exclusive Economic Zone', t('layer.areas.eez')) || []
+              ?.label?.replace(
+                'Exclusive Economic Zone',
+                t((t) => t.layer.areas.eez)
+              ) || []
         )
       }
       return labels

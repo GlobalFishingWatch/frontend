@@ -30,13 +30,13 @@ export default function ReportDownload() {
 
   return (
     <div className={styles.container}>
-      <label>{t('download.dataDownload')}</label>
-      <p className={styles.description}>{t('download.descriptionReport')}</p>
+      <label>{t($ => $.download.dataDownload)}</label>
+      <p className={styles.description}>{t($ => $.download.descriptionReport)}</p>
       <div className={styles.actionsRow}>
         <Button type="secondary" onClick={handleMoreOptionsClick}>
-          {t('download.downloadOptions')}
+          {t($ => $.download.downloadOptions)}
         </Button>
       </div>
     </div>
-  )
+  );
 }

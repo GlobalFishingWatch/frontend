@@ -67,14 +67,16 @@ function TurningTidesFilters({
   }
 
   if (!vesselDataviews?.length) {
-    return <p className={styles.placeholder}>{t('trackCorrection.selectAtLeastOneVessel')}</p>
+    return (
+      <p className={styles.placeholder}>{t((t) => t.trackCorrection.selectAtLeastOneVessel)}</p>
+    )
   }
 
   return (
     <Fragment>
       <MultiSelect
         testId="turning-tides-filters"
-        label={t('common.vessels') as string}
+        label={t((t) => t.common.vessels) as string}
         placeholder={getPlaceholderBySelections({
           selection: vesselOptionsSelected.map(({ id }) => id),
           options: vesselsOptions,
@@ -87,7 +89,7 @@ function TurningTidesFilters({
         onCleanClick={onCleanClick}
       />
       <div className={cx(styles.footer)}>
-        <Button onClick={() => onConfirmFilters()}>{t('common.confirm')}</Button>
+        <Button onClick={() => onConfirmFilters()}>{t((t) => t.common.confirm)}</Button>
       </div>
     </Fragment>
   )

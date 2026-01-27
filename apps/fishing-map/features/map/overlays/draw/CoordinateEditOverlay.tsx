@@ -114,7 +114,7 @@ export const CoordinateEditOverlay = () => {
             step="0.01"
             type="number"
             value={editingPointLatitude}
-            label={t('common.latitude')}
+            label={t((t) => t.common.latitude)}
             onChange={onHandleLatitudeChange}
             className={styles.coordinateInput}
           />
@@ -122,7 +122,7 @@ export const CoordinateEditOverlay = () => {
             step="0.01"
             type="number"
             value={editingPointLongitude}
-            label={t('common.longitude')}
+            label={t((t) => t.common.longitude)}
             className={styles.coordinateInput}
             onChange={onHandleLongitudeChange}
           />
@@ -133,7 +133,11 @@ export const CoordinateEditOverlay = () => {
             type="warning-border"
             onClick={onDeletePoint}
             disabled={!allowDeletePoint}
-            tooltip={allowDeletePoint ? t('layer.removePoint') : t('layer.removePointNotAllowed')}
+            tooltip={
+              allowDeletePoint
+                ? t((t) => t.layer.removePoint)
+                : t((t) => t.layer.removePointNotAllowed)
+            }
           />
           <Button
             disabled={
@@ -144,7 +148,7 @@ export const CoordinateEditOverlay = () => {
             onClick={onConfirm}
             className={styles.confirmBtn}
           >
-            {t('common.confirm')}
+            {t((t) => t.common.confirm)}
           </Button>
         </div>
       </div>

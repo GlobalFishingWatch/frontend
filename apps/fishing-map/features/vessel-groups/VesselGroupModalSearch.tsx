@@ -69,7 +69,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
         }
 
         if (columns.length > 1 && !foundIdColumn) {
-          onError(t('vesselGroup.csvError'))
+          onError(t((t) => t.vesselGroup.csvError))
           return
         } else {
           onError('')
@@ -117,7 +117,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
               ? `${searchIdField} (${vesselGroupVesselsToSearch?.length})`
               : searchIdField
           }
-          placeholder={t('vesselGroup.idsPlaceholder', {
+          placeholder={t((t) => t.vesselGroup.idsPlaceholder, {
             field: searchIdField,
           })}
           onChange={onIdsTextareaChange}

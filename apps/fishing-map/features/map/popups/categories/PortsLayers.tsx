@@ -28,7 +28,7 @@ function PortsTooltipSection({ features, showFeaturesDetails = false }: PortsLay
             <Icon icon="dots" className={styles.layerIcon} style={{ color }} />
             <div className={styles.popupSectionContent}>
               {showFeaturesDetails && (
-                <h3 className={styles.popupSectionTitle}>{t('event.ports')}</h3>
+                <h3 className={styles.popupSectionTitle}>{t((t) => t.event.ports)}</h3>
               )}
               {featureByType.map((feature) => {
                 const { id, name, flag } = feature.properties
@@ -47,7 +47,7 @@ function PortsTooltipSection({ features, showFeaturesDetails = false }: PortsLay
                         <PortsReportLink port={port}>
                           <IconButton
                             icon="analysis"
-                            tooltip={t('portsReport.seePortReport')}
+                            tooltip={t((t) => t.portsReport.seePortReport)}
                             size="small"
                           />
                         </PortsReportLink>

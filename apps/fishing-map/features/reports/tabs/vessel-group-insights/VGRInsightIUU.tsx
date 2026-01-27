@@ -47,8 +47,8 @@ const VesselGroupReportInsightIUU = ({ skip }: { skip?: boolean }) => {
   return (
     <div id="vessel-group-iuu" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vessel.insights.IUU')}</label>
-        <DataTerminology title={t('vessel.insights.IUU')} terminologyKey="insightsIUU" />
+        <label>{t((t) => t.vessel.insights.IUU)}</label>
+        <DataTerminology title={t((t) => t.vessel.insights.IUU)} terminologyKey="insightsIUU" />
       </div>
       {skip || isLoading || !vesselGroup ? (
         <VesselGroupReportInsightPlaceholder />
@@ -56,7 +56,7 @@ const VesselGroupReportInsightIUU = ({ skip }: { skip?: boolean }) => {
         <InsightError error={error as ParsedAPIError} />
       ) : !vesselsWithIIU || vesselsWithIIU.length === 0 ? (
         <span className={cx(styles.secondary, styles.nested, styles.row)}>
-          {t('vesselGroupReport.insights.IUUBlackListsEmpty')}
+          {t((t) => t.vesselGroupReport.insights.IUUBlackListsEmpty)}
         </span>
       ) : (
         <div className={styles.nested}>
@@ -65,7 +65,7 @@ const VesselGroupReportInsightIUU = ({ skip }: { skip?: boolean }) => {
             open={isExpanded}
             className={styles.collapsable}
             labelClassName={cx(styles.collapsableLabel, styles.row)}
-            label={t('vesselGroupReport.insights.IUUBlackListsCount', {
+            label={t((t) => t.vesselGroupReport.insights.IUUBlackListsCount, {
               vessels: vesselsWithIIU.length,
             })}
             onToggle={onInsightToggle}

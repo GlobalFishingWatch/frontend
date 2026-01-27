@@ -90,23 +90,23 @@ export default function Report() {
   const categoryTabs: Tab<ReportCategory>[] = [
     {
       id: ReportCategory.Activity,
-      title: t('common.activity'),
+      title: t((t) => t.common.activity),
     },
     {
       id: ReportCategory.Detections,
-      title: t('common.detections'),
+      title: t((t) => t.common.detections),
     },
     {
       id: ReportCategory.Events,
-      title: t('common.events'),
+      title: t((t) => t.common.events),
     },
     {
       id: ReportCategory.Environment,
-      title: t('common.environment'),
+      title: t((t) => t.common.environment),
     },
     {
       id: ReportCategory.Others,
-      title: t('common.others'),
+      title: t((t) => t.common.others),
     },
   ]
   const filteredCategoryTabs = categoryTabs.flatMap((tab) => {
@@ -193,7 +193,7 @@ export default function Report() {
   }
 
   if (reportAreaError) {
-    return <ErrorPlaceholder title={t('errors.areaLoad')}></ErrorPlaceholder>
+    return <ErrorPlaceholder title={t((t) => t.errors.areaLoad)}></ErrorPlaceholder>
   }
 
   if (!reportCategory) {
@@ -201,7 +201,7 @@ export default function Report() {
   }
 
   if (reportArea?.id === OUT_OF_TIME_REPORT_AREA_ID) {
-    return <ErrorPlaceholder title={t('errors.areaOutOfTime')}></ErrorPlaceholder>
+    return <ErrorPlaceholder title={t((t) => t.errors.areaOutOfTime)}></ErrorPlaceholder>
   }
 
   return (

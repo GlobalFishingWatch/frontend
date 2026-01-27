@@ -55,7 +55,7 @@ export const GRIDDED_FORMAT_OPTIONS: ChoiceOption<HeatmapDownloadFormat>[] = [
     id: HeatmapDownloadFormat.Geopackage,
     label: 'Geopackage',
     disabled: true,
-    tooltip: t('common.comingSoon'),
+    tooltip: t((t) => t.common.comingSoon),
     tooltipPlacement: 'top',
   },
 ]
@@ -86,26 +86,26 @@ export const getBaseGroupByOptions = (): ChoiceOption<GroupBy>[] => {
   return [
     {
       id: GroupBy.MMSI,
-      label: t('vessel.mmsi'),
+      label: t((t) => t.vessel.mmsi),
     },
     {
       id: GroupBy.Flag,
-      label: t('vessel.flag'),
+      label: t((t) => t.vessel.flag),
     },
     {
       id: GroupBy.GearType,
-      label: t('vessel.geartype'),
+      label: t((t) => t.vessel.geartype),
     },
     {
       id: GroupBy.FlagAndGearType,
-      label: `${t('vessel.flag')} + ${t('vessel.geartype')}`,
+      label: `${t((t) => t.vessel.flag)} + ${t((t) => t.vessel.geartype)}`,
     },
   ]
 }
 export const getVesselGroupOptions = (): ChoiceOption<GroupBy>[] => [
   {
     id: GroupBy.Vessel,
-    label: t('common.none'),
+    label: t((t) => t.common.none),
   },
   ...getBaseGroupByOptions(),
 ]
@@ -113,7 +113,7 @@ export const getVesselGroupOptions = (): ChoiceOption<GroupBy>[] => [
 export const getGriddedGroupOptions = (): ChoiceOption<GroupBy>[] => [
   {
     id: GroupBy.None,
-    label: t('common.none'),
+    label: t((t) => t.common.none),
   },
   ...getBaseGroupByOptions(),
 ]
@@ -131,7 +131,7 @@ export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption<SpatialResolution>[] = [
     id: SpatialResolution.VeryHigh,
     label: '0.001º',
     disabled: true,
-    tooltip: t('common.comingSoon'),
+    tooltip: t((t) => t.common.comingSoon),
     tooltipPlacement: 'top',
   },
 ]
@@ -139,19 +139,19 @@ export const SPATIAL_RESOLUTION_OPTIONS: ChoiceOption<SpatialResolution>[] = [
 export const getTemporalResolutionOptions = (): ChoiceOption<TemporalResolution>[] => [
   {
     id: TemporalResolution.Full,
-    label: t('download.fullTimeRange'),
+    label: t((t) => t.download.fullTimeRange),
   },
   {
     id: TemporalResolution.Daily,
-    label: t('download.daily'),
+    label: t((t) => t.download.daily),
   },
   {
     id: TemporalResolution.Monthly,
-    label: t('download.monthly'),
+    label: t((t) => t.download.monthly),
   },
   {
     id: TemporalResolution.Yearly,
-    label: t('download.yearly'),
+    label: t((t) => t.download.yearly),
   },
 ]
 

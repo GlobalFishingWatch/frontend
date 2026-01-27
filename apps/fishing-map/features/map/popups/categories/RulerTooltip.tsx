@@ -41,7 +41,7 @@ function RulerTooltip({ features, showFeaturesDetails }: RulerTooltipProps) {
             {id && <IconButton size="small" icon="delete" type="warning" onClick={onDeleteClick} />}
           </div>
         ) : (
-          <span className={styles.rowText}>{t('map.rulersHover')}</span>
+          <span className={styles.rowText}>{t((t) => t.map.rulersHover)}</span>
         )}
       </div>
     </div>

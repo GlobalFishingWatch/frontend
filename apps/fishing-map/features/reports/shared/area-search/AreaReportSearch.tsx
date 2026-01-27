@@ -206,7 +206,7 @@ function AreaReportSearch({ className }: { className?: string }) {
         <InputText
           {...inputProps}
           className={styles.input}
-          placeholder={t('map.search')}
+          placeholder={t((t) => t.map.search)}
           onBlur={onInputBlur}
           onKeyDown={handleKeyDown}
           inputSize="small"

@@ -110,7 +110,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
             {datasetTypeIcon && <Icon icon={datasetTypeIcon} />}
             {datasetSourceIcon ? (
               moreInfoLink ? (
-                <Tooltip content={t('common.seeMore')}>
+                <Tooltip content={t((t) => t.common.seeMore)}>
                   <a href={moreInfoLink} target="_blank" rel="noreferrer" style={{ lineHeight: 1 }}>
                     <Icon icon={datasetSourceIcon} type="original-colors" />
                   </a>
@@ -121,7 +121,7 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
             ) : null}
             {onlyGFWUser && <GFWOnly userGroup="gfw" />}
             <Button className={styles.cta} onClick={onAddToWorkspaceClick} loading={loading}>
-              {t('workspace.addLayer')}
+              {t((t) => t.workspace.addLayer)}
             </Button>
           </div>
         </div>

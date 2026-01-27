@@ -76,7 +76,7 @@ const TurningTidesModal: React.FC = () => {
         />
         <Select
           label={'Country'}
-          placeholder={t('selects.placeholder')}
+          placeholder={t((t) => t.selects.placeholder)}
           options={CountryOptions}
           containerClassName={styles.input}
           selectedOption={selectedCountryOption}
@@ -87,7 +87,7 @@ const TurningTidesModal: React.FC = () => {
       </div>
       <div className={styles.row}>
         <label>
-          {t('bigQuery.query')}{' '}
+          {t((t) => t.bigQuery.query)}{' '}
           <span className={styles.lowercase}>
             (ensure vessel_id as id, lat, lon, timestamp and value are all present)
           </span>
@@ -109,7 +109,7 @@ const TurningTidesModal: React.FC = () => {
       </div>
       <SwitchRow
         className={styles.row}
-        label={t('dataset.uploadPublic')}
+        label={t((t) => t.dataset.uploadPublic)}
         active={createAsPublic}
         onClick={() => setCreateAsPublic((createAsPublic) => !createAsPublic)}
       />
@@ -117,7 +117,7 @@ const TurningTidesModal: React.FC = () => {
         {error && <p className={styles.error}>{error}</p>}
         {runCost !== null && (
           <p>
-            {t('bigQuery.runCost')} {runCost?.totalBytesPretty}
+            {t((t) => t.bigQuery.runCost)} {runCost?.totalBytesPretty}
           </p>
         )}
         <Button
@@ -126,13 +126,13 @@ const TurningTidesModal: React.FC = () => {
           loading={runCostStatus === AsyncReducerStatus.Loading}
           onClick={onRunCostClick}
         >
-          {t('bigQuery.runCostCheck')}
+          {t((t) => t.bigQuery.runCostCheck)}
         </Button>
         <Button
           disabled={disableCreation || creationStatus === AsyncReducerStatus.Loading}
           tooltip={
             error
-              ? t('bigQuery.queryError')
+              ? t((t) => t.bigQuery.queryError)
               : disableCreation
                 ? 'Query, name, country and checking creation cost are required'
                 : ''
@@ -140,7 +140,7 @@ const TurningTidesModal: React.FC = () => {
           loading={creationStatus === AsyncReducerStatus.Loading}
           onClick={handleCreateClick}
         >
-          {t('bigQuery.create')}
+          {t((t) => t.bigQuery.create)}
         </Button>
       </div>
     </div>

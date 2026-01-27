@@ -61,7 +61,7 @@ function UserReports() {
   const onDeleteClick = useCallback(
     (report: Report) => {
       const confirmation = window.confirm(
-        `${t('analysis.confirmRemove')}\n${getReportAreaStringByLocale(report.name, i18n.language)}`
+        `${t((t) => t.analysis.confirmRemove)}\n${getReportAreaStringByLocale(report.name, i18n.language)}`
       )
       if (confirmation) {
         dispatch(deleteReportThunk(report))
@@ -84,7 +84,7 @@ function UserReports() {
       </div>
       <div className={styles.views}>
         <div className={styles.viewsHeader}>
-          <label>{t('common.reports')}</label>
+          <label>{t((t) => t.common.reports)}</label>
         </div>
         {loading ? (
           <div className={styles.placeholder}>
@@ -129,14 +129,14 @@ function UserReports() {
         ) : (
           <div className={styles.placeholder}>
             <p>
-              {t('analysis.createReportHelp')}{' '}
+              {t((t) => t.analysis.createReportHelp)}{' '}
               <a
                 className={styles.link}
                 href={getUserGuideReportLinkByLocale(i18n.language as Locale)}
                 target="_blank"
                 rel="noreferrer"
               >
-                {t('analysis.createReportHelpLink')}
+                {t((t) => t.analysis.createReportHelpLink)}
               </a>
             </p>
           </div>

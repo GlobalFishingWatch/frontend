@@ -186,7 +186,7 @@ export const formatInfoField = (
 
 export const getVesselOtherNamesLabel = (otherVesselsNames: string[]) => {
   return otherVesselsNames?.length
-    ? `, ${t('common.aka')} ${otherVesselsNames
+    ? `, ${t((t) => t.common.aka)} ${otherVesselsNames
         .map((i) => formatInfoField(i, 'shipname'))
         .join(', ')}`
     : ''

@@ -22,8 +22,8 @@ const InsightIUU = ({
   return (
     <div id="IUU" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vessel.insights.IUU')}</label>
-        <DataTerminology title={t('vessel.insights.IUU')} terminologyKey="insightsIUU" />
+        <label>{t((t) => t.vessel.insights.IUU)}</label>
+        <DataTerminology title={t((t) => t.vessel.insights.IUU)} terminologyKey="insightsIUU" />
       </div>
       {isLoading ? (
         <div style={{ width: '50rem' }} className={styles.loadingPlaceholder} />
@@ -33,13 +33,11 @@ const InsightIUU = ({
         <div>
           <p>
             {iuuVesselList?.valuesInThePeriod.length !== 0 ? (
-              <span>
-                {t('vessel.insights.IUUBlackListsCount', {
-                  // value: iuuBlacklist.valuesInThePeriod.join(', '),
-                })}
-              </span>
+              <span>{t((t) => t.vessel.insights.IUUBlackListsCount)}</span>
             ) : (
-              <span className={styles.secondary}>{t('vessel.insights.IUUBlackListsEmpty')}</span>
+              <span className={styles.secondary}>
+                {t((t) => t.vessel.insights.IUUBlackListsEmpty)}
+              </span>
             )}
           </p>
         </div>

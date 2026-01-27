@@ -148,12 +148,12 @@ function ActivityReport() {
     if (hasAuthError || guestUser) {
       const errorMsg = guestUser
         ? isVesselGroupReportLocation
-          ? t('errors.vesselGroupReportLogin')
-          : t('errors.reportLogin')
-        : t(
-            'errors.privateReport',
-            "Your account doesn't have permissions to see the vessels active in this area"
-          )
+          ? t((t) => t.errors.vesselGroupReportLogin)
+          : t((t) => t.errors.reportLogin)
+        : t((t) => t.errors.privateReport, {
+            defaultValue:
+              "Your account doesn't have permissions to see the vessels active in this area",
+          })
       return (
         <ReportVesselsPlaceholder animate={false}>
           <div className={styles.cover}>
@@ -174,10 +174,12 @@ function ActivityReport() {
           <ReportVesselsPlaceholder animate={false}>
             <div className={styles.cover}>
               <p className={styles.error}>
-                {t('analysis.errorConcurrentReport')}
+                {t((t) => t.analysis.errorConcurrentReport)}
                 <p className={styles.link}>
                   {lastReport && (
-                    <a href={lastReport.workspaceUrl}>{t('analysis.errorConcurrentReportLink')}</a>
+                    <a href={lastReport.workspaceUrl}>
+                      {t((t) => t.analysis.errorConcurrentReportLink)}
+                    </a>
                   )}
                 </p>
               </p>
@@ -193,7 +195,7 @@ function ActivityReport() {
         return (
           <ReportVesselsPlaceholder animate={false}>
             <div className={styles.cover}>
-              <p className={styles.error}>{t('analysis.errorTooComplex')}</p>
+              <p className={styles.error}>{t((t) => t.analysis.errorTooComplex)}</p>
             </div>
           </ReportVesselsPlaceholder>
         )
@@ -202,7 +204,7 @@ function ActivityReport() {
         return (
           <ReportVesselsPlaceholder animate={false}>
             <div className={styles.cover}>
-              <p className={cx(styles.center, styles.top)}>{t('analysis.timeoutError')}</p>
+              <p className={cx(styles.center, styles.top)}>{t((t) => t.analysis.timeoutError)}</p>
             </div>
           </ReportVesselsPlaceholder>
         )
@@ -217,12 +219,12 @@ function ActivityReport() {
     }
 
     if (!reportDataviews?.length) {
-      return <p className={styles.error}>{t('analysis.datasetsNotAllowedAll')} </p>
+      return <p className={styles.error}>{t((t) => t.analysis.datasetsNotAllowedAll)} </p>
     }
     return (
       <p className={styles.error}>
         <span>
-          {t('errors.generic')} <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+          {t((t) => t.errors.generic)} <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
         </span>
       </p>
     )
@@ -258,7 +260,7 @@ function ActivityReport() {
       return (
         <ReportVesselsPlaceholder animate={false} className="print-hidden">
           <div className={cx(styles.cover, styles.error)}>
-            <p>{t('analysis.timeRangeTooLong')}</p>
+            <p>{t((t) => t.analysis.timeRangeTooLong)}</p>
           </div>
         </ReportVesselsPlaceholder>
       )
@@ -274,7 +276,7 @@ function ActivityReport() {
           <div className={cx(styles.cover, styles.center, styles.top)}>
             <p
               dangerouslySetInnerHTML={{
-                __html: t('analysis.onlyEvolutionSupported'),
+                __html: t((t) => t.analysis.onlyEvolutionSupported),
               }}
             />
           </div>
@@ -292,7 +294,7 @@ function ActivityReport() {
           <div className={cx(styles.cover, styles.center, styles.top)}>
             <p
               dangerouslySetInnerHTML={{
-                __html: t('analysis.newTimeRange', {
+                __html: t((t) => t.analysis.newTimeRange, {
                   start: formatI18nDate(timerange?.start),
                   end: formatI18nDate(timerange?.end),
                 }),
@@ -309,7 +311,7 @@ function ActivityReport() {
                 })
               }}
             >
-              {t('analysis.seeVessels')}
+              {t((t) => t.analysis.seeVessels)}
             </Button>
           </div>
         </ReportVesselsPlaceholder>
@@ -324,8 +326,8 @@ function ActivityReport() {
               isVesselGroupReportLocation
                 ? undefined
                 : reportCategory === ReportCategory.Detections
-                  ? t('common.matchedVessels')
-                  : t('common.vessels')
+                  ? t((t) => t.common.matchedVessels)
+                  : t((t) => t.common.vessels)
             }
             activityUnit={
               isVesselGroupReportLocation
@@ -341,7 +343,7 @@ function ActivityReport() {
         <div className={styles.error}>
           {datasetsDownloadNotSupported.length > 0 ? (
             <p className={styles.secondary}>
-              {t('analysis.datasetsNotAllowed')}{' '}
+              {t((t) => t.analysis.datasetsNotAllowed)}{' '}
               {datasetsDownloadNotSupported.map((dataset, index) => (
                 <Fragment>
                   <DatasetLabel key={dataset} dataset={{ id: dataset }} />
@@ -350,7 +352,7 @@ function ActivityReport() {
               ))}
             </p>
           ) : (
-            <p>{t('analysis.noDataByArea')}</p>
+            <p>{t((t) => t.analysis.noDataByArea)}</p>
           )}
         </div>
       )

@@ -52,18 +52,18 @@ export const BufferButtonTooltip = ({
   const previewBuffer = useSelector(selectReportPreviewBufferFeature)
   const bufferUnitOptions: ChoiceOption<BufferUnit>[] = useMemo(
     () => [
-      { id: NAUTICAL_MILES, label: t('analysis.nauticalmiles') },
-      { id: KILOMETERS, label: t('analysis.kilometers') },
+      { id: NAUTICAL_MILES, label: t((t) => t.analysis.nauticalmiles) },
+      { id: KILOMETERS, label: t((t) => t.analysis.kilometers) },
     ],
     [t]
   )
   const bufferOperationOptions: ChoiceOption<BufferOperation>[] = useMemo(() => {
     if (values[1] <= 0 || areaType === 'Point') {
-      return [{ id: DISSOLVE, label: t('analysis.buffer') }]
+      return [{ id: DISSOLVE, label: t((t) => t.analysis.buffer) }]
     } else {
       return [
-        { id: DISSOLVE, label: t('analysis.dissolve') },
-        { id: DIFFERENCE, label: t('analysis.difference') },
+        { id: DISSOLVE, label: t((t) => t.analysis.dissolve) },
+        { id: DIFFERENCE, label: t((t) => t.analysis.difference) },
       ]
     }
   }, [t, values, areaType])
@@ -79,7 +79,7 @@ export const BufferButtonTooltip = ({
   return (
     <div className={styles.bufferTooltipContent}>
       <div className={styles.actionContainer}>
-        <label>{t('common.unit')}</label>
+        <label>{t((t) => t.common.unit)}</label>
         <Choice
           size="tiny"
           activeOption={activeUnit}
@@ -88,7 +88,7 @@ export const BufferButtonTooltip = ({
         />
       </div>
       <div className={styles.actionContainer}>
-        <label>{t('common.value')}</label>
+        <label>{t((t) => t.common.value)}</label>
         <div className={styles.bufferValueControls}>
           <Range
             allowOverlap
@@ -163,7 +163,7 @@ export const BufferButtonTooltip = ({
         </div>
       </div>
       <div className={styles.actionContainer}>
-        <label>{t('analysis.bufferOperationLabel')}</label>
+        <label>{t((t) => t.analysis.bufferOperationLabel)}</label>
         <Choice
           size="tiny"
           className={styles.operationChoice}
@@ -176,7 +176,7 @@ export const BufferButtonTooltip = ({
         <IconButton
           type="border"
           icon="delete"
-          tooltip={t('analysis.deleteBuffer')}
+          tooltip={t((t) => t.analysis.deleteBuffer)}
           size="small"
           onClick={handleRemoveBuffer}
           disabled={areaType === 'Point'}
@@ -186,7 +186,7 @@ export const BufferButtonTooltip = ({
           onClick={handleConfirmBuffer}
           disabled={!previewBuffer || !values || values[1] < minValue || values[1] > maxValue}
         >
-          {t('common.confirm')}
+          {t((t) => t.common.confirm)}
         </Button>
       </div>
     </div>

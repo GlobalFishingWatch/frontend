@@ -243,7 +243,9 @@ function ActivityLayerPanel({
                       icon={filterOpen ? 'filter-on' : 'filter-off'}
                       size="small"
                       onClick={onToggleFilterOpen}
-                      tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
+                      tooltip={
+                        filterOpen ? t((t) => t.layer.filterClose) : t((t) => t.layer.filterOpen)
+                      }
                       tooltipPlacement="top"
                     />
                     {dataview.id === 'fishing-ais' && (
@@ -270,8 +272,8 @@ function ActivityLayerPanel({
                   type={'warning'}
                   tooltip={
                     isGFWUser
-                      ? `${t('errors.layerLoading')} (${layerError})`
-                      : t('errors.layerLoading')
+                      ? `${t((t) => t.errors.layerLoading)} (${layerError})`
+                      : t((t) => t.errors.layerLoading)
                   }
                   size="small"
                 />
@@ -368,7 +370,7 @@ function ActivityLayerPanel({
                     size="small"
                     type="border"
                     icon="split"
-                    tooltip={t('layer.toggleCombinationMode.split')}
+                    tooltip={t((t) => t.layer.toggleCombinationMode.split)}
                     tooltipPlacement="left"
                     className={cx(activityStyles.bivariateSplit, 'print-hidden')}
                     onClick={onSplitLayers}

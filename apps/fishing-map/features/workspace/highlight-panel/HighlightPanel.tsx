@@ -87,12 +87,14 @@ const HighlightPanel = ({
             <h3 className={styles.title}>{highlightContent.title}</h3>
             <p className={styles.text}>
               {highlightContent.description}{' '}
-              {config.workspaceUrl && <a href={config.workspaceUrl}>{t('common.view_layer')}</a>}
+              {config.workspaceUrl && (
+                <a href={config.workspaceUrl}>{t((t) => t.common.view_layer)}</a>
+              )}
             </p>
           </div>
           <div className={styles.footer}>
             <Button type="secondary" onClick={onDismiss} className={styles.footerBtn}>
-              {t('common.dismiss')}
+              {t((t) => t.common.dismiss)}
             </Button>
             {learnMoreUrl && (
               <Button
@@ -101,7 +103,7 @@ const HighlightPanel = ({
                 onClick={onDismiss}
                 className={cx(styles.footerBtn, styles.cta)}
               >
-                {t('common.learnMore')}
+                {t((t) => t.common.learnMore)}
               </Button>
             )}
           </div>

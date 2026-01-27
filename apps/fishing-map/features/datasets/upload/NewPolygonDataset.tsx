@@ -126,8 +126,8 @@ function NewPolygonDataset({
       })
       if (hasDateError) {
         setTimeFilterError(
-          t('datasetUpload.errors.invalidDatesFeatures', {
-            featureType: t('dataset.typePolygons'),
+          t((t) => t.datasetUpload.errors.invalidDatesFeatures, {
+            featureType: t((t) => t.dataset.typePolygons),
           })
         )
       }
@@ -151,7 +151,7 @@ function NewPolygonDataset({
     return (
       <div className={styles.processingData}>
         <Spinner className={styles.processingDataSpinner} />
-        <p>{t('datasetUpload.processingData')}</p>
+        <p>{t((t) => t.datasetUpload.processingData)}</p>
       </div>
     )
   }
@@ -175,16 +175,16 @@ function NewPolygonDataset({
       )}
       <InputText
         value={datasetMetadata?.name}
-        label={t('datasetUpload.datasetName')}
+        label={t((t) => t.datasetUpload.datasetName)}
         className={styles.input}
         onChange={(e) => setDatasetMetadata({ name: e.target.value })}
         disabled={loading}
       />
       {errors.name && <p className={cx(styles.errorMsg, styles.errorMargin)}>{errors.name}</p>}
-      <Collapsable className={styles.optional} label={t('datasetUpload.optionalFields')}>
+      <Collapsable className={styles.optional} label={t((t) => t.datasetUpload.optionalFields)}>
         <InputText
           value={datasetMetadata?.description}
-          label={t('datasetUpload.datasetDescription')}
+          label={t((t) => t.datasetUpload.datasetDescription)}
           className={styles.input}
           onChange={(e) => setDatasetMetadata({ description: e.target.value })}
           disabled={loading}
@@ -192,7 +192,7 @@ function NewPolygonDataset({
         <NewDatasetField
           datasetMetadata={datasetMetadata}
           property="valueProperties"
-          label={t('datasetUpload.polygons.name')}
+          label={t((t) => t.datasetUpload.polygons.name)}
           onSelect={(selected) => {
             setDatasetMetadataConfig({ valueProperties: [selected.id] })
           }}
@@ -200,13 +200,13 @@ function NewPolygonDataset({
             setDatasetMetadataConfig({ valueProperties: [] })
           }}
           editable={!loading}
-          infoTooltip={t('datasetUpload.polygons.nameHelp')}
+          infoTooltip={t((t) => t.datasetUpload.polygons.nameHelp)}
         />
         <NewDatasetField
           datasetMetadata={datasetMetadata}
           property="polygonColor"
-          label={t('datasetUpload.polygons.color')}
-          placeholder={t('datasetUpload.fieldNumericPlaceholder')}
+          label={t((t) => t.datasetUpload.polygons.color)}
+          placeholder={t((t) => t.datasetUpload.fieldNumericPlaceholder)}
           onSelect={(selected) => {
             setDatasetMetadataConfig({ polygonColor: selected.id })
           }}
@@ -214,7 +214,7 @@ function NewPolygonDataset({
             setDatasetMetadataConfig({ polygonColor: '' })
           }}
           editable={!loading}
-          infoTooltip={t('datasetUpload.polygons.colorHelp')}
+          infoTooltip={t((t) => t.datasetUpload.polygons.colorHelp)}
         />
         <div className={styles.row}>
           <TimeFieldsGroup
@@ -226,11 +226,11 @@ function NewPolygonDataset({
         <span className={styles.errorMsg}>{timeFilterError}</span>
         <MultiSelect
           className={styles.input}
-          label={t('datasetUpload.polygons.filters')}
+          label={t((t) => t.datasetUpload.polygons.filters)}
           placeholder={
             datasetFieldsAllowed.length > 0
               ? datasetFieldsAllowed.join(', ')
-              : t('datasetUpload.fieldMultiplePlaceholder')
+              : t((t) => t.datasetUpload.fieldMultiplePlaceholder)
           }
           direction="top"
           options={filtersFieldsOptions}
@@ -245,11 +245,11 @@ function NewPolygonDataset({
             setDatasetMetadata({ fieldsAllowed: [] })
           }}
           disabled={loading}
-          infoTooltip={t('datasetUpload.polygons.filtersHelp')}
+          infoTooltip={t((t) => t.datasetUpload.polygons.filtersHelp)}
         />
         <SwitchRow
           className={styles.saveAsPublic}
-          label={t('dataset.uploadPublic')}
+          label={t((t) => t.dataset.uploadPublic)}
           disabled={isEditing || loading}
           active={isPublic}
           onClick={() => setDatasetMetadata({ public: !isPublic })}
@@ -266,7 +266,7 @@ function NewPolygonDataset({
           disabled={!datasetMetadata || error !== '' || !isValid}
           loading={loading}
         >
-          {t('common.confirm') as string}
+          {t((t) => t.common.confirm) as string}
         </Button>
       </div>
     </div>

@@ -43,7 +43,7 @@ const LayerSwitch = ({
       disabled={disabled}
       active={active}
       onClick={onToggleLayerActive}
-      tooltip={t('layer.toggleVisibility')}
+      tooltip={t((t) => t.layer.toggleVisibility)}
       tooltipPlacement="top"
       className={className}
       testId={testId}

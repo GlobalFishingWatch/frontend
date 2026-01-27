@@ -26,7 +26,7 @@ const FooterPartners = ({ smallScreen }: FooterPartnersProps) => {
     case WorkspaceCategory.MarineManager:
       return (
         <div className={styles.partners}>
-          {!smallScreen && <span className={styles.text}>{t('footer.supportBy')}</span>}
+          {!smallScreen && <span className={styles.text}>{t((t) => t.footer.supportBy)}</span>}
           <a href="https://donabertarelli.com/" rel="noopener noreferrer" target="_blank">
             <img src={LogoDonaBertarelli.src} alt="Dona Bertarelli" width="129px" />
           </a>
@@ -35,7 +35,7 @@ const FooterPartners = ({ smallScreen }: FooterPartnersProps) => {
     default:
       return (
         <div className={styles.partners}>
-          {!smallScreen && <span className={styles.text}>{t('footer.convenedBy')}</span>}
+          {!smallScreen && <span className={styles.text}>{t((t) => t.footer.convenedBy)}</span>}
           <a href="https://oceana.org/" rel="noopener noreferrer" target="_blank">
             <img src={LogoOceana.src} alt="Oceana" width="64px" height="24px" />
           </a>

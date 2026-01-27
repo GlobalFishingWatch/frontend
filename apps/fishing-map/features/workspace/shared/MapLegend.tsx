@@ -91,7 +91,7 @@ const MapLegendWrapper = ({
       currentValueClassName={styles.currentValue}
       labelComponent={
         uiLegend.label?.includes('²') ? (
-          <Tooltip content={t('map.legend_help')}>
+          <Tooltip content={t((t) => t.map.legend_help)}>
             <span className={cx(styles.legendLabel, styles.help)}>{uiLegend.label}</span>
           </Tooltip>
         ) : (

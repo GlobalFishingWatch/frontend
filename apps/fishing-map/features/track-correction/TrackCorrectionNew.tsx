@@ -104,13 +104,14 @@ const TrackCorrectionNew = () => {
             segment.length
               ? segment.map(
                   (point) =>
-                    ({
+                    (({
                       type: 'Feature',
+
                       geometry: {
                         type: 'Point',
                         coordinates: [point.longitude, point.latitude],
-                      },
-                    }) as Feature<Point>
+                      }
+                    }) as Feature<Point>)
                 )
               : []
           ),
@@ -196,10 +197,10 @@ const TrackCorrectionNew = () => {
   if (!trackCorrectionVesselDataviewId) {
     return (
       <>
-        <h1 className={styles.title}>{t('trackCorrection.title')}</h1>
+        <h1 className={styles.title}>{t((t) => t.trackCorrection.title)}</h1>
         <div className={styles.container}>
           <Icon type="default" icon="warning" />
-          {t('trackCorrection.badLink')}
+          {t((t) => t.trackCorrection.badLink)}
         </div>
       </>
     )
@@ -209,10 +210,10 @@ const TrackCorrectionNew = () => {
 
   return (
     <Fragment>
-      <h1 className={styles.title}>{t('trackCorrection.newIssue')}</h1>
+      <h1 className={styles.title}>{t((t) => t.trackCorrection.newIssue)}</h1>
       <div className={styles.container}>
         <div>
-          <label>{t('common.vessel')}</label>
+          <label>{t((t) => t.common.vessel)}</label>
           <div className={styles.vessel}>
             <span className={styles.vesselLabel}>
               <Icon icon="vessel" style={{ color: vesselColor }} />
@@ -225,22 +226,22 @@ const TrackCorrectionNew = () => {
         {vesselInfo && (
           <div className={styles.vesselInfo}>
             <div>
-              <label>{t('common.flag')}</label>
+              <label>{t((t) => t.common.flag)}</label>
               {getVesselProperty(vesselInfo, 'flag')}
             </div>
             <div>
-              <label>{t('vessel.shiptype')}</label>
+              <label>{t((t) => t.vessel.shiptype)}</label>
               {getVesselShipTypeLabel({ shiptypes: getVesselProperty(vesselInfo, 'shiptypes') })}
             </div>
             <div>
-              <label>{t('vessel.geartype')}</label>
+              <label>{t((t) => t.vessel.geartype)}</label>
               {getVesselGearTypeLabel({ geartypes: getVesselProperty(vesselInfo, 'geartypes') })}
             </div>
           </div>
         )}
 
         <div>
-          <label>{t('common.timerange')}</label>
+          <label>{t((t) => t.common.timerange)}</label>
           <TrackSlider
             rangeStartTime={getUTCDateTime(start).toMillis()}
             rangeEndTime={getUTCDateTime(end).toMillis()}
@@ -251,10 +252,10 @@ const TrackCorrectionNew = () => {
 
         <div className={styles.disclaimer}>
           <Icon type="default" icon="warning" />
-          <span>{t('trackCorrection.adjustDisclaimer')}</span>
+          <span>{t((t) => t.trackCorrection.adjustDisclaimer)}</span>
         </div>
         <Choice
-          label={t('trackCorrection.issueType')}
+          label={t((t) => t.trackCorrection.issueType)}
           options={getTrackCorrectionIssueOptions()}
           activeOption={issueType}
           onSelect={(option) => {
@@ -263,9 +264,9 @@ const TrackCorrectionNew = () => {
           size="small"
         />
         <InputText
-          label={t('trackCorrection.comment')}
+          label={t((t) => t.trackCorrection.comment)}
           inputSize="small"
-          placeholder={t('trackCorrection.commentPlaceholder')}
+          placeholder={t((t) => t.trackCorrection.commentPlaceholder)}
           value={issueComment}
           className={styles.input}
           onChange={(e) => dispatch(setTrackIssueComment(e.target.value))}
@@ -280,7 +281,7 @@ const TrackCorrectionNew = () => {
         <div className={styles.actions}>
           <span className={styles.version}>
             {
-              t('trackCorrection.version') + ' 1'
+              t((t) => t.trackCorrection.version) + ' 1'
               /*vesselInfo.datasetVersion*/
             }
           </span>
@@ -290,7 +291,7 @@ const TrackCorrectionNew = () => {
             onClick={() => onConfirmClick(trackCorrectionTimerange)}
             loading={isSubmitting}
           >
-            {t('common.confirm')}
+            {t((t) => t.common.confirm)}
           </Button>
         </div>
       </div>

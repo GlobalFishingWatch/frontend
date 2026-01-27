@@ -24,7 +24,7 @@ function ActivityFitBounds({ stats, loading }: ActivityFitBoundsProps) {
   return statsBbox ? (
     <IconButton
       icon="target"
-      tooltip={t('layer.activityFitBounds')}
+      tooltip={t((t) => t.layer.activityFitBounds)}
       loading={loading}
       tooltipPlacement="top"
       size="small"

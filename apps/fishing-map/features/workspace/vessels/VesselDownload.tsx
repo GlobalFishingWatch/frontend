@@ -48,14 +48,13 @@ function VesselDownloadButton({
       icon="download"
       type={iconType}
       disabled={!downloadSupported}
-      loginTooltip={t('download.trackLogin') as string}
+      loginTooltip={t((t) => t.download.trackLogin) as string}
       tooltip={
         downloadSupported
-          ? t('download.trackAction')
-          : t(
-              'download.trackNotAllowed',
-              "You don't have permissions to download tracks from this source"
-            )
+          ? t((t) => t.download.trackAction)
+          : t((t) => t.download.trackNotAllowed, {
+              defaultValue: "You don't have permissions to download tracks from this source",
+            })
       }
       tooltipPlacement="top"
       onClick={onDownloadClick}

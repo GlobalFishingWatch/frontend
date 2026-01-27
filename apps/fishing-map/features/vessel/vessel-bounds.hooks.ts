@@ -47,7 +47,7 @@ export const useVesselProfileBounds = () => {
       if (bounds) {
         fitBounds(bounds, { padding: 60, fitZoom: true })
       } else if (canFitDates) {
-        if (window.confirm(t('layer.vessel_fit_bounds_out_of_timerange') as string)) {
+        if (window.confirm(t((t) => t.layer.vessel_fit_bounds_out_of_timerange) as string)) {
           setTimerange({
             start: getUTCDateTime(transmissionDateFrom).toISO()!,
             end: getUTCDateTime(transmissionDateTo).toISO()!,

@@ -108,11 +108,12 @@ function SearchActions() {
         onClick={onSeeVesselsInMapClick}
         disabled={!hasVesselsSelected}
         testId="search-vessels-add-vessel"
-        tooltip={!hasVesselsSelected ? t('search.selectVesselResults') : ''}
+        tooltip={!hasVesselsSelected ? t((t) => t.search.selectVesselResults) : ''}
       >
-        {t('search.seeVesselsOnMap' as any, {
-          ...(hasVesselsSelected && { count: vesselsSelected.length }),
-        })}
+        {t(
+          (t) => t.search.seeVesselsOnMap,
+          hasVesselsSelected ? { count: vesselsSelected.length } : ({} as any)
+        )}
       </Button>
     </Fragment>
   )

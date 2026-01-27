@@ -107,7 +107,7 @@ function EventsReport() {
             width={EventsEmptyState.width / 2}
             height={EventsEmptyState.height / 2}
           />
-          {t('vessel.noEventsinTimeRange')}
+          {t((t) => t.vessel.noEventsinTimeRange)}
         </div>
       )
     }
@@ -131,8 +131,9 @@ function EventsReport() {
     return (
       <div className={styles.disclaimer}>
         <Icon icon="warning" type="warning" />
-        {t('vesselGroup.disclaimerFeaturesNotAvailable', {
-          features: t('common.events'),
+        {t((t) => t.vesselGroup.disclaimerFeaturesNotAvailable, {
+          features: t((t) => t.common.events),
+
           datasets: Array.from(datasetsWithoutRelatedEvents)
             .map((d) => getDatasetLabel(d))
             .join(', '),
@@ -148,12 +149,11 @@ function EventsReport() {
           <EventsReportSubsectionSelector />
         </div>
       )}
-
       <Fragment>
         <ReportSummary />
         <div className={styles.container}>
           <div className={styles.headerContainer}>
-            <label>{t('common.events')}</label>
+            <label>{t((t) => t.common.events)}</label>
             <EventsReportGraphSelector disabled={isLoadingVessels || noEvents} />
           </div>
           {graph}
@@ -161,7 +161,7 @@ function EventsReport() {
         {noEvents ? null : !timerangeSupported ? (
           <ReportVesselsPlaceholder animate={false}>
             <div className={cx(styles.cover, styles.error)}>
-              <p>{t('analysis.timeRangeTooLong')}</p>
+              <p>{t((t) => t.analysis.timeRangeTooLong)}</p>
             </div>
           </ReportVesselsPlaceholder>
         ) : reportOutdated ? (
@@ -169,7 +169,7 @@ function EventsReport() {
             <div className={cx(styles.cover, styles.center, styles.top)}>
               <p
                 dangerouslySetInnerHTML={{
-                  __html: t('eventsReport.newTimeRange', {
+                  __html: t((t) => t.eventsReport.newTimeRange, {
                     start: formatI18nDate(start),
                     end: formatI18nDate(end),
                   }),
@@ -185,7 +185,7 @@ function EventsReport() {
                   })
                 }}
               >
-                {t('analysis.seeVessels')}
+                {t((t) => t.analysis.seeVessels)}
               </Button>
             </div>
           </ReportVesselsPlaceholder>
@@ -193,7 +193,7 @@ function EventsReport() {
           <ReportVessels
             color={eventsDataview?.config?.color}
             activityUnit="numEvents"
-            title={t('common.vessels')}
+            title={t((t) => t.common.vessels)}
             loading={isLoadingVessels}
           />
         )}

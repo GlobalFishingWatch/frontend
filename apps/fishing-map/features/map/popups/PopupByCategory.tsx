@@ -150,7 +150,9 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                         error={
                           activityInteractionError === AsyncReducerStatus.Error
                             ? activityInteractionError ||
-                              t('errors.genericShort', 'Something went wrong')
+                              t((t) => t.errors.genericShort, {
+                                defaultValue: 'Something went wrong',
+                              })
                             : undefined
                         }
                         feature={{
@@ -199,7 +201,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
                 showFeaturesDetails={type === 'click'}
                 error={
                   apiEventStatus === AsyncReducerStatus.Error
-                    ? apiEventError || t('errors.genericShort')
+                    ? apiEventError || t((t) => t.errors.genericShort)
                     : undefined
                 }
                 loading={apiEventStatus === AsyncReducerStatus.Loading}

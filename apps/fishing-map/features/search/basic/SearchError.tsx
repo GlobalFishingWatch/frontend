@@ -23,7 +23,7 @@ function SearchError() {
   if (searchStatusCode === 401 || isUserExpired) {
     return (
       <SearchPlaceholder>
-        <Trans i18nKey="errors.sessionExpired">
+        <Trans i18nKey={(t) => t.errors.sessionExpired}>
           Your session has expired, please
           <LocalStorageLoginLink className={styles.link}>log in</LocalStorageLoginLink> again.
         </Trans>
@@ -34,15 +34,15 @@ function SearchError() {
   if (searchStatusCode === 404) {
     return (
       <p className={styles.error}>
-        {t(
-          'search.noResults',
-          "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign"
-        )}
+        {t((t) => t.search.noResults, {
+          defaultValue:
+            "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign",
+        })}
       </p>
     )
   }
 
-  return <p className={styles.error}>{t('errors.genericShort')}</p>
+  return <p className={styles.error}>{t((t) => t.errors.genericShort)}</p>
 }
 
 export default SearchError

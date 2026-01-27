@@ -45,7 +45,11 @@ const TrackCommentsList = ({ track }: TrackCommentsListProps) => {
             </span>
           )}
           <span className={styles.version}>
-            {t('trackCorrection.version', 'Version') + ' ' + comment.datasetVersion}
+            {t((t) => t.trackCorrection.version, {
+              defaultValue: 'Version',
+            }) +
+              ' ' +
+              comment.datasetVersion}
           </span>
         </li>
       ))}

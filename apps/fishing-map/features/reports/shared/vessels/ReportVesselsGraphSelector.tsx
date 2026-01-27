@@ -32,14 +32,14 @@ function ReportVesselsGraphSelector({ loading }: { loading?: boolean }) {
   const options: ChoiceOption<ReportVesselGraph | ReportVesselsSubCategory>[] = [
     {
       id: REPORT_VESSELS_GRAPH_FLAG,
-      label: t('analysis.groupByFlag'),
+      label: t((t) => t.analysis.groupByFlag),
       disabled: loading,
     },
     ...(reportSubCategory !== 'fishing'
       ? [
           {
             id: REPORT_VESSELS_GRAPH_VESSELTYPE,
-            label: t('analysis.groupByVesseltype'),
+            label: t((t) => t.analysis.groupByVesseltype),
             disabled: loading,
           },
         ]
@@ -48,7 +48,7 @@ function ReportVesselsGraphSelector({ loading }: { loading?: boolean }) {
       ? [
           {
             id: REPORT_VESSELS_GRAPH_GEARTYPE,
-            label: t('analysis.groupByGeartype'),
+            label: t((t) => t.analysis.groupByGeartype),
             disabled: loading,
           },
         ]
@@ -59,12 +59,12 @@ function ReportVesselsGraphSelector({ loading }: { loading?: boolean }) {
             id: 'source' as ReportVesselsSubCategory,
             label: (
               <span>
-                {t('analysis.groupBySource')}
+                {t((t) => t.analysis.groupBySource)}
                 {selectedOptionId === 'source' && (
                   <DataTerminology
                     size="tiny"
                     type="default"
-                    title={t('vesselGroupReport.sources')}
+                    title={t((t) => t.vesselGroupReport.sources)}
                     terminologyKey="sources"
                     className={styles.dataTerminology}
                   />
@@ -77,19 +77,19 @@ function ReportVesselsGraphSelector({ loading }: { loading?: boolean }) {
             id: 'coverage' as ReportVesselsSubCategory,
             label: (
               <span>
-                {t('analysis.groupByCoverage')}
+                {t((t) => t.analysis.groupByCoverage)}
                 {selectedOptionId === 'coverage' && (
                   <DataTerminology
                     size="tiny"
                     type="default"
                     title={
                       <span>
-                        {t('vessel.insights.coverage')}
+                        {t((t) => t.vessel.insights.coverage)}
                         <span className={styles.experimental}>(Experimental)</span>
                       </span>
                     }
                     terminologyKey="insightsCoverage"
-                    tooltip={t('common.experimental')}
+                    tooltip={t((t) => t.common.experimental)}
                     className={cx(styles.dataTerminology, styles.experimental)}
                   />
                 )}

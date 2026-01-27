@@ -174,11 +174,10 @@ function Search() {
       <WorkspaceLoginError
         title={
           guestUser
-            ? t('errors.searchLogin')
-            : t(
-                'errors.privateSearch',
-                "Your account doesn't have permissions to search on these datasets"
-              )
+            ? t((t) => t.errors.searchLogin)
+            : t((t) => t.errors.privateSearch, {
+                defaultValue: "Your account doesn't have permissions to search on these datasets",
+              })
         }
         emailSubject={`Requesting access for searching vessels`}
       />
@@ -219,13 +218,13 @@ function Search() {
       >
         {searchResults && searchResults.length !== 0 && (
           <label className={styles.results}>
-            {`${t('search.seeing')} `}
+            {`${t((t) => t.search.seeing)} `}
             <I18nNumber number={searchResults.length} />
-            {` ${t('common.of')} `}
+            {` ${t((t) => t.common.of)} `}
             <I18nNumber number={searchResultsPagination.total} />
-            {` ${t('search.results')} ${
+            {` ${t((t) => t.search.results)} ${
               vesselsSelected.length !== 0
-                ? `(${vesselsSelected.length} ${t('selects.selected')})`
+                ? `(${vesselsSelected.length} ${t((t) => t.selects.selected)})`
                 : ''
             }`}
           </label>

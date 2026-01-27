@@ -121,7 +121,7 @@ const ReportActivityDatasetComparisonGraph = ({
   if (hasEmptyData) {
     return (
       <ReportActivityPlaceholder showHeader={false} animate={false}>
-        {t('analysis.noDataByArea')}
+        {t((t) => t.analysis.noDataByArea)}
       </ReportActivityPlaceholder>
     )
   }

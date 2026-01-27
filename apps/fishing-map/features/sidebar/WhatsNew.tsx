@@ -47,8 +47,8 @@ function WhatsNew() {
         icon="sparks"
         tooltip={
           newVersionSinceLastVisit.current
-            ? t('common.whatsNewWithNewVersion')
-            : t('common.whatsNew')
+            ? t((t) => t.common.whatsNewWithNewVersion)
+            : t((t) => t.common.whatsNew)
         }
         tooltipPlacement="right"
       />

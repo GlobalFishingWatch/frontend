@@ -66,7 +66,7 @@ function ContextAreaSection(): React.ReactElement<any> {
       data-testid="context-areas-section"
       title={
         <span>
-          {t('common.context_areas')}
+          {t((t) => t.common.context_areas)}
           {hasVisibleDataviews && (
             <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
           )}
@@ -80,7 +80,7 @@ function ContextAreaSection(): React.ReactElement<any> {
               icon="plus"
               type="border"
               size="medium"
-              tooltip={t('dataset.addContext')}
+              tooltip={t((t) => t.dataset.addContext)}
               tooltipPlacement="top"
               className="print-hidden"
               onClick={onAdd}

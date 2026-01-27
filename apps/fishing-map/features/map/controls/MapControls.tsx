@@ -124,13 +124,13 @@ const MapControls = ({
           <IconButton
             icon="plus"
             type="map-tool"
-            tooltip={t('map.zoom_in')}
+            tooltip={t((t) => t.map.zoom_in)}
             onClick={onZoomInClick}
           />
           <IconButton
             icon="minus"
             type="map-tool"
-            tooltip={t('map.zoom_out')}
+            tooltip={t((t) => t.map.zoom_out)}
             onClick={onZoomOutClick}
           />
           {showExtendedControls && (
@@ -142,16 +142,16 @@ const MapControls = ({
               <Tooltip
                 content={
                   currentBasemap === BasemapType.Default
-                    ? t('map.change_basemap_satellite')
-                    : t('map.change_basemap_default')
+                    ? t((t) => t.map.change_basemap_satellite)
+                    : t((t) => t.map.change_basemap_default)
                 }
                 placement="left"
               >
                 <button
                   aria-label={
                     currentBasemap === BasemapType.Default
-                      ? t('map.change_basemap_satellite')
-                      : t('map.change_basemap_default')
+                      ? t((t) => t.map.change_basemap_satellite)
+                      : t((t) => t.map.change_basemap_default)
                   }
                   className={cx(styles.basemapSwitcher, styles[currentBasemap])}
                   onClick={switchBasemap}
@@ -162,7 +162,7 @@ const MapControls = ({
           {(isAnyVesselLocation || isAnyReportLocation) && <ReferenceLayersControl />}
           <IconButton
             type="map-tool"
-            tooltip={t('map.loading')}
+            tooltip={t((t) => t.map.loading)}
             loading={mapLoading}
             className={cx(styles.loadingBtn, { [styles.visible]: mapLoading })}
           />

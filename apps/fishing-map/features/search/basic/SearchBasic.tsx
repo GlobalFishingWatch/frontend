@@ -116,7 +116,7 @@ function SearchBasic({
                 searchStatus === AsyncReducerStatus.Loading ||
                 searchStatus === AsyncReducerStatus.Aborted
               }
-              placeholder={`${t('search.placeholder')} (${t('search.mainQueryLabel')})`}
+              placeholder={`${t((t) => t.search.placeholder)} (${t((t) => t.search.mainQueryLabel)})`}
             />
           </div>
           <div className={styles.scrollContainer}>
@@ -129,7 +129,7 @@ function SearchBasic({
               >
                 {debouncedQuery && debouncedQuery?.length < MIN_SEARCH_CHARACTERS && (
                   <li key="suggestion" className={cx(styles.searchSuggestion, styles.red)}>
-                    {t('search.minCharacters', {
+                    {t((t) => t.search.minCharacters, {
                       count: MIN_SEARCH_CHARACTERS,
                     })}
                   </li>
@@ -139,7 +139,7 @@ function SearchBasic({
                   searchSuggestion !== searchQuery &&
                   !searchSuggestionClicked && (
                     <li key="suggestion" className={cx(styles.searchSuggestion)}>
-                      {t('search.suggestion')}{' '}
+                      {t((t) => t.search.suggestion)}{' '}
                       <button onClick={onSuggestionClick} className={styles.suggestion}>
                         {' '}
                         {searchSuggestion}{' '}

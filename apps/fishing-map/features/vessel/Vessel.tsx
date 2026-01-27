@@ -108,13 +108,13 @@ const Vessel = () => {
     () => [
       {
         id: 'activity',
-        title: t('vessel.sectionSummary'),
+        title: t((t) => t.vessel.sectionSummary),
         content: <VesselActivity />,
         testId: 'vv-summary-tab',
       },
       {
         id: 'areas',
-        title: t('vessel.sectionAreas'),
+        title: t((t) => t.vessel.sectionAreas),
         content: hasDeprecatedDataviewInstances ? null : (
           <VesselAreas updateAreaLayersVisibility={updateAreaLayersVisibility} />
         ),
@@ -123,14 +123,14 @@ const Vessel = () => {
       },
       {
         id: 'related_vessels',
-        title: t('vessel.sectionRelatedVessels'),
+        title: t((t) => t.vessel.sectionRelatedVessels),
         content: hasDeprecatedDataviewInstances ? null : <RelatedVessels />,
         disabled: !hasEventsDataset,
         testId: 'vv-related-tab',
       },
       {
         id: 'insights' as VesselSection,
-        title: t('vessel.sectionInsights'),
+        title: t((t) => t.vessel.sectionInsights),
         content: hasDeprecatedDataviewInstances ? null : <Insights />,
         disabled: !hasEventsDataset,
         testId: 'vv-insights-tab',
@@ -204,7 +204,7 @@ const Vessel = () => {
     const hasAuthError = isAuthError(infoError)
     return hasAuthError ? (
       <WorkspaceLoginError
-        title={guestUser ? t('errors.profileLogin') : t('errors.privateProfile')}
+        title={guestUser ? t((t) => t.errors.profileLogin) : t((t) => t.errors.privateProfile)}
         emailSubject={`Requesting access for ${datasetId}-${vesselId} profile`}
       />
     ) : (
@@ -240,7 +240,7 @@ const Vessel = () => {
         />
       ) : (
         <div className={styles.placeholder}>
-          <p className={styles.secondary}>{t('vessel.noActivityData')}</p>
+          <p className={styles.secondary}>{t((t) => t.vessel.noActivityData)}</p>
         </div>
       )}
     </Fragment>

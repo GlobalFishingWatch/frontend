@@ -232,7 +232,9 @@ export function VesselPin({
         ...(style || {}),
       }}
       tooltip={
-        vesselInWorkspace ? t('search.vesselAlreadyInWorkspace') : t('vessel.addToWorkspace')
+        vesselInWorkspace
+          ? t((t) => t.search.vesselAlreadyInWorkspace)
+          : t((t) => t.vessel.addToWorkspace)
       }
       onClick={onPinClick}
       size={size}
