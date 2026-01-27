@@ -85,21 +85,19 @@ export default function VesselGroupReportTitle() {
             {vesselGroup.name}
           </h1>
           <h2 className={styles.summary}>
-            {
-              (parse(
-                t('vesselGroup.summary', {
-                  vessels: formatI18nNumber(getVesselGroupVesselsCount(vesselGroup)),
-                  flags: flags?.size,
-                  start: formatI18nDate(timeRange.start, {
-                    format: DateTime.DATE_MED,
-                  }),
-                  end: formatI18nDate(timeRange.end, {
-                    format: DateTime.DATE_MED,
-                  }),
-                })
-              ),
-              options)
-            }
+            {parse(
+              t('vesselGroup.summary', {
+                vessels: formatI18nNumber(getVesselGroupVesselsCount(vesselGroup)),
+                flags: flags?.size,
+                start: formatI18nDate(timeRange.start, {
+                  format: DateTime.DATE_MED,
+                }),
+                end: formatI18nDate(timeRange.end, {
+                  format: DateTime.DATE_MED,
+                }),
+              }),
+              options
+            )}
             <DataTerminology title={t('vesselGroupReport.vessels')} terminologyKey="vessels" />
           </h2>
         </div>
