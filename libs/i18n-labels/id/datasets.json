@@ -1255,6 +1255,23 @@
     "name": "GFCM FAO",
     "description": "A fisheries restricted area (FRA) is a geographically defined area in which some specific fishing activities are temporarily or permanently banned or restricted in order to improve the exploitation patterns and conservation of specific stocks as well as of habitats and deep-sea ecosystems. In the Mediterranean and the Black Sea, 1,760,000 square kilometers of sea habitats are protected by ten FRAs established by the GFCM. This includes one large deep-water FRA (1,730,000 square kilometers) in which the use of towed dredges and trawl nets in all waters deeper than 1000 metres is banned to protect deep-sea benthic habitats. The layer was taken from the GFCM website but manually adjusted to reflect the original coordinates of the FRAs as stipulated in the document REC. GFCM/29/2005/1."
   },
+  "public-global-ais-ports-footprint": {
+    "name": "Anchorages convex hulls by portId",
+    "description": "Anchorages footprint using the convex hull grouped by portId",
+    "schema": {
+      "port_id": "port_id"
+    }
+  },
+  "public-global-ais-ports": {
+    "name": "Ports v1 for AIS v4",
+    "description": "Named ports v1",
+    "schema": {
+      "name": "name",
+      "ais_gaps": "ais_gaps",
+      "loitering": "loitering",
+      "encounters": "encounters"
+    }
+  },
   "public-global-all-tracks": {
     "name": "Lintasan",
     "description": "The dataset contains the tracks from all vessels (AIS) - Version 3.0",
@@ -1686,6 +1703,23 @@
           "10": "10"
         }
       }
+    }
+  },
+  "public-global-vms-ports-footprint": {
+    "name": "Anchorages convex hulls by portId",
+    "description": "Anchorages footprint using the convex hull grouped by portId",
+    "schema": {
+      "port_id": "port_id"
+    }
+  },
+  "public-global-vms-ports": {
+    "name": "Ports v1 for AIS v4",
+    "description": "Named ports v1",
+    "schema": {
+      "name": "name",
+      "vms_gaps": "vms_gaps",
+      "loitering": "loitering",
+      "encounters": "encounters"
     }
   },
   "public-global-water-salinity-max": {
