@@ -29,7 +29,8 @@ const ROUTES_ACTIONS = Object.keys(routesMap)
 export const routerQueryMiddleware: Middleware =
   ({ getState }: { getState: () => RootState }) =>
   (next) =>
-  (action) => {
+  (action: any) => {
+    if (!action) return
     const routerAction = action as UpdateQueryParamsAction
     // check if action type matches a route type
     const isRouterAction = ROUTES_ACTIONS.includes(routerAction.type)
