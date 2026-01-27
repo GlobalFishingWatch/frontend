@@ -2,9 +2,8 @@ import { uniqBy } from 'es-toolkit'
 
 import type {
   Dataset,
-  DatasetSchema,
-  DatasetSchemaItem,
-  DatasetSchemaItemOperation,
+  DatasetFilter,
+  DatasetFilterOperation,
   Dataview,
   DataviewDatasetConfig,
   DataviewDatasetFilter,
@@ -22,7 +21,11 @@ import {
   INCLUDE_FILTER_ID,
 } from '@globalfishingwatch/api-types'
 import { isNumeric } from '@globalfishingwatch/data-transforms'
-import { removeDatasetVersion, resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import {
+  flattenDatasetFilters,
+  removeDatasetVersion,
+  resolveEndpoint,
+} from '@globalfishingwatch/datasets-client'
 
 import type { UrlDataviewInstance } from './types'
 
@@ -127,10 +130,12 @@ export const FILTERABLE_GENERATORS: DataviewType[] = [
   DataviewType.UserPoints,
 ]
 
-function getDatasetSchemaItem(dataset: Dataset, schema: string) {
+function getDatasetSchemaItem(dataset: Dataset, filter: string) {
+  const flatFilters = flattenDatasetFilters(dataset?.filters)
   return (
-    (dataset?.schema?.[schema] as DatasetSchemaItem) ||
-    (dataset?.schema?.selfReportedInfo as DatasetSchema)?.items?.[schema]
+    (flatFilters?.[filter] as DatasetFilter) ||
+    // TODO:DR test if still need selfReportedInfo
+    (flatFilters?.selfReportedInfo as DatasetFilter)
   )
 }
 
@@ -370,12 +375,12 @@ export const resolveDataviewDatasetResource = (
   return resolveDataviewDatasetResources(dataview, datasetTypeOrId)[0] || ({} as Resource)
 }
 
-export function getOperationLabel(operation?: DatasetSchemaItemOperation) {
+export function getOperationLabel(operation?: DatasetFilterOperation) {
   if (!operation) return ''
   return operation === 'gt' ? '>' : operation === 'lt' ? '<' : operation === 'gte' ? '≥' : '≤'
 }
 
-export function getOperationOperator(operation: DatasetSchemaItemOperation) {
+export function getOperationOperator(operation: DatasetFilterOperation) {
   return operation === 'gt' ? '>' : operation === 'lt' ? '<' : operation === 'gte' ? '>=' : '<='
 }
 
