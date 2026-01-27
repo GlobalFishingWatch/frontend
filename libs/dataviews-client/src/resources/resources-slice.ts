@@ -1,4 +1,4 @@
-import type { PayloadAction} from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import type { Feature, FeatureCollection, LineString } from 'geojson'
 import memoize from 'lodash/memoize'
@@ -10,10 +10,9 @@ import type {
   ApiEvents,
   DataviewDatasetConfig,
   Resource,
-  TrackField} from '@globalfishingwatch/api-types';
-import {
-  DatasetTypes,
-  ResourceStatus} from '@globalfishingwatch/api-types'
+  TrackField,
+} from '@globalfishingwatch/api-types'
+import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
 import {
   mergeTrackChunks,
   trackValueArrayToSegments,
@@ -142,14 +141,17 @@ const resourcesSlice = createSlice({
   reducers: {
     setResource(state, action: PayloadAction<Resource>) {
       const key = action.payload.key || action.payload.url
-      state[key] = action.payload
+      state[key] = action.payload as (typeof state)[string]
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchResourceThunk.pending, (state, action) => {
       const { resource } = action.meta.arg
       const key = action.meta.arg.resourceKey || resource.url
-      state[key] = { status: ResourceStatus.Loading, ...resource }
+      state[key] = {
+        status: ResourceStatus.Loading,
+        ...resource,
+      } as (typeof state)[string]
       const thisChunkSetId = resource.datasetConfig?.metadata?.chunkSetId
       if (thisChunkSetId) {
         state[thisChunkSetId] = {
@@ -162,13 +164,16 @@ const resourcesSlice = createSlice({
               chunkSetMerged: true,
             },
           },
-        }
+        } as (typeof state)[string]
       }
     })
     builder.addCase(fetchResourceThunk.fulfilled, (state, action) => {
       const { url } = action.payload
       const key = action.meta.arg.resourceKey || url
-      state[key] = { status: ResourceStatus.Finished, ...action.payload }
+      state[key] = {
+        status: ResourceStatus.Finished,
+        ...action.payload,
+      } as (typeof state)[string]
 
       const chunkSetId = action.payload.datasetConfig.metadata?.chunkSetId
       // If resource is part of a chunk set (ie tracks by year), rebuild the whole set into a single resource
