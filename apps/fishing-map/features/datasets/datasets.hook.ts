@@ -45,10 +45,12 @@ const DATASET_REFRESH_TIMEOUT = 10000
 export const getDataviewInstanceByDataset = (dataset: Dataset) => {
   const isBQEditorLayer = getIsBQEditorDataset(dataset)
   if (isBQEditorLayer) {
+    // TODO:DR-test
+    const config = getDatasetConfiguration(dataset, 'fourwingsV1')
     return dataset.category === DatasetCategory.Activity
       ? getBigQuery4WingsDataviewInstance(dataset.id, {
           aggregationOperation:
-            (dataset.configuration?.aggregationOperation as FourwingsAggregationOperation) ||
+            (config?.function?.toLowerCase() as FourwingsAggregationOperation) ||
             FourwingsAggregationOperation.Sum,
         })
       : getBigQueryEventsDataviewInstance(dataset.id)

@@ -9,7 +9,7 @@ import type {
 } from '@globalfishingwatch/api-types'
 import {
   fixTextEncoding,
-  getSchemaIdClean,
+  getFilterIdClean,
   kmlToGeoJSON,
   listToTrackSegments,
   pointsGeojsonToNormalizedGeojson,
@@ -136,7 +136,7 @@ export async function getDatasetParsed(
         dynamicTyping: true,
         header: true,
         transformHeader: (header) => {
-          return getSchemaIdClean(fixTextEncoding(header)) as string
+          return getFilterIdClean(fixTextEncoding(header)) as string
         },
       })
       return data as DataList
