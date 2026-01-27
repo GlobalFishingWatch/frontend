@@ -51,14 +51,7 @@ export type NewDatasetProps = {
 export type DatasetMetadata = Partial<
   Pick<
     Dataset,
-    | 'id'
-    | 'name'
-    | 'description'
-    | 'type'
-    | 'schema'
-    | 'category'
-    | 'configuration'
-    | 'fieldsAllowed'
+    'id' | 'name' | 'description' | 'type' | 'filters' | 'category' | 'configuration'
   > & { public: boolean }
 >
 
@@ -140,7 +133,7 @@ function NewDataset() {
         }
         trackEvent({
           category: TrackCategory.User,
-          action: `Confirm ${datasetMetadata.configuration?.geometryType} upload`,
+          action: `Confirm ${datasetMetadata.configuration?.frontend?.geometryType} upload`,
           label: datasetMetadata?.name,
         })
         return payload
