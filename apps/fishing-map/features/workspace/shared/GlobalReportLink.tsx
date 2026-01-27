@@ -30,6 +30,7 @@ const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }
       latitude: 0,
       longitude: 0,
       zoom: 0,
+      bivariateDataviews: null,
     },
   }
 
