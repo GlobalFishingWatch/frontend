@@ -1,4 +1,4 @@
-import type { DatasetTypes } from './datasets'
+import { DatasetTypes } from './datasets'
 
 export type ApiSupportedVersions = 'v3'
 
@@ -185,19 +185,21 @@ export type SharedDatasetConfiguration = {
   frontend: FrontendConfiguration
 }
 
-export type DatasetTypeToConfigurationType = {
-  [DatasetTypes.Context]: 'contextLayerV1'
-  [DatasetTypes.Download]: 'dataDownloadV1'
-  [DatasetTypes.Events]: 'eventsV1'
-  [DatasetTypes.Fourwings]: 'fourwingsV1'
-  [DatasetTypes.PMTiles]: 'pmTilesV1'
-  [DatasetTypes.TemporalContext]: 'temporalContextLayerV1'
-  [DatasetTypes.Thumbnails]: 'thumbnailsV1'
-  [DatasetTypes.Tracks]: 'tracksV1'
-  [DatasetTypes.UserContext]: 'userContextLayerV1'
-  [DatasetTypes.UserTracks]: 'userTracksV1'
-  [DatasetTypes.Vessels]: 'vesselsV1'
+export const DATASET_TYPE_TO_CONFIG_TYPE = {
+  [DatasetTypes.Context]: 'contextLayerV1' as const,
+  [DatasetTypes.Download]: 'dataDownloadV1' as const,
+  [DatasetTypes.Events]: 'eventsV1' as const,
+  [DatasetTypes.Fourwings]: 'fourwingsV1' as const,
+  [DatasetTypes.PMTiles]: 'pmTilesV1' as const,
+  [DatasetTypes.TemporalContext]: 'temporalContextLayerV1' as const,
+  [DatasetTypes.Thumbnails]: 'thumbnailsV1' as const,
+  [DatasetTypes.Tracks]: 'tracksV1' as const,
+  [DatasetTypes.UserContext]: 'userContextLayerV1' as const,
+  [DatasetTypes.UserTracks]: 'userTracksV1' as const,
+  [DatasetTypes.Vessels]: 'vesselsV1' as const,
 }
+
+export type DatasetTypeToConfigurationType = typeof DATASET_TYPE_TO_CONFIG_TYPE
 
 type GetConfigurationType<T extends keyof DatasetTypeToConfigurationType> =
   DatasetTypeToConfigurationType[T]
