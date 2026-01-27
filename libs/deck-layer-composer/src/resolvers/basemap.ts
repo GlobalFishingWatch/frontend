@@ -1,6 +1,10 @@
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes, EndpointId } from '@globalfishingwatch/api-types'
-import { findDatasetByType, resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import {
+  findDatasetByType,
+  getDatasetConfiguration,
+  resolveEndpoint,
+} from '@globalfishingwatch/datasets-client'
 import type {
   BaseMapImageLayerProps,
   BaseMapLabelsLayerProps,
@@ -16,7 +20,7 @@ export function resolvePMTilesDatasetTilesUrl(dataview: ResolvedDataviewInstance
   if (!dataset) {
     throw new Error('Dataset not found for basemap image layer')
   }
-
+  const { filePath } = getDatasetConfiguration(dataset, 'pmTilesV1')
   const datasetConfig = {
     endpoint: EndpointId.PMTiles,
     datasetId: dataset.id,
@@ -24,7 +28,7 @@ export function resolvePMTilesDatasetTilesUrl(dataview: ResolvedDataviewInstance
     params: [
       {
         id: 'file_path',
-        value: dataset.configuration?.filePath as string,
+        value: filePath as string,
       },
     ],
   }
