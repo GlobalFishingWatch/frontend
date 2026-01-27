@@ -15,9 +15,11 @@ type Resources = AppResources & LibraryResources
 
 export declare module 'i18next' {
   interface CustomTypeOptions {
-    resources: Resources
     defaultNS: typeof DEFAULT_NAMESPACE
     fallbackLng: typeof FALLBACK_LNG
+    resources: Resources
     allowObjectInHTMLChildren: true
+    // Keeps large translation sets from slowing IDE/tsc (i18next typescript docs)
+    enableSelector: 'optimize'
   }
 }

@@ -3011,7 +3011,7 @@ __metadata:
     html-react-parser: "npm:5.2.11"
     html2canvas: "npm:1.4.1"
     husky: "npm:9.1.7"
-    i18next: "npm:25.7.3"
+    i18next: "npm:25.8.0"
     i18next-browser-languagedetector: "npm:8.2.0"
     i18next-http-backend: "npm:3.0.2"
     i18next-resources-for-ts: "npm:^2.0.0"
@@ -3060,7 +3060,7 @@ __metadata:
     react-fps: "npm:1.0.6"
     react-ga4: "npm:2.1.0"
     react-hot-keys: "npm:2.7.3"
-    react-i18next: "npm:16.5.1"
+    react-i18next: "npm:16.5.3"
     react-image-gallery: "npm:1.4.0"
     react-map-gl: "npm:7.1.9"
     react-markdown: "npm:10.1.0"
@@ -3118,7 +3118,7 @@ __metadata:
   dependencies:
     "@vitest/coverage-istanbul": "npm:4.0.7"
     cross-env: "npm:^10.1.0"
-    i18next-cli: "npm:^1.36.1"
+    i18next-cli: "npm:^1.38.2"
     source-map-explorer: "npm:2.5.3"
   languageName: unknown
   linkType: soft
@@ -24544,9 +24544,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-cli@npm:^1.36.1":
-  version: 1.39.2
-  resolution: "i18next-cli@npm:1.39.2"
+"i18next-cli@npm:^1.38.2":
+  version: 1.38.2
+  resolution: "i18next-cli@npm:1.38.2"
   dependencies:
     "@croct/json5-parser": "npm:0.2.2"
     "@swc/core": "npm:1.15.10"
@@ -24566,7 +24566,7 @@ __metadata:
     swc-walk: "npm:1.0.1"
   bin:
     i18next-cli: dist/esm/cli.js
-  checksum: 10/6919d05fc4c8290d46f9b5c230a00f7dc7f4ca219173dfbdea17cad4bb55475091250bcff7336cfdc50617152f5f80e2fbfcfdc90f52d21c66e5a8ab9cdf52c0
+  checksum: 10/e549db83124113a286b8b524c30a522dd34cf17abb95594982ba09ae2fc2e7a577d15dcacf0112b5d0ad840910a184749f30afee5f86583e2e39fb5b5766dd99
   languageName: node
   linkType: hard
 
@@ -24593,9 +24593,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:25.7.3":
-  version: 25.7.3
-  resolution: "i18next@npm:25.7.3"
+"i18next@npm:25.8.0":
+  version: 25.8.0
+  resolution: "i18next@npm:25.8.0"
   dependencies:
     "@babel/runtime": "npm:^7.28.4"
   peerDependencies:
@@ -24603,7 +24603,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/ec6601b22660b2f0d2d3996e7ef6dd2ff24f6f6e4bee121b33ecd3d36fe11018a01af9e66c01a93e8b42669ca9735f6c0888621c46bc1894872db3ba836815d8
+  checksum: 10/d24a6e8e8e53f339f473f27eb3bed6a6cdcc6357bde3c5abe5aa0221f19030a077ffdb115e64ba5c665eb833a95d430b0a40fff67451da38a7c20d3c0fc831fe
   languageName: node
   linkType: hard
 
@@ -31785,9 +31785,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-i18next@npm:16.5.1":
-  version: 16.5.1
-  resolution: "react-i18next@npm:16.5.1"
+"react-i18next@npm:16.5.3":
+  version: 16.5.3
+  resolution: "react-i18next@npm:16.5.3"
   dependencies:
     "@babel/runtime": "npm:^7.28.4"
     html-parse-stringify: "npm:^3.0.1"
@@ -31803,7 +31803,7 @@ __metadata:
       optional: true
     typescript:
       optional: true
-  checksum: 10/c316a30f9f2b9e5078e196e8b137216a821fd61507ab37fcf9f4445616cedb6fe978d164c134db1d69e24ab5d13bb2d1166eaa018e2c862c1703b9ff75604d79
+  checksum: 10/691482229be7e5b04d0b1bfc38aa1c97fbd54aa4b16f159ee99745e0538aa2b67259853c9c742d79c5e5b245b790eddadadd09f1e4fb30991aaf5e37a733cffd
   languageName: node
   linkType: hard
 
