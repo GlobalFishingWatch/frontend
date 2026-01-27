@@ -8,19 +8,13 @@
     "watch-deps": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "nx watch --projects=fishing-map --includeDependentProjects -- nx build \\$NX_PROJECT_NAME --exclude=fishing-map"
+        "command": "nx watch --projects=fishing-map --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=fishing-map"
       },
       "continuous": true
     },
     "prepare-start": {
       "executor": "nx:run-commands",
-      "dependsOn": [
-        "build-deps",
-        "clean-next",
-        "prepare-loaders",
-        "i18n-labels:ts",
-        "i18n-labels:serve"
-      ],
+      "dependsOn": ["build-deps", "clean-next", "prepare-loaders", "i18n-labels:serve"],
       "options": {
         "commands": ["nx run fishing-map:i18n:watch"],
         "parallel": false
@@ -100,7 +94,6 @@
       "executor": "@nx/next:build",
       "outputs": ["{workspaceRoot}/dist/apps/fishing-map"],
       "dependsOn": ["build-deps", "i18n", "prepare-loaders", "clean-next"],
-      "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/fishing-map"
       },

@@ -11,7 +11,7 @@
     "watch-deps": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "nx watch --projects real-time-prototype --includeDependentProjects -- nx build-deps real-time-prototype"
+        "command": "nx watch --projects real-time-prototype --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=real-time-prototype"
       },
       "continuous": true
     },
