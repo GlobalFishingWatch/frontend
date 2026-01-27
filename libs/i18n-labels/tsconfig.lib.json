@@ -11,6 +11,6 @@
     "module": "ESNext",
     "moduleResolution": "bundler"
   },
-  "include": ["source/**/*.json", "index.ts"],
+  "include": ["source/**/*.json", "index.ts", "./types.d.ts"],
   "exclude": ["**/*.spec.ts", "**/*.test.ts"]
 }

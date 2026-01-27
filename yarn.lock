@@ -2974,7 +2974,6 @@ __metadata:
   resolution: "@globalfishingwatch/i18n-labels@workspace:libs/i18n-labels"
   dependencies:
     cross-env: "npm:^10.1.0"
-    i18next-cli: "npm:1.36.1"
     prettier: "npm:3.8.0"
     rimraf: "npm:6.1.2"
     tslib: "npm:2.x"
@@ -26754,7 +26753,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-cli@npm:1.36.1, i18next-cli@npm:^1.36.1":
+"i18next-cli@npm:^1.36.1":
   version: 1.36.1
   resolution: "i18next-cli@npm:1.36.1"
   dependencies:
