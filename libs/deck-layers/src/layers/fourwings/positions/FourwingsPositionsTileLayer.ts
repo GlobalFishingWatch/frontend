@@ -111,13 +111,6 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
     return this.state?.viewportLoaded ?? false
   }
 
-  forceUpdate() {
-    const layer = this.getLayerInstance()
-    if (layer) {
-      layer.setNeedsUpdate()
-    }
-  }
-
   getError(): string {
     return this.state.error
   }

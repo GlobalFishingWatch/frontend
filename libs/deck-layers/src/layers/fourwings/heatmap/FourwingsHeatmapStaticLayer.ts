@@ -81,6 +81,10 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
     return this.state?.rampDirty?.toString() || ''
   }
 
+  get debounceTime(): number {
+    return this.props.debounceTime ?? 0
+  }
+
   get viewportLoaded(): boolean {
     return this.state?.viewportLoaded ?? false
   }
@@ -104,13 +108,6 @@ export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmap
 
   getError(): string {
     return this.state.error
-  }
-
-  forceUpdate() {
-    const layer = this.getLayerInstance()
-    if (layer) {
-      layer.setNeedsUpdate()
-    }
   }
 
   _calculateColorDomain = () => {

@@ -52,7 +52,6 @@ type AnyFourwingsLayer =
   | FourwingsFootprintTileLayer
   | FourwingsHeatmapStaticLayer
 
-
 const defaultProps: DefaultProps<FourwingsLayerProps> = {
   comparisonMode: FourwingsComparisonMode.Compare,
   aggregationOperation: FourwingsAggregationOperation.Sum,
@@ -76,10 +75,6 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
 
   get debounceTime() {
     return this.getLayer()?.debounceTime || 0
-  }
-
-  forceUpdate() {
-    this.getLayer()?.forceUpdate?.()
   }
 
   renderLayers(): AnyFourwingsLayer {
@@ -186,7 +181,7 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getLayer() {
-    return this.getSubLayers()?.[0] as FourwingsHeatmapTileLayer | FourwingsPositionsTileLayer
+    return this.getSubLayers()?.[0] as AnyFourwingsLayer
   }
 
   getColorScale() {
@@ -198,6 +193,10 @@ export class FourwingsLayer extends CompositeLayer<FourwingsLayerProps & TileLay
   }
 
   getTimeseries() {
-    return this.getLayer()?.getTimeseries()
+    const layer = this.getLayer()
+    if (layer instanceof FourwingsHeatmapStaticLayer) {
+      return []
+    }
+    return layer.getTimeseries()
   }
 }
