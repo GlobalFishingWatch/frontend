@@ -3,12 +3,12 @@ import { scaleLinear } from 'd3-scale'
 import type {
   Dataset,
   DatasetConfiguration,
-  DatasetConfigurationUI,
+  DatasetFilter,
+  DatasetFilters,
   DatasetGeometryType,
-  EnviromentalDatasetConfiguration} from '@globalfishingwatch/api-types';
-import {
-  DRAW_DATASET_SOURCE
+  FrontendConfiguration,
 } from '@globalfishingwatch/api-types'
+import { DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
 
 // Got from deck-layers colorRamps to avoid circular dependencies
 export const COLOR_RAMP_DEFAULT_NUM_STEPS = 10
@@ -18,27 +18,33 @@ export type DatasetSchemaGeneratorProps = {
   data: DataList
 }
 
-export type MergedDatasetConfig = DatasetConfigurationUI & DatasetConfiguration
-export type DatasetConfigurationProperty = keyof MergedDatasetConfig
+export type DatasetConfigurationProperty = keyof FrontendConfiguration
 
-type DatasetProperty<P extends DatasetConfigurationProperty> = Required<MergedDatasetConfig>[P]
+type DatasetProperty<P extends DatasetConfigurationProperty> = Required<FrontendConfiguration>[P]
 export function getDatasetConfigurationProperty<P extends DatasetConfigurationProperty>({
   dataset,
   property,
 }: {
   dataset: Partial<Dataset> | undefined
   property: P
-}): DatasetProperty<P> {
-  return (dataset?.configuration?.configurationUI?.[property as keyof DatasetConfigurationUI] ||
-    dataset?.configuration?.[property as keyof DatasetConfiguration]) as DatasetProperty<P>
+}): DatasetProperty<P> | undefined {
+  const frontendValue = dataset?.configuration?.frontend?.[property as keyof FrontendConfiguration]
+  if (frontendValue !== undefined) {
+    return frontendValue as DatasetProperty<P>
+  }
+  const configValue = (dataset?.configuration as any)?.[property]
+  if (configValue !== undefined) {
+    return configValue as DatasetProperty<P>
+  }
+  return undefined
 }
 
-export const getDatasetConfiguration = (
-  dataset: Partial<Dataset> | undefined
-): DatasetConfiguration & DatasetConfiguration['configurationUI'] => ({
-  ...(dataset?.configuration || ({} as DatasetConfiguration)),
-  ...(dataset?.configuration?.configurationUI || ({} as DatasetConfiguration['configurationUI'])),
-})
+export const getDatasetConfiguration = <T extends keyof DatasetConfiguration = 'frontend'>(
+  dataset: Partial<Dataset> | undefined,
+  configurationType: T = 'frontend' as T
+): NonNullable<DatasetConfiguration[T]> => {
+  return (dataset?.configuration?.[configurationType] ?? {}) as NonNullable<DatasetConfiguration[T]>
+}
 
 export function getDatasetGeometryType(dataset?: Dataset) {
   if (!dataset) {
@@ -54,19 +60,17 @@ export function getDatasetGeometryType(dataset?: Dataset) {
 }
 
 export const getEnvironmentalDatasetRange = (dataset: Dataset) => {
-  const {
-    max,
-    min,
-    scale = 1,
-    offset = 0,
-  } = dataset?.configuration as EnviromentalDatasetConfiguration
+  const configuration = dataset?.configuration
+  const max = configuration?.frontend?.max ?? (configuration as any)?.max
+  const min = configuration?.frontend?.min ?? (configuration as any)?.min
+  const scale = (configuration as any)?.scale ?? 1
 
   // Using Math.max to ensure we don't show negative values as 4wings doesn't support them yet
   // TODO use offset again once the whole app understand the values
   // const cleanMin = Math.max(0, Math.floor(min * scale + offset))
   // const cleanMax = Math.ceil(max * scale + offset)
-  const cleanMin = Math.max(0, Math.floor(min * scale))
-  const cleanMax = Math.ceil(max * scale)
+  const cleanMin = Math.max(0, Math.floor((min ?? 0) * scale))
+  const cleanMax = Math.ceil((max ?? 0) * scale)
   return {
     min: cleanMin,
     max: cleanMax,
@@ -82,4 +86,33 @@ export const getDatasetRangeSteps = ({ min, max }: { min: number; max: number })
     .map((_, i) => i / (numSteps - 1))
     .map((value) => rampScale(value) as number)
   return steps
+}
+
+/**
+ * Flattens DatasetFilters (organized by FilterType) into a flat Record<string, DatasetFilter>
+ */
+export const flattenDatasetFilters = (
+  schema: Record<string, DatasetFilter> | DatasetFilters | null | undefined
+): Record<string, DatasetFilter> => {
+  if (!schema) return {}
+
+  // Flatten DatasetFilters if it's organized by FilterType
+  let flatSchema: Record<string, DatasetFilter>
+  if ('fourwings' in schema || 'events' in schema || 'tracks' in schema || 'vessels' in schema) {
+    flatSchema = Object.values(schema).reduce(
+      (acc, filters) => {
+        if (Array.isArray(filters)) {
+          filters.forEach((filter) => {
+            acc[filter.id] = filter
+          })
+        }
+        return acc
+      },
+      {} as Record<string, DatasetFilter>
+    )
+  } else {
+    flatSchema = schema as Record<string, DatasetFilter>
+  }
+
+  return flatSchema
 }
