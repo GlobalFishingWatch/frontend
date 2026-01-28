@@ -2958,6 +2958,7 @@ __metadata:
     "@types/redux-first-router-link": "npm:1.4.9"
     "@types/shpjs": "npm:3.4.7"
     "@types/topojson-client": "npm:3.1.5"
+    "@uiw/react-json-view": "npm:^2.0.0-alpha.41"
     "@vitejs/plugin-react": "npm:5.1.2"
     "@vitest/browser": "npm:4.0.16"
     "@vitest/browser-playwright": "npm:4.0.16"
@@ -16687,6 +16688,17 @@ __metadata:
     "@typescript-eslint/types": "npm:8.54.0"
     eslint-visitor-keys: "npm:^4.2.1"
   checksum: 10/cca5380ee30250302ee1459e5a0a38de8c16213026dbbff3d167fa7d71d012f31d60ac4483ad45ebd13f2ac963d1ca52dd5f22759a68d4ee57626e421769187a
+  languageName: node
+  linkType: hard
+
+"@uiw/react-json-view@npm:^2.0.0-alpha.41":
+  version: 2.0.0-alpha.41
+  resolution: "@uiw/react-json-view@npm:2.0.0-alpha.41"
+  peerDependencies:
+    "@babel/runtime": ">=7.10.0"
+    react: ">=18.0.0"
+    react-dom: ">=18.0.0"
+  checksum: 10/60fece800a1adeb657cf1e20b013ce98a33d630beed6820c1c224f2d5e6e24efeaa7982e3f3d544ab1eab4e03cee0e11148eb0875d576557b5b8e7ec864bef5f
   languageName: node
   linkType: hard
 

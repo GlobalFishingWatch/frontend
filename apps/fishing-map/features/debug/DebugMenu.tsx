@@ -1,5 +1,7 @@
 import { Fragment, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import JsonView from '@uiw/react-json-view'
+import { darkTheme } from '@uiw/react-json-view/dark'
 import cx from 'classnames'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -215,10 +217,9 @@ const DebugMenu: React.FC = () => {
         <div className={styles.header}>
           <label>Current URL workspace settings</label>
         </div>
-        <textarea
-          className={styles.editor}
-          defaultValue={JSON.stringify(locationQuery, undefined, 2)}
-        />
+        <div className={styles.editor}>
+          <JsonView value={locationQuery} style={darkTheme} />
+        </div>
       </section>
     </div>
   )
