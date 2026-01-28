@@ -435,8 +435,8 @@ export const getTileDataCache = ({
   })
   return {
     zoom,
-    start,
-    end,
+    start: temporalAggregation ? startTime : start,
+    end: temporalAggregation ? endTime : end,
     bufferedStart,
     interval,
     compareStart,
