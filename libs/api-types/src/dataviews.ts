@@ -248,8 +248,9 @@ export interface Dataview<Type = any, Category = DataviewCategory> {
 }
 
 export type DataviewInstanceOrigin = 'workspace' | 'vesselProfile' | 'report' | 'comparison'
-export interface DataviewInstance<Type = any>
-  extends Partial<Omit<Dataview<Type>, 'id' | 'config'>> {
+export interface DataviewInstance<Type = any> extends Partial<
+  Omit<Dataview<Type>, 'id' | 'config'>
+> {
   id: string
   dataviewId: Dataview['id'] | Dataview['slug']
   config?: DataviewConfig<Type>

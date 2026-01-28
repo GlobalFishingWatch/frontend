@@ -39,6 +39,19 @@
           "headed": true
         }
       }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project apps/fishing-map-e2e/tsconfig.json"
+      }
+    },
+    "typecheck-watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --watch --project apps/fishing-map-e2e/tsconfig.json"
+      },
+      "continuous": true
     }
   }
 }

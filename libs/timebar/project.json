@@ -5,24 +5,24 @@
   "projectType": "library",
   "tags": ["lib"],
   "targets": {
-    "build": {
+    "dist": {
       "executor": "@nx/js:tsc",
       "options": {
         "assets": [{ "glob": "**/*.css", "input": "libs/timebar/src", "output": "." }]
       }
     },
     "dev": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^dist"],
       "executor": "nx:run-commands",
       "options": {
-        "command": "nx run timebar:build",
+        "command": "nx run timebar:dist",
         "watch": true
       },
       "continuous": true
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["build"],
+      "dependsOn": ["dist"],
       "options": {
         "packageRoot": "libs/timebar"
       }

@@ -9,7 +9,7 @@ import { LOGIN } from './routes/routes'
 import { getLocationType } from './routes/routes.selectors'
 
 import '@globalfishingwatch/ui-components/base.css'
-import '../../../libs/timebar/src/timebar-settings.css'
+import '@globalfishingwatch/timebar/timebar-settings.css'
 
 const Main = lazy(() => import(`././features/main/main.container`))
 const Sidebar = lazy(() => import(`././features/sidebar/sidebar.container`))

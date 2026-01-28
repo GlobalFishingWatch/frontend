@@ -1,8 +1,8 @@
 import { Fragment, useCallback } from 'react'
 import { createRootRoute, Outlet } from '@tanstack/react-router'
-import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
+import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/utils'
 import { useGFWLogin, useGFWLoginRedirect } from '@globalfishingwatch/react-hooks'
 import { Button, Spinner } from '@globalfishingwatch/ui-components'
 

@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { useRouter } from 'next/router'
 
 import {
@@ -9,8 +8,9 @@ import {
   removeAccessTokenFromUrl,
 } from '@globalfishingwatch/api-client'
 import type { UserApiAdditionalInformation, UserPermission } from '@globalfishingwatch/api-types'
+import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/utils'
 
-const fetchUser = async (accessToken) => {
+const fetchUser = async (accessToken: string) => {
   if (accessToken) {
     removeAccessTokenFromUrl()
   }
@@ -34,7 +34,14 @@ const logoutUser = async () => {
 
 export const useUser = () => {
   const accessToken = typeof window === 'undefined' ? null : getAccessTokenFromUrl()
-  const queryResult = useQuery(['user'], () => fetchUser(accessToken), {})
+  const queryResult = useQuery(
+    ['user'],
+    () => {
+      if (!accessToken) return null
+      return fetchUser(accessToken)
+    },
+    {}
+  )
   const token = GFWAPI.token
   const refreshToken = GFWAPI.refreshToken
   const { data: user } = queryResult
@@ -74,7 +81,11 @@ const updateUserAdditionalFields = async (
   userAdditionalInformation: UserApiAdditionalInformation
 ) => {
   const data = { ...userAdditionalInformation }
-  Object.keys(data).forEach((key) => data[key] === null && delete data[key])
+  Object.keys(data).forEach(
+    (key) =>
+      data[key as keyof UserApiAdditionalInformation] === null &&
+      delete data[key as keyof UserApiAdditionalInformation]
+  )
   const result = await GFWAPI.fetch(`/auth/me`, {
     method: 'PATCH',
     body: data as any,

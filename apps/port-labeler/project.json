@@ -11,7 +11,7 @@
     "watch-deps": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "nx watch --projects port-labeler --includeDependentProjects -- nx build-deps port-labeler"
+        "command": "nx watch --projects port-labeler --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=port-labeler"
       },
       "continuous": true
     },
@@ -90,7 +90,20 @@
       "options": {
         "jestConfig": "apps/port-labeler/jest.config.ts"
       }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project apps/port-labeler/tsconfig.json"
+      }
+    },
+    "typecheck-watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --watch --project apps/port-labeler/tsconfig.json"
+      },
+      "continuous": true
     }
   },
-  "tags": []
+  "tags": ["app"]
 }

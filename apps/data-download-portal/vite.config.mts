@@ -29,8 +29,6 @@ export default defineConfig({
     tanstackRouter({
       target: 'react',
       autoCodeSplitting: true,
-      routesDirectory: './apps/data-download-portal/src/routes',
-      generatedRouteTree: './apps/data-download-portal/src/routeTree.gen.ts',
     }),
     react(),
     svgr({

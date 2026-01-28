@@ -5,30 +5,29 @@
   "projectType": "library",
   "tags": ["lib"],
   "targets": {
-    "build": {
+    "dist": {
       "executor": "@nx/js:tsc"
     },
     "dev": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^dist"],
       "executor": "nx:run-commands",
       "options": {
-        "command": "nx run deck-loaders:build",
+        "command": "nx run deck-loaders:dist",
         "watch": true
       },
       "continuous": true
     },
-    "build:workers": {
+    "dist:workers": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
-          "nx dist:workers deck-loaders",
-          "rimraf libs/deck-loaders/dist/workers/libs",
-          "rimraf libs/deck-loaders/dist/workers/package.json"
+          "nx build:workers deck-loaders",
+          "node libs/deck-loaders/scripts/clean-workers-output.mjs"
         ],
         "parallel": false
       }
     },
-    "dist:workers": {
+    "build:workers": {
       "executor": "@nx/esbuild:esbuild",
       "outputs": ["{options.outputPath}", "{options.outputPath}/src"],
       "options": {
