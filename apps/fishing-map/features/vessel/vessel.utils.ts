@@ -256,9 +256,12 @@ export function getRelatedIdentityVesselIds(vessel: VesselsParamsSupported): str
     .flatMap((i) => i.id || [])
 }
 
+type SearchIdentityResolvedParams = {
+  prioritizedProperty?: IdField
+}
 export function getSearchIdentityResolved(
   vessel: VesselsParamsSupported,
-  searchIdPrioritized?: IdField
+  { prioritizedProperty } = {} as SearchIdentityResolvedParams
 ) {
   const vesselSelfReportedIdentities = getVesselIdentities(vessel, {
     identitySource: VesselIdentitySourceEnum.SelfReported,
@@ -270,15 +273,15 @@ export function getSearchIdentityResolved(
       vesselData = bestMatchIdentity
     }
   }
-  if (searchIdPrioritized) {
+  if (prioritizedProperty) {
     const identities = getVesselIdentities(vessel)
     const prioritizedIdentity =
       identities.find(
         (i) =>
-          i.identitySource === VesselIdentitySourceEnum.SelfReported && get(i, searchIdPrioritized)
+          i.identitySource === VesselIdentitySourceEnum.SelfReported && get(i, prioritizedProperty)
       ) ||
       identities.find(
-        (i) => i.identitySource === VesselIdentitySourceEnum.Registry && get(i, searchIdPrioritized)
+        (i) => i.identitySource === VesselIdentitySourceEnum.Registry && get(i, prioritizedProperty)
       )
 
     if (prioritizedIdentity) {

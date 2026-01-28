@@ -53,7 +53,7 @@ function VesselGroupVesselRow({
     transmissionDateTo,
     geartypes,
     dataset,
-  } = getSearchIdentityResolved(vessel.identity!, searchIdField)
+  } = getSearchIdentityResolved(vessel.identity!, { prioritizedProperty: searchIdField })
   const vesselDataset = useSelector(selectDatasetById(dataset))
   const vesselName = formatInfoField(shipname, 'shipname')
   const vesselGearType = getVesselGearTypeLabel({ geartypes })
