@@ -32,10 +32,10 @@ const InsightGaps = ({
   return (
     <div id="gaps" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <Tooltip content={t('common.experimentalTooltip')}>
-          <label className="experimental">{t('vessel.insights.gaps')}</label>
+        <Tooltip content={t((t) => t.common.experimentalTooltip)}>
+          <label className="experimental">{t((t) => t.vessel.insights.gaps)}</label>
         </Tooltip>
-        <DataTerminology title={t('vessel.insights.gaps')} terminologyKey="insightsGaps" />
+        <DataTerminology title={t((t) => t.vessel.insights.gaps)} terminologyKey="insightsGaps" />
       </div>
       {isLoading ? (
         <div style={{ width: '20rem' }} className={styles.loadingPlaceholder} />
@@ -46,7 +46,7 @@ const InsightGaps = ({
           {aisOff?.length !== 0 ? (
             <Fragment>
               <span>
-                {t('vessel.insights.gapsEvents', {
+                {t((t) => t.vessel.insights.gapsEvents, {
                   count: aisOff?.length,
                 })}
               </span>
@@ -57,7 +57,7 @@ const InsightGaps = ({
               />
             </Fragment>
           ) : (
-            <p className={styles.secondary}>{t('vessel.insights.gapsEventsEmpty')}</p>
+            <p className={styles.secondary}>{t((t) => t.vessel.insights.gapsEventsEmpty)}</p>
           )}
         </div>
       )}

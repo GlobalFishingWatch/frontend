@@ -53,13 +53,13 @@ function ActivityDownloadError() {
 
   let downloadErrorMsg = apiDownloadErrorMsg
   if (isDownloadConcurrentError && !hadDownloadTimeoutError) {
-    downloadErrorMsg = t('download.errorConcurrentReport')
+    downloadErrorMsg = t((t) => t.download.errorConcurrentReport)
   } else if (isDownloadTimeoutError || hadDownloadTimeoutError) {
-    downloadErrorMsg = t('analysis.timeoutError')
+    downloadErrorMsg = t((t) => t.analysis.timeoutError)
   } else if (isDownloadAreaTooBig) {
-    downloadErrorMsg = `${t('analysis.errorTooComplex')}`
+    downloadErrorMsg = `${t((t) => t.analysis.errorTooComplex)}`
   } else if (!downloadErrorMsg) {
-    downloadErrorMsg = `${t('analysis.errorMessage')} 🙈`
+    downloadErrorMsg = `${t((t) => t.analysis.errorMessage)} 🙈`
   }
 
   return <p className={cx(styles.footerLabel, styles.error)}>{downloadErrorMsg}</p>

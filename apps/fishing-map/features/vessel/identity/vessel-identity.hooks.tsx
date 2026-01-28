@@ -37,10 +37,10 @@ export function useVesselIdentityTabs() {
         id: VesselIdentitySourceEnum.Registry,
         title: (
           <span className={styles.tabTitle}>
-            {t('vessel.infoSources.registry')}
+            {t((t) => t.vessel.infoSources.registry)}
             {identitySource === VesselIdentitySourceEnum.Registry && (
               <DataTerminology
-                title={t('vessel.infoSources.registry')}
+                title={t((t) => t.vessel.infoSources.registry)}
                 terminologyKey="registryInfo"
               />
             )}
@@ -55,7 +55,7 @@ export function useVesselIdentityTabs() {
             {uniq(selfReportedIdentities.flatMap((i) => i.sourceCode || [])).join(',') || 'AIS'}
             {identitySource === VesselIdentitySourceEnum.SelfReported && (
               <DataTerminology
-                title={t('vessel.infoSources.selfReported')}
+                title={t((t) => t.vessel.infoSources.selfReported)}
                 terminologyKey="selfReported"
               />
             )}
@@ -89,7 +89,7 @@ export function useVesselIdentityChoice() {
     () => [
       {
         id: VesselIdentitySourceEnum.Registry,
-        label: t('vessel.infoSources.registry'),
+        label: t((t) => t.vessel.infoSources.registry),
         disabled: registryDisabled,
       },
       {

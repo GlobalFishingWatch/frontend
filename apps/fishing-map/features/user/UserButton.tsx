@@ -24,7 +24,7 @@ const UserButton = ({ className = '', testId }: { className?: string; testId?: s
   return (
     <div className={className}>
       {guestUser || isUserExpired ? (
-        <Tooltip content={t('common.login')}>
+        <Tooltip content={t((t) => t.common.login)}>
           <LocalStorageLoginLink>
             <Icon icon="user" testId={testId} />
           </LocalStorageLoginLink>

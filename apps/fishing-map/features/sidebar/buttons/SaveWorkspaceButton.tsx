@@ -65,14 +65,14 @@ function SaveWorkspaceButton() {
 
   if (isDefaultWorkspace) {
     return (
-      <LoginButtonWrapper tooltip={t('workspace.saveLogin')}>
+      <LoginButtonWrapper tooltip={t((t) => t.workspace.saveLogin)}>
         <IconButton
           icon="save"
           size="medium"
           className="print-hidden"
           onClick={onSaveAsClick}
           testId="save-workspace-button"
-          tooltip={t('workspace.save')}
+          tooltip={t((t) => t.workspace.save)}
           tooltipPlacement="bottom"
         />
       </LoginButtonWrapper>
@@ -89,33 +89,35 @@ function SaveWorkspaceButton() {
         content={
           <ul>
             <Tooltip
-              content={canEditWorkspace ? t('workspace.save') : t('workspace.saveOwnerOnly')}
+              content={
+                canEditWorkspace ? t((t) => t.workspace.save) : t((t) => t.workspace.saveOwnerOnly)
+              }
             >
               <li key="workspace-save">
                 <button
                   className={cx(styles.groupOption, { [styles.disabled]: !canEditWorkspace })}
                   onClick={onSaveClick}
                 >
-                  {t('workspace.save')}
+                  {t((t) => t.workspace.save)}
                 </button>
               </li>
             </Tooltip>
             <li key="workspace-save-as">
               <button className={styles.groupOption} onClick={onSaveAsClick}>
-                {t('workspace.saveAs')}
+                {t((t) => t.workspace.saveAs)}
               </button>
             </li>
           </ul>
         }
       >
         <div>
-          <LoginButtonWrapper tooltip={t('workspace.saveLogin')}>
+          <LoginButtonWrapper tooltip={t((t) => t.workspace.saveLogin)}>
             <IconButton
               icon="save"
               size="medium"
               className="print-hidden"
               onClick={() => setSaveWorkspaceTooltipOpen(true)}
-              tooltip={t('workspace.save')}
+              tooltip={t((t) => t.workspace.save)}
               tooltipPlacement="bottom"
             />
           </LoginButtonWrapper>

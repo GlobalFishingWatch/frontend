@@ -136,7 +136,7 @@ function DatasetSchemaField({
         <div className={cx(styles.filter, className)}>
           <label>
             {label}
-            {filterOperation === EXCLUDE_FILTER_ID && ` (${t('common.excluded')})`}
+            {filterOperation === EXCLUDE_FILTER_ID && ` (${t((t) => t.common.excluded)})`}
           </label>
           <TagList
             tags={valuesSelected}

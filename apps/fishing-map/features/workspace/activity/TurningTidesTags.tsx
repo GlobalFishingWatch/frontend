@@ -50,7 +50,7 @@ function TurningTidesTags({ dataview }: LayerFiltersProps) {
 
   return (
     <div className={cx(styles.filter)}>
-      <label>{t('common.vessels')}</label>
+      <label>{t((t) => t.common.vessels)}</label>
       <TagList
         tags={vesselsTags}
         color={dataview.config?.color}

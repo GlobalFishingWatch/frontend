@@ -15,7 +15,7 @@ export const useUserExpiredToast = () => {
 
   const ToastContent = () => (
     <div className={styles.disclaimer}>
-      <Trans i18nKey="errors.sessionExpired">
+      <Trans i18nKey={(t) => t.errors.sessionExpired}>
         Your session has expired, please
         <LocalStorageLoginLink className={styles.link}>log in</LocalStorageLoginLink> again.
       </Trans>

@@ -55,7 +55,9 @@ function UserVesselGroups() {
 
   const onDeleteClick = useCallback(
     (vesselGroup: VesselGroup) => {
-      const confirmation = window.confirm(`${t('vesselGroup.confirmRemove')}\n${vesselGroup.name}`)
+      const confirmation = window.confirm(
+        `${t((t) => t.vesselGroup.confirmRemove)}\n${vesselGroup.name}`
+      )
       if (confirmation) {
         dispatch(deleteVesselGroupThunk(vesselGroup.id.toString()))
       }
@@ -75,9 +77,9 @@ function UserVesselGroups() {
       </div>
       <div className={styles.views}>
         <div className={styles.viewsHeader}>
-          <label>{t('vesselGroup.vesselGroups')}</label>
+          <label>{t((t) => t.vesselGroup.vesselGroups)}</label>
           <Button disabled={loading} type="secondary" onClick={onNewGroupClick}>
-            {t('vesselGroup.new') as string}
+            {t((t) => t.vesselGroup.new) as string}
           </Button>
         </div>
         {loading ? (
@@ -119,7 +121,9 @@ function UserVesselGroups() {
                           type="border-secondary"
                           size="small"
                           tooltip={
-                            isOutdated ? t('vesselGroup.clickToUpdateLong') : t('vesselGroup.edit')
+                            isOutdated
+                              ? t((t) => t.vesselGroup.clickToUpdateLong)
+                              : t((t) => t.vesselGroup.edit)
                           }
                           loading={
                             vesselGroup.id === editingGroupId &&
@@ -129,12 +133,12 @@ function UserVesselGroups() {
                           className={styles.warningButton}
                         >
                           <Icon icon="warning" />
-                          {t('vesselGroup.updateRequired')}
+                          {t((t) => t.vesselGroup.updateRequired)}
                         </Button>
                       ) : (
                         <IconButton
                           icon="edit"
-                          tooltip={t('vesselGroup.edit')}
+                          tooltip={t((t) => t.vesselGroup.edit)}
                           loading={
                             vesselGroup.id === editingGroupId &&
                             vesselGroupStatus === AsyncReducerStatus.LoadingUpdate
@@ -149,7 +153,7 @@ function UserVesselGroups() {
                           vesselGroup.id === vesselGroupStatusId &&
                           vesselGroupStatus === AsyncReducerStatus.LoadingDelete
                         }
-                        tooltip={t('vesselGroup.remove')}
+                        tooltip={t((t) => t.vesselGroup.remove)}
                         onClick={() => onDeleteClick(vesselGroup)}
                       />
                     </div>
@@ -157,7 +161,7 @@ function UserVesselGroups() {
                 )
               })
             ) : (
-              <div className={styles.placeholder}>{t('vesselGroup.emptyState')}</div>
+              <div className={styles.placeholder}>{t((t) => t.vesselGroup.emptyState)}</div>
             )}
           </ul>
         )}

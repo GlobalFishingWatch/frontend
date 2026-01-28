@@ -13,9 +13,9 @@ function DatasetLoginRequired({ dataview }: { dataview: UrlDataviewInstance }) {
   return (
     <div className={cx(styles.LayerPanel, 'print-hidden')}>
       <div className={styles.header}>
-        <Tooltip content={t('dataset.login')}>
+        <Tooltip content={t((t) => t.dataset.login)}>
           <h3 className={cx(styles.name, styles.error)}>
-            {dataview.datasetsConfig?.[0]?.datasetId || t('errors.datasetNotFound')}
+            {dataview.datasetsConfig?.[0]?.datasetId || t((t) => t.errors.datasetNotFound)}
           </h3>
         </Tooltip>
         <div className={styles.actions}>
@@ -23,7 +23,7 @@ function DatasetLoginRequired({ dataview }: { dataview: UrlDataviewInstance }) {
             <IconButton
               icon="user"
               size="small"
-              tooltip={t('dataset.login')}
+              tooltip={t((t) => t.dataset.login)}
               tooltipPlacement="top"
             />
           </LoginButtonWrapper>

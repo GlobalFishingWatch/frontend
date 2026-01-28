@@ -53,7 +53,7 @@ function EventsLayerSection(): React.ReactElement<any> | null {
       data-testid="events-section"
       title={
         <span>
-          {t('common.events')}
+          {t((t) => t.common.events)}
           {hasVisibleDataviews && (
             <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
           )}
@@ -67,7 +67,7 @@ function EventsLayerSection(): React.ReactElement<any> | null {
               icon="plus"
               type="border"
               size="medium"
-              tooltip={t('layer.add')}
+              tooltip={t((t) => t.layer.add)}
               tooltipPlacement="top"
               onClick={(e) => {
                 e.stopPropagation()

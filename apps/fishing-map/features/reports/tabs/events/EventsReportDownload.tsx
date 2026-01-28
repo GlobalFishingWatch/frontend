@@ -71,8 +71,8 @@ const EventsReportDownload = ({ dataviews, start, end, className }: EventsReport
       onClick={onDownloadClick}
       loading={isDownloading}
       disabled={isDownloading}
-      tooltip={t('download.eventsDownload')}
-      loginTooltip={t('download.eventsDownloadLogin')}
+      tooltip={t((t) => t.download.eventsDownload)}
+      loginTooltip={t((t) => t.download.eventsDownloadLogin)}
       tooltipPlacement="top"
     />
   )

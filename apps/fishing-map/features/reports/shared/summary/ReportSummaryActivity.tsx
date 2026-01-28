@@ -80,7 +80,7 @@ export default function ReportSummaryActivity({
     const datasetTitle = sameTitleDataviews
       ? datasetTitles?.[0]
       : reportCategory === ReportCategory.Activity
-        ? `<strong>${t('common.activity').toLowerCase()}</strong>`
+        ? `<strong>${t((t) => t.common.activity).toLowerCase()}</strong>`
         : undefined
 
     if (
@@ -89,20 +89,24 @@ export default function ReportSummaryActivity({
       reportCategory !== ReportCategory.Detections &&
       !reportOutdated
     ) {
-      return t('analysis.summary', {
+      return t((t) => t.analysis.summary, {
         vessels: formatI18nNumber(reportVessels || 0, {
           locale: i18n.language as Locale,
         }),
+
         activityQuantity: formatI18nNumber(Math.floor(reportHours), {
           locale: i18n.language as Locale,
         }),
-        activityUnit: t(`common.${activityUnit}`, {
+
+        activityUnit: t((t) => t.common[activityUnit], {
           defaultValue: 'hours',
           count: Math.floor(reportHours),
         }),
+
         activityType: datasetTitle,
         start: formatI18nDate(timerange?.start),
         end: formatI18nDate(timerange?.end),
+
         sources: hasAllSourcesInCommon
           ? ` (${listAsSentence(
               getSourcesSelectedInDataview(dataviews[0]).map((source) => source.label)
@@ -149,18 +153,18 @@ export default function ReportSummaryActivity({
       }
       const activityUnitLabel =
         reportCategory === ReportCategory.Activity
-          ? `<strong>${t(`common.${activityUnit}`, {
+          ? `<strong>${t((t) => t.common[activityUnit], {
               defaultValue: 'hours',
               count: Math.floor(reportHours),
             })}</strong> ${
               Math.round(timeseriesImprecision)
                 ? `<a href="https://globalfishingwatch.org/faqs/calculating-fishing-effort-estimates-in-dynamic-analysis-reports/" target="_blank"
-                rel="noopener noreferrer" style="cursor: help" title="${t('common.learnMore')}">± ${Math.round(timeseriesImprecision)}%</a> `
+                rel="noopener noreferrer" style="cursor: help" title="${t((t) => t.common.learnMore)}">± ${Math.round(timeseriesImprecision)}%</a> `
                 : ''
-            }${t('common.of')}`
+            }${t((t) => t.common.of)}`
           : ''
 
-      return t('analysis.summaryNoVessels', {
+      return t((t) => t.analysis.summaryNoVessels, {
         activityQuantity,
         activityUnit: activityUnitLabel,
         activityType: datasetTitle,

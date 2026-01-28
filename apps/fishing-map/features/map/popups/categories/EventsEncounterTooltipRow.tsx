@@ -80,7 +80,9 @@ function EncounterTooltipRow({
             <div className={styles.row}>
               <span className={styles.rowText}>
                 <I18nNumber number={feature.count} />{' '}
-                {t('event.encounter', { count: feature.count })}
+                {t((t) => t.event.encounter, {
+                  count: feature.count,
+                })}
                 {!feature.properties.cluster && timestamp && interval && (
                   <span className={styles.rowTextSecondary}>
                     {' '}
@@ -106,7 +108,10 @@ function EncounterTooltipRow({
                           <div className={styles.rowColum}>
                             {event.vessel.type && (
                               <p className={styles.rowTitle}>
-                                {t(`vessel.vesselTypes.${event.vessel.type}`, event.vessel.type)}
+                                {t(
+                                  (t) => t.vessel.vesselTypes[event.vessel.type],
+                                  event.vessel.type
+                                )}
                               </p>
                             )}
                             {event.vessel && (
@@ -140,7 +145,7 @@ function EncounterTooltipRow({
                             <div className={styles.rowColum}>
                               <span className={styles.rowTitle}>
                                 {t(
-                                  `vessel.vesselTypes.${event.encounter.vessel.type}`,
+                                  (t) => t.vessel.vesselTypes[event.encounter.vessel.type],
                                   event.encounter.vessel.type
                                 )}
                               </span>
@@ -190,7 +195,7 @@ function EncounterTooltipRow({
                               className={styles.btnLarge}
                               onClick={seeEncounterClick}
                             >
-                              {t('common.seeMore')}
+                              {t((t) => t.common.seeMore)}
                             </Button>
                           </VesselLink>
                         </div>
@@ -199,7 +204,7 @@ function EncounterTooltipRow({
                   ) : error ? (
                     <p className={styles.error}>{error}</p>
                   ) : (
-                    t('event.noData')
+                    t((t) => t.event.noData)
                   )}
                 </Fragment>
               )}

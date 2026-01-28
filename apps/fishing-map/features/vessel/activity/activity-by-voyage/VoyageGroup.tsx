@@ -50,13 +50,17 @@ const VoyageGroup: React.FC<EventProps> = ({
     const startDate = voyageStart ? firstVoyageEvent.end : start
     const endDate = voyageEnd ? latestVoyageEvent.start : end
     const eventCount = events.filter((e) => e.type !== EventTypes.Port).length
-    parts.push(`${eventCount} ${t('common.events', { count: eventCount })}`)
-    parts.push(t('common.between'))
+    parts.push(
+      `${eventCount} ${t((t) => t.common.events, {
+        count: eventCount,
+      })}`
+    )
+    parts.push(t((t) => t.common.between))
     parts.push(formatI18nDate(startDate, { format: DateTime.DATE_MED }))
     if (voyageStart) {
       parts.push(`(${voyageStart})`)
     }
-    parts.push(t('common.and'))
+    parts.push(t((t) => t.common.and))
     parts.push(formatI18nDate(endDate, { format: DateTime.DATE_MED }))
     if (voyageEnd) {
       parts.push(`(${voyageEnd})`)
@@ -119,7 +123,7 @@ const VoyageGroup: React.FC<EventProps> = ({
               icon="download"
               size="small"
               onClick={onDownloadClick}
-              tooltip={t('download.dataDownload')}
+              tooltip={t((t) => t.download.dataDownload)}
               tooltipPlacement="top"
             />
             <IconButton icon="target" size="small" onClick={handleMapClick} />

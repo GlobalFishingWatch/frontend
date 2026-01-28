@@ -30,18 +30,18 @@ export default function WorkspaceLoginError({ title, emailSubject }: WorkspaceLo
     <ErrorPlaceholder title={title}>
       {guestUser ? (
         <LocalStorageLoginLink className={styles.button}>
-          {t('common.login') as string}
+          {t((t) => t.common.login) as string}
         </LocalStorageLoginLink>
       ) : (
         <Fragment>
           {emailSubject && (
             <Button href={`mailto:${SUPPORT_EMAIL}?subject=${emailSubject}`}>
-              {t('errors.requestAccess') as string}
+              {t((t) => t.errors.requestAccess) as string}
             </Button>
           )}
           {userData?.email && (
             <p className={styles.logged}>
-              {t('common.loggedAs')} {userData.email}
+              {t((t) => t.common.loggedAs)} {userData.email}
             </p>
           )}
           <Button
@@ -54,7 +54,7 @@ export default function WorkspaceLoginError({ title, emailSubject }: WorkspaceLo
               setLogoutLoading(false)
             }}
           >
-            {t('errors.switchAccount') as string}
+            {t((t) => t.errors.switchAccount) as string}
           </Button>
         </Fragment>
       )}

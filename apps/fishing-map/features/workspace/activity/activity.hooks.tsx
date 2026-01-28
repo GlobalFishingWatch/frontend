@@ -94,13 +94,13 @@ export const useVisualizationsOptions = (
       {
         id: HEATMAP_LOW_RES_ID,
         label: <Icon icon="heatmap-low-res" />,
-        tooltip: t('map.lowRes'),
+        tooltip: t((t) => t.map.lowRes),
         tooltipPlacement: 'bottom',
       },
       {
         id: HEATMAP_ID,
         label: <Icon icon="heatmap-default-res" />,
-        tooltip: t('map.defaultRes'),
+        tooltip: t((t) => t.map.defaultRes),
         tooltipPlacement: 'bottom',
       },
       ...(category !== DataviewCategory.Environment
@@ -112,7 +112,9 @@ export const useVisualizationsOptions = (
                   icon={hasVesselGroupsFilter ? 'heatmap-high-res-disabled' : 'heatmap-high-res'}
                 />
               ),
-              tooltip: hasVesselGroupsFilter ? t('map.highResDisabled') : t('map.highRes'),
+              tooltip: hasVesselGroupsFilter
+                ? t((t) => t.map.highResDisabled)
+                : t((t) => t.map.highRes),
               tooltipPlacement: 'bottom',
               disabled: hasVesselGroupsFilter,
             },
@@ -122,8 +124,8 @@ export const useVisualizationsOptions = (
                     id: POSITIONS_ID,
                     label: <Icon icon={isPositionsLayerAvailable ? 'vessel' : 'vessel-disabled'} />,
                     tooltip: isPositionsLayerAvailable
-                      ? t('map.positions')
-                      : t('map.positionsDisabled'),
+                      ? t((t) => t.map.positions)
+                      : t((t) => t.map.positionsDisabled),
                     tooltipPlacement: 'bottom',
                     disabled: !isPositionsLayerAvailable,
                   },

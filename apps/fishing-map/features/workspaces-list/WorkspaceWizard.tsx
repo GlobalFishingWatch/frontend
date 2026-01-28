@@ -199,20 +199,20 @@ function WorkspaceWizard() {
   }, [selectedItem, dataviews, linkToArea])
 
   const linkLabel = selectedItem
-    ? t('workspace.wizard.exploreArea')
-    : t('workspace.wizard.exploreGlobal')
+    ? t((t) => t.workspace.wizard.exploreArea)
+    : t((t) => t.workspace.wizard.exploreGlobal)
 
   return (
     <div className={styles.wizardContainer}>
       <div
         className={cx(styles.inputContainer, { [styles.open]: isOpen && areasMatching.length > 0 })}
       >
-        <label>{t('workspace.wizard.title')}</label>
+        <label>{t((t) => t.workspace.wizard.title)}</label>
         <div className={styles.comboContainer}>
           <InputText
             {...getInputProps({ ref: inputRef })}
             className={styles.input}
-            placeholder={t('map.search')}
+            placeholder={t((t) => t.map.search)}
             onBlur={onInputBlur}
           />
           <IconButton
@@ -240,13 +240,13 @@ function WorkspaceWizard() {
         <div>
           <p className={styles.hint}>
             <Icon icon="magic" />
-            {t('workspace.wizard.help')}
+            {t((t) => t.workspace.wizard.help)}
           </p>
         </div>
         <div className={styles.linksContainer}>
           {selectedItem && linkToReport && (
             <Link to={linkToReport} target="_self" className={cx(styles.confirmBtn)}>
-              {t('analysis.see')}
+              {t((t) => t.analysis.see)}
             </Link>
           )}
           <Link to={linkToArea} target="_self" className={cx(styles.confirmBtn)}>

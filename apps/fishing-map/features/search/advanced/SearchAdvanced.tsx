@@ -67,7 +67,7 @@ function SearchAdvanced({
   if (!advancedSearchAllowed) {
     return (
       <SearchPlaceholder>
-        <Trans i18nKey="search.advancedDisabled">
+        <Trans i18nKey={(t) => t.search.advancedDisabled}>
           You need to
           <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>
           to use advanced search
@@ -105,7 +105,7 @@ function SearchAdvanced({
             onChange={handleSearchQueryChange}
             id="name"
             value={searchQuery || ''}
-            label={t('common.name')}
+            label={t((t) => t.common.name)}
             className={styles.input}
             autoFocus
           />
@@ -115,7 +115,7 @@ function SearchAdvanced({
             searchSuggestion !== searchQuery &&
             !searchSuggestionClicked && (
               <div>
-                {t('search.suggestion')}{' '}
+                {t((t) => t.search.suggestion)}{' '}
                 <button onClick={onSuggestionClick} className={styles.suggestion}>
                   {' '}
                   {searchSuggestion}{' '}
@@ -134,10 +134,10 @@ function SearchAdvanced({
             }
             tooltip={
               hasSearchFilterErrors
-                ? t(
-                    'search.notValidFilterSelection',
-                    "At least one of your selected sources doesn't allow one of your filters"
-                  )
+                ? t((t) => t.search.notValidFilterSelection, {
+                    defaultValue:
+                      "At least one of your selected sources doesn't allow one of your filters",
+                  })
                 : ''
             }
             loading={
@@ -145,7 +145,7 @@ function SearchAdvanced({
               searchStatus === AsyncReducerStatus.Aborted
             }
           >
-            {t('search.title')}
+            {t((t) => t.search.title)}
           </Button>
         </div>
       </div>

@@ -225,7 +225,11 @@ function UserPanel({
                   icon="edit"
                   size="small"
                   disabled={dataview.datasets?.[0]?.status === DatasetStatus.Importing}
-                  tooltip={datasetGeometryType === 'draw' ? t('layer.editDraw') : t('dataset.edit')}
+                  tooltip={
+                    datasetGeometryType === 'draw'
+                      ? t((t) => t.layer.editDraw)
+                      : t((t) => t.dataset.edit)
+                  }
                   tooltipPlacement="top"
                   onClick={onEditClick}
                 />
@@ -273,7 +277,9 @@ function UserPanel({
                         icon={filterOpen ? 'filter-on' : 'filter-off'}
                         size="small"
                         onClick={onToggleFilterOpen}
-                        tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
+                        tooltip={
+                          filterOpen ? t((t) => t.layer.filterClose) : t((t) => t.layer.filterOpen)
+                        }
                         tooltipPlacement="top"
                       />
                     </div>
@@ -324,7 +330,6 @@ function UserPanel({
           {datasetGeometryType === 'tracks' && <UserLayerTrackPanel dataview={dataview} />}
         </div>
       )}
-
       {layerActive && hasLegend && (
         <div
           className={cx(styles.properties, styles.drag, {

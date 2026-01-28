@@ -63,8 +63,11 @@ const InsightFishing = ({
   return (
     <div id="fishing" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vessel.insights.fishing')}</label>
-        <DataTerminology title={t('vessel.insights.fishing')} terminologyKey="insightsFishing" />
+        <label>{t((t) => t.vessel.insights.fishing)}</label>
+        <DataTerminology
+          title={t((t) => t.vessel.insights.fishing)}
+          terminologyKey="insightsFishing"
+        />
       </div>
       {isLoading ? (
         <Fragment>
@@ -77,7 +80,7 @@ const InsightFishing = ({
         <div>
           {eventsInNoTakeMpas?.length !== 0 ? (
             <p>
-              {t('vessel.insights.fishingEventsInNoTakeMpas', {
+              {t((t) => t.vessel.insights.fishingEventsInNoTakeMpas, {
                 count: eventsInNoTakeMpas?.length,
               })}
               <InsightEventDetails
@@ -88,12 +91,12 @@ const InsightFishing = ({
             </p>
           ) : (
             <p className={styles.secondary}>
-              {t('vessel.insights.fishingEventsInNoTakeMpasEmpty')}
+              {t((t) => t.vessel.insights.fishingEventsInNoTakeMpasEmpty)}
             </p>
           )}
           {eventsInRfmoWithoutKnownAuthorization?.length !== 0 ? (
             <p>
-              {t('vessel.insights.fishingEventsInRfmoWithoutKnownAuthorization', {
+              {t((t) => t.vessel.insights.fishingEventsInRfmoWithoutKnownAuthorization, {
                 count: eventsInRfmoWithoutKnownAuthorization?.length,
               })}
               <InsightEventDetails
@@ -104,7 +107,7 @@ const InsightFishing = ({
             </p>
           ) : (
             <p className={styles.secondary}>
-              {t('vessel.insights.fishingEventsInRfmoWithoutKnownAuthorizationEmpty')}
+              {t((t) => t.vessel.insights.fishingEventsInRfmoWithoutKnownAuthorizationEmpty)}
             </p>
           )}
         </div>

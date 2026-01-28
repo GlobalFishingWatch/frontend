@@ -67,17 +67,17 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
 
   const datasetFields: { field: SupportedEnvDatasetSchema; label: string }[] = useMemo(
     () => [
-      { field: 'type', label: t('layer.type') },
-      { field: 'flag', label: t('layer.flagState') },
-      { field: 'vessel_type', label: t('vessel.vesselType') },
-      { field: 'speed', label: t('layer.speed') },
-      { field: 'Height', label: t('layer.height') },
-      { field: 'REALM', label: t('layer.REALM') },
-      { field: 'genus', label: t('layer.genus') },
-      { field: 'specie', label: t('layer.specie') },
-      { field: 'period', label: t('layer.period') },
-      { field: 'scenario', label: t('layer.scenario') },
-      { field: 'elevation', label: t('layer.elevation') },
+      { field: 'type', label: t((t) => t.layer.type) },
+      { field: 'flag', label: t((t) => t.layer.flagState) },
+      { field: 'vessel_type', label: t((t) => t.vessel.vesselType) },
+      { field: 'speed', label: t((t) => t.layer.speed) },
+      { field: 'Height', label: t((t) => t.layer.height) },
+      { field: 'REALM', label: t((t) => t.layer.REALM) },
+      { field: 'genus', label: t((t) => t.layer.genus) },
+      { field: 'specie', label: t((t) => t.layer.specie) },
+      { field: 'period', label: t((t) => t.layer.period) },
+      { field: 'scenario', label: t((t) => t.layer.scenario) },
+      { field: 'elevation', label: t((t) => t.layer.elevation) },
     ],
     [t]
   )
@@ -193,7 +193,9 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
                   loading={isPending}
                   size="small"
                   onClick={onToggleFilterOpen}
-                  tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
+                  tooltip={
+                    filterOpen ? t((t) => t.layer.filterClose) : t((t) => t.layer.filterOpen)
+                  }
                   tooltipPlacement="top"
                 />
               </div>
@@ -228,7 +230,9 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
               icon={'warning'}
               type={'warning'}
               tooltip={
-                isGFWUser ? `${t('errors.layerLoading')} (${layerError})` : t('errors.layerLoading')
+                isGFWUser
+                  ? `${t((t) => t.errors.layerLoading)} (${layerError})`
+                  : t((t) => t.errors.layerLoading)
               }
               size="small"
             />
@@ -255,7 +259,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
                   key={'visibleValues'}
                   dataview={dataview}
                   field={'visibleValues'}
-                  label={t('common.visibleValues')}
+                  label={t((t) => t.common.visibleValues)}
                   removeType="visibleValues"
                 />
               )}

@@ -110,7 +110,7 @@ export default function ReportActivityPeriodComparison() {
                 strokeWidth={2}
               ></path>
             </svg>
-            <label>{t('analysis.periodComparison1st')}</label>
+            <label>{t((t) => t.analysis.periodComparison1st)}</label>
             <Hint id="periodComparisonBaseline" className={styles.helpHint} />
           </div>
           <InputDate
@@ -131,7 +131,7 @@ export default function ReportActivityPeriodComparison() {
                 fill="none"
               ></path>
             </svg>
-            <label>{t('analysis.periodComparison2nd')}</label>
+            <label>{t((t) => t.analysis.periodComparison2nd)}</label>
           </div>
           <InputDate
             onChange={trackAndChangeComparisonDate}
@@ -142,7 +142,7 @@ export default function ReportActivityPeriodComparison() {
         </div>
         <div>
           <div className={styles.inputDateLabel}>
-            <label>{t('analysis.periodComparisonDuration')}</label>
+            <label>{t((t) => t.analysis.periodComparisonDuration)}</label>
           </div>
           <div className={styles.durationWrapper}>
             <InputText

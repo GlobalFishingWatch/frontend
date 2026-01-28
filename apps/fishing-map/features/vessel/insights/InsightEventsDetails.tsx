@@ -25,7 +25,11 @@ const InsightEventDetails = ({
         size="small"
         onClick={toggleVisibility}
         className={styles.seeMoreBtn}
-        tooltip={visible ? t('vessel.insights.gapsSeeLess') : t('vessel.insights.gapsSeeMore')}
+        tooltip={
+          visible
+            ? t((t) => t.vessel.insights.gapsSeeLess)
+            : t((t) => t.vessel.insights.gapsSeeMore)
+        }
         icon={visible ? 'arrow-top' : 'arrow-down'}
       />
       {visible && events.length > 0 && (

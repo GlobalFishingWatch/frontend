@@ -94,7 +94,7 @@ function VesselGroupVesselRow({
           style={{
             color: 'rgb(var(--danger-red-rgb))',
           }}
-          tooltip={t('vesselGroup.removeVessel')}
+          tooltip={t((t) => t.vesselGroup.removeVessel)}
           onClick={(e) => onRemoveClick(vessel)}
           size="small"
         />
@@ -134,13 +134,13 @@ function VesselGroupVessels() {
     <table className={styles.vesselsTable}>
       <thead>
         <tr>
-          <th>{t('vessel.mmsi')}</th>
-          <th>{t('vessel.imo')}</th>
-          <th>{t('common.name')}</th>
-          <th>{t('vessel.flag')}</th>
-          <th>{t('vessel.gearType_short')}</th>
-          <th>{t('vessel.transmissionDates')}</th>
-          <th>{t('vessel.source')}</th>
+          <th>{t((t) => t.vessel.mmsi)}</th>
+          <th>{t((t) => t.vessel.imo)}</th>
+          <th>{t((t) => t.common.name)}</th>
+          <th>{t((t) => t.vessel.flag)}</th>
+          <th>{t((t) => t.vessel.gearType_short)}</th>
+          <th>{t((t) => t.vessel.transmissionDates)}</th>
+          <th>{t((t) => t.vessel.source)}</th>
           <th />
         </tr>
       </thead>

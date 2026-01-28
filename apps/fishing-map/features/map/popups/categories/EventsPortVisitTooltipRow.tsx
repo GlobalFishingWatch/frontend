@@ -58,7 +58,9 @@ function PortVisitEventTooltipRow({
             <div className={styles.row}>
               <span className={styles.rowText}>
                 <I18nNumber number={feature.count} />{' '}
-                {t('event.port_visit', { count: feature.count })}
+                {t((t) => t.event.port_visit, {
+                  count: feature.count,
+                })}
                 {!feature.properties.cluster && feature.properties.stime && (
                   <span className={styles.rowTextSecondary}>
                     {' '}
@@ -91,7 +93,8 @@ function PortVisitEventTooltipRow({
                   className={cx(styles.portCTA, styles.rowMarginTop)}
                   onClick={seePortReportClick}
                 >
-                  {t('portsReport.seePortReport')} {event.port.name && `(${event.port.name})`}
+                  {t((t) => t.portsReport.seePortReport)}{' '}
+                  {event.port.name && `(${event.port.name})`}
                 </Button>
               </PortsReportLink>
             )}

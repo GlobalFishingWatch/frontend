@@ -292,7 +292,9 @@ function LayerPanel({
                     icon={filterOpen ? 'filter-on' : 'filter-off'}
                     size="small"
                     onClick={onToggleFilterOpen}
-                    tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
+                    tooltip={
+                      filterOpen ? t((t) => t.layer.filterClose) : t((t) => t.layer.filterOpen)
+                    }
                     tooltipPlacement="top"
                   />
                 </div>
@@ -340,9 +342,9 @@ function LayerPanel({
                   'This platform uses a reference layer from an external source.'
                 )}
                 <div className={cx('print-hidden', styles.dataWarningLinks)}>
-                  <button onClick={onAddNewClick}>{t('dataset.uploadYourOwn')}</button> |{' '}
+                  <button onClick={onAddNewClick}>{t((t) => t.dataset.uploadYourOwn)}</button> |{' '}
                   <button onClick={() => setModalDataWarningOpen(!modalDataWarningOpen)}>
-                    {t('common.learnMore')}
+                    {t((t) => t.common.learnMore)}
                   </button>
                   <Modal
                     appSelector={ROOT_DOM_ELEMENT}
@@ -380,12 +382,12 @@ function LayerPanel({
           <Collapsable
             label={
               layerLoadedDebounced ? (
-                `${t('layer.areasOnScreen')} ${
+                `${t((t) => t.layer.areasOnScreen)} ${
                   areasOnScreenOpen ? `(${featuresOnScreen?.total})` : ''
                 }`
               ) : (
                 <span>
-                  {`${t('layer.areasOnScreen')}`}
+                  {`${t((t) => t.layer.areasOnScreen)}`}
                   {areasOnScreenOpen && <Spinner className={styles.inline} size="tiny" />}
                 </span>
               )

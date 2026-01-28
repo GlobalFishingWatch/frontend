@@ -441,7 +441,7 @@ export function useReportTitle() {
       return ''
     }
     if (isGlobalReport && !report?.name) {
-      return t('common.globalReport')
+      return t((t) => t.common.globalReport)
     }
     let areaName: string | JSX.Element = getReportAreaStringByLocale(report?.name, i18n.language)
     if (!areaName) {
@@ -452,7 +452,7 @@ export function useReportTitle() {
           <Tooltip content={reportArea?.name}>
             <span
               className={styles.reportTitleTooltip}
-            >{`${areaDataviews.length > 1 ? `${areaDataviews.length} ` : ''}${uniqDatasetLabels.length > 1 ? t('common.areas') : uniqDatasetLabels[0]}`}</span>
+            >{`${areaDataviews.length > 1 ? `${areaDataviews.length} ` : ''}${uniqDatasetLabels.length > 1 ? t((t) => t.common.areas) : uniqDatasetLabels[0]}`}</span>
           </Tooltip>
         )
       } else {
@@ -498,7 +498,10 @@ export function useReportTitle() {
       return (
         <>
           {urlBufferValue} {t(`analysis.${urlBufferUnit}` as any, urlBufferUnit)}{' '}
-          {t(`analysis.around`, 'around')} {areaName}
+          {t((t) => t.analysis.around, {
+            defaultValue: 'around',
+          })}{' '}
+          {areaName}
         </>
       )
     }
@@ -506,14 +509,14 @@ export function useReportTitle() {
       if (urlBufferValue > 0) {
         return (
           <>
-            {areaName} {t('common.and')} {urlBufferValue}{' '}
-            {t(`analysis.${urlBufferUnit}` as any, urlBufferUnit)} {t('analysis.around')}
+            {areaName} {t((t) => t.common.and)} {urlBufferValue}{' '}
+            {t(`analysis.${urlBufferUnit}` as any, urlBufferUnit)} {t((t) => t.analysis.around)}
           </>
         )
       } else {
         return (
           <>
-            {areaName} {t('common.minus')} {Math.abs(urlBufferValue)}{' '}
+            {areaName} {t((t) => t.common.minus)} {Math.abs(urlBufferValue)}{' '}
             {t(`analysis.${urlBufferUnit}` as any, urlBufferUnit)}
           </>
         )

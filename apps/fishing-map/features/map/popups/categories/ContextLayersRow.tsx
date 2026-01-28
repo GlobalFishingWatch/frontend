@@ -52,7 +52,7 @@ const ContextLayersRow = ({
           )}
           {linkHref && (
             <a target="_blank" rel="noopener noreferrer" href={linkHref}>
-              <IconButton icon="info" tooltip={t('common.learnMore')} size="small" />
+              <IconButton icon="info" tooltip={t((t) => t.common.learnMore)} size="small" />
             </a>
           )}
         </div>

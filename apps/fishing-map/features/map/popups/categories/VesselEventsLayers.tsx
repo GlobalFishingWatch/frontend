@@ -68,7 +68,7 @@ function EventDescription({
       <Fragment>
         <p className={className}>
           <Trans
-            i18nKey="event.encounterActionWithVesselsPin"
+            i18nKey={(t) => t.event.encounterActionWithVesselsPin}
             defaults="had an encounter with <pin></pin>{{encounterVessel}} starting at {{start}} for {{duration}}"
             values={{
               encounterVessel: formatInfoField(encounterVesselName, 'shipname'),
@@ -165,7 +165,7 @@ function VesselEventsTooltipSection({
             })}
             {overflows && (
               <div className={styles.vesselsMore}>
-                + {features.length - MAX_TOOLTIP_LIST} {t('common.more')}
+                + {features.length - MAX_TOOLTIP_LIST} {t((t) => t.common.more)}
               </div>
             )}
           </div>

@@ -204,7 +204,7 @@ function ActivityByType() {
       {groupCounts.length > 0 ? (
         renderedComponent
       ) : (
-        <span className={styles.enptyState}>{t('vessel.noEventsinTimeRange')}</span>
+        <span className={styles.enptyState}>{t((t) => t.vessel.noEventsinTimeRange)}</span>
       )}
     </ul>
   )

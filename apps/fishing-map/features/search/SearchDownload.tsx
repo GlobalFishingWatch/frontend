@@ -79,8 +79,8 @@ function SearchDownload() {
       disabled={vesselsSelected.length <= 0}
       tooltip={
         vesselsSelected.length
-          ? `${t('search.downloadSelected')} (${vesselsSelected.length})`
-          : t('search.downloadDisabled')
+          ? `${t((t) => t.search.downloadSelected)} (${vesselsSelected.length})`
+          : t((t) => t.search.downloadDisabled)
       }
       tooltipPlacement="top"
     />

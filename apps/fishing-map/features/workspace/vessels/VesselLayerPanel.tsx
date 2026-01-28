@@ -112,7 +112,7 @@ export const getVesselIdentityTooltipSummary = (
       )
     }
   )
-  return [...identities, t('vessel.clickToSeeMore')]
+  return [...identities, t((t) => t.vessel.clickToSeeMore)]
 }
 
 function VesselLayerPanel({
@@ -201,8 +201,8 @@ function VesselLayerPanel({
     ''
 
   const getVesselTitle = (): ReactNode => {
-    if (infoLoading) return t('vessel.loadingInfo')
-    if (infoError) return t('common.unknownVessel')
+    if (infoLoading) return t((t) => t.vessel.loadingInfo)
+    if (infoError) return t((t) => t.common.unknownVessel)
     if (hideVesselNames) return FAKE_VESSEL_NAME
 
     if (dataview?.datasetsConfig?.some((d) => isGFWOnlyDataset({ id: d.datasetId })))
@@ -289,7 +289,7 @@ function VesselLayerPanel({
                   <VesselDownload
                     dataview={dataview}
                     vesselIds={[vesselId, ...(dataview.config?.relatedVesselIds || [])]}
-                    vesselTitle={vesselLabel || t('common.unknownVessel')}
+                    vesselTitle={vesselLabel || t((t) => t.common.unknownVessel)}
                     datasetId={trackDatasetId}
                   />
                 )}
@@ -324,7 +324,11 @@ function VesselLayerPanel({
                           icon={filterOpen ? 'filter-on' : 'filter-off'}
                           size="small"
                           onClick={onToggleFilterOpen}
-                          tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
+                          tooltip={
+                            filterOpen
+                              ? t((t) => t.layer.filterClose)
+                              : t((t) => t.layer.filterOpen)
+                          }
                           tooltipPlacement="top"
                         />
                       </div>
@@ -340,7 +344,7 @@ function VesselLayerPanel({
               loading
               className={styles.loadingIcon}
               size="small"
-              tooltip={t('vessel.loadingInfo')}
+              tooltip={t((t) => t.vessel.loadingInfo)}
             />
           )}
           {(infoError || trackError) && (
@@ -349,7 +353,7 @@ function VesselLayerPanel({
               icon="warning"
               type="warning"
               disabled
-              tooltip={`${t('errors.vesselLoading')} (${vesselId})`}
+              tooltip={`${t((t) => t.errors.vesselLoading)} (${vesselId})`}
               tooltipPlacement="top"
             />
           )}

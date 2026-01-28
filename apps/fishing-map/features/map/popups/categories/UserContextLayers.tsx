@@ -44,13 +44,13 @@ export function getUserContextLayerLabel(
     const i18nParams = { format: { month: 'long', year: 'numeric' } }
     const rangeLabel =
       startDate && endDate
-        ? t('common.timerangeDescription', {
+        ? t((t) => t.common.timerangeDescription, {
             start: formatI18nDate(startDate, i18nParams),
             end: formatI18nDate(endDate, i18nParams),
           })
-        : `${t('common.since')} ${formatI18nDate(startDate, i18nParams)}`
+        : `${t((t) => t.common.since)} ${formatI18nDate(startDate, i18nParams)}`
     return `${feature.properties.label} - ${feature.properties.label_confidence} ${t(
-      'common.confidence'
+      (t) => t.common.confidence
     )} (${rangeLabel})`
   }
 

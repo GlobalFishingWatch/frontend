@@ -11,10 +11,9 @@ const InsightError = ({ error }: { error: ParsedAPIError }) => {
     return (
       <Icon
         icon="private"
-        tooltip={t(
-          'vessel.insights.errorPermisions',
-          "You don't have permissions to see this insight"
-        )}
+        tooltip={t((t) => t.vessel.insights.errorPermisions, {
+          defaultValue: "You don't have permissions to see this insight",
+        })}
       />
     )
   }

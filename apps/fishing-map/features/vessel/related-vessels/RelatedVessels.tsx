@@ -27,11 +27,11 @@ const RelatedVessels = () => {
     () => [
       {
         id: 'encounters',
-        label: t('event.encountersShort'),
+        label: t((t) => t.event.encountersShort),
       },
       {
         id: 'owners',
-        label: t('vessel.owners'),
+        label: t((t) => t.vessel.owners),
       },
     ],
     [t]
@@ -58,7 +58,7 @@ const RelatedVessels = () => {
 
   return (
     <div className={styles.container}>
-      <h2 className="print-only">{t('vessel.sectionRelatedVessel')}</h2>
+      <h2 className="print-only">{t((t) => t.vessel.sectionRelatedVessel)}</h2>
       <div className="print-hidden">
         <VesselActivitySummary />
       </div>

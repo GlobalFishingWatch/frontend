@@ -70,7 +70,7 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
 
   const shipname = isPositionMatched
     ? (formatInfoField(feature.properties.shipname, 'shipname') as string)
-    : upperFirst(t('vessel.unmatched'))
+    : upperFirst(t((t) => t.vessel.unmatched))
   const activityDatasets = uniq(
     feature.sublayers?.flatMap((sublayer) => sublayer.datasets || []) || []
   )

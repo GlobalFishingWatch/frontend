@@ -202,7 +202,7 @@ function TrackFootprint({
   ])
 
   return (
-    <Tooltip content={error && t('vessel.noTrackAvailable')}>
+    <Tooltip content={error && t((t) => t.vessel.noTrackAvailable)}>
       <div className={styles.map}>
         <canvas
           className={cx(styles.canvas, { [styles.faint]: highlightedYear })}

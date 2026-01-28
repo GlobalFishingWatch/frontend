@@ -102,8 +102,8 @@ function EventReportPorts() {
     return (
       <ReportVesselsPlaceholder animate={false} showGraph={false} showSearch={false}>
         <div className={cx(styles.cover, styles.center, styles.top)}>
-          <p>{t('eventsReport.newTimeRangePorts')}</p>
-          <Button onClick={seePortsClick}>{t('eventsReport.seePorts')}</Button>
+          <p>{t((t) => t.eventsReport.newTimeRangePorts)}</p>
+          <Button onClick={seePortsClick}>{t((t) => t.eventsReport.seePorts)}</Button>
         </div>
       </ReportVesselsPlaceholder>
     )
@@ -112,10 +112,10 @@ function EventReportPorts() {
   return (
     <div className={styles.container}>
       <div className={styles.headerContainer}>
-        <label>{t('analysis.portsAfterEvents')}</label>
+        <label>{t((t) => t.analysis.portsAfterEvents)}</label>
         <InputText
           type="search"
-          placeholder={t('analysis.portsSearchPlaceholder')}
+          placeholder={t((t) => t.analysis.portsSearchPlaceholder)}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onCleanButtonClick={() => setQuery('')}
@@ -134,13 +134,13 @@ function EventReportPorts() {
           <div className={styles.tableContainer}>
             <div className={styles.portsTable}>
               <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
-                {t('common.name')}
+                {t((t) => t.common.name)}
               </div>
               <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
-                {t('common.country')}
+                {t((t) => t.common.country)}
               </div>
               <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
-                {t('common.visits')}
+                {t((t) => t.common.visits)}
               </div>
               {reportEventsPortsPaginated?.map((port, index) => {
                 const isPortInFilter = eventsDataview.config?.filters?.next_port_id?.includes(
@@ -156,8 +156,8 @@ function EventReportPorts() {
                         onClick={() => onTogglePortFilter(port.id)}
                         tooltip={
                           isPortInFilter
-                            ? t('event.port_visitedAfterRemove')
-                            : t('event.port_visitedAfterFilter')
+                            ? t((t) => t.event.port_visitedAfterRemove)
+                            : t((t) => t.event.port_visitedAfterFilter)
                         }
                       />
                       <PortsReportLink port={port}>{port.name}</PortsReportLink>
@@ -201,11 +201,13 @@ function EventReportPorts() {
               <span className={cx(styles.noWrap, styles.right)}>
                 {reportEventsPortsFilter && (
                   <Fragment>
-                    <I18nNumber number={pagination.totalFiltered} /> {t('common.of')}{' '}
+                    <I18nNumber number={pagination.totalFiltered} /> {t((t) => t.common.of)}{' '}
                   </Fragment>
                 )}
                 <I18nNumber number={pagination.total} />{' '}
-                {t('event.port', { count: pagination?.total })}
+                {t((t) => t.event.port, {
+                  count: pagination?.total,
+                })}
               </span>
             </Fragment>
           </div>
