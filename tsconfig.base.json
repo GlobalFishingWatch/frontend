@@ -37,7 +37,9 @@
       "@globalfishingwatch/pbf-decoders": ["libs/pbf-decoders/dist/index.d.ts"],
       "@globalfishingwatch/react-hooks": ["libs/react-hooks/dist/index.d.ts"],
       "@globalfishingwatch/react-hooks/*": ["libs/react-hooks/dist/*"],
-      "@globalfishingwatch/responsive-visualizations": ["libs/responsive-visualizations/dist/index.d.ts"],
+      "@globalfishingwatch/responsive-visualizations": [
+        "libs/responsive-visualizations/dist/index.d.ts"
+      ],
       "@globalfishingwatch/timebar": ["libs/timebar/dist/index.d.ts"],
       "@globalfishingwatch/ui-components": ["libs/ui-components/dist/index.d.ts"],
       "@globalfishingwatch/ui-components/*": ["libs/ui-components/dist/*"]

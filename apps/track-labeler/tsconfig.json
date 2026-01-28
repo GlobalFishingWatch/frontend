@@ -33,7 +33,9 @@
         "../../libs/responsive-visualizations/src/index.ts"
       ],
       "@globalfishingwatch/timebar": ["../../libs/timebar/src/index.ts"],
-      "@globalfishingwatch/ui-components": ["../../libs/ui-components/src/index.ts"]
+      "@globalfishingwatch/timebar/*": ["../../libs/timebar/src/*"],
+      "@globalfishingwatch/ui-components": ["../../libs/ui-components/src/index.ts"],
+      "@globalfishingwatch/ui-components/*": ["../../libs/ui-components/src/*"]
     }
   },
   "exclude": [
