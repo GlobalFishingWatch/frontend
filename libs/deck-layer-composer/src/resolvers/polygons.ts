@@ -12,32 +12,7 @@ import type {
 
 import type { DeckResolverFunction } from '../types/resolvers'
 
-// Module-level state for debounced values
-let debouncedStart = ''
-let debouncedEnd = ''
-let timeoutId: ReturnType<typeof setTimeout> | null = null
-
-const resolvePolygonsData: DeckResolverFunction<PolygonsLayerProps['data']> = (
-  dataview,
-  { start, end }
-) => {
-  if (!debouncedStart && !debouncedEnd) {
-    debouncedStart = start
-    debouncedEnd = end
-  }
-
-  if (timeoutId !== null) {
-    clearTimeout(timeoutId)
-  }
-
-  timeoutId = setTimeout(() => {
-    debouncedStart = start
-    debouncedEnd = end
-  }, 1000)
-
-  if (dataview.config?.data) {
-    return dataview.config.data as FeatureCollection
-  }
+const resolvePolygonsDataUrl: DeckResolverFunction<string> = (dataview, { start, end }) => {
   const { url } = resolveDataviewDatasetResource(dataview, DatasetTypes.TemporalContext)
   if (!url) {
     console.warn('No url found for polygon resolver', dataview)
@@ -50,8 +25,8 @@ const resolvePolygonsData: DeckResolverFunction<PolygonsLayerProps['data']> = (
   )
   const dataUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
   const dataUrlWithDates = dataUrl
-    .replace('start-date=', `start-date=${debouncedStart}`)
-    .replace('end-date=', `end-date=${debouncedEnd}`)
+    .replace('start-date=', `start-date=${start}`)
+    .replace('end-date=', `end-date=${end}`)
   return dataUrlWithDates
 }
 
@@ -61,7 +36,13 @@ export const resolveDeckPolygonsLayerProps: DeckResolverFunction<PolygonsLayerPr
 ) => {
   return {
     id: dataview.id,
-    data: resolvePolygonsData(dataview, globalConfig),
+    ...(dataview.config?.data
+      ? {
+          data: dataview.config?.data as FeatureCollection,
+        }
+      : {
+          dataUrl: resolvePolygonsDataUrl(dataview, globalConfig),
+        }),
     pickable: dataview.config?.pickable ?? true,
     category: dataview.category!,
     subcategory: dataview.config?.type,
