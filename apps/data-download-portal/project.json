@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/data-download-portal/src",
   "projectType": "application",
-  "tags": [],
+  "tags": ["app"],
   "targets": {
     "build-deps": {
       "dependsOn": ["^dist"]
@@ -49,6 +49,19 @@
         }
       },
       "dependsOn": ["build"]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project apps/data-download-portal/tsconfig.json"
+      }
+    },
+    "typecheck-watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --watch --project apps/data-download-portal/tsconfig.json"
+      },
+      "continuous": true
     }
   }
 }

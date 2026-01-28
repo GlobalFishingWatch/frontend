@@ -81,7 +81,20 @@
       "options": {
         "jestConfig": "apps/real-time-prototype/jest.config.ts"
       }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project apps/real-time-prototype/tsconfig.json"
+      }
+    },
+    "typecheck-watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --watch --project apps/real-time-prototype/tsconfig.json"
+      },
+      "continuous": true
     }
   },
-  "tags": []
+  "tags": ["app"]
 }

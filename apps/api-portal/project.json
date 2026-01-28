@@ -68,7 +68,20 @@
       "options": {
         "jestConfig": "apps/api-portal/jest.config.ts"
       }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project apps/api-portal/tsconfig.json"
+      }
+    },
+    "typecheck-watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --watch --project apps/api-portal/tsconfig.json"
+      },
+      "continuous": true
     }
   },
-  "tags": []
+  "tags": ["app"]
 }

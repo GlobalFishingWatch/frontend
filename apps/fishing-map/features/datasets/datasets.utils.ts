@@ -1,4 +1,3 @@
-import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 import { lowerCase, uniq } from 'es-toolkit'
 import intersection from 'lodash/intersection'
 
@@ -29,6 +28,7 @@ import {
   EventTypes,
   INCLUDE_FILTER_ID,
 } from '@globalfishingwatch/api-types'
+import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/utils'
 import {
   getDatasetConfigurationProperty,
   getDatasetGeometryType,
