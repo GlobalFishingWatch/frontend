@@ -1,19 +1,21 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "es2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "composite": true
+    "composite": true,
+    "outDir": "./dist",
+    "declarationDir": "./dist",
+    "rootDir": ".",
+    "declaration": true,
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
+    "types": ["node"]
   },
-  "files": [],
-  "include": [],
-  "references": [
-    {
-      "path": "./tsconfig.lib.json"
-    }
-  ]
+  "include": ["source/**/*.json", "index.ts", "./types.d.ts"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts"]
 }
