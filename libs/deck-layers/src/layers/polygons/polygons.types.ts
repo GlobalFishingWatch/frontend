@@ -16,7 +16,7 @@ export type PolygonPickingInfo = PickingInfo<PolygonPickingObject>
 export type PolygonsLayerProps = DeckLayerProps<{
   id: string
   color: string
-  data: string | FeatureCollection
+  url: string | FeatureCollection
   pickable?: boolean
   group?: LayerGroup
   highlightedFeatures: PolygonPickingObject[]

@@ -22,6 +22,12 @@ import type {
   PolygonsLayerProps,
 } from './polygons.types'
 
+type PolygonsLayerState = {
+  error: string
+  debouncedUrl: PolygonsLayerProps['url']
+  debounceTimer: ReturnType<typeof setTimeout> | null
+}
+
 const defaultProps: DefaultProps<PolygonsLayerProps> = {
   pickable: true,
 }
@@ -31,7 +37,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
 > {
   static layerName = 'PolygonsLayer'
   static defaultProps = defaultProps
-  state!: { error: string }
+  state!: PolygonsLayerState
 
   constructor(props: PolygonsLayerProps & PropsT) {
     ;(props as LayerProps).onDataLoad = () => {
@@ -41,11 +47,42 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
       this.setState({ error: error.message })
     }
     super(props as any)
-    this.state = { error: '' }
+  }
+
+  initializeState() {
+    this.setState({
+      error: '',
+      debouncedUrl: this.props.url,
+      debounceTimer: null,
+    })
   }
 
   get cacheHash(): string {
     return this.state.error
+  }
+
+  updateState = ({
+    props,
+    oldProps,
+    changeFlags,
+  }: {
+    props: any
+    oldProps: any
+    changeFlags: any
+  }) => {
+    if (changeFlags.propsChanged && props.url !== oldProps.url) {
+      const { debounceTimer } = this.state
+      if (debounceTimer) {
+        clearTimeout(debounceTimer)
+      }
+      this.setState({
+        debounceTimer: setTimeout(() => {
+          this.setState({
+            debouncedUrl: props.url,
+          })
+        }, 1000),
+      })
+    }
   }
 
   getPickingInfo = ({ info }: { info: PickingInfo<PolygonFeature> }): PolygonPickingInfo => {
@@ -80,10 +117,12 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
     const {
       id,
       color,
-      data,
       group = LayerGroup.OutlinePolygonsBackground,
       highlightedFeatures = [],
+      pickable,
     } = this.props
+
+    const data = this.state.debouncedUrl || this.props.url
 
     const showHighlight =
       (data as FeatureCollection<Geometry, GeoJsonProperties>).features?.some(
@@ -96,7 +135,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
         id: `${id}-highlight-fills`,
         stroked: false,
         data,
-        pickable: this.props.pickable,
+        pickable,
         getPolygonOffset: (params) => getLayerGroupOffset(group, params),
         getFillColor: (d) => this.getFillColor(d as PolygonFeature),
         updateTriggers: {
