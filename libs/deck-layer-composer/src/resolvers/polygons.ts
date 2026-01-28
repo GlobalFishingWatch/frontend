@@ -12,13 +12,7 @@ import type {
 
 import type { DeckResolverFunction } from '../types/resolvers'
 
-const resolvePolygonsData: DeckResolverFunction<PolygonsLayerProps['data']> = (
-  dataview,
-  { start, end }
-) => {
-  if (dataview.config?.data) {
-    return dataview.config.data as FeatureCollection
-  }
+const resolvePolygonsDataUrl: DeckResolverFunction<string> = (dataview, { start, end }) => {
   const { url } = resolveDataviewDatasetResource(dataview, DatasetTypes.TemporalContext)
   if (!url) {
     console.warn('No url found for polygon resolver', dataview)
@@ -42,7 +36,13 @@ export const resolveDeckPolygonsLayerProps: DeckResolverFunction<PolygonsLayerPr
 ) => {
   return {
     id: dataview.id,
-    data: resolvePolygonsData(dataview, globalConfig),
+    ...(dataview.config?.data
+      ? {
+          data: dataview.config?.data as FeatureCollection,
+        }
+      : {
+          dataUrl: resolvePolygonsDataUrl(dataview, globalConfig),
+        }),
     pickable: dataview.config?.pickable ?? true,
     category: dataview.category!,
     subcategory: dataview.config?.type,

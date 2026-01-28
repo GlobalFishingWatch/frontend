@@ -1,11 +1,11 @@
 import type { TFunction } from 'i18next'
-import { DateTime, Duration } from 'luxon'
+import { DateTime } from 'luxon'
 
 import type { Dataset, Report, VesselGroup } from '@globalfishingwatch/api-types'
 
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 
-export { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+export { getUTCDateTime } from '@globalfishingwatch/data-transforms/dates'
 
 type UserCreatedEntities = Dataset | AppWorkspace | VesselGroup | Report
 

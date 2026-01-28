@@ -45,6 +45,7 @@ function IntervalSelector({
               className={cx(styles.intervalBtn, {
                 [styles.intervalBtnActive]: active,
               })}
+              data-testid={`interval-btn-${intervalLabel}`}
               onClick={() => onIntervalClick(interval)}
               title={titleLabel || interval}
             >

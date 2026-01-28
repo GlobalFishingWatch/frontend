@@ -223,6 +223,7 @@ export class FourwingsVectorsLayer extends CompositeLayer<FourwingsVectorsLayerP
         ]
       },
       updateTriggers: {
+        getDirection: [startTime, endTime],
         getVelocity: [startTime, endTime, minVisibleValue, maxVisibleValue],
       },
     }

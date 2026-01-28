@@ -24,6 +24,7 @@ export type FourwingsFootprintTileLayerProps = _FourwingsFootprintTileLayerProps
 export type FourwingsFootprintTileLayerState = {
   error: string
   tilesCache: FourwingsHeatmapTilesCache
+  viewportLoaded: boolean
 }
 
 export type FourwingsFootprintLayerProps = FourwingsFootprintTileLayerProps & {

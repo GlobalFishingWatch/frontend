@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/image-labeler/src",
   "projectType": "application",
-  "tags": [],
+  "tags": ["app"],
   "// targets": "to see all targets run: nx show project image-labeler --web",
   "targets": {
     "build-deps": {
@@ -16,6 +16,19 @@
         "commands": ["vite", "nx watch-deps image-labeler"],
         "parallel": true,
         "cwd": "{projectRoot}"
+      },
+      "continuous": true
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project apps/image-labeler/tsconfig.json"
+      }
+    },
+    "typecheck-watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --watch --project apps/image-labeler/tsconfig.json"
       },
       "continuous": true
     }

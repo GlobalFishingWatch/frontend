@@ -110,7 +110,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   get debounceTime(): number {
-    return this.props.debounceTime || 0
+    return this.props.debounceTime ?? 0
   }
 
   get viewportLoaded(): boolean {
@@ -342,8 +342,12 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     const { startTime, endTime, availableIntervals, temporalAggregation } = props
     const { tilesCache } = this.state
     const zoom = Math.round(this.context.viewport.zoom)
-    const isStartOutRange = startTime < tilesCache.start
-    const isEndOutRange = endTime > tilesCache.end
+    const isStartOutRange = temporalAggregation
+      ? startTime !== tilesCache.start
+      : startTime < tilesCache.start
+    const isEndOutRange = temporalAggregation
+      ? endTime !== tilesCache.end
+      : endTime > tilesCache.end
     const isDifferentZoom = zoom !== tilesCache.zoom
     const isDifferentTemporalAggregation = temporalAggregation !== tilesCache.temporalAggregation
 

@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom/client'
 // Import the generated route tree
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
-import { createRouter,RouterProvider } from '@tanstack/react-router'
+import { createRouter, RouterProvider } from '@tanstack/react-router'
 
 import { projectApi, projectCreateApi, projectEditApi, projectsListApi, taskApi } from './api'
 import { routeTree } from './routeTree.gen'
 
-import '../../../libs/ui-components/src/base.css'
+import '@globalfishingwatch/ui-components/base.css'
 import styles from './main.module.css'
 
 // Create a new router instance

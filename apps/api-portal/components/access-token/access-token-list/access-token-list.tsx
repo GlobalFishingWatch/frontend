@@ -3,7 +3,7 @@ import { useClipboardNotification } from 'app/clipboard.hooks'
 import cx from 'classnames'
 import { formatI18nDate } from 'lib/dates'
 
-import type { UserApplication} from '@globalfishingwatch/api-types';
+import type { UserApplication } from '@globalfishingwatch/api-types'
 import { UserData } from '@globalfishingwatch/api-types'
 import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
@@ -49,7 +49,6 @@ export function AccessTokenList(props: AccessTokenListProps) {
   const onDeleteClick = useCallback(
     async ({ id }: UserApplication) => {
       if (
-         
         !confirm(
           'Deleting an application token will cause any application or service using it ' +
             'to lose the connection with our API. \n' +
@@ -74,7 +73,7 @@ export function AccessTokenList(props: AccessTokenListProps) {
   )
 
   const onCopyClipboardClick = useCallback(
-    (tokenText) => {
+    (tokenText: string) => {
       copyToClipboard(tokenText)
     },
     [copyToClipboard]

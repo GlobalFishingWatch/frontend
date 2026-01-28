@@ -3,28 +3,55 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/fishing-map-e2e/src",
   "projectType": "application",
-  "tags": [],
+  "tags": ["e2e"],
   "implicitDependencies": ["fishing-map"],
   "targets": {
-    "e2e:local": {
-      "executor": "nx:run-commands",
+    "e2e": {
+      "executor": "@nx/playwright:playwright",
       "options": {
-        "command": "playwright test --config=playwright.config.mts",
-        "cwd": "apps/fishing-map-e2e"
+        "config": "apps/fishing-map-e2e/playwright.config.mts"
       },
+      "cache": true,
+      "inputs": ["default", "^production"],
+      "outputs": ["{workspaceRoot}/dist/.playwright/apps/fishing-map-e2e"]
+    },
+    "e2e:local": {
+      "executor": "@nx/playwright:playwright",
+      "options": {
+        "config": "apps/fishing-map-e2e/playwright.config.mts"
+      },
+      "cache": false,
+      "inputs": ["default", "^production"],
+      "outputs": ["{workspaceRoot}/dist/.playwright/apps/fishing-map-e2e"],
       "dependsOn": [
         {
           "projects": "fishing-map",
-          "target": "serve"
+          "target": "start"
         }
-      ]
+      ],
+      "configurations": {
+        "ui": {
+          "cache": false,
+          "ui": true
+        },
+        "headed": {
+          "cache": false,
+          "headed": true
+        }
+      }
     },
-    "e2e": {
+    "typecheck": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "playwright test --config=playwright.config.mts",
-        "cwd": "apps/fishing-map-e2e"
+        "command": "tsc --noEmit --project apps/fishing-map-e2e/tsconfig.json"
       }
+    },
+    "typecheck-watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --watch --project apps/fishing-map-e2e/tsconfig.json"
+      },
+      "continuous": true
     }
   }
 }

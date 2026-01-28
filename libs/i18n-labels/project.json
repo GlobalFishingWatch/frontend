@@ -16,7 +16,7 @@
         "host": "0.0.0.0"
       }
     },
-    "build": {
+    "dist": {
       "executor": "@nx/js:tsc",
       "options": {
         "main": "libs/i18n-labels/index.ts",
@@ -35,7 +35,7 @@
     },
     "publish:npm": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["build"],
+      "dependsOn": ["dist"],
       "options": {
         "packageRoot": "libs/i18n-labels"
       }

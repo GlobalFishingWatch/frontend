@@ -5,7 +5,7 @@
   "projectType": "library",
   "tags": ["lib"],
   "targets": {
-    "build": {
+    "dist": {
       "executor": "@nx/js:tsc",
       "options": {
         "assets": [
@@ -14,17 +14,17 @@
       }
     },
     "dev": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^dist"],
       "executor": "nx:run-commands",
       "options": {
-        "command": "nx run responsive-visualizations:build",
+        "command": "nx run responsive-visualizations:dist",
         "watch": true
       },
       "continuous": true
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["build"],
+      "dependsOn": ["dist"],
       "options": {
         "packageRoot": "libs/responsive-visualizations"
       }

@@ -1,11 +1,11 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 
 import type { UserPermission } from '@globalfishingwatch/api-types'
+import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/utils'
 
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import { selectUserData,selectUserLogged, selectUserStatus } from './user.slice'
+import { selectUserData, selectUserLogged, selectUserStatus } from './user.slice'
 
 const DEFAULT_GROUP_ID = 'Default'
 const PRIVATE_SUPPORTED_GROUPS = ['Indonesia', 'Peru', 'Panama', 'Brazil', 'Mexico', 'Ecuador']

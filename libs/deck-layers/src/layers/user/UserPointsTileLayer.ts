@@ -121,15 +121,11 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
   }
 
   get debounceTime(): number {
-    return this.props.debounceTime || 0
+    return this.props.debounceTime ?? 0
   }
 
   get viewportLoaded(): boolean {
     return this.state?.viewportLoaded ?? false
-  }
-
-  forceUpdate() {
-    this.setNeedsUpdate()
   }
 
   _onViewportLoad = (tiles: Tile2DHeader[]) => {
@@ -323,7 +319,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
             const { extensionFilterProps, updateTrigger } = this._getExtensionFilterProps(sublayer)
             return [
               new ScatterplotLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-                id: `${props.id}-${sublayer.dataviewId}-points`,
+                id: `${props.id}-${sublayer.dataviewId}-points-${filtersHash}`,
                 pickable: pickable,
                 radiusMinPixels: 0,
                 radiusMaxPixels: maxPointSize,
