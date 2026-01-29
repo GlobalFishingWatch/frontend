@@ -58,7 +58,9 @@ function ReportEnvironmentGraph({
   const interval = getFourwingsInterval(start, end, allAvailableIntervals)
   const layersTimeseriesErrors = useReportTimeSeriesErrors()
   const isDynamic = isEnvironmentalDataview(dataview) // checks for animated heatmaps
+  console.log('🚀 ~ ReportEnvironmentGraph ~ isDynamic:', isDynamic)
 
+  console.log('🚀 ~ ReportEnvironmentGraph ~ dataview:', dataview)
   if (!dataview) return null
 
   const { min, mean, max } = (timeseriesStats?.[dataview.id] as FourwingsReportGraphStats) || {}
