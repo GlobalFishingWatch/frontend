@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { lowerCase } from 'es-toolkit'
-import htmlParser from 'html-react-parser'
 import { DateTime } from 'luxon'
 
 import type { EventType } from '@globalfishingwatch/api-types'
@@ -21,6 +20,7 @@ import {
   selectTotalStatsEvents,
 } from 'features/reports/tabs/events/events-report.selectors'
 import { selectIsPortReportLocation } from 'routes/routes.selectors'
+import { htmlSafeParse } from 'utils/html-parser'
 
 export default function ReportSummaryEvents() {
   const { t } = useTranslation()
@@ -96,5 +96,5 @@ export default function ReportSummaryEvents() {
     totalStatsEvents,
   ])
 
-  return summary ? htmlParser(summary) : <ReportSummaryPlaceholder />
+  return summary ? htmlSafeParse(summary) : <ReportSummaryPlaceholder />
 }

@@ -1,7 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import parse from 'html-react-parser'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Spinner, Tooltip } from '@globalfishingwatch/ui-components'
@@ -15,6 +14,7 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { selectQueryParam } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { htmlSafeParse, options } from 'utils/html-parser'
 
 import styles from './SearchPlaceholders.module.css'
 
@@ -86,7 +86,7 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
               </Trans>
             </p>
           )}
-          <p className={styles.highlighted}>{parse(t('search.learnMore'))}</p>
+          <p className={styles.highlighted}>{htmlSafeParse(t('search.learnMore'))}</p>
           <UserGuideLink section="vesselSearch" className={cx(styles.userGuide, styles.center)} />
         </div>
       </div>

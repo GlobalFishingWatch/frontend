@@ -14,6 +14,7 @@ import I18nDate from 'features/i18n/i18nDate'
 import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFieldLogin'
 import type { VesselIdentityProperty } from 'features/vessel/vessel.utils'
 import { getSearchIdentityResolved, isFieldLoginRequired } from 'features/vessel/vessel.utils'
+import type { IdField } from 'features/vessel-groups/vessel-groups.slice'
 import {
   getVesselGroupUniqVessels,
   groupVesselGroupVessels,
@@ -33,12 +34,14 @@ type VesselGroupVesselRowProps = {
   className?: string
   onRemoveClick: (vessel: VesselGroupVesselIdentity) => void
   hiddenProperties?: VesselIdentityProperty[]
+  searchIdField?: IdField
 }
 function VesselGroupVesselRow({
   vessel,
   onRemoveClick,
   className = '',
   hiddenProperties = [],
+  searchIdField,
 }: VesselGroupVesselRowProps) {
   const { t, i18n } = useTranslation()
   const {
@@ -50,10 +53,18 @@ function VesselGroupVesselRow({
     transmissionDateTo,
     geartypes,
     dataset,
-  } = getSearchIdentityResolved(vessel.identity!)
+  } = getSearchIdentityResolved(vessel.identity!, { prioritizedProperty: searchIdField })
   const vesselDataset = useSelector(selectDatasetById(dataset))
   const vesselName = formatInfoField(shipname, 'shipname')
   const vesselGearType = getVesselGearTypeLabel({ geartypes })
+
+  const identitySourceLabel = useMemo(() => {
+    if (vessel.identity!.registryInfo?.length && vessel.identity!.selfReportedInfo.length)
+      return `${t('vessel.infoSources.both')} `
+    if (vessel.identity!.registryInfo?.length) return t('vessel.infoSources.registry')
+    if (vessel.identity!.selfReportedInfo.length) return getDatasetLabel(vesselDataset)
+    return EMPTY_FIELD_PLACEHOLDER
+  }, [t, vessel.identity, vesselDataset])
 
   return (
     <tr className={className}>
@@ -66,7 +77,7 @@ function VesselGroupVesselRow({
       <td>
         {isFieldLoginRequired(vesselGearType) ? <VesselIdentityFieldLogin /> : vesselGearType}
       </td>
-      <td>
+      <td translate="no">
         {transmissionDateFrom && transmissionDateTo && (
           <Tooltip
             content={
@@ -87,7 +98,7 @@ function VesselGroupVesselRow({
           </Tooltip>
         )}
       </td>
-      <td>{getDatasetLabel(vesselDataset)}</td>
+      <td>{identitySourceLabel}</td>
       <td className={styles.icon}>
         <IconButton
           icon={'delete'}
@@ -104,7 +115,7 @@ function VesselGroupVesselRow({
 }
 
 const GROUP_BY_PROPERTY = 'ssvid'
-function VesselGroupVessels() {
+function VesselGroupVessels({ searchIdField }: { searchIdField: IdField }) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const vesselGroupVessels = useSelector(selectVesselGroupModalVessels)
@@ -159,6 +170,7 @@ function VesselGroupVessels() {
                 vessel={mainVessel}
                 onRemoveClick={(vessel) => onVesselRemoveClick(vessel)}
                 className={hasOtherVessels ? styles.noBorderBottom : ''}
+                searchIdField={searchIdField}
               />
               {hasOtherVessels &&
                 otherVessels.map((otherVessel) => (
