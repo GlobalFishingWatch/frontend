@@ -668,6 +668,20 @@
     "name": "crwdns65467:0crwdne65467:0",
     "description": "crwdns65469:0crwdne65469:0"
   },
+  "proto-global-skylight-viirs": {
+    "name": "crwdns109038:0crwdne109038:0",
+    "description": "crwdns109040:0crwdne109040:0",
+    "schema": {
+      "name": "crwdns109042:0crwdne109042:0",
+      "matched": {
+        "keyword": "crwdns109044:0crwdne109044:0",
+        "enum": {
+          "true": "crwdns109046:0crwdne109046:0",
+          "false": "crwdns109048:0crwdne109048:0"
+        }
+      }
+    }
+  },
   "public-ais-presence-viirs-match-prototype": {
     "name": "crwdns65491:0crwdne65491:0",
     "description": "crwdns65493:0crwdne65493:0",
