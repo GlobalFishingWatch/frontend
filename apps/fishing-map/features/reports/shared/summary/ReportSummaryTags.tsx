@@ -88,11 +88,7 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
   const showSchemaFilters = filtersAllowed.some(showSchemaFilter)
   const disabledFilters = isTimeComparisonGraph(selectedReportActivityGraph)
 
-  if (
-    reportCategory === ReportCategory.Environment &&
-    !dataview.config?.minVisibleValue &&
-    !dataview.config?.maxVisibleValue
-  ) {
+  if (!dataview.config?.minVisibleValue && !dataview.config?.maxVisibleValue) {
     return null
   }
 

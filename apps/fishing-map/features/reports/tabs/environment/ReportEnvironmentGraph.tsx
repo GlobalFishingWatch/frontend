@@ -84,9 +84,9 @@ function ReportEnvironmentGraph({
           <Fragment>
             {t('common.between')} <strong>{formatI18nDate(start)}</strong> {t('common.and')}{' '}
             <strong>{formatI18nDate(end)}</strong>
-            <ReportSummaryTags key={dataview.id} dataview={dataview} />
           </Fragment>
         )}
+        <ReportSummaryTags key={dataview.id} dataview={dataview} />
       </p>
       {(isDynamic || isHeatmapVector) &&
         (isLoading || hasError ? (
