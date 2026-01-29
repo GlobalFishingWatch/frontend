@@ -2,7 +2,6 @@ import { Fragment, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import parse from 'html-react-parser'
 
 import { DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
 import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components'
@@ -42,7 +41,7 @@ import {
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
-import { options } from 'utils/html-parser'
+import { htmlSafeParse } from 'utils/html-parser'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 import {
@@ -161,8 +160,7 @@ function DownloadActivityByVessel() {
 
   useActivityDownloadTimeoutRefresh()
 
-  const parsedLabel =
-    typeof downloadAreaName === 'string' ? parse(downloadAreaName, options) : downloadAreaName
+  const parsedLabel = htmlSafeParse(downloadAreaName)
 
   return (
     <Fragment>

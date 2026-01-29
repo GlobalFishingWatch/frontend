@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import area from '@turf/area'
 import cx from 'classnames'
-import parse from 'html-react-parser'
 
 import type { ChoiceOption, TooltipPlacement } from '@globalfishingwatch/ui-components'
 import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components'
@@ -46,7 +45,7 @@ import {
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
-import { options } from 'utils/html-parser'
+import { htmlSafeParse } from 'utils/html-parser'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 import {
@@ -211,8 +210,7 @@ function DownloadActivityGridded() {
   }
   useActivityDownloadTimeoutRefresh()
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
-  const parsedLabel =
-    typeof downloadAreaName === 'string' ? parse(downloadAreaName, options) : downloadAreaName
+  const parsedLabel = htmlSafeParse(downloadAreaName)
 
   return (
     <Fragment>

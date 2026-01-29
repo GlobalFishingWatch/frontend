@@ -2,7 +2,6 @@ import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import htmlParse from 'html-react-parser'
 
 import type { IconButtonSize, IconButtonType } from '@globalfishingwatch/ui-components'
 import { Icon, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
@@ -10,7 +9,7 @@ import { Icon, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import type I18nNamespaces from 'features/i18n/i18n.types'
-import { options } from 'utils/html-parser'
+import { htmlSafeParse } from 'utils/html-parser'
 
 import { selectVesselSection } from '../vessel.config.selectors'
 
@@ -89,7 +88,7 @@ const DataTerminology: React.FC<ModalProps> = ({
             />
           </Fragment>
         ) : (
-          htmlParse(t(`data-terminology:${terminologyKey}`, terminologyKey), options)
+          htmlSafeParse(t(`data-terminology:${terminologyKey}`, terminologyKey))
         )}
       </Modal>
     </Fragment>

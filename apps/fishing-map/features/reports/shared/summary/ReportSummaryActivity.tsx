@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { sum } from 'es-toolkit'
-import htmlParser from 'html-react-parser'
 
 import type { Locale } from '@globalfishingwatch/api-types'
 
@@ -34,7 +33,7 @@ import {
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { options } from 'utils/html-parser'
+import { htmlSafeParse } from 'utils/html-parser'
 import { listAsSentence } from 'utils/shared'
 
 export const PROPERTIES_EXCLUDED = ['flag', 'geartype']
@@ -187,5 +186,5 @@ export default function ReportSummaryActivity({
     hasAllSourcesInCommon,
   ])
 
-  return activitySummary ? htmlParser(activitySummary, options) : <ReportSummaryPlaceholder />
+  return activitySummary ? htmlSafeParse(activitySummary) : <ReportSummaryPlaceholder />
 }

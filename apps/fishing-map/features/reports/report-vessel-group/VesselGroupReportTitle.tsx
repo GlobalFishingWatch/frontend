@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import parse from 'html-react-parser'
 import { DateTime } from 'luxon'
 
 import { Button, Icon } from '@globalfishingwatch/ui-components'
@@ -27,7 +26,7 @@ import {
 } from 'features/vessel-groups/vessel-groups-modal.slice'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { options } from 'utils/html-parser'
+import { htmlSafeParse, options } from 'utils/html-parser'
 
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 
@@ -85,7 +84,7 @@ export default function VesselGroupReportTitle() {
             {vesselGroup.name}
           </h1>
           <h2 className={styles.summary}>
-            {parse(
+            {htmlSafeParse(
               t('vesselGroup.summary', {
                 vessels: formatI18nNumber(getVesselGroupVesselsCount(vesselGroup)),
                 flags: flags?.size,
@@ -95,8 +94,7 @@ export default function VesselGroupReportTitle() {
                 end: formatI18nDate(timeRange.end, {
                   format: DateTime.DATE_MED,
                 }),
-              }),
-              options
+              })
             )}
             <DataTerminology title={t('vesselGroupReport.vessels')} terminologyKey="vessels" />
           </h2>

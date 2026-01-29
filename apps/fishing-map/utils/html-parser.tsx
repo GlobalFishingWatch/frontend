@@ -1,4 +1,5 @@
 import type { DOMNode } from 'html-react-parser'
+import parse from 'html-react-parser'
 
 export const options = {
   replace: (domNode: DOMNode) => {
@@ -8,4 +9,8 @@ export const options = {
       return <span>{domNode.data}</span>
     }
   },
+}
+
+export const htmlSafeParse = (html: string | undefined) => {
+  return typeof html === 'string' ? parse(html, options) : html
 }

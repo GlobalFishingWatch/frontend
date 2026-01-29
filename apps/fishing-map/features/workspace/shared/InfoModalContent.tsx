@@ -1,12 +1,11 @@
 import { useSelector } from 'react-redux'
-import parse from 'html-react-parser'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 
 import { getDatasetDescriptionTranslated } from 'features/i18n/utils.datasets'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import { options } from 'utils/html-parser'
+import { htmlSafeParse } from 'utils/html-parser'
 
 import styles from './InfoModal.module.css'
 
@@ -37,7 +36,7 @@ const InfoModalContent = ({ dataset }: InfoModalContentProps) => {
          * For security reasons, we are only parsing html
          * coming from translated descriptions
          **/}
-        {description.length > 0 ? parse(description, options) : dataset.description}
+        {description.length > 0 ? htmlSafeParse(description) : dataset.description}
       </div>
       {gfwUser && queries && queries?.length > 0 && (
         <div className={styles.content}>
