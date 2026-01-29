@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
@@ -17,6 +17,7 @@ import {
   selectTrackCorrectionVesselDataviewId,
   selectTrackIssueComment,
   setTrackCorrectionDataviewId,
+  setTrackCorrectionTimerange,
   setTrackIssueComment,
 } from 'features/track-correction/track-correction.slice'
 import { selectCurrentTrackCorrectionIssue } from 'features/track-correction/track-selection.selectors'
@@ -46,7 +47,6 @@ const TrackCorrectionEdit = () => {
   const issueComment = useSelector(selectTrackIssueComment)
   const isGFWUser = useSelector(selectIsGFWUser)
   const isGuestUser = useSelector(selectIsGuestUser)
-  const { start, end } = useSelector(selectTimeRange)
 
   const workspaceId = useSelector(selectCurrentWorkspaceId)
 
@@ -61,7 +61,35 @@ const TrackCorrectionEdit = () => {
   )
   const vesselInfo = vesselInfoResource?.data
   const userData = useSelector(selectUserData)
+  const { start, end } = useSelector(selectTimeRange)
+  const [rangeStartTime, setRangeStartTime] = useState(
+    currentTrackCorrectionIssue?.startDate || start
+  )
+  const [rangeEndTime, setRangeEndTime] = useState(currentTrackCorrectionIssue?.endDate || end)
 
+  useEffect(() => {
+    if (currentTrackCorrectionIssue?.startDate && currentTrackCorrectionIssue?.endDate) {
+      setRangeStartTime(currentTrackCorrectionIssue?.startDate)
+      setRangeEndTime(currentTrackCorrectionIssue?.endDate)
+    }
+  }, [dispatch, currentTrackCorrectionIssue])
+
+  const prevStart = useRef(start)
+  const prevEnd = useRef(end)
+
+  useEffect(() => {
+    if (start !== prevStart.current) {
+      setRangeStartTime(start)
+      prevStart.current = start
+    }
+  }, [start])
+
+  useEffect(() => {
+    if (end !== prevEnd.current) {
+      setRangeEndTime(end)
+      prevEnd.current = end
+    }
+  }, [end])
   useEffect(() => {
     if (!trackCorrectionVesselDataviewId && currentTrackCorrectionIssue!.vesselId) {
       dispatch(
@@ -205,8 +233,8 @@ const TrackCorrectionEdit = () => {
             <div>
               <label>{t('common.newTimerange')}</label>
               <TrackSlider
-                rangeStartTime={getUTCDateTime(currentTrackCorrectionIssue.startDate).toMillis()}
-                rangeEndTime={getUTCDateTime(currentTrackCorrectionIssue.endDate).toMillis()}
+                rangeStartTime={getUTCDateTime(rangeStartTime).toMillis()}
+                rangeEndTime={getUTCDateTime(rangeEndTime).toMillis()}
                 segments={trackData ?? []}
                 // color={vesselColor}
               />
