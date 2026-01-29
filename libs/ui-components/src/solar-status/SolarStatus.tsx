@@ -26,31 +26,46 @@ interface SolarPhase {
 }
 
 const STATUS_LABELS: Record<Locale, { day: string; night: string; dawn: string; dusk: string }> = {
-  [Locale.en]: { day: 'Day', night: 'Night', dawn: 'Dawn', dusk: 'Dusk' },
+  [Locale.en]: {
+    day: 'Day',
+    night: 'Night',
+    dawn: 'Between nautical dawn and sunrise',
+    dusk: 'Between sunset and nautical dusk',
+  },
   [Locale.es]: {
     day: 'Día',
     night: 'Noche',
-    dawn: 'Amanecer',
-    dusk: 'Atardecer',
+    dawn: 'Entre el amanecer náutico y la salida del sol',
+    dusk: 'Entre la puesta del sol y el crepúsculo náutico',
   },
   [Locale.fr]: {
     day: 'Jour',
     night: 'Nuit',
-    dawn: 'Aube',
-    dusk: 'Crépuscule',
+    dawn: "Entre l'aube nautique et le lever du soleil",
+    dusk: 'Entre le coucher du soleil et le crépuscule nautique',
   },
-  [Locale.id]: { day: 'Siang', night: 'Malam', dawn: 'Fajar', dusk: 'Senja' },
+  [Locale.id]: {
+    day: 'Siang',
+    night: 'Malam',
+    dawn: 'Antara fajar nautika dan matahari terbit',
+    dusk: 'Antara matahari terbenam dan senja nautika',
+  },
   [Locale.pt]: {
     day: 'Dia',
     night: 'Noite',
-    dawn: 'Amanhecer',
-    dusk: 'Entardecer',
+    dawn: 'Entre o amanhecer náutico e o nascer do sol)',
+    dusk: 'Entre o pôr do sol e o crepúsculo náutico)',
   },
 }
 
-export function SolarStatus({ lat, lon, timestamp, locale, className }: SolarStatusProps) {
+export function SolarStatus({
+  lat,
+  lon,
+  timestamp,
+  locale = Locale.en,
+  className,
+}: SolarStatusProps) {
   const solarPhase = useMemo((): SolarPhase | undefined => {
-    // Basic validation
     if (typeof lat !== 'number' || typeof lon !== 'number' || !timestamp) {
       return
     }
@@ -62,8 +77,7 @@ export function SolarStatus({ lat, lon, timestamp, locale, className }: SolarSta
     const sSet = times.sunset.getTime()
     const nDusk = times.nauticalDusk.getTime()
 
-    const resolvedLocale = locale ?? Locale.en
-    const labels = STATUS_LABELS[resolvedLocale]
+    const labels = STATUS_LABELS[locale]
 
     // 1. Day: Sun is above the horizon
     if (timestamp >= sRise && timestamp <= sSet) {
