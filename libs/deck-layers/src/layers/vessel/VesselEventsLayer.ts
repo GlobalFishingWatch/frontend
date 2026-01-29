@@ -6,7 +6,7 @@ import { EventTypes } from '@globalfishingwatch/api-types'
 import type { VesselDeckLayersEventData } from '@globalfishingwatch/deck-loaders'
 import { EVENTS_COLORS } from '@globalfishingwatch/deck-loaders'
 
-import { getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
+import { COLOR_TRANSPARENT, getLayerGroupOffset, hexToDeckColor, LayerGroup } from '../../utils'
 
 import { DEFAULT_FISHING_EVENT_COLOR, SHAPES_ORDINALS } from './vessel.config'
 import type { _VesselEventIconLayerProps, VesselEventIconLayerProps } from './VesselEventIconLayer'
@@ -91,6 +91,12 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
           getPosition: (d: VesselDeckLayersEventData) => {
             return d.gaps ? [d.gaps.lonMax, d.gaps.latMax] : (undefined as any)
           },
+          getFillColor: (d: VesselDeckLayersEventData) => {
+            if (highlightEventIds?.includes(d.id ?? '')) {
+              return hexToDeckColor(EVENTS_COLORS.gaps)
+            }
+            return COLOR_TRANSPARENT
+          },
           updateTriggers: {
             getFillColor: [color, highlightEventIds],
             getFilterCategory: [highlightEventIds],
@@ -102,19 +108,30 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
         new PathLayer({
           id: `${id}-line`,
           data: baseLayerProps.data,
-          getColor: DEFAULT_FISHING_EVENT_COLOR,
+          getColor: (d: VesselDeckLayersEventData) => {
+            if (highlightEventIds?.includes(d.id ?? '')) {
+              return DEFAULT_FISHING_EVENT_COLOR
+            }
+            return COLOR_TRANSPARENT
+          },
           getPath: (d: VesselDeckLayersEventData) =>
             d.gaps ? [d.coordinates, [d.gaps.lonMax, d.gaps.latMax]] : [],
           getWidth: 2,
           widthUnits: 'pixels',
           pickable: false,
-          getFilterCategory: (d: VesselDeckLayersEventData) => d.id,
+          getFilterCategory: (d: VesselDeckLayersEventData) => {
+            return d.id
+          },
           filterCategories: highlightEventIds,
           extensions: [
             new DataFilterExtension({
               categorySize: 1,
             }),
           ],
+          updateTriggers: {
+            getColor: [highlightEventIds],
+            getFilterCategory: [highlightEventIds],
+          },
         })
       )
     }
