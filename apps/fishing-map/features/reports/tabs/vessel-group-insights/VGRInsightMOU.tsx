@@ -141,9 +141,9 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
             insights={vesselInsights}
             expanded={insightsExpanded.includes(`${country}-${list}`)}
             onToggle={(isOpen) => onToggle(isOpen, list)}
-            label={t(`vesselGroupReport.insights.MOUListsCount`, {
+            label={t((t) => t.vesselGroupReport.insights.MOUListsCount, {
               vessels: uniqVessels.length,
-              list: t(`insights.lists.${list}`, list),
+              list: t((t: any) => t.insights.lists[list], { defaultValue: list }),
             })}
           />
         </div>
@@ -154,9 +154,9 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
   return (
     <div id="vessel-group-mou" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vesselGroupReport.insights.MOULists')}</label>
+        <label>{t((t) => t.vesselGroupReport.insights.MOULists)}</label>
         <DataTerminology
-          title={t('vesselGroupReport.insights.MOULists')}
+          title={t((t) => t.vesselGroupReport.insights.MOULists)}
           terminologyKey="insightsMOUList"
         />
       </div>
@@ -169,23 +169,23 @@ const VesselGroupReportInsightMOU = ({ skip }: { skip?: boolean }) => {
       ) : (
         <div className={styles.insightContent}>
           <div className={styles.nested}>
-            <label className={styles.row}>{t('vessel.insights.countries.paris')}</label>
+            <label className={styles.row}>{t((t) => t.vessel.insights.countries.paris)}</label>
             {hasVesselsInParisMOU ? (
               getVesselsInMOU(MOUVesselsGrouped.paris, 'paris')
             ) : (
               <p className={cx(styles.secondary, styles.nested, styles.row)}>
-                {t('vesselGroupReport.insights.MOUListsEmpty', {
-                  country: t('vessel.insights.countries.paris'),
+                {t((t) => t.vesselGroupReport.insights.MOUListsEmpty, {
+                  country: t((t) => t.vessel.insights.countries.paris),
                 })}
               </p>
             )}
-            <label className={styles.row}>{t('vessel.insights.countries.tokyo')}</label>
+            <label className={styles.row}>{t((t) => t.vessel.insights.countries.tokyo)}</label>
             {hasVesselsInTokyoMOU ? (
               getVesselsInMOU(MOUVesselsGrouped.tokyo, 'tokyo')
             ) : (
               <p className={cx(styles.secondary, styles.nested, styles.row)}>
-                {t('vesselGroupReport.insights.MOUListsEmpty', {
-                  country: t('vessel.insights.countries.tokyo'),
+                {t((t) => t.vesselGroupReport.insights.MOUListsEmpty, {
+                  country: t((t) => t.vessel.insights.countries.tokyo),
                 })}
               </p>
             )}

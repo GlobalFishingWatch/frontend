@@ -21,9 +21,7 @@ import {
 } from '@globalfishingwatch/deck-loaders'
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 
-// import { useTrackDependencyChanges } from '@globalfishingwatch/react-hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-// import { useTrackDependencyChanges } from '@globalfishingwatch/react-hooks'
 import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { ENTIRE_WORLD_REPORT_AREA_ID } from 'features/reports/report-area/area-reports.config'

@@ -65,7 +65,6 @@ function EnvironmentTooltipSection({
               className={styles.layerIcon}
               style={{ color: feature.sublayers?.[0]?.color }}
             />
-
             <div className={styles.popupSectionContent}>
               {showFeaturesDetails && (
                 <h3 className={styles.popupSectionTitle}>
@@ -76,7 +75,7 @@ function EnvironmentTooltipSection({
                 <span className={styles.rowText}>
                   <span>
                     {parseEnvironmentalValue(value)}{' '}
-                    {unit && <span>{t(`common.${unit}`, unit)}</span>}
+                    {unit && <span>{t((t: any) => t.common[unit], { defaultValue: unit })}</span>}
                   </span>
                 </span>
                 {dataview && isBathymetryDataview(dataview) && showFeaturesDetails && (
@@ -84,7 +83,7 @@ function EnvironmentTooltipSection({
                     className={styles.bathymetryDisclaimer}
                     icon={'warning'}
                     size="small"
-                    tooltip={t('common.bathymetry_disclaimer')}
+                    tooltip={t((t) => t.common.bathymetry_disclaimer)}
                   />
                 )}
               </div>

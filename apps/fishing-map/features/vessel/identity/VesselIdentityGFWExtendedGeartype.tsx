@@ -78,8 +78,8 @@ const VesselIdentityGFWExtendedGeartype = ({
           </span>
         </Tooltip>
         {onFishingListSr?.[sourceIndex]?.value
-          ? t('vessel.gearTypes.fishing')
-          : t('vessel.gearTypes.other')}
+          ? t((t) => t.vessel.gearTypes.fishing)
+          : t((t) => t.vessel.gearTypes.other)}
       </li>
       <li>
         <Tooltip content="(prodGeartypeSource) Data table and specific field the GFW gear type value is populated from">

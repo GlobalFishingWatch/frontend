@@ -668,6 +668,20 @@
     "name": "crwdns65467:0crwdne65467:0",
     "description": "crwdns65469:0crwdne65469:0"
   },
+  "proto-global-skylight-viirs": {
+    "name": "crwdns109038:0crwdne109038:0",
+    "description": "crwdns109040:0crwdne109040:0",
+    "schema": {
+      "name": "crwdns109042:0crwdne109042:0",
+      "matched": {
+        "keyword": "crwdns109044:0crwdne109044:0",
+        "enum": {
+          "true": "crwdns109046:0crwdne109046:0",
+          "false": "crwdns109048:0crwdne109048:0"
+        }
+      }
+    }
+  },
   "public-ais-presence-viirs-match-prototype": {
     "name": "crwdns65491:0crwdne65491:0",
     "description": "crwdns65493:0crwdne65493:0",
@@ -1255,6 +1269,23 @@
     "name": "crwdns87882:0crwdne87882:0",
     "description": "crwdns93806:0crwdne93806:0"
   },
+  "public-global-ais-ports-footprint": {
+    "name": "crwdns109002:0crwdne109002:0",
+    "description": "crwdns109004:0crwdne109004:0",
+    "schema": {
+      "port_id": "crwdns109006:0crwdne109006:0"
+    }
+  },
+  "public-global-ais-ports": {
+    "name": "crwdns109008:0crwdne109008:0",
+    "description": "crwdns109010:0crwdne109010:0",
+    "schema": {
+      "name": "crwdns109012:0crwdne109012:0",
+      "ais_gaps": "crwdns109014:0crwdne109014:0",
+      "loitering": "crwdns109016:0crwdne109016:0",
+      "encounters": "crwdns109018:0crwdne109018:0"
+    }
+  },
   "public-global-all-tracks": {
     "name": "crwdns69888:0crwdne69888:0",
     "description": "crwdns83478:0crwdne83478:0",
@@ -1686,6 +1717,23 @@
           "10": "crwdns66597:0crwdne66597:0"
         }
       }
+    }
+  },
+  "public-global-vms-ports-footprint": {
+    "name": "crwdns109020:0crwdne109020:0",
+    "description": "crwdns109022:0crwdne109022:0",
+    "schema": {
+      "port_id": "crwdns109024:0crwdne109024:0"
+    }
+  },
+  "public-global-vms-ports": {
+    "name": "crwdns109026:0crwdne109026:0",
+    "description": "crwdns109028:0crwdne109028:0",
+    "schema": {
+      "name": "crwdns109030:0crwdne109030:0",
+      "vms_gaps": "crwdns109032:0crwdne109032:0",
+      "loitering": "crwdns109034:0crwdne109034:0",
+      "encounters": "crwdns109036:0crwdne109036:0"
     }
   },
   "public-global-water-salinity-max": {

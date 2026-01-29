@@ -113,18 +113,11 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   }
 
   get debounceTime(): number {
-    return this.props.debounceTime || 0
+    return this.props.debounceTime ?? 0
   }
 
   get viewportLoaded(): boolean {
     return this.state?.viewportLoaded ?? false
-  }
-
-  forceUpdate() {
-    const layer = this.getLayerInstance()
-    if (layer) {
-      layer.setNeedsUpdate()
-    }
   }
 
   getError(): string {

@@ -36,7 +36,9 @@ function DatasetFilterSource({
       ...nonVmsSources,
       {
         id: 'vms-grouped',
-        label: `VMS (${vmsSources.length} ${t('common.country', { count: 2 })})`,
+        label: `VMS (${vmsSources.length} ${t((t) => t.common.country, {
+          count: 2,
+        })})`,
         tooltip: vmsSources.map((source) => source.label).join(', '),
       },
     ]
@@ -54,7 +56,7 @@ function DatasetFilterSource({
 
   return (
     <div className={cx(styles.filter, className)} data-test="source-tags">
-      <label>{t('layer.source')}</label>
+      <label>{t((t) => t.layer.source)}</label>
       {/* Rendering both so the unmerged one is visible in printing */}
       <TagList
         testId="source-tag-item"

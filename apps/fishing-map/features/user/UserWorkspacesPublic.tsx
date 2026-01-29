@@ -51,7 +51,9 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
 
   const onDeleteClick = useCallback(
     async (workspace: AppWorkspace) => {
-      const confirmation = window.confirm(`${t('workspace.confirmRemove')}\n${workspace.name}`)
+      const confirmation = window.confirm(
+        `${t((t) => t.workspace.confirmRemove)}\n${workspace.name}`
+      )
       if (confirmation) {
         await dispatch(deleteWorkspaceThunk(workspace.id))
       }
@@ -66,12 +68,12 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
   return (
     <div className={styles.views}>
       <div className={styles.viewsHeader}>
-        <label>{t('workspace.titlePlural')}</label>
+        <label>{t((t) => t.workspace.titlePlural)}</label>
       </div>
       {editWorkspace && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}
-          title={t('workspace.edit')}
+          title={t((t) => t.workspace.edit)}
           isOpen
           shouldCloseOnEsc
           contentClassName={styles.modal}
@@ -114,23 +116,24 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
                   <IconButton
                     icon="edit"
                     loading={workspace.id === workspacesStatusId && updateLoading}
-                    tooltip={t('workspace.editName')}
+                    tooltip={t((t) => t.workspace.editName)}
                     onClick={() => setEditWorkspace(workspace)}
                   />
                   <IconButton
                     icon="delete"
                     type="warning"
                     loading={workspace.id === workspacesStatusId && deleteLoading}
-                    tooltip={t('workspace.remove')}
+                    tooltip={t((t) => t.workspace.remove)}
                     onClick={() => onDeleteClick(workspace)}
                     testId="remove-workspace-button"
+                    data-testid="remove-workspace-button"
                   />
                 </li>
               )
             })
           ) : (
             <div className={styles.placeholder} data-test="user-workspaces">
-              {t('workspace.emptyState')}
+              {t((t) => t.workspace.emptyState)}
             </div>
           )}
         </ul>

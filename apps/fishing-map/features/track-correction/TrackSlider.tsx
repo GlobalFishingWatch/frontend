@@ -130,12 +130,12 @@ function TrackSlider({
     if (rangeStartTime && rangeEndTime) {
       dispatch(
         setTrackCorrectionTimerange({
-          start: getUTCDateTime(rangeStartTime!).toISO() as string,
-          end: getUTCDateTime(rangeEndTime!).toISO() as string,
+          start: getUTCDateTime(rangeStartTime).toISO() as string,
+          end: getUTCDateTime(rangeEndTime).toISO() as string,
         })
       )
     }
-  }, [dispatch, rangeStartTime, rangeEndTime])
+  }, [])
 
   const findNearestPoint = useCallback(
     (date: DateTime) => {

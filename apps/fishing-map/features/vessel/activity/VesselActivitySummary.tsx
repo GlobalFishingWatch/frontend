@@ -55,8 +55,8 @@ export const VesselActivitySummary = () => {
           {restMostVisitedPortCountries.map(({ flag, count }) => {
             return (
               <li key={flag}>
-                {formatInfoField(flag, 'flag')} ({<I18nNumber number={count} />}{' '}
-                {t('event.port_visit', {
+                {formatInfoField(flag, 'flag')}({<I18nNumber number={count} />}{' '}
+                {t((t) => t.event.port_visit, {
                   count,
                 })}
                 )
@@ -68,17 +68,24 @@ export const VesselActivitySummary = () => {
     [restMostVisitedPortCountries, t]
   )
 
-  const summary = t('vessel.summary', {
-    events: `<strong>${formatI18nNumber(events?.length as number)}</strong> ${t('common.events', {
-      count: events?.length,
-    })}`,
+  const summary = t((t) => t.vessel.summary, {
+    events: `<strong>${formatI18nNumber(events?.length as number)}</strong> ${t(
+      (t) => t.common.events,
+      {
+        count: events?.length,
+      }
+    )}`,
+
     voyages:
       voyages !== 0 && (visibleEvents.includes('port_visit') || visibleEvents === 'all')
-        ? `${t('common.in')} <strong>${formatI18nNumber(voyages as number)}</strong> ${t(
-            'vessel.voyage',
-            { count: voyages }
+        ? `${t((t) => t.common.in)} <strong>${formatI18nNumber(voyages as number)}</strong> ${t(
+            (t) => t.vessel.voyage,
+            {
+              count: voyages,
+            }
           )}`
         : '',
+
     timerangeStart: formatI18nDate(timerange?.start),
     timerangeEnd: formatI18nDate(timerange?.end),
   })
@@ -97,14 +104,14 @@ export const VesselActivitySummary = () => {
 
   return (
     <div className={styles.summaryContainer}>
-      <h2 className="print-only">{t('vessel.sectionActivity')}</h2>
+      <h2 className="print-only">{t((t) => t.vessel.sectionActivity)}</h2>
       <div className={styles.container}>
         <h2 className={styles.summary}>
           <span dangerouslySetInnerHTML={{ __html: summary }}></span>
           {hasActivityRegionsData ? (
             <span>
               {' '}
-              {t('common.in')}{' '}
+              {t((t) => t.common.in)}{' '}
               {REGIONS_PRIORITY.map((regionType, index) => {
                 if (activityRegions[regionType] && activityRegions[regionType].length !== 0) {
                   const tooltipContent = (
@@ -114,8 +121,12 @@ export const VesselActivitySummary = () => {
                         .map(({ id, count }) => {
                           return (
                             <li key={id}>
-                              {getRegionNamesByType(regionType, [id])[0] || id} (
-                              {<I18nNumber number={count} />} {t('common.events', { count })})
+                              {getRegionNamesByType(regionType, [id])[0] || id}(
+                              {<I18nNumber number={count} />}{' '}
+                              {t((t) => t.common.events, {
+                                count,
+                              })}
+                              )
                             </li>
                           )
                         })}
@@ -125,14 +136,14 @@ export const VesselActivitySummary = () => {
                     <Tooltip key={regionType} content={tooltipContent}>
                       <span className={styles.help}>
                         {activityRegions[regionType].length}{' '}
-                        {t(`layer.areas.${regionType}` as any, {
+                        {t((t: any) => t.layer.areas[regionType], {
                           defaultvalue: regionType,
                           count: activityRegions[regionType].length,
                         })}
                         {(regionType === 'fao' || regionType === 'rfmo') && (
                           <span>
                             {' '}
-                            {t(`common.area`, {
+                            {t((t) => t.common.area, {
                               count: activityRegions[regionType].length,
                             })}
                           </span>
@@ -181,7 +192,7 @@ export const VesselActivitySummary = () => {
                   </span>
                   <p data-test={`vv-summary-${eventType}`}>
                     {active && <strong>{formatI18nNumber(events?.length || 0)} </strong>}
-                    {t(`event.${eventType}` as any, {
+                    {t((t) => t.event[eventType], {
                       defaultValue: eventType,
                       count: events?.length || 0,
                     })}{' '}
@@ -189,7 +200,10 @@ export const VesselActivitySummary = () => {
                       <span>
                         (
                         <I18nNumber number={fishingHours} />{' '}
-                        {t('common.hour', { count: fishingHours })})
+                        {t((t) => t.common.hour, {
+                          count: fishingHours,
+                        })}
+                        )
                       </span>
                     )}
                     {eventType === EventTypes.Port && threeMostVisitedPortCountries.length > 0 && (
@@ -199,7 +213,7 @@ export const VesselActivitySummary = () => {
                           return (
                             <Tooltip
                               key={flag}
-                              content={`${count} ${t('event.port_visit', {
+                              content={`${count} ${t((t) => t.event.port_visit, {
                                 count,
                               })}`}
                             >
@@ -212,9 +226,9 @@ export const VesselActivitySummary = () => {
                         })}
                         {restMostVisitedPortCountries.length > 0 && (
                           <Tooltip content={restTooltipContent}>
-                            <span className={styles.help}>{` ${t('common.and')} ${
+                            <span className={styles.help}>{` ${t((t) => t.common.and)} ${
                               restMostVisitedPortCountries.length
-                            } ${t('common.more')}`}</span>
+                            } ${t((t) => t.common.more)}`}</span>
                           </Tooltip>
                         )}
                         )
@@ -222,7 +236,7 @@ export const VesselActivitySummary = () => {
                     )}
                   </p>
                   <DataTerminology
-                    title={t(`event.${eventType}`, eventType)}
+                    title={t((t) => t.event[eventType], { defaultValue: eventType })}
                     terminologyKey={eventType as any}
                   />
                 </div>

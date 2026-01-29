@@ -30,6 +30,7 @@ const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }
       latitude: 0,
       longitude: 0,
       zoom: 0,
+      bivariateDataviews: null,
     },
   }
 
@@ -44,7 +45,7 @@ const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }
         icon="analysis"
         type="border"
         size="medium"
-        tooltip={t('analysis.seeGlobal')}
+        tooltip={t((t) => t.analysis.seeGlobal)}
         tooltipPlacement="top"
       />
     </Link>

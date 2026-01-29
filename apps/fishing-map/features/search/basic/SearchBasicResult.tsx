@@ -17,9 +17,7 @@ import {
   YearlyTransmissionsTimeline,
 } from '@globalfishingwatch/ui-components'
 
-import { PRIVATE_ICON } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import I18nDate from 'features/i18n/i18nDate'
@@ -36,6 +34,7 @@ import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFie
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import {
   getBestMatchCriteriaIdentity,
+  getIdentitySourceLabel,
   getOtherVesselNames,
   getSearchIdentityResolved,
   getVesselIdentities,
@@ -110,16 +109,7 @@ function SearchBasicResult({
     const selfReportedIdentities = vessel.identities.filter(
       ({ identitySource }) => identitySource === VesselIdentitySourceEnum.SelfReported
     )
-    const selfReportedIdentitiesSources = uniq(
-      selfReportedIdentities.flatMap(({ sourceCode }) => sourceCode || [])
-    )
-
-    if (registryIdentities.length && selfReportedIdentities.length)
-      return `${t('vessel.infoSources.both')} (${selfReportedIdentitiesSources.join(', ')})`
-    if (registryIdentities.length) return t('vessel.infoSources.registry')
-    if (selfReportedIdentities.length)
-      return `${t('vessel.infoSources.selfReported')} (${isPrivateDataset(dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
-    return EMPTY_FIELD_PLACEHOLDER
+    return getIdentitySourceLabel(registryIdentities, selfReportedIdentities, dataset, t)
   }, [t, vessel.identities, dataset])
 
   const transmissionsSource = useMemo(() => {
@@ -149,11 +139,11 @@ function SearchBasicResult({
   const isSelected = vesselsSelected?.some(
     (v) => getSearchVesselId(v) === getSearchVesselId(vessel)
   )
-  let tooltip: string = t('search.selectVessel')
+  let tooltip: string = t((t) => t.search.selectVessel)
   if (isInWorkspace) {
-    tooltip = t('search.vesselAlreadyInWorkspace')
+    tooltip = t((t) => t.search.vesselAlreadyInWorkspace)
   } else if (isSelected) {
-    tooltip = t('search.vesselSelected')
+    tooltip = t((t) => t.search.vesselSelected)
   }
   const { onClick, ...itemProps } = getItemProps({ item: vessel, index })
 
@@ -245,33 +235,33 @@ function SearchBasicResult({
           </div>
           <div className={styles.properties}>
             <div className={styles.property}>
-              <label>{t('vessel.flag')}</label>
+              <label>{t((t) => t.vessel.flag)}</label>
               <span>
                 <I18nFlag iso={flag} />
               </span>
             </div>
             <div className={styles.property}>
-              <label>{t('vessel.mmsi')}</label>
+              <label>{t((t) => t.vessel.mmsi)}</label>
               <span>
                 {getHighlightedText(ssvid || EMPTY_FIELD_PLACEHOLDER, searchQuery, styles)}
               </span>
             </div>
             <div className={styles.property}>
-              <label>{t('vessel.imo')}</label>
+              <label>{t((t) => t.vessel.imo)}</label>
               <span>{getHighlightedText(imo || EMPTY_FIELD_PLACEHOLDER, searchQuery, styles)}</span>
             </div>
             <div className={styles.property}>
-              <label>{t('vessel.callsign')}</label>
+              <label>{t((t) => t.vessel.callsign)}</label>
               <span>
                 {getHighlightedText(callsign || EMPTY_FIELD_PLACEHOLDER, searchQuery, styles)}
               </span>
             </div>
             <div className={styles.property}>
-              <label>{t('vessel.vesselType')}</label>
+              <label>{t((t) => t.vessel.vesselType)}</label>
               <span>{getVesselShipTypeLabel({ shiptypes }) || EMPTY_FIELD_PLACEHOLDER}</span>
             </div>
             <div className={styles.property}>
-              <label>{t('vessel.geartype')}</label>
+              <label>{t((t) => t.vessel.geartype)}</label>
               <span>
                 {geartypes === API_LOGIN_REQUIRED ? (
                   <VesselIdentityFieldLogin />
@@ -282,45 +272,48 @@ function SearchBasicResult({
             </div>
             {matricula && (
               <div className={styles.property}>
-                <label>{t('vessel.matricula')}</label>
+                <label>{t((t) => t.vessel.matricula)}</label>
                 <span>{matricula}</span>
               </div>
             )}
             {nationalId && (
               <div className={styles.property}>
-                <label>{t('vessel.nationalId')}</label>
+                <label>{t((t) => t.vessel.nationalId)}</label>
                 <span>{nationalId}</span>
               </div>
             )}
             {casco && (
               <div className={styles.property}>
-                <label>{t('vessel.casco')}</label>
+                <label>{t((t) => t.vessel.casco)}</label>
                 <span>{casco}</span>
               </div>
             )}
             {fleet && (
               <div className={styles.property}>
-                <label>{t('vessel.fleet')}</label>
+                <label>{t((t) => t.vessel.fleet)}</label>
                 <span>{formatInfoField(fleet, 'fleet')}</span>
               </div>
             )}
             {origin && (
               <div className={styles.property}>
-                <label>{t('vessel.origin')}</label>
+                <label>{t((t) => t.vessel.origin)}</label>
                 <span>{formatInfoField(origin, 'fleet')}</span>
               </div>
             )}
             {/* {dataset && (
                     <div className={styles.property}>
-                      <label>{t('vessel.source')}</label>
+                      <label>{t((t) => t.vessel.source)}</label>
                       <DatasetLabel dataset={dataset} />
                     </div>
                   )} */}
             {identitySource && (
               <div className={styles.property}>
                 <label>
-                  {t('vessel.infoSource')}
-                  <DataTerminology title={t('vessel.infoSource')} terminologyKey="registryInfo" />
+                  {t((t) => t.vessel.infoSource)}
+                  <DataTerminology
+                    title={t((t) => t.vessel.infoSource)}
+                    terminologyKey="registryInfo"
+                  />
                 </label>
                 <span>{identitySource}</span>
               </div>
@@ -331,8 +324,8 @@ function SearchBasicResult({
               <div className={cx(styles.property, styles.fullWidth)}>
                 <span>
                   {hasPositions ? `${formatI18nNumber(positionsCounter)} ` : ''}
-                  {`${transmissionsSource} ${lowerFirst(t('vessel.transmissions'))} ${t('common.from')} `}
-                  <I18nDate date={transmissionDateFrom} /> {t('common.to')}{' '}
+                  {`${transmissionsSource} ${lowerFirst(t((t) => t.vessel.transmissions))} ${t((t) => t.common.from)} `}
+                  <I18nDate date={transmissionDateFrom} /> {t((t) => t.common.to)}{' '}
                   <I18nDate date={transmissionDateTo} />
                 </span>
 

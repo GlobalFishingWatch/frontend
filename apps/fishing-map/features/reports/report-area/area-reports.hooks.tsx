@@ -1,5 +1,5 @@
 import type { JSX } from 'react'
-import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
@@ -440,8 +440,8 @@ export function useReportTitle() {
     if (reportId && !report) {
       return ''
     }
-    if (isGlobalReport) {
-      return t('common.globalReport')
+    if (isGlobalReport && !report?.name) {
+      return t((t) => t.common.globalReport)
     }
     let areaName: string | JSX.Element = getReportAreaStringByLocale(report?.name, i18n.language)
     if (!areaName) {
@@ -452,7 +452,7 @@ export function useReportTitle() {
           <Tooltip content={reportArea?.name}>
             <span
               className={styles.reportTitleTooltip}
-            >{`${areaDataviews.length > 1 ? `${areaDataviews.length} ` : ''}${uniqDatasetLabels.length > 1 ? t('common.areas') : uniqDatasetLabels[0]}`}</span>
+            >{`${areaDataviews.length > 1 ? `${areaDataviews.length} ` : ''}${uniqDatasetLabels.length > 1 ? t((t) => t.common.areas) : uniqDatasetLabels[0]}`}</span>
           </Tooltip>
         )
       } else {
@@ -494,28 +494,31 @@ export function useReportTitle() {
     if (!urlBufferValue) {
       return areaName
     }
+    const bufferUnit = t((t) => t.analysis[urlBufferUnit], { defaultvalue: urlBufferUnit })
     if (areaName && urlBufferOperation === 'difference') {
       return (
-        <>
-          {urlBufferValue} {t(`analysis.${urlBufferUnit}` as any, urlBufferUnit)}{' '}
-          {t(`analysis.around`, 'around')} {areaName}
-        </>
+        <Fragment>
+          {urlBufferValue} {bufferUnit}{' '}
+          {t((t) => t.analysis.around, {
+            defaultValue: 'around',
+          })}{' '}
+          {areaName}
+        </Fragment>
       )
     }
     if (areaName && urlBufferOperation === 'dissolve') {
       if (urlBufferValue > 0) {
         return (
-          <>
-            {areaName} {t('common.and')} {urlBufferValue}{' '}
-            {t(`analysis.${urlBufferUnit}` as any, urlBufferUnit)} {t('analysis.around')}
-          </>
+          <Fragment>
+            {areaName} {t((t) => t.common.and)} {urlBufferValue} {bufferUnit}{' '}
+            {t((t) => t.analysis.around)}
+          </Fragment>
         )
       } else {
         return (
-          <>
-            {areaName} {t('common.minus')} {Math.abs(urlBufferValue)}{' '}
-            {t(`analysis.${urlBufferUnit}` as any, urlBufferUnit)}
-          </>
+          <Fragment>
+            {areaName} {t((t) => t.common.minus)} {Math.abs(urlBufferValue)} {bufferUnit}
+          </Fragment>
         )
       }
     }

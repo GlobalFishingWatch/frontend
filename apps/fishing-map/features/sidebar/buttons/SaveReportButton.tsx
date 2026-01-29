@@ -69,7 +69,7 @@ function SaveReportButton() {
 
   return (
     <Fragment>
-      <LoginButtonWrapper tooltip={t('workspace.saveLogin')}>
+      <LoginButtonWrapper tooltip={t((t) => t.workspace.saveLogin)}>
         <IconButton
           icon={showClipboardNotification ? 'tick' : 'save'}
           size="medium"
@@ -78,11 +78,10 @@ function SaveReportButton() {
           loading={reportStatus === AsyncReducerStatus.Loading}
           tooltip={
             showClipboardNotification
-              ? t(
-                  'workspace.saved',
-                  "The workspace was saved and it's available in your user profile"
-                )
-              : t('analysis.save')
+              ? t((t) => t.workspace.saved, {
+                  defaultValue: "The workspace was saved and it's available in your user profile",
+                })
+              : t((t) => t.analysis.save)
           }
           tooltipPlacement="bottom"
         />

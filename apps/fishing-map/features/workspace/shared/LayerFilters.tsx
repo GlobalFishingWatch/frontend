@@ -150,7 +150,7 @@ function LayerFilters({
 
   const sourceOptions = getSourcesOptionsInDataview(dataview, [DatasetTypes.Fourwings])
   // insert the "All" option only when more than one option available
-  const allOption = { id: 'all', label: t('selects.allSelected') }
+  const allOption = { id: 'all', label: t((t) => t.selects.allSelected) }
   const allSourceOptions = sourceOptions.length > 1 ? [allOption, ...sourceOptions] : sourceOptions
   const allSelected = areAllSourcesSelectedInDataview(dataview)
   const sourcesSelected = allSelected ? [allOption] : getSourcesSelectedInDataview(dataview)
@@ -213,7 +213,7 @@ function LayerFilters({
   useEffect(() => {
     return () => {
       if (newDataviewInstanceConfigRef.current) {
-        if (window.confirm(t('layer.filtersConfirmAbort')) === true) {
+        if (window.confirm(t((t) => t.layer.filtersConfirmAbort)) === true) {
           upsertDataviewInstance(newDataviewInstanceConfigRef.current)
           checkVesselGroupsFilter(newDataviewInstanceConfigRef.current)
         }
@@ -425,7 +425,7 @@ function LayerFilters({
     showHistogramFilter || showSourceFilter || filtersAllowed.some(showSchemaFilter)
 
   if (!showSchemaFilters) {
-    return <p className={styles.placeholder}>{t('dataset.emptyFilters')}</p>
+    return <p className={styles.placeholder}>{t((t) => t.dataset.emptyFilters)}</p>
   }
 
   return (
@@ -433,7 +433,7 @@ function LayerFilters({
       {showSourceFilter && (
         <MultiSelect
           testId="activity-filters"
-          label={t('layer.sources') as string}
+          label={t((t) => t.layer.sources) as string}
           placeholder={getPlaceholderBySelections({
             selection: sourcesSelected.map(({ id }) => id),
             options: allSourceOptions,
@@ -472,16 +472,16 @@ function LayerFilters({
             disabled={!newDataviewInstanceConfig}
             onClick={() => onConfirmFilters({ applyToAll: true })}
           >
-            {t('common.applyToAll')}
+            {t((t) => t.common.applyToAll)}
           </Button>
         )}
         <Button disabled={!newDataviewInstanceConfig} onClick={() => onConfirmFilters()}>
-          {t('common.confirm')}
+          {t((t) => t.common.confirm)}
         </Button>
       </div>
       {filtersDisabled.length >= 1 && (
         <p className={styles.filtersDisabled}>
-          {t('layer.filtersDisabled', {
+          {t((t) => t.layer.filtersDisabled, {
             filters: listAsSentence(filtersDisabled.map((filter) => filter.label)),
           })}
         </p>

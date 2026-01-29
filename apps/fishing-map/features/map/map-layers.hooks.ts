@@ -175,9 +175,12 @@ export const useGlobalConfigConnect = () => {
         const categoryQueryParam = `${layer.props.category}VisualizationMode`
         dispatchQueryParams({ [categoryQueryParam]: HEATMAP_ID })
         if (isWorkspace) {
-          toast(t('toasts.maxPointsVisualizationExceeded'), {
-            toastId: 'maxPointsVisualizationExceeded',
-          })
+          toast(
+            t((t) => t.toasts.maxPointsVisualizationExceeded),
+            {
+              toastId: 'maxPointsVisualizationExceeded',
+            }
+          )
         }
       }
     },

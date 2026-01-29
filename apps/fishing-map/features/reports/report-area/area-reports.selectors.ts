@@ -183,7 +183,7 @@ export const selectReportActivityFlatten = createSelector(
             // Using hours as fallback to keep compatibility with old datasets
             value: (vessel as any)?.[activityDataset?.unit as any] || vessel?.hours,
             shipName: EMPTY_API_VALUES.includes(vessel.shipName)
-              ? t('common.unknownVessel')
+              ? t((t) => t.common.unknownVessel)
               : vessel.shipName,
             activityDatasetId: datasetId,
             dataviewId: dataview?.id,
@@ -409,6 +409,6 @@ export const selectReportAreaStatus = createSelector(
 export const selectIsGlobalReport = createSelector(
   [selectCurrentReport, selectReportArea],
   (report, reportArea) => {
-    return !report?.name && reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
+    return reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
   }
 )

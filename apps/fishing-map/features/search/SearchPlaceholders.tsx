@@ -1,7 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import parse from 'html-react-parser'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import { Spinner, Tooltip } from '@globalfishingwatch/ui-components'
@@ -15,6 +14,7 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import LocalStorageLoginLink from 'routes/LoginLink'
 import { selectQueryParam } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { htmlSafeParse, options } from 'utils/html-parser'
 
 import styles from './SearchPlaceholders.module.css'
 
@@ -38,10 +38,10 @@ export function SearchNoResultsState({ className = '' }: SearchPlaceholderProps)
       <div className={styles.container}>
         <VesselSearchNoSesultsImage />
         <p>
-          {t(
-            'search.noResults',
-            "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign"
-          )}
+          {t((t) => t.search.noResults, {
+            defaultValue:
+              "Can't find the vessel you are looking for? Try using MMSI, IMO or Callsign",
+          })}
         </p>
       </div>
     </SearchPlaceholder>
@@ -61,32 +61,34 @@ export function SearchEmptyState({ className = '' }: SearchPlaceholderProps) {
       <div className={styles.container}>
         <VesselSearchImage className={styles.image} />
         <div className={cx({ [styles.hidden]: searchStatus !== AsyncReducerStatus.Loading })}>
-          {t('search.searching')}
+          {t((t) => t.search.searching)}
           <Spinner className={styles.spinner} />
         </div>
         <div className={cx({ [styles.hidden]: searchStatus === AsyncReducerStatus.Loading })}>
           {activeSearchOption === 'basic' && (
             <div className={styles.description}>
-              {t('search.description')}
+              {t((t) => t.search.description)}
               <br />
-              {isSmallScreen ? t('search.descriptionSmallScreens') : t('search.descriptionNarrow')}
+              {isSmallScreen
+                ? t((t) => t.search.descriptionSmallScreens)
+                : t((t) => t.search.descriptionNarrow)}
             </div>
           )}
-          {activeSearchOption === 'advanced' && <p>{t('search.descriptionAdvanced')}</p>}
+          {activeSearchOption === 'advanced' && <p>{t((t) => t.search.descriptionAdvanced)}</p>}
           {guestUser && noGuestDatasets?.length > 0 && (
             <p className={cx(styles.description, styles.center)}>
               <Tooltip content={noGuestDatasets.join(', ')}>
                 <span className={styles.bold}>
-                  {noGuestDatasets.length} {t('common.sources')}
+                  {noGuestDatasets.length} {t((t) => t.common.sources)}
                 </span>
               </Tooltip>{' '}
-              <Trans i18nKey="search.missingSources">
+              <Trans i18nKey={(t) => t.search.missingSources}>
                 won't appear unless you
                 <LocalStorageLoginLink className={styles.link}>log in</LocalStorageLoginLink>
               </Trans>
             </p>
           )}
-          <p className={styles.highlighted}>{parse(t('search.learnMore'))}</p>
+          <p className={styles.highlighted}>{htmlSafeParse(t((t) => t.search.learnMore))}</p>
           <UserGuideLink section="vesselSearch" className={cx(styles.userGuide, styles.center)} />
         </div>
       </div>
@@ -98,7 +100,7 @@ export function SearchNotAllowed({ className = '' }: SearchPlaceholderProps) {
   const { t } = useTranslation()
   return (
     <SearchPlaceholder className={className}>
-      <p>{t('search.notAllowed')}</p>
+      <p>{t((t) => t.search.notAllowed)}</p>
     </SearchPlaceholder>
   )
 }

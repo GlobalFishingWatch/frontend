@@ -13,7 +13,7 @@ import Header from './header/header'
 
 import styles from '../styles/layout.module.css'
 
-const Layout = ({ children }) => {
+const Layout = ({ children }: any) => {
   const { data: user, isLoading, authorized, logout, loginLink } = useUser()
 
   const errorInfo = [

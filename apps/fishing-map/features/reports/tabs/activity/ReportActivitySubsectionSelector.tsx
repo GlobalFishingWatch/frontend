@@ -43,12 +43,12 @@ function ReportActivitySubsectionSelector() {
       ? ([
           {
             id: 'fishing',
-            label: t('common.apparentFishing'),
+            label: t((t) => t.common.apparentFishing),
             disabled: loading || !hasFishingDataviews,
           },
           {
             id: 'presence',
-            label: t('common.vesselPresence'),
+            label: t((t) => t.common.vesselPresence),
             disabled: loading || !hasPresenceDataviews,
           },
         ] as ChoiceOption<ReportActivitySubCategory>[])
@@ -57,7 +57,7 @@ function ReportActivitySubsectionSelector() {
             ? [
                 {
                   id: 'viirs',
-                  label: t('common.viirs'),
+                  label: t((t) => t.common.viirs),
                   disabled: loading,
                 },
               ]
@@ -66,7 +66,7 @@ function ReportActivitySubsectionSelector() {
             ? [
                 {
                   id: 'sar',
-                  label: t('common.sar'),
+                  label: t((t) => t.common.sar),
                   disabled: loading,
                 },
               ]
@@ -75,7 +75,7 @@ function ReportActivitySubsectionSelector() {
             ? [
                 {
                   id: 'sentinel-2',
-                  label: t('common.sentinel2'),
+                  label: t((t) => t.common.sentinel2),
                   disabled: loading,
                 },
               ]

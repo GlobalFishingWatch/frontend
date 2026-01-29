@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { lowerCase } from 'es-toolkit'
-import htmlParser from 'html-react-parser'
 import { DateTime } from 'luxon'
 
 import type { EventType } from '@globalfishingwatch/api-types'
@@ -21,6 +20,7 @@ import {
   selectTotalStatsEvents,
 } from 'features/reports/tabs/events/events-report.selectors'
 import { selectIsPortReportLocation } from 'routes/routes.selectors'
+import { htmlSafeParse } from 'utils/html-parser'
 
 export default function ReportSummaryEvents() {
   const { t } = useTranslation()
@@ -46,7 +46,7 @@ export default function ReportSummaryEvents() {
     const activityQuantity = formatI18nNumber(totalStatsEvents || 0)
 
     const activityUnit = eventType
-      ? t(`event.${eventType.toLowerCase()}`, {
+      ? t((t: any) => t.event[eventType.toLowerCase()], {
           defaultValue: lowerCase(eventType || ''),
           count: totalStatsEvents,
         }).toLowerCase()
@@ -56,17 +56,17 @@ export default function ReportSummaryEvents() {
       if (eventsStatsDataGrouped === undefined) {
         return ''
       }
-      return t('analysis.summaryEventsNoVessels', {
+      return t((t) => t.analysis.summaryEventsNoVessels, {
         activityQuantity,
         activityUnit,
-        area: reportAreaId ? '' : t('analysis.globally'),
+        area: reportAreaId ? '' : t((t) => t.analysis.globally),
         start: startDate,
         end: endDate,
       })
     }
     const vessels = formatI18nNumber(totalEventsVessels || 0)
     if (isPortReportLocation) {
-      return t('portsReport.summaryEvents', {
+      return t((t) => t.portsReport.summaryEvents, {
         vessels,
         flags: reportVesselsFlags?.size || 0,
         activityQuantity,
@@ -74,14 +74,14 @@ export default function ReportSummaryEvents() {
         end: endDate,
       })
     }
-    return t('analysis.summaryEvents', {
+    return t((t) => t.analysis.summaryEvents, {
       vessels,
       flags: reportVesselsFlags?.size || 0,
       activityQuantity,
       activityUnit,
       start: startDate,
       end: endDate,
-      area: reportAreaId ? '' : t('analysis.globally'),
+      area: reportAreaId ? '' : t((t) => t.analysis.globally),
     })
   }, [
     eventType,
@@ -96,5 +96,5 @@ export default function ReportSummaryEvents() {
     totalStatsEvents,
   ])
 
-  return summary ? htmlParser(summary) : <ReportSummaryPlaceholder />
+  return summary ? htmlSafeParse(summary) : <ReportSummaryPlaceholder />
 }

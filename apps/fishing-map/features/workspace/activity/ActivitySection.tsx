@@ -113,7 +113,7 @@ function ActivitySection(): React.ReactElement<any> {
       className="hover-target"
       title={
         <span>
-          {t('common.activity')}
+          {t((t) => t.common.activity)}
           {hasVisibleDataviews && (
             <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
           )}
@@ -134,7 +134,7 @@ function ActivitySection(): React.ReactElement<any> {
               icon="plus"
               type="border"
               size="medium"
-              tooltip={t('layer.add')}
+              tooltip={t((t) => t.layer.add)}
               tooltipPlacement="top"
               onClick={() => onAddLayerClick()}
             />
@@ -170,7 +170,7 @@ function ActivitySection(): React.ReactElement<any> {
                   type="border"
                   size="small"
                   className={activityStyles.bivariateToggle}
-                  tooltip={t('layer.toggleCombinationMode.combine')}
+                  tooltip={t((t) => t.layer.toggleCombinationMode.combine)}
                   tooltipPlacement="top"
                   onClick={() => onBivariateDataviewsClick(dataview, dataviews[index + 1])}
                 />

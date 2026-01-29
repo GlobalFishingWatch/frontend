@@ -63,7 +63,8 @@
       "**/*.spec.tsx",
       "**/*.test.ts",
       "**/*.test.tsx",
-      "**/*.tsbuildinfo"
+      "**/*.tsbuildinfo",
+      "**/i18n.types.d.ts"
     ]
   },
   "typescript.preferences.includePackageJsonAutoImports": "off",

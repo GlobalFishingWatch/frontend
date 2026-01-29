@@ -109,7 +109,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
 
   const sidebarComponent = useMemo(() => {
     if (userStatus === AsyncReducerStatus.Error) {
-      return <ErrorPlaceholder title={t('errors.userDataError')} />
+      return <ErrorPlaceholder title={t((t) => t.errors.userDataError)} />
     }
 
     if (!isUserLogged) {

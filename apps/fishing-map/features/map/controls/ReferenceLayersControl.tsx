@@ -79,7 +79,9 @@ const ReferenceLayersControl = () => {
       <IconButton
         type="map-tool"
         icon={isOpen ? 'close' : 'layers'}
-        tooltip={isOpen ? t('map.referenceLayersClose') : t('map.referenceLayersOpen')}
+        tooltip={
+          isOpen ? t((t) => t.map.referenceLayersClose) : t((t) => t.map.referenceLayersOpen)
+        }
         onClick={toggleOpen}
         className={cx({ [styles.active]: isOpen })}
       />

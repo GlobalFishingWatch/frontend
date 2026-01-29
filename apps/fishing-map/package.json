@@ -17,26 +17,10 @@
     "test:e2e": "npx playwright test"
   },
   "devDependencies": {
+    "@vitest/coverage-istanbul": "4.0.7",
     "cross-env": "^10.1.0",
-    "i18next-cli": "^1.36.1",
+    "i18next-cli": "^1.38.2",
     "source-map-explorer": "2.5.3"
-  },
-  "dependencies": {
-    "@globalfishingwatch/api-client": "workspace:*",
-    "@globalfishingwatch/api-types": "workspace:*",
-    "@globalfishingwatch/data-transforms": "workspace:*",
-    "@globalfishingwatch/datasets-client": "workspace:*",
-    "@globalfishingwatch/dataviews-client": "workspace:*",
-    "@globalfishingwatch/deck-layer-composer": "workspace:*",
-    "@globalfishingwatch/deck-layers": "workspace:*",
-    "@globalfishingwatch/deck-loaders": "workspace:*",
-    "@globalfishingwatch/i18n-labels": "workspace:*",
-    "@globalfishingwatch/ocean-areas": "workspace:*",
-    "@globalfishingwatch/pbf-decoders": "workspace:*",
-    "@globalfishingwatch/react-hooks": "workspace:*",
-    "@globalfishingwatch/responsive-visualizations": "workspace:*",
-    "@globalfishingwatch/timebar": "workspace:*",
-    "@globalfishingwatch/ui-components": "workspace:*"
   },
   "browserslist": [
     ">0.1%",

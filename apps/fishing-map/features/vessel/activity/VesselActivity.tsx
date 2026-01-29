@@ -49,11 +49,11 @@ const VesselActivity = () => {
     () => [
       {
         id: 'type',
-        label: t('vessel.activityByType'),
+        label: t((t) => t.vessel.activityByType),
       },
       {
         id: 'voyage',
-        label: t('vessel.activityByVoyages'),
+        label: t((t) => t.vessel.activityByVoyages),
       },
     ],
     [t]
@@ -70,7 +70,7 @@ const VesselActivity = () => {
   if (!hasEventsDataset) {
     return (
       <div className={styles.emptyState}>
-        <p>{t('vessel.noActivityData')}</p>
+        <p>{t((t) => t.vessel.noActivityData)}</p>
       </div>
     )
   }
@@ -78,7 +78,7 @@ const VesselActivity = () => {
   if (eventsError) {
     return (
       <div className={styles.emptyState}>
-        <span className={styles.error}>{t('errors.profileEvents')}</span>
+        <span className={styles.error}>{t((t) => t.errors.profileEvents)}</span>
       </div>
     )
   }

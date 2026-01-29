@@ -160,15 +160,19 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
 
   const getVesselGraphTooltip = (graph: 'speed' | 'depth') => {
     let tooltipLabel: string =
-      graph === 'depth' ? t('timebarSettings.showGraphDepth') : t('timebarSettings.showGraphSpeed')
+      graph === 'depth'
+        ? t((t) => t.timebarSettings.showGraphDepth)
+        : t((t) => t.timebarSettings.showGraphSpeed)
     if (!activeTrackDataviews?.length) {
-      tooltipLabel = t('timebarSettings.tracksDisabled')
+      tooltipLabel = t((t) => t.timebarSettings.tracksDisabled)
     } else if (!timebarGraphEnabled) {
-      tooltipLabel = t('timebarSettings.graphDisabled')
+      tooltipLabel = t((t) => t.timebarSettings.graphDisabled)
     } else if (!hasSomeVesselLayer) {
-      tooltipLabel = t('timebarSettings.graphVesselOnly', {
+      tooltipLabel = t((t) => t.timebarSettings.graphVesselOnly, {
         graph:
-          graph === 'depth' ? t('timebarSettings.graphDepth') : t('timebarSettings.graphSpeed'),
+          graph === 'depth'
+            ? t((t) => t.timebarSettings.graphDepth)
+            : t((t) => t.timebarSettings.graphSpeed),
       })
     }
     return tooltipLabel
@@ -177,12 +181,12 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
   const expandedContainerRef = useClickedOutside(closeOptions)
 
   const activityTooltipLabel = !activeActivityDataviews?.length
-    ? t('timebarSettings.activityDisabled')
-    : t('timebarSettings.showActivity')
+    ? t((t) => t.timebarSettings.activityDisabled)
+    : t((t) => t.timebarSettings.showActivity)
 
   const detectionsTooltipLabel = !activeDetectionsDataviews?.length
-    ? t('timebarSettings.detectionsDisabled')
-    : t('timebarSettings.showDetections')
+    ? t((t) => t.timebarSettings.detectionsDisabled)
+    : t((t) => t.timebarSettings.showDetections)
 
   return (
     <div className={cx('print-hidden', styles.container)} ref={expandedContainerRef}>
@@ -193,15 +197,15 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
         onClick={optionsPanelOpen ? closeOptions : openOptions}
         tooltip={
           loading
-            ? t('vessel.loadingInfo')
+            ? t((t) => t.vessel.loadingInfo)
             : optionsPanelOpen
-              ? t('timebarSettings.settings_close')
-              : t('timebarSettings.settings_open')
+              ? t((t) => t.timebarSettings.settings_close)
+              : t((t) => t.timebarSettings.settings_open)
         }
       />
       {optionsPanelOpen && (
         <div className={styles.optionsContainer}>
-          <h1>{t('timebarSettings.title')}</h1>
+          <h1>{t((t) => t.timebarSettings.title)}</h1>
           <div className={styles.radiosContainer}>
             {!isStandaloneVesselLocation && (
               <Fragment>
@@ -209,7 +213,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   label={
                     <Icon
                       SvgIcon={AreaIcon}
-                      label={t('common.activity')}
+                      label={t((t) => t.common.activity)}
                       color={activeActivityDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                       disabled={!activeActivityDataviews?.length}
                     />
@@ -223,7 +227,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   label={
                     <Icon
                       SvgIcon={AreaIcon}
-                      label={t('common.detections')}
+                      label={t((t) => t.common.detections)}
                       color={activeDetectionsDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                       disabled={!activeDetectionsDataviews?.length}
                     />
@@ -237,7 +241,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
                   label={
                     <Icon
                       SvgIcon={AreaIcon}
-                      label={t('common.events')}
+                      label={t((t) => t.common.events)}
                       color={activeEventsDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                       disabled={!activeEventsDataviews?.length}
                     />
@@ -273,7 +277,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               label={
                 <Icon
                   SvgIcon={vesselsAsPositions ? TrackPositionsIcon : TracksIcon}
-                  label={t('timebarSettings.tracks')}
+                  label={t((t) => t.timebarSettings.tracks)}
                   color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                   disabled={!activeTrackDataviews?.length}
                 />
@@ -285,8 +289,8 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               }
               tooltip={
                 !activeTrackDataviews?.length
-                  ? t('timebarSettings.tracksDisabled')
-                  : t('timebarSettings.showTracks')
+                  ? t((t) => t.timebarSettings.tracksDisabled)
+                  : t((t) => t.timebarSettings.showTracks)
               }
               onClick={setVesselActive}
             />
@@ -294,7 +298,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               label={
                 <Icon
                   SvgIcon={TrackSpeedIcon}
-                  label={t('timebarSettings.graphSpeed')}
+                  label={t((t) => t.timebarSettings.graphSpeed)}
                   color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                   disabled={!hasSomeVesselLayer || !activeTrackDataviews?.length}
                 />
@@ -311,7 +315,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               label={
                 <Icon
                   SvgIcon={TrackDepthIcon}
-                  label={t('timebarSettings.graphDepth')}
+                  label={t((t) => t.timebarSettings.graphDepth)}
                   color={activeTrackDataviews[0]?.config?.color || COLOR_PRIMARY_BLUE}
                   disabled={!hasSomeVesselLayer || !activeTrackDataviews?.length}
                 />
@@ -328,10 +332,10 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               const dataset = envDataview.datasets?.find(
                 (d) => d.type === DatasetTypes.Fourwings || d.type === DatasetTypes.UserContext
               )
-              const title = t(
-                `datasets:${dataset?.id}.name` as any,
-                dataset?.name || dataset?.id || ''
-              )
+              const title = t((t) => t[dataset?.id ?? ''].name, {
+                defalutValue: dataset?.name || dataset?.id || '',
+                ns: 'datasets',
+              })
               return (
                 <Radio
                   key={envDataview.id}
@@ -355,10 +359,10 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               const dataset = pointDataview.datasets?.find(
                 (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
               )
-              const title = t(
-                `datasets:${dataset?.id}.name` as any,
-                dataset?.name || dataset?.id || ''
-              )
+              const title = t((t) => t[dataset?.id ?? ''].name, {
+                defalutValue: dataset?.name || dataset?.id || '',
+                ns: 'datasets',
+              })
               return (
                 <Radio
                   key={pointDataview.id}

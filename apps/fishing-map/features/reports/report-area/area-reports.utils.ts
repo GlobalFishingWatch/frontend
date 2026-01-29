@@ -236,7 +236,7 @@ export const getBufferedFeature = ({
     ...properties,
     id: REPORT_BUFFER_FEATURE_ID,
     value: 'buffer',
-    label: t('analysis.bufferedArea', {
+    label: t((t) => t.analysis.bufferedArea, {
       value,
       unit,
     }),
@@ -287,7 +287,7 @@ export function normalizeVesselProperties(identity: VesselLastIdentity) {
         .sort()
         .map((g) => formatInfoField(g, 'shiptypes'))
         .join(', ') || OTHERS_CATEGORY_LABEL,
-    flagTranslated: t(`flags:${identity.flag as string}` as any),
+    flagTranslated: t((t) => t[identity.flag as string], { ns: 'flags' }),
   }
 }
 
