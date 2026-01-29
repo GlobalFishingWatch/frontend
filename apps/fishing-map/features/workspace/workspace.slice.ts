@@ -221,6 +221,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           ...LIBRARY_LAYERS,
         ]
         const datasetsIds = getDatasetsInDataviews(dataviews, dataviewInstances, guestUser)
+        datasetsIds.push('public-global-vessel-identity-vi-653:v1.0')
         const vesselGroupsIds = getVesselGroupsInDataviews(
           [...dataviews, ...dataviewInstances],
           guestUser
