@@ -93,7 +93,7 @@ module "preview-dev" {
   }
   set_env_vars_build = [
     "NX_CLOUD_ACCESS_TOKEN=${local.secrets_path.dev}/FRONTEND_NX_CLOUD_ACCESS_TOKEN",
-    "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
+    "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.staging.globalfishingwatch.org",
     "NEXT_PUBLIC_API_VERSION=v3",
     "NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
     "NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
