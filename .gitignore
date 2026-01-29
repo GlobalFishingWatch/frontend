@@ -158,3 +158,8 @@ __traces__
 test-results/
 .playwright/
 playwright-report/
+
+
+# SSL certificates
+local.globalfishingwatch.org-key.pem
+local.globalfishingwatch.org.pem
