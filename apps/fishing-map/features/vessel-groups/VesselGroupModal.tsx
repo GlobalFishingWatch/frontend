@@ -81,6 +81,7 @@ import {
   resetVesselGroupModal,
   resetVesselGroupModalSearchStatus,
   searchVesselGroupsVesselsThunk,
+  selectIsOwnedByUser,
   selectVesselGroupConfirmationMode,
   selectVesselGroupEditId,
   selectVesselGroupModalOpen,
@@ -102,7 +103,7 @@ function VesselGroupModal(): React.ReactElement<any> {
   const confirmationMode = useSelector(selectVesselGroupConfirmationMode)
   const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
   const editingVesselGroupId = useSelector(selectVesselGroupEditId)
-  const userIsVesselGroupOwner = useSelector(selectUserIsVesselGroupOwner)
+  const userIsVesselGroupOwner = useSelector(selectIsOwnedByUser)
   const vesselGroupVesselsToSearch = useSelector(selectVesselGroupsModalSearchIds)
   const editingVesselGroup = useSelector(selectVesselGroupById(editingVesselGroupId as string))
   const searchVesselStatus = useSelector(selectVesselGroupSearchStatus)
@@ -463,16 +464,12 @@ function VesselGroupModal(): React.ReactElement<any> {
         </div>
         {fullModalLoading ? (
           <Spinner />
+        ) : hasVesselGroupsVessels ? (
+          <div className={styles.vesselsTableContainer}>
+            <VesselGroupVessels searchIdField={searchIdField || 'imo'} />
+          </div>
         ) : (
-          <Fragment>
-            {hasVesselGroupsVessels ? (
-              <div className={styles.vesselsTableContainer}>
-                <VesselGroupVessels />
-              </div>
-            ) : (
-              <VesselGroupSearch onError={setError} />
-            )}
-          </Fragment>
+          <VesselGroupSearch onError={setError} />
         )}
       </div>
       <div className={styles.modalFooter}>

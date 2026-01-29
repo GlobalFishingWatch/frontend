@@ -98,7 +98,7 @@ export default function ReportVesselsTable({
   }
 
   return (
-    <Fragment>
+    <div>
       <div className={styles.tableContainer} data-test="report-vessels-table">
         {isAnyAreaReportLocation &&
           reportCategory === 'activity' &&
@@ -297,6 +297,6 @@ export default function ReportVesselsTable({
         </div>
       </div>
       <ReportVesselsTableFooter activityUnit={activityUnit} />
-    </Fragment>
+    </div>
   )
 }

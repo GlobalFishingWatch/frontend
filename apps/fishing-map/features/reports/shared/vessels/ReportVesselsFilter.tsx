@@ -60,15 +60,9 @@ export default function ReportVesselsFilter({
       <Tooltip
         content={
           <Fragment>
-            {t(
-              'analysis.searchHelp',
-              "Use spaces to search by multiple fileds and '-' to find all vessels that don't match a query."
-            )}
+            {t('analysis.searchHelp')}
             <br />
-            {t(
-              'analysis.searchHelpExamples',
-              "e.g. 'china trawlers', '-spain', 'peru purse|trawler'"
-            )}
+            {t('analysis.searchHelpExamples')}
           </Fragment>
         }
       >

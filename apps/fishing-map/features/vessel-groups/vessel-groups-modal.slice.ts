@@ -51,6 +51,7 @@ interface VesselGroupModalState {
     status: AsyncReducerStatus
     error: ParsedAPIError | null
   }
+  isOwnedByUser: boolean
 }
 
 type SearchVesselsBody = { datasets: string[]; where?: string; ids?: string[] }
@@ -200,6 +201,7 @@ const initialState: VesselGroupModalState = {
     status: AsyncReducerStatus.Idle,
     error: null,
   },
+  isOwnedByUser: false,
 }
 
 export const searchVesselGroupsVesselsThunk = createAsyncThunk(
@@ -304,6 +306,9 @@ export const vesselGroupModalSlice = createSlice({
     setVesselGroupEditId: (state, action: PayloadAction<string>) => {
       state.vesselGroupEditId = action.payload
     },
+    setIsOwnedByUser: (state, action: PayloadAction<boolean>) => {
+      state.isOwnedByUser = action.payload
+    },
     setVesselGroupConfirmationMode: (state, action: PayloadAction<VesselGroupConfirmationMode>) => {
       state.confirmationMode = action.payload
     },
@@ -354,6 +359,7 @@ export const {
   setVesselGroupModalVessels,
   setVesselGroupModalSearchText,
   setVesselGroupEditId,
+  setIsOwnedByUser,
   setVesselGroupConfirmationMode,
   resetVesselGroupModal,
 } = vesselGroupModalSlice.actions
@@ -370,5 +376,6 @@ export const selectVesselGroupEditId = (state: RootState) =>
   state.vesselGroupModal.vesselGroupEditId
 export const selectVesselGroupConfirmationMode = (state: RootState) =>
   state.vesselGroupModal.confirmationMode
+export const selectIsOwnedByUser = (state: RootState) => state.vesselGroupModal.isOwnedByUser
 
 export default vesselGroupModalSlice.reducer

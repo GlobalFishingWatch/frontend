@@ -95,6 +95,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
     },
     query: {
       ...query,
+      bivariateDataviews: null,
       reportBufferUnit: isPointFeature ? DEFAULT_BUFFER_UNIT : undefined,
       reportBufferValue: isPointFeature ? DEFAULT_POINT_BUFFER_VALUE : undefined,
       reportBufferOperation: isPointFeature ? DEFAULT_BUFFER_OPERATION : undefined,

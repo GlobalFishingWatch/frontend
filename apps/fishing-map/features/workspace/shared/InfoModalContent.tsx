@@ -1,12 +1,11 @@
-import { Fragment } from 'react'
 import { useSelector } from 'react-redux'
-import parse from 'html-react-parser'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 
 import { getDatasetDescriptionTranslated } from 'features/i18n/utils.datasets'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { htmlSafeParse } from 'utils/html-parser'
 
 import styles from './InfoModal.module.css'
 
@@ -18,6 +17,7 @@ const getDatasetQueriesArray = (dataset: Dataset) => {
     : [rawQueries as unknown as string]
   return queries
 }
+
 type InfoModalContentProps = {
   dataset: Dataset
 }
@@ -27,18 +27,17 @@ const InfoModalContent = ({ dataset }: InfoModalContentProps) => {
   if (!dataset) {
     return null
   }
-
   const description = getDatasetDescriptionTranslated(dataset)
   const queries = getDatasetQueriesArray(dataset)
   return (
-    <Fragment>
-      <p className={styles.content}>
+    <div>
+      <div className={styles.content}>
         {/**
          * For security reasons, we are only parsing html
          * coming from translated descriptions
          **/}
-        {description.length > 0 ? parse(description) : dataset.description}
-      </p>
+        {description.length > 0 ? htmlSafeParse(description) : dataset.description}
+      </div>
       {gfwUser && queries && queries?.length > 0 && (
         <div className={styles.content}>
           <div className={styles.queriesContainer}>
@@ -54,7 +53,7 @@ const InfoModalContent = ({ dataset }: InfoModalContentProps) => {
           ))}
         </div>
       )}
-    </Fragment>
+    </div>
   )
 }
 

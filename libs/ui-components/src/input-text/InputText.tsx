@@ -52,6 +52,7 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
   useImperativeHandle(forwardedRef, () => inputRef.current as HTMLInputElement)
   const inputRef = useRef<HTMLInputElement>(null)
   const [passwordVisible, setPasswordVisible] = useState(false)
+  const [isValid, setIsValid] = useState(true)
   let inputType = type
   if (type === 'password' && passwordVisible) {
     inputType = 'text'
@@ -60,6 +61,16 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
   const togglePasswordVisibility = useCallback(() => {
     setPasswordVisible((prev) => !prev)
   }, [])
+
+  const handleInput = useCallback(
+    (e: React.FormEvent<HTMLInputElement>) => {
+      setIsValid(e.currentTarget.validity.valid)
+      if (rest.onInput) {
+        rest.onInput(e)
+      }
+    },
+    [rest]
+  )
 
   const inputProps = {
     id: id ?? label,
@@ -88,6 +99,7 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
         type={inputType}
         {...(testId && { 'data-test': testId })}
         {...inputProps}
+        onInput={handleInput}
       />
       {loading && <Spinner size="tiny" className={styles.spinner} />}
       {!loading && onCleanButtonClick && inputProps.value && (
@@ -104,15 +116,11 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
           size="tiny"
           onClick={togglePasswordVisibility}
           className={styles.icon}
-          type={!inputRef.current || inputRef.current.validity.valid ? 'default' : 'warning'}
+          type={isValid ? 'default' : 'warning'}
         />
       )}
       {!loading && (type === 'email' || type === 'search') && (
-        <Icon
-          icon={type}
-          className={styles.icon}
-          type={!inputRef.current || inputRef.current.validity.valid ? 'default' : 'warning'}
-        />
+        <Icon icon={type} className={styles.icon} type={isValid ? 'default' : 'warning'} />
       )}
     </div>
   )

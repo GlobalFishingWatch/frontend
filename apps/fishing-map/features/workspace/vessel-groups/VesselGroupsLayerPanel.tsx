@@ -24,6 +24,7 @@ import {
   isOutdatedVesselGroup,
 } from 'features/vessel-groups/vessel-groups.utils'
 import {
+  setIsOwnedByUser,
   setVesselGroupConfirmationMode,
   setVesselGroupEditId,
   setVesselGroupModalVessels,
@@ -97,6 +98,7 @@ function VesselGroupLayerPanel({
     if (vesselGroup && (vesselGroup?.id || !vesselGroup?.vessels?.length)) {
       dispatch(setVesselGroupEditId(vesselGroup.id))
       dispatch(setVesselGroupModalVessels(vesselGroup.vessels))
+      dispatch(setIsOwnedByUser(isOwnedByUser))
       dispatch(setVesselGroupsModalOpen(true))
       if (isOutdated) {
         dispatch(setVesselGroupConfirmationMode('update'))
