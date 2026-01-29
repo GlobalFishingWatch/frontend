@@ -3,7 +3,7 @@ import { debounce, uniq } from 'es-toolkit'
 import { atom, useAtom, useSetAtom } from 'jotai'
 
 import { DataviewCategory, type DataviewInstance } from '@globalfishingwatch/api-types'
-import type { AnyDeckLayer, FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
+import type { AnyDeckLayer } from '@globalfishingwatch/deck-layers'
 import { TilesBoundariesLayer } from '@globalfishingwatch/deck-layers'
 import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 
@@ -59,16 +59,16 @@ export function useDeckLayerComposer({
           (visualizationMode, index) =>
             new TilesBoundariesLayer({ id: index.toString(), visualizationMode })
         ),
-      ]
+      ] as AnyDeckLayer[]
     }
-    return deckLayers as (AnyDeckLayer & { visualizationMode?: FourwingsVisualizationMode })[]
+    return deckLayers
   }, [memoDataviews, memoGlobalConfig])
 
   useEffect(() => {
     debouncedSetDeckLayers(layerInstances)
   }, [layerInstances, debouncedSetDeckLayers])
 
-  return deckLayers as (AnyDeckLayer & { visualizationMode?: FourwingsVisualizationMode })[]
+  return deckLayers
 }
 
 export function useSetDeckLayerComposer() {
