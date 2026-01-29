@@ -40,7 +40,7 @@ const Insights = () => {
     return (
       <div className={styles.disclaimer}>
         <Icon icon="warning" type="warning" />
-        {t('vessel.insights.disclaimerTimeRangeBeforeMinYear', {
+        {t((t) => t.vessel.insights.disclaimerTimeRangeBeforeMinYear, {
           year: MIN_INSIGHTS_YEAR,
         })}
       </div>
@@ -49,13 +49,13 @@ const Insights = () => {
 
   return (
     <div className={styles.container}>
-      <h2 className="print-only">{t('vessel.sectionInsights')}</h2>
+      <h2 className="print-only">{t((t) => t.vessel.sectionInsights)}</h2>
       <p className={styles.title}>
-        {t('vessel.insights.sectionTitle', {
+        {t((t) => t.vessel.insights.sectionTitle, {
           start: formatI18nDate(start),
           end: formatI18nDate(end),
         })}
-        <DataTerminology title={t('vessel.sectionInsights')} terminologyKey="insights" />
+        <DataTerminology title={t((t) => t.vessel.sectionInsights)} terminologyKey="insights" />
       </p>
       {insightsByVesselType.map((insight) => (
         <InsightWrapper insight={insight} key={insight} />

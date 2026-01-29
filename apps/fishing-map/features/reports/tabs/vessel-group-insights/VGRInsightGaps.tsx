@@ -59,10 +59,10 @@ const VesselGroupReportInsightGap = ({ skip }: { skip?: boolean }) => {
   return (
     <div id={`${VESSEL_GROUP_DATAVIEW_PREFIX}gap`} className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <Tooltip content={t('common.experimentalTooltip')}>
-          <label className="experimental">{t('vessel.insights.gaps')}</label>
+        <Tooltip content={t((t) => t.common.experimentalTooltip)}>
+          <label className="experimental">{t((t) => t.vessel.insights.gaps)}</label>
         </Tooltip>
-        <DataTerminology title={t('vessel.insights.gaps')} terminologyKey="insightsGaps" />
+        <DataTerminology title={t((t) => t.vessel.insights.gaps)} terminologyKey="insightsGaps" />
       </div>
       {skip || isLoading || !vesselGroup ? (
         <VesselGroupReportInsightPlaceholder />
@@ -70,7 +70,7 @@ const VesselGroupReportInsightGap = ({ skip }: { skip?: boolean }) => {
         <InsightError error={error as ParsedAPIError} />
       ) : !vesselsWithGaps || vesselsWithGaps?.length === 0 ? (
         <p className={cx(styles.nested, styles.secondary, styles.row)}>
-          {t('vessel.insights.gapsEventsEmpty')}
+          {t((t) => t.vessel.insights.gapsEventsEmpty)}
         </p>
       ) : (
         <div className={cx(styles.nested, styles.row)}>
@@ -79,11 +79,12 @@ const VesselGroupReportInsightGap = ({ skip }: { skip?: boolean }) => {
             open={isExpanded}
             className={styles.collapsable}
             labelClassName={styles.collapsableLabel}
-            label={t('vesselGroups.insights.gaps', {
+            label={t((t) => t.vesselGroups.insights.gaps, {
               count: vesselsWithGaps?.reduce(
                 (acc, vessel) => acc + vessel.periodSelectedCounters.eventsGapOff,
                 0
               ),
+
               vessels: vesselsWithGaps.length,
             })}
             onToggle={onInsightToggle}

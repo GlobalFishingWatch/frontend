@@ -73,8 +73,8 @@ const BigQueryModal: React.FC = () => {
           onChange={(e) => setName(e.target.value)}
         />
         <Select
-          label={t('bigQuery.visualiationMode')}
-          placeholder={t('selects.placeholder')}
+          label={t((t) => t.bigQuery.visualiationMode)}
+          placeholder={t((t) => t.selects.placeholder)}
           options={VisualisationOptions}
           containerClassName={styles.input}
           selectedOption={currentVisualisationMode}
@@ -85,8 +85,8 @@ const BigQueryModal: React.FC = () => {
         {visualisationMode === '4wings' && (
           <Fragment>
             <Select
-              label={t('bigQuery.aggregationMode')}
-              placeholder={t('selects.placeholder')}
+              label={t((t) => t.bigQuery.aggregationMode)}
+              placeholder={t((t) => t.selects.placeholder)}
               options={AggregationOptions}
               containerClassName={styles.input}
               selectedOption={AggregationOptions.find(({ id }) => id === aggregationOperation)}
@@ -106,12 +106,12 @@ const BigQueryModal: React.FC = () => {
       </div>
       <div className={styles.row}>
         <label>
-          {t('bigQuery.query')}{' '}
+          {t((t) => t.bigQuery.query)}{' '}
           {currentVisualisationMode && (
             <span className={styles.lowercase}>{currentVisualisationMode.fieldsHint}</span>
           )}
         </label>
-        <Tooltip content={!visualisationMode ? t('bigQuery.selectVisualisation') : ''}>
+        <Tooltip content={!visualisationMode ? t((t) => t.bigQuery.selectVisualisation) : ''}>
           <div>
             <textarea
               value={query}
@@ -131,7 +131,7 @@ const BigQueryModal: React.FC = () => {
       </div>
       <SwitchRow
         className={styles.row}
-        label={t('dataset.uploadPublic')}
+        label={t((t) => t.dataset.uploadPublic)}
         active={createAsPublic}
         onClick={() => setCreateAsPublic((createAsPublic) => !createAsPublic)}
       />
@@ -139,7 +139,7 @@ const BigQueryModal: React.FC = () => {
         {error && <p className={styles.error}>{error}</p>}
         {runCost !== null && (
           <p>
-            {t('bigQuery.runCost')} {runCost?.totalBytesPretty}
+            {t((t) => t.bigQuery.runCost)} {runCost?.totalBytesPretty}
           </p>
         )}
         <Button
@@ -148,17 +148,21 @@ const BigQueryModal: React.FC = () => {
           loading={runCostStatus === AsyncReducerStatus.Loading}
           onClick={onRunCostClick}
         >
-          {t('bigQuery.runCostCheck')}
+          {t((t) => t.bigQuery.runCostCheck)}
         </Button>
         <Button
           disabled={disableCreation || creationStatus === AsyncReducerStatus.Loading}
           tooltip={
-            error ? t('bigQuery.queryError') : disableCreation ? t('bigQuery.validationError') : ''
+            error
+              ? t((t) => t.bigQuery.queryError)
+              : disableCreation
+                ? t((t) => t.bigQuery.validationError)
+                : ''
           }
           loading={creationStatus === AsyncReducerStatus.Loading}
           onClick={handleCreateClick}
         >
-          {t('bigQuery.create')}
+          {t((t) => t.bigQuery.create)}
         </Button>
       </div>
     </div>

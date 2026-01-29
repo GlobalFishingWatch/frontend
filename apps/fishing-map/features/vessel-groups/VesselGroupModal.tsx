@@ -182,7 +182,7 @@ function VesselGroupModal(): React.ReactElement<any> {
           setError('')
           setShowBackButton(true)
         } else {
-          setError(t('vesselGroup.searchNotFound'))
+          setError(t((t) => t.vesselGroup.searchNotFound))
         }
       } else {
         setError((action.payload as any)?.message || '')
@@ -224,7 +224,7 @@ function VesselGroupModal(): React.ReactElement<any> {
   const onBackClick = useCallback(
     (action: 'back' | 'close' = 'back') => {
       const confirmed = hasVesselGroupsVessels
-        ? window.confirm(t('vesselGroup.confirmAbort'))
+        ? window.confirm(t((t) => t.vesselGroup.confirmAbort))
         : true
       if (confirmed) {
         if (action === 'back') {
@@ -370,25 +370,25 @@ function VesselGroupModal(): React.ReactElement<any> {
   const confirmButtonDisabled =
     loading || hasVesselsOverflow || !searchVesselGroupsVesselsAllowed || missesRequiredParams
   let confirmButtonTooltip: string = hasVesselsOverflow
-    ? t('vesselGroup.tooManyVessels', {
+    ? t((t) => t.vesselGroup.tooManyVessels, {
         count: MAX_VESSEL_GROUP_VESSELS,
       })
     : ''
   if (hasVesselGroupsVessels) {
     if (groupName === '') {
-      confirmButtonTooltip = t('vesselGroup.missingParam', {
-        param: t('common.name').toLowerCase(),
+      confirmButtonTooltip = t((t) => t.vesselGroup.missingParam, {
+        param: t((t) => t.common.name).toLowerCase(),
       })
     }
   } else {
     confirmButtonTooltip =
       searchIdField === ''
-        ? t('vesselGroup.missingParam', {
-            param: t('vesselGroup.idField').toLowerCase(),
+        ? t((t) => t.vesselGroup.missingParam, {
+            param: t((t) => t.vesselGroup.idField).toLowerCase(),
           })
         : searchVesselStatus === AsyncReducerStatus.Loading
-          ? t('common.loading')
-          : t('vesselGroup.searchVesselsRequired')
+          ? t((t) => t.common.loading)
+          : t((t) => t.vesselGroup.searchVesselsRequired)
   }
 
   const onIdFieldChange = useCallback(
@@ -415,7 +415,7 @@ function VesselGroupModal(): React.ReactElement<any> {
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
-      title={t('vesselGroup.vesselGroup')}
+      title={t((t) => t.vesselGroup.vesselGroup)}
       isOpen={isModalOpen}
       className={styles.modal}
       contentClassName={styles.modalContainer}
@@ -426,7 +426,7 @@ function VesselGroupModal(): React.ReactElement<any> {
         <div className={styles.parameters}>
           <InputText
             id="groupName"
-            label={t('vesselGroup.groupName')}
+            label={t((t) => t.vesselGroup.groupName)}
             type={'text'}
             value={groupName}
             onChange={onGroupNameChange}
@@ -434,7 +434,7 @@ function VesselGroupModal(): React.ReactElement<any> {
           {!fullModalLoading && !hasVesselGroupsVessels && (
             <Fragment>
               <MultiSelect
-                label={t('layer.sources')}
+                label={t((t) => t.layer.sources)}
                 placeholder={getPlaceholderBySelections({
                   selection: sourcesSelected.map(({ id }) => id),
                   options: sourceOptions,
@@ -445,7 +445,7 @@ function VesselGroupModal(): React.ReactElement<any> {
                 onRemove={sourcesSelected?.length > 1 ? onRemoveSourceClick : undefined}
               />
               <Select
-                label={t('vesselGroup.idField')}
+                label={t((t) => t.vesselGroup.idField)}
                 options={ID_COLUMNS_OPTIONS}
                 selectedOption={ID_COLUMNS_OPTIONS.find((o) => o.id === searchIdField)}
                 onSelect={onIdFieldChange}
@@ -456,7 +456,7 @@ function VesselGroupModal(): React.ReactElement<any> {
           {editingVesselGroup && hasVesselGroupsVessels && (
             <p className={styles.searchLink}>
               <span className={styles.searchLinkText}>
-                {t('vesselGroup.searchLink')}
+                {t((t) => t.vesselGroup.searchLink)}
                 <IconButton size="small" icon="search" type="border" onClick={onSearchClick} />
               </span>
             </p>
@@ -475,14 +475,16 @@ function VesselGroupModal(): React.ReactElement<any> {
       <div className={styles.modalFooter}>
         {vesselGroupVessels && vesselGroupVessels?.length > 0 && (
           <label>
-            {t('common.vessel', { count: vesselGroupVessels.length })}:{' '}
-            {getVesselGroupVesselsCount({ vessels: vesselGroupVessels } as VesselGroup)}
+            {t((t) => t.common.vessel, {
+              count: vesselGroupVessels.length,
+            })}
+            : {getVesselGroupVesselsCount({ vessels: vesselGroupVessels } as VesselGroup)}
           </label>
         )}
         {!editingVesselGroup && (
           <SwitchRow
             className={styles.row}
-            label={t('vesselGroup.uploadPublic')}
+            label={t((t) => t.vesselGroup.uploadPublic)}
             active={createAsPublic}
             onClick={() => setCreateAsPublic((createAsPublic) => !createAsPublic)}
           />
@@ -495,8 +497,9 @@ function VesselGroupModal(): React.ReactElement<any> {
           {datasetsWithoutRelatedEvents.length >= 1 && (
             <div className={styles.disclaimerFooter}>
               <Icon icon="warning" type="warning" />
-              {t('vesselGroup.disclaimerFeaturesNotAvailable', {
-                features: t('vesselGroup.disclaimerFeaturesNotAvailableGenericPrefix'),
+              {t((t) => t.vesselGroup.disclaimerFeaturesNotAvailable, {
+                features: t((t) => t.vesselGroup.disclaimerFeaturesNotAvailableGenericPrefix),
+
                 datasets: Array.from(datasetsWithoutRelatedEvents)
                   .map((d) => getDatasetLabel(d))
                   .join(', '),
@@ -505,14 +508,14 @@ function VesselGroupModal(): React.ReactElement<any> {
           )}
           {!searchVesselGroupsVesselsAllowed && (
             <span className={styles.errorMsg}>
-              {t('vesselGroup.searchLimit', {
+              {t((t) => t.vesselGroup.searchLimit, {
                 limit: MAX_VESSEL_GROUP_VESSELS,
               })}
             </span>
           )}
           {vesselGroupAPIError && !error && (
             <span className={styles.errorMsg}>
-              {vesselGroupsError?.message || t('errors.genericShort')}
+              {vesselGroupsError?.message || t((t) => t.errors.genericShort)}
             </span>
           )}
         </div>
@@ -523,7 +526,7 @@ function VesselGroupModal(): React.ReactElement<any> {
             className={styles.backButton}
             onClick={() => onBackClick('back')}
           >
-            {t('common.back')}
+            {t((t) => t.common.back)}
           </Button>
         )}
         {!fullModalLoading &&
@@ -545,9 +548,9 @@ function VesselGroupModal(): React.ReactElement<any> {
             >
               {hasVesselGroupsVessels
                 ? confirmationMode === 'update'
-                  ? t('common.update')
-                  : t('common.confirm')
-                : t('common.continue')}
+                  ? t((t) => t.common.update)
+                  : t((t) => t.common.confirm)
+                : t((t) => t.common.continue)}
             </Button>
           ) : (
             <Fragment>
@@ -559,13 +562,13 @@ function VesselGroupModal(): React.ReactElement<any> {
                 type={workspaceToNavigate ? 'secondary' : 'default'}
                 tooltip={
                   confirmButtonTooltip ||
-                  t(
-                    'vesselGroup.saveForLaterTooltip',
-                    "You'll find the group in the activity layers filters or your user panel button"
-                  )
+                  t((t) => t.vesselGroup.saveForLaterTooltip, {
+                    defaultValue:
+                      "You'll find the group in the activity layers filters or your user panel button",
+                  })
                 }
               >
-                {t('vesselGroup.saveForLater')}
+                {t((t) => t.vesselGroup.saveForLater)}
               </Button>
               {workspaceToNavigate && (
                 <Button
@@ -575,7 +578,7 @@ function VesselGroupModal(): React.ReactElement<any> {
                   loading={loading && buttonLoading === 'saveAndSeeInWorkspace'}
                   tooltip={confirmButtonTooltip}
                 >
-                  {t('vesselGroup.saveAndSeeInWorkspace')}
+                  {t((t) => t.vesselGroup.saveAndSeeInWorkspace)}
                 </Button>
               )}
             </Fragment>

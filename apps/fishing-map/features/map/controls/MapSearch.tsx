@@ -127,17 +127,18 @@ const MapSearch = () => {
   return (
     <div className={styles.container}>
       <IconButton
+        // eslint-disable-next-line react-hooks/refs
         {...getToggleButtonProps(togglePropOptions)}
         icon="search"
         type="map-tool"
         testId="map-search-button"
-        tooltip={isOpen ? t('search.close') : t('map.search')}
+        tooltip={isOpen ? t((t) => t.search.close) : t((t) => t.map.search)}
         className={cx({ [styles.active]: isOpen })}
       />
-
       <Hint id="areaSearch" className={styles.helpHint} />
       <div className={cx(styles.searchContainer, { [styles.hidden]: !isOpen })}>
         <InputText
+          // eslint-disable-next-line react-hooks/refs
           {...getInputProps({ ref: inputRef })}
           onClick={(e) => {
             e.preventDefault()
@@ -145,7 +146,7 @@ const MapSearch = () => {
           }}
           className={styles.input}
           testId="map-search-input"
-          placeholder={t('map.search')}
+          placeholder={t((t) => t.map.search)}
           value={inputValue}
         />
         <ul {...getMenuProps()} className={styles.results} data-test="map-search-results">
@@ -159,7 +160,7 @@ const MapSearch = () => {
                 data-test={`map-search-result-${index}`}
                 className={cx(styles.result, { [styles.highlighted]: highlightedIndex === index })}
               >
-                {`${t(`search.searchTypes.${type}`, type)}: ${formatInfoField(name, 'name')}${
+                {`${t((t: any) => t.search.searchTypes[type], { defaultValue: type })}: ${formatInfoField(name, 'name')}${
                   flag ? ` (${formatInfoField(flag, 'flag')})` : ''
                 }`}
               </li>

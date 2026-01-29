@@ -136,14 +136,14 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
 
   const getWorkspaceError = () => {
     if (!name) {
-      return t('workspace.nameRequired')
+      return t((t) => t.workspace.nameRequired)
     }
     if (viewAccess === WORKSPACE_PASSWORD_ACCESS || editAccess === WORKSPACE_PASSWORD_ACCESS) {
       if (!password) {
-        return t('workspace.passwordRequired')
+        return t((t) => t.workspace.passwordRequired)
       }
       if (password.length < MIN_WORKSPACE_PASSWORD_LENGTH) {
-        return t('workspace.passwordMinLength')
+        return t((t) => t.workspace.passwordMinLength)
       }
     }
     return ''
@@ -207,7 +207,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
-      title={title || t('workspace.save')}
+      title={title || t((t) => t.workspace.save)}
       isOpen={workspaceModalOpen}
       shouldCloseOnEsc
       className={styles.modalContentWrapper}
@@ -220,7 +220,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
             value={name}
             className={styles.input}
             testId="create-workspace-name"
-            label={t('common.name')}
+            label={t((t) => t.common.name)}
             onChange={onNameChange}
             // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus
@@ -229,7 +229,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
         <div className={styles.row}>
           <Select
             options={timeRangeOptions}
-            label={t('common.timerange')}
+            label={t((t) => t.common.timerange)}
             containerClassName={styles.select}
             onSelect={onSelectTimeRangeChange}
             selectedOption={
@@ -241,7 +241,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
               value={daysFromLatest}
               type="number"
               className={styles.select}
-              label={t('common.timerangeDaysFromLatest')}
+              label={t((t) => t.common.timerangeDaysFromLatest)}
               onChange={onDaysFromLatestChange}
               min={DAYS_FROM_LATEST_MIN}
               max={DAYS_FROM_LATEST_MAX}
@@ -252,10 +252,10 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
           <Select
             options={viewOptions}
             direction="top"
-            label={t('workspace.viewAccess')}
+            label={t((t) => t.workspace.viewAccess)}
             infoTooltip={
               containsPrivateDatasets
-                ? `${t('workspace.sharePrivateDisclaimer')}: ${privateDatasets.join(', ')}`
+                ? `${t((t) => t.workspace.sharePrivateDisclaimer)}: ${privateDatasets.join(', ')}`
                 : ''
             }
             containerClassName={styles.select}
@@ -265,14 +265,16 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
           <Select
             options={editOptions}
             direction="top"
-            label={t('workspace.editAccess')}
+            label={t((t) => t.workspace.editAccess)}
             placeholder={
               viewAccess === WORKSPACE_PRIVATE_ACCESS
-                ? t('common.onlyMe')
-                : t('selects.placeholder')
+                ? t((t) => t.common.onlyMe)
+                : t((t) => t.selects.placeholder)
             }
             infoTooltip={
-              viewAccess === WORKSPACE_PRIVATE_ACCESS ? t('workspace.privateEditAcessInfo') : ''
+              viewAccess === WORKSPACE_PRIVATE_ACCESS
+                ? t((t) => t.workspace.privateEditAcessInfo)
+                : ''
             }
             disabled={viewAccess === WORKSPACE_PRIVATE_ACCESS}
             containerClassName={styles.select}
@@ -287,7 +289,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
               className={styles.select}
               type="password"
               testId="create-workspace-password"
-              label={t('common.setNewPassword')}
+              label={t((t) => t.common.setNewPassword)}
               onChange={(e) => setPassword(e.target.value)}
             />
           )}
@@ -300,7 +302,7 @@ function CreateWorkspaceModal({ title, onFinish }: CreateWorkspaceModalProps) {
             htmlType="submit"
             testId="create-workspace-button"
           >
-            {t('workspace.create') as string}
+            {t((t) => t.workspace.create) as string}
           </Button>
         </div>
       </form>

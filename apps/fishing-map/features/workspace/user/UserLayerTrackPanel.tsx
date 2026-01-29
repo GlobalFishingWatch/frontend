@@ -162,7 +162,7 @@ function UserLayerTrackPanel({ dataview, mergedDataviewId }: UserPanelProps) {
           })}
           onClick={onSeeMoreClick}
         >
-          {seeMoreOpen ? t('common.less') : t('common.more')}
+          {seeMoreOpen ? t((t) => t.common.less) : t((t) => t.common.more)}
         </button>
       )}
     </Fragment>

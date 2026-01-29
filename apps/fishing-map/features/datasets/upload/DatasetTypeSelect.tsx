@@ -82,11 +82,11 @@ const DatasetType = ({
       {isDragActive ? (
         dragError ? (
           <div className={styles.textContainer}>
-            <p>{t('dataset.dragNotAccepted')}</p>
+            <p>{t((t) => t.dataset.dragNotAccepted)}</p>
           </div>
         ) : (
           <div className={styles.textContainer}>
-            <p>{t('dataset.dragActive')}</p>
+            <p>{t((t) => t.dataset.dragActive)}</p>
           </div>
         )
       ) : (
@@ -97,7 +97,7 @@ const DatasetType = ({
           <div className={styles.textContainer}>
             {fileRejections.length > 0 ? (
               <p className={cx(styles.description, styles.errorMessage)}>
-                {t('dataset.dragNotAccepted')}
+                {t((t) => t.dataset.dragNotAccepted)}
               </p>
             ) : (
               <p className={styles.fileTypes}>{fileTypes.join(', ')}</p>
@@ -121,25 +121,25 @@ const DatasetTypeSelect = ({
     <div className={styles.wrapper}>
       <DatasetType
         type="polygons"
-        title={t('dataset.typePolygons')}
+        title={t((t) => t.dataset.typePolygons)}
         style={style}
-        description={t('dataset.typePolygonsDescription')}
+        description={t((t) => t.dataset.typePolygonsDescription)}
         onFileLoaded={onFileLoaded}
         icon={<Polygons />}
       />
       <DatasetType
         type="tracks"
-        title={t('dataset.typeTracks')}
+        title={t((t) => t.dataset.typeTracks)}
         style={style}
-        description={t('dataset.typeTracksDescription')}
+        description={t((t) => t.dataset.typeTracksDescription)}
         icon={<Tracks />}
         onFileLoaded={onFileLoaded}
       />
       <DatasetType
         type="points"
-        title={t('dataset.typePoints')}
+        title={t((t) => t.dataset.typePoints)}
         style={style}
-        description={t('dataset.typePointsDescription')}
+        description={t((t) => t.dataset.typePointsDescription)}
         icon={<Points />}
         onFileLoaded={onFileLoaded}
       />

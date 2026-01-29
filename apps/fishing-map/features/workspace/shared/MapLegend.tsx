@@ -21,11 +21,11 @@ const getLegendLabelTranslated = (legend?: DeckLegendAtom, tFn = t) => {
   }
   let label =
     legend.unit === 'hours'
-      ? tFn('common.hours', 'hours').toLowerCase()
+      ? tFn((t) => t.common.hours, { defaultValue: 'hours' }).toLowerCase()
       : legend.unit === 'detections'
-        ? tFn('common.detections', 'detections').toLowerCase()
+        ? tFn((t) => t.common.detections, { defaultValue: 'detections' }).toLowerCase()
         : legend.unit === 'm/s'
-          ? tFn('common.m/s', 'm/s').toLowerCase()
+          ? tFn((t) => t.common['m/s'], { defaultValue: 'm/s' }).toLowerCase()
           : legend.label
 
   if (legend.label?.includes('²')) {
@@ -91,7 +91,7 @@ const MapLegendWrapper = ({
       currentValueClassName={styles.currentValue}
       labelComponent={
         uiLegend.label?.includes('²') ? (
-          <Tooltip content={t('map.legend_help')}>
+          <Tooltip content={t((t) => t.map.legend_help)}>
             <span className={cx(styles.legendLabel, styles.help)}>{uiLegend.label}</span>
           </Tooltip>
         ) : (

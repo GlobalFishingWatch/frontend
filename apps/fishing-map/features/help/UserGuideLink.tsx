@@ -76,8 +76,8 @@ function UserGuideLink({ section, className }: UserGuideLinkProps) {
     >
       <IconButton size="small" icon="help" className={styles.icon} />{' '}
       <div>
-        <label className={styles.label}>{t('userGuide.title')}</label>
-        <span>{t(`userGuide.${section}`)}</span>
+        <label className={styles.label}>{t((t) => t.userGuide.title)}</label>
+        <span>{t((t) => t.userGuide[section])}</span>
       </div>
     </a>
   )

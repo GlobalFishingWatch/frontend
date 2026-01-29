@@ -14,7 +14,6 @@ import type workspaceTranslations from '../../public/locales/source/workspaces.j
 export type ReportWorkspaceId = keyof (typeof workspaceTranslations)['reports']
 export type WorkspaceReportLink = {
   id: string
-  key?: string // Using analysis.see as default
 }
 export type ReportWorkspace =
   | {

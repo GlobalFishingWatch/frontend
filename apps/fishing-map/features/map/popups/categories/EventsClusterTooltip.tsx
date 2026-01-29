@@ -42,7 +42,7 @@ export function EventsClusterTooltip({
         />
         {moreFeatures.length > 0 && (
           <div className={cx(styles.popupSection, styles.secondary)}>
-            + {moreFeatures.length} {t('common.more')}
+            + {moreFeatures.length} {t((t) => t.common.more)}
           </div>
         )}
       </Fragment>

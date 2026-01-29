@@ -359,7 +359,7 @@ export const useTimebarVesselTracksGraph = () => {
 const getTrackEventHighlighterLabel = ({ chunk, expanded }: HighlighterCallbackFnArgs): string => {
   const { description, descriptionGeneric } = getEventDescription(chunk as any)
   if (chunk.cluster) {
-    return `${descriptionGeneric} (${chunk.cluster.numChunks} ${t('event.events')})`
+    return `${descriptionGeneric} (${chunk.cluster.numChunks} ${t((t) => t.event.events)})`
   }
   if (expanded) {
     return description as string

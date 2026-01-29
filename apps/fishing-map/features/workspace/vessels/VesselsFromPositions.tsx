@@ -131,7 +131,7 @@ function VesselsFromPositions() {
   return (
     <div className={cx(styles.content, 'print-hidden')}>
       <Collapsable
-        label={t('vessel.onScreen')}
+        label={t((t) => t.vessel.onScreen)}
         open
         className={cx(styles.header, styles.vesselsOnScreen, 'print-hidden')}
       >
@@ -158,13 +158,13 @@ function VesselsFromPositions() {
                 {fourwingsActivityLayer?.instance && !fourwingsDetectionsLayer?.instance && (
                   <span>
                     <I18nNumber number={Math.round(vessel.value)} />{' '}
-                    {index === 0 && ` ${t('common.hours')}`}
+                    {index === 0 && ` ${t((t) => t.common.hours)}`}
                   </span>
                 )}
                 {fourwingsDetectionsLayer?.instance && !fourwingsActivityLayer?.instance && (
                   <span>
                     <I18nNumber number={Math.round(vessel.value)} />{' '}
-                    {index === 0 && ` ${t('common.detections').toLowerCase()}`}
+                    {index === 0 && ` ${t((t) => t.common.detections).toLowerCase()}`}
                   </span>
                 )}
               </div>
@@ -173,7 +173,7 @@ function VesselsFromPositions() {
         </ul>
         {vessels.length > MAX_VESSLES_TO_DISPLAY && (
           <span className={styles.moreVesselsOnScreen}>
-            + {vessels.length - MAX_VESSLES_TO_DISPLAY} {t('common.more')}
+            + {vessels.length - MAX_VESSLES_TO_DISPLAY} {t((t) => t.common.more)}
           </span>
         )}
       </Collapsable>

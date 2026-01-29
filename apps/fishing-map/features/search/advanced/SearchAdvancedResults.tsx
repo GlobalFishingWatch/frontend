@@ -93,7 +93,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </AdvancedResultCellWithFilter>
           )
         },
-        header: t('vessel.gfw_shiptypes'),
+        header: t((t) => t.vessel.gfw_shiptypes),
       },
       {
         id: 'gfw_geartypes',
@@ -110,7 +110,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </AdvancedResultCellWithFilter>
           )
         },
-        header: t('vessel.gfw_geartypes'),
+        header: t((t) => t.vessel.gfw_geartypes),
       },
     ]
     const registryColumns: MRT_ColumnDef<any>[] = [
@@ -134,7 +134,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </AdvancedResultCellWithFilter>
           )
         },
-        header: t('vessel.registryGeartype'),
+        header: t((t) => t.vessel.registryGeartype),
       },
     ]
     let columnsByInfoSource = [...selfReportedColums, ...registryColumns]
@@ -184,7 +184,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </VesselLink>
           )
         },
-        header: t('common.name'),
+        header: t((t) => t.common.name),
         enableColumnDragging: false,
         enableColumnActions: false,
       },
@@ -207,7 +207,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </div>
           )
         },
-        header: t('vessel.transmissionDates'),
+        header: t((t) => t.vessel.transmissionDates),
       },
       {
         id: 'flag',
@@ -220,7 +220,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </span>
           ))
         },
-        header: t('vessel.flag'),
+        header: t((t) => t.vessel.flag),
       },
       {
         id: 'ssvid',
@@ -230,7 +230,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             ? getHighlightedText(ssvid, searchFilters.ssvid || '', styles)
             : ssvid
         },
-        header: t('vessel.mmsi'),
+        header: t((t) => t.vessel.mmsi),
       },
       {
         id: 'imo',
@@ -238,7 +238,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           const imo = getVesselProperty(vessel, 'imo') || EMPTY_FIELD_PLACEHOLDER
           return searchFilters.imo ? getHighlightedText(imo, searchFilters.imo || '', styles) : imo
         },
-        header: t('vessel.imo'),
+        header: t((t) => t.vessel.imo),
       },
       {
         id: 'callsign',
@@ -248,7 +248,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             ? getHighlightedText(callsign, searchFilters.callsign || '', styles)
             : callsign
         },
-        header: t('vessel.callsign'),
+        header: t((t) => t.vessel.callsign),
       },
       ...columnsByInfoSource,
       {
@@ -268,7 +268,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             </AdvancedResultCellWithFilter>
           )
         },
-        header: t('vessel.owner'),
+        header: t((t) => t.vessel.owner),
       },
       {
         id: 'infoSource',
@@ -283,16 +283,16 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             selfReportedIdentities.flatMap(({ sourceCode }) => sourceCode || [])
           )
           if (registryIdentities.length && selfReportedIdentities.length)
-            return `${t('vessel.infoSources.both')} (${isPrivateDataset(vessel.dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
-          if (registryIdentities.length) return t('vessel.infoSources.registry')
+            return `${t((t) => t.vessel.infoSources.both)} (${isPrivateDataset(vessel.dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
+          if (registryIdentities.length) return t((t) => t.vessel.infoSources.registry)
           if (selfReportedIdentities.length)
             return `${t(
-              'vessel.infoSources.selfReported'
+              (t) => t.vessel.infoSources.selfReported
             )} (${isPrivateDataset(vessel.dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
 
           return EMPTY_FIELD_PLACEHOLDER
         },
-        header: t('vessel.infoSource'),
+        header: t((t) => t.vessel.infoSource),
       },
       {
         id: 'transmissionCount',
@@ -302,7 +302,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
             return <I18nNumber number={positionsCounter} />
           }
         },
-        header: t('vessel.transmissions'),
+        header: t((t) => t.vessel.transmissions),
       },
     ]
   }, [

@@ -67,7 +67,7 @@ function VesselGroupSection(): React.ReactElement<any> {
       hasVisibleDataviews={hasVisibleDataviews}
       title={
         <span>
-          {t('vesselGroup.vesselGroups')}
+          {t((t) => t.vesselGroup.vesselGroups)}
           {hasVisibleDataviews && (
             <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
           )}
@@ -83,7 +83,7 @@ function VesselGroupSection(): React.ReactElement<any> {
                 type="border"
                 icon="vessel-group"
                 size="medium"
-                tooltip={t('vesselGroup.createNewGroup')}
+                tooltip={t((t) => t.vesselGroup.createNewGroup)}
                 tooltipPlacement="top"
                 onClick={onAddVesselGroupClick}
               />
@@ -94,7 +94,7 @@ function VesselGroupSection(): React.ReactElement<any> {
               icon="plus"
               type="border"
               size="medium"
-              tooltip={t('vesselGroup.addToWorkspace')}
+              tooltip={t((t) => t.vesselGroup.addToWorkspace)}
               tooltipPlacement="top"
               onClick={onAddClick}
             />
@@ -120,7 +120,7 @@ function VesselGroupSection(): React.ReactElement<any> {
         ) : (
           <div className={cx('print-hidden', styles.header)}>
             <div className={cx(styles.emptyState, styles.emptyStateVesselGroups)}>
-              {t('workspace.emptyStateVesselGroups')}
+              {t((t) => t.workspace.emptyStateVesselGroups)}
             </div>
             {/* <LayerPanelContainer dataview={MOCKED_DATAVIEW_TO_HIGHLIGHT_SECTION}>
               <span className={styles.highlightSpan}></span>

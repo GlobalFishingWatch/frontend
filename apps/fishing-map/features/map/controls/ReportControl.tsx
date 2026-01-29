@@ -29,7 +29,9 @@ const ReportControls = ({ disabled = false }: { disabled?: boolean }) => {
       icon="feedback-error"
       type="map-tool"
       disabled={disabled}
-      tooltip={t('map.errorAction', 'Log an issue at a specific location')}
+      tooltip={t((t) => t.map.errorAction, {
+        defaultValue: 'Log an issue at a specific location',
+      })}
       onClick={onErrorNotificationClick}
       className={cx({ [styles.active]: isErrorNotificationEditing })}
     />

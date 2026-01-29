@@ -133,7 +133,7 @@ export default function ReportActivity() {
     <div className={styles.container}>
       {showSelectors && (
         <div className={styles.titleRow}>
-          <label className={styles.blockTitle}>{t('common.activity')}</label>
+          <label className={styles.blockTitle}>{t((t) => t.common.activity)}</label>
           <ReportActivityGraphSelector loading={isInitialLoad} />
         </div>
       )}
@@ -143,7 +143,9 @@ export default function ReportActivity() {
         <ReportActivityPlaceholder showHeader={!showSelectors} loading />
       ) : isEmptyData || hasError ? (
         <ReportActivityPlaceholder showHeader={false} animate={false}>
-          {hasError ? t('errors.layerLoading') : isEmptyData && t('analysis.noDataByArea')}
+          {hasError
+            ? t((t) => t.errors.layerLoading)
+            : isEmptyData && t((t) => t.analysis.noDataByArea)}
         </ReportActivityPlaceholder>
       ) : (
         GraphElement
@@ -154,13 +156,13 @@ export default function ReportActivity() {
           <div className={styles.disclaimer}>
             <UserGuideLink section="analysis" />
             <p className={styles.disclaimerText}>
-              {t('analysis.disclaimer')}{' '}
+              {t((t) => t.analysis.disclaimer)}{' '}
               <a
                 href="https://globalfishingwatch.org/faqs/calculating-fishing-effort-estimates-in-dynamic-analysis-reports/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {t('common.learnMore')}.
+                {t((t) => t.common.learnMore)}.
               </a>
             </p>
           </div>

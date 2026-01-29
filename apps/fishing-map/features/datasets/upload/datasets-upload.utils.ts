@@ -41,7 +41,7 @@ export function getDatasetMetadataValidations(datasetMetadata: DatasetMetadata) 
   const errors = {
     name:
       datasetMetadata.name && datasetMetadata.name.length < MIN_NAME_LENGTH
-        ? t('datasetUpload.errors.name', {
+        ? t((t) => t.datasetUpload.errors.name, {
             min: MIN_NAME_LENGTH,
           })
         : null,

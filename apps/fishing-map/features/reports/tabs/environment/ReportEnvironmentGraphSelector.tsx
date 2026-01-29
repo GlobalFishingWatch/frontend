@@ -30,12 +30,12 @@ export default function ReportEnvironmentGraphSelector() {
   const options: ChoiceOption<ReportActivityGraph>[] = [
     {
       id: REPORT_ACTIVITY_GRAPH_EVOLUTION,
-      label: t('analysis.evolution'),
+      label: t((t) => t.analysis.evolution),
     },
     {
       id: REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON,
-      label: t('analysis.datasetComparison'),
-      tooltip: t('analysis.comparisonNotAvailable'),
+      label: t((t) => t.analysis.datasetComparison),
+      tooltip: t((t) => t.analysis.comparisonNotAvailable),
     },
   ]
 

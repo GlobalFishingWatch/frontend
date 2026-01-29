@@ -196,13 +196,13 @@ const TrackCorrectionEdit = () => {
 
   if (isGuestUser || !userData || !currentTrackCorrectionIssue) return null
   if (!currentTrackCorrectionIssue?.startDate || !currentTrackCorrectionIssue?.endDate) {
-    return <p> {t('trackCorrection.invalidIssueDates')}</p>
+    return <p> {t((t) => t.trackCorrection.invalidIssueDates)}</p>
   }
 
   return (
     <Fragment>
       <h1 className={styles.title}>
-        {t('trackCorrection.issue', {
+        {t((t) => t.trackCorrection.issue, {
           issueId: currentTrackCorrectionIssue.issueId,
         })}
       </h1>
@@ -214,7 +214,7 @@ const TrackCorrectionEdit = () => {
               : (vesselInfo && getVesselShipNameLabel(vesselInfo)) || dataview?.config?.name}
             {' - '} {currentTrackCorrectionIssue.issueId}
           </h2>
-          <h2>{t(`trackCorrection.${currentTrackCorrectionIssue.type}`)}</h2>
+          <h2>{t((t) => t.trackCorrection[currentTrackCorrectionIssue.type])}</h2>
           {currentTrackCorrectionIssue.confirmed ? (
             <label>
               <I18nDate
@@ -231,7 +231,7 @@ const TrackCorrectionEdit = () => {
             </label>
           ) : (
             <div>
-              <label>{t('common.newTimerange')}</label>
+              <label>{t((t) => t.common.newTimerange)}</label>
               <TrackSlider
                 rangeStartTime={getUTCDateTime(rangeStartTime).toMillis()}
                 rangeEndTime={getUTCDateTime(rangeEndTime).toMillis()}
@@ -247,7 +247,7 @@ const TrackCorrectionEdit = () => {
             <div>
               <InputText
                 inputSize="small"
-                placeholder={t('trackCorrection.replyPlaceholder')}
+                placeholder={t((t) => t.trackCorrection.replyPlaceholder)}
                 value={issueComment}
                 className={styles.input}
                 onChange={(e) => {
@@ -266,7 +266,7 @@ const TrackCorrectionEdit = () => {
             <div className={styles.actions}>
               <span className={styles.version}>
                 {
-                  t('trackCorrection.version') + ' 1'
+                  t((t) => t.trackCorrection.version) + ' 1'
                   /*vesselInfo.datasetVersion*/
                 }
               </span>
@@ -279,9 +279,9 @@ const TrackCorrectionEdit = () => {
                       onClick={() => onConfirmClick(ActionType.Comment)}
                       loading={isCommenting}
                       disabled={!issueComment}
-                      tooltip={!issueComment && t('trackCorrection.commentRequired')}
+                      tooltip={!issueComment && t((t) => t.trackCorrection.commentRequired)}
                     >
-                      {t('trackCorrection.comment')}
+                      {t((t) => t.trackCorrection.comment)}
                     </Button>
                     {isGFWUser ? (
                       currentTrackCorrectionIssue.confirmed ? (
@@ -290,10 +290,10 @@ const TrackCorrectionEdit = () => {
                           className={styles.commentButton}
                           onClick={() => onConfirmClick(ActionType.Resolve)}
                           loading={isSubmitting}
-                          tooltip={t('trackCorrection.resolveAndClose')}
+                          tooltip={t((t) => t.trackCorrection.resolveAndClose)}
                         >
                           <Icon icon={'tick'} />
-                          {t('trackCorrection.commentResolve')}
+                          {t((t) => t.trackCorrection.commentResolve)}
                         </Button>
                       ) : (
                         <Button
@@ -303,13 +303,15 @@ const TrackCorrectionEdit = () => {
                           loading={isSubmitting}
                           disabled={currentTrackCorrectionIssue?.confirmed}
                           tooltip={
-                            t('trackCorrection.confirmAs') +
+                            t((t) => t.trackCorrection.confirmAs) +
                             ' ' +
-                            t(`trackCorrection.${currentTrackCorrectionIssue.type}`).toLowerCase()
+                            t(
+                              (t) => t.trackCorrection[currentTrackCorrectionIssue.type]
+                            ).toLowerCase()
                           }
                         >
                           <Icon icon={'tick'} />
-                          {t('trackCorrection.confirm')}
+                          {t((t) => t.trackCorrection.confirm)}
                         </Button>
                       )
                     ) : null}

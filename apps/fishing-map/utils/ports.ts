@@ -8,7 +8,7 @@ type Port = { id: string; label: string }
 type PortData = { id: string; name: string; flag: string }
 
 const parsePort = (port: PortData, lng = i18n.language): Port => {
-  const flag = t(`flags:${port.flag}`, { lng, defaultValue: port.flag }) as string
+  const flag = t((t) => t[port.flag], { ns: 'flags', lng, defaultValue: port.flag }) as string
   return {
     id: port.id,
     label: `${formatInfoField(port.name, 'port')} (${flag})`,

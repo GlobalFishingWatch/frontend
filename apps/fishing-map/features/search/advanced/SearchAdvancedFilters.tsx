@@ -91,14 +91,11 @@ function SearchAdvancedFilters() {
     () => [
       {
         id: VesselIdentitySourceEnum.Registry,
-        label: t(`vessel.infoSources.${VesselIdentitySourceEnum.Registry}` as string, 'Registry'),
+        label: t((t) => t.vessel.infoSources.registry),
       },
       {
         id: VesselIdentitySourceEnum.SelfReported,
-        label: t(
-          `vessel.infoSources.${VesselIdentitySourceEnum.SelfReported}` as string,
-          'Self reported'
-        ),
+        label: t((t) => t.vessel.infoSources.selfReported),
       },
     ],
     [t]
@@ -161,7 +158,7 @@ function SearchAdvancedFilters() {
         <AdvancedFilterInputField key={field} field={field} onChange={onInputChange} />
       ))}
       <Select
-        label={t('vessel.infoSource')}
+        label={t((t) => t.vessel.infoSource)}
         placeholder={getPlaceholderBySelections({
           selection: infoSource,
           options: infoSourceOptions,
@@ -202,7 +199,7 @@ function SearchAdvancedFilters() {
         sourceOptions &&
         sourceOptions.length > 0 && (
           <MultiSelect
-            label={t('layer.sources')}
+            label={t((t) => t.layer.sources)}
             placeholder={getPlaceholderBySelections({ selection: sources, options: sourceOptions })}
             options={sourceOptions}
             selectedOptions={sourceOptions.filter((f) => sources?.includes(f.id))}
@@ -245,7 +242,7 @@ function SearchAdvancedFilters() {
           <MultiSelect
             key={id}
             disabled={disabled}
-            label={t(`vessel.${translationKey}` as any, translationKey)}
+            label={t((t: any) => t.vessel[translationKey], { defaultValue: translationKey })}
             placeholder={getPlaceholderBySelections({
               selection: optionsSelected.map(({ id }) => id),
               options,
@@ -271,7 +268,7 @@ function SearchAdvancedFilters() {
           value={transmissionDateTo || ''}
           max={AVAILABLE_END.slice(0, 10) as string}
           min={AVAILABLE_START.slice(0, 10) as string}
-          label={t('common.active_after')}
+          label={t((t) => t.common.active_after)}
           onChange={(e) => {
             if (e.target.value !== transmissionDateTo) {
               setSearchFilters({ transmissionDateTo: e.target.value })
@@ -289,7 +286,7 @@ function SearchAdvancedFilters() {
           value={transmissionDateFrom || ''}
           max={AVAILABLE_END.slice(0, 10) as string}
           min={AVAILABLE_START.slice(0, 10) as string}
-          label={t('common.active_before')}
+          label={t((t) => t.common.active_before)}
           onChange={(e) => {
             if (e.target.value !== transmissionDateFrom) {
               setSearchFilters({ transmissionDateFrom: e.target.value })
@@ -303,7 +300,7 @@ function SearchAdvancedFilters() {
         />
       </div>
       <div className={styles.error}>
-        {searchFilterErrors.date && t('search.endDateMustBeAfterStartDate')}
+        {searchFilterErrors.date && t((t) => t.search.endDateMustBeAfterStartDate)}
       </div>
     </div>
   )

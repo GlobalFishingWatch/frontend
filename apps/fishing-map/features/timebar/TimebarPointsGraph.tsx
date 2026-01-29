@@ -24,13 +24,13 @@ const TimebarPointsGraph = () => {
       if (!value?.value || !value?.count) return ''
       const labels = [
         formatNumber(value?.count),
-        t('common.points', { count: value?.count }).toLocaleLowerCase(),
+        t((t) => t.common.points, { count: value?.count }).toLocaleLowerCase(),
         aggregatedPropertyLabel && value?.value
-          ? t('common.aggregatedBy', {
+          ? t((t) => t.common.aggregatedBy, {
               total: formatI18nNumber(value?.value),
               property: aggregatedPropertyLabel,
             })
-          : t('common.onScreen'),
+          : t((t) => t.common.onScreen),
       ]
 
       return labels.join(' ')
