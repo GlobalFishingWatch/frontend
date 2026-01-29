@@ -67,7 +67,8 @@
       },
       "continuous": true
     },
-    "serve": {
+    "start": {
+      "dependsOn": ["prepare-start"],
       "executor": "@nx/next:server",
       "options": {
         "buildTarget": "fishing-map:build",
@@ -81,11 +82,21 @@
         }
       }
     },
-    "start": {
+    "proxy": {
+      "executor": "nx:run-commands",
+      "dependsOn": [],
+      "options": {
+        "commands": [
+          "local-ssl-proxy --key local.globalfishingwatch.org-key.pem --cert local.globalfishingwatch.org.pem --source 443 --target 3003"
+        ]
+      },
+      "continuous": true
+    },
+    "start-proxy": {
       "executor": "nx:run-commands",
       "dependsOn": ["prepare-start"],
       "options": {
-        "commands": ["nx run fishing-map:serve"],
+        "commands": ["nx run fishing-map:start", "nx run fishing-map:proxy"],
         "parallel": true
       },
       "continuous": true
