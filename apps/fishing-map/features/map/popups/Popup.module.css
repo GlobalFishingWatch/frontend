@@ -281,12 +281,6 @@
   flex-wrap: wrap;
 }
 
-.flexCenter {
-  display: flex;
-  gap: var(--space-XS);
-  align-items: center;
-}
-
 .vesselTitle {
   display: flex;
   align-items: center;

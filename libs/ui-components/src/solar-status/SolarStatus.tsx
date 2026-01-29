@@ -1,10 +1,13 @@
 import { useMemo } from 'react'
+import cx from 'classnames'
 import { getTimes } from 'suncalc'
 
 import { Locale } from '@globalfishingwatch/api-types'
 import { Tooltip } from '@globalfishingwatch/ui-components/tooltip'
 
 import { Icon, type IconType } from '../icon'
+
+import styles from './SolarStatus.module.css'
 
 interface SolarStatusProps {
   lat: number
@@ -14,6 +17,7 @@ interface SolarStatusProps {
    */
   timestamp: number
   locale?: Locale
+  className?: string
 }
 
 interface SolarPhase {
@@ -44,7 +48,7 @@ const STATUS_LABELS: Record<Locale, { day: string; night: string; dawn: string; 
   },
 }
 
-export function SolarStatus({ lat, lon, timestamp, locale }: SolarStatusProps) {
+export function SolarStatus({ lat, lon, timestamp, locale, className }: SolarStatusProps) {
   const solarPhase = useMemo((): SolarPhase | undefined => {
     // Basic validation
     if (typeof lat !== 'number' || typeof lon !== 'number' || !timestamp) {
@@ -84,7 +88,7 @@ export function SolarStatus({ lat, lon, timestamp, locale }: SolarStatusProps) {
     solarPhase && (
       <Tooltip content={solarPhase.label}>
         <span>
-          <Icon icon={solarPhase.icon} />
+          <Icon icon={solarPhase.icon} className={cx(styles.icon, className)} />
         </span>
       </Tooltip>
     )

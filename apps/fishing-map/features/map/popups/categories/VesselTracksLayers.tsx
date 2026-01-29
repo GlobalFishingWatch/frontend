@@ -115,7 +115,7 @@ function VesselTracksTooltipRow({
         <p>
           {!showFeaturesDetails && !hideVesselNames && formatInfoField(feature.title, 'shipname')}{' '}
           {interactionType === 'point' && feature.timestamp && (
-            <span className={cx({ [styles.secondary]: !showFeaturesDetails }, styles.flexCenter)}>
+            <span className={cx({ [styles.secondary]: !showFeaturesDetails })}>
               <I18nDate date={feature.timestamp} format={DateTime.DATETIME_MED} />
               <SolarStatus
                 lon={(feature.geometry as Point).coordinates[0]}
