@@ -3,36 +3,26 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/deck-layer-composer/src",
   "projectType": "library",
+  "tags": ["lib"],
   "targets": {
     "dist": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@nx/js:tsc"
+    },
+    "dev": {
+      "dependsOn": ["^dist"],
+      "executor": "nx:run-commands",
       "options": {
-        "outputPath": "dist/libs/deck-layer-composer",
-        "main": "libs/deck-layer-composer/src/index.ts",
-        "tsConfig": "libs/deck-layer-composer/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/deck-layer-composer",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/deck-layer-composer",
-            "glob": "README.md",
-            "output": "."
-          }
-        ],
-        "rootDir": "libs/deck-layer-composer/src"
-      }
+        "command": "nx run deck-layer-composer:dist",
+        "watch": true
+      },
+      "continuous": true
     },
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "dist/libs/deck-layer-composer"
+        "packageRoot": "libs/deck-layer-composer"
       }
     }
-  },
-  "tags": []
+  }
 }

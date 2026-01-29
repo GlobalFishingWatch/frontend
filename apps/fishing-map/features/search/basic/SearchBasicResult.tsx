@@ -17,9 +17,7 @@ import {
   YearlyTransmissionsTimeline,
 } from '@globalfishingwatch/ui-components'
 
-import { PRIVATE_ICON } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import I18nDate from 'features/i18n/i18nDate'
@@ -36,6 +34,7 @@ import VesselIdentityFieldLogin from 'features/vessel/identity/VesselIdentityFie
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import {
   getBestMatchCriteriaIdentity,
+  getIdentitySourceLabel,
   getOtherVesselNames,
   getSearchIdentityResolved,
   getVesselIdentities,
@@ -110,16 +109,7 @@ function SearchBasicResult({
     const selfReportedIdentities = vessel.identities.filter(
       ({ identitySource }) => identitySource === VesselIdentitySourceEnum.SelfReported
     )
-    const selfReportedIdentitiesSources = uniq(
-      selfReportedIdentities.flatMap(({ sourceCode }) => sourceCode || [])
-    )
-
-    if (registryIdentities.length && selfReportedIdentities.length)
-      return `${t('vessel.infoSources.both')} (${selfReportedIdentitiesSources.join(', ')})`
-    if (registryIdentities.length) return t('vessel.infoSources.registry')
-    if (selfReportedIdentities.length)
-      return `${t('vessel.infoSources.selfReported')} (${isPrivateDataset(dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
-    return EMPTY_FIELD_PLACEHOLDER
+    return getIdentitySourceLabel(registryIdentities, selfReportedIdentities, dataset, t)
   }, [t, vessel.identities, dataset])
 
   const transmissionsSource = useMemo(() => {

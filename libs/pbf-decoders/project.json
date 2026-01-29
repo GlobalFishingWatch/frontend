@@ -3,37 +3,23 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/pbf-decoders",
   "projectType": "library",
+  "tags": ["lib"],
   "targets": {
     "dist": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/pbf-decoders",
         "main": "libs/pbf-decoders/index.ts",
-        "tsConfig": "libs/pbf-decoders/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/pbf-decoders",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/pbf-decoders",
-            "glob": "README.md",
-            "output": "."
-          },
-          { "glob": "**/*", "input": "libs/pbf-decoders/decoders", "output": "decoders" }
-        ],
-        "rootDir": "libs/pbf-decoders"
+        "rootDir": "libs/pbf-decoders",
+        "generatePackageJson": true,
+        "assets": [{ "glob": "**/*", "input": "libs/pbf-decoders/decoders", "output": "decoders" }]
       }
     },
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "dist/libs/pbf-decoders"
+        "packageRoot": "libs/pbf-decoders"
       }
     }
-  },
-  "tags": []
+  }
 }

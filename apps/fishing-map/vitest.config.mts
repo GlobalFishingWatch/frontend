@@ -4,11 +4,23 @@ import { playwright } from '@vitest/browser-playwright'
 import path from 'path'
 import { defineConfig } from 'vitest/config'
 
+// Plugin to transform SVG imports for testing
+const svgMockPlugin = () => ({
+  name: 'svg-mock',
+  transform(_code: string, id: string) {
+    if (id.endsWith('.svg')) {
+      return {
+        code: 'export default () => null',
+        map: null,
+      }
+    }
+  },
+})
+
 export default defineConfig({
   root: '.',
   cacheDir: '../../node_modules/.vite/apps/fishing-map',
-  // NOTE: this any is needed to prevent vite from complaining about the plugins array type, vite 6 fixes this but we need to stick to vite 7 for now due to nx compatibility
-  plugins: [react(), nxViteTsPaths()] as any,
+  plugins: [react(), nxViteTsPaths(), svgMockPlugin()],
   resolve: {
     alias: {
       data: path.resolve(__dirname, './data'),
@@ -23,8 +35,10 @@ export default defineConfig({
       store: path.resolve(__dirname, './store'),
       appTestUtils: path.resolve(__dirname, './appTestUtils'),
       test: path.resolve(__dirname, './test'),
+      hooks: path.resolve(__dirname, './hooks'),
     },
   },
+
   define: {
     'process.env.NEXT_PUBLIC_API_GATEWAY': JSON.stringify(process.env.NEXT_PUBLIC_API_GATEWAY),
   },
@@ -36,10 +50,10 @@ export default defineConfig({
       'vitest-example/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       '/apps/fishing-map/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
     ],
-    reporters: ['html', 'default'],
+    reporters: ['default'],
     coverage: {
-      reportsDirectory: '../../coverage/apps/fishing-map',
-      provider: 'v8' as const,
+      reportsDirectory: 'test/coverage/apps/fishing-map',
+      provider: 'istanbul',
     },
     setupFiles: './test/vitest.setup.ts',
     browser: {

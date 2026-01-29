@@ -4,6 +4,17 @@
   "sourceRoot": "apps/real-time-prototype",
   "projectType": "application",
   "targets": {
+    "build-deps": {
+      "executor": "nx:noop",
+      "dependsOn": ["^dist"]
+    },
+    "watch-deps": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx watch --projects real-time-prototype --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=real-time-prototype"
+      },
+      "continuous": true
+    },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
@@ -24,10 +35,15 @@
     },
     "start": {
       "executor": "nx:run-commands",
+      "dependsOn": ["build-deps"],
       "options": {
-        "commands": ["nx serve real-time-prototype --hostname=0.0.0.0"],
+        "commands": [
+          "nx serve real-time-prototype --hostname=0.0.0.0",
+          "nx watch-deps real-time-prototype"
+        ],
         "parallel": true
-      }
+      },
+      "continuous": true
     },
     "serve": {
       "executor": "@nx/next:server",
@@ -65,7 +81,20 @@
       "options": {
         "jestConfig": "apps/real-time-prototype/jest.config.ts"
       }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project apps/real-time-prototype/tsconfig.json"
+      }
+    },
+    "typecheck-watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --watch --project apps/real-time-prototype/tsconfig.json"
+      },
+      "continuous": true
     }
   },
-  "tags": []
+  "tags": ["app"]
 }

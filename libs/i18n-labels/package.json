@@ -1,17 +1,18 @@
 {
   "name": "@globalfishingwatch/i18n-labels",
-  "version": "1.2.278",
-  "main": "./index.js",
-  "module": "./index.mjs",
-  "typings": "./index.d.ts",
-  "scripts": {
-    "ts:lint": "npx prettier ./resources.d.ts --write",
-    "ts:generate": "i18next-resources-for-ts interface -i ./source -o ./resources.d.ts",
-    "ts": "yarn ts:generate && yarn ts:lint"
+  "version": "1.2.287",
+  "description": "i18n label translations for Global Fishing Watch applications",
+  "author": "satellitestudio <contact@satellitestud.io>",
+  "homepage": "https://github.com/GlobalFishingWatch/frontend#readme",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./types.d.ts",
+      "default": "./dist/index.js"
+    }
   },
-  "devDependencies": {
-    "i18next-resources-for-ts": "1.7.4"
-  },
+  "main": "./dist/index.js",
+  "types": "./types.d.ts",
   "files": [
     "en",
     "es",
@@ -19,6 +20,15 @@
     "id",
     "pt",
     "source",
-    "val"
-  ]
+    "val",
+    "dist"
+  ],
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "prettier": "3.8.0",
+    "rimraf": "6.1.2"
+  },
+  "dependencies": {
+    "tslib": "2.x"
+  }
 }

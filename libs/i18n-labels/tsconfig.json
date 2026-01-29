@@ -1,16 +1,21 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "composite": true,
+    "outDir": "./dist",
+    "declarationDir": "./dist",
+    "rootDir": ".",
+    "declaration": true,
+    "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
+    "types": ["node"]
   },
-  "references": [
-    {
-      "path": "./tsconfig.lib.json"
-    }
-  ]
+  "include": ["source/**/*.json", "index.ts", "./types.d.ts"],
+  "exclude": ["**/*.spec.ts", "**/*.test.ts"]
 }

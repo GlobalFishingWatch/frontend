@@ -3,41 +3,29 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/timebar/src",
   "projectType": "library",
+  "tags": ["lib"],
   "targets": {
     "dist": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/timebar",
-        "main": "libs/timebar/src/index.ts",
-        "tsConfig": "libs/timebar/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/timebar",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/timebar",
-            "glob": "README.md",
-            "output": "."
-          },
-          {
-            "glob": "**/*.css",
-            "input": "libs/timebar/src",
-            "output": "."
-          }
-        ],
-        "rootDir": "libs/timebar/src"
+        "assets": [{ "glob": "**/*.css", "input": "libs/timebar/src", "output": "." }]
       }
+    },
+    "dev": {
+      "dependsOn": ["^dist"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx run timebar:dist",
+        "watch": true
+      },
+      "continuous": true
     },
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "dist/libs/timebar"
+        "packageRoot": "libs/timebar"
       }
     }
-  },
-  "tags": []
+  }
 }

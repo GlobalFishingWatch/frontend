@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { checkExistPermissionInList } from 'auth-middleware/src/utils'
 
 import type { Dataset, UserData } from '@globalfishingwatch/api-types'
+import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/utils'
 
 import { PRIVATE_SUFIX, PUBLIC_SUFIX } from 'data/config'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'

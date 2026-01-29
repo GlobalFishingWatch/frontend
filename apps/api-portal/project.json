@@ -4,6 +4,17 @@
   "sourceRoot": "apps/api-portal",
   "projectType": "application",
   "targets": {
+    "build-deps": {
+      "executor": "nx:noop",
+      "dependsOn": ["^dist"]
+    },
+    "watch-deps": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx watch --projects api-portal --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=api-portal"
+      },
+      "continuous": true
+    },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
@@ -24,10 +35,12 @@
     },
     "start": {
       "executor": "nx:run-commands",
+      "dependsOn": ["build-deps"],
       "options": {
-        "commands": ["nx serve api-portal"],
+        "commands": ["nx serve api-portal", "nx watch-deps api-portal"],
         "parallel": true
-      }
+      },
+      "continuous": true
     },
     "serve": {
       "executor": "@nx/next:server",
@@ -55,7 +68,20 @@
       "options": {
         "jestConfig": "apps/api-portal/jest.config.ts"
       }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project apps/api-portal/tsconfig.json"
+      }
+    },
+    "typecheck-watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --watch --project apps/api-portal/tsconfig.json"
+      },
+      "continuous": true
     }
   },
-  "tags": []
+  "tags": ["app"]
 }

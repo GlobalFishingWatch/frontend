@@ -3,27 +3,26 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ocean-areas/src",
   "projectType": "library",
+  "tags": ["lib"],
   "targets": {
     "dist": {
-      "executor": "@nx/rollup:rollup",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@nx/js:tsc"
+    },
+    "dev": {
+      "dependsOn": ["^dist"],
+      "executor": "nx:run-commands",
       "options": {
-        "assets": [],
-        "compiler": "tsc",
-        "format": ["esm"],
-        "main": "libs/ocean-areas/src/index.ts",
-        "outputPath": "dist/libs/ocean-areas",
-        "project": "libs/ocean-areas/package.json",
-        "tsConfig": "libs/ocean-areas/tsconfig.lib.json"
-      }
+        "command": "nx run ocean-areas:dist",
+        "watch": true
+      },
+      "continuous": true
     },
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "dist/libs/ocean-areas"
+        "packageRoot": "libs/ocean-areas"
       }
     }
-  },
-  "tags": []
+  }
 }

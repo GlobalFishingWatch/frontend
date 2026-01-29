@@ -197,7 +197,7 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
               </label>
             </button>
           )}
-          <span className={cx(styles.noWrap, styles.right)}>
+          <span className={cx(styles.noWrap, styles.right)} translate="no">
             {reportVesselFilter && (
               <Fragment>
                 <I18nNumber number={pagination.totalFiltered} /> {t('common.of')}{' '}

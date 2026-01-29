@@ -3,36 +3,26 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/api-types/src",
   "projectType": "library",
+  "tags": ["lib"],
   "targets": {
     "dist": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@nx/js:tsc"
+    },
+    "dev": {
+      "dependsOn": ["^dist"],
+      "executor": "nx:run-commands",
       "options": {
-        "outputPath": "dist/libs/api-types",
-        "main": "libs/api-types/src/index.ts",
-        "tsConfig": "libs/api-types/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/api-types",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/api-types",
-            "glob": "README.md",
-            "output": "."
-          }
-        ],
-        "rootDir": "libs/api-types/src"
-      }
+        "command": "nx run api-types:dist",
+        "watch": true
+      },
+      "continuous": true
     },
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "dist/libs/api-types"
+        "packageRoot": "libs/api-types"
       }
     }
-  },
-  "tags": []
+  }
 }

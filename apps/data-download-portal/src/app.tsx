@@ -5,7 +5,7 @@ import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
 
 // Import styles
-import '../../../libs/ui-components/src/base.css'
+import '@globalfishingwatch/ui-components/base.css'
 
 const basepath = process.env.NODE_ENV === 'production' ? '/data-download' : ''
 

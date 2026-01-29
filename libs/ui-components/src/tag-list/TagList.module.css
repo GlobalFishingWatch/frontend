@@ -4,3 +4,16 @@
   white-space: nowrap;
   flex-wrap: wrap;
 }
+
+.sourceExpanded {
+  display: none;
+  font: var(--font-XS);
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+@media print {
+  .sourceExpanded {
+    display: block;
+  }
+}

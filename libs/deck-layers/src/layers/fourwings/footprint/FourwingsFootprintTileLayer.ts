@@ -1,6 +1,10 @@
 import type { DefaultProps, Layer, LayerContext, LayersList, UpdateParameters } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import type { _TileLoadProps as TileLoadProps, TileLayerProps } from '@deck.gl/geo-layers'
+import type {
+  _Tile2DHeader as Tile2DHeader,
+  _TileLoadProps as TileLoadProps,
+  TileLayerProps,
+} from '@deck.gl/geo-layers'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { parse } from '@loaders.gl/core'
 
@@ -62,22 +66,20 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
         endTime: this.props.endTime,
         availableIntervals: this.props.availableIntervals,
       }),
+      viewportLoaded: false,
     }
-  }
-
-  get isLoaded(): boolean {
-    return super.isLoaded
   }
 
   get cacheHash(): string {
     return this._getTileDataCacheKey()
   }
 
-  forceUpdate() {
-    const layer = this.getLayerInstance()
-    if (layer) {
-      layer.setNeedsUpdate()
-    }
+  get debounceTime(): number {
+    return this.props.debounceTime ?? 0
+  }
+
+  get viewportLoaded(): boolean {
+    return this.state?.viewportLoaded ?? false
   }
 
   getError(): string {
@@ -88,6 +90,11 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     console.warn(error.message)
     this.setState({ error: error.message })
     return true
+  }
+
+  _onViewportLoad = (tiles: Tile2DHeader[]) => {
+    this.setState({ viewportLoaded: true })
+    this.props.onViewportLoad?.(tiles)
   }
 
   _fetchTileData: any = async (tile: TileLoadProps) => {
@@ -184,6 +191,9 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     if (tile.signal?.aborted) {
       return null
     }
+    if (this.state.viewportLoaded) {
+      this.setState({ viewportLoaded: false })
+    }
     return this._fetchTileData(tile)
   }
 
@@ -262,6 +272,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
         tilesCache,
         minZoom: 0,
         onTileError: this._onLayerError,
+        onViewportLoad: this._onViewportLoad,
         maxZoom: FOURWINGS_MAX_ZOOM,
         zoomOffset: getZoomOffsetByResolution(resolution, this.context.viewport.zoom),
         opacity: 1,

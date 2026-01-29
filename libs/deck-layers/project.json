@@ -3,36 +3,26 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/deck-layers/src",
   "projectType": "library",
+  "tags": ["lib"],
   "targets": {
     "dist": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@nx/js:tsc"
+    },
+    "dev": {
+      "dependsOn": ["^dist"],
+      "executor": "nx:run-commands",
       "options": {
-        "outputPath": "dist/libs/deck-layers",
-        "main": "libs/deck-layers/src/index.ts",
-        "tsConfig": "libs/deck-layers/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/deck-layers",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/deck-layers",
-            "glob": "README.md",
-            "output": "."
-          }
-        ],
-        "rootDir": "libs/deck-layers/src"
-      }
+        "command": "nx run deck-layers:dist",
+        "watch": true
+      },
+      "continuous": true
     },
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "dist/libs/deck-layers"
+        "packageRoot": "libs/deck-layers"
       }
     }
-  },
-  "tags": []
+  }
 }

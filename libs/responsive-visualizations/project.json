@@ -3,40 +3,30 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/responsive-visualizations/src",
   "projectType": "library",
-  "tags": [],
+  "tags": ["lib"],
   "targets": {
     "dist": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/responsive-visualizations",
-        "main": "libs/responsive-visualizations/src/index.ts",
-        "tsConfig": "libs/responsive-visualizations/tsconfig.lib.json",
         "assets": [
-          {
-            "input": "libs/responsive-visualizations",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/responsive-visualizations",
-            "glob": "README.md",
-            "output": "."
-          },
-          {
-            "glob": "**/*.css",
-            "input": "libs/responsive-visualizations/src",
-            "output": "."
-          }
-        ],
-        "rootDir": "libs/responsive-visualizations/src"
+          { "glob": "**/*.css", "input": "libs/responsive-visualizations/src", "output": "." }
+        ]
       }
+    },
+    "dev": {
+      "dependsOn": ["^dist"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx run responsive-visualizations:dist",
+        "watch": true
+      },
+      "continuous": true
     },
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "dist/libs/responsive-visualizations"
+        "packageRoot": "libs/responsive-visualizations"
       }
     }
   }

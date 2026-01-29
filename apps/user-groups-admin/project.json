@@ -3,7 +3,34 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/user-groups-admin/src",
   "projectType": "application",
-  "tags": [],
+  "tags": ["app"],
   "// targets": "to see all targets run: nx show project user-groups-admin --web",
-  "targets": {}
+  "targets": {
+    "build-deps": {
+      "dependsOn": ["^dist"]
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build-deps"],
+      "options": {
+        "commands": ["vite", "nx watch-deps user-groups-admin"],
+        "parallel": true,
+        "cwd": "{projectRoot}"
+      },
+      "continuous": true
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project apps/user-groups-admin/tsconfig.json"
+      }
+    },
+    "typecheck-watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --watch --project apps/user-groups-admin/tsconfig.json"
+      },
+      "continuous": true
+    }
+  }
 }

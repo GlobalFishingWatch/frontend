@@ -5,7 +5,6 @@ import Sticky from 'react-sticky-el'
 import { DndContext } from '@dnd-kit/core'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 import { arrayMove } from '@dnd-kit/sortable'
-import htmlParser from 'html-react-parser'
 
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import { Button, IconButton, InputText, Modal, Spinner } from '@globalfishingwatch/ui-components'
@@ -45,6 +44,7 @@ import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.s
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { htmlSafeParse, options } from 'utils/html-parser'
 
 import ActivitySection from './activity/ActivitySection'
 import ContextAreaSection from './context-areas/ContextAreaSection'
@@ -187,7 +187,7 @@ function Workspace() {
               </h2>
               {workspace?.id === DEEP_SEA_MINING_WORKSPACE_ID && (
                 <h3 className={styles.subTitle}>
-                  {htmlParser(workspace.description)}
+                  {htmlSafeParse(workspace.description)}
                   <IconButton
                     className={styles.subTitleBtn}
                     icon="info"

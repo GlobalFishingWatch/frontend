@@ -13,6 +13,7 @@ import {
   COLOR_HIGHLIGHT_LINE,
   COLOR_TRANSPARENT,
   DEFAULT_BACKGROUND_COLOR,
+  DEFAULT_ID_PROPERTY,
   getColorRampByOpacitySteps,
   getFetchLoadOptions,
   getLayerGroupOffset,
@@ -96,7 +97,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
   ) => {
     const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, {
-      idProperty: layer.idProperty,
+      idProperty: layer.idProperty || DEFAULT_ID_PROPERTY,
       datasetId: layer.datasetId,
     })
       ? Math.max(sublayer.thickness || 1, lineWidth)
@@ -145,7 +146,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
     }
     const highlightedFeatures = this._getHighlightedFeatures()
     return getPickedFeatureToHighlight(d, highlightedFeatures, {
-      idProperty: layer.idProperty,
+      idProperty: layer.idProperty || DEFAULT_ID_PROPERTY,
       datasetId: layer.datasetId,
     })
       ? COLOR_HIGHLIGHT_FILL
@@ -166,7 +167,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
     const highlightedFeatures = this._getHighlightedFeatures()
     if (
       getPickedFeatureToHighlight(d, highlightedFeatures, {
-        idProperty: layer.idProperty,
+        idProperty: layer.idProperty || DEFAULT_ID_PROPERTY,
         datasetId: layer.datasetId,
       })
     ) {
@@ -208,7 +209,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
             const { extensionFilterProps, updateTrigger } = this._getExtensionFilterProps(sublayer)
             return [
               new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-                id: `${props.id}-highlight-fills`,
+                id: `${props.id}-highlight-fills-${filtersHash}`,
                 stroked: false,
                 pickable: pickable,
                 ...extensionFilterProps,
@@ -224,7 +225,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
                 },
               }),
               new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-                id: `${props.id}-lines`,
+                id: `${props.id}-lines-${filtersHash}`,
                 lineWidthMinPixels: 0,
                 lineWidthUnits: 'pixels',
                 filled: false,
@@ -239,7 +240,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
                 },
               }),
               new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-                id: `${props.id}-highlight-lines-bg`,
+                id: `${props.id}-highlight-lines-bg-${filtersHash}`,
                 lineWidthMinPixels: 0,
                 lineWidthUnits: 'pixels',
                 filled: false,
@@ -258,7 +259,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
                 },
               }),
               new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
-                id: `${props.id}-highlight-lines-fg`,
+                id: `${props.id}-highlight-lines-fg-${filtersHash}`,
                 lineWidthMinPixels: 0,
                 lineWidthUnits: 'pixels',
                 filled: false,

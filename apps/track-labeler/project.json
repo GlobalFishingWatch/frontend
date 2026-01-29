@@ -3,7 +3,34 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/track-labeler/src",
   "projectType": "application",
-  "tags": [],
+  "tags": ["app"],
   "// targets": "to see all targets run: nx show project track-labeler --web",
-  "targets": {}
+  "targets": {
+    "build-deps": {
+      "dependsOn": ["^dist"]
+    },
+    "start": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["build-deps"],
+      "options": {
+        "commands": ["vite", "nx watch-deps track-labeler"],
+        "parallel": true,
+        "cwd": "{projectRoot}"
+      },
+      "continuous": true
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project apps/track-labeler/tsconfig.json"
+      }
+    },
+    "typecheck-watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --watch --project apps/track-labeler/tsconfig.json"
+      },
+      "continuous": true
+    }
+  }
 }

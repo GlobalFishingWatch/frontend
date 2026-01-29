@@ -392,7 +392,7 @@ export const selectReportArea = createSelector(
     if (hasReportBuffer) {
       return bufferedArea
     }
-    return reportArea ? reportArea.data : ENTIRE_WORLD_REPORT_AREA
+    return reportArea?.data ? reportArea.data : ENTIRE_WORLD_REPORT_AREA
   }
 )
 
@@ -409,6 +409,6 @@ export const selectReportAreaStatus = createSelector(
 export const selectIsGlobalReport = createSelector(
   [selectCurrentReport, selectReportArea],
   (report, reportArea) => {
-    return !report?.name && reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
+    return reportArea?.id === ENTIRE_WORLD_REPORT_AREA_ID
   }
 )

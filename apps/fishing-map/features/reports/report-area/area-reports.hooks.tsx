@@ -440,7 +440,7 @@ export function useReportTitle() {
     if (reportId && !report) {
       return ''
     }
-    if (isGlobalReport) {
+    if (isGlobalReport && !report?.name) {
       return t('common.globalReport')
     }
     let areaName: string | JSX.Element = getReportAreaStringByLocale(report?.name, i18n.language)

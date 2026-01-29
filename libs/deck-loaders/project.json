@@ -3,43 +3,26 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/deck-loaders/src",
   "projectType": "library",
+  "tags": ["lib"],
   "targets": {
-    "generate-version": {
+    "dist": {
+      "executor": "@nx/js:tsc"
+    },
+    "dev": {
+      "dependsOn": ["^dist"],
       "executor": "nx:run-commands",
       "options": {
-        "command": "node libs/deck-loaders/scripts/generate-version.mjs"
-      }
-    },
-    "dist": {
-      "executor": "@nx/js:tsc",
-      "dependsOn": ["generate-version"],
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/libs/deck-loaders",
-        "main": "libs/deck-loaders/src/index.ts",
-        "tsConfig": "libs/deck-loaders/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/deck-loaders",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/deck-loaders",
-            "glob": "README.md",
-            "output": "."
-          }
-        ],
-        "rootDir": "libs/deck-loaders/src"
-      }
+        "command": "nx run deck-loaders:dist",
+        "watch": true
+      },
+      "continuous": true
     },
     "dist:workers": {
       "executor": "nx:run-commands",
       "options": {
         "commands": [
           "nx build:workers deck-loaders",
-          "rimraf dist/libs/deck-loaders/workers/libs",
-          "rimraf dist/libs/deck-loaders/workers/package.json"
+          "node libs/deck-loaders/scripts/clean-workers-output.mjs"
         ],
         "parallel": false
       }
@@ -50,9 +33,9 @@
       "options": {
         "main": "libs/deck-loaders/src/**/workers/**.ts",
         "esbuildOptions": {
-          "outdir": "dist/libs/deck-loaders/workers"
+          "outdir": "libs/deck-loaders/dist/workers"
         },
-        "outputPath": "dist/libs/deck-loaders/workers",
+        "outputPath": "libs/deck-loaders/dist/workers",
         "generateExportsField": true,
         "tsConfig": "libs/deck-loaders/tsconfig.workers.json",
         "watch": false,
@@ -67,11 +50,10 @@
     },
     "publish": {
       "executor": "@nx/js:release-publish",
-      "dependsOn": ["dist"],
+      "dependsOn": ["dist", "dist:workers"],
       "options": {
-        "packageRoot": "dist/libs/deck-loaders"
+        "packageRoot": "libs/deck-loaders"
       }
     }
-  },
-  "tags": []
+  }
 }

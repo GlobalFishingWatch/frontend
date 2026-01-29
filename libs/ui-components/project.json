@@ -3,50 +3,36 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ui-components/src",
   "projectType": "library",
-  "tags": [],
+  "tags": ["lib"],
   "targets": {
     "dist": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/ui-components",
-        "main": "libs/ui-components/src/index.ts",
-        "tsConfig": "libs/ui-components/tsconfig.lib.json",
         "assets": [
-          {
-            "input": "libs/ui-components",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/ui-components",
-            "glob": "README.md",
-            "output": "."
-          },
-          {
-            "glob": "**/*.css",
-            "input": "libs/ui-components/src",
-            "output": "."
-          },
-          {
-            "glob": "**/*.svg",
-            "input": "libs/ui-components/src",
-            "output": "."
-          },
+          { "glob": "**/*.css", "input": "libs/ui-components/src", "output": "." },
+          { "glob": "**/*.svg", "input": "libs/ui-components/src", "output": "." },
           {
             "glob": "**/*.{jpg,jpeg,png,gif,webp}",
             "input": "libs/ui-components/src",
             "output": "."
           }
-        ],
-        "rootDir": "libs/ui-components/src"
+        ]
       }
+    },
+    "dev": {
+      "dependsOn": ["^dist"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx run ui-components:dist",
+        "watch": true
+      },
+      "continuous": true
     },
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "dist/libs/ui-components"
+        "packageRoot": "libs/ui-components"
       }
     }
   }

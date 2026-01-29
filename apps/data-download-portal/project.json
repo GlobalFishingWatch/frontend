@@ -3,8 +3,11 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/data-download-portal/src",
   "projectType": "application",
-  "tags": [],
+  "tags": ["app"],
   "targets": {
+    "build-deps": {
+      "dependsOn": ["^dist"]
+    },
     "build": {
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
@@ -22,21 +25,14 @@
       }
     },
     "start": {
-      "executor": "@nx/vite:dev-server",
-      "defaultConfiguration": "development",
+      "executor": "nx:run-commands",
+      "dependsOn": ["build-deps"],
       "options": {
-        "buildTarget": "data-download-portal:build"
+        "commands": ["vite", "nx watch-deps data-download-portal"],
+        "parallel": true,
+        "cwd": "{projectRoot}"
       },
-      "configurations": {
-        "development": {
-          "buildTarget": "data-download-portal:build:development",
-          "hmr": true
-        },
-        "production": {
-          "buildTarget": "data-download-portal:build:production",
-          "hmr": false
-        }
-      }
+      "continuous": true
     },
     "preview": {
       "executor": "@nx/vite:preview-server",
@@ -53,6 +49,19 @@
         }
       },
       "dependsOn": ["build"]
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project apps/data-download-portal/tsconfig.json"
+      }
+    },
+    "typecheck-watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --watch --project apps/data-download-portal/tsconfig.json"
+      },
+      "continuous": true
     }
   }
 }

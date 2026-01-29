@@ -325,6 +325,21 @@
       }
     }
   },
+  "private-global-gap-ais-off-events": {
+    "name": "GAPS Events. (AIS)",
+    "description": "GAPS Events",
+    "schema": {
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "2": "2",
+          "48": "48"
+        }
+      },
+      "is_closed": "is_closed",
+      "next_port_id": "next_port_id"
+    }
+  },
   "private-global-other-vessels": {
     "name": "AIS (Other Vessels)",
     "description": "Other vessels from AIS",
@@ -652,6 +667,20 @@
   "proto-global-encounters-events": {
     "name": "Encounter Events. (AIS)",
     "description": "The dataset contains encounter events with authorizations for AIS. [Fishing-Carriers, Carriers-Fishing, Support-Fishing, Fishing-Support]"
+  },
+  "proto-global-skylight-viirs": {
+    "name": "Skylight Viirs",
+    "description": "Skylight viirs",
+    "schema": {
+      "name": "name",
+      "matched": {
+        "keyword": "matched",
+        "enum": {
+          "true": "true",
+          "false": "false"
+        }
+      }
+    }
   },
   "public-ais-presence-viirs-match-prototype": {
     "name": "VIIRS",
@@ -1077,6 +1106,10 @@
     "name": "SAR without an AIS-matched vessel",
     "description": "Vessels identified using synthetic aperture radar (SAR) without a known match to any vessel recorded using automatic identification system (AIS) data. Currently available for 2019. Source: Sentinel-1."
   },
+  "public-ebsas": {
+    "name": "Ecologically or Biologically Significant Marine Areas (EBSAs)",
+    "description": "<h2>Overview</h2>\n<p>An EBSA is an area of the ocean recognized for its unique ecological and/or biological features, such as essential habitats, food sources or breeding grounds for specific species. The description and mapping of EBSAs is done through a process under the Convention on Biological Diversity (CBD).</p>\n<p>An EBSA is an area that meets at least one of the seven internationally agreed scientific criteria, known as the “EBSA criteria”, which were adopted by the Conference of the Parties to the Convention on Biological Diversity (CBD COP) in 2008. EBSAs included in the CBD EBSA repository undergo formal review and adoption by the CBD COP.</p>\n<p>These areas can vary greatly in size and location, ranging from coastal waters to the high seas and from the ocean surface to the seabed. EBSAs encompass a wide range of species, habitats and oceanographic features, including dynamic and ephemeral phenomena, as well as areas that are important seasonally or throughout the year. EBSAs have included features such as seamounts, hydrothermal vents, coral reefs, migratory corridors, seasonal fish spawning areas and coastal upwellings, among many other types of ecosystems.</p><p>For more details on the EBSA criteria, please see:</p>\n<a href=\"https://www.cbd.int/doc/meetings/mar/ebsaws-2014-01/other/ebsaws-2014-01-azores-brochure-en.pdf\">cbd.int/doc/meetings/mar/ebsaws-2014-01/other/ebsaws-2014-01-azores-brochure-en.pdf</a>\n<ol><li>Uniqueness or rarity</li><li>Special importance for life history stages of species</li><li>Importance for threatened, endangered or declining species and/or habitats</li><li>Vulnerability, fragility, sensitivity or slow recovery</li><li>Biological productivity</li><li>Biological diversity</li><li>Naturalness</li></ol>"
+  },
   "public-ecuador-fishing-effort": {
     "name": "VMS de Ecuador",
     "description": "Los datos del sistema de monitoreo de embarcaciones (VMS) son proporcionados por la Armada de Ecuador a través de la Dirección Nacional de Espacios Acuáticos. Los datos se recopilan utilizando el sistema de seguimiento de embarcaciones de Ecuador a través de satélites y se publican con un retraso de siete días. Los datos contienen información sobre la identidad, ubicación, velocidad, rumbo y movimiento de las embarcaciones. Global Fishing Watch analiza estos datos utilizando los mismos algoritmos desarrollados para el sistema de identificación automática (AIS) para identificar la actividad y los comportamientos pesqueros. El algoritmo clasifica cada punto de datos transmitido por las embarcaciones como pesca aparentemente o no pesca, y muestra el primero en el mapa de calor de la actividad pesquera de Global Fishing Watch. El sistema VMS transmite datos de manera diferente a AIS y puede proporcionar diferentes medidas de integridad, precisión y calidad. Global Fishing Watch mejora continuamente sus algoritmos en todos los formatos de transmisión de datos para identificar algorítmicamente la \\\\\\\"actividad de pesca aparente\\\\\\\". Es posible que no se identifique alguna actividad pesquera o que el mapa de calor muestre una actividad pesquera aparente cuando la pesca no se está llevando a cabo. Por estas razones, Global Fishing Watch califica los términos “actividad pesquera”, “pesca” o “esfuerzo pesquero” como aparentes en lugar de ciertos. Toda la información de Global Fishing Watch sobre la \\\\\\\"aparente actividad pesquera\\\\\\\" debe considerarse una estimación y debe confiarse en ella únicamente a discreción del usuario. Los algoritmos de detección de pesca de Global Fishing Watch se desarrollan y prueban utilizando datos de eventos de pesca reales recopilados por observadores y se combinan con análisis de expertos de datos de movimiento de embarcaciones AIS, lo que da como resultado la clasificación manual de miles de eventos de pesca conocidos. Global Fishing Watch también colabora ampliamente con investigadores académicos a través de nuestro programa de investigación para compartir datos de clasificación de la actividad pesquera y mejorar las técnicas de clasificación automatizadas",
@@ -1236,6 +1269,23 @@
     "name": "GFCM FAO",
     "description": "A fisheries restricted area (FRA) is a geographically defined area in which some specific fishing activities are temporarily or permanently banned or restricted in order to improve the exploitation patterns and conservation of specific stocks as well as of habitats and deep-sea ecosystems. In the Mediterranean and the Black Sea, 1,760,000 square kilometers of sea habitats are protected by ten FRAs established by the GFCM. This includes one large deep-water FRA (1,730,000 square kilometers) in which the use of towed dredges and trawl nets in all waters deeper than 1000 metres is banned to protect deep-sea benthic habitats. The layer was taken from the GFCM website but manually adjusted to reflect the original coordinates of the FRAs as stipulated in the document REC. GFCM/29/2005/1."
   },
+  "public-global-ais-ports-footprint": {
+    "name": "Anchorages convex hulls by portId",
+    "description": "Anchorages footprint using the convex hull grouped by portId",
+    "schema": {
+      "port_id": "port_id"
+    }
+  },
+  "public-global-ais-ports": {
+    "name": "Ports v1 for AIS v4",
+    "description": "Named ports v1",
+    "schema": {
+      "name": "name",
+      "ais_gaps": "ais_gaps",
+      "loitering": "loitering",
+      "encounters": "encounters"
+    }
+  },
   "public-global-all-tracks": {
     "name": "Trayectorias",
     "description": "The dataset contains the tracks from all vessels (AIS) - Version 3.0",
@@ -1278,7 +1328,7 @@
   },
   "public-global-currents-vo": {
     "name": "Currents",
-    "description": "Currents northward component"
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Ocean currents are the movement of seawater driven by wind, temperature, salinity, tides, and Earth’s rotation. Ocean currents regulate climate and transport heat, nutrients, and marine species. This dataset shows global ocean surface currents, including speed and direction, providing insight into large-scale circulation patterns</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://doi.org/10.48670/moi-00016'>Generated using E.U. Copernicus Marine Service Information; https://doi.org/10.48670/moi-00016.</a></li>"
   },
   "public-global-encounters-events-carriers-fishing": {
     "name": "Encuentros para embarcaciones Transportistas y Pesqueras (AIS)",
@@ -1669,6 +1719,23 @@
       }
     }
   },
+  "public-global-vms-ports-footprint": {
+    "name": "Anchorages convex hulls by portId",
+    "description": "Anchorages footprint using the convex hull grouped by portId",
+    "schema": {
+      "port_id": "port_id"
+    }
+  },
+  "public-global-vms-ports": {
+    "name": "Ports v1 for AIS v4",
+    "description": "Named ports v1",
+    "schema": {
+      "name": "name",
+      "vms_gaps": "vms_gaps",
+      "loitering": "loitering",
+      "encounters": "encounters"
+    }
+  },
   "public-global-water-salinity-max": {
     "name": "Salinidad",
     "description": "Sea surface salinity is a key parameter to estimate the influence of oceans on climate. Along with temperature, salinity is a key factor that determines the density of ocean water and thus determines the convection and re-emergence of water masses. The thermohaline circulation crosses all the oceans in surface and at depth, driven by temperature and salinity. A global “conveyor belt” is a simple model of the large-scale thermohaline circulation. Deep-water forms in the North Atlantic, sinks, moves south, circulates around Antarctica, and finally enters the Indian, Pacific, and Atlantic basins. Currents bring cold water masses from north to south and vice versa. This thermohaline circulation greatly influences the formation of sea ice at the world’s poles, and carries ocean food sources and sea life around the planet, as well as affects rainfall patterns, wind patterns, hurricanes and monsoons. Source: EU Copernicus Marine Service Information."
@@ -1694,8 +1761,8 @@
     "description": "Sea surface temperature is the water temperature at the ocean's surface. The Hybrid Coordinate Ocean Model (HYCOM) is a data-assimilative hybrid isopycnal-sigma-pressure (generalized) coordinate ocean model. The subset of HYCOM data hosted in EE contains the variables salinity, temperature, velocity, and elevation. They have been interpolated to a uniform 0.08 degree lat/long grid between 80.48°S and 80.48°N. The salinity, temperature, and velocity variables have been interpolated to 40 standard z-levels. Source: HYCOM"
   },
   "public-global-winds-vo": {
-    "name": "Winds",
-    "description": "Winds northward component"
+    "name": "Wind",
+    "description": "<h2>Overview</h2>\n<ul>\n<li>Wind is the movement of air across the Earth’s surface and plays an important role in shaping weather and ocean conditions. Surface winds help drive ocean circulation and influence mixing at the ocean surface. This dataset shows global wind speed and direction over the ocean.</li>\n<ul>\n<h2>Source</h2>\n<ul>\n <a href='https://cds.climate.copernicus.eu/datasets/derived-era5-single-levels-daily-statistics?tab=overview'>Copernicus Climate Change Service, Climate Data Store, (2024): ERA5 post-processed daily-statistics on single levels from 1940 to present. Copernicus Climate Change Service (C3S) Climate Data Store (CDS), DOI: 10.24381/cds.4991cf48</a></li>"
   },
   "public-graticules": {
     "name": "Latitud y longitud",
@@ -1716,6 +1783,10 @@
   "public-high-seas-pockets": {
     "name": "High seas pockets",
     "description": "<p> The United Nations Convention on the Law of the Sea describes the high seas as ‘all parts of the sea that are not included in the exclusive economic zone, in the territorial sea or in the internal waters of a State, or in the archipelagic waters of an archipelagic State.’ High Seas pockets are areas totally enclosed by EEZs. These pockets can be hard to distinguish from the multiple EEZ jurisdictions that surround them, thus, we have a layer that highlights them. Citation: Flanders Marine Institute (2024). Maritime Boundaries Geodatabase: High Seas, version 2. Available online at <a href=\"https://www.marineregions.org/\" target=\"_blank\" >https://www.marineregions.org/</a >. </p>"
+  },
+  "public-immas": {
+    "name": "Important Marine Mammal Areas (IMMA)",
+    "description": "<h2>Overview</h2>\n<p>Important Marine Mammal Areas (IMMAs) are defined as discrete portions of habitat, important to marine mammal species, that have the potential to be delineated and managed for conservation.</p>\n<p>IMMAs are not marine protected areas (MPAs). IMMAs are identified based on scientific expert knowledge, along with peer review, in order to prioritise their consideration for conservation measures by governments, intergovernmental organisations, conservation groups, industry or business, and the general public.</p>\n<p>The IMMA spatial layer aims to attract the attention of policy- and decision-makers to the opportunity, as well as to the need, to ensure the favourable conservation status of marine mammals in specific areas through the implementation of the most appropriate management measures. This can include an MPA designation, shipping or fishing regulations, and/or monitoring. However, IMMAs per se are a scientific knowledge product totally devoid of management implications.</p>\n<p>Please note the following:</p>\n<ul>\n<li>Dedicated efforts to identify IMMAs have not yet covered all of the global ocean but global coverage is anticipated in the near future.</li><li>Waters outside of IMMAs in all areas of the ocean may still be important for the long-term survival and well-being of marine mammals.</li><li>Human activities taking place in marine environments everywhere must be conducted responsibly.</li></ul>"
   },
   "public-indian-ocean-isa-claim-areas": {
     "name": "Indian Ocean ISA License Areas",

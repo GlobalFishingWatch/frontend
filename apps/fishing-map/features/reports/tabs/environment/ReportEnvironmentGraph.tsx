@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
-import htmlParse from 'html-react-parser'
 
 import type { DataviewType } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
@@ -31,6 +30,7 @@ import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags
 import ReportVectorGraphTooltip from 'features/reports/tabs/environment/ReportVectorGraphTooltip'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import OutOfTimerangeDisclaimer from 'features/workspace/shared/OutOfBoundsDisclaimer'
+import { htmlSafeParse, options } from 'utils/html-parser'
 import { upperFirst } from 'utils/info'
 
 import styles from './ReportEnvironment.module.css'
@@ -69,7 +69,8 @@ function ReportEnvironmentGraph({
   const unit = dataset?.unit
 
   const timeseries = Array.isArray(data) ? data[0]?.timeseries : data?.timeseries
-  const isEmptyData = !timeseries || (Array.isArray(timeseries) && timeseries.length === 0)
+  const isEmptyData =
+    data !== undefined && (!timeseries || (Array.isArray(timeseries) && timeseries.length === 0))
   const isHeatmapVector = isHeatmapVectorsDataview(dataview)
 
   return (
@@ -137,7 +138,7 @@ function ReportEnvironmentGraph({
               })}{' '}
           {dataset?.source && (
             <span>
-              {t('analysis.dataSource')}: {htmlParse(dataset.source)}
+              {t('analysis.dataSource')}: {htmlSafeParse(dataset.source)}
             </span>
           )}
         </p>

@@ -6,15 +6,23 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./index.js",
-      "types": "./index.d.ts"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./dates": {
+      "types": "./dist/dates/index.d.ts",
+      "default": "./dist/dates/index.js"
     }
   },
-  "main": "./index.js",
-  "types": "./index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
   "dependencies": {
     "@globalfishingwatch/api-types": "^8.0.3",
-    "@globalfishingwatch/deck-loaders": "^0.1.3",
+    "@globalfishingwatch/deck-loaders": "0.1.3",
     "@tmcw/togeojson": "7.x",
     "@turf/bbox": "7.x",
     "@turf/helpers": "7.x",
@@ -25,9 +33,9 @@
     "jszip": "3.x",
     "lodash": "4.x",
     "luxon": "3.x",
+    "papaparse": "5.5.3",
     "shpjs": "6.x",
     "simple-statistics": "7.x",
-    "papaparse": "5.5.3",
     "tslib": "2.x"
   }
 }

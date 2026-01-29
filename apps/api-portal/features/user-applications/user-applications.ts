@@ -26,8 +26,15 @@ async function fetchUserApplications(userId: number, limit = 0, offset = 0) {
   return data
 }
 
-export const useUserApplications = (userId) =>
-  useQuery(['user-applications', userId], () => fetchUserApplications(userId), {})
+export const useUserApplications = (userId?: number | null) =>
+  useQuery(
+    ['user-applications', userId],
+    () => {
+      if (!userId) return null
+      return fetchUserApplications(userId)
+    },
+    {}
+  )
 
 async function deleteUserApplication(id: number) {
   const url = `/auth/user-applications/${id}`
@@ -38,19 +45,21 @@ async function deleteUserApplication(id: number) {
   return { ...userApplication, id }
 }
 
-export const useDeleteUserApplication = (userId) => {
+export const useDeleteUserApplication = (userId?: number | null) => {
   const queryClient = useQueryClient()
   return useMutation(deleteUserApplication, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['user-applications', userId])
+      if (!userId) return
+      return queryClient.invalidateQueries(['user-applications', userId])
     },
   })
 }
 
 export default useUserApplications
 
-function createUserApplication(userId) {
+function createUserApplication(userId?: number | null) {
   return async function (newUserApplication: UserApplicationCreateArguments) {
+    if (!userId) return null
     const url = `/auth/user-applications`
     return await GFWAPI.fetch<UserApplication>(url, {
       method: 'POST',

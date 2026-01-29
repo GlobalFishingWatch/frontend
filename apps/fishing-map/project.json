@@ -3,99 +3,72 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/fishing-map",
   "projectType": "application",
-  "tags": [],
+  "tags": ["app"],
   "targets": {
-    "deploy": {
+    "watch-deps": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx prepare-loaders fishing-map", "nx build fishing-map --parallel"],
-        "parallel": false
-      }
-    },
-    "build:app": {
-      "executor": "@nx/next:build",
-      "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
-      "options": {
-        "outputPath": "dist/apps/fishing-map"
+        "command": "nx watch --projects=fishing-map --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=fishing-map"
       },
-      "configurations": {
-        "production": {}
-      }
+      "continuous": true
     },
-    "build": {
+    "prepare-start": {
       "executor": "nx:run-commands",
+      "dependsOn": ["clean-next", "prepare-loaders", "i18n-labels:serve"],
       "options": {
-        "commands": [
-          "nx i18n fishing-map",
-          "nx prepare-loaders fishing-map",
-          "nx clean-next fishing-map",
-          "nx build:app fishing-map"
-        ],
+        "commands": ["nx run fishing-map:i18n:watch"],
         "parallel": false
-      }
-    },
-    "start": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "nx run i18n-labels:ts",
-          "nx run fishing-map:i18n:extract:watch",
-          "nx run fishing-map:i18n:types:watch",
-          "nx clean-locales fishing-map",
-          "nx prepare-loaders fishing-map",
-          "nx serve i18n-labels",
-          "nx serve fishing-map --hostname=0.0.0.0"
-        ],
-        "parallel": true
-      }
+      },
+      "continuous": true
     },
     "prepare-loaders": {
       "executor": "nx:run-commands",
+      "dependsOn": ["deck-loaders:dist:workers"],
+      "inputs": ["default", "{workspaceRoot}/libs/deck-loaders/dist/workers/*.js"],
+      "outputs": ["{projectRoot}/public/workers"],
       "options": {
         "commands": [
-          "nx dist:workers deck-loaders",
           "make-dir apps/fishing-map/public/workers",
-          "shx cp -R dist/libs/deck-loaders/workers/**/*.js apps/fishing-map/public/workers/ || true"
+          "shx cp libs/deck-loaders/dist/workers/*.js apps/fishing-map/public/workers/"
         ],
         "parallel": false
-      }
-    },
-    "clean-locales": {
-      "executor": "nx:run-commands",
-      "outputs": [],
-      "options": {
-        "commands": ["rimraf dist/apps/fishing-map/public/locales"]
       }
     },
     "clean-next": {
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": ["rimraf dist/apps/fishing-map", "rimraf .next"]
+        "commands": [
+          "rimraf dist/apps/fishing-map/public/locales",
+          "rimraf dist/apps/fishing-map",
+          "rimraf .next"
+        ]
       }
     },
     "i18n": {
       "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["production"],
+      "outputs": [
+        "{projectRoot}/public/locales",
+        "{projectRoot}/features/i18n/i18next.d.ts",
+        "{projectRoot}/features/i18n/i18n.types.d.ts"
+      ],
       "options": {
         "commands": ["nx i18n:extract fishing-map", "nx i18n:types fishing-map"],
         "parallel": false
       }
     },
-    "prepare-serve": {
+    "i18n:watch": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": [
-          "rimraf server",
-          "make-dir ./server && make-dir server/apps/fishing-map/public && make-dir server/dist/apps/fishing-map/.next/static",
-          "cp -rp ./dist/apps/fishing-map/public/* ./server/apps/fishing-map/public/",
-          "cp -rp ./dist/apps/fishing-map/.next/standalone/* ./server/",
-          "cp -rp ./dist/apps/fishing-map/.next/static/* ./server/dist/apps/fishing-map/.next/static/"
-        ],
-        "parallel": false
-      }
+        "commands": ["yarn i18n:extract:watch", "yarn i18n:types:watch"],
+        "parallel": true
+      },
+      "continuous": true
     },
-    "serve": {
+    "start": {
+      "dependsOn": ["prepare-start"],
       "executor": "@nx/next:server",
       "options": {
         "buildTarget": "fishing-map:build",
@@ -109,34 +82,72 @@
         }
       }
     },
-    "serve:build": {
+    "proxy": {
       "executor": "nx:run-commands",
+      "dependsOn": [],
       "options": {
-        "commands": ["node ./server/apps/fishing-map/server.js"],
-        "parallel": false
-      }
+        "commands": [
+          "local-ssl-proxy --key local.globalfishingwatch.org-key.pem --cert local.globalfishingwatch.org.pem --source 443 --target 3003"
+        ]
+      },
+      "continuous": true
     },
-    "prepare:build": {
+    "start-proxy": {
       "executor": "nx:run-commands",
+      "dependsOn": ["prepare-start"],
       "options": {
-        "commands": ["nx build fishing-map --parallel", "nx prepare-serve fishing-map"],
-        "parallel": false
-      }
+        "commands": ["nx run fishing-map:start", "nx run fishing-map:proxy"],
+        "parallel": true
+      },
+      "continuous": true
     },
-    "build-serve": {
-      "executor": "nx:run-commands",
+    "build": {
+      "executor": "@nx/next:build",
+      "outputs": ["{workspaceRoot}/dist/apps/fishing-map"],
+      "dependsOn": ["i18n", "prepare-loaders", "clean-next"],
       "options": {
-        "commands": ["nx prepare:build fishing-map", "nx serve:build fishing-map"],
-        "parallel": false
+        "outputPath": "dist/apps/fishing-map"
+      },
+      "configurations": {
+        "production": {}
       }
     },
     "test": {
       "executor": "nx:run-commands",
+      "cache": true,
+      "inputs": ["default", "^production"],
       "outputs": ["{workspaceRoot}/coverage/apps/fishing-map"],
       "options": {
         "command": "vitest run --config=vitest.config.mts",
         "cwd": "apps/fishing-map"
       }
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitest run --coverage --config=vitest.config.mts",
+        "cwd": "apps/fishing-map"
+      }
+    },
+    "test:watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "vitest --config=vitest.config.mts --watch",
+        "cwd": "apps/fishing-map"
+      }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project apps/fishing-map/tsconfig.json"
+      }
+    },
+    "typecheck-watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --watch --project apps/fishing-map/tsconfig.json"
+      },
+      "continuous": true
     }
   }
 }

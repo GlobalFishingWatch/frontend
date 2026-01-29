@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "tui": {
+    "enabled": true
+  },
   "tasksRunnerOptions": {
     "default": {
       "options": {
@@ -51,30 +54,15 @@
         "eslintConfig": "eslint.config.mjs"
       }
     },
-    "@nx/rollup:rollup": {
-      "cache": true,
-      "dependsOn": ["^build", "^dist"],
-      "inputs": ["production", "^production"]
-    },
     "@nx/esbuild:esbuild": {
       "cache": true,
-      "dependsOn": ["^build", "^dist"],
+      "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
     },
     "@nx/vite:build": {
       "cache": true,
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
-    },
-    "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["{projectRoot}/dist"],
-      "cache": true
-    },
-    "build:workers": {
-      "dependsOn": ["^build"],
-      "outputs": ["{projectRoot}/dist"],
-      "cache": true
     },
     "dist": {
       "dependsOn": ["^dist"],
@@ -86,8 +74,25 @@
       "outputs": ["{projectRoot}/dist"],
       "cache": true
     },
+    "@nx/js:tsc": {
+      "dependsOn": ["^dist"],
+      "outputs": ["{options.outputPath}"],
+      "cache": true,
+      "options": {
+        "clean": false,
+        "outputPath": "{projectRoot}/dist",
+        "generatePackageJson": false,
+        "main": "{projectRoot}/src/index.ts",
+        "tsConfig": "{projectRoot}/tsconfig.json",
+        "rootDir": "{projectRoot}/src"
+      }
+    },
+    "build-deps": {
+      "dependsOn": ["^build"]
+    },
     "prepare-loaders": {
-      "cache": true
+      "cache": true,
+      "outputs": ["{projectRoot}/public/workers"]
     },
     "@nx/vitest:test": {
       "cache": true,

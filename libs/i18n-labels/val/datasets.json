@@ -325,6 +325,21 @@
       }
     }
   },
+  "private-global-gap-ais-off-events": {
+    "name": "crwdns108874:0crwdne108874:0",
+    "description": "crwdns108876:0crwdne108876:0",
+    "schema": {
+      "duration": {
+        "keyword": "crwdns108878:0crwdne108878:0",
+        "enum": {
+          "2": "crwdns108880:0crwdne108880:0",
+          "48": "crwdns108882:0crwdne108882:0"
+        }
+      },
+      "is_closed": "crwdns108884:0crwdne108884:0",
+      "next_port_id": "crwdns108886:0crwdne108886:0"
+    }
+  },
   "private-global-other-vessels": {
     "name": "crwdns64625:0crwdne64625:0",
     "description": "crwdns64627:0crwdne64627:0",
@@ -652,6 +667,20 @@
   "proto-global-encounters-events": {
     "name": "crwdns65467:0crwdne65467:0",
     "description": "crwdns65469:0crwdne65469:0"
+  },
+  "proto-global-skylight-viirs": {
+    "name": "crwdns109038:0crwdne109038:0",
+    "description": "crwdns109040:0crwdne109040:0",
+    "schema": {
+      "name": "crwdns109042:0crwdne109042:0",
+      "matched": {
+        "keyword": "crwdns109044:0crwdne109044:0",
+        "enum": {
+          "true": "crwdns109046:0crwdne109046:0",
+          "false": "crwdns109048:0crwdne109048:0"
+        }
+      }
+    }
   },
   "public-ais-presence-viirs-match-prototype": {
     "name": "crwdns65491:0crwdne65491:0",
@@ -1077,6 +1106,10 @@
     "name": "crwdns65979:0crwdne65979:0",
     "description": "crwdns65981:0crwdne65981:0"
   },
+  "public-ebsas": {
+    "name": "crwdns108892:0crwdne108892:0",
+    "description": "crwdns108894:0crwdne108894:0"
+  },
   "public-ecuador-fishing-effort": {
     "name": "crwdns65983:0crwdne65983:0",
     "description": "crwdns106596:0crwdne106596:0",
@@ -1235,6 +1268,23 @@
   "public-gfcm-fao": {
     "name": "crwdns87882:0crwdne87882:0",
     "description": "crwdns93806:0crwdne93806:0"
+  },
+  "public-global-ais-ports-footprint": {
+    "name": "crwdns109002:0crwdne109002:0",
+    "description": "crwdns109004:0crwdne109004:0",
+    "schema": {
+      "port_id": "crwdns109006:0crwdne109006:0"
+    }
+  },
+  "public-global-ais-ports": {
+    "name": "crwdns109008:0crwdne109008:0",
+    "description": "crwdns109010:0crwdne109010:0",
+    "schema": {
+      "name": "crwdns109012:0crwdne109012:0",
+      "ais_gaps": "crwdns109014:0crwdne109014:0",
+      "loitering": "crwdns109016:0crwdne109016:0",
+      "encounters": "crwdns109018:0crwdne109018:0"
+    }
   },
   "public-global-all-tracks": {
     "name": "crwdns69888:0crwdne69888:0",
@@ -1669,6 +1719,23 @@
       }
     }
   },
+  "public-global-vms-ports-footprint": {
+    "name": "crwdns109020:0crwdne109020:0",
+    "description": "crwdns109022:0crwdne109022:0",
+    "schema": {
+      "port_id": "crwdns109024:0crwdne109024:0"
+    }
+  },
+  "public-global-vms-ports": {
+    "name": "crwdns109026:0crwdne109026:0",
+    "description": "crwdns109028:0crwdne109028:0",
+    "schema": {
+      "name": "crwdns109030:0crwdne109030:0",
+      "vms_gaps": "crwdns109032:0crwdne109032:0",
+      "loitering": "crwdns109034:0crwdne109034:0",
+      "encounters": "crwdns109036:0crwdne109036:0"
+    }
+  },
   "public-global-water-salinity-max": {
     "name": "crwdns70248:0crwdne70248:0",
     "description": "crwdns70250:0crwdne70250:0"
@@ -1694,7 +1761,7 @@
     "description": "crwdns66607:0crwdne66607:0"
   },
   "public-global-winds-vo": {
-    "name": "crwdns108520:0crwdne108520:0",
+    "name": "crwdns109000:0crwdne109000:0",
     "description": "crwdns108522:0crwdne108522:0"
   },
   "public-graticules": {
@@ -1716,6 +1783,10 @@
   "public-high-seas-pockets": {
     "name": "crwdns66625:0crwdne66625:0",
     "description": "crwdns93808:0crwdne93808:0"
+  },
+  "public-immas": {
+    "name": "crwdns108948:0crwdne108948:0",
+    "description": "crwdns108950:0crwdne108950:0"
   },
   "public-indian-ocean-isa-claim-areas": {
     "name": "crwdns108538:0crwdne108538:0",

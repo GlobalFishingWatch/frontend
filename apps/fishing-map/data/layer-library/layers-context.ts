@@ -18,6 +18,7 @@ import {
   PROTECTED_SEAS_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
+  TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { PORTS_LAYER_ID } from 'features/map/map.config'
 
@@ -155,5 +156,37 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
     config: {
       color: '#9AEEFF',
     },
+  },
+  {
+    id: 'immas',
+    dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/immas.jpg`,
+    category: DataviewCategory.Context,
+    config: {
+      color: '#00EEFF',
+    },
+    datasetsConfig: [
+      {
+        params: [],
+        endpoint: 'context-tiles',
+        datasetId: 'public-immas',
+      },
+    ],
+  },
+  {
+    id: 'ebsas',
+    dataviewId: TEMPLATE_CONTEXT_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/ebsas.jpg`,
+    category: DataviewCategory.Context,
+    config: {
+      color: '#00EEFF',
+    },
+    datasetsConfig: [
+      {
+        params: [],
+        endpoint: 'context-tiles',
+        datasetId: 'public-ebsas',
+      },
+    ],
   },
 ]

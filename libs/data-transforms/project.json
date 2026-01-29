@@ -3,36 +3,26 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/data-transforms/src",
   "projectType": "library",
+  "tags": ["lib"],
   "targets": {
     "dist": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@nx/js:tsc"
+    },
+    "dev": {
+      "dependsOn": ["^dist"],
+      "executor": "nx:run-commands",
       "options": {
-        "outputPath": "dist/libs/data-transforms",
-        "main": "libs/data-transforms/src/index.ts",
-        "tsConfig": "libs/data-transforms/tsconfig.lib.json",
-        "assets": [
-          {
-            "input": "libs/data-transforms",
-            "glob": "package.json",
-            "output": "."
-          },
-          {
-            "input": "libs/data-transforms",
-            "glob": "README.md",
-            "output": "."
-          }
-        ],
-        "rootDir": "libs/data-transforms/src"
-      }
+        "command": "nx run data-transforms:dist",
+        "watch": true
+      },
+      "continuous": true
     },
     "publish": {
       "executor": "@nx/js:release-publish",
       "dependsOn": ["dist"],
       "options": {
-        "packageRoot": "dist/libs/data-transforms"
+        "packageRoot": "libs/data-transforms"
       }
     }
-  },
-  "tags": []
+  }
 }

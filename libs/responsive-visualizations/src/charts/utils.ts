@@ -44,6 +44,11 @@ export const getContrastSafeColor = (
     console.warn('No color provided using black as fallback', color)
     return '#000000'
   }
+  if (!Color.try(color) || !Color.try(backgroundColor)) {
+    console.warn('Error with color:', color)
+    return '#000000'
+  }
+
   const minContrastMichelson = 0.15
   const minContrastText = 1.8
   const colorA = new Color(color)

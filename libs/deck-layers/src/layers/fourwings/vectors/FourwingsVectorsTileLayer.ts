@@ -103,14 +103,18 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     }
   }
 
-  get isLoaded(): boolean {
-    return super.isLoaded && !this.state.rampDirty && this.state.viewportLoaded
-  }
-
   get cacheHash(): string {
     const { id, startTime, endTime } = this.props
     const colors = Array.from(new Set(this.props.sublayers.map((s) => s.color))).join(',')
-    return `${id}-${startTime}-${endTime}-${colors}`
+    return `${id}-${startTime}-${endTime}-${colors}-${this.state?.rampDirty ?? false}-${this.viewportLoaded}`
+  }
+
+  get debounceTime(): number {
+    return this.props.debounceTime ?? 0
+  }
+
+  get viewportLoaded(): boolean {
+    return this.state?.viewportLoaded ?? false
   }
 
   getError(): string {
@@ -338,8 +342,12 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     const { startTime, endTime, availableIntervals, temporalAggregation } = props
     const { tilesCache } = this.state
     const zoom = Math.round(this.context.viewport.zoom)
-    const isStartOutRange = startTime < tilesCache.start
-    const isEndOutRange = endTime > tilesCache.end
+    const isStartOutRange = temporalAggregation
+      ? startTime !== tilesCache.start
+      : startTime < tilesCache.start
+    const isEndOutRange = temporalAggregation
+      ? endTime !== tilesCache.end
+      : endTime > tilesCache.end
     const isDifferentZoom = zoom !== tilesCache.zoom
     const isDifferentTemporalAggregation = temporalAggregation !== tilesCache.temporalAggregation
 
@@ -351,14 +359,6 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
       isDifferentTemporalAggregation ||
       getFourwingsInterval(startTime, endTime, availableIntervals) !== tilesCache.interval ||
       isDifferentZoom
-
-    if (isDifferentZoom) {
-      requestAnimationFrame(() => {
-        this.setState({
-          viewportLoaded: false,
-        })
-      })
-    }
 
     if (needsCacheKeyUpdate) {
       requestAnimationFrame(() => {
@@ -433,7 +433,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   }
 
   getAggregationOperation() {
-    return 'avg'
+    return FourwingsAggregationOperation.Avg
   }
 
   getTilesData() {

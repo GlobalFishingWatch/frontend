@@ -26,6 +26,7 @@
 
 .selectorsRow {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   margin-top: var(--space-S);
@@ -33,4 +34,19 @@
 
 .select {
   max-width: calc(50% - 1rem);
+  min-width: 25rem;
+}
+
+.select:last-child {
+  margin-left: auto;
+}
+
+.printableTitle {
+  display: none;
+}
+
+@media print {
+  .printableTitle {
+    display: ruby-text;
+  }
 }

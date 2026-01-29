@@ -4,6 +4,17 @@
   "sourceRoot": "apps/port-labeler",
   "projectType": "application",
   "targets": {
+    "build-deps": {
+      "executor": "nx:noop",
+      "dependsOn": ["^dist"]
+    },
+    "watch-deps": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "nx watch --projects port-labeler --includeDependentProjects -- nx run-many -t build -p \\$NX_PROJECT_NAME --exclude=port-labeler"
+      },
+      "continuous": true
+    },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
@@ -24,14 +35,17 @@
     },
     "start": {
       "executor": "nx:run-commands",
+      "dependsOn": ["build-deps"],
       "options": {
         "commands": [
           "nx clean-locales port-labeler",
           "nx serve i18n-labels",
-          "nx serve port-labeler"
+          "nx serve port-labeler",
+          "nx watch-deps port-labeler"
         ],
         "parallel": true
-      }
+      },
+      "continuous": true
     },
     "clean-locales": {
       "executor": "nx:run-commands",
@@ -76,7 +90,20 @@
       "options": {
         "jestConfig": "apps/port-labeler/jest.config.ts"
       }
+    },
+    "typecheck": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project apps/port-labeler/tsconfig.json"
+      }
+    },
+    "typecheck-watch": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --watch --project apps/port-labeler/tsconfig.json"
+      },
+      "continuous": true
     }
   },
-  "tags": []
+  "tags": ["app"]
 }

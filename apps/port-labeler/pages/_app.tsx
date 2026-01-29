@@ -8,8 +8,8 @@ import 'features/i18n/i18n'
 import store from '../store'
 
 import './styles.css'
-import '../../../libs/ui-components/src/base.css'
-import '../../../libs/timebar/src/timebar-settings.css'
+import '@globalfishingwatch/ui-components/base.css'
+import '@globalfishingwatch/timebar/timebar-settings.css'
 import 'maplibre-gl/dist/maplibre-gl.css'
 
 // function SafeHydrate({ children }) {
