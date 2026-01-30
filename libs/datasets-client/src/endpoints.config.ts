@@ -164,9 +164,9 @@ export const VESSELS_ENDPOINTS = [
     ],
     query: [
       {
-        id: 'dataset',
+        id: 'datasets',
         type: 'string',
-        array: false,
+        array: true,
         required: true,
       },
       {
@@ -338,7 +338,7 @@ export const EVENTS_ENDPOINTS = [
     description: 'Endpoint to retrieve events cluster tiles',
     downloadable: false,
     method: 'GET',
-    pathTemplate: '/{{apiVersion}}/4wings/tile/{{type}}/{{z}}/{{x}}/{{y}}',
+    pathTemplate: '/{{apiVersion}}/4wings/tile/{{type}}/{z}/{x}/{y}',
     params: [
       {
         id: 'type',
@@ -362,11 +362,13 @@ export const EVENTS_ENDPOINTS = [
       {
         id: 'datasets',
         type: 'string',
+        array: true,
         required: true,
       },
       {
         id: 'filters',
         type: 'sql',
+        array: true,
         required: false,
       },
       {
@@ -393,7 +395,7 @@ export const EVENTS_ENDPOINTS = [
     description: 'Endpoint to retrieve events ids from a 4wings cell',
     downloadable: true,
     method: 'GET',
-    pathTemplate: '/{{apiVersion}}/4wings/interaction/{{z}}/{{x}}/{{y}}/{{cols}}/{{rows}}',
+    pathTemplate: '/{{apiVersion}}/4wings/interaction/{z}/{x}/{y}/{{cols}}/{{rows}}',
     params: [
       {
         id: 'z',
@@ -425,6 +427,7 @@ export const EVENTS_ENDPOINTS = [
       {
         id: 'filters',
         type: 'sql',
+        array: true,
         required: false,
       },
       {
@@ -453,7 +456,7 @@ export const FOURWINGS_ENDPOINTS = [
     description: 'Endpoint to retrieve tiles from 4wings dataset',
     downloadable: false,
     method: 'GET',
-    pathTemplate: '/{{apiVersion}}/4wings/tile/{{type}}/{{z}}/{{x}}/{{y}}',
+    pathTemplate: '/{{apiVersion}}/4wings/tile/{{type}}/{z}/{x}/{y}',
     params: [
       {
         id: 'type',
@@ -483,6 +486,7 @@ export const FOURWINGS_ENDPOINTS = [
       {
         id: 'filters',
         type: 'sql',
+        array: true,
         required: false,
       },
       {
@@ -515,7 +519,7 @@ export const FOURWINGS_ENDPOINTS = [
     description: 'Endpoint to retrieve vessel ids from a 4wings cell',
     downloadable: true,
     method: 'GET',
-    pathTemplate: '/{{apiVersion}}/4wings/interaction/{{z}}/{{x}}/{{y}}/{{cols}}/{{rows}}',
+    pathTemplate: '/{{apiVersion}}/4wings/interaction/{z}/{x}/{y}/{{cols}}/{{rows}}',
     params: [
       {
         id: 'z',
@@ -548,6 +552,7 @@ export const FOURWINGS_ENDPOINTS = [
       {
         id: 'filters',
         type: 'sql',
+        array: true,
         required: false,
       },
       {
@@ -579,6 +584,7 @@ export const FOURWINGS_ENDPOINTS = [
   //     {
   //       id: 'filters',
   //       type: 'sql',
+  //       array: true,
   //       required: false,
   //     },
   //     {
@@ -593,7 +599,7 @@ export const FOURWINGS_ENDPOINTS = [
   //   id: EndpointId.FourwingsLegendByZoom,
   //   downloadable: true,
   //   method: 'GET',
-  //   pathTemplate: '/{{apiVersion}}/4wings/legend/{{z}}',
+  //   pathTemplate: '/{{apiVersion}}/4wings/legend/{z}',
   //   params: [
   //     {
   //       id: 'z',
@@ -610,6 +616,7 @@ export const FOURWINGS_ENDPOINTS = [
   //     {
   //       id: 'filters',
   //       type: 'sql',
+  //       array: true,
   //       required: false,
   //     },
   //     {
@@ -657,6 +664,7 @@ export const FOURWINGS_ENDPOINTS = [
   //     {
   //       id: 'filters',
   //       type: 'sql',
+  //       array: true,
   //       required: false,
   //     },
   //     {
@@ -688,6 +696,7 @@ export const FOURWINGS_ENDPOINTS = [
       {
         id: 'filters',
         type: 'sql',
+        array: true,
         required: false,
       },
       {
@@ -726,6 +735,7 @@ export const FOURWINGS_ENDPOINTS = [
   //     {
   //       id: 'filters',
   //       type: 'sql',
+  //       array: true,
   //       required: false,
   //     },
   //     {
@@ -743,7 +753,7 @@ export const USER_TRACKS_ENDPOINTS = [
   //   id: EndpointId.UserTracksTiles,
   //   downloadable: true,
   //   method: 'GET',
-  //   pathTemplate: '/{{apiVersion}}/user-tracks-v1/{{z}}/{{x}}/{{y}}',
+  //   pathTemplate: '/{{apiVersion}}/user-tracks-v1/{z}/{x}/{y}',
   //   params: [
   //     {
   //       id: 'z',
@@ -803,8 +813,12 @@ export const USER_CONTEXT_LAYER_ENDPOINTS = [
     description: 'Endpoint to retrieve tiles from user context layers',
     downloadable: true,
     method: 'GET',
-    pathTemplate: '/{{apiVersion}}/datasets/{{dataset}}/user-context-layers/{{z}}/{{x}}/{{y}}',
+    pathTemplate: '/{{apiVersion}}/datasets/{{dataset}}/user-context-layers/{z}/{x}/{y}',
     params: [
+      {
+        id: 'dataset',
+        type: 'string',
+      },
       {
         id: 'z',
         type: 'number',
@@ -827,6 +841,7 @@ export const USER_CONTEXT_LAYER_ENDPOINTS = [
       {
         id: 'filters',
         type: 'sql',
+        array: true,
         required: false,
       },
     ],
@@ -838,6 +853,10 @@ export const USER_CONTEXT_LAYER_ENDPOINTS = [
     method: 'GET',
     pathTemplate: '/{{apiVersion}}/datasets/{{dataset}}/user-context-layers/{{id}}',
     params: [
+      {
+        id: 'dataset',
+        type: 'string',
+      },
       {
         id: 'id',
         type: 'number',
@@ -859,8 +878,12 @@ export const CONTEXT_LAYER_ENDPOINTS = [
     description: 'Endpoint to retrieve tiles from context layers',
     downloadable: true,
     method: 'GET',
-    pathTemplate: '/{{apiVersion}}/datasets/{{dataset}}/context-layers/{{z}}/{{x}}/{{y}}',
+    pathTemplate: '/{{apiVersion}}/datasets/{{dataset}}/context-layers/{z}/{x}/{y}',
     params: [
+      {
+        id: 'dataset',
+        type: 'string',
+      },
       {
         id: 'z',
         type: 'number',
@@ -884,6 +907,10 @@ export const CONTEXT_LAYER_ENDPOINTS = [
     pathTemplate: '/{{apiVersion}}/datasets/{{dataset}}/context-layers/{{id}}',
     params: [
       {
+        id: 'dataset',
+        type: 'string',
+      },
+      {
         id: 'id',
         type: 'number',
       },
@@ -905,7 +932,12 @@ export const TEMPORAL_CONTEXT_LAYER_ENDPOINTS = [
     downloadable: true,
     method: 'GET',
     pathTemplate: '/{{apiVersion}}/datasets/{{dataset}}/temporal-context-layers',
-    params: [],
+    params: [
+      {
+        id: 'dataset',
+        type: 'string',
+      },
+    ],
     query: [
       {
         id: 'start-date',
