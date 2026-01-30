@@ -31,7 +31,7 @@ export const FourwingsWorkerLoader: Loader = {
   version: VERSION,
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
-  worker: true,
+  worker: false,
   category: 'geometry',
   options: {
     fourwings: {
