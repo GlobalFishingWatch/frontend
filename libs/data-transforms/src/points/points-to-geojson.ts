@@ -1,6 +1,6 @@
 import type { Feature, FeatureCollection, GeoJsonProperties, Point } from 'geojson'
 
-import type { DatasetFilters } from '@globalfishingwatch/api-types'
+import type { DatasetFilter, DatasetFilters } from '@globalfishingwatch/api-types'
 import { flattenDatasetFilters } from '@globalfishingwatch/datasets-client'
 
 import { parseCoords } from '../coordinates'
@@ -11,8 +11,11 @@ import type { PointColumns } from '../types'
 export const cleanProperties = (object: GeoJsonProperties, filters: DatasetFilters | undefined) => {
   const result = normalizePropertiesKeys(object)
   const flatFilters = flattenDatasetFilters(filters)
+  const flatFiltersById = Object.fromEntries(
+    flatFilters.map((filter) => [filter.id, filter])
+  ) as Record<string, DatasetFilter>
   for (const property in result) {
-    const propertySchema = flatFilters[property]
+    const propertySchema = flatFiltersById[property]
     if (result[property] !== null) {
       if (propertySchema?.type === 'string') {
         result[property] = String(result[property])

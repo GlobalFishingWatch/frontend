@@ -10,6 +10,7 @@ export type DatasetFilterType =
   | 'timestamp'
 
 export type DatasetFilterFormat = 'date-time' | 'latitude' | 'longitude'
+export type DatasetFilterUnit = 'hours' | 'minutes' | 'km' | 'SI'
 
 export type DatasetFilterEnum = (string | number | boolean)[]
 export type DatasetFilterOperation = 'gt' | 'lt' | 'gte' | 'lte'
@@ -28,6 +29,7 @@ export type DatasetFilter = {
   max?: number
   singleSelection?: boolean
   operation?: DatasetFilterOperation
+  unit?: DatasetFilterUnit
 }
 
 export type DatasetFilters = Partial<Record<FilterType, DatasetFilter[]>>

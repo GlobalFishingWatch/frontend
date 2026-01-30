@@ -133,9 +133,9 @@ export const FILTERABLE_GENERATORS: DataviewType[] = [
 function getDatasetSchemaItem(dataset: Dataset, filter: string) {
   const flatFilters = flattenDatasetFilters(dataset?.filters)
   return (
-    (flatFilters?.[filter] as DatasetFilter) ||
+    flatFilters.find((f) => f.id === filter) ||
     // TODO:DR test if still need selfReportedInfo
-    (flatFilters?.selfReportedInfo as DatasetFilter)
+    flatFilters.find((f) => f.id === 'selfReportedInfo')
   )
 }
 

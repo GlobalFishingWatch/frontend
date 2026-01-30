@@ -131,9 +131,9 @@ export const getDatasetFiltersClean = (filters: DatasetFilters): Record<string, 
     return {}
   }
   const flatFilters = flattenDatasetFilters(filters)
-  return Object.entries(flatFilters).reduce(
-    (acc, [key, value]) => {
-      const cleanKey = getFilterIdClean(key) as string
+  return flatFilters.reduce(
+    (acc, value) => {
+      const cleanKey = getFilterIdClean(value.id) as string
       return { ...acc, [cleanKey]: { ...value, id: cleanKey, label: value.label || cleanKey } }
     },
     {} as Record<string, DatasetFilter>

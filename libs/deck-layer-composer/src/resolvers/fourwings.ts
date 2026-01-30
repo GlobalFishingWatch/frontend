@@ -54,7 +54,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     const positionProperties = uniq(
       sublayer?.datasets.flatMap((dataset) => {
         const flattenFilters = flattenDatasetFilters(dataset?.filters)
-        return Object.keys(flattenFilters || {})
+        return flattenFilters.map((f) => f.id)
       })
     )
     const { extentStart, extentEnd } = getDatasetsExtent<number>(sublayer.datasets, {
@@ -131,23 +131,11 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
               value: visualizationMode === 'positions' ? 'position' : 'heatmap',
             },
           ],
-        },
-        { absolute: true }
-      )
-    : undefined
-
-  const interactionUrl = dataset
-    ? resolveEndpoint(
-        dataset,
-        {
-          datasetId: dataset.id,
-          endpoint: EndpointId.FourwingsTiles,
-          params: [
+          // Removing dataset as they will be resolved with in the layer
+          query: [
             {
-              id: 'type',
-              // api enpdoint needs 'position' instead of 'positions'
-              // TODO: discuss this with Raul before the release
-              value: visualizationMode === 'positions' ? 'position' : 'heatmap',
+              id: 'datasets',
+              value: [],
             },
           ],
         },
