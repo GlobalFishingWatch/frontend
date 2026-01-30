@@ -1,16 +1,9 @@
 import { camelCase } from 'es-toolkit'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type {
-  Dataset,
-  DataviewDatasetConfig,
-  EndpointParamType,
-} from '@globalfishingwatch/api-types'
-import { DatasetTypes } from '@globalfishingwatch/api-types'
+import type { Dataset, DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 
 import { getEndpointsByDatasetType } from './endpoints'
-
-const arrayQueryParams: EndpointParamType[] = ['sql']
 
 // Generates an URL by interpolating a dataset endpoint template with a dataview datasetConfig
 export const resolveEndpoint = (
@@ -32,22 +25,50 @@ export const resolveEndpoint = (
   }
 
   let url = endpoint.pathTemplate
-  datasetConfig.params?.forEach((param) => {
-    const datasetConfigurationId = camelCase(param.id) as keyof typeof dataset.configuration
-    const value = param.value ?? dataset.configuration?.[datasetConfigurationId]
-    url = url.replace(`{{${param.id}}}`, value as string)
-  })
+  const datasetConfigParams = [...(datasetConfig.params ?? [])]
+  const datasetConfigQuery = [...(datasetConfig.query ?? [])]
+  const endpointDatasetParams = endpoint.params.find(
+    (param) => param.id === 'dataset' || param.id === 'datasets'
+  )
+  const endpointDatasetQuery = endpoint.query.find(
+    (query) => query.id === 'dataset' || query.id === 'datasets'
+  )
+  const hasDatasetConfigDatasetParm =
+    datasetConfig.params?.some((param) => param.id === 'dataset' || param.id === 'datasets') ||
+    datasetConfig.query?.some((query) => query.id === 'dataset' || query.id === 'datasets')
+  // This avoids duplicating query in every config when we already have the datasetId
+  if (
+    (endpointDatasetParams || endpointDatasetQuery) &&
+    !hasDatasetConfigDatasetParm &&
+    datasetConfig.datasetId
+  ) {
+    const endpointDatasetConfig = endpointDatasetParams
+      ? endpointDatasetParams
+      : endpointDatasetQuery!
+    const endpointDatasetParam = {
+      id: endpointDatasetConfig.id,
+      value: endpointDatasetConfig.array ? [datasetConfig.datasetId] : datasetConfig.datasetId,
+    }
+    if (endpointDatasetParams) {
+      datasetConfigParams.push(endpointDatasetParam)
+    } else {
+      datasetConfigQuery.push(endpointDatasetParam)
+    }
+  }
 
-  url = url.replace('{{x}}', '{x}').replace('{{y}}', '{y}').replace('{{z}}', '{z}')
+  if (datasetConfigParams?.length) {
+    datasetConfigParams?.forEach((param) => {
+      const datasetConfigurationId = camelCase(param.id) as keyof typeof dataset.configuration
+      const value = param.value ?? dataset.configuration?.[datasetConfigurationId]
+      url = url.replace(`{{${param.id}}}`, value as string)
+    })
+  }
 
-  if (datasetConfig.query) {
+  if (datasetConfigQuery?.length) {
     const resolvedQuery = new URLSearchParams()
-    datasetConfig.query.forEach((query) => {
+    datasetConfigQuery.forEach((query) => {
       const endpointQuery = endpoint.query.find((q) => q.id === query.id)
-      if (
-        endpointQuery &&
-        (endpointQuery.array === true || arrayQueryParams.includes(endpointQuery.type))
-      ) {
+      if (endpointQuery?.array === true || Array.isArray(query.value)) {
         const queryArray = Array.isArray(query.value)
           ? (query.value as string[])
           : [query.value as string]
@@ -57,40 +78,11 @@ export const resolveEndpoint = (
           resolvedQuery.set(queryArrId, queryArrItem)
         })
       } else {
-        if (Array.isArray(query.value)) {
-          query.value.forEach((queryArrItem, i) => {
-            const queryArrId = `${query.id}[${i}]`
-            resolvedQuery.set(queryArrId, queryArrItem as string)
-          })
-        } else {
-          resolvedQuery.set(query.id, query.value.toString())
-        }
+        resolvedQuery.set(query.id, query.value.toString())
       }
     })
-    // To avoid duplicating query in every config when we already have the datasetId
-    if (
-      endpoint.query.some((q) => q.id === 'datasets') &&
-      !resolvedQuery.toString().includes('datasets') &&
-      datasetConfig.datasetId
-    ) {
-      resolvedQuery.set('datasets[0]', datasetConfig.datasetId)
-    } else if (
-      // Also check v3 new single dataset param
-      endpoint.query.some((q) => q.id === 'dataset') &&
-      !resolvedQuery.toString().includes('dataset') &&
-      datasetConfig.datasetId
-    ) {
-      resolvedQuery.set('dataset', datasetConfig.datasetId)
-    }
+
     url = `${url}?${resolvedQuery.toString()}`
-  } else if (dataset.type !== DatasetTypes.Fourwings) {
-    if (endpoint.query.some((q) => q.id === 'dataset')) {
-      // Fallback when no dataset query is defined but we already know which dataset want to search in
-      url = `${url}?dataset=${dataset.id}`
-    } else if (endpoint.query.some((q) => q.id === 'datasets')) {
-      // Fallback when no dataset query is defined but we already know which datasets want to search in
-      url = `${url}?datasets=${dataset.id}`
-    }
   }
 
   return GFWAPI.generateUrl(decodeURI(url) as string, { absolute })
