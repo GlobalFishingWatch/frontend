@@ -69,6 +69,8 @@ export enum DatasetSubCategory {
   Sentinel2 = 'sentinel-2',
   Track = 'track',
   Viirs = 'viirs',
+  User = 'user',
+  UserInteractive = 'user-interactive',
 }
 
 export type DatasetFile = {

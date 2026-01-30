@@ -43,7 +43,7 @@ export const guessColumnsFromFilters = (
   if (!filters) return {}
 
   const flatSchema = flattenDatasetFilters(filters)
-  const columns = Object.keys(flatSchema)
+  const columns = flatSchema.map((filter) => filter.id)
   if (!columns.length) return {}
   const guessedColumns = GUESS_COLUMN_NAMES.map(([columnToGuess, candidates]) => {
     const exactGuess = columns?.find((column) => candidates.includes(column))
