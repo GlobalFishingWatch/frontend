@@ -69,8 +69,11 @@ export const getUserPolygonColorProps = ({
     property: 'polygonColor',
   })
   const flattenFilters = flattenDatasetFilters(dataset?.filters)
-  if (polygonColor && flattenFilters?.[polygonColor]?.enum) {
-    const [min, max] = flattenFilters[polygonColor].enum as number[]
+  const flattenFiltersById = Object.fromEntries(
+    flattenFilters.map((filter) => [filter.id, filter])
+  ) as Record<string, any>
+  if (polygonColor && flattenFiltersById?.[polygonColor]?.enum) {
+    const [min, max] = flattenFiltersById[polygonColor].enum as number[]
     return {
       steps: getDatasetRangeSteps({ min, max }),
       stepsPickValue: polygonColor,
@@ -100,11 +103,14 @@ export const getUserCircleProps = ({
   }
 
   const flattenFilters = flattenDatasetFilters(dataset?.filters)
+  const flattenFiltersById = Object.fromEntries(
+    flattenFilters.map((filter) => [filter.id, filter])
+  ) as Record<string, any>
   const circleRadiusRange =
-    circleRadiusProperty && flattenFilters?.[circleRadiusProperty]?.enum
+    circleRadiusProperty && flattenFiltersById?.[circleRadiusProperty]?.enum
       ? [
-          flattenFilters[circleRadiusProperty].enum?.[0] as number,
-          flattenFilters[circleRadiusProperty].enum?.[1] as number,
+          flattenFiltersById[circleRadiusProperty].enum?.[0] as number,
+          flattenFiltersById[circleRadiusProperty].enum?.[1] as number,
         ]
       : []
   const minPointSize = getDatasetConfigurationProperty({

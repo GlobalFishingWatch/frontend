@@ -3,11 +3,9 @@ import intersection from 'lodash/intersection'
 
 import type {
   Dataset,
-  DatasetSchema,
-  DatasetSchemaItem,
-  DatasetSchemaItemEnum,
-  DatasetSchemaItemOperation,
-  DatasetSchemaType,
+  DatasetFilter,
+  DatasetFilterOperation,
+  DatasetFilterType,
   Dataview,
   DataviewDatasetConfig,
   DataviewInstance,
@@ -30,6 +28,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/utils'
 import {
+  flattenDatasetFilters,
   getDatasetConfigurationProperty,
   getDatasetGeometryType,
   getEnvironmentalDatasetRange,
@@ -170,7 +169,6 @@ export const getDatasetTypeIcon = (dataset: Dataset): IconType | null => {
   }
   if (dataset.type === DatasetTypes.Fourwings) return 'heatmap'
   if (dataset.type === DatasetTypes.Events) return 'clusters'
-  if (dataset.type === DatasetTypes.VesselGroups) return 'vessel-group'
   const geometryType = getDatasetGeometryType(dataset)
   if (geometryType === 'draw') {
     const geometryType = getDatasetConfigurationProperty({ dataset, property: 'geometryType' })
@@ -562,8 +560,9 @@ export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boole
   return allowedDatasets
 }
 
-export const getAllDatasetAllowedFields = (dataset: Dataset) => {
-  return dataset.fieldsAllowed || []
+export const getDatasetAllowedFields = (dataset: Dataset) => {
+  const flattenFilters = flattenDatasetFilters(dataset.filters)
+  return flattenFilters.flatMap((filter) => (filter.enabled ? filter.id : []))
 }
 
 const isDataviewSchemaSupported = (
@@ -574,7 +573,7 @@ const isDataviewSchemaSupported = (
   const schemaSupported = dataview?.datasets
     ?.filter((dataset) => activeDatasets?.includes(dataset.id))
     .every((dataset) => {
-      const fieldsAllowed = getAllDatasetAllowedFields(dataset)
+      const fieldsAllowed = getDatasetAllowedFields(dataset)
       const fieldAllowed = fieldsAllowed.includes(schema)
       const incompatibleSelection = getIncompatibleFilterSelection(dataview, schema)
       return fieldAllowed && incompatibleSelection?.length === 0
@@ -586,38 +585,27 @@ const getSchemaItemByOrigin = (
   schema: SupportedDatasetSchema,
   schemaOrigin: Exclude<SchemaOriginParam, 'all'>
 ) => {
-  const schemaInfo = dataset?.schema?.[schemaOrigin] as DatasetSchema
-  const schemaInfoItem = schemaInfo?.items?.[schema] as DatasetSchemaItem
-  if (schemaInfoItem) {
-    return schemaInfoItem
-  }
-  const schemaInfoPropertiesItem = (schemaInfo?.items?.properties as any)?.[
-    schema
-  ] as DatasetSchemaItem
-  if (schemaInfoPropertiesItem) {
-    return schemaInfoPropertiesItem
+  const filters = flattenDatasetFilters(dataset.filters)
+  const schemaFilter = filters.find((f) => f.id === `${schemaOrigin}.${schema}`)
+  if (schemaFilter) {
+    return schemaFilter
   }
   // combinedSourcesInfo so far only applies for selfReportInfo properties
   if (schemaOrigin !== 'registryInfo' && (schema === 'geartypes' || schema === 'shiptypes')) {
-    const combinedSourceSchema = (dataset.schema?.combinedSourcesInfo?.items as DatasetSchemaItem)
-      ?.properties?.[schema]?.items as DatasetSchemaItem
-    return combinedSourceSchema?.properties?.name || null
+    return filters.find((f) => f.id === `combinedSourcesInfo.${schema}.name`)
   }
 }
 
-const combineSchemaItems = (schema1: DatasetSchemaItem, schema2: DatasetSchemaItem) => {
+const combineSchemaItems = (schema1: DatasetFilter, schema2: DatasetFilter) => {
   if (!schema1 || !schema2) {
     return schema1 || schema2
   }
 
-  if (schema1.type === 'array' && schema1.type === 'array') {
+  if (schema1.array && schema2.array) {
     return {
-      type: 'array',
-      items: {
-        type: 'string',
-        enum: uniq([...(schema1.items?.enum || []), ...(schema2.items?.enum || [])]).sort(),
-      },
-    } as DatasetSchemaItem
+      ...schema1,
+      enum: uniq([...(schema1?.enum || []), ...(schema2?.enum || [])]).sort(),
+    } as DatasetFilter
   }
 
   console.warn('schemas not compatible to merge, returing first schema')
@@ -628,20 +616,22 @@ export const getDatasetSchemaItem = (
   dataset: Dataset,
   schema: SupportedDatasetSchema,
   schemaOrigin: SchemaOriginParam = 'selfReportedInfo'
-) => {
-  const schemaItem = (dataset?.schema?.[schema] || dataset?.filters?.[schema]) as DatasetSchemaItem
+): DatasetFilter | null => {
+  const filters = flattenDatasetFilters(dataset.filters)
+  const schemaItem = filters.find((f) =>
+    f.id === schemaOrigin ? `${schemaOrigin}.${schema}` : schema
+  )
   if (schemaItem) {
     return schemaItem
   }
 
   if (schemaOrigin === 'all') {
-    const selfReportedInfo: DatasetSchemaItem = getDatasetSchemaItem(
-      dataset,
-      schema,
-      'selfReportedInfo'
-    ) as DatasetSchemaItem
-    const registryInfo = getDatasetSchemaItem(dataset, schema, 'registryInfo') as DatasetSchemaItem
-    return combineSchemaItems(selfReportedInfo, registryInfo)
+    const selfReportedInfo = getDatasetSchemaItem(dataset, schema, 'selfReportedInfo')
+    const registryInfo = getDatasetSchemaItem(dataset, schema, 'registryInfo')
+    if (selfReportedInfo && registryInfo) {
+      return combineSchemaItems(selfReportedInfo, registryInfo)
+    }
+    return selfReportedInfo || registryInfo || null
   } else {
     const nestedSchemaItem = getSchemaItemByOrigin(dataset, schema, schemaOrigin)
     if (nestedSchemaItem) {
@@ -658,7 +648,8 @@ const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema
     return true
   }
   if (schema === 'flag') {
-    return dataset.fieldsAllowed.some((f) => f.includes(schema))
+    const fieldsAllowed = getDatasetAllowedFields(dataset)
+    return fieldsAllowed.some((f) => f.includes(schema))
   }
   const schemaConfig = getDatasetSchemaItem(dataset, schema)
   if (!schemaConfig) {
@@ -666,10 +657,10 @@ const datasetHasSchemaFields = (dataset: Dataset, schema: SupportedDatasetSchema
   }
   if (
     schemaConfig.type === 'range' ||
-    schemaConfig.type === 'array' ||
+    schemaConfig.array === true ||
     schemaConfig.type === 'boolean'
   ) {
-    const schemaEnum = schemaConfig?.enum || schemaConfig?.items?.enum
+    const schemaEnum = schemaConfig?.enum
     return schemaEnum !== undefined && schemaEnum.length > 0
   }
   return schemaConfig.type === 'string' || schemaConfig.type === 'number'
@@ -699,7 +690,7 @@ export const isFieldInFieldsAllowed = ({
 const datasetHasFieldsAllowed = (dataset: Dataset, schema: SupportedDatasetSchema) => {
   return isFieldInFieldsAllowed({
     field: schema,
-    fieldsAllowed: getAllDatasetAllowedFields(dataset),
+    fieldsAllowed: getDatasetAllowedFields(dataset),
   })
 }
 
@@ -799,7 +790,7 @@ export const getCommonSchemaFieldsInDataview = (
   } else if (schema === 'next_port_id') {
     return getPorts()
   } else if (schema === 'vessel-groups') {
-    if (activeDatasets?.every((d) => d.fieldsAllowed?.includes(schema))) {
+    if (activeDatasets?.every((d) => getDatasetAllowedFields(d)?.includes(schema))) {
       if (isGuestUser) {
         return vesselGroups
       }
@@ -814,9 +805,9 @@ export const getCommonSchemaFieldsInDataview = (
     return []
   }
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
-  let schemaFields: DatasetSchemaItemEnum[] = (activeDatasets || [])?.map((d) => {
+  let schemaFields = (activeDatasets || [])?.map((d) => {
     const schemaItem = getDatasetSchemaItem(d, schema, schemaOrigin)
-    const schemaEnum = schemaItem?.enum || schemaItem?.items?.enum || []
+    const schemaEnum = schemaItem?.enum || []
     return Array.isArray(schemaEnum)
       ? schemaEnum.filter((e) => e !== null && e !== undefined)
       : schemaEnum
@@ -995,14 +986,14 @@ export const getSchemaFieldLabel = (schema: SupportedDatasetSchema, datasetId: s
 }
 
 export type SchemaFilter = {
-  type: DatasetSchemaType
+  type: DatasetFilterType
   id: SupportedDatasetSchema
   label: string
   disabled: boolean
   options: ReturnType<typeof getCommonSchemaFieldsInDataview>
   optionsSelected: ReturnType<typeof getCommonSchemaFieldsInDataview>
   unit?: string
-  operation?: DatasetSchemaItemOperation
+  operation?: DatasetFilterOperation
   filterOperator: FilterOperator
   singleSelection?: boolean
 }
@@ -1022,9 +1013,9 @@ export const getFiltersBySchema = (
     schemaOrigin,
     isGuestUser,
   })
-  const type = getCommonSchemaTypeInDataview(dataview, schema) as DatasetSchemaType
+  const type = getCommonSchemaTypeInDataview(dataview, schema) as DatasetFilterType
   const singleSelection = getSchemaFilterSingleSelection(schema)
-  const operation = getSchemaFilterOperation(dataview, schema)
+  const operation = getSchemaFilterOperation(dataview, schema) as DatasetFilterOperation
   const filterOperator = getSchemaFilterOperationInDataview(dataview, schema) as FilterOperator
   const optionsSelected = getSchemaOptionsSelectedInDataview(dataview, schema, options)
   const unit = getSchemaFilterUnitInDataview(dataview, schema)
@@ -1061,7 +1052,7 @@ export const getSchemaFiltersInDataview = (
   { vesselGroups, fieldsToInclude, isGuestUser } = {} as GetSchemaInDataviewParams
 ): { filtersAllowed: SchemaFilter[]; filtersDisabled: SchemaFilter[] } => {
   let fieldsIds = uniq(
-    dataview.datasets?.flatMap((dataset) => getAllDatasetAllowedFields(dataset)) || []
+    dataview.datasets?.flatMap((dataset) => getDatasetAllowedFields(dataset)) || []
   ) as SupportedDatasetSchema[]
   if (fieldsToInclude?.length) {
     fieldsIds = fieldsIds.filter((f) => fieldsToInclude.includes(f))

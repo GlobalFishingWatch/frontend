@@ -89,30 +89,24 @@ export const getDatasetRangeSteps = ({ min, max }: { min: number; max: number })
 }
 
 /**
- * Flattens DatasetFilters (organized by FilterType) into a flat Record<string, DatasetFilter>
+ * Flattens DatasetFilters (organized by FilterType) into a flat DatasetFilter[]
  */
 export const flattenDatasetFilters = (
-  schema: Record<string, DatasetFilter> | DatasetFilters | null | undefined
-): Record<string, DatasetFilter> => {
-  if (!schema) return {}
+  filters: Record<string, DatasetFilter> | DatasetFilters | null | undefined
+): DatasetFilter[] => {
+  if (!filters) return []
 
   // Flatten DatasetFilters if it's organized by FilterType
-  let flatSchema: Record<string, DatasetFilter>
-  if ('fourwings' in schema || 'events' in schema || 'tracks' in schema || 'vessels' in schema) {
-    flatSchema = Object.values(schema).reduce(
-      (acc, filters) => {
-        if (Array.isArray(filters)) {
-          filters.forEach((filter) => {
-            acc[filter.id] = filter
-          })
-        }
-        return acc
-      },
-      {} as Record<string, DatasetFilter>
-    )
-  } else {
-    flatSchema = schema as Record<string, DatasetFilter>
+  if (
+    'fourwings' in filters ||
+    'events' in filters ||
+    'tracks' in filters ||
+    'vessels' in filters
+  ) {
+    return Object.values(filters).flatMap((typeFilters) => {
+      return Array.isArray(typeFilters) ? typeFilters : []
+    })
   }
 
-  return flatSchema
+  return Object.values(filters as Record<string, DatasetFilter>)
 }
