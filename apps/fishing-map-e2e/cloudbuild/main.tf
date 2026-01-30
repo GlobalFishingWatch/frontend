@@ -63,9 +63,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
       id     = "Run integration tests"
       name   = "node:24-alpine"
       script = <<EOF
-        yarn install --immutable --inline-builds
-        yarn nx reset
-        yarn nx run fishing-map-e2e:e2e
+        nx test fishing-map
       EOF
     }
 
