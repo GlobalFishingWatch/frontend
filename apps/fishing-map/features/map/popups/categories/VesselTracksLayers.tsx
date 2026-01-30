@@ -27,7 +27,11 @@ import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useTimebarVisualisationConnect, useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
 import { setTrackCorrectionDataviewId } from 'features/track-correction/track-correction.slice'
-import { selectIsGuestUser, selectIsUserExpired } from 'features/user/selectors/user.selectors'
+import {
+  selectIsGFWUser,
+  selectIsGuestUser,
+  selectIsUserExpired,
+} from 'features/user/selectors/user.selectors'
 import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
 import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
 import { selectIsAnyVesselLocation } from 'routes/routes.selectors'
@@ -59,6 +63,7 @@ function VesselTracksTooltipRow({
   const setTrackCorrectionId = useSetTrackCorrectionId()
   const { setTimerange } = useTimerangeConnect()
   const guestUser = useSelector(selectIsGuestUser)
+  const isGFWUser = useSelector(selectIsGFWUser)
   const isUserExpired = useSelector(selectIsUserExpired)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
@@ -117,12 +122,14 @@ function VesselTracksTooltipRow({
           {interactionType === 'point' && feature.timestamp && (
             <span className={cx({ [styles.secondary]: !showFeaturesDetails })}>
               <I18nDate date={feature.timestamp} format={DateTime.DATETIME_MED} />
-              <SolarStatus
-                lon={(feature.geometry as Point).coordinates[0]}
-                lat={(feature.geometry as Point).coordinates[1]}
-                timestamp={feature.timestamp}
-                locale={i18n.language as Locale}
-              />
+              {isGFWUser && (
+                <SolarStatus
+                  lon={(feature.geometry as Point).coordinates[0]}
+                  lat={(feature.geometry as Point).coordinates[1]}
+                  timestamp={feature.timestamp}
+                  locale={i18n.language as Locale}
+                />
+              )}
               {!showFeaturesDetails && feature.speed !== undefined && (
                 <span>{` - ${feature.speed.toFixed(2)} ${t((t) => t.common.knots, {
                   defaultValue: 'knots',

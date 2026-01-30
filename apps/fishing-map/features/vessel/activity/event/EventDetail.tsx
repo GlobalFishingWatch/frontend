@@ -12,6 +12,7 @@ import { getHasVesselProfileInstance } from 'features/dataviews/dataviews.utils'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import PortsReportLink from 'features/reports/report-port/PortsReportLink'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
@@ -33,16 +34,17 @@ const AUTH_AREAS = ['CCSBT', 'IATTC', 'ICCAT', 'IOTC', 'NPFC', 'SPRFMO', 'WCPFC'
 const TimeFields = ({ event }: { event: VesselEvent }) => {
   const { t, i18n } = useTranslation()
   const { getEventDurationDescription } = useActivityEventTranslations()
+  const isGFWUser = useSelector(selectIsGFWUser)
   return (
     <Fragment>
       <li>
         <label className={styles.fieldLabel}>
-          {type === EventTypes.Port
+          {event.type === EventTypes.Port
             ? t((t) => t.eventInfo.port_entry)
             : t((t) => t.eventInfo.start)}
         </label>
         <span>{formatI18nDate(event.start, { format: DateTime.DATETIME_FULL })}</span>
-        {event.coordinates && (
+        {event.coordinates && isGFWUser && (
           <SolarStatus
             lon={event.coordinates[0]}
             lat={event.coordinates[1]}
@@ -53,10 +55,12 @@ const TimeFields = ({ event }: { event: VesselEvent }) => {
       </li>
       <li>
         <label className={styles.fieldLabel}>
-          {type === EventTypes.Port ? t((t) => t.eventInfo.port_exit) : t((t) => t.eventInfo.end)}
+          {event.type === EventTypes.Port
+            ? t((t) => t.eventInfo.port_exit)
+            : t((t) => t.eventInfo.end)}
         </label>
         <span>{formatI18nDate(event.end, { format: DateTime.DATETIME_FULL })}</span>
-        {event.coordinates && (
+        {event.coordinates && isGFWUser && (
           <SolarStatus
             lon={event.coordinates[0]}
             lat={event.coordinates[1]}
@@ -77,7 +81,7 @@ const PortVisitedAfterField = ({ nextPort }: { nextPort: EventNextPort | undefin
   const { t } = useTranslation()
   return (
     <li>
-      <label className={styles.fieldLabel}>{t('eventInfo.portVisitedAfter')}</label>
+      <label className={styles.fieldLabel}>{t((t) => t.eventInfo.portVisitedAfter)}</label>
       <span>
         {nextPort?.id ? (
           <PortsReportLink port={nextPort}>
@@ -111,7 +115,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
     return (
       <ul className={styles.detailContainer}>
         <label className={styles.blockLabel}>{t((t) => t.eventInfo.eventInfo)}</label>
-        <TimeFields />
+        <TimeFields event={event} />
         <li>
           <label className={styles.fieldLabel}>{t((t) => t.eventInfo.medianSpeedKnots)}</label>
           <span>{event.encounter?.medianSpeedKnots?.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
