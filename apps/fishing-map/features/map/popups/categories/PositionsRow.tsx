@@ -6,6 +6,7 @@ import { uniq } from 'es-toolkit'
 
 import type { DetectionThumbnail } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import type { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-layers'
 import {
   getIsActivityPositionMatched,
@@ -133,7 +134,7 @@ function PositionsRow({ loading, error, feature, showFeaturesDetails }: Position
           feature.properties.thumbnails?.length > 0 && (
             <DetectionThumbnails
               thumbnails={feature.properties.thumbnails}
-              scale={thumbnailsDataset?.configuration?.scale}
+              scale={getDatasetConfiguration(thumbnailsDataset, 'thumbnailsV1')?.scale}
             />
           )}
       </div>

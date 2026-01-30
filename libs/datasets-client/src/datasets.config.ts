@@ -91,7 +91,7 @@ export const getDatasetRangeSteps = ({ min, max }: { min: number; max: number })
 /**
  * Flattens DatasetFilters (organized by FilterType) into a flat DatasetFilter[]
  */
-export const flattenDatasetFilters = (
+export const getFlattenDatasetFilters = (
   filters: Record<string, DatasetFilter> | DatasetFilters | null | undefined
 ): DatasetFilter[] => {
   if (!filters) return []

@@ -11,7 +11,7 @@ import type {
   DatasetFilterType,
   FrontendConfiguration,
 } from '@globalfishingwatch/api-types'
-import { flattenDatasetFilters } from '@globalfishingwatch/datasets-client'
+import { getFlattenDatasetFilters } from '@globalfishingwatch/datasets-client'
 
 import { parseCoords } from '../coordinates'
 import { COORDINATES_PROPERTIES_ID } from '../segments/segments-to-geojson'
@@ -130,7 +130,7 @@ export const getDatasetFiltersClean = (filters: DatasetFilters): Record<string, 
   if (!filters || Object.keys(filters).length === 0) {
     return {}
   }
-  const flatFilters = flattenDatasetFilters(filters)
+  const flatFilters = getFlattenDatasetFilters(filters)
   return flatFilters.reduce(
     (acc, value) => {
       const cleanKey = getFilterIdClean(value.id) as string

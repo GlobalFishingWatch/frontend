@@ -44,6 +44,6 @@ export type Endpoint = {
   pathTemplate: string
   downloadable: boolean
   body?: any
-  params: readonly EndpointParam[] | EndpointParam[]
-  query: readonly EndpointParam[] | EndpointParam[]
+  params: readonly EndpointParam[]
+  query: readonly EndpointParam[]
 }

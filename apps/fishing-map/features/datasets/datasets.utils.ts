@@ -28,10 +28,10 @@ import {
 } from '@globalfishingwatch/api-types'
 import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/utils'
 import {
-  flattenDatasetFilters,
   getDatasetConfigurationProperty,
   getDatasetGeometryType,
   getEnvironmentalDatasetRange,
+  getFlattenDatasetFilters,
   removeDatasetVersion,
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -561,7 +561,7 @@ export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boole
 }
 
 export const getDatasetAllowedFields = (dataset: Dataset) => {
-  const flattenFilters = flattenDatasetFilters(dataset.filters)
+  const flattenFilters = getFlattenDatasetFilters(dataset.filters)
   return flattenFilters.flatMap((filter) => (filter.enabled ? filter.id : []))
 }
 
@@ -585,7 +585,7 @@ const getSchemaItemByOrigin = (
   schema: SupportedDatasetSchema,
   schemaOrigin: Exclude<SchemaOriginParam, 'all'>
 ) => {
-  const filters = flattenDatasetFilters(dataset.filters)
+  const filters = getFlattenDatasetFilters(dataset.filters)
   const schemaFilter = filters.find((f) => f.id === `${schemaOrigin}.${schema}`)
   if (schemaFilter) {
     return schemaFilter
@@ -617,7 +617,7 @@ export const getDatasetSchemaItem = (
   schema: SupportedDatasetSchema,
   schemaOrigin: SchemaOriginParam = 'selfReportedInfo'
 ): DatasetFilter | null => {
-  const filters = flattenDatasetFilters(dataset.filters)
+  const filters = getFlattenDatasetFilters(dataset.filters)
   const schemaItem = filters.find((f) =>
     f.id === schemaOrigin ? `${schemaOrigin}.${schema}` : schema
   )
