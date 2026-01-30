@@ -133,14 +133,18 @@ export const getCellTimeseries = (
               getIntervalTimestamp(startFrame + tileStartFrame + j)
 
             // sum current value to the initialValue for this sublayer
-            if (j + startFrame >= timeRangeStartFrame && j + startFrame < timeRangeEndFrame) {
+            const inRange =
+              timeRangeStartFrame === timeRangeEndFrame
+                ? j + startFrame === timeRangeStartFrame
+                : j + startFrame >= timeRangeStartFrame && j + startFrame < timeRangeEndFrame
+            if (inRange) {
               feature.properties.initialValues[timeRangeKey][subLayerIndex] +=
                 cellValue * sublayerScale - sublayerOffset
               numValuesBySubLayer[subLayerIndex] = numValuesBySubLayer[subLayerIndex] + 1
             }
           }
         }
-        if (aggregationOperation === 'avg') {
+        if (aggregationOperation === 'avg' && numValuesBySubLayer[subLayerIndex] > 1) {
           feature.properties.initialValues[timeRangeKey][subLayerIndex] =
             feature.properties.initialValues[timeRangeKey][subLayerIndex] /
             numValuesBySubLayer[subLayerIndex]
