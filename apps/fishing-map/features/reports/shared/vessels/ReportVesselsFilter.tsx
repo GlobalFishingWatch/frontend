@@ -60,16 +60,16 @@ export default function ReportVesselsFilter({
       <Tooltip
         content={
           <Fragment>
-            {t('analysis.searchHelp')}
+            {t((t) => t.analysis.searchHelp)}
             <br />
-            {t('analysis.searchHelpExamples')}
+            {t((t) => t.analysis.searchHelpExamples)}
           </Fragment>
         }
       >
         <InputText
           type="search"
           value={query}
-          placeholder={t('analysis.searchPlaceholder')}
+          placeholder={t((t) => t.analysis.searchPlaceholder)}
           onChange={(e) => setQuery(e.target.value)}
           onCleanButtonClick={() => setQuery('')}
           className={styles.input}

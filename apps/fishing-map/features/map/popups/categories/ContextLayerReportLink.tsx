@@ -66,7 +66,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
         icon="analysis"
         disabled={!isDataviewReportAnalysable}
         size="small"
-        tooltip={t('common.analysisNotAvailable')}
+        tooltip={t((t) => t.common.analysisNotAvailable)}
       />
     )
   }
@@ -126,7 +126,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
       <Link className={styles.workspaceLink} to={reportLinkTo} onClick={onReportClick}>
         <IconButton
           icon="analysis"
-          tooltip={t('common.analysis')}
+          tooltip={t((t) => t.common.analysis)}
           testId="open-analysis"
           size="small"
         />
@@ -135,7 +135,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
         <Link className={styles.workspaceLink} to={addReportLinkTo} onClick={onReportClick}>
           <IconButton
             icon="add-polygon-to-analysis"
-            tooltip={t('common.analysisAddArea')}
+            tooltip={t((t) => t.common.analysisAddArea)}
             testId="add-analysis"
             size="small"
           />
@@ -145,7 +145,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
         <Link className={styles.workspaceLink} to={removeReportLinkTo} onClick={onReportClick}>
           <IconButton
             icon="remove-polygon-from-analysis"
-            tooltip={t('common.analysisRemoveArea')}
+            tooltip={t((t) => t.common.analysisRemoveArea)}
             testId="remove-analysis"
             size="small"
           />

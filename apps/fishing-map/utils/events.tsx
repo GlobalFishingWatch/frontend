@@ -30,12 +30,14 @@ export const getEventColors = ({ type }: { type: ApiEvent['type'] }) => {
 const getEventDurationLabel = ({ durationRaw }: { durationRaw: Duration }): string => {
   const duration = durationRaw.toObject()
   return [
-    duration.days && duration.days > 0 ? t('event.dayAbbreviated', { count: duration.days }) : '',
+    duration.days && duration.days > 0
+      ? t((t) => t.event.dayAbbreviated, { count: duration.days })
+      : '',
     duration.hours && duration.hours > 0 && durationRaw.as('days') < 10
-      ? t('event.hourAbbreviated', { count: duration.hours })
+      ? t((t) => t.event.hourAbbreviated, { count: duration.hours })
       : '',
     duration.minutes && duration.minutes > 0 && durationRaw.as('hours') < 10
-      ? t('event.minuteAbbreviated', {
+      ? t((t) => t.event.minuteAbbreviated, {
           count: Math.round(duration.minutes as number),
         })
       : '',
@@ -82,19 +84,21 @@ export const getEventDescription = ({
       const mainVesselName = vessel?.name
       const encounterVesselName = encounter?.vessel?.name
       if (mainVesselName && encounterVesselName) {
-        description = t('event.encounterActionWithVessels', {
+        description = t((t) => t.event.encounterActionWithVessels, {
           ...time,
           mainVessel: mainVesselName,
           encounterVessel: encounterVesselName,
         })
       } else {
-        description = t('event.encounterActionWith', {
+        description = t((t) => t.event.encounterActionWith, {
           ...time,
-          vessel: encounterVesselName ? encounterVesselName : t('event.encounterAnotherVessel'),
+          vessel: encounterVesselName
+            ? encounterVesselName
+            : t((t) => t.event.encounterAnotherVessel),
         })
       }
 
-      descriptionGeneric = t('event.encounter')
+      descriptionGeneric = t((t) => t.event.encounter)
       break
     }
     case EventTypes.Port: {
@@ -106,32 +110,28 @@ export const getEventDescription = ({
           formatInfoField(portName, 'port'),
           formatInfoField(portFlag, 'flag'),
         ].join(', ')
-        description = t('event.portAt', { ...time, port: portLabel })
+        description = t((t) => t.event.portAt, { ...time, port: portLabel })
       } else {
-        description = t('event.portAction', time)
+        description = t((t) => t.event.portAction, time)
       }
-      descriptionGeneric = t('event.port')
+      descriptionGeneric = t((t) => t.event.port)
       break
     }
     case EventTypes.Loitering:
-      description = t(
-        'event.loiteringAction',
-        'Loitering started at {{start}} for {{duration}}',
-        time
-      )
-      descriptionGeneric = t('event.loitering')
+      description = t((t) => t.event.loiteringAction, time)
+      descriptionGeneric = t((t) => t.event.loitering)
       break
     case EventTypes.Fishing:
-      description = t('event.fishingAction', time)
-      descriptionGeneric = t('event.fishing')
+      description = t((t) => t.event.fishingAction, time)
+      descriptionGeneric = t((t) => t.event.fishing)
       break
     case EventTypes.Gap:
-      description = t('event.gapAction', time)
-      descriptionGeneric = t('event.gap')
+      description = t((t) => t.event.gapAction, time)
+      descriptionGeneric = t((t) => t.event.gap)
       break
     default:
-      description = t('event.unknown')
-      descriptionGeneric = t('event.unknown')
+      description = t((t) => t.event.unknown)
+      descriptionGeneric = t((t) => t.event.unknown)
   }
 
   return {

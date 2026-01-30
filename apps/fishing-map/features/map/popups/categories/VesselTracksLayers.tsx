@@ -69,7 +69,7 @@ function VesselTracksTooltipRow({
   const onReportClick = useCallback(() => {
     if (diffDays > 14) {
       if (
-        window.confirm(t('trackCorrection.reduce_issue_timerange') as string) &&
+        window.confirm(t((t) => t.trackCorrection.reduce_issue_timerange) as string) &&
         feature.timestamp
       ) {
         const startDate = getUTCDateTime(feature.timestamp)
@@ -124,7 +124,9 @@ function VesselTracksTooltipRow({
                 locale={i18n.language as Locale}
               />
               {!showFeaturesDetails && feature.speed !== undefined && (
-                <span>{` - ${feature.speed.toFixed(2)} ${t('common.knots', 'knots')}`}</span>
+                <span>{` - ${feature.speed.toFixed(2)} ${t((t) => t.common.knots, {
+                  defaultValue: 'knots',
+                })}`}</span>
               )}
             </span>
           )}
@@ -134,15 +136,18 @@ function VesselTracksTooltipRow({
             <p key="speed">
               {feature.speed !== undefined && (
                 <span>
-                  {upperFirst(t('eventInfo.speed'))}: {feature.speed.toFixed(2)}{' '}
-                  {t('common.knots', 'knots')}
+                  {upperFirst(t((t) => t.eventInfo.speed))}: {feature.speed.toFixed(2)}{' '}
+                  {t((t) => t.common.knots, {
+                    defaultValue: 'knots',
+                  })}
                 </span>
               )}
             </p>
             <p key="depth">
               {feature.depth !== undefined && (
                 <span>
-                  {upperFirst(t('eventInfo.depth'))}: {feature.depth} {t('common.meters')}
+                  {upperFirst(t((t) => t.eventInfo.depth))}: {feature.depth}{' '}
+                  {t((t) => t.common.meters)}
                 </span>
               )}
             </p>
@@ -155,7 +160,7 @@ function VesselTracksTooltipRow({
           isTurningTidesWorkspace && (
             <div>
               <Button onClick={onReportClick} className={styles.rowMarginTop}>
-                <span>{t('trackCorrection.logAnIssue')}</span>
+                <span>{t((t) => t.trackCorrection.logAnIssue)}</span>
               </Button>
             </div>
           )}

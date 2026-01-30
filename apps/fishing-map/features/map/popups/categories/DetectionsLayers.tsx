@@ -74,13 +74,14 @@ function DetectionsTooltipRow({
                 <I18nNumber number={feature.value} />{' '}
               </Fragment>
             )}
-            {t([`common.${feature?.unit}` as any, 'common.detection'], 'detections', {
+            {t((t: any) => t.common[feature?.unit ?? 'detections'], {
+              defaultValue: 'detections',
               count: feature.value, // neded to select the plural automatically
             })}{' '}
             {feature?.vessels && showFeaturesDetails && notMatchedDetectionsCount > 0 && (
               <Fragment>
                 {' - '}
-                <I18nNumber number={notMatchedDetectionsCount} /> {t('vessel.unmatched')}{' '}
+                <I18nNumber number={notMatchedDetectionsCount} /> {t((t) => t.vessel.unmatched)}{' '}
                 {notMatchedDetection && <VesselDetectionTimestamps vessel={notMatchedDetection} />}
               </Fragment>
             )}

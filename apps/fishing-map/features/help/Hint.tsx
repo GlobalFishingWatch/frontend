@@ -87,14 +87,22 @@ function Hint({ id, className }: HintProps) {
             />
           )}
           <div className={styles.content}>
-            <p className={styles.text}>{t(`help-hints:${id}`)}</p>
+            <p className={styles.text}>
+              {t((t) => t[id], {
+                ns: 'help-hints',
+              })}
+            </p>
           </div>
           <div className={styles.footer}>
             <Button type="secondary" onClick={onDismissAll} className={styles.footerBtn}>
-              {t('translations:common.hideAllHelpHints')}
+              {t((t) => t.common.hideAllHelpHints, {
+                ns: 'translations',
+              })}
             </Button>
             <Button type="secondary" onClick={onDismiss} className={styles.footerBtn}>
-              {t('translations:common.hideHelpHint')}
+              {t((t) => t.common.hideHelpHint, {
+                ns: 'translations',
+              })}
             </Button>
           </div>
         </div>

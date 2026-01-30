@@ -103,11 +103,11 @@ function SidebarHeader() {
     return [
       {
         id: 'basic' as SearchType,
-        label: t('search.basic'),
+        label: t((t) => t.search.basic),
       },
       {
         id: 'advanced' as SearchType,
-        label: t('search.advanced'),
+        label: t((t) => t.search.advanced),
       },
     ]
   }, [t])

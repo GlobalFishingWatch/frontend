@@ -55,10 +55,10 @@ function WorkspacesList() {
   if (!validCategory) {
     return (
       <div className={styles.placeholder}>
-        <h2>{t('errors.pageNotFound')}</h2>
+        <h2>{t((t) => t.errors.pageNotFound)}</h2>
         <p>🙈</p>
         <Link className={styles.linkButton} to={{ type: HOME, replaceQuery: true, query: {} }}>
-          {t('common.seeDefault')}
+          {t((t) => t.common.seeDefault)}
         </Link>
       </div>
     )
@@ -69,7 +69,7 @@ function WorkspacesList() {
       {locationCategory === WorkspaceCategory.MarineManager && (
         <Fragment>
           <WorkspaceWizard />
-          <label className={styles.listTitle}>{t('common.partnerSites')}</label>
+          <label className={styles.listTitle}>{t((t) => t.common.partnerSites)}</label>
         </Fragment>
       )}
       <ul>
@@ -160,7 +160,7 @@ function WorkspacesList() {
                   >
                     {cta}
                   </Link>
-                  {reports?.map(({ id: reportId, key }) => {
+                  {reports?.map(({ id: reportId }) => {
                     const reportLink = reportId
                       ? {
                           type: REPORT,
@@ -180,7 +180,7 @@ function WorkspacesList() {
                         className={styles.link}
                         onClick={() => onWorkspaceClick(highlightedWorkspace)}
                       >
-                        {t(key || 'analysis.see', 'See report')}
+                        {t((t) => t.analysis.see)}
                       </Link>
                     )
                   })}

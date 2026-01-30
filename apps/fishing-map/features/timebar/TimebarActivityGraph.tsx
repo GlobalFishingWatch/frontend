@@ -22,10 +22,10 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
       const labels = [
         formatNumber(value.value, maxHighlighterFractionDigits),
         item?.props.unit || '',
-        t('common.onScreen'),
+        t((t) => t.common.onScreen),
       ]
       if (visualisation === TimebarVisualisations.Environment) {
-        labels.push(t('common.averageAbbreviated'))
+        labels.push(t((t) => t.common.averageAbbreviated))
       }
 
       return labels.join(' ')
@@ -37,10 +37,7 @@ const TimebarActivityGraph = ({ visualisation }: { visualisation: TimebarVisuali
   // if (error) {
   //   return (
   //     <div className={styles.error}>
-  //       {t(
-  //         'analysis.error',
-  //         'There was a problem loading the data, please try refreshing the page'
-  //       )}
+  //       {t((t) => t.analysis.error)}
   //     </div>
   //   )
   // }

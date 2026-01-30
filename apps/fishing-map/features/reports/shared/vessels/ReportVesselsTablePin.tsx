@@ -70,7 +70,7 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
       disabled={loading || !vessels?.length || hasMoreMaxVesselsAllowed}
       tooltip={
         hasMoreMaxVesselsAllowed
-          ? t('analysis.pinVesselsMaxAllowed', {
+          ? t((t) => t.analysis.pinVesselsMaxAllowed, {
               maxVessels: MAX_VESSEL_REPORT_PIN,
             })
           : ''
@@ -87,8 +87,10 @@ export default function ReportVesselsTablePinAll({ vessels, onClick }: ReportVes
         />
       )}
       {/* TODO remove when GFWOnly is removed */}
-      <Icon icon="gfw-logo" type="original-colors" tooltip={t('common.onlyVisibleForGFW')} />
-      {hasAllVesselsInWorkspace ? t('analysis.removeVessels') : t('analysis.pinVessels')}
+      <Icon icon="gfw-logo" type="original-colors" tooltip={t((t) => t.common.onlyVisibleForGFW)} />
+      {hasAllVesselsInWorkspace
+        ? t((t) => t.analysis.removeVessels)
+        : t((t) => t.analysis.pinVessels)}
     </Button>
   )
 }

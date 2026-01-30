@@ -1,12 +1,11 @@
-type JsonObject = Record<string, string>
-
-declare module '*.json' {
-  const value: JsonObject
-  export default value
+export type DatasetTranslation = {
+  name: string
+  description: string
+  schema: Record<string, any>
 }
 
 declare module '@globalfishingwatch/i18n-labels' {
-  export const datasets: JsonObject
-  export const flags: JsonObject
-  export const timebar: JsonObject
+  export const datasets: Record<string, DatasetTranslation>
+  export const flags: Record<string, string>
+  export const timebar: Record<string, string>
 }

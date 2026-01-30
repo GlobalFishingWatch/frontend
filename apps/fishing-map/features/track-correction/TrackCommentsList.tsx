@@ -29,23 +29,31 @@ const TrackCommentsList = ({ track }: TrackCommentsListProps) => {
           </div>
           <div className="comment-content">{comment.comment} </div>
 
-          {comment.startDate_corrected && comment.endDate_corrected && (
+          {(comment.startDate_corrected || comment.endDate_corrected) && (
             <span className={styles.correctedDates}>
-              <I18nDate
-                date={comment.startDate_corrected}
-                format={DateTime.DATETIME_MED}
-                showUTCLabel={false}
-              />
-              {' - '}
-              <I18nDate
-                date={comment.endDate_corrected}
-                format={DateTime.DATETIME_MED}
-                showUTCLabel={false}
-              />
+              {comment.startDate_corrected && (
+                <I18nDate
+                  date={comment.startDate_corrected}
+                  format={DateTime.DATETIME_MED}
+                  showUTCLabel={false}
+                />
+              )}
+              {comment.startDate_corrected && comment.endDate_corrected && ' - '}
+              {comment.endDate_corrected && (
+                <I18nDate
+                  date={comment.endDate_corrected}
+                  format={DateTime.DATETIME_MED}
+                  showUTCLabel={false}
+                />
+              )}
             </span>
           )}
           <span className={styles.version}>
-            {t('trackCorrection.version', 'Version') + ' ' + comment.datasetVersion}
+            {t((t) => t.trackCorrection.version, {
+              defaultValue: 'Version',
+            }) +
+              ' ' +
+              comment.datasetVersion}
           </span>
         </li>
       ))}

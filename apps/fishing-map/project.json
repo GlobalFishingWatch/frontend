@@ -48,7 +48,12 @@
     "i18n": {
       "executor": "nx:run-commands",
       "cache": true,
-      "inputs": ["production"],
+      "inputs": [
+        "production",
+        "!{projectRoot}/public/locales/**/*",
+        "!{projectRoot}/features/i18n/i18next.d.ts",
+        "!{projectRoot}/features/i18n/i18n.types.d.ts"
+      ],
       "outputs": [
         "{projectRoot}/public/locales",
         "{projectRoot}/features/i18n/i18next.d.ts",

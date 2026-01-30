@@ -34,10 +34,9 @@ const MAX_RESULTS_NUMBER = 10
 const getItemLabel = (item: OceanArea | null) => {
   if (!item) return ''
   const name = item.properties?.name ? formatInfoField(item.properties?.name, 'name') : ''
-  return `${name} (${trans(
-    `layer.areas.${item.properties?.type}` as any,
-    upperFirst(item.properties?.type)
-  )})`
+  return `${name} (${trans((t: any) => t.layer.areas[item.properties?.type], {
+    defaultValue: upperFirst(item.properties?.type),
+  })})`
 }
 
 function AreaReportSearch({ className }: { className?: string }) {
@@ -206,7 +205,7 @@ function AreaReportSearch({ className }: { className?: string }) {
         <InputText
           {...inputProps}
           className={styles.input}
-          placeholder={t('map.search')}
+          placeholder={t((t) => t.map.search)}
           onBlur={onInputBlur}
           onKeyDown={handleKeyDown}
           inputSize="small"

@@ -154,11 +154,11 @@ export const selectReportVessels = createSelector(
             identitySource: VesselIdentitySourceEnum.SelfReported,
           }),
           flag: flag,
-          flagTranslated: flag ? t(`flags:${flag}` as any) : EMPTY_FIELD_PLACEHOLDER,
+          flagTranslated: flag ? t((t) => t[flag], { ns: 'flags' }) : EMPTY_FIELD_PLACEHOLDER,
           flagTranslatedClean: flag
-            ? cleanFlagState(t(`flags:${flag}` as any))
+            ? cleanFlagState(t((t) => t[flag], { ns: 'flags' }))
             : EMPTY_FIELD_PLACEHOLDER,
-          source: t(`common.sourceOptions.${source}`, source),
+          source: t((t: any) => t.common.sourceOptions[source], { defaultValue: source }),
         }
         return tableVessel
       } else {
@@ -186,10 +186,10 @@ export const selectReportVessels = createSelector(
           values: reportVessel.values as ReportVesselValues,
           color: reportVessel.color,
           flagTranslated: reportVessel.flag
-            ? t(`flags:${reportVessel.flag}` as any)
+            ? t((t: any) => t[reportVessel?.flag ?? ''], { ns: 'flags' })
             : EMPTY_FIELD_PLACEHOLDER,
           flagTranslatedClean: reportVessel.flag
-            ? cleanFlagState(t(`flags:${reportVessel.flag}` as any))
+            ? cleanFlagState(t((t: any) => t[reportVessel?.flag ?? ''], { ns: 'flags' }))
             : EMPTY_FIELD_PLACEHOLDER,
         }
         return tableVessel

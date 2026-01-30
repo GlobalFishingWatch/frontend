@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
@@ -17,6 +17,7 @@ import {
   selectTrackCorrectionVesselDataviewId,
   selectTrackIssueComment,
   setTrackCorrectionDataviewId,
+  setTrackCorrectionTimerange,
   setTrackIssueComment,
 } from 'features/track-correction/track-correction.slice'
 import { selectCurrentTrackCorrectionIssue } from 'features/track-correction/track-selection.selectors'
@@ -46,7 +47,6 @@ const TrackCorrectionEdit = () => {
   const issueComment = useSelector(selectTrackIssueComment)
   const isGFWUser = useSelector(selectIsGFWUser)
   const isGuestUser = useSelector(selectIsGuestUser)
-  const { start, end } = useSelector(selectTimeRange)
 
   const workspaceId = useSelector(selectCurrentWorkspaceId)
 
@@ -61,7 +61,35 @@ const TrackCorrectionEdit = () => {
   )
   const vesselInfo = vesselInfoResource?.data
   const userData = useSelector(selectUserData)
+  const { start, end } = useSelector(selectTimeRange)
+  const [rangeStartTime, setRangeStartTime] = useState(
+    currentTrackCorrectionIssue?.startDate || start
+  )
+  const [rangeEndTime, setRangeEndTime] = useState(currentTrackCorrectionIssue?.endDate || end)
 
+  useEffect(() => {
+    if (currentTrackCorrectionIssue?.startDate && currentTrackCorrectionIssue?.endDate) {
+      setRangeStartTime(currentTrackCorrectionIssue?.startDate)
+      setRangeEndTime(currentTrackCorrectionIssue?.endDate)
+    }
+  }, [dispatch, currentTrackCorrectionIssue])
+
+  const prevStart = useRef(start)
+  const prevEnd = useRef(end)
+
+  useEffect(() => {
+    if (start !== prevStart.current) {
+      setRangeStartTime(start)
+      prevStart.current = start
+    }
+  }, [start])
+
+  useEffect(() => {
+    if (end !== prevEnd.current) {
+      setRangeEndTime(end)
+      prevEnd.current = end
+    }
+  }, [end])
   useEffect(() => {
     if (!trackCorrectionVesselDataviewId && currentTrackCorrectionIssue!.vesselId) {
       dispatch(
@@ -168,13 +196,13 @@ const TrackCorrectionEdit = () => {
 
   if (isGuestUser || !userData || !currentTrackCorrectionIssue) return null
   if (!currentTrackCorrectionIssue?.startDate || !currentTrackCorrectionIssue?.endDate) {
-    return <p> {t('trackCorrection.invalidIssueDates')}</p>
+    return <p> {t((t) => t.trackCorrection.invalidIssueDates)}</p>
   }
 
   return (
     <Fragment>
       <h1 className={styles.title}>
-        {t('trackCorrection.issue', {
+        {t((t) => t.trackCorrection.issue, {
           issueId: currentTrackCorrectionIssue.issueId,
         })}
       </h1>
@@ -186,7 +214,7 @@ const TrackCorrectionEdit = () => {
               : (vesselInfo && getVesselShipNameLabel(vesselInfo)) || dataview?.config?.name}
             {' - '} {currentTrackCorrectionIssue.issueId}
           </h2>
-          <h2>{t(`trackCorrection.${currentTrackCorrectionIssue.type}`)}</h2>
+          <h2>{t((t) => t.trackCorrection[currentTrackCorrectionIssue.type])}</h2>
           {currentTrackCorrectionIssue.confirmed ? (
             <label>
               <I18nDate
@@ -203,10 +231,10 @@ const TrackCorrectionEdit = () => {
             </label>
           ) : (
             <div>
-              <label>{t('common.newTimerange')}</label>
+              <label>{t((t) => t.common.newTimerange)}</label>
               <TrackSlider
-                rangeStartTime={getUTCDateTime(currentTrackCorrectionIssue.startDate).toMillis()}
-                rangeEndTime={getUTCDateTime(currentTrackCorrectionIssue.endDate).toMillis()}
+                rangeStartTime={getUTCDateTime(rangeStartTime).toMillis()}
+                rangeEndTime={getUTCDateTime(rangeEndTime).toMillis()}
                 segments={trackData ?? []}
                 // color={vesselColor}
               />
@@ -219,7 +247,7 @@ const TrackCorrectionEdit = () => {
             <div>
               <InputText
                 inputSize="small"
-                placeholder={t('trackCorrection.replyPlaceholder')}
+                placeholder={t((t) => t.trackCorrection.replyPlaceholder)}
                 value={issueComment}
                 className={styles.input}
                 onChange={(e) => {
@@ -238,7 +266,7 @@ const TrackCorrectionEdit = () => {
             <div className={styles.actions}>
               <span className={styles.version}>
                 {
-                  t('trackCorrection.version') + ' 1'
+                  t((t) => t.trackCorrection.version) + ' 1'
                   /*vesselInfo.datasetVersion*/
                 }
               </span>
@@ -251,9 +279,9 @@ const TrackCorrectionEdit = () => {
                       onClick={() => onConfirmClick(ActionType.Comment)}
                       loading={isCommenting}
                       disabled={!issueComment}
-                      tooltip={!issueComment && t('trackCorrection.commentRequired')}
+                      tooltip={!issueComment && t((t) => t.trackCorrection.commentRequired)}
                     >
-                      {t('trackCorrection.comment')}
+                      {t((t) => t.trackCorrection.comment)}
                     </Button>
                     {isGFWUser ? (
                       currentTrackCorrectionIssue.confirmed ? (
@@ -262,10 +290,10 @@ const TrackCorrectionEdit = () => {
                           className={styles.commentButton}
                           onClick={() => onConfirmClick(ActionType.Resolve)}
                           loading={isSubmitting}
-                          tooltip={t('trackCorrection.resolveAndClose')}
+                          tooltip={t((t) => t.trackCorrection.resolveAndClose)}
                         >
                           <Icon icon={'tick'} />
-                          {t('trackCorrection.commentResolve')}
+                          {t((t) => t.trackCorrection.commentResolve)}
                         </Button>
                       ) : (
                         <Button
@@ -275,13 +303,15 @@ const TrackCorrectionEdit = () => {
                           loading={isSubmitting}
                           disabled={currentTrackCorrectionIssue?.confirmed}
                           tooltip={
-                            t('trackCorrection.confirmAs') +
+                            t((t) => t.trackCorrection.confirmAs) +
                             ' ' +
-                            t(`trackCorrection.${currentTrackCorrectionIssue.type}`).toLowerCase()
+                            t(
+                              (t) => t.trackCorrection[currentTrackCorrectionIssue.type]
+                            ).toLowerCase()
                           }
                         >
                           <Icon icon={'tick'} />
-                          {t('trackCorrection.confirm')}
+                          {t((t) => t.trackCorrection.confirm)}
                         </Button>
                       )
                     ) : null}

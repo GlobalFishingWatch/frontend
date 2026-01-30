@@ -47,9 +47,15 @@ export const resolveLibraryLayers = (
     if (!dataview) return []
     return {
       ...layer,
-      name: t(`layer-library:${layer.id}.name`),
-      description: t(`layer-library:${layer.id}.description`),
-      moreInfoLink: t(`layer-library:${layer.id}.moreInfoLink`),
+      name: t((t) => t[layer.id].name, {
+        ns: 'layer-library',
+      }),
+      description: t((t) => t[layer.id].description, {
+        ns: 'layer-library',
+      }),
+      moreInfoLink: t((t) => t[layer.id].moreInfoLink, {
+        ns: 'layer-library',
+      }),
       category: (layer.category || dataview.category) as DataviewCategory,
       dataview: {
         ...dataview,
@@ -66,8 +72,12 @@ export const resolveLibraryLayers = (
         color: '#ffffff',
       },
       category: DataviewCategory.Environment,
-      name: t('layer-library:bathymetry-contour.name'),
-      description: t('layer-library:bathymetry-contour.description'),
+      name: t((t) => t['bathymetry-contour'].name, {
+        ns: 'layer-library',
+      }),
+      description: t((t) => t['bathymetry-contour'].description, {
+        ns: 'layer-library',
+      }),
       moreInfoLink: '',
       previewImageUrl: `${PATH_BASENAME}/images/layer-library/bathymetry-contour.jpg`,
       dataview: {} as any,
@@ -275,7 +285,9 @@ const LayerLibrary: FC = () => {
             className={styles.input}
             type="search"
             disabled={!i18nReady}
-            placeholder={t('translations:search.title')}
+            placeholder={t((t) => t.search.title, {
+              ns: 'translations',
+            })}
           />
         </div>
         <div className={styles.categories}>
@@ -294,7 +306,9 @@ const LayerLibrary: FC = () => {
                   data-category={category}
                   onClick={onCategoryClick}
                 >
-                  {t(`common.${category as DataviewCategory}`, upperFirst(category))}
+                  {t((t: any) => t.common[category as DataviewCategory], {
+                    defaultValue: category,
+                  })}
                 </button>
                 {currentCategory === category &&
                   subcategories.length > 0 &&
@@ -309,7 +323,9 @@ const LayerLibrary: FC = () => {
                       data-subcategory={subcategory}
                       onClick={onCategoryClick}
                     >
-                      {t(`dataset.type${upperFirst(subcategory)}`, upperFirst(subcategory))}
+                      {t((t: any) => t.dataset.type[upperFirst(subcategory)], {
+                        defaultValue: upperFirst(subcategory),
+                      })}
                     </button>
                   ))}
               </div>
@@ -326,7 +342,9 @@ const LayerLibrary: FC = () => {
                   [styles.categoryLabelHidden]: layersByCategory[category].length === 0,
                 })}
               >
-                {t(`common.${category as DataviewCategory}`, upperFirst(category))}
+                {t((t: any) => t.common[category as DataviewCategory], {
+                  defaultValue: category,
+                })}
               </label>
               {layersByCategory[category].map((layer) => {
                 if (layer.onlyGFWUser && !isGFWUser) {

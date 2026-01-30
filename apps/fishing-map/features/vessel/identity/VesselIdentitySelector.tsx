@@ -68,7 +68,7 @@ const VesselIdentitySelector = () => {
   return (
     <div>
       {!isIdentityInTimerange && (
-        <p className={styles.error}>{t('vessel.identityDatesOutOfRange')}</p>
+        <p className={styles.error}>{t((t) => t.vessel.identityDatesOutOfRange)}</p>
       )}
       <ul className={cx(styles.selector, 'print-hidden')}>
         {identities.map((identity) => {
@@ -76,7 +76,7 @@ const VesselIdentitySelector = () => {
           const end = formatI18nDate(identity.transmissionDateTo)
           const identityId = getVesselIdentityId(identity)
           return (
-            <Tooltip key={identityId} content={t('vessel.selectIdentity')}>
+            <Tooltip key={identityId} content={t((t) => t.vessel.selectIdentity)}>
               <li>
                 <button
                   className={cx(styles.icon, {

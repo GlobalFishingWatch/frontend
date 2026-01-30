@@ -64,9 +64,9 @@ const ReportBarTooltip = (props: any) => {
   let otherLabelCounted = false
   let parsedLabel = label
   if (label === EMPTY_FIELD_PLACEHOLDER) {
-    parsedLabel = t('analysis.unknownProperty')
+    parsedLabel = t((t) => t.analysis.unknownProperty)
   } else if (EMPTY_API_VALUES.includes(label)) {
-    parsedLabel = t('common.unknown')
+    parsedLabel = t((t) => t.common.unknown)
   } else if (type === 'flag') {
     parsedLabel = formatInfoField(label, 'flag') as string
   } else if (type === 'geartype') {
@@ -101,7 +101,7 @@ const ReportBarTooltip = (props: any) => {
                     ))}
                     {restValue !== 0 && (
                       <li key="others" className={styles.tooltipValue}>
-                        {t('analysis.others')}: {restValue}
+                        {t((t) => t.analysis.others)}: {restValue}
                       </li>
                     )}
                   </Fragment>
@@ -112,7 +112,10 @@ const ReportBarTooltip = (props: any) => {
                   {tooltipPayload.length > 1 && (
                     <span className={styles.tooltipValueDot} style={{ color }}></span>
                   )}
-                  <I18nNumber number={value} /> {t('common.vessel', { count: value }).toLowerCase()}
+                  <I18nNumber number={value} />{' '}
+                  {t((t) => t.common.vessel, {
+                    count: value,
+                  }).toLowerCase()}
                 </li>
               )
             })
@@ -137,10 +140,10 @@ const ReportGraphTick = (props: any) => {
 
   const getTickLabel = (label: string) => {
     if (label === EMPTY_FIELD_PLACEHOLDER) {
-      return t('analysis.unknownProperty')
+      return t((t) => t.analysis.unknownProperty)
     }
     if (EMPTY_API_VALUES.includes(label)) {
-      return t('analysis.unknown')
+      return t((t) => t.analysis.unknown)
     }
     switch (property) {
       case 'flag':
@@ -165,7 +168,7 @@ const ReportGraphTick = (props: any) => {
     }
   }
 
-  const label = isOtherCategory ? t('analysis.others') : getTickLabel(payload.value)
+  const label = isOtherCategory ? t((t) => t.analysis.others) : getTickLabel(payload.value)
   const labelChunks = label.split(' ')
   const labelChunksClean = [labelChunks[0]]
   labelChunks.slice(1).forEach((chunk: any) => {

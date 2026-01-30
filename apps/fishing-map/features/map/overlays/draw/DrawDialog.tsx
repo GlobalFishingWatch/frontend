@@ -192,13 +192,13 @@ function MapDraw() {
   let saveTooltip = ''
 
   if (!layerName) {
-    saveTooltip = t('layer.nameRequired')
+    saveTooltip = t((t) => t.layer.nameRequired)
   } else if (!layerNameMinLength) {
-    saveTooltip = t('layer.nameLengthError', {
+    saveTooltip = t((t) => t.layer.nameLengthError, {
       count: MIN_DATASET_NAME_LENGTH,
     })
   } else if (hasOverlappingFeatures) {
-    saveTooltip = t('layer.geometryError')
+    saveTooltip = t((t) => t.layer.geometryError)
   }
 
   let placeholderMessage: string = ''
@@ -208,20 +208,23 @@ function MapDraw() {
       placeholderMessage = error
       break
     case hasOverlappingFeatures:
-      placeholderMessage = t('layer.geometryError')
+      placeholderMessage = t((t) => t.layer.geometryError)
       break
     case hasFeaturesDrawn:
       placeholderMessage =
-        mapDrawingMode === 'points' ? t('layer.editPointHint') : t('layer.editPolygonHint')
+        mapDrawingMode === 'points'
+          ? t((t) => t.layer.editPointHint)
+          : t((t) => t.layer.editPolygonHint)
       break
     case isDrawing && mapDrawingMode === 'polygons':
-      placeholderMessage = t(
-        'layer.closePolygonHint',
-        'Press enter or click the first point to close the polygon'
-      )
+      placeholderMessage = t((t) => t.layer.closePolygonHint, {
+        defaultValue: 'Press enter or click the first point to close the polygon',
+      })
       break
     default:
-      placeholderMessage = t('layer.drawHint', 'Click on the map to start drawing')
+      placeholderMessage = t((t) => t.layer.drawHint, {
+        defaultValue: 'Click on the map to start drawing',
+      })
       break
   }
 
@@ -238,7 +241,7 @@ function MapDraw() {
         {placeholderMessage}
       </div>
       <InputText
-        label={t('layer.name')}
+        label={t((t) => t.layer.name)}
         labelClassName={styles.layerLabel}
         value={layerName}
         disabled={!!mapDrawEditDataset}
@@ -249,7 +252,9 @@ function MapDraw() {
         <IconButton
           icon={mapDrawingMode === 'points' ? 'add-point' : 'add-polygon'}
           tooltip={
-            mapDrawingMode === 'points' ? t('layer.drawAddPoint') : t('layer.drawAddPolygon')
+            mapDrawingMode === 'points'
+              ? t((t) => t.layer.drawAddPoint)
+              : t((t) => t.layer.drawAddPolygon)
           }
           onClick={onAddPolygonClick}
         />
@@ -258,7 +263,9 @@ function MapDraw() {
           icon="delete"
           disabled={!drawFeaturesIndexes.length}
           tooltip={
-            !drawFeaturesIndexes.length ? t('layer.selectPolygonToRemove') : t('layer.drawDelete')
+            !drawFeaturesIndexes.length
+              ? t((t) => t.layer.selectPolygonToRemove)
+              : t((t) => t.layer.drawDelete)
           }
           onClick={drawLayer?.deleteSelectedFeature}
         />
@@ -266,14 +273,14 @@ function MapDraw() {
       <div className={styles.buttonsContainer}>
         <SwitchRow
           className={styles.saveAsPublic}
-          label={t('dataset.uploadPublic')}
+          label={t((t) => t.dataset.uploadPublic)}
           disabled={!!mapDrawEditDataset}
           active={createAsPublic}
           onClick={toggleCreateAsPublic}
         />
         <div className={styles.actionButtons}>
           <Button className={styles.button} type="secondary" onClick={closeDraw}>
-            {t('common.cancel')}
+            {t((t) => t.common.cancel)}
           </Button>
           <Button
             className={styles.button}
@@ -289,7 +296,7 @@ function MapDraw() {
             tooltipPlacement="top"
             onClick={() => onSaveClick(drawFeatures)}
           >
-            {t('common.save')}
+            {t((t) => t.common.save)}
           </Button>
         </div>
       </div>

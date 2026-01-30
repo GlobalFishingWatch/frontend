@@ -16,7 +16,9 @@ export function useRegionTranslationsById() {
       if (!id) return ''
       let translation = ''
       for (const key of Object.values(regionsDatasets)) {
-        const schemaTranslation: string = t(`datasets:${key}.schema.ID.enum.${id}` as any, '')
+        const schemaTranslation: string = t((t) => t[key].schema.ID.enum[id as any], {
+          ns: 'datasets',
+        })
         if (schemaTranslation) {
           translation = schemaTranslation
           break
@@ -51,7 +53,10 @@ export function useRegionNamesByType() {
           (id) =>
             regions
               .find((region) => region.id?.toString() === id)
-              ?.label?.replace('Exclusive Economic Zone', t('layer.areas.eez')) || []
+              ?.label?.replace(
+                'Exclusive Economic Zone',
+                t((t) => t.layer.areas.eez)
+              ) || []
         )
       }
       return labels

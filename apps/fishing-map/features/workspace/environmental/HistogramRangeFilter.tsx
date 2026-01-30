@@ -69,7 +69,7 @@ function HistogramRangeFilter({ dataview, onSelect }: HistogramRangeFilterProps)
         className={styles.slider}
         labelClassName={styles.sliderLabel}
         initialRange={[minSliderValue, maxSliderValue]}
-        label={`${t('layer.filterValues').toUpperCase()}${dataset?.unit ? ` (${dataset?.unit})` : ''}`}
+        label={`${t((t) => t.layer.filterValues).toUpperCase()}${dataset?.unit ? ` (${dataset?.unit})` : ''}`}
         config={sliderConfig}
         onChange={onSliderChange}
         histogram={false}

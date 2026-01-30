@@ -23,7 +23,7 @@ function AdvancedFilterInputField({ onChange, field }: AdvancedFilterInputFieldP
       ssvid: '123456789, 987654321, ...',
       imo: '1234567, 7654321, ...',
       callsign: 'A1BC2, X2YZ, ...',
-      owner: t('search.placeholderFilterMultiple'),
+      owner: t((t) => t.search.placeholderFilterMultiple),
     }),
     [t]
   )
@@ -35,14 +35,14 @@ function AdvancedFilterInputField({ onChange, field }: AdvancedFilterInputFieldP
       invalid={invalid}
       invalidTooltip={
         invalid
-          ? t('search.filterNotSupported', {
-              filter: t(`vessel.${field}` as any).toLowerCase(),
+          ? t((t) => t.search.filterNotSupported, {
+              filter: t((t: any) => t.vessel[field], { defaultValue: field }).toLowerCase(),
             })
           : ''
       }
       value={value}
       placeholder={PLACEHOLDER_BY_FIELD[field as string]}
-      label={t(`vessel.${field === 'ssvid' ? 'mmsi' : field}`, field)}
+      label={t((t: any) => t.vessel[field === 'ssvid' ? 'mmsi' : field], { defaultValue: field })}
     />
   )
 }

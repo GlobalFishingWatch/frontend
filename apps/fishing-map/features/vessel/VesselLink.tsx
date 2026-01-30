@@ -156,7 +156,7 @@ const VesselLink = ({
 
   return isTrackCorrectionOpen ? (
     <>
-      <Tooltip className={styles.linkTooltip} content={t('vessel.exitTrackCorrection')}>
+      <Tooltip className={styles.linkTooltip} content={t((t) => t.vessel.exitTrackCorrection)}>
         <span>{children}</span>
       </Tooltip>
     </>
@@ -194,7 +194,10 @@ const VesselLink = ({
       onClick={onLinkClick}
     >
       {showTooltip ? (
-        <Tooltip className={styles.linkTooltip} content={tooltip || t('vessel.clickToSeeMore')}>
+        <Tooltip
+          className={styles.linkTooltip}
+          content={tooltip || t((t) => t.vessel.clickToSeeMore)}
+        >
           <span>{children}</span>
         </Tooltip>
       ) : (
