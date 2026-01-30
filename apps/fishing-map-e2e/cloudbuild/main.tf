@@ -60,8 +60,18 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
 
   build {
     step {
+      id     = "Install Dependencies"
+      name   = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest"
+      script = <<-EOF
+        cp -R /app/node_modules /app/.yarn ./
+        yarn set version 4.12.0
+        yarn install --immutable --inline-builds
+      EOF
+    }
+
+    step {
       id     = "Run integration tests"
-      name   = "node:24-alpine"
+      name   = "node:24-slim"
       script = <<EOF
         nx test fishing-map
       EOF
