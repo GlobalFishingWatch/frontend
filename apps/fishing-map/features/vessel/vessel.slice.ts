@@ -1,5 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { castDraft } from 'immer'
 import type { RootState } from 'reducers'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
@@ -11,7 +12,6 @@ import type {
   GearType,
   IdentityVessel,
   RegistryExtraFields,
-  RegistryExtraFieldValue,
   Resource,
   SelfReportedInfo,
   VesselCombinedSourcesInfo,
@@ -225,7 +225,7 @@ const vesselSlice = createSlice({
     setVesselEvents: (state, action: PayloadAction<{ vesselId: string; events: ApiEvent[] }>) => {
       const { vesselId, events } = action.payload || {}
       if (!state.data[vesselId]) {
-        state.data[vesselId] = {} as VesselInfoEntry
+        state.data[vesselId] = castDraft({} as VesselInfoEntry)
       }
       state.data[vesselId].events = events
     },
@@ -249,10 +249,10 @@ const vesselSlice = createSlice({
     builder.addCase(fetchVesselInfoThunk.fulfilled, (state, action) => {
       const vesselId = action.meta?.arg?.vesselId as string
       state.data[vesselId].status = AsyncReducerStatus.Finished
-      state.data[vesselId].info = {
+      state.data[vesselId].info = castDraft({
         ...action.payload,
         id: vesselId,
-      }
+      })
     })
     builder.addCase(fetchVesselInfoThunk.rejected, (state, action) => {
       const vesselId = action.meta?.arg?.vesselId as string

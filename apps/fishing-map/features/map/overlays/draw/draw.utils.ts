@@ -1,7 +1,16 @@
 import type { Feature } from 'geojson'
 
-import type { Dataset, DatasetConfiguration } from '@globalfishingwatch/api-types'
-import { DatasetCategory, DatasetTypes,DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
+import type {
+  Dataset,
+  DatasetConfiguration,
+  UserContextLayerV1Configuration,
+} from '@globalfishingwatch/api-types'
+import {
+  DatasetCategory,
+  DatasetSubCategory,
+  DatasetTypes,
+  DRAW_DATASET_SOURCE,
+} from '@globalfishingwatch/api-types'
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 
 export const getDrawDatasetDefinition = (
@@ -12,13 +21,16 @@ export const getDrawDatasetDefinition = (
     name,
     type: DatasetTypes.UserContext,
     category: DatasetCategory.Context,
-    subcategory: 'user',
+    subcategory: DatasetSubCategory.User,
     unit: 'NA',
     source: DRAW_DATASET_SOURCE,
     configuration: {
-      propertyToInclude: 'draw_id',
-      format: 'geojson',
-      geometryType,
+      // TODO:DR this is (maybe) BROKEN, fix it!
+      userContextLayerV1: {
+        propertyToInclude: 'draw_id',
+        format: 'GEOJSON',
+        geometryType,
+      } as UserContextLayerV1Configuration,
     } as DatasetConfiguration,
   }
 }

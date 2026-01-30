@@ -1,5 +1,5 @@
 import type { DatasetFilter, DatasetFilters } from '@globalfishingwatch/api-types'
-import { flattenDatasetFilters } from '@globalfishingwatch/datasets-client'
+import { getFlattenDatasetFilters } from '@globalfishingwatch/datasets-client'
 
 export type GuessColumn = 'latitude' | 'longitude' | 'timestamp'
 
@@ -42,7 +42,7 @@ export const guessColumnsFromFilters = (
 ) => {
   if (!filters) return {}
 
-  const flatSchema = flattenDatasetFilters(filters)
+  const flatSchema = getFlattenDatasetFilters(filters)
   const columns = flatSchema.map((filter) => filter.id)
   if (!columns.length) return {}
   const guessedColumns = GUESS_COLUMN_NAMES.map(([columnToGuess, candidates]) => {

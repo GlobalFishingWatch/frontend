@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { DatasetTypes, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { TagItem } from '@globalfishingwatch/ui-components'
 import { TagList } from '@globalfishingwatch/ui-components'
@@ -70,7 +71,7 @@ function DatasetSchemaField({
     const filterConfig = filtersAllowed.find((filter) => filter.id === field)
     const dataviewWithHistogramFilter = isHistogramDataviewSupported(dataview)
     const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-    const { max, min } = dataset?.configuration || {}
+    const { max, min } = getDatasetConfiguration(dataset)
     const unit = filterUnit || dataset?.unit
     const minLabel = Array.isArray(valuesSelected[0])
       ? valuesSelected[0][0]?.label

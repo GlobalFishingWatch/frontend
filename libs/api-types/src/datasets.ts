@@ -108,7 +108,7 @@ export type ApiDataset<T extends DatasetTypes = DatasetTypes> = {
 }
 
 export type Dataset<T extends DatasetTypes = DatasetTypes> = ApiDataset<T> & {
-  endpoints?: Endpoint[]
+  endpoints: Endpoint[]
 }
 
 export type DownloadDataset<T extends DatasetTypes = DatasetTypes> = ApiDataset<T> & {

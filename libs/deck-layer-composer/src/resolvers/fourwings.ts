@@ -7,8 +7,8 @@ import {
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import {
-  flattenDatasetFilters,
   getDatasetsExtent,
+  getFlattenDatasetFilters,
   resolveEndpoint,
 } from '@globalfishingwatch/datasets-client'
 import type {
@@ -53,7 +53,7 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
     const units = uniq(sublayer.datasets?.map((dataset) => dataset.unit))
     const positionProperties = uniq(
       sublayer?.datasets.flatMap((dataset) => {
-        const flattenFilters = flattenDatasetFilters(dataset?.filters)
+        const flattenFilters = getFlattenDatasetFilters(dataset?.filters)
         return flattenFilters.map((f) => f.id)
       })
     )

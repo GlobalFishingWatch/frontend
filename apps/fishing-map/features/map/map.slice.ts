@@ -1,6 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
+import { castDraft } from 'immer'
 import type { RootState } from 'reducers'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
@@ -768,7 +769,7 @@ const slice = createSlice({
         state.clicked = null
         return
       }
-      state.clicked = { ...action.payload }
+      state.clicked = castDraft({ ...action.payload })
     },
   },
 
