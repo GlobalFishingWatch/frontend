@@ -5,7 +5,10 @@ import cx from 'classnames'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfiguration,
+  getDatasetConfigurationProperty,
+} from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
@@ -395,8 +398,9 @@ function LayerPanel({
                 featuresOnScreen.closest.map((feature) => {
                   const id = feature?.id || feature?.properties!.id
                   let title = feature.value || feature.properties.name || feature.properties.id
-                  if (dataset?.configuration?.valueProperties?.length) {
-                    title = dataset.configuration.valueProperties
+                  const { valueProperties = [] } = getDatasetConfiguration(dataset)
+                  if (valueProperties?.length) {
+                    title = valueProperties
                       .flatMap((prop) => feature.properties[prop] || [])
                       .join(', ')
                   }

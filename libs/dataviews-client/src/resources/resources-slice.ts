@@ -1,6 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import type { Feature, FeatureCollection, LineString } from 'geojson'
+import { castDraft } from 'immer'
 import memoize from 'lodash/memoize'
 import { DateTime } from 'luxon'
 
@@ -155,7 +156,7 @@ const resourcesSlice = createSlice({
       const thisChunkSetId = resource.datasetConfig?.metadata?.chunkSetId
       if (thisChunkSetId) {
         state[thisChunkSetId] = {
-          ...resource,
+          ...castDraft(resource),
           status: ResourceStatus.Loading,
           datasetConfig: {
             ...resource.datasetConfig,

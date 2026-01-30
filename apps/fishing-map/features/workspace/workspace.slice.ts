@@ -1,6 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice, isRejected } from '@reduxjs/toolkit'
 import { uniq } from 'es-toolkit'
+import { castDraft } from 'immer'
 
 import type { FetchOptions } from '@globalfishingwatch/api-client'
 import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
@@ -493,7 +494,7 @@ const workspaceSlice = createSlice({
   reducers: {
     setWorkspace: (state, action: PayloadAction<Workspace<AnyWorkspaceState>>) => {
       if (action.payload && Object.keys(action.payload).length) {
-        state.data = action.payload
+        state.data = castDraft(action.payload)
       }
     },
     setWorkspaceProperty: (
@@ -515,7 +516,7 @@ const workspaceSlice = createSlice({
       state.status = initialState.status
       state.customStatus = initialState.customStatus
       state.password = initialState.password
-      state.data = initialState.data
+      state.data = castDraft(initialState.data)
       state.error = initialState.error
     },
     cleanCurrentWorkspaceData: (state) => {
@@ -523,7 +524,7 @@ const workspaceSlice = createSlice({
     },
     cleanCurrentWorkspaceReportState: (state) => {
       if (state.data?.state) {
-        state.data.state = cleanReportQuery(state.data.state)
+        state.data.state = castDraft(cleanReportQuery(state.data.state))
       }
     },
     cleanCurrentWorkspaceStateBufferParams: (state) => {
@@ -534,7 +535,7 @@ const workspaceSlice = createSlice({
       }
     },
     setWorkspaceHistoryNavigation: (state, action: PayloadAction<LastWorkspaceVisited[]>) => {
-      state.historyNavigation = action.payload
+      state.historyNavigation = castDraft(action.payload)
     },
     resetWorkspaceHistoryNavigation: (state) => {
       state.historyNavigation = initialState.historyNavigation
@@ -564,7 +565,7 @@ const workspaceSlice = createSlice({
         const { workspace, error } = action.payload as RejectedActionPayload
         state.status = AsyncReducerStatus.Error
         if (workspace) {
-          state.data = workspace
+          state.data = castDraft(workspace)
         }
         if (error) {
           state.error = error
@@ -580,7 +581,7 @@ const workspaceSlice = createSlice({
     builder.addCase(saveWorkspaceThunk.fulfilled, (state, action) => {
       state.customStatus = AsyncReducerStatus.Finished
       if (action.payload) {
-        state.data = action.payload
+        state.data = castDraft(action.payload)
       }
     })
     builder.addCase(saveWorkspaceThunk.rejected, (state) => {
@@ -592,7 +593,7 @@ const workspaceSlice = createSlice({
     builder.addCase(updateCurrentWorkspaceThunk.fulfilled, (state, action) => {
       state.customStatus = AsyncReducerStatus.Finished
       if (action.payload) {
-        state.data = action.payload
+        state.data = castDraft(action.payload)
       }
     })
     builder.addCase(updateCurrentWorkspaceThunk.rejected, (state) => {

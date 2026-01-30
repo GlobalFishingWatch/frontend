@@ -6,6 +6,7 @@ import cx from 'classnames'
 import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DataviewType } from '@globalfishingwatch/api-types'
 import {
+  getDatasetConfiguration,
   getDatasetConfigurationProperty,
   getDatasetGeometryType,
   getUserDataviewDataset,
@@ -131,12 +132,11 @@ function UserPanel({
       dispatchSetMapDrawing(geometryType as DrawFeatureType)
     } else {
       dispatchDatasetModalOpen(true)
+      const { geometryType } = getDatasetConfiguration(dataset)
       dispatchDatasetModalConfig({
         id: dataset?.id,
         dataviewId: dataview.id,
-        type:
-          (dataset?.configuration?.configurationUI?.geometryType as DatasetGeometryType) ||
-          dataset?.configuration?.geometryType,
+        type: geometryType,
       })
     }
   }

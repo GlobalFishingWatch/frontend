@@ -2,10 +2,10 @@ import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
 import {
   findDatasetByType,
-  flattenDatasetFilters,
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
   getDatasetRangeSteps,
+  getFlattenDatasetFilters,
   resolveEndpoint,
 } from '@globalfishingwatch/datasets-client'
 import type {
@@ -68,7 +68,7 @@ export const getUserPolygonColorProps = ({
     dataset,
     property: 'polygonColor',
   })
-  const flattenFilters = flattenDatasetFilters(dataset?.filters)
+  const flattenFilters = getFlattenDatasetFilters(dataset?.filters)
   const flattenFiltersById = Object.fromEntries(
     flattenFilters.map((filter) => [filter.id, filter])
   ) as Record<string, any>
@@ -102,7 +102,7 @@ export const getUserCircleProps = ({
     return {}
   }
 
-  const flattenFilters = flattenDatasetFilters(dataset?.filters)
+  const flattenFilters = getFlattenDatasetFilters(dataset?.filters)
   const flattenFiltersById = Object.fromEntries(
     flattenFilters.map((filter) => [filter.id, filter])
   ) as Record<string, any>
@@ -181,7 +181,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
 
     const { valueProperties, disableInteraction } = getDatasetConfiguration(dataset) || {}
     const { idProperty } = getDatasetConfiguration(dataset, 'userContextLayerV1') || {}
-    const enabledFilters = Object.entries(flattenDatasetFilters(dataset?.filters))?.filter(
+    const enabledFilters = Object.entries(getFlattenDatasetFilters(dataset?.filters))?.filter(
       (f) => f[1]?.enabled
     )
     const allFilters = Object.fromEntries(enabledFilters?.map((f) => [f[0], undefined]))

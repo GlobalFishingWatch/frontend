@@ -61,14 +61,28 @@ type InferParamType<Param> =
           : never
         : never
 
-// Build a typed params object from endpoint query parameters
-// All params with their correct optionality based on the 'required' field
-export type InferQueryParams<T extends { query: readonly any[] }> = {
-  // Map each param to optional or required based on its 'required' field
-  [P in T['query'][number] as P['id']]: P extends { required: true }
-    ? InferParamType<P>
-    : InferParamType<P> | undefined
-} extends infer O
+type QueryParamItem<T extends { query: readonly any[] }> = T['query'][number]
+type QueryParamId<T extends { query: readonly any[] }> = QueryParamItem<T>['id']
+type RequiredQueryParamId<T extends { query: readonly any[] }> = Extract<
+  QueryParamItem<T>,
+  { required: true }
+>['id']
+type OptionalQueryParamId<T extends { query: readonly any[] }> = Exclude<
+  QueryParamId<T>,
+  RequiredQueryParamId<T>
+>
+type QueryParamById<T extends { query: readonly any[] }, Id extends QueryParamId<T>> = Extract<
+  QueryParamItem<T>,
+  { id: Id }
+>
+
+// Build a typed params object from endpoint query parameters.
+// Params marked as required are required object keys; others are optional keys.
+export type InferQueryParams<T extends { query: readonly any[] }> = ({
+  [Id in RequiredQueryParamId<T>]: InferParamType<QueryParamById<T, Id>>
+} & {
+  [Id in OptionalQueryParamId<T>]?: InferParamType<QueryParamById<T, Id>>
+}) extends infer O
   ? { [K in keyof O]: O[K] } // Flatten the type for better display
   : never
 
@@ -129,10 +143,10 @@ export function getEndpointByType<Type extends DatasetTypes, Id extends Endpoint
 }): InferEndpoint<Type, Id>
 export function getEndpointByType({ type, endpoint, version }: GetEndpointByType) {
   const endpoints = ENDPOINTS_BY_TYPE[type]
-  const found = endpoints.find((e) => e.id === endpoint)
-  if (!found) {
+  const endpointFound = endpoints.find((e) => e.id === endpoint)
+  if (!endpointFound) {
     throw new Error(`Endpoint ${endpoint} not found in ${type}`)
   }
   // Return the endpoint with replaced version, preserving all literal types
-  return replacePathVersion(found, version)
+  return replacePathVersion(endpointFound, version)
 }

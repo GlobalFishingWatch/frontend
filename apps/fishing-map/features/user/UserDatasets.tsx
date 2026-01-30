@@ -5,6 +5,10 @@ import { useSelector } from 'react-redux'
 import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { DatasetStatus } from '@globalfishingwatch/api-types'
 import {
+  getDatasetConfiguration,
+  getDatasetConfigurationProperty,
+} from '@globalfishingwatch/datasets-client'
+import {
   Button,
   Icon,
   IconButton,
@@ -92,9 +96,8 @@ function UserDatasets() {
       dispatchDatasetModalOpen(true)
       dispatchDatasetModalConfig({
         id: dataset?.id,
-        type:
-          (dataset?.configuration?.configurationUI?.geometryType as DatasetGeometryType) ||
-          dataset?.configuration?.geometryType,
+        // TODO:DR review if this works
+        type: getDatasetConfigurationProperty({ dataset, property: 'geometryType' }),
       })
     },
     [dispatchDatasetModalOpen, dispatchDatasetModalConfig]
@@ -151,7 +154,8 @@ function UserDatasets() {
                   infoTooltip = t((t) => t.dataset.importing)
                 }
                 if (datasetError) {
-                  infoTooltip = `${t((t) => t.errors.uploadError)} - ${dataset.importLogs}`
+                  const { importLogs = '' } = getDatasetConfiguration(dataset, 'userContextLayerV1')
+                  infoTooltip = `${t((t) => t.errors.uploadError)} - ${importLogs}`
                 }
                 const datasetIcon = getDatasetTypeIcon(dataset)
                 return (

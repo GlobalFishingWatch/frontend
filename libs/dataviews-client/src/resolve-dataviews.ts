@@ -22,7 +22,7 @@ import {
 } from '@globalfishingwatch/api-types'
 import { isNumeric } from '@globalfishingwatch/data-transforms'
 import {
-  flattenDatasetFilters,
+  getFlattenDatasetFilters,
   removeDatasetVersion,
   resolveEndpoint,
 } from '@globalfishingwatch/datasets-client'
@@ -131,7 +131,7 @@ export const FILTERABLE_GENERATORS: DataviewType[] = [
 ]
 
 function getDatasetSchemaItem(dataset: Dataset, filter: string) {
-  const flatFilters = flattenDatasetFilters(dataset?.filters)
+  const flatFilters = getFlattenDatasetFilters(dataset?.filters)
   return (
     flatFilters.find((f) => f.id === filter) ||
     // TODO:DR test if still need selfReportedInfo

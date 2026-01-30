@@ -160,9 +160,9 @@ export type FrontendConfiguration = {
   disableInteraction?: boolean
   endTime?: string | number
   geometryType?: DatasetGeometryType
-  latitude?: string
+  latitude?: number
   lineId?: string | number
-  longitude?: string
+  longitude?: number
   max?: number
   maxPointSize?: number
   maxZoom?: number

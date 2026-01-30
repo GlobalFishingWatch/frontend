@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 
-import type { DatasetSchemaType } from '@globalfishingwatch/api-types'
+import type { DatasetFilterType } from '@globalfishingwatch/api-types'
 import type { DatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { SelectOnChange, SelectOption } from '@globalfishingwatch/ui-components'
@@ -23,7 +23,7 @@ type NewDatasetFieldProps = {
 }
 
 const STRICT_PROPERTY_SELECTION_TYPES: Partial<
-  Record<DatasetConfigurationProperty, DatasetSchemaType[]>
+  Record<DatasetConfigurationProperty, DatasetFilterType[]>
 > = {
   polygonColor: ['range'],
   pointSize: ['range'],

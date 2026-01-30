@@ -17,7 +17,10 @@ import {
   segmentsToGeoJSON,
   shpToGeoJSON,
 } from '@globalfishingwatch/data-transforms'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfiguration,
+  getDatasetConfigurationProperty,
+} from '@globalfishingwatch/datasets-client'
 import { LineColorBarOptions } from '@globalfishingwatch/ui-components'
 
 import type { DatasetMetadata } from 'features/datasets/upload/NewDataset'
@@ -159,8 +162,8 @@ export const getTrackFromList = (data: DataList, dataset: DatasetMetadata) => {
   const timeFilterType = getDatasetConfigurationProperty({ dataset, property: 'timeFilterType' })
   const segments = listToTrackSegments({
     records: data,
-    latitude: getDatasetConfigurationProperty({ dataset, property: 'latitude' }),
-    longitude: getDatasetConfigurationProperty({ dataset, property: 'longitude' }),
+    latitude: getDatasetConfigurationProperty({ dataset, property: 'latitude' })!,
+    longitude: getDatasetConfigurationProperty({ dataset, property: 'longitude' })!,
     startTime: timeFilterType
       ? getDatasetConfigurationProperty({ dataset, property: 'startTime' })
       : undefined,
@@ -173,18 +176,20 @@ export const getTrackFromList = (data: DataList, dataset: DatasetMetadata) => {
 }
 
 export const getGeojsonFromPointsList = (data: Record<string, any>[], dataset: DatasetMetadata) => {
+  // TODO:DR test this is saved into userContextLayerV1 or contextLayerV1
+  const { idProperty } = getDatasetConfiguration(dataset, 'userContextLayerV1')
   const timeFilterType = getDatasetConfigurationProperty({ dataset, property: 'timeFilterType' })
   return pointsListToGeojson(data, {
-    latitude: getDatasetConfigurationProperty({ dataset, property: 'latitude' }),
-    longitude: getDatasetConfigurationProperty({ dataset, property: 'longitude' }),
+    latitude: getDatasetConfigurationProperty({ dataset, property: 'latitude' })!,
+    longitude: getDatasetConfigurationProperty({ dataset, property: 'longitude' })!,
     startTime: timeFilterType
       ? getDatasetConfigurationProperty({ dataset, property: 'startTime' })
       : undefined,
     endTime: timeFilterType
       ? getDatasetConfigurationProperty({ dataset, property: 'endTime' })
       : undefined,
-    id: getDatasetConfigurationProperty({ dataset, property: 'idProperty' }),
-    schema: dataset.schema,
+    id: idProperty,
+    filters: dataset.filters,
   })
 }
 

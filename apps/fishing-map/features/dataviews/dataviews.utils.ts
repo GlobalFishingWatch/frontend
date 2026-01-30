@@ -10,7 +10,10 @@ import type {
   DataviewType,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfigurationProperty,
+  getFlattenDatasetFilters,
+} from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { FourwingsAggregationOperation, getUTCDateTime } from '@globalfishingwatch/deck-layers'
 
@@ -310,7 +313,7 @@ export const getUserPointsDataviewInstance = (dataset: Dataset): DataviewInstanc
   })
   const properties = [circleRadiusProperty, startTimeFilterProperty, endTimeFilterProperty]
     .filter(Boolean)
-    .map((p) => p.toString().toLowerCase())
+    .flatMap((p) => (p ? p.toString().toLowerCase() : []))
   return {
     id: `user-points-${dataset?.id}`,
     dataviewId: TEMPLATE_POINTS_DATAVIEW_SLUG,
@@ -447,7 +450,11 @@ export const isBathymetryContourDataview = (dataview: UrlDataviewInstance) => {
 
 export const getIsPositionSupportedInDataview = (dataview: UrlDataviewInstance) => {
   const datasets = getActiveDatasetsInDataview(dataview)
-  return datasets?.some(({ schema }) => {
-    return schema?.['bearing'] !== undefined
+  const flattenDatasetFilters = datasets?.flatMap((d) =>
+    d ? getFlattenDatasetFilters(d.filters) || [] : []
+  )
+  // TODO:DR review if this is maintained and working
+  return flattenDatasetFilters?.some(({ id }) => {
+    return id === 'bearing'
   })
 }

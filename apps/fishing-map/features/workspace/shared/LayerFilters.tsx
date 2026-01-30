@@ -6,6 +6,7 @@ import { debounce } from 'es-toolkit'
 
 import type { FilterOperator } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import {
   isHeatmapVectorsDataview,
   type UrlDataviewInstance,
@@ -94,7 +95,7 @@ const cleanDataviewFiltersNotAllowed = (
 
 export const isHistogramDataviewSupported = (dataview: UrlDataviewInstance) => {
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-  const { max, min } = dataset?.configuration || {}
+  const { max, min } = getDatasetConfiguration(dataset)
   return (
     max !== undefined &&
     min !== undefined &&

@@ -16,6 +16,7 @@ import type {
   UploadResponse,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import { DETECTIONS_LEGACY_DATASETS_DICT } from '@globalfishingwatch/dataviews-client'
 
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV, PUBLIC_SUFIX } from 'data/config'
@@ -210,12 +211,18 @@ export const upsertDatasetThunk = createAsyncThunk<
   async ({ dataset, file, createAsPublic, addIdSuffix = true }, { rejectWithValue }) => {
     try {
       let filePath
+      // TODO:DR this is BROKEN, fix it!
+      const {
+        format,
+        idProperty,
+        filePath: datasetFilePath,
+      } = getDatasetConfiguration(dataset, 'userContextLayerV1')
       if (file) {
         const { url, path } = await GFWAPI.fetch<UploadResponse>(`/uploads`, {
           method: 'POST',
           body: {
             contentType:
-              dataset.configuration?.format === 'geojson' ? 'application/json' : file.type,
+              format && format.toUpperCase() === 'GEOJSON' ? 'application/json' : file.type,
           } as any,
         })
         filePath = path
@@ -224,7 +231,7 @@ export const upsertDatasetThunk = createAsyncThunk<
 
       // Properties that are to be used as SQL params on the server
       // need to be lowercase
-      const propertyToInclude = (dataset.configuration?.propertyToInclude as string)?.toLowerCase()
+      const propertyToInclude = idProperty?.toLowerCase() || ''
       const suffix = addIdSuffix ? `-${Date.now()}` : ''
       const generatedId = dataset.id || `${kebabCase(dataset.name || '')}${suffix}`
       const id = createAsPublic ? `${PUBLIC_SUFIX}-${generatedId}` : generatedId
@@ -240,7 +247,7 @@ export const upsertDatasetThunk = createAsyncThunk<
         configuration: {
           ...dataset.configuration,
           ...(propertyToInclude && { propertyToInclude }),
-          filePath: filePath || dataset.configuration?.filePath,
+          filePath: filePath || datasetFilePath,
         },
       }
       delete (datasetWithFilePath as any).public
@@ -269,10 +276,11 @@ export const updateDatasetThunk = createAsyncThunk<
   async (partialDataset, { rejectWithValue }) => {
     try {
       const { id, configuration, ...rest } = partialDataset
-      const { tableName, ...restConfiguration } = configuration as AnyDatasetConfiguration
+      // TODO:DR this is BROKEN, fix it!
+      // const { tableName, ...restConfiguration } = configuration as DatasetConfiguration
       const updatedDataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}`, {
         method: 'PATCH',
-        body: { ...rest, configuration: restConfiguration } as any,
+        body: { ...rest, configuration } as any,
       })
       return updatedDataset
     } catch (e: any) {
