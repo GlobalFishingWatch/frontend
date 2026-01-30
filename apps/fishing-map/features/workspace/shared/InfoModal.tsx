@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { uniqBy } from 'es-toolkit'
 
 import { DatasetStatus, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getVesselIdFromDatasetConfig,
@@ -44,7 +45,7 @@ const InfoModal = ({
     const uniqDatasets = dataview.datasets ? uniqBy(dataview.datasets, (dataset) => dataset.id) : []
     // Vector dataviews need two datasets to render the vector layer; we only show the first one with translations
     const firstVectorDatasetIndex = isHeatmapVector
-      ? uniqDatasets.findIndex((d) => d.configuration?.translate === true)
+      ? uniqDatasets.findIndex((d) => getDatasetConfiguration(d)?.translate === true)
       : -1
 
     return uniqDatasets
@@ -100,17 +101,19 @@ const InfoModal = ({
   const datasetError = dataset?.status === DatasetStatus.Error
 
   let tooltip: string = t((t) => t.layer.seeDescription)
+  const { importLogs = '' } = getDatasetConfiguration(dataset, 'userContextLayerV1')
+  const { geometryType } = getDatasetConfiguration(dataset)
   if (datasetImporting) {
     tooltip = t((t) => t.dataset.importing)
   }
   if (datasetError) {
-    tooltip = `${t((t) => t.errors.uploadError)} - ${dataset?.importLogs}`
+    tooltip = `${t((t) => t.errors.uploadError)} - ${importLogs}`
   }
   const selectedDataset = useMemo(() => {
     return dataview.datasets?.find((d) => d.id === activeTab?.id)
   }, [dataview.datasets, activeTab])
 
-  if (dataset?.configuration?.geometryType === 'draw') {
+  if (geometryType === 'draw') {
     return datasetImporting || datasetError ? (
       <IconButton
         size="small"

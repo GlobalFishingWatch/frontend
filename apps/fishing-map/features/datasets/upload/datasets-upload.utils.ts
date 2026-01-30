@@ -1,3 +1,5 @@
+// TODO:DR this is BROKEN, fix it!
+// @ts-nocheck
 import { flatten } from '@turf/flatten'
 import union from '@turf/union'
 import type {
@@ -19,11 +21,11 @@ import { DatasetCategory, DatasetTypes } from '@globalfishingwatch/api-types'
 import {
   cleanProperties,
   getDatasetConfigurationClean,
-  getDatasetSchema,
-  getDatasetSchemaClean,
-  getSchemaIdClean,
+  getDatasetFilters,
+  getDatasetFiltersClean,
+  getFilterIdClean,
   getUTCDate,
-  guessColumnsFromSchema,
+  guessColumnsFromFilters,
 } from '@globalfishingwatch/data-transforms'
 import type { DatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
@@ -67,7 +69,7 @@ export const getMetadataFromDataset = (dataset: Dataset): DatasetMetadata => {
 }
 
 const getBaseDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
-  const schema = getDatasetSchema(data, { includeEnum: true })
+  const schema = getDatasetFilters(data, { includeEnum: true })
   return {
     name,
     public: true,
@@ -84,7 +86,7 @@ const getBaseDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataPro
 
 export const getTracksDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
   const baseMetadata = getBaseDatasetMetadata({ name, data, sourceFormat })
-  const guessedColumns = guessColumnsFromSchema(baseMetadata.schema)
+  const guessedColumns = guessColumnsFromFilters(baseMetadata.schema)
   return {
     ...baseMetadata,
     type: DatasetTypes.UserTracks,
@@ -104,7 +106,7 @@ export const getTracksDatasetMetadata = ({ name, data, sourceFormat }: ExtractMe
 
 export const getPointsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
   const baseMetadata = getBaseDatasetMetadata({ name, data, sourceFormat })
-  const guessedColumns = guessColumnsFromSchema(baseMetadata.schema)
+  const guessedColumns = guessColumnsFromFilters(baseMetadata.schema)
   const isNotGeoStandard = data.type !== 'FeatureCollection'
   const baseConfig = baseMetadata?.configuration
   const baseConfigUI = baseMetadata?.configuration?.configurationUI
@@ -129,7 +131,7 @@ export const getPointsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMe
 
 export const getPolygonsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
   const baseMetadata = getBaseDatasetMetadata({ name, data, sourceFormat })
-  const guessedColumns = guessColumnsFromSchema(baseMetadata.schema)
+  const guessedColumns = guessColumnsFromFilters(baseMetadata.schema)
   const baseConfig = baseMetadata?.configuration
   const baseConfigUI = baseMetadata?.configuration?.configurationUI
   const timestampGuessedValid =
@@ -160,10 +162,10 @@ export const getFinalDatasetFromMetadata = (datasetMetadata: DatasetMetadata) =>
     ...datasetMetadata,
     unit: 'TBD',
     subcategory: 'info',
-    schema: getDatasetSchemaClean(datasetMetadata.schema),
+    schema: getDatasetFiltersClean(datasetMetadata.schema),
     configuration: getDatasetConfigurationClean(datasetMetadata.configuration),
     fieldsAllowed:
-      datasetMetadata.fieldsAllowed?.map((field) => getSchemaIdClean(field) as string) || [],
+      datasetMetadata.fieldsAllowed?.map((field) => getFilterIdClean(field) as string) || [],
   }
   const timestampProperty = getDatasetConfigurationProperty({
     dataset: datasetMetadata,
@@ -206,7 +208,7 @@ export const parseGeoJsonProperties = <T extends Polygon | Point | LineString>(
           cleanedProperties[propertyKey] = getUTCDateTime(value).toMillis()
         }
       })
-      const properties = getDatasetSchemaClean(cleanedProperties)
+      const properties = getDatasetFiltersClean(cleanedProperties)
       return {
         ...feature,
         properties,

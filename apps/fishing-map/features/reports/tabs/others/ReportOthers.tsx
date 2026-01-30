@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { getFlattenDatasetFilters } from '@globalfishingwatch/datasets-client'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Select } from '@globalfishingwatch/ui-components'
@@ -53,12 +54,9 @@ function ReportOthers() {
           (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
         )
 
-        const selectOptions = dataset?.schema
-          ? Object.entries(dataset.schema)
-              .filter(([, filter]) => filter.type === 'range' || filter.type === 'number')
-              .map(([key]) => ({ id: key, label: key }))
-          : []
-
+        const selectOptions = getFlattenDatasetFilters(dataset?.filters)
+          .filter((f) => f.type === 'range' || f.type === 'number')
+          .map((f) => ({ id: f.id, label: f.id }))
         const onSelectAggregatedProperty = (option: SelectOption) => {
           const newDataviewConfig = {
             aggregateByProperty: option.id.toString(),
