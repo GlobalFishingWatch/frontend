@@ -23,10 +23,13 @@ const InsightCoverage = ({
   return (
     <div id="coverage" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <Tooltip content={t('common.experimentalTooltip')}>
-          <label className="experimental">{t('vessel.insights.coverage')}</label>
+        <Tooltip content={t((t) => t.common.experimentalTooltip)}>
+          <label className="experimental">{t((t) => t.vessel.insights.coverage)}</label>
         </Tooltip>
-        <DataTerminology title={t('vessel.insights.coverage')} terminologyKey="insightsCoverage" />
+        <DataTerminology
+          title={t((t) => t.vessel.insights.coverage)}
+          terminologyKey="insightsCoverage"
+        />
       </div>
       {isLoading ? (
         <div style={{ width: '20rem' }} className={styles.loadingPlaceholder} />

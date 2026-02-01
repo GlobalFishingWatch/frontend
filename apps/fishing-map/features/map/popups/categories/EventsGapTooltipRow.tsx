@@ -66,7 +66,10 @@ function EventsGapTooltipRow({
           feature.count && (
             <div className={styles.row}>
               <span className={styles.rowText}>
-                <I18nNumber number={feature.count} /> {t('event.gap', { count: feature.count })}
+                <I18nNumber number={feature.count} />{' '}
+                {t((t) => t.event.gap, {
+                  count: feature.count,
+                })}
                 {!feature.properties.cluster && gapStart && interval && (
                   <span className={styles.rowTextSecondary}>
                     {' '}
@@ -107,7 +110,9 @@ function EventsGapTooltipRow({
                           <div className={styles.rowColum}>
                             {event.vessel.type && (
                               <p className={styles.rowTitle}>
-                                {t(`vessel.vesselTypes.${event.vessel.type}`, event.vessel.type)}
+                                {t((t) => t.vessel.vesselTypes[event.vessel.type], {
+                                  defaultValue: event.vessel.type,
+                                })}
                               </p>
                             )}
                             {event.vessel && (
@@ -157,7 +162,7 @@ function EventsGapTooltipRow({
                               className={styles.btnLarge}
                               onClick={seeGapEventClick}
                             >
-                              {t('common.seeMore')}
+                              {t((t) => t.common.seeMore)}
                             </Button>
                           </VesselLink>
                         </div>
@@ -166,7 +171,7 @@ function EventsGapTooltipRow({
                   ) : error ? (
                     <p className={styles.error}>{error}</p>
                   ) : (
-                    t('event.noData')
+                    t((t) => t.event.noData)
                   )}
                 </Fragment>
               )}

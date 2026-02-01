@@ -114,7 +114,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
               replaceQuery: true,
             }}
           >
-            <Tooltip content={t('common.seeDefault')} placement="right">
+            <Tooltip content={t((t) => t.common.seeDefault)} placement="right">
               <span className={styles.tabContent}>
                 <Icon icon="home" className={styles.searchIcon} />
               </span>
@@ -139,7 +139,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             }}
             onClick={onSearchClick}
           >
-            <Tooltip content={t('workspace.categories.search')} placement="right">
+            <Tooltip content={t((t) => t.workspace.categories.search)} placement="right">
               <span className={styles.tabContent}>
                 <Icon icon="category-search" className={styles.searchIcon} />
               </span>
@@ -150,7 +150,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           return (
             <Tooltip
               key={category}
-              content={t(`workspace.categories.${category}`, category)}
+              content={t((t) => t.workspace.categories[category], { defaultValue: category })}
               placement="right"
             >
               <li
@@ -195,7 +195,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
                   className={cx(styles.link)}
                   onClick={onFeedbackClick}
                 >
-                  {t('feedback.logAnIssue')}
+                  {t((t) => t.feedback.logAnIssue)}
                 </span>
               </li>
               <li>
@@ -205,7 +205,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
                   rel="noreferrer"
                   className={cx(styles.link)}
                 >
-                  {t('feedback.requestAnImprovement')}
+                  {t((t) => t.feedback.requestAnImprovement)}
                 </a>
               </li>
             </ul>

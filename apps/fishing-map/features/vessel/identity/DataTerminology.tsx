@@ -63,7 +63,7 @@ const DataTerminology: React.FC<ModalProps> = ({
         isOpen={showModal}
         onClose={closeModal}
         shouldCloseOnEsc
-        title={title ?? t('common.dataTerminology')}
+        title={title ?? t((t) => t.common.dataTerminology)}
         className={cx(containerClassName, {
           [styles.iFrameContainer]: debugOptions.dataTerminologyIframe,
         })}
@@ -88,7 +88,12 @@ const DataTerminology: React.FC<ModalProps> = ({
             />
           </Fragment>
         ) : (
-          htmlSafeParse(t(`data-terminology:${terminologyKey}`, terminologyKey))
+          htmlSafeParse(
+            t((t) => t[terminologyKey], {
+              defaultValue: terminologyKey,
+              ns: 'data-terminology',
+            })
+          )
         )}
       </Modal>
     </Fragment>

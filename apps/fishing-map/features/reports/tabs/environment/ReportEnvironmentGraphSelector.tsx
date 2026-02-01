@@ -30,12 +30,12 @@ export default function ReportEnvironmentGraphSelector() {
   const options: ChoiceOption<ReportActivityGraph>[] = [
     {
       id: REPORT_ACTIVITY_GRAPH_EVOLUTION,
-      label: t('analysis.evolution'),
+      label: t((t) => t.analysis.evolution),
     },
     {
       id: REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON,
-      label: t('analysis.datasetComparison'),
-      tooltip: t('analysis.comparisonNotAvailable'),
+      label: t((t) => t.analysis.datasetComparison),
+      tooltip: t((t) => t.analysis.comparisonNotAvailable),
     },
   ]
 
@@ -43,7 +43,7 @@ export default function ReportEnvironmentGraphSelector() {
     if (selectedReportActivityGraph !== option.id) {
       fitAreaInViewport()
 
-      const filteredDataviewInstances = urlDataviewInstances.filter(
+      const filteredDataviewInstances = (urlDataviewInstances || []).filter(
         (dv) => !dv.id.includes(DATASET_COMPARISON_SUFFIX)
       )
       const reportComparisonDataviewIds =

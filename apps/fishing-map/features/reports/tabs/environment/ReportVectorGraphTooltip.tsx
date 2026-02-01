@@ -145,7 +145,9 @@ function ReportVectorGraphTooltip(
           </span>
         )}
       </p>
-      <label className={cx(styles.tooltipLabel, styles.margin)}>{t('common.directions')}</label>
+      <label className={cx(styles.tooltipLabel, styles.margin)}>
+        {t((t) => t.common.directions)}
+      </label>
       <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`}>
         {/* Background circles */}
         {new Array(4).fill(0).map((_, i, array) => (
@@ -166,7 +168,7 @@ function ReportVectorGraphTooltip(
             textAnchor="middle"
             className={styles.cardinalDirection}
           >
-            {t('common.cardinalNorth')}
+            {t((t) => t.common.cardinalNorth)}
           </text>
           <line
             x1={center}
@@ -182,7 +184,7 @@ function ReportVectorGraphTooltip(
             textAnchor="middle"
             className={styles.cardinalDirection}
           >
-            {t('common.cardinalEast')}
+            {t((t) => t.common.cardinalEast)}
           </text>
           <line
             x1={center + INNER_RADIUS}
@@ -198,7 +200,7 @@ function ReportVectorGraphTooltip(
             textAnchor="middle"
             className={styles.cardinalDirection}
           >
-            {t('common.cardinalSouth')}
+            {t((t) => t.common.cardinalSouth)}
           </text>
           <line
             x1={center}
@@ -214,7 +216,7 @@ function ReportVectorGraphTooltip(
             textAnchor="middle"
             className={styles.cardinalDirection}
           >
-            {t('common.cardinalWest')}
+            {t((t) => t.common.cardinalWest)}
           </text>
           <line
             x1={center - outerRadius}

@@ -146,7 +146,9 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
                   icon={filterOpen ? 'filter-on' : 'filter-off'}
                   size="small"
                   onClick={onToggleFilterOpen}
-                  tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
+                  tooltip={
+                    filterOpen ? t((t) => t.layer.filterClose) : t((t) => t.layer.filterOpen)
+                  }
                   tooltipPlacement="top"
                 />
               </div>
@@ -162,7 +164,9 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
               icon={'warning'}
               type={'warning'}
               tooltip={
-                isGFWUser ? `${t('errors.layerLoading')} (${layerError})` : t('errors.layerLoading')
+                isGFWUser
+                  ? `${t((t) => t.errors.layerLoading)} (${layerError})`
+                  : t((t) => t.errors.layerLoading)
               }
               size="small"
             />

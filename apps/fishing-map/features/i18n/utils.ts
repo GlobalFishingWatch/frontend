@@ -18,8 +18,8 @@ export const getPlaceholderBySelections = ({
 }: PlaceholderBySelectionParams): string => {
   if (!selection?.length) {
     return filterOperator === EXCLUDE_FILTER_ID
-      ? t('selects.noneSelected')
-      : t('selects.allSelected')
+      ? t((t) => t.selects.noneSelected)
+      : t((t) => t.selects.allSelected)
   }
   const isSelectionArray = Array.isArray(selection)
   const optionSelected = options?.filter((o) =>
@@ -27,7 +27,7 @@ export const getPlaceholderBySelections = ({
   )
   const placeholder =
     isSelectionArray && selection.length > 1
-      ? `${selection.length} ${t('selects.selected')}`
+      ? `${selection.length} ${t((t) => t.selects.selected)}`
       : optionSelected?.[0]?.label
 
   if (typeof placeholder === 'string') {
@@ -39,6 +39,12 @@ export const getPlaceholderBySelections = ({
 
 export const joinTranslatedList = (list: string[], condition: 'or' | 'and' = 'or') => {
   return list.reduce(function (acc, el, i) {
-    return acc + (i === list.length - 1 ? ` ${t(`common.${condition}`, condition)} ` : ', ') + el
+    return (
+      acc +
+      (i === list.length - 1
+        ? ` ${t((t) => t.common[condition], { defaultValue: condition })} `
+        : ', ') +
+      el
+    )
   })
 }

@@ -151,12 +151,19 @@ const ReportActivityDatasetComparison = () => {
           selectedOption={selectedComparisonDataset}
           onSelect={onCompareSelect}
           containerClassName={styles.select}
-          placeholder={t('translations:analysis.selectDatasetPlaceholder')}
+          placeholder={t((t) => t.analysis.selectDatasetPlaceholder, {
+            ns: 'translations',
+          })}
         />
       </div>
       <p className={styles.printableTitle}>
-        {t('translations:analysis.printComparisonSummary')}
-        {selectedMainDataset?.label} {t('translations:common.and')}{' '}
+        {t((t) => t.analysis.printComparisonSummary, {
+          ns: 'translations',
+        })}
+        {selectedMainDataset?.label}{' '}
+        {t((t) => t.common.and, {
+          ns: 'translations',
+        })}{' '}
         {selectedComparisonDataset?.label}
       </p>
     </>

@@ -243,7 +243,9 @@ function ActivityLayerPanel({
                       icon={filterOpen ? 'filter-on' : 'filter-off'}
                       size="small"
                       onClick={onToggleFilterOpen}
-                      tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
+                      tooltip={
+                        filterOpen ? t((t) => t.layer.filterClose) : t((t) => t.layer.filterOpen)
+                      }
                       tooltipPlacement="top"
                     />
                     {dataview.id === 'fishing-ais' && (
@@ -270,8 +272,8 @@ function ActivityLayerPanel({
                   type={'warning'}
                   tooltip={
                     isGFWUser
-                      ? `${t('errors.layerLoading')} (${layerError})`
-                      : t('errors.layerLoading')
+                      ? `${t((t) => t.errors.layerLoading)} (${layerError})`
+                      : t((t) => t.errors.layerLoading)
                   }
                   size="small"
                 />
@@ -312,17 +314,17 @@ function ActivityLayerPanel({
                         <span>
                           <I18nNumber number={statsValue} />{' '}
                           {stats.type === 'vessels'
-                            ? t('common.vessel', {
+                            ? t((t) => t.common.vessel, {
                                 count: statsValue,
                                 }).toLocaleLowerCase()
-                            : t('common.detection', {
+                            : t((t) => t.common.detection, {
                                 count: statsValue,
                                 }).toLocaleLowerCase()}
                         </span>
                       ) : stats.type === 'vessels' ? (
-                        t('workspace.noVesselInFilters')
+                        t((t) => t.workspace.noVesselInFilters)
                       ) : (
-                        t('workspace.noDetectionInFilters')
+                        t((t) => t.workspace.noDetectionInFilters)
                       )}
                       {stats.type === 'vessels' &&
                         stats.flags > 0 &&
@@ -330,16 +332,16 @@ function ActivityLayerPanel({
                           dataview.config?.filterOperators?.flag === EXCLUDE_FILTER_ID ||
                           dataview.config?.filters?.flag.length > 1) && (
                           <Fragment>
-                            <span> {t('common.from')} </span>
+                            <span> {t((t) => t.common.from)} </span>
                             <span>
                               <I18nNumber number={stats.flags} />{' '}
-                              {t('layer.flagState', {
+                              {t((t) => t.layer.flagState, {
                                 count: stats.flags,
                                 }).toLocaleLowerCase()}
                             </span>
                           </Fragment>
                         )}{' '}
-                      {t('analysis.globally')}
+                      {t((t) => t.analysis.globally)}
                     </div>
                   </Tooltip>
                 </div>
@@ -368,7 +370,7 @@ function ActivityLayerPanel({
                     size="small"
                     type="border"
                     icon="split"
-                    tooltip={t('layer.toggleCombinationMode.split')}
+                    tooltip={t((t) => t.layer.toggleCombinationMode.split)}
                     tooltipPlacement="left"
                     className={cx(activityStyles.bivariateSplit, 'print-hidden')}
                     onClick={onSplitLayers}

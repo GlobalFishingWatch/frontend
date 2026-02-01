@@ -99,12 +99,12 @@ const InfoModal = ({
   const datasetImporting = dataset?.status === DatasetStatus.Importing
   const datasetError = dataset?.status === DatasetStatus.Error
 
-  let tooltip: string = t('layer.seeDescription')
+  let tooltip: string = t((t) => t.layer.seeDescription)
   if (datasetImporting) {
-    tooltip = t('dataset.importing')
+    tooltip = t((t) => t.dataset.importing)
   }
   if (datasetError) {
-    tooltip = `${t('errors.uploadError')} - ${dataset?.importLogs}`
+    tooltip = `${t((t) => t.errors.uploadError)} - ${dataset?.importLogs}`
   }
   const selectedDataset = useMemo(() => {
     return dataview.datasets?.find((d) => d.id === activeTab?.id)

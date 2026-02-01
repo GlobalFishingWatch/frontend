@@ -79,7 +79,7 @@ function ReportEnvironmentGraph({
     <div className={styles.container}>
       <p className={styles.summary}>
         {dataset?.configuration?.function === 'AVG' && (
-          <span>{upperFirst(t('common.average'))} </span>
+          <span>{upperFirst(t((t) => t.common.average))} </span>
         )}
         <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
         {isDynamic && (
@@ -93,13 +93,13 @@ function ReportEnvironmentGraph({
       {(isDynamic || isHeatmapVector) &&
         (isLoading || hasError ? (
           <ReportActivityPlaceholder showHeader={false} loading={isLoading}>
-            {hasError && <p className={styles.errorMessage}>{t('errors.layerLoading')}</p>}
+            {hasError && <p className={styles.errorMessage}>{t((t) => t.errors.layerLoading)}</p>}
           </ReportActivityPlaceholder>
         ) : isEmptyData ? (
           <ReportActivityPlaceholder showHeader={false}>
             <div className={styles.noDataDisclaimer}>
               <OutOfTimerangeDisclaimer dataview={dataview} />
-              {t('analysis.noDataByArea')}
+              {t((t) => t.analysis.noDataByArea)}
             </div>
           </ReportActivityPlaceholder>
         ) : (
@@ -124,15 +124,16 @@ function ReportEnvironmentGraph({
       ) : min !== undefined && mean !== undefined && max !== undefined ? (
         <p className={cx(styles.disclaimer, { [styles.marginTop]: isDynamic })}>
           {isDynamic
-            ? t('analysis.statsDisclaimerDynamic', {
-                interval: t(`common.${interval.toLowerCase()}s` as any, {
+            ? t((t) => t.analysis.statsDisclaimerDynamic, {
+                interval: t((t: any) => t.common[interval.toLowerCase() + 's'], {
                   count: 1,
                 }).toLowerCase(),
+
                 min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
                 max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
                 unit,
               })
-            : t('analysis.statsDisclaimerStatic', {
+            : t((t) => t.analysis.statsDisclaimerStatic, {
                 min: formatI18nNumber(min, { maximumFractionDigits: 2 }),
                 max: formatI18nNumber(max, { maximumFractionDigits: 2 }),
                 mean: formatI18nNumber(mean, { maximumFractionDigits: 2 }),
@@ -140,7 +141,7 @@ function ReportEnvironmentGraph({
               })}{' '}
           {dataset?.source && (
             <span>
-              {t('analysis.dataSource')}: {htmlSafeParse(dataset.source)}
+              {t((t) => t.analysis.dataSource)}: {htmlSafeParse(dataset.source)}
             </span>
           )}
         </p>

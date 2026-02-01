@@ -173,7 +173,9 @@ function Workspace() {
         !readOnly && (
           <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
             <div className={styles.header}>
-              {isUserWorkspace && <label className={styles.subTitle}>{t('workspace.user')}</label>}
+              {isUserWorkspace && (
+                <label className={styles.subTitle}>{t((t) => t.workspace.user)}</label>
+              )}
               <h2 className={styles.title} data-test="user-workspace-title">
                 {getWorkspaceLabel(workspace)}
                 {/* {gfwUser && (
@@ -198,7 +200,7 @@ function Workspace() {
               )}
               <Modal
                 appSelector={ROOT_DOM_ELEMENT}
-                title={t('workspace.edit')}
+                title={t((t) => t.workspace.edit)}
                 isOpen={workspaceEditModalOpen}
                 contentClassName={styles.modalContainer}
                 onClose={onWorkspaceUpdateClose}
@@ -207,13 +209,13 @@ function Workspace() {
                   <InputText
                     value={workspaceEditName}
                     className={styles.input}
-                    label={t('common.name')}
+                    label={t((t) => t.common.name)}
                     onChange={(e) => setWorkspaceEditName(e.target.value)}
                   />
                   <InputText
                     value={workspaceEditDescription}
                     className={styles.input}
-                    label={t('common.description')}
+                    label={t((t) => t.common.description)}
                     onChange={(e) => setWorkspaceEditDescription(e.target.value)}
                   />
                 </div>
@@ -223,7 +225,7 @@ function Workspace() {
                     loading={editWorkspaceLoading}
                     onClick={() => onWorkspaceUpdateClick(workspace?.id)}
                   >
-                    {t('common.update') as string}
+                    {t((t) => t.common.update) as string}
                   </Button>
                 </div>
               </Modal>

@@ -69,16 +69,16 @@ function HelpHub() {
       <ul className={styles.links}>
         <li>
           {noHelpHintsSeen ? (
-            <span className={cx(styles.link, styles.hintsTooltip)}>{t('common.hints')}</span>
+            <span className={cx(styles.link, styles.hintsTooltip)}>{t((t) => t.common.hints)}</span>
           ) : (
             <span className={cx(styles.link)} onClick={onHelpClick}>
-              {t('common.resetHelpHints')}
+              {t((t) => t.common.resetHelpHints)}
             </span>
           )}
         </li>
         <li>
           <a href={getUserGuideLink()} target="_blank" rel="noreferrer" className={cx(styles.link)}>
-            {t('common.userGuide')}
+            {t((t) => t.common.userGuide)}
           </a>
         </li>
         <li>
@@ -88,12 +88,12 @@ function HelpHub() {
             rel="noreferrer"
             className={cx(styles.link)}
           >
-            {t('common.tutorials')}
+            {t((t) => t.common.tutorials)}
           </a>
         </li>
         <li>
           <a href={getFAQsLink()} target="_blank" rel="noreferrer" className={cx(styles.link)}>
-            {t('common.faq')}
+            {t((t) => t.common.faq)}
           </a>
         </li>
       </ul>

@@ -104,19 +104,22 @@ function ReportOthers() {
               <Fragment>
                 <span>
                   {statsCounts}
-                  {' ' + t('common.points', { count: statsCounts })}
+                  {' ' +
+                    t((t) => t.common.points, {
+                      count: statsCounts,
+                    })}
                   {hasAggregateByProperty &&
                     ' ' +
-                      t('common.aggregatedBy', {
+                      t((t) => t.common.aggregatedBy, {
                         total: formatI18nNumber(totalValue),
                         property: dataview.config?.aggregateByProperty,
                       })}{' '}
-                  {t('analysis.insideYourArea')}
+                  {t((t) => t.analysis.insideYourArea)}
                   {hasTimeFilter && (
                     <>
                       {' '}
-                      {t('common.between')} <strong>{formatI18nDate(start)}</strong>{' '}
-                      {t('common.and')} <strong>{formatI18nDate(end)}</strong>
+                      {t((t) => t.common.between)} <strong>{formatI18nDate(start)}</strong>{' '}
+                      {t((t) => t.common.and)} <strong>{formatI18nDate(end)}</strong>
                     </>
                   )}
                 </span>
@@ -160,7 +163,7 @@ function ReportOthers() {
                     options={selectOptions}
                     selectedOption={selectedProperty}
                     onSelect={onSelectAggregatedProperty}
-                    placeholder={t('analysis.selectAggregationProperty')}
+                    placeholder={t((t) => t.analysis.selectAggregationProperty)}
                     onCleanClick={onClearSelection}
                   />
                 )}
@@ -171,7 +174,7 @@ function ReportOthers() {
                 <ReportActivityPlaceholder showHeader={false} loading />
               ) : statsCounts === 0 ? (
                 <ReportActivityPlaceholder showHeader={false}>
-                  {t('analysis.noDataByArea')}
+                  {t((t) => t.analysis.noDataByArea)}
                 </ReportActivityPlaceholder>
               ) : (
                 <ReportActivityEvolution

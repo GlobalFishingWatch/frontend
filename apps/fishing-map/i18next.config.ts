@@ -49,6 +49,6 @@ export default defineConfig({
     input: ['public/locales/source/*.json'],
     output: './features/i18n/i18next.d.ts',
     resourcesFile: './features/i18n/i18n.types.d.ts',
-    enableSelector: true, // Enable type-safe key selection
+    enableSelector: 'optimize', // smaller/faster TS types
   },
 })

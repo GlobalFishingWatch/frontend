@@ -61,19 +61,21 @@ export const selectHighlightedWorkspaces = createSelector(
           category: category,
           workspaces: workspaces.map((workspace) => ({
             ...workspace,
-            name: t(`workspaces:${category}.${workspace.id}.name`, { locale } as any) as string,
-            description: t(`workspaces:${category}.${workspace.id}.description`, {
+            name: t((t: any) => t[category][workspace.id].name, { ns: 'workspaces', locale }),
+            description: t((t: any) => t[category][workspace.id].description, {
+              ns: 'workspaces',
               locale,
-            } as any) as string,
+            }),
             visible: workspace.visible !== false,
-            cta: t(`workspaces:${category}.${workspace.id}.cta`, {
+            cta: t((t: any) => t[category][workspace.id].cta, {
+              ns: 'workspaces',
               locale,
               defaultValue:
                 category === 'marine-manager'
-                  ? t('workspace.marineManagerLink')
+                  ? t((t) => t.workspace.marineManagerLink)
                   : category === 'reports'
-                    ? t('analysis.see')
-                    : t('common.see'),
+                    ? t((t) => t.analysis.see)
+                    : t((t) => t.common.see),
             }),
           })),
         }

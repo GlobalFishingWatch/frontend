@@ -9,15 +9,19 @@ const DEFAULT = `Through our free and open data transparency platform, Global Fi
 const descriptionReducer = (state = DEFAULT, action: PayloadAction<{ category?: string }>) => {
   switch (action.type) {
     case HOME:
-      return t(`workspace.siteDescription.default`, DEFAULT)
+      return t((t: any) => t.workspace.siteDescription.default, { defaultValue: DEFAULT })
 
     case WORKSPACE:
     case WORKSPACES_LIST: {
-      return t(`workspace.siteDescription.${action.payload.category}`, 'default description')
+      return t((t: any) => t.workspace.siteDescription[action.payload.category as string], {
+        defaultValue: 'workspaces description',
+      })
     }
     case SEARCH:
     case WORKSPACE_SEARCH: {
-      return t(`workspace.siteDescription.search`, 'search description')
+      return t((t: any) => t.workspace.siteDescription.search, {
+        defaultValue: 'search description',
+      })
     }
     default:
       return state

@@ -173,12 +173,14 @@ function App() {
   const showStats = isReady && debugOptions.mapStats === true
 
   const getSidebarName = useCallback(() => {
-    if (locationType === USER) return t('user.title')
-    if (locationType === WORKSPACES_LIST) return t('workspace.titlePlural')
-    if (locationType === SEARCH || locationType === WORKSPACE_SEARCH) return t('search.title')
-    if (locationType === VESSEL || locationType === WORKSPACE_VESSEL) return t('vessel.title')
-    if (isAreaReportLocation) return t('analysis.title')
-    return t('common.layerList')
+    if (locationType === USER) return t((t) => t.user.title)
+    if (locationType === WORKSPACES_LIST) return t((t) => t.workspace.titlePlural)
+    if (locationType === SEARCH || locationType === WORKSPACE_SEARCH)
+      return t((t) => t.search.title)
+    if (locationType === VESSEL || locationType === WORKSPACE_VESSEL)
+      return t((t) => t.vessel.title)
+    if (isAreaReportLocation) return t((t) => t.analysis.title)
+    return t((t) => t.common.layerList)
   }, [locationType, isAreaReportLocation])
 
   let asideWidth = '50%'
@@ -213,7 +215,7 @@ function App() {
           main={<Main />}
           asideWidth={asideWidth}
           showAsideLabel={getSidebarName()}
-          showMainLabel={t('common.map')}
+          showMainLabel={t((t) => t.common.map)}
           className={styles.splitContainer}
           asideClassName={styles.aside}
           mainClassName={styles.main}

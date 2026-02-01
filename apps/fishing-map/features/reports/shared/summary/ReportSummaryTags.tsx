@@ -102,13 +102,13 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
           referenceClassName={styles.dotReference}
           component={
             <div>
-              {<label>{t('layer.properties.color')}</label>}
+              {<label>{t((t) => t.layer.properties.color)}</label>}
               <ColorBar
                 colorBarOptions={colorType === 'line' ? LineColorBarOptions : FillColorBarOptions}
                 selectedColor={dataview.config?.color}
                 onColorClick={onColorClick}
-                swatchesTooltip={t('layer.colorSelectPredefined')}
-                hueBarTooltip={t('layer.colorSelectCustom')}
+                swatchesTooltip={t((t) => t.layer.colorSelectPredefined)}
+                hueBarTooltip={t((t) => t.layer.colorSelectCustom)}
               />
             </div>
           }
@@ -134,10 +134,10 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
               className={cx(styles.printHidden, styles.filterButton)}
               tooltip={
                 disabledFilters
-                  ? t('layer.timeGraphFiltersDisabled')
+                  ? t((t) => t.layer.timeGraphFiltersDisabled)
                   : filtersUIOpen
-                    ? t('layer.filterClose')
-                    : t('layer.filterOpen')
+                    ? t((t) => t.layer.filterClose)
+                    : t((t) => t.layer.filterOpen)
               }
               tooltipPlacement="top"
               disabled={disabledFilters}
@@ -168,7 +168,7 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
                 />
               ))
             ) : hasSourceSelected ? null : (
-              <label>{t('selects.allSelected')}</label>
+              <label>{t((t) => t.selects.allSelected)}</label>
             )}
           </Fragment>
         )}
@@ -178,7 +178,7 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
               key={'visibleValues'}
               dataview={dataview}
               field={'visibleValues'}
-              label={t('common.visibleValues')}
+              label={t((t) => t.common.visibleValues)}
               removeType="visibleValues"
             />
           ) : null

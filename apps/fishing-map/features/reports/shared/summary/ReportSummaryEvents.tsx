@@ -46,7 +46,7 @@ export default function ReportSummaryEvents() {
     const activityQuantity = formatI18nNumber(totalStatsEvents || 0)
 
     const activityUnit = eventType
-      ? t(`event.${eventType.toLowerCase()}`, {
+      ? t((t: any) => t.event[eventType.toLowerCase()], {
           defaultValue: lowerCase(eventType || ''),
           count: totalStatsEvents,
         }).toLowerCase()
@@ -56,17 +56,17 @@ export default function ReportSummaryEvents() {
       if (eventsStatsDataGrouped === undefined) {
         return ''
       }
-      return t('analysis.summaryEventsNoVessels', {
+      return t((t) => t.analysis.summaryEventsNoVessels, {
         activityQuantity,
         activityUnit,
-        area: reportAreaId ? '' : t('analysis.globally'),
+        area: reportAreaId ? '' : t((t) => t.analysis.globally),
         start: startDate,
         end: endDate,
       })
     }
     const vessels = formatI18nNumber(totalEventsVessels || 0)
     if (isPortReportLocation) {
-      return t('portsReport.summaryEvents', {
+      return t((t) => t.portsReport.summaryEvents, {
         vessels,
         flags: reportVesselsFlags?.size || 0,
         activityQuantity,
@@ -74,14 +74,14 @@ export default function ReportSummaryEvents() {
         end: endDate,
       })
     }
-    return t('analysis.summaryEvents', {
+    return t((t) => t.analysis.summaryEvents, {
       vessels,
       flags: reportVesselsFlags?.size || 0,
       activityQuantity,
       activityUnit,
       start: startDate,
       end: endDate,
-      area: reportAreaId ? '' : t('analysis.globally'),
+      area: reportAreaId ? '' : t((t) => t.analysis.globally),
     })
   }, [
     eventType,

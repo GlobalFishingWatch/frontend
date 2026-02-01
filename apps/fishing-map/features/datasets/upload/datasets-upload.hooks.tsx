@@ -144,7 +144,9 @@ export function useDatasetMetadataOptions(
                     field={
                       field +
                       (isMaxValuesExceeded
-                        ? ` - ${t('datasetUpload.maxValuesExceededForFiltering', { max: MAX_SCHEMA_ENUM_VALUES })}`
+                        ? ` - ${t((t) => t.datasetUpload.maxValuesExceededForFiltering, {
+                            max: MAX_SCHEMA_ENUM_VALUES,
+                          })}`
                         : '')
                     }
                     fieldSchema={schema}
@@ -153,7 +155,7 @@ export function useDatasetMetadataOptions(
                 type: schema?.type,
                 disableSelection: isMaxValuesExceeded,
                 tooltip: isMaxValuesExceeded
-                  ? t('datasetUpload.maxValuesExceededForFilteringTooltip', {
+                  ? t((t) => t.datasetUpload.maxValuesExceededForFilteringTooltip, {
                       max: MAX_SCHEMA_ENUM_VALUES,
                     })
                   : undefined,

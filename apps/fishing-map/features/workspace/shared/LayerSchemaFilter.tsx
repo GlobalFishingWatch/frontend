@@ -52,15 +52,15 @@ const VALUE_TRANSFORMATIONS_BY_UNIT: Record<TransformationUnit, Transformation> 
   minutes: {
     in: (v) => parseFloat(v) / 60,
     out: (v) => parseFloat(v) * 60,
-    getLabel: () => t('common.hours'),
+    getLabel: () => t((t) => t.common.hours),
   },
   hours: {
     in: (v) => parseInt(v),
     out: (v) => parseInt(v),
-    getLabel: () => t('common.hours'),
+    getLabel: () => t((t) => t.common.hours),
   },
   km: {
-    getLabel: () => t('common.km'),
+    getLabel: () => t((t) => t.common.km),
   },
 }
 
@@ -93,7 +93,7 @@ export const getValueLabelByUnit = (
 }
 
 export const getLabelWithUnit = (label: string, unit?: string): string => {
-  const translatedLabel = t(`layer.${label}`, label)
+  const translatedLabel = t((t: any) => t.layer[label], { defalutValue: label })
   if (unit) {
     return `${translatedLabel} (${getUnitLabel(unit)})`
   }
@@ -104,11 +104,11 @@ const getFilterOperatorOptions = () => {
   return [
     {
       id: INCLUDE_FILTER_ID,
-      label: t('common.include'),
+      label: t((t) => t.common.include),
     },
     {
       id: EXCLUDE_FILTER_ID,
-      label: t('common.exclude'),
+      label: t((t) => t.common.exclude),
     },
   ] as ChoiceOption[]
 }
@@ -303,7 +303,9 @@ function LayerSchemaFilter({
   if (type === 'boolean') {
     return (
       <Fragment>
-        <Tooltip content={EXPERIMENTAL_FILTERS.includes(id) ? t('common.experimentalTooltip') : ''}>
+        <Tooltip
+          content={EXPERIMENTAL_FILTERS.includes(id) ? t((t) => t.common.experimentalTooltip) : ''}
+        >
           <label className={cx(styles.labelWithExperimental, 'experimental')}>
             {getLabelWithUnit(label, unit)}
           </label>

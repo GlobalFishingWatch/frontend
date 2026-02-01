@@ -226,7 +226,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
           })}
         >
           <a className={styles.reportLink} href={window.location.href}>
-            {t('analysis.linkToReport')}
+            {t((t) => t.analysis.linkToReport)}
           </a>
           {showAreaReportSearch && (
             <AreaReportSearch
@@ -266,7 +266,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
                     size="small"
                     className={styles.actionButton}
                   >
-                    {t('analysis.buffer')}
+                    {t((t) => t.analysis.buffer)}
                     <Icon icon="expand" type="default" />
                   </Button>
                 </div>
@@ -276,7 +276,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
               className={styles.actionButton}
               type="border"
               icon="print"
-              tooltip={t('analysis.print')}
+              tooltip={t((t) => t.analysis.print)}
               size="small"
               tooltipPlacement="bottom"
               onClick={onPrintClick}
@@ -300,7 +300,9 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
               role="button"
               tabIndex={0}
             >
-              {expandedDescription ? t('vessel.insights.gapsSeeLess') : t('common.seeMore')}
+              {expandedDescription
+                ? t((t) => t.vessel.insights.gapsSeeLess)
+                : t((t) => t.common.seeMore)}
             </span>
           )}
         </Fragment>

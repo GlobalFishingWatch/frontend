@@ -411,9 +411,9 @@ export function getIdentitySourceLabel(
   )
 
   if (registryIdentities.length && selfReportedIdentities.length)
-    return `${t('vessel.infoSources.both')} (${selfReportedIdentitiesSources.join(', ')})`
-  if (registryIdentities.length) return t('vessel.infoSources.registry')
+    return `${t((t) => t.vessel.infoSources.both)} (${selfReportedIdentitiesSources.join(', ')})`
+  if (registryIdentities.length) return t((t) => t.vessel.infoSources.registry)
   if (selfReportedIdentities.length)
-    return `${t('vessel.infoSources.selfReported')} (${isPrivateDataset(dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
+    return `${t((t) => t.vessel.infoSources.selfReported)} (${isPrivateDataset(dataset) ? `${PRIVATE_ICON} ` : ''}${selfReportedIdentitiesSources.join(', ')})`
   return EMPTY_FIELD_PLACEHOLDER
 }

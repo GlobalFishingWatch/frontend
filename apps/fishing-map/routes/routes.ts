@@ -69,7 +69,7 @@ const confirmLeave = (state: any, action: any) => {
     state.location?.type !== action.type &&
     suggestWorkspaceSave
   ) {
-    return t('common.confirmLeave')
+    return t((t) => t.common.confirmLeave)
   }
 }
 
