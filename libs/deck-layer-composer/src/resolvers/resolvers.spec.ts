@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 import type { Dataset, DataviewInstance } from '@globalfishingwatch/api-types'
 import {
@@ -68,7 +68,6 @@ describe('resolvers', () => {
       })
 
       const result = getDataviewHighlightedFeatures(dataview, globalConfig)
-      console.log('🚀 ~ result:', result)
 
       expect(result).toHaveLength(2)
       expect(result?.[0].layerId).toBe('test-layer')
@@ -78,7 +77,7 @@ describe('resolvers', () => {
     it('should return empty array when no matching highlighted features', () => {
       const dataview = createMockDataview({ id: 'test-layer' })
       const globalConfig = createMockGlobalConfig({
-        highlightedFeatures: [{ layerId: 'other-layer', object: {} }] as any,
+        highlightedFeatures: [{ layerId: 'other-layer', object: {} }] as DeckLayerPickingObject[],
       })
 
       const result = getDataviewHighlightedFeatures(dataview, globalConfig)
@@ -357,7 +356,6 @@ describe('resolvers', () => {
         const globalConfig = createMockGlobalConfig()
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
-        console.log('🚀 ~ layer:', layer.props.visible)
 
         expect(layer.props.visible).toBe(false)
       })
