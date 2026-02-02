@@ -34,10 +34,7 @@ export const getWorkspaceLabel = (workspace: AppWorkspace | Workspace<WorkspaceS
   return workspace.name
 }
 
-export const getNextColor = (
-  colorCyclingType: ColorCyclingType,
-  currentColors: string[] | undefined
-) => {
+export const getNextColor = (colorCyclingType: ColorCyclingType, currentColors?: string[]) => {
   const palette = colorCyclingType === 'fill' ? FillColorBarOptions : LineColorBarOptions
   if (!currentColors) {
     return palette[Math.floor(Math.random() * palette.length)]
