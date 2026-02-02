@@ -78,16 +78,18 @@ type QueryParamById<T extends { query: readonly any[] }, Id extends QueryParamId
 
 // Build a typed params object from endpoint query parameters.
 // Params marked as required are required object keys; others are optional keys.
-export type InferQueryParams<T extends { query: readonly any[] }> = ({
+export type InferQueryParams<T extends { query: readonly any[] }> = {
   [Id in RequiredQueryParamId<T>]: InferParamType<QueryParamById<T, Id>>
 } & {
   [Id in OptionalQueryParamId<T>]?: InferParamType<QueryParamById<T, Id>>
-}) extends infer O
+} extends infer O
   ? { [K in keyof O]: O[K] } // Flatten the type for better display
   : never
 
 export const ENDPOINTS_BY_TYPE = {
   '4wings:v1': FOURWINGS_ENDPOINTS,
+  'bulk-download:v1': [],
+  'insights:v1': [],
   'context-layer:v1': CONTEXT_LAYER_ENDPOINTS,
   'data-download:v1': [],
   'events:v1': EVENTS_ENDPOINTS,

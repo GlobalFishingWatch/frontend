@@ -3,6 +3,7 @@ import { scaleLinear } from 'd3-scale'
 import type {
   Dataset,
   DatasetConfiguration,
+  DatasetConfigurationByType,
   DatasetFilter,
   DatasetFilters,
   DatasetGeometryType,
@@ -21,21 +22,52 @@ export type DatasetSchemaGeneratorProps = {
 export type DatasetConfigurationProperty = keyof FrontendConfiguration
 
 type DatasetProperty<P extends DatasetConfigurationProperty> = Required<FrontendConfiguration>[P]
+
 export function getDatasetConfigurationProperty<P extends DatasetConfigurationProperty>({
   dataset,
   property,
+  type,
 }: {
   dataset: Partial<Dataset> | undefined
   property: P
-}): DatasetProperty<P> | undefined {
-  const frontendValue = dataset?.configuration?.frontend?.[property as keyof FrontendConfiguration]
-  if (frontendValue !== undefined) {
-    return frontendValue as DatasetProperty<P>
+  type?: 'frontend'
+}): DatasetProperty<P> | undefined
+export function getDatasetConfigurationProperty<
+  T extends Exclude<keyof DatasetConfigurationByType, 'frontend'>,
+  P extends keyof NonNullable<DatasetConfigurationByType[T]>,
+>({
+  dataset,
+  property,
+  type,
+}: {
+  dataset: Partial<Dataset> | undefined
+  property: P
+  type: T
+}): NonNullable<DatasetConfigurationByType[T]>[P] | undefined
+export function getDatasetConfigurationProperty<P extends string>({
+  dataset,
+  property,
+  type = 'frontend',
+}: {
+  dataset: Partial<Dataset> | undefined
+  property: P
+  type?: keyof DatasetConfigurationByType
+}) {
+  const configuration = dataset?.configuration?.[type] as Record<string, unknown> | undefined
+
+  const configurationValue = configuration?.[property]
+  if (configurationValue !== undefined) {
+    return configurationValue
   }
-  const configValue = (dataset?.configuration as any)?.[property]
-  if (configValue !== undefined) {
-    return configValue as DatasetProperty<P>
+
+  // Backward compatibility: older datasets might have FrontendConfiguration flattened at root.
+  if (type === 'frontend') {
+    const legacyValue = (dataset?.configuration as any)?.[property]
+    if (legacyValue !== undefined) {
+      return legacyValue
+    }
   }
+
   return undefined
 }
 
@@ -101,7 +133,9 @@ export const getFlattenDatasetFilters = (
     'fourwings' in filters ||
     'events' in filters ||
     'tracks' in filters ||
-    'vessels' in filters
+    'vessels' in filters ||
+    'context' in filters ||
+    'userContext' in filters
   ) {
     return Object.values(filters).flatMap((typeFilters) => {
       return Array.isArray(typeFilters) ? typeFilters : []

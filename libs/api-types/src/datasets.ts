@@ -26,6 +26,8 @@ export enum DatasetTypes {
   Vessels = 'vessels:v1',
 }
 
+export type DatasetType = `${DatasetTypes}`
+
 export enum DatasetStatus {
   Deleted = 'deleted',
   Done = 'done',
@@ -72,6 +74,8 @@ export enum DatasetCategory {
   VesselGroups = 'vessel groups',
 }
 
+export type DatasetCategories = `${DatasetCategory}`
+
 export enum DatasetSubCategory {
   Fishing = 'fishing',
   Info = 'info',
@@ -97,6 +101,8 @@ export enum DatasetSubCategory {
   Water = 'water-temperature',
   Waves = 'waves',
 }
+
+export type DatasetSubCategories = `${DatasetSubCategory}`
 
 export type DatasetFile = {
   name: string

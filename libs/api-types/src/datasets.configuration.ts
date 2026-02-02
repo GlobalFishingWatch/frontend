@@ -117,22 +117,6 @@ export type ThumbnailsV1Configuration = {
   scale?: number
 }
 
-export type DatasetConfigurationType =
-  | 'fourwingsV1'
-  | 'bulkDownloadV1'
-  | 'contextLayerV1'
-  | 'dataDownloadV1'
-  | 'eventsV1'
-  | 'front'
-  | 'insightsV1'
-  | 'pmTilesV1'
-  | 'temporalContextLayerV1'
-  | 'thumbnailsV1'
-  | 'tracksV1'
-  | 'userContextLayerV1'
-  | 'userTracksV1'
-  | 'vesselsV1'
-
 export type DatasetConfigurationByType = Partial<{
   fourwingsV1: FourwingsV1Configuration
   bulkDownloadV1: BulkDownloadV1Configuration
@@ -147,6 +131,7 @@ export type DatasetConfigurationByType = Partial<{
   userContextLayerV1: UserContextLayerV1Configuration
   userTracksV1: UserTracksV1Configuration
   vesselsV1: VesselsV1Configuration
+  frontend: FrontendConfiguration
 }>
 
 export type TimeFilterType = 'date' | 'dateRange'

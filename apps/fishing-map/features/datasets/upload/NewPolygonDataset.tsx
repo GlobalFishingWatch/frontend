@@ -1,10 +1,9 @@
-// TODO:DR this is BROKEN, fix it!
-// @ts-nocheck
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import type { FeatureCollection, Polygon } from 'geojson'
 
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
@@ -17,6 +16,7 @@ import {
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
 
+import { getDatasetAllowedFields } from 'features/datasets/datasets.utils'
 import {
   useDatasetMetadata,
   useDatasetMetadataOptions,
@@ -59,7 +59,10 @@ function NewPolygonDataset({
   const { getSelectedOption, filtersFieldsOptions } = useDatasetMetadataOptions(datasetMetadata)
   const isEditing = dataset?.id !== undefined
   const isPublic = !!datasetMetadata?.public
-  const datasetFieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
+  const datasetFieldsAllowed =
+    getDatasetAllowedFields(datasetMetadata as Dataset) ||
+    getDatasetAllowedFields(dataset as Dataset) ||
+    []
   const { isValid, errors } = getDatasetMetadataValidations(datasetMetadata)
   const [fileTypeResult, setFileTypeResult] = useState<FileTypeResult | undefined>()
   useEffect(() => {
@@ -122,7 +125,7 @@ function NewPolygonDataset({
           : true
         const isValidEndDate =
           timeFilterType === 'dateRange' && endTimeProperty
-            ? !isNaN(getUTCDate(feature.properties?.[startTimeProperty]).getTime())
+            ? !isNaN(getUTCDate(feature.properties?.[startTimeProperty!]).getTime())
             : true
         return !isValidStartDate || !isValidEndDate
       })
@@ -238,13 +241,37 @@ function NewPolygonDataset({
           options={filtersFieldsOptions}
           selectedOptions={getSelectedOption(datasetFieldsAllowed) as MultiSelectOption[]}
           onSelect={(newFilter: MultiSelectOption) => {
-            setDatasetMetadata({ fieldsAllowed: [...datasetFieldsAllowed, newFilter.id] })
+            const filters = datasetMetadata?.filters?.userContext || []
+            setDatasetMetadata({
+              filters: {
+                userContext: filters.map((f) => {
+                  return { ...f, enabled: f.id === newFilter.id }
+                }),
+              },
+            })
           }}
-          onRemove={(_: MultiSelectOption, rest: MultiSelectOption[]) => {
-            setDatasetMetadata({ fieldsAllowed: rest.map((f: MultiSelectOption) => f.id) })
+          onRemove={(newFilter: MultiSelectOption, rest: MultiSelectOption[]) => {
+            // setDatasetMetadata({ fieldsAllowed: rest.map((f: MultiSelectOption) => f.id) })
+            const filters = datasetMetadata?.filters?.userContext || []
+            const restIds = rest.map((r) => r.id)
+            setDatasetMetadata({
+              filters: {
+                userContext: filters.map((f) => {
+                  return { ...f, enabled: restIds.includes(f.id) }
+                }),
+              },
+            })
           }}
           onCleanClick={() => {
-            setDatasetMetadata({ fieldsAllowed: [] })
+            // setDatasetMetadata({ fieldsAllowed: [] })
+            const filters = datasetMetadata?.filters?.userContext || []
+            setDatasetMetadata({
+              filters: {
+                userContext: filters.map((f) => {
+                  return { ...f, enabled: false }
+                }),
+              },
+            })
           }}
           disabled={loading}
           infoTooltip={t((t) => t.datasetUpload.polygons.filtersHelp)}

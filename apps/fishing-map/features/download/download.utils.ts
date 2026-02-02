@@ -1,5 +1,3 @@
-// TODO:DR this is BROKEN, fix it!
-// @ts-nocheck
 import { t } from 'i18next'
 
 import type { Dataset, DatasetConfigurationInterval } from '@globalfishingwatch/api-types'
@@ -90,6 +88,7 @@ function hasDataviewWithIntervalSupported(
       const datasetIntervalsConfig = getDatasetConfigurationProperty({
         dataset,
         property: 'intervals',
+        type: 'fourwingsV1',
       })
       const intervals = datasetIntervalsConfig?.length
         ? datasetIntervalsConfig
