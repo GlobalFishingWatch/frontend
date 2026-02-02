@@ -109,7 +109,7 @@ export const filterTimeseriesByTimerange = (
         const inRange =
           intervalStart === intervalEnd
             ? current.date === intervalStart
-            : current.date >= intervalStart && current.date < intervalEnd
+            : current.date >= intervalStart && current.date <= intervalEnd
         return (current.max.some((v) => v !== 0) || current.min.some((v) => v !== 0)) && inRange
       }),
     }

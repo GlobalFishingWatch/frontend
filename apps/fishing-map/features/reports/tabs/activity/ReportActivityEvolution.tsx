@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { cloneElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import max from 'lodash/max'
 import min from 'lodash/min'
-import type { DateTimeUnit } from 'luxon';
+import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 import {
   Area,
@@ -15,6 +15,7 @@ import {
   YAxis,
 } from 'recharts'
 
+import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getContrastSafeColor } from '@globalfishingwatch/responsive-visualizations'
 
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
@@ -54,11 +55,14 @@ const ReportActivityEvolution = ({
   const [fixedTooltip, setFixedTooltip] = useState<EvolutionTooltipContentProps | null>(null)
   const hoverTooltipRef = useRef<EvolutionTooltipContentProps | null>(null)
   const chartRef = useRef<HTMLDivElement>(null)
-
+  const fourwingsInterval = getFourwingsInterval(start, end)
+  let interval: FourwingsInterval = data?.interval
+  if (interval === 'MONTH' && (fourwingsInterval === 'DAY' || fourwingsInterval === 'HOUR')) {
+    interval = 'DAY'
+  }
   const colors = (data?.sublayers || []).map((sublayer) => sublayer?.legend?.color)?.join(',')
   const domain = useMemo(() => {
-    if (start && end && data?.interval) {
-      const interval = data.interval.toLowerCase() as DateTimeUnit
+    if (start && end && interval) {
       const intervalStartDateTime = DateTime.fromISO(start, { zone: 'utc' }).startOf(interval)
       let intervalEndDateTime = DateTime.fromISO(end, { zone: 'utc' }).startOf(interval)
       if (intervalStartDateTime.toMillis() === intervalEndDateTime.toMillis()) {
@@ -66,14 +70,14 @@ const ReportActivityEvolution = ({
       }
       return [intervalStartDateTime.toMillis(), intervalEndDateTime.toMillis()]
     }
-  }, [start, end, data?.interval])
+  }, [start, end, interval])
 
   const dataFormated = useMemo(
     () => {
       return formatEvolutionData(data, {
         start: domain ? new Date(domain[0]).toISOString() : start,
         end: domain ? new Date(domain[1]).toISOString() : end,
-        timeseriesInterval: data?.interval,
+        timeseriesInterval: interval,
         removeEmptyValues,
       })
     },
@@ -167,7 +171,7 @@ const ReportActivityEvolution = ({
           dataKey="date"
           minTickGap={10}
           interval="preserveStartEnd"
-          tickFormatter={(tick: string) => formatDateTicks(tick, data?.interval)}
+          tickFormatter={(tick: string) => formatDateTicks(tick, interval)}
           axisLine={paddedDomain[0] === 0}
         />
         <YAxis
@@ -188,10 +192,10 @@ const ReportActivityEvolution = ({
               const tooltipContent = TooltipContent ? (
                 cloneElement(TooltipContent as React.ReactElement, {
                   ...tooltipProps,
-                  timeChunkInterval: data?.interval,
+                  timeChunkInterval: interval,
                 })
               ) : (
-                <EvolutionGraphTooltip {...tooltipProps} timeChunkInterval={data?.interval} />
+                <EvolutionGraphTooltip {...tooltipProps} timeChunkInterval={interval} />
               )
 
               if (!freezeTooltipOnClick) {

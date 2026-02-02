@@ -261,8 +261,12 @@ export const formatEvolutionData = (
       .fill(0)
       .map((_, i) => {
         const date = getUTCDateTime(startMillis).plus({ [timeseriesInterval]: i })
-        const dataValue = data.timeseries.find((item) => date.toISO()?.startsWith(item.date))
-
+        let dataValue = data.timeseries.find((item) => date.toISO()?.startsWith(item.date))
+        if (!dataValue && data.interval === 'MONTH' && timeseriesInterval === 'DAY') {
+          dataValue = data.timeseries.find((item) =>
+            date.startOf('month').toISO()?.startsWith(item.date)
+          )
+        }
         if (!dataValue && removeEmptyValues) {
           return {
             date: date.toMillis(),
