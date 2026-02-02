@@ -14,6 +14,7 @@ import {
   YAxis,
 } from 'recharts'
 
+import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getContrastSafeColor } from '@globalfishingwatch/responsive-visualizations'
 

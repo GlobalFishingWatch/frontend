@@ -287,8 +287,14 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
 
 // Inject the dataview instance for the events graph report by area
 export const selectAreaReportDataviewInstancesInjected = createSelector(
-  [selectReportCategorySelector, selectReportEventsGraph, selectReportComparisonDataviewIds],
+  [
+    selectWorkspaceDataviewInstancesMerged,
+    selectReportCategorySelector,
+    selectReportEventsGraph,
+    selectReportComparisonDataviewIds,
+  ],
   (
+    workspaceDataviewInstances,
     reportCategory,
     reportEventsGraph,
     reportComparisonDataviewIds
@@ -308,10 +314,16 @@ export const selectAreaReportDataviewInstancesInjected = createSelector(
       }
       dataviewInstancesInjected.push(contextDataviewInstance)
     }
+    console.log('🚀 ~ reportComparisonDataviewIds:', reportComparisonDataviewIds)
     if (reportComparisonDataviewIds?.compare) {
+      const mainLayer = workspaceDataviewInstances?.find(
+        (dataview) => dataview.id === reportComparisonDataviewIds.main
+      )
       const compareLayer = LIBRARY_LAYERS?.find(
         (l) => l.id === reportComparisonDataviewIds.compare?.split(LAYER_LIBRARY_ID_SEPARATOR)[0]
       )
+      const areLayersSameColor = mainLayer?.config?.color === compareLayer?.config?.color
+      const nextColor = getNextColor('fill', [mainLayer?.config?.color as string])
       if (compareLayer) {
         const compareDataviewInstance = {
           id: reportComparisonDataviewIds.compare,
@@ -322,6 +334,8 @@ export const selectAreaReportDataviewInstancesInjected = createSelector(
           config: {
             ...(compareLayer?.config && { ...compareLayer?.config }),
             visible: true,
+            color: areLayersSameColor ? nextColor.value : compareLayer?.config?.color,
+            colorRamp: areLayersSameColor ? nextColor.id : compareLayer?.config?.colorRamp,
           },
         } as UrlDataviewInstance
         dataviewInstancesInjected.push(compareDataviewInstance)
