@@ -1,4 +1,4 @@
-import type { DateTimeUnit } from 'luxon';
+import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
 import type { TimeRange } from '@globalfishingwatch/deck-layer-composer'
@@ -109,7 +109,7 @@ export const filterTimeseriesByTimerange = (
         const inRange =
           intervalStart === intervalEnd
             ? current.date === intervalStart
-            : current.date >= start && current.date < end
+            : current.date >= intervalStart && current.date < intervalEnd
         return (current.max.some((v) => v !== 0) || current.min.some((v) => v !== 0)) && inRange
       }),
     }
