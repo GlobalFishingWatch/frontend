@@ -85,6 +85,8 @@ export const resolveEndpoint = (
 
     const query = resolvedQuery.toString()
     url = query ? `${url}?${query}` : url
+
+    url = url.replace('{{x}}', '{x}').replace('{{y}}', '{y}').replace('{{z}}', '{z}')
   }
 
   return GFWAPI.generateUrl(decodeURI(url) as string, { absolute })
