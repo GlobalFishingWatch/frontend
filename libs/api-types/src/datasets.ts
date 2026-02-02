@@ -11,10 +11,12 @@ export type UploadResponse = {
 }
 
 export enum DatasetTypes {
+  BulkDownload = 'bulk-download:v1',
   Context = 'context-layer:v1',
   Download = 'data-download:v1',
   Events = 'events:v1',
   Fourwings = '4wings:v1',
+  Insights = 'insights:v1',
   PMTiles = 'pm-tiles:v1',
   TemporalContext = 'temporal-context-layer:v1',
   Thumbnails = 'thumbnails:v1',
@@ -31,13 +33,22 @@ export enum DatasetStatus {
   Importing = 'importing',
 }
 
+export type DatasetDocumentationTypes =
+  | 'fishing-effort'
+  | 'presence'
+  | 'vessels'
+  | 'tracks'
+  | 'events'
+  | 'environmental'
+  | 'insights'
+
 export enum DatasetDocumentationStatusTypes {
   Active = 'Active',
   Deprecated = 'Deprecated',
 }
 
 export type DatasetDocumentation = {
-  type?: string
+  type?: DatasetDocumentationTypes
   enable?: boolean
   status?: DatasetDocumentationStatusTypes
   queries?: string[]
@@ -71,6 +82,20 @@ export enum DatasetSubCategory {
   Viirs = 'viirs',
   User = 'user',
   UserInteractive = 'user-interactive',
+  Animal = 'animal',
+  Chlorophyl = 'chlorophyl',
+  Currents = 'currents',
+  Insight = 'insight',
+  Loitering = 'loitering',
+  Nitrate = 'nitrate',
+  Oxygen = 'oxygen',
+  Ph = 'ph',
+  Phosphate = 'phosphate',
+  Port_visit = 'port_visit',
+  Salinity = 'salinity',
+  Winds = 'winds',
+  Water = 'water-temperature',
+  Waves = 'waves',
 }
 
 export type DatasetFile = {

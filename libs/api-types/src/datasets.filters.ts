@@ -1,4 +1,4 @@
-export type FilterType = 'fourwings' | 'events' | 'tracks' | 'vessels'
+export type FilterType = 'fourwings' | 'events' | 'tracks' | 'vessels' | 'userContext'
 
 export type DatasetFilterType =
   | 'boolean'
