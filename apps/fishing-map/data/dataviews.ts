@@ -28,6 +28,7 @@ export const PRESENCE_DATAVIEW_INSTANCE_ID = 'presence'
 export const SAR_DATAVIEW_INSTANCE_ID = 'sar'
 export const SENTINEL2_DATAVIEW_INSTANCE_ID = 'sentinel2'
 export const VIIRS_DATAVIEW_INSTANCE_ID = 'viirs'
+export const VIIRS_SKYLIGHT_DATAVIEW_INSTANCE_ID = 'viirs-skylight'
 
 export const OCEAN_AREAS_DATAVIEWS = [
   EEZ_DATAVIEW_SLUG,
