@@ -181,7 +181,7 @@ export type FrontendConfiguration = {
 }
 
 export type SharedDatasetConfiguration = {
-  apiSupportedVersions: ApiSupportedVersions[]
+  apiSupportedVersions?: ApiSupportedVersions[]
   frontend: FrontendConfiguration
 }
 
