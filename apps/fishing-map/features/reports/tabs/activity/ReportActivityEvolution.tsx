@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { cloneElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import max from 'lodash/max'
 import min from 'lodash/min'
+import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 import {
   Area,
@@ -63,10 +64,13 @@ const ReportActivityEvolution = ({
   const colors = (data?.sublayers || []).map((sublayer) => sublayer?.legend?.color)?.join(',')
   const domain = useMemo(() => {
     if (start && end && interval) {
-      const intervalStartDateTime = DateTime.fromISO(start, { zone: 'utc' }).startOf(interval)
-      let intervalEndDateTime = DateTime.fromISO(end, { zone: 'utc' }).startOf(interval)
+      const intervalTimeUnit = interval.toLowerCase() as DateTimeUnit
+      const intervalStartDateTime = DateTime.fromISO(start, { zone: 'utc' }).startOf(
+        intervalTimeUnit
+      )
+      let intervalEndDateTime = DateTime.fromISO(end, { zone: 'utc' }).startOf(intervalTimeUnit)
       if (intervalStartDateTime.toMillis() === intervalEndDateTime.toMillis()) {
-        intervalEndDateTime = intervalEndDateTime.plus({ [interval]: 1 })
+        intervalEndDateTime = intervalEndDateTime.plus({ [intervalTimeUnit]: 1 })
       }
       return [intervalStartDateTime.toMillis(), intervalEndDateTime.toMillis()]
     }

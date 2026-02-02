@@ -314,7 +314,6 @@ export const selectAreaReportDataviewInstancesInjected = createSelector(
       }
       dataviewInstancesInjected.push(contextDataviewInstance)
     }
-    console.log('🚀 ~ reportComparisonDataviewIds:', reportComparisonDataviewIds)
     if (reportComparisonDataviewIds?.compare) {
       const mainLayer = workspaceDataviewInstances?.find(
         (dataview) => dataview.id === reportComparisonDataviewIds.main
