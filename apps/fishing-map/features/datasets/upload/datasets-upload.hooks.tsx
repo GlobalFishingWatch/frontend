@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import type { MultiSelectOption } from '@globalfishingwatch/api-client'
 import type {
+  DatasetConfiguration,
   DatasetFilters,
   DatasetFilterType,
   FrontendConfiguration,
@@ -31,13 +32,13 @@ export function useDatasetMetadata() {
     }))
   }, [])
 
-  const setDatasetMetadataConfig = useCallback((newConfig: Partial<DatasetMetadata>) => {
-    // TODO:DR this is BROKEN, fix it!
-    setDatasetMetadataState((meta: any = {} as any) => {
-      const metaConfig = getDatasetConfiguration(meta, 'userContextLayerV1')
-      const idProperty = metaConfig?.idProperty
-      const valueProperties = meta.configuration?.frontend?.valueProperties
-      const valuePropertyId = metaConfig.valuePropertyId
+  const setDatasetMetadataConfig = useCallback((newConfig: DatasetConfiguration['frontend']) => {
+    setDatasetMetadataState((meta = {} as DatasetMetadata) => {
+      const contextConfig = getDatasetConfiguration(meta, 'userContextLayerV1')
+      const frontendConfig = getDatasetConfiguration(meta)
+      const idProperty = contextConfig?.idProperty
+      const valuePropertyId = contextConfig.valuePropertyId
+      const valueProperties = frontendConfig?.valueProperties
       return {
         ...meta,
         configuration: {
@@ -48,8 +49,8 @@ export function useDatasetMetadata() {
             valuePropertyId,
           },
           frontend: {
-            ...meta?.configuration?.frontend,
-            ...(newConfig as FrontendConfiguration),
+            ...frontendConfig,
+            ...newConfig,
           },
         },
       }
@@ -124,64 +125,61 @@ export function useDatasetMetadataOptions(
   const filtersFieldsOptions: ((SelectOption | MultiSelectOption) & {
     type?: DatasetFilterType
   })[] = useMemo(() => {
-    return []
-    // TODO:DR this is BROKEN, fix it!
-    // const options = datasetMetadata?.schema
-    //   ? Object.entries(datasetMetadata.schema).flatMap(([field, schema]) => {
-    //       if (
-    //         (schemaTypes.length > 0 && !schemaTypes.includes(schema?.type as DatasetSchemaType)) ||
-    //         DISCARDED_FIELDS.includes(field)
-    //       ) {
-    //         return []
-    //       }
-    //       const isEnumAllowed =
-    //         schema?.type === 'boolean' ||
-    //         (schema?.type === 'string' && schema?.enum && schema?.enum?.length > 0)
-    //       const isRangeAllowed = schema?.type === 'range' && schema.enum?.length === 2
-    //       const isMaxValuesExceeded = schema.enum?.[0] === MAX_FILTERS_ENUM_VALUES_EXCEEDED
-    //       return isEnumAllowed || isRangeAllowed
-    //         ? {
-    //             id: field,
-    //             label: (
-    //               <DatasetFieldLabel
-    //                 field={
-    //                   field +
-    //                   (isMaxValuesExceeded
-    //                     ? ` - ${t((t) => t.datasetUpload.maxValuesExceededForFiltering, {
-    //                         max: MAX_FILTERS_ENUM_VALUES,
-    //                       })}`
-    //                     : '')
-    //                 }
-    //                 fieldSchema={schema}
-    //               />
-    //             ),
-    //             type: schema?.type,
-    //             disableSelection: isMaxValuesExceeded,
-    //             tooltip: isMaxValuesExceeded
-    //               ? t((t) => t.datasetUpload.maxValuesExceededForFilteringTooltip, {
-    //                   max: MAX_FILTERS_ENUM_VALUES,
-    //                 })
-    //               : undefined,
-    //           }
-    //         : []
-    //     })
-    //   : []
-    // return options
-    //   .filter((o) => {
-    //     return (
-    //       o.id !==
-    //         getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'latitude' }) &&
-    //       o.id !==
-    //         getDatasetConfigurationProperty({
-    //           dataset: datasetMetadata,
-    //           property: 'longitude',
-    //         }) &&
-    //       o.id !==
-    //         getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'timestamp' })
-    //     )
-    //   })
-    //   .sort(sortFields)
-  }, [])
+    const options =
+      datasetMetadata?.filters?.userContext && datasetMetadata?.filters?.userContext?.length > 0
+        ? datasetMetadata.filters.userContext.flatMap((filter) => {
+            if (
+              (filterTypes.length > 0 && !filterTypes.includes(filter.type as DatasetFilterType)) ||
+              DISCARDED_FIELDS.includes(filter.id)
+            ) {
+              return []
+            }
+            const isEnumAllowed =
+              filter?.type === 'boolean' ||
+              (filter?.type === 'string' && filter?.enum && filter?.enum?.length > 0)
+            const isRangeAllowed = filter?.type === 'range' && filter.enum?.length === 2
+            const isMaxValuesExceeded = filter.enum?.[0] === MAX_FILTERS_ENUM_VALUES_EXCEEDED
+            return isEnumAllowed || isRangeAllowed
+              ? {
+                  id: filter.id,
+                  label: (
+                    <DatasetFieldLabel
+                      field={
+                        filter.id +
+                        (isMaxValuesExceeded
+                          ? ` - ${t((t) => t.datasetUpload.maxValuesExceededForFiltering, {
+                              max: MAX_FILTERS_ENUM_VALUES,
+                            })}`
+                          : '')
+                      }
+                      fieldFilter={filter}
+                    />
+                  ),
+                  type: filter.type,
+                  disableSelection: isMaxValuesExceeded,
+                  tooltip: isMaxValuesExceeded
+                    ? t((t) => t.datasetUpload.maxValuesExceededForFilteringTooltip, {
+                        max: MAX_FILTERS_ENUM_VALUES,
+                      })
+                    : undefined,
+                }
+              : []
+          })
+        : []
+    return options
+      .filter((o) => {
+        const { latitude, longitude, timestamp } = getDatasetConfiguration(
+          datasetMetadata,
+          'frontend'
+        )
+        return (
+          o.id !== latitude?.toString() &&
+          o.id !== longitude?.toString() &&
+          o.id !== timestamp?.toString()
+        )
+      })
+      .sort(sortFields)
+  }, [datasetMetadata, filterTypes, t])
 
   return useMemo(
     () => ({ fieldsOptions, getSelectedOption, filtersFieldsOptions }),

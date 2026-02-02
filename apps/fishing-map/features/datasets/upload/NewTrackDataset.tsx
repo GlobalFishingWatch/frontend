@@ -1,10 +1,9 @@
-// TODO:DR this is BROKEN, fix it!
-// @ts-nocheck
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import type { FeatureCollection, LineString } from 'geojson'
 
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { checkRecordValidity } from '@globalfishingwatch/data-transforms'
 import {
   getDatasetConfiguration,
@@ -20,6 +19,7 @@ import {
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
 
+import { getDatasetAllowedFields } from 'features/datasets/datasets.utils'
 import type { DataList } from 'features/datasets/upload/datasets-parse.utils'
 import { getDatasetParsed, getTrackFromList } from 'features/datasets/upload/datasets-parse.utils'
 import {
@@ -76,7 +76,10 @@ function NewTrackDataset({
     updateFileType()
   }, [file, sourceFormat])
 
-  const fieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
+  const fieldsAllowed =
+    getDatasetAllowedFields(datasetMetadata as Dataset) ||
+    getDatasetAllowedFields(dataset as Dataset) ||
+    []
 
   const isPublic = !!datasetMetadata?.public
 
@@ -311,7 +314,14 @@ function NewTrackDataset({
                 setDatasetMetadataConfig({ lineId: selected.id })
               }}
               onCleanClick={() => {
-                setDatasetMetadata({ fieldsAllowed: [] })
+                const filters = datasetMetadata?.filters?.userContext || []
+                setDatasetMetadata({
+                  filters: {
+                    userContext: filters.map((f) => {
+                      return { ...f, enabled: false }
+                    }),
+                  },
+                })
                 setDatasetMetadataConfig({ lineId: '' })
               }}
               infoTooltip={t((t) => t.datasetUpload.tracks.lineIdHelp)}
@@ -325,7 +335,14 @@ function NewTrackDataset({
                 setDatasetMetadataConfig({ segmentId: selected.id })
               }}
               onCleanClick={() => {
-                setDatasetMetadata({ fieldsAllowed: [] })
+                const filters = datasetMetadata?.filters?.userContext || []
+                setDatasetMetadata({
+                  filters: {
+                    userContext: filters.map((f) => {
+                      return { ...f, enabled: false }
+                    }),
+                  },
+                })
                 setDatasetMetadataConfig({ segmentId: '' })
               }}
               infoTooltip={t((t) => t.datasetUpload.tracks.segmentIdHelp)}
@@ -369,13 +386,37 @@ function NewTrackDataset({
           options={filterOptions as MultiSelectOption[]}
           selectedOptions={getSelectedOption(fieldsAllowed) as MultiSelectOption[]}
           onSelect={(newFilter: MultiSelectOption) => {
-            setDatasetMetadata({ fieldsAllowed: [...fieldsAllowed, newFilter.id] })
+            const filters = datasetMetadata?.filters?.userContext || []
+            setDatasetMetadata({
+              filters: {
+                userContext: filters.map((f) => {
+                  return { ...f, enabled: f.id === newFilter.id }
+                }),
+              },
+            })
           }}
-          onRemove={(_: MultiSelectOption, rest: MultiSelectOption[]) => {
-            setDatasetMetadata({ fieldsAllowed: rest.map((f: MultiSelectOption) => f.id) })
+          onRemove={(newFilter: MultiSelectOption, rest: MultiSelectOption[]) => {
+            // setDatasetMetadata({ fieldsAllowed: rest.map((f: MultiSelectOption) => f.id) })
+            const filters = datasetMetadata?.filters?.userContext || []
+            const restIds = rest.map((r) => r.id)
+            setDatasetMetadata({
+              filters: {
+                userContext: filters.map((f) => {
+                  return { ...f, enabled: restIds.includes(f.id) }
+                }),
+              },
+            })
           }}
           onCleanClick={() => {
-            setDatasetMetadata({ fieldsAllowed: [] })
+            // setDatasetMetadata({ fieldsAllowed: [] })
+            const filters = datasetMetadata?.filters?.userContext || []
+            setDatasetMetadata({
+              filters: {
+                userContext: filters.map((f) => {
+                  return { ...f, enabled: false }
+                }),
+              },
+            })
           }}
           infoTooltip={t((t) => t.datasetUpload.tracks.filtersHelp)}
         />

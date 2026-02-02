@@ -126,7 +126,7 @@ export const getFieldFilter = (
   return null
 }
 
-export const getDatasetFiltersClean = (filters: DatasetFilters): Record<string, DatasetFilter> => {
+export const getDatasetFiltersClean = (filters?: DatasetFilters): Record<string, DatasetFilter> => {
   if (!filters || Object.keys(filters).length === 0) {
     return {}
   }

@@ -561,6 +561,9 @@ export const filterDatasetsByUserType = (datasets: Dataset[], isGuestUser: boole
 }
 
 export const getDatasetAllowedFields = (dataset: Dataset) => {
+  if (!dataset?.filters) {
+    return []
+  }
   const flattenFilters = getFlattenDatasetFilters(dataset.filters)
   return flattenFilters.flatMap((filter) => (filter.enabled ? filter.id : []))
 }

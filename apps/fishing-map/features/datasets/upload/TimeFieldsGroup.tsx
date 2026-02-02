@@ -1,14 +1,8 @@
-// TODO:DR this is BROKEN, fix it!
-// @ts-nocheck
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { t } from 'i18next'
 
-import type {
-  DatasetConfiguration,
-  DatasetConfigurationUI,
-  TimeFilterType,
-} from '@globalfishingwatch/api-types'
+import type { DatasetConfiguration, TimeFilterType } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Choice, Select } from '@globalfishingwatch/ui-components'
@@ -33,7 +27,7 @@ const getTimeFilterOptions = (
 type TimeFieldsGroupProps = {
   filterOptions?: TimeFilterTypeOption[]
   datasetMetadata: DatasetMetadata
-  setDatasetMetadataConfig: (config: Partial<DatasetConfiguration | DatasetConfigurationUI>) => void
+  setDatasetMetadataConfig: (config: Partial<DatasetConfiguration['frontend']>) => void
   disabled?: boolean
 }
 
@@ -50,7 +44,10 @@ export const TimeFieldsGroup = ({
     dataset: datasetMetadata,
     property: 'timeFilterType',
   })
-  const geometryType = datasetMetadata?.configuration?.configurationUI?.geometryType
+  const geometryType = getDatasetConfigurationProperty({
+    dataset: datasetMetadata,
+    property: 'geometryType',
+  })
   const activeOption = datasetTimeFilterConfiguration
     ? (getSelectedOption(datasetTimeFilterConfiguration, timeFilterOptions) as SelectOption)?.id
     : timeFilterOptions[0]?.id
@@ -58,7 +55,9 @@ export const TimeFieldsGroup = ({
 
   const onTimeFilterTypeSelect = useCallback(
     (selected: SelectOption) => {
-      setDatasetMetadataConfig({ timeFilterType: selected.id === 'none' ? undefined : selected.id })
+      setDatasetMetadataConfig({
+        timeFilterType: selected.id === 'none' ? undefined : selected.id,
+      })
       if (selected.id === 'none') {
         setDatasetMetadataConfig({ timestamp: undefined, startTime: '', endTime: '' })
       }
@@ -155,7 +154,7 @@ export const TimeFieldsGroup = ({
               getDatasetConfigurationProperty({
                 dataset: datasetMetadata,
                 property: 'startTime',
-              })?.toString()
+              })?.toString() as string
             ) as SelectOption
           }
           onSelect={onStartSelect}
@@ -173,7 +172,7 @@ export const TimeFieldsGroup = ({
               getDatasetConfigurationProperty({
                 dataset: datasetMetadata,
                 property: 'endTime',
-              })?.toString()
+              })?.toString() as string
             ) as SelectOption
           }
           label={t((t) => t.datasetUpload.timeEnd, {
