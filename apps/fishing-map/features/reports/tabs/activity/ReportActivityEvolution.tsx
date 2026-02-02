@@ -2,7 +2,6 @@ import type { ReactNode } from 'react'
 import { cloneElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import max from 'lodash/max'
 import min from 'lodash/min'
-import type { DateTimeUnit } from 'luxon'
 import { DateTime } from 'luxon'
 import {
   Area,
@@ -84,6 +83,10 @@ const ReportActivityEvolution = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [data, end, start, colors]
   )
+
+  const dataHasEmptyValues = useMemo(() => {
+    return dataFormated.some((d) => d.avg?.some((n: number) => n === null))
+  }, [dataFormated])
 
   const handleTooltipChange = useCallback(
     (tooltipProps: any) => {
@@ -243,7 +246,7 @@ const ReportActivityEvolution = ({
             type="monotone"
             dataKey={(data) => data.avg?.[index]}
             unit={legend?.unit}
-            dot={removeEmptyValues}
+            dot={removeEmptyValues && dataHasEmptyValues}
             isAnimationActive={false}
             stroke={getContrastSafeColor(legend?.color as string)}
             strokeWidth={2}
