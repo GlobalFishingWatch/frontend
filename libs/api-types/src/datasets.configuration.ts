@@ -5,34 +5,34 @@ export type ApiSupportedVersions = 'v3'
 export type ContextLayerFormat = 'GEOJSON' | 'PMTILE' | 'CSV'
 
 export type ContextLayerV1Configuration = {
-  fields?: string[]
-  filePath?: string
-  format?: ContextLayerFormat
   idProperty?: string
-  importLogs?: string
-  srid?: string
+  // fields?: string[]
+  // filePath?: string
+  // format?: ContextLayerFormat
+  // importLogs?: string
+  // srid?: string
 }
 
 export type UserContextLayerV1Configuration = {
-  fields?: string[]
   filePath?: string
   format?: ContextLayerFormat
   idProperty?: string
-  importLogs?: string
-  srid?: string
-  table?: string
   valuePropertyId?: string
+  importLogs?: string
+  // fields?: string[]
+  // srid?: string
+  // table?: string
 }
 
 export type TemporalContextLayerV1Configuration = {
-  dataset?: string
-  project?: string
-  source?: string
-  table?: string
+  // dataset?: string
+  // project?: string
+  // source?: string
+  // table?: string
 }
 
 export type UserTracksV1Configuration = {
-  filePath?: string
+  // filePath?: string
   idProperty?: string
 }
 
@@ -43,78 +43,78 @@ export type PmTilesV1Configuration = {
 
 export type AggregationFunction = 'AVG' | 'SUM'
 export type EventsV1Configuration = {
-  dataset?: string
   function?: AggregationFunction
   maxZoom?: number
-  project?: string
-  table?: string
-  ttl?: number
+  // dataset?: string
+  // project?: string
+  // table?: string
+  // ttl?: number
 }
 
 export type FourwingsInterval = 'YEAR' | 'MONTH' | 'DAY' | 'HOUR'
 export type FourwingsV1Configuration = {
-  dataset?: string
   function?: AggregationFunction
-  geeBand?: string
-  geeImages?: string[]
-  geeOffset?: number
-  geeScale?: number
-  interactionColumns?: string[]
-  interactionGroupColumns?: string[]
   intervals?: FourwingsInterval[]
   max?: number
   maxZoom?: number
   min?: number
-  project?: string
-  reportGroupings?: string[]
-  source?: string
-  table?: string
-  temporalAggregation?: boolean
-  tileOffset?: number
-  tileScale?: number
-  ttl?: number
+  // dataset?: string
+  // geeBand?: string
+  // geeImages?: string[]
+  // geeOffset?: number
+  // geeScale?: number
+  // interactionColumns?: string[]
+  // interactionGroupColumns?: string[]
+  // project?: string
+  // reportGroupings?: string[]
+  // source?: string
+  // table?: string
+  // temporalAggregation?: boolean
+  // tileOffset?: number
+  // tileScale?: number
+  // ttl?: number
 }
 
 export type TracksV1Configuration = {
-  bucket?: string
-  folder?: string
+  // bucket?: string
+  // folder?: string
 }
 
 export type VesselsV1Configuration = {
-  index?: string
-  indexBoost?: number
+  // index?: string
+  // indexBoost?: number
 }
 
 export type InsightSource = {
-  id?: string
-  insight?: string
-  type?: string
+  // id?: string
+  // insight?: string
+  // type?: string
 }
 
 export type InsightsV1Configuration = {
-  sources?: InsightSource[]
+  // sources?: InsightSource[]
 }
 
 export type BulkDownloadFormat = 'CSV' | 'JSON'
 export type BulkDownloadV1Configuration = {
-  compressed?: boolean
-  format?: BulkDownloadFormat
-  gcsUri?: string
-  path?: string
+  // compressed?: boolean
+  // format?: BulkDownloadFormat
+  // gcsUri?: string
+  // path?: string
 }
 
 export type DataDownloadV1Configuration = {
-  conceptDOI?: number
-  doi?: string
-  emailGroups?: string[]
-  gcsFolder?: string
+  // conceptDOI?: number
+  // doi?: string
+  // emailGroups?: string[]
+  // gcsFolder?: string
 }
 
 export type ThumbnailsV1Configuration = {
-  bucket?: string
-  extensions?: string[]
-  folder?: string
   scale?: number
+  // bucket?: string
+  // extensions?: string[]
+  // folder?: string
 }
 
 export type DatasetConfigurationByType = Partial<{
