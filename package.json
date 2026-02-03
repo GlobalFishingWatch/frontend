@@ -16,6 +16,7 @@
     "next:upgrade": "next upgrade",
     "knip": "NX_DAEMON=false knip",
     "knip:fix": "NX_DAEMON=false knip --fix",
+    "libs:dev": "yarn nx run-many -t dev --projects=tag:lib",
     "clean": "yarn clean:cache && yarn clean:deps",
     "clean:deps": "rimraf -rf ./yarn.lock && touch yarn.lock && rimraf -rf ./node_modules && yarn cache clean --all && yarn install",
     "clean:cache": "rimraf .nx && rimraf -rf ./dist",

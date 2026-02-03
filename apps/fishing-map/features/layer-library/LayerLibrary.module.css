@@ -28,6 +28,7 @@
   padding: var(--space-S);
   border-left: 0.4rem solid transparent;
   transition: var(--transition);
+  text-align: center;
 }
 
 .subcategory {

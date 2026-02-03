@@ -1,3 +1,6 @@
+import type { DateTimeUnit } from 'luxon'
+import { DateTime } from 'luxon'
+
 import type { TimeRange } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer, FourwingsVectorsTileLayer } from '@globalfishingwatch/deck-layers'
 import { UserPointsTileLayer } from '@globalfishingwatch/deck-layers'
@@ -92,14 +95,22 @@ export const filterTimeseriesByTimerange = (
   end: string
 ) => {
   return timeseries?.map((layerTimeseries) => {
+    const intervalStart =
+      DateTime.fromISO(start, { zone: 'utc' })
+        .startOf(layerTimeseries.interval.toLowerCase() as DateTimeUnit)
+        .toISO() || start
+    const intervalEnd =
+      DateTime.fromISO(end, { zone: 'utc' })
+        .startOf(layerTimeseries.interval.toLowerCase() as DateTimeUnit)
+        .toISO() || end
     return {
       ...layerTimeseries,
       timeseries: layerTimeseries?.timeseries.filter((current) => {
-        return (
-          (current.max.some((v) => v !== 0) || current.min.some((v) => v !== 0)) &&
-          current.date >= start &&
-          current.date < end
-        )
+        const inRange =
+          intervalStart === intervalEnd
+            ? current.date === intervalStart
+            : current.date >= intervalStart && current.date <= intervalEnd
+        return (current.max.some((v) => v !== 0) || current.min.some((v) => v !== 0)) && inRange
       }),
     }
   })

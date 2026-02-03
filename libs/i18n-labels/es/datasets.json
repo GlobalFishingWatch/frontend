@@ -24,7 +24,7 @@
     "name": "Panama VMS (Full Fishing Vessels)",
     "description": "Conjunto de Datos VMS Panamá (Público)",
     "schema": {
-      "length": "length",
+      "length": "longitud",
       "source": "fuente"
     }
   },
@@ -40,7 +40,7 @@
           "not defined": "not defined"
         }
       },
-      "length": "length",
+      "length": "longitud",
       "origin": {
         "keyword": "origin",
         "enum": {
