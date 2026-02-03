@@ -28,4 +28,5 @@
   display: flex;
   align-items: center;
   margin-right: auto;
+  gap: var(--space-S);
 }
