@@ -55,7 +55,7 @@ import ActivityDownloadError, { useActivityDownloadTimeoutRefresh } from './Down
 
 import styles from './DownloadModal.module.css'
 
-function DownloadActivityByVessel() {
+function DownloadActivityByVessel({ onDownloadCallback }: { onDownloadCallback?: () => void }) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
@@ -128,6 +128,7 @@ function DownloadActivityByVessel() {
         ),
       }),
     })
+    onDownloadCallback?.()
 
     const downloadParams: DownloadActivityParams = {
       areaId: downloadAreaKey?.areaId as AreaKeyId,
@@ -155,6 +156,7 @@ function DownloadActivityByVessel() {
           .flat(),
       ]),
     })
+
     return action
   }
 

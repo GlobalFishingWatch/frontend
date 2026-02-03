@@ -87,6 +87,7 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
     <Section
       id={DataviewCategory.Environment}
       data-testid="environment-section"
+      className="hover-target"
       title={
         <span>
           {t((t) => t.common.environment)}
