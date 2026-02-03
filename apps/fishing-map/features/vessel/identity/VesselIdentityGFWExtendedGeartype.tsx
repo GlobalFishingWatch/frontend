@@ -38,6 +38,10 @@ const VesselIdentityGFWExtendedGeartype = ({
     rfCoarseClass,
   } = identity.combinedSourcesInfo
 
+  const prodGeartypeNnetSort = (prodGeartypeNnet || [])
+    .filter(Boolean)
+    .sort((a, b) => (a.yearTo < b.yearTo ? 1 : -1))
+
   return (
     <ul className={styles.extendedInfo}>
       <li>
@@ -47,8 +51,8 @@ const VesselIdentityGFWExtendedGeartype = ({
         <Tooltip content="(prodGeartypeNnet)">
           <span className={cx(styles.secondary, styles.help)}>Previous GFW best gear type: </span>
         </Tooltip>
-        {prodGeartypeNnet?.[sourceIndex]?.value !== undefined
-          ? prodGeartypeNnet?.[sourceIndex]?.value.toString()
+        {prodGeartypeNnetSort?.[0]?.value !== undefined
+          ? prodGeartypeNnetSort?.[0]?.value.toString()
           : EMPTY_FIELD_PLACEHOLDER}
       </li>
       <li>
