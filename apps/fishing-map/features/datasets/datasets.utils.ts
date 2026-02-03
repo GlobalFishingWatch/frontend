@@ -617,30 +617,28 @@ const combineSchemaItems = (schema1: DatasetFilter, schema2: DatasetFilter) => {
 
 export const getDatasetSchemaItem = (
   dataset: Dataset,
-  schema: SupportedDatasetSchema,
-  schemaOrigin: SchemaOriginParam = 'selfReportedInfo'
+  schema: SupportedDatasetSchema
+  // schemaOrigin: SchemaOriginParam = 'selfReportedInfo'
 ): DatasetFilter | null => {
   const filters = getFlattenDatasetFilters(dataset.filters)
-  const schemaItem = filters.find((f) =>
-    f.id === schemaOrigin ? `${schemaOrigin}.${schema}` : schema
-  )
+  const schemaItem = filters.find((f) => f.id === schema)
   if (schemaItem) {
     return schemaItem
   }
-
-  if (schemaOrigin === 'all') {
-    const selfReportedInfo = getDatasetSchemaItem(dataset, schema, 'selfReportedInfo')
-    const registryInfo = getDatasetSchemaItem(dataset, schema, 'registryInfo')
-    if (selfReportedInfo && registryInfo) {
-      return combineSchemaItems(selfReportedInfo, registryInfo)
-    }
-    return selfReportedInfo || registryInfo || null
-  } else {
-    const nestedSchemaItem = getSchemaItemByOrigin(dataset, schema, schemaOrigin)
-    if (nestedSchemaItem) {
-      return nestedSchemaItem
-    }
-  }
+  // TODO:DR review if schemaOrigin 'all' is still needed
+  // if (schemaOrigin === 'all') {
+  //   const selfReportedInfo = getDatasetSchemaItem(dataset, schema, 'selfReportedInfo')
+  //   const registryInfo = getDatasetSchemaItem(dataset, schema, 'registryInfo')
+  //   if (selfReportedInfo && registryInfo) {
+  //     return combineSchemaItems(selfReportedInfo, registryInfo)
+  //   }
+  //   return selfReportedInfo || registryInfo || null
+  // } else {
+  //   const nestedSchemaItem = getSchemaItemByOrigin(dataset, schema, schemaOrigin)
+  //   if (nestedSchemaItem) {
+  //     return nestedSchemaItem
+  //   }
+  // }
 
   return null
 }
@@ -784,7 +782,6 @@ export const getCommonSchemaFieldsInDataview = (
     vesselGroups = [],
     isGuestUser = true,
     compatibilityOperation = 'every',
-    schemaOrigin,
   } = {} as GetSchemaInDataviewParams
 ): SchemaFieldSelection[] => {
   const activeDatasets = getActiveDatasetsInDataview(dataview)
@@ -809,7 +806,7 @@ export const getCommonSchemaFieldsInDataview = (
   }
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
   let schemaFields = (activeDatasets || [])?.map((d) => {
-    const schemaItem = getDatasetSchemaItem(d, schema, schemaOrigin)
+    const schemaItem = getDatasetSchemaItem(d, schema)
     const schemaEnum = schemaItem?.enum || []
     return Array.isArray(schemaEnum)
       ? schemaEnum.filter((e) => e !== null && e !== undefined)
