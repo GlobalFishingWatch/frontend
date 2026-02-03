@@ -23,7 +23,11 @@ import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.sl
 import WhatsNew from 'features/sidebar/WhatsNew'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
-import { selectIsDefaultWorkspace, selectWorkspace } from 'features/workspace/workspace.selectors'
+import {
+  selectIsDefaultWorkspace,
+  selectWorkspace,
+  selectWorkspaceHistoryNavigation,
+} from 'features/workspace/workspace.selectors'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
 import { HOME, SEARCH, USER, WORKSPACE_SEARCH, WORKSPACES_LIST } from 'routes/routes'
 import {
@@ -63,6 +67,8 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const isDefaultWorkspace = useSelector(selectIsDefaultWorkspace)
   const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const userData = useSelector(selectUserData)
+  const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
+  const lastWorkspaceVisited = workspaceHistoryNavigation[workspaceHistoryNavigation.length - 1]
 
   const modalFeedbackOpen = useSelector(selectFeedbackModalOpen)
 
@@ -128,15 +134,19 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         >
           <Link
             className={styles.tabContent}
-            to={{
-              type: isWorkspaceLocation ? WORKSPACE_SEARCH : SEARCH,
-              payload: {
-                category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-                workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-              },
-              query: {},
-              replaceQuery: !isWorkspaceLocation,
-            }}
+            to={
+              isAnySearchLocation
+                ? lastWorkspaceVisited
+                : {
+                    type: isWorkspaceLocation ? WORKSPACE_SEARCH : SEARCH,
+                    payload: {
+                      category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+                      workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+                    },
+                    query: {},
+                    replaceQuery: !isWorkspaceLocation,
+                  }
+            }
             onClick={onSearchClick}
           >
             <Tooltip content={t((t) => t.workspace.categories.search)} placement="right">
