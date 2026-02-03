@@ -120,27 +120,12 @@ export const getDatasetRangeSteps = ({ min, max }: { min: number; max: number })
   return steps
 }
 
-/**
- * Flattens DatasetFilters (organized by FilterType) into a flat DatasetFilter[]
- */
 export const getFlattenDatasetFilters = (
-  filters: Record<string, DatasetFilter> | DatasetFilters | null | undefined
+  filters: DatasetFilters | null | undefined
 ): DatasetFilter[] => {
   if (!filters) return []
 
-  // Flatten DatasetFilters if it's organized by FilterType
-  if (
-    'fourwings' in filters ||
-    'events' in filters ||
-    'tracks' in filters ||
-    'vessels' in filters ||
-    'context' in filters ||
-    'userContext' in filters
-  ) {
-    return Object.values(filters).flatMap((typeFilters) => {
-      return Array.isArray(typeFilters) ? typeFilters : []
-    })
-  }
-
-  return Object.values(filters as Record<string, DatasetFilter>)
+  return Object.values(filters).flatMap((typeFilters) => {
+    return Array.isArray(typeFilters) ? typeFilters : []
+  })
 }
