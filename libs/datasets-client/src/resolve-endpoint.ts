@@ -34,6 +34,8 @@ export const resolveEndpoint = (
     (query) => query.id === 'dataset' || query.id === 'datasets'
   )
 
+  url = url.replace('{{x}}', '{x}').replace('{{y}}', '{y}').replace('{{z}}', '{z}')
+
   const hasDatasetConfigDatasetParm =
     datasetConfig.params?.some((param) => param.id === 'dataset' || param.id === 'datasets') ||
     datasetConfig.query?.some((query) => query.id === 'dataset' || query.id === 'datasets')
@@ -85,8 +87,6 @@ export const resolveEndpoint = (
 
     const query = resolvedQuery.toString()
     url = query ? `${url}?${query}` : url
-
-    url = url.replace('{{x}}', '{x}').replace('{{y}}', '{y}').replace('{{z}}', '{z}')
   }
 
   return GFWAPI.generateUrl(decodeURI(url) as string, { absolute })
