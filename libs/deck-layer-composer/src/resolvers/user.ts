@@ -169,7 +169,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
     if (!dataset || dataset?.status !== 'done' || !datasetConfig) {
       return []
     }
-    const datasetContextConfig = getDatasetConfiguration(dataset, 'contextLayerV1')
+    const datasetContextConfig = getDatasetConfiguration(dataset, 'userContextLayerV1')
     let tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
     if (!tilesUrl) {
       console.warn('No url found for user context')
