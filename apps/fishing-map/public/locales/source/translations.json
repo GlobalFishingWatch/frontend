@@ -476,6 +476,15 @@
     "monthlyNotAvailable": "Your time range is shorter than 1 month",
     "noHeatmapLayers": "Turn on an activity, detections or environment layer to download its data for this area",
     "spatialResolution": "Spatial resolution",
+    "survey": {
+      "contactPermissionLabel": "Would you be open to sharing your story or results later?",
+      "contactPermissionNo": "Not right now",
+      "contactPermissionYes": "Yes, I’d be happy to be contacted",
+      "description": "Could you answer two quick questions? It takes less than a minute and helps us improve the platform.",
+      "intentLabel": "How do you intend to utilize this data?",
+      "intentPlaceholder": "Type your answer here",
+      "title": "While we prepare your file…"
+    },
     "temporalResolution": "Group time by",
     "timeRange": "Time Range",
     "timerangeTooLong": "The maximum time range is 1 year",
