@@ -4,18 +4,18 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { DatasetTypes, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
 import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { TagItem } from '@globalfishingwatch/ui-components'
 import { TagList } from '@globalfishingwatch/ui-components'
 
-import type { SupportedDatasetFilter } from 'features/datasets/datasets.utils'
 import {
   getFilterOperationInDataview,
   getFiltersInDataview,
   getFiltersSelectedInDataview,
   getFilterUnitInDataview,
-} from 'features/datasets/datasets.utils'
+} from 'features/dataviews/dataviews.filters'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { isHistogramDataviewSupported } from 'features/workspace/shared/LayerFilters'

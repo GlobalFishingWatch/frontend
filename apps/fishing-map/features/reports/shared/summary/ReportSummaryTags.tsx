@@ -13,7 +13,7 @@ import {
   LineColorBarOptions,
 } from '@globalfishingwatch/ui-components'
 
-import { getFiltersInDataview } from 'features/datasets/datasets.utils'
+import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import { selectReportCategory } from 'features/reports/reports.selectors'

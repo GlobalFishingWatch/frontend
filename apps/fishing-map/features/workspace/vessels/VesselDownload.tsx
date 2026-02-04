@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import type { IconButtonType } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getVesselDatasetsDownloadTrackSupported } from 'features/datasets/datasets.utils'
+import { getVesselDatasetsDownloadTrackSupported } from 'features/datasets/datasets.permissions'
 import { setDownloadTrackVessel } from 'features/download/downloadTrack.slice'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'

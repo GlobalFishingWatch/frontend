@@ -119,13 +119,3 @@ export const getDatasetRangeSteps = ({ min, max }: { min: number; max: number })
     .map((value) => rampScale(value) as number)
   return steps
 }
-
-export const getFlattenDatasetFilters = (
-  filters: DatasetFilters | null | undefined
-): DatasetFilter[] => {
-  if (!filters) return []
-
-  return Object.values(filters).flatMap((typeFilters) => {
-    return Array.isArray(typeFilters) ? typeFilters : []
-  })
-}

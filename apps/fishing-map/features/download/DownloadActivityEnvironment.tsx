@@ -4,16 +4,14 @@ import { useSelector } from 'react-redux'
 import area from '@turf/area'
 import cx from 'classnames'
 
+import { checkDatasetReportPermission } from '@globalfishingwatch/datasets-client'
 import type { TooltipPlacement } from '@globalfishingwatch/ui-components'
 import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import type { AreaKeyId } from 'features/areas/areas.slice'
-import {
-  checkDatasetReportPermission,
-  getActiveDatasetsInDataview,
-} from 'features/datasets/datasets.utils'
+import { getActiveDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { selectActiveHeatmapDowloadDataviewsByTab } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   selectDownloadActivityArea,

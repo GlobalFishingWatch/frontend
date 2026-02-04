@@ -26,10 +26,10 @@ import {
 } from 'features/datasets/datasets.hook'
 import {
   getDatasetLabel,
-  getFiltersInDataview,
   getIsBQEditorDataset,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
+import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectUserId } from 'features/user/selectors/user.permissions.selectors'

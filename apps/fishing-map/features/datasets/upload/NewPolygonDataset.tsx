@@ -5,7 +5,10 @@ import type { FeatureCollection, Polygon } from 'geojson'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfigurationProperty,
+  getDatasetFiltersAllowed,
+} from '@globalfishingwatch/datasets-client'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
   Button,
@@ -16,7 +19,6 @@ import {
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
 
-import { getDatasetFiltersAllowed } from 'features/datasets/datasets.utils'
 import {
   useDatasetMetadata,
   useDatasetMetadataOptions,

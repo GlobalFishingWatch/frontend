@@ -3,6 +3,7 @@ import cx from 'classnames'
 
 import type { FilterOperator } from '@globalfishingwatch/api-types'
 import { EXCLUDE_FILTER_ID, INCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
 import { getOperationLabel } from '@globalfishingwatch/dataviews-client'
 import type {
   ChoiceOption,
@@ -18,7 +19,7 @@ import {
   Tooltip,
 } from '@globalfishingwatch/ui-components'
 
-import type { DataviewFilterConfig, SupportedDatasetFilter } from 'features/datasets/datasets.utils'
+import type { DataviewFilterConfig } from 'features/dataviews/dataviews.filters'
 import { t } from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getPlaceholderBySelections } from 'features/i18n/utils'

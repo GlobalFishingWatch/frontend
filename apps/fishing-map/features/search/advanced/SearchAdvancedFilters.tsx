@@ -3,13 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
-import { InputDate, InputText, MultiSelect, Select } from '@globalfishingwatch/ui-components'
+import { InputDate, MultiSelect, Select } from '@globalfishingwatch/ui-components'
 
 import { AVAILABLE_END, AVAILABLE_START } from 'data/config'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import type { DataviewFilterConfig, SupportedDatasetFilter } from 'features/datasets/datasets.utils'
-import { getDataviewFilterConfig } from 'features/datasets/datasets.utils'
+import type { DataviewFilterConfig } from 'features/dataviews/dataviews.filters'
+import { getDataviewFilterConfig } from 'features/dataviews/dataviews.filters'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import {
   ADVANCED_SEARCH_FIELDS,

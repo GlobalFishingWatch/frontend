@@ -2,14 +2,17 @@ import { t } from 'i18next'
 
 import type { Dataset, DatasetConfigurationInterval } from '@globalfishingwatch/api-types'
 import { DatasetSubCategory, DataviewCategory } from '@globalfishingwatch/api-types'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfigurationProperty,
+  getDatasetFilterItem,
+} from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 
 import { REPORT_DAYS_LIMIT } from 'data/config'
 import { PRESENCE_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
-import { getActiveDatasetsInDataview, getDatasetFilterItem } from 'features/datasets/datasets.utils'
+import { getActiveDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { getUTCDateTime } from 'utils/dates'
 
 import {

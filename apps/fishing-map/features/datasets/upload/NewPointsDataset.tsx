@@ -7,6 +7,7 @@ import type { Dataset } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
+  getDatasetFiltersAllowed,
 } from '@globalfishingwatch/datasets-client'
 import { POINT_SIZES_DEFAULT_RANGE } from '@globalfishingwatch/deck-layers'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
@@ -19,7 +20,6 @@ import {
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
 
-import { getDatasetFiltersAllowed } from 'features/datasets/datasets.utils'
 import {
   useDatasetMetadata,
   useDatasetMetadataOptions,

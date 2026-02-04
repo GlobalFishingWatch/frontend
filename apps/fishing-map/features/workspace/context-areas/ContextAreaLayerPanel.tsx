@@ -28,11 +28,8 @@ import {
 } from 'data/workspaces'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { useAddDataset } from 'features/datasets/datasets.hook'
-import {
-  getDatasetLabel,
-  getFiltersInDataview,
-  isPrivateDataset,
-} from 'features/datasets/datasets.utils'
+import { getDatasetLabel, isPrivateDataset } from 'features/datasets/datasets.utils'
+import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import ContextLayerReportLink from 'features/map/popups/categories/ContextLayerReportLink'
