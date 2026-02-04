@@ -144,6 +144,17 @@ resource "google_cloudbuild_trigger" "trigger" {
       ]
     }
 
+    dynamic "step" {
+      for_each = var.run_e2e_tests_for_fishing_map ? [1] : []
+      content {
+        id     = "Run e2e tests"
+        name   = "node:24-slim"
+        script = <<EOF
+          yarn playwright install chromium --with-deps
+          yarn nx e2e:local fishing-map-e2e --browser="chromium"
+        EOF
+      }
+    }
 
     options {
       logging      = "CLOUD_LOGGING_ONLY"

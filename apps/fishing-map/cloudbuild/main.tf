@@ -189,7 +189,8 @@ module "staging" {
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
   ]
-  set_secrets = local.generate_secrets.sta
+  set_secrets                   = local.generate_secrets.sta
+  run_e2e_tests_for_fishing_map = true
 }
 
 module "production" {
@@ -227,5 +228,6 @@ module "production" {
   set_env_vars = [
     "BASIC_AUTH=off"
   ]
-  set_secrets = local.generate_secrets.pro
+  set_secrets                   = local.generate_secrets.pro
+  run_e2e_tests_for_fishing_map = true
 }

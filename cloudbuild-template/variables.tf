@@ -96,3 +96,9 @@ variable "machine_type" {
   }
 }
 
+variable "run_e2e_tests_for_fishing_map" {
+  description = "Whether to run the e2e tests for fishing map"
+  type        = bool
+  default     = false
+}
+
