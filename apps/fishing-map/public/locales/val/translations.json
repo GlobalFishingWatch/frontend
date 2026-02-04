@@ -456,6 +456,7 @@
     "dataPortal": "crwdns60017:0crwdne60017:0",
     "datasetsNotAllowed": "crwdns60019:0crwdne60019:0",
     "descriptionReport": "crwdns60021:0crwdne60021:0",
+    "downloading": "crwdns109068:0crwdne109068:0",
     "downloadOptions": "crwdns60023:0crwdne60023:0",
     "doYouNeedAnAPI": "crwdns60025:0crwdne60025:0",
     "errorConcurrentReport": "crwdns83678:0crwdne83678:0",
@@ -476,6 +477,15 @@
     "monthlyNotAvailable": "crwdns60045:0crwdne60045:0",
     "noHeatmapLayers": "crwdns82816:0crwdne82816:0",
     "spatialResolution": "crwdns60047:0crwdne60047:0",
+    "survey": {
+      "contactPermissionLabel": "crwdns109070:0crwdne109070:0",
+      "contactPermissionNo": "crwdns109072:0crwdne109072:0",
+      "contactPermissionYes": "crwdns109074:0crwdne109074:0",
+      "description": "crwdns109076:0crwdne109076:0",
+      "intentLabel": "crwdns109078:0crwdne109078:0",
+      "intentPlaceholder": "crwdns109080:0crwdne109080:0",
+      "title": "crwdns109082:0crwdne109082:0"
+    },
     "temporalResolution": "crwdns60049:0crwdne60049:0",
     "timeRange": "crwdns60051:0crwdne60051:0",
     "timerangeTooLong": "crwdns60053:0crwdne60053:0",
