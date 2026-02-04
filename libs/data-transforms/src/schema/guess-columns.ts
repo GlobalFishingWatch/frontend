@@ -39,12 +39,17 @@ export const guessColumn = (col: GuessColumn, options: string[] = []) => {
 
 export const guessColumnsFromFilters = (
   filters: Record<string, DatasetFilter> | DatasetFilters | null | undefined
-) => {
-  if (!filters) return {}
+): Record<GuessColumn, string | null> => {
+  const emptyGuessedColumns = {} as Record<GuessColumn, string | null>
+  if (!filters) {
+    return emptyGuessedColumns
+  }
 
-  const flatSchema = getFlattenDatasetFilters(filters)
-  const columns = flatSchema.map((filter) => filter.id)
-  if (!columns.length) return {}
+  const flattenedFilters = getFlattenDatasetFilters(filters)
+  const columns = flattenedFilters.map((filter) => filter.id)
+  if (!columns.length) {
+    return emptyGuessedColumns
+  }
   const guessedColumns = GUESS_COLUMN_NAMES.map(([columnToGuess, candidates]) => {
     const exactGuess = columns?.find((column) => candidates.includes(column))
     const longEnoughCandidates = candidates.filter((c) => c.length >= 3)
@@ -56,5 +61,5 @@ export const guessColumnsFromFilters = (
     return [columnToGuess, exactGuess || approximateGuess || null]
   })
 
-  return Object.fromEntries(guessedColumns)
+  return Object.fromEntries(guessedColumns) as Record<GuessColumn, string | null>
 }

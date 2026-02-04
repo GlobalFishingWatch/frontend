@@ -217,8 +217,6 @@ function NewPointDataset({
       if (error) {
         setError(error)
       } else if (onConfirm) {
-        // TODO update the schema with the selected field with type timestamp
-        // setDatasetMetadataFilters({ [selected.id]: { type: 'timestamp' } })
         setLoading(true)
         const file = geojson
           ? getFileFromGeojson(parseGeoJsonProperties<Point>(geojson, datasetMetadata))
