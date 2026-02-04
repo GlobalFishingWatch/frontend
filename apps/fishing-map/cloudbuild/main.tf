@@ -228,6 +228,5 @@ module "production" {
   set_env_vars = [
     "BASIC_AUTH=off"
   ]
-  set_secrets                   = local.generate_secrets.pro
-  run_e2e_tests_for_fishing_map = true
+  set_secrets = local.generate_secrets.pro
 }
