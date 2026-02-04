@@ -19,7 +19,7 @@ import {
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
 
-import { getDatasetAllowedFields } from 'features/datasets/datasets.utils'
+import { getDatasetFiltersAllowed } from 'features/datasets/datasets.utils'
 import type { DataList } from 'features/datasets/upload/datasets-parse.utils'
 import { getDatasetParsed, getTrackFromList } from 'features/datasets/upload/datasets-parse.utils'
 import {
@@ -77,8 +77,8 @@ function NewTrackDataset({
   }, [file, sourceFormat])
 
   const fieldsAllowed =
-    getDatasetAllowedFields(datasetMetadata as Dataset) ||
-    getDatasetAllowedFields(dataset as Dataset) ||
+    getDatasetFiltersAllowed(datasetMetadata as Dataset) ||
+    getDatasetFiltersAllowed(dataset as Dataset) ||
     []
 
   const isPublic = !!datasetMetadata?.public

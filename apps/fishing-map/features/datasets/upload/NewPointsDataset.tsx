@@ -19,7 +19,7 @@ import {
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
 
-import { getDatasetAllowedFields } from 'features/datasets/datasets.utils'
+import { getDatasetFiltersAllowed } from 'features/datasets/datasets.utils'
 import {
   useDatasetMetadata,
   useDatasetMetadataOptions,
@@ -71,8 +71,8 @@ function NewPointDataset({
   const isEditing = dataset?.id !== undefined
   const isPublic = !!datasetMetadata?.public
   const datasetFieldsAllowed =
-    getDatasetAllowedFields(datasetMetadata as Dataset) ||
-    getDatasetAllowedFields(dataset as Dataset) ||
+    getDatasetFiltersAllowed(datasetMetadata as Dataset) ||
+    getDatasetFiltersAllowed(dataset as Dataset) ||
     []
   const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
   const { isValid, errors } = getDatasetMetadataValidations(datasetMetadata)
@@ -218,7 +218,7 @@ function NewPointDataset({
         setError(error)
       } else if (onConfirm) {
         // TODO update the schema with the selected field with type timestamp
-        // setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
+        // setDatasetMetadataFilters({ [selected.id]: { type: 'timestamp' } })
         setLoading(true)
         const file = geojson
           ? getFileFromGeojson(parseGeoJsonProperties<Point>(geojson, datasetMetadata))

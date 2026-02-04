@@ -9,7 +9,7 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 
 import { REPORT_DAYS_LIMIT } from 'data/config'
 import { PRESENCE_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
-import { getActiveDatasetsInDataview, getDatasetSchemaItem } from 'features/datasets/datasets.utils'
+import { getActiveDatasetsInDataview, getDatasetFilterItem } from 'features/datasets/datasets.utils'
 import { getUTCDateTime } from 'utils/dates'
 
 import {
@@ -43,7 +43,7 @@ export function getSupportedGroupByOptions(
   )
 
   const mmsiSupported = vesselDatasets.every((dataset) => {
-    const schemaItem = getDatasetSchemaItem(dataset, 'ssvid')
+    const schemaItem = getDatasetFilterItem(dataset, 'ssvid')
     return schemaItem !== null && schemaItem !== undefined
   })
 

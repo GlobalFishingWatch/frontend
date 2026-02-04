@@ -21,9 +21,9 @@ import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
 import { selectDatasetById } from 'features/datasets/datasets.slice'
 import {
-  getDatasetAllowedFields,
+  getDatasetFiltersAllowed,
   getRelatedDatasetByType,
-  isFieldInFieldsAllowed,
+  isFilterInFiltersAllowed,
 } from 'features/datasets/datasets.utils'
 import { ADVANCED_SEARCH_FIELDS } from 'features/search/advanced/advanced-search.utils'
 import type { SearchType } from 'features/search/search.config'
@@ -88,15 +88,15 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     try {
       if (searchType === 'advanced') {
         const fieldsAllowed = Array.from(
-          new Set(datasets.flatMap((dataset) => getDatasetAllowedFields(dataset)))
+          new Set(datasets.flatMap((dataset) => getDatasetFiltersAllowed(dataset)))
         )
 
         const andCombinedFields = ADVANCED_SEARCH_QUERY_FIELDS.filter((f) => f !== 'shipname')
 
         const fields = andCombinedFields.flatMap((field) => {
-          const isInFieldsAllowed = isFieldInFieldsAllowed({
+          const isInFieldsAllowed = isFilterInFiltersAllowed({
             field,
-            fieldsAllowed,
+            filtersAllowed: fieldsAllowed,
             infoSource: filters.infoSource,
           })
 

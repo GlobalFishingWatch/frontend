@@ -16,7 +16,7 @@ import {
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
 
-import { getDatasetAllowedFields } from 'features/datasets/datasets.utils'
+import { getDatasetFiltersAllowed } from 'features/datasets/datasets.utils'
 import {
   useDatasetMetadata,
   useDatasetMetadataOptions,
@@ -60,8 +60,8 @@ function NewPolygonDataset({
   const isEditing = dataset?.id !== undefined
   const isPublic = !!datasetMetadata?.public
   const datasetFieldsAllowed =
-    getDatasetAllowedFields(datasetMetadata as Dataset) ||
-    getDatasetAllowedFields(dataset as Dataset) ||
+    getDatasetFiltersAllowed(datasetMetadata as Dataset) ||
+    getDatasetFiltersAllowed(dataset as Dataset) ||
     []
   const { isValid, errors } = getDatasetMetadataValidations(datasetMetadata)
   const [fileTypeResult, setFileTypeResult] = useState<FileTypeResult | undefined>()

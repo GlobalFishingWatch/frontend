@@ -26,8 +26,8 @@ import {
 } from 'features/datasets/datasets.hook'
 import {
   getDatasetLabel,
+  getFiltersInDataview,
   getIsBQEditorDataset,
-  getSchemaFiltersInDataview,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
@@ -98,7 +98,7 @@ function UserPanel({
     activeIndex,
   } = useLayerPanelDataviewSort(dataview.id)
 
-  const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+  const { filtersAllowed } = getFiltersInDataview(dataview)
   const hasSchemaFilters = filtersAllowed.some(showSchemaFilter)
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0

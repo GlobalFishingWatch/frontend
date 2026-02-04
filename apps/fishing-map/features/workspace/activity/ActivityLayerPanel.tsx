@@ -16,10 +16,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
 import { TURNING_TIDES_DESCRIPTION_PREFIX } from 'features/bigquery/turning-tides.config'
-import {
-  getDatasetTitleByDataview,
-  getSchemaFiltersInDataview,
-} from 'features/datasets/datasets.utils'
+import { getDatasetTitleByDataview, getFiltersInDataview } from 'features/datasets/datasets.utils'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import Hint from 'features/help/Hint'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
@@ -175,7 +172,7 @@ function ActivityLayerPanel({
   const showTurningTidesFilters = isTurningTidesDataset && isTurningTidesWorkspace
 
   const showFilters = isDefaultActivityDataview(dataview) || isDefaultDetectionsDataview(dataview)
-  const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+  const { filtersAllowed } = getFiltersInDataview(dataview)
 
   return (
     <div

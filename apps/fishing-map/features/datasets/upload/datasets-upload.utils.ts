@@ -70,13 +70,13 @@ export const getMetadataFromDataset = (dataset: Dataset): DatasetMetadata => {
 }
 
 const getBaseDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
-  const schema = getDatasetFilters(data, { includeEnum: true })
+  const filter = getDatasetFilters(data, { includeEnum: true })
   return {
     name,
     public: true,
     category: DatasetCategory.Context,
     type: DatasetTypes.UserContext,
-    schema,
+    filter,
     configuration: {
       frontend: {
         sourceFormat,
@@ -166,15 +166,15 @@ export const getFinalDatasetFromMetadata = (datasetMetadata: DatasetMetadata) =>
     dataset: datasetMetadata,
     property: 'startTime',
   })
-  const timestampSchema = getFlattenDatasetFilters(datasetMetadata.filters).find(
+  const timestampFilter = getFlattenDatasetFilters(datasetMetadata.filters).find(
     (filter) => filter.id === timestampProperty
   )
-  if (timestampSchema) {
-    const startDate = getUTCDateTime(timestampSchema.enum?.[0] as string)?.toISO()
+  if (timestampFilter) {
+    const startDate = getUTCDateTime(timestampFilter.enum?.[0] as string)?.toISO()
     if (startDate) {
       baseDataset.startDate = startDate
     }
-    const endDate = getUTCDateTime(timestampSchema.enum?.[1] as string)?.toISO()
+    const endDate = getUTCDateTime(timestampFilter.enum?.[1] as string)?.toISO()
     if (endDate) {
       baseDataset.endDate = endDate
     }

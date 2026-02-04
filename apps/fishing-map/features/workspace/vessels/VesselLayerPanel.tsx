@@ -24,7 +24,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { PRIVATE_ICON } from 'data/config'
 import {
-  getSchemaFiltersInDataview,
+  getFiltersInDataview,
   isGFWOnlyDataset,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
@@ -185,7 +185,7 @@ function VesselLayerPanel({
     ? getVesselIdentityTooltipSummary(vesselData, { showVesselId: gfwUser || false })
     : ''
 
-  const { filtersAllowed } = getSchemaFiltersInDataview(dataview, {
+  const { filtersAllowed } = getFiltersInDataview(dataview, {
     fieldsToInclude: ['speed', 'elevation'],
   })
 
