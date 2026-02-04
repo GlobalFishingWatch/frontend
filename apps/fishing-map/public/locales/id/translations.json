@@ -456,6 +456,7 @@
     "dataPortal": "Lihat portal unduh data",
     "datasetsNotAllowed": "Anda tidak memiliki izin untuk mengunduh dataset berikut:",
     "descriptionReport": "Anda dapat mengunduh daftar aktivitas atau bitmap peta panas untuk area ini dalam berbagai format",
+    "downloading": "Downloading",
     "downloadOptions": "Opsi pengunduhan",
     "doYouNeedAnAPI": "Apakah aplikasi Anda memerlukan data yang berlanjut?",
     "errorConcurrentReport": "Your account is currently loading an analysis report, please wait for the report to finish before downloading data",
@@ -476,6 +477,15 @@
     "monthlyNotAvailable": "Rentang waktu Anda lebih pendek dari 1 bulan",
     "noHeatmapLayers": "Aktifkan lapisan aktivitas, deteksi, atau lingkungan untuk mengunduh datanya untuk area ini",
     "spatialResolution": "Resolusi spasial",
+    "survey": {
+      "contactPermissionLabel": "Would you be open to sharing your story or results later?",
+      "contactPermissionNo": "Not right now",
+      "contactPermissionYes": "Yes, I’d be happy to be contacted",
+      "description": "Could you answer two quick questions? It takes less than a minute and helps us improve the platform.",
+      "intentLabel": "How do you intend to utilize this data?",
+      "intentPlaceholder": "Type your answer here",
+      "title": "While we prepare your file…"
+    },
     "temporalResolution": "Kelompok waktu berdasarkan",
     "timeRange": "Rentang Waktu",
     "timerangeTooLong": "Rentang waktu maksimum adalah 1 tahun",
