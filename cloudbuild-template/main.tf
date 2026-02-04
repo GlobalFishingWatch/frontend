@@ -147,11 +147,24 @@ resource "google_cloudbuild_trigger" "trigger" {
     dynamic "step" {
       for_each = var.run_e2e_tests_for_fishing_map ? [1] : []
       content {
+        id     = "Install Dependencies"
+        name   = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest"
+        script = <<-EOF
+          cp -R /app/node_modules /app/.yarn ./
+          yarn set version 4.12.0
+          yarn install --immutable --inline-builds
+        EOF
+      }
+    }
+
+    dynamic "step" {
+      for_each = var.run_e2e_tests_for_fishing_map ? [1] : []
+      content {
         id     = "Run e2e tests"
-        name   = "node:24-slim"
+        name   = "mcr.microsoft.com/playwright:v1.51.0-noble"
         script = <<EOF
-          yarn playwright install chromium --with-deps
-          yarn nx e2e:local fishing-map-e2e --browser="chromium"
+          yarn install
+          yarn nx e2e:local fishing-map-e2e --project="chromium"
         EOF
       }
     }

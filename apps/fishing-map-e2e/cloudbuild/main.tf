@@ -73,7 +73,9 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
       id     = "Run integration tests"
       name   = "node:24-slim"
       script = <<EOF
-        nx test fishing-map
+        yarn install
+        yarn playwright install chromium --with-deps
+        yarn nx test fishing-map --browser="chromium"
       EOF
     }
 
