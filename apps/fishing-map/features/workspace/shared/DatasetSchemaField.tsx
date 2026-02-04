@@ -9,12 +9,12 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { TagItem } from '@globalfishingwatch/ui-components'
 import { TagList } from '@globalfishingwatch/ui-components'
 
-import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
+import type { SupportedDatasetFilter } from 'features/datasets/datasets.utils'
 import {
-  getSchemaFieldsSelectedInDataview,
-  getSchemaFilterOperationInDataview,
-  getSchemaFiltersInDataview,
-  getSchemaFilterUnitInDataview,
+  getFilterOperationInDataview,
+  getFiltersInDataview,
+  getFiltersSelectedInDataview,
+  getFilterUnitInDataview,
 } from 'features/datasets/datasets.utils'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
@@ -27,7 +27,7 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
-  field: SupportedDatasetSchema
+  field: SupportedDatasetFilter
   label: string
   className?: string
   removeType?: 'visibleValues' | 'filter'
@@ -46,13 +46,13 @@ function DatasetSchemaField({
   const vesselGroupsOptions = useVesselGroupsOptions()
   const isGuestUser = useSelector(selectIsGuestUser)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const filterOperation = getSchemaFilterOperationInDataview(dataview, field)
-  const filterUnit = getSchemaFilterUnitInDataview(dataview, field)
-  const schemaFieldSelected = getSchemaFieldsSelectedInDataview(dataview, field, {
+  const filterOperation = getFilterOperationInDataview(dataview, field)
+  const filterUnit = getFilterUnitInDataview(dataview, field)
+  const schemaFieldSelected = getFiltersSelectedInDataview(dataview, field, {
     vesselGroups: vesselGroupsOptions,
     isGuestUser,
   })
-  const { filtersAllowed } = useMemo(() => getSchemaFiltersInDataview(dataview), [dataview])
+  const { filtersAllowed } = useMemo(() => getFiltersInDataview(dataview), [dataview])
 
   let valuesSelected = Array.isArray(schemaFieldSelected)
     ? schemaFieldSelected.sort((a, b) => a.label - b.label)

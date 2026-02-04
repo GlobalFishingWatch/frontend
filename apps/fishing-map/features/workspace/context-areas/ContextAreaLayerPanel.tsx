@@ -30,7 +30,7 @@ import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { useAddDataset } from 'features/datasets/datasets.hook'
 import {
   getDatasetLabel,
-  getSchemaFiltersInDataview,
+  getFiltersInDataview,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
@@ -218,7 +218,7 @@ function LayerPanel({
   const isContextAreaDataview =
     dataview.config?.type === DataviewType.Context ||
     dataview.config?.type === DataviewType.UserContext
-  const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+  const { filtersAllowed } = getFiltersInDataview(dataview)
   const hasSchemaFilters = filtersAllowed.some(showSchemaFilter)
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0

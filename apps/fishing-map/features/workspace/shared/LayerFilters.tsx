@@ -21,11 +21,11 @@ import {
   selectActivityVisualizationMode,
   selectDetectionsVisualizationMode,
 } from 'features/app/selectors/app.selectors'
-import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
+import type { SupportedDatasetFilter } from 'features/datasets/datasets.utils'
 import {
-  getCommonSchemaFieldsInDataview,
+  getCommonFiltersInDataview,
+  getFiltersInDataview,
   getIncompatibleFilterSelection,
-  getSchemaFiltersInDataview,
   VESSEL_GROUPS_MODAL_ID,
 } from 'features/datasets/datasets.utils'
 import { selectDataviewInstancesByCategory } from 'features/dataviews/selectors/dataviews.categories.selectors'
@@ -70,9 +70,9 @@ const cleanDataviewFiltersNotAllowed = (
 ) => {
   const filters = dataview.config?.filters ? { ...dataview.config.filters } : {}
   Object.keys(filters).forEach((k) => {
-    const key = k as SupportedDatasetSchema
+    const key = k as SupportedDatasetFilter
     if (filters[key]) {
-      const newFilterOptions = getCommonSchemaFieldsInDataview(dataview, key, {
+      const newFilterOptions = getCommonFiltersInDataview(dataview, key, {
         vesselGroups,
         isGuestUser,
       })
@@ -106,7 +106,7 @@ export const isHistogramDataviewSupported = (dataview: UrlDataviewInstance) => {
 }
 
 export type OnSelectFilterArgs = {
-  filterKey: string | SupportedDatasetSchema
+  filterKey: string | SupportedDatasetFilter
   selection: number | MultiSelectOption | MultiSelectOption[]
   singleValue?: boolean
 }
@@ -159,7 +159,7 @@ function LayerFilters({
   const showSourceFilter =
     sourceOptions && sourceOptions?.length > 1 && !isHeatmapVectorsDataview(dataview)
 
-  const { filtersAllowed, filtersDisabled } = getSchemaFiltersInDataview(dataview, {
+  const { filtersAllowed, filtersDisabled } = getFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
     isGuestUser,
   })
@@ -311,7 +311,7 @@ function LayerFilters({
     const incompatibleFilters = Object.keys(newDataview.config?.filters || {}).flatMap((key) => {
       const incompatibleFilterSelection = getIncompatibleFilterSelection(
         newDataview,
-        key as SupportedDatasetSchema
+        key as SupportedDatasetFilter
       )
       const hasIncompatibleFilterSelection =
         incompatibleFilterSelection?.length && incompatibleFilterSelection.length > 0
@@ -335,7 +335,7 @@ function LayerFilters({
   }
 
   const onSelectFilterOperationClick = (
-    filterKey: string | SupportedDatasetSchema,
+    filterKey: string | SupportedDatasetFilter,
     filterOperator: FilterOperator
   ) => {
     const newDataviewConfig = {

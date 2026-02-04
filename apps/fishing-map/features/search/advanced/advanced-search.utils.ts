@@ -1,7 +1,10 @@
 import type { Dataset } from '@globalfishingwatch/api-types'
 
-import type { SchemaFieldDataview } from 'features/datasets/datasets.utils'
-import { getDatasetAllowedFields, isFieldInFieldsAllowed } from 'features/datasets/datasets.utils'
+import type { DataviewWithFilters } from 'features/datasets/datasets.utils'
+import {
+  getDatasetFiltersAllowed,
+  isFilterInFiltersAllowed,
+} from 'features/datasets/datasets.utils'
 import type { VesselSearchState } from 'features/search/search.types'
 
 export const ADVANCED_SEARCH_FIELDS = ['ssvid', 'imo', 'callsign', 'owner'] as const
@@ -21,7 +24,7 @@ export const getSearchDataview = (
   datasets: Dataset[],
   searchFilters: VesselSearchState,
   sources?: string[]
-): SchemaFieldDataview => {
+): DataviewWithFilters => {
   return {
     config: {
       datasets: sources?.length ? sources?.map((id) => id) : datasets.map((d) => d.id),
@@ -44,7 +47,9 @@ export const isDatasetSearchFieldNeededSupported = (
   dataset: Dataset,
   fields = DEFAULT_SEARCH_FIELDS_NEEDED
 ) => {
-  const fieldsAllowed = getDatasetAllowedFields(dataset)
-  const isSupported = fields.some((field) => isFieldInFieldsAllowed({ field, fieldsAllowed }))
+  const fieldsAllowed = getDatasetFiltersAllowed(dataset)
+  const isSupported = fields.some((field) =>
+    isFilterInFiltersAllowed({ field, filtersAllowed: fieldsAllowed })
+  )
   return isSupported
 }

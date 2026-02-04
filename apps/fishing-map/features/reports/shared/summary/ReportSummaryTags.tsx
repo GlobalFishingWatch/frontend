@@ -13,7 +13,7 @@ import {
   LineColorBarOptions,
 } from '@globalfishingwatch/ui-components'
 
-import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
+import { getFiltersInDataview } from 'features/datasets/datasets.utils'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import { selectReportCategory } from 'features/reports/reports.selectors'
@@ -70,7 +70,7 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
     fitAreaInViewport()
   }
 
-  const { filtersAllowed: schemaFiltersAllowed } = getSchemaFiltersInDataview(dataview, {
+  const { filtersAllowed: schemaFiltersAllowed } = getFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
   })
   const filtersAllowed = isVesselGroupReportLocation

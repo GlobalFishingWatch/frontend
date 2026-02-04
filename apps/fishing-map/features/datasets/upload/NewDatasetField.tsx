@@ -40,10 +40,10 @@ function NewDatasetField({
   infoTooltip,
 }: NewDatasetFieldProps) {
   const { t } = useTranslation()
-  const schemaTypes = STRICT_PROPERTY_SELECTION_TYPES[property]
+  const filterTypes = STRICT_PROPERTY_SELECTION_TYPES[property]
   const { fieldsOptions, filtersFieldsOptions, getSelectedOption } = useDatasetMetadataOptions(
     datasetMetadata,
-    schemaTypes
+    filterTypes
   )
   const notEditableOptions = [
     'latitude',

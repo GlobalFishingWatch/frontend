@@ -18,7 +18,7 @@ import {
   Tooltip,
 } from '@globalfishingwatch/ui-components'
 
-import type { SchemaFilter, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
+import type { DataviewFilterConfig, SupportedDatasetFilter } from 'features/datasets/datasets.utils'
 import { t } from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
@@ -27,20 +27,20 @@ import type { OnSelectFilterArgs } from 'features/workspace/shared/LayerFilters'
 import styles from './LayerFilters.module.css'
 
 type LayerSchemaFilterProps = {
-  schemaFilter: SchemaFilter
+  schemaFilter: DataviewFilterConfig
   onSelect: (args: OnSelectFilterArgs) => void
   onSelectOperation: (filterKey: string, filterOperator: FilterOperator) => void
   onIsOpenChange?: (open: boolean) => void
   onRemove: (filterKey: string, selection: MultiSelectOption[]) => void
   onClean: (filterKey: string) => void
 }
-export const showSchemaFilter = (schemaFilter: SchemaFilter) => {
+export const showSchemaFilter = (schemaFilter: DataviewFilterConfig) => {
   return !schemaFilter.disabled && schemaFilter.options && schemaFilter.options.length > 0
 }
 
 type TransformationUnit = 'minutes' | 'hours' | 'km'
 
-const EXPERIMENTAL_FILTERS: SchemaFilter['id'][] = ['matched', 'neural_vessel_type']
+const EXPERIMENTAL_FILTERS: DataviewFilterConfig['id'][] = ['matched', 'neural_vessel_type']
 
 type Transformation = {
   in?: (v: any) => number
@@ -117,7 +117,7 @@ export const getSchemaValueRounded = (value: number, decimals = 2): number => {
   return parseFloat(value.toFixed(decimals))
 }
 
-const getSliderConfigBySchema = (schemaFilter: SchemaFilter) => {
+const getSliderConfigBySchema = (schemaFilter: DataviewFilterConfig) => {
   if (schemaFilter?.id === 'radiance') {
     return {
       steps: [0, 1, 10, 100, 1000, 10000],
@@ -148,7 +148,7 @@ const getSliderConfigBySchema = (schemaFilter: SchemaFilter) => {
   }
 }
 
-const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): number[] => {
+const getRangeLimitsBySchema = (schemaFilter: DataviewFilterConfig): number[] => {
   const { options } = schemaFilter
   const optionValues = options.map(({ id }) => parseFloat(id)).sort((a, b) => a - b)
 
@@ -166,7 +166,7 @@ const getRangeLimitsBySchema = (schemaFilter: SchemaFilter): number[] => {
   ]
 }
 
-const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
+const getRangeBySchema = (schemaFilter: DataviewFilterConfig): number[] => {
   const { options, optionsSelected, unit } = schemaFilter
   const optionValues = options.map(({ id }) => getValueByUnit(id, { unit })).sort((a, b) => a - b)
   const { min, max } = getSliderConfigBySchema(schemaFilter)
@@ -199,7 +199,7 @@ const getRangeBySchema = (schemaFilter: SchemaFilter): number[] => {
   return values
 }
 
-const UNSORTED_FILTERS: SupportedDatasetSchema[] = ['speed', 'elevation', 'vessel-groups']
+const UNSORTED_FILTERS: SupportedDatasetFilter[] = ['speed', 'elevation', 'vessel-groups']
 
 function LayerSchemaFilter({
   schemaFilter,

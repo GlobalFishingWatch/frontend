@@ -57,27 +57,30 @@ export function useDatasetMetadata() {
     })
   }, [])
 
-  const setDatasetMetadataSchema = useCallback((newSchemaEntry: Record<string, DatasetFilters>) => {
-    setDatasetMetadataState((meta = {} as DatasetMetadata) => {
-      // TODO:DR this is BROKEN, fix it!
-      return {
-        ...meta,
-        schema: {
-          ...meta?.filters,
-          ...newSchemaEntry,
-        },
-      }
-    })
-  }, [])
+  const setDatasetMetadataFilters = useCallback(
+    (newFilterEntry: Record<string, DatasetFilters>) => {
+      setDatasetMetadataState((meta = {} as DatasetMetadata) => {
+        // TODO:DR this is BROKEN, fix it!
+        return {
+          ...meta,
+          filters: {
+            ...meta?.filters,
+            ...newFilterEntry,
+          },
+        }
+      })
+    },
+    []
+  )
 
   return useMemo(
     () => ({
       datasetMetadata,
       setDatasetMetadata,
       setDatasetMetadataConfig,
-      setDatasetMetadataSchema,
+      setDatasetMetadataFilters,
     }),
-    [datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig, setDatasetMetadataSchema]
+    [datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig, setDatasetMetadataFilters]
   )
 }
 

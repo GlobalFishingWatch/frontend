@@ -4,18 +4,14 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import type {
-  Dataset,
-  DatasetGeometryType,
-  FrontendConfiguration,
-} from '@globalfishingwatch/api-types'
+import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { Button, Modal } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import { getDatasetAllowedFields } from 'features/datasets/datasets.utils'
+import { getDatasetFiltersAllowed } from 'features/datasets/datasets.utils'
 import { getFinalDatasetFromMetadata } from 'features/datasets/upload/datasets-upload.utils'
 import NewPointsDataset from 'features/datasets/upload/NewPointsDataset'
 import NewPolygonDataset from 'features/datasets/upload/NewPolygonDataset'
@@ -123,7 +119,7 @@ function NewDataset() {
                 ).reduce(
                   (acc, [key, value]) => {
                     // TODO:DR test this
-                    const fieldsAllowed = getDatasetAllowedFields(dataset)
+                    const fieldsAllowed = getDatasetFiltersAllowed(dataset)
                     if (fieldsAllowed.includes(key)) {
                       acc[key] = value
                     }

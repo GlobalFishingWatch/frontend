@@ -8,8 +8,8 @@ import { InputDate, InputText, MultiSelect, Select } from '@globalfishingwatch/u
 
 import { AVAILABLE_END, AVAILABLE_START } from 'data/config'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import type { SchemaFilter, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
-import { getFiltersBySchema } from 'features/datasets/datasets.utils'
+import type { DataviewFilterConfig, SupportedDatasetFilter } from 'features/datasets/datasets.utils'
+import { getDataviewFilterConfig } from 'features/datasets/datasets.utils'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import {
   ADVANCED_SEARCH_FIELDS,
@@ -51,7 +51,7 @@ const getIncompatibleFiltersBySelection = ({ id, values }: ImcompatibleFilter) =
 }
 
 const isIncompatibleFilterBySelection = (
-  schemaFilter: SchemaFilter,
+  schemaFilter: DataviewFilterConfig,
   filters: VesselSearchState
 ) => {
   const { incompatible } =
@@ -109,7 +109,7 @@ function SearchAdvancedFilters() {
     () =>
       schemaFilterIds.map((id) => {
         const isSharedSelectionSchema = FILTERS_WITH_SHARED_SELECTION_COMPATIBILITY.includes(id)
-        return getFiltersBySchema(dataview, id as SupportedDatasetSchema, {
+        return getDataviewFilterConfig(dataview, id as SupportedDatasetFilter, {
           ...(isSharedSelectionSchema && {
             schemaOrigin: infoSource || 'all',
             compatibilityOperation: 'some',
@@ -126,7 +126,7 @@ function SearchAdvancedFilters() {
       // when not valid we need to remove the filter from the search
       const newDataview = getSearchDataview(datasets, searchFilters, sources)
       const newSchemaFilters = schemaFilterIds.map((id) =>
-        getFiltersBySchema(newDataview, id as any, { isGuestUser })
+        getDataviewFilterConfig(newDataview, id as any, { isGuestUser })
       )
       const notCompatibleSchemaFilters = newSchemaFilters.flatMap(({ id, disabled }) => {
         return disabled && (searchFilters as any)[id] !== undefined ? id : []
