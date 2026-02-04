@@ -1,13 +1,18 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import cx from 'classnames'
 
 import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import type { ChoiceOption } from '@globalfishingwatch/ui-components'
-import { Button, Choice, TextArea } from '@globalfishingwatch/ui-components'
+import { Button, Choice, Spinner, TextArea } from '@globalfishingwatch/ui-components'
 
 import { PATH_BASENAME } from 'data/config'
-import { selectIsDownloadActivityLoading } from 'features/download/downloadActivity.slice'
+import {
+  selectIsDownloadActivityFinished,
+  selectIsDownloadActivityLoading,
+} from 'features/download/downloadActivity.slice'
+import ActivityDownloadError from 'features/download/DownloadActivityError'
 import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import type { ContactConsent, FeedbackFormData } from 'pages/api/downloadSurvey'
@@ -19,15 +24,18 @@ export const DISABLE_DOWNLOAD_SURVEY = 'disableDownloadSurvey'
 function DownloadSurvey({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation()
   const isDownloadLoading = useSelector(selectIsDownloadActivityLoading)
+  const isDownloadFinished = useSelector(selectIsDownloadActivityFinished)
   const userData = useSelector(selectUserData)
   const userGroups = useSelector(selectUserGroupsClean)
   const [loading, setLoading] = useState(false)
+  const [sent, setSent] = useState(false)
   const [usageIntent, setUsageIntent] = useState('')
   const [disableDownloadSurvey, setDisableDownloadSurvey] = useLocalStorage(
     DISABLE_DOWNLOAD_SURVEY,
     false
   )
   const [contactConsent, setContactConsent] = useState<ContactConsent>('yes')
+
   const contactConsentOptions: ChoiceOption[] = useMemo(
     () => [
       { id: 'yes', label: t((t) => t.download.survey.contactPermissionYes) },
@@ -36,14 +44,21 @@ function DownloadSurvey({ onClose }: { onClose: () => void }) {
     [t]
   )
 
+  useEffect(() => {
+    if (sent && isDownloadFinished) {
+      onClose()
+    }
+  }, [sent, isDownloadFinished, onClose])
+
   const onConfirm = useCallback(async () => {
     setLoading(true)
+    const { firstName, lastName, email, organization } = userData || {}
     const surveyAnswer: FeedbackFormData = {
       date: new Date().toISOString(),
-      name: `${userData?.firstName} ${userData?.lastName}`,
-      email: userData?.email as string,
+      name: `${firstName} ${lastName}`,
+      email: email as string,
       groups: (userGroups || []).join(', '),
-      organization: userData?.organization || '',
+      organization: organization || '',
       usageIntent,
       contactConsent,
     }
@@ -59,8 +74,11 @@ function DownloadSurvey({ onClose }: { onClose: () => void }) {
       throw new Error(data.message || 'Something went wrong')
     }
     setLoading(false)
-    onClose()
-  }, [contactConsent, onClose, usageIntent, userData, userGroups])
+    setSent(true)
+    if (isDownloadFinished) {
+      onClose()
+    }
+  }, [contactConsent, isDownloadFinished, onClose, usageIntent, userData, userGroups])
 
   const toggleDontShowAgain = () => {
     setDisableDownloadSurvey(!disableDownloadSurvey)
@@ -93,34 +111,46 @@ function DownloadSurvey({ onClose }: { onClose: () => void }) {
         />
       </div>
       <div className={styles.footer}>
-        <div className={styles.disableSection}>
-          <input
-            id={DISABLE_DOWNLOAD_SURVEY}
-            type="checkbox"
-            onChange={toggleDontShowAgain}
-            className={styles.disableCheckbox}
-            checked={disableDownloadSurvey}
-          />
-          <label className={styles.disableLabel} htmlFor={DISABLE_DOWNLOAD_SURVEY}>
-            {t((t) => t.common.welcomePopupDisable)}
-          </label>
-        </div>
+        {sent ? (
+          <ActivityDownloadError />
+        ) : (
+          <div className={styles.disableSection}>
+            <input
+              id={DISABLE_DOWNLOAD_SURVEY}
+              type="checkbox"
+              onChange={toggleDontShowAgain}
+              className={styles.disableCheckbox}
+              checked={disableDownloadSurvey}
+            />
+            <label className={styles.disableLabel} htmlFor={DISABLE_DOWNLOAD_SURVEY}>
+              {t((t) => t.common.welcomePopupDisable)}
+            </label>
+          </div>
+        )}
         <Button
-          onClick={onClose}
-          className={styles.downloadBtn}
+          onClick={isDownloadLoading ? undefined : onClose}
           type="secondary"
-          loading={isDownloadLoading}
+          className={cx(styles.downloadBtn, { [styles.nonInteractive]: isDownloadLoading })}
         >
-          {t((t) => t.common.dismiss)}
+          {isDownloadLoading ? (
+            <p className={styles.flex}>
+              <Spinner size="small" />
+              {t((t) => t.download.downloading)}
+            </p>
+          ) : (
+            t((t) => t.common.dismiss)
+          )}
         </Button>
-        <Button
-          onClick={onConfirm}
-          className={styles.downloadBtn}
-          disabled={usageIntent === ''}
-          loading={loading}
-        >
-          {t((t) => t.common.confirm)}
-        </Button>
+        {!sent && (
+          <Button
+            onClick={onConfirm}
+            className={styles.downloadBtn}
+            disabled={usageIntent === ''}
+            loading={loading}
+          >
+            {t((t) => t.common.confirm)}
+          </Button>
+        )}
       </div>
     </div>
   )

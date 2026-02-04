@@ -22,11 +22,22 @@
   margin-top: auto;
   display: flex;
   gap: var(--space-S);
+  justify-content: flex-end;
 }
 
 .disableSection {
   display: flex;
   align-items: center;
   margin-right: auto;
+  gap: var(--space-S);
+}
+
+.nonInteractive {
+  cursor: default;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
   gap: var(--space-S);
 }
