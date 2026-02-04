@@ -176,7 +176,6 @@ export const getTrackFromList = (data: DataList, dataset: DatasetMetadata) => {
 }
 
 export const getGeojsonFromPointsList = (data: Record<string, any>[], dataset: DatasetMetadata) => {
-  // TODO:DR test this is saved into userContextLayerV1 or contextLayerV1
   const { idProperty } = getDatasetConfiguration(dataset, 'userContextLayerV1')
   const timeFilterType = getDatasetConfigurationProperty({ dataset, property: 'timeFilterType' })
   return pointsListToGeojson(data, {

@@ -69,39 +69,44 @@ export const getMetadataFromDataset = (dataset: Dataset): DatasetMetadata => {
   }
 }
 
-const getBaseDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
-  const filter = getDatasetFilters(data, { includeEnum: true })
+const getBaseDatasetMetadata = ({
+  name,
+  data,
+  sourceFormat,
+}: ExtractMetadataProps): Partial<Dataset> & { public: boolean } => {
+  const userContext = getDatasetFilters(data, { includeEnum: true })
   return {
     name,
     public: true,
     category: DatasetCategory.Context,
     type: DatasetTypes.UserContext,
-    filter,
+    filters: { userContext },
     configuration: {
       frontend: {
         sourceFormat,
       },
     } as DatasetConfiguration,
-  } as Partial<Dataset>
+  }
 }
 
 export const getTracksDatasetMetadata = ({ name, data, sourceFormat }: ExtractMetadataProps) => {
   const baseMetadata = getBaseDatasetMetadata({ name, data, sourceFormat })
   const guessedColumns = guessColumnsFromFilters(baseMetadata.filters)
+  const configuration: DatasetConfiguration = {
+    frontend: {
+      sourceFormat,
+      latitude: guessedColumns.latitude || undefined,
+      longitude: guessedColumns.longitude || undefined,
+      timestamp: guessedColumns.timestamp || undefined,
+      timeFilterType: guessedColumns.timestamp ? 'date' : undefined,
+      startTime: guessedColumns.timestamp || undefined,
+      geometryType: 'tracks' as DatasetGeometryType,
+    },
+  }
   return {
     ...baseMetadata,
     type: DatasetTypes.UserTracks,
-    configuration: {
-      frontend: {
-        sourceFormat,
-        latitude: guessedColumns.latitude,
-        longitude: guessedColumns.longitude,
-        timestamp: guessedColumns.timestamp,
-        timeFilterType: guessedColumns.timestamp ? 'date' : null,
-        startTime: guessedColumns.timestamp || null,
-        geometryType: 'tracks' as DatasetGeometryType,
-      },
-    } as DatasetConfiguration,
+    configuration,
   }
 }
 
@@ -110,21 +115,24 @@ export const getPointsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMe
   const guessedColumns = guessColumnsFromFilters(baseMetadata.filters)
   const isNotGeoStandard = data.type !== 'FeatureCollection'
   const baseFrontendConfig = getDatasetConfiguration(baseMetadata)
+  const configuration: DatasetConfiguration = {
+    userContextLayerV1: {
+      format: 'GEOJSON',
+    },
+    frontend: {
+      ...(baseFrontendConfig && baseFrontendConfig),
+      ...(isNotGeoStandard && { longitude: guessedColumns.longitude || undefined }),
+      ...(isNotGeoStandard && { latitude: guessedColumns.latitude || undefined }),
+      sourceFormat,
+      timestamp: guessedColumns.timestamp as string,
+      timeFilterType: guessedColumns.timestamp ? 'date' : undefined,
+      startTime: guessedColumns.timestamp as string,
+      geometryType: 'points' as DatasetGeometryType,
+    },
+  }
   return {
     ...baseMetadata,
-    configuration: {
-      format: 'geojson',
-      frontend: {
-        ...(baseFrontendConfig && baseFrontendConfig),
-        ...(isNotGeoStandard && { longitude: guessedColumns.longitude }),
-        ...(isNotGeoStandard && { latitude: guessedColumns.latitude }),
-        sourceFormat,
-        timestamp: guessedColumns.timestamp,
-        timeFilterType: guessedColumns.timestamp ? 'date' : null,
-        startTime: guessedColumns.timestamp || null,
-        geometryType: 'points' as DatasetGeometryType,
-      },
-    } as DatasetConfiguration,
+    configuration,
   }
 }
 
@@ -135,22 +143,25 @@ export const getPolygonsDatasetMetadata = ({ name, data, sourceFormat }: Extract
   const timestampGuessedValid =
     guessedColumns.timestamp &&
     data?.features?.some((f: any) => {
-      const value = f.properties?.[guessedColumns.timestamp]
+      const value = f.properties?.[guessedColumns.timestamp as string]
       return getUTCDate(value)?.toString() !== 'Invalid Date'
     })
+  const configuration: DatasetConfiguration = {
+    userContextLayerV1: {
+      format: 'GEOJSON',
+    },
+    frontend: {
+      ...(baseFrontendConfig && baseFrontendConfig),
+      sourceFormat,
+      timeFilterType: timestampGuessedValid ? 'date' : undefined,
+      timestamp: (timestampGuessedValid && guessedColumns.timestamp) || null,
+      startTime: (timestampGuessedValid && guessedColumns.timestamp) || null,
+      geometryType: 'polygons' as DatasetGeometryType,
+    },
+  }
   return {
     ...baseMetadata,
-    configuration: {
-      format: 'geojson',
-      frontend: {
-        ...(baseFrontendConfig && baseFrontendConfig),
-        sourceFormat,
-        timeFilterType: timestampGuessedValid ? 'date' : null,
-        timestamp: (timestampGuessedValid && guessedColumns.timestamp) || null,
-        startTime: (timestampGuessedValid && guessedColumns.timestamp) || null,
-        geometryType: 'polygons' as DatasetGeometryType,
-      },
-    } as DatasetConfiguration,
+    configuration,
   }
 }
 
@@ -159,7 +170,7 @@ export const getFinalDatasetFromMetadata = (datasetMetadata: DatasetMetadata) =>
     ...datasetMetadata,
     unit: 'TBD',
     subcategory: DatasetSubCategory.Info,
-    filters: getDatasetFiltersClean(datasetMetadata.filters),
+    filters: { userContext: getDatasetFiltersClean(datasetMetadata.filters?.userContext) },
     configuration: getDatasetConfigurationClean(datasetMetadata.configuration),
   }
   const timestampProperty = getDatasetConfigurationProperty({
@@ -182,6 +193,18 @@ export const getFinalDatasetFromMetadata = (datasetMetadata: DatasetMetadata) =>
   return baseDataset
 }
 
+export const getPropertiesIdClean = (properties?: Record<string, any>) => {
+  if (!properties || Object.keys(properties).length === 0) {
+    return {}
+  }
+  return Object.entries(properties).reduce(
+    (acc, value) => {
+      const cleanKey = getFilterIdClean(value[0]) as string
+      return { ...acc, [cleanKey]: value[1] }
+    },
+    {} as Record<string, any>
+  )
+}
 export const parseGeoJsonProperties = <T extends Polygon | Point | LineString>(
   geojson: FeatureCollection<T, GeoJsonProperties>,
   datasetMetadata: DatasetMetadata
@@ -205,10 +228,10 @@ export const parseGeoJsonProperties = <T extends Polygon | Point | LineString>(
           cleanedProperties[propertyKey] = getUTCDateTime(value).toMillis()
         }
       })
-      const properties = getDatasetFiltersClean(cleanedProperties)
       return {
         ...feature,
-        properties,
+        // TODO:DR review if we need to clean the properties
+        properties: getPropertiesIdClean(cleanedProperties),
         geometry:
           (feature.geometry as unknown as GeometryCollection)?.type === 'GeometryCollection'
             ? (union(flatten(feature.geometry))?.geometry as AreaGeometry)

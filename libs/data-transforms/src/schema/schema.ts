@@ -26,7 +26,9 @@ type GetFieldFilterParams = {
 export const MAX_FILTERS_ENUM_VALUES = 100
 export const MAX_FILTERS_ENUM_VALUES_EXCEEDED = 'maximum values exceeded'
 
-export const getFilterIdClean = (id: string | string[]) => {
+export function getFilterIdClean(id: string): string
+export function getFilterIdClean(id: string[]): string[]
+export function getFilterIdClean(id: string | string[]): string | string[] {
   if (Array.isArray(id)) {
     return id.map((d) => snakeCase(d))
   }
@@ -126,18 +128,13 @@ export const getFieldFilter = (
   return null
 }
 
-export const getDatasetFiltersClean = (filters?: DatasetFilters): Record<string, DatasetFilter> => {
-  if (!filters || Object.keys(filters).length === 0) {
-    return {}
+export const getDatasetFiltersClean = (filters?: DatasetFilter[]): DatasetFilter[] => {
+  if (!filters || filters.length === 0) {
+    return []
   }
-  const flatFilters = getFlattenDatasetFilters(filters)
-  return flatFilters.reduce(
-    (acc, value) => {
-      const cleanKey = getFilterIdClean(value.id) as string
-      return { ...acc, [cleanKey]: { ...value, id: cleanKey, label: value.label || cleanKey } }
-    },
-    {} as Record<string, DatasetFilter>
-  )
+  return filters.map((filter) => {
+    return { ...filter, id: getFilterIdClean(filter.id), label: filter.label || filter.id }
+  })
 }
 
 const CONFIGURATION_KEYS_TO_CLEAN: (keyof FrontendConfiguration)[] = [
@@ -159,7 +156,7 @@ export const getDatasetConfigurationClean = (
   const frontend = Object.entries(configuration.frontend || {}).reduce((acc, [key, value]) => {
     const cleanValue = CONFIGURATION_KEYS_TO_CLEAN.includes(key as keyof FrontendConfiguration)
       ? typeof value === 'string' || Array.isArray(value)
-        ? getFilterIdClean(value as string | string[])
+        ? getFilterIdClean(value as string)
         : value
       : value
     return { ...acc, [key]: cleanValue }
@@ -173,26 +170,20 @@ export const getDatasetConfigurationClean = (
 export const getDatasetFiltersFromGeojson = (
   geojson: FeatureCollection,
   getFieldFilterParams = {} as GetFieldFilterParams
-): Record<string, DatasetFilter> => {
+): DatasetFilter[] => {
   const fields = geojson?.features?.[0]?.properties && Object.keys(geojson.features[0].properties)
   if (!fields?.length) {
-    return {}
+    return []
   }
-  const filters: Record<string, DatasetFilter> = fields.reduce(
-    (acc: Record<string, DatasetFilter>, field: string): Record<string, DatasetFilter> => {
-      const uniqDataValues = uniq(geojson.features.flatMap((d) => d.properties?.[field] || []))
-      const filter = getFieldFilter(field, uniqDataValues, getFieldFilterParams)
-      if (filter) {
-        const cleanField = snakeCase(field)
-        return {
-          ...acc,
-          [cleanField]: { ...filter, id: cleanField, label: filter.label || cleanField },
-        }
-      }
-      return acc
-    },
-    {}
-  )
+  const filters: DatasetFilter[] = fields.flatMap((field) => {
+    const uniqDataValues = uniq(geojson.features.flatMap((d) => d.properties?.[field] || []))
+    const filter = getFieldFilter(field, uniqDataValues, getFieldFilterParams)
+    if (!filter) {
+      return []
+    }
+    const cleanField = snakeCase(field)
+    return { ...filter, id: cleanField, label: filter.label || cleanField }
+  })
   return filters
 }
 
@@ -200,37 +191,31 @@ type ListedData = Record<string, any>[]
 export const getDatasetFiltersFromList = (
   data: ListedData,
   getFieldFilterParams = {} as GetFieldFilterParams
-): Record<string, DatasetFilter> => {
+): DatasetFilter[] => {
   const fields = Object.keys(data[0])
   if (!fields?.length) {
-    return {}
+    return []
   }
-  const filters: Record<string, DatasetFilter> = fields.reduce(
-    (acc: Record<string, DatasetFilter>, field: string): Record<string, DatasetFilter> => {
-      const uniqDataValues = uniq(data.flatMap((d) => d[field] || []))
-      const filter = getFieldFilter(field, uniqDataValues, getFieldFilterParams)
-      if (filter) {
-        const cleanField = snakeCase(field)
-        return {
-          ...acc,
-          [cleanField]: { ...filter, id: cleanField, label: filter.label || cleanField },
-        }
-      }
-      return acc
-    },
-    {}
-  )
+  const filters: DatasetFilter[] = fields.flatMap((field) => {
+    const uniqDataValues = uniq(data.flatMap((d) => d[field] || []))
+    const filter = getFieldFilter(field, uniqDataValues, getFieldFilterParams)
+    if (!filter) {
+      return []
+    }
+    const cleanField = getFilterIdClean(field)
+    return { ...filter, id: cleanField, label: filter.label || cleanField }
+  })
   return filters
 }
 
 export const getDatasetFilters = (
   data: ListedData | FeatureCollection,
   getFieldFilterParams = {} as GetFieldFilterParams
-): Record<string, DatasetFilter> => {
+): DatasetFilter[] => {
   if (Array.isArray(data)) {
     return getDatasetFiltersFromList(data, getFieldFilterParams)
   } else if (data.type === 'FeatureCollection') {
     return getDatasetFiltersFromGeojson(data, getFieldFilterParams)
   }
-  return {}
+  return []
 }

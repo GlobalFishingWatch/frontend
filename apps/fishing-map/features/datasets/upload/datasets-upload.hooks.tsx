@@ -2,19 +2,14 @@ import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import type { MultiSelectOption } from '@globalfishingwatch/api-client'
-import type {
-  DatasetConfiguration,
-  DatasetFilters,
-  DatasetFilterType,
-  FrontendConfiguration,
-} from '@globalfishingwatch/api-types'
+import type { DatasetConfiguration, DatasetFilterType } from '@globalfishingwatch/api-types'
 import {
   MAX_FILTERS_ENUM_VALUES,
   MAX_FILTERS_ENUM_VALUES_EXCEEDED,
 } from '@globalfishingwatch/data-transforms'
 import {
   getDatasetConfiguration,
-  getDatasetConfigurationProperty,
+  getFlattenDatasetFilters,
 } from '@globalfishingwatch/datasets-client'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 
@@ -57,30 +52,13 @@ export function useDatasetMetadata() {
     })
   }, [])
 
-  const setDatasetMetadataFilters = useCallback(
-    (newFilterEntry: Record<string, DatasetFilters>) => {
-      setDatasetMetadataState((meta = {} as DatasetMetadata) => {
-        // TODO:DR this is BROKEN, fix it!
-        return {
-          ...meta,
-          filters: {
-            ...meta?.filters,
-            ...newFilterEntry,
-          },
-        }
-      })
-    },
-    []
-  )
-
   return useMemo(
     () => ({
       datasetMetadata,
       setDatasetMetadata,
       setDatasetMetadataConfig,
-      setDatasetMetadataFilters,
     }),
-    [datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig, setDatasetMetadataFilters]
+    [datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig]
   )
 }
 
@@ -92,18 +70,18 @@ export function useDatasetMetadataOptions(
   const { t } = useTranslation()
   const filters = datasetMetadata?.filters
   const fieldsOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
-    if (!filters) return []
-
-    const options = Object.entries(filters).flatMap(([field, fieldFilter]) => {
+    if (!filters) {
       return []
-      // TODO:DR this is BROKEN, fix it!
-      // if (filterTypes.length > 0 && !filterTypes.includes(fieldFilter.type) {
-      //   return []
-      // }
-      // return {
-      //   id: field,
-      //   label: <DatasetFieldLabel field={field} fieldFilter={fieldFilter} />,
-      // }
+    }
+    const flattenedFilters = getFlattenDatasetFilters(filters)
+    const options = flattenedFilters.flatMap((filter) => {
+      if (filterTypes.length > 0 && !filterTypes.includes(filter.type)) {
+        return []
+      }
+      return {
+        id: filter.id,
+        label: <DatasetFieldLabel field={filter.id} fieldFilter={filter} />,
+      }
     })
 
     return options.sort(sortFields)

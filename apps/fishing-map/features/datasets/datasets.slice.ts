@@ -211,7 +211,6 @@ export const upsertDatasetThunk = createAsyncThunk<
   async ({ dataset, file, createAsPublic, addIdSuffix = true }, { rejectWithValue }) => {
     try {
       let filePath
-      // TODO:DR this is BROKEN, fix it!
       const {
         format,
         idProperty,
@@ -229,9 +228,6 @@ export const upsertDatasetThunk = createAsyncThunk<
         await fetch(url, { method: 'PUT', body: file })
       }
 
-      // Properties that are to be used as SQL params on the server
-      // need to be lowercase
-      const propertyToInclude = idProperty?.toLowerCase() || ''
       const suffix = addIdSuffix ? `-${Date.now()}` : ''
       const generatedId = dataset.id || `${kebabCase(dataset.name || '')}${suffix}`
       const id = createAsPublic ? `${PUBLIC_SUFIX}-${generatedId}` : generatedId
@@ -246,8 +242,13 @@ export const upsertDatasetThunk = createAsyncThunk<
         ...(isPatchDataset && file && { status: 'importing' }),
         configuration: {
           ...dataset.configuration,
-          ...(propertyToInclude && { propertyToInclude }),
-          filePath: filePath || datasetFilePath,
+          userContextLayerV1: {
+            ...dataset.configuration?.userContextLayerV1,
+            // Properties that are to be used as SQL params on the server
+            // need to be lowercase
+            ...(idProperty && { idProperty: idProperty?.toLowerCase() || '' }),
+            filePath: filePath || datasetFilePath,
+          },
         },
       }
       delete (datasetWithFilePath as any).public
