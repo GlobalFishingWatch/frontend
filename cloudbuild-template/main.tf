@@ -161,6 +161,6 @@ resource "google_cloudbuild_trigger" "trigger" {
       machine_type = var.machine_type == null ? null : var.machine_type
     }
 
-    timeout = "1800s"
+    timeout = var.run_e2e_tests_for_fishing_map ? "15m" : "1800s"
   }
 }
