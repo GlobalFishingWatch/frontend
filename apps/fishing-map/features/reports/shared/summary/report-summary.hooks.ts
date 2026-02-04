@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-import type { GetSchemaInDataviewParams } from 'features/datasets/datasets.utils'
-import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
+import type { GetFiltersInDataviewParams } from 'features/dataviews/dataviews.filters'
+import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
@@ -13,10 +13,10 @@ function getHasDataviewSchemaFilters(
   dataview: UrlDataviewInstance,
   { isVesselGroupReportLocation = false, vesselGroups = [] } = {} as {
     isVesselGroupReportLocation?: boolean
-    vesselGroups?: GetSchemaInDataviewParams['vesselGroups']
+    vesselGroups?: GetFiltersInDataviewParams['vesselGroups']
   }
 ) {
-  const { filtersAllowed: schemaFiltersAllowed } = getSchemaFiltersInDataview(dataview, {
+  const { filtersAllowed: schemaFiltersAllowed } = getFiltersInDataview(dataview, {
     vesselGroups,
   })
   const filtersAllowed = isVesselGroupReportLocation

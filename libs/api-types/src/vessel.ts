@@ -1,4 +1,4 @@
-export interface Authorization {
+export type Authorization = {
   source: string
   startDate: string
   endDate: string
@@ -17,7 +17,7 @@ export type VesselTypeV2 =
   | 'support'
   | 'other'
 
-export interface Vessel {
+export type Vessel = {
   authorizations?: Authorization[]
   builtYear?: string
   callsign?: string
@@ -51,12 +51,12 @@ export interface Vessel {
   years?: number[]
 }
 
-export interface VesselSearch extends Vessel {
+export type VesselSearch = Vessel & {
   dataset: string
   source: string // Label of the dataset
   vesselMatchId: string
 }
 
-export interface RelatedVesselSearchMerged extends VesselSearch {
+export type RelatedVesselSearchMerged = VesselSearch & {
   relatedVessels: VesselSearch[]
 }

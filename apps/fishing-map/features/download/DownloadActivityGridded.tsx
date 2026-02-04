@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import area from '@turf/area'
 import cx from 'classnames'
 
+import { checkDatasetReportPermission } from '@globalfishingwatch/datasets-client'
 import type { ChoiceOption, TooltipPlacement } from '@globalfishingwatch/ui-components'
 import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components'
 
@@ -11,11 +12,8 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import type { AreaKeyId } from 'features/areas/areas.slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
-import {
-  checkDatasetReportPermission,
-  getActiveDatasetsInDataview,
-  getDatasetsReportNotSupported,
-} from 'features/datasets/datasets.utils'
+import { getDatasetsReportNotSupported } from 'features/datasets/datasets.permissions'
+import { getActiveDatasetsInDataview } from 'features/datasets/datasets.utils'
 import {
   selectActiveHeatmapDowloadDataviewsByTab,
   selectActiveHeatmapVesselDatasets,

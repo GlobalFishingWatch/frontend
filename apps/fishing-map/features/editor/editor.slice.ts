@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { castDraft } from 'immer'
 import { stringify } from 'qs'
 import type { RootState } from 'reducers'
 
@@ -69,7 +70,7 @@ const editorSlice = createSlice({
     builder.addCase(fetchEditorDataviewsThunk.fulfilled, (state, action) => {
       state.dataviews.status = AsyncReducerStatus.Finished
       if (action.payload) {
-        state.dataviews.data = action.payload
+        state.dataviews.data = castDraft(action.payload)
       }
     })
     builder.addCase(fetchEditorDataviewsThunk.rejected, (state) => {
