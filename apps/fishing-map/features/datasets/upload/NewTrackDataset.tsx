@@ -8,6 +8,7 @@ import { checkRecordValidity } from '@globalfishingwatch/data-transforms'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
+  getDatasetFiltersAllowed,
 } from '@globalfishingwatch/datasets-client'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
 import {
@@ -19,7 +20,6 @@ import {
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
 
-import { getDatasetFiltersAllowed } from 'features/datasets/datasets.utils'
 import type { DataList } from 'features/datasets/upload/datasets-parse.utils'
 import { getDatasetParsed, getTrackFromList } from 'features/datasets/upload/datasets-parse.utils'
 import {

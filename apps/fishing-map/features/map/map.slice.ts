@@ -24,7 +24,11 @@ import {
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import {
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+  resolveEndpoint,
+} from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDataviewSqlFiltersResolved } from '@globalfishingwatch/dataviews-client'
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
@@ -44,11 +48,7 @@ import {
   getDatasetByIdsThunk,
   selectDatasetById,
 } from 'features/datasets/datasets.slice'
-import {
-  getRelatedDatasetByType,
-  getRelatedDatasetsByType,
-  getVesselGroupInDataview,
-} from 'features/datasets/datasets.utils'
+import { getVesselGroupInDataview } from 'features/datasets/datasets.utils'
 import {
   selectActiveDetectionsDataviews,
   selectEventsDataviews,

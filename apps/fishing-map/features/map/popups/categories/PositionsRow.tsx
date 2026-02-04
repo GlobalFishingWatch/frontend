@@ -6,7 +6,10 @@ import { uniq } from 'es-toolkit'
 
 import type { DetectionThumbnail } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfiguration,
+  getRelatedDatasetByType,
+} from '@globalfishingwatch/datasets-client'
 import type { FourwingsPositionsPickingObject } from '@globalfishingwatch/deck-layers'
 import {
   getIsActivityPositionMatched,
@@ -15,7 +18,6 @@ import {
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import I18nDate from 'features/i18n/i18nDate'

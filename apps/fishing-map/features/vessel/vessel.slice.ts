@@ -20,7 +20,11 @@ import type {
   VesselType,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
-import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import {
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+  resolveEndpoint,
+} from '@globalfishingwatch/datasets-client'
 import { setResource } from '@globalfishingwatch/dataviews-client'
 
 import { PROFILE_DATAVIEW_SLUGS } from 'data/workspaces'
@@ -30,7 +34,6 @@ import {
   selectDatasetById,
 } from 'features/datasets/datasets.slice'
 import type { VesselInstanceDatasets } from 'features/datasets/datasets.utils'
-import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import {
   getVesselDataviewInstance,

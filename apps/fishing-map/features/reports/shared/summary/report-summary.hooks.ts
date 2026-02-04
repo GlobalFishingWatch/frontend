@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
-import type { GetFiltersInDataviewParams } from 'features/datasets/datasets.utils'
-import { getFiltersInDataview } from 'features/datasets/datasets.utils'
+import type { GetFiltersInDataviewParams } from 'features/dataviews/dataviews.filters'
+import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'

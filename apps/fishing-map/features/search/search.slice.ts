@@ -17,14 +17,14 @@ import type {
   RegistryExtraFields,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, EndpointId, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
-
-import { selectDatasetById } from 'features/datasets/datasets.slice'
 import {
   getDatasetFiltersAllowed,
   getRelatedDatasetByType,
   isFilterInFiltersAllowed,
-} from 'features/datasets/datasets.utils'
+  resolveEndpoint,
+} from '@globalfishingwatch/datasets-client'
+
+import { selectDatasetById } from 'features/datasets/datasets.slice'
 import { ADVANCED_SEARCH_FIELDS } from 'features/search/advanced/advanced-search.utils'
 import type { SearchType } from 'features/search/search.config'
 import type { VesselSearchState } from 'features/search/search.types'
@@ -95,7 +95,7 @@ export const fetchVesselSearchThunk = createAsyncThunk(
 
         const fields = andCombinedFields.flatMap((field) => {
           const isInFieldsAllowed = isFilterInFiltersAllowed({
-            field,
+            filter: field,
             filtersAllowed: fieldsAllowed,
             infoSource: filters.infoSource,
           })

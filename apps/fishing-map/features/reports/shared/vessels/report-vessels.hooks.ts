@@ -9,11 +9,10 @@ import type {
   Resource,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, ResourceStatus } from '@globalfishingwatch/api-types'
-import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import { getRelatedDatasetsByType, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import {
   getVesselDataview,
   getVesselDataviewInstance,

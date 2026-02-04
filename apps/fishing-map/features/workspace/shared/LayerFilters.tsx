@@ -6,6 +6,7 @@ import { debounce } from 'es-toolkit'
 
 import type { FilterOperator } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
 import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import {
   isHeatmapVectorsDataview,
@@ -21,13 +22,12 @@ import {
   selectActivityVisualizationMode,
   selectDetectionsVisualizationMode,
 } from 'features/app/selectors/app.selectors'
-import type { SupportedDatasetFilter } from 'features/datasets/datasets.utils'
 import {
   getCommonFiltersInDataview,
   getFiltersInDataview,
   getIncompatibleFilterSelection,
   VESSEL_GROUPS_MODAL_ID,
-} from 'features/datasets/datasets.utils'
+} from 'features/dataviews/dataviews.filters'
 import { selectDataviewInstancesByCategory } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { getPlaceholderBySelections } from 'features/i18n/utils'

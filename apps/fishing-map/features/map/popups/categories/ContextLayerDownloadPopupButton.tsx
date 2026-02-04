@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishingwatch/deck-layers'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import { getActivityDatasetsReportSupported } from 'features/datasets/datasets.utils'
+import { getActivityDatasetsReportSupported } from 'features/datasets/datasets.permissions'
 import {
   getIsDataviewReportSupported,
   selectActiveHeatmapDowloadDataviews,
