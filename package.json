@@ -335,6 +335,9 @@
     "*.{css, scss}": [
       "prettier --write",
       "stylelint --fix"
+    ],
+    "apps/fishing-map/cloudbuild/**/*.tf": [
+      "bash -c 'terraform -chdir=apps/fishing-map/cloudbuild apply'"
     ]
   },
   "packageManager": "yarn@4.12.0"

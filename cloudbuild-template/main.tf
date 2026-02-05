@@ -42,20 +42,40 @@ resource "google_cloudbuild_trigger" "trigger" {
 
   service_account = "projects/${local.project}/serviceAccounts/cloudbuild@gfw-int-infrastructure.iam.gserviceaccount.com"
   build {
+    # Make secrets available during build
+    dynamic "available_secrets" {
+      for_each = length(var.build_secrets) > 0 ? [1] : []
+      content {
+        dynamic "secret_manager" {
+          for_each = var.build_secrets
+          content {
+            env          = secret_manager.key
+            version_name = "${secret_manager.value}/versions/latest"
+          }
+        }
+      }
+    }
+
     step {
-      id   = "Build Image"
-      name = "gcr.io/cloud-builders/docker"
-      args = concat(
-        [
-          "build",
-          "-t",
-          var.docker_image,
-          "-f",
-          "apps/${var.app_name}/Dockerfile",
-        ],
-        flatten([for env_var in var.set_env_vars_build : ["--build-arg", env_var]]),
-        ["."]
-      )
+      id         = "Build Image"
+      name       = "gcr.io/cloud-builders/docker"
+      entrypoint = "bash"
+      # Inject build secrets as environment variables (only if secrets are configured)
+      secret_env = length(var.build_secrets) > 0 ? keys(var.build_secrets) : null
+      args = [
+        "-c",
+        join(" ", concat(
+          [
+            "docker build",
+            "-t ${var.docker_image}",
+            "-f apps/${var.app_name}/Dockerfile",
+            "--build-arg COMMIT_SHA=$COMMIT_SHA",
+          ],
+          [for env_var in var.set_env_vars_build : "--build-arg ${env_var}"],
+          [for secret_name, _ in var.build_secrets : format("--build-arg %s=$$%s", secret_name, secret_name)],
+          ["."]
+        ))
+      ]
     }
 
     step {
