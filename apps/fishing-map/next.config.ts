@@ -213,6 +213,11 @@ const configWithSentry = withSentryConfig(configWithNx, {
   silent: false,
   debug: true,
 
+  // Release name - use git commit SHA in CI for proper source map association
+  release: {
+    name: process.env.COMMIT_SHA || process.env.GITHUB_SHA,
+  },
+
   // For all available options, see:
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
@@ -225,7 +230,7 @@ const configWithSentry = withSentryConfig(configWithNx, {
 
   // Delete source maps after uploading to Sentry (keeps them private)
   sourcemaps: {
-    deleteSourcemapsAfterUpload: false,
+    deleteSourcemapsAfterUpload: true,
   },
 
   // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
