@@ -1,4 +1,5 @@
 import { PATH_BASENAME } from 'data/config'
+import { VIIRS_DATAVIEW_INSTANCE_ID, VIIRS_SKYLIGHT_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
 import type { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
   SAR_DATAVIEW_SLUG,
@@ -9,7 +10,7 @@ import {
 
 export const LAYERS_LIBRARY_DETECTIONS: LibraryLayerConfig[] = [
   {
-    id: 'viirs',
+    id: VIIRS_DATAVIEW_INSTANCE_ID,
     dataviewId: VIIRS_MATCH_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/VIIRS.jpg`,
     config: {
@@ -18,7 +19,7 @@ export const LAYERS_LIBRARY_DETECTIONS: LibraryLayerConfig[] = [
     },
   },
   {
-    id: 'viirs-skylight',
+    id: VIIRS_SKYLIGHT_DATAVIEW_INSTANCE_ID,
     dataviewId: VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/VIIRS.jpg`,
     onlyGFWUser: true,

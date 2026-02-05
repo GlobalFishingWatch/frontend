@@ -456,6 +456,7 @@
     "dataPortal": "Voir le portail de téléchargement de données",
     "datasetsNotAllowed": "Vous n'avez pas la permission de télécharger les jeux de données suivants :",
     "descriptionReport": "Vous pouvez télécharger une liste de l'activité ou un bitmap de carte thermique pour cette zone dans différents formats",
+    "downloading": "Downloading",
     "downloadOptions": "Options de téléchargement",
     "doYouNeedAnAPI": "Est-ce que votre application a besoin de données continues ?",
     "errorConcurrentReport": "Votre compte est en cours de création d'un rapport d'analyse, veuillez attendre que le rapport soit terminé avant de télécharger les données.",
@@ -476,6 +477,15 @@
     "monthlyNotAvailable": "Votre plage de temps est inférieure à 1 mois",
     "noHeatmapLayers": "Activez un calque d'activité, de détection ou d'environnement pour télécharger les données correspondant à cette zone",
     "spatialResolution": "Résolution spatiale",
+    "survey": {
+      "contactPermissionLabel": "Would you be open to sharing your story or results later?",
+      "contactPermissionNo": "Not right now",
+      "contactPermissionYes": "Yes, I’d be happy to be contacted",
+      "description": "Could you answer two quick questions? It takes less than a minute and helps us improve the platform.",
+      "intentLabel": "How do you intend to utilize this data?",
+      "intentPlaceholder": "Type your answer here",
+      "title": "While we prepare your file…"
+    },
     "temporalResolution": "Grouper l'heure par",
     "timeRange": "Plage de temps",
     "timerangeTooLong": "La plage de temps maximum est de 1 an",

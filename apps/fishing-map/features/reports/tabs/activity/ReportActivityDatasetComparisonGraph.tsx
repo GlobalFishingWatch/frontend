@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 import { CartesianGrid, ComposedChart, Legend, Line, Tooltip, XAxis, YAxis } from 'recharts'
 
+import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { getContrastSafeColor } from '@globalfishingwatch/responsive-visualizations'
 
 import { tickFormatter } from 'features/reports/report-area/area-reports.utils'
@@ -100,7 +101,8 @@ const ReportActivityDatasetComparisonGraph = ({
     return filterDataBySublayer(data, comparisonDatasets?.main, comparisonDatasets?.compare)
   }, [data, comparisonDatasets?.main, comparisonDatasets?.compare])
 
-  const interval = filteredData[0]?.interval
+  const intervals = filteredData.map((d) => d.interval)
+  const interval = getFourwingsInterval(start, end, intervals)
 
   const dataFormated = useMemo(() => {
     return formatEvolutionData(
