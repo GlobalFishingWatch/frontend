@@ -7,7 +7,8 @@ const MASTRA_API_URL = process.env.NEXT_MASTRA_API_URL
 const WORKSPACES_AGENT_ID = process.env.NEXT_WORKSPACES_AGENT_ID
 
 export const mastra = new MastraClient({
-  baseUrl: MASTRA_API_URL || 'http://localhost:4111',
+  // baseUrl: MASTRA_API_URL || 'http://localhost:4111',
+  baseUrl: 'http://localhost:4111',
 })
 
 const workspacesAgent = mastra.getAgent(WORKSPACES_AGENT_ID!)
@@ -111,7 +112,8 @@ export default async function handler(
       error: '',
     }
     try {
-      if (response.text.startsWith('```json')) {
+      console.log('🚀 ~ response.text:', response.text)
+      if (response.text.startsWith('```json') || response.text.startsWith('{')) {
         const jsonString = response.text.replace('```json\n', '').replace('\n```', '').trim()
         const parsedResponse = JSON.parse(jsonString)
         const { label, links } = (await getWorkspaceConfig(parsedResponse)) || {}

@@ -24,7 +24,12 @@ import { TimebarVisualisations } from 'types'
 import { upperFirst } from 'utils/info'
 
 import type { ConfigurationParams, DatasetType } from '../types'
-import { DEFAULT_WORKSPACE, getDateRangeLabel, getSharedWorkspaceParams } from '../utils'
+import {
+  DEFAULT_WORKSPACE,
+  getDateRangeLabel,
+  getFiltersLabel,
+  getSharedWorkspaceParams,
+} from '../utils'
 
 import { type AreaSearchResult, type AreaType, searchAreas } from './area-search'
 
@@ -120,7 +125,7 @@ function getAreaReportDataviewInstances(
   return dataviewInstances
 }
 
-export async function getAreaWorkspaceConfig(configuration: ConfigurationParams) {
+export async function getAreaReportConfig(configuration: ConfigurationParams) {
   const { area, port } = configuration
   if (area?.name) {
     let areasMatched = searchAreas(area)
@@ -140,7 +145,7 @@ export async function getAreaWorkspaceConfig(configuration: ConfigurationParams)
     }
     const links = areasMatched.slice(0, 10).map((areaMatched) => ({
       url: `/map/${DEFAULT_WORKSPACE}/report/${areaMatched.dataset}/${areaMatched.id}?${stringifyWorkspace(reportParams)}`,
-      message: `${upperFirst(configuration.dataset || '')} in ${areaMatched.label} ${getDateRangeLabel(configuration)}`,
+      message: `${upperFirst(configuration.dataset || '')} in ${areaMatched.label} ${getFiltersLabel(configuration)}${getDateRangeLabel(configuration)}`,
     }))
     return {
       label: 'Area reports',
@@ -149,7 +154,7 @@ export async function getAreaWorkspaceConfig(configuration: ConfigurationParams)
   }
 }
 
-export async function getGlobalReportWorkspaceConfig(configuration: ConfigurationParams) {
+export async function getGlobalReportConfig(configuration: ConfigurationParams) {
   if (configuration.dataset) {
     const reportParams: AnyWorkspaceState = {
       ...getSharedWorkspaceParams(configuration),

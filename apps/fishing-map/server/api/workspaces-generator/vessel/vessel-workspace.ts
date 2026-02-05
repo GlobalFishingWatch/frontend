@@ -5,7 +5,7 @@ import { getSharedWorkspaceParams } from '../utils'
 
 import { searchVessels } from './vessel-search'
 
-export async function getVesselWorkspaceConfig(configuration: ConfigurationParams) {
+export async function getVesselProfileConfig(configuration: ConfigurationParams) {
   const { vessel } = configuration
   if (vessel?.name || vessel?.imo || vessel?.mmsi) {
     const vesselsMatched = await searchVessels(vessel)

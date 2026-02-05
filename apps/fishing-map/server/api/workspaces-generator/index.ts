@@ -1,27 +1,27 @@
-import { getAreaWorkspaceConfig, getGlobalReportWorkspaceConfig } from './area/area-workspace'
-import { getPortWorkspaceConfig } from './port/port-workspace'
-import { getVesselWorkspaceConfig } from './vessel/vessel-workspace'
+import { getAreaReportConfig, getGlobalReportConfig } from './area/area-workspace'
+import { getPortProfileConfig } from './port/port-workspace'
+import { getVesselProfileConfig } from './vessel/vessel-workspace'
 import type { ConfigurationParams } from './types'
 
 export async function getWorkspaceConfig(configuration: ConfigurationParams) {
-  const vesselWorkspace = await getVesselWorkspaceConfig(configuration)
-  if (vesselWorkspace) {
-    return vesselWorkspace
+  const vesselProfile = await getVesselProfileConfig(configuration)
+  if (vesselProfile) {
+    return vesselProfile
   }
 
-  const portWorkspace = await getPortWorkspaceConfig(configuration)
-  if (portWorkspace) {
-    return portWorkspace
+  const portProfile = await getPortProfileConfig(configuration)
+  if (portProfile) {
+    return portProfile
   }
 
-  const areaWorkspace = await getAreaWorkspaceConfig(configuration)
-  if (areaWorkspace) {
-    return areaWorkspace
+  const areaReport = await getAreaReportConfig(configuration)
+  if (areaReport) {
+    return areaReport
   }
 
-  const globalReportWorkspace = await getGlobalReportWorkspaceConfig(configuration)
-  if (globalReportWorkspace) {
-    return globalReportWorkspace
+  const globalReport = await getGlobalReportConfig(configuration)
+  if (globalReport) {
+    return globalReport
   }
 
   return

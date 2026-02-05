@@ -82,6 +82,7 @@ const WorkspaceGenerator = () => {
   const { messages, sendMessage, isLoading, hasError } = useWorkspacesAgent()
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const [rollingMessageIndex, setRollingMessageIndex] = useState(
+    // eslint-disable-next-line react-hooks/purity
     Math.floor(Math.random() * EXAMPLE_MESSAGES.length)
   )
   const rollingMessage = EXAMPLE_MESSAGES[rollingMessageIndex]
@@ -169,7 +170,7 @@ const WorkspaceGenerator = () => {
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Ask GFW workspace generator"
+          placeholder="What do you want to see?"
           disabled={isLoading}
           ref={inputRef}
         />

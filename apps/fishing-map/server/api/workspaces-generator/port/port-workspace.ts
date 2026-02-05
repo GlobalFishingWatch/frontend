@@ -9,7 +9,7 @@ import { DEFAULT_WORKSPACE, getDateRangeLabel, getSharedWorkspaceParams } from '
 
 import { searchPorts } from './port-search'
 
-export async function getPortWorkspaceConfig(configuration: ConfigurationParams) {
+export async function getPortProfileConfig(configuration: ConfigurationParams) {
   const { port } = configuration
   if (port?.name || port?.country) {
     const portsMatched = searchPorts(port)
