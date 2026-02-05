@@ -2,6 +2,8 @@
 import { Fragment, useRef } from 'react'
 import cx from 'classnames'
 
+import { handleOpenImage } from 'utils/img'
+
 import styles from './DetectionThumbnail.module.css'
 
 type DetectionThumbnailProps = {
@@ -89,24 +91,34 @@ export function DetectionThumbnail({ data, scale }: DetectionThumbnailProps) {
     })
   }
   return (
-    <div className={cx(styles.imgContainer)}>
-      <img
-        ref={imgRef}
-        className={styles.img}
-        onLoad={draw}
-        src={`data:${data}`}
-        alt="detection thumbnail"
-      />
-      <canvas ref={canvasRef} className={styles.canvas} width={100} height={100} />
-      {scale !== undefined && (
-        <Fragment>
-          <span className={styles.scaleValue}>
-            {(scale * 100) / (100 / SCALE_LINE_WIDTH_PERCENTAGE)} m
-          </span>
-          <div className={styles.scaleLine} style={{ width: `${SCALE_LINE_WIDTH_PERCENTAGE}%` }} />
-        </Fragment>
-      )}
-    </div>
+    <a
+      href={`data:${data}`}
+      target="_blank"
+      rel="noreferrer"
+      onClick={(e) => handleOpenImage(e, `data:${data}`)}
+    >
+      <div className={cx(styles.imgContainer)}>
+        <img
+          ref={imgRef}
+          className={styles.img}
+          onLoad={draw}
+          src={`data:${data}`}
+          alt="detection thumbnail"
+        />
+        <canvas ref={canvasRef} className={styles.canvas} width={100} height={100} />
+        {scale !== undefined && (
+          <Fragment>
+            <span className={styles.scaleValue}>
+              {(scale * 100) / (100 / SCALE_LINE_WIDTH_PERCENTAGE)} m
+            </span>
+            <div
+              className={styles.scaleLine}
+              style={{ width: `${SCALE_LINE_WIDTH_PERCENTAGE}%` }}
+            />
+          </Fragment>
+        )}
+      </div>
+    </a>
   )
 }
 
