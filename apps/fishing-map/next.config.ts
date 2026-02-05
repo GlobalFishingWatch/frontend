@@ -210,7 +210,8 @@ const configWithSentry = withSentryConfig(configWithNx, {
   project: 'frontend',
 
   // Only print logs for uploading source maps in CI
-  silent: !process.env.CI,
+  silent: false,
+  debug: true,
 
   // For all available options, see:
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
@@ -224,7 +225,7 @@ const configWithSentry = withSentryConfig(configWithNx, {
 
   // Delete source maps after uploading to Sentry (keeps them private)
   sourcemaps: {
-    deleteSourcemapsAfterUpload: true,
+    deleteSourcemapsAfterUpload: false,
   },
 
   // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
