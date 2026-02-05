@@ -164,6 +164,7 @@ resource "google_cloudbuild_trigger" "trigger" {
         name   = "mcr.microsoft.com/playwright:v1.51.0-noble"
         script = <<EOF
           yarn install
+          yarn nx build fishing-map
           yarn nx e2e:local fishing-map-e2e --project="chromium"
         EOF
       }
