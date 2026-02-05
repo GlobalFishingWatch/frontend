@@ -33,6 +33,7 @@ import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import {
   cleanCurrentWorkspaceReportState,
   cleanReportQuery,
+  resetWorkspaceHistoryNavigation,
 } from 'features/workspace/workspace.slice'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
 import { SEARCH, USER, WORKSPACE, WORKSPACE_SEARCH, WORKSPACES_LIST } from 'routes/routes'
@@ -112,6 +113,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
     dispatch(resetVesselGroupReportData())
     dispatch(cleanCurrentWorkspaceReportState())
     dispatch(setVesselEventId(null))
+    dispatch(resetWorkspaceHistoryNavigation())
   }, [dispatch, dispatchQueryParams])
 
   return (

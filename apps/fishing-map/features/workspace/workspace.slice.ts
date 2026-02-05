@@ -536,6 +536,9 @@ const workspaceSlice = createSlice({
     setWorkspaceHistoryNavigation: (state, action: PayloadAction<LastWorkspaceVisited[]>) => {
       state.historyNavigation = action.payload
     },
+    resetWorkspaceHistoryNavigation: (state) => {
+      state.historyNavigation = initialState.historyNavigation
+    },
     removeGFWStaffOnlyDataviews: (state) => {
       if (ONLY_GFW_STAFF_DATAVIEW_SLUGS.length && state.data?.dataviewInstances) {
         state.data.dataviewInstances = state.data.dataviewInstances.filter((d) =>
@@ -609,6 +612,7 @@ export const {
   cleanCurrentWorkspaceReportState,
   cleanCurrentWorkspaceStateBufferParams,
   setWorkspaceHistoryNavigation,
+  resetWorkspaceHistoryNavigation,
 } = workspaceSlice.actions
 
 export default workspaceSlice.reducer
