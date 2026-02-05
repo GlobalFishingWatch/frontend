@@ -47,7 +47,10 @@ export const resolveLibraryLayers = (
 ): LibraryLayer[] => {
   const layers = LIBRARY_LAYERS.flatMap((layer) => {
     const dataview = dataviews.find((d) => d.slug === layer.dataviewId)
-    if (!dataview) return []
+    if (!dataview) {
+      console.warn('Dataview not found for layer library dataview', layer.dataviewId)
+      return []
+    }
     const nextColor = getNextColor('fill', avoidColors)
     return {
       ...layer,
