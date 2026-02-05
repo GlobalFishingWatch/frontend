@@ -481,6 +481,12 @@ export function cleanReportQuery(query: QueryParams) {
   }
 }
 
+export function cleanReportPayload(payload: Record<string, any>) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { areaId, datasetId, reportId, ...rest } = payload || {}
+  return rest
+}
+
 const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,

@@ -140,6 +140,7 @@ const icons = [
   'visibility-off',
   'visibility-on',
   'warning',
+  'workspace',
 ] as const
 
 export type IconType = (typeof icons)[number]
