@@ -3,6 +3,7 @@ import type { Layer } from '@deck.gl/core'
 import type { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 
 import type { BaseMapLayer } from './layers/basemap/BasemapLayer'
+import type { TilesBoundariesLayer } from './layers/basemap/TilesBoundariesLayer'
 import type { ContextPickingInfo, ContextPickingObject } from './layers/context'
 import type { ContextLayer } from './layers/context/ContextLayer'
 import type { DrawLayer, DrawPickingInfo, DrawPickingObject } from './layers/draw'
@@ -57,6 +58,7 @@ export type AnyDeckLayer<D extends object = object> =
   | VesselLayer
   | RulersLayer
   | PMTilesLayer
+  | TilesBoundariesLayer
 
 export type LayerWithIndependentSublayersLoadState = VesselLayer
 
