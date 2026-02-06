@@ -69,6 +69,7 @@ export default defineConfig({
           browser: 'chromium',
           name: 'fishing-map-browser',
           headless: true,
+          viewport: { width: 1280, height: 720 },
         },
         {
           browser: 'firefox',

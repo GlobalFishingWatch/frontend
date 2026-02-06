@@ -28,7 +28,7 @@ const defaultMiddlewareOptions: any = {
   },
 }
 
-export const makeStore = () => {
+export const makeStore = (preloadedState?: any, middlewares?: Middleware[]) => {
   return configureStore({
     devTools: {
       stateSanitizer: (state: any) => {
@@ -57,10 +57,11 @@ export const makeStore = () => {
         ...queriesApiMiddlewares,
         ...routerMiddlewares,
         routerMiddleware as Middleware,
-        logoutUserMiddleware
+        logoutUserMiddleware,
+        ...(middlewares || [])
       ),
     enhancers: (getDefaultEnhancers) => [routerEnhancer, ...getDefaultEnhancers()] as any,
-    // preloadedState,
+    preloadedState: { ...preloadedState },
   })
 }
 
