@@ -34,6 +34,7 @@ import VesselGroupAddButton, {
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
+import { handleOpenImage } from 'utils/img'
 import { formatInfoField, getVesselOtherNamesLabel } from 'utils/info'
 
 import styles from './VesselHeader.module.css'
@@ -138,16 +139,23 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
           onMouseLeave={() => setIsHovering(false)}
           onMouseMove={handleMouseMove}
         >
-          <img
-            src={allVesselImages[currentImageIndex].url}
-            alt={`${shipname} - ${currentImageIndex + 1}`}
-            title={
-              allVesselImages[currentImageIndex].copyright
-                ? `© ${allVesselImages[currentImageIndex].copyright}`
-                : undefined
-            }
-            className={styles.vesselImage}
-          />
+          <a
+            href={`${allVesselImages[currentImageIndex].url}`}
+            target="_blank"
+            rel="noreferrer"
+            onClick={(e) => handleOpenImage(e, allVesselImages[currentImageIndex].url)}
+          >
+            <img
+              src={allVesselImages[currentImageIndex].url}
+              alt={`${shipname} - ${currentImageIndex + 1}`}
+              title={
+                allVesselImages[currentImageIndex].copyright
+                  ? `© ${allVesselImages[currentImageIndex].copyright}`
+                  : undefined
+              }
+              className={styles.vesselImage}
+            />
+          </a>
           {isHovering && (
             <div className={styles.zoomedContainer}>
               <img

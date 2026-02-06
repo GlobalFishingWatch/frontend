@@ -211,7 +211,7 @@ export const parseGeoJsonProperties = <T extends Polygon | Point | LineString>(
         ...feature,
         properties,
         geometry:
-          (feature.geometry as unknown as GeometryCollection).type === 'GeometryCollection'
+          (feature.geometry as unknown as GeometryCollection)?.type === 'GeometryCollection'
             ? (union(flatten(feature.geometry))?.geometry as AreaGeometry)
             : (feature.geometry as AreaGeometry),
       }

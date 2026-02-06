@@ -64,8 +64,11 @@ export const selectVessselGroupsAllowed = createSelector(
 
 export const selectWorkspaceVessselGroupsIds = createSelector(
   [selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
-  (workspaceDataviewInstances = [], urlDataviewInstances = []) => {
-    return getVesselGroupsInDataviews([...workspaceDataviewInstances, ...urlDataviewInstances])
+  (workspaceDataviewInstances, urlDataviewInstances) => {
+    return getVesselGroupsInDataviews([
+      ...(workspaceDataviewInstances || []),
+      ...(urlDataviewInstances || []),
+    ])
   }
 )
 
@@ -88,11 +91,11 @@ export const selectVesselGroupWorkspaceToNavigate = createSelector(
 
 export const selectIsVessselGroupsFiltering = createSelector(
   [selectActiveActivityAndDetectionsDataviews, selectActiveVesselGroupDataviews],
-  (activeActivityAndDetectionsDataviews, activeVesselGroupDataviews = []) => {
+  (activeActivityAndDetectionsDataviews, activeVesselGroupDataviews) => {
     return (
       [
         ...getVesselGroupsInDataviews(activeActivityAndDetectionsDataviews),
-        ...activeVesselGroupDataviews,
+        ...(activeVesselGroupDataviews || []),
       ].length > 0
     )
   }
@@ -121,7 +124,7 @@ export const selectWorkspaceVesselGroups = createSelector(
 
 export const selectAllVisibleVesselGroups = createSelector(
   [selectAllVesselGroups, selectWorkspaceVesselGroups],
-  (userVesselGroups = [], workspaceVesselGroups = []) => {
-    return uniqBy([...userVesselGroups, ...workspaceVesselGroups], (v) => v.id)
+  (userVesselGroups, workspaceVesselGroups) => {
+    return uniqBy([...(userVesselGroups || []), ...(workspaceVesselGroups || [])], (v) => v.id)
   }
 )

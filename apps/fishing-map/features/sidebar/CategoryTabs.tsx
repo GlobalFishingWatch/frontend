@@ -29,7 +29,10 @@ import WhatsNew from 'features/sidebar/WhatsNew'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
 import { setVesselEventId } from 'features/vessel/vessel.slice'
-import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import {
+  selectWorkspace,
+  selectWorkspaceHistoryNavigation,
+} from 'features/workspace/workspace.selectors'
 import {
   cleanCurrentWorkspaceReportState,
   cleanReportQuery,
@@ -77,6 +80,8 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
   const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const userData = useSelector(selectUserData)
+  const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
+  const lastWorkspaceVisited = workspaceHistoryNavigation[workspaceHistoryNavigation.length - 1]
 
   const modalFeedbackOpen = useSelector(selectFeedbackModalOpen)
 
@@ -148,15 +153,19 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         <li className={cx(styles.tab, { [styles.current]: isAnySearchLocation })}>
           <Link
             className={styles.tabContent}
-            to={{
-              type: isWorkspaceLocation ? WORKSPACE_SEARCH : SEARCH,
-              payload: {
-                category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-                workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-              },
-              query: {},
-              replaceQuery: false,
-            }}
+            to={
+              isAnySearchLocation
+                ? lastWorkspaceVisited
+                : {
+                    type: isWorkspaceLocation ? WORKSPACE_SEARCH : SEARCH,
+                    payload: {
+                      category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+                      workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+                    },
+                    query: {},
+                    replaceQuery: !isWorkspaceLocation,
+                  }
+            }
             onClick={onSearchClick}
           >
             <Tooltip content={t((t) => t.workspace.categories.search)} placement="right">
