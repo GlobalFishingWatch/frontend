@@ -617,7 +617,6 @@ describe('useSetDeckLayerComposer', () => {
 
     const { result: setterResult } = renderHook(() => useSetDeckLayerComposer())
 
-    // Set layers directly - this should not throw
-    expect(() => setterResult.current(mockLayers as any)).not.toThrow()
+    expect(() => setterResult.current(mockLayers)).not.toThrow()
   })
 })
