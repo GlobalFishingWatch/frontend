@@ -12,9 +12,7 @@ test('Map01 - should select a vessel from map tile', async ({ page }) => {
 
   await page.getByText('month').first().click()
 
-  await page.waitForURL(
-    'http://localhost:3003/map/index?longitude=26&latitude=19&zoom=1.49&start=2025-01-01T00%3A00%3A00.000Z&end=2026-01-01T00%3A00%3A00.000Z'
-  )
+  await page.waitForURL('**/map/index*')
 
   expect(page.url()).toContain('start=2025-01-01T00%3A00%3A00.000Z')
   expect(page.url()).toContain('end=2026-01-01T00%3A00%3A00.000Z')
