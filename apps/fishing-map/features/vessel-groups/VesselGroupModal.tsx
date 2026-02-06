@@ -21,11 +21,9 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
-import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
-import { selectUserIsVesselGroupOwner } from 'features/reports/report-vessel-group/vessel-group-report.selectors'
 import {
   fetchVesselGroupReportThunk,
   resetVesselGroupReportData,
@@ -33,6 +31,7 @@ import {
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { DEFAULT_VESSEL_IDENTITY_DATASET } from 'features/vessel/vessel.config'
+import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import {
   selectHasVesselGroupSearchVessels,
   selectHasVesselGroupVesselsOverflow,
@@ -79,6 +78,7 @@ import {
   resetVesselGroupModalSearchStatus,
   searchVesselGroupsVesselsThunk,
   selectIsOwnedByUser,
+  selectShowDeleteUnknownVessels,
   selectVesselGroupConfirmationMode,
   selectVesselGroupEditId,
   selectVesselGroupModalOpen,
@@ -105,6 +105,7 @@ function VesselGroupModal(): React.ReactElement<any> {
   const searchVesselStatus = useSelector(selectVesselGroupSearchStatus)
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
   const vesselGroupsError = useSelector(selectVesselGroupsError)
+  const showDeleteUnknownVessels = useSelector(selectShowDeleteUnknownVessels)
   const workspaceToNavigate = useSelector(selectVesselGroupWorkspaceToNavigate)
   const searchQuery = useSelector(selectSearchQuery)
   const loading =
@@ -404,6 +405,15 @@ function VesselGroupModal(): React.ReactElement<any> {
     }
   }, [onBackClick, dispatchLocation, workspace])
 
+  const onRemoveUnknownVesselsClick = useCallback(() => {
+    if (vesselGroupVessels) {
+      const filteredVessels = vesselGroupVessels.filter(
+        (v) => getSearchIdentityResolved(v.identity!).shipname !== null
+      )
+      dispatch(setVesselGroupModalVessels(filteredVessels))
+    }
+  }, [dispatch, vesselGroupVessels])
+
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
@@ -452,6 +462,14 @@ function VesselGroupModal(): React.ReactElement<any> {
                 <IconButton size="small" icon="search" type="border" onClick={onSearchClick} />
               </span>
             </p>
+          )}
+          {showDeleteUnknownVessels && (
+            <Button
+              onClick={onRemoveUnknownVesselsClick}
+              tooltip={t((t) => t.vesselGroup.removeUnknownVesselsTooltip)}
+            >
+              {t((t) => t.vesselGroup.removeUnknownVessels) as string}
+            </Button>
           )}
         </div>
         {fullModalLoading ? (

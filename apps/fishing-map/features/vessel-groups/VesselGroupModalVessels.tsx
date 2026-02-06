@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo } from 'react'
+import { Fragment, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -24,6 +24,7 @@ import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselGearTypeLabel } from
 import type { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
 import {
   selectVesselGroupModalVessels,
+  setShowDeleteUnknownVessels,
   setVesselGroupModalVessels,
 } from './vessel-groups-modal.slice'
 
@@ -32,7 +33,7 @@ import styles from './VesselGroupModal.module.css'
 type VesselGroupVesselRowProps = {
   vessel: VesselGroupVesselIdentity
   className?: string
-  onRemoveClick: (vessel: VesselGroupVesselIdentity) => void
+  onRemoveClick: (vessel: VesselGroupVesselIdentity, isUnknownVessel: boolean) => void
   hiddenProperties?: VesselIdentityProperty[]
   searchIdField?: IdField
 }
@@ -106,7 +107,7 @@ function VesselGroupVesselRow({
             color: 'rgb(var(--danger-red-rgb))',
           }}
           tooltip={t((t) => t.vesselGroup.removeVessel)}
-          onClick={(e) => onRemoveClick(vessel)}
+          onClick={(e) => onRemoveClick(vessel, shipname === null)}
           size="small"
         />
       </td>
@@ -119,6 +120,7 @@ function VesselGroupVessels({ searchIdField }: { searchIdField: IdField }) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const vesselGroupVessels = useSelector(selectVesselGroupModalVessels)
+  const deletedUnknownVesselsCount = useRef(0)
 
   const uniqVesselGroupVesselsByProperty = useMemo(() => {
     const uniqVesselGroupVessels = getVesselGroupUniqVessels(vesselGroupVessels)
@@ -126,11 +128,13 @@ function VesselGroupVessels({ searchIdField }: { searchIdField: IdField }) {
   }, [vesselGroupVessels])
 
   const onVesselRemoveClick = useCallback(
-    (vessel: VesselGroupVesselIdentity) => {
+    (vessel: VesselGroupVesselIdentity, isUnknownVessel: boolean) => {
       if (vesselGroupVessels) {
         const filteredVessels = vesselGroupVessels.filter(
           (v) => v.vesselId !== vessel.vesselId && v.relationId !== vessel.vesselId
         )
+        if (isUnknownVessel) deletedUnknownVesselsCount.current += 1
+        if (deletedUnknownVesselsCount.current > 1) dispatch(setShowDeleteUnknownVessels(true))
         dispatch(setVesselGroupModalVessels(filteredVessels))
       }
     },
@@ -168,7 +172,7 @@ function VesselGroupVessels({ searchIdField }: { searchIdField: IdField }) {
               <VesselGroupVesselRow
                 key={`${mainVessel?.vesselId}-${mainVessel.dataset}`}
                 vessel={mainVessel}
-                onRemoveClick={(vessel) => onVesselRemoveClick(vessel)}
+                onRemoveClick={onVesselRemoveClick}
                 className={hasOtherVessels ? styles.noBorderBottom : ''}
                 searchIdField={searchIdField}
               />
@@ -177,7 +181,7 @@ function VesselGroupVessels({ searchIdField }: { searchIdField: IdField }) {
                   <VesselGroupVesselRow
                     key={`${otherVessel?.vesselId}-${otherVessel.dataset}`}
                     vessel={otherVessel}
-                    onRemoveClick={(vessel) => onVesselRemoveClick(vessel)}
+                    onRemoveClick={onVesselRemoveClick}
                     className={cx(styles.noBorderTop)}
                     hiddenProperties={[GROUP_BY_PROPERTY]}
                   />

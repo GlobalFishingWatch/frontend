@@ -1240,6 +1240,8 @@
     "new": "New vessel group",
     "notFound": "Vessel group not found",
     "remove": "Remove vessel group",
+    "removeUnknownVessels": "Remove all unknown vessels",
+    "removeUnknownVesselsTooltip": "Reminder: Unknown vessels are those that don't have a shipname but may have other important information.",
     "removeVessel": "Remove vessel from group",
     "saveAndSeeInWorkspace": "Save and see in workspace",
     "saveForLater": "Save for later",
