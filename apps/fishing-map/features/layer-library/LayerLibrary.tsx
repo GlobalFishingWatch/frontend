@@ -26,6 +26,7 @@ import {
 } from 'features/modals/modals.slice'
 import { selectUserDatasets } from 'features/user/selectors/user.permissions.selectors'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
+import { getNextColor } from 'features/workspace/workspace.utils'
 import { upperFirst } from 'utils/info'
 
 import LayerLibraryVesselGroupPanel from './LayerLibraryVesselGroupPanel'
@@ -38,15 +39,28 @@ export const resolveLibraryLayers = (
   dataviews: Dataview<any, DataviewCategory>[],
   {
     experimentalLayers,
+    avoidColors = [],
   }: {
     experimentalLayers: boolean
+    avoidColors?: string[]
   }
 ): LibraryLayer[] => {
   const layers = LIBRARY_LAYERS.flatMap((layer) => {
     const dataview = dataviews.find((d) => d.slug === layer.dataviewId)
-    if (!dataview) return []
+    if (!dataview) {
+      console.warn('Dataview not found for layer library dataview', layer.dataviewId)
+      return []
+    }
+    const nextColor = getNextColor('fill', avoidColors)
     return {
       ...layer,
+      config: {
+        ...(layer.config && { ...layer.config }),
+        ...(avoidColors.includes(layer.config?.color as string) && {
+          color: nextColor.value,
+          colorRamp: nextColor.id,
+        }),
+      },
       name: t((t) => t[layer.id].name, {
         ns: 'layer-library',
       }),

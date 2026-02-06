@@ -30,9 +30,9 @@
     "name": "Zonas Autorizadas ISA"
   },
   "ebsas": {
-    "description": "EBSAs are areas of the ocean recognized for their unique ecological and/or biological features, such as essential habitats, food sources or breeding grounds for specific species.",
+    "description": "Los AIEB son áreas del océano reconocidas por sus características ecológicas y/o biológicas únicas, tales como hábitats esenciales, fuentes de alimento o áreas de reproducción para especies específicas.",
     "moreInfoLink": "",
-    "name": "Ecologically or Biologically Significant Marine Areas (EBSAs)"
+    "name": "Áreas Marinas de \nImportancia Ecológica \no Biológica (AIEB)"
   },
   "eez": {
     "description": "Las zonas económicas exclusivas (ZEE) se extienden hasta 200 millas náuticas desde la costa de un país. Instituto Marino de Flandes (2019). Conjunto de datos geográficos de Límites Marinos: Límites Marinos y Zonas Económicas Exclusivas (200NM), versión 11.",
@@ -85,9 +85,9 @@
     "name": "Bolsillos (pockets) de alta mar"
   },
   "immas": {
-    "description": "Important Marine Mammal Areas (IMMAs) are defined as discrete portions of habitat, important to marine mammal species, that have the potential to be delineated and managed for conservation.",
+    "description": "Las Áreas Importantes para los Mamíferos Marinos (IMMA) se definen como porciones discretas de hábitat, importantes para las especies de mamíferos marinos, que tienen el potencial de ser delimitadas y gestionadas para su conservación.",
     "moreInfoLink": "",
-    "name": "Important Marine Mammal Areas (IMMA)"
+    "name": "Áreas Importantes para los Mamíferos Marinos (IMMA)"
   },
   "loitering": {
     "description": "Eventos a la deriva ocurre cuando una embarcación individual exhibe un comportamiento que podría indicar un posible encuentro. Este se calcula utilizando datos del sistema de identificación automática (AIS), que incluyen la velocidad de la embarcación, el tiempo que permanece en una ubicación específica y la distancia desde la costa. Eventos a la deriva se identifica cuando una embarcación mantiene una velocidad promedio inferior a dos nudos mientras se encuentra, en promedio, a más de 20 millas náuticas de la costa. Para minimizar el ruido en el portal de buques de transporte, únicamente se muestran los eventos a la deriva que superan una hora de duración.",

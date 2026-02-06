@@ -33,7 +33,7 @@ export function useMapRulersDrag() {
     (info: PickingInfo) => {
       if (!draggedRuler.current) return
       const [longitude, latitude] = info.coordinate as number[]
-      const newRulers = rulers.map((r) => {
+      const newRulers = (rulers || []).map((r) => {
         if (Number(r.id) === draggedRuler.current?.id) {
           return { ...r, [draggedRuler.current.order]: { longitude, latitude } }
         } else {
