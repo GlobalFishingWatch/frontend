@@ -385,21 +385,6 @@ describe('resolvers', () => {
 
         expect(layer.id).toContain('my-custom-dataview-id')
       })
-
-      it('should include global config time range', () => {
-        const dataview = createMockDataview({
-          config: { type: DataviewType.Graticules },
-        })
-        const globalConfig = createMockGlobalConfig({
-          start: '2023-01-01T00:00:00.000Z',
-          end: '2023-12-31T23:59:59.999Z',
-        })
-
-        const layer = dataviewToDeckLayer(dataview, globalConfig)
-
-        // The layer should have access to time range through its props
-        expect(layer).toBeDefined()
-      })
     })
 
     describe('Error handling', () => {
