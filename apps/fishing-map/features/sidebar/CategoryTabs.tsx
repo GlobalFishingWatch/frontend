@@ -155,7 +155,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
                 workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
               },
               query: {},
-              replaceQuery: !isWorkspaceLocation,
+              replaceQuery: false,
             }}
             onClick={onSearchClick}
           >
@@ -186,6 +186,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
                   to={{
                     ...getLinkToCategory(category as WorkspaceCategory),
                     query: {},
+                    replaceQuery: false,
                   }}
                   onClick={() => onCategoryClick(category as WorkspaceCategory)}
                 >
