@@ -481,6 +481,12 @@ export function cleanReportQuery(query: QueryParams) {
   }
 }
 
+export function cleanReportPayload(payload: Record<string, any>) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { areaId, datasetId, reportId, ...rest } = payload || {}
+  return rest
+}
+
 const workspaceSlice = createSlice({
   name: 'workspace',
   initialState,
@@ -529,6 +535,9 @@ const workspaceSlice = createSlice({
     },
     setWorkspaceHistoryNavigation: (state, action: PayloadAction<LastWorkspaceVisited[]>) => {
       state.historyNavigation = action.payload
+    },
+    resetWorkspaceHistoryNavigation: (state) => {
+      state.historyNavigation = initialState.historyNavigation
     },
     removeGFWStaffOnlyDataviews: (state) => {
       if (ONLY_GFW_STAFF_DATAVIEW_SLUGS.length && state.data?.dataviewInstances) {
@@ -603,6 +612,7 @@ export const {
   cleanCurrentWorkspaceReportState,
   cleanCurrentWorkspaceStateBufferParams,
   setWorkspaceHistoryNavigation,
+  resetWorkspaceHistoryNavigation,
 } = workspaceSlice.actions
 
 export default workspaceSlice.reducer
