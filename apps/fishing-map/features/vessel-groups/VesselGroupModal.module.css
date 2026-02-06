@@ -32,6 +32,7 @@
 .parameters {
   display: flex;
   margin-bottom: 2rem;
+  align-items: center;
 }
 
 .parameters > * {

@@ -16,7 +16,6 @@ import { asyncInitialState, AsyncReducerStatus, createAsyncSlice } from 'utils/a
 import { prepareVesselGroupVesselsUpdate } from './vessel-groups.utils'
 
 export type IdField = 'vesselId' | 'mmsi' | 'imo'
-export type VesselGroupConfirmationMode = 'save' | 'saveAndSeeInWorkspace' | 'saveAndDeleteVessels'
 
 interface VesselGroupsState extends AsyncReducer<VesselGroup> {
   workspace: {
