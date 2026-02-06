@@ -14,6 +14,7 @@ import {
   DataviewCategory,
   DataviewType,
 } from '@globalfishingwatch/api-types'
+import type { AnyDeckLayer, FourwingsVisualizationMode } from '@globalfishingwatch/deck-layers'
 
 import type { ResolverGlobalConfig } from '../resolvers'
 import { getDataviewsResolved, getDataviewsSorted } from '../resolvers/dataviews'
@@ -25,12 +26,10 @@ import {
   useSetDeckLayerComposer,
 } from './deck-layers-composer.hooks'
 
-// Mock the resolvers
-vi.mock('../resolvers/dataviews', { spy: true })
-
 vi.mock('../resolvers/resolvers', { spy: true })
 
-// Mock deck layers
+vi.mock('../resolvers/dataviews', { spy: true })
+
 vi.mock('@globalfishingwatch/deck-layers', async () => {
   const actual = await vi.importActual('@globalfishingwatch/deck-layers')
   class MockTilesBoundariesLayer {
@@ -260,9 +259,10 @@ describe('useDeckLayerComposer', () => {
       )
 
       await waitFor(() => {
-        const tilesBoundariesLayers = result.current.filter(
-          (layer: any) => layer._type === 'TilesBoundariesLayer'
-        )
+        const tilesBoundariesLayers: (AnyDeckLayer & {
+          visualizationMode?: FourwingsVisualizationMode
+        })[] = result.current.filter((layer: any) => layer._type === 'TilesBoundariesLayer')
+
         expect(tilesBoundariesLayers.length).toBeGreaterThan(0)
         expect(tilesBoundariesLayers[0].visualizationMode).toBe('heatmap')
       })
@@ -284,9 +284,9 @@ describe('useDeckLayerComposer', () => {
       )
 
       await waitFor(() => {
-        const tilesBoundariesLayers = result.current.filter(
-          (layer: any) => layer._type === 'TilesBoundariesLayer'
-        )
+        const tilesBoundariesLayers: (AnyDeckLayer & {
+          visualizationMode?: FourwingsVisualizationMode
+        })[] = result.current.filter((layer: any) => layer._type === 'TilesBoundariesLayer')
 
         expect(tilesBoundariesLayers.length).toBeGreaterThan(0)
         expect(tilesBoundariesLayers[0].visualizationMode).toBe('heatmap')
@@ -378,7 +378,10 @@ describe('useDeckLayerComposer', () => {
         )
         // Should have 2 layers since they use different visualization modes
         expect(tilesBoundariesLayers.length).toBe(2)
-        const visualizationModes = tilesBoundariesLayers.map((layer) => layer.visualizationMode)
+        const visualizationModes = tilesBoundariesLayers.map(
+          (layer: AnyDeckLayer & { visualizationMode?: FourwingsVisualizationMode }) =>
+            layer.visualizationMode
+        )
         expect(visualizationModes).toContain('heatmap')
         expect(visualizationModes).toContain('positions')
       })

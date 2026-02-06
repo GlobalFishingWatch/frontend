@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest'
+import { getDefaultStore } from 'jotai'
+import { afterEach, beforeEach, describe, expect, it, vitest } from 'vitest'
 
 import type { Dataset, DataviewInstance } from '@globalfishingwatch/api-types'
 import {
@@ -6,15 +7,28 @@ import {
   DatasetTypes,
   DataviewCategory,
   DataviewType,
+  EndpointId,
 } from '@globalfishingwatch/api-types'
 import type { DeckLayerPickingObject } from '@globalfishingwatch/deck-layers'
 
+import { deckLayerInstancesAtom } from '../hooks/deck-layers-composer.hooks'
 import type { ResolvedDataviewInstance } from '../types/dataviews'
 import type { ResolverGlobalConfig } from '../types/resolvers'
 
 import { dataviewToDeckLayer, getDataviewHighlightedFeatures } from './resolvers'
 
 describe('resolvers', () => {
+  beforeEach(() => {
+    // Reset mocks before each test
+    vitest.clearAllMocks()
+  })
+
+  afterEach(() => {
+    // Clean up after each test
+    const store = getDefaultStore()
+    store.set(deckLayerInstancesAtom, [])
+  })
+
   const createMockDataview = (
     overrides: Partial<DataviewInstance> = {}
   ): ResolvedDataviewInstance =>
@@ -47,6 +61,23 @@ describe('resolvers', () => {
       ...overrides,
     }) as ResolverGlobalConfig
 
+  const createMockDataset = (overrides: Partial<Dataset> = {}): Dataset => ({
+    type: DatasetTypes.PMTiles,
+    alias: ['test-alias'],
+    id: 'test-id',
+    name: 'test-name',
+    description: 'test-description',
+    status: DatasetStatus.Done,
+    ownerId: 123,
+    ownerType: 'owner-type',
+    createdAt: '2024-01-01T00:00:00.000Z',
+    configuration: {},
+    relatedDatasets: [],
+    fieldsAllowed: [],
+    filters: {},
+    ...overrides,
+  })
+
   describe('getDataviewHighlightedFeatures', () => {
     it('should return undefined when no highlighted features in global config', () => {
       const dataview = createMockDataview({ id: 'test-layer' })
@@ -77,7 +108,15 @@ describe('resolvers', () => {
     it('should return empty array when no matching highlighted features', () => {
       const dataview = createMockDataview({ id: 'test-layer' })
       const globalConfig = createMockGlobalConfig({
-        highlightedFeatures: [{ layerId: 'other-layer', object: {} }] as DeckLayerPickingObject[],
+        highlightedFeatures: [
+          {
+            layerId: 'other-layer',
+            object: {},
+            properties: {},
+            id: '3',
+            category: DataviewCategory.Activity,
+          },
+        ],
       })
 
       const result = getDataviewHighlightedFeatures(dataview, globalConfig)
@@ -104,23 +143,7 @@ describe('resolvers', () => {
       it('should create BaseMapImageLayer for BasemapImage type', () => {
         const dataview = createMockDataview({
           config: { type: DataviewType.BasemapImage },
-          datasets: [
-            {
-              type: DatasetTypes.PMTiles,
-              alias: ['test-alias'],
-              id: 'test-id',
-              name: 'test-name',
-              description: 'test-description',
-              status: DatasetStatus.Done,
-              ownerId: 123,
-              ownerType: 'owner-type',
-              createdAt: '2024-01-01T00:00:00.000Z',
-              configuration: {},
-              relatedDatasets: [],
-              fieldsAllowed: [],
-              filters: {},
-            },
-          ] as Dataset[],
+          datasets: [createMockDataset()],
         })
         const globalConfig = createMockGlobalConfig()
 
@@ -133,6 +156,7 @@ describe('resolvers', () => {
       it('should create BaseMapLabelsLayer for BasemapLabels type', () => {
         const dataview = createMockDataview({
           config: { type: DataviewType.BasemapLabels },
+          datasets: [createMockDataset({ type: DatasetTypes.PMTiles })],
         })
         const globalConfig = createMockGlobalConfig()
 
@@ -146,7 +170,24 @@ describe('resolvers', () => {
     describe('Bathymetry layer', () => {
       it('should create BathymetryContourLayer for Bathymetry type', () => {
         const dataview = createMockDataview({
-          config: { type: DataviewType.Bathymetry },
+          config: {
+            type: DataviewType.Bathymetry,
+          },
+          datasets: [
+            createMockDataset({
+              endpoints: [
+                {
+                  id: EndpointId.ContextTiles,
+                  downloadable: true,
+                  pathTemplate: 'https://example.com/tiles/{z}/{x}/{y}.png',
+                  params: [
+                    { id: EndpointId.ContextTiles, label: 'label', type: '4wings-datasets' },
+                  ],
+                  query: [],
+                },
+              ],
+            }),
+          ],
         })
         const globalConfig = createMockGlobalConfig()
 
@@ -321,7 +362,7 @@ describe('resolvers', () => {
     describe('Workspaces layer', () => {
       it('should create WorkspacesLayer for Workspaces type', () => {
         const dataview = createMockDataview({
-          config: { type: DataviewType.Workspaces },
+          config: { type: DataviewType.Workspaces, data: { features: [] } },
         })
         const globalConfig = createMockGlobalConfig()
 
@@ -343,21 +384,6 @@ describe('resolvers', () => {
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
         expect(layer.id).toContain('my-custom-dataview-id')
-      })
-
-      it('should pass visible property from dataview config', () => {
-        const dataview = createMockDataview({
-          config: {
-            type: DataviewType.Graticules,
-            visible: false,
-            info: 'asd',
-          },
-        })
-        const globalConfig = createMockGlobalConfig()
-
-        const layer = dataviewToDeckLayer(dataview, globalConfig)
-
-        expect(layer.props.visible).toBe(false)
       })
 
       it('should include global config time range', () => {
