@@ -47,7 +47,6 @@ import {
   selectWorkspaceStatus,
   selectWorkspaceVisibleEventsArray,
 } from 'features/workspace/workspace.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectIsAnyReportLocation,
   selectIsIndexLocation,
@@ -66,6 +65,7 @@ import {
 } from './map.selectors'
 import { selectClickedEvent } from './map.slice'
 import { useMapViewState } from './map-viewport.hooks'
+import { replaceQueryParams } from 'routes/routes.actions'
 
 export const useActivityDataviewId = (dataview: UrlDataviewInstance) => {
   const activityMergedDataviewId = useSelector(selectActivityMergedDataviewId)
@@ -127,7 +127,6 @@ export const useGlobalConfigConnect = () => {
   const timebarHighlightedTime = useSelector(selectHighlightedTime)
   const highlightEventIds = useSelector(selectHighlightedEvents)
   const viewState = useMapViewState()
-  const { dispatchQueryParams } = useLocationConnect()
   const { t } = useTranslation()
   const isWorkspace = useSelector(selectIsWorkspaceLocation)
   const showTimeComparison = useSelector(selectShowTimeComparison)
@@ -173,7 +172,7 @@ export const useGlobalConfigConnect = () => {
         layer.props.category === DataviewCategory.Detections
       ) {
         const categoryQueryParam = `${layer.props.category}VisualizationMode`
-        dispatchQueryParams({ [categoryQueryParam]: HEATMAP_ID })
+        replaceQueryParams({ [categoryQueryParam]: HEATMAP_ID })
         if (isWorkspace) {
           toast(
             t((t) => t.toasts.maxPointsVisualizationExceeded),
@@ -184,7 +183,7 @@ export const useGlobalConfigConnect = () => {
         }
       }
     },
-    [dispatchQueryParams, isWorkspace, t]
+    [isWorkspace, t]
   )
 
   return useMemo(() => {

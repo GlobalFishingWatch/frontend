@@ -28,7 +28,6 @@ import {
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { isOutdatedVesselGroup } from 'features/vessel-groups/vessel-groups.utils'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { TimebarVisualisations } from 'types'
 import { getEventLabel } from 'utils/analytics'
@@ -47,12 +46,12 @@ import { useEditVesselGroupModal, useFetchVesselGroupReport } from './vessel-gro
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportError from './VesselGroupReportError'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './VesselGroupReport.module.css'
 
 function VesselGroupReport() {
   useMigrateWorkspaceToast()
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
   const fetchVesselGroupReport = useFetchVesselGroupReport()
   const vesselGroupId = useSelector(selectReportVesselGroupId)
   const vesselGroup = useSelector(selectVGRData)!
@@ -110,7 +109,7 @@ function VesselGroupReport() {
           dispatchTimebarSelectedVGId(VESSEL_GROUP_FISHING_ACTIVITY_ID)
         }
       }
-      dispatchQueryParams({ reportCategory: tab.id })
+      replaceQueryParams({ reportCategory: tab.id })
       trackEvent({
         category: TrackCategory.VesselGroupReport,
         action: `access_vessel_group_${tab.id}_tab`,
@@ -122,7 +121,6 @@ function VesselGroupReport() {
       }
     },
     [
-      dispatchQueryParams,
       dispatchTimebarSelectedVGId,
       fitAreaInViewport,
       reportSubcategory,

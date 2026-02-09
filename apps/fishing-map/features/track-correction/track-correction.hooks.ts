@@ -8,18 +8,13 @@ import {
   selectCurrentWorkspaceId,
   selectIsTurningTidesWorkspace,
 } from 'features/workspace/workspace.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
 import type { TrackCorrectionId } from 'types'
+import { replaceQueryParams } from 'routes/routes.actions'
 
 export function useSetTrackCorrectionId() {
-  const { dispatchQueryParams } = useLocationConnect()
-
-  return useCallback(
-    (trackCorrectionId: TrackCorrectionId) => {
-      dispatchQueryParams({ trackCorrectionId })
-    },
-    [dispatchQueryParams]
-  )
+  return useCallback((trackCorrectionId: TrackCorrectionId) => {
+    replaceQueryParams({ trackCorrectionId })
+  }, [])
 }
 
 export function useFetchTrackCorrections() {

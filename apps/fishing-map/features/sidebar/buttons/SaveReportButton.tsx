@@ -13,6 +13,7 @@ import { useClipboardNotification } from 'features/sidebar/sidebar.hooks'
 import { selectWorkspace, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { setWorkspace } from 'features/workspace/workspace.slice'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import { getCurrentAppUrl } from 'routes/routes.actions'
 import { REPORT } from 'routes/routes'
 import { useLocationConnect } from 'routes/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -41,7 +42,7 @@ function SaveReportButton() {
 
   const onSaveCreateReport = useCallback(
     (report: any) => {
-      copyToClipboard(window.location.href)
+      copyToClipboard(getCurrentAppUrl())
       dispatchLocation(
         REPORT,
         { payload: { reportId: report?.id }, query: {} },

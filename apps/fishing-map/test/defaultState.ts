@@ -1,4 +1,7 @@
-export const defaultState = {
+// @ts-nocheck
+import type { RootState } from 'store'
+
+export const defaultState: RootState = {
   dataviewStatsApi: {
     queries: {},
     mutations: {},

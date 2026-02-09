@@ -28,9 +28,7 @@ import vesselGroupsReducer from 'features/vessel-groups/vessel-groups.slice'
 import vesselGroupsModalReducer from 'features/vessel-groups/vessel-groups-modal.slice'
 import workspaceReducer from 'features/workspace/workspace.slice'
 import workspacesReducer from 'features/workspaces-list/workspaces-list.slice'
-import descriptionReducer from 'routes/description.reducer'
-import connectedRoutes from 'routes/routes'
-import titleReducer from 'routes/title.reducer'
+import locationReducer from 'routes/location.slice'
 
 export const rootReducer = combineReducers({
   ...queriesApiReducers,
@@ -39,12 +37,11 @@ export const rootReducer = combineReducers({
   datasets: datasetsReducer,
   dataviews: dataviewsReducer,
   debug: debugReducer,
-  description: descriptionReducer,
   downloadActivity: downloadActivityReducer,
   downloadTrack: downloadTrackReducer,
   editor: editorReducer,
   hints: hintsReducer,
-  location: connectedRoutes.reducer,
+  location: locationReducer,
   map: mapReducer,
   mapControls: mapControlsReducer,
   modals: modalsReducer,
@@ -55,7 +52,6 @@ export const rootReducer = combineReducers({
   screenshot: screenshotReducer,
   search: searchReducer,
   timebar: timebarReducer,
-  title: titleReducer,
   trackCorrection: trackCorrectionReducer,
   user: userReducer,
   vessel: vesselReducer,

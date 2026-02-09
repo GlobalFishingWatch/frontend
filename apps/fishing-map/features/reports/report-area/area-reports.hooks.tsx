@@ -3,6 +3,7 @@ import { Fragment, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
+import { getCurrentAppUrl } from 'routes/routes.actions'
 import { useGetStatsByDataviewQuery } from 'queries/stats-api'
 
 import {
@@ -330,7 +331,7 @@ export function useFetchReportVessel() {
       setLastReportUrl((lastReportUrls: LastReportStorage[]) => {
         const newReportUrl = {
           reportUrl,
-          workspaceUrl: window.location.href,
+          workspaceUrl: getCurrentAppUrl(),
         }
         if (!lastReportUrls?.length) {
           return [newReportUrl]
@@ -446,7 +447,7 @@ export function useReportTitle() {
     if (isGlobalReport && !report?.name) {
       return t((t) => t.common.globalReport)
     }
-    let areaName: string | JSX.Element = getReportAreaStringByLocale(report?.name, i18n.language)
+    let areaName: string | JSX.Element = getReportAreaStringByLocale(report?.name || '', i18n.language)
     if (!areaName) {
       if (areaDataviews?.length > 1) {
         const datasets = areaDataviews.flatMap((d) => d.datasets?.[0] || [])

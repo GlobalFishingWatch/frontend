@@ -14,7 +14,7 @@ import {
 } from 'features/reports/reports.config.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
+import { replaceQueryParams } from 'routes/routes.actions'
 import { getUTCDateTime } from 'utils/dates'
 
 import { MAX_DAYS_TO_COMPARE, MAX_MONTHS_TO_COMPARE } from './reports-activity.config'
@@ -27,7 +27,6 @@ export const useSetReportTimeComparison = () => {
   const timeComparison = useSelector(selectReportTimeComparison)
   const durationType = timeComparison?.durationType
   const duration = timeComparison?.duration
-  const { dispatchQueryParams } = useLocationConnect()
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
 
   const setReportTimecomparison = useCallback(
@@ -38,7 +37,7 @@ export const useSetReportTimeComparison = () => {
           const newStart = getUTCDateTime(timeComparison?.compareStart)
             .minus({ [durationType!]: duration })
             .toISO() as string
-          dispatchQueryParams({
+          replaceQueryParams({
             start: timebarStart,
             end: timebarEnd,
             reportTimeComparison: {
@@ -71,7 +70,7 @@ export const useSetReportTimeComparison = () => {
       const initialStart = getUTCDateTime(baseStart).minus(baseStartMinusOffset).toISO() as string
       const initialCompareStart = baseStart
 
-      dispatchQueryParams({
+      replaceQueryParams({
         reportTimeComparison: {
           start: initialStart,
           compareStart: initialCompareStart,
@@ -80,12 +79,12 @@ export const useSetReportTimeComparison = () => {
         },
       })
     },
-    [dispatchQueryParams, duration, durationType, timeComparison, timebarEnd, timebarStart]
+    [duration, durationType, timeComparison, timebarEnd, timebarStart]
   )
 
   const resetReportTimecomparison = useCallback(() => {
-    dispatchQueryParams({ start: timebarStart, end: timebarEnd, reportTimeComparison: undefined })
-  }, [dispatchQueryParams, timebarEnd, timebarStart])
+    replaceQueryParams({ start: timebarStart, end: timebarEnd, reportTimeComparison: undefined })
+  }, [timebarEnd, timebarStart])
 
   return useMemo(
     () => ({ setReportTimecomparison, resetReportTimecomparison }),
@@ -95,7 +94,6 @@ export const useSetReportTimeComparison = () => {
 
 export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) => {
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
   const fitAreaInViewport = useFitAreaInViewport()
   const [errorMsg, setErrorMsg] = useState('')
   const timeComparison = useSelector(selectReportTimeComparison)
@@ -151,7 +149,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
       }
 
       fitAreaInViewport()
-      dispatchQueryParams({
+      replaceQueryParams({
         reportTimeComparison: {
           start,
           compareStart,
@@ -172,7 +170,6 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
       timeComparison?.start,
       activityType,
       fitAreaInViewport,
-      dispatchQueryParams,
       t,
     ]
   )

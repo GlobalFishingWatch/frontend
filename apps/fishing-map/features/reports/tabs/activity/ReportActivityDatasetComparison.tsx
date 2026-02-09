@@ -18,9 +18,9 @@ import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.
 import { isSupportedComparisonDataview } from 'features/reports/report-area/area-reports.utils'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
 import { selectReportSubCategory } from 'features/reports/reports.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
 import { selectLocationQuery } from 'routes/routes.selectors'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './ReportActivityDatasetComparison.module.css'
 
 const createDatasetOption = (id: string, label: string, color?: string): SelectOption => ({
@@ -35,7 +35,6 @@ const createDatasetOption = (id: string, label: string, color?: string): SelectO
 
 const ReportActivityDatasetComparison = () => {
   const { t, ready: i18nReady } = useTranslation(['layer-library', 'translations'])
-  const { dispatchQueryParams } = useLocationConnect()
   const reportDataviews = useSelector(selectActiveReportDataviews)
   const reportSubcategory = useSelector(selectReportSubCategory)
   const locationQuery = useSelector(selectLocationQuery)
@@ -106,22 +105,17 @@ const ReportActivityDatasetComparison = () => {
 
   useEffect(() => {
     if (selectedMainDataset?.id && selectedMainDataset.id !== comparisonDatasets?.main) {
-      dispatchQueryParams({
+      replaceQueryParams({
         reportComparisonDataviewIds: {
           main: selectedMainDataset.id,
           compare: comparisonDatasets?.compare,
         },
       })
     }
-  }, [
-    selectedMainDataset?.id,
-    comparisonDatasets?.main,
-    comparisonDatasets?.compare,
-    dispatchQueryParams,
-  ])
+  }, [selectedMainDataset?.id, comparisonDatasets?.main, comparisonDatasets?.compare])
 
   const onMainSelect = (option: SelectOption) => {
-    dispatchQueryParams({
+    replaceQueryParams({
       reportComparisonDataviewIds: {
         main: option.id,
         compare: comparisonDatasets?.compare,
@@ -131,10 +125,11 @@ const ReportActivityDatasetComparison = () => {
 
   const onCompareSelect = (option: SelectOption) => {
     const dataviewID = `${option.id}${LAYER_LIBRARY_ID_SEPARATOR}${DATASET_COMPARISON_SUFFIX}`
-    dispatchQueryParams({
+    replaceQueryParams({
       reportCategory:
         locationQuery.reportCategory ||
-        reportDataviews.find((dataview) => dataview.id === comparisonDatasets?.main)?.category,
+        (reportDataviews.find((dataview) => dataview.id === comparisonDatasets?.main)
+          ?.category as any),
       reportComparisonDataviewIds: {
         main: comparisonDatasets?.main || mainDatasetOptions[0]?.id,
         compare: dataviewID,

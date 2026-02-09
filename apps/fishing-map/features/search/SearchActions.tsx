@@ -30,6 +30,7 @@ import { TimebarVisualisations } from 'types'
 import { selectSearchOption } from './search.config.selectors'
 import { cleanVesselSearchResults, selectSelectedVessels } from './search.slice'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './Search.module.css'
 
 function SearchActions() {
@@ -38,7 +39,7 @@ function SearchActions() {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const vesselTemplateDataviews = useSelector(selectVesselTemplateDataviews)
   const { addNewDataviewInstances } = useDataviewInstancesConnect()
-  const { dispatchQueryParams, dispatchLocation } = useLocationConnect()
+  const { dispatchLocation } = useLocationConnect()
   const vesselsSelected = useSelector(selectSelectedVessels)
   const activeSearchOption = useSelector(selectSearchOption)
 
@@ -64,7 +65,7 @@ function SearchActions() {
     })
     addNewDataviewInstances(instances)
     dispatch(cleanVesselSearchResults())
-    dispatchQueryParams(EMPTY_SEARCH_FILTERS)
+    replaceQueryParams(EMPTY_SEARCH_FILTERS)
     trackEvent({
       category: TrackCategory.SearchVessel,
       action: 'Click view on map',
