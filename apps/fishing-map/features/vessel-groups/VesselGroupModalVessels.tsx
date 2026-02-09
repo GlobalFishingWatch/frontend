@@ -132,20 +132,21 @@ function VesselGroupVessels({ searchIdField }: { searchIdField: IdField }) {
         let filteredVessels = vesselGroupVessels.filter(
           (v) => v.vesselId !== vessel.vesselId && v.relationId !== vessel.vesselId
         )
-
         if (isUnknownVessel) {
           deletedUnknownVesselsCount.current += 1
-          const vesselsWithShipname = filteredVessels.filter(
-            (v) => getSearchIdentityResolved(v.identity!).shipname !== null
-          )
-          const unknownVesselsCount = filteredVessels.length - vesselsWithShipname.length
-
-          if (unknownVesselsCount > 0) {
-            const confirmation = window.confirm(
-              t((t) => t.vesselGroup.removeUnknownVessels, { count: unknownVesselsCount })
+          if (deletedUnknownVesselsCount.current > 2) {
+            const vesselsWithShipname = filteredVessels.filter(
+              (v) => getSearchIdentityResolved(v.identity!).shipname !== null
             )
-            if (confirmation) {
-              filteredVessels = vesselsWithShipname
+            const unknownVesselsCount = filteredVessels.length - vesselsWithShipname.length
+
+            if (unknownVesselsCount > 0) {
+              const confirmation = window.confirm(
+                t((t) => t.vesselGroup.removeUnknownVessels, { param: unknownVesselsCount })
+              )
+              if (confirmation) {
+                filteredVessels = vesselsWithShipname
+              }
             }
           }
         }
