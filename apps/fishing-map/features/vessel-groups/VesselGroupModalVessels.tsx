@@ -24,7 +24,6 @@ import { EMPTY_FIELD_PLACEHOLDER, formatInfoField, getVesselGearTypeLabel } from
 import type { VesselGroupVesselIdentity } from './vessel-groups-modal.slice'
 import {
   selectVesselGroupModalVessels,
-  setShowDeleteUnknownVessels,
   setVesselGroupModalVessels,
 } from './vessel-groups-modal.slice'
 
@@ -130,15 +129,31 @@ function VesselGroupVessels({ searchIdField }: { searchIdField: IdField }) {
   const onVesselRemoveClick = useCallback(
     (vessel: VesselGroupVesselIdentity, isUnknownVessel: boolean) => {
       if (vesselGroupVessels) {
-        const filteredVessels = vesselGroupVessels.filter(
+        let filteredVessels = vesselGroupVessels.filter(
           (v) => v.vesselId !== vessel.vesselId && v.relationId !== vessel.vesselId
         )
-        if (isUnknownVessel) deletedUnknownVesselsCount.current += 1
-        if (deletedUnknownVesselsCount.current > 1) dispatch(setShowDeleteUnknownVessels(true))
+
+        if (isUnknownVessel) {
+          deletedUnknownVesselsCount.current += 1
+          const vesselsWithShipname = filteredVessels.filter(
+            (v) => getSearchIdentityResolved(v.identity!).shipname !== null
+          )
+          const unknownVesselsCount = filteredVessels.length - vesselsWithShipname.length
+
+          if (unknownVesselsCount > 0) {
+            const confirmation = window.confirm(
+              t((t) => t.vesselGroup.removeUnknownVessels, { count: unknownVesselsCount })
+            )
+            if (confirmation) {
+              filteredVessels = vesselsWithShipname
+            }
+          }
+        }
+
         dispatch(setVesselGroupModalVessels(filteredVessels))
       }
     },
-    [dispatch, vesselGroupVessels]
+    [dispatch, vesselGroupVessels, t]
   )
 
   if (!vesselGroupVessels?.length) {
