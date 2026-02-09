@@ -257,6 +257,7 @@
     "see": "Ver",
     "seeDefault": "Ver la vista por defecto",
     "seeMore": "Ver más",
+    "seeWorkspace": "Ver su área de trabajo",
     "send": "Enviar",
     "sentinel2": "Sentinel 2",
     "setNewPassword": "Establecer una nueva contraseña",
@@ -478,13 +479,13 @@
     "noHeatmapLayers": "Activa una capa de actividad, detecciones o de entorno para descargar sus datos en esta área",
     "spatialResolution": "Resolución espacial",
     "survey": {
-      "contactPermissionLabel": "Would you be open to sharing your story or results later?",
-      "contactPermissionNo": "Not right now",
-      "contactPermissionYes": "Yes, I’d be happy to be contacted",
-      "description": "Could you answer two quick questions? It takes less than a minute and helps us improve the platform.",
-      "intentLabel": "How do you intend to utilize this data?",
-      "intentPlaceholder": "Type your answer here",
-      "title": "While we prepare your file…"
+      "contactPermissionLabel": "¿Estaría abierto a compartir su historia o resultados más tarde?",
+      "contactPermissionNo": "No, por ahora",
+      "contactPermissionYes": "Sí, acepto ser contactado",
+      "description": "¿Podrías responder a dos preguntas rápidas? Tarda menos de un minuto y nos ayuda a mejorar la plataforma.",
+      "intentLabel": "¿Cómo piensa utilizar estos datos?",
+      "intentPlaceholder": "Escribe tu respuesta aquí",
+      "title": "Mientras preparamos tu archivo…"
     },
     "temporalResolution": "Agrupar tiempo por",
     "timeRange": "Rango de tiempo",
