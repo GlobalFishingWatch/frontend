@@ -295,7 +295,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.21.4, @babel/code-frame@npm:^7.27.1, @babel/code-frame@npm:^7.28.6, @babel/code-frame@npm:^7.29.0":
+"@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.21.4, @babel/code-frame@npm:^7.27.1, @babel/code-frame@npm:^7.28.6":
+  version: 7.28.6
+  resolution: "@babel/code-frame@npm:7.28.6"
+  dependencies:
+    "@babel/helper-validator-identifier": "npm:^7.28.5"
+    js-tokens: "npm:^4.0.0"
+    picocolors: "npm:^1.1.1"
+  checksum: 10/93e7ed9e039e3cb661bdb97c26feebafacc6ec13d745881dae5c7e2708f579475daebe7a3b5d23b183bb940b30744f52f4a5bcb65b4df03b79d82fcb38495784
+  languageName: node
+  linkType: hard
+
+"@babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.29.0":
   version: 7.29.0
   resolution: "@babel/code-frame@npm:7.29.0"
   dependencies:
