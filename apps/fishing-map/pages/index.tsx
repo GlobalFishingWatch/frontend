@@ -1,11 +1,7 @@
-import dynamic from 'next/dynamic'
-
-const AppNoSSRComponent = dynamic(() => import('../features/app/App'), {
-  ssr: false,
-})
-
+// The App is rendered by TanStack Router via RouterProvider in _app.tsx
+// This page exists to satisfy Next.js's pages structure
 const Index = () => {
-  return <AppNoSSRComponent />
+  return null
 }
 
 export default Index

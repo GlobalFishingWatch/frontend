@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { parse } from 'qs'
 
-import { ACCESS_TOKEN_STRING, removeUrlParameterByName } from '@globalfishingwatch/api-client'
+import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { parseWorkspace } from '@globalfishingwatch/dataviews-client'
 import { DEFAULT_CALLBACK_URL_PARAM, useLoginRedirect } from '@globalfishingwatch/react-hooks'
 
@@ -57,20 +57,17 @@ export const useReplaceLoginUrl = () => {
     const hasCallbackUrlStorageQuery = currentQuery[DEFAULT_CALLBACK_URL_PARAM]
     const accessToken = currentQuery[ACCESS_TOKEN_STRING]
     if (redirectUrl && hasCallbackUrlStorageQuery) {
-      removeUrlParameterByName('callbackUrlStorage')
       const query = {
         ...parseWorkspace(new URL(redirectUrl).search),
         [ACCESS_TOKEN_STRING]: accessToken,
         [DEFAULT_CALLBACK_URL_PARAM]: undefined,
       } as QueryParams
 
-      dispatch(
-        updateLocation(locationType, {
-          query,
-          payload: locationPayload,
-          replaceQuery: true,
-        })
-      )
+      updateLocation(locationType, {
+        query,
+        payload: locationPayload,
+        replaceQuery: true,
+      })
 
       if (historyNavigation && historyNavigation.length > 0) {
         dispatch(setWorkspaceHistoryNavigation(historyNavigation))
@@ -87,38 +84,28 @@ export const useReplaceLoginUrl = () => {
 }
 
 export const useLocationConnect = () => {
-  const dispatch = useAppDispatch()
   const locationType = useSelector(selectLocationType)
   const payload = useSelector(selectLocationPayload)
 
   const dispatchLocation = useCallback(
     (
       type: ROUTE_TYPES,
-      params = {} as { query?: QueryParams; payload?: Record<string, any> },
+      params = {} as { query?: QueryParams; payload?: Record<string, string | undefined> },
       { replaceQuery = false, replaceUrl = false } = {}
     ) => {
       const { query = {}, payload: customPayload = {} } = params
-      dispatch(
-        updateLocation(type, {
-          query,
-          payload: { ...payload, ...customPayload },
-          replaceQuery,
-          replaceUrl,
-        })
-      )
+      updateLocation(type, {
+        query,
+        payload: { ...payload, ...customPayload },
+        replaceQuery,
+        replaceUrl,
+      })
     },
-    [dispatch, payload]
-  )
-
-  const dispatchQueryParams = useCallback(
-    (query: QueryParams, replaceQuery = false) => {
-      dispatch(updateLocation(locationType, { query, payload, replaceQuery }))
-    },
-    [dispatch, locationType, payload]
+    [payload]
   )
 
   return useMemo(
-    () => ({ location: locationType, payload, dispatchLocation, dispatchQueryParams }),
-    [dispatchLocation, dispatchQueryParams, locationType, payload]
+    () => ({ location: locationType, payload, dispatchLocation }),
+    [dispatchLocation, locationType, payload]
   )
 }

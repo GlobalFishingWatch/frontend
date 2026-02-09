@@ -1,6 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
 import type { RootState } from 'reducers'
-import type { Query } from 'redux-first-router'
 
 import { WorkspaceCategory } from 'data/workspaces'
 import type { QueryParams, WorkspaceParam } from 'types'
@@ -24,10 +23,9 @@ import {
 
 const selectLocation = (state: RootState) => state.location
 
-export const selectLocationType = createSelector(
-  [selectLocation],
-  (location) => location.type as ROUTE_TYPES
-)
+export const selectLocationType = createSelector([selectLocation], (location) => {
+  return location.type as ROUTE_TYPES
+})
 
 export const selectIsWorkspaceLocation = createSelector([selectLocationType], (locationType) =>
   WORKSPACE_ROUTES.includes(locationType)
@@ -117,7 +115,7 @@ export const selectIsAnySearchLocation = createSelector(
 
 export const selectLocationQuery = createSelector(
   [selectLocation],
-  (location) => location.query as Query
+  (location) => location.query as QueryParams
 )
 
 type QueryParamProperty<P extends WorkspaceParam> = Required<QueryParams>[P]
