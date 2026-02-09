@@ -107,12 +107,6 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     }
   }, [dispatch, dataviewsResources])
 
-  useEffect(() => {
-    setTimeout(() => {
-      throw new Error('Another source map test in development - ' + new Date().toISOString())
-    }, 1000)
-  }, [])
-
   const sidebarComponent = useMemo(() => {
     if (userStatus === AsyncReducerStatus.Error) {
       return <ErrorPlaceholder title={t((t) => t.errors.userDataError)} />
