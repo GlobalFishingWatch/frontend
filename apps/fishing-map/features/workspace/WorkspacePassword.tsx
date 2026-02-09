@@ -38,7 +38,7 @@ export default function WorkspacePassword() {
     if (password.length >= MIN_WORKSPACE_PASSWORD_LENGTH) {
       setLoading(true)
       dispatch(setWorkspacePassword(password))
-      const action = await dispatch(fetchWorkspaceThunk({ workspaceId, password }))
+      const action = await dispatch(fetchWorkspaceThunk({ workspaceId: workspaceId!, password }))
       if (fetchWorkspaceThunk.fulfilled.match(action)) {
         const workspace = action.payload
         if (!isWorkspacePasswordProtected(workspace)) {

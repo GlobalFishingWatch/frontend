@@ -10,16 +10,14 @@ import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySu
 import RelatedEncounterVessels from 'features/vessel/related-vessels/RelatedEncounterVessels'
 import RelatedOwnersVessels from 'features/vessel/related-vessels/RelatedOwnersVessels'
 import { selectVesselRelatedSubsection } from 'features/vessel/vessel.config.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
-
 import type { VesselRelatedSubsection } from '../vessel.types'
 import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './RelatedVessels.module.css'
 
 const RelatedVessels = () => {
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
   const vesselRelatedSubsection = useSelector(selectVesselRelatedSubsection)
   const eventsLoading = useVesselProfileEventsLoading()
 
@@ -39,13 +37,13 @@ const RelatedVessels = () => {
 
   const changeVesselRelatedSubsection = useCallback(
     (option: ChoiceOption<VesselRelatedSubsection>) => {
-      dispatchQueryParams({ vesselRelated: option.id })
+      replaceQueryParams({ vesselRelated: option.id })
       trackEvent({
         category: TrackCategory.VesselProfile,
         action: `click_${option.id}_related_vessels_tab`,
       })
     },
-    [dispatchQueryParams]
+    []
   )
 
   if (eventsLoading) {

@@ -7,6 +7,7 @@ import { DateTime } from 'luxon'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
+import { getCurrentAppUrl } from 'routes/routes.actions'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { selectUserIsVesselGroupOwner } from 'features/reports/report-vessel-group/vessel-group-report.selectors'
@@ -104,7 +105,7 @@ export default function VesselGroupReportTitle() {
             />
           </h2>
         </div>
-        <a className={styles.reportLink} href={window.location.href}>
+        <a className={styles.reportLink} href={getCurrentAppUrl()}>
           {t((t) => t.vesselGroupReport.linkToReport)}
         </a>
         <div className={styles.actions}>

@@ -78,9 +78,9 @@ function UserDatasets() {
         },
         replaceQuery: false,
       }
-      dispatch(updateLocation(type, locationParams))
+      updateLocation(type, locationParams)
     },
-    [dispatch, lastVisitedWorkspace]
+    [lastVisitedWorkspace]
   )
 
   const onInfoClick = useCallback((dataset: Dataset) => {

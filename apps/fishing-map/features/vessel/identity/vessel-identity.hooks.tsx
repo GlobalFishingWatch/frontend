@@ -9,8 +9,7 @@ import type { ChoiceOption, Tab } from '@globalfishingwatch/ui-components'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import { selectVesselIdentitySource } from 'features/vessel/vessel.config.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
-
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './VesselIdentity.module.css'
 
 export function useVesselIdentities() {
@@ -28,7 +27,6 @@ export function useVesselIdentities() {
 
 export function useVesselIdentityTabs() {
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
   const { identitySource, registryDisabled, selfReportedIdentities } = useVesselIdentities()
 
   const identityTabs: Tab<VesselIdentitySourceEnum>[] = useMemo(
@@ -69,11 +67,11 @@ export function useVesselIdentityTabs() {
 
   useEffect(() => {
     if (identitySource === VesselIdentitySourceEnum.Registry && registryDisabled) {
-      dispatchQueryParams({
+      replaceQueryParams({
         vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
       })
     }
-  }, [dispatchQueryParams, identitySource, registryDisabled])
+  }, [identitySource, registryDisabled])
 
   return useMemo(
     () => ({ identityTabs, selfReportedIdentities, registryDisabled }),

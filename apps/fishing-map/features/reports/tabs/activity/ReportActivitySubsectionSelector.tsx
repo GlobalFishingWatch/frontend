@@ -22,12 +22,11 @@ import type {
 import { ReportCategory } from 'features/reports/reports.types'
 import { useReportFeaturesLoading } from 'features/reports/reports-timeseries.hooks'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
-import { useLocationConnect } from 'routes/routes.hook'
+import { replaceQueryParams } from 'routes/routes.actions'
 
 function ReportActivitySubsectionSelector() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
   const reportSubCategory = useSelector(selectReportSubCategory)
   const hasFishingDataviews = useSelector(selectHasFishingDataviews)
@@ -90,7 +89,7 @@ function ReportActivitySubsectionSelector() {
         reportCategory === ReportCategory.Activity
           ? 'reportActivitySubCategory'
           : 'reportDetectionsSubCategory'
-      dispatchQueryParams({ [queryParam]: option.id })
+      replaceQueryParams({ [queryParam]: option.id })
       fitAreaInViewport()
       dispatch(resetReportData())
       trackEvent({

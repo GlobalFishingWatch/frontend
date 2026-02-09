@@ -23,7 +23,6 @@ import { getWorkspaceReport } from 'features/reports/shared/new-report-modal/New
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
 import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnyVesselLocation,
@@ -36,6 +35,7 @@ import { useDataviewInstancesConnect } from './workspace.hook'
 import { selectIsWorkspaceOwner } from './workspace.selectors'
 import { updateCurrentWorkspaceThunk } from './workspace.slice'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './Workspace.module.css'
 
 export const useMigrateWorkspace = () => {
@@ -45,7 +45,6 @@ export const useMigrateWorkspace = () => {
   const vesselDatasetId = useSelector(selectVesselDatasetId)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const vesselId = useSelector(selectVesselId)
-  const { dispatchQueryParams } = useLocationConnect()
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const dispatch = useAppDispatch()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -110,7 +109,7 @@ export const useMigrateWorkspace = () => {
       if (isAnyVesselLocation && deprecatedDatasets[vesselDatasetId]) {
         const newVesselDatasetId = deprecatedDatasets[vesselDatasetId]
         setTimeout(() => {
-          dispatchQueryParams({ vesselDatasetId: newVesselDatasetId })
+          replaceQueryParams({ vesselDatasetId: newVesselDatasetId })
           dispatch(fetchVesselInfoThunk({ vesselId, datasetId: newVesselDatasetId }))
         }, 100)
       }
@@ -158,7 +157,6 @@ export const useMigrateWorkspace = () => {
     deprecatedDatasets,
     deprecatedDataviewInstances,
     dispatch,
-    dispatchQueryParams,
     isAnyVesselLocation,
     upsertDataviewInstance,
     urlDataviewInstances,

@@ -50,6 +50,7 @@ import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'
 import VesselTracksLegend from './VesselTracksLegend'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from 'features/workspace/shared/Section.module.css'
 
 const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: string) => {
@@ -80,7 +81,6 @@ function VesselsSection(): React.ReactElement<any> {
   const someVesselsVisible = activeDataviews.length > 0
   const readOnly = useSelector(selectReadOnly)
   const resources = useSelector(selectResources)
-  const { dispatchQueryParams } = useLocationConnect()
   const [sortOrder, setSortOrder] = useState<'ASC' | 'DESC' | 'DEFAULT'>('DEFAULT')
 
   const onToggleAllVessels = useCallback(() => {
@@ -140,8 +140,8 @@ function VesselsSection(): React.ReactElement<any> {
         }
       })
       .map((d) => d.id)
-    dispatchQueryParams({ dataviewInstancesOrder: dataviewsSortedIds })
-  }, [dataviews, dispatchQueryParams, resources, sortOrder])
+    replaceQueryParams({ dataviewInstancesOrder: dataviewsSortedIds })
+  }, [dataviews, resources, sortOrder])
 
   const onSearchClick = useCallback(() => {
     trackEvent({

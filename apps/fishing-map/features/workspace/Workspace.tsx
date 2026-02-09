@@ -41,7 +41,6 @@ import { getWorkspaceLabel, isPrivateWorkspaceNotAllowed } from 'features/worksp
 import WorkspaceError from 'features/workspace/WorkspaceError'
 import WorkspacePassword from 'features/workspace/WorkspacePassword'
 import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
-import { useLocationConnect } from 'routes/routes.hook'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse, options } from 'utils/html-parser'
@@ -54,6 +53,7 @@ import VesselGroupSection from './vessel-groups/VesselGroupsSection'
 import VesselsSection from './vessels/VesselsSection'
 import { useMigrateWorkspaceToast } from './workspace-migration.hooks'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './Workspace.module.css'
 
 function Workspace() {
@@ -73,7 +73,6 @@ function Workspace() {
   const isUserWorkspace =
     workspace?.id?.endsWith(`-${USER_SUFIX}`) ||
     workspace?.id?.endsWith(`-${USER_SUFIX}-${PUBLIC_SUFIX}`)
-  const { dispatchQueryParams } = useLocationConnect()
   const [workspaceEditName, setWorkspaceEditName] = useState(workspace?.name)
   const [workspaceEditDescription, setWorkspaceEditDescription] = useState(workspace?.description)
   const [workspaceEditModalOpen, setWorkspaceEditModalOpen] = useState(false)
@@ -107,10 +106,10 @@ function Workspace() {
         const oldIndex = dataviews.findIndex((d) => d.id === active.id)
         const newIndex = dataviews.findIndex((d) => d.id === over.id)
         const dataviewInstancesId = arrayMove(dataviews, oldIndex, newIndex).map((d) => d.id)
-        dispatchQueryParams({ dataviewInstancesOrder: dataviewInstancesId })
+        replaceQueryParams({ dataviewInstancesOrder: dataviewInstancesId })
       }
     },
-    [dataviews, dispatchQueryParams]
+    [dataviews]
   )
 
   const onWorkspaceUpdateClose = useCallback(() => {

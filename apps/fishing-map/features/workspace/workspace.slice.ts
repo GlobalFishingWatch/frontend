@@ -56,7 +56,7 @@ import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.sli
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
 import { HOME, REPORT, WORKSPACE } from 'routes/routes'
-import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
+import { cleanQueryParams, replaceQueryParams, updateLocation } from 'routes/routes.actions'
 import {
   selectLocationCategory,
   selectLocationType,
@@ -141,7 +141,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     try {
       let workspace: Workspace<any> | null = null
       if (locationType === REPORT) {
-        const action = dispatch(fetchReportsThunk([reportId]))
+        const action = dispatch(fetchReportsThunk([reportId as string]))
         const resolvedAction = await action
         if (fetchReportsThunk.fulfilled.match(resolvedAction)) {
           workspace = resolvedAction.payload?.[0]?.workspace as Workspace
@@ -282,7 +282,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
             vesselDataviewsWithTrack,
             urlDataviewInstances
           )
-          dispatch(updateQueryParam({ dataviewInstances: dataviewInstancesToUpsert }))
+          replaceQueryParams({ dataviewInstances: dataviewInstancesToUpsert })
         }
 
         if (error) {
@@ -351,7 +351,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
       properties: SaveWorkspaceThunkProperties
       workspace: AppWorkspace
     },
-    { dispatch, getState }
+    { getState }
   ) => {
     const state = getState() as any
     const workspaceUpsert = parseUpsertWorkspace(workspace)
@@ -402,16 +402,14 @@ export const saveWorkspaceThunk = createAsyncThunk(
     const locationType = selectLocationType(state)
     const locationCategory = selectLocationCategory(state) || WorkspaceCategory.FishingActivity
     if (workspaceUpdated) {
-      dispatch(
-        updateLocation(locationType === HOME ? WORKSPACE : locationType, {
-          payload: {
-            category: locationCategory,
-            workspaceId: workspaceUpdated.id,
-          },
-          query: {},
-          replaceQuery: true,
-        })
-      )
+      updateLocation(locationType === HOME ? WORKSPACE : locationType, {
+        payload: {
+          category: locationCategory,
+          workspaceId: workspaceUpdated.id,
+        },
+        query: {},
+        replaceQuery: true,
+      })
     }
     return workspaceUpdated
   }
@@ -434,7 +432,7 @@ export const updateCurrentWorkspaceThunk = createAsyncThunk<
     dispatch: AppDispatch
     rejectValue: UpdateWorkspaceThunkRejectError
   }
->('workspace/updatedCurrent', async (workspaceWithPassword, { dispatch, rejectWithValue }) => {
+>('workspace/updatedCurrent', async (workspaceWithPassword, { rejectWithValue }) => {
   try {
     const { editPassword, newPassword, ...workspace } = workspaceWithPassword
     const password = newPassword || editPassword || 'default'
@@ -452,7 +450,7 @@ export const updateCurrentWorkspaceThunk = createAsyncThunk<
       }),
     } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
     if (workspaceUpdated) {
-      dispatch(cleanQueryLocation())
+      cleanQueryParams()
     }
     return workspaceUpdated
   } catch (e: any) {

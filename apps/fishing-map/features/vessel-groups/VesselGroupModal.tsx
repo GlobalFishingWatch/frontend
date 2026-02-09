@@ -49,7 +49,7 @@ import {
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import { type ROUTE_TYPES, SEARCH, VESSEL_GROUP_REPORT, WORKSPACE_SEARCH } from 'routes/routes'
-import { updateLocation } from 'routes/routes.actions'
+import { replaceQueryParams, updateLocation } from 'routes/routes.actions'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsVesselGroupReportLocation, selectLocationQuery } from 'routes/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
@@ -277,16 +277,14 @@ function VesselGroupModal(): React.ReactElement<any> {
           : undefined
 
         if (isVesselGroupReportLocation && vesselGroupId !== editingVesselGroupId) {
-          dispatch(
-            updateLocation(VESSEL_GROUP_REPORT, {
-              payload: {
-                category: workspace?.category,
-                workspaceId: workspace?.id,
-                vesselGroupId: vesselGroupId,
-              },
-              query,
-            })
-          )
+          updateLocation(VESSEL_GROUP_REPORT, {
+            payload: {
+              category: workspace?.category,
+              workspaceId: workspace?.id,
+              vesselGroupId: vesselGroupId,
+            },
+            query,
+          })
         } else if (navigateToWorkspace && dataviewInstance) {
           if (workspaceToNavigate) {
             const { type, ...rest } = workspaceToNavigate
@@ -295,18 +293,15 @@ function VesselGroupModal(): React.ReactElement<any> {
               dataviewInstance,
               rest.query.dataviewInstances!
             )
-
-            dispatch(
-              updateLocation(type as ROUTE_TYPES, {
-                query: { ...query, dataviewInstances: dataviewInstancesMerged },
-                payload,
-              })
-            )
+            updateLocation(type as ROUTE_TYPES, {
+              query: { ...query, dataviewInstances: dataviewInstancesMerged },
+              payload,
+            })
             dispatch(setWorkspaceSuggestSave(true))
           } else if (searchQuery) {
             // TODO check if is search location and navigate back to workspace
             upsertDataviewInstance(dataviewInstance)
-            // dispatchQueryParams({ query: undefined })
+            replaceQueryParams({ query: undefined })
           }
           resetSidebarScroll()
           // } else if (addToDataviews && dataviewInstance) {

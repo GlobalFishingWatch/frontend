@@ -33,7 +33,7 @@ import VesselGroupAddButton, {
 } from 'features/vessel-groups/VesselGroupAddButton'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
+import { getCurrentAppUrl, replaceQueryParams } from 'routes/routes.actions'
 import { handleOpenImage } from 'utils/img'
 import { formatInfoField, getVesselOtherNamesLabel } from 'utils/info'
 
@@ -42,7 +42,6 @@ import styles from './VesselHeader.module.css'
 const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { dispatchQueryParams } = useLocationConnect()
   const isSmallScreen = useSmallScreen()
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
@@ -113,7 +112,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
 
   const onVesselFitBoundsClick = () => {
-    if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
+    if (isSmallScreen) replaceQueryParams({ sidebarOpen: false })
     setVesselBounds()
     trackAction('center_map')
   }
@@ -206,7 +205,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
           {shipnameLabel}
           <span className={styles.secondary}>{otherNamesLabel}</span>
           <span className={styles.reportLink}>
-            <a href={window.location.href}>{t((t) => t.vessel.linkToVessel)}</a>
+            <a href={getCurrentAppUrl()}>{t((t) => t.vessel.linkToVessel)}</a>
           </span>
         </h1>
 

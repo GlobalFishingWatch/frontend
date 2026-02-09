@@ -41,7 +41,6 @@ import {
   getCurrentIdentityVessel,
 } from 'features/vessel/vessel.utils'
 import VesselInfoCorrection from 'features/workspace/vessels/VesselInfoCorrection'
-import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsVesselLocation } from 'routes/routes.selectors'
 import {
   EMPTY_FIELD_PLACEHOLDER,
@@ -53,6 +52,7 @@ import {
 import VesselRegistryField from './VesselRegistryField'
 import VesselTypesField from './VesselTypesField'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
@@ -61,7 +61,6 @@ const VesselIdentity = () => {
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
-  const { dispatchQueryParams } = useLocationConnect()
   const { setTimerange } = useTimerangeConnect()
   const { identityTabs } = useVesselIdentityTabs()
   const isGFWUser = useSelector(selectIsGFWUser)
@@ -73,7 +72,7 @@ const VesselIdentity = () => {
   })
 
   const onTabClick: TabsProps<VesselIdentitySourceEnum>['onTabClick'] = (tab) => {
-    dispatchQueryParams({ vesselIdentitySource: tab.id })
+    replaceQueryParams({ vesselIdentitySource: tab.id })
     trackEvent({
       category: TrackCategory.VesselProfile,
       action: 'click_vessel_source_tab',

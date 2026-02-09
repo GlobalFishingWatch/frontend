@@ -12,7 +12,6 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsAnyReportLocation, selectIsAnyVesselLocation } from 'routes/routes.selectors'
 import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
 
@@ -20,6 +19,7 @@ import type { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 
 import { ScrenshotAreaIds, selectScreenshotAreaId, setScreenshotAreaId } from './screenshot.slice'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './MapControls.module.css'
 
 type ScrenshotDOMArea = typeof ROOT_DOM_ELEMENT | typeof MAP_CONTAINER_ID | typeof MAIN_DOM_ID
@@ -34,7 +34,6 @@ const MapControlScreenshot = ({
   const dispatch = useAppDispatch()
   const modalOpen = useSelector(selectScreenshotModalOpen)
   const timeoutRef = useRef<NodeJS.Timeout>(undefined)
-  const { dispatchQueryParams } = useLocationConnect()
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const showScreenshot = !isVesselLocation && !isAnyReportLocation
@@ -84,11 +83,11 @@ const MapControlScreenshot = ({
 
   const onScreenshotClick = useCallback(() => {
     if (screenshotAreaId === ScrenshotAreaIds.withTimebarAndLegend) {
-      dispatchQueryParams({ sidebarOpen: true })
+      replaceQueryParams({ sidebarOpen: true })
     }
     dispatch(setModalOpen({ id: 'screenshot', open: true }))
     generateImage(screenshotAreaId)
-  }, [dispatch, dispatchQueryParams, generateImage, screenshotAreaId])
+  }, [dispatch, generateImage, screenshotAreaId])
 
   const handleModalClose = useCallback(() => {
     resetPreviewImage()
@@ -115,11 +114,11 @@ const MapControlScreenshot = ({
     (area: ScrenshotDOMArea) => {
       dispatch(setScreenshotAreaId(area))
       if (area === ScrenshotAreaIds.withTimebarAndLegend) {
-        dispatchQueryParams({ sidebarOpen: true })
+        replaceQueryParams({ sidebarOpen: true })
       }
       generateImage(area)
     },
-    [dispatch, dispatchQueryParams, generateImage]
+    [dispatch, generateImage]
   )
 
   return (

@@ -8,6 +8,7 @@ import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { Button, Choice, Icon, InputText } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
+import { getCurrentAppUrl } from 'routes/routes.actions'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { useMapViewState } from 'features/map/map-viewport.hooks'
 import type { TurningTidesWorkspaceId } from 'features/track-correction/track-correction.config'
@@ -135,7 +136,7 @@ const TrackCorrectionNew = () => {
           userEmail: userData?.email || '',
           startDate_original: trackCorrectionTimerange.start,
           endDate_original: trackCorrectionTimerange.end,
-          workspaceLink: window.location.href.replace(
+          workspaceLink: getCurrentAppUrl().replace(
             'trackCorrectionId=new',
             `trackCorrectionId=${issueId}`
           ),

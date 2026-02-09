@@ -6,7 +6,7 @@ import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
+import { replaceQueryParams } from 'routes/routes.actions'
 
 const ALL_EVENT_TYPES = [
   EventTypes.Fishing,
@@ -17,7 +17,6 @@ const ALL_EVENT_TYPES = [
 ]
 
 export const useVisibleVesselEvents = () => {
-  const { dispatchQueryParams } = useLocationConnect()
   const currentVisibleEvents = useSelector(selectVisibleEvents)
 
   const setVesselEventVisibility = useCallback(
@@ -27,7 +26,7 @@ export const useVisibleVesselEvents = () => {
           currentVisibleEvents === 'all'
             ? ALL_EVENT_TYPES.filter((eventType) => eventType !== event)
             : uniq([...(currentVisibleEvents === 'none' ? [] : currentVisibleEvents), event])
-        dispatchQueryParams({
+        replaceQueryParams({
           visibleEvents: visibleEvents?.length === ALL_EVENT_TYPES.length ? 'all' : visibleEvents,
         })
       } else {
@@ -40,12 +39,12 @@ export const useVisibleVesselEvents = () => {
         const visibleEvents = currentVisibleEventsTypes.filter(
           (eventType) => event !== eventType
         ) as EventTypes[]
-        dispatchQueryParams({
+        replaceQueryParams({
           visibleEvents: visibleEvents?.length ? visibleEvents : 'none',
         })
       }
     },
-    [dispatchQueryParams, currentVisibleEvents]
+    [currentVisibleEvents]
   )
 
   return useMemo(

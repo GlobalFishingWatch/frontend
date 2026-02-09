@@ -18,6 +18,7 @@ import {
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
 import { formatTransmissionDate, getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
+import { getCurrentAppUrl } from 'routes/routes.actions'
 import {
   formatInfoField,
   getVesselGearTypeLabel,
@@ -64,7 +65,7 @@ function VesselCorrectionModal({ isOpen = false, onClose }: InfoCorrectionModalP
       const finalFeedbackData: InfoCorrectionSendFormat = {
         reviewer: userData!.email || '',
         source: vesselIdentity.identitySource || '',
-        workspaceLink: window.location.href,
+        workspaceLink: getCurrentAppUrl(),
         dateSubmitted: now,
         timeRange: formatTransmissionDate(vesselIdentity),
         vesselId:

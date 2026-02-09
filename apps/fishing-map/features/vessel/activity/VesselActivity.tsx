@@ -17,16 +17,14 @@ import { ACTIVITY_CONTAINER_ID } from 'features/vessel/activity/event/event-scro
 import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
 import { selectVesselHasEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
 import { selectVesselActivityMode } from 'features/vessel/vessel.config.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
-
 import type { VesselProfileActivityMode } from '../vessel.types'
 import { useVesselProfileEventsError, useVesselProfileEventsLoading } from '../vessel-events.hooks'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './VesselActivity.module.css'
 
 const VesselActivity = () => {
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
   const activityMode = useSelector(selectVesselActivityMode)
   const hasEventsDataset = useSelector(selectVesselHasEventsDatasets)
   const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
@@ -38,7 +36,7 @@ const VesselActivity = () => {
     vesselProfileDataview?.config?.events && vesselProfileDataview?.config?.events?.length > 0
 
   const setActivityMode = (option: ChoiceOption<VesselProfileActivityMode>) => {
-    dispatchQueryParams({ vesselActivityMode: option.id })
+    replaceQueryParams({ vesselActivityMode: option.id })
     trackEvent({
       category: TrackCategory.VesselProfile,
       action: `click_activity_by_${option.id}_summary_tab`,

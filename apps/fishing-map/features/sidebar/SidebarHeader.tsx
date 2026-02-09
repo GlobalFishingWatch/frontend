@@ -38,7 +38,6 @@ import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
 import VesselHeader from 'features/vessel/VesselHeader'
 import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnySearchLocation,
@@ -49,6 +48,7 @@ import {
   selectLocationCategory,
 } from 'routes/routes.selectors'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './SidebarHeader.module.css'
 
 function SidebarHeader() {
@@ -69,7 +69,6 @@ function SidebarHeader() {
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const activeSearchOption = useSelector(selectSearchOption)
   const isGFWUser = useSelector(selectIsGFWUser)
-  const { dispatchQueryParams } = useLocationConnect()
   const searchQuery = useSelector(selectSearchQuery)
   const { searchFilters } = useSearchFiltersConnect()
   const scrollElement = getScrollElement()
@@ -137,7 +136,7 @@ function SidebarHeader() {
       }
     }
     dispatch(cleanVesselSearchResults())
-    dispatchQueryParams({ searchOption: option.id, ...EMPTY_SEARCH_FILTERS, ...additionalParams })
+    replaceQueryParams({ searchOption: option.id, ...EMPTY_SEARCH_FILTERS, ...additionalParams })
   }
 
   const sectionHeaderComponent = useMemo(() => {

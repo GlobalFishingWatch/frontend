@@ -29,11 +29,11 @@ import SearchPlaceholder, {
 } from 'features/search/SearchPlaceholders'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import LocalStorageLoginLink from 'routes/LoginLink'
-import { useLocationConnect } from 'routes/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import SearchError from '../basic/SearchError'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from 'features/search/advanced/SearchAdvanced.module.css'
 
 const SearchAdvancedResults = dynamic(
@@ -53,16 +53,15 @@ function SearchAdvanced({
   const searchStatus = useSelector(selectSearchStatus)
   const searchQuery = useSelector(selectSearchQuery)
   const searchStatusCode = useSelector(selectSearchStatusCode)
-  const { dispatchQueryParams } = useLocationConnect()
   const { hasFilters } = useSearchFiltersConnect()
   const searchFilterErrors = useSearchFiltersErrors()
   const isGFWUser = useSelector(selectIsGFWUser)
   const ref = useEventKeyListener(['Enter'], fetchResults)
 
   const resetSearchState = useCallback(() => {
-    dispatchQueryParams(EMPTY_SEARCH_FILTERS)
+    replaceQueryParams(EMPTY_SEARCH_FILTERS)
     dispatch(cleanVesselSearchResults())
-  }, [dispatch, dispatchQueryParams])
+  }, [dispatch])
 
   if (!advancedSearchAllowed) {
     return (
@@ -77,7 +76,7 @@ function SearchAdvanced({
   }
 
   const handleSearchQueryChange = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatchQueryParams({ query: e.target.value })
+    replaceQueryParams({ query: e.target.value })
   }
 
   const handleSearchIdChange = (e: ChangeEvent<HTMLInputElement>) => {

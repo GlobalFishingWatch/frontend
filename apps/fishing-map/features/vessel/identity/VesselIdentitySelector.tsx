@@ -20,8 +20,7 @@ import {
   getVesselIdentity,
   getVesselIdentityId,
 } from 'features/vessel/vessel.utils'
-import { useLocationConnect } from 'routes/routes.hook'
-
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './VesselIdentitySelector.module.css'
 
 export function isRegistryInTimerange(registry: VesselDataIdentity, start: string, end: string) {
@@ -37,7 +36,6 @@ const VesselIdentitySelector = () => {
   const vessel = useSelector(selectVesselInfoData)
   const identitySource = useSelector(selectVesselIdentitySource)
   const identityId = useSelector(selectVesselIdentityId)
-  const { dispatchQueryParams } = useLocationConnect()
   const { start, end } = useTimerangeConnect()
 
   const identities = getVesselIdentities(vessel, { identitySource })
@@ -48,9 +46,9 @@ const VesselIdentitySelector = () => {
 
   const setIdentityId = (identityId: string, from: string, to: string) => {
     if (identitySource === VesselIdentitySourceEnum.SelfReported) {
-      dispatchQueryParams({ vesselSelfReportedId: identityId })
+      replaceQueryParams({ vesselSelfReportedId: identityId })
     } else {
-      dispatchQueryParams({ vesselRegistryId: identityId })
+      replaceQueryParams({ vesselRegistryId: identityId })
     }
 
     const start = formatI18nDate(from)

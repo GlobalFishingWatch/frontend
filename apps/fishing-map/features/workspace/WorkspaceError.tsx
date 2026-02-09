@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux'
 import { isAuthError } from '@globalfishingwatch/api-client'
 import { Button } from '@globalfishingwatch/ui-components'
 
-import { useAppDispatch } from 'features/app/app.hooks'
 import { selectWorkspaceVesselGroupsError } from 'features/vessel-groups/vessel-groups.slice'
 import { selectWorkspace, selectWorkspaceError } from 'features/workspace/workspace.selectors'
 import { HOME } from 'routes/routes'
@@ -19,7 +18,6 @@ export default function WorkspaceError() {
   const error = useSelector(selectWorkspaceError)
   const vesselGroupsError = useSelector(selectWorkspaceVesselGroupsError)
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const workspaceId = useSelector(selectWorkspaceId)
   const workspace = useSelector(selectWorkspace)
 
@@ -41,13 +39,11 @@ export default function WorkspaceError() {
       <ErrorPlaceholder title={t((t) => t.errors.workspaceNotFound)}>
         <Button
           onClick={() => {
-            dispatch(
-              updateLocation(HOME, {
-                payload: { workspaceId: undefined },
-                query: {},
-                replaceQuery: true,
-              })
-            )
+            updateLocation(HOME, {
+              payload: { workspaceId: undefined },
+              query: {},
+              replaceQuery: true,
+            })
           }}
         >
           {t((t) => t.errors.loadDefaultWorkspace)}

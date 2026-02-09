@@ -34,13 +34,12 @@ import {
   selectHasDetectionsDataviewVesselGroups,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { setUserSetting } from 'features/user/user.slice'
-import { useLocationConnect } from 'routes/routes.hook'
+import { replaceQueryParams } from 'routes/routes.actions'
 
 export const useVisualizationsOptions = (
   category: DataviewCategory.Activity | DataviewCategory.Detections | DataviewCategory.Environment
 ) => {
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useAppDispatch()
   const dataviews = useSelector(
     category === DataviewCategory.Activity
@@ -81,12 +80,12 @@ export const useVisualizationsOptions = (
   const onVisualizationModeChange = useCallback(
     (visualizationMode: FourwingsVisualizationMode) => {
       const categoryQueryParam = `${category}VisualizationMode`
-      dispatchQueryParams({ [categoryQueryParam]: visualizationMode })
+      replaceQueryParams({ [categoryQueryParam]: visualizationMode })
       if (visualizationMode !== 'positions') {
         dispatch(setUserSetting({ [PREFERRED_FOURWINGS_VISUALISATION_MODE]: visualizationMode }))
       }
     },
-    [category, dispatch, dispatchQueryParams]
+    [category, dispatch]
   )
 
   const visualizationOptions: ChoiceOption<FourwingsVisualizationMode>[] = useMemo(() => {

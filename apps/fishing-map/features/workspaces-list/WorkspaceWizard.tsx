@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
 import type { UseComboboxStateChange } from 'downshift'
 import { useCombobox } from 'downshift'
-import Link from 'redux-first-router-link'
 
 import type { Dataview } from '@globalfishingwatch/api-types'
 import type { OceanArea, OceanAreaLocale } from '@globalfishingwatch/ocean-areas'
@@ -29,7 +29,6 @@ import { t as trans } from 'features/i18n/i18n'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useMapViewState } from 'features/map/map-viewport.hooks'
 import { useOceanAreas } from 'hooks/ocean-areas'
-import { WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
 import type { Bbox } from 'types'
 import { getEventLabel } from 'utils/analytics'
 
@@ -138,18 +137,18 @@ function WorkspaceWizard() {
       setAreasMatching([])
     }
   }
-  const linkToArea = useMemo(() => {
+  const linkToAreaProps = useMemo(() => {
     const linkViewport = selectedItem
       ? getMapCoordinatesFromBounds(selectedItem.properties?.bounds as Bbox)
       : viewState
 
     return {
-      type: WORKSPACE,
-      payload: {
+      to: '/$category/$workspaceId' as const,
+      params: {
         category: WorkspaceCategory.MarineManager,
         workspaceId: WIZARD_TEMPLATE_ID,
       },
-      query: {
+      search: {
         ...linkViewport,
         daysFromLatest: 90,
         dataviewInstances: [
@@ -164,11 +163,11 @@ function WorkspaceWizard() {
           ...MARINE_MANAGER_DATAVIEWS_INSTANCES,
         ],
       },
-      replaceQuery: true,
+      replace: true,
     }
   }, [selectedItem, viewState])
 
-  const linkToReport = useMemo(() => {
+  const linkToReportProps = useMemo(() => {
     if (!selectedItem) {
       return null
     }
@@ -184,18 +183,18 @@ function WorkspaceWizard() {
       return null
     }
     return {
-      ...linkToArea,
-      type: WORKSPACE_REPORT,
-      payload: {
-        ...linkToArea.payload,
+      to: '/$category/$workspaceId/report/$datasetId/$areaId' as const,
+      params: {
+        ...linkToAreaProps.params,
         datasetId,
-        areaId: selectedItem?.properties?.area,
+        areaId: String(selectedItem?.properties?.area ?? ''),
       },
-      query: {
-        ...linkToArea.query,
+      search: {
+        ...linkToAreaProps.search,
       },
+      replace: true,
     }
-  }, [selectedItem, dataviews, linkToArea])
+  }, [selectedItem, dataviews, linkToAreaProps])
 
   const linkLabel = selectedItem
     ? t((t) => t.workspace.wizard.exploreArea)
@@ -243,12 +242,12 @@ function WorkspaceWizard() {
           </p>
         </div>
         <div className={styles.linksContainer}>
-          {selectedItem && linkToReport && (
-            <Link to={linkToReport} target="_self" className={cx(styles.confirmBtn)}>
+          {selectedItem && linkToReportProps && (
+            <Link {...linkToReportProps} target="_self" className={cx(styles.confirmBtn)}>
               {t((t) => t.analysis.see)}
             </Link>
           )}
-          <Link to={linkToArea} target="_self" className={cx(styles.confirmBtn)}>
+          <Link {...linkToAreaProps} target="_self" className={cx(styles.confirmBtn)}>
             {linkLabel}
           </Link>
         </div>

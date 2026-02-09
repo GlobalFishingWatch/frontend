@@ -11,15 +11,13 @@ import {
 import { selectActivityCategory } from 'features/app/selectors/app.selectors'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useLocationConnect } from 'routes/routes.hook'
+import { replaceQueryParams } from 'routes/routes.actions'
 
 export const useHideLegacyActivityCategoryDataviews = () => {
   const actionDone = useRef(false)
   const activityCategory = useSelector(selectActivityCategory)
   const dataviewInstancesResolved = useSelector(selectAllDataviewInstancesResolved)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { dispatchQueryParams } = useLocationConnect()
-
   useEffect(() => {
     // When legacy activityCategory is present this hides
     // the dataviewInstances from the category not selected
@@ -45,11 +43,11 @@ export const useHideLegacyActivityCategoryDataviews = () => {
             config: { visible: false },
           }))
         )
-        dispatchQueryParams({ activityCategory: undefined })
+        replaceQueryParams({ activityCategory: undefined })
         actionDone.current = true
       }
     }
-  }, [activityCategory, dataviewInstancesResolved, dispatchQueryParams, upsertDataviewInstance])
+  }, [activityCategory, dataviewInstancesResolved, upsertDataviewInstance])
 
   return activityCategory
 }

@@ -31,7 +31,6 @@ import LayerProperties from 'features/workspace/shared/LayerProperties'
 import MapLegend from 'features/workspace/shared/MapLegend'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -47,6 +46,7 @@ import { isDefaultActivityDataview, isDefaultDetectionsDataview } from './activi
 import TurningTidesFilters from './TurningTidesFilters'
 
 import activityStyles from './ActivitySection.module.css'
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type LayerPanelProps = {
@@ -68,7 +68,6 @@ function ActivityLayerPanel({
   const [colorOpen, setColorOpen] = useState(false)
 
   const { deleteDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { dispatchQueryParams } = useLocationConnect()
   const isGFWUser = useSelector(selectIsGFWUser)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const hintsDismissed = useSelector(selectHintsDismissed)
@@ -102,7 +101,7 @@ function ActivityLayerPanel({
   // )
   // const statsValue = stats && (stats.vesselIds || stats.id)
   const disableBivariate = () => {
-    dispatchQueryParams({ bivariateDataviews: null })
+    replaceQueryParams({ bivariateDataviews: null })
   }
 
   const onSplitLayers = () => {

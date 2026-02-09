@@ -12,8 +12,8 @@ export function selectVesselProfileStateProperty<P extends VesselProfileStatePro
   property: P
 ) {
   return createSelector([selectLocationQuery], (locationQuery): VesselProfileProperty<P> => {
-    const urlProperty = locationQuery?.[property]
-    if (urlProperty !== undefined) return urlProperty
+    const urlProperty = locationQuery?.[property as keyof typeof locationQuery]
+    if (urlProperty !== undefined) return urlProperty as VesselProfileProperty<P>
     return DEFAULT_VESSEL_STATE[property] as VesselProfileProperty<P>
   })
 }

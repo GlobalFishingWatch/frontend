@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
-import Link from 'redux-first-router-link'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
@@ -31,14 +31,15 @@ import {
   cleanReportQuery,
 } from 'features/workspace/workspace.slice'
 import { REPORT_ROUTES, VESSEL, WORKSPACE_VESSEL, WORKSPACES_LIST } from 'routes/routes'
-import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
   selectIsRouteWithWorkspace,
   selectIsVesselGroupReportLocation,
 } from 'routes/routes.selectors'
+import { buildPathForRouteType } from 'routes/routes.utils'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from '../SidebarHeader.module.css'
 
 function NavigationHistoryButton() {
@@ -49,7 +50,6 @@ function NavigationHistoryButton() {
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isRouteWithWorkspace = useSelector(selectIsRouteWithWorkspace)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const { dispatchQueryParams } = useLocationConnect()
   const reportAreaIds = useSelector(selectReportAreaIds)
   const lastWorkspaceVisited = workspaceHistoryNavigation[workspaceHistoryNavigation.length - 1]
   const setTrackCorrectionId = useSetTrackCorrectionId()
@@ -76,8 +76,8 @@ function NavigationHistoryButton() {
   }, [isAnyVesselLocation, isAnyReportLocation, isVesselGroupReportLocation, isRouteWithWorkspace])
 
   const resetQueryParams = useCallback(() => {
-    dispatchQueryParams({ ...EMPTY_SEARCH_FILTERS, userTab: undefined })
-  }, [dispatchQueryParams])
+    replaceQueryParams({ ...EMPTY_SEARCH_FILTERS, userTab: undefined })
+  }, [])
 
   const { start, end, latitude, longitude, zoom } = lastWorkspaceVisited.query
   const onCloseClick = useCallback(() => {
@@ -151,24 +151,22 @@ function NavigationHistoryButton() {
         ? { ...cleanReportQuery(lastWorkspaceVisited.query || {}), ...EMPTY_SEARCH_FILTERS }
         : lastWorkspaceVisited.query),
     }
-    const linkTo = {
-      ...lastWorkspaceVisited,
-      payload: {
-        ...(!isPreviousLocationReport
-          ? cleanReportPayload(lastWorkspaceVisited.payload)
-          : lastWorkspaceVisited.payload),
-      },
-      query: {
-        ...query,
-        dataviewInstances: cleanVesselProfileDataviewInstances(query.dataviewInstances),
-      },
-      isHistoryNavigation: true,
+    const payload = !isPreviousLocationReport
+      ? cleanReportPayload(lastWorkspaceVisited.payload)
+      : lastWorkspaceVisited.payload
+
+    const linkPath = buildPathForRouteType(lastWorkspaceVisited.type, payload)
+    const linkSearch = {
+      ...query,
+      dataviewInstances: cleanVesselProfileDataviewInstances(query.dataviewInstances),
     }
 
     return (
       <Link
         className={cx(styles.workspaceLink, 'print-hidden')}
-        to={linkTo}
+        to={linkPath}
+        params={payload}
+        search={linkSearch}
         onClick={() => {
           resetQueryParams()
           onCloseClick()

@@ -11,8 +11,8 @@ function selectReportStateProperty<P extends ReportStateProperty>(property: P) {
   return createSelector(
     [selectLocationQuery, selectWorkspaceState],
     (locationQuery, workspaceState): AreaReportProperty<P> => {
-      const urlProperty = locationQuery?.[property]
-      if (urlProperty !== undefined) return urlProperty
+      const urlProperty = locationQuery?.[property as keyof typeof locationQuery]
+      if (urlProperty !== undefined) return urlProperty as AreaReportProperty<P>
       if (property in workspaceState && workspaceState[property as keyof typeof workspaceState]) {
         return workspaceState[property as keyof typeof workspaceState] as AreaReportProperty<P>
       }

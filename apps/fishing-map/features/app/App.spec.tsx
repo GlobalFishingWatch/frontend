@@ -14,7 +14,7 @@ describe('Fishing Map App', () => {
 
   it('should reflex store changes on layer toggle', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const { getByTestId, getByText } = await render(<App />, { store })
 
     await expect.element(getByText(/common.activity/)).toBeInTheDocument()
@@ -42,7 +42,7 @@ describe('Fishing Map App', () => {
 
   it('should preserve map previous state on layer toggle', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const { getByTestId, getByText } = await render(<App />, { store })
 
     await expect.element(getByText(/common.activity/)).toBeInTheDocument()
