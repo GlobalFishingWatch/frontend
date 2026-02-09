@@ -46,7 +46,6 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
   location    = "us-central1"
   description = "Run integrations tests on PR"
 
-
   github {
     name  = local.repository
     owner = "GlobalFishingWatch"
@@ -102,6 +101,9 @@ resource "google_cloudbuild_trigger" "e2e_tests_on_pr" {
     }
   }
 
+  include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
+
+
   service_account = "projects/gfw-int-infrastructure/serviceAccounts/cloudbuild@gfw-int-infrastructure.iam.gserviceaccount.com"
 
   build {
@@ -148,6 +150,7 @@ resource "google_cloudbuild_trigger" "e2e_tests_on_pr" {
       EOF
       ]
     }
+
 
     available_secrets {
       secret_manager {
