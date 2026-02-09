@@ -37,7 +37,7 @@ import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-m
 import HistogramRangeFilter from 'features/workspace/environmental/HistogramRangeFilter'
 import LayerSchemaFilter, { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useLocationConnect } from 'routes/routes.hook'
+import { replaceQueryParams } from 'routes/routes.actions'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { listAsSentence } from 'utils/shared'
 
@@ -121,8 +121,6 @@ function LayerFilters({
   const categoryDataviews = useSelector(selectDataviewInstancesByCategory(baseDataview?.category))
   const activityVisualizationMode = useSelector(selectActivityVisualizationMode)
   const detectionsVisualizationMode = useSelector(selectDetectionsVisualizationMode)
-  const { dispatchQueryParams } = useLocationConnect()
-
   const [newDataviewInstanceConfig, setNewDataviewInstanceConfig] = useState<
     UrlDataviewInstance | undefined
   >()
@@ -205,10 +203,10 @@ function LayerFilters({
             : false
       if (isHighRes && dataviewInstance?.config?.filters?.['vessel-groups']) {
         const categoryQueryParam = `${dataview.category}VisualizationMode`
-        dispatchQueryParams({ [categoryQueryParam]: HEATMAP_ID })
+        replaceQueryParams({ [categoryQueryParam]: HEATMAP_ID })
       }
     },
-    [activityVisualizationMode, dataview.category, detectionsVisualizationMode, dispatchQueryParams]
+    [activityVisualizationMode, dataview.category, detectionsVisualizationMode]
   )
 
   useEffect(() => {

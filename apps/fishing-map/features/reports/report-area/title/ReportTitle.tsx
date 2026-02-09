@@ -9,6 +9,7 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Button, Icon, IconButton, Popover } from '@globalfishingwatch/ui-components'
 
 import { AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION } from 'data/config'
+import { getCurrentAppUrl, replaceQueryParams } from 'routes/routes.actions'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -36,7 +37,6 @@ import {
   setPreviewBuffer,
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
-import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsStandaloneReportLocation } from 'routes/routes.selectors'
 import type { BufferOperation, BufferUnit } from 'types'
 import { htmlSafeParse } from 'utils/html-parser'
@@ -53,7 +53,6 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const [longDescription, setLongDescription] = useState(false)
   const [expandedDescription, setExpandedDescription] = useState(false)
   const descriptionRef = useRef<HTMLSpanElement>(null)
-  const { dispatchQueryParams } = useLocationConnect()
   const dispatch = useAppDispatch()
   const loading = useReportFeaturesLoading()
   const highlightArea = useHighlightReportArea()
@@ -145,7 +144,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const handleConfirmBuffer = useCallback(() => {
     setShowBufferTooltip(false)
     highlightArea(undefined)
-    dispatchQueryParams({
+    replaceQueryParams({
       reportBufferValue: previewBuffer.value!,
       reportBufferUnit: previewBuffer.unit!,
       reportBufferOperation: previewBuffer.operation!,
@@ -156,28 +155,21 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
       action: `Confirm area buffer`,
       label: `${previewBuffer.value} ${previewBuffer.unit} ${previewBuffer.operation}`,
     })
-  }, [
-    highlightArea,
-    dispatchQueryParams,
-    previewBuffer.value,
-    previewBuffer.unit,
-    previewBuffer.operation,
-    dispatch,
-  ])
+  }, [highlightArea, previewBuffer.value, previewBuffer.unit, previewBuffer.operation, dispatch])
 
   const handleRemoveBuffer = useCallback(() => {
     setShowBufferTooltip(false)
     if (reportArea) {
       highlightArea(reportArea as ContextFeature)
     }
-    dispatchQueryParams({
+    replaceQueryParams({
       reportBufferValue: undefined,
       reportBufferUnit: undefined,
       reportBufferOperation: undefined,
     })
     dispatch(resetReportData())
     dispatch(cleanCurrentWorkspaceStateBufferParams())
-  }, [dispatch, dispatchQueryParams, highlightArea, reportArea])
+  }, [dispatch, highlightArea, reportArea])
 
   const reportDescription =
     report?.description === AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION
@@ -225,7 +217,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
             [styles.actionsContainerColumn]: isSticky || hasLongTitle,
           })}
         >
-          <a className={styles.reportLink} href={window.location.href}>
+          <a className={styles.reportLink} href={getCurrentAppUrl()}>
             {t((t) => t.analysis.linkToReport)}
           </a>
           {showAreaReportSearch && (

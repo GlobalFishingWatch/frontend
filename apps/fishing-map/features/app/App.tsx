@@ -3,6 +3,8 @@ import { FpsView } from 'react-fps'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
+import { HeadContent } from '@tanstack/react-router'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
@@ -30,6 +32,7 @@ import {
   selectWorkspaceReportId,
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { ConfirmLeave } from 'routes/ConfirmLeave'
 import {
   HOME,
   PORT_REPORT,
@@ -44,7 +47,8 @@ import {
   WORKSPACE_VESSEL,
   WORKSPACES_LIST,
 } from 'routes/routes'
-import { useBeforeUnload, useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
+import { replaceQueryParams } from 'routes/routes.actions'
+import { useBeforeUnload, useReplaceLoginUrl } from 'routes/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnySearchLocation,
@@ -85,7 +89,6 @@ function App() {
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const readOnly = useSelector(selectReadOnly)
   const i18n = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const vesselLocation = useSelector(selectIsVesselLocation)
@@ -164,8 +167,8 @@ function App() {
   }, [dispatch])
 
   const onToggle = useCallback(() => {
-    dispatchQueryParams({ sidebarOpen: !sidebarOpen })
-  }, [dispatchQueryParams, sidebarOpen])
+    replaceQueryParams({ sidebarOpen: !sidebarOpen })
+  }, [sidebarOpen])
 
   const debugOptions = useSelector(selectDebugOptions)
   const [isReady, setReady] = useState(false)
@@ -198,6 +201,9 @@ function App() {
 
   return (
     <Fragment>
+      <HeadContent />
+      {/* // TODO:RR test if this really works */}
+      <ConfirmLeave />
       <a href="https://globalfishingwatch.org" className="print-only">
         <Logo className={styles.logo} />
       </a>
@@ -236,6 +242,7 @@ function App() {
           closeButton={false}
         />
       </ErrorBoundary>
+      <TanStackRouterDevtools position="bottom-right" />
     </Fragment>
   )
 }

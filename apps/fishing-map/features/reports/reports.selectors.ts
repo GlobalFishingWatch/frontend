@@ -36,7 +36,7 @@ import { ReportCategory } from './reports.types'
 export const selectCurrentReport = createSelector(
   [selectReportId, (state) => state.reports],
   (reportId, reports) => {
-    const report = selectReportById(reportId)({ reports })
+    const report = reportId ? selectReportById(Number(reportId))({ reports }) : undefined
     return report
   }
 )

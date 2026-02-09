@@ -128,8 +128,8 @@ export function selectWorkspaceStateProperty<P extends WorkspaceStateProperty>(p
   return createSelector(
     [selectLocationQuery, selectWorkspaceState, selectUserSettings],
     (locationQuery, workspaceState, userSettings): WorkspaceProperty<P> => {
-      const urlProperty = locationQuery?.[property]
-      if (urlProperty !== undefined) return urlProperty
+      const urlProperty = locationQuery?.[property as keyof typeof locationQuery]
+      if (urlProperty !== undefined) return urlProperty as WorkspaceProperty<P>
       if (workspaceState[property]) return workspaceState[property] as WorkspaceProperty<P>
       const userSettingsProperty =
         userSettings[USER_SETTINGS_FALLBACKS[property] as keyof UserSettings]

@@ -10,12 +10,10 @@ import type {
 } from '@globalfishingwatch/deck-layers'
 
 import { selectMapRulersVisible } from 'features/app/selectors/app.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
+import { replaceQueryParams } from 'routes/routes.actions'
 
 export function useMapRulersDrag() {
   const rulers = useSelector(selectMapRulersVisible)
-  const { dispatchQueryParams } = useLocationConnect()
-
   const draggedRuler = useRef<{
     ruler: RulerData | undefined
     order: RulerPointProperties['order']
@@ -24,9 +22,9 @@ export function useMapRulersDrag() {
 
   const debouncedUpdate = useCallback(
     throttle((mapRulers) => {
-      dispatchQueryParams({ mapRulers })
+      replaceQueryParams({ mapRulers })
     }, 200),
-    [dispatchQueryParams]
+    []
   )
 
   const onRulerDrag = useCallback(

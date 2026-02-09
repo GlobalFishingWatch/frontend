@@ -119,7 +119,7 @@ function AreaReportSearch({ className }: { className?: string }) {
           dispatchLocation(PORT_REPORT, {
             payload: {
               ...workspacePayload,
-              portId: area.properties.area,
+              portId: area.properties.area != null ? String(area.properties.area) : undefined,
             },
             query: {
               ...query,
@@ -132,7 +132,7 @@ function AreaReportSearch({ className }: { className?: string }) {
           })
         } else {
           dispatchLocation(WORKSPACE_REPORT, {
-            payload: { ...workspacePayload, datasetId, areaId: area.properties.area },
+            payload: { ...workspacePayload, datasetId, areaId: area.properties.area != null ? String(area.properties.area) : undefined },
             query: {
               ...query,
               dataviewInstances,

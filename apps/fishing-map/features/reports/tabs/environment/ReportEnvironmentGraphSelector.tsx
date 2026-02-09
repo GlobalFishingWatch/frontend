@@ -14,13 +14,12 @@ import {
 } from 'features/reports/reports.config'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import { type ReportActivityGraph } from 'features/reports/reports.types'
-import { useLocationConnect } from 'routes/routes.hook'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './ReportEnvironment.module.css'
 
 export default function ReportEnvironmentGraphSelector() {
-  const { dispatchQueryParams } = useLocationConnect()
   const selectedReportActivityGraph = useSelector(selectReportActivityGraph)
   const { t } = useTranslation()
   const fitAreaInViewport = useFitAreaInViewport()
@@ -51,7 +50,7 @@ export default function ReportEnvironmentGraphSelector() {
           ? { main: dataviews[0]?.id, compare: '' }
           : undefined
 
-      dispatchQueryParams({
+      replaceQueryParams({
         reportComparisonDataviewIds,
         ...(option.id === REPORT_ACTIVITY_GRAPH_EVOLUTION && {
           dataviewInstances: filteredDataviewInstances,
@@ -62,7 +61,7 @@ export default function ReportEnvironmentGraphSelector() {
         category: TrackCategory.Analysis,
         action: `Click on ${option.id} environmental graph`,
       })
-      dispatchQueryParams({ reportActivityGraph: option.id })
+      replaceQueryParams({ reportActivityGraph: option.id })
     }
   }
 

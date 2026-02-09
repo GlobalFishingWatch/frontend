@@ -15,14 +15,13 @@ import { selectReportEventsPortsFilter } from 'features/reports/reports.config.s
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import { useReportHash } from 'features/reports/tabs/events/events-report.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useLocationConnect } from 'routes/routes.hook'
-
 import {
   selectFetchEventsPortsStatsParams,
   selectReportEventsPortsPaginated,
   selectReportEventsPortsPagination,
 } from './events-report.selectors'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './EventReportPorts.module.css'
 
 function EventReportPorts() {
@@ -34,8 +33,6 @@ function EventReportPorts() {
   const reportEventsPortsPaginated = useSelector(selectReportEventsPortsPaginated)
   const reportEventsPortsFilter = useSelector(selectReportEventsPortsFilter)
   const pagination = useSelector(selectReportEventsPortsPagination)
-  const { dispatchQueryParams } = useLocationConnect()
-
   const [query, setQuery] = useState(reportEventsPortsFilter || '')
   const [debouncedQuery] = useDebounce(query, 200)
   const { updateReportHash, reportOutdated } = useReportHash()
@@ -52,15 +49,15 @@ function EventReportPorts() {
   }, [reportEventsPortsFilter])
 
   useEffect(() => {
-    dispatchQueryParams({ reportEventsPortsFilter: debouncedQuery, reportEventsPortsPage: 0 })
+    replaceQueryParams({ reportEventsPortsFilter: debouncedQuery, reportEventsPortsPage: 0 })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery])
 
   const onPrevPageClick = () => {
-    dispatchQueryParams({ reportEventsPortsPage: pagination.page - 1 })
+    replaceQueryParams({ reportEventsPortsPage: pagination.page - 1 })
   }
   const onNextPageClick = () => {
-    dispatchQueryParams({ reportEventsPortsPage: pagination.page + 1 })
+    replaceQueryParams({ reportEventsPortsPage: pagination.page + 1 })
   }
 
   const seePortsClick = useCallback(() => {
@@ -89,7 +86,7 @@ function EventReportPorts() {
       config: newDataviewConfig,
     })
     setTimeout(() => {
-      dispatchQueryParams({ reportEventsPortsPage: 0 })
+      replaceQueryParams({ reportEventsPortsPage: 0 })
     }, 100)
   }
 

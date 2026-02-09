@@ -21,8 +21,6 @@ import {
 } from 'features/search/search.selectors'
 import type { VesselSearchState } from 'features/search/search.types'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
-
 import {
   cleanVesselSearchResults,
   fetchVesselSearchThunk,
@@ -31,6 +29,7 @@ import {
   selectSearchSuggestion,
   selectSearchSuggestionClicked,
 } from './search.slice'
+import { replaceQueryParams } from 'routes/routes.actions'
 
 export const useSearchConnect = () => {
   const searchPagination = useSelector(selectSearchPagination)
@@ -106,14 +105,12 @@ export const useSearchFiltersErrors = () => {
 export const useSearchFiltersConnect = () => {
   const dispatch = useAppDispatch()
   const searchFilters = useSelector(selectSearchFilters)
-  const { dispatchQueryParams } = useLocationConnect()
-
   const setSearchFilters = useCallback(
     (filter: VesselSearchState) => {
-      dispatchQueryParams(filter)
+      replaceQueryParams(filter)
       dispatch(cleanVesselSearchResults())
     },
-    [dispatch, dispatchQueryParams]
+    [dispatch]
   )
 
   const hasFilters = hasFiltersActive(searchFilters)

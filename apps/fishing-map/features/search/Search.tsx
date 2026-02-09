@@ -42,10 +42,10 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
-import { useLocationConnect } from 'routes/routes.hook'
 import { selectWorkspaceId } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './Search.module.css'
 
 function Search() {
@@ -59,7 +59,6 @@ function Search() {
   const { hasFilters, searchFilters } = useSearchFiltersConnect()
   const { searchSuggestion } = useSearchConnect()
   const debouncedQuery = useDebounce(searchQuery, 600)
-  const { dispatchQueryParams } = useLocationConnect()
   const activeSearchOption = useSelector(selectSearchOption)
   const searchResultsPagination = useSelector(selectSearchPagination)
   const vesselsSelected = useSelector(selectSelectedVessels)
@@ -77,7 +76,7 @@ function Search() {
   const { fetchResults, fetchMoreResults } = useFetchSearchResults()
 
   useEffect(() => {
-    dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId }))
+    dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId as string }))
   }, [dispatch, urlWorkspaceId])
 
   useEffect(() => {
@@ -124,7 +123,7 @@ function Search() {
     if (debouncedQuery === '') {
       dispatch(cleanVesselSearchResults())
     }
-    dispatchQueryParams({ query: debouncedQuery })
+    replaceQueryParams({ query: debouncedQuery })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery])
 
@@ -138,7 +137,7 @@ function Search() {
   const onSuggestionClick = () => {
     if (searchSuggestion) {
       dispatch(setSuggestionClicked(true))
-      dispatchQueryParams({ query: searchSuggestion })
+      replaceQueryParams({ query: searchSuggestion })
     }
   }
 

@@ -2,7 +2,6 @@ import { Fragment, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import dynamic from 'next/dynamic'
-import { replace } from 'redux-first-router'
 
 import { useSessionStorage } from '@globalfishingwatch/react-hooks'
 import { Modal } from '@globalfishingwatch/ui-components'
@@ -42,6 +41,7 @@ import EditWorkspaceModal from 'features/workspace/save/WorkspaceEditModal'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
+import { router } from 'routes/router'
 import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'routes/routes'
 import dynamicWithRetry from 'utils/dynamic-import'
 
@@ -118,7 +118,7 @@ const TurningTidesMenuConfig = {
 const ResetWorkspaceConfig = {
   key: 'w',
   dispatchToggle: () => {
-    replace(window.location.origin)
+    router.navigate({ to: '/', search: {}, replace: true })
   },
 }
 

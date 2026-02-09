@@ -20,9 +20,9 @@ import { selectReportActivityGraph } from 'features/reports/reports.config.selec
 import { type ReportActivityGraph } from 'features/reports/reports.types'
 import { REPORT_ACTIVITY_GRAPH_TIME_OPTIONS } from 'features/reports/shared/utils/reports.utils'
 import { useSetReportTimeComparison } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
 import { selectUrlDataviewInstances } from 'routes/routes.selectors'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './ReportActivity.module.css'
 
 export const isEvolutionOrDatasetComparison = (id: ReportActivityGraph) =>
@@ -35,7 +35,6 @@ type ReportActivityGraphSelectorProps = {
 export default function ReportActivityGraphSelector({
   loading = false,
 }: ReportActivityGraphSelectorProps) {
-  const { dispatchQueryParams } = useLocationConnect()
   const { setReportTimecomparison, resetReportTimecomparison } = useSetReportTimeComparison()
   const selectedReportActivityGraph = useSelector(selectReportActivityGraph)
   const { t } = useTranslation()
@@ -91,7 +90,7 @@ export default function ReportActivityGraphSelector({
             ? { main: dataviews[0]?.id, compare: '' }
             : undefined
 
-        dispatchQueryParams({
+        replaceQueryParams({
           reportComparisonDataviewIds,
           ...(option.id === REPORT_ACTIVITY_GRAPH_EVOLUTION && {
             dataviewInstances: filteredDataviewInstances,
@@ -99,7 +98,7 @@ export default function ReportActivityGraphSelector({
         })
       } else {
         setReportTimecomparison(option.id)
-        dispatchQueryParams({
+        replaceQueryParams({
           reportComparisonDataviewIds: undefined,
           dataviewInstances: filteredDataviewInstances,
         })
@@ -108,7 +107,7 @@ export default function ReportActivityGraphSelector({
         category: TrackCategory.Analysis,
         action: `Click on ${option.id} activity graph`,
       })
-      dispatchQueryParams({ reportActivityGraph: option.id })
+      replaceQueryParams({ reportActivityGraph: option.id })
     }
   }
 

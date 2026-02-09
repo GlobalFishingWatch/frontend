@@ -39,11 +39,11 @@ import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import WorkspaceError from 'features/workspace/WorkspaceError'
-import { useLocationConnect } from 'routes/routes.hook'
 import { TimebarVisualisations } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import dynamicWithRetry from 'utils/dynamic-import'
 
+import { replaceQueryParams } from 'routes/routes.actions'
 import styles from 'features/reports/report-area/AreaReport.module.css'
 
 const ReportActivity = dynamicWithRetry(
@@ -68,7 +68,6 @@ export default function Report() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const highlightArea = useHighlightReportArea()
-  const { dispatchQueryParams } = useLocationConnect()
   const reportCategory = useSelector(selectReportCategory)
   const reportStatus = useSelector(selectReportVesselsStatus)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
@@ -171,7 +170,7 @@ export default function Report() {
   const handleTabClick = (option: Tab<ReportCategory>) => {
     if (option.id !== reportCategory) {
       dispatch(resetReportData())
-      dispatchQueryParams({
+      replaceQueryParams({
         reportCategory: option.id,
         reportVesselPage: 0,
       })
