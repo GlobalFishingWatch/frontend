@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { Fragment, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
 import { handleOpenImage } from 'utils/img'
@@ -81,6 +82,7 @@ const drawEnhancedImageToCanvas = ({
 }
 
 export function DetectionThumbnail({ data, scale }: DetectionThumbnailProps) {
+  const { t } = useTranslation()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
 
@@ -95,7 +97,13 @@ export function DetectionThumbnail({ data, scale }: DetectionThumbnailProps) {
       href={`data:${data}`}
       target="_blank"
       rel="noreferrer"
-      onClick={(e) => handleOpenImage(e, `data:${data}`)}
+      onClick={(e) =>
+        handleOpenImage(e, {
+          data: canvasRef.current?.toDataURL() as string,
+          title: t((t) => t.common.detection),
+          type: 'detection',
+        })
+      }
     >
       <div className={cx(styles.imgContainer)}>
         <img
