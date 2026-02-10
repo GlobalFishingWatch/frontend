@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useMemo, useRef } from 'react'
+import { Fragment, memo, useCallback, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -36,7 +36,7 @@ type VesselGroupVesselRowProps = {
   hiddenProperties?: VesselIdentityProperty[]
   searchIdField?: IdField
 }
-function VesselGroupVesselRow({
+const VesselGroupVesselRow = memo(function VesselGroupVesselRow({
   vessel,
   onRemoveClick,
   className = '',
@@ -112,10 +112,10 @@ function VesselGroupVesselRow({
       </td>
     </tr>
   )
-}
+})
 
 const GROUP_BY_PROPERTY = 'ssvid'
-function VesselGroupVessels({ searchIdField }: { searchIdField: IdField }) {
+function VesselGroupVesselsComponent({ searchIdField }: { searchIdField: IdField }) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const vesselGroupVessels = useSelector(selectVesselGroupModalVessels)
@@ -209,5 +209,7 @@ function VesselGroupVessels({ searchIdField }: { searchIdField: IdField }) {
     </table>
   )
 }
+
+const VesselGroupVessels = memo(VesselGroupVesselsComponent)
 
 export default VesselGroupVessels
