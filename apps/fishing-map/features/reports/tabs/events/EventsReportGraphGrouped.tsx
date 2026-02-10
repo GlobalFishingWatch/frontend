@@ -32,7 +32,7 @@ import type { EventsReportGraphProps } from 'features/reports/tabs/events/events
 import EventsReportDownload from 'features/reports/tabs/events/EventsReportDownload'
 import { EventsReportIndividualGraphTooltip } from 'features/reports/tabs/events/EventsReportGraphEvolution'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectLocationPayload, selectLocationQuery } from 'routes/routes.selectors'
+import { selectLocationPayload } from 'routes/routes.selectors'
 import { ROUTE_PATHS } from 'routes/routes.utils'
 
 import EncounterIcon from './icons/event-encounter.svg'
@@ -125,7 +125,6 @@ const ReportGraphTick = (props: any) => {
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const workspace = useSelector(selectWorkspaceWithCurrentState)
   const locationPayload = useSelector(selectLocationPayload)
-  const query = useSelector(selectLocationQuery)
   const datasetAreaId = useSelector(selectEventsGraphDatasetAreaId)
   const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
   const isCategoryInteractive =
@@ -174,11 +173,11 @@ const ReportGraphTick = (props: any) => {
             datasetId: datasetAreaId,
             areaId,
           },
-          search: {
-            ...query,
+          search: (prev) => ({
+            ...prev,
             reportEventsGraph: 'evolution',
             dataviewInstances: dataviewInstancesWithAreaLayerVisible,
-          },
+          }),
         })
       }
     }
