@@ -840,6 +840,7 @@
     "seeing": "crwdns69442:0crwdne69442:0",
     "seeVesselsOnMap": "crwdns69444:0crwdne69444:0",
     "seeVesselsOnMap_one": "crwdns69446:0{{count}}crwdne69446:0",
+    "seeVesselsOnMap_many": "crwdns109086:0crwdne109086:0",
     "seeVesselsOnMap_other": "crwdns69448:0{{count}}crwdne69448:0",
     "selectVessel": "crwdns69450:0crwdne69450:0",
     "selectVesselResults": "crwdns70236:0crwdne70236:0",

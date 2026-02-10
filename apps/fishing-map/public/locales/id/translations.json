@@ -840,6 +840,7 @@
     "seeing": "Melihat",
     "seeVesselsOnMap": "Lihat kapal di peta",
     "seeVesselsOnMap_one": "Lihat {{count}} kapal di peta",
+    "seeVesselsOnMap_many": "",
     "seeVesselsOnMap_other": "Lihat {{count}} kapal di peta",
     "selectVessel": "Pilih kapal",
     "selectVesselResults": "Pilih hasil untuk melihat kapal di peta",

@@ -840,6 +840,7 @@
     "seeing": "Vendo",
     "seeVesselsOnMap": "Ver embarcação no mapa",
     "seeVesselsOnMap_one": "Ver {{count}} embarcação no mapa",
+    "seeVesselsOnMap_many": "",
     "seeVesselsOnMap_other": "Ver {{count}} embarcações no mapa",
     "selectVessel": "Selecione a embarcação",
     "selectVesselResults": "Selecione os resultados para ver as embarcações do mapa",

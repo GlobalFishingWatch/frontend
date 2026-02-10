@@ -840,6 +840,7 @@
     "seeing": "Voir",
     "seeVesselsOnMap": "Voir navire sur la carte",
     "seeVesselsOnMap_one": "Voir {{count}} navire sur la carte",
+    "seeVesselsOnMap_many": "",
     "seeVesselsOnMap_other": "Voir {{count}} navires sur la carte",
     "selectVessel": "Sélectionnez le navire",
     "selectVesselResults": "Sélectionnez les résultats pour voir les navires sur la carte",
