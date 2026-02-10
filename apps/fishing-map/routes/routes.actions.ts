@@ -1,49 +1,19 @@
-import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
-import { DEFAULT_CALLBACK_URL_PARAM } from '@globalfishingwatch/react-hooks'
-
 import { PATH_BASENAME } from 'data/config'
-import { REPLACE_URL_PARAMS } from 'routes/routes.config'
-import type { QueryParam, QueryParams } from 'types'
+import type { RoutePathValues } from 'routes/routes.utils'
+import type { QueryParams } from 'types'
 
 import { router } from './router'
 import type { NavigationState } from './router-sync'
-
-/**
- * Transient auth params that should never persist in the URL.
- * They are read from `window.location.search` on mount (before any router navigation)
- * by `useReplaceLoginUrl`, so stripping them here is safe.
- */
-const TRANSIENT_PARAMS = [ACCESS_TOKEN_STRING, DEFAULT_CALLBACK_URL_PARAM] as const
-
-/**
- * Merge new query params with previous search, stripping transient auth params.
- * Extracted so it can be used inside TanStack Router's `search` callback.
- */
-export function mergeSearch(
-  prev: Record<string, unknown>,
-  query: QueryParams,
-  replaceQuery: boolean
-): Record<string, unknown> {
-  const merged = replaceQuery
-    ? ({ ...query } as Record<string, unknown>)
-    : ({ ...prev, ...query } as Record<string, unknown>)
-
-  // Always strip transient auth params — they are never part of workspace state
-  for (const param of TRANSIENT_PARAMS) {
-    delete merged[param]
-  }
-  return merged
-}
 
 /** Replace all query params with an empty search (clears the URL search). */
 export function cleanQueryParams() {
   const lastMatch = router.state.matches[router.state.matches.length - 1]
   router.navigate({
-    to: lastMatch.routeId as Exclude<typeof lastMatch.routeId, '__root__'>,
+    to: lastMatch.routeId as RoutePathValues,
     params: lastMatch.params,
-    search: {},
     replace: true,
     resetScroll: false,
+    search: {},
   })
 }
 
@@ -58,12 +28,12 @@ export function replaceQueryParams(
   const navState: NavigationState = { skipHistoryNavigation }
   const lastMatch = router.state.matches[router.state.matches.length - 1]
   router.navigate({
-    to: lastMatch.routeId as Exclude<typeof lastMatch.routeId, '__root__'>,
+    to: lastMatch.routeId as RoutePathValues,
     params: lastMatch.params,
-    search: (prev) => ({ ...prev, ...search }),
     replace: true,
-    state: (prev) => ({ ...prev, ...navState }),
     resetScroll: false,
+    search: (prev) => ({ ...prev, ...search }),
+    state: (prev) => ({ ...prev, ...navState }),
   })
 }
 

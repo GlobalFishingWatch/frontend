@@ -50,9 +50,8 @@ const optionalEnum = <T extends string>(enumObj: Record<string, T>) =>
 const optionalLiteralUnion = <T extends string>(values: readonly [T, ...T[]]) =>
   fallback(z.enum(values).optional(), undefined)
 
-// TODO:RR review if we can use this as source of truth for the search params and remove the types/index.ts file
-// ── Search params schema ────────────────────────────────────────────────────
-// Covers every field in QueryParams (types/index.ts).
+// ── Root search params schema ─────────────────────────────────────────────────
+// Shared across all routes: viewport, time, workspace state, app state, auth.
 //
 // Complex types (dataviewInstances, mapRulers, mapAnnotations, …) are already
 // deeply parsed upstream by parseWorkspace + BASE_URL_TO_OBJECT_TRANSFORMATION
@@ -60,10 +59,11 @@ const optionalLiteralUnion = <T extends string>(values: readonly [T, ...T[]]) =>
 //
 // .partial() makes every key optional so TanStack Router doesn't force
 // callers (Link, navigate, redirect) to always supply `search`.
-// .passthrough() lets any future / untracked fields flow through.
+// .passthrough() lets child-route-specific and future/untracked fields flow through.
 
-export const searchParamsSchema = z
+export const rootSearchSchema = z
   .object({
+    // ── Viewport ────────────────────────────────────────────────────────────
     latitude: optionalNumber(),
     longitude: optionalNumber(),
     zoom: optionalNumber(),
@@ -114,7 +114,26 @@ export const searchParamsSchema = z
       undefined
     ),
 
-    // ── Partial<VesselProfileState> ───────────────────────────────────────
+    // ── AppState ──────────────────────────────────────────────────────────
+    userTab: optionalEnum(UserTab),
+    mapDrawing: z
+      .union([z.enum(['polygons', 'points']), z.boolean()])
+      .optional()
+      .catch(undefined as 'polygons' | 'points' | boolean | undefined)
+      .transform((v) => (v === true ? 'polygons' : v)),
+    mapDrawingEditId: optionalString(),
+    trackCorrectionId: optionalString(), // 'new' | arbitrary ID string
+
+    // ── RedirectParam ─────────────────────────────────────────────────────
+    'access-token': optionalString(),
+    callbackUrlStorage: optionalBoolean(),
+  })
+  .partial()
+  .passthrough()
+
+// ── Vessel profile search params ──────────────────────────────────────────────
+export const vesselSearchSchema = z
+  .object({
     vesselDatasetId: optionalString(),
     vesselRegistryId: optionalString(),
     vesselSelfReportedId: optionalString(),
@@ -124,8 +143,13 @@ export const searchParamsSchema = z
     vesselIdentitySource: optionalEnum(VesselIdentitySourceEnum),
     vesselActivityMode: optionalLiteralUnion(VESSEL_PROFILE_ACTIVITY_MODES),
     includeRelatedIdentities: optionalBoolean(),
+  })
+  .partial()
+  .passthrough()
 
-    // ── Partial<ReportState> ──────────────────────────────────────────────
+// ── Report search params ──────────────────────────────────────────────────────
+export const reportSearchSchema = z
+  .object({
     // ReportCategoryState
     reportCategory: optionalEnum(ReportCategory),
 
@@ -187,24 +211,13 @@ export const searchParamsSchema = z
     portsReportName: optionalString(),
     portsReportCountry: optionalString(),
     portsReportDatasetId: optionalString(),
+  })
+  .partial()
+  .passthrough()
 
-    // ── AppState ──────────────────────────────────────────────────────────
-    userTab: optionalEnum(UserTab),
-    // mapDrawing — also in BASE_URL_TO_OBJECT_TRANSFORMATION
-    // Normalises legacy boolean true / "true" → "polygons"
-    mapDrawing: z
-      .union([z.enum(['polygons', 'points']), z.boolean()])
-      .optional()
-      .catch(undefined as 'polygons' | 'points' | boolean | undefined)
-      .transform((v) => (v === true ? 'polygons' : v)),
-    mapDrawingEditId: optionalString(),
-    trackCorrectionId: optionalString(), // 'new' | arbitrary ID string
-
-    // ── RedirectParam ─────────────────────────────────────────────────────
-    'access-token': optionalString(),
-    callbackUrlStorage: optionalBoolean(),
-
-    // ── VesselSearchState ─────────────────────────────────────────────────
+// ── Vessel search (query) search params ───────────────────────────────────────
+export const vesselSearchQuerySchema = z
+  .object({
     id: optionalString(),
     query: optionalString(),
     shipname: optionalString(),
@@ -227,6 +240,34 @@ export const searchParamsSchema = z
     origin: optionalString(),
   })
   .partial()
+  .passthrough()
+
+// ── Per-route validators ──────────────────────────────────────────────────────
+// TanStack Router merges parent + child validateSearch results, so each child
+// only validates its own params. .passthrough() on all schemas ensures params
+// from other routes flow through without being stripped.
+
+export function validateRootSearchParams(search: Record<string, unknown>): QueryParams {
+  return rootSearchSchema.parse(search) as QueryParams
+}
+
+export function validateVesselSearchParams(search: Record<string, unknown>): QueryParams {
+  return vesselSearchSchema.parse(search) as QueryParams
+}
+
+export function validateReportSearchParams(search: Record<string, unknown>): QueryParams {
+  return reportSearchSchema.parse(search) as QueryParams
+}
+
+export function validateSearchQueryParams(search: Record<string, unknown>): QueryParams {
+  return vesselSearchQuerySchema.parse(search) as QueryParams
+}
+
+// ── Full schema (kept for backward compat where all params are needed) ────────
+export const searchParamsSchema = rootSearchSchema
+  .merge(vesselSearchSchema)
+  .merge(reportSearchSchema)
+  .merge(vesselSearchQuerySchema)
   .passthrough()
 
 export function validateSearchParams(search: Record<string, unknown>): QueryParams {
