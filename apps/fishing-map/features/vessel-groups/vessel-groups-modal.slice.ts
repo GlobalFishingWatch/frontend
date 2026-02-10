@@ -32,11 +32,7 @@ import {
 
 export const MAX_VESSEL_GROUP_VESSELS = 1000
 
-export type VesselGroupConfirmationMode =
-  | 'save'
-  | 'update'
-  | 'saveAndSeeInWorkspace'
-  | 'saveAndDeleteVessels'
+export type VesselGroupConfirmationMode = 'save' | 'update' | 'saveAndSeeInWorkspace'
 
 export type VesselGroupVesselIdentity = VesselGroupVessel & { identity?: IdentityVessel }
 

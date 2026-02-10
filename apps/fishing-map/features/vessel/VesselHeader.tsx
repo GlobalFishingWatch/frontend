@@ -34,6 +34,7 @@ import VesselGroupAddButton, {
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
+import { handleOpenImage } from 'utils/img'
 import { formatInfoField, getVesselOtherNamesLabel } from 'utils/info'
 
 import styles from './VesselHeader.module.css'
@@ -129,6 +130,12 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
     setMousePosition({ x, y })
   }
 
+  const copyright = allVesselImages[currentImageIndex].copyright
+    ? `© ${allVesselImages[currentImageIndex].copyright}`
+    : undefined
+
+  const shipnameLabel = formatInfoField(shipname, 'shipname')
+
   return (
     <div className={cx(styles.summaryContainer, { [styles.sticky]: isSticky })}>
       {allVesselImages.length > 0 && (
@@ -138,16 +145,26 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
           onMouseLeave={() => setIsHovering(false)}
           onMouseMove={handleMouseMove}
         >
-          <img
-            src={allVesselImages[currentImageIndex].url}
-            alt={`${shipname} - ${currentImageIndex + 1}`}
-            title={
-              allVesselImages[currentImageIndex].copyright
-                ? `© ${allVesselImages[currentImageIndex].copyright}`
-                : undefined
+          <a
+            href={`${allVesselImages[currentImageIndex].url}`}
+            target="_blank"
+            rel="noreferrer"
+            onClick={(e) =>
+              handleOpenImage(e, {
+                data: allVesselImages[currentImageIndex].url,
+                copyright,
+                title: (shipnameLabel || t((t) => t.common.vessel)) as string,
+                type: 'vessel',
+              })
             }
-            className={styles.vesselImage}
-          />
+          >
+            <img
+              src={allVesselImages[currentImageIndex].url}
+              alt={`${shipnameLabel} - ${currentImageIndex + 1}`}
+              title={copyright}
+              className={styles.vesselImage}
+            />
+          </a>
           {isHovering && (
             <div className={styles.zoomedContainer}>
               <img
@@ -186,7 +203,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
               d="M15.23.75v6.36l-7.8 7.8-1.58-4.78-4.78-1.59L8.87.75h6.36Z"
             />
           </svg>
-          {formatInfoField(shipname, 'shipname')}
+          {shipnameLabel}
           <span className={styles.secondary}>{otherNamesLabel}</span>
           <span className={styles.reportLink}>
             <a href={window.location.href}>{t((t) => t.vessel.linkToVessel)}</a>
