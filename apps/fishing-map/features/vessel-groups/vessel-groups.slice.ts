@@ -16,7 +16,6 @@ import { asyncInitialState, AsyncReducerStatus, createAsyncSlice } from 'utils/a
 import { prepareVesselGroupVesselsUpdate } from './vessel-groups.utils'
 
 export type IdField = 'vesselId' | 'mmsi' | 'imo'
-export type VesselGroupConfirmationMode = 'save' | 'saveAndSeeInWorkspace' | 'saveAndDeleteVessels'
 
 interface VesselGroupsState extends AsyncReducer<VesselGroup> {
   workspace: {
@@ -132,9 +131,14 @@ export const createVesselGroupThunk = createAsyncThunk(
             body: { ...vesselGroup, name },
           } as FetchOptions<any>)
         } catch (e: any) {
-          // Means we already have a workspace with this name
+          // Means we already have a vessel group with this name
           if (e.status === 422 && e.message.includes('Id') && e.message.includes('duplicated')) {
-            return await saveVesselGroup(vesselGroup, formatI18nDate(Date.now()))
+            if (!retrySufix) {
+              return await saveVesselGroup(vesselGroup, formatI18nDate(Date.now()))
+            }
+            window.alert(
+              'You already have a vessel group with this name, please try again with a different name'
+            )
           }
           console.warn('Error creating vessel group', e)
           throw e

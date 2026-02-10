@@ -100,7 +100,7 @@ function VesselsSection(): React.ReactElement<any> {
 
   const onAddToVesselGroupClick = useCallback(
     (vesselGroupId?: string) => {
-      dispatch(setVesselGroupConfirmationMode('saveAndDeleteVessels'))
+      dispatch(setVesselGroupConfirmationMode('update'))
       if (vesselGroupId && vesselGroupId !== NEW_VESSEL_GROUP_ID) {
         const isVesselGroupInWorkspace = vesselGroupsInWorkspace.includes(vesselGroupId)
         const dataviewInstance = !isVesselGroupInWorkspace
