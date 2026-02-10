@@ -33,6 +33,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { ConfirmLeave } from 'routes/ConfirmLeave'
+import { ConfirmVesselProfileLeave } from 'routes/ConfirmVesselProfileLeave'
 import {
   HOME,
   PORT_REPORT,
@@ -204,6 +205,7 @@ function App() {
       <HeadContent />
       {/* // TODO:RR test if this really works */}
       <ConfirmLeave />
+      <ConfirmVesselProfileLeave />
       <a href="https://globalfishingwatch.org" className="print-only">
         <Logo className={styles.logo} />
       </a>
