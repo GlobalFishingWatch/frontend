@@ -37,8 +37,10 @@ export function mergeSearch(
 
 /** Replace all query params with an empty search (clears the URL search). */
 export function cleanQueryParams() {
+  const lastMatch = router.state.matches[router.state.matches.length - 1]
   router.navigate({
-    to: router.state.location.pathname,
+    to: lastMatch.routeId as Exclude<typeof lastMatch.routeId, '__root__'>,
+    params: lastMatch.params,
     search: {},
     replace: true,
     resetScroll: false,
@@ -54,8 +56,10 @@ export function replaceQueryParams(
   { skipHistoryNavigation = true } = {}
 ) {
   const navState: NavigationState = { skipHistoryNavigation }
+  const lastMatch = router.state.matches[router.state.matches.length - 1]
   router.navigate({
-    to: router.state.location.pathname,
+    to: lastMatch.routeId as Exclude<typeof lastMatch.routeId, '__root__'>,
+    params: lastMatch.params,
     search: (prev) => ({ ...prev, ...search }),
     replace: true,
     state: (prev) => ({ ...prev, ...navState }),

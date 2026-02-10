@@ -16,6 +16,7 @@ import type { WorkspaceCategoryDescriptionKey } from 'routes/router.meta'
 import { getRouteHead, getSearchHead, getWorkspaceHead } from 'routes/router.meta'
 import type { QueryParams } from 'types'
 
+import { validateSearchParams } from './routes.search'
 import { ROUTE_PATHS } from './routes.utils'
 
 // Re-export utilities from routes.utils
@@ -31,6 +32,7 @@ const parseAppWorkspace = (searchStr: string): Record<string, any> => {
 // Root route - renders the App component which handles all UI based on Redux state
 const rootRoute = createRootRoute({
   component: App,
+  validateSearch: validateSearchParams,
 })
 
 // Static routes

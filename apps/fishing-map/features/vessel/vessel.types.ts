@@ -1,9 +1,13 @@
 import type { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
-export type VesselSection = 'activity' | 'related_vessels' | 'areas' | 'insights'
-export type VesselAreaSubsection = 'fao' | 'eez' | 'mpa' | 'rfmo'
-export type VesselRelatedSubsection = 'encounters' | 'owners'
-export type VesselProfileActivityMode = 'voyage' | 'type'
+export const VESSEL_SECTIONS = ['activity', 'related_vessels', 'areas', 'insights'] as const
+export type VesselSection = (typeof VESSEL_SECTIONS)[number]
+export const VESSEL_AREA_SUBSECTIONS = ['fao', 'eez', 'mpa', 'rfmo'] as const
+export type VesselAreaSubsection = (typeof VESSEL_AREA_SUBSECTIONS)[number]
+export const VESSEL_RELATED_SUBSECTIONS = ['encounters', 'owners'] as const
+export type VesselRelatedSubsection = (typeof VESSEL_RELATED_SUBSECTIONS)[number]
+export const VESSEL_PROFILE_ACTIVITY_MODES = ['voyage', 'type'] as const
+export type VesselProfileActivityMode = (typeof VESSEL_PROFILE_ACTIVITY_MODES)[number]
 export type VesselProfileState = {
   vesselDatasetId: string
   vesselRegistryId?: string
