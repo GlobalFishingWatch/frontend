@@ -134,7 +134,7 @@ function VesselGroupVessels({ searchIdField }: { searchIdField: IdField }) {
         )
         if (isUnknownVessel) {
           deletedUnknownVesselsCount.current += 1
-          if (deletedUnknownVesselsCount.current > 2) {
+          if (deletedUnknownVesselsCount.current === 2) {
             const vesselsWithShipname = filteredVessels.filter(
               (v) => getSearchIdentityResolved(v.identity!).shipname !== null
             )
