@@ -20,6 +20,7 @@ import { selectUserData, selectUserSettings } from 'features/user/selectors/user
 import type { UserSettings } from 'features/user/user.slice'
 import { WORKSPACE_ROUTES } from 'routes/routes'
 import { selectIsRouteWithWorkspace, selectLocationQuery } from 'routes/routes.selectors'
+import { mapRouteIdToType } from 'routes/routes.utils'
 import type { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -36,7 +37,10 @@ export const selectWorkspaceCustomStatus = (state: RootState) => state.workspace
 export const selectLastVisitedWorkspace = createSelector(
   [selectWorkspaceHistoryNavigation],
   (historyNavigation) => {
-    return historyNavigation.findLast((navigation) => WORKSPACE_ROUTES.includes(navigation.type))
+    return historyNavigation.findLast((navigation) => {
+      const routeType = mapRouteIdToType(navigation.to)
+      return WORKSPACE_ROUTES.includes(routeType)
+    })
   }
 )
 export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {

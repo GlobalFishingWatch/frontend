@@ -126,6 +126,7 @@ export function selectQueryParam<P extends WorkspaceParam>(param: P) {
 }
 
 export const selectLocationPayload = createSelector([selectLocation], ({ payload }) => payload)
+export const selectLocationTo = createSelector([selectLocation], (location) => location.to)
 
 export const selectWorkspaceId = createSelector(
   [selectLocationPayload],

@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { useRouter } from '@tanstack/react-router'
 import dynamic from 'next/dynamic'
 
 import { WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
@@ -14,8 +15,7 @@ import { selectWorkspace, selectWorkspaceStatus } from 'features/workspace/works
 import { setWorkspace } from 'features/workspace/workspace.slice'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { getCurrentAppUrl } from 'routes/routes.actions'
-import { REPORT } from 'routes/routes'
-import { useLocationConnect } from 'routes/routes.hook'
+import { ROUTE_PATHS } from 'routes/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 const NewReportModal = dynamic(
@@ -32,7 +32,7 @@ function SaveReportButton() {
   const report = useSelector(selectCurrentReport)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const reportStatus = useSelector(selectReportsStatus)
-  const { dispatchLocation } = useLocationConnect()
+  const router = useRouter()
   const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
   const [showReportCreateModal, setShowReportCreateModal] = useState(false)
 
@@ -43,15 +43,18 @@ function SaveReportButton() {
   const onSaveCreateReport = useCallback(
     (report: any) => {
       copyToClipboard(getCurrentAppUrl())
-      dispatchLocation(
-        REPORT,
-        { payload: { reportId: report?.id }, query: {} },
-        { replaceQuery: true }
-      )
+      router.navigate({
+        to: ROUTE_PATHS.REPORT,
+        params: {
+          reportId: report?.id,
+        },
+        search: {},
+        replace: true,
+      })
       dispatch(setWorkspace(report.workspace))
       onCloseCreateReport()
     },
-    [copyToClipboard, dispatch, dispatchLocation, onCloseCreateReport]
+    [copyToClipboard, dispatch, router, onCloseCreateReport]
   )
 
   const onSaveClick = async () => {

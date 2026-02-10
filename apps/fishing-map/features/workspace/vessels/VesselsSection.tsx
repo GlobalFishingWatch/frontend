@@ -2,6 +2,7 @@ import { Fragment, useCallback, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { SortableContext } from '@dnd-kit/sortable'
+import { useRouter } from '@tanstack/react-router'
 import cx from 'classnames'
 
 import { DatasetTypes, DataviewCategory, ResourceStatus } from '@globalfishingwatch/api-types'
@@ -38,8 +39,8 @@ import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import LocalStorageLoginLink from 'routes/LoginLink'
-import { WORKSPACE_SEARCH } from 'routes/routes'
-import { useLocationConnect } from 'routes/routes.hook'
+import { replaceQueryParams } from 'routes/routes.actions'
+import { ROUTE_PATHS } from 'routes/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getVesselShipNameLabel } from 'utils/info'
 
@@ -50,7 +51,6 @@ import VesselLayerPanel from './VesselLayerPanel'
 import VesselsFromPositions from './VesselsFromPositions'
 import VesselTracksLegend from './VesselTracksLegend'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from 'features/workspace/shared/Section.module.css'
 
 const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: string) => {
@@ -64,7 +64,7 @@ const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: st
 function VesselsSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { dispatchLocation } = useLocationConnect()
+  const router = useRouter()
   const dataviews = useSelector(selectVesselsDataviews)
   const activeDataviews = useSelector(selectActiveVesselsDataviews)
   const workspace = useSelector(selectWorkspace)
@@ -148,13 +148,13 @@ function VesselsSection(): React.ReactElement<any> {
       category: TrackCategory.SearchVessel,
       action: 'Click search icon to open search panel',
     })
-    dispatchLocation(WORKSPACE_SEARCH, {
-      payload: {
-        category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-        workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-      },
+    const category = workspace?.category || DEFAULT_WORKSPACE_CATEGORY
+    const workspaceId = workspace?.id || DEFAULT_WORKSPACE_ID
+    router.navigate({
+      to: ROUTE_PATHS.WORKSPACE_SEARCH,
+      params: { category, workspaceId },
     })
-  }, [dispatchLocation, workspace])
+  }, [router, workspace])
 
   const vesselResources = activeDataviews.flatMap((dataview) => {
     const { url: infoUrl } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)

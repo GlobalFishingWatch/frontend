@@ -18,13 +18,8 @@ import type { QueryParams } from 'types'
 
 import { ROUTE_PATHS } from './routes.utils'
 
-// Re-export utilities from routes.utils to maintain backward compatibility
-export {
-  buildPathForRouteType,
-  mapRouteIdToType,
-  ROUTE_PATHS,
-  ROUTE_TYPE_TO_PATH,
-} from './routes.utils'
+// Re-export utilities from routes.utils
+export { mapRouteIdToType, ROUTE_PATHS } from './routes.utils'
 
 const parseAppWorkspace = (searchStr: string): Record<string, any> => {
   return parseWorkspace(searchStr, {

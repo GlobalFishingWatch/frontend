@@ -91,92 +91,12 @@ export function mapRouteIdToType(routeId: string): ROUTE_TYPES {
   return ROUTE_ID_TO_TYPE[routeId] || HOME
 }
 
-// Map from ROUTE_TYPES to route path patterns for navigation
-export const ROUTE_TYPE_TO_PATH = {
-  [HOME]: ROUTE_PATHS.HOME,
-  [USER]: ROUTE_PATHS.USER,
-  [SEARCH]: ROUTE_PATHS.SEARCH,
-  [REPORT]: ROUTE_PATHS.REPORT,
-  [VESSEL]: ROUTE_PATHS.VESSEL,
-  [WORKSPACES_LIST]: ROUTE_PATHS.WORKSPACES_LIST,
-  [WORKSPACE]: ROUTE_PATHS.WORKSPACE,
-  [WORKSPACE_SEARCH]: ROUTE_PATHS.WORKSPACE_SEARCH,
-  [WORKSPACE_VESSEL]: ROUTE_PATHS.WORKSPACE_VESSEL,
-  [WORKSPACE_REPORT]: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
-  [VESSEL_GROUP_REPORT]: ROUTE_PATHS.VESSEL_GROUP_REPORT,
-  [PORT_REPORT]: ROUTE_PATHS.PORT_REPORT,
-} as const satisfies Record<ROUTE_TYPES, RoutePathValues>
-
-// ============================================================================
-// Path Building Utilities
-// ============================================================================
-
-function interpolatePath(pattern: string, params: Record<string, any>): string {
-  return pattern.replace(/\$([a-zA-Z]+)/g, (_, key) => {
-    return encodeURIComponent(params[key] || '')
-  })
-}
-
 /**
- * Build a concrete path from a route type and payload by interpolating params.
- * For routes with optional params that are missing, use the appropriate shorter path variant.
- * @deprecated Prefer using ROUTE_PATHS constants directly with TanStack Router's Link component
+ * Map TanStack Router's routeId (which is the path pattern) to our ROUTE_PATHS constant.
+ * The routeId is already the path pattern, so this is mostly a pass-through with fallback.
  */
-export function buildPathForRouteType(
-  type: ROUTE_TYPES,
-  payload: Record<string, any> = {}
-): string {
-  // Handle WORKSPACE_REPORT optional params
-  if (type === WORKSPACE_REPORT) {
-    if (!payload.datasetId && !payload.areaId) {
-      return interpolatePath(ROUTE_PATHS.WORKSPACE_REPORT, payload)
-    }
-    if (!payload.areaId) {
-      return interpolatePath(ROUTE_PATHS.WORKSPACE_REPORT_DATASET, payload)
-    }
-  }
-
-  // Handle WORKSPACE vs WORKSPACES_LIST (workspaceId optional)
-  if (type === WORKSPACE && !payload.workspaceId) {
-    return interpolatePath(ROUTE_PATHS.WORKSPACES_LIST, payload)
-  }
-
-  const pathPattern = ROUTE_TYPE_TO_PATH[type]
-  if (!pathPattern) {
-    return ROUTE_PATHS.HOME
-  }
-  return interpolatePath(pathPattern, payload)
-}
-
-/**
- * Routes that don't require params (empty params object).
- */
-type NoParamsRoutes = '/' | '/user' | '/vessel-search'
-
-/**
- * Type-safe link props builder for use with TanStack Router's Link component.
- * Returns an object that can be spread directly into a Link component.
- *
- * Uses TanStack Router's auto-generated types for full type safety.
- *
- * @example
- * // Simple route without params
- * <Link {...linkTo(ROUTE_PATHS.HOME)} />
- *
- * // Route with params (TypeScript enforces correct params from router types)
- * <Link {...linkTo(ROUTE_PATHS.WORKSPACE, { category: 'fishing', workspaceId: '123' })} />
- *
- * // With search params
- * <Link {...linkTo(ROUTE_PATHS.WORKSPACE, { category: 'fishing', workspaceId: '123' })} search={{ zoom: 5 }} />
- */
-export function linkTo<TPath extends NoParamsRoutes>(to: TPath): { to: TPath }
-export function linkTo<TPath extends Exclude<AppRoutePaths, NoParamsRoutes>>(
-  to: TPath,
-  params: ParamsForRoute<TPath>
-): { to: TPath; params: ParamsForRoute<TPath> }
-export function linkTo<TPath extends AppRoutePaths>(
-  to: TPath,
-  params?: ParamsForRoute<TPath>
-): { to: TPath; params?: ParamsForRoute<TPath> } {
-  return params ? { to, params } : { to }
+export function mapRouteIdToPath(routeId: string): string {
+  // Find the matching ROUTE_PATHS value
+  const matchingPath = Object.values(ROUTE_PATHS).find((path) => path === routeId)
+  return matchingPath || ROUTE_PATHS.HOME
 }

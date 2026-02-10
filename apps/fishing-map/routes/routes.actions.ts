@@ -7,28 +7,6 @@ import type { QueryParam, QueryParams } from 'types'
 
 import { router } from './router'
 import type { NavigationState } from './router-sync'
-import type { ROUTE_TYPES } from './routes'
-import { buildPathForRouteType } from './routes.utils'
-
-export interface UpdateQueryParamsAction {
-  type: ROUTE_TYPES
-  query?: QueryParams
-  isHistoryNavigation?: boolean
-  skipHistoryNavigation?: boolean
-  replaceQuery?: boolean
-  replaceUrl?: boolean
-  payload?: Record<string, string | undefined>
-}
-
-type UpdateLocationOptions = Pick<
-  UpdateQueryParamsAction,
-  | 'query'
-  | 'payload'
-  | 'replaceQuery'
-  | 'replaceUrl'
-  | 'isHistoryNavigation'
-  | 'skipHistoryNavigation'
->
 
 /**
  * Transient auth params that should never persist in the URL.
@@ -41,7 +19,7 @@ const TRANSIENT_PARAMS = [ACCESS_TOKEN_STRING, DEFAULT_CALLBACK_URL_PARAM] as co
  * Merge new query params with previous search, stripping transient auth params.
  * Extracted so it can be used inside TanStack Router's `search` callback.
  */
-function mergeSearch(
+export function mergeSearch(
   prev: Record<string, unknown>,
   query: QueryParams,
   replaceQuery: boolean
@@ -55,46 +33,6 @@ function mergeSearch(
     delete merged[param]
   }
   return merged
-}
-
-/**
- * Navigate to a route using TanStack Router.
- * Handles query merging, replace-vs-push logic, and path interpolation from route type + payload.
- * Used by useLocationConnect hook and functions that need programmatic navigation.
- */
-export function updateLocation(
-  type: ROUTE_TYPES,
-  {
-    query = {},
-    payload = {},
-    replaceQuery = false,
-    replaceUrl = false,
-    isHistoryNavigation = false,
-    skipHistoryNavigation = false,
-  } = {} as UpdateLocationOptions
-) {
-  const shouldReplace =
-    replaceUrl ||
-    Object.keys((router.state.location.search || {}) as Record<string, unknown>)
-      .filter((k) => (query as Record<string, unknown>)?.[k])
-      .some((key) => REPLACE_URL_PARAMS.includes(key as QueryParam))
-
-  // Build the path from route type and payload
-  const path = buildPathForRouteType(type, payload)
-
-  // Navigation state passed via history state
-  const navState: NavigationState = {
-    isHistoryNavigation,
-    skipHistoryNavigation,
-  }
-
-  router.navigate({
-    to: path,
-    search: (prev) => mergeSearch(prev, query as QueryParams, replaceQuery),
-    replace: shouldReplace,
-    state: (prev) => ({ ...prev, ...navState }),
-    resetScroll: false,
-  })
 }
 
 /** Replace all query params with an empty search (clears the URL search). */

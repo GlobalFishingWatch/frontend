@@ -1,13 +1,12 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { Link } from '@tanstack/react-router'
 
 import { isAuthError } from '@globalfishingwatch/api-client'
 import { Button } from '@globalfishingwatch/ui-components'
 
 import { selectWorkspaceVesselGroupsError } from 'features/vessel-groups/vessel-groups.slice'
 import { selectWorkspace, selectWorkspaceError } from 'features/workspace/workspace.selectors'
-import { HOME } from 'routes/routes'
-import { updateLocation } from 'routes/routes.actions'
 import { selectWorkspaceId } from 'routes/routes.selectors'
 
 import ErrorPlaceholder from './ErrorPlaceholder'
@@ -37,17 +36,9 @@ export default function WorkspaceError() {
   if (error.status === 404) {
     return (
       <ErrorPlaceholder title={t((t) => t.errors.workspaceNotFound)}>
-        <Button
-          onClick={() => {
-            updateLocation(HOME, {
-              payload: { workspaceId: undefined },
-              query: {},
-              replaceQuery: true,
-            })
-          }}
-        >
-          {t((t) => t.errors.loadDefaultWorkspace)}
-        </Button>
+        <Link to="/" search={{}} replace>
+          <Button>{t((t) => t.errors.loadDefaultWorkspace)}</Button>
+        </Link>
       </ErrorPlaceholder>
     )
   }

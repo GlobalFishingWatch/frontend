@@ -31,15 +31,15 @@ import {
   cleanReportQuery,
 } from 'features/workspace/workspace.slice'
 import { REPORT_ROUTES, VESSEL, WORKSPACE_VESSEL, WORKSPACES_LIST } from 'routes/routes'
+import { replaceQueryParams } from 'routes/routes.actions'
 import {
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
   selectIsRouteWithWorkspace,
   selectIsVesselGroupReportLocation,
 } from 'routes/routes.selectors'
-import { buildPathForRouteType } from 'routes/routes.utils'
+import { mapRouteIdToType } from 'routes/routes.utils'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from '../SidebarHeader.module.css'
 
 function NavigationHistoryButton() {
@@ -79,8 +79,12 @@ function NavigationHistoryButton() {
     replaceQueryParams({ ...EMPTY_SEARCH_FILTERS, userTab: undefined })
   }, [])
 
-  const { start, end, latitude, longitude, zoom } = lastWorkspaceVisited.query
-  const onCloseClick = useCallback(() => {
+  if (!workspaceHistoryNavigation.length || !lastWorkspaceVisited) {
+    return null
+  }
+
+  const { start, end, latitude, longitude, zoom } = lastWorkspaceVisited.search
+  const onCloseClick = () => {
     resetSidebarScroll()
 
     dispatch(cleanVesselSearchResults())
@@ -114,68 +118,53 @@ function NavigationHistoryButton() {
     })
 
     trackAnalytics()
-  }, [
-    dispatch,
-    end,
-    latitude,
-    longitude,
-    start,
-    zoom,
-    reportAreaIds,
-    setMapCoordinates,
-    setTimerange,
-    setTrackCorrectionId,
-    trackAnalytics,
-  ])
-
-  const isPreviousLocationReport = REPORT_ROUTES.includes(lastWorkspaceVisited.type)
-
-  if (workspaceHistoryNavigation.length) {
-    const previousLocation =
-      lastWorkspaceVisited.type === VESSEL || lastWorkspaceVisited.type === WORKSPACE_VESSEL
-        ? t((t) => t.vessel.title)
-        : isPreviousLocationReport
-          ? t((t) => t.analysis.title)
-          : isVesselGroupReportLocation
-            ? t((t) => t.vesselGroup.vesselGroupProfile)
-            : lastWorkspaceVisited.type === WORKSPACES_LIST
-              ? t((t) => t.workspace.list)
-              : t((t) => t.workspace.title)
-
-    const tooltip = t((t) => t.common.navigateBackTo, {
-      section: previousLocation.toLocaleLowerCase(),
-    })
-
-    const query = {
-      ...(!isPreviousLocationReport
-        ? { ...cleanReportQuery(lastWorkspaceVisited.query || {}), ...EMPTY_SEARCH_FILTERS }
-        : lastWorkspaceVisited.query),
-    }
-    const payload = !isPreviousLocationReport
-      ? cleanReportPayload(lastWorkspaceVisited.payload)
-      : lastWorkspaceVisited.payload
-
-    const linkPath = buildPathForRouteType(lastWorkspaceVisited.type, payload)
-    const linkSearch = {
-      ...query,
-      dataviewInstances: cleanVesselProfileDataviewInstances(query.dataviewInstances),
-    }
-
-    return (
-      <Link
-        className={cx(styles.workspaceLink, 'print-hidden')}
-        to={linkPath}
-        params={payload}
-        search={linkSearch}
-        onClick={() => {
-          resetQueryParams()
-          onCloseClick()
-        }}
-      >
-        <IconButton type="border" icon="close" tooltip={tooltip} />
-      </Link>
-    )
   }
+
+  // Determine route type from stored path pattern for display logic
+  const previousRouteType = mapRouteIdToType(lastWorkspaceVisited.to)
+  const isPreviousLocationReport = REPORT_ROUTES.includes(previousRouteType)
+
+  const previousLocation =
+    previousRouteType === VESSEL || previousRouteType === WORKSPACE_VESSEL
+      ? t((t) => t.vessel.title)
+      : isPreviousLocationReport
+        ? t((t) => t.analysis.title)
+        : isVesselGroupReportLocation
+          ? t((t) => t.vesselGroup.vesselGroupProfile)
+          : previousRouteType === WORKSPACES_LIST
+            ? t((t) => t.workspace.list)
+            : t((t) => t.workspace.title)
+
+  const tooltip = t((t) => t.common.navigateBackTo, {
+    section: previousLocation.toLocaleLowerCase(),
+  })
+
+  const search = {
+    ...(!isPreviousLocationReport
+      ? { ...cleanReportQuery(lastWorkspaceVisited.search || {}), ...EMPTY_SEARCH_FILTERS }
+      : lastWorkspaceVisited.search),
+  }
+  const params = !isPreviousLocationReport
+    ? cleanReportPayload(lastWorkspaceVisited.params || {})
+    : lastWorkspaceVisited.params
+
+  return (
+    <Link
+      className={cx(styles.workspaceLink, 'print-hidden')}
+      to={lastWorkspaceVisited.to}
+      params={params}
+      search={{
+        ...search,
+        dataviewInstances: cleanVesselProfileDataviewInstances(search.dataviewInstances),
+      }}
+      onClick={() => {
+        resetQueryParams()
+        onCloseClick()
+      }}
+    >
+      <IconButton type="border" icon="close" tooltip={tooltip} />
+    </Link>
+  )
 }
 
 export default NavigationHistoryButton

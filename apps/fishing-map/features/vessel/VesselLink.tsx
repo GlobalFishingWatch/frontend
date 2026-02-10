@@ -191,7 +191,7 @@ const VesselLink = ({
       className={className}
       to={linkTo}
       params={linkParams}
-      search={linkSearch}
+      search={linkSearch as QueryParams}
       onClick={onLinkClick}
     >
       {showTooltip ? (
