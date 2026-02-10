@@ -1,6 +1,11 @@
 import type { RegisteredRouter } from '@tanstack/react-router'
 import type { RouteByPath, RoutePaths } from '@tanstack/router-core'
 
+import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
+import { DEFAULT_CALLBACK_URL_PARAM } from '@globalfishingwatch/react-hooks'
+
+import type { QueryParams } from 'types'
+
 import type { ROUTE_TYPES } from './routes'
 import {
   HOME,
@@ -87,6 +92,11 @@ const ROUTE_ID_TO_TYPE: Record<string, ROUTE_TYPES> = Object.entries(ROUTE_PATHS
   {} as Record<string, ROUTE_TYPES>
 )
 
+// The workspace index route (nested under workspaceLayoutRoute) generates
+// a trailing-slash routeId: /$category/$workspaceId/
+// Map it to the WORKSPACE type for backward compat with Redux location state.
+ROUTE_ID_TO_TYPE['/$category/$workspaceId/'] = WORKSPACE
+
 export function mapRouteIdToType(routeId: string): ROUTE_TYPES {
   return ROUTE_ID_TO_TYPE[routeId] || HOME
 }
@@ -99,4 +109,17 @@ export function mapRouteIdToPath(routeId: string): string {
   // Find the matching ROUTE_PATHS value
   const matchingPath = Object.values(ROUTE_PATHS).find((path) => path === routeId)
   return matchingPath || ROUTE_PATHS.HOME
+}
+
+/**
+ * Transient auth params that should never persist in the URL.
+ * They are read from `window.location.search` on mount (before any router navigation)
+ * by `useReplaceLoginUrl`, so stripping them here is safe.
+ */
+const TRANSIENT_PARAMS = [ACCESS_TOKEN_STRING, DEFAULT_CALLBACK_URL_PARAM] as const
+export function cleanAccessTokenQueryParams(query: Partial<QueryParams>): Partial<QueryParams> {
+  for (const param of TRANSIENT_PARAMS) {
+    delete query[param]
+  }
+  return query
 }

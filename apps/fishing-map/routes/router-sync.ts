@@ -16,6 +16,18 @@ export interface NavigationState {
 }
 
 /**
+ * Normalize a routeId to a RoutePathValues.
+ * The workspace index route generates a trailing-slash routeId (/$category/$workspaceId/)
+ * which needs to be mapped to the canonical /$category/$workspaceId for navigation.
+ */
+function normalizeRouteId(routeId: string): RoutePathValues {
+  if (routeId === '/$category/$workspaceId/') {
+    return ROUTE_PATHS.WORKSPACE
+  }
+  return routeId as RoutePathValues
+}
+
+/**
  * Sets up the one-way sync from TanStack Router → Redux state.location.
  * Also handles the workspace history tracking logic that was previously
  * in routerWorkspaceMiddleware.
@@ -43,7 +55,7 @@ export function setupRouterSync(router: AppRouter, store: AppStore) {
         query: search,
         pathname: router.latestLocation.pathname,
         // TanStack Router format (direct usage)
-        to: initialMatch.routeId as RoutePathValues,
+        to: normalizeRouteId(initialMatch.routeId),
       })
     )
   }
@@ -142,7 +154,7 @@ export function setupRouterSync(router: AppRouter, store: AppStore) {
         query: search,
         pathname: toLocation.pathname,
         // TanStack Router format (direct usage)
-        to: lastMatch.routeId as RoutePathValues,
+        to: normalizeRouteId(lastMatch.routeId),
         prev: fromLocation
           ? {
               type: prevLocation.type,

@@ -20,7 +20,7 @@ import {
 import type { QueryParams } from 'types'
 
 import { router } from './router'
-import { mergeSearch } from './routes.actions'
+import { cleanAccessTokenQueryParams } from './routes.utils'
 
 export const useBeforeUnload = () => {
   const dispatch = useAppDispatch()
@@ -63,14 +63,13 @@ export const useReplaceLoginUrl = () => {
         [DEFAULT_CALLBACK_URL_PARAM]: undefined,
       } as QueryParams
 
-      // Use stored TanStack Router format directly - no conversion needed!
       const to = locationTo || '/'
       const params = locationParams
 
       router.navigate({
         to,
         params,
-        search: (prev) => mergeSearch(prev, query, true),
+        search: (prev) => cleanAccessTokenQueryParams({ ...prev, ...query }),
         replace: true,
         resetScroll: false,
       })

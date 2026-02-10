@@ -9,9 +9,10 @@ import type { DataviewCategory } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
+import { replaceQueryParams } from 'routes/routes.actions'
+
 import { selectCollapsedSections } from '../workspace.selectors'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from 'features/workspace/shared/Section.module.css'
 
 interface SectionProps {
