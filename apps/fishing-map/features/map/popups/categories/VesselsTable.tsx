@@ -171,7 +171,7 @@ function VesselsTable({
                               }}
                               search={{
                                 searchOption: 'advanced',
-                                query: vesselName,
+                                query: vesselName as string,
                                 ssvid: vessel.id,
                                 flag: [(vessel as any).flag],
                               }}

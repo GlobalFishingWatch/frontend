@@ -56,8 +56,9 @@ import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import { router } from 'routes/router'
 import { HOME, REPORT, WORKSPACE } from 'routes/routes'
-import { cleanQueryParams, replaceQueryParams, updateLocation } from 'routes/routes.actions'
+import { cleanQueryParams, replaceQueryParams } from 'routes/routes.actions'
 import {
   selectLocationCategory,
   selectLocationType,
@@ -65,6 +66,7 @@ import {
   selectUrlDataviewInstances,
 } from 'routes/routes.selectors'
 import type { LinkTo } from 'routes/routes.types'
+import { ROUTE_PATHS } from 'routes/routes.utils'
 import type { AppDispatch } from 'store'
 import type { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
 import type { AsyncError } from 'utils/async-slice'
@@ -78,6 +80,10 @@ import {
 } from './workspace.selectors'
 import { parseUpsertWorkspace } from './workspace.utils'
 
+/**
+ * History navigation entry stored in TanStack Router format.
+ * No conversion needed when navigating back - use directly with Link or router.navigate().
+ */
 export type LastWorkspaceVisited = LinkTo & {
   pathname?: string
 }
@@ -403,14 +409,30 @@ export const saveWorkspaceThunk = createAsyncThunk(
     const locationType = selectLocationType(state)
     const locationCategory = selectLocationCategory(state) || WorkspaceCategory.FishingActivity
     if (workspaceUpdated) {
-      updateLocation(locationType === HOME ? WORKSPACE : locationType, {
-        payload: {
-          category: locationCategory,
-          workspaceId: workspaceUpdated.id,
-        },
-        query: {},
-        replaceQuery: true,
-      })
+      // Navigate after workspace save
+      const targetType = locationType === HOME ? WORKSPACE : locationType
+      if (targetType === WORKSPACE) {
+        router.navigate({
+          to: ROUTE_PATHS.WORKSPACE,
+          params: { category: locationCategory, workspaceId: workspaceUpdated.id },
+          search: {},
+          replace: true,
+        })
+      } else if (targetType === REPORT) {
+        const reportId = selectReportId(state)
+        router.navigate({
+          to: ROUTE_PATHS.REPORT,
+          params: { reportId: reportId! },
+          search: {},
+          replace: true,
+        })
+      } else {
+        router.navigate({
+          to: ROUTE_PATHS.HOME,
+          search: {},
+          replace: true,
+        })
+      }
     }
     return workspaceUpdated
   }
