@@ -118,24 +118,24 @@ function AreaReportSearch({ className }: { className?: string }) {
           router.navigate({
             to: ROUTE_PATHS.PORT_REPORT,
             params: { category, workspaceId, portId: portId! },
-            search: {
-              ...query,
+            search: (prev) => ({
+              ...prev,
               reportCategory: ReportCategory.Events,
               portsReportName: area.properties.name,
               portsReportCountry: area.properties.area?.toString().split('-')[0]?.toUpperCase(),
               portsReportDatasetId: datasetId,
               dataviewInstances,
-            },
+            }),
           })
         } else {
           const areaId = area.properties.area != null ? String(area.properties.area) : undefined
           router.navigate({
             to: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
             params: { category, workspaceId, datasetId, areaId: areaId! },
-            search: {
-              ...query,
+            search: (prev) => ({
+              ...prev,
               dataviewInstances,
-            },
+            }),
           })
         }
       } else {

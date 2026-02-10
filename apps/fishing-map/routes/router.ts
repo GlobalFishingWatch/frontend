@@ -1,9 +1,10 @@
+import { lazy } from 'react'
 import {
   createBrowserHistory,
   createRootRoute,
   createRoute,
   createRouter,
-  redirect,
+  Navigate,
 } from '@tanstack/react-router'
 import { lowerCase } from 'es-toolkit'
 
@@ -16,7 +17,12 @@ import type { WorkspaceCategoryDescriptionKey } from 'routes/router.meta'
 import { getRouteHead, getSearchHead, getWorkspaceHead } from 'routes/router.meta'
 import type { QueryParams } from 'types'
 
-import { validateSearchParams } from './routes.search'
+import {
+  validateReportSearchParams,
+  validateRootSearchParams,
+  validateSearchQueryParams,
+  validateVesselSearchParams,
+} from './routes.search'
 import { ROUTE_PATHS } from './routes.utils'
 
 // Re-export utilities from routes.utils
@@ -29,127 +35,161 @@ const parseAppWorkspace = (searchStr: string): Record<string, any> => {
   })
 }
 
-// Root route - renders the App component which handles all UI based on Redux state
+// ── Lazy-loaded route components ────────────────────────────────────────────
+const Workspace = lazy(() => import('features/workspace/Workspace'))
+const User = lazy(() => import('features/user/User'))
+const Search = lazy(() => import('features/search/Search'))
+const VesselProfile = lazy(() => import('features/vessel/Vessel'))
+const AreaReport = lazy(() => import('features/reports/report-area/AreaReport'))
+const PortsReport = lazy(() => import('features/reports/report-port/PortsReport'))
+const VesselGroupReport = lazy(
+  () => import('features/reports/report-vessel-group/VesselGroupReport')
+)
+const WorkspacesList = lazy(() => import('features/workspaces-list/WorkspacesList'))
+const WorkspaceLayout = lazy(() => import('features/workspace/WorkspaceLayout'))
+
+// ── Root route ──────────────────────────────────────────────────────────────
 const rootRoute = createRootRoute({
   component: App,
-  validateSearch: validateSearchParams,
+  validateSearch: validateRootSearchParams,
 })
 
-// Static routes
+// ── Static routes ───────────────────────────────────────────────────────────
 const homeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: ROUTE_PATHS.HOME,
+  component: Workspace,
   head: () => getRouteHead(),
 })
 
 const userRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: ROUTE_PATHS.USER,
+  component: User,
   head: () => getRouteHead({ category: t((tr) => tr.user.profile) }),
 })
 
 const searchRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: ROUTE_PATHS.SEARCH,
+  component: Search,
+  validateSearch: validateSearchQueryParams,
   head: getSearchHead,
 })
 
 const reportRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: ROUTE_PATHS.REPORT,
+  component: AreaReport,
+  validateSearch: validateReportSearchParams,
   head: () => getRouteHead({ category: t((tr) => tr.analysis.title) }),
 })
 
 const vesselRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: ROUTE_PATHS.VESSEL,
+  component: VesselProfile,
+  validateSearch: validateVesselSearchParams,
   head: () => getRouteHead({ category: t((tr) => tr.vessel.title) }),
-})
-
-// Workspace routes — more specific paths must come first
-const workspaceVesselRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: ROUTE_PATHS.WORKSPACE_VESSEL,
-  head: () => getRouteHead({ category: t((tr) => tr.vessel.title) }),
-})
-
-const workspaceSearchRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: ROUTE_PATHS.WORKSPACE_SEARCH,
-  head: getSearchHead,
-})
-
-// WORKSPACE_REPORT with all params
-const workspaceReportFullRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
-  head: () => getRouteHead({ category: t((tr) => tr.analysis.title) }),
-})
-
-// WORKSPACE_REPORT with only datasetId
-const workspaceReportPartialRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: ROUTE_PATHS.WORKSPACE_REPORT_DATASET,
-  head: () => getRouteHead({ category: t((tr) => tr.analysis.title) }),
-})
-
-// WORKSPACE_REPORT base (no datasetId or areaId)
-const workspaceReportBaseRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: ROUTE_PATHS.WORKSPACE_REPORT,
-  head: () => getRouteHead({ category: t((tr) => tr.analysis.title) }),
-})
-
-const vesselGroupReportRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: ROUTE_PATHS.VESSEL_GROUP_REPORT,
-  head: () => getRouteHead({ category: t((tr) => tr.analysis.title) }),
-})
-
-const portReportRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: ROUTE_PATHS.PORT_REPORT,
-  head: () => getRouteHead({ category: t((tr) => tr.analysis.title) }),
-})
-
-const workspaceRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: ROUTE_PATHS.WORKSPACE,
-  head: ({ params }) => getRouteHead({ category: lowerCase(params.category || '') }),
 })
 
 const workspacesListRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: ROUTE_PATHS.WORKSPACES_LIST,
+  component: WorkspacesList,
   head: ({ params }) =>
     getWorkspaceHead(lowerCase(params.category || '') as WorkspaceCategoryDescriptionKey),
 })
 
-// Catch-all for not found — redirect to HOME
-const notFoundRoute = createRoute({
+// ── Workspace layout route (parent for all /$category/$workspaceId/* routes) ─
+const workspaceLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '*',
-  beforeLoad: () => {
-    throw redirect({ to: ROUTE_PATHS.HOME })
-  },
+  path: ROUTE_PATHS.WORKSPACE,
+  component: WorkspaceLayout,
 })
 
+// ── Workspace child routes (relative paths under workspaceLayoutRoute) ──────
+const workspaceIndexRoute = createRoute({
+  getParentRoute: () => workspaceLayoutRoute,
+  path: '/',
+  component: Workspace,
+  head: ({ params }) => getRouteHead({ category: lowerCase(params.category || '') }),
+})
+
+const workspaceVesselRoute = createRoute({
+  getParentRoute: () => workspaceLayoutRoute,
+  path: '/vessel/$vesselId',
+  component: VesselProfile,
+  validateSearch: validateVesselSearchParams,
+  head: () => getRouteHead({ category: t((tr) => tr.vessel.title) }),
+})
+
+const workspaceSearchRoute = createRoute({
+  getParentRoute: () => workspaceLayoutRoute,
+  path: '/vessel-search',
+  component: Search,
+  validateSearch: validateSearchQueryParams,
+  head: getSearchHead,
+})
+
+const workspaceReportFullRoute = createRoute({
+  getParentRoute: () => workspaceLayoutRoute,
+  path: '/report/$datasetId/$areaId',
+  component: AreaReport,
+  validateSearch: validateReportSearchParams,
+  head: () => getRouteHead({ category: t((tr) => tr.analysis.title) }),
+})
+
+const workspaceReportPartialRoute = createRoute({
+  getParentRoute: () => workspaceLayoutRoute,
+  path: '/report/$datasetId',
+  component: AreaReport,
+  validateSearch: validateReportSearchParams,
+  head: () => getRouteHead({ category: t((tr) => tr.analysis.title) }),
+})
+
+const workspaceReportBaseRoute = createRoute({
+  getParentRoute: () => workspaceLayoutRoute,
+  path: '/report',
+  component: AreaReport,
+  validateSearch: validateReportSearchParams,
+  head: () => getRouteHead({ category: t((tr) => tr.analysis.title) }),
+})
+
+const vesselGroupReportRoute = createRoute({
+  getParentRoute: () => workspaceLayoutRoute,
+  path: '/vessel-group-report/$vesselGroupId',
+  component: VesselGroupReport,
+  validateSearch: validateReportSearchParams,
+  head: () => getRouteHead({ category: t((tr) => tr.analysis.title) }),
+})
+
+const portReportRoute = createRoute({
+  getParentRoute: () => workspaceLayoutRoute,
+  path: '/ports-report/$portId',
+  component: PortsReport,
+  validateSearch: validateReportSearchParams,
+  head: () => getRouteHead({ category: t((tr) => tr.analysis.title) }),
+})
+
+// ── Route tree ──────────────────────────────────────────────────────────────
 const routeTree = rootRoute.addChildren([
   homeRoute,
   userRoute,
   searchRoute,
   reportRoute,
   vesselRoute,
-  workspaceVesselRoute,
-  workspaceSearchRoute,
-  workspaceReportFullRoute,
-  workspaceReportPartialRoute,
-  workspaceReportBaseRoute,
-  vesselGroupReportRoute,
-  portReportRoute,
-  workspaceRoute,
   workspacesListRoute,
-  notFoundRoute,
+  workspaceLayoutRoute.addChildren([
+    workspaceIndexRoute,
+    workspaceVesselRoute,
+    workspaceSearchRoute,
+    workspaceReportFullRoute,
+    workspaceReportPartialRoute,
+    workspaceReportBaseRoute,
+    vesselGroupReportRoute,
+    portReportRoute,
+  ]),
 ])
 
 // Create history only on client side
@@ -160,6 +200,7 @@ export const router = createRouter({
   history,
   basepath: PATH_BASENAME,
   defaultPreload: false,
+  defaultNotFoundComponent: () => Navigate({ to: ROUTE_PATHS.HOME }),
   stringifySearch: (search) => {
     const str = stringifyWorkspace(search as QueryParams)
     return str ? `?${str}` : ''
