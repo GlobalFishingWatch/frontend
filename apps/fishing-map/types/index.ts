@@ -20,8 +20,10 @@ export { Locale } from '@globalfishingwatch/api-types'
 
 type WorkspaceViewportParam = 'latitude' | 'longitude' | 'zoom'
 type WorkspaceTimeRangeParam = 'start' | 'end'
-export type BufferUnit = 'nauticalmiles' | 'kilometers'
-export type BufferOperation = 'dissolve' | 'difference'
+export const BUFFER_UNITS = ['nauticalmiles', 'kilometers'] as const
+export type BufferUnit = (typeof BUFFER_UNITS)[number]
+export const BUFFER_OPERATIONS = ['dissolve', 'difference'] as const
+export type BufferOperation = (typeof BUFFER_OPERATIONS)[number]
 
 export type WorkspaceStateProperty = keyof WorkspaceState
 type AppStateProperty = keyof AppState

@@ -3147,6 +3147,7 @@ __metadata:
     "@tanstack/react-virtual": "npm:^3.13.17"
     "@tanstack/router-devtools": "npm:1.145.7"
     "@tanstack/router-vite-plugin": "npm:1.145.10"
+    "@tanstack/zod-adapter": "npm:^1.159.5"
     "@testing-library/dom": "npm:10.4.1"
     "@testing-library/jest-dom": "npm:6.9.1"
     "@testing-library/react": "npm:16.3.1"
@@ -3346,7 +3347,7 @@ __metadata:
     vitest: "npm:4.0.16"
     vitest-browser-react: "npm:2.0.2"
     web-vitals: "npm:5.1.0"
-    zod: "npm:3.25.76"
+    zod: "npm:^4.3.6"
   languageName: unknown
   linkType: soft
 
@@ -13127,6 +13128,16 @@ __metadata:
   version: 1.145.4
   resolution: "@tanstack/virtual-file-routes@npm:1.145.4"
   checksum: 10/3bb4faa2425f060ae588c760feab25e12b6f97b309eb79a7e2581833ee48cab46c6433c2c17f8f9458efe146827b446d85b71165ef5a9a2f8fd00f558d48ffee
+  languageName: node
+  linkType: hard
+
+"@tanstack/zod-adapter@npm:^1.159.5":
+  version: 1.159.5
+  resolution: "@tanstack/zod-adapter@npm:1.159.5"
+  peerDependencies:
+    "@tanstack/react-router": ">=1.43.2"
+    zod: ^3.23.8
+  checksum: 10/5b9a67b37d1255b94f96cdda4ef51aa1669250f6f691bca9c198cbe976a70803dfcaaaf6528f287e46cfc613f40cab265567d668dd6f430019e8d9a87d87423e
   languageName: node
   linkType: hard
 
@@ -38094,14 +38105,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:3.25.76, zod@npm:^3.23.8, zod@npm:^3.24.2":
+"zod@npm:^3.23.8, zod@npm:^3.24.2":
   version: 3.25.76
   resolution: "zod@npm:3.25.76"
   checksum: 10/f0c963ec40cd96858451d1690404d603d36507c1fc9682f2dae59ab38b578687d542708a7fdbf645f77926f78c9ed558f57c3d3aa226c285f798df0c4da16995
   languageName: node
   linkType: hard
 
-"zod@npm:^3.25.0 || ^4.0.0, zod@npm:^4.0.17, zod@npm:^4.1.11":
+"zod@npm:^3.25.0 || ^4.0.0, zod@npm:^4.0.17, zod@npm:^4.1.11, zod@npm:^4.3.6":
   version: 4.3.6
   resolution: "zod@npm:4.3.6"
   checksum: 10/25fc0f62e01b557b4644bf0b393bbaf47542ab30877c37837ea8caf314a8713d220c7d7fe51f68ffa72f0e1018ddfa34d96f1973d23033f5a2a5a9b6b9d9da01

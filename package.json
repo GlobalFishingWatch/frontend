@@ -67,6 +67,7 @@
     "@sentry/nextjs": "^10",
     "@tanstack/react-router": "1.145.7",
     "@tanstack/react-virtual": "^3.13.17",
+    "@tanstack/zod-adapter": "^1.159.5",
     "@tmcw/togeojson": "7.1.2",
     "@turf/bbox": "7.3.1",
     "@turf/boolean-overlap": "7.3.1",
@@ -175,7 +176,7 @@
     "usehooks-ts": "3.1.1",
     "vite-plugin-svgr": "4.5.0",
     "web-vitals": "5.1.0",
-    "zod": "3.25.76"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/compat": "2.0.0",

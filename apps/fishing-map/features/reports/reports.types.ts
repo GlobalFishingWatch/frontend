@@ -80,8 +80,10 @@ export type PortsReportState = {
 }
 
 // REPORT VESSELS
-export type ReportVesselOrderProperty = 'shipname' | 'flag' | 'shiptype'
-export type ReportVesselOrderDirection = 'asc' | 'desc'
+export const REPORT_VESSEL_ORDER_PROPERTIES = ['shipname', 'flag', 'shiptype'] as const
+export type ReportVesselOrderProperty = (typeof REPORT_VESSEL_ORDER_PROPERTIES)[number]
+export const REPORT_VESSEL_ORDER_DIRECTIONS = ['asc', 'desc'] as const
+export type ReportVesselOrderDirection = (typeof REPORT_VESSEL_ORDER_DIRECTIONS)[number]
 export type ReportVesselGraph =
   | typeof REPORT_VESSELS_GRAPH_GEARTYPE
   | typeof REPORT_VESSELS_GRAPH_VESSELTYPE
