@@ -2,6 +2,7 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { useRouter } from '@tanstack/react-router'
 
 import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 import { Button, Modal, Spinner, Tooltip } from '@globalfishingwatch/ui-components'
@@ -23,8 +24,7 @@ import {
   selectIsUserLogged,
   selectUserData,
 } from 'features/user/selectors/user.selectors'
-import { HOME } from 'routes/routes'
-import { updateLocation } from 'routes/routes.actions'
+import { ROUTE_PATHS } from 'routes/routes.utils'
 
 import {
   selectHasAmbassadorBadge,
@@ -44,6 +44,7 @@ type BadgeInfo = { image: string; placeholder: string; userHasIt: boolean }
 function UserInfo() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const router = useRouter()
   const userLogged = useSelector(selectIsUserLogged)
   const isGFWUser = useSelector(selectIsGFWUser)
   const userData = useSelector(selectUserData)
@@ -61,10 +62,10 @@ function UserInfo() {
   const onLogoutClick = useCallback(async () => {
     setLogoutLoading(true)
     await dispatch(logoutUserThunk({ loginRedirect: false }))
-    updateLocation(HOME, { query: {}, replaceQuery: true })
+    router.navigate({ to: ROUTE_PATHS.HOME, search: {}, replace: true })
     await dispatch(fetchUserThunk({ guest: true }))
     setLogoutLoading(false)
-  }, [dispatch])
+  }, [dispatch, router])
 
   const onBadgeClick = (badge: Badge) => {
     setBadgeSelected(badge)

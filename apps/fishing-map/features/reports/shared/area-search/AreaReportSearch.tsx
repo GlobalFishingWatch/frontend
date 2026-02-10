@@ -2,6 +2,7 @@ import type { KeyboardEventHandler } from 'react'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { useRouter } from '@tanstack/react-router'
 import cx from 'classnames'
 import type { UseComboboxStateChange } from 'downshift'
 import { useCombobox } from 'downshift'
@@ -21,9 +22,8 @@ import { t as trans } from 'features/i18n/i18n'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { useOceanAreas } from 'hooks/ocean-areas'
-import { PORT_REPORT, WORKSPACE_REPORT } from 'routes/routes'
-import { useLocationConnect } from 'routes/routes.hook'
 import { selectLocationQuery } from 'routes/routes.selectors'
+import { ROUTE_PATHS } from 'routes/routes.utils'
 import { getEventLabel } from 'utils/analytics'
 import { formatInfoField, upperFirst } from 'utils/info'
 
@@ -41,6 +41,7 @@ const getItemLabel = (item: OceanArea | null) => {
 
 function AreaReportSearch({ className }: { className?: string }) {
   const { t, i18n } = useTranslation()
+  const router = useRouter()
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [areasMatching, setAreasMatching] = useState<OceanArea[]>([])
   const [selectedItem, setSelectedItem] = useState<OceanArea | null>(null)
@@ -50,7 +51,6 @@ function AreaReportSearch({ className }: { className?: string }) {
   const allDataviews = useSelector(selectAllDataviews)
   const query = useSelector(selectLocationQuery)
   const { searchOceanAreas } = useOceanAreas()
-  const { dispatchLocation } = useLocationConnect()
 
   const updateMatchingAreas = async (inputValue: string) => {
     try {
@@ -111,17 +111,14 @@ function AreaReportSearch({ className }: { className?: string }) {
             { ...newDataviewInstance, config: { visible: true } },
           ]
         }
-        const workspacePayload = {
-          category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-          workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-        }
+        const category = workspace?.category || DEFAULT_WORKSPACE_CATEGORY
+        const workspaceId = workspace?.id || DEFAULT_WORKSPACE_ID
         if (area.properties?.type === 'port') {
-          dispatchLocation(PORT_REPORT, {
-            payload: {
-              ...workspacePayload,
-              portId: area.properties.area != null ? String(area.properties.area) : undefined,
-            },
-            query: {
+          const portId = area.properties.area != null ? String(area.properties.area) : undefined
+          router.navigate({
+            to: ROUTE_PATHS.PORT_REPORT,
+            params: { category, workspaceId, portId: portId! },
+            search: {
               ...query,
               reportCategory: ReportCategory.Events,
               portsReportName: area.properties.name,
@@ -131,9 +128,11 @@ function AreaReportSearch({ className }: { className?: string }) {
             },
           })
         } else {
-          dispatchLocation(WORKSPACE_REPORT, {
-            payload: { ...workspacePayload, datasetId, areaId: area.properties.area != null ? String(area.properties.area) : undefined },
-            query: {
+          const areaId = area.properties.area != null ? String(area.properties.area) : undefined
+          router.navigate({
+            to: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
+            params: { category, workspaceId, datasetId, areaId: areaId! },
+            search: {
               ...query,
               dataviewInstances,
             },

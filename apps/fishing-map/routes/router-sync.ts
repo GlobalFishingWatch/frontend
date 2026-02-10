@@ -3,6 +3,7 @@ import { selectHasVesselProfileInstancePinned } from 'features/dataviews/selecto
 import { t } from 'features/i18n/i18n'
 import type { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { setWorkspaceHistoryNavigation } from 'features/workspace/workspace.slice'
+import type { LinkToPayload } from 'routes/routes.types'
 import type { AppStore } from 'store'
 import type { QueryParams } from 'types'
 
@@ -11,8 +12,8 @@ import type { AppRouter } from './router'
 import type { ROUTE_TYPES } from './routes'
 import { ALL_WORKSPACE_ROUTES, REPORT_ROUTES, VESSEL_ROUTES, WORKSPACE_ROUTES } from './routes'
 import { selectIsAnyVesselLocation } from './routes.selectors'
-import type { LinkToPayload } from './routes.types'
-import { mapRouteIdToType } from './routes.utils'
+import type { RoutePathValues } from './routes.utils'
+import { mapRouteIdToType, ROUTE_PATHS } from './routes.utils'
 
 export interface NavigationState {
   isHistoryNavigation?: boolean
@@ -41,10 +42,13 @@ export function setupRouterSync(router: AppRouter, store: AppStore) {
     const search = router.latestLocation.search as unknown as QueryParams
     store.dispatch(
       setLocation({
+        // Legacy format (backward compatibility)
         type: routeType,
         payload: params,
         query: search,
         pathname: router.latestLocation.pathname,
+        // TanStack Router format (direct usage)
+        to: initialMatch.routeId as RoutePathValues,
       })
     )
   }
@@ -134,11 +138,12 @@ export function setupRouterSync(router: AppRouter, store: AppStore) {
         !navState.isHistoryNavigation &&
         (!lastHistoryNavigation || lastHistoryNavigation.pathname !== prevLocation.pathname)
       ) {
+        // Store history in TanStack Router format - copy directly from location state
         const newHistoryNavigation: LastWorkspaceVisited = {
           pathname: prevLocation.pathname,
-          type: prevLocation.type as ROUTE_TYPES,
-          query: { ...(prevQuery as QueryParams) } as QueryParams,
-          payload: prevLocation.payload as LinkToPayload,
+          to: prevLocation.to || ROUTE_PATHS.HOME,
+          params: prevLocation.payload,
+          search: { ...(prevQuery as QueryParams) } as QueryParams,
         }
         store.dispatch(
           setWorkspaceHistoryNavigation([...currentHistoryNavigation, newHistoryNavigation])
@@ -147,25 +152,27 @@ export function setupRouterSync(router: AppRouter, store: AppStore) {
         const historyNavigation = navState.isHistoryNavigation
           ? currentHistoryNavigation.slice(0, -1)
           : currentHistoryNavigation
-        const updatedHistoryNavigation = historyNavigation.map((navigation: LastWorkspaceVisited) => {
-          if ([...WORKSPACE_ROUTES, ...REPORT_ROUTES].includes(lastHistoryNavigation.type)) {
-            const dataviewInstancesWithoutReport = WORKSPACE_ROUTES.includes(
-              lastHistoryNavigation.type
-            )
-              ? (finalSearch.dataviewInstances || []).filter(
-                  (dataviewInstance) => dataviewInstance.origin !== 'report'
-                )
-              : finalSearch.dataviewInstances || []
-            return {
-              ...navigation,
-              query: {
-                ...finalSearch,
-                dataviewInstances: dataviewInstancesWithoutReport,
-              },
+        const updatedHistoryNavigation = historyNavigation.map(
+          (navigation: LastWorkspaceVisited) => {
+            // Determine route type from path pattern to check if we should update dataviewInstances
+            const navRouteType = mapRouteIdToType(lastHistoryNavigation.to)
+            if ([...WORKSPACE_ROUTES, ...REPORT_ROUTES].includes(navRouteType)) {
+              const dataviewInstancesWithoutReport = WORKSPACE_ROUTES.includes(navRouteType)
+                ? (finalSearch.dataviewInstances || []).filter(
+                    (dataviewInstance) => dataviewInstance.origin !== 'report'
+                  )
+                : finalSearch.dataviewInstances || []
+              return {
+                ...navigation,
+                search: {
+                  ...finalSearch,
+                  dataviewInstances: dataviewInstancesWithoutReport,
+                },
+              }
             }
+            return navigation
           }
-          return navigation
-        })
+        )
         store.dispatch(setWorkspaceHistoryNavigation(updatedHistoryNavigation))
       }
     }
@@ -173,16 +180,20 @@ export function setupRouterSync(router: AppRouter, store: AppStore) {
     // --- Sync to Redux ---
     store.dispatch(
       setLocation({
+        // Legacy format (backward compatibility)
         type: routeType,
         payload: params,
         query: finalSearch,
         pathname: toLocation.pathname,
+        // TanStack Router format (direct usage)
+        to: lastMatch.routeId as RoutePathValues,
         prev: fromLocation
           ? {
               type: prevLocation.type,
               payload: prevLocation.payload,
               query: prevLocation.query as QueryParams,
               pathname: prevLocation.pathname,
+              to: prevLocation.to,
             }
           : undefined,
       })

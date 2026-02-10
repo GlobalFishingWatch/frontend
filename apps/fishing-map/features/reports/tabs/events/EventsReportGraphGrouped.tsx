@@ -2,6 +2,7 @@ import type { ReactElement } from 'react'
 import React, { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { useRouter } from '@tanstack/react-router'
 import cx from 'classnames'
 
 import type { ApiEvent } from '@globalfishingwatch/api-types'
@@ -10,6 +11,7 @@ import { useMemoCompare } from '@globalfishingwatch/react-hooks'
 import { ResponsiveBarChart } from '@globalfishingwatch/responsive-visualizations'
 import { Tooltip as GFWTooltip } from '@globalfishingwatch/ui-components'
 
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { COLOR_PRIMARY_BLUE } from 'features/app/app.config'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -30,9 +32,8 @@ import type { EventsReportGraphProps } from 'features/reports/tabs/events/events
 import EventsReportDownload from 'features/reports/tabs/events/EventsReportDownload'
 import { EventsReportIndividualGraphTooltip } from 'features/reports/tabs/events/EventsReportGraphEvolution'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { WORKSPACE_REPORT } from 'routes/routes'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { selectLocationPayload, selectLocationQuery } from 'routes/routes.selectors'
+import { ROUTE_PATHS } from 'routes/routes.utils'
 
 import EncounterIcon from './icons/event-encounter.svg'
 import LoiteringIcon from './icons/event-loitering.svg'
@@ -72,6 +73,7 @@ const AggregatedGraphTooltip = (props: any) => {
                 return null
               }
               if (payload.label === OTHERS_CATEGORY_LABEL && payload.others) {
+                // eslint-disable-next-line react-hooks/immutability
                 otherLabelCounted = true
                 const top = payload.others.slice(0, MAX_CATEGORIES)
                 const restValue = payload.others
@@ -118,10 +120,11 @@ const AggregatedGraphTooltip = (props: any) => {
 const ReportGraphTick = (props: any) => {
   const { x, y, payload, width, visibleTicksCount, graphType, dataview } = props
   const { t } = useTranslation()
+  const router = useRouter()
   const getReportAreaLabel = useGetEventReportGraphLabel()
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const workspace = useSelector(selectWorkspaceWithCurrentState)
-  const { dispatchLocation } = useLocationConnect()
+  const locationPayload = useSelector(selectLocationPayload)
   const query = useSelector(selectLocationQuery)
   const datasetAreaId = useSelector(selectEventsGraphDatasetAreaId)
   const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
@@ -161,9 +164,17 @@ const ReportGraphTick = (props: any) => {
             return dataviewInstance
           }
         )
-        dispatchLocation(WORKSPACE_REPORT, {
-          payload: { datasetId: datasetAreaId, areaId },
-          query: {
+        const category = locationPayload.category
+        const workspaceId = locationPayload.workspaceId
+        router.navigate({
+          to: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
+          params: {
+            category: category || DEFAULT_WORKSPACE_CATEGORY,
+            workspaceId: workspaceId || DEFAULT_WORKSPACE_ID,
+            datasetId: datasetAreaId,
+            areaId,
+          },
+          search: {
             ...query,
             reportEventsGraph: 'evolution',
             dataviewInstances: dataviewInstancesWithAreaLayerVisible,

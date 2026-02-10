@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { parse } from 'qs'
 
@@ -15,12 +15,12 @@ import { setWorkspaceHistoryNavigation } from 'features/workspace/workspace.slic
 import {
   selectIsRouteWithWorkspace,
   selectLocationPayload,
-  selectLocationType,
+  selectLocationTo,
 } from 'routes/routes.selectors'
 import type { QueryParams } from 'types'
 
-import type { ROUTE_TYPES } from './routes'
-import { updateLocation } from './routes.actions'
+import { router } from './router'
+import { mergeSearch } from './routes.actions'
 
 export const useBeforeUnload = () => {
   const dispatch = useAppDispatch()
@@ -49,8 +49,8 @@ export const useBeforeUnload = () => {
 export const useReplaceLoginUrl = () => {
   const { redirectUrl, historyNavigation, cleanRedirectUrl } = useLoginRedirect()
   const dispatch = useAppDispatch()
-  const locationPayload = useSelector(selectLocationPayload)
-  const locationType = useSelector(selectLocationType)
+  const locationTo = useSelector(selectLocationTo)
+  const locationParams = useSelector(selectLocationPayload)
 
   useEffect(() => {
     const currentQuery = parse(window.location.search, { ignoreQueryPrefix: true })
@@ -63,10 +63,16 @@ export const useReplaceLoginUrl = () => {
         [DEFAULT_CALLBACK_URL_PARAM]: undefined,
       } as QueryParams
 
-      updateLocation(locationType, {
-        query,
-        payload: locationPayload,
-        replaceQuery: true,
+      // Use stored TanStack Router format directly - no conversion needed!
+      const to = locationTo || '/'
+      const params = locationParams
+
+      router.navigate({
+        to,
+        params,
+        search: (prev) => mergeSearch(prev, query, true),
+        replace: true,
+        resetScroll: false,
       })
 
       if (historyNavigation && historyNavigation.length > 0) {
@@ -81,31 +87,4 @@ export const useReplaceLoginUrl = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-}
-
-export const useLocationConnect = () => {
-  const locationType = useSelector(selectLocationType)
-  const payload = useSelector(selectLocationPayload)
-
-  const dispatchLocation = useCallback(
-    (
-      type: ROUTE_TYPES,
-      params = {} as { query?: QueryParams; payload?: Record<string, string | undefined> },
-      { replaceQuery = false, replaceUrl = false } = {}
-    ) => {
-      const { query = {}, payload: customPayload = {} } = params
-      updateLocation(type, {
-        query,
-        payload: { ...payload, ...customPayload },
-        replaceQuery,
-        replaceUrl,
-      })
-    },
-    [payload]
-  )
-
-  return useMemo(
-    () => ({ location: locationType, payload, dispatchLocation }),
-    [dispatchLocation, locationType, payload]
-  )
 }
