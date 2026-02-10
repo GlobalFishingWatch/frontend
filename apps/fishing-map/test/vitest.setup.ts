@@ -12,4 +12,11 @@ beforeAll(async () => {
 
   // Ensure i18n is initialized before running tests
   await i18n.changeLanguage('en')
+
+  // Setup localstorage modal shown flag to prevent it from appearing in tests
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('MarineManagerPopup', '{"visible":false,"showAgain":false}')
+    localStorage.setItem('VesselProfilePopup', '{"visible":false,"showAgain":false}')
+    localStorage.setItem('WelcomePopup', '{"visible":false,"showAgain":false}')
+  }
 })
