@@ -1,6 +1,3 @@
-import { selectVesselProfileDataviewIntance } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectHasVesselProfileInstancePinned } from 'features/dataviews/selectors/dataviews.selectors'
-import { t } from 'features/i18n/i18n'
 import type { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { setWorkspaceHistoryNavigation } from 'features/workspace/workspace.slice'
 import type { LinkToPayload } from 'routes/routes.types'
@@ -9,9 +6,7 @@ import type { QueryParams } from 'types'
 
 import { setLocation } from './location.slice'
 import type { AppRouter } from './router'
-import type { ROUTE_TYPES } from './routes'
-import { ALL_WORKSPACE_ROUTES, REPORT_ROUTES, VESSEL_ROUTES, WORKSPACE_ROUTES } from './routes'
-import { selectIsAnyVesselLocation } from './routes.selectors'
+import { REPORT_ROUTES, WORKSPACE_ROUTES } from './routes'
 import type { RoutePathValues } from './routes.utils'
 import { mapRouteIdToType, ROUTE_PATHS } from './routes.utils'
 
@@ -82,45 +77,6 @@ export function setupRouterSync(router: AppRouter, store: AppStore) {
     const state = store.getState()
     const prevLocation = state.location
 
-    // --- Workspace middleware logic: vessel profile pinning ---
-    let finalSearch = { ...search }
-    const isAnyVesselLocation = selectIsAnyVesselLocation(state)
-    const navigatesToWorkspaceRoute = ALL_WORKSPACE_ROUTES.includes(routeType)
-    const vesselProfileDataviewIntance = selectVesselProfileDataviewIntance(state)
-    const hasVesselProfileInstancePinned = selectHasVesselProfileInstancePinned(state)
-    const navigatesToDifferentLocation = routeType !== prevLocation.type
-    const navigatesToDifferentVessel =
-      VESSEL_ROUTES.includes(routeType) &&
-      VESSEL_ROUTES.includes(prevLocation.type as ROUTE_TYPES) &&
-      params.vesselId !== prevLocation.payload?.vesselId
-
-    if (
-      isAnyVesselLocation &&
-      navigatesToWorkspaceRoute &&
-      (navigatesToDifferentLocation || navigatesToDifferentVessel) &&
-      vesselProfileDataviewIntance &&
-      !hasVesselProfileInstancePinned
-    ) {
-      if (window.confirm(t((t) => t.vessel.confirmationClose)) === true) {
-        const cleanVesselDataviewInstance = {
-          ...vesselProfileDataviewIntance,
-          config: {
-            ...vesselProfileDataviewIntance?.config,
-            highlightEventStartTime: undefined,
-            highlightEventEndTime: undefined,
-          },
-          datasetsConfig: undefined,
-        }
-        finalSearch = {
-          ...finalSearch,
-          dataviewInstances: [
-            ...(finalSearch.dataviewInstances || []),
-            cleanVesselDataviewInstance,
-          ],
-        }
-      }
-    }
-
     // --- Workspace middleware logic: history navigation tracking ---
     const isNotInitialLoad = prevLocation.type && routeType !== prevLocation.type
     if (isNotInitialLoad && !navState.skipHistoryNavigation) {
@@ -131,7 +87,7 @@ export function setupRouterSync(router: AppRouter, store: AppStore) {
         Object.entries(params).some(([key, value]) => value !== prevLocation.payload?.[key])
       const prevQuery = prevLocation.query || ({} as QueryParams)
       const isDifferentTrackCorrection =
-        finalSearch?.trackCorrectionId && !prevQuery?.trackCorrectionId
+        search?.trackCorrectionId && !prevQuery?.trackCorrectionId
 
       if (
         (isDifferentRoute || isDifferentTrackCorrection) &&
@@ -158,14 +114,14 @@ export function setupRouterSync(router: AppRouter, store: AppStore) {
             const navRouteType = mapRouteIdToType(lastHistoryNavigation.to)
             if ([...WORKSPACE_ROUTES, ...REPORT_ROUTES].includes(navRouteType)) {
               const dataviewInstancesWithoutReport = WORKSPACE_ROUTES.includes(navRouteType)
-                ? (finalSearch.dataviewInstances || []).filter(
+                ? (search.dataviewInstances || []).filter(
                     (dataviewInstance) => dataviewInstance.origin !== 'report'
                   )
-                : finalSearch.dataviewInstances || []
+                : search.dataviewInstances || []
               return {
                 ...navigation,
                 search: {
-                  ...finalSearch,
+                  ...search,
                   dataviewInstances: dataviewInstancesWithoutReport,
                 },
               }
@@ -183,7 +139,7 @@ export function setupRouterSync(router: AppRouter, store: AppStore) {
         // Legacy format (backward compatibility)
         type: routeType,
         payload: params,
-        query: finalSearch,
+        query: search,
         pathname: toLocation.pathname,
         // TanStack Router format (direct usage)
         to: lastMatch.routeId as RoutePathValues,
