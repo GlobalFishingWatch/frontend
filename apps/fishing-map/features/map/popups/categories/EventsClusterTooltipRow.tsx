@@ -43,7 +43,6 @@ export function EventsClusterTooltipRow({
   loading,
   error,
 }: EventsClusterTooltipRowProps) {
-  console.log('🚀 ~ EventsClusterTooltipRow ~ feature:', feature.layerId)
   const isGFWCluster = GFW_CLUSTER_LAYERS.some((source) => {
     const id = feature.layerId.split(LAYER_LIBRARY_ID_SEPARATOR)[0]
     return feature.subcategory === DataviewType.FourwingsTileCluster && id.includes(source)
