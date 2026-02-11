@@ -538,7 +538,7 @@ const workspaceSlice = createSlice({
       state.historyNavigation = castDraft(action.payload)
     },
     resetWorkspaceHistoryNavigation: (state) => {
-      state.historyNavigation = initialState.historyNavigation
+      state.historyNavigation = castDraft(initialState.historyNavigation)
     },
     removeGFWStaffOnlyDataviews: (state) => {
       if (ONLY_GFW_STAFF_DATAVIEW_SLUGS.length && state.data?.dataviewInstances) {
