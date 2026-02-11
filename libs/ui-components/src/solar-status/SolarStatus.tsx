@@ -77,7 +77,7 @@ export function SolarStatus({
     const sSet = times.sunset.getTime()
     const nDusk = times.nauticalDusk.getTime()
 
-    const labels = STATUS_LABELS[locale]
+    const labels = STATUS_LABELS[locale] || STATUS_LABELS[Locale.en]
 
     // 1. Day: Sun is above the horizon
     if (timestamp >= sRise && timestamp <= sSet) {

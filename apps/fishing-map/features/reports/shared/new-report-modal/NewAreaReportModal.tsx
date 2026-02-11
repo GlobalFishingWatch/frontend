@@ -20,6 +20,7 @@ import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
 import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
 import { createReportThunk, updateReportThunk } from 'features/reports/reports.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import { useSaveWorkspaceTimerange } from 'features/workspace/save/workspace-save.hooks'
 import type { WorkspaceTimeRangeMode } from 'features/workspace/save/workspace-save.utils'
 import {
@@ -55,6 +56,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
   const workspace = useSelector(selectWorkspaceWithCurrentState)
   const privateDatasets = useSelector(selectPrivateDatasetsInWorkspace)
   const containsPrivateDatasets = privateDatasets.length > 0
+  const userData = useSelector(selectUserData)
 
   const [name, setName] = useState(report?.name || reportArea?.name || '')
   const [description, setDescription] = useState(report?.description || '')
@@ -73,7 +75,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
   } = useSaveWorkspaceTimerange(workspace)
   const [loading, setLoading] = useState(false)
 
-  const isEditing = report?.id !== undefined
+  const isEditing = report?.id !== undefined && report.ownerId === userData?.id
 
   const updateReport = async (event: any) => {
     event.preventDefault()

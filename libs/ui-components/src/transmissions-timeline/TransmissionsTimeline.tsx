@@ -48,7 +48,7 @@ export function TransmissionsTimeline({
     <div className={styles.timelineContainer}>
       <div
         className={styles.highlighted}
-        style={{ marginLeft: `${beforeWidth}%`, width: `${duringWidth}%` }}
+        style={{ marginLeft: `${beforeWidth}%`, width: `${duringWidth || 1}%` }}
         ref={transmissionsRef}
       >
         {timelineWidth > 30 && (
