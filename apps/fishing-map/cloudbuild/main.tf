@@ -3,7 +3,8 @@ provider "google" {
 }
 
 locals {
-  app_name = "fishing-map"
+  app_name   = "fishing-map"
+  repository = "frontend"
   secrets_path = {
     dev = "projects/706952489382/secrets"
     sta = "projects/706952489382/secrets"
@@ -189,8 +190,7 @@ module "staging" {
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
   ]
-  set_secrets                   = local.generate_secrets.sta
-  run_e2e_tests_for_fishing_map = true
+  set_secrets = local.generate_secrets.sta
 }
 
 module "production" {

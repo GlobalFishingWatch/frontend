@@ -95,10 +95,3 @@ variable "machine_type" {
     error_message = "machine_type must be one of: E2_HIGHCPU_8, E2-STANDARD-2"
   }
 }
-
-variable "run_e2e_tests_for_fishing_map" {
-  description = "Whether to run the e2e tests for fishing map"
-  type        = bool
-  default     = false
-}
-

@@ -1,46 +1,3 @@
-provider "google" {
-  project = "gfw-int-infrastructure"
-}
-
-locals {
-  repository = "frontend"
-  app_name   = "fishing-map-e2e"
-  secrets_path = {
-    dev = "projects/706952489382/secrets"
-    sta = "projects/706952489382/secrets"
-    pro = "projects/674016975526/secrets"
-  }
-  service_account = {
-    dev = "frontend-dev@gfw-development.iam.gserviceaccount.com"
-    sta = "frontend-sta@gfw-development.iam.gserviceaccount.com"
-    pro = "frontend-pro@gfw-production.iam.gserviceaccount.com"
-  }
-  // Ensure it is prefixed with FISHING_MAP_ in the secrets manager
-  secrets = [
-    "BASIC_AUTH_PASS",
-    "NEXT_FEEDBACK_SPREADSHEET_ID",
-    "NEXT_GFW_API_KEY",
-    "NEXT_SENTRY_AUTH_TOKEN",
-    "NEXT_IDENTITY_REVIEW_SPREADSHEET_ID",
-    "NEXT_MAP_ERRORS_SPREADSHEET_ID",
-    "NEXT_MASTRA_API_URL",
-    "NEXT_SPREADSHEET_CLIENT_EMAIL",
-    "NEXT_SPREADSHEET_PRIVATE_KEY",
-    "NEXT_TURNING_TIDES_BRAZIL_ID",
-    "NEXT_TURNING_TIDES_CHILE_ID",
-    "NEXT_TURNING_TIDES_PERU_ID",
-    "NEXT_TURNING_TIDES_AIS_ID",
-    "NEXT_WORKSPACES_AGENT_ID",
-  ]
-
-  generate_secrets = {
-    for env, path in local.secrets_path : env => [
-      for secret in local.secrets :
-      "${secret}=${path}/FISHING_MAP_${secret}"
-    ]
-  }
-}
-
 resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
   name        = "fishing-map-integrations-tests"
   location    = "us-central1"
@@ -70,10 +27,9 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
 
     step {
       id     = "Run integration tests"
-      name   = "node:24-slim"
+      name   = "mcr.microsoft.com/playwright:v1.57.0-noble"
       script = <<EOF
         yarn install
-        yarn playwright install chromium --with-deps
         yarn nx test fishing-map --browser="chromium"
       EOF
     }
@@ -145,7 +101,8 @@ resource "google_cloudbuild_trigger" "e2e_tests_on_pr" {
       name       = "gcr.io/cloud-builders/gcloud"
       entrypoint = "bash"
       args = ["-c", <<EOF
-      echo '📊 Playwright Report: https://storage.cloud.google.com/gfw-cloudbuild-artifacts-ttl30/frontend/e2e-tests/$BUILD_ID/playwright-report/index.html'
+      echo '📊 Playwright Report: https://storage.googleapis.com/gfw-cloudbuild-artifacts-ttl30/frontend/e2e-tests/$BUILD_ID/playwright-report/index.html'
+
       echo '🗂️ Test Results: https://console.cloud.google.com/storage/browser/gfw-cloudbuild-artifacts-ttl30/frontend/e2e-tests/$BUILD_ID'
       EOF
       ]
