@@ -3,9 +3,9 @@ import cx from 'classnames'
 import { getTimes } from 'suncalc'
 
 import { Locale } from '@globalfishingwatch/api-types'
-import { Tooltip } from '@globalfishingwatch/ui-components/tooltip'
 
 import { Icon, type IconType } from '../icon'
+import { Tooltip } from '../tooltip'
 
 import styles from './SolarStatus.module.css'
 

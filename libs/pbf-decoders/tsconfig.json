@@ -16,8 +16,12 @@
     "declarationMap": true,
     "inlineSources": true,
     "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
-    "types": ["node"]
+    "types": [
+      "node"
+    ]
   },
-  "include": ["decoders/**/*.ts", "index.ts"],
-  "exclude": ["**/*.spec.ts", "**/*.test.ts"]
+  "include": [
+    "decoders/**/*.ts",
+    "index.ts"
+  ]
 }
