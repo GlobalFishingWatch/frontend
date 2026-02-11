@@ -81,8 +81,8 @@ function ReportEnvironmentGraph({
         <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
         {isDynamic && (
           <Fragment>
-            {t('common.between')} <strong>{formatI18nDate(start)}</strong> {t('common.and')}{' '}
-            <strong>{formatI18nDate(end)}</strong>
+            {t((t) => t.common.between)} <strong>{formatI18nDate(start)}</strong>{' '}
+            {t((t) => t.common.and)} <strong>{formatI18nDate(end)}</strong>
           </Fragment>
         )}
         <ReportSummaryTags key={dataview.id} dataview={dataview} />
