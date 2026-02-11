@@ -27,6 +27,7 @@ import { setVesselEventId } from 'features/vessel/vessel.slice'
 import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
 import {
   cleanCurrentWorkspaceReportState,
+  cleanReportPayload,
   cleanReportQuery,
 } from 'features/workspace/workspace.slice'
 import { REPORT_ROUTES, VESSEL, WORKSPACE_VESSEL, WORKSPACES_LIST } from 'routes/routes'
@@ -39,12 +40,6 @@ import {
 } from 'routes/routes.selectors'
 
 import styles from '../SidebarHeader.module.css'
-
-function cleanReportPayload(payload: Record<string, any>) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { areaId, datasetId, reportId, ...rest } = payload || {}
-  return rest
-}
 
 function NavigationHistoryButton() {
   const { t } = useTranslation()

@@ -210,7 +210,13 @@ const configWithSentry = withSentryConfig(configWithNx, {
   project: 'frontend',
 
   // Only print logs for uploading source maps in CI
-  silent: !process.env.CI,
+  silent: true,
+  debug: false,
+
+  // Release name - use git commit SHA in CI for proper source map association
+  release: {
+    name: process.env.COMMIT_SHA || process.env.GITHUB_SHA,
+  },
 
   // For all available options, see:
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/

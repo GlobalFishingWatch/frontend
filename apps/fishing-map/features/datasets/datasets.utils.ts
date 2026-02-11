@@ -794,7 +794,7 @@ export const getCommonSchemaFieldsInDataview = (
   } = {} as GetSchemaInDataviewParams
 ): SchemaFieldSelection[] => {
   const activeDatasets = getActiveDatasetsInDataview(dataview)
-  if (schema === 'flag') {
+  if (dataview.category !== DataviewCategory.User && schema === 'flag') {
     return getFlags()
   } else if (schema === 'next_port_id') {
     return getPorts()
@@ -882,7 +882,7 @@ const getSchemaOptionsSelectedInDataview = (
   options: ReturnType<typeof getCommonSchemaFieldsInDataview>
 ) => {
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
-  if (schema === 'flag') {
+  if (dataview.category !== DataviewCategory.User && schema === 'flag') {
     return getFlagsByIds(dataview.config?.filters?.flag || [])
   }
   if (schemaType === 'range' && dataview.config?.filters?.[schema]) {

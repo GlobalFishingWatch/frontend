@@ -58,7 +58,6 @@ function ReportEnvironmentGraph({
   const interval = getFourwingsInterval(start, end, allAvailableIntervals)
   const layersTimeseriesErrors = useReportTimeSeriesErrors()
   const isDynamic = isEnvironmentalDataview(dataview) // checks for animated heatmaps
-
   if (!dataview) return null
 
   const { min, mean, max } = (timeseriesStats?.[dataview.id] as FourwingsReportGraphStats) || {}
@@ -84,9 +83,9 @@ function ReportEnvironmentGraph({
           <Fragment>
             {t((t) => t.common.between)} <strong>{formatI18nDate(start)}</strong>{' '}
             {t((t) => t.common.and)} <strong>{formatI18nDate(end)}</strong>
-            <ReportSummaryTags key={dataview.id} dataview={dataview} />
           </Fragment>
         )}
+        <ReportSummaryTags key={dataview.id} dataview={dataview} />
       </p>
       {(isDynamic || isHeatmapVector) &&
         (isLoading || hasError ? (

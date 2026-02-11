@@ -1,7 +1,8 @@
-import { useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
+import { useLocalStorage } from '@globalfishingwatch/react-hooks'
 import type { Tab } from '@globalfishingwatch/ui-components'
 import { Modal, Tabs } from '@globalfishingwatch/ui-components'
 
@@ -18,6 +19,7 @@ import {
   setDownloadActiveTab,
 } from 'features/download/downloadActivity.slice'
 import DownloadActivityEnvironment from 'features/download/DownloadActivityEnvironment'
+import DownloadSurvey, { DISABLE_DOWNLOAD_SURVEY } from 'features/download/DownloadSurvey'
 
 import { HeatmapDownloadTab } from './downloadActivity.config'
 import DownloadActivityByVessel from './DownloadActivityByVessel'
@@ -32,6 +34,8 @@ function DownloadActivityModal() {
   const activityAndDetectionsDataviews = useSelector(selectActiveActivityAndDetectionsDataviews)
   const environmentalDataviews = useSelector(selectActiveHeatmapAnimatedEnvironmentalDataviews)
   const downloadModalOpen = useSelector(selectDownloadActivityModalOpen)
+  const [disableDownloadSurvey, _] = useLocalStorage(DISABLE_DOWNLOAD_SURVEY, false)
+  const [showSurvey, setShowSurvey] = useState(false)
 
   useEffect(() => {
     if (activityAndDetectionsDataviews.length > 0) {
@@ -41,30 +45,36 @@ function DownloadActivityModal() {
     }
   }, [activityAndDetectionsDataviews, dispatch, environmentalDataviews])
 
+  const onDownload = useCallback(() => {
+    if (!disableDownloadSurvey) {
+      setShowSurvey(true)
+    }
+  }, [disableDownloadSurvey])
+
   const tabs = useMemo(() => {
     return [
       {
         id: HeatmapDownloadTab.ByVessel,
         title: t((t) => t.download.byVessel),
-        content: <DownloadActivityByVessel />,
+        content: <DownloadActivityByVessel onDownloadCallback={onDownload} />,
         disabled: activityAndDetectionsDataviews.length === 0,
       },
       {
         id: HeatmapDownloadTab.Gridded,
         title: t((t) => t.download.gridded),
-        content: <DownloadActivityGridded />,
+        content: <DownloadActivityGridded onDownloadCallback={onDownload} />,
         testId: 'activity-modal-gridded-activity',
         disabled: activityAndDetectionsDataviews.length === 0,
       },
       {
         id: HeatmapDownloadTab.Environment,
         title: t((t) => t.common.environment),
-        content: <DownloadActivityEnvironment />,
+        content: <DownloadActivityEnvironment onDownloadCallback={onDownload} />,
         testId: 'activity-modal-environment',
         disabled: environmentalDataviews.length === 0,
       },
     ] as Tab<HeatmapDownloadTab>[]
-  }, [t, environmentalDataviews, activityAndDetectionsDataviews])
+  }, [t, environmentalDataviews, activityAndDetectionsDataviews, onDownload])
 
   const activeTab = tabs.find((tab) => tab.id === activeTabId)
 
@@ -84,7 +94,16 @@ function DownloadActivityModal() {
       onClose={onClose}
       contentClassName={styles.modalContent}
     >
-      <Tabs tabs={tabs} activeTab={activeTab?.id} onTabClick={onTabClick} buttonSize={'default'} />
+      {showSurvey ? (
+        <DownloadSurvey onClose={onClose} />
+      ) : (
+        <Tabs
+          tabs={tabs}
+          activeTab={activeTab?.id}
+          onTabClick={onTabClick}
+          buttonSize={'default'}
+        />
+      )}
     </Modal>
   )
 }

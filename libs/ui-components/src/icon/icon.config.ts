@@ -117,6 +117,10 @@ const icons = [
   'settings',
   'share',
   'skip',
+  'solar-status-day',
+  'solar-status-dawn',
+  'solar-status-dusk',
+  'solar-status-night',
   'sort-asc',
   'sort-desc',
   'sparks',
@@ -136,6 +140,7 @@ const icons = [
   'visibility-off',
   'visibility-on',
   'warning',
+  'workspace',
 ] as const
 
 export type IconType = (typeof icons)[number]

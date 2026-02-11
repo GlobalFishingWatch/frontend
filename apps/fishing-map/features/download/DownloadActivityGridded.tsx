@@ -67,7 +67,7 @@ import ActivityDownloadError, { useActivityDownloadTimeoutRefresh } from './Down
 
 import styles from './DownloadModal.module.css'
 
-function DownloadActivityGridded() {
+function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: () => void }) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
@@ -146,6 +146,7 @@ function DownloadActivityGridded() {
         }
       })
       .filter((dataview) => dataview.datasets.length > 0)
+    onDownloadCallback?.()
 
     if (format === HeatmapDownloadFormat.GeoTIFF) {
       trackEvent({

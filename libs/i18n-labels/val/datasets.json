@@ -337,7 +337,18 @@
         }
       },
       "is_closed": "crwdns108884:0crwdne108884:0",
-      "next_port_id": "crwdns108886:0crwdne108886:0"
+      "next_port_id": "crwdns108886:0crwdne108886:0",
+      "start_distance_from_port_trunc": {
+        "keyword": "crwdns109054:0crwdne109054:0",
+        "enum": {
+          "0": "crwdns109056:0crwdne109056:0",
+          "1": "crwdns109058:0crwdne109058:0",
+          "2": "crwdns109060:0crwdne109060:0",
+          "3": "crwdns109062:0crwdne109062:0",
+          "4": "crwdns109064:0crwdne109064:0",
+          "5": "crwdns109066:0crwdne109066:0"
+        }
+      }
     }
   },
   "private-global-other-vessels": {

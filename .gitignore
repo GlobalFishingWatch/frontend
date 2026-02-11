@@ -8,6 +8,7 @@ lerna-debug.log*
 
 # Editor files
 .cursor/mcp.json
+.claude
 
 # Env
 .env
