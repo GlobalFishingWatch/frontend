@@ -1242,6 +1242,7 @@
     "new": "kelompok kapal baru",
     "notFound": "Vessel group not found",
     "remove": "hapus kelompok kapal",
+    "removeUnknownVessels": "Do you want to remove all ({{param}}) unnamed vessels?",
     "removeVessel": "Hapus kapal dari kelompok",
     "saveAndSeeInWorkspace": "Save and see in workspace",
     "saveForLater": "Simpan untuk nanti",

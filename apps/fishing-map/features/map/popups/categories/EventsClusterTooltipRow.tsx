@@ -28,7 +28,8 @@ type EventsClusterTooltipRowProps = {
 }
 
 const GFW_CLUSTER_LAYERS = [
-  'encounter', // Used in VMS workspaaces
+  'encounter', // Used in VMS workspaces
+  'cluster-events', // Used in VMS workspaces
   ...ENCOUNTER_EVENTS_SOURCES,
   PORT_VISITS_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,
@@ -42,6 +43,7 @@ export function EventsClusterTooltipRow({
   loading,
   error,
 }: EventsClusterTooltipRowProps) {
+  console.log('🚀 ~ EventsClusterTooltipRow ~ feature:', feature.layerId)
   const isGFWCluster = GFW_CLUSTER_LAYERS.some((source) => {
     const id = feature.layerId.split(LAYER_LIBRARY_ID_SEPARATOR)[0]
     return feature.subcategory === DataviewType.FourwingsTileCluster && id.includes(source)
