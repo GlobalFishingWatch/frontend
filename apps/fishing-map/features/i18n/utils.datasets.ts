@@ -6,7 +6,7 @@ import i18n, { t } from 'features/i18n/i18n'
 export const getDatasetNameTranslated = (dataset = {} as GetDatasetLabelParams): string => {
   const datasetId = removeDatasetVersion(dataset?.id)
   if (datasetId && i18n.exists(`datasets:${datasetId}.name`)) {
-    return t(`datasets:${datasetId}.name` as any)
+    return t((t) => t[datasetId].name, { ns: 'datasets' })
   }
   return dataset?.name || datasetId
 }
@@ -16,7 +16,8 @@ export const getDatasetDescriptionTranslated = (dataset: {
   description?: string
 }): string => {
   return (
-    t(`datasets:${removeDatasetVersion(dataset?.id)}.description`, {
+    t((t) => t[removeDatasetVersion(dataset?.id)]?.description, {
+      ns: 'datasets',
       defaultValue: dataset?.description || '',
     })
       // can't understand why i18next introduces an space in the url

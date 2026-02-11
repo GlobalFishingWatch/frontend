@@ -58,6 +58,13 @@ variable "set_secrets" {
   type        = list(string)
   default     = []
 }
+
+variable "build_secrets" {
+  description = "Secrets to make available during Docker build. Map of ENV_VAR_NAME to secret path (e.g., projects/123/secrets/MY_SECRET)"
+  type        = map(string)
+  default     = {}
+}
+
 variable "labels" {
   description = "The labels to set"
   type        = map(string)

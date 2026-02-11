@@ -3,13 +3,15 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { groupBy, upperFirst } from 'es-toolkit'
+import type { Point } from 'geojson'
 import { DateTime } from 'luxon'
 
+import type { Locale } from '@globalfishingwatch/api-types'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { VesselTrackPickingObject } from '@globalfishingwatch/deck-layers'
-import { Button, Icon } from '@globalfishingwatch/ui-components'
+import { Button, Icon, SolarStatus } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
@@ -25,7 +27,11 @@ import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import { useTimebarVisualisationConnect, useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import { useSetTrackCorrectionId } from 'features/track-correction/track-correction.hooks'
 import { setTrackCorrectionDataviewId } from 'features/track-correction/track-correction.slice'
-import { selectIsGuestUser, selectIsUserExpired } from 'features/user/selectors/user.selectors'
+import {
+  selectIsGFWUser,
+  selectIsGuestUser,
+  selectIsUserExpired,
+} from 'features/user/selectors/user.selectors'
 import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
 import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
 import { selectIsAnyVesselLocation } from 'routes/routes.selectors'
@@ -49,7 +55,7 @@ function VesselTracksTooltipRow({
   interactionType?: 'point' | 'segment'
 }) {
   const dispatch = useAppDispatch()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const dataviewId = feature.layerId
   const { vesselLayer } = useGetVesselInfoByDataviewId(dataviewId)
   const { dispatchTimebarVisualisation } = useTimebarVisualisationConnect()
@@ -57,6 +63,7 @@ function VesselTracksTooltipRow({
   const setTrackCorrectionId = useSetTrackCorrectionId()
   const { setTimerange } = useTimerangeConnect()
   const guestUser = useSelector(selectIsGuestUser)
+  const isGFWUser = useSelector(selectIsGFWUser)
   const isUserExpired = useSelector(selectIsUserExpired)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
@@ -67,7 +74,7 @@ function VesselTracksTooltipRow({
   const onReportClick = useCallback(() => {
     if (diffDays > 14) {
       if (
-        window.confirm(t('trackCorrection.reduce_issue_timerange') as string) &&
+        window.confirm(t((t) => t.trackCorrection.reduce_issue_timerange) as string) &&
         feature.timestamp
       ) {
         const startDate = getUTCDateTime(feature.timestamp)
@@ -115,8 +122,18 @@ function VesselTracksTooltipRow({
           {interactionType === 'point' && feature.timestamp && (
             <span className={cx({ [styles.secondary]: !showFeaturesDetails })}>
               <I18nDate date={feature.timestamp} format={DateTime.DATETIME_MED} />
+              {isGFWUser && (
+                <SolarStatus
+                  lon={(feature.geometry as Point).coordinates[0]}
+                  lat={(feature.geometry as Point).coordinates[1]}
+                  timestamp={feature.timestamp}
+                  locale={i18n.language as Locale}
+                />
+              )}
               {!showFeaturesDetails && feature.speed !== undefined && (
-                <span>{` - ${feature.speed.toFixed(2)} ${t('common.knots', 'knots')}`}</span>
+                <span>{` - ${feature.speed.toFixed(2)} ${t((t) => t.common.knots, {
+                  defaultValue: 'knots',
+                })}`}</span>
               )}
             </span>
           )}
@@ -126,15 +143,18 @@ function VesselTracksTooltipRow({
             <p key="speed">
               {feature.speed !== undefined && (
                 <span>
-                  {upperFirst(t('eventInfo.speed'))}: {feature.speed.toFixed(2)}{' '}
-                  {t('common.knots', 'knots')}
+                  {upperFirst(t((t) => t.eventInfo.speed))}: {feature.speed.toFixed(2)}{' '}
+                  {t((t) => t.common.knots, {
+                    defaultValue: 'knots',
+                  })}
                 </span>
               )}
             </p>
             <p key="depth">
               {feature.depth !== undefined && (
                 <span>
-                  {upperFirst(t('eventInfo.depth'))}: {feature.depth} {t('common.meters')}
+                  {upperFirst(t((t) => t.eventInfo.depth))}: {feature.depth}{' '}
+                  {t((t) => t.common.meters)}
                 </span>
               )}
             </p>
@@ -147,7 +167,7 @@ function VesselTracksTooltipRow({
           isTurningTidesWorkspace && (
             <div>
               <Button onClick={onReportClick} className={styles.rowMarginTop}>
-                <span>{t('trackCorrection.logAnIssue')}</span>
+                <span>{t((t) => t.trackCorrection.logAnIssue)}</span>
               </Button>
             </div>
           )}

@@ -30,8 +30,9 @@ const VesselGroupReportInsights = () => {
     return (
       <div className={styles.disclaimer}>
         <Icon icon="warning" type="warning" />
-        {t('vesselGroup.disclaimerFeaturesNotAvailable', {
-          features: t('common.insights'),
+        {t((t) => t.vesselGroup.disclaimerFeaturesNotAvailable, {
+          features: t((t) => t.common.insights),
+
           datasets: Array.from(datasetsWithoutRelatedEvents)
             .map((d) => getDatasetLabel(d))
             .join(', '),
@@ -44,7 +45,7 @@ const VesselGroupReportInsights = () => {
     return (
       <div className={styles.disclaimer}>
         <Icon icon="warning" type="warning" />
-        {t('vessel.insights.disclaimerTimeRangeBeforeMinYear', {
+        {t((t) => t.vessel.insights.disclaimerTimeRangeBeforeMinYear, {
           year: MIN_INSIGHTS_YEAR,
         })}
       </div>
@@ -53,14 +54,14 @@ const VesselGroupReportInsights = () => {
 
   return (
     <div className={styles.container}>
-      <h2 className="print-only">{t('vessel.sectionInsights')}</h2>
+      <h2 className="print-only">{t((t) => t.vessel.sectionInsights)}</h2>
       <p className={styles.title}>
-        {t('vesselGroup.insightSectionTitle', {
+        {t((t) => t.vesselGroup.insightSectionTitle, {
           start: formatI18nDate(start),
           end: formatI18nDate(end),
         })}
         <DataTerminology
-          title={t('vesselGroupReport.insights.title')}
+          title={t((t) => t.vesselGroupReport.insights.title)}
           terminologyKey="insightsVesselGroups"
         />
       </p>

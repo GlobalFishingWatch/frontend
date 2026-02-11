@@ -11,23 +11,23 @@ export const VisualisationOptions: {
 }[] = [
   {
     id: '4wings',
-    label: t('bigQuery.visualisationActivity'),
-    fieldsHint: t('bigQuery.visualisationActivityHint'),
+    label: t((t) => t.bigQuery.visualisationActivity),
+    fieldsHint: t((t) => t.bigQuery.visualisationActivityHint),
   },
   {
     id: 'events',
-    label: t('bigQuery.visualisationEvents'),
-    fieldsHint: t('bigQuery.visualisationActivityHint'),
+    label: t((t) => t.bigQuery.visualisationEvents),
+    fieldsHint: t((t) => t.bigQuery.visualisationActivityHint),
   },
 ]
 
 export const AggregationOptions = [
   {
     id: FourwingsAggregationOperation.Avg,
-    label: t('bigQuery.aggregateAvg'),
+    label: t((t) => t.bigQuery.aggregateAvg),
   },
   {
     id: FourwingsAggregationOperation.Sum,
-    label: t('bigQuery.aggregateSum'),
+    label: t((t) => t.bigQuery.aggregateSum),
   },
 ]

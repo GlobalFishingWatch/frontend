@@ -19,11 +19,10 @@ const VesselGroupReportInsightVesselTable = ({
   const { t } = useTranslation()
   return (
     <div className={styles.vesselsTable}>
-      <div className={styles.header}>{t('common.name')}</div>
-      <div className={styles.header}>{t('vessel.mmsi')}</div>
-      <div className={styles.header}>{t('layer.flagState')}</div>
-      <div className={styles.header}>{t('vessel.geartype')}</div>
-
+      <div className={styles.header}>{t((t) => t.common.name)}</div>
+      <div className={styles.header}>{t((t) => t.vessel.mmsi)}</div>
+      <div className={styles.header}>{t((t) => t.layer.flagState)}</div>
+      <div className={styles.header}>{t((t) => t.vessel.geartype)}</div>
       {vessels.map((vessel, i) => {
         const vesselId = vessel.identity.id
         const isLastRow = i === vessels.length - 1

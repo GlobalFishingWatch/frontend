@@ -28,10 +28,10 @@ const TrackCorrection = () => {
   if (isGuestUser || !userData)
     return (
       <>
-        <h1 className={styles.title}>{t('trackCorrection.title')}</h1>
+        <h1 className={styles.title}>{t((t) => t.trackCorrection.title)}</h1>
         <div className={styles.loginRequired}>
           <Icon type="default" icon="warning" />
-          <Trans i18nKey="trackCorrection.loginRequired">
+          <Trans i18nKey={(t) => t.trackCorrection.loginRequired}>
             To suggest and view this correction, you must
             <LocalStorageLoginLink className={styles.link}> log in </LocalStorageLoginLink>
           </Trans>

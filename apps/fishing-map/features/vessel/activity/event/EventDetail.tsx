@@ -3,15 +3,16 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 
-import type { EventNextPort, EventType } from '@globalfishingwatch/api-types'
+import type { EventNextPort, Locale } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
-import { IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { IconButton, SolarStatus, Spinner } from '@globalfishingwatch/ui-components'
 
 import { EVENTS_COLORS } from 'data/config'
 import { getHasVesselProfileInstance } from 'features/dataviews/dataviews.utils'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import PortsReportLink from 'features/reports/report-port/PortsReportLink'
+import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
@@ -30,66 +31,75 @@ interface ActivityContentProps {
 
 const AUTH_AREAS = ['CCSBT', 'IATTC', 'ICCAT', 'IOTC', 'NPFC', 'SPRFMO', 'WCPFC']
 
-const EventDetail = ({ event }: ActivityContentProps) => {
-  const { t } = useTranslation()
+const TimeFields = ({ event }: { event: VesselEvent }) => {
+  const { t, i18n } = useTranslation()
   const { getEventDurationDescription } = useActivityEventTranslations()
-  const vesselProfileEncounterLayer = useVesselProfileEncounterLayer()
-  const workspaceDataviewInstancesMerged = useSelector(selectWorkspaceDataviewInstancesMerged)
-
-  const TimeFields = ({ type }: { type?: EventType }) => (
+  const isGFWUser = useSelector(selectIsGFWUser)
+  return (
     <Fragment>
       <li>
         <label className={styles.fieldLabel}>
-          {type === EventTypes.Port ? t('eventInfo.port_entry') : t('eventInfo.start')}
+          {event.type === EventTypes.Port
+            ? t((t) => t.eventInfo.port_entry)
+            : t((t) => t.eventInfo.start)}
         </label>
         <span>{formatI18nDate(event.start, { format: DateTime.DATETIME_FULL })}</span>
+        {event.coordinates && isGFWUser && (
+          <SolarStatus
+            lon={event.coordinates[0]}
+            lat={event.coordinates[1]}
+            timestamp={event.start as number}
+            locale={i18n.language as Locale}
+          />
+        )}
       </li>
       <li>
         <label className={styles.fieldLabel}>
-          {type === EventTypes.Port ? t('eventInfo.port_exit') : t('eventInfo.end')}
+          {event.type === EventTypes.Port
+            ? t((t) => t.eventInfo.port_exit)
+            : t((t) => t.eventInfo.end)}
         </label>
         <span>{formatI18nDate(event.end, { format: DateTime.DATETIME_FULL })}</span>
+        {event.coordinates && isGFWUser && (
+          <SolarStatus
+            lon={event.coordinates[0]}
+            lat={event.coordinates[1]}
+            timestamp={event.end as number}
+            locale={i18n.language as Locale}
+          />
+        )}
       </li>
       <li>
-        <label className={styles.fieldLabel}>{t('eventInfo.duration')}</label>
+        <label className={styles.fieldLabel}>{t((t) => t.eventInfo.duration)}</label>
         <span>{getEventDurationDescription(event)}</span>
       </li>
     </Fragment>
   )
-  // const DistanceFields = () => (
-  //   <Fragment>
-  //     <li>
-  //       <label className={styles.fieldLabel}>
-  //         {t(`eventInfo.distanceFromShoreKm`)}
-  //       </label>
-  //       <span>{event.distances?.startDistanceFromShoreKm || EMPTY_FIELD_PLACEHOLDER}</span>
-  //     </li>
-  //     <li>
-  //       <label className={styles.fieldLabel}>
-  //         {t(`eventInfo.distanceFromPortKm`)}
-  //       </label>
-  //       <span>{event.distances?.startDistanceFromPortKm || EMPTY_FIELD_PLACEHOLDER}</span>
-  //     </li>
-  //   </Fragment>
-  // )
+}
 
-  const PortVisitedAfterField = ({ nextPort }: { nextPort: EventNextPort | undefined }) => {
-    return (
-      <li>
-        <label className={styles.fieldLabel}>{t('eventInfo.portVisitedAfter')}</label>
-        <span>
-          {nextPort?.id ? (
-            <PortsReportLink port={nextPort}>
-              {formatInfoField(nextPort.name || nextPort.id, 'port')} (
-              {formatInfoField(nextPort.flag, 'flag')})
-            </PortsReportLink>
-          ) : (
-            EMPTY_FIELD_PLACEHOLDER
-          )}
-        </span>
-      </li>
-    )
-  }
+const PortVisitedAfterField = ({ nextPort }: { nextPort: EventNextPort | undefined }) => {
+  const { t } = useTranslation()
+  return (
+    <li>
+      <label className={styles.fieldLabel}>{t((t) => t.eventInfo.portVisitedAfter)}</label>
+      <span>
+        {nextPort?.id ? (
+          <PortsReportLink port={nextPort}>
+            {formatInfoField(nextPort.name || nextPort.id, 'port')} (
+            {formatInfoField(nextPort.flag, 'flag')})
+          </PortsReportLink>
+        ) : (
+          EMPTY_FIELD_PLACEHOLDER
+        )}
+      </span>
+    </li>
+  )
+}
+
+const EventDetail = ({ event }: ActivityContentProps) => {
+  const { t } = useTranslation()
+  const vesselProfileEncounterLayer = useVesselProfileEncounterLayer()
+  const workspaceDataviewInstancesMerged = useSelector(selectWorkspaceDataviewInstancesMerged)
 
   const authAreas = event.regions?.rfmo.filter((rfmo) => AUTH_AREAS.includes(rfmo)).sort()
 
@@ -104,17 +114,17 @@ const EventDetail = ({ event }: ActivityContentProps) => {
       !id || !vesselProfileEncounterLayer?.id.includes(id) || !vesselProfileEncounterLayer?.loaded
     return (
       <ul className={styles.detailContainer}>
-        <label className={styles.blockLabel}>{t('eventInfo.eventInfo')}</label>
-        <TimeFields />
+        <label className={styles.blockLabel}>{t((t) => t.eventInfo.eventInfo)}</label>
+        <TimeFields event={event} />
         <li>
-          <label className={styles.fieldLabel}>{t('eventInfo.medianSpeedKnots')}</label>
+          <label className={styles.fieldLabel}>{t((t) => t.eventInfo.medianSpeedKnots)}</label>
           <span>{event.encounter?.medianSpeedKnots?.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
         <PortVisitedAfterField nextPort={event.vessel.nextPort} />
         <div className={styles.divider} />
-        <label className={styles.blockLabel}>{t('eventInfo.encounteredVesselName')}</label>
+        <label className={styles.blockLabel}>{t((t) => t.eventInfo.encounteredVesselName)}</label>
         <li>
-          <label className={styles.fieldLabel}>{t('eventInfo.name')}</label>
+          <label className={styles.fieldLabel}>{t((t) => t.eventInfo.name)}</label>
           <span className={styles.vesselNameWithPin}>
             {isLoading && isEncounterInstanceInWorkspace ? (
               <Spinner size="tiny" className={styles.spinner} />
@@ -134,15 +144,15 @@ const EventDetail = ({ event }: ActivityContentProps) => {
           </span>
         </li>
         <li>
-          <label className={styles.fieldLabel}>{t('eventInfo.flag')}</label>
+          <label className={styles.fieldLabel}>{t((t) => t.eventInfo.flag)}</label>
           <span>{formatInfoField(flag, 'flag')}</span>
         </li>
         <li>
-          <label className={styles.fieldLabel}>{t('eventInfo.mmsi')}</label>
+          <label className={styles.fieldLabel}>{t((t) => t.eventInfo.mmsi)}</label>
           <span>{ssvid || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
         <li>
-          <label className={styles.fieldLabel}>{t('vessel.shiptype')}</label>
+          <label className={styles.fieldLabel}>{t((t) => t.vessel.shiptype)}</label>
           <span>{formatInfoField(type, 'vesselType')}</span>
         </li>
         {!isEncounterInstanceInWorkspace && (
@@ -153,10 +163,9 @@ const EventDetail = ({ event }: ActivityContentProps) => {
               style={{ backgroundColor: EVENTS_COLORS.encounter }}
               loading={isLoading}
             />
-            {t('eventInfo.trackDisclaimer')}
+            {t((t) => t.eventInfo.trackDisclaimer)}
           </div>
         )}
-
         <Fragment>
           <div className={styles.divider} />
           <table className={styles.authTable}>
@@ -164,9 +173,9 @@ const EventDetail = ({ event }: ActivityContentProps) => {
               <tr>
                 <th>
                   <label>
-                    {t('eventInfo.authorization')}
+                    {t((t) => t.eventInfo.authorization)}
                     <DataTerminology
-                      title={t('eventInfo.authorization')}
+                      title={t((t) => t.eventInfo.authorization)}
                       terminologyKey="authorization"
                     />
                   </label>
@@ -232,7 +241,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
               ) : (
                 <tr>
                   <td>
-                    <p className={styles.secondary}>{t('eventInfo.authorizationEmpty')}</p>
+                    <p className={styles.secondary}>{t((t) => t.eventInfo.authorizationEmpty)}</p>
                   </td>
                 </tr>
               )}
@@ -244,10 +253,10 @@ const EventDetail = ({ event }: ActivityContentProps) => {
   } else if (event.type === EventTypes.Fishing) {
     return (
       <ul className={styles.detailContainer}>
-        <TimeFields />
+        <TimeFields event={event} />
         {/* <DistanceFields /> */}
         <li>
-          <label className={styles.fieldLabel}>{t('eventInfo.averageSpeedKnots')}</label>
+          <label className={styles.fieldLabel}>{t((t) => t.eventInfo.averageSpeedKnots)}</label>
           <span>{event.fishing?.averageSpeedKnots.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
       </ul>
@@ -255,14 +264,13 @@ const EventDetail = ({ event }: ActivityContentProps) => {
   } else if (event.type === EventTypes.Loitering) {
     return (
       <ul className={styles.detailContainer}>
-        <TimeFields />
-        {/* <DistanceFields /> */}
+        <TimeFields event={event} />
         <li>
-          <label className={styles.fieldLabel}>{t('eventInfo.totalDistanceKm')}</label>
+          <label className={styles.fieldLabel}>{t((t) => t.eventInfo.totalDistanceKm)}</label>
           <span>{event.loitering?.totalDistanceKm.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
         <li>
-          <label className={styles.fieldLabel}>{t('eventInfo.averageSpeedKnots')}</label>
+          <label className={styles.fieldLabel}>{t((t) => t.eventInfo.averageSpeedKnots)}</label>
           <span>{event.loitering?.averageSpeedKnots.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
         <PortVisitedAfterField nextPort={event.vessel.nextPort} />
@@ -271,7 +279,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
   } else if (event.type === EventTypes.Port) {
     return (
       <ul className={styles.detailContainer}>
-        <TimeFields type={event.type} />
+        <TimeFields event={event} />
       </ul>
     )
   }

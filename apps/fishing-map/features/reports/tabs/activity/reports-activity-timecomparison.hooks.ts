@@ -106,11 +106,15 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
     () => [
       {
         id: 'days',
-        label: t('common.days', { count: 2 }),
+        label: t((t) => t.common.days, {
+          count: 2,
+        }),
       },
       {
         id: 'months',
-        label: t('common.months', { count: 2 }),
+        label: t((t) => t.common.months, {
+          count: 2,
+        }),
       },
     ],
     [t]
@@ -156,7 +160,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
         },
       })
       if (error) {
-        setErrorMsg(t('analysis.errorPeriodComparisonDateRange'))
+        setErrorMsg(t((t) => t.analysis.errorPeriodComparisonDateRange))
       } else {
         setErrorMsg('')
       }
@@ -257,27 +261,28 @@ export const useTimeCompareTimeDescription = (addPrefix = true) => {
     format: DateTime.DATE_MED_WITH_WEEKDAY,
   })
 
-  const durationTypeLabel: string = t(`common.${timeComparison?.durationType}`, {
+  const durationTypeLabel: string = t((t) => t.common[timeComparison?.durationType], {
     count: parseInt(timeComparison?.duration as any),
   })
   const durationLabel = [timeComparison?.duration, durationTypeLabel].join(' ')
 
   let label: string =
     reportGraph === 'periodComparison'
-      ? t('analysis.periodComparisonRange', {
+      ? t((t) => t.analysis.periodComparisonRange, {
           compareStart: formatI18nDate(timeComparison?.compareStart, {
             format: DateTime.DATE_MED_WITH_WEEKDAY,
           }),
+
           start: startLabel,
           duration: durationLabel,
         })
-      : t('analysis.beforeAfterRange', {
+      : t((t) => t.analysis.beforeAfterRange, {
           compareStart: compareStartLabel,
           duration: durationLabel,
         })
 
   if (addPrefix) {
-    label = [t('analysis.change'), label].join(' ')
+    label = [t((t) => t.analysis.change), label].join(' ')
   }
 
   return label

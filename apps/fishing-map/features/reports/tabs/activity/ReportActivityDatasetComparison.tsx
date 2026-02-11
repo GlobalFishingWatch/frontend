@@ -11,6 +11,7 @@ import { DATASET_COMPARISON_SUFFIX, LAYER_LIBRARY_ID_SEPARATOR } from 'data/conf
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
+import { selectDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { resolveLibraryLayers } from 'features/layer-library/LayerLibrary'
 import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.hooks'
@@ -40,6 +41,7 @@ const ReportActivityDatasetComparison = () => {
   const locationQuery = useSelector(selectLocationQuery)
   const comparisonDatasets = useSelector(selectReportComparisonDataviewIds)
   const allDataviews = useSelector(selectAllDataviews)
+  const allDataviewInstances = useSelector(selectDataviewInstancesMerged)
   const allDatasets = useSelector(selectAllDatasets)
   const fitAreaInViewport = useFitAreaInViewport()
 
@@ -47,8 +49,13 @@ const ReportActivityDatasetComparison = () => {
     if (!i18nReady) {
       return []
     }
-    return resolveLibraryLayers(allDataviews, { experimentalLayers: false })
-  }, [allDataviews, i18nReady])
+    const mainDataviewColor = allDataviewInstances?.find((d) => d.id === comparisonDatasets?.main)
+      ?.config?.color
+    return resolveLibraryLayers(allDataviews, {
+      experimentalLayers: false,
+      avoidColors: mainDataviewColor ? [mainDataviewColor] : [],
+    })
+  }, [allDataviews, i18nReady, comparisonDatasets?.main, allDataviewInstances])
 
   const layersResolved = useMemo(() => {
     const reportCategory = reportDataviews[0]?.category
@@ -151,12 +158,19 @@ const ReportActivityDatasetComparison = () => {
           selectedOption={selectedComparisonDataset}
           onSelect={onCompareSelect}
           containerClassName={styles.select}
-          placeholder={t('translations:analysis.selectDatasetPlaceholder')}
+          placeholder={t((t) => t.analysis.selectDatasetPlaceholder, {
+            ns: 'translations',
+          })}
         />
       </div>
       <p className={styles.printableTitle}>
-        {t('translations:analysis.printComparisonSummary')}
-        {selectedMainDataset?.label} {t('translations:common.and')}{' '}
+        {t((t) => t.analysis.printComparisonSummary, {
+          ns: 'translations',
+        })}
+        {selectedMainDataset?.label}{' '}
+        {t((t) => t.common.and, {
+          ns: 'translations',
+        })}{' '}
         {selectedComparisonDataset?.label}
       </p>
     </>

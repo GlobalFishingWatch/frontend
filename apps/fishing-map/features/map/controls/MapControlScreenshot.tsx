@@ -46,7 +46,7 @@ const MapControlScreenshot = ({
       (Object.entries(ScrenshotAreaIds) as Entries<typeof ScrenshotAreaIds>).map(
         ([key, value]) => ({
           id: value as ScrenshotDOMArea,
-          label: t(`map.screenshotArea.${key}`, key),
+          label: t((t) => t.map.screenshotArea[key], { defaultValue: key }),
         })
       ),
     [t]
@@ -130,13 +130,15 @@ const MapControlScreenshot = ({
           type="map-tool"
           loading={loading}
           disabled={mapLoading || loading}
-          tooltip={mapLoading || loading ? t('map.mapLoadingWait') : t('map.captureMap')}
+          tooltip={
+            mapLoading || loading ? t((t) => t.map.mapLoadingWait) : t((t) => t.map.captureMap)
+          }
           onClick={onScreenshotClick}
         />
       )}
       <Modal
         appSelector={ROOT_DOM_ELEMENT}
-        title={t('map.screenshotPreview')}
+        title={t((t) => t.map.screenshotPreview)}
         isOpen={modalOpen}
         onClose={handleModalClose}
         contentClassName={styles.previewContainer}
@@ -159,7 +161,7 @@ const MapControlScreenshot = ({
         </div>
         <div className={styles.previewFooter}>
           <Button id="dismiss-preview-download" onClick={handleModalClose} type="secondary">
-            {t('common.dismiss')}
+            {t((t) => t.common.dismiss)}
           </Button>
           <div>
             {isPrintSupported && (
@@ -172,7 +174,7 @@ const MapControlScreenshot = ({
               </Button>
             )}
             <Button id="image-preview-download" loading={loading} onClick={onImageDownloadClick}>
-              {t('map.screenshotDownload')}
+              {t((t) => t.map.screenshotDownload)}
             </Button>
           </div>
         </div>

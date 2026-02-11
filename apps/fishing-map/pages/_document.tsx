@@ -4,11 +4,6 @@ import Document, { Head, Html, Main, NextScript } from 'next/document'
 import { GOOGLE_TAG_MANAGER_ID, PATH_BASENAME } from 'data/config'
 
 class MyDocument extends Document {
-  static async getInitialProps(ctx: DocumentContext) {
-    const initialProps = await Document.getInitialProps(ctx)
-    return { ...initialProps }
-  }
-
   render() {
     return (
       <Html>
@@ -204,10 +199,7 @@ class MyDocument extends Document {
           {GOOGLE_TAG_MANAGER_ID && (
             <noscript
               dangerouslySetInnerHTML={{
-                __html: `
-                <iframe src="https://www.googletagmanager.com/ns.html?id=${GOOGLE_TAG_MANAGER_ID}"
-                height="0" width="0" style="display:none;visibility:hidden"></iframe>
-              `,
+                __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=${GOOGLE_TAG_MANAGER_ID}"height="0" width="0" style="display:none;visibility:hidden"></iframe>`,
               }}
             />
           )}

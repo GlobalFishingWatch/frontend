@@ -45,7 +45,9 @@ export const getVesselShipTypeLabel = (
   return shipTypes
     .filter(Boolean)
     ?.map((shiptype) =>
-      translationFn(`vessel.vesselTypes.${shiptype?.toLowerCase()}`, upperFirst(shiptype))
+      translationFn((t: any) => t.vessel.vesselTypes[shiptype?.toLowerCase()], {
+        defaultValue: upperFirst(shiptype),
+      })
     )
     .toSorted((a, b) => a.localeCompare(b))
     .join(joinCharacter) as VesselType
@@ -67,7 +69,11 @@ export const getVesselGearTypeLabel = (
   }
   return gearTypes
     .filter(Boolean)
-    ?.map((gear) => translationFn(`vessel.gearTypes.${gear?.toLowerCase()}`, upperFirst(gear)))
+    ?.map((gear) =>
+      translationFn((t: any) => t.vessel.gearTypes[gear?.toLowerCase()], {
+        defaultValue: upperFirst(gear),
+      })
+    )
     .toSorted((a, b) => a.localeCompare(b))
     .join(joinCharacter) as GearType
 }
@@ -83,21 +89,21 @@ export const getVesselShipNameLabel = (
   } = {}
 ): string => {
   const vesselInfo = getLatestIdentityPrioritised(vessel)
-  if (!vesselInfo) return t('common.unknownVessel')
+  if (!vesselInfo) return translationFn((t) => t.common.unknownVessel)
   if (vesselInfo.shipname && vesselInfo.geartypes && vesselInfo.flag && withGearType) {
     const gearTypes = getVesselGearTypeLabel(vesselInfo, { translationFn })
     return `${formatInfoField(vesselInfo.shipname, 'shipname')}
-    (${translationFn(`flags:${vesselInfo.flag}`, vesselInfo.flag)}, ${gearTypes || EMPTY_FIELD_PLACEHOLDER})`
+    (${translationFn((t) => t[vesselInfo.flag], { ns: 'flags', defaultValue: vesselInfo.flag })}, ${gearTypes || EMPTY_FIELD_PLACEHOLDER})`
   }
   if (vesselInfo.shipname) {
     return formatInfoField(vesselInfo.shipname, 'shipname', { translationFn }) as string
   }
   if (vesselInfo.geartypes) {
-    return `${translationFn('vessel.unkwownVesselByGeartype', {
+    return `${translationFn((t) => t.vessel.unkwownVesselByGeartype, {
       gearType: getVesselGearTypeLabel({ geartypes: vesselInfo.geartypes }, { translationFn }),
     })}`
   }
-  return translationFn('common.unknownVessel', 'Unknown vessel')
+  return translationFn((t) => t.common.unknownVessel)
 }
 
 export const formatInfoField = (
@@ -127,11 +133,11 @@ export const formatInfoField = (
   } = {}
 ) => {
   if (!fieldValue && type === 'shipname') {
-    return translationFn('common.unknownVessel', 'Unknown Vessel')
+    return translationFn((t) => t.common.unknownVessel, { defaultValue: 'Unknown Vessel' })
   }
   if (typeof fieldValue === 'string') {
     if (type === 'flag' || type === 'ownerFlag') {
-      return translationFn(`flags:${fieldValue}` as any, fieldValue)
+      return translationFn((t) => t[fieldValue], { ns: 'flags', defaultValue: fieldValue })
     }
     if (type === 'shiptypes' || type === 'vesselType') {
       return getVesselShipTypeLabel({ shiptypes: fieldValue }, { translationFn }) || fallbackValue
@@ -186,7 +192,7 @@ export const formatInfoField = (
 
 export const getVesselOtherNamesLabel = (otherVesselsNames: string[]) => {
   return otherVesselsNames?.length
-    ? `, ${t('common.aka')} ${otherVesselsNames
+    ? `, ${t((t) => t.common.aka)} ${otherVesselsNames
         .map((i) => formatInfoField(i, 'shipname'))
         .join(', ')}`
     : ''

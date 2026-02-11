@@ -62,7 +62,7 @@ const AggregatedGraphTooltip = (props: any) => {
               return (
                 <li key={index} className={styles.tooltipValue}>
                   <span className={styles.tooltipValueDot} style={{ color }}></span>
-                  {formatTooltipValue(value, t('common.events').toLowerCase())}
+                  {formatTooltipValue(value, t((t) => t.common.events).toLowerCase())}
                 </li>
               )
             })}
@@ -89,11 +89,11 @@ export const EventsReportIndividualGraphTooltip = ({
 
   return (
     <div className={styles.event}>
-      {eventType && upperFirst(t(`event.${eventType}`, eventType))}
+      {eventType && upperFirst(t((t) => t.event[eventType], { defaultValue: eventType }))}
       <div className={styles.properties}>
         <div className={styles.property}>
           <label>
-            {`${formatInfoField(data.vessel?.type, 'shiptypes')} ${t('common.vessel')}`}
+            {`${formatInfoField(data.vessel?.type, 'shiptypes')} ${t((t) => t.common.vessel)}`}
           </label>
           <span>
             {formatInfoField(data.vessel?.name, 'shipname')}{' '}
@@ -102,18 +102,18 @@ export const EventsReportIndividualGraphTooltip = ({
         </div>
         {eventType === 'encounter' && data.encounter?.vessel && (
           <div className={styles.property}>
-            <label>{`${formatInfoField(data.encounter.vessel.type, 'shiptypes')} ${t('common.vessel')}`}</label>
+            <label>{`${formatInfoField(data.encounter.vessel.type, 'shiptypes')} ${t((t) => t.common.vessel)}`}</label>
             <span>{`${formatInfoField(data.encounter.vessel.name, 'shipname')} ${data.encounter.vessel.flag ? `(${formatInfoField(data.encounter.vessel.flag, 'flag')}` : ''}`}</span>
           </div>
         )}
       </div>
       <div className={styles.properties}>
         <div className={styles.property}>
-          <label>{t('eventInfo.start')}</label>
+          <label>{t((t) => t.eventInfo.start)}</label>
           <span>{start}</span>
         </div>
         <div className={styles.property}>
-          <label>{t('eventInfo.duration')}</label>
+          <label>{t((t) => t.eventInfo.duration)}</label>
           <span>{duration}</span>
         </div>
       </div>

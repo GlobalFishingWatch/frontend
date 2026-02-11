@@ -69,7 +69,7 @@ export const useTrackLayerFitBounds = () => {
               console.warn("transmissionDates not available, can't fit time", infoResource)
               return
             }
-            if (window.confirm(t('layer.vessel_fit_bounds_out_of_timerange') as string)) {
+            if (window.confirm(t((t) => t.layer.vessel_fit_bounds_out_of_timerange) as string)) {
               if (infoResource) {
                 setTimerange({
                   start: getUTCDate(transmissionDateFrom).toISOString()!,
@@ -113,11 +113,11 @@ const FitBounds = ({ className, layer, hasError, infoResource, disabled }: FitBo
 
   let tooltip = ''
   if (hasError) {
-    tooltip = t('errors.trackLoading')
+    tooltip = t((t) => t.errors.trackLoading)
   } else if (layer instanceof VesselLayer) {
-    tooltip = t('layer.vessel_fit_bounds')
+    tooltip = t((t) => t.layer.vessel_fit_bounds)
   } else {
-    tooltip = t('layer.user_track_fit_bounds')
+    tooltip = t((t) => t.layer.user_track_fit_bounds)
   }
   return (
     <IconButton

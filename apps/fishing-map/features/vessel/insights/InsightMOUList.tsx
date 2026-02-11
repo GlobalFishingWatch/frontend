@@ -72,13 +72,13 @@ const InsightMOUList = ({
     if (hasTokyoBlackAppearences) {
       messages.push(
         <p key="tokyoBlackCount">
-          {t('vessel.insights.MOUTokyoBlackListsCount', {
+          {t((t) => t.vessel.insights.MOUTokyoBlackListsCount, {
             flags: Object.values(tokyoAppearences.BLACK)
               .map(
                 (v) =>
-                  `${formatInfoField(v.reference, 'flag')} ${t('common.from')} ${formatI18nDate(
+                  `${formatInfoField(v.reference, 'flag')} ${t((t) => t.common.from)} ${formatI18nDate(
                     v.from
-                  )} ${t('common.to')} ${formatI18nDate(v.to)}`
+                  )} ${t((t) => t.common.to)} ${formatI18nDate(v.to)}`
               )
               .join(', '),
           })}
@@ -88,13 +88,13 @@ const InsightMOUList = ({
     if (hasTokyoGreyAppearences) {
       messages.push(
         <p key="tokyoGreyCount">
-          {t('vessel.insights.MOUTokyoGreyListsCount', {
+          {t((t) => t.vessel.insights.MOUTokyoGreyListsCount, {
             flags: Object.values(tokyoAppearences.GREY)
               .map(
                 (v) =>
-                  `${formatInfoField(v.reference, 'flag')} ${t('common.from')} ${formatI18nDate(
+                  `${formatInfoField(v.reference, 'flag')} ${t((t) => t.common.from)} ${formatI18nDate(
                     v.from
-                  )} ${t('common.to')} ${formatI18nDate(v.to)}`
+                  )} ${t((t) => t.common.to)} ${formatI18nDate(v.to)}`
               )
               .join(', '),
           })}
@@ -107,7 +107,9 @@ const InsightMOUList = ({
       mouList?.tokyo.totalTimesListed &&
       mouList?.tokyo.totalTimesListed > 0
     ) {
-      messages.push(<p key="tokyoEmpty">{t('vessel.insights.MOUTokyoListsPreviousAppearance')}</p>)
+      messages.push(
+        <p key="tokyoEmpty">{t((t) => t.vessel.insights.MOUTokyoListsPreviousAppearance)}</p>
+      )
     }
 
     const hasParisBlackAppearences = Object.values(parisAppearences.BLACK).length > 0
@@ -116,13 +118,13 @@ const InsightMOUList = ({
     if (hasParisBlackAppearences) {
       messages.push(
         <p key="parisBlackCount">
-          {t('vessel.insights.MOUParisBlackListsCount', {
+          {t((t) => t.vessel.insights.MOUParisBlackListsCount, {
             flags: Object.values(parisAppearences.BLACK)
               .map(
                 (v) =>
-                  `${formatInfoField(v.reference, 'flag')} ${t('common.from')} ${formatI18nDate(
+                  `${formatInfoField(v.reference, 'flag')} ${t((t) => t.common.from)} ${formatI18nDate(
                     v.from
-                  )} ${t('common.to')} ${formatI18nDate(v.to)}`
+                  )} ${t((t) => t.common.to)} ${formatI18nDate(v.to)}`
               )
               .join(', '),
           })}
@@ -132,13 +134,13 @@ const InsightMOUList = ({
     if (hasParisGreyAppearences) {
       messages.push(
         <p key="parisGreyCount">
-          {t('vessel.insights.MOUParisGreyListsCount', {
+          {t((t) => t.vessel.insights.MOUParisGreyListsCount, {
             flags: Object.values(parisAppearences.GREY)
               .map(
                 (v) =>
-                  `${formatInfoField(v.reference, 'flag')} ${t('common.from')} ${formatI18nDate(
+                  `${formatInfoField(v.reference, 'flag')} ${t((t) => t.common.from)} ${formatI18nDate(
                     v.from
-                  )} ${t('common.to')} ${formatI18nDate(v.to)}`
+                  )} ${t((t) => t.common.to)} ${formatI18nDate(v.to)}`
               )
               .join(', '),
           })}
@@ -152,7 +154,9 @@ const InsightMOUList = ({
       mouList?.paris.totalTimesListed &&
       mouList?.paris.totalTimesListed > 0
     ) {
-      messages.push(<p key="parisEmpty">{t('vessel.insights.MOUParisListsPreviousAppearance')}</p>)
+      messages.push(
+        <p key="parisEmpty">{t((t) => t.vessel.insights.MOUParisListsPreviousAppearance)}</p>
+      )
     }
     if (
       mouList?.tokyo.valuesInThePeriod.length === 0 &&
@@ -160,7 +164,7 @@ const InsightMOUList = ({
     ) {
       messages.push(
         <p className={styles.secondary} key="allEmpty">
-          {t('vessel.insights.MOUListsEmpty')}
+          {t((t) => t.vessel.insights.MOUListsEmpty)}
         </p>
       )
     }
@@ -170,8 +174,11 @@ const InsightMOUList = ({
   return (
     <div id="MOULists" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vessel.insights.MOULists')}</label>
-        <DataTerminology title={t('vessel.insights.MOULists')} terminologyKey="insightsMOUList" />
+        <label>{t((t) => t.vessel.insights.MOULists)}</label>
+        <DataTerminology
+          title={t((t) => t.vessel.insights.MOULists)}
+          terminologyKey="insightsMOUList"
+        />
       </div>
       {guestUser ? (
         <VesselIdentityFieldLogin />

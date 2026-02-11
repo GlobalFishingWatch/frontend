@@ -76,8 +76,8 @@ const VesselRegistryField = ({
       <div className={styles.fieldGroupContainer} key={key}>
         {showLabel && (
           <div className={styles.labelContainer}>
-            <label>{t('vessel.registryOperator')}</label>
-            <DataTerminology title={t('vessel.operator')} terminologyKey="operator" />
+            <label>{t((t) => t.vessel.registryOperator)}</label>
+            <DataTerminology title={t((t) => t.vessel.operator)} terminologyKey="operator" />
           </div>
         )}
         <RegistryOperatorField registryField={registryField} vesselIdentity={vesselIdentity} />
@@ -93,7 +93,7 @@ const VesselRegistryField = ({
         {showLabel && (
           <div className={styles.labelContainer}>
             <label>
-              {t('vessel.recordId')}
+              {t((t) => t.vessel.recordId)}
               <GFWOnly userGroup="gfw" />
             </label>
           </div>
@@ -128,10 +128,10 @@ const VesselRegistryField = ({
     <div className={styles.fieldGroupContainer} key={key}>
       {showLabel && (
         <div className={styles.labelContainer}>
-          <label className={styles.twoCells}>{t(`vessel.${label}`, label || '')}</label>
+          <label className={styles.twoCells}>{t((t: any) => t.vessel[label ?? ''])}</label>
           {terminologyKey && (
             <DataTerminology
-              title={t(`vessel.${label}`, label || '')}
+              title={t((t: any) => t.vessel[label ?? ''])}
               terminologyKey={terminologyKey}
             />
           )}
@@ -194,7 +194,7 @@ const VesselRegistryField = ({
             })}
           </ul>
           {isAuthorizations && showLabel && (
-            <p className={styles.disclaimer}>{t('vessel.authorizationDatesDisclaimer')}</p>
+            <p className={styles.disclaimer}>{t((t) => t.vessel.authorizationDatesDisclaimer)}</p>
           )}
         </Fragment>
       ) : (

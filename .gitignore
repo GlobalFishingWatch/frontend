@@ -8,6 +8,7 @@ lerna-debug.log*
 
 # Editor files
 .cursor/mcp.json
+.claude
 
 # Env
 .env
@@ -158,3 +159,8 @@ __traces__
 test-results/
 .playwright/
 playwright-report/
+
+
+# SSL certificates
+local.globalfishingwatch.org-key.pem
+local.globalfishingwatch.org.pem

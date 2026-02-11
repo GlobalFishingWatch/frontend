@@ -28,31 +28,31 @@ export const getTimeAgo = (date: number | DateTime, t: TFunction) => {
   const translateWithPlural = (
     keyBase: 'days' | 'hours' | 'minutes' | 'months' | 'weeks',
     count: number
-  ) => t(`time.${keyBase}`, { count })
+  ) => t((t) => t.time[keyBase], { count })
 
   if (days >= 30) {
     const months = Math.floor(days / 30)
-    return t('time.ago', { time: translateWithPlural('months', months) })
+    return t((t) => t.time.ago, { time: translateWithPlural('months', months) })
   }
   if (days >= 7) {
     const weeks = Math.floor(days / 7)
-    return t('time.ago', { time: translateWithPlural('weeks', weeks) })
+    return t((t) => t.time.ago, { time: translateWithPlural('weeks', weeks) })
   }
   if (days > 0) {
-    return t('time.ago', { time: translateWithPlural('days', days) })
+    return t((t) => t.time.ago, { time: translateWithPlural('days', days) })
   }
   if (days === 0 && hours === 0 && minutes < 2) {
-    return t('time.now')
+    return t((t) => t.time.now)
   }
   if (hours === 0) {
-    return t('time.ago', { time: translateWithPlural('minutes', minutes) })
+    return t((t) => t.time.ago, { time: translateWithPlural('minutes', minutes) })
   }
   if (minutes === 0) {
-    return t('time.ago', { time: translateWithPlural('hours', hours) })
+    return t((t) => t.time.ago, { time: translateWithPlural('hours', hours) })
   }
 
   const timeStr = `${translateWithPlural('hours', hours)} ${translateWithPlural('minutes', minutes)}`
-  return t('time.ago', { time: timeStr })
+  return t((t) => t.time.ago, { time: timeStr })
 }
 
 export const getDateLabel = (date: number, t: TFunction) => {

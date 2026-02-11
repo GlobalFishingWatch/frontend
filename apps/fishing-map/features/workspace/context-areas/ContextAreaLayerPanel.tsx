@@ -2,7 +2,6 @@ import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import parse from 'html-react-parser'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
@@ -45,6 +44,7 @@ import {
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { htmlSafeParse } from 'utils/html-parser'
 
 import DatasetNotFound from '../shared/DatasetNotFound'
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -207,7 +207,9 @@ function LayerPanel({
 
   const title = dataset
     ? getDatasetLabel(dataset)
-    : t(`dataview.${dataview?.id}.title` as any, dataview?.name || dataview?.id)
+    : t((t: any) => t.dataview[dataview?.id].title, {
+        defaultValue: dataview?.name || dataview?.id,
+      })
 
   const isBasemapLabelsDataview = dataview.config?.type === DataviewType.BasemapLabels
   const isContextAreaDataview =
@@ -292,7 +294,9 @@ function LayerPanel({
                     icon={filterOpen ? 'filter-on' : 'filter-off'}
                     size="small"
                     onClick={onToggleFilterOpen}
-                    tooltip={filterOpen ? t('layer.filterClose') : t('layer.filterOpen')}
+                    tooltip={
+                      filterOpen ? t((t) => t.layer.filterClose) : t((t) => t.layer.filterOpen)
+                    }
                     tooltipPlacement="top"
                   />
                 </div>
@@ -335,14 +339,11 @@ function LayerPanel({
           >
             {DATAVIEWS_WARNING.includes(dataview?.id as any) && (
               <Fragment>
-                {t(
-                  `dataview.${dataview?.id}.dataWarning` as any,
-                  'This platform uses a reference layer from an external source.'
-                )}
+                {t((t: any) => t.dataview[dataview?.id].dataWarning)}
                 <div className={cx('print-hidden', styles.dataWarningLinks)}>
-                  <button onClick={onAddNewClick}>{t('dataset.uploadYourOwn')}</button> |{' '}
+                  <button onClick={onAddNewClick}>{t((t) => t.dataset.uploadYourOwn)}</button> |{' '}
                   <button onClick={() => setModalDataWarningOpen(!modalDataWarningOpen)}>
-                    {t('common.learnMore')}
+                    {t((t) => t.common.learnMore)}
                   </button>
                   <Modal
                     appSelector={ROOT_DOM_ELEMENT}
@@ -351,12 +352,7 @@ function LayerPanel({
                     onClose={onDataWarningModalClose}
                     contentClassName={styles.modalContent}
                   >
-                    {parse(
-                      t(
-                        `dataview.${dataview?.id}.dataWarningDetail` as any,
-                        'This platform uses reference layers (shapefiles) from an external source. The designations employed and the presentation of the material on this platform do not imply the expression of any opinion whatsoever on the part of Global Fishing Watch concerning the legal status of any country, territory, city or area or of its authorities, or concerning the delimitation of its frontiers or boundaries. Should you consider these reference layers not applicable for your purposes, this platform allows custom reference layers to be uploaded. Draw or upload your own reference layer using the "+" icon in the left sidebar. Learn more on our <a href="https://globalfishingwatch.org/tutorials/">tutorials</a> and <a href="https://globalfishingwatch.org/help-faqs/">FAQs</a>.'
-                      )
-                    )}
+                    {htmlSafeParse(t((t: any) => t.dataview[dataview?.id].dataWarningDetail))}
                   </Modal>
                 </div>
               </Fragment>
@@ -380,12 +376,12 @@ function LayerPanel({
           <Collapsable
             label={
               layerLoadedDebounced ? (
-                `${t('layer.areasOnScreen')} ${
+                `${t((t) => t.layer.areasOnScreen)} ${
                   areasOnScreenOpen ? `(${featuresOnScreen?.total})` : ''
                 }`
               ) : (
                 <span>
-                  {`${t('layer.areasOnScreen')}`}
+                  {`${t((t) => t.layer.areasOnScreen)}`}
                   {areasOnScreenOpen && <Spinner className={styles.inline} size="tiny" />}
                 </span>
               )

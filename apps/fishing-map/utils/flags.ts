@@ -7,7 +7,7 @@ export const getFlagById = (id: string, lng = i18n.language): Flag | undefined =
   if (!flag || !lng) return flag
   return {
     ...flag,
-    label: t(`flags:${id}`, { lng, defaultValue: flag.label }),
+    label: t((t) => t[id], { ns: 'flags', lng, defaultValue: flag.label }),
   }
 }
 
@@ -21,7 +21,7 @@ export const getFlags = (lng = i18n.language): Flag[] =>
   flags.map((flag) => {
     return {
       ...flag,
-      label: t(`flags:${flag.id}`, { lng, defaultValue: flag.label }) as string,
+      label: t((t) => t[flag.id], { ns: 'flags', lng, defaultValue: flag.label }),
     }
   })
 

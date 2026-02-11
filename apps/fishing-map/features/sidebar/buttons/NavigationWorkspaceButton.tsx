@@ -66,8 +66,8 @@ function NavigationWorkspaceButton() {
       isTrackCorrectionOpen ||
       (isAnyWorkspaceReportLocation && locationCategory !== WorkspaceCategory.Reports))
   ) {
-    const tooltip = t('common.navigateBackTo', {
-      section: t('workspace.title').toLocaleLowerCase(),
+    const tooltip = t((t) => t.common.navigateBackTo, {
+      section: t((t) => t.workspace.title).toLocaleLowerCase(),
     })
     const query = {
       ...cleanReportQuery(locationQuery),

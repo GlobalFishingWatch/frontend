@@ -27,6 +27,7 @@ import { setVesselEventId } from 'features/vessel/vessel.slice'
 import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
 import {
   cleanCurrentWorkspaceReportState,
+  cleanReportPayload,
   cleanReportQuery,
 } from 'features/workspace/workspace.slice'
 import { REPORT_ROUTES, VESSEL, WORKSPACE_VESSEL, WORKSPACES_LIST } from 'routes/routes'
@@ -39,12 +40,6 @@ import {
 } from 'routes/routes.selectors'
 
 import styles from '../SidebarHeader.module.css'
-
-function cleanReportPayload(payload: Record<string, any>) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { areaId, datasetId, reportId, ...rest } = payload || {}
-  return rest
-}
 
 function NavigationHistoryButton() {
   const { t } = useTranslation()
@@ -138,16 +133,16 @@ function NavigationHistoryButton() {
   if (workspaceHistoryNavigation.length) {
     const previousLocation =
       lastWorkspaceVisited.type === VESSEL || lastWorkspaceVisited.type === WORKSPACE_VESSEL
-        ? t('vessel.title')
+        ? t((t) => t.vessel.title)
         : isPreviousLocationReport
-          ? t('analysis.title')
+          ? t((t) => t.analysis.title)
           : isVesselGroupReportLocation
-            ? t('vesselGroup.vesselGroupProfile')
+            ? t((t) => t.vesselGroup.vesselGroupProfile)
             : lastWorkspaceVisited.type === WORKSPACES_LIST
-              ? t('workspace.list')
-              : t('workspace.title')
+              ? t((t) => t.workspace.list)
+              : t((t) => t.workspace.title)
 
-    const tooltip = t('common.navigateBackTo', {
+    const tooltip = t((t) => t.common.navigateBackTo, {
       section: previousLocation.toLocaleLowerCase(),
     })
 

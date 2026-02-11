@@ -40,5 +40,6 @@ const translations = 'workaround_for_different_plural_rules'
 // t('vesselGroups.insights.fishingInNoTakeMpas_many')
 // t('vesselGroups.insights.fishingInRfmoWithoutKnownAuthorization_many')
 // t('vesselGroups.insights.gaps_many')
+// t('search.seeVesselsOnMap_many')
 
 export default translations

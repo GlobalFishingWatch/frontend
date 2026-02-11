@@ -2,7 +2,6 @@ import { useCallback, useEffect, useEffectEvent, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import parse from 'html-react-parser'
 
 import type { DatasetsMigration } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
@@ -31,6 +30,7 @@ import {
   selectUrlDataviewInstances,
   selectVesselId,
 } from 'routes/routes.selectors'
+import { htmlSafeParse } from 'utils/html-parser'
 
 import { useDataviewInstancesConnect } from './workspace.hook'
 import { selectIsWorkspaceOwner } from './workspace.selectors'
@@ -209,18 +209,13 @@ export const useMigrateWorkspaceToast = () => {
 
   const ToastContent = ({ loading = false }: { loading?: boolean }) => (
     <div className={styles.disclaimer}>
-      <p>{t('workspace.migrationDisclaimer')}</p>
+      <p>{t((t) => t.workspace.migrationDisclaimer)}</p>
       <p className={styles.secondary}>
-        {parse(
-          t(
-            'workspace.migrationDisclaimerNote',
-            "Note, some vessel identity and activity information may change. <a target='_blank' href='https://globalfishingwatch.org/faqs/2024-aug-new-release-in-our-ais-data-pipeline-version-3'> Learn more.</a>"
-          )
-        )}
+        {htmlSafeParse(t((t) => t.workspace.migrationDisclaimerNote))}
       </p>
       <div className={styles.disclaimerFooter}>
         {/* <Button onClick={dissmissToast} type="secondary" className={styles.updateBtn}>
-          {t('workspace.migrationMaintain')}
+          {t((t) => t.workspace.migrationMaintain)}
         </Button> */}
         <Button
           loading={loading}
@@ -228,7 +223,7 @@ export const useMigrateWorkspaceToast = () => {
           onClick={updateWorkspace}
           className={styles.updateBtn}
         >
-          {t('workspace.migrationUpdate')}
+          {t((t) => t.workspace.migrationUpdate)}
         </Button>
       </div>
     </div>

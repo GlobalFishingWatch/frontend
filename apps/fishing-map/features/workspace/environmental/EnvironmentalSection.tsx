@@ -87,9 +87,10 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
     <Section
       id={DataviewCategory.Environment}
       data-testid="environment-section"
+      className="hover-target"
       title={
         <span>
-          {t('common.environment')}
+          {t((t) => t.common.environment)}
           {hasVisibleDataviews && (
             <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
           )}
@@ -113,7 +114,7 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
               icon="plus"
               type="border"
               size="medium"
-              tooltip={t('dataset.addEnvironmental')}
+              tooltip={t((t) => t.dataset.addEnvironmental)}
               tooltipPlacement="top"
               onClick={onAddClick}
             />
@@ -143,12 +144,12 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
         {locationCategory === WorkspaceCategory.MarineManager && (
           <div className={cx(styles.surveyLink, 'print-hidden')}>
             <a
-              href={t('feedback.marineManagerDatasetsSurveyLink') as string}
+              href={t((t) => t.feedback.marineManagerDatasetsSurveyLink) as string}
               target="_blank"
               rel="noreferrer"
               className={styles.link}
             >
-              {t('feedback.marineManagerDatasetsSurvey')}
+              {t((t) => t.feedback.marineManagerDatasetsSurvey)}
             </a>
           </div>
         )}

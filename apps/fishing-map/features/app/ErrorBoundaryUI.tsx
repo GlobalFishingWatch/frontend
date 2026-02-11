@@ -35,16 +35,16 @@ export default function ErrorBoundaryUI({ error }: ErrorBoundaryUIProps) {
   return (
     <Fragment>
       <div className={styles.errorBoundary}>
-        <h1 className={styles.title}>{t('errors.genericShort')}</h1>
+        <h1 className={styles.title}>{t((t) => t.errors.genericShort)}</h1>
         <div>
           <Button type="secondary" onClick={onFeedbackClick}>
-            {t('errors.reportError')}
+            {t((t) => t.errors.reportError)}
           </Button>{' '}
         </div>
         {isGFWUser && (
           <div>
             <Button type="secondary" size="small" onClick={() => setShowError(!showError)}>
-              {t('errors.showError')} ▾
+              {t((t) => t.errors.showError)} ▾
             </Button>
           </div>
         )}

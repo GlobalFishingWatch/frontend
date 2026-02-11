@@ -17,18 +17,19 @@ locals {
   // Ensure it is prefixed with FISHING_MAP_ in the secrets manager
   secrets = [
     "BASIC_AUTH_PASS",
+    "NEXT_DOWNLOAD_SURVEY_SPREADSHEET_ID",
     "NEXT_FEEDBACK_SPREADSHEET_ID",
     "NEXT_GFW_API_KEY",
-    "NEXT_SENTRY_AUTH_TOKEN",
     "NEXT_IDENTITY_REVIEW_SPREADSHEET_ID",
     "NEXT_MAP_ERRORS_SPREADSHEET_ID",
     "NEXT_MASTRA_API_URL",
+    "NEXT_SENTRY_AUTH_TOKEN",
     "NEXT_SPREADSHEET_CLIENT_EMAIL",
     "NEXT_SPREADSHEET_PRIVATE_KEY",
+    "NEXT_TURNING_TIDES_AIS_ID",
     "NEXT_TURNING_TIDES_BRAZIL_ID",
     "NEXT_TURNING_TIDES_CHILE_ID",
     "NEXT_TURNING_TIDES_PERU_ID",
-    "NEXT_TURNING_TIDES_AIS_ID",
     "NEXT_WORKSPACES_AGENT_ID",
   ]
 
@@ -64,8 +65,11 @@ module "develop" {
     "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=false",
     "NEXT_PUBLIC_WORKSPACE_ENV=development",
     "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
-    "NEXT_PUBLIC_PIPE_DATASET_VERSION=4"
+    "NEXT_PUBLIC_PIPE_DATASET_VERSION=4",
   ]
+  build_secrets = {
+    SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_NEXT_SENTRY_AUTH_TOKEN"
+  }
   set_env_vars = [
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
@@ -92,7 +96,6 @@ module "preview-dev" {
     branch = "develop"
   }
   set_env_vars_build = [
-    "NX_CLOUD_ACCESS_TOKEN=${local.secrets_path.dev}/FRONTEND_NX_CLOUD_ACCESS_TOKEN",
     "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
     "NEXT_PUBLIC_API_VERSION=v3",
     "NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
@@ -101,8 +104,12 @@ module "preview-dev" {
     "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=true",
     "NEXT_PUBLIC_WORKSPACE_ENV=development",
     "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
-    "NEXT_PUBLIC_PIPE_DATASET_VERSION=4"
+    "NEXT_PUBLIC_PIPE_DATASET_VERSION=4",
   ]
+  build_secrets = {
+    NX_CLOUD_ACCESS_TOKEN = "${local.secrets_path.dev}/FRONTEND_NX_CLOUD_ACCESS_TOKEN"
+    SENTRY_AUTH_TOKEN     = "${local.secrets_path.dev}/FISHING_MAP_NEXT_SENTRY_AUTH_TOKEN"
+  }
   set_env_vars = [
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
@@ -136,8 +143,11 @@ module "random-forest" {
     "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=true",
     "NEXT_PUBLIC_WORKSPACE_ENV=development",
     "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
-    "NEXT_PUBLIC_PIPE_DATASET_VERSION=4"
+    "NEXT_PUBLIC_PIPE_DATASET_VERSION=4",
   ]
+  build_secrets = {
+    SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_NEXT_SENTRY_AUTH_TOKEN"
+  }
   set_env_vars = [
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
@@ -170,8 +180,11 @@ module "staging" {
     "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=false",
     "NEXT_PUBLIC_WORKSPACE_ENV=staging",
     "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
-    "NEXT_PUBLIC_PIPE_DATASET_VERSION=4"
+    "NEXT_PUBLIC_PIPE_DATASET_VERSION=4",
   ]
+  build_secrets = {
+    SENTRY_AUTH_TOKEN = "${local.secrets_path.sta}/FISHING_MAP_NEXT_SENTRY_AUTH_TOKEN"
+  }
   set_env_vars = [
     "BASIC_AUTH=Restricted",
     "BASIC_AUTH_USER=gfw-fish",
@@ -206,8 +219,11 @@ module "production" {
     "NEXT_PUBLIC_USE_LOCAL_DATAVIEWS=false",
     "NEXT_PUBLIC_WORKSPACE_ENV=production",
     "NEXT_PUBLIC_REPORT_DAYS_LIMIT=366",
-    "NEXT_PUBLIC_PIPE_DATASET_VERSION=3"
+    "NEXT_PUBLIC_PIPE_DATASET_VERSION=3",
   ]
+  build_secrets = {
+    SENTRY_AUTH_TOKEN = "${local.secrets_path.pro}/FISHING_MAP_NEXT_SENTRY_AUTH_TOKEN"
+  }
   set_env_vars = [
     "BASIC_AUTH=off"
   ]

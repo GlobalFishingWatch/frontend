@@ -55,8 +55,8 @@ const VesselActivityDownload = () => {
       type="border"
       disabled={eventsLoading}
       onClick={onDownloadClick}
-      tooltip={t('download.eventsDownload')}
-      loginTooltip={t('download.eventsDownloadLogin')}
+      tooltip={t((t) => t.download.eventsDownload)}
+      loginTooltip={t((t) => t.download.eventsDownloadLogin)}
       tooltipPlacement="top"
     />
   )

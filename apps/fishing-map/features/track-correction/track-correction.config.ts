@@ -27,9 +27,9 @@ export const TRACK_CORRECTION_SPREADSHEET_ID_BY_WORKSPACE: Record<TurningTidesWo
 
 export function getTrackCorrectionIssueOptions() {
   const issueTypesOptions: ChoiceOption<IssueType>[] = [
-    { id: 'falsePositive', label: t('trackCorrection.falsePositive') },
-    { id: 'falseNegative', label: t('trackCorrection.falseNegative') },
-    { id: 'other', label: t('trackCorrection.other') },
+    { id: 'falsePositive', label: t((t) => t.trackCorrection.falsePositive) },
+    { id: 'falseNegative', label: t((t) => t.trackCorrection.falseNegative) },
+    { id: 'other', label: t((t) => t.trackCorrection.other) },
   ]
   return issueTypesOptions
 }

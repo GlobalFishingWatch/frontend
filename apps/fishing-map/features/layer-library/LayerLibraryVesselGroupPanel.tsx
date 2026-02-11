@@ -66,20 +66,20 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
     <Fragment>
       <div className={styles.titleContainer}>
         <label id={DataviewCategory.VesselGroups} className={styles.categoryLabel}>
-          {t('common.vesselGroups')}
+          {t((t) => t.common.vesselGroups)}
         </label>
         <UserLoggedIconButton
           type="border"
           icon="add-to-vessel-group"
           size="medium"
-          tooltip={t('vesselGroup.createNewGroup')}
+          tooltip={t((t) => t.vesselGroup.createNewGroup)}
           tooltipPlacement="top"
           onClick={() => onAddVesselGroupClick()}
         />
       </div>
       {guestUser ? (
         <div className={styles.login}>
-          <Trans i18nKey="dataset.uploadVesselGroups">
+          <Trans i18nKey={(t) => t.dataset.uploadVesselGroups}>
             <a
               className={styles.link}
               href={GFWAPI.getRegisterUrl(
@@ -108,11 +108,10 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
                     {formatInfoField(vesselGroup?.name, 'shipname')} (
                     {vesselGroup?.vessels?.length && getVesselGroupVesselsCount(vesselGroup)})
                   </span>
-
                   <div>
                     <VesselGroupReportLink vesselGroupId={vesselGroup?.id ?? ''}>
                       <IconButton
-                        tooltip={t('vesselGroupReport.clickToSee')}
+                        tooltip={t((t) => t.vesselGroupReport.clickToSee)}
                         icon="analysis"
                         onClick={() => {
                           dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
@@ -121,7 +120,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
                     </VesselGroupReportLink>
 
                     <IconButton
-                      tooltip={t('workspace.addLayer')}
+                      tooltip={t((t) => t.workspace.addLayer)}
                       icon="plus"
                       onClick={() => toggleAddToWorkspace(vesselGroup.id, 'add')}
                     />
@@ -130,7 +129,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
               )
             })
           ) : (
-            <div className={styles.placeholder}>{t('workspace.emptyStateVesselGroups')}</div>
+            <div className={styles.placeholder}>{t((t) => t.workspace.emptyStateVesselGroups)}</div>
           )}
         </ul>
       )}

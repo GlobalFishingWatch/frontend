@@ -157,8 +157,11 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
   return (
     <div id="vessel-group-fishing" className={styles.insightContainer}>
       <div className={styles.insightTitle}>
-        <label>{t('vessel.insights.fishing')}</label>
-        <DataTerminology title={t('vessel.insights.fishing')} terminologyKey="insightsFishing" />
+        <label>{t((t) => t.vessel.insights.fishing)}</label>
+        <DataTerminology
+          title={t((t) => t.vessel.insights.fishing)}
+          terminologyKey="insightsFishing"
+        />
       </div>
       {skip || isLoading || !vesselGroup ? (
         <VesselGroupReportInsightPlaceholder />
@@ -168,7 +171,7 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
         <div className={styles.nested}>
           {!vesselsWithNoTakeMpas || vesselsWithNoTakeMpas?.length === 0 ? (
             <p className={cx(styles.secondary, styles.row)}>
-              {t('vessel.insights.fishingEventsInNoTakeMpasEmpty')}
+              {t((t) => t.vessel.insights.fishingEventsInNoTakeMpasEmpty)}
             </p>
           ) : (
             <Collapsable
@@ -176,11 +179,12 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
               open={isMPAExpanded}
               className={styles.collapsable}
               labelClassName={styles.collapsableLabel}
-              label={t('vesselGroups.insights.fishingInNoTakeMpas', {
+              label={t((t) => t.vesselGroups.insights.fishingInNoTakeMpas, {
                 count: vesselsWithNoTakeMpas.reduce(
                   (acc, vessel) => acc + vessel.eventsInNoTakeMpas.length,
                   0
                 ),
+
                 vessels: vesselsWithNoTakeMpas?.length,
               })}
               onToggle={onMPAToggle}
@@ -194,7 +198,7 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
           {!vesselsInRfmoWithoutKnownAuthorization ||
           !vesselsInRfmoWithoutKnownAuthorization?.length ? (
             <p className={cx(styles.secondary, styles.row)}>
-              {t('vessel.insights.fishingEventsInRfmoWithoutKnownAuthorizationEmpty')}
+              {t((t) => t.vessel.insights.fishingEventsInRfmoWithoutKnownAuthorizationEmpty)}
             </p>
           ) : (
             <Collapsable
@@ -202,11 +206,12 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
               open={isRFMOExpanded}
               className={styles.collapsable}
               labelClassName={styles.collapsableLabel}
-              label={t('vesselGroups.insights.fishingInRfmoWithoutKnownAuthorization', {
+              label={t((t) => t.vesselGroups.insights.fishingInRfmoWithoutKnownAuthorization, {
                 count: vesselsInRfmoWithoutKnownAuthorization.reduce(
                   (acc, vessel) => acc + vessel.eventsInRfmoWithoutKnownAuthorization.length,
                   0
                 ),
+
                 vessels: vesselsInRfmoWithoutKnownAuthorization.length,
               })}
               onToggle={onRFMOToggle}

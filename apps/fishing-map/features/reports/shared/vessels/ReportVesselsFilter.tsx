@@ -60,22 +60,16 @@ export default function ReportVesselsFilter({
       <Tooltip
         content={
           <Fragment>
-            {t(
-              'analysis.searchHelp',
-              "Use spaces to search by multiple fileds and '-' to find all vessels that don't match a query."
-            )}
+            {t((t) => t.analysis.searchHelp)}
             <br />
-            {t(
-              'analysis.searchHelpExamples',
-              "e.g. 'china trawlers', '-spain', 'peru purse|trawler'"
-            )}
+            {t((t) => t.analysis.searchHelpExamples)}
           </Fragment>
         }
       >
         <InputText
           type="search"
           value={query}
-          placeholder={t('analysis.searchPlaceholder')}
+          placeholder={t((t) => t.analysis.searchPlaceholder)}
           onChange={(e) => setQuery(e.target.value)}
           onCleanButtonClick={() => setQuery('')}
           className={styles.input}

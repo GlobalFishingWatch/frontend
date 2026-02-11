@@ -2958,6 +2958,7 @@ __metadata:
     "@types/redux-first-router": "npm:2.1.12"
     "@types/redux-first-router-link": "npm:1.4.9"
     "@types/shpjs": "npm:3.4.7"
+    "@types/suncalc": "npm:^1.9.2"
     "@types/topojson-client": "npm:3.1.5"
     "@uiw/react-json-view": "npm:^2.0.0-alpha.41"
     "@vitejs/plugin-react": "npm:5.1.2"
@@ -3012,7 +3013,7 @@ __metadata:
     html-react-parser: "npm:5.2.11"
     html2canvas: "npm:1.4.1"
     husky: "npm:9.1.7"
-    i18next: "npm:25.7.3"
+    i18next: "npm:25.8.0"
     i18next-browser-languagedetector: "npm:8.2.0"
     i18next-http-backend: "npm:3.0.2"
     i18next-resources-for-ts: "npm:^2.0.0"
@@ -3031,6 +3032,7 @@ __metadata:
     knip: "npm:5.80.0"
     lint-staged: "npm:16.2.7"
     load-json-file: "npm:7.0.1"
+    local-ssl-proxy: "npm:^2.0.5"
     lodash: "npm:4.17.23"
     luxon: "npm:3.7.2"
     make-dir-cli: "npm:4.0.0"
@@ -3060,7 +3062,7 @@ __metadata:
     react-fps: "npm:1.0.6"
     react-ga4: "npm:2.1.0"
     react-hot-keys: "npm:2.7.3"
-    react-i18next: "npm:16.5.1"
+    react-i18next: "npm:16.5.3"
     react-image-gallery: "npm:1.4.0"
     react-map-gl: "npm:7.1.9"
     react-markdown: "npm:10.1.0"
@@ -3090,6 +3092,7 @@ __metadata:
     stylelint: "npm:16.26.1"
     stylelint-config-css-modules: "npm:4.5.1"
     stylelint-config-standard: "npm:39.0.1"
+    suncalc: "npm:^1.9.0"
     supercluster: "npm:8.0.1"
     ts-jest: "npm:29.4.6"
     ts-node: "npm:10.9.2"
@@ -3118,7 +3121,7 @@ __metadata:
   dependencies:
     "@vitest/coverage-istanbul": "npm:4.0.7"
     cross-env: "npm:^10.1.0"
-    i18next-cli: "npm:^1.36.1"
+    i18next-cli: "npm:^1.38.2"
     source-map-explorer: "npm:2.5.3"
   languageName: unknown
   linkType: soft
@@ -3716,11 +3719,11 @@ __metadata:
   linkType: hard
 
 "@isaacs/brace-expansion@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@isaacs/brace-expansion@npm:5.0.0"
+  version: 5.0.1
+  resolution: "@isaacs/brace-expansion@npm:5.0.1"
   dependencies:
     "@isaacs/balanced-match": "npm:^4.0.1"
-  checksum: 10/cf3b7f206aff12128214a1df764ac8cdbc517c110db85249b945282407e3dfc5c6e66286383a7c9391a059fc8e6e6a8ca82262fc9d2590bd615376141fbebd2d
+  checksum: 10/aec226065bc4285436a27379e08cc35bf94ef59f5098ac1c026495c9ba4ab33d851964082d3648d56d63eb90f2642867bd15a3e1b810b98beb1a8c14efce6a94
   languageName: node
   linkType: hard
 
@@ -16273,6 +16276,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/suncalc@npm:^1.9.2":
+  version: 1.9.2
+  resolution: "@types/suncalc@npm:1.9.2"
+  checksum: 10/3a2d3b48b5097b7dadc8f0782e5a47805fdf64b0d93d00dc51feb5a61117306dc78fd99f424afee9c9b263a0c38fe66644e50a823febbf6db578e61dcd41ccac
+  languageName: node
+  linkType: hard
+
 "@types/supercluster@npm:5.0.2":
   version: 5.0.2
   resolution: "@types/supercluster@npm:5.0.2"
@@ -19258,6 +19268,13 @@ __metadata:
   version: 7.2.0
   resolution: "commander@npm:7.2.0"
   checksum: 10/9973af10727ad4b44f26703bf3e9fdc323528660a7590efe3aa9ad5042b4584c0deed84ba443f61c9d6f02dade54a5a5d3c95e306a1e1630f8374ae6db16c06d
+  languageName: node
+  linkType: hard
+
+"commander@npm:^10.0.0":
+  version: 10.0.1
+  resolution: "commander@npm:10.0.1"
+  checksum: 10/8799faa84a30da985802e661cc9856adfaee324d4b138413013ef7f087e8d7924b144c30a1f1405475f0909f467665cd9e1ce13270a2f41b141dab0b7a58f3fb
   languageName: node
   linkType: hard
 
@@ -24576,9 +24593,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-cli@npm:^1.36.1":
-  version: 1.39.2
-  resolution: "i18next-cli@npm:1.39.2"
+"i18next-cli@npm:^1.38.2":
+  version: 1.38.2
+  resolution: "i18next-cli@npm:1.38.2"
   dependencies:
     "@croct/json5-parser": "npm:0.2.2"
     "@swc/core": "npm:1.15.10"
@@ -24598,7 +24615,7 @@ __metadata:
     swc-walk: "npm:1.0.1"
   bin:
     i18next-cli: dist/esm/cli.js
-  checksum: 10/6919d05fc4c8290d46f9b5c230a00f7dc7f4ca219173dfbdea17cad4bb55475091250bcff7336cfdc50617152f5f80e2fbfcfdc90f52d21c66e5a8ab9cdf52c0
+  checksum: 10/e549db83124113a286b8b524c30a522dd34cf17abb95594982ba09ae2fc2e7a577d15dcacf0112b5d0ad840910a184749f30afee5f86583e2e39fb5b5766dd99
   languageName: node
   linkType: hard
 
@@ -24625,9 +24642,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next@npm:25.7.3":
-  version: 25.7.3
-  resolution: "i18next@npm:25.7.3"
+"i18next@npm:25.8.0":
+  version: 25.8.0
+  resolution: "i18next@npm:25.8.0"
   dependencies:
     "@babel/runtime": "npm:^7.28.4"
   peerDependencies:
@@ -24635,7 +24652,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/ec6601b22660b2f0d2d3996e7ef6dd2ff24f6f6e4bee121b33ecd3d36fe11018a01af9e66c01a93e8b42669ca9735f6c0888621c46bc1894872db3ba836815d8
+  checksum: 10/d24a6e8e8e53f339f473f27eb3bed6a6cdcc6357bde3c5abe5aa0221f19030a077ffdb115e64ba5c665eb833a95d430b0a40fff67451da38a7c20d3c0fc831fe
   languageName: node
   linkType: hard
 
@@ -27018,6 +27035,19 @@ __metadata:
   version: 3.3.1
   resolution: "loader-utils@npm:3.3.1"
   checksum: 10/3f994a948ded4248569773f065b1f6d7c95da059888c8429153e203f9bdadfb1691ca517f9eac6548a8af2fe5c724a8e09cbb79f665db4209426606a57ec7650
+  languageName: node
+  linkType: hard
+
+"local-ssl-proxy@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "local-ssl-proxy@npm:2.0.5"
+  dependencies:
+    ansi-colors: "npm:^4.1.3"
+    commander: "npm:^10.0.0"
+    http-proxy: "npm:^1.18.1"
+  bin:
+    local-ssl-proxy: build/main.js
+  checksum: 10/06bc7c41bc50fecbeb42277595ebb898cc914eb5b8324bd8185da1c6f7c5fb4378eb7712157026202c093581797969078ccb14bdf21c3e17f86fb4c4dbe36958
   languageName: node
   linkType: hard
 
@@ -31824,9 +31854,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-i18next@npm:16.5.1":
-  version: 16.5.1
-  resolution: "react-i18next@npm:16.5.1"
+"react-i18next@npm:16.5.3":
+  version: 16.5.3
+  resolution: "react-i18next@npm:16.5.3"
   dependencies:
     "@babel/runtime": "npm:^7.28.4"
     html-parse-stringify: "npm:^3.0.1"
@@ -31842,7 +31872,7 @@ __metadata:
       optional: true
     typescript:
       optional: true
-  checksum: 10/c316a30f9f2b9e5078e196e8b137216a821fd61507ab37fcf9f4445616cedb6fe978d164c134db1d69e24ab5d13bb2d1166eaa018e2c862c1703b9ff75604d79
+  checksum: 10/691482229be7e5b04d0b1bfc38aa1c97fbd54aa4b16f159ee99745e0538aa2b67259853c9c742d79c5e5b245b790eddadadd09f1e4fb30991aaf5e37a733cffd
   languageName: node
   linkType: hard
 
@@ -35030,6 +35060,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"suncalc@npm:^1.9.0":
+  version: 1.9.0
+  resolution: "suncalc@npm:1.9.0"
+  checksum: 10/ba24acf67a421fd96f1137d905540ec445834e8965573888c9fd4d7b94d6825051c8a6fcb11c9a4f1fb64042d3ddd51cdc992f0b7a5436714dd5faab18715d92
+  languageName: node
+  linkType: hard
+
 "supercluster@npm:8.0.1, supercluster@npm:^8.0.1":
   version: 8.0.1
   resolution: "supercluster@npm:8.0.1"
@@ -35281,15 +35318,15 @@ __metadata:
   linkType: hard
 
 "tar@npm:^7.5.4":
-  version: 7.5.6
-  resolution: "tar@npm:7.5.6"
+  version: 7.5.7
+  resolution: "tar@npm:7.5.7"
   dependencies:
     "@isaacs/fs-minipass": "npm:^4.0.0"
     chownr: "npm:^3.0.0"
     minipass: "npm:^7.1.2"
     minizlib: "npm:^3.1.0"
     yallist: "npm:^5.0.0"
-  checksum: 10/cf4a84d79b9327fcf765f2ea16de4702b9b8dd7dc6b1840b16e0f999628d96b81b2c7efbf83d4eb42b0164856f1db887a5a61ffef97d36cdb77cac742219f9ee
+  checksum: 10/0d6938dd32fe5c0f17c8098d92bd9889ee0ed9d11f12381b8146b6e8c87bb5aa49feec7abc42463f0597503d8e89e4c4c0b42bff1a5a38444e918b4878b7fd21
   languageName: node
   linkType: hard
 

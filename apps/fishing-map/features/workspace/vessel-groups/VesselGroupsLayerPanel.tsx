@@ -24,6 +24,7 @@ import {
   isOutdatedVesselGroup,
 } from 'features/vessel-groups/vessel-groups.utils'
 import {
+  setIsOwnedByUser,
   setVesselGroupConfirmationMode,
   setVesselGroupEditId,
   setVesselGroupModalVessels,
@@ -97,6 +98,7 @@ function VesselGroupLayerPanel({
     if (vesselGroup && (vesselGroup?.id || !vesselGroup?.vessels?.length)) {
       dispatch(setVesselGroupEditId(vesselGroup.id))
       dispatch(setVesselGroupModalVessels(vesselGroup.vessels))
+      dispatch(setIsOwnedByUser(isOwnedByUser))
       dispatch(setVesselGroupsModalOpen(true))
       if (isOutdated) {
         dispatch(setVesselGroupConfirmationMode('update'))
@@ -133,7 +135,7 @@ function VesselGroupLayerPanel({
           title={
             layerActive ? (
               isOutdated ? (
-                <Tooltip content={t('vesselGroupReport.linkDisabled')}>
+                <Tooltip content={t((t) => t.vesselGroupReport.linkDisabled)}>
                   <span>
                     {formatInfoField(vesselGroup?.name, 'shipname')}
                     <span className={styles.secondary}>
@@ -143,10 +145,10 @@ function VesselGroupLayerPanel({
                 </Tooltip>
               ) : (
                 <VesselGroupReportLink vesselGroupId={vesselGroup?.id}>
-                  <Tooltip content={t('vesselGroupReport.clickToSee')}>
+                  <Tooltip content={t((t) => t.vesselGroupReport.clickToSee)}>
                     <span>
                       {vesselGroupLoading ? (
-                        t('vesselGroup.loadingInfo')
+                        t((t) => t.vesselGroup.loadingInfo)
                       ) : (
                         <Fragment>
                           {vesselGroup?.name}{' '}
@@ -189,7 +191,7 @@ function VesselGroupLayerPanel({
                 {!isOutdated && (
                   <VesselGroupReportLink vesselGroupId={vesselGroup?.id}>
                     <IconButton
-                      tooltip={t('vesselGroupReport.clickToSee')}
+                      tooltip={t((t) => t.vesselGroupReport.clickToSee)}
                       icon="analysis"
                       size="small"
                     />
@@ -200,7 +202,7 @@ function VesselGroupLayerPanel({
                     size="small"
                     icon={'edit'}
                     type={'default'}
-                    tooltip={t('vesselGroup.edit')}
+                    tooltip={t((t) => t.vesselGroup.edit)}
                     loading={vesselGroupStatus === AsyncReducerStatus.LoadingUpdate}
                     onClick={onEditClick}
                   />
@@ -208,7 +210,7 @@ function VesselGroupLayerPanel({
                 <IconButton
                   icon="target"
                   size="small"
-                  tooltip={t('layer.vessel_group_fit_bounds')}
+                  tooltip={t((t) => t.layer.vessel_group_fit_bounds)}
                   onClick={() => setfitBoundsClicked(true)}
                   tooltipPlacement="top"
                   loading={fitBoundsClicked}
@@ -230,8 +232,8 @@ function VesselGroupLayerPanel({
                 type={'warning'}
                 tooltip={
                   isGFWUser
-                    ? `${t('errors.layerLoading')} (${layerError})`
-                    : t('errors.layerLoading')
+                    ? `${t((t) => t.errors.layerLoading)} (${layerError})`
+                    : t((t) => t.errors.layerLoading)
                 }
                 size="small"
               />
@@ -243,7 +245,7 @@ function VesselGroupLayerPanel({
             size="small"
             icon={'warning'}
             type={'warning'}
-            tooltip={t('vesselGroup.clickToUpdateLong')}
+            tooltip={t((t) => t.vesselGroup.clickToUpdateLong)}
             loading={vesselGroupStatus === AsyncReducerStatus.LoadingUpdate}
             onClick={onEditClick}
           />

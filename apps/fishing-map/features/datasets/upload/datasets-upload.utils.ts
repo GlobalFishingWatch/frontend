@@ -41,7 +41,7 @@ export function getDatasetMetadataValidations(datasetMetadata: DatasetMetadata) 
   const errors = {
     name:
       datasetMetadata.name && datasetMetadata.name.length < MIN_NAME_LENGTH
-        ? t('datasetUpload.errors.name', {
+        ? t((t) => t.datasetUpload.errors.name, {
             min: MIN_NAME_LENGTH,
           })
         : null,
@@ -211,7 +211,7 @@ export const parseGeoJsonProperties = <T extends Polygon | Point | LineString>(
         ...feature,
         properties,
         geometry:
-          (feature.geometry as unknown as GeometryCollection).type === 'GeometryCollection'
+          (feature.geometry as unknown as GeometryCollection)?.type === 'GeometryCollection'
             ? (union(flatten(feature.geometry))?.geometry as AreaGeometry)
             : (feature.geometry as AreaGeometry),
       }

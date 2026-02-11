@@ -7,7 +7,7 @@ import { getDatasetsExtent } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { LAST_DATA_UPDATE } from 'data/config'
-import { VIIRS_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
+import { VIIRS_DATAVIEW_INSTANCE_ID, VIIRS_SKYLIGHT_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
 import {
   getActiveDatasetsInActivityDataviews,
   getDatasetsInDataviews,
@@ -45,12 +45,14 @@ const OutOfTimerangeDisclaimer = ({
     })
   }, [dataview])
 
-  const isVIIRSLayer = dataview.id.includes(VIIRS_DATAVIEW_INSTANCE_ID)
+  const isVIIRSLayer =
+    dataview.id.includes(VIIRS_DATAVIEW_INSTANCE_ID) &&
+    !dataview.id.includes(VIIRS_SKYLIGHT_DATAVIEW_INSTANCE_ID)
   if (isVIIRSLayer) {
     return (
       <span className={cx(styles.dataWarning, styles.error, className)}>
         <span className={cx(styles.dataWarning, styles.error, className)}>
-          {t('dataset.VIIRSDelayDisclaimer')}
+          {t((t) => t.dataset.VIIRSDelayDisclaimer)}
         </span>
       </span>
     )
@@ -63,9 +65,9 @@ const OutOfTimerangeDisclaimer = ({
     const datasetInTimerange = end >= extentStart
     return datasetInTimerange ? null : (
       <span className={cx(styles.dataWarning, styles.error, className)}>
-        {t('dataset.noDataForTimerange')}.
+        {t((t) => t.dataset.noDataForTimerange)}.
         <br />
-        {t('dataset.extentStart', {
+        {t((t) => t.dataset.extentStart, {
           start: formatI18nDate(extentStart),
         })}
       </span>
@@ -77,9 +79,9 @@ const OutOfTimerangeDisclaimer = ({
     const datasetInTimerange = start <= extentEnd
     return datasetInTimerange ? null : (
       <span className={cx(styles.dataWarning, styles.error, className)}>
-        {t('dataset.noDataForTimerange')}.
+        {t((t) => t.dataset.noDataForTimerange)}.
         <br />
-        {t('dataset.extentEnd', {
+        {t((t) => t.dataset.extentEnd, {
           end: formatI18nDate(extentEnd),
         })}
       </span>
@@ -94,9 +96,9 @@ const OutOfTimerangeDisclaimer = ({
 
   return datasetInTimerange ? null : (
     <span className={cx(styles.dataWarning, styles.error, className)}>
-      {t('dataset.noDataForTimerange')}.
+      {t((t) => t.dataset.noDataForTimerange)}.
       <br />
-      {t('dataset.extent', {
+      {t((t) => t.dataset.extent, {
         extent: [formatI18nDate(extentStart), formatI18nDate(extentEnd)].join(' - '),
       })}
     </span>

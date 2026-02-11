@@ -13,6 +13,8 @@
     "declarationDir": "./dist",
     "rootDir": ".",
     "declaration": true,
+    "declarationMap": true,
+    "inlineSources": true,
     "tsBuildInfoFile": "./tsconfig.tsbuildinfo",
     "types": ["node"]
   },

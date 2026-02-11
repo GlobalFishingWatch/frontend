@@ -189,7 +189,7 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
           {pagination.total > REPORT_VESSELS_PER_PAGE && (
             <button onClick={isShowingMore ? onShowLessClick : onShowMoreClick}>
               <label className={styles.pointer}>
-                {t('analysis.resultsPerPage', {
+                {t((t) => t.analysis.resultsPerPage, {
                   results: isShowingMore
                     ? REPORT_VESSELS_PER_PAGE
                     : REPORT_SHOW_MORE_VESSELS_PER_PAGE,
@@ -197,14 +197,16 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
               </label>
             </button>
           )}
-          <span className={cx(styles.noWrap, styles.right)}>
+          <span className={cx(styles.noWrap, styles.right)} translate="no">
             {reportVesselFilter && (
               <Fragment>
-                <I18nNumber number={pagination.totalFiltered} /> {t('common.of')}{' '}
+                <I18nNumber number={pagination.totalFiltered} /> {t((t) => t.common.of)}{' '}
               </Fragment>
             )}
             <I18nNumber number={pagination.total} />{' '}
-            {t('common.vessel', { count: pagination?.total })}
+            {t((t) => t.common.vessel, {
+              count: pagination?.total,
+            })}
           </span>
         </Fragment>
       </div>
@@ -221,7 +223,7 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
           // testId="download-vessel-table-report"
           onClick={onDownloadVesselsClick}
         >
-          {t('analysis.downloadVesselsList')}
+          {t((t) => t.analysis.downloadVesselsList)}
         </Button>
       </div>
     </div>

@@ -28,7 +28,8 @@ type EventsClusterTooltipRowProps = {
 }
 
 const GFW_CLUSTER_LAYERS = [
-  'encounter', // Used in VMS workspaaces
+  'encounter', // Used in VMS workspaces
+  'cluster-events', // Used in VMS workspaces
   ...ENCOUNTER_EVENTS_SOURCES,
   PORT_VISITS_EVENTS_SOURCE_ID,
   LOITERING_EVENTS_SOURCE_ID,

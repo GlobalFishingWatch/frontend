@@ -32,8 +32,8 @@ const Rulers = () => {
       active={rulersEditing}
       visible={rulersVisible}
       expanded={rulers?.length > 0}
-      editTooltip={rulersEditing ? t('map.rulersStop') : t('map.rulers_add')}
-      deleteTooltip={t('map.rulersDelete')}
+      editTooltip={rulersEditing ? t((t) => t.map.rulersStop) : t((t) => t.map.rulers_add)}
+      deleteTooltip={t((t) => t.map.rulersDelete)}
       onClick={onToggleClick}
       onVisibilityClick={toggleRulersVisibility}
       onDeleteClick={resetRulers}

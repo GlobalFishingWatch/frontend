@@ -98,7 +98,10 @@ const VesselIdentity = () => {
       const filteredVesselIdentity = {
         ...vesselIdentity,
         nShipname: formatInfoField(shipname, 'shipname') as string,
-        flag: t(`flags:${flag}`, flag) as string,
+        flag: t((t) => t[flag], {
+          defaultValue: flag,
+          ns: 'flags',
+        }) as string,
         shiptypes: getVesselShipTypeLabel(vesselIdentity, { joinCharacter: ' -' }), // Can't be commas as it would break the csv format
         geartypes: getVesselGearTypeLabel(vesselIdentity, { joinCharacter: ' -' }),
         ...(identitySource === VesselIdentitySourceEnum.Registry
@@ -151,9 +154,9 @@ const VesselIdentity = () => {
           {identitySource === VesselIdentitySourceEnum.Registry && (
             <div>
               <div className={styles.labelContainer}>
-                <label>{t('vessel.registrySources')}</label>
+                <label>{t((t) => t.vessel.registrySources)}</label>
                 <DataTerminology
-                  title={t('vessel.registrySources')}
+                  title={t((t) => t.vessel.registrySources)}
                   terminologyKey="registrySources"
                 />
               </div>
@@ -169,7 +172,11 @@ const VesselIdentity = () => {
             </div>
           )}
           <div className={styles.twoCells}>
-            <label>{t('common.date', { count: 2 })}</label>
+            <label>
+              {t((t) => t.common.date, {
+                count: 2,
+              })}
+            </label>
             <div className={styles.timerange}>
               <VesselIdentityField
                 value={`${formatI18nDate(vesselIdentity.transmissionDateFrom)} - ${formatI18nDate(
@@ -180,7 +187,7 @@ const VesselIdentity = () => {
                 <IconButton
                   size="small"
                   icon="fit-to-timerange"
-                  tooltip={t('timebar.fitOnThisDates')}
+                  tooltip={t((t) => t.timebar.fitOnThisDates)}
                   className="print-hidden"
                   onClick={onTimeRangeClick}
                 />
@@ -196,8 +203,8 @@ const VesselIdentity = () => {
               size="medium"
               className="print-hidden"
               onClick={onDownloadClick}
-              tooltip={t('download.identityDownload')}
-              loginTooltip={t('download.dataDownloadLogin')}
+              tooltip={t((t) => t.download.identityDownload)}
+              loginTooltip={t((t) => t.download.dataDownloadLogin)}
               tooltipPlacement="top"
             />
           </div>
@@ -234,13 +241,14 @@ const VesselIdentity = () => {
                           ? API_LOGIN_REQUIRED
                           : vesselIdentity[key]?.value?.toString()
                     }
+                    const labelTranslation = t((t: any) => t.vessel[label], { defaultValue: label })
                     return (
                       <div key={field.key}>
                         <div className={styles.labelContainer}>
-                          <label>{t(`vessel.${label}` as any, label)}</label>
+                          <label>{labelTranslation}</label>
                           {field.terminologyKey && (
                             <DataTerminology
-                              title={t(`vessel.${label}`, label) as string}
+                              title={labelTranslation}
                               terminologyKey={field.terminologyKey}
                             />
                           )}
@@ -281,9 +289,9 @@ const VesselIdentity = () => {
                     alt={registrySourceData?.key}
                     className={styles.registrySourceLogo}
                   />
-                  <Tooltip content={t('vessel.extraInfoTooltip')}>
+                  <Tooltip content={t((t) => t.vessel.extraInfoTooltip)}>
                     <div>
-                      <label>{t('vessel.extraInfo')}</label>
+                      <label>{t((t) => t.vessel.extraInfo)}</label>
                       <a href={`mailto:${registrySourceData?.contact}`} target="_blank">
                         {registrySourceData?.contact}
                       </a>
@@ -297,7 +305,7 @@ const VesselIdentity = () => {
       </div>
       {vesselIdentity?.ssvid && (
         <div className={styles.container}>
-          <label>{t('common.viewIn')}</label>
+          <label>{t((t) => t.common.viewIn)}</label>
           <div className={styles.externalToolLinks}>
             <a
               href={`https://www.marinetraffic.com/${i18n.language}/data/?asset_type=vessels&mmsi=${vesselIdentity?.ssvid}`}

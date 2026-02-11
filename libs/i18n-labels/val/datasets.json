@@ -337,7 +337,18 @@
         }
       },
       "is_closed": "crwdns108884:0crwdne108884:0",
-      "next_port_id": "crwdns108886:0crwdne108886:0"
+      "next_port_id": "crwdns108886:0crwdne108886:0",
+      "start_distance_from_port_trunc": {
+        "keyword": "crwdns109054:0crwdne109054:0",
+        "enum": {
+          "0": "crwdns109056:0crwdne109056:0",
+          "1": "crwdns109058:0crwdne109058:0",
+          "2": "crwdns109060:0crwdne109060:0",
+          "3": "crwdns109062:0crwdne109062:0",
+          "4": "crwdns109064:0crwdne109064:0",
+          "5": "crwdns109066:0crwdne109066:0"
+        }
+      }
     }
   },
   "private-global-other-vessels": {
@@ -667,6 +678,20 @@
   "proto-global-encounters-events": {
     "name": "crwdns65467:0crwdne65467:0",
     "description": "crwdns65469:0crwdne65469:0"
+  },
+  "proto-global-skylight-viirs": {
+    "name": "crwdns109038:0crwdne109038:0",
+    "description": "crwdns109040:0crwdne109040:0",
+    "schema": {
+      "name": "crwdns109042:0crwdne109042:0",
+      "matched": {
+        "keyword": "crwdns109044:0crwdne109044:0",
+        "enum": {
+          "true": "crwdns109046:0crwdne109046:0",
+          "false": "crwdns109048:0crwdne109048:0"
+        }
+      }
+    }
   },
   "public-ais-presence-viirs-match-prototype": {
     "name": "crwdns65491:0crwdne65491:0",

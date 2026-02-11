@@ -2,7 +2,6 @@ import { Fragment, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import parse from 'html-react-parser'
 
 import { DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
 import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components'
@@ -42,6 +41,7 @@ import {
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
+import { htmlSafeParse } from 'utils/html-parser'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 import {
@@ -55,7 +55,7 @@ import ActivityDownloadError, { useActivityDownloadTimeoutRefresh } from './Down
 
 import styles from './DownloadModal.module.css'
 
-function DownloadActivityByVessel() {
+function DownloadActivityByVessel({ onDownloadCallback }: { onDownloadCallback?: () => void }) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
@@ -128,6 +128,7 @@ function DownloadActivityByVessel() {
         ),
       }),
     })
+    onDownloadCallback?.()
 
     const downloadParams: DownloadActivityParams = {
       areaId: downloadAreaKey?.areaId as AreaKeyId,
@@ -155,31 +156,31 @@ function DownloadActivityByVessel() {
           .flat(),
       ]),
     })
+
     return action
   }
 
   useActivityDownloadTimeoutRefresh()
 
-  const parsedLabel =
-    typeof downloadAreaName === 'string' ? parse(downloadAreaName) : downloadAreaName
+  const parsedLabel = htmlSafeParse(downloadAreaName)
 
   return (
     <Fragment>
       <div className={styles.container} data-test="download-activity-byvessel">
         <div className={styles.info}>
           <div>
-            <label>{t('download.area')}</label>
+            <label>{t((t) => t.download.area)}</label>
             <Tag testId="area-name">{parsedLabel || EMPTY_FIELD_PLACEHOLDER}</Tag>
           </div>
           <div>
-            <label>{t('download.timeRange')}</label>
+            <label>{t((t) => t.download.timeRange)}</label>
             <Tag>
               <TimelineDatesRange />
             </Tag>
           </div>
         </div>
         <div>
-          <label>{t('download.format')}</label>
+          <label>{t((t) => t.download.format)}</label>
           <Choice
             options={VESSEL_FORMAT_OPTIONS}
             size="small"
@@ -189,7 +190,7 @@ function DownloadActivityByVessel() {
           />
         </div>
         <div>
-          <label>{t('download.groupVesselsBy')}</label>
+          <label>{t((t) => t.download.groupVesselsBy)}</label>
           <Choice
             options={filteredGroupByOptions}
             size="small"
@@ -199,7 +200,7 @@ function DownloadActivityByVessel() {
           />
         </div>
         <div>
-          <label>{t('download.temporalResolution')}</label>
+          <label>{t((t) => t.download.temporalResolution)}</label>
           <Choice
             options={filteredTemporalResolutionOptions}
             size="small"
@@ -211,13 +212,14 @@ function DownloadActivityByVessel() {
         <UserGuideLink section="downloadActivity" />
         <div className={styles.footer}>
           {!isDownloadReportSupported ? (
-            <p className={cx(styles.footerLabel, styles.error)}>{t('download.timerangeTooLong')}</p>
+            <p className={cx(styles.footerLabel, styles.error)}>
+              {t((t) => t.download.timerangeTooLong)}
+            </p>
           ) : datasetsDownloadNotSupported.length > 0 ? (
             <p className={styles.footerLabel}>
-              {t(
-                'download.datasetsNotAllowed',
-                "You don't have permissions to download the following datasets:"
-              )}{' '}
+              {t((t) => t.download.datasetsNotAllowed, {
+                defaultValue: "You don't have permissions to download the following datasets:",
+              })}{' '}
               {datasetsDownloadNotSupported.map((dataset, index) => (
                 <Fragment>
                   <DatasetLabel key={dataset} dataset={{ id: dataset }} />
@@ -236,7 +238,7 @@ function DownloadActivityByVessel() {
               isDownloadAreaLoading || !isDownloadReportSupported || hadDownloadTimeoutError
             }
           >
-            {isDownloadFinished ? <Icon icon="tick" /> : t('download.title')}
+            {isDownloadFinished ? <Icon icon="tick" /> : t((t) => t.download.title)}
           </Button>
         </div>
       </div>

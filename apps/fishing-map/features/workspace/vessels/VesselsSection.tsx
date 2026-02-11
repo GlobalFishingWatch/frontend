@@ -100,7 +100,7 @@ function VesselsSection(): React.ReactElement<any> {
 
   const onAddToVesselGroupClick = useCallback(
     (vesselGroupId?: string) => {
-      dispatch(setVesselGroupConfirmationMode('saveAndDeleteVessels'))
+      dispatch(setVesselGroupConfirmationMode('update'))
       if (vesselGroupId && vesselGroupId !== NEW_VESSEL_GROUP_ID) {
         const isVesselGroupInWorkspace = vesselGroupsInWorkspace.includes(vesselGroupId)
         const dataviewInstance = !isVesselGroupInWorkspace
@@ -201,12 +201,12 @@ function VesselsSection(): React.ReactElement<any> {
                 active={someVesselsVisible}
                 disabled={hasDeprecatedDataviewInstances}
                 onClick={onToggleAllVessels}
-                tooltip={t('vessel.toggleAllVessels')}
+                tooltip={t((t) => t.vessel.toggleAllVessels)}
                 tooltipPlacement="top"
               />
             </span>
           )}{' '}
-          {t('common.vessels')}
+          {t((t) => t.common.vessels)}
           {hasVisibleDataviews && (
             <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
           )}
@@ -227,7 +227,7 @@ function VesselsSection(): React.ReactElement<any> {
                   loading={areVesselsLoading || isVesselGroupUpdating}
                   disabled={areVesselsLoading || isVesselGroupUpdating}
                   size="medium"
-                  tooltip={t('vesselGroup.addVisibleVessels')}
+                  tooltip={t((t) => t.vesselGroup.addVisibleVessels)}
                   tooltipPlacement="top"
                 />
               </VesselGroupAddButton>
@@ -235,7 +235,9 @@ function VesselsSection(): React.ReactElement<any> {
                 <IconButton
                   icon={sortOrder === 'DESC' ? 'sort-asc' : 'sort-desc'}
                   size="medium"
-                  tooltip={sortOrder === 'DESC' ? t('vessel.sortAsc') : t('vessel.sortDesc')}
+                  tooltip={
+                    sortOrder === 'DESC' ? t((t) => t.vessel.sortAsc) : t((t) => t.vessel.sortDesc)
+                  }
                   tooltipPlacement="top"
                   onClick={onSetSortOrderClick}
                 />
@@ -243,7 +245,7 @@ function VesselsSection(): React.ReactElement<any> {
               <IconButton
                 icon="delete"
                 size="medium"
-                tooltip={t('vessel.removeAllVessels')}
+                tooltip={t((t) => t.vessel.removeAllVessels)}
                 tooltipPlacement="top"
                 onClick={onDeleteAllClick}
               />
@@ -256,7 +258,7 @@ function VesselsSection(): React.ReactElement<any> {
             testId="search-vessels-open"
             disabled={!searchAllowed || hasDeprecatedDataviewInstances}
             className="print-hidden"
-            tooltip={searchAllowed ? t('search.vessels') : t('search.notAllowed')}
+            tooltip={searchAllowed ? t((t) => t.search.vessels) : t((t) => t.search.notAllowed)}
             tooltipPlacement="top"
             onClick={onSearchClick}
           />
@@ -275,19 +277,19 @@ function VesselsSection(): React.ReactElement<any> {
               />
             ))
           ) : (
-            <div className={styles.emptyState}>{t('workspace.emptyStateVessels')}</div>
+            <div className={styles.emptyState}>{t((t) => t.workspace.emptyStateVessels)}</div>
           )}
         </SortableContext>
         {activeDataviews.length > 0 && guestUser && !hasDeprecatedDataviewInstances && (
           <p className={cx(styles.disclaimer, 'print-hidden')}>
             {hasVesselsWithNoTrack ? (
-              <Trans i18nKey="vessel.trackLogin">
+              <Trans i18nKey={(t) => t.vessel.trackLogin}>
                 One of your selected sources requires you to
                 <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink> to see
                 vessel tracks and events
               </Trans>
             ) : (
-              <Trans i18nKey="vessel.trackResolution">
+              <Trans i18nKey={(t) => t.vessel.trackResolution}>
                 <LocalStorageLoginLink className={styles.link}>Login</LocalStorageLoginLink> to see
                 more detailed vessel tracks (free, 2 minutes)
               </Trans>

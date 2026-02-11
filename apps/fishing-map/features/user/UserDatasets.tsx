@@ -102,7 +102,7 @@ function UserDatasets() {
 
   const onDeleteClick = useCallback(
     (dataset: Dataset) => {
-      const confirmation = window.confirm(`${t('dataset.confirmRemove')}\n${dataset.name}`)
+      const confirmation = window.confirm(`${t((t) => t.dataset.confirmRemove)}\n${dataset.name}`)
       if (confirmation) {
         dispatch(deleteDatasetThunk(dataset.id))
       }
@@ -124,9 +124,9 @@ function UserDatasets() {
       </div>
       <div className={styles.views}>
         <div className={styles.viewsHeader}>
-          <label>{t('user.datasets')}</label>
+          <label>{t((t) => t.user.datasets)}</label>
           <Button disabled={loading} type="secondary" onClick={onNewDatasetClick}>
-            {t('dataset.new') as string}
+            {t((t) => t.dataset.new) as string}
           </Button>
         </div>
         {loading ? (
@@ -144,15 +144,14 @@ function UserDatasets() {
                 const datasetError = dataset.status === DatasetStatus.Error
                 const datasetImporting = dataset.status === DatasetStatus.Importing
                 const datasetDescription = dataset.description !== dataset.name
-                let infoTooltip: string = t(
-                  `layer.seeDescription`,
-                  'Click to see layer description'
-                )
+                let infoTooltip: string = t((t) => t.layer.seeDescription, {
+                  defaultValue: 'Click to see layer description',
+                })
                 if (datasetImporting) {
-                  infoTooltip = t('dataset.importing')
+                  infoTooltip = t((t) => t.dataset.importing)
                 }
                 if (datasetError) {
-                  infoTooltip = `${t('errors.uploadError')} - ${dataset.importLogs}`
+                  infoTooltip = `${t((t) => t.errors.uploadError)} - ${dataset.importLogs}`
                 }
                 const datasetIcon = getDatasetTypeIcon(dataset)
                 return (
@@ -168,7 +167,7 @@ function UserDatasets() {
                         <IconButton
                           icon="arrow-right"
                           onClick={() => onDatasetClick(dataset)}
-                          tooltip={t('user.seeDataset')}
+                          tooltip={t((t) => t.user.seeDataset)}
                         />
                       )}
                       {(datasetError || datasetDescription) && (
@@ -182,7 +181,7 @@ function UserDatasets() {
                       {!datasetImporting && !datasetError && (
                         <IconButton
                           icon="edit"
-                          tooltip={t('dataset.edit')}
+                          tooltip={t((t) => t.dataset.edit)}
                           onClick={() => onEditClick(dataset)}
                         />
                       )}
@@ -190,7 +189,7 @@ function UserDatasets() {
                         icon="delete"
                         type="warning"
                         loading={dataset.id === datasetStatusId}
-                        tooltip={t('dataset.remove')}
+                        tooltip={t((t) => t.dataset.remove)}
                         onClick={() => onDeleteClick(dataset)}
                       />
                     </div>
@@ -198,7 +197,7 @@ function UserDatasets() {
                 )
               })
             ) : (
-              <div className={styles.placeholder}>{t('dataset.emptyState')}</div>
+              <div className={styles.placeholder}>{t((t) => t.dataset.emptyState)}</div>
             )}
           </ul>
         )}

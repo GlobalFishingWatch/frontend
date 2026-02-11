@@ -50,7 +50,7 @@ function VectorsTooltipRow({ feature, showFeaturesDetails }: VectorsTooltipRowPr
           )}
           {speed && (
             <span>
-              <I18nNumber number={speed} /> {t(`common.${unit}`, unit)}
+              <I18nNumber number={speed} /> {t((t) => t.common[unit], { defaultValue: unit })}
             </span>
           )}
         </div>

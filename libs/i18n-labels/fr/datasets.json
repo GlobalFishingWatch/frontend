@@ -337,7 +337,18 @@
         }
       },
       "is_closed": "is_closed",
-      "next_port_id": "next_port_id"
+      "next_port_id": "next_port_id",
+      "start_distance_from_port_trunc": {
+        "keyword": "start_distance_from_port_trunc",
+        "enum": {
+          "0": "0",
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
+        }
+      }
     }
   },
   "private-global-other-vessels": {
@@ -667,6 +678,20 @@
   "proto-global-encounters-events": {
     "name": "Événements de rencontre (AIS)",
     "description": "The dataset contains encounter events with authorizations for AIS. [Fishing-Carriers, Carriers-Fishing, Support-Fishing, Fishing-Support]"
+  },
+  "proto-global-skylight-viirs": {
+    "name": "Skylight Viirs",
+    "description": "Skylight viirs",
+    "schema": {
+      "name": "name",
+      "matched": {
+        "keyword": "matched",
+        "enum": {
+          "true": "true",
+          "false": "false"
+        }
+      }
+    }
   },
   "public-ais-presence-viirs-match-prototype": {
     "name": "VIIRS Match",

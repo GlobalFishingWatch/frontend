@@ -56,9 +56,10 @@ export function useActivityEventTranslations() {
           const regions = entry[1] as string[]
           if (!regions.length || regionType === 'majorFao' || regionType === 'highSeas') return
           allRegionsDescriptionBlocks.push(
-            `${t(`layer.areas.${regionType}`)}: ${getRegionNamesByType(regionType, regions).join(
-              ', '
-            )}`
+            `${t((t) => t.layer.areas[regionType])}: ${getRegionNamesByType(
+              regionType,
+              regions
+            ).join(', ')}`
           )
         })
       }
@@ -90,12 +91,12 @@ export function useActivityEventTranslations() {
             return (
               // TODO check if we can get the dataset of the vessel encountered, using Identity for now
               <span>
-                {t('event.encounterAction')} {formatInfoField(name, 'shipname')} (
+                {t((t) => t.event.encounterAction)} {formatInfoField(name, 'shipname')}(
                 {formatInfoField(flag, 'flag')}){' '}
                 {mainRegionDescription && (
                   <Tooltip content={allRegionsDescription}>
                     <span className={styles.region}>
-                      {t('common.in')} {mainRegionDescription}
+                      {t((t) => t.common.in)} {mainRegionDescription}
                       {allRegionsDescription ? <span className="print-hidden">...</span> : ''}
                     </span>
                   </Tooltip>
@@ -108,14 +109,23 @@ export function useActivityEventTranslations() {
           const portName = name || id
           const portType = event.subType || event.type
           const portLabel = portName
-            ? [portName, ...(flag ? [t(`flags:${flag}`, flag.toLocaleUpperCase())] : [])].join(', ')
+            ? [
+                portName,
+                ...(flag
+                  ? [
+                      t((t) => t[flag], {
+                        ns: 'flags',
+                      }),
+                    ]
+                  : []),
+              ].join(', ')
             : ''
           const portDataset = vesselEventsDatasets?.find(
             (dataset) => (dataset.subcategory as EventType) === 'port_visit'
           )
           return (
             <Fragment>
-              {t(`event.${portType}ActionIn`, `${portType} {{port}}`, {
+              {t((t: any) => t.event[portType].ActionIn, {
                 port: '',
               })}
               <PortsReportLink port={{ id, name, country: flag, datasetId: portDataset?.id }}>
@@ -129,7 +139,7 @@ export function useActivityEventTranslations() {
             mainRegionDescription && (
               <Tooltip content={allRegionsDescription}>
                 <span className={styles.region}>
-                  {t('event.loiteringActionIn', {
+                  {t((t) => t.event.loiteringActionIn, {
                     regionName: mainRegionDescription,
                   })}
                   {allRegionsDescription ? <span className="print-hidden">...</span> : ''}
@@ -142,7 +152,7 @@ export function useActivityEventTranslations() {
             mainRegionDescription && (
               <Tooltip content={allRegionsDescription}>
                 <span className={styles.region}>
-                  {t('event.fishingActionIn', {
+                  {t((t) => t.event.fishingActionIn, {
                     regionName: mainRegionDescription,
                   })}
                   {allRegionsDescription ? <span className="print-hidden">...</span> : ''}
@@ -155,7 +165,7 @@ export function useActivityEventTranslations() {
             mainRegionDescription && (
               <Tooltip content={allRegionsDescription}>
                 <span className={styles.region}>
-                  {t('event.gapActionIn', {
+                  {t((t) => t.event.gapActionIn, {
                     regionName: mainRegionDescription,
                   })}
                   {allRegionsDescription ? <span className="print-hidden">...</span> : ''}
@@ -164,7 +174,7 @@ export function useActivityEventTranslations() {
             )
           )
         default:
-          return t('event.unknown')
+          return t((t) => t.event.unknown)
       }
     },
     [getEventRegionDescription, t]
@@ -182,16 +192,24 @@ export function useActivityEventTranslations() {
         event.end > event.start
           ? [
               duration.years && duration.years > 0
-                ? t('event.yearAbbreviated', { count: duration.years })
+                ? t((t) => t.event.yearAbbreviated, {
+                    count: duration.years,
+                  })
                 : '',
               duration.months && duration.months > 0
-                ? t('event.monthAbbreviated', { count: duration.months })
+                ? t((t) => t.event.monthAbbreviated, {
+                    count: duration.months,
+                  })
                 : '',
               duration.days && duration.days > 0
-                ? t('event.dayAbbreviated', { count: duration.days })
+                ? t((t) => t.event.dayAbbreviated, {
+                    count: duration.days,
+                  })
                 : '',
               duration.years === 0 && duration.months === 0 && duration.hours && duration.hours > 0
-                ? t('event.hourAbbreviated', { count: duration.hours })
+                ? t((t) => t.event.hourAbbreviated, {
+                    count: duration.hours,
+                  })
                 : '',
               duration.years === 0 &&
               duration.months === 0 &&

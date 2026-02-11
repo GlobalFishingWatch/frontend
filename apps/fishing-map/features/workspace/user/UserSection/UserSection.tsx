@@ -32,7 +32,7 @@ import styles from 'features/workspace/shared/Section.module.css'
 
 export function RegisterOrLoginToUpload() {
   return (
-    <Trans i18nKey="dataset.uploadLogin">
+    <Trans i18nKey={(t) => t.dataset.uploadLogin}>
       <a
         className={styles.link}
         href={GFWAPI.getRegisterUrl(
@@ -42,8 +42,8 @@ export function RegisterOrLoginToUpload() {
         Register
       </a>
       or
-      <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>
-      to upload datasets (free, 2 minutes)
+      <LocalStorageLoginLink className={styles.link}>login</LocalStorageLoginLink>to upload datasets
+      (free, 2 minutes)
     </Trans>
   )
 }
@@ -116,7 +116,7 @@ export function UserSection(): React.ReactElement<any> {
       data-testid="user-section"
       title={
         <span>
-          {t('user.datasets')}
+          {t((t) => t.user.datasets)}
           {hasVisibleDataviews && (
             <span className={styles.layersCount}>{` (${visibleDataviews.length})`}</span>
           )}
@@ -133,9 +133,9 @@ export function UserSection(): React.ReactElement<any> {
                 type="border"
                 size="medium"
                 onClick={onUploadClick}
-                tooltip={t('dataset.upload')}
+                tooltip={t((t) => t.dataset.upload)}
                 tooltipPlacement="top"
-                loginTooltip={t('download.eventsDownloadLogin')}
+                loginTooltip={t((t) => t.download.eventsDownloadLogin)}
               />
             </div>
           )}
@@ -143,25 +143,25 @@ export function UserSection(): React.ReactElement<any> {
             icon="draw"
             type="border"
             size="medium"
-            tooltip={t('layer.drawPolygon')}
+            tooltip={t((t) => t.layer.drawPolygon)}
             tooltipPlacement="top"
             onClick={() => onDrawClick('polygons')}
-            loginTooltip={t('download.eventsDownloadLogin')}
+            loginTooltip={t((t) => t.download.eventsDownloadLogin)}
           />
           <UserLoggedIconButton
             icon="draw-points"
             type="border"
             size="medium"
-            tooltip={t('layer.drawPoints')}
+            tooltip={t((t) => t.layer.drawPoints)}
             tooltipPlacement="top"
             onClick={() => onDrawClick('points')}
-            loginTooltip={t('download.eventsDownloadLogin')}
+            loginTooltip={t((t) => t.download.eventsDownloadLogin)}
           />
           <IconButton
             icon="plus"
             type="border"
             size="medium"
-            tooltip={t('dataset.addUser')}
+            tooltip={t((t) => t.dataset.addUser)}
             tooltipPlacement="top"
             onClick={onAddClick}
           />
@@ -192,7 +192,7 @@ export function UserSection(): React.ReactElement<any> {
           </div>
         ) : !dataviews.length ? (
           <div className={cx(styles.emptyStateBig, 'print-hidden')}>
-            {t('workspace.emptyStateUser')}
+            {t((t) => t.workspace.emptyStateUser)}
           </div>
         ) : null}
       </SortableContext>

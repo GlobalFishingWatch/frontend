@@ -68,7 +68,7 @@ function NewDatasetField({
     return (
       <Select
         label={label}
-        placeholder={placeholder || t('dataset.fieldPlaceholder')}
+        placeholder={placeholder || t((t) => t.dataset.fieldPlaceholder)}
         options={options}
         disabled={!options.length}
         selectedOption={getSelectedOption(configurationPropertyString, options) as SelectOption}

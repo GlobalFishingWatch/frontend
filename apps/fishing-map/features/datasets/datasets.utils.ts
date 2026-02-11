@@ -1,4 +1,4 @@
-import { lowerCase, uniq } from 'es-toolkit'
+import { uniq } from 'es-toolkit'
 import intersection from 'lodash/intersection'
 
 import type {
@@ -45,7 +45,7 @@ import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { getFlags, getFlagsByIds } from 'utils/flags'
 import { getVesselGearTypeLabel, getVesselShipTypeLabel } from 'utils/info'
 import { getPorts, getPortsByIds } from 'utils/ports'
-import { capitalize, sortFields } from 'utils/shared'
+import { sortFields } from 'utils/shared'
 
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 
@@ -274,13 +274,13 @@ export const getDatasetTitleByDataview = (
       .includes(VMS_DATAVIEW_INSTANCE_ID)
       ? 'VMS'
       : 'AIS'
-    datasetTitle = `${t('common.apparentFishing')} (${sourceType})`
+    datasetTitle = `${t((t) => t.common.apparentFishing)} (${sourceType})`
   } else if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Presence) {
-    datasetTitle = t('common.presence')
+    datasetTitle = t((t) => t.common.presence)
   } else if (category === DatasetCategory.Detections && subcategory === DatasetSubCategory.Viirs) {
-    datasetTitle = t('common.viirs')
+    datasetTitle = t((t) => t.common.viirs)
   } else if (category === DatasetCategory.Detections && subcategory === DatasetSubCategory.Sar) {
-    datasetTitle = t('common.sar')
+    datasetTitle = t((t) => t.common.sar)
   } else if (activeDatasets) {
     if (hasDatasetsConfig && activeDatasets?.length !== 1) {
       return datasetTitle
@@ -294,7 +294,7 @@ export const getDatasetTitleByDataview = (
   }
   const sources =
     dataview?.datasets && dataview?.datasets?.length > 1
-      ? `(${dataview.datasets?.length} ${t('common.sources')})`
+      ? `(${dataview.datasets?.length} ${t((t) => t.common.sources)})`
       : `(${getDatasetNameTranslated(dataview.datasets?.[0] as Dataset)})`
 
   return datasetTitle + ' ' + sources
@@ -794,7 +794,7 @@ export const getCommonSchemaFieldsInDataview = (
   } = {} as GetSchemaInDataviewParams
 ): SchemaFieldSelection[] => {
   const activeDatasets = getActiveDatasetsInDataview(dataview)
-  if (schema === 'flag') {
+  if (dataview.category !== DataviewCategory.User && schema === 'flag') {
     return getFlags()
   } else if (schema === 'next_port_id') {
     return getPorts()
@@ -805,7 +805,7 @@ export const getCommonSchemaFieldsInDataview = (
       }
       const addNewGroup = {
         id: VESSEL_GROUPS_MODAL_ID,
-        label: t('vesselGroup.createNewGroup'),
+        label: t((t) => t.vesselGroup.createNewGroup),
         disableSelection: true,
         className: styles.openModalLink,
       } as MultiSelectOption
@@ -835,7 +835,10 @@ export const getCommonSchemaFieldsInDataview = (
         let label =
           schemaType === 'range' || schemaType === 'number'
             ? field
-            : t(`datasets:${datasetId}.schema.${schema}.enum.${field}`, field?.toString())
+            : t((t: any) => t[datasetId]?.schema?.[schema]?.enum?.[field as string], {
+                ns: 'datasets',
+                defaultValue: field?.toString(),
+              })
         if (EXPERIMENTAL_FIELDS_BY_SCHEMA[schema]?.includes(field as string)) {
           label += ' (Experimental)'
         }
@@ -852,7 +855,9 @@ export const getCommonSchemaFieldsInDataview = (
             schema !== 'encounter_type'
           ) {
             const fallbackValue = typeof field === 'string' ? field : (field || '').toString()
-            label = t(`vessel.${schema}.${field}`, capitalize(lowerCase(fallbackValue)))
+            label = t((t: any) => t.vessel?.[schema]?.[field as string], {
+              defaultValue: fallbackValue,
+            })
           }
         }
         return { id: field?.toString(), label: label as string }
@@ -877,7 +882,7 @@ const getSchemaOptionsSelectedInDataview = (
   options: ReturnType<typeof getCommonSchemaFieldsInDataview>
 ) => {
   const schemaType = getCommonSchemaTypeInDataview(dataview, schema)
-  if (schema === 'flag') {
+  if (dataview.category !== DataviewCategory.User && schema === 'flag') {
     return getFlagsByIds(dataview.config?.filters?.flag || [])
   }
   if (schemaType === 'range' && dataview.config?.filters?.[schema]) {
@@ -972,18 +977,21 @@ export const getSchemaFieldsSelectedInDataview = (
 
 export const getSchemaFieldLabel = (schema: SupportedDatasetSchema, datasetId: string) => {
   if (datasetId && i18n.exists(`datasets:${datasetId}.schema.${schema}.keyword`)) {
-    const label = t(`datasets:${datasetId}.schema.${schema}.keyword`, schema.toString())
+    const label = t((t) => t[datasetId]?.schema?.[schema]?.keyword, {
+      ns: 'datasets',
+      defaultValue: schema.toString(),
+    })
     if (label !== schema) {
       return label
     }
   }
   if (i18n.exists(`vessel.${schema}`)) {
-    const label = t(`vessel.${schema}`, { defaultValue: schema.toString(), count: 2 })
+    const label = t((t: any) => t.vessel[schema], { defaultValue: schema.toString(), count: 2 })
     if (label !== schema) {
       return label
     }
   }
-  return t(`layer.${schema}`, schema.toString())
+  return t((t: any) => t.layer[schema], { defaultValue: schema.toString() })
 }
 
 export type SchemaFilter = {

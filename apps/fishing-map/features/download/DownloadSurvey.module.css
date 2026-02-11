@@ -1,0 +1,43 @@
+.container {
+  min-height: 55rem;
+  padding: var(--space-M);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-S);
+}
+
+.title {
+  font: var(--font-L);
+}
+
+.description {
+  color: var(--color-secondary-blue);
+}
+
+.textArea {
+  height: 10rem;
+}
+
+.footer {
+  margin-top: auto;
+  display: flex;
+  gap: var(--space-S);
+  justify-content: flex-end;
+}
+
+.disableSection {
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+  gap: var(--space-S);
+}
+
+.nonInteractive {
+  cursor: default;
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  gap: var(--space-S);
+}

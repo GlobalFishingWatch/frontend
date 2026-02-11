@@ -86,7 +86,7 @@ export default function ReportSummary({
                 icon="plus"
                 type="border"
                 size="small"
-                tooltip={t('layer.add')}
+                tooltip={t((t) => t.layer.add)}
                 tooltipPlacement="top"
                 onClick={onAddLayerClick}
                 className={'print-hidden'}

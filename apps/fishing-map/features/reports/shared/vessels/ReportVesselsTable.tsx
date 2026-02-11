@@ -98,13 +98,13 @@ export default function ReportVesselsTable({
   }
 
   return (
-    <Fragment>
+    <div>
       <div className={styles.tableContainer} data-test="report-vessels-table">
         {isAnyAreaReportLocation &&
           reportCategory === 'activity' &&
           datasetsDownloadNotSupported.length > 0 && (
             <p className={styles.error}>
-              {t('analysis.datasetsNotAllowed')}{' '}
+              {t((t) => t.analysis.datasetsNotAllowed)}{' '}
               {datasetsDownloadNotSupported.map((dataset, index) => (
                 <Fragment key={dataset}>
                   <DatasetLabel key={dataset} dataset={{ id: dataset }} />
@@ -115,7 +115,7 @@ export default function ReportVesselsTable({
           )}
         <div className={cx(styles.vesselsTable, { [styles.vesselsTableWithValue]: activityUnit })}>
           <div className={cx(styles.header, styles.spansFirstTwoColumns)}>
-            {t('common.name')}
+            {t((t) => t.common.name)}
             {allowSorting && (
               <IconButton
                 size="tiny"
@@ -127,9 +127,9 @@ export default function ReportVesselsTable({
               />
             )}
           </div>
-          <div className={styles.header}>{t('vessel.mmsi')}</div>
+          <div className={styles.header}>{t((t) => t.vessel.mmsi)}</div>
           <div className={styles.header}>
-            {t('layer.flagState')}
+            {t((t) => t.layer.flagState)}
             {allowSorting && (
               <IconButton
                 size="tiny"
@@ -140,7 +140,7 @@ export default function ReportVesselsTable({
             )}
           </div>
           <div className={styles.header}>
-            {t('vessel.type')}
+            {t((t) => t.vessel.type)}
             {allowSorting && (
               <IconButton
                 size="tiny"
@@ -155,12 +155,12 @@ export default function ReportVesselsTable({
           {activityUnit && (
             <div className={cx(styles.header, styles.right)}>
               {activityUnit === 'hour'
-                ? t('common.hours')
+                ? t((t) => t.common.hours)
                 : activityUnit === 'detection'
-                  ? t('common.detections')
+                  ? t((t) => t.common.detections)
                   : activityUnit === 'coverage'
-                    ? t('vessel.insights.coverage')
-                    : t('common.events')}
+                    ? t((t) => t.vessel.insights.coverage)
+                    : t((t) => t.common.events)}
             </div>
           )}
           {vessels?.map((vessel, i) => {
@@ -242,7 +242,9 @@ export default function ReportVesselsTable({
                     [styles.pointer]: flagInteractionEnabled,
                   })}
                   title={
-                    flagInteractionEnabled ? `${t('analysis.clickToFilterBy')} ${flag}` : undefined
+                    flagInteractionEnabled
+                      ? `${t((t) => t.analysis.clickToFilterBy)} ${flag}`
+                      : undefined
                   }
                   onClick={
                     flagInteractionEnabled
@@ -258,7 +260,7 @@ export default function ReportVesselsTable({
                   className={cx(styles.pointer, {
                     [styles.border]: !isLastRow,
                   })}
-                  title={`${t('analysis.clickToFilterBy')} ${type}`}
+                  title={`${t((t) => t.analysis.clickToFilterBy)} ${type}`}
                   onClick={() => onFilterClick(`${'type'}:${type}`)}
                 >
                   {type}
@@ -297,6 +299,6 @@ export default function ReportVesselsTable({
         </div>
       </div>
       <ReportVesselsTableFooter activityUnit={activityUnit} />
-    </Fragment>
+    </div>
   )
 }

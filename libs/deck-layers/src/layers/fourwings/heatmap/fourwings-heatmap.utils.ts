@@ -107,6 +107,7 @@ export const sliceCellValues = ({
   if (!values || !values.length) {
     return []
   }
+  if (startFrame === endFrame) return [values[Math.max(startFrame - startOffset, 0)]]
   return values.slice(
     Math.max(startFrame - startOffset, 0),
     endFrame - startOffset < values.length ? endFrame - startOffset : undefined

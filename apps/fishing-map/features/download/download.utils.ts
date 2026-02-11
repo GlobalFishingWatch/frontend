@@ -52,7 +52,9 @@ export function getSupportedGroupByOptions(
       return {
         ...option,
         disabled: true,
-        tooltip: t('download.groupByNotSupported', { property: option.label }),
+        tooltip: t((t) => t.download.groupByNotSupported, {
+          property: option.label,
+        }),
         tooltipPlacement: 'top',
       }
     }
@@ -63,7 +65,9 @@ export function getSupportedGroupByOptions(
       return {
         ...option,
         disabled: true,
-        tooltip: t('download.groupByNotSupported', { property: option.label }),
+        tooltip: t((t) => t.download.groupByNotSupported, {
+          property: option.label,
+        }),
         tooltipPlacement: 'top',
       }
     }
@@ -119,7 +123,7 @@ export function getSupportedTemporalResolutions(
         return {
           ...option,
           disabled: true,
-          tooltip: t('download.yearlyNotAvailable'),
+          tooltip: t((t) => t.download.yearlyNotAvailable),
           tooltipPlacement: 'top',
         }
       }
@@ -131,7 +135,7 @@ export function getSupportedTemporalResolutions(
         return {
           ...option,
           disabled: true,
-          tooltip: t('download.monthlyNotAvailable'),
+          tooltip: t((t) => t.download.monthlyNotAvailable),
           tooltipPlacement: 'top',
         }
       }

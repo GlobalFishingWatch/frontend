@@ -20,6 +20,7 @@ import { selectDatasetAreaDetail } from 'features/areas/areas.slice'
 import { selectPrivateDatasetsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectReportAreaIds } from 'features/reports/report-area/area-reports.selectors'
 import { createReportThunk, updateReportThunk } from 'features/reports/reports.slice'
+import { selectUserData } from 'features/user/selectors/user.selectors'
 import { useSaveWorkspaceTimerange } from 'features/workspace/save/workspace-save.hooks'
 import type { WorkspaceTimeRangeMode } from 'features/workspace/save/workspace-save.utils'
 import {
@@ -55,6 +56,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
   const workspace = useSelector(selectWorkspaceWithCurrentState)
   const privateDatasets = useSelector(selectPrivateDatasetsInWorkspace)
   const containsPrivateDatasets = privateDatasets.length > 0
+  const userData = useSelector(selectUserData)
 
   const [name, setName] = useState(report?.name || reportArea?.name || '')
   const [description, setDescription] = useState(report?.description || '')
@@ -73,7 +75,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
   } = useSaveWorkspaceTimerange(workspace)
   const [loading, setLoading] = useState(false)
 
-  const isEditing = report?.id !== undefined
+  const isEditing = report?.id !== undefined && report.ownerId === userData?.id
 
   const updateReport = async (event: any) => {
     event.preventDefault()
@@ -137,8 +139,8 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
         setLoading(false)
         setError(
           error.status === 422 && error.message?.includes('duplicated')
-            ? t('analysis.errorDuplicatedName')
-            : t('analysis.errorMessage')
+            ? t((t) => t.analysis.errorDuplicatedName)
+            : t((t) => t.analysis.errorMessage)
         )
       }
     }
@@ -161,7 +163,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
   return (
     <Modal
       appSelector={ROOT_DOM_ELEMENT}
-      title={report?.id ? t('analysis.editTitle') : t('analysis.save')}
+      title={report?.id ? t((t) => t.analysis.editTitle) : t((t) => t.analysis.save)}
       isOpen={isOpen}
       shouldCloseOnEsc
       contentClassName={styles.modal}
@@ -171,7 +173,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
         <div className={styles.row}>
           <InputText
             value={name}
-            label={t('common.name')}
+            label={t((t) => t.common.name)}
             className={styles.input}
             onChange={(e) => setName(e.target.value)}
             autoFocus
@@ -180,7 +182,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
         <div className={styles.row}>
           <InputText
             value={description}
-            label={t('common.description')}
+            label={t((t) => t.common.description)}
             className={styles.input}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -188,7 +190,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
         <div className={styles.row}>
           <Select
             options={timeRangeOptions}
-            label={t('common.timerange')}
+            label={t((t) => t.common.timerange)}
             direction="top"
             containerClassName={styles.select}
             onSelect={onSelectTimeRangeChange}
@@ -201,7 +203,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
               value={daysFromLatest}
               type="number"
               className={styles.select}
-              label={t('common.timerangeDaysFromLatest')}
+              label={t((t) => t.common.timerangeDaysFromLatest)}
               onChange={onDaysFromLatestChange}
               min={DAYS_FROM_LATEST_MIN}
               max={DAYS_FROM_LATEST_MAX}
@@ -213,14 +215,14 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
             <Select
               options={viewOptions}
               direction="top"
-              label={t('workspace.viewAccess')}
+              label={t((t) => t.workspace.viewAccess)}
               disabled={containsPrivateDatasets}
               infoTooltip={
                 containsPrivateDatasets
-                  ? `${t(
-                      'workspace.uploadPublicDisabled',
-                      "This workspace can't be shared publicly because it contains private datasets"
-                    )}: ${privateDatasets.join(', ')}`
+                  ? `${t((t) => t.workspace.uploadPublicDisabled, {
+                      defaultValue:
+                        "This workspace can't be shared publicly because it contains private datasets",
+                    })}: ${privateDatasets.join(', ')}`
                   : ''
               }
               containerClassName={styles.input}
@@ -232,7 +234,7 @@ function NewReportModal({ title, isOpen, onClose, onFinish, report }: NewReportM
         <div className={styles.footer}>
           {error && <p className={styles.error}>{error}</p>}
           <Button loading={loading} disabled={!name} htmlType="submit">
-            {isEditing ? t('common.update') : t('common.save')}
+            {isEditing ? t((t) => t.common.update) : t((t) => t.common.save)}
           </Button>
         </div>
       </form>

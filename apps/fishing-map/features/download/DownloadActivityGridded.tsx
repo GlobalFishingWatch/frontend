@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import area from '@turf/area'
 import cx from 'classnames'
-import parse from 'html-react-parser'
 
 import type { ChoiceOption, TooltipPlacement } from '@globalfishingwatch/ui-components'
 import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components'
@@ -46,6 +45,7 @@ import {
   selectUrlBufferValueQuery,
 } from 'routes/routes.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
+import { htmlSafeParse } from 'utils/html-parser'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 import {
@@ -67,7 +67,7 @@ import ActivityDownloadError, { useActivityDownloadTimeoutRefresh } from './Down
 
 import styles from './DownloadModal.module.css'
 
-function DownloadActivityGridded() {
+function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: () => void }) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userData = useSelector(selectUserData)
@@ -113,7 +113,7 @@ function DownloadActivityGridded() {
       return {
         ...option,
         disabled: true,
-        tooltip: t('download.highResNotAvailable'),
+        tooltip: t((t) => t.download.highResNotAvailable),
         tooltipPlacement: 'top' as TooltipPlacement,
       }
     }
@@ -146,6 +146,7 @@ function DownloadActivityGridded() {
         }
       })
       .filter((dataview) => dataview.datasets.length > 0)
+    onDownloadCallback?.()
 
     if (format === HeatmapDownloadFormat.GeoTIFF) {
       trackEvent({
@@ -210,26 +211,25 @@ function DownloadActivityGridded() {
   }
   useActivityDownloadTimeoutRefresh()
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
-  const parsedLabel =
-    typeof downloadAreaName === 'string' ? parse(downloadAreaName) : downloadAreaName
+  const parsedLabel = htmlSafeParse(downloadAreaName)
 
   return (
     <Fragment>
       <div className={styles.container} data-test="download-activity-gridded">
         <div className={styles.info}>
           <div>
-            <label>{t('download.area')}</label>
+            <label>{t((t) => t.download.area)}</label>
             <Tag>{parsedLabel || EMPTY_FIELD_PLACEHOLDER}</Tag>
           </div>
           <div>
-            <label>{t('download.timeRange')}</label>
+            <label>{t((t) => t.download.timeRange)}</label>
             <Tag>
               <TimelineDatesRange />
             </Tag>
           </div>
         </div>
         <div>
-          <label>{t('download.format')}</label>
+          <label>{t((t) => t.download.format)}</label>
           <Choice
             options={GRIDDED_FORMAT_OPTIONS}
             size="small"
@@ -241,7 +241,7 @@ function DownloadActivityGridded() {
         {(format === HeatmapDownloadFormat.Csv || format === HeatmapDownloadFormat.Json) && (
           <Fragment>
             <div>
-              <label>{t('download.groupActivityBy')}</label>
+              <label>{t((t) => t.download.groupActivityBy)}</label>
               <Choice
                 options={filteredGroupByOptions}
                 size="small"
@@ -251,7 +251,7 @@ function DownloadActivityGridded() {
               />
             </div>
             <div>
-              <label>{t('download.temporalResolution')}</label>
+              <label>{t((t) => t.download.temporalResolution)}</label>
               <Choice
                 options={filteredTemporalResolutionOptions}
                 size="small"
@@ -263,7 +263,7 @@ function DownloadActivityGridded() {
           </Fragment>
         )}
         <div>
-          <label>{t('download.spatialResolution')}</label>
+          <label>{t((t) => t.download.spatialResolution)}</label>
           <Choice
             options={filteredSpatialResolutionOptions}
             size="small"
@@ -275,13 +275,14 @@ function DownloadActivityGridded() {
         <UserGuideLink section="downloadActivity" />
         <div className={styles.footer}>
           {!isDownloadReportSupported ? (
-            <p className={cx(styles.footerLabel, styles.error)}>{t('download.timerangeTooLong')}</p>
+            <p className={cx(styles.footerLabel, styles.error)}>
+              {t((t) => t.download.timerangeTooLong)}
+            </p>
           ) : datasetsDownloadNotSupported.length > 0 ? (
             <p className={styles.footerLabel}>
-              {t(
-                'download.datasetsNotAllowed',
-                "You don't have permissions to download the following datasets:"
-              )}{' '}
+              {t((t) => t.download.datasetsNotAllowed, {
+                defaultValue: "You don't have permissions to download the following datasets:",
+              })}{' '}
               {datasetsDownloadNotSupported.map((dataset, index) => (
                 <Fragment>
                   <DatasetLabel key={dataset} dataset={{ id: dataset }} />
@@ -298,7 +299,7 @@ function DownloadActivityGridded() {
             loading={isDownloadAreaLoading || isDownloadLoading || isDownloadTimeoutError}
             disabled={!isDownloadReportSupported || isDownloadAreaLoading || isDownloadError}
           >
-            {isDownloadFinished ? <Icon icon="tick" /> : t('download.title')}
+            {isDownloadFinished ? <Icon icon="tick" /> : t((t) => t.download.title)}
           </Button>
         </div>
       </div>
