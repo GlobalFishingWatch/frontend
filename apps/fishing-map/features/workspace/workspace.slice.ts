@@ -52,6 +52,7 @@ import {
   selectUserGroups,
 } from 'features/user/selectors/user.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
+import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
@@ -221,7 +222,8 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           ...LIBRARY_LAYERS,
         ]
         const datasetsIds = getDatasetsInDataviews(dataviews, dataviewInstances, guestUser)
-        datasetsIds.push('public-global-vessel-identity-vi-653:v1.0')
+        // TODO:RandomForest remove this before merge
+        datasetsIds.push(DEFAULT_VESSEL_IDENTITY_ID)
         const vesselGroupsIds = getVesselGroupsInDataviews(
           [...dataviews, ...dataviewInstances],
           guestUser

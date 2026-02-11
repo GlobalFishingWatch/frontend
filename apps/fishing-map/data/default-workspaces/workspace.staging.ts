@@ -1,3 +1,3 @@
-import workspace from './workspace.production'
+import workspace from './workspace.development'
 
 export default workspace
