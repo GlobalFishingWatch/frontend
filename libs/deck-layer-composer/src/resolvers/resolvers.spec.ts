@@ -10,6 +10,23 @@ import {
   EndpointId,
 } from '@globalfishingwatch/api-types'
 import type { DeckLayerPickingObject } from '@globalfishingwatch/deck-layers'
+import {
+  BaseMapImageLayer,
+  BaseMapLabelsLayer,
+  BaseMapLayer,
+  BathymetryContourLayer,
+  ContextLayer,
+  FourwingsClustersLayer,
+  FourwingsLayer,
+  FourwingsVectorsTileLayer,
+  GraticulesLayer,
+  PolygonsLayer,
+  UserContextTileLayer,
+  UserPointsTileLayer,
+  UserTracksLayer,
+  VesselLayer,
+  WorkspacesLayer,
+} from '@globalfishingwatch/deck-layers'
 
 import { deckLayerInstancesAtom } from '../hooks/deck-layers-composer.hooks'
 import type { ResolvedDataviewInstance } from '../types/dataviews'
@@ -88,6 +105,24 @@ describe('resolvers', () => {
       expect(result).toBeUndefined()
     })
 
+    it('should return undefined when highlightedFeatures is undefined', () => {
+      const dataview = createMockDataview({ id: 'test-layer' })
+      const globalConfig = createMockGlobalConfig({ highlightedFeatures: undefined })
+
+      const result = getDataviewHighlightedFeatures(dataview, globalConfig)
+
+      expect(result).toBeUndefined()
+    })
+
+    it('should return empty array when highlightedFeatures is empty array', () => {
+      const dataview = createMockDataview({ id: 'test-layer' })
+      const globalConfig = createMockGlobalConfig({ highlightedFeatures: [] })
+
+      const result = getDataviewHighlightedFeatures(dataview, globalConfig)
+
+      expect(result).toEqual([])
+    })
+
     it('should return filtered highlighted features matching dataview id', () => {
       const dataview = createMockDataview({ id: 'test-layer' })
       const globalConfig = createMockGlobalConfig({
@@ -101,8 +136,10 @@ describe('resolvers', () => {
       const result = getDataviewHighlightedFeatures(dataview, globalConfig)
 
       expect(result).toHaveLength(2)
-      expect(result?.[0].layerId).toBe('test-layer')
-      expect(result?.[1].layerId).toBe('test-layer')
+      expect(result).toEqual([
+        expect.objectContaining({ layerId: 'test-layer', id: '1' }),
+        expect.objectContaining({ layerId: 'test-layer', id: '2' }),
+      ])
     })
 
     it('should return empty array when no matching highlighted features', () => {
@@ -135,9 +172,8 @@ describe('resolvers', () => {
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
-        expect(layer).toBeDefined()
         expect(layer.id).toContain('test-dataview')
-        expect(layer.constructor.name).toBe('BaseMapLayer')
+        expect(layer).toBeInstanceOf(BaseMapLayer)
       })
 
       it('should create BaseMapImageLayer for BasemapImage type', () => {
@@ -149,8 +185,7 @@ describe('resolvers', () => {
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
-        expect(layer).toBeDefined()
-        expect(layer.constructor.name).toBe('BaseMapImageLayer')
+        expect(layer).toBeInstanceOf(BaseMapImageLayer)
       })
 
       it('should create BaseMapLabelsLayer for BasemapLabels type', () => {
@@ -162,8 +197,7 @@ describe('resolvers', () => {
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
-        expect(layer).toBeDefined()
-        expect(layer.constructor.name).toBe('BaseMapLabelsLayer')
+        expect(layer).toBeInstanceOf(BaseMapLabelsLayer)
       })
     })
 
@@ -193,8 +227,7 @@ describe('resolvers', () => {
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
-        expect(layer).toBeDefined()
-        expect(layer.constructor.name).toBe('BathymetryContourLayer')
+        expect(layer).toBeInstanceOf(BathymetryContourLayer)
       })
     })
 
@@ -207,8 +240,7 @@ describe('resolvers', () => {
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
-        expect(layer).toBeDefined()
-        expect(layer.constructor.name).toBe('GraticulesLayer')
+        expect(layer).toBeInstanceOf(GraticulesLayer)
       })
     })
 
@@ -221,8 +253,7 @@ describe('resolvers', () => {
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
-        expect(layer).toBeDefined()
-        expect(layer.constructor.name).toBe('FourwingsLayer')
+        expect(layer).toBeInstanceOf(FourwingsLayer)
       })
 
       it('should create FourwingsLayer for HeatmapStatic type', () => {
@@ -233,8 +264,7 @@ describe('resolvers', () => {
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
-        expect(layer).toBeDefined()
-        expect(layer.constructor.name).toBe('FourwingsLayer')
+        expect(layer).toBeInstanceOf(FourwingsLayer)
       })
 
       it('should create FourwingsVectorsTileLayer for FourwingsVector type', () => {
@@ -245,8 +275,7 @@ describe('resolvers', () => {
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
-        expect(layer).toBeDefined()
-        expect(layer.constructor.name).toBe('FourwingsVectorsTileLayer')
+        expect(layer).toBeInstanceOf(FourwingsVectorsTileLayer)
       })
 
       it('should create FourwingsClustersLayer for FourwingsTileCluster type', () => {
@@ -257,8 +286,7 @@ describe('resolvers', () => {
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
-        expect(layer).toBeDefined()
-        expect(layer.constructor.name).toBe('FourwingsClustersLayer')
+        expect(layer).toBeInstanceOf(FourwingsClustersLayer)
       })
     })
 
@@ -272,8 +300,7 @@ describe('resolvers', () => {
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
-        expect(layer).toBeDefined()
-        expect(layer.constructor.name).toBe('ContextLayer')
+        expect(layer).toBeInstanceOf(ContextLayer)
       })
 
       it('should create PolygonsLayer for Polygons type', () => {
@@ -285,8 +312,7 @@ describe('resolvers', () => {
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
-        expect(layer).toBeDefined()
-        expect(layer.constructor.name).toBe('PolygonsLayer')
+        expect(layer).toBeInstanceOf(PolygonsLayer)
       })
     })
 
@@ -300,8 +326,7 @@ describe('resolvers', () => {
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
-        expect(layer).toBeDefined()
-        expect(layer.constructor.name).toBe('UserContextTileLayer')
+        expect(layer).toBeInstanceOf(UserContextTileLayer)
       })
 
       it('should create UserPointsTileLayer for UserPoints type', () => {
@@ -313,8 +338,7 @@ describe('resolvers', () => {
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
-        expect(layer).toBeDefined()
-        expect(layer.constructor.name).toBe('UserPointsTileLayer')
+        expect(layer).toBeInstanceOf(UserPointsTileLayer)
       })
 
       it('should create UserTracksLayer for Track type with User category', () => {
@@ -326,8 +350,7 @@ describe('resolvers', () => {
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
-        expect(layer).toBeDefined()
-        expect(layer.constructor.name).toBe('UserTracksLayer')
+        expect(layer).toBeInstanceOf(UserTracksLayer)
       })
     })
 
@@ -341,8 +364,7 @@ describe('resolvers', () => {
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
-        expect(layer).toBeDefined()
-        expect(layer.constructor.name).toBe('VesselLayer')
+        expect(layer).toBeInstanceOf(VesselLayer)
       })
 
       it('should create VesselLayer for Track type with Activity category', () => {
@@ -354,8 +376,7 @@ describe('resolvers', () => {
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
-        expect(layer).toBeDefined()
-        expect(layer.constructor.name).toBe('VesselLayer')
+        expect(layer).toBeInstanceOf(VesselLayer)
       })
     })
 
@@ -368,8 +389,7 @@ describe('resolvers', () => {
 
         const layer = dataviewToDeckLayer(dataview, globalConfig)
 
-        expect(layer).toBeDefined()
-        expect(layer.constructor.name).toBe('WorkspacesLayer')
+        expect(layer).toBeInstanceOf(WorkspacesLayer)
       })
     })
 
