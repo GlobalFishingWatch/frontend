@@ -59,7 +59,7 @@ export function useDeckLayerComposer({
           (visualizationMode, index) =>
             new TilesBoundariesLayer({ id: index.toString(), visualizationMode })
         ),
-      ]
+      ] as AnyDeckLayer[]
     }
     return deckLayers
   }, [memoDataviews, memoGlobalConfig])

@@ -23,6 +23,25 @@
       "options": {
         "packageRoot": "libs/deck-layer-composer"
       }
+    },
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "dependsOn": ["^dist"],
+      "options": {
+        "command": "vitest run --config=vitest.config.mts",
+        "reportsDirectory": "../../coverage/libs/deck-layer-composer"
+      }
+    },
+    "test:watch": {
+      "executor": "@nx/vitest:test",
+      "dependsOn": ["^dist"],
+      "cache": false,
+      "options": {
+        "configFile": "libs/deck-layer-composer/vitest.config.mts",
+        "watch": true
+      },
+      "continuous": true
     }
   }
 }
