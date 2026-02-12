@@ -90,18 +90,6 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
           grep "FAIL" /workspace/test-output-clean.txt | sed 's/^[ \t]*//' | head -20 | while read -r line; do
             echo "- \`$$line\`" >> /workspace/summary.txt
           done
-          
-          echo "" >> /workspace/summary.txt
-          echo "<details>" >> /workspace/summary.txt
-          echo "<summary>Error Details</summary>" >> /workspace/summary.txt
-          echo "" >> /workspace/summary.txt
-          echo "\`\`\`" >> /workspace/summary.txt
-          
-          # Extract error messages with better filtering
-          grep -E "AssertionError|Error:|Expected|Received" /workspace/test-output-clean.txt | head -30 >> /workspace/summary.txt || echo "No specific error details found. See build logs for full output." >> /workspace/summary.txt
-          
-          echo "\`\`\`" >> /workspace/summary.txt
-          echo "</details>" >> /workspace/summary.txt
         fi
         
         # Exit with the captured code
@@ -228,8 +216,8 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
 
 locals {
   e2e_trigger_configs = {
-    main = {
-      name        = "fishing-map-e2e-tests-main"
+    staging = {
+      name        = "fishing-map-e2e-tests-staging"
       description = "Run end-to-end tests on main branch"
       push = {
         branch       = "^main$"
@@ -239,9 +227,11 @@ locals {
       env = {
         PLAYWRIGHT_BASE_URL = "https://fishing-map.staging.globalfishingwatch.org/map"
       }
+      testing_account_email    = "projects/706952489382/secrets/E2E_TEST_ACCOUNT_EMAIL_STA/versions/latest"
+      testing_account_password = "projects/706952489382/secrets/E2E_TEST_ACCOUNT_PASSWORD_STA/versions/latest"
     }
-    tag = {
-      name        = "fishing-map-e2e-tests-tag"
+    production = {
+      name        = "fishing-map-e2e-tests-prod"
       description = "Run end-to-end tests on tag @gfw/fishing-map@x.x.x"
       push = {
         branch       = null
@@ -251,6 +241,8 @@ locals {
       env = {
         PLAYWRIGHT_BASE_URL = "https://globalfishingwatch.org/map"
       }
+      testing_account_email    = "projects/674016975526/secrets/E2E_TEST_ACCOUNT_EMAIL/versions/latest"
+      testing_account_password = "projects/674016975526/secrets/E2E_TEST_ACCOUNT_PASSWORD/versions/latest"
     }
   }
 }
@@ -295,11 +287,13 @@ resource "google_cloudbuild_trigger" "e2e_tests" {
       EOF
       env = [
         "PLAYWRIGHT_BASE_URL=${each.value.env.PLAYWRIGHT_BASE_URL}",
-        "TEST_USER_EMAIL=francisco.pacio+testing@globalfishingwatch.org",
-        "TEST_USER_PASSWORD=GlobalFishingWatch123!",
         "BASIC_AUTH_USER=gfw-fish"
       ]
-      secret_env    = ["BASIC_AUTH_PASS"]
+      secret_env = [
+        "BASIC_AUTH_PASS",
+        "TEST_USER_EMAIL",
+        "TEST_USER_PASSWORD"
+      ]
       allow_failure = true
     }
 
@@ -325,6 +319,14 @@ resource "google_cloudbuild_trigger" "e2e_tests" {
       secret_manager {
         env          = "BASIC_AUTH_PASS"
         version_name = "projects/706952489382/secrets/FISHING_MAP_BASIC_AUTH_PASS/versions/latest"
+      }
+      secret_manager {
+        env          = "TEST_USER_EMAIL"
+        version_name = each.value.testing_account_email
+      }
+      secret_manager {
+        env          = "TEST_USER_PASSWORD"
+        version_name = each.value.testing_account_password
       }
     }
 
