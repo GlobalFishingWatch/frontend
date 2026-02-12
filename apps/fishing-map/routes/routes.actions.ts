@@ -5,7 +5,9 @@ import type { QueryParams } from 'types'
 import { router } from './router'
 import type { NavigationState } from './router-sync'
 
-/** Replace all query params with an empty search (clears the URL search). */
+/**
+ * Replace all query params with an empty search (clears the URL search).
+ */
 export function cleanQueryParams() {
   const lastMatch = router.state.matches[router.state.matches.length - 1]
   router.navigate({
@@ -45,5 +47,8 @@ export function getCurrentAppUrl(): string {
   if (typeof window === 'undefined') {
     return ''
   }
-  return window.location.origin + PATH_BASENAME + (router.state.location.href || '')
+  const href = router.state.location?.href ?? ''
+  return href.startsWith(PATH_BASENAME)
+    ? window.location.origin + href
+    : window.location.origin + PATH_BASENAME + (href || '/')
 }
