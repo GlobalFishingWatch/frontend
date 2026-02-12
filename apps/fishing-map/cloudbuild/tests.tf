@@ -82,14 +82,14 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
             echo "" >> /workspace/summary.txt
           fi
           
-          # Extract failed tests with context
-          echo "### Failed Tests" >> /workspace/summary.txt
+          # Add full test output in collapsible section
+          echo "<details>" >> /workspace/summary.txt
+          echo "<summary>Full Test Output</summary>" >> /workspace/summary.txt
           echo "" >> /workspace/summary.txt
-          
-          # Extract failed test names (look for FAIL lines and test suite names)
-          grep "FAIL" /workspace/test-output-clean.txt | sed 's/^[ \t]*//' | head -20 | while read -r line; do
-            echo "- \`$$line\`" >> /workspace/summary.txt
-          done
+          echo "\`\`\`" >> /workspace/summary.txt
+          cat /workspace/test-output-clean.txt >> /workspace/summary.txt
+          echo "\`\`\`" >> /workspace/summary.txt
+          echo "</details>" >> /workspace/summary.txt
         fi
         
         # Exit with the captured code
