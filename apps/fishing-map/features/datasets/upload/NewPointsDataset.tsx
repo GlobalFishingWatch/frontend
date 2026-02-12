@@ -379,10 +379,10 @@ function NewPointDataset({
           options={filtersFieldsOptions}
           selectedOptions={getSelectedOption(datasetFieldsAllowed) as MultiSelectOption[]}
           onSelect={(newFilter: MultiSelectOption) => {
-            const filters = datasetMetadata?.filters?.userContext || []
+            const filters = datasetMetadata?.filters?.userContextLayers || []
             setDatasetMetadata({
               filters: {
-                userContext: filters.map((f) => {
+                userContextLayers: filters.map((f) => {
                   return { ...f, enabled: f.id === newFilter.id }
                 }),
               },
@@ -390,11 +390,11 @@ function NewPointDataset({
           }}
           onRemove={(newFilter: MultiSelectOption, rest: MultiSelectOption[]) => {
             // setDatasetMetadata({ fieldsAllowed: rest.map((f: MultiSelectOption) => f.id) })
-            const filters = datasetMetadata?.filters?.userContext || []
+            const filters = datasetMetadata?.filters?.userContextLayers || []
             const restIds = rest.map((r) => r.id)
             setDatasetMetadata({
               filters: {
-                userContext: filters.map((f) => {
+                userContextLayers: filters.map((f) => {
                   return { ...f, enabled: restIds.includes(f.id) }
                 }),
               },
@@ -402,10 +402,10 @@ function NewPointDataset({
           }}
           onCleanClick={() => {
             // setDatasetMetadata({ fieldsAllowed: [] })
-            const filters = datasetMetadata?.filters?.userContext || []
+            const filters = datasetMetadata?.filters?.userContextLayers || []
             setDatasetMetadata({
               filters: {
-                userContext: filters.map((f) => {
+                userContextLayers: filters.map((f) => {
                   return { ...f, enabled: false }
                 }),
               },

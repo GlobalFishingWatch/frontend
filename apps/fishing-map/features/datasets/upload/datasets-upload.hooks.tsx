@@ -39,6 +39,7 @@ export function useDatasetMetadata() {
         configuration: {
           ...meta?.configuration,
           userContextLayerV1: {
+            ...(meta?.configuration?.userContextLayerV1 || {}),
             idProperty,
             valueProperties,
             valuePropertyId,
@@ -107,8 +108,9 @@ export function useDatasetMetadataOptions(
     type?: DatasetFilterType
   })[] = useMemo(() => {
     const options =
-      datasetMetadata?.filters?.userContext && datasetMetadata?.filters?.userContext?.length > 0
-        ? datasetMetadata.filters.userContext.flatMap((filter) => {
+      datasetMetadata?.filters?.userContextLayers &&
+      datasetMetadata?.filters?.userContextLayers?.length > 0
+        ? datasetMetadata.filters.userContextLayers.flatMap((filter) => {
             if (
               (filterTypes.length > 0 && !filterTypes.includes(filter.type as DatasetFilterType)) ||
               DISCARDED_FIELDS.includes(filter.id)

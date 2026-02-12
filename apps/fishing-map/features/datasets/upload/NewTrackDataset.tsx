@@ -314,10 +314,10 @@ function NewTrackDataset({
                 setDatasetMetadataConfig({ lineId: selected.id })
               }}
               onCleanClick={() => {
-                const filters = datasetMetadata?.filters?.userContext || []
+                const filters = datasetMetadata?.filters?.userContextLayers || []
                 setDatasetMetadata({
                   filters: {
-                    userContext: filters.map((f) => {
+                    userContextLayers: filters.map((f) => {
                       return { ...f, enabled: false }
                     }),
                   },
@@ -335,10 +335,10 @@ function NewTrackDataset({
                 setDatasetMetadataConfig({ segmentId: selected.id })
               }}
               onCleanClick={() => {
-                const filters = datasetMetadata?.filters?.userContext || []
+                const filters = datasetMetadata?.filters?.userContextLayers || []
                 setDatasetMetadata({
                   filters: {
-                    userContext: filters.map((f) => {
+                    userContextLayers: filters.map((f) => {
                       return { ...f, enabled: false }
                     }),
                   },
@@ -386,10 +386,10 @@ function NewTrackDataset({
           options={filterOptions as MultiSelectOption[]}
           selectedOptions={getSelectedOption(fieldsAllowed) as MultiSelectOption[]}
           onSelect={(newFilter: MultiSelectOption) => {
-            const filters = datasetMetadata?.filters?.userContext || []
+            const filters = datasetMetadata?.filters?.userContextLayers || []
             setDatasetMetadata({
               filters: {
-                userContext: filters.map((f) => {
+                userContextLayers: filters.map((f) => {
                   return { ...f, enabled: f.id === newFilter.id }
                 }),
               },
@@ -397,11 +397,11 @@ function NewTrackDataset({
           }}
           onRemove={(newFilter: MultiSelectOption, rest: MultiSelectOption[]) => {
             // setDatasetMetadata({ fieldsAllowed: rest.map((f: MultiSelectOption) => f.id) })
-            const filters = datasetMetadata?.filters?.userContext || []
+            const filters = datasetMetadata?.filters?.userContextLayers || []
             const restIds = rest.map((r) => r.id)
             setDatasetMetadata({
               filters: {
-                userContext: filters.map((f) => {
+                userContextLayers: filters.map((f) => {
                   return { ...f, enabled: restIds.includes(f.id) }
                 }),
               },
@@ -409,10 +409,10 @@ function NewTrackDataset({
           }}
           onCleanClick={() => {
             // setDatasetMetadata({ fieldsAllowed: [] })
-            const filters = datasetMetadata?.filters?.userContext || []
+            const filters = datasetMetadata?.filters?.userContextLayers || []
             setDatasetMetadata({
               filters: {
-                userContext: filters.map((f) => {
+                userContextLayers: filters.map((f) => {
                   return { ...f, enabled: false }
                 }),
               },

@@ -143,7 +143,7 @@ export const useDatasetsAPI = () => {
   const dispatchUpsertDataset = useCallback(
     async (createDataset: UpsertDataset): Promise<{ payload?: Dataset; error?: AsyncError }> => {
       const action = await dispatch(
-        upsertDatasetThunk({ ...createDataset, addIdSuffix: debugOptions.addDatasetIdHash })
+        upsertDatasetThunk({ ...createDataset, addIdSuffix: debugOptions?.addDatasetIdHash })
       )
       if (upsertDatasetThunk.fulfilled.match(action)) {
         return { payload: action.payload }
@@ -151,7 +151,7 @@ export const useDatasetsAPI = () => {
         return { error: action.payload as AsyncError }
       }
     },
-    [debugOptions?.addDatasetIdHash, dispatch]
+    [debugOptions, dispatch]
   )
 
   const dispatchUpdateDataset = useCallback(

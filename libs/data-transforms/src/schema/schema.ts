@@ -7,11 +7,9 @@ import snakeCase from 'lodash/snakeCase'
 import type {
   Dataset,
   DatasetFilter,
-  DatasetFilters,
   DatasetFilterType,
   FrontendConfiguration,
 } from '@globalfishingwatch/api-types'
-import { getFlattenDatasetFilters } from '@globalfishingwatch/datasets-client'
 
 import { parseCoords } from '../coordinates'
 import { COORDINATES_PROPERTIES_ID } from '../segments/segments-to-geojson'

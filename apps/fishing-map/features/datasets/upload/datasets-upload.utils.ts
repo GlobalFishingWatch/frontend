@@ -74,13 +74,13 @@ const getBaseDatasetMetadata = ({
   data,
   sourceFormat,
 }: ExtractMetadataProps): Partial<Dataset> & { public: boolean } => {
-  const userContext = getDatasetFilters(data, { includeEnum: true })
+  const userContextLayers = getDatasetFilters(data, { includeEnum: true })
   return {
     name,
     public: true,
     category: DatasetCategory.Context,
     type: DatasetTypes.UserContext,
-    filters: { userContext },
+    filters: { userContextLayers },
     configuration: {
       frontend: {
         sourceFormat,
@@ -170,7 +170,9 @@ export const getFinalDatasetFromMetadata = (datasetMetadata: DatasetMetadata) =>
     ...datasetMetadata,
     unit: 'TBD',
     subcategory: DatasetSubCategory.Info,
-    filters: { userContext: getDatasetFiltersClean(datasetMetadata.filters?.userContext) },
+    filters: {
+      userContextLayers: getDatasetFiltersClean(datasetMetadata.filters?.userContextLayers),
+    },
     configuration: getDatasetConfigurationClean(datasetMetadata.configuration),
   }
   const timestampProperty = getDatasetConfigurationProperty({

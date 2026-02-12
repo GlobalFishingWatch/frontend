@@ -12,11 +12,6 @@ import type {
   ContextLayerFormat,
   FourwingsInterval,
 } from './datasets.configuration'
-import type {
-  DatasetFilterFormat,
-  DatasetFilterOperation,
-  DatasetFilterType,
-} from './datasets.filters'
 import { EventTypes } from './events'
 import type { ThinningConfig } from './thinning'
 
@@ -34,36 +29,6 @@ export const DATASET_SUB_CATEGORIES: ApiDataset['subcategory'][] = [
 export const DATASET_DOCUMENTATION_STATUS_TYPES: DatasetDocumentationStatusTypes[] = Object.values(
   DatasetDocumentationStatusTypes
 )
-
-export const DATASET_CONFIGURATION_FILTERS: (keyof ApiDataset['filters'])[] = [
-  'fourwings',
-  'events',
-  'tracks',
-  'vessels',
-]
-
-export const DATASET_CONFIGURATION_FILTER_TYPES: DatasetFilterType[] = [
-  'boolean',
-  'coordinate',
-  'number',
-  'range',
-  'sql',
-  'string',
-  'timestamp',
-]
-
-export const DATASET_CONFIGURATION_FILTER_FORMATS: DatasetFilterFormat[] = [
-  'date-time',
-  'latitude',
-  'longitude',
-]
-
-export const DATASET_CONFIGURATION_FILTER_OPERATIONS: DatasetFilterOperation[] = [
-  'gt',
-  'lt',
-  'gte',
-  'lte',
-]
 
 export const DATASET_CONFIGURATION_CONTEXT_FORMATS: ContextLayerFormat[] = [
   'GEOJSON',
