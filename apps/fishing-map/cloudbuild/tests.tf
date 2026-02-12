@@ -300,7 +300,7 @@ resource "google_cloudbuild_trigger" "e2e_tests" {
     step {
       id   = "Upload test artifacts"
       name = "gcr.io/cloud-builders/gsutil"
-      args = ["-m", "cp", "-r", "apps/fishing-map-e2e/test-results", "apps/fishing-map-e2e/playwright-report", "gs://gfw-cloudbuild-artifacts-ttl30/frontend/e2e-tests/$BUILD_ID/"]
+      args = ["-m", "cp", "-r", "apps/fishing-map-e2e/test-results", "apps/fishing-map-e2e/playwright-report", "gs://gfw-playwright-traces-ttl30/frontend/e2e-tests/$BUILD_ID/"]
     }
 
     step {
@@ -308,9 +308,9 @@ resource "google_cloudbuild_trigger" "e2e_tests" {
       name       = "gcr.io/cloud-builders/gcloud"
       entrypoint = "bash"
       args = ["-c", <<EOF
-      echo '📊 Playwright Report: https://storage.googleapis.com/gfw-cloudbuild-artifacts-ttl30/frontend/e2e-tests/$BUILD_ID/playwright-report/index.html'
+      echo '📊 Playwright Report: https://storage.googleapis.com/gfw-playwright-traces-ttl30/frontend/e2e-tests/$BUILD_ID/playwright-report/index.html'
 
-      echo '🗂️ Test Results: https://console.cloud.google.com/storage/browser/gfw-cloudbuild-artifacts-ttl30/frontend/e2e-tests/$BUILD_ID'
+      echo '🗂️ Test Results folder: https://console.cloud.google.com/storage/browser/gfw-playwright-traces-ttl30/frontend/e2e-tests/$BUILD_ID'
       EOF
       ]
     }
@@ -331,7 +331,8 @@ resource "google_cloudbuild_trigger" "e2e_tests" {
     }
 
     options {
-      logging = "CLOUD_LOGGING_ONLY"
+      logging      = "CLOUD_LOGGING_ONLY"
+      machine_type = "N1_HIGHCPU_8"
     }
 
     timeout = "1800s"
