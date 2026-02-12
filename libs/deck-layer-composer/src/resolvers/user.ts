@@ -181,10 +181,8 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
 
     const { valueProperties, disableInteraction } = getDatasetConfiguration(dataset) || {}
     const { idProperty } = getDatasetConfiguration(dataset, 'userContextLayerV1') || {}
-    const enabledFilters = Object.entries(getFlattenDatasetFilters(dataset?.filters))?.filter(
-      (f) => f[1]?.enabled
-    )
-    const allFilters = Object.fromEntries(enabledFilters?.map((f) => [f[0], undefined]))
+    const enabledFilters = getFlattenDatasetFilters(dataset?.filters)?.filter((f) => f?.enabled)
+    const allFilters = Object.fromEntries(enabledFilters?.map((f) => [f.id, undefined]))
     return {
       id: `${dataview.id}-${dataset.id}`,
       datasetId: dataset.id,
