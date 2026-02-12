@@ -113,7 +113,7 @@ function VesselGroupAddButton(props: VesselGroupAddButtonProps) {
         }
       }
       if (vesselGroupId !== NEW_VESSEL_GROUP_ID) {
-        if (resolvedVesselGroupVessels.length) {
+        if (resolvedVesselGroupVessels?.length) {
           const vesselGroup = await addVesselsToVesselGroup(
             vesselGroupId,
             resolvedVesselGroupVessels
