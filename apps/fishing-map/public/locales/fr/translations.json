@@ -1242,6 +1242,7 @@
     "new": "Nouveau groupe de navires",
     "notFound": "Groupe de navires introuvable",
     "remove": "Supprimer le groupe de navires",
+    "removeUnknownVessels": "Do you want to remove all ({{param}}) unnamed vessels?",
     "removeVessel": "Supprimer le navire du groupe",
     "saveAndSeeInWorkspace": "Enregistrer et voir dans l'espace de travail",
     "saveForLater": "Enregistrer pour plus tard",

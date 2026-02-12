@@ -1242,6 +1242,7 @@
     "new": "New vessel group",
     "notFound": "Vessel group not found",
     "remove": "Remove vessel group",
+    "removeUnknownVessels": "Do you want to remove all ({{param}}) unnamed vessels?",
     "removeVessel": "Remove vessel from group",
     "saveAndSeeInWorkspace": "Save and see in workspace",
     "saveForLater": "Save for later",

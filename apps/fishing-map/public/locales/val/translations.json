@@ -1242,6 +1242,7 @@
     "new": "crwdns60681:0crwdne60681:0",
     "notFound": "crwdns83730:0crwdne83730:0",
     "remove": "crwdns60683:0crwdne60683:0",
+    "removeUnknownVessels": "crwdns109088:0{{param}}crwdne109088:0",
     "removeVessel": "crwdns60685:0crwdne60685:0",
     "saveAndSeeInWorkspace": "crwdns83732:0crwdne83732:0",
     "saveForLater": "crwdns60689:0crwdne60689:0",

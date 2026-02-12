@@ -130,7 +130,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
     setMousePosition({ x, y })
   }
 
-  const copyright = allVesselImages[currentImageIndex].copyright
+  const copyright = allVesselImages[currentImageIndex]?.copyright
     ? `© ${allVesselImages[currentImageIndex].copyright}`
     : undefined
 
