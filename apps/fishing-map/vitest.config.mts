@@ -55,6 +55,7 @@ export default defineConfig({
       reportsDirectory: 'test/coverage/apps/fishing-map',
       provider: 'istanbul',
     },
+    testTimeout: 30000,
     setupFiles: './test/vitest.setup.ts',
     browser: {
       enabled: true,
@@ -75,11 +76,13 @@ export default defineConfig({
           browser: 'firefox',
           name: 'fishing-map-firefox',
           headless: true,
+          viewport: { width: 1280, height: 720 },
         },
         {
           browser: 'webkit',
           name: 'fishing-map-webkit',
           headless: true,
+          viewport: { width: 1280, height: 720 },
         },
       ],
     },

@@ -68,7 +68,7 @@ export function Switch(props: SwitchProps) {
           className
         )}
         {...(color && { style: { color } })}
-        data-testid="map-control-visibility-toggle"
+        data-testid={testId}
       >
         <span className={styles.nib}></span>
       </button>

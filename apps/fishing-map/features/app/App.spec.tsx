@@ -19,7 +19,7 @@ describe('Fishing Map App', () => {
 
     await expect.element(getByText(/common.activity/)).toBeInTheDocument()
 
-    const button = getByTestId('map-control-visibility-toggle').first()
+    const button = getByTestId('activity-layer-panel-switch-ais').first()
 
     await button.click()
 
@@ -27,15 +27,17 @@ describe('Fishing Map App', () => {
 
     const toggleAction = actions.findLast((action) => action.type === 'HOME')
 
-    expect(toggleAction).toBeDefined()
-    expect(toggleAction?.query.dataviewInstances).toMatchObject([
+    const expectedResult = [
       {
         config: {
           visible: false,
         },
         id: 'ais',
       },
-    ])
+    ]
+    expect(toggleAction).toBeDefined()
+    expect(toggleAction?.query.dataviewInstances).toMatchObject(expectedResult)
+    expect(store.getState()?.location?.query?.dataviewInstances).toMatchObject(expectedResult)
   })
 
   it('should preserve map previous state on layer toggle', async () => {
@@ -51,12 +53,11 @@ describe('Fishing Map App', () => {
     // Wait for debounced viewport updates to complete (debounced by 1000ms)
     await new Promise((resolve) => setTimeout(resolve, 1100))
 
-    await getByTestId('map-control-visibility-toggle').first().click()
+    await getByTestId('activity-layer-panel-switch-ais').click()
     const actions = testingMiddleware.getActions()
     const toggleAction = actions.findLast((action) => action.type === 'HOME')
 
-    expect(toggleAction).toBeDefined()
-    expect(toggleAction?.query).toMatchObject({
+    const expectedResult = {
       dataviewInstances: [
         {
           config: {
@@ -68,6 +69,9 @@ describe('Fishing Map App', () => {
       latitude: 19,
       longitude: 26,
       zoom: 2.49,
-    })
+    }
+    expect(toggleAction).toBeDefined()
+    expect(toggleAction?.query).toMatchObject(expectedResult)
+    expect(store.getState().location.query).toMatchObject(expectedResult)
   })
 })

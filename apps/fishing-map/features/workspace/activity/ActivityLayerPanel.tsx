@@ -195,6 +195,7 @@ function ActivityLayerPanel({
               active={layerActive && !hasDeprecatedDataviewInstances}
               className={styles.switch}
               dataview={dataview}
+              testId={`activity-layer-panel-switch-${dataview.id}`}
             />
             <Title
               title={datasetTitle}
