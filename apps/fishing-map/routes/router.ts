@@ -1,11 +1,5 @@
 import { lazy } from 'react'
-import {
-  createBrowserHistory,
-  createRootRoute,
-  createRoute,
-  createRouter,
-  Navigate,
-} from '@tanstack/react-router'
+import { createRootRoute, createRoute, createRouter, Navigate } from '@tanstack/react-router'
 import { lowerCase } from 'es-toolkit'
 
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
@@ -192,20 +186,18 @@ const routeTree = rootRoute.addChildren([
   ]),
 ])
 
-// Create history only on client side
-const history = typeof window !== 'undefined' ? createBrowserHistory() : undefined
-
+// Use default browser history; basepath handles /map prefix.
+// Custom createBrowserHistory was removed to avoid basepath conflicts (see GH #4471, #6064).
 export const router = createRouter({
   routeTree,
-  history,
   basepath: PATH_BASENAME,
   defaultPreload: false,
   defaultNotFoundComponent: () => Navigate({ to: ROUTE_PATHS.HOME }),
-  stringifySearch: (search) => {
+  stringifySearch: (search: Record<string, unknown>) => {
     const str = stringifyWorkspace(search as QueryParams)
     return str ? `?${str}` : ''
   },
-  parseSearch: (searchStr) => parseAppWorkspace(searchStr),
+  parseSearch: (searchStr: string) => parseAppWorkspace(searchStr),
 })
 
 // Register the router for type safety

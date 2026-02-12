@@ -12,6 +12,7 @@ import { PATH_BASENAME, PUBLIC_WORKSPACE_ENV } from 'data/config'
 import PopupWrapper from 'features/map/popups/PopupWrapper'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { router } from 'routes/router'
+import { getCurrentAppUrl } from 'routes/routes.actions'
 import { selectLocationQuery } from 'routes/routes.selectors'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
@@ -64,7 +65,7 @@ const ErrorNotification = (): React.ReactNode | null => {
         longitude: errorNotification.lon,
         label: errorNotification.label,
         date: date.toISOString(),
-        url: `${window.location.origin}${PATH_BASENAME}${router.state.location.pathname}?${query}`,
+        url: getCurrentAppUrl(),
         userId: userData?.id || GUEST_USER_TYPE,
         email: userData?.email || EMPTY_FIELD_PLACEHOLDER,
         environment: PUBLIC_WORKSPACE_ENV || 'development',
