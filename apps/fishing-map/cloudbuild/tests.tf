@@ -25,65 +25,89 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
     }
 
     step {
-      id            = "Run integration tests"
-      name          = "mcr.microsoft.com/playwright:v1.57.0-noble"
-      script        = <<EOF
-        set +e  # Don't exit on error, we want to capture the result
+      id         = "Run integration tests"
+      name       = "mcr.microsoft.com/playwright:v1.57.0-noble"
+      entrypoint = "bash"
+      args = ["-c", <<EOF
+        set +e  # Don't exit on error
         
         yarn install
 
-        # Fetch origin/develop for nx affected (Cloud Build may use shallow clone)
+        # Fetch origin/develop for nx affected (Cloud Build uses shallow clone)
         git fetch origin develop --depth=100 2>/dev/null || git fetch origin develop 2>/dev/null || true
+        
+        # Fetch current branch with depth to ensure we have history
+        git fetch --depth=10 2>/dev/null || true
 
-        # Determine base: on develop/main use HEAD~1, else use merge base with develop
+        # Determine base: on develop/main use origin/develop, else use merge base with develop
         if [ "$${BRANCH_NAME:-}" = "develop" ] || [ "$${BRANCH_NAME:-}" = "main" ]; then
-          BASE="HEAD~1"
+          BASE="origin/develop~1"
         else
-          BASE=$$(git merge-base origin/develop HEAD 2>/dev/null || echo "HEAD~1")
+          BASE=$$(git merge-base origin/develop HEAD 2>/dev/null || echo "origin/develop")
         fi
 
-        # Run tests and capture output
-        OUTPUT_FILE="/workspace/test-output.txt"
-        yarn nx affected -t test --base="$$BASE" --head=HEAD --browser="chromium" 2>&1 | tee $$OUTPUT_FILE
-        TEST_EXIT_CODE=$${PIPESTATUS[0]}
+        # Run tests, save output to file, and capture exit code
+        yarn nx affected -t test --base="$$BASE" --head=HEAD --browser="chromium" > /workspace/test-output.txt 2>&1
+        echo $$? > /workspace/test-exit-code.txt
+        
+        # Display the output
+        cat /workspace/test-output.txt
 
-        # Generate summary for GitHub comment
-        if [ $$TEST_EXIT_CODE -eq 0 ]; then
-          cat > /workspace/summary.txt << 'SUMMARY'
-## ✅ Integration Tests Passed
+        # Strip ANSI color codes from output for clean parsing
+        sed 's/\x1b\[[0-9;]*m//g' /workspace/test-output.txt > /workspace/test-output-clean.txt
 
-All integration tests completed successfully! 🎉
-
-SUMMARY
-        else
-          # Extract relevant error information
-          FAILED_TESTS=$$(grep -E "FAIL|✖|Failed" $$OUTPUT_FILE | head -20 || echo "")
+        # Generate detailed summary for PR comment
+        EXIT_CODE=$$(cat /workspace/test-exit-code.txt)
+        
+        if [ $$EXIT_CODE -eq 0 ]; then
+          echo "## ✅ Integration Tests Passed" > /workspace/summary.txt
+          echo "" >> /workspace/summary.txt
           
-          cat > /workspace/summary.txt << SUMMARY
-## ❌ Integration Tests Failed
-
-The integration tests have failed. Please review the errors below:
-
-<details>
-<summary>Failed Test Details</summary>
-
-\`\`\`
-$${FAILED_TESTS}
-\`\`\`
-
-</details>
-
-**What to do next:**
-- Review the failed tests above
-- Check the full build logs for more details
-- Fix the failing tests and push your changes
-SUMMARY
+          # Extract test summary if available
+          if grep -q "Test Suites:" /workspace/test-output-clean.txt; then
+            echo "\`\`\`" >> /workspace/summary.txt
+            grep -E "Test Suites:|Tests:|Time:" /workspace/test-output-clean.txt | tail -3 >> /workspace/summary.txt
+            echo "\`\`\`" >> /workspace/summary.txt
+          fi
+        else
+          echo "## ❌ Integration Tests Failed" > /workspace/summary.txt
+          echo "" >> /workspace/summary.txt
+          
+          # Extract test summary statistics
+          if grep -q "Test Suites:" /workspace/test-output-clean.txt; then
+            echo "### Summary" >> /workspace/summary.txt
+            echo "\`\`\`" >> /workspace/summary.txt
+            grep -E "Test Suites:|Tests:|Time:" /workspace/test-output-clean.txt | tail -3 >> /workspace/summary.txt
+            echo "\`\`\`" >> /workspace/summary.txt
+            echo "" >> /workspace/summary.txt
+          fi
+          
+          # Extract failed tests with context
+          echo "### Failed Tests" >> /workspace/summary.txt
+          echo "" >> /workspace/summary.txt
+          
+          # Extract failed test names (look for FAIL lines and test suite names)
+          grep "FAIL" /workspace/test-output-clean.txt | sed 's/^[ \t]*//' | head -20 | while read -r line; do
+            echo "- \`$$line\`" >> /workspace/summary.txt
+          done
+          
+          echo "" >> /workspace/summary.txt
+          echo "<details>" >> /workspace/summary.txt
+          echo "<summary>Error Details</summary>" >> /workspace/summary.txt
+          echo "" >> /workspace/summary.txt
+          echo "\`\`\`" >> /workspace/summary.txt
+          
+          # Extract error messages with better filtering
+          grep -E "AssertionError|Error:|Expected|Received" /workspace/test-output-clean.txt | head -30 >> /workspace/summary.txt || echo "No specific error details found. See build logs for full output." >> /workspace/summary.txt
+          
+          echo "\`\`\`" >> /workspace/summary.txt
+          echo "</details>" >> /workspace/summary.txt
         fi
-
-        # Exit with the original test exit code
-        exit $$TEST_EXIT_CODE
+        
+        # Exit with the captured code
+        exit $$(cat /workspace/test-exit-code.txt)
       EOF
-      env           = ["BRANCH_NAME=$$BRANCH_NAME"]
+      ]
       allow_failure = true
     }
 
@@ -99,7 +123,7 @@ SUMMARY
         apt-get update -y && apt-get install -y openssl curl jq
 
         client_id=$_APP_ID
-        pem="$${GITHUB_BOT_PRIVATE_KEY}"
+        pem="$$GITHUB_BOT_PRIVATE_KEY"
 
         # If the env var contains the PEM text instead of a file path, write it to a temp file
         if [[ "$$pem" == *"BEGIN RSA PRIVATE KEY"* ]] || [[ "$$pem" == *"BEGIN PRIVATE KEY"* ]]; then
@@ -121,12 +145,12 @@ SUMMARY
         payload_json="{\"iat\":$${iat},\"exp\":$${exp},\"iss\":\"$${client_id}\"}"
         payload=$$(echo -n "$$payload_json" | b64enc)
 
-        header_payload="$${header}.$${payload}"
+        header_payload="$$header.$$payload"
 
         signature=$$(echo -n "$$header_payload" \
           | openssl dgst -sha256 -sign "$$pem_file" \
           | b64enc)
-        JWT="$${header_payload}.$${signature}"
+        JWT="$$header_payload.$$signature"
 
 
         printf 'JWT: %s\n' "$$JWT"
@@ -157,7 +181,7 @@ SUMMARY
         echo "Looking for PR associated with branch: $BRANCH_NAME"
         # Try direct lookup using head=owner:branch (works when PR comes from same repo)
         GITHUB_TOKEN=$$(cat /workspace/token.txt)
-        PR_NUMBER=$$(curl -s -H "Authorization: token $${GITHUB_TOKEN}" \
+        PR_NUMBER=$$(curl -s -H "Authorization: token $$GITHUB_TOKEN" \
           "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/pulls?state=open&head=$_REPO_OWNER:$BRANCH_NAME" \
           | jq -r '.[0].number // empty')
         if [ -z "$$PR_NUMBER" ]; then
@@ -171,10 +195,10 @@ SUMMARY
         echo "Posting comment to PR #$$PR_NUMBER..."
         echo "Payload:"
         cat /tmp/payload.json
-        curl -s -H "Authorization: token $${GITHUB_TOKEN}" \
+        curl -s -H "Authorization: token $$GITHUB_TOKEN" \
              -H "Content-Type: application/json" \
              -d @/tmp/payload.json \
-             "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/$${PR_NUMBER}/comments"
+             "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/$$PR_NUMBER/comments"
       EOF
       ]
     }
@@ -186,19 +210,19 @@ SUMMARY
       }
     }
 
+    substitutions = {
+      _INSTALLATION_ID = "9051610"
+      _APP_ID          = "65572"
+      _REPO_OWNER      = "GlobalFishingWatch"
+      _REPO_NAME       = "frontend"
+    }
+
 
     options {
       logging = "CLOUD_LOGGING_ONLY"
     }
 
     timeout = "1800s"
-  }
-
-  substitutions = {
-    _APP_ID          = "65572"
-    _INSTALLATION_ID = "9051610"
-    _REPO_OWNER      = "GlobalFishingWatch"
-    _REPO_NAME       = "frontend"
   }
 }
 
