@@ -5,15 +5,17 @@ import { selectVesselProfileDataviewIntance } from 'features/dataviews/selectors
 import { selectHasVesselProfileInstancePinned } from 'features/dataviews/selectors/dataviews.selectors'
 import { t } from 'features/i18n/i18n'
 
+import { router } from './router'
 import { ALL_WORKSPACE_ROUTES, VESSEL_ROUTES } from './routes'
-import { replaceQueryParams } from './routes.actions'
 import { selectIsAnyVesselLocation } from './routes.selectors'
-import { mapRouteIdToType } from './routes.utils'
+import { mapRouteIdToType, type RoutePathValues } from './routes.utils'
 
 /**
  * Blocks navigation away from vessel profile when the vessel dataview instance
  * is not pinned. Prompts the user with window.confirm and, if they confirm,
- * adds the cleaned vessel dataview instance to search params before allowing navigation.
+ * navigates to the target route with the cleaned vessel dataview instance
+ * merged into search params. We perform a single programmatic navigation
+ * instead of allowing the original + replaceQueryParams to avoid a race.
  */
 export function ConfirmVesselProfileLeave() {
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
@@ -46,7 +48,6 @@ export function ConfirmVesselProfileLeave() {
       const shouldLeave = window.confirm(t((t) => t.vessel.confirmationClose))
 
       if (shouldLeave) {
-        // User wants to leave — add the cleaned vessel dataview instance to search params
         const cleanVesselDataviewInstance = {
           ...vesselProfileDataviewInstance,
           config: {
@@ -56,13 +57,19 @@ export function ConfirmVesselProfileLeave() {
           },
           datasetsConfig: undefined,
         }
-        replaceQueryParams({
-          dataviewInstances: [
-            ...((next.search as any)?.dataviewInstances || []),
-            cleanVesselDataviewInstance,
-          ],
+        const nextSearch = next.search || {}
+        const mergedDataviewInstances = [
+          ...((nextSearch.dataviewInstances as any[]) || []),
+          cleanVesselDataviewInstance,
+        ]
+        router.navigate({
+          to: next.routeId as RoutePathValues,
+          params: next.params,
+          search: { ...nextSearch, dataviewInstances: mergedDataviewInstances },
+          replace: true,
+          resetScroll: false,
         })
-        return false // allow navigation
+        return true // block the original navigation; our navigate handles it
       }
 
       return true // block navigation

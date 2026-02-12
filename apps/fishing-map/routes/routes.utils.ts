@@ -1,6 +1,3 @@
-import type { RegisteredRouter } from '@tanstack/react-router'
-import type { RouteByPath, RoutePaths } from '@tanstack/router-core'
-
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { DEFAULT_CALLBACK_URL_PARAM } from '@globalfishingwatch/react-hooks'
 
@@ -26,12 +23,6 @@ import {
 // TanStack Router Type-Safe Navigation
 // ============================================================================
 
-/**
- * All valid route paths in the application.
- * This is derived from the registered router's route tree.
- */
-export type AppRoutePaths = RoutePaths<RegisteredRouter['routeTree']>
-
 // Route path literals for type-safe navigation
 export const ROUTE_PATHS = {
   HOME: '/' as const,
@@ -51,15 +42,6 @@ export const ROUTE_PATHS = {
 } as const
 
 export type RoutePathValues = (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS]
-
-/**
- * Get the params type for a specific route path.
- * This uses TanStack Router's auto-generated types from the route tree.
- */
-export type ParamsForRoute<TPath extends AppRoutePaths> = RouteByPath<
-  RegisteredRouter['routeTree'],
-  TPath
->['types']['allParams']
 
 // ============================================================================
 // Legacy Route Type Mapping (for backward compatibility)

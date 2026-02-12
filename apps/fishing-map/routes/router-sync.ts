@@ -1,3 +1,6 @@
+import type { RouterEvents } from '@tanstack/react-router'
+
+import { PATH_BASENAME } from 'data/config'
 import type { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
 import { setWorkspaceHistoryNavigation } from 'features/workspace/workspace.slice'
 import type { LinkToPayload } from 'routes/routes.types'
@@ -38,10 +41,14 @@ export function setupRouterSync(router: AppRouter, store: AppStore) {
   // which may not happen on initial load when routes have no loaders.
   // We use router.matchRoutes() because router.state.matches is still
   // empty at this point (matches are populated by router.load() later).
-  const initialMatches = router.matchRoutes(
-    router.latestLocation.pathname,
-    router.latestLocation.search
-  )
+  // Strip basepath from pathname: with Next.js basepath /map, browser pathname
+  // is /map or /map/..., while router expects paths relative to basepath.
+  const pathname =
+    router.latestLocation.pathname.replace(
+      new RegExp(`^${PATH_BASENAME.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`),
+      ''
+    ) || '/'
+  const initialMatches = router.matchRoutes(pathname, router.latestLocation.search)
   const initialMatch = initialMatches[initialMatches.length - 1]
   if (initialMatch) {
     const routeType = mapRouteIdToType(initialMatch.routeId)
@@ -65,7 +72,7 @@ export function setupRouterSync(router: AppRouter, store: AppStore) {
   // (e.g., layer toggle + viewport rAF + timebar rAF).
   let lastSyncedHref = ''
 
-  router.subscribe('onResolved', (event) => {
+  router.subscribe('onResolved', (event: RouterEvents['onResolved']) => {
     const { toLocation, fromLocation } = event
 
     // Skip if the URL hasn't changed since the last sync
@@ -98,8 +105,7 @@ export function setupRouterSync(router: AppRouter, store: AppStore) {
         routeType !== prevLocation.type ||
         Object.entries(params).some(([key, value]) => value !== prevLocation.payload?.[key])
       const prevQuery = prevLocation.query || ({} as QueryParams)
-      const isDifferentTrackCorrection =
-        search?.trackCorrectionId && !prevQuery?.trackCorrectionId
+      const isDifferentTrackCorrection = search?.trackCorrectionId && !prevQuery?.trackCorrectionId
 
       if (
         (isDifferentRoute || isDifferentTrackCorrection) &&

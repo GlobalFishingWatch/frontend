@@ -1,5 +1,3 @@
-import { saveAs } from 'file-saver'
-
 import type {
   APIPagination,
   ResourceRequestType,
@@ -222,7 +220,8 @@ export class GFW_API_CLASS {
   download(downloadUrl: string, fileName = 'download'): Promise<boolean> {
     this.status = 'downloading'
     return this._internalFetch<Blob>(downloadUrl, { responseType: 'blob' })
-      .then((blob) => {
+      .then(async (blob) => {
+        const { saveAs } = await import('file-saver')
         saveAs(blob, fileName)
         this.status = 'idle'
         return true
