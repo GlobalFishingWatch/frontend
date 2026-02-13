@@ -41,6 +41,8 @@ export default defineConfig({
 
   define: {
     'process.env.NEXT_PUBLIC_API_GATEWAY': JSON.stringify(process.env.NEXT_PUBLIC_API_GATEWAY),
+    'process.env.NODE_ENV': JSON.stringify('test'),
+    'process.env.VITEST': JSON.stringify('true'),
   },
   test: {
     watch: false,
@@ -68,7 +70,7 @@ export default defineConfig({
       instances: [
         {
           browser: 'chromium',
-          name: 'fishing-map-browser',
+          name: 'fishing-map-chromium',
           headless: true,
           viewport: { width: 1280, height: 720 },
         },
