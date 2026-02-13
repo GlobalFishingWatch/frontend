@@ -1,7 +1,6 @@
-import { Fragment } from 'react'
+import { Fragment, lazy } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import dynamic from 'next/dynamic'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
@@ -23,8 +22,8 @@ import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './App.module.css'
 
-const Map = dynamic(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
-const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
+const Map = lazy(() => import('features/map/Map'))
+const Timebar = lazy(() => import('features/timebar/Timebar'))
 
 const Main = () => {
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)

@@ -15,7 +15,8 @@
       "Bash(curl:*)",
       "Bash(npx vite dev:*)",
       "Bash(lsof:*)",
-      "Bash(npx vite:*)"
+      "Bash(npx vite:*)",
+      "*"
     ]
   }
 }
