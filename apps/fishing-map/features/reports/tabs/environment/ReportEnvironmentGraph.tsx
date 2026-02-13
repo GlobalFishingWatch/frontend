@@ -4,6 +4,7 @@ import cx from 'classnames'
 
 import type { DataviewType } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   isEnvironmentalDataview,
@@ -71,13 +72,11 @@ function ReportEnvironmentGraph({
   const isEmptyData =
     data !== undefined && (!timeseries || (Array.isArray(timeseries) && timeseries.length === 0))
   const isHeatmapVector = isHeatmapVectorsDataview(dataview)
-
+  const { function: aggregationFunction } = getDatasetConfiguration(dataset, 'fourwingsV1')
   return (
     <div className={styles.container}>
       <p className={styles.summary}>
-        {dataset?.configuration?.function === 'AVG' && (
-          <span>{upperFirst(t((t) => t.common.average))} </span>
-        )}
+        {aggregationFunction === 'AVG' && <span>{upperFirst(t((t) => t.common.average))} </span>}
         <strong>{title}</strong> {unit && <span>({unit})</span>}{' '}
         {isDynamic && (
           <Fragment>

@@ -3,9 +3,11 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import type { FeatureCollection, Point } from 'geojson'
 
+import type { Dataset } from '@globalfishingwatch/api-types'
 import {
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
+  getDatasetFiltersAllowed,
 } from '@globalfishingwatch/datasets-client'
 import { POINT_SIZES_DEFAULT_RANGE } from '@globalfishingwatch/deck-layers'
 import type { MultiSelectOption } from '@globalfishingwatch/ui-components'
@@ -68,7 +70,10 @@ function NewPointDataset({
   const { getSelectedOption, filtersFieldsOptions } = useDatasetMetadataOptions(datasetMetadata)
   const isEditing = dataset?.id !== undefined
   const isPublic = !!datasetMetadata?.public
-  const datasetFieldsAllowed = datasetMetadata?.fieldsAllowed || dataset?.fieldsAllowed || []
+  const datasetFieldsAllowed =
+    getDatasetFiltersAllowed(datasetMetadata as Dataset) ||
+    getDatasetFiltersAllowed(dataset as Dataset) ||
+    []
   const sourceFormat = getDatasetConfigurationProperty({ dataset, property: 'sourceFormat' })
   const { isValid, errors } = getDatasetMetadataValidations(datasetMetadata)
   const [fileTypeResult, setFileTypeResult] = useState<FileTypeResult | undefined>()
@@ -212,8 +217,6 @@ function NewPointDataset({
       if (error) {
         setError(error)
       } else if (onConfirm) {
-        // TODO update the schema with the selected field with type timestamp
-        // setDatasetMetadataSchema({ [selected.id]: { type: 'timestamp' } })
         setLoading(true)
         const file = geojson
           ? getFileFromGeojson(parseGeoJsonProperties<Point>(geojson, datasetMetadata))
@@ -376,13 +379,37 @@ function NewPointDataset({
           options={filtersFieldsOptions}
           selectedOptions={getSelectedOption(datasetFieldsAllowed) as MultiSelectOption[]}
           onSelect={(newFilter: MultiSelectOption) => {
-            setDatasetMetadata({ fieldsAllowed: [...datasetFieldsAllowed, newFilter.id] })
+            const filters = datasetMetadata?.filters?.userContextLayers || []
+            setDatasetMetadata({
+              filters: {
+                userContextLayers: filters.map((f) => {
+                  return { ...f, enabled: f.id === newFilter.id }
+                }),
+              },
+            })
           }}
-          onRemove={(_: MultiSelectOption, rest: MultiSelectOption[]) => {
-            setDatasetMetadata({ fieldsAllowed: rest.map((f: MultiSelectOption) => f.id) })
+          onRemove={(newFilter: MultiSelectOption, rest: MultiSelectOption[]) => {
+            // setDatasetMetadata({ fieldsAllowed: rest.map((f: MultiSelectOption) => f.id) })
+            const filters = datasetMetadata?.filters?.userContextLayers || []
+            const restIds = rest.map((r) => r.id)
+            setDatasetMetadata({
+              filters: {
+                userContextLayers: filters.map((f) => {
+                  return { ...f, enabled: restIds.includes(f.id) }
+                }),
+              },
+            })
           }}
           onCleanClick={() => {
-            setDatasetMetadata({ fieldsAllowed: [] })
+            // setDatasetMetadata({ fieldsAllowed: [] })
+            const filters = datasetMetadata?.filters?.userContextLayers || []
+            setDatasetMetadata({
+              filters: {
+                userContextLayers: filters.map((f) => {
+                  return { ...f, enabled: false }
+                }),
+              },
+            })
           }}
           disabled={loading}
           infoTooltip={t((t) => t.datasetUpload.points.filtersHelp)}

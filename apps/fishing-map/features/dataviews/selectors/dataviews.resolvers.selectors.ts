@@ -4,6 +4,7 @@ import { uniqBy } from 'es-toolkit'
 import type { DataviewDatasetConfig, IdentityVessel, Resource } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
 import type {
   GetDatasetConfigsCallbacks,
   UrlDataviewInstance,
@@ -17,7 +18,6 @@ import {
 } from '@globalfishingwatch/dataviews-client'
 
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import {
   getIsVesselDataviewInstanceId,

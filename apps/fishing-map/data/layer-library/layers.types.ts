@@ -1,7 +1,7 @@
 import type {
-  DatasetConfiguration,
   Dataview,
   DataviewCategory,
+  DataviewDatasetConfig,
   DataviewInstance,
 } from '@globalfishingwatch/api-types'
 
@@ -23,5 +23,5 @@ export type LibraryLayer = LibraryLayerConfig & {
   category: DataviewCategory
   dataview: Dataview
   previewImageUrl: string
-  datasetsConfig?: DatasetConfiguration[]
+  datasetsConfig?: DataviewDatasetConfig[]
 }

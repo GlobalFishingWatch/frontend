@@ -238,7 +238,7 @@ export type VesselCombinedSourcesInfo = {
   registryVesselClass?: CombinedSourceInfo[]
 }
 
-export interface IdentityVessel {
+export type IdentityVessel = {
   combinedSourcesInfo: VesselCombinedSourcesInfo[]
   dataset: string
   matchCriteria?: VesselIdentitySearchMatchCriteria[]

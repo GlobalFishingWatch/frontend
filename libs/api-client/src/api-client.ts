@@ -33,7 +33,7 @@ interface LoginParams {
   accessToken?: string | null
   refreshToken?: string | null
 }
-export type ApiVersion = '' | 'v1' | 'v2' | 'v3'
+export type ApiVersion = '' | 'v3'
 export type FetchOptions<T = unknown> = Partial<Omit<RequestInit, 'body'>> & {
   version?: ApiVersion
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
@@ -203,7 +203,7 @@ export class GFW_API_CLASS {
     if (isUrlAbsolute(url)) {
       return url
     }
-    if (url.startsWith('/v3/') || url.startsWith('/v2/') || url.startsWith('/v1/')) {
+    if (url.startsWith(`/${API_VERSION}/`)) {
       return absolute ? `${this.baseUrl}${url}` : url
     }
     const apiVersion = version ?? this.apiVersion

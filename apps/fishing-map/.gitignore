@@ -24,6 +24,9 @@
 .env.test.local
 .env.production.local
 
+.env.next
+.env.vite
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

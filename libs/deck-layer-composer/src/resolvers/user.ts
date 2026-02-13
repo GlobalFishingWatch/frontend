@@ -1,11 +1,11 @@
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
-import { COORDINATE_PROPERTY_TIMESTAMP } from '@globalfishingwatch/data-transforms'
 import {
   findDatasetByType,
   getDatasetConfiguration,
   getDatasetConfigurationProperty,
   getDatasetRangeSteps,
+  getFlattenDatasetFilters,
   resolveEndpoint,
 } from '@globalfishingwatch/datasets-client'
 import type {
@@ -68,9 +68,12 @@ export const getUserPolygonColorProps = ({
     dataset,
     property: 'polygonColor',
   })
-
-  if (dataset?.schema?.[polygonColor]?.enum) {
-    const [min, max] = dataset.schema[polygonColor].enum as number[]
+  const flattenFilters = getFlattenDatasetFilters(dataset?.filters)
+  const flattenFiltersById = Object.fromEntries(
+    flattenFilters.map((filter) => [filter.id, filter])
+  ) as Record<string, any>
+  if (polygonColor && flattenFiltersById?.[polygonColor]?.enum) {
+    const [min, max] = flattenFiltersById[polygonColor].enum as number[]
     return {
       steps: getDatasetRangeSteps({ min, max }),
       stepsPickValue: polygonColor,
@@ -99,12 +102,17 @@ export const getUserCircleProps = ({
     return {}
   }
 
-  const circleRadiusRange = circleRadiusProperty
-    ? [
-        dataset.schema?.[circleRadiusProperty].enum?.[0] as number,
-        dataset.schema?.[circleRadiusProperty].enum?.[1] as number,
-      ]
-    : []
+  const flattenFilters = getFlattenDatasetFilters(dataset?.filters)
+  const flattenFiltersById = Object.fromEntries(
+    flattenFilters.map((filter) => [filter.id, filter])
+  ) as Record<string, any>
+  const circleRadiusRange =
+    circleRadiusProperty && flattenFiltersById?.[circleRadiusProperty]?.enum
+      ? [
+          flattenFiltersById[circleRadiusProperty].enum?.[0] as number,
+          flattenFiltersById[circleRadiusProperty].enum?.[1] as number,
+        ]
+      : []
   const minPointSize = getDatasetConfigurationProperty({
     dataset,
     property: 'minPointSize',
@@ -161,18 +169,20 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
     if (!dataset || dataset?.status !== 'done' || !datasetConfig) {
       return []
     }
-
+    const datasetContextConfig = getDatasetConfiguration(dataset, 'userContextLayerV1')
     let tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
     if (!tilesUrl) {
       console.warn('No url found for user context')
     }
     if (dataset.source === DRAW_DATASET_SOURCE) {
       // This invalidates cache after drawn editions
-      tilesUrl = `${tilesUrl}?cache=${dataset.configuration?.filePath}`
+      tilesUrl = `${tilesUrl}?cache=${datasetContextConfig?.filePath}`
     }
 
-    const { idProperty, valueProperties } = getDatasetConfiguration(dataset)
-    const allFilters = Object.fromEntries((dataset.fieldsAllowed || []).map((f) => [f, undefined]))
+    const { valueProperties, disableInteraction } = getDatasetConfiguration(dataset) || {}
+    const { idProperty } = getDatasetConfiguration(dataset, 'userContextLayerV1') || {}
+    const enabledFilters = getFlattenDatasetFilters(dataset?.filters)?.filter((f) => f?.enabled)
+    const allFilters = Object.fromEntries(enabledFilters?.map((f) => [f.id, undefined]))
     return {
       id: `${dataview.id}-${dataset.id}`,
       datasetId: dataset.id,
@@ -180,9 +190,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
       idProperty,
       valueProperties,
       pickable:
-        dataview.config?.pickable !== undefined
-          ? dataview.config?.pickable
-          : !dataset.configuration?.disableInteraction,
+        dataview.config?.pickable !== undefined ? dataview.config?.pickable : !disableInteraction,
       sublayers: layer.sublayers.map((sublayer) => {
         return {
           ...sublayer,

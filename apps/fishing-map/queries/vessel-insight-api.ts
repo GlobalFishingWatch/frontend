@@ -8,6 +8,7 @@ import type {
   VesselGroupInsightResponse,
 } from '@globalfishingwatch/api-types'
 
+// TODO:DR (dataset-refactor) use the new typing for the params
 export type BaseInsightParams = {
   insight: InsightType
   start: string

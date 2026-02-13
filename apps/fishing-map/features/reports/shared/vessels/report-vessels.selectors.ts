@@ -2,10 +2,10 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import type { Dataset, IdentityVessel } from '@globalfishingwatch/api-types'
 import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
 import { type ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectVGRFootprintDataview } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { t } from 'features/i18n/i18n'
 import {
