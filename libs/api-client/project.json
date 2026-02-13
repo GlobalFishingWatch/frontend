@@ -9,10 +9,10 @@
       "executor": "@nx/js:tsc"
     },
     "dev": {
-      "dependsOn": ["^dist"],
-      "executor": "nx:run-commands",
+      "dependsOn": ["^dev"],
+      "executor": "@nx/js:tsc",
+      "cache": false,
       "options": {
-        "command": "nx run api-client:dist",
         "watch": true
       },
       "continuous": true
@@ -27,7 +27,6 @@
     "test": {
       "executor": "@nx/vitest:test",
       "outputs": ["{options.reportsDirectory}"],
-      "dependsOn": ["^dist"],
       "options": {
         "command": "vitest run --config=vitest.config.mts",
         "reportsDirectory": "../../coverage/libs/api-client"
@@ -35,7 +34,6 @@
     },
     "test:watch": {
       "executor": "@nx/vitest:test",
-      "dependsOn": ["^dist"],
       "cache": false,
       "options": {
         "configFile": "libs/api-client/vitest.config.mts",
