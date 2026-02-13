@@ -457,6 +457,7 @@
     "dataPortal": "Ver portal de descarga de datos",
     "datasetsNotAllowed": "No tiene permisos para descargar datos de las siguientes fuentes:",
     "descriptionReport": "Puede descargar una lista o un raster de la actividad para esta área en diferentes formatos",
+    "downloadAreaLabel": "Download area as geoJSON",
     "downloading": "Downloading",
     "downloadOptions": "Opciones de descarga",
     "doYouNeedAnAPI": "¿Su aplicación necesita datos continuos?",
