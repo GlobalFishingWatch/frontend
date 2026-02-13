@@ -64,10 +64,11 @@ export function Popover({
       offset(10),
       flip({
         fallbackStrategy: 'initialPlacement',
+        padding: { left: 60 },
       }),
-      shift(),
+      shift({ padding: { left: 60 } }),
       arrow({
-        element: arrowRef,
+        element: arrowRef.current,
         padding: 0,
       }),
     ],
