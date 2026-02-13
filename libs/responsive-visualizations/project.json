@@ -14,10 +14,10 @@
       }
     },
     "dev": {
-      "dependsOn": ["^dist"],
-      "executor": "nx:run-commands",
+      "dependsOn": ["^dev"],
+      "executor": "@nx/js:tsc",
+      "cache": false,
       "options": {
-        "command": "nx run responsive-visualizations:dist",
         "watch": true
       },
       "continuous": true
