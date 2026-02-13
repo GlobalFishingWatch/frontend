@@ -167,26 +167,50 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
         echo "Installing curl and jq..."
         apk add --no-cache curl jq >/dev/null 2>&1
         echo "Looking for PR associated with branch: $BRANCH_NAME"
-        # Try direct lookup using head=owner:branch (works when PR comes from same repo)
+        
         GITHUB_TOKEN=$$(cat /workspace/token.txt)
+        
+        # Find PR number
         PR_NUMBER=$$(curl -s -H "Authorization: token $$GITHUB_TOKEN" \
           "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/pulls?state=open&head=$_REPO_OWNER:$BRANCH_NAME" \
           | jq -r '.[0].number // empty')
+        
         if [ -z "$$PR_NUMBER" ]; then
           echo "No open PR found for branch '$BRANCH_NAME'. Skipping PR comment."
           exit 0
         fi
+        
         echo "PR found: #$$PR_NUMBER"
-        # Prepare comment body (escape double quotes)
+        
+        # Prepare comment body
+        COMMENT_MARKER="<!-- integration-tests-bot-comment -->"
         FOOTER="Posted by [this build](https://console.cloud.google.com/cloud-build/builds;region=us-central1/$BUILD_ID?project=gfw-int-infrastructure)"
-        jq -n --rawfile summary /workspace/summary.txt --arg footer "$$FOOTER" '{body: ($$summary + "\n\n" + $$footer)}' > /tmp/payload.json
-        echo "Posting comment to PR #$$PR_NUMBER..."
-        echo "Payload:"
-        cat /tmp/payload.json
-        curl -s -H "Authorization: token $$GITHUB_TOKEN" \
-             -H "Content-Type: application/json" \
-             -d @/tmp/payload.json \
-             "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/$$PR_NUMBER/comments"
+        jq -n --rawfile summary /workspace/summary.txt --arg footer "$$FOOTER" --arg marker "$$COMMENT_MARKER" \
+          '{body: ($$marker + "\n" + $$summary + "\n\n" + $$footer)}' > /tmp/payload.json
+        
+        # Search for existing bot comment
+        echo "Searching for existing bot comment..."
+        EXISTING_COMMENT_ID=$$(curl -s -H "Authorization: token $$GITHUB_TOKEN" \
+          "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/$$PR_NUMBER/comments" \
+          | jq -r ".[] | select(.body | contains(\"$$COMMENT_MARKER\")) | .id" | head -1)
+        
+        if [ -n "$$EXISTING_COMMENT_ID" ]; then
+          echo "Found existing comment ID: $$EXISTING_COMMENT_ID. Updating..."
+          curl -s -X PATCH \
+               -H "Authorization: token $$GITHUB_TOKEN" \
+               -H "Content-Type: application/json" \
+               -d @/tmp/payload.json \
+               "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/comments/$$EXISTING_COMMENT_ID"
+          echo "Comment updated!"
+        else
+          echo "No existing comment found. Creating new comment..."
+          curl -s -X POST \
+               -H "Authorization: token $$GITHUB_TOKEN" \
+               -H "Content-Type: application/json" \
+               -d @/tmp/payload.json \
+               "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/$$PR_NUMBER/comments"
+          echo "Comment created!"
+        fi
       EOF
       ]
     }
