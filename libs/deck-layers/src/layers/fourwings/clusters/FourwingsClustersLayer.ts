@@ -34,6 +34,7 @@ import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FourwingsClustersLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
+import { IS_TEST_ENV } from '../../../config'
 import {
   COLOR_HIGHLIGHT_LINE,
   DEFAULT_BACKGROUND_COLOR,
@@ -405,7 +406,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
         return
       }
       return await parse(data, FourwingsClustersLoader, {
-        worker: true,
+        worker: !IS_TEST_ENV,
         fourwingsClusters: {
           cols,
           rows,
