@@ -17,8 +17,13 @@ const parseAppWorkspace = (searchStr: string): QueryParams => {
   }) as QueryParams
 }
 
+let router: ReturnType<typeof createRouter>
+
 export function getRouter() {
-  const router = createRouter({
+  if (typeof window !== 'undefined' && router) {
+    return router
+  }
+  router = createRouter({
     routeTree,
     basepath: PATH_BASENAME,
     defaultPreload: false,
