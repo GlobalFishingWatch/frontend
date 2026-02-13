@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import type { Dataset, DatasetCategory, Dataview, VesselType } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 
-import { DATASET_FULL_SUFIX } from './datasets.const'
+import { ALL_DATASETS_PREFIX, DATASET_FULL_PREFIX } from './datasets.const'
 import type { UrlDataviewInstance } from './types'
 
 export const removeDatasetVersion = (datasetId: string) => {
@@ -12,6 +12,14 @@ export const removeDatasetVersion = (datasetId: string) => {
 
 export const getDatasetVersion = (datasetId: string) => {
   return datasetId ? datasetId?.split(':')[1] : ''
+}
+
+export const removeDatasetPrefix = (datasetId: string) => {
+  return datasetId
+    ? ALL_DATASETS_PREFIX.forEach((prefix) => {
+        return datasetId.startsWith(prefix) ? datasetId.replace(prefix, '') : ''
+      })
+    : ''
 }
 
 export function findDatasetByType(datasets = [] as Dataset[], type: DatasetTypes) {
@@ -87,7 +95,7 @@ export const getRelatedDatasetByType = (
   if (fullDatasetAllowed) {
     const fullDataset = dataset?.relatedDatasets?.find(
       (relatedDataset) =>
-        relatedDataset.type === datasetType && relatedDataset.id.startsWith(DATASET_FULL_SUFIX)
+        relatedDataset.type === datasetType && relatedDataset.id.startsWith(DATASET_FULL_PREFIX)
     )
     if (fullDataset) {
       return fullDataset
@@ -104,7 +112,7 @@ export const getRelatedDatasetsByType = (
   if (fullDatasetAllowed) {
     const fullDataset = dataset?.relatedDatasets?.filter(
       (relatedDataset) =>
-        relatedDataset.type === datasetType && relatedDataset.id.startsWith(DATASET_FULL_SUFIX)
+        relatedDataset.type === datasetType && relatedDataset.id.startsWith(DATASET_FULL_PREFIX)
     )
     if (fullDataset && fullDataset.length > 0) {
       return fullDataset
