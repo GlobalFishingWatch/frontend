@@ -18,5 +18,7 @@ beforeAll(async () => {
     localStorage.setItem('MarineManagerPopup', '{"visible":false,"showAgain":false}')
     localStorage.setItem('VesselProfilePopup', '{"visible":false,"showAgain":false}')
     localStorage.setItem('WelcomePopup', '{"visible":false,"showAgain":false}')
+    localStorage.setItem('DeepSeaMiningPopup', '{"visible":false,"showAgain":false}')
+    localStorage.setItem('HighlightPopup', '"sentinel2"')
   }
 })
