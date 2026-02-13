@@ -24,6 +24,7 @@ import {
   getTimeRangeKey,
 } from '@globalfishingwatch/deck-loaders'
 
+import { IS_TEST_ENV } from '../../../config'
 import { getSteps, hexToRgb, removeOutliers } from '../../../utils'
 import type { ColorRampId } from '../../../utils/colorRamps'
 import {
@@ -466,7 +467,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
 
     const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
-      worker: true,
+      worker: !IS_TEST_ENV,
       fourwings: {
         sublayers: 1,
         cols,
@@ -579,7 +580,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     })
 
     const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
-      worker: true,
+      worker: !IS_TEST_ENV,
       fourwings: {
         sublayers: 1,
         cols,

@@ -18,6 +18,7 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import { FourwingsVectorsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
+import { IS_TEST_ENV } from '../../../config'
 import { hexToRgbaString, removeOutliers } from '../../../utils'
 import {
   DYNAMIC_RAMP_VECTOR_CHANGE_THRESHOLD,
@@ -300,7 +301,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     const arrayBuffer = await response.arrayBuffer()
 
     const data = await parse(arrayBuffer, FourwingsVectorsLoader, {
-      worker: true,
+      worker: !IS_TEST_ENV,
       fourwingsVectors: {
         cols,
         rows,
