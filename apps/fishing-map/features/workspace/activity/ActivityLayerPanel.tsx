@@ -5,7 +5,6 @@ import cx from 'classnames'
 
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { getDatasetConfigByDatasetType } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
@@ -27,7 +26,6 @@ import { useActivityDataviewId } from 'features/map/map-layers.hooks'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAuxiliaryLayer'
 import TurningTidesTags from 'features/workspace/activity/TurningTidesTags'
-import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import LayerProperties from 'features/workspace/shared/LayerProperties'
 import MapLegend from 'features/workspace/shared/MapLegend'
@@ -170,8 +168,6 @@ function ActivityLayerPanel({
   const isTurningTidesDataset =
     dataset?.subcategory === 'user-interactive' &&
     dataset.description?.startsWith(TURNING_TIDES_DESCRIPTION_PREFIX)
-  const hasDatasetAvailable =
-    getDatasetConfigByDatasetType(dataview, DatasetTypes.Fourwings) !== undefined
   const showTurningTidesFilters = isTurningTidesDataset && isTurningTidesWorkspace
 
   const showFilters = isDefaultActivityDataview(dataview) || isDefaultDetectionsDataview(dataview)
@@ -186,111 +182,109 @@ function ActivityLayerPanel({
         'print-hidden': !layerActive,
       })}
     >
-      {hasDatasetAvailable ? (
-        <Fragment>
-          <div className={styles.header}>
-            <LayerSwitch
-              onToggle={onLayerSwitchToggle}
-              disabled={hasDeprecatedDataviewInstances}
-              active={layerActive && !hasDeprecatedDataviewInstances}
-              className={styles.switch}
-              dataview={dataview}
-              testId={`activity-layer-panel-switch-${dataview.id}`}
-            />
-            <Title
-              title={datasetTitle}
-              className={styles.name}
-              classNameActive={styles.active}
-              dataview={dataview}
-              toggleVisibility={!hasDeprecatedDataviewInstances}
-              onToggle={onLayerSwitchToggle}
-            />
-            <div
-              className={cx(
-                'print-hidden',
-                styles.actions,
-                { [styles.active]: layerActive },
-                styles.hideUntilHovered
-              )}
-            >
-              {layerActive && (
-                <LayerProperties
-                  dataview={dataview}
-                  open={colorOpen}
-                  onColorClick={changeColor}
-                  onToggleClick={onToggleColorOpen}
-                  onClickOutside={closeExpandedContainer}
-                  colorType="fill"
-                />
-              )}
-              {layerActive && showFilters && (
-                <ExpandedContainer
-                  onClickOutside={closeExpandedContainer}
-                  visible={filterOpen}
-                  component={
-                    showTurningTidesFilters ? (
-                      <TurningTidesFilters
-                        dataview={dataview}
-                        onConfirmCallback={onToggleFilterOpen}
-                      />
-                    ) : (
-                      <LayerFilters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />
-                    )
-                  }
-                >
-                  <div className={styles.filterButtonWrapper}>
-                    <IconButton
-                      data-test={`activity-layer-panel-btn-filter-${dataview.id}`}
-                      icon={filterOpen ? 'filter-on' : 'filter-off'}
-                      size="small"
-                      onClick={onToggleFilterOpen}
-                      tooltip={
-                        filterOpen ? t((t) => t.layer.filterClose) : t((t) => t.layer.filterOpen)
-                      }
-                      tooltipPlacement="top"
-                    />
-                    {dataview.id === 'fishing-ais' && (
-                      <Hint id="filterActivityLayers" className={styles.helpHint} />
-                    )}
-                  </div>
-                </ExpandedContainer>
-              )}
-              {/* {layerActive && stats && <ActivityFitBounds stats={stats} loading={isFetching} />} */}
-              <InfoModal
+      <Fragment>
+        <div className={styles.header}>
+          <LayerSwitch
+            onToggle={onLayerSwitchToggle}
+            disabled={hasDeprecatedDataviewInstances}
+            active={layerActive && !hasDeprecatedDataviewInstances}
+            className={styles.switch}
+            dataview={dataview}
+          />
+          <Title
+            title={datasetTitle}
+            className={styles.name}
+            classNameActive={styles.active}
+            dataview={dataview}
+            toggleVisibility={!hasDeprecatedDataviewInstances}
+            onToggle={onLayerSwitchToggle}
+          />
+          <div
+            className={cx(
+              'print-hidden',
+              styles.actions,
+              { [styles.active]: layerActive },
+              styles.hideUntilHovered
+            )}
+          >
+            {layerActive && (
+              <LayerProperties
                 dataview={dataview}
-                // Workaround to always show the auxiliar dataset too
-                showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_SLUG}
+                open={colorOpen}
+                onColorClick={changeColor}
+                onToggleClick={onToggleColorOpen}
+                onClickOutside={closeExpandedContainer}
+                colorType="fill"
               />
-              {!readOnly && (
-                <Remove
-                  onClick={onRemoveLayerClick}
-                  loading={!hasDeprecatedDataviewInstances && layerActive && !layerLoaded}
-                />
-              )}
-              {!readOnly && layerActive && layerError && (
-                <IconButton
-                  icon={'warning'}
-                  type={'warning'}
-                  tooltip={
-                    isGFWUser
-                      ? `${t((t) => t.errors.layerLoading)} (${layerError})`
-                      : t((t) => t.errors.layerLoading)
-                  }
-                  size="small"
-                />
-              )}
-            </div>
-            <IconButton
-              icon={layerError ? 'warning' : layerActive ? 'more' : undefined}
-              type={layerError ? 'warning' : 'default'}
-              loading={!hasDeprecatedDataviewInstances && layerActive && !layerLoaded}
-              className={cx('print-hidden', styles.shownUntilHovered)}
-              size="small"
+            )}
+            {layerActive && showFilters && (
+              <ExpandedContainer
+                onClickOutside={closeExpandedContainer}
+                visible={filterOpen}
+                component={
+                  showTurningTidesFilters ? (
+                    <TurningTidesFilters
+                      dataview={dataview}
+                      onConfirmCallback={onToggleFilterOpen}
+                    />
+                  ) : (
+                    <LayerFilters dataview={dataview} onConfirmCallback={onToggleFilterOpen} />
+                  )
+                }
+              >
+                <div className={styles.filterButtonWrapper}>
+                  <IconButton
+                    data-test={`activity-layer-panel-btn-filter-${dataview.id}`}
+                    icon={filterOpen ? 'filter-on' : 'filter-off'}
+                    size="small"
+                    onClick={onToggleFilterOpen}
+                    tooltip={
+                      filterOpen ? t((t) => t.layer.filterClose) : t((t) => t.layer.filterOpen)
+                    }
+                    tooltipPlacement="top"
+                  />
+                  {dataview.id === 'fishing-ais' && (
+                    <Hint id="filterActivityLayers" className={styles.helpHint} />
+                  )}
+                </div>
+              </ExpandedContainer>
+            )}
+            {/* {layerActive && stats && <ActivityFitBounds stats={stats} loading={isFetching} />} */}
+            <InfoModal
+              dataview={dataview}
+              // Workaround to always show the auxiliar dataset too
+              showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_SLUG}
             />
+            {!readOnly && (
+              <Remove
+                onClick={onRemoveLayerClick}
+                loading={!hasDeprecatedDataviewInstances && layerActive && !layerLoaded}
+              />
+            )}
+            {!readOnly && layerActive && layerError && (
+              <IconButton
+                icon={'warning'}
+                type={'warning'}
+                tooltip={
+                  isGFWUser
+                    ? `${t((t) => t.errors.layerLoading)} (${layerError})`
+                    : t((t) => t.errors.layerLoading)
+                }
+                size="small"
+              />
+            )}
           </div>
-          {layerActive && (
-            <div className={styles.properties}>
-              {/* TODO remove when final decission on stats display is taken
+          <IconButton
+            icon={layerError ? 'warning' : layerActive ? 'more' : undefined}
+            type={layerError ? 'warning' : 'default'}
+            loading={!hasDeprecatedDataviewInstances && layerActive && !layerLoaded}
+            className={cx('print-hidden', styles.shownUntilHovered)}
+            size="small"
+          />
+        </div>
+        {layerActive && (
+          <div className={styles.properties}>
+            {/* TODO remove when final decission on stats display is taken
               {stats && (
                 <div
                   className={cx(
@@ -347,44 +341,41 @@ function ActivityLayerPanel({
                   </Tooltip>
                 </div>
               )} */}
+            <div className={styles.filters}>
               <div className={styles.filters}>
-                <div className={styles.filters}>
-                  <OutOfTimerangeDisclaimer dataview={dataview} />
-                  {dataview.category === DataviewCategory.Activity && (
-                    <DatasetFilterSource dataview={dataview} />
-                  )}
-                  {filtersAllowed.map(({ id, label }) => (
-                    <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
-                  ))}
-                  {showTurningTidesFilters && <TurningTidesTags dataview={dataview} />}
-                </div>
-              </div>
-              <div className={activityStyles.legendContainer}>
-                <div className={activityStyles.legend}>
-                  <MapLegend
-                    dataview={dataview}
-                    showPlaceholder={!bivariateDataviews?.includes(dataview.id)}
-                  />
-                </div>
-                {bivariateDataviews?.[0] === dataview.id && (
-                  <IconButton
-                    size="small"
-                    type="border"
-                    icon="split"
-                    tooltip={t((t) => t.layer.toggleCombinationMode.split)}
-                    tooltipPlacement="left"
-                    className={cx(activityStyles.bivariateSplit, 'print-hidden')}
-                    onClick={onSplitLayers}
-                  />
+                <OutOfTimerangeDisclaimer dataview={dataview} />
+                {dataview.category === DataviewCategory.Activity && (
+                  <DatasetFilterSource dataview={dataview} />
                 )}
+                {filtersAllowed.map(({ id, label }) => (
+                  <DatasetSchemaField key={id} dataview={dataview} field={id} label={label} />
+                ))}
+                {showTurningTidesFilters && <TurningTidesTags dataview={dataview} />}
               </div>
             </div>
-          )}
-          {layerActive && <ActivityAuxiliaryLayerPanel dataview={dataview} />}
-        </Fragment>
-      ) : (
-        <DatasetNotFound dataview={dataview} />
-      )}
+            <div className={activityStyles.legendContainer}>
+              <div className={activityStyles.legend}>
+                <MapLegend
+                  dataview={dataview}
+                  showPlaceholder={!bivariateDataviews?.includes(dataview.id)}
+                />
+              </div>
+              {bivariateDataviews?.[0] === dataview.id && (
+                <IconButton
+                  size="small"
+                  type="border"
+                  icon="split"
+                  tooltip={t((t) => t.layer.toggleCombinationMode.split)}
+                  tooltipPlacement="left"
+                  className={cx(activityStyles.bivariateSplit, 'print-hidden')}
+                  onClick={onSplitLayers}
+                />
+              )}
+            </div>
+          </div>
+        )}
+        {layerActive && <ActivityAuxiliaryLayerPanel dataview={dataview} />}
+      </Fragment>
     </div>
   )
 }

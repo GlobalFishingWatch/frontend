@@ -30,7 +30,7 @@ import ReportSummaryTags from 'features/reports/shared/summary/ReportSummaryTags
 import ReportVectorGraphTooltip from 'features/reports/tabs/environment/ReportVectorGraphTooltip'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
 import OutOfTimerangeDisclaimer from 'features/workspace/shared/OutOfBoundsDisclaimer'
-import { htmlSafeParse, options } from 'utils/html-parser'
+import { htmlSafeParse } from 'utils/html-parser'
 import { upperFirst } from 'utils/info'
 
 import styles from './ReportEnvironment.module.css'
