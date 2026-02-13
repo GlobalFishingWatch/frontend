@@ -57,8 +57,8 @@ export const selectTrackCorrectionIssues = createSelector(
       return (
         issue.startDate &&
         issue.endDate &&
-        issue.startDate >= timeRange.start &&
-        issue.endDate <= timeRange.end
+        issue.startDate <= timeRange.end &&
+        issue.endDate >= timeRange.start
       )
     })
   }

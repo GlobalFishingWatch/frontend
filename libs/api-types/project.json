@@ -9,10 +9,10 @@
       "executor": "@nx/js:tsc"
     },
     "dev": {
-      "dependsOn": ["^dist"],
-      "executor": "nx:run-commands",
+      "dependsOn": ["^dev"],
+      "executor": "@nx/js:tsc",
+      "cache": false,
       "options": {
-        "command": "nx run api-types:dist",
         "watch": true
       },
       "continuous": true

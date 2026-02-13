@@ -29,6 +29,7 @@ import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selec
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import { selectTrackThinningConfig } from 'features/resources/resources.selectors.thinning'
 import { infoDatasetConfigsCallback } from 'features/resources/resources.utils'
+import { selectHighlightedTime } from 'features/timebar/timebar.slice'
 import {
   selectTrackCorrectionTimerange,
   selectTrackCorrectionVesselDataviewId,
@@ -37,7 +38,11 @@ import { selectIsGuestUser, selectUserLogged } from 'features/user/selectors/use
 import { selectCurrentVesselEvent } from 'features/vessel/selectors/vessel.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectAllVesselGroups } from 'features/vessel-groups/vessel-groups.slice'
-import { selectIsAnyVesselLocation, selectUrlDataviewInstancesOrder } from 'routes/routes.selectors'
+import {
+  selectIsAnyVesselLocation,
+  selectTrackCorrectionId,
+  selectUrlDataviewInstancesOrder,
+} from 'routes/routes.selectors'
 import { formatInfoField } from 'utils/info'
 import { createDeepEqualSelector } from 'utils/selectors'
 
@@ -76,6 +81,8 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectTrackThinningConfig,
     selectIsGuestUser,
     selectTrackCorrectionVesselDataviewId,
+    selectTrackCorrectionId,
+    selectHighlightedTime,
     selectTrackCorrectionTimerange,
   ],
   (
@@ -87,6 +94,8 @@ export const selectAllDataviewInstancesResolved = createSelector(
     trackThinningZoomConfig,
     guestUser,
     trackCorrectionVesselDataviewId,
+    trackCorrectionId,
+    highlightedTime,
     trackCorrectionTimerange
   ): UrlDataviewInstance[] | undefined => {
     if (!dataviews?.length || !datasets?.length || !dataviewInstances?.length) {
@@ -144,6 +153,12 @@ export const selectAllDataviewInstancesResolved = createSelector(
               highlightStartTime: trackCorrectionTimerange.start,
               highlightEndTime: trackCorrectionTimerange.end,
               showVesselIcon: false,
+              ...(trackCorrectionId !== 'new' &&
+                highlightedTime && {
+                  highlightStartTime: highlightedTime.start,
+                  highlightEndTime: highlightedTime.end,
+                  showVesselIcon: true,
+                }),
             },
           }
         }

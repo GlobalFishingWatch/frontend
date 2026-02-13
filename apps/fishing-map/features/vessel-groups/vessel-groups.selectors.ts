@@ -66,8 +66,8 @@ export const selectWorkspaceVessselGroupsIds = createSelector(
   [selectWorkspaceDataviewInstances, selectUrlDataviewInstances],
   (workspaceDataviewInstances, urlDataviewInstances) => {
     return getVesselGroupsInDataviews([
-      ...(workspaceDataviewInstances || []),
-      ...(urlDataviewInstances || []),
+      ...(Array.isArray(workspaceDataviewInstances) ? workspaceDataviewInstances : []),
+      ...(Array.isArray(urlDataviewInstances) ? urlDataviewInstances : []),
     ])
   }
 )

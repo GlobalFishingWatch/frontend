@@ -74,3 +74,9 @@
 .error {
   color: var(--color-danger-red);
 }
+
+.downloadAreaLabelContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-XS);
+}

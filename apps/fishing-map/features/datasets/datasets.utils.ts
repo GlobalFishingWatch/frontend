@@ -314,7 +314,8 @@ const getDatasetsInDataview = (
   if (!datasetIds.length) {
     // Get the datasets from the vessel config shorcurt (to avoid large urls)
     datasetIds = VESSEL_INSTANCE_DATASETS.flatMap((d) => {
-      return dataview.config?.[d] || []
+      const value = dataview.config?.[d]
+      return Array.isArray(value) ? value : []
     })
   }
 

@@ -52,6 +52,7 @@ import {
 import type { GroupBy, HeatmapDownloadFormat, TemporalResolution } from './downloadActivity.config'
 import { getVesselGroupOptions, VESSEL_FORMAT_OPTIONS } from './downloadActivity.config'
 import ActivityDownloadError, { useActivityDownloadTimeoutRefresh } from './DownloadActivityError'
+import { DownloadAreaLabel } from './DownloadAreaLabel'
 
 import styles from './DownloadModal.module.css'
 
@@ -74,7 +75,6 @@ function DownloadActivityByVessel({ onDownloadCallback }: { onDownloadCallback?:
   const downloadAreaKey = useSelector(selectDownloadActivityAreaKey)
   const downloadAreaDataset = useSelector(selectDatasetById(downloadAreaKey?.datasetId as string))
   const isDownloadAreaLoading = useSelector(selectIsDownloadActivityAreaLoading)
-
   const bufferUnit = useSelector(selectUrlBufferUnitQuery)
   const bufferValue = useSelector(selectUrlBufferValueQuery)
   const bufferOperation = useSelector(selectUrlBufferOperationQuery)
@@ -162,15 +162,13 @@ function DownloadActivityByVessel({ onDownloadCallback }: { onDownloadCallback?:
 
   useActivityDownloadTimeoutRefresh()
 
-  const parsedLabel = htmlSafeParse(downloadAreaName)
-
   return (
     <Fragment>
       <div className={styles.container} data-test="download-activity-byvessel">
         <div className={styles.info}>
           <div>
             <label>{t((t) => t.download.area)}</label>
-            <Tag testId="area-name">{parsedLabel || EMPTY_FIELD_PLACEHOLDER}</Tag>
+            <DownloadAreaLabel name={downloadAreaName} />
           </div>
           <div>
             <label>{t((t) => t.download.timeRange)}</label>
