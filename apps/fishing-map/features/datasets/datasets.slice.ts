@@ -211,11 +211,13 @@ export const upsertDatasetThunk = createAsyncThunk<
   async ({ dataset, file, createAsPublic, addIdSuffix = true }, { rejectWithValue }) => {
     try {
       let filePath
-      const {
-        format,
-        idProperty,
-        filePath: datasetFilePath,
-      } = getDatasetConfiguration(dataset, 'userContextLayerV1')
+      const configurationByType =
+        dataset.type === DatasetTypes.UserTracks ? 'userTracksV1' : 'userContextLayerV1'
+      const { idProperty, filePath: datasetFilePath } = getDatasetConfiguration(
+        dataset,
+        configurationByType
+      )
+      const { format } = getDatasetConfiguration(dataset, 'userContextLayerV1')
       if (file) {
         const { url, path } = await GFWAPI.fetch<UploadResponse>(`/uploads`, {
           method: 'POST',
@@ -242,11 +244,11 @@ export const upsertDatasetThunk = createAsyncThunk<
         ...(isPatchDataset && file && { status: 'importing' }),
         configuration: {
           ...dataset.configuration,
-          userContextLayerV1: {
-            ...dataset.configuration?.userContextLayerV1,
+          [configurationByType]: {
+            ...dataset.configuration?.[configurationByType],
             // Properties that are to be used as SQL params on the server
             // need to be lowercase
-            ...(idProperty && { idProperty: idProperty?.toLowerCase() || '' }),
+            idProperty: idProperty?.toLowerCase() || '',
             filePath: filePath || datasetFilePath,
           },
         },

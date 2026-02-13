@@ -56,10 +56,10 @@ export const TimeFieldsGroup = ({
   const onTimeFilterTypeSelect = useCallback(
     (selected: SelectOption) => {
       setDatasetMetadataConfig({
-        timeFilterType: selected.id === 'none' ? undefined : selected.id,
+        timeFilterType: selected.id === 'none' ? '' : selected.id,
       })
       if (selected.id === 'none') {
-        setDatasetMetadataConfig({ timestamp: undefined, startTime: '', endTime: '' })
+        setDatasetMetadataConfig({ timestamp: '', startTime: '', endTime: '' })
       }
       if (selected.id === 'date') {
         setDatasetMetadataConfig({ endTime: '' })

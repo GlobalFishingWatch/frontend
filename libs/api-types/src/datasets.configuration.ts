@@ -32,7 +32,7 @@ export type TemporalContextLayerV1Configuration = {
 }
 
 export type UserTracksV1Configuration = {
-  // filePath?: string
+  filePath?: string
   idProperty?: string
 }
 

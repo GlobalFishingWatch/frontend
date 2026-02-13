@@ -3,9 +3,10 @@ import { truncate } from '@turf/truncate'
 import type { Feature, FeatureCollection, Position } from 'geojson'
 import { parse } from 'papaparse'
 
-import type {
-  DatasetGeometryToGeoJSONGeometry,
-  DatasetGeometryType,
+import {
+  type DatasetGeometryToGeoJSONGeometry,
+  type DatasetGeometryType,
+  DatasetTypes,
 } from '@globalfishingwatch/api-types'
 import {
   fixTextEncoding,
@@ -176,7 +177,9 @@ export const getTrackFromList = (data: DataList, dataset: DatasetMetadata) => {
 }
 
 export const getGeojsonFromPointsList = (data: Record<string, any>[], dataset: DatasetMetadata) => {
-  const { idProperty } = getDatasetConfiguration(dataset, 'userContextLayerV1')
+  const configurationByType =
+    dataset.type === DatasetTypes.UserTracks ? 'userTracksV1' : 'userContextLayerV1'
+  const { idProperty } = getDatasetConfiguration(dataset, configurationByType)
   const timeFilterType = getDatasetConfigurationProperty({ dataset, property: 'timeFilterType' })
   return pointsListToGeojson(data, {
     latitude: getDatasetConfigurationProperty({ dataset, property: 'latitude' })!,

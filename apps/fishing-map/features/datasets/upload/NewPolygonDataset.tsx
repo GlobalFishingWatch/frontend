@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 import type { FeatureCollection, Polygon } from 'geojson'
 
-import type { Dataset } from '@globalfishingwatch/api-types'
+import { type Dataset } from '@globalfishingwatch/api-types'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
 import {
   getDatasetConfigurationProperty,

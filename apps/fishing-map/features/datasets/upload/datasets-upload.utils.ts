@@ -54,7 +54,11 @@ export function getDatasetMetadataValidations(datasetMetadata: DatasetMetadata) 
   return { isValid, errors }
 }
 
-type ExtractMetadataProps = { name: string; sourceFormat?: FileType; data: any }
+type ExtractMetadataProps = {
+  name: string
+  sourceFormat?: FileType
+  data: any
+}
 
 export const getMetadataFromDataset = (dataset: Dataset): DatasetMetadata => {
   return {
@@ -116,9 +120,11 @@ export const getPointsDatasetMetadata = ({ name, data, sourceFormat }: ExtractMe
   const isNotGeoStandard = data.type !== 'FeatureCollection'
   const baseFrontendConfig = getDatasetConfiguration(baseMetadata)
   const configuration: DatasetConfiguration = {
-    userContextLayerV1: {
-      format: 'GEOJSON',
-    },
+    ...(baseMetadata.type === DatasetTypes.UserContext && {
+      userContextLayerV1: {
+        format: 'GEOJSON',
+      },
+    }),
     frontend: {
       ...(baseFrontendConfig && baseFrontendConfig),
       ...(isNotGeoStandard && { longitude: guessedColumns.longitude || undefined }),
@@ -147,9 +153,11 @@ export const getPolygonsDatasetMetadata = ({ name, data, sourceFormat }: Extract
       return getUTCDate(value)?.toString() !== 'Invalid Date'
     })
   const configuration: DatasetConfiguration = {
-    userContextLayerV1: {
-      format: 'GEOJSON',
-    },
+    ...(baseMetadata.type === DatasetTypes.UserContext && {
+      userContextLayerV1: {
+        format: 'GEOJSON',
+      },
+    }),
     frontend: {
       ...(baseFrontendConfig && baseFrontendConfig),
       sourceFormat,
