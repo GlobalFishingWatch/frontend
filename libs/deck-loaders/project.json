@@ -17,6 +17,23 @@
       },
       "continuous": true
     },
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "command": "vitest run --config=vitest.config.mts",
+        "reportsDirectory": "../../coverage/libs/deck-loaders"
+      }
+    },
+    "test:watch": {
+      "executor": "@nx/vitest:test",
+      "cache": false,
+      "options": {
+        "configFile": "libs/deck-loaders/vitest.config.mts",
+        "watch": true
+      },
+      "continuous": true
+    },
     "dist:workers": {
       "executor": "nx:run-commands",
       "options": {

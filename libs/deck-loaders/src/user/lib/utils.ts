@@ -14,13 +14,13 @@ export type TrackCoordinatesPropertyFilter = {
 }
 
 export type FilterTrackByCoordinatePropertiesParams = {
-  filters: Record<string, (string | number)[]>
+  filters?: Record<string, (string | number)[]>
   includeNonTemporalFeatures?: boolean
   includeCoordinateProperties?: string[]
 }
 
 type FilterTrackByCoordinatePropertiesArgs = Parameters<
-  (data: FeatureCollection, params: FilterTrackByCoordinatePropertiesParams) => void
+  (data: FeatureCollection, params?: FilterTrackByCoordinatePropertiesParams) => void
 >
 
 type FilterTrackByCoordinatePropertiesFn = (

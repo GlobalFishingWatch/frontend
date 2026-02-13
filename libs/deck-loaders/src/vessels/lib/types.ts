@@ -35,4 +35,7 @@ export type VesselDeckLayersEventData = Partial<ApiEvent> & {
   coordinates: [number, number]
   start: number
   end: number
+  props?: {
+    color: string
+  }
 }
