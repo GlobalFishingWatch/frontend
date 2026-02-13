@@ -170,3 +170,6 @@ const routesOptions: Options = {
 }
 
 export default connectRoutes(routesMap, routesOptions)
+
+// Export a function to create a new router instance for tests
+export const createRouterInstance = () => connectRoutes(routesMap, routesOptions)

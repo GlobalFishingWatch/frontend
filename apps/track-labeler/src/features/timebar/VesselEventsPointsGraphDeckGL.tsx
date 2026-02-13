@@ -125,8 +125,8 @@ export const VesselEventsPointsGraphDeckGL = () => {
         stroked: true,
         filled: true,
         radiusScale: 1,
-        radiusMinPixels: 3.5,
-        radiusMaxPixels: 3.5,
+        radiusMinPixels: 2,
+        radiusMaxPixels: 2,
         lineWidthMinPixels: 1,
         getPosition: (d) => d.position,
         getFillColor: (d) =>

@@ -20,15 +20,31 @@ import LanguageToggle from 'features/i18n/LanguageToggle'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { selectFeedbackModalOpen, setModalOpen } from 'features/modals/modals.slice'
+import { resetVesselGroupReportData } from 'features/reports/report-vessel-group/vessel-group-report.slice'
+import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
+import { EMPTY_SEARCH_FILTERS } from 'features/search/search.config'
+import { cleanVesselSearchResults } from 'features/search/search.slice'
+import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import WhatsNew from 'features/sidebar/WhatsNew'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
-import { selectIsDefaultWorkspace, selectWorkspace } from 'features/workspace/workspace.selectors'
+import { setVesselEventId } from 'features/vessel/vessel.slice'
+import {
+  selectWorkspace,
+  selectWorkspaceHistoryNavigation,
+} from 'features/workspace/workspace.selectors'
+import {
+  cleanCurrentWorkspaceReportState,
+  cleanReportQuery,
+  resetWorkspaceHistoryNavigation,
+} from 'features/workspace/workspace.slice'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
-import { HOME, SEARCH, USER, WORKSPACE_SEARCH, WORKSPACES_LIST } from 'routes/routes'
+import { SEARCH, USER, WORKSPACE, WORKSPACE_SEARCH, WORKSPACES_LIST } from 'routes/routes'
+import { useLocationConnect } from 'routes/routes.hook'
 import {
   selectIsAnySearchLocation,
   selectIsWorkspaceLocation,
+  selectLocationQuery,
   selectLocationType,
 } from 'routes/routes.selectors'
 
@@ -54,15 +70,18 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchClickedEvent } = useClickedEventConnect()
+  const { dispatchQueryParams } = useLocationConnect()
   const locationType = useSelector(selectLocationType)
+  const locationQuery = useSelector(selectLocationQuery)
   const setMapCoordinates = useSetMapCoordinates()
   const workspace = useSelector(selectWorkspace)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const locationCategory = useSelector(selectWorkspaceCategory)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
-  const isDefaultWorkspace = useSelector(selectIsDefaultWorkspace)
   const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const userData = useSelector(selectUserData)
+  const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
+  const lastWorkspaceVisited = workspaceHistoryNavigation[workspaceHistoryNavigation.length - 1]
 
   const modalFeedbackOpen = useSelector(selectFeedbackModalOpen)
 
@@ -91,6 +110,17 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
     })
   }, [])
 
+  const onWorkspaceClick = useCallback(() => {
+    resetSidebarScroll()
+    dispatchQueryParams({ ...EMPTY_SEARCH_FILTERS, userTab: undefined })
+    dispatch(cleanVesselSearchResults())
+    dispatch(resetReportData())
+    dispatch(resetVesselGroupReportData())
+    dispatch(cleanCurrentWorkspaceReportState())
+    dispatch(setVesselEventId(null))
+    dispatch(resetWorkspaceHistoryNavigation())
+  }, [dispatch, dispatchQueryParams])
+
   return (
     <Fragment>
       <ul className={cx('print-hidden', styles.CategoryTabs)}>
@@ -100,43 +130,42 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             <Icon icon="menu" />
           </span>
         </li>
-        <li
-          className={cx(styles.tab, {
-            [styles.current]: isWorkspaceLocation && isDefaultWorkspace,
-          })}
-        >
+        <li className={cx(styles.tab, { [styles.current]: isWorkspaceLocation })}>
           <Link
             className={styles.tabContent}
             to={{
-              type: HOME,
-              payload: {},
-              query: {},
-              replaceQuery: true,
-            }}
-          >
-            <Tooltip content={t((t) => t.common.seeDefault)} placement="right">
-              <span className={styles.tabContent}>
-                <Icon icon="home" className={styles.searchIcon} />
-              </span>
-            </Tooltip>
-          </Link>
-        </li>
-        <li
-          className={cx(styles.tab, {
-            [styles.current]: isAnySearchLocation,
-          })}
-        >
-          <Link
-            className={styles.tabContent}
-            to={{
-              type: isWorkspaceLocation ? WORKSPACE_SEARCH : SEARCH,
+              type: WORKSPACE,
+              query: cleanReportQuery(locationQuery),
               payload: {
                 category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
                 workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
               },
-              query: {},
-              replaceQuery: !isWorkspaceLocation,
             }}
+            onClick={onWorkspaceClick}
+          >
+            <Tooltip content={t((t) => t.common.seeWorkspace)} placement="right">
+              <span className={styles.tabContent}>
+                <Icon icon="workspace" className={styles.searchIcon} />
+              </span>
+            </Tooltip>
+          </Link>
+        </li>
+        <li className={cx(styles.tab, { [styles.current]: isAnySearchLocation })}>
+          <Link
+            className={styles.tabContent}
+            to={
+              isAnySearchLocation
+                ? lastWorkspaceVisited
+                : {
+                    type: isWorkspaceLocation ? WORKSPACE_SEARCH : SEARCH,
+                    payload: {
+                      category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+                      workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+                    },
+                    query: {},
+                    replaceQuery: !isWorkspaceLocation,
+                  }
+            }
             onClick={onSearchClick}
           >
             <Tooltip content={t((t) => t.workspace.categories.search)} placement="right">
@@ -166,6 +195,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
                   to={{
                     ...getLinkToCategory(category as WorkspaceCategory),
                     query: {},
+                    replaceQuery: false,
                   }}
                   onClick={() => onCategoryClick(category as WorkspaceCategory)}
                 >
@@ -214,11 +244,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         <li className={styles.tab}>
           <LanguageToggle />
         </li>
-        <li
-          className={cx(styles.tab, {
-            [styles.current]: locationType === USER,
-          })}
-        >
+        <li className={cx(styles.tab, { [styles.current]: locationType === USER })}>
           <UserButton className={styles.userButton} testId="sidebar-login-icon" />
         </li>
       </ul>
