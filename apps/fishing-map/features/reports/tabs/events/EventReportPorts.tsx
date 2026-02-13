@@ -15,13 +15,14 @@ import { selectReportEventsPortsFilter } from 'features/reports/reports.config.s
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import { useReportHash } from 'features/reports/tabs/events/events-report.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { replaceQueryParams } from 'router/routes.actions'
+
 import {
   selectFetchEventsPortsStatsParams,
   selectReportEventsPortsPaginated,
   selectReportEventsPortsPagination,
 } from './events-report.selectors'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './EventReportPorts.module.css'
 
 function EventReportPorts() {
@@ -50,7 +51,7 @@ function EventReportPorts() {
 
   useEffect(() => {
     replaceQueryParams({ reportEventsPortsFilter: debouncedQuery, reportEventsPortsPage: 0 })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [debouncedQuery])
 
   const onPrevPageClick = () => {

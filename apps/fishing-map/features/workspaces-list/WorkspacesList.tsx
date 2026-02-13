@@ -9,7 +9,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { fetchWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
-import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
+import { isValidLocationCategory, selectLocationCategory } from 'router/routes.selectors'
 
 import type { HighlightedWorkspace } from './workspaces-list.selectors'
 import {

@@ -14,29 +14,33 @@ import { getUTCDateTime } from '../utils/dates'
 
 export { DATASET_COMPARISON_SUFFIX } from '@globalfishingwatch/deck-layer-composer'
 
-export const ROOT_DOM_ELEMENT = '__next'
+export const ROOT_DOM_ELEMENT = '__root__'
 
 export const SUPPORT_EMAIL = 'support@globalfishingwatch.org'
 
-export const IS_DEVELOPMENT_ENV = process.env.NODE_ENV === 'development'
-export const IS_PRODUCTION_BUILD = process.env.NODE_ENV === 'production'
-export const PUBLIC_WORKSPACE_ENV = process.env.NEXT_PUBLIC_WORKSPACE_ENV
+export const IS_DEVELOPMENT_ENV = import.meta.env.DEV
+export const IS_PRODUCTION_BUILD = import.meta.env.PROD
+export const WORKSPACE_ENV = import.meta.env.VITE_WORKSPACE_ENV as string | undefined
 export const IS_PRODUCTION_WORKSPACE_ENV =
-  PUBLIC_WORKSPACE_ENV === 'production' || PUBLIC_WORKSPACE_ENV === 'staging'
+  WORKSPACE_ENV === 'production' || WORKSPACE_ENV === 'staging'
 
-export const SHOW_LEAVE_CONFIRMATION = process.env.NEXT_PUBLIC_SHOW_LEAVE_CONFIRMATION
-  ? process.env.NEXT_PUBLIC_SHOW_LEAVE_CONFIRMATION === 'true'
-  : process.env.NODE_ENV !== 'development'
+export const SHOW_LEAVE_CONFIRMATION = import.meta.env.VITE_SHOW_LEAVE_CONFIRMATION
+  ? import.meta.env.VITE_SHOW_LEAVE_CONFIRMATION === 'true'
+  : !import.meta.env.DEV
 
-export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || '/map'
+export const PATH_BASENAME = (import.meta.env.VITE_PUBLIC_URL as string) || '/map'
 
 export const REPORT_DAYS_LIMIT =
-  typeof process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT !== 'undefined'
-    ? parseInt(process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT)
+  typeof import.meta.env.VITE_REPORT_DAYS_LIMIT !== 'undefined'
+    ? parseInt(import.meta.env.VITE_REPORT_DAYS_LIMIT)
     : 366 // 1 year
 
-export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
-export const GOOGLE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID
+export const GOOGLE_TAG_MANAGER_ID = import.meta.env.VITE_GOOGLE_TAG_MANAGER_ID as
+  | string
+  | undefined
+export const GOOGLE_MEASUREMENT_ID = import.meta.env.VITE_GOOGLE_MEASUREMENT_ID as
+  | string
+  | undefined
 
 // Local storage keys
 export const HINTS = 'hints'

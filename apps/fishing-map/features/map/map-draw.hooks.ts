@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux'
 
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 
-import { replaceQueryParams } from 'routes/routes.actions'
-import { selectIsMapDrawing, selectMapDrawingMode } from 'routes/routes.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectIsMapDrawing, selectMapDrawingMode } from 'router/routes.selectors'
 
 export const useMapDrawConnect = () => {
   const isMapDrawing = useSelector(selectIsMapDrawing)

@@ -11,14 +11,14 @@ import {
   selectIsWorkspaceReady,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
+import { VESSEL, WORKSPACE_VESSEL } from 'router/routes'
 import {
   selectIsAnyAreaReportLocation,
   selectIsPortReportLocation,
   selectIsVesselGroupReportLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './App.module.css'

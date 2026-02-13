@@ -21,6 +21,7 @@ import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
 import { VisualisationChoice } from 'features/workspace/shared/VisualisationChoice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { replaceQueryParams } from 'router/routes.actions'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
 import LayerPanelContainer from '../shared/LayerPanelContainer'
@@ -30,7 +31,6 @@ import { useVisualizationsOptions } from './activity.hooks'
 import LayerPanel from './ActivityLayerPanel'
 
 import activityStyles from './ActivitySection.module.css'
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from 'features/workspace/shared/Section.module.css'
 
 function ActivitySection(): React.ReactElement<any> {

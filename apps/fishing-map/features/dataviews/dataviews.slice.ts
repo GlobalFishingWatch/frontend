@@ -32,7 +32,7 @@ const fetchDataviewByIdThunk = createAsyncThunk(
 )
 
 const USE_MOCKED_DATAVIEWS =
-  IS_DEVELOPMENT_ENV || process.env.NEXT_PUBLIC_USE_LOCAL_DATAVIEWS === 'true'
+  IS_DEVELOPMENT_ENV || import.meta.env.VITE_USE_LOCAL_DATAVIEWS === 'true'
 const mockedDataviewsImported = false
 export const fetchDataviewsByIdsThunk = createAsyncThunk(
   'dataviews/fetch',

@@ -12,8 +12,8 @@ import {
   selectReportSubCategory,
 } from 'features/reports/reports.selectors'
 import type { ReportEventsSubCategory } from 'features/reports/reports.types'
+import { replaceQueryParams } from 'router/routes.actions'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { replaceQueryParams } from 'routes/routes.actions'
 
 function VesselGroupReportEventsSubsectionSelector() {
   const { t } = useTranslation()

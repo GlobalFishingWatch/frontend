@@ -38,9 +38,9 @@ import {
 import EventsReportGraph from 'features/reports/tabs/events/EventsReportGraph'
 import EventsReportGraphSelector from 'features/reports/tabs/events/EventsReportGraphSelector'
 import EventsReportSubsectionSelector from 'features/reports/tabs/events/EventsReportSubsectionSelector'
+import { replaceQueryParams } from 'router/routes.actions'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './EventsReport.module.css'
 
 function EventsReport() {

@@ -16,7 +16,7 @@ import {
 import type { ExtendedFeatureByVesselEventPort } from 'features/map/map.slice'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { selectLocationQuery } from 'router/routes.selectors'
 
 import { ReportCategory } from '../reports.types'
 

@@ -6,9 +6,9 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useClipboardNotification } from 'features/sidebar/sidebar.hooks'
-import type { ROUTE_TYPES } from 'routes/routes'
-import { getCurrentAppUrl } from 'routes/routes.actions'
-import { selectLocationType } from 'routes/routes.selectors'
+import type { ROUTE_TYPES } from 'router/routes'
+import { getCurrentAppUrl } from 'router/routes.actions'
+import { selectLocationType } from 'router/routes.selectors'
 
 function ShareWorkspaceButton() {
   const { t } = useTranslation()

@@ -9,7 +9,8 @@ import type { ChoiceOption, Tab } from '@globalfishingwatch/ui-components'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import { selectVesselIdentitySource } from 'features/vessel/vessel.config.selectors'
-import { replaceQueryParams } from 'routes/routes.actions'
+import { replaceQueryParams } from 'router/routes.actions'
+
 import styles from './VesselIdentity.module.css'
 
 export function useVesselIdentities() {

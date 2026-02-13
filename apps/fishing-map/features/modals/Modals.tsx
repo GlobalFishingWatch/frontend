@@ -41,9 +41,9 @@ import EditWorkspaceModal from 'features/workspace/save/WorkspaceEditModal'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import useSecretMenu, { useSecretKeyboardCombo } from 'hooks/secret-menu.hooks'
-import { router } from 'routes/router'
-import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'routes/routes'
-import { ROUTE_PATHS } from 'routes/routes.utils'
+import { getRouterRef } from 'router/router-ref'
+import { SAVE_WORKSPACE_BEFORE_LEAVE_KEY } from 'router/routes'
+import { ROUTE_PATHS } from 'router/routes.utils'
 import dynamicWithRetry from 'utils/dynamic-import'
 
 import styles from './Modals.module.css'
@@ -119,7 +119,7 @@ const TurningTidesMenuConfig = {
 const ResetWorkspaceConfig = {
   key: 'w',
   dispatchToggle: () => {
-    router.navigate({ to: ROUTE_PATHS.HOME, search: {}, replace: true })
+    getRouterRef().navigate({ to: ROUTE_PATHS.HOME, search: {}, replace: true })
   },
 }
 

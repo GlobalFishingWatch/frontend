@@ -13,7 +13,7 @@ import {
 } from 'features/reports/report-area/area-reports.utils'
 import { isVesselGroupActivityDataview } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
-import { selectReportVesselGroupId } from 'routes/routes.selectors'
+import { selectReportVesselGroupId } from 'router/routes.selectors'
 
 import { dataviewHasUserPointsTimeRange, dataviewHasVesselGroupId } from '../dataviews.utils'
 

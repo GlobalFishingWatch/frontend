@@ -11,7 +11,7 @@ import {
 import { selectActivityCategory } from 'features/app/selectors/app.selectors'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { replaceQueryParams } from 'routes/routes.actions'
+import { replaceQueryParams } from 'router/routes.actions'
 
 export const useHideLegacyActivityCategoryDataviews = () => {
   const actionDone = useRef(false)

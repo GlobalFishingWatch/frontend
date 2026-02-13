@@ -28,7 +28,8 @@ import {
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { isOutdatedVesselGroup } from 'features/vessel-groups/vessel-groups.utils'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
-import { selectReportVesselGroupId } from 'routes/routes.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectReportVesselGroupId } from 'router/routes.selectors'
 import { TimebarVisualisations } from 'types'
 import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -46,7 +47,6 @@ import { useEditVesselGroupModal, useFetchVesselGroupReport } from './vessel-gro
 import { selectVGRData, selectVGRStatus } from './vessel-group-report.slice'
 import VesselGroupReportError from './VesselGroupReportError'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './VesselGroupReport.module.css'
 
 function VesselGroupReport() {

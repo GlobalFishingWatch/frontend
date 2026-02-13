@@ -23,8 +23,8 @@ import {
   selectWorkspaceDataviewInstances,
 } from 'features/workspace/workspace.selectors'
 import type { LastWorkspaceVisited } from 'features/workspace/workspace.slice'
-import { selectLocationQuery, selectUrlDataviewInstances } from 'routes/routes.selectors'
-import { ROUTE_PATHS } from 'routes/routes.utils'
+import { selectLocationQuery, selectUrlDataviewInstances } from 'router/routes.selectors'
+import { ROUTE_PATHS } from 'router/routes.utils'
 
 import { selectAllVesselGroups } from './vessel-groups.slice'
 

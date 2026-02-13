@@ -28,12 +28,12 @@ import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
 import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
 import { DATAVIEWS_WARNING } from 'features/workspace/context-areas/ContextAreaLayerPanel'
+import { replaceQueryParams } from 'router/routes.actions'
 import { htmlSafeParse } from 'utils/html-parser'
 
 import type { VesselAreaSubsection } from '../vessel.types'
 import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './VesselAreas.module.css'
 
 type VesselAreasProps = {

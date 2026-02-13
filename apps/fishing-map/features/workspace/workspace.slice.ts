@@ -56,17 +56,17 @@ import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { router } from 'routes/router'
-import { HOME, REPORT, WORKSPACE } from 'routes/routes'
-import { cleanQueryParams, replaceQueryParams } from 'routes/routes.actions'
+import { getRouterRef } from 'router/router-ref'
+import { HOME, REPORT, WORKSPACE } from 'router/routes'
+import { cleanQueryParams, replaceQueryParams } from 'router/routes.actions'
 import {
   selectLocationCategory,
   selectLocationType,
   selectReportId,
   selectUrlDataviewInstances,
-} from 'routes/routes.selectors'
-import type { LinkTo } from 'routes/routes.types'
-import { ROUTE_PATHS } from 'routes/routes.utils'
+} from 'router/routes.selectors'
+import type { LinkTo } from 'router/routes.types'
+import { ROUTE_PATHS } from 'router/routes.utils'
 import type { AppDispatch } from 'store'
 import type { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
 import type { AsyncError } from 'utils/async-slice'
@@ -82,7 +82,7 @@ import { parseUpsertWorkspace } from './workspace.utils'
 
 /**
  * History navigation entry stored in TanStack Router format.
- * No conversion needed when navigating back - use directly with Link or router.navigate().
+ * No conversion needed when navigating back - use directly with Link or getRouterRef().navigate().
  */
 export type LastWorkspaceVisited = LinkTo & {
   pathname?: string
@@ -116,12 +116,17 @@ type RejectedActionPayload = {
   error: AsyncError
 }
 
-export const getDefaultWorkspace = () => {
+const workspaceModules = import.meta.glob<{ default: AppWorkspace }>(
+  '../../data/default-workspaces/workspace.*.ts'
+)
+
+export const getDefaultWorkspace = async (): Promise<AppWorkspace> => {
   const workspaceEnv = getWorkspaceEnv()
-  const workspace = import(`../../data/default-workspaces/workspace.${workspaceEnv}`).then(
-    (m) => m.default
-  )
-  return workspace as Promise<AppWorkspace>
+  const loader =
+    workspaceModules[`../../data/default-workspaces/workspace.${workspaceEnv}.ts`] ??
+    workspaceModules['../../data/default-workspaces/workspace.production.ts']!
+  const mod = await loader()
+  return mod.default
 }
 
 type FetchWorkspacesThunkParams = {
@@ -412,7 +417,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
       // Navigate after workspace save
       const targetType = locationType === HOME ? WORKSPACE : locationType
       if (targetType === WORKSPACE) {
-        router.navigate({
+        getRouterRef().navigate({
           to: ROUTE_PATHS.WORKSPACE,
           params: { category: locationCategory, workspaceId: workspaceUpdated.id },
           search: {},
@@ -420,14 +425,14 @@ export const saveWorkspaceThunk = createAsyncThunk(
         })
       } else if (targetType === REPORT) {
         const reportId = selectReportId(state)
-        router.navigate({
+        getRouterRef().navigate({
           to: ROUTE_PATHS.REPORT,
           params: { reportId: reportId! },
           search: {},
           replace: true,
         })
       } else {
-        router.navigate({
+        getRouterRef().navigate({
           to: ROUTE_PATHS.HOME,
           search: {},
           replace: true,

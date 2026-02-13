@@ -7,8 +7,8 @@ import { InputText, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import type { ReportState } from 'features/reports/reports.types'
-import { replaceQueryParams } from 'routes/routes.actions'
-import { selectLocationType } from 'routes/routes.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectLocationType } from 'router/routes.selectors'
 
 import styles from './ReportVesselsFilter.module.css'
 

@@ -3,7 +3,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { selectLocationQuery } from 'router/routes.selectors'
 
 import type { VesselProfileState, VesselProfileStateProperty } from './vessel.types'
 

@@ -24,7 +24,7 @@ import {
   selectIsUserLogged,
   selectUserData,
 } from 'features/user/selectors/user.selectors'
-import { ROUTE_PATHS } from 'routes/routes.utils'
+import { ROUTE_PATHS } from 'router/routes.utils'
 
 import {
   selectHasAmbassadorBadge,

@@ -17,8 +17,8 @@ import {
 } from 'features/reports/reports.config'
 import { selectReportEventsGraph } from 'features/reports/reports.config.selectors'
 import type { ReportEventsGraph } from 'features/reports/reports.types'
-import { selectIsPortReportLocation } from 'routes/routes.selectors'
-import { replaceQueryParams } from 'routes/routes.actions'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectIsPortReportLocation } from 'router/routes.selectors'
 
 type EventsReportGraphSelectorProps = {
   disabled: boolean

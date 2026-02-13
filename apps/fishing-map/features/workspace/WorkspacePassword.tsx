@@ -13,7 +13,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk, setWorkspacePassword } from 'features/workspace/workspace.slice'
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from 'features/workspace/workspace.utils'
-import { selectWorkspaceId } from 'routes/routes.selectors'
+import { selectWorkspaceId } from 'router/routes.selectors'
 
 import ErrorPlaceholder from './ErrorPlaceholder'
 

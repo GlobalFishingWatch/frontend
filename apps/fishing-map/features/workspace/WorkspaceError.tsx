@@ -7,7 +7,7 @@ import { Button } from '@globalfishingwatch/ui-components'
 
 import { selectWorkspaceVesselGroupsError } from 'features/vessel-groups/vessel-groups.slice'
 import { selectWorkspace, selectWorkspaceError } from 'features/workspace/workspace.selectors'
-import { selectWorkspaceId } from 'routes/routes.selectors'
+import { selectWorkspaceId } from 'router/routes.selectors'
 
 import ErrorPlaceholder from './ErrorPlaceholder'
 import { isPrivateWorkspaceNotAllowed } from './workspace.utils'

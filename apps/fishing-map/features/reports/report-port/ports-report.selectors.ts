@@ -5,7 +5,7 @@ import { EndpointId } from '@globalfishingwatch/api-types'
 import { PORTS_FOOTPRINT_DATAVIEW_SLUG } from 'data/workspaces'
 import { selectAreas } from 'features/areas/areas.slice'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
-import { selectReportPortId } from 'routes/routes.selectors'
+import { selectReportPortId } from 'router/routes.selectors'
 
 export const selectPortReportFootprintDatasetId = createSelector(
   [selectAllDataviews],

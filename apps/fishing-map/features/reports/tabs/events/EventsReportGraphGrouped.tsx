@@ -32,8 +32,8 @@ import type { EventsReportGraphProps } from 'features/reports/tabs/events/events
 import EventsReportDownload from 'features/reports/tabs/events/EventsReportDownload'
 import { EventsReportIndividualGraphTooltip } from 'features/reports/tabs/events/EventsReportGraphEvolution'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectLocationPayload } from 'routes/routes.selectors'
-import { ROUTE_PATHS } from 'routes/routes.utils'
+import { selectLocationPayload } from 'router/routes.selectors'
+import { ROUTE_PATHS } from 'router/routes.utils'
 
 import EncounterIcon from './icons/event-encounter.svg'
 import LoiteringIcon from './icons/event-loitering.svg'

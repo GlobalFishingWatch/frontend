@@ -41,6 +41,7 @@
         "commands": [
           "rimraf dist/apps/fishing-map/public/locales",
           "rimraf dist/apps/fishing-map",
+          "rimraf apps/fishing-map/.output",
           "rimraf .next"
         ]
       }
@@ -74,16 +75,35 @@
     },
     "start": {
       "dependsOn": ["prepare-start"],
-      "executor": "@nx/next:server",
+      "executor": "@nx/vite:dev-server",
+      "defaultConfiguration": "development",
       "options": {
         "buildTarget": "fishing-map:build",
-        "dev": true,
         "port": 3003
       },
       "configurations": {
+        "development": {
+          "buildTarget": "fishing-map:build:development"
+        },
         "production": {
-          "buildTarget": "fishing-map:build:production",
-          "dev": false
+          "buildTarget": "fishing-map:build:production"
+        }
+      }
+    },
+    "preview": {
+      "dependsOn": ["build"],
+      "executor": "@nx/vite:preview-server",
+      "defaultConfiguration": "production",
+      "options": {
+        "buildTarget": "fishing-map:build",
+        "port": 3003
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "fishing-map:build:development"
+        },
+        "production": {
+          "buildTarget": "fishing-map:build:production"
         }
       }
     },
@@ -107,14 +127,22 @@
       "continuous": true
     },
     "build": {
-      "executor": "@nx/next:build",
-      "outputs": ["{workspaceRoot}/dist/apps/fishing-map"],
-      "dependsOn": ["i18n", "prepare-loaders", "clean-next"],
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}", "{projectRoot}/.output"],
+      "defaultConfiguration": "production",
+      "dependsOn": ["^build", "i18n", "prepare-loaders", "clean-next"],
       "options": {
-        "outputPath": "dist/apps/fishing-map"
+        "outputPath": "dist/apps/fishing-map",
+        "configFile": "apps/fishing-map/vite.config.mts",
+        "buildLibsFromSource": true
       },
       "configurations": {
-        "production": {}
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
       }
     },
     "test": {

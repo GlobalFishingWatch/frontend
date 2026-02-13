@@ -44,18 +44,18 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
+import { replaceQueryParams } from 'router/routes.actions'
 import {
   selectIsWorkspaceVesselLocation,
   selectVesselId,
   selectWorkspaceId,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import VesselActivity from './activity/VesselActivity'
 import VesselIdentity from './identity/VesselIdentity'
 import type { VesselSection } from './vessel.types'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './Vessel.module.css'
 
 const Vessel = () => {

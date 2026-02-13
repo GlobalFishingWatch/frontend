@@ -138,7 +138,6 @@
     "comingSoon": "Coming soon",
     "confidence": "confidence",
     "confirm": "Confirm",
-    "confirmLeave": "Are you sure you want to leave without saving your workspace?",
     "context": "Reference",
     "context_areas": "Reference layers",
     "continue": "Continue",
@@ -953,7 +952,6 @@
     "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
     "groups": "Groups",
     "info": "User Info",
-    "profile": "Profile",
     "seeDataset": "See on map",
     "title": "User"
   },
@@ -988,7 +986,6 @@
     "clickToFitMapToEvents": "Center map on the events inside",
     "clickToSeeMore": "Click to see more information",
     "codMarinha": "Cod Marinha",
-    "confirmationClose": "Do you want to keep this vessel in your workspace? Press 'Ok' to keep or 'Cancel' to exit vessel profile and remove it.",
     "dataset": "Source",
     "depthM": "Depth (m)",
     "exitTrackCorrection": "Exit activity issue (track correction) panel to be able to navigate to the vessel profile",
@@ -1345,10 +1342,8 @@
     "saveOwnerOnly": "This workspace can only be edited by its creator",
     "sharePrivateDisclaimer": "This workspace contains datasets that require special permissions",
     "siteDescription": {
-      "default": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
       "fishing-activity": "The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.",
-      "marine-manager": "The portal provides dynamic interactive data on marine traffic, biology and ocean conditions to support marine protected area design and management.",
-      "search": "Search by vessel name or identification code."
+      "marine-manager": "The portal provides dynamic interactive data on marine traffic, biology and ocean conditions to support marine protected area design and management."
     },
     "title": "Workspace",
     "titlePlural": "Workspaces",

@@ -12,7 +12,7 @@ import {
   selectLocationAreaId,
   selectLocationDatasetId,
   selectReportId,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 
 import {
   selectReportActivitySubCategorySelector,
