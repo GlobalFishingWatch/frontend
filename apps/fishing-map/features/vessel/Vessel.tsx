@@ -192,7 +192,6 @@ const Vessel = () => {
       end: undefined,
       vesselSelfReportedId: undefined,
     })
-    window.location.reload()
   }, [])
 
   if (infoStatus === AsyncReducerStatus.Loading) {

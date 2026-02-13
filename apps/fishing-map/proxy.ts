@@ -12,10 +12,12 @@ const basePath =
   (process.env['NEXT_PUBLIC_URL'] || process.env['VITE_PUBLIC_URL'] || '/map').replace(/\/$/, '') ||
   '/map'
 
-const AUTH_REQUIRED_RESPONSE = new Response('Auth Required.', {
-  status: 401,
-  headers: { 'WWW-authenticate': 'Basic realm="Secure Area"' },
-})
+function createAuthRequiredResponse() {
+  return new Response('Auth Required.', {
+    status: 401,
+    headers: { 'WWW-authenticate': 'Basic realm="Secure Area"' },
+  })
+}
 
 function isRootPath(pathname: string): boolean {
   const normalized = pathname.replace(/\/$/, '') || '/'
@@ -61,7 +63,7 @@ export function proxy(request: Request): ProxyResult {
         // Invalid auth format
       }
     }
-    return { type: 'response', response: AUTH_REQUIRED_RESPONSE }
+    return { type: 'response', response: createAuthRequiredResponse() }
   }
 
   return { type: 'next' }

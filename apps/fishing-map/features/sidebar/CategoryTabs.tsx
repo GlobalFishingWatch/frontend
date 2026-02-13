@@ -1,9 +1,8 @@
-import { Fragment, useCallback } from 'react'
+import { Fragment, lazy, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
-import dynamic from 'next/dynamic'
 
 import type { IconType } from '@globalfishingwatch/ui-components'
 import { Icon, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
@@ -42,12 +41,11 @@ import {
   selectIsWorkspaceLocation,
 } from 'router/routes.selectors'
 import { ROUTE_PATHS } from 'router/routes.utils'
+import type { QueryParams } from 'types'
 
 import styles from './CategoryTabs.module.css'
 
-const FeedbackModal = dynamic(
-  () => import(/* webpackChunkName: "FeedbackModal" */ 'features/feedback/FeedbackModal')
-)
+const FeedbackModal = lazy(() => import('features/feedback/FeedbackModal'))
 
 type CategoryTabsProps = {
   onMenuClick: () => void
@@ -125,9 +123,9 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             className={styles.tabContent}
             onClick={onWorkspaceClick}
           >
-            <Tooltip content={t((t) => t.common.seeDefault)} placement="right">
+            <Tooltip content={t((t) => t.common.seeWorkspace)} placement="right">
               <span className={styles.tabContent}>
-                <Icon icon="home" className={styles.searchIcon} />
+                <Icon icon="workspace" className={styles.searchIcon} />
               </span>
             </Tooltip>
           </Link>
@@ -144,7 +142,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
               category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
               workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
             }}
-            search={isWorkspaceLocation ? (prev) => prev : {}}
+            search={isWorkspaceLocation ? (prev: QueryParams) => prev : {}}
             replace={!isWorkspaceLocation}
             onClick={onSearchClick}
           >

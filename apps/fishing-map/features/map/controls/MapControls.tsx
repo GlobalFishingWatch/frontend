@@ -1,8 +1,7 @@
-import { Fragment, memo, useCallback, useMemo, useState } from 'react'
+import { Fragment, lazy, memo, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import dynamic from 'next/dynamic'
 
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
@@ -25,20 +24,11 @@ import {
 
 import styles from './MapControls.module.css'
 
-const MiniGlobeInfo = dynamic(
-  () => import(/* webpackChunkName: "MiniGlobeInfo" */ './MiniGlobeInfo')
-)
-const MapControlScreenshot = dynamic(
-  () => import(/* webpackChunkName: "MapControlScreenshot" */ './MapControlScreenshot')
-)
-const MapSearch = dynamic(() => import(/* webpackChunkName: "MapSearch" */ './MapSearch'))
-const Rulers = dynamic(
-  () => import(/* webpackChunkName: "Rulers" */ 'features/map/controls/RulersControl')
-)
-const MapAnnotations = dynamic(
-  () =>
-    import(/* webpackChunkName: "AnnotationsControl" */ 'features/map/controls/AnnotationsControl')
-)
+const MiniGlobeInfo = lazy(() => import('./MiniGlobeInfo'))
+const MapControlScreenshot = lazy(() => import('./MapControlScreenshot'))
+const MapSearch = lazy(() => import('./MapSearch'))
+const Rulers = lazy(() => import('features/map/controls/RulersControl'))
+const MapAnnotations = lazy(() => import('features/map/controls/AnnotationsControl'))
 
 const MapControls = ({
   mapLoading = false,
