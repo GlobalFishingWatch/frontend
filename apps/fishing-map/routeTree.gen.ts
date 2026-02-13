@@ -33,7 +33,6 @@ import { Route as AppCategoryWorkspaceIdReportIndexRouteImport } from './routes/
 import { Route as AppCategoryWorkspaceIdVesselVesselIdRouteImport } from './routes/_app/$category/$workspaceId/vessel.$vesselId'
 import { Route as AppCategoryWorkspaceIdVesselGroupReportVesselGroupIdRouteImport } from './routes/_app/$category/$workspaceId/vessel-group-report.$vesselGroupId'
 import { Route as AppCategoryWorkspaceIdPortsReportPortIdRouteImport } from './routes/_app/$category/$workspaceId/ports-report.$portId'
-import { Route as AppCategoryWorkspaceIdReportDatasetIdIndexRouteImport } from './routes/_app/$category/$workspaceId/report/$datasetId/index'
 import { Route as AppCategoryWorkspaceIdReportDatasetIdAreaIdRouteImport } from './routes/_app/$category/$workspaceId/report/$datasetId/$areaId'
 
 const AppRoute = AppRouteImport.update({
@@ -164,12 +163,6 @@ const AppCategoryWorkspaceIdPortsReportPortIdRoute =
     path: '/ports-report/$portId',
     getParentRoute: () => AppCategoryWorkspaceIdRoute,
   } as any)
-const AppCategoryWorkspaceIdReportDatasetIdIndexRoute =
-  AppCategoryWorkspaceIdReportDatasetIdIndexRouteImport.update({
-    id: '/report/$datasetId/',
-    path: '/report/$datasetId/',
-    getParentRoute: () => AppCategoryWorkspaceIdRoute,
-  } as any)
 const AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute =
   AppCategoryWorkspaceIdReportDatasetIdAreaIdRouteImport.update({
     id: '/report/$datasetId/$areaId',
@@ -202,7 +195,6 @@ export interface FileRoutesByFullPath {
   '/$category/$workspaceId/vessel/$vesselId': typeof AppCategoryWorkspaceIdVesselVesselIdRoute
   '/$category/$workspaceId/report/': typeof AppCategoryWorkspaceIdReportIndexRoute
   '/$category/$workspaceId/report/$datasetId/$areaId': typeof AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute
-  '/$category/$workspaceId/report/$datasetId/': typeof AppCategoryWorkspaceIdReportDatasetIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/user': typeof AppUserRoute
@@ -228,7 +220,6 @@ export interface FileRoutesByTo {
   '/$category/$workspaceId/vessel/$vesselId': typeof AppCategoryWorkspaceIdVesselVesselIdRoute
   '/$category/$workspaceId/report': typeof AppCategoryWorkspaceIdReportIndexRoute
   '/$category/$workspaceId/report/$datasetId/$areaId': typeof AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute
-  '/$category/$workspaceId/report/$datasetId': typeof AppCategoryWorkspaceIdReportDatasetIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -257,7 +248,6 @@ export interface FileRoutesById {
   '/_app/$category/$workspaceId/vessel/$vesselId': typeof AppCategoryWorkspaceIdVesselVesselIdRoute
   '/_app/$category/$workspaceId/report/': typeof AppCategoryWorkspaceIdReportIndexRoute
   '/_app/$category/$workspaceId/report/$datasetId/$areaId': typeof AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute
-  '/_app/$category/$workspaceId/report/$datasetId/': typeof AppCategoryWorkspaceIdReportDatasetIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -286,7 +276,6 @@ export interface FileRouteTypes {
     | '/$category/$workspaceId/vessel/$vesselId'
     | '/$category/$workspaceId/report/'
     | '/$category/$workspaceId/report/$datasetId/$areaId'
-    | '/$category/$workspaceId/report/$datasetId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/user'
@@ -312,7 +301,6 @@ export interface FileRouteTypes {
     | '/$category/$workspaceId/vessel/$vesselId'
     | '/$category/$workspaceId/report'
     | '/$category/$workspaceId/report/$datasetId/$areaId'
-    | '/$category/$workspaceId/report/$datasetId'
   id:
     | '__root__'
     | '/_app'
@@ -340,7 +328,6 @@ export interface FileRouteTypes {
     | '/_app/$category/$workspaceId/vessel/$vesselId'
     | '/_app/$category/$workspaceId/report/'
     | '/_app/$category/$workspaceId/report/$datasetId/$areaId'
-    | '/_app/$category/$workspaceId/report/$datasetId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -527,13 +514,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCategoryWorkspaceIdPortsReportPortIdRouteImport
       parentRoute: typeof AppCategoryWorkspaceIdRoute
     }
-    '/_app/$category/$workspaceId/report/$datasetId/': {
-      id: '/_app/$category/$workspaceId/report/$datasetId/'
-      path: '/report/$datasetId'
-      fullPath: '/$category/$workspaceId/report/$datasetId/'
-      preLoaderRoute: typeof AppCategoryWorkspaceIdReportDatasetIdIndexRouteImport
-      parentRoute: typeof AppCategoryWorkspaceIdRoute
-    }
     '/_app/$category/$workspaceId/report/$datasetId/$areaId': {
       id: '/_app/$category/$workspaceId/report/$datasetId/$areaId'
       path: '/report/$datasetId/$areaId'
@@ -552,7 +532,6 @@ interface AppCategoryWorkspaceIdRouteChildren {
   AppCategoryWorkspaceIdVesselVesselIdRoute: typeof AppCategoryWorkspaceIdVesselVesselIdRoute
   AppCategoryWorkspaceIdReportIndexRoute: typeof AppCategoryWorkspaceIdReportIndexRoute
   AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute: typeof AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute
-  AppCategoryWorkspaceIdReportDatasetIdIndexRoute: typeof AppCategoryWorkspaceIdReportDatasetIdIndexRoute
 }
 
 const AppCategoryWorkspaceIdRouteChildren: AppCategoryWorkspaceIdRouteChildren =
@@ -570,8 +549,6 @@ const AppCategoryWorkspaceIdRouteChildren: AppCategoryWorkspaceIdRouteChildren =
       AppCategoryWorkspaceIdReportIndexRoute,
     AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute:
       AppCategoryWorkspaceIdReportDatasetIdAreaIdRoute,
-    AppCategoryWorkspaceIdReportDatasetIdIndexRoute:
-      AppCategoryWorkspaceIdReportDatasetIdIndexRoute,
   }
 
 const AppCategoryWorkspaceIdRouteWithChildren =

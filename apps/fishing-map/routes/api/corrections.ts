@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { loadSpreadsheetDoc } from 'server/api/utils/spreadsheets'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 
@@ -62,16 +61,18 @@ export type ApiResponse = {
   data?: InfoCorrectionSendFormat
 }
 
+type RouteOptions = Parameters<ReturnType<typeof createFileRoute<'/api/corrections'>>>[0]
+
 export const Route = createFileRoute('/api/corrections')({
   server: {
     handlers: {
       POST: async ({ request }: { request: Request }) => {
-        const body = await request.json()
-        const rawData = body?.data || {}
+        const body = await request.json().catch(() => null)
+        const rawData = body?.data
 
-        if (!rawData) {
+        if (!rawData || !rawData.source) {
           return Response.json(
-            { success: false, message: 'Feedback data is required' },
+            { success: false, message: 'Correction data with source is required' },
             { status: 400 }
           )
         }
@@ -83,6 +84,7 @@ export const Route = createFileRoute('/api/corrections')({
               ? REGISTRY_CORRECTIONS_SHEET_TITLE
               : GFW_SOURCE_CORRECTIONS_SHEET_TITLE
 
+          const { loadSpreadsheetDoc } = await import('server/api/utils/spreadsheets')
           const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(spreadsheetId)
           const sheet = feedbackSpreadsheetDoc.sheetsByTitle[spreadsheetTitle]
 
@@ -120,4 +122,4 @@ export const Route = createFileRoute('/api/corrections')({
       },
     },
   },
-})
+} as RouteOptions)

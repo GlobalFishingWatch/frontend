@@ -1,8 +1,7 @@
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import Script from 'next/script'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
@@ -16,6 +15,25 @@ import useClickedOutside from 'hooks/use-clicked-outside'
 import { Locale } from 'types'
 
 import styles from './LanguageToggle.module.css'
+
+function CrowdinScripts({ enabled }: { enabled: boolean }) {
+  const injectedRef = useRef(false)
+
+  useEffect(() => {
+    if (!enabled || injectedRef.current) return
+    injectedRef.current = true
+
+    const initScript = document.createElement('script')
+    initScript.textContent = `var _jipt = []; _jipt.push(['project', 'gfw-frontend']);`
+    document.head.appendChild(initScript)
+
+    const crowdinScript = document.createElement('script')
+    crowdinScript.src = '//cdn.crowdin.com/jipt/jipt.js'
+    document.head.appendChild(crowdinScript)
+  }, [enabled])
+
+  return null
+}
 
 type LanguageToggleProps = {
   className?: string
@@ -103,21 +121,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
           </li>
         )}
       </ul>
-      {i18n.language === CROWDIN_IN_CONTEXT_LANG && (
-        <Fragment>
-          <Script
-            id="pre-crowding"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
-            var _jipt = [];
-            _jipt.push(['project', 'gfw-frontend']);
-    `,
-            }}
-          />
-          <Script id="crowding" src="//cdn.crowdin.com/jipt/jipt.js" strategy="afterInteractive" />
-        </Fragment>
-      )}
+      <CrowdinScripts enabled={i18n.language === CROWDIN_IN_CONTEXT_LANG} />
     </div>
   )
 }

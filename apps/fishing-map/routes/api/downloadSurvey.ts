@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { loadSpreadsheetDoc } from 'server/api/utils/spreadsheets'
 
 const SURVEY_SPREADSHEET_ID = process.env.NEXT_DOWNLOAD_SURVEY_SPREADSHEET_ID || ''
 const SURVEY_SHEET_TITLE = 'answers'
@@ -22,13 +21,18 @@ export type ApiResponse = {
   data?: FeedbackFormData
 }
 
-export const Route = createFileRoute('/api/downloadSurvey')({
-  server: {
+type RouteOptions = Parameters<
+  ReturnType<typeof createFileRoute<'/api/downloadSurvey'>>
+>[0]
+
+export const Route = createFileRoute('/api/downloadSurvey')(
+  {
+    server: {
     handlers: {
       POST: async ({ request }: { request: Request }) => {
-        const data: FeedbackFormData = await request.json().catch(() => ({}))
+        const data: FeedbackFormData = await request.json().catch(() => null)
 
-        if (!data) {
+        if (!data || !data.email) {
           return Response.json(
             { success: false, message: 'Survey data is required' },
             { status: 400 }
@@ -36,6 +40,7 @@ export const Route = createFileRoute('/api/downloadSurvey')({
         }
 
         try {
+          const { loadSpreadsheetDoc } = await import('server/api/utils/spreadsheets')
           const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(SURVEY_SPREADSHEET_ID)
           const sheet = feedbackSpreadsheetDoc.sheetsByTitle[SURVEY_SHEET_TITLE]
 
@@ -56,4 +61,5 @@ export const Route = createFileRoute('/api/downloadSurvey')({
       },
     },
   },
-})
+  } as RouteOptions
+)

@@ -1,8 +1,7 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, lazy, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { useRouter } from '@tanstack/react-router'
-import dynamic from 'next/dynamic'
 
 import { WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -18,11 +17,8 @@ import { getCurrentAppUrl } from 'router/routes.actions'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-const NewReportModal = dynamic(
-  () =>
-    import(
-      /* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/shared/new-report-modal/NewAreaReportModal'
-    )
+const NewReportModal = lazy(
+  () => import('features/reports/shared/new-report-modal/NewAreaReportModal')
 )
 
 function SaveReportButton() {

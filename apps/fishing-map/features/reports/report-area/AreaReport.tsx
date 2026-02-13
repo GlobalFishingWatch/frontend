@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo } from 'react'
+import { Fragment, lazy, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
@@ -42,26 +42,13 @@ import WorkspaceError from 'features/workspace/WorkspaceError'
 import { replaceQueryParams } from 'router/routes.actions'
 import { TimebarVisualisations } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import dynamicWithRetry from 'utils/dynamic-import'
 
 import styles from 'features/reports/report-area/AreaReport.module.css'
 
-const ReportActivity = dynamicWithRetry(
-  () =>
-    import(/* webpackChunkName: "ReportActivity" */ 'features/reports/tabs/activity/ReportActivity')
-)
-const ReportEnvironment = dynamicWithRetry(
-  () =>
-    import(
-      /* webpackChunkName: "ReportEnvironment" */ 'features/reports/tabs/environment/ReportEnvironment'
-    )
-)
-const ReportOthers = dynamicWithRetry(
-  () => import(/* webpackChunkName: "ReportOthers" */ 'features/reports/tabs/others/ReportOthers')
-)
-const ReportEvents = dynamicWithRetry(
-  () => import(/* webpackChunkName: "ReportEvents" */ 'features/reports/tabs/events/EventsReport')
-)
+const ReportActivity = lazy(() => import('features/reports/tabs/activity/ReportActivity'))
+const ReportEnvironment = lazy(() => import('features/reports/tabs/environment/ReportEnvironment'))
+const ReportOthers = lazy(() => import('features/reports/tabs/others/ReportOthers'))
+const ReportEvents = lazy(() => import('features/reports/tabs/events/EventsReport'))
 
 export default function Report() {
   useMigrateWorkspaceToast()

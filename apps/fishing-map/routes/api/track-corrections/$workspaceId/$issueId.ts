@@ -1,6 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { getWorkspaceIssueDetail } from 'server/api/track-corrections/get-one'
-import { addCommentToIssue } from 'server/api/track-corrections/post-comment'
 
 import type {
   TrackCorrection,
@@ -16,8 +14,13 @@ export type GetIssueDetailAPIResponse = TrackCorrection
 
 export type APIResponse = ErrorAPIResponse | GetIssueDetailAPIResponse
 
-export const Route = createFileRoute('/api/track-corrections/$workspaceId/$issueId')({
-  server: {
+type RouteOptions = Parameters<
+  ReturnType<typeof createFileRoute<'/api/track-corrections/$workspaceId/$issueId'>>
+>[0]
+
+export const Route = createFileRoute('/api/track-corrections/$workspaceId/$issueId')(
+  {
+    server: {
     handlers: {
       POST: async ({
         request,
@@ -50,6 +53,8 @@ export const Route = createFileRoute('/api/track-corrections/$workspaceId/$issue
           )
         }
 
+        const { addCommentToIssue } = await import('server/api/track-corrections/post-comment')
+        const { getWorkspaceIssueDetail } = await import('server/api/track-corrections/get-one')
         await addCommentToIssue(issueId, body.commentBody as TrackCorrectionComment, workspaceId)
         await getWorkspaceIssueDetail(workspaceId, issueId)
 
@@ -60,4 +65,5 @@ export const Route = createFileRoute('/api/track-corrections/$workspaceId/$issue
       },
     },
   },
-})
+  } as RouteOptions
+)

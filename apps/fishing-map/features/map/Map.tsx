@@ -1,6 +1,5 @@
-import { Fragment, useCallback, useEffect, useMemo } from 'react'
+import { Fragment, lazy, useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import dynamic from 'next/dynamic'
 
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
@@ -35,18 +34,9 @@ import TimeComparisonLegend from './TimeComparisonLegend'
 
 import styles from './Map.module.css'
 
-const DrawDialog = dynamic(
-  () => import(/* webpackChunkName: "DrawDialog" */ './overlays/draw/DrawDialog')
-)
-const Hint = dynamic(() => import(/* webpackChunkName: "Hint" */ 'features/help/Hint'))
-
-const DeckGLWrapper = dynamic(
-  () => import(/* webpackChunkName: "DeckGLWrapper" */ './DeckGLWrapper'),
-  {
-    ssr: false,
-    loading: () => null,
-  }
-)
+const DrawDialog = lazy(() => import('./overlays/draw/DrawDialog'))
+const Hint = lazy(() => import('features/help/Hint'))
+const DeckGLWrapper = lazy(() => import('./DeckGLWrapper'))
 
 const MapWrapper = () => {
   useUpdateViewStateUrlParams()

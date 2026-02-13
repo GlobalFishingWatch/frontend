@@ -2,6 +2,7 @@ import { createRouter, Navigate } from '@tanstack/react-router'
 
 import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataviews-client'
 
+// import { Spinner } from '@globalfishingwatch/ui-components'
 import { PATH_BASENAME } from 'data/config'
 import { setRouterRef } from 'router/router-ref'
 import { ROUTE_PATHS } from 'router/routes.utils'
@@ -9,11 +10,11 @@ import type { QueryParams } from 'types'
 
 import { routeTree } from './routeTree.gen'
 
-const parseAppWorkspace = (searchStr: string): Record<string, any> => {
+const parseAppWorkspace = (searchStr: string): QueryParams => {
   return parseWorkspace(searchStr, {
     reportAreaBounds: (reportAreaBounds: string[]) =>
       reportAreaBounds?.map((bound: string) => parseFloat(bound)),
-  })
+  }) as QueryParams
 }
 
 export function getRouter() {
@@ -22,12 +23,12 @@ export function getRouter() {
     basepath: PATH_BASENAME,
     defaultPreload: false,
     scrollRestoration: true,
-    defaultNotFoundComponent: () => Navigate({ to: ROUTE_PATHS.HOME }),
-    stringifySearch: (search: Record<string, unknown>) => {
-      const str = stringifyWorkspace(search as QueryParams)
+    defaultNotFoundComponent: () => <Navigate to={ROUTE_PATHS.HOME} />,
+    stringifySearch: (search: QueryParams) => {
+      const str = stringifyWorkspace(search)
       return str ? `?${str}` : ''
     },
-    parseSearch: (searchStr: string) => parseAppWorkspace(searchStr),
+    parseSearch: parseAppWorkspace,
   })
 
   setRouterRef(router)

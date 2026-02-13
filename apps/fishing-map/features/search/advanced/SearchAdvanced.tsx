@@ -1,8 +1,7 @@
 import type { ChangeEvent } from 'react'
-import { useCallback } from 'react'
+import { lazy, useCallback } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import dynamic from 'next/dynamic'
 
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
@@ -36,9 +35,7 @@ import SearchError from '../basic/SearchError'
 
 import styles from 'features/search/advanced/SearchAdvanced.module.css'
 
-const SearchAdvancedResults = dynamic(
-  () => import(/* webpackChunkName: "SearchAdvancedResults" */ './SearchAdvancedResults')
-)
+const SearchAdvancedResults = lazy(() => import('./SearchAdvancedResults'))
 
 function SearchAdvanced({
   onSuggestionClick,

@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { loadSpreadsheetDoc } from 'server/api/utils/spreadsheets'
 
 import type { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 
@@ -35,8 +34,13 @@ export type ApiResponse = {
   data?: FeedbackForm['data']
 }
 
-export const Route = createFileRoute('/api/feedback')({
-  server: {
+type RouteOptions = Parameters<
+  ReturnType<typeof createFileRoute<'/api/feedback'>>
+>[0]
+
+export const Route = createFileRoute('/api/feedback')(
+  {
+    server: {
     handlers: {
       POST: async ({ request }: { request: Request }) => {
         const body = await request.json().catch(() => ({}))
@@ -60,6 +64,7 @@ export const Route = createFileRoute('/api/feedback')({
               : type === 'corrections'
                 ? CORRECTIONS_SHEET_TITLE
                 : FEEDBACK_SHEET_TITLE
+          const { loadSpreadsheetDoc } = await import('server/api/utils/spreadsheets')
           const feedbackSpreadsheetDoc = await loadSpreadsheetDoc(spreadsheetId)
           const sheet = feedbackSpreadsheetDoc.sheetsByTitle[spreadsheetTitle]
 
@@ -80,4 +85,5 @@ export const Route = createFileRoute('/api/feedback')({
       },
     },
   },
-})
+  } as RouteOptions
+)
