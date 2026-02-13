@@ -12,14 +12,14 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
-import { selectIsAnyReportLocation, selectIsAnyVesselLocation } from 'routes/routes.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectIsAnyReportLocation, selectIsAnyVesselLocation } from 'router/routes.selectors'
 import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
 
 import type { MAP_CONTAINER_ID } from '../map-viewport.hooks'
 
 import { ScrenshotAreaIds, selectScreenshotAreaId, setScreenshotAreaId } from './screenshot.slice'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './MapControls.module.css'
 
 type ScrenshotDOMArea = typeof ROOT_DOM_ELEMENT | typeof MAP_CONTAINER_ID | typeof MAIN_DOM_ID

@@ -18,9 +18,9 @@ import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.
 import { isSupportedComparisonDataview } from 'features/reports/report-area/area-reports.utils'
 import { selectReportComparisonDataviewIds } from 'features/reports/reports.config.selectors'
 import { selectReportSubCategory } from 'features/reports/reports.selectors'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectLocationQuery } from 'router/routes.selectors'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './ReportActivityDatasetComparison.module.css'
 
 const createDatasetOption = (id: string, label: string, color?: string): SelectOption => ({

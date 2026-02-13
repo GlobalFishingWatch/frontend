@@ -14,7 +14,7 @@ import {
 } from 'features/reports/reports.config.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { replaceQueryParams } from 'routes/routes.actions'
+import { replaceQueryParams } from 'router/routes.actions'
 import { getUTCDateTime } from 'utils/dates'
 
 import { MAX_DAYS_TO_COMPARE, MAX_MONTHS_TO_COMPARE } from './reports-activity.config'

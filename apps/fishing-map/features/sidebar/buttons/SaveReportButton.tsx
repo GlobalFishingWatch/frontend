@@ -13,9 +13,9 @@ import { selectReportsStatus } from 'features/reports/reports.slice'
 import { useClipboardNotification } from 'features/sidebar/sidebar.hooks'
 import { selectWorkspace, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { setWorkspace } from 'features/workspace/workspace.slice'
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
-import { getCurrentAppUrl } from 'routes/routes.actions'
-import { ROUTE_PATHS } from 'routes/routes.utils'
+import LoginButtonWrapper from 'router/LoginButtonWrapper'
+import { getCurrentAppUrl } from 'router/routes.actions'
+import { ROUTE_PATHS } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 const NewReportModal = dynamic(

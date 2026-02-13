@@ -8,8 +8,8 @@ import {
   selectCurrentWorkspaceId,
   selectIsTurningTidesWorkspace,
 } from 'features/workspace/workspace.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
 import type { TrackCorrectionId } from 'types'
-import { replaceQueryParams } from 'routes/routes.actions'
 
 export function useSetTrackCorrectionId() {
   return useCallback((trackCorrectionId: TrackCorrectionId) => {

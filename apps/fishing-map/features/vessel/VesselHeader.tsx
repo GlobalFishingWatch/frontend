@@ -33,7 +33,7 @@ import VesselGroupAddButton, {
 } from 'features/vessel-groups/VesselGroupAddButton'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
-import { getCurrentAppUrl, replaceQueryParams } from 'routes/routes.actions'
+import { getCurrentAppUrl, replaceQueryParams } from 'router/routes.actions'
 import { handleOpenImage } from 'utils/img'
 import { formatInfoField, getVesselOtherNamesLabel } from 'utils/info'
 

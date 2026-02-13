@@ -9,7 +9,7 @@ import LogoGoogle from 'assets/images/partner-logos/google@2x.png'
 import LogoOceana from 'assets/images/partner-logos/oceana@2x.png'
 import LogoSkytruth from 'assets/images/partner-logos/skytruth@2x.png'
 import { WorkspaceCategory } from 'data/workspaces'
-import { selectLocationCategory } from 'routes/routes.selectors'
+import { selectLocationCategory } from 'router/routes.selectors'
 
 import styles from './Footer.module.css'
 

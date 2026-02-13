@@ -17,7 +17,8 @@ import {
   // fetchDefaultWorkspaceThunk,
   fetchWorkspacesThunk,
 } from 'features/workspaces-list/workspaces-list.slice'
-import { selectUserTab } from 'routes/routes.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectUserTab } from 'router/routes.selectors'
 import { UserTab } from 'types'
 
 import UserDatasets from './UserDatasets'
@@ -26,7 +27,6 @@ import UserReports from './UserReports'
 import UserVesselGroups from './UserVesselGroups'
 import UserWorkspaces from './UserWorkspaces'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './User.module.css'
 
 function User() {

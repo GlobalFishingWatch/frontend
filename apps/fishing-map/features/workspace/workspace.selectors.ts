@@ -18,9 +18,9 @@ import type { TurningTidesWorkspaceId } from 'features/track-correction/track-co
 import { TURNING_TIDES_WORKSPACES_IDS } from 'features/track-correction/track-correction.config'
 import { selectUserData, selectUserSettings } from 'features/user/selectors/user.selectors'
 import type { UserSettings } from 'features/user/user.slice'
-import { WORKSPACE_ROUTES } from 'routes/routes'
-import { selectIsRouteWithWorkspace, selectLocationQuery } from 'routes/routes.selectors'
-import { mapRouteIdToType } from 'routes/routes.utils'
+import { WORKSPACE_ROUTES } from 'router/routes'
+import { selectIsRouteWithWorkspace, selectLocationQuery } from 'router/routes.selectors'
+import { mapRouteIdToType } from 'router/routes.utils'
 import type { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 

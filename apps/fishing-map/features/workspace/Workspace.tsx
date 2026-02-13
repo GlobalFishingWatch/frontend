@@ -41,7 +41,8 @@ import { getWorkspaceLabel, isPrivateWorkspaceNotAllowed } from 'features/worksp
 import WorkspaceError from 'features/workspace/WorkspaceError'
 import WorkspacePassword from 'features/workspace/WorkspacePassword'
 import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
-import { selectLocationCategory } from 'routes/routes.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectLocationCategory } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse, options } from 'utils/html-parser'
 
@@ -53,7 +54,6 @@ import VesselGroupSection from './vessel-groups/VesselGroupsSection'
 import VesselsSection from './vessels/VesselsSection'
 import { useMigrateWorkspaceToast } from './workspace-migration.hooks'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './Workspace.module.css'
 
 function Workspace() {

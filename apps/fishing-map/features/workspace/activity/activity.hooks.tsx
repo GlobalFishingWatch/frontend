@@ -34,7 +34,7 @@ import {
   selectHasDetectionsDataviewVesselGroups,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { setUserSetting } from 'features/user/user.slice'
-import { replaceQueryParams } from 'routes/routes.actions'
+import { replaceQueryParams } from 'router/routes.actions'
 
 export const useVisualizationsOptions = (
   category: DataviewCategory.Activity | DataviewCategory.Detections | DataviewCategory.Environment

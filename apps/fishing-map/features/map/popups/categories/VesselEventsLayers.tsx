@@ -20,7 +20,7 @@ import { getVesselProperty } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
 import type { VesselPinOnClickCb } from 'features/vessel/VesselPin'
 import VesselPin from 'features/vessel/VesselPin'
-import { selectIsAnyVesselLocation } from 'routes/routes.selectors'
+import { selectIsAnyVesselLocation } from 'router/routes.selectors'
 import { getEventDescription, getTimeLabels } from 'utils/events'
 import { formatInfoField } from 'utils/info'
 

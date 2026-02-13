@@ -35,13 +35,13 @@ import {
   resetWorkspaceHistoryNavigation,
 } from 'features/workspace/workspace.slice'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
-import { ROUTE_PATHS } from 'routes/router'
-import { replaceQueryParams } from 'routes/routes.actions'
+import { replaceQueryParams } from 'router/routes.actions'
 import {
   selectIsAnySearchLocation,
   selectIsUserLocation,
   selectIsWorkspaceLocation,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
+import { ROUTE_PATHS } from 'router/routes.utils'
 
 import styles from './CategoryTabs.module.css'
 

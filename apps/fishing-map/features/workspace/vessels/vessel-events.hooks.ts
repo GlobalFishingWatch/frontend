@@ -6,7 +6,7 @@ import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
-import { replaceQueryParams } from 'routes/routes.actions'
+import { replaceQueryParams } from 'router/routes.actions'
 
 const ALL_EVENT_TYPES = [
   EventTypes.Fishing,

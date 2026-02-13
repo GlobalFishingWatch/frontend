@@ -21,7 +21,7 @@ import {
   selectIsAnyVesselLocation,
   selectIsMapDrawing,
   selectIsWorkspaceLocation,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 
 import styles from './MapControls.module.css'
 

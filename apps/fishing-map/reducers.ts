@@ -28,7 +28,7 @@ import vesselGroupsReducer from 'features/vessel-groups/vessel-groups.slice'
 import vesselGroupsModalReducer from 'features/vessel-groups/vessel-groups-modal.slice'
 import workspaceReducer from 'features/workspace/workspace.slice'
 import workspacesReducer from 'features/workspaces-list/workspaces-list.slice'
-import locationReducer from 'routes/location.slice'
+import locationReducer from 'router/location.slice'
 
 export const rootReducer = combineReducers({
   ...queriesApiReducers,

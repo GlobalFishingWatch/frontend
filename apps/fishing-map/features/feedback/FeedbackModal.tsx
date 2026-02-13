@@ -29,8 +29,8 @@ import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.
 import { getSourcesSelectedInDataview } from 'features/workspace/activity/activity.utils'
 import { parseUpsertWorkspace } from 'features/workspace/workspace.utils'
 import { createWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
-import { getCurrentAppUrl } from 'routes/routes.actions'
-import { selectIsAnyAreaReportLocation, selectIsWorkspaceLocation } from 'routes/routes.selectors'
+import { getCurrentAppUrl } from 'router/routes.actions'
+import { selectIsAnyAreaReportLocation, selectIsWorkspaceLocation } from 'router/routes.selectors'
 
 import styles from './FeedbackModal.module.css'
 

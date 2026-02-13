@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 
 import { selectWorkspaceState } from 'features/workspace/workspace.selectors'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { selectLocationQuery } from 'router/routes.selectors'
 
 import { DEFAULT_REPORT_STATE } from './reports.config'
 import type { ReportState, ReportStateProperty } from './reports.types'

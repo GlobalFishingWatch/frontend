@@ -9,7 +9,6 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Button, Icon, IconButton, Popover } from '@globalfishingwatch/ui-components'
 
 import { AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION } from 'data/config'
-import { getCurrentAppUrl, replaceQueryParams } from 'routes/routes.actions'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
@@ -37,7 +36,8 @@ import {
   setPreviewBuffer,
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
-import { selectIsStandaloneReportLocation } from 'routes/routes.selectors'
+import { getCurrentAppUrl, replaceQueryParams } from 'router/routes.actions'
+import { selectIsStandaloneReportLocation } from 'router/routes.selectors'
 import type { BufferOperation, BufferUnit } from 'types'
 import { htmlSafeParse } from 'utils/html-parser'
 

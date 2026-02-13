@@ -25,7 +25,7 @@ import { selectActiveTrackDataviews } from 'features/dataviews/selectors/datavie
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
-import { replaceQueryParams } from 'routes/routes.actions'
+import { replaceQueryParams } from 'router/routes.actions'
 import type { TimebarGraphs } from 'types'
 import { TimebarVisualisations } from 'types'
 

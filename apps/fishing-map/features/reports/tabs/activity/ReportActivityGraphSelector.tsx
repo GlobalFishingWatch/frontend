@@ -20,9 +20,9 @@ import { selectReportActivityGraph } from 'features/reports/reports.config.selec
 import { type ReportActivityGraph } from 'features/reports/reports.types'
 import { REPORT_ACTIVITY_GRAPH_TIME_OPTIONS } from 'features/reports/shared/utils/reports.utils'
 import { useSetReportTimeComparison } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
-import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectUrlDataviewInstances } from 'router/routes.selectors'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './ReportActivity.module.css'
 
 export const isEvolutionOrDatasetComparison = (id: ReportActivityGraph) =>

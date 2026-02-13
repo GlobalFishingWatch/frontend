@@ -30,15 +30,15 @@ import {
   cleanReportPayload,
   cleanReportQuery,
 } from 'features/workspace/workspace.slice'
-import { REPORT_ROUTES, VESSEL, WORKSPACE_VESSEL, WORKSPACES_LIST } from 'routes/routes'
-import { replaceQueryParams } from 'routes/routes.actions'
+import { REPORT_ROUTES, VESSEL, WORKSPACE_VESSEL, WORKSPACES_LIST } from 'router/routes'
+import { replaceQueryParams } from 'router/routes.actions'
 import {
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
   selectIsRouteWithWorkspace,
   selectIsVesselGroupReportLocation,
-} from 'routes/routes.selectors'
-import { mapRouteIdToType } from 'routes/routes.utils'
+} from 'router/routes.selectors'
+import { mapRouteIdToType } from 'router/routes.utils'
 
 import styles from '../SidebarHeader.module.css'
 

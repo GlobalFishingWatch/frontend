@@ -22,7 +22,7 @@ import type {
 import { ReportCategory } from 'features/reports/reports.types'
 import { useReportFeaturesLoading } from 'features/reports/reports-timeseries.hooks'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
-import { replaceQueryParams } from 'routes/routes.actions'
+import { replaceQueryParams } from 'router/routes.actions'
 
 function ReportActivitySubsectionSelector() {
   const { t } = useTranslation()

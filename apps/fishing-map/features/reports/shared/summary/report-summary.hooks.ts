@@ -7,7 +7,7 @@ import type { GetSchemaInDataviewParams } from 'features/datasets/datasets.utils
 import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
-import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import { selectIsVesselGroupReportLocation } from 'router/routes.selectors'
 
 function getHasDataviewSchemaFilters(
   dataview: UrlDataviewInstance,

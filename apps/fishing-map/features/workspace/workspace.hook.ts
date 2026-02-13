@@ -9,16 +9,16 @@ import { LAYERS_LIBRARY_DETECTIONS } from 'data/layer-library/layers-detections'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
+import { replaceQueryParams } from 'router/routes.actions'
 import {
   selectIsAnyAreaReportLocation,
   selectUrlDataviewInstances,
   selectUrlTimeRange,
   selectUrlViewport,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 
 import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 import { getNextColor } from './workspace.utils'
-import { replaceQueryParams } from 'routes/routes.actions'
 
 export const useFitWorkspaceBounds = () => {
   const urlViewport = useSelector(selectUrlViewport)

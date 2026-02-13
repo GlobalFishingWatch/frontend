@@ -23,19 +23,19 @@ import { getWorkspaceReport } from 'features/reports/shared/new-report-modal/New
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
 import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
+import { replaceQueryParams } from 'router/routes.actions'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnyVesselLocation,
   selectUrlDataviewInstances,
   selectVesselId,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { htmlSafeParse } from 'utils/html-parser'
 
 import { useDataviewInstancesConnect } from './workspace.hook'
 import { selectIsWorkspaceOwner } from './workspace.selectors'
 import { updateCurrentWorkspaceThunk } from './workspace.slice'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './Workspace.module.css'
 
 export const useMigrateWorkspace = () => {

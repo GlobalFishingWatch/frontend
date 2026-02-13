@@ -41,7 +41,8 @@ import {
   getCurrentIdentityVessel,
 } from 'features/vessel/vessel.utils'
 import VesselInfoCorrection from 'features/workspace/vessels/VesselInfoCorrection'
-import { selectIsVesselLocation } from 'routes/routes.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectIsVesselLocation } from 'router/routes.selectors'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
@@ -52,7 +53,6 @@ import {
 import VesselRegistryField from './VesselRegistryField'
 import VesselTypesField from './VesselTypesField'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {

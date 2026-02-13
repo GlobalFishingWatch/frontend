@@ -22,7 +22,7 @@ import MapAnnotations from 'features/map/overlays/annotations/Annotations'
 import TrackCorrectionsOverlay from 'features/map/overlays/track-corrections/TrackCorrectionsOverlay'
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { useReportFeaturesLoading } from 'features/reports/reports-timeseries.hooks'
-import { selectIsAnyReportLocation } from 'routes/routes.selectors'
+import { selectIsAnyReportLocation } from 'router/routes.selectors'
 
 const DeckGLWrapper = () => {
   const deckRef = useRef<DeckGLRef>(null)

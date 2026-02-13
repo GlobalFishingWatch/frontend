@@ -13,8 +13,8 @@ import {
 import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
 import { setVesselFitBoundsOnLoad } from 'features/vessel/vessel.slice'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
-import { replaceQueryParams } from 'routes/routes.actions'
-import { selectIsVesselLocation, selectUrlTimeRange } from 'routes/routes.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectIsVesselLocation, selectUrlTimeRange } from 'router/routes.selectors'
 import { getUTCDateTime } from 'utils/dates'
 
 export const useVesselProfileBbox = () => {

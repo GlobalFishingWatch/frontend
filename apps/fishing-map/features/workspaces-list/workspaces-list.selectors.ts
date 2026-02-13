@@ -16,8 +16,8 @@ import {
   selectUserWorkspacesPrivate,
 } from 'features/user/selectors/user.permissions.selectors'
 import { selectLanguage } from 'features/user/selectors/user.selectors'
-import { USER } from 'routes/routes'
-import { selectLocationCategory, selectLocationType } from 'routes/routes.selectors'
+import { USER } from 'router/routes'
+import { selectLocationCategory, selectLocationType } from 'router/routes.selectors'
 
 import type workspaceTranslations from '../../public/locales/source/workspaces.json'
 

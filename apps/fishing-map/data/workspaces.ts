@@ -9,8 +9,8 @@ import { PUBLIC_SUFIX } from './config'
 
 type WorkspaceEnv = 'development' | 'production'
 export const WORKSPACE_ENV =
-  (process.env.NEXT_PUBLIC_WORKSPACE_ENV as WorkspaceEnv) ||
-  (process.env.NODE_ENV as WorkspaceEnv) ||
+  (import.meta.env.VITE_WORKSPACE_ENV as WorkspaceEnv) ||
+  (import.meta.env.MODE as WorkspaceEnv) ||
   'production'
 
 export function getWorkspaceEnv(): WorkspaceEnv {

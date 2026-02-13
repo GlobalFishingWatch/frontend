@@ -38,9 +38,9 @@ import { setVesselGroupConfirmationMode } from 'features/vessel-groups/vessel-gr
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
-import LocalStorageLoginLink from 'routes/LoginLink'
-import { replaceQueryParams } from 'routes/routes.actions'
-import { ROUTE_PATHS } from 'routes/routes.utils'
+import LocalStorageLoginLink from 'router/LoginLink'
+import { replaceQueryParams } from 'router/routes.actions'
+import { ROUTE_PATHS } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getVesselShipNameLabel } from 'utils/info'
 

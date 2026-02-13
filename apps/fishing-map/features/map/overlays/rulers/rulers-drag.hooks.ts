@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import type { PickingInfo } from '@deck.gl/core'
 import { throttle } from 'es-toolkit'
@@ -10,7 +10,7 @@ import type {
 } from '@globalfishingwatch/deck-layers'
 
 import { selectMapRulersVisible } from 'features/app/selectors/app.selectors'
-import { replaceQueryParams } from 'routes/routes.actions'
+import { replaceQueryParams } from 'router/routes.actions'
 
 export function useMapRulersDrag() {
   const rulers = useSelector(selectMapRulersVisible)
@@ -20,10 +20,11 @@ export function useMapRulersDrag() {
     id: RulerPointProperties['id']
   } | null>(null)
 
-  const debouncedUpdate = useCallback(
-    throttle((mapRulers) => {
-      replaceQueryParams({ mapRulers })
-    }, 200),
+  const debouncedUpdate = useMemo(
+    () =>
+      throttle((mapRulers) => {
+        replaceQueryParams({ mapRulers })
+      }, 200),
     []
   )
 

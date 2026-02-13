@@ -26,6 +26,7 @@ import {
 } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
+import { replaceQueryParams } from 'router/routes.actions'
 import { getEventLabel } from 'utils/analytics'
 
 import {
@@ -35,7 +36,6 @@ import {
 } from './report-vessels.selectors'
 import ReportVesselsTablePinAll from './ReportVesselsTablePin'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './ReportVesselsTableFooter.module.css'
 
 type ReportVesselsTableFooterProps = {

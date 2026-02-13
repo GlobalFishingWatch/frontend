@@ -49,9 +49,9 @@ import {
 } from 'features/workspace/workspace.hook'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
-import { replaceQueryParams } from 'routes/routes.actions'
-import { selectIsVesselGroupReportLocation, selectLocationQuery } from 'routes/routes.selectors'
-import { ROUTE_PATHS } from 'routes/routes.utils'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectIsVesselGroupReportLocation, selectLocationQuery } from 'router/routes.selectors'
+import { ROUTE_PATHS } from 'router/routes.utils'
 import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 

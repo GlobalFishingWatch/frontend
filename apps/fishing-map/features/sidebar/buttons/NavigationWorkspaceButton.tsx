@@ -22,7 +22,7 @@ import {
   selectIsWorkspaceVesselLocation,
   selectLocationCategory,
   selectWorkspaceId,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import type { QueryParams } from 'types'
 
 import styles from '../SidebarHeader.module.css'

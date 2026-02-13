@@ -17,10 +17,11 @@ import { ACTIVITY_CONTAINER_ID } from 'features/vessel/activity/event/event-scro
 import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySummary'
 import { selectVesselHasEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
 import { selectVesselActivityMode } from 'features/vessel/vessel.config.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+
 import type { VesselProfileActivityMode } from '../vessel.types'
 import { useVesselProfileEventsError, useVesselProfileEventsLoading } from '../vessel-events.hooks'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './VesselActivity.module.css'
 
 const VesselActivity = () => {

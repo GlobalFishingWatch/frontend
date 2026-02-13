@@ -22,14 +22,14 @@ import {
   VESSEL_GROUP_REPORT,
   WORKSPACE,
   WORKSPACE_REPORT,
-} from 'routes/routes'
+} from 'router/routes'
 import {
   selectIsAnyVesselLocation,
   selectIsVesselGroupReportLocation,
   selectLocationType,
   selectReportId,
   selectWorkspaceId,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 /**

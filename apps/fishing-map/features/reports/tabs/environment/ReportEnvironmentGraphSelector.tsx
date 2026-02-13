@@ -14,9 +14,9 @@ import {
 } from 'features/reports/reports.config'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import { type ReportActivityGraph } from 'features/reports/reports.types'
-import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectUrlDataviewInstances } from 'router/routes.selectors'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './ReportEnvironment.module.css'
 
 export default function ReportEnvironmentGraphSelector() {

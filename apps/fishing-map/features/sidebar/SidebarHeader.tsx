@@ -38,6 +38,7 @@ import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
 import VesselHeader from 'features/vessel/VesselHeader'
 import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnySearchLocation,
@@ -46,9 +47,8 @@ import {
   selectIsVesselGroupReportLocation,
   selectIsWorkspaceLocation,
   selectLocationCategory,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './SidebarHeader.module.css'
 
 function SidebarHeader() {

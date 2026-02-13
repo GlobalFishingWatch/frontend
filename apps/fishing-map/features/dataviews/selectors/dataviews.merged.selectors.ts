@@ -10,7 +10,7 @@ import {
   selectWorkspaceDataviewInstances,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { selectIsRouteWithWorkspace, selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { selectIsRouteWithWorkspace, selectUrlDataviewInstances } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 const EMPTY_ARRAY: [] = []

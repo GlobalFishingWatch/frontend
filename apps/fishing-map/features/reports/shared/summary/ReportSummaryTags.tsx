@@ -26,7 +26,7 @@ import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import Filters from 'features/workspace/shared/LayerFilters'
 import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import { selectIsVesselGroupReportLocation } from 'router/routes.selectors'
 
 import { isTimeComparisonGraph } from '../utils/reports.utils'
 

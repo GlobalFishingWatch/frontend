@@ -23,7 +23,7 @@ import {
   selectIsStandaloneSearchLocation,
   selectLocationCategory,
   selectWorkspaceId,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 
 const selectAppModals = createSelector(
   [

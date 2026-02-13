@@ -47,13 +47,14 @@ import {
   selectWorkspaceStatus,
   selectWorkspaceVisibleEventsArray,
 } from 'features/workspace/workspace.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
 import {
   selectIsAnyReportLocation,
   selectIsIndexLocation,
   selectIsUserLocation,
   selectIsWorkspaceLocation,
   selectVesselsMaxTimeGapHours,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { useDrawLayerInstance } from './overlays/draw/draw.hooks'
@@ -65,7 +66,6 @@ import {
 } from './map.selectors'
 import { selectClickedEvent } from './map.slice'
 import { useMapViewState } from './map-viewport.hooks'
-import { replaceQueryParams } from 'routes/routes.actions'
 
 export const useActivityDataviewId = (dataview: UrlDataviewInstance) => {
   const activityMergedDataviewId = useSelector(selectActivityMergedDataviewId)

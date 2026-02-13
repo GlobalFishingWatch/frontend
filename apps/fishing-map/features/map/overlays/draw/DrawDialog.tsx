@@ -22,7 +22,8 @@ import {
 } from 'features/datasets/datasets.hook'
 import { selectDrawEditDataset } from 'features/map/map.selectors'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { selectMapDrawingEditId, selectMapDrawingMode } from 'routes/routes.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectMapDrawingEditId, selectMapDrawingMode } from 'router/routes.selectors'
 import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -31,7 +32,6 @@ import { useMapDrawConnect } from '../../map-draw.hooks'
 import { useDrawLayerInstance } from './draw.hooks'
 import { getDrawDatasetDefinition, getFileWithFeatures } from './draw.utils'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './DrawDialog.module.css'
 
 type DrawFeature = Feature<Polygon, { id: string; gfw_id: number; draw_id: number }>

@@ -32,8 +32,8 @@ import {
   selectWorkspaceReportId,
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { ConfirmLeave } from 'routes/ConfirmLeave'
-import { ConfirmVesselProfileLeave } from 'routes/ConfirmVesselProfileLeave'
+import { ConfirmLeave } from 'router/ConfirmLeave'
+import { ConfirmVesselProfileLeave } from 'router/ConfirmVesselProfileLeave'
 import {
   HOME,
   REPORT,
@@ -43,9 +43,9 @@ import {
   WORKSPACE_SEARCH,
   WORKSPACE_VESSEL,
   WORKSPACES_LIST,
-} from 'routes/routes'
-import { replaceQueryParams } from 'routes/routes.actions'
-import { useBeforeUnload, useReplaceLoginUrl } from 'routes/routes.hook'
+} from 'router/routes'
+import { replaceQueryParams } from 'router/routes.actions'
+import { useBeforeUnload, useReplaceLoginUrl } from 'router/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnySearchLocation,
@@ -55,7 +55,7 @@ import {
   selectLocationType,
   selectReportId,
   selectWorkspaceId,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
@@ -226,7 +226,7 @@ function App() {
           closeButton={false}
         />
       </ErrorBoundary>
-      {process.env.NODE_ENV === 'development' && <TanStackRouterDevtools position="bottom-right" />}
+      {import.meta.env.DEV && <TanStackRouterDevtools position="bottom-right" />}
     </Fragment>
   )
 }

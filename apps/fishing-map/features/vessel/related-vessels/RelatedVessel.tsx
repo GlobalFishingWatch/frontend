@@ -9,7 +9,7 @@ import { getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
 import type { VesselToResolve } from 'features/vessel/VesselPin'
 import VesselPin from 'features/vessel/VesselPin'
-import { selectIsWorkspaceVesselLocation } from 'routes/routes.selectors'
+import { selectIsWorkspaceVesselLocation } from 'router/routes.selectors'
 import { formatInfoField } from 'utils/info'
 
 import styles from './RelatedVessels.module.css'

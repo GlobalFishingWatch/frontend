@@ -10,8 +10,8 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import type { VesselEvent } from 'features/vessel/activity/event/Event'
+import { replaceQueryParams } from 'router/routes.actions'
 import type { Bbox } from 'types'
-import { replaceQueryParams } from 'routes/routes.actions'
 
 export function useVesselEventBounds(vesselLayer: DeckLayerAtom<VesselLayer>) {
   const isSmallScreen = useSmallScreen()

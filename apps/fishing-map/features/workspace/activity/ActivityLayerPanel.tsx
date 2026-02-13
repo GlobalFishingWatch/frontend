@@ -31,6 +31,7 @@ import LayerProperties from 'features/workspace/shared/LayerProperties'
 import MapLegend from 'features/workspace/shared/MapLegend'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -46,7 +47,6 @@ import { isDefaultActivityDataview, isDefaultDetectionsDataview } from './activi
 import TurningTidesFilters from './TurningTidesFilters'
 
 import activityStyles from './ActivitySection.module.css'
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type LayerPanelProps = {

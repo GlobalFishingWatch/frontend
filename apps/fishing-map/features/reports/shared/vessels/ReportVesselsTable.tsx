@@ -30,14 +30,14 @@ import VesselLink from 'features/vessel/VesselLink'
 import type { VesselPinClickProps } from 'features/vessel/VesselPin'
 import VesselPin from 'features/vessel/VesselPin'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
-import { selectIsAnyAreaReportLocation } from 'routes/routes.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectIsAnyAreaReportLocation } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 import type { ReportTableVessel, ReportVesselValues } from './report-vessels.types'
 import ReportVesselsTableFooter from './ReportVesselsTableFooter'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './ReportVesselsTable.module.css'
 
 type ReportVesselTableProps = {

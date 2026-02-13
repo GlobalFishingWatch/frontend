@@ -51,7 +51,7 @@ import {
 import TimebarClusterEventsGraph from 'features/timebar/TimebarClusterEventsGraph'
 import { selectIsVessselGroupsFiltering } from 'features/vessel-groups/vessel-groups.selectors'
 import { useDOMElement } from 'hooks/dom.hooks'
-import { selectIsAnyAreaReportLocation, selectIsAnyReportLocation } from 'routes/routes.selectors'
+import { selectIsAnyAreaReportLocation, selectIsAnyReportLocation } from 'router/routes.selectors'
 import type { Locale } from 'types'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { getEventLabel } from 'utils/analytics'

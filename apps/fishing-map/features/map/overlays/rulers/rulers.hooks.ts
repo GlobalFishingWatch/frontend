@@ -9,7 +9,7 @@ import { RulersLayer } from '@globalfishingwatch/deck-layers'
 import { selectAreMapRulersVisible, selectMapRulers } from 'features/app/selectors/app.selectors'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
 import { MAP_CONTROL_RULERS } from 'features/map/controls/map-controls.slice'
-import { replaceQueryParams } from 'routes/routes.actions'
+import { replaceQueryParams } from 'router/routes.actions'
 
 const useRulers = () => {
   const rulers = useSelector(selectMapRulers)

@@ -8,7 +8,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { boundsAtom, viewStateAtom } from 'features/map/map.atoms'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
-import { replaceQueryParams } from 'routes/routes.actions'
+import { replaceQueryParams } from 'router/routes.actions'
 import type { WorkspaceViewport } from 'types'
 
 export const useMapViewState = () => {

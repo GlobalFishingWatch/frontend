@@ -28,12 +28,12 @@ import SearchPlaceholder, {
   SearchNoResultsState,
 } from 'features/search/SearchPlaceholders'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import LocalStorageLoginLink from 'routes/LoginLink'
+import LocalStorageLoginLink from 'router/LoginLink'
+import { replaceQueryParams } from 'router/routes.actions'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import SearchError from '../basic/SearchError'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from 'features/search/advanced/SearchAdvanced.module.css'
 
 const SearchAdvancedResults = dynamic(

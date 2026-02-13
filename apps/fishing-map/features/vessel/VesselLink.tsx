@@ -31,7 +31,7 @@ import {
   selectIsStandaloneSearchLocation,
   selectIsVesselLocation,
   selectLocationQuery,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import type { QueryParams } from 'types'
 
 import styles from './Vessel.module.css'

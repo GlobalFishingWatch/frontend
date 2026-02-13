@@ -19,7 +19,7 @@ import type {
 import {
   selectIsPortReportLocation,
   selectIsVesselGroupReportLocation,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 
 import { selectDataviewInstancesResolved } from './dataviews.resolvers.selectors'
 

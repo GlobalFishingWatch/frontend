@@ -39,11 +39,11 @@ import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import WorkspaceError from 'features/workspace/WorkspaceError'
+import { replaceQueryParams } from 'router/routes.actions'
 import { TimebarVisualisations } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import dynamicWithRetry from 'utils/dynamic-import'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from 'features/reports/report-area/AreaReport.module.css'
 
 const ReportActivity = dynamicWithRetry(
