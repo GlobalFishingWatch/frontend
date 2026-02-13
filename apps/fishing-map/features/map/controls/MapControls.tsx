@@ -126,12 +126,14 @@ const MapControls = ({
             type="map-tool"
             tooltip={t((t) => t.map.zoom_in)}
             onClick={onZoomInClick}
+            data-testid="map-control-zoom-in"
           />
           <IconButton
             icon="minus"
             type="map-tool"
             tooltip={t((t) => t.map.zoom_out)}
             onClick={onZoomOutClick}
+            data-testid="map-control-zoom-out"
           />
           {showExtendedControls && (
             <Fragment>
