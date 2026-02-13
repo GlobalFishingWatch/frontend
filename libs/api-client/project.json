@@ -23,6 +23,25 @@
       "options": {
         "packageRoot": "libs/api-client"
       }
+    },
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "dependsOn": ["^dist"],
+      "options": {
+        "command": "vitest run --config=vitest.config.mts",
+        "reportsDirectory": "../../coverage/libs/api-client"
+      }
+    },
+    "test:watch": {
+      "executor": "@nx/vitest:test",
+      "dependsOn": ["^dist"],
+      "cache": false,
+      "options": {
+        "configFile": "libs/api-client/vitest.config.mts",
+        "watch": true
+      },
+      "continuous": true
     }
   }
 }
