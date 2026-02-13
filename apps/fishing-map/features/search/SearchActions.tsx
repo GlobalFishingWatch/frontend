@@ -25,8 +25,8 @@ import VesselGroupAddButton, {
 } from 'features/vessel-groups/VesselGroupAddButton'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectCurrentWorkspaceId, selectWorkspace } from 'features/workspace/workspace.selectors'
-import { replaceQueryParams } from 'routes/routes.actions'
-import { ROUTE_PATHS } from 'routes/routes.utils'
+import { replaceQueryParams } from 'router/routes.actions'
+import { ROUTE_PATHS } from 'router/routes.utils'
 import { TimebarVisualisations } from 'types'
 
 import { selectSearchOption } from './search.config.selectors'

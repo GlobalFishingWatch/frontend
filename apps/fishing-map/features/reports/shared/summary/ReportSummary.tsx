@@ -20,7 +20,7 @@ import type { ReportActivityUnit } from 'features/reports/tabs/activity/reports-
 import {
   selectIsPortReportLocation,
   selectIsVesselGroupReportLocation,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './ReportSummary.module.css'

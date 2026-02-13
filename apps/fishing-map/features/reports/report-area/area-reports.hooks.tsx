@@ -3,7 +3,6 @@ import { Fragment, useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
-import { getCurrentAppUrl } from 'routes/routes.actions'
 import { useGetStatsByDataviewQuery } from 'queries/stats-api'
 
 import {
@@ -69,12 +68,13 @@ import {
   selectReportVesselsError,
   selectReportVesselsStatus,
 } from 'features/reports/tabs/activity/reports-activity.slice'
+import { getCurrentAppUrl } from 'router/routes.actions'
 import {
   selectIsPortReportLocation,
   selectIsVesselGroupReportLocation,
   selectReportId,
   selectReportPortId,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -447,7 +447,10 @@ export function useReportTitle() {
     if (isGlobalReport && !report?.name) {
       return t((t) => t.common.globalReport)
     }
-    let areaName: string | JSX.Element = getReportAreaStringByLocale(report?.name || '', i18n.language)
+    let areaName: string | JSX.Element = getReportAreaStringByLocale(
+      report?.name || '',
+      i18n.language
+    )
     if (!areaName) {
       if (areaDataviews?.length > 1) {
         const datasets = areaDataviews.flatMap((d) => d.datasets?.[0] || [])

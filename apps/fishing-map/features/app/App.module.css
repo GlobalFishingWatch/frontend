@@ -8,15 +8,15 @@
   height: 100%;
 }
 
-:global(#__next:not(.printing)) .withTimebar {
+:global(#__root__:not(.printing)) .withTimebar {
   height: 100%;
 }
 
-:global(#__next:not(.printing)) .withSmallScreenSwitch {
+:global(#__root__:not(.printing)) .withSmallScreenSwitch {
   height: calc(100dvh - var(--footer-height) - var(--switch-height));
 }
 
-:global(#__next:not(.printing)) .withTimebarAndSmallScreenSwitch {
+:global(#__root__:not(.printing)) .withTimebarAndSmallScreenSwitch {
   height: calc(
     100dvh - var(--footer-height) - var(--timebar-height-small-screen) - var(--switch-height)
   );
@@ -59,7 +59,7 @@
     overflow: visible;
     height: auto;
     background: none;
-    page-break-before: always;
+    break-before: always;
   }
 
   .main {

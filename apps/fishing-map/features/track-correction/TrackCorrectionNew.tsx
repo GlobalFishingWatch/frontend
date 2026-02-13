@@ -8,7 +8,6 @@ import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { Button, Choice, Icon, InputText } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getCurrentAppUrl } from 'routes/routes.actions'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { useMapViewState } from 'features/map/map-viewport.hooks'
 import type { TurningTidesWorkspaceId } from 'features/track-correction/track-correction.config'
@@ -33,6 +32,7 @@ import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import FitBounds from 'features/workspace/shared/FitBounds'
 import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
+import { getCurrentAppUrl } from 'router/routes.actions'
 import { getVesselGearTypeLabel, getVesselShipNameLabel, getVesselShipTypeLabel } from 'utils/info'
 
 import styles from './TrackCorrection.module.css'
@@ -105,14 +105,14 @@ const TrackCorrectionNew = () => {
             segment.length
               ? segment.map(
                   (point) =>
-                    (({
+                    ({
                       type: 'Feature',
 
                       geometry: {
                         type: 'Point',
                         coordinates: [point.longitude, point.latitude],
-                      }
-                    }) as Feature<Point>)
+                      },
+                    }) as Feature<Point>
                 )
               : []
           ),

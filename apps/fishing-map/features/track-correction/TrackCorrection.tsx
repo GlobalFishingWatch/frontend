@@ -12,7 +12,7 @@ import TrackCorrectionEdit from 'features/track-correction/TrackCorrectionEdit'
 import TrackCorrectionNew from 'features/track-correction/TrackCorrectionNew'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
-import LocalStorageLoginLink from 'routes/LoginLink'
+import LocalStorageLoginLink from 'router/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './TrackCorrection.module.css'

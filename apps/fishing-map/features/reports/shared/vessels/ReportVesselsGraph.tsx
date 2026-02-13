@@ -28,9 +28,9 @@ import type {
 import { REPORT_VESSELS_GRAPH_LABEL_KEY } from 'features/reports/shared/utils/reports.utils'
 import ReportVesselsIndividualTooltip from 'features/reports/shared/vessels/ReportVesselsIndividualTooltip'
 import VesselGraphLink from 'features/reports/shared/vessels/VesselGraphLink'
+import { replaceQueryParams } from 'router/routes.actions'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './ReportVesselsGraph.module.css'
 
 type ReportGraphTooltipProps = {

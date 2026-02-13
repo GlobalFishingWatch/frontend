@@ -7,7 +7,6 @@ import { DateTime } from 'luxon'
 import { Button, Icon } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getCurrentAppUrl } from 'routes/routes.actions'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { selectUserIsVesselGroupOwner } from 'features/reports/report-vessel-group/vessel-group-report.selectors'
@@ -25,7 +24,8 @@ import {
   setVesselGroupModalVessels,
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import LoginButtonWrapper from 'router/LoginButtonWrapper'
+import { getCurrentAppUrl } from 'router/routes.actions'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
 

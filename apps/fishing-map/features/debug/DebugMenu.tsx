@@ -13,8 +13,8 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectIsGFWDeveloper, selectIsGFWTestGroup } from 'features/user/selectors/user.selectors'
 import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
-import { replaceQueryParams } from 'routes/routes.actions'
-import { selectLocationQuery, selectVesselsMaxTimeGapHours } from 'routes/routes.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectLocationQuery, selectVesselsMaxTimeGapHours } from 'router/routes.selectors'
 
 import {
   DebugOption,

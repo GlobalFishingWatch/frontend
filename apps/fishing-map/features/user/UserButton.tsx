@@ -10,7 +10,7 @@ import {
   selectIsUserExpired,
   selectUserData,
 } from 'features/user/selectors/user.selectors'
-import LocalStorageLoginLink from 'routes/LoginLink'
+import LocalStorageLoginLink from 'router/LoginLink'
 
 const UserButton = ({ className = '', testId }: { className?: string; testId?: string }) => {
   const { t } = useTranslation()

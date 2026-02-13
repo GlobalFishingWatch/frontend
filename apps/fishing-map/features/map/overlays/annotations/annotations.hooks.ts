@@ -9,8 +9,9 @@ import {
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
 import { MAP_CONTROL_ANNOTATIONS } from 'features/map/controls/map-controls.slice'
 import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
+import { replaceQueryParams } from 'router/routes.actions'
+
 import type { MapAnnotation } from './annotations.types'
-import { replaceQueryParams } from 'routes/routes.actions'
 
 /**
  * Hook used only for the temporal annotation stored into the slice before confirming

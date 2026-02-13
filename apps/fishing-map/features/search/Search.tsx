@@ -42,10 +42,10 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
-import { selectWorkspaceId } from 'routes/routes.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectWorkspaceId } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './Search.module.css'
 
 function Search() {

@@ -13,9 +13,10 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
 import PopupWrapper from 'features/map/popups/PopupWrapper'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
+import { replaceQueryParams } from 'router/routes.actions'
+
 import { useMapAnnotation, useMapAnnotations } from './annotations.hooks'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './Annotations.module.css'
 
 const colors = [{ id: 'white', value: DEFAUL_ANNOTATION_COLOR }, ...LineColorBarOptions]

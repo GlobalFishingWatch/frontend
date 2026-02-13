@@ -10,10 +10,11 @@ import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySu
 import RelatedEncounterVessels from 'features/vessel/related-vessels/RelatedEncounterVessels'
 import RelatedOwnersVessels from 'features/vessel/related-vessels/RelatedOwnersVessels'
 import { selectVesselRelatedSubsection } from 'features/vessel/vessel.config.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+
 import type { VesselRelatedSubsection } from '../vessel.types'
 import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from './RelatedVessels.module.css'
 
 const RelatedVessels = () => {

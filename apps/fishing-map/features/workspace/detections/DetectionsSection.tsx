@@ -19,6 +19,7 @@ import { ReportCategory } from 'features/reports/reports.types'
 import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
 import { VisualisationChoice } from 'features/workspace/shared/VisualisationChoice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { replaceQueryParams } from 'router/routes.actions'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
 import { useVisualizationsOptions } from '../activity/activity.hooks'
@@ -27,7 +28,6 @@ import LayerPanelContainer from '../shared/LayerPanelContainer'
 import Section from '../shared/Section'
 
 import activityStyles from '../activity/ActivitySection.module.css'
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from 'features/workspace/shared/Section.module.css'
 
 function DetectionsSection(): React.ReactElement<any> {

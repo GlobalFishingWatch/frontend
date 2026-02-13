@@ -42,7 +42,7 @@ import {
   selectUrlBufferOperationQuery,
   selectUrlBufferUnitQuery,
   selectUrlBufferValueQuery,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { getActivityFilters, getEventLabel } from 'utils/analytics'
 import { htmlSafeParse } from 'utils/html-parser'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'

@@ -19,7 +19,8 @@ import {
 import type { ReportVesselGraph, ReportVesselsSubCategory } from 'features/reports/reports.types'
 import { ReportCategory } from 'features/reports/reports.types'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
-import { replaceQueryParams } from 'routes/routes.actions'
+import { replaceQueryParams } from 'router/routes.actions'
+
 import styles from './ReportVesselsGraph.module.css'
 
 function ReportVesselsGraphSelector({ loading }: { loading?: boolean }) {

@@ -11,7 +11,7 @@ import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
 import PortsReportLink from 'features/reports/report-port/PortsReportLink'
-import { selectIsPortReportLocation } from 'routes/routes.selectors'
+import { selectIsPortReportLocation } from 'router/routes.selectors'
 
 import type {
   ExtendedFeatureByVesselEvent,

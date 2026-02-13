@@ -125,7 +125,7 @@ const fetchDatasetsFromApi = async (
   }
 
   const mockedDatasets =
-    IS_DEVELOPMENT_ENV || process.env.NEXT_PUBLIC_USE_LOCAL_DATASETS === 'true'
+    IS_DEVELOPMENT_ENV || import.meta.env.VITE_USE_LOCAL_DATASETS === 'true'
       ? await import('./datasets.mock')
       : { default: [] }
   let datasets = uniqBy([...mockedDatasets.default, ...initialDatasets.entries], (d) => d.id)

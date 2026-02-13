@@ -28,7 +28,8 @@ import {
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
 import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
 import { selectVesselEventId } from 'features/vessel/vessel.slice'
-import { replaceQueryParams } from 'routes/routes.actions'
+import { replaceQueryParams } from 'router/routes.actions'
+
 import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {

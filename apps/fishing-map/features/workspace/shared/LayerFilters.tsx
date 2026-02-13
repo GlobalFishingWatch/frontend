@@ -37,7 +37,7 @@ import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-m
 import HistogramRangeFilter from 'features/workspace/environmental/HistogramRangeFilter'
 import LayerSchemaFilter, { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { replaceQueryParams } from 'routes/routes.actions'
+import { replaceQueryParams } from 'router/routes.actions'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 import { listAsSentence } from 'utils/shared'
 

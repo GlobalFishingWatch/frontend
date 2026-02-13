@@ -23,7 +23,7 @@ import {
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
   selectIsWorkspaceLocation,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import MapInfo from './controls/MapInfo'

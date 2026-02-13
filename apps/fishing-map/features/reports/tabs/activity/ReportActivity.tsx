@@ -52,12 +52,12 @@ import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
-import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
+import { replaceQueryParams } from 'router/routes.actions'
+import { selectIsVesselGroupReportLocation } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import ReportActivitySubsectionSelector from './ReportActivitySubsectionSelector'
 
-import { replaceQueryParams } from 'routes/routes.actions'
 import styles from 'features/reports/report-area/AreaReport.module.css'
 
 function ActivityReport() {
