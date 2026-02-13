@@ -20,10 +20,10 @@
       }
     },
     "dev": {
-      "dependsOn": ["^dist"],
-      "executor": "nx:run-commands",
+      "dependsOn": ["^dev"],
+      "executor": "@nx/js:tsc",
+      "cache": false,
       "options": {
-        "command": "nx run ui-components:dist",
         "watch": true
       },
       "continuous": true

@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { getDatasetConfigByDatasetType } from '@globalfishingwatch/dataviews-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -16,6 +17,7 @@ import {
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { ReportCategory } from 'features/reports/reports.types'
+import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
 import { VisualisationChoice } from 'features/workspace/shared/VisualisationChoice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -144,12 +146,14 @@ function ActivitySection(): React.ReactElement<any> {
       hasVisibleDataviews={hasVisibleDataviews}
     >
       {dataviews?.map((dataview, index) => {
+        const hasDatasetAvailable =
+          getDatasetConfigByDatasetType(dataview, DatasetTypes.Fourwings) !== undefined
         const isLastElement = index === dataviews?.length - 1
         const isVisible = dataview?.config?.visible ?? false
         const isNextVisible = dataviews[index + 1]?.config?.visible ?? false
         const showBivariateIcon =
           bivariateDataviews === null && isVisible && isNextVisible && !isLastElement
-        return (
+        return hasDatasetAvailable ? (
           <Fragment key={dataview.id}>
             <LayerPanelContainer key={dataview.id} dataview={dataview}>
               <LayerPanel
@@ -177,6 +181,8 @@ function ActivitySection(): React.ReactElement<any> {
               </div>
             )}
           </Fragment>
+        ) : (
+          <DatasetNotFound dataview={dataview} />
         )
       })}
     </Section>

@@ -16,6 +16,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReportComparisonDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectActiveReportDataviews } from 'features/dataviews/selectors/dataviews.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
+import { REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON } from 'features/reports/reports.config'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import { categoryToDataviewMap, ReportCategory } from 'features/reports/reports.types'
 import {
@@ -64,7 +65,7 @@ function ReportEnvironment() {
         <ReportEnvironmentGraphSelector />
       ) : null}
       <div>
-        {reportGraphType === 'evolution' ? (
+        {reportGraphType !== REPORT_ACTIVITY_GRAPH_DATASET_COMPARISON ? (
           environmentalDataviews.map((dataview, index) => {
             return (
               <ReportEnvironmentGraph
