@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useState } from 'react'
+import { Fragment, Suspense, useCallback, useEffect, useState } from 'react'
 import { FpsView } from 'react-fps'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
@@ -199,7 +199,9 @@ function App() {
           onToggle={onToggle}
           aside={
             <Sidebar onMenuClick={onMenuClick}>
-              <Outlet />
+              <Suspense fallback={null}>
+                <Outlet />
+              </Suspense>
             </Sidebar>
           }
           main={<Main />}
