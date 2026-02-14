@@ -37,7 +37,7 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
           <EventIcon type={eventType} />
           <p className={styles.title}>
             <I18nNumber number={quantity} />{' '}
-            {t((t) => t.event[eventType], { defaultValue: eventType, count: quantity })}
+            {t((t: any) => t.event[eventType], { defaultValue: eventType, count: quantity })}
           </p>
           <div className={cx(styles.actions, 'print-hidden')}>
             <IconButton icon={expanded ? 'arrow-top' : 'arrow-down'} size="small"></IconButton>

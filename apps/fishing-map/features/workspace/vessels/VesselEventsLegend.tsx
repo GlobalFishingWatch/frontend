@@ -90,7 +90,7 @@ function VesselEventsLegend({
               color={EVENTS_COLORS[eventType]}
             />
             <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>
-              {upperFirst(t((t) => t.event[eventType], { defaultValue: eventType }))}
+              {upperFirst(t((t: any) => t.event[eventType], { defaultValue: eventType }))}
             </label>
             <div className={cx(layerStyles.iconWrapper, layerStyles[eventType])}>
               <div

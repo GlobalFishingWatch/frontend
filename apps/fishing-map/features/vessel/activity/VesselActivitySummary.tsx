@@ -192,7 +192,7 @@ export const VesselActivitySummary = () => {
                   </span>
                   <p data-test={`vv-summary-${eventType}`}>
                     {active && <strong>{formatI18nNumber(events?.length || 0)} </strong>}
-                    {t((t) => t.event[eventType], {
+                    {t((t: any) => t.event[eventType], {
                       defaultValue: eventType,
                       count: events?.length || 0,
                     })}{' '}
@@ -236,7 +236,7 @@ export const VesselActivitySummary = () => {
                     )}
                   </p>
                   <DataTerminology
-                    title={t((t) => t.event[eventType], { defaultValue: eventType })}
+                    title={t((t: any) => t.event[eventType], { defaultValue: eventType })}
                     terminologyKey={eventType as any}
                   />
                 </div>
