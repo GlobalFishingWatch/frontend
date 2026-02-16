@@ -1,4 +1,4 @@
-import { lazy, useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { Provider } from 'react-redux'
 import { createFileRoute } from '@tanstack/react-router'
 
@@ -28,7 +28,9 @@ function AppLayout() {
 
   return (
     <Provider store={store}>
-      <App />
+      <Suspense fallback={null}>
+        <App />
+      </Suspense>
     </Provider>
   )
 }

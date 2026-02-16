@@ -1,4 +1,4 @@
-import { Fragment, lazy } from 'react'
+import { Fragment, lazy, Suspense } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
@@ -58,10 +58,18 @@ const Main = () => {
             [styles.withTimebarAndSmallScreenSwitch]: showTimebar && isSmallScreen,
           })}
         >
-          {isWorkspaceReady && <Map />}
+          {isWorkspaceReady && (
+            <Suspense fallback={<div>Loading...</div>}>
+              <Map />
+            </Suspense>
+          )}
         </div>
       )}
-      {showTimebar && isWorkspaceReady && <Timebar />}
+      {showTimebar && isWorkspaceReady && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <Timebar />
+        </Suspense>
+      )}
       <Footer />
     </Fragment>
   )

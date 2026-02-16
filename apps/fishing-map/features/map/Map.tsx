@@ -1,4 +1,4 @@
-import { Fragment, lazy, useCallback, useEffect, useMemo } from 'react'
+import { Fragment, lazy, Suspense, useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
@@ -84,7 +84,9 @@ const MapWrapper = () => {
       {isMapDrawing && (
         <Fragment>
           <CoordinateEditOverlay />
-          <DrawDialog />
+          <Suspense fallback={null}>
+            <DrawDialog />
+          </Suspense>
         </Fragment>
       )}
       <MapPopups />
@@ -92,10 +94,14 @@ const MapWrapper = () => {
       <MapAnnotationsDialog />
       <MapControls mapLoading={mapLoading || isReportAreaLoading} />
       {isWorkspaceLocation && !isAnyReportLocation && (
-        <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
+        <Suspense fallback={null}>
+          <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
+        </Suspense>
       )}
       {isWorkspaceLocation && !isAnyReportLocation && (
-        <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
+        <Suspense fallback={null}>
+          <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
+        </Suspense>
       )}
       {(isWorkspaceLocation || isVesselLocation || isAnyReportLocation) && <MapInfo />}
 
