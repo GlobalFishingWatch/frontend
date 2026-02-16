@@ -17,6 +17,7 @@ import type { ExtendedFeatureByVesselEventPort } from 'features/map/map.slice'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { selectLocationQuery } from 'router/routes.selectors'
+import type { QueryParams } from 'types'
 
 import { ReportCategory } from '../reports.types'
 
@@ -75,7 +76,7 @@ function PortsReportLink({ children, port, tooltip }: PortsReportLinkProps) {
         workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
         portId: port.id!,
       }}
-      search={(prev) => ({
+      search={(prev: QueryParams) => ({
         ...prev,
         reportCategory: ReportCategory.Events,
         portsReportName: port.name,

@@ -5,6 +5,7 @@ import { Link } from '@tanstack/react-router'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import type { QueryParams } from 'types'
 
 import { ReportCategory } from '../reports.types'
 
@@ -39,7 +40,7 @@ function VesselGroupReportLink({ children, vesselGroupId }: VesselGroupReportLin
         workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
         vesselGroupId: vesselGroupId,
       }}
-      search={(prev) => ({ ...prev, reportCategory: ReportCategory.VesselGroup })}
+      search={(prev: QueryParams) => ({ ...prev, reportCategory: ReportCategory.VesselGroup })}
       onClick={analysisRedirect}
     >
       {children}

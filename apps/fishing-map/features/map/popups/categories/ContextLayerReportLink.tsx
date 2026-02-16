@@ -21,6 +21,7 @@ import { resetReportData } from 'features/reports/tabs/activity/reports-activity
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { cleanCurrentWorkspaceReportState } from 'features/workspace/workspace.slice'
+import type { QueryParams } from 'types'
 
 import { getAreaIdFromFeature } from './ContextLayers.hooks'
 
@@ -115,7 +116,7 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
         className={styles.workspaceLink}
         to="/$category/$workspaceId/report/$datasetId/$areaId"
         params={reportLinkParams}
-        search={(prev) => ({ ...prev, ...reportLinkSearch })}
+        search={(prev: QueryParams) => ({ ...prev, ...reportLinkSearch })}
         onClick={onReportClick}
       >
         <IconButton

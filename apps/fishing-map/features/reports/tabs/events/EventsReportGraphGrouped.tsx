@@ -34,6 +34,7 @@ import { EventsReportIndividualGraphTooltip } from 'features/reports/tabs/events
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectLocationPayload } from 'router/routes.selectors'
 import { ROUTE_PATHS } from 'router/routes.utils'
+import type { QueryParams } from 'types'
 
 import EncounterIcon from './icons/event-encounter.svg'
 import LoiteringIcon from './icons/event-loitering.svg'
@@ -173,7 +174,7 @@ const ReportGraphTick = (props: any) => {
             datasetId: datasetAreaId,
             areaId,
           },
-          search: (prev) => ({
+          search: (prev: QueryParams) => ({
             ...prev,
             reportEventsGraph: 'evolution',
             dataviewInstances: dataviewInstancesWithAreaLayerVisible,

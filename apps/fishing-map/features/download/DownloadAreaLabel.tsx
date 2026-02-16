@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { saveAs } from 'file-saver'
+import filesaver from 'file-saver'
 import type { FeatureCollection } from 'geojson'
 
 import { IconButton, Spinner, Tag } from '@globalfishingwatch/ui-components'
@@ -35,7 +35,7 @@ export const DownloadAreaLabel = ({ name }: { name?: string }) => {
     }
     const file = getFileFromGeojson(featureCollection)
     if (file) {
-      saveAs(file, `${name}.json`)
+      filesaver.saveAs(file, `${name}.json`)
     }
   }, [area?.data?.geometry, name])
 

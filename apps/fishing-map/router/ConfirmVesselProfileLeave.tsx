@@ -1,11 +1,10 @@
 import { useSelector } from 'react-redux'
-import { useBlocker } from '@tanstack/react-router'
+import { useBlocker, useRouter } from '@tanstack/react-router'
 
 import { selectVesselProfileDataviewIntance } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectHasVesselProfileInstancePinned } from 'features/dataviews/selectors/dataviews.selectors'
 import { t } from 'features/i18n/i18n'
 
-import { getRouterRef } from './router-ref'
 import { ALL_WORKSPACE_ROUTES, VESSEL_ROUTES } from './routes'
 import { selectIsAnyVesselLocation } from './routes.selectors'
 import { mapRouteIdToType, type RoutePathValues } from './routes.utils'
@@ -22,6 +21,7 @@ function stripAppPrefix(routeId: string): string {
  * instead of allowing the original + replaceQueryParams to avoid a race.
  */
 export function ConfirmVesselProfileLeave() {
+  const router = useRouter()
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const vesselProfileDataviewInstance = useSelector(selectVesselProfileDataviewIntance)
   const hasVesselProfileInstancePinned = useSelector(selectHasVesselProfileInstancePinned)
@@ -66,7 +66,7 @@ export function ConfirmVesselProfileLeave() {
           ...((nextSearch.dataviewInstances as any[]) || []),
           cleanVesselDataviewInstance,
         ]
-        getRouterRef().navigate({
+        router.navigate({
           to: stripAppPrefix(next.routeId) as RoutePathValues,
           params: next.params,
           search: { ...nextSearch, dataviewInstances: mergedDataviewInstances },

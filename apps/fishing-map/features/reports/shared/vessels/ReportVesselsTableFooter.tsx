@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
-import { saveAs } from 'file-saver'
-import { unparse as unparseCSV } from 'papaparse'
+import filesaver from 'file-saver'
+import papaparse from 'papaparse'
 
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 
@@ -95,12 +95,12 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
         }
       })
     if (vessels?.length) {
-      const csv = unparseCSV(vessels)
+      const csv = papaparse.unparse(vessels)
       const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
       const fileName = [reportSubCategory, `${reportUnit}s`, reportAreaName || 'global', start, end]
         .filter(Boolean)
         .join('-')
-      saveAs(blob, `${fileName}.csv`)
+      filesaver.saveAs(blob, `${fileName}.csv`)
       trackEvent({
         category: TrackCategory.VesselGroupReport,
         action: 'vessel_report_download_csv',

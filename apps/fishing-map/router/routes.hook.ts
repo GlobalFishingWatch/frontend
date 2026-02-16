@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { useRouter } from '@tanstack/react-router'
 import { parse } from 'qs'
 
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
@@ -19,7 +20,6 @@ import {
 } from 'router/routes.selectors'
 import type { QueryParams } from 'types'
 
-import { getRouterRef } from './router-ref'
 import { cleanAccessTokenQueryParams } from './routes.utils'
 
 export const useBeforeUnload = () => {
@@ -47,6 +47,7 @@ export const useBeforeUnload = () => {
 }
 
 export const useReplaceLoginUrl = () => {
+  const router = useRouter()
   const { redirectUrl, historyNavigation, cleanRedirectUrl } = useLoginRedirect()
   const dispatch = useAppDispatch()
   const locationTo = useSelector(selectLocationTo)
@@ -66,10 +67,10 @@ export const useReplaceLoginUrl = () => {
       const to = locationTo || '/'
       const params = locationParams
 
-      getRouterRef().navigate({
+      router.navigate({
         to,
         params,
-        search: (prev) => cleanAccessTokenQueryParams({ ...prev, ...query }),
+        search: (prev: QueryParams) => cleanAccessTokenQueryParams({ ...prev, ...query }),
         replace: true,
         resetScroll: false,
       })

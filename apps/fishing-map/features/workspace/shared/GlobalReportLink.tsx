@@ -9,6 +9,7 @@ import { useFitAreaInViewport } from 'features/reports/report-area/area-reports.
 import type { ReportCategory } from 'features/reports/reports.types'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
+import type { QueryParams } from 'types'
 
 const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }) => {
   const { t } = useTranslation()
@@ -27,7 +28,7 @@ const GlobalReportLink = ({ reportCategory }: { reportCategory: ReportCategory }
         category: workspace?.category || '',
         workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
       }}
-      search={(prev) => ({
+      search={(prev: QueryParams) => ({
         ...prev,
         reportCategory,
         latitude: 0,

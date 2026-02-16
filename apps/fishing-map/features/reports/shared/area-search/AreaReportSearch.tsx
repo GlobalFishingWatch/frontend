@@ -24,6 +24,7 @@ import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { useOceanAreas } from 'hooks/ocean-areas'
 import { selectLocationQuery } from 'router/routes.selectors'
 import { ROUTE_PATHS } from 'router/routes.utils'
+import type { QueryParams } from 'types'
 import { getEventLabel } from 'utils/analytics'
 import { formatInfoField, upperFirst } from 'utils/info'
 
@@ -118,7 +119,7 @@ function AreaReportSearch({ className }: { className?: string }) {
           router.navigate({
             to: ROUTE_PATHS.PORT_REPORT,
             params: { category, workspaceId, portId: portId! },
-            search: (prev) => ({
+            search: (prev: QueryParams) => ({
               ...prev,
               reportCategory: ReportCategory.Events,
               portsReportName: area.properties.name,
@@ -132,7 +133,7 @@ function AreaReportSearch({ className }: { className?: string }) {
           router.navigate({
             to: ROUTE_PATHS.WORKSPACE_REPORT_FULL,
             params: { category, workspaceId, datasetId, areaId: areaId! },
-            search: (prev) => ({
+            search: (prev: QueryParams) => ({
               ...prev,
               dataviewInstances,
             }),

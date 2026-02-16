@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import { parse as parseCSV } from 'papaparse'
+import papaparse from 'papaparse'
 
 import { useDebounce } from '@globalfishingwatch/react-hooks'
 import { TextArea } from '@globalfishingwatch/ui-components'
@@ -90,7 +90,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
   const onCSVLoaded = useCallback(
     async (file: File) => {
       const fileData = await readBlobAs(file, 'text')
-      const { data } = parseCSV(fileData, {
+      const { data } = papaparse.parse(fileData, {
         header: true,
         skipEmptyLines: true,
       }) as { data: string[] }

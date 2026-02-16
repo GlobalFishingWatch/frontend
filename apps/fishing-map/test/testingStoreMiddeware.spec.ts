@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
+import type { RootState } from 'store'
 import { makeStore } from 'store'
 
 import { createTestingMiddleware } from './testingStoreMiddeware'
@@ -13,7 +14,7 @@ describe('TestingStoreMiddleware Example Usage', () => {
     testingMiddleware = createTestingMiddleware()
 
     // Create store with the testing middleware
-    store = makeStore({}, [testingMiddleware.createMiddleware()])
+    store = makeStore({} as RootState, [testingMiddleware.createMiddleware()])
   })
 
   afterEach(() => {

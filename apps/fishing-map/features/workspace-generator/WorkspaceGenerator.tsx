@@ -6,7 +6,7 @@ import { Button, Icon, InputText, Spinner } from '@globalfishingwatch/ui-compone
 
 import { PATH_BASENAME } from 'data/config'
 import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
-import type { WorkspaceGeneratorResponse } from 'pages/api/workspaces-generator'
+import type { WorkspaceGeneratorResponse } from 'routes/api/workspaces-generator'
 
 import styles from './WorkspaceGenerator.module.css'
 
@@ -81,7 +81,7 @@ const WorkspaceGenerator = () => {
   const [input, setInput] = useState('')
   const { messages, sendMessage, isLoading, hasError } = useWorkspacesAgent()
   const messagesContainerRef = useRef<HTMLDivElement>(null)
-  const [rollingMessageIndex, setRollingMessageIndex] = useState(
+  const [rollingMessageIndex, setRollingMessageIndex] = useState(() =>
     Math.floor(Math.random() * EXAMPLE_MESSAGES.length)
   )
   const rollingMessage = EXAMPLE_MESSAGES[rollingMessageIndex]

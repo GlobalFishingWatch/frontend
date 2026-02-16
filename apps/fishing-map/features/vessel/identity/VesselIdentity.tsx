@@ -3,7 +3,7 @@ import { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { saveAs } from 'file-saver'
+import filesaver from 'file-saver'
 
 import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import {
@@ -120,7 +120,7 @@ const VesselIdentity = () => {
       }
       const data = parseVesselToCSV(filteredVesselIdentity)
       const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, `${shipname}-${flag}.csv`)
+      filesaver.saveAs(blob, `${shipname}-${flag}.csv`)
       trackEvent({
         category: TrackCategory.VesselProfile,
         action: 'vessel_identity_download',

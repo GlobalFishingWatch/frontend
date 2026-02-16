@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 
 import type { ReactNode } from 'react'
+import { Suspense } from 'react'
 import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-router'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
@@ -128,7 +129,11 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 function RootComponent() {
   return (
     <RootDocument>
-      <Outlet />
+      <Suspense fallback={null}>
+        <I18nSSRWrapper>
+          <Outlet />
+        </I18nSSRWrapper>
+      </Suspense>
     </RootDocument>
   )
 }
