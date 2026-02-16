@@ -18,7 +18,7 @@ import {
   selectVesselIdentitySource,
 } from 'features/vessel/vessel.config.selectors'
 import { formatTransmissionDate, getCurrentIdentityVessel } from 'features/vessel/vessel.utils'
-import { getCurrentAppUrl } from 'router/routes.actions'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import {
   formatInfoField,
   getVesselGearTypeLabel,

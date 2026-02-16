@@ -41,7 +41,7 @@ import { getWorkspaceLabel, isPrivateWorkspaceNotAllowed } from 'features/worksp
 import WorkspaceError from 'features/workspace/WorkspaceError'
 import WorkspacePassword from 'features/workspace/WorkspacePassword'
 import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectLocationCategory } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse, options } from 'utils/html-parser'
@@ -62,6 +62,7 @@ function Workspace() {
   useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const readOnly = useSelector(selectReadOnly)
   const isWorkspacePasswordRequired = useSelector(selectIsWorkspacePasswordRequired)
   const workspace = useSelector(selectWorkspace)

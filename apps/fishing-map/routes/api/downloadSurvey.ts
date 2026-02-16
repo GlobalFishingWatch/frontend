@@ -21,13 +21,8 @@ export type ApiResponse = {
   data?: FeedbackFormData
 }
 
-type RouteOptions = Parameters<
-  ReturnType<typeof createFileRoute<'/api/downloadSurvey'>>
->[0]
-
-export const Route = createFileRoute('/api/downloadSurvey')(
-  {
-    server: {
+export const Route = createFileRoute('/api/downloadSurvey')({
+  server: {
     handlers: {
       POST: async ({ request }: { request: Request }) => {
         const data: FeedbackFormData = await request.json().catch(() => null)
@@ -61,5 +56,4 @@ export const Route = createFileRoute('/api/downloadSurvey')(
       },
     },
   },
-  } as RouteOptions
-)
+})

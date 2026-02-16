@@ -39,7 +39,7 @@ import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import LocalStorageLoginLink from 'router/LoginLink'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getVesselShipNameLabel } from 'utils/info'
@@ -64,6 +64,7 @@ const getVesselResourceByDataviewId = (resources: ResourcesState, dataviewId: st
 function VesselsSection(): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const router = useRouter()
   const dataviews = useSelector(selectVesselsDataviews)
   const activeDataviews = useSelector(selectActiveVesselsDataviews)

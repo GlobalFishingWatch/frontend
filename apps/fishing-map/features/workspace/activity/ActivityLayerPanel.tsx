@@ -29,7 +29,7 @@ import LayerProperties from 'features/workspace/shared/LayerProperties'
 import MapLegend from 'features/workspace/shared/MapLegend'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
 import DatasetSchemaField from '../shared/DatasetSchemaField'
@@ -62,6 +62,7 @@ function ActivityLayerPanel({
 }: LayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const [filterOpen, setFiltersOpen] = useState(isOpen === undefined ? false : isOpen)
   const [colorOpen, setColorOpen] = useState(false)
 

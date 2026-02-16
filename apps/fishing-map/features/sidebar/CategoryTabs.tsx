@@ -34,7 +34,7 @@ import {
   resetWorkspaceHistoryNavigation,
 } from 'features/workspace/workspace.slice'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnySearchLocation,
   selectIsUserLocation,
@@ -54,6 +54,7 @@ type CategoryTabsProps = {
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const { dispatchClickedEvent } = useClickedEventConnect()
   const setMapCoordinates = useSetMapCoordinates()
   const workspace = useSelector(selectWorkspace)

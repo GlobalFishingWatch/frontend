@@ -47,7 +47,7 @@ import {
   selectWorkspaceStatus,
   selectWorkspaceVisibleEventsArray,
 } from 'features/workspace/workspace.selectors'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyReportLocation,
   selectIsIndexLocation,
@@ -124,6 +124,7 @@ export const useTimebarTracksGraphSteps = () => {
 
 export const useGlobalConfigConnect = () => {
   const { start, end } = useTimerangeConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const timebarHighlightedTime = useSelector(selectHighlightedTime)
   const highlightEventIds = useSelector(selectHighlightedEvents)
   const viewState = useMapViewState()
@@ -183,7 +184,7 @@ export const useGlobalConfigConnect = () => {
         }
       }
     },
-    [isWorkspace, t]
+    [isWorkspace, replaceQueryParams, t]
   )
 
   return useMemo(() => {

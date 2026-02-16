@@ -1,7 +1,10 @@
 import { ACCESS_TOKEN_STRING } from '@globalfishingwatch/api-client'
 import { DEFAULT_CALLBACK_URL_PARAM } from '@globalfishingwatch/react-hooks'
 
+import { PATH_BASENAME } from 'data/config'
 import type { QueryParams } from 'types'
+
+import { getRouterRef } from '../router'
 
 import type { ROUTE_TYPES } from './routes'
 import {
@@ -106,4 +109,22 @@ export function cleanAccessTokenQueryParams(query: Partial<QueryParams>): Partia
     delete query[param]
   }
   return query
+}
+
+/**
+ * Get the current full URL from the router state.
+ * Use this instead of window.location.href to stay consistent with router state.
+ */
+export function getCurrentAppUrl(): string {
+  if (typeof window === 'undefined') {
+    return ''
+  }
+  const router = getRouterRef()
+  if (!router) {
+    return ''
+  }
+  const href = router.state.location?.href ?? ''
+  return href.startsWith(PATH_BASENAME)
+    ? window.location.origin + href
+    : window.location.origin + PATH_BASENAME + (href || '/')
 }

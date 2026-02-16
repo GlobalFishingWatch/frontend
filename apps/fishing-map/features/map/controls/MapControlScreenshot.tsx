@@ -12,7 +12,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsAnyReportLocation, selectIsAnyVesselLocation } from 'router/routes.selectors'
 import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
 
@@ -32,6 +32,7 @@ const MapControlScreenshot = ({
 }): React.ReactElement<any> => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const modalOpen = useSelector(selectScreenshotModalOpen)
   const timeoutRef = useRef<NodeJS.Timeout>(undefined)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)

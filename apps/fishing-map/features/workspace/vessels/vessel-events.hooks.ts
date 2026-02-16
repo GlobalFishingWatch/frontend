@@ -6,7 +6,7 @@ import type { EventType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 const ALL_EVENT_TYPES = [
   EventTypes.Fishing,
@@ -18,6 +18,7 @@ const ALL_EVENT_TYPES = [
 
 export const useVisibleVesselEvents = () => {
   const currentVisibleEvents = useSelector(selectVisibleEvents)
+  const { replaceQueryParams } = useReplaceQueryParams()
 
   const setVesselEventVisibility = useCallback(
     ({ event, visible }: { event: EventTypes | EventType; visible: boolean }) => {
@@ -44,7 +45,7 @@ export const useVisibleVesselEvents = () => {
         })
       }
     },
-    [currentVisibleEvents]
+    [currentVisibleEvents, replaceQueryParams]
   )
 
   return useMemo(

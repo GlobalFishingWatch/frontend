@@ -20,7 +20,7 @@ import {
   getVesselIdentity,
   getVesselIdentityId,
 } from 'features/vessel/vessel.utils'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import styles from './VesselIdentitySelector.module.css'
 
@@ -34,6 +34,7 @@ export function isRegistryInTimerange(registry: VesselDataIdentity, start: strin
 
 const VesselIdentitySelector = () => {
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const vessel = useSelector(selectVesselInfoData)
   const identitySource = useSelector(selectVesselIdentitySource)
   const identityId = useSelector(selectVesselIdentityId)

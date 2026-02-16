@@ -22,11 +22,12 @@ import type {
 import { ReportCategory } from 'features/reports/reports.types'
 import { useReportFeaturesLoading } from 'features/reports/reports-timeseries.hooks'
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 function ReportActivitySubsectionSelector() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const reportCategory = useSelector(selectReportCategory)
   const reportSubCategory = useSelector(selectReportSubCategory)
   const hasFishingDataviews = useSelector(selectHasFishingDataviews)

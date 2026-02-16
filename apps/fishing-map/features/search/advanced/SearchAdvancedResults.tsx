@@ -437,7 +437,6 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           ['--col-callsign-size' as any]: 100,
           ['--header-mrt_row_select-size' as any]: 10,
           ['--col-mrt_row_select-size' as any]: 10,
-          ['--header-mrt_row_select-size' as any]: 10,
           ['--header-shipname-size' as any]: 250,
           ['--header-infoSource-size' as any]: 250,
         },

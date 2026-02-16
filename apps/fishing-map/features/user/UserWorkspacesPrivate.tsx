@@ -9,7 +9,7 @@ import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { getWorkspaceLabel } from 'features/workspace/workspace.utils'
 import { selectWorkspaceListStatus } from 'features/workspaces-list/workspaces-list.slice'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
 import { getHighlightedText } from 'utils/text'
@@ -20,6 +20,7 @@ import styles from './User.module.css'
 
 function UserWorkspacesPrivate({ searchQuery }: { searchQuery: string }) {
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const workspaces = useSelector(selectUserWorkspacesPrivate)
   const workspacesStatus = useSelector(selectWorkspaceListStatus)
   const setMapCoordinates = useSetMapCoordinates()

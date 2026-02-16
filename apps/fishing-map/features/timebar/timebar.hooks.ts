@@ -25,7 +25,7 @@ import { selectActiveTrackDataviews } from 'features/dataviews/selectors/datavie
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import type { TimebarGraphs } from 'types'
 import { TimebarVisualisations } from 'types'
 
@@ -77,6 +77,7 @@ timerangeState.onMount = (setAtom) => {
 export const useSetTimerange = () => {
   const setAtomTimerange = useSetAtom(timerangeState)
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const hintsDismissed = useSelector(selectHintsDismissed)
   const isWorkspaceMapReady = useSelector(selectIsWorkspaceReady)
   const pendingRef = useRef<TimeRange | null>(null)
@@ -176,12 +177,12 @@ export const useHighlightedEventsConnect = () => {
       highlightedEventIds,
       dispatchHighlightedEvents,
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serializedHighlightedEventIds, dispatchHighlightedEvents])
 }
 
 export const useTimebarVisualisationConnect = () => {
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const timebarVisualisation = useSelector(selectTimebarVisualisation)
   const hasChangedSettingsOnce = useSelector(selectHasChangedSettingsOnce)
   const dispatchTimebarVisualisation = useCallback(
@@ -203,6 +204,7 @@ export const useTimebarVisualisationConnect = () => {
 }
 
 export const useTimebarEnvironmentConnect = () => {
+  const { replaceQueryParams } = useReplaceQueryParams()
   const timebarSelectedEnvId = useSelector(selectTimebarSelectedEnvId)
 
   const dispatchTimebarSelectedEnvId = useCallback((timebarSelectedEnvId: string) => {
@@ -219,6 +221,7 @@ export const useTimebarEnvironmentConnect = () => {
 }
 
 export const useTimebarUserPointsConnect = () => {
+  const { replaceQueryParams } = useReplaceQueryParams()
   const timebarSelectedUserId = useSelector(selectTimebarSelectedUserId)
 
   const dispatchTimebarSelectedUserId = useCallback((timebarSelectedUserId: string) => {
@@ -235,6 +238,7 @@ export const useTimebarUserPointsConnect = () => {
 }
 
 export const useTimebarVesselGroupConnect = () => {
+  const { replaceQueryParams } = useReplaceQueryParams()
   const timebarSelectedVGId = useSelector(selectTimebarSelectedVGId)
 
   const dispatchTimebarSelectedVGId = useCallback((timebarSelectedVGId: string) => {
@@ -248,6 +252,7 @@ export const useTimebarVesselGroupConnect = () => {
 }
 
 export const useTimebarGraphConnect = () => {
+  const { replaceQueryParams } = useReplaceQueryParams()
   const timebarGraph = useSelector(selectTimebarGraph)
   const dispatchTimebarGraph = useCallback((timebarGraph: TimebarGraphs) => {
     replaceQueryParams({ timebarGraph })
@@ -332,7 +337,6 @@ export const useTimebarVisualisation = () => {
         dispatchTimebarVisualisation(TimebarVisualisations.Points, true)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     activeActivityDataviews,
     activeDetectionsDataviews,

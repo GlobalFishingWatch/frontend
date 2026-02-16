@@ -9,7 +9,7 @@ import type { ChoiceOption, Tab } from '@globalfishingwatch/ui-components'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { selectVesselInfoData } from 'features/vessel/selectors/vessel.selectors'
 import { selectVesselIdentitySource } from 'features/vessel/vessel.config.selectors'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import styles from './VesselIdentity.module.css'
 
@@ -29,6 +29,7 @@ export function useVesselIdentities() {
 export function useVesselIdentityTabs() {
   const { t } = useTranslation()
   const { identitySource, registryDisabled, selfReportedIdentities } = useVesselIdentities()
+  const { replaceQueryParams } = useReplaceQueryParams()
 
   const identityTabs: Tab<VesselIdentitySourceEnum>[] = useMemo(
     () => [

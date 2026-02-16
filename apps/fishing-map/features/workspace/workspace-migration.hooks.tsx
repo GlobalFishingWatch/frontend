@@ -23,7 +23,7 @@ import { getWorkspaceReport } from 'features/reports/shared/new-report-modal/New
 import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
 import { fetchVesselInfoThunk } from 'features/vessel/vessel.slice'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnyVesselLocation,
@@ -39,6 +39,7 @@ import { updateCurrentWorkspaceThunk } from './workspace.slice'
 import styles from './Workspace.module.css'
 
 export const useMigrateWorkspace = () => {
+  const { replaceQueryParams } = useReplaceQueryParams()
   const deprecatedDataviewInstances = useSelector(selectDeprecatedDataviewInstances)
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
   const workspace = useSelector(selectWorkspaceWithCurrentState)

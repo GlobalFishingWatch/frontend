@@ -44,7 +44,7 @@ import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsWorkspaceVesselLocation,
   selectVesselId,
@@ -62,6 +62,7 @@ const Vessel = () => {
   useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const { removeDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
   const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const vesselId = useSelector(selectVesselId)

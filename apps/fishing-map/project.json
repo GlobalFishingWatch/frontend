@@ -41,8 +41,7 @@
         "commands": [
           "rimraf dist/apps/fishing-map/public/locales",
           "rimraf dist/apps/fishing-map",
-          "rimraf apps/fishing-map/.output",
-          "rimraf .next"
+          "rimraf apps/fishing-map/.output"
         ]
       }
     },

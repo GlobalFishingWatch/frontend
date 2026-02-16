@@ -10,7 +10,7 @@ import { VesselActivitySummary } from 'features/vessel/activity/VesselActivitySu
 import RelatedEncounterVessels from 'features/vessel/related-vessels/RelatedEncounterVessels'
 import RelatedOwnersVessels from 'features/vessel/related-vessels/RelatedOwnersVessels'
 import { selectVesselRelatedSubsection } from 'features/vessel/vessel.config.selectors'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import type { VesselRelatedSubsection } from '../vessel.types'
 import { useVesselProfileEventsLoading } from '../vessel-events.hooks'
@@ -20,6 +20,7 @@ import styles from './RelatedVessels.module.css'
 const RelatedVessels = () => {
   const { t } = useTranslation()
   const vesselRelatedSubsection = useSelector(selectVesselRelatedSubsection)
+  const { replaceQueryParams } = useReplaceQueryParams()
   const eventsLoading = useVesselProfileEventsLoading()
 
   const relatedOptions: ChoiceOption<VesselRelatedSubsection>[] = useMemo(
@@ -44,7 +45,7 @@ const RelatedVessels = () => {
         action: `click_${option.id}_related_vessels_tab`,
       })
     },
-    []
+    [replaceQueryParams]
   )
 
   if (eventsLoading) {

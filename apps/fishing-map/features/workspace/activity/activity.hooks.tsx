@@ -34,13 +34,14 @@ import {
   selectHasDetectionsDataviewVesselGroups,
 } from 'features/dataviews/selectors/dataviews.selectors'
 import { setUserSetting } from 'features/user/user.slice'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 export const useVisualizationsOptions = (
   category: DataviewCategory.Activity | DataviewCategory.Detections | DataviewCategory.Environment
 ) => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const dataviews = useSelector(
     category === DataviewCategory.Activity
       ? selectActiveActivityDataviews

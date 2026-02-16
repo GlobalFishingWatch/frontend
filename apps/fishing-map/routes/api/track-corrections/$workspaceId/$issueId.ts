@@ -14,13 +14,8 @@ export type GetIssueDetailAPIResponse = TrackCorrection
 
 export type APIResponse = ErrorAPIResponse | GetIssueDetailAPIResponse
 
-type RouteOptions = Parameters<
-  ReturnType<typeof createFileRoute<'/api/track-corrections/$workspaceId/$issueId'>>
->[0]
-
-export const Route = createFileRoute('/api/track-corrections/$workspaceId/$issueId')(
-  {
-    server: {
+export const Route = createFileRoute('/api/track-corrections/$workspaceId/$issueId')({
+  server: {
     handlers: {
       POST: async ({
         request,
@@ -65,5 +60,4 @@ export const Route = createFileRoute('/api/track-corrections/$workspaceId/$issue
       },
     },
   },
-  } as RouteOptions
-)
+})

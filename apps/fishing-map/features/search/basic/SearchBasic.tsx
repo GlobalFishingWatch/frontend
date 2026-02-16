@@ -28,7 +28,7 @@ import {
 } from 'features/search/SearchPlaceholders'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import SearchError from './SearchError'
@@ -50,6 +50,7 @@ function SearchBasic({
 }: SearchComponentProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const searchQuery = useSelector(selectSearchQuery)
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)

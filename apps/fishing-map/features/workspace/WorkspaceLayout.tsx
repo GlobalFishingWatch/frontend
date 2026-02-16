@@ -23,6 +23,7 @@ import {
   WORKSPACE,
   WORKSPACE_REPORT,
 } from 'router/routes'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyVesselLocation,
   selectIsVesselGroupReportLocation,
@@ -48,6 +49,7 @@ function WorkspaceLayout() {
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
+  const { replaceQueryParams } = useReplaceQueryParams()
   const fitWorkspaceBounds = useFitWorkspaceBounds()
 
   const isHomeLocation = locationType === HOME
@@ -68,9 +70,12 @@ function WorkspaceLayout() {
       action = dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId as string, reportId }))
       const resolvedAction = await action
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
-        const workspace = resolvedAction.payload as Workspace
-        if (!isVesselGroupReportLocation && !isWorkspacePasswordProtected(workspace)) {
-          fitWorkspaceBounds(workspace)
+        const { dataviewInstancesToUpsert, ...workspace } = resolvedAction.payload
+        if (dataviewInstancesToUpsert) {
+          replaceQueryParams({ dataviewInstances: dataviewInstancesToUpsert })
+        }
+        if (!isVesselGroupReportLocation && !isWorkspacePasswordProtected(workspace as Workspace)) {
+          fitWorkspaceBounds(workspace as Workspace)
         }
       }
       actionResolved = true
@@ -87,7 +92,6 @@ function WorkspaceLayout() {
         action.abort()
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     userLogged,
     homeNeedsFetch,

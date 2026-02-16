@@ -31,7 +31,6 @@ import {
   DEFAULT_WORKSPACE_ID,
   getWorkspaceEnv,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
-  WorkspaceCategory,
 } from 'data/workspaces'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import {
@@ -56,17 +55,13 @@ import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { getRouterRef } from 'router/router-ref'
-import { HOME, REPORT, WORKSPACE } from 'router/routes'
-import { cleanQueryParams, replaceQueryParams } from 'router/routes.actions'
+import { HOME, REPORT } from 'router/routes'
 import {
-  selectLocationCategory,
   selectLocationType,
   selectReportId,
   selectUrlDataviewInstances,
 } from 'router/routes.selectors'
 import type { LinkTo } from 'router/routes.types'
-import { ROUTE_PATHS } from 'router/routes.utils'
 import type { AppDispatch } from 'store'
 import type { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
 import type { AsyncError } from 'utils/async-slice'
@@ -82,7 +77,7 @@ import { parseUpsertWorkspace } from './workspace.utils'
 
 /**
  * History navigation entry stored in TanStack Router format.
- * No conversion needed when navigating back - use directly with Link or getRouterRef().navigate().
+ * No conversion needed when navigating back - use directly with Link or useRouter().navigate().
  */
 export type LastWorkspaceVisited = LinkTo & {
   pathname?: string
@@ -150,6 +145,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const privateUserGroups = selectPrivateUserGroups(state)
     const reportId = reportIdParam || selectReportId(state)
     let workspaceReportId = null
+    let dataviewInstancesToUpsert: UrlDataviewInstance[] | undefined
     try {
       let workspace: Workspace<any> | null = null
       if (locationType === REPORT) {
@@ -288,13 +284,12 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           }
           return []
         })
-        // Update the dataviewInstances with the track config in case it was found
+        // Compute the dataviewInstances with the track config to be upserted by the caller
         if (vesselDataviewsWithTrack?.length) {
-          const dataviewInstancesToUpsert = mergeDataviewIntancesToUpsert(
+          dataviewInstancesToUpsert = mergeDataviewIntancesToUpsert(
             vesselDataviewsWithTrack,
             urlDataviewInstances
           )
-          replaceQueryParams({ dataviewInstances: dataviewInstancesToUpsert })
         }
 
         if (error) {
@@ -323,6 +318,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         startAt: startAt.toISO(),
         endAt: endAt.toISO(),
         workspaceReportId,
+        dataviewInstancesToUpsert,
       }
     } catch (e: any) {
       console.warn(e)
@@ -411,34 +407,6 @@ export const saveWorkspaceThunk = createAsyncThunk(
     }
 
     const workspaceUpdated = await saveWorkspace()
-    const locationType = selectLocationType(state)
-    const locationCategory = selectLocationCategory(state) || WorkspaceCategory.FishingActivity
-    if (workspaceUpdated) {
-      // Navigate after workspace save
-      const targetType = locationType === HOME ? WORKSPACE : locationType
-      if (targetType === WORKSPACE) {
-        getRouterRef().navigate({
-          to: ROUTE_PATHS.WORKSPACE,
-          params: { category: locationCategory, workspaceId: workspaceUpdated.id },
-          search: {},
-          replace: true,
-        })
-      } else if (targetType === REPORT) {
-        const reportId = selectReportId(state)
-        getRouterRef().navigate({
-          to: ROUTE_PATHS.REPORT,
-          params: { reportId: reportId! },
-          search: {},
-          replace: true,
-        })
-      } else {
-        getRouterRef().navigate({
-          to: ROUTE_PATHS.HOME,
-          search: {},
-          replace: true,
-        })
-      }
-    }
     return workspaceUpdated
   }
 )
@@ -477,8 +445,12 @@ export const updateCurrentWorkspaceThunk = createAsyncThunk<
         },
       }),
     } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
-    if (workspaceUpdated) {
-      cleanQueryParams()
+    if (!workspaceUpdated) {
+      return rejectWithValue({
+        status: 500,
+        message: 'Workspace update failed',
+        isWorkspaceWrongPassword: false,
+      })
     }
     return workspaceUpdated
   } catch (e: any) {
@@ -579,7 +551,7 @@ const workspaceSlice = createSlice({
     })
     builder.addCase(fetchWorkspaceThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
-      const { workspaceReportId, ...data } = action.payload
+      const { workspaceReportId, dataviewInstancesToUpsert: _, ...data } = action.payload
       if (data) {
         state.data = data
       }

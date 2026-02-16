@@ -1,8 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { Provider } from 'react-redux'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
 
-import { getRouterRef } from 'router/router-ref'
 import { setupRouterSync } from 'router/router-sync'
 import { validateRootSearchParams } from 'router/routes.search'
 import { makeStore } from 'store'
@@ -22,9 +21,11 @@ export const Route = createFileRoute('/_app')({
 
 const store = makeStore()
 function AppLayout() {
+  const router = useRouter()
+
   useEffect(() => {
-    setupRouterSync(getRouterRef(), store)
-  }, [])
+    setupRouterSync(router, store)
+  }, [router])
 
   return (
     <Provider store={store}>

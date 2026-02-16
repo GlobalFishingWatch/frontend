@@ -28,7 +28,7 @@ import SearchPlaceholder, {
 } from 'features/search/SearchPlaceholders'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import LocalStorageLoginLink from 'router/LoginLink'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import SearchError from '../basic/SearchError'
@@ -44,6 +44,7 @@ function SearchAdvanced({
 }: SearchComponentProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
   const { searchFilters, setSearchFilters } = useSearchFiltersConnect()

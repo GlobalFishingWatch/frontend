@@ -20,7 +20,7 @@ import { selectReportActivityGraph } from 'features/reports/reports.config.selec
 import { type ReportActivityGraph } from 'features/reports/reports.types'
 import { REPORT_ACTIVITY_GRAPH_TIME_OPTIONS } from 'features/reports/shared/utils/reports.utils'
 import { useSetReportTimeComparison } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectUrlDataviewInstances } from 'router/routes.selectors'
 
 import styles from './ReportActivity.module.css'
@@ -36,6 +36,7 @@ export default function ReportActivityGraphSelector({
   loading = false,
 }: ReportActivityGraphSelectorProps) {
   const { setReportTimecomparison, resetReportTimecomparison } = useSetReportTimeComparison()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const selectedReportActivityGraph = useSelector(selectReportActivityGraph)
   const { t } = useTranslation()
   const fitAreaInViewport = useFitAreaInViewport()

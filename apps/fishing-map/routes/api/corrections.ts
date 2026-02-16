@@ -61,8 +61,6 @@ export type ApiResponse = {
   data?: InfoCorrectionSendFormat
 }
 
-type RouteOptions = Parameters<ReturnType<typeof createFileRoute<'/api/corrections'>>>[0]
-
 export const Route = createFileRoute('/api/corrections')({
   server: {
     handlers: {
@@ -122,4 +120,4 @@ export const Route = createFileRoute('/api/corrections')({
       },
     },
   },
-} as RouteOptions)
+})

@@ -17,7 +17,7 @@ import {
   // fetchDefaultWorkspaceThunk,
   fetchWorkspacesThunk,
 } from 'features/workspaces-list/workspaces-list.slice'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectUserTab } from 'router/routes.selectors'
 import { UserTab } from 'types'
 
@@ -32,6 +32,7 @@ import styles from './User.module.css'
 function User() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const userLogged = useSelector(selectIsUserLogged)
   const userData = useSelector(selectUserData)
   const userTab = useSelector(selectUserTab)

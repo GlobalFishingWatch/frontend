@@ -8,7 +8,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { boundsAtom, viewStateAtom } from 'features/map/map.atoms'
 import { useDeckMap } from 'features/map/map-context.hooks'
 import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import type { WorkspaceViewport } from 'types'
 
 export const useMapViewState = () => {
@@ -54,6 +54,7 @@ export function useSetMapCoordinates() {
 export const useUpdateViewStateUrlParams = () => {
   const viewState = useAtomValue(viewStateAtom)
   const isWorkspaceReady = useSelector(selectIsWorkspaceReady)
+  const { replaceQueryParams } = useReplaceQueryParams()
   const pendingRef = useRef<WorkspaceViewport | null>(null)
   const rafRef = useRef<number>(0)
 

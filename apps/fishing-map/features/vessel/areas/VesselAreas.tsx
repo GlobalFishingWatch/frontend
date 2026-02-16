@@ -28,7 +28,7 @@ import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
 import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
 import { DATAVIEWS_WARNING } from 'features/workspace/context-areas/ContextAreaLayerPanel'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { htmlSafeParse } from 'utils/html-parser'
 
 import type { VesselAreaSubsection } from '../vessel.types'
@@ -106,6 +106,7 @@ const AreaTooltip = ({ payload }: any) => {
 const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
   useFetchRegionsData()
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const events = useSelector(selectVesselEventsFilteredByTimerange)
   const vesselArea = useSelector(selectVesselAreaSubsection)
   const eventsGrouped = useSelector(selectEventsGroupedByArea)

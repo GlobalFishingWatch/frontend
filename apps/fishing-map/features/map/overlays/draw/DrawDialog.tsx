@@ -22,7 +22,7 @@ import {
 } from 'features/datasets/datasets.hook'
 import { selectDrawEditDataset } from 'features/map/map.selectors'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectMapDrawingEditId, selectMapDrawingMode } from 'router/routes.selectors'
 import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
@@ -40,6 +40,7 @@ const MIN_DATASET_NAME_LENGTH = 3
 function MapDraw() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const fitMapBounds = useMapFitBounds()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)

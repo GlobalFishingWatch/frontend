@@ -14,7 +14,7 @@ import {
 } from 'features/reports/reports.config.selectors'
 import type { ReportActivityGraph } from 'features/reports/reports.types'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { getUTCDateTime } from 'utils/dates'
 
 import { MAX_DAYS_TO_COMPARE, MAX_MONTHS_TO_COMPARE } from './reports-activity.config'
@@ -25,6 +25,7 @@ const MAX_DATE = AVAILABLE_END.slice(0, 10)
 
 export const useSetReportTimeComparison = () => {
   const timeComparison = useSelector(selectReportTimeComparison)
+  const { replaceQueryParams } = useReplaceQueryParams()
   const durationType = timeComparison?.durationType
   const duration = timeComparison?.duration
   const { start: timebarStart, end: timebarEnd } = useTimerangeConnect()
@@ -79,12 +80,12 @@ export const useSetReportTimeComparison = () => {
         },
       })
     },
-    [duration, durationType, timeComparison, timebarEnd, timebarStart]
+    [duration, durationType, replaceQueryParams, timeComparison, timebarEnd, timebarStart]
   )
 
   const resetReportTimecomparison = useCallback(() => {
     replaceQueryParams({ start: timebarStart, end: timebarEnd, reportTimeComparison: undefined })
-  }, [timebarEnd, timebarStart])
+  }, [replaceQueryParams, timebarEnd, timebarStart])
 
   return useMemo(
     () => ({ setReportTimecomparison, resetReportTimecomparison }),
@@ -95,6 +96,7 @@ export const useSetReportTimeComparison = () => {
 export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) => {
   const { t } = useTranslation()
   const fitAreaInViewport = useFitAreaInViewport()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const [errorMsg, setErrorMsg] = useState('')
   const timeComparison = useSelector(selectReportTimeComparison)
   const durationType = timeComparison?.durationType
@@ -171,6 +173,7 @@ export const useReportTimeCompareConnect = (activityType: ReportActivityGraph) =
       activityType,
       fitAreaInViewport,
       t,
+      replaceQueryParams,
     ]
   )
 

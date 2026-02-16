@@ -19,12 +19,13 @@ import {
 import type { ReportVesselGraph, ReportVesselsSubCategory } from 'features/reports/reports.types'
 import { ReportCategory } from 'features/reports/reports.types'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import styles from './ReportVesselsGraph.module.css'
 
 function ReportVesselsGraphSelector({ loading }: { loading?: boolean }) {
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const reportCategory = useSelector(selectReportCategory)
   const reportSubCategory = useSelector(selectReportSubCategory)
   const selectedOptionId = useSelector(selectReportVesselGraph)

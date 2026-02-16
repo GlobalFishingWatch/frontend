@@ -28,13 +28,14 @@ import {
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
 import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
 import { selectVesselEventId } from 'features/vessel/vessel.slice'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {
   const { t } = useTranslation()
   const voyages = useSelector(selectEventsGroupedByVoyages)
+  const { replaceQueryParams } = useReplaceQueryParams()
 
   const isSmallScreen = useSmallScreen()
   const { dispatchHighlightedEvents } = useHighlightedEventsConnect()

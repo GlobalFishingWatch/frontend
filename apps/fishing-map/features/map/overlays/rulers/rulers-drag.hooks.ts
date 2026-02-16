@@ -10,10 +10,11 @@ import type {
 } from '@globalfishingwatch/deck-layers'
 
 import { selectMapRulersVisible } from 'features/app/selectors/app.selectors'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 export function useMapRulersDrag() {
   const rulers = useSelector(selectMapRulersVisible)
+  const { replaceQueryParams } = useReplaceQueryParams()
   const draggedRuler = useRef<{
     ruler: RulerData | undefined
     order: RulerPointProperties['order']
@@ -25,7 +26,7 @@ export function useMapRulersDrag() {
       throttle((mapRulers) => {
         replaceQueryParams({ mapRulers })
       }, 200),
-    []
+    [replaceQueryParams]
   )
 
   const onRulerDrag = useCallback(

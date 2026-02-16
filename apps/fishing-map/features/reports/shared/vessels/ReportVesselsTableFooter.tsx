@@ -26,7 +26,7 @@ import {
 } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { getEventLabel } from 'utils/analytics'
 
 import {
@@ -44,6 +44,7 @@ type ReportVesselsTableFooterProps = {
 
 export default function ReportVesselsTableFooter({ activityUnit }: ReportVesselsTableFooterProps) {
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const reportCategory = useSelector(selectReportCategory)
   const reportSubCategory = useSelector(selectReportSubCategory)
   const reportAreaName = useSelector(selectReportAreaName)

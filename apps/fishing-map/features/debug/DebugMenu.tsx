@@ -13,7 +13,7 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectIsGFWDeveloper, selectIsGFWTestGroup } from 'features/user/selectors/user.selectors'
 import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectLocationQuery, selectVesselsMaxTimeGapHours } from 'router/routes.selectors'
 
 import {
@@ -31,6 +31,7 @@ import styles from './DebugMenu.module.css'
 
 const DebugMenu: React.FC = () => {
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const isGFWDeveloper = useSelector(selectIsGFWDeveloper)
   const isGFWTestGroup = useSelector(selectIsGFWTestGroup)
   const debugOptions = useSelector(selectDebugOptions)

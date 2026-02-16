@@ -9,7 +9,7 @@ import {
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
 import { MAP_CONTROL_ANNOTATIONS } from 'features/map/controls/map-controls.slice'
 import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import type { MapAnnotation } from './annotations.types'
 
@@ -63,15 +63,16 @@ export const useMapAnnotation = () => {
  * Hook used only for the confirmed annotations into the url
  */
 export const useMapAnnotations = () => {
+  const { replaceQueryParams } = useReplaceQueryParams()
   const mapAnnotations = useSelector(selectMapAnnotations)
   const areMapAnnotationsVisible = useSelector(selectAreMapAnnotationsVisible)
   const toggleMapAnnotationsVisibility = useCallback(() => {
     replaceQueryParams({ mapAnnotationsVisible: !areMapAnnotationsVisible })
-  }, [areMapAnnotationsVisible])
+  }, [areMapAnnotationsVisible, replaceQueryParams])
 
   const cleanMapAnnotations = useCallback(() => {
     replaceQueryParams({ mapAnnotations: undefined })
-  }, [])
+  }, [replaceQueryParams])
 
   const upsertMapAnnotations = useCallback(
     (annotation: MapAnnotation) => {
@@ -84,7 +85,7 @@ export const useMapAnnotations = () => {
         replaceQueryParams({ mapAnnotations: [...(mapAnnotations || []), annotation] })
       }
     },
-    [mapAnnotations]
+    [mapAnnotations, replaceQueryParams]
   )
 
   const deleteMapAnnotation = useCallback(
@@ -94,7 +95,7 @@ export const useMapAnnotations = () => {
       })
       replaceQueryParams({ mapAnnotations: annotations })
     },
-    [mapAnnotations]
+    [mapAnnotations, replaceQueryParams]
   )
 
   return useMemo(

@@ -44,8 +44,7 @@ import {
   WORKSPACE_VESSEL,
   WORKSPACES_LIST,
 } from 'router/routes'
-import { replaceQueryParams } from 'router/routes.actions'
-import { useBeforeUnload, useReplaceLoginUrl } from 'router/routes.hook'
+import { useBeforeUnload, useReplaceLoginUrl, useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnySearchLocation,
@@ -103,6 +102,7 @@ function App() {
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const fitWorkspaceBounds = useFitWorkspaceBounds()
   const isPrinting = useSelector(selectScreenshotModalOpen)
+  const { replaceQueryParams } = useReplaceQueryParams()
 
   useEffect(() => {
     dispatch(fetchUserThunk({ guest: false }))
@@ -123,9 +123,12 @@ function App() {
       action = dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId as string, reportId }))
       const resolvedAction = await action
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
-        const workspace = resolvedAction.payload as Workspace
-        if (!isWorkspacePasswordProtected(workspace)) {
-          fitWorkspaceBounds(workspace)
+        const { dataviewInstancesToUpsert, ...workspace } = resolvedAction.payload
+        if (dataviewInstancesToUpsert) {
+          replaceQueryParams({ dataviewInstances: dataviewInstancesToUpsert })
+        }
+        if (!isWorkspacePasswordProtected(workspace as Workspace)) {
+          fitWorkspaceBounds(workspace as Workspace)
         }
       }
       actionResolved = true
@@ -174,9 +177,10 @@ function App() {
     asideWidth = isPrinting ? '34rem' : '39rem'
   }
 
-  if (!i18n.ready) {
-    return null
-  }
+  /* TODO:RR test if we can remove this */
+  // if (!i18n.ready) {
+  //   return null
+  // }
 
   return (
     <Fragment>

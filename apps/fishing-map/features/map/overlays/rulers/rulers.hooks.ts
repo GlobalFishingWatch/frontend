@@ -9,11 +9,12 @@ import { RulersLayer } from '@globalfishingwatch/deck-layers'
 import { selectAreMapRulersVisible, selectMapRulers } from 'features/app/selectors/app.selectors'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
 import { MAP_CONTROL_RULERS } from 'features/map/controls/map-controls.slice'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 const useRulers = () => {
   const rulers = useSelector(selectMapRulers)
   const rulersVisible = useSelector(selectAreMapRulersVisible)
+  const { replaceQueryParams } = useReplaceQueryParams()
   const {
     value,
     isEditing,
@@ -61,7 +62,7 @@ const useRulers = () => {
       })
       replaceQueryParams({ mapRulers })
     },
-    [rulers]
+    [rulers, replaceQueryParams]
   )
 
   const onRulerMapClick = useCallback(
@@ -80,18 +81,18 @@ const useRulers = () => {
         resetMapControlValue()
       }
     },
-    [resetMapControlValue, rulers, setRuleStart, value]
+    [replaceQueryParams, resetMapControlValue, rulers, setRuleStart, value]
   )
 
   const toggleRulersVisibility = useCallback(() => {
     replaceQueryParams({ mapRulersVisible: !rulersVisible })
-  }, [rulersVisible])
+  }, [replaceQueryParams, rulersVisible])
 
   const resetRulers = useCallback(() => {
     setMapControl(false)
     resetMapControlValue()
     replaceQueryParams({ mapRulers: undefined })
-  }, [resetMapControlValue, setMapControl])
+  }, [replaceQueryParams, resetMapControlValue, setMapControl])
 
   return useMemo(
     () => ({

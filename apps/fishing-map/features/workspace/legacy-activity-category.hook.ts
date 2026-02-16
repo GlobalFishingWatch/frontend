@@ -11,10 +11,11 @@ import {
 import { selectActivityCategory } from 'features/app/selectors/app.selectors'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 export const useHideLegacyActivityCategoryDataviews = () => {
   const actionDone = useRef(false)
+  const { replaceQueryParams } = useReplaceQueryParams()
   const activityCategory = useSelector(selectActivityCategory)
   const dataviewInstancesResolved = useSelector(selectAllDataviewInstancesResolved)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()

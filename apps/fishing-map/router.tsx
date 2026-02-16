@@ -5,26 +5,16 @@ import { parseWorkspace, stringifyWorkspace } from '@globalfishingwatch/dataview
 
 // import { Spinner } from '@globalfishingwatch/ui-components'
 import { PATH_BASENAME } from 'data/config'
-import { setRouterRef } from 'router/router-ref'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import type { QueryParams } from 'types'
 
 import { routeTree } from './routeTree.gen'
 
-const parseAppWorkspace = (searchStr: string): QueryParams => {
-  return parseWorkspace(searchStr, {
-    reportAreaBounds: (reportAreaBounds: string[]) =>
-      reportAreaBounds?.map((bound: string) => parseFloat(bound)),
-  }) as QueryParams
-}
+const parseAppWorkspace = (searchStr: string): QueryParams =>
+  parseWorkspace(searchStr) as QueryParams
 
-let router: ReturnType<typeof createRouter>
-
-export function getRouter() {
-  if (typeof window !== 'undefined' && router) {
-    return router
-  }
-  router = createRouter({
+function createAppRouter() {
+  const router = createRouter({
     routeTree,
     basepath: PATH_BASENAME,
     defaultPreload: false,
@@ -56,5 +46,20 @@ export function getRouter() {
     })
   }
 
+  return router
+}
+
+export type AppRouter = ReturnType<typeof createAppRouter>
+
+let router: AppRouter
+export function getRouter() {
+  if (!import.meta.env.SSR && router) {
+    return router
+  }
+  router = createAppRouter()
+  return router
+}
+
+export function getRouterRef() {
   return router
 }

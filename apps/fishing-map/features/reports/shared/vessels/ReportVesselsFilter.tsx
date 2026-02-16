@@ -7,7 +7,7 @@ import { InputText, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import type { ReportState } from 'features/reports/reports.types'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectLocationType } from 'router/routes.selectors'
 
 import styles from './ReportVesselsFilter.module.css'
@@ -24,6 +24,7 @@ export default function ReportVesselsFilter({
   pageQueryParam = 'reportVesselPage',
 }: ReportVesselsFilterProps) {
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const [query, setQuery] = useState(filter || '')
   const [debouncedQuery] = useDebounce(query, 200)
   const locationType = useSelector(selectLocationType)

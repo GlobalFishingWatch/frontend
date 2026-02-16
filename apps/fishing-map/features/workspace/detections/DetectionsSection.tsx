@@ -19,7 +19,7 @@ import { ReportCategory } from 'features/reports/reports.types'
 import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
 import { VisualisationChoice } from 'features/workspace/shared/VisualisationChoice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
 import { useVisualizationsOptions } from '../activity/activity.hooks'
@@ -32,6 +32,7 @@ import styles from 'features/workspace/shared/Section.module.css'
 
 function DetectionsSection(): React.ReactElement<any> {
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectDetectionsDataviews)
   const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
@@ -82,7 +83,7 @@ function DetectionsSection(): React.ReactElement<any> {
         ]),
       })
     },
-    [activityDataviews, dataviews, upsertDataviewInstance]
+    [activityDataviews, dataviews, replaceQueryParams, upsertDataviewInstance]
   )
 
   const onToggleLayer = useCallback(

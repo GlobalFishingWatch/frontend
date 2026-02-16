@@ -25,7 +25,7 @@ import VesselGroupAddButton, {
 } from 'features/vessel-groups/VesselGroupAddButton'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { selectCurrentWorkspaceId, selectWorkspace } from 'features/workspace/workspace.selectors'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import { TimebarVisualisations } from 'types'
 
@@ -37,6 +37,7 @@ import styles from './Search.module.css'
 function SearchActions() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const router = useRouter()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const workspace = useSelector(selectWorkspace)

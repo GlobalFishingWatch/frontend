@@ -38,13 +38,14 @@ import {
 import EventsReportGraph from 'features/reports/tabs/events/EventsReportGraph'
 import EventsReportGraphSelector from 'features/reports/tabs/events/EventsReportGraphSelector'
 import EventsReportSubsectionSelector from 'features/reports/tabs/events/EventsReportSubsectionSelector'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './EventsReport.module.css'
 
 function EventsReport() {
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const activeReportSubCategories = useSelector(selectActiveReportSubCategories)
   const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
   const { start, end } = useSelector(selectTimeRange)

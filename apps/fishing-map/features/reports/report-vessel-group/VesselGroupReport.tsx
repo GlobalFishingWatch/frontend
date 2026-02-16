@@ -28,7 +28,7 @@ import {
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { isOutdatedVesselGroup } from 'features/vessel-groups/vessel-groups.utils'
 import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectReportVesselGroupId } from 'router/routes.selectors'
 import { TimebarVisualisations } from 'types'
 import { getEventLabel } from 'utils/analytics'
@@ -52,6 +52,7 @@ import styles from './VesselGroupReport.module.css'
 function VesselGroupReport() {
   useMigrateWorkspaceToast()
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const fetchVesselGroupReport = useFetchVesselGroupReport()
   const vesselGroupId = useSelector(selectReportVesselGroupId)
   const vesselGroup = useSelector(selectVGRData)!
@@ -128,6 +129,7 @@ function VesselGroupReport() {
       timeRange?.start,
       vesselGroup?.id,
       vesselGroup?.vessels?.length,
+      replaceQueryParams,
     ]
   )
 

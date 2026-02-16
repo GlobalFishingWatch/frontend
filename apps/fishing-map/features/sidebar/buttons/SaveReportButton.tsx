@@ -13,8 +13,7 @@ import { useClipboardNotification } from 'features/sidebar/sidebar.hooks'
 import { selectWorkspace, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { setWorkspace } from 'features/workspace/workspace.slice'
 import LoginButtonWrapper from 'router/LoginButtonWrapper'
-import { getCurrentAppUrl } from 'router/routes.actions'
-import { ROUTE_PATHS } from 'router/routes.utils'
+import { getCurrentAppUrl, ROUTE_PATHS } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 const NewReportModal = lazy(

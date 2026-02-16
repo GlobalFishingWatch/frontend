@@ -41,7 +41,7 @@ import {
   getCurrentIdentityVessel,
 } from 'features/vessel/vessel.utils'
 import VesselInfoCorrection from 'features/workspace/vessels/VesselInfoCorrection'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsVesselLocation } from 'router/routes.selectors'
 import {
   EMPTY_FIELD_PLACEHOLDER,
@@ -57,6 +57,7 @@ import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
   const { t, i18n } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const vesselData = useSelector(selectVesselInfoData)
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)

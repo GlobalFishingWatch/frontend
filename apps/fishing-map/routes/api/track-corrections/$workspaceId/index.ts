@@ -15,43 +15,37 @@ export type GetAllIssuesAPIResponse = TrackCorrection[]
 
 export type APIResponse = ErrorAPIResponse | GetAllIssuesAPIResponse | CreateIssueAPIResponse
 
-type RouteOptions = Parameters<
-  ReturnType<typeof createFileRoute<'/api/track-corrections/$workspaceId/'>>
->[0]
-
-export const Route = createFileRoute('/api/track-corrections/$workspaceId/')(
-  {
-    server: {
-      handlers: {
-        GET: async ({ params }: { params: { workspaceId: string } }) => {
-          const { workspaceId } = params
-          const { getWorkspaceIssues } = await import('server/api/track-corrections/get-all')
-          const issues = await getWorkspaceIssues(workspaceId)
-          return Response.json(issues)
-        },
-        POST: async ({ request, params }: { request: Request; params: { workspaceId: string } }) => {
-          const { workspaceId } = params
-          try {
-            const body = await request.json()
-            const { createNewIssue } = await import('server/api/track-corrections/post-new')
-            await createNewIssue(
-              body.issueBody as TrackCorrection,
-              body.commentBody as TrackCorrectionComment,
-              workspaceId
-            )
-            return Response.json(body.issueBody as TrackCorrection, { status: 201 })
-          } catch (error) {
-            console.error('Error processing request:', error)
-            return Response.json(
-              {
-                success: false,
-                message: error instanceof Error ? error.message : 'An unknown error occurred',
-              },
-              { status: 500 }
-            )
-          }
-        },
+export const Route = createFileRoute('/api/track-corrections/$workspaceId/')({
+  server: {
+    handlers: {
+      GET: async ({ params }: { params: { workspaceId: string } }) => {
+        const { workspaceId } = params
+        const { getWorkspaceIssues } = await import('server/api/track-corrections/get-all')
+        const issues = await getWorkspaceIssues(workspaceId)
+        return Response.json(issues)
+      },
+      POST: async ({ request, params }: { request: Request; params: { workspaceId: string } }) => {
+        const { workspaceId } = params
+        try {
+          const body = await request.json()
+          const { createNewIssue } = await import('server/api/track-corrections/post-new')
+          await createNewIssue(
+            body.issueBody as TrackCorrection,
+            body.commentBody as TrackCorrectionComment,
+            workspaceId
+          )
+          return Response.json(body.issueBody as TrackCorrection, { status: 201 })
+        } catch (error) {
+          console.error('Error processing request:', error)
+          return Response.json(
+            {
+              success: false,
+              message: error instanceof Error ? error.message : 'An unknown error occurred',
+            },
+            { status: 500 }
+          )
+        }
       },
     },
-  } as RouteOptions
-)
+  },
+})

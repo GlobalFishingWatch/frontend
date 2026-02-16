@@ -13,6 +13,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk, setWorkspacePassword } from 'features/workspace/workspace.slice'
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from 'features/workspace/workspace.utils'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectWorkspaceId } from 'router/routes.selectors'
 
 import ErrorPlaceholder from './ErrorPlaceholder'
@@ -28,6 +29,7 @@ export default function WorkspacePassword() {
   const workspaceId = useSelector(selectWorkspaceId)
   const workspacePassword = useSelector(selectWorkspacePassword)
   const fitWorkspaceBounds = useFitWorkspaceBounds()
+  const { replaceQueryParams } = useReplaceQueryParams()
 
   const handlePasswordChange = (event: any) => {
     setPassword(event.target.value)
@@ -40,7 +42,10 @@ export default function WorkspacePassword() {
       dispatch(setWorkspacePassword(password))
       const action = await dispatch(fetchWorkspaceThunk({ workspaceId: workspaceId!, password }))
       if (fetchWorkspaceThunk.fulfilled.match(action)) {
-        const workspace = action.payload
+        const { dataviewInstancesToUpsert, ...workspace } = action.payload
+        if (dataviewInstancesToUpsert) {
+          replaceQueryParams({ dataviewInstances: dataviewInstancesToUpsert })
+        }
         if (!isWorkspacePasswordProtected(workspace)) {
           fitWorkspaceBounds(workspace)
           dispatch(setWorkspacePassword(VALID_PASSWORD))

@@ -17,7 +17,7 @@ import {
 } from 'features/reports/reports.config'
 import { selectReportEventsGraph } from 'features/reports/reports.config.selectors'
 import type { ReportEventsGraph } from 'features/reports/reports.types'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsPortReportLocation } from 'router/routes.selectors'
 
 type EventsReportGraphSelectorProps = {
@@ -25,6 +25,7 @@ type EventsReportGraphSelectorProps = {
 }
 
 function EventsReportGraphSelector({ disabled = false }: EventsReportGraphSelectorProps) {
+  const { replaceQueryParams } = useReplaceQueryParams()
   const reportEventsGraph = useSelector(selectReportEventsGraph)
   const isGlobalReport = useSelector(selectIsGlobalReport)
   const isPortReportLocation = useSelector(selectIsPortReportLocation)

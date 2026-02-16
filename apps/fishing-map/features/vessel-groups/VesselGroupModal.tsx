@@ -49,7 +49,7 @@ import {
 } from 'features/workspace/workspace.hook'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsVesselGroupReportLocation, selectLocationQuery } from 'router/routes.selectors'
 import { ROUTE_PATHS } from 'router/routes.utils'
 import { getEventLabel } from 'utils/analytics'
@@ -93,6 +93,7 @@ import styles from './VesselGroupModal.module.css'
 function VesselGroupModal(): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const router = useRouter()
   const [buttonLoading, setButtonLoading] = useState<VesselGroupConfirmationMode | ''>('')
   const isModalOpen = useSelector(selectVesselGroupModalOpen)
@@ -292,7 +293,7 @@ function VesselGroupModal(): React.ReactElement<any> {
               search.dataviewInstances!
             )
             router.navigate({
-              to,
+              to: to as string,
               params,
               search: { ...search, dataviewInstances: dataviewInstancesMerged },
             })
@@ -347,6 +348,7 @@ function VesselGroupModal(): React.ReactElement<any> {
       workspaceToNavigate,
       searchQuery,
       upsertDataviewInstance,
+      replaceQueryParams,
     ]
   )
 

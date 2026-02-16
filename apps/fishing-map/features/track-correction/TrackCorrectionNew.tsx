@@ -32,7 +32,7 @@ import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import FitBounds from 'features/workspace/shared/FitBounds'
 import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
-import { getCurrentAppUrl } from 'router/routes.actions'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import { getVesselGearTypeLabel, getVesselShipNameLabel, getVesselShipTypeLabel } from 'utils/info'
 
 import styles from './TrackCorrection.module.css'

@@ -52,7 +52,7 @@ import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsVesselGroupReportLocation } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -64,6 +64,7 @@ function ActivityReport() {
   useFetchDataviewResources()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const [lastReports] = useLocalStorage<LastReportStorage[]>(LAST_REPORTS_STORAGE_KEY, [])
   const timerange = useSelector(selectTimeRange)
   const reportDataviews = useSelector(selectReportDataviewsWithPermissions)

@@ -34,13 +34,8 @@ export type ApiResponse = {
   data?: FeedbackForm['data']
 }
 
-type RouteOptions = Parameters<
-  ReturnType<typeof createFileRoute<'/api/feedback'>>
->[0]
-
-export const Route = createFileRoute('/api/feedback')(
-  {
-    server: {
+export const Route = createFileRoute('/api/feedback')({
+  server: {
     handlers: {
       POST: async ({ request }: { request: Request }) => {
         const body = await request.json().catch(() => ({}))
@@ -85,5 +80,4 @@ export const Route = createFileRoute('/api/feedback')(
       },
     },
   },
-  } as RouteOptions
-)
+})

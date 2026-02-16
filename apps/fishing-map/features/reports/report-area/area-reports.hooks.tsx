@@ -68,13 +68,13 @@ import {
   selectReportVesselsError,
   selectReportVesselsStatus,
 } from 'features/reports/tabs/activity/reports-activity.slice'
-import { getCurrentAppUrl } from 'router/routes.actions'
 import {
   selectIsPortReportLocation,
   selectIsVesselGroupReportLocation,
   selectReportId,
   selectReportPortId,
 } from 'router/routes.selectors'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -425,7 +425,6 @@ export function usePortsReportAreaFootprintFitBounds() {
     if (loaded && bbox?.length) {
       fitAreaInViewport()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, bboxHash])
 }
 

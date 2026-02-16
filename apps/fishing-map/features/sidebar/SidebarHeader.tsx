@@ -38,7 +38,7 @@ import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
 import VesselHeader from 'features/vessel/VesselHeader'
 import { selectWorkspaceHistoryNavigation } from 'features/workspace/workspace.selectors'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnySearchLocation,
@@ -54,6 +54,7 @@ import styles from './SidebarHeader.module.css'
 function SidebarHeader() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const readOnly = useSelector(selectReadOnly)
   const [isSticky, setIsSticky] = useState(false)
   const locationCategory = useSelector(selectLocationCategory)

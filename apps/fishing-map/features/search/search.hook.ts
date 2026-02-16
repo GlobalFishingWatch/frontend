@@ -21,7 +21,7 @@ import {
 } from 'features/search/search.selectors'
 import type { VesselSearchState } from 'features/search/search.types'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import {
   cleanVesselSearchResults,
@@ -105,6 +105,7 @@ export const useSearchFiltersErrors = () => {
 
 export const useSearchFiltersConnect = () => {
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const searchFilters = useSelector(selectSearchFilters)
   const setSearchFilters = useCallback(
     (filter: VesselSearchState) => {

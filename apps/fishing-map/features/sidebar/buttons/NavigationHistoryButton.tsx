@@ -31,7 +31,7 @@ import {
   cleanReportQuery,
 } from 'features/workspace/workspace.slice'
 import { REPORT_ROUTES, VESSEL, WORKSPACE_VESSEL, WORKSPACES_LIST } from 'router/routes'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
@@ -45,6 +45,7 @@ import styles from '../SidebarHeader.module.css'
 function NavigationHistoryButton() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)

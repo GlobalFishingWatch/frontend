@@ -14,7 +14,7 @@ import {
 } from 'features/reports/reports.config'
 import { selectReportActivityGraph } from 'features/reports/reports.config.selectors'
 import { type ReportActivityGraph } from 'features/reports/reports.types'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectUrlDataviewInstances } from 'router/routes.selectors'
 
 import styles from './ReportEnvironment.module.css'
@@ -22,6 +22,7 @@ import styles from './ReportEnvironment.module.css'
 export default function ReportEnvironmentGraphSelector() {
   const selectedReportActivityGraph = useSelector(selectReportActivityGraph)
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const fitAreaInViewport = useFitAreaInViewport()
   const dataviews = useSelector(selectActiveReportDataviews)
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)

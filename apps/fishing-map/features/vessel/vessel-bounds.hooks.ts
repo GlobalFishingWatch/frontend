@@ -13,7 +13,7 @@ import {
 import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
 import { setVesselFitBoundsOnLoad } from 'features/vessel/vessel.slice'
 import { getSearchIdentityResolved, getVesselProperty } from 'features/vessel/vessel.utils'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsVesselLocation, selectUrlTimeRange } from 'router/routes.selectors'
 import { getUTCDateTime } from 'utils/dates'
 
@@ -91,6 +91,7 @@ const useVesselFitBoundsOnLoad = () => {
 const useVesselFitTranmissionsBounds = () => {
   const isVesselLocation = useSelector(selectIsVesselLocation)
   const { setVesselBounds } = useVesselProfileBounds()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const urlTimerange = useSelector(selectUrlTimeRange)
   const vessel = useSelector(selectVesselInfoData)
   const { setTimerange } = useTimerangeConnect()

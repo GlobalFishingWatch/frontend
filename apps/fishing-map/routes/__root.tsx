@@ -130,9 +130,7 @@ function RootComponent() {
   return (
     <RootDocument>
       <Suspense fallback={null}>
-        <I18nSSRWrapper>
-          <Outlet />
-        </I18nSSRWrapper>
+        <Outlet />
       </Suspense>
     </RootDocument>
   )

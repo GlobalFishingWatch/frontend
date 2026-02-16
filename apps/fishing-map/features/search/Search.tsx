@@ -42,7 +42,7 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectWorkspaceId } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -51,6 +51,7 @@ import styles from './Search.module.css'
 function Search() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const searchQuery = useSelector(selectSearchQuery)
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)

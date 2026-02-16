@@ -36,8 +36,9 @@ import {
   setPreviewBuffer,
 } from 'features/reports/tabs/activity/reports-activity.slice'
 import { cleanCurrentWorkspaceStateBufferParams } from 'features/workspace/workspace.slice'
-import { getCurrentAppUrl, replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { selectIsStandaloneReportLocation } from 'router/routes.selectors'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import type { BufferOperation, BufferUnit } from 'types'
 import { htmlSafeParse } from 'utils/html-parser'
 
@@ -49,6 +50,7 @@ import styles from './ReportTitle.module.css'
 
 export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
   const { t, i18n } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const [showBufferTooltip, setShowBufferTooltip] = useState(false)
   const [longDescription, setLongDescription] = useState(false)
   const [expandedDescription, setExpandedDescription] = useState(false)
@@ -155,7 +157,14 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
       action: `Confirm area buffer`,
       label: `${previewBuffer.value} ${previewBuffer.unit} ${previewBuffer.operation}`,
     })
-  }, [highlightArea, previewBuffer.value, previewBuffer.unit, previewBuffer.operation, dispatch])
+  }, [
+    highlightArea,
+    replaceQueryParams,
+    previewBuffer.value,
+    previewBuffer.unit,
+    previewBuffer.operation,
+    dispatch,
+  ])
 
   const handleRemoveBuffer = useCallback(() => {
     setShowBufferTooltip(false)
@@ -169,7 +178,7 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
     })
     dispatch(resetReportData())
     dispatch(cleanCurrentWorkspaceStateBufferParams())
-  }, [dispatch, highlightArea, reportArea])
+  }, [dispatch, highlightArea, replaceQueryParams, reportArea])
 
   const reportDescription =
     report?.description === AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION

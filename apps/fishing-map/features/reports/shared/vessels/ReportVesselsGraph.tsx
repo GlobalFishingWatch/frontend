@@ -28,7 +28,7 @@ import type {
 import { REPORT_VESSELS_GRAPH_LABEL_KEY } from 'features/reports/shared/utils/reports.utils'
 import ReportVesselsIndividualTooltip from 'features/reports/shared/vessels/ReportVesselsIndividualTooltip'
 import VesselGraphLink from 'features/reports/shared/vessels/VesselGraphLink'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
 import styles from './ReportVesselsGraph.module.css'
@@ -133,6 +133,7 @@ const ReportGraphTick = (props: any) => {
     props
 
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const isOtherCategory = payload.value === OTHERS_CATEGORY_LABEL
   const isCategoryInteractive =
     !EMPTY_API_VALUES.includes(payload.value) && payload.value !== OTHERS_CATEGORY_LABEL
@@ -217,6 +218,7 @@ export default function ReportVesselsGraph({
   filterQueryParam = 'reportVesselFilter',
   pageQueryParam = 'reportVesselPage',
 }: ReportVesselsGraphProps) {
+  const { replaceQueryParams } = useReplaceQueryParams()
   const onBarClick: ResponsiveVisualizationInteractionCallback = (payload: any) => {
     const propertyParam = FILTER_PROPERTIES[property as ReportVesselsSubCategory]
     if (payload && propertyParam && payload?.name !== OTHERS_CATEGORY_LABEL) {

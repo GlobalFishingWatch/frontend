@@ -9,7 +9,7 @@ import { LAYERS_LIBRARY_DETECTIONS } from 'data/layer-library/layers-detections'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
   selectUrlDataviewInstances,
@@ -114,6 +114,7 @@ export const mergeDataviewIntancesToUpsert = (
 export const useDataviewInstancesConnect = () => {
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
   const allDataviews = useSelector(selectDataviewInstancesResolved)
+  const { replaceQueryParams } = useReplaceQueryParams()
   const removeDataviewInstance = useCallback(
     (id: string | string[]) => {
       const ids = Array.isArray(id) ? id : [id]
@@ -122,7 +123,7 @@ export const useDataviewInstancesConnect = () => {
       )
       replaceQueryParams({ dataviewInstances })
     },
-    [urlDataviewInstances]
+    [replaceQueryParams, urlDataviewInstances]
   )
 
   const upsertDataviewInstance = useCallback(
@@ -134,7 +135,7 @@ export const useDataviewInstancesConnect = () => {
       )
       replaceQueryParams({ dataviewInstances })
     },
-    [urlDataviewInstances, allDataviews]
+    [replaceQueryParams, urlDataviewInstances, allDataviews]
   )
 
   const addNewDataviewInstances = useCallback(
@@ -146,7 +147,7 @@ export const useDataviewInstancesConnect = () => {
         ],
       })
     },
-    [urlDataviewInstances, allDataviews]
+    [replaceQueryParams, allDataviews, urlDataviewInstances]
   )
 
   const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
@@ -166,7 +167,7 @@ export const useDataviewInstancesConnect = () => {
       }
       replaceQueryParams({ dataviewInstances })
     },
-    [urlDataviewInstances, workspaceDataviewInstances]
+    [replaceQueryParams, urlDataviewInstances, workspaceDataviewInstances]
   )
   return useMemo(
     () => ({

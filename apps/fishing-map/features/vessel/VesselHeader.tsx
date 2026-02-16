@@ -34,7 +34,7 @@ import VesselGroupAddButton, {
 } from 'features/vessel-groups/VesselGroupAddButton'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
-import { getCurrentAppUrl, replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { handleOpenImage } from 'utils/img'
 import { formatInfoField, getVesselOtherNamesLabel } from 'utils/info'
 
@@ -44,6 +44,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const { t } = useTranslation()
   const state = useRouterState()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const isSmallScreen = useSmallScreen()
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)

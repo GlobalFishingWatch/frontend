@@ -21,6 +21,7 @@ import type {
   UpdateWorkspaceThunkParams,
 } from 'features/workspaces-list/workspaces-list.slice'
 import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import { MIN_WORKSPACE_PASSWORD_LENGTH } from '../workspace.utils'
 
@@ -44,6 +45,7 @@ type EditWorkspaceProps = {
 function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWorkspaceProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { cleanQueryParams } = useReplaceQueryParams()
 
   const [name, setName] = useState(workspace?.name)
   const [editAccess, setEditAccess] = useState<WorkspaceEditAccessType>(workspace?.editAccess)
@@ -90,6 +92,9 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
         updateWorkspaceThunk.fulfilled.match(dispatchedAction) ||
         updateCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)
       ) {
+        if (updateCurrentWorkspaceThunk.fulfilled.match(dispatchedAction)) {
+          cleanQueryParams()
+        }
         const workspace = dispatchedAction.payload as AppWorkspace
         if (!workspace?.dataviewInstances.length) {
           setError(t((t) => t.workspace.passwordIncorrect))

@@ -25,7 +25,7 @@ import {
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
 import LoginButtonWrapper from 'router/LoginButtonWrapper'
-import { getCurrentAppUrl } from 'router/routes.actions'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
 

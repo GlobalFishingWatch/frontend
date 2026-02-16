@@ -15,7 +15,7 @@ import { selectReportEventsPortsFilter } from 'features/reports/reports.config.s
 import ReportVesselsPlaceholder from 'features/reports/shared/placeholders/ReportVesselsPlaceholder'
 import { useReportHash } from 'features/reports/tabs/events/events-report.hooks'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { replaceQueryParams } from 'router/routes.actions'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import {
   selectFetchEventsPortsStatsParams,
@@ -27,6 +27,7 @@ import styles from './EventReportPorts.module.css'
 
 function EventReportPorts() {
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const eventsDataviews = useSelector(selectActiveReportDataviews)
   const eventsDataview = eventsDataviews?.[0]
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
