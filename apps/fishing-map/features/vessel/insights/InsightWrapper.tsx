@@ -37,14 +37,12 @@ const InsightWrapper = ({ insight }: { insight: InsightType }) => {
       end,
     },
     {
-      skip: !identities?.length || hasDeprecatedDataviewInstances,
+      skip: !identities?.length || hasDeprecatedDataviewInstances || insight === 'COVERAGE',
     }
   )
 
   if (insight === 'COVERAGE') {
-    return (
-      <InsightCoverage isLoading={isLoading} insightData={data} error={error as ParsedAPIError} />
-    )
+    return <InsightCoverage />
   }
   if (insight === 'GAP') {
     return <InsightGaps isLoading={isLoading} insightData={data} error={error as ParsedAPIError} />
