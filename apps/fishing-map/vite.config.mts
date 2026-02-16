@@ -2,6 +2,7 @@ import { join } from 'path'
 
 import svgr from 'vite-plugin-svgr'
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
+import { sentryTanstackStart } from '@sentry/tanstackstart-react'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
@@ -46,6 +47,11 @@ export default defineConfig({
     react(),
     svgr({
       include: ['**/*.svg', '**/*.svg?react'],
+    }),
+    sentryTanstackStart({
+      org: 'global-fishing-watch',
+      project: 'frontend',
+      authToken: process.env.SENTRY_AUTH_TOKEN,
     }),
   ],
   envPrefix: ['VITE_', 'i18n_'],
