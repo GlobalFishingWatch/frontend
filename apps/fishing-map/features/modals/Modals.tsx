@@ -1,4 +1,4 @@
-import { Fragment, lazy, useEffect, useMemo } from 'react'
+import { Fragment, lazy, Suspense, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -160,7 +160,9 @@ const AppModals = () => {
           shouldCloseOnEsc
           onClose={dispatchToggleDebugMenu}
         >
-          <DebugMenu />
+          <Suspense fallback={null}>
+            <DebugMenu />
+          </Suspense>
         </Modal>
       )}
       {isGFWUser && (
@@ -176,7 +178,9 @@ const AppModals = () => {
           contentClassName={styles.editorModal}
           onClose={dispatchToggleEditorMenu}
         >
-          <EditorMenu />
+          <Suspense fallback={null}>
+            <EditorMenu />
+          </Suspense>
         </Modal>
       )}
       {(isGFWUser || jacUser) && (bigqueryActive || turningTidesActive) && !anyAppModalOpen && (
@@ -193,7 +197,9 @@ const AppModals = () => {
             onClose={dispatchBigQueryMenu}
             contentClassName={styles.bqModal}
           >
-            <BigQueryModal />
+            <Suspense fallback={null}>
+              <BigQueryModal />
+            </Suspense>
           </Modal>
           <Modal
             appSelector={ROOT_DOM_ELEMENT}
@@ -207,7 +213,9 @@ const AppModals = () => {
             onClose={dispatchTurningTidesMenu}
             contentClassName={styles.bqModal}
           >
-            <TurningTidesModal />
+            <Suspense fallback={null}>
+              <TurningTidesModal />
+            </Suspense>
           </Modal>
         </Fragment>
       )}
@@ -220,21 +228,45 @@ const AppModals = () => {
           contentClassName={styles.workspaceGeneratorModal}
           header={false}
         >
-          <WorkspaceGenerator />
+          <Suspense fallback={null}>
+            <WorkspaceGenerator />
+          </Suspense>
         </Modal>
       )}
-      {!isVesselGroupModalOpen && isDatasetUploadModalOpen && <NewDataset />}
+      {!isVesselGroupModalOpen && isDatasetUploadModalOpen && (
+        <Suspense fallback={null}>
+          <NewDataset />
+        </Suspense>
+      )}
       <EditWorkspaceModal />
       <CreateWorkspaceModal />
-      {downloadActivityAreaKey && <DownloadActivityModal />}
-      {downloadTrackModalOpen && <DownloadTrackModal />}
+      {downloadActivityAreaKey && (
+        <Suspense fallback={null}>
+          <DownloadActivityModal />
+        </Suspense>
+      )}
+      {downloadTrackModalOpen && (
+        <Suspense fallback={null}>
+          <DownloadTrackModal />
+        </Suspense>
+      )}
       {!readOnly && isWorkspaceReady && (
         <Fragment>
           {/* Please don't judge this piece of code, it is needed to avoid race-conditions in the useLocalStorage internal hook */}
-          {welcomePopupContentKey === 'vessel-profile' && <Welcome contentKey="vessel-profile" />}
-          {welcomePopupContentKey === 'deep-sea-mining' && <Welcome contentKey="deep-sea-mining" />}
+          {welcomePopupContentKey === 'vessel-profile' && (
+            <Suspense fallback={null}>
+              <Welcome contentKey="vessel-profile" />
+            </Suspense>
+          )}
+          {welcomePopupContentKey === 'deep-sea-mining' && (
+            <Suspense fallback={null}>
+              <Welcome contentKey="deep-sea-mining" />
+            </Suspense>
+          )}
           {welcomePopupContentKey === WorkspaceCategory.FishingActivity && (
-            <Welcome contentKey={WorkspaceCategory.FishingActivity} />
+            <Suspense fallback={null}>
+              <Welcome contentKey={WorkspaceCategory.FishingActivity} />
+            </Suspense>
           )}
           {welcomePopupContentKey === WorkspaceCategory.MarineManager && (
             <Welcome contentKey={WorkspaceCategory.MarineManager} />
@@ -242,7 +274,11 @@ const AppModals = () => {
           {/* also, this was done 2 days before the release, end of the history */}
         </Fragment>
       )}
-      {isVesselGroupModalOpen && <VesselGroupModal />}
+      {isVesselGroupModalOpen && (
+        <Suspense fallback={null}>
+          <VesselGroupModal />
+        </Suspense>
+      )}
     </Fragment>
   )
 }

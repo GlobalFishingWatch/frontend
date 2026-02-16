@@ -1,4 +1,4 @@
-import { Fragment, lazy, memo, useCallback, useMemo, useState } from 'react'
+import { Fragment, lazy, memo, Suspense, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -100,17 +100,23 @@ const MapControls = ({
     <Fragment>
       <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
         <div onMouseEnter={enterMiniGlobeHandler} onMouseLeave={leaveMiniGlobeHandler}>
-          <MiniGlobe
-            className={styles.miniglobe}
-            size={60}
-            viewportThickness={3}
-            bounds={debouncedOptions.bounds}
-            center={debouncedOptions.center}
-          />
+          <Suspense fallback={null}>
+            <MiniGlobe
+              className={styles.miniglobe}
+              size={60}
+              viewportThickness={3}
+              bounds={debouncedOptions.bounds}
+              center={debouncedOptions.center}
+            />
+          </Suspense>
           {miniGlobeHovered && <MiniGlobeInfo viewport={viewState} />}
         </div>
         <div className={cx('print-hidden', styles.controlsNested)}>
-          {(isWorkspaceLocation || isAnyVesselLocation) && !isMapDrawing && <MapSearch />}
+          {(isWorkspaceLocation || isAnyVesselLocation) && !isMapDrawing && (
+            <Suspense fallback={null}>
+              <MapSearch />
+            </Suspense>
+          )}
           <IconButton
             icon="plus"
             type="map-tool"
@@ -127,10 +133,16 @@ const MapControls = ({
           />
           {showExtendedControls && (
             <Fragment>
-              <Rulers />
-              <MapAnnotations />
+              <Suspense fallback={null}>
+                <Rulers />
+              </Suspense>
+              <Suspense fallback={null}>
+                <MapAnnotations />
+              </Suspense>
               {gfwUser && <ReportControls disabled={mapLoading} />}
-              <MapControlScreenshot />
+              <Suspense fallback={null}>
+                <MapControlScreenshot />
+              </Suspense>
               <Tooltip
                 content={
                   currentBasemap === BasemapType.Default

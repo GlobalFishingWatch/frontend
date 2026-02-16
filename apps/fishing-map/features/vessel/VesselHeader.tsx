@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { Link, useRouterState } from '@tanstack/react-router'
 import cx from 'classnames'
 import { uniqBy, upperFirst } from 'es-toolkit'
 
@@ -41,6 +42,7 @@ import styles from './VesselHeader.module.css'
 
 const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const { t } = useTranslation()
+  const state = useRouterState()
   const dispatch = useAppDispatch()
   const isSmallScreen = useSmallScreen()
   const identityId = useSelector(selectVesselIdentityId)
@@ -205,7 +207,9 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
           {shipnameLabel}
           <span className={styles.secondary}>{otherNamesLabel}</span>
           <span className={styles.reportLink}>
-            <a href={getCurrentAppUrl()}>{t((t) => t.vessel.linkToVessel)}</a>
+            <Link to={state.location.pathname} search={state.location.search}>
+              {t((t) => t.vessel.linkToVessel)}
+            </Link>
           </span>
         </h1>
 

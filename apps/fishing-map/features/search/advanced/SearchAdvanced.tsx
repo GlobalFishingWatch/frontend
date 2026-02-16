@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react'
-import { lazy, useCallback } from 'react'
+import { lazy, Suspense, useCallback } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
@@ -149,10 +149,12 @@ function SearchAdvanced({
         {searchStatus === AsyncReducerStatus.Aborted &&
         searchPagination.loading === false ? null : (
           <div className={styles.searchResults}>
-            <SearchAdvancedResults
-              fetchResults={fetchResults}
-              fetchMoreResults={fetchMoreResults}
-            />
+            <Suspense fallback={null}>
+              <SearchAdvancedResults
+                fetchResults={fetchResults}
+                fetchMoreResults={fetchMoreResults}
+              />
+            </Suspense>
             {(searchStatus === AsyncReducerStatus.Idle ||
               searchStatus === AsyncReducerStatus.Loading) && <SearchEmptyState />}
             {searchStatus === AsyncReducerStatus.Finished && searchPagination.total === 0 && (
