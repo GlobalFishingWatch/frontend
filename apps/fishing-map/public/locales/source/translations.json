@@ -1148,6 +1148,7 @@
     "noEventsIn": "No event in your timerange happened in any {{regionType}}",
     "noEventsinTimeRange": "There are no events fully contained in your timerange.",
     "noOwnersMatch": "We can't find other vessels with this owner",
+    "noPortVisitsVisible": "Please turn on port visits visibility",
     "notMatched": "No data matched",
     "noTrackAvailable": "There is no track available",
     "noVoyagesinTimeRange": "There are no voyages fully contained in your timerange.",
