@@ -451,9 +451,14 @@ export const isBathymetryContourDataview = (dataview: UrlDataviewInstance) => {
 export const getIsPositionSupportedInDataview = (dataview: UrlDataviewInstance) => {
   const datasets = getActiveDatasetsInDataview(dataview)
   const flattenDatasetFilters = datasets?.flatMap((d) =>
-    d ? getFlattenDatasetFilters(d.filters) || [] : []
+    d
+      ? getDatasetConfigurationProperty({
+          dataset: d,
+          property: 'extraPropertiesPositionTiles',
+          type: 'fourwingsV1',
+        }) || []
+      : []
   )
-  // TODO:DR review if this is maintained and working
   return flattenDatasetFilters?.some(({ id }) => {
     return id === 'bearing'
   })

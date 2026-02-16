@@ -6,11 +6,6 @@ export type ContextLayerFormat = 'GEOJSON' | 'PMTILE' | 'CSV'
 
 export type ContextLayerV1Configuration = {
   idProperty?: string
-  // fields?: string[]
-  // filePath?: string
-  // format?: ContextLayerFormat
-  // importLogs?: string
-  // srid?: string
 }
 
 export type UserContextLayerV1Configuration = {
@@ -19,17 +14,9 @@ export type UserContextLayerV1Configuration = {
   idProperty?: string
   valuePropertyId?: string
   importLogs?: string
-  // fields?: string[]
-  // srid?: string
-  // table?: string
 }
 
-export type TemporalContextLayerV1Configuration = {
-  // dataset?: string
-  // project?: string
-  // source?: string
-  // table?: string
-}
+export type TemporalContextLayerV1Configuration = {}
 
 export type UserTracksV1Configuration = {
   filePath?: string
@@ -45,76 +32,45 @@ export type AggregationFunction = 'AVG' | 'SUM'
 export type EventsV1Configuration = {
   function?: AggregationFunction
   maxZoom?: number
-  // dataset?: string
-  // project?: string
-  // table?: string
-  // ttl?: number
 }
 
 export type FourwingsInterval = 'YEAR' | 'MONTH' | 'DAY' | 'HOUR'
+export type FourwingsPositionProperty = 'bearing' | 'speed' | 'shipname' | 'vessel_id'
+export type FourwingsPositionProperties = {
+  id: FourwingsPositionProperty
+  type: string | number
+}
 export type FourwingsV1Configuration = {
   function?: AggregationFunction
   intervals?: FourwingsInterval[]
   max?: number
   maxZoom?: number
   min?: number
-  // dataset?: string
-  // geeBand?: string
-  // geeImages?: string[]
-  // geeOffset?: number
-  // geeScale?: number
-  // interactionColumns?: string[]
-  // interactionGroupColumns?: string[]
-  // project?: string
-  // reportGroupings?: string[]
-  // source?: string
-  // table?: string
-  // temporalAggregation?: boolean
-  // tileOffset?: number
-  // tileScale?: number
-  // ttl?: number
+  extraPropertiesPositionTiles?: FourwingsPositionProperties[]
 }
 
-export type TracksV1Configuration = {
-  // bucket?: string
-  // folder?: string
-}
+export type TracksV1Configuration = {}
 
-export type VesselsV1Configuration = {
-  // index?: string
-  // indexBoost?: number
-}
+export type VesselsV1Configuration = {}
 
-export type InsightSource = {
-  // id?: string
-  // insight?: string
-  // type?: string
-}
+export type InsightSource = {}
 
 export type InsightsV1Configuration = {
-  // sources?: InsightSource[]
+  sources?: InsightSource[]
 }
 
 export type BulkDownloadFormat = 'CSV' | 'JSON'
-export type BulkDownloadV1Configuration = {
-  // compressed?: boolean
-  // format?: BulkDownloadFormat
-  // gcsUri?: string
-  // path?: string
-}
+export type BulkDownloadV1Configuration = {}
 
 export type DataDownloadV1Configuration = {
-  // conceptDOI?: number
-  // doi?: string
-  // emailGroups?: string[]
-  // gcsFolder?: string
+  conceptDOI?: number
+  doi?: string
+  emailGroups?: string[]
+  gcsFolder?: string
 }
 
 export type ThumbnailsV1Configuration = {
   scale?: number
-  // bucket?: string
-  // extensions?: string[]
-  // folder?: string
 }
 
 export type DatasetConfigurationByType = Partial<{
