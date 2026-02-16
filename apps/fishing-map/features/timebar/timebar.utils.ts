@@ -2,6 +2,7 @@ import type { Feature, Point } from 'geojson'
 import type { DateTimeUnit, DurationUnit } from 'luxon'
 import { DateTime } from 'luxon'
 
+import type { TimeFilterType } from '@globalfishingwatch/api-types'
 import { getDateInIntervalResolution, getFeatureTimeRange } from '@globalfishingwatch/deck-layers'
 import type {
   FourwingsFeature,
@@ -14,8 +15,6 @@ import type { ActivityTimeseriesFrame } from '@globalfishingwatch/timebar'
 
 import type { FourwingsFeaturesToTimeseriesParams } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { getUTCDateTime } from 'utils/dates'
-
-import type { TimeFilterType } from '../../../../libs/api-types/src/datasets'
 
 type GetGraphDataFromFourwingsFeaturesParams = Pick<
   FourwingsFeaturesToTimeseriesParams,

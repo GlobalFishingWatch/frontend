@@ -79,7 +79,7 @@ const DataviewEditor = ({ editDataview, onCancelClick }: DataviewEditorProps) =>
       if (dataview.category === UNKNOWN_CATEGORY) {
         return !dataset.category || !Object.keys(dataset.category).length
       }
-      return dataview.category === dataset.category
+      return dataview.category === (dataset.category as any)
     })
     return filteredDatasets.map((dataset) => ({ id: dataset.id, label: dataset.id }))
   }, [dataview.category, datasets])

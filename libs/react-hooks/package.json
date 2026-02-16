@@ -19,7 +19,7 @@
   ],
   "dependencies": {
     "@globalfishingwatch/api-client": "^7.0.0",
-    "@globalfishingwatch/api-types": "^8.0.3",
+    "@globalfishingwatch/api-types": "^9.0.0-beta.2",
     "es-toolkit": "1.x",
     "lodash": "4.x",
     "react": "19.x",

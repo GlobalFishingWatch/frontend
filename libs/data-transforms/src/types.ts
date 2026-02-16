@@ -1,4 +1,4 @@
-import type { DatasetSchema, DatasetSchemaItem } from '@globalfishingwatch/api-types'
+import type { DatasetFilters } from '@globalfishingwatch/api-types'
 
 export type BBox = [number, number, number, number]
 
@@ -18,5 +18,5 @@ export type PointColumns = {
   startTime?: string | number
   endTime?: string | number
   id?: string | number
-  schema: Record<string, DatasetSchema | DatasetSchemaItem> | undefined
+  filters: DatasetFilters | undefined
 }

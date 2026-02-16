@@ -1,6 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
+import { castDraft } from 'immer'
 import type { RootState } from 'reducers'
 
 import type { ParsedAPIError } from '@globalfishingwatch/api-client'
@@ -23,7 +24,11 @@ import {
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import { getUTCDate } from '@globalfishingwatch/data-transforms'
-import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import {
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+  resolveEndpoint,
+} from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getDataviewSqlFiltersResolved } from '@globalfishingwatch/dataviews-client'
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
@@ -43,11 +48,7 @@ import {
   getDatasetByIdsThunk,
   selectDatasetById,
 } from 'features/datasets/datasets.slice'
-import {
-  getRelatedDatasetByType,
-  getRelatedDatasetsByType,
-  getVesselGroupInDataview,
-} from 'features/datasets/datasets.utils'
+import { getVesselGroupInDataview } from 'features/datasets/datasets.utils'
 import {
   selectActiveDetectionsDataviews,
   selectEventsDataviews,
@@ -768,7 +769,7 @@ const slice = createSlice({
         state.clicked = null
         return
       }
-      state.clicked = { ...action.payload }
+      state.clicked = castDraft({ ...action.payload })
     },
   },
 

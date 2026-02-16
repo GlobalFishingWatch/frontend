@@ -14,7 +14,7 @@ export type WorkspaceEditAccessType =
   | typeof WORKSPACE_PASSWORD_ACCESS
   | typeof WORKSPACE_PRIVATE_ACCESS
 
-export interface WorkspaceViewport {
+export type WorkspaceViewport = {
   zoom: number
   latitude: number
   longitude: number
@@ -22,7 +22,7 @@ export interface WorkspaceViewport {
 
 export type OwnerType = 'super-user' | string
 
-export interface Workspace<State = unknown, Category = string> {
+export type Workspace<State = unknown, Category = string> = {
   id: string
   name: string
   app: ApiAppName

@@ -1,4 +1,5 @@
-import type { Dataset } from '@globalfishingwatch/api-types'
+import type { DatasetFilter, DatasetFilters } from '@globalfishingwatch/api-types'
+import { getFlattenDatasetFilters } from '@globalfishingwatch/datasets-client'
 
 export type GuessColumn = 'latitude' | 'longitude' | 'timestamp'
 
@@ -36,10 +37,19 @@ export const guessColumn = (col: GuessColumn, options: string[] = []) => {
   return options.find((option) => GUESS_COLUMN_DICT[col].includes(option))
 }
 
-export const guessColumnsFromSchema = (schema: Dataset['schema']) => {
-  if (!schema) return {}
-  const columns = Object.keys(schema)
-  if (!columns) return {}
+export const guessColumnsFromFilters = (
+  filters: Record<string, DatasetFilter> | DatasetFilters | null | undefined
+): Record<GuessColumn, string | null> => {
+  const emptyGuessedColumns = {} as Record<GuessColumn, string | null>
+  if (!filters) {
+    return emptyGuessedColumns
+  }
+
+  const flattenedFilters = getFlattenDatasetFilters(filters)
+  const columns = flattenedFilters.map((filter) => filter.id)
+  if (!columns.length) {
+    return emptyGuessedColumns
+  }
   const guessedColumns = GUESS_COLUMN_NAMES.map(([columnToGuess, candidates]) => {
     const exactGuess = columns?.find((column) => candidates.includes(column))
     const longEnoughCandidates = candidates.filter((c) => c.length >= 3)
@@ -51,5 +61,5 @@ export const guessColumnsFromSchema = (schema: Dataset['schema']) => {
     return [columnToGuess, exactGuess || approximateGuess || null]
   })
 
-  return Object.fromEntries(guessedColumns)
+  return Object.fromEntries(guessedColumns) as Record<GuessColumn, string | null>
 }
