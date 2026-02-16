@@ -3,7 +3,6 @@ import intersection from 'lodash/intersection'
 
 import type {
   Dataset,
-  DatasetFilter,
   DatasetFilterOperation,
   DatasetFilterType,
   Dataview,
@@ -18,7 +17,6 @@ import {
   getDatasetFilterItem,
   getDatasetFiltersAllowed,
   getEnvironmentalDatasetRange,
-  getFlattenDatasetFilters,
   removeDatasetVersion,
 } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -34,9 +32,6 @@ import { sortFields } from 'utils/shared'
 import styles from '../vessel-groups/VesselGroupModal.module.css'
 
 export const VESSEL_GROUPS_MODAL_ID = 'vesselGroupsOpenModalId'
-
-// TODO:DR review if SINGLE_SELECTION_FILTERS is still needed or we can trust the endpoint config
-const SINGLE_SELECTION_FILTERS: SupportedDatasetFilter[] = ['vessel-groups', 'period', 'scenario']
 
 const EXPERIMENTAL_FIELDS_BY_FILTER: { [key in SupportedDatasetFilter]?: string[] } = {
   encounter_type: ['FISHING-BUNKER', 'FISHING-FISHING', 'CARRIER-BUNKER'],
@@ -71,40 +66,6 @@ const isDataviewFilterSupported = (
       return filterAllowed && incompatibleSelection?.length === 0
     })
   return filtersSupported
-}
-
-// TODO:DR review if filterOrigin is still needed
-const getFilterConfigByOrigin = (
-  dataset: Dataset,
-  filter: SupportedDatasetFilter,
-  filterOrigin: Exclude<FilterOriginParam, 'all'>
-) => {
-  const filters = getFlattenDatasetFilters(dataset.filters)
-  const filterConfig = filters.find((f) => f.id === `${filterOrigin}.${filter}`)
-  if (filterConfig) {
-    return filterConfig
-  }
-  // combinedSourcesInfo so far only applies for selfReportInfo properties
-  if (filterOrigin !== 'registryInfo' && (filter === 'geartypes' || filter === 'shiptypes')) {
-    return filters.find((f) => f.id === `combinedSourcesInfo.${filter}.name`)
-  }
-}
-
-// TODO:DR review if filterOrigin is still needed
-const combineFilterConfigs = (filterConfig1: DatasetFilter, filterConfig2: DatasetFilter) => {
-  if (!filterConfig1 || !filterConfig2) {
-    return filterConfig1 || filterConfig2
-  }
-
-  if (filterConfig1.array && filterConfig2.array) {
-    return {
-      ...filterConfig1,
-      enum: uniq([...(filterConfig1?.enum || []), ...(filterConfig2?.enum || [])]).sort(),
-    } as DatasetFilter
-  }
-
-  console.warn('filter configs not compatible to merge, returing first filter config')
-  return filterConfig1 || filterConfig2
 }
 
 export const getFilterLabel = (filter: SupportedDatasetFilter, datasetId: string) => {
@@ -200,7 +161,7 @@ const getCommonFilterTypeInDataview = (
   return datasetFilters?.[0]
 }
 
-type DaataviewFilterSelection = {
+type DataviewFilterSelection = {
   id: string
   label: any
 }
@@ -213,7 +174,7 @@ export const getCommonFiltersInDataview = (
     isGuestUser = true,
     compatibilityOperation = 'every',
   } = {} as GetFiltersInDataviewParams
-): DaataviewFilterSelection[] => {
+): DataviewFilterSelection[] => {
   const activeDatasets = getActiveDatasetsInDataview(dataview as UrlDataviewInstance)
   if (filter === 'flag') {
     return getFlags()
@@ -388,8 +349,6 @@ const getIsFilterSingleSelection = (
   dataview: DataviewWithFilters,
   filter: SupportedDatasetFilter
 ) => {
-  // TODO:DR replace this with singleSelection
-  // return SINGLE_SELECTION_FILTERS.includes(filter)
   const filterConfig = getDatasetFilterItem(dataview.datasets?.[0] as Dataset, filter)
   return filterConfig?.singleSelection
 }

@@ -1,4 +1,4 @@
-import type { ApiDataset } from './datasets'
+import type { Dataset } from './datasets'
 import {
   DatasetCategory,
   DatasetDocumentationStatusTypes,
@@ -15,13 +15,13 @@ import type {
 import { EventTypes } from './events'
 import type { ThinningConfig } from './thinning'
 
-export const DATASET_TYPES: ApiDataset['type'][] = Object.values(DatasetTypes)
+export const DATASET_TYPES: Dataset['type'][] = Object.values(DatasetTypes)
 
-export const DATASET_STATUS: ApiDataset['status'][] = Object.values(DatasetStatus)
+export const DATASET_STATUS: Dataset['status'][] = Object.values(DatasetStatus)
 
-export const DATASET_CATEGORIES: ApiDataset['category'][] = Object.values(DatasetCategory)
+export const DATASET_CATEGORIES: Dataset['category'][] = Object.values(DatasetCategory)
 
-export const DATASET_SUB_CATEGORIES: ApiDataset['subcategory'][] = [
+export const DATASET_SUB_CATEGORIES: Dataset['subcategory'][] = [
   ...Object.values(DatasetSubCategory),
   ...Object.values(EventTypes),
 ]

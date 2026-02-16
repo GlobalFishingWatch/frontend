@@ -462,7 +462,7 @@ export function useReportTitle() {
         const areaDataview = areaDataviews?.[0]
         const dataset = areaDataview?.datasets?.[0]
         const configuration = getDatasetConfiguration(dataset, 'userContextLayerV1')
-        const propertyToInclude = configuration.valuePropertyId!
+        const valuePropertyId = configuration.valuePropertyId!
         const valueProperties = getDatasetConfigurationProperty({
           dataset,
           property: 'valueProperties',
@@ -478,9 +478,9 @@ export function useReportTitle() {
               areaName = getDatasetLabel(dataset)
             } else {
               const propertyValue =
-                reportArea?.properties?.[propertyToInclude] ||
+                reportArea?.properties?.[valuePropertyId] ||
                 reportArea?.properties?.[valueProperty] ||
-                (reportArea as any)?.[propertyToInclude?.toLowerCase()] ||
+                (reportArea as any)?.[valuePropertyId?.toLowerCase()] ||
                 (reportArea as any)?.[valueProperty?.toLowerCase()]
               areaName =
                 propertyValue && typeof propertyValue === 'string'

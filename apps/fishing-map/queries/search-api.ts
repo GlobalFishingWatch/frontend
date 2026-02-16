@@ -15,7 +15,6 @@ const endpoint = getEndpointByType({
   type: DatasetTypes.Vessels,
   endpoint: EndpointId.VesselSearch,
 })
-// TODO:DR (dataset-refactor) use the new typing for the params
 type SearchIncludes = 'MATCH_CRITERIA' | 'OWNERSHIP'
 
 type SearchOwnerParams = {

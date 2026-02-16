@@ -16,7 +16,6 @@ export const resolveDeckContextLayerProps: DeckResolverFunction<
   const layers = (dataview.config?.layers || [])?.flatMap(
     (layer): ContextLayerConfig<ContextLayerId> | [] => {
       const dataset = dataview.datasets?.find((dataset) => dataset.id === layer.dataset)
-      // TODO:DR test this
       const { valueProperties } = getDatasetConfiguration(dataset) || {}
       const { idProperty } = getDatasetConfiguration(dataset, 'contextLayerV1') || {}
       const datasetConfig = dataview.datasetsConfig?.find(

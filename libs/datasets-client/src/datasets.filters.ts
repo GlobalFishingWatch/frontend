@@ -28,27 +28,12 @@ export const getDatasetFiltersAllowed = (dataset: Dataset) => {
 export const getDatasetFilterItem = (
   dataset: Dataset,
   filter: SupportedDatasetFilter
-  // filterOrigin: FilterOriginParam = 'selfReportedInfo'
 ): DatasetFilter | null => {
   const filters = getFlattenDatasetFilters(dataset.filters)
   const filterItem = filters.find((f) => f.id === filter)
   if (filterItem) {
     return filterItem
   }
-  // TODO:DR review if filterOrigin 'all' is still needed
-  // if (filterOrigin === 'all') {
-  //   const selfReportedInfo = getDatasetFilterConfig(dataset, filter, 'selfReportedInfo')
-  //   const registryInfo = getDatasetFilterConfig(dataset, filter, 'registryInfo')
-  //   if (selfReportedInfo && registryInfo) {
-  //     return combineFilterConfigs(selfReportedInfo, registryInfo)
-  //   }
-  //   return selfReportedInfo || registryInfo || null
-  // } else {
-  //   const nestedFilterConfig = getFilterConfigByOrigin(dataset, filter, filterOrigin)
-  //   if (nestedFilterConfig) {
-  //     return nestedFilterConfig
-  //   }
-  // }
 
   return null
 }
@@ -84,14 +69,12 @@ export const isFilterInFiltersAllowed = ({
 }: {
   filter: SupportedDatasetFilter
   filtersAllowed: string[]
-  // TODO:DR review if infoSource is still needed
   infoSource?: VesselIdentitySourceEnum
 }): boolean => {
   return filtersAllowed?.some((f) => {
     return (
       f === filter ||
       f.includes(filter) ||
-      // TODO:DR review if infoSource is still needed
       f === `${infoSource}.${filter}` ||
       (filter === 'owner' && f === 'registryOwners.name') ||
       (filter === 'shiptypes' && f === 'combinedSourcesInfo.shiptypes.name') ||

@@ -118,7 +118,6 @@ function NewDataset() {
                   dataviewInstance.config?.filters || {}
                 ).reduce(
                   (acc, [key, value]) => {
-                    // TODO:DR test this
                     const fieldsAllowed = getDatasetFiltersAllowed(dataset)
                     if (fieldsAllowed.includes(key)) {
                       acc[key] = value

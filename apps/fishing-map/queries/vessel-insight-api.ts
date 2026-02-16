@@ -2,13 +2,12 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
 import type { RootState } from 'reducers'
 
-import type {
-  InsightResponse,
-  InsightType,
-  VesselGroupInsightResponse,
+import {
+  type InsightResponse,
+  type InsightType,
+  type VesselGroupInsightResponse,
 } from '@globalfishingwatch/api-types'
 
-// TODO:DR (dataset-refactor) use the new typing for the params
 export type BaseInsightParams = {
   insight: InsightType
   start: string

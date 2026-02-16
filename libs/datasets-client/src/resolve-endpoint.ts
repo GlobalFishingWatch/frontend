@@ -11,8 +11,7 @@ export const resolveEndpoint = (
   datasetConfig = {} as DataviewDatasetConfig,
   { absolute = false } = {} as { absolute: boolean }
 ) => {
-  // TODO:DR (dataset-refactor) decide if we keep using dataset.endpoints or we use the new getEndpointByType()
-  const endpoints = dataset.endpoints ?? getEndpointsByDatasetType({ type: dataset.type })
+  const endpoints = getEndpointsByDatasetType({ type: dataset.type })
   const endpoint = endpoints?.find((endpoint) => {
     return endpoint.id === datasetConfig.endpoint
   })

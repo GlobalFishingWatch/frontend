@@ -30,7 +30,6 @@ export const filterFeaturesByDistance = (
 }
 
 export const parseContextFeatures = (features: any[], dataset: Dataset) => {
-  // TODO:DR review if this works
   const { idProperty = 'gfw_id' } =
     getDatasetConfiguration(dataset, 'contextLayerV1') ||
     getDatasetConfiguration(dataset, 'userContextLayerV1')

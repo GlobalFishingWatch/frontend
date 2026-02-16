@@ -111,7 +111,7 @@ export type DatasetFile = {
   lastUpdate: string
 }
 
-export type ApiDataset<T extends DatasetTypes = DatasetTypes> = {
+export type Dataset<T extends DatasetTypes = DatasetTypes> = {
   id: string
   type: T
   alias: string[] | null
@@ -138,11 +138,7 @@ export type ApiDataset<T extends DatasetTypes = DatasetTypes> = {
   filters: DatasetFilters
 }
 
-export type Dataset<T extends DatasetTypes = DatasetTypes> = ApiDataset<T> & {
-  endpoints: Endpoint[]
-}
-
-export type DownloadDataset<T extends DatasetTypes = DatasetTypes> = ApiDataset<T> & {
+export type DownloadDataset<T extends DatasetTypes = DatasetTypes> = Dataset<T> & {
   readme?: string
   files?: DatasetFile[]
 }

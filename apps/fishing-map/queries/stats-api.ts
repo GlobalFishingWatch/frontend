@@ -18,7 +18,6 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import type { TimeRange } from 'features/timebar/timebar.slice'
 
-// TODO:DR (dataset-refactor) use the new typing for the params
 type FetchDataviewStatsParams = {
   timerange: TimeRange
   dataview: UrlDataviewInstance

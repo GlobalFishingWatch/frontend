@@ -240,7 +240,6 @@ export const parseGeoJsonProperties = <T extends Polygon | Point | LineString>(
       })
       return {
         ...feature,
-        // TODO:DR review if we need to clean the properties
         properties: getPropertiesIdClean(cleanedProperties),
         geometry:
           (feature.geometry as unknown as GeometryCollection)?.type === 'GeometryCollection'

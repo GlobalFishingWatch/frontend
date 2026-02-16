@@ -176,7 +176,6 @@ export function getEventsVesselQuery(params: ReportEventsVesselsParams) {
   }
 }
 
-// TODO:DR (dataset-refactor) use the new typing for the params
 const endpoint = getEndpointByType({
   type: DatasetTypes.Events,
   endpoint: EndpointId.EventsStats,

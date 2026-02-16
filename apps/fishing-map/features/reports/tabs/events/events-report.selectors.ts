@@ -113,7 +113,6 @@ export const selectFetchEventsVesselsParams = createSelector(
       } as DataviewDatasetFilter
 
       const eventsDataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Events)
-      // TODO:DR review if this is working
       const durationSchema = getFlattenDatasetFilters(eventsDataset?.filters).find(
         (f) => f.id === 'duration'
       )

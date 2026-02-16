@@ -25,12 +25,13 @@ export const getDrawDatasetDefinition = (
     unit: 'NA',
     source: DRAW_DATASET_SOURCE,
     configuration: {
-      // TODO:DR this is (maybe) BROKEN, fix it!
       userContextLayerV1: {
-        propertyToInclude: 'draw_id',
+        valuePropertyId: 'draw_id',
         format: 'GEOJSON',
-        geometryType,
       } as UserContextLayerV1Configuration,
+      frontend: {
+        geometryType,
+      },
     } as DatasetConfiguration,
   }
 }

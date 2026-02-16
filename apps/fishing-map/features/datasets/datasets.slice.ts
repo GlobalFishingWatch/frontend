@@ -20,6 +20,7 @@ import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import { DETECTIONS_LEGACY_DATASETS_DICT } from '@globalfishingwatch/dataviews-client'
 
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV, PUBLIC_SUFIX } from 'data/config'
+import type { RootState } from 'store'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
 import { asyncInitialState, createAsyncSlice } from 'utils/async-slice'
 
@@ -33,7 +34,7 @@ export const getDatasetByIdsThunk = createAsyncThunk(
     { rejectWithValue, getState, dispatch }
   ) => {
     try {
-      const state = getState() as any
+      const state = getState() as RootState
       const datasetsToRequest: string[] = []
       let datasets = ids.flatMap((datasetId) => {
         const dataset = selectDatasetById(datasetId)(state)
@@ -279,8 +280,6 @@ export const updateDatasetThunk = createAsyncThunk<
   async (partialDataset, { rejectWithValue }) => {
     try {
       const { id, configuration, ...rest } = partialDataset
-      // TODO:DR this is BROKEN, fix it!
-      // const { tableName, ...restConfiguration } = configuration as DatasetConfiguration
       const updatedDataset = await GFWAPI.fetch<Dataset>(`/datasets/${id}`, {
         method: 'PATCH',
         body: { ...rest, configuration } as any,

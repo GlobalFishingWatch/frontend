@@ -10,7 +10,6 @@ import { htmlSafeParse } from 'utils/html-parser'
 import styles from './InfoModal.module.css'
 
 const getDatasetQueriesArray = (dataset: Dataset) => {
-  // TODO:DR test this
   const rawQueries = dataset?.documentation?.queries
   if (!rawQueries) return
   const queries = Array.isArray(rawQueries)

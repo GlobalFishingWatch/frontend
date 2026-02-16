@@ -96,7 +96,6 @@ function UserDatasets() {
       dispatchDatasetModalOpen(true)
       dispatchDatasetModalConfig({
         id: dataset?.id,
-        // TODO:DR review if this works
         type: getDatasetConfigurationProperty({ dataset, property: 'geometryType' }),
       })
     },
