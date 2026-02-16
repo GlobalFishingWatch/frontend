@@ -144,7 +144,6 @@ resource "google_cloudbuild_trigger" "trigger" {
       ]
     }
 
-
     options {
       logging      = "CLOUD_LOGGING_ONLY"
       machine_type = var.machine_type == null ? null : var.machine_type

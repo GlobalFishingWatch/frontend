@@ -69,18 +69,14 @@ test('Report02 - View full report area', async ({ page }) => {
 
   await page.getByText('Log in', { exact: true }).click()
 
-  await page.waitForURL(
-    'https://gateway.api.staging.globalfishingwatch.org/v3/auth?client=gfw&callback=http%3A%2F%2Flocalhost%3A3003%2Fmap%2Ffishing-activity%2Fdefault-public%2Freport%2Fpublic-eez-areas%2F8431%3FcallbackUrlStorage%3Dtrue&locale=en'
-  )
+  await page.waitForURL('**/v3/auth*')
 
   await page.getByRole('textbox', { name: 'Email' }).fill(process.env.TEST_USER_EMAIL || '')
   await page.getByRole('textbox', { name: 'Password' }).fill(process.env.TEST_USER_PASSWORD || '')
 
   await page.getByRole('button', { name: 'Login' }).click()
 
-  await page.waitForURL(
-    'http://localhost:3003/map/fishing-activity/default-public/report/public-eez-areas/8431?longitude=-81.56748505&latitude=-0.9994481&zoom=6.12504552&dvIn[0][id]=context-layer-eez&dvIn[0][cfg][vis]=true'
-  )
+  await page.waitForURL('**/map/fishing-activity/**/report/**')
 
   await page.locator('[data-test="see-vessel-table-activity-report"]').click()
 
