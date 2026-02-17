@@ -1,4 +1,3 @@
-import nextPlugin from '@next/eslint-plugin-next'
 import nxPlugin from '@nx/eslint-plugin'
 import { defineConfig } from 'eslint/config'
 
@@ -12,12 +11,9 @@ export const repoConfig = {
   plugins: {
     ...config.plugins,
     '@nx': nxPlugin,
-    '@next/next': nextPlugin,
   },
   rules: {
     ...config.rules,
-    ...nextPlugin.configs.recommended.rules,
-    ...nextPlugin.configs['core-web-vitals'].rules,
   },
 }
 
