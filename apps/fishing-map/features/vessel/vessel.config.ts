@@ -55,20 +55,20 @@ const IDENTIFIER_FIELDS: VesselRenderField[] = [
 type CustomVMSGroup = Partial<Record<SelfReportedSource, VesselRenderField[][]>>
 export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   [SelfReportedSource.Peru]: [
-    [{ key: 'origin' }, { key: 'fleet' }, { key: 'nationalId' }],
+    [{ key: 'origin' }, { key: 'sourceFleet' }, { key: 'externalId' }],
     [{ key: 'length' }, { key: 'capacity' }, { key: 'beam' }],
     [{ key: 'regimen' }, { key: 'resolution' }],
     [{ key: 'casco' }, { key: 'chdSpecies' }],
   ],
-  [SelfReportedSource.CostaRica]: [[{ key: 'nationalId' }]],
+  [SelfReportedSource.CostaRica]: [[{ key: 'externalId' }]],
   [SelfReportedSource.Indonesia]: [
     [{ key: 'widthRange' }, { key: 'lengthRange' }, { key: 'grossTonnageRange' }],
   ],
   [SelfReportedSource.Brazil]: [
     [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
-    [{ key: 'codMarinha' }],
+    [{ key: 'externalId' }],
   ],
-  [SelfReportedSource.Chile]: [[{ key: 'fleet' }]],
+  [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
 }
 
 const VESSEL_FISICAL_FEATURES_FIELDS: VesselRenderField[] = [
