@@ -6,7 +6,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
   github {
     name  = local.repository
     owner = "GlobalFishingWatch"
-    pull_request {
+    push {
       branch       = "l18n_.*"
       invert_regex = true
     }
