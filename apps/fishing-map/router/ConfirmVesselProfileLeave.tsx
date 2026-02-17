@@ -1,13 +1,17 @@
 import { useSelector } from 'react-redux'
 import { useBlocker, useRouter } from '@tanstack/react-router'
 
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+
 import { selectVesselProfileDataviewIntance } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectHasVesselProfileInstancePinned } from 'features/dataviews/selectors/dataviews.selectors'
 import { t } from 'features/i18n/i18n'
+import { cleanVesselProfileDataviewInstances } from 'features/sidebar/sidebar-header.hooks'
+import type { QueryParams } from 'types'
 
 import { ALL_WORKSPACE_ROUTES, VESSEL_ROUTES } from './routes'
 import { selectIsAnyVesselLocation } from './routes.selectors'
-import { mapRouteIdToType, type RoutePathValues } from './routes.utils'
+import { mapRouteIdToType, type RoutePathValues, toValidRoutePath } from './routes.utils'
 
 function stripAppPrefix(routeId: string): string {
   return routeId.replace(/^\/_app/, '') || '/'
@@ -52,22 +56,22 @@ export function ConfirmVesselProfileLeave() {
       const shouldLeave = window.confirm(t((t) => t.vessel.confirmationClose))
 
       if (shouldLeave) {
-        const cleanVesselDataviewInstance = {
-          ...vesselProfileDataviewInstance,
+        const cleanVesselDataviewInstance: UrlDataviewInstance = {
+          ...vesselProfileDataviewInstance!,
           config: {
-            ...vesselProfileDataviewInstance?.config,
+            ...vesselProfileDataviewInstance!.config,
             highlightEventStartTime: undefined,
             highlightEventEndTime: undefined,
           },
           datasetsConfig: undefined,
         }
-        const nextSearch = next.search || {}
-        const mergedDataviewInstances = [
-          ...((nextSearch.dataviewInstances as any[]) || []),
+        const nextSearch = (next.search || {}) as QueryParams
+        const mergedDataviewInstances = cleanVesselProfileDataviewInstances([
+          ...(nextSearch.dataviewInstances || []),
           cleanVesselDataviewInstance,
-        ]
+        ])
         router.navigate({
-          to: stripAppPrefix(next.routeId) as RoutePathValues,
+          to: toValidRoutePath(stripAppPrefix(next.routeId) as RoutePathValues, next.params),
           params: next.params,
           search: { ...nextSearch, dataviewInstances: mergedDataviewInstances },
           replace: true,

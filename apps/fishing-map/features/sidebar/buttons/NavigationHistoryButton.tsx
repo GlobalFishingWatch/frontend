@@ -38,7 +38,7 @@ import {
   selectIsRouteWithWorkspace,
   selectIsVesselGroupReportLocation,
 } from 'router/routes.selectors'
-import { mapRouteIdToType } from 'router/routes.utils'
+import { mapRouteIdToType, toValidRoutePath } from 'router/routes.utils'
 
 import styles from '../SidebarHeader.module.css'
 
@@ -78,7 +78,7 @@ function NavigationHistoryButton() {
 
   const resetQueryParams = useCallback(() => {
     replaceQueryParams({ ...EMPTY_SEARCH_FILTERS, userTab: undefined })
-  }, [])
+  }, [replaceQueryParams])
 
   if (!workspaceHistoryNavigation.length || !lastWorkspaceVisited) {
     return null
@@ -152,7 +152,7 @@ function NavigationHistoryButton() {
   return (
     <Link
       className={cx(styles.workspaceLink, 'print-hidden')}
-      to={lastWorkspaceVisited.to}
+      to={toValidRoutePath(lastWorkspaceVisited.to, lastWorkspaceVisited.params)}
       params={params}
       search={{
         ...search,

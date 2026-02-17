@@ -46,6 +46,31 @@ export const ROUTE_PATHS = {
 
 export type RoutePathValues = (typeof ROUTE_PATHS)[keyof typeof ROUTE_PATHS]
 
+/** TanStack Router does not have WORKSPACE_REPORT_DATASET - only report index and report/$datasetId/$areaId */
+export type ValidRoutePathValues = Exclude<
+  RoutePathValues,
+  typeof ROUTE_PATHS.WORKSPACE_REPORT_DATASET
+>
+
+/**
+ * TanStack Router only has report routes with areaId (/$datasetId/$areaId).
+ * WORKSPACE_REPORT_DATASET (/$datasetId) is not a valid route.
+ * This normalizes paths for Link/navigate: when we have datasetId but no areaId,
+ * fall back to report index; when we have areaId, use the full path.
+ */
+export function toValidRoutePath(
+  path: RoutePathValues,
+  params?: { datasetId?: string; areaId?: string; [key: string]: string | undefined }
+): ValidRoutePathValues {
+  if (path === ROUTE_PATHS.WORKSPACE_REPORT_DATASET) {
+    if (params?.areaId) {
+      return ROUTE_PATHS.WORKSPACE_REPORT_FULL
+    }
+    return ROUTE_PATHS.WORKSPACE_REPORT
+  }
+  return path as ValidRoutePathValues
+}
+
 // ============================================================================
 // Legacy Route Type Mapping (for backward compatibility)
 // ============================================================================

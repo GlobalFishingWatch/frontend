@@ -36,7 +36,7 @@ import { selectUserDatasets } from 'features/user/selectors/user.permissions.sel
 import InfoError from 'features/workspace/shared/InfoError'
 import InfoModalContent from 'features/workspace/shared/InfoModalContent'
 import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selectors'
-import { ROUTE_PATHS } from 'router/routes.utils'
+import { ROUTE_PATHS, toValidRoutePath } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
 import { getHighlightedText } from 'utils/text'
@@ -77,7 +77,7 @@ function UserDatasets() {
       } = lastVisitedWorkspace || {}
 
       router.navigate({
-        to,
+        to: toValidRoutePath(to, params),
         params,
         search: {
           ...search,

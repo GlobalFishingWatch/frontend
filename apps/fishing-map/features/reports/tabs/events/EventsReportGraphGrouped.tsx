@@ -176,7 +176,7 @@ const ReportGraphTick = (props: any) => {
           },
           search: (prev: QueryParams) => ({
             ...prev,
-            reportEventsGraph: 'evolution',
+            reportEventsGraph: REPORT_EVENTS_GRAPH_EVOLUTION,
             dataviewInstances: dataviewInstancesWithAreaLayerVisible,
           }),
         })
