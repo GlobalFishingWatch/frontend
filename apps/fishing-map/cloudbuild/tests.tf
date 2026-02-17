@@ -13,6 +13,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
   }
   service_account = "projects/gfw-int-infrastructure/serviceAccounts/cloudbuild@gfw-int-infrastructure.iam.gserviceaccount.com"
 
+
   build {
     step {
       id     = "Install Dependencies"
