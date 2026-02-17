@@ -2,7 +2,7 @@ import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 
-import { GapEvent, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
@@ -15,11 +15,7 @@ import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { formatInfoField } from 'utils/info'
 
-import type {
-  ExtendedEventVessel,
-  ExtendedFeatureSingleEvent,
-  SliceExtendedClusterPickingObject,
-} from '../../map.slice'
+import type { ExtendedFeatureSingleEvent, SliceExtendedClusterPickingObject } from '../../map.slice'
 
 import styles from '../Popup.module.css'
 
