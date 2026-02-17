@@ -278,6 +278,7 @@
     "make-dir-cli": "4.0.0",
     "mochawesome": "7.1.4",
     "next-react-memory-stats": "1.0.2",
+    "nitro": "npm:nitro-nightly@latest",
     "nx": "22.3.3",
     "playwright": "1.57.0",
     "prettier": "3.8.0",

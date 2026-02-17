@@ -21,7 +21,7 @@ export const DEFAULT_NAMESPACE = 'translations'
 export const FALLBACK_LNG = IS_DEVELOPMENT_ENV ? 'source' : Locale.en
 
 const NPM_SCOPE = WORKSPACE_ENV === 'production' ? 'stable' : 'latest'
-const UNIQUE_BUILD_ID = import.meta.env.NEXT_PUBLIC_UNIQUE_BUILD_ID || Date.now()
+const UNIQUE_BUILD_ID = Date.now()
 
 const SHARED_LABELS_PATH = IS_DEVELOPMENT_ENV
   ? 'http://localhost:8000'

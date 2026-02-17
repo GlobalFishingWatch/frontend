@@ -10,8 +10,8 @@ import appCss from './styles.css?url'
 
 // Inline env values to avoid importing data/config which transitively
 // pulls in heavy visualization libraries incompatible with Vite's SSR Module Runner
-const PATH_BASENAME = (import.meta.env.NEXT_PUBLIC_URL as string) || '/map'
-const GOOGLE_TAG_MANAGER_ID = import.meta.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID as string
+const PATH_BASENAME = (import.meta.env.VITE_PUBLIC_URL as string) || '/map'
+const GOOGLE_TAG_MANAGER_ID = import.meta.env.VITE_GOOGLE_TAG_MANAGER_ID as string
 
 const defaultDescription =
   'The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.'

@@ -50,12 +50,6 @@
       "@globalfishingwatch/ui-components/*": ["../../libs/ui-components/src/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": [
-    "node_modules",
-    "jest.config.ts",
-    "exported",
-    "**/resources.d.ts",
-    "**/__traces__/**"
-  ]
+  "include": ["**/*.ts", "**/*.tsx", "**/*.mts"],
+  "exclude": ["node_modules", "jest.config.ts", "exported", "**/resources.d.ts", "**/__traces__/**"]
 }

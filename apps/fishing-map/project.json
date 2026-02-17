@@ -34,25 +34,23 @@
         "parallel": false
       }
     },
-    "clean-next": {
+    "clean-output": {
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": [
-          "rimraf dist/apps/fishing-map/public/locales",
-          "rimraf dist/apps/fishing-map",
-          "rimraf apps/fishing-map/.output"
-        ]
+        "commands": ["rimraf apps/fishing-map/output"]
       }
     },
     "i18n": {
       "executor": "nx:run-commands",
       "cache": true,
       "inputs": [
-        "production",
-        "!{projectRoot}/public/locales/**/*",
-        "!{projectRoot}/features/i18n/i18next.d.ts",
-        "!{projectRoot}/features/i18n/i18n.types.d.ts"
+        "{projectRoot}/{data,features,hooks,pages,routes,router,server,types,utils}/**/*.{js,jsx,ts,tsx}",
+        "{projectRoot}/i18next.config.ts",
+        "!{projectRoot}/**/*.test.{js,jsx,ts,tsx}",
+        "!{projectRoot}/**/*.spec.{js,jsx,ts,tsx}",
+        "!{projectRoot}/**/test-results/**",
+        "!{projectRoot}/**/__traces__/**"
       ],
       "outputs": [
         "{projectRoot}/public/locales",
@@ -89,21 +87,13 @@
         }
       }
     },
-    "preview": {
+    "serve": {
       "dependsOn": ["build"],
-      "executor": "@nx/vite:preview-server",
-      "defaultConfiguration": "production",
+      "executor": "nx:run-commands",
+      "continuous": true,
       "options": {
-        "buildTarget": "fishing-map:build",
-        "port": 3003
-      },
-      "configurations": {
-        "development": {
-          "buildTarget": "fishing-map:build:development"
-        },
-        "production": {
-          "buildTarget": "fishing-map:build:production"
-        }
+        "command": "node .output/server/index.mjs",
+        "cwd": "apps/fishing-map"
       }
     },
     "proxy": {
@@ -126,21 +116,20 @@
       "continuous": true
     },
     "build": {
-      "executor": "@nx/vite:build",
-      "outputs": ["{options.outputPath}", "{projectRoot}/.output"],
+      "executor": "nx:run-commands",
+      "outputs": ["{projectRoot}/output"],
       "defaultConfiguration": "production",
-      "dependsOn": ["^build", "i18n", "prepare-loaders", "clean-next"],
+      "dependsOn": ["^build", "i18n", "prepare-loaders", "clean-output"],
       "options": {
-        "outputPath": "dist/apps/fishing-map",
-        "configFile": "apps/fishing-map/vite.config.mts",
-        "buildLibsFromSource": true
+        "command": "vite build",
+        "cwd": "apps/fishing-map"
       },
       "configurations": {
         "development": {
-          "mode": "development"
+          "command": "vite build --mode development"
         },
         "production": {
-          "mode": "production"
+          "command": "vite build --mode production"
         }
       }
     },
