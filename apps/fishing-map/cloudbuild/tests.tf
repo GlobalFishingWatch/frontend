@@ -7,8 +7,8 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
     name  = local.repository
     owner = "GlobalFishingWatch"
     pull_request {
-      branch       = ".*"
-      invert_regex = false
+      branch       = "l18n_.*"
+      invert_regex = true
     }
   }
   service_account = "projects/gfw-int-infrastructure/serviceAccounts/cloudbuild@gfw-int-infrastructure.iam.gserviceaccount.com"
