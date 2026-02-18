@@ -48,7 +48,7 @@ export const getAnalyticsEvent = (feature: DeckLayerPickingObject) => {
       }`
       break
     case DataviewCategory.Events:
-      eventLabel = `event_id: ${(feature as FourwingsClusterFeature).properties.id}`
+      eventLabel = `event_type: ${(feature as FourwingsClusterPickingObject).eventType} | datasetId : ${(feature as FourwingsClusterPickingObject).datasetId}`
       break
     case DataviewCategory.Context:
     case DataviewCategory.User:
