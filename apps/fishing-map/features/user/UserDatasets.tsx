@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { useRouter } from '@tanstack/react-router'
 
 import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { DatasetStatus } from '@globalfishingwatch/api-types'
@@ -35,8 +36,7 @@ import { selectUserDatasets } from 'features/user/selectors/user.permissions.sel
 import InfoError from 'features/workspace/shared/InfoError'
 import InfoModalContent from 'features/workspace/shared/InfoModalContent'
 import { selectLastVisitedWorkspace } from 'features/workspace/workspace.selectors'
-import { HOME } from 'routes/routes'
-import { updateLocation } from 'routes/routes.actions'
+import { ROUTE_PATHS, toValidRoutePath } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { sortByCreationDate } from 'utils/dates'
 import { getHighlightedText } from 'utils/text'
@@ -51,6 +51,7 @@ function UserDatasets() {
   const lastVisitedWorkspace = useSelector(selectLastVisitedWorkspace)
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const router = useRouter()
   const { dispatchDatasetModalOpen } = useDatasetModalOpenConnect()
   const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
   const [searchQuery, setSearchQuery] = useState('')
@@ -70,21 +71,21 @@ function UserDatasets() {
         return
       }
       const {
-        type = HOME,
-        query = { dataviewInstances: [] },
-        payload = {},
+        to = ROUTE_PATHS.HOME,
+        params,
+        search = { dataviewInstances: [] },
       } = lastVisitedWorkspace || {}
-      const locationParams = {
-        payload,
-        query: {
-          ...query,
-          dataviewInstances: [...(query.dataviewInstances || []), dataviewInstanceWithDataset],
+
+      router.navigate({
+        to: toValidRoutePath(to, params),
+        params,
+        search: {
+          ...search,
+          dataviewInstances: [...(search.dataviewInstances || []), dataviewInstanceWithDataset],
         },
-        replaceQuery: false,
-      }
-      dispatch(updateLocation(type, locationParams))
+      })
     },
-    [dispatch, lastVisitedWorkspace]
+    [lastVisitedWorkspace, router]
   )
 
   const onInfoClick = useCallback((dataset: Dataset) => {

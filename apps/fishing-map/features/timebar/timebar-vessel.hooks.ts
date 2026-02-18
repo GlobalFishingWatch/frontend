@@ -23,7 +23,7 @@ import { selectDebugOptions } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { useTimebarVisualisationConnect } from 'features/timebar/timebar.hooks'
 import { selectWorkspaceVisibleEventsArray } from 'features/workspace/workspace.selectors'
-import { selectVesselsMaxTimeGapHours } from 'routes/routes.selectors'
+import { selectVesselsMaxTimeGapHours } from 'router/routes.selectors'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { getEventDescription } from 'utils/events'
 

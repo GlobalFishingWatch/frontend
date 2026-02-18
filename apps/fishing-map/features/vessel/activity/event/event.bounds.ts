@@ -10,13 +10,13 @@ import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
 import type { VesselEvent } from 'features/vessel/activity/event/Event'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import type { Bbox } from 'types'
 
 export function useVesselEventBounds(vesselLayer: DeckLayerAtom<VesselLayer>) {
   const isSmallScreen = useSmallScreen()
-  const { dispatchQueryParams } = useLocationConnect()
   const fitMapBounds = useMapFitBounds()
+  const { replaceQueryParams } = useReplaceQueryParams()
 
   const fitEventBounds = useCallback(
     (event: VesselEvent) => {
@@ -39,10 +39,10 @@ export function useVesselEventBounds(vesselLayer: DeckLayerAtom<VesselLayer>) {
         }
       }
       if (isSmallScreen) {
-        dispatchQueryParams({ sidebarOpen: false })
+        replaceQueryParams({ sidebarOpen: false })
       }
     },
-    [dispatchQueryParams, fitMapBounds, isSmallScreen, vesselLayer?.instance]
+    [fitMapBounds, isSmallScreen, replaceQueryParams, vesselLayer.instance]
   )
 
   return fitEventBounds

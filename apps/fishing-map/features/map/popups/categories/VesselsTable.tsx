@@ -1,8 +1,8 @@
 import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
-import Link from 'redux-first-router-link'
 
 import type { DataviewCategory } from '@globalfishingwatch/api-types'
 import { DatasetSubCategory, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -31,7 +31,6 @@ import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/VesselLayerPanel'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
-import { WORKSPACE_SEARCH } from 'routes/routes'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
@@ -165,18 +164,16 @@ function VesselsTable({
                             {vesselName}
                             <Link
                               className={styles.link}
-                              to={{
-                                type: WORKSPACE_SEARCH,
-                                payload: {
-                                  category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-                                  workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-                                },
-                                query: {
-                                  searchOption: 'advanced',
-                                  query: vesselName,
-                                  ssvid: vessel.id,
-                                  flag: [(vessel as any).flag],
-                                },
+                              to="/$category/$workspaceId/vessel-search"
+                              params={{
+                                category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+                                workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+                              }}
+                              search={{
+                                searchOption: 'advanced',
+                                query: vesselName as string,
+                                ssvid: vessel.id,
+                                flag: [(vessel as any).flag],
                               }}
                             >
                               <IconButton

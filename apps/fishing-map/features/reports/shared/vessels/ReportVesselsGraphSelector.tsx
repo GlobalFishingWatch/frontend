@@ -19,15 +19,15 @@ import {
 import type { ReportVesselGraph, ReportVesselsSubCategory } from 'features/reports/reports.types'
 import { ReportCategory } from 'features/reports/reports.types'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import styles from './ReportVesselsGraph.module.css'
 
 function ReportVesselsGraphSelector({ loading }: { loading?: boolean }) {
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const reportCategory = useSelector(selectReportCategory)
   const reportSubCategory = useSelector(selectReportSubCategory)
-  const { dispatchQueryParams } = useLocationConnect()
   const selectedOptionId = useSelector(selectReportVesselGraph)
   const options: ChoiceOption<ReportVesselGraph | ReportVesselsSubCategory>[] = [
     {
@@ -105,7 +105,7 @@ function ReportVesselsGraphSelector({ loading }: { loading?: boolean }) {
     option: ChoiceOption<ReportVesselGraph | ReportVesselsSubCategory>
   ) => {
     if (selectedOptionId !== option.id) {
-      dispatchQueryParams(
+      replaceQueryParams(
         reportCategory === ReportCategory.VesselGroup
           ? { reportVesselsSubCategory: option.id as ReportVesselsSubCategory }
           : { reportVesselGraph: option.id as ReportVesselGraph }

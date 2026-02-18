@@ -118,6 +118,45 @@ module "preview-dev" {
   set_secrets = local.generate_secrets.dev
 }
 
+module "router-refactor" {
+  source            = "../../../cloudbuild-template"
+  project_id        = "gfw-development"
+  short_environment = "dev"
+  app_name          = local.app_name
+  app_suffix        = "-router-refactor"
+  docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-random-forest-dev"
+  service_account   = local.service_account.dev
+  labels = {
+    environment      = "develop"
+    resource_creator = "engineering"
+    project          = "frontend"
+  }
+  push_config = {
+    branch  = "fishing-map/router-refactor-2"
+    trigger = "branch"
+  }
+  set_env_vars_build = [
+    "VITE_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
+    "VITE_API_VERSION=v3",
+    "VITE_GOOGLE_MEASUREMENT_ID=G-R3PWRQW70G",
+    "VITE_GOOGLE_TAG_MANAGER_ID=GTM-KK5ZFST",
+    "VITE_USE_LOCAL_DATASETS=false",
+    "VITE_USE_LOCAL_DATAVIEWS=false",
+    "VITE_WORKSPACE_ENV=development",
+    "VITE_REPORT_DAYS_LIMIT=366",
+    "VITE_PIPE_DATASET_VERSION=4",
+  ]
+  build_secrets = {
+    SENTRY_AUTH_TOKEN = "${local.secrets_path.dev}/FISHING_MAP_VITE_SENTRY_AUTH_TOKEN"
+  }
+  set_env_vars = [
+    "BASIC_AUTH=Restricted",
+    "BASIC_AUTH_USER=gfw-fish",
+  ]
+  set_secrets = local.generate_secrets.dev
+}
+
+
 module "random-forest" {
   source            = "../../../cloudbuild-template"
   project_id        = "gfw-development"

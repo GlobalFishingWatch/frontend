@@ -1,8 +1,7 @@
-import { Fragment, memo, useCallback, useMemo, useState } from 'react'
+import { Fragment, lazy, memo, Suspense, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import dynamic from 'next/dynamic'
 
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
@@ -21,24 +20,15 @@ import {
   selectIsAnyVesselLocation,
   selectIsMapDrawing,
   selectIsWorkspaceLocation,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 
 import styles from './MapControls.module.css'
 
-const MiniGlobeInfo = dynamic(
-  () => import(/* webpackChunkName: "MiniGlobeInfo" */ './MiniGlobeInfo')
-)
-const MapControlScreenshot = dynamic(
-  () => import(/* webpackChunkName: "MapControlScreenshot" */ './MapControlScreenshot')
-)
-const MapSearch = dynamic(() => import(/* webpackChunkName: "MapSearch" */ './MapSearch'))
-const Rulers = dynamic(
-  () => import(/* webpackChunkName: "Rulers" */ 'features/map/controls/RulersControl')
-)
-const MapAnnotations = dynamic(
-  () =>
-    import(/* webpackChunkName: "AnnotationsControl" */ 'features/map/controls/AnnotationsControl')
-)
+const MiniGlobeInfo = lazy(() => import('./MiniGlobeInfo'))
+const MapControlScreenshot = lazy(() => import('./MapControlScreenshot'))
+const MapSearch = lazy(() => import('./MapSearch'))
+const Rulers = lazy(() => import('features/map/controls/RulersControl'))
+const MapAnnotations = lazy(() => import('features/map/controls/AnnotationsControl'))
 
 const MapControls = ({
   mapLoading = false,
@@ -110,17 +100,23 @@ const MapControls = ({
     <Fragment>
       <div className={styles.mapControls} onMouseEnter={onMouseEnter}>
         <div onMouseEnter={enterMiniGlobeHandler} onMouseLeave={leaveMiniGlobeHandler}>
-          <MiniGlobe
-            className={styles.miniglobe}
-            size={60}
-            viewportThickness={3}
-            bounds={debouncedOptions.bounds}
-            center={debouncedOptions.center}
-          />
+          <Suspense fallback={null}>
+            <MiniGlobe
+              className={styles.miniglobe}
+              size={60}
+              viewportThickness={3}
+              bounds={debouncedOptions.bounds}
+              center={debouncedOptions.center}
+            />
+          </Suspense>
           {miniGlobeHovered && <MiniGlobeInfo viewport={viewState} />}
         </div>
         <div className={cx('print-hidden', styles.controlsNested)}>
-          {(isWorkspaceLocation || isAnyVesselLocation) && !isMapDrawing && <MapSearch />}
+          {(isWorkspaceLocation || isAnyVesselLocation) && !isMapDrawing && (
+            <Suspense fallback={null}>
+              <MapSearch />
+            </Suspense>
+          )}
           <IconButton
             icon="plus"
             type="map-tool"
@@ -137,10 +133,16 @@ const MapControls = ({
           />
           {showExtendedControls && (
             <Fragment>
-              <Rulers />
-              <MapAnnotations />
+              <Suspense fallback={null}>
+                <Rulers />
+              </Suspense>
+              <Suspense fallback={null}>
+                <MapAnnotations />
+              </Suspense>
               {gfwUser && <ReportControls disabled={mapLoading} />}
-              <MapControlScreenshot />
+              <Suspense fallback={null}>
+                <MapControlScreenshot />
+              </Suspense>
               <Tooltip
                 content={
                   currentBasemap === BasemapType.Default

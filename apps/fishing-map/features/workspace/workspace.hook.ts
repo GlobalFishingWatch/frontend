@@ -9,13 +9,13 @@ import { LAYERS_LIBRARY_DETECTIONS } from 'data/layer-library/layers-detections'
 import { selectDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
   selectUrlDataviewInstances,
   selectUrlTimeRange,
   selectUrlViewport,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 
 import { selectWorkspaceDataviewInstances } from './workspace.selectors'
 import { getNextColor } from './workspace.utils'
@@ -114,17 +114,16 @@ export const mergeDataviewIntancesToUpsert = (
 export const useDataviewInstancesConnect = () => {
   const urlDataviewInstances = useSelector(selectUrlDataviewInstances)
   const allDataviews = useSelector(selectDataviewInstancesResolved)
-  const { dispatchQueryParams } = useLocationConnect()
-
+  const { replaceQueryParams } = useReplaceQueryParams()
   const removeDataviewInstance = useCallback(
     (id: string | string[]) => {
       const ids = Array.isArray(id) ? id : [id]
       const dataviewInstances = urlDataviewInstances?.filter(
         (urlDataviewInstance) => !ids.includes(urlDataviewInstance.id)
       )
-      dispatchQueryParams({ dataviewInstances })
+      replaceQueryParams({ dataviewInstances })
     },
-    [dispatchQueryParams, urlDataviewInstances]
+    [replaceQueryParams, urlDataviewInstances]
   )
 
   const upsertDataviewInstance = useCallback(
@@ -134,21 +133,21 @@ export const useDataviewInstancesConnect = () => {
         urlDataviewInstances,
         allDataviews
       )
-      dispatchQueryParams({ dataviewInstances })
+      replaceQueryParams({ dataviewInstances })
     },
-    [dispatchQueryParams, urlDataviewInstances, allDataviews]
+    [replaceQueryParams, urlDataviewInstances, allDataviews]
   )
 
   const addNewDataviewInstances = useCallback(
     (dataviewInstances: Partial<UrlDataviewInstance>[]) => {
-      dispatchQueryParams({
+      replaceQueryParams({
         dataviewInstances: [
           ...createDataviewsInstances(dataviewInstances, allDataviews),
           ...(urlDataviewInstances || []),
         ],
       })
     },
-    [dispatchQueryParams, urlDataviewInstances, allDataviews]
+    [replaceQueryParams, allDataviews, urlDataviewInstances]
   )
 
   const workspaceDataviewInstances = useSelector(selectWorkspaceDataviewInstances)
@@ -166,9 +165,9 @@ export const useDataviewInstancesConnect = () => {
           dataviewInstances.push({ id, deleted: true })
         })
       }
-      dispatchQueryParams({ dataviewInstances })
+      replaceQueryParams({ dataviewInstances })
     },
-    [dispatchQueryParams, urlDataviewInstances, workspaceDataviewInstances]
+    [replaceQueryParams, urlDataviewInstances, workspaceDataviewInstances]
   )
   return useMemo(
     () => ({

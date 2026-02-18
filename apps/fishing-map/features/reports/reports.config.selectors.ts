@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 
 import { selectWorkspaceState } from 'features/workspace/workspace.selectors'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { selectLocationQuery } from 'router/routes.selectors'
 
 import { DEFAULT_REPORT_STATE } from './reports.config'
 import type { ReportState, ReportStateProperty } from './reports.types'
@@ -11,8 +11,8 @@ function selectReportStateProperty<P extends ReportStateProperty>(property: P) {
   return createSelector(
     [selectLocationQuery, selectWorkspaceState],
     (locationQuery, workspaceState): AreaReportProperty<P> => {
-      const urlProperty = locationQuery?.[property]
-      if (urlProperty !== undefined) return urlProperty
+      const urlProperty = locationQuery?.[property as keyof typeof locationQuery]
+      if (urlProperty !== undefined) return urlProperty as AreaReportProperty<P>
       if (property in workspaceState && workspaceState[property as keyof typeof workspaceState]) {
         return workspaceState[property as keyof typeof workspaceState] as AreaReportProperty<P>
       }

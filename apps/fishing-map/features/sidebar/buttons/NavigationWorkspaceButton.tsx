@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
-import Link from 'redux-first-router-link'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
@@ -15,17 +15,15 @@ import { selectTrackCorrectionOpen } from 'features/track-correction/track-selec
 import { DEFAULT_VESSEL_STATE } from 'features/vessel/vessel.config'
 import { resetVesselState } from 'features/vessel/vessel.slice'
 import { cleanReportQuery } from 'features/workspace/workspace.slice'
-import type { ROUTE_TYPES } from 'routes/routes'
-import { HOME, WORKSPACE } from 'routes/routes'
 import {
   selectIsAnySearchLocation,
   selectIsAnyWorkspaceReportLocation,
   selectIsVesselLocation,
   selectIsWorkspaceVesselLocation,
   selectLocationCategory,
-  selectLocationQuery,
   selectWorkspaceId,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
+import type { QueryParams } from 'types'
 
 import styles from '../SidebarHeader.module.css'
 
@@ -38,7 +36,6 @@ function NavigationWorkspaceButton() {
   const isTrackCorrectionOpen = useSelector(selectTrackCorrectionOpen)
   const isAnyWorkspaceReportLocation = useSelector(selectIsAnyWorkspaceReportLocation)
   const workspaceId = useSelector(selectWorkspaceId)
-  const locationQuery = useSelector(selectLocationQuery)
   const locationCategory = useSelector(selectLocationCategory)
 
   const resetState = useCallback(() => {
@@ -47,14 +44,14 @@ function NavigationWorkspaceButton() {
   }, [dispatch])
 
   if (isSearchLocation || (!workspaceId && isVesselLocation)) {
-    const linkTo = {
-      type: HOME,
-      query: {},
-      replaceQuery: true,
-      isHistoryNavigation: true,
-    }
     return (
-      <Link className={cx(styles.workspaceLink, 'print-hidden')} to={linkTo} onClick={resetState}>
+      <Link
+        className={cx(styles.workspaceLink, 'print-hidden')}
+        to="/"
+        search={{}}
+        replace
+        onClick={resetState}
+      >
         <IconButton type="border" icon="close" />
       </Link>
     )
@@ -69,26 +66,23 @@ function NavigationWorkspaceButton() {
     const tooltip = t((t) => t.common.navigateBackTo, {
       section: t((t) => t.workspace.title).toLocaleLowerCase(),
     })
-    const query = {
-      ...cleanReportQuery(locationQuery),
-      ...EMPTY_SEARCH_FILTERS,
-      ...DEFAULT_VESSEL_STATE,
-      trackCorrectionId: undefined,
-    }
-    const linkTo = {
-      type: WORKSPACE as ROUTE_TYPES,
-      payload: {
-        workspaceId: workspaceId,
-        category: locationCategory || DEFAULT_WORKSPACE_CATEGORY,
-      },
-      query: {
-        ...query,
-        dataviewInstances: cleanVesselProfileDataviewInstances(query.dataviewInstances),
-      },
-      isHistoryNavigation: true,
-    }
     return (
-      <Link className={cx(styles.workspaceLink, 'print-hidden')} to={linkTo} onClick={resetState}>
+      <Link
+        className={cx(styles.workspaceLink, 'print-hidden')}
+        to="/$category/$workspaceId"
+        params={{
+          workspaceId: workspaceId,
+          category: locationCategory || DEFAULT_WORKSPACE_CATEGORY,
+        }}
+        search={(prev: QueryParams) => ({
+          ...cleanReportQuery(prev),
+          ...EMPTY_SEARCH_FILTERS,
+          ...DEFAULT_VESSEL_STATE,
+          trackCorrectionId: undefined,
+          dataviewInstances: cleanVesselProfileDataviewInstances(prev.dataviewInstances),
+        })}
+        onClick={resetState}
+      >
         <IconButton type="border" icon="close" tooltip={tooltip} />
       </Link>
     )

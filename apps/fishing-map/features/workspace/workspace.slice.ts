@@ -31,7 +31,6 @@ import {
   DEFAULT_WORKSPACE_ID,
   getWorkspaceEnv,
   ONLY_GFW_STAFF_DATAVIEW_SLUGS,
-  WorkspaceCategory,
 } from 'data/workspaces'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import {
@@ -56,15 +55,13 @@ import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
 import { fetchVesselGroupsThunk } from 'features/vessel-groups/vessel-groups.slice'
 import { mergeDataviewIntancesToUpsert } from 'features/workspace/workspace.hook'
 import type { AppWorkspace } from 'features/workspaces-list/workspaces-list.slice'
-import { HOME, REPORT, WORKSPACE } from 'routes/routes'
-import { cleanQueryLocation, updateLocation, updateQueryParam } from 'routes/routes.actions'
+import { HOME, REPORT } from 'router/routes'
 import {
-  selectLocationCategory,
   selectLocationType,
   selectReportId,
   selectUrlDataviewInstances,
-} from 'routes/routes.selectors'
-import type { LinkTo } from 'routes/routes.types'
+} from 'router/routes.selectors'
+import type { LinkTo } from 'router/routes.types'
 import type { AppDispatch } from 'store'
 import type { AnyWorkspaceState, QueryParams, WorkspaceState } from 'types'
 import type { AsyncError } from 'utils/async-slice'
@@ -78,6 +75,10 @@ import {
 } from './workspace.selectors'
 import { parseUpsertWorkspace } from './workspace.utils'
 
+/**
+ * History navigation entry stored in TanStack Router format.
+ * No conversion needed when navigating back - use directly with Link or useRouter().navigate().
+ */
 export type LastWorkspaceVisited = LinkTo & {
   pathname?: string
 }
@@ -110,12 +111,17 @@ type RejectedActionPayload = {
   error: AsyncError
 }
 
-export const getDefaultWorkspace = () => {
+const workspaceModules = import.meta.glob<{ default: AppWorkspace }>(
+  '../../data/default-workspaces/workspace.*.ts'
+)
+
+export const getDefaultWorkspace = async (): Promise<AppWorkspace> => {
   const workspaceEnv = getWorkspaceEnv()
-  const workspace = import(`../../data/default-workspaces/workspace.${workspaceEnv}`).then(
-    (m) => m.default
-  )
-  return workspace as Promise<AppWorkspace>
+  const loader =
+    workspaceModules[`../../data/default-workspaces/workspace.${workspaceEnv}.ts`] ??
+    workspaceModules['../../data/default-workspaces/workspace.production.ts']!
+  const mod = await loader()
+  return mod.default
 }
 
 type FetchWorkspacesThunkParams = {
@@ -139,10 +145,11 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const privateUserGroups = selectPrivateUserGroups(state)
     const reportId = reportIdParam || selectReportId(state)
     let workspaceReportId = null
+    let dataviewInstancesToUpsert: UrlDataviewInstance[] | undefined
     try {
       let workspace: Workspace<any> | null = null
       if (locationType === REPORT) {
-        const action = dispatch(fetchReportsThunk([reportId]))
+        const action = dispatch(fetchReportsThunk([reportId as string]))
         const resolvedAction = await action
         if (fetchReportsThunk.fulfilled.match(resolvedAction)) {
           workspace = resolvedAction.payload?.[0]?.workspace as Workspace
@@ -277,13 +284,12 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           }
           return []
         })
-        // Update the dataviewInstances with the track config in case it was found
+        // Compute the dataviewInstances with the track config to be upserted by the caller
         if (vesselDataviewsWithTrack?.length) {
-          const dataviewInstancesToUpsert = mergeDataviewIntancesToUpsert(
+          dataviewInstancesToUpsert = mergeDataviewIntancesToUpsert(
             vesselDataviewsWithTrack,
             urlDataviewInstances
           )
-          dispatch(updateQueryParam({ dataviewInstances: dataviewInstancesToUpsert }))
         }
 
         if (error) {
@@ -312,6 +318,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         startAt: startAt.toISO(),
         endAt: endAt.toISO(),
         workspaceReportId,
+        dataviewInstancesToUpsert,
       }
     } catch (e: any) {
       console.warn(e)
@@ -352,7 +359,7 @@ export const saveWorkspaceThunk = createAsyncThunk(
       properties: SaveWorkspaceThunkProperties
       workspace: AppWorkspace
     },
-    { dispatch, getState }
+    { getState }
   ) => {
     const state = getState() as any
     const workspaceUpsert = parseUpsertWorkspace(workspace)
@@ -400,20 +407,6 @@ export const saveWorkspaceThunk = createAsyncThunk(
     }
 
     const workspaceUpdated = await saveWorkspace()
-    const locationType = selectLocationType(state)
-    const locationCategory = selectLocationCategory(state) || WorkspaceCategory.FishingActivity
-    if (workspaceUpdated) {
-      dispatch(
-        updateLocation(locationType === HOME ? WORKSPACE : locationType, {
-          payload: {
-            category: locationCategory,
-            workspaceId: workspaceUpdated.id,
-          },
-          query: {},
-          replaceQuery: true,
-        })
-      )
-    }
     return workspaceUpdated
   }
 )
@@ -435,7 +428,7 @@ export const updateCurrentWorkspaceThunk = createAsyncThunk<
     dispatch: AppDispatch
     rejectValue: UpdateWorkspaceThunkRejectError
   }
->('workspace/updatedCurrent', async (workspaceWithPassword, { dispatch, rejectWithValue }) => {
+>('workspace/updatedCurrent', async (workspaceWithPassword, { rejectWithValue }) => {
   try {
     const { editPassword, newPassword, ...workspace } = workspaceWithPassword
     const password = newPassword || editPassword || 'default'
@@ -452,8 +445,12 @@ export const updateCurrentWorkspaceThunk = createAsyncThunk<
         },
       }),
     } as FetchOptions<WorkspaceUpsert<WorkspaceState>>)
-    if (workspaceUpdated) {
-      dispatch(cleanQueryLocation())
+    if (!workspaceUpdated) {
+      return rejectWithValue({
+        status: 500,
+        message: 'Workspace update failed',
+        isWorkspaceWrongPassword: false,
+      })
     }
     return workspaceUpdated
   } catch (e: any) {
@@ -554,7 +551,7 @@ const workspaceSlice = createSlice({
     })
     builder.addCase(fetchWorkspaceThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
-      const { workspaceReportId, ...data } = action.payload
+      const { workspaceReportId, dataviewInstancesToUpsert: _, ...data } = action.payload
       if (data) {
         state.data = data
       }

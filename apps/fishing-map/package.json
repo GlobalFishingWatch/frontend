@@ -3,9 +3,6 @@
   "version": "3.4.20",
   "private": true,
   "scripts": {
-    "dev": "next",
-    "build": "next build",
-    "start": "next start",
     "i18n": "nx i18n:extract fishing-map && nx i18n:ts fishing-map",
     "i18n:status": "i18next-cli status",
     "i18n:extract": "cross-env LC_ALL=en_US.UTF-8 i18next-cli extract",

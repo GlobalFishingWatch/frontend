@@ -12,7 +12,7 @@ import {
   selectWorkspaceStateProperty,
   selectWorkspaceTimeRange,
 } from 'features/workspace/workspace.selectors'
-import { selectIsAnyVesselLocation, selectUrlTimeRange } from 'routes/routes.selectors'
+import { selectIsAnyVesselLocation, selectUrlTimeRange } from 'router/routes.selectors'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 
 export const selectTimeRange = createSelector(

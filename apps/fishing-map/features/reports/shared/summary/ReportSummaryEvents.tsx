@@ -19,7 +19,7 @@ import {
   selectTotalEventsVessels,
   selectTotalStatsEvents,
 } from 'features/reports/tabs/events/events-report.selectors'
-import { selectIsPortReportLocation } from 'routes/routes.selectors'
+import { selectIsPortReportLocation } from 'router/routes.selectors'
 import { htmlSafeParse } from 'utils/html-parser'
 
 export default function ReportSummaryEvents() {

@@ -20,8 +20,8 @@ import { selectReportActivityGraph } from 'features/reports/reports.config.selec
 import { type ReportActivityGraph } from 'features/reports/reports.types'
 import { REPORT_ACTIVITY_GRAPH_TIME_OPTIONS } from 'features/reports/shared/utils/reports.utils'
 import { useSetReportTimeComparison } from 'features/reports/tabs/activity/reports-activity-timecomparison.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectUrlDataviewInstances } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectUrlDataviewInstances } from 'router/routes.selectors'
 
 import styles from './ReportActivity.module.css'
 
@@ -35,8 +35,8 @@ type ReportActivityGraphSelectorProps = {
 export default function ReportActivityGraphSelector({
   loading = false,
 }: ReportActivityGraphSelectorProps) {
-  const { dispatchQueryParams } = useLocationConnect()
   const { setReportTimecomparison, resetReportTimecomparison } = useSetReportTimeComparison()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const selectedReportActivityGraph = useSelector(selectReportActivityGraph)
   const { t } = useTranslation()
   const fitAreaInViewport = useFitAreaInViewport()
@@ -91,7 +91,7 @@ export default function ReportActivityGraphSelector({
             ? { main: dataviews[0]?.id, compare: '' }
             : undefined
 
-        dispatchQueryParams({
+        replaceQueryParams({
           reportComparisonDataviewIds,
           ...(option.id === REPORT_ACTIVITY_GRAPH_EVOLUTION && {
             dataviewInstances: filteredDataviewInstances,
@@ -99,7 +99,7 @@ export default function ReportActivityGraphSelector({
         })
       } else {
         setReportTimecomparison(option.id)
-        dispatchQueryParams({
+        replaceQueryParams({
           reportComparisonDataviewIds: undefined,
           dataviewInstances: filteredDataviewInstances,
         })
@@ -108,7 +108,7 @@ export default function ReportActivityGraphSelector({
         category: TrackCategory.Analysis,
         action: `Click on ${option.id} activity graph`,
       })
-      dispatchQueryParams({ reportActivityGraph: option.id })
+      replaceQueryParams({ reportActivityGraph: option.id })
     }
   }
 

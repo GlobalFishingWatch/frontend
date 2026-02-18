@@ -73,7 +73,8 @@ import {
   selectIsVesselGroupReportLocation,
   selectReportId,
   selectReportPortId,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -330,7 +331,7 @@ export function useFetchReportVessel() {
       setLastReportUrl((lastReportUrls: LastReportStorage[]) => {
         const newReportUrl = {
           reportUrl,
-          workspaceUrl: window.location.href,
+          workspaceUrl: getCurrentAppUrl(),
         }
         if (!lastReportUrls?.length) {
           return [newReportUrl]
@@ -424,7 +425,6 @@ export function usePortsReportAreaFootprintFitBounds() {
     if (loaded && bbox?.length) {
       fitAreaInViewport()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, bboxHash])
 }
 
@@ -446,7 +446,10 @@ export function useReportTitle() {
     if (isGlobalReport && !report?.name) {
       return t((t) => t.common.globalReport)
     }
-    let areaName: string | JSX.Element = getReportAreaStringByLocale(report?.name, i18n.language)
+    let areaName: string | JSX.Element = getReportAreaStringByLocale(
+      report?.name || '',
+      i18n.language
+    )
     if (!areaName) {
       if (areaDataviews?.length > 1) {
         const datasets = areaDataviews.flatMap((d) => d.datasets?.[0] || [])

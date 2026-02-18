@@ -12,12 +12,12 @@ import {
   selectReportSubCategory,
 } from 'features/reports/reports.selectors'
 import type { ReportEventsSubCategory } from 'features/reports/reports.types'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 function VesselGroupReportEventsSubsectionSelector() {
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const vesselGroupReportStatus = useSelector(selectVGRStatus)
   const subsection = useSelector(selectReportSubCategory)
   const activeReportSubCategories = useSelector(selectActiveReportSubCategories)
@@ -70,7 +70,7 @@ function VesselGroupReportEventsSubsectionSelector() {
 
   const onSelectSubsection = (option: ChoiceOption<ReportEventsSubCategory>) => {
     if (subsection !== option.id) {
-      dispatchQueryParams({ reportEventsSubCategory: option.id })
+      replaceQueryParams({ reportEventsSubCategory: option.id })
       trackEvent({
         category: TrackCategory.VesselGroupReport,
         action: `vessel_group_profile_events_tab_${option.id}_graph`,

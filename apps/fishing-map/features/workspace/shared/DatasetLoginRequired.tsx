@@ -4,7 +4,7 @@ import cx from 'classnames'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import LoginButtonWrapper from 'router/LoginButtonWrapper'
 
 import styles from 'features/workspace/shared/LayerPanel.module.css'
 

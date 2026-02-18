@@ -27,7 +27,7 @@ import { selectActiveTrackDataviews } from 'features/dataviews/selectors/datavie
 import { selectActiveHeatmapEnvironmentalDataviewsWithoutStatic } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import useClickedOutside from 'hooks/use-clicked-outside'
-import { selectIsVesselLocation } from 'routes/routes.selectors'
+import { selectIsVesselLocation } from 'router/routes.selectors'
 import { TimebarGraphs, TimebarVisualisations } from 'types'
 import { getEventLabel } from 'utils/analytics'
 

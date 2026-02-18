@@ -37,7 +37,7 @@ import {
   getVesselProperty,
 } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
-import { selectIsStandaloneSearchLocation } from 'routes/routes.selectors'
+import { selectIsStandaloneSearchLocation } from 'router/routes.selectors'
 import type { Locale, QueryParam } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import {
@@ -437,7 +437,6 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           ['--col-callsign-size' as any]: 100,
           ['--header-mrt_row_select-size' as any]: 10,
           ['--col-mrt_row_select-size' as any]: 10,
-          ['--header-mrt_row_select-size' as any]: 10,
           ['--header-shipname-size' as any]: 250,
           ['--header-infoSource-size' as any]: 250,
         },

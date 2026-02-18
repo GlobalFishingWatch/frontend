@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch, useSelector } from 'react-redux'
-import Link from 'redux-first-router-link'
+import { Link } from '@tanstack/react-router'
 
 import type { DataviewInstance, EventType } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -27,12 +27,11 @@ import {
   selectCurrentWorkspaceCategory,
   selectCurrentWorkspaceId,
 } from 'features/workspace/workspace.selectors'
-import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
 import {
   selectIsStandaloneSearchLocation,
   selectIsVesselLocation,
   selectLocationQuery,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import type { QueryParams } from 'types'
 
 import styles from './Vessel.module.css'
@@ -120,10 +119,10 @@ const VesselLink = ({
   if (dataviewInstanceToUpdateId) {
     // When coming from a saved workspace the vessel instance might not be in the url yet
     const isInWorkspace = dataviewInstances?.some(
-      ({ id }: DataviewInstance) => id === dataviewInstanceToUpdateId
+      ({ id }: any) => id === dataviewInstanceToUpdateId
     )
     if (isInWorkspace) {
-      dataviewInstances = dataviewInstances?.map((instance: DataviewInstance) => {
+      dataviewInstances = dataviewInstances?.map((instance) => {
         const matches = instance.id === dataviewInstanceToUpdateId
         if (matches) {
           return {
@@ -154,6 +153,32 @@ const VesselLink = ({
     }
   }
 
+  const linkSearch = {
+    ...locationQuery,
+    // Clean search url when clicking on vessel link
+    query: undefined,
+    vesselDatasetId,
+    ...(identity && {
+      vesselIdentitySource: identity.identitySource,
+      ...(identity.identitySource === VesselIdentitySourceEnum.SelfReported
+        ? {
+            vesselSelfReportedId: getVesselIdentityId(identity),
+          }
+        : { vesselRegistryId: getVesselIdentityId(identity) }),
+    }),
+    ...(query || {}),
+    dataviewInstances,
+  }
+
+  const linkTo = standaloneLink ? '/vessel/$vesselId' : '/$category/$workspaceId/vessel/$vesselId'
+  const linkParams = standaloneLink
+    ? { vesselId }
+    : {
+        category: workspaceCategory || DEFAULT_WORKSPACE_CATEGORY,
+        workspaceId: workspaceId || '',
+        vesselId,
+      }
+
   return isTrackCorrectionOpen ? (
     <>
       <Tooltip className={styles.linkTooltip} content={t((t) => t.vessel.exitTrackCorrection)}>
@@ -164,33 +189,9 @@ const VesselLink = ({
     <Link
       {...(testId && { 'data-test': testId })}
       className={className}
-      to={{
-        type: standaloneLink ? VESSEL : WORKSPACE_VESSEL,
-        payload: {
-          ...(!standaloneLink &&
-            workspaceId && {
-              category: workspaceCategory || DEFAULT_WORKSPACE_CATEGORY,
-              workspaceId: workspaceId,
-            }),
-          vesselId,
-        },
-        query: {
-          ...locationQuery,
-          // Clean search url when clicking on vessel link
-          query: undefined,
-          vesselDatasetId,
-          ...(identity && {
-            vesselIdentitySource: identity.identitySource,
-            ...(identity.identitySource === VesselIdentitySourceEnum.SelfReported
-              ? {
-                  vesselSelfReportedId: getVesselIdentityId(identity),
-                }
-              : { vesselRegistryId: getVesselIdentityId(identity) }),
-          }),
-          ...(query || {}),
-          dataviewInstances,
-        },
-      }}
+      to={linkTo}
+      params={linkParams}
+      search={linkSearch as QueryParams}
       onClick={onLinkClick}
     >
       {showTooltip ? (

@@ -9,6 +9,8 @@
 /coverage
 
 # production
+/.dist
+/.output
 /build
 .build.env
 
@@ -23,11 +25,9 @@
 .env.development.local
 .env.test.local
 .env.production.local
-.env.tanstack
-.env.next
-
 .env.next
 .env.vite
+.env.tanstack
 
 npm-debug.log*
 yarn-debug.log*

@@ -6,7 +6,7 @@ import type { IconButtonProps } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectIsGuestUser, selectIsUserExpired } from 'features/user/selectors/user.selectors'
-import LocalStorageLoginLink from 'routes/LoginLink'
+import LocalStorageLoginLink from 'router/LoginLink'
 
 import styles from './User.module.css'
 

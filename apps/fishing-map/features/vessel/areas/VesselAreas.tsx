@@ -28,7 +28,7 @@ import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors
 import { selectVesselAreaSubsection } from 'features/vessel/vessel.config.selectors'
 import { getSidebarContentWidth } from 'features/vessel/vessel.utils'
 import { DATAVIEWS_WARNING } from 'features/workspace/context-areas/ContextAreaLayerPanel'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { htmlSafeParse } from 'utils/html-parser'
 
 import type { VesselAreaSubsection } from '../vessel.types'
@@ -106,7 +106,7 @@ const AreaTooltip = ({ payload }: any) => {
 const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
   useFetchRegionsData()
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const events = useSelector(selectVesselEventsFilteredByTimerange)
   const vesselArea = useSelector(selectVesselAreaSubsection)
   const eventsGrouped = useSelector(selectEventsGroupedByArea)
@@ -162,14 +162,14 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
 
   const changeVesselArea = useCallback(
     (option: ChoiceOption<VesselAreaSubsection>) => {
-      dispatchQueryParams({ vesselArea: option.id })
+      replaceQueryParams({ vesselArea: option.id })
       updateAreaLayersVisibility(option.id)
       trackEvent({
         category: TrackCategory.VesselProfile,
         action: `click_${option.id}_areas_tab`,
       })
     },
-    [dispatchQueryParams, updateAreaLayersVisibility]
+    [updateAreaLayersVisibility]
   )
 
   if (eventsLoading) {

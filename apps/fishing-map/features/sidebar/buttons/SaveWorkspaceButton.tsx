@@ -15,7 +15,7 @@ import {
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
 import { isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import LoginButtonWrapper from 'router/LoginButtonWrapper'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from '../SidebarHeader.module.css'

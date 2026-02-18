@@ -28,16 +28,16 @@ import {
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
 import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
 import { selectVesselEventId } from 'features/vessel/vessel.slice'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import styles from '../ActivityGroupedList.module.css'
 
 const ActivityByVoyage = () => {
   const { t } = useTranslation()
   const voyages = useSelector(selectEventsGroupedByVoyages)
+  const { replaceQueryParams } = useReplaceQueryParams()
 
   const isSmallScreen = useSmallScreen()
-  const { dispatchQueryParams } = useLocationConnect()
   const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const visibleEvents = useSelector(selectVisibleEvents)
   const selectedVesselEventId = useSelector(selectVesselEventId)
@@ -85,9 +85,9 @@ const ActivityByVoyage = () => {
       const events = voyages[voyageId]
       const bounds = eventsToBbox(events)
       fitBounds(bounds, { fitZoom: true })
-      if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
+      if (isSmallScreen) replaceQueryParams({ sidebarOpen: false })
     },
-    [dispatchQueryParams, fitBounds, isSmallScreen, voyages]
+    [fitBounds, isSmallScreen, voyages]
   )
 
   const onEventMapHover = useCallback(

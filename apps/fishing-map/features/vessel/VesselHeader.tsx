@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { Link, useRouterState } from '@tanstack/react-router'
 import cx from 'classnames'
 import { uniqBy, upperFirst } from 'es-toolkit'
 
@@ -33,7 +34,7 @@ import VesselGroupAddButton, {
 } from 'features/vessel-groups/VesselGroupAddButton'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { handleOpenImage } from 'utils/img'
 import { formatInfoField, getVesselOtherNamesLabel } from 'utils/info'
 
@@ -41,8 +42,9 @@ import styles from './VesselHeader.module.css'
 
 const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const { t } = useTranslation()
+  const state = useRouterState()
   const dispatch = useAppDispatch()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const isSmallScreen = useSmallScreen()
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
@@ -113,7 +115,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const otherNamesLabel = getVesselOtherNamesLabel(getOtherVesselNames(vessel, nShipname))
 
   const onVesselFitBoundsClick = () => {
-    if (isSmallScreen) dispatchQueryParams({ sidebarOpen: false })
+    if (isSmallScreen) replaceQueryParams({ sidebarOpen: false })
     setVesselBounds()
     trackAction('center_map')
   }
@@ -206,7 +208,9 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
           {shipnameLabel}
           <span className={styles.secondary}>{otherNamesLabel}</span>
           <span className={styles.reportLink}>
-            <a href={window.location.href}>{t((t) => t.vessel.linkToVessel)}</a>
+            <Link to={state.location.pathname} search={state.location.search}>
+              {t((t) => t.vessel.linkToVessel)}
+            </Link>
           </span>
         </h1>
 

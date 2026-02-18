@@ -12,8 +12,8 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectScreenshotModalOpen, setModalOpen } from 'features/modals/modals.slice'
 import { useDOMElement } from 'hooks/dom.hooks'
 import { useDownloadDomElementAsImage } from 'hooks/screen.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsAnyReportLocation, selectIsAnyVesselLocation } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsAnyReportLocation, selectIsAnyVesselLocation } from 'router/routes.selectors'
 import { cleantInlineStyles, setInlineStyles } from 'utils/dom'
 
 import type { MAP_CONTAINER_ID } from '../map-viewport.hooks'
@@ -32,9 +32,9 @@ const MapControlScreenshot = ({
 }): React.ReactElement<any> => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const modalOpen = useSelector(selectScreenshotModalOpen)
   const timeoutRef = useRef<NodeJS.Timeout>(undefined)
-  const { dispatchQueryParams } = useLocationConnect()
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const showScreenshot = !isVesselLocation && !isAnyReportLocation
@@ -84,11 +84,11 @@ const MapControlScreenshot = ({
 
   const onScreenshotClick = useCallback(() => {
     if (screenshotAreaId === ScrenshotAreaIds.withTimebarAndLegend) {
-      dispatchQueryParams({ sidebarOpen: true })
+      replaceQueryParams({ sidebarOpen: true })
     }
     dispatch(setModalOpen({ id: 'screenshot', open: true }))
     generateImage(screenshotAreaId)
-  }, [dispatch, dispatchQueryParams, generateImage, screenshotAreaId])
+  }, [dispatch, generateImage, screenshotAreaId])
 
   const handleModalClose = useCallback(() => {
     resetPreviewImage()
@@ -115,11 +115,11 @@ const MapControlScreenshot = ({
     (area: ScrenshotDOMArea) => {
       dispatch(setScreenshotAreaId(area))
       if (area === ScrenshotAreaIds.withTimebarAndLegend) {
-        dispatchQueryParams({ sidebarOpen: true })
+        replaceQueryParams({ sidebarOpen: true })
       }
       generateImage(area)
     },
-    [dispatch, dispatchQueryParams, generateImage]
+    [dispatch, generateImage]
   )
 
   return (

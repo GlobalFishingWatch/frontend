@@ -1,17 +1,15 @@
 import { Fragment, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
-import type { To } from 'redux-first-router-link'
-import Link from 'redux-first-router-link'
 
 import { DEFAULT_WORKSPACE_ID, WorkspaceCategory } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { fetchWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
-import { HOME, REPORT, WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
-import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
+import { isValidLocationCategory, selectLocationCategory } from 'router/routes.selectors'
 
 import type { HighlightedWorkspace } from './workspaces-list.selectors'
 import {
@@ -57,7 +55,7 @@ function WorkspacesList() {
       <div className={styles.placeholder}>
         <h2>{t((t) => t.errors.pageNotFound)}</h2>
         <p>🙈</p>
-        <Link className={styles.linkButton} to={{ type: HOME, replaceQuery: true, query: {} }}>
+        <Link className={styles.linkButton} to="/" search={{}} replace>
           {t((t) => t.common.seeDefault)}
         </Link>
       </div>
@@ -89,59 +87,66 @@ function WorkspacesList() {
             return null
           }
 
-          let linkTo: To
+          // Compute link props based on workspace type
+          let linkPath: string
+          let linkParams: Record<string, string> = {}
+          let linkSearch: Record<string, any> = {}
+          let linkReplace = false
+
           if (id === DEFAULT_WORKSPACE_ID) {
-            linkTo = {
-              type: HOME,
-              payload: {},
-              query: {},
-              replaceQuery: true,
-            }
+            linkPath = '/'
+            linkSearch = {}
+            linkReplace = true
           } else if (highlightedWorkspace.category === WorkspaceCategory.Reports) {
-            linkTo = {
-              type: WORKSPACE_REPORT,
-              payload: {
-                category: WorkspaceCategory.Reports,
-                workspaceId: DEFAULT_WORKSPACE_ID,
-              },
-              query: {
-                dataviewInstances,
-                reportCategory,
-                latitude: 0,
-                longitude: 0,
-                zoom: 0,
-                reportLoadVessels: true,
-              },
+            linkPath = '/$category/$workspaceId/report'
+            linkParams = {
+              category: WorkspaceCategory.Reports,
+              workspaceId: DEFAULT_WORKSPACE_ID,
+            }
+            linkSearch = {
+              dataviewInstances,
+              reportCategory,
+              latitude: 0,
+              longitude: 0,
+              zoom: 0,
+              reportLoadVessels: true,
             }
           } else {
-            linkTo = {
-              type: WORKSPACE,
-              payload: {
-                category:
-                  highlightedWorkspace.category ||
-                  locationCategory ||
-                  WorkspaceCategory.FishingActivity,
-                workspaceId: id,
-              },
-              query: {
-                ...(dataviewInstances?.length && { dataviewInstances }),
-                ...(highlightedWorkspace.viewport || {}),
-              },
-              replaceQuery: true,
+            linkPath = '/$category/$workspaceId'
+            linkParams = {
+              category:
+                highlightedWorkspace.category ||
+                locationCategory ||
+                WorkspaceCategory.FishingActivity,
+              workspaceId: id,
             }
+            linkSearch = {
+              ...(dataviewInstances?.length && { dataviewInstances }),
+              ...(highlightedWorkspace.viewport || {}),
+            }
+            linkReplace = true
           }
 
           return (
             <li key={id || name} className={cx(styles.workspace)}>
               <Link
-                to={linkTo}
+                to={linkPath}
+                params={linkParams}
+                search={linkSearch}
+                replace={linkReplace}
                 onClick={() => onWorkspaceClick(highlightedWorkspace)}
                 className={styles.imageLink}
               >
                 <img className={styles.image} alt={name} src={img} />
               </Link>
               <div className={styles.info}>
-                <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
+                <Link
+                  to={linkPath}
+                  params={linkParams}
+                  search={linkSearch}
+                  replace={linkReplace}
+                  onClick={() => onWorkspaceClick(highlightedWorkspace)}
+                >
                   <h3 className={styles.title}>{name}</h3>
                 </Link>
                 {description && (
@@ -154,29 +159,25 @@ function WorkspacesList() {
                 )}
                 <div className={styles.linksContainer}>
                   <Link
-                    to={linkTo}
+                    to={linkPath}
+                    params={linkParams}
+                    search={linkSearch}
+                    replace={linkReplace}
                     onClick={() => onWorkspaceClick(highlightedWorkspace)}
                     className={styles.link}
                   >
                     {cta}
                   </Link>
                   {reports?.map(({ id: reportId }) => {
-                    const reportLink = reportId
-                      ? {
-                          type: REPORT,
-                          payload: {
-                            reportId,
-                          },
-                          query: {},
-                        }
-                      : undefined
-                    if (!reportLink) {
+                    if (!reportId) {
                       return null
                     }
                     return (
                       <Link
                         key={reportId}
-                        to={reportLink}
+                        to="/report/$reportId"
+                        params={{ reportId }}
+                        search={{}}
                         className={styles.link}
                         onClick={() => onWorkspaceClick(highlightedWorkspace)}
                       >

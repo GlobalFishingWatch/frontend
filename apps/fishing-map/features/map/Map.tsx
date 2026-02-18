@@ -1,6 +1,5 @@
-import { Fragment, useCallback, useEffect, useMemo } from 'react'
+import { Fragment, lazy, Suspense, useCallback, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import dynamic from 'next/dynamic'
 
 import type { InteractionEvent } from '@globalfishingwatch/deck-layer-composer'
 import {
@@ -23,7 +22,7 @@ import {
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
   selectIsWorkspaceLocation,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import MapInfo from './controls/MapInfo'
@@ -35,18 +34,9 @@ import TimeComparisonLegend from './TimeComparisonLegend'
 
 import styles from './Map.module.css'
 
-const DrawDialog = dynamic(
-  () => import(/* webpackChunkName: "DrawDialog" */ './overlays/draw/DrawDialog')
-)
-const Hint = dynamic(() => import(/* webpackChunkName: "Hint" */ 'features/help/Hint'))
-
-const DeckGLWrapper = dynamic(
-  () => import(/* webpackChunkName: "DeckGLWrapper" */ './DeckGLWrapper'),
-  {
-    ssr: false,
-    loading: () => null,
-  }
-)
+const DrawDialog = lazy(() => import('./overlays/draw/DrawDialog'))
+const Hint = lazy(() => import('features/help/Hint'))
+const DeckGLWrapper = lazy(() => import('./DeckGLWrapper'))
 
 const MapWrapper = () => {
   useUpdateViewStateUrlParams()
@@ -94,7 +84,9 @@ const MapWrapper = () => {
       {isMapDrawing && (
         <Fragment>
           <CoordinateEditOverlay />
-          <DrawDialog />
+          <Suspense fallback={null}>
+            <DrawDialog />
+          </Suspense>
         </Fragment>
       )}
       <MapPopups />
@@ -102,10 +94,14 @@ const MapWrapper = () => {
       <MapAnnotationsDialog />
       <MapControls mapLoading={mapLoading || isReportAreaLoading} />
       {isWorkspaceLocation && !isAnyReportLocation && (
-        <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
+        <Suspense fallback={null}>
+          <Hint id="fishingEffortHeatmap" className={styles.helpHintLeft} />
+        </Suspense>
       )}
       {isWorkspaceLocation && !isAnyReportLocation && (
-        <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
+        <Suspense fallback={null}>
+          <Hint id="clickingOnAGridCellToShowVessels" className={styles.helpHintRight} />
+        </Suspense>
       )}
       {(isWorkspaceLocation || isVesselLocation || isAnyReportLocation) && <MapInfo />}
 

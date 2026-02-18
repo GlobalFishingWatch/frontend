@@ -17,8 +17,8 @@ import {
   // fetchDefaultWorkspaceThunk,
   fetchWorkspacesThunk,
 } from 'features/workspaces-list/workspaces-list.slice'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectUserTab } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectUserTab } from 'router/routes.selectors'
 import { UserTab } from 'types'
 
 import UserDatasets from './UserDatasets'
@@ -32,12 +32,11 @@ import styles from './User.module.css'
 function User() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const userLogged = useSelector(selectIsUserLogged)
   const userData = useSelector(selectUserData)
   const userTab = useSelector(selectUserTab)
   const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
-  const { dispatchQueryParams } = useLocationConnect()
-
   const userTabs = useMemo(() => {
     const tabs = [
       {
@@ -70,12 +69,9 @@ function User() {
     return tabs
   }, [t])
 
-  const onTabClick = useCallback(
-    (tab: Tab<UserTab>) => {
-      dispatchQueryParams({ userTab: tab.id })
-    },
-    [dispatchQueryParams]
-  )
+  const onTabClick = useCallback((tab: Tab<UserTab>) => {
+    replaceQueryParams({ userTab: tab.id })
+  }, [])
 
   useEffect(() => {
     if (userLogged && userData?.id) {

@@ -1,8 +1,10 @@
-import { Fragment, useCallback, useEffect, useState } from 'react'
+import { Fragment, Suspense, useCallback, useEffect, useState } from 'react'
 import { FpsView } from 'react-fps'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
+import { HeadContent, Outlet } from '@tanstack/react-router'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
@@ -30,33 +32,29 @@ import {
   selectWorkspaceReportId,
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
+import { ConfirmLeave } from 'router/ConfirmLeave'
+import { ConfirmVesselProfileLeave } from 'router/ConfirmVesselProfileLeave'
 import {
   HOME,
-  PORT_REPORT,
   REPORT,
   SEARCH,
   USER,
   VESSEL,
-  VESSEL_GROUP_REPORT,
-  WORKSPACE,
-  WORKSPACE_REPORT,
   WORKSPACE_SEARCH,
   WORKSPACE_VESSEL,
   WORKSPACES_LIST,
-} from 'routes/routes'
-import { useBeforeUnload, useLocationConnect, useReplaceLoginUrl } from 'routes/routes.hook'
+} from 'router/routes'
+import { useBeforeUnload, useReplaceLoginUrl, useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyAreaReportLocation,
   selectIsAnySearchLocation,
-  selectIsAnyVesselLocation,
   selectIsMapDrawing,
-  selectIsVesselGroupReportLocation,
   selectIsVesselLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
   selectReportId,
   selectWorkspaceId,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
@@ -85,14 +83,11 @@ function App() {
   const isMapDrawing = useSelector(selectIsMapDrawing)
   const readOnly = useSelector(selectReadOnly)
   const i18n = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
   const [menuOpen, setMenuOpen] = useState(false)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const vesselLocation = useSelector(selectIsVesselLocation)
   const isAreaReportLocation = useSelector(selectIsAnyAreaReportLocation)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
-  const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
-  const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
 
   const onMenuClick = useCallback(() => {
     setMenuOpen(true)
@@ -107,20 +102,19 @@ function App() {
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const fitWorkspaceBounds = useFitWorkspaceBounds()
   const isPrinting = useSelector(selectScreenshotModalOpen)
+  const { replaceQueryParams } = useReplaceQueryParams()
 
-  // TODO review this as is needed in analysis and workspace but adds a lot of extra logic here
-  // probably better to fetch in both components just checking if the workspaceId is already fetched
+  useEffect(() => {
+    dispatch(fetchUserThunk({ guest: false }))
+  }, [dispatch])
+
+  // Workspace fetching for routes NOT under the workspace layout route:
+  // - HOME (/) needs the default workspace
+  // - Standalone REPORT (/report/$reportId) needs a workspace loaded
   const isHomeLocation = locationType === HOME
   const homeNeedsFetch = isHomeLocation && currentWorkspaceId !== DEFAULT_WORKSPACE_ID
-  // Checking only when REPORT entrypoint or WORKSPACE_REPORT when workspace is not loaded
-  const locationNeedsFetch =
-    locationType === REPORT ||
-    locationType === VESSEL_GROUP_REPORT ||
-    locationType === PORT_REPORT ||
-    ((locationType === WORKSPACE_REPORT || isAnyVesselLocation) &&
-      currentWorkspaceId !== urlWorkspaceId)
-  const hasWorkspaceIdChanged = locationType === WORKSPACE && currentWorkspaceId !== urlWorkspaceId
-  const hasWorkspaceReportIdChanged = locationType === REPORT && currentReportId !== reportId
+  const standaloneReportNeedsFetch = locationType === REPORT
+  const hasStandaloneReportIdChanged = locationType === REPORT && currentReportId !== reportId
 
   useEffect(() => {
     let action: any
@@ -129,9 +123,12 @@ function App() {
       action = dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId as string, reportId }))
       const resolvedAction = await action
       if (fetchWorkspaceThunk.fulfilled.match(resolvedAction)) {
-        const workspace = resolvedAction.payload as Workspace
-        if (!isVesselGroupReportLocation && !isWorkspacePasswordProtected(workspace)) {
-          fitWorkspaceBounds(workspace)
+        const { dataviewInstancesToUpsert, ...workspace } = resolvedAction.payload
+        if (dataviewInstancesToUpsert) {
+          replaceQueryParams({ dataviewInstances: dataviewInstancesToUpsert })
+        }
+        if (!isWorkspacePasswordProtected(workspace as Workspace)) {
+          fitWorkspaceBounds(workspace as Workspace)
         }
       }
       actionResolved = true
@@ -139,10 +136,8 @@ function App() {
     if (
       userLogged &&
       workspaceCustomStatus !== AsyncReducerStatus.Loading &&
-      (homeNeedsFetch || locationNeedsFetch || hasWorkspaceIdChanged || hasWorkspaceReportIdChanged)
+      (homeNeedsFetch || standaloneReportNeedsFetch || hasStandaloneReportIdChanged)
     ) {
-      // TODO Can we arrive in a situation where no workspace is ever loaded?
-      // In that case static timerange will need to be set manually
       fetchWorkspace()
     }
     return () => {
@@ -151,21 +146,11 @@ function App() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    userLogged,
-    homeNeedsFetch,
-    locationNeedsFetch,
-    hasWorkspaceIdChanged,
-    hasWorkspaceReportIdChanged,
-  ])
-
-  useEffect(() => {
-    dispatch(fetchUserThunk({ guest: false }))
-  }, [dispatch])
+  }, [userLogged, homeNeedsFetch, standaloneReportNeedsFetch, hasStandaloneReportIdChanged])
 
   const onToggle = useCallback(() => {
-    dispatchQueryParams({ sidebarOpen: !sidebarOpen })
-  }, [dispatchQueryParams, sidebarOpen])
+    replaceQueryParams({ sidebarOpen: !sidebarOpen })
+  }, [sidebarOpen])
 
   const debugOptions = useSelector(selectDebugOptions)
   const [isReady, setReady] = useState(false)
@@ -192,12 +177,17 @@ function App() {
     asideWidth = isPrinting ? '34rem' : '39rem'
   }
 
-  if (!i18n.ready) {
-    return null
-  }
+  /* TODO:RR test if we can remove this */
+  // if (!i18n.ready) {
+  //   return null
+  // }
 
   return (
     <Fragment>
+      <HeadContent />
+      {/* // TODO:RR test if this really works */}
+      <ConfirmLeave />
+      <ConfirmVesselProfileLeave />
       <a href="https://globalfishingwatch.org" className="print-only">
         <Logo className={styles.logo} />
       </a>
@@ -211,7 +201,13 @@ function App() {
           isOpen={sidebarOpen && !isMapDrawing}
           showToggle={isWorkspaceLocation || vesselLocation}
           onToggle={onToggle}
-          aside={<Sidebar onMenuClick={onMenuClick} />}
+          aside={
+            <Sidebar onMenuClick={onMenuClick}>
+              <Suspense fallback={null}>
+                <Outlet />
+              </Suspense>
+            </Sidebar>
+          }
           main={<Main />}
           asideWidth={asideWidth}
           showAsideLabel={getSidebarName()}
@@ -236,6 +232,7 @@ function App() {
           closeButton={false}
         />
       </ErrorBoundary>
+      {import.meta.env.DEV && <TanStackRouterDevtools position="bottom-right" />}
     </Fragment>
   )
 }

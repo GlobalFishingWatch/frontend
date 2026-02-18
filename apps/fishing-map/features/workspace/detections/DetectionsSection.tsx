@@ -19,7 +19,7 @@ import { ReportCategory } from 'features/reports/reports.types'
 import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
 import { VisualisationChoice } from 'features/workspace/shared/VisualisationChoice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
 import { useVisualizationsOptions } from '../activity/activity.hooks'
@@ -32,13 +32,13 @@ import styles from 'features/workspace/shared/Section.module.css'
 
 function DetectionsSection(): React.ReactElement<any> {
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const readOnly = useSelector(selectReadOnly)
   const dataviews = useSelector(selectDetectionsDataviews)
   const visibleDataviews = dataviews?.filter((dataview) => dataview.config?.visible === true)
   const hasVisibleDataviews = visibleDataviews.length >= 1
   const activityDataviews = useSelector(selectActivityDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const { dispatchQueryParams } = useLocationConnect()
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const { visualizationOptions, activeVisualizationOption, onVisualizationModeChange } =
     useVisualizationsOptions(DataviewCategory.Detections)
@@ -50,7 +50,7 @@ function DetectionsSection(): React.ReactElement<any> {
 
   const onBivariateDataviewsClick = useCallback(
     (dataview1: UrlDataviewInstance, dataview2: UrlDataviewInstance) => {
-      dispatchQueryParams({ bivariateDataviews: [dataview1.id, dataview2.id] })
+      replaceQueryParams({ bivariateDataviews: [dataview1.id, dataview2.id] })
       // automatically set other animated heatmaps to invisible
       const detectionsDataviewsToDisable = (dataviews || [])?.filter(
         (dataview) =>
@@ -83,7 +83,7 @@ function DetectionsSection(): React.ReactElement<any> {
         ]),
       })
     },
-    [activityDataviews, dataviews, dispatchQueryParams, upsertDataviewInstance]
+    [activityDataviews, dataviews, replaceQueryParams, upsertDataviewInstance]
   )
 
   const onToggleLayer = useCallback(

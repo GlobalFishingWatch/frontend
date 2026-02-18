@@ -8,7 +8,7 @@ import { SUPPORT_EMAIL } from 'data/config'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { logoutUserThunk } from 'features/user/user.slice'
-import LocalStorageLoginLink from 'routes/LoginLink'
+import LocalStorageLoginLink from 'router/LoginLink'
 
 import ErrorPlaceholder from './ErrorPlaceholder'
 

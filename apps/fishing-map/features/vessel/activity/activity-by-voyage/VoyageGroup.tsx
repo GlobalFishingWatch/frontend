@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { saveAs } from 'file-saver'
+import filesaver from 'file-saver'
 import { DateTime } from 'luxon'
 
 import { EventTypes } from '@globalfishingwatch/api-types'
@@ -75,7 +75,7 @@ const VoyageGroup: React.FC<EventProps> = ({
       const { start, end } = getVoyageTimeRange(events)
       const data = parseEventsToCSV(events)
       const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, `${vesselId}-voyage-${start}-${end}-events.csv`)
+      filesaver.saveAs(blob, `${vesselId}-voyage-${start}-${end}-events.csv`)
     }
   }
 

@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { useRouter } from '@tanstack/react-router'
 
 import type { VesselGroup, VesselGroupVessel } from '@globalfishingwatch/api-types'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
@@ -48,10 +49,9 @@ import {
 } from 'features/workspace/workspace.hook'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
-import { type ROUTE_TYPES, SEARCH, VESSEL_GROUP_REPORT, WORKSPACE_SEARCH } from 'routes/routes'
-import { updateLocation } from 'routes/routes.actions'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsVesselGroupReportLocation, selectLocationQuery } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsVesselGroupReportLocation, selectLocationQuery } from 'router/routes.selectors'
+import { ROUTE_PATHS } from 'router/routes.utils'
 import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -93,6 +93,8 @@ import styles from './VesselGroupModal.module.css'
 function VesselGroupModal(): React.ReactElement<any> {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
+  const router = useRouter()
   const [buttonLoading, setButtonLoading] = useState<VesselGroupConfirmationMode | ''>('')
   const isModalOpen = useSelector(selectVesselGroupModalOpen)
   const confirmationMode = useSelector(selectVesselGroupConfirmationMode)
@@ -134,7 +136,6 @@ function VesselGroupModal(): React.ReactElement<any> {
     ? vesselGroupVesselsToSearch?.length < MAX_VESSEL_GROUP_VESSELS
     : true
   const workspace = useSelector(selectWorkspace)
-  const { dispatchLocation } = useLocationConnect()
 
   const vesselDatasets = useSelector(selectVesselGroupCompatibleDatasets)
   const sourceOptions = vesselDatasets.map((d) => ({
@@ -277,36 +278,30 @@ function VesselGroupModal(): React.ReactElement<any> {
           : undefined
 
         if (isVesselGroupReportLocation && vesselGroupId !== editingVesselGroupId) {
-          dispatch(
-            updateLocation(VESSEL_GROUP_REPORT, {
-              payload: {
-                category: workspace?.category,
-                workspaceId: workspace?.id,
-                vesselGroupId: vesselGroupId,
-              },
-              query,
-            })
-          )
+          const category = workspace?.category
+          const workspaceId = workspace?.id
+          router.navigate({
+            to: ROUTE_PATHS.VESSEL_GROUP_REPORT,
+            params: { category: category!, workspaceId: workspaceId!, vesselGroupId },
+            search: query,
+          })
         } else if (navigateToWorkspace && dataviewInstance) {
           if (workspaceToNavigate) {
-            const { type, ...rest } = workspaceToNavigate
-            const { query, payload } = rest
+            const { to, params, search } = workspaceToNavigate
             const dataviewInstancesMerged = mergeDataviewIntancesToUpsert(
               dataviewInstance,
-              rest.query.dataviewInstances!
+              search.dataviewInstances!
             )
-
-            dispatch(
-              updateLocation(type as ROUTE_TYPES, {
-                query: { ...query, dataviewInstances: dataviewInstancesMerged },
-                payload,
-              })
-            )
+            router.navigate({
+              to: to as string,
+              params,
+              search: { ...search, dataviewInstances: dataviewInstancesMerged },
+            })
             dispatch(setWorkspaceSuggestSave(true))
           } else if (searchQuery) {
             // TODO check if is search location and navigate back to workspace
             upsertDataviewInstance(dataviewInstance)
-            // dispatchQueryParams({ query: undefined })
+            replaceQueryParams({ query: undefined })
           }
           resetSidebarScroll()
           // } else if (addToDataviews && dataviewInstance) {
@@ -348,10 +343,12 @@ function VesselGroupModal(): React.ReactElement<any> {
       close,
       workspace?.category,
       workspace?.id,
+      router,
       query,
       workspaceToNavigate,
       searchQuery,
       upsertDataviewInstance,
+      replaceQueryParams,
     ]
   )
 
@@ -392,16 +389,16 @@ function VesselGroupModal(): React.ReactElement<any> {
   const onSearchClick = useCallback(() => {
     onBackClick('close')
     if (workspace?.id) {
-      dispatchLocation(WORKSPACE_SEARCH, {
-        payload: {
-          category: workspace.category,
-          workspaceId: workspace.id,
-        },
+      router.navigate({
+        to: ROUTE_PATHS.WORKSPACE_SEARCH,
+        params: { category: workspace.category!, workspaceId: workspace.id },
       })
     } else {
-      dispatchLocation(SEARCH)
+      router.navigate({
+        to: ROUTE_PATHS.SEARCH,
+      })
     }
-  }, [onBackClick, dispatchLocation, workspace])
+  }, [onBackClick, router, workspace])
 
   return (
     <Modal

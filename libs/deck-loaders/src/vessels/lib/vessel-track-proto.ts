@@ -1,4 +1,6 @@
-import { parse } from 'protobufjs'
+import protobuf from 'protobufjs'
+
+const { parse } = protobuf
 
 // TODO: catchup with backed to update to edition 2024
 // as protobufjs 8.0.0 now supports it

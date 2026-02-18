@@ -29,7 +29,7 @@ import {
 import { selectVesselSelfReportedId } from 'features/vessel/vessel.config.selectors'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
-import { selectVesselId } from 'routes/routes.selectors'
+import { selectVesselId } from 'router/routes.selectors'
 
 export const useVesselProfileLayer = () => {
   const vesselId = useSelector(selectVesselId)

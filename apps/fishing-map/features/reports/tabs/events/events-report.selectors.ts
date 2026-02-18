@@ -43,7 +43,7 @@ import {
   selectReportEventsPortsResultsPerPage,
 } from 'features/reports/reports.config.selectors'
 import { getAggregatedDataWithOthers } from 'features/reports/shared/utils/reports.utils'
-import { selectReportPortId, selectReportVesselGroupId } from 'routes/routes.selectors'
+import { selectReportPortId, selectReportVesselGroupId } from 'router/routes.selectors'
 import { formatInfoField } from 'utils/info'
 
 export const selectEventsGraphDatasetAreaId = createSelector(

@@ -1,7 +1,6 @@
-import { Fragment } from 'react'
+import { Fragment, lazy, Suspense } from 'react'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import dynamic from 'next/dynamic'
 
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 
@@ -11,20 +10,20 @@ import {
   selectIsWorkspaceReady,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
-import { VESSEL, WORKSPACE_VESSEL } from 'routes/routes'
+import { VESSEL, WORKSPACE_VESSEL } from 'router/routes'
 import {
   selectIsAnyAreaReportLocation,
   selectIsPortReportLocation,
   selectIsVesselGroupReportLocation,
   selectIsWorkspaceLocation,
   selectLocationType,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './App.module.css'
 
-const Map = dynamic(() => import(/* webpackChunkName: "Map" */ 'features/map/Map'))
-const Timebar = dynamic(() => import(/* webpackChunkName: "Timebar" */ 'features/timebar/Timebar'))
+const Map = lazy(() => import('features/map/Map'))
+const Timebar = lazy(() => import('features/timebar/Timebar'))
 
 const Main = () => {
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
@@ -59,10 +58,18 @@ const Main = () => {
             [styles.withTimebarAndSmallScreenSwitch]: showTimebar && isSmallScreen,
           })}
         >
-          {isWorkspaceReady && <Map />}
+          {isWorkspaceReady && (
+            <Suspense fallback={<div>Loading...</div>}>
+              <Map />
+            </Suspense>
+          )}
         </div>
       )}
-      {showTimebar && isWorkspaceReady && <Timebar />}
+      {showTimebar && isWorkspaceReady && (
+        <Suspense fallback={<div>Loading...</div>}>
+          <Timebar />
+        </Suspense>
+      )}
       <Footer />
     </Fragment>
   )

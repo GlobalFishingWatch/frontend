@@ -22,8 +22,8 @@ import {
 } from 'features/datasets/datasets.hook'
 import { selectDrawEditDataset } from 'features/map/map.selectors'
 import { useMapFitBounds } from 'features/map/map-bounds.hooks'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectMapDrawingEditId, selectMapDrawingMode } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectMapDrawingEditId, selectMapDrawingMode } from 'router/routes.selectors'
 import type { Bbox } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -40,13 +40,13 @@ const MIN_DATASET_NAME_LENGTH = 3
 function MapDraw() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const fitMapBounds = useMapFitBounds()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [layerName, setLayerName] = useState<string>('')
   const [createAsPublic, setCreateAsPublic] = useState<boolean>(true)
   const { isMapDrawing, dispatchResetMapDraw } = useMapDrawConnect()
-  const { dispatchQueryParams } = useLocationConnect()
   const { dispatchUpsertDataset } = useDatasetsAPI()
   const { addDataviewFromDatasetToWorkspace } = useAddDataviewFromDatasetToWorkspace()
   const mapDrawingMode = useSelector(selectMapDrawingMode)
@@ -114,19 +114,12 @@ function MapDraw() {
     resetState()
     dispatch(resetAreaList({ datasetId: mapDrawEditDatasetId }))
     dispatchResetMapDraw()
-    dispatchQueryParams({ sidebarOpen: true })
+    replaceQueryParams({ sidebarOpen: true })
     trackEvent({
       category: TrackCategory.ReferenceLayer,
       action: `Draw a custom reference layer - Click dismiss`,
     })
-  }, [
-    dispatch,
-    dispatchQueryParams,
-    dispatchResetMapDraw,
-    drawLayer,
-    mapDrawEditDatasetId,
-    resetState,
-  ])
+  }, [dispatch, dispatchResetMapDraw, drawLayer, mapDrawEditDatasetId, resetState])
 
   const toggleCreateAsPublic = useCallback(() => {
     setCreateAsPublic((createAsPublic) => !createAsPublic)

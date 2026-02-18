@@ -56,7 +56,7 @@ import {
   selectReportPortId,
   selectReportVesselGroupId,
   selectVesselId,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 
 export const selectVesselProfileDataviewInstancesInjected = createSelector(
   [

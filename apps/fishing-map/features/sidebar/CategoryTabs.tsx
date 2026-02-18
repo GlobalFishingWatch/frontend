@@ -1,9 +1,8 @@
-import { Fragment, useCallback } from 'react'
+import { Fragment, lazy, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
-import dynamic from 'next/dynamic'
-import Link from 'redux-first-router-link'
 
 import type { IconType } from '@globalfishingwatch/ui-components'
 import { Icon, IconButton, Tooltip } from '@globalfishingwatch/ui-components'
@@ -29,59 +28,42 @@ import WhatsNew from 'features/sidebar/WhatsNew'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import UserButton from 'features/user/UserButton'
 import { setVesselEventId } from 'features/vessel/vessel.slice'
-import {
-  selectWorkspace,
-  selectWorkspaceHistoryNavigation,
-} from 'features/workspace/workspace.selectors'
+import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import {
   cleanCurrentWorkspaceReportState,
-  cleanReportQuery,
   resetWorkspaceHistoryNavigation,
 } from 'features/workspace/workspace.slice'
 import { selectAvailableWorkspacesCategories } from 'features/workspaces-list/workspaces-list.selectors'
-import { SEARCH, USER, WORKSPACE, WORKSPACE_SEARCH, WORKSPACES_LIST } from 'routes/routes'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnySearchLocation,
+  selectIsUserLocation,
   selectIsWorkspaceLocation,
-  selectLocationQuery,
-  selectLocationType,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
+import { ROUTE_PATHS } from 'router/routes.utils'
+import type { QueryParams } from 'types'
 
 import styles from './CategoryTabs.module.css'
 
-const FeedbackModal = dynamic(
-  () => import(/* webpackChunkName: "FeedbackModal" */ 'features/feedback/FeedbackModal')
-)
+const FeedbackModal = lazy(() => import('features/feedback/FeedbackModal'))
 
 type CategoryTabsProps = {
   onMenuClick: () => void
 }
 
-function getLinkToCategory(category: WorkspaceCategory) {
-  return {
-    type: WORKSPACES_LIST,
-    payload: { workspaceId: undefined, category: category || DEFAULT_WORKSPACE_CATEGORY },
-    replaceQuery: true,
-  }
-}
-
 function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const { dispatchClickedEvent } = useClickedEventConnect()
-  const { dispatchQueryParams } = useLocationConnect()
-  const locationType = useSelector(selectLocationType)
-  const locationQuery = useSelector(selectLocationQuery)
   const setMapCoordinates = useSetMapCoordinates()
   const workspace = useSelector(selectWorkspace)
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const locationCategory = useSelector(selectWorkspaceCategory)
   const isAnySearchLocation = useSelector(selectIsAnySearchLocation)
+  const isUserLocation = useSelector(selectIsUserLocation)
   const availableCategories = useSelector(selectAvailableWorkspacesCategories)
   const userData = useSelector(selectUserData)
-  const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
-  const lastWorkspaceVisited = workspaceHistoryNavigation[workspaceHistoryNavigation.length - 1]
 
   const modalFeedbackOpen = useSelector(selectFeedbackModalOpen)
 
@@ -112,14 +94,14 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
 
   const onWorkspaceClick = useCallback(() => {
     resetSidebarScroll()
-    dispatchQueryParams({ ...EMPTY_SEARCH_FILTERS, userTab: undefined })
+    replaceQueryParams({ ...EMPTY_SEARCH_FILTERS, userTab: undefined })
     dispatch(cleanVesselSearchResults())
     dispatch(resetReportData())
     dispatch(resetVesselGroupReportData())
     dispatch(cleanCurrentWorkspaceReportState())
     dispatch(setVesselEventId(null))
     dispatch(resetWorkspaceHistoryNavigation())
-  }, [dispatch, dispatchQueryParams])
+  }, [dispatch])
 
   return (
     <Fragment>
@@ -132,15 +114,14 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         </li>
         <li className={cx(styles.tab, { [styles.current]: isWorkspaceLocation })}>
           <Link
-            className={styles.tabContent}
-            to={{
-              type: WORKSPACE,
-              query: cleanReportQuery(locationQuery),
-              payload: {
-                category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-                workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-              },
+            to={ROUTE_PATHS.WORKSPACE}
+            params={{
+              category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+              workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
             }}
+            search={{}}
+            replace
+            className={styles.tabContent}
             onClick={onWorkspaceClick}
           >
             <Tooltip content={t((t) => t.common.seeWorkspace)} placement="right">
@@ -150,22 +131,20 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             </Tooltip>
           </Link>
         </li>
-        <li className={cx(styles.tab, { [styles.current]: isAnySearchLocation })}>
+        <li
+          className={cx(styles.tab, {
+            [styles.current]: isAnySearchLocation,
+          })}
+        >
           <Link
             className={styles.tabContent}
-            to={
-              isAnySearchLocation
-                ? lastWorkspaceVisited
-                : {
-                    type: isWorkspaceLocation ? WORKSPACE_SEARCH : SEARCH,
-                    payload: {
-                      category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-                      workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-                    },
-                    query: {},
-                    replaceQuery: !isWorkspaceLocation,
-                  }
-            }
+            to={isWorkspaceLocation ? '/$category/$workspaceId/vessel-search' : '/vessel-search'}
+            params={{
+              category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+              workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+            }}
+            search={isWorkspaceLocation ? (prev: QueryParams) => prev : {}}
+            replace={!isWorkspaceLocation}
             onClick={onSearchClick}
           >
             <Tooltip content={t((t) => t.workspace.categories.search)} placement="right">
@@ -192,11 +171,9 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
               >
                 <Link
                   className={styles.tabContent}
-                  to={{
-                    ...getLinkToCategory(category as WorkspaceCategory),
-                    query: {},
-                    replaceQuery: false,
-                  }}
+                  to="/$category"
+                  params={{ category: category || DEFAULT_WORKSPACE_CATEGORY }}
+                  search={{}}
                   onClick={() => onCategoryClick(category as WorkspaceCategory)}
                 >
                   <Icon icon={`category-${category}` as IconType} />
@@ -244,7 +221,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         <li className={styles.tab}>
           <LanguageToggle />
         </li>
-        <li className={cx(styles.tab, { [styles.current]: locationType === USER })}>
+        <li className={cx(styles.tab, { [styles.current]: isUserLocation })}>
           <UserButton className={styles.userButton} testId="sidebar-login-icon" />
         </li>
       </ul>

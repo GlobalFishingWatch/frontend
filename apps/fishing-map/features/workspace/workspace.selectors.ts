@@ -18,8 +18,9 @@ import type { TurningTidesWorkspaceId } from 'features/track-correction/track-co
 import { TURNING_TIDES_WORKSPACES_IDS } from 'features/track-correction/track-correction.config'
 import { selectUserData, selectUserSettings } from 'features/user/selectors/user.selectors'
 import type { UserSettings } from 'features/user/user.slice'
-import { WORKSPACE_ROUTES } from 'routes/routes'
-import { selectIsRouteWithWorkspace, selectLocationQuery } from 'routes/routes.selectors'
+import { WORKSPACE_ROUTES } from 'router/routes'
+import { selectIsRouteWithWorkspace, selectLocationQuery } from 'router/routes.selectors'
+import { mapRouteIdToType } from 'router/routes.utils'
 import type { WorkspaceState, WorkspaceStateProperty } from 'types'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
@@ -36,7 +37,10 @@ export const selectWorkspaceCustomStatus = (state: RootState) => state.workspace
 export const selectLastVisitedWorkspace = createSelector(
   [selectWorkspaceHistoryNavigation],
   (historyNavigation) => {
-    return historyNavigation.findLast((navigation) => WORKSPACE_ROUTES.includes(navigation.type))
+    return historyNavigation.findLast((navigation) => {
+      const routeType = mapRouteIdToType(navigation.to)
+      return WORKSPACE_ROUTES.includes(routeType)
+    })
   }
 )
 export const selectCurrentWorkspaceId = createSelector([selectWorkspace], (workspace) => {
@@ -128,8 +132,8 @@ export function selectWorkspaceStateProperty<P extends WorkspaceStateProperty>(p
   return createSelector(
     [selectLocationQuery, selectWorkspaceState, selectUserSettings],
     (locationQuery, workspaceState, userSettings): WorkspaceProperty<P> => {
-      const urlProperty = locationQuery?.[property]
-      if (urlProperty !== undefined) return urlProperty
+      const urlProperty = locationQuery?.[property as keyof typeof locationQuery]
+      if (urlProperty !== undefined) return urlProperty as WorkspaceProperty<P>
       if (workspaceState[property]) return workspaceState[property] as WorkspaceProperty<P>
       const userSettingsProperty =
         userSettings[USER_SETTINGS_FALLBACKS[property] as keyof UserSettings]

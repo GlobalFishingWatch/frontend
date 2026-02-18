@@ -3,31 +3,31 @@ import { useSelector } from 'react-redux'
 
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsMapDrawing, selectMapDrawingMode } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsMapDrawing, selectMapDrawingMode } from 'router/routes.selectors'
 
 export const useMapDrawConnect = () => {
   const isMapDrawing = useSelector(selectIsMapDrawing)
+  const { replaceQueryParams } = useReplaceQueryParams()
   const mapDrawingMode = useSelector(selectMapDrawingMode)
-  const { dispatchQueryParams } = useLocationConnect()
-
+  // TODO:RR review if this works
   const dispatchSetMapDrawing = useCallback(
     (mapDrawing: DrawFeatureType | false) => {
-      dispatchQueryParams({ mapDrawing })
+      replaceQueryParams({ mapDrawing })
     },
-    [dispatchQueryParams]
+    [replaceQueryParams]
   )
 
   const dispatchSetMapDrawEditDataset = useCallback(
     (mapDrawingEditId: string) => {
-      dispatchQueryParams({ mapDrawingEditId })
+      replaceQueryParams({ mapDrawingEditId })
     },
-    [dispatchQueryParams]
+    [replaceQueryParams]
   )
 
   const dispatchResetMapDraw = useCallback(() => {
-    dispatchQueryParams({ mapDrawing: false, mapDrawingEditId: undefined })
-  }, [dispatchQueryParams])
+    replaceQueryParams({ mapDrawing: false, mapDrawingEditId: undefined })
+  }, [replaceQueryParams])
 
   return useMemo(
     () => ({

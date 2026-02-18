@@ -1,8 +1,7 @@
 import type { ChangeEvent } from 'react'
-import { useCallback } from 'react'
+import { lazy, Suspense, useCallback } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import dynamic from 'next/dynamic'
 
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { Button, IconButton, InputText } from '@globalfishingwatch/ui-components'
@@ -28,17 +27,15 @@ import SearchPlaceholder, {
   SearchNoResultsState,
 } from 'features/search/SearchPlaceholders'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import LocalStorageLoginLink from 'routes/LoginLink'
-import { useLocationConnect } from 'routes/routes.hook'
+import LocalStorageLoginLink from 'router/LoginLink'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import SearchError from '../basic/SearchError'
 
 import styles from 'features/search/advanced/SearchAdvanced.module.css'
 
-const SearchAdvancedResults = dynamic(
-  () => import(/* webpackChunkName: "SearchAdvancedResults" */ './SearchAdvancedResults')
-)
+const SearchAdvancedResults = lazy(() => import('./SearchAdvancedResults'))
 
 function SearchAdvanced({
   onSuggestionClick,
@@ -47,22 +44,22 @@ function SearchAdvanced({
 }: SearchComponentProps) {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const { searchPagination, searchSuggestion, searchSuggestionClicked } = useSearchConnect()
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
   const { searchFilters, setSearchFilters } = useSearchFiltersConnect()
   const searchStatus = useSelector(selectSearchStatus)
   const searchQuery = useSelector(selectSearchQuery)
   const searchStatusCode = useSelector(selectSearchStatusCode)
-  const { dispatchQueryParams } = useLocationConnect()
   const { hasFilters } = useSearchFiltersConnect()
   const searchFilterErrors = useSearchFiltersErrors()
   const isGFWUser = useSelector(selectIsGFWUser)
   const ref = useEventKeyListener(['Enter'], fetchResults)
 
   const resetSearchState = useCallback(() => {
-    dispatchQueryParams(EMPTY_SEARCH_FILTERS)
+    replaceQueryParams(EMPTY_SEARCH_FILTERS)
     dispatch(cleanVesselSearchResults())
-  }, [dispatch, dispatchQueryParams])
+  }, [dispatch])
 
   if (!advancedSearchAllowed) {
     return (
@@ -77,7 +74,7 @@ function SearchAdvanced({
   }
 
   const handleSearchQueryChange = (e: ChangeEvent<HTMLInputElement>) => {
-    dispatchQueryParams({ query: e.target.value })
+    replaceQueryParams({ query: e.target.value })
   }
 
   const handleSearchIdChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -153,10 +150,12 @@ function SearchAdvanced({
         {searchStatus === AsyncReducerStatus.Aborted &&
         searchPagination.loading === false ? null : (
           <div className={styles.searchResults}>
-            <SearchAdvancedResults
-              fetchResults={fetchResults}
-              fetchMoreResults={fetchMoreResults}
-            />
+            <Suspense fallback={null}>
+              <SearchAdvancedResults
+                fetchResults={fetchResults}
+                fetchMoreResults={fetchMoreResults}
+              />
+            </Suspense>
             {(searchStatus === AsyncReducerStatus.Idle ||
               searchStatus === AsyncReducerStatus.Loading) && <SearchEmptyState />}
             {searchStatus === AsyncReducerStatus.Finished && searchPagination.total === 0 && (

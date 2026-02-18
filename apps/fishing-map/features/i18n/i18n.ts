@@ -21,7 +21,7 @@ export const DEFAULT_NAMESPACE = 'translations'
 export const FALLBACK_LNG = IS_DEVELOPMENT_ENV ? 'source' : Locale.en
 
 const NPM_SCOPE = WORKSPACE_ENV === 'production' ? 'stable' : 'latest'
-const UNIQUE_BUILD_ID = process.env.NEXT_PUBLIC_UNIQUE_BUILD_ID || Date.now()
+const UNIQUE_BUILD_ID = Date.now()
 
 const SHARED_LABELS_PATH = IS_DEVELOPMENT_ENV
   ? 'http://localhost:8000'
@@ -59,7 +59,7 @@ i18n
     defaultNS: DEFAULT_NAMESPACE,
     fallbackLng: FALLBACK_LNG,
     supportedLngs: SUPPORTED_LANGUAGES,
-    debug: process.env.i18n_DEBUG === 'true',
+    debug: import.meta.env.VITE_I18N_DEBUG === 'true',
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default,
       // format: (value, format, lng) => {

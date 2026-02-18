@@ -32,6 +32,7 @@ import { useGetVesselInfoByDataviewId } from 'features/vessel/vessel.hooks'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import FitBounds from 'features/workspace/shared/FitBounds'
 import { selectCurrentWorkspaceId } from 'features/workspace/workspace.selectors'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import { getVesselGearTypeLabel, getVesselShipNameLabel, getVesselShipTypeLabel } from 'utils/info'
 
 import styles from './TrackCorrection.module.css'
@@ -104,14 +105,14 @@ const TrackCorrectionNew = () => {
             segment.length
               ? segment.map(
                   (point) =>
-                    (({
+                    ({
                       type: 'Feature',
 
                       geometry: {
                         type: 'Point',
                         coordinates: [point.longitude, point.latitude],
-                      }
-                    }) as Feature<Point>)
+                      },
+                    }) as Feature<Point>
                 )
               : []
           ),
@@ -135,7 +136,7 @@ const TrackCorrectionNew = () => {
           userEmail: userData?.email || '',
           startDate_original: trackCorrectionTimerange.start,
           endDate_original: trackCorrectionTimerange.end,
-          workspaceLink: window.location.href.replace(
+          workspaceLink: getCurrentAppUrl().replace(
             'trackCorrectionId=new',
             `trackCorrectionId=${issueId}`
           ),
