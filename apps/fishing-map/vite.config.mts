@@ -6,7 +6,7 @@ import { defineConfig } from 'vite'
 import { nitro } from 'nitro/vite'
 import { visualizer } from 'rollup-plugin-visualizer'
 
-const basePath = process.env.VITE_PUBLIC_URL || '/map'
+const basePath = import.meta.env?.VITE_PUBLIC_URL || process.env.VITE_PUBLIC_URL || '/map'
 
 export default defineConfig(({ command }) => ({
   root: __dirname,
