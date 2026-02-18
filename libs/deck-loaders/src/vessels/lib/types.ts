@@ -9,6 +9,7 @@ export const EVENTS_COLORS: Record<`${EventTypes}` | 'partially' | 'unmatched' |
   port_visit: '#99EEFF',
   fishing: '#ffffff',
   gap: '#f95e5e',
+  gaps: '#f95e5e',
 }
 
 export type VesselTrackGraphExtent = [number, number]
