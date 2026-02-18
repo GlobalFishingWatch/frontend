@@ -93,8 +93,13 @@ function PopupWrapper({
       style={{ position: 'absolute', top, left, zIndex: 2 }}
       className={cx(styles.popup, className)}
     >
-      {/* eslint-disable-next-line react-hooks/refs */}
-      <div className={styles.contentWrapper} ref={refs.setFloating} style={floatingStyles}>
+      <div
+        // eslint-disable-next-line react-hooks/refs
+        ref={refs.setFloating}
+        className={styles.contentWrapper}
+        style={floatingStyles}
+        data-testid="map-popup-wrapper"
+      >
         {showArrow && <FloatingArrow fill="white" ref={arrowRef} context={context} />}
         {showClose && onClose !== undefined && (
           <div className={styles.close}>

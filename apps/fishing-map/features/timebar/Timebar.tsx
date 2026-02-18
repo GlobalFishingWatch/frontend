@@ -457,6 +457,7 @@ const TimebarWrapper = () => {
       onMouseLeave={onMouseLeave}
       // style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
       role="toolbar"
+      data-testid="timebar-wrapper"
     >
       <Timebar
         disablePlayback={vesselGroupsFiltering || hasVectorDataviews}

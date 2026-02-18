@@ -109,6 +109,7 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
           disabled={hasDeprecatedDataviewInstances}
           dataview={dataview}
           onToggle={onToggle}
+          testId={`events-layer-switch-${dataview.id}`}
         />
         <Title
           title={title}
