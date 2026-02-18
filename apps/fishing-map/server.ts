@@ -6,7 +6,7 @@ import { proxy } from './proxy'
 // Initialize Sentry for server-side error monitoring and tracing
 Sentry.init({
   dsn: 'https://f093e15df0145c6c0b1b9afe8f15fdba@o4510353401577472.ingest.us.sentry.io/4510462762942464',
-  enabled: process.env.NODE_ENV === 'production',
+  enabled: process.env.NODE_ENV === 'production' && !process.env.CI,
   tracesSampleRate: 1,
   enableLogs: true,
   sendDefaultPii: true,
