@@ -7,6 +7,7 @@ import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 
+import { VMS_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nDate from 'features/i18n/i18nDate'
@@ -64,6 +65,9 @@ function EventsGapTooltipRow({
               <span className={styles.rowText}>
                 <I18nNumber number={feature.count} />{' '}
                 {t((t) => t.event.gap, {
+                  source: feature.datasetId?.includes(VMS_DATAVIEW_INSTANCE_ID)
+                    ? t((t) => t.common.vms)
+                    : t((t) => t.common.ais),
                   count: feature.count,
                 })}
                 {!feature.properties.cluster && gapStart && interval && (

@@ -126,7 +126,7 @@ export const getEventDescription = ({
       descriptionGeneric = t((t) => t.event.fishing)
       break
     case EventTypes.Gap:
-      description = t((t) => t.event.gapAction, time)
+      description = t((t) => t.event.gapAction, { ...time, source: t((t) => t.common.ais) })
       descriptionGeneric = t((t) => t.event.gap)
       break
     default:

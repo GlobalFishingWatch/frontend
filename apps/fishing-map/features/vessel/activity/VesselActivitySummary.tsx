@@ -195,6 +195,7 @@ export const VesselActivitySummary = () => {
                     {t((t) => t.event[eventType], {
                       defaultValue: eventType,
                       count: events?.length || 0,
+                      source: t((t) => t.common.ais),
                     })}{' '}
                     {active && eventType === EventTypes.Fishing && fishingHours !== 0 && (
                       <span>
@@ -236,7 +237,10 @@ export const VesselActivitySummary = () => {
                     )}
                   </p>
                   <DataTerminology
-                    title={t((t) => t.event[eventType], { defaultValue: eventType })}
+                    title={t((t) => t.event[eventType], {
+                      defaultValue: eventType,
+                      source: t((t) => t.common.ais),
+                    })}
                     terminologyKey={eventType as any}
                   />
                 </div>
