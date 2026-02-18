@@ -525,7 +525,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
         getPosition: this._getPosition,
         getSize: ICON_SIZE[eventType],
         sizeUnits: 'pixels',
-        iconAtlas: `${PATH_BASENAME}/events-color-sprite.png`,
+        iconAtlas: `${PATH_BASENAME}events-color-sprite.png`,
         iconMapping: ICON_MAPPING,
         getIcon: () => eventType,
         getColor: this._getColor,

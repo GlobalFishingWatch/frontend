@@ -1,4 +1,24 @@
-export const IS_PRODUCTION = process.env.NODE_ENV === 'production'
-export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || '/map'
+/// <reference types="vite/client" />
+
+export function getEnv(key: string, fallback?: string): string | undefined {
+  if (typeof import.meta !== 'undefined') {
+    const val = (import.meta.env as Record<string, string | undefined>)?.[key]
+    if (val !== undefined) return val
+  }
+  if (typeof process !== 'undefined') {
+    const val = process.env?.[key]
+    if (val !== undefined) return val
+  }
+  return fallback
+}
+
+export const IS_PRODUCTION = getEnv('NODE_ENV') === 'production' || getEnv('MODE') === 'production'
+
+const DEFAULT_PATH_BASENAME =
+  getEnv('VITE_PUBLIC_URL') || getEnv('NEXT_PUBLIC_URL') || IS_PRODUCTION ? '/map/' : '/'
+export const PATH_BASENAME = DEFAULT_PATH_BASENAME.endsWith('/')
+  ? DEFAULT_PATH_BASENAME
+  : DEFAULT_PATH_BASENAME + '/'
+
 export const MAX_FILTER_VALUE = 999999999999999
 export const PREVIEW_BUFFER_GENERATOR_ID = 'report-area-preview-buffer'

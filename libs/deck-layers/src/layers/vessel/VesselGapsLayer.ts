@@ -33,7 +33,7 @@ export class BluePlanetGapsLayer extends CompositeLayer<BluePlanetGapsLayerProps
         id: `${this.props.id}-blue-planet-gaps`,
         data: gaps,
         // pickable: true,
-        iconAtlas: `${PATH_BASENAME}/gaps-sprite.png`,
+        iconAtlas: `${PATH_BASENAME}gaps-sprite.png`,
         iconMapping: GAPS_SPRITE_ICON_MAPPING,
         getIcon: (d) => d.icon,
         getAngle: 0,

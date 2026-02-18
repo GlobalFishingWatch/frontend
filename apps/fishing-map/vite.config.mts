@@ -8,7 +8,9 @@ import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { nitro } from 'nitro/vite'
 
-const basePath = import.meta.env?.VITE_PUBLIC_URL || process.env.VITE_PUBLIC_URL || '/map'
+const DEFAULT_BASE_PATH = process.env.NODE_ENV === 'production' ? '/map' : ''
+const basePath =
+  import.meta.env?.VITE_PUBLIC_URL || process.env.VITE_PUBLIC_URL || DEFAULT_BASE_PATH
 
 export default defineConfig({
   root: __dirname,

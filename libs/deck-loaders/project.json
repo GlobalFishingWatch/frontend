@@ -33,7 +33,11 @@
       "options": {
         "main": "libs/deck-loaders/src/**/workers/**.ts",
         "esbuildOptions": {
-          "outdir": "libs/deck-loaders/dist/workers"
+          "outdir": "libs/deck-loaders/dist/workers",
+          "format": "iife",
+          "define": {
+            "import.meta.env": "\"{}\""
+          }
         },
         "outputPath": "libs/deck-loaders/dist/workers",
         "generateExportsField": true,

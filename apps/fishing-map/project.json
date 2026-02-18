@@ -28,6 +28,7 @@
       "outputs": ["{projectRoot}/public/workers"],
       "options": {
         "commands": [
+          "rimraf apps/fishing-map/public/workers/*.js",
           "make-dir apps/fishing-map/public/workers",
           "shx cp libs/deck-loaders/dist/workers/*.js apps/fishing-map/public/workers/"
         ],

@@ -12,7 +12,8 @@ import appCss from './styles.css?url'
 
 // Inline env values to avoid importing data/config which transitively
 // pulls in heavy visualization libraries incompatible with Vite's SSR Module Runner
-const PATH_BASENAME = (import.meta.env.VITE_PUBLIC_URL as string) || '/map'
+const DEFAULT_BASE_PATH = import.meta.env.DEV ? '' : '/map'
+const PATH_BASENAME = (import.meta.env.VITE_PUBLIC_URL as string) || DEFAULT_BASE_PATH
 const GOOGLE_TAG_MANAGER_ID = import.meta.env.VITE_GOOGLE_TAG_MANAGER_ID as string
 
 const defaultDescription =

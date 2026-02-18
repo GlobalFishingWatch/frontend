@@ -4,13 +4,15 @@
  * Supports both root (/ and /map) and /monitoring paths for basepath deployments.
  */
 
-const basicAuthEnabled =
-  (process.env['BASIC_AUTH'] || 'none').toLocaleLowerCase() === 'restricted'
+const basicAuthEnabled = (process.env['BASIC_AUTH'] || 'none').toLocaleLowerCase() === 'restricted'
 const basicAuthUser = process.env['BASIC_AUTH_USER']
 const basicAuthPass = process.env['BASIC_AUTH_PASS']
+const DEFAULT_BASE_PATH = import.meta.env.DEV ? '' : '/map'
 const basePath =
-  (process.env['NEXT_PUBLIC_URL'] || process.env['VITE_PUBLIC_URL'] || '/map').replace(/\/$/, '') ||
-  '/map'
+  (process.env['NEXT_PUBLIC_URL'] || process.env['VITE_PUBLIC_URL'] || DEFAULT_BASE_PATH).replace(
+    /\/$/,
+    ''
+  ) || DEFAULT_BASE_PATH
 
 function createAuthRequiredResponse() {
   return new Response('Auth Required.', {

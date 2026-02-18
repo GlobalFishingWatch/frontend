@@ -36,7 +36,7 @@ export const FourwingsWorkerLoader: Loader = {
   options: {
     fourwings: {
       ...baseFourwingsLoaderOptions,
-      workerUrl: `${PATH_BASENAME}/workers/fourwings-worker.js`,
+      workerUrl: `${PATH_BASENAME}workers/fourwings-worker.js`,
     } as ParseFourwingsOptions,
   } as FourwingsLoaderOptions,
 }

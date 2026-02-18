@@ -28,7 +28,8 @@ export const SHOW_LEAVE_CONFIRMATION = import.meta.env.VITE_SHOW_LEAVE_CONFIRMAT
   ? import.meta.env.VITE_SHOW_LEAVE_CONFIRMATION === 'true'
   : !import.meta.env.DEV
 
-export const PATH_BASENAME = (import.meta.env.VITE_PUBLIC_URL as string) || '/map'
+export const PATH_BASENAME =
+  (import.meta.env.VITE_PUBLIC_URL as string) || IS_DEVELOPMENT_ENV ? '' : '/map'
 
 export const REPORT_DAYS_LIMIT =
   typeof import.meta.env.VITE_REPORT_DAYS_LIMIT !== 'undefined'
