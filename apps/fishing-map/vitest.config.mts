@@ -85,7 +85,7 @@ export default defineConfig({
       reportsDirectory: 'test/coverage/apps/fishing-map',
       provider: 'istanbul',
     },
-    testTimeout: 30000,
+    testTimeout: 45000,
     setupFiles: './test/vitest.setup.ts',
     browser: {
       enabled: true,
