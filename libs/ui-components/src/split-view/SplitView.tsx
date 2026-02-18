@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo,useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
 
 import { Choice } from '../choice'
@@ -99,6 +99,7 @@ export function SplitView(props: SplitViewProps) {
       </aside>
       <main
         id={MAIN_DOM_ID}
+        data-testid={MAIN_DOM_ID}
         style={{ left: isOpen ? asideWidth : 0 }}
         className={cx(styles.main, mainClassName)}
       >
