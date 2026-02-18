@@ -1,11 +1,13 @@
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import react from '@vitejs/plugin-react'
 import { playwright } from '@vitest/browser-playwright'
+import { IncomingMessage, ServerResponse } from 'http'
 import path from 'path'
+import type { Connect, Plugin, PreviewServer, ViteDevServer } from 'vite'
 import { defineConfig } from 'vitest/config'
 
 // Plugin to transform SVG imports for testing
-const svgMockPlugin = () => ({
+const svgMockPlugin = (): Plugin => ({
   name: 'svg-mock',
   transform(_code: string, id: string) {
     if (id.endsWith('.svg')) {
@@ -17,10 +19,35 @@ const svgMockPlugin = () => ({
   },
 })
 
+// Plugin to serve public assets from /map path, this is needed because not having events-color-sprite.png causes timebar to throw an error an not load any events
+const publicAssetsPlugin = (): Plugin => ({
+  name: 'public-assets',
+  configureServer(server: ViteDevServer) {
+    server.middlewares.use(
+      (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
+        if (req.url?.startsWith('/map/')) {
+          req.url = req.url.replace('/map/', '/')
+        }
+        next()
+      }
+    )
+  },
+  configurePreviewServer(server: PreviewServer) {
+    server.middlewares.use(
+      (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
+        if (req.url?.startsWith('/map/')) {
+          req.url = req.url.replace('/map/', '/')
+        }
+        next()
+      }
+    )
+  },
+})
+
 export default defineConfig({
   root: '.',
   cacheDir: '../../node_modules/.vite/apps/fishing-map',
-  plugins: [react(), nxViteTsPaths(), svgMockPlugin()],
+  plugins: [react(), nxViteTsPaths(), svgMockPlugin(), publicAssetsPlugin()],
   resolve: {
     alias: {
       data: path.resolve(__dirname, './data'),
@@ -52,6 +79,7 @@ export default defineConfig({
       'vitest-example/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       '/apps/fishing-map/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
     ],
+    fileParallelism: false,
     reporters: ['default'],
     coverage: {
       reportsDirectory: 'test/coverage/apps/fishing-map',
