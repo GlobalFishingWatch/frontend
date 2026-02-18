@@ -17,12 +17,12 @@ export const FourwingsVectorsWorkerLoader: Loader = {
   version: VERSION,
   extensions: ['pbf'],
   mimeTypes: ['application/x-protobuf', 'application/octet-stream', 'application/protobuf'],
-  worker: false,
+  worker: true,
   category: 'geometry',
   options: {
     fourwingsVectors: {
       ...(baseFourwingsLoaderOptions as ParseFourwingsVectorsOptions),
-      workerUrl: `${PATH_BASENAME}/workers/fourwings-vectors-worker.js`,
+      workerUrl: `${PATH_BASENAME}workers/fourwings-vectors-worker.js`,
       temporalAggregation: false,
       unit: 'm/s',
     } as ParseFourwingsVectorsOptions,

@@ -18,7 +18,7 @@ export const VesselEventsWorkerLoader: Loader = {
   worker: true,
   options: {
     'vessel-events': {
-      workerUrl: `${PATH_BASENAME}/workers/vessel-events-worker.js`,
+      workerUrl: `${PATH_BASENAME}workers/vessel-events-worker.js`,
     },
   },
 }

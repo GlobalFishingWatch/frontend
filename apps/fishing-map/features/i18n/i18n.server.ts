@@ -81,12 +81,13 @@ export async function createServerI18n(request: Request): Promise<{
   await i18n.loadNamespaces(NAMESPACES)
 
   const initialI18nStore: Record<string, Record<string, Record<string, unknown>>> = {}
-  i18n.languages.forEach((lng) => {
-    const data = i18n.services.resourceStore.data[lng]
-    if (data) {
-      initialI18nStore[lng] = data as Record<string, Record<string, unknown>>
-    }
-  })
+  // Only serialize the primary detected language — i18n.languages includes the full
+  // fallback chain (e.g. ['en', 'source'] in dev), which causes duplicate identical
+  // translations to be embedded in the SSR HTML.
+  const data = i18n.services.resourceStore.data[language]
+  if (data) {
+    initialI18nStore[language] = data as Record<string, Record<string, unknown>>
+  }
 
   return {
     i18n,

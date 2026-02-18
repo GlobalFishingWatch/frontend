@@ -5,6 +5,7 @@ import Backend from 'i18next-http-backend'
 
 import { IS_DEVELOPMENT_ENV, PATH_BASENAME } from 'data/config'
 import { WORKSPACE_ENV } from 'data/workspaces'
+import type { I18nServerState } from 'features/i18n/i18n.server'
 import { Locale } from 'types'
 
 export const CROWDIN_IN_CONTEXT_LANG = 'val'
@@ -33,31 +34,13 @@ if (IS_DEVELOPMENT_ENV) {
   SUPPORTED_LANGUAGES.push('source')
 }
 
-// TODO:RR clean this up and get client working to be able to change language on the fly
-/**
- * SSR i18n state - read from TanStack Router's dehydrated loader data.
- * The root route loader returns i18nState, which is available at $_TSR.router.matches
- * before the app hydrates. We find the root match (id starts with __root__) and use its loader data.
- */
-function getSsrI18nState():
-  | {
-      initialI18nStore: Record<string, Record<string, Record<string, unknown>>>
-      initialLanguage: string
-    }
-  | undefined {
-  if (typeof window === 'undefined') return undefined
-  const router = (
-    window as { $_TSR?: { router?: { matches?: { i?: string; l?: { i18nState?: unknown } }[] } } }
-  ).$_TSR?.router
-  const rootMatch = router?.matches?.find((m) => m.i?.startsWith?.('__root__'))
-  return rootMatch?.l?.i18nState as
-    | {
-        initialI18nStore: Record<string, Record<string, Record<string, unknown>>>
-        initialLanguage: string
-      }
-    | undefined
-}
-const ssrState = getSsrI18nState()
+// Read TanStack Router's dehydrated root-loader data before React hydrates.
+// $_TSR.router.matches holds each route's loader result (l); the root match id starts with '__root__'.
+const ssrState: I18nServerState | undefined =
+  typeof window !== 'undefined'
+    ? (window as any)?.$_TSR?.router?.matches?.find((m: any) => m.i?.startsWith('__root__'))?.l
+        ?.i18nState
+    : undefined
 
 i18n
   // load translation using http -> see /public/locales
@@ -74,6 +57,8 @@ i18n
     ...(ssrState && {
       resources: ssrState.initialI18nStore as Resource,
       lng: ssrState.initialLanguage,
+      // Resources only contain the SSR language — let the backend load others on demand
+      partialBundledLanguages: true,
     }),
     backend: {
       loadPath: (lngs: string[], namespaces: string[]) => {
