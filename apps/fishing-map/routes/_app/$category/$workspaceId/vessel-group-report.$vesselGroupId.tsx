@@ -1,8 +1,7 @@
 import { lazy } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 
-import { t } from 'features/i18n/i18n'
-import { getRouteHead } from 'router/router.meta'
+import { getRouteHead, getTFuntion } from 'router/router.meta'
 import { validateReportSearchParams } from 'router/routes.search'
 
 const VesselGroupReport = lazy(
@@ -14,5 +13,8 @@ export const Route = createFileRoute(
 )({
   component: VesselGroupReport,
   validateSearch: validateReportSearchParams,
-  head: () => getRouteHead({ category: t((tr) => tr.analysis.title) }),
+  head: ({ matches }) => {
+    const t = getTFuntion(matches)
+    return getRouteHead({ category: t('analysis.title'), t })
+  },
 })

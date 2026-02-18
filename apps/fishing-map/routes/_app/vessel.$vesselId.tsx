@@ -1,8 +1,7 @@
 import { lazy } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 
-import { t } from 'features/i18n/i18n'
-import { getRouteHead } from 'router/router.meta'
+import { getRouteHead, getTFuntion } from 'router/router.meta'
 import { validateVesselProfileParams } from 'router/routes.search'
 
 const VesselProfile = lazy(() => import('features/vessel/Vessel'))
@@ -10,5 +9,8 @@ const VesselProfile = lazy(() => import('features/vessel/Vessel'))
 export const Route = createFileRoute('/_app/vessel/$vesselId')({
   component: VesselProfile,
   validateSearch: validateVesselProfileParams,
-  head: () => getRouteHead({ category: t((tr) => tr.vessel.title) }),
+  head: ({ matches }) => {
+    const t = getTFuntion(matches)
+    return getRouteHead({ category: t('vessel.title'), t })
+  },
 })
