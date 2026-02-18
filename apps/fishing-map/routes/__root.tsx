@@ -5,6 +5,8 @@ import { Suspense } from 'react'
 import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-router'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
+import { getI18nState } from 'features/i18n/getI18nState.server'
+import { I18nSSRProvider } from 'features/i18n/I18nSSRProvider'
 
 import appCss from './styles.css?url'
 
@@ -17,6 +19,17 @@ const defaultDescription =
   'The Global Fishing Watch map is the first open-access platform for visualization and analysis of marine traffic and vessel-based human activity at sea.'
 
 export const Route = createRootRoute({
+  loader: async (_ctx) => {
+    const i18nState = await getI18nState()
+    return {
+      i18nState,
+    } as {
+      i18nState: {
+        initialI18nStore: Record<string, Record<string, Record<string, object>>>
+        initialLanguage: string
+      }
+    }
+  },
   head: () => ({
     meta: [
       { charSet: 'utf-8' },
@@ -127,10 +140,13 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 }
 
 function RootComponent() {
+  const { i18nState } = Route.useLoaderData() ?? {}
   return (
     <RootDocument>
       <Suspense fallback={null}>
-        <Outlet />
+        <I18nSSRProvider serverState={i18nState}>
+          <Outlet />
+        </I18nSSRProvider>
       </Suspense>
     </RootDocument>
   )

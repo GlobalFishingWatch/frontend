@@ -1,5 +1,5 @@
 import { initReactI18next } from 'react-i18next'
-import i18n from 'i18next'
+import i18n, { type Resource } from 'i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 import Backend from 'i18next-http-backend'
 
@@ -33,6 +33,32 @@ if (IS_DEVELOPMENT_ENV) {
   SUPPORTED_LANGUAGES.push('source')
 }
 
+// TODO:RR clean this up and get client working to be able to change language on the fly
+/**
+ * SSR i18n state - read from TanStack Router's dehydrated loader data.
+ * The root route loader returns i18nState, which is available at $_TSR.router.matches
+ * before the app hydrates. We find the root match (id starts with __root__) and use its loader data.
+ */
+function getSsrI18nState():
+  | {
+      initialI18nStore: Record<string, Record<string, Record<string, unknown>>>
+      initialLanguage: string
+    }
+  | undefined {
+  if (typeof window === 'undefined') return undefined
+  const router = (
+    window as { $_TSR?: { router?: { matches?: { i?: string; l?: { i18nState?: unknown } }[] } } }
+  ).$_TSR?.router
+  const rootMatch = router?.matches?.find((m) => m.i?.startsWith?.('__root__'))
+  return rootMatch?.l?.i18nState as
+    | {
+        initialI18nStore: Record<string, Record<string, Record<string, unknown>>>
+        initialLanguage: string
+      }
+    | undefined
+}
+const ssrState = getSsrI18nState()
+
 i18n
   // load translation using http -> see /public/locales
   // learn more: https://github.com/i18next/i18next-http-backend
@@ -45,6 +71,10 @@ i18n
   // init i18next
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
+    ...(ssrState && {
+      resources: ssrState.initialI18nStore as Resource,
+      lng: ssrState.initialLanguage,
+    }),
     backend: {
       loadPath: (lngs: string[], namespaces: string[]) => {
         if (namespaces.some((namespace: string) => PACKAGE_NAMESPACES.includes(namespace))) {

@@ -7,9 +7,8 @@ import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { nitro } from 'nitro/vite'
-import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
-const basePath = process.env.NEXT_PUBLIC_URL || '/map'
+const basePath = import.meta.env?.VITE_PUBLIC_URL || process.env.VITE_PUBLIC_URL || '/map'
 
 export default defineConfig({
   root: __dirname,
@@ -36,18 +35,6 @@ export default defineConfig({
     strictPort: true,
   },
   plugins: [
-    // Only apply node polyfills for client build - Nitro server build uses native Node
-    // {
-    //   ...nodePolyfills({
-    //     protocolImports: true,
-    //     exclude: ['path', 'fs'],
-    //     overrides: {
-    //       net: join(__dirname, 'node-stubs/net.mjs'),
-    //       child_process: join(__dirname, 'node-stubs/child_process.mjs'),
-    //     },
-    //   }),
-    //   apply: (_config, env) => env.ssr === false,
-    // },
     nxViteTsPaths(),
     tanstackStart({
       srcDirectory: '.',
@@ -55,14 +42,14 @@ export default defineConfig({
         routesDirectory: 'routes',
         basepath: basePath,
       },
-      spa: {
-        enabled: true,
-      },
+      // spa: {
+      //   enabled: true,
+      // },
     }),
     nitro({
       baseURL: basePath,
       rollupConfig: {
-        external: ['fsevents', 'chokidar', /^@vitejs\//, '@opentelemetry/api-logs'],
+        external: ['assert', 'fsevents', 'chokidar', /^@vitejs\//, '@opentelemetry/api-logs'],
       },
     }),
     react(),

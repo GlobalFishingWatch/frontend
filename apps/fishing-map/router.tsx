@@ -17,6 +17,7 @@ function createAppRouter() {
   const router = createRouter({
     routeTree,
     basepath: PATH_BASENAME,
+    trailingSlash: 'preserve',
     defaultPreload: false,
     scrollRestoration: true,
     defaultNotFoundComponent: () => <Navigate to={ROUTE_PATHS.HOME} />,

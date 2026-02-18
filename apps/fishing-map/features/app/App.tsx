@@ -3,7 +3,7 @@ import { FpsView } from 'react-fps'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
-import { HeadContent, Outlet } from '@tanstack/react-router'
+import { Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
@@ -184,7 +184,6 @@ function App() {
 
   return (
     <Fragment>
-      <HeadContent />
       {/* // TODO:RR test if this really works */}
       <ConfirmLeave />
       <ConfirmVesselProfileLeave />

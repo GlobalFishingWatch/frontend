@@ -126,6 +126,7 @@ module "router-refactor" {
   app_suffix        = "-router-refactor"
   docker_image      = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/${local.app_name}:latest-random-forest-dev"
   service_account   = local.service_account.dev
+  machine_type      = "E2_HIGHCPU_8"
   labels = {
     environment      = "develop"
     resource_creator = "engineering"
