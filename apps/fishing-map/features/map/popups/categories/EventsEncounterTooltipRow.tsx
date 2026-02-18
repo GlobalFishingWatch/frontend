@@ -1,7 +1,7 @@
 import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import type { EventVesselTypeEnum } from '@globalfishingwatch/api-types'
+import type { Dataset, EventVesselTypeEnum } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
@@ -13,6 +13,7 @@ import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
+import { getEventLabel } from 'utils/analytics'
 import { formatInfoField } from 'utils/info'
 
 import type {
@@ -54,10 +55,15 @@ function EncounterTooltipRow({
 }: EncounterTooltipRowProps) {
   const { t } = useTranslation()
 
-  const seeEncounterClick = useCallback(() => {
+  const seeEncounterClick = useCallback((dataset: Dataset) => {
     trackEvent({
       category: TrackCategory.GlobalReports,
       action: `Clicked see encounter event`,
+      label: getEventLabel(
+        [` dataset_name: ${dataset.name} `, ` source: ${dataset.source} `, dataset.id].filter(
+          Boolean
+        ) as string[]
+      ),
     })
   }, [])
 
@@ -163,6 +169,7 @@ function EncounterTooltipRow({
                                       vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
                                       vesselSelfReportedId: event.encounter.vessel?.id,
                                     }}
+                                    onClick={() => seeEncounterClick(event.dataset)}
                                   >
                                     {formatInfoField(event.encounter.vessel?.name, 'shipname')}
                                   </VesselLink>
@@ -198,7 +205,7 @@ function EncounterTooltipRow({
                               target="_blank"
                               size="small"
                               className={styles.btnLarge}
-                              onClick={seeEncounterClick}
+                              onClick={() => seeEncounterClick(event.dataset)}
                             >
                               {t((t) => t.common.seeMore)}
                             </Button>
