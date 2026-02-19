@@ -34,7 +34,6 @@ import { filterFeaturesByBounds } from '@globalfishingwatch/data-transforms'
 import type { FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { FourwingsClustersLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import { IS_TEST_ENV } from '../../../config'
 import {
   COLOR_HIGHLIGHT_LINE,
   DEFAULT_BACKGROUND_COLOR,
@@ -45,7 +44,7 @@ import {
   LayerGroup,
 } from '../../../utils'
 import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
-import { PATH_BASENAME } from '../../layers.config'
+import { IS_TEST_ENV, PATH_BASENAME } from '../../layers.config'
 import {
   FOURWINGS_MAX_ZOOM,
   HEATMAP_API_TILES_URL,
