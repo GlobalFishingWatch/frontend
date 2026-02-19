@@ -72,7 +72,7 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
         },
       }),
     ]
-    if (type === EventTypes.Gap) {
+    if (type === EventTypes.Gap || type === EventTypes.Gaps) {
       chunkLayers.push(
         new VesselEventIconLayer({
           ...baseLayerProps,

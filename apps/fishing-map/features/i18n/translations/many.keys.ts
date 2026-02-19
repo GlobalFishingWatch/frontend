@@ -16,6 +16,7 @@ const translations = 'workaround_for_different_plural_rules'
 // t('event.dayAbbreviated_many')
 // t('event.encounter_many')
 // t('event.gap_many')
+// t('event.gaps_many')
 // t('event.hourAbbreviated_many')
 // t('event.loitering_many')
 // t('event.minuteAbbreviated_many')

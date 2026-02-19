@@ -65,6 +65,7 @@ export const DATAVIEW_ID_BY_VESSEL_GROUP_EVENTS: Record<
   [EventTypes.Loitering]: VESSEL_GROUP_LOITERING_EVENTS_ID,
   [EventTypes.Port]: VESSEL_GROUP_PORT_VISITS_EVENTS_ID,
   [EventTypes.Gap]: VESSEL_GROUP_GAPS_EVENTS_ID,
+  [EventTypes.Gaps]: VESSEL_GROUP_GAPS_EVENTS_ID,
 }
 
 type GetReportVesselGroupVisibleDataviewsParams = {
