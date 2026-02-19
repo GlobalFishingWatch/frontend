@@ -16,6 +16,7 @@ import {
   FISHING_DATAVIEW_SLUG_ALL,
   PRESENCE_DATAVIEW_SLUG,
 } from 'data/workspaces'
+import { GAPS_EVENTS_SOURCE_ID } from 'features/dataviews/dataviews.utils'
 
 import type {
   AnyReportSubCategory,
@@ -47,7 +48,7 @@ export type VesselGroupEventsDataviewId =
 export const VESSEL_GROUP_ENCOUNTER_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}encounter`
 export const VESSEL_GROUP_LOITERING_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}loitering`
 export const VESSEL_GROUP_PORT_VISITS_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}port_visit`
-export const VESSEL_GROUP_GAPS_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}gap`
+export const VESSEL_GROUP_GAPS_EVENTS_ID = `${VESSEL_GROUP_DATAVIEW_PREFIX}${GAPS_EVENTS_SOURCE_ID}`
 
 export const VESSEL_GROUP_EVENTS_DATAVIEW_IDS: VesselGroupEventsDataviewId[] = [
   VESSEL_GROUP_ENCOUNTER_EVENTS_ID,

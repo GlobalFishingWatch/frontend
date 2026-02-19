@@ -37,6 +37,7 @@ export const PORT_VISITS_EVENTS_SOURCE_ID = 'port-visits'
 export const PORT_VISITS_REPORT_DATAVIEW_ID = `${PORT_VISITS_EVENTS_SOURCE_ID}-report`
 export const LOITERING_EVENTS_SOURCE_ID = 'loitering'
 export const GAPS_EVENTS_SOURCE_ID = 'gap'
+export const GAPS_AIS_OFF_EVENTS_SOURCE_ID = `${GAPS_EVENTS_SOURCE_ID}s-ais-off`
 export const VESSEL_GROUP_DATAVIEW_PREFIX = `vessel-group-`
 export const BIG_QUERY_PREFIX = 'bq-'
 export const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`

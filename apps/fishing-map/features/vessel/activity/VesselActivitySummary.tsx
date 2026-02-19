@@ -164,6 +164,9 @@ export const VesselActivitySummary = () => {
         <ul>
           {EVENTS_ORDER.map((eventType) => {
             const events = eventsByType[eventType]
+            if (eventType === EventTypes.Gaps && !events?.length) {
+              return null
+            }
             const active =
               visibleEvents === 'all'
                 ? true
