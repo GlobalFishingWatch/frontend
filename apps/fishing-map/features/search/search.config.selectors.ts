@@ -2,6 +2,7 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import { DEFAULT_SEARCH_STATE } from 'features/search/search.config'
 import type { VesselSearchState, VesselSearchStateProperty } from 'features/search/search.types'
+import { IS_PIPE_4 } from 'features/vessel/vessel.config'
 import { selectLocationQuery } from 'routes/routes.selectors'
 
 type VesselSearchProperty<P extends VesselSearchStateProperty> = Required<VesselSearchState>[P]
@@ -26,13 +27,19 @@ export const selectSearchSsvid = selectVesselSearchStateProperty('ssvid')
 export const selectSearchImo = selectVesselSearchStateProperty('imo')
 export const selectSearchCallsign = selectVesselSearchStateProperty('callsign')
 export const selectSearchOwner = selectVesselSearchStateProperty('owner')
-export const selectSearchNationalId = selectVesselSearchStateProperty('nationalId')
-export const selectSearchCodMarinha = selectVesselSearchStateProperty('codMarinha')
 export const selectSearchGeartypes = selectVesselSearchStateProperty('geartypes')
 export const selectSearchShiptypes = selectVesselSearchStateProperty('shiptypes')
 export const selectSearchTargetSpecies = selectVesselSearchStateProperty('targetSpecies')
-export const selectSearchFleet = selectVesselSearchStateProperty('fleet')
 export const selectSearchOrigin = selectVesselSearchStateProperty('origin')
+
+export const selectSearchExternalId = selectVesselSearchStateProperty('externalId')
+
+//TO DO: remove the below selectors when migrate to pipe 4
+export const selectSearchNationalId = selectVesselSearchStateProperty('nationalId')
+export const selectSearchCodMarinha = selectVesselSearchStateProperty('codMarinha')
+export const selectSearchFleet = IS_PIPE_4
+  ? selectVesselSearchStateProperty('sourceFleet')
+  : selectVesselSearchStateProperty('fleet')
 
 export const selectSearchFilters = createSelector(
   [
@@ -45,6 +52,7 @@ export const selectSearchFilters = createSelector(
     selectSearchImo,
     selectSearchCallsign,
     selectSearchOwner,
+    selectSearchExternalId,
     selectSearchNationalId,
     selectSearchCodMarinha,
     selectSearchGeartypes,
@@ -64,6 +72,7 @@ export const selectSearchFilters = createSelector(
     imo,
     callsign,
     owner,
+    externalId,
     nationalId,
     codMarinha,
     geartypes,
@@ -83,6 +92,7 @@ export const selectSearchFilters = createSelector(
       imo,
       callsign,
       owner,
+      externalId,
       nationalId,
       codMarinha,
       geartypes,

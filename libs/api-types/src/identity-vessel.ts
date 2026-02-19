@@ -147,6 +147,10 @@ export type SelfReportedInfo = VesselInfo & {
   nationalId?: string
   codMarinha?: string
   vesselType?: string
+  //pipe 4 new fields
+  externalId?: string
+  sourceFleet?: string
+  hull?: string
 }
 
 export type RegistryImage = {

@@ -49,6 +49,10 @@ export interface Vessel {
   ssvid?: string
   type?: string
   years?: number[]
+  //pipe 4 new fields
+  externalId?: string
+  sourceFleet?: string
+  hull?: string
 }
 
 export interface VesselSearch extends Vessel {
