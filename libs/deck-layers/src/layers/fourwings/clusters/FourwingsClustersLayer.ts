@@ -88,6 +88,7 @@ const ICON_SIZE: Record<FourwingsClusterEventType, number> = {
   [EventTypes.Encounter]: 16,
   [EventTypes.Loitering]: 16,
   [EventTypes.Gap]: 14,
+  [EventTypes.Gaps]: 14,
   [EventTypes.Port]: 12,
 }
 const MIN_CLUSTER_RADIUS = 12
@@ -96,6 +97,7 @@ const ICON_MAPPING: Record<FourwingsClusterEventType, any> = {
   user: { x: 40, y: 0, width: 36, height: 36, mask: true },
   [EventTypes.Encounter]: { x: 0, y: 0, width: 36, height: 36, mask: true },
   [EventTypes.Gap]: { x: 160, y: 2, width: 32, height: 32, mask: true },
+  [EventTypes.Gaps]: { x: 160, y: 2, width: 32, height: 32, mask: true },
   [EventTypes.Port]: { x: 80, y: 0, width: 36, height: 36, mask: true },
   [EventTypes.Loitering]: { x: 120, y: 0, width: 36, height: 36, mask: true },
 }
