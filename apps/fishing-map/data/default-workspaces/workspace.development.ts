@@ -126,13 +126,13 @@ const workspace: Workspace<WorkspaceState> = {
         visible: false,
       },
     },
-    // {
-    //   id: GAPS_EVENTS_SOURCE_ID,
-    //   dataviewId: CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG,
-    //   config: {
-    //     visible: false,
-    //   },
-    // },
+    {
+      id: GAPS_EVENTS_SOURCE_ID,
+      dataviewId: CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG,
+      config: {
+        visible: false,
+      },
+    },
     {
       id: PORT_VISITS_EVENTS_SOURCE_ID,
       dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
