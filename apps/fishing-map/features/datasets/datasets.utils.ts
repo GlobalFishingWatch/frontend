@@ -839,9 +839,9 @@ export const getCommonSchemaFieldsInDataview = (
                 ns: 'datasets',
                 defaultValue: field?.toString(),
               })
-        if (EXPERIMENTAL_FIELDS_BY_SCHEMA[schema]?.includes(field as string)) {
-          label += ' (Experimental)'
-        }
+        // if (EXPERIMENTAL_FIELDS_BY_SCHEMA[schema]?.includes(field as string)) {
+        //   label += ' (Experimental)'
+        // }
         if (label === field) {
           if (schema === 'geartypes' || schema === 'geartype') {
             // There is an fixed list of gearTypes independant of the dataset
