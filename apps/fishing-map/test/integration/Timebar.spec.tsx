@@ -39,8 +39,7 @@ describe('App Timebar Integration', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    // Click on map
-    await userEvent.click(mapElement, { position: { x: 5, y: 400 } })
+    await userEvent.click(mapElement, { position: { x: 6, y: 400 } })
 
     await expect.element(getByTestId('map-popup-wrapper')).toBeVisible()
   })
@@ -55,9 +54,13 @@ describe('App Timebar Integration', () => {
 
     await getByTestId('events-layer-switch-encounters').click()
 
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
     const timebarWrapper = getByTestId('timebar-wrapper')
 
     await userEvent.hover(timebarWrapper, { position: { x: 300, y: 35 } })
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     await expect.element(getByText(/\d+\.?\d* events on screen/)).toBeVisible()
   })
@@ -75,9 +78,13 @@ describe('App Timebar Integration', () => {
 
     await getByTestId('activity-layer-panel-switch-sentinel2').click()
 
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
     const timebarWrapper = getByTestId('timebar-wrapper')
 
     await userEvent.hover(timebarWrapper, { position: { x: 300, y: 35 } })
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     await expect.element(getByText(/\d+\.?\d* detections on screen/)).toBeVisible()
   })
