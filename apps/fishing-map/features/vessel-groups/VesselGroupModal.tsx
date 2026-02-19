@@ -31,7 +31,6 @@ import {
 import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { resetSidebarScroll } from 'features/sidebar/sidebar.utils'
 import { DEFAULT_VESSEL_IDENTITY_DATASET } from 'features/vessel/vessel.config'
-import { getSearchIdentityResolved } from 'features/vessel/vessel.utils'
 import {
   selectHasVesselGroupSearchVessels,
   selectHasVesselGroupVesselsOverflow,
@@ -243,7 +242,10 @@ function VesselGroupModal(): React.ReactElement<any> {
   }, [dispatchSearchVesselsGroupsThunk, vesselGroupVesselsToSearch, searchIdField])
 
   const onCreateGroupClick = useCallback(
-    async (e: React.MouseEvent<Element, MouseEvent>, { navigateToWorkspace = false } = {}) => {
+    async (
+      e: React.MouseEvent<Element, MouseEvent>,
+      { addToDataviews = true, removeVessels = false, navigateToWorkspace = false } = {}
+    ) => {
       setButtonLoading(navigateToWorkspace ? 'saveAndSeeInWorkspace' : 'save')
       const vessels: VesselGroupVessel[] = getVesselGroupUniqVessels(vesselGroupVessels)
       let dispatchedAction
@@ -256,12 +258,21 @@ function VesselGroupModal(): React.ReactElement<any> {
         }
         dispatchedAction = await dispatch(updateVesselGroupVesselsThunk(vesselGroup))
       } else {
+        const creationId = groupName + `_${Date.now()}`
         const vesselGroup = {
-          name: groupName,
+          name: creationId,
           vessels,
           public: createAsPublic,
         }
         dispatchedAction = await dispatch(createVesselGroupThunk(vesselGroup))
+        if (createVesselGroupThunk.fulfilled.match(dispatchedAction)) {
+          const vesselGroup: UpdateVesselGroupThunkParams = {
+            id: dispatchedAction.payload?.id,
+            name: groupName,
+          }
+          await new Promise((resolve) => setTimeout(resolve, 1000))
+          await dispatch(updateVesselGroupVesselsThunk(vesselGroup))
+        }
       }
 
       if (
@@ -309,15 +320,15 @@ function VesselGroupModal(): React.ReactElement<any> {
             // dispatchQueryParams({ query: undefined })
           }
           resetSidebarScroll()
-          // } else if (addToDataviews && dataviewInstance) {
-          //   if (removeVessels) {
-          //     const dataviewsToDelete = vesselDataviews.flatMap((d) =>
-          //       d.config?.visible ? { id: d.id, deleted: true } : []
-          //     )
-          //     upsertDataviewInstance([...dataviewsToDelete, dataviewInstance])
-          //   } else {
-          //     upsertDataviewInstance(dataviewInstance)
-          //   }
+        } else if (addToDataviews && dataviewInstance) {
+          // if (removeVessels) {
+          //   const dataviewsToDelete = vesselDataviews.flatMap((d) =>
+          //     d.config?.visible ? { id: d.id, deleted: true } : []
+          //   )
+          //   upsertDataviewInstance([...dataviewsToDelete, dataviewInstance])
+          // } else {
+          upsertDataviewInstance(dataviewInstance)
+          // }
         }
         if (editingVesselGroupId && isVesselGroupReportLocation) {
           dispatch(resetVesselGroupReportData())
