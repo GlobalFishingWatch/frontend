@@ -4,7 +4,7 @@ import {
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 
-import { PIPE_DATASET_ID } from 'data/workspaces.config'
+import { PIPE_DATASET_ID, PIPE_DATASET_VERSION } from 'data/workspaces.config'
 import type I18nNamespaces from 'features/i18n/i18n.types'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 
@@ -52,23 +52,28 @@ const IDENTIFIER_FIELDS: VesselRenderField[] = [
 
 // TODO review private datasets to ensure there are no missing fields
 
+const IS_PIPE_4 = PIPE_DATASET_VERSION === ('4' as const)
 type CustomVMSGroup = Partial<Record<SelfReportedSource, VesselRenderField[][]>>
 export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   [SelfReportedSource.Peru]: [
-    [{ key: 'origin' }, { key: 'sourceFleet' }, { key: 'externalId' }],
+    [
+      { key: 'origin' },
+      { key: IS_PIPE_4 ? 'sourceFleet' : 'fleet' },
+      { key: IS_PIPE_4 ? 'externalId' : 'nationalId' },
+    ],
     [{ key: 'length' }, { key: 'capacity' }, { key: 'beam' }],
     [{ key: 'regimen' }, { key: 'resolution' }],
     [{ key: 'casco' }, { key: 'chdSpecies' }],
   ],
-  [SelfReportedSource.CostaRica]: [[{ key: 'externalId' }]],
+  [SelfReportedSource.CostaRica]: [[{ key: IS_PIPE_4 ? 'externalId' : 'nationalId' }]],
   [SelfReportedSource.Indonesia]: [
     [{ key: 'widthRange' }, { key: 'lengthRange' }, { key: 'grossTonnageRange' }],
   ],
   [SelfReportedSource.Brazil]: [
     [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
-    [{ key: 'externalId' }],
+    [{ key: IS_PIPE_4 ? 'externalId' : 'codMarinha' }],
   ],
-  [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
+  [SelfReportedSource.Chile]: [[{ key: IS_PIPE_4 ? 'sourceFleet' : 'fleet' }]],
 }
 
 const VESSEL_FISICAL_FEATURES_FIELDS: VesselRenderField[] = [
