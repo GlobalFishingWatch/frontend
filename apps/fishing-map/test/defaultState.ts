@@ -28459,8 +28459,7 @@ export const defaultState = {
       viewAccess: 'public',
       editAccess: 'private',
       category: 'fishing-activity',
-      startAt: '2025-11-01T00:00:00.000Z',
-      endAt: '2026-02-01T00:00:00.000Z',
+
       viewport: {
         zoom: 1.49,
         latitude: 19,
