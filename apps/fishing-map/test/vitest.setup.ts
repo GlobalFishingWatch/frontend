@@ -1,4 +1,5 @@
 import i18n from 'i18next'
+import { Settings } from 'luxon'
 import { beforeAll, vi } from 'vitest'
 
 import '../pages/styles.css'
@@ -6,10 +7,14 @@ import './test-styles.css'
 import '@globalfishingwatch/ui-components/base.css'
 import '@globalfishingwatch/timebar/timebar-settings.css'
 
-beforeAll(async () => {
-  // Set the system time to December 1st, 2025 at 12:00 PM UTC
-  vi.setSystemTime(new Date('2025-12-01T12:00:00.000Z'))
+// Set the system time to February 18th, 2026 at 12:00 PM UTC
+const mockDate = new Date('2026-02-18T12:00:00.000Z')
+vi.setSystemTime(mockDate)
 
+// Mock Luxon's now() function globally
+Settings.now = () => mockDate.valueOf()
+
+beforeAll(async () => {
   // Ensure i18n is initialized before running tests
   await i18n.changeLanguage('en')
 
