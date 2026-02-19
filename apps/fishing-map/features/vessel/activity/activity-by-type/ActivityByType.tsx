@@ -7,6 +7,7 @@ import cx from 'classnames'
 import type { EventType } from '@globalfishingwatch/api-types'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectVesselProfileSource } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
 import { useHighlightedEventsConnect } from 'features/timebar/timebar.hooks'
 import { useVesselEventBounds } from 'features/vessel/activity/event/event.bounds'
@@ -40,6 +41,7 @@ function ActivityByType() {
   const selectedVesselEventId = useSelector(selectVesselEventId)
   const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const vesselLayer = useVesselProfileLayer()
+  const vesselProfileSource = useSelector(selectVesselProfileSource)
   const fitEventBounds = useVesselEventBounds(vesselLayer)
   const { virtuosoRef } = useVirtuosoScroll()
   const eventsRef = useRef(new Map<string, HTMLElement>())
@@ -146,6 +148,7 @@ function ActivityByType() {
                 <ActivityGroup
                   key={eventType}
                   eventType={eventType}
+                  eventSource={vesselProfileSource}
                   onToggleClick={onToggleExpandedType}
                   quantity={events.length}
                   expanded={expanded}
@@ -192,6 +195,7 @@ function ActivityByType() {
     selectedEventGroup,
     onToggleExpandedType,
     groups,
+    vesselProfileSource,
     events,
     selectedEventId,
     onMapHover,

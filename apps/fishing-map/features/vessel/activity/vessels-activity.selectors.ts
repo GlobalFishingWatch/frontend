@@ -70,7 +70,7 @@ export const EVENTS_ORDER = [
   EventTypes.Fishing,
   EventTypes.Encounter,
   EventTypes.Loitering,
-  // EventTypes.Gap,
+  EventTypes.Gaps,
 ]
 
 export const selectVirtuosoVesselProfileEventsByType = createSelector(

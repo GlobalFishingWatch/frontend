@@ -40,7 +40,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
       url: `${API_GATEWAY}${resource.url}`,
     }
   })
-  console.log('🚀 ~ resolveDeckVesselLayerProps ~ events:', events)
+
   return {
     id: dataview.id,
     visible: dataview.config?.visible ?? true,
