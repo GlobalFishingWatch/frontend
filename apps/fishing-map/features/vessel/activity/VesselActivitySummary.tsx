@@ -12,6 +12,7 @@ import { Icon, Switch, Tooltip } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { selectVesselProfileSource } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
@@ -41,6 +42,7 @@ export const VesselActivitySummary = () => {
   const timerange = useSelector(selectTimeRange)
   const visibleEvents = useSelector(selectVisibleEvents)
   const { setVesselEventVisibility } = useVisibleVesselEvents()
+  const vesselProfileSource = useSelector(selectVesselProfileSource)
   const eventsByType = useSelector(selectEventsGroupedByType)
   const { getRegionNamesByType } = useRegionNamesByType()
   const { activityRegions, mostVisitedPortCountries, fishingHours } =
@@ -198,7 +200,10 @@ export const VesselActivitySummary = () => {
                     {t((t) => t.event[eventType], {
                       defaultValue: eventType,
                       count: events?.length || 0,
-                      source: t((t) => t.common.ais),
+                      source:
+                        vesselProfileSource === 'VMS'
+                          ? t((t) => t.common.vms)
+                          : t((t) => t.common.ais),
                     })}{' '}
                     {active && eventType === EventTypes.Fishing && fishingHours !== 0 && (
                       <span>

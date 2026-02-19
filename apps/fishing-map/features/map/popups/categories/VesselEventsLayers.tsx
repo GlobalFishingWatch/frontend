@@ -10,6 +10,7 @@ import type {
   SelfReportedInfo,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, EventTypes } from '@globalfishingwatch/api-types'
+import { isVMSDataset } from '@globalfishingwatch/datasets-client'
 import type { VesselEventPickingObject } from '@globalfishingwatch/deck-layers'
 import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 
@@ -92,9 +93,10 @@ function EventDescription({
     )
   }
 
+  const source = vesselDataview?.datasets?.some((d) => isVMSDataset(d.id)) ? 'VMS' : 'AIS'
   return (
     <Fragment>
-      <p className={className}>{getEventDescription(event)?.description}</p>
+      <p className={className}>{getEventDescription(event, { source })?.description}</p>
       {LinkComponent}
     </Fragment>
   )
@@ -118,6 +120,9 @@ function VesselEventsTooltipSection({
 
   const resources = useSelector(selectVisibleResources)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
+  const dataviews = useSelector(selectVesselsDataviews)
+  const vesselDataview = dataviews.find((dataview) => dataview.id === features[0].layerId)
+  const source = vesselDataview?.datasets?.some((d) => isVMSDataset(d.id)) ? 'VMS' : 'AIS'
 
   const vesselNamesByType = useMemo(() => {
     return Object.values(featuresByType).map((features) => {
@@ -158,7 +163,7 @@ function VesselEventsTooltipSection({
                       vesselOrigin={isAnyVesselLocation ? 'vesselProfile' : undefined}
                     />
                   ) : (
-                    getEventDescription(feature)?.description
+                    getEventDescription(feature, { source })?.description
                   )}
                 </div>
               )
