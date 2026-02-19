@@ -55,31 +55,31 @@ const IDENTIFIER_FIELDS: VesselRenderField[] = [
 export const IS_PIPE_4 = PIPE_DATASET_VERSION === ('4' as const)
 type CustomVMSGroup = Partial<Record<SelfReportedSource, VesselRenderField[][]>>
 export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
-  [SelfReportedSource.Peru]: [
+  [SelfReportedSource.Peru_Pipe3]: [
     [{ key: 'origin' }, { key: 'fleet' }, { key: 'nationalId' }],
     [{ key: 'length' }, { key: 'capacity' }, { key: 'beam' }],
     [{ key: 'regimen' }, { key: 'resolution' }],
     [{ key: 'casco' }, { key: 'chdSpecies' }],
   ],
-  [SelfReportedSource.CostaRica]: [[{ key: 'nationalId' }]],
+  [SelfReportedSource.CostaRica_Pipe3]: [[{ key: 'nationalId' }]],
   [SelfReportedSource.Indonesia]: [[{ key: 'width' }, { key: 'length' }, { key: 'grossTonnage' }]],
-  [SelfReportedSource.Brazil]: [
+  [SelfReportedSource.Brazil_Pipe3]: [
     [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
     [{ key: 'codMarinha' }],
   ],
-  [SelfReportedSource.Chile]: [[{ key: 'fleet' }]],
-  [SelfReportedSource.Peru_Pipe4]: [
+  [SelfReportedSource.Chile_Pipe3]: [[{ key: 'fleet' }]],
+  [SelfReportedSource.Peru]: [
     [{ key: 'origin' }, { key: 'sourceFleet' }, { key: 'externalId' }],
     [{ key: 'length' }, { key: 'holdCapacityM3' }, { key: 'beam' }],
     [{ key: 'licenseDescription' }, { key: 'resolution' }],
     [{ key: 'hull' }, { key: 'targetSpecies' }],
   ],
-  [SelfReportedSource.CostaRica_Pipe4]: [[{ key: 'externalId' }]],
-  [SelfReportedSource.Brazil_Pipe4]: [
+  [SelfReportedSource.CostaRica]: [[{ key: 'externalId' }]],
+  [SelfReportedSource.Brazil]: [
     [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
     [{ key: 'externalId' }],
   ],
-  [SelfReportedSource.Chile_Pipe4]: [[{ key: 'sourceFleet' }]],
+  [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
 }
 
 const VESSEL_FISICAL_FEATURES_FIELDS: VesselRenderField[] = [
