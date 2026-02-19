@@ -2,24 +2,23 @@ import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { DateTime } from 'luxon'
 
-import { GapEvent, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { Dataset } from '@globalfishingwatch/api-types'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 
+import { VMS_DATAVIEW_INSTANCE_ID } from 'data/dataviews'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
+import { getEventLabel } from 'utils/analytics'
 import { formatInfoField } from 'utils/info'
 
-import type {
-  ExtendedEventVessel,
-  ExtendedFeatureSingleEvent,
-  SliceExtendedClusterPickingObject,
-} from '../../map.slice'
+import type { ExtendedFeatureSingleEvent, SliceExtendedClusterPickingObject } from '../../map.slice'
 
 import styles from '../Popup.module.css'
 
@@ -38,10 +37,15 @@ function EventsGapTooltipRow({
 }: EventsGapTooltipRowProps) {
   const { t } = useTranslation()
 
-  const seeGapEventClick = useCallback(() => {
+  const seeGapEventClick = useCallback((dataset: Dataset) => {
     trackEvent({
-      category: TrackCategory.GlobalReports,
+      category: TrackCategory.VesselProfile,
       action: `Clicked see gap event`,
+      label: getEventLabel(
+        [` dataset_name: ${dataset.name} `, ` source: ${dataset.source} `, dataset.id].filter(
+          Boolean
+        ) as string[]
+      ),
     })
   }, [])
 
@@ -68,6 +72,9 @@ function EventsGapTooltipRow({
               <span className={styles.rowText}>
                 <I18nNumber number={feature.count} />{' '}
                 {t((t) => t.event.gap, {
+                  source: feature.datasetId?.includes(VMS_DATAVIEW_INSTANCE_ID)
+                    ? t((t) => t.common.vms)
+                    : t((t) => t.common.ais),
                   count: feature.count,
                 })}
                 {!feature.properties.cluster && gapStart && interval && (
@@ -125,6 +132,7 @@ function EventsGapTooltipRow({
                                       vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
                                       vesselSelfReportedId: event.vessel.id,
                                     }}
+                                    onClick={() => seeGapEventClick(event.dataset)}
                                   >
                                     {formatInfoField(event.vessel?.name, 'shipname')}
                                   </VesselLink>
@@ -160,7 +168,7 @@ function EventsGapTooltipRow({
                               target="_blank"
                               size="small"
                               className={styles.btnLarge}
-                              onClick={seeGapEventClick}
+                              onClick={() => seeGapEventClick(event.dataset)}
                             >
                               {t((t) => t.common.seeMore)}
                             </Button>

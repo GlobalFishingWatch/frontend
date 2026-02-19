@@ -29,6 +29,7 @@ export enum EventTypes {
   Encounter = 'encounter',
   Fishing = 'fishing',
   Gap = 'gap',
+  Gaps = 'gaps',
   Port = 'port_visit',
   Loitering = 'loitering',
 }

@@ -103,12 +103,22 @@ const VesselLink = ({
         onClick(e, vesselId)
         trackEvent({
           category: TrackCategory.SearchVessel,
-          action: 'vessel search click',
-          label: vesselId,
+          action: 'vessel profile link click',
+          label: `vesselId: ${vesselId} | datasetId: ${datasetId} | source: ${identity?.sourceCode?.join(', ')}`,
         })
       }
     },
-    [dispatch, eventId, eventType, fitBounds, onClick, vesselId, vesselInfoDataId]
+    [
+      datasetId,
+      dispatch,
+      eventId,
+      eventType,
+      fitBounds,
+      identity?.sourceCode,
+      onClick,
+      vesselId,
+      vesselInfoDataId,
+    ]
   )
 
   if (!vesselId) return children

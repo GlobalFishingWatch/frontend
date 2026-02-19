@@ -14,6 +14,7 @@ import type { DeckLayerPickingObject, DeckLayerProps, DeckPickingObject } from '
 export type FourwingsClusterEventType =
   | `${EventTypes.Encounter}`
   | `${EventTypes.Gap}`
+  | `${EventTypes.Gaps}`
   | `${EventTypes.Port}`
   | `${EventTypes.Loitering}`
   | 'user' // Used for BigQuery user datasets

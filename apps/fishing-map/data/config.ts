@@ -145,6 +145,7 @@ export const EVENTS_COLORS: Record<
   [EventTypes.Port]: '#99EEFF',
   [EventTypes.Fishing]: '#6075A7',
   [EventTypes.Gap]: '#f45d5e',
+  [EventTypes.Gaps]: '#f45d5e',
   fishingLabels: PRIMARY_BLUE_COLOR,
 }
 

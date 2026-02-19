@@ -33,7 +33,14 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
 
   const highlightStartTime = dataview.config?.highlightStartTime || highlightedTime?.start
   const highlightEndTime = dataview.config?.highlightEndTime || highlightedTime?.end
-
+  const events = resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
+    const eventType = resource.dataset?.subcategory as EventTypes
+    return {
+      type: eventType,
+      url: `${API_GATEWAY}${resource.url}`,
+    }
+  })
+  console.log('🚀 ~ resolveDeckVesselLayerProps ~ events:', events)
   return {
     id: dataview.id,
     visible: dataview.config?.visible ?? true,
@@ -59,13 +66,7 @@ export const resolveDeckVesselLayerProps: DeckResolverFunction<VesselLayerProps>
     color: hexToDeckColor(dataview.config?.color as string),
     colorBy: globalConfig.vesselsColorBy,
     maxTimeGapHours: globalConfig.vesselsMaxTimeGapHours,
-    events: resolveDataviewDatasetResources(dataview, DatasetTypes.Events).map((resource) => {
-      const eventType = resource.dataset?.subcategory as EventTypes
-      return {
-        type: eventType,
-        url: `${API_GATEWAY}${resource.url}`,
-      }
-    }),
+    events,
     visibleEvents: visibleEvents,
     highlightEventIds,
     hoveredFeature: globalConfig.highlightedFeatures?.find(

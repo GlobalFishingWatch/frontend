@@ -331,7 +331,10 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
   name: 'datasets',
   initialState,
   reducers: {
-    setDeprecatedDatasets: (state, action: PayloadAction<DatasetsMigration>) => {
+    setDeprecatedDatasets: (
+      state: { deprecatedDatasets: DatasetsMigration },
+      action: PayloadAction<DatasetsMigration>
+    ) => {
       state.deprecatedDatasets = { ...state.deprecatedDatasets, ...(action.payload || {}) }
     },
   },
