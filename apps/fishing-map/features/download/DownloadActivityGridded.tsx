@@ -34,6 +34,7 @@ import {
   selectIsDownloadActivityTimeoutError,
 } from 'features/download/downloadActivity.slice'
 import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
+import { DownloadAreaLabel } from 'features/download/DownloadAreaLabel'
 import UserGuideLink from 'features/help/UserGuideLink'
 import TimelineDatesRange from 'features/map/controls/TimelineDatesRange'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -211,7 +212,6 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
   }
   useActivityDownloadTimeoutRefresh()
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
-  const parsedLabel = htmlSafeParse(downloadAreaName)
 
   return (
     <Fragment>
@@ -219,7 +219,7 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
         <div className={styles.info}>
           <div>
             <label>{t((t) => t.download.area)}</label>
-            <Tag>{parsedLabel || EMPTY_FIELD_PLACEHOLDER}</Tag>
+            <DownloadAreaLabel name={downloadAreaName} />
           </div>
           <div>
             <label>{t((t) => t.download.timeRange)}</label>

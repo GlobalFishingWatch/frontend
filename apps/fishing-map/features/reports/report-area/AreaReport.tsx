@@ -2,7 +2,6 @@ import { Fragment, useCallback, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { uniq } from 'es-toolkit'
-import dynamic from 'next/dynamic'
 
 import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import type { Tab } from '@globalfishingwatch/ui-components'

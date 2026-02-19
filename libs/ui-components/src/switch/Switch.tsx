@@ -58,7 +58,7 @@ export function Switch(props: SwitchProps) {
         type="button"
         role="switch"
         aria-checked={active}
-        {...(testId && { 'data-test': testId })}
+        {...(testId && { 'data-testid': testId })}
         {...(typeof tooltip === 'string' && { 'aria-label': tooltip })}
         onClick={onClickCallback}
         className={cx(

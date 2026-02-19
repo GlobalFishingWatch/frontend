@@ -329,10 +329,10 @@ function VesselGroupModal(): React.ReactElement<any> {
           category: TrackCategory.VesselGroups,
           action: `${editingVesselGroupId ? 'Edit' : 'Create new'} vessel group`,
           label: getEventLabel([
-            vesselGroupId,
-            calculateVMSVesselsPercentage(vesselGroupVessels).toString(),
+            `vessel_id: ${vesselGroupId}`,
+            calculateVMSVesselsPercentage(vesselGroupVessels),
           ]),
-          value: `number of vessel identities: ${vessels.length}`,
+          value: `number of vessels: ${vessels.length}`,
         })
       }
     },
