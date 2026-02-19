@@ -115,8 +115,25 @@
   display: inline-block;
   z-index: 1;
   height: var(--border-size);
-  background: var(--background-color);
-  opacity: 0.6;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--background-color) 0,
+    var(--background-color) 2px,
+    transparent 3px,
+    transparent 8px
+  );
+  background-color: transparent;
+}
+
+.gaps.highlighted {
+  background-color: transparent;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--background-color) 0,
+    var(--background-color) 2px,
+    transparent 3px,
+    transparent 8px
+  );
 }
 
 .gaps::before,
@@ -125,7 +142,7 @@
   position: absolute;
   left: 0;
   top: 50%;
-  width: calc(var(--size) * 0.8);
+  width: calc(var(--size) * 1.2);
   height: var(--border-size);
   background: var(--background-color);
   transform-origin: center;
