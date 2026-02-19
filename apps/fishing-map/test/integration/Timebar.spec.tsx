@@ -46,8 +46,7 @@ describe('App Timebar Integration', () => {
   })
 
   it('events should be visible on timebar', async () => {
-    const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [], true)
     const { getByTestId, getByText } = await render(<App />, {
       store,
     })
@@ -64,8 +63,7 @@ describe('App Timebar Integration', () => {
   })
 
   it('detections should be visible on timebar', async () => {
-    const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [], true)
     const { getByTestId, getByText } = await render(<App />, {
       store,
     })
