@@ -591,6 +591,7 @@ class Timeline extends PureComponent<TimelineProps> {
             </div>
           </div>
           <div
+            data-testid="timeline-tooltip-container"
             className={styles.tooltipContainer}
             ref={(el) => {
               this.tooltipContainer = el
