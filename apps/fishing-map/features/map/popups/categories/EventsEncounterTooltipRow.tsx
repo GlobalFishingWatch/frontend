@@ -187,7 +187,7 @@ function EncounterTooltipRow({
                           </div>
                         )}
                       </div>
-                      {event.vessel && (
+                      {event.vessel?.id && (
                         <div className={styles.row}>
                           <VesselLink
                             vesselId={event.vessel.id}
