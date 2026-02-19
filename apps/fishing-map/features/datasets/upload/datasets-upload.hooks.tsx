@@ -4,15 +4,18 @@ import { useTranslation } from 'react-i18next'
 import type { MultiSelectOption } from '@globalfishingwatch/api-client'
 import type {
   DatasetConfiguration,
-  DatasetConfigurationUI,
-  DatasetSchemaItem,
-  DatasetSchemaType,
+  DatasetFilterType,
+  UserContextLayerV1Configuration,
 } from '@globalfishingwatch/api-types'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import {
-  MAX_SCHEMA_ENUM_VALUES,
-  MAX_SCHEMA_ENUM_VALUES_EXCEEDED,
+  MAX_FILTERS_ENUM_VALUES,
+  MAX_FILTERS_ENUM_VALUES_EXCEEDED,
 } from '@globalfishingwatch/data-transforms'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfiguration,
+  getFlattenDatasetFilters,
+} from '@globalfishingwatch/datasets-client'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 
 import DatasetFieldLabel from 'features/datasets/upload/DatasetFieldLabel'
@@ -29,80 +32,66 @@ export function useDatasetMetadata() {
     }))
   }, [])
 
-  const setDatasetMetadataConfig = useCallback(
-    (newConfig: Partial<DatasetConfiguration | DatasetConfigurationUI>) => {
-      setDatasetMetadataState((meta = {} as DatasetMetadata) => {
-        const {
-          idProperty = meta.configuration?.idProperty,
-          valueProperties = meta.configuration?.valueProperties,
-          propertyToInclude = meta.configuration?.propertyToInclude,
-          ...configurationUI
-        } = newConfig as DatasetConfiguration
-        return {
-          ...meta,
-          configuration: {
-            ...meta?.configuration,
+  const setDatasetMetadataConfig = useCallback((newConfig: DatasetConfiguration['frontend']) => {
+    setDatasetMetadataState((meta = {} as DatasetMetadata) => {
+      const configurationByType =
+        meta.type === DatasetTypes.UserTracks ? 'userTracksV1' : 'userContextLayerV1'
+      const contextConfig = getDatasetConfiguration(meta, configurationByType)
+      const frontendConfig = getDatasetConfiguration(meta)
+      const idProperty = contextConfig?.idProperty
+      const valuePropertyId = (contextConfig as UserContextLayerV1Configuration)?.valuePropertyId
+      return {
+        ...meta,
+        configuration: {
+          ...meta?.configuration,
+          [configurationByType]: {
+            ...(meta?.configuration?.[configurationByType] || {}),
             idProperty,
-            valueProperties,
-            propertyToInclude,
-            configurationUI: {
-              ...meta?.configuration?.configurationUI,
-              ...(configurationUI as DatasetConfigurationUI),
-            },
+            valuePropertyId,
           },
-        }
-      })
-    },
-    []
-  )
-
-  const setDatasetMetadataSchema = useCallback(
-    (newSchemaEntry: Record<string, DatasetSchemaItem>) => {
-      setDatasetMetadataState((meta = {} as DatasetMetadata) => {
-        return {
-          ...meta,
-          schema: {
-            ...meta?.schema,
-            ...newSchemaEntry,
+          frontend: {
+            ...frontendConfig,
+            ...newConfig,
           },
-        }
-      })
-    },
-    []
-  )
+        },
+      }
+    })
+  }, [])
 
   return useMemo(
     () => ({
       datasetMetadata,
       setDatasetMetadata,
       setDatasetMetadataConfig,
-      setDatasetMetadataSchema,
     }),
-    [datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig, setDatasetMetadataSchema]
+    [datasetMetadata, setDatasetMetadata, setDatasetMetadataConfig]
   )
 }
 
 const DISCARDED_FIELDS = ['gfw_id']
 export function useDatasetMetadataOptions(
   datasetMetadata?: DatasetMetadata,
-  schemaTypes = [] as DatasetSchemaType[]
+  filterTypes = [] as DatasetFilterType[]
 ) {
   const { t } = useTranslation()
+  const filters = datasetMetadata?.filters
   const fieldsOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
-    if (!datasetMetadata?.schema) return []
-
-    const options = Object.entries(datasetMetadata.schema).flatMap(([field, fieldSchema]) => {
-      if (schemaTypes.length > 0 && !schemaTypes.includes(fieldSchema.type)) {
+    if (!filters) {
+      return []
+    }
+    const flattenedFilters = getFlattenDatasetFilters(filters)
+    const options = flattenedFilters.flatMap((filter) => {
+      if (filterTypes.length > 0 && !filterTypes.includes(filter.type)) {
         return []
       }
       return {
-        id: field,
-        label: <DatasetFieldLabel field={field} fieldSchema={fieldSchema} />,
+        id: filter.id,
+        label: <DatasetFieldLabel field={filter.id} fieldFilter={filter} />,
       }
     })
 
     return options.sort(sortFields)
-  }, [datasetMetadata?.schema, schemaTypes])
+  }, [filterTypes, filters])
 
   const getSelectedOption = useCallback(
     (
@@ -121,64 +110,64 @@ export function useDatasetMetadataOptions(
   )
 
   const filtersFieldsOptions: ((SelectOption | MultiSelectOption) & {
-    type?: DatasetSchemaType
+    type?: DatasetFilterType
   })[] = useMemo(() => {
-    const options = datasetMetadata?.schema
-      ? Object.entries(datasetMetadata.schema).flatMap(([field, schema]) => {
-          if (
-            (schemaTypes.length > 0 && !schemaTypes.includes(schema?.type as DatasetSchemaType)) ||
-            DISCARDED_FIELDS.includes(field)
-          ) {
-            return []
-          }
-          const isEnumAllowed =
-            schema?.type === 'boolean' ||
-            (schema?.type === 'string' && schema?.enum && schema?.enum?.length > 0)
-          const isRangeAllowed = schema?.type === 'range' && schema.enum?.length === 2
-          const isMaxValuesExceeded = schema.enum?.[0] === MAX_SCHEMA_ENUM_VALUES_EXCEEDED
-          return isEnumAllowed || isRangeAllowed
-            ? {
-                id: field,
-                label: (
-                  <DatasetFieldLabel
-                    field={
-                      field +
-                      (isMaxValuesExceeded
-                        ? ` - ${t((t) => t.datasetUpload.maxValuesExceededForFiltering, {
-                            max: MAX_SCHEMA_ENUM_VALUES,
-                          })}`
-                        : '')
-                    }
-                    fieldSchema={schema}
-                  />
-                ),
-                type: schema?.type,
-                disableSelection: isMaxValuesExceeded,
-                tooltip: isMaxValuesExceeded
-                  ? t((t) => t.datasetUpload.maxValuesExceededForFilteringTooltip, {
-                      max: MAX_SCHEMA_ENUM_VALUES,
-                    })
-                  : undefined,
-              }
-            : []
-        })
-      : []
+    const options =
+      datasetMetadata?.filters?.userContextLayers &&
+      datasetMetadata?.filters?.userContextLayers?.length > 0
+        ? datasetMetadata.filters.userContextLayers.flatMap((filter) => {
+            if (
+              (filterTypes.length > 0 && !filterTypes.includes(filter.type as DatasetFilterType)) ||
+              DISCARDED_FIELDS.includes(filter.id)
+            ) {
+              return []
+            }
+            const isEnumAllowed =
+              filter?.type === 'boolean' ||
+              (filter?.type === 'string' && filter?.enum && filter?.enum?.length > 0)
+            const isRangeAllowed = filter?.type === 'range' && filter.enum?.length === 2
+            const isMaxValuesExceeded = filter.enum?.[0] === MAX_FILTERS_ENUM_VALUES_EXCEEDED
+            return isEnumAllowed || isRangeAllowed
+              ? {
+                  id: filter.id,
+                  label: (
+                    <DatasetFieldLabel
+                      field={
+                        filter.id +
+                        (isMaxValuesExceeded
+                          ? ` - ${t((t) => t.datasetUpload.maxValuesExceededForFiltering, {
+                              max: MAX_FILTERS_ENUM_VALUES,
+                            })}`
+                          : '')
+                      }
+                      fieldFilter={filter}
+                    />
+                  ),
+                  type: filter.type,
+                  disableSelection: isMaxValuesExceeded,
+                  tooltip: isMaxValuesExceeded
+                    ? t((t) => t.datasetUpload.maxValuesExceededForFilteringTooltip, {
+                        max: MAX_FILTERS_ENUM_VALUES,
+                      })
+                    : undefined,
+                }
+              : []
+          })
+        : []
     return options
       .filter((o) => {
+        const { latitude, longitude, timestamp } = getDatasetConfiguration(
+          datasetMetadata,
+          'frontend'
+        )
         return (
-          o.id !==
-            getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'latitude' }) &&
-          o.id !==
-            getDatasetConfigurationProperty({
-              dataset: datasetMetadata,
-              property: 'longitude',
-            }) &&
-          o.id !==
-            getDatasetConfigurationProperty({ dataset: datasetMetadata, property: 'timestamp' })
+          o.id !== latitude?.toString() &&
+          o.id !== longitude?.toString() &&
+          o.id !== timestamp?.toString()
         )
       })
       .sort(sortFields)
-  }, [datasetMetadata, schemaTypes, t])
+  }, [datasetMetadata, filterTypes, t])
 
   return useMemo(
     () => ({ fieldsOptions, getSelectedOption, filtersFieldsOptions }),

@@ -10,6 +10,7 @@ import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspace
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import {
   getIsDataviewReportSupported,
   selectReportLayersVisible,
@@ -72,10 +73,14 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
   }
 
   const onReportClick = (e: React.MouseEvent<Element, MouseEvent>) => {
+    const layerSources = (reportLayersVisible ?? [])
+      .map((layer) => (layer.datasets ?? []).map((d) => getDatasetLabel(d)))
+      .flat()
+      .join(', ')
     trackEvent({
       category: TrackCategory.Analysis,
-      action: 'Open analysis panel',
-      label: areaId as string,
+      action: 'Generate report from context layer',
+      label: 'active layer sources: ' + layerSources,
     })
     resetSidebarScroll()
     dispatch(resetReportData())

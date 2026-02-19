@@ -4,18 +4,16 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
+import { checkDatasetReportPermission } from '@globalfishingwatch/datasets-client'
 import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import type { AreaKeyId } from 'features/areas/areas.slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import { getDatasetsReportNotSupported } from 'features/datasets/datasets.permissions'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import {
-  checkDatasetReportPermission,
-  getActiveDatasetsInDataview,
-  getDatasetsReportNotSupported,
-} from 'features/datasets/datasets.utils'
+import { getActiveDatasetsInDataview } from 'features/datasets/datasets.utils'
 import {
   selectActiveHeatmapDowloadDataviewsByTab,
   selectActiveHeatmapVesselDatasets,
@@ -52,6 +50,7 @@ import {
 import type { GroupBy, HeatmapDownloadFormat, TemporalResolution } from './downloadActivity.config'
 import { getVesselGroupOptions, VESSEL_FORMAT_OPTIONS } from './downloadActivity.config'
 import ActivityDownloadError, { useActivityDownloadTimeoutRefresh } from './DownloadActivityError'
+import { DownloadAreaLabel } from './DownloadAreaLabel'
 
 import styles from './DownloadModal.module.css'
 
@@ -74,7 +73,6 @@ function DownloadActivityByVessel({ onDownloadCallback }: { onDownloadCallback?:
   const downloadAreaKey = useSelector(selectDownloadActivityAreaKey)
   const downloadAreaDataset = useSelector(selectDatasetById(downloadAreaKey?.datasetId as string))
   const isDownloadAreaLoading = useSelector(selectIsDownloadActivityAreaLoading)
-
   const bufferUnit = useSelector(selectUrlBufferUnitQuery)
   const bufferValue = useSelector(selectUrlBufferValueQuery)
   const bufferOperation = useSelector(selectUrlBufferOperationQuery)
@@ -162,15 +160,13 @@ function DownloadActivityByVessel({ onDownloadCallback }: { onDownloadCallback?:
 
   useActivityDownloadTimeoutRefresh()
 
-  const parsedLabel = htmlSafeParse(downloadAreaName)
-
   return (
     <Fragment>
       <div className={styles.container} data-test="download-activity-byvessel">
         <div className={styles.info}>
           <div>
             <label>{t((t) => t.download.area)}</label>
-            <Tag testId="area-name">{parsedLabel || EMPTY_FIELD_PLACEHOLDER}</Tag>
+            <DownloadAreaLabel name={downloadAreaName} />
           </div>
           <div>
             <label>{t((t) => t.download.timeRange)}</label>

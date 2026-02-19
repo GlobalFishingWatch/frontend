@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -13,6 +13,7 @@ import {
   DEFAULT_WORKSPACE_ID,
   GLOBAL_VESSELS_DATASET_ID,
 } from 'data/workspaces'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import DatasetLabel from 'features/datasets/DatasetLabel'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
@@ -32,6 +33,7 @@ import VesselPin from 'features/vessel/VesselPin'
 import { getVesselIdentityTooltipSummary } from 'features/workspace/vessels/VesselLayerPanel'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
 import { WORKSPACE_SEARCH } from 'routes/routes'
+import { getEventLabel } from 'utils/analytics'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
@@ -73,6 +75,17 @@ function VesselsTable({
   const { start, end } = useSelector(selectTimeRange)
   const workspace = useSelector(selectWorkspace)
   const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
+
+  const seeVesselClick = useCallback(
+    (source: string) => {
+      trackEvent({
+        category: TrackCategory.VesselProfile,
+        action: `Clicked see vessel from ${feature?.category}`,
+        label: getEventLabel([`source: ${source}`]),
+      })
+    },
+    [feature]
+  )
 
   const interactionAllowed = [...SUBLAYER_INTERACTION_TYPES_WITH_VESSEL_INTERACTION].includes(
     feature?.category || ''
@@ -207,6 +220,7 @@ function VesselsTable({
                               vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
                               vesselSelfReportedId: vessel.id,
                             }}
+                            onClick={() => seeVesselClick(getDatasetLabel(vessel.infoDataset))}
                           >
                             {vesselName}
                           </VesselLink>

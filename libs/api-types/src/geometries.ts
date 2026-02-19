@@ -1,14 +1,14 @@
 import type { MultiPolygon, Point, Polygon } from 'geojson'
 
-export interface TileContextAreaFeatureProperties {
+export type TileContextAreaFeatureProperties = {
   gfw_id: string
   [key: string]: string
 }
 
-export interface TileContextAreaFeature<
+export type TileContextAreaFeature<
   Geometry = Polygon | MultiPolygon | Point,
   Properties = TileContextAreaFeatureProperties,
-> {
+> = {
   id: string
   value?: string
   bbox?: [number, number, number, number] | undefined

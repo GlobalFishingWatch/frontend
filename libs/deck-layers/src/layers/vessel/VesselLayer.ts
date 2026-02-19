@@ -169,7 +169,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         .findLast(([zoomLevel]) => zoom >= parseInt(zoomLevel))?.[1] || TRACK_DEFAULT_THINNING
 
     Object.entries(THINNING_LEVELS[thinningLevel]).forEach(([key, value]) => {
-      trackUrlObject.searchParams.set(key, value)
+      trackUrlObject.searchParams.set(key, value?.toString() as string)
     })
     const format = trackUrlObject.searchParams.get('format') || 'DECKGL'
     if (format !== 'DECKGL' && !warnLogged) {

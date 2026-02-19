@@ -1,14 +1,18 @@
+import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
+import { getEventLabel } from 'utils/analytics'
 import { getEventDescription } from 'utils/events'
 import { formatInfoField } from 'utils/info'
 
@@ -37,6 +41,18 @@ function ClusterEventTooltipRow({
     : event?.start
       ? getUTCDateTime(event?.start as string).toMillis()
       : undefined
+
+  const seeEventClick = useCallback((dataset: Dataset) => {
+    trackEvent({
+      category: TrackCategory.VesselProfile,
+      action: `Clicked see loitering event`,
+      label: getEventLabel(
+        [` dataset_name: ${dataset.name} `, ` source: ${dataset.source} `, dataset.id].filter(
+          Boolean
+        ) as string[]
+      ),
+    })
+  }, [])
 
   return (
     <div className={styles.popupSection}>
@@ -83,6 +99,7 @@ function ClusterEventTooltipRow({
                       vesselSelfReportedId: event.vessel.id,
                     }}
                     className={styles.marginRight}
+                    onClick={() => seeEventClick(event.dataset)}
                   >
                     {formatInfoField(event.vessel.name, 'shipname')}
                   </VesselLink>

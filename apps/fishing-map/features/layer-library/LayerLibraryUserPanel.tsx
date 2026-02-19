@@ -6,6 +6,7 @@ import cx from 'classnames'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DataviewCategory } from '@globalfishingwatch/api-types'
+import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
@@ -146,7 +147,8 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
                     infoTooltip = t((t) => t.dataset.importing)
                   }
                   if (datasetError) {
-                    infoTooltip = `${t((t) => t.errors.uploadError)} - ${dataset.importLogs}`
+                    const configuration = getDatasetConfiguration(dataset, 'userContextLayerV1')
+                    infoTooltip = `${t((t) => t.errors.uploadError)} - ${configuration.importLogs}`
                   }
                   const datasetIcon = getDatasetTypeIcon(dataset)
 

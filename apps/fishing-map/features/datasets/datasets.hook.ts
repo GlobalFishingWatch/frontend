@@ -45,10 +45,11 @@ const DATASET_REFRESH_TIMEOUT = 10000
 export const getDataviewInstanceByDataset = (dataset: Dataset) => {
   const isBQEditorLayer = getIsBQEditorDataset(dataset)
   if (isBQEditorLayer) {
+    const config = getDatasetConfiguration(dataset, 'fourwingsV1')
     return dataset.category === DatasetCategory.Activity
       ? getBigQuery4WingsDataviewInstance(dataset.id, {
           aggregationOperation:
-            (dataset.configuration?.aggregationOperation as FourwingsAggregationOperation) ||
+            (config?.function?.toLowerCase() as FourwingsAggregationOperation) ||
             FourwingsAggregationOperation.Sum,
         })
       : getBigQueryEventsDataviewInstance(dataset.id)
@@ -141,7 +142,7 @@ export const useDatasetsAPI = () => {
   const dispatchUpsertDataset = useCallback(
     async (createDataset: UpsertDataset): Promise<{ payload?: Dataset; error?: AsyncError }> => {
       const action = await dispatch(
-        upsertDatasetThunk({ ...createDataset, addIdSuffix: debugOptions.addDatasetIdHash })
+        upsertDatasetThunk({ ...createDataset, addIdSuffix: debugOptions?.addDatasetIdHash })
       )
       if (upsertDatasetThunk.fulfilled.match(action)) {
         return { payload: action.payload }
@@ -149,7 +150,7 @@ export const useDatasetsAPI = () => {
         return { error: action.payload as AsyncError }
       }
     },
-    [debugOptions?.addDatasetIdHash, dispatch]
+    [debugOptions, dispatch]
   )
 
   const dispatchUpdateDataset = useCallback(

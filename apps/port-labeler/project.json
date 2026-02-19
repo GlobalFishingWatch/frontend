@@ -84,13 +84,6 @@
         ]
       }
     },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/port-labeler"],
-      "options": {
-        "jestConfig": "apps/port-labeler/jest.config.ts"
-      }
-    },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {

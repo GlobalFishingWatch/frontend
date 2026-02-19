@@ -6,6 +6,7 @@ import cx from 'classnames'
 import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DataviewType } from '@globalfishingwatch/api-types'
 import {
+  getDatasetConfiguration,
   getDatasetConfigurationProperty,
   getDatasetGeometryType,
   getUserDataviewDataset,
@@ -26,9 +27,9 @@ import {
 import {
   getDatasetLabel,
   getIsBQEditorDataset,
-  getSchemaFiltersInDataview,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
+import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { useMapDrawConnect } from 'features/map/map-draw.hooks'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectUserId } from 'features/user/selectors/user.permissions.selectors'
@@ -97,7 +98,7 @@ function UserPanel({
     activeIndex,
   } = useLayerPanelDataviewSort(dataview.id)
 
-  const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+  const { filtersAllowed } = getFiltersInDataview(dataview)
   const hasSchemaFilters = filtersAllowed.some(showSchemaFilter)
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
@@ -131,12 +132,11 @@ function UserPanel({
       dispatchSetMapDrawing(geometryType as DrawFeatureType)
     } else {
       dispatchDatasetModalOpen(true)
+      const { geometryType } = getDatasetConfiguration(dataset)
       dispatchDatasetModalConfig({
         id: dataset?.id,
         dataviewId: dataview.id,
-        type:
-          (dataset?.configuration?.configurationUI?.geometryType as DatasetGeometryType) ||
-          dataset?.configuration?.geometryType,
+        type: geometryType,
       })
     }
   }

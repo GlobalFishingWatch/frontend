@@ -9,9 +9,7 @@ import { PUBLIC_SUFIX } from './config'
 
 type WorkspaceEnv = 'development' | 'production'
 export const WORKSPACE_ENV =
-  (process.env.NEXT_PUBLIC_WORKSPACE_ENV as WorkspaceEnv) ||
-  (process.env.NODE_ENV as WorkspaceEnv) ||
-  'production'
+  (process.env.NEXT_PUBLIC_WORKSPACE_ENV as WorkspaceEnv) || (process.env.NODE_ENV as WorkspaceEnv) || 'production'
 
 export function getWorkspaceEnv(): WorkspaceEnv {
   return WORKSPACE_ENV
@@ -63,32 +61,23 @@ export const BATHYMETRY_CONTOUR_DATAVIEW_SLUG = 'bathymetry-contour' as const
 
 export const FISHING_DATAVIEW_SLUG_PREFIX = 'apparent-fishing-effort' as const
 // Workspaces dataviews
-export const FISHING_DATAVIEW_SLUG_ALL =
-  `${FISHING_DATAVIEW_SLUG_PREFIX}-v-${PIPE_DATASET_VERSION}` as const
-export const FISHING_DATAVIEW_SLUG_AIS =
-  `${FISHING_DATAVIEW_SLUG_PREFIX}-ais-v-${PIPE_DATASET_VERSION}` as const
-export const FISHING_DATAVIEW_SLUG_VMS =
-  `${FISHING_DATAVIEW_SLUG_PREFIX}-vms-v-${PIPE_DATASET_VERSION}` as const
-export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG =
-  `encounter-cluster-events-v-${PIPE_DATASET_VERSION}` as const
-export const CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG =
-  `loitering-cluster-events-v-${PIPE_DATASET_VERSION}` as const
-export const CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG =
-  `port-visit-cluster-events-v-${PIPE_DATASET_VERSION}` as const
-export const CLUSTER_GAPS_EVENTS_DATAVIEW_SLUG =
-  `gaps-cluster-events-v-${PIPE_DATASET_VERSION}` as const
+export const FISHING_DATAVIEW_SLUG_ALL = `${FISHING_DATAVIEW_SLUG_PREFIX}-v-${PIPE_DATASET_VERSION}` as const
+export const FISHING_DATAVIEW_SLUG_AIS = `${FISHING_DATAVIEW_SLUG_PREFIX}-ais-v-${PIPE_DATASET_VERSION}` as const
+export const FISHING_DATAVIEW_SLUG_VMS = `${FISHING_DATAVIEW_SLUG_PREFIX}-vms-v-${PIPE_DATASET_VERSION}` as const
+export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG = `encounter-cluster-events-v-${PIPE_DATASET_VERSION}` as const
+export const CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG = `loitering-cluster-events-v-${PIPE_DATASET_VERSION}` as const
+export const CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG = `port-visit-cluster-events-v-${PIPE_DATASET_VERSION}` as const
+export const CLUSTER_GAPS_EVENTS_DATAVIEW_SLUG = `gaps-cluster-events-v-${PIPE_DATASET_VERSION}` as const
+export const CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG = `gaps-ais-off-cluster-events-v-${PIPE_DATASET_VERSION}` as const
 export const VIIRS_MATCH_DATAVIEW_SLUG = `viirs-match-v-${PIPE_DATASET_VERSION}` as const
-export const VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG =
-  `viirs-match-skylight-v-${PIPE_DATASET_VERSION}` as const
+export const VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG = `viirs-match-skylight-v-${PIPE_DATASET_VERSION}` as const
 export const SAR_DATAVIEW_SLUG = `sar-v-${PIPE_DATASET_VERSION}` as const
 export const SENTINEL2_DATAVIEW_SLUG = `sentinel-2-v-${PIPE_DATASET_VERSION}` as const
 export const PRESENCE_DATAVIEW_SLUG = `presence-activity-v-${PIPE_DATASET_VERSION}` as const
 export const TEMPLATE_USER_TRACK_SLUG = `user-track` as const
-export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-random-forest'
-// `fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
+export const TEMPLATE_VESSEL_DATAVIEW_SLUG = 'fishing-map-vessel-track-random-forest' // `fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
 // export const TEMPLATE_VESSEL_DATAVIEW_SLUG = `fishing-map-vessel-track-v-${BASE_DATASETS_VERSION}-gaps` as const
-export const TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG =
-  `vessel-track-only-v-${PIPE_DATASET_VERSION}` as const
+export const TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG = `vessel-track-only-v-${PIPE_DATASET_VERSION}` as const
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = `default-context-layer` as const
 export const TEMPLATE_POINTS_DATAVIEW_SLUG = `default-points-layer` as const
 export const TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG = `gfw-environmental-layer` as const

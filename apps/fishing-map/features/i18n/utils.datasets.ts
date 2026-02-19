@@ -1,14 +1,20 @@
-import { removeDatasetVersion } from '@globalfishingwatch/datasets-client'
+import { removeDatasetPrefix, removeDatasetVersion } from '@globalfishingwatch/datasets-client'
 
 import type { GetDatasetLabelParams } from 'features/datasets/datasets.utils'
 import i18n, { t } from 'features/i18n/i18n'
 
 export const getDatasetNameTranslated = (dataset = {} as GetDatasetLabelParams): string => {
-  const datasetId = removeDatasetVersion(dataset?.id)
-  if (datasetId && i18n.exists(`datasets:${datasetId}.name`)) {
-    return t((t) => t[datasetId].name, { ns: 'datasets' })
+  const datasetIdWithoutVersion = removeDatasetVersion(dataset?.id)
+  if (datasetIdWithoutVersion && i18n.exists(`datasets:${datasetIdWithoutVersion}.name`)) {
+    return t((t) => t[datasetIdWithoutVersion].name, { ns: 'datasets' })
   }
-  return dataset?.name || datasetId
+
+  const datasetIdWithoutPrefix = removeDatasetPrefix(dataset?.id)
+  if (datasetIdWithoutPrefix && i18n.exists(`datasets:${datasetIdWithoutPrefix}.name`)) {
+    return t((t) => t[datasetIdWithoutPrefix].name, { ns: 'datasets' })
+  }
+
+  return dataset?.name || dataset?.id || ''
 }
 
 export const getDatasetDescriptionTranslated = (dataset: {

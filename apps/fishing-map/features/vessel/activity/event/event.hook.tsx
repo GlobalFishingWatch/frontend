@@ -161,6 +161,7 @@ export function useActivityEventTranslations() {
             )
           )
         case EventTypes.Gap:
+        case EventTypes.Gaps:
           return (
             mainRegionDescription && (
               <Tooltip content={allRegionsDescription}>

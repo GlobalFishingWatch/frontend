@@ -10,6 +10,7 @@ import { Button, Icon, Tooltip } from '@globalfishingwatch/ui-components'
 import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
 import type { LibraryLayer } from 'data/layer-library'
 import { LAYER_LIBRARY_EVENTS_IDS } from 'data/layer-library/layers-events'
+import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchDatasetsByIdsThunk, selectDatasetById } from 'features/datasets/datasets.slice'
 import {
@@ -24,6 +25,7 @@ import GFWOnly from 'features/user/GFWOnly'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
 import { getNextColor } from 'features/workspace/workspace.utils'
+import { getEventLabel } from 'utils/analytics'
 import { getHighlightedText } from 'utils/text'
 
 import styles from './LayerLibraryItem.module.css'
@@ -90,6 +92,11 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
           colorRamp: isDefaultColorUnused ? config?.colorRamp : firstUnusedColor?.id,
         }),
       },
+    })
+    trackEvent({
+      category: TrackCategory.EnvironmentalData,
+      action: `add ${category} layer to workspace`,
+      label: getEventLabel([`layer_id: ${id}`]),
     })
     dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
     dispatch(setWorkspaceSuggestSave(true))

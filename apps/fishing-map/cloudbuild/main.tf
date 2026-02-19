@@ -3,7 +3,8 @@ provider "google" {
 }
 
 locals {
-  app_name = "fishing-map"
+  app_name   = "fishing-map"
+  repository = "frontend"
   secrets_path = {
     dev = "projects/706952489382/secrets"
     sta = "projects/706952489382/secrets"

@@ -1,6 +1,6 @@
 {
   "name": "@globalfishingwatch/data-transforms",
-  "version": "3.0.5",
+  "version": "4.0.1",
   "license": "MIT",
   "description": "Utils to decode various data formats",
   "type": "module",
@@ -21,8 +21,9 @@
     "dist"
   ],
   "dependencies": {
-    "@globalfishingwatch/api-types": "^8.0.3",
-    "@globalfishingwatch/deck-loaders": "0.1.3",
+    "@globalfishingwatch/api-types": "9.x",
+    "@globalfishingwatch/datasets-client": "3.x",
+    "@globalfishingwatch/deck-loaders": "0.x",
     "@tmcw/togeojson": "7.x",
     "@turf/bbox": "7.x",
     "@turf/helpers": "7.x",

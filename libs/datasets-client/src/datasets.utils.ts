@@ -1,8 +1,9 @@
 import { DateTime } from 'luxon'
 
-import type { Dataset, Dataview } from '@globalfishingwatch/api-types'
+import type { Dataset, DatasetCategory, Dataview, VesselType } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 
+import { ALL_DATASETS_PREFIX, DATASET_FULL_PREFIX } from './datasets.const'
 import type { UrlDataviewInstance } from './types'
 
 export const removeDatasetVersion = (datasetId: string) => {
@@ -11,6 +12,14 @@ export const removeDatasetVersion = (datasetId: string) => {
 
 export const getDatasetVersion = (datasetId: string) => {
   return datasetId ? datasetId?.split(':')[1] : ''
+}
+
+export const removeDatasetPrefix = (datasetId: string) => {
+  return datasetId
+    ? ALL_DATASETS_PREFIX.forEach((prefix) => {
+        return datasetId.startsWith(prefix) ? datasetId.replace(prefix, '') : ''
+      })
+    : ''
 }
 
 export function findDatasetByType(datasets = [] as Dataset[], type: DatasetTypes) {
@@ -53,4 +62,61 @@ export const getDatasetsExtent = <Format = 'string' | 'number'>(
     extentEnd = format === 'isoString' ? extentEndDate.toISO() : extentEndDate.toMillis()
   }
   return { extentStart: extentStart as Format, extentEnd: extentEnd as Format }
+}
+
+export const getDatasetsLatestEndDate = (
+  datasets: Dataset[],
+  datasetCategory?: DatasetCategory
+): string | undefined => {
+  const datasetsWithEndDate = datasets.filter((dataset) => dataset.endDate)
+  if (!datasetsWithEndDate.length) {
+    return undefined
+  }
+  const latestDate = datasetsWithEndDate.reduce((acc, dataset) => {
+    const endDate = dataset.endDate as string
+    if (datasetCategory && dataset.category !== datasetCategory) {
+      return acc
+    }
+    return endDate > acc ? endDate : acc
+  }, datasetsWithEndDate?.[0].endDate || '')
+  return latestDate
+}
+
+type RelatedDatasetByTypeParams = {
+  fullDatasetAllowed?: boolean
+  vesselType?: VesselType
+}
+
+export const getRelatedDatasetByType = (
+  dataset?: Dataset,
+  datasetType?: DatasetTypes,
+  { fullDatasetAllowed = false } = {} as RelatedDatasetByTypeParams
+) => {
+  if (fullDatasetAllowed) {
+    const fullDataset = dataset?.relatedDatasets?.find(
+      (relatedDataset) =>
+        relatedDataset.type === datasetType && relatedDataset.id.startsWith(DATASET_FULL_PREFIX)
+    )
+    if (fullDataset) {
+      return fullDataset
+    }
+  }
+  return dataset?.relatedDatasets?.find((relatedDataset) => relatedDataset.type === datasetType)
+}
+
+export const getRelatedDatasetsByType = (
+  dataset?: Dataset,
+  datasetType?: DatasetTypes,
+  fullDatasetAllowed = false
+) => {
+  if (fullDatasetAllowed) {
+    const fullDataset = dataset?.relatedDatasets?.filter(
+      (relatedDataset) =>
+        relatedDataset.type === datasetType && relatedDataset.id.startsWith(DATASET_FULL_PREFIX)
+    )
+    if (fullDataset && fullDataset.length > 0) {
+      return fullDataset
+    }
+  }
+  return dataset?.relatedDatasets?.filter((relatedDataset) => relatedDataset.type === datasetType)
 }

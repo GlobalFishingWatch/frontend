@@ -4,16 +4,14 @@ import { useSelector } from 'react-redux'
 import area from '@turf/area'
 import cx from 'classnames'
 
+import { checkDatasetReportPermission } from '@globalfishingwatch/datasets-client'
 import type { TooltipPlacement } from '@globalfishingwatch/ui-components'
 import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import type { AreaKeyId } from 'features/areas/areas.slice'
-import {
-  checkDatasetReportPermission,
-  getActiveDatasetsInDataview,
-} from 'features/datasets/datasets.utils'
+import { getActiveDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { selectActiveHeatmapDowloadDataviewsByTab } from 'features/dataviews/selectors/dataviews.selectors'
 import {
   selectDownloadActivityArea,
@@ -29,6 +27,7 @@ import {
   selectIsDownloadActivityTimeoutError,
 } from 'features/download/downloadActivity.slice'
 import DownloadActivityProductsBanner from 'features/download/DownloadActivityProductsBanner'
+import { DownloadAreaLabel } from 'features/download/DownloadAreaLabel'
 import UserGuideLink from 'features/help/UserGuideLink'
 import TimelineDatesRange from 'features/map/controls/TimelineDatesRange'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -187,7 +186,6 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
   useActivityDownloadTimeoutRefresh()
 
   const isDownloadReportSupported = getDownloadReportSupported(start, end)
-  const parsedLabel = htmlSafeParse(downloadAreaName)
 
   return (
     <Fragment>
@@ -195,7 +193,7 @@ function DownloadActivityGridded({ onDownloadCallback }: { onDownloadCallback?: 
         <div className={styles.info}>
           <div>
             <label>{t((t) => t.download.area)}</label>
-            <Tag>{parsedLabel || EMPTY_FIELD_PLACEHOLDER}</Tag>
+            <DownloadAreaLabel name={downloadAreaName} />
           </div>
           <div>
             <label>{t((t) => t.download.timeRange)}</label>

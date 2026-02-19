@@ -457,6 +457,7 @@
     "dataPortal": "Voir le portail de téléchargement de données",
     "datasetsNotAllowed": "Vous n'avez pas la permission de télécharger les jeux de données suivants :",
     "descriptionReport": "Vous pouvez télécharger une liste de l'activité ou un bitmap de carte thermique pour cette zone dans différents formats",
+    "downloadAreaLabel": "Download area as geoJSON",
     "downloading": "Downloading",
     "downloadOptions": "Options de téléchargement",
     "doYouNeedAnAPI": "Est-ce que votre application a besoin de données continues ?",

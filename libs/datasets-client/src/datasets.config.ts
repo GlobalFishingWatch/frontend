@@ -3,12 +3,13 @@ import { scaleLinear } from 'd3-scale'
 import type {
   Dataset,
   DatasetConfiguration,
-  DatasetConfigurationUI,
+  DatasetConfigurationByType,
+  DatasetFilter,
+  DatasetFilters,
   DatasetGeometryType,
-  EnviromentalDatasetConfiguration} from '@globalfishingwatch/api-types';
-import {
-  DRAW_DATASET_SOURCE
+  FrontendConfiguration,
 } from '@globalfishingwatch/api-types'
+import { DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
 
 // Got from deck-layers colorRamps to avoid circular dependencies
 export const COLOR_RAMP_DEFAULT_NUM_STEPS = 10
@@ -18,27 +19,64 @@ export type DatasetSchemaGeneratorProps = {
   data: DataList
 }
 
-export type MergedDatasetConfig = DatasetConfigurationUI & DatasetConfiguration
-export type DatasetConfigurationProperty = keyof MergedDatasetConfig
+export type DatasetConfigurationProperty = keyof FrontendConfiguration
 
-type DatasetProperty<P extends DatasetConfigurationProperty> = Required<MergedDatasetConfig>[P]
+type DatasetProperty<P extends DatasetConfigurationProperty> = Required<FrontendConfiguration>[P]
+
 export function getDatasetConfigurationProperty<P extends DatasetConfigurationProperty>({
   dataset,
   property,
+  type,
 }: {
   dataset: Partial<Dataset> | undefined
   property: P
-}): DatasetProperty<P> {
-  return (dataset?.configuration?.configurationUI?.[property as keyof DatasetConfigurationUI] ||
-    dataset?.configuration?.[property as keyof DatasetConfiguration]) as DatasetProperty<P>
+  type?: 'frontend'
+}): DatasetProperty<P> | undefined
+export function getDatasetConfigurationProperty<
+  T extends Exclude<keyof DatasetConfigurationByType, 'frontend'>,
+  P extends keyof NonNullable<DatasetConfigurationByType[T]>,
+>({
+  dataset,
+  property,
+  type,
+}: {
+  dataset: Partial<Dataset> | undefined
+  property: P
+  type: T
+}): NonNullable<DatasetConfigurationByType[T]>[P] | undefined
+export function getDatasetConfigurationProperty<P extends string>({
+  dataset,
+  property,
+  type = 'frontend',
+}: {
+  dataset: Partial<Dataset> | undefined
+  property: P
+  type?: keyof DatasetConfigurationByType
+}) {
+  const configuration = dataset?.configuration?.[type] as Record<string, unknown> | undefined
+
+  const configurationValue = configuration?.[property]
+  if (configurationValue !== undefined) {
+    return configurationValue
+  }
+
+  // Backward compatibility: older datasets might have FrontendConfiguration flattened at root.
+  if (type === 'frontend') {
+    const legacyValue = (dataset?.configuration as any)?.[property]
+    if (legacyValue !== undefined) {
+      return legacyValue
+    }
+  }
+
+  return undefined
 }
 
-export const getDatasetConfiguration = (
-  dataset: Partial<Dataset> | undefined
-): DatasetConfiguration & DatasetConfiguration['configurationUI'] => ({
-  ...(dataset?.configuration || ({} as DatasetConfiguration)),
-  ...(dataset?.configuration?.configurationUI || ({} as DatasetConfiguration['configurationUI'])),
-})
+export const getDatasetConfiguration = <T extends keyof DatasetConfiguration = 'frontend'>(
+  dataset: Partial<Dataset> | undefined,
+  configurationType: T = 'frontend' as T
+): NonNullable<DatasetConfiguration[T]> => {
+  return (dataset?.configuration?.[configurationType] ?? {}) as NonNullable<DatasetConfiguration[T]>
+}
 
 export function getDatasetGeometryType(dataset?: Dataset) {
   if (!dataset) {
@@ -54,19 +92,17 @@ export function getDatasetGeometryType(dataset?: Dataset) {
 }
 
 export const getEnvironmentalDatasetRange = (dataset: Dataset) => {
-  const {
-    max,
-    min,
-    scale = 1,
-    offset = 0,
-  } = dataset?.configuration as EnviromentalDatasetConfiguration
+  const configuration = dataset?.configuration
+  const max = configuration?.frontend?.max ?? (configuration as any)?.max
+  const min = configuration?.frontend?.min ?? (configuration as any)?.min
+  const scale = (configuration as any)?.scale ?? 1
 
   // Using Math.max to ensure we don't show negative values as 4wings doesn't support them yet
   // TODO use offset again once the whole app understand the values
   // const cleanMin = Math.max(0, Math.floor(min * scale + offset))
   // const cleanMax = Math.ceil(max * scale + offset)
-  const cleanMin = Math.max(0, Math.floor(min * scale))
-  const cleanMax = Math.ceil(max * scale)
+  const cleanMin = Math.max(0, Math.floor((min ?? 0) * scale))
+  const cleanMax = Math.ceil((max ?? 0) * scale)
   return {
     min: cleanMin,
     max: cleanMax,

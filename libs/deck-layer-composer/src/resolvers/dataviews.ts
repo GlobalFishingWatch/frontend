@@ -7,6 +7,7 @@ import {
   DataviewType,
   EndpointId,
 } from '@globalfishingwatch/api-types'
+import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getMergedDataviewId,
@@ -45,7 +46,7 @@ export const AUXILIAR_DATAVIEW_SUFIX = 'auxiliar'
 export const DATASET_COMPARISON_SUFFIX = 'dataset-comparison'
 
 const getDatasetsAvailableIntervals = (datasets: Dataset[]) =>
-  uniq((datasets || [])?.flatMap((d) => (d?.configuration?.intervals as FourwingsInterval[]) || []))
+  uniq((datasets || [])?.flatMap((d) => getDatasetConfiguration(d, 'fourwingsV1')?.intervals || []))
 
 export const getDataviewAvailableIntervals = (
   dataview: UrlDataviewInstance | ResolvedFourwingsDataviewInstance,
@@ -107,9 +108,12 @@ export function getFourwingsDataviewSublayers(dataview: UrlDataviewInstance) {
       ? dataview.datasets
       : dataview.datasets.filter((dataset) => dataview?.config?.datasets?.includes(dataset.id))
 
-  const maxZoomLevels = activeDatasets?.flatMap(({ configuration }) =>
-    configuration?.maxZoom !== undefined ? (configuration?.maxZoom as number) : []
-  )
+  const maxZoomLevels = activeDatasets?.flatMap((dataset) => {
+    const datasetConfiguration = getDatasetConfiguration(dataset, 'fourwingsV1')
+    return datasetConfiguration?.maxZoom !== undefined
+      ? (datasetConfiguration?.maxZoom as number)
+      : []
+  })
   const maxZoom = maxZoomLevels?.length ? Math.min(...maxZoomLevels) : undefined
 
   const sublayer: FourwingsSublayerConfig = {
