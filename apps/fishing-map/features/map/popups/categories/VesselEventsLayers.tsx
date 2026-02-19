@@ -121,7 +121,7 @@ function VesselEventsTooltipSection({
   const resources = useSelector(selectVisibleResources)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const dataviews = useSelector(selectVesselsDataviews)
-  const vesselDataview = dataviews.find((dataview) => dataview.id === features[0].layerId)
+  const vesselDataview = dataviews.find((dataview) => dataview.id === features?.[0]?.layerId)
   const source = vesselDataview?.datasets?.some((d) => isVMSDataset(d.id)) ? 'VMS' : 'AIS'
 
   const vesselNamesByType = useMemo(() => {
