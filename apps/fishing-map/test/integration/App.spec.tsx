@@ -47,7 +47,6 @@ describe('Fishing Map App', () => {
 
     await getByTestId('map-control-zoom-in').click()
 
-    // Wait for debounced viewport updates to complete (debounced by 1000ms)
     await new Promise((resolve) => setTimeout(resolve, 1100))
 
     await getByTestId('activity-layer-panel-switch-ais').click()
@@ -67,7 +66,6 @@ describe('Fishing Map App', () => {
       longitude: 26,
       zoom: 2.49,
     }
-    expect(toggleAction).toBeDefined()
     expect(toggleAction?.query).toMatchObject(expectedResult)
     expect(store.getState().location.query).toMatchObject(expectedResult)
   })

@@ -68,6 +68,7 @@ export default defineConfig({
 
   define: {
     'process.env.NEXT_PUBLIC_API_GATEWAY': JSON.stringify(process.env.NEXT_PUBLIC_API_GATEWAY),
+    'proccess.env.NEXT_PUBLIC_WORKSPACE_ENV': JSON.stringify(process.env.NEXT_PUBLIC_WORKSPACE_ENV),
     'process.env.NODE_ENV': JSON.stringify('test'),
     'process.env.VITEST': JSON.stringify('true'),
   },
@@ -99,7 +100,7 @@ export default defineConfig({
         {
           browser: 'chromium',
           name: 'fishing-map-chromium',
-          headless: true,
+          headless: false,
           viewport: { width: 1280, height: 720 },
         },
         {
