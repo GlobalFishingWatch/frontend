@@ -24,7 +24,6 @@ import {
   getTimeRangeKey,
 } from '@globalfishingwatch/deck-loaders'
 
-import { IS_TEST_ENV } from '../../../config'
 import { getSteps, hexToRgb, removeOutliers } from '../../../utils'
 import type { ColorRampId } from '../../../utils/colorRamps'
 import {
@@ -34,6 +33,7 @@ import {
   getColorRamp,
   TIME_COMPARE_COLOR_RAMP,
 } from '../../../utils/colorRamps'
+import { IS_TEST_ENV } from '../../layers.config'
 import {
   DYNAMIC_RAMP_CHANGE_THRESHOLD,
   FOURWINGS_MAX_ZOOM,

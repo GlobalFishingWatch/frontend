@@ -18,7 +18,7 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import { FourwingsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import { IS_TEST_ENV } from '../../../config'
+import { IS_TEST_ENV } from '../../layers.config'
 import {
   FOURWINGS_MAX_ZOOM,
   FOURWINGS_TILE_SIZE,

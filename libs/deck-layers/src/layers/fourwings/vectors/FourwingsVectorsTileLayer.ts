@@ -18,8 +18,8 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import { FourwingsVectorsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
-import { IS_TEST_ENV } from '../../../config'
 import { hexToRgbaString, removeOutliers } from '../../../utils'
+import { IS_TEST_ENV } from '../../layers.config'
 import {
   DYNAMIC_RAMP_VECTOR_CHANGE_THRESHOLD,
   FOURWINGS_TILE_SIZE,
