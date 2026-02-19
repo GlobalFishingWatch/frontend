@@ -4,6 +4,7 @@ import { DateTime } from 'luxon'
 import type { ApiEvent } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
 import type { SupportedDateType } from '@globalfishingwatch/data-transforms'
+import type { DatasetEventSource } from '@globalfishingwatch/datasets-client'
 
 import { EVENTS_COLORS } from 'data/config'
 import { t } from 'features/i18n/i18n'
@@ -68,14 +69,10 @@ export const getTimeLabels = ({
   }
 }
 
-export const getEventDescription = ({
-  start,
-  end,
-  type,
-  vessel,
-  encounter,
-  port_visit,
-}: ApiEvent) => {
+export const getEventDescription = (
+  { start, end, type, vessel, encounter, port_visit }: ApiEvent,
+  { source }: { source?: DatasetEventSource } = {}
+) => {
   const time = getTimeLabels({ start, end })
   let description: string
   let descriptionGeneric: string
@@ -126,8 +123,14 @@ export const getEventDescription = ({
       descriptionGeneric = t((t) => t.event.fishing)
       break
     case EventTypes.Gap:
-      description = t((t) => t.event.gapAction, { ...time, source: t((t) => t.common.ais) })
-      descriptionGeneric = t((t) => t.event.gap)
+    case EventTypes.Gaps:
+      description = t((t) => t.event.gapAction, {
+        ...time,
+        source: source === 'VMS' ? t((t) => t.common.vms) : t((t) => t.common.ais),
+      })
+      descriptionGeneric = t((t) => t.event.gap, {
+        source: source === 'VMS' ? t((t) => t.common.vms) : t((t) => t.common.ais),
+      })
       break
     default:
       description = t((t) => t.event.unknown)

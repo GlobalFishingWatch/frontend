@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import { getDatasetSource } from '@globalfishingwatch/datasets-client'
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
@@ -36,6 +37,7 @@ function ClusterEventTooltipRow({
   const { datasetId, event, color } = feature
   const title = getDatasetLabel({ id: datasetId! })
   const infoDataset = event?.dataset.relatedDatasets?.find((d) => d.type === DatasetTypes.Vessels)
+  const source = getDatasetSource(infoDataset?.id)
   const timestamp = feature.properties.stime
     ? feature.properties.stime * 1000
     : event?.start
@@ -105,7 +107,7 @@ function ClusterEventTooltipRow({
                   </VesselLink>
                   ({formatInfoField(event.vessel.flag, 'flag')}){' '}
                   <span className={styles.secondary} style={{ display: 'inline' }}>
-                    {getEventDescription(event)?.description}
+                    {getEventDescription(event, { source })?.description}
                   </span>
                 </div>
               ) : (

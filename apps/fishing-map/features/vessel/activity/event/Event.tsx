@@ -87,7 +87,7 @@ const Event: React.FC<EventProps> = (props): React.ReactElement<any> => {
         <div className={styles.eventData}>
           <ActivityDate event={event as ActivityEvent} />
           <p className={cx(styles.description, { [styles.interactive]: expanded })}>
-            {getEventDescription(event as ActivityEvent, regionsPriority) as string}
+            {getEventDescription(event as ActivityEvent, { regionsPriority })}
           </p>
         </div>
         <div className={cx(styles.actions, 'print-hidden')}>

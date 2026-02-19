@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 
 import type { EventType, GapPosition, Regions, RegionType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
+import type { DatasetEventSource } from '@globalfishingwatch/datasets-client'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -78,7 +79,13 @@ export function useActivityEventTranslations() {
   )
 
   const getEventDescription = useCallback(
-    (event?: ActivityEvent, regionsPriority?: RegionType[]) => {
+    (
+      event?: ActivityEvent,
+      {
+        source,
+        regionsPriority,
+      }: { source?: DatasetEventSource; regionsPriority?: RegionType[] } = {}
+    ) => {
       if (!event) return EMPTY_FIELD_PLACEHOLDER
       const { mainRegionDescription, allRegionsDescription } = getEventRegionDescription(
         event,
@@ -168,6 +175,7 @@ export function useActivityEventTranslations() {
                 <span className={styles.region}>
                   {t((t) => t.event.gapActionIn, {
                     regionName: mainRegionDescription,
+                    source,
                   })}
                   {allRegionsDescription ? <span className="print-hidden">...</span> : ''}
                 </span>
@@ -178,7 +186,7 @@ export function useActivityEventTranslations() {
           return t((t) => t.event.unknown)
       }
     },
-    [getEventRegionDescription, t]
+    [getEventRegionDescription, t, vesselEventsDatasets]
   )
 
   const getEventDurationDescription = useCallback(
