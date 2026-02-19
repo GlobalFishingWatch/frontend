@@ -54,7 +54,7 @@ const IDENTIFIER_FIELDS: VesselRenderField[] = [
 
 export const IS_PIPE_4 = PIPE_DATASET_VERSION === ('4' as const)
 type CustomVMSGroup = Partial<Record<SelfReportedSource, VesselRenderField[][]>>
-const CUSTOM_VMS_IDENTITY_FIELD_GROUPS_3: CustomVMSGroup = {
+export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
   [SelfReportedSource.Peru]: [
     [{ key: 'origin' }, { key: 'fleet' }, { key: 'nationalId' }],
     [{ key: 'length' }, { key: 'capacity' }, { key: 'beam' }],
@@ -62,33 +62,25 @@ const CUSTOM_VMS_IDENTITY_FIELD_GROUPS_3: CustomVMSGroup = {
     [{ key: 'casco' }, { key: 'chdSpecies' }],
   ],
   [SelfReportedSource.CostaRica]: [[{ key: 'nationalId' }]],
-  [SelfReportedSource.Indonesia]: [
-    [{ key: 'widthRange' }, { key: 'lengthRange' }, { key: 'grossTonnageRange' }],
-  ],
+  [SelfReportedSource.Indonesia]: [[{ key: 'width' }, { key: 'length' }, { key: 'grossTonnage' }]],
   [SelfReportedSource.Brazil]: [
     [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
     [{ key: 'codMarinha' }],
   ],
   [SelfReportedSource.Chile]: [[{ key: 'fleet' }]],
-}
-const CUSTOM_VMS_IDENTITY_FIELD_GROUPS_4: CustomVMSGroup = {
-  [SelfReportedSource.Peru]: [
+  [SelfReportedSource.Peru_Pipe4]: [
     [{ key: 'origin' }, { key: 'sourceFleet' }, { key: 'externalId' }],
     [{ key: 'length' }, { key: 'holdCapacityM3' }, { key: 'beam' }],
     [{ key: 'licenseDescription' }, { key: 'resolution' }],
     [{ key: 'hull' }, { key: 'targetSpecies' }],
   ],
-  [SelfReportedSource.CostaRica]: [[{ key: 'externalId' }]],
-  [SelfReportedSource.Indonesia]: [[{ key: 'width' }, { key: 'length' }, { key: 'grossTonnage' }]],
-  [SelfReportedSource.Brazil]: [
+  [SelfReportedSource.CostaRica_Pipe4]: [[{ key: 'externalId' }]],
+  [SelfReportedSource.Brazil_Pipe4]: [
     [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
     [{ key: 'externalId' }],
   ],
-  [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
+  [SelfReportedSource.Chile_Pipe4]: [[{ key: 'sourceFleet' }]],
 }
-export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS = IS_PIPE_4
-  ? CUSTOM_VMS_IDENTITY_FIELD_GROUPS_4
-  : CUSTOM_VMS_IDENTITY_FIELD_GROUPS_3
 
 const VESSEL_FISICAL_FEATURES_FIELDS: VesselRenderField[] = [
   { key: 'lengthM', label: 'lengthM' },
