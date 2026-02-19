@@ -4,17 +4,18 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { DatasetTypes, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
+import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { TagItem } from '@globalfishingwatch/ui-components'
 import { TagList } from '@globalfishingwatch/ui-components'
 
-import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import {
-  getSchemaFieldsSelectedInDataview,
-  getSchemaFilterOperationInDataview,
-  getSchemaFiltersInDataview,
-  getSchemaFilterUnitInDataview,
-} from 'features/datasets/datasets.utils'
+  getFilterOperationInDataview,
+  getFiltersInDataview,
+  getFiltersSelectedInDataview,
+  getFilterUnitInDataview,
+} from 'features/dataviews/dataviews.filters'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import { isHistogramDataviewSupported } from 'features/workspace/shared/LayerFilters'
@@ -26,7 +27,7 @@ import styles from 'features/workspace/shared/LayerPanel.module.css'
 
 type LayerPanelProps = {
   dataview: UrlDataviewInstance
-  field: SupportedDatasetSchema
+  field: SupportedDatasetFilter
   label: string
   className?: string
   removeType?: 'visibleValues' | 'filter'
@@ -45,13 +46,13 @@ function DatasetSchemaField({
   const vesselGroupsOptions = useVesselGroupsOptions()
   const isGuestUser = useSelector(selectIsGuestUser)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const filterOperation = getSchemaFilterOperationInDataview(dataview, field)
-  const filterUnit = getSchemaFilterUnitInDataview(dataview, field)
-  const schemaFieldSelected = getSchemaFieldsSelectedInDataview(dataview, field, {
+  const filterOperation = getFilterOperationInDataview(dataview, field)
+  const filterUnit = getFilterUnitInDataview(dataview, field)
+  const schemaFieldSelected = getFiltersSelectedInDataview(dataview, field, {
     vesselGroups: vesselGroupsOptions,
     isGuestUser,
   })
-  const { filtersAllowed } = useMemo(() => getSchemaFiltersInDataview(dataview), [dataview])
+  const { filtersAllowed } = useMemo(() => getFiltersInDataview(dataview), [dataview])
 
   let valuesSelected = Array.isArray(schemaFieldSelected)
     ? schemaFieldSelected.sort((a, b) => a.label - b.label)
@@ -70,7 +71,7 @@ function DatasetSchemaField({
     const filterConfig = filtersAllowed.find((filter) => filter.id === field)
     const dataviewWithHistogramFilter = isHistogramDataviewSupported(dataview)
     const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-    const { max, min } = dataset?.configuration || {}
+    const { max, min } = getDatasetConfiguration(dataset)
     const unit = filterUnit || dataset?.unit
     const minLabel = Array.isArray(valuesSelected[0])
       ? valuesSelected[0][0]?.label

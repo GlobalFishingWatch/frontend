@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { DatasetStatus, DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
+import type { SupportedEnvDatasetFilter } from '@globalfishingwatch/datasets-client'
 import { getEnvironmentalDatasetRange } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
@@ -12,8 +13,7 @@ import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import type { SupportedEnvDatasetSchema } from 'features/datasets/datasets.utils'
-import { getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
+import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { useActivityDataviewId } from 'features/map/map-layers.hooks'
@@ -65,7 +65,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   const activityLayer = useGetDeckLayer<FourwingsLayer>(dataviewId)
   const layerError = activityLayer?.instance?.getError?.()
 
-  const datasetFields: { field: SupportedEnvDatasetSchema; label: string }[] = useMemo(
+  const datasetFields: { field: SupportedEnvDatasetFilter; label: string }[] = useMemo(
     () => [
       { field: 'type', label: t((t) => t.layer.type) },
       { field: 'flag', label: t((t) => t.layer.flagState) },
@@ -131,7 +131,7 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
   const title = getDatasetNameTranslated(dataset)
   const showFilters =
     isHistogramDataviewSupported(dataview) ||
-    getSchemaFiltersInDataview(dataview)?.filtersAllowed?.some(showSchemaFilter)
+    getFiltersInDataview(dataview)?.filtersAllowed?.some(showSchemaFilter)
 
   const layerRange = getEnvironmentalDatasetRange(dataset)
   const showMinVisibleFilter =

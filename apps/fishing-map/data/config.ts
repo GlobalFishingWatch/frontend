@@ -2,6 +2,11 @@ import { DateTime } from 'luxon'
 
 import type { EventType } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType, EventTypes } from '@globalfishingwatch/api-types'
+import {
+  DATASET_FULL_PREFIX,
+  DATASET_PRIVATE_PREFIX,
+  DATASET_PUBLIC_PREFIX,
+} from '@globalfishingwatch/datasets-client'
 
 import type { AppState, WorkspaceState } from '../types'
 import { TimebarGraphs, TimebarVisualisations, UserTab } from '../types'
@@ -40,10 +45,10 @@ export const PREFERRED_FOURWINGS_VISUALISATION_MODE = 'preferredFourwingsVisuali
 
 // TODO use it to retrieve it and store in workspace.default in deploy
 export const APP_NAME = 'fishing-map'
-export const PUBLIC_SUFIX = 'public'
-export const FULL_SUFIX = 'full'
+export const PUBLIC_SUFIX = DATASET_PUBLIC_PREFIX
+export const FULL_SUFIX = DATASET_FULL_PREFIX
+export const PRIVATE_SUFIX = DATASET_PRIVATE_PREFIX
 export const USER_SUFIX = 'user'
-export const PRIVATE_SUFIX = 'private'
 export const AUTO_GENERATED_FEEDBACK_WORKSPACE_PREFIX = 'gfw-feedback-auto-saved'
 export const AUTO_GENERATED_FEEDBACK_WORKSPACE_DESCRIPTION = 'Auto generated workspace for feedback'
 export const PRIVATE_ICON = '🔒'
@@ -140,6 +145,7 @@ export const EVENTS_COLORS: Record<
   [EventTypes.Port]: '#99EEFF',
   [EventTypes.Fishing]: '#6075A7',
   [EventTypes.Gap]: '#f45d5e',
+  [EventTypes.Gaps]: '#f45d5e',
   fishingLabels: PRIMARY_BLUE_COLOR,
 }
 

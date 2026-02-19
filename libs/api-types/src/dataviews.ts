@@ -37,7 +37,7 @@ export enum DataviewType {
   Workspaces = 'WORKSPACES',
 }
 
-export interface DataviewContexLayerConfig {
+export type DataviewContexLayerConfig = {
   id: string
   dataset: string
 }
@@ -47,7 +47,7 @@ export type FourwingsGeolocation = 'country' | 'port' | 'default'
 /** Used to define the max zoom level for each geolocation (all levels must be below 12) */
 export type ClusterMaxZoomLevelConfig = Partial<Record<FourwingsGeolocation, number>>
 
-export interface DataviewConfig<Type = DataviewType> {
+export type DataviewConfig<Type = DataviewType> = {
   /** Type to define what kind of layer to render, ex: fourwings, context, draw... */
   type?: Type
   /** Used in buffers report to store the geometry, normally a FeatureCollection */
@@ -152,20 +152,19 @@ export interface DataviewConfig<Type = DataviewType> {
 
   pickable?: boolean
   trackThinningZoomConfig?: Record<number, string>
-  includeWithoutEndDate?: boolean
 
   /** Tile size for basemap image layer */
   tileSize?: number
 }
 
-export interface DataviewDatasetConfigParam {
+export type DataviewDatasetConfigParam = {
   id: string
   value: string | number | boolean | string[] | number[]
 }
 
 export type DataviewDatasetFilter = Record<string, any>
 export type DatasetsMigration = Record<string, string>
-export interface DataviewDatasetConfig {
+export type DataviewDatasetConfig = {
   datasetId: string
   endpoint: string
   params: DataviewDatasetConfigParam[]
@@ -174,7 +173,7 @@ export interface DataviewDatasetConfig {
   metadata?: Record<string, any>
 }
 
-export interface DataviewCreation<T = any> {
+export type DataviewCreation<T = any> = {
   name: string
   app: ApiAppName
   description: string
@@ -182,31 +181,31 @@ export interface DataviewCreation<T = any> {
   datasetsConfig?: DataviewDatasetConfig[]
 }
 
-export interface DataviewInfoConfigField {
+export type DataviewInfoConfigField = {
   id: string
   type: 'flag' | 'number' | 'date' | 'fleet' | 'string'
   mandatory?: boolean
   guest?: boolean
 }
 
-export interface DataviewInfoConfig {
+export type DataviewInfoConfig = {
   fields: DataviewInfoConfigField[]
 }
 
-export interface DataviewEventsConfig {
+export type DataviewEventsConfig = {
   showIcons: boolean
   showAuthorizationStatus: boolean
   pointsToSegmentsSwitchLevel: boolean
 }
 
-export interface IncomatibleFilterConfig {
+export type IncomatibleFilterConfig = {
   id: string // id of the filter
   value?: boolean | string // value to match
   valueNot?: boolean | string // value to match
   disabled: string[] // disabled filter on matches
 }
 
-export interface DataviewFiltersConfig {
+export type DataviewFiltersConfig = {
   order: string[]
   // Dictionary for datasets filters selection not allowed
   incompatibility: Record<string, IncomatibleFilterConfig[]>
@@ -229,7 +228,7 @@ export enum DataviewCategory {
   Buffer = 'buffer',
 }
 
-export interface Dataview<Type = any, Category = DataviewCategory> {
+export type Dataview<Type = any, Category = DataviewCategory> = {
   id: number
   slug: string
   name: string
@@ -248,9 +247,7 @@ export interface Dataview<Type = any, Category = DataviewCategory> {
 }
 
 export type DataviewInstanceOrigin = 'workspace' | 'vesselProfile' | 'report' | 'comparison'
-export interface DataviewInstance<Type = any> extends Partial<
-  Omit<Dataview<Type>, 'id' | 'config'>
-> {
+export type DataviewInstance<Type = any> = Partial<Omit<Dataview<Type>, 'id' | 'config'>> & {
   id: string
   dataviewId: Dataview['id'] | Dataview['slug']
   config?: DataviewConfig<Type>

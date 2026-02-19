@@ -12,9 +12,11 @@ import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
 import PortsReportLink from 'features/reports/report-port/PortsReportLink'
 import { selectIsPortReportLocation } from 'routes/routes.selectors'
+import { getEventLabel } from 'utils/analytics'
 
 import type {
   ExtendedFeatureByVesselEvent,
+  ExtendedFeatureByVesselEventPort,
   SliceExtendedClusterPickingObject,
 } from '../../map.slice'
 
@@ -40,10 +42,13 @@ function PortVisitEventTooltipRow({
   const { datasetId, event, color } = feature
   const title = getDatasetLabel({ id: datasetId! })
 
-  const seePortReportClick = useCallback(() => {
+  const seePortReportClick = useCallback((port?: ExtendedFeatureByVesselEventPort) => {
     trackEvent({
       category: TrackCategory.GlobalReports,
       action: `Clicked see port report`,
+      label: getEventLabel(
+        [` dataset: ${port?.datasetId} `, ` port_id: ${port?.id} `].filter(Boolean) as string[]
+      ),
     })
   }, [])
 
@@ -91,7 +96,7 @@ function PortVisitEventTooltipRow({
               <PortsReportLink port={event.port}>
                 <Button
                   className={cx(styles.portCTA, styles.rowMarginTop)}
-                  onClick={seePortReportClick}
+                  onClick={() => seePortReportClick(event.port)}
                 >
                   {t((t) => t.portsReport.seePortReport)}{' '}
                   {event.port.name && `(${event.port.name})`}

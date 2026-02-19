@@ -28,7 +28,7 @@
   ],
   "dependencies": {
     "@floating-ui/react": "0.x",
-    "@globalfishingwatch/api-types": "^8.0.3",
+    "@globalfishingwatch/api-types": "^9.0.0-beta.2",
     "@globalfishingwatch/react-hooks": "^17.0.9",
     "@tanstack/react-virtual": "3.x",
     "@types/topojson-specification": "1.x",

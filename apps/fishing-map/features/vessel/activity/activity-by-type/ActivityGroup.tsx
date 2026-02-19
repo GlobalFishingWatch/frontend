@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import cx from 'classnames'
 
 import type { EventType } from '@globalfishingwatch/api-types'
+import type { DatasetEventSource } from '@globalfishingwatch/datasets-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import I18nNumber from 'features/i18n/i18nNumber'
@@ -12,6 +13,7 @@ import styles from '../ActivityGroupedList.module.css'
 
 interface ActivityGroupProps {
   eventType: EventType
+  eventSource?: DatasetEventSource
   onToggleClick?: (type: EventType) => void
   quantity: number
   expanded: boolean
@@ -22,6 +24,7 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
   onToggleClick = () => {},
   quantity,
   expanded,
+  eventSource,
 }): React.ReactElement<any> => {
   const { t } = useTranslation()
 
@@ -37,7 +40,11 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
           <EventIcon type={eventType} />
           <p className={styles.title}>
             <I18nNumber number={quantity} />{' '}
-            {t((t) => t.event[eventType], { defaultValue: eventType, count: quantity })}
+            {t((t) => t.event[eventType], {
+              defaultValue: eventType,
+              count: quantity,
+              source: eventSource === 'VMS' ? t((t) => t.common.vms) : t((t) => t.common.ais),
+            })}
           </p>
           <div className={cx(styles.actions, 'print-hidden')}>
             <IconButton icon={expanded ? 'arrow-top' : 'arrow-down'} size="small"></IconButton>

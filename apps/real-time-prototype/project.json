@@ -75,13 +75,6 @@
         ]
       }
     },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/real-time-prototype"],
-      "options": {
-        "jestConfig": "apps/real-time-prototype/jest.config.ts"
-      }
-    },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {

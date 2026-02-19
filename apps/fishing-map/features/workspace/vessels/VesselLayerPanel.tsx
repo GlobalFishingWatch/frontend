@@ -23,11 +23,8 @@ import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { PRIVATE_ICON } from 'data/config'
-import {
-  getSchemaFiltersInDataview,
-  isGFWOnlyDataset,
-  isPrivateDataset,
-} from 'features/datasets/datasets.utils'
+import { isGFWOnlyDataset, isPrivateDataset } from 'features/datasets/datasets.utils'
+import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { getVesselIdFromInstanceId } from 'features/dataviews/dataviews.utils'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
@@ -185,7 +182,7 @@ function VesselLayerPanel({
     ? getVesselIdentityTooltipSummary(vesselData, { showVesselId: gfwUser || false })
     : ''
 
-  const { filtersAllowed } = getSchemaFiltersInDataview(dataview, {
+  const { filtersAllowed } = getFiltersInDataview(dataview, {
     fieldsToInclude: ['speed', 'elevation'],
   })
 

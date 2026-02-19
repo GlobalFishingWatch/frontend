@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 
 import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import { isVMSDataset } from '@globalfishingwatch/datasets-client'
 
 import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
 import { BASEMAP_DATAVIEW_SLUG, CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG } from 'data/workspaces'
@@ -215,6 +216,13 @@ export const selectVesselsDataviews = createSelector([selectTrackDataviews], (da
 export const selectVesselProfileDataview = createDeepEqualSelector(
   [selectVesselsDataviews, selectVesselId],
   (dataviews, vesselId) => dataviews.find(({ id }) => vesselId && id.includes(vesselId))
+)
+
+export const selectVesselProfileSource = createDeepEqualSelector(
+  [selectVesselProfileDataview],
+  (vesselProfileDataview) => {
+    return vesselProfileDataview?.datasets?.some((d) => isVMSDataset(d.id)) ? 'VMS' : 'AIS'
+  }
 )
 
 export const selectVesselProfileDataviewIntance = createDeepEqualSelector(

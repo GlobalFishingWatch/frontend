@@ -2,10 +2,10 @@ import { createApi } from '@reduxjs/toolkit/query/react'
 import { getQueryParamsResolved, gfwBaseQuery } from 'queries/base'
 import type { RootState } from 'reducers'
 
-import type {
-  InsightResponse,
-  InsightType,
-  VesselGroupInsightResponse,
+import {
+  type InsightResponse,
+  type InsightType,
+  type VesselGroupInsightResponse,
 } from '@globalfishingwatch/api-types'
 
 export type BaseInsightParams = {

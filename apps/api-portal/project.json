@@ -62,13 +62,6 @@
         "buildTarget": "api-portal:build:production"
       }
     },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/api-portal"],
-      "options": {
-        "jestConfig": "apps/api-portal/jest.config.ts"
-      }
-    },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {

@@ -1,4 +1,5 @@
 import type { Dataset } from '@globalfishingwatch/api-types'
+import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import type { ContextFeature } from '@globalfishingwatch/deck-layers'
 import { getAreasByDistance } from '@globalfishingwatch/ocean-areas'
 
@@ -29,7 +30,9 @@ export const filterFeaturesByDistance = (
 }
 
 export const parseContextFeatures = (features: any[], dataset: Dataset) => {
-  const idProperty = dataset?.configuration?.idProperty || 'gfw_id'
+  const { idProperty = 'gfw_id' } =
+    getDatasetConfiguration(dataset, 'contextLayerV1') ||
+    getDatasetConfiguration(dataset, 'userContextLayerV1')
   return features.map((feature) => {
     return {
       ...feature,

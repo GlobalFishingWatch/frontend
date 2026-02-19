@@ -4,11 +4,14 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import {
+  getRelatedDatasetByType,
+  getRelatedDatasetsByType,
+} from '@globalfishingwatch/datasets-client'
 import { Button } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
-import { getRelatedDatasetByType, getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
 import { EMPTY_SEARCH_FILTERS } from 'features/search/search.config'

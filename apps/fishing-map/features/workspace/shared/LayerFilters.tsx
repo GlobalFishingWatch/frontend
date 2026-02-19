@@ -6,6 +6,8 @@ import { debounce } from 'es-toolkit'
 
 import type { FilterOperator } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EXCLUDE_FILTER_ID } from '@globalfishingwatch/api-types'
+import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
+import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import {
   isHeatmapVectorsDataview,
   type UrlDataviewInstance,
@@ -20,13 +22,12 @@ import {
   selectActivityVisualizationMode,
   selectDetectionsVisualizationMode,
 } from 'features/app/selectors/app.selectors'
-import type { SupportedDatasetSchema } from 'features/datasets/datasets.utils'
 import {
-  getCommonSchemaFieldsInDataview,
+  getCommonFiltersInDataview,
+  getFiltersInDataview,
   getIncompatibleFilterSelection,
-  getSchemaFiltersInDataview,
   VESSEL_GROUPS_MODAL_ID,
-} from 'features/datasets/datasets.utils'
+} from 'features/dataviews/dataviews.filters'
 import { selectDataviewInstancesByCategory } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
@@ -69,9 +70,9 @@ const cleanDataviewFiltersNotAllowed = (
 ) => {
   const filters = dataview.config?.filters ? { ...dataview.config.filters } : {}
   Object.keys(filters).forEach((k) => {
-    const key = k as SupportedDatasetSchema
+    const key = k as SupportedDatasetFilter
     if (filters[key]) {
-      const newFilterOptions = getCommonSchemaFieldsInDataview(dataview, key, {
+      const newFilterOptions = getCommonFiltersInDataview(dataview, key, {
         vesselGroups,
         isGuestUser,
       })
@@ -94,7 +95,7 @@ const cleanDataviewFiltersNotAllowed = (
 
 export const isHistogramDataviewSupported = (dataview: UrlDataviewInstance) => {
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
-  const { max, min } = dataset?.configuration || {}
+  const { max, min } = getDatasetConfiguration(dataset)
   return (
     max !== undefined &&
     min !== undefined &&
@@ -105,7 +106,7 @@ export const isHistogramDataviewSupported = (dataview: UrlDataviewInstance) => {
 }
 
 export type OnSelectFilterArgs = {
-  filterKey: string | SupportedDatasetSchema
+  filterKey: string | SupportedDatasetFilter
   selection: number | MultiSelectOption | MultiSelectOption[]
   singleValue?: boolean
 }
@@ -158,7 +159,7 @@ function LayerFilters({
   const showSourceFilter =
     sourceOptions && sourceOptions?.length > 1 && !isHeatmapVectorsDataview(dataview)
 
-  const { filtersAllowed, filtersDisabled } = getSchemaFiltersInDataview(dataview, {
+  const { filtersAllowed, filtersDisabled } = getFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
     isGuestUser,
   })
@@ -310,7 +311,7 @@ function LayerFilters({
     const incompatibleFilters = Object.keys(newDataview.config?.filters || {}).flatMap((key) => {
       const incompatibleFilterSelection = getIncompatibleFilterSelection(
         newDataview,
-        key as SupportedDatasetSchema
+        key as SupportedDatasetFilter
       )
       const hasIncompatibleFilterSelection =
         incompatibleFilterSelection?.length && incompatibleFilterSelection.length > 0
@@ -334,7 +335,7 @@ function LayerFilters({
   }
 
   const onSelectFilterOperationClick = (
-    filterKey: string | SupportedDatasetSchema,
+    filterKey: string | SupportedDatasetFilter,
     filterOperator: FilterOperator
   ) => {
     const newDataviewConfig = {

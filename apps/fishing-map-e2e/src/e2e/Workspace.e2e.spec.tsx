@@ -15,18 +15,14 @@ test('WS01 - Save workspace', async ({ page }) => {
 
   await page.getByText('login').click()
 
-  await page.waitForURL(
-    'https://gateway.api.staging.globalfishingwatch.org/v3/auth?client=gfw&callback=http%3A%2F%2Flocalhost%3A3003%2Fmap%2Ffishing-activity%2Fdeep-sea-mining-public%3FcallbackUrlStorage%3Dtrue&locale=en'
-  )
+  await page.waitForURL('**/v3/auth*')
 
   await page.getByRole('textbox', { name: 'Email' }).fill(process.env.TEST_USER_EMAIL || '')
   await page.getByRole('textbox', { name: 'Password' }).fill(process.env.TEST_USER_PASSWORD || '')
 
   await page.getByRole('button', { name: 'Login' }).click()
 
-  await page.waitForURL(
-    'http://localhost:3003/map/fishing-activity/deep-sea-mining-public?zoom=1.4&latitude=-13.322088344162196&longitude=-68.31476421655266&start=2020-04-03T22%3A00%3A00.000Z&end=2021-04-03T22%3A00%3A00.000Z&dvIn[0][id]=context-layer-eez&dvIn[0][cfg][vis]=true'
-  )
+  await page.waitForURL('**/map/fishing-activity/deep-sea-mining-public*')
 
   await page.waitForLoadState('networkidle')
 

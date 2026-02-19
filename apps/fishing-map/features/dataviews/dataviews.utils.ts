@@ -10,7 +10,10 @@ import type {
   DataviewType,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfigurationProperty,
+  getFlattenDatasetFilters,
+} from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { FourwingsAggregationOperation, getUTCDateTime } from '@globalfishingwatch/deck-layers'
 
@@ -34,6 +37,7 @@ export const PORT_VISITS_EVENTS_SOURCE_ID = 'port-visits'
 export const PORT_VISITS_REPORT_DATAVIEW_ID = `${PORT_VISITS_EVENTS_SOURCE_ID}-report`
 export const LOITERING_EVENTS_SOURCE_ID = 'loitering'
 export const GAPS_EVENTS_SOURCE_ID = 'gap'
+export const GAPS_AIS_OFF_EVENTS_SOURCE_ID = `${GAPS_EVENTS_SOURCE_ID}s-ais-off`
 export const VESSEL_GROUP_DATAVIEW_PREFIX = `vessel-group-`
 export const BIG_QUERY_PREFIX = 'bq-'
 export const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`
@@ -310,7 +314,7 @@ export const getUserPointsDataviewInstance = (dataset: Dataset): DataviewInstanc
   })
   const properties = [circleRadiusProperty, startTimeFilterProperty, endTimeFilterProperty]
     .filter(Boolean)
-    .map((p) => p.toString().toLowerCase())
+    .flatMap((p) => (p ? p.toString().toLowerCase() : []))
   return {
     id: `user-points-${dataset?.id}`,
     dataviewId: TEMPLATE_POINTS_DATAVIEW_SLUG,
@@ -447,7 +451,16 @@ export const isBathymetryContourDataview = (dataview: UrlDataviewInstance) => {
 
 export const getIsPositionSupportedInDataview = (dataview: UrlDataviewInstance) => {
   const datasets = getActiveDatasetsInDataview(dataview)
-  return datasets?.some(({ schema }) => {
-    return schema?.['bearing'] !== undefined
+  const flattenDatasetFilters = datasets?.flatMap((d) =>
+    d
+      ? getDatasetConfigurationProperty({
+          dataset: d,
+          property: 'extraPropertiesPositionTiles',
+          type: 'fourwingsV1',
+        }) || []
+      : []
+  )
+  return flattenDatasetFilters?.some(({ id }) => {
+    return id === 'bearing'
   })
 }

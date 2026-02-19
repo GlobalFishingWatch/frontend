@@ -1,6 +1,7 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { uniqBy } from 'es-toolkit'
+import { castDraft } from 'immer'
 
 import type { AdvancedSearchQueryFieldKey } from '@globalfishingwatch/api-client'
 import {
@@ -16,10 +17,14 @@ import type {
   RegistryExtraFields,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, EndpointId, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
-import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetFiltersAllowed,
+  getRelatedDatasetByType,
+  isFilterInFiltersAllowed,
+  resolveEndpoint,
+} from '@globalfishingwatch/datasets-client'
 
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType, isFieldInFieldsAllowed } from 'features/datasets/datasets.utils'
 import { ADVANCED_SEARCH_FIELDS } from 'features/search/advanced/advanced-search.utils'
 import type { SearchType } from 'features/search/search.config'
 import type { VesselSearchState } from 'features/search/search.types'
@@ -83,15 +88,15 @@ export const fetchVesselSearchThunk = createAsyncThunk(
     try {
       if (searchType === 'advanced') {
         const fieldsAllowed = Array.from(
-          new Set(datasets.flatMap((dataset) => dataset.fieldsAllowed))
+          new Set(datasets.flatMap((dataset) => getDatasetFiltersAllowed(dataset)))
         )
 
         const andCombinedFields = ADVANCED_SEARCH_QUERY_FIELDS.filter((f) => f !== 'shipname')
 
         const fields = andCombinedFields.flatMap((field) => {
-          const isInFieldsAllowed = isFieldInFieldsAllowed({
-            field,
-            fieldsAllowed,
+          const isInFieldsAllowed = isFilterInFiltersAllowed({
+            filter: field,
+            filtersAllowed: fieldsAllowed,
             infoSource: filters.infoSource,
           })
 
@@ -232,7 +237,7 @@ const searchSlice = createSlice({
       state.status = initialState.status
       state.suggestion = initialState.suggestion
       state.suggestionClicked = false
-      state.data = initialState.data
+      state.data = castDraft(initialState.data)
       state.pagination = paginationInitialState
       state.selectedVessels = initialState.selectedVessels
     },
@@ -247,7 +252,7 @@ const searchSlice = createSlice({
       const payload = action.payload as any
       if (payload) {
         const uniqData = uniqBy(payload.data, (d: IdentityVesselData) => getSearchVesselId(d))
-        state.data = uniqData
+        state.data = castDraft(uniqData)
         state.suggestion = payload.suggestion
         state.pagination = payload.pagination
       }
@@ -256,7 +261,7 @@ const searchSlice = createSlice({
       if (action.error.message === 'Aborted') {
         state.status = AsyncReducerStatus.Aborted
       } else {
-        state.data = initialState.data
+        state.data = castDraft(initialState.data)
         state.pagination = paginationInitialState
         state.status = AsyncReducerStatus.Error
         state.statusCode = (action.payload as AsyncError)?.status

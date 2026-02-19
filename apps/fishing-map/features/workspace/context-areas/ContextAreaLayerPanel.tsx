@@ -5,7 +5,10 @@ import cx from 'classnames'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DatasetTypes, DataviewType } from '@globalfishingwatch/api-types'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfiguration,
+  getDatasetConfigurationProperty,
+} from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextLayer, ContextPickingObject } from '@globalfishingwatch/deck-layers'
@@ -25,11 +28,8 @@ import {
 } from 'data/workspaces'
 import { selectViewport } from 'features/app/selectors/app.viewport.selectors'
 import { useAddDataset } from 'features/datasets/datasets.hook'
-import {
-  getDatasetLabel,
-  getSchemaFiltersInDataview,
-  isPrivateDataset,
-} from 'features/datasets/datasets.utils'
+import { getDatasetLabel, isPrivateDataset } from 'features/datasets/datasets.utils'
+import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { selectBasemapLabelsDataviewInstance } from 'features/dataviews/selectors/dataviews.selectors'
 import { selectDebugOptions } from 'features/debug/debug.slice'
 import ContextLayerReportLink from 'features/map/popups/categories/ContextLayerReportLink'
@@ -215,7 +215,7 @@ function LayerPanel({
   const isContextAreaDataview =
     dataview.config?.type === DataviewType.Context ||
     dataview.config?.type === DataviewType.UserContext
-  const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+  const { filtersAllowed } = getFiltersInDataview(dataview)
   const hasSchemaFilters = filtersAllowed.some(showSchemaFilter)
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
@@ -395,8 +395,9 @@ function LayerPanel({
                 featuresOnScreen.closest.map((feature) => {
                   const id = feature?.id || feature?.properties!.id
                   let title = feature.value || feature.properties.name || feature.properties.id
-                  if (dataset?.configuration?.valueProperties?.length) {
-                    title = dataset.configuration.valueProperties
+                  const { valueProperties = [] } = getDatasetConfiguration(dataset)
+                  if (valueProperties?.length) {
+                    title = valueProperties
                       .flatMap((prop) => feature.properties[prop] || [])
                       .join(', ')
                   }

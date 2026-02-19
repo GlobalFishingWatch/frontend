@@ -2,9 +2,9 @@ import { createSelector } from '@reduxjs/toolkit'
 import { groupBy, uniqBy } from 'es-toolkit'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
 
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import type { ReportVesselWithDatasets } from 'features/reports/report-area/area-reports.selectors'
 import { selectReportActivityFlatten } from 'features/reports/report-area/area-reports.selectors'
 
