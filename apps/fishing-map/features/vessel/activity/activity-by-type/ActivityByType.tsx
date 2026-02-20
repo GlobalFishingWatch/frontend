@@ -162,7 +162,15 @@ function ActivityByType() {
                 fitEventBounds(event)
               }}
               onInfoClick={handleEventClick}
-              className={cx(styles.event, { [styles.eventExpanded]: expanded })}
+              className={cx(
+                styles.event,
+                { [styles.eventExpanded]: expanded },
+                { [styles.lastEvent]: index === events.length - 1 },
+                {
+                  [styles.lastEventFromLastGroup]:
+                    index === events.length - 1 && groupIndex === groups.length - 1,
+                }
+              )}
               testId={`vv-${event.type}-event-${index}`}
             />
           )

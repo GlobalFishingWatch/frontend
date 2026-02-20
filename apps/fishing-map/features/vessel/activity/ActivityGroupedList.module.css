@@ -51,6 +51,14 @@
   border-radius: 0 0 var(--border-radius-1) var(--border-radius-1);
 }
 
+.lastEvent::after {
+  display: none;
+}
+
+.lastEventFromLastGroup {
+  border-radius: 0 0 var(--border-radius-1) var(--border-radius-1);
+}
+
 .header {
   padding: 0 1.4rem 0 var(--space-M);
   display: flex;

@@ -360,7 +360,7 @@ function ActivityLayerPanel({
               </div>
               {bivariateDataviews?.[0] === dataview.id && (
                 <IconButton
-                  size="small"
+                  size="medium"
                   type="border"
                   icon="split"
                   tooltip={t((t) => t.layer.toggleCombinationMode.split)}

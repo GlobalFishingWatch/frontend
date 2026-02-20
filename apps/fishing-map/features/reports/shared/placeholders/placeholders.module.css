@@ -1,7 +1,6 @@
 .container {
   padding: var(--space-M);
   position: relative;
-  border-bottom: var(--border);
   padding-bottom: var(--space-L);
 }
 

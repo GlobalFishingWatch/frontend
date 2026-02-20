@@ -172,7 +172,7 @@ function ActivitySection(): React.ReactElement<any> {
                 <IconButton
                   icon={bivariateDataviews ? 'split' : 'compare'}
                   type="border"
-                  size="small"
+                  size="medium"
                   className={activityStyles.bivariateToggle}
                   tooltip={t((t) => t.layer.toggleCombinationMode.combine)}
                   tooltipPlacement="top"

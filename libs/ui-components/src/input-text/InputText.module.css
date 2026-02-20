@@ -16,6 +16,10 @@
   height: var(--size-M);
 }
 
+.medium input {
+  height: var(--size-SM);
+}
+
 .small input {
   height: var(--size-S);
 }
@@ -42,6 +46,10 @@
 
 .default .icon {
   margin-bottom: var(--space-S);
+}
+
+.medium .icon {
+  margin-bottom: 0.6rem;
 }
 
 .small .icon {

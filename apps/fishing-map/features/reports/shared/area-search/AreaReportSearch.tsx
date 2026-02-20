@@ -208,7 +208,7 @@ function AreaReportSearch({ className }: { className?: string }) {
           placeholder={t((t) => t.map.search)}
           onBlur={onInputBlur}
           onKeyDown={handleKeyDown}
-          inputSize="small"
+          inputSize="medium"
           type="search"
         />
         <ul {...getMenuProps()} className={styles.results}>

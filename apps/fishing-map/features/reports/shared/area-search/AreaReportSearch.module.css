@@ -7,7 +7,7 @@
 .input input,
 .input input:placeholder-shown {
   border-radius: var(--border-radius-0);
-  padding-inline: 1.5rem;
+  padding-inline: var(--space-S);
   padding-right: var(--size-M);
 }
 
@@ -52,6 +52,8 @@
 .inputContainer:focus-within .comboContainer div input:focus-visible {
   height: 100%;
   border-radius: 0;
+  border-left: none;
+  border-right: none;
   box-shadow: none;
 }
 

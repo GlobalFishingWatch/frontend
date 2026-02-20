@@ -77,22 +77,27 @@ export default function Report() {
     {
       id: ReportCategory.Activity,
       title: t((t) => t.common.activity),
+      content: <ReportActivity />,
     },
     {
       id: ReportCategory.Detections,
       title: t((t) => t.common.detections),
+      content: <ReportActivity />,
     },
     {
       id: ReportCategory.Events,
       title: t((t) => t.common.events),
+      content: <ReportEvents />,
     },
     {
       id: ReportCategory.Environment,
       title: t((t) => t.common.environment),
+      content: <ReportEnvironment />,
     },
     {
       id: ReportCategory.Others,
       title: t((t) => t.common.others),
+      content: <ReportOthers />,
     },
   ]
   const filteredCategoryTabs = categoryTabs.flatMap((tab) => {
@@ -190,26 +195,16 @@ export default function Report() {
     return <ErrorPlaceholder title={t((t) => t.errors.areaOutOfTime)}></ErrorPlaceholder>
   }
 
-  return (
-    <Fragment>
-      {filteredCategoryTabs.length > 1 && (
-        <div className={styles.tabContainer}>
-          <Tabs
-            tabs={filteredCategoryTabs}
-            activeTab={reportCategory}
-            onTabClick={handleTabClick}
-          />
-        </div>
-      )}
-      {reportCategory === ReportCategory.Environment ? (
-        <ReportEnvironment />
-      ) : reportCategory === ReportCategory.Events ? (
-        <ReportEvents />
-      ) : reportCategory === ReportCategory.Others ? (
-        <ReportOthers />
-      ) : (
-        <ReportActivity />
-      )}
-    </Fragment>
+  return filteredCategoryTabs.length > 1 ? (
+    <Tabs
+      className={styles.tabContainer}
+      tabs={filteredCategoryTabs}
+      activeTab={reportCategory}
+      onTabClick={handleTabClick}
+    />
+  ) : (
+    <div className={styles.singleTabContainer}>
+      {filteredCategoryTabs.find((tab) => tab.id === reportCategory)?.content}
+    </div>
   )
 }

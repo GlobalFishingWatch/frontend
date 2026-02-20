@@ -1,6 +1,5 @@
 .container {
-  border-top: var(--border);
-  padding: var(--space-M);
+  padding: var(--space-SM);
 }
 
 .description {

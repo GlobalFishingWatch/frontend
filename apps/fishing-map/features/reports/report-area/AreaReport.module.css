@@ -1,9 +1,22 @@
+.tabContainer {
+  margin: var(--space-S);
+  margin-bottom: var(--space-L);
+}
+
+.singleTabContainer {
+  margin: var(--space-S);
+  margin-bottom: var(--space-L);
+  border-radius: var(--border-radius-1);
+  background-color: var(--color-off-white);
+  box-shadow: var(--box-shadow-1);
+}
+
 .container {
-  padding: var(--space-M);
+  padding: var(--space-SM);
 }
 
 .subsectionSelectorContainer {
-  padding: var(--space-SM) var(--space-M);
+  padding: var(--space-SM);
   padding-bottom: 0;
 }
 
