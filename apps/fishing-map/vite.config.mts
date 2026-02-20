@@ -49,16 +49,6 @@ export default defineConfig({
     //   apply: (_config, env) => env.ssr === false,
     // },
     nxViteTsPaths(),
-    sentryTanstackStart({
-      org: 'global-fishing-watch',
-      project: 'frontend',
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      sourcemaps: {
-        assets: ['.output/public/**'],
-      },
-      telemetry: false,
-    }),
-    react(),
     tanstackStart({
       srcDirectory: '.',
       router: {
@@ -75,8 +65,18 @@ export default defineConfig({
         external: ['fsevents', 'chokidar', /^@vitejs\//, '@opentelemetry/api-logs'],
       },
     }),
+    react(),
     svgr({
       include: ['**/*.svg', '**/*.svg?react'],
+    }),
+    sentryTanstackStart({
+      org: 'global-fishing-watch',
+      project: 'frontend',
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      sourcemaps: {
+        assets: ['.output/public/**'],
+      },
+      telemetry: false,
     }),
   ],
   envPrefix: ['VITE_', 'i18n_'],
