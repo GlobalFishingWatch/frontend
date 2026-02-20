@@ -41,7 +41,10 @@ function EventsGapTooltipRow({
   const dataviews = useSelector(selectEventsDataviews)
   const encounterDataview = dataviews.find((d) => d.id === feature.layerId)
   const encounterDataset = encounterDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
-  const vesselDatasetId = getRelatedDatasetByType(encounterDataset, DatasetTypes.Vessels)?.id
+  const encounterVesselDatasetId = getRelatedDatasetByType(
+    encounterDataset,
+    DatasetTypes.Vessels
+  )?.id
   const seeGapEventClick = useCallback((dataset: Dataset) => {
     trackEvent({
       category: TrackCategory.VesselProfile,
@@ -55,7 +58,7 @@ function EventsGapTooltipRow({
   }, [])
 
   const event = feature.event || ({} as ExtendedFeatureSingleEvent)
-  const mainVesselDatasetId = event?.vessel?.dataset || vesselDatasetId
+  const vesselDatasetId = event?.vessel?.dataset || encounterVesselDatasetId
   const interval = getFourwingsInterval(feature.startTime, feature.endTime)
   const title = feature.title || getDatasetLabel({ id: feature.datasetId! })
   const gapStart = feature.properties.stime
@@ -142,11 +145,11 @@ function EventsGapTooltipRow({
                                     {formatInfoField(event.vessel?.name, 'shipname')}
                                   </VesselLink>
                                 </span>
-                                {mainVesselDatasetId && (
+                                {vesselDatasetId && (
                                   <VesselPin
                                     vesselToResolve={{
                                       ...event.vessel,
-                                      datasetId: mainVesselDatasetId,
+                                      datasetId: vesselDatasetId,
                                     }}
                                   />
                                 )}
@@ -159,7 +162,7 @@ function EventsGapTooltipRow({
                         <div className={styles.row}>
                           <VesselLink
                             vesselId={event.vessel.id}
-                            datasetId={mainVesselDatasetId}
+                            datasetId={vesselDatasetId}
                             query={{
                               vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
                               vesselSelfReportedId: event.vessel.id,

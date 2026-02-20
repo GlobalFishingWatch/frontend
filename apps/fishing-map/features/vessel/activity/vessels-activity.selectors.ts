@@ -11,6 +11,7 @@ import {
   selectVesselAreaSubsection,
 } from 'features/vessel/vessel.config.selectors'
 import { selectVesselEventType, selectVesselVoyage } from 'features/vessel/vessel.slice'
+import { ActivityEventSubType } from 'features/vessel/vessel.types'
 import { getUTCDateTime } from 'utils/dates'
 
 import {
@@ -18,10 +19,6 @@ import {
   selectVesselEventsFilteredByTimerange,
 } from '../selectors/vessel.resources.selectors'
 
-export enum ActivityEventSubType {
-  Entry = 'port_entry',
-  Exit = 'port_exit',
-}
 export interface ActivityEvent extends ApiEvent {
   voyage: number
   subType?: ActivityEventSubType

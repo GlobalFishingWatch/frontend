@@ -130,7 +130,7 @@ function EncounterTooltipRow({
                                 <span className={styles.rowText}>
                                   <VesselLink
                                     vesselId={event.vessel.id}
-                                    datasetId={event.vessel.dataset || encounterVesselDatasetId}
+                                    datasetId={mainVesselDatasetId}
                                     query={{
                                       vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
                                       vesselSelfReportedId: event.vessel.id,
