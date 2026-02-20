@@ -6,6 +6,7 @@ import { sentryTanstackStart } from '@sentry/tanstackstart-react'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+import { nitro } from 'nitro/vite'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 const basePath = process.env.NEXT_PUBLIC_URL || '/map'
@@ -48,6 +49,16 @@ export default defineConfig({
     //   apply: (_config, env) => env.ssr === false,
     // },
     nxViteTsPaths(),
+    sentryTanstackStart({
+      org: 'global-fishing-watch',
+      project: 'frontend',
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      sourcemaps: {
+        assets: ['.output/public/**'],
+      },
+      telemetry: false,
+    }),
+    react(),
     tanstackStart({
       srcDirectory: '.',
       router: {
@@ -57,29 +68,15 @@ export default defineConfig({
       spa: {
         enabled: true,
       },
-      nitro: {
-        baseURL: basePath,
-        rollupConfig: {
-          external: ['fsevents', 'chokidar', /^@vitejs\//, '@opentelemetry/api-logs'],
-        },
-        prerender: {
-          routes: [],
-          crawlLinks: false,
-        },
+    }),
+    nitro({
+      baseURL: basePath,
+      rollupConfig: {
+        external: ['fsevents', 'chokidar', /^@vitejs\//, '@opentelemetry/api-logs'],
       },
     }),
-    react(),
     svgr({
       include: ['**/*.svg', '**/*.svg?react'],
-    }),
-    sentryTanstackStart({
-      org: 'global-fishing-watch',
-      project: 'frontend',
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      sourcemaps: {
-        assets: ['.output/public/**'],
-      },
-      telemetry: false,
     }),
   ],
   envPrefix: ['VITE_', 'i18n_'],

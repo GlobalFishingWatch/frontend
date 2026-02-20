@@ -15,8 +15,8 @@ if (process.env.NODE_ENV === 'production' && !process.env.NITRO_PRERENDER) {
 
 type ServerFetchOpts = Parameters<typeof server.fetch>[1]
 
-const fetchHandler = Sentry.wrapFetchWithSentry({
-  async fetch(request, opts?: unknown) {
+const rawFetchHandler = {
+  async fetch(request: Request, opts?: unknown) {
     const result = proxy(request)
 
     if (result.type === 'response') {
@@ -26,6 +26,11 @@ const fetchHandler = Sentry.wrapFetchWithSentry({
     const requestToUse = result.type === 'request' ? result.request : request
     return server.fetch(requestToUse, opts as ServerFetchOpts)
   },
-})
+}
+
+// Skip Sentry fetch wrapper during prerendering to avoid build hangs
+const fetchHandler = process.env.NITRO_PRERENDER
+  ? rawFetchHandler
+  : Sentry.wrapFetchWithSentry(rawFetchHandler)
 
 export default createServerEntry(fetchHandler)
