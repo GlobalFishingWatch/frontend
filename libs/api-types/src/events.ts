@@ -63,6 +63,7 @@ export type EventVesselAuthorization = {
 export type EventVessel = {
   id: string
   ssvid: string
+  dataset: string
   name: string
   flag: string
   type: EventVesselTypeEnum

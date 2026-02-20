@@ -51,7 +51,6 @@ const icons = [
   'event-gaps',
   'event-legend-encounter',
   'event-legend-fishing',
-  'event-legend-gaps',
   'event-legend-loitering',
   'event-legend-port_visit',
   'event-loitering',

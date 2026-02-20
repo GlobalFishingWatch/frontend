@@ -9,10 +9,7 @@ import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import {
-  getVesselDataviewInstance,
-  VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX,
-} from 'features/dataviews/dataviews.utils'
+import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
@@ -127,12 +124,8 @@ const VesselLink = ({
   if (!vesselId) return children
 
   const dataviewInstanceToUpdateId = vesselDataviews.find(
-    (instance) =>
-      (!instance.id.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX) &&
-        instance.id.includes(vesselId)) ||
-      instance.id === dataviewId
+    (instance) => instance.id.includes(vesselId) || instance.id === dataviewId
   )?.id
-
   let dataviewInstances = locationQuery?.dataviewInstances || []
   if (dataviewInstanceToUpdateId) {
     // When coming from a saved workspace the vessel instance might not be in the url yet
