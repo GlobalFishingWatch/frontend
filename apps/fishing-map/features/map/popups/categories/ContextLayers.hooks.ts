@@ -65,13 +65,16 @@ export const useContextInteractions = () => {
   )
 
   const setReportArea = useCallback(
-    (feature: ContextPickingObject | UserLayerPickingObject) => {
-      const { title, value } = feature
+    (feature: ContextPickingObject | UserLayerPickingObject, layerSources?: string) => {
+      const { value } = feature
       dispatchClickedEvent(null)
       trackEvent({
         category: TrackCategory.Analysis,
         action: `Open report`,
-        label: getEventLabel([title ?? '', value.toString()]),
+        label: getEventLabel([
+          value.toString(),
+          layerSources ? 'active layer sources: ' + layerSources : '',
+        ]),
       })
     },
     [dispatchClickedEvent]
@@ -80,7 +83,8 @@ export const useContextInteractions = () => {
   const onReportClick = useCallback(
     (
       ev: React.MouseEvent<Element, MouseEvent>,
-      feature: ContextPickingObject | UserLayerPickingObject
+      feature: ContextPickingObject | UserLayerPickingObject,
+      layerSources?: string
     ) => {
       const featureAreaId = getAreaIdFromFeature(feature)
       if (!featureAreaId) {
@@ -88,7 +92,7 @@ export const useContextInteractions = () => {
         return
       }
       if (areaId?.toString() !== featureAreaId) {
-        setReportArea(feature)
+        setReportArea(feature, layerSources)
       }
     },
     [areaId, setReportArea]

@@ -27,6 +27,8 @@ export const EMPTY_SEARCH_FILTERS = {
   targetSpecies: undefined,
   fleet: undefined,
   origin: undefined,
+  externalId: undefined,
+  sourceFleet: undefined,
 }
 
 export const DEFAULT_SEARCH_STATE: VesselSearchState = {
