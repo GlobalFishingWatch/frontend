@@ -289,20 +289,18 @@ function SearchBasicResult({
                 <span>{externalId}</span>
               </div>
             )}
-            {casco ||
-              (hull && (
-                <div className={styles.property}>
-                  <label>{t((t) => t.vessel.casco)}</label>
-                  <span>{casco || hull}</span>
-                </div>
-              ))}
-            {fleet ||
-              (sourceFleet && (
-                <div className={styles.property}>
-                  <label>{t((t) => t.vessel.fleet)}</label>
-                  <span>{formatInfoField(fleet || sourceFleet, 'fleet')}</span>
-                </div>
-              ))}
+            {(casco || hull) && (
+              <div className={styles.property}>
+                <label>{t((t) => t.vessel.casco)}</label>
+                <span>{casco || hull}</span>
+              </div>
+            )}
+            {(fleet || sourceFleet) && (
+              <div className={styles.property}>
+                <label>{t((t) => t.vessel.fleet)}</label>
+                <span>{formatInfoField(fleet || sourceFleet, 'fleet')}</span>
+              </div>
+            )}
             {origin && (
               <div className={styles.property}>
                 <label>{t((t) => t.vessel.origin)}</label>
