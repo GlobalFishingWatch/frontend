@@ -59,6 +59,7 @@
   max-height: 15rem;
   overflow: hidden;
   background-color: var(--color-terthiary-blue);
+  border-radius: var(--border-radius-0);
 }
 
 .vesselImage {
