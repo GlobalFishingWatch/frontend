@@ -43,8 +43,9 @@
 .expandedContainer {
   width: 34rem;
   background-color: var(--color-white);
+  box-shadow: var(--box-shadow-1);
   padding: var(--space-S);
-  border-radius: var(--border-radius-1);
+  border-radius: var(--border-radius-0);
 }
 
 .tag {
