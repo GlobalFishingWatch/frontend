@@ -6,7 +6,7 @@
 
 .input input,
 .input input:placeholder-shown {
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   padding-inline: 1.5rem;
   padding-right: var(--size-M);
 }
@@ -17,7 +17,7 @@
 
 .open .input {
   background: var(--color-white);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow-1);
 }
 
 .open .input input {
@@ -40,7 +40,7 @@
 
 .inputContainer:focus-within {
   z-index: 1;
-  background-color: var(--color-gradient);
+  background-color: var(--color-background);
   position: absolute;
   inset: 0;
   display: block;
@@ -67,7 +67,7 @@
   left: 0;
   width: 100%;
   background: var(--color-white);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow-1);
   z-index: 1;
   overflow: hidden;
 }

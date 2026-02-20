@@ -6,8 +6,25 @@
 
 .container {
   padding: var(--space-M);
-  border-bottom: var(--border);
+  padding-bottom: var(--space-SM);
   position: relative;
+}
+
+.tabsContainer {
+  margin: var(--space-S);
+  margin-bottom: var(--space-XS);
+}
+
+.externalToolsContainer {
+  padding: var(--space-M);
+  padding-bottom: var(--space-SM);
+  position: relative;
+  margin: var(--space-S);
+  margin-top: 0;
+  margin-bottom: var(--space-SM);
+  background: var(--color-off-white);
+  box-shadow: var(--box-shadow-1);
+  border-radius: var(--border-radius-1);
 }
 
 .fieldGroupContainer {

@@ -153,7 +153,6 @@ const ActivityByVoyage = () => {
                   onMapClick={selectVoyageOnMap}
                   // onMapHover={onVoyageMapHover}
                 />
-                {!expanded && index === groups.length - 1 && <div style={{ height: '48vh' }}></div>}
               </Fragment>
             )
           }}
@@ -177,9 +176,6 @@ const ActivityByVoyage = () => {
                   onInfoClick={handleEventClick}
                   className={cx(styles.event, { [styles.eventExpanded]: expanded })}
                 />
-                {index === events.length - 1 && groupIndex === groups.length - 1 && (
-                  <div style={{ height: '48vh' }}></div>
-                )}
               </Fragment>
             )
           }}

@@ -12,7 +12,7 @@
   left: 0;
   height: 100%;
   transform: translateX(-100%);
-  background: var(--gradient);
+  background: var(--color-background);
 }
 
 .isOpen .aside {
@@ -40,7 +40,7 @@
   cursor: pointer;
   color: var(--color-white);
   background-color: var(--color-primary-blue);
-  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  border-radius: 0 var(--border-radius-0) var(--border-radius-0) 0;
   transition: var(--transition);
 }
 
@@ -65,7 +65,7 @@
     bottom: -4.2rem;
     z-index: 1;
     transition: var(--transition);
-    box-shadow: var(--box-shadow);
+    box-shadow: var(--box-shadow-1);
   }
 
   .isOpen .toggleChoice {

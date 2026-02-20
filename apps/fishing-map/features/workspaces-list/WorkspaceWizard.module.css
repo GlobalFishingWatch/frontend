@@ -2,7 +2,7 @@
   padding: var(--space-M);
   background-color: var(--color-help-yellow);
   border-radius: 8px;
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow-1);
 }
 
 .inputContainer {
@@ -17,7 +17,7 @@
 
 .input input,
 .input input:placeholder-shown {
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   padding-inline: 1.5rem;
   padding-right: var(--size-M);
 }
@@ -28,7 +28,7 @@
 
 .open .input {
   background: var(--color-white);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow-1);
 }
 
 .open .input input {
@@ -85,7 +85,7 @@
   top: 4rem;
   width: 100%;
   background: var(--color-white);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow-1);
   z-index: 1;
 }
 
@@ -113,7 +113,7 @@
   white-space: nowrap;
   padding-inline: 1rem;
   line-height: 1;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
 }
 
 .confirmBtn.disabled {

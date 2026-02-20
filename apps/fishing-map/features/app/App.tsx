@@ -5,6 +5,29 @@ import { useSelector } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import { HeadContent, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import { ConfirmLeave } from 'router/ConfirmLeave'
+import { ConfirmVesselProfileLeave } from 'router/ConfirmVesselProfileLeave'
+import {
+  HOME,
+  REPORT,
+  SEARCH,
+  USER,
+  VESSEL,
+  WORKSPACE_SEARCH,
+  WORKSPACE_VESSEL,
+  WORKSPACES_LIST,
+} from 'router/routes'
+import { useBeforeUnload, useReplaceLoginUrl, useReplaceQueryParams } from 'router/routes.hook'
+import {
+  selectIsAnyAreaReportLocation,
+  selectIsAnySearchLocation,
+  selectIsMapDrawing,
+  selectIsVesselLocation,
+  selectIsWorkspaceLocation,
+  selectLocationType,
+  selectReportId,
+  selectWorkspaceId,
+} from 'router/routes.selectors'
 
 import type { Workspace } from '@globalfishingwatch/api-types'
 import { Logo, Menu, SplitView } from '@globalfishingwatch/ui-components'
@@ -32,29 +55,6 @@ import {
   selectWorkspaceReportId,
 } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { ConfirmLeave } from 'router/ConfirmLeave'
-import { ConfirmVesselProfileLeave } from 'router/ConfirmVesselProfileLeave'
-import {
-  HOME,
-  REPORT,
-  SEARCH,
-  USER,
-  VESSEL,
-  WORKSPACE_SEARCH,
-  WORKSPACE_VESSEL,
-  WORKSPACES_LIST,
-} from 'router/routes'
-import { useBeforeUnload, useReplaceLoginUrl, useReplaceQueryParams } from 'router/routes.hook'
-import {
-  selectIsAnyAreaReportLocation,
-  selectIsAnySearchLocation,
-  selectIsMapDrawing,
-  selectIsVesselLocation,
-  selectIsWorkspaceLocation,
-  selectLocationType,
-  selectReportId,
-  selectWorkspaceId,
-} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { selectReadOnly, selectSidebarOpen } from './selectors/app.selectors'
@@ -174,7 +174,7 @@ function App() {
   } else if (isAnySearchLocation) {
     asideWidth = '100%'
   } else if (isWorkspaceLocation) {
-    asideWidth = isPrinting ? '34rem' : '39rem'
+    asideWidth = isPrinting ? '34rem' : '40rem'
   }
 
   /* TODO:RR test if we can remove this */

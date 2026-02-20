@@ -93,95 +93,81 @@ function ActivityByType() {
 
   const renderedComponent = useMemo(() => {
     if (vesselPrintMode) {
-      return (
-        <Fragment>
-          {EVENTS_ORDER.map((eventType) => {
-            const events = activityGroups[eventType]
-            if (!events) {
-              return null
-            }
-            const expanded = selectedEventGroup === eventType
-            return (
-              <Fragment key={eventType}>
-                <ActivityGroup
-                  key={`${eventType}-group`}
-                  eventType={eventType}
-                  onToggleClick={onToggleExpandedType}
-                  quantity={events.length}
-                  expanded={expanded}
-                />
-                {events.map((event, index) => (
-                  <Event
-                    key={`${eventType}-${index}-${event.id}`}
-                    event={event}
-                    className={styles.event}
-                  />
-                ))}
-              </Fragment>
-            )
-          })}
-        </Fragment>
-      )
+      return EVENTS_ORDER.map((eventType) => {
+        const events = activityGroups[eventType]
+        if (!events) {
+          return null
+        }
+        const expanded = selectedEventGroup === eventType
+        return (
+          <Fragment key={eventType}>
+            <ActivityGroup
+              key={`${eventType}-group`}
+              eventType={eventType}
+              onToggleClick={onToggleExpandedType}
+              quantity={events.length}
+              expanded={expanded}
+            />
+            {events.map((event, index) => (
+              <Event
+                key={`${eventType}-${index}-${event.id}`}
+                event={event}
+                className={styles.event}
+              />
+            ))}
+          </Fragment>
+        )
+      })
     }
     return (
-      <Fragment>
-        <GroupedVirtuoso
-          ref={virtuosoRef}
-          useWindowScroll
-          defaultItemHeight={EVENT_HEIGHT}
-          groupCounts={groupCounts}
-          increaseViewportBy={EVENT_HEIGHT * 4}
-          customScrollParent={getScrollElement() as HTMLElement}
-          onWheel={handleScroll}
-          rangeChanged={handleScroll}
-          groupContent={(index) => {
-            const eventType = groups[index] as EventType
-            const events = activityGroups[eventType]
-            if (!events) {
-              return null
-            }
-            const expanded = selectedEventGroup === eventType
-            return (
-              <Fragment>
-                <ActivityGroup
-                  key={eventType}
-                  eventType={eventType}
-                  onToggleClick={onToggleExpandedType}
-                  quantity={events.length}
-                  expanded={expanded}
-                />
-                {!expanded && index === groups.length - 1 && <div style={{ height: '48vh' }}></div>}
-              </Fragment>
-            )
-          }}
-          itemContent={(index, groupIndex) => {
-            const event = events[index]
-            const expanded = selectedEventId ? event?.id.includes(selectedEventId) : false
-            return (
-              <Fragment>
-                <Event
-                  event={event}
-                  expanded={expanded}
-                  onMapHover={onMapHover}
-                  eventsRef={eventsRef.current}
-                  onMapClick={(event, e) => {
-                    if (expanded) {
-                      e.stopPropagation()
-                    }
-                    fitEventBounds(event)
-                  }}
-                  onInfoClick={handleEventClick}
-                  className={cx(styles.event, { [styles.eventExpanded]: expanded })}
-                  testId={`vv-${event.type}-event-${index}`}
-                />
-                {index === events.length - 1 && groupIndex === groups.length - 1 && (
-                  <div style={{ height: '48vh' }}></div>
-                )}
-              </Fragment>
-            )
-          }}
-        />
-      </Fragment>
+      <GroupedVirtuoso
+        ref={virtuosoRef}
+        useWindowScroll
+        defaultItemHeight={EVENT_HEIGHT}
+        groupCounts={groupCounts}
+        increaseViewportBy={EVENT_HEIGHT * 4}
+        customScrollParent={getScrollElement() as HTMLElement}
+        onWheel={handleScroll}
+        rangeChanged={handleScroll}
+        groupContent={(index) => {
+          const eventType = groups[index] as EventType
+          const events = activityGroups[eventType]
+          if (!events) {
+            return null
+          }
+          const expanded = selectedEventGroup === eventType
+          return (
+            <ActivityGroup
+              key={eventType}
+              eventType={eventType}
+              onToggleClick={onToggleExpandedType}
+              quantity={events.length}
+              expanded={expanded}
+            />
+          )
+        }}
+        itemContent={(index, groupIndex) => {
+          const event = events[index]
+          const expanded = selectedEventId ? event?.id.includes(selectedEventId) : false
+          return (
+            <Event
+              event={event}
+              expanded={expanded}
+              onMapHover={onMapHover}
+              eventsRef={eventsRef.current}
+              onMapClick={(event, e) => {
+                if (expanded) {
+                  e.stopPropagation()
+                }
+                fitEventBounds(event)
+              }}
+              onInfoClick={handleEventClick}
+              className={cx(styles.event, { [styles.eventExpanded]: expanded })}
+              testId={`vv-${event.type}-event-${index}`}
+            />
+          )
+        }}
+      />
     )
   }, [
     vesselPrintMode,

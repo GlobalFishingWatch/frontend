@@ -25,7 +25,7 @@
   background-color: var(--color-help);
   text-align: right;
   padding: 0.5rem 1rem;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
 }
 
 .container .layerLabel {
@@ -71,7 +71,7 @@
 
 .popupContent {
   color: var(--color-primary-blue);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow-1);
   max-width: 40vw;
   background: var(--color-white);
   padding: var(--space-S);

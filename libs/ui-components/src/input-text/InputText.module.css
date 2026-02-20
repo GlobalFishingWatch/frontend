@@ -6,7 +6,7 @@
   width: 100%;
   font: var(--font-M);
   color: var(--color-primary-blue);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   background-color: var(--color-terthiary-blue);
   border: var(--border);
   padding: 0 var(--space-XS);

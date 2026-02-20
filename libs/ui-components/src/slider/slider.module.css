@@ -56,7 +56,7 @@
 }
 
 .miniSize {
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   width: var(--size-XXS);
   height: var(--size-XXS);
   background: var(--color-primary-blue);

@@ -46,7 +46,7 @@
   display: block;
   left: 0;
   width: 100%;
-  background-color: var(--color-gradient);
+  background-color: var(--color-background);
 }
 
 .result {

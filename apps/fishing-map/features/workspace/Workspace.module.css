@@ -87,7 +87,7 @@
   height: var(--size-M);
   color: var(--color-white);
   background-color: var(--color-primary-blue);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
 }
 
 .modalContainer {

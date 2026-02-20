@@ -32,7 +32,7 @@
 
 .border,
 .warning-border {
-  border: var(--border);
+  background-color: var(--color-terthiary-blue);
 }
 
 .default:hover:not(:disabled),
