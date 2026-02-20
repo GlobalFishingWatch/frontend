@@ -668,6 +668,1592 @@
       "bearing": "cap"
     }
   },
+  "private-vms-blz-encounters-events": {
+    "name": "Encounter Events. (BLZ)",
+    "description": "<h2>Overview</h2> <h3> Encounter events identify instances where two vessels appear to meet at sea. </h3> <ul> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage. </li> </ul> <ul> <p> Users can filter encounter events by vessel characteristics and context, including: </p> <li>Duration of encounter</li> <li> Vessel flag - Shows encounters where at least one vessel is flagged to the selected country </li> <li> Next port visit after the encounter - Shows encounters where at least one vessel is has visited the selected port(s) </li> <li>Vessel types involved in the encounter</li> <li>User saved vessel group</li> </ul> <ul> <p>Currently displayed encounter types include:</p> <li>Carrier ⇄ Bunker (experimental)</li> <li>Carrier ⇄ Fishing</li> <li>Fishing ⇄ Bunker (experimental)</li> <li>Fishing ⇄ Fishing (experimental)</li> <li>Support ⇄ Fishing</li> </ul> <p> To view more details about a specific encounter—such as its location or the identity of the encountered vessel—click the “See more” icon associated with the event. </p> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of rule-based algorithms being applied to AIS positional data. There are many potential reasons for vessels to meet at sea. Such interactions may include transshipment of catch or supplies, equipment transfers, crew changes, safety-related matters, and more. Encounter data should therefore be viewed as an indicator for review. </li> <li> Encounters that do not meet the specifications of GFW encounter events described above are not included in the map, such as encounters less than two hours and in-port encounters. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. While multiple encounters within such a short timeframe are possible, they remain exceptionally rare. </li> <li> The 500-meter proximity threshold is calculated using implied positions—not raw AIS messages. Since AIS transmissions occur at irregular intervals, vessel positions are estimated by a 10-minute time grid using reported course and speed. Proximity is then calculated based on these estimated positions. Due to this modeling approach, it is possible that vessels identified in an encounter may not have been physically within 500 meters of each other for the entire 2-hour period. </li> <li> Bias in vessel identification and gear classification can result in the unexpected presence or absence of an encounter. Misclassifications in vessel type may occur due to inconsistent or incomplete vessel registry data. Misclassifications can also happen when algorithms struggle to appropriately categorize vessels, for instance, where vessels use several gears (thus changing their behavioral patterns) or when a vessel’s MMSI (maritime mobile service identity) number is used by more than one vessel. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. As a result it is possible the vessels never occupied that precise location during the encounter event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> You can read more about transshipment behaviour from our <a href=\"http://globalfishingwatch.org/wp-content/uploads/GlobalViewOfTransshipment_Aug2017.pdf\" >report</a > or <a href=\"https://www.frontiersin.org/articles/10.3389/fmars.2018.00240/full\" >scientific publication</a >. </p>",
+    "schema": {
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "2": "2",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id",
+      "encounter_type": {
+        "keyword": "encounter_type",
+        "enum": {
+          "-": "-"
+        }
+      }
+    }
+  },
+  "private-vms-blz-fishing-effort": {
+    "name": "VMS Belize",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing presence algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing presence algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "schema": {
+      "speed": "speed",
+      "bearing": "bearing",
+      "distance_from_port_km": {
+        "keyword": "distance_from_port_km",
+        "enum": {
+          "0": "0",
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
+        }
+      }
+    }
+  },
+  "private-vms-blz-loitering-events": {
+    "name": "Loitering Events (BLZ)",
+    "description": "<h2>Overview</h2> <h3> Loitering events identify when a vessel is operating away from shore while moving at low speeds. Loitering events highlight when a vessel is behaving in a manner consistent with a potential encounter event (i.e. stationary or drifting slowly at sea) but no encountering vessel is visible on AIS. As such, these should not be considered indicators of likely encounter events, but rather periods of time when undetected encounters could have potentially occurred. </h3> <ul> <p>Global Fishing Watch classifies an event as a loitering event when:</p> <li> The vessel is located more than 20 nautical miles (37.04 kilometers) from shore, and </li> <li>Maintains an average speed of less than 2 knots,</li> <li>For a continuous period of at least 1 hour.</li> </ul> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of a rule-based algorithm being applied to AIS positional data. Loitering events should be cross-verified with other sources of information (like RFMO transshipment records) when possible. </li> <li> Vessels in loitering events may not be meeting any other vessels at the time of the event. Other events in which a vessel may remain fairly stationary or moving slowly while at sea include: maintenance, losing vessel power, idling during poor weather, waiting outside of port for permission to dock, normal fishing behavior, and more. </li> <li> Due to the individual definitions of loitering events, fishing events, and encounter events, it is possible for a single vessel movement pattern to trigger multiple event types. </li> <li> A loitering event position may not align exactly with the vessel’s tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within that event. As a result it is possible the vessel never occupied that precise location during the event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> Learn more about considerations of using AIS data by looking at the <a href=\"https://globalfishingwatch.org/data-documentation/apparent-fishing-events-ais/\" >AIS limitations section in the Apparent fishing events (AIS) data documentation.</a >. </p>",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id"
+    }
+  },
+  "private-vms-blz-port-visits-events": {
+    "name": "Port Visits Events (BLZ)",
+    "description": "The dataset contains port visits events for BLZ",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "49": "49"
+        }
+      },
+      "confidences": {
+        "keyword": "confidences",
+        "enum": {
+          "2": "2",
+          "3": "3",
+          "4": "4"
+        }
+      }
+    }
+  },
+  "private-vms-blz-presence": {
+    "name": "VMS Belize Presence",
+    "description": "Global Fishing Watch uses data about a vessels identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessels AIS.",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "<2": "<2",
+          "2-4": "2-4",
+          "4-6": "4-6",
+          "6-10": "6-10",
+          "10-15": "10-15",
+          "15-25": "15-25",
+          ">25": ">25"
+        }
+      },
+      "bearing": "bearing"
+    }
+  },
+  "private-vms-blz-tracks": {
+    "name": "Belize VMS",
+    "description": "Tracks dataset for VMS Belize (Private)",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "0": "0",
+          "20": "20"
+        }
+      }
+    }
+  },
+  "private-vms-blz-vessel-identity": {
+    "name": "VMS Belize",
+    "description": "Vessels (VMS Belize)"
+  },
+  "private-vms-bra-encounters-events": {
+    "name": "Encounter Events. (BRA)",
+    "description": "<h2>Overview</h2> <h3> Encounter events identify instances where two vessels appear to meet at sea. </h3> <ul> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage. </li> </ul> <ul> <p> Users can filter encounter events by vessel characteristics and context, including: </p> <li>Duration of encounter</li> <li> Vessel flag - Shows encounters where at least one vessel is flagged to the selected country </li> <li> Next port visit after the encounter - Shows encounters where at least one vessel is has visited the selected port(s) </li> <li>Vessel types involved in the encounter</li> <li>User saved vessel group</li> </ul> <ul> <p>Currently displayed encounter types include:</p> <li>Carrier ⇄ Bunker (experimental)</li> <li>Carrier ⇄ Fishing</li> <li>Fishing ⇄ Bunker (experimental)</li> <li>Fishing ⇄ Fishing (experimental)</li> <li>Support ⇄ Fishing</li> </ul> <p> To view more details about a specific encounter—such as its location or the identity of the encountered vessel—click the “See more” icon associated with the event. </p> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of rule-based algorithms being applied to AIS positional data. There are many potential reasons for vessels to meet at sea. Such interactions may include transshipment of catch or supplies, equipment transfers, crew changes, safety-related matters, and more. Encounter data should therefore be viewed as an indicator for review. </li> <li> Encounters that do not meet the specifications of GFW encounter events described above are not included in the map, such as encounters less than two hours and in-port encounters. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. While multiple encounters within such a short timeframe are possible, they remain exceptionally rare. </li> <li> The 500-meter proximity threshold is calculated using implied positions—not raw AIS messages. Since AIS transmissions occur at irregular intervals, vessel positions are estimated by a 10-minute time grid using reported course and speed. Proximity is then calculated based on these estimated positions. Due to this modeling approach, it is possible that vessels identified in an encounter may not have been physically within 500 meters of each other for the entire 2-hour period. </li> <li> Bias in vessel identification and gear classification can result in the unexpected presence or absence of an encounter. Misclassifications in vessel type may occur due to inconsistent or incomplete vessel registry data. Misclassifications can also happen when algorithms struggle to appropriately categorize vessels, for instance, where vessels use several gears (thus changing their behavioral patterns) or when a vessel’s MMSI (maritime mobile service identity) number is used by more than one vessel. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. As a result it is possible the vessels never occupied that precise location during the encounter event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> You can read more about transshipment behaviour from our <a href=\"http://globalfishingwatch.org/wp-content/uploads/GlobalViewOfTransshipment_Aug2017.pdf\" >report</a > or <a href=\"https://www.frontiersin.org/articles/10.3389/fmars.2018.00240/full\" >scientific publication</a >. </p>",
+    "schema": {
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "2": "2",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id",
+      "encounter_type": {
+        "keyword": "encounter_type",
+        "enum": {
+          "FISHING-FISHING": "FISHING-FISHING",
+          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
+          "NON_FISHING-FISHING": "NON_FISHING-FISHING",
+          "NON_FISHING-NON_FISHING": "NON_FISHING-NON_FISHING"
+        }
+      }
+    }
+  },
+  "private-vms-bra-fishing-effort": {
+    "name": "VMS Brazil",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing presence algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing presence algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "schema": {
+      "speed": "speed",
+      "bearing": "bearing",
+      "target_species": {
+        "keyword": "target_species",
+        "enum": {
+          "": "",
+          "Sardinha verdadeira": "Sardinha verdadeira",
+          "Polvo": "Polvo",
+          "Pescada amarela gurijuba e camurim": "Pescada amarela gurijuba e camurim",
+          "Camarão rosa (santana e barba ruça)": "Camarão rosa (santana e barba ruça)",
+          "Anchova, tainha e sororoca": "Anchova, tainha e sororoca",
+          "Serra": "Serra",
+          "Corvina, pescada, castanha, abrótea": "Corvina, pescada, castanha, abrótea",
+          "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante": "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante",
+          "Bonito listrado": "Bonito listrado",
+          "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)": "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)",
+          "Peixe sapo": "Peixe sapo",
+          "Pescada gó, camurim e corvina": "Pescada gó, camurim e corvina",
+          "Camarão rosa, sete- barbas e branco": "Camarão rosa, sete- barbas e branco",
+          "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.": "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.",
+          "Peroá, Garoupa e Corvina": "Peroá, Garoupa e Corvina",
+          "Piramutaba": "Piramutaba",
+          "Saramunete": "Saramunete",
+          "Camarões de profundidade": "Camarões de profundidade",
+          "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro": "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro",
+          "Caranguejo vermelho (Chaceon notialis)": "Caranguejo vermelho (Chaceon notialis)",
+          "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ": "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ",
+          "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).": "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).",
+          "Camarões (sete- barbas, branco, rosa)": "Camarões (sete- barbas, branco, rosa)",
+          "Espadarte": "Espadarte",
+          "Camarão sete barbas (Santana e barba ruça)": "Camarão sete barbas (Santana e barba ruça)",
+          "Serranidae e caranjidae (detalhar)": "Serranidae e caranjidae (detalhar)",
+          "Corvina, castanha, pescada e pescadinha real": "Corvina, castanha, pescada e pescadinha real",
+          "Lagosta verde e lagosta vermelha": "Lagosta verde e lagosta vermelha",
+          "Atuns (albacora laje, albacora branca e albacora bandolim)": "Atuns (albacora laje, albacora branca e albacora bandolim)",
+          "Caranguejo de profundidade (Chaceon spp.)": "Caranguejo de profundidade (Chaceon spp.)",
+          "Galo-de-fundo, abrótea-de-fundo, merluza": "Galo-de-fundo, abrótea-de-fundo, merluza",
+          "Dourado": "Dourado",
+          "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.": "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.",
+          "Dourada, Piramutaba e Gurijuba": "Dourada, Piramutaba e Gurijuba",
+          "Pargo": "Pargo"
+        }
+      },
+      "license_category": {
+        "keyword": "license_category",
+        "enum": {
+          "": "",
+          "1.12 - Linha de mão (fundo)": "1.12 - Linha de mão (fundo)",
+          "3.9 - Arrasto (fundo) - duplo ou simples": "3.9 - Arrasto (fundo) - duplo ou simples",
+          "5.11 - Potes": "5.11 - Potes",
+          "5.1 - Covos": "5.1 - Covos",
+          "4.4 - Cerco": "4.4 - Cerco",
+          "1.9 - Espinhel vertical/Covos": "1.9 - Espinhel vertical/Covos",
+          "3.12 - Arrasto oceânico (fundo) - simples e duplo": "3.12 - Arrasto oceânico (fundo) - simples e duplo",
+          "2.10 - Emalhe costeiro (fundo)": "2.10 - Emalhe costeiro (fundo)",
+          "3.3 - Arrasto (fundo) - duplo ou simples (**)": "3.3 - Arrasto (fundo) - duplo ou simples (**)",
+          "3.5 - Arrasto (fundo) - duplo ou simples": "3.5 - Arrasto (fundo) - duplo ou simples",
+          "3.1 - Arrasto (fundo) parelha ou trilheira (*)": "3.1 - Arrasto (fundo) parelha ou trilheira (*)",
+          "5.3 - Covos": "5.3 - Covos",
+          "4.6 - Cerco": "4.6 - Cerco",
+          "1.5 - Espinhel horizontal (fundo)": "1.5 - Espinhel horizontal (fundo)",
+          "1.13 - Linha/vara - com isca viva": "1.13 - Linha/vara - com isca viva",
+          "1.18 - Cardume associado": "1.18 - Cardume associado",
+          "4.3 - Cerco": "4.3 - Cerco",
+          "5.6 - Covos": "5.6 - Covos",
+          "2.11 - Emalhe costeiro (fundo)": "2.11 - Emalhe costeiro (fundo)",
+          "2.5 - Emalhe costeiro (superfície)": "2.5 - Emalhe costeiro (superfície)",
+          "1.1 - Espinhel horizontal (superfície)": "1.1 - Espinhel horizontal (superfície)",
+          "1.14 - Linha de mão (fundo)": "1.14 - Linha de mão (fundo)",
+          "4.1 - Cerco": "4.1 - Cerco",
+          "5.4 - Covos": "5.4 - Covos",
+          "5.9 - Covos": "5.9 - Covos",
+          "1.6 - Espinhel horizontal (fundo)": "1.6 - Espinhel horizontal (fundo)",
+          "1.17 - Cardume associado": "1.17 - Cardume associado",
+          "1.8 - Espinhel vertical/covos": "1.8 - Espinhel vertical/covos",
+          "2.3 - Emalhe oceânico (fundo)": "2.3 - Emalhe oceânico (fundo)",
+          "5.2 - Covos": "5.2 - Covos",
+          "1.2 - Espinhel horizontal (superfície)": "1.2 - Espinhel horizontal (superfície)",
+          "3.2 - Arrasto (fundo) - Simples ou parelha": "3.2 - Arrasto (fundo) - Simples ou parelha",
+          "1.7 - Espinhel horizontal (fundo)": "1.7 - Espinhel horizontal (fundo)",
+          "2.13 - Emalhe Costeiro Diversificado": "2.13 - Emalhe Costeiro Diversificado",
+          "1.4 - Espinhel horizontal (superfície)": "1.4 - Espinhel horizontal (superfície)",
+          "Sem código IN - Covos": "Sem código IN - Covos",
+          "2.4 - Emalhe costeiro (fundo)": "2.4 - Emalhe costeiro (fundo)",
+          "5.10 - Potes": "5.10 - Potes",
+          "1.10 - Espinhel vertical/Covos": "1.10 - Espinhel vertical/Covos",
+          "3.11 - Arrasto costeiro (fundo simples e parelha": "3.11 - Arrasto costeiro (fundo simples e parelha",
+          "4.2 - Cerco": "4.2 - Cerco",
+          "3.6 - Arrasto (fundo) - duplo": "3.6 - Arrasto (fundo) - duplo",
+          "2.2 - Emalhe costeiro (superfície) ": "2.2 - Emalhe costeiro (superfície) ",
+          "3.10 - Arrasto costeiro (fundo) - duplo": "3.10 - Arrasto costeiro (fundo) - duplo",
+          "3.13 - Arrasto oceânico (fundo) - simples e duplo": "3.13 - Arrasto oceânico (fundo) - simples e duplo",
+          "1.3 - Espinhel horizontal (superfície) - com isca-viva": "1.3 - Espinhel horizontal (superfície) - com isca-viva"
+        }
+      },
+      "distance_from_port_km": {
+        "keyword": "distance_from_port_km",
+        "enum": {
+          "0": "0",
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
+        }
+      }
+    }
+  },
+  "private-vms-bra-gap-events": {
+    "name": "Gaps Events (BRA)",
+    "description": "The dataset contains VMS gap events for BRA",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id"
+    }
+  },
+  "private-vms-bra-loitering-events": {
+    "name": "Loitering Events (BRA)",
+    "description": "<h2>Overview</h2> <h3> Loitering events identify when a vessel is operating away from shore while moving at low speeds. Loitering events highlight when a vessel is behaving in a manner consistent with a potential encounter event (i.e. stationary or drifting slowly at sea) but no encountering vessel is visible on AIS. As such, these should not be considered indicators of likely encounter events, but rather periods of time when undetected encounters could have potentially occurred. </h3> <ul> <p>Global Fishing Watch classifies an event as a loitering event when:</p> <li> The vessel is located more than 20 nautical miles (37.04 kilometers) from shore, and </li> <li>Maintains an average speed of less than 2 knots,</li> <li>For a continuous period of at least 1 hour.</li> </ul> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of a rule-based algorithm being applied to AIS positional data. Loitering events should be cross-verified with other sources of information (like RFMO transshipment records) when possible. </li> <li> Vessels in loitering events may not be meeting any other vessels at the time of the event. Other events in which a vessel may remain fairly stationary or moving slowly while at sea include: maintenance, losing vessel power, idling during poor weather, waiting outside of port for permission to dock, normal fishing behavior, and more. </li> <li> Due to the individual definitions of loitering events, fishing events, and encounter events, it is possible for a single vessel movement pattern to trigger multiple event types. </li> <li> A loitering event position may not align exactly with the vessel’s tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within that event. As a result it is possible the vessel never occupied that precise location during the event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> Learn more about considerations of using AIS data by looking at the <a href=\"https://globalfishingwatch.org/data-documentation/apparent-fishing-events-ais/\" >AIS limitations section in the Apparent fishing events (AIS) data documentation.</a >. </p>",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id"
+    }
+  },
+  "private-vms-bra-port-visits-events": {
+    "name": "Port Visits Events (BRA)",
+    "description": "The dataset contains port visits events for BRA",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "49": "49"
+        }
+      },
+      "confidences": {
+        "keyword": "confidences",
+        "enum": {
+          "2": "2",
+          "3": "3",
+          "4": "4"
+        }
+      }
+    }
+  },
+  "private-vms-bra-presence": {
+    "name": "VMS Brazil Presence",
+    "description": "Global Fishing Watch uses data about a vessels identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessels AIS.",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "<2": "<2",
+          "2-4": "2-4",
+          "4-6": "4-6",
+          "6-10": "6-10",
+          "10-15": "10-15",
+          "15-25": "15-25",
+          ">25": ">25"
+        }
+      },
+      "bearing": "bearing"
+    }
+  },
+  "private-vms-bra-tracks": {
+    "name": "Brazil VMS",
+    "description": "Tracks dataset for VMS Brazil (Private)",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "0": "0",
+          "20": "20"
+        }
+      }
+    }
+  },
+  "private-vms-bra-vessel-identity": {
+    "name": "VMS Brazil",
+    "description": "Vessels (VMS Brazil)"
+  },
+  "private-vms-chl-encounters-events": {
+    "name": "Encounter Events. (CHL)",
+    "description": "<h2>Overview</h2> <h3> Encounter events identify instances where two vessels appear to meet at sea. </h3> <ul> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage. </li> </ul> <ul> <p> Users can filter encounter events by vessel characteristics and context, including: </p> <li>Duration of encounter</li> <li> Vessel flag - Shows encounters where at least one vessel is flagged to the selected country </li> <li> Next port visit after the encounter - Shows encounters where at least one vessel is has visited the selected port(s) </li> <li>Vessel types involved in the encounter</li> <li>User saved vessel group</li> </ul> <ul> <p>Currently displayed encounter types include:</p> <li>Carrier ⇄ Bunker (experimental)</li> <li>Carrier ⇄ Fishing</li> <li>Fishing ⇄ Bunker (experimental)</li> <li>Fishing ⇄ Fishing (experimental)</li> <li>Support ⇄ Fishing</li> </ul> <p> To view more details about a specific encounter—such as its location or the identity of the encountered vessel—click the “See more” icon associated with the event. </p> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of rule-based algorithms being applied to AIS positional data. There are many potential reasons for vessels to meet at sea. Such interactions may include transshipment of catch or supplies, equipment transfers, crew changes, safety-related matters, and more. Encounter data should therefore be viewed as an indicator for review. </li> <li> Encounters that do not meet the specifications of GFW encounter events described above are not included in the map, such as encounters less than two hours and in-port encounters. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. While multiple encounters within such a short timeframe are possible, they remain exceptionally rare. </li> <li> The 500-meter proximity threshold is calculated using implied positions—not raw AIS messages. Since AIS transmissions occur at irregular intervals, vessel positions are estimated by a 10-minute time grid using reported course and speed. Proximity is then calculated based on these estimated positions. Due to this modeling approach, it is possible that vessels identified in an encounter may not have been physically within 500 meters of each other for the entire 2-hour period. </li> <li> Bias in vessel identification and gear classification can result in the unexpected presence or absence of an encounter. Misclassifications in vessel type may occur due to inconsistent or incomplete vessel registry data. Misclassifications can also happen when algorithms struggle to appropriately categorize vessels, for instance, where vessels use several gears (thus changing their behavioral patterns) or when a vessel’s MMSI (maritime mobile service identity) number is used by more than one vessel. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. As a result it is possible the vessels never occupied that precise location during the encounter event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> You can read more about transshipment behaviour from our <a href=\"http://globalfishingwatch.org/wp-content/uploads/GlobalViewOfTransshipment_Aug2017.pdf\" >report</a > or <a href=\"https://www.frontiersin.org/articles/10.3389/fmars.2018.00240/full\" >scientific publication</a >. </p>",
+    "schema": {
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "2": "2",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id",
+      "encounter_type": {
+        "keyword": "encounter_type",
+        "enum": {
+          "FISHING-FISHING": "FISHING-FISHING",
+          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
+          "NON_FISHING-FISHING": "NON_FISHING-FISHING",
+          "NON_FISHING-NON_FISHING": "NON_FISHING-NON_FISHING"
+        }
+      }
+    }
+  },
+  "private-vms-chl-fishing-effort": {
+    "name": "VMS Chile",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing presence algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing presence algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "schema": {
+      "speed": "speed",
+      "bearing": "bearing",
+      "source_fleet": {
+        "keyword": "source_fleet",
+        "enum": {
+          "SMALL_FISHERIES": "SMALL_FISHERIES",
+          "INDUSTRY": "INDUSTRY"
+        }
+      },
+      "distance_from_port_km": {
+        "keyword": "distance_from_port_km",
+        "enum": {
+          "0": "0",
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
+        }
+      }
+    }
+  },
+  "private-vms-chl-loitering-events": {
+    "name": "Loitering Events (CHL)",
+    "description": "<h2>Overview</h2> <h3> Loitering events identify when a vessel is operating away from shore while moving at low speeds. Loitering events highlight when a vessel is behaving in a manner consistent with a potential encounter event (i.e. stationary or drifting slowly at sea) but no encountering vessel is visible on AIS. As such, these should not be considered indicators of likely encounter events, but rather periods of time when undetected encounters could have potentially occurred. </h3> <ul> <p>Global Fishing Watch classifies an event as a loitering event when:</p> <li> The vessel is located more than 20 nautical miles (37.04 kilometers) from shore, and </li> <li>Maintains an average speed of less than 2 knots,</li> <li>For a continuous period of at least 1 hour.</li> </ul> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of a rule-based algorithm being applied to AIS positional data. Loitering events should be cross-verified with other sources of information (like RFMO transshipment records) when possible. </li> <li> Vessels in loitering events may not be meeting any other vessels at the time of the event. Other events in which a vessel may remain fairly stationary or moving slowly while at sea include: maintenance, losing vessel power, idling during poor weather, waiting outside of port for permission to dock, normal fishing behavior, and more. </li> <li> Due to the individual definitions of loitering events, fishing events, and encounter events, it is possible for a single vessel movement pattern to trigger multiple event types. </li> <li> A loitering event position may not align exactly with the vessel’s tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within that event. As a result it is possible the vessel never occupied that precise location during the event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> Learn more about considerations of using AIS data by looking at the <a href=\"https://globalfishingwatch.org/data-documentation/apparent-fishing-events-ais/\" >AIS limitations section in the Apparent fishing events (AIS) data documentation.</a >. </p>",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id"
+    }
+  },
+  "private-vms-chl-port-visits-events": {
+    "name": "Port Visits Events (CHL)",
+    "description": "The dataset contains port visits events for CHL",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "49": "49"
+        }
+      },
+      "confidences": {
+        "keyword": "confidences",
+        "enum": {
+          "2": "2",
+          "3": "3",
+          "4": "4"
+        }
+      }
+    }
+  },
+  "private-vms-chl-presence": {
+    "name": "VMS Chile Presence",
+    "description": "Global Fishing Watch uses data about a vessels identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessels AIS.",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "<2": "<2",
+          "2-4": "2-4",
+          "4-6": "4-6",
+          "6-10": "6-10",
+          "10-15": "10-15",
+          "15-25": "15-25",
+          ">25": ">25"
+        }
+      },
+      "bearing": "bearing",
+      "source_fleet": {
+        "keyword": "source_fleet",
+        "enum": {
+          "SMALL_FISHERIES": "SMALL_FISHERIES",
+          "INDUSTRY": "INDUSTRY",
+          "TRANSPORT": "TRANSPORT",
+          "AQUACULTURE": "AQUACULTURE"
+        }
+      }
+    }
+  },
+  "private-vms-chl-tracks": {
+    "name": "CHILE VMS",
+    "description": "Tracks dataset for VMS CHILE (Private)",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "0": "0",
+          "20": "20"
+        }
+      }
+    }
+  },
+  "private-vms-chl-vessel-identity": {
+    "name": "VMS Chile",
+    "description": "Vessels (VMS Chile)"
+  },
+  "private-vms-cri-encounters-events": {
+    "name": "Encounter Events. (CRI)",
+    "description": "<h2>Overview</h2> <h3> Encounter events identify instances where two vessels appear to meet at sea. </h3> <ul> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage. </li> </ul> <ul> <p> Users can filter encounter events by vessel characteristics and context, including: </p> <li>Duration of encounter</li> <li> Vessel flag - Shows encounters where at least one vessel is flagged to the selected country </li> <li> Next port visit after the encounter - Shows encounters where at least one vessel is has visited the selected port(s) </li> <li>Vessel types involved in the encounter</li> <li>User saved vessel group</li> </ul> <ul> <p>Currently displayed encounter types include:</p> <li>Carrier ⇄ Bunker (experimental)</li> <li>Carrier ⇄ Fishing</li> <li>Fishing ⇄ Bunker (experimental)</li> <li>Fishing ⇄ Fishing (experimental)</li> <li>Support ⇄ Fishing</li> </ul> <p> To view more details about a specific encounter—such as its location or the identity of the encountered vessel—click the “See more” icon associated with the event. </p> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of rule-based algorithms being applied to AIS positional data. There are many potential reasons for vessels to meet at sea. Such interactions may include transshipment of catch or supplies, equipment transfers, crew changes, safety-related matters, and more. Encounter data should therefore be viewed as an indicator for review. </li> <li> Encounters that do not meet the specifications of GFW encounter events described above are not included in the map, such as encounters less than two hours and in-port encounters. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. While multiple encounters within such a short timeframe are possible, they remain exceptionally rare. </li> <li> The 500-meter proximity threshold is calculated using implied positions—not raw AIS messages. Since AIS transmissions occur at irregular intervals, vessel positions are estimated by a 10-minute time grid using reported course and speed. Proximity is then calculated based on these estimated positions. Due to this modeling approach, it is possible that vessels identified in an encounter may not have been physically within 500 meters of each other for the entire 2-hour period. </li> <li> Bias in vessel identification and gear classification can result in the unexpected presence or absence of an encounter. Misclassifications in vessel type may occur due to inconsistent or incomplete vessel registry data. Misclassifications can also happen when algorithms struggle to appropriately categorize vessels, for instance, where vessels use several gears (thus changing their behavioral patterns) or when a vessel’s MMSI (maritime mobile service identity) number is used by more than one vessel. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. As a result it is possible the vessels never occupied that precise location during the encounter event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> You can read more about transshipment behaviour from our <a href=\"http://globalfishingwatch.org/wp-content/uploads/GlobalViewOfTransshipment_Aug2017.pdf\" >report</a > or <a href=\"https://www.frontiersin.org/articles/10.3389/fmars.2018.00240/full\" >scientific publication</a >. </p>",
+    "schema": {
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "2": "2",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id",
+      "encounter_type": {
+        "keyword": "encounter_type",
+        "enum": {
+          "FISHING-FISHING": "FISHING-FISHING",
+          "FISHING-": "FISHING-",
+          "-FISHING": "-FISHING",
+          "-": "-"
+        }
+      }
+    }
+  },
+  "private-vms-cri-fishing-effort": {
+    "name": "VMS Costa Rica",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing presence algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing presence algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "schema": {
+      "speed": "speed",
+      "bearing": "bearing",
+      "source_fleet": {
+        "keyword": "source_fleet",
+        "enum": {
+          "AVANZADOS": "AVANZADOS",
+          "SARDINEROS": "SARDINEROS",
+          "ATUNEROS": "ATUNEROS"
+        }
+      },
+      "distance_from_port_km": {
+        "keyword": "distance_from_port_km",
+        "enum": {
+          "0": "0",
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
+        }
+      }
+    }
+  },
+  "private-vms-cri-loitering-events": {
+    "name": "Loitering Events (CRI)",
+    "description": "<h2>Overview</h2> <h3> Loitering events identify when a vessel is operating away from shore while moving at low speeds. Loitering events highlight when a vessel is behaving in a manner consistent with a potential encounter event (i.e. stationary or drifting slowly at sea) but no encountering vessel is visible on AIS. As such, these should not be considered indicators of likely encounter events, but rather periods of time when undetected encounters could have potentially occurred. </h3> <ul> <p>Global Fishing Watch classifies an event as a loitering event when:</p> <li> The vessel is located more than 20 nautical miles (37.04 kilometers) from shore, and </li> <li>Maintains an average speed of less than 2 knots,</li> <li>For a continuous period of at least 1 hour.</li> </ul> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of a rule-based algorithm being applied to AIS positional data. Loitering events should be cross-verified with other sources of information (like RFMO transshipment records) when possible. </li> <li> Vessels in loitering events may not be meeting any other vessels at the time of the event. Other events in which a vessel may remain fairly stationary or moving slowly while at sea include: maintenance, losing vessel power, idling during poor weather, waiting outside of port for permission to dock, normal fishing behavior, and more. </li> <li> Due to the individual definitions of loitering events, fishing events, and encounter events, it is possible for a single vessel movement pattern to trigger multiple event types. </li> <li> A loitering event position may not align exactly with the vessel’s tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within that event. As a result it is possible the vessel never occupied that precise location during the event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> Learn more about considerations of using AIS data by looking at the <a href=\"https://globalfishingwatch.org/data-documentation/apparent-fishing-events-ais/\" >AIS limitations section in the Apparent fishing events (AIS) data documentation.</a >. </p>",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id"
+    }
+  },
+  "private-vms-cri-port-visits-events": {
+    "name": "Port Visits Events (CRI)",
+    "description": "The dataset contains port visits events for CRI",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "49": "49"
+        }
+      },
+      "confidences": {
+        "keyword": "confidences",
+        "enum": {
+          "2": "2",
+          "3": "3",
+          "4": "4"
+        }
+      }
+    }
+  },
+  "private-vms-cri-presence": {
+    "name": "VMS Costa Rica Presence",
+    "description": "Global Fishing Watch uses data about a vessels identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessels AIS.",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "<2": "<2",
+          "2-4": "2-4",
+          "4-6": "4-6",
+          "6-10": "6-10",
+          "10-15": "10-15",
+          "15-25": "15-25",
+          ">25": ">25"
+        }
+      },
+      "bearing": "bearing",
+      "source_fleet": {
+        "keyword": "source_fleet",
+        "enum": {
+          "AVANZADOS": "AVANZADOS",
+          "SARDINEROS": "SARDINEROS",
+          "ATUNEROS": "ATUNEROS"
+        }
+      }
+    }
+  },
+  "private-vms-cri-tracks": {
+    "name": "Costa Rica VMS",
+    "description": "Tracks dataset for VMS Costa Rica (Private)",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "0": "0",
+          "20": "20"
+        }
+      }
+    }
+  },
+  "private-vms-cri-vessel-identity": {
+    "name": "VMS Costa Rica",
+    "description": "Vessels (VMS Costa Rica)"
+  },
+  "private-vms-ecu-encounters-events": {
+    "name": "Encounter Events. (ECU)",
+    "description": "<h2>Overview</h2> <h3> Encounter events identify instances where two vessels appear to meet at sea. </h3> <ul> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage. </li> </ul> <ul> <p> Users can filter encounter events by vessel characteristics and context, including: </p> <li>Duration of encounter</li> <li> Vessel flag - Shows encounters where at least one vessel is flagged to the selected country </li> <li> Next port visit after the encounter - Shows encounters where at least one vessel is has visited the selected port(s) </li> <li>Vessel types involved in the encounter</li> <li>User saved vessel group</li> </ul> <ul> <p>Currently displayed encounter types include:</p> <li>Carrier ⇄ Bunker (experimental)</li> <li>Carrier ⇄ Fishing</li> <li>Fishing ⇄ Bunker (experimental)</li> <li>Fishing ⇄ Fishing (experimental)</li> <li>Support ⇄ Fishing</li> </ul> <p> To view more details about a specific encounter—such as its location or the identity of the encountered vessel—click the “See more” icon associated with the event. </p> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of rule-based algorithms being applied to AIS positional data. There are many potential reasons for vessels to meet at sea. Such interactions may include transshipment of catch or supplies, equipment transfers, crew changes, safety-related matters, and more. Encounter data should therefore be viewed as an indicator for review. </li> <li> Encounters that do not meet the specifications of GFW encounter events described above are not included in the map, such as encounters less than two hours and in-port encounters. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. While multiple encounters within such a short timeframe are possible, they remain exceptionally rare. </li> <li> The 500-meter proximity threshold is calculated using implied positions—not raw AIS messages. Since AIS transmissions occur at irregular intervals, vessel positions are estimated by a 10-minute time grid using reported course and speed. Proximity is then calculated based on these estimated positions. Due to this modeling approach, it is possible that vessels identified in an encounter may not have been physically within 500 meters of each other for the entire 2-hour period. </li> <li> Bias in vessel identification and gear classification can result in the unexpected presence or absence of an encounter. Misclassifications in vessel type may occur due to inconsistent or incomplete vessel registry data. Misclassifications can also happen when algorithms struggle to appropriately categorize vessels, for instance, where vessels use several gears (thus changing their behavioral patterns) or when a vessel’s MMSI (maritime mobile service identity) number is used by more than one vessel. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. As a result it is possible the vessels never occupied that precise location during the encounter event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> You can read more about transshipment behaviour from our <a href=\"http://globalfishingwatch.org/wp-content/uploads/GlobalViewOfTransshipment_Aug2017.pdf\" >report</a > or <a href=\"https://www.frontiersin.org/articles/10.3389/fmars.2018.00240/full\" >scientific publication</a >. </p>",
+    "schema": {
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "2": "2",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id",
+      "encounter_type": {
+        "keyword": "encounter_type",
+        "enum": {
+          "FISHING-FISHING": "FISHING-FISHING",
+          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
+          "FISHING-SUPPORT": "FISHING-SUPPORT",
+          "FISHING-": "FISHING-",
+          "NON_FISHING-FISHING": "NON_FISHING-FISHING",
+          "NON_FISHING-NON_FISHING": "NON_FISHING-NON_FISHING",
+          "NON_FISHING-SUPPORT": "NON_FISHING-SUPPORT",
+          "NON_FISHING-": "NON_FISHING-",
+          "SUPPORT-FISHING": "SUPPORT-FISHING",
+          "SUPPORT-NON_FISHING": "SUPPORT-NON_FISHING",
+          "SUPPORT-SUPPORT": "SUPPORT-SUPPORT",
+          "SUPPORT-": "SUPPORT-",
+          "-FISHING": "-FISHING",
+          "-NON_FISHING": "-NON_FISHING",
+          "-SUPPORT": "-SUPPORT",
+          "-": "-"
+        }
+      }
+    }
+  },
+  "private-vms-ecu-fishing-effort": {
+    "name": "VMS Ecuador",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing presence algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing presence algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "schema": {
+      "speed": "speed",
+      "bearing": "bearing",
+      "distance_from_port_km": {
+        "keyword": "distance_from_port_km",
+        "enum": {
+          "0": "0",
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
+        }
+      }
+    }
+  },
+  "private-vms-ecu-loitering-events": {
+    "name": "Loitering Events (ECU)",
+    "description": "<h2>Overview</h2> <h3> Loitering events identify when a vessel is operating away from shore while moving at low speeds. Loitering events highlight when a vessel is behaving in a manner consistent with a potential encounter event (i.e. stationary or drifting slowly at sea) but no encountering vessel is visible on AIS. As such, these should not be considered indicators of likely encounter events, but rather periods of time when undetected encounters could have potentially occurred. </h3> <ul> <p>Global Fishing Watch classifies an event as a loitering event when:</p> <li> The vessel is located more than 20 nautical miles (37.04 kilometers) from shore, and </li> <li>Maintains an average speed of less than 2 knots,</li> <li>For a continuous period of at least 1 hour.</li> </ul> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of a rule-based algorithm being applied to AIS positional data. Loitering events should be cross-verified with other sources of information (like RFMO transshipment records) when possible. </li> <li> Vessels in loitering events may not be meeting any other vessels at the time of the event. Other events in which a vessel may remain fairly stationary or moving slowly while at sea include: maintenance, losing vessel power, idling during poor weather, waiting outside of port for permission to dock, normal fishing behavior, and more. </li> <li> Due to the individual definitions of loitering events, fishing events, and encounter events, it is possible for a single vessel movement pattern to trigger multiple event types. </li> <li> A loitering event position may not align exactly with the vessel’s tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within that event. As a result it is possible the vessel never occupied that precise location during the event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> Learn more about considerations of using AIS data by looking at the <a href=\"https://globalfishingwatch.org/data-documentation/apparent-fishing-events-ais/\" >AIS limitations section in the Apparent fishing events (AIS) data documentation.</a >. </p>",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id"
+    }
+  },
+  "private-vms-ecu-port-visits-events": {
+    "name": "Port Visits Events (ECU)",
+    "description": "The dataset contains port visits events for ECU",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "49": "49"
+        }
+      },
+      "confidences": {
+        "keyword": "confidences",
+        "enum": {
+          "2": "2",
+          "3": "3",
+          "4": "4"
+        }
+      }
+    }
+  },
+  "private-vms-ecu-presence": {
+    "name": "VMS Ecuador Presence",
+    "description": "Global Fishing Watch uses data about a vessels identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessels AIS.",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "<2": "<2",
+          "2-4": "2-4",
+          "4-6": "4-6",
+          "6-10": "6-10",
+          "10-15": "10-15",
+          "15-25": "15-25",
+          ">25": ">25"
+        }
+      },
+      "bearing": "bearing"
+    }
+  },
+  "private-vms-ecu-tracks": {
+    "name": "Ecuador VMS",
+    "description": "Tracks dataset for VMS Ecuador (Private)",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "0": "0",
+          "20": "20"
+        }
+      }
+    }
+  },
+  "private-vms-ecu-vessel-identity": {
+    "name": "VMS Ecuador",
+    "description": "Vessels (VMS Ecuador)"
+  },
+  "private-vms-nor-encounters-events": {
+    "name": "Encounter Events. (NOR)",
+    "description": "<h2>Overview</h2> <h3> Encounter events identify instances where two vessels appear to meet at sea. </h3> <ul> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage. </li> </ul> <ul> <p> Users can filter encounter events by vessel characteristics and context, including: </p> <li>Duration of encounter</li> <li> Vessel flag - Shows encounters where at least one vessel is flagged to the selected country </li> <li> Next port visit after the encounter - Shows encounters where at least one vessel is has visited the selected port(s) </li> <li>Vessel types involved in the encounter</li> <li>User saved vessel group</li> </ul> <ul> <p>Currently displayed encounter types include:</p> <li>Carrier ⇄ Bunker (experimental)</li> <li>Carrier ⇄ Fishing</li> <li>Fishing ⇄ Bunker (experimental)</li> <li>Fishing ⇄ Fishing (experimental)</li> <li>Support ⇄ Fishing</li> </ul> <p> To view more details about a specific encounter—such as its location or the identity of the encountered vessel—click the “See more” icon associated with the event. </p> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of rule-based algorithms being applied to AIS positional data. There are many potential reasons for vessels to meet at sea. Such interactions may include transshipment of catch or supplies, equipment transfers, crew changes, safety-related matters, and more. Encounter data should therefore be viewed as an indicator for review. </li> <li> Encounters that do not meet the specifications of GFW encounter events described above are not included in the map, such as encounters less than two hours and in-port encounters. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. While multiple encounters within such a short timeframe are possible, they remain exceptionally rare. </li> <li> The 500-meter proximity threshold is calculated using implied positions—not raw AIS messages. Since AIS transmissions occur at irregular intervals, vessel positions are estimated by a 10-minute time grid using reported course and speed. Proximity is then calculated based on these estimated positions. Due to this modeling approach, it is possible that vessels identified in an encounter may not have been physically within 500 meters of each other for the entire 2-hour period. </li> <li> Bias in vessel identification and gear classification can result in the unexpected presence or absence of an encounter. Misclassifications in vessel type may occur due to inconsistent or incomplete vessel registry data. Misclassifications can also happen when algorithms struggle to appropriately categorize vessels, for instance, where vessels use several gears (thus changing their behavioral patterns) or when a vessel’s MMSI (maritime mobile service identity) number is used by more than one vessel. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. As a result it is possible the vessels never occupied that precise location during the encounter event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> You can read more about transshipment behaviour from our <a href=\"http://globalfishingwatch.org/wp-content/uploads/GlobalViewOfTransshipment_Aug2017.pdf\" >report</a > or <a href=\"https://www.frontiersin.org/articles/10.3389/fmars.2018.00240/full\" >scientific privateation</a >. </p>",
+    "schema": {
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "2": "2",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id",
+      "encounter_type": {
+        "keyword": "encounter_type",
+        "enum": {
+          "FISHING-FISHING": "FISHING-FISHING",
+          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
+          "NON_FISHING-FISHING": "NON_FISHING-FISHING"
+        }
+      }
+    }
+  },
+  "private-vms-nor-fishing-effort": {
+    "name": "VMS Norway",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing presence algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing presence algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "schema": {
+      "speed": "speed",
+      "bearing": "bearing",
+      "distance_from_port_km": {
+        "keyword": "distance_from_port_km",
+        "enum": {
+          "0": "0",
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
+        }
+      }
+    }
+  },
+  "private-vms-nor-loitering-events": {
+    "name": "Loitering Events (NOR)",
+    "description": "<h2>Overview</h2> <h3> Loitering events identify when a vessel is operating away from shore while moving at low speeds. Loitering events highlight when a vessel is behaving in a manner consistent with a potential encounter event (i.e. stationary or drifting slowly at sea) but no encountering vessel is visible on AIS. As such, these should not be considered indicators of likely encounter events, but rather periods of time when undetected encounters could have potentially occurred. </h3> <ul> <p>Global Fishing Watch classifies an event as a loitering event when:</p> <li> The vessel is located more than 20 nautical miles (37.04 kilometers) from shore, and </li> <li>Maintains an average speed of less than 2 knots,</li> <li>For a continuous period of at least 1 hour.</li> </ul> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of a rule-based algorithm being applied to AIS positional data. Loitering events should be cross-verified with other sources of information (like RFMO transshipment records) when possible. </li> <li> Vessels in loitering events may not be meeting any other vessels at the time of the event. Other events in which a vessel may remain fairly stationary or moving slowly while at sea include: maintenance, losing vessel power, idling during poor weather, waiting outside of port for permission to dock, normal fishing behavior, and more. </li> <li> Due to the individual definitions of loitering events, fishing events, and encounter events, it is possible for a single vessel movement pattern to trigger multiple event types. </li> <li> A loitering event position may not align exactly with the vessel’s tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within that event. As a result it is possible the vessel never occupied that precise location during the event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> Learn more about considerations of using AIS data by looking at the <a href=\"https://globalfishingwatch.org/data-documentation/apparent-fishing-events-ais/\" >AIS limitations section in the Apparent fishing events (AIS) data documentation.</a >. </p>",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id"
+    }
+  },
+  "private-vms-nor-port-visits-events": {
+    "name": "Port Visits Events (NOR)",
+    "description": "The dataset contains port visits events for NOR",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "49": "49"
+        }
+      },
+      "confidences": {
+        "keyword": "confidences",
+        "enum": {
+          "2": "2",
+          "3": "3",
+          "4": "4"
+        }
+      }
+    }
+  },
+  "private-vms-nor-presence": {
+    "name": "VMS Norway Presence",
+    "description": "Global Fishing Watch uses data about a vessels identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessels AIS.",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "<2": "<2",
+          "2-4": "2-4",
+          "4-6": "4-6",
+          "6-10": "6-10",
+          "10-15": "10-15",
+          "15-25": "15-25",
+          ">25": ">25"
+        }
+      },
+      "bearing": "bearing"
+    }
+  },
+  "private-vms-nor-tracks": {
+    "name": "Norway VMS",
+    "description": "Tracks dataset for VMS Norway (Private)",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "0": "0",
+          "20": "20"
+        }
+      }
+    }
+  },
+  "private-vms-nor-vessel-identity": {
+    "name": "VMS Norway",
+    "description": "Vessels (VMS Norway)"
+  },
+  "private-vms-pan-encounters-events": {
+    "name": "Encounter Events. (PAN)",
+    "description": "<h2>Overview</h2> <h3> Encounter events identify instances where two vessels appear to meet at sea. </h3> <ul> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage. </li> </ul> <ul> <p> Users can filter encounter events by vessel characteristics and context, including: </p> <li>Duration of encounter</li> <li> Vessel flag - Shows encounters where at least one vessel is flagged to the selected country </li> <li> Next port visit after the encounter - Shows encounters where at least one vessel is has visited the selected port(s) </li> <li>Vessel types involved in the encounter</li> <li>User saved vessel group</li> </ul> <ul> <p>Currently displayed encounter types include:</p> <li>Carrier ⇄ Bunker (experimental)</li> <li>Carrier ⇄ Fishing</li> <li>Fishing ⇄ Bunker (experimental)</li> <li>Fishing ⇄ Fishing (experimental)</li> <li>Support ⇄ Fishing</li> </ul> <p> To view more details about a specific encounter—such as its location or the identity of the encountered vessel—click the “See more” icon associated with the event. </p> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of rule-based algorithms being applied to AIS positional data. There are many potential reasons for vessels to meet at sea. Such interactions may include transshipment of catch or supplies, equipment transfers, crew changes, safety-related matters, and more. Encounter data should therefore be viewed as an indicator for review. </li> <li> Encounters that do not meet the specifications of GFW encounter events described above are not included in the map, such as encounters less than two hours and in-port encounters. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. While multiple encounters within such a short timeframe are possible, they remain exceptionally rare. </li> <li> The 500-meter proximity threshold is calculated using implied positions—not raw AIS messages. Since AIS transmissions occur at irregular intervals, vessel positions are estimated by a 10-minute time grid using reported course and speed. Proximity is then calculated based on these estimated positions. Due to this modeling approach, it is possible that vessels identified in an encounter may not have been physically within 500 meters of each other for the entire 2-hour period. </li> <li> Bias in vessel identification and gear classification can result in the unexpected presence or absence of an encounter. Misclassifications in vessel type may occur due to inconsistent or incomplete vessel registry data. Misclassifications can also happen when algorithms struggle to appropriately categorize vessels, for instance, where vessels use several gears (thus changing their behavioral patterns) or when a vessel’s MMSI (maritime mobile service identity) number is used by more than one vessel. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. As a result it is possible the vessels never occupied that precise location during the encounter event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> You can read more about transshipment behaviour from our <a href=\"http://globalfishingwatch.org/wp-content/uploads/GlobalViewOfTransshipment_Aug2017.pdf\" >report</a > or <a href=\"https://www.frontiersin.org/articles/10.3389/fmars.2018.00240/full\" >scientific publication</a >. </p>",
+    "schema": {
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "2": "2",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id",
+      "encounter_type": {
+        "keyword": "encounter_type",
+        "enum": {
+          "FISHING-FISHING": "FISHING-FISHING",
+          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
+          "FISHING-": "FISHING-",
+          "NON_FISHING-FISHING": "NON_FISHING-FISHING",
+          "NON_FISHING-NON_FISHING": "NON_FISHING-NON_FISHING",
+          "NON_FISHING-": "NON_FISHING-",
+          "-FISHING": "-FISHING",
+          "-NON_FISHING": "-NON_FISHING",
+          "-": "-"
+        }
+      }
+    }
+  },
+  "private-vms-pan-fishing-effort": {
+    "name": "VMS Panama",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing presence algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing presence algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expant analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "schema": {
+      "speed": "speed",
+      "bearing": "bearing",
+      "source_fleet": {
+        "keyword": "source_fleet",
+        "enum": {
+          "INTERNATIONAL": "INTERNATIONAL",
+          "TRAWLER": "TRAWLER",
+          "LONGLINE": "LONGLINE"
+        }
+      },
+      "distance_from_port_km": {
+        "keyword": "distance_from_port_km",
+        "enum": {
+          "0": "0",
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
+        }
+      }
+    }
+  },
+  "private-vms-pan-loitering-events": {
+    "name": "Loitering Events (PAN)",
+    "description": "<h2>Overview</h2> <h3> Loitering events identify when a vessel is operating away from shore while moving at low speeds. Loitering events highlight when a vessel is behaving in a manner consistent with a potential encounter event (i.e. stationary or drifting slowly at sea) but no encountering vessel is visible on AIS. As such, these should not be considered indicators of likely encounter events, but rather periods of time when undetected encounters could have potentially occurred. </h3> <ul> <p>Global Fishing Watch classifies an event as a loitering event when:</p> <li> The vessel is located more than 20 nautical miles (37.04 kilometers) from shore, and </li> <li>Maintains an average speed of less than 2 knots,</li> <li>For a continuous period of at least 1 hour.</li> </ul> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of a rule-based algorithm being applied to AIS positional data. Loitering events should be cross-verified with other sources of information (like RFMO transshipment records) when possible. </li> <li> Vessels in loitering events may not be meeting any other vessels at the time of the event. Other events in which a vessel may remain fairly stationary or moving slowly while at sea include: maintenance, losing vessel power, idling during poor weather, waiting outside of port for permission to dock, normal fishing behavior, and more. </li> <li> Due to the individual definitions of loitering events, fishing events, and encounter events, it is possible for a single vessel movement pattern to trigger multiple event types. </li> <li> A loitering event position may not align exactly with the vessel’s tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within that event. As a result it is possible the vessel never occupied that precise location during the event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> Learn more about considerations of using AIS data by looking at the <a href=\"https://globalfishingwatch.org/data-documentation/apparent-fishing-events-ais/\" >AIS limitations section in the Apparent fishing events (AIS) data documentation.</a >. </p>",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id"
+    }
+  },
+  "private-vms-pan-port-visits-events": {
+    "name": "Port Visits Events (PAN)",
+    "description": "The dataset contains port visits events for PAN",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "49": "49"
+        }
+      },
+      "confidences": {
+        "keyword": "confidences",
+        "enum": {
+          "2": "2",
+          "3": "3",
+          "4": "4"
+        }
+      }
+    }
+  },
+  "private-vms-pan-presence": {
+    "name": "VMS Panama Presence",
+    "description": "Global Fishing Watch uses data about a vessels identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position pan day pan vessel from the positions transmitted by the vessels AIS.",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "<2": "<2",
+          "2-4": "2-4",
+          "4-6": "4-6",
+          "6-10": "6-10",
+          "10-15": "10-15",
+          "15-25": "15-25",
+          ">25": ">25"
+        }
+      },
+      "bearing": "bearing",
+      "source_fleet": {
+        "keyword": "source_fleet",
+        "enum": {
+          "INTERNATIONAL": "INTERNATIONAL",
+          "LONGLINE": "LONGLINE",
+          "TRAWLER": "TRAWLER"
+        }
+      }
+    }
+  },
+  "private-vms-pan-tracks": {
+    "name": "PANAMA VMS",
+    "description": "Tracks dataset for VMS PANAMA (Private)",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "0": "0",
+          "20": "20"
+        }
+      }
+    }
+  },
+  "private-vms-pan-vessel-identity": {
+    "name": "VMS Panama",
+    "description": "Vessels (VMS Panama)"
+  },
+  "private-vms-per-encounters-events": {
+    "name": "Encounter Events. (PER)",
+    "description": "<h2>Overview</h2> <h3> Encounter events identify instances where two vessels appear to meet at sea. </h3> <ul> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage. </li> </ul> <ul> <p> Users can filter encounter events by vessel characteristics and context, including: </p> <li>Duration of encounter</li> <li> Vessel flag - Shows encounters where at least one vessel is flagged to the selected country </li> <li> Next port visit after the encounter - Shows encounters where at least one vessel is has visited the selected port(s) </li> <li>Vessel types involved in the encounter</li> <li>User saved vessel group</li> </ul> <ul> <p>Currently displayed encounter types include:</p> <li>Carrier ⇄ Bunker (experimental)</li> <li>Carrier ⇄ Fishing</li> <li>Fishing ⇄ Bunker (experimental)</li> <li>Fishing ⇄ Fishing (experimental)</li> <li>Support ⇄ Fishing</li> </ul> <p> To view more details about a specific encounter—such as its location or the identity of the encountered vessel—click the “See more” icon associated with the event. </p> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of rule-based algorithms being applied to AIS positional data. There are many potential reasons for vessels to meet at sea. Such interactions may include transshipment of catch or supplies, equipment transfers, crew changes, safety-related matters, and more. Encounter data should therefore be viewed as an indicator for review. </li> <li> Encounters that do not meet the specifications of GFW encounter events described above are not included in the map, such as encounters less than two hours and in-port encounters. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. While multiple encounters within such a short timeframe are possible, they remain exceptionally rare. </li> <li> The 500-meter proximity threshold is calculated using implied positions—not raw AIS messages. Since AIS transmissions occur at irregular intervals, vessel positions are estimated by a 10-minute time grid using reported course and speed. Proximity is then calculated based on these estimated positions. Due to this modeling approach, it is possible that vessels identified in an encounter may not have been physically within 500 meters of each other for the entire 2-hour period. </li> <li> Bias in vessel identification and gear classification can result in the unexpected presence or absence of an encounter. Misclassifications in vessel type may occur due to inconsistent or incomplete vessel registry data. Misclassifications can also happen when algorithms struggle to appropriately categorize vessels, for instance, where vessels use several gears (thus changing their behavioral patterns) or when a vessel’s MMSI (maritime mobile service identity) number is used by more than one vessel. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. As a result it is possible the vessels never occupied that precise location during the encounter event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> You can read more about transshipment behaviour from our <a href=\"http://globalfishingwatch.org/wp-content/uploads/GlobalViewOfTransshipment_Aug2017.pdf\" >report</a > or <a href=\"https://www.frontiersin.org/articles/10.3389/fmars.2018.00240/full\" >scientific publication</a >. </p>",
+    "schema": {
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "2": "2",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id",
+      "encounter_type": {
+        "keyword": "encounter_type",
+        "enum": {
+          "FISHING-FISHING": "FISHING-FISHING",
+          "FISHING-": "FISHING-",
+          "-FISHING": "-FISHING",
+          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
+          "NON_FISHING-FISHING": "NON_FISHING-FISHING"
+        }
+      }
+    }
+  },
+  "private-vms-per-fishing-effort": {
+    "name": "VMS Peru",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing presence algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing presence algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "schema": {
+      "speed": "speed",
+      "origin": {
+        "keyword": "origin",
+        "enum": {
+          "Foreign": "Foreign",
+          "PER": "PER",
+          "": ""
+        }
+      },
+      "bearing": "bearing",
+      "source_fleet": {
+        "keyword": "source_fleet",
+        "enum": {
+          "": "",
+          "SMALL-SCALE": "SMALL-SCALE",
+          "INDUSTRIAL": "INDUSTRIAL",
+          "ARTISANAL": "ARTISANAL"
+        }
+      },
+      "distance_from_port_km": {
+        "keyword": "distance_from_port_km",
+        "enum": {
+          "0": "0",
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
+        }
+      }
+    }
+  },
+  "private-vms-per-loitering-events": {
+    "name": "Loitering Events (PER)",
+    "description": "<h2>Overview</h2> <h3> Loitering events identify when a vessel is operating away from shore while moving at low speeds. Loitering events highlight when a vessel is behaving in a manner consistent with a potential encounter event (i.e. stationary or drifting slowly at sea) but no encountering vessel is visible on AIS. As such, these should not be considered indicators of likely encounter events, but rather periods of time when undetected encounters could have potentially occurred. </h3> <ul> <p>Global Fishing Watch classifies an event as a loitering event when:</p> <li> The vessel is located more than 20 nautical miles (37.04 kilometers) from shore, and </li> <li>Maintains an average speed of less than 2 knots,</li> <li>For a continuous period of at least 1 hour.</li> </ul> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of a rule-based algorithm being applied to AIS positional data. Loitering events should be cross-verified with other sources of information (like RFMO transshipment records) when possible. </li> <li> Vessels in loitering events may not be meeting any other vessels at the time of the event. Other events in which a vessel may remain fairly stationary or moving slowly while at sea include: maintenance, losing vessel power, idling during poor weather, waiting outside of port for permission to dock, normal fishing behavior, and more. </li> <li> Due to the individual definitions of loitering events, fishing events, and encounter events, it is possible for a single vessel movement pattern to trigger multiple event types. </li> <li> A loitering event position may not align exactly with the vessel’s tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within that event. As a result it is possible the vessel never occupied that precise location during the event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> Learn more about considerations of using AIS data by looking at the <a href=\"https://globalfishingwatch.org/data-documentation/apparent-fishing-events-ais/\" >AIS limitations section in the Apparent fishing events (AIS) data documentation.</a >. </p>",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id"
+    }
+  },
+  "private-vms-per-port-visits-events": {
+    "name": "Port Visits Events (PER)",
+    "description": "The dataset contains port visits events for PER",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "49": "49"
+        }
+      },
+      "confidences": {
+        "keyword": "confidences",
+        "enum": {
+          "2": "2",
+          "3": "3",
+          "4": "4"
+        }
+      }
+    }
+  },
+  "private-vms-per-presence": {
+    "name": "VMS Peru Presence",
+    "description": "Global Fishing Watch uses data about a vessels identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessels AIS.",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "<2": "<2",
+          "2-4": "2-4",
+          "4-6": "4-6",
+          "6-10": "6-10",
+          "10-15": "10-15",
+          "15-25": "15-25",
+          ">25": ">25"
+        }
+      },
+      "origin": {
+        "keyword": "origin",
+        "enum": {
+          "Foreign": "Foreign",
+          "PER": "PER",
+          "": ""
+        }
+      },
+      "bearing": "bearing",
+      "source_fleet": {
+        "keyword": "source_fleet",
+        "enum": {
+          "INDUSTRIAL": "INDUSTRIAL",
+          "SMALL-SCALE": "SMALL-SCALE",
+          "ARTISANAL": "ARTISANAL",
+          "": ""
+        }
+      }
+    }
+  },
+  "private-vms-per-tracks": {
+    "name": "PERU VMS",
+    "description": "Tracks dataset for VMS PERU (Private)",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "0": "0",
+          "20": "20"
+        }
+      }
+    }
+  },
+  "private-vms-per-vessel-identity": {
+    "name": "VMS Peru",
+    "description": "Vessels (VMS Peru)"
+  },
+  "private-vms-plw-encounters-events": {
+    "name": "Encounter Events. (PLW)",
+    "description": "<h2>Overview</h2> <h3> Encounter events identify instances where two vessels appear to meet at sea. </h3> <ul> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage. </li> </ul> <ul> <p> Users can filter encounter events by vessel characteristics and context, including: </p> <li>Duration of encounter</li> <li> Vessel flag - Shows encounters where at least one vessel is flagged to the selected country </li> <li> Next port visit after the encounter - Shows encounters where at least one vessel is has visited the selected port(s) </li> <li>Vessel types involved in the encounter</li> <li>User saved vessel group</li> </ul> <ul> <p>Currently displayed encounter types include:</p> <li>Carrier ⇄ Bunker (experimental)</li> <li>Carrier ⇄ Fishing</li> <li>Fishing ⇄ Bunker (experimental)</li> <li>Fishing ⇄ Fishing (experimental)</li> <li>Support ⇄ Fishing</li> </ul> <p> To view more details about a specific encounter—such as its location or the identity of the encountered vessel—click the “See more” icon associated with the event. </p> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of rule-based algorithms being applied to AIS positional data. There are many potential reasons for vessels to meet at sea. Such interactions may include transshipment of catch or supplies, equipment transfers, crew changes, safety-related matters, and more. Encounter data should therefore be viewed as an indicator for review. </li> <li> Encounters that do not meet the specifications of GFW encounter events described above are not included in the map, such as encounters less than two hours and in-port encounters. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. While multiple encounters within such a short timeframe are possible, they remain exceptionally rare. </li> <li> The 500-meter proximity threshold is calculated using implied positions—not raw AIS messages. Since AIS transmissions occur at irregular intervals, vessel positions are estimated by a 10-minute time grid using reported course and speed. Proximity is then calculated based on these estimated positions. Due to this modeling approach, it is possible that vessels identified in an encounter may not have been physically within 500 meters of each other for the entire 2-hour period. </li> <li> Bias in vessel identification and gear classification can result in the unexpected presence or absence of an encounter. Misclassifications in vessel type may occur due to inconsistent or incomplete vessel registry data. Misclassifications can also happen when algorithms struggle to appropriately categorize vessels, for instance, where vessels use several gears (thus changing their behavioral patterns) or when a vessel’s MMSI (maritime mobile service identity) number is used by more than one vessel. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. As a result it is possible the vessels never occupied that precise location during the encounter event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> You can read more about transshipment behaviour from our <a href=\"http://globalfishingwatch.org/wp-content/uploads/GlobalViewOfTransshipment_Aug2017.pdf\" >report</a > or <a href=\"https://www.frontiersin.org/articles/10.3389/fmars.2018.00240/full\" >scientific publication</a >. </p>",
+    "schema": {
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "2": "2",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id",
+      "encounter_type": {
+        "keyword": "encounter_type",
+        "enum": {
+          "FISHING-FISHING": "FISHING-FISHING",
+          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
+          "FISHING-SUPPORT": "FISHING-SUPPORT",
+          "FISHING-CARRIER": "FISHING-CARRIER",
+          "FISHING-": "FISHING-",
+          "NON_FISHING-FISHING": "NON_FISHING-FISHING",
+          "NON_FISHING-NON_FISHING": "NON_FISHING-NON_FISHING",
+          "NON_FISHING-SUPPORT": "NON_FISHING-SUPPORT",
+          "NON_FISHING-CARRIER": "NON_FISHING-CARRIER",
+          "NON_FISHING-": "NON_FISHING-",
+          "SUPPORT-FISHING": "SUPPORT-FISHING",
+          "SUPPORT-NON_FISHING": "SUPPORT-NON_FISHING",
+          "SUPPORT-SUPPORT": "SUPPORT-SUPPORT",
+          "SUPPORT-CARRIER": "SUPPORT-CARRIER",
+          "SUPPORT-": "SUPPORT-",
+          "CARRIER-FISHING": "CARRIER-FISHING",
+          "CARRIER-NON_FISHING": "CARRIER-NON_FISHING",
+          "CARRIER-SUPPORT": "CARRIER-SUPPORT",
+          "CARRIER-CARRIER": "CARRIER-CARRIER",
+          "CARRIER-": "CARRIER-",
+          "-FISHING": "-FISHING",
+          "-NON_FISHING": "-NON_FISHING",
+          "-SUPPORT": "-SUPPORT",
+          "-CARRIER": "-CARRIER",
+          "-": "-"
+        }
+      }
+    }
+  },
+  "private-vms-plw-fishing-effort": {
+    "name": "VMS Palau",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing presence algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing presence algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "schema": {
+      "speed": "speed",
+      "bearing": "bearing",
+      "distance_from_port_km": {
+        "keyword": "distance_from_port_km",
+        "enum": {
+          "0": "0",
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
+        }
+      }
+    }
+  },
+  "private-vms-plw-loitering-events": {
+    "name": "Loitering Events (PLW)",
+    "description": "<h2>Overview</h2> <h3> Loitering events identify when a vessel is operating away from shore while moving at low speeds. Loitering events highlight when a vessel is behaving in a manner consistent with a potential encounter event (i.e. stationary or drifting slowly at sea) but no encountering vessel is visible on AIS. As such, these should not be considered indicators of likely encounter events, but rather periods of time when undetected encounters could have potentially occurred. </h3> <ul> <p>Global Fishing Watch classifies an event as a loitering event when:</p> <li> The vessel is located more than 20 nautical miles (37.04 kilometers) from shore, and </li> <li>Maintains an average speed of less than 2 knots,</li> <li>For a continuous period of at least 1 hour.</li> </ul> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of a rule-based algorithm being applied to AIS positional data. Loitering events should be cross-verified with other sources of information (like RFMO transshipment records) when possible. </li> <li> Vessels in loitering events may not be meeting any other vessels at the time of the event. Other events in which a vessel may remain fairly stationary or moving slowly while at sea include: maintenance, losing vessel power, idling during poor weather, waiting outside of port for permission to dock, normal fishing behavior, and more. </li> <li> Due to the individual definitions of loitering events, fishing events, and encounter events, it is possible for a single vessel movement pattern to trigger multiple event types. </li> <li> A loitering event position may not align exactly with the vessel’s tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within that event. As a result it is possible the vessel never occupied that precise location during the event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> Learn more about considerations of using AIS data by looking at the <a href=\"https://globalfishingwatch.org/data-documentation/apparent-fishing-events-ais/\" >AIS limitations section in the Apparent fishing events (AIS) data documentation.</a >. </p>",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id"
+    }
+  },
+  "private-vms-plw-port-visits-events": {
+    "name": "Port Visits Events (PLW)",
+    "description": "The dataset contains port visits events for PLW",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "49": "49"
+        }
+      },
+      "confidences": {
+        "keyword": "confidences",
+        "enum": {
+          "2": "2",
+          "3": "3",
+          "4": "4"
+        }
+      }
+    }
+  },
+  "private-vms-plw-presence": {
+    "name": "VMS Palau Presence",
+    "description": "Global Fishing Watch uses data about a vessels identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessels AIS.",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "<2": "<2",
+          "2-4": "2-4",
+          "4-6": "4-6",
+          "6-10": "6-10",
+          "10-15": "10-15",
+          "15-25": "15-25",
+          ">25": ">25"
+        }
+      },
+      "bearing": "bearing"
+    }
+  },
+  "private-vms-plw-tracks": {
+    "name": "Palau VMS",
+    "description": "Tracks dataset for VMS Palau (Private)",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "0": "0",
+          "20": "20"
+        }
+      }
+    }
+  },
+  "private-vms-plw-vessel-identity": {
+    "name": "VMS Palau",
+    "description": "Vessels (VMS Palau)"
+  },
+  "private-vms-png-encounters-events": {
+    "name": "Encounter Events. (PNG)",
+    "description": "<h2>Overview</h2> <h3> Encounter events identify instances where two vessels appear to meet at sea. </h3> <ul> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage. </li> </ul> <ul> <p> Users can filter encounter events by vessel characteristics and context, including: </p> <li>Duration of encounter</li> <li> Vessel flag - Shows encounters where at least one vessel is flagged to the selected country </li> <li> Next port visit after the encounter - Shows encounters where at least one vessel is has visited the selected port(s) </li> <li>Vessel types involved in the encounter</li> <li>User saved vessel group</li> </ul> <ul> <p>Currently displayed encounter types include:</p> <li>Carrier ⇄ Bunker (experimental)</li> <li>Carrier ⇄ Fishing</li> <li>Fishing ⇄ Bunker (experimental)</li> <li>Fishing ⇄ Fishing (experimental)</li> <li>Support ⇄ Fishing</li> </ul> <p> To view more details about a specific encounter—such as its location or the identity of the encountered vessel—click the “See more” icon associated with the event. </p> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of rule-based algorithms being applied to AIS positional data. There are many potential reasons for vessels to meet at sea. Such interactions may include transshipment of catch or supplies, equipment transfers, crew changes, safety-related matters, and more. Encounter data should therefore be viewed as an indicator for review. </li> <li> Encounters that do not meet the specifications of GFW encounter events described above are not included in the map, such as encounters less than two hours and in-port encounters. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. While multiple encounters within such a short timeframe are possible, they remain exceptionally rare. </li> <li> The 500-meter proximity threshold is calculated using implied positions—not raw AIS messages. Since AIS transmissions occur at irregular intervals, vessel positions are estimated by a 10-minute time grid using reported course and speed. Proximity is then calculated based on these estimated positions. Due to this modeling approach, it is possible that vessels identified in an encounter may not have been physically within 500 meters of each other for the entire 2-hour period. </li> <li> Bias in vessel identification and gear classification can result in the unexpected presence or absence of an encounter. Misclassifications in vessel type may occur due to inconsistent or incomplete vessel registry data. Misclassifications can also happen when algorithms struggle to appropriately categorize vessels, for instance, where vessels use several gears (thus changing their behavioral patterns) or when a vessel’s MMSI (maritime mobile service identity) number is used by more than one vessel. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. As a result it is possible the vessels never occupied that precise location during the encounter event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> You can read more about transshipment behaviour from our <a href=\"http://globalfishingwatch.org/wp-content/uploads/GlobalViewOfTransshipment_Aug2017.pdf\" >report</a > or <a href=\"https://www.frontiersin.org/articles/10.3389/fmars.2018.00240/full\" >scientific publication</a >. </p>",
+    "schema": {
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "2": "2",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id",
+      "encounter_type": {
+        "keyword": "encounter_type",
+        "enum": {
+          "FISHING-FISHING": "FISHING-FISHING",
+          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
+          "NON_FISHING-FISHING": "NON_FISHING-FISHING",
+          "FISHING-": "FISHING-",
+          "-FISHING": "-FISHING"
+        }
+      }
+    }
+  },
+  "private-vms-png-fishing-effort": {
+    "name": "VMS Papua New Guinea",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing presence algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing presence algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "schema": {
+      "speed": "speed",
+      "bearing": "bearing",
+      "distance_from_port_km": {
+        "keyword": "distance_from_port_km",
+        "enum": {
+          "0": "0",
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
+        }
+      }
+    }
+  },
+  "private-vms-png-loitering-events": {
+    "name": "Loitering Events (PNG)",
+    "description": "<h2>Overview</h2> <h3> Loitering events identify when a vessel is operating away from shore while moving at low speeds. Loitering events highlight when a vessel is behaving in a manner consistent with a potential encounter event (i.e. stationary or drifting slowly at sea) but no encountering vessel is visible on AIS. As such, these should not be considered indicators of likely encounter events, but rather periods of time when undetected encounters could have potentially occurred. </h3> <ul> <p>Global Fishing Watch classifies an event as a loitering event when:</p> <li> The vessel is located more than 20 nautical miles (37.04 kilometers) from shore, and </li> <li>Maintains an average speed of less than 2 knots,</li> <li>For a continuous period of at least 1 hour.</li> </ul> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of a rule-based algorithm being applied to AIS positional data. Loitering events should be cross-verified with other sources of information (like RFMO transshipment records) when possible. </li> <li> Vessels in loitering events may not be meeting any other vessels at the time of the event. Other events in which a vessel may remain fairly stationary or moving slowly while at sea include: maintenance, losing vessel power, idling during poor weather, waiting outside of port for permission to dock, normal fishing behavior, and more. </li> <li> Due to the individual definitions of loitering events, fishing events, and encounter events, it is possible for a single vessel movement pattern to trigger multiple event types. </li> <li> A loitering event position may not align exactly with the vessel’s tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within that event. As a result it is possible the vessel never occupied that precise location during the event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> Learn more about considerations of using AIS data by looking at the <a href=\"https://globalfishingwatch.org/data-documentation/apparent-fishing-events-ais/\" >AIS limitations section in the Apparent fishing events (AIS) data documentation.</a >. </p>",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id"
+    }
+  },
+  "private-vms-png-port-visits-events": {
+    "name": "Port Visits Events (PNG)",
+    "description": "The dataset contains port visits events for PNG",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "49": "49"
+        }
+      },
+      "confidences": {
+        "keyword": "confidences",
+        "enum": {
+          "2": "2",
+          "3": "3",
+          "4": "4"
+        }
+      }
+    }
+  },
+  "private-vms-png-presence": {
+    "name": "VMS Papua New Guinea Presence",
+    "description": "Global Fishing Watch uses data about a vessels identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessels AIS.",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "<2": "<2",
+          "2-4": "2-4",
+          "4-6": "4-6",
+          "6-10": "6-10",
+          "10-15": "10-15",
+          "15-25": "15-25",
+          ">25": ">25"
+        }
+      },
+      "bearing": "bearing"
+    }
+  },
+  "private-vms-png-tracks": {
+    "name": "Papua New Guinea VMS",
+    "description": "Tracks dataset for VMS Papua New Guinea (Private)",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "0": "0",
+          "20": "20"
+        }
+      }
+    }
+  },
+  "private-vms-png-vessel-identity": {
+    "name": "VMS Papua New Guinea",
+    "description": "Vessels (VMS Papua New Guinea)"
+  },
   "proto-global-encounters-events-30min": {
     "name": "PROTOTYPE - Événements de rencontre de 30 min. (AIS)",
     "description": "Le jeu de données contient des événements de rencontre de 30 min. (AIS). [Pêche-Transport, Transport-Pêche, Soutien-Pêche, Pêche-Soutien]",
