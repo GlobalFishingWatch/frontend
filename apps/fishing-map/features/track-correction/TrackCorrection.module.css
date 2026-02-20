@@ -33,7 +33,7 @@
   align-items: center;
   gap: var(--space-S);
   padding: var(--space-XS) var(--space-S);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   font-size: small;
   line-height: 1.5;
 }
@@ -68,7 +68,7 @@
   margin: var(--space-S);
   padding: var(--space-S);
   background-color: var(--color-danger-red-background);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
 }
 
 .link {

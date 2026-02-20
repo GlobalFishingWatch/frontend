@@ -3,7 +3,7 @@
   height: var(--size-M);
   display: flex;
   background: var(--color-terthiary-blue);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   border-bottom: 2px solid var(--color-border);
   line-height: var(--size-M);
 }
@@ -46,13 +46,13 @@
 
 :not(.secondary).isOpen {
   background: var(--color-white);
-  border-radius: var(--border-radius) var(--border-radius) 0 0;
-  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius-0) var(--border-radius-0) 0 0;
+  box-shadow: var(--box-shadow-1);
   z-index: 11;
 }
 
 :not(.secondary).isOpen:has(.optionsContainer.top) {
-  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  border-radius: 0 0 var(--border-radius-0) var(--border-radius-0);
 }
 
 .placeholderContainer {
@@ -77,11 +77,11 @@
   top: var(--size-M);
   left: 0;
   background: var(--color-white);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow-1);
   max-height: 24rem;
   overflow: auto;
   z-index: 10;
-  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  border-radius: 0 0 var(--border-radius-0) var(--border-radius-0);
 }
 
 .secondary .optionsContainer {
@@ -98,7 +98,7 @@
 }
 
 .optionsContainer.top {
-  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  border-radius: var(--border-radius-0) var(--border-radius-0) 0 0;
   bottom: calc(100% + 1px);
   top: auto;
 }

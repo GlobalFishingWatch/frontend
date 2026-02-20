@@ -3,6 +3,10 @@
   padding-block: var(--space-XL);
 }
 
+.tabsContainer {
+  margin: var(--space-S);
+}
+
 .secondary {
   color: var(--color-secondary-blue);
 }

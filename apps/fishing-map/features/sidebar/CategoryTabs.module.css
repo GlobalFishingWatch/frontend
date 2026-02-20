@@ -1,25 +1,20 @@
 .CategoryTabs {
   display: flex;
   flex-direction: column;
+  border-right: var(--border);
 }
 
 .tab {
   width: var(--sidebar-tabs-width);
   height: var(--sidebar-tabs-width);
+  margin: var(--space-XS);
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: calc(var(--sidebar-tabs-width) / 2);
 }
 
-.tab:not(.current) {
-  background-color: var(--color-terthiary-blue);
-  border-right: var(--border);
-}
-
-.tab:not(:last-child) {
-  border-bottom: var(--border);
-}
-
+.tab.current,
 .tab:not(.current):hover {
   background-color: var(--color-border);
 }
@@ -41,14 +36,11 @@
 
 .tab.current .tabContent,
 .tab:hover > .tabContent {
-  background-color: transparent !important;
   opacity: var(--opacity-primary);
 }
 
 .separator {
   flex: 1;
-  background-color: var(--color-terthiary-blue);
-  border-right: var(--border);
 }
 
 .userButton,

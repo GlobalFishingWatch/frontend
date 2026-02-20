@@ -24,8 +24,8 @@
   --primary-blue-rgb: 22, 63, 137; /* rgb(22, 63, 137) */
   --danger-red-rgb: 360, 62, 98; /* rgb(360, 62, 98) */
   --help-yellow-rgb: 255, 248, 205; /* rgb(255, 248, 205) */
-  --gradient-rgb: 229, 240, 242; /* rgb(229, 240, 242) */
-  --off-white-rgb: 242, 247, 248; /* rgb(242, 247, 248) */
+  --background-rgb: 232, 236, 244; /* rgb(232, 236, 244) */
+  --off-white-rgb: 243, 245, 249; /* rgb(243, 245, 249) */
   --white-rgb: 255, 255, 255; /* rgb(255, 255, 255) */
 
   /* COLORS */
@@ -37,10 +37,9 @@
   --color-danger-red-background: #f6bdbd;
   --color-danger-secondary-red: rgba(var(--danger-red-rgb), var(--opacity-secondary));
   --color-help-yellow: rgba(var(--help-yellow-rgb));
-  --color-gradient: rgba(var(--gradient-rgb));
+  --color-background: rgba(var(--background-rgb));
   --color-off-white: rgba(var(--off-white-rgb));
   --color-white: rgba(var(--white-rgb));
-  --gradient: linear-gradient(180deg, var(--color-gradient) 0, var(--color-white) 70rem);
   --color-map-background: #002457;
   --color-highlight-blue: #6aecf9;
 
@@ -58,7 +57,9 @@
   --opacity-border-extra-thick: 0.5;
 
   /* SHADOWS */
-  --box-shadow: 0 0 1rem 0 rgba(var(--primary-blue-rgb), var(--opacity-border));
+  --box-shadow-0: 0 0.2rem 0.4rem 0 rgba(var(--primary-blue-rgb), var(--opacity-border));
+  --box-shadow-1: 0 0.4rem 0.8rem 0 rgba(var(--primary-blue-rgb), var(--opacity-border));
+  --box-shadow-2: 0 0.8rem 1.6rem 0 rgba(var(--primary-blue-rgb), var(--opacity-border));
   --filter-drop-shadow: drop-shadow(0 0 1rem rgba(var(--primary-blue-rgb), var(--opacity-border)));
 
   /* UTILS */
@@ -71,20 +72,21 @@
   --border-white: 1px solid rgba(var(--white-rgb), var(--opacity-border));
   --box-shadow-highlight: 0 0 0.2rem 0.2rem var(--color-highlight-blue);
   --transition: all 150ms ease-out;
-  --border-radius: 0.4rem;
+  --border-radius-0: 0.4rem;
+  --border-radius-1: 0.8rem;
 
   /* SIZES */
-  --size-XXS: 1.5rem;
+  --size-XXS: 1.6rem;
   --size-XS: 2rem;
-  --size-S: 2.8rem;
+  --size-S: 2.4rem;
   --size-SM: 3.2rem;
   --size-M: 4rem;
   --size-L: 6rem;
   --size-XL: 8rem;
-  --space-XS: 0.5rem;
-  --space-S: 1rem;
-  --space-SM: 1.5rem;
-  --space-M: 2rem;
+  --space-XS: 0.4rem;
+  --space-S: 0.8rem;
+  --space-SM: 1.6rem;
+  --space-M: 2.4rem;
   --space-L: 4rem;
   --space-XL: 8rem;
 
@@ -93,8 +95,8 @@
   --scrollbar-color: rgba(0, 36, 87, 0.4);
   --scrollbar-color-hover: rgba(0, 36, 87, 0.6);
   --scrollbar-width: thin;
-  --scrollbar-size: 0.5rem;
-  --scrollbar-minlength: 1.5rem;
+  --scrollbar-size: 0.4rem;
+  --scrollbar-minlength: 1.6rem;
 
   /* Minimum length of scrollbar thumb (width of horizontal, height of vertical) */
 }
@@ -219,7 +221,7 @@ label {
 
 .screen-reader-only {
   border: 0;
-  clip: rect(0 0 0 0);
+  clip-path: rect(0 0 0 0);
   height: auto;
   margin: 0;
   overflow: hidden;

@@ -53,7 +53,7 @@
 
 .hueBar {
   height: 1.2rem;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   border: var(--border);
 }
 

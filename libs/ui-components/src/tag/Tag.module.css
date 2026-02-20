@@ -9,7 +9,7 @@
   margin-bottom: var(--space-XS);
   color: var(--color-primary-blue);
   border-bottom: var(--border);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
 }
 
 .tag::after {
@@ -17,7 +17,7 @@
   position: absolute;
   content: '';
   inset: 0 0 -0.1rem;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   background-color: currentcolor;
   opacity: var(--opacity-border);
   z-index: -1;

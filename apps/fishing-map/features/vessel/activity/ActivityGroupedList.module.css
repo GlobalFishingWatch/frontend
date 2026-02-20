@@ -11,7 +11,7 @@
 .eventExpanded {
   background-color: transparent;
   color: var(--color-primary-blue);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow-1);
 }
 
 .eventExpanded::after {
@@ -43,8 +43,12 @@
 .eventGroup {
   margin-left: unset;
   width: 100%;
-  background: var(--color-white);
-  outline: var(--border);
+  background: var(--color-off-white);
+  border-top: var(--border);
+}
+
+.eventGroup:last-child {
+  border-radius: 0 0 var(--border-radius-1) var(--border-radius-1);
 }
 
 .header {

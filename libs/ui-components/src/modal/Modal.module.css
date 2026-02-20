@@ -15,13 +15,14 @@
 }
 
 .modalContentWrapper {
-  background: var(--gradient);
+  background: var(--color-background);
   padding: 0;
   position: relative;
   width: 100%;
   max-width: 78rem;
   overflow-y: auto;
   max-height: 100dvh;
+  border-radius: var(--border-radius-1);
 }
 
 .auto {
