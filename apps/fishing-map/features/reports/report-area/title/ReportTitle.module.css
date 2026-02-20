@@ -132,8 +132,8 @@
 .bufferContainer {
   background-color: white;
   padding: var(--space-S);
-  box-shadow: var(--box-shadow);
-  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow-1);
+  border-radius: var(--border-radius-0);
 }
 
 .bufferTooltipContent {

@@ -1,6 +1,5 @@
 .summaryContainer {
-  padding: var(--space-S) var(--space-S) var(--space-S) var(--space-M);
-  border-bottom: var(--border);
+  padding: var(--space-S);
   min-height: 5.2rem;
   display: flex;
   gap: var(--space-S);

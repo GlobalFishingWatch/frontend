@@ -58,7 +58,7 @@
 
 .click .content {
   min-width: var(--sidebar-width);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow-1);
 }
 
 .click .loading {

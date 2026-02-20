@@ -16,7 +16,7 @@
   gap: var(--space-S);
   padding: var(--space-S);
   background: var(--color-white);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow-1);
   border-top: var(--border);
   transition: transform 300ms ease-in-out;
   z-index: 3;
@@ -24,7 +24,7 @@
 }
 
 .footer.advanced {
-  width: calc(100% - var(--sidebar-tabs-width) - var(--sidebar-width));
+  width: calc(100% - var(--sidebar-tabs-width) - (var(--space-XS) * 2) - var(--sidebar-width));
 }
 
 .footerAction {
