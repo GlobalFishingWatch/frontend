@@ -3,8 +3,10 @@ import { DateTime } from 'luxon'
 
 import I18nDate from 'features/i18n/i18nDate'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
-import { type ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
-import { ActivityEventSubType } from 'features/vessel/vessel.types'
+import {
+  type ActivityEvent,
+  ActivityEventSubType,
+} from 'features/vessel/activity/vessels-activity.selectors'
 
 import styles from './Event.module.css'
 

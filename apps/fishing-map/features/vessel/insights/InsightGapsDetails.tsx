@@ -9,9 +9,9 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
 import { removeNonTunaRFMO } from 'features/vessel/insights/insights.utils'
-import type { VesselEvent } from 'features/vessel/vessel.types'
 import { getVesselIdentities } from 'features/vessel/vessel.utils'
 
+import type { VesselEvent } from '../activity/event/Event'
 import Event from '../activity/event/Event'
 import { selectVesselInfoData } from '../selectors/vessel.selectors'
 

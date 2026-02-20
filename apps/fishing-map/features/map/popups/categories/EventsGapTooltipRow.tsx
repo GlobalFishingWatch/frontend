@@ -1,18 +1,16 @@
 import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
-import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { isVMSDataset } from '@globalfishingwatch/datasets-client'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { getDatasetLabel, getRelatedDatasetByType } from 'features/datasets/datasets.utils'
-import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
@@ -38,13 +36,7 @@ function EventsGapTooltipRow({
   loading,
 }: EventsGapTooltipRowProps) {
   const { t } = useTranslation()
-  const dataviews = useSelector(selectEventsDataviews)
-  const encounterDataview = dataviews.find((d) => d.id === feature.layerId)
-  const encounterDataset = encounterDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
-  const encounterVesselDatasetId = getRelatedDatasetByType(
-    encounterDataset,
-    DatasetTypes.Vessels
-  )?.id
+
   const seeGapEventClick = useCallback((dataset: Dataset) => {
     trackEvent({
       category: TrackCategory.VesselProfile,
@@ -58,7 +50,7 @@ function EventsGapTooltipRow({
   }, [])
 
   const event = feature.event || ({} as ExtendedFeatureSingleEvent)
-  const vesselDatasetId = event?.vessel?.dataset || encounterVesselDatasetId
+
   const interval = getFourwingsInterval(feature.startTime, feature.endTime)
   const title = feature.title || getDatasetLabel({ id: feature.datasetId! })
   const gapStart = feature.properties.stime
@@ -145,11 +137,11 @@ function EventsGapTooltipRow({
                                     {formatInfoField(event.vessel?.name, 'shipname')}
                                   </VesselLink>
                                 </span>
-                                {vesselDatasetId && (
+                                {event.vessel.dataset && (
                                   <VesselPin
                                     vesselToResolve={{
                                       ...event.vessel,
-                                      datasetId: vesselDatasetId,
+                                      datasetId: event.vessel.dataset,
                                     }}
                                   />
                                 )}
@@ -162,7 +154,7 @@ function EventsGapTooltipRow({
                         <div className={styles.row}>
                           <VesselLink
                             vesselId={event.vessel.id}
-                            datasetId={vesselDatasetId}
+                            datasetId={event.vessel.dataset}
                             query={{
                               vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
                               vesselSelfReportedId: event.vessel.id,

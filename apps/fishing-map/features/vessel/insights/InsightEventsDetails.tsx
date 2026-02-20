@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import type { VesselEvent } from 'features/vessel/vessel.types'
-
+import type { VesselEvent } from '../activity/event/Event'
 import Event from '../activity/event/Event'
 
 import styles from './Insights.module.css'
