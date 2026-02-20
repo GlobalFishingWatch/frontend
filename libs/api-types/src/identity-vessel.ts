@@ -92,14 +92,18 @@ export enum VesselIdentitySourceEnum {
 export enum SelfReportedSource {
   Ais = 'AIS',
   Belize = 'VMS Belize',
-  Brazil = 'VMS Brazil Onyxsat',
-  Chile = 'VMS Chile',
-  CostaRica = 'VMS Costa Rica',
+  Brazil_Pipe3 = 'VMS Brazil Onyxsat',
+  Brazil = 'VMS-BRA',
+  Chile_Pipe3 = 'VMS Chile',
+  Chile = 'VMS-CHL',
+  CostaRica_Pipe3 = 'VMS Costa Rica',
+  CostaRica = 'VMS-CRI',
   Ecuador = 'VMS Ecuador',
   Indonesia = 'VMS Indonesia',
   Norway = 'VMS Norway',
   Papua = 'VMS PNG',
-  Peru = 'VMS Peru',
+  Peru_Pipe3 = 'VMS Peru',
+  Peru = 'VMS-PER',
 }
 
 export type VesselInfo = {
@@ -147,6 +151,10 @@ export type SelfReportedInfo = VesselInfo & {
   nationalId?: string
   codMarinha?: string
   vesselType?: string
+  //pipe 4 new fields
+  externalId?: string
+  sourceFleet?: string
+  hull?: string
 }
 
 export type RegistryImage = {

@@ -266,14 +266,13 @@ export const getDatasetTitleByDataview = (
     : dataview.datasets
 
   let datasetTitle = dataview.name || ''
-  const { category, subcategory } = dataviewInstance.datasets?.[0] || {}
+  const { category, subcategory, id } = dataviewInstance.datasets?.[0] || {}
   if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Fishing) {
-    const sourceType = dataviewInstance.id
-      .toString()
-      .toLowerCase()
-      .includes(VMS_DATAVIEW_INSTANCE_ID)
-      ? 'VMS'
-      : 'AIS'
+    const sourceType =
+      dataviewInstance.id.toString().toLowerCase().includes(VMS_DATAVIEW_INSTANCE_ID) ||
+      id?.toLowerCase().includes(VMS_DATAVIEW_INSTANCE_ID)
+        ? 'VMS'
+        : 'AIS'
     datasetTitle = `${t((t) => t.common.apparentFishing)} (${sourceType})`
   } else if (category === DatasetCategory.Activity && subcategory === DatasetSubCategory.Presence) {
     datasetTitle = t((t) => t.common.presence)
@@ -840,9 +839,9 @@ export const getCommonSchemaFieldsInDataview = (
                 ns: 'datasets',
                 defaultValue: field?.toString(),
               })
-        if (EXPERIMENTAL_FIELDS_BY_SCHEMA[schema]?.includes(field as string)) {
-          label += ' (Experimental)'
-        }
+        // if (EXPERIMENTAL_FIELDS_BY_SCHEMA[schema]?.includes(field as string)) {
+        //   label += ' (Experimental)'
+        // }
         if (label === field) {
           if (schema === 'geartypes' || schema === 'geartype') {
             // There is an fixed list of gearTypes independant of the dataset

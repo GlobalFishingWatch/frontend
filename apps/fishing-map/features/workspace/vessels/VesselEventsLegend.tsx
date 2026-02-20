@@ -64,13 +64,15 @@ function VesselEventsLegend({
     })
   }, [eventDatasets, currentVisibleEvents])
 
+  const uniqEventTypes = useMemo(() => uniqBy(eventTypes, (e) => e.eventType), [eventTypes])
+
   if (!showLegend) {
     return null
   }
 
   return (
     <ul className={layerStyles.eventsLegendContainer}>
-      {eventTypes.map(({ datasetId, eventType, active }) => {
+      {uniqEventTypes.map(({ datasetId, eventType, active }) => {
         const color =
           eventType === 'fishing' && tracks.length === 1 ? '#ffffff' : EVENTS_COLORS[eventType]
         return (
