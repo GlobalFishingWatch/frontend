@@ -120,3 +120,15 @@ export const getRelatedDatasetsByType = (
   }
   return dataset?.relatedDatasets?.filter((relatedDataset) => relatedDataset.type === datasetType)
 }
+
+export const VMS_DATASET_ID = 'vms'
+export const isVMSDataset = (datasetId: string): boolean => {
+  return datasetId?.toLowerCase().includes(VMS_DATASET_ID)
+}
+export type DatasetEventSource = 'VMS' | 'AIS'
+export const getDatasetSource = (datasetId?: string): DatasetEventSource | undefined => {
+  if (!datasetId) {
+    return undefined
+  }
+  return isVMSDataset(datasetId) ? 'VMS' : 'AIS'
+}
