@@ -65,7 +65,6 @@ export interface EventVesselAuthorization {
 export interface EventVessel {
   id: string
   ssvid: string
-  dataset: string
   name: string
   flag: string
   type: EventVesselTypeEnum
