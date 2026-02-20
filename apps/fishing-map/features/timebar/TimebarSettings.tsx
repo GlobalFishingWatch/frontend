@@ -365,10 +365,7 @@ const TimebarSettings = ({ loading = false }: { loading: boolean }) => {
               const dataset = pointDataview.datasets?.find(
                 (d) => d.type === DatasetTypes.UserContext || d.type === DatasetTypes.Context
               )
-              const title = t((t) => t[dataset?.id ?? ''].name, {
-                defalutValue: dataset?.name || dataset?.id || '',
-                ns: 'datasets',
-              })
+              const title = dataset?.name || dataset?.id || ''
               return (
                 <Radio
                   key={pointDataview.id}
