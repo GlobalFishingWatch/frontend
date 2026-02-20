@@ -79,7 +79,7 @@ export type ExtendedFeatureVessel = ExtendedFeatureVesselDatasets & {
 
 export type ExtendedEventVessel = EventVessel & { dataset?: string }
 
-export type ExtendedFeatureSingleEvent = ApiEvent<EventVessel> & { dataset: Dataset }
+export type ExtendedFeatureSingleEvent = ApiEvent<ExtendedEventVessel> & { dataset: Dataset }
 export type ExtendedFeatureByVesselEventPort = {
   id?: string
   name?: string
