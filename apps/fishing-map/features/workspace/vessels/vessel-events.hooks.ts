@@ -13,7 +13,7 @@ const ALL_EVENT_TYPES = [
   EventTypes.Loitering,
   EventTypes.Encounter,
   EventTypes.Port,
-  EventTypes.Gap,
+  EventTypes.Gaps,
 ]
 
 export const useVisibleVesselEvents = () => {
