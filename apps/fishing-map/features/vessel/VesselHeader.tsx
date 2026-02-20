@@ -239,7 +239,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
             icon="target"
             tooltip={t((t) => t.layer.vessel_fit_bounds)}
             tooltipPlacement="bottom"
-            size="small"
+            size="medium"
             disabled={!boundsReady}
             onClick={onVesselFitBoundsClick}
           />
@@ -248,7 +248,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
             type="border"
             icon="print"
             tooltip={upperFirst(t((t) => t.analysis.print))}
-            size="small"
+            size="medium"
             tooltipPlacement="bottom"
             onClick={onPrintClick}
           />
@@ -256,7 +256,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
             vessels={vessel ? [vessel] : []}
             onAddToVesselGroup={onAddToVesselGroup}
           >
-            <VesselGroupAddActionButton buttonSize="small" buttonType="border-secondary" />
+            <VesselGroupAddActionButton buttonSize="medium" buttonType="border-secondary" />
           </VesselGroupAddButton>
         </div>
       </div>

@@ -58,7 +58,7 @@ function VesselDownloadButton({
       }
       tooltipPlacement="top"
       onClick={onDownloadClick}
-      size="small"
+      size="medium"
     />
   )
 }

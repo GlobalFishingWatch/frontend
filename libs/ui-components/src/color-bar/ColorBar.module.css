@@ -64,5 +64,5 @@
   border-radius: 1rem;
   border: solid 0.2rem var(--color-white);
   outline: solid 0.1rem var(--color-primary-blue);
-  filter: var(--filter-drop-shadow);
+  filter: var(--filter-drop-shadow-1);
 }
