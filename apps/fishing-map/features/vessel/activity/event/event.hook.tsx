@@ -132,7 +132,7 @@ export function useActivityEventTranslations() {
           )
           return (
             <Fragment>
-              {t((t: any) => t.event[portType].ActionIn, {
+              {t((t) => t.event[`${portType}ActionIn`], {
                 port: '',
               })}
               <PortsReportLink port={{ id, name, country: flag, datasetId: portDataset?.id }}>
