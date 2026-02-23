@@ -27,9 +27,9 @@
   z-index: 1;
   flex-direction: column;
   background-color: var(--color-white);
-  filter: var(--filter-drop-shadow-1);
+  filter: var(--filter-drop-shadow-2);
   width: max-content;
-  border: var(--border);
+  border-radius: var(--border-radius-1);
 }
 
 .bottomRight {

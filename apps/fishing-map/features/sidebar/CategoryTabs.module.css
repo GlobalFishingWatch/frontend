@@ -73,12 +73,12 @@
   flex-direction: column;
   align-items: flex-start;
   background-color: var(--color-white);
-  filter: var(--filter-drop-shadow-1);
+  filter: var(--filter-drop-shadow-2);
   width: max-content;
   transform: translateY(50%);
   bottom: 50%;
-  left: 5.1rem;
-  border: var(--border);
+  left: var(--space-L);
+  border-radius: var(--border-radius-1);
 }
 
 .links > li {
