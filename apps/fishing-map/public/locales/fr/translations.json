@@ -996,6 +996,7 @@
     "dataset": "Source",
     "depthM": "Profondeur (M)",
     "exitTrackCorrection": "Exit activity issue (track correction) panel to be able to navigate to the vessel profile",
+    "externalId": "External ID",
     "extraInfo": "Demandez des informations supplémentaires à",
     "extraInfoTooltip": "TMT has additional insights relating to the vessel’s compliance history and/or IUU listing",
     "firstTransmissionDate": "Première date de transmission",
