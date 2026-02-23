@@ -5,7 +5,7 @@ const EEZ = 'EEZs (Marine Regions)'
 const MPAS_WDPA = 'MPAs (WDPA)'
 const MPAS_PS = 'MPAs (Protected Seas)'
 const FAO = 'FAO Major Fishing Areas'
-const RFMO = 'RFMOs'
+const RFMO = 'Regional Fisheries Bodies'
 const HIGH_SEAS = 'High Seas'
 
 export const CONTEXT_LAYERS_IDS = [EEZ, MPAS_WDPA, MPAS_PS, FAO, RFMO, HIGH_SEAS, GRID]

@@ -149,7 +149,7 @@ export const useDatasetsAPI = () => {
         return { error: action.payload as AsyncError }
       }
     },
-    [debugOptions?.addDatasetIdHash, dispatch]
+    [debugOptions, dispatch]
   )
 
   const dispatchUpdateDataset = useCallback(

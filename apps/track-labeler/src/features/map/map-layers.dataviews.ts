@@ -110,6 +110,7 @@ const dataviews: UrlDataviewInstance[] = [
         relatedDatasets: [],
         schema: {},
         fieldsAllowed: [],
+        filters: {},
         createdAt: '2023-01-16T15:58:52.698Z',
         endpoints: [
           {
@@ -196,6 +197,7 @@ const dataviews: UrlDataviewInstance[] = [
         relatedDatasets: [],
         schema: {},
         fieldsAllowed: [],
+        filters: {},
         createdAt: '2023-01-16T15:58:51.214Z',
         endpoints: [
           {
@@ -315,6 +317,7 @@ const dataviews: UrlDataviewInstance[] = [
         relatedDatasets: [],
         schema: {},
         fieldsAllowed: [],
+        filters: {},
         createdAt: '2023-01-16T15:58:52.451Z',
         endpoints: [
           {
@@ -477,6 +480,7 @@ const dataviews: UrlDataviewInstance[] = [
           },
         },
         fieldsAllowed: ['ID'],
+        filters: {},
         createdAt: '2023-01-16T15:58:52.580Z',
         endpoints: [
           {
