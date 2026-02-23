@@ -10,11 +10,11 @@ import type {
   SelfReportedInfo,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes, EventTypes } from '@globalfishingwatch/api-types'
-import { isVMSDataset } from '@globalfishingwatch/datasets-client'
 import type { VesselEventPickingObject } from '@globalfishingwatch/deck-layers'
 import { Icon, IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { getDatasetSourceTranslated } from 'features/i18n/utils.datasets'
 import { selectVisibleResources } from 'features/resources/resources.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
@@ -93,10 +93,15 @@ function EventDescription({
     )
   }
 
-  const source = vesselDataview?.datasets?.some((d) => isVMSDataset(d.id)) ? 'VMS' : 'AIS'
   return (
     <Fragment>
-      <p className={className}>{getEventDescription(event, { source })?.description}</p>
+      <p className={className}>
+        {
+          getEventDescription(event, {
+            source: getDatasetSourceTranslated(vesselDataview?.datasets),
+          })?.description
+        }
+      </p>
       {LinkComponent}
     </Fragment>
   )
@@ -122,7 +127,7 @@ function VesselEventsTooltipSection({
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const dataviews = useSelector(selectVesselsDataviews)
   const vesselDataview = dataviews.find((dataview) => dataview.id === features[0]?.layerId)
-  const source = vesselDataview?.datasets?.some((d) => isVMSDataset(d.id)) ? 'VMS' : 'AIS'
+  const source = getDatasetSourceTranslated(vesselDataview?.datasets)
 
   const vesselNamesByType = useMemo(() => {
     return Object.values(featuresByType).map((features) => {

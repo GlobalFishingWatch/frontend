@@ -14,6 +14,7 @@ import { EVENTS_COLORS, PATH_BASENAME } from 'data/config'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { getDatasetSourceTranslated } from 'features/i18n/utils.datasets'
 import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 import { upperFirst } from 'utils/info'
 
@@ -93,12 +94,10 @@ function VesselEventsLegend({
               color={EVENTS_COLORS[eventType]}
             />
             <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>
-              {upperFirst(
-                t((t) => t.event[eventType], {
-                  defaultValue: eventType,
-                  source: getDatasetSource(datasetId),
-                })
-              )}
+              {t((t) => t.event[eventType], {
+                defaultValue: eventType,
+                source: getDatasetSourceTranslated(eventDatasets),
+              })}
             </label>
             <div className={cx(layerStyles.iconWrapper, layerStyles[eventType])}>
               <div
