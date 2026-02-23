@@ -509,6 +509,7 @@
   "errors": {
     "areaLoad": "There was an error loading the report area",
     "areaOutOfTime": "The report area is out of the current time range",
+    "datasetLoginRequired": "Login to access this dataset",
     "datasetNotFound": "Dataset not found",
     "fields": "Errors with fields {{fields}}",
     "generic": "Something went wrong. Please try again or contact:",
