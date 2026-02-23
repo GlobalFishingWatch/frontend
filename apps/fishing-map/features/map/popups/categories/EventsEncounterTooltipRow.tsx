@@ -72,7 +72,7 @@ function EncounterTooltipRow({
 
   const event = parseEncounterEvent(feature.event)
   const mainVesselDatasetId = event?.vessel?.dataset || vesselDatasetId
-  const encounterVesselDatasetId = event?.encounter?.vessel?.dataset || vesselDatasetId
+  const encounterVesselDatasetId = event?.encounter?.vessel?.dataset
   const interval = getFourwingsInterval(feature.startTime, feature.endTime)
   const title = feature.title || getDatasetLabel({ id: feature.datasetId! })
   const timestamp = feature.properties.stime
@@ -155,15 +155,16 @@ function EncounterTooltipRow({
                           <div className={styles.row}>
                             <div className={styles.rowColum}>
                               <span className={styles.rowTitle}>
-                                {t(
-                                  (t) =>
-                                    t.vessel.vesselTypes[
-                                      event.encounter?.vessel.type as EventVesselTypeEnum
-                                    ],
-                                  {
-                                    defaultValue: event.encounter.vessel.type,
-                                  }
-                                )}
+                                {event.encounter?.vessel.type &&
+                                  t(
+                                    (t) =>
+                                      t.vessel.vesselTypes[
+                                        event.encounter?.vessel.type as EventVesselTypeEnum
+                                      ],
+                                    {
+                                      defaultValue: event.encounter.vessel.type,
+                                    }
+                                  )}
                               </span>
                               <div className={styles.centered}>
                                 <span className={styles.rowText}>
