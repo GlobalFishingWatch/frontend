@@ -302,6 +302,7 @@
     "visibleValues": "Valores visíveis",
     "visits": "Visits",
     "vms": "VMS",
+    "vmsAndAis": "VMS & AIS",
     "welcomePopupDisable": "Não mostrar novamente",
     "whatsNew": "O que há de novo?",
     "whatsNewWithNewVersion": "Nós fizemos algumas alterações desde a última visita ao mapa. Clique para saber mais"
@@ -694,7 +695,7 @@
       "mpa": "AMP",
       "mpa_other": "MPAs (WDPA)",
       "port": "Port",
-      "rfmo": "RFMOs"
+      "rfmo": "Regional Fisheries Bodies"
     },
     "areasOnScreen": "Áreas na tela",
     "closePolygonHint": "Press enter or click the first point to close the polygon",
