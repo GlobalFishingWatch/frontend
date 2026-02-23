@@ -45,10 +45,10 @@
   transform: translateX(-50%);
   background: var(--timebar-ui-btn-color);
   color: var(--timebar-white);
-  padding: 6px;
+  padding: var(--space-S);
   padding-left: 0;
-  border-radius: 6px;
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.4);
+  border-radius: var(--border-radius-1);
+  box-shadow: var(--box-shadow-2);
   min-width: 320px;
 }
 
