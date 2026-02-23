@@ -16,6 +16,8 @@ import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/datav
 import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 import { upperFirst } from 'utils/info'
 
+import { getDatasetSource } from '../../../../../libs/datasets-client/src/datasets.utils'
+
 import layerStyles from './VesselEventsLegend.module.css'
 import styles from 'features/workspace/shared/Section.module.css'
 
@@ -95,7 +97,7 @@ function VesselEventsLegend({
               {upperFirst(
                 t((t) => t.event[eventType], {
                   defaultValue: eventType,
-                  source: t((t) => t.common.ais),
+                  source: getDatasetSource(datasetId),
                 })
               )}
             </label>
