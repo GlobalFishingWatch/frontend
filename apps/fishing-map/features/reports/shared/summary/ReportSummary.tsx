@@ -73,7 +73,7 @@ export default function ReportSummary({
       )}
       {dataviews?.length > 0 && (
         <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
-          <div className={cx(styles.tagsContainer, styles.tagsContainerBorder)}>
+          <div className={cx(styles.tagsContainer)}>
             {dataviews?.map((dataview) => (
               <ReportSummaryTags
                 key={dataview.id}

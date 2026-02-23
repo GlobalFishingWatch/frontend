@@ -3,10 +3,22 @@
   margin-bottom: var(--space-L);
 }
 
-.singleTabContainer {
+.section {
+  padding-block: var(--space-S);
+}
+
+.subsection {
   margin: var(--space-S);
-  margin-bottom: var(--space-L);
   border-radius: var(--border-radius-1);
+  border: var(--border);
+}
+
+.singleTabContainer .section {
+  padding-block: 0;
+}
+
+.singleTabContainer .subsection {
+  border: none;
   background-color: var(--color-off-white);
   box-shadow: var(--box-shadow-1);
 }
@@ -16,8 +28,7 @@
 }
 
 .subsectionSelectorContainer {
-  padding: var(--space-SM);
-  padding-bottom: 0;
+  padding: var(--space-S) var(--space-SM);
 }
 
 .error {
