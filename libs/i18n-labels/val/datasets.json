@@ -1811,7 +1811,8 @@
           "FISHING-": "crwdns110774:0crwdne110774:0",
           "-FISHING": "crwdns110824:0crwdne110824:0",
           "FISHING-NON_FISHING": "crwdns111470:0crwdne111470:0",
-          "NON_FISHING-FISHING": "crwdns111472:0crwdne111472:0"
+          "NON_FISHING-FISHING": "crwdns111472:0crwdne111472:0",
+          "-": "crwdns111510:0crwdne111510:0"
         }
       }
     }
