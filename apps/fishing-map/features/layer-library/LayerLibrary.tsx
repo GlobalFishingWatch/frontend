@@ -1,5 +1,5 @@
 import type { ChangeEvent, FC } from 'react'
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
@@ -348,34 +348,38 @@ const LayerLibrary: FC = () => {
       </div>
       {i18nReady ? (
         <ul className={styles.layerList} onScroll={onLayerListScroll}>
-          {uniqCategories.map((category) => (
-            <Fragment key={category}>
-              <label
-                id={category}
-                className={cx(styles.categoryLabel, {
-                  [styles.categoryLabelHidden]: layersByCategory[category].length === 0,
+          {uniqCategories.map((category) =>
+            category === DataviewCategory.VesselGroups ? (
+              <div key={DataviewCategory.VesselGroups} className={styles.categoryContainer}>
+                <LayerLibraryVesselGroupPanel searchQuery={searchQuery} />
+              </div>
+            ) : (
+              <div key={category} className={styles.categoryContainer}>
+                <label
+                  id={category}
+                  className={cx(styles.categoryLabel, {
+                    [styles.categoryLabelHidden]: layersByCategory[category].length === 0,
+                  })}
+                >
+                  {t((t: any) => t.common[category as DataviewCategory], {
+                    defaultValue: category,
+                  })}
+                </label>
+                {layersByCategory[category].map((layer) => {
+                  if (layer.onlyGFWUser && !isGFWUser) {
+                    return null
+                  }
+                  return (
+                    <LayerLibraryItem key={layer.id} layer={layer} highlightedText={searchQuery} />
+                  )
                 })}
-              >
-                {t((t: any) => t.common[category as DataviewCategory], {
-                  defaultValue: category,
-                })}
-              </label>
-              {layersByCategory[category].map((layer) => {
-                if (layer.onlyGFWUser && !isGFWUser) {
-                  return null
-                }
-                return (
-                  <LayerLibraryItem key={layer.id} layer={layer} highlightedText={searchQuery} />
-                )
-              })}
-              {category === DataviewCategory.Events &&
-                allCategories.includes(DataviewCategory.VesselGroups) && (
-                  <LayerLibraryVesselGroupPanel searchQuery={searchQuery} />
-                )}
-            </Fragment>
-          ))}
+              </div>
+            )
+          )}
           {allCategories.includes(DataviewCategory.User) && (
-            <LayerLibraryUserPanel searchQuery={searchQuery} />
+            <div className={styles.categoryContainer}>
+              <LayerLibraryUserPanel searchQuery={searchQuery} />
+            </div>
           )}
         </ul>
       ) : (
