@@ -141,6 +141,13 @@
         "cwd": "apps/fishing-map"
       }
     },
+    "test:ui": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx cross-env VITEST_UI=true vitest --watch --config=vitest.config.mts",
+        "cwd": "apps/fishing-map"
+      }
+    },
     "typecheck": {
       "executor": "nx:run-commands",
       "options": {
