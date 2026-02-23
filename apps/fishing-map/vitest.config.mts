@@ -88,34 +88,47 @@ export default defineConfig({
     },
     testTimeout: 30000,
     setupFiles: './test/vitest.setup.ts',
+    // isolate: false helps with WebSocket connection issues when using Vitest UI + browser mode
+    isolate: false,
     browser: {
       enabled: true,
       provider: playwright(),
+      ui: process.env.VITEST_UI === 'true',
+      headless: process.env.VITEST_UI !== 'true',
       trace: {
         screenshots: true,
         snapshots: true,
         mode: 'on',
       },
-      instances: [
-        {
-          browser: 'chromium',
-          name: 'fishing-map-chromium',
-          headless: true,
-          viewport: { width: 1280, height: 720 },
-        },
-        {
-          browser: 'firefox',
-          name: 'fishing-map-firefox',
-          headless: true,
-          viewport: { width: 1280, height: 720 },
-        },
-        {
-          browser: 'webkit',
-          name: 'fishing-map-webkit',
-          headless: true,
-          viewport: { width: 1280, height: 720 },
-        },
-      ],
+      instances:
+        process.env.VITEST_UI === 'true'
+          ? [
+              {
+                browser: 'chromium',
+                name: 'fishing-map-chromium',
+                viewport: { width: 1280, height: 720 },
+              },
+            ]
+          : [
+              {
+                browser: 'chromium',
+                name: 'fishing-map-chromium',
+                headless: true,
+                viewport: { width: 1280, height: 720 },
+              },
+              {
+                browser: 'firefox',
+                name: 'fishing-map-firefox',
+                headless: true,
+                viewport: { width: 1280, height: 720 },
+              },
+              {
+                browser: 'webkit',
+                name: 'fishing-map-webkit',
+                headless: true,
+                viewport: { width: 1280, height: 720 },
+              },
+            ],
     },
   },
 })
