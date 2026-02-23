@@ -11,10 +11,15 @@ import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { getDatasetLabel, getSchemaFiltersInDataview } from 'features/datasets/datasets.utils'
+import {
+  getDatasetLabel,
+  getSchemaFiltersInDataview,
+  isPrivateDataset,
+} from 'features/datasets/datasets.utils'
 import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
+import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
@@ -57,6 +62,7 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
   const layerError = eventLayer?.instance?.getError?.()
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
     useLayerPanelDataviewSort(dataview.id)
+  const guestUser = useSelector(selectIsGuestUser)
 
   const dataset = dataview.datasets?.find(
     (d) => d.type === DatasetTypes.Events || d.type === DatasetTypes.Fourwings
@@ -87,6 +93,14 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
   }
 
   if (!dataset || dataset.status === 'deleted') {
+    const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
+      isPrivateDataset({ id: d.datasetId })
+    )
+    return guestUser && dataviewHasPrivateDataset ? (
+      <DatasetLoginRequired dataview={dataview} />
+    ) : (
+      <DatasetNotFound dataview={dataview} />
+    )
     return <DatasetNotFound dataview={dataview} />
   }
 
