@@ -121,7 +121,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
           <label className={styles.fieldLabel}>{t((t) => t.eventInfo.medianSpeedKnots)}</label>
           <span>{event.encounter?.medianSpeedKnots?.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
-        <PortVisitedAfterField nextPort={event.vessel.nextPort} />
+        {event.vessel?.nextPort && <PortVisitedAfterField nextPort={event.vessel.nextPort} />}
         <div className={styles.divider} />
         <label className={styles.blockLabel}>{t((t) => t.eventInfo.encounteredVesselName)}</label>
         <li>
@@ -274,7 +274,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
           <label className={styles.fieldLabel}>{t((t) => t.eventInfo.averageSpeedKnots)}</label>
           <span>{event.loitering?.averageSpeedKnots.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
-        <PortVisitedAfterField nextPort={event.vessel.nextPort} />
+        {event.vessel?.nextPort && <PortVisitedAfterField nextPort={event.vessel.nextPort} />}
       </ul>
     )
   } else if (event.type === EventTypes.Port) {
