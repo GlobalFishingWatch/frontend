@@ -15,6 +15,7 @@ import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 import { upperFirst } from 'utils/info'
+import { getDatasetSource } from '@globalfishingwatch/datasets-client'
 
 import layerStyles from './VesselEventsLegend.module.css'
 import styles from 'features/workspace/shared/Section.module.css'
@@ -95,7 +96,7 @@ function VesselEventsLegend({
               {upperFirst(
                 t((t) => t.event[eventType], {
                   defaultValue: eventType,
-                  source: t((t) => t.common.ais),
+                  source: getDatasetSource(datasetId),
                 })
               )}
             </label>
