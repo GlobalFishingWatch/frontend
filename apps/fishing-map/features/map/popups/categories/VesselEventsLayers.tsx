@@ -78,7 +78,10 @@ function EventDescription({
             components={{
               pin: (
                 <VesselPin
-                  vesselToResolve={{ id: encounterVesselId, datasetId: DEFAULT_VESSEL_IDENTITY_ID }}
+                  vesselToResolve={{
+                    id: encounterVesselId,
+                    datasetId: vesselInfoDataset?.id || DEFAULT_VESSEL_IDENTITY_ID,
+                  }}
                   size="tiny"
                   onClick={onVesselPinClick}
                   origin={vesselOrigin}
