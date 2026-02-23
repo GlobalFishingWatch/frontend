@@ -24,10 +24,6 @@
   gap: var(--space-M);
 }
 
-.tagsContainerBorder {
-  border-bottom: var(--border-thick);
-}
-
 .tagsContainerNoFilters {
   padding-bottom: var(--space-XS);
 }
