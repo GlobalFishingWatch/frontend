@@ -47,12 +47,18 @@ export function Modal(props: ModalProps) {
   } = props
   const modalContentId = useId()
 
+  const isSSR = typeof window === 'undefined'
   const appElement = useMemo(
-    () => (typeof window !== 'undefined' ? document.getElementById(appSelector) : null),
-    [appSelector]
+    () => (isSSR ? null : document.getElementById(appSelector)),
+    [isSSR, appSelector]
   )
+  if (isSSR) {
+    return null
+  }
   if (!appElement) {
-    console.warn(`Invalid appSelector (${appSelector}) provided`)
+    if (process.env.NODE_ENV !== 'test' && process.env.VITEST !== 'true') {
+      console.warn(`Invalid appSelector (${appSelector}) provided`)
+    }
     return null
   }
 
