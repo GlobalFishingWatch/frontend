@@ -258,23 +258,13 @@ function VesselGroupModal(): React.ReactElement<any> {
         }
         dispatchedAction = await dispatch(updateVesselGroupVesselsThunk(vesselGroup))
       } else {
-        const creationId = groupName + `_${Date.now()}`
         const vesselGroup = {
-          name: creationId,
+          name: groupName,
           vessels,
           public: createAsPublic,
         }
         dispatchedAction = await dispatch(createVesselGroupThunk(vesselGroup))
-        if (createVesselGroupThunk.fulfilled.match(dispatchedAction)) {
-          const vesselGroup: UpdateVesselGroupThunkParams = {
-            id: dispatchedAction.payload?.id,
-            name: groupName,
-          }
-          await new Promise((resolve) => setTimeout(resolve, 1000))
-          await dispatch(updateVesselGroupVesselsThunk(vesselGroup))
-        }
       }
-
       if (
         updateVesselGroupVesselsThunk.fulfilled.match(dispatchedAction) ||
         createVesselGroupThunk.fulfilled.match(dispatchedAction)

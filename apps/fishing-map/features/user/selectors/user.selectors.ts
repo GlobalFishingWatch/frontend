@@ -42,14 +42,12 @@ export const selectIsGFWTestGroup = createSelector([selectUserData], (userData) 
 })
 
 export const selectIsGuestUser = createSelector([selectUserData], (userData) => {
-  console.log('🚀 ~ userData:', userData)
   return userData?.type === GUEST_USER_TYPE
 })
 
 export const selectIsUserLogged = createSelector(
   [selectUserStatus, selectUserLogged],
   (status, logged) => {
-    console.log('🚀 ~ logged:', logged)
     return status === AsyncReducerStatus.Finished && logged
   }
 )
