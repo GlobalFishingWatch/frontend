@@ -57,18 +57,12 @@
   --opacity-border-extra-thick: 0.5;
 
   /* SHADOWS */
-  --box-shadow-0: 0 0.2rem 0.4rem 0 rgba(var(--primary-blue-rgb), var(--opacity-border));
-  --box-shadow-1: 0 0.4rem 0.8rem 0 rgba(var(--primary-blue-rgb), var(--opacity-border));
-  --box-shadow-2: 0 0.8rem 1.6rem 0 rgba(var(--primary-blue-rgb), var(--opacity-border));
-  --filter-drop-shadow-0: drop-shadow(
-    0 0.2rem 0.4rem rgba(var(--primary-blue-rgb), var(--opacity-border))
-  );
-  --filter-drop-shadow-1: drop-shadow(
-    0 0.4rem 0.8rem rgba(var(--primary-blue-rgb), var(--opacity-border))
-  );
-  --filter-drop-shadow-2: drop-shadow(
-    0 0.8rem 1.6rem rgba(var(--primary-blue-rgb), var(--opacity-border))
-  );
+  --box-shadow-0: 0 0.2rem 0.4rem 0 rgba(var(--primary-blue-rgb), 0.1);
+  --box-shadow-1: 0 0.4rem 0.8rem 0 rgba(var(--primary-blue-rgb), 0.15);
+  --box-shadow-2: 0 0.8rem 1.6rem 0 rgba(var(--primary-blue-rgb), 0.2);
+  --filter-drop-shadow-0: drop-shadow(0 0.2rem 0.4rem rgba(var(--primary-blue-rgb), 0.1));
+  --filter-drop-shadow-1: drop-shadow(0 0.4rem 0.8rem rgba(var(--primary-blue-rgb), 0.15));
+  --filter-drop-shadow-2: drop-shadow(0 0.8rem 1.6rem rgba(var(--primary-blue-rgb), 0.2));
 
   /* UTILS */
   --color-border: rgba(var(--primary-blue-rgb), var(--opacity-border));
