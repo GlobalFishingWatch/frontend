@@ -3,8 +3,10 @@ import type { Middleware } from '@floating-ui/react'
 import {
   arrow,
   detectOverflow,
+  flip,
   FloatingArrow,
   offset,
+  shift,
   useClick,
   useDismiss,
   useFloating,
@@ -79,6 +81,7 @@ function ExpandedContainer({
     middleware: [
       offset(5),
       ...(overflowDOMId ? [overflowMiddlware] : []),
+      shift({ padding: 8 }),
       arrow({
         element: arrowRef,
       }),
@@ -113,13 +116,7 @@ function ExpandedContainer({
           className={cx(styles.expandedContainer, className)}
         >
           {component}
-          <FloatingArrow
-            stroke="rgba(22, 63, 137, .15)" //--var-border
-            strokeWidth={0.75}
-            className={styles.tooltipArrow}
-            ref={arrowRef}
-            context={context}
-          />
+          <FloatingArrow className={styles.tooltipArrow} ref={arrowRef} context={context} />
         </div>
       )}
     </Fragment>
