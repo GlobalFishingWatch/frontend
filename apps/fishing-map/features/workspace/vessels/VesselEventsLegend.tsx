@@ -15,8 +15,7 @@ import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 import { upperFirst } from 'utils/info'
-
-import { getDatasetSource } from '../../../../../libs/datasets-client/src/datasets.utils'
+import { getDatasetSource } from '@globalfishingwatch/datasets-client'
 
 import layerStyles from './VesselEventsLegend.module.css'
 import styles from 'features/workspace/shared/Section.module.css'
