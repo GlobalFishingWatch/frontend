@@ -7,14 +7,13 @@ import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishin
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectSidebarOpen } from 'features/app/selectors/app.selectors'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import {
   getIsDataviewReportSupported,
   selectReportLayersVisible,
 } from 'features/dataviews/selectors/dataviews.selectors'
+import { getDatasetNameTranslated } from 'features/i18n/utils.datasets'
 import { DEFAULT_POINT_BUFFER_VALUE } from 'features/reports/report-area/area-reports.config'
 import { DEFAULT_BUFFER_OPERATION, DEFAULT_BUFFER_UNIT } from 'features/reports/reports.config'
 import { selectReportAreaId, selectReportDatasetId } from 'features/reports/reports.selectors'
@@ -33,7 +32,8 @@ type ContextLayerReportLinkProps = {
   feature: ContextPickingObject | UserLayerPickingObject
   onClick?: (
     e: React.MouseEvent<Element, MouseEvent>,
-    feature: ContextPickingObject | UserLayerPickingObject
+    feature: ContextPickingObject | UserLayerPickingObject,
+    layerSources: string
   ) => void
 }
 
@@ -74,19 +74,14 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
 
   const onReportClick = (e: React.MouseEvent<Element, MouseEvent>) => {
     const layerSources = (reportLayersVisible ?? [])
-      .map((layer) => (layer.datasets ?? []).map((d) => getDatasetLabel(d)))
+      .map((layer) => (layer.datasets ?? []).map((d) => getDatasetNameTranslated(d)))
       .flat()
       .join(', ')
-    trackEvent({
-      category: TrackCategory.Analysis,
-      action: 'Generate report from context layer',
-      label: 'active layer sources: ' + layerSources,
-    })
     resetSidebarScroll()
     dispatch(resetReportData())
     dispatch(cleanCurrentWorkspaceReportState())
     if (onClick) {
-      onClick(e, feature)
+      onClick(e, feature, layerSources)
     }
   }
 

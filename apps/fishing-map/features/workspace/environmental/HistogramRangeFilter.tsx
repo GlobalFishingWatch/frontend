@@ -55,7 +55,7 @@ function HistogramRangeFilter({ dataview, onSelect }: HistogramRangeFilterProps)
         label: getEventLabel([dataview.name as string, ...rangeSelected.map((r) => r.toString())]),
       })
     },
-    [layerRange?.min, layerRange?.max, dataview?.name, onSelect]
+    [layerRange.min, layerRange.max, dataview.name, onSelect]
   )
 
   return (

@@ -302,6 +302,7 @@
     "visibleValues": "Valores visibles",
     "visits": "Visitas",
     "vms": "VMS",
+    "vmsAndAis": "VMS & AIS",
     "welcomePopupDisable": "No volver a mostrar",
     "whatsNew": "Novedades",
     "whatsNewWithNewVersion": "Hemos realizado algunos cambios desde la última vez que visitaste el mapa. Haz clic para saber más"
@@ -508,6 +509,7 @@
   "errors": {
     "areaLoad": "Ha habido un error al cargar el área del reporte",
     "areaOutOfTime": "El área del informe está fuera del rango de tiempo actual",
+    "datasetLoginRequired": "Login to access this dataset",
     "datasetNotFound": "No se pudo encontrar esos datos",
     "fields": "Errores con los campos {{fields}}",
     "generic": "Algo salió mal, inténtalo de nuevo o contacta:",
@@ -996,6 +998,7 @@
     "dataset": "Fuente",
     "depthM": "Profundidad (m)",
     "exitTrackCorrection": "Salir del panel de actividad (corrección de pistas) para poder navegar al perfil del buque",
+    "externalId": "External ID",
     "extraInfo": "Solicitar información adicional en",
     "extraInfoTooltip": "TMT tiene información adicional relacionada con el historial de cumplimiento y/o la lista de IUU",
     "firstTransmissionDate": "Fecha primera transmisión",

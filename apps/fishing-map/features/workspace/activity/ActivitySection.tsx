@@ -11,12 +11,14 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
+import { isPrivateDataset } from 'features/datasets/datasets.utils'
 import {
   selectActivityDataviews,
   selectDetectionsDataviews,
 } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { ReportCategory } from 'features/reports/reports.types'
+import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import DatasetNotFound from 'features/workspace/shared/DatasetNotFound'
 import GlobalReportLink from 'features/workspace/shared/GlobalReportLink'
 import { VisualisationChoice } from 'features/workspace/shared/VisualisationChoice'
@@ -149,6 +151,10 @@ function ActivitySection(): React.ReactElement<any> {
       {dataviews?.map((dataview, index) => {
         const hasDatasetAvailable =
           getDatasetConfigByDatasetType(dataview, DatasetTypes.Fourwings) !== undefined
+        const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
+          isPrivateDataset({ id: d.datasetId })
+        )
+
         const isLastElement = index === dataviews?.length - 1
         const isVisible = dataview?.config?.visible ?? false
         const isNextVisible = dataviews[index + 1]?.config?.visible ?? false
@@ -182,6 +188,8 @@ function ActivitySection(): React.ReactElement<any> {
               </div>
             )}
           </Fragment>
+        ) : dataviewHasPrivateDataset ? (
+          <DatasetLoginRequired dataview={dataview} />
         ) : (
           <DatasetNotFound dataview={dataview} />
         )

@@ -9,7 +9,6 @@ export type MultiSelectOption<ID = any, Label = string | JSX.Element> = {
   tooltip?: string
 }
 
-export type AdvancedSearchQueryFieldKey = (typeof ADVANCED_SEARCH_QUERY_FIELDS)[number]
 export const ADVANCED_SEARCH_QUERY_FIELDS = [
   'id' as const,
   'callsign' as const,
@@ -20,6 +19,7 @@ export const ADVANCED_SEARCH_QUERY_FIELDS = [
   'mmsi' as const,
   'origin' as const,
   'owner' as const,
+  'selfReportedInfo.externalId' as const,
   'selfReportedInfo.codMarinha' as const,
   'selfReportedInfo.nationalId' as const,
   'shipname' as const,
@@ -28,7 +28,8 @@ export const ADVANCED_SEARCH_QUERY_FIELDS = [
   'targetSpecies' as const,
   'transmissionDateFrom' as const,
   'transmissionDateTo' as const,
-]
+] as const
+export type AdvancedSearchQueryFieldKey = (typeof ADVANCED_SEARCH_QUERY_FIELDS)[number]
 
 export type AdvancedSearchQueryField = {
   key: AdvancedSearchQueryFieldKey
@@ -108,6 +109,10 @@ const FIELDS_PARAMS: Record<AdvancedSearchQueryFieldKey, AdvancedSearchQueryFiel
     transformation: toUpperCaseWithQuotationMarks,
   },
   // VMS specific
+
+  'selfReportedInfo.externalId': {
+    operator: '=',
+  },
   'selfReportedInfo.codMarinha': {
     operator: '=',
   },

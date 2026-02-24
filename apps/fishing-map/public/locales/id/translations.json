@@ -302,6 +302,7 @@
     "visibleValues": "Nilai yang terlihat",
     "visits": "Visits",
     "vms": "VMS",
+    "vmsAndAis": "VMS & AIS",
     "welcomePopupDisable": "Jangan tampilkan lagi",
     "whatsNew": "Apa yang baru?",
     "whatsNewWithNewVersion": "Kami telah membuat beberapa perubahan sejak terakhir kali Anda mengungjungi peta. Klik untuk mempelajari lebih lanjut"
@@ -508,6 +509,7 @@
   "errors": {
     "areaLoad": "There was an error loading the report area",
     "areaOutOfTime": "The report area is out of the current time range",
+    "datasetLoginRequired": "Login to access this dataset",
     "datasetNotFound": "Dataset tidak ditemukan",
     "fields": "Kesalahan dengan bidang {{fields}}",
     "generic": "Ada yang tidak beres, Silahkan coba lagi atau hubungi:",
@@ -996,6 +998,7 @@
     "dataset": "Sumber",
     "depthM": "Depth (m)",
     "exitTrackCorrection": "Exit activity issue (track correction) panel to be able to navigate to the vessel profile",
+    "externalId": "External ID",
     "extraInfo": "Request additional information at",
     "extraInfoTooltip": "TMT has additional insights relating to the vessel’s compliance history and/or IUU listing",
     "firstTransmissionDate": "Tanggal transmisi pertama",

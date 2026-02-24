@@ -3,6 +3,8 @@ import { Provider } from 'react-redux'
 import type { RenderOptions } from 'vitest-browser-react'
 import { render as vitestRender } from 'vitest-browser-react'
 
+import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
+
 import { fetchUserThunk } from 'features/user/user.slice'
 
 import type { AppStore } from '../store'
@@ -13,7 +15,13 @@ interface AppRenderOptions extends Omit<RenderOptions, 'wrapper'> {
 }
 
 export async function withGuestUser(store: AppStore) {
-  await store.dispatch(fetchUserThunk({ guest: true }) as any)
+  store.dispatch(
+    fetchUserThunk.fulfilled(
+      { id: 0, type: GUEST_USER_TYPE, permissions: [], groups: [] },
+      '',
+      { guest: true }
+    )
+  )
   return store
 }
 

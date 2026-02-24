@@ -302,6 +302,7 @@
     "visibleValues": "crwdns59885:0crwdne59885:0",
     "visits": "crwdns84534:0crwdne84534:0",
     "vms": "crwdns111394:0crwdne111394:0",
+    "vmsAndAis": "crwdns111512:0crwdne111512:0",
     "welcomePopupDisable": "crwdns59887:0crwdne59887:0",
     "whatsNew": "crwdns59889:0crwdne59889:0",
     "whatsNewWithNewVersion": "crwdns59891:0crwdne59891:0"
@@ -508,6 +509,7 @@
   "errors": {
     "areaLoad": "crwdns83658:0crwdne83658:0",
     "areaOutOfTime": "crwdns106648:0crwdne106648:0",
+    "datasetLoginRequired": "crwdns111648:0crwdne111648:0",
     "datasetNotFound": "crwdns60077:0crwdne60077:0",
     "fields": "crwdns60083:0{{fields}}crwdne60083:0",
     "generic": "crwdns60085:0crwdne60085:0",
@@ -996,6 +998,7 @@
     "dataset": "crwdns60497:0crwdne60497:0",
     "depthM": "crwdns84096:0crwdne84096:0",
     "exitTrackCorrection": "crwdns94236:0crwdne94236:0",
+    "externalId": "crwdns111508:0crwdne111508:0",
     "extraInfo": "crwdns84098:0crwdne84098:0",
     "extraInfoTooltip": "crwdns84110:0crwdne84110:0",
     "firstTransmissionDate": "crwdns60501:0crwdne60501:0",
