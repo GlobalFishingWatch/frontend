@@ -225,7 +225,13 @@ function VesselGroupLayerPanel({
                 />
               </Fragment>
             )}
-            {!readOnly && <Remove dataview={dataview} loading={layerActive && !layerLoaded} />}
+            {!readOnly && (
+              <Remove
+                dataview={dataview}
+                loading={layerActive && !layerLoaded}
+                testId={`vessel-group-layer-panel-remove-${dataview.id}`}
+              />
+            )}
             {!readOnly && layerActive && layerError && (
               <IconButton
                 icon={'warning'}

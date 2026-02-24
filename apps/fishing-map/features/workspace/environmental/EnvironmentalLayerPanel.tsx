@@ -213,7 +213,11 @@ function EnvironmentalLayerPanel({ dataview, onToggle }: LayerPanelProps): React
           )}
           <InfoModal dataview={dataview} />
           {!readOnly && (
-            <Remove dataview={dataview} loading={!showSortHandler && layerActive && !layerLoaded} />
+            <Remove
+              dataview={dataview}
+              loading={!showSortHandler && layerActive && !layerLoaded}
+              testId={`environmental-layer-panel-remove-${dataview.id}`}
+            />
           )}
           {showSortHandler && (
             <IconButton

@@ -303,7 +303,11 @@ function LayerPanel({
               </ExpandedContainer>
             )}
           {!isBasemapLabelsDataview && <InfoModal dataview={dataview} />}
-          <Remove dataview={dataview} loading={!showSortHandler && layerActive && !layerLoaded} />
+          <Remove
+            dataview={dataview}
+            loading={!showSortHandler && layerActive && !layerLoaded}
+            testId={`context-area-layer-panel-remove-${dataview.id}`}
+          />
           {showSortHandler && (
             <IconButton
               size="small"

@@ -258,6 +258,7 @@ function ActivityLayerPanel({
               <Remove
                 onClick={onRemoveLayerClick}
                 loading={!hasDeprecatedDataviewInstances && layerActive && !layerLoaded}
+                testId={`activity-layer-panel-remove-${dataview.id}`}
               />
             )}
             {!readOnly && layerActive && layerError && (
