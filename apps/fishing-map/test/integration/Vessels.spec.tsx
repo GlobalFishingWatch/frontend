@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
 import App from 'features/app/App'
+import { VESSEL } from 'routes/routes'
 import { makeStore } from 'store'
 
 describe('Vessel map popup', () => {
@@ -32,6 +33,8 @@ describe('Vessel map popup', () => {
     await userEvent.click(mapElement, { position: { x: 280, y: 275 } })
 
     await getByTestId('link-vessel-profile').first().click()
+
+    expect(store.getState().location.type).toBe(VESSEL)
 
     // await expect.element(getByTestId('vv-vessel-name')).toHaveTextContent('Gabu Reefer')
   })
