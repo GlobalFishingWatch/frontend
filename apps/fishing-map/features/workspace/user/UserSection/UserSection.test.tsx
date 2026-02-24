@@ -11,10 +11,8 @@ describe('UserSection', () => {
 
     const { getByText } = await render(<UserSection />, { store })
 
-    const element = getByText('Register')
-
     expect(store.getState().user.data?.type === 'guest').toBe(true)
 
-    expect(element).toBeInTheDocument()
+    await expect.element(getByText('Register')).toBeInTheDocument()
   })
 })

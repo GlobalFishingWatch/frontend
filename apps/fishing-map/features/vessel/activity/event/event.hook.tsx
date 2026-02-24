@@ -12,10 +12,10 @@ import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import PortsReportLink from 'features/reports/report-port/PortsReportLink'
-import type { VesselEvent } from 'features/vessel/activity/event/Event'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
+import type { VesselEvent } from 'features/vessel/vessel.types'
 import { getUTCDateTime } from 'utils/dates'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
@@ -132,7 +132,7 @@ export function useActivityEventTranslations() {
           )
           return (
             <Fragment>
-              {t((t: any) => t.event[portType].ActionIn, {
+              {t((t) => t.event[`${portType}ActionIn`], {
                 port: '',
               })}
               <PortsReportLink port={{ id, name, country: flag, datasetId: portDataset?.id }}>

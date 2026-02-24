@@ -52,28 +52,34 @@ const IDENTIFIER_FIELDS: VesselRenderField[] = [
 
 // TODO review private datasets to ensure there are no missing fields
 
-const IS_PIPE_4 = PIPE_DATASET_VERSION === ('4' as const)
+export const IS_PIPE_4 = PIPE_DATASET_VERSION === ('4' as const)
 type CustomVMSGroup = Partial<Record<SelfReportedSource, VesselRenderField[][]>>
 export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
-  [SelfReportedSource.Peru]: [
-    [
-      { key: 'origin' },
-      { key: IS_PIPE_4 ? 'sourceFleet' : 'fleet' },
-      { key: IS_PIPE_4 ? 'externalId' : 'nationalId' },
-    ],
+  [SelfReportedSource.Peru_Pipe3]: [
+    [{ key: 'origin' }, { key: 'fleet' }, { key: 'nationalId' }],
     [{ key: 'length' }, { key: 'capacity' }, { key: 'beam' }],
     [{ key: 'regimen' }, { key: 'resolution' }],
     [{ key: 'casco' }, { key: 'chdSpecies' }],
   ],
-  [SelfReportedSource.CostaRica]: [[{ key: IS_PIPE_4 ? 'externalId' : 'nationalId' }]],
-  [SelfReportedSource.Indonesia]: [
-    [{ key: 'widthRange' }, { key: 'lengthRange' }, { key: 'grossTonnageRange' }],
+  [SelfReportedSource.CostaRica_Pipe3]: [[{ key: 'nationalId' }]],
+  [SelfReportedSource.Indonesia]: [[{ key: 'width' }, { key: 'length' }, { key: 'grossTonnage' }]],
+  [SelfReportedSource.Brazil_Pipe3]: [
+    [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
+    [{ key: 'codMarinha' }],
   ],
+  [SelfReportedSource.Chile_Pipe3]: [[{ key: 'fleet' }]],
+  [SelfReportedSource.Peru]: [
+    [{ key: 'origin' }, { key: 'sourceFleet' }, { key: 'externalId' }],
+    [{ key: 'length' }, { key: 'holdCapacityM3' }, { key: 'beam' }],
+    [{ key: 'licenseDescription' }, { key: 'resolution' }],
+    [{ key: 'hull' }, { key: 'targetSpecies' }],
+  ],
+  [SelfReportedSource.CostaRica]: [[{ key: 'externalId' }]],
   [SelfReportedSource.Brazil]: [
     [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
-    [{ key: IS_PIPE_4 ? 'externalId' : 'codMarinha' }],
+    [{ key: 'externalId' }],
   ],
-  [SelfReportedSource.Chile]: [[{ key: IS_PIPE_4 ? 'sourceFleet' : 'fleet' }]],
+  [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
 }
 
 const VESSEL_FISICAL_FEATURES_FIELDS: VesselRenderField[] = [

@@ -302,6 +302,7 @@
     "visibleValues": "Valores visíveis",
     "visits": "Visits",
     "vms": "VMS",
+    "vmsAndAis": "VMS & AIS",
     "welcomePopupDisable": "Não mostrar novamente",
     "whatsNew": "O que há de novo?",
     "whatsNewWithNewVersion": "Nós fizemos algumas alterações desde a última visita ao mapa. Clique para saber mais"
@@ -508,6 +509,7 @@
   "errors": {
     "areaLoad": "Ocorreu um erro ao carregar a área do relatório",
     "areaOutOfTime": "The report area is out of the current time range",
+    "datasetLoginRequired": "Login to access this dataset",
     "datasetNotFound": "Dataset não encontrado",
     "fields": "Erros com os campos {{fields}}",
     "generic": "Algo deu errado. Tente novamente ou entre em contato:",
@@ -694,7 +696,7 @@
       "mpa": "AMP",
       "mpa_other": "MPAs (WDPA)",
       "port": "Port",
-      "rfmo": "RFMOs"
+      "rfmo": "Regional Fisheries Bodies"
     },
     "areasOnScreen": "Áreas na tela",
     "closePolygonHint": "Press enter or click the first point to close the polygon",
@@ -996,6 +998,7 @@
     "dataset": "Fonte",
     "depthM": "Profundidade (M)",
     "exitTrackCorrection": "Exit activity issue (track correction) panel to be able to navigate to the vessel profile",
+    "externalId": "External ID",
     "extraInfo": "Solicite informações adicionais em",
     "extraInfoTooltip": "TMT has additional insights relating to the vessel’s compliance history and/or IUU listing",
     "firstTransmissionDate": "Primeira data de transmissão",

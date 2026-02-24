@@ -302,6 +302,7 @@
     "visibleValues": "Visible values",
     "visits": "Visits",
     "vms": "VMS",
+    "vmsAndAis": "VMS & AIS",
     "welcomePopupDisable": "Don't show again",
     "whatsNew": "What's new?",
     "whatsNewWithNewVersion": "We've made some changes since you last visited the map. Click to learn more"
@@ -508,6 +509,7 @@
   "errors": {
     "areaLoad": "There was an error loading the report area",
     "areaOutOfTime": "The report area is out of the current time range",
+    "datasetLoginRequired": "Login to access this dataset",
     "datasetNotFound": "Dataset not found",
     "fields": "Errors with fields {{fields}}",
     "generic": "Something went wrong. Please try again or contact:",
@@ -996,6 +998,7 @@
     "dataset": "Source",
     "depthM": "Depth (m)",
     "exitTrackCorrection": "Exit activity issue (track correction) panel to be able to navigate to the vessel profile",
+    "externalId": "External ID",
     "extraInfo": "Request additional information at",
     "extraInfoTooltip": "TMT has additional insights relating to the vessel’s compliance history and/or IUU listing",
     "firstTransmissionDate": "First transmission date",

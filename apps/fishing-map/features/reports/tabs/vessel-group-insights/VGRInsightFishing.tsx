@@ -77,7 +77,7 @@ const VesselGroupReportInsightFishing = ({ skip }: { skip?: boolean }) => {
       trackEvent({
         category: TrackCategory.VesselGroupReport,
         action: 'vessel_group_profile_insights_tab_expand_insights',
-        label: 'fishing RFMOs expanded',
+        label: 'fishing Regional Fisheries Bodies (RFMOs) expanded',
       })
     }
   }

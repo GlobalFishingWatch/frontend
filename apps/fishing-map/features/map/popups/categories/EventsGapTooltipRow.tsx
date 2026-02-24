@@ -1,18 +1,21 @@
 import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
-import { isVMSDataset } from '@globalfishingwatch/datasets-client'
+import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
+import { getDatasetSourceTranslated } from 'features/i18n/utils.datasets'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { getEventLabel } from 'utils/analytics'
@@ -36,7 +39,13 @@ function EventsGapTooltipRow({
   loading,
 }: EventsGapTooltipRowProps) {
   const { t } = useTranslation()
-
+  const dataviews = useSelector(selectEventsDataviews)
+  const encounterDataview = dataviews.find((d) => d.id === feature.layerId)
+  const encounterDataset = encounterDataview?.datasets?.find((d) => d.type === DatasetTypes.Events)
+  const encounterVesselDatasetId = getRelatedDatasetByType(
+    encounterDataset,
+    DatasetTypes.Vessels
+  )?.id
   const seeGapEventClick = useCallback((dataset: Dataset) => {
     trackEvent({
       category: TrackCategory.VesselProfile,
@@ -50,7 +59,7 @@ function EventsGapTooltipRow({
   }, [])
 
   const event = feature.event || ({} as ExtendedFeatureSingleEvent)
-
+  const vesselDatasetId = event?.vessel?.dataset || encounterVesselDatasetId
   const interval = getFourwingsInterval(feature.startTime, feature.endTime)
   const title = feature.title || getDatasetLabel({ id: feature.datasetId! })
   const gapStart = feature.properties.stime
@@ -72,9 +81,7 @@ function EventsGapTooltipRow({
               <span className={styles.rowText}>
                 <I18nNumber number={feature.count} />{' '}
                 {t((t) => t.event.gap, {
-                  source: isVMSDataset(feature?.datasetId || '')
-                    ? t((t) => t.common.vms)
-                    : t((t) => t.common.ais),
+                  source: getDatasetSourceTranslated({ id: feature?.datasetId || '' }),
                   count: feature.count,
                 })}
                 {!feature.properties.cluster && gapStart && interval && (
@@ -137,11 +144,11 @@ function EventsGapTooltipRow({
                                     {formatInfoField(event.vessel?.name, 'shipname')}
                                   </VesselLink>
                                 </span>
-                                {event.vessel.dataset && (
+                                {vesselDatasetId && (
                                   <VesselPin
                                     vesselToResolve={{
                                       ...event.vessel,
-                                      datasetId: event.vessel.dataset,
+                                      datasetId: vesselDatasetId,
                                     }}
                                   />
                                 )}
@@ -154,7 +161,7 @@ function EventsGapTooltipRow({
                         <div className={styles.row}>
                           <VesselLink
                             vesselId={event.vessel.id}
-                            datasetId={event.vessel.dataset}
+                            datasetId={vesselDatasetId}
                             query={{
                               vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
                               vesselSelfReportedId: event.vessel.id,

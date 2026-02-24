@@ -683,41 +683,6 @@
       "encounter_type": {
         "keyword": "encounter_type",
         "enum": {
-          "FISHING-FISHING": "FISHING-FISHING",
-          "FISHING-NON-FISHING": "FISHING-NON-FISHING",
-          "FISHING-SUPPORT": "FISHING-SUPPORT",
-          "FISHING-CARRIER": "FISHING-CARRIER",
-          "FISHING-RESEARCH": "FISHING-RESEARCH",
-          "FISHING-": "FISHING-",
-          "NON-FISHING-FISHING": "NON-FISHING-FISHING",
-          "NON-FISHING-NON-FISHING": "NON-FISHING-NON-FISHING",
-          "NON-FISHING-SUPPORT": "NON-FISHING-SUPPORT",
-          "NON-FISHING-CARRIER": "NON-FISHING-CARRIER",
-          "NON-FISHING-RESEARCH": "NON-FISHING-RESEARCH",
-          "NON-FISHING-": "NON-FISHING-",
-          "SUPPORT-FISHING": "SUPPORT-FISHING",
-          "SUPPORT-NON-FISHING": "SUPPORT-NON-FISHING",
-          "SUPPORT-SUPPORT": "SUPPORT-SUPPORT",
-          "SUPPORT-CARRIER": "SUPPORT-CARRIER",
-          "SUPPORT-RESEARCH": "SUPPORT-RESEARCH",
-          "SUPPORT-": "SUPPORT-",
-          "CARRIER-FISHING": "CARRIER-FISHING",
-          "CARRIER-NON-FISHING": "CARRIER-NON-FISHING",
-          "CARRIER-SUPPORT": "CARRIER-SUPPORT",
-          "CARRIER-CARRIER": "CARRIER-CARRIER",
-          "CARRIER-RESEARCH": "CARRIER-RESEARCH",
-          "CARRIER-": "CARRIER-",
-          "RESEARCH-FISHING": "RESEARCH-FISHING",
-          "RESEARCH-NON-FISHING": "RESEARCH-NON-FISHING",
-          "RESEARCH-SUPPORT": "RESEARCH-SUPPORT",
-          "RESEARCH-CARRIER": "RESEARCH-CARRIER",
-          "RESEARCH-RESEARCH": "RESEARCH-RESEARCH",
-          "RESEARCH-": "RESEARCH-",
-          "-FISHING": "-FISHING",
-          "-NON-FISHING": "-NON-FISHING",
-          "-SUPPORT": "-SUPPORT",
-          "-CARRIER": "-CARRIER",
-          "-RESEARCH": "-RESEARCH",
           "-": "-"
         }
       }
@@ -750,7 +715,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -775,7 +740,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -851,41 +816,9 @@
         "keyword": "encounter_type",
         "enum": {
           "FISHING-FISHING": "FISHING-FISHING",
-          "FISHING-NON-FISHING": "FISHING-NON-FISHING",
-          "FISHING-SUPPORT": "FISHING-SUPPORT",
-          "FISHING-CARRIER": "FISHING-CARRIER",
-          "FISHING-RESEARCH": "FISHING-RESEARCH",
-          "FISHING-": "FISHING-",
-          "NON-FISHING-FISHING": "NON-FISHING-FISHING",
-          "NON-FISHING-NON-FISHING": "NON-FISHING-NON-FISHING",
-          "NON-FISHING-SUPPORT": "NON-FISHING-SUPPORT",
-          "NON-FISHING-CARRIER": "NON-FISHING-CARRIER",
-          "NON-FISHING-RESEARCH": "NON-FISHING-RESEARCH",
-          "NON-FISHING-": "NON-FISHING-",
-          "SUPPORT-FISHING": "SUPPORT-FISHING",
-          "SUPPORT-NON-FISHING": "SUPPORT-NON-FISHING",
-          "SUPPORT-SUPPORT": "SUPPORT-SUPPORT",
-          "SUPPORT-CARRIER": "SUPPORT-CARRIER",
-          "SUPPORT-RESEARCH": "SUPPORT-RESEARCH",
-          "SUPPORT-": "SUPPORT-",
-          "CARRIER-FISHING": "CARRIER-FISHING",
-          "CARRIER-NON-FISHING": "CARRIER-NON-FISHING",
-          "CARRIER-SUPPORT": "CARRIER-SUPPORT",
-          "CARRIER-CARRIER": "CARRIER-CARRIER",
-          "CARRIER-RESEARCH": "CARRIER-RESEARCH",
-          "CARRIER-": "CARRIER-",
-          "RESEARCH-FISHING": "RESEARCH-FISHING",
-          "RESEARCH-NON-FISHING": "RESEARCH-NON-FISHING",
-          "RESEARCH-SUPPORT": "RESEARCH-SUPPORT",
-          "RESEARCH-CARRIER": "RESEARCH-CARRIER",
-          "RESEARCH-RESEARCH": "RESEARCH-RESEARCH",
-          "RESEARCH-": "RESEARCH-",
-          "-FISHING": "-FISHING",
-          "-NON-FISHING": "-NON-FISHING",
-          "-SUPPORT": "-SUPPORT",
-          "-CARRIER": "-CARRIER",
-          "-RESEARCH": "-RESEARCH",
-          "-": "-"
+          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
+          "NON_FISHING-FISHING": "NON_FISHING-FISHING",
+          "NON_FISHING-NON_FISHING": "NON_FISHING-NON_FISHING"
         }
       }
     }
@@ -1010,7 +943,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -1035,7 +968,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -1060,7 +993,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -1136,41 +1069,9 @@
         "keyword": "encounter_type",
         "enum": {
           "FISHING-FISHING": "FISHING-FISHING",
-          "FISHING-NON-FISHING": "FISHING-NON-FISHING",
-          "FISHING-SUPPORT": "FISHING-SUPPORT",
-          "FISHING-CARRIER": "FISHING-CARRIER",
-          "FISHING-RESEARCH": "FISHING-RESEARCH",
-          "FISHING-": "FISHING-",
-          "NON-FISHING-FISHING": "NON-FISHING-FISHING",
-          "NON-FISHING-NON-FISHING": "NON-FISHING-NON-FISHING",
-          "NON-FISHING-SUPPORT": "NON-FISHING-SUPPORT",
-          "NON-FISHING-CARRIER": "NON-FISHING-CARRIER",
-          "NON-FISHING-RESEARCH": "NON-FISHING-RESEARCH",
-          "NON-FISHING-": "NON-FISHING-",
-          "SUPPORT-FISHING": "SUPPORT-FISHING",
-          "SUPPORT-NON-FISHING": "SUPPORT-NON-FISHING",
-          "SUPPORT-SUPPORT": "SUPPORT-SUPPORT",
-          "SUPPORT-CARRIER": "SUPPORT-CARRIER",
-          "SUPPORT-RESEARCH": "SUPPORT-RESEARCH",
-          "SUPPORT-": "SUPPORT-",
-          "CARRIER-FISHING": "CARRIER-FISHING",
-          "CARRIER-NON-FISHING": "CARRIER-NON-FISHING",
-          "CARRIER-SUPPORT": "CARRIER-SUPPORT",
-          "CARRIER-CARRIER": "CARRIER-CARRIER",
-          "CARRIER-RESEARCH": "CARRIER-RESEARCH",
-          "CARRIER-": "CARRIER-",
-          "RESEARCH-FISHING": "RESEARCH-FISHING",
-          "RESEARCH-NON-FISHING": "RESEARCH-NON-FISHING",
-          "RESEARCH-SUPPORT": "RESEARCH-SUPPORT",
-          "RESEARCH-CARRIER": "RESEARCH-CARRIER",
-          "RESEARCH-RESEARCH": "RESEARCH-RESEARCH",
-          "RESEARCH-": "RESEARCH-",
-          "-FISHING": "-FISHING",
-          "-NON-FISHING": "-NON-FISHING",
-          "-SUPPORT": "-SUPPORT",
-          "-CARRIER": "-CARRIER",
-          "-RESEARCH": "-RESEARCH",
-          "-": "-"
+          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
+          "NON_FISHING-FISHING": "NON_FISHING-FISHING",
+          "NON_FISHING-NON_FISHING": "NON_FISHING-NON_FISHING"
         }
       }
     }
@@ -1209,7 +1110,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -1234,7 +1135,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -1319,40 +1220,8 @@
         "keyword": "encounter_type",
         "enum": {
           "FISHING-FISHING": "FISHING-FISHING",
-          "FISHING-NON-FISHING": "FISHING-NON-FISHING",
-          "FISHING-SUPPORT": "FISHING-SUPPORT",
-          "FISHING-CARRIER": "FISHING-CARRIER",
-          "FISHING-RESEARCH": "FISHING-RESEARCH",
           "FISHING-": "FISHING-",
-          "NON-FISHING-FISHING": "NON-FISHING-FISHING",
-          "NON-FISHING-NON-FISHING": "NON-FISHING-NON-FISHING",
-          "NON-FISHING-SUPPORT": "NON-FISHING-SUPPORT",
-          "NON-FISHING-CARRIER": "NON-FISHING-CARRIER",
-          "NON-FISHING-RESEARCH": "NON-FISHING-RESEARCH",
-          "NON-FISHING-": "NON-FISHING-",
-          "SUPPORT-FISHING": "SUPPORT-FISHING",
-          "SUPPORT-NON-FISHING": "SUPPORT-NON-FISHING",
-          "SUPPORT-SUPPORT": "SUPPORT-SUPPORT",
-          "SUPPORT-CARRIER": "SUPPORT-CARRIER",
-          "SUPPORT-RESEARCH": "SUPPORT-RESEARCH",
-          "SUPPORT-": "SUPPORT-",
-          "CARRIER-FISHING": "CARRIER-FISHING",
-          "CARRIER-NON-FISHING": "CARRIER-NON-FISHING",
-          "CARRIER-SUPPORT": "CARRIER-SUPPORT",
-          "CARRIER-CARRIER": "CARRIER-CARRIER",
-          "CARRIER-RESEARCH": "CARRIER-RESEARCH",
-          "CARRIER-": "CARRIER-",
-          "RESEARCH-FISHING": "RESEARCH-FISHING",
-          "RESEARCH-NON-FISHING": "RESEARCH-NON-FISHING",
-          "RESEARCH-SUPPORT": "RESEARCH-SUPPORT",
-          "RESEARCH-CARRIER": "RESEARCH-CARRIER",
-          "RESEARCH-RESEARCH": "RESEARCH-RESEARCH",
-          "RESEARCH-": "RESEARCH-",
           "-FISHING": "-FISHING",
-          "-NON-FISHING": "-NON-FISHING",
-          "-SUPPORT": "-SUPPORT",
-          "-CARRIER": "-CARRIER",
-          "-RESEARCH": "-RESEARCH",
           "-": "-"
         }
       }
@@ -1393,7 +1262,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -1418,7 +1287,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -1502,40 +1371,20 @@
         "keyword": "encounter_type",
         "enum": {
           "FISHING-FISHING": "FISHING-FISHING",
-          "FISHING-NON-FISHING": "FISHING-NON-FISHING",
+          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
           "FISHING-SUPPORT": "FISHING-SUPPORT",
-          "FISHING-CARRIER": "FISHING-CARRIER",
-          "FISHING-RESEARCH": "FISHING-RESEARCH",
           "FISHING-": "FISHING-",
-          "NON-FISHING-FISHING": "NON-FISHING-FISHING",
-          "NON-FISHING-NON-FISHING": "NON-FISHING-NON-FISHING",
-          "NON-FISHING-SUPPORT": "NON-FISHING-SUPPORT",
-          "NON-FISHING-CARRIER": "NON-FISHING-CARRIER",
-          "NON-FISHING-RESEARCH": "NON-FISHING-RESEARCH",
-          "NON-FISHING-": "NON-FISHING-",
+          "NON_FISHING-FISHING": "NON_FISHING-FISHING",
+          "NON_FISHING-NON_FISHING": "NON_FISHING-NON_FISHING",
+          "NON_FISHING-SUPPORT": "NON_FISHING-SUPPORT",
+          "NON_FISHING-": "NON_FISHING-",
           "SUPPORT-FISHING": "SUPPORT-FISHING",
-          "SUPPORT-NON-FISHING": "SUPPORT-NON-FISHING",
+          "SUPPORT-NON_FISHING": "SUPPORT-NON_FISHING",
           "SUPPORT-SUPPORT": "SUPPORT-SUPPORT",
-          "SUPPORT-CARRIER": "SUPPORT-CARRIER",
-          "SUPPORT-RESEARCH": "SUPPORT-RESEARCH",
           "SUPPORT-": "SUPPORT-",
-          "CARRIER-FISHING": "CARRIER-FISHING",
-          "CARRIER-NON-FISHING": "CARRIER-NON-FISHING",
-          "CARRIER-SUPPORT": "CARRIER-SUPPORT",
-          "CARRIER-CARRIER": "CARRIER-CARRIER",
-          "CARRIER-RESEARCH": "CARRIER-RESEARCH",
-          "CARRIER-": "CARRIER-",
-          "RESEARCH-FISHING": "RESEARCH-FISHING",
-          "RESEARCH-NON-FISHING": "RESEARCH-NON-FISHING",
-          "RESEARCH-SUPPORT": "RESEARCH-SUPPORT",
-          "RESEARCH-CARRIER": "RESEARCH-CARRIER",
-          "RESEARCH-RESEARCH": "RESEARCH-RESEARCH",
-          "RESEARCH-": "RESEARCH-",
           "-FISHING": "-FISHING",
-          "-NON-FISHING": "-NON-FISHING",
+          "-NON_FISHING": "-NON_FISHING",
           "-SUPPORT": "-SUPPORT",
-          "-CARRIER": "-CARRIER",
-          "-RESEARCH": "-RESEARCH",
           "-": "-"
         }
       }
@@ -1568,7 +1417,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -1593,7 +1442,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -1653,6 +1502,138 @@
     "name": "VMS Ecuador",
     "description": "Vessels (VMS Ecuador)"
   },
+  "private-vms-mne-encounters-events": {
+    "name": "Encounter Events. (MNE)",
+    "description": "<h2>Overview</h2> <h3> Encounter events identify instances where two vessels appear to meet at sea. </h3> <ul> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage. </li> </ul> <ul> <p> Users can filter encounter events by vessel characteristics and context, including: </p> <li>Duration of encounter</li> <li> Vessel flag - Shows encounters where at least one vessel is flagged to the selected country </li> <li> Next port visit after the encounter - Shows encounters where at least one vessel is has visited the selected port(s) </li> <li>Vessel types involved in the encounter</li> <li>User saved vessel group</li> </ul> <ul> <p>Currently displayed encounter types include:</p> <li>Carrier ⇄ Bunker (experimental)</li> <li>Carrier ⇄ Fishing</li> <li>Fishing ⇄ Bunker (experimental)</li> <li>Fishing ⇄ Fishing (experimental)</li> <li>Support ⇄ Fishing</li> </ul> <p> To view more details about a specific encounter—such as its location or the identity of the encountered vessel—click the “See more” icon associated with the event. </p> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of rule-based algorithms being applied to AIS positional data. There are many potential reasons for vessels to meet at sea. Such interactions may include transshipment of catch or supplies, equipment transfers, crew changes, safety-related matters, and more. Encounter data should therefore be viewed as an indicator for review. </li> <li> Encounters that do not meet the specifications of GFW encounter events described above are not included in the map, such as encounters less than two hours and in-port encounters. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. While multiple encounters within such a short timeframe are possible, they remain exceptionally rare. </li> <li> The 500-meter proximity threshold is calculated using implied positions—not raw AIS messages. Since AIS transmissions occur at irregular intervals, vessel positions are estimated by a 10-minute time grid using reported course and speed. Proximity is then calculated based on these estimated positions. Due to this modeling approach, it is possible that vessels identified in an encounter may not have been physically within 500 meters of each other for the entire 2-hour period. </li> <li> Bias in vessel identification and gear classification can result in the unexpected presence or absence of an encounter. Misclassifications in vessel type may occur due to inconsistent or incomplete vessel registry data. Misclassifications can also happen when algorithms struggle to appropriately categorize vessels, for instance, where vessels use several gears (thus changing their behavioral patterns) or when a vessel’s MMSI (maritime mobile service identity) number is used by more than one vessel. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. As a result it is possible the vessels never occupied that precise location during the encounter event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> You can read more about transshipment behaviour from our <a href=\"http://globalfishingwatch.org/wp-content/uploads/GlobalViewOfTransshipment_Aug2017.pdf\" >report</a > or <a href=\"https://www.frontiersin.org/articles/10.3389/fmars.2018.00240/full\" >scientific publication</a >. </p>",
+    "schema": {
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "2": "2",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id",
+      "encounter_type": {
+        "keyword": "encounter_type",
+        "enum": {
+          "FISHING-FISHING": "FISHING-FISHING"
+        }
+      }
+    }
+  },
+  "private-vms-mne-fishing-effort": {
+    "name": "VMS Montenegro",
+    "description": "Global Fishing Watch uses data about a vessel’s identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as known or possible commercial fishing vessels, and applies a fishing presence algorithm to determine “apparent fishing activity” based on changes in vessel speed and direction. The algorithm classifies each AIS broadcast data point for these vessels as either apparently fishing or not fishing and shows the former on the Global Fishing Watch fishing activity heat map. AIS data as broadcast may vary in completeness, accuracy and quality. Also, data collection by satellite or terrestrial receivers may introduce errors through missing or inaccurate data. Global Fishing Watch’s fishing presence algorithm is a best effort mathematically to identify “apparent fishing activity.” As a result, it is possible that some fishing activity is not identified as such by Global Fishing Watch; conversely, Global Fishing Watch may show apparent fishing activity where fishing is not actually taking place. For these reasons, Global Fishing Watch qualifies designations of vessel fishing activity, including synonyms of the term “fishing activity,” such as “fishing” or “fishing effort,” as “apparent,” rather than certain. Any/all Global Fishing Watch information about “apparent fishing activity” should be considered an estimate and must be relied upon solely at your own risk. Global Fishing Watch is taking steps to make sure fishing activity designations are as accurate as possible. Global Fishing Watch fishing presence algorithms are developed and tested using actual fishing event data collected by observers, combined with expert analysis of vessel movement data resulting in the manual classification of thousands of known fishing events. Global Fishing Watch also collaborates extensively with academic researchers through our research program to share fishing activity classification data and automated classification techniques.",
+    "schema": {
+      "speed": "speed",
+      "bearing": "bearing",
+      "distance_from_port_km": {
+        "keyword": "distance_from_port_km",
+        "enum": {
+          "0": "0",
+          "1": "1",
+          "2": "2",
+          "3": "3",
+          "4": "4",
+          "5": "5"
+        }
+      }
+    }
+  },
+  "private-vms-mne-loitering-events": {
+    "name": "Loitering Events (MNE)",
+    "description": "<h2>Overview</h2> <h3> Loitering events identify when a vessel is operating away from shore while moving at low speeds. Loitering events highlight when a vessel is behaving in a manner consistent with a potential encounter event (i.e. stationary or drifting slowly at sea) but no encountering vessel is visible on AIS. As such, these should not be considered indicators of likely encounter events, but rather periods of time when undetected encounters could have potentially occurred. </h3> <ul> <p>Global Fishing Watch classifies an event as a loitering event when:</p> <li> The vessel is located more than 20 nautical miles (37.04 kilometers) from shore, and </li> <li>Maintains an average speed of less than 2 knots,</li> <li>For a continuous period of at least 1 hour.</li> </ul> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of a rule-based algorithm being applied to AIS positional data. Loitering events should be cross-verified with other sources of information (like RFMO transshipment records) when possible. </li> <li> Vessels in loitering events may not be meeting any other vessels at the time of the event. Other events in which a vessel may remain fairly stationary or moving slowly while at sea include: maintenance, losing vessel power, idling during poor weather, waiting outside of port for permission to dock, normal fishing behavior, and more. </li> <li> Due to the individual definitions of loitering events, fishing events, and encounter events, it is possible for a single vessel movement pattern to trigger multiple event types. </li> <li> A loitering event position may not align exactly with the vessel’s tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within that event. As a result it is possible the vessel never occupied that precise location during the event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> Learn more about considerations of using AIS data by looking at the <a href=\"https://globalfishingwatch.org/data-documentation/apparent-fishing-events-ais/\" >AIS limitations section in the Apparent fishing events (AIS) data documentation.</a >. </p>",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "48": "48"
+        }
+      },
+      "next_port_id": "next_port_id"
+    }
+  },
+  "private-vms-mne-port-visits-events": {
+    "name": "Port Visits Events (MNE)",
+    "description": "The dataset contains port visits events for MNE",
+    "schema": {
+      "type": {
+        "keyword": "type",
+        "enum": {
+          "FISHING": "FISHING",
+          "NON_FISHING": "NON_FISHING",
+          "SUPPORT": "SUPPORT",
+          "CARRIER": "CARRIER",
+          "RESEARCH": "RESEARCH",
+          "": ""
+        }
+      },
+      "duration": {
+        "keyword": "duration",
+        "enum": {
+          "0": "0",
+          "49": "49"
+        }
+      },
+      "confidences": {
+        "keyword": "confidences",
+        "enum": {
+          "2": "2",
+          "3": "3",
+          "4": "4"
+        }
+      }
+    }
+  },
+  "private-vms-mne-presence": {
+    "name": "VMS Montenegro Presence",
+    "description": "Global Fishing Watch uses data about a vessels identity, type, location, speed, direction and more that is broadcast using the Automatic Identification System (AIS) and collected via satellites and terrestrial receivers. AIS was developed for safety/collision-avoidance. Global Fishing Watch analyzes AIS data collected from vessels that our research has identified as carriers. The activity layer displays a heatmap of vessel presence. The presence is determined by taking one position per day per vessel from the positions transmitted by the vessels AIS.",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "<2": "<2",
+          "2-4": "2-4",
+          "4-6": "4-6",
+          "6-10": "6-10",
+          "10-15": "10-15",
+          "15-25": "15-25",
+          ">25": ">25"
+        }
+      },
+      "bearing": "bearing"
+    }
+  },
+  "private-vms-mne-tracks": {
+    "name": "Montenegro VMS",
+    "description": "Tracks dataset for VMS Montenegro (Private)",
+    "schema": {
+      "speed": {
+        "keyword": "speed",
+        "enum": {
+          "0": "0",
+          "20": "20"
+        }
+      }
+    }
+  },
+  "private-vms-mne-vessel-identity": {
+    "name": "VMS Montenegro",
+    "description": "Vessels (VMS Montenegro)"
+  },
   "private-vms-nor-encounters-events": {
     "name": "Encounter Events. (NOR)",
     "description": "<h2>Overview</h2> <h3> Encounter events identify instances where two vessels appear to meet at sea. </h3> <ul> <p> Global Fishing Watch classifies an event as an encounter when two vessels are detected: </p> <li>Within 500 meters of one another</li> <li>For a duration of at least 2 hours</li> <li>Traveling at a median speed of less than 2 knots</li> <li> And located at least 10 kilometers (5.4 nautical miles) from a coastal anchorage. </li> </ul> <ul> <p> Users can filter encounter events by vessel characteristics and context, including: </p> <li>Duration of encounter</li> <li> Vessel flag - Shows encounters where at least one vessel is flagged to the selected country </li> <li> Next port visit after the encounter - Shows encounters where at least one vessel is has visited the selected port(s) </li> <li>Vessel types involved in the encounter</li> <li>User saved vessel group</li> </ul> <ul> <p>Currently displayed encounter types include:</p> <li>Carrier ⇄ Bunker (experimental)</li> <li>Carrier ⇄ Fishing</li> <li>Fishing ⇄ Bunker (experimental)</li> <li>Fishing ⇄ Fishing (experimental)</li> <li>Support ⇄ Fishing</li> </ul> <p> To view more details about a specific encounter—such as its location or the identity of the encountered vessel—click the “See more” icon associated with the event. </p> <h2>Caveats</h2> <ul> <li> Global Fishing Watch events are the result of rule-based algorithms being applied to AIS positional data. There are many potential reasons for vessels to meet at sea. Such interactions may include transshipment of catch or supplies, equipment transfers, crew changes, safety-related matters, and more. Encounter data should therefore be viewed as an indicator for review. </li> <li> Encounters that do not meet the specifications of GFW encounter events described above are not included in the map, such as encounters less than two hours and in-port encounters. </li> <li> Encounters between the same two vessels occurring within a 4-hour window are consolidated into a single encounter event. While multiple encounters within such a short timeframe are possible, they remain exceptionally rare. </li> <li> The 500-meter proximity threshold is calculated using implied positions—not raw AIS messages. Since AIS transmissions occur at irregular intervals, vessel positions are estimated by a 10-minute time grid using reported course and speed. Proximity is then calculated based on these estimated positions. Due to this modeling approach, it is possible that vessels identified in an encounter may not have been physically within 500 meters of each other for the entire 2-hour period. </li> <li> Bias in vessel identification and gear classification can result in the unexpected presence or absence of an encounter. Misclassifications in vessel type may occur due to inconsistent or incomplete vessel registry data. Misclassifications can also happen when algorithms struggle to appropriately categorize vessels, for instance, where vessels use several gears (thus changing their behavioral patterns) or when a vessel’s MMSI (maritime mobile service identity) number is used by more than one vessel. </li> <li> An encounter event position may not align exactly with the vessels' tracks. Global Fishing Watch determines a single location for each event by calculating the average latitude and longitude of all positions within the event. As a result it is possible the vessels never occupied that precise location during the encounter event. </li> <li> Global Fishing Watch recommends to visually inspect vessel tracks, always refer to additional data source and/or information, and request records from a vessel to confirm any findings, as part of the users’ due diligence process. </li> </ul> <h2>Learn more</h2> <p> You can read more about transshipment behaviour from our <a href=\"http://globalfishingwatch.org/wp-content/uploads/GlobalViewOfTransshipment_Aug2017.pdf\" >report</a > or <a href=\"https://www.frontiersin.org/articles/10.3389/fmars.2018.00240/full\" >scientific privateation</a >. </p>",
@@ -1669,41 +1650,8 @@
         "keyword": "encounter_type",
         "enum": {
           "FISHING-FISHING": "FISHING-FISHING",
-          "FISHING-NON-FISHING": "FISHING-NON-FISHING",
-          "FISHING-SUPPORT": "FISHING-SUPPORT",
-          "FISHING-CARRIER": "FISHING-CARRIER",
-          "FISHING-RESEARCH": "FISHING-RESEARCH",
-          "FISHING-": "FISHING-",
-          "NON-FISHING-FISHING": "NON-FISHING-FISHING",
-          "NON-FISHING-NON-FISHING": "NON-FISHING-NON-FISHING",
-          "NON-FISHING-SUPPORT": "NON-FISHING-SUPPORT",
-          "NON-FISHING-CARRIER": "NON-FISHING-CARRIER",
-          "NON-FISHING-RESEARCH": "NON-FISHING-RESEARCH",
-          "NON-FISHING-": "NON-FISHING-",
-          "SUPPORT-FISHING": "SUPPORT-FISHING",
-          "SUPPORT-NON-FISHING": "SUPPORT-NON-FISHING",
-          "SUPPORT-SUPPORT": "SUPPORT-SUPPORT",
-          "SUPPORT-CARRIER": "SUPPORT-CARRIER",
-          "SUPPORT-RESEARCH": "SUPPORT-RESEARCH",
-          "SUPPORT-": "SUPPORT-",
-          "CARRIER-FISHING": "CARRIER-FISHING",
-          "CARRIER-NON-FISHING": "CARRIER-NON-FISHING",
-          "CARRIER-SUPPORT": "CARRIER-SUPPORT",
-          "CARRIER-CARRIER": "CARRIER-CARRIER",
-          "CARRIER-RESEARCH": "CARRIER-RESEARCH",
-          "CARRIER-": "CARRIER-",
-          "RESEARCH-FISHING": "RESEARCH-FISHING",
-          "RESEARCH-NON-FISHING": "RESEARCH-NON-FISHING",
-          "RESEARCH-SUPPORT": "RESEARCH-SUPPORT",
-          "RESEARCH-CARRIER": "RESEARCH-CARRIER",
-          "RESEARCH-RESEARCH": "RESEARCH-RESEARCH",
-          "RESEARCH-": "RESEARCH-",
-          "-FISHING": "-FISHING",
-          "-NON-FISHING": "-NON-FISHING",
-          "-SUPPORT": "-SUPPORT",
-          "-CARRIER": "-CARRIER",
-          "-RESEARCH": "-RESEARCH",
-          "-": "-"
+          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
+          "NON_FISHING-FISHING": "NON_FISHING-FISHING"
         }
       }
     }
@@ -1735,7 +1683,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -1760,7 +1708,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -1836,40 +1784,13 @@
         "keyword": "encounter_type",
         "enum": {
           "FISHING-FISHING": "FISHING-FISHING",
-          "FISHING-NON-FISHING": "FISHING-NON-FISHING",
-          "FISHING-SUPPORT": "FISHING-SUPPORT",
-          "FISHING-CARRIER": "FISHING-CARRIER",
-          "FISHING-RESEARCH": "FISHING-RESEARCH",
+          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
           "FISHING-": "FISHING-",
-          "NON-FISHING-FISHING": "NON-FISHING-FISHING",
-          "NON-FISHING-NON-FISHING": "NON-FISHING-NON-FISHING",
-          "NON-FISHING-SUPPORT": "NON-FISHING-SUPPORT",
-          "NON-FISHING-CARRIER": "NON-FISHING-CARRIER",
-          "NON-FISHING-RESEARCH": "NON-FISHING-RESEARCH",
-          "NON-FISHING-": "NON-FISHING-",
-          "SUPPORT-FISHING": "SUPPORT-FISHING",
-          "SUPPORT-NON-FISHING": "SUPPORT-NON-FISHING",
-          "SUPPORT-SUPPORT": "SUPPORT-SUPPORT",
-          "SUPPORT-CARRIER": "SUPPORT-CARRIER",
-          "SUPPORT-RESEARCH": "SUPPORT-RESEARCH",
-          "SUPPORT-": "SUPPORT-",
-          "CARRIER-FISHING": "CARRIER-FISHING",
-          "CARRIER-NON-FISHING": "CARRIER-NON-FISHING",
-          "CARRIER-SUPPORT": "CARRIER-SUPPORT",
-          "CARRIER-CARRIER": "CARRIER-CARRIER",
-          "CARRIER-RESEARCH": "CARRIER-RESEARCH",
-          "CARRIER-": "CARRIER-",
-          "RESEARCH-FISHING": "RESEARCH-FISHING",
-          "RESEARCH-NON-FISHING": "RESEARCH-NON-FISHING",
-          "RESEARCH-SUPPORT": "RESEARCH-SUPPORT",
-          "RESEARCH-CARRIER": "RESEARCH-CARRIER",
-          "RESEARCH-RESEARCH": "RESEARCH-RESEARCH",
-          "RESEARCH-": "RESEARCH-",
+          "NON_FISHING-FISHING": "NON_FISHING-FISHING",
+          "NON_FISHING-NON_FISHING": "NON_FISHING-NON_FISHING",
+          "NON_FISHING-": "NON_FISHING-",
           "-FISHING": "-FISHING",
-          "-NON-FISHING": "-NON-FISHING",
-          "-SUPPORT": "-SUPPORT",
-          "-CARRIER": "-CARRIER",
-          "-RESEARCH": "-RESEARCH",
+          "-NON_FISHING": "-NON_FISHING",
           "-": "-"
         }
       }
@@ -1910,7 +1831,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -1935,7 +1856,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -2019,40 +1940,10 @@
         "keyword": "encounter_type",
         "enum": {
           "FISHING-FISHING": "FISHING-FISHING",
-          "FISHING-NON-FISHING": "FISHING-NON-FISHING",
-          "FISHING-SUPPORT": "FISHING-SUPPORT",
-          "FISHING-CARRIER": "FISHING-CARRIER",
-          "FISHING-RESEARCH": "FISHING-RESEARCH",
           "FISHING-": "FISHING-",
-          "NON-FISHING-FISHING": "NON-FISHING-FISHING",
-          "NON-FISHING-NON-FISHING": "NON-FISHING-NON-FISHING",
-          "NON-FISHING-SUPPORT": "NON-FISHING-SUPPORT",
-          "NON-FISHING-CARRIER": "NON-FISHING-CARRIER",
-          "NON-FISHING-RESEARCH": "NON-FISHING-RESEARCH",
-          "NON-FISHING-": "NON-FISHING-",
-          "SUPPORT-FISHING": "SUPPORT-FISHING",
-          "SUPPORT-NON-FISHING": "SUPPORT-NON-FISHING",
-          "SUPPORT-SUPPORT": "SUPPORT-SUPPORT",
-          "SUPPORT-CARRIER": "SUPPORT-CARRIER",
-          "SUPPORT-RESEARCH": "SUPPORT-RESEARCH",
-          "SUPPORT-": "SUPPORT-",
-          "CARRIER-FISHING": "CARRIER-FISHING",
-          "CARRIER-NON-FISHING": "CARRIER-NON-FISHING",
-          "CARRIER-SUPPORT": "CARRIER-SUPPORT",
-          "CARRIER-CARRIER": "CARRIER-CARRIER",
-          "CARRIER-RESEARCH": "CARRIER-RESEARCH",
-          "CARRIER-": "CARRIER-",
-          "RESEARCH-FISHING": "RESEARCH-FISHING",
-          "RESEARCH-NON-FISHING": "RESEARCH-NON-FISHING",
-          "RESEARCH-SUPPORT": "RESEARCH-SUPPORT",
-          "RESEARCH-CARRIER": "RESEARCH-CARRIER",
-          "RESEARCH-RESEARCH": "RESEARCH-RESEARCH",
-          "RESEARCH-": "RESEARCH-",
           "-FISHING": "-FISHING",
-          "-NON-FISHING": "-NON-FISHING",
-          "-SUPPORT": "-SUPPORT",
-          "-CARRIER": "-CARRIER",
-          "-RESEARCH": "-RESEARCH",
+          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
+          "NON_FISHING-FISHING": "NON_FISHING-FISHING",
           "-": "-"
         }
       }
@@ -2102,7 +1993,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -2127,7 +2018,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -2220,40 +2111,29 @@
         "keyword": "encounter_type",
         "enum": {
           "FISHING-FISHING": "FISHING-FISHING",
-          "FISHING-NON-FISHING": "FISHING-NON-FISHING",
+          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
           "FISHING-SUPPORT": "FISHING-SUPPORT",
           "FISHING-CARRIER": "FISHING-CARRIER",
-          "FISHING-RESEARCH": "FISHING-RESEARCH",
           "FISHING-": "FISHING-",
-          "NON-FISHING-FISHING": "NON-FISHING-FISHING",
-          "NON-FISHING-NON-FISHING": "NON-FISHING-NON-FISHING",
-          "NON-FISHING-SUPPORT": "NON-FISHING-SUPPORT",
-          "NON-FISHING-CARRIER": "NON-FISHING-CARRIER",
-          "NON-FISHING-RESEARCH": "NON-FISHING-RESEARCH",
-          "NON-FISHING-": "NON-FISHING-",
+          "NON_FISHING-FISHING": "NON_FISHING-FISHING",
+          "NON_FISHING-NON_FISHING": "NON_FISHING-NON_FISHING",
+          "NON_FISHING-SUPPORT": "NON_FISHING-SUPPORT",
+          "NON_FISHING-CARRIER": "NON_FISHING-CARRIER",
+          "NON_FISHING-": "NON_FISHING-",
           "SUPPORT-FISHING": "SUPPORT-FISHING",
-          "SUPPORT-NON-FISHING": "SUPPORT-NON-FISHING",
+          "SUPPORT-NON_FISHING": "SUPPORT-NON_FISHING",
           "SUPPORT-SUPPORT": "SUPPORT-SUPPORT",
           "SUPPORT-CARRIER": "SUPPORT-CARRIER",
-          "SUPPORT-RESEARCH": "SUPPORT-RESEARCH",
           "SUPPORT-": "SUPPORT-",
           "CARRIER-FISHING": "CARRIER-FISHING",
-          "CARRIER-NON-FISHING": "CARRIER-NON-FISHING",
+          "CARRIER-NON_FISHING": "CARRIER-NON_FISHING",
           "CARRIER-SUPPORT": "CARRIER-SUPPORT",
           "CARRIER-CARRIER": "CARRIER-CARRIER",
-          "CARRIER-RESEARCH": "CARRIER-RESEARCH",
           "CARRIER-": "CARRIER-",
-          "RESEARCH-FISHING": "RESEARCH-FISHING",
-          "RESEARCH-NON-FISHING": "RESEARCH-NON-FISHING",
-          "RESEARCH-SUPPORT": "RESEARCH-SUPPORT",
-          "RESEARCH-CARRIER": "RESEARCH-CARRIER",
-          "RESEARCH-RESEARCH": "RESEARCH-RESEARCH",
-          "RESEARCH-": "RESEARCH-",
           "-FISHING": "-FISHING",
-          "-NON-FISHING": "-NON-FISHING",
+          "-NON_FISHING": "-NON_FISHING",
           "-SUPPORT": "-SUPPORT",
           "-CARRIER": "-CARRIER",
-          "-RESEARCH": "-RESEARCH",
           "-": "-"
         }
       }
@@ -2286,7 +2166,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -2311,7 +2191,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -2387,41 +2267,10 @@
         "keyword": "encounter_type",
         "enum": {
           "FISHING-FISHING": "FISHING-FISHING",
-          "FISHING-NON-FISHING": "FISHING-NON-FISHING",
-          "FISHING-SUPPORT": "FISHING-SUPPORT",
-          "FISHING-CARRIER": "FISHING-CARRIER",
-          "FISHING-RESEARCH": "FISHING-RESEARCH",
+          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
+          "NON_FISHING-FISHING": "NON_FISHING-FISHING",
           "FISHING-": "FISHING-",
-          "NON-FISHING-FISHING": "NON-FISHING-FISHING",
-          "NON-FISHING-NON-FISHING": "NON-FISHING-NON-FISHING",
-          "NON-FISHING-SUPPORT": "NON-FISHING-SUPPORT",
-          "NON-FISHING-CARRIER": "NON-FISHING-CARRIER",
-          "NON-FISHING-RESEARCH": "NON-FISHING-RESEARCH",
-          "NON-FISHING-": "NON-FISHING-",
-          "SUPPORT-FISHING": "SUPPORT-FISHING",
-          "SUPPORT-NON-FISHING": "SUPPORT-NON-FISHING",
-          "SUPPORT-SUPPORT": "SUPPORT-SUPPORT",
-          "SUPPORT-CARRIER": "SUPPORT-CARRIER",
-          "SUPPORT-RESEARCH": "SUPPORT-RESEARCH",
-          "SUPPORT-": "SUPPORT-",
-          "CARRIER-FISHING": "CARRIER-FISHING",
-          "CARRIER-NON-FISHING": "CARRIER-NON-FISHING",
-          "CARRIER-SUPPORT": "CARRIER-SUPPORT",
-          "CARRIER-CARRIER": "CARRIER-CARRIER",
-          "CARRIER-RESEARCH": "CARRIER-RESEARCH",
-          "CARRIER-": "CARRIER-",
-          "RESEARCH-FISHING": "RESEARCH-FISHING",
-          "RESEARCH-NON-FISHING": "RESEARCH-NON-FISHING",
-          "RESEARCH-SUPPORT": "RESEARCH-SUPPORT",
-          "RESEARCH-CARRIER": "RESEARCH-CARRIER",
-          "RESEARCH-RESEARCH": "RESEARCH-RESEARCH",
-          "RESEARCH-": "RESEARCH-",
-          "-FISHING": "-FISHING",
-          "-NON-FISHING": "-NON-FISHING",
-          "-SUPPORT": "-SUPPORT",
-          "-CARRIER": "-CARRIER",
-          "-RESEARCH": "-RESEARCH",
-          "-": "-"
+          "-FISHING": "-FISHING"
         }
       }
     }
@@ -2453,7 +2302,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -2478,7 +2327,7 @@
         "keyword": "type",
         "enum": {
           "FISHING": "FISHING",
-          "NON-FISHING": "NON-FISHING",
+          "NON_FISHING": "NON_FISHING",
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
@@ -4505,7 +4354,7 @@
     "description": "2% of EEZ"
   },
   "public-tuna-rfmo": {
-    "name": "RFMOs",
+    "name": "RFMOs (Source: FAO)",
     "description": "Regional fisheries management organizations (RFMOs) are international bodies formed by countries with a shared interest in managing or conserving fish stocks in a particular region. Some manage all the fish stocks found in a given area, while others focus on specific highly migratory species, notably tuna. The regional fisheries management organization on the Global Fishing Watch map currently includes the five tuna regional fisheries management organizations. See more detailed <a href='https://globalfishingwatch. org/faqs/reference-layer-sources/' target='_blank' rel=noopener'>metadata information</a> for this layer."
   },
   "public-wdpa-may-2021-marine": {

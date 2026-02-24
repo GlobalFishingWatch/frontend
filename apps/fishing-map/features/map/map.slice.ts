@@ -79,7 +79,7 @@ export type ExtendedFeatureVessel = ExtendedFeatureVesselDatasets & {
 
 export type ExtendedEventVessel = EventVessel & { dataset?: string }
 
-export type ExtendedFeatureSingleEvent = ApiEvent<EventVessel> & { dataset: Dataset }
+export type ExtendedFeatureSingleEvent = ApiEvent<ExtendedEventVessel> & { dataset: Dataset }
 export type ExtendedFeatureByVesselEventPort = {
   id?: string
   name?: string
@@ -578,12 +578,13 @@ export const fetchClusterEventThunk = createAsyncThunk(
               // will need discuss with API team to scale this for other types
               let vessels = []
               if (clusterEvent.type === 'encounter') {
-                const isACarrierTheMainVessel =
-                  clusterEvent.vessel.type === EventVesselTypeEnum.Carrier
-                const fishingVessel = isACarrierTheMainVessel
+                const isTheMainVesselNotFishing =
+                  clusterEvent.vessel.type === EventVesselTypeEnum.Carrier ||
+                  !clusterEvent.encounter?.vessel
+                const fishingVessel = isTheMainVesselNotFishing
                   ? clusterEvent.encounter?.vessel
                   : clusterEvent.vessel
-                const carrierVessel = isACarrierTheMainVessel
+                const carrierVessel = isTheMainVesselNotFishing
                   ? clusterEvent.vessel
                   : clusterEvent.encounter?.vessel
                 vessels = [fishingVessel, carrierVessel]

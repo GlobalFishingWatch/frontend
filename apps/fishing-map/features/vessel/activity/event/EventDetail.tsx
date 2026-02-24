@@ -16,12 +16,12 @@ import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { useActivityEventTranslations } from 'features/vessel/activity/event/event.hook'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
+import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
 import { useVesselProfileEncounterLayer } from 'features/vessel/vessel.hooks'
+import type { VesselEvent } from 'features/vessel/vessel.types'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
-
-import type { VesselEvent } from './Event'
 
 import styles from './Event.module.css'
 
@@ -98,13 +98,14 @@ const PortVisitedAfterField = ({ nextPort }: { nextPort: EventNextPort | undefin
 
 const EventDetail = ({ event }: ActivityContentProps) => {
   const { t } = useTranslation()
+  const vesselDatasetId = useSelector(selectVesselDatasetId)
   const vesselProfileEncounterLayer = useVesselProfileEncounterLayer()
   const workspaceDataviewInstancesMerged = useSelector(selectWorkspaceDataviewInstancesMerged)
 
   const authAreas = event.regions?.rfmo.filter((rfmo) => AUTH_AREAS.includes(rfmo)).sort()
 
   if (event.type === EventTypes.Encounter) {
-    const { name, id, dataset, flag, ssvid, type } = event.encounter?.vessel || {}
+    const { name, id, flag, ssvid, type } = event.encounter?.vessel || {}
     const isEncounterInstanceInWorkspace = getHasVesselProfileInstance({
       dataviews: workspaceDataviewInstancesMerged!,
       vesselId: id!,
@@ -120,7 +121,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
           <label className={styles.fieldLabel}>{t((t) => t.eventInfo.medianSpeedKnots)}</label>
           <span>{event.encounter?.medianSpeedKnots?.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
-        <PortVisitedAfterField nextPort={event.vessel.nextPort} />
+        {event.vessel?.nextPort && <PortVisitedAfterField nextPort={event.vessel.nextPort} />}
         <div className={styles.divider} />
         <label className={styles.blockLabel}>{t((t) => t.eventInfo.encounteredVesselName)}</label>
         <li>
@@ -132,13 +133,13 @@ const EventDetail = ({ event }: ActivityContentProps) => {
               <VesselPin
                 vesselToResolve={{
                   id: id as string,
-                  datasetId: (dataset as string) || DEFAULT_VESSEL_IDENTITY_ID,
+                  datasetId: vesselDatasetId || DEFAULT_VESSEL_IDENTITY_ID,
                 }}
                 size="tiny"
                 origin="vesselProfile"
               />
             )}
-            <VesselLink vesselId={id} datasetId={dataset}>
+            <VesselLink vesselId={id} datasetId={vesselDatasetId}>
               {formatInfoField(name, 'shipname')}
             </VesselLink>
           </span>
@@ -273,7 +274,7 @@ const EventDetail = ({ event }: ActivityContentProps) => {
           <label className={styles.fieldLabel}>{t((t) => t.eventInfo.averageSpeedKnots)}</label>
           <span>{event.loitering?.averageSpeedKnots.toFixed(2) || EMPTY_FIELD_PLACEHOLDER}</span>
         </li>
-        <PortVisitedAfterField nextPort={event.vessel.nextPort} />
+        {event.vessel?.nextPort && <PortVisitedAfterField nextPort={event.vessel.nextPort} />}
       </ul>
     )
   } else if (
