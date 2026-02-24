@@ -28,8 +28,8 @@
       "outputs": ["{projectRoot}/public/workers"],
       "options": {
         "commands": [
-          "rimraf apps/fishing-map/public/workers/*.js",
-          "make-dir apps/fishing-map/public/workers",
+          "shx rm -rf apps/fishing-map/public/workers/*.js",
+          "shx mkdir -p apps/fishing-map/public/workers",
           "shx cp libs/deck-loaders/dist/workers/*.js apps/fishing-map/public/workers/"
         ],
         "parallel": false
@@ -39,7 +39,7 @@
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": ["rimraf apps/fishing-map/output"]
+        "commands": ["shx rm -rf apps/fishing-map/output"]
       }
     },
     "i18n": {
