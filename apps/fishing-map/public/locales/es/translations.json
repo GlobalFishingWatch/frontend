@@ -509,6 +509,7 @@
   "errors": {
     "areaLoad": "Ha habido un error al cargar el área del reporte",
     "areaOutOfTime": "El área del informe está fuera del rango de tiempo actual",
+    "datasetLoginRequired": "Login to access this dataset",
     "datasetNotFound": "No se pudo encontrar esos datos",
     "fields": "Errores con los campos {{fields}}",
     "generic": "Algo salió mal, inténtalo de nuevo o contacta:",
