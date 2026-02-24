@@ -122,7 +122,7 @@ function DetectionsSection(): React.ReactElement<any> {
           <div className={cx(styles.sectionButtons)}>
             <VisualisationChoice
               options={visualizationOptions}
-              testId="activity-visualizations-change"
+              testId="detections-visualizations-change"
               activeOption={activeVisualizationOption}
               onSelect={(option) => onVisualizationModeChange(option.id)}
               className={cx({ [styles.hidden]: !hasVisibleDataviews })}

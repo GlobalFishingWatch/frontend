@@ -75,7 +75,10 @@ describe('Vessel map popup', () => {
     await getByTestId('activity-layer-panel-switch-ais').click()
     await getByTestId('activity-layer-panel-switch-vms').click()
     await getByTestId('activity-layer-panel-switch-presence').click()
+    expect(store.getState().map.loaded).toBe(true)
 
+    await getByTestId('activity-visualizations-change').hover()
+    await getByTestId('activity-visualizations-change-heatmap-low-res').click()
     expect(store.getState().map.loaded).toBe(true)
 
     const mapElement = getByTestId('app-main')
