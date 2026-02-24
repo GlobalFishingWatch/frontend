@@ -58,6 +58,11 @@ export default defineConfig(({ command }) => ({
   environments: {
     ssr: { build: { rollupOptions: { input: './server.ts' } } },
   },
+  css: {
+    modules: {
+      localsConvention: 'camelCaseOnly',
+    },
+  },
   ssr: {
     noExternal: ['@mastra/core', '@mastra/client-js'],
     // Prevent browser-only packages from being bundled into the SSR output.
