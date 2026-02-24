@@ -15,7 +15,7 @@ function DatasetLoginRequired({ dataview }: { dataview: UrlDataviewInstance }) {
       <div className={styles.header}>
         <Tooltip content={t((t) => t.dataset.login)}>
           <h3 className={cx(styles.name, styles.error)}>
-            {dataview.datasetsConfig?.[0]?.datasetId || t((t) => t.errors.datasetNotFound)}
+            {dataview.datasetsConfig?.[0]?.datasetId || t((t) => t.errors.datasetLoginRequired)}
           </h3>
         </Tooltip>
         <div className={styles.actions}>
