@@ -23,31 +23,18 @@ export const PRIVATE_SUPPORTED_GROUPS = [
 ]
 
 export const PRIVATE_SEARCH_DATASET_BY_GROUP: Record<UserGroupId, string[]> = {
-  belize: [
-    'private-belize-vessel-identity-fishing:v20220304',
-    'private-belize-vessel-identity-non-fishing:v20220304',
-  ],
-  brazil: [
-    // 'private-brazil-opentuna-vessel-identity-fishing:v20210311',
-    'private-bra-onyxsat-vessel-identity-fishing:v20211126',
-    'private-bra-onyxsat-vessel-identity-non-fishing:v20211126',
-  ],
-  'costa rica': ['private-costa-rica-vessel-identity-vessels:v20211126'],
-  ecuador: [
-    'private-ecuador-vessel-identity-fishing:v20211126',
-    'private-ecuador-vessel-identity-non-fishing:v20211126',
-  ],
-  panama: [
-    'private-panama-vessel-identity-non-fishing:v20211126',
-    'private-panama-vessel-identity-fishing:v20211126',
-  ],
-  peru: ['private-peru-vessel-identity-fishing:v20211126'],
-  'papua new guinea': ['private-png-fishing-identity-vessels:v20230210'],
-  chile: [],
+  'costa rica': ['private-vms-cri-vessel-identity:v4.0'],
+  'papua new guinea': ['private-png-vessel-identity:v4.0'],
+  belize: ['private-vms-blz-vessel-identity:v4.0'],
+  brazil: ['private-vms-bra-vessel-identity:v4.0'],
+  chile: ['private-vms-chl-vessel-identity:v4.0'],
+  costarica: ['private-vms-cri-vessel-identity:v4.0'],
+  ecuador: ['private-vms-ecu-vessel-identity:v4.0'],
+  norway: ['private-vms-nor-vessel-identity:v4.0'],
+  palau: ['private-vms-plw-vessel-identity:v4.0'],
+  panama: ['private-vms-pan-vessel-identity:v4.0'],
+  peru: ['private-vms-per-vessel-identity:v4.0'],
   'ssf-aruna': [],
   'ssf-rare': [],
   'ssf-ipnlf': [],
-  norway: [],
-  palau: [],
-  costarica: [],
 }
