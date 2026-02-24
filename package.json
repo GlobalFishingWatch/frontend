@@ -312,6 +312,7 @@
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "eslint-plugin-react": "7.37.5",
+    "fast-xml-parser": "5.3.7",
     "get-intrinsic": "1.3.0",
     "gl-matrix": "3.3.0",
     "stylus": "0.0.1-security",
