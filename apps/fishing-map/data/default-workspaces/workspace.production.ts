@@ -74,29 +74,11 @@ const workspace: Workspace<WorkspaceState> = {
     },
     {
       id: VMS_DATAVIEW_INSTANCE_ID,
-      config: {
-        color: '#FFAA0D',
-        colorRamp: 'orange',
-        datasets: [
-          'public-belize-fishing-effort:v20220304',
-          'public-bra-onyxsat-fishing-effort:v20211126',
-          'public-chile-fishing-effort:v20211126',
-          'public-costa-rica-fishing-effort:v20211126',
-          'public-ecuador-fishing-effort:v20211126',
-          'public-indonesia-fishing-effort:v20200320',
-          'public-panama-fishing-effort:v20211126',
-          'public-peru-fishing-effort:v20211126',
-          'public-png-fishing-effort:v20230210',
-          'public-norway-fishing-effort:v20220112',
-        ],
-      },
       dataviewId: FISHING_DATAVIEW_SLUG_VMS,
     },
     {
       id: PRESENCE_DATAVIEW_INSTANCE_ID,
       config: {
-        color: '#FF64CE',
-        colorRamp: 'magenta',
         visible: false,
       },
       dataviewId: PRESENCE_DATAVIEW_SLUG,
@@ -111,8 +93,6 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: VIIRS_DATAVIEW_INSTANCE_ID,
       config: {
-        color: '#FFEA00',
-        colorRamp: 'yellow',
         visible: false,
       },
       dataviewId: VIIRS_MATCH_DATAVIEW_SLUG,
