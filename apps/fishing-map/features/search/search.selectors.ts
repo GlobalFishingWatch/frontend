@@ -50,7 +50,16 @@ const selectSearchDatasetsInWorkspace = createSelector(
       }
       return true
     })
-    return filteredDatasetsPrioritised
+    const filteredDatasetsPrioritisedRF = filteredDatasetsPrioritised.map((d) => {
+      if (d.id === 'public-global-vessel-identity:v3.0') {
+        const datasetRF = allDatasets.find(
+          (d) => d.id === 'public-global-vessel-identity-vi-653:v1.0'
+        )
+        return datasetRF || d
+      }
+      return d
+    })
+    return filteredDatasetsPrioritisedRF
   }
 )
 

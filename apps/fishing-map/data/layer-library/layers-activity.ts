@@ -15,7 +15,7 @@ export const LAYERS_LIBRARY_ACTIVITY: LibraryLayerConfig[] = [
     config: {
       color: '#00FFBC',
       colorRamp: 'teal',
-      datasets: [DEFAULT_FISHING_DATASET_ID],
+      datasets: ['public-global-fishing-effort-vi-653:v1.0'],
       filters: {
         distance_from_port_km: '3',
       },
