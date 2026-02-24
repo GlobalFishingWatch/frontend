@@ -11,9 +11,10 @@ type RemoveProps = {
   dataview?: UrlDataviewInstance
   onClick?: (e: any) => void
   loading?: boolean
+  testId?: string
 }
 
-const Remove = ({ onClick, className, dataview, loading }: RemoveProps) => {
+const Remove = ({ onClick, className, dataview, loading, testId }: RemoveProps) => {
   const { t } = useTranslation()
   const { deleteDataviewInstance } = useDataviewInstancesConnect()
 
@@ -39,6 +40,7 @@ const Remove = ({ onClick, className, dataview, loading }: RemoveProps) => {
       tooltipPlacement="top"
       onClick={onClickInternal}
       className={className}
+      testId={testId}
     />
   )
 }
