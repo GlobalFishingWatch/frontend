@@ -88,8 +88,7 @@ export default defineConfig({
     },
     testTimeout: 30000,
     setupFiles: './test/vitest.setup.ts',
-    // isolate: false helps with WebSocket connection issues when using Vitest UI + browser mode
-    isolate: false,
+    isolate: true,
     browser: {
       enabled: true,
       provider: playwright(),
