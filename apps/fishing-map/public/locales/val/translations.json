@@ -509,6 +509,7 @@
   "errors": {
     "areaLoad": "crwdns83658:0crwdne83658:0",
     "areaOutOfTime": "crwdns106648:0crwdne106648:0",
+    "datasetLoginRequired": "crwdns111648:0crwdne111648:0",
     "datasetNotFound": "crwdns60077:0crwdne60077:0",
     "fields": "crwdns60083:0{{fields}}crwdne60083:0",
     "generic": "crwdns60085:0crwdne60085:0",
