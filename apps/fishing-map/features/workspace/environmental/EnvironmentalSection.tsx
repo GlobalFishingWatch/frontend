@@ -102,7 +102,7 @@ function EnvironmentalLayerSection(): React.ReactElement<any> | null {
           <div className={styles.sectionButtons}>
             <VisualisationChoice
               options={visualizationOptions}
-              testId="activity-visualizations-change"
+              testId="environmental-visualizations-change"
               activeOption={activeVisualizationOption}
               onSelect={(option) => onVisualizationModeChange(option.id)}
               className={cx({ [styles.hidden]: !hasVisibleDataviews })}

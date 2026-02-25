@@ -33,7 +33,7 @@ export function VisualisationChoice({
 
   return (
     <div className={cx(styles.VisualisationChoice, className, 'print-hidden')}>
-      <ul className={styles.list} role="radiogroup" {...(testId && { 'data-test': `${testId}` })}>
+      <ul className={styles.list} role="radiogroup" {...(testId && { 'data-testid': `${testId}` })}>
         {options.map((option) => {
           const optionSelected = activeOption === option.id
           const optionCollapsable =

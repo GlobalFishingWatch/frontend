@@ -77,7 +77,7 @@ export function Button(props: ButtonProps) {
           onClick={(e) => !loading && !disabled && onClick && onClick(e)}
           onMouseEnter={(e) => onMouseEnter && onMouseEnter(e)}
           onMouseLeave={(e) => onMouseLeave && onMouseLeave(e)}
-          {...(testId && { 'data-test': testId })}
+          {...(testId && { 'data-testid': testId })}
           {...(htmlType ? { type: htmlType } : {})}
         >
           {loading ? (
