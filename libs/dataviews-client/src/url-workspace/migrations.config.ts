@@ -94,6 +94,35 @@ export const VMS_LEGACY_VESSELS_DATASETS_DICT = {
   'private-belize-fishing-vessels:v20220304': 'private-belize-vessel-identity-fishing:v20220304',
 }
 
+export const VMS_V2_LEGACY_VESSELS_DATASETS_DICT = {
+  'public-png-vessel-identity-fishing:v20230210': 'public-vms-png-vessel-identity:v4.0',
+  'public-peru-vessel-identity-fishing:v20211126': 'public-vms-per-vessel-identity:v4.0',
+  'public-panama-vessel-identity-fishing:v20211126': 'public-vms-pan-vessel-identity:v4.0',
+  'public-norway-vessel-identity-non-fishing:v20220112': 'public-nor-vessel-identity:v4.0',
+  'public-norway-vessel-identity-fishing:v20220112': 'public-vms-nor-vessel-identity:v4.0',
+  'public-ecuador-vessel-identity-non-fishing:v20211126': 'public-vms-ecu-vessel-identity:v4.0',
+  'public-ecuador-vessel-identity-fishing:v20211126': 'public-vms-ecu-vessel-identity:v4.0',
+  'public-costa-rica-vessel-identity-vessels:v20211126': 'public-vms-cri-vessel-identity:v4.0',
+  'public-chile-vessel-identity-non-fishing:v20211126': 'public-vms-chl-vessel-identity:v4.0',
+  'public-chile-vessel-identity-fishing:v20211126': 'public-vms-chl-vessel-identity:v4.0',
+  'public-brazil-opentuna-vessel-identity-fishing:v20210311': 'public-vms-bra-vessel-identity:v4.0',
+  'public-bra-onyxsat-vessel-identity-fishing:v20211126': 'public-vms-bra-vessel-identity:v4.0',
+  'public-belize-vessel-identity-fishing:v20220304': 'public-vms-blz-vessel-identity:v4.0',
+  'private-peru-vessel-identity-fishing:v20211126': 'private-vms-per-vessel-identity:v4.0',
+  'private-panama-vessel-identity-non-fishing:v20211126': 'private-vms-pan-vessel-identity:v4.0',
+  'private-panama-vessel-identity-fishing:v20211126': 'private-vms-pan-vessel-identity:v4.0',
+  'private-ecuador-vessel-identity-non-fishing:v20211126': 'private-vms-ecu-vessel-identity:v4.0',
+  'private-ecuador-vessel-identity-fishing:v20211126': 'private-vms-ecu-vessel-identity:v4.0',
+  'private-costa-rica-vessel-identity-vessels:v20211126': 'private-vms-cri-vessel-identity:v4.0',
+  'private-brazil-opentuna-vessel-identity-fishing:v20210311':
+    'private-vms-bra-vessel-identity:v4.0',
+  'private-bra-onyxsat-vessel-identity-non-fishing:v20211126':
+    'private-vms-bra-vessel-identity:v4.0',
+  'private-bra-onyxsat-vessel-identity-fishing:v20211126': 'private-vms-bra-vessel-identity:v4.0',
+  'private-belize-vessel-identity-non-fishing:v20220304': 'private-vms-blz-vessel-identity:v4.0',
+  'private-belize-vessel-identity-fishing:v20220304': 'private-vms-blz-vessel-identity:v4.0',
+}
+
 export const EVENTS_LEGACY_VESSELS_DATASETS_DICT = {
   'public-global-fishing-events:v20201001': 'public-global-fishing-events:v20231026',
   'public-global-loitering-events-carriers:v20201001': 'public-global-loitering-events:v20231026',
@@ -112,6 +141,10 @@ export const ALL_LEGACY_VESSELS_DATASETS_DICT: Record<string, string> = {
   ...AIS_LEGACY_FISHING_EFFORT_DATASETS_DICT,
   ...AIS_LEGACY_VESSELS_DATASETS_DICT,
   ...VMS_LEGACY_VESSELS_DATASETS_DICT,
+  // Date added: February 2026
+  // Release: Country VMS + pipe 4
+  // Changelog: v4 Added VMS_V2_LEGACY_VESSELS_DATASETS_DICT
+  ...VMS_V2_LEGACY_VESSELS_DATASETS_DICT,
 }
 
 export const ALL_LEGACY_EVENTS_DATASETS_DICT: Record<string, string> = {
