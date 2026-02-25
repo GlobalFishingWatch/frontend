@@ -1773,8 +1773,9 @@
       "source_fleet": {
         "keyword": "crwdns110626:0crwdne110626:0",
         "enum": {
-          "PALANGRE": "crwdns111792:0crwdne111792:0",
-          "ARRASTRE": "crwdns111794:0crwdne111794:0"
+          "INTERNATIONAL": "crwdns112484:0crwdne112484:0",
+          "LONGLINE": "crwdns112486:0crwdne112486:0",
+          "TRAWLER": "crwdns112488:0crwdne112488:0"
         }
       },
       "distance_from_port_km": {
@@ -1867,8 +1868,9 @@
       "source_fleet": {
         "keyword": "crwdns110728:0crwdne110728:0",
         "enum": {
-          "PALANGRE": "crwdns111798:0crwdne111798:0",
-          "ARRASTRE": "crwdns111800:0crwdne111800:0"
+          "INTERNATIONAL": "crwdns112490:0crwdne112490:0",
+          "LONGLINE": "crwdns112492:0crwdne112492:0",
+          "TRAWLER": "crwdns112494:0crwdne112494:0"
         }
       }
     }
@@ -4681,8 +4683,7 @@
       "source_fleet": {
         "keyword": "crwdns112222:0crwdne112222:0",
         "enum": {
-          "PALANGRE": "crwdns112224:0crwdne112224:0",
-          "ARRASTRE": "crwdns112226:0crwdne112226:0"
+          "INTERNATIONAL": "crwdns112496:0crwdne112496:0"
         }
       },
       "distance_from_port_km": {
@@ -4718,8 +4719,7 @@
       "source_fleet": {
         "keyword": "crwdns112264:0crwdne112264:0",
         "enum": {
-          "PALANGRE": "crwdns112266:0crwdne112266:0",
-          "ARRASTRE": "crwdns112268:0crwdne112268:0"
+          "INTERNATIONAL": "crwdns112498:0crwdne112498:0"
         }
       }
     }
