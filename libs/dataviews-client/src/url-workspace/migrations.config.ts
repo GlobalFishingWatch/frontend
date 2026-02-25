@@ -144,7 +144,7 @@ export const ALL_LEGACY_VESSELS_DATASETS_DICT: Record<string, string> = {
   // Date added: February 2026
   // Release: Country VMS + pipe 4
   // Changelog: v4 Added VMS_V2_LEGACY_VESSELS_DATASETS_DICT
-  ...VMS_V2_LEGACY_VESSELS_DATASETS_DICT,
+  // ...VMS_V2_LEGACY_VESSELS_DATASETS_DICT,
 }
 
 export const ALL_LEGACY_EVENTS_DATASETS_DICT: Record<string, string> = {
