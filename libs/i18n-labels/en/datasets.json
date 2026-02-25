@@ -2954,7 +2954,7 @@
     }
   },
   "public-global-ais-ports": {
-    "name": "Ports v1 for AIS v4",
+    "name": "Ports (AIS)",
     "description": "Named ports v1",
     "schema": {
       "name": "name",
@@ -3404,7 +3404,7 @@
     }
   },
   "public-global-vms-ports": {
-    "name": "Ports v1 for AIS v4",
+    "name": "Ports (VMS)",
     "description": "Named ports v1",
     "schema": {
       "name": "name",
