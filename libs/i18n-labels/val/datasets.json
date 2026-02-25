@@ -1348,9 +1348,9 @@
       "speed": "crwdns110218:0crwdne110218:0",
       "bearing": "crwdns110220:0crwdne110220:0",
       "prod_shiptype": {
-        "keyword": "crwdns111756:0crwdne111756:0",
+        "keyword": "crwdns112440:0crwdne112440:0",
         "enum": {
-          "FISHING": "crwdns111758:0crwdne111758:0"
+          "FISHING": "crwdns112442:0crwdne112442:0"
         }
       },
       "distance_from_port_km": {
@@ -1441,14 +1441,14 @@
       },
       "bearing": "crwdns110314:0crwdne110314:0",
       "prod_shiptype": {
-        "keyword": "crwdns111766:0crwdne111766:0",
+        "keyword": "crwdns112444:0crwdne112444:0",
         "enum": {
-          "FISHING": "crwdns111768:0crwdne111768:0",
-          "NON_FISHING": "crwdns111770:0crwdne111770:0",
-          "SUPPORT": "crwdns111772:0crwdne111772:0",
-          "CARRIER": "crwdns111774:0crwdne111774:0",
-          "RESEARCH": "crwdns111776:0crwdne111776:0",
-          "": "crwdns111778:0crwdne111778:0"
+          "FISHING": "crwdns112446:0crwdne112446:0",
+          "NON_FISHING": "crwdns112448:0crwdne112448:0",
+          "SUPPORT": "crwdns112450:0crwdne112450:0",
+          "CARRIER": "crwdns112452:0crwdne112452:0",
+          "RESEARCH": "crwdns112454:0crwdne112454:0",
+          "": "crwdns112456:0crwdne112456:0"
         }
       }
     }
@@ -4582,9 +4582,9 @@
       "speed": "crwdns112120:0crwdne112120:0",
       "bearing": "crwdns112122:0crwdne112122:0",
       "prod_shiptype": {
-        "keyword": "crwdns112124:0crwdne112124:0",
+        "keyword": "crwdns112458:0crwdne112458:0",
         "enum": {
-          "FISHING": "crwdns112126:0crwdne112126:0"
+          "FISHING": "crwdns112460:0crwdne112460:0"
         }
       },
       "distance_from_port_km": {
@@ -4757,7 +4757,7 @@
       "source_fleet": {
         "keyword": "crwdns112298:0crwdne112298:0",
         "enum": {
-          "NOT DEFINED": "crwdns112300:0crwdne112300:0"
+          "NOT DEFINED": "crwdns112462:0crwdne112462:0"
         }
       },
       "distance_from_port_km": {
