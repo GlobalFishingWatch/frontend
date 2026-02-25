@@ -53,10 +53,12 @@ export const PROTECTED_SEAS_DATAVIEW_SLUG = 'protected-seas' as const
 export const MPATLAS_DATAVIEW_SLUG = 'mpatlas' as const
 export const GRATICULES_DATAVIEW_SLUG = 'graticules' as const
 export const FIXED_SAR_INFRASTRUCTURE = 'fixed-infrastructure' as const
-export const PORTS_DATAVIEW_SLUG = 'ports' as const
+export const PORTS_AIS_DATAVIEW_SLUG = 'ais-ports' as const
+export const PORTS_VMS_DATAVIEW_SLUG = 'vms-ports' as const
 export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas' as const
 export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas' as const
-export const PORTS_FOOTPRINT_DATAVIEW_SLUG = 'ports-footprint' as const
+export const PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG = 'ais-ports-footprint' as const
+export const PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG = 'vms-ports-footprint' as const
 export const CURRENTS_DATAVIEW_SLUG = 'currents' as const
 export const WINDS_DATAVIEW_SLUG = 'winds' as const
 export const BATHYMETRY_CONTOUR_DATAVIEW_SLUG = 'bathymetry-contour' as const
@@ -156,8 +158,10 @@ export const CONTEXT_LAYERS_DATAVIEWS = [
   FAO_AREAS_DATAVIEW_SLUG,
   BASEMAP_LABELS_DATAVIEW_SLUG,
   FIXED_SAR_INFRASTRUCTURE,
-  PORTS_DATAVIEW_SLUG,
-  PORTS_FOOTPRINT_DATAVIEW_SLUG,
+  PORTS_AIS_DATAVIEW_SLUG,
+  PORTS_VMS_DATAVIEW_SLUG,
+  PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG,
+  PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG,
 ]
 
 // Global environmental dataviews
