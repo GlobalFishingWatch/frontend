@@ -140,22 +140,22 @@ const workspace: Workspace<WorkspaceState> = {
       config: { visible: false },
     },
     ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,
-    {
-      id: `${PORTS_LAYER_ID}-ais`,
-      config: {
-        visible: false,
-        color: '#9AEEFF',
-      },
-      dataviewId: PORTS_AIS_DATAVIEW_SLUG,
-    },
-    {
-      id: `${PORTS_LAYER_ID}-vms`,
-      config: {
-        visible: false,
-        color: '#9AEEFF',
-      },
-      dataviewId: PORTS_VMS_DATAVIEW_SLUG,
-    },
+    // {
+    //   id: `${PORTS_LAYER_ID}-ais`,
+    //   config: {
+    //     visible: false,
+    //     color: '#9AEEFF',
+    //   },
+    //   dataviewId: PORTS_AIS_DATAVIEW_SLUG,
+    // },
+    // {
+    //   id: `${PORTS_LAYER_ID}-vms`,
+    //   config: {
+    //     visible: false,
+    //     color: '#9AEEFF',
+    //   },
+    //   dataviewId: PORTS_VMS_DATAVIEW_SLUG,
+    // },
     {
       id: BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
       config: {
