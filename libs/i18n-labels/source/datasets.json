@@ -1914,7 +1914,10 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
-          "NOT DEFINED": "NOT DEFINED"
+          "INDUSTRIAL": "INDUSTRIAL",
+          "SMALL-SCALE": "SMALL-SCALE",
+          "ARTISANAL": "ARTISANAL",
+          "": ""
         }
       },
       "distance_from_port_km": {
@@ -2016,7 +2019,8 @@
         "enum": {
           "INDUSTRIAL": "INDUSTRIAL",
           "SMALL-SCALE": "SMALL-SCALE",
-          "ARTISANAL": "ARTISANAL"
+          "ARTISANAL": "ARTISANAL",
+          "": ""
         }
       }
     }
