@@ -1347,12 +1347,6 @@
     "schema": {
       "speed": "speed",
       "bearing": "bearing",
-      "prod_shiptype": {
-        "keyword": "prod_shiptype",
-        "enum": {
-          "FISHING": "FISHING"
-        }
-      },
       "distance_from_port_km": {
         "keyword": "distance_from_port_km",
         "enum": {
@@ -1439,18 +1433,7 @@
           ">25": ">25"
         }
       },
-      "bearing": "bearing",
-      "prod_shiptype": {
-        "keyword": "prod_shiptype",
-        "enum": {
-          "FISHING": "FISHING",
-          "NON_FISHING": "NON_FISHING",
-          "SUPPORT": "SUPPORT",
-          "CARRIER": "CARRIER",
-          "RESEARCH": "RESEARCH",
-          "": ""
-        }
-      }
+      "bearing": "bearing"
     }
   },
   "private-vms-ecu-tracks": {
@@ -1931,7 +1914,10 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
-          "NOT DEFINED": "NOT DEFINED"
+          "INDUSTRIAL": "INDUSTRIAL",
+          "SMALL-SCALE": "SMALL-SCALE",
+          "ARTISANAL": "ARTISANAL",
+          "": ""
         }
       },
       "distance_from_port_km": {
@@ -2033,7 +2019,8 @@
         "enum": {
           "INDUSTRIAL": "INDUSTRIAL",
           "SMALL-SCALE": "SMALL-SCALE",
-          "ARTISANAL": "ARTISANAL"
+          "ARTISANAL": "ARTISANAL",
+          "": ""
         }
       }
     }
@@ -4581,12 +4568,6 @@
     "schema": {
       "speed": "speed",
       "bearing": "bearing",
-      "prod_shiptype": {
-        "keyword": "prod_shiptype",
-        "enum": {
-          "FISHING": "FISHING"
-        }
-      },
       "distance_from_port_km": {
         "keyword": "distance_from_port_km",
         "enum": {
@@ -4757,7 +4738,10 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
-          "NOT DEFINED": "NOT DEFINED"
+          "INDUSTRIAL": "INDUSTRIAL",
+          "SMALL-SCALE": "SMALL-SCALE",
+          "ARTISANAL": "ARTISANAL",
+          "": ""
         }
       },
       "distance_from_port_km": {
@@ -4802,7 +4786,8 @@
         "enum": {
           "INDUSTRIAL": "INDUSTRIAL",
           "SMALL-SCALE": "SMALL-SCALE",
-          "ARTISANAL": "ARTISANAL"
+          "ARTISANAL": "ARTISANAL",
+          "": ""
         }
       }
     }
