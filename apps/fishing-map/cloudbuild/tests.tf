@@ -100,6 +100,31 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
     }
 
     step {
+      id   = "ZIP the integration tests traces"
+      name = "ubuntu"
+      args = ["-c", <<EOF
+      zip -r traces.zip apps/fishing-map/test/integration
+      EOF
+      ]
+    }
+
+    step {
+      id   = "Upload tests traces"
+      name = "gcr.io/cloud-builders/gsutil"
+      args = ["-m", "cp", "-r", "traces.zip", "gs://gfw-playwright-traces-ttl30/frontend/integration-tests/$BUILD_ID/"]
+    }
+
+    step {
+      id         = "Print traces link"
+      name       = "gcr.io/cloud-builders/gcloud"
+      entrypoint = "bash"
+      args = ["-c", <<EOF
+      echo '📊 Integration Tests Traces: https://storage.googleapis.com/gfw-playwright-traces-ttl30/frontend/integration-tests/$BUILD_ID/traces.zip'
+      EOF
+      ]
+    }
+
+    step {
       id         = "create-token"
       name       = "ubuntu"
       entrypoint = "bash"
@@ -183,6 +208,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
         echo "PR found: #$$PR_NUMBER"
         
         # Prepare comment body
+        echo "📊 Integration Tests Traces [here](https://storage.googleapis.com/gfw-playwright-traces-ttl30/frontend/integration-tests/$BUILD_ID/traces.zip)" >> /workspace/summary.txt
         COMMENT_MARKER="<!-- integration-tests-bot-comment -->"
         FOOTER="Posted by [this build](https://console.cloud.google.com/cloud-build/builds;region=us-central1/$BUILD_ID?project=gfw-int-infrastructure)"
         jq -n --rawfile summary /workspace/summary.txt --arg footer "$$FOOTER" --arg marker "$$COMMENT_MARKER" \
