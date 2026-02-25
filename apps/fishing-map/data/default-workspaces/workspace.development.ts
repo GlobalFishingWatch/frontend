@@ -1,9 +1,5 @@
 import type { Workspace } from '@globalfishingwatch/api-types'
-import {
-  DataviewCategory,
-  WORKSPACE_PRIVATE_ACCESS,
-  WORKSPACE_PUBLIC_ACCESS,
-} from '@globalfishingwatch/api-types'
+import { WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
 import {
@@ -33,7 +29,8 @@ import {
   FISHING_DATAVIEW_SLUG_VMS,
   FIXED_SAR_INFRASTRUCTURE,
   GRATICULES_DATAVIEW_SLUG,
-  PORTS_DATAVIEW_SLUG,
+  PORTS_AIS_DATAVIEW_SLUG,
+  PORTS_VMS_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
   SENTINEL2_DATAVIEW_SLUG,
@@ -163,12 +160,20 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: FIXED_SAR_INFRASTRUCTURE,
     },
     {
-      id: PORTS_LAYER_ID,
+      id: `${PORTS_LAYER_ID}-ais`,
       config: {
         visible: false,
         color: '#9AEEFF',
       },
-      dataviewId: PORTS_DATAVIEW_SLUG,
+      dataviewId: PORTS_AIS_DATAVIEW_SLUG,
+    },
+    {
+      id: `${PORTS_LAYER_ID}-vms`,
+      config: {
+        visible: false,
+        color: '#9AEEFF',
+      },
+      dataviewId: PORTS_VMS_DATAVIEW_SLUG,
     },
     {
       id: BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,

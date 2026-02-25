@@ -3,6 +3,7 @@ import { createSelector } from '@reduxjs/toolkit'
 import type { DataviewDatasetConfig } from '@globalfishingwatch/api-types'
 import { DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import { VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
 import {
   mergeWorkspaceUrlDataviewInstances,
   type UrlDataviewInstance,
@@ -14,7 +15,8 @@ import { VESSEL_PROFILE_DATAVIEWS_INSTANCES } from 'data/default-workspaces/cont
 import { LIBRARY_LAYERS } from 'data/layer-library'
 import {
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
-  PORTS_FOOTPRINT_DATAVIEW_SLUG,
+  PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG,
+  PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import {
   dataviewHasVesselGroupId,
@@ -34,6 +36,7 @@ import {
 } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS } from 'features/reports/reports.config'
 import {
+  selectPortReportDatasetId,
   selectReportCategorySelector,
   selectReportComparisonDataviewIds,
   selectReportEventsGraph,
@@ -223,17 +226,25 @@ export const selectVGRDataviewInstancesInjected = createSelector(
 // Inject dataviews on the fly for reports and vessel profile
 // Also for the vessel profile encounter events to see encountered vessel track
 export const selectPortReportDataviewInstancesInjected = createSelector(
-  [selectWorkspaceDataviewInstancesMerged, selectIsPortReportLocation, selectReportPortId],
+  [
+    selectWorkspaceDataviewInstancesMerged,
+    selectIsPortReportLocation,
+    selectReportPortId,
+    selectPortReportDatasetId,
+  ],
   (
     workspaceDataviewInstancesMerged,
     isPortReportLocation,
-    reportPortId
+    reportPortId,
+    portReportDatasetId
   ): UrlDataviewInstance[] | undefined => {
     const dataviewInstancesInjected = [] as UrlDataviewInstance[]
 
     if (isPortReportLocation) {
       let footprintDataviewInstance = workspaceDataviewInstancesMerged?.find(
-        (dataview) => dataview.id === PORTS_FOOTPRINT_DATAVIEW_SLUG
+        (dataview) =>
+          dataview.id === PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG ||
+          dataview.id === PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG
       )
       if (footprintDataviewInstance) {
         footprintDataviewInstance.config = {
@@ -244,9 +255,13 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
           },
         }
       } else {
+        const dataviewId = portReportDatasetId?.includes(VMS_DATASET_ID)
+          ? PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG
+          : PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG
+
         footprintDataviewInstance = {
-          id: `${PORTS_FOOTPRINT_DATAVIEW_SLUG}-${Date.now()}`,
-          dataviewId: PORTS_FOOTPRINT_DATAVIEW_SLUG,
+          id: `${PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG}-${Date.now()}`,
+          dataviewId,
           config: {
             pickable: false,
             visible: true,
