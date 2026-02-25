@@ -4,7 +4,9 @@ import {
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   EEZ_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
+  FISHING_DATAVIEW_SLUG_AIS,
   FISHING_DATAVIEW_SLUG_ALL,
+  FISHING_DATAVIEW_SLUG_VMS,
   MPA_DATAVIEW_SLUG,
   PORTS_AIS_DATAVIEW_SLUG,
   PORTS_VMS_DATAVIEW_SLUG,
@@ -17,9 +19,9 @@ import {
 } from './workspaces'
 
 export const LEGACY_TO_LATEST_DATAVIEWS: Record<string, string> = {
-  'apparent-fishing-effort-ais-v-3': FISHING_DATAVIEW_SLUG_ALL,
+  'apparent-fishing-effort-ais-v-3': FISHING_DATAVIEW_SLUG_AIS,
   'apparent-fishing-effort-v-3': FISHING_DATAVIEW_SLUG_ALL,
-  'apparent-fishing-effort-vms-v-3': FISHING_DATAVIEW_SLUG_ALL,
+  'apparent-fishing-effort-vms-v-3': FISHING_DATAVIEW_SLUG_VMS,
   'apparent-fishing-effort': FISHING_DATAVIEW_SLUG_ALL,
   'encounter-cluster-events-v-3': CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   'encounter-cluster-events': CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
