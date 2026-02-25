@@ -14,6 +14,8 @@ export const PRIVATE_SUPPORTED_GROUPS = [
   'Ecuador',
   'Indonesia',
   'Mexico',
+  'Norway',
+  'Montenegro',
   'Panama',
   'Papua New Guinea',
   'Peru',
