@@ -266,7 +266,7 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
             pickable: false,
             visible: true,
             filters: {
-              gfw_id: [reportPortId],
+              port_id: [reportPortId],
             },
           },
         }
