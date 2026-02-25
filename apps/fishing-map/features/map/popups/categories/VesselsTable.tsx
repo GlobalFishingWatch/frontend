@@ -238,7 +238,9 @@ function VesselsTable({
                       <span>{vesselFlag || EMPTY_FIELD_PLACEHOLDER}</span>
                     </Tooltip>
                   </td>
-                  {!linkToSkylight && <td className={styles.columnSpace}>{vesselType}</td>}
+                  {!linkToSkylight && (
+                    <td className={styles.columnSpace}>{vesselType || EMPTY_FIELD_PLACEHOLDER}</td>
+                  )}
                   {isHoursProperty && (
                     <td className={styles.columnSpace}>
                       <Tooltip content={getDatasetLabel(vessel.infoDataset)}>
