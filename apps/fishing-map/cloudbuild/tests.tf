@@ -100,10 +100,11 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
     }
 
     step {
-      id   = "ZIP the integration tests traces"
-      name = "ubuntu"
+      id         = "Archive the integration tests traces"
+      name       = "alpine"
+      entrypoint = "sh"
       args = ["-c", <<EOF
-      zip -r traces.zip apps/fishing-map/test/integration
+      tar -czf traces.tar.gz apps/fishing-map/test/integration
       EOF
       ]
     }
@@ -111,7 +112,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
     step {
       id   = "Upload tests traces"
       name = "gcr.io/cloud-builders/gsutil"
-      args = ["-m", "cp", "-r", "traces.zip", "gs://gfw-playwright-traces-ttl30/frontend/integration-tests/$BUILD_ID/"]
+      args = ["-m", "cp", "-r", "traces.tar.gz", "gs://gfw-playwright-traces-ttl30/frontend/integration-tests/$BUILD_ID/"]
     }
 
     step {
@@ -119,7 +120,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
       name       = "gcr.io/cloud-builders/gcloud"
       entrypoint = "bash"
       args = ["-c", <<EOF
-      echo '📊 Integration Tests Traces: https://storage.googleapis.com/gfw-playwright-traces-ttl30/frontend/integration-tests/$BUILD_ID/traces.zip'
+      echo '📊 Integration Tests Traces: https://storage.googleapis.com/gfw-playwright-traces-ttl30/frontend/integration-tests/$BUILD_ID/traces.tar.gz'
       EOF
       ]
     }
@@ -208,7 +209,8 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
         echo "PR found: #$$PR_NUMBER"
         
         # Prepare comment body
-        echo "📊 Integration Tests Traces [here](https://storage.googleapis.com/gfw-playwright-traces-ttl30/frontend/integration-tests/$BUILD_ID/traces.zip)" >> /workspace/summary.txt
+        echo "" >> /workspace/summary.txt
+        echo "📊 Integration Tests Traces [here](https://storage.googleapis.com/gfw-playwright-traces-ttl30/frontend/integration-tests/$BUILD_ID/traces.tar.gz)" >> /workspace/summary.txt
         COMMENT_MARKER="<!-- integration-tests-bot-comment -->"
         FOOTER="Posted by [this build](https://console.cloud.google.com/cloud-build/builds;region=us-central1/$BUILD_ID?project=gfw-int-infrastructure)"
         jq -n --rawfile summary /workspace/summary.txt --arg footer "$$FOOTER" --arg marker "$$COMMENT_MARKER" \
