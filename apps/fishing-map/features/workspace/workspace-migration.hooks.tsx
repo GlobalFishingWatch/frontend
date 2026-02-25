@@ -237,17 +237,18 @@ export const useMigrateWorkspaceToast = () => {
     console.log(deprecatedDatasets)
   })
 
-  useEffect(() => {
-    if (hasDeprecatedDataviews) {
-      toastId.current = toast(<ToastContent loading={false} />, {
-        toastId: 'migrateWorkspace',
-        autoClose: false,
-      })
-      onDeprecatedDataviewsChange()
-      return () => {
-        closeToast()
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasDeprecatedDataviews])
+  // TODO: VMS COUNTRY RELEASE NEEDS FIX BEFORE ENABLING IT
+  // useEffect(() => {
+  //   if (hasDeprecatedDataviews) {
+  //     toastId.current = toast(<ToastContent loading={false} />, {
+  //       toastId: 'migrateWorkspace',
+  //       autoClose: false,
+  //     })
+  //     onDeprecatedDataviewsChange()
+  //     return () => {
+  //       closeToast()
+  //     }
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [hasDeprecatedDataviews])
 }
