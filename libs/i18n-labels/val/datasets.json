@@ -1347,12 +1347,6 @@
     "schema": {
       "speed": "crwdns110218:0crwdne110218:0",
       "bearing": "crwdns110220:0crwdne110220:0",
-      "prod_shiptype": {
-        "keyword": "crwdns112440:0crwdne112440:0",
-        "enum": {
-          "FISHING": "crwdns112442:0crwdne112442:0"
-        }
-      },
       "distance_from_port_km": {
         "keyword": "crwdns110222:0crwdne110222:0",
         "enum": {
@@ -1439,18 +1433,7 @@
           ">25": "crwdns110312:0crwdne110312:0"
         }
       },
-      "bearing": "crwdns110314:0crwdne110314:0",
-      "prod_shiptype": {
-        "keyword": "crwdns112444:0crwdne112444:0",
-        "enum": {
-          "FISHING": "crwdns112446:0crwdne112446:0",
-          "NON_FISHING": "crwdns112448:0crwdne112448:0",
-          "SUPPORT": "crwdns112450:0crwdne112450:0",
-          "CARRIER": "crwdns112452:0crwdne112452:0",
-          "RESEARCH": "crwdns112454:0crwdne112454:0",
-          "": "crwdns112456:0crwdne112456:0"
-        }
-      }
+      "bearing": "crwdns110314:0crwdne110314:0"
     }
   },
   "private-vms-ecu-tracks": {
@@ -1931,7 +1914,10 @@
       "source_fleet": {
         "keyword": "crwdns110852:0crwdne110852:0",
         "enum": {
-          "NOT DEFINED": "crwdns111806:0crwdne111806:0"
+          "INDUSTRIAL": "crwdns112464:0crwdne112464:0",
+          "SMALL-SCALE": "crwdns112466:0crwdne112466:0",
+          "ARTISANAL": "crwdns112468:0crwdne112468:0",
+          "": "crwdns112470:0crwdne112470:0"
         }
       },
       "distance_from_port_km": {
@@ -2033,7 +2019,8 @@
         "enum": {
           "INDUSTRIAL": "crwdns110966:0crwdne110966:0",
           "SMALL-SCALE": "crwdns110968:0crwdne110968:0",
-          "ARTISANAL": "crwdns110970:0crwdne110970:0"
+          "ARTISANAL": "crwdns110970:0crwdne110970:0",
+          "": "crwdns112472:0crwdne112472:0"
         }
       }
     }
@@ -4581,12 +4568,6 @@
     "schema": {
       "speed": "crwdns112120:0crwdne112120:0",
       "bearing": "crwdns112122:0crwdne112122:0",
-      "prod_shiptype": {
-        "keyword": "crwdns112458:0crwdne112458:0",
-        "enum": {
-          "FISHING": "crwdns112460:0crwdne112460:0"
-        }
-      },
       "distance_from_port_km": {
         "keyword": "crwdns112128:0crwdne112128:0",
         "enum": {
@@ -4757,7 +4738,10 @@
       "source_fleet": {
         "keyword": "crwdns112298:0crwdne112298:0",
         "enum": {
-          "NOT DEFINED": "crwdns112462:0crwdne112462:0"
+          "INDUSTRIAL": "crwdns112474:0crwdne112474:0",
+          "SMALL-SCALE": "crwdns112476:0crwdne112476:0",
+          "ARTISANAL": "crwdns112478:0crwdne112478:0",
+          "": "crwdns112480:0crwdne112480:0"
         }
       },
       "distance_from_port_km": {
@@ -4802,7 +4786,8 @@
         "enum": {
           "INDUSTRIAL": "crwdns112346:0crwdne112346:0",
           "SMALL-SCALE": "crwdns112348:0crwdne112348:0",
-          "ARTISANAL": "crwdns112350:0crwdne112350:0"
+          "ARTISANAL": "crwdns112350:0crwdne112350:0",
+          "": "crwdns112482:0crwdne112482:0"
         }
       }
     }
