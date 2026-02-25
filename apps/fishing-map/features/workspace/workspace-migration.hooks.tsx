@@ -12,6 +12,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectWorkspaceWithCurrentState } from 'features/app/selectors/app.workspace.selectors'
 import { fetchDatasetsByIdsThunk, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
+import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
 import {
   selectDeprecatedDataviewInstances,
   selectHasDeprecatedDataviewInstances,
@@ -75,7 +76,7 @@ export const useMigrateWorkspace = () => {
           if (vesselInfo && deprecatedDatasets[vesselInfo]) {
             datasetsConfigMigration[vesselInfo] = deprecatedDatasets[vesselInfo]
           }
-          const vesselTrack = dataviewInstance.config?.info
+          const vesselTrack = dataviewInstance.config?.track
           if (vesselTrack && deprecatedDatasets[vesselTrack]) {
             datasetsConfigMigration[vesselTrack] = deprecatedDatasets[vesselTrack]
           }
@@ -103,7 +104,9 @@ export const useMigrateWorkspace = () => {
           }
         }
       )
+      const newDataviewIds = dataviewInstancesToMigrate.flatMap((d) => d.dataviewId || [])
       await dispatch(fetchDatasetsByIdsThunk({ ids: Object.values(deprecatedDatasets) }))
+      await dispatch(fetchDataviewsByIdsThunk(newDataviewIds))
       if (dataviewInstancesToMigrate.length) {
         upsertDataviewInstance(dataviewInstancesToMigrate)
       }
