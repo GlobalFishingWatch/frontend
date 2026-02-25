@@ -1,6 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { kebabCase, uniqBy } from 'es-toolkit'
+import { kebabCase, uniq, uniqBy } from 'es-toolkit'
 import { stringify } from 'qs'
 
 import {
@@ -39,7 +39,7 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
   async (ids: (Dataview['id'] | Dataview['slug'])[], { signal, rejectWithValue, getState }) => {
     const state = getState() as DataviewsSliceState
     const existingIds = selectIds(state) as (number | string)[]
-    const uniqIds = ids.filter((id) => !existingIds.includes(id))
+    const uniqIds = uniq(ids.filter((id) => !existingIds.includes(id)))
 
     let mockedDataviews = [] as Dataview[]
     if (USE_MOCKED_DATAVIEWS && !mockedDataviewsImported) {
