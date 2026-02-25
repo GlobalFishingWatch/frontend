@@ -1,6 +1,6 @@
 .sourceSelector {
   padding-top: var(--space-M);
-  padding-inline: var(--space-L);
+  padding-inline: var(--space-M);
   padding-bottom: 0;
 }
 
@@ -9,8 +9,7 @@ div.modalContent {
 }
 
 .content {
-  padding: var(--space-L);
-  padding-top: var(--space-M);
+  padding: var(--space-M);
   font: var(--font-S);
 }
 

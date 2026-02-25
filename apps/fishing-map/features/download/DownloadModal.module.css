@@ -1,6 +1,9 @@
 .modalContent {
   height: 100%;
   padding: 0;
+  margin: var(--space-S);
+  border-radius: var(--border-radius-1);
+  box-shadow: var(--box-shadow-1);
 }
 
 .container {
@@ -34,6 +37,7 @@
   background-image: url('../../assets/images/download-popup.jpg');
   background-size: cover;
   transition: height 300ms ease-in-out;
+  border-radius: 0 0 var(--border-radius-1) var(--border-radius-1);
 }
 
 .downloadFooterContainer.open {
