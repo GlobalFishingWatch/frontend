@@ -1756,8 +1756,9 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
-          "PALANGRE": "PALANGRE",
-          "ARRASTRE": "ARRASTRE"
+          "INTERNATIONAL": "INTERNATIONAL",
+          "LONGLINE": "LONGLINE",
+          "TRAWLER": "TRAWLER"
         }
       },
       "distance_from_port_km": {
@@ -1850,8 +1851,9 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
-          "PALANGRE": "PALANGRE",
-          "ARRASTRE": "ARRASTRE"
+          "INTERNATIONAL": "INTERNATIONAL",
+          "LONGLINE": "LONGLINE",
+          "TRAWLER": "TRAWLER"
         }
       }
     }
@@ -4662,8 +4664,7 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
-          "PALANGRE": "PALANGRE",
-          "ARRASTRE": "ARRASTRE"
+          "INTERNATIONAL": "INTERNATIONAL"
         }
       },
       "distance_from_port_km": {
@@ -4699,8 +4700,7 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
-          "PALANGRE": "PALANGRE",
-          "ARRASTRE": "ARRASTRE"
+          "INTERNATIONAL": "INTERNATIONAL"
         }
       }
     }
