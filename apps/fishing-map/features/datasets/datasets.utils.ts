@@ -306,6 +306,15 @@ const getDatasetsInDataview = (
   let datasetIds: string[] = (dataview.datasetsConfig || []).flatMap(
     ({ datasetId }) => datasetId || []
   )
+  if (dataview.config?.info) {
+    datasetIds.push(dataview.config.info)
+  }
+  if (dataview.config?.track) {
+    datasetIds.push(dataview.config.track)
+  }
+  if (dataview.config?.events?.length) {
+    datasetIds.push(...dataview.config.events)
+  }
   const datasetsConfigMigration = (dataview as DataviewInstance).datasetsConfigMigration || {}
   if (Object.values(datasetsConfigMigration).length) {
     datasetIds = [...datasetIds, ...Object.values(datasetsConfigMigration)]
