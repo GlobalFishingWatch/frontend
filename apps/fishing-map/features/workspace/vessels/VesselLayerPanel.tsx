@@ -25,6 +25,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { PRIVATE_ICON } from 'data/config'
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
+import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import {
   getSchemaFiltersInDataview,
   isGFWOnlyDataset,
@@ -133,6 +134,7 @@ function VesselLayerPanel({
   const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
   const workspace = useSelector(selectWorkspace)
+  const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const infoResource: Resource<IdentityVessel> = useSelector(
     selectResourceByUrl<IdentityVessel>(infoUrl)
   )
@@ -355,13 +357,18 @@ function VesselLayerPanel({
                   searchOption: 'advanced',
                   query: getVesselProperty(vesselData, 'shipname'),
                   ssvid: getVesselProperty(vesselData, 'ssvid'),
-                  flag: [getVesselProperty(vesselData, 'flag')],
+                  sources: deprecatedDatasets[vesselData.dataset]
+                    ? [deprecatedDatasets[vesselData.dataset]]
+                    : undefined,
+                  flag: getVesselProperty(vesselData, 'flag')
+                    ? [getVesselProperty(vesselData, 'flag')]
+                    : undefined,
                 },
               }}
             >
               <IconButton
                 icon="warning"
-                type="warning"
+                type="warning-invert"
                 size="small"
                 tooltip={t((t) => t.workspace.deprecatedVesselLayer)}
               />
@@ -371,7 +378,7 @@ function VesselLayerPanel({
             <IconButton
               size="small"
               icon="warning"
-              type="warning"
+              type="warning-invert"
               disabled
               tooltip={`${t((t) => t.errors.vesselLoading)} (${vesselId})`}
               tooltipPlacement="top"
@@ -395,8 +402,12 @@ function VesselLayerPanel({
                 : 'more'
               : undefined
           }
-          type={infoError || trackError || showDeprecatedWarning ? 'warning' : 'default'}
-          loading={trackLoading}
+          type={
+            layerActive && (infoError || trackError || showDeprecatedWarning)
+              ? 'warning-invert'
+              : 'default'
+          }
+          loading={!showDeprecatedWarning && trackLoading}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />

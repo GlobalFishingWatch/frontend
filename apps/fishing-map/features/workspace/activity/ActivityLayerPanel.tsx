@@ -4,10 +4,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
-import {
-  isDetectionsDataview,
-  type UrlDataviewInstance,
-} from '@globalfishingwatch/dataviews-client'
+import { type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
@@ -22,10 +19,10 @@ import {
   getDatasetTitleByDataview,
   getSchemaFiltersInDataview,
 } from 'features/datasets/datasets.utils'
+import { useMigrateToLatestDataview } from 'features/dataviews/dataviews.hooks'
 import Hint from 'features/help/Hint'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
 import { useActivityDataviewId } from 'features/map/map-layers.hooks'
-import { setModalOpen } from 'features/modals/modals.slice'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import ActivityAuxiliaryLayerPanel from 'features/workspace/activity/ActivityAuxiliaryLayer'
 import TurningTidesTags from 'features/workspace/activity/TurningTidesTags'
@@ -86,6 +83,7 @@ function ActivityLayerPanel({
   const activityLayer = useGetDeckLayer<FourwingsLayer>(dataviewId)
   const layerLoaded = activityLayer?.loaded
   const layerError = activityLayer?.instance?.getError?.()
+  const { migrateToLatestDataviewInstance } = useMigrateToLatestDataview()
 
   // TODO remove when final decission on stats display is taken
   // const urlTimeRange = useSelector(selectUrlTimeRange)
@@ -170,15 +168,7 @@ function ActivityLayerPanel({
   }
 
   const onUpdateDeprecatedLayerClick = () => {
-    dispatch(
-      setModalOpen({
-        id: 'layerLibrary',
-        open: isDetectionsDataview(dataview)
-          ? DataviewCategory.Detections
-          : DataviewCategory.Activity,
-        singleCategory: true,
-      })
-    )
+    migrateToLatestDataviewInstance(dataview)
   }
 
   const datasetTitle = getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
@@ -202,7 +192,7 @@ function ActivityLayerPanel({
       })}
     >
       <Fragment>
-        <div className={styles.header}>
+        <div className={cx(styles.header)}>
           <LayerSwitch
             onToggle={onLayerSwitchToggle}
             active={layerActive}
@@ -277,8 +267,8 @@ function ActivityLayerPanel({
             )}
             {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
               <IconButton
-                icon={'warning'}
-                type={'warning'}
+                icon="warning"
+                type="warning-invert"
                 onClick={showDeprecatedWarning ? onUpdateDeprecatedLayerClick : undefined}
                 tooltip={
                   showDeprecatedWarning
@@ -295,8 +285,10 @@ function ActivityLayerPanel({
             icon={
               layerActive ? (layerError || showDeprecatedWarning ? 'warning' : 'more') : undefined
             }
-            type={layerError || showDeprecatedWarning ? 'warning' : 'default'}
-            loading={layerActive && !layerLoaded}
+            type={
+              layerActive && (layerError || showDeprecatedWarning) ? 'warning-invert' : 'default'
+            }
+            loading={!showDeprecatedWarning && layerActive && !layerLoaded}
             className={cx('print-hidden', styles.shownUntilHovered)}
             size="small"
           />

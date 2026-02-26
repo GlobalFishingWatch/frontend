@@ -3,21 +3,20 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
+import { DatasetTypes } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useDeckLayerLoadedState, useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsClustersLayer } from '@globalfishingwatch/deck-layers'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
-import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import {
   getDatasetLabel,
   getSchemaFiltersInDataview,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
-import { setModalOpen } from 'features/modals/modals.slice'
+import { useMigrateToLatestDataview } from 'features/dataviews/dataviews.hooks'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
@@ -44,7 +43,6 @@ type EventsLayerPanelProps = {
 
 function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.ReactElement<any> {
   const { t } = useTranslation()
-  const dispatch = useAppDispatch()
   const layerActive = dataview?.config?.visible ?? true
   const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
@@ -54,6 +52,7 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
   const { filtersAllowed } = getSchemaFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
   })
+  const { migrateToLatestDataviewInstance } = useMigrateToLatestDataview()
   const isGFWUser = useSelector(selectIsGFWUser)
   const readOnly = useSelector(selectReadOnly)
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
@@ -97,13 +96,7 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
   }
 
   const onUpdateDeprecatedLayerClick = () => {
-    dispatch(
-      setModalOpen({
-        id: 'layerLibrary',
-        open: DataviewCategory.Events,
-        singleCategory: true,
-      })
-    )
+    migrateToLatestDataviewInstance(dataview)
   }
 
   if (!dataset || dataset.status === 'deleted') {
@@ -184,8 +177,8 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
           <Remove dataview={dataview} loading={layerActive && !layerLoaded} />
           {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
             <IconButton
-              icon={'warning'}
-              type={'warning'}
+              icon="warning"
+              type="warning-invert"
               onClick={showDeprecatedWarning ? onUpdateDeprecatedLayerClick : undefined}
               tooltip={
                 showDeprecatedWarning
@@ -211,8 +204,8 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
           icon={
             layerActive ? (layerError || showDeprecatedWarning ? 'warning' : 'more') : undefined
           }
-          type={layerError || showDeprecatedWarning ? 'warning' : 'default'}
-          loading={layerActive && !layerLoaded}
+          type={layerActive && (layerError || showDeprecatedWarning) ? 'warning-invert' : 'default'}
+          loading={!showDeprecatedWarning && layerActive && !layerLoaded}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />
