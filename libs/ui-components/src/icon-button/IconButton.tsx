@@ -19,6 +19,7 @@ export type IconButtonType =
   | 'map-tool'
   | 'warning'
   | 'warning-border'
+  | 'warning-invert'
   | 'solid'
 export type IconButtonSize = 'default' | 'medium' | 'small' | 'tiny'
 
