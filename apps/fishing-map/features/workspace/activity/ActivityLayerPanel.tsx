@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { DatasetTypes, DataviewCategory } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import { type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
@@ -19,7 +19,7 @@ import {
   getDatasetTitleByDataview,
   getSchemaFiltersInDataview,
 } from 'features/datasets/datasets.utils'
-import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { useMigrateToLatestDataview } from 'features/dataviews/dataviews.hooks'
 import Hint from 'features/help/Hint'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
 import { useActivityDataviewId } from 'features/map/map-layers.hooks'
@@ -30,7 +30,10 @@ import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import LayerProperties from 'features/workspace/shared/LayerProperties'
 import MapLegend from 'features/workspace/shared/MapLegend'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
+import {
+  selectIsTurningTidesWorkspace,
+  selectIsWorkspaceOwner,
+} from 'features/workspace/workspace.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
 
@@ -70,9 +73,9 @@ function ActivityLayerPanel({
   const { deleteDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const isGFWUser = useSelector(selectIsGFWUser)
+  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const hintsDismissed = useSelector(selectHintsDismissed)
-  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)
   const readOnly = useSelector(selectReadOnly)
   const layerActive = dataview?.config?.visible ?? true
@@ -80,6 +83,7 @@ function ActivityLayerPanel({
   const activityLayer = useGetDeckLayer<FourwingsLayer>(dataviewId)
   const layerLoaded = activityLayer?.loaded
   const layerError = activityLayer?.instance?.getError?.()
+  const { migrateToLatestDataviewInstance } = useMigrateToLatestDataview()
 
   // TODO remove when final decission on stats display is taken
   // const urlTimeRange = useSelector(selectUrlTimeRange)
@@ -163,12 +167,17 @@ function ActivityLayerPanel({
     setColorOpen(false)
   }
 
+  const onUpdateDeprecatedLayerClick = () => {
+    migrateToLatestDataviewInstance(dataview)
+  }
+
   const datasetTitle = getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
   const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings)
   const isTurningTidesDataset =
     dataset?.subcategory === 'user-interactive' &&
     dataset.description?.startsWith(TURNING_TIDES_DESCRIPTION_PREFIX)
   const showTurningTidesFilters = isTurningTidesDataset && isTurningTidesWorkspace
+  const showDeprecatedWarning = isWorkspaceOwner && dataview.deprecated
 
   const showFilters = isDefaultActivityDataview(dataview) || isDefaultDetectionsDataview(dataview)
   const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
@@ -183,11 +192,10 @@ function ActivityLayerPanel({
       })}
     >
       <Fragment>
-        <div className={styles.header}>
+        <div className={cx(styles.header)}>
           <LayerSwitch
             onToggle={onLayerSwitchToggle}
-            disabled={hasDeprecatedDataviewInstances}
-            active={layerActive && !hasDeprecatedDataviewInstances}
+            active={layerActive}
             className={styles.switch}
             dataview={dataview}
           />
@@ -196,7 +204,6 @@ function ActivityLayerPanel({
             className={styles.name}
             classNameActive={styles.active}
             dataview={dataview}
-            toggleVisibility={!hasDeprecatedDataviewInstances}
             onToggle={onLayerSwitchToggle}
           />
           <div
@@ -256,28 +263,32 @@ function ActivityLayerPanel({
               showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_SLUG}
             />
             {!readOnly && (
-              <Remove
-                onClick={onRemoveLayerClick}
-                loading={!hasDeprecatedDataviewInstances && layerActive && !layerLoaded}
-              />
+              <Remove onClick={onRemoveLayerClick} loading={layerActive && !layerLoaded} />
             )}
-            {!readOnly && layerActive && layerError && (
+            {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
               <IconButton
-                icon={'warning'}
-                type={'warning'}
+                icon="warning"
+                type="warning-invert"
+                onClick={showDeprecatedWarning ? onUpdateDeprecatedLayerClick : undefined}
                 tooltip={
-                  isGFWUser
-                    ? `${t((t) => t.errors.layerLoading)} (${layerError})`
-                    : t((t) => t.errors.layerLoading)
+                  showDeprecatedWarning
+                    ? t((t) => t.workspace.deprecatedActivityLayer)
+                    : isGFWUser
+                      ? `${t((t) => t.errors.layerLoading)} (${layerError})`
+                      : t((t) => t.errors.layerLoading)
                 }
                 size="small"
               />
             )}
           </div>
           <IconButton
-            icon={layerError ? 'warning' : layerActive ? 'more' : undefined}
-            type={layerError ? 'warning' : 'default'}
-            loading={!hasDeprecatedDataviewInstances && layerActive && !layerLoaded}
+            icon={
+              layerActive ? (layerError || showDeprecatedWarning ? 'warning' : 'more') : undefined
+            }
+            type={
+              layerActive && (layerError || showDeprecatedWarning) ? 'warning-invert' : 'default'
+            }
+            loading={!showDeprecatedWarning && layerActive && !layerLoaded}
             className={cx('print-hidden', styles.shownUntilHovered)}
             size="small"
           />

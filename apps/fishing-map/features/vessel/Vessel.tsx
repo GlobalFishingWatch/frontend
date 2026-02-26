@@ -15,7 +15,6 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchDatasetsByIdsThunk } from 'features/datasets/datasets.slice'
 import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import { fetchDataviewsByIdsThunk } from 'features/dataviews/dataviews.slice'
-import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import { useFetchDataviewResources } from 'features/resources/resources.hooks'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
@@ -42,7 +41,6 @@ import { useSetVesselProfileEvents } from 'features/vessel/vessel-events.hooks'
 import ErrorPlaceholder from 'features/workspace/ErrorPlaceholder'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
-import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
 import { useLocationConnect } from 'routes/routes.hook'
 import {
@@ -59,12 +57,10 @@ import type { VesselSection } from './vessel.types'
 import styles from './Vessel.module.css'
 
 const Vessel = () => {
-  useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { dispatchQueryParams } = useLocationConnect()
   const { removeDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
-  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const vesselId = useSelector(selectVesselId)
   const isGFWUser = useSelector(selectIsGFWUser)
   const includeRelatedIdentities = useSelector(selectIncludeRelatedIdentities)
@@ -115,28 +111,26 @@ const Vessel = () => {
       {
         id: 'areas',
         title: t((t) => t.vessel.sectionAreas),
-        content: hasDeprecatedDataviewInstances ? null : (
-          <VesselAreas updateAreaLayersVisibility={updateAreaLayersVisibility} />
-        ),
+        content: <VesselAreas updateAreaLayersVisibility={updateAreaLayersVisibility} />,
         disabled: !hasEventsDataset,
         testId: 'vv-areas-tab',
       },
       {
         id: 'related_vessels',
         title: t((t) => t.vessel.sectionRelatedVessels),
-        content: hasDeprecatedDataviewInstances ? null : <RelatedVessels />,
+        content: <RelatedVessels />,
         disabled: !hasEventsDataset,
         testId: 'vv-related-tab',
       },
       {
         id: 'insights' as VesselSection,
         title: t((t) => t.vessel.sectionInsights),
-        content: hasDeprecatedDataviewInstances ? null : <Insights />,
+        content: <Insights />,
         disabled: !hasEventsDataset,
         testId: 'vv-insights-tab',
       },
     ],
-    [t, hasDeprecatedDataviewInstances, updateAreaLayersVisibility, hasEventsDataset]
+    [t, updateAreaLayersVisibility, hasEventsDataset]
   )
 
   useEffect(() => {

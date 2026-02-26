@@ -1,12 +1,9 @@
 import { createSelector } from '@reduxjs/toolkit'
 
 import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
-import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/dataviews'
-import { BASEMAP_DATAVIEW_SLUG, CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG } from 'data/workspaces'
-import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
+import { CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG } from 'data/workspaces'
 import {
   getIsEncounteredVesselDataviewInstanceId,
   getIsVesselDataviewInstanceId,
@@ -25,7 +22,6 @@ import { selectReportComparisonDataviewIds } from 'features/reports/reports.conf
 import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectCurrentVesselEvent } from 'features/vessel/selectors/vessel.selectors'
-import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
 import {
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
@@ -37,51 +33,12 @@ import {
 import { createDeepEqualSelector } from 'utils/selectors'
 
 import {
-  selectAllDataviewInstancesResolved,
   selectDataviewInstancesMerged,
   selectDataviewInstancesResolved,
 } from './dataviews.resolvers.selectors'
 
-export const selectDeprecatedDataviewInstances = createSelector(
-  [selectAllDataviewInstancesResolved, selectDeprecatedDatasets],
-  (dataviews, deprecatedDatasets = {}) => {
-    // TODO: VMS COUNTRY RELEASE NEEDS FIX BEFORE ENABLING IT
-    return [] as UrlDataviewInstance[]
-    // return dataviews?.filter(({ datasetsConfig, config, dataviewId }) => {
-    //   const hasDeprecatedDataviewInstance = LEGACY_TO_LATEST_DATAVIEWS[dataviewId!] !== undefined
-    //   const hasDatasetsDeprecated =
-    //     datasetsConfig?.some((datasetConfig) => deprecatedDatasets[datasetConfig.datasetId]) ||
-    //     false
-    //   const hasConfigDeprecated = config?.datasets
-    //     ? config.datasets.some((d) => deprecatedDatasets[d])
-    //     : false
-    //   const hasVesselTrackDeprecated = config?.track ? deprecatedDatasets[config.track] : false
-    //   const hasVesselEventsDeprecated = config?.events
-    //     ? config.events.some((d) => deprecatedDatasets[d])
-    //     : false
-    //   const hasVesselInfoDeprecated = config?.info ? deprecatedDatasets[config.info] : false
-    //   return (
-    //     hasDeprecatedDataviewInstance ||
-    //     hasDatasetsDeprecated ||
-    //     hasConfigDeprecated ||
-    //     hasVesselTrackDeprecated ||
-    //     hasVesselEventsDeprecated ||
-    //     hasVesselInfoDeprecated
-    //   )
-    // })
-  }
-)
-
-export const selectHasDeprecatedDataviewInstances = createSelector(
-  [selectIsWorkspaceReady, selectDeprecatedDataviewInstances],
-  (isWorkspaceReady, deprecatedDataviews) => {
-    return isWorkspaceReady && deprecatedDataviews && deprecatedDataviews.length > 0
-  }
-)
-
 export const selectDataviewInstancesResolvedVisible = createSelector(
   [
-    selectHasDeprecatedDataviewInstances,
     selectReportComparisonDataviewIds,
     selectDataviewInstancesResolved,
     selectIsAnyReportLocation,
@@ -95,7 +52,6 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     selectReportVesselGroupId,
   ],
   (
-    hasDeprecatedDataviewInstances,
     reportComparisonDataviewIds,
     dataviews = [],
     isAnyReportLocation,
@@ -109,15 +65,6 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     reportVesselGroupId
   ) => {
     const visibleDataviews = dataviews.filter((dataview) => dataview.config?.visible)
-    if (hasDeprecatedDataviewInstances) {
-      return visibleDataviews.filter(
-        (d) =>
-          d.category === DataviewCategory.Context ||
-          d.category === DataviewCategory.User ||
-          d.category === DataviewCategory.Environment ||
-          d.slug === BASEMAP_DATAVIEW_SLUG
-      )
-    }
     if (isVesselLocation && vesselId !== undefined) {
       const filteredDataviews = visibleDataviews.filter(({ id, config, origin }) => {
         if (REPORT_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
