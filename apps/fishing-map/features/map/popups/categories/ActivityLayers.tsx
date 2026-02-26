@@ -42,7 +42,7 @@ function ActivityTooltipRow({
             <h3 className={popupStyles.popupSectionTitle}>{feature.title}</h3>
           )}
           <div className={popupStyles.row}>
-            <span className={popupStyles.rowText}>
+            <span className={popupStyles.rowText} data-testid="activity-tooltip-row-value">
               <I18nNumber number={value} />{' '}
               {t((t: any) => t.common[feature?.unit ?? 'hours'], {
                 defaultValue: 'hours',
