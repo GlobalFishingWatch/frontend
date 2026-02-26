@@ -231,6 +231,8 @@ export enum DataviewCategory {
 export type Dataview<Type = any, Category = DataviewCategory> = {
   id: number
   slug: string
+  // This can be defined in the API configurationor added at runtime when one of its dataset is deprecated
+  deprecated?: boolean
   name: string
   app: ApiAppName
   description: string

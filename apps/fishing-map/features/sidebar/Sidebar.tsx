@@ -10,7 +10,6 @@ import { Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectDataviewsResources } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
 import { fetchResourceThunk } from 'features/resources/resources.slice'
@@ -71,7 +70,6 @@ function Sidebar({ onMenuClick }: SidebarProps) {
   const isSmallScreen = useSmallScreen(SMALL_PHONE_BREAKPOINT)
   const isUserLocation = useSelector(selectIsUserLocation)
   const isUserLogged = useSelector(selectIsUserLogged)
-  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const isWorkspacesListLocation = useSelector(selectIsWorkspacesListLocation)
   const isSearchLocation = useSelector(selectIsAnySearchLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
@@ -160,6 +158,7 @@ function Sidebar({ onMenuClick }: SidebarProps) {
     isPortReportLocation,
     isVesselGroupReportLocation,
     isSearchLocation,
+    t,
   ])
 
   const showTabs = !readOnly && !isSmallScreen && !isPrinting && !isTrackCorrectionOpen
@@ -172,7 +171,6 @@ function Sidebar({ onMenuClick }: SidebarProps) {
           id={SCROLL_CONTAINER_DOM_ID}
           className={cx('scrollContainer', styles.scrollContainer)}
           data-test="sidebar-container"
-          // style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
         >
           {sidebarComponent}
         </div>

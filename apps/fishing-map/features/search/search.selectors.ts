@@ -14,6 +14,7 @@ import {
 import { selectAllDataviewsInWorkspace } from 'features/dataviews/selectors/dataviews.selectors'
 import { isDatasetSearchFieldNeededSupported } from 'features/search/advanced/advanced-search.utils'
 import type { SearchType } from 'features/search/search.config'
+import { selectSearchSources } from 'features/search/search.config.selectors'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
@@ -26,8 +27,9 @@ const selectSearchDatasetsInWorkspace = createSelector(
     selectVesselsDatasets,
     selectAllDatasets,
     selectPrivateUserGroups,
+    selectSearchSources,
   ],
-  (dataviews, vesselsDatasets, allDatasets, privateUserGroups) => {
+  (dataviews, vesselsDatasets, allDatasets, privateUserGroups, searchSources) => {
     const datasetsIds = [
       ...getDatasetsInDataviews(dataviews),
       ...privateUserGroups.flatMap((group) => {
@@ -45,7 +47,7 @@ const selectSearchDatasetsInWorkspace = createSelector(
       d.id.startsWith(PRIVATE_SUFIX) ? [d.id] : []
     )
     const filteredDatasetsPrioritised = filteredDatasets.filter((d) => {
-      if (d.id.startsWith(PUBLIC_SUFIX)) {
+      if (d.id.startsWith(PUBLIC_SUFIX) && !searchSources?.includes(d.id)) {
         return !privateDatasetsIds.includes(d.id.replace(PUBLIC_SUFIX, PRIVATE_SUFIX))
       }
       return true

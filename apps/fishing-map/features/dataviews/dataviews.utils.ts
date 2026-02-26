@@ -3,6 +3,7 @@ import { kebabCase } from 'es-toolkit'
 import type {
   ColorCyclingType,
   Dataset,
+  DatasetsMigration,
   Dataview,
   DataviewDatasetConfig,
   DataviewInstance,
@@ -17,6 +18,7 @@ import {
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { FourwingsAggregationOperation, getUTCDateTime } from '@globalfishingwatch/deck-layers'
 
+import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/dataviews'
 import {
   TEMPLATE_ACTIVITY_DATAVIEW_SLUG,
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
@@ -463,4 +465,38 @@ export const getIsPositionSupportedInDataview = (dataview: UrlDataviewInstance) 
   return flattenDatasetFilters?.some(({ id }) => {
     return id === 'bearing'
   })
+}
+
+export function isDataviewDeprecated(
+  dataview: DataviewInstance | UrlDataviewInstance,
+  deprecatedDatasets: DatasetsMigration
+) {
+  if (!dataview || !deprecatedDatasets) {
+    return false
+  }
+  const { datasetsConfig, config, dataviewId } = dataview
+  // TODO: remove this static configuration and mark the dataviews as deprecated in the API
+  const hasDeprecatedDataviewInstance = LEGACY_TO_LATEST_DATAVIEWS[dataviewId!] !== undefined
+  const hasDatasetsDeprecated =
+    datasetsConfig?.some((datasetConfig) => deprecatedDatasets[datasetConfig.datasetId]) || false
+  const hasConfigDeprecated = config?.datasets
+    ? config.datasets.some((d) => deprecatedDatasets[d])
+    : false
+  const hasVesselTrackDeprecated = config?.track
+    ? deprecatedDatasets[config.track] !== undefined
+    : false
+  const hasVesselEventsDeprecated = config?.events
+    ? config.events.some((d) => deprecatedDatasets[d])
+    : false
+  const hasVesselInfoDeprecated = config?.info
+    ? deprecatedDatasets[config.info] !== undefined
+    : false
+  return (
+    hasDeprecatedDataviewInstance ||
+    hasDatasetsDeprecated ||
+    hasConfigDeprecated ||
+    hasVesselTrackDeprecated ||
+    hasVesselEventsDeprecated ||
+    hasVesselInfoDeprecated
+  )
 }

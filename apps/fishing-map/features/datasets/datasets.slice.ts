@@ -16,8 +16,10 @@ import type {
   UploadResponse,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
-import { DETECTIONS_LEGACY_DATASETS_DICT } from '@globalfishingwatch/dataviews-client'
+import {
+  getDatasetConfiguration,
+  LEGACY_DATASETS_TO_LATEST_VMS,
+} from '@globalfishingwatch/datasets-client'
 
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV, PUBLIC_SUFIX } from 'data/config'
 import type { RootState } from 'store'
@@ -372,7 +374,7 @@ export const selectDeprecatedDatasets = createSelector(
   (deprecatedDatasets) => {
     return {
       ...deprecatedDatasets,
-      ...(DETECTIONS_LEGACY_DATASETS_DICT as DatasetsMigration),
+      ...LEGACY_DATASETS_TO_LATEST_VMS,
     }
   }
 )

@@ -13,7 +13,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { getDatasetLabel, isPrivateDataset } from 'features/datasets/datasets.utils'
 import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
-import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { useMigrateToLatestDataview } from 'features/dataviews/dataviews.hooks'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
 import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
@@ -22,6 +22,7 @@ import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import Remove from 'features/workspace/shared/Remove'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectIsWorkspaceOwner } from 'features/workspace/workspace.selectors'
 
 import DatasetNotFound from '../shared/DatasetNotFound'
 import InfoModal from '../shared/InfoModal'
@@ -48,18 +49,20 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
   const { filtersAllowed } = getFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
   })
+  const { migrateToLatestDataviewInstance } = useMigrateToLatestDataview()
   const isGFWUser = useSelector(selectIsGFWUser)
   const readOnly = useSelector(selectReadOnly)
+  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
   const showSchemaFilters = filtersAllowed.length > 0
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
   )
   const eventLayer = useGetDeckLayer<FourwingsClustersLayer>(dataview?.id)
-  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const layerError = eventLayer?.instance?.getError?.()
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
     useLayerPanelDataviewSort(dataview.id)
   const guestUser = useSelector(selectIsGuestUser)
+  const showDeprecatedWarning = isWorkspaceOwner && dataview.deprecated
 
   const dataset = dataview.datasets?.find(
     (d) => d.type === DatasetTypes.Events || d.type === DatasetTypes.Fourwings
@@ -89,6 +92,10 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
     setColorOpen(!colorOpen)
   }
 
+  const onUpdateDeprecatedLayerClick = () => {
+    migrateToLatestDataviewInstance(dataview)
+  }
+
   if (!dataset || dataset.status === 'deleted') {
     const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
       isPrivateDataset({ id: d.datasetId })
@@ -115,9 +122,8 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
     >
       <div className={styles.header}>
         <LayerSwitch
-          active={layerActive && !hasDeprecatedDataviewInstances}
+          active={layerActive}
           className={styles.switch}
-          disabled={hasDeprecatedDataviewInstances}
           dataview={dataview}
           onToggle={onToggle}
           testId={`events-layer-switch-${dataview.id}`}
@@ -127,7 +133,6 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
           className={styles.name}
           classNameActive={styles.active}
           dataview={dataview}
-          toggleVisibility={!hasDeprecatedDataviewInstances}
           onToggle={onToggle}
         />
         <div
@@ -167,18 +172,18 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
             </ExpandedContainer>
           )}
           <InfoModal dataview={dataview} />
-          <Remove
-            dataview={dataview}
-            loading={layerActive && !layerLoaded && !hasDeprecatedDataviewInstances}
-          />
-          {!readOnly && layerActive && layerError && (
+          <Remove dataview={dataview} loading={layerActive && !layerLoaded} />
+          {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
             <IconButton
-              icon={'warning'}
-              type={'warning'}
+              icon="warning"
+              type="warning-invert"
+              onClick={showDeprecatedWarning ? onUpdateDeprecatedLayerClick : undefined}
               tooltip={
-                isGFWUser
-                  ? `${t((t) => t.errors.layerLoading)} (${layerError})`
-                  : t((t) => t.errors.layerLoading)
+                showDeprecatedWarning
+                  ? t((t) => t.workspace.deprecatedActivityLayer)
+                  : isGFWUser
+                    ? `${t((t) => t.errors.layerLoading)} (${layerError})`
+                    : t((t) => t.errors.layerLoading)
               }
               size="small"
             />
@@ -193,11 +198,12 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
             />
           )}
         </div>
-
         <IconButton
-          icon={layerActive ? 'more' : undefined}
-          type="default"
-          loading={layerActive && !layerLoaded && !hasDeprecatedDataviewInstances}
+          icon={
+            layerActive ? (layerError || showDeprecatedWarning ? 'warning' : 'more') : undefined
+          }
+          type={layerActive && (layerError || showDeprecatedWarning) ? 'warning-invert' : 'default'}
+          loading={!showDeprecatedWarning && layerActive && !layerLoaded}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />

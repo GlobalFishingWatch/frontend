@@ -11,7 +11,6 @@ import {
 import { Logo } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT } from 'data/config'
-import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import MapControls from 'features/map/controls/MapControls'
 import { selectScreenshotAreaId } from 'features/map/controls/screenshot.slice'
 import ErrorNotificationDialog from 'features/map/overlays/error-notification/ErrorNotification'
@@ -70,7 +69,6 @@ const MapWrapper = () => {
   const isWorkspaceLocation = useSelector(selectIsWorkspaceLocation)
   const isVesselLocation = useSelector(selectIsAnyVesselLocation)
   const reportAreaStatus = useSelector(selectReportAreaStatus)
-  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const isPrinting = useSelector(selectScreenshotModalOpen)
   const screenshotAreaId = useSelector(selectScreenshotAreaId)
 
@@ -81,12 +79,7 @@ const MapWrapper = () => {
   )
 
   return (
-    <div
-      id={MAP_CONTAINER_ID}
-      className={styles.container}
-      onMouseLeave={onMouseLeave}
-      // style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}
-    >
+    <div id={MAP_CONTAINER_ID} className={styles.container} onMouseLeave={onMouseLeave}>
       {isPrinting && screenshotAreaId !== ROOT_DOM_ELEMENT && (
         <Logo className={styles.logo} type="invert" />
       )}
