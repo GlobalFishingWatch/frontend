@@ -832,45 +832,115 @@
       "target_species": {
         "keyword": "crwdns109388:0crwdne109388:0",
         "enum": {
+          "": "crwdns112504:0crwdne112504:0",
+          "Agulha": "crwdns112506:0crwdne112506:0",
+          "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).": "crwdns112508:0crwdne112508:0",
+          "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante": "crwdns112510:0crwdne112510:0",
+          "Anchova, tainha e sororoca": "crwdns112512:0crwdne112512:0",
+          "Anchoíta, galo, calamar": "crwdns112514:0crwdne112514:0",
+          "Atuns (albacora laje, albacora branca e albacora bandolim)": "crwdns112516:0crwdne112516:0",
+          "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.": "crwdns112518:0crwdne112518:0",
+          "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro": "crwdns112520:0crwdne112520:0",
+          "Bonito listrado": "crwdns112522:0crwdne112522:0",
+          "Camarão rosa (santana e barba ruça)": "crwdns112524:0crwdne112524:0",
+          "Camarão rosa, sete- barbas e branco": "crwdns112526:0crwdne112526:0",
+          "Camarão santana e barba ruça": "crwdns112528:0crwdne112528:0",
+          "Camarão sete barbas (Santana e barba ruça)": "crwdns112530:0crwdne112530:0",
+          "Camarões (sete- barbas, branco, rosa)": "crwdns112532:0crwdne112532:0",
+          "Camarões de profundidade": "crwdns112534:0crwdne112534:0",
+          "Caranguejo de profundidade (Chaceon spp.)": "crwdns112536:0crwdne112536:0",
+          "Caranguejo vermelho (Chaceon notialis)": "crwdns112538:0crwdne112538:0",
+          "Cavalas, Albacorinhas": "crwdns112540:0crwdne112540:0",
+          "Corvina, castanha, pescada e pescadinha real": "crwdns112542:0crwdne112542:0",
+          "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.": "crwdns112544:0crwdne112544:0",
+          "Corvina, pescada, castanha, abrótea": "crwdns112546:0crwdne112546:0",
+          "Dourada, Piramutaba e Gurijuba": "crwdns112548:0crwdne112548:0",
+          "Dourado": "crwdns112550:0crwdne112550:0",
+          "Espadarte": "crwdns112552:0crwdne112552:0",
+          "Galo-de-fundo, abrótea-de-fundo, merluza": "crwdns112554:0crwdne112554:0",
+          "Lagosta verde e lagosta vermelha": "crwdns112556:0crwdne112556:0",
           "Pargo": "crwdns109460:0crwdne109460:0",
-          "Tainhas; Anchova e Serras": "crwdns111658:0crwdne111658:0",
-          "Dourado - atuns e afins": "crwdns111660:0crwdne111660:0",
-          "Sardinha-verdadeira e Anchova": "crwdns111662:0crwdne111662:0",
-          " Camarão-rosa": "crwdns111664:0crwdne111664:0",
-          "Piramutaba e peixes diversos": "crwdns111666:0crwdne111666:0",
-          "Sardinha-laje": "crwdns111668:0crwdne111668:0",
-          "Corvina; Pescadas; Castanha e Abrótea": "crwdns111670:0crwdne111670:0",
-          "Bonito-listrado": "crwdns111672:0crwdne111672:0",
-          "Pescada-gó": "crwdns111674:0crwdne111674:0",
-          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "crwdns111676:0crwdne111676:0",
-          "Camarão-rosa e peixes diversos": "crwdns111678:0crwdne111678:0",
-          "peixes diversos": "crwdns111680:0crwdne111680:0",
-          "Albacoras - atuns e afins": "crwdns111682:0crwdne111682:0",
-          "peixes demersais": "crwdns111684:0crwdne111684:0",
-          "Espadarte - atuns e afins": "crwdns111686:0crwdne111686:0",
+          "Pargo rosa": "crwdns112558:0crwdne112558:0",
+          "Peixe sapo": "crwdns112560:0crwdne112560:0",
+          "Peroá, Garoupa e Corvina": "crwdns112562:0crwdne112562:0",
+          "Pescada amarela gurijuba e camurim": "crwdns112564:0crwdne112564:0",
+          "Pescada gó, camurim e corvina": "crwdns112566:0crwdne112566:0",
+          "Piramutaba": "crwdns112568:0crwdne112568:0",
+          "Piramutaba e dourada": "crwdns112570:0crwdne112570:0",
           "Polvo": "crwdns109394:0crwdne109394:0",
-          "Camarão-sete-barbas": "crwdns111688:0crwdne111688:0",
-          "Piramutaba; Dourada e Gurijuba": "crwdns111690:0crwdne111690:0",
-          "Serras": "crwdns111692:0crwdne111692:0",
-          "Sardinha-verdadeira e Bonito-listrado": "crwdns111694:0crwdne111694:0",
-          "Lagostas": "crwdns111696:0crwdne111696:0",
-          "Fundo e Superfície": "crwdns111698:0crwdne111698:0",
-          "Pescada Amarela": "crwdns111700:0crwdne111700:0",
-          "Abrótea; Galo e Merluza": "crwdns111702:0crwdne111702:0",
-          "Caranguejo-vermelho": "crwdns111704:0crwdne111704:0",
-          "Sardinha-verdadeira e Tainha": "crwdns111706:0crwdne111706:0",
-          "Peixe-sapo": "crwdns111708:0crwdne111708:0",
-          "Cavala e Albacorinha": "crwdns111710:0crwdne111710:0"
+          "Saramunete": "crwdns112572:0crwdne112572:0",
+          "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ": "crwdns112574:0crwdne112574:0",
+          "Sardinha verdadeira": "crwdns112576:0crwdne112576:0",
+          "Sardinha-lage": "crwdns112578:0crwdne112578:0",
+          "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)": "crwdns112580:0crwdne112580:0",
+          "Serra": "crwdns112582:0crwdne112582:0",
+          "Serranidae e caranjidae (detalhar)": "crwdns112584:0crwdne112584:0",
+          "Tainha": "crwdns112586:0crwdne112586:0",
+          "Vermelhos (especificar)": "crwdns112588:0crwdne112588:0"
         }
       },
       "license_category": {
         "keyword": "crwdns109462:0crwdne109462:0",
         "enum": {
-          "Linha": "crwdns111712:0crwdne111712:0",
-          "Rede de emalhe": "crwdns111714:0crwdne111714:0",
-          "Armadilhas": "crwdns111716:0crwdne111716:0",
-          "Arrasto": "crwdns111718:0crwdne111718:0",
-          "Cerco": "crwdns111720:0crwdne111720:0"
+          "": "crwdns112590:0crwdne112590:0",
+          "1.1 - Espinhel horizontal (superfície)": "crwdns112592:0crwdne112592:0",
+          "1.10 - Espinhel vertical/Covos": "crwdns112594:0crwdne112594:0",
+          "1.11 - Espinhel vertical": "crwdns112596:0crwdne112596:0",
+          "1.12 - Linha de mão (fundo)": "crwdns112598:0crwdne112598:0",
+          "1.13 - Linha/vara - com isca viva": "crwdns112600:0crwdne112600:0",
+          "1.14 - Linha de mão (fundo)": "crwdns112602:0crwdne112602:0",
+          "1.15 - Linha de mão (superfície)": "crwdns112604:0crwdne112604:0",
+          "1.17 - Cardume associado": "crwdns112606:0crwdne112606:0",
+          "1.18 - Cardume associado": "crwdns112608:0crwdne112608:0",
+          "1.2 - Espinhel horizontal (superfície)": "crwdns112610:0crwdne112610:0",
+          "1.3 - Espinhel horizontal (superfície) - com isca-viva": "crwdns112612:0crwdne112612:0",
+          "1.4 - Espinhel horizontal (superfície)": "crwdns112614:0crwdne112614:0",
+          "1.5 - Espinhel horizontal (fundo)": "crwdns112616:0crwdne112616:0",
+          "1.6 - Espinhel horizontal (fundo)": "crwdns112618:0crwdne112618:0",
+          "1.7 - Espinhel horizontal (fundo)": "crwdns112620:0crwdne112620:0",
+          "1.8 - Espinhel vertical/covos": "crwdns112622:0crwdne112622:0",
+          "1.9 - Espinhel vertical/Covos": "crwdns112624:0crwdne112624:0",
+          "2.10 - Emalhe costeiro (fundo)": "crwdns112626:0crwdne112626:0",
+          "2.11 - Emalhe costeiro (fundo)": "crwdns112628:0crwdne112628:0",
+          "2.12 - Emalhe costeiro (fundo)": "crwdns112630:0crwdne112630:0",
+          "2.13 - Emalhe Costeiro Diversificado": "crwdns112632:0crwdne112632:0",
+          "2.2 - Emalhe costeiro (superfície) ": "crwdns112634:0crwdne112634:0",
+          "2.3 - Emalhe oceânico (fundo)": "crwdns112636:0crwdne112636:0",
+          "2.4 - Emalhe costeiro (fundo)": "crwdns112638:0crwdne112638:0",
+          "2.5 - Emalhe costeiro (superfície)": "crwdns112640:0crwdne112640:0",
+          "2.6 - Emalhe costeiro (superfície)": "crwdns112642:0crwdne112642:0",
+          "2.7 - Emalhe costeiro (superfície)": "crwdns112644:0crwdne112644:0",
+          "2.8 - Emalhe costeiro (superfície)": "crwdns112646:0crwdne112646:0",
+          "3.1 - Arrasto (fundo) parelha ou trilheira (*)": "crwdns112648:0crwdne112648:0",
+          "3.10 - Arrasto costeiro (fundo) - duplo": "crwdns112650:0crwdne112650:0",
+          "3.11 - Arrasto costeiro (fundo simples e parelha": "crwdns112652:0crwdne112652:0",
+          "3.12 - Arrasto oceânico (fundo) – simples e duplo": "crwdns112654:0crwdne112654:0",
+          "3.13 - Arrasto oceânico (fundo) – simples e duplo": "crwdns112656:0crwdne112656:0",
+          "3.14 - Arrasto (meia água)": "crwdns112658:0crwdne112658:0",
+          "3.2 - Arrasto (fundo) – Simples ou parelha": "crwdns112660:0crwdne112660:0",
+          "3.3 - Arrasto (fundo) - duplo ou simples (**)": "crwdns112662:0crwdne112662:0",
+          "3.4 - Arrasto (fundo) - duplo ou simples": "crwdns112664:0crwdne112664:0",
+          "3.5 - Arrasto (fundo) - duplo ou simples": "crwdns112666:0crwdne112666:0",
+          "3.6 - Arrasto (fundo) - duplo": "crwdns112668:0crwdne112668:0",
+          "3.7 - Arrasto (fundo)– duplo": "crwdns112670:0crwdne112670:0",
+          "3.8 - Arrasto (fundo) - duplo ou simples": "crwdns112672:0crwdne112672:0",
+          "3.9 - Arrasto (fundo) - duplo ou simples": "crwdns112674:0crwdne112674:0",
+          "4.1 - Cerco": "crwdns112676:0crwdne112676:0",
+          "4.2 - Cerco": "crwdns112678:0crwdne112678:0",
+          "4.3 - Cerco": "crwdns112680:0crwdne112680:0",
+          "4.4 - Cerco": "crwdns112682:0crwdne112682:0",
+          "4.6 - Cerco": "crwdns112684:0crwdne112684:0",
+          "5.1 - Covos": "crwdns112686:0crwdne112686:0",
+          "5.10 - Potes": "crwdns112688:0crwdne112688:0",
+          "5.11 - Potes": "crwdns112690:0crwdne112690:0",
+          "5.12 - Potes": "crwdns112692:0crwdne112692:0",
+          "5.2 - Covos": "crwdns112694:0crwdne112694:0",
+          "5.3 - Covos": "crwdns112696:0crwdne112696:0",
+          "5.4 - Covos": "crwdns112698:0crwdne112698:0",
+          "5.5 - Covos": "crwdns112700:0crwdne112700:0",
+          "5.6 - Covos": "crwdns112702:0crwdne112702:0",
+          "5.9 - Covos": "crwdns112704:0crwdne112704:0",
+          "Sem código IN - Covos": "crwdns112706:0crwdne112706:0"
         }
       },
       "distance_from_port_km": {
@@ -1037,7 +1107,7 @@
         "keyword": "crwdns109786:0crwdne109786:0",
         "enum": {
           "INDUSTRY": "crwdns109790:0crwdne109790:0",
-          "AQUACULTURE": "crwdns111734:0crwdne111734:0"
+          "SMALL_FISHERIES": "crwdns112708:0crwdne112708:0"
         }
       },
       "distance_from_port_km": {
@@ -1130,10 +1200,10 @@
       "source_fleet": {
         "keyword": "crwdns109886:0crwdne109886:0",
         "enum": {
-          "SMALL_FISHERIES": "crwdns109888:0crwdne109888:0",
+          "AQUACULTURE": "crwdns109894:0crwdne109894:0",
           "INDUSTRY": "crwdns109890:0crwdne109890:0",
-          "TRANSPORT": "crwdns109892:0crwdne109892:0",
-          "AQUACULTURE": "crwdns109894:0crwdne109894:0"
+          "SMALL_FISHERIES": "crwdns109888:0crwdne109888:0",
+          "TRANSPORT": "crwdns109892:0crwdne109892:0"
         }
       }
     }
@@ -1455,7 +1525,7 @@
   },
   "private-vms-mne-encounters-events": {
     "name": "crwdns111514:0crwdne111514:0",
-    "description": "crwdns111516:0crwdne111516:0",
+    "description": "crwdns112710:0crwdne112710:0",
     "schema": {
       "duration": {
         "keyword": "crwdns111518:0crwdne111518:0",
@@ -1494,7 +1564,7 @@
   },
   "private-vms-mne-loitering-events": {
     "name": "crwdns111552:0crwdne111552:0",
-    "description": "crwdns111554:0crwdne111554:0",
+    "description": "crwdns112712:0crwdne112712:0",
     "schema": {
       "type": {
         "keyword": "crwdns111556:0crwdne111556:0",
@@ -1519,7 +1589,7 @@
   },
   "private-vms-mne-port-visits-events": {
     "name": "crwdns111578:0crwdne111578:0",
-    "description": "crwdns111580:0crwdne111580:0",
+    "description": "crwdns112714:0crwdne112714:0",
     "schema": {
       "type": {
         "keyword": "crwdns111582:0crwdne111582:0",
@@ -1916,10 +1986,10 @@
       "source_fleet": {
         "keyword": "crwdns110852:0crwdne110852:0",
         "enum": {
-          "INDUSTRIAL": "crwdns112464:0crwdne112464:0",
-          "SMALL-SCALE": "crwdns112466:0crwdne112466:0",
+          "": "crwdns112470:0crwdne112470:0",
           "ARTISANAL": "crwdns112468:0crwdne112468:0",
-          "": "crwdns112470:0crwdne112470:0"
+          "INDUSTRIAL": "crwdns112464:0crwdne112464:0",
+          "SMALL-SCALE": "crwdns112466:0crwdne112466:0"
         }
       },
       "distance_from_port_km": {
@@ -2019,10 +2089,10 @@
       "source_fleet": {
         "keyword": "crwdns110964:0crwdne110964:0",
         "enum": {
-          "INDUSTRIAL": "crwdns110966:0crwdne110966:0",
-          "SMALL-SCALE": "crwdns110968:0crwdne110968:0",
+          "": "crwdns112472:0crwdne112472:0",
           "ARTISANAL": "crwdns110970:0crwdne110970:0",
-          "": "crwdns112472:0crwdne112472:0"
+          "INDUSTRIAL": "crwdns110966:0crwdne110966:0",
+          "SMALL-SCALE": "crwdns110968:0crwdne110968:0"
         }
       }
     }
@@ -2046,7 +2116,7 @@
   },
   "private-vms-plw-encounters-events": {
     "name": "crwdns110988:0crwdne110988:0",
-    "description": "crwdns110990:0crwdne110990:0",
+    "description": "crwdns112716:0crwdne112716:0",
     "schema": {
       "duration": {
         "keyword": "crwdns110992:0crwdne110992:0",
@@ -2109,7 +2179,7 @@
   },
   "private-vms-plw-loitering-events": {
     "name": "crwdns111096:0crwdne111096:0",
-    "description": "crwdns111098:0crwdne111098:0",
+    "description": "crwdns112718:0crwdne112718:0",
     "schema": {
       "type": {
         "keyword": "crwdns111100:0crwdne111100:0",
@@ -2134,7 +2204,7 @@
   },
   "private-vms-plw-port-visits-events": {
     "name": "crwdns111122:0crwdne111122:0",
-    "description": "crwdns111124:0crwdne111124:0",
+    "description": "crwdns112720:0crwdne112720:0",
     "schema": {
       "type": {
         "keyword": "crwdns111126:0crwdne111126:0",
@@ -4351,45 +4421,115 @@
       "target_species": {
         "keyword": "crwdns111868:0crwdne111868:0",
         "enum": {
+          "": "crwdns112722:0crwdne112722:0",
+          "Agulha": "crwdns112724:0crwdne112724:0",
+          "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).": "crwdns112726:0crwdne112726:0",
+          "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante": "crwdns112728:0crwdne112728:0",
+          "Anchova, tainha e sororoca": "crwdns112730:0crwdne112730:0",
+          "Anchoíta, galo, calamar": "crwdns112732:0crwdne112732:0",
+          "Atuns (albacora laje, albacora branca e albacora bandolim)": "crwdns112734:0crwdne112734:0",
+          "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.": "crwdns112736:0crwdne112736:0",
+          "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro": "crwdns112738:0crwdne112738:0",
+          "Bonito listrado": "crwdns112740:0crwdne112740:0",
+          "Camarão rosa (santana e barba ruça)": "crwdns112742:0crwdne112742:0",
+          "Camarão rosa, sete- barbas e branco": "crwdns112744:0crwdne112744:0",
+          "Camarão santana e barba ruça": "crwdns112746:0crwdne112746:0",
+          "Camarão sete barbas (Santana e barba ruça)": "crwdns112748:0crwdne112748:0",
+          "Camarões (sete- barbas, branco, rosa)": "crwdns112750:0crwdne112750:0",
+          "Camarões de profundidade": "crwdns112752:0crwdne112752:0",
+          "Caranguejo de profundidade (Chaceon spp.)": "crwdns112754:0crwdne112754:0",
+          "Caranguejo vermelho (Chaceon notialis)": "crwdns112756:0crwdne112756:0",
+          "Cavalas, Albacorinhas": "crwdns112758:0crwdne112758:0",
+          "Corvina, castanha, pescada e pescadinha real": "crwdns112760:0crwdne112760:0",
+          "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.": "crwdns112762:0crwdne112762:0",
+          "Corvina, pescada, castanha, abrótea": "crwdns112764:0crwdne112764:0",
+          "Dourada, Piramutaba e Gurijuba": "crwdns112766:0crwdne112766:0",
+          "Dourado": "crwdns112768:0crwdne112768:0",
+          "Espadarte": "crwdns112770:0crwdne112770:0",
+          "Galo-de-fundo, abrótea-de-fundo, merluza": "crwdns112772:0crwdne112772:0",
+          "Lagosta verde e lagosta vermelha": "crwdns112774:0crwdne112774:0",
           "Pargo": "crwdns111870:0crwdne111870:0",
-          "Tainhas; Anchova e Serras": "crwdns111872:0crwdne111872:0",
-          "Dourado - atuns e afins": "crwdns111874:0crwdne111874:0",
-          "Sardinha-verdadeira e Anchova": "crwdns111876:0crwdne111876:0",
-          " Camarão-rosa": "crwdns111878:0crwdne111878:0",
-          "Piramutaba e peixes diversos": "crwdns111880:0crwdne111880:0",
-          "Sardinha-laje": "crwdns111882:0crwdne111882:0",
-          "Corvina; Pescadas; Castanha e Abrótea": "crwdns111884:0crwdne111884:0",
-          "Bonito-listrado": "crwdns111886:0crwdne111886:0",
-          "Pescada-gó": "crwdns111888:0crwdne111888:0",
-          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "crwdns111890:0crwdne111890:0",
-          "Camarão-rosa e peixes diversos": "crwdns111892:0crwdne111892:0",
-          "peixes diversos": "crwdns111894:0crwdne111894:0",
-          "Albacoras - atuns e afins": "crwdns111896:0crwdne111896:0",
-          "peixes demersais": "crwdns111898:0crwdne111898:0",
-          "Espadarte - atuns e afins": "crwdns111900:0crwdne111900:0",
+          "Pargo rosa": "crwdns112776:0crwdne112776:0",
+          "Peixe sapo": "crwdns112778:0crwdne112778:0",
+          "Peroá, Garoupa e Corvina": "crwdns112780:0crwdne112780:0",
+          "Pescada amarela gurijuba e camurim": "crwdns112782:0crwdne112782:0",
+          "Pescada gó, camurim e corvina": "crwdns112784:0crwdne112784:0",
+          "Piramutaba": "crwdns112786:0crwdne112786:0",
+          "Piramutaba e dourada": "crwdns112788:0crwdne112788:0",
           "Polvo": "crwdns111902:0crwdne111902:0",
-          "Camarão-sete-barbas": "crwdns111904:0crwdne111904:0",
-          "Piramutaba; Dourada e Gurijuba": "crwdns111906:0crwdne111906:0",
-          "Serras": "crwdns111908:0crwdne111908:0",
-          "Sardinha-verdadeira e Bonito-listrado": "crwdns111910:0crwdne111910:0",
-          "Lagostas": "crwdns111912:0crwdne111912:0",
-          "Fundo e Superfície": "crwdns111914:0crwdne111914:0",
-          "Pescada Amarela": "crwdns111916:0crwdne111916:0",
-          "Abrótea; Galo e Merluza": "crwdns111918:0crwdne111918:0",
-          "Caranguejo-vermelho": "crwdns111920:0crwdne111920:0",
-          "Sardinha-verdadeira e Tainha": "crwdns111922:0crwdne111922:0",
-          "Peixe-sapo": "crwdns111924:0crwdne111924:0",
-          "Cavala e Albacorinha": "crwdns111926:0crwdne111926:0"
+          "Saramunete": "crwdns112790:0crwdne112790:0",
+          "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ": "crwdns112792:0crwdne112792:0",
+          "Sardinha verdadeira": "crwdns112794:0crwdne112794:0",
+          "Sardinha-lage": "crwdns112796:0crwdne112796:0",
+          "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)": "crwdns112798:0crwdne112798:0",
+          "Serra": "crwdns112800:0crwdne112800:0",
+          "Serranidae e caranjidae (detalhar)": "crwdns112802:0crwdne112802:0",
+          "Tainha": "crwdns112804:0crwdne112804:0",
+          "Vermelhos (especificar)": "crwdns112806:0crwdne112806:0"
         }
       },
       "license_category": {
         "keyword": "crwdns111928:0crwdne111928:0",
         "enum": {
-          "Linha": "crwdns111930:0crwdne111930:0",
-          "Rede de emalhe": "crwdns111932:0crwdne111932:0",
-          "Armadilhas": "crwdns111934:0crwdne111934:0",
-          "Arrasto": "crwdns111936:0crwdne111936:0",
-          "Cerco": "crwdns111938:0crwdne111938:0"
+          "": "crwdns112808:0crwdne112808:0",
+          "1.1 - Espinhel horizontal (superfície)": "crwdns112810:0crwdne112810:0",
+          "1.10 - Espinhel vertical/Covos": "crwdns112812:0crwdne112812:0",
+          "1.11 - Espinhel vertical": "crwdns112814:0crwdne112814:0",
+          "1.12 - Linha de mão (fundo)": "crwdns112816:0crwdne112816:0",
+          "1.13 - Linha/vara - com isca viva": "crwdns112818:0crwdne112818:0",
+          "1.14 - Linha de mão (fundo)": "crwdns112820:0crwdne112820:0",
+          "1.15 - Linha de mão (superfície)": "crwdns112822:0crwdne112822:0",
+          "1.17 - Cardume associado": "crwdns112824:0crwdne112824:0",
+          "1.18 - Cardume associado": "crwdns112826:0crwdne112826:0",
+          "1.2 - Espinhel horizontal (superfície)": "crwdns112828:0crwdne112828:0",
+          "1.3 - Espinhel horizontal (superfície) - com isca-viva": "crwdns112830:0crwdne112830:0",
+          "1.4 - Espinhel horizontal (superfície)": "crwdns112832:0crwdne112832:0",
+          "1.5 - Espinhel horizontal (fundo)": "crwdns112834:0crwdne112834:0",
+          "1.6 - Espinhel horizontal (fundo)": "crwdns112836:0crwdne112836:0",
+          "1.7 - Espinhel horizontal (fundo)": "crwdns112838:0crwdne112838:0",
+          "1.8 - Espinhel vertical/covos": "crwdns112840:0crwdne112840:0",
+          "1.9 - Espinhel vertical/Covos": "crwdns112842:0crwdne112842:0",
+          "2.10 - Emalhe costeiro (fundo)": "crwdns112844:0crwdne112844:0",
+          "2.11 - Emalhe costeiro (fundo)": "crwdns112846:0crwdne112846:0",
+          "2.12 - Emalhe costeiro (fundo)": "crwdns112848:0crwdne112848:0",
+          "2.13 - Emalhe Costeiro Diversificado": "crwdns112850:0crwdne112850:0",
+          "2.2 - Emalhe costeiro (superfície) ": "crwdns112852:0crwdne112852:0",
+          "2.3 - Emalhe oceânico (fundo)": "crwdns112854:0crwdne112854:0",
+          "2.4 - Emalhe costeiro (fundo)": "crwdns112856:0crwdne112856:0",
+          "2.5 - Emalhe costeiro (superfície)": "crwdns112858:0crwdne112858:0",
+          "2.6 - Emalhe costeiro (superfície)": "crwdns112860:0crwdne112860:0",
+          "2.7 - Emalhe costeiro (superfície)": "crwdns112862:0crwdne112862:0",
+          "2.8 - Emalhe costeiro (superfície)": "crwdns112864:0crwdne112864:0",
+          "3.1 - Arrasto (fundo) parelha ou trilheira (*)": "crwdns112866:0crwdne112866:0",
+          "3.10 - Arrasto costeiro (fundo) - duplo": "crwdns112868:0crwdne112868:0",
+          "3.11 - Arrasto costeiro (fundo simples e parelha": "crwdns112870:0crwdne112870:0",
+          "3.12 - Arrasto oceânico (fundo) – simples e duplo": "crwdns112872:0crwdne112872:0",
+          "3.13 - Arrasto oceânico (fundo) – simples e duplo": "crwdns112874:0crwdne112874:0",
+          "3.14 - Arrasto (meia água)": "crwdns112876:0crwdne112876:0",
+          "3.2 - Arrasto (fundo) – Simples ou parelha": "crwdns112878:0crwdne112878:0",
+          "3.3 - Arrasto (fundo) - duplo ou simples (**)": "crwdns112880:0crwdne112880:0",
+          "3.4 - Arrasto (fundo) - duplo ou simples": "crwdns112882:0crwdne112882:0",
+          "3.5 - Arrasto (fundo) - duplo ou simples": "crwdns112884:0crwdne112884:0",
+          "3.6 - Arrasto (fundo) - duplo": "crwdns112886:0crwdne112886:0",
+          "3.7 - Arrasto (fundo)– duplo": "crwdns112888:0crwdne112888:0",
+          "3.8 - Arrasto (fundo) - duplo ou simples": "crwdns112890:0crwdne112890:0",
+          "3.9 - Arrasto (fundo) - duplo ou simples": "crwdns112892:0crwdne112892:0",
+          "4.1 - Cerco": "crwdns112894:0crwdne112894:0",
+          "4.2 - Cerco": "crwdns112896:0crwdne112896:0",
+          "4.3 - Cerco": "crwdns112898:0crwdne112898:0",
+          "4.4 - Cerco": "crwdns112900:0crwdne112900:0",
+          "4.6 - Cerco": "crwdns112902:0crwdne112902:0",
+          "5.1 - Covos": "crwdns112904:0crwdne112904:0",
+          "5.10 - Potes": "crwdns112906:0crwdne112906:0",
+          "5.11 - Potes": "crwdns112908:0crwdne112908:0",
+          "5.12 - Potes": "crwdns112910:0crwdne112910:0",
+          "5.2 - Covos": "crwdns112912:0crwdne112912:0",
+          "5.3 - Covos": "crwdns112914:0crwdne112914:0",
+          "5.4 - Covos": "crwdns112916:0crwdne112916:0",
+          "5.5 - Covos": "crwdns112918:0crwdne112918:0",
+          "5.6 - Covos": "crwdns112920:0crwdne112920:0",
+          "5.9 - Covos": "crwdns112922:0crwdne112922:0",
+          "Sem código IN - Covos": "crwdns112924:0crwdne112924:0"
         }
       },
       "distance_from_port_km": {
@@ -4432,7 +4572,7 @@
         "keyword": "crwdns111976:0crwdne111976:0",
         "enum": {
           "INDUSTRY": "crwdns111978:0crwdne111978:0",
-          "AQUACULTURE": "crwdns111980:0crwdne111980:0"
+          "SMALL_FISHERIES": "crwdns112926:0crwdne112926:0"
         }
       },
       "distance_from_port_km": {
@@ -4468,10 +4608,10 @@
       "source_fleet": {
         "keyword": "crwdns112018:0crwdne112018:0",
         "enum": {
-          "SMALL_FISHERIES": "crwdns112020:0crwdne112020:0",
+          "AQUACULTURE": "crwdns112026:0crwdne112026:0",
           "INDUSTRY": "crwdns112022:0crwdne112022:0",
-          "TRANSPORT": "crwdns112024:0crwdne112024:0",
-          "AQUACULTURE": "crwdns112026:0crwdne112026:0"
+          "SMALL_FISHERIES": "crwdns112020:0crwdne112020:0",
+          "TRANSPORT": "crwdns112024:0crwdne112024:0"
         }
       }
     }
@@ -4738,10 +4878,10 @@
       "source_fleet": {
         "keyword": "crwdns112298:0crwdne112298:0",
         "enum": {
-          "INDUSTRIAL": "crwdns112474:0crwdne112474:0",
-          "SMALL-SCALE": "crwdns112476:0crwdne112476:0",
+          "": "crwdns112480:0crwdne112480:0",
           "ARTISANAL": "crwdns112478:0crwdne112478:0",
-          "": "crwdns112480:0crwdne112480:0"
+          "INDUSTRIAL": "crwdns112474:0crwdne112474:0",
+          "SMALL-SCALE": "crwdns112476:0crwdne112476:0"
         }
       },
       "distance_from_port_km": {
@@ -4784,10 +4924,10 @@
       "source_fleet": {
         "keyword": "crwdns112344:0crwdne112344:0",
         "enum": {
-          "INDUSTRIAL": "crwdns112346:0crwdne112346:0",
-          "SMALL-SCALE": "crwdns112348:0crwdne112348:0",
+          "": "crwdns112482:0crwdne112482:0",
           "ARTISANAL": "crwdns112350:0crwdne112350:0",
-          "": "crwdns112482:0crwdne112482:0"
+          "INDUSTRIAL": "crwdns112346:0crwdne112346:0",
+          "SMALL-SCALE": "crwdns112348:0crwdne112348:0"
         }
       }
     }
