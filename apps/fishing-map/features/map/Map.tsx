@@ -83,6 +83,7 @@ const MapWrapper = () => {
   return (
     <div
       id={MAP_CONTAINER_ID}
+      data-testid={MAP_CONTAINER_ID}
       className={styles.container}
       onMouseLeave={onMouseLeave}
       // style={hasDeprecatedDataviewInstances ? { pointerEvents: 'none' } : {}}

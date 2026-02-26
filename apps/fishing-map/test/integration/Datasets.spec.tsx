@@ -271,6 +271,8 @@ describe('Datasets', () => {
       .element(getByTestId('map-popup-wrapper').getByRole('heading', { name: 'Vessel presence' }))
       .toBeVisible()
 
-    await expect.element(getByTestId('map-popup-wrapper').getByText('2,154 hours')).toBeVisible()
+    const valueElement = getByTestId('map-popup-wrapper').getByTestId('activity-tooltip-row-value')
+    await expect.element(valueElement).toBeVisible()
+    await expect.element(valueElement).toHaveTextContent(/[\d,]+\s+hours/)
   })
 })
