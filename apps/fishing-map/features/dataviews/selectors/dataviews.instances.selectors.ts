@@ -1,6 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit'
 
 import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
 import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/dataviews'
@@ -44,28 +45,30 @@ import {
 export const selectDeprecatedDataviewInstances = createSelector(
   [selectAllDataviewInstancesResolved, selectDeprecatedDatasets],
   (dataviews, deprecatedDatasets = {}) => {
-    return dataviews?.filter(({ datasetsConfig, config, dataviewId }) => {
-      const hasDeprecatedDataviewInstance = LEGACY_TO_LATEST_DATAVIEWS[dataviewId!] !== undefined
-      const hasDatasetsDeprecated =
-        datasetsConfig?.some((datasetConfig) => deprecatedDatasets[datasetConfig.datasetId]) ||
-        false
-      const hasConfigDeprecated = config?.datasets
-        ? config.datasets.some((d) => deprecatedDatasets[d])
-        : false
-      const hasVesselTrackDeprecated = config?.track ? deprecatedDatasets[config.track] : false
-      const hasVesselEventsDeprecated = config?.events
-        ? config.events.some((d) => deprecatedDatasets[d])
-        : false
-      const hasVesselInfoDeprecated = config?.info ? deprecatedDatasets[config.info] : false
-      return (
-        hasDeprecatedDataviewInstance ||
-        hasDatasetsDeprecated ||
-        hasConfigDeprecated ||
-        hasVesselTrackDeprecated ||
-        hasVesselEventsDeprecated ||
-        hasVesselInfoDeprecated
-      )
-    })
+    // TODO: VMS COUNTRY RELEASE NEEDS FIX BEFORE ENABLING IT
+    return [] as UrlDataviewInstance[]
+    // return dataviews?.filter(({ datasetsConfig, config, dataviewId }) => {
+    //   const hasDeprecatedDataviewInstance = LEGACY_TO_LATEST_DATAVIEWS[dataviewId!] !== undefined
+    //   const hasDatasetsDeprecated =
+    //     datasetsConfig?.some((datasetConfig) => deprecatedDatasets[datasetConfig.datasetId]) ||
+    //     false
+    //   const hasConfigDeprecated = config?.datasets
+    //     ? config.datasets.some((d) => deprecatedDatasets[d])
+    //     : false
+    //   const hasVesselTrackDeprecated = config?.track ? deprecatedDatasets[config.track] : false
+    //   const hasVesselEventsDeprecated = config?.events
+    //     ? config.events.some((d) => deprecatedDatasets[d])
+    //     : false
+    //   const hasVesselInfoDeprecated = config?.info ? deprecatedDatasets[config.info] : false
+    //   return (
+    //     hasDeprecatedDataviewInstance ||
+    //     hasDatasetsDeprecated ||
+    //     hasConfigDeprecated ||
+    //     hasVesselTrackDeprecated ||
+    //     hasVesselEventsDeprecated ||
+    //     hasVesselInfoDeprecated
+    //   )
+    // })
   }
 )
 

@@ -237,6 +237,7 @@ export const useMigrateWorkspaceToast = () => {
     console.log(deprecatedDatasets)
   })
 
+  // TODO: VMS COUNTRY RELEASE NEEDS FIX BEFORE ENABLING IT
   useEffect(() => {
     if (hasDeprecatedDataviews) {
       toastId.current = toast(<ToastContent loading={false} />, {
