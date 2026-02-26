@@ -18,7 +18,6 @@ import {
 } from '@globalfishingwatch/dataviews-client'
 
 import { selectAllDatasets, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import {
   getIsVesselDataviewInstanceId,
