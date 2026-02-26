@@ -238,6 +238,7 @@ function VesselLayerPanel({
     >
       <div className={styles.header}>
         <LayerSwitch
+          testId={`vessel-switch-${vesselLabel.replace(/\s/g, '-')}`}
           active={layerActive && !hasDeprecatedDataviewInstances}
           className={styles.switch}
           dataview={dataview}
