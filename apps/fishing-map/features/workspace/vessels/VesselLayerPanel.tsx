@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { groupBy } from 'es-toolkit'
+import Link from 'redux-first-router-link'
 
 import type {
   DataviewDatasetConfigParam,
@@ -23,13 +24,13 @@ import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { PRIVATE_ICON } from 'data/config'
+import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import {
   getSchemaFiltersInDataview,
   isGFWOnlyDataset,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { getVesselIdFromInstanceId } from 'features/dataviews/dataviews.utils'
-import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -37,13 +38,15 @@ import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import { getOtherVesselNames } from 'features/vessel/vessel.utils'
+import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.utils'
 import VesselLink from 'features/vessel/VesselLink'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectIsWorkspaceOwner, selectWorkspace } from 'features/workspace/workspace.selectors'
+import { WORKSPACE_SEARCH } from 'routes/routes'
 import { formatInfoField, getVesselOtherNamesLabel, getVesselShipNameLabel } from 'utils/info'
 
 import FitBounds from '../shared/FitBounds'
@@ -122,14 +125,14 @@ function VesselLayerPanel({
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(false)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const vesselLayer = useGetDeckLayer<VesselLayer>(dataview.id)
   // const vesselInstance = useMapVesselLayer(dataview.id)
   const gfwUser = useSelector(selectIsGFWUser)
   const trackDatasetId = dataview.datasets?.find((rld) => rld.type === DatasetTypes.Tracks)?.id
   const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
-
+  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
+  const workspace = useSelector(selectWorkspace)
   const infoResource: Resource<IdentityVessel> = useSelector(
     selectResourceByUrl<IdentityVessel>(infoUrl)
   )
@@ -169,6 +172,7 @@ function VesselLayerPanel({
     setInfoOpen(false)
   }
 
+  const showDeprecatedWarning = isWorkspaceOwner && dataview.deprecated
   const trackLoaded = vesselLayer?.instance?.getVesselTracksLayersLoaded()
   const trackLayerVisible = vesselLayer?.instance?.props?.visible
   const infoLoading = infoResource?.status === ResourceStatus.Loading
@@ -240,34 +244,25 @@ function VesselLayerPanel({
       {...attributes}
     >
       <div className={styles.header}>
-        <LayerSwitch
-          active={layerActive && !hasDeprecatedDataviewInstances}
-          className={styles.switch}
-          dataview={dataview}
-          disabled={hasDeprecatedDataviewInstances}
-        />
+        <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
         <Title
           title={
             <Fragment>
               <span className={cx({ [styles.faded]: infoLoading || infoError })}>
-                {hasDeprecatedDataviewInstances ? (
-                  getVesselTitle()
-                ) : (
-                  <VesselLink
-                    className={cx(styles.link)}
-                    vesselId={vesselId}
-                    datasetId={dataset?.id}
-                    tooltip={<div>{identitiesSummary}</div>}
-                    query={{
-                      vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-                      vesselSelfReportedId: vesselId,
-                    }}
-                    testId="vessel-layer-vessel-name"
-                    dataviewId={dataview.id}
-                  >
-                    {getVesselTitle()}
-                  </VesselLink>
-                )}
+                <VesselLink
+                  className={cx(styles.link)}
+                  vesselId={vesselId}
+                  datasetId={dataset?.id}
+                  tooltip={<div>{identitiesSummary}</div>}
+                  query={{
+                    vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                    vesselSelfReportedId: vesselId,
+                  }}
+                  testId="vessel-layer-vessel-name"
+                  dataviewId={dataview.id}
+                >
+                  {getVesselTitle()}
+                </VesselLink>
               </span>
             </Fragment>
           }
@@ -284,7 +279,7 @@ function VesselLayerPanel({
         >
           <Fragment>
             {!infoLoading && !(infoError || trackError) && (
-              <>
+              <Fragment>
                 {trackDatasetId && (
                   <VesselDownload
                     dataview={dataview}
@@ -294,7 +289,7 @@ function VesselLayerPanel({
                   />
                 )}
                 {layerActive && (
-                  <>
+                  <Fragment>
                     <LayerProperties
                       dataview={dataview}
                       open={colorOpen}
@@ -333,9 +328,9 @@ function VesselLayerPanel({
                         />
                       </div>
                     </ExpandedContainer>
-                  </>
+                  </Fragment>
                 )}
-              </>
+              </Fragment>
             )}
             <Remove dataview={dataview} />
           </Fragment>
@@ -347,7 +342,32 @@ function VesselLayerPanel({
               tooltip={t((t) => t.vessel.loadingInfo)}
             />
           )}
-          {(infoError || trackError) && (
+          {showDeprecatedWarning && vesselData && (
+            <Link
+              className={styles.link}
+              to={{
+                type: WORKSPACE_SEARCH,
+                payload: {
+                  category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+                  workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+                },
+                query: {
+                  searchOption: 'advanced',
+                  query: getVesselProperty(vesselData, 'shipname'),
+                  ssvid: getVesselProperty(vesselData, 'ssvid'),
+                  flag: [getVesselProperty(vesselData, 'flag')],
+                },
+              }}
+            >
+              <IconButton
+                icon="warning"
+                type="warning"
+                size="small"
+                tooltip={t((t) => t.workspace.deprecatedVesselLayer)}
+              />
+            </Link>
+          )}
+          {(infoError || trackError) && !showDeprecatedWarning && (
             <IconButton
               size="small"
               icon="warning"
@@ -368,8 +388,14 @@ function VesselLayerPanel({
           )}
         </div>
         <IconButton
-          icon={layerActive ? (infoError || trackError ? 'warning' : 'more') : undefined}
-          type={infoError || trackError ? 'warning' : 'default'}
+          icon={
+            layerActive
+              ? infoError || trackError || showDeprecatedWarning
+                ? 'warning'
+                : 'more'
+              : undefined
+          }
+          type={infoError || trackError || showDeprecatedWarning ? 'warning' : 'default'}
           loading={trackLoading}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"

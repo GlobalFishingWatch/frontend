@@ -193,7 +193,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
       dataviewInstancesResolvedExtendedUniq.map((dataview) => {
         return {
           ...dataview,
-          deprecated: isDataviewDeprecated(dataview, deprecatedDatasets),
+          deprecated: dataview.deprecated ?? isDataviewDeprecated(dataview, deprecatedDatasets),
         }
       })
     return dataviewInstancesResolvedExtendedUniqDeprecated

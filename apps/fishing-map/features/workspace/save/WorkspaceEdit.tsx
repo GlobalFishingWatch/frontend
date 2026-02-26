@@ -11,6 +11,7 @@ import { Button, InputText, Select } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectUserData } from 'features/user/selectors/user.selectors'
+import { selectIsWorkspaceOwner } from 'features/workspace/workspace.selectors'
 import type {
   UpdateCurrentWorkspaceThunkParams,
   UpdateWorkspaceThunkRejectError,
@@ -60,8 +61,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
     handleDaysFromLatestChange,
   } = useSaveWorkspaceTimerange(workspace)
 
-  const userData = useSelector(selectUserData)
-  const isOwnerWorkspace = workspace?.ownerId === userData?.id
+  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
   const isPassWordEditAccess = workspace?.editAccess === WORKSPACE_PASSWORD_ACCESS
   const validDaysFromLatestValue =
     timeRangeOption === 'dynamic' ? isValidDaysFromLatest(daysFromLatest) : true
@@ -72,8 +72,8 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
       const updateParams: UpdateCurrentWorkspaceThunkParams | UpdateWorkspaceThunkParams = {
         ...workspace,
         name,
-        newPassword: isOwnerWorkspace ? newPassword : undefined,
-        editAccess: isOwnerWorkspace ? editAccess : undefined,
+        newPassword: isWorkspaceOwner ? newPassword : undefined,
+        editAccess: isWorkspaceOwner ? editAccess : undefined,
         state: {
           ...workspace.state,
           daysFromLatest,
@@ -133,7 +133,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
     updateWorkspace()
   }
 
-  const password = isOwnerWorkspace ? newPassword : editPassword
+  const password = isWorkspaceOwner ? newPassword : editPassword
   const passwordDisabled =
     editAccess === WORKSPACE_PASSWORD_ACCESS &&
     editAccess !== workspace?.editAccess &&
@@ -174,7 +174,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
         )}
       </div>
       <div className={styles.row}>
-        {isOwnerWorkspace && (
+        {isWorkspaceOwner && (
           <Select
             options={editOptions}
             direction="top"
@@ -195,7 +195,7 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
             selectedOption={editOptions.find((o) => o.id === editAccess) || editOptions[0]}
           />
         )}
-        {((isPassWordEditAccess && !isOwnerWorkspace) ||
+        {((isPassWordEditAccess && !isWorkspaceOwner) ||
           editAccess === WORKSPACE_PASSWORD_ACCESS) && (
           <InputText
             value={password}
@@ -203,10 +203,10 @@ function EditWorkspace({ workspace, isWorkspaceList = false, onFinish }: EditWor
             type="password"
             testId="create-workspace-password"
             label={
-              isOwnerWorkspace ? t((t) => t.common.setNewPassword) : t((t) => t.common.password)
+              isWorkspaceOwner ? t((t) => t.common.setNewPassword) : t((t) => t.common.password)
             }
             onChange={(e) =>
-              isOwnerWorkspace ? setNewPassword(e.target.value) : setEditPassword(e.target.value)
+              isWorkspaceOwner ? setNewPassword(e.target.value) : setEditPassword(e.target.value)
             }
           />
         )}
