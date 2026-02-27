@@ -5,7 +5,7 @@ import { checkExistPermissionInList } from '@globalfishingwatch/auth-middleware/
 
 import { PRIVATE_SUFIX, PUBLIC_SUFIX } from 'data/config'
 import { selectVesselsDatasets } from 'features/datasets/datasets.selectors'
-import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { selectAllDatasets, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import {
   filterDatasetsByUserType,
   getDatasetLabel,
@@ -28,8 +28,16 @@ const selectSearchDatasetsInWorkspace = createSelector(
     selectAllDatasets,
     selectPrivateUserGroups,
     selectSearchSources,
+    selectDeprecatedDatasets,
   ],
-  (dataviews, vesselsDatasets, allDatasets, privateUserGroups, searchSources) => {
+  (
+    dataviews,
+    vesselsDatasets,
+    allDatasets,
+    privateUserGroups,
+    searchSources,
+    deprecatedDatasets
+  ) => {
     const datasetsIds = [
       ...getDatasetsInDataviews(dataviews),
       ...privateUserGroups.flatMap((group) => {
@@ -47,6 +55,9 @@ const selectSearchDatasetsInWorkspace = createSelector(
       d.id.startsWith(PRIVATE_SUFIX) ? [d.id] : []
     )
     const filteredDatasetsPrioritised = filteredDatasets.filter((d) => {
+      if (deprecatedDatasets[d.id]) {
+        return false
+      }
       if (d.id.startsWith(PUBLIC_SUFIX) && !searchSources?.includes(d.id)) {
         return !privateDatasetsIds.includes(d.id.replace(PUBLIC_SUFIX, PRIVATE_SUFIX))
       }
