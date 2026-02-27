@@ -1326,7 +1326,7 @@
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente este espacio de trabajo?",
     "create": "Crear nuevo",
     "deprecatedActivityLayer": "This layer is using outdated data. Click to add a copy with the latest dataset",
-    "deprecatedVesselLayer": "This layer is using outdated data. Click to search in the latest dataset.",
+    "deprecatedVesselLayer": "This vessel is using outdated data. Click to search in the latest dataset.",
     "edit": "Editar espacio de trabajo",
     "editAccess": "Editar acceso",
     "editName": "Modificar el nombre del espacio de trabajo",
