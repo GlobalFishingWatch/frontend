@@ -2428,6 +2428,13 @@
           "true": "crwdns109046:0crwdne109046:0",
           "false": "crwdns109048:0crwdne109048:0"
         }
+      },
+      "radiance": {
+        "keyword": "crwdns112928:0crwdne112928:0",
+        "enum": {
+          "0": "crwdns112930:0crwdne112930:0",
+          "1000": "crwdns112932:0crwdne112932:0"
+        }
       }
     }
   },
