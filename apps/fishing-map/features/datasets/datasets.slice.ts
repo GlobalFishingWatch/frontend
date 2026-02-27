@@ -211,7 +211,13 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
   ) => {
     const state = getState() as DatasetsSliceState
     const existingIds = selectIds(state) as string[]
-
+    const existingRequestedDatasets = ids.flatMap((id) => {
+      const dataset = selectById(state, id) as Dataset
+      return dataset ? [dataset] : []
+    })
+    if (ids.length === existingRequestedDatasets.length) {
+      return uniqBy([...existingRequestedDatasets], (dataset) => dataset.id)
+    }
     try {
       const { datasetsDeprecated, datasets } = await fetchDatasetsFromApi({
         ids,
@@ -223,7 +229,8 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
       if (Object.keys(datasetsDeprecated).length) {
         dispatch(setDeprecatedDatasets(datasetsDeprecated))
       }
-      return datasets.map(parsePOCsDatasets)
+      const fetchedDatasets = datasets.map(parsePOCsDatasets)
+      return uniqBy([...existingRequestedDatasets, ...fetchedDatasets], (dataset) => dataset.id)
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue(parseAPIError(e))

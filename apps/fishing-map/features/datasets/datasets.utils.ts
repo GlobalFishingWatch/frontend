@@ -575,7 +575,7 @@ export const getAllDatasetAllowedFields = (dataset: Dataset) => {
   return dataset.fieldsAllowed || []
 }
 
-const isDataviewSchemaSupported = (
+export const isDataviewSchemaSupported = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
