@@ -2428,6 +2428,13 @@
           "true": "true",
           "false": "false"
         }
+      },
+      "radiance": {
+        "keyword": "radiance",
+        "enum": {
+          "0": "0",
+          "1000": "1000"
+        }
       }
     }
   },
