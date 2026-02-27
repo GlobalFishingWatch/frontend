@@ -17,7 +17,10 @@ export const getVesselGroupLabel = (vesselGroup: VesselGroup) => {
 }
 
 export const isOutdatedVesselGroup = (vesselGroup: VesselGroup) => {
-  return vesselGroup?.updatedAt && vesselGroup?.updatedAt < VESSEL_GROUPS_REPORT_RELEASE_DATE
+  return (
+    vesselGroup?.updatedAt !== undefined &&
+    vesselGroup?.updatedAt < VESSEL_GROUPS_REPORT_RELEASE_DATE
+  )
 }
 
 export const getVesselGroupVesselsCount = (vesselGroup: VesselGroup) => {
