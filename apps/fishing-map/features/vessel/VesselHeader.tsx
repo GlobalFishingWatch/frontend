@@ -16,6 +16,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import {
   selectVesselProfileColor,
   selectVesselProfileDataview,
+  selectVesselProfileDataviewIntanceResolved,
 } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import {
   selectVesselInfoData,
@@ -28,10 +29,12 @@ import {
 import { setVesselPrintMode } from 'features/vessel/vessel.slice'
 import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.utils'
 import { useVesselProfileBounds } from 'features/vessel/vessel-bounds.hooks'
+import VesselDeprecatedLink from 'features/vessel/VesselDeprecatedLink'
 import VesselGroupAddButton, {
   VesselGroupAddActionButton,
 } from 'features/vessel-groups/VesselGroupAddButton'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
+import { selectIsWorkspaceOwner } from 'features/workspace/workspace.selectors'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { handleOpenImage } from 'utils/img'
@@ -46,6 +49,8 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const isSmallScreen = useSmallScreen()
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
+  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
+  const vesselProfileDataviewIntance = useSelector(selectVesselProfileDataviewIntanceResolved)
   const vessel = useSelector(selectVesselInfoData)
   const vesselColor = useSelector(selectVesselProfileColor)
   const vesselPrintMode = useSelector(selectVesselPrintMode)
@@ -135,6 +140,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
     : undefined
 
   const shipnameLabel = formatInfoField(shipname, 'shipname')
+  const showDeprecatedWarning = isWorkspaceOwner && vesselProfileDataviewIntance?.deprecated
 
   return (
     <div className={cx(styles.summaryContainer, { [styles.sticky]: isSticky })}>
@@ -211,6 +217,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
         </h1>
 
         <div className={styles.actionsContainer}>
+          {showDeprecatedWarning && <VesselDeprecatedLink vesselIdentity={vessel} />}
           {vesselProfileDataview && (
             <VesselDownload
               dataview={vesselProfileDataview}
