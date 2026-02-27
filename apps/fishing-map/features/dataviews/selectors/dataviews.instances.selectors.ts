@@ -33,6 +33,7 @@ import {
 import { createDeepEqualSelector } from 'utils/selectors'
 
 import {
+  selectAllDataviewInstancesResolved,
   selectDataviewInstancesMerged,
   selectDataviewInstancesResolved,
 } from './dataviews.resolvers.selectors'
@@ -191,6 +192,13 @@ export const selectVesselProfileSource = createDeepEqualSelector(
 
 export const selectVesselProfileDataviewIntance = createDeepEqualSelector(
   [selectDataviewInstancesMerged, selectVesselId],
+  (dataviewsInstances, vesselId) => {
+    return dataviewsInstances?.find(({ id }) => vesselId && id && id.includes(vesselId))
+  }
+)
+
+export const selectVesselProfileDataviewIntanceResolved = createDeepEqualSelector(
+  [selectAllDataviewInstancesResolved, selectVesselId],
   (dataviewsInstances, vesselId) => {
     return dataviewsInstances?.find(({ id }) => vesselId && id && id.includes(vesselId))
   }

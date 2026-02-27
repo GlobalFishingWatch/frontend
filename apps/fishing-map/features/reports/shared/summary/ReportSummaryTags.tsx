@@ -26,6 +26,7 @@ import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import Filters from 'features/workspace/shared/LayerFilters'
 import { showSchemaFilter } from 'features/workspace/shared/LayerSchemaFilter'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectIsWorkspaceOwner } from 'features/workspace/workspace.selectors'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 
 import { isTimeComparisonGraph } from '../utils/reports.utils'
@@ -45,6 +46,8 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const selectedReportActivityGraph = useSelector(selectReportActivityGraph)
   const fitAreaInViewport = useFitAreaInViewport()
+  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
+  const showDeprecatedWarning = isWorkspaceOwner && dataview.deprecated
 
   const [filtersUIOpen, setFiltersUIOpen] = useState(false)
   const [colorOpen, setColorOpen] = useState(false)
@@ -159,6 +162,7 @@ export default function ReportSummaryTags({ dataview, allowDelete = false }: Lay
               dataview={dataview}
               className={styles.tag}
               allowDelete={allowDelete}
+              showDeprecatedWarning={showDeprecatedWarning}
             />
             {hasFilterSelected ? (
               filtersAllowed.map(({ id, label }) => (

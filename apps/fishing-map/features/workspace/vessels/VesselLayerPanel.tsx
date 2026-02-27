@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { groupBy } from 'es-toolkit'
-import Link from 'redux-first-router-link'
 
 import type {
   DataviewDatasetConfigParam,
@@ -24,8 +23,6 @@ import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { PRIVATE_ICON } from 'data/config'
-import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
-import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { isGFWOnlyDataset, isPrivateDataset } from 'features/datasets/datasets.utils'
 import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { getVesselIdFromInstanceId } from 'features/dataviews/dataviews.utils'
@@ -36,15 +33,15 @@ import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { selectResourceByUrl } from 'features/resources/resources.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import { getOtherVesselNames, getVesselProperty } from 'features/vessel/vessel.utils'
+import { getOtherVesselNames } from 'features/vessel/vessel.utils'
+import VesselDeprecatedLink from 'features/vessel/VesselDeprecatedLink'
 import VesselLink from 'features/vessel/VesselLink'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectIsWorkspaceOwner, selectWorkspace } from 'features/workspace/workspace.selectors'
-import { WORKSPACE_SEARCH } from 'routes/routes'
+import { selectIsWorkspaceOwner } from 'features/workspace/workspace.selectors'
 import { formatInfoField, getVesselOtherNamesLabel, getVesselShipNameLabel } from 'utils/info'
 
 import FitBounds from '../shared/FitBounds'
@@ -130,8 +127,6 @@ function VesselLayerPanel({
   const trackDatasetId = dataview.datasets?.find((rld) => rld.type === DatasetTypes.Tracks)?.id
   const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
-  const workspace = useSelector(selectWorkspace)
-  const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const infoResource: Resource<IdentityVessel> = useSelector(
     selectResourceByUrl<IdentityVessel>(infoUrl)
   )
@@ -342,34 +337,7 @@ function VesselLayerPanel({
             />
           )}
           {showDeprecatedWarning && vesselData && (
-            <Link
-              className={styles.link}
-              to={{
-                type: WORKSPACE_SEARCH,
-                payload: {
-                  category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-                  workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-                },
-                query: {
-                  searchOption: 'advanced',
-                  query: getVesselProperty(vesselData, 'shipname'),
-                  ssvid: getVesselProperty(vesselData, 'ssvid'),
-                  sources: deprecatedDatasets[vesselData.dataset]
-                    ? [deprecatedDatasets[vesselData.dataset]]
-                    : undefined,
-                  flag: getVesselProperty(vesselData, 'flag')
-                    ? [getVesselProperty(vesselData, 'flag')]
-                    : undefined,
-                },
-              }}
-            >
-              <IconButton
-                icon="warning"
-                type="warning-invert"
-                size="small"
-                tooltip={t((t) => t.workspace.deprecatedVesselLayer)}
-              />
-            </Link>
+            <VesselDeprecatedLink vesselIdentity={vesselData} />
           )}
           {(infoError || trackError) && !showDeprecatedWarning && (
             <IconButton
