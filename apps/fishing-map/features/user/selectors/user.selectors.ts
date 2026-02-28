@@ -16,6 +16,8 @@ export const selectUserData = (state: RootState) => state.user.data
 export const selectUserStatus = (state: RootState) => state.user.status
 export const selectUserLogged = (state: RootState) => state.user.logged
 export const selectIsUserExpired = (state: RootState) => state.user.expired
+export const selectUserTokenExpirationTimestamp = (state: RootState) =>
+  state.user.tokenExpirationTimestamp
 export const selectUserSettings = (state: RootState) => state.user.settings
 export const selectLanguage = (state: RootState) => state.user.language
 
