@@ -33,7 +33,6 @@
 
 .option {
   flex: 1;
-  min-width: max-content;
   line-height: 1;
 }
 
@@ -44,6 +43,7 @@
   border-radius: var(--size-M);
   background-color: transparent;
   color: var(--color-secondary-blue);
+  height: auto;
 }
 
 .optionActive {
@@ -80,5 +80,11 @@
 
   .option:not([aria-checked='true']) {
     display: none;
+  }
+}
+
+@media (width >= 767px) {
+  .option button {
+    padding: 0.8rem;
   }
 }

@@ -1,5 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { jwtDecode } from 'jwt-decode'
 
 import {
   getAccessTokenFromUrl,
@@ -27,6 +28,7 @@ export interface UserSettings {
 interface UserState {
   logged: boolean
   expired: boolean
+  tokenExpirationTimestamp: number | null
   language: Locale
   status: AsyncReducerStatus
   data: UserData | null
@@ -36,6 +38,7 @@ interface UserState {
 const initialState: UserState = {
   logged: false,
   expired: false,
+  tokenExpirationTimestamp: null,
   language: Locale.en,
   status: AsyncReducerStatus.Idle,
   data: null,
@@ -136,14 +139,28 @@ const userSlice = createSlice({
     })
     builder.addCase(fetchUserThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
-      state.logged = true // loggs as true even if is guest user (not logged in)
+      state.logged = true
       state.data = action.payload
+      if (GFWAPI.token && action.payload.type !== 'guest') {
+        try {
+          const { exp } = jwtDecode<{ exp: number }>(GFWAPI.token)
+          state.tokenExpirationTimestamp = exp * 1000
+          state.expired = false
+        } catch (e: any) {
+          console.warn('Failed to decode JWT token', e)
+          state.tokenExpirationTimestamp = null
+        }
+      } else {
+        state.tokenExpirationTimestamp = null
+      }
     })
     builder.addCase(fetchUserThunk.rejected, (state) => {
       state.status = AsyncReducerStatus.Error
     })
     builder.addCase(logoutUserThunk.fulfilled, (state) => {
       state.logged = false
+      state.expired = false
+      state.tokenExpirationTimestamp = null
       state.data = null
     })
   },

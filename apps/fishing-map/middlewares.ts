@@ -23,8 +23,13 @@ export const logoutUserMiddleware: Middleware =
     if (isRejectedWithValue(action)) {
       const state = getState()
       const isGuestUser = selectIsGuestUser(state)
-      const payload = action.payload as AsyncError & UpdateWorkspaceThunkRejectError
-      if (!isGuestUser && isUnauthorized(payload) && !payload.isWorkspaceWrongPassword) {
+      const payload = action.payload as AsyncError &
+        UpdateWorkspaceThunkRejectError & { refreshError?: boolean }
+      if (
+        !isGuestUser &&
+        (payload.refreshError || isUnauthorized(payload)) &&
+        !payload.isWorkspaceWrongPassword
+      ) {
         dispatch(setLoginExpired(true))
       }
     }
