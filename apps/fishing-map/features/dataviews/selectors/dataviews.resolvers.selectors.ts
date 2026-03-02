@@ -17,12 +17,13 @@ import {
   selectResources,
 } from '@globalfishingwatch/dataviews-client'
 
-import { selectAllDatasets } from 'features/datasets/datasets.slice'
+import { selectAllDatasets, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import {
   getIsVesselDataviewInstanceId,
   getVesselDataviewInstanceDatasetConfig,
   getVesselIdFromInstanceId,
+  isDataviewDeprecated,
 } from 'features/dataviews/dataviews.utils'
 import { selectDataviewInstancesInjected } from 'features/dataviews/selectors/dataviews.injected.selectors'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
@@ -84,6 +85,7 @@ export const selectAllDataviewInstancesResolved = createSelector(
     selectTrackCorrectionId,
     selectHighlightedTime,
     selectTrackCorrectionTimerange,
+    selectDeprecatedDatasets,
   ],
   (
     dataviewInstances,
@@ -96,7 +98,8 @@ export const selectAllDataviewInstancesResolved = createSelector(
     trackCorrectionVesselDataviewId,
     trackCorrectionId,
     highlightedTime,
-    trackCorrectionTimerange
+    trackCorrectionTimerange,
+    deprecatedDatasets
   ): UrlDataviewInstance[] | undefined => {
     if (!dataviews?.length || !datasets?.length || !dataviewInstances?.length) {
       return EMPTY_ARRAY
@@ -186,7 +189,14 @@ export const selectAllDataviewInstancesResolved = createSelector(
         dataviewInstancesResolvedExtended
       )
     }
-    return dataviewInstancesResolvedExtendedUniq
+    const dataviewInstancesResolvedExtendedUniqDeprecated =
+      dataviewInstancesResolvedExtendedUniq.map((dataview) => {
+        return {
+          ...dataview,
+          deprecated: dataview.deprecated ?? isDataviewDeprecated(dataview, deprecatedDatasets),
+        }
+      })
+    return dataviewInstancesResolvedExtendedUniqDeprecated
   }
 )
 

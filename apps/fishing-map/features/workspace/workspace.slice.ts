@@ -321,13 +321,14 @@ export const fetchWorkspaceThunk = createAsyncThunk(
   {
     condition: ({ workspaceId }, { getState }) => {
       const rootState = getState() as any
+      const workspaceStatus = selectWorkspaceStatus(rootState)
+      const isLoading = workspaceStatus === AsyncReducerStatus.Loading
       if (!workspaceId || workspaceId === DEFAULT_WORKSPACE_ID) {
         const currentWorkspaceId = selectCurrentWorkspaceId(rootState)
-        return DEFAULT_WORKSPACE_ID !== currentWorkspaceId
+        return DEFAULT_WORKSPACE_ID !== currentWorkspaceId && !isLoading
       }
-      const workspaceStatus = selectWorkspaceStatus(rootState)
       // Fetched already in progress, don't need to re-fetch
-      return workspaceStatus !== AsyncReducerStatus.Loading
+      return !isLoading
     },
   }
 )

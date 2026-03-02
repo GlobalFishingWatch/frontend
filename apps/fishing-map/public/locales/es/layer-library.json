@@ -149,6 +149,11 @@
     "moreInfoLink": "",
     "name": "Puertos"
   },
+  "port-locations-vms": {
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
+    "moreInfoLink": "",
+    "name": "Ports (VMS)"
+  },
   "port-visits": {
     "description": "Los puertos se basan en el conjunto de datos de fondeaderos de Global Fishing Watch, una base de datos global de lugares de fondeo donde se congregan las embarcaciones. Este conjunto de datos incluye más de 160.000 puntos de fondeo individuales, que se agrupan en aproximadamente 32.000 puertos. ",
     "moreInfoLink": "",

@@ -44,7 +44,7 @@ import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.s
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { htmlSafeParse, options } from 'utils/html-parser'
+import { htmlSafeParse } from 'utils/html-parser'
 
 import ActivitySection from './activity/ActivitySection'
 import ContextAreaSection from './context-areas/ContextAreaSection'
@@ -52,14 +52,12 @@ import EnvironmentalSection from './environmental/EnvironmentalSection'
 import EventsSection from './events/EventsSection'
 import VesselGroupSection from './vessel-groups/VesselGroupsSection'
 import VesselsSection from './vessels/VesselsSection'
-import { useMigrateWorkspaceToast } from './workspace-migration.hooks'
 
 import styles from './Workspace.module.css'
 
 function Workspace() {
   useHideLegacyActivityCategoryDataviews()
   useUserExpiredToast()
-  useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)

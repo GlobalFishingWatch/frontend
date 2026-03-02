@@ -175,6 +175,9 @@ export const VesselActivitySummary = () => {
                 : visibleEvents === 'none'
                   ? false
                   : visibleEvents.includes(eventType)
+            if ((eventType === EventTypes.Gap || eventType === EventTypes.Gaps) && !events) {
+              return null
+            }
             return (
               <li key={eventType} className={styles.eventTypeRowContainer}>
                 <Switch

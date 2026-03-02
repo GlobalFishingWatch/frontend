@@ -52,7 +52,7 @@ export type DataviewWithFilters =
   | UrlDataviewInstance
   | Pick<Dataview, 'category' | 'config' | 'datasets' | 'filtersConfig'>
 
-const isDataviewFilterSupported = (
+export const isDataviewFilterSupported = (
   dataview: DataviewWithFilters,
   filter: SupportedDatasetFilter
 ) => {

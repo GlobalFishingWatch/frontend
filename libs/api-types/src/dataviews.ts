@@ -231,6 +231,8 @@ export enum DataviewCategory {
 export type Dataview<Type = any, Category = DataviewCategory> = {
   id: number
   slug: string
+  // This can be defined in the API configurationor added at runtime when one of its dataset is deprecated
+  deprecated?: boolean
   name: string
   app: ApiAppName
   description: string
@@ -253,6 +255,7 @@ export type DataviewInstance<Type = any> = Partial<Omit<Dataview<Type>, 'id' | '
   config?: DataviewConfig<Type>
   datasetsConfig?: DataviewDatasetConfig[]
   datasetsConfigMigration?: DatasetsMigration
+  injected?: boolean
   origin?: DataviewInstanceOrigin
   deleted?: boolean
 }
