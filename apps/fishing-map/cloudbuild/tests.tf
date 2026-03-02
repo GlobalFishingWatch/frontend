@@ -29,14 +29,18 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
       id         = "Run integration tests"
       name       = "mcr.microsoft.com/playwright:v1.57.0-noble"
       entrypoint = "bash"
+      env = [
+        "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
+        "NEXT_PUBLIC_WORKSPACE_ENV=development",
+      ]
       args = ["-c", <<EOF
         set +e  # Don't exit on error
-        
+
         yarn install
 
         # Fetch origin/develop for nx affected (Cloud Build uses shallow clone)
         git fetch origin develop --depth=100 2>/dev/null || git fetch origin develop 2>/dev/null || true
-        
+
         # Fetch current branch with depth to ensure we have history
         git fetch --depth=10 2>/dev/null || true
 
@@ -50,7 +54,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
         # Run tests, save output to file, and capture exit code
         yarn nx affected -t test --base="$$BASE" --head=HEAD --browser="chromium" > /workspace/test-output.txt 2>&1
         echo $$? > /workspace/test-exit-code.txt
-        
+
         # Display the output
         cat /workspace/test-output.txt
 
@@ -59,11 +63,11 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
 
         # Generate detailed summary for PR comment
         EXIT_CODE=$$(cat /workspace/test-exit-code.txt)
-        
+
         if [ $$EXIT_CODE -eq 0 ]; then
           echo "## ✅ Integration Tests Passed" > /workspace/summary.txt
           echo "" >> /workspace/summary.txt
-          
+
           # Extract test summary if available
           if grep -q "Test Suites:" /workspace/test-output-clean.txt; then
             echo "\`\`\`" >> /workspace/summary.txt
@@ -73,7 +77,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
         else
           echo "## ❌ Integration Tests Failed" > /workspace/summary.txt
           echo "" >> /workspace/summary.txt
-          
+
           # Extract test summary statistics
           if grep -q "Test Suites:" /workspace/test-output-clean.txt; then
             echo "### Summary" >> /workspace/summary.txt
@@ -82,7 +86,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
             echo "\`\`\`" >> /workspace/summary.txt
             echo "" >> /workspace/summary.txt
           fi
-          
+
           # Add full test output in collapsible section
           echo "<details>" >> /workspace/summary.txt
           echo "<summary>Full Test Output</summary>" >> /workspace/summary.txt
@@ -92,7 +96,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
           echo "\`\`\`" >> /workspace/summary.txt
           echo "</details>" >> /workspace/summary.txt
         fi
-        
+
         # Exit with the captured code
         exit $$(cat /workspace/test-exit-code.txt)
       EOF
@@ -134,7 +138,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
         set -euo pipefail
         if [ $BRANCH_NAME = 'main' ]; then
           exit 0
-        fi  
+        fi
         apt-get update -y && apt-get install -y openssl curl jq
 
         client_id=$_APP_ID
@@ -190,25 +194,25 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
         set -euo pipefail
         if [ $BRANCH_NAME = 'main' ]; then
           exit 0
-        fi  
+        fi
         echo "Installing curl and jq..."
         apk add --no-cache curl jq >/dev/null 2>&1
         echo "Looking for PR associated with branch: $BRANCH_NAME"
-        
+
         GITHUB_TOKEN=$$(cat /workspace/token.txt)
-        
+
         # Find PR number
         PR_NUMBER=$$(curl -s -H "Authorization: token $$GITHUB_TOKEN" \
           "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/pulls?state=open&head=$_REPO_OWNER:$BRANCH_NAME" \
           | jq -r '.[0].number // empty')
-        
+
         if [ -z "$$PR_NUMBER" ]; then
           echo "No open PR found for branch '$BRANCH_NAME'. Skipping PR comment."
           exit 0
         fi
-        
+
         echo "PR found: #$$PR_NUMBER"
-        
+
         # Prepare comment body
         echo "" >> /workspace/summary.txt
         echo "📊 Integration Tests Traces [here](https://storage.googleapis.com/gfw-playwright-traces-ttl30/frontend/integration-tests/$BUILD_ID/traces.tar.gz)" >> /workspace/summary.txt
@@ -216,13 +220,13 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
         FOOTER="Posted by [this build](https://console.cloud.google.com/cloud-build/builds;region=us-central1/$BUILD_ID?project=gfw-int-infrastructure)"
         jq -n --rawfile summary /workspace/summary.txt --arg footer "$$FOOTER" --arg marker "$$COMMENT_MARKER" \
           '{body: ($$marker + "\n" + $$summary + "\n\n" + $$footer)}' > /tmp/payload.json
-        
+
         # Search for existing bot comment
         echo "Searching for existing bot comment..."
         EXISTING_COMMENT_ID=$$(curl -s -H "Authorization: token $$GITHUB_TOKEN" \
           "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/$$PR_NUMBER/comments" \
           | jq -r ".[] | select(.body | contains(\"$$COMMENT_MARKER\")) | .id" | head -1)
-        
+
         if [ -n "$$EXISTING_COMMENT_ID" ]; then
           echo "Found existing comment ID: $$EXISTING_COMMENT_ID. Updating..."
           curl -s -X PATCH \

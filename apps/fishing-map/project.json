@@ -127,6 +127,12 @@
         "cwd": "apps/fishing-map"
       }
     },
+    "test:ci": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "docker compose -f apps/fishing-map/docker-compose.test.yml run --rm test"
+      }
+    },
     "test:coverage": {
       "executor": "nx:run-commands",
       "options": {
