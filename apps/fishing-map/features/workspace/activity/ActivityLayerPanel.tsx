@@ -32,7 +32,7 @@ import MapLegend from 'features/workspace/shared/MapLegend'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import {
   selectIsTurningTidesWorkspace,
-  selectIsWorkspaceOwner,
+  selectIsWorkspaceOwnerOrDefault,
 } from 'features/workspace/workspace.selectors'
 import { useLocationConnect } from 'routes/routes.hook'
 import { getActivityFilters, getActivitySources, getEventLabel } from 'utils/analytics'
@@ -73,7 +73,7 @@ function ActivityLayerPanel({
   const { deleteDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
   const { dispatchQueryParams } = useLocationConnect()
   const isGFWUser = useSelector(selectIsGFWUser)
-  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
+  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
   const bivariateDataviews = useSelector(selectBivariateDataviews)
   const hintsDismissed = useSelector(selectHintsDismissed)
   const isTurningTidesWorkspace = useSelector(selectIsTurningTidesWorkspace)

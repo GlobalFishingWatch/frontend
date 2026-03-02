@@ -27,7 +27,7 @@ import {
   setVesselGroupModalVessels,
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
-import { selectIsWorkspaceOwner } from 'features/workspace/workspace.selectors'
+import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
 import LoginButtonWrapper from 'routes/LoginButtonWrapper'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
@@ -45,7 +45,7 @@ export default function VesselGroupReportTitle() {
   const flags = useSelector(selectReportVesselGroupFlags)
   const userIsVesselGroupOwner = useSelector(selectUserIsVesselGroupOwner)
   const { isLoading, migrateToLatestVesselGroup } = useMigrateToLatestVesselGroup()
-  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
+  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const hasDeprecatedVesselGroupVessels = hasVesselGroupVesselsDeprecated(
     vesselGroup?.vessels,

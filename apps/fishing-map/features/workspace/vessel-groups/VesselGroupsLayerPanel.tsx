@@ -33,7 +33,7 @@ import {
 } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectIsWorkspaceOwner } from 'features/workspace/workspace.selectors'
+import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 
@@ -77,7 +77,7 @@ function VesselGroupLayerPanel({
   const setMapCoordinates = useSetMapCoordinates()
   const vesselGroupStatus = useSelector(selectVesselGroupsStatus)
   const isOutdated = isOutdatedVesselGroup(vesselGroup!)
-  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
+  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
   const isVesselGroupOwner = vesselGroup?.ownerId === userData?.id
   const showDeprecatedWarning = isWorkspaceOwner && dataview.deprecated
 
