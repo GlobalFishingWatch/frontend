@@ -3423,7 +3423,7 @@
     }
   },
   "public-global-vessel-identity": {
-    "name": "AIS (all vessel types)",
+    "name": "AIS",
     "description": "Vessel Identity (all shiptypes)",
     "schema": {
       "registryTmtExtraFields": "registryTmtExtraFields"
