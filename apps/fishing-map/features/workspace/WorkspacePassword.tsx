@@ -27,7 +27,7 @@ export default function WorkspacePassword() {
   const dispatch = useAppDispatch()
   const workspaceId = useSelector(selectWorkspaceId)
   const workspacePassword = useSelector(selectWorkspacePassword)
-  const fitWorkspaceBounds = useFitWorkspaceBounds()
+  const { fitWorkspaceBounds, fitWorkspaceTimerange } = useFitWorkspaceBounds()
 
   const handlePasswordChange = (event: any) => {
     setPassword(event.target.value)
@@ -45,6 +45,7 @@ export default function WorkspacePassword() {
           fitWorkspaceBounds(workspace)
           dispatch(setWorkspacePassword(VALID_PASSWORD))
         }
+        fitWorkspaceTimerange(workspace)
       }
       setLoading(false)
     } else {
