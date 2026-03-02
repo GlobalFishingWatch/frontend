@@ -61,6 +61,40 @@ import {
   selectVesselId,
 } from 'routes/routes.selectors'
 
+const REPORT_EVENTS_GRAPH_AREA_DATAVIEW_ID = `report-event-graph-area`
+const COMPARISON_INJECTED_DATAVIEW_ORIGIN = 'comparison'
+const EVENTS_REPORT_SUBCATEGORIES: ReportEventsSubCategory[] = [
+  EventTypes.Encounter,
+  EventTypes.Loitering,
+  EventTypes.Gap,
+  EventTypes.Port,
+]
+
+export function getIsInjectedDataview(dataview?: UrlDataviewInstance) {
+  if (!dataview) {
+    return false
+  }
+  if (dataview.injected) {
+    return true
+  }
+  const isVesselGroupEventsInjectedDataview = EVENTS_REPORT_SUBCATEGORIES.some((category) => {
+    return dataview.id === getVesselGroupEventsDataviewInstance('test-is-injected', category)?.id
+  })
+  const isPortReportDataview =
+    dataview.id === PORT_VISITS_REPORT_DATAVIEW_ID ||
+    dataview.id === PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG ||
+    dataview.id === PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG
+  const isAreaReportDataview = dataview.id === REPORT_EVENTS_GRAPH_AREA_DATAVIEW_ID
+  const isComparisonDataview = dataview.origin === COMPARISON_INJECTED_DATAVIEW_ORIGIN
+
+  return (
+    isVesselGroupEventsInjectedDataview ||
+    isPortReportDataview ||
+    isAreaReportDataview ||
+    isComparisonDataview
+  )
+}
+
 export const selectVesselProfileDataviewInstancesInjected = createSelector(
   [
     selectWorkspaceDataviewInstancesMerged,
@@ -80,6 +114,9 @@ export const selectVesselProfileDataviewInstancesInjected = createSelector(
     vesselId,
     vesselInfoData
   ): UrlDataviewInstance[] | undefined => {
+    if (!workspaceDataviewInstancesMerged) {
+      return [] as UrlDataviewInstance[]
+    }
     const dataviewInstancesInjected = [] as UrlDataviewInstance[]
     const hasCurrentEvent = isAnyVesselLocation && currentVesselEvent
     const eventStartDateTime = hasCurrentEvent
@@ -149,7 +186,7 @@ export const selectVesselProfileDataviewInstancesInjected = createSelector(
       }
     }
 
-    return dataviewInstancesInjected
+    return dataviewInstancesInjected.map((d) => ({ ...d, injected: true }))
   }
 )
 
@@ -166,6 +203,9 @@ export const selectVGRDataviewInstancesInjected = createSelector(
     reportCategory,
     reportVesselGroupId
   ): UrlDataviewInstance[] | undefined => {
+    if (!workspaceDataviewInstancesMerged) {
+      return [] as UrlDataviewInstance[]
+    }
     const dataviewInstancesInjected = [] as UrlDataviewInstance[]
     if (isVesselGroupReportLocation) {
       let vesselGroupDataviewInstance = workspaceDataviewInstancesMerged?.find((dataview) =>
@@ -192,13 +232,7 @@ export const selectVGRDataviewInstancesInjected = createSelector(
         })
       }
       if (reportCategory === 'events') {
-        const eventsReportSubCategories: ReportEventsSubCategory[] = [
-          EventTypes.Encounter,
-          EventTypes.Loitering,
-          EventTypes.Gap,
-          EventTypes.Port,
-        ]
-        eventsReportSubCategories.forEach((category) => {
+        EVENTS_REPORT_SUBCATEGORIES.forEach((category) => {
           const eventsDataviewInstance = getVesselGroupEventsDataviewInstance(
             reportVesselGroupId,
             category
@@ -219,7 +253,7 @@ export const selectVGRDataviewInstancesInjected = createSelector(
         })
       }
     }
-    return dataviewInstancesInjected
+    return dataviewInstancesInjected.map((d) => ({ ...d, injected: true }))
   }
 )
 
@@ -238,6 +272,9 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
     reportPortId,
     portReportDatasetId
   ): UrlDataviewInstance[] | undefined => {
+    if (!workspaceDataviewInstancesMerged) {
+      return [] as UrlDataviewInstance[]
+    }
     const dataviewInstancesInjected = [] as UrlDataviewInstance[]
 
     if (isPortReportLocation) {
@@ -296,7 +333,7 @@ export const selectPortReportDataviewInstancesInjected = createSelector(
         dataviewInstancesInjected.push(portVisitDataviewInstance)
       }
     }
-    return dataviewInstancesInjected
+    return dataviewInstancesInjected.map((d) => ({ ...d, injected: true }))
   }
 )
 
@@ -309,11 +346,14 @@ export const selectAreaReportDataviewInstancesInjected = createSelector(
     selectReportComparisonDataviewIds,
   ],
   (
-    workspaceDataviewInstances,
+    workspaceDataviewInstancesMerged,
     reportCategory,
     reportEventsGraph,
     reportComparisonDataviewIds
   ): UrlDataviewInstance[] | undefined => {
+    if (!workspaceDataviewInstancesMerged) {
+      return [] as UrlDataviewInstance[]
+    }
     const dataviewInstancesInjected = [] as UrlDataviewInstance[]
     const reportAreaDataviewId =
       REPORT_EVENTS_GRAPH_DATAVIEW_AREA_SLUGS[
@@ -321,7 +361,7 @@ export const selectAreaReportDataviewInstancesInjected = createSelector(
       ]
     if (reportCategory === 'events' && reportAreaDataviewId) {
       const contextDataviewInstance: UrlDataviewInstance = {
-        id: `report-event-graph-area`,
+        id: REPORT_EVENTS_GRAPH_AREA_DATAVIEW_ID,
         dataviewId: reportAreaDataviewId,
         config: {
           visible: true,
@@ -330,7 +370,7 @@ export const selectAreaReportDataviewInstancesInjected = createSelector(
       dataviewInstancesInjected.push(contextDataviewInstance)
     }
     if (reportComparisonDataviewIds?.compare) {
-      const mainLayer = workspaceDataviewInstances?.find(
+      const mainLayer = workspaceDataviewInstancesMerged?.find(
         (dataview) => dataview.id === reportComparisonDataviewIds.main
       )
       const compareLayer = LIBRARY_LAYERS?.find(
@@ -341,7 +381,7 @@ export const selectAreaReportDataviewInstancesInjected = createSelector(
       if (compareLayer) {
         const compareDataviewInstance = {
           id: reportComparisonDataviewIds.compare,
-          origin: 'comparison',
+          origin: COMPARISON_INJECTED_DATAVIEW_ORIGIN,
           category: compareLayer?.category,
           dataviewId: compareLayer?.dataviewId,
           datasetsConfig: compareLayer?.datasetsConfig,
@@ -356,7 +396,7 @@ export const selectAreaReportDataviewInstancesInjected = createSelector(
       }
     }
 
-    return dataviewInstancesInjected
+    return dataviewInstancesInjected.map((d) => ({ ...d, injected: true }))
   }
 )
 

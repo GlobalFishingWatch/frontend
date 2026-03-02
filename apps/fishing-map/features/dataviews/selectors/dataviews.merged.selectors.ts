@@ -6,6 +6,7 @@ import {
   type UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
 
+import { getIsInjectedDataview } from 'features/dataviews/selectors/dataviews.injected.selectors'
 import {
   selectWorkspaceDataviewInstances,
   selectWorkspaceStatus,
@@ -33,9 +34,17 @@ export const selectWorkspaceDataviewInstancesMerged = createSelector(
     if (isWorkspaceLocation && workspaceStatus !== AsyncReducerStatus.Finished) {
       return
     }
+    // There was a bug where the windows.prompt asked to the user to save the workspace before leaving the page and
+    // it was creating duplicated dataview instances because the injected dataviews were included into the saved workspace.
+    // Later when the workspace is loaded, the injected dataviews are included again and this creates duplicated dataview instances.
+    // To fix it there is a new injected flag into the dataview instance to avoid including them,
+    // but this workaround is needed to discard already saved workspaces:
+    const cleanWorkspaceDataviewInstances = workspaceDataviewInstances?.filter((d) => {
+      return !getIsInjectedDataview(d)
+    })
     const mergedDataviewInstances =
       mergeWorkspaceUrlDataviewInstances(
-        workspaceDataviewInstances as DataviewInstance<any>[],
+        cleanWorkspaceDataviewInstances as DataviewInstance<any>[],
         urlDataviewInstances
       ) || []
 
