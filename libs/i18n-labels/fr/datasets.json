@@ -3433,7 +3433,7 @@
     }
   },
   "public-global-vessel-identity": {
-    "name": "AIS (tous types de navires)",
+    "name": "AIS",
     "description": "Identité des navires (tous types de navires)",
     "schema": {
       "registryTmtExtraFields": "registryTmtExtraFields"
