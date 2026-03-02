@@ -50,7 +50,13 @@ interface VesselGroupModalState {
   isOwnedByUser: boolean
 }
 
-type SearchVesselsBody = { datasets: string[]; where?: string; ids?: string[] }
+type SearchVesselsBody = {
+  datasets: string[]
+  where?: string
+  ids?: string[]
+  activeAfter?: string
+  activeBefore?: string
+}
 type FetchSearchVessels = { url: string; body?: SearchVesselsBody; signal?: AbortSignal }
 
 const fetchSearchVessels = async ({
@@ -113,12 +119,16 @@ type SearchVesselsInVGParams = {
   signal: AbortSignal
   ids: string[]
   idField?: IdField
+  transmissionDateFrom?: string
+  transmissionDateTo?: string
 }
 const searchVesselsInVesselGroup = async ({
   datasets,
   signal,
   ids,
   idField = 'vesselId',
+  transmissionDateFrom,
+  transmissionDateTo,
 }: SearchVesselsInVGParams) => {
   if (!datasets || !ids?.length) {
     throw new Error(ids ? 'No vessel ids provided' : 'No datasets provided')
@@ -131,10 +141,23 @@ const searchVesselsInVesselGroup = async ({
     throw new Error('Missing search url')
   }
 
-  const searchKey = idField === 'vesselId' ? 'ids' : idField === 'mmsi' ? 'ssvids' : 'imos'
+  const searchKey = idField === 'vesselId' ? 'id' : idField === 'mmsi' ? 'ssvid' : 'imo'
+  const whereClauses: string[] = [
+    `(${uniq(ids)
+      .map((id) => `${searchKey} = "${id}"`)
+      .join(' OR ')})`,
+  ]
+  if (transmissionDateFrom) {
+    whereClauses.push(`transmissionDateFrom < "${transmissionDateFrom}"`)
+  } else if (transmissionDateTo) {
+    whereClauses.push(`transmissionDateTo > "${transmissionDateTo}"`)
+  }
   const searchResults = await fetchAllSearchVessels({
     url: `${url}`,
-    body: { datasets: datasetIds, [searchKey]: uniq(ids) },
+    body: {
+      datasets: datasetIds,
+      where: whereClauses.join(' AND '),
+    },
     signal,
   })
 
@@ -192,7 +215,7 @@ const initialState: VesselGroupModalState = {
   confirmationMode: 'save',
   vessels: null,
   search: {
-    idField: '',
+    idField: 'mmsi',
     text: '',
     status: AsyncReducerStatus.Idle,
     error: null,
@@ -203,7 +226,19 @@ const initialState: VesselGroupModalState = {
 export const searchVesselGroupsVesselsThunk = createAsyncThunk(
   'vessel-groups/searchVessels',
   async (
-    { ids, idField, datasets = [] }: { ids: string[]; idField: IdField; datasets?: string[] },
+    {
+      ids,
+      idField,
+      datasets = [],
+      transmissionDateFrom,
+      transmissionDateTo,
+    }: {
+      ids: string[]
+      idField: IdField
+      datasets?: string[]
+      transmissionDateFrom?: string
+      transmissionDateTo?: string
+    },
     { signal, rejectWithValue, getState }
   ) => {
     try {
@@ -217,6 +252,8 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
         signal,
         ids,
         idField,
+        transmissionDateFrom,
+        transmissionDateTo,
       })
       return vesselGroupVessels
     } catch (e: any) {

@@ -113,9 +113,9 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
           className={styles.idsArea}
           value={searchText}
           label={
-            hasGroupVesselsToSearch
-              ? `${searchIdField} (${vesselGroupVesselsToSearch?.length})`
-              : searchIdField
+            t((t) => t.vesselGroup.idsList, {
+              field: searchIdField,
+            }) + (hasGroupVesselsToSearch ? ` (${vesselGroupVesselsToSearch?.length})` : '')
           }
           placeholder={t((t) => t.vesselGroup.idsPlaceholder, {
             field: searchIdField,
@@ -124,7 +124,25 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
         />
       </div>
       <div className={styles.dropzoneContainer}>
-        <FileDropzone className={styles.dropzone} onFileLoaded={onCSVLoaded} fileTypes={['CSV']} />
+        <label className={styles.dropzoneLabel}>
+          {t((t) => t.dataset.file)}{' '}
+          <a
+            href="https://globalfishingwatch.org/user-guide/#Vessel%20groups"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.dropzoneLink}
+          >
+            ({t((t) => t.vesselGroup.csvLink)})
+          </a>
+        </label>
+        <FileDropzone
+          className={styles.dropzone}
+          onFileLoaded={onCSVLoaded}
+          fileTypes={['CSV']}
+          label={t((t) => t.vesselGroup.csvPlaceholder, {
+            field: searchIdField,
+          })}
+        />
       </div>
     </div>
   )
