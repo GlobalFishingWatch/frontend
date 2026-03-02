@@ -22,7 +22,7 @@ import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import Remove from 'features/workspace/shared/Remove'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
-import { selectIsWorkspaceOwner } from 'features/workspace/workspace.selectors'
+import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
 
 import DatasetNotFound from '../shared/DatasetNotFound'
 import InfoModal from '../shared/InfoModal'
@@ -52,7 +52,7 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
   const { migrateToLatestDataviewInstance } = useMigrateToLatestDataview()
   const isGFWUser = useSelector(selectIsGFWUser)
   const readOnly = useSelector(selectReadOnly)
-  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
+  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
   const showSchemaFilters = filtersAllowed.length > 0
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0

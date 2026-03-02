@@ -34,7 +34,7 @@ import VesselGroupAddButton, {
   VesselGroupAddActionButton,
 } from 'features/vessel-groups/VesselGroupAddButton'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
-import { selectIsWorkspaceOwner } from 'features/workspace/workspace.selectors'
+import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
 import { useCallbackAfterPaint } from 'hooks/paint.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { handleOpenImage } from 'utils/img'
@@ -49,7 +49,7 @@ const VesselHeader = ({ isSticky }: { isSticky?: boolean }) => {
   const isSmallScreen = useSmallScreen()
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
-  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
+  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
   const vesselProfileDataviewIntance = useSelector(selectVesselProfileDataviewIntanceResolved)
   const vessel = useSelector(selectVesselInfoData)
   const vesselColor = useSelector(selectVesselProfileColor)
