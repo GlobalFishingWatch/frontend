@@ -1,6 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { memoize, uniqBy } from 'es-toolkit'
+import { memoize, uniq, uniqBy } from 'es-toolkit'
 import { stringify } from 'qs'
 
 import type { FetchOptions, ParsedAPIError } from '@globalfishingwatch/api-client'
@@ -8,7 +8,7 @@ import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type { APIPagination, VesselGroup, VesselGroupUpsert } from '@globalfishingwatch/api-types'
 
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { getDatasetByIdsThunk } from 'features/datasets/datasets.slice'
 import type { RootState } from 'store'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
 import { asyncInitialState, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
@@ -75,7 +75,7 @@ export const fetchVesselGroupsThunk = createAsyncThunk<
   { ids: string[] } | undefined
 >(
   'vessel-groups/fetch',
-  async ({ ids = [] } = {} as { ids: string[] }, { rejectWithValue }) => {
+  async ({ ids = [] } = {} as { ids: string[] }, { dispatch, rejectWithValue }) => {
     try {
       const vesselGroupsParams = {
         ...DEFAULT_PAGINATION_PARAMS,
@@ -84,6 +84,12 @@ export const fetchVesselGroupsThunk = createAsyncThunk<
       }
       const url = `/vessel-groups?${stringify(vesselGroupsParams)}`
       const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(url, { cache: 'reload' })
+      const vesselGroupVesselDatasets = uniq(
+        (vesselGroups.entries || []).flatMap((vG) =>
+          (vG.vessels || []).flatMap((v) => v.dataset || [])
+        )
+      )
+      await dispatch(getDatasetByIdsThunk({ ids: vesselGroupVesselDatasets }))
       return vesselGroups.entries
     } catch (e: any) {
       return rejectWithValue(parseAPIError(e))
