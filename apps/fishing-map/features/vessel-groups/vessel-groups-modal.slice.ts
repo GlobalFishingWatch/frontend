@@ -219,7 +219,7 @@ const initialState: VesselGroupModalState = {
   name: '',
   vessels: null,
   search: {
-    idField: '',
+    idField: 'mmsi',
     text: '',
     status: AsyncReducerStatus.Idle,
     error: null,
