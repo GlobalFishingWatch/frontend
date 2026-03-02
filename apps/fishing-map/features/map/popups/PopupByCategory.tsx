@@ -348,7 +348,6 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               </Fragment>
             )
           }
-
           case DataviewCategory.Vessels: {
             const trackFeatures = (features as VesselEventPickingObject[]).filter(
               (feature) => feature.subcategory === DataviewType.Track
@@ -369,7 +368,6 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               </Fragment>
             )
           }
-
           case DataviewCategory.Workspaces: {
             return (
               <WorkspacePointsTooltipSection
@@ -379,7 +377,6 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               />
             )
           }
-
           case 'rulers': {
             const rulersFeatures = (features as RulerPickingObject[]).filter(
               (f) => f.properties.order === 'start' || f.properties.order === 'end'
@@ -392,7 +389,6 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
               />
             )
           }
-
           default:
             return null
         }

@@ -6,7 +6,7 @@ import { DateTime } from 'luxon'
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
-import { getRelatedDatasetByType, isVMSDataset } from '@globalfishingwatch/datasets-client'
+import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 
@@ -15,6 +15,7 @@ import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
+import { getDatasetSourceTranslated } from 'features/i18n/utils.datasets'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
 import { getEventLabel } from 'utils/analytics'
@@ -80,9 +81,7 @@ function EventsGapTooltipRow({
               <span className={styles.rowText}>
                 <I18nNumber number={feature.count} />{' '}
                 {t((t) => t.event.gap, {
-                  source: isVMSDataset(feature?.datasetId || '')
-                    ? t((t) => t.common.vms)
-                    : t((t) => t.common.ais),
+                  source: getDatasetSourceTranslated({ id: feature?.datasetId || '' }),
                   count: feature.count,
                 })}
                 {!feature.properties.cluster && gapStart && interval && (

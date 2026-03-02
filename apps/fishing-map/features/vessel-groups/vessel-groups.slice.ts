@@ -1,6 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createAsyncThunk, createSelector } from '@reduxjs/toolkit'
-import { memoize, uniqBy } from 'es-toolkit'
+import { memoize, uniq, uniqBy } from 'es-toolkit'
 import { stringify } from 'qs'
 
 import type { FetchOptions, ParsedAPIError } from '@globalfishingwatch/api-client'
@@ -8,7 +8,7 @@ import { GFWAPI, parseAPIError } from '@globalfishingwatch/api-client'
 import type { APIPagination, VesselGroup, VesselGroupUpsert } from '@globalfishingwatch/api-types'
 
 import { DEFAULT_PAGINATION_PARAMS } from 'data/config'
-import { formatI18nDate } from 'features/i18n/i18nDate'
+import { getDatasetByIdsThunk } from 'features/datasets/datasets.slice'
 import type { RootState } from 'store'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
 import { asyncInitialState, AsyncReducerStatus, createAsyncSlice } from 'utils/async-slice'
@@ -75,7 +75,7 @@ export const fetchVesselGroupsThunk = createAsyncThunk<
   { ids: string[] } | undefined
 >(
   'vessel-groups/fetch',
-  async ({ ids = [] } = {} as { ids: string[] }, { rejectWithValue }) => {
+  async ({ ids = [] } = {} as { ids: string[] }, { dispatch, rejectWithValue }) => {
     try {
       const vesselGroupsParams = {
         ...DEFAULT_PAGINATION_PARAMS,
@@ -84,6 +84,12 @@ export const fetchVesselGroupsThunk = createAsyncThunk<
       }
       const url = `/vessel-groups?${stringify(vesselGroupsParams)}`
       const vesselGroups = await GFWAPI.fetch<APIPagination<VesselGroup>>(url, { cache: 'reload' })
+      const vesselGroupVesselDatasets = uniq(
+        (vesselGroups.entries || []).flatMap((vG) =>
+          (vG.vessels || []).flatMap((v) => v.dataset || [])
+        )
+      )
+      await dispatch(getDatasetByIdsThunk({ ids: vesselGroupVesselDatasets }))
       return vesselGroups.entries
     } catch (e: any) {
       return rejectWithValue(parseAPIError(e))
@@ -106,46 +112,6 @@ export const fetchVesselGroupByIdThunk = createAsyncThunk(
         const vesselGroup = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${vesselGroupId}`)
         return vesselGroup
       }
-    } catch (e: any) {
-      return rejectWithValue(parseAPIError(e))
-    }
-  }
-)
-
-export const createVesselGroupThunk = createAsyncThunk(
-  'vessel-groups/create',
-  async (vesselGroupCreate: VesselGroupUpsert, { rejectWithValue }) => {
-    try {
-      const vesselGroupUpsert: VesselGroupUpsert = {
-        ...vesselGroupCreate,
-        vessels: prepareVesselGroupVesselsUpdate(vesselGroupCreate.vessels || []),
-      }
-      const saveVesselGroup: any = async (vesselGroup: VesselGroupUpsert, retrySufix = '') => {
-        let vesselGroupUpdated: VesselGroup
-        try {
-          const name = retrySufix
-            ? vesselGroupUpsert.name + `_${retrySufix}`
-            : vesselGroupUpsert.name
-          vesselGroupUpdated = await GFWAPI.fetch<VesselGroup>('/vessel-groups', {
-            method: 'POST',
-            body: { ...vesselGroup, name },
-          } as FetchOptions<any>)
-        } catch (e: any) {
-          // Means we already have a vessel group with this name
-          if (e.status === 422 && e.message.includes('Id') && e.message.includes('duplicated')) {
-            if (!retrySufix) {
-              return await saveVesselGroup(vesselGroup, formatI18nDate(Date.now()))
-            }
-            window.alert(
-              'You already have a vessel group with this name, please try again with a different name'
-            )
-          }
-          console.warn('Error creating vessel group', e)
-          throw e
-        }
-        return vesselGroupUpdated
-      }
-      return await saveVesselGroup(vesselGroupUpsert)
     } catch (e: any) {
       return rejectWithValue(parseAPIError(e))
     }
@@ -209,6 +175,52 @@ export const updateVesselGroupVesselsThunk = createAsyncThunk(
       }
     } catch (e: any) {
       console.warn(e)
+      return rejectWithValue(parseAPIError(e))
+    }
+  }
+)
+
+export const createVesselGroupThunk = createAsyncThunk(
+  'vessel-groups/create',
+  async (vesselGroupCreate: VesselGroupUpsert, { rejectWithValue, dispatch }) => {
+    try {
+      const vesselGroupUpsert: VesselGroupUpsert = {
+        ...vesselGroupCreate,
+        vessels: prepareVesselGroupVesselsUpdate(vesselGroupCreate.vessels || []),
+      }
+      const saveVesselGroup: any = async (vesselGroup: VesselGroupUpsert, retrySufix = '') => {
+        let vesselGroupUpdated: VesselGroup
+        try {
+          const name = retrySufix
+            ? vesselGroupUpsert.name + `_${retrySufix}`
+            : vesselGroupUpsert.name
+          vesselGroupUpdated = await GFWAPI.fetch<VesselGroup>('/vessel-groups', {
+            method: 'POST',
+            body: { ...vesselGroup, name },
+          } as FetchOptions<any>)
+          if (retrySufix) {
+            const dispatchedAction = await dispatch(
+              updateVesselGroupVesselsThunk({
+                id: vesselGroupUpdated.id,
+                name: vesselGroupUpsert.name,
+              })
+            )
+            if (updateVesselGroupVesselsThunk.fulfilled.match(dispatchedAction)) {
+              vesselGroupUpdated = dispatchedAction.payload?.payload as VesselGroup
+            }
+          }
+        } catch (e: any) {
+          // Means we already have a vessel group with this name
+          if (e.status === 422 && e.message.includes('Id') && e.message.includes('duplicated')) {
+            return await saveVesselGroup(vesselGroup, Date.now())
+          }
+          console.warn('Error creating vessel group', e)
+          throw e
+        }
+        return vesselGroupUpdated
+      }
+      return await saveVesselGroup(vesselGroupUpsert)
+    } catch (e: any) {
       return rejectWithValue(parseAPIError(e))
     }
   }

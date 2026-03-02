@@ -26,6 +26,7 @@
 .env.next
 .env.vite
 .env.tanstack
+.env.vite
 
 npm-debug.log*
 yarn-debug.log*

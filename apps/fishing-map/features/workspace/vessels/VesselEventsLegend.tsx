@@ -5,6 +5,7 @@ import cx from 'classnames'
 import { uniqBy } from 'es-toolkit'
 
 import type { EventType } from '@globalfishingwatch/api-types'
+import { getDatasetSource } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { SwitchEvent } from '@globalfishingwatch/ui-components'
 import { Switch } from '@globalfishingwatch/ui-components'
@@ -13,6 +14,7 @@ import { EVENTS_COLORS, PATH_BASENAME } from 'data/config'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { getEventsDatasetsInDataview } from 'features/datasets/datasets.utils'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
+import { getDatasetSourceTranslated } from 'features/i18n/utils.datasets'
 import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
 import { upperFirst } from 'utils/info'
 
@@ -64,13 +66,15 @@ function VesselEventsLegend({
     })
   }, [eventDatasets, currentVisibleEvents])
 
+  const uniqEventTypes = useMemo(() => uniqBy(eventTypes, (e) => e.eventType), [eventTypes])
+
   if (!showLegend) {
     return null
   }
 
   return (
     <ul className={layerStyles.eventsLegendContainer}>
-      {eventTypes.map(({ datasetId, eventType, active }) => {
+      {uniqEventTypes.map(({ datasetId, eventType, active }) => {
         const color =
           eventType === 'fishing' && tracks.length === 1 ? '#ffffff' : EVENTS_COLORS[eventType]
         return (
@@ -90,12 +94,10 @@ function VesselEventsLegend({
               color={EVENTS_COLORS[eventType]}
             />
             <label className={layerStyles.eventLegendLabel} htmlFor={eventType}>
-              {upperFirst(
-                t((t) => t.event[eventType], {
-                  defaultValue: eventType,
-                  source: t((t) => t.common.ais),
-                })
-              )}
+              {t((t) => t.event[eventType], {
+                defaultValue: eventType,
+                source: getDatasetSourceTranslated(eventDatasets),
+              })}
             </label>
             <div className={cx(layerStyles.iconWrapper, layerStyles[eventType])}>
               <div

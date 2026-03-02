@@ -44,7 +44,7 @@ import {
   LayerGroup,
 } from '../../../utils'
 import { transformTileCoordsToWGS84 } from '../../../utils/coordinates'
-import { PATH_BASENAME } from '../../layers.config'
+import { IS_TEST_ENV, PATH_BASENAME } from '../../layers.config'
 import {
   FOURWINGS_MAX_ZOOM,
   HEATMAP_API_TILES_URL,
@@ -407,7 +407,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
         return
       }
       return await parse(data, FourwingsClustersLoader, {
-        worker: true,
+        worker: !IS_TEST_ENV,
         fourwingsClusters: {
           cols,
           rows,

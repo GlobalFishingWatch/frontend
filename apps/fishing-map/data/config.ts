@@ -33,7 +33,7 @@ export const PATH_BASENAME = process.env.NEXT_PUBLIC_URL || '/map'
 export const REPORT_DAYS_LIMIT =
   typeof process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT !== 'undefined'
     ? parseInt(process.env.NEXT_PUBLIC_REPORT_DAYS_LIMIT)
-    : 366 // 1 year
+    : 364 // 1 year
 
 export const GOOGLE_TAG_MANAGER_ID = process.env.NEXT_PUBLIC_GOOGLE_TAG_MANAGER_ID
 export const GOOGLE_MEASUREMENT_ID = process.env.NEXT_PUBLIC_NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID

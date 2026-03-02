@@ -33,6 +33,11 @@ export const useFitWorkspaceBounds = () => {
       if (viewport && !isAreaReportLocation) {
         setMapCoordinates(viewport)
       }
+    },
+    [isAreaReportLocation, setMapCoordinates, urlViewport]
+  )
+  const fitWorkspaceTimerange = useCallback(
+    async (workspace: Workspace) => {
       if (!urlTimeRange && workspace?.startAt && workspace?.endAt) {
         setTimerange({
           start: workspace?.startAt,
@@ -40,10 +45,13 @@ export const useFitWorkspaceBounds = () => {
         })
       }
     },
-    [isAreaReportLocation, setMapCoordinates, setTimerange, urlTimeRange, urlViewport]
+    [setTimerange, urlTimeRange]
   )
 
-  return fitWorkspaceBounds
+  return useMemo(
+    () => ({ fitWorkspaceBounds, fitWorkspaceTimerange }),
+    [fitWorkspaceBounds, fitWorkspaceTimerange]
+  )
 }
 
 const createDataviewsInstances = (

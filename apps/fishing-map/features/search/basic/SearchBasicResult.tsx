@@ -131,7 +131,8 @@ function SearchBasicResult({
   }, [vessel])
 
   // TODO decide how we manage VMS properties
-  const { fleet, origin, casco, nationalId, matricula } = vessel as any
+  const { fleet, origin, casco, nationalId, matricula, externalId, sourceFleet, hull } =
+    vessel as any
 
   const isInWorkspace = vesselDataviews?.some(
     (vessel) => vessel.id === `${VESSEL_LAYER_PREFIX}${id}`
@@ -282,16 +283,22 @@ function SearchBasicResult({
                 <span>{nationalId}</span>
               </div>
             )}
-            {casco && (
+            {externalId && (
               <div className={styles.property}>
-                <label>{t((t) => t.vessel.casco)}</label>
-                <span>{casco}</span>
+                <label>{t((t) => t.vessel.externalId)}</label>
+                <span>{externalId}</span>
               </div>
             )}
-            {fleet && (
+            {(casco || hull) && (
+              <div className={styles.property}>
+                <label>{t((t) => t.vessel.casco)}</label>
+                <span>{casco || hull}</span>
+              </div>
+            )}
+            {(fleet || sourceFleet) && (
               <div className={styles.property}>
                 <label>{t((t) => t.vessel.fleet)}</label>
-                <span>{formatInfoField(fleet, 'fleet')}</span>
+                <span>{formatInfoField(fleet || sourceFleet, 'fleet')}</span>
               </div>
             )}
             {origin && (
