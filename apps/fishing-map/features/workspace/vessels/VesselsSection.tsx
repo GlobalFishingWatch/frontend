@@ -14,10 +14,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
 import { getVesselIdFromInstanceId } from 'features/dataviews/dataviews.utils'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
-import {
-  selectHasDeprecatedDataviewInstances,
-  selectVesselsDataviews,
-} from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import type { ResourcesState } from 'features/resources/resources.slice'
 import { selectResources } from 'features/resources/resources.slice'
@@ -69,7 +66,6 @@ function VesselsSection(): React.ReactElement<any> {
   const workspace = useSelector(selectWorkspace)
   const guestUser = useSelector(selectIsGuestUser)
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
-  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vesselTracksData = useTimebarVesselTracksData()
@@ -199,7 +195,6 @@ function VesselsSection(): React.ReactElement<any> {
               <Switch
                 className="print-hidden"
                 active={someVesselsVisible}
-                disabled={hasDeprecatedDataviewInstances}
                 onClick={onToggleAllVessels}
                 tooltip={t((t) => t.vessel.toggleAllVessels)}
                 tooltipPlacement="top"
@@ -256,7 +251,7 @@ function VesselsSection(): React.ReactElement<any> {
             type="border"
             size="medium"
             testId="search-vessels-open"
-            disabled={!searchAllowed || hasDeprecatedDataviewInstances}
+            disabled={!searchAllowed}
             className="print-hidden"
             tooltip={searchAllowed ? t((t) => t.search.vessels) : t((t) => t.search.notAllowed)}
             tooltipPlacement="top"
@@ -280,7 +275,7 @@ function VesselsSection(): React.ReactElement<any> {
             <div className={styles.emptyState}>{t((t) => t.workspace.emptyStateVessels)}</div>
           )}
         </SortableContext>
-        {activeDataviews.length > 0 && guestUser && !hasDeprecatedDataviewInstances && (
+        {activeDataviews.length > 0 && guestUser && (
           <p className={cx(styles.disclaimer, 'print-hidden')}>
             {hasVesselsWithNoTrack ? (
               <Trans i18nKey={(t) => t.vessel.trackLogin}>
@@ -296,7 +291,7 @@ function VesselsSection(): React.ReactElement<any> {
             )}
           </p>
         )}
-        {!hasDeprecatedDataviewInstances && <VesselEventsLegend dataviews={dataviews} />}
+        <VesselEventsLegend dataviews={dataviews} />
         <VesselsFromPositions />
       </>
     </Section>

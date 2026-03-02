@@ -23,6 +23,7 @@ import {
   getVesselGroupVesselsCount,
   isOutdatedVesselGroup,
 } from 'features/vessel-groups/vessel-groups.utils'
+import { useMigrateToLatestVesselGroup } from 'features/vessel-groups/vessel-groups-migration.hooks'
 import {
   setIsOwnedByUser,
   setVesselGroupConfirmationMode,
@@ -32,6 +33,7 @@ import {
 } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { formatInfoField } from 'utils/info'
 
@@ -60,6 +62,7 @@ function VesselGroupLayerPanel({
   const readOnly = useSelector(selectReadOnly)
   const { vesselGroup } = dataview
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { isLoading, migrateToLatestVesselGroupByDataview } = useMigrateToLatestVesselGroup()
   const activityLayer = useGetDeckLayer<FourwingsLayer>(dataview?.id)
   const layerLoaded = activityLayer?.loaded && !vesselGroupLoading
   const layerError = activityLayer?.instance?.getError?.()
@@ -74,7 +77,9 @@ function VesselGroupLayerPanel({
   const setMapCoordinates = useSetMapCoordinates()
   const vesselGroupStatus = useSelector(selectVesselGroupsStatus)
   const isOutdated = isOutdatedVesselGroup(vesselGroup!)
-  const isOwnedByUser = vesselGroup?.ownerId === userData?.id
+  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
+  const isVesselGroupOwner = vesselGroup?.ownerId === userData?.id
+  const showDeprecatedWarning = isWorkspaceOwner && dataview.deprecated
 
   useEffect(() => {
     if (coordinates && loaded) {
@@ -98,7 +103,7 @@ function VesselGroupLayerPanel({
     if (vesselGroup && (vesselGroup?.id || !vesselGroup?.vessels?.length)) {
       dispatch(setVesselGroupEditId(vesselGroup.id))
       dispatch(setVesselGroupModalVessels(vesselGroup.vessels))
-      dispatch(setIsOwnedByUser(isOwnedByUser))
+      dispatch(setIsOwnedByUser(isVesselGroupOwner))
       dispatch(setVesselGroupsModalOpen(true))
       if (isOutdated) {
         dispatch(setVesselGroupConfirmationMode('update'))
@@ -112,6 +117,10 @@ function VesselGroupLayerPanel({
 
   const closeExpandedContainer = () => {
     setColorOpen(false)
+  }
+
+  const onUpdateDeprecatedLayerClick = () => {
+    migrateToLatestVesselGroupByDataview(dataview)
   }
 
   if (!vesselGroup) {
@@ -197,7 +206,7 @@ function VesselGroupLayerPanel({
                     />
                   </VesselGroupReportLink>
                 )}
-                {isOwnedByUser && !isOutdated && (
+                {isVesselGroupOwner && !isOutdated && (
                   <IconButton
                     size="small"
                     icon={'edit'}
@@ -232,34 +241,42 @@ function VesselGroupLayerPanel({
                 testId={`vessel-group-layer-panel-remove-${dataview.id}`}
               />
             )}
-            {!readOnly && layerActive && layerError && (
+            {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
               <IconButton
-                icon={'warning'}
-                type={'warning'}
+                icon="warning"
+                type="warning-invert"
+                onClick={showDeprecatedWarning ? onUpdateDeprecatedLayerClick : undefined}
+                loading={isLoading}
+                disabled={isLoading}
                 tooltip={
-                  isGFWUser
-                    ? `${t((t) => t.errors.layerLoading)} (${layerError})`
-                    : t((t) => t.errors.layerLoading)
+                  showDeprecatedWarning
+                    ? t((t) => t.workspace.deprecatedVesselGroupLayer)
+                    : isGFWUser
+                      ? `${t((t) => t.errors.layerLoading)} (${layerError})`
+                      : t((t) => t.errors.layerLoading)
                 }
                 size="small"
               />
             )}
           </Fragment>
         </div>
-        {isOwnedByUser && isOutdated && (
+        {isVesselGroupOwner && isOutdated && (
           <IconButton
             size="small"
             icon={'warning'}
             type={'warning'}
             tooltip={t((t) => t.vesselGroup.clickToUpdateLong)}
-            loading={vesselGroupStatus === AsyncReducerStatus.LoadingUpdate}
+            loading={isLoading || vesselGroupStatus === AsyncReducerStatus.LoadingUpdate}
+            disabled={isLoading}
             onClick={onEditClick}
           />
         )}
         <IconButton
-          icon={layerActive ? (layerError ? 'warning' : 'more') : undefined}
-          type={layerError ? 'warning' : 'default'}
-          loading={layerActive && !layerLoaded}
+          icon={
+            layerActive ? (layerError || showDeprecatedWarning ? 'warning' : 'more') : undefined
+          }
+          type={layerActive && (layerError || showDeprecatedWarning) ? 'warning-invert' : 'default'}
+          loading={!showDeprecatedWarning && layerActive && !layerLoaded}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />

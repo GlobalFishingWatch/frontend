@@ -105,7 +105,7 @@ function App() {
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
   const userLogged = useSelector(selectIsUserLogged)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
-  const fitWorkspaceBounds = useFitWorkspaceBounds()
+  const { fitWorkspaceBounds, fitWorkspaceTimerange } = useFitWorkspaceBounds()
   const isPrinting = useSelector(selectScreenshotModalOpen)
 
   // TODO review this as is needed in analysis and workspace but adds a lot of extra logic here
@@ -133,6 +133,7 @@ function App() {
         if (!isVesselGroupReportLocation && !isWorkspacePasswordProtected(workspace)) {
           fitWorkspaceBounds(workspace)
         }
+        fitWorkspaceTimerange(workspace)
       }
       actionResolved = true
     }
