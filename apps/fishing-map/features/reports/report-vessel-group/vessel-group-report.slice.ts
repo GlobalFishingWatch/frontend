@@ -1,9 +1,11 @@
-import { createAsyncThunk,createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { uniq } from 'es-toolkit'
 import { stringify } from 'qs'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { APIPagination, IdentityVessel, VesselGroup } from '@globalfishingwatch/api-types'
 
+import { getDatasetByIdsThunk } from 'features/datasets/datasets.slice'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
 import { mergeVesselGroupVesselIdentities } from 'features/vessel-groups/vessel-groups.utils'
 import type { VesselGroupVesselIdentity } from 'features/vessel-groups/vessel-groups-modal.slice'
@@ -34,19 +36,31 @@ type FetchVesselGroupReportThunkParams = {
   vesselGroupId: string
 }
 
+export async function fetchVesselGroupVesselIdentities(
+  vesselGroupId: string,
+  signal?: AbortSignal
+) {
+  const params = {
+    'vessel-groups': [vesselGroupId],
+    includes: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
+  }
+  return await GFWAPI.fetch<APIPagination<IdentityVessel>>(`/vessels?${stringify(params)}`, {
+    cache: 'reload',
+    signal,
+  })
+}
+
 export const fetchVesselGroupReportThunk = createAsyncThunk(
   'vessel-group-report/vessels',
-  async ({ vesselGroupId }: FetchVesselGroupReportThunkParams, { rejectWithValue, signal }) => {
+  async (
+    { vesselGroupId }: FetchVesselGroupReportThunkParams,
+    { dispatch, rejectWithValue, signal }
+  ) => {
     try {
       const vesselGroup = await GFWAPI.fetch<VesselGroup>(`/vessel-groups/${vesselGroupId}`)
-      const params = {
-        'vessel-groups': [vesselGroupId],
-        includes: [INCLUDES_RELATED_SELF_REPORTED_INFO_ID],
-      }
-      const vesselGroupVessels = await GFWAPI.fetch<APIPagination<IdentityVessel>>(
-        `/vessels?${stringify(params)}`,
-        { cache: 'reload', signal }
-      )
+      const vesselGroupVessels = await fetchVesselGroupVesselIdentities(vesselGroupId, signal)
+      const vesselGroupVesselDatasets = uniq(vesselGroup.vessels.flatMap((v) => v.dataset || []))
+      await dispatch(getDatasetByIdsThunk({ ids: vesselGroupVesselDatasets }))
       return {
         ...vesselGroup,
         vessels: mergeVesselGroupVesselIdentities(vesselGroup.vessels, vesselGroupVessels.entries),

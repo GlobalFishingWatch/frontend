@@ -7,10 +7,7 @@ import type { ChoiceOption } from '@globalfishingwatch/ui-components'
 import { Choice, Spinner } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import {
-  selectHasDeprecatedDataviewInstances,
-  selectVesselProfileDataview,
-} from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectVesselProfileDataview } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import ActivityByType from 'features/vessel/activity/activity-by-type/ActivityByType'
 import ActivityByVoyage from 'features/vessel/activity/activity-by-voyage/ActivityByVoyage'
 import { ACTIVITY_CONTAINER_ID } from 'features/vessel/activity/event/event-scroll.hooks'
@@ -29,7 +26,6 @@ const VesselActivity = () => {
   const { dispatchQueryParams } = useLocationConnect()
   const activityMode = useSelector(selectVesselActivityMode)
   const hasEventsDataset = useSelector(selectVesselHasEventsDatasets)
-  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const eventsLoading = useVesselProfileEventsLoading()
   const eventsLoadingDebounce = useDebounce(eventsLoading, 400)
   const eventsError = useVesselProfileEventsError()
@@ -59,7 +55,7 @@ const VesselActivity = () => {
     [t]
   )
 
-  if (hasVesselEvents && !hasDeprecatedDataviewInstances && eventsLoadingDebounce) {
+  if (hasVesselEvents && eventsLoadingDebounce) {
     return (
       <div className={styles.placeholder}>
         <Spinner />

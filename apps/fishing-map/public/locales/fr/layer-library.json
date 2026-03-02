@@ -147,7 +147,12 @@
   "port-locations": {
     "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
     "moreInfoLink": "",
-    "name": "Ports"
+    "name": "Ports (AIS)"
+  },
+  "port-locations-vms": {
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
+    "moreInfoLink": "",
+    "name": "Ports (VMS)"
   },
   "port-visits": {
     "description": "Les ports sont basés sur le jeu de données des mouillages de Global Fishing Watch, qui et une base de données mondiale des emplacements de mouillage où les navires se rassemblent. Le jeu de données contient plus de 160 000 emplacements de mouillage individuels, qui sont eux-mêmes regroupés en près de 32 000 ports. ",
