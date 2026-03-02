@@ -255,6 +255,7 @@ export type DataviewInstance<Type = any> = Partial<Omit<Dataview<Type>, 'id' | '
   config?: DataviewConfig<Type>
   datasetsConfig?: DataviewDatasetConfig[]
   datasetsConfigMigration?: DatasetsMigration
+  injected?: boolean
   origin?: DataviewInstanceOrigin
   deleted?: boolean
 }
