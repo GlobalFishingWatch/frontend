@@ -127,7 +127,10 @@ const selectVGRDataviews = createSelector(
 export const selectVGRFootprintDataview = createSelector(
   [selectVGRDataviews],
   (vesselGroupDataviews) => {
-    return vesselGroupDataviews?.find((dataview) => !isVesselGroupActivityDataview(dataview.id))
+    const footprintDataview = vesselGroupDataviews?.find(
+      (dataview) => !isVesselGroupActivityDataview(dataview.id)
+    )
+    return footprintDataview
   }
 )
 
