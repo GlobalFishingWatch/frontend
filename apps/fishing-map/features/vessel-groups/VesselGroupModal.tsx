@@ -8,6 +8,7 @@ import {
   Button,
   Icon,
   IconButton,
+  InputDate,
   InputText,
   Modal,
   MultiSelect,
@@ -16,7 +17,7 @@ import {
   SwitchRow,
 } from '@globalfishingwatch/ui-components'
 
-import { ROOT_DOM_ELEMENT } from 'data/config'
+import { AVAILABLE_END, AVAILABLE_START, ROOT_DOM_ELEMENT } from 'data/config'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
@@ -121,6 +122,8 @@ function VesselGroupModal(): React.ReactElement<any> {
   const groupName = useSelector(selectVesselGroupModalName)
   const [showBackButton, setShowBackButton] = useState(false)
   const [createAsPublic, setCreateAsPublic] = useState(true)
+  const [transmissionDateFrom, setTransmissionDateFrom] = useState<string>('')
+  const [transmissionDateTo, setTransmissionDateTo] = useState<string>('')
   const vesselGroupVessels = useSelector(selectVesselGroupModalVessels)
   const hasVesselsOverflow = useSelector(selectHasVesselGroupVesselsOverflow)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
@@ -196,6 +199,8 @@ function VesselGroupModal(): React.ReactElement<any> {
           ids,
           idField,
           datasets: sourcesSelected.map(({ id }) => id),
+          transmissionDateFrom,
+          transmissionDateTo,
         })
       )
       const action = await searchVesselGroupsVesselsRef.current
@@ -210,7 +215,7 @@ function VesselGroupModal(): React.ReactElement<any> {
         setError((action.payload as any)?.message || '')
       }
     },
-    [dispatch, sourcesSelected, t]
+    [dispatch, sourcesSelected, t, transmissionDateFrom, transmissionDateTo]
   )
 
   useEffect(() => {
@@ -474,6 +479,34 @@ function VesselGroupModal(): React.ReactElement<any> {
                 onSelect={onIdFieldChange}
                 disabled={hasVesselGroupsVessels}
               />
+              <div>
+                <InputDate
+                  value={transmissionDateTo || ''}
+                  max={AVAILABLE_END.slice(0, 10) as string}
+                  min={AVAILABLE_START.slice(0, 10) as string}
+                  label={t((t) => t.common.active_after)}
+                  onChange={(e) => {
+                    setTransmissionDateTo(e.target.value)
+                  }}
+                  onRemove={() => {
+                    setTransmissionDateTo('')
+                  }}
+                />
+              </div>
+              <div>
+                <InputDate
+                  value={transmissionDateFrom || ''}
+                  max={AVAILABLE_END.slice(0, 10) as string}
+                  min={AVAILABLE_START.slice(0, 10) as string}
+                  label={t((t) => t.common.active_before)}
+                  onChange={(e) => {
+                    setTransmissionDateFrom(e.target.value)
+                  }}
+                  onRemove={() => {
+                    setTransmissionDateFrom('')
+                  }}
+                />
+              </div>
             </Fragment>
           )}
           {editingVesselGroup && hasVesselGroupsVessels && (
