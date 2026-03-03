@@ -1339,6 +1339,8 @@
     "emptyStateVessels": "Las embarcaciones seleccionadas en la búsqueda o haciendo clic en el mapa de calor aparecerán aquí.",
     "list": "Lista de espacios de trabajo",
     "marineManagerLink": "Ver el portal",
+    "migrationDisclaimer": "Algunas capas en este área de trabajo están usando datos desactualizados",
+    "migrationDisclaimerNote": "Sigue las instrucciones de los iconos de advertencia para actualizarlos. <a target='_blank' href='https://globalfishingwatch.org/platform-update/version-4-data-pipeline-release/'>Ver más.</a>",
     "nameRequired": "Se necesita cargar el nombre del área de trabajo",
     "passwordIncorrect": "Contraseña invalida",
     "passwordMinLength": "La contraseña debe tener al menos 5 caracteres",
