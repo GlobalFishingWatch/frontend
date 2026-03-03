@@ -26,6 +26,7 @@
     },
     "test": {
       "executor": "@nx/vitest:test",
+      "dependsOn": ["^dist"],
       "outputs": ["{options.reportsDirectory}"],
       "options": {
         "command": "vitest run --config=vitest.config.mts",
