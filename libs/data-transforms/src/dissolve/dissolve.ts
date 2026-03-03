@@ -7,7 +7,6 @@ import { BUFFERED_ANTIMERIDIAN_LON, wrapFeatureLongitudes } from '../wrap-longit
 export const getGeometryDissolved = (geometry?: Point | Polygon | MultiPolygon) => {
   try {
     if (!geometry) {
-      console.warn('No geometry to dissolve')
       return undefined
     }
 

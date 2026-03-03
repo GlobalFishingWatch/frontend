@@ -1205,6 +1205,7 @@
     },
     "vesselType": "Type de navire",
     "vesselTypes": {
+      "": "Unknown",
       "bunker": "Navire ravitailleur",
       "bunker_or_tanker": "Bunker ou navire-citerne",
       "cargo": "Fret",

@@ -35,17 +35,18 @@
     },
     "test": {
       "executor": "@nx/vitest:test",
+      "dependsOn": ["^dist"],
       "outputs": ["{options.reportsDirectory}"],
       "options": {
         "command": "vitest run --config=vitest.config.mts",
-        "reportsDirectory": "../../coverage/libs/deck-layer-composer"
+        "reportsDirectory": "../../coverage/libs/dataviews-client"
       }
     },
     "test:watch": {
       "executor": "@nx/vitest:test",
       "cache": false,
       "options": {
-        "configFile": "libs/deck-layer-composer/vitest.config.mts",
+        "configFile": "libs/dataviews-client/vitest.config.mts",
         "watch": true
       },
       "continuous": true
