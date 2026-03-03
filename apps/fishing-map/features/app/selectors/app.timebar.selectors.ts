@@ -1,3 +1,4 @@
+import { shallowEqual } from 'react-redux'
 import { createSelector } from '@reduxjs/toolkit'
 
 import { DEFAULT_TIME_RANGE } from 'data/config'
@@ -22,6 +23,11 @@ export const selectTimeRange = createSelector(
       start: urlTimerange?.start || workspaceTimerange?.start || DEFAULT_TIME_RANGE.start,
       end: urlTimerange?.end || workspaceTimerange?.end || DEFAULT_TIME_RANGE.end,
     } as TimeRange
+  },
+  {
+    memoizeOptions: {
+      resultEqualityCheck: shallowEqual,
+    },
   }
 )
 

@@ -74,7 +74,22 @@ export const selectVesselEventsFilteredByTimerange = createSelector(
   }
 )
 
-export const selectVesselEventsByType = (type: EventTypes) =>
-  createSelector([selectVesselEventsFilteredByTimerange], (events) => {
-    return events.filter((event) => event.type === type)
-  })
+export const selectVesselEncounterEvents = createSelector(
+  [selectVesselEventsFilteredByTimerange],
+  (events) => events.filter((event) => event.type === EventTypes.Encounter)
+)
+
+export const selectVesselLoiteringEvents = createSelector(
+  [selectVesselEventsFilteredByTimerange],
+  (events) => events.filter((event) => event.type === EventTypes.Loitering)
+)
+
+export const selectVesselFishingEvents = createSelector(
+  [selectVesselEventsFilteredByTimerange],
+  (events) => events.filter((event) => event.type === EventTypes.Fishing)
+)
+
+export const selectVesselPortEvents = createSelector(
+  [selectVesselEventsFilteredByTimerange],
+  (events) => events.filter((event) => event.type === EventTypes.Port)
+)

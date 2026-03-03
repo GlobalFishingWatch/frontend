@@ -15,7 +15,7 @@ import { ActivityEventSubType } from 'features/vessel/vessel.types'
 import { getUTCDateTime } from 'utils/dates'
 
 import {
-  selectVesselEventsByType,
+  selectVesselEncounterEvents,
   selectVesselEventsFilteredByTimerange,
 } from '../selectors/vessel.resources.selectors'
 
@@ -90,7 +90,7 @@ export const selectVirtuosoVesselProfileEventsByVoyage = createSelector(
   [selectVesselVoyage, selectEventsGroupedByVoyages],
   (expandedVoyage, voyages) => {
     const eventsExpanded = Object.entries(voyages).map(([voyage, events]) => {
-      return expandedVoyage === parseInt(voyage) ? events : ([] as ActivityEvent[])
+      return (expandedVoyage === parseInt(voyage) ? events : []) as ActivityEvent[]
     })
     return {
       events: eventsExpanded.flat(),
@@ -218,7 +218,7 @@ export const selectEventsGroupedByArea = createSelector(
 )
 
 export const selectEventsGroupedByEncounteredVessel = createSelector(
-  [selectVesselEventsByType(EventTypes.Encounter)],
+  [selectVesselEncounterEvents],
   (encounters) => {
     const vesselCounts: Record<string, Vessel & { encounters: number }> = encounters.reduce(
       (acc, event) => {
