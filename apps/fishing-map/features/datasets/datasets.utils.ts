@@ -908,8 +908,8 @@ const getSchemaOptionsSelectedInDataview = (
   ) {
     const dataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Fourwings) as Dataset
     const layerRange = getEnvironmentalDatasetRange(dataset)
-    const min = dataview.config?.minVisibleValue || layerRange?.min
-    const max = dataview.config?.maxVisibleValue || layerRange?.max
+    const min = dataview.config?.minVisibleValue ?? layerRange?.min
+    const max = dataview.config?.maxVisibleValue ?? layerRange?.max
     return [
       {
         id: min.toString(),
