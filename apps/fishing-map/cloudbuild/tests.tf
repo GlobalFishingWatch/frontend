@@ -36,7 +36,9 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
       args = ["-c", <<EOF
         set +e  # Don't exit on error
 
-        yarn install
+        # Skip native module rebuilds — binaries from Step #0 are already in
+        # /workspace/node_modules and are compatible (both images are Linux x86_64)
+        YARN_ENABLE_SCRIPTS=0 yarn install
 
         # Fetch origin/develop for nx affected (Cloud Build uses shallow clone)
         git fetch origin develop --depth=100 2>/dev/null || git fetch origin develop 2>/dev/null || true
@@ -132,25 +134,29 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
 
     step {
       id         = "create-token"
-      name       = "ubuntu"
-      entrypoint = "bash"
+      name       = "alpine"
+      wait_for   = ["Run integration tests"]
+      entrypoint = "sh"
       args = ["-c", <<EOF
-        set -euo pipefail
+        set -eu
         if [ $BRANCH_NAME = 'main' ]; then
           exit 0
         fi
-        apt-get update -y && apt-get install -y openssl curl jq
+        apk add --no-cache openssl curl jq >/dev/null 2>&1
 
         client_id=$_APP_ID
         pem="$$GITHUB_BOT_PRIVATE_KEY"
 
         # If the env var contains the PEM text instead of a file path, write it to a temp file
-        if [[ "$$pem" == *"BEGIN RSA PRIVATE KEY"* ]] || [[ "$$pem" == *"BEGIN PRIVATE KEY"* ]]; then
-          pem_file=$$(mktemp)
-          echo "$$pem" | sed 's/\\n/\n/g' > "$$pem_file"
-        else
-          pem_file="$$pem"
-        fi
+        case "$$pem" in
+          *"BEGIN RSA PRIVATE KEY"*|*"BEGIN PRIVATE KEY"*)
+            pem_file=$$(mktemp)
+            echo "$$pem" | sed 's/\\n/\n/g' > "$$pem_file"
+            ;;
+          *)
+            pem_file="$$pem"
+            ;;
+        esac
 
         now=$$(date +%s)
         iat=$$((now - 60))  # Issued 60s ago
@@ -189,6 +195,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
     step {
       id         = "find-and-comment-pr"
       name       = "alpine"
+      wait_for   = ["create-token"]
       entrypoint = "sh"
       args = ["-c", <<EOF
         set -euo pipefail
@@ -264,7 +271,8 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
 
 
     options {
-      logging = "CLOUD_LOGGING_ONLY"
+      logging      = "CLOUD_LOGGING_ONLY"
+      machine_type = "E2_HIGHCPU_8"
     }
 
     timeout = "1800s"
@@ -389,7 +397,7 @@ resource "google_cloudbuild_trigger" "e2e_tests" {
 
     options {
       logging      = "CLOUD_LOGGING_ONLY"
-      machine_type = "N1_HIGHCPU_8"
+      machine_type = "E2_HIGHCPU_8"
     }
 
     timeout = "1800s"
