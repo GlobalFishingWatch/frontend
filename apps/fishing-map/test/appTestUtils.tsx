@@ -30,11 +30,19 @@ export function render(ui: ReactElement, options?: AppRenderOptions) {
 
   const storeToUse = store || makeStore()
 
+  // Ensure __next element exists for modals
+  let rootElement = document.getElementById('__next')
+  if (!rootElement) {
+    rootElement = document.createElement('div')
+    rootElement.id = '__next'
+    document.body.appendChild(rootElement)
+  }
+
   function Wrapper({ children }: { children: React.ReactNode }) {
     return <Provider store={storeToUse}>{children}</Provider>
   }
 
-  return vitestRender(ui, { wrapper: Wrapper, ...renderOptions })
+  return vitestRender(ui, { wrapper: Wrapper, container: rootElement, ...renderOptions })
 }
 
 // Re-export everything else from vitest-browser-react

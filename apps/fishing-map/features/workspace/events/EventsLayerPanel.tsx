@@ -172,7 +172,11 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
             </ExpandedContainer>
           )}
           <InfoModal dataview={dataview} />
-          <Remove dataview={dataview} loading={layerActive && !layerLoaded} />
+          <Remove
+            dataview={dataview}
+            loading={layerActive && !layerLoaded}
+            testId={`events-layer-panel-remove-${dataview.id}`}
+          />
           {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
             <IconButton
               icon="warning"

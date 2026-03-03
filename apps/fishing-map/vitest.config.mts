@@ -88,7 +88,6 @@ export default defineConfig({
     },
     testTimeout: 30000,
     setupFiles: './test/vitest.setup.ts',
-    isolate: true,
     browser: {
       enabled: true,
       provider: playwright(),

@@ -155,9 +155,10 @@ export const getDatasetSourceIcon = (dataset: Dataset): IconType | null => {
 }
 
 export const getDatasetTitleByDataview = (
-  dataview: Dataview | UrlDataviewInstance,
+  dataview: Dataview | UrlDataviewInstance | undefined,
   { showPrivateIcon = true, withSources = false } = {}
 ): string => {
+  if (!dataview) return ''
   const dataviewInstance = {
     ...dataview,
     dataviewId: (dataview as UrlDataviewInstance).dataviewId || dataview.slug,

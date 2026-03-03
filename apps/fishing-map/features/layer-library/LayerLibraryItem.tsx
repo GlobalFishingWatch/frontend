@@ -127,7 +127,12 @@ const LayerLibraryItem = (props: LayerLibraryItemProps) => {
               )
             ) : null}
             {onlyGFWUser && <GFWOnly userGroup="gfw" />}
-            <Button className={styles.cta} onClick={onAddToWorkspaceClick} loading={loading}>
+            <Button
+              className={styles.cta}
+              onClick={onAddToWorkspaceClick}
+              loading={loading}
+              testId={`add-layer-${id}-button`}
+            >
               {t((t) => t.workspace.addLayer)}
             </Button>
           </div>
