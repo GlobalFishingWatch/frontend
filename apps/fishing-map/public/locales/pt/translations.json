@@ -1339,6 +1339,8 @@
     "emptyStateVessels": "As embarcações selecionadas na busca ou clicando nas células grid de atividade aparecerão aqui.",
     "list": "Workspaces list",
     "marineManagerLink": "Ver o portal",
+    "migrationDisclaimer": "Some layers in this workspace are using outdated data",
+    "migrationDisclaimerNote": "Follow the instructions of the warning icons to update them. <a target='_blank' href='https://globalfishingwatch.org/platform-update/version-4-data-pipeline-release/'>Learn more.</a>",
     "nameRequired": "O nome do espaço de trabalho é obrigatório",
     "passwordIncorrect": "Senha inválida",
     "passwordMinLength": "A senha deve ter, pelo menos, 5 caracteres",
