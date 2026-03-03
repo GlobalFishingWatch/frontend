@@ -38,6 +38,7 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { setWorkspaceProperty } from 'features/workspace/workspace.slice'
 import { getWorkspaceLabel, isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
+import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import WorkspaceError from 'features/workspace/WorkspaceError'
 import WorkspacePassword from 'features/workspace/WorkspacePassword'
 import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
@@ -58,6 +59,7 @@ import styles from './Workspace.module.css'
 function Workspace() {
   useHideLegacyActivityCategoryDataviews()
   useUserExpiredToast()
+  useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const readOnly = useSelector(selectReadOnly)
