@@ -53,54 +53,79 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
           BASE=$$(git merge-base origin/develop HEAD 2>/dev/null || echo "origin/develop")
         fi
 
-        # Run tests, save output to file, and capture exit code
-        yarn nx affected -t test --base="$$BASE" --head=HEAD --browser="chromium" > /workspace/test-output.txt 2>&1
-        echo $$? > /workspace/test-exit-code.txt
+        # Get list of affected projects that have a test target
+        AFFECTED_PROJECTS=$$(yarn nx show projects --affected --base="$$BASE" --head=HEAD --withTarget=test 2>/dev/null \
+          | grep -v "^\s*NX" | grep -v "^>" | grep -v "^yarn" | grep -v "^$")
 
-        # Display the output
-        cat /workspace/test-output.txt
-
-        # Strip ANSI color codes from output for clean parsing
-        sed 's/\x1b\[[0-9;]*m//g' /workspace/test-output.txt > /workspace/test-output-clean.txt
-
-        # Generate detailed summary for PR comment
-        EXIT_CODE=$$(cat /workspace/test-exit-code.txt)
-
-        if [ $$EXIT_CODE -eq 0 ]; then
-          echo "## ✅ Integration Tests Passed" > /workspace/summary.txt
+        if [ -z "$$AFFECTED_PROJECTS" ]; then
+          echo "## ✅ Integration Tests" > /workspace/summary.txt
           echo "" >> /workspace/summary.txt
-
-          # Extract test summary if available
-          if grep -q "Test Suites:" /workspace/test-output-clean.txt; then
-            echo "\`\`\`" >> /workspace/summary.txt
-            grep -E "Test Suites:|Tests:|Time:" /workspace/test-output-clean.txt | tail -3 >> /workspace/summary.txt
-            echo "\`\`\`" >> /workspace/summary.txt
-          fi
-        else
-          echo "## ❌ Integration Tests Failed" > /workspace/summary.txt
-          echo "" >> /workspace/summary.txt
-
-          # Extract test summary statistics
-          if grep -q "Test Suites:" /workspace/test-output-clean.txt; then
-            echo "### Summary" >> /workspace/summary.txt
-            echo "\`\`\`" >> /workspace/summary.txt
-            grep -E "Test Suites:|Tests:|Time:" /workspace/test-output-clean.txt | tail -3 >> /workspace/summary.txt
-            echo "\`\`\`" >> /workspace/summary.txt
-            echo "" >> /workspace/summary.txt
-          fi
-
-          # Add full test output in collapsible section
-          echo "<details>" >> /workspace/summary.txt
-          echo "<summary>Full Test Output</summary>" >> /workspace/summary.txt
-          echo "" >> /workspace/summary.txt
-          echo "\`\`\`" >> /workspace/summary.txt
-          cat /workspace/test-output-clean.txt >> /workspace/summary.txt
-          echo "\`\`\`" >> /workspace/summary.txt
-          echo "</details>" >> /workspace/summary.txt
+          echo "No affected projects with tests found." >> /workspace/summary.txt
+          echo "0" > /workspace/test-exit-code.txt
+          exit 0
         fi
 
-        # Exit with the captured code
-        exit $$(cat /workspace/test-exit-code.txt)
+        OVERALL_EXIT=0
+
+        # Run tests per project and build per-project summary sections
+        > /workspace/summary-body.txt
+        for PROJECT in $$AFFECTED_PROJECTS; do
+          echo ""
+          echo "=============================="
+          echo "Running tests for: $$PROJECT"
+          echo "=============================="
+
+          yarn nx run $$PROJECT:test --browser="chromium" > /workspace/test-$$PROJECT.txt 2>&1
+          PROJECT_EXIT=$$?
+
+          cat /workspace/test-$$PROJECT.txt
+          sed 's/\x1b\[[0-9;]*m//g' /workspace/test-$$PROJECT.txt > /workspace/test-$$PROJECT-clean.txt
+
+          if [ $$PROJECT_EXIT -ne 0 ]; then
+            OVERALL_EXIT=1
+          fi
+
+          # Build inline stats line from vitest output
+          TESTS_INFO=$$(grep -E "^ *Tests " /workspace/test-$$PROJECT-clean.txt | tail -1 | sed 's/^ *Tests *//' | sed 's/ (.*//')
+          DURATION=$$(grep -E "^ *Duration" /workspace/test-$$PROJECT-clean.txt | tail -1 | sed 's/^ *Duration *//' | sed 's/ (.*//')
+          if [ -n "$$TESTS_INFO" ] && [ -n "$$DURATION" ]; then
+            STATS=" · $$TESTS_INFO · $$DURATION"
+          elif [ -n "$$TESTS_INFO" ]; then
+            STATS=" · $$TESTS_INFO"
+          else
+            STATS=""
+          fi
+
+          if [ $$PROJECT_EXIT -eq 0 ]; then
+            echo "**✅ \`$$PROJECT\`**$$STATS" >> /workspace/summary-body.txt
+          else
+            echo "**❌ \`$$PROJECT\`**$$STATS" >> /workspace/summary-body.txt
+          fi
+          echo "" >> /workspace/summary-body.txt
+          echo "<details><summary>View output</summary>" >> /workspace/summary-body.txt
+          echo "" >> /workspace/summary-body.txt
+          echo "\`\`\`" >> /workspace/summary-body.txt
+          cat /workspace/test-$$PROJECT-clean.txt >> /workspace/summary-body.txt
+          echo "\`\`\`" >> /workspace/summary-body.txt
+          echo "" >> /workspace/summary-body.txt
+          echo "</details>" >> /workspace/summary-body.txt
+          echo "" >> /workspace/summary-body.txt
+          echo "---" >> /workspace/summary-body.txt
+          echo "" >> /workspace/summary-body.txt
+        done
+
+        echo $$OVERALL_EXIT > /workspace/test-exit-code.txt
+
+        # Build final summary with header + per-project sections
+        if [ $$OVERALL_EXIT -eq 0 ]; then
+          echo "## ✅ Integration Tests Passed" > /workspace/summary.txt
+        else
+          echo "## ❌ Integration Tests Failed" > /workspace/summary.txt
+        fi
+        echo "" >> /workspace/summary.txt
+        cat /workspace/summary-body.txt >> /workspace/summary.txt
+
+        exit $$OVERALL_EXIT
       EOF
       ]
       allow_failure = true
