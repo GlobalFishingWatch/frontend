@@ -1205,6 +1205,7 @@
     },
     "vesselType": "Tipos de embarcaciones",
     "vesselTypes": {
+      "": "Unknown",
       "bunker": "Aprovisionamiento",
       "bunker_or_tanker": "Aprovisionamiento o petrolero",
       "cargo": "Mercancía",
