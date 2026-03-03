@@ -683,7 +683,7 @@
       "encounter_type": {
         "keyword": "encounter_type",
         "enum": {
-          "-": "-"
+          "-": "UNKNOWN-UNKNOWN"
         }
       }
     }
@@ -719,7 +719,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -744,7 +744,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -832,7 +832,7 @@
       "target_species": {
         "keyword": "target_species",
         "enum": {
-          "": "",
+          "": "UNKNOWN",
           "Agulha": "Agulha",
           "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).": "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).",
           "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante": "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante",
@@ -882,7 +882,7 @@
       "license_category": {
         "keyword": "license_category",
         "enum": {
-          "": "",
+          "": "UNKNOWN",
           "1.1 - Espinhel horizontal (superfície)": "1.1 - Espinhel horizontal (superfície)",
           "1.10 - Espinhel vertical/Covos": "1.10 - Espinhel vertical/Covos",
           "1.11 - Espinhel vertical": "1.11 - Espinhel vertical",
@@ -968,7 +968,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -993,7 +993,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -1018,7 +1018,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -1135,7 +1135,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -1160,7 +1160,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -1241,9 +1241,14 @@
         "keyword": "encounter_type",
         "enum": {
           "FISHING-FISHING": "FISHING-FISHING",
-          "FISHING-": "FISHING-",
-          "-FISHING": "-FISHING",
-          "-": "-"
+          "FISHING-": "FISHING-UNKNOWN",
+          "-FISHING": "UNKNOWN-FISHING",
+          "-": "UNKNOWN-UNKNOWN",
+          "FISHING-NON_FISHING": "FISHING-NON_FISHING",
+          "NON_FISHING-FISHING": "NON_FISHING-FISHING",
+          "NON_FISHING-NON_FISHING": "NON_FISHING-NON_FISHING",
+          "NON_FISHING-": "NON_FISHING-UNKNOWN",
+          "-NON_FISHING": "UNKNOWN-NON_FISHING"
         }
       }
     }
@@ -1287,7 +1292,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -1312,7 +1317,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -1394,19 +1399,19 @@
           "FISHING-FISHING": "FISHING-FISHING",
           "FISHING-NON_FISHING": "FISHING-NON_FISHING",
           "FISHING-SUPPORT": "FISHING-SUPPORT",
-          "FISHING-": "FISHING-",
+          "FISHING-": "FISHING-UNKNOWN",
           "NON_FISHING-FISHING": "NON_FISHING-FISHING",
           "NON_FISHING-NON_FISHING": "NON_FISHING-NON_FISHING",
           "NON_FISHING-SUPPORT": "NON_FISHING-SUPPORT",
-          "NON_FISHING-": "NON_FISHING-",
+          "NON_FISHING-": "NON_FISHING-UNKNOWN",
           "SUPPORT-FISHING": "SUPPORT-FISHING",
           "SUPPORT-NON_FISHING": "SUPPORT-NON_FISHING",
           "SUPPORT-SUPPORT": "SUPPORT-SUPPORT",
-          "SUPPORT-": "SUPPORT-",
-          "-FISHING": "-FISHING",
-          "-NON_FISHING": "-NON_FISHING",
-          "-SUPPORT": "-SUPPORT",
-          "-": "-"
+          "SUPPORT-": "SUPPORT-UNKNOWN",
+          "-FISHING": "UNKNOWN-FISHING",
+          "-NON_FISHING": "UNKNOWN-NON_FISHING",
+          "-SUPPORT": "UNKNOWN-SUPPORT",
+          "-": "UNKNOWN-UNKNOWN"
         }
       }
     }
@@ -1448,7 +1453,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -1473,7 +1478,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -1518,7 +1523,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       }
     }
@@ -1591,7 +1596,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -1616,7 +1621,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -1725,7 +1730,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -1750,7 +1755,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -1823,13 +1828,13 @@
         "enum": {
           "FISHING-FISHING": "FISHING-FISHING",
           "FISHING-NON_FISHING": "FISHING-NON_FISHING",
-          "FISHING-": "FISHING-",
+          "FISHING-": "FISHING-UNKNOWN",
           "NON_FISHING-FISHING": "NON_FISHING-FISHING",
           "NON_FISHING-NON_FISHING": "NON_FISHING-NON_FISHING",
-          "NON_FISHING-": "NON_FISHING-",
-          "-FISHING": "-FISHING",
-          "-NON_FISHING": "-NON_FISHING",
-          "-": "-"
+          "NON_FISHING-": "NON_FISHING-UNKNOWN",
+          "-FISHING": "UNKNOWN-FISHING",
+          "-NON_FISHING": "UNKNOWN-NON_FISHING",
+          "-": "UNKNOWN-UNKNOWN"
         }
       }
     }
@@ -1873,7 +1878,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -1898,7 +1903,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -1978,11 +1983,11 @@
         "keyword": "encounter_type",
         "enum": {
           "FISHING-FISHING": "FISHING-FISHING",
-          "FISHING-": "FISHING-",
-          "-FISHING": "-FISHING",
+          "FISHING-": "FISHING-UNKNOWN",
+          "-FISHING": "UNKNOWN-FISHING",
           "FISHING-NON_FISHING": "FISHING-NON_FISHING",
           "NON_FISHING-FISHING": "NON_FISHING-FISHING",
-          "-": "-"
+          "-": "UNKNOWN-UNKNOWN"
         }
       }
     }
@@ -2003,7 +2008,7 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
-          "": "",
+          "": "UNKNOWN",
           "ARTISANAL": "ARTISANAL",
           "INDUSTRIAL": "INDUSTRIAL",
           "SMALL-SCALE": "SMALL-SCALE"
@@ -2034,7 +2039,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -2059,7 +2064,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -2106,7 +2111,7 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
-          "": "",
+          "": "UNKNOWN",
           "ARTISANAL": "ARTISANAL",
           "INDUSTRIAL": "INDUSTRIAL",
           "SMALL-SCALE": "SMALL-SCALE"
@@ -2166,11 +2171,11 @@
           "CARRIER-SUPPORT": "CARRIER-SUPPORT",
           "CARRIER-CARRIER": "CARRIER-CARRIER",
           "CARRIER-": "CARRIER-",
-          "-FISHING": "-FISHING",
-          "-NON_FISHING": "-NON_FISHING",
-          "-SUPPORT": "-SUPPORT",
-          "-CARRIER": "-CARRIER",
-          "-": "-"
+          "-FISHING": "UNKNOWN-FISHING",
+          "-NON_FISHING": "UNKNOWN-NON_FISHING",
+          "-SUPPORT": "UNKNOWN-SUPPORT",
+          "-CARRIER": "UNKNOWN-CARRIER",
+          "-": "UNKNOWN-UNKNOWN"
         }
       }
     }
@@ -2206,7 +2211,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -2231,7 +2236,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -2305,8 +2310,8 @@
           "FISHING-FISHING": "FISHING-FISHING",
           "FISHING-NON_FISHING": "FISHING-NON_FISHING",
           "NON_FISHING-FISHING": "NON_FISHING-FISHING",
-          "FISHING-": "FISHING-",
-          "-FISHING": "-FISHING"
+          "FISHING-": "FISHING-UNKNOWN",
+          "-FISHING": "UNKNOWN-FISHING"
         }
       }
     }
@@ -2342,7 +2347,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -2367,7 +2372,7 @@
           "SUPPORT": "SUPPORT",
           "CARRIER": "CARRIER",
           "RESEARCH": "RESEARCH",
-          "": ""
+          "": "UNKNOWN"
         }
       },
       "duration": {
@@ -4438,7 +4443,7 @@
       "target_species": {
         "keyword": "target_species",
         "enum": {
-          "": "",
+          "": "UNKNOWN",
           "Agulha": "Agulha",
           "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).": "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).",
           "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante": "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante",
@@ -4488,7 +4493,7 @@
       "license_category": {
         "keyword": "license_category",
         "enum": {
-          "": "",
+          "": "UNKNOWN",
           "1.1 - Espinhel horizontal (superfície)": "1.1 - Espinhel horizontal (superfície)",
           "1.10 - Espinhel vertical/Covos": "1.10 - Espinhel vertical/Covos",
           "1.11 - Espinhel vertical": "1.11 - Espinhel vertical",
@@ -4901,7 +4906,7 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
-          "": "",
+          "": "UNKNOWN",
           "ARTISANAL": "ARTISANAL",
           "INDUSTRIAL": "INDUSTRIAL",
           "SMALL-SCALE": "SMALL-SCALE"
@@ -4947,7 +4952,7 @@
       "source_fleet": {
         "keyword": "source_fleet",
         "enum": {
-          "": "",
+          "": "UNKNOWN",
           "ARTISANAL": "ARTISANAL",
           "INDUSTRIAL": "INDUSTRIAL",
           "SMALL-SCALE": "SMALL-SCALE"
