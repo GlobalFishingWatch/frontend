@@ -579,7 +579,8 @@ export const fetchClusterEventThunk = createAsyncThunk(
               if (clusterEvent.type === 'encounter') {
                 const isTheMainVesselNotFishing =
                   clusterEvent.vessel.type === EventVesselTypeEnum.Carrier ||
-                  !clusterEvent.encounter?.vessel
+                  !clusterEvent.encounter?.vessel ||
+                  !clusterEvent.encounter?.vessel.id
                 const fishingVessel = isTheMainVesselNotFishing
                   ? clusterEvent.encounter?.vessel
                   : clusterEvent.vessel

@@ -29,7 +29,6 @@ import {
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { getVesselIdFromInstanceId } from 'features/dataviews/dataviews.utils'
-import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -38,12 +37,14 @@ import { selectResourceByUrl } from 'features/resources/resources.slice'
 import GFWOnly from 'features/user/GFWOnly'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
 import { getOtherVesselNames } from 'features/vessel/vessel.utils'
+import VesselDeprecatedLink from 'features/vessel/VesselDeprecatedLink'
 import VesselLink from 'features/vessel/VesselLink'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import VesselDownload from 'features/workspace/vessels/VesselDownload'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
 import { formatInfoField, getVesselOtherNamesLabel, getVesselShipNameLabel } from 'utils/info'
 
 import FitBounds from '../shared/FitBounds'
@@ -122,14 +123,13 @@ function VesselLayerPanel({
   const { t } = useTranslation()
   const [filterOpen, setFiltersOpen] = useState(false)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
-  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const { url: infoUrl, dataset } = resolveDataviewDatasetResource(dataview, DatasetTypes.Vessels)
   const vesselLayer = useGetDeckLayer<VesselLayer>(dataview.id)
   // const vesselInstance = useMapVesselLayer(dataview.id)
   const gfwUser = useSelector(selectIsGFWUser)
   const trackDatasetId = dataview.datasets?.find((rld) => rld.type === DatasetTypes.Tracks)?.id
   const hideVesselNames = useSelector(selectDebugOptions)?.hideVesselNames
-
+  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
   const infoResource: Resource<IdentityVessel> = useSelector(
     selectResourceByUrl<IdentityVessel>(infoUrl)
   )
@@ -169,6 +169,7 @@ function VesselLayerPanel({
     setInfoOpen(false)
   }
 
+  const showDeprecatedWarning = isWorkspaceOwner && dataview.deprecated
   const trackLoaded = vesselLayer?.instance?.getVesselTracksLayersLoaded()
   const trackLayerVisible = vesselLayer?.instance?.props?.visible
   const infoLoading = infoResource?.status === ResourceStatus.Loading
@@ -240,34 +241,25 @@ function VesselLayerPanel({
       {...attributes}
     >
       <div className={styles.header}>
-        <LayerSwitch
-          active={layerActive && !hasDeprecatedDataviewInstances}
-          className={styles.switch}
-          dataview={dataview}
-          disabled={hasDeprecatedDataviewInstances}
-        />
+        <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
         <Title
           title={
             <Fragment>
               <span className={cx({ [styles.faded]: infoLoading || infoError })}>
-                {hasDeprecatedDataviewInstances ? (
-                  getVesselTitle()
-                ) : (
-                  <VesselLink
-                    className={cx(styles.link)}
-                    vesselId={vesselId}
-                    datasetId={dataset?.id}
-                    tooltip={<div>{identitiesSummary}</div>}
-                    query={{
-                      vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
-                      vesselSelfReportedId: vesselId,
-                    }}
-                    testId="vessel-layer-vessel-name"
-                    dataviewId={dataview.id}
-                  >
-                    {getVesselTitle()}
-                  </VesselLink>
-                )}
+                <VesselLink
+                  className={cx(styles.link)}
+                  vesselId={vesselId}
+                  datasetId={dataset?.id}
+                  tooltip={<div>{identitiesSummary}</div>}
+                  query={{
+                    vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
+                    vesselSelfReportedId: vesselId,
+                  }}
+                  testId="vessel-layer-vessel-name"
+                  dataviewId={dataview.id}
+                >
+                  {getVesselTitle()}
+                </VesselLink>
               </span>
             </Fragment>
           }
@@ -284,7 +276,7 @@ function VesselLayerPanel({
         >
           <Fragment>
             {!infoLoading && !(infoError || trackError) && (
-              <>
+              <Fragment>
                 {trackDatasetId && (
                   <VesselDownload
                     dataview={dataview}
@@ -294,7 +286,7 @@ function VesselLayerPanel({
                   />
                 )}
                 {layerActive && (
-                  <>
+                  <Fragment>
                     <LayerProperties
                       dataview={dataview}
                       open={colorOpen}
@@ -333,9 +325,9 @@ function VesselLayerPanel({
                         />
                       </div>
                     </ExpandedContainer>
-                  </>
+                  </Fragment>
                 )}
-              </>
+              </Fragment>
             )}
             <Remove dataview={dataview} />
           </Fragment>
@@ -347,11 +339,14 @@ function VesselLayerPanel({
               tooltip={t((t) => t.vessel.loadingInfo)}
             />
           )}
-          {(infoError || trackError) && (
+          {showDeprecatedWarning && vesselData && (
+            <VesselDeprecatedLink vesselIdentity={vesselData} />
+          )}
+          {(infoError || trackError) && !showDeprecatedWarning && (
             <IconButton
               size="small"
               icon="warning"
-              type="warning"
+              type="warning-invert"
               disabled
               tooltip={`${t((t) => t.errors.vesselLoading)} (${vesselId})`}
               tooltipPlacement="top"
@@ -368,9 +363,19 @@ function VesselLayerPanel({
           )}
         </div>
         <IconButton
-          icon={layerActive ? (infoError || trackError ? 'warning' : 'more') : undefined}
-          type={infoError || trackError ? 'warning' : 'default'}
-          loading={trackLoading}
+          icon={
+            layerActive
+              ? infoError || trackError || showDeprecatedWarning
+                ? 'warning'
+                : 'more'
+              : undefined
+          }
+          type={
+            layerActive && (infoError || trackError || showDeprecatedWarning)
+              ? 'warning-invert'
+              : 'default'
+          }
+          loading={!showDeprecatedWarning && trackLoading}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />

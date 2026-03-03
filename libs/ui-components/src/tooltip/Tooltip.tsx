@@ -60,6 +60,7 @@ function TooltipComponent({ content, children, className, placement = 'top' }: T
           {children}
         </span>
       ) : (
+        // eslint-disable-next-line react-hooks/refs
         Children.map(children, (child) => {
           if (isValidElement(child)) {
             return cloneElement(
@@ -80,6 +81,7 @@ function TooltipComponent({ content, children, className, placement = 'top' }: T
       {isMounted && (
         <FloatingPortal>
           <div
+            // eslint-disable-next-line react-hooks/refs
             ref={refs.setFloating}
             className={cx(styles.tooltip, className)}
             style={{ ...floatingStyles, ...transitionStyles }}

@@ -15,7 +15,7 @@ import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV } from 'data/config'
 import type { AsyncError, AsyncReducer } from 'utils/async-slice'
 import { createAsyncSlice } from 'utils/async-slice'
 
-const fetchDataviewByIdThunk = createAsyncThunk(
+export const fetchDataviewByIdThunk = createAsyncThunk(
   'dataviews/fetchById',
   async (id: Dataview['id'] | Dataview['slug'], { rejectWithValue }) => {
     try {
@@ -39,7 +39,19 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
   async (ids: (Dataview['id'] | Dataview['slug'])[], { signal, rejectWithValue, getState }) => {
     const state = getState() as DataviewsSliceState
     const existingIds = selectIds(state) as (number | string)[]
+    const existingRequestedDataviews = ids.flatMap((id) => {
+      const dataview = selectById(state, id as number) as Dataview
+      return dataview ? [dataview] : []
+    })
+    if (ids.length === existingRequestedDataviews.length) {
+      return uniqBy([...existingRequestedDataviews], (dataview) => dataview.slug || dataview.id)
+    }
+
     const uniqIds = uniq(ids.filter((id) => !existingIds.includes(id)))
+    const normalizeDataview = (dataview: Dataview) => ({
+      ...dataview,
+      slug: dataview.slug || kebabCase(dataview.name),
+    })
 
     let mockedDataviews = [] as Dataview[]
     if (USE_MOCKED_DATAVIEWS && !mockedDataviewsImported) {
@@ -47,7 +59,10 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
     }
 
     if (!uniqIds?.length) {
-      return mockedDataviews
+      return uniqBy(
+        [...existingRequestedDataviews, ...mockedDataviews].map(normalizeDataview),
+        (dataview) => dataview.slug || dataview.id
+      )
     }
     try {
       const dataviewsParams = {
@@ -63,11 +78,8 @@ export const fetchDataviewsByIdsThunk = createAsyncThunk(
         ? [...mockedDataviews, ...dataviewsResponse.entries]
         : dataviewsResponse.entries
       return uniqBy(
-        dataviews.map((d) => ({
-          ...d,
-          slug: d.slug || kebabCase(d.name),
-        })),
-        (d) => d.slug
+        [...existingRequestedDataviews, ...dataviews].map(normalizeDataview),
+        (dataview) => dataview.slug || dataview.id
       )
     } catch (e: any) {
       console.warn(e)

@@ -5,7 +5,7 @@ import { DatasetCategory, DatasetStatus, DatasetTypes } from '@globalfishingwatc
 
 import { VESSEL_GROUPS_MIN_API_VERSION } from 'features/vessel-groups/vessel-groups.config'
 
-import { selectAllDatasets } from './datasets.slice'
+import { selectAllDatasets, selectDeprecatedDatasets } from './datasets.slice'
 
 const EMPTY_ARRAY: [] = []
 
@@ -30,12 +30,13 @@ export const selectFourwingsDatasets = selectDatasetsByType(DatasetTypes.Fourwin
 export const selectVesselsDatasets = selectDatasetsByType(DatasetTypes.Vessels)
 
 export const selectVesselGroupCompatibleDatasets = createSelector(
-  [selectVesselsDatasets],
-  (datasets) => {
+  [selectVesselsDatasets, selectDeprecatedDatasets],
+  (datasets, deprecatedDatasets) => {
     return datasets.filter(
       (d) =>
         d.status !== DatasetStatus.Deleted &&
-        d.configuration?.apiSupportedVersions?.includes(VESSEL_GROUPS_MIN_API_VERSION)
+        d.configuration?.apiSupportedVersions?.includes(VESSEL_GROUPS_MIN_API_VERSION) &&
+        !deprecatedDatasets[d.id]
     )
   }
 )

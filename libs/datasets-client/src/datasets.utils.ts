@@ -56,7 +56,7 @@ export const getDatasetsExtent = <Format = 'string' | 'number'>(
 }
 
 export const VMS_DATASET_ID = 'vms'
-export const isVMSDataset = (datasetId: string): boolean => {
+export const getIsVMSDataset = (datasetId: string): boolean => {
   return datasetId?.toLowerCase().includes(VMS_DATASET_ID)
 }
 export type DatasetEventSource = 'VMS' | 'AIS'
@@ -64,5 +64,5 @@ export const getDatasetSource = (datasetId?: string): DatasetEventSource | undef
   if (!datasetId) {
     return undefined
   }
-  return isVMSDataset(datasetId) ? 'VMS' : 'AIS'
+  return getIsVMSDataset(datasetId) ? 'VMS' : 'AIS'
 }

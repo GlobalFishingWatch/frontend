@@ -1,3 +1,5 @@
+import type { DatasetsMigration } from '@globalfishingwatch/api-types'
+
 import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
@@ -18,7 +20,7 @@ import {
   VIIRS_MATCH_DATAVIEW_SLUG,
 } from './workspaces'
 
-export const LEGACY_TO_LATEST_DATAVIEWS: Record<string, string> = {
+export const LEGACY_TO_LATEST_DATAVIEWS: DatasetsMigration = {
   'apparent-fishing-effort-ais-v-3': FISHING_DATAVIEW_SLUG_AIS,
   'apparent-fishing-effort-v-3': FISHING_DATAVIEW_SLUG_ALL,
   'apparent-fishing-effort-vms-v-3': FISHING_DATAVIEW_SLUG_VMS,

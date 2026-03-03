@@ -575,7 +575,7 @@ export const getAllDatasetAllowedFields = (dataset: Dataset) => {
   return dataset.fieldsAllowed || []
 }
 
-const isDataviewSchemaSupported = (
+export const isDataviewSchemaSupported = (
   dataview: SchemaFieldDataview,
   schema: SupportedDatasetSchema
 ) => {
@@ -1083,7 +1083,7 @@ export const getSchemaFiltersInDataview = (
   const fieldsOrder = dataview.filtersConfig?.order as SupportedDatasetSchema[]
   const fieldsAllowed = fieldsIds.filter((f) => isDataviewSchemaSupported(dataview, f))
   const fieldsDisabled = fieldsIds.filter((f) => !isDataviewSchemaSupported(dataview, f))
-  const fielsAllowedOrdered =
+  const fieldsAllowedOrdered =
     fieldsOrder && fieldsOrder.length > 0
       ? fieldsAllowed.sort((a, b) => {
           const aIndex = fieldsOrder.findIndex((f) => f === a)
@@ -1091,7 +1091,7 @@ export const getSchemaFiltersInDataview = (
           return aIndex - bIndex
         })
       : fieldsAllowed
-  const filtersAllowed = fielsAllowedOrdered.map((id) => {
+  const filtersAllowed = fieldsAllowedOrdered.map((id) => {
     return getFiltersBySchema(dataview, id, {
       vesselGroups,
       isGuestUser,

@@ -232,6 +232,8 @@ export enum DataviewCategory {
 export interface Dataview<Type = any, Category = DataviewCategory> {
   id: number
   slug: string
+  // This can be defined in the API configurationor added at runtime when one of its dataset is deprecated
+  deprecated?: boolean
   name: string
   app: ApiAppName
   description: string
@@ -248,6 +250,7 @@ export interface Dataview<Type = any, Category = DataviewCategory> {
 }
 
 export type DataviewInstanceOrigin = 'workspace' | 'vesselProfile' | 'report' | 'comparison'
+
 export interface DataviewInstance<Type = any> extends Partial<
   Omit<Dataview<Type>, 'id' | 'config'>
 > {
@@ -256,6 +259,7 @@ export interface DataviewInstance<Type = any> extends Partial<
   config?: DataviewConfig<Type>
   datasetsConfig?: DataviewDatasetConfig[]
   datasetsConfigMigration?: DatasetsMigration
+  injected?: boolean
   origin?: DataviewInstanceOrigin
   deleted?: boolean
 }

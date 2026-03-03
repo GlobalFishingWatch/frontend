@@ -38,13 +38,14 @@ import {
 } from 'features/workspace/workspace.selectors'
 import { setWorkspaceProperty } from 'features/workspace/workspace.slice'
 import { getWorkspaceLabel, isPrivateWorkspaceNotAllowed } from 'features/workspace/workspace.utils'
+import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import WorkspaceError from 'features/workspace/WorkspaceError'
 import WorkspacePassword from 'features/workspace/WorkspacePassword'
 import { updateWorkspaceThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectLocationCategory } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
-import { htmlSafeParse, options } from 'utils/html-parser'
+import { htmlSafeParse } from 'utils/html-parser'
 
 import ActivitySection from './activity/ActivitySection'
 import ContextAreaSection from './context-areas/ContextAreaSection'
@@ -52,7 +53,6 @@ import EnvironmentalSection from './environmental/EnvironmentalSection'
 import EventsSection from './events/EventsSection'
 import VesselGroupSection from './vessel-groups/VesselGroupsSection'
 import VesselsSection from './vessels/VesselsSection'
-import { useMigrateWorkspaceToast } from './workspace-migration.hooks'
 
 import styles from './Workspace.module.css'
 
