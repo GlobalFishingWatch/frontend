@@ -1205,6 +1205,7 @@
     },
     "vesselType": "crwdns69584:0crwdne69584:0",
     "vesselTypes": {
+      "": "crwdns112938:0crwdne112938:0",
       "bunker": "crwdns69758:0crwdne69758:0",
       "bunker_or_tanker": "crwdns60579:0crwdne60579:0",
       "cargo": "crwdns60577:0crwdne60577:0",
