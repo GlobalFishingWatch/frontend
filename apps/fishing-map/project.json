@@ -45,6 +45,15 @@
         ]
       }
     },
+    "clean-test-artifacts": {
+      "executor": "nx:run-commands",
+      "cache": false,
+      "outputs": [],
+      "options": {
+        "command": "rimraf test/integration/__screenshots__ test/integration/__traces__",
+        "cwd": "apps/fishing-map"
+      }
+    },
     "i18n": {
       "executor": "nx:run-commands",
       "cache": true,
@@ -122,6 +131,7 @@
       "cache": true,
       "inputs": ["default", "^production"],
       "outputs": ["{workspaceRoot}/coverage/apps/fishing-map"],
+      "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
         "command": "vitest run --config=vitest.config.mts",
         "cwd": "apps/fishing-map"
@@ -129,12 +139,15 @@
     },
     "test:ci": {
       "executor": "nx:run-commands",
+      "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "command": "docker compose -f apps/fishing-map/docker-compose.test.yml run --rm test"
+        "command": "docker compose -f docker-compose.test.yml run --rm test",
+        "cwd": "apps/fishing-map"
       }
     },
     "test:coverage": {
       "executor": "nx:run-commands",
+      "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
         "command": "vitest run --coverage --config=vitest.config.mts",
         "cwd": "apps/fishing-map"
@@ -142,6 +155,7 @@
     },
     "test:watch": {
       "executor": "nx:run-commands",
+      "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
         "command": "vitest --config=vitest.config.mts --watch",
         "cwd": "apps/fishing-map"
@@ -149,6 +163,7 @@
     },
     "test:ui": {
       "executor": "nx:run-commands",
+      "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
         "command": "npx cross-env VITEST_UI=true vitest --watch --config=vitest.config.mts",
         "cwd": "apps/fishing-map"
