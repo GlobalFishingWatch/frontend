@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import Link from 'redux-first-router-link'
 
 import type { IdentityVessel } from '@globalfishingwatch/api-types'
+import { getIsVMSDataset } from '@globalfishingwatch/datasets-client'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
@@ -22,6 +23,7 @@ const VesselDeprecatedLink = ({
   const { t } = useTranslation()
   const vesselDatasetId =
     typeof vesselIdentity.dataset === 'string' ? vesselIdentity.dataset : vesselIdentity.dataset.id
+
   return (
     <Link
       to={{
@@ -33,7 +35,9 @@ const VesselDeprecatedLink = ({
         query: {
           searchOption: 'advanced',
           query: getVesselProperty(vesselIdentity, 'shipname'),
-          ssvid: getVesselProperty(vesselIdentity, 'ssvid'),
+          ...(!getIsVMSDataset(vesselDatasetId) && {
+            ssvid: getVesselProperty(vesselIdentity, 'ssvid'),
+          }),
           sources: deprecatedDatasets[vesselDatasetId]
             ? [deprecatedDatasets[vesselDatasetId]]
             : undefined,
