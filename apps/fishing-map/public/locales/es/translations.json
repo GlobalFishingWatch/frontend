@@ -998,7 +998,7 @@
     "dataset": "Fuente",
     "depthM": "Profundidad (m)",
     "exitTrackCorrection": "Salir del panel de actividad (corrección de pistas) para poder navegar al perfil del buque",
-    "externalId": "External ID",
+    "externalId": "ID Externo",
     "extraInfo": "Solicitar información adicional en",
     "extraInfoTooltip": "TMT tiene información adicional relacionada con el historial de cumplimiento y/o la lista de IUU",
     "firstTransmissionDate": "Fecha primera transmisión",
