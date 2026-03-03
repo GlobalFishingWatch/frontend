@@ -179,7 +179,7 @@ const VesselLink = ({
     </>
   ) : (
     <Link
-      {...(testId && { 'data-test': testId })}
+      {...(testId && { 'data-testid': testId })}
       className={className}
       to={{
         type: standaloneLink ? VESSEL : WORKSPACE_VESSEL,

@@ -141,6 +141,7 @@ function ActivitySection(): React.ReactElement<any> {
               tooltip={t((t) => t.layer.add)}
               tooltipPlacement="top"
               onClick={() => onAddLayerClick()}
+              data-testid="activity-add-layer-button"
             />
           </div>
         ) : null

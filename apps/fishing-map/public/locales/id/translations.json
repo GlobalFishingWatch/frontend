@@ -1205,6 +1205,7 @@
     },
     "vesselType": "Jenis Kapal",
     "vesselTypes": {
+      "": "Unknown",
       "bunker": "Kapal bunker",
       "bunker_or_tanker": "Bunker atau tanker",
       "cargo": "Kargo",
@@ -1338,6 +1339,8 @@
     "emptyStateVessels": "Kapal-kapal yang dipilih dalam pencarian atau dengan mengklik sel grid aktivitas akan muncul di sini.",
     "list": "Workspaces list",
     "marineManagerLink": "Lihat portal",
+    "migrationDisclaimer": "Some layers in this workspace are using outdated data",
+    "migrationDisclaimerNote": "Follow the instructions of the warning icons to update them. <a target='_blank' href='https://globalfishingwatch.org/platform-update/version-4-data-pipeline-release/'>Learn more.</a>",
     "nameRequired": "Workspace name is required",
     "passwordIncorrect": "Invalid password",
     "passwordMinLength": "Password must be at least 5 characters",

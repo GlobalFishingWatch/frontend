@@ -238,7 +238,12 @@ function VesselLayerPanel({
       {...attributes}
     >
       <div className={styles.header}>
-        <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
+        <LayerSwitch
+          testId={`vessel-switch-${vesselLabel.replace(/\s/g, '-')}`}
+          active={layerActive}
+          className={styles.switch}
+          dataview={dataview}
+        />
         <Title
           title={
             <Fragment>

@@ -68,7 +68,7 @@ export default defineConfig({
 
   define: {
     'process.env.NEXT_PUBLIC_API_GATEWAY': JSON.stringify(process.env.NEXT_PUBLIC_API_GATEWAY),
-    'proccess.env.NEXT_PUBLIC_WORKSPACE_ENV': JSON.stringify(process.env.NEXT_PUBLIC_WORKSPACE_ENV),
+    'process.env.NEXT_PUBLIC_WORKSPACE_ENV': JSON.stringify(process.env.NEXT_PUBLIC_WORKSPACE_ENV),
     'process.env.NODE_ENV': JSON.stringify('test'),
     'process.env.VITEST': JSON.stringify('true'),
   },
@@ -88,7 +88,6 @@ export default defineConfig({
     },
     testTimeout: 30000,
     setupFiles: './test/vitest.setup.ts',
-    isolate: true,
     browser: {
       enabled: true,
       provider: playwright(),

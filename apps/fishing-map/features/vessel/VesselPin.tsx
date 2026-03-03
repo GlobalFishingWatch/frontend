@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { stringify } from 'qs'
@@ -220,8 +220,14 @@ export function VesselPin({
     onClick,
   })
 
+  const vesselName = useMemo(
+    () => vessel?.selfReportedInfo[0].shipname.toLowerCase().replace(/\s/g, '-'),
+    [vessel]
+  )
+
   return (
     <IconButton
+      data-testid={`vessel-pin-button-${vesselName}`}
       icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
       loading={loading}
       disabled={disabled}

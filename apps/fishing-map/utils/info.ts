@@ -38,12 +38,13 @@ export const getVesselShipTypeLabel = (
     translationFn?: TFunction
   }
 ): VesselType => {
-  const shipTypes = uniq(Array.isArray(shiptype) ? shiptype : [shiptype])
-  if (shipTypes.every((shiptype) => shiptype === undefined)) {
+  const shipTypes = uniq(Array.isArray(shiptype) ? shiptype : [shiptype]).filter(
+    (shiptype) => shiptype !== undefined
+  )
+  if (!shipTypes?.length) {
     return EMPTY_FIELD_PLACEHOLDER as VesselType
   }
   return shipTypes
-    .filter(Boolean)
     ?.map((shiptype) =>
       translationFn((t: any) => t.vessel.vesselTypes[shiptype?.toLowerCase()], {
         defaultValue: upperFirst(shiptype),

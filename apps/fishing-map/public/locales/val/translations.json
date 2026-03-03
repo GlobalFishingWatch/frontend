@@ -1205,6 +1205,7 @@
     },
     "vesselType": "crwdns69584:0crwdne69584:0",
     "vesselTypes": {
+      "": "crwdns112938:0crwdne112938:0",
       "bunker": "crwdns69758:0crwdne69758:0",
       "bunker_or_tanker": "crwdns60579:0crwdne60579:0",
       "cargo": "crwdns60577:0crwdne60577:0",
@@ -1338,6 +1339,8 @@
     "emptyStateVessels": "crwdns60717:0crwdne60717:0",
     "list": "crwdns84576:0crwdne84576:0",
     "marineManagerLink": "crwdns84139:0crwdne84139:0",
+    "migrationDisclaimer": "crwdns112940:0crwdne112940:0",
+    "migrationDisclaimerNote": "crwdns112942:0crwdne112942:0",
     "nameRequired": "crwdns83232:0crwdne83232:0",
     "passwordIncorrect": "crwdns83234:0crwdne83234:0",
     "passwordMinLength": "crwdns83238:0crwdne83238:0",

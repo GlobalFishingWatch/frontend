@@ -136,7 +136,7 @@ const userSlice = createSlice({
     })
     builder.addCase(fetchUserThunk.fulfilled, (state, action) => {
       state.status = AsyncReducerStatus.Finished
-      state.logged = true // loggs as true even if is guest user (not logged in)
+      state.logged = true
       state.data = action.payload
     })
     builder.addCase(fetchUserThunk.rejected, (state) => {
@@ -144,6 +144,7 @@ const userSlice = createSlice({
     })
     builder.addCase(logoutUserThunk.fulfilled, (state) => {
       state.logged = false
+      state.expired = false
       state.data = null
     })
   },

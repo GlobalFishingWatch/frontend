@@ -29,8 +29,14 @@ type VesselGroupListTooltipProps = {
   disabled?: boolean
 }
 
-function VesselGroupListTooltip({ onAddToVesselGroup, ...props }: VesselGroupListTooltipProps) {
-  const { children, keepOpenWhileAdding = false, disabled = false } = props
+function VesselGroupListTooltip(props: VesselGroupListTooltipProps) {
+  const {
+    children,
+    keepOpenWhileAdding = false,
+    disabled = false,
+    onAddToVesselGroup: _onAddToVesselGroup,
+    ...restProps
+  } = props
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const vesselGroupOptions = useVesselGroupsOptions()
@@ -60,8 +66,8 @@ function VesselGroupListTooltip({ onAddToVesselGroup, ...props }: VesselGroupLis
 
   const handleVesselGroupClick = useCallback(
     (vesselGroupId: string) => {
-      if (onAddToVesselGroup) {
-        onAddToVesselGroup(vesselGroupId)
+      if (_onAddToVesselGroup) {
+        _onAddToVesselGroup(vesselGroupId)
         if (vesselGroupId === NEW_VESSEL_GROUP_ID) {
           dispatch(setVesselGroupsModalOpen(true))
         } else {
@@ -73,7 +79,7 @@ function VesselGroupListTooltip({ onAddToVesselGroup, ...props }: VesselGroupLis
         }
       }
     },
-    [dispatch, keepOpenWhileAdding, onAddToVesselGroup]
+    [dispatch, keepOpenWhileAdding, _onAddToVesselGroup]
   )
 
   return (
@@ -113,7 +119,7 @@ function VesselGroupListTooltip({ onAddToVesselGroup, ...props }: VesselGroupLis
             return React.cloneElement(
               child,
               {
-                ...props,
+                ...restProps,
                 onToggleClick: toggleVesselGroupsOpen,
                 disabled,
               } as any,

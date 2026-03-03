@@ -262,7 +262,11 @@ function ActivityLayerPanel({
               showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_SLUG}
             />
             {!readOnly && (
-              <Remove onClick={onRemoveLayerClick} loading={layerActive && !layerLoaded} />
+              <Remove
+                onClick={onRemoveLayerClick}
+                loading={layerActive && !layerLoaded}
+                testId={`activity-layer-panel-remove-${dataview.id}`}
+              />
             )}
             {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
               <IconButton

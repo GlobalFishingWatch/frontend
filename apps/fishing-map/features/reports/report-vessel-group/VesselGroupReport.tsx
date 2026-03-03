@@ -27,6 +27,7 @@ import {
 } from 'features/timebar/timebar.hooks'
 import { selectUserData } from 'features/user/selectors/user.selectors'
 import { isOutdatedVesselGroup } from 'features/vessel-groups/vessel-groups.utils'
+import { useMigrateWorkspaceToast } from 'features/workspace/workspace-migration.hooks'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectReportVesselGroupId } from 'routes/routes.selectors'
 import { TimebarVisualisations } from 'types'
@@ -49,6 +50,7 @@ import VesselGroupReportError from './VesselGroupReportError'
 import styles from './VesselGroupReport.module.css'
 
 function VesselGroupReport() {
+  useMigrateWorkspaceToast()
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
   const fetchVesselGroupReport = useFetchVesselGroupReport()
