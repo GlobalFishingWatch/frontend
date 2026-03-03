@@ -79,7 +79,12 @@ const MapWrapper = () => {
   )
 
   return (
-    <div id={MAP_CONTAINER_ID} className={styles.container} onMouseLeave={onMouseLeave}>
+    <div
+      id={MAP_CONTAINER_ID}
+      data-testid={MAP_CONTAINER_ID}
+      className={styles.container}
+      onMouseLeave={onMouseLeave}
+    >
       {isPrinting && screenshotAreaId !== ROOT_DOM_ELEMENT && (
         <Logo className={styles.logo} type="invert" />
       )}
