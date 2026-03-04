@@ -150,7 +150,6 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
         tar -czf traces.tar.gz apps/fishing-map/test/integration
       else
         echo "No integration tests folder found. Skipping archive."
-        tar -czf traces.tar.gz --files-from /dev/null
       fi
       EOF
       ]
