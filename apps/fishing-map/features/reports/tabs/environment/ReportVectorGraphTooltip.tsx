@@ -7,6 +7,8 @@ import max from 'lodash/max'
 import type { FourwingsFeature, FourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { PRIMARY_BLUE_COLOR } from 'data/config'
+import type { CURRENTS_LAYER_ID} from 'data/layer-library';
+import { WINDS_LAYER_ID } from 'data/layer-library'
 import i18n from 'features/i18n/i18n'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { formatDate } from 'features/reports/report-area/area-reports.utils'
@@ -23,6 +25,8 @@ type TooltipData = {
   x: number
   y: number
 } | null
+
+type DirectionType = typeof CURRENTS_LAYER_ID | typeof WINDS_LAYER_ID
 
 const DEGREES_BINNED = 10
 const SIZE = 160
@@ -66,8 +70,12 @@ function ReportVectorGraphTooltip(
     // Store force sums and counts for each degree bin
     const directions: { [key: number]: { force: number; count: number } } = {}
     data?.forEach((feature) => {
-      const rawDirection = -270 - Math.round(feature.direction || 0)
-      const direction = Math.abs((Math.round(rawDirection / DEGREES_BINNED) * DEGREES_BINNED) % 360)
+      const rawDirection = Math.round(feature.direction || 0)
+      const binnedDirection = (Math.round(rawDirection / DEGREES_BINNED) * DEGREES_BINNED) % 360
+      let direction = binnedDirection < 0 ? binnedDirection + 360 : binnedDirection
+      if (instanceId.includes(WINDS_LAYER_ID)) {
+        direction = direction - 180
+      }
       const force = feature.velocity || 0
       if (!directions[direction]) {
         directions[direction] = { force: 0, count: 0 }
@@ -95,8 +103,8 @@ function ReportVectorGraphTooltip(
 
     return dataFormated.map((d) => {
       const length = barScale(d.count)
-      const startAngle = ((d.direction - DEGREES_BINNED / 2) * Math.PI) / 180 + 90
-      const endAngle = ((d.direction + DEGREES_BINNED / 2) * Math.PI) / 180 + 90
+      const startAngle = ((d.direction - DEGREES_BINNED / 2) * Math.PI) / 180
+      const endAngle = ((d.direction + DEGREES_BINNED / 2) * Math.PI) / 180
       return (
         <path
           key={d.direction}

@@ -37,7 +37,7 @@ export const useVisibleVesselEvents = () => {
             : currentVisibleEvents === 'none'
               ? []
               : currentVisibleEvents
-        const visibleEvents = currentVisibleEventsTypes.filter(
+        const visibleEvents = currentVisibleEventsTypes?.filter(
           (eventType) => event !== eventType
         ) as EventTypes[]
         dispatchQueryParams({

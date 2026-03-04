@@ -72,7 +72,7 @@ export const useContextInteractions = () => {
         category: TrackCategory.Analysis,
         action: `Open report`,
         label: getEventLabel([
-          value.toString(),
+          value?.toString(),
           layerSources ? 'active layer sources: ' + layerSources : '',
         ]),
       })

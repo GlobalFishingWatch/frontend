@@ -154,7 +154,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           <Link
             className={styles.tabContent}
             to={
-              isAnySearchLocation
+              isAnySearchLocation && lastWorkspaceVisited
                 ? lastWorkspaceVisited
                 : {
                     type: isWorkspaceLocation ? WORKSPACE_SEARCH : SEARCH,
