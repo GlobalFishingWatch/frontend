@@ -81,7 +81,7 @@ function ActivityLayerPanel({
   const activityLayer = useGetDeckLayer<FourwingsLayer>(dataviewId)
   const layerLoaded = activityLayer?.loaded
   const layerError = activityLayer?.instance?.getError?.()
-  const { migrateToLatestDataviewInstance } = useMigrateToLatestDataview()
+  const { migrateToLatestDataviewInstance, hasMigratedDataviews } = useMigrateToLatestDataview()
 
   // TODO remove when final decission on stats display is taken
   // const urlTimeRange = useSelector(selectUrlTimeRange)
@@ -166,7 +166,14 @@ function ActivityLayerPanel({
   }
 
   const onUpdateDeprecatedLayerClick = () => {
-    migrateToLatestDataviewInstance(dataview)
+    const alreadyMigratedDataview = hasMigratedDataviews(dataview)
+    if (alreadyMigratedDataview) {
+      if (window.confirm(t((t) => t.workspace.deprecatedLayerMigrateConfirm))) {
+        deleteDataviewInstance(dataview.id)
+      }
+    } else {
+      migrateToLatestDataviewInstance(dataview)
+    }
   }
 
   const datasetTitle = getDatasetTitleByDataview(dataview, { showPrivateIcon: false })

@@ -13,6 +13,7 @@ import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import type { DataviewWithFilters } from 'features/dataviews/dataviews.filters'
 import { isDataviewFilterSupported } from 'features/dataviews/dataviews.filters'
 import { fetchDataviewByIdThunk, selectAllDataviews } from 'features/dataviews/dataviews.slice'
+import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
 export function useMigrateToLatestDataview() {
@@ -21,6 +22,7 @@ export function useMigrateToLatestDataview() {
   const allDataviews = useSelector(selectAllDataviews)
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
+  const workspaceDataviewInstances = useSelector(selectDataviewInstancesResolvedVisible)
 
   const migrateToLatestDataviewInstance = useCallback(
     async (dataviewInstance: DataviewInstance | UrlDataviewInstance) => {
@@ -66,8 +68,26 @@ export function useMigrateToLatestDataview() {
     },
     [allDataviews, deprecatedDatasets, dispatch, upsertDataviewInstance]
   )
+
+  const hasMigratedDataviews = useCallback(
+    (dataviewInstance: DataviewInstance | UrlDataviewInstance) => {
+      const dataviewId = LEGACY_TO_LATEST_DATAVIEWS[dataviewInstance.slug!] || dataviewInstance.slug
+
+      if (!LEGACY_TO_LATEST_DATAVIEWS[dataviewInstance.slug!]) {
+        return true
+      }
+
+      const migratedInstanceExists = workspaceDataviewInstances?.some(
+        (instance) => instance.dataviewId === dataviewId
+      )
+
+      return !!migratedInstanceExists
+    },
+    [workspaceDataviewInstances]
+  )
+
   return useMemo(
-    () => ({ migrateToLatestDataviewInstance, isLoading }),
-    [migrateToLatestDataviewInstance, isLoading]
+    () => ({ hasMigratedDataviews, migrateToLatestDataviewInstance, isLoading }),
+    [hasMigratedDataviews, migrateToLatestDataviewInstance, isLoading]
   )
 }
