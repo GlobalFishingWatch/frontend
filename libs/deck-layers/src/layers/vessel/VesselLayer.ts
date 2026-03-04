@@ -238,10 +238,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             'vessel-tracks': {
               maxTimeGapHours,
             },
-            image: {
-              type: 'imagebitmap',
-              premultiplyAlpha: 'none',
-            },
           },
           maxTimeGapHours,
           visualizationMode: trackVisualizationMode,
@@ -300,10 +296,6 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           highlightEventIds,
           loadOptions: {
             ...getFetchLoadOptions(),
-            image: {
-              type: 'imagebitmap',
-              premultiplyAlpha: 'none',
-            },
           },
           loaders: [VesselEventsLoader],
           onError: (e: any) => this.onSublayerError(type, e),
