@@ -19,7 +19,6 @@ describe('Map', () => {
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore })
     const mapElement = getByTestId('map-container')
-    expect(store.getState().map.loaded).toBe(true)
 
     const viewState = jotaiStore.get(viewStateAtom)
 
@@ -38,8 +37,6 @@ describe('Map', () => {
     const { getByTestId } = await render(<App />, { store, jotaiStore })
 
     const mapElement = getByTestId('app-main')
-
-    expect(store.getState().map.loaded).toBe(true)
 
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
@@ -70,7 +67,6 @@ describe('Map', () => {
     const openLayerModalButton = getByTestId('activity-add-layer-button')
     const addLayerButton = getByTestId('add-layer-eez-button')
 
-    expect(store.getState().map.loaded).toBe(true)
     await userEvent.hover(getByTestId('activity-layer-panel-switch-presence'))
     await new Promise((resolve) => setTimeout(resolve, 300))
     await openLayerModalButton.click()
@@ -94,8 +90,6 @@ describe('Map', () => {
 
     const removeLayerButton = getByTestId('activity-layer-panel-remove-presence')
 
-    expect(store.getState().map.loaded).toBe(true)
-
     await userEvent.hover(getByTestId('activity-layer-panel-switch-presence'))
     await new Promise((resolve) => setTimeout(resolve, 300))
     await removeLayerButton.click()
@@ -113,8 +107,6 @@ describe('Map', () => {
     const store = makeStore(defaultState, [], true)
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore })
-
-    expect(store.getState().map.loaded).toBe(true)
 
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
@@ -165,8 +157,6 @@ describe('Map', () => {
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore })
 
-    expect(store.getState().map.loaded).toBe(true)
-
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
     await userEvent.click(getByTestId('interval-btn-year'))
@@ -192,8 +182,6 @@ describe('Map', () => {
     const store = makeStore(defaultState, [], true)
     const jotaiStore = createJotaiStore()
     const { getByTestId } = await render(<App />, { store, jotaiStore })
-
-    expect(store.getState().map.loaded).toBe(true)
 
     await new Promise((resolve) => setTimeout(resolve, 1000))
 

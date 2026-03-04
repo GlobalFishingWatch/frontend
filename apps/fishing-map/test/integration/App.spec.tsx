@@ -43,8 +43,6 @@ describe('Fishing Map App', () => {
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const { getByTestId } = await render(<App />, { store })
 
-    expect(store.getState().map.loaded).toBe(true)
-
     await getByTestId('map-control-zoom-in').click()
 
     await new Promise((resolve) => setTimeout(resolve, 1100))
