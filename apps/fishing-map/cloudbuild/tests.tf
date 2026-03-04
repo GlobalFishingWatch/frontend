@@ -36,6 +36,16 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
       args = ["-c", <<EOF
         set +e  # Don't exit on error
 
+        # Skip if integration tests folder doesn't exist in this branch
+        if [ ! -d "apps/fishing-map/test/integration" ]; then
+          echo "No apps/fishing-map/test/integration folder found. Skipping."
+          echo "## ✅ Integration Tests" > /workspace/summary.txt
+          echo "" >> /workspace/summary.txt
+          echo "Skipped: no \`apps/fishing-map/test/integration\` folder in source." >> /workspace/summary.txt
+          echo "0" > /workspace/test-exit-code.txt
+          exit 0
+        fi
+
         # Skip native module rebuilds — binaries from Step #0 are already in
         # /workspace/node_modules and are compatible (both images are Linux x86_64)
         YARN_ENABLE_SCRIPTS=0 yarn install
@@ -136,15 +146,27 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
       name       = "alpine"
       entrypoint = "sh"
       args = ["-c", <<EOF
-      tar -czf traces.tar.gz apps/fishing-map/test/integration
+      if [ -d "apps/fishing-map/test/integration" ]; then
+        tar -czf traces.tar.gz apps/fishing-map/test/integration
+      else
+        echo "No integration tests folder found. Skipping archive."
+      fi
       EOF
       ]
     }
 
     step {
-      id   = "Upload tests traces"
-      name = "gcr.io/cloud-builders/gsutil"
-      args = ["-m", "cp", "-r", "traces.tar.gz", "gs://gfw-playwright-traces-ttl30/frontend/integration-tests/$BUILD_ID/"]
+      id         = "Upload tests traces"
+      name       = "gcr.io/cloud-builders/gsutil"
+      entrypoint = "bash"
+      args = ["-c", <<EOF
+      if [ -f "traces.tar.gz" ]; then
+        gsutil -m cp -r traces.tar.gz gs://gfw-playwright-traces-ttl30/frontend/integration-tests/$BUILD_ID/
+      else
+        echo "No traces archive found. Skipping upload."
+      fi
+      EOF
+      ]
     }
 
     step {
