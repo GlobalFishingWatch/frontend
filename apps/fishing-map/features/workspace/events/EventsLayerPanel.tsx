@@ -45,14 +45,14 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
   const { t } = useTranslation()
   const layerActive = dataview?.config?.visible ?? true
   const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { deleteDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
   const [filterOpen, setFiltersOpen] = useState(false)
   const [colorOpen, setColorOpen] = useState(false)
   const vesselGroupsOptions = useVesselGroupsOptions()
   const { filtersAllowed } = getSchemaFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
   })
-  const { migrateToLatestDataviewInstance } = useMigrateToLatestDataview()
+  const { migrateToLatestDataviewInstance, hasMigratedDataviews } = useMigrateToLatestDataview()
   const isGFWUser = useSelector(selectIsGFWUser)
   const readOnly = useSelector(selectReadOnly)
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
@@ -96,7 +96,14 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
   }
 
   const onUpdateDeprecatedLayerClick = () => {
-    migrateToLatestDataviewInstance(dataview)
+    const alreadyMigratedDataview = hasMigratedDataviews(dataview)
+    if (alreadyMigratedDataview) {
+      if (window.confirm(t((t) => t.workspace.deprecatedLayerMigrateConfirm))) {
+        deleteDataviewInstance(dataview.id)
+      }
+    } else {
+      migrateToLatestDataviewInstance(dataview)
+    }
   }
 
   if (!dataset || dataset.status === 'deleted') {
