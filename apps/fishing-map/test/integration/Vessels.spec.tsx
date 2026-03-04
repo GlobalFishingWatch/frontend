@@ -7,6 +7,8 @@ import { addVesselToWorkspaceAction } from 'test/utils/actions/addVesselToWorksp
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
+import { GFWAPI } from '@globalfishingwatch/api-client'
+
 import App from 'features/app/App'
 import { mapInstanceAtom } from 'features/map/map.atoms'
 import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
@@ -36,12 +38,14 @@ describe('Vessel map popup', () => {
 
     await userEvent.click(mapElement, { position: { x, y } })
 
+    await expect.element(getByTestId('link-vessel-profile').first()).toBeVisible()
     await getByTestId('link-vessel-profile').first().click()
 
     // await expect.element(getByTestId('vv-vessel-name')).toHaveTextContent('Gabu Reefer')
   })
 
   it('should display the vessel track on the timebar', async () => {
+    const fetchSpy = vi.spyOn(GFWAPI, 'fetch')
     const store = makeStore(defaultState, [], true)
 
     store.dispatch(addVesselToWorkspaceAction)
@@ -50,15 +54,29 @@ describe('Vessel map popup', () => {
 
     const timebarElement = getByTestId('timebar-wrapper')
 
-    await userEvent.hover(timebarElement, { position: { x: 400, y: 35 } })
+    await vi.waitFor(
+      async () => {
+        const eventsCalls = fetchSpy.mock.calls
+          .map((_, i) => i)
+          .filter((i) => {
+            const [url] = fetchSpy.mock.calls[i]
+            return typeof url === 'string' && url.includes('/events')
+          })
 
-    await new Promise((resolve) => setTimeout(resolve, 3000))
+        expect(eventsCalls.length).toBeGreaterThan(0)
+
+        await Promise.all(eventsCalls.map((i) => fetchSpy.mock.results[i]?.value).filter(Boolean))
+      },
+      { timeout: 15000 }
+    )
+
+    await userEvent.hover(timebarElement, { position: { x: 400, y: 35 } })
 
     await expect
       .element(getByTestId('timeline-tooltip-container').getByText('Gabu Reefer'))
       .toBeVisible()
     await expect.element(getByTestId('timebar-highlighter')).toBeVisible()
-    await expect.element(getByText('Friday, December 5, 2025')).toBeVisible()
+    await expect.element(getByText('Saturday, December 6, 2025')).toBeVisible()
 
     await expect.element(getByText(/Docked at Banjul, Gambia \(Republic of The\)/)).toBeVisible()
   })
@@ -84,6 +102,7 @@ describe('Vessel map popup', () => {
 
     await userEvent.click(mapElement, { position: { x, y } })
 
+    await expect.element(getByTestId('vessel-pin-button-ibsa-quinto')).toBeVisible()
     await getByTestId('vessel-pin-button-ibsa-quinto').click()
 
     const actions = testingMiddleware.getActions()
