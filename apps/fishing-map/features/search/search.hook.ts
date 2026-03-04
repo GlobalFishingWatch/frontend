@@ -1,7 +1,8 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useEffectEvent, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
+import { useDebounce, useTrackDependencyChanges } from '@globalfishingwatch/react-hooks'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -9,6 +10,7 @@ import {
   ADVANCED_SEARCH_FIELDS,
   isDatasetSearchFieldNeededSupported,
 } from 'features/search/advanced/advanced-search.utils'
+import type { SearchType } from 'features/search/search.config'
 import { MIN_SEARCH_CHARACTERS, RESULTS_PER_PAGE } from 'features/search/search.config'
 import {
   selectSearchFilters,
@@ -61,6 +63,31 @@ const hasFiltersActive = (filters: VesselSearchState): boolean => {
   )
 }
 
+export const useSearchFiltersConnect = () => {
+  const dispatch = useAppDispatch()
+  const searchFilters = useSelector(selectSearchFilters)
+  const { dispatchQueryParams } = useLocationConnect()
+
+  const setSearchFilters = useCallback(
+    (filter: VesselSearchState) => {
+      dispatchQueryParams(filter)
+      dispatch(cleanVesselSearchResults())
+    },
+    [dispatch, dispatchQueryParams]
+  )
+
+  const hasFilters = hasFiltersActive(searchFilters)
+
+  return useMemo(
+    () => ({
+      hasFilters,
+      searchFilters,
+      setSearchFilters,
+    }),
+    [hasFilters, searchFilters, setSearchFilters]
+  )
+}
+
 export const useSearchFiltersErrors = () => {
   const datasets = useSelector(selectAdvancedSearchDatasets)
   const { searchFilters } = useSearchFiltersConnect()
@@ -103,75 +130,34 @@ export const useSearchFiltersErrors = () => {
   return searchFilterErrors
 }
 
-export const useSearchFiltersConnect = () => {
-  const dispatch = useAppDispatch()
-  const searchFilters = useSelector(selectSearchFilters)
-  const { dispatchQueryParams } = useLocationConnect()
-
-  const setSearchFilters = useCallback(
-    (filter: VesselSearchState) => {
-      dispatchQueryParams(filter)
-      dispatch(cleanVesselSearchResults())
-    },
-    [dispatch, dispatchQueryParams]
-  )
-
-  const hasFilters = hasFiltersActive(searchFilters)
-
-  return useMemo(
-    () => ({
-      hasFilters,
-      searchFilters,
-      setSearchFilters,
-    }),
-    [hasFilters, searchFilters, setSearchFilters]
-  )
-}
-
 type FetchSearchResultsParams = {
   query: string
   filters: VesselSearchState
-  datasets?: Dataset[]
+  datasets: Dataset[]
+  searchType: SearchType
+  gfwUser: boolean
   since?: string
 }
 
 export const useFetchSearchResults = () => {
   const promiseRef = useRef<any>(undefined)
-  const query = useSelector(selectSearchQuery)
-  const activeSearchOption = useSelector(selectSearchOption)
+  const lastParamsRef = useRef<Omit<FetchSearchResultsParams, 'since'> | undefined>(undefined)
   const { searchPagination } = useSearchConnect()
   const searchResults = useSelector(selectSearchResults)
-  const searchDatasets = useSelector(
-    activeSearchOption === 'basic' ? selectBasicSearchDatasets : selectAdvancedSearchDatasets
-  ) as Dataset[]
-  const gfwUser = useSelector(selectIsGFWUser)
-  const { searchFilters } = useSearchFiltersConnect()
   const dispatch = useAppDispatch()
 
   const fetchResults = useCallback(
-    ({ query, filters, datasets = searchDatasets, since = '' }: FetchSearchResultsParams) => {
-      const searchInBasic =
-        activeSearchOption === 'basic' && query?.length > MIN_SEARCH_CHARACTERS - 1
-      const searchInAdvanced =
-        activeSearchOption === 'advanced' && (hasFiltersActive(filters) || query?.trim() !== '')
-      if (datasets?.length && (searchInAdvanced || searchInBasic)) {
+    ({ query, filters, datasets, gfwUser, since = '', searchType }: FetchSearchResultsParams) => {
+      if (datasets?.length && searchType) {
         const sources = filters?.sources
           ? datasets.filter(({ id }) => filters?.sources?.includes(id))
           : datasets
+        lastParamsRef.current = { query, filters, datasets: sources, gfwUser, searchType }
         if (promiseRef.current) {
           promiseRef.current.abort()
         }
-        // To ensure the pending action isn't overwritted by the abort above
-        // and we miss the loading intermediate state
         promiseRef.current = dispatch(
-          fetchVesselSearchThunk({
-            query,
-            filters,
-            datasets: sources,
-            since,
-            gfwUser,
-            searchType: activeSearchOption,
-          })
+          fetchVesselSearchThunk({ query, filters, datasets: sources, since, gfwUser, searchType })
         )
         // TODO: Find a better approach to sync query
         // and searchPagination.total to track the search in google analytics
@@ -180,9 +166,10 @@ export const useFetchSearchResults = () => {
           if (total >= 0) {
             trackEvent({
               category: TrackCategory.SearchVessel,
-              action: searchInBasic
-                ? 'Search specific vessel'
-                : 'add_filters_and_hit_search_in_advanced_search',
+              action:
+                searchType === 'basic'
+                  ? 'Search specific vessel'
+                  : 'add_filters_and_hit_search_in_advanced_search',
               label: query,
               value: total,
             })
@@ -190,19 +177,104 @@ export const useFetchSearchResults = () => {
         })
       }
     },
-    [activeSearchOption, dispatch, gfwUser, searchDatasets]
+    [dispatch]
   )
 
   const fetchMoreResults = useCallback(() => {
     const { since, total } = searchPagination
-    if (since && searchResults?.length < total && total > RESULTS_PER_PAGE) {
-      fetchResults({
-        query,
-        filters: activeSearchOption === 'advanced' ? searchFilters : {},
-        since,
-      })
+    if (
+      since &&
+      searchResults?.length < total &&
+      total > RESULTS_PER_PAGE &&
+      lastParamsRef.current
+    ) {
+      fetchResults({ ...lastParamsRef.current, since })
     }
-  }, [searchPagination, searchResults, fetchResults, query, activeSearchOption, searchFilters])
+  }, [fetchResults, searchPagination, searchResults?.length])
 
   return useMemo(() => ({ fetchResults, fetchMoreResults }), [fetchResults, fetchMoreResults])
+}
+
+export const useSearch = () => {
+  const query = useSelector(selectSearchQuery)
+  const gfwUser = useSelector(selectIsGFWUser)
+  const activeSearchOption = useSelector(selectSearchOption)
+  const searchDatasets = useSelector(
+    activeSearchOption === 'basic' ? selectBasicSearchDatasets : selectAdvancedSearchDatasets
+  ) as Dataset[]
+
+  const dispatch = useAppDispatch()
+  const debouncedQuery = useDebounce(query, 600)
+  const searchFilterErrors = useSearchFiltersErrors()
+  const { hasFilters, searchFilters } = useSearchFiltersConnect()
+  const { fetchResults, fetchMoreResults } = useFetchSearchResults()
+
+  const hasSearchFiltersErrors = Object.values(searchFilterErrors).some((e) => e)
+  const searchInBasic = activeSearchOption === 'basic' && query?.length > MIN_SEARCH_CHARACTERS - 1
+  const searchInAdvanced = activeSearchOption === 'advanced' && (hasFilters || query?.trim() !== '')
+
+  const onBasicSearch = useEffectEvent(() => {
+    dispatch(cleanVesselSearchResults())
+    fetchResults({
+      query: debouncedQuery,
+      datasets: searchDatasets,
+      filters: {},
+      gfwUser: gfwUser || false,
+      searchType: 'basic',
+    })
+  })
+
+  const onAdvancedSearch = useEffectEvent(() => {
+    fetchResults({
+      query,
+      datasets: searchDatasets,
+      filters: searchFilters,
+      gfwUser: gfwUser || false,
+      searchType: 'advanced',
+    })
+  })
+
+  const searchDatasetsHash = searchDatasets.map((dataset) => dataset.id).join(',')
+
+  useEffect(() => {
+    if (searchDatasetsHash?.length && !hasSearchFiltersErrors) {
+      if (searchInBasic) {
+        onBasicSearch()
+      } else if (searchInAdvanced) {
+        onAdvancedSearch()
+      }
+    }
+  }, [hasSearchFiltersErrors, debouncedQuery, searchDatasetsHash, searchInAdvanced, searchInBasic])
+
+  const onAdvancedSearchClick = useCallback(() => {
+    if (!hasSearchFiltersErrors) {
+      trackEvent({
+        category: TrackCategory.SearchVessel,
+        action: 'Add filters to refine Advanced Search',
+        label: `name: ${debouncedQuery} | MMSI: ${searchFilters.ssvid} | IMO: ${searchFilters.imo} | Call Sign: ${searchFilters.callsign} | Owner: ${searchFilters.owner} | Info source: ${searchFilters.infoSource} | Sources: ${searchFilters.sources} | Flag: ${searchFilters.flag} | Active After: ${searchFilters.transmissionDateFrom} | Active Before: ${searchFilters.transmissionDateTo}`,
+      })
+      dispatch(cleanVesselSearchResults())
+      fetchResults({
+        query,
+        datasets: searchDatasets,
+        filters: searchFilters,
+        gfwUser: gfwUser || false,
+        searchType: 'advanced',
+      })
+    }
+  }, [
+    debouncedQuery,
+    dispatch,
+    fetchResults,
+    gfwUser,
+    hasSearchFiltersErrors,
+    query,
+    searchDatasets,
+    searchFilters,
+  ])
+
+  return useMemo(
+    () => ({ debouncedQuery, fetchMoreResults, onAdvancedSearchClick }),
+    [debouncedQuery, fetchMoreResults, onAdvancedSearchClick]
+  )
 }
