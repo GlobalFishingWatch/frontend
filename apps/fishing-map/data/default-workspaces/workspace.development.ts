@@ -69,7 +69,6 @@ const workspace: Workspace<WorkspaceState> = {
       id: AIS_DATAVIEW_INSTANCE_ID,
       config: {
         visible: true,
-        datasets: [DEFAULT_FISHING_DATASET_ID],
         filters: {
           distance_from_port_km: '3',
         },

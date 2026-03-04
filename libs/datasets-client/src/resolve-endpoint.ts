@@ -33,8 +33,6 @@ export const resolveEndpoint = (
     (query) => query.id === 'dataset' || query.id === 'datasets'
   )
 
-  url = url.replace('{{x}}', '{x}').replace('{{y}}', '{y}').replace('{{z}}', '{z}')
-
   const hasDatasetConfigDatasetParm =
     datasetConfig.params?.some((param) => param.id === 'dataset' || param.id === 'datasets') ||
     datasetConfig.query?.some((query) => query.id === 'dataset' || query.id === 'datasets')
@@ -81,6 +79,13 @@ export const resolveEndpoint = (
         })
       } else {
         resolvedQuery.set(query.id, query.value.toString())
+      }
+    })
+
+    const coords = ['x', 'y', 'z']
+    coords.forEach((coord) => {
+      if (url.includes(`{{${coord}}}`)) {
+        url = url.replace(`{{${coord}}}`, `{${coord}}`)
       }
     })
 
