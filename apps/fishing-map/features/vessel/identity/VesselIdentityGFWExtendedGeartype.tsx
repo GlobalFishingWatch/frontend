@@ -123,7 +123,7 @@ const VesselIdentityGFWExtendedGeartype = ({
           <span className={cx(styles.secondary, styles.help)}>Messy MMSI: </span>
         </Tooltip>
         {messyMmsi?.[sourceIndex]?.value !== undefined
-          ? messyMmsi?.[sourceIndex]?.value.toString()
+          ? messyMmsi?.[sourceIndex]?.value?.toString()
           : EMPTY_FIELD_PLACEHOLDER}
       </li>
     </ul>
