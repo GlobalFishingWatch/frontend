@@ -1328,6 +1328,7 @@
     "confirmRemove": "crwdns60703:0crwdne60703:0",
     "create": "crwdns60705:0crwdne60705:0",
     "deprecatedActivityLayer": "crwdns112500:0crwdne112500:0",
+    "deprecatedLayerMigrateConfirm": "crwdns112944:0crwdne112944:0",
     "deprecatedVesselGroupLayer": "crwdns112936:0crwdne112936:0",
     "deprecatedVesselLayer": "crwdns112502:0crwdne112502:0",
     "edit": "crwdns60709:0crwdne60709:0",
