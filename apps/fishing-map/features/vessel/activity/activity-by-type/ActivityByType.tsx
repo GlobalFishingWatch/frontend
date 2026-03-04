@@ -175,7 +175,7 @@ function ActivityByType() {
                   }}
                   onInfoClick={handleEventClick}
                   className={cx(styles.event, { [styles.eventExpanded]: expanded })}
-                  testId={`vv-${event.type}-event-${index}`}
+                  testId={`vv-${event?.type}-event-${index}`}
                 />
                 {index === events.length - 1 && groupIndex === groups.length - 1 && (
                   <div style={{ height: '48vh' }}></div>
