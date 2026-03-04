@@ -24,8 +24,9 @@
   --primary-blue-rgb: 22, 63, 137; /* rgb(22, 63, 137) */
   --danger-red-rgb: 360, 62, 98; /* rgb(360, 62, 98) */
   --help-yellow-rgb: 255, 248, 205; /* rgb(255, 248, 205) */
-  --background-rgb: 231, 238, 243; /* rgb(231, 238, 243) */
-  --off-white-rgb: 246, 248, 250; /* rgb(246, 248, 250) */
+  --background-rgb: 232, 236, 244; /* rgb(231, 238, 243) */
+  --off-white-0-rgb: 243, 245, 249; /* rgb(246, 246, 248) */
+  --off-white-1-rgb: 249, 250, 252; /* rgb(250, 250, 250) */
   --white-rgb: 255, 255, 255; /* rgb(255, 255, 255) */
 
   /* COLORS */
@@ -38,7 +39,8 @@
   --color-danger-secondary-red: rgba(var(--danger-red-rgb), var(--opacity-secondary));
   --color-help-yellow: rgba(var(--help-yellow-rgb));
   --color-background: rgba(var(--background-rgb));
-  --color-off-white: rgba(var(--off-white-rgb));
+  --color-off-white-0: rgba(var(--off-white-0-rgb));
+  --color-off-white-1: rgba(var(--off-white-1-rgb));
   --color-white: rgba(var(--white-rgb));
   --color-map-background: #002457;
   --color-highlight-blue: #6aecf9;
@@ -52,7 +54,7 @@
   --opacity-hover: 0.9;
   --opacity-secondary: 0.8;
   --opacity-terthiary: 0.1;
-  --opacity-border: 0.15;
+  --opacity-border: 0.1;
   --opacity-border-thick: 0.25;
   --opacity-border-extra-thick: 0.5;
 
@@ -60,9 +62,17 @@
   --box-shadow-0: 0 0.2rem 0.4rem 0 rgba(var(--primary-blue-rgb), 0.1);
   --box-shadow-1: 0 0.4rem 0.8rem 0 rgba(var(--primary-blue-rgb), 0.15);
   --box-shadow-2: 0 0.8rem 1.6rem 0 rgba(var(--primary-blue-rgb), 0.2);
-  --filter-drop-shadow-0: drop-shadow(0 0.2rem 0.4rem rgba(var(--primary-blue-rgb), 0.1));
-  --filter-drop-shadow-1: drop-shadow(0 0.4rem 0.8rem rgba(var(--primary-blue-rgb), 0.15));
-  --filter-drop-shadow-2: drop-shadow(0 0.8rem 1.6rem rgba(var(--primary-blue-rgb), 0.2));
+  --filter-drop-shadow-0: drop-shadow(1px 0px 0px rgba(var(--primary-blue-rgb), 0.05))
+    drop-shadow(-1px 0px 0px rgba(var(--primary-blue-rgb), 0.05))
+    drop-shadow(0px 1px 0px rgba(var(--primary-blue-rgb), 0.05))
+    drop-shadow(0px -1px 0px rgba(var(--primary-blue-rgb), 0.05))
+    drop-shadow(0 2px 4px rgba(79, 108, 162, 0.15));
+  --filter-drop-shadow-1: drop-shadow(1px 0px 0px rgba(var(--primary-blue-rgb), 0.05))
+    drop-shadow(-1px 0px 0px rgba(var(--primary-blue-rgb), 0.05))
+    drop-shadow(0px 1px 0px rgba(var(--primary-blue-rgb), 0.05))
+    drop-shadow(0px -1px 0px rgba(var(--primary-blue-rgb), 0.05))
+    drop-shadow(0 0.4rem 0.8rem rgba(var(--primary-blue-rgb), 0.15));
+  --filter-drop-shadow-2: drop-shadow(0 0.6rem 1.2rem rgba(var(--primary-blue-rgb), 0.2));
 
   /* UTILS */
   --color-border: rgba(var(--primary-blue-rgb), var(--opacity-border));

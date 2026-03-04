@@ -55,6 +55,9 @@ export function Tabs<TabID = string>({
       <ul className={cx(styles.header, headerClassName)} role="tablist">
         {tabs.map((tab, index) => {
           const tabSelected = activeTabId === tab.id
+          const selectedIndex = tabs.findIndex((t) => t.id === activeTabId)
+          const showBorder =
+            index !== selectedIndex && index !== selectedIndex - 1 && index !== tabs.length - 1
           return (
             <li
               key={tab.id as unknown as string}
@@ -65,7 +68,10 @@ export function Tabs<TabID = string>({
               aria-selected={tabSelected}
             >
               <Button
-                className={cx(styles.tabButton, { [styles.tabActive]: tabSelected })}
+                className={cx(styles.tabButton, {
+                  [styles.tabActive]: tabSelected,
+                  [styles.border]: showBorder,
+                })}
                 type="secondary"
                 tooltip={tab.tooltip}
                 tooltipPlacement={tab.tooltipPlacement}

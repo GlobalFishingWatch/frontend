@@ -5,8 +5,8 @@
 }
 
 .tab {
-  width: var(--sidebar-tabs-width);
-  height: var(--sidebar-tabs-width);
+  width: var(--size-M);
+  height: var(--size-M);
   margin: var(--space-XS);
   display: flex;
   align-items: center;

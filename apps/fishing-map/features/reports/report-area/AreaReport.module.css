@@ -9,8 +9,14 @@
 
 .subsection {
   margin: var(--space-S);
-  border-radius: var(--border-radius-1);
+  border-radius: var(--border-radius-0);
+  background-color: var(--color-off-white-1);
   border: var(--border);
+}
+
+.front {
+  position: relative;
+  z-index: 1;
 }
 
 .singleTabContainer .section {
@@ -19,8 +25,10 @@
 
 .singleTabContainer .subsection {
   border: none;
-  background-color: var(--color-off-white);
+  background-color: var(--color-off-white-0);
+  border-radius: var(--border-radius-1);
   box-shadow: var(--box-shadow-1);
+  border: var(--border);
 }
 
 .container {

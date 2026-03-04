@@ -1,16 +1,20 @@
 .searchResult {
   position: relative;
-  padding: var(--space-M);
+  padding: var(--space-SM);
   transition:
     background-color 150ms linear,
     box-shadow 150ms linear,
     border 150ms linear;
-  border-bottom: var(--border);
+  border-radius: var(--border-radius-1);
+  background-color: var(--color-off-white-0);
+  margin: var(--space-S);
+  box-shadow: var(--box-shadow-1);
+  border: var(--border);
 }
 
 .searchResult.highlighted:has(.icon:hover),
 .selected {
-  background: var(--color-terthiary-blue);
+  background: var(--color-white);
 }
 
 .icon {

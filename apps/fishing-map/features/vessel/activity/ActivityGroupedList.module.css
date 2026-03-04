@@ -43,7 +43,7 @@
 .eventGroup {
   margin-left: unset;
   width: 100%;
-  background: var(--color-off-white);
+  background: var(--color-off-white-0);
   border-top: var(--border);
 }
 

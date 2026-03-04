@@ -29,9 +29,10 @@ a.linkButton,
 }
 
 .list {
-  background-color: var(--color-off-white);
-  border-radius: var(--border-radius-1);
+  background-color: var(--color-off-white-0);
   box-shadow: var(--box-shadow-1);
+  border: var(--border);
+  border-radius: var(--border-radius-1);
   padding: var(--space-SM);
 }
 
