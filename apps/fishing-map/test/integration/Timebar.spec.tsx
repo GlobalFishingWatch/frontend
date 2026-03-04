@@ -47,7 +47,6 @@ describe('App Timebar Integration', () => {
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
     const [x, y] = viewport?.project([-15, 28]) || [0, 0]
-    console.log('🚀 ~ x, y:', x, y)
 
     await userEvent.click(mapElement, { position: { x, y } })
 
