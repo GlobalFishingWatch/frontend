@@ -20,10 +20,10 @@
   padding-bottom: var(--space-SM);
   position: relative;
   margin: var(--space-S);
-  margin-top: 0;
   margin-bottom: var(--space-SM);
-  background: var(--color-off-white);
+  background: var(--color-off-white-0);
   box-shadow: var(--box-shadow-1);
+  border: var(--border);
   border-radius: var(--border-radius-1);
 }
 

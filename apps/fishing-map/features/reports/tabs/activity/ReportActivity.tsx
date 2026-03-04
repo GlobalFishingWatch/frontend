@@ -386,7 +386,7 @@ function ActivityReport() {
           <ReportActivitySubsectionSelector />
         </div>
       )}
-      <div className={styles.subsection}>
+      <div className={cx(styles.subsection, styles.front)}>
         {!isVesselGroupReportLocation && (
           <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
         )}

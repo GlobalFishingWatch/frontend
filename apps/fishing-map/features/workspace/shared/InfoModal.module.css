@@ -84,7 +84,7 @@ div.modalContent {
 }
 
 .content tr:hover {
-  background-color: var(--color-off-white);
+  background-color: var(--color-off-white-0);
 }
 
 .subtitle {

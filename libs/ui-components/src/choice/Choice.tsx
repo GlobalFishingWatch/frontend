@@ -42,41 +42,14 @@ export function Choice({
   const activeOptionId = activeOption
 
   const activeRef = useRef<HTMLLIElement | null>(null)
-  const [activeElementProperties, setActiveElementProperties] = useState<
-    ActiveChoiceProperties | undefined
-  >()
 
   const onOptionClickHandle = (option: ChoiceOption, e: React.MouseEvent) => {
     if (activeOptionId === option.id) return
     activeRef.current = e.currentTarget.parentElement as HTMLLIElement
-    setActiveElementProperties({
-      width: activeRef?.current.clientWidth,
-      left: activeRef?.current.offsetLeft,
-    })
     if (onSelect) {
       onSelect(option, e)
     }
   }
-
-  const updateActiveElementPoperties = useCallback(() => {
-    if (activeRef?.current?.clientWidth) {
-      setActiveElementProperties({
-        width: activeRef?.current.clientWidth,
-        left: activeRef?.current.offsetLeft,
-      })
-    }
-  }, [])
-
-  useLayoutEffect(() => {
-    updateActiveElementPoperties()
-  }, [activeRef, activeOptionId, updateActiveElementPoperties])
-
-  useEffect(() => {
-    if (!activeRef.current) return
-    const resizeObserver = new ResizeObserver(updateActiveElementPoperties)
-    resizeObserver.observe(activeRef.current)
-    return () => resizeObserver.disconnect()
-  }, [updateActiveElementPoperties])
 
   if (!options?.length) {
     return null
@@ -125,15 +98,6 @@ export function Choice({
               </li>
             )
           })}
-          {activeOption && activeElementProperties && (
-            <div
-              className={styles.activeChip}
-              style={{
-                width: activeElementProperties.width,
-                left: activeElementProperties.left,
-              }}
-            />
-          )}
         </ul>
       </div>
     </div>
