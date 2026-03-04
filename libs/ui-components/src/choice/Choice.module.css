@@ -13,22 +13,9 @@
   align-items: center;
   gap: 0.2rem;
   border-radius: var(--size-M);
-  border: var(--border);
+  background-color: var(--color-terthiary-blue);
   padding: 0.2rem;
   min-width: min-content;
-}
-
-.activeChip {
-  content: '';
-  position: absolute;
-  width: 10px;
-  top: 0.3rem;
-  left: 0.2rem;
-  height: calc(100% - 0.6rem);
-  border-radius: var(--size-M);
-  background-color: var(--color-terthiary-blue);
-  z-index: 0;
-  transition: all 300ms ease-in-out;
 }
 
 .option {
@@ -48,10 +35,16 @@
 
 .optionActive {
   color: var(--color-primary-blue);
+  background-color: var(--color-off-white-1);
+  filter: var(--filter-drop-shadow-0);
+}
+
+.Choice .optionActive:hover {
+  background-color: var(--color-off-white-1);
 }
 
 .Choice .optionActive:focus {
-  background-color: transparent;
+  background-color: var(--color-off-white-1);
   box-shadow: none;
 }
 

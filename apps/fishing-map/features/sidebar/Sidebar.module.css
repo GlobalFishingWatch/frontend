@@ -4,7 +4,7 @@
 }
 
 .content {
-  width: calc(100% - var(--sidebar-tabs-width) - (var(--space-XS) * 2));
+  width: calc(100% - var(--sidebar-tabs-width));
   display: flex;
   flex-direction: column;
 }

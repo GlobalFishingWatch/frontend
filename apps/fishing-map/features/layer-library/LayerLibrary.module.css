@@ -24,9 +24,9 @@
 .categoryContainer {
   border-radius: var(--border-radius-1);
   padding: var(--space-SM);
-  background-color: var(--color-off-white);
+  background-color: var(--color-off-white-0);
   margin: var(--space-S);
-  box-shadow: var(--box-shadow-1);
+  filter: var(--filter-drop-shadow-1);
 }
 
 .category {
