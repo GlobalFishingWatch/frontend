@@ -36,7 +36,7 @@ import {
   getVesselDataviewInstance,
   getVesselInfoDataviewInstanceDatasetConfig,
 } from 'features/dataviews/dataviews.utils'
-import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.static.selectors'
 import { selectResources } from 'features/resources/resources.slice'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { CACHE_FALSE_PARAM } from 'features/vessel/vessel.config'

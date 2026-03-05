@@ -9,6 +9,7 @@ import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-compon
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { selectPresenceDataview } from 'features/dataviews/selectors/dataviews.static.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import { useEditVesselGroupModal } from 'features/reports/report-vessel-group/vessel-group-report.hooks'
@@ -37,6 +38,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
   const onEditClick = useEditVesselGroupModal()
   const guestUser = useSelector(selectIsGuestUser)
   const dataviews = useSelector(selectAllVisibleVesselGroups)
+  const presenceDataview = useSelector(selectPresenceDataview)
 
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
 
@@ -55,7 +57,8 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
 
   const toggleAddToWorkspace = useCallback(
     (vesselGroupId: string, action: 'remove' | 'add') => {
-      const dataviewInstance = getVesselGroupDataviewInstance(vesselGroupId)
+      const presenceDatasets = presenceDataview?.datasetsConfig?.map((dataset) => dataset.datasetId)
+      const dataviewInstance = getVesselGroupDataviewInstance(vesselGroupId, presenceDatasets)
       if (dataviewInstance && action === 'add') {
         upsertDataviewInstance(dataviewInstance)
       } else if (dataviewInstance && action === 'remove') {
@@ -63,7 +66,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
       }
       dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
     },
-    [dispatch, deleteDataviewInstance, upsertDataviewInstance]
+    [presenceDataview?.datasetsConfig, dispatch, upsertDataviewInstance, deleteDataviewInstance]
   )
 
   return (
