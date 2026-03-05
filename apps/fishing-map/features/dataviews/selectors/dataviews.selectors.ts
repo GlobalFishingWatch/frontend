@@ -11,7 +11,11 @@ import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
 
 import { DATASET_COMPARISON_SUFFIX } from 'data/config'
-import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_DATAVIEW_SLUGS } from 'data/workspaces'
+import {
+  DEFAULT_BASEMAP_DATAVIEW_INSTANCE,
+  DEFAULT_DATAVIEW_SLUGS,
+  PRESENCE_DATAVIEW_SLUG,
+} from 'data/workspaces'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   getActiveDatasetsInDataview,

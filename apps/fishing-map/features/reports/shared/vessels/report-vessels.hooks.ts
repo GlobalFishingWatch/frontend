@@ -20,7 +20,7 @@ import {
   getVesselDataviewInstanceDatasetConfig,
 } from 'features/dataviews/dataviews.utils'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.static.selectors'
 import type { ReportTableVessel } from 'features/reports/shared/vessels/report-vessels.types'
 import { setResource } from 'features/resources/resources.slice'
 import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'

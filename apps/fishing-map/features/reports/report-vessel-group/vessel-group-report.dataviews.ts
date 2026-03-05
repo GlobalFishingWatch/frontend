@@ -12,7 +12,7 @@ import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
-  DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS,
+  DEFAULT_PRESENCE_DATASET_ID,
   FISHING_DATAVIEW_SLUG_ALL,
   PRESENCE_DATAVIEW_SLUG,
 } from 'data/workspaces'
@@ -100,7 +100,8 @@ export function getReportVesselGroupVisibleDataviews({
 }
 
 export const getVesselGroupDataviewInstance = (
-  vesselGroupId: string
+  vesselGroupId: string,
+  datasets: string[] = [DEFAULT_PRESENCE_DATASET_ID]
 ): DataviewInstance<DataviewType> | undefined => {
   if (vesselGroupId) {
     return {
@@ -113,7 +114,7 @@ export const getVesselGroupDataviewInstance = (
         filters: {
           'vessel-groups': [vesselGroupId],
         },
-        datasets: DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS,
+        datasets,
       },
       dataviewId: PRESENCE_DATAVIEW_SLUG,
     }
