@@ -15,7 +15,7 @@ const DebugTestingTools: React.FC = () => {
         <label>Global state extractor</label>
         <IconButton
           icon="copy"
-          tooltip="Copy global state to clipboard"
+          tooltip="Copy entire redux state to clipboard"
           onClick={() => {
             copyToClipboard(JSON.stringify(store.getState()))
           }}
