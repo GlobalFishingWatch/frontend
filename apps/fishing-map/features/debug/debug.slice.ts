@@ -29,7 +29,7 @@ interface DebugState {
   options: DebugOptions
 }
 
-const initialState: DebugState = {
+export const debugInitialState: DebugState = {
   active: false,
   featureFlags: {
     workspaceGenerator: false,
@@ -50,7 +50,7 @@ const initialState: DebugState = {
 
 const debugSlice = createSlice({
   name: 'debug',
-  initialState,
+  initialState: debugInitialState,
   reducers: {
     toggleDebugMenu: (state) => {
       state.active = !state.active
