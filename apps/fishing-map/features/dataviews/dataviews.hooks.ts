@@ -36,7 +36,9 @@ export function useMigrateToLatestDataview() {
       if (dataview && !datasets.length) {
         const datasetIds = getDatasetsInDataviews([dataview])
         if (datasetIds.length > 0) {
-          datasets = await dispatch(fetchDatasetsByIdsThunk({ ids: datasetIds })).unwrap()
+          datasets = await dispatch(
+            fetchDatasetsByIdsThunk({ ids: datasetIds, onlyUserDatasets: false })
+          ).unwrap()
         }
       }
       const hasDatasets =
