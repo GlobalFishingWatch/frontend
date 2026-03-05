@@ -123,7 +123,12 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
 
   return (
     <Fragment>
-      <Link className={styles.workspaceLink} to={reportLinkTo} onClick={onReportClick}>
+      <Link
+        className={styles.workspaceLink}
+        to={reportLinkTo}
+        onClick={onReportClick}
+        data-testid="open-analysis-link"
+      >
         <IconButton
           icon="analysis"
           tooltip={t((t) => t.common.analysis)}
@@ -132,7 +137,12 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
         />
       </Link>
       {addAreaToReport && (
-        <Link className={styles.workspaceLink} to={addReportLinkTo} onClick={onReportClick}>
+        <Link
+          className={styles.workspaceLink}
+          to={addReportLinkTo}
+          onClick={onReportClick}
+          data-testid="add-area-to-report-link"
+        >
           <IconButton
             icon="add-polygon-to-analysis"
             tooltip={t((t) => t.common.analysisAddArea)}
@@ -142,7 +152,12 @@ const ContextLayerReportLink = ({ feature, onClick }: ContextLayerReportLinkProp
         </Link>
       )}
       {removeAreaFromReport && (
-        <Link className={styles.workspaceLink} to={removeReportLinkTo} onClick={onReportClick}>
+        <Link
+          className={styles.workspaceLink}
+          to={removeReportLinkTo}
+          onClick={onReportClick}
+          data-testid="remove-area-from-report-link"
+        >
           <IconButton
             icon="remove-polygon-from-analysis"
             tooltip={t((t) => t.common.analysisRemoveArea)}
