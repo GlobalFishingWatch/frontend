@@ -83,7 +83,7 @@ describe('Vessel map popup', () => {
 
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-    const [x, y] = viewport?.project([-83.5, 21.6]) || [0, 0]
+    const [x, y] = viewport?.project([8.5, -48]) || [0, 0]
 
     await userEvent.click(mapElement, { position: { x, y } })
 
@@ -96,7 +96,7 @@ describe('Vessel map popup', () => {
     expect(pinAction?.query).toStrictEqual({
       dataviewInstances: [
         {
-          id: 'vessel-9375434a0-0b91-7247-5a95-57a10d2b08df',
+          id: 'vessel-9375434a0-0b91-7247-5a95-57a10d2b08df:v4.0',
           dataviewId: 'fishing-map-vessel-track-v-4',
           config: {
             info: 'public-global-vessel-identity:v4.0',
