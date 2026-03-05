@@ -45,14 +45,14 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
   const { t } = useTranslation()
   const layerActive = dataview?.config?.visible ?? true
   const layerLoaded = useDeckLayerLoadedState()[dataview.id]?.loaded
-  const { deleteDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const [filterOpen, setFiltersOpen] = useState(false)
   const [colorOpen, setColorOpen] = useState(false)
   const vesselGroupsOptions = useVesselGroupsOptions()
   const { filtersAllowed } = getSchemaFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
   })
-  const { migrateToLatestDataviewInstance, hasMigratedDataviews } = useMigrateToLatestDataview()
+  const { onMigrateDataviewClick, getIsDataviewMigrated } = useMigrateToLatestDataview()
   const isGFWUser = useSelector(selectIsGFWUser)
   const readOnly = useSelector(selectReadOnly)
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
@@ -93,17 +93,6 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
 
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
-  }
-
-  const onUpdateDeprecatedLayerClick = () => {
-    const alreadyMigratedDataview = hasMigratedDataviews(dataview)
-    if (alreadyMigratedDataview) {
-      if (window.confirm(t((t) => t.workspace.deprecatedLayerMigrateConfirm))) {
-        deleteDataviewInstance(dataview.id)
-      }
-    } else {
-      migrateToLatestDataviewInstance(dataview)
-    }
   }
 
   if (!dataset || dataset.status === 'deleted') {
@@ -186,10 +175,12 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
             <IconButton
               icon="warning"
               type="warning-invert"
-              onClick={showDeprecatedWarning ? onUpdateDeprecatedLayerClick : undefined}
+              onClick={showDeprecatedWarning ? () => onMigrateDataviewClick(dataview) : undefined}
               tooltip={
                 showDeprecatedWarning
-                  ? t((t) => t.workspace.deprecatedActivityLayer)
+                  ? getIsDataviewMigrated(dataview)
+                    ? t((t) => t.workspace.deprecatedActivityLayerMigrated)
+                    : t((t) => t.workspace.deprecatedActivityLayer)
                   : isGFWUser
                     ? `${t((t) => t.errors.layerLoading)} (${layerError})`
                     : t((t) => t.errors.layerLoading)
