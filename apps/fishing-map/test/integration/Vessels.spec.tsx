@@ -4,10 +4,9 @@ import { render } from 'test/appTestUtils'
 import { defaultState } from 'test/defaultState'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
 import { addVesselToWorkspaceAction } from 'test/utils/actions/addVesselToWorkspace'
+import { GFWAPITestUtils } from 'test/utils/network/gfw-api-test'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
-
-import { GFWAPI } from '@globalfishingwatch/api-client'
 
 import App from 'features/app/App'
 import { mapInstanceAtom } from 'features/map/map.atoms'
@@ -45,7 +44,7 @@ describe('Vessel map popup', () => {
   })
 
   it('should display the vessel track on the timebar', async () => {
-    const fetchSpy = vi.spyOn(GFWAPI, 'fetch')
+    const GFWAPITest = new GFWAPITestUtils()
     const store = makeStore(defaultState, [], true)
 
     store.dispatch(addVesselToWorkspaceAction)
@@ -54,21 +53,7 @@ describe('Vessel map popup', () => {
 
     const timebarElement = getByTestId('timebar-wrapper')
 
-    await vi.waitFor(
-      async () => {
-        const eventsCalls = fetchSpy.mock.calls
-          .map((_, i) => i)
-          .filter((i) => {
-            const [url] = fetchSpy.mock.calls[i]
-            return typeof url === 'string' && url.includes('/events')
-          })
-
-        expect(eventsCalls.length).toBeGreaterThan(0)
-
-        await Promise.all(eventsCalls.map((i) => fetchSpy.mock.results[i]?.value).filter(Boolean))
-      },
-      { timeout: 15000 }
-    )
+    await GFWAPITest.waitForRequest('/events')
 
     await userEvent.hover(timebarElement, { position: { x: 400, y: 35 } })
 
