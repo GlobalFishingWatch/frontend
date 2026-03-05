@@ -187,7 +187,7 @@ const AppModals = () => {
         title={
           <Fragment>
             Secret debug menu 🤖
-            <GFWOnly userGroup="gfw" />
+            {isGFWUser && <GFWOnly userGroup="gfw" />}
           </Fragment>
         }
         isOpen={debugActive && !anyAppModalOpen}

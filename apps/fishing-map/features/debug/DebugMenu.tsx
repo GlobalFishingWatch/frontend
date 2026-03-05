@@ -31,11 +31,12 @@ const DebugMenu: React.FC = () => {
   }, [isGFWUser])
 
   const [activeTab, setActiveTab] = useState<DebugTabId>(tabs[0].id)
+  const validActiveTab = tabs.some((tab) => tab.id === activeTab) ? activeTab : tabs[0].id
 
   return (
     <Tabs<DebugTabId>
       tabs={tabs}
-      activeTab={activeTab}
+      activeTab={validActiveTab}
       onTabClick={(tab) => setActiveTab(tab.id)}
     />
   )
