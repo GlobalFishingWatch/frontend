@@ -7,6 +7,7 @@ import { Logo, Modal } from '@globalfishingwatch/ui-components'
 import { ROOT_DOM_ELEMENT } from 'data/config'
 import LanguageToggle from 'features/i18n/LanguageToggle'
 import { Locale } from 'types'
+import { htmlSafeParse } from 'utils/html-parser'
 
 import type { WelcomeContentKey } from './welcome.content'
 import WELCOME_POPUP_CONTENT from './welcome.content'
@@ -111,10 +112,9 @@ const Welcome = ({ contentKey }: WelcomeProps) => {
           <LanguageToggle className={styles.lngToggle} position="rightDown" />
         </div>
         <h1 className={styles.title}>{title}</h1>
-        <div
-          className={styles.contentContainer}
-          dangerouslySetInnerHTML={{ __html: description }}
-        ></div>
+        <div className={styles.contentContainer}>
+          <span>{htmlSafeParse(description)}</span>
+        </div>
       </div>
     </Modal>
   )
