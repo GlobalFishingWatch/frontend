@@ -48,8 +48,10 @@ export const useMigrateWorkspaceToast = () => {
         toastId: 'migrateWorkspace',
         autoClose: 10000,
         closeButton: true,
-        onClose: () => {
-          migrationToastDiscarded = true
+        onClose: (reason) => {
+          if (reason === true || reason === 'click') {
+            migrationToastDiscarded = true
+          }
         },
       })
       onDeprecatedDataviewsChange()
