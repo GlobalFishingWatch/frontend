@@ -2,7 +2,7 @@
   "analysis": {
     "activityChange": "Mudança de atividade",
     "around": "ao redor",
-    "beforeAfter": "antes/depois",
+    "beforeAfter": "Antes/Depois",
     "beforeAfterDate": "data",
     "beforeAfterRange": "entre {{duration}} antes e depois de {{compareStart}}",
     "buffer": "Área de buffer",
@@ -834,7 +834,7 @@
     "learnMore": "Saiba mais sobre nosso trabalho de identidade <a href='https://globalfishingwatch.org/research-project-vessel-identity/' target='_blank'>aqui</a>.",
     "mainQueryLabel": "Nome, IMO ou MMSI",
     "minCharacters_one": "Insira pelo menos {{count}} caractere",
-    "minCharacters_many": "Please type at least {{count}} characters",
+    "minCharacters_many": "Insira ao menos {{count}} caracteres",
     "minCharacters_other": "Insira pelo menos {{count}} caracteres",
     "missingSources": "não aparecerão a menos que você faça <1>login</1>",
     "noResults": "Não consegue encontrar a embarcação que está procurando? Tente usar MMSI, IMO ou Callsign",
