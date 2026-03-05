@@ -1328,7 +1328,7 @@
     "confirmRemove": "¿Está seguro que desea eliminar permanentemente este espacio de trabajo?",
     "create": "Crear nuevo",
     "deprecatedActivityLayer": "Esta capa está usando datos obsoletos. Haga clic para agregar una copia con el último conjunto de datos",
-    "deprecatedLayerMigrateConfirm": "You have already migrated this data, would you like to remove the old layer from your workspace? Remember to save your workspace after removing the old layer.",
+    "deprecatedActivityLayerMigrated": "There is already a copy of this layer using the latest dataset. Click to remove this one",
     "deprecatedVesselGroupLayer": "Este grupo de embarcaciones está usando datos obsoletos. Haga clic para crearlo de nuevo con el último conjunto de datos",
     "deprecatedVesselLayer": "Esta embarcación utiliza datos obsoletos. Haga clic para buscar en el conjunto de datos más reciente.",
     "edit": "Editar espacio de trabajo",
