@@ -29,6 +29,7 @@ import {
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
 } from 'data/workspaces'
+import { DATASET_VERSION_SEPARATOR, PIPE_DATASET_ID } from 'data/workspaces.config'
 import type { VesselInstanceDatasets } from 'features/datasets/datasets.utils'
 import { getActiveDatasetsInDataview, isPrivateDataset } from 'features/datasets/datasets.utils'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
@@ -77,7 +78,7 @@ export const getVesselIdFromInstanceId = (dataviewInstanceId: string) => {
   const prefix = dataviewInstanceId?.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
     ? VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX
     : VESSEL_DATAVIEW_INSTANCE_PREFIX
-  return dataviewInstanceId.split(prefix)[1]
+  return dataviewInstanceId.split(prefix)[1].split(DATASET_VERSION_SEPARATOR)[0]
 }
 
 export const getIsVesselDataviewInstanceId = (dataviewInstanceId: string) =>
@@ -86,11 +87,13 @@ export const getIsVesselDataviewInstanceId = (dataviewInstanceId: string) =>
 export const getIsEncounteredVesselDataviewInstanceId = (dataviewInstanceId: string) =>
   dataviewInstanceId?.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
 
-export const getVesselDataviewInstanceId = (vesselId: string) =>
-  `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}`
+export const getVesselDataviewInstanceId = (
+  vesselId: string,
+  version = PIPE_DATASET_ID as string
+) => `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}${DATASET_VERSION_SEPARATOR}${version}`
 
 export const getEncounteredVesselDataviewInstanceId = (vesselId: string) =>
-  `${VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX}${vesselId}`
+  `${VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX}${vesselId}${DATASET_VERSION_SEPARATOR}${PIPE_DATASET_ID}`
 
 export type GetVesselInWorkspaceParams = {
   dataviews: UrlDataviewInstance[]
