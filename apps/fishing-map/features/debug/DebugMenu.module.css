@@ -1,3 +1,7 @@
+.container {
+  padding: var(--space-M);
+}
+
 .header {
   display: flex;
   align-items: center;
@@ -41,6 +45,7 @@
 
 .input {
   margin-left: var(--space-M);
+  flex: 1;
 }
 
 .separation {

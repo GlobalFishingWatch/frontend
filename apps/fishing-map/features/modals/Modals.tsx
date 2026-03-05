@@ -193,6 +193,7 @@ const AppModals = () => {
           isOpen={debugActive && !anyAppModalOpen}
           shouldCloseOnEsc
           onClose={dispatchToggleDebugMenu}
+          contentClassName={styles.debugMenuModal}
         >
           <DebugMenu />
         </Modal>
