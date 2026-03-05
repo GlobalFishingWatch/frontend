@@ -143,7 +143,7 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
 )
 
 export const selectHasDeprecatedDataviewInstances = createSelector(
-  [selectDataviewInstancesResolved],
+  [selectDataviewInstancesResolvedVisible],
   (dataviews) => {
     return dataviews?.some((dataview) => dataview.deprecated)
   }
