@@ -16,124 +16,78 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
 
   build {
     step {
-      id         = "create-token"
-      name       = "alpine"
-      entrypoint = "sh"
-      args = ["-c", <<EOF
-        set -eu
-        if [ $BRANCH_NAME = 'main' ]; then
-          exit 0
-        fi
-        apk add --no-cache openssl curl jq >/dev/null 2>&1
-
-        client_id=$_APP_ID
-        pem="$$GITHUB_BOT_PRIVATE_KEY"
-
-        # If the env var contains the PEM text instead of a file path, write it to a temp file
-        case "$$pem" in
-          *"BEGIN RSA PRIVATE KEY"*|*"BEGIN PRIVATE KEY"*)
-            pem_file=$$(mktemp)
-            echo "$$pem" | sed 's/\\n/\n/g' > "$$pem_file"
-            ;;
-          *)
-            pem_file="$$pem"
-            ;;
-        esac
-
-        now=$$(date +%s)
-        iat=$$((now - 60))  # Issued 60s ago
-        exp=$$((now + 600)) # Expires in 10 minutes
-
-        b64enc() { openssl base64 -A | tr '+/' '-_' | tr -d '='; }
-
-        header_json='{"typ":"JWT","alg":"RS256"}'
-        header=$$(echo -n "$$header_json" | b64enc)
-
-        payload_json="{\"iat\":$${iat},\"exp\":$${exp},\"iss\":\"$${client_id}\"}"
-        payload=$$(echo -n "$$payload_json" | b64enc)
-
-        header_payload="$$header.$$payload"
-
-        signature=$$(echo -n "$$header_payload" \
-          | openssl dgst -sha256 -sign "$$pem_file" \
-          | b64enc)
-        JWT="$$header_payload.$$signature"
-
-
-        printf 'JWT: %s\n' "$$JWT"
-        TOKEN_RESPONSE=$$(curl -s -X POST \
-          -H "Authorization: Bearer $$JWT" \
-          -H "Accept: application/vnd.github+json" \
-          "https://api.github.com/app/installations/$_INSTALLATION_ID/access_tokens"
-        )
-        TOKEN=$(echo "$$TOKEN_RESPONSE" | jq -r '.token')
-        echo "$$TOKEN" > /workspace/token.txt
-        printf 'TOKEN: %s\n' "$$TOKEN"
-      EOF
-      ]
-      secret_env = ["GITHUB_BOT_PRIVATE_KEY"]
-    }
-
-    step {
       id         = "Notify about workflow running"
       name       = "alpine"
       entrypoint = "sh"
       args = ["-c", <<EOF
         set -euo pipefail
-        if [ $BRANCH_NAME = 'main' ]; then
-          exit 0
+        [ "$BRANCH_NAME" = "main" ] && exit 0
+        apk add --no-cache openssl curl jq >/dev/null 2>&1
+
+        # --- Generate GitHub App token ---
+        b64enc() { openssl base64 -A | tr '+/' '-_' | tr -d '='; }
+
+        pem_file=$$(mktemp)
+        echo "$$GITHUB_BOT_PRIVATE_KEY" | sed 's/\\n/\n/g' > "$$pem_file"
+
+        now=$$(date +%s)
+        header=$$(echo -n '{"typ":"JWT","alg":"RS256"}' | b64enc)
+        payload=$$(printf '{"iat":%d,"exp":%d,"iss":"%s"}' $$((now - 60)) $$((now + 600)) "$_APP_ID" | b64enc)
+        signature=$$(echo -n "$$header.$$payload" | openssl dgst -sha256 -sign "$$pem_file" | b64enc)
+
+        GITHUB_TOKEN_RESPONSE=$$(curl -s -X POST \
+          -H "Authorization: Bearer $$header.$$payload.$$signature" \
+          -H "Accept: application/vnd.github+json" \
+          "https://api.github.com/app/installations/$_INSTALLATION_ID/access_tokens")
+
+        echo "GitHub API response: $$GITHUB_TOKEN_RESPONSE"
+        GITHUB_TOKEN=$$(echo "$$GITHUB_TOKEN_RESPONSE" | jq -r '.token')
+
+        echo "$$GITHUB_TOKEN" > /workspace/token.txt
+
+        if [ -z "$$GITHUB_TOKEN" ] || [ "$$GITHUB_TOKEN" = "null" ]; then
+          echo "Failed to generate GitHub token"
+          exit 1
         fi
-        echo "Installing curl and jq..."
-        apk add --no-cache curl jq >/dev/null 2>&1
-        echo "Looking for PR associated with branch: $BRANCH_NAME"
 
-        GITHUB_TOKEN=$$(cat /workspace/token.txt)
-
-        # Find PR number
-        PR_NUMBER=$$(curl -s -H "Authorization: token $$GITHUB_TOKEN" \
+        # --- Find PR for this branch ---
+        PR_NUMBER=$$(curl -s \
+          -H "Authorization: token $$GITHUB_TOKEN" \
           "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/pulls?state=open&head=$_REPO_OWNER:$BRANCH_NAME" \
-          | jq -r '.[0].number // empty')
+          | jq -r 'if type == "array" then .[0].number // empty else empty end')
 
         if [ -z "$$PR_NUMBER" ]; then
-          echo "No open PR found for branch '$BRANCH_NAME'. Skipping PR comment."
+          echo "No PR found for '$BRANCH_NAME'. Skipping."
           exit 0
         fi
-
         echo "PR found: #$$PR_NUMBER"
 
-        # Prepare comment body
-        echo "Integration tests are running 🧪" > /workspace/summary.txt
-        COMMENT_MARKER="<!-- integration-tests-bot-comment -->"
+        # --- Post or update PR comment ---
+        MARKER="<!-- integration-tests-bot-comment -->"
+        echo "## Integration tests are running... 🧪" > /tmp/comment.txt
         FOOTER="Posted by [this build](https://console.cloud.google.com/cloud-build/builds;region=us-central1/$BUILD_ID?project=gfw-int-infrastructure)"
-        jq -n --rawfile summary /workspace/summary.txt --arg footer "$$FOOTER" --arg marker "$$COMMENT_MARKER" \
+        jq -n --rawfile summary /tmp/comment.txt --arg footer "$$FOOTER" --arg marker "$$MARKER" \
           '{body: ($$marker + "\n" + $$summary + "\n\n" + $$footer)}' > /tmp/payload.json
-        rm /workspace/summary.txt
 
-        # Search for existing bot comment
-        echo "Searching for existing bot comment..."
-        EXISTING_COMMENT_ID=$$(curl -s -H "Authorization: token $$GITHUB_TOKEN" \
+        COMMENT_ID=$$(curl -s \
+          -H "Authorization: token $$GITHUB_TOKEN" \
           "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/$$PR_NUMBER/comments" \
-          | jq -r ".[] | select(.body | contains(\"$$COMMENT_MARKER\")) | .id" | head -1)
+          | jq -r ".[] | select(.body | contains(\"$$MARKER\")) | .id" | head -1)
 
-        if [ -n "$$EXISTING_COMMENT_ID" ]; then
-          echo "Found existing comment ID: $$EXISTING_COMMENT_ID. Updating..."
-          curl -s -X PATCH \
-               -H "Authorization: token $$GITHUB_TOKEN" \
-               -H "Content-Type: application/json" \
-               -d @/tmp/payload.json \
-               "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/comments/$$EXISTING_COMMENT_ID"
-          echo "Comment updated!"
+        if [ -n "$$COMMENT_ID" ]; then
+          curl -s -X PATCH -H "Authorization: token $$GITHUB_TOKEN" -H "Content-Type: application/json" \
+            -d @/tmp/payload.json \
+            "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/comments/$$COMMENT_ID" > /dev/null
+          echo "Updated comment $$COMMENT_ID"
         else
-          echo "No existing comment found. Creating new comment..."
-          curl -s -X POST \
-               -H "Authorization: token $$GITHUB_TOKEN" \
-               -H "Content-Type: application/json" \
-               -d @/tmp/payload.json \
-               "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/$$PR_NUMBER/comments"
-          echo "Comment created!"
+          curl -s -X POST -H "Authorization: token $$GITHUB_TOKEN" -H "Content-Type: application/json" \
+            -d @/tmp/payload.json \
+            "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/$$PR_NUMBER/comments" > /dev/null
+          echo "Created new comment"
         fi
       EOF
       ]
+      secret_env = ["GITHUB_BOT_PRIVATE_KEY"]
     }
 
     step {
@@ -301,8 +255,69 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
     }
 
     step {
+      id         = "create-token"
+      name       = "alpine"
+      wait_for   = ["Run integration tests"]
+      entrypoint = "sh"
+      args = ["-c", <<EOF
+        set -eu
+        if [ $BRANCH_NAME = 'main' ]; then
+          exit 0
+        fi
+        apk add --no-cache openssl curl jq >/dev/null 2>&1
+
+        client_id=$_APP_ID
+        pem="$$GITHUB_BOT_PRIVATE_KEY"
+
+        # If the env var contains the PEM text instead of a file path, write it to a temp file
+        case "$$pem" in
+          *"BEGIN RSA PRIVATE KEY"*|*"BEGIN PRIVATE KEY"*)
+            pem_file=$$(mktemp)
+            echo "$$pem" | sed 's/\\n/\n/g' > "$$pem_file"
+            ;;
+          *)
+            pem_file="$$pem"
+            ;;
+        esac
+
+        now=$$(date +%s)
+        iat=$$((now - 60))  # Issued 60s ago
+        exp=$$((now + 600)) # Expires in 10 minutes
+
+        b64enc() { openssl base64 -A | tr '+/' '-_' | tr -d '='; }
+
+        header_json='{"typ":"JWT","alg":"RS256"}'
+        header=$$(echo -n "$$header_json" | b64enc)
+
+        payload_json="{\"iat\":$${iat},\"exp\":$${exp},\"iss\":\"$${client_id}\"}"
+        payload=$$(echo -n "$$payload_json" | b64enc)
+
+        header_payload="$$header.$$payload"
+
+        signature=$$(echo -n "$$header_payload" \
+          | openssl dgst -sha256 -sign "$$pem_file" \
+          | b64enc)
+        JWT="$$header_payload.$$signature"
+
+
+        printf 'JWT: %s\n' "$$JWT"
+        TOKEN_RESPONSE=$$(curl -s -X POST \
+          -H "Authorization: Bearer $$JWT" \
+          -H "Accept: application/vnd.github+json" \
+          "https://api.github.com/app/installations/$_INSTALLATION_ID/access_tokens"
+        )
+        TOKEN=$(echo "$$TOKEN_RESPONSE" | jq -r '.token')
+        echo "$$TOKEN" > /workspace/token.txt
+        printf 'TOKEN: %s\n' "$$TOKEN"
+      EOF
+      ]
+      secret_env = ["GITHUB_BOT_PRIVATE_KEY"]
+    }
+
+    step {
       id         = "find-and-comment-pr"
       name       = "alpine"
+      wait_for   = ["create-token"]
       entrypoint = "sh"
       args = ["-c", <<EOF
         set -euo pipefail
