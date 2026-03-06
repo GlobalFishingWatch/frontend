@@ -32,7 +32,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
 
         now=$$(date +%s)
         header=$$(echo -n '{"typ":"JWT","alg":"RS256"}' | b64enc)
-        payload=$$(printf '{"iat":%d,"exp":%d,"iss":"%s"}' $$((now - 60)) $$((now + 590)) "$_APP_ID" | b64enc)
+        payload=$$(printf '{"iat":%d,"exp":%d,"iss":"%s"}' $$((now - 60)) $$((now + 540)) "$_APP_ID" | b64enc)
         signature=$$(echo -n "$$header.$$payload" | openssl dgst -sha256 -sign "$$pem_file" | b64enc)
 
         GITHUB_TOKEN_RESPONSE=$$(curl -s -X POST \
@@ -282,7 +282,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
 
         now=$$(date +%s)
         iat=$$((now - 60))  # Issued 60s ago
-        exp=$$((now + 590)) # Expires in 9 minutes (buffer for clock skew)
+        exp=$$((now + 540)) # Expires in 9 minutes (buffer for clock skew)
 
         b64enc() { openssl base64 -A | tr '+/' '-_' | tr -d '='; }
 
@@ -321,7 +321,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
       entrypoint = "sh"
       args = ["-c", <<EOF
         set -euo pipefail
-        if [ "$$BRANCH_NAME" = 'main' ]; then
+        if [ $BRANCH_NAME = 'main' ]; then
           exit 0
         fi
         echo "Installing curl and jq..."
