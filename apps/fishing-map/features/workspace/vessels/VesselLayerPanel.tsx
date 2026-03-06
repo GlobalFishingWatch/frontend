@@ -16,7 +16,10 @@ import {
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
+import {
+  getVesselIdFromInstanceId,
+  resolveDataviewDatasetResource,
+} from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { VesselLayer } from '@globalfishingwatch/deck-layers'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'

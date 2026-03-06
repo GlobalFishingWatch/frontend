@@ -6,14 +6,17 @@ import { t } from 'i18next'
 
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
-import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
+import {
+  getMergedDataviewId,
+  getVesselIdFromInstanceId,
+} from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { FourwingsLayer } from '@globalfishingwatch/deck-layers'
 import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import { Collapsable } from '@globalfishingwatch/ui-components'
 
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
+import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
@@ -40,7 +43,7 @@ function VesselsFromPositions() {
 
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const vesselIds = vesselDataviews?.flatMap(
-    (dataview) => dataview.id.split(VESSEL_LAYER_PREFIX)[1] || []
+    (dataview) => getVesselIdFromInstanceId(dataview.id) || []
   )
   const vesselsHash = vesselIds.join(',')
 

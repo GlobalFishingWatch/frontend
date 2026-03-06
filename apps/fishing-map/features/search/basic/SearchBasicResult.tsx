@@ -10,6 +10,7 @@ import type { Locale } from '@globalfishingwatch/api-types'
 import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { geoJSONToSegments, segmentsToBbox } from '@globalfishingwatch/data-transforms'
+import { getVesselDataviewInstanceId } from '@globalfishingwatch/dataviews-client'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   FIRST_YEAR_OF_DATA,
@@ -18,7 +19,6 @@ import {
 } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
@@ -135,7 +135,7 @@ function SearchBasicResult({
     vessel as any
 
   const isInWorkspace = vesselDataviews?.some(
-    (vessel) => vessel.id === `${VESSEL_LAYER_PREFIX}${id}`
+    (vesselDataview) => vesselDataview.id === getVesselDataviewInstanceId(id)
   )
   const isSelected = vesselsSelected?.some(
     (v) => getSearchVesselId(v) === getSearchVesselId(vessel)
