@@ -16,6 +16,81 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
 
   build {
     step {
+      id         = "Notify about workflow running"
+      name       = "alpine"
+      entrypoint = "sh"
+      args = ["-c", <<EOF
+        set -euo pipefail
+        [ "$BRANCH_NAME" = "main" ] && exit 0
+        apk add --no-cache openssl curl jq >/dev/null 2>&1
+
+        # --- Generate GitHub App token ---
+        b64enc() { openssl base64 -A | tr '+/' '-_' | tr -d '='; }
+
+        pem_file=$$(mktemp)
+        echo "$$GITHUB_BOT_PRIVATE_KEY" | sed 's/\\n/\n/g' > "$$pem_file"
+
+        now=$$(date +%s)
+        header=$$(echo -n '{"typ":"JWT","alg":"RS256"}' | b64enc)
+        payload=$$(printf '{"iat":%d,"exp":%d,"iss":"%s"}' $$((now - 60)) $$((now + 540)) "$_APP_ID" | b64enc)
+        signature=$$(echo -n "$$header.$$payload" | openssl dgst -sha256 -sign "$$pem_file" | b64enc)
+
+        GITHUB_TOKEN_RESPONSE=$$(curl -s -X POST \
+          -H "Authorization: Bearer $$header.$$payload.$$signature" \
+          -H "Accept: application/vnd.github+json" \
+          "https://api.github.com/app/installations/$_INSTALLATION_ID/access_tokens")
+
+        echo "GitHub API response: $$GITHUB_TOKEN_RESPONSE"
+        GITHUB_TOKEN=$$(echo "$$GITHUB_TOKEN_RESPONSE" | jq -r '.token')
+
+        echo "$$GITHUB_TOKEN" > /workspace/token.txt
+
+        if [ -z "$$GITHUB_TOKEN" ] || [ "$$GITHUB_TOKEN" = "null" ]; then
+          echo "Failed to generate GitHub token"
+          exit 1
+        fi
+
+        # --- Find PR for this branch ---
+        PR_NUMBER=$$(curl -s \
+          -H "Authorization: token $$GITHUB_TOKEN" \
+          "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/pulls?state=open&head=$_REPO_OWNER:$BRANCH_NAME" \
+          | jq -r 'if type == "array" then .[0].number // empty else empty end')
+
+        if [ -z "$$PR_NUMBER" ]; then
+          echo "No PR found for '$BRANCH_NAME'. Skipping."
+          exit 0
+        fi
+        echo "PR found: #$$PR_NUMBER"
+
+        # --- Post or update PR comment ---
+        MARKER="<!-- integration-tests-bot-comment -->"
+        echo "## Integration tests are running... 🧪" > /tmp/comment.txt
+        FOOTER="Posted by [this build](https://console.cloud.google.com/cloud-build/builds;region=us-central1/$BUILD_ID?project=gfw-int-infrastructure)"
+        jq -n --rawfile summary /tmp/comment.txt --arg footer "$$FOOTER" --arg marker "$$MARKER" \
+          '{body: ($$marker + "\n" + $$summary + "\n\n" + $$footer)}' > /tmp/payload.json
+
+        COMMENT_ID=$$(curl -s \
+          -H "Authorization: token $$GITHUB_TOKEN" \
+          "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/$$PR_NUMBER/comments" \
+          | jq -r ".[] | select(.body | contains(\"$$MARKER\")) | .id" | head -1)
+
+        if [ -n "$$COMMENT_ID" ]; then
+          curl -s -X PATCH -H "Authorization: token $$GITHUB_TOKEN" -H "Content-Type: application/json" \
+            -d @/tmp/payload.json \
+            "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/comments/$$COMMENT_ID" > /dev/null
+          echo "Updated comment $$COMMENT_ID"
+        else
+          curl -s -X POST -H "Authorization: token $$GITHUB_TOKEN" -H "Content-Type: application/json" \
+            -d @/tmp/payload.json \
+            "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/$$PR_NUMBER/comments" > /dev/null
+          echo "Created new comment"
+        fi
+      EOF
+      ]
+      secret_env = ["GITHUB_BOT_PRIVATE_KEY"]
+    }
+
+    step {
       id     = "Install Dependencies"
       name   = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest"
       script = <<-EOF
@@ -207,7 +282,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
 
         now=$$(date +%s)
         iat=$$((now - 60))  # Issued 60s ago
-        exp=$$((now + 600)) # Expires in 10 minutes
+        exp=$$((now + 540)) # Expires in 9 minutes (buffer for clock skew)
 
         b64enc() { openssl base64 -A | tr '+/' '-_' | tr -d '='; }
 

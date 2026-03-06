@@ -15,6 +15,7 @@ type SecretMenuProps =
       key?: never
       repeatNumber?: never
       selectMenuActive?: (state: RootState) => boolean
+      guestEnabled?: boolean
     }
   | {
       key: string
@@ -23,6 +24,7 @@ type SecretMenuProps =
       dispatchToggle?: () => any
       keys?: never
       selectMenuActive?: (state: RootState) => boolean
+      guestEnabled?: boolean
     }
 
 export const useSecretKeyboardCombo = ({
@@ -31,8 +33,10 @@ export const useSecretKeyboardCombo = ({
   onToggle,
   dispatchToggle,
   repeatNumber = 7,
+  guestEnabled = false,
 }: SecretMenuProps) => {
   const gfwUser = useSelector(selectIsGFWUser)
+  const enabled = guestEnabled || gfwUser
 
   // Sequence mode
   const sequence = keys?.toLocaleLowerCase().split('') || null
@@ -84,13 +88,13 @@ export const useSecretKeyboardCombo = ({
   )
 
   useEffect(() => {
-    if (gfwUser) {
+    if (enabled) {
       document.addEventListener('keydown', onKeyDown)
     }
     return () => {
       document.removeEventListener('keydown', onKeyDown)
     }
-  }, [gfwUser, onKeyDown])
+  }, [enabled, onKeyDown])
 }
 
 const useSecretMenu = (props: SecretMenuProps): DebugMenu => {
@@ -102,7 +106,9 @@ const useSecretMenu = (props: SecretMenuProps): DebugMenu => {
       props.onToggle()
     }
   }, [dispatch, props])
+
   useSecretKeyboardCombo({ ...props, onToggle: dispatchToggleMenu })
+
   const menuActive = useSelector(props.selectMenuActive ?? (() => false))
   return useMemo(() => [menuActive, dispatchToggleMenu], [dispatchToggleMenu, menuActive])
 }

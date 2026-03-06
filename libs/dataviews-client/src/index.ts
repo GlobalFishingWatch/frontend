@@ -1,4 +1,5 @@
+export * from './dataviews.utils'
 export * from './resolve-dataviews'
 export * from './resources'
-export * from './url-workspace/index'
 export * from './types'
+export * from './url-workspace/index'

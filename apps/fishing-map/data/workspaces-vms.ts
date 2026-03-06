@@ -1,6 +1,5 @@
 import type { UserGroupId } from '@globalfishingwatch/api-types'
-
-import { PIPE_DATASET_VERSION } from 'data/workspaces.config'
+import { PIPE_DATASET_VERSION } from '@globalfishingwatch/datasets-client'
 
 export const VESSEL_DATAVIEW_SLUG_VMS_BRAZIL =
   `private-bra-fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const

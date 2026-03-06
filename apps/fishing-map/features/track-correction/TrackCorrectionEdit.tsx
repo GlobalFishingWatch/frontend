@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux'
 import { DateTime } from 'luxon'
 
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import { getVesselDataviewInstanceId } from '@globalfishingwatch/dataviews-client'
 import { Button, Icon, InputText } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
-import { getVesselDataviewInstanceId } from 'features/dataviews/dataviews.utils'
 import I18nDate from 'features/i18n/i18nDate'
 import {
   createCommentThunk,
@@ -17,7 +17,6 @@ import {
   selectTrackCorrectionVesselDataviewId,
   selectTrackIssueComment,
   setTrackCorrectionDataviewId,
-  setTrackCorrectionTimerange,
   setTrackIssueComment,
 } from 'features/track-correction/track-correction.slice'
 import { selectCurrentTrackCorrectionIssue } from 'features/track-correction/track-selection.selectors'

@@ -5,6 +5,7 @@ import { DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
 import {
+  getIsVesselDataviewInstanceId,
   mergeWorkspaceUrlDataviewInstances,
   type UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
@@ -21,7 +22,6 @@ import {
 import {
   dataviewHasVesselGroupId,
   getHasVesselProfileInstance,
-  getIsVesselDataviewInstanceId,
   getVesselDataviewInstance,
   getVesselDataviewInstanceDatasetConfig,
   getVesselEncounterTrackDataviewInstance,

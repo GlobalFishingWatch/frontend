@@ -82,16 +82,16 @@ export const resolveEndpoint = (
       }
     })
 
-    const coords = ['x', 'y', 'z']
-    coords.forEach((coord) => {
-      if (url.includes(`{{${coord}}}`)) {
-        url = url.replace(`{{${coord}}}`, `{${coord}}`)
-      }
-    })
-
     const query = resolvedQuery.toString()
     url = query ? `${url}?${query}` : url
   }
+
+  const coords = ['x', 'y', 'z']
+  coords.forEach((coord) => {
+    if (url.includes(`{{${coord}}}`)) {
+      url = url.replace(`{{${coord}}}`, `{${coord}}`)
+    }
+  })
 
   return GFWAPI.generateUrl(decodeURI(url) as string, { absolute })
 }

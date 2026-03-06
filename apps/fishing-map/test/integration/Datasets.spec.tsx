@@ -159,6 +159,9 @@ describe('Datasets', () => {
           deleted: true,
         },
       ],
+      latitude: 19,
+      longitude: 26,
+      zoom: 1.49,
     })
 
     await expect
@@ -206,6 +209,9 @@ describe('Datasets', () => {
           deleted: true,
         },
       ],
+      latitude: 19,
+      longitude: 26,
+      zoom: 1.49,
     })
 
     await expect

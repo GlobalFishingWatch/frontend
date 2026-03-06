@@ -3,6 +3,7 @@ import { DataFilterExtension, PathStyleExtension } from '@deck.gl/extensions'
 import { PathLayer } from '@deck.gl/layers'
 
 import { EventTypes } from '@globalfishingwatch/api-types'
+import { getVesselIdFromInstanceId } from '@globalfishingwatch/dataviews-client'
 import type { VesselDeckLayersEventData } from '@globalfishingwatch/deck-loaders'
 import { EVENTS_COLORS } from '@globalfishingwatch/deck-loaders'
 
@@ -39,7 +40,7 @@ export class VesselEventsLayer extends CompositeLayer<_VesselEventsLayerProps> {
       id: `${id}-points`,
       data: this.props.data,
       name: this.props.name,
-      vesselId: this.props.id.replace('vessel-', ''),
+      vesselId: getVesselIdFromInstanceId(this.props.id),
       getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Point, params),
       getFillColor: (d: any): Color => {
         if (highlightEventIds?.includes(d.id)) return DEFAULT_FISHING_EVENT_COLOR

@@ -48,6 +48,7 @@ export const TimeFieldsGroup = ({
     dataset: datasetMetadata,
     property: 'geometryType',
   })
+  const timePropertyFieldsOptions = fieldsOptions.filter((f) => f.type !== 'string')
   const activeOption = datasetTimeFilterConfiguration
     ? (getSelectedOption(datasetTimeFilterConfiguration, timeFilterOptions) as SelectOption)?.id
     : timeFilterOptions[0]?.id
@@ -123,7 +124,7 @@ export const TimeFieldsGroup = ({
       {datasetTimeFilterConfiguration && (
         <Select
           placeholder={t((t) => t.datasetUpload.fieldPlaceholder)}
-          options={fieldsOptions}
+          options={timePropertyFieldsOptions}
           label={
             datasetTimeFilterConfiguration === 'date'
               ? t((t) => t.datasetUpload.time, {
@@ -165,7 +166,7 @@ export const TimeFieldsGroup = ({
       {datasetTimeFilterConfiguration === 'dateRange' && (
         <Select
           placeholder={t((t) => t.datasetUpload.fieldPlaceholder)}
-          options={fieldsOptions}
+          options={timePropertyFieldsOptions}
           direction="top"
           selectedOption={
             getSelectedOption(

@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux'
 import type { IdentityVessel, Resource } from '@globalfishingwatch/api-types'
 import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import {
+  getEncounteredVesselDataviewInstanceId,
+  getVesselDataviewInstanceId,
   resolveDataviewDatasetResource,
   selectResourceByUrl,
   type UrlDataviewInstance,
@@ -11,12 +13,7 @@ import {
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { VesselLayer } from '@globalfishingwatch/deck-layers'
 
-import {
-  getEncounteredVesselDataviewInstanceId,
-  getHasVesselProfileInstance,
-  getVesselDataviewInstanceId,
-  VESSEL_LAYER_PREFIX,
-} from 'features/dataviews/dataviews.utils'
+import { getHasVesselProfileInstance } from 'features/dataviews/dataviews.utils'
 import {
   selectActiveVesselsDataviews,
   selectCustomUserDataviews,
@@ -33,7 +30,7 @@ import { selectVesselId } from 'routes/routes.selectors'
 
 export const useVesselProfileLayer = () => {
   const vesselId = useSelector(selectVesselId)
-  const vesselLayer = useGetDeckLayer<VesselLayer>(`${VESSEL_LAYER_PREFIX}${vesselId}`)
+  const vesselLayer = useGetDeckLayer<VesselLayer>(getVesselDataviewInstanceId(vesselId))
   return vesselLayer
 }
 

@@ -32,7 +32,7 @@
     "errorMessage": "Something went wrong",
     "errorPeriodComparisonDateRange": "Date range error. Comparison start must be after baseline start.",
     "errorTooComplex": "We cannot create a dynamic report for this area as the boundary information is complex. Please simplify your area of interest - by uploading a new layer or drawing your layer on the map - and try the report again to resolve.",
-    "evolution": "Evolution",
+    "evolution": "Evolución",
     "globally": "globally",
     "groupByCoverage": "by coverage",
     "groupByEEZ": "By EEZ",
@@ -954,7 +954,7 @@
         "title": "Teacher"
       }
     },
-    "datasets": "User datasets",
+    "datasets": "Dados do usuário",
     "gfwBadges": "GFW Badges",
     "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
     "groups": "Groups",
@@ -1318,7 +1318,7 @@
     }
   },
   "workspace": {
-    "addLayer": "Add to workspace",
+    "addLayer": "Adicionar à área de trabalho",
     "categories": {
       "fishing-activity": "Highlighted workspaces",
       "marine-manager": "Marine Manager workspaces",
