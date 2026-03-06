@@ -3,8 +3,8 @@ import {
   SelfReportedSource,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
+import { PIPE_DATASET_ID, PIPE_DATASET_VERSION } from '@globalfishingwatch/datasets-client'
 
-import { PIPE_DATASET_ID, PIPE_DATASET_VERSION } from 'data/workspaces.config'
 import type I18nNamespaces from 'features/i18n/i18n.types'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 

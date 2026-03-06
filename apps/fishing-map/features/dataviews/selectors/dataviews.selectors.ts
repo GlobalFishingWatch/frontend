@@ -8,14 +8,13 @@ import {
   DataviewType,
 } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { getMergedDataviewId } from '@globalfishingwatch/dataviews-client'
+import {
+  getMergedDataviewId,
+  getVesselDataviewInstanceId,
+} from '@globalfishingwatch/dataviews-client'
 
 import { DATASET_COMPARISON_SUFFIX } from 'data/config'
-import {
-  DEFAULT_BASEMAP_DATAVIEW_INSTANCE,
-  DEFAULT_DATAVIEW_SLUGS,
-  PRESENCE_DATAVIEW_SLUG,
-} from 'data/workspaces'
+import { DEFAULT_BASEMAP_DATAVIEW_INSTANCE, DEFAULT_DATAVIEW_SLUGS } from 'data/workspaces'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   getActiveDatasetsInDataview,
@@ -24,10 +23,7 @@ import {
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
-import {
-  getVesselDataviewInstanceId,
-  isBathymetryDataview,
-} from 'features/dataviews/dataviews.utils'
+import { isBathymetryDataview } from 'features/dataviews/dataviews.utils'
 import {
   selectActiveActivityDataviews,
   selectActiveContextAreasDataviews,

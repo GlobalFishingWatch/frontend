@@ -2,16 +2,16 @@ import { createSelector } from '@reduxjs/toolkit'
 
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
+import { DATASET_VERSION_SEPARATOR } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-
-import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
-import { CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG } from 'data/workspaces'
-import { DATASET_VERSION_SEPARATOR } from 'data/workspaces.config'
 import {
   getIsEncounteredVesselDataviewInstanceId,
   getIsVesselDataviewInstanceId,
   getVesselDataviewInstanceId,
-} from 'features/dataviews/dataviews.utils'
+} from '@globalfishingwatch/dataviews-client'
+
+import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
+import { CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG } from 'data/workspaces'
 import { getDatasetSourceTranslated } from 'features/i18n/utils.datasets'
 import {
   getReportCategoryFromDataview,
