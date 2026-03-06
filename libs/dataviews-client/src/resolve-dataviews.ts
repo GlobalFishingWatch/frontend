@@ -483,7 +483,7 @@ export function resolveDataviews(
 ) {
   let dataviewInstancesResolved: UrlDataviewInstance[] = dataviewInstances.flatMap(
     (dataviewInstance) => {
-      if (!dataviewInstance || dataviewInstance?.deleted) {
+      if (!dataviewInstance || !dataviewInstance.id || dataviewInstance?.deleted) {
         return []
       }
       const dataview = dataviews?.find((dataview) => {
@@ -547,7 +547,7 @@ export function resolveDataviews(
                           // Makes the trick to fix pinned vessels with a dataset version that doesn't match the same name
                           // eg: public-global-port-visits-c2 => public-global-port-visits-events:v3.0
                           if (query.id === 'vessels' && !query.value) {
-                            const vesselId = dataviewInstance.id.split('vessel-')[1]
+                            const vesselId = dataviewInstance.id?.split('vessel-')[1]
                             const value = [vesselId, ...(dataview.config.relatedVesselIds || [])]
                             return { ...query, value }
                           }
