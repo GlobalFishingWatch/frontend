@@ -124,20 +124,24 @@
   "release": {
     "projects": ["!linting", "libs/*", "!libs/i18n-labels", "!apps/*"],
     "projectsRelationship": "independent",
+    "version": {
+      "currentVersionResolver": "git-tag",
+      "fallbackCurrentVersionResolver": "disk",
+      "preserveLocalDependencyProtocols": false,
+      "git": {
+        "commit": false,
+        "tag": false
+      }
+    },
     "changelog": {
       "projectChangelogs": {
         "createRelease": "github",
         "file": false
+      },
+      "git": {
+        "commit": false,
+        "tag": false
       }
-    },
-    "version": {
-      "currentVersionResolver": "git-tag",
-      "fallbackCurrentVersionResolver": "disk",
-      "preserveLocalDependencyProtocols": false
-    },
-    "git": {
-      "commit": false,
-      "tag": false
     },
     "releaseTag": {
       "pattern": "@gfw/{projectName}@{version}"
