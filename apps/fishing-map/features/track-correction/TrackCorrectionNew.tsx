@@ -5,6 +5,7 @@ import { centerOfMass } from '@turf/center-of-mass'
 import type { Feature, Point } from 'geojson'
 
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import { getVesselIdFromInstanceId } from '@globalfishingwatch/dataviews-client'
 import { Button, Choice, Icon, InputText } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -104,14 +105,14 @@ const TrackCorrectionNew = () => {
             segment.length
               ? segment.map(
                   (point) =>
-                    (({
+                    ({
                       type: 'Feature',
 
                       geometry: {
                         type: 'Point',
                         coordinates: [point.longitude, point.latitude],
-                      }
-                    }) as Feature<Point>)
+                      },
+                    }) as Feature<Point>
                 )
               : []
           ),
@@ -129,7 +130,7 @@ const TrackCorrectionNew = () => {
         )
         const issueBody: TrackCorrection = {
           issueId,
-          vesselId: trackCorrectionVesselDataviewId.replace('vessel-', ''),
+          vesselId: getVesselIdFromInstanceId(trackCorrectionVesselDataviewId),
           ssvid: vesselInfo?.selfReportedInfo?.[0]?.ssvid || '',
           vesselName: vesselInfo ? getVesselShipNameLabel(vesselInfo) : dataview?.config?.name,
           userEmail: userData?.email || '',
