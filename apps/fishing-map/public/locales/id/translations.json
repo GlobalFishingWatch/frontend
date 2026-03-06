@@ -1328,6 +1328,7 @@
     "confirmRemove": "Anda yakin ingin menghapus ruang kerja ini secara permanen?",
     "create": "Buat sebagai baru",
     "deprecatedActivityLayer": "This layer is using outdated data. Click to add a copy with the latest dataset",
+    "deprecatedActivityLayerMigrated": "There is already a copy of this layer using the latest dataset. Click to remove this one",
     "deprecatedVesselGroupLayer": "This vessel group is using outdated data. Click to create it again with the latest dataset",
     "deprecatedVesselLayer": "This vessel is using outdated data. Click to search in the latest dataset.",
     "edit": "Ubah ruang kerja",

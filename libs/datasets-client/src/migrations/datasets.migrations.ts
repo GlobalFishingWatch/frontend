@@ -3,7 +3,7 @@ import type { DatasetsMigration } from '@globalfishingwatch/api-types'
 import { LATEST_DATASETS_VMS, replaceDatasetPublicToPrivate } from './datasets.latest'
 
 export const LEGACY_DATASETS_TO_LATEST_VMS_FISHING: DatasetsMigration = {
-  'public-belize-fishing-effort:v20220304': LATEST_DATASETS_VMS.blz.fishing,
+  // 'public-belize-fishing-effort:v20220304': LATEST_DATASETS_VMS.blz.fishing,
   'public-bra-onyxsat-fishing-effort:v20211126': LATEST_DATASETS_VMS.bra.fishing,
   'public-chile-fishing-effort:v20211126': LATEST_DATASETS_VMS.chl.fishing,
   'public-costa-rica-fishing-effort:v20211126': LATEST_DATASETS_VMS.cri.fishing,
@@ -15,7 +15,7 @@ export const LEGACY_DATASETS_TO_LATEST_VMS_FISHING: DatasetsMigration = {
 }
 
 export const LEGACY_DATASETS_TO_LATEST_VMS_PRESENCE: DatasetsMigration = {
-  'public-belize-fishing-effort:v20220304': LATEST_DATASETS_VMS.blz.fishing,
+  // 'public-belize-fishing-effort:v20220304': LATEST_DATASETS_VMS.blz.fishing,
   'public-bra-onyxsat-fishing-effort:v20211126': LATEST_DATASETS_VMS.bra.fishing,
   'public-chile-fishing-effort:v20211126': LATEST_DATASETS_VMS.chl.fishing,
   'public-costa-rica-fishing-effort:v20211126': LATEST_DATASETS_VMS.cri.fishing,

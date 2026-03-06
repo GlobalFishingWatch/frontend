@@ -47,7 +47,7 @@
   "encounters": {
     "description": "Identified from AIS data as locations where two vessels, a carrier and fishing vessel, were within 500 meters for at least 2 hours and traveling at a median speed under 2 knots, while at least 10 km from a coastal anchorage.",
     "moreInfoLink": "",
-    "name": "Encounter events (AIS)"
+    "name": "Eventos de encontro (AIS)"
   },
   "fao-major": {
     "description": "FAO major fishing areas for statistical purposes are arbitrary areas, the boundaries of which were determined in consultation with international fishery agencies. The major fishing areas, inland and marine, are listed below by two-digit codes and their names. To access maps and description of boundaries of each fishing area click on the relevant item in the list below or in the map showing the 19 major marine fishing areas.",
@@ -90,9 +90,9 @@
     "name": "Important Marine Mammal Areas (IMMA)"
   },
   "loitering": {
-    "description": "Loitering is when a single vessel exhibits behavior indicative of a potential encounter event. Loitering is estimated using automatic identification system (AIS) data, including vessel speed, duration in a given location, and distance from shore. Loitering occurs when a vessel travels at average speed of < two knots, while at least an average of 20 nautical miles from shore. To reduce noise in the carrier vessel portal, only loitering events greater than one hour are shown.",
+    "description": "A permanência prolongada ocorre quando uma única embarcação exibe comportamento indicativo de um possível encontro com outra. A permanência prolongada é estimada usando dados do Sistema de Identificação Automática (AIS), incluindo a velocidade da embarcação, a duração em um determinado local e a distância da costa. Considera-se permanência prolongada quando uma embarcação navega a uma velocidade média inferior a dois nós, a uma distância média de pelo menos 20 milhas náuticas da costa. Para reduzir o ruído no portal de embarcações de transporte, apenas os eventos de permanência prolongada com duração superior a uma hora são exibidos.",
     "moreInfoLink": "",
-    "name": "Loitering events (AIS)"
+    "name": "Eventos de deriva (AIS)"
   },
   "mangroves": {
     "description": "Mangroves are trees or shrubs that can survive in saline environments and typically grow within the intertidal zone of tropical and subtropical regions. Considered blue carbon habitats, mangrove forests improve water quality, stabilize and protect coastlines, and provide shelter for birds, animals and marine organisms. This dataset uses earth observation satellite imagery to show the global distribution of mangroves.  ",
@@ -195,9 +195,9 @@
     "name": "Seamounts"
   },
   "sentinel2": {
-    "description": "This layer shows vessels detected using optical satellite imagery collected by the European Space Agency’s Sentinel-2 satellites. Optical imagery is similar to high-quality aerial photography from space, using reflected sunlight in visible and near-infrared wavelengths.",
+    "description": "Esta camada mostra embarcações detectadas por meio de imagens ópticas de satélite coletadas pelos satélites Sentinel-2 da Agência Espacial Europeia. As imagens ópticas são semelhantes a fotografias aéreas de alta qualidade tiradas do espaço, utilizando a luz solar refletida em comprimentos de onda visíveis e infravermelhos próximos.",
     "moreInfoLink": "",
-    "name": "Imagery detections (Optical)"
+    "name": "Detecções de imagem (Ótico)"
   },
   "species": {
     "description": "TODO",
@@ -237,7 +237,7 @@
   "viirs-skylight": {
     "description": "TODO: description",
     "moreInfoLink": "",
-    "name": "Night light detections (VIIRS Skylight)"
+    "name": "Detecção de luz noturna (VIIRS Skylight)"
   },
   "winds": {
     "description": "Wind is the movement of air across the Earth’s surface and plays an important role in shaping weather and ocean conditions. Surface winds help drive ocean circulation and influence mixing at the ocean surface. This dataset shows global wind speed and direction over the ocean.",

@@ -178,7 +178,7 @@ export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerP
       const object = {
         id: this.props.id,
         value: layer.valueProperties?.length
-          ? feature?.properties.coordinateProperties[layer.valueProperties[0]]?.[info.index]
+          ? feature?.properties?.coordinateProperties?.[layer.valueProperties[0]]?.[info.index]
           : undefined,
         title: getContextId(feature as ContextFeature, layer.idProperty) || info.index,
         color,

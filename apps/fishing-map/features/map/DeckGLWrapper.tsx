@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import type { FilterContext, ViewStateChangeParameters } from '@deck.gl/core'
+import type { FilterContext, MapView, ViewStateChangeParameters } from '@deck.gl/core'
 import type { DeckGLRef } from '@deck.gl/react'
 import DeckGL from '@deck.gl/react'
 
@@ -25,7 +25,7 @@ import { useReportFeaturesLoading } from 'features/reports/reports-timeseries.ho
 import { selectIsAnyReportLocation } from 'routes/routes.selectors'
 
 const DeckGLWrapper = () => {
-  const deckRef = useRef<DeckGLRef>(null)
+  const deckRef = useRef<DeckGLRef<MapView>>(null)
   useSetMapInstance(deckRef)
   const setViewState = useMapSetViewState()
   const dispatch = useAppDispatch()

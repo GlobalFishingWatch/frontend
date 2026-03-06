@@ -171,7 +171,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
       const dataset = selectById(state, id) as Dataset
       return dataset ? [dataset] : []
     })
-    if (ids.length === existingRequestedDatasets.length) {
+    if (ids.length === existingRequestedDatasets.length && !onlyUserDatasets) {
       return uniqBy([...existingRequestedDatasets], (dataset) => dataset.id)
     }
     try {

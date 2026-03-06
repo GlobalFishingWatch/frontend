@@ -49,7 +49,7 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
   const { filtersAllowed } = getFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
   })
-  const { migrateToLatestDataviewInstance } = useMigrateToLatestDataview()
+  const { onMigrateDataviewClick, getIsDataviewMigrated } = useMigrateToLatestDataview()
   const isGFWUser = useSelector(selectIsGFWUser)
   const readOnly = useSelector(selectReadOnly)
   const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
@@ -90,10 +90,6 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
 
   const onToggleColorOpen = () => {
     setColorOpen(!colorOpen)
-  }
-
-  const onUpdateDeprecatedLayerClick = () => {
-    migrateToLatestDataviewInstance(dataview)
   }
 
   if (!dataset || dataset.status === 'deleted') {
@@ -181,10 +177,12 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
             <IconButton
               icon="warning"
               type="warning-invert"
-              onClick={showDeprecatedWarning ? onUpdateDeprecatedLayerClick : undefined}
+              onClick={showDeprecatedWarning ? () => onMigrateDataviewClick(dataview) : undefined}
               tooltip={
                 showDeprecatedWarning
-                  ? t((t) => t.workspace.deprecatedActivityLayer)
+                  ? getIsDataviewMigrated(dataview)
+                    ? t((t) => t.workspace.deprecatedActivityLayerMigrated)
+                    : t((t) => t.workspace.deprecatedActivityLayer)
                   : isGFWUser
                     ? `${t((t) => t.errors.layerLoading)} (${layerError})`
                     : t((t) => t.errors.layerLoading)

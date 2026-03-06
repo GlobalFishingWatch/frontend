@@ -34,3 +34,7 @@
 .fullHeightModal {
   height: 100vh;
 }
+
+.debugMenuModal {
+  padding: 0;
+}

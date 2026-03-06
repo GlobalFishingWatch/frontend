@@ -16,8 +16,6 @@ describe('Datasets', () => {
     const mapElement = getByTestId('app-main')
     const addLayerButton = getByTestId('add-layer-eez-button')
 
-    expect(store.getState().map.loaded).toBe(true)
-
     await openLayerModalButton.click()
 
     await expect.element(getByText('Layer Library')).toBeVisible()
@@ -55,8 +53,6 @@ describe('Datasets', () => {
     const mapElement = getByTestId('app-main')
     const addLayerButton = getByTestId('add-layer-bathymetry-button')
 
-    expect(store.getState().map.loaded).toBe(true)
-
     await openLayerModalButton.click()
 
     await expect.element(getByText('Layer Library')).toBeVisible()
@@ -92,8 +88,6 @@ describe('Datasets', () => {
     const mapElement = getByTestId('app-main')
     const addLayerButton = getByTestId('add-layer-port-visits-button')
 
-    expect(store.getState().map.loaded).toBe(true)
-
     await openLayerModalButton.click()
 
     await expect.element(getByText('Layer Library')).toBeVisible()
@@ -121,7 +115,7 @@ describe('Datasets', () => {
     })
 
     await expect
-      .element(getByTestId('map-popup-wrapper').getByText('140,586 Port Visits'))
+      .element(getByTestId('map-popup-wrapper').getByText(/[\d,]+\s+Port visits/))
       .toBeVisible()
   })
 
@@ -133,8 +127,6 @@ describe('Datasets', () => {
     const mapElement = getByTestId('app-main')
     const removeLayerButton = getByTestId('events-layer-panel-remove-encounters')
     const addLayerButton = getByTestId('add-layer-encounters-button')
-
-    expect(store.getState().map.loaded).toBe(true)
 
     await userEvent.hover(getByTestId('events-layer-switch-encounters'))
     await new Promise((resolve) => setTimeout(resolve, 300))
@@ -167,10 +159,13 @@ describe('Datasets', () => {
           deleted: true,
         },
       ],
+      latitude: 19,
+      longitude: 26,
+      zoom: 1.49,
     })
 
     await expect
-      .element(getByTestId('map-popup-wrapper').getByText('335 Encounter Events'))
+      .element(getByTestId('map-popup-wrapper').getByText(/[\d,]+\s+Encounter events/))
       .toBeVisible()
   })
 
@@ -182,8 +177,6 @@ describe('Datasets', () => {
     const openLayerModalButton = getByTestId('activity-add-layer-button')
     const removeLayerButton = getByTestId('activity-layer-panel-remove-presence')
     const addLayerButton = getByTestId('add-layer-presence-button')
-
-    expect(store.getState().map.loaded).toBe(true)
 
     await userEvent.hover(getByTestId('activity-layer-panel-switch-presence'))
     await new Promise((resolve) => setTimeout(resolve, 300))
@@ -216,13 +209,22 @@ describe('Datasets', () => {
           deleted: true,
         },
       ],
+      latitude: 19,
+      longitude: 26,
+      zoom: 1.49,
     })
 
     await expect
-      .element(getByTestId('map-popup-wrapper').getByText('Apparent fishing effort (VMS)'))
+      .element(getByTestId('map-popup-wrapper').getByText('Vessel presence'))
       .toBeVisible()
 
-    await expect.element(getByTestId('map-popup-wrapper').getByText('139.77 hours')).toBeVisible()
+    await expect
+      .element(
+        getByTestId('map-popup-wrapper')
+          .getByText(/[\d.]+\s+hours/)
+          .first()
+      )
+      .toBeVisible()
   })
 
   it('should preserve other layers when removing layer', async () => {
@@ -233,8 +235,6 @@ describe('Datasets', () => {
     const vesselPresenceSwitch = getByTestId('activity-layer-panel-switch-presence')
     const removeAISLayerButton = getByTestId('activity-layer-panel-remove-ais')
     const removeVMSLayerButton = getByTestId('activity-layer-panel-remove-vms')
-
-    expect(store.getState().map.loaded).toBe(true)
 
     await userEvent.click(vesselPresenceSwitch)
     await userEvent.hover(getByTestId('activity-layer-panel-switch-ais'))

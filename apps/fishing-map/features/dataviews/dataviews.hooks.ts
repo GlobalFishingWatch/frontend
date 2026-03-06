@@ -13,14 +13,16 @@ import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
 import type { DataviewWithFilters } from 'features/dataviews/dataviews.filters'
 import { isDataviewFilterSupported } from 'features/dataviews/dataviews.filters'
 import { fetchDataviewByIdThunk, selectAllDataviews } from 'features/dataviews/dataviews.slice'
+import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
 export function useMigrateToLatestDataview() {
   const [isLoading, setIsLoading] = useState(false)
   const dispatch = useAppDispatch()
   const allDataviews = useSelector(selectAllDataviews)
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
+  const workspaceDataviewInstances = useSelector(selectDataviewInstancesResolvedVisible)
 
   const migrateToLatestDataviewInstance = useCallback(
     async (dataviewInstance: DataviewInstance | UrlDataviewInstance) => {
@@ -34,7 +36,9 @@ export function useMigrateToLatestDataview() {
       if (dataview && !datasets.length) {
         const datasetIds = getDatasetsInDataviews([dataview])
         if (datasetIds.length > 0) {
-          datasets = await dispatch(fetchDatasetsByIdsThunk({ ids: datasetIds })).unwrap()
+          datasets = await dispatch(
+            fetchDatasetsByIdsThunk({ ids: datasetIds, onlyUserDatasets: false })
+          ).unwrap()
         }
       }
       const hasDatasets =
@@ -52,22 +56,65 @@ export function useMigrateToLatestDataview() {
         },
         {} as NonNullable<DataviewConfig['filters']>
       )
-      upsertDataviewInstance({
-        id: `${dataviewId}${LAYER_LIBRARY_ID_SEPARATOR}${Date.now()}`,
-        dataviewId: dataviewId,
-        config: {
-          ...(hasDatasets && {
-            datasets: dataviewInstance.config?.datasets?.map((d) => deprecatedDatasets[d] || d),
-          }),
-          filters,
+      const dataviewInstances = [
+        {
+          id: `${dataviewId}${LAYER_LIBRARY_ID_SEPARATOR}${Date.now()}`,
+          dataviewId: dataviewId,
+          config: {
+            ...(hasDatasets && {
+              datasets: dataviewInstance.config?.datasets?.map((d) => deprecatedDatasets[d] || d),
+            }),
+            filters,
+          },
         },
-      })
+        {
+          id: dataviewInstance.id,
+          config: {
+            visible: false,
+          },
+        },
+      ]
+      upsertDataviewInstance(dataviewInstances)
       setIsLoading(false)
     },
     [allDataviews, deprecatedDatasets, dispatch, upsertDataviewInstance]
   )
+
+  const getIsDataviewMigrated = useCallback(
+    (dataviewInstance: DataviewInstance | UrlDataviewInstance) => {
+      const dataviewId = LEGACY_TO_LATEST_DATAVIEWS[dataviewInstance.slug!] || dataviewInstance.slug
+
+      if (!LEGACY_TO_LATEST_DATAVIEWS[dataviewInstance.slug!]) {
+        return true
+      }
+
+      const migratedInstanceExists = workspaceDataviewInstances?.some(
+        (instance) => instance.dataviewId === dataviewId
+      )
+
+      return !!migratedInstanceExists
+    },
+    [workspaceDataviewInstances]
+  )
+
+  const onMigrateDataviewClick = useCallback(
+    (dataviewInstance: DataviewInstance | UrlDataviewInstance) => {
+      const alreadyMigratedDataview = getIsDataviewMigrated(dataviewInstance)
+      if (alreadyMigratedDataview) {
+        deleteDataviewInstance(dataviewInstance.id)
+      } else {
+        migrateToLatestDataviewInstance(dataviewInstance)
+      }
+    },
+    [deleteDataviewInstance, getIsDataviewMigrated, migrateToLatestDataviewInstance]
+  )
+
   return useMemo(
-    () => ({ migrateToLatestDataviewInstance, isLoading }),
-    [migrateToLatestDataviewInstance, isLoading]
+    () => ({
+      isLoading,
+      getIsDataviewMigrated,
+      onMigrateDataviewClick,
+    }),
+    [getIsDataviewMigrated, isLoading, onMigrateDataviewClick]
   )
 }

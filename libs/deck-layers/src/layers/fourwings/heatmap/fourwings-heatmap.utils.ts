@@ -359,7 +359,9 @@ export function getIntervalFrames({
   }
 
   const interval = getFourwingsInterval(startTime, endTime, availableIntervals)
-  const tileStartFrame = Math.ceil(CONFIG_BY_INTERVAL[interval].getIntervalFrame(bufferedStart))
+  const tileStartFrame = Math.ceil(
+    CONFIG_BY_INTERVAL[interval]?.getIntervalFrame(bufferedStart) ?? 0
+  )
   const startFrame = Math.ceil(
     CONFIG_BY_INTERVAL[interval].getIntervalFrame(startTime) - tileStartFrame
   )

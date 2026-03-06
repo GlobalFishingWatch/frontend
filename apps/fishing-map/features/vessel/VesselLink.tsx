@@ -14,7 +14,7 @@ import {
   VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX,
 } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.static.selectors'
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
 import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'

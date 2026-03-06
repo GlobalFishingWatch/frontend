@@ -18,11 +18,14 @@ import { selectSearchSources } from 'features/search/search.config.selectors'
 import { selectPrivateUserGroups } from 'features/user/selectors/user.groups.selectors'
 import { selectIsGuestUser, selectUserData } from 'features/user/selectors/user.selectors'
 import { PRIVATE_SEARCH_DATASET_BY_GROUP } from 'features/user/user.config'
+import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
+import { AsyncReducerStatus } from 'utils/async-slice'
 
 const EMPTY_ARRAY: [] = []
 
 const selectSearchDatasetsInWorkspace = createSelector(
   [
+    selectWorkspaceStatus,
     selectAllDataviewsInWorkspace,
     selectVesselsDatasets,
     selectAllDatasets,
@@ -31,6 +34,7 @@ const selectSearchDatasetsInWorkspace = createSelector(
     selectDeprecatedDatasets,
   ],
   (
+    workspaceStatus,
     dataviews,
     vesselsDatasets,
     allDatasets,
@@ -38,6 +42,9 @@ const selectSearchDatasetsInWorkspace = createSelector(
     searchSources,
     deprecatedDatasets
   ) => {
+    if (workspaceStatus !== AsyncReducerStatus.Finished) {
+      return EMPTY_ARRAY
+    }
     const datasetsIds = [
       ...getDatasetsInDataviews(dataviews),
       ...privateUserGroups.flatMap((group) => {

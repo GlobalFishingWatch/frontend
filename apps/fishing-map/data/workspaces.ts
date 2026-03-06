@@ -2,7 +2,11 @@ import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 
-import { PIPE_DATASET_ID, PIPE_DATASET_VERSION } from 'data/workspaces.config'
+import {
+  DATASET_VERSION_SEPARATOR,
+  PIPE_DATASET_ID,
+  PIPE_DATASET_VERSION,
+} from 'data/workspaces.config'
 import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/workspaces-vms'
 
 import { PUBLIC_SUFIX } from './config'
@@ -103,17 +107,12 @@ export const TEMPLATE_DATAVIEW_SLUGS = [
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
 ]
 
-export const DEFAULT_FISHING_DATASET_ID = `public-global-fishing-effort:${PIPE_DATASET_ID}`
-export const DEFAULT_PRESENCE_DATASET_ID = `public-global-presence:${PIPE_DATASET_ID}`
-export const DEFAULT_IDENTITY_DATASET_ID = `public-global-vessel-identity:${PIPE_DATASET_ID}`
-
-export const DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS = [
-  DEFAULT_PRESENCE_DATASET_ID,
-  'public-chile-presence:v20211126',
-  'public-panama-presence:v20211126',
-  'public-norway-presence:v20220112',
-  'public-png-presence:v20230210',
-]
+export const DEFAULT_FISHING_DATASET_ID =
+  `public-global-fishing-effort${DATASET_VERSION_SEPARATOR}${PIPE_DATASET_ID}` as const
+export const DEFAULT_PRESENCE_DATASET_ID =
+  `public-global-presence${DATASET_VERSION_SEPARATOR}${PIPE_DATASET_ID}` as const
+export const DEFAULT_IDENTITY_DATASET_ID =
+  `public-global-vessel-identity${DATASET_VERSION_SEPARATOR}${PIPE_DATASET_ID}` as const
 
 const PRESENCE_DATAVIEWS = [
   PRESENCE_DATAVIEW_SLUG, // In case the workspace doesn't have the dataview added,

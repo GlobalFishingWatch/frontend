@@ -240,7 +240,9 @@ export const getDatasetsInDataviews = (
   dataviewInstances: (DataviewInstance | UrlDataviewInstance)[] = [],
   guestUser = false
 ) => {
-  const allDataviews = [...(dataviews || []), ...(dataviewInstances || [])]
+  const safeDataviews = Array.isArray(dataviews) ? dataviews : []
+  const safeDataviewInstances = Array.isArray(dataviewInstances) ? dataviewInstances : []
+  const allDataviews = [...safeDataviews, ...safeDataviewInstances]
   if (!allDataviews?.length) {
     return []
   }

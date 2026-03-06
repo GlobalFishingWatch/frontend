@@ -1,6 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 
-import { TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
+import { PRESENCE_DATAVIEW_SLUG, TEMPLATE_VESSEL_DATAVIEW_SLUG } from 'data/workspaces'
 import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/workspaces-vms'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 
@@ -18,3 +18,7 @@ export const selectVesselTemplateDataviews = createSelector(
     )
   }
 )
+
+export const selectPresenceDataview = createSelector([selectAllDataviews], (dataviews = []) => {
+  return dataviews.find((dataview) => dataview.slug === PRESENCE_DATAVIEW_SLUG)
+})
