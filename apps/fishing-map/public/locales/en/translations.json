@@ -1318,7 +1318,7 @@
     }
   },
   "workspace": {
-    "addLayer": "Adicionar à área de trabalho",
+    "addLayer": "Add to workspace",
     "categories": {
       "fishing-activity": "Highlighted workspaces",
       "marine-manager": "Marine Manager workspaces",
