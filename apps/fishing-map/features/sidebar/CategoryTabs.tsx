@@ -130,7 +130,10 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             <Icon icon="menu" />
           </span>
         </li>
-        <li className={cx(styles.tab, { [styles.current]: isWorkspaceLocation })}>
+        <li
+          data-testid="link-workspace"
+          className={cx(styles.tab, { [styles.current]: isWorkspaceLocation })}
+        >
           <Link
             className={styles.tabContent}
             to={{
@@ -150,7 +153,10 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             </Tooltip>
           </Link>
         </li>
-        <li className={cx(styles.tab, { [styles.current]: isAnySearchLocation })}>
+        <li
+          data-testid="link-search"
+          className={cx(styles.tab, { [styles.current]: isAnySearchLocation })}
+        >
           <Link
             className={styles.tabContent}
             to={

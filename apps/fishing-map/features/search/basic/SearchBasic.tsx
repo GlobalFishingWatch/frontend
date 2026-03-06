@@ -110,7 +110,7 @@ function SearchBasic({
               autoFocus
               disabled={!basicSearchAllowed}
               className={styles.input}
-              testId="seach-vessels-basic-input"
+              testId="search-vessels-basic-input"
               type="search"
               loading={
                 searchStatus === AsyncReducerStatus.Loading ||

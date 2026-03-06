@@ -290,7 +290,7 @@ export function MultiSelect(props: MultiSelectProps) {
             {...getInputProps({
               ref: inputRef,
             })}
-            data-test={`${testId}-input`}
+            data-testid={`${testId}-input`}
             disabled={disabled}
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
@@ -309,7 +309,7 @@ export function MultiSelect(props: MultiSelectProps) {
               <IconButton
                 icon={isOpen ? 'arrow-top' : 'arrow-down'}
                 size="small"
-                data-test={`${testId}-toggle`}
+                data-testid={`${testId}-toggle`}
                 aria-label={'toggle menu'}
                 {...getToggleButtonProps(getDropdownProps({ preventKeyAction: isOpen }))}
               ></IconButton>
@@ -361,7 +361,7 @@ export function MultiSelect(props: MultiSelectProps) {
                           height: `${virtualRow.size}px`,
                           transform: `translateY(${virtualRow.start}px)`,
                         }}
-                        data-test={`${testId}-option-${item.id}`}
+                        data-testid={`${testId}-option-${item.id}`}
                         className={cx(styles.optionItem, {
                           [styles.highlight]: highlight,
                           [item.className || '']: item.className,
