@@ -1,0 +1,100 @@
+name: Libs 🚀 publish to npm
+
+on:
+  workflow_dispatch:
+    inputs:
+      specifier:
+        description: 'Semver bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      projects:
+        description: 'Comma-separated list of projects to release (leave default to release all libs)'
+        required: true
+        default: 'api-types,api-client,data-transforms,dataviews-client,datasets-client,deck-layer-composer,deck-layers,deck-loaders,ocean-areas,pbf-decoders,react-hooks,responsive-visualizations,timebar,ui-components'
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GH_PA_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_PA_TOKEN }}
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '21'
+          registry-url: https://registry.npmjs.org/
+
+      - name: Validate npm authentication
+        run: |
+          WHOAMI=$(npm whoami 2>&1)
+          if [ $? -ne 0 ]; then
+            echo "❌ npm authentication failed: $WHOAMI"
+            echo "Please ensure the NPM_TOKEN secret is valid and not expired."
+            exit 1
+          fi
+          echo "✅ Authenticated to npm as: $WHOAMI"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Setup Git
+        run: |
+          git config user.name "Github Action"
+          git config user.email "action@github.com"
+
+      - name: Install yarn
+        run: npm install -g yarn
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: |
+          DIR=$(yarn cache dir 2>/dev/null | head -n 1)
+          echo "dir=$DIR" >> $GITHUB_OUTPUT
+
+      - name: Cache yarn dependencies
+        uses: actions/cache@v4
+        id: yarn-cache
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            **/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install --immutable
+
+      - name: Version bump (${{ github.event.inputs.specifier }})
+        run: |
+          npx nx release version \
+            --projects="${{ github.event.inputs.projects }}" \
+            --specifier=${{ github.event.inputs.specifier }} \
+            --gitCommit=true \
+            --gitTag=true \
+            --gitCommitMessage="chore(release): bump {projectName} to {version} [skip ci]" \
+            --verbose
+
+      - name: Push version commits and tags
+        run: |
+          git push --follow-tags origin HEAD:${{ github.ref_name }}
+
+      - name: Publish to npm
+        run: |
+          npx nx release publish \
+            --projects="${{ github.event.inputs.projects }}" \
+            --verbose
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

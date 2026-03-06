@@ -138,6 +138,19 @@
   "release": {
     "projectsRelationship": "independent",
     "version": {
+      "currentVersionResolver": "git-tag",
+      "fallbackCurrentVersionResolver": "disk",
+      "preserveLocalDependencyProtocols": false,
+      "git": {
+        "commit": false,
+        "tag": false
+      }
+    },
+    "changelog": {
+      "projectChangelogs": {
+        "createRelease": "github",
+        "file": false
+      },
       "git": {
         "commit": false,
         "tag": false

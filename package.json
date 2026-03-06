@@ -10,6 +10,7 @@
     "preinstall": "npx only-allow pnpm",
     "release:fishing-map": "nx release --projects='fishing-map' --skip-publish",
     "affected": "nx show projects --affected --base=origin/develop~1 --exclude='linting,port-labeler,*-e2e,libs/*' --plain > affected-apps.txt",
+    "release:libs": "nx release version --projects='api-types,api-client,data-transforms,dataviews-client,datasets-client,deck-layer-composer,deck-layers,deck-loaders,ocean-areas,pbf-decoders,react-hooks,responsive-visualizations,timebar,ui-components' --dry-run",
     "affected:libs": "nx show projects --affected --base=origin/develop~1 --exclude='apps/*' --plain > affected-libs.txt",
     "postinstall": "husky",
     "nx:latest": "nx migrate latest",
