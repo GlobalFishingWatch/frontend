@@ -69,13 +69,14 @@ export function useDatasetMetadata() {
 }
 
 const DISCARDED_FIELDS = ['gfw_id']
+type FieldOption = (SelectOption | MultiSelectOption) & { type?: DatasetFilterType }
 export function useDatasetMetadataOptions(
   datasetMetadata?: DatasetMetadata,
   filterTypes = [] as DatasetFilterType[]
 ) {
   const { t } = useTranslation()
   const filters = datasetMetadata?.filters
-  const fieldsOptions: SelectOption[] | MultiSelectOption[] = useMemo(() => {
+  const fieldsOptions: FieldOption[] = useMemo(() => {
     if (!filters) {
       return []
     }
@@ -86,6 +87,7 @@ export function useDatasetMetadataOptions(
       }
       return {
         id: filter.id,
+        type: filter.type,
         label: <DatasetFieldLabel field={filter.id} fieldFilter={filter} />,
       }
     })
@@ -96,8 +98,8 @@ export function useDatasetMetadataOptions(
   const getSelectedOption = useCallback(
     (
       option: string | string[],
-      options?: SelectOption[] | MultiSelectOption[]
-    ): SelectOption | MultiSelectOption[] | undefined => {
+      options?: FieldOption[] | FieldOption[]
+    ): FieldOption | FieldOption[] | undefined => {
       const opts = options ?? fieldsOptions
       if (option) {
         if (Array.isArray(option)) {
@@ -109,9 +111,7 @@ export function useDatasetMetadataOptions(
     [fieldsOptions]
   )
 
-  const filtersFieldsOptions: ((SelectOption | MultiSelectOption) & {
-    type?: DatasetFilterType
-  })[] = useMemo(() => {
+  const filtersFieldsOptions: FieldOption[] = useMemo(() => {
     const options =
       datasetMetadata?.filters?.userContextLayers &&
       datasetMetadata?.filters?.userContextLayers?.length > 0
