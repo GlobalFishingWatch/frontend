@@ -1,4 +1,5 @@
 export * from './datasets.config'
 export * from './datasets.utils'
+export * from './config'
 export * from './migrations/datasets.migrations'
 export * from './resolve-endpoint'

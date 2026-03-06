@@ -14,6 +14,10 @@ import type {
 import { DatasetTypes, DataviewCategory, EndpointId } from '@globalfishingwatch/api-types'
 import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  getEncounteredVesselDataviewInstanceId,
+  getVesselDataviewInstanceId,
+} from '@globalfishingwatch/dataviews-client'
 import { FourwingsAggregationOperation, getUTCDateTime } from '@globalfishingwatch/deck-layers'
 
 import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/dataviews'
@@ -26,11 +30,9 @@ import {
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
 } from 'data/workspaces'
-import { DATASET_VERSION_SEPARATOR, PIPE_DATASET_ID } from 'data/workspaces.config'
 import type { VesselInstanceDatasets } from 'features/datasets/datasets.utils'
 import { getActiveDatasetsInDataview, isPrivateDataset } from 'features/datasets/datasets.utils'
 import { INCLUDES_RELATED_SELF_REPORTED_INFO_ID } from 'features/vessel/vessel.config'
-
 // used in workspaces with encounter events layers
 export const ENCOUNTER_EVENTS_SOURCE_ID = 'encounters'
 const ENCOUNTER_EVENTS_30MIN_SOURCE_ID = 'proto-global-encounters-events-30min'
@@ -42,10 +44,8 @@ export const VESSEL_GROUP_DATAVIEW_PREFIX = `vessel-group-`
 export const BIG_QUERY_PREFIX = 'bq-'
 export const BIG_QUERY_4WINGS_PREFIX = `${BIG_QUERY_PREFIX}4wings-`
 export const BIG_QUERY_EVENTS_PREFIX = `${BIG_QUERY_PREFIX}events-`
-export const VESSEL_LAYER_PREFIX = 'vessel-'
 const CONTEXT_LAYER_PREFIX = 'context-'
-export const VESSEL_DATAVIEW_INSTANCE_PREFIX = 'vessel-'
-export const VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX = `${VESSEL_DATAVIEW_INSTANCE_PREFIX}encounter-`
+
 export const ENCOUNTER_EVENTS_SOURCES = [
   ENCOUNTER_EVENTS_SOURCE_ID,
   ENCOUNTER_EVENTS_30MIN_SOURCE_ID,
@@ -69,27 +69,6 @@ export function dataviewHasUserPointsTimeRange(dataview: UrlDataviewInstance) {
   const hasTimeFilter = timeFilterType === 'dateRange' || timeFilterType === 'date'
   return hasTimeFilter
 }
-
-export const getVesselIdFromInstanceId = (dataviewInstanceId: string) => {
-  const prefix = dataviewInstanceId?.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
-    ? VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX
-    : VESSEL_DATAVIEW_INSTANCE_PREFIX
-  return dataviewInstanceId.split(prefix)[1].split(DATASET_VERSION_SEPARATOR)[0]
-}
-
-export const getIsVesselDataviewInstanceId = (dataviewInstanceId: string) =>
-  dataviewInstanceId?.startsWith(VESSEL_DATAVIEW_INSTANCE_PREFIX)
-
-export const getIsEncounteredVesselDataviewInstanceId = (dataviewInstanceId: string) =>
-  dataviewInstanceId?.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX)
-
-export const getVesselDataviewInstanceId = (
-  vesselId: string,
-  version = PIPE_DATASET_ID as string
-) => `${VESSEL_DATAVIEW_INSTANCE_PREFIX}${vesselId}${DATASET_VERSION_SEPARATOR}${version}`
-
-export const getEncounteredVesselDataviewInstanceId = (vesselId: string) =>
-  `${VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX}${vesselId}${DATASET_VERSION_SEPARATOR}${PIPE_DATASET_ID}`
 
 export type GetVesselInWorkspaceParams = {
   dataviews: UrlDataviewInstance[]
@@ -262,7 +241,7 @@ export const getVesselEncounterTrackDataviewInstance = ({
   highlightEventEndTime?: number
 }): DataviewInstance => {
   const vesselDataviewInstance: DataviewInstance = {
-    id: `${VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX}${vesselId}`,
+    id: getEncounteredVesselDataviewInstanceId(vesselId),
     dataviewId: TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG,
     config: {
       startDate: getUTCDateTime(start).toISO()!,

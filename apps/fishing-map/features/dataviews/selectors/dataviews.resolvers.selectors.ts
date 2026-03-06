@@ -10,7 +10,9 @@ import type {
 } from '@globalfishingwatch/dataviews-client'
 import {
   extendDataviewDatasetConfig,
+  getIsVesselDataviewInstanceId,
   getResources,
+  getVesselIdFromInstanceId,
   resolveDataviewDatasetResource,
   resolveDataviews,
   selectResources,
@@ -20,9 +22,7 @@ import { selectAllDatasets, selectDeprecatedDatasets } from 'features/datasets/d
 import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import {
-  getIsVesselDataviewInstanceId,
   getVesselDataviewInstanceDatasetConfig,
-  getVesselIdFromInstanceId,
   isDataviewDeprecated,
 } from 'features/dataviews/dataviews.utils'
 import { selectDataviewInstancesInjected } from 'features/dataviews/selectors/dataviews.injected.selectors'

@@ -16,7 +16,10 @@ import {
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
+import {
+  getVesselIdFromInstanceId,
+  resolveDataviewDatasetResource,
+} from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayer } from '@globalfishingwatch/deck-layer-composer'
 import type { VesselLayer } from '@globalfishingwatch/deck-layers'
 import type { ColorBarOption } from '@globalfishingwatch/ui-components'
@@ -28,7 +31,6 @@ import {
   isGFWOnlyDataset,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
-import { getVesselIdFromInstanceId } from 'features/dataviews/dataviews.utils'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'

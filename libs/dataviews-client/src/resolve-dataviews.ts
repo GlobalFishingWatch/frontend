@@ -24,6 +24,7 @@ import {
 import { isNumeric } from '@globalfishingwatch/data-transforms'
 import { removeDatasetVersion, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 
+import { getVesselIdFromInstanceId } from './dataviews.utils'
 import type { UrlDataviewInstance } from './types'
 
 export function isActivityDataview(dataview: UrlDataviewInstance) {
@@ -547,7 +548,7 @@ export function resolveDataviews(
                           // Makes the trick to fix pinned vessels with a dataset version that doesn't match the same name
                           // eg: public-global-port-visits-c2 => public-global-port-visits-events:v3.0
                           if (query.id === 'vessels' && !query.value) {
-                            const vesselId = dataviewInstance.id?.split('vessel-')[1]
+                            const vesselId = getVesselIdFromInstanceId(dataviewInstance.id)
                             const value = [vesselId, ...(dataview.config.relatedVesselIds || [])]
                             return { ...query, value }
                           }
