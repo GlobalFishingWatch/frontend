@@ -2,7 +2,7 @@ import { useCallback, useEffect, useEffectEvent, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 
 import type { Dataset } from '@globalfishingwatch/api-types'
-import { useDebounce, useTrackDependencyChanges } from '@globalfishingwatch/react-hooks'
+import { useDebounce } from '@globalfishingwatch/react-hooks'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
