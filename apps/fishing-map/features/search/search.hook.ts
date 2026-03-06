@@ -211,7 +211,8 @@ export const useSearch = () => {
 
   const hasSearchFiltersErrors = Object.values(searchFilterErrors).some((e) => e)
   const searchInBasic = activeSearchOption === 'basic' && query?.length > MIN_SEARCH_CHARACTERS - 1
-  const searchInAdvanced = activeSearchOption === 'advanced' && (hasFilters || query?.trim() !== '')
+  const searchInAdvanced =
+    activeSearchOption === 'advanced' && (hasFilters || (query ? query?.trim() !== '' : false))
 
   const onBasicSearch = useEffectEvent(() => {
     dispatch(cleanVesselSearchResults())
