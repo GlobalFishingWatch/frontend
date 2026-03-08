@@ -69,11 +69,6 @@ export default defineConfig({
     }),
   ],
   envPrefix: ['VITE_', 'i18n_'],
-  css: {
-    modules: {
-      localsConvention: 'camelCaseOnly',
-    },
-  },
   ssr: {
     noExternal: ['@mastra/core', '@mastra/client-js'],
   },
