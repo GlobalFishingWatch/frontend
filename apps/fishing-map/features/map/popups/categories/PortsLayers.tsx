@@ -33,12 +33,12 @@ function PortsTooltipSection({ features, showFeaturesDetails = false }: PortsLay
               {featureByType.map((feature) => {
                 const { id, name, flag } = feature.properties
                 const port: ExtendedFeatureByVesselEventPort = {
-                  id,
+                  id: feature?.id || id,
                   name,
                   country: flag,
                 }
                 return (
-                  <div className={styles.row} key={id}>
+                  <div className={styles.row} key={port.id}>
                     <span className={styles.rowText}>
                       {`${formatInfoField(name, 'port')} (${formatInfoField(flag, 'flag')})`}
                     </span>
