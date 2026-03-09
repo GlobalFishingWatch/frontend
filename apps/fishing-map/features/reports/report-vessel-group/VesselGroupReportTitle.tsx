@@ -112,7 +112,7 @@ export default function VesselGroupReportTitle() {
           <LoginButtonWrapper tooltip="">
             <Button
               type="border-secondary"
-              size="small"
+              size="medium"
               className={styles.actionButton}
               onClick={onEditClick}
               disabled={loading}

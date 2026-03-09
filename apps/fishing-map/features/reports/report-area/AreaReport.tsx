@@ -167,7 +167,6 @@ export default function Report() {
         reportCategory: option.id,
         reportVesselPage: 0,
       })
-
       fitAreaInViewport()
       trackEvent({
         category: TrackCategory.Analysis,
