@@ -4,8 +4,13 @@
   display: flex;
   background: var(--color-terthiary-blue);
   border-radius: var(--border-radius-0);
-  border-bottom: 2px solid var(--color-border);
+  border: 1px solid transparent;
+  border-bottom: var(--border);
   line-height: var(--size-M);
+}
+
+.container.isOpen {
+  border: var(--border);
 }
 
 .secondary {
@@ -72,11 +77,11 @@
 }
 
 .optionsContainer {
-  width: 100%;
+  width: calc(100% + 2px);
   position: absolute !important; /* as needs to overwrite default FixedSizeList behaviour */
   top: var(--size-M);
-  left: 0;
-  background: var(--color-white);
+  left: -1px;
+  background: var(--color-off-white-0);
   box-shadow: var(--box-shadow-1);
   max-height: 24rem;
   overflow: auto;
@@ -88,6 +93,11 @@
   min-width: max-content;
 }
 
+.container.isOpen .optionsContainer {
+  border: var(--border);
+  border-top: none;
+}
+
 .secondary .optionsContainer.right {
   left: unset;
   right: 0;
@@ -97,10 +107,13 @@
   top: calc(100% + 1px);
 }
 
-.optionsContainer.top {
+.container.isOpen .optionsContainer.top {
   border-radius: var(--border-radius-0) var(--border-radius-0) 0 0;
   bottom: calc(100% + 1px);
   top: auto;
+  border-top: var(--border);
+  border-bottom: none;
+  box-shadow: var(--box-shadow-1-top);
 }
 
 .optionItem {

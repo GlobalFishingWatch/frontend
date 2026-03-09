@@ -1,10 +1,20 @@
+.section {
+  padding-block: var(--space-S);
+}
+
 .selector {
-  padding: var(--space-SM) var(--space-SM) 0;
+  padding: var(--space-S);
 }
 
 .container {
   padding: var(--space-M);
-  border-bottom: var(--border);
+}
+
+.subsection {
+  margin: var(--space-S);
+  border-radius: var(--border-radius-0);
+  background-color: var(--color-off-white-1);
+  border: var(--border);
 }
 
 .summary {
