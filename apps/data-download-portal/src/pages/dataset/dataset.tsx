@@ -3,8 +3,7 @@ import { useParams } from '@tanstack/react-router'
 import { DateTime } from 'luxon'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { Dataset } from '@globalfishingwatch/api-types'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import type { DownloadDataset } from '@globalfishingwatch/api-types'
 import { useGFWLogin } from '@globalfishingwatch/react-hooks'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
@@ -60,27 +59,22 @@ const columns = [
 
 function DatasetPage() {
   const { datasetId } = useParams({ from: '/datasets/$datasetId' })
-  const [dataset, setDataset] = useState<(Dataset & { files: TableData[] }) | null>(null)
+  const [dataset, setDataset] = useState<(DownloadDataset & { files: TableData[] }) | null>(null)
   const [loading, setLoading] = useState(false)
   const { logged } = useGFWLogin(GFWAPI)
 
   useEffect(() => {
     setLoading(true)
 
-    const formatDataset = (dataset: Dataset) => {
-      const files = getDatasetConfigurationProperty({
-        dataset,
-        property: 'files',
-        type: 'dataDownloadV1',
-      })
+    const formatDataset = (dataset: DownloadDataset) => {
       const formatedDataset = {
         ...dataset,
-        files: buildFileTree(files || []),
+        files: buildFileTree(dataset.files || []),
       }
       return formatedDataset
     }
 
-    GFWAPI.fetch<Dataset>(`/download/datasets/${datasetId}`)
+    GFWAPI.fetch<DownloadDataset>(`/download/datasets/${datasetId}`)
       .then((data) => {
         setDataset(formatDataset(data))
       })
@@ -92,13 +86,7 @@ function DatasetPage() {
       })
   }, [datasetId])
 
-  const readme = dataset
-    ? getDatasetConfigurationProperty({
-        dataset,
-        property: 'readme',
-        type: 'dataDownloadV1',
-      })
-    : undefined
+  const readme = dataset?.readme
 
   return (
     <Fragment>
