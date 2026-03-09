@@ -25,9 +25,9 @@ import {
   DEFAULT_WORKSPACE_ID,
   FISHING_DATAVIEW_SLUG_AIS,
   FISHING_DATAVIEW_SLUG_VMS,
-  // FIXED_SAR_INFRASTRUCTURE,
   GRATICULES_DATAVIEW_SLUG,
-  // PORTS_DATAVIEW_SLUG,
+  PORTS_AIS_DATAVIEW_SLUG,
+  PORTS_VMS_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
   SENTINEL2_DATAVIEW_SLUG,
@@ -39,6 +39,7 @@ import {
   LOITERING_EVENTS_SOURCE_ID,
   PORT_VISITS_EVENTS_SOURCE_ID,
 } from 'features/dataviews/dataviews.utils'
+import { PORTS_LAYER_ID } from 'features/map/map.config'
 // import { OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID, PORTS_LAYER_ID } from 'features/map/map.config'
 import type { WorkspaceState } from 'types'
 
@@ -74,29 +75,11 @@ const workspace: Workspace<WorkspaceState> = {
     },
     {
       id: VMS_DATAVIEW_INSTANCE_ID,
-      config: {
-        color: '#FFAA0D',
-        colorRamp: 'orange',
-        datasets: [
-          'public-belize-fishing-effort:v20220304',
-          'public-bra-onyxsat-fishing-effort:v20211126',
-          'public-chile-fishing-effort:v20211126',
-          'public-costa-rica-fishing-effort:v20211126',
-          'public-ecuador-fishing-effort:v20211126',
-          'public-indonesia-fishing-effort:v20200320',
-          'public-panama-fishing-effort:v20211126',
-          'public-peru-fishing-effort:v20211126',
-          'public-png-fishing-effort:v20230210',
-          'public-norway-fishing-effort:v20220112',
-        ],
-      },
       dataviewId: FISHING_DATAVIEW_SLUG_VMS,
     },
     {
       id: PRESENCE_DATAVIEW_INSTANCE_ID,
       config: {
-        color: '#FF64CE',
-        colorRamp: 'magenta',
         visible: false,
       },
       dataviewId: PRESENCE_DATAVIEW_SLUG,
@@ -111,8 +94,6 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: VIIRS_DATAVIEW_INSTANCE_ID,
       config: {
-        color: '#FFEA00',
-        colorRamp: 'yellow',
         visible: false,
       },
       dataviewId: VIIRS_MATCH_DATAVIEW_SLUG,
@@ -160,21 +141,20 @@ const workspace: Workspace<WorkspaceState> = {
     },
     ...BASE_CONTEXT_LAYERS_DATAVIEW_INSTANCES,
     // {
-    //   id: OFFSHORE_FIXED_INFRASTRUCTURE_LAYER_ID,
-    //   config: {
-    //     visible: false,
-    //     color: '#8E24A9',
-    //     colorRamp: 'seance',
-    //   },
-    //   dataviewId: FIXED_SAR_INFRASTRUCTURE,
-    // },
-    // {
-    //   id: PORTS_LAYER_ID,
+    //   id: `${PORTS_LAYER_ID}-ais`,
     //   config: {
     //     visible: false,
     //     color: '#9AEEFF',
     //   },
-    //   dataviewId: PORTS_DATAVIEW_SLUG,
+    //   dataviewId: PORTS_AIS_DATAVIEW_SLUG,
+    // },
+    // {
+    //   id: `${PORTS_LAYER_ID}-vms`,
+    //   config: {
+    //     visible: false,
+    //     color: '#9AEEFF',
+    //   },
+    //   dataviewId: PORTS_VMS_DATAVIEW_SLUG,
     // },
     {
       id: BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,

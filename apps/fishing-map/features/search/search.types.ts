@@ -12,8 +12,9 @@ export type VesselSearchState = {
   ssvid?: string
   imo?: string
   callsign?: string
-  codMarinha?: string
-  nationalId?: string
+  codMarinha?: string // pipe 3
+  nationalId?: string // pipe 3
+  externalId?: string
   flag?: string[]
   geartypes?: GearType[]
   shiptypes?: VesselType[]
@@ -21,7 +22,8 @@ export type VesselSearchState = {
   transmissionDateFrom?: string
   transmissionDateTo?: string
   owner?: string
-  fleet?: string[]
+  sourceFleet?: string[]
+  fleet?: string[] // pipe 3
   origin?: string
 }
 

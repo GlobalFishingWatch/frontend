@@ -75,7 +75,7 @@ function Hint({ id, className }: HintProps) {
       key={`${id}-tooltip`}
       onOpenChange={onOpenChange}
       content={
-        <div className={styles.container}>
+        <div className={styles.container} translate="no">
           {imageUrl && (
             <img
               className={styles.img}

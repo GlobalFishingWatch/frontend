@@ -10,7 +10,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { setModalOpen } from 'features/modals/modals.slice'
 import {
   selectIsDefaultWorkspace,
-  selectIsWorkspaceOwner,
+  selectIsWorkspaceOwnerOrDefault,
   selectWorkspace,
   selectWorkspaceStatus,
 } from 'features/workspace/workspace.selectors'
@@ -25,7 +25,7 @@ function SaveWorkspaceButton() {
   const workspace = useSelector(selectWorkspace)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const isDefaultWorkspace = useSelector(selectIsDefaultWorkspace)
-  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwner)
+  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
 
   const isPassWordEditAccess = workspace?.editAccess === WORKSPACE_PASSWORD_ACCESS
   const canEditWorkspace = isWorkspaceOwner || isPassWordEditAccess

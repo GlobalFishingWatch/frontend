@@ -1,5 +1,3 @@
-import { Fragment } from 'react'
-
 import { Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import I18nNumber from 'features/i18n/i18nNumber'

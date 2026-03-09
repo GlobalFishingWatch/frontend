@@ -326,7 +326,7 @@ const areasSlice = createSlice({
       const { datasetId, areaId } = action.meta.arg as FetchAreaDetailThunkParam
       state[datasetId].detail[areaId] = {
         status: AsyncReducerStatus.Finished,
-        data: { ...(state[datasetId].detail[areaId].data || ({} as Area)), ...action.payload },
+        data: { ...(state[datasetId]?.detail?.[areaId]?.data || ({} as Area)), ...action.payload },
       }
     })
     builder.addCase(fetchAreaDetailThunk.rejected, (state, action) => {

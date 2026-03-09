@@ -17,7 +17,10 @@ export const getVesselGroupLabel = (vesselGroup: VesselGroup) => {
 }
 
 export const isOutdatedVesselGroup = (vesselGroup: VesselGroup) => {
-  return vesselGroup?.updatedAt && vesselGroup?.updatedAt < VESSEL_GROUPS_REPORT_RELEASE_DATE
+  return (
+    vesselGroup?.updatedAt !== undefined &&
+    vesselGroup?.updatedAt < VESSEL_GROUPS_REPORT_RELEASE_DATE
+  )
 }
 
 export const getVesselGroupVesselsCount = (vesselGroup: VesselGroup) => {
@@ -163,8 +166,8 @@ export const getVesselsWithoutDuplicates = (vessels: VesselGroupVesselIdentity[]
   return vessels.filter((v) => v.identity !== undefined)
 }
 
-export function calculateVMSVesselsPercentage(vessels: VesselGroupVesselIdentity[] | null): number {
-  if (!vessels || vessels.length === 0) return 0
+export function calculateVMSVesselsPercentage(vessels: VesselGroupVesselIdentity[] | null): string {
+  if (!vessels || vessels.length === 0) return '0% of vessels with VMS'
 
   const vesselsWithVMS = vessels.filter((vessel) => {
     const selfReportedInfo = vessel.identity?.selfReportedInfo
@@ -175,5 +178,19 @@ export function calculateVMSVesselsPercentage(vessels: VesselGroupVesselIdentity
     )
   })
 
-  return Math.round((vesselsWithVMS.length / vessels.length) * 100)
+  const uniqueSources = Array.from(
+    new Set(
+      vesselsWithVMS
+        .flatMap((vessel) => vessel.identity?.selfReportedInfo?.flatMap((info) => info.sourceCode))
+        .flat()
+        .filter(Boolean)
+    )
+  )
+
+  return (
+    Math.round((vesselsWithVMS.length / vessels.length) * 100) +
+    '% of vessels with VMS | ' +
+    'source(s):' +
+    uniqueSources.join(', ')
+  )
 }

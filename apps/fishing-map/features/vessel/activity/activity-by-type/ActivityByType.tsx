@@ -7,6 +7,7 @@ import cx from 'classnames'
 import type { EventType } from '@globalfishingwatch/api-types'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
+import { selectVesselProfileSource } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { getScrollElement } from 'features/sidebar/sidebar.utils'
 import { useHighlightedEventsConnect } from 'features/timebar/timebar.hooks'
 import { useVesselEventBounds } from 'features/vessel/activity/event/event.bounds'
@@ -24,8 +25,8 @@ import {
 import { selectVesselPrintMode } from 'features/vessel/selectors/vessel.selectors'
 import { useVesselProfileLayer } from 'features/vessel/vessel.hooks'
 import { selectVesselEventId } from 'features/vessel/vessel.slice'
+import type { VesselEvent } from 'features/vessel/vessel.types'
 
-import type { VesselEvent } from '../event/Event'
 import Event, { EVENT_HEIGHT } from '../event/Event'
 
 import ActivityGroup from './ActivityGroup'
@@ -40,6 +41,7 @@ function ActivityByType() {
   const selectedVesselEventId = useSelector(selectVesselEventId)
   const { dispatchHighlightedEvents } = useHighlightedEventsConnect()
   const vesselLayer = useVesselProfileLayer()
+  const vesselProfileSource = useSelector(selectVesselProfileSource)
   const fitEventBounds = useVesselEventBounds(vesselLayer)
   const { virtuosoRef } = useVirtuosoScroll()
   const eventsRef = useRef(new Map<string, HTMLElement>())
@@ -146,6 +148,7 @@ function ActivityByType() {
                 <ActivityGroup
                   key={eventType}
                   eventType={eventType}
+                  eventSource={vesselProfileSource}
                   onToggleClick={onToggleExpandedType}
                   quantity={events.length}
                   expanded={expanded}
@@ -172,7 +175,7 @@ function ActivityByType() {
                   }}
                   onInfoClick={handleEventClick}
                   className={cx(styles.event, { [styles.eventExpanded]: expanded })}
-                  testId={`vv-${event.type}-event-${index}`}
+                  testId={`vv-${event?.type}-event-${index}`}
                 />
                 {index === events.length - 1 && groupIndex === groups.length - 1 && (
                   <div style={{ height: '48vh' }}></div>
@@ -192,6 +195,7 @@ function ActivityByType() {
     selectedEventGroup,
     onToggleExpandedType,
     groups,
+    vesselProfileSource,
     events,
     selectedEventId,
     onMapHover,

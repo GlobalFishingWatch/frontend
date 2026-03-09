@@ -5,7 +5,7 @@ import type { ContextPickingObject, UserLayerPickingObject } from '@globalfishin
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
-import { htmlSafeParse, options } from 'utils/html-parser'
+import { htmlSafeParse } from 'utils/html-parser'
 
 import ContextLayerDownloadPopupButton from './ContextLayerDownloadPopupButton'
 import ContextLayerReportLink from './ContextLayerReportLink'
@@ -22,7 +22,8 @@ type ContextLayersRowProps = {
   handleDownloadClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
   handleReportClick?: (
     e: React.MouseEvent<Element, MouseEvent>,
-    feature: ContextPickingObject | UserLayerPickingObject
+    feature: ContextPickingObject | UserLayerPickingObject,
+    layerSources?: string
   ) => void
 }
 

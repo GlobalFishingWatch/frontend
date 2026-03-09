@@ -12,6 +12,7 @@ import { Icon, Switch, Tooltip } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVisibleEvents } from 'features/app/selectors/app.selectors'
 import { selectTimeRange } from 'features/app/selectors/app.timebar.selectors'
+import { selectVesselProfileSource } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import I18nNumber, { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { useRegionNamesByType } from 'features/regions/regions.hooks'
@@ -27,6 +28,7 @@ import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 import { setVesselEventId } from 'features/vessel/vessel.slice'
 import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
+import { htmlSafeParse } from 'utils/html-parser'
 import { formatInfoField } from 'utils/info'
 
 import styles from './VesselActivitySummary.module.css'
@@ -41,6 +43,7 @@ export const VesselActivitySummary = () => {
   const timerange = useSelector(selectTimeRange)
   const visibleEvents = useSelector(selectVisibleEvents)
   const { setVesselEventVisibility } = useVisibleVesselEvents()
+  const vesselProfileSource = useSelector(selectVesselProfileSource)
   const eventsByType = useSelector(selectEventsGroupedByType)
   const { getRegionNamesByType } = useRegionNamesByType()
   const { activityRegions, mostVisitedPortCountries, fishingHours } =
@@ -107,7 +110,7 @@ export const VesselActivitySummary = () => {
       <h2 className="print-only">{t((t) => t.vessel.sectionActivity)}</h2>
       <div className={styles.container}>
         <h2 className={styles.summary}>
-          <span dangerouslySetInnerHTML={{ __html: summary }}></span>
+          <span>{htmlSafeParse(summary)}</span>
           {hasActivityRegionsData ? (
             <span>
               {' '}
@@ -164,12 +167,18 @@ export const VesselActivitySummary = () => {
         <ul>
           {EVENTS_ORDER.map((eventType) => {
             const events = eventsByType[eventType]
+            if (eventType === EventTypes.Gaps && !events?.length) {
+              return null
+            }
             const active =
               visibleEvents === 'all'
                 ? true
                 : visibleEvents === 'none'
                   ? false
                   : visibleEvents.includes(eventType)
+            if ((eventType === EventTypes.Gap || eventType === EventTypes.Gaps) && !events) {
+              return null
+            }
             return (
               <li key={eventType} className={styles.eventTypeRowContainer}>
                 <Switch
@@ -195,6 +204,10 @@ export const VesselActivitySummary = () => {
                     {t((t) => t.event[eventType], {
                       defaultValue: eventType,
                       count: events?.length || 0,
+                      source:
+                        vesselProfileSource === 'VMS'
+                          ? t((t) => t.common.vms)
+                          : t((t) => t.common.ais),
                     })}{' '}
                     {active && eventType === EventTypes.Fishing && fishingHours !== 0 && (
                       <span>
@@ -236,7 +249,10 @@ export const VesselActivitySummary = () => {
                     )}
                   </p>
                   <DataTerminology
-                    title={t((t) => t.event[eventType], { defaultValue: eventType })}
+                    title={t((t) => t.event[eventType], {
+                      defaultValue: eventType,
+                      source: t((t) => t.common.ais),
+                    })}
                     terminologyKey={eventType as any}
                   />
                 </div>

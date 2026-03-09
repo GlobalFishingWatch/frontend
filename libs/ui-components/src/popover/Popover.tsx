@@ -68,6 +68,7 @@ export function Popover({
       }),
       shift({ padding: { left: 60 } }),
       arrow({
+        // eslint-disable-next-line react-hooks/refs
         element: arrowRef.current,
         padding: 0,
       }),

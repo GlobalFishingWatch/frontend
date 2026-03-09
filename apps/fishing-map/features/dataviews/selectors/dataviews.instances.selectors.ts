@@ -1,15 +1,18 @@
 import { createSelector } from '@reduxjs/toolkit'
 
+import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DatasetTypes, DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
-
-import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
-import { BASEMAP_DATAVIEW_SLUG, CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG } from 'data/workspaces'
-import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
+import { DATASET_VERSION_SEPARATOR } from '@globalfishingwatch/datasets-client'
+import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getIsEncounteredVesselDataviewInstanceId,
   getIsVesselDataviewInstanceId,
   getVesselDataviewInstanceId,
-} from 'features/dataviews/dataviews.utils'
+} from '@globalfishingwatch/dataviews-client'
+
+import { REPORT_ONLY_VISIBLE_LAYERS } from 'data/config'
+import { CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG } from 'data/workspaces'
+import { getDatasetSourceTranslated } from 'features/i18n/utils.datasets'
 import {
   getReportCategoryFromDataview,
   getReportSubCategoryFromDataview,
@@ -22,7 +25,7 @@ import { selectReportComparisonDataviewIds } from 'features/reports/reports.conf
 import { selectReportCategory, selectReportSubCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectCurrentVesselEvent } from 'features/vessel/selectors/vessel.selectors'
-import { selectIsWorkspaceReady } from 'features/workspace/workspace.selectors'
+import { selectVesselDatasetId } from 'features/vessel/vessel.config.selectors'
 import {
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
@@ -39,31 +42,32 @@ import {
   selectDataviewInstancesResolved,
 } from './dataviews.resolvers.selectors'
 
-export const selectDeprecatedDataviewInstances = createSelector(
-  [selectAllDataviewInstancesResolved, selectDeprecatedDatasets],
-  (dataviews, deprecatedDatasets = {}) => {
-    return dataviews?.filter(({ datasetsConfig, config }) => {
-      const hasDatasetsDeprecated =
-        datasetsConfig?.some((datasetConfig) => deprecatedDatasets[datasetConfig.datasetId]) ||
-        false
-      const hasConfigDeprecated = config?.datasets
-        ? config.datasets.some((d) => deprecatedDatasets[d])
-        : false
-      return hasDatasetsDeprecated || hasConfigDeprecated
+export const findVesselProfileDataviewInstance = (
+  dataviewInstances: (DataviewInstance | UrlDataviewInstance)[],
+  vesselId: string,
+  vesselDatasetId: string
+) => {
+  if (dataviewInstances?.length && vesselId) {
+    const vesselProfileDataviewInstances = (dataviewInstances || [])?.filter(
+      ({ id }) => vesselId && id && id.includes(vesselId)
+    )
+    if (vesselProfileDataviewInstances.length === 1) {
+      return vesselProfileDataviewInstances[0]
+    }
+    const vesselDatasetIdVersion = vesselDatasetId.split(DATASET_VERSION_SEPARATOR)[1] as string
+    const exactProfileDataviewInstanceMatch = vesselProfileDataviewInstances?.find(({ id }) => {
+      return id === getVesselDataviewInstanceId(vesselId, vesselDatasetIdVersion)
     })
+    if (exactProfileDataviewInstanceMatch) {
+      return exactProfileDataviewInstanceMatch
+    }
+    // Returns the first vessel profile dataview instance that does not include the dataset version
+    return vesselProfileDataviewInstances.find(({ id }) => !id.includes(DATASET_VERSION_SEPARATOR))
   }
-)
-
-export const selectHasDeprecatedDataviewInstances = createSelector(
-  [selectIsWorkspaceReady, selectDeprecatedDataviewInstances],
-  (isWorkspaceReady, deprecatedDataviews) => {
-    return isWorkspaceReady && deprecatedDataviews && deprecatedDataviews.length > 0
-  }
-)
+}
 
 export const selectDataviewInstancesResolvedVisible = createSelector(
   [
-    selectHasDeprecatedDataviewInstances,
     selectReportComparisonDataviewIds,
     selectDataviewInstancesResolved,
     selectIsAnyReportLocation,
@@ -71,13 +75,13 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     selectReportSubCategory,
     selectIsAnyVesselLocation,
     selectVesselId,
+    selectVesselDatasetId,
     selectCurrentVesselEvent,
     selectIsPortReportLocation,
     selectIsVesselGroupReportLocation,
     selectReportVesselGroupId,
   ],
   (
-    hasDeprecatedDataviewInstances,
     reportComparisonDataviewIds,
     dataviews = [],
     isAnyReportLocation,
@@ -85,27 +89,24 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
     reportSubCategory,
     isVesselLocation,
     vesselId,
+    vesselDatasetId,
     currentVesselEvent,
     isPortReportLocation,
     isVesselGroupReportLocation,
     reportVesselGroupId
   ) => {
     const visibleDataviews = dataviews.filter((dataview) => dataview.config?.visible)
-    if (hasDeprecatedDataviewInstances) {
-      return visibleDataviews.filter(
-        (d) =>
-          d.category === DataviewCategory.Context ||
-          d.category === DataviewCategory.User ||
-          d.category === DataviewCategory.Environment ||
-          d.slug === BASEMAP_DATAVIEW_SLUG
-      )
-    }
     if (isVesselLocation && vesselId !== undefined) {
       const filteredDataviews = visibleDataviews.filter(({ id, config, origin }) => {
         if (REPORT_ONLY_VISIBLE_LAYERS.includes(config?.type as DataviewType)) {
           return true
         }
-        const isSameVessel = id.includes(vesselId)
+        const vesselProfileDataviewInstance = findVesselProfileDataviewInstance(
+          dataviews,
+          vesselId,
+          vesselDatasetId
+        )
+        const isSameVessel = id === vesselProfileDataviewInstance?.id
         const isVesselProfileOrigin = origin === 'vesselProfile'
         const isEncounterVesselTrack =
           id.includes(currentVesselEvent?.encounter?.vessel?.id || '') &&
@@ -176,6 +177,13 @@ export const selectDataviewInstancesResolvedVisible = createSelector(
   }
 )
 
+export const selectHasDeprecatedDataviewInstances = createSelector(
+  [selectDataviewInstancesResolvedVisible],
+  (dataviews) => {
+    return dataviews?.some((dataview) => dataview.deprecated)
+  }
+)
+
 const selectDataviewInstancesByType = (type: DataviewType) => {
   return createSelector([selectDataviewInstancesResolved], (dataviews) => {
     return dataviews?.filter((dataview) => dataview.config?.type === type)
@@ -213,14 +221,29 @@ export const selectVesselsDataviews = createSelector([selectTrackDataviews], (da
 })
 
 export const selectVesselProfileDataview = createDeepEqualSelector(
-  [selectVesselsDataviews, selectVesselId],
-  (dataviews, vesselId) => dataviews.find(({ id }) => vesselId && id.includes(vesselId))
+  [selectVesselsDataviews, selectVesselId, selectVesselDatasetId],
+  (dataviews, vesselId, vesselDatasetId) =>
+    findVesselProfileDataviewInstance(dataviews, vesselId, vesselDatasetId)
+)
+
+export const selectVesselProfileSource = createDeepEqualSelector(
+  [selectVesselProfileDataview],
+  (vesselProfileDataview) => {
+    return getDatasetSourceTranslated(vesselProfileDataview?.datasets)
+  }
 )
 
 export const selectVesselProfileDataviewIntance = createDeepEqualSelector(
-  [selectDataviewInstancesMerged, selectVesselId],
-  (dataviewsInstances, vesselId) => {
-    return dataviewsInstances?.find(({ id }) => vesselId && id && id.includes(vesselId))
+  [selectDataviewInstancesMerged, selectVesselId, selectVesselDatasetId],
+  (dataviewsInstances = [], vesselId, vesselDatasetId) => {
+    return findVesselProfileDataviewInstance(dataviewsInstances, vesselId, vesselDatasetId)
+  }
+)
+
+export const selectVesselProfileDataviewIntanceResolved = createDeepEqualSelector(
+  [selectAllDataviewInstancesResolved, selectVesselId, selectVesselDatasetId],
+  (dataviewsInstances = [], vesselId, vesselDatasetId) => {
+    return findVesselProfileDataviewInstance(dataviewsInstances, vesselId, vesselDatasetId)
   }
 )
 

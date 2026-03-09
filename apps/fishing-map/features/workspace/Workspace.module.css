@@ -8,12 +8,11 @@
   text-align: center;
 }
 
-.disclaimerFooter {
+.disclaimer {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: var(--space-S);
-  margin-top: var(--space-S);
 }
 
 .disclaimer a {

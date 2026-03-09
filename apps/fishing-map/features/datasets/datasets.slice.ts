@@ -16,8 +16,10 @@ import type {
   UploadResponse,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
-import { DETECTIONS_LEGACY_DATASETS_DICT } from '@globalfishingwatch/dataviews-client'
+import {
+  getDatasetConfiguration,
+  LEGACY_DATASETS_TO_LATEST_VMS,
+} from '@globalfishingwatch/datasets-client'
 
 import { DEFAULT_PAGINATION_PARAMS, IS_DEVELOPMENT_ENV, PUBLIC_SUFIX } from 'data/config'
 import type { RootState } from 'store'
@@ -165,7 +167,13 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
   ) => {
     const state = getState() as DatasetsSliceState
     const existingIds = selectIds(state) as string[]
-
+    const existingRequestedDatasets = ids.flatMap((id) => {
+      const dataset = selectById(state, id) as Dataset
+      return dataset ? [dataset] : []
+    })
+    if (ids.length === existingRequestedDatasets.length && !onlyUserDatasets) {
+      return uniqBy([...existingRequestedDatasets], (dataset) => dataset.id)
+    }
     try {
       const { datasetsDeprecated, datasets } = await fetchDatasetsFromApi({
         ids,
@@ -177,7 +185,7 @@ export const fetchDatasetsByIdsThunk = createAsyncThunk<
       if (Object.keys(datasetsDeprecated).length) {
         dispatch(setDeprecatedDatasets(datasetsDeprecated))
       }
-      return datasets
+      return uniqBy([...existingRequestedDatasets, ...datasets], (dataset) => dataset.id)
     } catch (e: any) {
       console.warn(e)
       return rejectWithValue(parseAPIError(e))
@@ -331,7 +339,10 @@ const { slice: datasetSlice, entityAdapter } = createAsyncSlice<DatasetsState, D
   name: 'datasets',
   initialState,
   reducers: {
-    setDeprecatedDatasets: (state, action: PayloadAction<DatasetsMigration>) => {
+    setDeprecatedDatasets: (
+      state: { deprecatedDatasets: DatasetsMigration },
+      action: PayloadAction<DatasetsMigration>
+    ) => {
       state.deprecatedDatasets = { ...state.deprecatedDatasets, ...(action.payload || {}) }
     },
   },
@@ -369,7 +380,7 @@ export const selectDeprecatedDatasets = createSelector(
   (deprecatedDatasets) => {
     return {
       ...deprecatedDatasets,
-      ...(DETECTIONS_LEGACY_DATASETS_DICT as DatasetsMigration),
+      ...LEGACY_DATASETS_TO_LATEST_VMS,
     }
   }
 )

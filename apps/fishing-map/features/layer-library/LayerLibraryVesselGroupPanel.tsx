@@ -5,18 +5,23 @@ import cx from 'classnames'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import { DataviewCategory } from '@globalfishingwatch/api-types'
-import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
+import { Button, Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { selectPresenceDataview } from 'features/dataviews/selectors/dataviews.static.selectors'
 import { setModalOpen } from 'features/modals/modals.slice'
 import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
+import { useEditVesselGroupModal } from 'features/reports/report-vessel-group/vessel-group-report.hooks'
 import VesselGroupReportLink from 'features/reports/report-vessel-group/VesselGroupReportLink'
 import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import UserLoggedIconButton from 'features/user/UserLoggedIconButton'
 import { selectAllVisibleVesselGroups } from 'features/vessel-groups/vessel-groups.selectors'
 import { selectWorkspaceVesselGroupsStatus } from 'features/vessel-groups/vessel-groups.slice'
-import { getVesselGroupVesselsCount } from 'features/vessel-groups/vessel-groups.utils'
+import {
+  getVesselGroupVesselsCount,
+  isOutdatedVesselGroup,
+} from 'features/vessel-groups/vessel-groups.utils'
 import { setVesselGroupsModalOpen } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
@@ -30,9 +35,10 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
   const { t } = useTranslation()
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const dispatch = useAppDispatch()
+  const onEditClick = useEditVesselGroupModal()
   const guestUser = useSelector(selectIsGuestUser)
-
   const dataviews = useSelector(selectAllVisibleVesselGroups)
+  const presenceDataview = useSelector(selectPresenceDataview)
 
   const workspaceVesselGroupsStatus = useSelector(selectWorkspaceVesselGroupsStatus)
 
@@ -51,7 +57,8 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
 
   const toggleAddToWorkspace = useCallback(
     (vesselGroupId: string, action: 'remove' | 'add') => {
-      const dataviewInstance = getVesselGroupDataviewInstance(vesselGroupId)
+      const presenceDatasets = presenceDataview?.datasetsConfig?.map((dataset) => dataset.datasetId)
+      const dataviewInstance = getVesselGroupDataviewInstance(vesselGroupId, presenceDatasets)
       if (dataviewInstance && action === 'add') {
         upsertDataviewInstance(dataviewInstance)
       } else if (dataviewInstance && action === 'remove') {
@@ -59,7 +66,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
       }
       dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
     },
-    [dispatch, deleteDataviewInstance, upsertDataviewInstance]
+    [presenceDataview?.datasetsConfig, dispatch, upsertDataviewInstance, deleteDataviewInstance]
   )
 
   return (
@@ -101,6 +108,7 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
         <ul className={styles.vesselGroupDatasets}>
           {filteredDataview.length > 0 ? (
             filteredDataview?.map((vesselGroup) => {
+              const isOutdated = isOutdatedVesselGroup(vesselGroup)
               return (
                 <li className={styles.dataset} key={vesselGroup?.id}>
                   <span className={styles.datasetLabel}>
@@ -109,16 +117,27 @@ const LayerLibraryVesselGroupPanel = ({ searchQuery }: { searchQuery: string }) 
                     {vesselGroup?.vessels?.length && getVesselGroupVesselsCount(vesselGroup)})
                   </span>
                   <div>
-                    <VesselGroupReportLink vesselGroupId={vesselGroup?.id ?? ''}>
-                      <IconButton
-                        tooltip={t((t) => t.vesselGroupReport.clickToSee)}
-                        icon="analysis"
+                    {isOutdated ? (
+                      <Button
+                        type="border-secondary"
+                        size="small"
                         onClick={() => {
-                          dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
+                          onEditClick(vesselGroup)
                         }}
-                      />
-                    </VesselGroupReportLink>
-
+                      >
+                        {t((t) => t.vesselGroup.updateRequired)}
+                      </Button>
+                    ) : (
+                      <VesselGroupReportLink vesselGroupId={vesselGroup?.id ?? ''}>
+                        <IconButton
+                          tooltip={t((t) => t.vesselGroupReport.clickToSee)}
+                          icon="analysis"
+                          onClick={() => {
+                            dispatch(setModalOpen({ id: 'layerLibrary', open: false }))
+                          }}
+                        />
+                      </VesselGroupReportLink>
+                    )}
                     <IconButton
                       tooltip={t((t) => t.workspace.addLayer)}
                       icon="plus"

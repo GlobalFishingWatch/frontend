@@ -33,7 +33,7 @@ export const PATH_BASENAME = (import.meta.env.VITE_PUBLIC_URL as string) || '/ma
 export const REPORT_DAYS_LIMIT =
   typeof import.meta.env.VITE_REPORT_DAYS_LIMIT !== 'undefined'
     ? parseInt(import.meta.env.VITE_REPORT_DAYS_LIMIT)
-    : 366 // 1 year
+    : 364 // 1 year
 
 export const GOOGLE_TAG_MANAGER_ID = import.meta.env.VITE_GOOGLE_TAG_MANAGER_ID as
   | string
@@ -149,6 +149,7 @@ export const EVENTS_COLORS: Record<
   [EventTypes.Port]: '#99EEFF',
   [EventTypes.Fishing]: '#6075A7',
   [EventTypes.Gap]: '#f45d5e',
+  [EventTypes.Gaps]: '#f45d5e',
   fishingLabels: PRIMARY_BLUE_COLOR,
 }
 

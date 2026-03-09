@@ -6,15 +6,10 @@
   "tags": ["app"],
   "// targets": "to see all targets run: nx show project user-groups-admin --web",
   "targets": {
-    "build-deps": {
-      "dependsOn": ["^dist"]
-    },
     "start": {
       "executor": "nx:run-commands",
-      "dependsOn": ["build-deps"],
       "options": {
-        "commands": ["vite", "nx watch-deps user-groups-admin"],
-        "parallel": true,
+        "command": "vite",
         "cwd": "{projectRoot}"
       },
       "continuous": true

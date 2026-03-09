@@ -101,7 +101,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
     dispatch(cleanCurrentWorkspaceReportState())
     dispatch(setVesselEventId(null))
     dispatch(resetWorkspaceHistoryNavigation())
-  }, [dispatch])
+  }, [dispatch, replaceQueryParams])
 
   return (
     <Fragment>

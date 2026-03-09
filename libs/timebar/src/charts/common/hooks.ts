@@ -156,6 +156,7 @@ const EVENT_TYPES_SORT_ORDER = {
   [EventTypes.Fishing]: 1,
   [EventTypes.Port]: 2,
   [EventTypes.Gap]: 3,
+  [EventTypes.Gaps]: 3,
   [EventTypes.Loitering]: 4,
   [EventTypes.Encounter]: 5,
 }

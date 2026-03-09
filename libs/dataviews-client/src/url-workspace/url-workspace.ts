@@ -4,6 +4,7 @@ import isString from 'lodash/isString'
 import transform from 'lodash/transform'
 import { parse, stringify } from 'qs'
 
+import { VESSEL_DATAVIEW_INSTANCE_PREFIX } from '../config'
 import type { AnyDataviewInstance, UrlDataviewInstance } from '../types'
 
 import {
@@ -197,10 +198,10 @@ const deepTokenizeValues = (obj: Dictionary<any>) => {
         result[key] = tokenizeValues(value)
       } else if (isString(value)) {
         // Special case for dataset ids that are of the form 'vessel-[same hash as other dataset ids]'
-        const isVessel = value.includes('vessel-')
-        const vesselValue = isVessel ? 'vessel-' : ''
+        const isVessel = value.includes(VESSEL_DATAVIEW_INSTANCE_PREFIX)
+        const vesselValue = isVessel ? VESSEL_DATAVIEW_INSTANCE_PREFIX : ''
 
-        const tokenValue = isVessel ? value.replace('vessel-', '') : value
+        const tokenValue = isVessel ? value.replace(VESSEL_DATAVIEW_INSTANCE_PREFIX, '') : value
         const repeatedTokenIndex = repeatedTokens.indexOf(tokenValue)
         const replacedValue =
           repeatedTokenIndex === -1 ? value : `${vesselValue}${TOKEN_PREFIX}${repeatedTokenIndex}`

@@ -117,6 +117,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
     // TODO: handle multiple layers
     if (!info.object) return { ...info, object: undefined }
     const { idProperty, valueProperties } = this.props.layers[0]
+
     const sublayer = this.props.layers
       .flatMap((layer) => layer.sublayers)
       .find((sublayer) => {
@@ -268,7 +269,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
               new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
                 id: `${props.id}-${sublayer.dataviewId}-highlight-fills-${filtersHash}`,
                 stroked: false,
-                pickable,
+                pickable: layer?.pickable ?? pickable,
                 extensions,
                 ...filterProperties,
                 getPolygonOffset: (params) =>

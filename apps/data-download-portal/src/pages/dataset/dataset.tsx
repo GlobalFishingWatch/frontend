@@ -3,7 +3,7 @@ import { useParams } from '@tanstack/react-router'
 import { DateTime } from 'luxon'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { Dataset } from '@globalfishingwatch/api-types'
+import type { DownloadDataset } from '@globalfishingwatch/api-types'
 import { useGFWLogin } from '@globalfishingwatch/react-hooks'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
@@ -59,14 +59,14 @@ const columns = [
 
 function DatasetPage() {
   const { datasetId } = useParams({ from: '/datasets/$datasetId' })
-  const [dataset, setDataset] = useState<Dataset | null>(null)
+  const [dataset, setDataset] = useState<(DownloadDataset & { files: TableData[] }) | null>(null)
   const [loading, setLoading] = useState(false)
   const { logged } = useGFWLogin(GFWAPI)
 
   useEffect(() => {
     setLoading(true)
 
-    const formatDataset = (dataset: Dataset) => {
+    const formatDataset = (dataset: DownloadDataset) => {
       const formatedDataset = {
         ...dataset,
         files: buildFileTree(dataset.files || []),
@@ -74,7 +74,7 @@ function DatasetPage() {
       return formatedDataset
     }
 
-    GFWAPI.fetch<Dataset>(`/download/datasets/${datasetId}`)
+    GFWAPI.fetch<DownloadDataset>(`/download/datasets/${datasetId}`)
       .then((data) => {
         setDataset(formatDataset(data))
       })
@@ -85,6 +85,8 @@ function DatasetPage() {
         setLoading(false)
       })
   }, [datasetId])
+
+  const readme = dataset?.readme
 
   return (
     <Fragment>
@@ -104,12 +106,12 @@ function DatasetPage() {
               <span>{dataset.lastUpdated ? getUTCString(dataset.lastUpdated) : '---'}</span>
               <label>description</label>
               <div className={styles.description}>
-                {dataset.readme && <EnhancedMarkdown content={dataset.readme} />}
+                {readme && <EnhancedMarkdown content={readme} />}
               </div>
             </div>
             <div className={styles.files}>
-              {dataset && dataset.files && (
-                <Table columns={columns} data={dataset.files as TableData[]} logged={logged} />
+              {dataset && dataset.files?.length > 0 && (
+                <Table columns={columns} data={dataset.files} logged={logged} />
               )}
               <ApiBanner />
             </div>

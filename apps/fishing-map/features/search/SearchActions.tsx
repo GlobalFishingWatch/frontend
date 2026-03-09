@@ -15,7 +15,7 @@ import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
-import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.static.selectors'
 import { EMPTY_SEARCH_FILTERS } from 'features/search/search.config'
 import { getRelatedIdentityVesselIds } from 'features/vessel/vessel.utils'
 import { NEW_VESSEL_GROUP_ID } from 'features/vessel-groups/vessel-groups.hooks'
@@ -120,7 +120,7 @@ function SearchActions() {
         testId="search-vessels-add-vessel"
         tooltip={!hasVesselsSelected ? t((t) => t.search.selectVesselResults) : ''}
       >
-        {t((t) => t.search.seeVesselsOnMap, { count: vesselsSelected?.length || 2 })}
+        {t((t) => t.search.seeVesselsOnMap, { count: vesselsSelected?.length || undefined })}
       </Button>
     </Fragment>
   )

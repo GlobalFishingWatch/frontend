@@ -35,6 +35,17 @@
   border: var(--border);
 }
 
+.warning-invert {
+  color: rgba(var(--white-rgb), var(--opacity-secondary));
+  background-color: var(--color-danger-secondary-red);
+}
+
+.warning-invert:hover,
+.warning-invert:focus {
+  color: rgba(var(--white-rgb));
+  background-color: var(--color-danger-red);
+}
+
 .default:hover:not(:disabled),
 .default:focus:not(:disabled),
 .warning:hover:not(:disabled),

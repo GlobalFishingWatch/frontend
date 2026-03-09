@@ -14,3 +14,4 @@ export const LIBRARY_LAYERS: LibraryLayerConfig[] = [
 ]
 
 export * from 'data/layer-library/layers.types'
+export * from 'data/layer-library/layers-environment'

@@ -62,11 +62,19 @@ export type InsightsV1Configuration = {
 export type BulkDownloadFormat = 'CSV' | 'JSON'
 export type BulkDownloadV1Configuration = {}
 
+export type DataDownloadDatasetFile = {
+  name: string
+  path: string
+  size: number | string
+  lastUpdate: string
+}
 export type DataDownloadV1Configuration = {
+  readme?: string
   conceptDOI?: number
   doi?: string
   emailGroups?: string[]
   gcsFolder?: string
+  files: DataDownloadDatasetFile[]
 }
 
 export type ThumbnailsV1Configuration = {
@@ -98,7 +106,6 @@ export type DatasetGeometryToGeoJSONGeometry = {
   [Property in DatasetGeometryType]: string[]
 }
 export type FrontendConfiguration = {
-  disableInteraction?: boolean
   endTime?: string | number
   geometryType?: DatasetGeometryType
   latitude?: string

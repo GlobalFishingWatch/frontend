@@ -340,6 +340,6 @@ export function cleanDatasetComparisonDataviewInstances(
   dataviewInstances: (UrlDataviewInstance | DataviewInstance)[] = []
 ) {
   return dataviewInstances?.filter(
-    (dataviewInstance) => !dataviewInstance.id.includes(DATASET_COMPARISON_SUFFIX)
+    (dataviewInstance) => !dataviewInstance?.id?.includes(DATASET_COMPARISON_SUFFIX)
   )
 }

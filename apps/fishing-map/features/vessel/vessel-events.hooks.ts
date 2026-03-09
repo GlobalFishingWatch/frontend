@@ -22,6 +22,7 @@ const useVesselProfileEvents = () => {
     if (dataLoaded) {
       return vesselLayer?.instance?.getVesselEventsData()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataLoaded])
 }
 

@@ -19,7 +19,7 @@ function ComparisonRow({ feature, showFeaturesDetails = false }: ComparisonRowPr
   const unit = feature.sublayers?.[0]?.unit as string
 
   return (
-    <div className={cx(styles.popupSection, styles.noIcon)}>
+    <div className={cx(styles.popupSection, styles.noIcon)} translate="no">
       <div className={styles.popupSectionContent}>
         {showFeaturesDetails && (
           <h3 className={styles.popupSectionTitle}>{t((t) => t.analysis.activityChange)}</h3>

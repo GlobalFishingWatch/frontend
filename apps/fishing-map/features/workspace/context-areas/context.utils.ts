@@ -34,12 +34,13 @@ export const parseContextFeatures = (features: any[], dataset: Dataset) => {
     getDatasetConfiguration(dataset, 'contextLayerV1') ||
     getDatasetConfiguration(dataset, 'userContextLayerV1')
   return features.map((feature) => {
+    const gfw_id = feature.properties[idProperty] || feature.properties.gfw_id
     return {
       ...feature,
       promoteId: idProperty,
       properties: {
         ...feature.properties,
-        gfw_id: feature.properties[idProperty],
+        gfw_id,
       },
     }
   })

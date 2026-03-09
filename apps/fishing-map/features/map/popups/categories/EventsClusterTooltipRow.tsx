@@ -72,7 +72,7 @@ export function EventsClusterTooltipRow({
         />
       )
     }
-    if (feature.layerId.includes(EventTypes.Gap)) {
+    if (feature.layerId.includes(EventTypes.Gap) || feature.layerId.includes(EventTypes.Gaps)) {
       return (
         <EventsGapTooltipRow
           key={key}

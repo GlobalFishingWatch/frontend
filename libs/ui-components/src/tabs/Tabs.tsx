@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useState } from 'react'
 import cx from 'classnames'
 
 import { Button } from '../button'
@@ -28,9 +28,25 @@ export function Tabs<TabID = string>({
   buttonSize = 'default',
 }: TabsProps<TabID>) {
   const activeTabId = activeTab || tabs?.[0]?.id
-  const activedTabs = useRef([activeTabId])
-  if (!activedTabs.current.includes(activeTabId)) {
-    activedTabs.current.push(activeTabId)
+  const [activeTabs, setActiveTabs] = useState<TabID[]>(() =>
+    activeTabId !== undefined ? [activeTabId] : []
+  )
+  const loadedTabs =
+    activeTabId !== undefined && !activeTabs.includes(activeTabId)
+      ? [...activeTabs, activeTabId]
+      : activeTabs
+
+  const handleTabClick = (tab: Tab<TabID>, e: React.MouseEvent) => {
+    setActiveTabs((previousActiveTabs) => {
+      if (previousActiveTabs.includes(tab.id)) {
+        return previousActiveTabs
+      }
+
+      return [...previousActiveTabs, tab.id]
+    })
+    if (onTabClick) {
+      onTabClick(tab, e)
+    }
   }
   return (
     <div className={styles.container}>
@@ -52,7 +68,7 @@ export function Tabs<TabID = string>({
                 tooltip={tab.tooltip}
                 tooltipPlacement={tab.tooltipPlacement}
                 disabled={tab.disabled}
-                onClick={(e) => onTabClick && onTabClick(tab, e)}
+                onClick={(e) => handleTabClick(tab, e)}
                 size={buttonSize || 'default'}
                 testId={tab.testId}
               >
@@ -63,11 +79,11 @@ export function Tabs<TabID = string>({
         })}
       </ul>
       {tabs.map((tab) => {
+        if (tab.disabled) {
+          return null
+        }
         const tabSelected = activeTabId === tab.id
-        if (
-          (mountAllTabsOnLoad || tabSelected || activedTabs.current.includes(tab.id)) &&
-          tab.content
-        ) {
+        if ((mountAllTabsOnLoad || tabSelected || loadedTabs.includes(tab.id)) && tab.content) {
           return (
             // eslint-disable-next-line jsx-a11y/role-supports-aria-props
             <div

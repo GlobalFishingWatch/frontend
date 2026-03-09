@@ -100,7 +100,6 @@ export const EVENTS_LEGACY_VESSELS_DATASETS_DICT = {
   'public-global-encounters-events:v20201001': 'public-global-encounters-events:v20231026',
   'public-global-port-visits-c2-events:v20201001': 'public-global-port-visits-c2-events:v20231026',
 }
-
 export const DETECTIONS_LEGACY_DATASETS_DICT = {
   'public-ais-presence-viirs-match:v20231026': 'public-global-viirs-presence:v3.0',
 }

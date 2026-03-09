@@ -11,16 +11,18 @@ import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { getDatasetLabel, isPrivateDataset } from 'features/datasets/datasets.utils'
 import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
-import { selectHasDeprecatedDataviewInstances } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
+import { useMigrateToLatestDataview } from 'features/dataviews/dataviews.hooks'
+import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
+import DatasetLoginRequired from 'features/workspace/shared/DatasetLoginRequired'
 import DatasetSchemaField from 'features/workspace/shared/DatasetSchemaField'
 import ExpandedContainer from 'features/workspace/shared/ExpandedContainer'
 import { useLayerPanelDataviewSort } from 'features/workspace/shared/layer-panel-sort.hook'
 import Remove from 'features/workspace/shared/Remove'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
+import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
 
 import DatasetNotFound from '../shared/DatasetNotFound'
 import InfoModal from '../shared/InfoModal'
@@ -47,17 +49,20 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
   const { filtersAllowed } = getFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
   })
+  const { onMigrateDataviewClick, getIsDataviewMigrated } = useMigrateToLatestDataview()
   const isGFWUser = useSelector(selectIsGFWUser)
   const readOnly = useSelector(selectReadOnly)
+  const isWorkspaceOwner = useSelector(selectIsWorkspaceOwnerOrDefault)
   const showSchemaFilters = filtersAllowed.length > 0
   const hasSchemaFilterSelection = filtersAllowed.some(
     (schema) => schema.optionsSelected?.length > 0
   )
   const eventLayer = useGetDeckLayer<FourwingsClustersLayer>(dataview?.id)
-  const hasDeprecatedDataviewInstances = useSelector(selectHasDeprecatedDataviewInstances)
   const layerError = eventLayer?.instance?.getError?.()
   const { items, attributes, listeners, setNodeRef, setActivatorNodeRef, style } =
     useLayerPanelDataviewSort(dataview.id)
+  const guestUser = useSelector(selectIsGuestUser)
+  const showDeprecatedWarning = isWorkspaceOwner && dataview.deprecated
 
   const dataset = dataview.datasets?.find(
     (d) => d.type === DatasetTypes.Events || d.type === DatasetTypes.Fourwings
@@ -88,6 +93,14 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
   }
 
   if (!dataset || dataset.status === 'deleted') {
+    const dataviewHasPrivateDataset = dataview.datasetsConfig?.some((d) =>
+      isPrivateDataset({ id: d.datasetId })
+    )
+    return guestUser && dataviewHasPrivateDataset ? (
+      <DatasetLoginRequired dataview={dataview} />
+    ) : (
+      <DatasetNotFound dataview={dataview} />
+    )
     return <DatasetNotFound dataview={dataview} />
   }
 
@@ -105,18 +118,17 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
     >
       <div className={styles.header}>
         <LayerSwitch
-          active={layerActive && !hasDeprecatedDataviewInstances}
+          active={layerActive}
           className={styles.switch}
-          disabled={hasDeprecatedDataviewInstances}
           dataview={dataview}
           onToggle={onToggle}
+          testId={`events-layer-switch-${dataview.id}`}
         />
         <Title
           title={title}
           className={styles.name}
           classNameActive={styles.active}
           dataview={dataview}
-          toggleVisibility={!hasDeprecatedDataviewInstances}
           onToggle={onToggle}
         />
         <div
@@ -158,16 +170,22 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
           <InfoModal dataview={dataview} />
           <Remove
             dataview={dataview}
-            loading={layerActive && !layerLoaded && !hasDeprecatedDataviewInstances}
+            loading={layerActive && !layerLoaded}
+            testId={`events-layer-panel-remove-${dataview.id}`}
           />
-          {!readOnly && layerActive && layerError && (
+          {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
             <IconButton
-              icon={'warning'}
-              type={'warning'}
+              icon="warning"
+              type="warning-invert"
+              onClick={showDeprecatedWarning ? () => onMigrateDataviewClick(dataview) : undefined}
               tooltip={
-                isGFWUser
-                  ? `${t((t) => t.errors.layerLoading)} (${layerError})`
-                  : t((t) => t.errors.layerLoading)
+                showDeprecatedWarning
+                  ? getIsDataviewMigrated(dataview)
+                    ? t((t) => t.workspace.deprecatedActivityLayerMigrated)
+                    : t((t) => t.workspace.deprecatedActivityLayer)
+                  : isGFWUser
+                    ? `${t((t) => t.errors.layerLoading)} (${layerError})`
+                    : t((t) => t.errors.layerLoading)
               }
               size="small"
             />
@@ -182,11 +200,12 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
             />
           )}
         </div>
-
         <IconButton
-          icon={layerActive ? 'more' : undefined}
-          type="default"
-          loading={layerActive && !layerLoaded && !hasDeprecatedDataviewInstances}
+          icon={
+            layerActive ? (layerError || showDeprecatedWarning ? 'warning' : 'more') : undefined
+          }
+          type={layerActive && (layerError || showDeprecatedWarning) ? 'warning-invert' : 'default'}
+          loading={!showDeprecatedWarning && layerActive && !layerLoaded}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"
         />

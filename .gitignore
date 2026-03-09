@@ -153,6 +153,7 @@ terraform.tfstate.backup
 
 # Vitest traces
 __traces__
+__screenshots__
 .vitest-attachments
 
 # Playwright test artifacts

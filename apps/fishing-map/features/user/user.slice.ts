@@ -144,6 +144,7 @@ const userSlice = createSlice({
     })
     builder.addCase(logoutUserThunk.fulfilled, (state) => {
       state.logged = false
+      state.expired = false
       state.data = null
     })
   },

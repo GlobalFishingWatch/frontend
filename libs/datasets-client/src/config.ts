@@ -1,5 +1,7 @@
-export const PIPE_DATASET_VERSION = (import.meta.env.VITE_PIPE_DATASET_VERSION || '4') as '3' | '4'
+export const PIPE_DATASET_VERSION = (import.meta.env.VITE_PIPE_DATASET_VERSION || '4') as '4'
 export const PIPE_DATASET_MINOR_VERSION = (import.meta.env.VITE_PIPE_DATASET_MINOR_VERSION ||
   '0') as '0'
 
 export const PIPE_DATASET_ID = `v${PIPE_DATASET_VERSION}.${PIPE_DATASET_MINOR_VERSION}` as const
+
+export const DATASET_VERSION_SEPARATOR = ':' as const

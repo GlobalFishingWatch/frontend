@@ -40,6 +40,7 @@ import EventsReportGraphSelector from 'features/reports/tabs/events/EventsReport
 import EventsReportSubsectionSelector from 'features/reports/tabs/events/EventsReportSubsectionSelector'
 import { useReplaceQueryParams } from 'router/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { htmlSafeParse } from 'utils/html-parser'
 
 import styles from './EventsReport.module.css'
 
@@ -84,8 +85,9 @@ function EventsReport() {
 
   const isLoadingStats = statsStatus === 'pending'
   const isLoadingVessels = vessselStatus === 'pending'
-  const noEvents = !isLoadingStats && totalEvents !== undefined && totalEvents === 0
-  const showPortsTable = eventsDataview?.datasets?.[0]?.subcategory !== 'port_visit' && !noEvents
+  const hasEvents =
+    statsStatus === 'fulfilled' ? totalEvents !== undefined && totalEvents > 0 : false
+  const showPortsTable = eventsDataview?.datasets?.[0]?.subcategory !== 'port_visit' && hasEvents
 
   const graph = useMemo(() => {
     if (statsError) {
@@ -97,7 +99,7 @@ function EventsReport() {
     ) {
       return <ReportActivityPlaceholder showHeader={false} loading />
     }
-    if (noEvents) {
+    if (!hasEvents) {
       return (
         <div className={styles.emptyState}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -112,7 +114,7 @@ function EventsReport() {
       )
     }
     return <EventsReportGraph />
-  }, [datasetAreas?.status, datasetAreasId, isLoadingStats, noEvents, statsError, t])
+  }, [datasetAreas?.status, datasetAreasId, isLoadingStats, hasEvents, statsError, t])
 
   if (!vesselDatasets.length) {
     return (
@@ -154,11 +156,11 @@ function EventsReport() {
         <div className={styles.container}>
           <div className={styles.headerContainer}>
             <label>{t((t) => t.common.events)}</label>
-            <EventsReportGraphSelector disabled={isLoadingVessels || noEvents} />
+            <EventsReportGraphSelector disabled={isLoadingVessels || !hasEvents} />
           </div>
           {graph}
         </div>
-        {noEvents ? null : !timerangeSupported ? (
+        {!timerangeSupported ? (
           <ReportVesselsPlaceholder animate={false}>
             <div className={cx(styles.cover, styles.error)}>
               <p>{t((t) => t.analysis.timeRangeTooLong)}</p>
@@ -167,14 +169,14 @@ function EventsReport() {
         ) : reportOutdated ? (
           <ReportVesselsPlaceholder animate={false}>
             <div className={cx(styles.cover, styles.center, styles.top)}>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html: t((t) => t.eventsReport.newTimeRange, {
+              <p>
+                {htmlSafeParse(
+                  t((t) => t.eventsReport.newTimeRange, {
                     start: formatI18nDate(start),
                     end: formatI18nDate(end),
-                  }),
-                }}
-              />
+                  })
+                )}
+              </p>
               <Button
                 testId="see-vessel-table-events-report"
                 onClick={() => {
@@ -189,14 +191,14 @@ function EventsReport() {
               </Button>
             </div>
           </ReportVesselsPlaceholder>
-        ) : (
+        ) : hasEvents ? (
           <ReportVessels
             color={eventsDataview?.config?.color}
             activityUnit="numEvents"
             title={t((t) => t.common.vessels)}
             loading={isLoadingVessels}
           />
-        )}
+        ) : null}
         {showPortsTable && (
           <div className={styles.container}>
             <EventReportPorts />

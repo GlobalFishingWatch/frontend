@@ -71,6 +71,13 @@ export const selectIsWorkspaceOwner = createSelector(
   }
 )
 
+export const selectIsWorkspaceOwnerOrDefault = createSelector(
+  [selectIsDefaultWorkspace, selectIsWorkspaceOwner],
+  (isDefaultWorkspace, isWorkspaceOwner) => {
+    return isDefaultWorkspace || isWorkspaceOwner
+  }
+)
+
 export function isWorkspacePasswordProtected(workspace: Workspace<any> | null) {
   if (!workspace) {
     return false
