@@ -79,7 +79,7 @@ const HighlightPanel = ({
       className={cx(styles.highlightPanel, 'print-hidden')}
       placement={placement || 'right'}
       content={
-        <div className={styles.container}>
+        <div className={styles.container} translate="no">
           {config.imageUrl && (
             <img className={styles.img} src={config.imageUrl} alt="highlight dataview" />
           )}

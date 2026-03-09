@@ -55,6 +55,7 @@ import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
 import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsVesselGroupReportLocation } from 'routes/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { htmlSafeParse } from 'utils/html-parser'
 
 import ReportActivitySubsectionSelector from './ReportActivitySubsectionSelector'
 
@@ -272,11 +273,7 @@ function ActivityReport() {
       return (
         <ReportVesselsPlaceholder animate={false} className="print-hidden">
           <div className={cx(styles.cover, styles.center, styles.top)}>
-            <p
-              dangerouslySetInnerHTML={{
-                __html: t((t) => t.analysis.onlyEvolutionSupported),
-              }}
-            />
+            <p>{htmlSafeParse(t((t) => t.analysis.onlyEvolutionSupported))}</p>
           </div>
         </ReportVesselsPlaceholder>
       )
@@ -290,14 +287,14 @@ function ActivityReport() {
       return (
         <ReportVesselsPlaceholder animate={false} className="print-hidden">
           <div className={cx(styles.cover, styles.center, styles.top)}>
-            <p
-              dangerouslySetInnerHTML={{
-                __html: t((t) => t.analysis.newTimeRange, {
+            <p>
+              {htmlSafeParse(
+                t((t) => t.analysis.newTimeRange, {
                   start: formatI18nDate(timerange?.start),
                   end: formatI18nDate(timerange?.end),
-                }),
-              }}
-            />
+                })
+              )}
+            </p>
             <Button
               testId="see-vessel-table-activity-report"
               onClick={() => {
