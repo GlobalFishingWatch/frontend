@@ -16,8 +16,7 @@
       "executor": "nx:run-commands",
       "dependsOn": ["clean-next", "prepare-loaders", "i18n-labels:serve"],
       "options": {
-        "commands": ["nx run fishing-map:i18n:watch"],
-        "parallel": false
+        "command": "nx run fishing-map:i18n:watch"
       },
       "continuous": true
     },
@@ -100,9 +99,7 @@
       "executor": "nx:run-commands",
       "dependsOn": [],
       "options": {
-        "commands": [
-          "local-ssl-proxy --key local.globalfishingwatch.org-key.pem --cert local.globalfishingwatch.org.pem --source 443 --target 3003"
-        ]
+        "command": "local-ssl-proxy --key local.globalfishingwatch.org-key.pem --cert local.globalfishingwatch.org.pem --source 443 --target 3003"
       },
       "continuous": true
     },
