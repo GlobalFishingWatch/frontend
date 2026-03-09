@@ -12,6 +12,7 @@ import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { fetchWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { HOME, REPORT, WORKSPACE, WORKSPACE_REPORT } from 'routes/routes'
 import { isValidLocationCategory, selectLocationCategory } from 'routes/routes.selectors'
+import { htmlSafeParse } from 'utils/html-parser'
 
 import type { HighlightedWorkspace } from './workspaces-list.selectors'
 import {
@@ -144,14 +145,7 @@ function WorkspacesList() {
                 <Link to={linkTo} onClick={() => onWorkspaceClick(highlightedWorkspace)}>
                   <h3 className={styles.title}>{name}</h3>
                 </Link>
-                {description && (
-                  <p
-                    className={styles.description}
-                    dangerouslySetInnerHTML={{
-                      __html: description,
-                    }}
-                  ></p>
-                )}
+                {description && <p className={styles.description}>{htmlSafeParse(description)}</p>}
                 <div className={styles.linksContainer}>
                   <Link
                     to={linkTo}

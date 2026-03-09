@@ -28,6 +28,7 @@ import { selectVesselEventsFilteredByTimerange } from 'features/vessel/selectors
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
 import { setVesselEventId } from 'features/vessel/vessel.slice'
 import { useVisibleVesselEvents } from 'features/workspace/vessels/vessel-events.hooks'
+import { htmlSafeParse } from 'utils/html-parser'
 import { formatInfoField } from 'utils/info'
 
 import styles from './VesselActivitySummary.module.css'
@@ -109,7 +110,7 @@ export const VesselActivitySummary = () => {
       <h2 className="print-only">{t((t) => t.vessel.sectionActivity)}</h2>
       <div className={styles.container}>
         <h2 className={styles.summary}>
-          <span dangerouslySetInnerHTML={{ __html: summary }}></span>
+          <span>{htmlSafeParse(summary)}</span>
           {hasActivityRegionsData ? (
             <span>
               {' '}
