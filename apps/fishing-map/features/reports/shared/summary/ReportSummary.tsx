@@ -24,6 +24,8 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './ReportSummary.module.css'
+import { selectEventsStatsDataGrouped } from 'features/reports/tabs/events/events-report.selectors'
+import { useReportFilteredTimeSeries } from 'features/reports/reports-timeseries.hooks'
 
 type ReportSummaryProps = {
   activityUnit?: ReportActivityUnit
