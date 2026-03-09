@@ -16,7 +16,6 @@ import type { FourwingsPositionFeature } from '@globalfishingwatch/deck-loaders'
 import { Collapsable } from '@globalfishingwatch/ui-components'
 
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetByType } from 'features/datasets/datasets.utils'
 import {
   selectActiveActivityDataviews,
   selectActiveDetectionsDataviews,
