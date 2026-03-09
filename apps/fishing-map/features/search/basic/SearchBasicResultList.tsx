@@ -11,6 +11,7 @@ type SearchBasicResultListProps = {
   setHighlightedIndex: (index: number) => void
   getItemProps: (options: GetItemPropsOptions<IdentityVesselData>) => any
   vesselsSelected: IdentityVesselData[]
+  highlightQuery: string
 }
 
 function SearchBasicResultList({
@@ -19,6 +20,7 @@ function SearchBasicResultList({
   setHighlightedIndex,
   getItemProps,
   vesselsSelected,
+  highlightQuery,
 }: SearchBasicResultListProps) {
   return (
     <Fragment>
@@ -32,6 +34,7 @@ function SearchBasicResultList({
             setHighlightedIndex={setHighlightedIndex}
             getItemProps={getItemProps}
             vesselsSelected={vesselsSelected}
+            highlightQuery={highlightQuery}
           />
         )
       })}

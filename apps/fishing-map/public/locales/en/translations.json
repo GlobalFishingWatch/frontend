@@ -954,7 +954,7 @@
         "title": "Teacher"
       }
     },
-    "datasets": "Dados do usuário",
+    "datasets": "User Datasets",
     "gfwBadges": "GFW Badges",
     "groupMissing": "Do you belong to a user group that doesn’t appear here? <2>Request access</2>",
     "groups": "Groups",
@@ -1318,7 +1318,7 @@
     }
   },
   "workspace": {
-    "addLayer": "Adicionar à área de trabalho",
+    "addLayer": "Add to workspace",
     "categories": {
       "fishing-activity": "Highlighted workspaces",
       "marine-manager": "Marine Manager workspaces",

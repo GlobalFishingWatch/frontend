@@ -11,6 +11,7 @@ import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import type { EventTypes } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { type Bbox, getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import { getVesselIdFromInstanceId } from '@globalfishingwatch/dataviews-client'
 import {
   getVesselGraphExtentClamped,
   VesselEventsLoader,
@@ -86,7 +87,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }: {
     info: PickingInfo<VesselEventProperties | VesselTrackProperties | VesselPositionProperties>
   }): VesselEventPickingInfo | VesselTrackPickingInfo => {
-    const vesselId = this.props.id.replace('vessel-', '')
+    const vesselId = getVesselIdFromInstanceId(this.props.id)
 
     const baseObject = {
       ...(info.object || ({} as VesselTrackProperties | VesselEventProperties)),

@@ -3,11 +3,13 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { uniqBy } from 'es-toolkit'
 
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  getVesselIdFromInstanceId,
+  type UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import type { TagItem } from '@globalfishingwatch/ui-components'
 import { TagList } from '@globalfishingwatch/ui-components'
 
-import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 
@@ -24,7 +26,7 @@ function TurningTidesTags({ dataview }: LayerFiltersProps) {
 
   const vesselsTags = uniqBy(
     (dataview.config?.filters?.id || []).map((id: string) => ({
-      id: id.replace(VESSEL_LAYER_PREFIX, ''),
+      id: getVesselIdFromInstanceId(id),
       label:
         vesselDataviews.find((v) => v.id.includes(id) || v.config?.relatedVesselIds?.includes(id))
           ?.config?.name || id,

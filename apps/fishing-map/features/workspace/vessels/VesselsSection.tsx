@@ -5,14 +5,16 @@ import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
 
 import { DatasetTypes, DataviewCategory, ResourceStatus } from '@globalfishingwatch/api-types'
-import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
+import {
+  getVesselIdFromInstanceId,
+  resolveDataviewDatasetResource,
+} from '@globalfishingwatch/dataviews-client'
 import { IconButton, Switch } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { getVesselIdFromInstanceId } from 'features/dataviews/dataviews.utils'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { selectPresenceDataview } from 'features/dataviews/selectors/dataviews.static.selectors'

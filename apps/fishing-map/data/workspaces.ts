@@ -1,12 +1,12 @@
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import { BasemapType } from '@globalfishingwatch/deck-layers'
-
 import {
   DATASET_VERSION_SEPARATOR,
   PIPE_DATASET_ID,
   PIPE_DATASET_VERSION,
-} from 'data/workspaces.config'
+} from '@globalfishingwatch/datasets-client'
+import { BasemapType } from '@globalfishingwatch/deck-layers'
+
 import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/workspaces-vms'
 
 import { PUBLIC_SUFIX } from './config'
