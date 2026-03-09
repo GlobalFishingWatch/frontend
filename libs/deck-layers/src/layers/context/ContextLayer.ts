@@ -269,7 +269,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
               new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
                 id: `${props.id}-${sublayer.dataviewId}-highlight-fills-${filtersHash}`,
                 stroked: false,
-                pickable,
+                pickable: layer?.pickable ?? pickable,
                 extensions,
                 ...filterProperties,
                 getPolygonOffset: (params) =>

@@ -180,7 +180,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
       tilesUrl = `${tilesUrl}?cache=${datasetContextConfig.filePath}`
     }
 
-    const { valueProperties, disableInteraction } = getDatasetConfiguration(dataset) || {}
+    const { valueProperties } = getDatasetConfiguration(dataset) || {}
     const { idProperty } =
       getDatasetConfiguration(dataset, 'contextLayerV1') ||
       getDatasetConfiguration(dataset, 'userContextLayerV1') ||
@@ -193,8 +193,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
       tilesUrl,
       idProperty,
       valueProperties,
-      pickable:
-        dataview.config?.pickable !== undefined ? dataview.config?.pickable : !disableInteraction,
+      pickable: dataview.config?.pickable ?? true,
       sublayers: layer.sublayers.map((sublayer) => {
         return {
           ...sublayer,
