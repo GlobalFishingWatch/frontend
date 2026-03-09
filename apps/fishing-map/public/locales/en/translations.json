@@ -32,7 +32,7 @@
     "errorMessage": "Something went wrong",
     "errorPeriodComparisonDateRange": "Date range error. Comparison start must be after baseline start.",
     "errorTooComplex": "We cannot create a dynamic report for this area as the boundary information is complex. Please simplify your area of interest - by uploading a new layer or drawing your layer on the map - and try the report again to resolve.",
-    "evolution": "Evolución",
+    "evolution": "Evolution",
     "globally": "globally",
     "groupByCoverage": "by coverage",
     "groupByEEZ": "By EEZ",
