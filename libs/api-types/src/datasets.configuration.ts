@@ -106,7 +106,6 @@ export type DatasetGeometryToGeoJSONGeometry = {
   [Property in DatasetGeometryType]: string[]
 }
 export type FrontendConfiguration = {
-  disableInteraction?: boolean
   endTime?: string | number
   geometryType?: DatasetGeometryType
   latitude?: string
