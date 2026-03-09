@@ -87,9 +87,6 @@
         "rootDir": "{projectRoot}/src"
       }
     },
-    "build-deps": {
-      "dependsOn": ["^build"]
-    },
     "prepare-loaders": {
       "cache": true,
       "outputs": ["{projectRoot}/public/workers"]
