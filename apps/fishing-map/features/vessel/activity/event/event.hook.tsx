@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 
 import type { EventType, GapPosition, Regions, RegionType } from '@globalfishingwatch/api-types'
 import { EventTypes } from '@globalfishingwatch/api-types'
+import type { DatasetEventSource } from '@globalfishingwatch/datasets-client'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
@@ -11,10 +12,10 @@ import { useRegionNamesByType } from 'features/regions/regions.hooks'
 import { selectRegionsDatasets } from 'features/regions/regions.selectors'
 import { fetchRegionsThunk } from 'features/regions/regions.slice'
 import PortsReportLink from 'features/reports/report-port/PortsReportLink'
-import type { VesselEvent } from 'features/vessel/activity/event/Event'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
 import { selectVesselEventsDatasets } from 'features/vessel/selectors/vessel.resources.selectors'
 import { REGIONS_PRIORITY } from 'features/vessel/vessel.config'
+import type { VesselEvent } from 'features/vessel/vessel.types'
 import { getUTCDateTime } from 'utils/dates'
 import { EMPTY_FIELD_PLACEHOLDER, formatInfoField } from 'utils/info'
 
@@ -78,7 +79,13 @@ export function useActivityEventTranslations() {
   )
 
   const getEventDescription = useCallback(
-    (event?: ActivityEvent, regionsPriority?: RegionType[]) => {
+    (
+      event?: ActivityEvent,
+      {
+        source,
+        regionsPriority,
+      }: { source?: DatasetEventSource; regionsPriority?: RegionType[] } = {}
+    ) => {
       if (!event) return EMPTY_FIELD_PLACEHOLDER
       const { mainRegionDescription, allRegionsDescription } = getEventRegionDescription(
         event,
@@ -125,7 +132,7 @@ export function useActivityEventTranslations() {
           )
           return (
             <Fragment>
-              {t((t: any) => t.event[portType].ActionIn, {
+              {t((t) => t.event[`${portType}ActionIn`], {
                 port: '',
               })}
               <PortsReportLink port={{ id, name, country: flag, datasetId: portDataset?.id }}>
@@ -161,12 +168,14 @@ export function useActivityEventTranslations() {
             )
           )
         case EventTypes.Gap:
+        case EventTypes.Gaps:
           return (
             mainRegionDescription && (
               <Tooltip content={allRegionsDescription}>
                 <span className={styles.region}>
                   {t((t) => t.event.gapActionIn, {
                     regionName: mainRegionDescription,
+                    source,
                   })}
                   {allRegionsDescription ? <span className="print-hidden">...</span> : ''}
                 </span>
@@ -177,7 +186,7 @@ export function useActivityEventTranslations() {
           return t((t) => t.event.unknown)
       }
     },
-    [getEventRegionDescription, t]
+    [getEventRegionDescription, t, vesselEventsDatasets]
   )
 
   const getEventDurationDescription = useCallback(

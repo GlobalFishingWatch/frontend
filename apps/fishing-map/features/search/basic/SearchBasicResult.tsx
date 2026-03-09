@@ -10,6 +10,7 @@ import type { Locale } from '@globalfishingwatch/api-types'
 import { API_LOGIN_REQUIRED, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import type { Bbox } from '@globalfishingwatch/data-transforms'
 import { geoJSONToSegments, segmentsToBbox } from '@globalfishingwatch/data-transforms'
+import { getVesselDataviewInstanceId } from '@globalfishingwatch/dataviews-client'
 import { useSmallScreen } from '@globalfishingwatch/react-hooks'
 import {
   FIRST_YEAR_OF_DATA,
@@ -18,14 +19,12 @@ import {
 } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
-import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nFlag from 'features/i18n/i18nFlag'
 import { formatI18nNumber } from 'features/i18n/i18nNumber'
 import { getMapCoordinatesFromBounds, useMapFitBounds } from 'features/map/map-bounds.hooks'
 import TrackFootprint from 'features/search/basic/TrackFootprint'
-import { selectSearchQuery } from 'features/search/search.config.selectors'
 import { cleanVesselSearchResults } from 'features/search/search.slice'
 import { getSearchVesselId } from 'features/search/search.utils'
 import { useTimerangeConnect } from 'features/timebar/timebar.hooks'
@@ -60,6 +59,7 @@ type SearchBasicResultProps = {
   setHighlightedIndex: (index: number) => void
   getItemProps: (options: GetItemPropsOptions<IdentityVesselData>) => any
   vesselsSelected: IdentityVesselData[]
+  highlightQuery: string
 }
 
 function SearchBasicResult({
@@ -69,12 +69,12 @@ function SearchBasicResult({
   setHighlightedIndex,
   getItemProps,
   vesselsSelected,
+  highlightQuery,
 }: SearchBasicResultProps) {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
   const vesselDataviews = useSelector(selectVesselsDataviews)
   const isSmallScreen = useSmallScreen()
-  const searchQuery = useSelector(selectSearchQuery)
   const isStandaloneSearchLocation = useSelector(selectIsStandaloneSearchLocation)
   const [highlightedYear, setHighlightedYear] = useState<number>()
   const [trackBbox, setTrackBbox] = useState<Bbox>()
@@ -131,10 +131,11 @@ function SearchBasicResult({
   }, [vessel])
 
   // TODO decide how we manage VMS properties
-  const { fleet, origin, casco, nationalId, matricula } = vessel as any
+  const { fleet, origin, casco, nationalId, matricula, externalId, sourceFleet, hull } =
+    vessel as any
 
   const isInWorkspace = vesselDataviews?.some(
-    (vessel) => vessel.id === `${VESSEL_LAYER_PREFIX}${id}`
+    (vesselDataview) => vesselDataview.id === getVesselDataviewInstanceId(id)
   )
   const isSelected = vesselsSelected?.some(
     (v) => getSearchVesselId(v) === getSearchVesselId(vessel)
@@ -147,7 +148,7 @@ function SearchBasicResult({
   }
   const { onClick, ...itemProps } = getItemProps({ item: vessel, index })
 
-  const vesselQuery = useMemo(() => {
+  const vesselQuery = (() => {
     const query = isStandaloneSearchLocation
       ? { start: transmissionDateFrom, end: transmissionDateTo }
       : {}
@@ -156,30 +157,19 @@ function SearchBasicResult({
       return { ...query, ...coordinates }
     }
     return query
-  }, [isStandaloneSearchLocation, trackBbox, transmissionDateFrom, transmissionDateTo])
+  })()
 
-  const onVesselClick = useCallback(
-    (e: MouseEvent) => {
-      if (!e.ctrlKey && !e.shiftKey && !e.metaKey) {
-        dispatch(cleanVesselSearchResults())
+  const onVesselClick = (e: MouseEvent) => {
+    if (!e.ctrlKey && !e.shiftKey && !e.metaKey) {
+      dispatch(cleanVesselSearchResults())
+    }
+    if (isStandaloneSearchLocation) {
+      if (trackBbox) {
+        fitBounds(trackBbox, { fitZoom: true })
       }
-      if (isStandaloneSearchLocation) {
-        if (trackBbox) {
-          fitBounds(trackBbox, { fitZoom: true })
-        }
-        setTimerange({ start: transmissionDateFrom, end: transmissionDateTo })
-      }
-    },
-    [
-      dispatch,
-      fitBounds,
-      isStandaloneSearchLocation,
-      setTimerange,
-      trackBbox,
-      transmissionDateFrom,
-      transmissionDateTo,
-    ]
-  )
+      setTimerange({ start: transmissionDateFrom, end: transmissionDateTo })
+    }
+  }
 
   const onYearHover = useCallback(
     (year?: number) => {
@@ -229,7 +219,11 @@ function SearchBasicResult({
               query={vesselQuery}
               fitBounds={isStandaloneSearchLocation}
             >
-              {getHighlightedText((name as string) || EMPTY_FIELD_PLACEHOLDER, searchQuery, styles)}
+              {getHighlightedText(
+                (name as string) || EMPTY_FIELD_PLACEHOLDER,
+                highlightQuery,
+                styles
+              )}
             </VesselLink>
             <span className={styles.secondary}>{otherNamesLabel}</span>
           </div>
@@ -243,17 +237,19 @@ function SearchBasicResult({
             <div className={styles.property}>
               <label>{t((t) => t.vessel.mmsi)}</label>
               <span>
-                {getHighlightedText(ssvid || EMPTY_FIELD_PLACEHOLDER, searchQuery, styles)}
+                {getHighlightedText(ssvid || EMPTY_FIELD_PLACEHOLDER, highlightQuery, styles)}
               </span>
             </div>
             <div className={styles.property}>
               <label>{t((t) => t.vessel.imo)}</label>
-              <span>{getHighlightedText(imo || EMPTY_FIELD_PLACEHOLDER, searchQuery, styles)}</span>
+              <span>
+                {getHighlightedText(imo || EMPTY_FIELD_PLACEHOLDER, highlightQuery, styles)}
+              </span>
             </div>
             <div className={styles.property}>
               <label>{t((t) => t.vessel.callsign)}</label>
               <span>
-                {getHighlightedText(callsign || EMPTY_FIELD_PLACEHOLDER, searchQuery, styles)}
+                {getHighlightedText(callsign || EMPTY_FIELD_PLACEHOLDER, highlightQuery, styles)}
               </span>
             </div>
             <div className={styles.property}>
@@ -282,16 +278,22 @@ function SearchBasicResult({
                 <span>{nationalId}</span>
               </div>
             )}
-            {casco && (
+            {externalId && (
               <div className={styles.property}>
-                <label>{t((t) => t.vessel.casco)}</label>
-                <span>{casco}</span>
+                <label>{t((t) => t.vessel.externalId)}</label>
+                <span>{externalId}</span>
               </div>
             )}
-            {fleet && (
+            {(casco || hull) && (
+              <div className={styles.property}>
+                <label>{t((t) => t.vessel.casco)}</label>
+                <span>{casco || hull}</span>
+              </div>
+            )}
+            {(fleet || sourceFleet) && (
               <div className={styles.property}>
                 <label>{t((t) => t.vessel.fleet)}</label>
-                <span>{formatInfoField(fleet, 'fleet')}</span>
+                <span>{formatInfoField(fleet || sourceFleet, 'fleet')}</span>
               </div>
             )}
             {origin && (

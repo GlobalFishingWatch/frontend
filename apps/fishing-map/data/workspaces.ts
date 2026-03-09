@@ -1,17 +1,14 @@
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
+import { DATASET_VERSION_SEPARATOR, PIPE_DATASET_ID, PIPE_DATASET_VERSION } from '@globalfishingwatch/datasets-client'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 
-import { PIPE_DATASET_ID, PIPE_DATASET_VERSION } from 'data/workspaces.config'
 import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/workspaces-vms'
 
 import { PUBLIC_SUFIX } from './config'
 
 type WorkspaceEnv = 'development' | 'production'
-export const WORKSPACE_ENV =
-  (import.meta.env.VITE_WORKSPACE_ENV as WorkspaceEnv) ||
-  (import.meta.env.MODE as WorkspaceEnv) ||
-  'production'
+export const WORKSPACE_ENV = (import.meta.env.VITE_WORKSPACE_ENV as WorkspaceEnv) || (import.meta.env.MODE as WorkspaceEnv) || 'production'
 
 export function getWorkspaceEnv(): WorkspaceEnv {
   return WORKSPACE_ENV
@@ -53,42 +50,35 @@ export const PROTECTED_SEAS_DATAVIEW_SLUG = 'protected-seas' as const
 export const MPATLAS_DATAVIEW_SLUG = 'mpatlas' as const
 export const GRATICULES_DATAVIEW_SLUG = 'graticules' as const
 export const FIXED_SAR_INFRASTRUCTURE = 'fixed-infrastructure' as const
-export const PORTS_DATAVIEW_SLUG = 'ports' as const
+export const PORTS_AIS_DATAVIEW_SLUG = 'ais-ports' as const
+export const PORTS_VMS_DATAVIEW_SLUG = 'vms-ports' as const
 export const FAO_AREAS_DATAVIEW_SLUG = 'fao-areas' as const
 export const FAO_AREAS_DATAVIEW_INSTANCE_ID = 'context-layer-fao-areas' as const
-export const PORTS_FOOTPRINT_DATAVIEW_SLUG = 'ports-footprint' as const
+export const PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG = 'ais-ports-footprint' as const
+export const PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG = 'vms-ports-footprint' as const
 export const CURRENTS_DATAVIEW_SLUG = 'currents' as const
 export const WINDS_DATAVIEW_SLUG = 'winds' as const
 export const BATHYMETRY_CONTOUR_DATAVIEW_SLUG = 'bathymetry-contour' as const
 
 export const FISHING_DATAVIEW_SLUG_PREFIX = 'apparent-fishing-effort' as const
 // Workspaces dataviews
-export const FISHING_DATAVIEW_SLUG_ALL =
-  `${FISHING_DATAVIEW_SLUG_PREFIX}-v-${PIPE_DATASET_VERSION}` as const
-export const FISHING_DATAVIEW_SLUG_AIS =
-  `${FISHING_DATAVIEW_SLUG_PREFIX}-ais-v-${PIPE_DATASET_VERSION}` as const
-export const FISHING_DATAVIEW_SLUG_VMS =
-  `${FISHING_DATAVIEW_SLUG_PREFIX}-vms-v-${PIPE_DATASET_VERSION}` as const
-export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG =
-  `encounter-cluster-events-v-${PIPE_DATASET_VERSION}` as const
-export const CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG =
-  `loitering-cluster-events-v-${PIPE_DATASET_VERSION}` as const
-export const CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG =
-  `port-visit-cluster-events-v-${PIPE_DATASET_VERSION}` as const
-export const CLUSTER_GAPS_EVENTS_DATAVIEW_SLUG =
-  `gaps-cluster-events-v-${PIPE_DATASET_VERSION}` as const
+export const FISHING_DATAVIEW_SLUG_ALL = `${FISHING_DATAVIEW_SLUG_PREFIX}-v-${PIPE_DATASET_VERSION}` as const
+export const FISHING_DATAVIEW_SLUG_AIS = `${FISHING_DATAVIEW_SLUG_PREFIX}-ais-v-${PIPE_DATASET_VERSION}` as const
+export const FISHING_DATAVIEW_SLUG_VMS = `${FISHING_DATAVIEW_SLUG_PREFIX}-vms-v-${PIPE_DATASET_VERSION}` as const
+export const CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG = `encounter-cluster-events-v-${PIPE_DATASET_VERSION}` as const
+export const CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG = `loitering-cluster-events-v-${PIPE_DATASET_VERSION}` as const
+export const CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG = `port-visit-cluster-events-v-${PIPE_DATASET_VERSION}` as const
+export const CLUSTER_GAPS_EVENTS_DATAVIEW_SLUG = `gaps-cluster-events-v-${PIPE_DATASET_VERSION}` as const
+export const CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG = `gaps-ais-off-cluster-events-v-${PIPE_DATASET_VERSION}` as const
 export const VIIRS_MATCH_DATAVIEW_SLUG = `viirs-match-v-${PIPE_DATASET_VERSION}` as const
-export const VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG =
-  `viirs-match-skylight-v-${PIPE_DATASET_VERSION}` as const
+export const VIIRS_MATCH_SKYLIGHT_DATAVIEW_SLUG = `viirs-match-skylight-v-${PIPE_DATASET_VERSION}` as const
 export const SAR_DATAVIEW_SLUG = `sar-v-${PIPE_DATASET_VERSION}` as const
 export const SENTINEL2_DATAVIEW_SLUG = `sentinel-2-v-${PIPE_DATASET_VERSION}` as const
 export const PRESENCE_DATAVIEW_SLUG = `presence-activity-v-${PIPE_DATASET_VERSION}` as const
 export const TEMPLATE_USER_TRACK_SLUG = `user-track` as const
-export const TEMPLATE_VESSEL_DATAVIEW_SLUG =
-  `fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
-// export const TEMPLATE_VESSEL_DATAVIEW_SLUG = `fishing-map-vessel-track-v-${BASE_DATASETS_VERSION}-gaps` as const
-export const TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG =
-  `vessel-track-only-v-${PIPE_DATASET_VERSION}` as const
+export const TEMPLATE_VESSEL_DATAVIEW_SLUG = `fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}` as const
+// export const TEMPLATE_VESSEL_DATAVIEW_SLUG = `fishing-map-vessel-track-v-${PIPE_DATASET_VERSION}-gaps` as const
+export const TEMPLATE_VESSEL_TRACK_DATAVIEW_SLUG = `vessel-track-only-v-${PIPE_DATASET_VERSION}` as const
 export const TEMPLATE_CONTEXT_DATAVIEW_SLUG = `default-context-layer` as const
 export const TEMPLATE_POINTS_DATAVIEW_SLUG = `default-points-layer` as const
 export const TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG = `gfw-environmental-layer` as const
@@ -112,17 +102,9 @@ export const TEMPLATE_DATAVIEW_SLUGS = [
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
 ]
 
-export const DEFAULT_FISHING_DATASET_ID = `public-global-fishing-effort:${PIPE_DATASET_ID}`
-export const DEFAULT_PRESENCE_DATASET_ID = `public-global-presence:${PIPE_DATASET_ID}`
-export const DEFAULT_IDENTITY_DATASET_ID = `public-global-vessel-identity:${PIPE_DATASET_ID}`
-
-export const DEFAULT_PRESENCE_VESSEL_GROUP_DATASETS = [
-  DEFAULT_PRESENCE_DATASET_ID,
-  'public-chile-presence:v20211126',
-  'public-panama-presence:v20211126',
-  'public-norway-presence:v20220112',
-  'public-png-presence:v20230210',
-]
+export const DEFAULT_FISHING_DATASET_ID = `public-global-fishing-effort${DATASET_VERSION_SEPARATOR}${PIPE_DATASET_ID}` as const
+export const DEFAULT_PRESENCE_DATASET_ID = `public-global-presence${DATASET_VERSION_SEPARATOR}${PIPE_DATASET_ID}` as const
+export const DEFAULT_IDENTITY_DATASET_ID = `public-global-vessel-identity${DATASET_VERSION_SEPARATOR}${PIPE_DATASET_ID}` as const
 
 const PRESENCE_DATAVIEWS = [
   PRESENCE_DATAVIEW_SLUG, // In case the workspace doesn't have the dataview added,
@@ -156,8 +138,10 @@ export const CONTEXT_LAYERS_DATAVIEWS = [
   FAO_AREAS_DATAVIEW_SLUG,
   BASEMAP_LABELS_DATAVIEW_SLUG,
   FIXED_SAR_INFRASTRUCTURE,
-  PORTS_DATAVIEW_SLUG,
-  PORTS_FOOTPRINT_DATAVIEW_SLUG,
+  PORTS_AIS_DATAVIEW_SLUG,
+  PORTS_VMS_DATAVIEW_SLUG,
+  PORTS_FOOTPRINT_AIS_DATAVIEW_SLUG,
+  PORTS_FOOTPRINT_VMS_DATAVIEW_SLUG,
 ]
 
 // Global environmental dataviews

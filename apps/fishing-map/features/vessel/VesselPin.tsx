@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { stringify } from 'qs'
@@ -25,7 +25,7 @@ import {
   getVesselInfoDataviewInstanceDatasetConfig,
 } from 'features/dataviews/dataviews.utils'
 import { selectTrackDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.static.selectors'
 import type { ExtendedFeatureVessel } from 'features/map/map.slice'
 import { usePopulateVesselResource } from 'features/reports/shared/vessels/report-vessels.hooks'
 import { getRelatedIdentityVesselIds, getVesselId } from 'features/vessel/vessel.utils'
@@ -220,8 +220,14 @@ export function VesselPin({
     onClick,
   })
 
+  const vesselName = useMemo(
+    () => vessel?.selfReportedInfo[0].shipname?.toLowerCase()?.replace(/\s/g, '-') || '',
+    [vessel]
+  )
+
   return (
     <IconButton
+      data-testid={`vessel-pin-button-${vesselName}`}
       icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
       loading={loading}
       disabled={disabled}

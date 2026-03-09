@@ -1,25 +1,45 @@
+import type { DatasetsMigration } from '@globalfishingwatch/api-types'
+
 import {
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
   EEZ_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
+  FISHING_DATAVIEW_SLUG_AIS,
   FISHING_DATAVIEW_SLUG_ALL,
+  FISHING_DATAVIEW_SLUG_VMS,
   MPA_DATAVIEW_SLUG,
-  PORTS_DATAVIEW_SLUG,
+  PORTS_AIS_DATAVIEW_SLUG,
+  PORTS_VMS_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
+  SENTINEL2_DATAVIEW_SLUG,
   TEMPLATE_VESSEL_DATAVIEW_SLUG,
   VIIRS_MATCH_DATAVIEW_SLUG,
 } from './workspaces'
 
-export const LEGACY_TO_LATEST_DATAVIEWS: Record<string, string> = {
+export const LEGACY_TO_LATEST_DATAVIEWS: DatasetsMigration = {
+  'apparent-fishing-effort-ais-v-3': FISHING_DATAVIEW_SLUG_AIS,
+  'apparent-fishing-effort-v-3': FISHING_DATAVIEW_SLUG_ALL,
+  'apparent-fishing-effort-vms-v-3': FISHING_DATAVIEW_SLUG_VMS,
   'apparent-fishing-effort': FISHING_DATAVIEW_SLUG_ALL,
+  'encounter-cluster-events-v-3': CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
   'encounter-cluster-events': CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
+  'fishing-map-vessel-track-v-3': TEMPLATE_VESSEL_DATAVIEW_SLUG,
+  'fishing-map-vessel-track': TEMPLATE_VESSEL_DATAVIEW_SLUG,
+  'loitering-cluster-events-v-3': CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
+  'port-visit-cluster-events-v-3': CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
+  'presence-activity-v-3': PRESENCE_DATAVIEW_SLUG,
+  'presence-activity': PRESENCE_DATAVIEW_SLUG,
+  'sar-v-3': SAR_DATAVIEW_SLUG,
+  'sentinel-2-v-3': SENTINEL2_DATAVIEW_SLUG,
+  'vessel-presence-v-3': PRESENCE_DATAVIEW_SLUG,
+  'vessel-presence': PRESENCE_DATAVIEW_SLUG,
+  'viirs-match-v-3': VIIRS_MATCH_DATAVIEW_SLUG,
   'viirs-match': VIIRS_MATCH_DATAVIEW_SLUG,
   sar: SAR_DATAVIEW_SLUG,
-  'presence-activity': PRESENCE_DATAVIEW_SLUG,
-  'vessel-presence': PRESENCE_DATAVIEW_SLUG,
-  'fishing-map-vessel-track': TEMPLATE_VESSEL_DATAVIEW_SLUG,
 }
 
 export const AIS_DATAVIEW_INSTANCE_ID = 'ais'
@@ -35,5 +55,6 @@ export const OCEAN_AREAS_DATAVIEWS = [
   MPA_DATAVIEW_SLUG,
   FAO_AREAS_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
-  PORTS_DATAVIEW_SLUG,
+  PORTS_AIS_DATAVIEW_SLUG,
+  PORTS_VMS_DATAVIEW_SLUG,
 ]

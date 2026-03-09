@@ -61,6 +61,7 @@ const DebugMenuConfig = {
   key: 'd',
   dispatchToggle: toggleDebugMenu,
   selectMenuActive: selectDebugActive,
+  guestEnabled: typeof window !== 'undefined' && window.location.hostname === 'localhost',
 }
 
 const EditorMenuConfig = {
@@ -147,24 +148,21 @@ const AppModals = () => {
       >
         <LayerLibrary />
       </Modal>
-      {isGFWUser && (
-        <Modal
-          appSelector={ROOT_DOM_ELEMENT}
-          title={
-            <Fragment>
-              Secret debug menu 🤖
-              <GFWOnly userGroup="gfw" />
-            </Fragment>
-          }
-          isOpen={debugActive && !anyAppModalOpen}
-          shouldCloseOnEsc
-          onClose={dispatchToggleDebugMenu}
-        >
-          <Suspense fallback={null}>
-            <DebugMenu />
-          </Suspense>
-        </Modal>
-      )}
+      <Modal
+        appSelector={ROOT_DOM_ELEMENT}
+        title={
+          <Fragment>
+            Secret debug menu 🤖
+            {isGFWUser && <GFWOnly userGroup="gfw" />}
+          </Fragment>
+        }
+        isOpen={debugActive && !anyAppModalOpen}
+        shouldCloseOnEsc
+        onClose={dispatchToggleDebugMenu}
+        contentClassName={styles.debugMenuModal}
+      >
+        <DebugMenu />
+      </Modal>
       {isGFWUser && (
         <Modal
           appSelector={ROOT_DOM_ELEMENT}

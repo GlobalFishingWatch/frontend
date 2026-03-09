@@ -13,7 +13,7 @@ const ALL_EVENT_TYPES = [
   EventTypes.Loitering,
   EventTypes.Encounter,
   EventTypes.Port,
-  EventTypes.Gap,
+  EventTypes.Gaps,
 ]
 
 export const useVisibleVesselEvents = () => {
@@ -37,7 +37,7 @@ export const useVisibleVesselEvents = () => {
             : currentVisibleEvents === 'none'
               ? []
               : currentVisibleEvents
-        const visibleEvents = currentVisibleEventsTypes.filter(
+        const visibleEvents = currentVisibleEventsTypes?.filter(
           (eventType) => event !== eventType
         ) as EventTypes[]
         replaceQueryParams({

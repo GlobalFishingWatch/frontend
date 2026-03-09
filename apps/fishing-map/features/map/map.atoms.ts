@@ -1,5 +1,4 @@
-import type { MapView, ViewStateMap } from '@deck.gl/core'
-import type { DeckGLRef } from '@deck.gl/react'
+import type { Deck, MapView, ViewStateMap } from '@deck.gl/core'
 import { atom } from 'jotai'
 
 import type { MiniglobeBounds } from '@globalfishingwatch/ui-components'
@@ -8,7 +7,7 @@ import { DEFAULT_VIEWPORT } from 'data/config'
 import { getUrlViewstateNumericParam } from 'utils/url'
 
 // MAP INSTANCE
-export const mapInstanceAtom = atom<DeckGLRef | undefined>(undefined)
+export const mapInstanceAtom = atom<Deck<MapView> | undefined>(undefined)
 
 // BOUNDS
 type BoundsAtom = MiniglobeBounds & { isTransitioning?: boolean }

@@ -89,7 +89,10 @@ export const EventsReportIndividualGraphTooltip = ({
 
   return (
     <div className={styles.event}>
-      {eventType && upperFirst(t((t) => t.event[eventType], { defaultValue: eventType }))}
+      {eventType &&
+        upperFirst(
+          t((t) => t.event[eventType], { defaultValue: eventType, source: t((t) => t.common.ais) })
+        )}
       <div className={styles.properties}>
         <div className={styles.property}>
           <label>

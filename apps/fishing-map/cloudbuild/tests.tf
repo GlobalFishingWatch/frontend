@@ -13,7 +13,83 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
   }
   service_account = "projects/gfw-int-infrastructure/serviceAccounts/cloudbuild@gfw-int-infrastructure.iam.gserviceaccount.com"
 
+
   build {
+    step {
+      id         = "Notify about workflow running"
+      name       = "alpine"
+      entrypoint = "sh"
+      args = ["-c", <<EOF
+        set -euo pipefail
+        [ "$BRANCH_NAME" = "main" ] && exit 0
+        apk add --no-cache openssl curl jq >/dev/null 2>&1
+
+        # --- Generate GitHub App token ---
+        b64enc() { openssl base64 -A | tr '+/' '-_' | tr -d '='; }
+
+        pem_file=$$(mktemp)
+        echo "$$GITHUB_BOT_PRIVATE_KEY" | sed 's/\\n/\n/g' > "$$pem_file"
+
+        now=$$(date +%s)
+        header=$$(echo -n '{"typ":"JWT","alg":"RS256"}' | b64enc)
+        payload=$$(printf '{"iat":%d,"exp":%d,"iss":"%s"}' $$((now - 60)) $$((now + 540)) "$_APP_ID" | b64enc)
+        signature=$$(echo -n "$$header.$$payload" | openssl dgst -sha256 -sign "$$pem_file" | b64enc)
+
+        GITHUB_TOKEN_RESPONSE=$$(curl -s -X POST \
+          -H "Authorization: Bearer $$header.$$payload.$$signature" \
+          -H "Accept: application/vnd.github+json" \
+          "https://api.github.com/app/installations/$_INSTALLATION_ID/access_tokens")
+
+        echo "GitHub API response: $$GITHUB_TOKEN_RESPONSE"
+        GITHUB_TOKEN=$$(echo "$$GITHUB_TOKEN_RESPONSE" | jq -r '.token')
+
+        echo "$$GITHUB_TOKEN" > /workspace/token.txt
+
+        if [ -z "$$GITHUB_TOKEN" ] || [ "$$GITHUB_TOKEN" = "null" ]; then
+          echo "Failed to generate GitHub token"
+          exit 1
+        fi
+
+        # --- Find PR for this branch ---
+        PR_NUMBER=$$(curl -s \
+          -H "Authorization: token $$GITHUB_TOKEN" \
+          "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/pulls?state=open&head=$_REPO_OWNER:$BRANCH_NAME" \
+          | jq -r 'if type == "array" then .[0].number // empty else empty end')
+
+        if [ -z "$$PR_NUMBER" ]; then
+          echo "No PR found for '$BRANCH_NAME'. Skipping."
+          exit 0
+        fi
+        echo "PR found: #$$PR_NUMBER"
+
+        # --- Post or update PR comment ---
+        MARKER="<!-- integration-tests-bot-comment -->"
+        echo "## Integration tests are running... 🧪" > /tmp/comment.txt
+        FOOTER="Posted by [this build](https://console.cloud.google.com/cloud-build/builds;region=us-central1/$BUILD_ID?project=gfw-int-infrastructure)"
+        jq -n --rawfile summary /tmp/comment.txt --arg footer "$$FOOTER" --arg marker "$$MARKER" \
+          '{body: ($$marker + "\n" + $$summary + "\n\n" + $$footer)}' > /tmp/payload.json
+
+        COMMENT_ID=$$(curl -s \
+          -H "Authorization: token $$GITHUB_TOKEN" \
+          "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/$$PR_NUMBER/comments" \
+          | jq -r ".[] | select(.body | contains(\"$$MARKER\")) | .id" | head -1)
+
+        if [ -n "$$COMMENT_ID" ]; then
+          curl -s -X PATCH -H "Authorization: token $$GITHUB_TOKEN" -H "Content-Type: application/json" \
+            -d @/tmp/payload.json \
+            "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/comments/$$COMMENT_ID" > /dev/null
+          echo "Updated comment $$COMMENT_ID"
+        else
+          curl -s -X POST -H "Authorization: token $$GITHUB_TOKEN" -H "Content-Type: application/json" \
+            -d @/tmp/payload.json \
+            "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/$$PR_NUMBER/comments" > /dev/null
+          echo "Created new comment"
+        fi
+      EOF
+      ]
+      secret_env = ["GITHUB_BOT_PRIVATE_KEY"]
+    }
+
     step {
       id     = "Install Dependencies"
       name   = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest"
@@ -28,14 +104,30 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
       id         = "Run integration tests"
       name       = "mcr.microsoft.com/playwright:v1.57.0-noble"
       entrypoint = "bash"
+      env = [
+        "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
+        "NEXT_PUBLIC_WORKSPACE_ENV=development",
+      ]
       args = ["-c", <<EOF
         set +e  # Don't exit on error
-        
-        yarn install
+
+        # Skip if integration tests folder doesn't exist in this branch
+        if [ ! -d "apps/fishing-map/test/integration" ]; then
+          echo "No apps/fishing-map/test/integration folder found. Skipping."
+          echo "## ✅ Integration Tests" > /workspace/summary.txt
+          echo "" >> /workspace/summary.txt
+          echo "Skipped: no \`apps/fishing-map/test/integration\` folder in source." >> /workspace/summary.txt
+          echo "0" > /workspace/test-exit-code.txt
+          exit 0
+        fi
+
+        # Skip native module rebuilds — binaries from Step #0 are already in
+        # /workspace/node_modules and are compatible (both images are Linux x86_64)
+        YARN_ENABLE_SCRIPTS=0 yarn install
 
         # Fetch origin/develop for nx affected (Cloud Build uses shallow clone)
         git fetch origin develop --depth=100 2>/dev/null || git fetch origin develop 2>/dev/null || true
-        
+
         # Fetch current branch with depth to ensure we have history
         git fetch --depth=10 2>/dev/null || true
 
@@ -46,84 +138,151 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
           BASE=$$(git merge-base origin/develop HEAD 2>/dev/null || echo "origin/develop")
         fi
 
-        # Run tests, save output to file, and capture exit code
-        yarn nx affected -t test --base="$$BASE" --head=HEAD --browser="chromium" > /workspace/test-output.txt 2>&1
-        echo $$? > /workspace/test-exit-code.txt
-        
-        # Display the output
-        cat /workspace/test-output.txt
+        # Get list of affected projects that have a test target
+        AFFECTED_PROJECTS=$$(yarn nx show projects --affected --base="$$BASE" --head=HEAD --withTarget=test 2>/dev/null \
+          | grep -v "^\s*NX" | grep -v "^>" | grep -v "^yarn" | grep -v "^$")
 
-        # Strip ANSI color codes from output for clean parsing
-        sed 's/\x1b\[[0-9;]*m//g' /workspace/test-output.txt > /workspace/test-output-clean.txt
-
-        # Generate detailed summary for PR comment
-        EXIT_CODE=$$(cat /workspace/test-exit-code.txt)
-        
-        if [ $$EXIT_CODE -eq 0 ]; then
-          echo "## ✅ Integration Tests Passed" > /workspace/summary.txt
+        if [ -z "$$AFFECTED_PROJECTS" ]; then
+          echo "## ✅ Integration Tests" > /workspace/summary.txt
           echo "" >> /workspace/summary.txt
-          
-          # Extract test summary if available
-          if grep -q "Test Suites:" /workspace/test-output-clean.txt; then
-            echo "\`\`\`" >> /workspace/summary.txt
-            grep -E "Test Suites:|Tests:|Time:" /workspace/test-output-clean.txt | tail -3 >> /workspace/summary.txt
-            echo "\`\`\`" >> /workspace/summary.txt
+          echo "No affected projects with tests found." >> /workspace/summary.txt
+          echo "0" > /workspace/test-exit-code.txt
+          exit 0
+        fi
+
+        OVERALL_EXIT=0
+
+        # Run tests per project and build per-project summary sections
+        > /workspace/summary-body.txt
+        for PROJECT in $$AFFECTED_PROJECTS; do
+          echo ""
+          echo "=============================="
+          echo "Running tests for: $$PROJECT"
+          echo "=============================="
+
+          yarn nx run $$PROJECT:test --browser="chromium" > /workspace/test-$$PROJECT.txt 2>&1
+          PROJECT_EXIT=$$?
+
+          cat /workspace/test-$$PROJECT.txt
+          sed 's/\x1b\[[0-9;]*m//g' /workspace/test-$$PROJECT.txt > /workspace/test-$$PROJECT-clean.txt
+
+          if [ $$PROJECT_EXIT -ne 0 ]; then
+            OVERALL_EXIT=1
           fi
+
+          # Build inline stats line from vitest output
+          TESTS_INFO=$$(grep -E "^ *Tests " /workspace/test-$$PROJECT-clean.txt | tail -1 | sed 's/^ *Tests *//' | sed 's/ (.*//')
+          DURATION=$$(grep -E "^ *Duration" /workspace/test-$$PROJECT-clean.txt | tail -1 | sed 's/^ *Duration *//' | sed 's/ (.*//')
+          if [ -n "$$TESTS_INFO" ] && [ -n "$$DURATION" ]; then
+            STATS=" · $$TESTS_INFO · $$DURATION"
+          elif [ -n "$$TESTS_INFO" ]; then
+            STATS=" · $$TESTS_INFO"
+          else
+            STATS=""
+          fi
+
+          if [ $$PROJECT_EXIT -eq 0 ]; then
+            echo "**✅ \`$$PROJECT\`**$$STATS" >> /workspace/summary-body.txt
+          else
+            echo "**❌ \`$$PROJECT\`**$$STATS" >> /workspace/summary-body.txt
+          fi
+          echo "" >> /workspace/summary-body.txt
+          echo "<details><summary>View output</summary>" >> /workspace/summary-body.txt
+          echo "" >> /workspace/summary-body.txt
+          echo "\`\`\`" >> /workspace/summary-body.txt
+          cat /workspace/test-$$PROJECT-clean.txt >> /workspace/summary-body.txt
+          echo "\`\`\`" >> /workspace/summary-body.txt
+          echo "" >> /workspace/summary-body.txt
+          echo "</details>" >> /workspace/summary-body.txt
+          echo "" >> /workspace/summary-body.txt
+          echo "---" >> /workspace/summary-body.txt
+          echo "" >> /workspace/summary-body.txt
+        done
+
+        echo $$OVERALL_EXIT > /workspace/test-exit-code.txt
+
+        # Build final summary with header + per-project sections
+        if [ $$OVERALL_EXIT -eq 0 ]; then
+          echo "## ✅ Integration Tests Passed" > /workspace/summary.txt
         else
           echo "## ❌ Integration Tests Failed" > /workspace/summary.txt
-          echo "" >> /workspace/summary.txt
-          
-          # Extract test summary statistics
-          if grep -q "Test Suites:" /workspace/test-output-clean.txt; then
-            echo "### Summary" >> /workspace/summary.txt
-            echo "\`\`\`" >> /workspace/summary.txt
-            grep -E "Test Suites:|Tests:|Time:" /workspace/test-output-clean.txt | tail -3 >> /workspace/summary.txt
-            echo "\`\`\`" >> /workspace/summary.txt
-            echo "" >> /workspace/summary.txt
-          fi
-          
-          # Add full test output in collapsible section
-          echo "<details>" >> /workspace/summary.txt
-          echo "<summary>Full Test Output</summary>" >> /workspace/summary.txt
-          echo "" >> /workspace/summary.txt
-          echo "\`\`\`" >> /workspace/summary.txt
-          cat /workspace/test-output-clean.txt >> /workspace/summary.txt
-          echo "\`\`\`" >> /workspace/summary.txt
-          echo "</details>" >> /workspace/summary.txt
         fi
-        
-        # Exit with the captured code
-        exit $$(cat /workspace/test-exit-code.txt)
+        echo "" >> /workspace/summary.txt
+        cat /workspace/summary-body.txt >> /workspace/summary.txt
+
+        exit $$OVERALL_EXIT
       EOF
       ]
       allow_failure = true
     }
 
     step {
-      id         = "create-token"
-      name       = "ubuntu"
+      id         = "Archive the integration tests traces"
+      name       = "alpine"
+      entrypoint = "sh"
+      args = ["-c", <<EOF
+      if [ -d "apps/fishing-map/test/integration" ]; then
+        tar -czf traces.tar.gz apps/fishing-map/test/integration
+      else
+        echo "No integration tests folder found. Skipping archive."
+      fi
+      EOF
+      ]
+    }
+
+    step {
+      id         = "Upload tests traces"
+      name       = "gcr.io/cloud-builders/gsutil"
       entrypoint = "bash"
       args = ["-c", <<EOF
-        set -euo pipefail
+      if [ -f "traces.tar.gz" ]; then
+        gsutil -m cp -r traces.tar.gz gs://gfw-playwright-traces-ttl30/frontend/integration-tests/$BUILD_ID/
+      else
+        echo "No traces archive found. Skipping upload."
+      fi
+      EOF
+      ]
+    }
+
+    step {
+      id         = "Print traces link"
+      name       = "gcr.io/cloud-builders/gcloud"
+      entrypoint = "bash"
+      args = ["-c", <<EOF
+      echo '📊 Integration Tests Traces: https://storage.googleapis.com/gfw-playwright-traces-ttl30/frontend/integration-tests/$BUILD_ID/traces.tar.gz'
+      EOF
+      ]
+    }
+
+    step {
+      id         = "create-token"
+      name       = "alpine"
+      wait_for   = ["Run integration tests"]
+      entrypoint = "sh"
+      args = ["-c", <<EOF
+        set -eu
         if [ $BRANCH_NAME = 'main' ]; then
           exit 0
-        fi  
-        apt-get update -y && apt-get install -y openssl curl jq
+        fi
+        apk add --no-cache openssl curl jq >/dev/null 2>&1
 
         client_id=$_APP_ID
         pem="$$GITHUB_BOT_PRIVATE_KEY"
 
         # If the env var contains the PEM text instead of a file path, write it to a temp file
-        if [[ "$$pem" == *"BEGIN RSA PRIVATE KEY"* ]] || [[ "$$pem" == *"BEGIN PRIVATE KEY"* ]]; then
-          pem_file=$$(mktemp)
-          echo "$$pem" | sed 's/\\n/\n/g' > "$$pem_file"
-        else
-          pem_file="$$pem"
-        fi
+        case "$$pem" in
+          *"BEGIN RSA PRIVATE KEY"*|*"BEGIN PRIVATE KEY"*)
+            pem_file=$$(mktemp)
+            echo "$$pem" | sed 's/\\n/\n/g' > "$$pem_file"
+            ;;
+          *)
+            pem_file="$$pem"
+            ;;
+        esac
 
         now=$$(date +%s)
         iat=$$((now - 60))  # Issued 60s ago
-        exp=$$((now + 600)) # Expires in 10 minutes
+        exp=$$((now + 540)) # Expires in 9 minutes (buffer for clock skew)
 
         b64enc() { openssl base64 -A | tr '+/' '-_' | tr -d '='; }
 
@@ -158,42 +317,45 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
     step {
       id         = "find-and-comment-pr"
       name       = "alpine"
+      wait_for   = ["create-token"]
       entrypoint = "sh"
       args = ["-c", <<EOF
         set -euo pipefail
         if [ $BRANCH_NAME = 'main' ]; then
           exit 0
-        fi  
+        fi
         echo "Installing curl and jq..."
         apk add --no-cache curl jq >/dev/null 2>&1
         echo "Looking for PR associated with branch: $BRANCH_NAME"
-        
+
         GITHUB_TOKEN=$$(cat /workspace/token.txt)
-        
+
         # Find PR number
         PR_NUMBER=$$(curl -s -H "Authorization: token $$GITHUB_TOKEN" \
           "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/pulls?state=open&head=$_REPO_OWNER:$BRANCH_NAME" \
           | jq -r '.[0].number // empty')
-        
+
         if [ -z "$$PR_NUMBER" ]; then
           echo "No open PR found for branch '$BRANCH_NAME'. Skipping PR comment."
           exit 0
         fi
-        
+
         echo "PR found: #$$PR_NUMBER"
-        
+
         # Prepare comment body
+        echo "" >> /workspace/summary.txt
+        echo "📊 Integration Tests Traces [here](https://storage.googleapis.com/gfw-playwright-traces-ttl30/frontend/integration-tests/$BUILD_ID/traces.tar.gz)" >> /workspace/summary.txt
         COMMENT_MARKER="<!-- integration-tests-bot-comment -->"
         FOOTER="Posted by [this build](https://console.cloud.google.com/cloud-build/builds;region=us-central1/$BUILD_ID?project=gfw-int-infrastructure)"
         jq -n --rawfile summary /workspace/summary.txt --arg footer "$$FOOTER" --arg marker "$$COMMENT_MARKER" \
           '{body: ($$marker + "\n" + $$summary + "\n\n" + $$footer)}' > /tmp/payload.json
-        
+
         # Search for existing bot comment
         echo "Searching for existing bot comment..."
         EXISTING_COMMENT_ID=$$(curl -s -H "Authorization: token $$GITHUB_TOKEN" \
           "https://api.github.com/repos/$_REPO_OWNER/$_REPO_NAME/issues/$$PR_NUMBER/comments" \
           | jq -r ".[] | select(.body | contains(\"$$COMMENT_MARKER\")) | .id" | head -1)
-        
+
         if [ -n "$$EXISTING_COMMENT_ID" ]; then
           echo "Found existing comment ID: $$EXISTING_COMMENT_ID. Updating..."
           curl -s -X PATCH \
@@ -231,7 +393,8 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
 
 
     options {
-      logging = "CLOUD_LOGGING_ONLY"
+      logging      = "CLOUD_LOGGING_ONLY"
+      machine_type = "E2_HIGHCPU_8"
     }
 
     timeout = "1800s"
@@ -356,7 +519,7 @@ resource "google_cloudbuild_trigger" "e2e_tests" {
 
     options {
       logging      = "CLOUD_LOGGING_ONLY"
-      machine_type = "N1_HIGHCPU_8"
+      machine_type = "E2_HIGHCPU_8"
     }
 
     timeout = "1800s"

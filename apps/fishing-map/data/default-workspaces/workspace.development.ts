@@ -1,9 +1,5 @@
 import type { Workspace } from '@globalfishingwatch/api-types'
-import {
-  DataviewCategory,
-  WORKSPACE_PRIVATE_ACCESS,
-  WORKSPACE_PUBLIC_ACCESS,
-} from '@globalfishingwatch/api-types'
+import { WORKSPACE_PRIVATE_ACCESS, WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 
 import { APP_NAME, DEFAULT_TIME_RANGE, DEFAULT_VIEWPORT } from 'data/config'
 import {
@@ -21,6 +17,7 @@ import {
   BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,
   BASEMAP_LABELS_DATAVIEW_SLUG,
   CLUSTER_ENCOUNTER_EVENTS_DATAVIEW_SLUG,
+  CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG,
   CLUSTER_GAPS_EVENTS_DATAVIEW_SLUG,
   CLUSTER_LOITERING_EVENTS_DATAVIEW_SLUG,
   CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
@@ -32,7 +29,8 @@ import {
   FISHING_DATAVIEW_SLUG_VMS,
   FIXED_SAR_INFRASTRUCTURE,
   GRATICULES_DATAVIEW_SLUG,
-  PORTS_DATAVIEW_SLUG,
+  PORTS_AIS_DATAVIEW_SLUG,
+  PORTS_VMS_DATAVIEW_SLUG,
   PRESENCE_DATAVIEW_SLUG,
   SAR_DATAVIEW_SLUG,
   SENTINEL2_DATAVIEW_SLUG,
@@ -71,7 +69,6 @@ const workspace: Workspace<WorkspaceState> = {
       id: AIS_DATAVIEW_INSTANCE_ID,
       config: {
         visible: true,
-        datasets: [DEFAULT_FISHING_DATASET_ID],
         filters: {
           distance_from_port_km: '3',
         },
@@ -80,29 +77,11 @@ const workspace: Workspace<WorkspaceState> = {
     },
     {
       id: VMS_DATAVIEW_INSTANCE_ID,
-      config: {
-        color: '#FFAA0D',
-        colorRamp: 'orange',
-        datasets: [
-          'public-belize-fishing-effort:v20220304',
-          'public-bra-onyxsat-fishing-effort:v20211126',
-          'public-chile-fishing-effort:v20211126',
-          'public-costa-rica-fishing-effort:v20211126',
-          'public-ecuador-fishing-effort:v20211126',
-          'public-indonesia-fishing-effort:v20200320',
-          'public-panama-fishing-effort:v20211126',
-          'public-peru-fishing-effort:v20211126',
-          'public-png-fishing-effort:v20230210',
-          'public-norway-fishing-effort:v20220112',
-        ],
-      },
       dataviewId: FISHING_DATAVIEW_SLUG_VMS,
     },
     {
       id: PRESENCE_DATAVIEW_INSTANCE_ID,
       config: {
-        color: '#FF64CE',
-        colorRamp: 'magenta',
         visible: false,
       },
       dataviewId: PRESENCE_DATAVIEW_SLUG,
@@ -117,8 +96,6 @@ const workspace: Workspace<WorkspaceState> = {
     {
       id: VIIRS_DATAVIEW_INSTANCE_ID,
       config: {
-        color: '#FFEA00',
-        colorRamp: 'yellow',
         visible: false,
       },
       dataviewId: VIIRS_MATCH_DATAVIEW_SLUG,
@@ -147,7 +124,7 @@ const workspace: Workspace<WorkspaceState> = {
     },
     // {
     //   id: GAPS_EVENTS_SOURCE_ID,
-    //   dataviewId: CLUSTER_GAPS_EVENTS_DATAVIEW_SLUG,
+    //   dataviewId: CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG,
     //   config: {
     //     visible: false,
     //   },
@@ -182,12 +159,20 @@ const workspace: Workspace<WorkspaceState> = {
       dataviewId: FIXED_SAR_INFRASTRUCTURE,
     },
     {
-      id: PORTS_LAYER_ID,
+      id: `${PORTS_LAYER_ID}-ais`,
       config: {
         visible: false,
         color: '#9AEEFF',
       },
-      dataviewId: PORTS_DATAVIEW_SLUG,
+      dataviewId: PORTS_AIS_DATAVIEW_SLUG,
+    },
+    {
+      id: `${PORTS_LAYER_ID}-vms`,
+      config: {
+        visible: false,
+        color: '#9AEEFF',
+      },
+      dataviewId: PORTS_VMS_DATAVIEW_SLUG,
     },
     {
       id: BASEMAP_LABELS_DATAVIEW_INSTANCE_ID,

@@ -3,8 +3,8 @@ import {
   SelfReportedSource,
   VesselIdentitySourceEnum,
 } from '@globalfishingwatch/api-types'
+import { PIPE_DATASET_ID, PIPE_DATASET_VERSION } from '@globalfishingwatch/datasets-client'
 
-import { PIPE_DATASET_ID } from 'data/workspaces.config'
 import type I18nNamespaces from 'features/i18n/i18n.types'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 
@@ -52,23 +52,34 @@ const IDENTIFIER_FIELDS: VesselRenderField[] = [
 
 // TODO review private datasets to ensure there are no missing fields
 
+export const IS_PIPE_4 = PIPE_DATASET_VERSION === ('4' as const)
 type CustomVMSGroup = Partial<Record<SelfReportedSource, VesselRenderField[][]>>
 export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
-  [SelfReportedSource.Peru]: [
+  [SelfReportedSource.Peru_Pipe3]: [
     [{ key: 'origin' }, { key: 'fleet' }, { key: 'nationalId' }],
     [{ key: 'length' }, { key: 'capacity' }, { key: 'beam' }],
     [{ key: 'regimen' }, { key: 'resolution' }],
     [{ key: 'casco' }, { key: 'chdSpecies' }],
   ],
-  [SelfReportedSource.CostaRica]: [[{ key: 'nationalId' }]],
-  [SelfReportedSource.Indonesia]: [
-    [{ key: 'widthRange' }, { key: 'lengthRange' }, { key: 'grossTonnageRange' }],
-  ],
-  [SelfReportedSource.Brazil]: [
+  [SelfReportedSource.CostaRica_Pipe3]: [[{ key: 'nationalId' }]],
+  [SelfReportedSource.Indonesia]: [[{ key: 'width' }, { key: 'length' }, { key: 'grossTonnage' }]],
+  [SelfReportedSource.Brazil_Pipe3]: [
     [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
     [{ key: 'codMarinha' }],
   ],
-  [SelfReportedSource.Chile]: [[{ key: 'fleet' }]],
+  [SelfReportedSource.Chile_Pipe3]: [[{ key: 'fleet' }]],
+  [SelfReportedSource.Peru]: [
+    [{ key: 'origin' }, { key: 'sourceFleet' }, { key: 'externalId' }],
+    [{ key: 'length' }, { key: 'holdCapacityM3' }, { key: 'beam' }],
+    [{ key: 'licenseDescription' }, { key: 'resolution' }],
+    [{ key: 'hull' }, { key: 'targetSpecies' }],
+  ],
+  [SelfReportedSource.CostaRica]: [[{ key: 'externalId' }]],
+  [SelfReportedSource.Brazil]: [
+    [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
+    [{ key: 'externalId' }],
+  ],
+  [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
 }
 
 const VESSEL_FISICAL_FEATURES_FIELDS: VesselRenderField[] = [

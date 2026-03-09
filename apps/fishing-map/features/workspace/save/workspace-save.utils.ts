@@ -141,16 +141,17 @@ export const replaceTimerangeWorkspaceName = ({
   timeRangeOption,
   timerange,
 }: ReplaceTimerangeWorkspaceNameParams) => {
+  const safeName = typeof name === 'string' ? name : String(name ?? '')
   const workspaceTimerangeName = getWorkspaceTimerangeName(prevTimeRangeOption || timeRangeOption, {
     timerange,
     daysFromLatest: prevDaysFromLatest as number,
   })
-  if (name && name.includes(workspaceTimerangeName)) {
+  if (safeName && safeName.includes(workspaceTimerangeName)) {
     const workspaceLatestDescription = getWorkspaceTimerangeName(timeRangeOption, {
       timerange,
       daysFromLatest,
     })
-    return name.replace(workspaceTimerangeName, workspaceLatestDescription)
+    return safeName.replace(workspaceTimerangeName, workspaceLatestDescription)
   }
-  return name
+  return safeName
 }

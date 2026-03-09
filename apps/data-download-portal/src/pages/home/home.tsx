@@ -2,7 +2,7 @@ import { Fragment, useEffect, useMemo, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
-import type { Dataset } from '@globalfishingwatch/api-types'
+import type { DownloadDataset } from '@globalfishingwatch/api-types'
 import { useGFWLogin } from '@globalfishingwatch/react-hooks'
 import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 
@@ -17,7 +17,7 @@ import { Route as DatasetsDatasetIdRoute } from './../../../src/routes/datasets.
 import styles from './home.module.css'
 
 function HomePage() {
-  const [datasets, setDatasets] = useState<Dataset[]>([])
+  const [datasets, setDatasets] = useState<DownloadDataset[]>([])
   const [loading, setLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const { logged } = useGFWLogin(GFWAPI)
@@ -31,7 +31,7 @@ function HomePage() {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setLoading(true)
-    GFWAPI.fetch<Dataset[]>(`/download/datasets`)
+    GFWAPI.fetch<DownloadDataset[]>(`/download/datasets`)
       .then((data) => {
         const sortedData = sortByLastUpdated(data)
         setDatasets(sortedData)

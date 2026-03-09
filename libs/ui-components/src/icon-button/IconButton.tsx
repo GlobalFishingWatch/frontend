@@ -19,6 +19,7 @@ export type IconButtonType =
   | 'map-tool'
   | 'warning'
   | 'warning-border'
+  | 'warning-invert'
   | 'solid'
 export type IconButtonSize = 'default' | 'medium' | 'small' | 'tiny'
 
@@ -88,7 +89,7 @@ function IconButtonComponent(props: IconButtonProps, ref: Ref<HTMLButtonElement>
         type={htmlType ?? 'button'}
         style={style}
         {...(typeof tooltip === 'string' && { 'aria-label': tooltip })}
-        {...(testId && { 'data-test': testId })}
+        {...(testId && { 'data-testid': testId })}
         {...rest}
       >
         {loading ? (

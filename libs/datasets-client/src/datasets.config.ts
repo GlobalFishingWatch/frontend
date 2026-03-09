@@ -4,8 +4,6 @@ import type {
   Dataset,
   DatasetConfiguration,
   DatasetConfigurationByType,
-  DatasetFilter,
-  DatasetFilters,
   DatasetGeometryType,
   FrontendConfiguration,
 } from '@globalfishingwatch/api-types'
@@ -97,12 +95,11 @@ export const getEnvironmentalDatasetRange = (dataset: Dataset) => {
   const min = configuration?.frontend?.min ?? (configuration as any)?.min
   const scale = (configuration as any)?.scale ?? 1
 
-  // Using Math.max to ensure we don't show negative values as 4wings doesn't support them yet
   // TODO use offset again once the whole app understand the values
   // const cleanMin = Math.max(0, Math.floor(min * scale + offset))
   // const cleanMax = Math.ceil(max * scale + offset)
-  const cleanMin = Math.max(0, Math.floor((min ?? 0) * scale))
-  const cleanMax = Math.ceil((max ?? 0) * scale)
+  const cleanMin = Math.floor(min * scale)
+  const cleanMax = Math.ceil(max * scale)
   return {
     min: cleanMin,
     max: cleanMax,

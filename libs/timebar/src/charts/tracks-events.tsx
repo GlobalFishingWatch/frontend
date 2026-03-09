@@ -105,11 +105,9 @@ const TracksEvents = ({
           } else if (useTrackColor || event.type === 'fishing') {
             color = trackEvents.color as string
           }
-          const eventSizeByType = Math.min(
-            eventSize,
-            event.type === 'fishing' ? 5 : event.type === 'gap' ? 10 : 15
-          )
-          const borderSize = eventSizeByType >= 10 ? 1.5 : 1
+          const eventSizeByType = Math.min(eventSize, event.type === 'fishing' ? 5 : 15)
+          const borderSize =
+            event.type === 'gap' || event.type === 'gaps' ? 2 : eventSizeByType >= 10 ? 1.5 : 1
           return (
             <div
               role="button"
@@ -123,7 +121,10 @@ const TracksEvents = ({
                 {
                   left: `${event.x}px`,
                   width: `${event.width}px`,
-                  height: event.type === 'gap' ? `${borderSize}px` : `${eventSizeByType}px`,
+                  height:
+                    event.type === 'gap' || event.type === 'gaps'
+                      ? `${borderSize + 1}px`
+                      : `${eventSizeByType}px`,
                   '--background-color': color,
                   '--size': `${eventSizeByType}px`,
                   '--border-size': `${borderSize}px`,

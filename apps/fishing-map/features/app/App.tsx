@@ -100,7 +100,7 @@ function App() {
   const workspaceCustomStatus = useSelector(selectWorkspaceCustomStatus)
   const userLogged = useSelector(selectIsUserLogged)
   const urlWorkspaceId = useSelector(selectWorkspaceId)
-  const fitWorkspaceBounds = useFitWorkspaceBounds()
+  const { fitWorkspaceBounds, fitWorkspaceTimerange } = useFitWorkspaceBounds()
   const isPrinting = useSelector(selectScreenshotModalOpen)
   const { replaceQueryParams } = useReplaceQueryParams()
 
@@ -130,6 +130,7 @@ function App() {
         if (!isWorkspacePasswordProtected(workspace as Workspace)) {
           fitWorkspaceBounds(workspace as Workspace)
         }
+        fitWorkspaceTimerange(workspace)
       }
       actionResolved = true
     }

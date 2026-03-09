@@ -1,25 +1,25 @@
 import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux'
 
-import type { EventVesselTypeEnum } from '@globalfishingwatch/api-types'
-import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { Dataset, EventVesselTypeEnum } from '@globalfishingwatch/api-types'
+import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
 import { getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 import { Button, Icon, Spinner } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { selectEventsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import I18nDate from 'features/i18n/i18nDate'
 import I18nNumber from 'features/i18n/i18nNumber'
 import VesselLink from 'features/vessel/VesselLink'
 import VesselPin from 'features/vessel/VesselPin'
+import { getEventLabel } from 'utils/analytics'
 import { formatInfoField } from 'utils/info'
 
-import type {
-  ExtendedEventVessel,
-  ExtendedFeatureSingleEvent,
-  SliceExtendedClusterPickingObject,
-} from '../../map.slice'
+import type { ExtendedFeatureSingleEvent, SliceExtendedClusterPickingObject } from '../../map.slice'
 
 import styles from '../Popup.module.css'
 
@@ -53,15 +53,27 @@ function EncounterTooltipRow({
   loading,
 }: EncounterTooltipRowProps) {
   const { t } = useTranslation()
-
-  const seeEncounterClick = useCallback(() => {
+  const dataviews = useSelector(selectEventsDataviews)
+  const encountersDataview = dataviews.find((d) => d.id === feature.layerId)
+  const encountersDataset = encountersDataview?.datasets?.find(
+    (d) => d.type === DatasetTypes.Events
+  )
+  const vesselDatasetId = getRelatedDatasetByType(encountersDataset, DatasetTypes.Vessels)?.id
+  const seeEncounterClick = useCallback((dataset: Dataset) => {
     trackEvent({
       category: TrackCategory.GlobalReports,
       action: `Clicked see encounter event`,
+      label: getEventLabel(
+        [` dataset_name: ${dataset.name} `, ` source: ${dataset.source} `, dataset.id].filter(
+          Boolean
+        ) as string[]
+      ),
     })
   }, [])
 
   const event = parseEncounterEvent(feature.event)
+  const mainVesselDatasetId = event?.vessel?.dataset || vesselDatasetId
+  const encounterVesselDatasetId = event?.encounter?.vessel?.dataset
   const interval = getFourwingsInterval(feature.startTime, feature.endTime)
   const title = feature.title || getDatasetLabel({ id: feature.datasetId! })
   const timestamp = feature.properties.stime
@@ -119,7 +131,7 @@ function EncounterTooltipRow({
                                 <span className={styles.rowText}>
                                   <VesselLink
                                     vesselId={event.vessel.id}
-                                    datasetId={event.vessel.dataset}
+                                    datasetId={mainVesselDatasetId}
                                     query={{
                                       vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
                                       vesselSelfReportedId: event.vessel.id,
@@ -128,11 +140,11 @@ function EncounterTooltipRow({
                                     {formatInfoField(event.vessel?.name, 'shipname')}
                                   </VesselLink>
                                 </span>
-                                {(event.vessel as ExtendedEventVessel).dataset && (
+                                {mainVesselDatasetId && (
                                   <VesselPin
                                     vesselToResolve={{
                                       ...event.vessel,
-                                      datasetId: event.vessel.dataset,
+                                      datasetId: mainVesselDatasetId,
                                     }}
                                   />
                                 )}
@@ -144,34 +156,36 @@ function EncounterTooltipRow({
                           <div className={styles.row}>
                             <div className={styles.rowColum}>
                               <span className={styles.rowTitle}>
-                                {t(
-                                  (t) =>
-                                    t.vessel.vesselTypes[
-                                      event.encounter?.vessel.type as EventVesselTypeEnum
-                                    ],
-                                  {
-                                    defaultValue: event.encounter.vessel.type,
-                                  }
-                                )}
+                                {event.encounter?.vessel.type &&
+                                  t(
+                                    (t) =>
+                                      t.vessel.vesselTypes[
+                                        event.encounter?.vessel.type as EventVesselTypeEnum
+                                      ],
+                                    {
+                                      defaultValue: event.encounter.vessel.type,
+                                    }
+                                  )}
                               </span>
                               <div className={styles.centered}>
                                 <span className={styles.rowText}>
                                   <VesselLink
                                     vesselId={event.encounter.vessel?.id}
-                                    datasetId={event.encounter.vessel?.dataset}
+                                    datasetId={encounterVesselDatasetId}
                                     query={{
                                       vesselIdentitySource: VesselIdentitySourceEnum.SelfReported,
                                       vesselSelfReportedId: event.encounter.vessel?.id,
                                     }}
+                                    onClick={() => seeEncounterClick(event.dataset)}
                                   >
                                     {formatInfoField(event.encounter.vessel?.name, 'shipname')}
                                   </VesselLink>
                                 </span>
-                                {(event.encounter?.vessel as ExtendedEventVessel).dataset && (
+                                {encounterVesselDatasetId && (
                                   <VesselPin
                                     vesselToResolve={{
                                       ...event.encounter.vessel,
-                                      datasetId: event.encounter.vessel.dataset,
+                                      datasetId: encounterVesselDatasetId,
                                     }}
                                   />
                                 )}
@@ -180,7 +194,7 @@ function EncounterTooltipRow({
                           </div>
                         )}
                       </div>
-                      {event.vessel && (
+                      {event.vessel?.id && (
                         <div className={styles.row}>
                           <VesselLink
                             vesselId={event.vessel.id}
@@ -198,7 +212,7 @@ function EncounterTooltipRow({
                               target="_blank"
                               size="small"
                               className={styles.btnLarge}
-                              onClick={seeEncounterClick}
+                              onClick={() => seeEncounterClick(event.dataset)}
                             >
                               {t((t) => t.common.seeMore)}
                             </Button>

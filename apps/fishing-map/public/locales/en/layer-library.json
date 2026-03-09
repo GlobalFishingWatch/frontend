@@ -47,7 +47,7 @@
   "encounters": {
     "description": "Identified from AIS data as locations where two vessels, a carrier and fishing vessel, were within 500 meters for at least 2 hours and traveling at a median speed under 2 knots, while at least 10 km from a coastal anchorage.",
     "moreInfoLink": "",
-    "name": "Encounter events (AIS)"
+    "name": "Encounter events  (AIS)"
   },
   "fao-major": {
     "description": "FAO major fishing areas for statistical purposes are arbitrary areas, the boundaries of which were determined in consultation with international fishery agencies. The major fishing areas, inland and marine, are listed below by two-digit codes and their names. To access maps and description of boundaries of each fishing area click on the relevant item in the list below or in the map showing the 19 major marine fishing areas.",
@@ -147,7 +147,12 @@
   "port-locations": {
     "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
     "moreInfoLink": "",
-    "name": "Ports"
+    "name": "Ports (AIS)"
+  },
+  "port-locations-vms": {
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
+    "moreInfoLink": "",
+    "name": "Ports (VMS)"
   },
   "port-visits": {
     "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. The dataset contains over 160,000 individual anchorage locations, which are further grouped into nearly 32,000 ports. ",

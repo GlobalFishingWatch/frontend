@@ -38,14 +38,17 @@ export const BATHYMETRY_DATAVIEW_INSTANCE: Omit<LibraryLayerConfig, 'previewImag
   ],
 }
 
+export const CURRENTS_LAYER_ID = 'currents'
+export const WINDS_LAYER_ID = 'winds'
+
 export const LAYERS_LIBRARY_ENVIRONMENT: LibraryLayerConfig[] = [
   {
-    id: 'currents',
+    id: CURRENTS_LAYER_ID,
     dataviewId: CURRENTS_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/currents.jpg`,
   },
   {
-    id: 'winds',
+    id: WINDS_LAYER_ID,
     dataviewId: WINDS_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/winds.jpg`,
   },

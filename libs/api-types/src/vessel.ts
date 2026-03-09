@@ -49,6 +49,10 @@ export type Vessel = {
   ssvid?: string
   type?: string
   years?: number[]
+  //pipe 4 new fields
+  externalId?: string
+  sourceFleet?: string
+  hull?: string
 }
 
 export type VesselSearch = Vessel & {

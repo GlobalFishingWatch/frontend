@@ -9,7 +9,10 @@ import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
 import { Collapsable, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import { VESSEL_GROUP_DATAVIEW_PREFIX } from 'features/dataviews/dataviews.utils'
+import {
+  GAPS_EVENTS_SOURCE_ID,
+  VESSEL_GROUP_DATAVIEW_PREFIX,
+} from 'features/dataviews/dataviews.utils'
 import DataTerminology from 'features/vessel/identity/DataTerminology'
 import InsightError from 'features/vessel/insights/InsightErrorMessage'
 import VesselLink from 'features/vessel/VesselLink'
@@ -57,7 +60,10 @@ const VesselGroupReportInsightGap = ({ skip }: { skip?: boolean }) => {
   }
 
   return (
-    <div id={`${VESSEL_GROUP_DATAVIEW_PREFIX}gap`} className={styles.insightContainer}>
+    <div
+      id={`${VESSEL_GROUP_DATAVIEW_PREFIX}${GAPS_EVENTS_SOURCE_ID}`}
+      className={styles.insightContainer}
+    >
       <div className={styles.insightTitle}>
         <Tooltip content={t((t) => t.common.experimentalTooltip)}>
           <label className="experimental">{t((t) => t.vessel.insights.gaps)}</label>

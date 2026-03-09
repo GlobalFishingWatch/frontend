@@ -29,6 +29,7 @@ export enum EventTypes {
   Encounter = 'encounter',
   Fishing = 'fishing',
   Gap = 'gap',
+  Gaps = 'gaps',
   Port = 'port_visit',
   Loitering = 'loitering',
 }
@@ -62,7 +63,6 @@ export type EventVesselAuthorization = {
 export type EventVessel = {
   id: string
   ssvid: string
-  dataset: string
   name: string
   flag: string
   type: EventVesselTypeEnum

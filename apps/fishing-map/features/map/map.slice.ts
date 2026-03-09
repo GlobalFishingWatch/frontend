@@ -79,7 +79,7 @@ export type ExtendedFeatureVessel = ExtendedFeatureVesselDatasets & {
 
 export type ExtendedEventVessel = EventVessel & { dataset?: string }
 
-export type ExtendedFeatureSingleEvent = ApiEvent<EventVessel> & { dataset: Dataset }
+export type ExtendedFeatureSingleEvent = ApiEvent<ExtendedEventVessel> & { dataset: Dataset }
 export type ExtendedFeatureByVesselEventPort = {
   id?: string
   name?: string
@@ -511,7 +511,6 @@ export const fetchClusterEventThunk = createAsyncThunk(
         if (!getDatasetByIdsThunk.fulfilled.match(getDatasetsAction)) {
           return rejectWithValue(getDatasetsAction.error)
         }
-
         const infoDatasets = getDatasetsAction.payload.flatMap((v) => v)
         const vesselIds = (interactionResponse as FourwingsEventsInteraction[])
           ?.sort((a, b) => b.events - a.events)
@@ -572,18 +571,21 @@ export const fetchClusterEventThunk = createAsyncThunk(
             }
             if (
               clusterEvent.type === EventTypes.Encounter ||
-              clusterEvent.type === EventTypes.Gap
+              clusterEvent.type === EventTypes.Gap ||
+              clusterEvent.type === EventTypes.Gaps
             ) {
               // Workaround to grab information about each vessel dataset
               // will need discuss with API team to scale this for other types
               let vessels = []
               if (clusterEvent.type === 'encounter') {
-                const isACarrierTheMainVessel =
-                  clusterEvent.vessel.type === EventVesselTypeEnum.Carrier
-                const fishingVessel = isACarrierTheMainVessel
+                const isTheMainVesselNotFishing =
+                  clusterEvent.vessel.type === EventVesselTypeEnum.Carrier ||
+                  !clusterEvent.encounter?.vessel ||
+                  !clusterEvent.encounter?.vessel.id
+                const fishingVessel = isTheMainVesselNotFishing
                   ? clusterEvent.encounter?.vessel
                   : clusterEvent.vessel
-                const carrierVessel = isACarrierTheMainVessel
+                const carrierVessel = isTheMainVesselNotFishing
                   ? clusterEvent.vessel
                   : clusterEvent.encounter?.vessel
                 vessels = [fishingVessel, carrierVessel]

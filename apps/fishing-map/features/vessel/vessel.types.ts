@@ -1,4 +1,15 @@
-import type { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { ApiEvent, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+
+export enum ActivityEventSubType {
+  Entry = 'port_entry',
+  Exit = 'port_exit',
+}
+export interface ActivityEvent extends ApiEvent {
+  voyage: number
+  subType?: ActivityEventSubType
+}
+
+export type VesselEvent = (ActivityEvent | ApiEvent) & { vesselDatasetId?: string }
 
 export const VESSEL_SECTIONS = ['activity', 'related_vessels', 'areas', 'insights'] as const
 export type VesselSection = (typeof VESSEL_SECTIONS)[number]

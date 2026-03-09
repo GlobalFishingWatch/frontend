@@ -10,6 +10,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { useSetMapCoordinates } from 'features/map/map-viewport.hooks'
 import { fetchWorkspacesThunk } from 'features/workspaces-list/workspaces-list.slice'
 import { isValidLocationCategory, selectLocationCategory } from 'router/routes.selectors'
+import { htmlSafeParse } from 'utils/html-parser'
 
 import type { HighlightedWorkspace } from './workspaces-list.selectors'
 import {
@@ -149,14 +150,7 @@ function WorkspacesList() {
                 >
                   <h3 className={styles.title}>{name}</h3>
                 </Link>
-                {description && (
-                  <p
-                    className={styles.description}
-                    dangerouslySetInnerHTML={{
-                      __html: description,
-                    }}
-                  ></p>
-                )}
+                {description && <p className={styles.description}>{htmlSafeParse(description)}</p>}
                 <div className={styles.linksContainer}>
                   <Link
                     to={linkPath}

@@ -5,13 +5,14 @@ import { Link } from '@tanstack/react-router'
 
 import type { DataviewInstance, EventType } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { getIsEncounteredVesselDataviewInstanceId } from '@globalfishingwatch/dataviews-client'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.static.selectors'
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
 import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
@@ -102,19 +103,32 @@ const VesselLink = ({
         onClick(e, vesselId)
         trackEvent({
           category: TrackCategory.SearchVessel,
-          action: 'vessel search click',
-          label: vesselId,
+          action: 'vessel profile link click',
+          label: `vesselId: ${vesselId} | datasetId: ${datasetId} | source: ${identity?.sourceCode?.join(', ')}`,
         })
       }
     },
-    [dispatch, eventId, eventType, fitBounds, onClick, vesselId, vesselInfoDataId]
+    [
+      datasetId,
+      dispatch,
+      eventId,
+      eventType,
+      fitBounds,
+      identity?.sourceCode,
+      onClick,
+      vesselId,
+      vesselInfoDataId,
+    ]
   )
 
   if (!vesselId) return children
 
   const dataviewInstanceToUpdateId = vesselDataviews.find(
-    (instance) => instance.id.includes(vesselId) || instance.id === dataviewId
+    (instance) =>
+      (!getIsEncounteredVesselDataviewInstanceId(instance.id) && instance.id.includes(vesselId)) ||
+      instance.id === dataviewId
   )?.id
+
   let dataviewInstances = locationQuery?.dataviewInstances || []
   if (dataviewInstanceToUpdateId) {
     // When coming from a saved workspace the vessel instance might not be in the url yet
@@ -187,7 +201,7 @@ const VesselLink = ({
     </>
   ) : (
     <Link
-      {...(testId && { 'data-test': testId })}
+      {...(testId && { 'data-testid': testId })}
       className={className}
       to={linkTo}
       params={linkParams}

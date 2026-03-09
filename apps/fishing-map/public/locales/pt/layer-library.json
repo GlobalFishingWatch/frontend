@@ -147,7 +147,12 @@
   "port-locations": {
     "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
     "moreInfoLink": "",
-    "name": "Ports"
+    "name": "Ports (AIS)"
+  },
+  "port-locations-vms": {
+    "description": "Ports are based upon the Global Fishing Watch anchorages dataset, a global database of anchorage locations where vessels congregate. This layer includes the ports with a known name.",
+    "moreInfoLink": "",
+    "name": "Ports (VMS)"
   },
   "port-visits": {
     "description": "Os portos são baseados no conjunto de dados de ancoragens da Global Fishing Watch, um banco de dados global de locais de ancoragem onde as embarcações se reúnem. O conjunto de dados contém mais de 160.000 locais de ancoragem individuais, que são agrupados em cerca de 32.000 portos. ",

@@ -1,19 +1,18 @@
 import React, { useCallback } from 'react'
 import cx from 'classnames'
 
-import type { ApiEvent, RegionType } from '@globalfishingwatch/api-types'
+import type { RegionType } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import EventDetail from 'features/vessel/activity/event/EventDetail'
 import EventIcon from 'features/vessel/activity/event/EventIcon'
 import type { ActivityEvent } from 'features/vessel/activity/vessels-activity.selectors'
+import type { VesselEvent } from 'features/vessel/vessel.types'
 
 import ActivityDate from './ActivityDate'
 import { useActivityEventTranslations } from './event.hook'
 
 import styles from './Event.module.css'
-
-export type VesselEvent = ActivityEvent | ApiEvent
 
 interface EventProps {
   className?: string
@@ -30,7 +29,7 @@ interface EventProps {
 
 export const EVENT_HEIGHT = 126
 
-const Event: React.FC<EventProps> = (props): React.ReactElement<any> => {
+const Event = (props: EventProps) => {
   const {
     event,
     className = '',
@@ -87,7 +86,7 @@ const Event: React.FC<EventProps> = (props): React.ReactElement<any> => {
         <div className={styles.eventData}>
           <ActivityDate event={event as ActivityEvent} />
           <p className={cx(styles.description, { [styles.interactive]: expanded })}>
-            {getEventDescription(event as ActivityEvent, regionsPriority) as string}
+            {getEventDescription(event as ActivityEvent, { regionsPriority })}
           </p>
         </div>
         <div className={cx(styles.actions, 'print-hidden')}>

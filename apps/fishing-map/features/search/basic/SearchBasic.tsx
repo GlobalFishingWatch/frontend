@@ -145,6 +145,7 @@ function SearchBasic({
                   setHighlightedIndex={setHighlightedIndex}
                   getItemProps={getItemProps}
                   vesselsSelected={vesselsSelected}
+                  highlightQuery={debouncedQuery || ''}
                 />
                 {hasMoreResults && (
                   <li key="spinner" className={styles.spinner} ref={spinnerRef}>

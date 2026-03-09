@@ -1,6 +1,6 @@
 import { DataviewCategory } from '@globalfishingwatch/api-types'
 
-import { IS_DEVELOPMENT_ENV, PATH_BASENAME } from 'data/config'
+import { PATH_BASENAME } from 'data/config'
 import type { LibraryLayerConfig } from 'data/layer-library/layers.types'
 import {
   EEZ_AREAS_12NM_DATAVIEW_SLUG,
@@ -14,11 +14,11 @@ import {
   MPA_DATAVIEW_SLUG,
   MPATLAS_DATAVIEW_SLUG,
   PAA_DUKE_DATAVIEW_SLUG,
-  PORTS_DATAVIEW_SLUG,
+  PORTS_AIS_DATAVIEW_SLUG,
+  PORTS_VMS_DATAVIEW_SLUG,
   PROTECTED_SEAS_DATAVIEW_SLUG,
   RFMO_DATAVIEW_SLUG,
   TEMPLATE_CONTEXT_DATAVIEW_SLUG,
-  TEMPLATE_GFW_ENVIRONMENT_DATAVIEW_SLUG,
 } from 'data/workspaces'
 import { PORTS_LAYER_ID } from 'features/map/map.config'
 
@@ -150,8 +150,16 @@ export const LAYERS_LIBRARY_CONTEXT: LibraryLayerConfig[] = [
     ],
   },
   {
-    id: PORTS_LAYER_ID,
-    dataviewId: PORTS_DATAVIEW_SLUG,
+    id: `${PORTS_LAYER_ID}`,
+    dataviewId: PORTS_AIS_DATAVIEW_SLUG,
+    previewImageUrl: `${PATH_BASENAME}/images/layer-library/ports.jpg`,
+    config: {
+      color: '#9AEEFF',
+    },
+  },
+  {
+    id: `${PORTS_LAYER_ID}-vms`,
+    dataviewId: PORTS_VMS_DATAVIEW_SLUG,
     previewImageUrl: `${PATH_BASENAME}/images/layer-library/ports.jpg`,
     config: {
       color: '#9AEEFF',
