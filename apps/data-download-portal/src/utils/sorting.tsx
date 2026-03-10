@@ -1,6 +1,6 @@
-import type { Dataset } from '@globalfishingwatch/api-types'
+import type { DownloadDataset } from '@globalfishingwatch/api-types'
 
-export function sortByName(data: Dataset[], direction: 'asc' | 'desc') {
+export function sortByName(data: DownloadDataset[], direction: 'asc' | 'desc') {
   return [...data].sort((a, b) => {
     const nameA = a.name.toLowerCase()
     const nameB = b.name.toLowerCase()
@@ -9,7 +9,7 @@ export function sortByName(data: Dataset[], direction: 'asc' | 'desc') {
   })
 }
 
-export function sortByLastUpdated(data: Dataset[]) {
+export function sortByLastUpdated(data: DownloadDataset[]) {
   return [...data].sort((a, b) => {
     if (!a.lastUpdated) return 1
     if (!b.lastUpdated) return -1
@@ -18,7 +18,7 @@ export function sortByLastUpdated(data: Dataset[]) {
 }
 
 export function sortDatasets(
-  data: Dataset[],
+  data: DownloadDataset[],
   sortBy: 'name' | 'lastUpdated',
   direction: 'asc' | 'desc' = 'asc'
 ) {

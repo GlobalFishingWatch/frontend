@@ -170,17 +170,21 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
       return []
     }
     const datasetContextConfig = getDatasetConfiguration(dataset, 'userContextLayerV1')
+
     let tilesUrl = resolveEndpoint(dataset, datasetConfig, { absolute: true }) as string
     if (!tilesUrl) {
       console.warn('No url found for user context')
     }
-    if (dataset.source === DRAW_DATASET_SOURCE) {
+    if (dataset.source === DRAW_DATASET_SOURCE && datasetContextConfig?.filePath) {
       // This invalidates cache after drawn editions
-      tilesUrl = `${tilesUrl}?cache=${datasetContextConfig?.filePath}`
+      tilesUrl = `${tilesUrl}?cache=${datasetContextConfig.filePath}`
     }
 
-    const { valueProperties, disableInteraction } = getDatasetConfiguration(dataset) || {}
-    const { idProperty } = getDatasetConfiguration(dataset, 'userContextLayerV1') || {}
+    const { valueProperties } = getDatasetConfiguration(dataset) || {}
+    const { idProperty } =
+      getDatasetConfiguration(dataset, 'contextLayerV1') ||
+      getDatasetConfiguration(dataset, 'userContextLayerV1') ||
+      {}
     const enabledFilters = getFlattenDatasetFilters(dataset?.filters)?.filter((f) => f?.enabled)
     const allFilters = Object.fromEntries(enabledFilters?.map((f) => [f.id, undefined]))
     return {
@@ -189,8 +193,7 @@ export const resolveDeckUserLayerProps: DeckResolverFunction<
       tilesUrl,
       idProperty,
       valueProperties,
-      pickable:
-        dataview.config?.pickable !== undefined ? dataview.config?.pickable : !disableInteraction,
+      pickable: dataview.config?.pickable ?? true,
       sublayers: layer.sublayers.map((sublayer) => {
         return {
           ...sublayer,
