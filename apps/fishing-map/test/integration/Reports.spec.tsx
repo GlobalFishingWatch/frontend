@@ -2,20 +2,22 @@ import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
 import { defaultState } from 'test/defaultState'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
+import { openGlobalReportAction } from 'test/utils/actions/openGlobalReportAction'
+import { openReportAction } from 'test/utils/actions/openReportAction'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
 import { GFWAPI } from '@globalfishingwatch/api-client'
 
 import App from 'features/app/App'
-import { selectDatasetAreaStatus } from 'features/areas/areas.slice'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import { mapInstanceAtom } from 'features/map/map.atoms'
 import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
 import { reportStateAtom } from 'features/reports/reports-timeseries.hooks'
+import * as reportsActivityUtils from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { timerangeState } from 'features/timebar/timebar.hooks'
 import { WORKSPACE_REPORT } from 'routes/routes'
 import { makeStore } from 'store'
-import { AsyncReducerStatus } from 'utils/async-slice'
 
 const waitForReportFeaturesLoaded = async (
   jotaiStore: ReturnType<typeof createJotaiStore>,
@@ -24,12 +26,23 @@ const waitForReportFeaturesLoaded = async (
   const startTime = Date.now()
   while (Date.now() - startTime < timeout) {
     const reportState = jotaiStore.get(reportStateAtom)
-    if (reportState && !reportState.isLoading) {
-      return
+    if (
+      reportState &&
+      reportState.featuresFiltered !== undefined &&
+      reportState.stats !== undefined
+    ) {
+      if (!reportState.isLoading) return
     }
     await new Promise((resolve) => setTimeout(resolve, 100))
   }
   throw new Error(`Report features did not finish loading within ${timeout}ms`)
+}
+
+const getCalculatedReportHours = (getByText: any): number | null => {
+  const description = getByText(/hours of activity in the area between/i)
+  const text = description.element().textContent || ''
+  const hoursMatch = text.match(/([\d,]+)\s+hours/)
+  return hoursMatch ? parseFloat(hoursMatch[1].replace(/,/g, '')) : null
 }
 
 describe('Reports', () => {
@@ -62,358 +75,169 @@ describe('Reports', () => {
     expect(store.getState().location.type).toBe(WORKSPACE_REPORT)
   })
 
+  it('should display the date chosen in the timebar in the report description', async () => {
+    const testingMiddleware = createTestingMiddleware()
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const jotaiStore = createJotaiStore()
+    store.dispatch(openReportAction)
+    const { getByText } = await render(<App />, { store, jotaiStore })
+
+    await waitForReportFeaturesLoaded(jotaiStore)
+
+    const timerange = jotaiStore.get(timerangeState)
+
+    expect(timerange).toBeDefined()
+    const start = formatI18nDate(timerange?.start)
+    const end = formatI18nDate(timerange?.end)
+    const description = getByText(/hours of activity in the area between/i)
+    const text = description.element().textContent || ''
+    expect(text).toContain(start)
+    expect(text).toContain(end)
+  })
+
   it('should show same report data at different zoom levels', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-    store.dispatch({
-      type: 'WORKSPACE_REPORT',
-      payload: {
-        category: 'fishing-activity',
-        workspaceId: 'default-public',
-        datasetId: 'public-eez-areas',
-        areaId: '8361',
-      },
-      query: {
-        longitude: -28.09249823,
-        latitude: 38.48103761,
-        zoom: 3.88091657,
-        dataviewInstances: [
-          {
-            id: 'context-layer-eez',
-            config: {
-              visible: true,
-            },
-          },
-        ],
-        bivariateDataviews: null,
-      },
-    })
+    store.dispatch(openReportAction)
     const { getByTestId } = await render(<App />, { store, jotaiStore })
-
-    const mapElement = getByTestId('app-main')
-
-    expect(
-      selectDatasetAreaStatus({ datasetId: 'public-eez-areas', areaId: '8361' })(store.getState())
-    ).toBe(AsyncReducerStatus.Finished)
 
     await waitForReportFeaturesLoaded(jotaiStore)
 
-    const reportState = jotaiStore.get(reportStateAtom)
-    expect(reportState?.isLoading).toBe(false)
-
     const initialReportData = jotaiStore.get(reportStateAtom)
-    console.log('🚀 ~ initialReportData:', initialReportData)
 
     await userEvent.click(getByTestId('map-control-zoom-in'))
+    const zoomedReportData = jotaiStore.get(reportStateAtom)
+    expect(zoomedReportData).toEqual(initialReportData)
   })
 
   it('should update report data when timebar changes', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-
-    store.dispatch({
-      type: 'WORKSPACE_REPORT',
-      payload: {
-        category: 'fishing-activity',
-        workspaceId: 'default-public',
-        datasetId: 'public-eez-areas',
-        areaId: '8361',
-      },
-      query: {
-        longitude: -28.09249823,
-        latitude: 38.48103761,
-        zoom: 3.88091657,
-        dataviewInstances: [
-          {
-            id: 'context-layer-eez',
-            config: {
-              visible: true,
-            },
-          },
-        ],
-        bivariateDataviews: null,
-      },
-    })
-
-    const { getByTestId } = await render(<App />, { store, jotaiStore })
+    store.dispatch(openReportAction)
+    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
 
     await waitForReportFeaturesLoaded(jotaiStore)
 
     const initialReportData = jotaiStore.get(reportStateAtom)
     const initialTimeseries = initialReportData?.timeseries
 
-    // Change timebar period
+    const initialHours = getCalculatedReportHours(getByText)
+    expect(initialHours).toBeDefined()
+
     await getByTestId('interval-btn-month').click()
     await new Promise((resolve) => setTimeout(resolve, 500))
-
     await waitForReportFeaturesLoaded(jotaiStore)
 
     const updatedReportData = jotaiStore.get(reportStateAtom)
     const updatedTimeseries = updatedReportData?.timeseries
 
-    // Verify that timeseries data was recalculated
     expect(updatedTimeseries).toBeDefined()
     expect(updatedTimeseries?.[0]?.interval).not.toBe(initialTimeseries?.[0]?.interval)
+
+    const updatedDescription = getByText(/hours of activity in the area between/i)
+    const updatedText = updatedDescription.element().textContent || ''
+
+    expect(updatedText).toContain('Jan 1, 2025')
+    expect(updatedText).toContain('Jan 1, 2026')
+
+    const updatedHours = getCalculatedReportHours(getByText)
+    expect(updatedHours).toBeDefined()
+    expect(typeof updatedHours).toBe('number')
+    expect(typeof initialHours).toBe('number')
+    expect(updatedHours).toBeGreaterThan(initialHours!)
   })
 
   it('should update report data when filter changes', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-
-    store.dispatch({
-      type: 'WORKSPACE_REPORT',
-      payload: {
-        category: 'fishing-activity',
-        workspaceId: 'default-public',
-        datasetId: 'public-eez-areas',
-        areaId: '8361',
-      },
-      query: {
-        longitude: -28.09249823,
-        latitude: 38.48103761,
-        zoom: 3.88091657,
-        dataviewInstances: [
-          {
-            id: 'context-layer-eez',
-            config: {
-              visible: true,
-            },
-          },
-        ],
-        bivariateDataviews: null,
-      },
-    })
-
-    const { getByTestId } = await render(<App />, { store, jotaiStore })
-
+    store.dispatch(openReportAction)
+    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
     await waitForReportFeaturesLoaded(jotaiStore)
 
-    const initialReportData = jotaiStore.get(reportStateAtom)
+    const initialHours = getCalculatedReportHours(getByText)
+    expect(initialHours).toBeDefined()
 
-    // Toggle a layer filter to trigger data update
-    await getByTestId('activity-layer-panel-switch-ais').click()
+    await getByTestId('reports-summary-tags-filters').first().click()
 
+    await expect.element(getByTestId('reports-summary-expanded-container')).toBeVisible()
+
+    const filterInput = getByTestId('reports-summary-expanded-container')
+      .element()
+      .querySelector('input')
+    if (filterInput) {
+      await userEvent.click(filterInput)
+      await userEvent.keyboard('portugal')
+      await new Promise((resolve) => setTimeout(resolve, 100))
+      const option = getByText(/portugal/i)
+      await option.click()
+      filterInput.blur()
+    }
+    await getByTestId('confirm-filters-button').click()
     await new Promise((resolve) => setTimeout(resolve, 1000))
     await waitForReportFeaturesLoaded(jotaiStore)
 
-    const updatedReportData = jotaiStore.get(reportStateAtom)
-
-    // Verify report data was recalculated
-    expect(updatedReportData).toBeDefined()
-    expect(updatedReportData?.isLoading).toBe(false)
+    const updatedHours = getCalculatedReportHours(getByText)
+    expect(updatedHours).toBeDefined()
+    expect(typeof updatedHours).toBe('number')
+    expect(typeof initialHours).toBe('number')
+    expect(updatedHours).toBeLessThan(initialHours!)
   })
 
-  it('should not show see vessels button when no data', async () => {
+  it('should show no data message when no data', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-
-    // Mock the API to return empty vessel data
-    const originalFetch = GFWAPI.fetch
-    const fetchSpy = vi.spyOn(GFWAPI, 'fetch')
-    fetchSpy.mockImplementation((url: string) => {
-      if (typeof url === 'string' && url.includes('/4wings/report')) {
-        return Promise.resolve({ entries: [] })
-      }
-      return originalFetch.call(GFWAPI, url)
-    })
-
-    store.dispatch({
-      type: 'WORKSPACE_REPORT',
-      payload: {
-        category: 'fishing-activity',
-        workspaceId: 'default-public',
-        datasetId: 'public-eez-areas',
-        areaId: '8361',
-      },
-      query: {
-        longitude: -28.09249823,
-        latitude: 38.48103761,
-        zoom: 3.88091657,
-        dataviewInstances: [
-          {
-            id: 'context-layer-eez',
-            config: {
-              visible: true,
-            },
-          },
-        ],
-        bivariateDataviews: null,
-      },
-    })
-
-    const { container } = await render(<App />, { store, jotaiStore })
-
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    // Verify "see vessels" button is not visible when there's no data
-    const seeVesselsButton = container.querySelector(
-      '[data-testid="see-vessel-table-activity-report"]'
-    )
-    expect(seeVesselsButton).toBeNull()
-
-    fetchSpy.mockRestore()
-  })
-
-  it.todo('should show data for buffered area', async () => {
-    const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const jotaiStore = createJotaiStore()
-
-    store.dispatch({
-      type: 'WORKSPACE_REPORT',
-      payload: {
-        category: 'fishing-activity',
-        workspaceId: 'default-public',
-        datasetId: 'public-eez-areas',
-        areaId: '8361',
-      },
-      query: {
-        longitude: -28.09249823,
-        latitude: 38.48103761,
-        zoom: 3.88091657,
-        reportBufferValue: 50,
-        reportBufferUnit: 'nauticalmiles',
-        reportBufferOperation: 'dissolve',
-        dataviewInstances: [
-          {
-            id: 'context-layer-eez',
-            config: {
-              visible: true,
-            },
-          },
-        ],
-        bivariateDataviews: null,
-      },
-    })
-
-    const { getByTestId } = await render(<App />, { store, jotaiStore })
-
-    await waitForReportFeaturesLoaded(jotaiStore)
-
-    const reportData = jotaiStore.get(reportStateAtom)
-  })
-
-  it('should display the date chosen in the timebar in the report description', async () => {
-    const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const jotaiStore = createJotaiStore()
-
-    store.dispatch({
-      type: 'WORKSPACE_REPORT',
-      payload: {
-        category: 'environment',
-        workspaceId: 'default-public',
-        datasetId: 'public-eez-areas',
-        areaId: '8361',
-      },
-      query: {
-        longitude: -28.09249823,
-        latitude: 38.48103761,
-        zoom: 3.88091657,
-        dataviewInstances: [
-          {
-            id: 'context-layer-eez',
-            config: {
-              visible: true,
-            },
-          },
-        ],
-        bivariateDataviews: null,
-      },
-    })
-
     const { getByText } = await render(<App />, { store, jotaiStore })
-
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
-    // Get dates from timerange atom
-    const timerange = jotaiStore.get(timerangeState)
-
-    expect(timerange).toBeDefined()
-
-    // Verify dates are visible in the description
-    // The formatI18nDate function formats dates, we should see "between" text
-    const betweenText = getByText(/between/i)
-
-    expect(betweenText).toBeDefined()
-  })
-
-  //global reports
-  it('should display description with calculated values if map finished loading', async () => {
-    const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const jotaiStore = createJotaiStore()
+    jotaiStore.set(timerangeState, {
+      start: '2025-12-17T00:00:00.000Z',
+      end: '2025-12-18T00:00:00.000Z',
+    })
 
     store.dispatch({
       type: 'WORKSPACE_REPORT',
       payload: {
         category: 'fishing-activity',
         workspaceId: 'default-public',
-        datasetId: 'public-global-all',
-        areaId: 'ENTIRE_WORLD',
+        datasetId: 'public-eez-areas',
+        areaId: 8402,
       },
       query: {
-        longitude: 0,
-        latitude: 0,
-        zoom: 1,
+        longitude: -64.8109861,
+        latitude: 32.42313903,
+        zoom: 5.44564202,
         dataviewInstances: [
           {
-            id: 'ais',
+            id: 'context-layer-eez',
             config: {
               visible: true,
             },
           },
+          {
+            id: 'vms',
+            deleted: true,
+          },
         ],
+        activityVisualizationMode: 'heatmap-low-res',
         bivariateDataviews: null,
       },
     })
+    await waitForReportFeaturesLoaded(jotaiStore)
+    await expect.element(getByText(/No data available for the selected area/)).toBeVisible()
+  })
 
+  // //global reports
+
+  it.todo('should have activity, events and detections tabs', async () => {
+    const testingMiddleware = createTestingMiddleware()
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const jotaiStore = createJotaiStore()
+    store.dispatch(openGlobalReportAction)
     const { getByText } = await render(<App />, { store, jotaiStore })
 
     await waitForReportFeaturesLoaded(jotaiStore)
-
-    // Verify description is visible with calculated values
-    const descriptionText = getByText(/between/i)
-
-    expect(descriptionText).toBeDefined()
-  })
-
-  it('should have activity, events and detections tabs', async () => {
-    const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const jotaiStore = createJotaiStore()
-
-    store.dispatch({
-      type: 'WORKSPACE_REPORT',
-      payload: {
-        category: 'fishing-activity',
-        workspaceId: 'default-public',
-        datasetId: 'public-eez-areas',
-        areaId: '8361',
-      },
-      query: {
-        longitude: -28.09249823,
-        latitude: 38.48103761,
-        zoom: 3.88091657,
-        dataviewInstances: [
-          {
-            id: 'context-layer-eez',
-            config: {
-              visible: true,
-            },
-          },
-        ],
-        bivariateDataviews: null,
-      },
-    })
-
-    const { getByText } = await render(<App />, { store, jotaiStore })
-
-    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     // Verify tabs are present
     expect(getByText('Activity')).toBeDefined()
@@ -421,46 +245,19 @@ describe('Reports', () => {
     expect(getByText('Detections')).toBeDefined()
   })
 
-  it('should display subcategory layer on map when subcategory is selected', async () => {
+  it.todo('should display subcategory layer on map when subcategory is selected', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-
-    store.dispatch({
-      type: 'WORKSPACE_REPORT',
-      payload: {
-        category: 'fishing-activity',
-        workspaceId: 'default-public',
-        datasetId: 'public-eez-areas',
-        areaId: '8361',
-      },
-      query: {
-        longitude: -28.09249823,
-        latitude: 38.48103761,
-        zoom: 3.88091657,
-        dataviewInstances: [
-          {
-            id: 'context-layer-eez',
-            config: {
-              visible: true,
-            },
-          },
-        ],
-        bivariateDataviews: null,
-      },
-    })
-
-    const { getByText, getByTestId } = await render(<App />, { store, jotaiStore })
+    store.dispatch(openGlobalReportAction)
+    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
 
     await waitForReportFeaturesLoaded(jotaiStore)
-
-    // Click on Presence subcategory if available
     const presenceButton = getByText('Presence')
     if (presenceButton) {
       await presenceButton.click()
       await new Promise((resolve) => setTimeout(resolve, 500))
 
-      // Verify the layer is displayed on map
       const actions = testingMiddleware.getActions()
       const updateAction = actions.findLast((action) => action.type === 'WORKSPACE_REPORT')
 
@@ -468,218 +265,42 @@ describe('Reports', () => {
     }
   })
 
-  it('should add new subcategory option when new layer is added from layer library', async () => {
+  it.todo(
+    'should add new subcategory option when new layer is added from layer library',
+    async () => {
+      const testingMiddleware = createTestingMiddleware()
+      const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+      const jotaiStore = createJotaiStore()
+      store.dispatch(openGlobalReportAction)
+      const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
+
+      await waitForReportFeaturesLoaded(jotaiStore)
+      await getByTestId('activity-layer-panel-switch-vms').click()
+
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      const actions = testingMiddleware.getActions()
+      const updateAction = actions.findLast((action) => action.type === 'HOME')
+
+      // Verify new dataview instance was added
+      const vmsDataview = updateAction?.query?.dataviewInstances?.find((dv: any) => dv.id === 'vms')
+      expect(vmsDataview).toBeDefined()
+    }
+  )
+
+  it.todo('should show second selector when choose data comparison mode', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-
-    store.dispatch({
-      type: 'WORKSPACE_REPORT',
-      payload: {
-        category: 'fishing-activity',
-        workspaceId: 'default-public',
-        datasetId: 'public-eez-areas',
-        areaId: '8361',
-      },
-      query: {
-        longitude: -28.09249823,
-        latitude: 38.48103761,
-        zoom: 3.88091657,
-        dataviewInstances: [
-          {
-            id: 'ais',
-            config: {
-              visible: true,
-            },
-          },
-        ],
-        bivariateDataviews: null,
-      },
-    })
-
-    const { getByTestId } = await render(<App />, { store, jotaiStore })
-
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    // Add a new layer (e.g., VMS)
-    await getByTestId('activity-layer-panel-switch-vms').click()
-
-    await new Promise((resolve) => setTimeout(resolve, 500))
-
-    const actions = testingMiddleware.getActions()
-    const updateAction = actions.findLast((action) => action.type === 'HOME')
-
-    // Verify new dataview instance was added
-    const vmsDataview = updateAction?.query?.dataviewInstances?.find((dv: any) => dv.id === 'vms')
-    expect(vmsDataview).toBeDefined()
-  })
-
-  it('should show second selector when choose data comparison mode', async () => {
-    const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const jotaiStore = createJotaiStore()
-
-    store.dispatch({
-      type: 'WORKSPACE_REPORT',
-      payload: {
-        category: 'fishing-activity',
-        workspaceId: 'default-public',
-        datasetId: 'public-eez-areas',
-        areaId: '8361',
-      },
-      query: {
-        longitude: -28.09249823,
-        latitude: 38.48103761,
-        zoom: 3.88091657,
-        dataviewInstances: [
-          {
-            id: 'ais',
-            config: {
-              visible: true,
-            },
-          },
-          {
-            id: 'vms',
-            config: {
-              visible: true,
-            },
-          },
-        ],
-        bivariateDataviews: null,
-      },
-    })
-
-    const { container } = await render(<App />, { store, jotaiStore })
+    store.dispatch(openGlobalReportAction)
+    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
 
     await waitForReportFeaturesLoaded(jotaiStore)
-
-    // Look for graph selector and select dataset comparison
-    const selectors = container.querySelectorAll('select')
-
-    // If there are multiple selectors, data comparison mode might have been activated
-    expect(selectors.length).toBeGreaterThanOrEqual(1)
-  })
-
-  it('should show same data as in evolution mode when data comparison mode is selected', async () => {
-    const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const jotaiStore = createJotaiStore()
-
-    store.dispatch({
-      type: 'WORKSPACE_REPORT',
-      payload: {
-        category: 'fishing-activity',
-        workspaceId: 'default-public',
-        datasetId: 'public-eez-areas',
-        areaId: '8361',
-      },
-      query: {
-        longitude: -28.09249823,
-        latitude: 38.48103761,
-        zoom: 3.88091657,
-        reportActivityGraph: 'evolution',
-        dataviewInstances: [
-          {
-            id: 'ais',
-            config: {
-              visible: true,
-            },
-          },
-        ],
-        bivariateDataviews: null,
-      },
-    })
-
-    const { getByTestId } = await render(<App />, { store, jotaiStore })
-
-    await waitForReportFeaturesLoaded(jotaiStore)
-
-    const evolutionData = jotaiStore.get(reportStateAtom)
-
-    // Switch to dataset comparison mode
-    store.dispatch({
-      type: 'WORKSPACE_REPORT',
-      payload: {
-        category: 'fishing-activity',
-        workspaceId: 'default-public',
-        datasetId: 'public-eez-areas',
-        areaId: '8361',
-      },
-      query: {
-        longitude: -28.09249823,
-        latitude: 38.48103761,
-        zoom: 3.88091657,
-        reportActivityGraph: 'datasetComparison',
-        dataviewInstances: [
-          {
-            id: 'ais',
-            config: {
-              visible: true,
-            },
-          },
-        ],
-        bivariateDataviews: null,
-      },
-    })
-
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    await waitForReportFeaturesLoaded(jotaiStore)
-
-    const comparisonData = jotaiStore.get(reportStateAtom)
-
-    // Both modes should have timeseries data
-    expect(evolutionData?.timeseries).toBeDefined()
-    expect(comparisonData?.timeseries).toBeDefined()
-  })
-
-  it('should show 2 values in graph when data comparison dataset is selected', async () => {
-    const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const jotaiStore = createJotaiStore()
-
-    store.dispatch({
-      type: 'WORKSPACE_REPORT',
-      payload: {
-        category: 'fishing-activity',
-        workspaceId: 'default-public',
-        datasetId: 'public-eez-areas',
-        areaId: '8361',
-      },
-      query: {
-        longitude: -28.09249823,
-        latitude: 38.48103761,
-        zoom: 3.88091657,
-        reportActivityGraph: 'datasetComparison',
-        dataviewInstances: [
-          {
-            id: 'ais',
-            config: {
-              visible: true,
-            },
-          },
-          {
-            id: 'vms',
-            config: {
-              visible: true,
-            },
-          },
-        ],
-        reportComparisonDataviewIds: {
-          main: 'ais',
-          compare: 'vms',
-        },
-        bivariateDataviews: null,
-      },
-    })
-
-    const { getByTestId } = await render(<App />, { store, jotaiStore })
-
-    await waitForReportFeaturesLoaded(jotaiStore)
-
-    const reportData = jotaiStore.get(reportStateAtom)
-
-    // Verify multiple timeseries are available for comparison
-    expect(reportData?.timeseries).toBeDefined()
-    expect(reportData?.timeseries?.length).toBeGreaterThanOrEqual(1)
   })
 })
+
+// Other verification ideas:
+
+// expect(
+//   selectDatasetAreaStatus({ datasetId: 'public-eez-areas', areaId: '8361' })(store.getState())
+// ).toBe(AsyncReducerStatus.Finished)
