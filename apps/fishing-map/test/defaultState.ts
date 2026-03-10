@@ -7687,7 +7687,7 @@ export const defaultState = {
       editAccess: 'private',
       category: 'fishing-activity',
       startAt: '2025-12-03T00:00:00.000Z',
-      endAt: '2026-03-03T00:00:00.000Z',
+      endAt: '2026-02-18T12:00:00.000Z',
       viewport: { zoom: 1.49, latitude: 19, longitude: 26 },
       public: true,
       state: {},

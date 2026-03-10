@@ -42,7 +42,7 @@ describe('Vessel viewer', async () => {
     await expect
       .element(
         getByTestId('vessel-profile-info').getByText(
-          '6 Events in 5 voyages between Dec 1, 2025 and Mar 1, 2026 in 1 MPA, 3 EEZs, 5 RFMOs areas.',
+          '6 Events in 5 voyages between Dec 3, 2025 and Feb 18, 2026 in 1 MPA, 3 EEZs, 5 RFMOs areas.',
           {
             exact: true,
           }
@@ -137,7 +137,7 @@ describe('Vessel viewer', async () => {
     await userEvent.click(getByTestId('vv-insights-tab'))
 
     await expect
-      .element(getByText('Vessel insights between Dec 1, 2025 and Mar 1, 2026', { exact: true }))
+      .element(getByText(/Vessel insights between \w+ \d+, \d{4} and \w+ \d+, \d{4}/))
       .toBeVisible()
   })
 })

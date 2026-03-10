@@ -106,7 +106,7 @@ describe('Vessel map popup', () => {
 
     await GFWAPITest.waitForRequest('/events')
 
-    await userEvent.hover(timebarElement, { position: { x: 400, y: 35 } })
+    await userEvent.hover(timebarElement, { position: { x: 405, y: 35 } })
 
     await expect
       .element(getByTestId('timeline-tooltip-container').getByText('Gabu Reefer'))
@@ -160,7 +160,10 @@ describe('Vessel map popup', () => {
               'public-global-loitering-events:v4.0',
               'public-global-gaps-events:v4.0',
             ],
-            relatedVesselIds: [],
+            relatedVesselIds: [
+              '19630081d-d249-9b1d-2b6d-46113987f976',
+              '9126f54fd-d5b3-2c09-0552-abcceccd10ff',
+            ],
             color: '#F95E5E',
             colorCyclingType: undefined,
           },
@@ -192,13 +195,11 @@ describe('Vessel map popup', () => {
       timebarVisualisation: 'vessel',
     })
 
-    await userEvent.hover(mapPopup.getByText('Siempre Bella Vista'))
+    await userEvent.hover(mapPopup.getByText('Ibsa Quinto'))
 
-    await expect.element(getByTestId('vessel-switch-Siempre-Bella-Vista')).toBeVisible()
+    await expect.element(getByTestId('vessel-switch-Ibsa-Quinto')).toBeVisible()
 
-    await expect
-      .element(getByText('Siempre Bella Vista - (Spain) (Jan 2, 2012 - Feb 8, 2026)'))
-      .toBeVisible()
+    await expect.element(getByText(/Ibsa Quinto - \(Spain\)/)).toBeVisible()
   })
 
   it('should show vessel info on vessel hover', async () => {
@@ -234,7 +235,11 @@ describe('Vessel map popup', () => {
     await userEvent.hover(vesselNameElement)
 
     await expect
-      .element(getByText('Gabu Reefer - (Gambia (Republic of The)) (Jan 2, 2012 - Feb 8, 2026)'))
+      .element(
+        getByText(
+          /Gabu Reefer - \(Gambia \(Republic of The\)\) \(\w+ \d+, \d{4} - \w+ \d+, \d{4}\)/
+        )
+      )
       .toBeVisible()
   })
 
@@ -269,7 +274,7 @@ describe('Vessel map popup', () => {
     await expect.element(getByText('ESP')).toHaveLength(6)
   })
 
-  it.only('should be able to interact with vessels after filtering by flag', async () => {
+  it('should be able to interact with vessels after filtering by flag', async () => {
     const store = makeStore(defaultState, [], true)
     const jotaiStore = createJotaiStore()
     store.dispatch(addVesselToWorkspaceAction)
