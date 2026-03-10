@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
 import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { InputDate, MultiSelect, Select } from '@globalfishingwatch/ui-components'
 
