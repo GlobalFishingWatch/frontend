@@ -122,13 +122,17 @@ const workspace: Workspace<WorkspaceState> = {
         visible: false,
       },
     },
-    // {
-    //   id: GAPS_EVENTS_SOURCE_ID,
-    //   dataviewId: CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG,
-    //   config: {
-    //     visible: false,
-    //   },
-    // },
+    {
+      id: GAPS_EVENTS_SOURCE_ID,
+      dataviewId: CLUSTER_GAPS_AIS_OFF_EVENTS_DATAVIEW_SLUG,
+      config: {
+        visible: true,
+        filters: {
+          start_distance_from_shore_trunc: 1,
+          duration: ['4', '48'],
+        },
+      },
+    },
     {
       id: PORT_VISITS_EVENTS_SOURCE_ID,
       dataviewId: CLUSTER_PORT_VISIT_EVENTS_DATAVIEW_SLUG,
