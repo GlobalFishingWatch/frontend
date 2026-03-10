@@ -24,7 +24,7 @@ RUN yarn install --immutable --inline-builds && \
 #################################################################################
 
 # Production image, copy all the files and run next
-FROM node:24-alpine3.23 AS production
+FROM node:24-alpine AS production
 WORKDIR /app
 
 ARG APP_NAME=real-time-prototype

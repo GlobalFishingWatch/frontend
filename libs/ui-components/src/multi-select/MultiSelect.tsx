@@ -94,10 +94,19 @@ const isItemSelected = (selectedItems: MultiSelectOption[], item: MultiSelectOpt
   return selectedItems !== null ? selectedItems.some((selected) => selected.id === item.id) : false
 }
 
+const getSearchableTextFromLabel = (label: MultiSelectOption['label']): string => {
+  if (React.isValidElement(label)) {
+    const labelProp = (label as any).props?.label || (label as any).props.dataset?.name
+    return labelProp !== undefined && labelProp !== null ? String(labelProp) : ''
+  }
+
+  return String(label)
+}
+
 const getItemsFiltered = (items: MultiSelectOption[], filter?: string) => {
   if (!filter) return items
   const matchingItems = matchSorter(items, filter, {
-    keys: ['id', 'label', 'alias'],
+    keys: ['id', 'alias', (item) => getSearchableTextFromLabel(item.label)],
   })
   return matchingItems
 }

@@ -43,7 +43,7 @@ RUN yarn install --immutable --inline-builds && \
   yarn nx reset && \
   NODE_OPTIONS='--max-old-space-size=8192 --max-semi-space-size=1024' yarn nx run fishing-map:build
 
-FROM node:24-alpine3.23 AS production
+FROM node:24-alpine AS production
 
 WORKDIR /app
 

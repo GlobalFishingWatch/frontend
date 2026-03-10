@@ -1,6 +1,7 @@
 import { Fragment, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { DateTime } from 'luxon'
 
 import type { Dataset, EventVesselTypeEnum } from '@globalfishingwatch/api-types'
 import { DatasetTypes, VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
@@ -76,11 +77,12 @@ function EncounterTooltipRow({
   const encounterVesselDatasetId = event?.encounter?.vessel?.dataset
   const interval = getFourwingsInterval(feature.startTime, feature.endTime)
   const title = feature.title || getDatasetLabel({ id: feature.datasetId! })
-  const timestamp = feature.properties.stime
+  const timestampStart = feature.properties.stime
     ? feature.properties.stime * 1000
     : event?.start
       ? getUTCDateTime(event?.start as string).toMillis()
       : undefined
+  const timestampEnd = event?.end ? getUTCDateTime(event?.end as string).toMillis() : undefined
 
   return (
     <div className={styles.popupSection}>
@@ -96,10 +98,10 @@ function EncounterTooltipRow({
                 {t((t) => t.event.encounter, {
                   count: feature.count,
                 })}
-                {!feature.properties.cluster && timestamp && interval && (
+                {!feature.properties.cluster && timestampStart && interval && (
                   <span className={styles.rowTextSecondary}>
                     {' '}
-                    <I18nDate date={timestamp} />
+                    <I18nDate date={timestampStart} />
                   </span>
                 )}
               </span>
@@ -109,7 +111,17 @@ function EncounterTooltipRow({
         {showFeaturesDetails && (
           <div className={styles.row}>
             <div className={styles.rowContainer}>
-              {timestamp && <span className={styles.rowText}>{<I18nDate date={timestamp} />}</span>}
+              {timestampStart && (
+                <span className={styles.rowText}>
+                  <I18nDate date={timestampStart} format={DateTime.DATETIME_SHORT} />{' '}
+                  {timestampEnd && (
+                    <>
+                      {t((t) => t.common.to)}{' '}
+                      <I18nDate date={timestampEnd} format={DateTime.DATETIME_SHORT} />
+                    </>
+                  )}
+                </span>
+              )}
               {loading ? (
                 <Spinner className={styles.eventSpinner} inline size="small" />
               ) : (
