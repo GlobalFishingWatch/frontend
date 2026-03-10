@@ -34,10 +34,9 @@ import {
 
 // import DatasetConfig, { extractPropertiesFromGeojson } from '../DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
+import { NEW_DATASET_MODAL_ID } from 'data/config'
 
 import styles from './NewDataset.module.css'
-
-export const NEW_DATASET_MODAL_ID = 'new-dataset-modal'
 
 type OnConfirmParams = { isEditing: boolean; file?: File }
 export type NewDatasetProps = {

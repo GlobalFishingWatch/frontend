@@ -60,6 +60,8 @@ export const PRIVATE_PASSWORD_ICON = '🔐'
 
 export const VALID_PASSWORD = 'VALID_WORKSPACE_PASSWORD'
 
+export const NEW_DATASET_MODAL_ID = 'new-dataset-modal'
+
 export const LAYER_LIBRARY_ID_SEPARATOR = '__'
 
 const DEFAULT_DATA_DELAY_DAYS = 3

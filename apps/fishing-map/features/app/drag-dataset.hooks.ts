@@ -6,7 +6,7 @@ import {
   useDatasetModalConfigConnect,
   useDatasetModalOpenConnect,
 } from 'features/datasets/datasets.hook'
-import { NEW_DATASET_MODAL_ID } from 'features/datasets/upload/NewDataset'
+import { NEW_DATASET_MODAL_ID } from 'data/config'
 import { selectDatasetUploadModalOpen } from 'features/modals/modals.slice'
 import { selectIsWorkspaceLocation } from 'router/routes.selectors'
 import { getFileType } from 'utils/files'
