@@ -58,6 +58,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
         <IconButton
           icon={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'language'}
           type={IS_DEVELOPMENT_ENV && i18n.language !== 'source' ? 'warning' : 'default'}
+          testId="language-toggle-button"
           onClick={(e) => {
             e.stopPropagation()
             setIsLanguageMenuOpen(!isLanguageMenuOpen)
@@ -69,6 +70,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
           <li>
             <button
               onClick={() => toggleLanguage('source')}
+              data-testid="language-option-source"
               className={cx(styles.language, {
                 [styles.currentLanguage]: i18n.language === 'source',
                 [styles.warning]: IS_DEVELOPMENT_ENV && i18n.language !== 'source',
@@ -82,6 +84,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
           <li key={id}>
             <button
               onClick={() => toggleLanguage(id)}
+              data-testid={`language-option-${id}`}
               className={cx(styles.language, {
                 [styles.currentLanguage]: i18n.language === id,
               })}
@@ -94,6 +97,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({
           <li>
             <button
               onClick={() => toggleLanguage(CROWDIN_IN_CONTEXT_LANG as Locale)}
+              data-testid="language-option-edit-translations"
               className={cx(styles.language, {
                 [styles.currentLanguage]: i18n.language === CROWDIN_IN_CONTEXT_LANG,
               })}

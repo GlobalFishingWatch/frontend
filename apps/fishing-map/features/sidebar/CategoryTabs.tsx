@@ -124,8 +124,14 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
   return (
     <Fragment>
       <ul className={cx('print-hidden', styles.CategoryTabs)}>
-        {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role */}
-        <li role="button" tabIndex={0} className={styles.tab} onClick={onMenuClick}>
+        <li
+          // eslint-disable-next-line jsx-a11y/no-noninteractive-element-to-interactive-role
+          role="button"
+          tabIndex={0}
+          className={styles.tab}
+          onClick={onMenuClick}
+          data-testid="sidebar-menu-toggle"
+        >
           <span className={styles.tabContent}>
             <Icon icon="menu" />
           </span>
@@ -215,7 +221,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
         <li className={cx(styles.tab, styles.secondary)}>
           <div className={cx(styles.linksToggle)}>
             <div className={styles.linksBtn}>
-              <IconButton icon="feedback" />
+              <IconButton icon="feedback" testId="feedback-button" />
             </div>
             <ul className={styles.links}>
               <li>
@@ -224,6 +230,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
                   tabIndex={0}
                   className={cx(styles.link)}
                   onClick={onFeedbackClick}
+                  data-testid="open-feedback-modal"
                 >
                   {t((t) => t.feedback.logAnIssue)}
                 </span>
