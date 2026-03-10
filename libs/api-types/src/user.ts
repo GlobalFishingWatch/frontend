@@ -63,16 +63,17 @@ export type UserGroupId =
   | 'brazil'
   | 'chile'
   | 'costa rica'
+  | 'costarica'
   | 'ecuador'
+  | 'montenegro'
+  | 'norway'
+  | 'palau'
   | 'panama'
   | 'papua new guinea'
   | 'peru'
   | 'ssf-aruna'
-  | 'ssf-rare'
   | 'ssf-ipnlf'
-  | 'norway'
-  | 'palau'
-  | 'costarica'
+  | 'ssf-rare'
 
 export interface UserGroup<T = UserGroupId> {
   id: T
