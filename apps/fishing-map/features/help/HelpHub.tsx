@@ -57,6 +57,7 @@ function HelpHub() {
       <div className={styles.linksBtn}>
         <IconButton
           icon="help"
+          testId="help-hub-button"
           type="border"
           className={cx({
             [styles.pulseDarkOnce]: hintsDismissedArray.length === 1,
@@ -69,11 +70,18 @@ function HelpHub() {
       <ul className={styles.links}>
         <li>
           {noHelpHintsSeen ? (
-            <span className={cx(styles.link, styles.hintsTooltip)}>{t((t) => t.common.hints)}</span>
-          ) : (
-            <span className={cx(styles.link)} onClick={onHelpClick}>
-              {t((t) => t.common.resetHelpHints)}
+            <span className={cx(styles.link, styles.hintsTooltip)} data-testid="help-hints-label">
+              {t((t) => t.common.hints)}
             </span>
+          ) : (
+            <button
+              type="button"
+              className={cx(styles.link)}
+              onClick={onHelpClick}
+              data-testid="reset-help-hints"
+            >
+              {t((t) => t.common.resetHelpHints)}
+            </button>
           )}
         </li>
         <li>
