@@ -14,6 +14,23 @@ vi.setSystemTime(mockDate)
 // Mock Luxon's now() function globally
 Settings.now = () => mockDate.valueOf()
 
+// Mock Web Workers to prevent blocking in tests
+// This is needed for filterCellsByPolygonWorker used in reports
+vi.mock('features/reports/reports-geo.utils.workers.hooks', () => ({
+  useFilterCellsByPolygonWorker: () => {
+    // Return a synchronous mock that immediately resolves
+    return async (params: any) => {
+      // For tests, just return the features without filtering
+      // In real environment, this filters by polygon using a worker
+      return params.layersCells.map((features: any) => ({
+        contained: features || [],
+        overlapping: [],
+        instanceId: params.instanceId,
+      }))
+    }
+  },
+}))
+
 beforeAll(async () => {
   // Ensure i18n is initialized before running tests
   await i18n.changeLanguage('en')
