@@ -40,6 +40,8 @@ export type FourwingsPositionProperties = {
   id: FourwingsPositionProperty
   type: string | number
 }
+
+export type FourwingsReportGrouping = 'vessel_id' | 'flag' | 'geartype' | 'flagAndGearType' | 'mmsi'
 export type FourwingsV1Configuration = {
   function?: AggregationFunction
   intervals?: FourwingsInterval[]
@@ -47,6 +49,7 @@ export type FourwingsV1Configuration = {
   maxZoom?: number
   min?: number
   extraPropertiesPositionTiles?: FourwingsPositionProperties[]
+  reportGroupings?: FourwingsReportGrouping[]
 }
 
 export type TracksV1Configuration = {}
@@ -106,7 +109,6 @@ export type DatasetGeometryToGeoJSONGeometry = {
   [Property in DatasetGeometryType]: string[]
 }
 export type FrontendConfiguration = {
-  disableInteraction?: boolean
   endTime?: string | number
   geometryType?: DatasetGeometryType
   latitude?: string

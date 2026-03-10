@@ -100,7 +100,7 @@ function PopupByCategory({ interaction, type = 'hover' }: PopupByCategoryProps) 
   )
 
   return (
-    <div className={styles.content}>
+    <div className={styles.content} translate="no">
       {Object.entries(featureByCategory)?.map(([featureCategory, allCategoryFeatures]) => {
         const features = allCategoryFeatures.some((feature) => feature.uniqueFeatureInteraction)
           ? [allCategoryFeatures[0]]

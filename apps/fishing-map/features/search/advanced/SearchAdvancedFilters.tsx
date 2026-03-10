@@ -9,6 +9,7 @@ import { InputDate, MultiSelect, Select } from '@globalfishingwatch/ui-component
 
 import { AVAILABLE_END, AVAILABLE_START } from 'data/config'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import type { DataviewFilterConfig } from 'features/dataviews/dataviews.filters'
 import { getDataviewFilterConfig } from 'features/dataviews/dataviews.filters'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
@@ -85,6 +86,7 @@ function SearchAdvancedFilters() {
       ?.sort((a, b) => a.name.localeCompare(b.name))
       .map((dataset) => ({
         id: dataset.id,
+        alias: [getDatasetLabel(dataset)],
         label: <DatasetLabel dataset={dataset} />,
       }))
   }, [datasets, infoSource])

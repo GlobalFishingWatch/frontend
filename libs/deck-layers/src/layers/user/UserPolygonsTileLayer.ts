@@ -211,7 +211,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
               new GeoJsonLayer<GeoJsonProperties, { data: any }>(mvtSublayerProps, {
                 id: `${props.id}-highlight-fills-${filtersHash}`,
                 stroked: false,
-                pickable: pickable,
+                pickable: layer?.pickable ?? pickable,
                 ...extensionFilterProps,
                 getPolygonOffset: (params) =>
                   getLayerGroupOffset(LayerGroup.OutlinePolygonsBackground, params),

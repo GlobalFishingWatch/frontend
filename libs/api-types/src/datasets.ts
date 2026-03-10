@@ -138,7 +138,13 @@ export type Dataset<T extends DatasetTypes = DatasetTypes> = {
   filters: DatasetFilters
 }
 
-export type DownloadDataset<T extends DatasetTypes = DatasetTypes> = Dataset<T> & {
-  readme?: string
-  files?: DatasetFile[]
+export type DownloadDataset = {
+  id: string
+  name: string
+  description: string
+  doi: string
+  concept_doi: number
+  lastUpdated: string
+  readme: string
+  files: DatasetFile[]
 }
