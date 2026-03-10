@@ -5,6 +5,7 @@ import { DataviewCategory, EventTypes } from '@globalfishingwatch/api-types'
 import { getUTCDateTime } from '@globalfishingwatch/data-transforms'
 import { VMS_DATASET_ID } from '@globalfishingwatch/datasets-client'
 import {
+  getIsVesselDataviewInstanceId,
   mergeWorkspaceUrlDataviewInstances,
   type UrlDataviewInstance,
 } from '@globalfishingwatch/dataviews-client'
@@ -21,14 +22,16 @@ import {
 import {
   dataviewHasVesselGroupId,
   getHasVesselProfileInstance,
-  getIsVesselDataviewInstanceId,
   getVesselDataviewInstance,
   getVesselDataviewInstanceDatasetConfig,
   getVesselEncounterTrackDataviewInstance,
   PORT_VISITS_REPORT_DATAVIEW_ID,
 } from 'features/dataviews/dataviews.utils'
 import { selectWorkspaceDataviewInstancesMerged } from 'features/dataviews/selectors/dataviews.merged.selectors'
-import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
+import {
+  selectPresenceDataview,
+  selectVesselTemplateDataviews,
+} from 'features/dataviews/selectors/dataviews.static.selectors'
 import {
   getVesselGroupActivityDataviewInstance,
   getVesselGroupDataviewInstance,
@@ -196,12 +199,14 @@ export const selectVGRDataviewInstancesInjected = createSelector(
     selectIsVesselGroupReportLocation,
     selectReportCategorySelector,
     selectReportVesselGroupId,
+    selectPresenceDataview,
   ],
   (
     workspaceDataviewInstancesMerged,
     isVesselGroupReportLocation,
     reportCategory,
-    reportVesselGroupId
+    reportVesselGroupId,
+    presenceDataview
   ): UrlDataviewInstance[] | undefined => {
     if (!workspaceDataviewInstancesMerged) {
       return [] as UrlDataviewInstance[]
@@ -212,7 +217,13 @@ export const selectVGRDataviewInstancesInjected = createSelector(
         dataviewHasVesselGroupId(dataview, reportVesselGroupId)
       )
       if (!vesselGroupDataviewInstance) {
-        vesselGroupDataviewInstance = getVesselGroupDataviewInstance(reportVesselGroupId)
+        const presenceDatasets = presenceDataview?.datasetsConfig?.map(
+          (dataset) => dataset.datasetId
+        )
+        vesselGroupDataviewInstance = getVesselGroupDataviewInstance(
+          reportVesselGroupId,
+          presenceDatasets
+        )
         if (vesselGroupDataviewInstance) {
           dataviewInstancesInjected.push(vesselGroupDataviewInstance)
         }

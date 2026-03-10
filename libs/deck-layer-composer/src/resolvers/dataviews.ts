@@ -263,6 +263,7 @@ export function getContextDataviewsResolved(
 
     const mergedDataviewConfig: ResolvedContextDataviewInstance['config'] = {
       visible: dataviews[0]?.config?.visible ?? true,
+      pickable: dataviews[0]?.config?.pickable ?? true,
       type: dataviews[0]?.config?.type as DataviewType,
       ...(isUserTrackDataview(dataviews[0]) && {
         singleTrack: hasSingleUserTrackDataview,

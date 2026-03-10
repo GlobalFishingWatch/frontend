@@ -5,16 +5,19 @@ import { SortableContext } from '@dnd-kit/sortable'
 import cx from 'classnames'
 
 import { DatasetTypes, DataviewCategory, ResourceStatus } from '@globalfishingwatch/api-types'
-import { resolveDataviewDatasetResource } from '@globalfishingwatch/dataviews-client'
+import {
+  getVesselIdFromInstanceId,
+  resolveDataviewDatasetResource,
+} from '@globalfishingwatch/dataviews-client'
 import { IconButton, Switch } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_CATEGORY, DEFAULT_WORKSPACE_ID } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import { getVesselIdFromInstanceId } from 'features/dataviews/dataviews.utils'
 import { selectActiveVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
+import { selectPresenceDataview } from 'features/dataviews/selectors/dataviews.static.selectors'
 import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import type { ResourcesState } from 'features/resources/resources.slice'
 import { selectResources } from 'features/resources/resources.slice'
@@ -67,6 +70,7 @@ function VesselsSection(): React.ReactElement<any> {
   const guestUser = useSelector(selectIsGuestUser)
   const vesselGroupsStatus = useSelector(selectVesselGroupsStatus)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
+  const presenceDataview = useSelector(selectPresenceDataview)
   const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const vesselTracksData = useTimebarVesselTracksData()
   const hasVesselsWithNoTrack = hasTracksWithNoData(vesselTracksData)
@@ -99,8 +103,11 @@ function VesselsSection(): React.ReactElement<any> {
       dispatch(setVesselGroupConfirmationMode('update'))
       if (vesselGroupId && vesselGroupId !== NEW_VESSEL_GROUP_ID) {
         const isVesselGroupInWorkspace = vesselGroupsInWorkspace.includes(vesselGroupId)
+        const presenceDatasets = presenceDataview?.datasetsConfig?.map(
+          (dataset) => dataset.datasetId
+        )
         const dataviewInstance = !isVesselGroupInWorkspace
-          ? getVesselGroupDataviewInstance(vesselGroupId)
+          ? getVesselGroupDataviewInstance(vesselGroupId, presenceDatasets)
           : undefined
         const dataviewsToDelete = dataviews.flatMap((d) =>
           d.config?.visible ? { id: d.id, deleted: true } : []
@@ -116,7 +123,7 @@ function VesselsSection(): React.ReactElement<any> {
         })
       }
     },
-    [dataviews, dispatch, upsertDataviewInstance, vesselGroupsInWorkspace]
+    [dataviews, dispatch, upsertDataviewInstance, vesselGroupsInWorkspace, presenceDataview]
   )
 
   const onSetSortOrderClick = useCallback(() => {

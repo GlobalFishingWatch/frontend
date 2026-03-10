@@ -20,7 +20,7 @@ export function useMigrateToLatestDataview() {
   const [isLoading, setIsLoading] = useState(false)
   const dispatch = useAppDispatch()
   const allDataviews = useSelector(selectAllDataviews)
-  const { upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { upsertDataviewInstance, deleteDataviewInstance } = useDataviewInstancesConnect()
   const deprecatedDatasets = useSelector(selectDeprecatedDatasets)
   const workspaceDataviewInstances = useSelector(selectDataviewInstancesResolvedVisible)
 
@@ -36,7 +36,9 @@ export function useMigrateToLatestDataview() {
       if (dataview && !datasets.length) {
         const datasetIds = getDatasetsInDataviews([dataview])
         if (datasetIds.length > 0) {
-          datasets = await dispatch(fetchDatasetsByIdsThunk({ ids: datasetIds })).unwrap()
+          datasets = await dispatch(
+            fetchDatasetsByIdsThunk({ ids: datasetIds, onlyUserDatasets: false })
+          ).unwrap()
         }
       }
       const hasDatasets =
@@ -54,22 +56,31 @@ export function useMigrateToLatestDataview() {
         },
         {} as NonNullable<DataviewConfig['filters']>
       )
-      upsertDataviewInstance({
-        id: `${dataviewId}${LAYER_LIBRARY_ID_SEPARATOR}${Date.now()}`,
-        dataviewId: dataviewId,
-        config: {
-          ...(hasDatasets && {
-            datasets: dataviewInstance.config?.datasets?.map((d) => deprecatedDatasets[d] || d),
-          }),
-          filters,
+      const dataviewInstances = [
+        {
+          id: `${dataviewId}${LAYER_LIBRARY_ID_SEPARATOR}${Date.now()}`,
+          dataviewId: dataviewId,
+          config: {
+            ...(hasDatasets && {
+              datasets: dataviewInstance.config?.datasets?.map((d) => deprecatedDatasets[d] || d),
+            }),
+            filters,
+          },
         },
-      })
+        {
+          id: dataviewInstance.id,
+          config: {
+            visible: false,
+          },
+        },
+      ]
+      upsertDataviewInstance(dataviewInstances)
       setIsLoading(false)
     },
     [allDataviews, deprecatedDatasets, dispatch, upsertDataviewInstance]
   )
 
-  const hasMigratedDataviews = useCallback(
+  const getIsDataviewMigrated = useCallback(
     (dataviewInstance: DataviewInstance | UrlDataviewInstance) => {
       const dataviewId = LEGACY_TO_LATEST_DATAVIEWS[dataviewInstance.slug!] || dataviewInstance.slug
 
@@ -86,8 +97,24 @@ export function useMigrateToLatestDataview() {
     [workspaceDataviewInstances]
   )
 
+  const onMigrateDataviewClick = useCallback(
+    (dataviewInstance: DataviewInstance | UrlDataviewInstance) => {
+      const alreadyMigratedDataview = getIsDataviewMigrated(dataviewInstance)
+      if (alreadyMigratedDataview) {
+        deleteDataviewInstance(dataviewInstance.id)
+      } else {
+        migrateToLatestDataviewInstance(dataviewInstance)
+      }
+    },
+    [deleteDataviewInstance, getIsDataviewMigrated, migrateToLatestDataviewInstance]
+  )
+
   return useMemo(
-    () => ({ hasMigratedDataviews, migrateToLatestDataviewInstance, isLoading }),
-    [hasMigratedDataviews, migrateToLatestDataviewInstance, isLoading]
+    () => ({
+      isLoading,
+      getIsDataviewMigrated,
+      onMigrateDataviewClick,
+    }),
+    [getIsDataviewMigrated, isLoading, onMigrateDataviewClick]
   )
 }

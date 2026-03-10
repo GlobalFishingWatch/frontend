@@ -41,7 +41,7 @@ function PortsReportLink({ children, port, tooltip }: PortsReportLinkProps) {
     dispatchClickedEvent(null)
   }, [dispatchClickedEvent])
 
-  if (!workspace || !port) {
+  if (!workspace || !port || !port.id) {
     return children
   }
 

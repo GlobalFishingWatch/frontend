@@ -21,9 +21,6 @@ export const getAreaIdFromFeature = (
   if (feature.properties?.gfw_id !== undefined) {
     return feature.properties?.gfw_id
   }
-  if (feature.properties?.[(feature as any).promoteId as string] !== undefined) {
-    return feature.properties?.[(feature as any).promoteId as string]
-  }
   return feature.id as string
 }
 

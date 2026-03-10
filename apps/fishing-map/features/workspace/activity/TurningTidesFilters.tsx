@@ -3,11 +3,13 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
-import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
+import {
+  getVesselIdFromInstanceId,
+  type UrlDataviewInstance,
+} from '@globalfishingwatch/dataviews-client'
 import type { MultiSelectOnChange } from '@globalfishingwatch/ui-components'
 import { Button, MultiSelect } from '@globalfishingwatch/ui-components'
 
-import { VESSEL_LAYER_PREFIX } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.categories.selectors'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -31,7 +33,7 @@ function TurningTidesFilters({
   const { upsertDataviewInstance } = useDataviewInstancesConnect()
 
   const vesselsOptions = vesselDataviews.map((d) => ({
-    id: d.id.replace(VESSEL_LAYER_PREFIX, ''),
+    id: getVesselIdFromInstanceId(d.id),
     label: d.config?.name || d.id,
   }))
 
@@ -39,7 +41,7 @@ function TurningTidesFilters({
 
   const onConfirmFilters = () => {
     const allVesselsSelected = vesselDataviews.flatMap((dataview) => {
-      const id = dataview.id.replace(VESSEL_LAYER_PREFIX, '')
+      const id = getVesselIdFromInstanceId(dataview.id)
       if (vesselsSelected.includes(id)) {
         return [id, ...(dataview.config?.relatedVesselIds || [])]
       }

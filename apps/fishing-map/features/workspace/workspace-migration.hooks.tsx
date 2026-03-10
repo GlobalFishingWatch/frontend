@@ -13,6 +13,7 @@ import { selectIsWorkspaceOwnerOrDefault } from './workspace.selectors'
 
 import styles from './Workspace.module.css'
 
+let migrationToastDiscarded = false
 export const useMigrateWorkspaceToast = () => {
   const { t } = useTranslation()
   const hasDeprecatedDataviews = useSelector(selectHasDeprecatedDataviewInstances)
@@ -42,11 +43,16 @@ export const useMigrateWorkspaceToast = () => {
   })
 
   useEffect(() => {
-    if (hasDeprecatedDataviews && isWorkspaceOwner) {
+    if (hasDeprecatedDataviews && isWorkspaceOwner && !migrationToastDiscarded) {
       toastId.current = toast(<ToastContent />, {
         toastId: 'migrateWorkspace',
         autoClose: 10000,
         closeButton: true,
+        onClose: (reason) => {
+          if (reason === true || reason === 'click') {
+            migrationToastDiscarded = true
+          }
+        },
       })
       onDeprecatedDataviewsChange()
       return () => {

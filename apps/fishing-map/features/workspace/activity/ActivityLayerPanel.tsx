@@ -81,7 +81,7 @@ function ActivityLayerPanel({
   const activityLayer = useGetDeckLayer<FourwingsLayer>(dataviewId)
   const layerLoaded = activityLayer?.loaded
   const layerError = activityLayer?.instance?.getError?.()
-  const { migrateToLatestDataviewInstance, hasMigratedDataviews } = useMigrateToLatestDataview()
+  const { onMigrateDataviewClick, getIsDataviewMigrated } = useMigrateToLatestDataview()
 
   // TODO remove when final decission on stats display is taken
   // const urlTimeRange = useSelector(selectUrlTimeRange)
@@ -163,17 +163,6 @@ function ActivityLayerPanel({
   const closeExpandedContainer = () => {
     setFiltersOpen(false)
     setColorOpen(false)
-  }
-
-  const onUpdateDeprecatedLayerClick = () => {
-    const alreadyMigratedDataview = hasMigratedDataviews(dataview)
-    if (alreadyMigratedDataview) {
-      if (window.confirm(t((t) => t.workspace.deprecatedLayerMigrateConfirm))) {
-        deleteDataviewInstance(dataview.id)
-      }
-    } else {
-      migrateToLatestDataviewInstance(dataview)
-    }
   }
 
   const datasetTitle = getDatasetTitleByDataview(dataview, { showPrivateIcon: false })
@@ -279,10 +268,12 @@ function ActivityLayerPanel({
               <IconButton
                 icon="warning"
                 type="warning-invert"
-                onClick={showDeprecatedWarning ? onUpdateDeprecatedLayerClick : undefined}
+                onClick={showDeprecatedWarning ? () => onMigrateDataviewClick(dataview) : undefined}
                 tooltip={
                   showDeprecatedWarning
-                    ? t((t) => t.workspace.deprecatedActivityLayer)
+                    ? getIsDataviewMigrated(dataview)
+                      ? t((t) => t.workspace.deprecatedActivityLayerMigrated)
+                      : t((t) => t.workspace.deprecatedActivityLayer)
                     : isGFWUser
                       ? `${t((t) => t.errors.layerLoading)} (${layerError})`
                       : t((t) => t.errors.layerLoading)

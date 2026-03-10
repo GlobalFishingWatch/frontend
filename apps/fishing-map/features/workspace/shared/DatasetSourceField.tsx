@@ -28,9 +28,9 @@ function DatasetFilterSource({
   showDeprecatedWarning = false,
 }: DatasetFilterSourceProps) {
   const { t } = useTranslation()
-  const { deleteDataviewInstance, upsertDataviewInstance } = useDataviewInstancesConnect()
+  const { upsertDataviewInstance } = useDataviewInstancesConnect()
   const sourcesSelected: TagItem[] = getSourcesSelectedInDataview(dataview)
-  const { migrateToLatestDataviewInstance, hasMigratedDataviews } = useMigrateToLatestDataview()
+  const { onMigrateDataviewClick, getIsDataviewMigrated } = useMigrateToLatestDataview()
   const nonVmsSources = sourcesSelected.filter((source) => !source.label.includes('VMS'))
   const vmsSources = sourcesSelected.filter((source) => source.label.includes('VMS'))
   const hasPrivateDatasets = dataviewWithPrivateDatasets(dataview as UrlDataviewInstance)
@@ -57,16 +57,6 @@ function DatasetFilterSource({
       upsertDataviewInstance({ id: dataview.id, deleted: true })
     }
   }
-  const onUpdateDeprecatedLayerClick = () => {
-    const alreadyMigratedDataview = hasMigratedDataviews(dataview)
-    if (alreadyMigratedDataview) {
-      if (window.confirm(t((t) => t.workspace.deprecatedLayerMigrateConfirm))) {
-        deleteDataviewInstance(dataview.id)
-      }
-    } else {
-      migrateToLatestDataviewInstance(dataview)
-    }
-  }
 
   return (
     <div className={cx(styles.filter, className)} data-test="source-tags">
@@ -76,8 +66,12 @@ function DatasetFilterSource({
           <IconButton
             icon="warning"
             type="warning-invert"
-            onClick={onUpdateDeprecatedLayerClick}
-            tooltip={t((t) => t.workspace.deprecatedActivityLayer)}
+            onClick={() => onMigrateDataviewClick(dataview)}
+            tooltip={
+              getIsDataviewMigrated(dataview)
+                ? t((t) => t.workspace.deprecatedActivityLayerMigrated)
+                : t((t) => t.workspace.deprecatedActivityLayer)
+            }
             size="small"
           />
         )}

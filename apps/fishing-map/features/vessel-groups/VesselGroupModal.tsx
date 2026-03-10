@@ -21,6 +21,7 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.selectors'
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
+import { selectPresenceDataview } from 'features/dataviews/selectors/dataviews.static.selectors'
 import UserGuideLink from 'features/help/UserGuideLink'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
@@ -126,6 +127,7 @@ function VesselGroupModal(): React.ReactElement<any> {
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
+  const presenceDataview = useSelector(selectPresenceDataview)
   const query = useSelector(selectLocationQuery)
   const datasetsWithoutRelatedEvents = useSelector(
     selectVesselGroupModalDatasetsWithoutEventsRelated
@@ -304,8 +306,11 @@ function VesselGroupModal(): React.ReactElement<any> {
           ? (dispatchedAction.payload?.payload as VesselGroup)?.id
           : dispatchedAction.payload?.id
         const isVesselGroupInWorkspace = vesselGroupsInWorkspace.includes(vesselGroupId)
+        const presenceDatasets = presenceDataview?.datasetsConfig?.map(
+          (dataset) => dataset.datasetId
+        )
         const dataviewInstance = !isVesselGroupInWorkspace
-          ? getVesselGroupDataviewInstance(vesselGroupId)
+          ? getVesselGroupDataviewInstance(vesselGroupId, presenceDatasets)
           : undefined
 
         if (isVesselGroupReportLocation && vesselGroupId !== editingVesselGroupId) {
@@ -384,6 +389,7 @@ function VesselGroupModal(): React.ReactElement<any> {
       workspaceToNavigate,
       searchQuery,
       upsertDataviewInstance,
+      presenceDataview,
     ]
   )
 

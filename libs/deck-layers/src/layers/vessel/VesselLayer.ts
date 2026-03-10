@@ -11,6 +11,7 @@ import { THINNING_LEVELS } from '@globalfishingwatch/api-client'
 import type { EventTypes } from '@globalfishingwatch/api-types'
 import { DataviewCategory, DataviewType } from '@globalfishingwatch/api-types'
 import { type Bbox, getUTCDateTime } from '@globalfishingwatch/data-transforms'
+import { getVesselIdFromInstanceId } from '@globalfishingwatch/dataviews-client'
 import {
   getVesselGraphExtentClamped,
   VesselEventsLoader,
@@ -18,7 +19,7 @@ import {
 } from '@globalfishingwatch/deck-loaders'
 
 import type { DeckLayerProps } from '../../types'
-import { getFetchLoadOptions, getLayerGroupOffset, LayerGroup } from '../../utils'
+import { fetchWithGFWAPI, getLayerGroupOffset, LayerGroup } from '../../utils'
 import { deckToHexColor } from '../../utils/colors'
 
 import {
@@ -63,6 +64,7 @@ let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   static layerName = 'VesselLayer'
   state!: VesselLayerState
+
   initializeState() {
     super.initializeState(this.context)
     this.state = {
@@ -85,7 +87,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   }: {
     info: PickingInfo<VesselEventProperties | VesselTrackProperties | VesselPositionProperties>
   }): VesselEventPickingInfo | VesselTrackPickingInfo => {
-    const vesselId = this.props.id.replace('vessel-', '')
+    const vesselId = getVesselIdFromInstanceId(this.props.id)
 
     const baseObject = {
       ...(info.object || ({} as VesselTrackProperties | VesselEventProperties)),
@@ -233,8 +235,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             zoom,
             trackThinningZoomConfig,
           }),
+          fetch: fetchWithGFWAPI,
           loadOptions: {
-            ...getFetchLoadOptions(),
             'vessel-tracks': {
               maxTimeGapHours,
             },
@@ -291,12 +293,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           ...this.props,
           id: chunkId,
           data: eventUrl.toString(),
+          fetch: fetchWithGFWAPI,
           type,
           visible,
           highlightEventIds,
-          loadOptions: {
-            ...getFetchLoadOptions(),
-          },
           loaders: [VesselEventsLoader],
           onError: (e: any) => this.onSublayerError(type, e),
         })

@@ -1,6 +1,6 @@
 import { matchSorter } from 'match-sorter'
 
-import { PIPE_DATASET_VERSION } from 'data/workspaces.config'
+import { PIPE_DATASET_VERSION } from '@globalfishingwatch/datasets-client'
 
 import type { PortParams } from '../types'
 

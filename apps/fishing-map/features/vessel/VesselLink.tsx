@@ -5,16 +5,14 @@ import Link from 'redux-first-router-link'
 
 import type { DataviewInstance, EventType } from '@globalfishingwatch/api-types'
 import { VesselIdentitySourceEnum } from '@globalfishingwatch/api-types'
+import { getIsEncounteredVesselDataviewInstanceId } from '@globalfishingwatch/dataviews-client'
 import { Tooltip } from '@globalfishingwatch/ui-components'
 
 import { DEFAULT_WORKSPACE_CATEGORY } from 'data/workspaces'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
-import {
-  getVesselDataviewInstance,
-  VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX,
-} from 'features/dataviews/dataviews.utils'
+import { getVesselDataviewInstance } from 'features/dataviews/dataviews.utils'
 import { selectVesselsDataviews } from 'features/dataviews/selectors/dataviews.instances.selectors'
-import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.vessels.selectors'
+import { selectVesselTemplateDataviews } from 'features/dataviews/selectors/dataviews.static.selectors'
 import { selectTrackCorrectionOpen } from 'features/track-correction/track-selection.selectors'
 import { selectVesselInfoDataId } from 'features/vessel/selectors/vessel.selectors'
 import { DEFAULT_VESSEL_IDENTITY_ID } from 'features/vessel/vessel.config'
@@ -128,8 +126,7 @@ const VesselLink = ({
 
   const dataviewInstanceToUpdateId = vesselDataviews.find(
     (instance) =>
-      (!instance.id.startsWith(VESSEL_ENCOUNTER_DATAVIEW_INSTANCE_PREFIX) &&
-        instance.id.includes(vesselId)) ||
+      (!getIsEncounteredVesselDataviewInstanceId(instance.id) && instance.id.includes(vesselId)) ||
       instance.id === dataviewId
   )?.id
 

@@ -4,6 +4,7 @@ import { render } from 'test/appTestUtils'
 import { defaultState } from 'test/defaultState'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
 import { addVesselToWorkspaceAction } from 'test/utils/actions/addVesselToWorkspace'
+import { GFWAPITestUtils } from 'test/utils/network/gfw-api-test'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -36,12 +37,14 @@ describe('Vessel map popup', () => {
 
     await userEvent.click(mapElement, { position: { x, y } })
 
+    await expect.element(getByTestId('link-vessel-profile').first()).toBeVisible()
     await getByTestId('link-vessel-profile').first().click()
 
     // await expect.element(getByTestId('vv-vessel-name')).toHaveTextContent('Gabu Reefer')
   })
 
   it('should display the vessel track on the timebar', async () => {
+    const GFWAPITest = new GFWAPITestUtils()
     const store = makeStore(defaultState, [], true)
 
     store.dispatch(addVesselToWorkspaceAction)
@@ -50,15 +53,15 @@ describe('Vessel map popup', () => {
 
     const timebarElement = getByTestId('timebar-wrapper')
 
-    await userEvent.hover(timebarElement, { position: { x: 400, y: 35 } })
+    await GFWAPITest.waitForRequest('/events')
 
-    await new Promise((resolve) => setTimeout(resolve, 3000))
+    await userEvent.hover(timebarElement, { position: { x: 400, y: 35 } })
 
     await expect
       .element(getByTestId('timeline-tooltip-container').getByText('Gabu Reefer'))
       .toBeVisible()
     await expect.element(getByTestId('timebar-highlighter')).toBeVisible()
-    await expect.element(getByText('Friday, December 5, 2025')).toBeVisible()
+    await expect.element(getByText('Saturday, December 6, 2025')).toBeVisible()
 
     await expect.element(getByText(/Docked at Banjul, Gambia \(Republic of The\)/)).toBeVisible()
   })
@@ -80,10 +83,11 @@ describe('Vessel map popup', () => {
 
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
-    const [x, y] = viewport?.project([-83.5, 21.6]) || [0, 0]
+    const [x, y] = viewport?.project([8.5, -48]) || [0, 0]
 
     await userEvent.click(mapElement, { position: { x, y } })
 
+    await expect.element(getByTestId('vessel-pin-button-ibsa-quinto')).toBeVisible()
     await getByTestId('vessel-pin-button-ibsa-quinto').click()
 
     const actions = testingMiddleware.getActions()
@@ -92,7 +96,7 @@ describe('Vessel map popup', () => {
     expect(pinAction?.query).toStrictEqual({
       dataviewInstances: [
         {
-          id: 'vessel-9375434a0-0b91-7247-5a95-57a10d2b08df',
+          id: 'vessel-9375434a0-0b91-7247-5a95-57a10d2b08df:v4.0',
           dataviewId: 'fishing-map-vessel-track-v-4',
           config: {
             info: 'public-global-vessel-identity:v4.0',

@@ -40,6 +40,7 @@ import EventsReportGraphSelector from 'features/reports/tabs/events/EventsReport
 import EventsReportSubsectionSelector from 'features/reports/tabs/events/EventsReportSubsectionSelector'
 import { useLocationConnect } from 'routes/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { htmlSafeParse } from 'utils/html-parser'
 
 import styles from './EventsReport.module.css'
 
@@ -168,14 +169,14 @@ function EventsReport() {
         ) : reportOutdated ? (
           <ReportVesselsPlaceholder animate={false}>
             <div className={cx(styles.cover, styles.center, styles.top)}>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html: t((t) => t.eventsReport.newTimeRange, {
+              <p>
+                {htmlSafeParse(
+                  t((t) => t.eventsReport.newTimeRange, {
                     start: formatI18nDate(start),
                     end: formatI18nDate(end),
-                  }),
-                }}
-              />
+                  })
+                )}
+              </p>
               <Button
                 testId="see-vessel-table-events-report"
                 onClick={() => {
