@@ -56,7 +56,7 @@ export default function ReportSummary({
   }, [dispatch, reportCategory])
 
   return (
-    <div className={styles.summaryWrapper}>
+    <div className={styles.summaryWrapper} data-testid="report-summary">
       {(reportCategory === ReportCategory.Activity ||
         reportCategory === ReportCategory.Detections) && (
         <div className={styles.summaryContainer}>

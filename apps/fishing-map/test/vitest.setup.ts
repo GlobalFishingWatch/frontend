@@ -18,10 +18,7 @@ Settings.now = () => mockDate.valueOf()
 // This is needed for filterCellsByPolygonWorker used in reports
 vi.mock('features/reports/reports-geo.utils.workers.hooks', () => ({
   useFilterCellsByPolygonWorker: () => {
-    // Return a synchronous mock that immediately resolves
     return async (params: any) => {
-      // For tests, just return the features without filtering
-      // In real environment, this filters by polygon using a worker
       return params.layersCells.map((features: any) => ({
         contained: features || [],
         overlapping: [],

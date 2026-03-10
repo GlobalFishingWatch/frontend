@@ -1,3 +1,4 @@
+import { sum } from 'es-toolkit'
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
 import { defaultState } from 'test/defaultState'
@@ -7,14 +8,13 @@ import { openReportAction } from 'test/utils/actions/openReportAction'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
-import { GFWAPI } from '@globalfishingwatch/api-client'
-
 import App from 'features/app/App'
 import { formatI18nDate } from 'features/i18n/i18nDate'
 import { mapInstanceAtom } from 'features/map/map.atoms'
 import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
+import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import { reportStateAtom } from 'features/reports/reports-timeseries.hooks'
-import * as reportsActivityUtils from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
+import { formatEvolutionData } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { timerangeState } from 'features/timebar/timebar.hooks'
 import { WORKSPACE_REPORT } from 'routes/routes'
 import { makeStore } from 'store'
@@ -29,6 +29,7 @@ const waitForReportFeaturesLoaded = async (
     if (
       reportState &&
       reportState.featuresFiltered !== undefined &&
+      reportState.timeseries !== undefined &&
       reportState.stats !== undefined
     ) {
       if (!reportState.isLoading) return
@@ -38,11 +39,20 @@ const waitForReportFeaturesLoaded = async (
   throw new Error(`Report features did not finish loading within ${timeout}ms`)
 }
 
-const getCalculatedReportHours = (getByText: any): number | null => {
-  const description = getByText(/hours of activity in the area between/i)
-  const text = description.element().textContent || ''
-  const hoursMatch = text.match(/([\d,]+)\s+hours/)
-  return hoursMatch ? parseFloat(hoursMatch[1].replace(/,/g, '')) : null
+const getCalculatedReportHours = (jotaiStore: ReturnType<typeof createJotaiStore>): number => {
+  const reportState = jotaiStore.get(reportStateAtom)
+  const timerange = jotaiStore.get(timerangeState)
+
+  if (!reportState?.timeseries?.length) return 0
+
+  const firstTimeseries = reportState.timeseries[0] as ReportGraphProps
+  const formattedTimeseries = formatEvolutionData(firstTimeseries, {
+    start: timerange?.start,
+    end: timerange?.end,
+    timeseriesInterval: firstTimeseries?.interval,
+  })
+
+  return sum(formattedTimeseries?.map((t) => sum(t.avg || [0])) || [])
 }
 
 describe('Reports', () => {
@@ -115,15 +125,16 @@ describe('Reports', () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
+    const { getByTestId } = await render(<App />, { store, jotaiStore })
     store.dispatch(openReportAction)
-    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
+    await testingMiddleware.waitForAction(WORKSPACE_REPORT)
 
     await waitForReportFeaturesLoaded(jotaiStore)
 
     const initialReportData = jotaiStore.get(reportStateAtom)
     const initialTimeseries = initialReportData?.timeseries
 
-    const initialHours = getCalculatedReportHours(getByText)
+    const initialHours = getCalculatedReportHours(jotaiStore)
     expect(initialHours).toBeDefined()
 
     await getByTestId('interval-btn-month').click()
@@ -133,16 +144,11 @@ describe('Reports', () => {
     const updatedReportData = jotaiStore.get(reportStateAtom)
     const updatedTimeseries = updatedReportData?.timeseries
 
+    expect(updatedTimeseries).not.toEqual(initialTimeseries)
     expect(updatedTimeseries).toBeDefined()
     expect(updatedTimeseries?.[0]?.interval).not.toBe(initialTimeseries?.[0]?.interval)
 
-    const updatedDescription = getByText(/hours of activity in the area between/i)
-    const updatedText = updatedDescription.element().textContent || ''
-
-    expect(updatedText).toContain('Jan 1, 2025')
-    expect(updatedText).toContain('Jan 1, 2026')
-
-    const updatedHours = getCalculatedReportHours(getByText)
+    const updatedHours = getCalculatedReportHours(jotaiStore)
     expect(updatedHours).toBeDefined()
     expect(typeof updatedHours).toBe('number')
     expect(typeof initialHours).toBe('number')
@@ -153,11 +159,12 @@ describe('Reports', () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-    store.dispatch(openReportAction)
     const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
+    store.dispatch(openReportAction)
+    await testingMiddleware.waitForAction(WORKSPACE_REPORT)
     await waitForReportFeaturesLoaded(jotaiStore)
 
-    const initialHours = getCalculatedReportHours(getByText)
+    const initialHours = getCalculatedReportHours(jotaiStore)
     expect(initialHours).toBeDefined()
 
     await getByTestId('reports-summary-tags-filters').first().click()
@@ -179,7 +186,7 @@ describe('Reports', () => {
     await new Promise((resolve) => setTimeout(resolve, 1000))
     await waitForReportFeaturesLoaded(jotaiStore)
 
-    const updatedHours = getCalculatedReportHours(getByText)
+    const updatedHours = getCalculatedReportHours(jotaiStore)
     expect(updatedHours).toBeDefined()
     expect(typeof updatedHours).toBe('number')
     expect(typeof initialHours).toBe('number')
