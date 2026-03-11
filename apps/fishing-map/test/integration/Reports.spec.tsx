@@ -1,5 +1,6 @@
 import { sum } from 'es-toolkit'
 import { createStore as createJotaiStore } from 'jotai'
+import { selectReportEventsStats } from 'queries/report-events-stats-api'
 import { render } from 'test/appTestUtils'
 import { defaultState } from 'test/defaultState'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
@@ -15,9 +16,11 @@ import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
 import type { ReportGraphProps } from 'features/reports/reports-timeseries.hooks'
 import { reportStateAtom } from 'features/reports/reports-timeseries.hooks'
 import { formatEvolutionData } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
+import { selectFetchEventsStatsParams } from 'features/reports/tabs/events/events-report.selectors'
 import { timerangeState } from 'features/timebar/timebar.hooks'
 import { WORKSPACE_REPORT } from 'routes/routes'
 import { makeStore } from 'store'
+import { getUTCDateTime } from 'utils/dates'
 
 const waitForReportFeaturesLoaded = async (
   jotaiStore: ReturnType<typeof createJotaiStore>,
@@ -55,6 +58,28 @@ const getCalculatedReportHours = (jotaiStore: ReturnType<typeof createJotaiStore
   return sum(formattedTimeseries?.map((t) => sum(t.avg || [0])) || [])
 }
 
+const waitForStatsQueryLoaded = async (store: ReturnType<typeof makeStore>, timeout = 10000) => {
+  const startTime = Date.now()
+  while (Date.now() - startTime < timeout) {
+    const state = store.getState()
+    const params = selectFetchEventsStatsParams(state)
+
+    if (!params) {
+      await new Promise((resolve) => setTimeout(resolve, 100))
+      continue
+    }
+
+    const statsQueryState = selectReportEventsStats(params)(state)
+
+    if (statsQueryState?.status === 'fulfilled' || statsQueryState?.status === 'rejected') {
+      return statsQueryState
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 100))
+  }
+  throw new Error(`Stats query did not finish loading within ${timeout}ms`)
+}
+
 describe('Reports', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -70,14 +95,14 @@ describe('Reports', () => {
     const mapElement = getByTestId('app-main')
     await getByTestId('context-layer-context-layer-eez').click()
 
-    await new Promise((resolve) => setTimeout(resolve, 3000))
+    await new Promise((resolve) => setTimeout(resolve, 500))
 
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)
     const [x, y] = viewport?.project([-25, 38]) || [0, 0]
 
     await userEvent.click(mapElement, { position: { x, y } })
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 500))
 
     await getByTestId('open-analysis-link').click()
 
@@ -235,31 +260,82 @@ describe('Reports', () => {
     await expect.element(getByText(/No data available for the selected area/)).toBeVisible()
   })
 
-  // //global reports
-
-  it.todo('should have activity, events and detections tabs', async () => {
+  it('should add new subcategory option when new layer is added from layer library', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-    store.dispatch(openGlobalReportAction)
-    const { getByText } = await render(<App />, { store, jotaiStore })
+    const { getByTestId } = await render(<App />, { store, jotaiStore })
+    store.dispatch(openReportAction)
+    await testingMiddleware.waitForAction(WORKSPACE_REPORT)
 
-    await waitForReportFeaturesLoaded(jotaiStore)
+    await getByTestId('report-summary-add-layer-button').click()
+    await getByTestId('add-layer-presence-button').click()
+    const subselector = getByTestId('report-subsection-selector')
+    await expect.element(subselector).toBeVisible()
+    await expect.element(subselector).toHaveTextContent(/presence/i)
+  })
+})
 
-    // Verify tabs are present
+describe('Global reports', () => {
+  let getByTestId: any
+  let getByText: any
+  let store: ReturnType<typeof makeStore>
+  let testingMiddleware: ReturnType<typeof createTestingMiddleware>
+
+  beforeEach(async () => {
+    vi.clearAllMocks()
+    testingMiddleware = createTestingMiddleware()
+    store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const rendered = await render(<App />, { store })
+    getByTestId = rendered.getByTestId
+    getByText = rendered.getByText
+    await getByTestId('category-tab-reports').click()
+    const reportWorkspaceLink = getByTestId('highlighted-workspace-events-report')
+    await reportWorkspaceLink.getByText('see report').click()
+  })
+
+  it('should open global report when clicking on highlighted workspace in reports category', async () => {
+    const statsQueryState = await waitForStatsQueryLoaded(store)
+    const statsData = statsQueryState?.data
+    expect(statsData).toBeDefined()
+  })
+
+  it('should have activity, events and detections tabs', async () => {
     expect(getByText('Activity')).toBeDefined()
     expect(getByText('Events')).toBeDefined()
     expect(getByText('Detections')).toBeDefined()
   })
 
-  it.todo('should display subcategory layer on map when subcategory is selected', async () => {
-    const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const jotaiStore = createJotaiStore()
-    store.dispatch(openGlobalReportAction)
-    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
+  it('should display the same number in the graph as in the timeseries', async () => {
+    const statsQueryState = await waitForStatsQueryLoaded(store)
+    const statsData = statsQueryState?.data
 
-    await waitForReportFeaturesLoaded(jotaiStore)
+    expect(statsData).toBeDefined()
+    const lastStatsValue = statsData?.[0].timeseries?.[statsData[0].timeseries.length - 1]
+    expect(lastStatsValue).toBeDefined()
+
+    const eventsGraph = getByTestId('evolution-timeseries-chart')
+    const graphElement = eventsGraph.element()
+    const { width, height } = graphElement.getBoundingClientRect()
+
+    // Hover at the rightmost position to get value from graph
+    await userEvent.hover(graphElement, {
+      position: {
+        x: width - 1,
+        y: height / 2, // middle vertically
+      },
+    })
+
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    const tooltip = getByTestId('aggregated-graph-tooltip')
+    const tooltipElement = tooltip.element()
+    // const tooltipLabel = tooltipElement.querySelector('p')?.textContent
+    // expect(tooltipLabel).toContain(getUTCDateTime(lastStatsValue?.date))
+    const tooltipValues = tooltipElement.querySelector('li')?.textContent
+    expect(tooltipValues).toContain(lastStatsValue!.value.toString())
+  })
+
+  it.todo('should change dataviews when changing tabs', async () => {
     const presenceButton = getByText('Presence')
     if (presenceButton) {
       await presenceButton.click()
@@ -271,31 +347,10 @@ describe('Reports', () => {
       expect(updateAction?.query?.reportActivitySubCategory).toBe('presence')
     }
   })
+})
 
-  it.todo(
-    'should add new subcategory option when new layer is added from layer library',
-    async () => {
-      const testingMiddleware = createTestingMiddleware()
-      const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-      const jotaiStore = createJotaiStore()
-      store.dispatch(openGlobalReportAction)
-      const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
-
-      await waitForReportFeaturesLoaded(jotaiStore)
-      await getByTestId('activity-layer-panel-switch-vms').click()
-
-      await new Promise((resolve) => setTimeout(resolve, 500))
-
-      const actions = testingMiddleware.getActions()
-      const updateAction = actions.findLast((action) => action.type === 'HOME')
-
-      // Verify new dataview instance was added
-      const vmsDataview = updateAction?.query?.dataviewInstances?.find((dv: any) => dv.id === 'vms')
-      expect(vmsDataview).toBeDefined()
-    }
-  )
-
-  it.todo('should show second selector when choose data comparison mode', async () => {
+describe.todo('Data Comparison', () => {
+  it('should show second selector when choose data comparison mode', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
@@ -305,9 +360,3 @@ describe('Reports', () => {
     await waitForReportFeaturesLoaded(jotaiStore)
   })
 })
-
-// Other verification ideas:
-
-// expect(
-//   selectDatasetAreaStatus({ datasetId: 'public-eez-areas', areaId: '8361' })(store.getState())
-// ).toBe(AsyncReducerStatus.Finished)
