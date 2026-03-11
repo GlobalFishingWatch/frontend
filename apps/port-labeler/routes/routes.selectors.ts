@@ -25,7 +25,7 @@ export const selectLocationQuery = createSelector(
 
 export const selectQueryParam = <T = any>(param: WorkspaceParam) =>
   createSelector([selectLocationQuery], (query: any): T => {
-    return query?.[param] ?? DEFAULT_WORKSPACE[param]
+    return query?.[param] ?? (DEFAULT_WORKSPACE as any)[param]
   })
 
 export const selectLocationPayload = createSelector([selectLocation], ({ payload }) => payload)

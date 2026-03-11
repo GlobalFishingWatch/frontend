@@ -45,9 +45,9 @@ const store = configureStore({
   },
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware(defaultMiddlewareOptions)
-      .concat(routerQueryMiddleware)
-      .concat(routerMiddleware),
+    (getDefaultMiddleware(defaultMiddlewareOptions) as any)
+      .concat(routerQueryMiddleware as any)
+      .concat(routerMiddleware as any),
   enhancers: (getDefaultEnhancers) => [routerEnhancer, ...getDefaultEnhancers()] as any,
 })
 
