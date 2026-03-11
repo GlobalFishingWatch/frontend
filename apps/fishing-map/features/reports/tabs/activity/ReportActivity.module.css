@@ -70,12 +70,10 @@
 
 @media (width >= 767px) {
   .selector li {
-    min-width: unset;
+    min-width: unset !important;
   }
-  .selector .option button {
+  .selector li button {
     padding: 0.8rem;
-  }
-  .selector .optionButton {
     height: auto;
   }
 }
