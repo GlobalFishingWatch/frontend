@@ -49,6 +49,8 @@ export default defineConfig({
   cacheDir: '../../node_modules/.vite/apps/fishing-map',
   plugins: [react(), nxViteTsPaths(), svgMockPlugin(), publicAssetsPlugin()],
   resolve: {
+    // Without dedupe, different dependency paths (app code vs test helpers vs linked workspace libs) can load separate React copies
+    dedupe: ['react', 'react-dom'],
     alias: {
       data: path.resolve(__dirname, './data'),
       features: path.resolve(__dirname, './features'),
@@ -71,6 +73,9 @@ export default defineConfig({
     'process.env.NEXT_PUBLIC_WORKSPACE_ENV': JSON.stringify(process.env.NEXT_PUBLIC_WORKSPACE_ENV),
     'process.env.NODE_ENV': JSON.stringify('test'),
     'process.env.VITEST': JSON.stringify('true'),
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
   },
   test: {
     watch: false,

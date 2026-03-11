@@ -244,7 +244,7 @@ function VesselGroupLayerPanel({
             {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
               <IconButton
                 icon="warning"
-                type="warning-invert"
+                type={showDeprecatedWarning ? 'warning-invert' : 'warning'}
                 onClick={showDeprecatedWarning ? onUpdateDeprecatedLayerClick : undefined}
                 loading={isLoading}
                 disabled={isLoading}
@@ -275,7 +275,15 @@ function VesselGroupLayerPanel({
           icon={
             layerActive ? (layerError || showDeprecatedWarning ? 'warning' : 'more') : undefined
           }
-          type={layerActive && (layerError || showDeprecatedWarning) ? 'warning-invert' : 'default'}
+          type={
+            layerActive
+              ? showDeprecatedWarning
+                ? 'warning-invert'
+                : layerError
+                  ? 'warning'
+                  : 'default'
+              : 'default'
+          }
           loading={!showDeprecatedWarning && layerActive && !layerLoaded}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"

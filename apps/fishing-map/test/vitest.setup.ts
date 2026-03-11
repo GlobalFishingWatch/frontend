@@ -20,6 +20,9 @@ beforeAll(async () => {
   // Ensure i18n is initialized before running tests
   await i18n.changeLanguage('en')
 
+  // Browser mode cannot handle native confirm dialogs without explicit mocking.
+  vi.spyOn(window, 'confirm').mockReturnValue(false)
+
   // Setup localstorage modal shown flag to prevent it from appearing in tests
   if (typeof window !== 'undefined') {
     localStorage.setItem('MarineManagerPopup', '{"visible":false,"showAgain":false}')

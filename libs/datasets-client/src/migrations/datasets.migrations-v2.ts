@@ -100,19 +100,19 @@ export const EVENTS_LEGACY_VESSELS_DATASETS_DICT = {
   'public-global-encounters-events:v20201001': 'public-global-encounters-events:v20231026',
   'public-global-port-visits-c2-events:v20201001': 'public-global-port-visits-c2-events:v20231026',
 }
-export const DETECTIONS_LEGACY_DATASETS_DICT = {
+export const DETECTIONS_LEGACY_V2_DATASETS_DICT = {
   'public-ais-presence-viirs-match:v20231026': 'public-global-viirs-presence:v3.0',
 }
 
 // Date added: October 2023
 // Release: Vessel Profile
 // Changelog: v2 datasets are not compatible with v3 format responses
-export const ALL_LEGACY_VESSELS_DATASETS_DICT: Record<string, string> = {
+export const ALL_LEGACY_V2_VESSELS_DATASETS_DICT: Record<string, string> = {
   ...AIS_LEGACY_FISHING_EFFORT_DATASETS_DICT,
   ...AIS_LEGACY_VESSELS_DATASETS_DICT,
   ...VMS_LEGACY_VESSELS_DATASETS_DICT,
 }
 
-export const ALL_LEGACY_EVENTS_DATASETS_DICT: Record<string, string> = {
+export const ALL_LEGACY_V2_EVENTS_DATASETS_DICT: Record<string, string> = {
   ...EVENTS_LEGACY_VESSELS_DATASETS_DICT,
 }
