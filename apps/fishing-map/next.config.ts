@@ -151,7 +151,9 @@ const nextConfig: NextConfig = {
     return config
   },
   basePath,
-  reactStrictMode: true,
+  // Needs to be disable to get deckgl working
+  // https://github.com/visgl/deck.gl/discussions/9857
+  reactStrictMode: false,
   // Must be true in production for Sentry to find and upload client source maps
   productionBrowserSourceMaps: true,
   // to deploy on a node server
