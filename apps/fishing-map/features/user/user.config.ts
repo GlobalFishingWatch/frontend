@@ -33,6 +33,7 @@ export const PRIVATE_SEARCH_DATASET_BY_GROUP: Record<UserGroupId, string[]> = {
   chile: ['private-vms-chl-vessel-identity:v4.0'],
   costarica: ['private-vms-cri-vessel-identity:v4.0'],
   ecuador: ['private-vms-ecu-vessel-identity:v4.0'],
+  montenegro: ['private-mne-vessel-identity:v4.0'],
   norway: ['private-vms-nor-vessel-identity:v4.0'],
   palau: ['private-vms-plw-vessel-identity:v4.0'],
   panama: ['private-vms-pan-vessel-identity:v4.0'],
