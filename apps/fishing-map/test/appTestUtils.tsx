@@ -2,10 +2,11 @@ import type { ReactElement } from 'react'
 import { Provider } from 'react-redux'
 import { createStore as createJotaiStore, Provider as JotaiProvider } from 'jotai'
 import type { Store as JotaiStore } from 'jotai/vanilla/store'
+import { vi } from 'vitest'
 import type { RenderOptions } from 'vitest-browser-react'
 import { render as vitestRender } from 'vitest-browser-react'
 
-import { GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
+import { GFWAPI, GUEST_USER_TYPE } from '@globalfishingwatch/api-client'
 
 import { fetchUserThunk } from 'features/user/user.slice'
 
@@ -15,6 +16,7 @@ import { makeStore } from '../store'
 interface AppRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   store?: AppStore
   jotaiStore?: JotaiStore
+  authenticated?: boolean
 }
 
 export async function withGuestUser(store: AppStore) {
@@ -26,8 +28,39 @@ export async function withGuestUser(store: AppStore) {
   return store
 }
 
-export function render(ui: ReactElement, options?: AppRenderOptions) {
-  const { store, jotaiStore, ...renderOptions } = options || {}
+export async function render(ui: ReactElement, options?: AppRenderOptions) {
+  const { store, jotaiStore, authenticated, ...renderOptions } = options || {}
+
+  // Load authentication tokens if requested
+  if (authenticated) {
+    try {
+      const response = await fetch('/.auth/tokens.json').catch(() => null)
+      if (response?.ok) {
+        const tokens = await response.json()
+        if (tokens.token) {
+          localStorage.setItem('GFW_API_USER_TOKEN', tokens.token)
+        }
+        if (tokens.refreshToken) {
+          localStorage.setItem('GFW_API_USER_REFRESH_TOKEN', tokens.refreshToken)
+        }
+      }
+    } catch {
+      console.warn('Authentication requested but tokens not available')
+    }
+
+    // Mock logout to prevent invalidating shared auth tokens
+    // This allows tests to call logout without affecting other tests
+    vi.spyOn(GFWAPI, 'logout').mockImplementation(async () => {
+      // Only clear localStorage, don't make the API call
+      localStorage.removeItem('GFW_API_USER_TOKEN')
+      localStorage.removeItem('GFW_API_USER_REFRESH_TOKEN')
+      return true
+    })
+  } else {
+    // Ensure no tokens are set for non-authenticated tests
+    localStorage.removeItem('GFW_API_USER_TOKEN')
+    localStorage.removeItem('GFW_API_USER_REFRESH_TOKEN')
+  }
 
   const storeToUse = store || makeStore()
   const jotaiStoreToUse = jotaiStore || createJotaiStore()

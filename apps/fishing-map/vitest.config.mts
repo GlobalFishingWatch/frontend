@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import { playwright } from '@vitest/browser-playwright'
 import { IncomingMessage, ServerResponse } from 'http'
 import path from 'path'
+import * as fs from 'fs'
 import type { Connect, Plugin, PreviewServer, ViteDevServer } from 'vite'
 import { defineConfig } from 'vitest/config'
 
@@ -44,10 +45,55 @@ const publicAssetsPlugin = (): Plugin => ({
   },
 })
 
+// Plugin to serve auth tokens file to browser tests
+const authTokensPlugin = (): Plugin => ({
+  name: 'auth-tokens',
+  configureServer(server: ViteDevServer) {
+    server.middlewares.use(
+      (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
+        if (req.url === '/.auth/tokens.json') {
+          const tokensPath = path.join(__dirname, '../../.auth/tokens.json')
+          if (fs.existsSync(tokensPath)) {
+            res.setHeader('Content-Type', 'application/json')
+            res.setHeader('Access-Control-Allow-Origin', '*')
+            const tokens = fs.readFileSync(tokensPath, 'utf-8')
+            res.end(tokens)
+          } else {
+            res.statusCode = 404
+            res.end(JSON.stringify({ token: '', refreshToken: '' }))
+          }
+          return
+        }
+        next()
+      }
+    )
+  },
+  configurePreviewServer(server: PreviewServer) {
+    server.middlewares.use(
+      (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
+        if (req.url === '/.auth/tokens.json') {
+          const tokensPath = path.join(__dirname, '../../.auth/tokens.json')
+          if (fs.existsSync(tokensPath)) {
+            res.setHeader('Content-Type', 'application/json')
+            res.setHeader('Access-Control-Allow-Origin', '*')
+            const tokens = fs.readFileSync(tokensPath, 'utf-8')
+            res.end(tokens)
+          } else {
+            res.statusCode = 404
+            res.end(JSON.stringify({ token: '', refreshToken: '' }))
+          }
+          return
+        }
+        next()
+      }
+    )
+  },
+})
+
 export default defineConfig({
   root: '.',
   cacheDir: '../../node_modules/.vite/apps/fishing-map',
-  plugins: [react(), nxViteTsPaths(), svgMockPlugin(), publicAssetsPlugin()],
+  plugins: [react(), nxViteTsPaths(), svgMockPlugin(), publicAssetsPlugin(), authTokensPlugin()],
   resolve: {
     // Without dedupe, different dependency paths (app code vs test helpers vs linked workspace libs) can load separate React copies
     dedupe: ['react', 'react-dom'],
@@ -73,6 +119,8 @@ export default defineConfig({
     'process.env.NEXT_PUBLIC_WORKSPACE_ENV': JSON.stringify(process.env.NEXT_PUBLIC_WORKSPACE_ENV),
     'process.env.NODE_ENV': JSON.stringify('test'),
     'process.env.VITEST': JSON.stringify('true'),
+    'process.env.TEST_USER_EMAIL': JSON.stringify(process.env.TEST_USER_EMAIL),
+    'process.env.TEST_USER_PASSWORD': JSON.stringify(process.env.TEST_USER_PASSWORD),
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
@@ -93,6 +141,7 @@ export default defineConfig({
     },
     testTimeout: 30000,
     setupFiles: './test/vitest.setup.ts',
+    globalSetup: './test/auth-setup.ts',
     browser: {
       enabled: true,
       provider: playwright(),
