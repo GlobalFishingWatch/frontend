@@ -67,3 +67,13 @@
     font: var(--font-M);
   }
 }
+
+@media (width >= 767px) {
+  .selector li {
+    min-width: unset !important;
+  }
+  .selector li button {
+    padding: 0.8rem;
+    height: auto;
+  }
+}
