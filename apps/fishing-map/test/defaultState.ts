@@ -1,7 +1,10 @@
 // @ts-nocheck
+
 import type { RootState } from 'store'
 
-export const defaultState: RootState = {
+import { TEST_END_DATE } from './test.config'
+
+const DEFAULT_STATE = {
   dataviewStatsApi: {
     queries: {},
     mutations: {},
@@ -7782,3 +7785,18 @@ export const defaultState: RootState = {
     currentRequestIds: [],
   },
 }
+
+function getDefaultState(): RootState {
+  return {
+    ...DEFAULT_STATE,
+    workspace: {
+      ...DEFAULT_STATE.workspace,
+      data: {
+        ...DEFAULT_STATE.workspace.data,
+        endAt: TEST_END_DATE,
+      },
+    },
+  }
+}
+
+export const defaultState = getDefaultState()
