@@ -140,8 +140,8 @@ export default defineConfig({
       provider: 'istanbul',
     },
     testTimeout: 30000,
-    setupFiles: './test/vitest.setup.ts',
-    globalSetup: './test/auth-setup.ts',
+    setupFiles: './test/setup/vitest.setup.ts',
+    globalSetup: './test/setup/vitest.setup-global.ts',
     browser: {
       enabled: true,
       provider: playwright(),
