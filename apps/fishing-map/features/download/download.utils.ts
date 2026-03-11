@@ -45,10 +45,12 @@ export function getSupportedGroupByOptions(
       dataview.id.includes(PRESENCE_DATAVIEW_INSTANCE_ID)
   )
 
-  const mmsiSupported = vesselDatasets.every((dataset) => {
-    const schemaItem = getDatasetFilterItem(dataset, 'ssvid')
-    return schemaItem !== null && schemaItem !== undefined
+  const reportGroupings = getDatasetConfigurationProperty({
+    dataset: vesselDatasets[0],
+    property: 'reportGroupings',
+    type: 'fourwingsV1',
   })
+  const mmsiSupported = reportGroupings?.includes('mmsi')
 
   return options.map((option) => {
     if (option.id === GroupBy.MMSI && !mmsiSupported) {
