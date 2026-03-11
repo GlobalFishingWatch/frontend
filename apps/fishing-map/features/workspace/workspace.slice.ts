@@ -133,11 +133,11 @@ export const fetchWorkspaceThunk = createAsyncThunk(
     const locationType = selectLocationType(state)
     const urlDataviewInstances = selectUrlDataviewInstances(state)
     const guestUser = selectIsGuestUser(state)
-    const userGroups = selectUserGroups(state)
     const gfwUser = selectIsGFWUser(state)
     const privateUserGroups = selectPrivateUserGroups(state)
     const reportId = reportIdParam || selectReportId(state)
     let workspaceReportId = null
+
     try {
       let workspace: Workspace<any> | null = null
       if (locationType === REPORT) {
@@ -212,6 +212,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           dataviews = payload
         }
       }
+
       let datasets: Dataset[] = []
       if (!signal.aborted) {
         const dataviewInstances: UrlDataviewInstance[] = [
@@ -225,6 +226,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           [...dataviews, ...dataviewInstances],
           guestUser
         )
+
         if (vesselGroupsIds?.length) {
           dispatch(fetchVesselGroupsThunk({ ids: vesselGroupsIds }))
         }
@@ -232,7 +234,12 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         // Don't abort datasets as they are needed in the search
         // signal.addEventListener('abort', fetchDatasetsAction.abort)
         const { error, payload } = await fetchDatasetsAction
-        datasets = payload as Dataset[]
+        if (error) {
+          console.warn(error)
+          return rejectWithValue({ workspace, error: payload })
+        } else {
+          datasets = payload as Dataset[]
+        }
 
         if (privateUserGroups.length) {
           try {
@@ -284,11 +291,6 @@ export const fetchWorkspaceThunk = createAsyncThunk(
           )
           dispatch(updateQueryParam({ dataviewInstances: dataviewInstancesToUpsert }))
         }
-
-        if (error) {
-          console.warn(error)
-          return rejectWithValue({ workspace, error: datasets })
-        }
       }
 
       const daysFromLatest =
@@ -306,6 +308,7 @@ export const fetchWorkspaceThunk = createAsyncThunk(
         ...workspace,
         dataviewInstances: workspace?.dataviewInstances.map(parseLegacyDataviewInstanceConfig),
       }
+
       return {
         ...migratedWorkspace,
         startAt: startAt.toISO(),

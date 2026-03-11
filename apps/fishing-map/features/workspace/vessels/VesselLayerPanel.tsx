@@ -373,8 +373,12 @@ function VesselLayerPanel({
               : undefined
           }
           type={
-            layerActive && (infoError || trackError || showDeprecatedWarning)
-              ? 'warning-invert'
+            layerActive
+              ? showDeprecatedWarning
+                ? 'warning-invert'
+                : infoError || trackError
+                  ? 'warning'
+                  : 'default'
               : 'default'
           }
           loading={!showDeprecatedWarning && trackLoading}
