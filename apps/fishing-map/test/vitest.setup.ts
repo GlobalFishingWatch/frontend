@@ -16,17 +16,19 @@ Settings.now = () => mockDate.valueOf()
 
 // Mock Web Workers to prevent blocking in tests
 // This is needed for filterCellsByPolygonWorker used in reports
-vi.mock('features/reports/reports-geo.utils.workers.hooks', () => ({
-  useFilterCellsByPolygonWorker: () => {
-    return async (params: any) => {
-      return params.layersCells.map((features: any) => ({
-        contained: features || [],
-        overlapping: [],
-        instanceId: params.instanceId,
-      }))
-    }
-  },
-}))
+vi.mock('features/reports/reports-geo.utils.workers.hooks', async () => {
+  const { filterByPolygon } = await vi.importActual<
+    typeof import('../features/reports/reports-geo.utils')
+  >('../features/reports/reports-geo.utils')
+  
+  return {
+    useFilterCellsByPolygonWorker: () => {
+      return async (params: any) => {
+        return filterByPolygon(params)
+      }
+    },
+  }
+})
 
 beforeAll(async () => {
   // Ensure i18n is initialized before running tests
