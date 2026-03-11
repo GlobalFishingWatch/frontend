@@ -1,12 +1,11 @@
 import { EndpointId } from '@globalfishingwatch/api-types'
-
 import {
-  ALL_LEGACY_EVENTS_DATASETS_DICT,
-  ALL_LEGACY_VESSELS_DATASETS_DICT,
-  DETECTIONS_LEGACY_DATASETS_DICT,
+  ALL_LEGACY_V2_EVENTS_DATASETS_DICT,
+  ALL_LEGACY_V2_VESSELS_DATASETS_DICT,
+  DETECTIONS_LEGACY_V2_DATASETS_DICT,
   FULL_VMS_VESSELS_DATASETS,
   PUBLIC_VMS_TRACK_DATASETS,
-} from './migrations.config'
+} from '@globalfishingwatch/datasets-client'
 
 export const removeLegacyEndpointPrefix = (endpointId: string) => {
   if (endpointId === 'user-context-tiles') {
@@ -33,13 +32,14 @@ export const migrateLegacyVMSDatasets = (datasetId: string) => {
 
 export const migrateDetectionsLegacyDatasets = (datasetId: string) => {
   return (
-    DETECTIONS_LEGACY_DATASETS_DICT[datasetId as keyof typeof DETECTIONS_LEGACY_DATASETS_DICT] ||
-    datasetId
+    DETECTIONS_LEGACY_V2_DATASETS_DICT[
+      datasetId as keyof typeof DETECTIONS_LEGACY_V2_DATASETS_DICT
+    ] || datasetId
   )
 }
 
 export const migrateVesselLegacyDatasets = (datasetId: string) => {
-  return ALL_LEGACY_VESSELS_DATASETS_DICT[datasetId] || datasetId
+  return ALL_LEGACY_V2_VESSELS_DATASETS_DICT[datasetId] || datasetId
 }
 
 export const runDatasetMigrations = (datasetId: string) => {
@@ -49,5 +49,5 @@ export const runDatasetMigrations = (datasetId: string) => {
 }
 
 export const migrateEventsLegacyDatasets = (datasetId: string) => {
-  return ALL_LEGACY_EVENTS_DATASETS_DICT[datasetId] || datasetId
+  return ALL_LEGACY_V2_EVENTS_DATASETS_DICT[datasetId] || datasetId
 }

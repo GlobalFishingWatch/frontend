@@ -17,6 +17,7 @@ import type {
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
 import {
+  ALL_LEGACY_V2_VESSELS_DATASETS_DICT,
   getDatasetConfiguration,
   LEGACY_DATASETS_TO_LATEST_VMS,
 } from '@globalfishingwatch/datasets-client'
@@ -104,7 +105,19 @@ const fetchDatasetsFromApi = async (
     includeRelated = true,
   } = {} as FetchDatasetsFromApiParams
 ) => {
-  const uniqIds = ids?.length ? ids.filter((id) => !existingIds.includes(id)) : []
+  const uniqIds = ids?.length
+    ? ids.filter((id) => {
+        const isLegacyV2Dataset = ALL_LEGACY_V2_VESSELS_DATASETS_DICT[id]
+        if (isLegacyV2Dataset) {
+          console.warn(`Skipping request for deprecated V2 dataset: ${id}`)
+          return false
+        }
+        return !existingIds.includes(id)
+      })
+    : []
+  if (!uniqIds.length && !onlyUserDatasets) {
+    return { datasetsDeprecated: {}, datasets: [] }
+  }
   const datasetsParams = {
     ...(uniqIds?.length ? { ids: uniqIds } : { 'logged-user': onlyUserDatasets }),
     cache: false,

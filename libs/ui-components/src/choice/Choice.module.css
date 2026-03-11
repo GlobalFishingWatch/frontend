@@ -82,9 +82,3 @@
     display: none;
   }
 }
-
-@media (width >= 767px) {
-  .option button {
-    padding: 0.8rem;
-  }
-}

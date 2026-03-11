@@ -34,7 +34,7 @@ const ActivityGroup: React.FC<ActivityGroupProps> = ({
     <Fragment>
       <li
         className={cx(styles.eventGroup, { [styles.open]: expanded })}
-        data-test={`vv-list-${eventType}`}
+        data-testid={`vv-list-${eventType}`}
       >
         <div className={styles.header} onClick={onToggle}>
           <EventIcon type={eventType} />

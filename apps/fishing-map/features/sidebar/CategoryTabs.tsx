@@ -118,7 +118,10 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
             <Icon icon="menu" />
           </span>
         </li>
-        <li className={cx(styles.tab, { [styles.current]: isWorkspaceLocation })}>
+        <li
+          data-testid="link-workspace"
+          className={cx(styles.tab, { [styles.current]: isWorkspaceLocation })}
+        >
           <Link
             to={ROUTE_PATHS.WORKSPACE}
             params={{
@@ -138,6 +141,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
           </Link>
         </li>
         <li
+          data-testid="link-search"
           className={cx(styles.tab, {
             [styles.current]: isAnySearchLocation,
           })}

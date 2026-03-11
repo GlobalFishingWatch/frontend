@@ -236,7 +236,7 @@ function ActivityLayerPanel({
               >
                 <div className={styles.filterButtonWrapper}>
                   <IconButton
-                    data-test={`activity-layer-panel-btn-filter-${dataview.id}`}
+                    testId={`activity-layer-panel-btn-filter-${dataview.id}`}
                     icon={filterOpen ? 'filter-on' : 'filter-off'}
                     size="small"
                     onClick={onToggleFilterOpen}
@@ -267,7 +267,7 @@ function ActivityLayerPanel({
             {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
               <IconButton
                 icon="warning"
-                type="warning-invert"
+                type={showDeprecatedWarning ? 'warning-invert' : 'warning'}
                 onClick={showDeprecatedWarning ? () => onMigrateDataviewClick(dataview) : undefined}
                 tooltip={
                   showDeprecatedWarning
@@ -287,7 +287,13 @@ function ActivityLayerPanel({
               layerActive ? (layerError || showDeprecatedWarning ? 'warning' : 'more') : undefined
             }
             type={
-              layerActive && (layerError || showDeprecatedWarning) ? 'warning-invert' : 'default'
+              layerActive
+                ? showDeprecatedWarning
+                  ? 'warning-invert'
+                  : layerError
+                    ? 'warning'
+                    : 'default'
+                : 'default'
             }
             loading={!showDeprecatedWarning && layerActive && !layerLoaded}
             className={cx('print-hidden', styles.shownUntilHovered)}
