@@ -39,7 +39,7 @@ describe('User Datasets', () => {
 
     await userEvent.click(getByRole('button', { name: 'User' }))
 
-    await expect.element(getByText('Tracks')).toBeVisible()
+    await expect.element(getByRole('dialog').getByText('Tracks')).toBeVisible()
     await expect.element(getByText('Polygons')).toBeVisible()
     await expect.element(getByText('Points')).toBeVisible()
     await expect.element(getByText('Bigquery')).toBeVisible()
