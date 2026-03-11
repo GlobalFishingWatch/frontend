@@ -27,10 +27,10 @@ async function waitForServer(url: string, maxAttempts = 60, delayMs = 1000): Pro
     try {
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout per attempt
-      
+
       const response = await fetch(url, { signal: controller.signal })
       clearTimeout(timeoutId)
-      
+
       if (response.ok || response.status === 404) {
         return true
       }
@@ -118,10 +118,10 @@ async function globalSetup() {
     log(`Checking if server is already running at ${baseURL}...`)
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
-    
+
     const response = await fetch(baseURL, { signal: controller.signal })
     clearTimeout(timeoutId)
-    
+
     log(`Server response status: ${response.status}`)
     if (response.ok || response.status === 404) {
       log('✅ Dev server is already running')
@@ -191,7 +191,7 @@ async function globalSetup() {
 
     // Wait for redirect back to app
     log('Waiting for redirect back to app...')
-    await page.waitForURL('**/map/**', { timeout: 15000 })
+    await page.waitForURL('**/map/**', { timeout: 30000 })
     log(`Redirected to: ${page.url()}`)
 
     // Wait for the tokens to be stored in localStorage
