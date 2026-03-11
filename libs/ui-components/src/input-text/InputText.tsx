@@ -97,7 +97,7 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
         key={inputKey}
         ref={inputRef}
         type={inputType}
-        {...(testId && { 'data-test': testId })}
+        {...(testId && { 'data-testid': testId })}
         {...inputProps}
         onInput={handleInput}
       />

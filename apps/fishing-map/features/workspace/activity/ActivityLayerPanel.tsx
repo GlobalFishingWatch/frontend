@@ -236,7 +236,7 @@ function ActivityLayerPanel({
               >
                 <div className={styles.filterButtonWrapper}>
                   <IconButton
-                    data-test={`activity-layer-panel-btn-filter-${dataview.id}`}
+                    testId={`activity-layer-panel-btn-filter-${dataview.id}`}
                     icon={filterOpen ? 'filter-on' : 'filter-off'}
                     size="small"
                     onClick={onToggleFilterOpen}
