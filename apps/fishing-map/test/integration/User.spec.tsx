@@ -2,9 +2,9 @@ import React from 'react'
 import { render } from 'test/appTestUtils'
 import { defaultState } from 'test/defaultState'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { userEvent } from 'vitest/browser'
 
 import App from 'features/app/App'
+import { setLoginExpired } from 'features/user/user.slice'
 import { makeStore } from 'store'
 
 describe('Help hints', () => {
