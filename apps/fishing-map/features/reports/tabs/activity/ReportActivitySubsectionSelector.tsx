@@ -110,6 +110,7 @@ function ReportActivitySubsectionSelector() {
       options={options}
       activeOption={selectedOption?.id}
       onSelect={onSelectSubsection}
+      className="selector"
     />
   )
 }

@@ -67,3 +67,9 @@
     font: var(--font-M);
   }
 }
+
+@media (width >= 767px) {
+  .selector .option button {
+    padding: 0.8rem;
+  }
+}
