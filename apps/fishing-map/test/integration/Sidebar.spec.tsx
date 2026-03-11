@@ -22,9 +22,11 @@ describe('Sidebar tools', () => {
   })
 
   it('should change language from selector', async () => {
-    const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [], true)
     const { getByTestId } = await render(<App />, { store })
+    const activitySection = getByTestId('activity-section')
+
+    await expect.element(activitySection.getByText(/activity/i)).toBeVisible()
 
     await getByTestId('language-toggle-button').click()
     await getByTestId('language-option-es').click()
@@ -32,7 +34,7 @@ describe('Sidebar tools', () => {
       expect(document.documentElement.getAttribute('lang')).toBe('es')
     })
 
-    expect(changeLanguageAction).toBeDefined()
+    await expect.element(activitySection.getByText(/actividad/i)).toBeVisible()
   })
 
   it('should toggle sidebar', async () => {
