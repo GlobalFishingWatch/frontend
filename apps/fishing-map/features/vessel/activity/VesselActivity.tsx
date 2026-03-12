@@ -45,7 +45,7 @@ const VesselActivity = () => {
     })
   }
 
-  const areaOptions: ChoiceOption<VesselProfileActivityMode>[] = useMemo(
+  const activityOptions: ChoiceOption<VesselProfileActivityMode>[] = useMemo(
     () => [
       {
         id: 'type',
@@ -88,8 +88,8 @@ const VesselActivity = () => {
       <div data-test="vessel-profile-info" className={styles.activityTitleContainer}>
         <VesselActivitySummary />
         <Choice
-          options={areaOptions}
-          size="small"
+          options={activityOptions}
+          size="medium"
           activeOption={activityMode}
           className={styles.choice}
           onSelect={setActivityMode}
@@ -100,7 +100,7 @@ const VesselActivity = () => {
           <Spinner />
         </div>
       )}
-      <div id={ACTIVITY_CONTAINER_ID}>
+      <div className={styles.activityWrapper} id={ACTIVITY_CONTAINER_ID}>
         {!eventsLoadingDebounce && activityMode === 'type' && <ActivityByType />}
         {!eventsLoadingDebounce && activityMode === 'voyage' && <ActivityByVoyage />}
       </div>
