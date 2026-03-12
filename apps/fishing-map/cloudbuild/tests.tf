@@ -101,49 +101,61 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
     }
 
     step {
-      id         = "Run integration tests"
-      name       = "mcr.microsoft.com/playwright:v1.57.0-noble"
-      entrypoint = "bash"
+      id   = "Run integration tests"
+      name = "mcr.microsoft.com/playwright:v1.57.0-noble"
       env = [
         "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
         "NEXT_PUBLIC_WORKSPACE_ENV=development",
+        "CI=1",
+        "NX_DAEMON=false",
+        "NODE_OPTIONS=--trace-warnings",
       ]
       secret_env = [
         "TEST_USER_EMAIL",
         "TEST_USER_PASSWORD"
       ]
-      args = ["-c", <<EOF
-        set -euo pipefail
-        
-        nx affected --target test | tee test-output.txt
+      script        = <<EOF
+#!/bin/bash
 
-        cat test-output.txt | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g; s/\x1b\[[?][0-9]*[a-zA-Z]//g' | awk '
-          function flush() {
-            if (target != "" && is_test) {
-              status = (failed ? "❌" : "✅")
-              printf "<details>\n<summary>%s %s</summary>\n\n```\n%s\n```\n\n</details>\n\n", status, target, output
-              if (failed) fail_count++; else pass_count++
-            }
-          }
-          BEGIN { print "## Test Results\n" }
-          /^> nx run /{
-            flush()
-            target = $4
-            is_test = ($4 ~ /:test$/)
-            output = ""
-            failed = 0
-          }
-          is_test {
-            output = (output == "" ? $0 : output "\n" $0)
-            if (/Unhandled Error/ || /exited with non-zero/ || /exiting with code 1/) failed = 1
-          }
-          END {
-            flush()
-            printf "---\n**Summary:** %d passed, %d failed\n", pass_count, fail_count
-          }
-        ' > /workspace/summary.txt
-      EOF
-      ]
+git fetch origin develop --depth=100
+
+# Run tests only for affected projects
+yarn nx affected \
+  --target test \
+  --base=origin/develop \
+  --head=HEAD \
+  --parallel=1 \
+  --forceExit \
+  | tee integration-tests-output
+
+# Parse the tests output to create a Github Comment
+
+cat integration-tests-output | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g; s/\x1b\[[?][0-9]*[a-zA-Z]//g' | awk '
+  function flush() {
+    if (target != "" && is_test) {
+      status = (failed ? "❌" : "✅")
+      printf "<details>\n<summary>%s %s</summary>\n\n```\n%s\n```\n\n</details>\n\n", status, target, output
+      if (failed) fail_count++; else pass_count++
+    }
+  }
+  BEGIN { print "## Test Results\n" }
+  /^> nx run /{
+    flush()
+    target = $4
+    is_test = ($4 ~ /:test$/)
+    output = ""
+    failed = 0
+  }
+  is_test {
+    output = (output == "" ? $0 : output "\n" $0)
+    if (/Unhandled Error/ || /exited with non-zero/ || /exiting with code 1/) failed = 1
+  }
+  END {
+    flush()
+    printf "---\n**Summary:** %d passed, %d failed\n", pass_count, fail_count
+  }
+' > /workspace/summary.txt
+EOF
       allow_failure = true
     }
 

@@ -6,7 +6,13 @@
   "tags": ["lib"],
   "targets": {
     "test": {
-      "dependsOn": ["^dist"]
+      "executor": "@nx/vitest:test",
+      "dependsOn": ["^dist"],
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "command": "vitest run --config=vitest.config.mts",
+        "reportsDirectory": "../../coverage/libs/deck-layer-composer"
+      }
     },
     "dist": {
       "executor": "@nx/js:tsc"
