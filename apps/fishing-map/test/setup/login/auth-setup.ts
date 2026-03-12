@@ -20,6 +20,7 @@ const AUTH_DIR = path.join(__dirname, '../../../../../.auth')
 const TOKENS_FILE = path.join(AUTH_DIR, 'tokens.json')
 const AUTH_LOG_FILE = path.join(AUTH_DIR, 'auth-setup.log')
 const NAVIGATION_TIMEOUT_MS = 10000
+const INVALID_CREDENTIALS_MESSAGE = 'email or password incorrect'
 
 async function hasValidTokens(): Promise<boolean> {
   if (!fs.existsSync(TOKENS_FILE)) {
@@ -58,6 +59,17 @@ function setupPageLogging(page: Page) {
   })
 }
 
+async function getAuthErrorMessage(page: Page): Promise<string> {
+  const bodyText = (await page.textContent('body').catch(() => ''))?.trim() || ''
+  if (!bodyText) {
+    return ''
+  }
+  if (bodyText.toLowerCase().includes(INVALID_CREDENTIALS_MESSAGE)) {
+    return 'Email or password incorrect'
+  }
+  return ''
+}
+
 async function runLoginFlow(email: string, password: string) {
   log('🔐 Setting up authenticated browser state...')
   log('Launching Playwright browser...')
@@ -90,9 +102,22 @@ async function runLoginFlow(email: string, password: string) {
     await page.getByRole('button', { name: 'Login' }).click()
 
     log('Waiting for redirect to proxy callback with access token...')
-    const accessToken = await Promise.race([
+    const accessToken = await Promise.race<string>([
       proxyServer.waitForAccessToken(),
-      rejectAfter(NAVIGATION_TIMEOUT_MS, 'Timed out waiting for auth callback'),
+      page.waitForURL('**/auth?error=true**', { timeout: NAVIGATION_TIMEOUT_MS }).then(async () => {
+        const authErrorMessage = await getAuthErrorMessage(page)
+        if (authErrorMessage.toLowerCase().includes(INVALID_CREDENTIALS_MESSAGE)) {
+          throw new Error(
+            'Authentication failed: invalid TEST_USER_EMAIL or TEST_USER_PASSWORD (gateway says "Email or password incorrect").'
+          )
+        }
+        throw new Error(
+          authErrorMessage
+            ? `Authentication rejected by gateway: ${authErrorMessage}`
+            : 'Authentication rejected by gateway (redirected to auth?error=true).'
+        )
+      }),
+      rejectAfter(NAVIGATION_TIMEOUT_MS + 1000, 'Timed out waiting for auth callback'),
     ])
     log(`Access token captured from callback URL: Yes (length: ${accessToken.length})`)
 
