@@ -49,7 +49,7 @@
       "cache": false,
       "outputs": [],
       "options": {
-        "command": "rimraf test/integration/__screenshots__ test/integration/__traces__",
+        "command": "rimraf test/integration/__screenshots__ test/integration/__traces__ test/__traces__/testingStoreMiddeware.spec.ts",
         "cwd": "apps/fishing-map"
       }
     },
