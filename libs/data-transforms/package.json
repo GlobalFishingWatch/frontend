@@ -26,6 +26,7 @@
     "@globalfishingwatch/deck-loaders": "0.x",
     "@tmcw/togeojson": "7.x",
     "@turf/bbox": "7.x",
+    "@turf/buffer": "7.x",
     "@turf/dissolve": "7.x",
     "@turf/helpers": "7.x",
     "es-toolkit": "1.x",
