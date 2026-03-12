@@ -108,6 +108,10 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
         "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
         "NEXT_PUBLIC_WORKSPACE_ENV=development",
       ]
+      secret_env = [
+        "TEST_USER_EMAIL",
+        "TEST_USER_PASSWORD"
+      ]
       args = ["-c", <<EOF
         set +e  # Don't exit on error
 
@@ -381,6 +385,14 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
       secret_manager {
         env          = "GITHUB_BOT_PRIVATE_KEY"
         version_name = "projects/gfw-int-infrastructure/secrets/GITHUB_BOT_PRIVATE_KEY/versions/latest"
+      }
+      secret_manager {
+        env          = "TEST_USER_EMAIL"
+        version_name = "projects/706952489382/secrets/E2E_TEST_ACCOUNT_EMAIL/versions/latest"
+      }
+      secret_manager {
+        env          = "TEST_USER_PASSWORD"
+        version_name = "projects/706952489382/secrets/E2E_TEST_ACCOUNT_PASSWORD/versions/latest"
       }
     }
 
