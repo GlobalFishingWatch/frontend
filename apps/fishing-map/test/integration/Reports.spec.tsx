@@ -197,17 +197,13 @@ describe('Reports', () => {
 
     await expect.element(getByTestId('reports-summary-expanded-container')).toBeVisible()
 
-    const filterInput = getByTestId('reports-summary-expanded-container')
-      .element()
-      .querySelector('input')
-    if (filterInput) {
-      await userEvent.click(filterInput)
-      await userEvent.keyboard('portugal')
-      await new Promise((resolve) => setTimeout(resolve, 100))
-      const option = getByText(/portugal/i)
-      await option.click()
-      filterInput.blur()
-    }
+    const filterInput = getByTestId('layer-schema-filter-flag-input')
+    await userEvent.click(filterInput)
+    await userEvent.keyboard('portugal')
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    const option = getByText(/portugal/i)
+    await option.click()
+    filterInput.element().blur()
     await getByTestId('confirm-filters-button').click()
     await new Promise((resolve) => setTimeout(resolve, 1000))
     await waitForReportFeaturesLoaded(jotaiStore)
@@ -329,10 +325,7 @@ describe('Global reports', () => {
 
     await new Promise((resolve) => setTimeout(resolve, 100))
     const tooltip = getByTestId('aggregated-graph-tooltip')
-    const tooltipElement = tooltip.element()
-    // const tooltipLabel = tooltipElement.querySelector('p')?.textContent
-    // expect(tooltipLabel).toContain(getUTCDateTime(lastStatsValue?.date))
-    const tooltipValues = tooltipElement.querySelector('li')?.textContent
+    const tooltipValues = tooltip.getByRole('listitem').element().textContent
     expect(tooltipValues).toContain(lastStatsValue!.value.toString())
   })
 
