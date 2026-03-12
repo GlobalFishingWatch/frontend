@@ -388,11 +388,11 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
       }
       secret_manager {
         env          = "TEST_USER_EMAIL"
-        version_name = "projects/706952489382/secrets/E2E_TEST_ACCOUNT_EMAIL_STA/versions/latest"
+        version_name = "projects/706952489382/secrets/E2E_TEST_ACCOUNT_EMAIL/versions/latest"
       }
       secret_manager {
         env          = "TEST_USER_PASSWORD"
-        version_name = "projects/706952489382/secrets/E2E_TEST_ACCOUNT_PASSWORD_STA/versions/latest"
+        version_name = "projects/706952489382/secrets/E2E_TEST_ACCOUNT_PASSWORD/versions/latest"
       }
     }
 
