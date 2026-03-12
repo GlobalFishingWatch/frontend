@@ -43,7 +43,7 @@ import {
   selectIsAnyVesselLocation,
   selectTrackCorrectionId,
   selectUrlDataviewInstancesOrder,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { formatInfoField } from 'utils/info'
 import { createDeepEqualSelector } from 'utils/selectors'
 

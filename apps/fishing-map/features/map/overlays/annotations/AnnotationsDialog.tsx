@@ -13,7 +13,7 @@ import { useAppDispatch } from 'features/app/app.hooks'
 import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
 import PopupWrapper from 'features/map/popups/PopupWrapper'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import { useMapAnnotation, useMapAnnotations } from './annotations.hooks'
 
@@ -24,7 +24,7 @@ const colors = [{ id: 'white', value: DEFAUL_ANNOTATION_COLOR }, ...LineColorBar
 const MapAnnotationsDialog = (): React.ReactNode | null => {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const { mapAnnotation, resetMapAnnotation, setMapAnnotation } = useMapAnnotation()
   const { deleteMapAnnotation, upsertMapAnnotations } = useMapAnnotations()
 
@@ -37,7 +37,7 @@ const MapAnnotationsDialog = (): React.ReactNode | null => {
       id: mapAnnotation?.id || Date.now(),
     })
     resetMapAnnotation()
-    dispatchQueryParams({ mapAnnotationsVisible: true })
+    replaceQueryParams({ mapAnnotationsVisible: true })
     dispatch(setWorkspaceSuggestSave(true))
   }
 

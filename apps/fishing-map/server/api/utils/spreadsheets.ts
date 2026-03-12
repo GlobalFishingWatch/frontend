@@ -1,7 +1,7 @@
 import { JWT } from 'google-auth-library'
 import { GoogleSpreadsheet } from 'google-spreadsheet'
 
-import { TRACK_CORRECTION_SPREADSHEET_ID_BY_WORKSPACE } from '../../../features/track-correction/track-correction.config'
+import { TRACK_CORRECTION_SPREADSHEET_ID_BY_WORKSPACE } from '../../../features/track-correction/track-correction.constants'
 
 const FEEDBACK_CLIENT_EMAIL = process.env.NEXT_SPREADSHEET_CLIENT_EMAIL
 const FEEDBACK_PRIVATE_KEY = process.env.NEXT_SPREADSHEET_PRIVATE_KEY?.replace(/\\n/gm, '\n') || ''

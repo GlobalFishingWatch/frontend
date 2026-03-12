@@ -5,7 +5,7 @@ import {
   selectPortReportCountry,
   selectPortReportName,
 } from 'features/reports/reports.config.selectors'
-import { selectReportPortId } from 'routes/routes.selectors'
+import { selectReportPortId } from 'router/routes.selectors'
 import { formatInfoField } from 'utils/info'
 
 import styles from './PortsReport.module.css'

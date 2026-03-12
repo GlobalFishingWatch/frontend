@@ -51,3 +51,10 @@ export const getNextColor = (colorCyclingType: ColorCyclingType, currentColors?:
   const nextColor = availableColors.find((c) => c.num === minRepeat) || availableColors[0]
   return nextColor
 }
+
+export function getWorkspaceReport(workspace: Workspace<WorkspaceState>, daysFromLatest?: number) {
+  const { ownerId, createdAt, ownerType, viewAccess, editAccess, state, ...workspaceProperties } =
+    workspace
+
+  return { ...workspaceProperties, state: { ...state, daysFromLatest } }
+}

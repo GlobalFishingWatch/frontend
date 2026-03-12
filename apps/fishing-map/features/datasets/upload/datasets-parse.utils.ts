@@ -1,7 +1,7 @@
 import { lineToPolygon } from '@turf/line-to-polygon'
 import { truncate } from '@turf/truncate'
 import type { Feature, FeatureCollection, Position } from 'geojson'
-import { parse } from 'papaparse'
+import papaparse from 'papaparse'
 
 import {
   type DatasetGeometryToGeoJSONGeometry,
@@ -135,7 +135,7 @@ export async function getDatasetParsed(
       if (!fileText) {
         throw new Error('datasetUpload.errors.csv.invalidData')
       }
-      const { data } = parse(fileText, {
+      const { data } = papaparse.parse(fileText, {
         download: false,
         dynamicTyping: true,
         header: true,

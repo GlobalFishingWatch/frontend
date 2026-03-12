@@ -23,7 +23,7 @@ import {
 } from 'features/search/search.selectors'
 import type { VesselSearchState } from 'features/search/search.types'
 import { selectIsGFWUser } from 'features/user/selectors/user.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import {
   cleanVesselSearchResults,
@@ -65,15 +65,14 @@ const hasFiltersActive = (filters: VesselSearchState): boolean => {
 
 export const useSearchFiltersConnect = () => {
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const searchFilters = useSelector(selectSearchFilters)
-  const { dispatchQueryParams } = useLocationConnect()
-
   const setSearchFilters = useCallback(
     (filter: VesselSearchState) => {
-      dispatchQueryParams(filter)
+      replaceQueryParams(filter)
       dispatch(cleanVesselSearchResults())
     },
-    [dispatch, dispatchQueryParams]
+    [dispatch, replaceQueryParams]
   )
 
   const hasFilters = hasFiltersActive(searchFilters)

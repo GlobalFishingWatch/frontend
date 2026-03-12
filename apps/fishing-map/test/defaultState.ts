@@ -1,3 +1,7 @@
+// @ts-nocheck
+
+import type { RootState } from 'store'
+
 import { TEST_END_DATE } from './test.config'
 
 const DEFAULT_STATE = {
@@ -7782,7 +7786,7 @@ const DEFAULT_STATE = {
   },
 }
 
-function getDefaultState() {
+function getDefaultState(): RootState {
   return {
     ...DEFAULT_STATE,
     workspace: {

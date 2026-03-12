@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
+import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
-import Link from 'redux-first-router-link'
 
 import { IconButton } from '@globalfishingwatch/ui-components'
 
@@ -30,26 +30,27 @@ import {
   cleanReportPayload,
   cleanReportQuery,
 } from 'features/workspace/workspace.slice'
-import { REPORT_ROUTES, VESSEL, WORKSPACE_VESSEL, WORKSPACES_LIST } from 'routes/routes'
-import { useLocationConnect } from 'routes/routes.hook'
+import { REPORT_ROUTES, VESSEL, WORKSPACE_VESSEL, WORKSPACES_LIST } from 'router/routes'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyReportLocation,
   selectIsAnyVesselLocation,
   selectIsRouteWithWorkspace,
   selectIsVesselGroupReportLocation,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
+import { mapRouteIdToType, toValidRoutePath } from 'router/routes.utils'
 
 import styles from '../SidebarHeader.module.css'
 
 function NavigationHistoryButton() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const workspaceHistoryNavigation = useSelector(selectWorkspaceHistoryNavigation)
   const isAnyVesselLocation = useSelector(selectIsAnyVesselLocation)
   const isAnyReportLocation = useSelector(selectIsAnyReportLocation)
   const isRouteWithWorkspace = useSelector(selectIsRouteWithWorkspace)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
-  const { dispatchQueryParams } = useLocationConnect()
   const reportAreaIds = useSelector(selectReportAreaIds)
   const lastWorkspaceVisited = workspaceHistoryNavigation[workspaceHistoryNavigation.length - 1]
   const setTrackCorrectionId = useSetTrackCorrectionId()
@@ -76,11 +77,15 @@ function NavigationHistoryButton() {
   }, [isAnyVesselLocation, isAnyReportLocation, isVesselGroupReportLocation, isRouteWithWorkspace])
 
   const resetQueryParams = useCallback(() => {
-    dispatchQueryParams({ ...EMPTY_SEARCH_FILTERS, userTab: undefined })
-  }, [dispatchQueryParams])
+    replaceQueryParams({ ...EMPTY_SEARCH_FILTERS, userTab: undefined })
+  }, [replaceQueryParams])
 
-  const { start, end, latitude, longitude, zoom } = lastWorkspaceVisited.query
-  const onCloseClick = useCallback(() => {
+  if (!workspaceHistoryNavigation.length || !lastWorkspaceVisited) {
+    return null
+  }
+
+  const { start, end, latitude, longitude, zoom } = lastWorkspaceVisited.search
+  const onCloseClick = () => {
     resetSidebarScroll()
 
     dispatch(cleanVesselSearchResults())
@@ -114,70 +119,53 @@ function NavigationHistoryButton() {
     })
 
     trackAnalytics()
-  }, [
-    dispatch,
-    end,
-    latitude,
-    longitude,
-    start,
-    zoom,
-    reportAreaIds,
-    setMapCoordinates,
-    setTimerange,
-    setTrackCorrectionId,
-    trackAnalytics,
-  ])
-
-  const isPreviousLocationReport = REPORT_ROUTES.includes(lastWorkspaceVisited.type)
-
-  if (workspaceHistoryNavigation.length) {
-    const previousLocation =
-      lastWorkspaceVisited.type === VESSEL || lastWorkspaceVisited.type === WORKSPACE_VESSEL
-        ? t((t) => t.vessel.title)
-        : isPreviousLocationReport
-          ? t((t) => t.analysis.title)
-          : isVesselGroupReportLocation
-            ? t((t) => t.vesselGroup.vesselGroupProfile)
-            : lastWorkspaceVisited.type === WORKSPACES_LIST
-              ? t((t) => t.workspace.list)
-              : t((t) => t.workspace.title)
-
-    const tooltip = t((t) => t.common.navigateBackTo, {
-      section: previousLocation.toLocaleLowerCase(),
-    })
-
-    const query = {
-      ...(!isPreviousLocationReport
-        ? { ...cleanReportQuery(lastWorkspaceVisited.query || {}), ...EMPTY_SEARCH_FILTERS }
-        : lastWorkspaceVisited.query),
-    }
-    const linkTo = {
-      ...lastWorkspaceVisited,
-      payload: {
-        ...(!isPreviousLocationReport
-          ? cleanReportPayload(lastWorkspaceVisited.payload)
-          : lastWorkspaceVisited.payload),
-      },
-      query: {
-        ...query,
-        dataviewInstances: cleanVesselProfileDataviewInstances(query.dataviewInstances),
-      },
-      isHistoryNavigation: true,
-    }
-
-    return (
-      <Link
-        className={cx(styles.workspaceLink, 'print-hidden')}
-        to={linkTo}
-        onClick={() => {
-          resetQueryParams()
-          onCloseClick()
-        }}
-      >
-        <IconButton type="border" icon="close" tooltip={tooltip} />
-      </Link>
-    )
   }
+
+  // Determine route type from stored path pattern for display logic
+  const previousRouteType = mapRouteIdToType(lastWorkspaceVisited.to)
+  const isPreviousLocationReport = REPORT_ROUTES.includes(previousRouteType)
+
+  const previousLocation =
+    previousRouteType === VESSEL || previousRouteType === WORKSPACE_VESSEL
+      ? t((t) => t.vessel.title)
+      : isPreviousLocationReport
+        ? t((t) => t.analysis.title)
+        : isVesselGroupReportLocation
+          ? t((t) => t.vesselGroup.vesselGroupProfile)
+          : previousRouteType === WORKSPACES_LIST
+            ? t((t) => t.workspace.list)
+            : t((t) => t.workspace.title)
+
+  const tooltip = t((t) => t.common.navigateBackTo, {
+    section: previousLocation.toLocaleLowerCase(),
+  })
+
+  const search = {
+    ...(!isPreviousLocationReport
+      ? { ...cleanReportQuery(lastWorkspaceVisited.search || {}), ...EMPTY_SEARCH_FILTERS }
+      : lastWorkspaceVisited.search),
+  }
+  const params = !isPreviousLocationReport
+    ? cleanReportPayload(lastWorkspaceVisited.params || {})
+    : lastWorkspaceVisited.params
+
+  return (
+    <Link
+      className={cx(styles.workspaceLink, 'print-hidden')}
+      to={toValidRoutePath(lastWorkspaceVisited.to, lastWorkspaceVisited.params)}
+      params={params}
+      search={{
+        ...search,
+        dataviewInstances: cleanVesselProfileDataviewInstances(search.dataviewInstances),
+      }}
+      onClick={() => {
+        resetQueryParams()
+        onCloseClick()
+      }}
+    >
+      <IconButton type="border" icon="close" tooltip={tooltip} />
+    </Link>
+  )
 }
 
 export default NavigationHistoryButton

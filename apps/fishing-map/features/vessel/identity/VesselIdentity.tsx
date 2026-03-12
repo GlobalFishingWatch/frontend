@@ -3,7 +3,7 @@ import { Fragment, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
-import { saveAs } from 'file-saver'
+import filesaver from 'file-saver'
 
 import type { VesselRegistryOwner } from '@globalfishingwatch/api-types'
 import {
@@ -41,8 +41,8 @@ import {
   getCurrentIdentityVessel,
 } from 'features/vessel/vessel.utils'
 import VesselInfoCorrection from 'features/workspace/vessels/VesselInfoCorrection'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectIsVesselLocation } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectIsVesselLocation } from 'router/routes.selectors'
 import {
   EMPTY_FIELD_PLACEHOLDER,
   formatInfoField,
@@ -57,11 +57,11 @@ import styles from './VesselIdentity.module.css'
 
 const VesselIdentity = () => {
   const { t, i18n } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const vesselData = useSelector(selectVesselInfoData)
   const identityId = useSelector(selectVesselIdentityId)
   const identitySource = useSelector(selectVesselIdentitySource)
   const isStandaloneVesselLocation = useSelector(selectIsVesselLocation)
-  const { dispatchQueryParams } = useLocationConnect()
   const { setTimerange } = useTimerangeConnect()
   const { identityTabs } = useVesselIdentityTabs()
   const isGFWUser = useSelector(selectIsGFWUser)
@@ -73,7 +73,7 @@ const VesselIdentity = () => {
   })
 
   const onTabClick: TabsProps<VesselIdentitySourceEnum>['onTabClick'] = (tab) => {
-    dispatchQueryParams({ vesselIdentitySource: tab.id })
+    replaceQueryParams({ vesselIdentitySource: tab.id })
     trackEvent({
       category: TrackCategory.VesselProfile,
       action: 'click_vessel_source_tab',
@@ -121,7 +121,7 @@ const VesselIdentity = () => {
       }
       const data = parseVesselToCSV(filteredVesselIdentity)
       const blob = new Blob([data], { type: 'text/plain;charset=utf-8' })
-      saveAs(blob, `${shipname}-${flag}.csv`)
+      filesaver.saveAs(blob, `${shipname}-${flag}.csv`)
       trackEvent({
         category: TrackCategory.VesselProfile,
         action: 'vessel_identity_download',

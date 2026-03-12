@@ -6,6 +6,7 @@ const foldersToExtract = [
   'hooks',
   'pages',
   'routes',
+  'router',
   'server',
   'types',
   'utils',

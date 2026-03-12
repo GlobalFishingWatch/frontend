@@ -33,7 +33,7 @@ import {
   selectIsVesselGroupReportLocation,
   selectReportVesselGroupId,
   selectVesselId,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 
 import {

@@ -47,14 +47,14 @@ import {
   selectWorkspaceStatus,
   selectWorkspaceVisibleEventsArray,
 } from 'features/workspace/workspace.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import {
   selectIsAnyReportLocation,
   selectIsIndexLocation,
   selectIsUserLocation,
   selectIsWorkspaceLocation,
   selectVesselsMaxTimeGapHours,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { useDrawLayerInstance } from './overlays/draw/draw.hooks'
@@ -124,10 +124,10 @@ export const useTimebarTracksGraphSteps = () => {
 
 export const useGlobalConfigConnect = () => {
   const { start, end } = useTimerangeConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const timebarHighlightedTime = useSelector(selectHighlightedTime)
   const highlightEventIds = useSelector(selectHighlightedEvents)
   const viewState = useMapViewState()
-  const { dispatchQueryParams } = useLocationConnect()
   const { t } = useTranslation()
   const isWorkspace = useSelector(selectIsWorkspaceLocation)
   const showTimeComparison = useSelector(selectShowTimeComparison)
@@ -173,7 +173,7 @@ export const useGlobalConfigConnect = () => {
         layer.props.category === DataviewCategory.Detections
       ) {
         const categoryQueryParam = `${layer.props.category}VisualizationMode`
-        dispatchQueryParams({ [categoryQueryParam]: HEATMAP_ID })
+        replaceQueryParams({ [categoryQueryParam]: HEATMAP_ID })
         if (isWorkspace) {
           toast(
             t((t) => t.toasts.maxPointsVisualizationExceeded),
@@ -184,7 +184,7 @@ export const useGlobalConfigConnect = () => {
         }
       }
     },
-    [dispatchQueryParams, isWorkspace, t]
+    [isWorkspace, replaceQueryParams, t]
   )
 
   return useMemo(() => {

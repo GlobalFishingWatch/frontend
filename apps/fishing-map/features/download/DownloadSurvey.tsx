@@ -15,7 +15,7 @@ import {
 import ActivityDownloadError from 'features/download/DownloadActivityError'
 import { selectUserGroupsClean } from 'features/user/selectors/user.permissions.selectors'
 import { selectUserData } from 'features/user/selectors/user.selectors'
-import type { ContactConsent, FeedbackFormData } from 'pages/api/downloadSurvey'
+import type { ContactConsent, FeedbackFormData } from 'routes/api/downloadSurvey'
 
 import styles from './DownloadSurvey.module.css'
 

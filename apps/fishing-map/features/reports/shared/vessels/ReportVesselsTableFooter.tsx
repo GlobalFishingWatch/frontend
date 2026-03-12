@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import cx from 'classnames'
 import { uniq } from 'es-toolkit'
-import { saveAs } from 'file-saver'
-import { unparse as unparseCSV } from 'papaparse'
+import filesaver from 'file-saver'
+import papaparse from 'papaparse'
 
 import { Button, IconButton } from '@globalfishingwatch/ui-components'
 
@@ -26,7 +26,7 @@ import {
 } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import VesselGroupAddButton from 'features/vessel-groups/VesselGroupAddButton'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { getEventLabel } from 'utils/analytics'
 
 import {
@@ -44,7 +44,7 @@ type ReportVesselsTableFooterProps = {
 
 export default function ReportVesselsTableFooter({ activityUnit }: ReportVesselsTableFooterProps) {
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const reportCategory = useSelector(selectReportCategory)
   const reportSubCategory = useSelector(selectReportSubCategory)
   const reportAreaName = useSelector(selectReportAreaName)
@@ -96,12 +96,12 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
         }
       })
     if (vessels?.length) {
-      const csv = unparseCSV(vessels)
+      const csv = papaparse.unparse(vessels)
       const blob = new Blob([csv], { type: 'text/plain;charset=utf-8' })
       const fileName = [reportSubCategory, `${reportUnit}s`, reportAreaName || 'global', start, end]
         .filter(Boolean)
         .join('-')
-      saveAs(blob, `${fileName}.csv`)
+      filesaver.saveAs(blob, `${fileName}.csv`)
       trackEvent({
         category: TrackCategory.VesselGroupReport,
         action: 'vessel_report_download_csv',
@@ -116,13 +116,13 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
   }
 
   const onPrevPageClick = () => {
-    dispatchQueryParams({ reportVesselPage: pagination.page - 1 })
+    replaceQueryParams({ reportVesselPage: pagination.page - 1 })
   }
   const onNextPageClick = () => {
-    dispatchQueryParams({ reportVesselPage: pagination.page + 1 })
+    replaceQueryParams({ reportVesselPage: pagination.page + 1 })
   }
   const onShowMoreClick = () => {
-    dispatchQueryParams({
+    replaceQueryParams({
       reportVesselResultsPerPage: REPORT_SHOW_MORE_VESSELS_PER_PAGE,
       reportVesselPage: 0,
     })
@@ -132,7 +132,7 @@ export default function ReportVesselsTableFooter({ activityUnit }: ReportVessels
     })
   }
   const onShowLessClick = () => {
-    dispatchQueryParams({
+    replaceQueryParams({
       reportVesselResultsPerPage: REPORT_VESSELS_PER_PAGE,
       reportVesselPage: 0,
     })

@@ -7,8 +7,8 @@ import { InputText, Switch } from '@globalfishingwatch/ui-components'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectIsGFWDeveloper, selectIsGFWTestGroup } from 'features/user/selectors/user.selectors'
 import { selectIsTurningTidesWorkspace } from 'features/workspace/workspace.selectors'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectVesselsMaxTimeGapHours } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectVesselsMaxTimeGapHours } from 'router/routes.selectors'
 
 import {
   DebugOption,
@@ -22,7 +22,7 @@ import styles from './DebugMenu.module.css'
 
 const DebugFeatureFlags: React.FC = () => {
   const dispatch = useAppDispatch()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const isGFWDeveloper = useSelector(selectIsGFWDeveloper)
   const isGFWTestGroup = useSelector(selectIsGFWTestGroup)
   const debugOptions = useSelector(selectDebugOptions)
@@ -80,10 +80,10 @@ const DebugFeatureFlags: React.FC = () => {
           onClick={() => {
             dispatch(toggleDebugOption(DebugOption.VesselsMaxTimeGapHours))
             if (debugOptions.vesselsMaxTimeGapHours) {
-              dispatchQueryParams({ vesselsMaxTimeGapHours: undefined })
+              replaceQueryParams({ vesselsMaxTimeGapHours: undefined })
             } else {
               dispatch(setDebugOption({ option: DebugOption.VesselsAsPositions, value: true }))
-              dispatchQueryParams({ vesselsMaxTimeGapHours: 3 })
+              replaceQueryParams({ vesselsMaxTimeGapHours: 3 })
             }
           }}
         />
@@ -99,7 +99,7 @@ const DebugFeatureFlags: React.FC = () => {
               const value = Number(e.target.value)
               // Validate input: must be a valid number between 0 and 24
               if (!isNaN(value) && value >= 0 && value <= 24) {
-                dispatchQueryParams({ vesselsMaxTimeGapHours: value })
+                replaceQueryParams({ vesselsMaxTimeGapHours: value })
               }
             }}
           />

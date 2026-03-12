@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
+import { Link } from '@tanstack/react-router'
 import cx from 'classnames'
-import Link from 'redux-first-router-link'
 
 import { DataviewType } from '@globalfishingwatch/api-types'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
@@ -16,8 +16,8 @@ import {
 import type { ExtendedFeatureByVesselEventPort } from 'features/map/map.slice'
 import { useClickedEventConnect } from 'features/map/map-interactions.hooks'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
-import { PORT_REPORT } from 'routes/routes'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { selectLocationQuery } from 'router/routes.selectors'
+import type { QueryParams } from 'types'
 
 import { ReportCategory } from '../reports.types'
 
@@ -64,28 +64,26 @@ function PortsReportLink({ children, port, tooltip }: PortsReportLinkProps) {
         visible: true,
       })
     })
-    dataviewInstances.push(...parsedInstances)
+    dataviewInstances.push(...(parsedInstances as typeof dataviewInstances))
   }
 
   return (
     <Link
       className={cx(styles.link)}
-      to={{
-        type: PORT_REPORT,
-        payload: {
-          category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-          workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-          portId: port.id,
-        },
-        query: {
-          ...query,
-          reportCategory: ReportCategory.Events,
-          portsReportName: port.name,
-          portsReportCountry: port.country || port.flag,
-          portsReportDatasetId: port.datasetId,
-          dataviewInstances,
-        },
+      to="/$category/$workspaceId/ports-report/$portId"
+      params={{
+        category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+        workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+        portId: port.id!,
       }}
+      search={(prev: QueryParams) => ({
+        ...prev,
+        reportCategory: ReportCategory.Events,
+        portsReportName: port.name,
+        portsReportCountry: port.country || port.flag,
+        portsReportDatasetId: port.datasetId,
+        dataviewInstances,
+      })}
       onClick={handleOnClick}
     >
       <Tooltip content={tooltip}>{children}</Tooltip>

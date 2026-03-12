@@ -1,10 +1,6 @@
 import type { DataviewInstance } from '@globalfishingwatch/api-types'
 import { DataviewType } from '@globalfishingwatch/api-types'
-import {
-  DATASET_VERSION_SEPARATOR,
-  PIPE_DATASET_ID,
-  PIPE_DATASET_VERSION,
-} from '@globalfishingwatch/datasets-client'
+import { DATASET_VERSION_SEPARATOR, PIPE_DATASET_ID, PIPE_DATASET_VERSION } from '@globalfishingwatch/datasets-client'
 import { BasemapType } from '@globalfishingwatch/deck-layers'
 
 import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/workspaces-vms'
@@ -12,8 +8,7 @@ import { VMS_VESSEL_DATAVIEW_SLUGS } from 'data/workspaces-vms'
 import { PUBLIC_SUFIX } from './config'
 
 type WorkspaceEnv = 'development' | 'production'
-export const WORKSPACE_ENV =
-  (process.env.NEXT_PUBLIC_WORKSPACE_ENV as WorkspaceEnv) || (process.env.NODE_ENV as WorkspaceEnv) || 'production'
+export const WORKSPACE_ENV = (import.meta.env.VITE_WORKSPACE_ENV as WorkspaceEnv) || (import.meta.env.MODE as WorkspaceEnv) || 'production'
 
 export function getWorkspaceEnv(): WorkspaceEnv {
   return WORKSPACE_ENV
@@ -107,12 +102,9 @@ export const TEMPLATE_DATAVIEW_SLUGS = [
   TEMPLATE_CLUSTERS_DATAVIEW_SLUG,
 ]
 
-export const DEFAULT_FISHING_DATASET_ID =
-  `public-global-fishing-effort${DATASET_VERSION_SEPARATOR}${PIPE_DATASET_ID}` as const
-export const DEFAULT_PRESENCE_DATASET_ID =
-  `public-global-presence${DATASET_VERSION_SEPARATOR}${PIPE_DATASET_ID}` as const
-export const DEFAULT_IDENTITY_DATASET_ID =
-  `public-global-vessel-identity${DATASET_VERSION_SEPARATOR}${PIPE_DATASET_ID}` as const
+export const DEFAULT_FISHING_DATASET_ID = `public-global-fishing-effort${DATASET_VERSION_SEPARATOR}${PIPE_DATASET_ID}` as const
+export const DEFAULT_PRESENCE_DATASET_ID = `public-global-presence${DATASET_VERSION_SEPARATOR}${PIPE_DATASET_ID}` as const
+export const DEFAULT_IDENTITY_DATASET_ID = `public-global-vessel-identity${DATASET_VERSION_SEPARATOR}${PIPE_DATASET_ID}` as const
 
 const PRESENCE_DATAVIEWS = [
   PRESENCE_DATAVIEW_SLUG, // In case the workspace doesn't have the dataview added,
