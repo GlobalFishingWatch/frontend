@@ -124,14 +124,14 @@
       }
     },
     "test": {
-      "executor": "nx:run-commands",
+      "executor": "@nx/vitest:test",
       "cache": true,
       "inputs": ["default", "^production"],
-      "outputs": ["{workspaceRoot}/coverage/apps/fishing-map"],
+      "outputs": ["{options.reportsDirectory}"],
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
         "command": "vitest run --config=vitest.config.mts",
-        "cwd": "apps/fishing-map"
+        "reportsDirectory": "../../coverage/apps/fishing-map"
       }
     },
     "test:ci": {
