@@ -106,7 +106,7 @@ function DetectionsSection(): React.ReactElement<any> {
   return (
     <Section
       id={DataviewCategory.Detections}
-      data-testid="detections-section"
+      testId="detections-section"
       className="hover-target"
       title={
         <span>

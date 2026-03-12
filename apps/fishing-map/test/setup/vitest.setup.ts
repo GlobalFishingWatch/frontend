@@ -2,10 +2,10 @@ import i18n from 'i18next'
 import { Settings } from 'luxon'
 import { beforeAll, vi } from 'vitest'
 
-import { TEST_END_DATE } from './test.config'
+import { TEST_END_DATE } from '../test.config'
 
-import '../pages/styles.css'
-import './test-styles.css'
+import '../../pages/styles.css'
+import '../test-styles.css'
 import '@globalfishingwatch/ui-components/base.css'
 import '@globalfishingwatch/timebar/timebar-settings.css'
 
