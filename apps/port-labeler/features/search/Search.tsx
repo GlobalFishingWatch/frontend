@@ -1,5 +1,4 @@
 import { Fragment, useCallback, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 
 import type { SelectOption } from '@globalfishingwatch/ui-components'
@@ -11,11 +10,10 @@ import { useSearchConnect } from './search.hooks'
 
 import styles from './Search.module.css'
 
-const Search: React.FC = (props) => {
-  const { t, i18n } = useTranslation()
+const Search: React.FC = () => {
   const [open, setOpen] = useState(false)
   const { searchPoints } = useSearchConnect()
-  const [searchType, setSearchType] = useState(undefined)
+  const [searchType, setSearchType] = useState<SelectOption | undefined>(undefined)
   const [searchValue, setSearchValue] = useState('')
   const dispatch = useDispatch()
 
@@ -41,12 +39,15 @@ const Search: React.FC = (props) => {
   }, [])
 
   const seach = useCallback(() => {
+    if (!searchType) {
+      return
+    }
     searchPoints(searchType.id, searchValue)
   }, [searchPoints, searchType, searchValue])
 
   const clear = useCallback(() => {
     dispatch(setSelectedPoints([]))
-  }, [setSelectedPoints])
+  }, [dispatch])
 
   return (
     <Fragment>

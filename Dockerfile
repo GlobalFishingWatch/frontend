@@ -1,6 +1,6 @@
 FROM node:24-slim AS builder
 WORKDIR /app
-RUN yarn set version 4.12.0
+RUN yarn set version 4.13.0
 COPY . .
 RUN yarn install --immutable --inline-builds
 

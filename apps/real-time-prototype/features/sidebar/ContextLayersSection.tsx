@@ -1,4 +1,5 @@
 import type { RGBA } from 'color-blend/dist/types'
+import type { ContextLayerId } from 'layers/context/context.config'
 import { CONTEXT_LAYERS_IDS, CONTEXT_LAYERS_OBJECT } from 'layers/context/context.config'
 import {
   useAddContextInLayer,
@@ -19,7 +20,7 @@ function ContextLayersSection() {
   const addContextId = useAddContextInLayer()
   const contextIds = useContextsLayerIds()
 
-  const handleContextLayerToggle = (layerId: string) => {
+  const handleContextLayerToggle = (layerId: ContextLayerId) => {
     if (contextIds.includes(layerId)) {
       removeContextId(layerId)
     } else {

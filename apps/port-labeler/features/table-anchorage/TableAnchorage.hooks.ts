@@ -12,15 +12,15 @@ type ValueManager = {
 export function useValueManagerConnect(): ValueManager {
     const dispatch = useDispatch()
 
-    const onPointValueChange = useCallback((id, value) => {
+    const onPointValueChange = useCallback((id: string, value: string) => {
         dispatch(changePointValue({ id, value }))
     }, [dispatch])
 
-    const onSubareaChange = useCallback((id, value) => {
+    const onSubareaChange = useCallback((id: string, value: string) => {
         dispatch(changeSubareaValue({ id, value }))
     }, [dispatch])
 
-    const onPortChange = useCallback((id, value) => {
+    const onPortChange = useCallback((id: string, value: string) => {
         dispatch(changePortValue({ id, value }))
     }, [dispatch])
 

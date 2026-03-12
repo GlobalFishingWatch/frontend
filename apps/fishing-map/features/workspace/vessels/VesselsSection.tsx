@@ -183,7 +183,7 @@ function VesselsSection(): React.ReactElement<any> {
   return (
     <Section
       id={DataviewCategory.Vessels}
-      data-testid="vessels-section"
+      testId="vessels-section"
       hasVisibleDataviews={hasVisibleDataviews}
       title={
         <Fragment>

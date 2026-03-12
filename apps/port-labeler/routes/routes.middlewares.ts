@@ -12,7 +12,7 @@ import type { UpdateQueryParamsAction } from './routes.actions'
 export const routerQueryMiddleware: Middleware =
   ({ getState }: { getState: () => RootState }) =>
   (next) =>
-  (action: UpdateQueryParamsAction) => {
+  (action: any) => {
     const routesActions = Object.keys(routesMap)
     // check if action type matches a route type
     const isRouterAction = routesActions.includes(action.type)
@@ -27,8 +27,8 @@ export const routerQueryMiddleware: Middleware =
           ...prevQuery,
           ...newAction.query,
         }
-        if (newAction.query[ACCESS_TOKEN_STRING]) {
-          delete newAction.query[ACCESS_TOKEN_STRING]
+        if ((newAction.query as any)[ACCESS_TOKEN_STRING]) {
+          delete (newAction.query as any)[ACCESS_TOKEN_STRING]
         }
       }
       const { query } = action

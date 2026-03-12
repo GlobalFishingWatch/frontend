@@ -11,7 +11,7 @@ import { useViewport } from '../map-viewport.hooks'
 
 import styles from './MapControls.module.css'
 
-const MapControls = ({ bounds }: { bounds: MiniglobeBounds | null }) => {
+const MapControls = ({ bounds }: { bounds: MiniglobeBounds | undefined }) => {
   const { viewport, setMapCoordinates } = useViewport()
   const { t } = useTranslation()
 

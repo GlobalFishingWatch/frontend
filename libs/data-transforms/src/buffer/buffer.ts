@@ -1,5 +1,6 @@
+import { bbox } from '@turf/bbox'
+import { buffer } from '@turf/buffer'
 import { polygon } from '@turf/helpers'
-import { bbox, buffer } from '@turf/turf'
 import type { Feature, GeoJsonProperties, MultiPolygon, Polygon } from 'geojson'
 
 import { BUFFERED_ANTIMERIDIAN_LON, wrapFeatureLongitudes } from '../wrap-longitudes'

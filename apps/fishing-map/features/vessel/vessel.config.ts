@@ -79,6 +79,7 @@ export const CUSTOM_VMS_IDENTITY_FIELD_GROUPS: CustomVMSGroup = {
     [{ key: 'fishingZone' }, { key: 'mainGear' }, { key: 'targetSpecies' }],
     [{ key: 'externalId' }],
   ],
+  [SelfReportedSource.Montenegro]: [[{ key: 'length' }]],
   [SelfReportedSource.Chile]: [[{ key: 'sourceFleet' }]],
 }
 

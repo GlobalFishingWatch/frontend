@@ -32,15 +32,15 @@ function TableAnchorage() {
   const dispatch = useDispatch()
   type orderDirectionType = 'asc' | 'desc' | ''
 
-  const [orderColumn, setOrderColumn] = useState(null)
+  const [orderColumn, setOrderColumn] = useState<string | null>(null)
   const [orderDirection, setOrderDirection] = useState<orderDirectionType>('')
-  const [anchorageChangeCountryOpen, setAnchorageChangeCountryOpen] = useState<PortPosition>(null)
+  const [anchorageChangeCountryOpen, setAnchorageChangeCountryOpen] = useState<PortPosition | null>(null)
 
-  const onToggleHeader = useCallback((column, order) => {
+  const onToggleHeader = useCallback((column: string, order: string) => {
     setOrderColumn(column)
-    setOrderDirection(order)
+    setOrderDirection(order as orderDirectionType)
     dispatch(sortPoints({ orderColumn: column, orderDirection: order }))
-  }, [])
+  }, [dispatch])
 
   const mapBounds = useMapBounds()
 
@@ -62,7 +62,10 @@ function TableAnchorage() {
   }, [])
 
   const changeAnchorageCountry = useCallback(
-    (newCountry) => {
+    (newCountry: string) => {
+      if (!anchorageChangeCountryOpen) {
+        return
+      }
       dispatch(
         changeAnchoragePort({
           id: anchorageChangeCountryOpen.s2id,
@@ -74,7 +77,7 @@ function TableAnchorage() {
         iso3: newCountry,
       })
     },
-    [anchorageChangeCountryOpen]
+    [anchorageChangeCountryOpen, dispatch]
   )
 
   const screenFilteredRecords = useMemo(() => {
@@ -112,7 +115,7 @@ function TableAnchorage() {
           tooltip="Toggle extra data"
           tooltipPlacement="bottom"
           className={styles.actionButton}
-          onClick={() => dispatch(toogleExtraData())}
+          onClick={() => dispatch(toogleExtraData([]))}
         />
       </div>
 
@@ -164,12 +167,12 @@ function TableAnchorage() {
                 ? {
                     id: anchorageChangeCountryOpen.iso3,
                     label:
-                      flags[anchorageChangeCountryOpen.iso3] ?? anchorageChangeCountryOpen.iso3,
+                      flags[anchorageChangeCountryOpen.iso3 as keyof typeof flags] ?? anchorageChangeCountryOpen.iso3,
                   }
                 : undefined
             }
             onSelect={(selected: SelectOption) => {
-              changeAnchorageCountry(selected.id)
+              changeAnchorageCountry(String(selected.id))
             }}
           />
         </div>
