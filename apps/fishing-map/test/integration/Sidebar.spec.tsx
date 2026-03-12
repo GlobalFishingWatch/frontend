@@ -12,7 +12,7 @@ describe('Sidebar tools', () => {
     vi.clearAllMocks()
   })
 
-  it.only('should open feedback modal', async () => {
+  it('should open feedback modal', async () => {
     const store = makeStore(defaultState, [], true)
     const { getByTestId, getByRole } = await render(<App />, { store })
 
