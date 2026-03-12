@@ -8,9 +8,14 @@ const FAO = 'FAO Major Fishing Areas'
 const RFMO = 'Regional Fisheries Bodies'
 const HIGH_SEAS = 'High Seas'
 
-export const CONTEXT_LAYERS_IDS = [EEZ, MPAS_WDPA, MPAS_PS, FAO, RFMO, HIGH_SEAS, GRID]
+export const CONTEXT_LAYERS_IDS = [EEZ, MPAS_WDPA, MPAS_PS, FAO, RFMO, HIGH_SEAS, GRID] as const
+export type ContextLayerId = (typeof CONTEXT_LAYERS_IDS)[number]
+type ContextLayerConfig = {
+  dataset: string
+  lineColor: number[]
+}
 
-export const CONTEXT_LAYERS_OBJECT = {
+export const CONTEXT_LAYERS_OBJECT: Record<ContextLayerId, ContextLayerConfig> = {
   [GRID]: {
     dataset: 'public-graticules/user-context-layer-v1',
     lineColor: [252, 162, 111, 15],

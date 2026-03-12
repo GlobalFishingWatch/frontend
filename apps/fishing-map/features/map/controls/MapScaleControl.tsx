@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { distance as turfDistance } from '@turf/turf'
+import { distance as turfDistance } from '@turf/distance'
 
 import { useMapViewport } from '../map-viewport.hooks'
 

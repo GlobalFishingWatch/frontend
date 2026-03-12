@@ -9,7 +9,7 @@ import { useViewport } from '../map-viewport.hooks'
 export const useMapBounds = () => {
     const { viewport } = useViewport()
     const instance = useMapInstance()
-    const [bounds, setBounds] = useState<MiniglobeBounds>(null)
+    const [bounds, setBounds] = useState<MiniglobeBounds | undefined>(undefined)
     useEffect(() => {
         if (instance) {
             const rawBounds = instance.getBounds()

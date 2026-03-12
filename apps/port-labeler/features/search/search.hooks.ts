@@ -11,6 +11,7 @@ import {
   setSelectedPoints,
 } from 'features/labeler/labeler.slice'
 import { useMapConnect } from 'features/map/map.hooks'
+import type { PortPosition, PortSubarea } from 'types'
 
 type Dictionary<T> = Record<string, T>
 
@@ -32,41 +33,43 @@ export const useSearchConnect = () => {
   }
 
   const filterFiels = (
-    records,
+    records: PortPosition[],
     country: string | null,
     term: string,
-    fieldValues,
+    fieldValues: Dictionary<Dictionary<string>>,
     optionNames: Dictionary<string> | null,
     mainSearchProperties: string[]
-  ) => {
+  ): PortPosition[] => {
     if (country) {
-      return records.filter((record) => {
+      return records.filter((record: PortPosition) => {
+        const recordValue = fieldValues[country]?.[record.s2id] ?? ''
+        const optionName = optionNames?.[recordValue]
         return compareProperty(term, [
-          fieldValues[country][record.s2id],
-          ...(optionNames ? optionNames[fieldValues[country][record.s2id]] : []),
+          recordValue,
+          ...(optionName ? [optionName] : []),
         ])
       })
     } else {
-      return records.filter((record) => {
+      return records.filter((record: PortPosition) => {
         return compareProperty(
           term,
-          mainSearchProperties.map((property) => record[property])
+          mainSearchProperties.map((property) => String(record[property as keyof PortPosition] ?? ''))
         )
       })
     }
   }
 
   const searchPoints = (type: string, term: string) => {
-    let filteredPoints = []
-    const optionNames = {}
+    let filteredPoints: PortPosition[] = []
+    const optionNames: Dictionary<string> = {}
     if (type === 'destination') {
-      filteredPoints = records.filter((record) => {
+      filteredPoints = records.filter((record: PortPosition) => {
         return compareProperty(term, [record.top_destination])
       })
     }
     if (type === 'port') {
       if (country) {
-        ports[country].forEach((port) => {
+        ports[country]?.forEach((port: PortSubarea) => {
           optionNames[port.id] = port.name
         })
       }
@@ -77,7 +80,7 @@ export const useSearchConnect = () => {
     }
     if (type === 'subarea') {
       if (country) {
-        subareas[country].forEach((subarea) => {
+        subareas[country]?.forEach((subarea: PortSubarea) => {
           optionNames[subarea.id] = subarea.name
         })
       }
@@ -92,7 +95,7 @@ export const useSearchConnect = () => {
 
     if (filteredPoints) {
       centerPoints(filteredPoints)
-      dispatch(setSelectedPoints(filteredPoints.map((point) => point.s2id)))
+      dispatch(setSelectedPoints(filteredPoints.map((point: PortPosition) => point.s2id)))
     } else {
       dispatch(setSelectedPoints([]))
     }

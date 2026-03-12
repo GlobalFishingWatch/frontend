@@ -161,7 +161,7 @@ async function runAuthSetup(runLabel: string, options: AuthSetupOptions = {}) {
     fs.writeFileSync(AUTH_LOG_FILE, '')
   }
 
-  initLogStream(AUTH_LOG_FILE, runLabel)
+  initLogStream(AUTH_LOG_FILE)
   logBanner(`Authentication Setup Started (${runLabel})`)
 
   try {

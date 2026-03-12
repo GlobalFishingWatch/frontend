@@ -1,12 +1,13 @@
 import { useCallback, useEffect } from 'react'
 import type { PickingInfo } from '@deck.gl/core'
 import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai'
+import type { ContextLayerId } from 'layers/context/context.config'
 import { ContextsLayer } from 'layers/context/ContextsLayer'
 
 import { clickedFeaturesAtom, hoveredFeaturesAtom } from 'features/map/map-picking.hooks'
 
 type ContextsAtom = {
-  ids: string[]
+  ids: ContextLayerId[]
   loaded: boolean
   instance?: ContextsLayer
 }
@@ -56,7 +57,7 @@ export function useContextsLayerIds() {
 export function useAddContextInLayer() {
   const setContextLayer = useSetAtom(contextsLayerAtom)
   const addContextLayer = useCallback(
-    (id: string) => {
+    (id: ContextLayerId) => {
       setContextLayer((atom) => {
         return { ...atom, ids: Array.from(new Set([...atom.ids, id])), loaded: false }
       })
@@ -69,7 +70,7 @@ export function useAddContextInLayer() {
 export function useRemoveContextInLayer() {
   const setContextLayer = useSetAtom(contextsLayerAtom)
   const addContextLayer = useCallback(
-    (id: string) => {
+    (id: ContextLayerId) => {
       setContextLayer((atom) => {
         return { ...atom, ids: atom.ids.filter((i) => i !== id) }
       })
