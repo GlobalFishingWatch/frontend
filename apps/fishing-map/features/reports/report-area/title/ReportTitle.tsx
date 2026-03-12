@@ -229,61 +229,63 @@ export default function ReportTitle({ isSticky }: { isSticky?: boolean }) {
           <a className={styles.reportLink} href={getCurrentAppUrl()}>
             {t((t) => t.analysis.linkToReport)}
           </a>
-          {showAreaReportSearch && (
+          {!isSticky && showAreaReportSearch && (
             <AreaReportSearch
               className={cx(styles.areaReportSearch, {
                 [styles.areaReportSearchColumn]: hasLongTitle,
               })}
             />
           )}
-          <div className={styles.actions}>
-            {!isGlobalReport && (
-              <Popover
-                open={showBufferTooltip}
-                onClickOutside={handleTooltipHide}
-                className={cx(styles.highlightPanel, 'print-hidden')}
-                placement="bottom"
-                content={
-                  <div className={styles.filterButtonWrapper}>
-                    <BufferButtonTooltip
-                      areaType={reportArea?.properties?.originalGeometryType}
-                      activeUnit={previewBuffer.unit || NAUTICAL_MILES}
-                      defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
-                      activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}
-                      handleRemoveBuffer={handleRemoveBuffer}
-                      handleConfirmBuffer={handleConfirmBuffer}
-                      handleBufferUnitChange={handleBufferUnitChange}
-                      handleBufferValueChange={handleBufferValueChange}
-                      handleBufferOperationChange={handleBufferOperationChange}
-                    />
+          {!isSticky && (
+            <div className={styles.actions}>
+              {!isGlobalReport && (
+                <Popover
+                  open={showBufferTooltip}
+                  onClickOutside={handleTooltipHide}
+                  className={cx(styles.highlightPanel, 'print-hidden')}
+                  placement="bottom"
+                  content={
+                    <div className={styles.filterButtonWrapper}>
+                      <BufferButtonTooltip
+                        areaType={reportArea?.properties?.originalGeometryType}
+                        activeUnit={previewBuffer.unit || NAUTICAL_MILES}
+                        defaultValue={urlBufferValue || DEFAULT_BUFFER_VALUE}
+                        activeOperation={previewBuffer.operation || DEFAULT_BUFFER_OPERATION}
+                        handleRemoveBuffer={handleRemoveBuffer}
+                        handleConfirmBuffer={handleConfirmBuffer}
+                        handleBufferUnitChange={handleBufferUnitChange}
+                        handleBufferValueChange={handleBufferValueChange}
+                        handleBufferOperationChange={handleBufferOperationChange}
+                      />
+                    </div>
+                  }
+                >
+                  <div>
+                    <Button
+                      onClick={handleTooltipShow}
+                      // onHide: handleTooltipHide,
+                      type="border-secondary"
+                      size="medium"
+                      className={styles.actionButton}
+                    >
+                      {t((t) => t.analysis.buffer)}
+                      <Icon icon="expand" type="default" />
+                    </Button>
                   </div>
-                }
-              >
-                <div>
-                  <Button
-                    onClick={handleTooltipShow}
-                    // onHide: handleTooltipHide,
-                    type="border-secondary"
-                    size="small"
-                    className={styles.actionButton}
-                  >
-                    {t((t) => t.analysis.buffer)}
-                    <Icon icon="expand" type="default" />
-                  </Button>
-                </div>
-              </Popover>
-            )}
-            <IconButton
-              className={styles.actionButton}
-              type="border"
-              icon="print"
-              tooltip={t((t) => t.analysis.print)}
-              size="small"
-              tooltipPlacement="bottom"
-              onClick={onPrintClick}
-              disabled={loading}
-            />
-          </div>
+                </Popover>
+              )}
+              <IconButton
+                className={styles.actionButton}
+                type="border"
+                icon="print"
+                tooltip={t((t) => t.analysis.print)}
+                size="medium"
+                tooltipPlacement="bottom"
+                onClick={onPrintClick}
+                disabled={loading}
+              />
+            </div>
+          )}
         </div>
       </div>
       {reportDescription && !isSticky && (

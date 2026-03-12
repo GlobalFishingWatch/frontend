@@ -93,7 +93,7 @@
     left 0.1s linear,
     transform 0.1s linear;
   line-height: 1;
-  filter: var(--filter-drop-shadow);
+  filter: var(--filter-drop-shadow-1);
 }
 
 .currentValue::after {

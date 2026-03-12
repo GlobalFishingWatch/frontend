@@ -23,6 +23,7 @@ interface EventProps {
   onMapClick?: (voyageId: ActivityEvent['voyage']) => void
   onMapHover?: (voyageId?: ActivityEvent['voyage']) => void
   onToggleClick?: (voyageId: ActivityEvent['voyage']) => void
+  className?: string
 }
 
 const VoyageGroup: React.FC<EventProps> = ({
@@ -31,6 +32,7 @@ const VoyageGroup: React.FC<EventProps> = ({
   onMapClick,
   onMapHover,
   onToggleClick,
+  className,
 }): React.ReactElement<any> => {
   const { t } = useTranslation()
   const vesselId = useSelector(selectVesselInfoDataId)
@@ -106,7 +108,7 @@ const VoyageGroup: React.FC<EventProps> = ({
   }, [onMapHover])
 
   return (
-    <li className={cx(styles.eventGroup, { [styles.open]: expanded })}>
+    <li className={cx(styles.eventGroup, { [styles.open]: expanded }, className)}>
       <div
         className={styles.header}
         onClick={onToggle}

@@ -33,7 +33,7 @@
 
 .sliderThumb {
   border-radius: 50%;
-  background-color: var(--color-off-white);
+  background-color: var(--color-off-white-0);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -56,7 +56,7 @@
 }
 
 .miniSize {
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   width: var(--size-XXS);
   height: var(--size-XXS);
   background: var(--color-primary-blue);

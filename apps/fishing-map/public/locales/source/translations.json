@@ -639,7 +639,7 @@
     "type": "shiptype"
   },
   "eventsReport": {
-    "newTimeRange": "Click the button to see the vessels that had events in this area <br/>between <strong>{{start}}</strong> and <strong>{{end}}</strong>",
+    "newTimeRange": "",
     "newTimeRangePorts": "Click the button to see the ports visited after events",
     "seePorts": "See ports"
   },

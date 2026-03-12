@@ -12,23 +12,10 @@
   flex-direction: row;
   align-items: center;
   gap: 0.2rem;
-  border-radius: var(--size-M);
-  border: var(--border);
+  border-radius: var(--border-radius-0);
+  background-color: var(--color-terthiary-blue);
   padding: 0.2rem;
   min-width: min-content;
-}
-
-.activeChip {
-  content: '';
-  position: absolute;
-  width: 10px;
-  top: 0.3rem;
-  left: 0.2rem;
-  height: calc(100% - 0.6rem);
-  border-radius: var(--size-M);
-  background-color: var(--color-terthiary-blue);
-  z-index: 0;
-  transition: all 300ms ease-in-out;
 }
 
 .option {
@@ -40,7 +27,7 @@
   flex: 1;
   min-width: auto;
   width: 100%;
-  border-radius: var(--size-M);
+  border-radius: var(--border-radius-0);
   background-color: transparent;
   color: var(--color-secondary-blue);
   height: auto;
@@ -48,14 +35,17 @@
 
 .optionActive {
   color: var(--color-primary-blue);
+  background-color: var(--color-off-white-0);
+  filter: var(--filter-drop-shadow-0);
 }
 
+.Choice .optionActive:hover,
 .Choice .optionActive:focus {
-  background-color: transparent;
+  background-color: var(--color-off-white-1);
   box-shadow: none;
 }
 
-.Choice .disabled {
+.Choice .disabled:not(.optionActive) {
   background-color: transparent;
   opacity: 0.5;
 }

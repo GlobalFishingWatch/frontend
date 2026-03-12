@@ -8,5 +8,5 @@ export const COLOR_SECONDARY_BLUE =
   'rgb(22, 63, 137, .75)'
 export const COLOR_GRADIENT =
   (typeof window !== 'undefined' &&
-    getComputedStyle(document.documentElement).getPropertyValue('--color-gradient')) ||
+    getComputedStyle(document.documentElement).getPropertyValue('--color-background')) ||
   'rgb(229, 240, 242)'

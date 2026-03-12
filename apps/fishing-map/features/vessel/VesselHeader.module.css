@@ -1,6 +1,5 @@
 .summaryContainer {
-  padding: var(--space-S) var(--space-S) var(--space-S) var(--space-M);
-  border-bottom: var(--border);
+  padding: var(--space-S);
   min-height: 5.2rem;
   display: flex;
   gap: var(--space-S);
@@ -60,6 +59,7 @@
   max-height: 15rem;
   overflow: hidden;
   background-color: var(--color-terthiary-blue);
+  border-radius: var(--border-radius-0);
 }
 
 .vesselImage {

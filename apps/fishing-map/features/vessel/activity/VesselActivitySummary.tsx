@@ -261,7 +261,9 @@ export const VesselActivitySummary = () => {
           })}
         </ul>
       </div>
-      <VesselActivityDownload />
+      <div className={styles.downloadContainer}>
+        <VesselActivityDownload />
+      </div>
     </div>
   )
 }

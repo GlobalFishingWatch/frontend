@@ -122,7 +122,7 @@ function UserInfo() {
   }
 
   return (
-    <div className={styles.userInfo}>
+    <div>
       <div className={styles.views}>
         <div className={styles.viewsHeader}>
           <div>

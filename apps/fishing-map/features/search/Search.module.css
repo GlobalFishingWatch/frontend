@@ -7,16 +7,20 @@
 }
 
 .footer {
+  background: var(--color-off-white-0);
+  box-shadow: var(--box-shadow-1);
+  border: var(--border);
+  border-radius: var(--border-radius-1);
   position: fixed;
-  width: calc(100% - var(--header-height));
-  bottom: 0;
-  right: 0;
+  width: calc(100% - var(--sidebar-tabs-width) - var(--space-S) * 2);
+  bottom: var(--space-S);
+  right: var(--space-S);
   display: flex;
   align-items: center;
   gap: var(--space-S);
   padding: var(--space-S);
   background: var(--color-white);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow-1);
   border-top: var(--border);
   transition: transform 300ms ease-in-out;
   z-index: 3;
@@ -24,7 +28,7 @@
 }
 
 .footer.advanced {
-  width: calc(100% - var(--sidebar-tabs-width) - var(--sidebar-width));
+  width: calc(100% - var(--sidebar-tabs-width) - (var(--space-S) * 3) - var(--sidebar-width));
 }
 
 .footerAction {

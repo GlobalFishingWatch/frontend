@@ -28,7 +28,7 @@
 }
 
 .optionsContainer.top {
-  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  border-radius: var(--border-radius-0) var(--border-radius-0) 0 0;
   bottom: calc(100% + 1px);
   top: auto;
 }

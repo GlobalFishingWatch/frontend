@@ -54,7 +54,7 @@
   width: 38rem;
   top: 8.4rem;
   right: -0.4rem;
-  background: var(--color-background);
+  background: var(--color-off-white);
   filter: var(--drop-shadow);
   padding: var(--space-S);
   z-index: 1;
@@ -69,7 +69,7 @@
 .contextLayersButton {
   composes: mapControl;
   position: absolute;
-  background: var(--color-background);
+  background: var(--color-off-white);
   color: var(--color-brand);
   top: 0.4rem;
   right: 0.4rem;

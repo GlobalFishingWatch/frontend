@@ -4,7 +4,7 @@
 }
 
 .summaryContainer {
-  padding: var(--space-SM) var(--space-M);
+  padding: var(--space-SM);
   padding-bottom: 0;
   font: var(--font-L);
   color: var(--color-secondary-blue);
@@ -22,10 +22,6 @@
   flex-wrap: wrap;
   align-items: flex-start;
   gap: var(--space-M);
-}
-
-.tagsContainerBorder {
-  border-bottom: var(--border);
 }
 
 .tagsContainerNoFilters {

@@ -15,13 +15,15 @@
   right: 5rem;
   width: max-content;
   background-color: var(--color-white);
-  padding: var(--space-XS) var(--space-S);
+  padding: var(--space-S);
+  border-radius: var(--border-radius-1);
 }
 
 .layers::after {
   content: '';
   top: 1rem;
   right: -0.2rem;
+  z-index: -1;
   position: absolute;
   transform: rotate(45deg);
   width: var(--size-XS);

@@ -18,7 +18,7 @@
   background-color: var(--color-terthiary-blue);
   border: 0.1rem solid transparent;
   box-shadow: 0 0 0.2rem 0.2rem transparent;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   cursor: pointer;
 }
 

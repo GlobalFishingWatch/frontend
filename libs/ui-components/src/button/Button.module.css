@@ -12,7 +12,7 @@
   padding: 0 var(--space-S);
   text-transform: uppercase;
   line-height: 1;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
 }
 
 .button:focus {
@@ -55,10 +55,9 @@ a.button:visited,
 }
 
 .border-secondary {
-  border: var(--border);
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   color: var(--color-secondary-blue);
-  background-color: transparent;
+  background-color: var(--color-terthiary-blue);
 }
 
 .border-secondary:not(.disabled):hover,

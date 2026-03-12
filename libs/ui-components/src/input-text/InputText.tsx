@@ -10,7 +10,7 @@ import type { TooltipTypes } from '../types/types'
 
 import styles from './InputText.module.css'
 
-export type InputSize = 'default' | 'small'
+export type InputSize = 'default' | 'small' | 'medium'
 export type InputType = 'text' | 'email' | 'search' | 'number' | 'password'
 
 type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {

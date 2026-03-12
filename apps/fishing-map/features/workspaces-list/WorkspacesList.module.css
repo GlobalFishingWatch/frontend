@@ -1,5 +1,5 @@
 .container {
-  padding: var(--space-M);
+  padding: var(--space-S);
 }
 
 .placeholder {
@@ -28,9 +28,12 @@ a.linkButton,
   background-color: var(--color-primary-blue);
 }
 
-.listTitle {
-  margin-top: var(--space-M);
-  margin-bottom: var(--space-XS);
+.list {
+  background-color: var(--color-off-white-0);
+  box-shadow: var(--box-shadow-1);
+  border: var(--border);
+  border-radius: var(--border-radius-1);
+  padding: var(--space-SM);
 }
 
 .workspace {
@@ -38,7 +41,7 @@ a.linkButton,
 }
 
 .workspace:not(:first-child) {
-  margin-top: var(--space-M);
+  margin-top: var(--space-SM);
 }
 
 .imageLink {
@@ -55,7 +58,7 @@ a.linkButton,
   width: 18rem;
   height: 15rem;
   object-fit: cover;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius-0);
   background-color: var(--color-terthiary-blue);
 }
 

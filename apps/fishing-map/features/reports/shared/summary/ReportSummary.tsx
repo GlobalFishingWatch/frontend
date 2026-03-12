@@ -24,6 +24,8 @@ import {
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './ReportSummary.module.css'
+import { selectEventsStatsDataGrouped } from 'features/reports/tabs/events/events-report.selectors'
+import { useReportFilteredTimeSeries } from 'features/reports/reports-timeseries.hooks'
 
 type ReportSummaryProps = {
   activityUnit?: ReportActivityUnit
@@ -73,7 +75,7 @@ export default function ReportSummary({
       )}
       {dataviews?.length > 0 && (
         <Sticky scrollElement=".scrollContainer" stickyClassName={styles.sticky}>
-          <div className={cx(styles.tagsContainer, styles.tagsContainerBorder)}>
+          <div className={cx(styles.tagsContainer)}>
             {dataviews?.map((dataview) => (
               <ReportSummaryTags
                 key={dataview.id}

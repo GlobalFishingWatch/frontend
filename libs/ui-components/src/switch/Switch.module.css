@@ -58,7 +58,7 @@
 .switch[aria-checked='true'] .nib {
   background-color: var(--color-white);
   border: var(--border);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow-1);
 }
 
 .switch.default[aria-checked='true'] .nib {

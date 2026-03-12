@@ -1,4 +1,6 @@
 .activityContainer {
+  border-radius: var(--border-radius-0);
+  border: var(--border);
   display: flex;
   flex-direction: column;
   height: calc(100vh - var(--header-height) - var(--tabs-height));
@@ -11,7 +13,7 @@
 .eventExpanded {
   background-color: transparent;
   color: var(--color-primary-blue);
-  box-shadow: var(--box-shadow);
+  box-shadow: var(--box-shadow-1);
 }
 
 .eventExpanded::after {
@@ -43,8 +45,35 @@
 .eventGroup {
   margin-left: unset;
   width: 100%;
-  background: var(--color-white);
-  outline: var(--border);
+  background: var(--color-off-white-0);
+  box-shadow: inset 0 -1px 0 0 var(--color-border);
+  position: relative;
+}
+
+.eventGroup.first {
+  border-radius: var(--border-radius-0) var(--border-radius-0) 0 0;
+}
+
+.eventGroup.last {
+  border-radius: 0 0 var(--border-radius-0) var(--border-radius-0);
+  box-shadow: none;
+}
+
+.eventGroup.expanded {
+  box-shadow: inset 0 -1px 0 0 var(--color-border);
+  background: var(--color-off-white-1);
+}
+
+.eventGroup.last.expanded {
+  border-radius: 0;
+}
+
+.lastEvent::after {
+  display: none;
+}
+
+.lastEventFromLastGroup {
+  border-radius: 0 0 var(--border-radius-1) var(--border-radius-1);
 }
 
 .header {

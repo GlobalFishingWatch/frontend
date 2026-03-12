@@ -1,10 +1,42 @@
+.tabContainer {
+  margin: var(--space-S);
+  margin-bottom: var(--space-L);
+}
+
+.section {
+  padding-block: var(--space-S);
+}
+
+.subsection {
+  margin: var(--space-S);
+  border-radius: var(--border-radius-0);
+  background-color: var(--color-off-white-1);
+  border: var(--border);
+}
+
+.front {
+  position: relative;
+  z-index: 1;
+}
+
+.singleTabContainer .section {
+  padding-block: 0;
+}
+
+.singleTabContainer .subsection {
+  border: none;
+  background-color: var(--color-off-white-0);
+  border-radius: var(--border-radius-1);
+  box-shadow: var(--box-shadow-1);
+  border: var(--border);
+}
+
 .container {
-  padding: var(--space-M);
+  padding: var(--space-SM);
 }
 
 .subsectionSelectorContainer {
-  padding: var(--space-SM) var(--space-M);
-  padding-bottom: 0;
+  padding: var(--space-S);
 }
 
 .error {

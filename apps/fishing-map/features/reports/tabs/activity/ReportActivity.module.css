@@ -1,6 +1,5 @@
 .container {
-  padding: var(--space-SM) var(--space-M);
-  border-bottom: var(--border);
+  padding: var(--space-SM);
   min-height: 37rem;
 }
 

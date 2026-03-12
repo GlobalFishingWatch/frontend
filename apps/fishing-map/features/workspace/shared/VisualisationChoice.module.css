@@ -3,18 +3,19 @@
   flex-direction: row;
   align-items: center;
   border-radius: var(--size-M);
-  border: var(--border);
   padding: 0.2rem;
+  background-color: var(--color-terthiary-blue);
 }
 
 .option {
   line-height: 1;
 }
 
-.VisualisationChoice .optionButton {
+.VisualisationChoice .optionButton,
+.VisualisationChoice .optionButton:focus {
   overflow: hidden;
-  width: 2.6rem;
-  height: 2.6rem;
+  width: 2.8rem;
+  height: 2.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,26 +23,32 @@
   background-color: transparent;
   color: var(--color-secondary-blue);
   padding: 0;
+  box-shadow: none;
 }
 
 .VisualisationChoice .optionActive {
-  background-color: var(--color-terthiary-blue);
   color: var(--color-primary-blue);
+  background-color: var(--color-off-white-1);
+}
+
+.VisualisationChoice .optionActive:focus {
+  box-shadow: none;
 }
 
 .VisualisationChoice .optionCollapsable {
   width: 0;
 }
 
+.VisualisationChoice .disabled {
+  background-color: transparent;
+  opacity: 0.5;
+}
+
 :global(.hover-target):hover .VisualisationChoice .optionCollapsable {
   width: 2.6rem;
 }
 
-.Choice .optionActive:focus {
-  box-shadow: none;
-}
-
-.Choice .disabled {
-  background-color: transparent;
-  opacity: 0.5;
+:global(.hover-target):hover .VisualisationChoice .optionActive {
+  background-color: var(--color-off-white-0);
+  filter: var(--filter-drop-shadow-0);
 }

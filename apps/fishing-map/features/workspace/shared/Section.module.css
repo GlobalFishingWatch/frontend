@@ -1,10 +1,11 @@
 .container {
+  margin: var(--space-S);
+  background: var(--color-off-white-0);
+  box-shadow: var(--box-shadow-1);
+  border: var(--border);
+  border-radius: var(--border-radius-1);
   padding-block: var(--space-XS);
   position: relative;
-}
-
-.container:not(:last-of-type) {
-  border-bottom: var(--border-thick);
 }
 
 .header {

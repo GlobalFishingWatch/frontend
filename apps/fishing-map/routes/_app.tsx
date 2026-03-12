@@ -1,9 +1,9 @@
 import { lazy, Suspense, useEffect } from 'react'
 import { Provider } from 'react-redux'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
-
 import { setupRouterSync } from 'router/router-sync'
 import { validateRootSearchParams } from 'router/routes.search'
+
 import { makeStore } from 'store'
 
 import 'utils/polyfills'
