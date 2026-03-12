@@ -19,7 +19,7 @@
     "libs:dev": "yarn nx run-many -t dev --projects=tag:lib",
     "clean": "yarn clean:cache && yarn clean:deps",
     "clean:deps": "rimraf -rf ./yarn.lock && touch yarn.lock && rimraf -rf ./node_modules && yarn cache clean --all && yarn install",
-    "clean:cache": "rimraf .nx && rimraf -rf ./dist",
+    "clean:cache": "rimraf -rf .nx && rimraf -rf ./dist",
     "purge": "node scripts/purge-css.js",
     "prepare": "husky install"
   },
@@ -69,7 +69,6 @@
     "@tanstack/react-virtual": "^3.13.21",
     "@tmcw/togeojson": "7.1.2",
     "@turf/turf": "7.3.4",
-    "@turf/union": "7.3.4",
     "@types/mdast": "^4.0.4",
     "@types/suncalc": "^1.9.2",
     "@uiw/react-json-view": "^2.0.0-alpha.41",
