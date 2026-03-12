@@ -1,5 +1,6 @@
+import { difference } from '@turf/difference'
+import { dissolve } from '@turf/dissolve'
 import { featureCollection, multiPolygon } from '@turf/helpers'
-import { difference, dissolve } from '@turf/turf'
 import { format } from 'd3-format'
 import { uniq } from 'es-toolkit'
 import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'

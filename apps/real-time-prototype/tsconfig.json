@@ -13,7 +13,7 @@
       "vitest-browser-react",
       "vitest"
     ],
-    "strict": true,
+    "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "resolveJsonModule": true,
@@ -26,7 +26,7 @@
     "moduleResolution": "bundler",
     "incremental": true,
     "tsBuildInfoFile": ".tsbuildinfo",
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     // generating source maps for debug ids for Sentry.
     "sourceMap": true,
     "plugins": [

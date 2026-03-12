@@ -1,5 +1,6 @@
 import { Fragment, useCallback, useMemo, useRef, useState } from 'react'
-import type { PickingInfo } from '@deck.gl/core'
+import type { ViewStateChangeEvent } from 'react-map-gl'
+import type { PickingInfo, ViewStateChangeParameters } from '@deck.gl/core'
 import { MapView, WebMercatorViewport } from '@deck.gl/core'
 import { TileLayer } from '@deck.gl/geo-layers'
 import { BitmapLayer } from '@deck.gl/layers'
@@ -41,7 +42,14 @@ export type GFWLayerProps = {
   showLatestPositions: boolean
 }
 
-const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement<any> => {
+type MapWrapperProps = Pick<GFWLayerProps, 'lastUpdate' | 'showLatestPositions'>
+type InfoTooltipProps = { features: PickingInfo[] }
+type CursorInfo = { isDragging: boolean }
+
+const MapWrapper = ({
+  lastUpdate,
+  showLatestPositions,
+}: MapWrapperProps): React.ReactElement<any> => {
   const [viewState, onViewportStateChange] = useViewport()
   const deckRef = useRef<DeckGLRef>(null)
   const basemapLayer = useBasemapLayer()
@@ -123,10 +131,11 @@ const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement<any
 
   const onClick = useCallback(
     (info: PickingInfo) => {
-      const features = deckRef?.current?.pickMultipleObjects({
-        x: info.x,
-        y: info.y,
-      })
+      const features =
+        deckRef?.current?.pickMultipleObjects({
+          x: info.x,
+          y: info.y,
+        }) || []
       if (!features.length || !features[0].object.properties.mmsi) return
       features.forEach((feature) => {
         if (feature.object.properties.mmsi) {
@@ -139,10 +148,11 @@ const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement<any
 
   const onHover = useCallback(
     (info: PickingInfo) => {
-      const features = deckRef?.current?.pickMultipleObjects({
-        x: info.x,
-        y: info.y,
-      })
+      const features =
+        deckRef?.current?.pickMultipleObjects({
+          x: info.x,
+          y: info.y,
+        }) || []
       setCursorPosition(info.coordinate)
       if (!hoveredFeatures.length && !features.length) return
       const uniqFeatures = uniqBy(features, 'object.properties.mmsi')
@@ -151,8 +161,8 @@ const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement<any
     [setHoveredFeatures, hoveredFeatures]
   )
 
-  const onViewStateChange = (e) => {
-    onViewportStateChange(e)
+  const onViewStateChange = (e: ViewStateChangeParameters) => {
+    onViewportStateChange({ viewState: e.viewState } as ViewStateChangeEvent)
     const viewport = new WebMercatorViewport(e.viewState)
     const nw = viewport.unproject([0, 0])
     const se = viewport.unproject([viewport.width, viewport.height])
@@ -164,14 +174,14 @@ const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement<any
     })
   }
 
-  const InfoTooltip = ({ features }) => {
+  const InfoTooltip = ({ features }: InfoTooltipProps) => {
     const vessels = features
-      .filter((f) => f.object?.properties?.mmsi)
-      .sort((a, b) => b.object?.properties?.timestamp - a.object?.properties?.timestamp)
+      .filter((f: any) => f.object?.properties?.mmsi)
+      .sort((a: any, b: any) => b.object?.properties?.timestamp - a.object?.properties?.timestamp)
     const count = features[0]?.object?.properties?.count
     const points = features
-      .filter((f) => f.object?.timestamp)
-      .sort((a, b) => b.object?.timestamp - a.object?.timestamp)
+      .filter((f: any) => f.object?.timestamp)
+      .sort((a: any, b: any) => b.object?.timestamp - a.object?.timestamp)
     const mapWidth = window.innerWidth - 320
     if (vessels.length > 0 || points.length > 0 || count) {
       return (
@@ -192,7 +202,7 @@ const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement<any
             <label className={styles.vesselRow}>Latest vessels</label>
           )}
           {vessels &&
-            vessels.slice(0, 3).map((f) => (
+            vessels.slice(0, 3).map((f: any) => (
               <div key={f.object?.properties?.mmsi} className={styles.vesselRow}>
                 <div>
                   <label>MMSI</label>
@@ -219,11 +229,14 @@ const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement<any
           {points.length > 0 && (
             <div>
               <p>
-                <div className={styles.dot} style={{ color: points[0].sourceLayer.props.color }} />
-                {points[0].sourceLayer.id}
+                <div
+                  className={styles.dot}
+                  style={{ color: (points[0].sourceLayer?.props as any)?.color }}
+                />
+                {points[0].sourceLayer?.id}
               </p>
-              <p>{getCoordinatesLabel(points[0].object.coordinates)}</p>
-              <p>{getDateLabel(points[0].object.timestamp)}</p>
+              <p>{getCoordinatesLabel(points[0].object?.coordinates)}</p>
+              <p>{getDateLabel(points[0].object?.timestamp)}</p>
             </div>
           )}
         </div>
@@ -231,7 +244,7 @@ const MapWrapper = ({ lastUpdate, showLatestPositions }): React.ReactElement<any
     }
   }
 
-  const getCursor = ({ isDragging }) => {
+  const getCursor = ({ isDragging }: CursorInfo) => {
     if (hoveredFeatures.length && hoveredFeatures[0].object.properties?.mmsi) return 'pointer'
     return isDragging ? 'grabbing' : 'grab'
   }

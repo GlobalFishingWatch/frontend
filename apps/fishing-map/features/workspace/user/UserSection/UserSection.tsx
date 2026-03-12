@@ -113,7 +113,7 @@ export function UserSection(): React.ReactElement<any> {
   return (
     <Section
       id={DataviewCategory.User}
-      data-testid="user-section"
+      testId="user-section"
       title={
         <span>
           {t((t) => t.user.datasets)}

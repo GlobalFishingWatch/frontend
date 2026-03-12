@@ -63,7 +63,7 @@ function VesselGroupSection(): React.ReactElement<any> {
   return (
     <Section
       id={DataviewCategory.VesselGroups}
-      data-testid="vessel-groups-section"
+      testId="vessel-groups-section"
       hasVisibleDataviews={hasVisibleDataviews}
       title={
         <span>

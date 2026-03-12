@@ -429,7 +429,7 @@ export class VesselTrackPathLayer<
 
     const colors = steps.reduce(
       (acc, step, index) => {
-        acc[`color${index}`] = (hexToDeckColor(step.color) as number[]).map((c) => colorToVec(c))
+        acc[`color${index}`] = hexToDeckColor(step.color).map((c) => colorToVec(c)) as number[]
         return acc
       },
       {} as Record<string, number[]>

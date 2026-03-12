@@ -19,7 +19,7 @@ import {
 } from 'features/labeler/labeler.selectors'
 import { selectCountry, selectHoverPoint, setHoverPoint, setPorts, setSubareas } from 'features/labeler/labeler.slice'
 import useMapInstance from 'features/map/map-context.hooks'
-import type { PortPosition } from 'types'
+import type { PortPosition, PortSubarea } from 'types'
 import { getFixedColorForUnknownLabel } from 'utils/colors'
 
 import type { SubareaSelectOption } from './components/SubareaSelector';
@@ -49,6 +49,9 @@ function TableRow({
   } = useValueManagerConnect()
   const onRowHover = useCallback((id: string, hover: boolean) => {
     dispatch(setHoverPoint(id))
+    if (!map) {
+      return
+    }
     map.setFeatureState(
       { source: 'pointsLayer', id: parseInt(id, 16) },
       { hover }
@@ -56,22 +59,25 @@ function TableRow({
   }, [dispatch, map])
 
   const country = useSelector(selectCountry)
-  const pointValues = useSelector(selectPointValuesByCountry)
+  const pointValues = useSelector(selectPointValuesByCountry) as Record<string, string> | undefined
   const pointValue = country && pointValues ? pointValues[record.s2id] : ''
-  const portValues = useSelector(selectPortValuesByCountry)
+  const portValues = useSelector(selectPortValuesByCountry) as Record<string, string> | undefined
   const selectedPort = country && portValues ? portValues[record.s2id] : ''
 
-  const subareaValues = useSelector(selectSubareaValuesByCountry)
+  const subareaValues = useSelector(selectSubareaValuesByCountry) as Record<string, string> | undefined
   const selectedSubarea = country && subareaValues ? subareaValues[record.s2id] : ''
   const hoverPoint = useSelector(selectHoverPoint)
 
-  const ports = useSelector(selectPortsByCountry)
-  const subareas = useSelector(selectSubareasByCountry)
+  const ports = (useSelector(selectPortsByCountry) ?? []) as PortSubarea[]
+  const subareas = (useSelector(selectSubareasByCountry) ?? []) as PortSubarea[]
   const subareaOptions: SubareaSelectOption[] = useSelector(selectSubareaOptions)
 
   const portOptions: SubareaSelectOption[] = useSelector(selectPortsOptions)
 
   const onSubareaAdded = useCallback(() => {
+    if (!country) {
+      return
+    }
     console.log('Adding a new subarea')
     const newId = Math.max.apply(null, subareas.map((subarea) => parseInt(subarea.id.replace(country + '-', ''))).filter(number => !isNaN(number))) + 1
     dispatch(setSubareas([...subareas, {
@@ -82,6 +88,9 @@ function TableRow({
   }, [country, dispatch, subareas])
 
   const onPortAdded = useCallback(() => {
+    if (!country) {
+      return
+    }
     console.log('Adding a new port')
     const newPorts = [...ports, {
       id: uuidv4(),
@@ -90,14 +99,14 @@ function TableRow({
     dispatch(setPorts(newPorts))
   }, [country, dispatch, ports])
 
-  const onSubareaNameChange = useCallback((id, value) => {
+  const onSubareaNameChange = useCallback((id: string | number, value: string) => {
     dispatch(setSubareas(subareas.map(subarea => ({
       ...subarea,
       name: subarea.id === id ? value : subarea.name
     }))))
   }, [dispatch, subareas])
 
-  const onPortNameChange = useCallback((id, value) => {
+  const onPortNameChange = useCallback((id: string | number, value: string) => {
     dispatch(setPorts(ports.map(port => ({
       ...port,
       name: port.id === id ? value : port.name
@@ -118,7 +127,7 @@ function TableRow({
           className={styles.portSelector}
           onRemove={() => { }}
           onSelect={(selected: SelectOption) => {
-            onPortChange(record.s2id, selected.id)
+            onPortChange(record.s2id, String(selected.id))
           }}
           selectedOption={portOptions.find(port => port.id === selectedPort)}
           onAddNew={onPortAdded}
@@ -134,7 +143,7 @@ function TableRow({
         {country ? <SubareaSelector
           onRemove={() => { }}
           onSelect={(selected: SelectOption) => {
-            onSubareaChange(record.s2id, selected.id)
+            onSubareaChange(record.s2id, String(selected.id))
           }}
           selectedOption={subareaOptions.find(subarea => subarea.id === selectedSubarea)}
           onAddNew={onSubareaAdded}
@@ -162,7 +171,7 @@ function TableRow({
         <span
           onClick={() => onCountryChange(record)}
           className={styles.actionButton}
-        >{flags[record.iso3] ?? record.iso3}</span>
+        >{flags[record.iso3 as keyof typeof flags] ?? record.iso3}</span>
       </div>}
     </div>
   )

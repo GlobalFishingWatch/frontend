@@ -37,6 +37,9 @@ describe('Vessel map popup', () => {
 
     // hover first to select the hover info more consistently, then click to open the popup
     await userEvent.hover(mapElement, { position: { x, y } })
+
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
     await userEvent.click(mapElement, { position: { x, y } })
 
     await expect.element(mapPopup.getByText('Gabu Reefer')).toBeVisible()

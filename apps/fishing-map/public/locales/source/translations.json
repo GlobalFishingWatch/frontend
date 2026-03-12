@@ -1011,6 +1011,7 @@
     "gearType_short": "gear",
     "geartypes": "Gear types",
     "gearTypes": {
+      "": "",
       "bunker": "Bunker",
       "bunker_or_tanker": "Bunker or Tanker",
       "cargo": "Cargo or reefer",

@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import bbox from '@turf/bbox'
+import { bboxPolygon } from '@turf/bbox-polygon'
 import { featureCollection, point } from '@turf/helpers'
-import { bboxPolygon } from '@turf/turf'
 import type { Point, Polygon, Position } from 'geojson'
 
 import type { DeckLayerAtom } from '@globalfishingwatch/deck-layer-composer'
