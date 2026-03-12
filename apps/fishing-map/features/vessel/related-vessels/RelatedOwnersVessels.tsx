@@ -79,7 +79,7 @@ const RelatedOwnerVessels = () => {
     <ul className={styles.vesselsList}>
       {uniqOwners?.map((owner) => {
         return (
-          <li className={styles.vessel}>
+          <li key={`${owner.name}-${owner.dateFrom}-${owner.dateTo}`} className={styles.vessel}>
             {formatInfoField(owner.name, 'owner')} ({formatInfoField(owner.flag, 'flag')}){' '}
             <span className={styles.secondary}>
               <I18nDate date={owner.dateFrom} /> - <I18nDate date={owner.dateTo} />

@@ -38,7 +38,7 @@
     "@turf/helpers": "7.x",
     "@turf/kinks": "7.x",
     "@turf/length": "7.x",
-    "@turf/turf": "7.x",
+    "@turf/rhumb-bearing": "7.x",
     "color-blend": "4.x",
     "d3-scale": "4.x",
     "es-toolkit": "1.x",

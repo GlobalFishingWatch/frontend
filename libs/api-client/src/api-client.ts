@@ -151,7 +151,7 @@ export class GFW_API_CLASS {
     }
   }
 
-  private async getTokensWithAccessToken(accessToken: string): Promise<UserTokens> {
+  async getTokensWithAccessToken(accessToken: string): Promise<UserTokens> {
     return fetch(
       this.generateUrl(`/${AUTH_PATH}/tokens?access-token=${accessToken}`, { absolute: true })
     )

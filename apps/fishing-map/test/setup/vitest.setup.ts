@@ -2,10 +2,10 @@ import i18n from 'i18next'
 import { Settings } from 'luxon'
 import { beforeAll, vi } from 'vitest'
 
-import { TEST_END_DATE } from './test.config'
+import { TEST_END_DATE } from '../test.config'
 
-import '../pages/styles.css'
-import './test-styles.css'
+import '../../pages/styles.css'
+import '../test-styles.css'
 import '@globalfishingwatch/ui-components/base.css'
 import '@globalfishingwatch/timebar/timebar-settings.css'
 
@@ -35,6 +35,9 @@ vi.mock('features/reports/reports-geo.utils.workers.hooks', async () => {
 beforeAll(async () => {
   // Ensure i18n is initialized before running tests
   await i18n.changeLanguage('en')
+
+  // Browser mode cannot handle native confirm dialogs without explicit mocking.
+  vi.spyOn(window, 'confirm').mockReturnValue(false)
 
   // Setup localstorage modal shown flag to prevent it from appearing in tests
   if (typeof window !== 'undefined') {

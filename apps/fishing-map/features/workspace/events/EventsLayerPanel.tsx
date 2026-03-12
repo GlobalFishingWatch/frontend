@@ -176,7 +176,7 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
           {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
             <IconButton
               icon="warning"
-              type="warning-invert"
+              type={showDeprecatedWarning ? 'warning-invert' : 'warning'}
               onClick={showDeprecatedWarning ? () => onMigrateDataviewClick(dataview) : undefined}
               tooltip={
                 showDeprecatedWarning
@@ -204,7 +204,15 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
           icon={
             layerActive ? (layerError || showDeprecatedWarning ? 'warning' : 'more') : undefined
           }
-          type={layerActive && (layerError || showDeprecatedWarning) ? 'warning-invert' : 'default'}
+          type={
+            layerActive
+              ? showDeprecatedWarning
+                ? 'warning-invert'
+                : layerError
+                  ? 'warning'
+                  : 'default'
+              : 'default'
+          }
           loading={!showDeprecatedWarning && layerActive && !layerLoaded}
           className={cx('print-hidden', styles.shownUntilHovered)}
           size="small"

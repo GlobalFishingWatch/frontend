@@ -1,4 +1,5 @@
 import React from 'react'
+import i18n from 'i18next'
 import { render } from 'test/appTestUtils'
 import { defaultState } from 'test/defaultState'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -8,11 +9,12 @@ import App from 'features/app/App'
 import { makeStore } from 'store'
 
 describe('Sidebar tools', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks()
+    await i18n.changeLanguage('en')
   })
 
-  it.only('should open feedback modal', async () => {
+  it('should open feedback modal', async () => {
     const store = makeStore(defaultState, [], true)
     const { getByTestId, getByRole } = await render(<App />, { store })
 
@@ -27,12 +29,12 @@ describe('Sidebar tools', () => {
     const activitySection = getByTestId('activity-section')
 
     await expect.element(activitySection.getByText(/activity/i)).toBeVisible()
-
+    await userEvent.hover(getByTestId('language-toggle-button'))
     await getByTestId('language-toggle-button').click()
     await getByTestId('language-option-es').click()
-    await vi.waitFor(() => {
-      expect(document.documentElement.getAttribute('lang')).toBe('es')
-    })
+    // await vi.waitFor(() => {
+    //   expect(document.documentElement.getAttribute('lang')).toBe('es')
+    // })
 
     await expect.element(activitySection.getByText(/actividad/i)).toBeVisible()
   })

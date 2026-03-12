@@ -18,7 +18,7 @@ import {
   setSubareas,
   setSubareaValues} from 'features/labeler/labeler.slice'
 import { useMapConnect } from 'features/map/map.hooks'
-import type { PortPosition } from 'types'
+import type { PortPosition, PortSubarea } from 'types'
 import { getFixedColorForUnknownLabel } from 'utils/colors'
 
 export const useSelectedTracksConnect = () => {
@@ -85,22 +85,22 @@ export const useSelectedTracksConnect = () => {
         colors: {}
       }))
     }
-    const countriesDuplicated: string[] = data.map(e => {
+    const countriesDuplicated: string[] = data.map((e: PortPosition) => {
       return e.iso3
     })
-    const countries = [...new Set(countriesDuplicated)];
-    const countryColors = {}
-    countries.forEach((country, index) => {
+    const countries: string[] = [...new Set(countriesDuplicated)];
+    const countryColors: any = {}
+    countries.forEach((country: string, index: number) => {
       countryColors[country] = getFixedColorForUnknownLabel(index)
     })
 
     const countryOptions = [{
       id: null,
       label: 'All countries'
-    }, ...countries.map(e => {
+    }, ...countries.map((e: string) => {
       return {
         id: e,
-        label: flags[e] ?? e,
+        label: flags[e as keyof typeof flags] ?? e,
       }
     }).sort((a, b) => a.label > b.label ? 1 : -1)]
 
@@ -113,11 +113,11 @@ export const useSelectedTracksConnect = () => {
   /**
    * handle the file after this was uploaded
    */
-  const handleFileUploaded = (e: any) => {
+  const handleFileUploaded = (_e: ProgressEvent<FileReader>) => {
     const content: string = fileReader.result as string
     const records: any = JSON.parse(content)
 
-    dispatch(setData(records.map(record => ({
+    dispatch(setData(records.map((record: any) => ({
       ...record,
       port_label: record.port_label ?? record.label,
       // in some cases the coords are uploaded in string, we need to parse them
@@ -144,12 +144,12 @@ export const useSelectedTracksConnect = () => {
     dispatch(setCountry(country))
 
     // we need to generete selectors based on data we don't know if exists
-    const tempPortsIds = []
-    const tempPortsNames = []
-    const tempSubareas = []
+    const tempPortsIds: string[] = []
+    const tempPortsNames: string[] = []
+    const tempSubareas: string[] = []
     const countryRecords = allRecords?.filter((point) => point.iso3 === country) || []
     centerPoints(countryRecords)
-    countryRecords.forEach(e => {
+    countryRecords.forEach((e: PortPosition) => {
       if (e.port_iso3) {
         tempPortsIds.push(e.port_iso3) // new field that not exist in the actual data
       } else if (e.port_label) {
@@ -166,16 +166,16 @@ export const useSelectedTracksConnect = () => {
     // here we know that community_iso3 exists
     if (!subareas[country]) {
       const uniqueTempSubareas = [...new Set(tempSubareas)];
-      dispatch(setSubareas(uniqueTempSubareas.map((e, index) => {
-        const record = countryRecords.find(record => record.community_iso3 === e)
+      dispatch(setSubareas(uniqueTempSubareas.map((e: string, index: number) => {
+        const record = countryRecords.find((record: PortPosition) => record.community_iso3 === e)
         return {
           id: e,
-          name: record.community_label ?? record.community_iso3,
+          name: record?.community_label ?? record?.community_iso3 ?? e,
           color: getFixedColorForUnknownLabel(index)
         }
       }).sort((a, b) => a.name > b.name ? 1 : -1)))
 
-      const subareaMap = countryRecords.reduce((ac, value, i, v) => {
+      const subareaMap = countryRecords.reduce((ac: Record<string, string>, value: PortPosition) => {
         ac[value.s2id] = value.community_iso3
         return ac
       }, {})
@@ -184,16 +184,16 @@ export const useSelectedTracksConnect = () => {
 
     if (!ports[country]) {
       // first use the ids to generate the port selectors
-      const countryPorts = uniqueTempPortsIds.map((e) => {
-        const record = countryRecords.find(record => record.port_iso3 === e)
+      const countryPorts: PortSubarea[] = uniqueTempPortsIds.map((e: string) => {
+        const record = countryRecords.find((record: PortPosition) => record.port_iso3 === e)
         return {
           id: e,
-          name: record.port_label ?? record.port_iso3,
+          name: record?.port_label ?? record?.port_iso3 ?? e,
         }
       })
       // then use the names to generate the port selectors only if the name is not used before
-      uniqueTempPortsNames.forEach((e) => {
-        const portAlreadyExist = countryPorts.some(record => record.name === e)
+      uniqueTempPortsNames.forEach((e: string) => {
+        const portAlreadyExist = countryPorts.some((record: PortSubarea) => record.name === e)
         // Only add a new selector if the name is not used before
         if (!portAlreadyExist) {
           countryPorts.push({
@@ -203,15 +203,15 @@ export const useSelectedTracksConnect = () => {
         }
       })
       dispatch(setPorts(countryPorts.sort((a, b) => a.name > b.name ? 1 : -1)))
-      const portMap = countryRecords.reduce((ac, value, i, v) => {
-        ac[value.s2id] = value.port_iso3 ?? (value.port_label ? countryPorts.find(port => port.name === value.port_label).id : null)
+      const portMap = countryRecords.reduce((ac: Record<string, string | null>, value: PortPosition) => {
+        ac[value.s2id] = value.port_iso3 ?? (value.port_label ? countryPorts.find((port: PortSubarea) => port.name === value.port_label)?.id ?? null : null)
         return ac
       }, {})
 
       dispatch(setPortValues(portMap))
     }
 
-    const pointMap = countryRecords.reduce((ac, value, i, v) => {
+    const pointMap = countryRecords.reduce((ac: Record<string, string>, value: PortPosition) => {
       ac[value.s2id] = value.point_label
       return ac
     }, {})

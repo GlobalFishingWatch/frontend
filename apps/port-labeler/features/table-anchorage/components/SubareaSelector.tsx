@@ -27,7 +27,7 @@ interface SelectProps {
   onSelect: SelectOnChange
   onRemove: SelectOnChange
   onAddNew: () => void
-  onSelectedNameChange: (id, label) => void
+  onSelectedNameChange: (id: string | number, label: string) => void
   onCleanClick?: (e: React.MouseEvent) => void
   containerClassName?: string
   className?: string

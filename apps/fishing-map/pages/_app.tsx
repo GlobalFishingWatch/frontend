@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Provider } from 'react-redux'
 // import { appWithTranslation } from 'next-i18next'
 // import { ClickToComponent } from 'click-to-react-component'
@@ -22,7 +22,8 @@ function CustomApp({ Component, pageProps }: AppProps) {
   const store = makeStore()
 
   return (
-    <React.StrictMode>
+    // <React.StrictMode>
+    <Fragment>
       <Head>
         <title>GFW | Map</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -31,7 +32,8 @@ function CustomApp({ Component, pageProps }: AppProps) {
         {/* <ClickToComponent /> */}
         <Component {...pageProps} />
       </Provider>
-    </React.StrictMode>
+    </Fragment>
+    // </React.StrictMode>
   )
 }
 

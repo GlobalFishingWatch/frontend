@@ -3,7 +3,7 @@ import { CompositeLayer } from '@deck.gl/core'
 import bbox from '@turf/bbox'
 import bboxPolygon from '@turf/bbox-polygon'
 import { featureCollection, point } from '@turf/helpers'
-import { rhumbBearing } from '@turf/turf'
+import { rhumbBearing } from '@turf/rhumb-bearing'
 import type { BBox, Position } from 'geojson'
 import { extent } from 'simple-statistics'
 

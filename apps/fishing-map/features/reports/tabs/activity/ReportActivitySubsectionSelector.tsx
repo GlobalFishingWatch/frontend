@@ -24,6 +24,8 @@ import { useReportFeaturesLoading } from 'features/reports/reports-timeseries.ho
 import { resetReportData } from 'features/reports/tabs/activity/reports-activity.slice'
 import { useLocationConnect } from 'routes/routes.hook'
 
+import styles from './ReportActivity.module.css'
+
 function ReportActivitySubsectionSelector() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
@@ -111,6 +113,7 @@ function ReportActivitySubsectionSelector() {
       activeOption={selectedOption?.id}
       onSelect={onSelectSubsection}
       testId="report-subsection-selector"
+      className={styles.selector}
     />
   )
 }
