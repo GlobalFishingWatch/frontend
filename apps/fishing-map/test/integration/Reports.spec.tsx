@@ -26,20 +26,21 @@ const waitForReportFeaturesLoaded = async (
   jotaiStore: ReturnType<typeof createJotaiStore>,
   timeout = 10000
 ) => {
-  const startTime = Date.now()
-  while (Date.now() - startTime < timeout) {
-    const reportState = jotaiStore.get(reportStateAtom)
-    if (
-      reportState &&
-      reportState.featuresFiltered !== undefined &&
-      reportState.timeseries !== undefined &&
-      reportState.stats !== undefined
-    ) {
-      if (!reportState.isLoading) return
-    }
-    await new Promise((resolve) => setTimeout(resolve, 100))
-  }
-  throw new Error(`Report features did not finish loading within ${timeout}ms`)
+  await vi.waitFor(
+    () => {
+      const reportState = jotaiStore.get(reportStateAtom)
+      if (
+        !reportState ||
+        reportState.featuresFiltered === undefined ||
+        reportState.timeseries === undefined ||
+        reportState.stats === undefined ||
+        reportState.isLoading
+      ) {
+        throw new Error('Report features not loaded yet')
+      }
+    },
+    { timeout }
+  )
 }
 
 const getCalculatedReportHours = (jotaiStore: ReturnType<typeof createJotaiStore>): number => {
@@ -59,25 +60,25 @@ const getCalculatedReportHours = (jotaiStore: ReturnType<typeof createJotaiStore
 }
 
 const waitForStatsQueryLoaded = async (store: ReturnType<typeof makeStore>, timeout = 10000) => {
-  const startTime = Date.now()
-  while (Date.now() - startTime < timeout) {
-    const state = store.getState()
-    const params = selectFetchEventsStatsParams(state)
+  return await vi.waitFor(
+    () => {
+      const state = store.getState()
+      const params = selectFetchEventsStatsParams(state)
 
-    if (!params) {
-      await new Promise((resolve) => setTimeout(resolve, 100))
-      continue
-    }
+      if (!params) {
+        throw new Error('Params not available yet')
+      }
 
-    const statsQueryState = selectReportEventsStats(params)(state)
+      const statsQueryState = selectReportEventsStats(params)(state)
 
-    if (statsQueryState?.status === 'fulfilled' || statsQueryState?.status === 'rejected') {
+      if (statsQueryState?.status !== 'fulfilled' && statsQueryState?.status !== 'rejected') {
+        throw new Error('Stats query not loaded yet')
+      }
+
       return statsQueryState
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 100))
-  }
-  throw new Error(`Stats query did not finish loading within ${timeout}ms`)
+    },
+    { timeout }
+  )
 }
 
 describe('Reports', () => {
