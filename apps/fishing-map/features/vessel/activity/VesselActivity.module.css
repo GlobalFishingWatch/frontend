@@ -4,12 +4,17 @@
 
 .activityTitleContainer {
   page-break-before: always;
-  padding: var(--space-M);
+  padding: var(--space-SM);
   flex: 1;
 }
 
 .choice {
   width: 100%;
+}
+
+.activityWrapper {
+  padding: var(--space-SM);
+  padding-top: 0;
 }
 
 .emptyState {

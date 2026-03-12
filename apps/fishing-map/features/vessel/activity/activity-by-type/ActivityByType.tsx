@@ -145,6 +145,12 @@ function ActivityByType() {
               onToggleClick={onToggleExpandedType}
               quantity={events.length}
               expanded={expanded}
+              className={cx(
+                styles.eventGroup,
+                { [styles.first]: index === 0 },
+                { [styles.last]: index === groups.length - 1 },
+                { [styles.expanded]: expanded }
+              )}
             />
           )
         }}

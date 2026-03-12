@@ -188,7 +188,7 @@ const VesselAreas = ({ updateAreaLayersVisibility }: VesselAreasProps) => {
       </div>
       <Choice
         options={areaOptions}
-        size="small"
+        size="medium"
         testId="vv-area"
         activeOption={vesselArea}
         className={styles.choice}
