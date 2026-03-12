@@ -36,7 +36,7 @@ export async function startAuthProxyServer() {
     res.end('Not found')
   })
 
-  server.listen(PROXY_PORT, 'localhost')
+  server.listen(PROXY_PORT)
   await once(server, 'listening')
 
   return {

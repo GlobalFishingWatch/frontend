@@ -74,7 +74,10 @@ async function runLoginFlow(email: string, password: string) {
     authProxyServer = proxyServer.server
 
     log(`Navigating to proxy login URL: ${proxyServer.loginUrl}`)
-    await page.goto(proxyServer.loginUrl, { timeout: NAVIGATION_TIMEOUT_MS })
+    await page.goto(proxyServer.loginUrl, {
+      timeout: NAVIGATION_TIMEOUT_MS,
+      waitUntil: 'domcontentloaded',
+    })
     await page.waitForURL('**/auth*', { timeout: NAVIGATION_TIMEOUT_MS })
     log(`Navigated to auth page: ${page.url()}`)
 
