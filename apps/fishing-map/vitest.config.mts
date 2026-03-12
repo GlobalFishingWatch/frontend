@@ -144,7 +144,13 @@ export default defineConfig({
     globalSetup: './test/setup/vitest.setup-global.ts',
     browser: {
       enabled: true,
-      provider: playwright(),
+      provider: playwright({
+        launchOptions: {
+          // Playwright 1.58 restricts SwiftShader WebGL by default for security reasons
+          // so this is needed to fix Deck.gl context creation in headless mode.
+          args: ['--enable-unsafe-swiftshader'],
+        },
+      }),
       ui: process.env.VITEST_UI === 'true',
       headless: process.env.VITEST_UI !== 'true',
       trace: {
