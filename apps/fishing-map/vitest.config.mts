@@ -158,35 +158,13 @@ export default defineConfig({
         snapshots: true,
         mode: 'on',
       },
-      instances:
-        process.env.VITEST_UI === 'true'
-          ? [
-              {
-                browser: 'chromium',
-                name: 'fishing-map-chromium',
-                viewport: { width: 1280, height: 720 },
-              },
-            ]
-          : [
-              {
-                browser: 'chromium',
-                name: 'fishing-map-chromium',
-                headless: true,
-                viewport: { width: 1280, height: 720 },
-              },
-              {
-                browser: 'firefox',
-                name: 'fishing-map-firefox',
-                headless: true,
-                viewport: { width: 1280, height: 720 },
-              },
-              {
-                browser: 'webkit',
-                name: 'fishing-map-webkit',
-                headless: true,
-                viewport: { width: 1280, height: 720 },
-              },
-            ],
+      instances: [
+        {
+          browser: 'chromium',
+          name: 'fishing-map-chromium',
+          viewport: { width: 1280, height: 720 },
+        },
+      ]
     },
   },
 })
