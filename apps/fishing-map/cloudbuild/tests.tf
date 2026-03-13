@@ -124,7 +124,6 @@ yarn nx affected \
   --target test \
   --base=origin/develop \
   --head=HEAD \
-  --parallel=1 \
   --forceExit \
   | tee integration-tests-output
 
