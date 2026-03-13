@@ -1012,6 +1012,7 @@
     "gearType_short": "crwdns60515:0crwdne60515:0",
     "geartypes": "crwdns70110:0crwdne70110:0",
     "gearTypes": {
+      "": "crwdns118854:0crwdne118854:0",
       "bunker": "crwdns69466:0crwdne69466:0",
       "bunker_or_tanker": "crwdns69468:0crwdne69468:0",
       "cargo": "crwdns69470:0crwdne69470:0",
