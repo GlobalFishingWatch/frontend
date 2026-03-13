@@ -331,7 +331,7 @@ const VesselIdentity = () => {
     )
   }
   return (
-    <Fragment>
+    <div className={styles.identityContainer}>
       <Tabs
         tabs={identityTabs.map((t) => ({
           ...t,
@@ -341,9 +341,8 @@ const VesselIdentity = () => {
         onTabClick={onTabClick}
         className={styles.tabsContainer}
       />
-
       {vesselIdentity?.ssvid && (
-        <div className={styles.externalToolsContainer}>
+        <div className={cx('card', styles.externalToolsContainer)}>
           <label>{t((t) => t.common.viewIn)}</label>
           <div className={styles.externalToolLinks}>
             <a
@@ -401,7 +400,7 @@ const VesselIdentity = () => {
           </div>
         </div>
       )}
-    </Fragment>
+    </div>
   )
 }
 

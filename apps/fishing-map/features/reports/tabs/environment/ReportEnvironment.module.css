@@ -1,6 +1,5 @@
 .container {
-  padding: var(--space-M) var(--space-M);
-  border-bottom: var(--border);
+  padding: var(--space-SM);
 }
 
 .graphSelectorContainer {
@@ -9,7 +8,7 @@
 }
 
 .comparisonContainer {
-  padding: var(--space-S) var(--space-M) 0;
+  padding: var(--space-S);
 }
 
 .addLayerContainer {

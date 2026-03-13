@@ -3,12 +3,7 @@
   display: flex;
 }
 
-.form {
-  background: var(--color-off-white-0);
-  box-shadow: var(--box-shadow-1);
-  border: var(--border);
-  border-radius: var(--border-radius-1);
-  margin: var(--space-S);
+.advancedLayout .form {
   margin-top: 0;
   width: var(--sidebar-width);
   z-index: 4;
@@ -39,13 +34,9 @@
   min-width: 15rem;
 }
 
-.scrollContainer {
-  background: var(--color-off-white-0);
-  box-shadow: var(--box-shadow-1);
-  border: var(--border);
-  border-radius: var(--border-radius-1);
-  margin-right: var(--space-S);
-  margin-bottom: var(--space-S);
+.advancedLayout .scrollContainer {
+  margin-top: 0;
+  margin-left: 0;
   flex: 1;
   overflow-y: auto;
   display: flex;

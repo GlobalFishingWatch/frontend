@@ -1,7 +1,3 @@
-.container {
-  padding: var(--space-S);
-}
-
 .placeholder {
   height: calc(100% - var(--header-height));
   flex: 1;
@@ -29,10 +25,6 @@ a.linkButton,
 }
 
 .list {
-  background-color: var(--color-off-white-0);
-  box-shadow: var(--box-shadow-1);
-  border: var(--border);
-  border-radius: var(--border-radius-1);
   padding: var(--space-SM);
 }
 

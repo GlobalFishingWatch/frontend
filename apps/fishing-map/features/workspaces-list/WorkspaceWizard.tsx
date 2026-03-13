@@ -201,7 +201,7 @@ function WorkspaceWizard() {
     : t((t) => t.workspace.wizard.exploreGlobal)
 
   return (
-    <div className={styles.wizardContainer}>
+    <div className={cx('card', styles.wizardContainer)}>
       <div
         className={cx(styles.inputContainer, { [styles.open]: isOpen && areasMatching.length > 0 })}
       >

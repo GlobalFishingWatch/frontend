@@ -6,22 +6,16 @@
   position: relative;
 }
 
-.footer {
-  background: var(--color-off-white-0);
-  box-shadow: var(--box-shadow-1);
-  border: var(--border);
-  border-radius: var(--border-radius-1);
+.search .footer {
   position: fixed;
   width: calc(100% - var(--sidebar-tabs-width) - var(--space-S) * 2);
-  bottom: var(--space-S);
-  right: var(--space-S);
+  bottom: 0;
+  right: 0;
   display: flex;
   align-items: center;
   gap: var(--space-S);
   padding: var(--space-S);
-  background: var(--color-white);
-  box-shadow: var(--box-shadow-1);
-  border-top: var(--border);
+  background: var(--color-off-white-1);
   transition: transform 300ms ease-in-out;
   z-index: 3;
   line-height: 1;

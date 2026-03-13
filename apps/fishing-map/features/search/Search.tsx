@@ -122,7 +122,7 @@ function Search() {
         debouncedQuery={debouncedQuery}
       />
       <div
-        className={cx(styles.footer, styles[activeSearchOption], {
+        className={cx('card', styles.footer, styles[activeSearchOption], {
           [styles.hidden]:
             !searchResultsPagination ||
             searchResultsPagination.total === 0 ||

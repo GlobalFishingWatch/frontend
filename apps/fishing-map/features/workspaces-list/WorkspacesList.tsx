@@ -66,7 +66,7 @@ function WorkspacesList() {
   return (
     <div className={styles.container}>
       {locationCategory === WorkspaceCategory.MarineManager && <WorkspaceWizard />}
-      <ul className={styles.list}>
+      <ul className={cx('card', styles.list)}>
         {locationCategory === WorkspaceCategory.MarineManager && (
           <label className={styles.listTitle}>{t((t) => t.common.partnerSites)}</label>
         )}

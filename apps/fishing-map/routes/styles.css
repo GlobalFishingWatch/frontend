@@ -11,6 +11,19 @@
   --switch-height: 4.4rem;
 }
 
+.card {
+  background-color: var(--color-off-white-0);
+  border: var(--border);
+  border-radius: var(--border-radius-1);
+  box-shadow: var(--box-shadow-1);
+  margin: var(--space-S);
+}
+
+.cardContainer .card {
+  box-shadow: none;
+  background: var(--color-off-white-1);
+}
+
 html:has(.printing) {
   font-size: 10px !important;
 }

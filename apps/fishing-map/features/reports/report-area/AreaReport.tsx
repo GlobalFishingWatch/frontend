@@ -195,15 +195,15 @@ export default function Report() {
   }
 
   return filteredCategoryTabs.length > 1 ? (
-    <Tabs
-      className={styles.tabContainer}
-      tabs={filteredCategoryTabs}
-      activeTab={reportCategory}
-      onTabClick={handleTabClick}
-    />
-  ) : (
-    <div className={styles.singleTabContainer}>
-      {filteredCategoryTabs.find((tab) => tab.id === reportCategory)?.content}
+    <div className="cardContainer">
+      <Tabs
+        className={styles.tabContainer}
+        tabs={filteredCategoryTabs}
+        activeTab={reportCategory}
+        onTabClick={handleTabClick}
+      />
     </div>
+  ) : (
+    filteredCategoryTabs.find((tab) => tab.id === reportCategory)?.content
   )
 }

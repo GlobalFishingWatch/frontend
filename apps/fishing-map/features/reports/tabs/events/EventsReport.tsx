@@ -152,10 +152,10 @@ function EventsReport() {
         </div>
       )}
       <Fragment>
-        <div className={styles.subsection}>
+        <div className={cx('card', styles.subsection)}>
           <ReportSummary />
         </div>
-        <div className={styles.subsection}>
+        <div className={cx('card', styles.subsection)}>
           <div className={styles.container}>
             <div className={styles.headerContainer}>
               <label>{t((t) => t.common.events)}</label>
@@ -164,7 +164,7 @@ function EventsReport() {
             {graph}
           </div>
         </div>
-        <div className={styles.subsection}>
+        <div className={cx('card', styles.subsection)}>
           {!hasEvents ? null : !timerangeSupported ? (
             <ReportVesselsPlaceholder animate={false}>
               <div className={cx(styles.cover, styles.error)}>
@@ -207,7 +207,7 @@ function EventsReport() {
         </div>
 
         {showPortsTable && (
-          <div className={styles.subsection}>
+          <div className={cx('card', styles.subsection)}>
             <div className={styles.container}>
               <EventReportPorts />
             </div>

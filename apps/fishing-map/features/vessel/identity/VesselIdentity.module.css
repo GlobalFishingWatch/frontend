@@ -5,7 +5,7 @@
 }
 
 .container {
-  padding: var(--space-M);
+  padding: var(--space-SM);
   padding-bottom: var(--space-SM);
   position: relative;
 }
@@ -15,16 +15,11 @@
   margin-bottom: var(--space-XS);
 }
 
-.externalToolsContainer {
-  padding: var(--space-M);
+.identityContainer .externalToolsContainer {
+  padding: var(--space-SM);
   padding-bottom: var(--space-SM);
   position: relative;
-  margin: var(--space-S);
   margin-bottom: var(--space-SM);
-  background: var(--color-off-white-0);
-  box-shadow: var(--box-shadow-1);
-  border: var(--border);
-  border-radius: var(--border-radius-1);
 }
 
 .fieldGroupContainer {
@@ -63,7 +58,7 @@
   justify-content: flex-end;
   gap: var(--space-S);
   position: absolute;
-  right: var(--space-M);
+  right: var(--space-SM);
 }
 
 .secondary {
