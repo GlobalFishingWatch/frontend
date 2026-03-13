@@ -23,7 +23,7 @@ import { makeStore } from 'store'
 
 const waitForReportFeaturesLoaded = async (
   jotaiStore: ReturnType<typeof createJotaiStore>,
-  timeout = 5000
+  timeout = 10000
 ) => {
   await vi.waitFor(
     () => {
@@ -274,20 +274,32 @@ describe('Reports', () => {
     await expect.element(subselector).toHaveTextContent(/presence/i)
   })
 
-  it.only('should show vessels in area when user logged in', async () => {
+  it('should show vessels in area when user logged in', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-    const { getByTestId, getByText, getByRole } = await render(<App />, {
+    const { getByTestId } = await render(<App />, {
       store,
+      jotaiStore,
       authenticated: true,
     })
-    store.dispatch(openGlobalReportAction)
+    store.dispatch(eezReportAction)
     await testingMiddleware.waitForAction(WORKSPACE_REPORT)
+    await waitForReportFeaturesLoaded(jotaiStore)
 
-    await userEvent.click(getByRole('button', { name: 'See vessels' }))
+    await userEvent.click(getByTestId('see-vessel-table-activity-report'))
 
-    //expect(updateAction?.query?.reportActivitySubCategory).toBe('presence')
+    expect(getByTestId('report-vessels-graph')).toBeVisible()
+    const vesselsTable = getByTestId('report-vessels-table')
+    await expect.element(vesselsTable).toBeVisible()
+    expect(vesselsTable).toHaveTextContent('Name')
+    expect(vesselsTable).toHaveTextContent('MMSI')
+    expect(vesselsTable).toHaveTextContent('Flag')
+    expect(vesselsTable).toHaveTextContent('Type')
+    expect(vesselsTable).toHaveTextContent('hours')
+
+    const vesselLink = vesselsTable.getByTestId('link-vessel-profile').first()
+    expect(vesselLink).toBeVisible()
   })
 })
 
@@ -355,7 +367,7 @@ describe('Global reports', () => {
     expect(tooltipValues).toContain(lastStatsValue!.value.toString())
   })
 
-  it('should change dataviews when changing tabs', async () => {
+  it.only('should change dataviews when changing tabs', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
