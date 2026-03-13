@@ -159,6 +159,15 @@ const nextConfig: NextConfig = {
   // to deploy on a node server
   output: 'standalone',
   outputFileTracingRoot: join(__dirname, '../../'),
+  // These packages use the `module-sync` export condition (Node.js 22+) which
+  // @vercel/nft doesn't trace automatically, causing missing files in standalone builds.
+  outputFileTracingIncludes: {
+    '/**': [
+      '../../node_modules/async-function/**',
+      '../../node_modules/async-generator-function/**',
+      '../../node_modules/generator-function/**',
+    ],
+  },
   // devIndicators: {
   //   position: 'top-left',
   // },

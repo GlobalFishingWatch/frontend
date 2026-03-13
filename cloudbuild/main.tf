@@ -29,7 +29,13 @@ resource "google_cloudbuild_trigger" "dependencies-base-image-trigger" {
     }
   }
 
-  included_files = ["package.json", "yarn.lock"]
+  included_files = [
+    "package.json",
+    "yarn.lock",
+    ".yarnrc.yml",
+    ".yarn/releases/**",
+    "Dockerfile"
+  ]
 
   service_account = "projects/gfw-int-infrastructure/serviceAccounts/cloudbuild@gfw-int-infrastructure.iam.gserviceaccount.com"
   build {
