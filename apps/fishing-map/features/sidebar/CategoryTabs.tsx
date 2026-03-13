@@ -201,6 +201,7 @@ function CategoryTabs({ onMenuClick }: CategoryTabsProps) {
                     (locationCategory === (category as WorkspaceCategory) ||
                       (index === 0 && !locationCategory)),
                 })}
+                data-testid={`category-tab-${category}`}
               >
                 <Link
                   className={styles.tabContent}
