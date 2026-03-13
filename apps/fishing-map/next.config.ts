@@ -163,9 +163,9 @@ const nextConfig: NextConfig = {
   // @vercel/nft doesn't trace automatically, causing missing files in standalone builds.
   outputFileTracingIncludes: {
     '/**': [
-      './node_modules/async-function/**',
-      './node_modules/async-generator-function/**',
-      './node_modules/generator-function/**',
+      '../../node_modules/async-function/**',
+      '../../node_modules/async-generator-function/**',
+      '../../node_modules/generator-function/**',
     ],
   },
   // devIndicators: {
