@@ -367,7 +367,7 @@ describe('Global reports', () => {
     expect(tooltipValues).toContain(lastStatsValue!.value.toString())
   })
 
-  it.only('should change dataviews when changing tabs', async () => {
+  it('should change dataviews when changing tabs', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
@@ -410,22 +410,91 @@ describe('Global reports', () => {
 describe.todo('Private user reports', () => {
   it('should show user reports when user is logged in', async () => {})
 
-  it('should show correct access message for private user reports', async () => {})
+  it('should show correct access message for private reports', async () => {})
 })
 
-describe.todo('Data Comparison', () => {
+describe.only('Data Comparison', () => {
   it('should show second selector when choose data comparison mode', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-    store.dispatch(openGlobalReportAction)
+    store.dispatch(eezReportAction)
     const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
 
     await waitForReportFeaturesLoaded(jotaiStore)
+
+    await userEvent.click(getByTestId('graph-type-selector'))
+    const comparisonOption = getByText(/data comparison/i)
+    await comparisonOption.click()
+
+    await expect.element(getByTestId('comparison-dataset-select')).toBeVisible()
   })
 
-  it('should show both dataviews in map when compared data is selected', async () => {})
+  it('should show both dataviews in map when compared data is selected', async () => {
+    const testingMiddleware = createTestingMiddleware()
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const jotaiStore = createJotaiStore()
+    store.dispatch(eezReportAction)
+    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
 
-  it('should show both dataviews in graph when compared data is selected', async () => {})
-  it('should correctly update a dataview when changing compared data', async () => {})
+    await waitForReportFeaturesLoaded(jotaiStore)
+
+    await userEvent.click(getByTestId('graph-type-selector'))
+    const comparisonOption = getByText(/data comparison/i)
+    await comparisonOption.click()
+
+    const dataComparisonSelect = getByTestId('comparison-dataset-select')
+    await dataComparisonSelect.click()
+    await getByText(/imagery detections/i).click()
+
+    const actions = testingMiddleware.getActions()
+    const addLayerAction = actions.findLast((action) => action.type === 'WORKSPACE_REPORT')
+
+    expect(addLayerAction?.query).toEqual(
+      expect.objectContaining({
+        reportComparisonDataviewIds: {
+          compare: 'sentinel2__dataset-comparison',
+          main: 'ais',
+        },
+      })
+    )
+  })
+
+  it('should show both dataviews in graph when compared data is selected', async () => {
+    const testingMiddleware = createTestingMiddleware()
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const jotaiStore = createJotaiStore()
+    store.dispatch(eezReportAction)
+    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
+
+    await waitForReportFeaturesLoaded(jotaiStore)
+
+    await userEvent.click(getByTestId('graph-type-selector'))
+    const comparisonOption = getByText(/data comparison/i)
+    await comparisonOption.click()
+
+    const dataComparisonSelect = getByTestId('comparison-dataset-select')
+    await dataComparisonSelect.click()
+    await getByText(/imagery detections/i).click()
+
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
+    const comparisonGraph = getByTestId('report-activity-dataset-comparison')
+    const graphElement = comparisonGraph.element()
+    const { width, height } = graphElement.getBoundingClientRect()
+
+    await userEvent.hover(graphElement, {
+      position: {
+        x: width - 30,
+        y: height / 2,
+      },
+    })
+
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    const tooltip = getByTestId('evolution-graph-tooltip')
+    const tooltipListItems = tooltip.getByRole('listitem').elements()
+    expect(tooltipListItems).toHaveLength(2)
+    expect(tooltipListItems[0].textContent).toContain('hours')
+    expect(tooltipListItems[1].textContent).toContain('detections')
+  })
 })
