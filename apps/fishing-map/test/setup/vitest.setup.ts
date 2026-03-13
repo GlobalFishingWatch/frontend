@@ -2,6 +2,8 @@ import i18n from 'i18next'
 import { Settings } from 'luxon'
 import { beforeAll, vi } from 'vitest'
 
+import type * as ReportsGeoUtilsModule from 'features/reports/reports-geo.utils'
+
 import { TEST_END_DATE } from '../test.config'
 
 import '../../pages/styles.css'
@@ -20,8 +22,8 @@ Settings.now = () => mockDate.valueOf()
 // This is needed for filterCellsByPolygonWorker used in reports
 vi.mock('features/reports/reports-geo.utils.workers.hooks', async () => {
   const { filterByPolygon } = await vi.importActual<
-    typeof import('../features/reports/reports-geo.utils')
-  >('../features/reports/reports-geo.utils')
+    typeof ReportsGeoUtilsModule
+  >('features/reports/reports-geo.utils')
   
   return {
     useFilterCellsByPolygonWorker: () => {
