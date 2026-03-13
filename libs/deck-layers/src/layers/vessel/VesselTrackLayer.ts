@@ -1,6 +1,6 @@
 import type { Layer, LayerProps, LayersList, PickingInfo, UpdateParameters } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
-import { rhumbBearing } from '@turf/turf'
+import { rhumbBearing } from '@turf/rhumb-bearing'
 import type { Position } from 'geojson'
 import * as geokdbush from 'geokdbush'
 import KDBush from 'kdbush'

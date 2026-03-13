@@ -32,7 +32,7 @@ export const selectFilteredPoints = createSelector([selectPortPointsByCountry, s
  * get subareas by country (subareas are polygons that group positions in a part of every port)
  */
 export const selectSubareaValuesByCountry = createSelector([selectSubareaValues, selectCountry],
-  (data, selectedCountry) => data[selectedCountry] ?? []
+  (data, selectedCountry) => selectedCountry ? (data[selectedCountry] ?? []) : []
 )
 
 /**
@@ -46,7 +46,7 @@ export const selectPointValuesByCountry = createSelector([selectPointValues, sel
  * return the map of port assigned to the points
  */
 export const selectPortValuesByCountry = createSelector([selectPortValues, selectCountry],
-  (data, selectedCountry) => data[selectedCountry]
+  (data, selectedCountry) => selectedCountry ? data[selectedCountry] : undefined
 )
 
 /**
@@ -54,8 +54,8 @@ export const selectPortValuesByCountry = createSelector([selectPortValues, selec
  */
 export const selectSubareaColors = createSelector([selectSubareas, selectCountry],
   (subareas, country): any => {
-    const colorsMap = {}
-    if (subareas[country]) {
+    const colorsMap: Record<string, string | undefined> = {}
+    if (country && subareas[country]) {
       subareas[country].forEach((subarea) => {
         colorsMap[subarea.id] = subarea.color
       })
@@ -67,13 +67,13 @@ export const selectSubareaColors = createSelector([selectSubareas, selectCountry
 // Return the list of ports by selected country
 export const selectPortsByCountry = createSelector([selectPorts, selectCountry],
   (ports, country): any => {
-    return ports[country]
+    return country ? ports[country] : undefined
   })
 
 // the list of subareas by selected country
 export const selectSubareasByCountry = createSelector([selectSubareas, selectCountry],
   (subareas, country): any => {
-    return subareas[country]
+    return country ? subareas[country] : undefined
   })
 
 // this generate the port options for the selects in the table
