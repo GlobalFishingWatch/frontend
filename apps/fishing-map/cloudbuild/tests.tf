@@ -124,9 +124,6 @@ yarn nx affected \
   --target test \
   --base=origin/develop \
   --head=HEAD \
-  --parallel=1 \
-  --pool=forks \
-  --isolate \
   | tee integration-tests-output
 
 # Parse the tests output to create a Github Comment
