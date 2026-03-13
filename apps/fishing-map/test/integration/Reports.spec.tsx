@@ -24,7 +24,7 @@ import { getUTCDateTime } from 'utils/dates'
 
 const waitForReportFeaturesLoaded = async (
   jotaiStore: ReturnType<typeof createJotaiStore>,
-  timeout = 10000
+  timeout = 5000
 ) => {
   await vi.waitFor(
     () => {
@@ -59,7 +59,7 @@ const getCalculatedReportHours = (jotaiStore: ReturnType<typeof createJotaiStore
   return sum(formattedTimeseries?.map((t) => sum(t.avg || [0])) || [])
 }
 
-const waitForStatsQueryLoaded = async (store: ReturnType<typeof makeStore>, timeout = 10000) => {
+const waitForStatsQueryLoaded = async (store: ReturnType<typeof makeStore>, timeout = 5000) => {
   return await vi.waitFor(
     () => {
       const state = store.getState()
@@ -271,39 +271,63 @@ describe('Reports', () => {
     await expect.element(subselector).toBeVisible()
     await expect.element(subselector).toHaveTextContent(/presence/i)
   })
+
+  it.only('should show vessels in area when user logged in', async () => {
+    const testingMiddleware = createTestingMiddleware()
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const jotaiStore = createJotaiStore()
+    const { getByTestId, getByText, getByRole } = await render(<App />, {
+      store,
+      authenticated: true,
+    })
+    store.dispatch(openGlobalReportAction)
+    await testingMiddleware.waitForAction(WORKSPACE_REPORT)
+
+    await userEvent.click(getByRole('button', { name: 'See vessels' }))
+
+    //expect(updateAction?.query?.reportActivitySubCategory).toBe('presence')
+  })
 })
 
 describe('Global reports', () => {
-  let getByTestId: any
-  let getByText: any
-  let store: ReturnType<typeof makeStore>
-  let testingMiddleware: ReturnType<typeof createTestingMiddleware>
-
   beforeEach(async () => {
     vi.clearAllMocks()
-    testingMiddleware = createTestingMiddleware()
-    store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
-    const rendered = await render(<App />, { store })
-    getByTestId = rendered.getByTestId
-    getByText = rendered.getByText
-    await getByTestId('category-tab-reports').click()
-    const reportWorkspaceLink = getByTestId('highlighted-workspace-events-report')
-    await reportWorkspaceLink.getByText('see report').click()
   })
 
   it('should open global report when clicking on highlighted workspace in reports category', async () => {
+    const testingMiddleware = createTestingMiddleware()
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const rendered = await render(<App />, { store })
+    const getByTestId = rendered.getByTestId
+    await getByTestId('category-tab-reports').click()
+    const reportWorkspaceLink = getByTestId('highlighted-workspace-events-report')
+    await reportWorkspaceLink.getByText('see report').click()
     const statsQueryState = await waitForStatsQueryLoaded(store)
     const statsData = statsQueryState?.data
     expect(statsData).toBeDefined()
   })
 
   it('should have activity, events and detections tabs', async () => {
+    const testingMiddleware = createTestingMiddleware()
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const jotaiStore = createJotaiStore()
+    const { getByText } = await render(<App />, { store, jotaiStore })
+    store.dispatch(openGlobalReportAction)
+    await testingMiddleware.waitForAction(WORKSPACE_REPORT)
+
     expect(getByText('Activity')).toBeDefined()
     expect(getByText('Events')).toBeDefined()
     expect(getByText('Detections')).toBeDefined()
   })
 
   it('should display the same number in the graph as in the timeseries', async () => {
+    const testingMiddleware = createTestingMiddleware()
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const jotaiStore = createJotaiStore()
+    const { getByTestId } = await render(<App />, { store, jotaiStore })
+    store.dispatch(openGlobalReportAction)
+    await testingMiddleware.waitForAction(WORKSPACE_REPORT)
+
     const statsQueryState = await waitForStatsQueryLoaded(store)
     const statsData = statsQueryState?.data
 
@@ -329,7 +353,14 @@ describe('Global reports', () => {
     expect(tooltipValues).toContain(lastStatsValue!.value.toString())
   })
 
-  it.todo('should change dataviews when changing tabs', async () => {
+  it('should change dataviews when changing tabs', async () => {
+    const testingMiddleware = createTestingMiddleware()
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const jotaiStore = createJotaiStore()
+    const { getByText } = await render(<App />, { store, jotaiStore })
+    store.dispatch(openGlobalReportAction)
+    await testingMiddleware.waitForAction(WORKSPACE_REPORT)
+
     const presenceButton = getByText('Presence')
     if (presenceButton) {
       await presenceButton.click()
@@ -341,6 +372,31 @@ describe('Global reports', () => {
       expect(updateAction?.query?.reportActivitySubCategory).toBe('presence')
     }
   })
+
+  it.todo('should show detections in detections tab', async () => {
+    const testingMiddleware = createTestingMiddleware()
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const jotaiStore = createJotaiStore()
+    const { getByText, getByTestId } = await render(<App />, { store, jotaiStore })
+    store.dispatch(openGlobalReportAction)
+    await testingMiddleware.waitForAction(WORKSPACE_REPORT)
+
+    const presenceButton = getByText('Detections')
+    if (presenceButton) {
+      await presenceButton.click()
+      await new Promise((resolve) => setTimeout(resolve, 500))
+
+      const subselector = getByTestId('report-subsection-selector')
+      await expect.element(subselector).toBeVisible()
+      await expect.element(subselector).toHaveTextContent(/detections/i)
+    }
+  })
+})
+
+describe.todo('Private user reports', () => {
+  it('should show user reports when user is logged in', async () => {})
+
+  it('should show correct access message for private user reports', async () => {})
 })
 
 describe.todo('Data Comparison', () => {
@@ -353,4 +409,9 @@ describe.todo('Data Comparison', () => {
 
     await waitForReportFeaturesLoaded(jotaiStore)
   })
+
+  it('should show both dataviews in map when compared data is selected', async () => {})
+
+  it('should show both dataviews in graph when compared data is selected', async () => {})
+  it('should correctly update a dataview when changing compared data', async () => {})
 })
