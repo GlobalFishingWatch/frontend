@@ -10,6 +10,7 @@
 }
 
 .searchContainer {
+  border-radius: var(--border-radius-1);
   position: absolute;
   background-color: var(--color-white);
   top: 0;
@@ -47,6 +48,7 @@
   left: 0;
   width: 100%;
   background-color: var(--color-background);
+  border-radius: 0 0 var(--border-radius-1) var(--border-radius-1);
 }
 
 .result {

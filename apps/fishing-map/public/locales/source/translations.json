@@ -240,7 +240,7 @@
     "onlyVisibleForJAC": "Only visible for JAC users",
     "onScreen": "on screen",
     "or": "or",
-    "others": "Others",
+    "others": "",
     "partnerSites": "Partner sites",
     "password": "password",
     "permissions": "permissions required",
@@ -507,8 +507,8 @@
     "yearlyNotAvailable": "Your time range is shorter than 1 year"
   },
   "errors": {
-    "areaLoad": "There was an error loading the report area",
-    "areaOutOfTime": "The report area is out of the current time range",
+    "areaLoad": "",
+    "areaOutOfTime": "",
     "datasetLoginRequired": "Login to access this dataset",
     "datasetNotFound": "Dataset not found",
     "fields": "Errors with fields {{fields}}",
@@ -1367,10 +1367,10 @@
     "user": "User workspace",
     "viewAccess": "View access",
     "wizard": {
-      "exploreArea": "See area",
-      "exploreGlobal": "See global",
-      "help": "You can move the map and update your workspace later",
-      "title": "Setup a marine manager workspace for any area globally"
+      "exploreArea": "",
+      "exploreGlobal": "",
+      "help": "",
+      "title": ""
     }
   }
 }

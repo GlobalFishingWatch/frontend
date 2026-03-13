@@ -1,8 +1,6 @@
 .container {
   flex: 1;
   width: 100%;
-  padding: var(--space-SM);
-  padding-bottom: 0;
 }
 
 .eventTypeRowContainer {
@@ -70,11 +68,6 @@
   height: 1.2rem;
   border-radius: 0.6rem;
   border: var(--border-thick);
-}
-
-.downloadContainer {
-  margin-top: var(--space-S);
-  margin-right: var(--space-S);
 }
 
 @media print {

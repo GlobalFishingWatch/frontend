@@ -191,7 +191,7 @@ function SearchBasicResult({
       {...itemProps}
       onMouseOut={() => setHighlightedIndex(-1)}
       onBlur={() => setHighlightedIndex(-1)}
-      className={cx(styles.searchResult, {
+      className={cx('card', styles.searchResult, {
         [styles.highlighted]: highlightedIndex === index,
         [styles.inWorkspace]: isInWorkspace,
         [styles.selected]: isSelected,

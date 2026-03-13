@@ -384,14 +384,14 @@ function ActivityReport() {
         </div>
       )}
       {!isVesselGroupReportLocation && (
-        <div className={cx(styles.subsection, styles.front)}>
+        <div className={cx('card', styles.subsection, styles.front)}>
           <ReportSummary activityUnit={activityUnit} reportStatus={reportStatus} />
         </div>
       )}
-      <div className={styles.subsection}>
+      <div className={cx('card', styles.subsection)}>
         <ReportActivityGraph />
       </div>
-      <div className={styles.subsection}>{ReportComponent}</div>
+      <div className={cx('card', styles.subsection)}>{ReportComponent}</div>
     </div>
   )
 }

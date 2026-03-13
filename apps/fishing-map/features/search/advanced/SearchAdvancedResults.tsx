@@ -420,7 +420,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         sx: {
           backgroundColor: 'transparent',
           ':hover': {
-            td: { backgroundColor: 'white' },
+            td: { backgroundColor: 'var(--color-off-white-1)' },
             'td ~ td': { backgroundColor: 'var(--color-terthiary-blue)' },
           },
         },
@@ -447,7 +447,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           color: 'var(--color-primary-blue)',
           borderRight: 'var(--border)',
           borderBottom: 'var(--border)',
-          backgroundColor: 'var(--color-white)',
+          backgroundColor: 'var(--color-off-white-1)',
           boxShadow:
             cell.column.id === 'shipname' ? '5px 0 5px -3px var(--color-terthiary-blue)' : '',
           div: { justifyContent: cell.column.id === 'mrt-row-select' ? 'center' : 'flex-start' },
@@ -460,7 +460,7 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
           color: 'var(--color-primary-blue)',
           backgroundColor:
             cell.column.id === 'shipname'
-              ? 'var(--color-white)'
+              ? 'var(--color-off-white-1)'
               : vesselSelectedIds.includes(getVesselProperty(row.original, 'id'))
                 ? 'var(--color-terthiary-blue)'
                 : 'transparent',
@@ -484,7 +484,9 @@ function SearchAdvancedResults({ fetchResults, fetchMoreResults }: SearchCompone
         sx: {
           height: '6px',
           backgroundColor: 'var(--color-white)',
-          transform: 'translateY(-6px)',
+          transform: 'translateY(-24px)',
+          margin: '8px',
+          borderRadius: 'var(--border-radius-1)',
           span: { backgroundColor: 'var(--color-secondary-blue)' },
         },
       }}

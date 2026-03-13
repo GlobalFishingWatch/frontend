@@ -1,9 +1,6 @@
 .wizardContainer {
-  padding: var(--space-M);
-  background-color: var(--color-help-yellow);
-  border-radius: 8px;
-  box-shadow: var(--box-shadow-1);
-  margin-bottom: var(--space-SM);
+  padding: var(--space-SM);
+  background: var(--color-help-yellow) !important;
 }
 
 .inputContainer {

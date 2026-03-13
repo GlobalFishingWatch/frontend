@@ -48,6 +48,7 @@ function Section({
   return (
     <section
       className={cx(
+        'card',
         styles.container,
         {
           'print-hidden': !hasVisibleDataviews,
