@@ -22,6 +22,7 @@ const DatasetType = ({
   style = 'default',
   icon,
   onFileLoaded,
+  testId,
 }: {
   type: DatasetGeometryTypesSupported
   title: string
@@ -29,6 +30,7 @@ const DatasetType = ({
   style?: DatasetUploadStyle
   icon: ReactElement<any, any>
   onFileLoaded: (file: File) => void
+  testId?: string
 }) => {
   const { t } = useTranslation()
   const { dispatchDatasetModalConfig } = useDatasetModalConfigConnect()
@@ -78,7 +80,7 @@ const DatasetType = ({
       {...(getRootProps() as any)}
     >
       {icon}
-      <input {...getInputProps()} />
+      <input {...getInputProps()} data-testid={testId} />
       {isDragActive ? (
         dragError ? (
           <div className={styles.textContainer}>
@@ -120,6 +122,7 @@ const DatasetTypeSelect = ({
   return (
     <div className={styles.wrapper}>
       <DatasetType
+        testId="polygons-file-input"
         type="polygons"
         title={t((t) => t.dataset.typePolygons)}
         style={style}
@@ -128,6 +131,7 @@ const DatasetTypeSelect = ({
         icon={<Polygons />}
       />
       <DatasetType
+        testId="tracks-file-input"
         type="tracks"
         title={t((t) => t.dataset.typeTracks)}
         style={style}
@@ -136,6 +140,7 @@ const DatasetTypeSelect = ({
         onFileLoaded={onFileLoaded}
       />
       <DatasetType
+        testId="points-file-input"
         type="points"
         title={t((t) => t.dataset.typePoints)}
         style={style}

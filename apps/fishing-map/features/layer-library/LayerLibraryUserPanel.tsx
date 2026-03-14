@@ -136,7 +136,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
                 <label id={geometryType} className={styles.categoryLabel}>
                   {t((t: any) => t.dataset.type[geometryType], { defaultValue: geometryType })}
                 </label>
-                {sortByCreationDate<Dataset>(layer).map((dataset) => {
+                {sortByCreationDate<Dataset>(layer).map((dataset, index) => {
                   const datasetError = dataset.status === DatasetStatus.Error
                   const datasetImporting = dataset.status === DatasetStatus.Importing
                   const datasetDescription = dataset.description !== dataset.name
@@ -172,6 +172,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
                         )}
                         {!datasetError && (
                           <IconButton
+                            testId={`${dataset.type}-add-to-map-${index}`}
                             icon="view-on-map"
                             onClick={() => onAddToWorkspaceClick(dataset)}
                             tooltip={t((t) => t.user.seeDataset)}

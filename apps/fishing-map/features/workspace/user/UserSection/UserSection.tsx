@@ -129,6 +129,7 @@ export function UserSection(): React.ReactElement<any> {
             <div className={styles.relative}>
               <Hint id="userContextLayers" />
               <UserLoggedIconButton
+                testId="upload-user-dataset"
                 icon="upload"
                 type="border"
                 size="medium"
