@@ -7,7 +7,6 @@ import * as fs from 'fs'
 import type { Connect, Plugin, PreviewServer, ViteDevServer } from 'vite'
 import { defineConfig } from 'vitest/config'
 
-const isVitestUi = process.env.VITEST_UI === 'true'
 const isChromeOnly = process.env.TEST_CHROME_ONLY === 'true'
 const defaultPlaywrightProvider = playwright()
 const chromiumPlaywrightProvider = playwright({
@@ -101,97 +100,106 @@ const authTokensPlugin = (): Plugin => ({
   },
 })
 
-export default defineConfig({
-  root: '.',
-  cacheDir: '../../node_modules/.vite/apps/fishing-map',
-  plugins: [react(), nxViteTsPaths(), svgMockPlugin(), publicAssetsPlugin(), authTokensPlugin()],
-  resolve: {
-    // Without dedupe, different dependency paths (app code vs test helpers vs linked workspace libs) can load separate React copies
-    dedupe: ['react', 'react-dom'],
-    alias: {
-      data: path.resolve(__dirname, './data'),
-      features: path.resolve(__dirname, './features'),
-      routes: path.resolve(__dirname, './routes'),
-      services: path.resolve(__dirname, './services'),
-      utils: path.resolve(__dirname, './utils'),
-      'data/config': path.resolve(__dirname, './data/config'),
-      types: path.resolve(__dirname, './types'),
-      queries: path.resolve(__dirname, './queries'),
-      middlewares: path.resolve(__dirname, './middlewares'),
-      store: path.resolve(__dirname, './store'),
-      appTestUtils: path.resolve(__dirname, './appTestUtils'),
-      test: path.resolve(__dirname, './test'),
-      hooks: path.resolve(__dirname, './hooks'),
-    },
-  },
+export default defineConfig(({ mode }) => {
+  const isUiTarget = process.env.NX_TASK_TARGET_TARGET === 'test:ui'
+  const isUiMode = mode === 'ui' || process.env.VITEST_UI === 'true' || isUiTarget
+  const isCoverageMode = mode === 'coverage'
 
-  define: {
-    'process.env.NEXT_PUBLIC_API_GATEWAY': JSON.stringify(process.env.NEXT_PUBLIC_API_GATEWAY),
-    'process.env.NEXT_PUBLIC_WORKSPACE_ENV': JSON.stringify(process.env.NEXT_PUBLIC_WORKSPACE_ENV),
-    'process.env.NODE_ENV': JSON.stringify('test'),
-    'process.env.VITEST': JSON.stringify('true'),
-    'process.env.TEST_USER_EMAIL': JSON.stringify(process.env.TEST_USER_EMAIL),
-    'process.env.TEST_USER_PASSWORD': JSON.stringify(process.env.TEST_USER_PASSWORD),
-  },
-  optimizeDeps: {
-    include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
-  },
-  test: {
-    watch: false,
-    include: [
-      '**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-      'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-    ],
-    fileParallelism: false,
-    reporters: ['default'],
-    coverage: {
-      reportsDirectory: 'test/coverage/apps/fishing-map',
-      provider: 'istanbul',
-    },
-    testTimeout: 30000,
-    setupFiles: './test/setup/vitest.setup.ts',
-    globalSetup: './test/setup/vitest.setup-global.ts',
-    browser: {
-      enabled: true,
-      provider: defaultPlaywrightProvider,
-      ui: isVitestUi,
-      headless: !isVitestUi,
-      trace: {
-        screenshots: true,
-        snapshots: true,
-        mode: isVitestUi ? 'on' : 'on-first-retry',
+  return {
+    root: __dirname,
+    cacheDir: '../../node_modules/.vite/apps/fishing-map',
+    plugins: [react(), nxViteTsPaths(), svgMockPlugin(), publicAssetsPlugin(), authTokensPlugin()],
+    resolve: {
+      // Without dedupe, different dependency paths (app code vs test helpers vs linked workspace libs) can load separate React copies
+      dedupe: ['react', 'react-dom'],
+      alias: {
+        data: path.resolve(__dirname, './data'),
+        features: path.resolve(__dirname, './features'),
+        routes: path.resolve(__dirname, './routes'),
+        services: path.resolve(__dirname, './services'),
+        utils: path.resolve(__dirname, './utils'),
+        'data/config': path.resolve(__dirname, './data/config'),
+        types: path.resolve(__dirname, './types'),
+        queries: path.resolve(__dirname, './queries'),
+        middlewares: path.resolve(__dirname, './middlewares'),
+        store: path.resolve(__dirname, './store'),
+        appTestUtils: path.resolve(__dirname, './appTestUtils'),
+        test: path.resolve(__dirname, './test'),
+        hooks: path.resolve(__dirname, './hooks'),
       },
-      instances:
-        isVitestUi || isChromeOnly
-          ? [
-              {
-                browser: 'chromium',
-                name: 'fishing-map-chromium',
-                provider: chromiumPlaywrightProvider,
-                viewport: { width: 1280, height: 720 },
-              },
-            ]
-          : [
-              {
-                browser: 'chromium',
-                name: 'fishing-map-chromium',
-                provider: chromiumPlaywrightProvider,
-                headless: true,
-                viewport: { width: 1280, height: 720 },
-              },
-              {
-                browser: 'firefox',
-                name: 'fishing-map-firefox',
-                headless: true,
-                viewport: { width: 1280, height: 720 },
-              },
-              {
-                browser: 'webkit',
-                name: 'fishing-map-webkit',
-                headless: true,
-                viewport: { width: 1280, height: 720 },
-              },
-            ],
     },
-  },
+
+    define: {
+      'process.env.NEXT_PUBLIC_API_GATEWAY': JSON.stringify(process.env.NEXT_PUBLIC_API_GATEWAY),
+      'process.env.NEXT_PUBLIC_WORKSPACE_ENV': JSON.stringify(
+        process.env.NEXT_PUBLIC_WORKSPACE_ENV
+      ),
+      'process.env.NODE_ENV': JSON.stringify('test'),
+      'process.env.VITEST': JSON.stringify('true'),
+      'process.env.TEST_USER_EMAIL': JSON.stringify(process.env.TEST_USER_EMAIL),
+      'process.env.TEST_USER_PASSWORD': JSON.stringify(process.env.TEST_USER_PASSWORD),
+    },
+    optimizeDeps: {
+      include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
+    },
+    test: {
+      watch: false,
+      include: [
+        '**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
+        'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
+      ],
+      fileParallelism: false,
+      reporters: ['default'],
+      coverage: {
+        enabled: isCoverageMode,
+        reportsDirectory: 'test/coverage/apps/fishing-map',
+        provider: 'istanbul',
+      },
+      testTimeout: 30000,
+      setupFiles: './test/setup/vitest.setup.ts',
+      globalSetup: './test/setup/vitest.setup-global.ts',
+      browser: {
+        enabled: true,
+        provider: defaultPlaywrightProvider,
+        ui: isUiMode,
+        headless: !isUiMode,
+        trace: {
+          screenshots: true,
+          snapshots: true,
+          mode: isUiMode ? 'on' : 'on-first-retry',
+        },
+        instances:
+          isUiMode || isChromeOnly
+            ? [
+                {
+                  browser: 'chromium',
+                  name: 'fishing-map-chromium',
+                  provider: chromiumPlaywrightProvider,
+                  viewport: { width: 1280, height: 720 },
+                },
+              ]
+            : [
+                {
+                  browser: 'chromium',
+                  name: 'fishing-map-chromium',
+                  provider: chromiumPlaywrightProvider,
+                  headless: true,
+                  viewport: { width: 1280, height: 720 },
+                },
+                {
+                  browser: 'firefox',
+                  name: 'fishing-map-firefox',
+                  headless: true,
+                  viewport: { width: 1280, height: 720 },
+                },
+                {
+                  browser: 'webkit',
+                  name: 'fishing-map-webkit',
+                  headless: true,
+                  viewport: { width: 1280, height: 720 },
+                },
+              ],
+      },
+    },
+  }
 })
