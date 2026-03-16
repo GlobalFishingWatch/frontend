@@ -1,24 +1,80 @@
-export const openGlobalReportAction = {
-  pathname: '/fishing-activity/default-public/report/public-eez-areas/8311',
+export const openGlobalReportAction ={
   type: 'WORKSPACE_REPORT',
-  payload: {
-    category: 'fishing-activity',
-    workspaceId: 'default-public',
-    datasetId: 'public-eez-areas',
-    areaId: '8311',
-  },
   query: {
-    longitude: 158.7770691,
-    latitude: -54.90904804,
-    zoom: 5.20960877,
+    longitude: 0,
+    latitude: 0,
+    zoom: 0,
     dataviewInstances: [
       {
-        id: 'context-layer-eez',
+        id: 'ais',
+        origin: 'report',
         config: {
-          visible: true,
-        },
+          visible: true
+        }
       },
+      {
+        id: 'vms',
+        origin: 'report',
+        config: {
+          visible: true
+        }
+      },
+      {
+        id: 'presence',
+        origin: 'report',
+        config: {
+          visible: true
+        }
+      },
+      {
+        id: 'sar',
+        origin: 'report',
+        config: {
+          visible: true
+        }
+      },
+      {
+        id: 'sentinel2',
+        origin: 'report',
+        config: {
+          visible: true
+        }
+      },
+      {
+        id: 'viirs',
+        origin: 'report',
+        config: {
+          visible: true
+        }
+      },
+      {
+        id: 'encounters',
+        origin: 'report',
+        config: {
+          visible: true
+        }
+      },
+      {
+        id: 'loitering',
+        origin: 'report',
+        config: {
+          visible: true
+        }
+      },
+      {
+        id: 'port-visits',
+        origin: 'report',
+        config: {
+          visible: true
+        }
+      }
     ],
-    bivariateDataviews: null,
+    reportCategory: 'events',
+    reportLoadVessels: false,
+    timebarVisualisation: 'events'
   },
-}
+  payload: {
+    category: 'reports',
+    workspaceId: 'default-public'
+  },
+ }

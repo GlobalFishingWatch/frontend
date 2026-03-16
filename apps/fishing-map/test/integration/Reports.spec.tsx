@@ -4,6 +4,7 @@ import { selectReportEventsStats } from 'queries/report-events-stats-api'
 import { render } from 'test/appTestUtils'
 import { defaultState } from 'test/defaultState'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
+import { navigateToPrivateWorkspace } from 'test/utils/actions/navigateToPrivateWorkspace'
 import { openGlobalReportAction } from 'test/utils/actions/openGlobalReportAction'
 import { getOpenReportActionByArea } from 'test/utils/actions/openReportAction'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -18,7 +19,8 @@ import { reportStateAtom } from 'features/reports/reports-timeseries.hooks'
 import { formatEvolutionData } from 'features/reports/tabs/activity/reports-activity-timeseries.utils'
 import { selectFetchEventsStatsParams } from 'features/reports/tabs/events/events-report.selectors'
 import { timerangeState } from 'features/timebar/timebar.hooks'
-import { WORKSPACE_REPORT } from 'routes/routes'
+import { setLoginExpired } from 'features/user/user.slice'
+import { REPORT, WORKSPACE_REPORT } from 'routes/routes'
 import { makeStore } from 'store'
 
 const waitForReportFeaturesLoaded = async (
@@ -371,23 +373,31 @@ describe('Global reports', () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
-    const { getByText } = await render(<App />, { store, jotaiStore })
+    const { getByTestId, getByText } = await render(<App />, { store, jotaiStore })
     store.dispatch(openGlobalReportAction)
     await testingMiddleware.waitForAction(WORKSPACE_REPORT)
+    const mapElement = getByTestId('app-main')
 
-    const presenceButton = getByText('Presence')
-    if (presenceButton) {
-      await presenceButton.click()
-      await new Promise((resolve) => setTimeout(resolve, 500))
+    await userEvent.click(getByText('Activity'))
+    await waitForReportFeaturesLoaded(jotaiStore)
 
-      const actions = testingMiddleware.getActions()
-      const updateAction = actions.findLast((action) => action.type === 'WORKSPACE_REPORT')
+    const presenceButton = getByText(/vessel Presence/i)
+    await presenceButton.click()
+    await waitForReportFeaturesLoaded(jotaiStore)
+    await expect.element(getByText(/hours of Vessel presence in the area between/i)).toBeVisible()
 
-      expect(updateAction?.query?.reportActivitySubCategory).toBe('presence')
-    }
+    await userEvent.click(mapElement, { position: { x: 4, y: 453 } })
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    await expect
+      .element(getByTestId('map-popup-wrapper').getByRole('heading', { name: 'Vessel presence' }))
+      .toBeVisible()
+
+    const valueElement = getByTestId('map-popup-wrapper').getByTestId('activity-tooltip-row-value')
+    await expect.element(valueElement).toBeVisible()
+    await expect.element(valueElement).toHaveTextContent(/[\d,]+\s+hours/)
   })
 
-  it.todo('should show detections in detections tab', async () => {
+  it('should show detections in detections tab', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
     const jotaiStore = createJotaiStore()
@@ -395,25 +405,105 @@ describe('Global reports', () => {
     store.dispatch(openGlobalReportAction)
     await testingMiddleware.waitForAction(WORKSPACE_REPORT)
 
-    const presenceButton = getByText('Detections')
-    if (presenceButton) {
-      await presenceButton.click()
-      await new Promise((resolve) => setTimeout(resolve, 500))
+    const detectionsTab = getByText('Detections')
+    await detectionsTab.click()
+    await waitForReportFeaturesLoaded(jotaiStore)
 
-      const subselector = getByTestId('report-subsection-selector')
-      await expect.element(subselector).toBeVisible()
-      await expect.element(subselector).toHaveTextContent(/detections/i)
-    }
+    const subselector = getByTestId('report-subsection-selector')
+    await expect.element(subselector).toBeVisible()
+    await expect.element(subselector).toHaveTextContent(/Night light detections \(VIIRS\)/i)
+    await expect.element(subselector).toHaveTextContent(/Radar vessel detections \(SAR\)/i)
+    await expect.element(subselector).toHaveTextContent(/Sentinel 2/i)
   })
 })
 
-describe.todo('Private user reports', () => {
-  it('should show user reports when user is logged in', async () => {})
+describe('Private user reports', () => {
+  it.skip('should show correct access message for private reports', async () => {
+    const testingMiddleware = createTestingMiddleware()
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const jotaiStore = createJotaiStore()
+    const { getByTestId, getByText } = await render(<App />, {
+      store,
+      jotaiStore,
+      authenticated: true,
+    })
 
-  it('should show correct access message for private reports', async () => {})
+    await userEvent.click(getByTestId('sidebar-login-icon'))
+    await userEvent.click(getByText(/Reports/i))
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
+    const reportLink = getByText(/Report02/i)
+    await expect.element(reportLink).toBeVisible()
+    await userEvent.click(reportLink)
+    await testingMiddleware.waitForAction(REPORT)
+    expect(store.getState().location.type).toBe(REPORT)
+
+    store.dispatch(setLoginExpired(true))
+    // TODO: review expired token flow - not logging out
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
+    // Re-dispatch the REPORT action to trigger workspace reload with expired auth
+    const currentLocation = store.getState().location
+    store.dispatch({
+      type: REPORT,
+      payload: currentLocation.payload,
+      query: currentLocation.query,
+    })
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    expect(getByText(/This is a private workspace./)).toBeVisible()
+    expect(getByTestId('login-link')).toBeVisible()
+  })
+
+  it('should show user reports when user is logged in', async () => {
+    const testingMiddleware = createTestingMiddleware()
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const jotaiStore = createJotaiStore()
+    const { getByTestId, getByText } = await render(<App />, {
+      store,
+      jotaiStore,
+      authenticated: true,
+    })
+
+    await userEvent.click(getByTestId('sidebar-login-icon'))
+    await userEvent.click(getByText(/Reports/i))
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
+    const reportLink = getByText(/Report02/i)
+    await userEvent.click(reportLink)
+    await testingMiddleware.waitForAction(REPORT)
+    expect(store.getState().location.type).toBe(REPORT)
+  })
+
+  it('should correctly display others points reports data', async () => {
+    const testingMiddleware = createTestingMiddleware()
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const jotaiStore = createJotaiStore()
+    const { getByTestId, getByText } = await render(<App />, {
+      store,
+      jotaiStore,
+      authenticated: true,
+    })
+
+    await userEvent.click(getByTestId('sidebar-login-icon'))
+    await userEvent.click(getByText(/Reports/i))
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
+    const reportLink = getByText(/Report02/i)
+    await userEvent.click(reportLink)
+    await testingMiddleware.waitForAction(REPORT)
+    expect(store.getState().location.type).toBe(REPORT)
+
+    await userEvent.click(getByText(/Others/i))
+    await waitForReportFeaturesLoaded(jotaiStore)
+    expect(getByText(/3 points inside your area/i)).toBeVisible()
+
+    //todo: check graph points data
+  })
 })
 
-describe.only('Data Comparison', () => {
+describe('Data Comparison', () => {
   it('should show second selector when choose data comparison mode', async () => {
     const testingMiddleware = createTestingMiddleware()
     const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
