@@ -9,6 +9,14 @@ import { defineConfig } from 'vitest/config'
 
 const isVitestUi = process.env.VITEST_UI === 'true'
 const isChromeOnly = process.env.TEST_CHROME_ONLY === 'true'
+const defaultPlaywrightProvider = playwright()
+const chromiumPlaywrightProvider = playwright({
+  launchOptions: {
+    // Playwright 1.58 restricts SwiftShader WebGL by default for security reasons
+    // so this is needed to fix Deck.gl context creation in headless mode.
+    args: ['--enable-unsafe-swiftshader'],
+  },
+})
 
 // Plugin to transform SVG imports for testing
 const svgMockPlugin = (): Plugin => ({
@@ -145,13 +153,7 @@ export default defineConfig({
     globalSetup: './test/setup/vitest.setup-global.ts',
     browser: {
       enabled: true,
-      provider: playwright({
-        launchOptions: {
-          // Playwright 1.58 restricts SwiftShader WebGL by default for security reasons
-          // so this is needed to fix Deck.gl context creation in headless mode.
-          args: ['--enable-unsafe-swiftshader'],
-        },
-      }),
+      provider: defaultPlaywrightProvider,
       ui: isVitestUi,
       headless: !isVitestUi,
       trace: {
@@ -165,6 +167,7 @@ export default defineConfig({
               {
                 browser: 'chromium',
                 name: 'fishing-map-chromium',
+                provider: chromiumPlaywrightProvider,
                 viewport: { width: 1280, height: 720 },
               },
             ]
@@ -172,6 +175,7 @@ export default defineConfig({
               {
                 browser: 'chromium',
                 name: 'fishing-map-chromium',
+                provider: chromiumPlaywrightProvider,
                 headless: true,
                 viewport: { width: 1280, height: 720 },
               },

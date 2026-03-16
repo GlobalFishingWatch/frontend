@@ -164,7 +164,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
           echo "Running tests for: $$PROJECT"
           echo "=============================="
 
-          yarn nx run $$PROJECT:test > /workspace/test-$$PROJECT.txt 2>&1
+          yarn nx run $$PROJECT:test --browser="chromium" > /workspace/test-$$PROJECT.txt 2>&1
           PROJECT_EXIT=$$?
 
           cat /workspace/test-$$PROJECT.txt

@@ -22,9 +22,6 @@ const AUTH_LOG_FILE = path.join(AUTH_DIR, 'auth-setup.log')
 const NAVIGATION_TIMEOUT_MS = 10000
 const INVALID_CREDENTIALS_MESSAGE = 'email or password incorrect'
 
-// Cache the /auth/me result so concurrent globalSetup calls (one per browser
-// project) share a single HTTP round-trip.  The TTL guards long-lived
-// processes like --watch where tokens can expire mid-session.
 const TOKEN_VALIDITY_TTL_MS = 30 * 60 * 1000 // 30 minutes
 let tokenValidityPromise: Promise<boolean> | null = null
 let tokenValidityTimestamp = 0
