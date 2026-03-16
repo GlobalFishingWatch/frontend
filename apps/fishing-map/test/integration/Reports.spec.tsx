@@ -201,7 +201,7 @@ describe('Reports', () => {
 
     await expect.element(getByTestId('reports-summary-expanded-container')).toBeVisible()
 
-    const filterInput = getByTestId('layer-schema-filter-flag-input')
+    const filterInput = getByTestId('multi-select-input').first()
     await userEvent.click(filterInput)
     await userEvent.keyboard('portugal')
     await new Promise((resolve) => setTimeout(resolve, 100))
