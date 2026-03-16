@@ -47,7 +47,7 @@ export class LabelLayer<DataT = unknown> extends CompositeLayer<
     getPosition: (d: Feature<Point>) => d.geometry.coordinates,
     getPolygonOffset: (params: any) => getLayerGroupOffset(LayerGroup.Overlay, params),
   }
-  state!: LabelLayerState
+  declare state: LabelLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)

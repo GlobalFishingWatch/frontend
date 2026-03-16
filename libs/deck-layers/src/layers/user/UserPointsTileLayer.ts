@@ -71,7 +71,7 @@ export class UserPointsTileLayer<PropsT = Record<string, unknown>> extends UserB
 > {
   static layerName = 'UserPointsTileLayer'
   static defaultProps = defaultProps
-  state!: UserPointsLayerState
+  declare state: UserPointsLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)

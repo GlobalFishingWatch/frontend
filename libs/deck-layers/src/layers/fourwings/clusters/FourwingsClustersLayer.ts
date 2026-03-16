@@ -129,7 +129,7 @@ export class FourwingsClustersLayer extends CompositeLayer<
 > {
   static layerName = 'FourwingsClusterTileLayer'
   static defaultProps = defaultProps
-  state!: FourwingsClustersTileLayerState
+  declare state: FourwingsClustersTileLayerState
 
   get cacheHash(): string {
     return `${this.state?.viewportLoaded ?? false}`
@@ -420,7 +420,8 @@ export class FourwingsClustersLayer extends CompositeLayer<
         },
       })
     } catch (error: any) {
-      throw new Error(error.statusText || error.status)
+      const message = String(error?.statusText || error?.status || 'Failed to fetch clusters data')
+      throw new Error(message, { cause: error })
     }
   }
 

@@ -91,7 +91,7 @@ export type DrawLayerProps = {
 
 export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   static layerName = 'draw-layer'
-  state!: DrawLayerState
+  declare state: DrawLayerState
   isTranslating = false
   isMoving = false
 

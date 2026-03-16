@@ -109,6 +109,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
         "CI=1",
         "NX_DAEMON=false",
         "NODE_OPTIONS=--trace-warnings",
+        "TEST_CHROME_ONLY=true"
       ]
       secret_env = [
         "TEST_USER_EMAIL",
