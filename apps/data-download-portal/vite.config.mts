@@ -57,9 +57,6 @@ export default defineConfig({
   build: {
     outDir: '../../dist/apps/data-download-portal',
     reportCompressedSize: true,
-    commonjsOptions: {
-      transformMixedEsModules: true,
-    },
   },
 
   define: {

@@ -52,9 +52,6 @@ export default defineConfig({
   build: {
     outDir: '../../dist/apps/track-labeler',
     reportCompressedSize: true,
-    commonjsOptions: {
-      transformMixedEsModules: true,
-    },
   },
 
   define: {

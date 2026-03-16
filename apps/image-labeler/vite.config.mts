@@ -53,9 +53,6 @@ export default defineConfig({
   build: {
     outDir: '../../dist/apps/image-labeler',
     reportCompressedSize: true,
-    commonjsOptions: {
-      transformMixedEsModules: true,
-    },
   },
 
   define: {

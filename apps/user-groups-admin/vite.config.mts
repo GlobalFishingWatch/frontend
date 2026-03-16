@@ -48,9 +48,6 @@ export default defineConfig({
   build: {
     outDir: '../../dist/apps/user-groups-admin',
     reportCompressedSize: true,
-    commonjsOptions: {
-      transformMixedEsModules: true,
-    },
   },
 
   define: {
