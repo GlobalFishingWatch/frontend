@@ -133,8 +133,6 @@ export default defineConfig({
     include: [
       '**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-      'vitest-example/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-      '/apps/fishing-map/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
     ],
     fileParallelism: false,
     reporters: ['default'],
@@ -159,7 +157,7 @@ export default defineConfig({
       trace: {
         screenshots: true,
         snapshots: true,
-        mode: isLocalFast ? 'on-first-retry' : 'on',
+        mode: isVitestUi ? 'on' : 'on-first-retry',
       },
       instances:
         isVitestUi || isLocalFast
