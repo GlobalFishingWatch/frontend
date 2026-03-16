@@ -11,3 +11,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /
 
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/.yarn /app/.yarn
+
+FROM node:24-slim AS affected-nx
+WORKDIR /opt/affected-nx
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+COPY cloudbuild/affected-nx.package.json package.json
+RUN npm install --omit=optional --no-audit --no-fund

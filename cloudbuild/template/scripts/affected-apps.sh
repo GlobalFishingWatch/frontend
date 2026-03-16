@@ -11,4 +11,5 @@ if [[ "$BASE_REF" == origin/* ]] && ! git rev-parse --verify --quiet "$BASE_REF"
   git fetch --no-tags --depth=2 origin "${BASE_BRANCH}:refs/remotes/origin/${BASE_BRANCH}"
 fi
 
-yarn nx show projects --affected --base="$NX_BASE" --head="$NX_HEAD" --type app --exclude='linting,port-labeler,real-time-prototype,*-e2e,libs/*' --plain > affected-apps.txt
+export NODE_PATH="/opt/affected-nx/node_modules"
+node /opt/affected-nx/node_modules/nx/bin/nx.js show projects --affected --base="$NX_BASE" --head="$NX_HEAD" --type app --exclude='linting,port-labeler,real-time-prototype,*-e2e,libs/*' --plain > affected-apps.txt

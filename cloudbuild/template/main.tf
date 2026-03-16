@@ -33,17 +33,8 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
     }
 
     step {
-      id     = "Install Dependencies"
-      name   = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest"
-      script = <<-EOF
-        cp -R /app/node_modules /app/.yarn ./
-        yarn install --immutable --inline-builds
-      EOF
-    }
-
-    step {
       id     = "Get Affected"
-      name   = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest"
+      name   = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/affected-nx:latest"
       script = file("${path.module}/scripts/affected-apps.sh")
       env = [
         "NX_BASE=origin/${var.branch_name}~1",
