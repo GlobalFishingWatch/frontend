@@ -1,104 +1,24 @@
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import react from '@vitejs/plugin-react'
 import { playwright } from '@vitest/browser-playwright'
-import { IncomingMessage, ServerResponse } from 'http'
 import path from 'path'
-import * as fs from 'fs'
-import type { Connect, Plugin, PreviewServer, ViteDevServer } from 'vite'
 import { defineConfig } from 'vitest/config'
+import { publicAssetsPlugin, authTokensPlugin, svgMockPlugin } from './test/utils/vitest/plugins'
+
+const DEFAULT_VIEWPORT = { width: 1280, height: 720 }
 
 const isChromeOnly = process.env.TEST_CHROME_ONLY === 'true'
+
 const defaultPlaywrightProvider = playwright()
-const chromiumPlaywrightProvider = playwright({
-  launchOptions: {
-    // Playwright 1.58 restricts SwiftShader WebGL by default for security reasons
-    // so this is needed to fix Deck.gl context creation in headless mode.
-    args: ['--enable-unsafe-swiftshader'],
-  },
-})
-
-// Plugin to transform SVG imports for testing
-const svgMockPlugin = (): Plugin => ({
-  name: 'svg-mock',
-  transform(_code: string, id: string) {
-    if (id.endsWith('.svg')) {
-      return {
-        code: 'export default () => null',
-        map: null,
-      }
-    }
-  },
-})
-
-// Plugin to serve public assets from /map path, this is needed because not having events-color-sprite.png causes timebar to throw an error an not load any events
-const publicAssetsPlugin = (): Plugin => ({
-  name: 'public-assets',
-  configureServer(server: ViteDevServer) {
-    server.middlewares.use(
-      (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
-        if (req.url?.startsWith('/map/')) {
-          req.url = req.url.replace('/map/', '/')
-        }
-        next()
-      }
-    )
-  },
-  configurePreviewServer(server: PreviewServer) {
-    server.middlewares.use(
-      (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
-        if (req.url?.startsWith('/map/')) {
-          req.url = req.url.replace('/map/', '/')
-        }
-        next()
-      }
-    )
-  },
-})
-
-// Plugin to serve auth tokens file to browser tests
-const authTokensPlugin = (): Plugin => ({
-  name: 'auth-tokens',
-  configureServer(server: ViteDevServer) {
-    server.middlewares.use(
-      (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
-        if (req.url === '/.auth/tokens.json') {
-          const tokensPath = path.join(__dirname, '../../.auth/tokens.json')
-          if (fs.existsSync(tokensPath)) {
-            res.setHeader('Content-Type', 'application/json')
-            res.setHeader('Access-Control-Allow-Origin', '*')
-            const tokens = fs.readFileSync(tokensPath, 'utf-8')
-            res.end(tokens)
-          } else {
-            res.statusCode = 404
-            res.end(JSON.stringify({ token: '', refreshToken: '' }))
-          }
-          return
-        }
-        next()
-      }
-    )
-  },
-  configurePreviewServer(server: PreviewServer) {
-    server.middlewares.use(
-      (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
-        if (req.url === '/.auth/tokens.json') {
-          const tokensPath = path.join(__dirname, '../../.auth/tokens.json')
-          if (fs.existsSync(tokensPath)) {
-            res.setHeader('Content-Type', 'application/json')
-            res.setHeader('Access-Control-Allow-Origin', '*')
-            const tokens = fs.readFileSync(tokensPath, 'utf-8')
-            res.end(tokens)
-          } else {
-            res.statusCode = 404
-            res.end(JSON.stringify({ token: '', refreshToken: '' }))
-          }
-          return
-        }
-        next()
-      }
-    )
-  },
-})
+// Not needed for Playwright 1.57.0 but will need in future versions
+// Not used as version 1.58.2 runs much much slower than 1.57.0 (keep an eye on this)
+// const chromiumPlaywrightProvider = playwright({
+//   launchOptions: {
+//     // Playwright 1.58 restricts SwiftShader WebGL by default for security reasons
+//     // so this is needed to fix Deck.gl context creation in headless mode.
+//     args: ['--enable-unsafe-swiftshader'],
+//   },
+// })
 
 export default defineConfig(({ mode }) => {
   const isUiTarget = process.env.NX_TASK_TARGET_TARGET === 'test:ui'
@@ -163,6 +83,7 @@ export default defineConfig(({ mode }) => {
         provider: defaultPlaywrightProvider,
         ui: isUiMode,
         headless: !isUiMode,
+        viewport: DEFAULT_VIEWPORT,
         trace: {
           screenshots: true,
           snapshots: true,
@@ -174,29 +95,22 @@ export default defineConfig(({ mode }) => {
                 {
                   browser: 'chromium',
                   name: 'fishing-map-chromium',
-                  provider: chromiumPlaywrightProvider,
-                  viewport: { width: 1280, height: 720 },
+                  // provider: chromiumPlaywrightProvider,
                 },
               ]
             : [
                 {
                   browser: 'chromium',
                   name: 'fishing-map-chromium',
-                  provider: chromiumPlaywrightProvider,
-                  headless: true,
-                  viewport: { width: 1280, height: 720 },
+                  // provider: chromiumPlaywrightProvider,
                 },
                 {
                   browser: 'firefox',
                   name: 'fishing-map-firefox',
-                  headless: true,
-                  viewport: { width: 1280, height: 720 },
                 },
                 {
                   browser: 'webkit',
                   name: 'fishing-map-webkit',
-                  headless: true,
-                  viewport: { width: 1280, height: 720 },
                 },
               ],
       },
