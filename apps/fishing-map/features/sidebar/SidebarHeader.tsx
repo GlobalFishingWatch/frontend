@@ -194,7 +194,7 @@ function SidebarHeader() {
                 options={searchOptions}
                 activeOption={activeSearchOption}
                 onSelect={onSearchOptionChange}
-                size="small"
+                size="medium"
                 className={styles.searchOption}
               />
             )}
