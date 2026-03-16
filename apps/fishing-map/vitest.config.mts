@@ -8,7 +8,7 @@ import type { Connect, Plugin, PreviewServer, ViteDevServer } from 'vite'
 import { defineConfig } from 'vitest/config'
 
 const isVitestUi = process.env.VITEST_UI === 'true'
-const isLocalFast = process.env.VITEST_LOCAL_FAST === 'true'
+const isChromeOnly = process.env.TEST_CHROME_ONLY === 'true'
 
 // Plugin to transform SVG imports for testing
 const svgMockPlugin = (): Plugin => ({
@@ -160,7 +160,7 @@ export default defineConfig({
         mode: isVitestUi ? 'on' : 'on-first-retry',
       },
       instances:
-        isVitestUi || isLocalFast
+        isVitestUi || isChromeOnly
           ? [
               {
                 browser: 'chromium',
