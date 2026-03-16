@@ -35,7 +35,7 @@ export class GraticulesLayer<PropsT = Record<string, unknown>> extends Composite
 > {
   static layerName = 'ContextLayer'
   static defaultProps = defaultProps
-  state!: GraticulesLayerState
+  declare state: GraticulesLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)

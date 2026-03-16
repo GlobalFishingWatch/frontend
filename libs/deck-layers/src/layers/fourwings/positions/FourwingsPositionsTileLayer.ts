@@ -84,7 +84,7 @@ export class FourwingsPositionsTileLayer extends CompositeLayer<
 > {
   static layerName = 'FourwingsPositionsTileLayer'
   static defaultProps = defaultProps
-  state!: FourwingsPositionsTileLayerState
+  declare state: FourwingsPositionsTileLayerState
   viewportDirtyTimeout!: NodeJS.Timeout
 
   get cacheHash(): string {

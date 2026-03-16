@@ -84,7 +84,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   static layerName = 'FourwingsHeatmapTileLayer'
   static defaultProps = defaultProps
   initialBinsLoad = false
-  state!: FourwingsTileLayerState
+  declare state: FourwingsTileLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)

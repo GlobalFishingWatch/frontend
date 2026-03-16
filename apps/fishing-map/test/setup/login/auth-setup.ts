@@ -22,22 +22,38 @@ const AUTH_LOG_FILE = path.join(AUTH_DIR, 'auth-setup.log')
 const NAVIGATION_TIMEOUT_MS = 10000
 const INVALID_CREDENTIALS_MESSAGE = 'email or password incorrect'
 
+const TOKEN_VALIDITY_TTL_MS = 30 * 60 * 1000 // 30 minutes
+let tokenValidityPromise: Promise<boolean> | null = null
+let tokenValidityTimestamp = 0
+
+export function isAuthCacheExpired(): boolean {
+  return Date.now() - tokenValidityTimestamp > TOKEN_VALIDITY_TTL_MS
+}
+
 async function hasValidTokens(): Promise<boolean> {
-  if (!fs.existsSync(TOKENS_FILE)) {
-    return false
+  const isExpired = Date.now() - tokenValidityTimestamp > TOKEN_VALIDITY_TTL_MS
+  if (tokenValidityPromise !== null && !isExpired) {
+    return tokenValidityPromise
   }
-  try {
-    const { token } = JSON.parse(fs.readFileSync(TOKENS_FILE, 'utf-8'))
-    if (!token || typeof token !== 'string') {
+  tokenValidityTimestamp = Date.now()
+  tokenValidityPromise = (async () => {
+    if (!fs.existsSync(TOKENS_FILE)) {
       return false
     }
-    const response = await fetch(`${GFWAPI.baseUrl}/${GFWAPI.apiVersion}/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    return response.ok
-  } catch {
-    return false
-  }
+    try {
+      const { token } = JSON.parse(fs.readFileSync(TOKENS_FILE, 'utf-8'))
+      if (!token || typeof token !== 'string') {
+        return false
+      }
+      const response = await fetch(`${GFWAPI.baseUrl}/${GFWAPI.apiVersion}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      return response.ok
+    } catch {
+      return false
+    }
+  })()
+  return tokenValidityPromise
 }
 
 function rejectAfter(ms: number, message: string): Promise<never> {
@@ -187,5 +203,4 @@ async function runAuthSetup(runLabel: string, options: AuthSetupOptions = {}) {
     closeLogStream()
   }
 }
-
 export default runAuthSetup
