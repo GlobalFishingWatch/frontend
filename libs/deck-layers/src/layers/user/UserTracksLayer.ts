@@ -166,7 +166,7 @@ startCacheCleanup()
 export class UserTracksLayer extends CompositeLayer<LayerProps & UserTrackLayerProps> {
   static layerName = 'UserTracksLayer'
   static defaultProps = defaultProps
-  state!: UserTracksLayerState
+  declare state: UserTracksLayerState
 
   getPickingInfo = ({ info }: { info: PickingInfo<UserTrackFeature> }): UserLayerPickingInfo => {
     const feature = this.state.rawData?.features[info.index]

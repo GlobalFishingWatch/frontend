@@ -6,6 +6,8 @@ import { makeStore } from 'store'
 import Timebar from './Timebar'
 import * as timebarHooks from './timebar.hooks'
 
+vi.mock('./timebar.hooks', { spy: true })
+
 describe('Timebar', () => {
   beforeEach(() => {
     vi.clearAllMocks()
@@ -25,7 +27,6 @@ describe('Timebar', () => {
   it('should call onTimebarChange with new time interval on yearly data button click', async () => {
     const store = makeStore()
 
-    vi.mock('./timebar.hooks', { spy: true })
     const onTimebarChangeSpy = vi.fn()
 
     vi.mocked(timebarHooks.useTimerangeConnect).mockReturnValue({

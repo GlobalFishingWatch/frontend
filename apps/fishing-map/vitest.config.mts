@@ -8,7 +8,15 @@ import type { Connect, Plugin, PreviewServer, ViteDevServer } from 'vite'
 import { defineConfig } from 'vitest/config'
 
 const isVitestUi = process.env.VITEST_UI === 'true'
-const isLocalFast = process.env.VITEST_LOCAL_FAST === 'true'
+const isChromeOnly = process.env.TEST_CHROME_ONLY === 'true'
+const defaultPlaywrightProvider = playwright()
+const chromiumPlaywrightProvider = playwright({
+  launchOptions: {
+    // Playwright 1.58 restricts SwiftShader WebGL by default for security reasons
+    // so this is needed to fix Deck.gl context creation in headless mode.
+    args: ['--enable-unsafe-swiftshader'],
+  },
+})
 
 // Plugin to transform SVG imports for testing
 const svgMockPlugin = (): Plugin => ({
@@ -133,8 +141,6 @@ export default defineConfig({
     include: [
       '**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
       'tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-      'vitest-example/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
-      '/apps/fishing-map/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}',
     ],
     fileParallelism: false,
     reporters: ['default'],
@@ -147,26 +153,21 @@ export default defineConfig({
     globalSetup: './test/setup/vitest.setup-global.ts',
     browser: {
       enabled: true,
-      provider: playwright({
-        launchOptions: {
-          // Playwright 1.58 restricts SwiftShader WebGL by default for security reasons
-          // so this is needed to fix Deck.gl context creation in headless mode.
-          args: ['--enable-unsafe-swiftshader'],
-        },
-      }),
+      provider: defaultPlaywrightProvider,
       ui: isVitestUi,
       headless: !isVitestUi,
       trace: {
         screenshots: true,
         snapshots: true,
-        mode: isLocalFast ? 'on-first-retry' : 'on',
+        mode: isVitestUi ? 'on' : 'on-first-retry',
       },
       instances:
-        isVitestUi || isLocalFast
+        isVitestUi || isChromeOnly
           ? [
               {
                 browser: 'chromium',
                 name: 'fishing-map-chromium',
+                provider: chromiumPlaywrightProvider,
                 viewport: { width: 1280, height: 720 },
               },
             ]
@@ -174,6 +175,7 @@ export default defineConfig({
               {
                 browser: 'chromium',
                 name: 'fishing-map-chromium',
+                provider: chromiumPlaywrightProvider,
                 headless: true,
                 viewport: { width: 1280, height: 720 },
               },

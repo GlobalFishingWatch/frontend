@@ -7,12 +7,14 @@ import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import 'dotenv/config'
 
 export default defineConfig({
+  devtools: true,
   root: __dirname,
   cacheDir: '../../node_modules/.vite/apps/user-groups-admin',
 
   server: {
     port: 3000,
     host: 'localhost',
+    forwardConsole: true,
   },
 
   preview: {
@@ -48,9 +50,6 @@ export default defineConfig({
   build: {
     outDir: '../../dist/apps/user-groups-admin',
     reportCompressedSize: true,
-    commonjsOptions: {
-      transformMixedEsModules: true,
-    },
   },
 
   define: {
