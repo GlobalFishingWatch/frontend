@@ -53,7 +53,7 @@ export class UserContextTileLayer<PropsT = Record<string, unknown>> extends User
 > {
   static layerName = 'UserContextTileLayer'
   static defaultProps = defaultProps
-  state!: UserContextLayerState
+  declare state: UserContextLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)

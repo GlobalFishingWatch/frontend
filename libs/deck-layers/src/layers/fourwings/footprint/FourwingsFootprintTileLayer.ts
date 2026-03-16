@@ -56,7 +56,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
   static layerName = 'FourwingsFootprintTileLayer'
   static defaultProps = defaultProps
   initialBinsLoad = false
-  state!: FourwingsFootprintTileLayerState
+  declare state: FourwingsFootprintTileLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
