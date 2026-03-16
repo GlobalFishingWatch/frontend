@@ -11,6 +11,7 @@ const basePath =
   process.env.PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/data-download' : '')
 
 export default defineConfig({
+  devtools: true,
   base: basePath,
   root: __dirname,
   cacheDir: '../../node_modules/.vite/apps/data-download-portal',
@@ -18,6 +19,7 @@ export default defineConfig({
   server: {
     port: 3000,
     host: 'localhost',
+    forwardConsole: true,
   },
 
   preview: {
@@ -57,9 +59,6 @@ export default defineConfig({
   build: {
     outDir: '../../dist/apps/data-download-portal',
     reportCompressedSize: true,
-    commonjsOptions: {
-      transformMixedEsModules: true,
-    },
   },
 
   define: {

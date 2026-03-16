@@ -3,6 +3,24 @@ import ReactGA from 'react-ga4'
 import type { InitOptions } from 'react-ga4/types/ga4'
 import snakeCase from 'lodash/snakeCase'
 
+type ReactGAClient = {
+  event?: (eventName: string, params?: Record<string, any>) => void
+  initialize?: (trackingId: string | InitOptions[], options?: any) => void
+  set?: (...args: any[]) => void
+  default?: ReactGAClient
+}
+
+function getReactGAClient() {
+  const reactGA = ReactGA as ReactGAClient
+  if (typeof reactGA.event === 'function') {
+    return reactGA
+  }
+  if (reactGA.default && typeof reactGA.default.event === 'function') {
+    return reactGA.default
+  }
+  return reactGA
+}
+
 export enum TrackCategory {
   User = 'user',
 }
@@ -22,6 +40,10 @@ export const trackEvent = <T>({
   value,
   other = {},
 }: TrackEventParams<T>) => {
+  const reactGA = getReactGAClient()
+  if (typeof reactGA.event !== 'function') {
+    return
+  }
   /**
    * IMPORTANT
    *
@@ -34,7 +56,7 @@ export const trackEvent = <T>({
    *
    * https://github.com/codler/react-ga4/issues/15
    */
-  ReactGA.event(snakeCase(action), {
+  reactGA.event(snakeCase(action), {
     ...(category && { category: snakeCase((category as string) ?? '') }),
     ...(label && { label }),
     ...(value && { value }),
@@ -74,13 +96,26 @@ export const useAnalyticsInit = ({
     }, [debugMode, googleMeasurementId, googleTagManagerId, gtagUrl])
 
   useEffect(() => {
+    const reactGA = getReactGAClient()
     if (config.length > 0) {
-      ReactGA.initialize(config, initGtagOptions)
-      setInitialized(true)
+      if (typeof reactGA.initialize === 'function') {
+        reactGA.initialize(config, initGtagOptions)
+        setInitialized(true)
+      }
       // Tip: Uncomment this to prevent sending hits to GA
-      // ReactGA.set({ sendHitTask: null })
+      // reactGA.set({ sendHitTask: null })
     }
   }, [config, initGtagOptions])
 
-  return useMemo(() => ({ initialized, setConfig: ReactGA.set }), [initialized])
+  return useMemo(() => {
+    const reactGA = getReactGAClient()
+    return {
+      initialized,
+      setConfig: (...args: any[]) => {
+        if (typeof reactGA.set === 'function') {
+          reactGA.set(...args)
+        }
+      },
+    }
+  }, [initialized])
 }

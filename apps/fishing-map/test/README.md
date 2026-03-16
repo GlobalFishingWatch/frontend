@@ -14,7 +14,7 @@ nx test:ui fishing-map
 
 ## Replicating the CI environment locally
 
-Tests run in CI inside `mcr.microsoft.com/playwright:v1.57.0-noble` (Linux/Noble) with only Chromium and no auth credentials. To reproduce a CI failure locally:
+Tests run in CI inside `mcr.microsoft.com/playwright:v1.58.2-noble` (Linux/Noble) with only Chromium and no auth credentials. To reproduce a CI failure locally:
 
 ```bash
 nx test:ci fishing-map

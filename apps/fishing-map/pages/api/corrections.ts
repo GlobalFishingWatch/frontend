@@ -95,7 +95,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     try {
-      await sheet.loadHeaderRow(3)
+      await sheet.loadHeaderRow(4)
       const headers = sheet.headerValues
 
       const rowToAdd: Record<string, any> = {}

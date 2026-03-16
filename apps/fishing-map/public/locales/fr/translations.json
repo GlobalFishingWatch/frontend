@@ -1012,6 +1012,7 @@
     "gearType_short": "engin",
     "geartypes": "Types d’engins",
     "gearTypes": {
+      "": "",
       "bunker": "Ravitailleur",
       "bunker_or_tanker": "Ravitailleur ou pétrolier",
       "cargo": "Navire cargo",

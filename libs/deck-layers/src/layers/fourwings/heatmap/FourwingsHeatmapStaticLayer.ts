@@ -63,7 +63,7 @@ const defaultProps: DefaultProps<FourwingsHeatmapStaticLayerProps> = {
 export class FourwingsHeatmapStaticLayer extends CompositeLayer<FourwingsHeatmapTileLayerProps> {
   static layerName = 'FourwingsHeatmapStaticLayer'
   static defaultProps = defaultProps
-  state!: Omit<FourwingsTileLayerState, 'tilesCache'>
+  declare state: Omit<FourwingsTileLayerState, 'tilesCache'>
 
   initializeState(context: LayerContext) {
     super.initializeState(context)

@@ -60,7 +60,7 @@ export class ContextLayer<PropsT = Record<string, unknown>> extends CompositeLay
   static layerName = 'ContextLayer'
   static defaultProps = defaultProps
 
-  state!: ContextLayerState
+  declare state: ContextLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
