@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
 import App from 'features/app/App'
+import i18n from 'features/i18n/i18n'
 import { makeStore } from 'store'
 
 describe('Sidebar tools', () => {
@@ -35,6 +36,9 @@ describe('Sidebar tools', () => {
     // })
 
     await expect.element(activitySection.getByText(/actividad/i)).toBeVisible()
+
+    // NOTE: Change back language to English for other tests
+    await i18n.changeLanguage('en')
   })
 
   it('should toggle sidebar', async () => {
@@ -64,7 +68,7 @@ describe('Sidebar tools', () => {
     const { getByText } = await render(<App />, { store })
 
     await expect.element(getByText('Dismiss').first()).toBeVisible()
-    await getByText('Dismiss').first().click()
+    await userEvent.click(getByText('Dismiss').first())
     await new Promise((resolve) => setTimeout(resolve, 200))
 
     expect(store.getState().hints.hintsDismissed?.fishingEffortHeatmap).toBe(true)
