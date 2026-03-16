@@ -7,6 +7,9 @@ import * as fs from 'fs'
 import type { Connect, Plugin, PreviewServer, ViteDevServer } from 'vite'
 import { defineConfig } from 'vitest/config'
 
+const isVitestUi = process.env.VITEST_UI === 'true'
+const isLocalFast = process.env.VITEST_LOCAL_FAST === 'true'
+
 // Plugin to transform SVG imports for testing
 const svgMockPlugin = (): Plugin => ({
   name: 'svg-mock',
@@ -151,15 +154,15 @@ export default defineConfig({
           args: ['--enable-unsafe-swiftshader'],
         },
       }),
-      ui: process.env.VITEST_UI === 'true',
-      headless: process.env.VITEST_UI !== 'true',
+      ui: isVitestUi,
+      headless: !isVitestUi,
       trace: {
         screenshots: true,
         snapshots: true,
-        mode: 'on',
+        mode: isLocalFast ? 'on-first-retry' : 'on',
       },
       instances:
-        process.env.VITEST_UI === 'true'
+        isVitestUi || isLocalFast
           ? [
               {
                 browser: 'chromium',
