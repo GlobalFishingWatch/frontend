@@ -7,6 +7,7 @@ Integration tests verify that different parts of the Fishing Map application wor
 **Location:** `/apps/fishing-map/test/integration/`
 
 **Technology Stack:**
+
 - **Test Framework:** Vitest with Browser Mode
 - **Rendering:** React Testing Library (vitest-browser-react)
 - **State Management:** Redux + Jotai
@@ -74,6 +75,7 @@ describe('Feature Name', () => {
 Testing that UI changes properly update application state (Redux + URL).
 
 **Pattern:**
+
 ```typescript
 it('should reflect store changes on layer toggle', async () => {
   // WHY: Testing middleware captures all Redux actions for verification
@@ -99,6 +101,7 @@ it('should reflect store changes on layer toggle', async () => {
 ```
 
 **Use Cases:**
+
 - Layer visibility toggles → URL and Redux state
 - Map viewport changes → URL parameters
 - Timebar interactions → Redux state
@@ -109,6 +112,7 @@ it('should reflect store changes on layer toggle', async () => {
 Testing map clicks, hovers, and coordinate-based interactions.
 
 **Pattern:**
+
 ```typescript
 it('should open vessel popup on vessel click', async () => {
   // WHY: Jotai store is needed to access map instance atoms (mapInstanceAtom)
@@ -133,12 +137,12 @@ it('should open vessel popup on vessel click', async () => {
   // WHY: Hovering before clicking ensures the map's hover state is properly set
   // This makes feature selection more reliable, especially with overlapping features
   await userEvent.hover(mapElement, { position: { x, y } })
-  
+
   // WHY: Wait 500ms for hover state to stabilize before clicking
   // The map hover detection has debouncing logic; immediate clicks may miss the feature
   // ⚠️ IMPORTANT: This wait is REQUIRED because hover state is debounced
   await new Promise((resolve) => setTimeout(resolve, 500))
-  
+
   await userEvent.click(mapElement, { position: { x, y } })
 
   // ℹ️ NOTE: No wait needed here - expect.element() will retry until popup is visible
@@ -147,6 +151,7 @@ it('should open vessel popup on vessel click', async () => {
 ```
 
 **Use Cases:**
+
 - Clicking vessels on map → Opens popup
 - Clicking context layers → Shows layer info
 - Dragging map → Updates viewport state
@@ -157,6 +162,7 @@ it('should open vessel popup on vessel click', async () => {
 Testing adding, removing, and configuring data layers.
 
 **Pattern:**
+
 ```typescript
 it('should add reference data layer', async () => {
   // WHY: Testing middleware captures Redux actions so we can verify state changes
@@ -188,17 +194,45 @@ it('should add reference data layer', async () => {
 ```
 
 **Layer Categories Tested:**
+
 - **Reference Layers:** EEZ, MPA, RFMO boundaries
 - **Environment Layers:** Bathymetry, SST, chlorophyll
 - **Events Layers:** Port visits, encounters, loitering
 - **Detection Layers:** AIS, VMS, SAR, Optical
 - **User Layers:** Tracks, polygons, points, BigQuery
 
-### 4. **Authentication Flows**
+### 4. **Authentication Setup**
+
+Authentication is handled in `test/setup/login/` and runs once before all tests.
+
+### How it works
+
+1. **`auth-setup.ts`** checks if `.auth/tokens.json` already holds a valid token by calling `/auth/me`. If valid, setup is skipped entirely.
+2. If tokens are missing or expired, it reads `TEST_USER_EMAIL` / `TEST_USER_PASSWORD` from `.env` and launches a headless Chromium browser via Playwright.
+3. It starts a **local proxy server** (`proxy-server.ts`) on `localhost:3000` that acts as the OAuth callback receiver.
+4. The browser navigates to `http://localhost:3000/login`, which immediately redirects to the GFW OAuth login page (`GFWAPI.getLoginUrl(callbackUrl)`).
+5. Playwright fills in the credentials and submits the form.
+6. On success, the GFW gateway redirects to `http://localhost:3000/auth/callback?access_token=…`. The proxy server captures the access token from the query string and resolves its internal promise.
+7. The access token is exchanged for long-lived API tokens via `GFWAPI.getTokensWithAccessToken()`.
+8. Tokens are saved to `.auth/tokens.json` for all tests to reuse.
+
+### Why a proxy server?
+
+Vitest Browser Mode runs tests inside an iframe. Navigating to an external OAuth page would break the iframe connection and hang the test runner. The local proxy keeps the OAuth redirect loop entirely within `localhost`, so the browser never leaves the controlled environment during test execution. The proxy only runs during the global setup phase, not during tests themselves.
+
+### Credentials
+
+Set in `.env` (not committed):
+
+```
+TEST_USER_EMAIL=your@email.com
+TEST_USER_PASSWORD=yourpassword
+```
 
 Testing authenticated vs. unauthenticated user experiences.
 
 **Pattern:**
+
 ```typescript
 it('should show login prompt when user is not logged in', async () => {
   // WHY: Not passing 'authenticated: true' means the test runs as a guest user
@@ -227,6 +261,7 @@ it('should show user dataset sections when user is logged in', async () => {
 ```
 
 **Use Cases:**
+
 - Displaying login prompts for protected features
 - Loading user-specific data when authenticated
 - Testing session expiration warnings
@@ -237,6 +272,7 @@ it('should show user dataset sections when user is logged in', async () => {
 Testing timeline interactions and their effect on map layers.
 
 **Pattern:**
+
 ```typescript
 it('the map should be interactive after timebar interaction', async () => {
   const { getByTestId } = await render(<App />, { store, jotaiStore })
@@ -255,7 +291,7 @@ it('the map should be interactive after timebar interaction', async () => {
 
   const actions = testingMiddleware.getActions()
   const timebarAction = actions.findLast((action) => action.type === 'timebar/setHighlightedTime')
-  
+
   // WHY: Verify the timebar interaction triggered the expected Redux action
   // This ensures the timeline scrubbing updates the application state correctly
   expect(timebarAction).toBeDefined()
@@ -263,6 +299,7 @@ it('the map should be interactive after timebar interaction', async () => {
 ```
 
 **Use Cases:**
+
 - Dragging timeline → Updates highlighted time
 - Hovering timeline → Shows event counts
 - Timeline interactions → Map remains interactive
@@ -273,10 +310,11 @@ it('the map should be interactive after timebar interaction', async () => {
 Testing the vessel profile viewer with multiple tabs and data sections.
 
 **Pattern:**
+
 ```typescript
 it('should render tabs and vessel basic info', async () => {
   const { getByTestId, getByText } = await render(<App />, { store })
-  
+
   store.dispatch(navigateToVesselViewerAction)
 
   await expect.element(getByTestId('vv-vessel-name')).toHaveTextContent('Gabu Reefer')
@@ -287,6 +325,7 @@ it('should render tabs and vessel basic info', async () => {
 ```
 
 **Use Cases:**
+
 - Rendering vessel basic info (name, flag, MMSI, IMO)
 - Tab navigation (Summary, Areas, Related, Insights)
 - Different summary views (by type, by timeline)
@@ -299,6 +338,7 @@ it('should render tabs and vessel basic info', async () => {
 Testing vessel search functionality and navigation flows.
 
 **Pattern:**
+
 ```typescript
 it('can search for a vessel and see it on the map', async () => {
   const { getByTestId } = await render(<App />, { store, jotaiStore })
@@ -315,6 +355,7 @@ it('can search for a vessel and see it on the map', async () => {
 ```
 
 **Use Cases:**
+
 - Typing in search input → Shows matching results
 - Clicking search result → Navigates to vessel
 - Clearing search → Removes results
@@ -325,6 +366,7 @@ it('can search for a vessel and see it on the map', async () => {
 Testing that API calls are made with correct parameters and formats.
 
 **Pattern 1: Direct Spy on GFWAPI.fetch**
+
 ```typescript
 it('should request tiles with correct parameters', async () => {
   // WHY: Spy on GFWAPI.fetch to intercept and verify all API calls
@@ -355,7 +397,7 @@ it('should request tiles with correct parameters', async () => {
   expect(Math.max(...zoomLevels)).toBeGreaterThan(0)
 
   // WHY: Check if specific query parameters are present
-  const hasIntervalParam = fetchSpy.mock.calls.some((call) => 
+  const hasIntervalParam = fetchSpy.mock.calls.some((call) =>
     (call[0] as string).includes('&interval=YEAR')
   )
   expect(hasIntervalParam).toBe(true)
@@ -366,6 +408,7 @@ it('should request tiles with correct parameters', async () => {
 ```
 
 **Pattern 2: Using GFWAPITestUtils**
+
 ```typescript
 import { GFWAPITestUtils } from 'test/utils/network/gfw-api-test'
 
@@ -389,6 +432,7 @@ it('should wait for API request to complete', async () => {
 ```
 
 **What You Can Verify:**
+
 - **URL Structure:** Check if correct endpoints are called
 - **Query Parameters:** Verify filters, intervals, date ranges, zoom levels
 - **Request Headers:** Check authentication tokens, content types
@@ -397,6 +441,7 @@ it('should wait for API request to complete', async () => {
 - **Request Body:** Check POST/PUT payload formatting
 
 **Use Cases:**
+
 - Verifying map tiles are requested with correct zoom levels
 - Checking that time range filters are applied to API calls
 - Ensuring authentication headers are included
@@ -409,6 +454,7 @@ it('should wait for API request to complete', async () => {
 Testing that application state persists correctly during various operations.
 
 **Pattern:**
+
 ```typescript
 it('should preserve map previous state on layer toggle', async () => {
   const { getByTestId } = await render(<App />, { store })
@@ -422,12 +468,13 @@ it('should preserve map previous state on layer toggle', async () => {
     longitude: 26,
     zoom: 2.49,
   }
-  
+
   expect(store.getState().location.query).toMatchObject(expectedResult)
 })
 ```
 
 **Use Cases:**
+
 - Map viewport preserved when toggling layers
 - Search input preserved during navigation
 - Layer configuration maintained across interactions
@@ -438,18 +485,20 @@ it('should preserve map previous state on layer toggle', async () => {
 Testing sidebar controls, modals, and dialogs.
 
 **Pattern:**
+
 ```typescript
 it('should open feedback modal', async () => {
   const { getByTestId, getByRole } = await render(<App />, { store })
 
   await userEvent.hover(getByTestId('feedback-button'))
   await getByTestId('open-feedback-modal').click()
-  
+
   await expect.element(getByRole('heading', { name: 'Feedback' })).toBeVisible()
 })
 ```
 
 **Use Cases:**
+
 - Opening/closing modals and dialogs
 - Language selector changes
 - Sidebar toggle functionality
@@ -461,29 +510,32 @@ it('should open feedback modal', async () => {
 Testing components that require data to load before interaction.
 
 **Pattern:**
+
 ```typescript
 it('should display data after loading', async () => {
   const { getByTestId } = await render(<App />, { store })
 
   await getByTestId('activity-add-layer-button').click()
   await getByTestId('add-layer-button').click()
-  
+
   // ⚠️ DECISION POINT: Do we need this wait?
   // - YES if we're clicking map features that depend on loaded data
   // - NO if we're just checking that UI elements appear (expect.element() retries automatically)
-  
+
   // Example 1: Wait IS needed - interacting with loaded data
   await new Promise((resolve) => setTimeout(resolve, 2000))
   const mapElement = getByTestId('app-main')
   await userEvent.click(mapElement, { position: { x: 100, y: 100 } })
-  
+
   // Example 2: Wait NOT needed - just checking UI rendered
   await expect.element(getByTestId('data-display')).toBeVisible()
 })
 ```
 
 **Wait Times by Operation:**
+
 > **⚠️ IMPORTANT:** These wait times are **NOT required in every test**. Only add waits when you detect timing issues or flakiness. Many tests will work without explicit waits because `expect.element()` has built-in retry logic. Add waits only when:
+>
 > - Data must be fetched from an API before interaction
 > - Animations/transitions must complete before next action
 > - Debounced operations need time to settle
@@ -500,18 +552,20 @@ it('should display data after loading', async () => {
 ## Best Practices
 
 > ### ⚠️ Critical: Don't Add Unnecessary Waits!
-> 
+>
 > **Start without waits** - Many tests work perfectly without explicit `setTimeout` calls because:
+>
 > - `expect.element()` has built-in retry logic
 > - Most UI rendering is fast enough
 > - Premature waits make tests slower and harder to maintain
-> 
+>
 > **Add waits only when:**
+>
 > 1. Tests fail due to timing (not because of wrong selectors!)
 > 2. You're interacting with data that must be loaded first (map tiles, API data)
 > 3. You're asserting debounced operations (URL updates, search)
 > 4. Elements depend on animations/transitions to be interactive
-> 
+>
 > **When in doubt:** Run the test first. If it passes, you don't need the wait!
 
 ### 1. **Use Data Test IDs**
@@ -531,6 +585,7 @@ await getByText('AIS Layer').click()
 ⚠️ **Use waits sparingly** - Only add them when tests fail due to timing issues.
 
 Many assertions don't need explicit waits because `expect.element()` has built-in retry logic. Add waits only when:
+
 - Testing behavior that occurs AFTER an async operation completes
 - Interacting with elements that appear after data loads
 - Asserting state changes from debounced operations
@@ -710,6 +765,7 @@ await render(<App />, {
 ```
 
 **Features:**
+
 - Wraps component in Redux and Jotai providers
 - Handles authentication token loading from `.auth/tokens.json`
   - WHY: Tokens are fetched only once and reused across all tests for performance
@@ -719,7 +775,7 @@ await render(<App />, {
   - WHY: If a test calls logout() and it hits the real API, it would invalidate the token for all tests
   - Solution: Mock logout to only clear localStorage (local effect) without API calls (global effect)
 - Ensures `__next` element exists for modals
-  - WHY: Next.js modals and portals render into #__next element by default
+  - WHY: Next.js modals and portals render into #\_\_next element by default
   - WHY: In the test environment, this element doesn't exist automatically
   - Without it, modal rendering would fail with "Target container is not a DOM element"
 
@@ -764,6 +820,7 @@ const lastAction = actions.findLast((action) => action.type === 'TARGET_TYPE')
 ```
 
 **Key Methods:**
+
 - `getActions()` - Returns all dispatched actions (filters out internal Redux Toolkit actions)
 - `getActionsByType(type)` - Returns only actions matching a specific type
 - `waitForAction(type, timeout)` - Async wait for a specific action to be dispatched
@@ -797,6 +854,7 @@ expect(spy).toHaveBeenCalled()
 ```
 
 **Key Features:**
+
 - Automatically creates a spy on `GFWAPI.fetch` during instantiation
   - WHY: Spying at the GFWAPI level captures all API calls regardless of which feature makes them
   - WHY: This is more robust than mocking individual API methods
@@ -809,6 +867,7 @@ expect(spy).toHaveBeenCalled()
   - Check parameters, body, or headers in fetch calls
 
 **When to use:**
+
 - Testing that user actions trigger correct API requests (search, filtering, etc.)
 - Verifying API calls happen in the right order
 - Ensuring correct parameters are sent to the backend
@@ -834,12 +893,14 @@ store.dispatch(navigateToVesselViewerAction)
 ```
 
 **When to use:**
+
 - When you need the app in a specific state to test a feature
 - To skip irrelevant UI interactions and focus on what you're testing
 - To make tests faster by avoiding multi-step UI setup
 - When the state setup is complex and would require many user interactions
 
 **When NOT to use:**
+
 - When you're actually testing the navigation flow itself
 - When you need to verify that UI interactions trigger the correct state changes
 
@@ -869,11 +930,13 @@ After a test failure, artifacts are saved to:
 - **Traces:** `test/integration/__traces__/`
 
 **View a trace file:**
+
 ```bash
 npx playwright show-trace "apps/fishing-map/test/integration/__traces__/Vessels.spec.tsx/trace-file.trace.zip"
 ```
 
 The trace viewer shows:
+
 - Timeline of all actions
 - DOM snapshots before/after each action
 - Network requests and responses
@@ -888,11 +951,13 @@ The trace viewer shows:
 **Solution:** Use pre-authentication with `authenticated: true` instead of testing actual login flows.
 
 **Why this happens:**
+
 - Vitest Browser Mode runs tests in an iframe for isolation
 - Navigating to external OAuth providers breaks the iframe connection
 - The test runner loses control and cannot continue execution
 
 **The right approach:**
+
 ```typescript
 // ✅ Use pre-authentication
 const { getByTestId } = await render(<App />, { store, authenticated: true })
@@ -914,12 +979,14 @@ await new Promise((resolve) => setTimeout(resolve, 2000))
 ```
 
 **When to add waits:**
+
 1. **Start without waits** - Let `expect.element()` retry logic handle most cases
 2. **Run the test** - See if it fails due to timing
 3. **Add targeted waits** - Only where timing issues are detected
 4. **Use minimum wait time** - Don't add extra buffer "just in case"
 
 **Standard wait times by operation:**
+
 - Map initialization: `3000ms` (full bootstrap with tiles)
 - Layer data loading: `2000ms` (API + rendering)
 - Debounced URL updates: `1500ms` (1000ms debounce + 500ms buffer)
@@ -943,6 +1010,7 @@ const element = getByTestId('my-element') // This will fail if element isn't rea
 ```
 
 **Why expect.element() is better:**
+
 - Has built-in retry logic and waits for elements to appear
 - More resilient to timing issues
 - Provides better error messages when elements aren't found
@@ -1008,12 +1076,12 @@ describe('New Feature', () => {
     // 2. Act
     // WHY: Simulate user interaction with the feature
     await userEvent.click(getByTestId('trigger-button'))
-    
+
     // ⚠️ DECISION: Do we need to wait here?
     // - Start WITHOUT this wait and run the test
     // - Add it ONLY if the test fails due to timing
     // - Ask: Does the next assertion depend on async operations completing?
-    
+
     // If yes, add a targeted wait:
     // WHY: Wait 500ms for async operations to complete
     // Adjust this based on your feature's requirements (API calls, animations, etc.)
