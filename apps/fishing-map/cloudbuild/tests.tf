@@ -150,7 +150,11 @@ cat integration-tests-output | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g; s/\x1b\[[?][0-9]
   }
   END {
     flush()
-    printf "---\n**Summary:** %d passed, %d failed\n", pass_count, fail_count
+    if (pass_count == 0 && fail_count == 0) {
+      printf "---\n**Summary:** No tests were ran\n"
+    } else {
+      printf "---\n**Summary:** %d passed, %d failed\n", pass_count, fail_count
+    }
   }
 ' > /workspace/summary.txt
 EOF
