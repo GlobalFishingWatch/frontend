@@ -8,12 +8,14 @@ import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import 'dotenv/config'
 
 export default defineConfig({
+  devtools: true,
   root: __dirname,
   cacheDir: '../../node_modules/.vite/apps/image-labeler',
 
   server: {
     port: 3000,
     host: 'localhost',
+    forwardConsole: true,
   },
 
   preview: {

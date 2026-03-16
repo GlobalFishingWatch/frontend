@@ -7,12 +7,14 @@ import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import 'dotenv/config'
 
 export default defineConfig({
+  devtools: true,
   root: __dirname,
   cacheDir: '../../node_modules/.vite/apps/track-labeler',
 
   server: {
     port: 3000,
     host: 'localhost',
+    forwardConsole: true,
   },
 
   preview: {
