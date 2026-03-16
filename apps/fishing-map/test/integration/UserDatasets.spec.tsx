@@ -44,7 +44,7 @@ describe('User Datasets', () => {
 
     await expect.element(getByRole('dialog').getByText('Tracks')).toBeVisible()
     await expect.element(getByText('Polygons')).toBeVisible()
-    await expect.element(getByText('Points')).toBeVisible()
+    await expect.element(getByText('Points', { exact: true })).toBeVisible()
     await expect.element(getByText('Bigquery')).toBeVisible()
   })
 
