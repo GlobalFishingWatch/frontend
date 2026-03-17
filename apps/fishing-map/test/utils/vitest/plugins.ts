@@ -49,7 +49,7 @@ export const authTokensPlugin = (): Plugin => ({
     server.middlewares.use(
       (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
         if (req.url === '/.auth/tokens.json') {
-          const tokensPath = path.join(__dirname, '../../.auth/tokens.json')
+          const tokensPath = path.join(__dirname, '../../../../../.auth/tokens.json')
           if (fs.existsSync(tokensPath)) {
             res.setHeader('Content-Type', 'application/json')
             res.setHeader('Access-Control-Allow-Origin', '*')
@@ -69,7 +69,7 @@ export const authTokensPlugin = (): Plugin => ({
     server.middlewares.use(
       (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
         if (req.url === '/.auth/tokens.json') {
-          const tokensPath = path.join(__dirname, '../../.auth/tokens.json')
+          const tokensPath = path.join(__dirname, '../../../../../.auth/tokens.json')
           if (fs.existsSync(tokensPath)) {
             res.setHeader('Content-Type', 'application/json')
             res.setHeader('Access-Control-Allow-Origin', '*')

@@ -14,7 +14,7 @@ import { closeLogStream, initLogStream, log } from '../logs'
 import { startAuthProxyServer } from './proxy-server'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-dotenv.config({ path: path.resolve(__dirname, '../../.env') })
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') })
 
 const AUTH_DIR = path.join(__dirname, '../../../../../.auth')
 const TOKENS_FILE = path.join(AUTH_DIR, 'tokens.json')
