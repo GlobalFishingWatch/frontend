@@ -42,6 +42,8 @@ export async function render(ui: ReactElement, options?: AppRenderOptions) {
           const tokens = await response.json()
           localStorage.setItem('GFW_API_USER_TOKEN', tokens?.token)
           localStorage.setItem('GFW_API_USER_REFRESH_TOKEN', tokens?.refreshToken)
+        } else {
+          throw new Error('Authentication requested but tokens not available')
         }
       } catch {
         console.warn('Authentication requested but tokens not available')
