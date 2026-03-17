@@ -10,8 +10,8 @@ import 'dotenv/config'
 const basePath =
   process.env.PUBLIC_URL || (process.env.NODE_ENV === 'production' ? '/data-download' : '')
 
-export default defineConfig({
-  devtools: true,
+export default defineConfig(({ command }) => ({
+  devtools: command === 'serve',
   base: basePath,
   root: __dirname,
   cacheDir: '../../node_modules/.vite/apps/data-download-portal',
@@ -81,4 +81,4 @@ export default defineConfig({
   //     provider: 'v8',
   //   },
   // },
-})
+}))
