@@ -1,5 +1,4 @@
 import React from 'react'
-import i18n from 'i18next'
 import { render } from 'test/appTestUtils'
 import { defaultState } from 'test/defaultState'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
