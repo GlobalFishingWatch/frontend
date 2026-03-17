@@ -12,7 +12,7 @@ type SidebarProps = {
 
 function TableHeader({ order, label, onToggle }: SidebarProps) {
   const setSort = useCallback(
-    (e) => {
+    () => {
       if (onToggle) {
         onToggle(order === 'desc' ? 'asc' : 'desc')
       }

@@ -34,6 +34,8 @@ export default defineConfig({
       // API dynamic properties
       'datasetUpload.errors.*',
       'vesselGroupReport.insights.*',
+      'vessel.gearTypes.*',
+      'vessel.vesselTypes.*',
       // Namespaces controlled by hand
       'data-terminology:*',
       'layer-library:*',

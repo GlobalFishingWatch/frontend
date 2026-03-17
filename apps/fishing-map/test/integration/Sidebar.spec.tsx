@@ -1,4 +1,5 @@
 import React from 'react'
+import i18n from 'i18next'
 import { render } from 'test/appTestUtils'
 import { defaultState } from 'test/defaultState'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -9,8 +10,9 @@ import i18n from 'features/i18n/i18n'
 import { makeStore } from 'store'
 
 describe('Sidebar tools', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks()
+    await i18n.changeLanguage('en')
   })
 
   it('should open feedback modal', async () => {

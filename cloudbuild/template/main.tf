@@ -29,7 +29,7 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
     step {
       id   = "Fetch"
       name = "gcr.io/cloud-builders/git"
-      args = ["fetch", "--unshallow", "--no-tags"]
+      args = ["fetch", "--no-tags", "--depth=2", "origin", var.branch_name]
     }
 
     step {
@@ -37,15 +37,18 @@ resource "google_cloudbuild_trigger" "ui-trigger-affected" {
       name   = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest"
       script = <<-EOF
         cp -R /app/node_modules /app/.yarn ./
-        yarn set version 4.12.0
         yarn install --immutable --inline-builds
       EOF
     }
 
     step {
       id     = "Get Affected"
-      name   = "node:24-slim"
+      name   = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies:latest"
       script = file("${path.module}/scripts/affected-apps.sh")
+      env = [
+        "NX_BASE=origin/${var.branch_name}~1",
+        "NX_HEAD=HEAD"
+      ]
     }
 
     step {

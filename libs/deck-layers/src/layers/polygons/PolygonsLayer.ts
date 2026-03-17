@@ -46,7 +46,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
 > {
   static layerName = 'PolygonsLayer'
   static defaultProps = defaultProps
-  state!: PolygonsLayerState
+  declare state: PolygonsLayerState
 
   constructor(props: PolygonsLayerProps & PropsT) {
     ;(props as LayerProps).onDataLoad = () => {

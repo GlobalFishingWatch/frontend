@@ -1,5 +1,4 @@
 import type { PickingInfo } from '@deck.gl/core'
-import type { FeatureWithProps } from '@deck.gl-community/editable-layers'
 import type { Feature, MultiPolygon, Point,Polygon } from 'geojson'
 
 import type { DeckPickingObject } from '../../types'
@@ -23,7 +22,7 @@ export type EditHandleType =
   | 'scale'
   | 'rotate'
 
-export type EditHandleFeature = FeatureWithProps<
+export type EditHandleFeature = Feature<
   Point,
   {
     guideType: 'editHandle'

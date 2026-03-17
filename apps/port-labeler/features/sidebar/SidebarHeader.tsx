@@ -68,12 +68,12 @@ function SidebarHeader(props: HeaderProps) {
         onRemove={() => { }}
         className={styles.countrySelector}
         placeholder={t('messages.country_selection', 'Select a country')}
-        selectedOption={country ? { id: country, label: flags[country] ?? country } : undefined}
+        selectedOption={country ? { id: country, label: flags[country as keyof typeof flags] ?? country } : undefined}
         onSelect={(selected: SelectOption) => {
-          onCountryChange(selected.id)
+          onCountryChange(String(selected.id))
 
           if (props.onCountryChange) {
-            props.onCountryChange(selected.id)
+            props.onCountryChange(String(selected.id))
           }
         }}
       />

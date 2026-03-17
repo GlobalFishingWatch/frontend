@@ -3,7 +3,7 @@ import { createServer } from 'http'
 
 import { ACCESS_TOKEN_STRING, GFWAPI } from '@globalfishingwatch/api-client'
 
-const PROXY_PORT = 3003
+const PROXY_PORT = 3000
 const PROXY_HOST = `localhost:${PROXY_PORT}`
 
 export async function startAuthProxyServer() {

@@ -39,16 +39,16 @@ type UseSelector = {
 // The selector connect is mainly to manage the selection of points on the map
 export function useSelectorConnect(): UseSelector {
   const dispatch = useDispatch()
-  const [box, setBox] = useState(null)
-  const [boxTransform, setBoxTransform] = useState(null)
-  const [boxHeight, setBoxHeight] = useState(null)
-  const [boxWidth, setBoxWidth] = useState(null)
-  const [hoveredStateId, setHoveredStateId] = useState(null)
+  const [box, setBox] = useState<BoxSelection | null>(null)
+  const [boxTransform, setBoxTransform] = useState<string | null>(null)
+  const [boxHeight, setBoxHeight] = useState<string | null>(null)
+  const [boxWidth, setBoxWidth] = useState<string | null>(null)
+  const [hoveredStateId, setHoveredStateId] = useState<string | number | null>(null)
   const selected = useSelector(selectSelectedPoints)
   const map = useMapInstance()
   const canvas = map?.getCanvasContainer()
 
-  const mousePos = useCallback((e) => {
+  const mousePos = useCallback((e: MapLayerMouseEvent) => {
     return new Point(e.point.x, e.point.y)
   }, [])
 
@@ -72,7 +72,7 @@ export function useSelectorConnect(): UseSelector {
   // control the selection box movement
   const onMouseMove = useCallback(
     (e: MapLayerMouseEvent) => {
-      if (box) {
+      if (box && box.startPosition) {
         const actualPosition = mousePos(e)
         // Append the box element if it doesnt exist
         const newBox = box
@@ -100,8 +100,11 @@ export function useSelectorConnect(): UseSelector {
             if (hoveredStateId !== null) {
               map.setFeatureState({ source: 'pointsLayer', id: hoveredStateId }, { hover: false })
             }
-            setHoveredStateId(features[0].id)
-            map.setFeatureState({ source: 'pointsLayer', id: features[0].id }, { hover: true })
+            const featureId = features[0].id
+            if (featureId !== undefined) {
+              setHoveredStateId(featureId)
+              map.setFeatureState({ source: 'pointsLayer', id: featureId }, { hover: true })
+            }
             dispatch(setHoverPoint(features[0].properties.id))
           } else if (hoveredStateId !== null) {
             map.setFeatureState({ source: 'pointsLayer', id: hoveredStateId }, { hover: false })
@@ -114,7 +117,7 @@ export function useSelectorConnect(): UseSelector {
 
   const onMouseUp = useCallback(
     (e: MapLayerMouseEvent) => {
-      if (box && box.endPosition && box.startPosition) {
+      if (map && box && box.endPosition && box.startPosition) {
         const features = map.queryRenderedFeatures([box.startPosition, box.endPosition], {
           layers: ['portPoints'],
         })
@@ -165,6 +168,9 @@ export function useSelectorConnect(): UseSelector {
   // here we use the mapbox feature to hightlight points on hover
   const onHover = useCallback(
     (e: MapLayerMouseEvent) => {
+      if (!map) {
+        return
+      }
       //const feature = e?.features?.[0] as any
       const features = map.queryRenderedFeatures(e.point, {
         layers: ['portPoints'],
@@ -173,9 +179,12 @@ export function useSelectorConnect(): UseSelector {
         if (hoveredStateId !== null) {
           map.setFeatureState({ source: 'pointsLayer', id: hoveredStateId }, { hover: false })
         }
-        setHoveredStateId(e.features[0].id)
-        map.setFeatureState({ source: 'pointsLayer', id: e.features[0].id }, { hover: true })
-        dispatch(setHoverPoint(e.features[0].properties.id))
+        const featureId = features[0].id
+        if (featureId !== undefined) {
+          setHoveredStateId(featureId)
+          map.setFeatureState({ source: 'pointsLayer', id: featureId }, { hover: true })
+        }
+        dispatch(setHoverPoint(features[0].properties.id))
       } else if (hoveredStateId !== null) {
         map.setFeatureState({ source: 'pointsLayer', id: hoveredStateId }, { hover: false })
       }
@@ -184,10 +193,10 @@ export function useSelectorConnect(): UseSelector {
   )
 
   return {
-    box,
-    boxTransform,
-    boxHeight,
-    boxWidth,
+    box: box ?? undefined,
+    boxTransform: boxTransform ?? undefined,
+    boxHeight: boxHeight ?? undefined,
+    boxWidth: boxWidth ?? undefined,
     onMouseDown,
     onMouseMove,
     onMouseUp,
@@ -206,7 +215,7 @@ export function useMapConnect(): UseMap {
 
   // this is to center the positions (points) on the map when the user change the country
   const centerPoints = useCallback(
-    (points) => {
+    (points: PortPosition[]) => {
       if (points) {
         const bbox = points?.length
           ? segmentsToBbox([

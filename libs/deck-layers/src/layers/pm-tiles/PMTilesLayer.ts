@@ -12,7 +12,7 @@ type PMTilesLayerState = TileLayer['state'] & {
 
 export class PMTilesLayer<DataT = any> extends TileLayer<DataT, PMTileLayerProps> {
   static layerName = 'PMTilesLayer'
-  state!: PMTilesLayerState
+  declare state: PMTilesLayerState
 
   initializeState() {
     super.initializeState()
