@@ -2,12 +2,11 @@ import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin'
 import react from '@vitejs/plugin-react'
 import { playwright } from '@vitest/browser-playwright'
 import path from 'path'
+import { loadEnv } from 'vite'
 import { defineConfig } from 'vitest/config'
 import { publicAssetsPlugin, authTokensPlugin, svgMockPlugin } from './test/utils/vitest/plugins'
 
 const DEFAULT_VIEWPORT = { width: 1280, height: 720 }
-
-const isChromeOnly = process.env.TEST_CHROME_ONLY === 'true'
 
 const defaultPlaywrightProvider = playwright()
 // Not needed for Playwright 1.57.0 but will need in future versions
@@ -21,9 +20,12 @@ const defaultPlaywrightProvider = playwright()
 // })
 
 export default defineConfig(({ mode }) => {
-  const isUiTarget = process.env.NX_TASK_TARGET_TARGET === 'test:ui'
-  const isUiMode = mode === 'ui' || process.env.VITEST_UI === 'true' || isUiTarget
-  const isCoverageMode = mode === 'coverage'
+  const env = loadEnv(mode, process.cwd(), '')
+
+  const isChromeOnly = env.TEST_CHROME_ONLY === 'true'
+  const isUiTarget = env.NX_TASK_TARGET_TARGET === 'test:ui'
+  const isUiMode = mode === 'ui' || env.VITEST_UI === 'true' || isUiTarget
+  const isCoverageMode = mode === 'coverage' || env.VITEST_COVERAGE === 'true'
 
   return {
     root: __dirname,
@@ -50,14 +52,12 @@ export default defineConfig(({ mode }) => {
     },
 
     define: {
-      'process.env.NEXT_PUBLIC_API_GATEWAY': JSON.stringify(process.env.NEXT_PUBLIC_API_GATEWAY),
-      'process.env.NEXT_PUBLIC_WORKSPACE_ENV': JSON.stringify(
-        process.env.NEXT_PUBLIC_WORKSPACE_ENV
-      ),
+      'process.env.NEXT_PUBLIC_API_GATEWAY': JSON.stringify(env.NEXT_PUBLIC_API_GATEWAY),
+      'process.env.NEXT_PUBLIC_WORKSPACE_ENV': JSON.stringify(env.NEXT_PUBLIC_WORKSPACE_ENV),
       'process.env.NODE_ENV': JSON.stringify('test'),
       'process.env.VITEST': JSON.stringify('true'),
-      'process.env.TEST_USER_EMAIL': JSON.stringify(process.env.TEST_USER_EMAIL),
-      'process.env.TEST_USER_PASSWORD': JSON.stringify(process.env.TEST_USER_PASSWORD),
+      'process.env.TEST_USER_EMAIL': JSON.stringify(env.TEST_USER_EMAIL),
+      'process.env.TEST_USER_PASSWORD': JSON.stringify(env.TEST_USER_PASSWORD),
     },
     optimizeDeps: {
       include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],

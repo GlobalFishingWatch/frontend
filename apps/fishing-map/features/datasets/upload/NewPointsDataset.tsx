@@ -432,6 +432,7 @@ function NewPointDataset({
           onClick={onConfirmClick}
           disabled={!datasetMetadata || error !== '' || !isValid}
           loading={loading}
+          testId="confirm-upload"
         >
           {t((t) => t.common.confirm) as string}
         </Button>
