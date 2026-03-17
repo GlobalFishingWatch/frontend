@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Link from 'redux-first-router-link'
+import { Link } from '@tanstack/react-router'
 
 import { IconButton, Modal, Spinner } from '@globalfishingwatch/ui-components'
 
@@ -17,7 +17,6 @@ import {
   selectWorkspaceListStatus,
   selectWorkspaceListStatusId,
 } from 'features/workspaces-list/workspaces-list.slice'
-import { WORKSPACE } from 'routes/routes'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { getHighlightedText } from 'utils/text'
 
@@ -98,14 +97,12 @@ function UserWorkspacesPublic({ searchQuery }: { searchQuery: string }) {
                 <li className={styles.workspace} key={workspace.id}>
                   <Link
                     className={styles.workspaceLink}
-                    to={{
-                      type: WORKSPACE,
-                      payload: {
-                        category: workspace.category || DEFAULT_WORKSPACE_CATEGORY,
-                        workspaceId: workspace.id,
-                      },
-                      query: {},
+                    to="/$category/$workspaceId"
+                    params={{
+                      category: workspace.category || DEFAULT_WORKSPACE_CATEGORY,
+                      workspaceId: workspace.id,
                     }}
+                    search={{}}
                     onClick={() => onWorkspaceClick(workspace)}
                   >
                     <span className={styles.workspaceTitle} data-test="workspace-name">

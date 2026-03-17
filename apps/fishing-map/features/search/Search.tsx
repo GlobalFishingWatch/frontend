@@ -28,8 +28,8 @@ import { selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { fetchWorkspaceThunk } from 'features/workspace/workspace.slice'
 import WorkspaceLoginError from 'features/workspace/WorkspaceLoginError'
-import { useLocationConnect } from 'routes/routes.hook'
-import { selectWorkspaceId } from 'routes/routes.selectors'
+import { useReplaceQueryParams } from 'router/routes.hook'
+import { selectWorkspaceId } from 'router/routes.selectors'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import styles from './Search.module.css'
@@ -37,12 +37,12 @@ import styles from './Search.module.css'
 function Search() {
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const urlWorkspaceId = useSelector(selectWorkspaceId)
   const basicSearchAllowed = useSelector(isBasicSearchAllowed)
   const advancedSearchAllowed = useSelector(isAdvancedSearchAllowed)
   const searchResults = useSelector(selectSearchResults)
   const { searchSuggestion } = useSearchConnect()
-  const { dispatchQueryParams } = useLocationConnect()
   const { debouncedQuery, fetchMoreResults, onAdvancedSearchClick } = useSearch()
   const activeSearchOption = useSelector(selectSearchOption)
   const searchResultsPagination = useSelector(selectSearchPagination)
@@ -55,14 +55,14 @@ function Search() {
   const datasetError = useSelector(selectDatasetsError)
 
   useEffect(() => {
-    dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId }))
+    dispatch(fetchWorkspaceThunk({ workspaceId: urlWorkspaceId as string }))
   }, [dispatch, urlWorkspaceId])
 
   useEffect(() => {
     if (debouncedQuery === '') {
       dispatch(cleanVesselSearchResults())
     }
-    dispatchQueryParams({ query: debouncedQuery })
+    replaceQueryParams({ query: debouncedQuery })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuery])
 
@@ -76,7 +76,7 @@ function Search() {
   const onSuggestionClick = () => {
     if (searchSuggestion) {
       dispatch(setSuggestionClicked(true))
-      dispatchQueryParams({ query: searchSuggestion })
+      replaceQueryParams({ query: searchSuggestion })
     }
   }
 

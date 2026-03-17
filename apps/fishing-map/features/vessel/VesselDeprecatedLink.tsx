@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import Link from 'redux-first-router-link'
+import { Link } from '@tanstack/react-router'
 
 import type { IdentityVessel } from '@globalfishingwatch/api-types'
 import { getIsVMSDataset } from '@globalfishingwatch/datasets-client'
@@ -11,7 +11,7 @@ import { selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
 import type { IdentityVesselData } from 'features/vessel/vessel.slice'
 import { getVesselProperty } from 'features/vessel/vessel.utils'
 import { selectWorkspace } from 'features/workspace/workspace.selectors'
-import { WORKSPACE_SEARCH } from 'routes/routes'
+import { ROUTE_PATHS } from 'router/routes.utils'
 
 const VesselDeprecatedLink = ({
   vesselIdentity,
@@ -26,25 +26,23 @@ const VesselDeprecatedLink = ({
 
   return (
     <Link
-      to={{
-        type: WORKSPACE_SEARCH,
-        payload: {
-          category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
-          workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
-        },
-        query: {
-          searchOption: 'advanced',
-          query: getVesselProperty(vesselIdentity, 'shipname'),
-          ...(!getIsVMSDataset(vesselDatasetId) && {
-            ssvid: getVesselProperty(vesselIdentity, 'ssvid'),
-          }),
-          sources: deprecatedDatasets[vesselDatasetId]
-            ? [deprecatedDatasets[vesselDatasetId]]
-            : undefined,
-          flag: getVesselProperty(vesselIdentity, 'flag')
-            ? [getVesselProperty(vesselIdentity, 'flag')]
-            : undefined,
-        },
+      to={ROUTE_PATHS.WORKSPACE_SEARCH}
+      params={{
+        category: workspace?.category || DEFAULT_WORKSPACE_CATEGORY,
+        workspaceId: workspace?.id || DEFAULT_WORKSPACE_ID,
+      }}
+      search={{
+        searchOption: 'advanced',
+        query: getVesselProperty(vesselIdentity, 'shipname'),
+        ...(!getIsVMSDataset(vesselDatasetId) && {
+          ssvid: getVesselProperty(vesselIdentity, 'ssvid'),
+        }),
+        sources: deprecatedDatasets[vesselDatasetId]
+          ? [deprecatedDatasets[vesselDatasetId]]
+          : undefined,
+        flag: getVesselProperty(vesselIdentity, 'flag')
+          ? [getVesselProperty(vesselIdentity, 'flag')]
+          : undefined,
       }}
     >
       <IconButton

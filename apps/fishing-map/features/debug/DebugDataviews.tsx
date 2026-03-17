@@ -4,14 +4,13 @@ import JsonView from '@uiw/react-json-view'
 import { darkTheme } from '@uiw/react-json-view/dark'
 
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
-import { Icon, IconButton, InputText, Switch } from '@globalfishingwatch/ui-components'
+import { IconButton, InputText } from '@globalfishingwatch/ui-components'
 
-import { useAppDispatch } from 'features/app/app.hooks'
 import { debugDatasetsInDataviews, debugRelatedDatasets } from 'features/datasets/datasets.debug'
 import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import { selectAllDataviewInstancesResolved } from 'features/dataviews/selectors/dataviews.resolvers.selectors'
 import { selectIsGFWDeveloper } from 'features/user/selectors/user.selectors'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { selectLocationQuery } from 'router/routes.selectors'
 
 import styles from './DebugMenu.module.css'
 

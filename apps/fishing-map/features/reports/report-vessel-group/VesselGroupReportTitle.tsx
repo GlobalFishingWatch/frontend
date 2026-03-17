@@ -28,7 +28,8 @@ import {
   setVesselGroupsModalOpen,
 } from 'features/vessel-groups/vessel-groups-modal.slice'
 import { selectIsWorkspaceOwnerOrDefault } from 'features/workspace/workspace.selectors'
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
+import LoginButtonWrapper from 'router/LoginButtonWrapper'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
 
@@ -116,7 +117,7 @@ export default function VesselGroupReportTitle() {
             />
           </h2>
         </div>
-        <a className={styles.reportLink} href={window.location.href}>
+        <a className={styles.reportLink} href={getCurrentAppUrl()}>
           {t((t) => t.vesselGroupReport.linkToReport)}
         </a>
         <div className={styles.actions}>

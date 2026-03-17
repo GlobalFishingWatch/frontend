@@ -47,7 +47,7 @@ import { isSupportedReportDataview } from 'features/reports/report-area/area-rep
 import { selectReportCategory } from 'features/reports/reports.selectors'
 import { ReportCategory } from 'features/reports/reports.types'
 import { selectWorkspaceDataviewInstances } from 'features/workspace/workspace.selectors'
-import { selectIsVesselGroupReportLocation, selectVesselId } from 'routes/routes.selectors'
+import { selectIsVesselGroupReportLocation, selectVesselId } from 'router/routes.selectors'
 import { createDeepEqualSelector } from 'utils/selectors'
 
 export const selectBasemapLabelsDataviewInstance = createSelector(

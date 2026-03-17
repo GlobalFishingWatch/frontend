@@ -2,7 +2,7 @@ import { Trans, useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 
 import { selectIsUserExpired } from 'features/user/selectors/user.selectors'
-import LocalStorageLoginLink from 'routes/LoginLink'
+import LocalStorageLoginLink from 'router/LoginLink'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
 import { selectSearchStatus, selectSearchStatusCode } from '../search.slice'

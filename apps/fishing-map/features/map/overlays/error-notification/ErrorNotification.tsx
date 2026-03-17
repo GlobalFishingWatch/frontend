@@ -8,10 +8,11 @@ import { URL_STRINGIFY_CONFIG } from '@globalfishingwatch/dataviews-client'
 import { useEventKeyListener } from '@globalfishingwatch/react-hooks'
 import { Button, Icon, InputText } from '@globalfishingwatch/ui-components'
 
-import { PATH_BASENAME, PUBLIC_WORKSPACE_ENV } from 'data/config'
+import { PATH_BASENAME, WORKSPACE_ENV } from 'data/config'
 import PopupWrapper from 'features/map/popups/PopupWrapper'
 import { selectUserData } from 'features/user/selectors/user.selectors'
-import { selectLocationQuery } from 'routes/routes.selectors'
+import { selectLocationQuery } from 'router/routes.selectors'
+import { getCurrentAppUrl } from 'router/routes.utils'
 import { EMPTY_FIELD_PLACEHOLDER } from 'utils/info'
 
 import type { MapAnnotation } from '../annotations/annotations.types'
@@ -63,10 +64,10 @@ const ErrorNotification = (): React.ReactNode | null => {
         longitude: errorNotification.lon,
         label: errorNotification.label,
         date: date.toISOString(),
-        url: `${window.location.origin}${window.location.pathname}?${query}`,
+        url: getCurrentAppUrl(),
         userId: userData?.id || GUEST_USER_TYPE,
         email: userData?.email || EMPTY_FIELD_PLACEHOLDER,
-        environment: PUBLIC_WORKSPACE_ENV || 'development',
+        environment: WORKSPACE_ENV || 'development',
         name: userData?.firstName
           ? `${userData.firstName} ${userData.lastName}`
           : EMPTY_FIELD_PLACEHOLDER,

@@ -38,7 +38,7 @@ import {
 import EventsReportGraph from 'features/reports/tabs/events/EventsReportGraph'
 import EventsReportGraphSelector from 'features/reports/tabs/events/EventsReportGraphSelector'
 import EventsReportSubsectionSelector from 'features/reports/tabs/events/EventsReportSubsectionSelector'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 import { AsyncReducerStatus } from 'utils/async-slice'
 import { htmlSafeParse } from 'utils/html-parser'
 
@@ -46,6 +46,7 @@ import styles from './EventsReport.module.css'
 
 function EventsReport() {
   const { t } = useTranslation()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const activeReportSubCategories = useSelector(selectActiveReportSubCategories)
   const eventsDataview = useSelector(selectActiveReportDataviews)?.[0]
   const { start, end } = useSelector(selectTimeRange)
@@ -59,7 +60,6 @@ function EventsReport() {
   const timerangeSupported = getDownloadReportSupported(start, end)
   const datasetAreasId = useSelector(selectEventsGraphDatasetAreaId)
   const datasetAreas = useFetchContextDatasetAreas(datasetAreasId)
-  const { dispatchQueryParams } = useLocationConnect()
   const { updateReportHash, reportOutdated } = useReportHash()
 
   const { status: vessselStatus } = useGetReportEventsVesselsQuery(
@@ -79,9 +79,9 @@ function EventsReport() {
   useEffect(() => {
     if (reportLoadVessels && eventsDataview) {
       updateReportHash()
-      dispatchQueryParams({ reportLoadVessels: false })
+      replaceQueryParams({ reportLoadVessels: false })
     }
-  }, [reportLoadVessels, eventsDataview, dispatchQueryParams, updateReportHash])
+  }, [reportLoadVessels, eventsDataview, updateReportHash])
 
   const isLoadingStats = statsStatus === 'pending'
   const isLoadingVessels = vessselStatus === 'pending'

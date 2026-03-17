@@ -1,7 +1,7 @@
-import { Fragment, useCallback, useState } from 'react'
+import { Fragment, lazy, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
-import dynamic from 'next/dynamic'
+import { useRouter } from '@tanstack/react-router'
 
 import { WORKSPACE_PUBLIC_ACCESS } from '@globalfishingwatch/api-types'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -12,16 +12,12 @@ import { selectReportsStatus } from 'features/reports/reports.slice'
 import { useClipboardNotification } from 'features/sidebar/sidebar.hooks'
 import { selectWorkspace, selectWorkspaceStatus } from 'features/workspace/workspace.selectors'
 import { setWorkspace } from 'features/workspace/workspace.slice'
-import LoginButtonWrapper from 'routes/LoginButtonWrapper'
-import { REPORT } from 'routes/routes'
-import { useLocationConnect } from 'routes/routes.hook'
+import LoginButtonWrapper from 'router/LoginButtonWrapper'
+import { getCurrentAppUrl, ROUTE_PATHS } from 'router/routes.utils'
 import { AsyncReducerStatus } from 'utils/async-slice'
 
-const NewReportModal = dynamic(
-  () =>
-    import(
-      /* webpackChunkName: "NewWorkspaceModal" */ 'features/reports/shared/new-report-modal/NewAreaReportModal'
-    )
+const NewReportModal = lazy(
+  () => import('features/reports/shared/new-report-modal/NewAreaReportModal')
 )
 
 function SaveReportButton() {
@@ -31,7 +27,7 @@ function SaveReportButton() {
   const report = useSelector(selectCurrentReport)
   const workspaceStatus = useSelector(selectWorkspaceStatus)
   const reportStatus = useSelector(selectReportsStatus)
-  const { dispatchLocation } = useLocationConnect()
+  const router = useRouter()
   const { showClipboardNotification, copyToClipboard } = useClipboardNotification()
   const [showReportCreateModal, setShowReportCreateModal] = useState(false)
 
@@ -41,16 +37,19 @@ function SaveReportButton() {
 
   const onSaveCreateReport = useCallback(
     (report: any) => {
-      copyToClipboard(window.location.href)
-      dispatchLocation(
-        REPORT,
-        { payload: { reportId: report?.id }, query: {} },
-        { replaceQuery: true }
-      )
+      copyToClipboard(getCurrentAppUrl())
+      router.navigate({
+        to: ROUTE_PATHS.REPORT,
+        params: {
+          reportId: report?.id,
+        },
+        search: {},
+        replace: true,
+      })
       dispatch(setWorkspace(report.workspace))
       onCloseCreateReport()
     },
-    [copyToClipboard, dispatch, dispatchLocation, onCloseCreateReport]
+    [copyToClipboard, dispatch, router, onCloseCreateReport]
   )
 
   const onSaveClick = async () => {

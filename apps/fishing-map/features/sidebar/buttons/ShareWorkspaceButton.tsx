@@ -6,8 +6,9 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useClipboardNotification } from 'features/sidebar/sidebar.hooks'
-import type { ROUTE_TYPES } from 'routes/routes'
-import { selectLocationType } from 'routes/routes.selectors'
+import type { ROUTE_TYPES } from 'router/routes'
+import { selectLocationType } from 'router/routes.selectors'
+import { getCurrentAppUrl } from 'router/routes.utils'
 
 function ShareWorkspaceButton() {
   const { t } = useTranslation()
@@ -41,7 +42,7 @@ function ShareWorkspaceButton() {
       VESSEL: 'report',
       WORKSPACE_VESSEL: 'report',
     }
-    copyToClipboard(window.location.href)
+    copyToClipboard(getCurrentAppUrl())
     trackEvent({
       category: trackEventCategories[location] as TrackCategory,
       action: `Click share ${trackEventActions[location]}'}`,

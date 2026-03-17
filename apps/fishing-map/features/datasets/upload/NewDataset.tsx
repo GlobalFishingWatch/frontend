@@ -23,7 +23,7 @@ import { selectIsGuestUser, selectIsUserExpired } from 'features/user/selectors/
 import { RegisterOrLoginToUpload } from 'features/workspace/user/UserSection/UserSection'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
 import { setWorkspaceSuggestSave } from 'features/workspace/workspace.slice'
-import { selectLocationType } from 'routes/routes.selectors'
+import { selectLocationType } from 'router/routes.selectors'
 
 import {
   useAddDataviewFromDatasetToWorkspace,
@@ -34,10 +34,9 @@ import {
 
 // import DatasetConfig, { extractPropertiesFromGeojson } from '../DatasetConfig'
 import DatasetTypeSelect from './DatasetTypeSelect'
+import { NEW_DATASET_MODAL_ID } from 'data/config'
 
 import styles from './NewDataset.module.css'
-
-export const NEW_DATASET_MODAL_ID = 'new-dataset-modal'
 
 type OnConfirmParams = { isEditing: boolean; file?: File }
 export type NewDatasetProps = {

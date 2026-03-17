@@ -9,7 +9,7 @@ import type { DataviewCategory } from '@globalfishingwatch/api-types'
 import { IconButton, Tooltip } from '@globalfishingwatch/ui-components'
 
 import { selectScreenshotModalOpen } from 'features/modals/modals.slice'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import { selectCollapsedSections } from '../workspace.selectors'
 
@@ -35,7 +35,7 @@ function Section({
   testId,
 }: SectionProps): React.ReactElement<any> {
   const { t } = useTranslation()
-  const { dispatchQueryParams } = useLocationConnect()
+  const { replaceQueryParams } = useReplaceQueryParams()
   const collapsedSections = useSelector(selectCollapsedSections)
   const screenshotModalOpen = useSelector(selectScreenshotModalOpen)
   const collapsed = screenshotModalOpen ? false : collapsedSections.includes(id)
@@ -44,8 +44,8 @@ function Section({
     const newCollapsedSections = collapsed
       ? collapsedSections.filter((section) => section !== id)
       : [...collapsedSections, id]
-    dispatchQueryParams({ collapsedSections: uniq(newCollapsedSections) })
-  }, [collapsed, collapsedSections, dispatchQueryParams, id])
+    replaceQueryParams({ collapsedSections: uniq(newCollapsedSections) })
+  }, [collapsed, collapsedSections, id, replaceQueryParams])
 
   return (
     <section

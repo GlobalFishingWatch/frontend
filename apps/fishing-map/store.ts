@@ -3,15 +3,11 @@ import { configureStore } from '@reduxjs/toolkit'
 import { logoutUserMiddleware } from 'middlewares'
 import { queriesApiMiddlewares, queriesApiReducers } from 'queries'
 
-import connectedRoutes, { createRouterInstance } from 'routes/routes'
-import routerMiddlewares from 'routes/routes.middlewares'
-
 import { rootReducer } from './reducers'
 
 // Can't type because GetDefaultMiddlewareOptions type is not exposed by RTK
 const defaultMiddlewareOptions: any = {
-  // Fix issue with Redux-first-router and RTK (https://stackoverflow.com/questions/59773345/react-toolkit-and-redux-first-router)
-  serializableCheck: false,
+  // serializableCheck: false,
   immutableCheck: {
     ignoredPaths: [
       // Too big to check for immutability:
@@ -22,16 +18,7 @@ const defaultMiddlewareOptions: any = {
   },
 }
 
-export const makeStore = (
-  preloadedState?: any,
-  middlewares?: Middleware[],
-  useNewRouter = false
-) => {
-  // In test environment, create a fresh router instance to avoid singleton state pollution
-  const { middleware: routerMiddlewareToUse, enhancer: routerEnhancerToUse } = useNewRouter
-    ? createRouterInstance()
-    : connectedRoutes
-
+export const makeStore = (preloadedState?: RootState, middlewares?: Middleware[]) => {
   return configureStore({
     devTools: {
       stateSanitizer: (state: any) => {
@@ -58,12 +45,9 @@ export const makeStore = (
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware(defaultMiddlewareOptions).concat(
         ...queriesApiMiddlewares,
-        ...routerMiddlewares,
-        routerMiddlewareToUse as Middleware,
         logoutUserMiddleware,
         ...(middlewares || [])
       ),
-    enhancers: (getDefaultEnhancers) => [routerEnhancerToUse, ...getDefaultEnhancers()] as any,
     preloadedState: { ...preloadedState },
   })
 }
@@ -79,8 +63,4 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   Action<string>
 >
 
-// export function useStore(initialState) {
-//   const store = useMemo(() => initializeStore(initialState), [initialState])
-//   return store
-// }
 export type RootState = ReturnType<typeof rootReducer>

@@ -14,7 +14,7 @@ describe('Fishing Map App', () => {
 
   it('should reflex store changes on layer toggle', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const { getByTestId } = await render(<App />, { store })
 
     const button = getByTestId('activity-layer-panel-switch-ais')
@@ -40,7 +40,7 @@ describe('Fishing Map App', () => {
 
   it('should preserve map previous state on layer toggle', async () => {
     const testingMiddleware = createTestingMiddleware()
-    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()], true)
+    const store = makeStore(defaultState, [testingMiddleware.createMiddleware()])
     const { getByTestId } = await render(<App />, { store })
 
     await getByTestId('map-control-zoom-in').click()

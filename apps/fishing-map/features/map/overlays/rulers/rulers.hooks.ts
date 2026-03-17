@@ -9,13 +9,12 @@ import { RulersLayer } from '@globalfishingwatch/deck-layers'
 import { selectAreMapRulersVisible, selectMapRulers } from 'features/app/selectors/app.selectors'
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
 import { MAP_CONTROL_RULERS } from 'features/map/controls/map-controls.slice'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 const useRulers = () => {
   const rulers = useSelector(selectMapRulers)
   const rulersVisible = useSelector(selectAreMapRulersVisible)
-  const { dispatchQueryParams } = useLocationConnect()
-
+  const { replaceQueryParams } = useReplaceQueryParams()
   const {
     value,
     isEditing,
@@ -61,9 +60,9 @@ const useRulers = () => {
       const mapRulers = rulers.filter((a) => {
         return a.id !== id
       })
-      dispatchQueryParams({ mapRulers })
+      replaceQueryParams({ mapRulers })
     },
-    [dispatchQueryParams, rulers]
+    [rulers, replaceQueryParams]
   )
 
   const onRulerMapClick = useCallback(
@@ -75,25 +74,25 @@ const useRulers = () => {
       if (!value) {
         setRuleStart(point)
       } else {
-        dispatchQueryParams({
+        replaceQueryParams({
           mapRulers: [...(rulers || []), { ...value, end: point } as RulerData],
           mapRulersVisible: true,
         })
         resetMapControlValue()
       }
     },
-    [dispatchQueryParams, resetMapControlValue, rulers, setRuleStart, value]
+    [replaceQueryParams, resetMapControlValue, rulers, setRuleStart, value]
   )
 
   const toggleRulersVisibility = useCallback(() => {
-    dispatchQueryParams({ mapRulersVisible: !rulersVisible })
-  }, [rulersVisible, dispatchQueryParams])
+    replaceQueryParams({ mapRulersVisible: !rulersVisible })
+  }, [replaceQueryParams, rulersVisible])
 
   const resetRulers = useCallback(() => {
     setMapControl(false)
     resetMapControlValue()
-    dispatchQueryParams({ mapRulers: undefined })
-  }, [dispatchQueryParams, resetMapControlValue, setMapControl])
+    replaceQueryParams({ mapRulers: undefined })
+  }, [replaceQueryParams, resetMapControlValue, setMapControl])
 
   return useMemo(
     () => ({

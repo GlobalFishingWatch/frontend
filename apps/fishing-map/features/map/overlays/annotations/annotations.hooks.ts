@@ -9,7 +9,7 @@ import {
 import { useMapControl } from 'features/map/controls/map-controls.hooks'
 import { MAP_CONTROL_ANNOTATIONS } from 'features/map/controls/map-controls.slice'
 import { DEFAUL_ANNOTATION_COLOR } from 'features/map/map.config'
-import { useLocationConnect } from 'routes/routes.hook'
+import { useReplaceQueryParams } from 'router/routes.hook'
 
 import type { MapAnnotation } from './annotations.types'
 
@@ -63,17 +63,16 @@ export const useMapAnnotation = () => {
  * Hook used only for the confirmed annotations into the url
  */
 export const useMapAnnotations = () => {
+  const { replaceQueryParams } = useReplaceQueryParams()
   const mapAnnotations = useSelector(selectMapAnnotations)
   const areMapAnnotationsVisible = useSelector(selectAreMapAnnotationsVisible)
-  const { dispatchQueryParams } = useLocationConnect()
-
   const toggleMapAnnotationsVisibility = useCallback(() => {
-    dispatchQueryParams({ mapAnnotationsVisible: !areMapAnnotationsVisible })
-  }, [areMapAnnotationsVisible, dispatchQueryParams])
+    replaceQueryParams({ mapAnnotationsVisible: !areMapAnnotationsVisible })
+  }, [areMapAnnotationsVisible, replaceQueryParams])
 
   const cleanMapAnnotations = useCallback(() => {
-    dispatchQueryParams({ mapAnnotations: undefined })
-  }, [dispatchQueryParams])
+    replaceQueryParams({ mapAnnotations: undefined })
+  }, [replaceQueryParams])
 
   const upsertMapAnnotations = useCallback(
     (annotation: MapAnnotation) => {
@@ -81,12 +80,12 @@ export const useMapAnnotations = () => {
         const annotations = mapAnnotations.map((a) => {
           return a.id === annotation.id ? { ...a, ...annotation } : a
         })
-        dispatchQueryParams({ mapAnnotations: annotations })
+        replaceQueryParams({ mapAnnotations: annotations })
       } else {
-        dispatchQueryParams({ mapAnnotations: [...(mapAnnotations || []), annotation] })
+        replaceQueryParams({ mapAnnotations: [...(mapAnnotations || []), annotation] })
       }
     },
-    [dispatchQueryParams, mapAnnotations]
+    [mapAnnotations, replaceQueryParams]
   )
 
   const deleteMapAnnotation = useCallback(
@@ -94,9 +93,9 @@ export const useMapAnnotations = () => {
       const annotations = mapAnnotations.filter((a) => {
         return a.id !== id
       })
-      dispatchQueryParams({ mapAnnotations: annotations })
+      replaceQueryParams({ mapAnnotations: annotations })
     },
-    [dispatchQueryParams, mapAnnotations]
+    [mapAnnotations, replaceQueryParams]
   )
 
   return useMemo(

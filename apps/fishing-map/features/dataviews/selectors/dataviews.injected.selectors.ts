@@ -62,7 +62,7 @@ import {
   selectReportPortId,
   selectReportVesselGroupId,
   selectVesselId,
-} from 'routes/routes.selectors'
+} from 'router/routes.selectors'
 
 const REPORT_EVENTS_GRAPH_AREA_DATAVIEW_ID = `report-event-graph-area`
 const COMPARISON_INJECTED_DATAVIEW_ORIGIN = 'comparison'

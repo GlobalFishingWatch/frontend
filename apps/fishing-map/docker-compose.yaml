@@ -1,0 +1,19 @@
+services:
+  fishing-map:
+    build:
+      context: ../../
+      dockerfile: apps/fishing-map/Dockerfile
+      args:
+        VITE_API_GATEWAY: https://gateway.api.dev.globalfishingwatch.org
+        VITE_API_VERSION: v3
+        VITE_GOOGLE_MEASUREMENT_ID: G-R3PWRQW70G
+        VITE_GOOGLE_TAG_MANAGER_ID: GTM-KK5ZFST
+        VITE_USE_LOCAL_DATASETS: 'false'
+        VITE_USE_LOCAL_DATAVIEWS: 'false'
+        VITE_WORKSPACE_ENV: development
+        VITE_REPORT_DAYS_LIMIT: '366'
+        VITE_PIPE_DATASET_VERSION: '4'
+    ports:
+      - '3000:3000'
+    environment:
+      - PORT=3000
