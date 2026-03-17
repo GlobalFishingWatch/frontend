@@ -48,6 +48,8 @@ interface VesselGroupModalState {
     text: string | ''
     status: AsyncReducerStatus
     error: ParsedAPIError | null
+    csvColumns: string[] | null
+    csvData: any[] | null
   }
   isOwnedByUser: boolean
 }
@@ -119,21 +121,28 @@ export const fetchAllSearchVessels = async (params: FetchSearchVessels) => {
 type SearchVesselsInVGParams = {
   datasets: Dataset[]
   signal: AbortSignal
-  ids: string[]
+  ids?: string[]
   idField?: IdField
+  csvData?: any[]
+  csvColumns?: string[]
   transmissionDateFrom?: string
   transmissionDateTo?: string
 }
+
 const searchVesselsInVesselGroup = async ({
   datasets,
   signal,
   ids,
   idField = 'vesselId',
+  csvData,
+  csvColumns,
   transmissionDateFrom,
   transmissionDateTo,
 }: SearchVesselsInVGParams) => {
-  if (!datasets || !ids?.length) {
-    throw new Error(ids ? 'No vessel ids provided' : 'No datasets provided')
+  if (!datasets) {
+    throw new Error('No datasets provided')
+  } else if (!ids?.length && !csvData?.length) {
+    throw new Error(!ids?.length ? 'No vessel ids provided' : 'No csv data provided')
   }
 
   const datasetIds = datasets.map((d) => d.id)
@@ -142,29 +151,62 @@ const searchVesselsInVesselGroup = async ({
   if (!url) {
     throw new Error('Missing search url')
   }
-
-  const searchKey = idField === 'vesselId' ? 'id' : idField === 'mmsi' ? 'ssvid' : 'imo'
-  const whereClauses: string[] = [
-    `(${uniq(ids)
-      .map((id) => `${searchKey} = "${id}"`)
-      .join(' OR ')})`,
-  ]
+  let whereClauses: string[] = []
+  if (ids && idField) {
+    const searchKey = idField === 'vesselId' ? 'id' : idField === 'mmsi' ? 'ssvid' : 'imo'
+    whereClauses = [
+      `(${uniq(ids)
+        .map((id) => `${searchKey} = "${id}"`)
+        .join(' OR ')})`,
+    ]
+  } else if (csvData && csvColumns) {
+    whereClauses = [
+      `(${csvData
+        .flatMap((row) => {
+          const rowClauses = csvColumns
+            .flatMap((column) => {
+              const value = row[column].trim().replace(/[^a-zA-Z0-9\s.]/g, '')
+              console.log(column, value)
+              if (!value) {
+                return []
+              }
+              if (column === 'vesselId') {
+                return `id = "${value}"`
+              } else if (column.toLowerCase() === 'mmsi') {
+                return `ssvid = "${value}"`
+              } else if (column.toLowerCase() === 'imo') {
+                return `imo = "${value}"`
+              } else if (column.toLowerCase() === 'flag') {
+                return `flag = "${value}"`
+              } else if (column.toLowerCase() === 'name' || column.toLowerCase() === 'shipname') {
+                return `shipname LIKE  "%${value.toUpperCase()}%"`
+              }
+              return `${column} = "${value}"`
+            })
+            .join(' AND ')
+          return rowClauses ? `(${rowClauses})` : []
+        })
+        .join(' OR ')})`,
+    ]
+  }
   if (transmissionDateFrom) {
     whereClauses.push(`transmissionDateFrom < "${transmissionDateFrom}"`)
   } else if (transmissionDateTo) {
     whereClauses.push(`transmissionDateTo > "${transmissionDateTo}"`)
   }
-  const searchResults = await fetchAllSearchVessels({
-    url: `${url}`,
-    body: {
-      datasets: datasetIds,
-      where: whereClauses.join(' AND '),
-    },
-    signal,
-  })
-
-  const vesselGroupVessels = flatVesselGroupSearchVessels(searchResults)
-  return vesselGroupVessels
+  if (whereClauses.length) {
+    const searchResults = await fetchAllSearchVessels({
+      url: `${url}`,
+      body: {
+        datasets: datasetIds,
+        where: whereClauses.join(' AND '),
+      },
+      signal,
+    })
+    const vesselGroupVessels = flatVesselGroupSearchVessels(searchResults)
+    return vesselGroupVessels
+  }
+  return []
 }
 
 type GetVesselsInVGParams = {
@@ -223,6 +265,8 @@ const initialState: VesselGroupModalState = {
     text: '',
     status: AsyncReducerStatus.Idle,
     error: null,
+    csvColumns: null,
+    csvData: null,
   },
   isOwnedByUser: false,
 }
@@ -233,12 +277,16 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
     {
       ids,
       idField,
+      csvData,
+      csvColumns,
       datasets = [],
       transmissionDateFrom,
       transmissionDateTo,
     }: {
-      ids: string[]
-      idField: IdField
+      ids?: string[]
+      idField?: IdField
+      csvData?: any[]
+      csvColumns?: string[]
       datasets?: string[]
       transmissionDateFrom?: string
       transmissionDateTo?: string
@@ -251,14 +299,19 @@ export const searchVesselGroupsVesselsThunk = createAsyncThunk(
         return datasets?.length ? datasets.includes(d.id) : true
         /*&& d.alias?.some((alias) => alias.includes(':latest'))*/
       })
-      const vesselGroupVessels = await searchVesselsInVesselGroup({
-        datasets: searchDatasets,
-        signal,
-        ids,
-        idField,
-        transmissionDateFrom,
-        transmissionDateTo,
-      })
+      let vesselGroupVessels
+      if ((ids && idField) || (csvData && csvColumns)) {
+        vesselGroupVessels = await searchVesselsInVesselGroup({
+          datasets: searchDatasets,
+          signal,
+          ids,
+          idField,
+          csvData,
+          csvColumns,
+          transmissionDateFrom,
+          transmissionDateTo,
+        })
+      }
       return vesselGroupVessels
     } catch (e: any) {
       console.warn(e)
@@ -346,6 +399,13 @@ export const vesselGroupModalSlice = createSlice({
     setVesselGroupModalSearchText: (state, action: PayloadAction<string>) => {
       state.search.text = action.payload
     },
+    setVesselGroupModalCsvColumns: (state, action: PayloadAction<string[]>) => {
+      state.search.csvColumns = action.payload
+      console.log('setVesselGroupModalCsvColumns', state.search.csvColumns)
+    },
+    setVesselGroupModalCsvData: (state, action: PayloadAction<any[]>) => {
+      state.search.csvData = action.payload
+    },
     setVesselGroupEditId: (state, action: PayloadAction<string>) => {
       state.vesselGroupEditId = action.payload
     },
@@ -366,7 +426,7 @@ export const vesselGroupModalSlice = createSlice({
     })
     builder.addCase(searchVesselGroupsVesselsThunk.fulfilled, (state, action) => {
       state.search.status = AsyncReducerStatus.Finished
-      state.vessels = action.payload
+      state.vessels = action.payload ? action.payload : null
     })
     builder.addCase(searchVesselGroupsVesselsThunk.rejected, (state, action) => {
       if (action.error.message === 'Aborted') {
@@ -403,6 +463,8 @@ export const {
   setVesselGroupModalName,
   setVesselGroupModalVessels,
   setVesselGroupModalSearchText,
+  setVesselGroupModalCsvColumns,
+  setVesselGroupModalCsvData,
   setVesselGroupEditId,
   setIsOwnedByUser,
   setVesselGroupConfirmationMode,
@@ -412,6 +474,10 @@ export const {
 export const selectVesselGroupModalOpen = (state: RootState) => state.vesselGroupModal.isModalOpen
 export const selectVesselGroupModalSearchIdField = (state: RootState) =>
   state.vesselGroupModal.search.idField
+export const selectVesselGroupModalCsvColumns = (state: RootState) =>
+  state.vesselGroupModal.search.csvColumns
+export const selectVesselGroupModalCsvData = (state: RootState) =>
+  state.vesselGroupModal.search.csvData
 export const selectVesselGroupSearchStatus = (state: RootState) =>
   state.vesselGroupModal.search.status
 export const selectVesselGroupModalSources = (state: RootState) => state.vesselGroupModal.sources
