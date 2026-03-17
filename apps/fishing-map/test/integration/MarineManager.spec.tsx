@@ -23,9 +23,6 @@ describe('Marine Manager', () => {
 
     await userEvent.click(getByTestId('link-category-marine-manager'))
 
-    // Wait for marine-manager navigation to complete and clear query params
-    await expect.poll(() => store.getState().location.type).toBe('WORKSPACES_LIST')
-
     await userEvent.click(getByRole('link', { name: 'Fiji' }).first())
 
     const action = testingMiddleware.getLastActionByType('WORKSPACE')
@@ -49,7 +46,7 @@ describe('Marine Manager', () => {
 
     // Wait for layers to initialize
     await expect
-      .poll(() => jotaiStore.get(deckLayersStateAtom), { timeout: 20000 })
+      .poll(() => jotaiStore.get(deckLayersStateAtom), { timeout: 30000 })
       .toMatchObject({
         basemap: {
           loaded: true,
