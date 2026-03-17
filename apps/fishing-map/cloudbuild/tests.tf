@@ -102,7 +102,7 @@ resource "google_cloudbuild_trigger" "integrations_tests_on_pr" {
 
     step {
       id   = "Run integration tests"
-      name = "mcr.microsoft.com/playwright:v1.58.2-noble"
+      name = "mcr.microsoft.com/playwright:v1.57.0-noble"
       env = [
         "NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org",
         "NEXT_PUBLIC_WORKSPACE_ENV=development",
@@ -421,7 +421,7 @@ resource "google_cloudbuild_trigger" "e2e_tests" {
 
     step {
       id     = "Run end-to-end tests"
-      name   = "mcr.microsoft.com/playwright:v1.58.2-noble"
+      name   = "mcr.microsoft.com/playwright:v1.57.0-noble"
       script = <<EOF
         yarn install
         yarn nx e2e fishing-map-e2e -- --project="chromium" --no-cache
