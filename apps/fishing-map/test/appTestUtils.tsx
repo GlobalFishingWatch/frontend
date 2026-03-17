@@ -20,10 +20,6 @@ interface AppRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   authenticated?: boolean
 }
 
-// Cache for authentication tokens (fetched once per test session)
-let authTokensCache: { token?: string; refreshToken?: string } | null = null
-let authTokensFetched = false
-
 export async function withGuestUser(store: AppStore) {
   store.dispatch(
     fetchUserThunk.fulfilled({ id: 0, type: GUEST_USER_TYPE, permissions: [], groups: [] }, '', {
@@ -40,24 +36,17 @@ export async function render(ui: ReactElement, options?: AppRenderOptions) {
     // Load authentication tokens if requested
     if (authenticated) {
       // Fetch tokens only once per test session
-      if (!authTokensFetched) {
-        try {
-          const response = await fetch('/.auth/tokens.json').catch(() => null)
-          if (response?.ok) {
-            authTokensCache = await response.json()
-          }
-        } catch {
-          console.warn('Authentication requested but tokens not available')
+      try {
+        const response = await fetch('/.auth/tokens.json').catch(() => null)
+        if (response?.ok) {
+          const tokens = await response.json()
+          localStorage.setItem('GFW_API_USER_TOKEN', tokens?.token)
+          localStorage.setItem('GFW_API_USER_REFRESH_TOKEN', tokens?.refreshToken)
+        } else {
+          throw new Error('Authentication requested but tokens not available')
         }
-        authTokensFetched = true
-      }
-
-      // Use cached tokens
-      if (authTokensCache?.token) {
-        localStorage.setItem('GFW_API_USER_TOKEN', authTokensCache.token)
-      }
-      if (authTokensCache?.refreshToken) {
-        localStorage.setItem('GFW_API_USER_REFRESH_TOKEN', authTokensCache.refreshToken)
+      } catch {
+        console.warn('Authentication requested but tokens not available')
       }
 
       // Mock logout to prevent invalidating shared auth tokens
