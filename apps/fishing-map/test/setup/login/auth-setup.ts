@@ -16,7 +16,7 @@ import { startAuthProxyServer } from './proxy-server'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') })
 
-const AUTH_DIR = path.join(__dirname, '../../../../../.auth')
+const AUTH_DIR = path.join(__dirname, '../../.auth')
 const TOKENS_FILE = path.join(AUTH_DIR, 'tokens.json')
 const AUTH_LOG_FILE = path.join(AUTH_DIR, 'auth-setup.log')
 const NAVIGATION_TIMEOUT_MS = 10000

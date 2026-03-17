@@ -1,8 +1,12 @@
 import * as fs from 'fs'
 import path from 'path'
+import { fileURLToPath } from 'url'
 
 import type { IncomingMessage, ServerResponse } from 'http'
 import type { Connect, Plugin, PreviewServer, ViteDevServer } from 'vite'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const TOKENS_PATH = path.resolve(__dirname, '../../.auth/tokens.json')
 
 // Plugin to transform SVG imports for testing
 export const svgMockPlugin = (): Plugin => ({
@@ -49,11 +53,10 @@ export const authTokensPlugin = (): Plugin => ({
     server.middlewares.use(
       (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
         if (req.url === '/.auth/tokens.json') {
-          const tokensPath = path.join(__dirname, '../../../../../.auth/tokens.json')
-          if (fs.existsSync(tokensPath)) {
+          if (fs.existsSync(TOKENS_PATH)) {
             res.setHeader('Content-Type', 'application/json')
             res.setHeader('Access-Control-Allow-Origin', '*')
-            const tokens = fs.readFileSync(tokensPath, 'utf-8')
+            const tokens = fs.readFileSync(TOKENS_PATH, 'utf-8')
             res.end(tokens)
           } else {
             res.statusCode = 404
@@ -69,11 +72,10 @@ export const authTokensPlugin = (): Plugin => ({
     server.middlewares.use(
       (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
         if (req.url === '/.auth/tokens.json') {
-          const tokensPath = path.join(__dirname, '../../../../../.auth/tokens.json')
-          if (fs.existsSync(tokensPath)) {
+          if (fs.existsSync(TOKENS_PATH)) {
             res.setHeader('Content-Type', 'application/json')
             res.setHeader('Access-Control-Allow-Origin', '*')
-            const tokens = fs.readFileSync(tokensPath, 'utf-8')
+            const tokens = fs.readFileSync(TOKENS_PATH, 'utf-8')
             res.end(tokens)
           } else {
             res.statusCode = 404
