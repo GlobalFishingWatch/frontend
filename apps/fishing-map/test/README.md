@@ -73,7 +73,7 @@ Tests use **pre-authentication** to avoid navigating to external OAuth pages dur
    - Checks if dev server is running; starts it automatically if not
    - Navigates to the auth gateway and logs in with test credentials
    - Extracts auth tokens from localStorage
-   - Saves tokens to `.auth/tokens.json` in the workspace root
+   - Saves tokens to `.auth/tokens.json` in the workspace app test folder
    - Cleanup: Stops dev server after tests if it was started by the setup
    - Vite plugin serves `.auth/tokens.json` at the `/.auth/tokens.json` endpoint
    - This allows browser tests to fetch the tokens file created by global setup

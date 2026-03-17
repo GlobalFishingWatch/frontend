@@ -15,10 +15,16 @@ type UserLoggedIconButton = IconButtonProps & {
   disabled?: boolean
   // Needed to avoid react warnings when cloning the component and used in a parent
   onToggleClick?: () => void
+  testId?: string
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const UserLoggedIconButton = ({ loginTooltip, onToggleClick, ...props }: UserLoggedIconButton) => {
+const UserLoggedIconButton = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onToggleClick,
+  loginTooltip,
+  testId,
+  ...props
+}: UserLoggedIconButton) => {
   const { t } = useTranslation()
   const [isLoginHover, setIsLoginHover] = useState(false)
   const guestUser = useSelector(selectIsGuestUser)
@@ -29,6 +35,7 @@ const UserLoggedIconButton = ({ loginTooltip, onToggleClick, ...props }: UserLog
       <LocalStorageLoginLink className={styles.loginLinkButton}>
         <IconButton
           {...props}
+          testId={testId}
           icon={isLoginHover ? 'user' : props.icon}
           disabled={props.disabled}
           tooltip={loginTooltip || t((t) => t.vessel.infoLogin)}
@@ -39,7 +46,7 @@ const UserLoggedIconButton = ({ loginTooltip, onToggleClick, ...props }: UserLog
       </LocalStorageLoginLink>
     )
   }
-  return <IconButton {...props} />
+  return <IconButton {...props} testId={testId} />
 }
 
 export default UserLoggedIconButton
