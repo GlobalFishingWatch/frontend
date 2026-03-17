@@ -124,14 +124,13 @@
       }
     },
     "test": {
-      "executor": "nx:run-commands",
+      "executor": "@nx/vitest:test",
       "cache": true,
       "inputs": ["default", "^production"],
       "outputs": ["{workspaceRoot}/coverage/apps/fishing-map"],
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "command": "vitest run --config=vitest.config.mts",
-        "cwd": "apps/fishing-map"
+        "configFile": "apps/fishing-map/vitest.config.mts"
       }
     },
     "test:ci": {
@@ -143,27 +142,28 @@
       }
     },
     "test:coverage": {
-      "executor": "nx:run-commands",
+      "executor": "@nx/vitest:test",
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "command": "vitest run --coverage --config=vitest.config.mts",
-        "cwd": "apps/fishing-map"
+        "configFile": "apps/fishing-map/vitest.config.mts",
+        "mode": "coverage"
       }
     },
     "test:watch": {
-      "executor": "nx:run-commands",
+      "executor": "@nx/vitest:test",
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "command": "vitest --config=vitest.config.mts --watch",
-        "cwd": "apps/fishing-map"
+        "configFile": "apps/fishing-map/vitest.config.mts",
+        "watch": true
       }
     },
     "test:ui": {
-      "executor": "nx:run-commands",
+      "executor": "@nx/vitest:test",
       "dependsOn": ["clean-test-artifacts", "prepare-loaders"],
       "options": {
-        "command": "npx cross-env VITEST_UI=true vitest --watch --config=vitest.config.mts",
-        "cwd": "apps/fishing-map"
+        "configFile": "apps/fishing-map/vitest.config.mts",
+        "mode": "ui",
+        "watch": true
       }
     },
     "typecheck": {

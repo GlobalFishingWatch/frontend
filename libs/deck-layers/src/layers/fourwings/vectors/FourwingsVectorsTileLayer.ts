@@ -84,7 +84,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   initialBinsLoad = false
   // Disable extra chunks buffer to avoid loading a lot of extra data
   chunksBuffer = 0
-  state!: FourwingsVectorsTileLayerState
+  declare state: FourwingsVectorsTileLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)

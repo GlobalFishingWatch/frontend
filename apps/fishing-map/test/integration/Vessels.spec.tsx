@@ -306,6 +306,7 @@ describe('Vessel map popup', () => {
     const [x, y] = viewport?.project([-17.3, 26.4]) || [0, 0]
 
     await userEvent.hover(getByTestId('app-main'), { position: { x, y } })
+    await new Promise((resolve) => setTimeout(resolve, 1000))
     await userEvent.click(getByTestId('app-main'), { position: { x, y } })
 
     await expect.element(getByTestId('map-popup-wrapper').getByText('Gabu Reefer')).toBeVisible()

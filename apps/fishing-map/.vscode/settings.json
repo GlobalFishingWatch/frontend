@@ -1,4 +1,16 @@
 {
   "typescript.tsdk": "../../node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.tsserver.maxTsServerMemory": 16384,
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/.next/**": true,
+    "**/.nx/**": true,
+    "**/.yarn/**": true,
+    "**/.turbo/**": true,
+    "**/coverage/**": true
+  }
 }

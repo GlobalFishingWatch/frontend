@@ -291,6 +291,7 @@ function UserPanel({
           )}
           <InfoModal dataview={dataview} />
           <Remove
+            testId={`user-layer-remove-${dataset.id}`}
             dataview={dataview}
             loading={layerLoading && dataset?.status !== DatasetStatus.Importing}
           />

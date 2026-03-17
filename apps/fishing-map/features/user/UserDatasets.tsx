@@ -189,6 +189,7 @@ function UserDatasets() {
                         />
                       )}
                       <IconButton
+                        testId={`delete-dataset-${dataset.id}`}
                         icon="delete"
                         type="warning"
                         loading={dataset.id === datasetStatusId}

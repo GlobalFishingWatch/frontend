@@ -62,7 +62,7 @@ export abstract class UserBaseLayer<
 > extends CompositeLayer<PropsT> {
   static layerName = 'UserBaseLayer'
   static defaultProps = defaultProps
-  state!: UserBaseLayerState
+  declare state: UserBaseLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)

@@ -63,7 +63,7 @@ type VesselLayerState = {
 let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   static layerName = 'VesselLayer'
-  state!: VesselLayerState
+  declare state: VesselLayerState
 
   initializeState() {
     super.initializeState(this.context)
