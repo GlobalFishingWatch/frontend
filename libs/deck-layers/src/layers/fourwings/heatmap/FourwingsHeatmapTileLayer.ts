@@ -33,6 +33,7 @@ import {
   getColorRamp,
   TIME_COMPARE_COLOR_RAMP,
 } from '../../../utils/colorRamps'
+import { IS_TEST_ENV } from '../../layers.config'
 import {
   DYNAMIC_RAMP_CHANGE_THRESHOLD,
   FOURWINGS_MAX_ZOOM,
@@ -83,7 +84,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
   static layerName = 'FourwingsHeatmapTileLayer'
   static defaultProps = defaultProps
   initialBinsLoad = false
-  state!: FourwingsTileLayerState
+  declare state: FourwingsTileLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
@@ -466,7 +467,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     }
 
     const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
-      worker: true,
+      worker: !IS_TEST_ENV,
       fourwings: {
         sublayers: 1,
         cols,
@@ -579,7 +580,7 @@ export class FourwingsHeatmapTileLayer extends CompositeLayer<FourwingsHeatmapTi
     })
 
     const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
-      worker: true,
+      worker: !IS_TEST_ENV,
       fourwings: {
         sublayers: 1,
         cols,

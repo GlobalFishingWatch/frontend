@@ -26,11 +26,8 @@ import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { PRIVATE_ICON } from 'data/config'
-import {
-  getSchemaFiltersInDataview,
-  isGFWOnlyDataset,
-  isPrivateDataset,
-} from 'features/datasets/datasets.utils'
+import { isGFWOnlyDataset, isPrivateDataset } from 'features/datasets/datasets.utils'
+import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { FAKE_VESSEL_NAME, selectDebugOptions } from 'features/debug/debug.slice'
 import { t } from 'features/i18n/i18n'
 import { formatI18nDate } from 'features/i18n/i18nDate'
@@ -188,7 +185,7 @@ function VesselLayerPanel({
     ? getVesselIdentityTooltipSummary(vesselData, { showVesselId: gfwUser || false })
     : ''
 
-  const { filtersAllowed } = getSchemaFiltersInDataview(dataview, {
+  const { filtersAllowed } = getFiltersInDataview(dataview, {
     fieldsToInclude: ['speed', 'elevation'],
   })
 
@@ -243,7 +240,12 @@ function VesselLayerPanel({
       {...attributes}
     >
       <div className={styles.header}>
-        <LayerSwitch active={layerActive} className={styles.switch} dataview={dataview} />
+        <LayerSwitch
+          testId={`vessel-switch-${vesselLabel.replace(/\s/g, '-')}`}
+          active={layerActive}
+          className={styles.switch}
+          dataview={dataview}
+        />
         <Title
           title={
             <Fragment>

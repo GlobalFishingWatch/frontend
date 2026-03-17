@@ -24,6 +24,7 @@
 .env.test.local
 .env.production.local
 .env.next
+.env.vite
 .env.tanstack
 .env.vite
 

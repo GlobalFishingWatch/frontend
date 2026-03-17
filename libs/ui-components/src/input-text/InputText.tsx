@@ -63,7 +63,7 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
   }, [])
 
   const handleInput = useCallback(
-    (e: React.FormEvent<HTMLInputElement>) => {
+    (e: React.InputEvent<HTMLInputElement>) => {
       setIsValid(e.currentTarget.validity.valid)
       if (rest.onInput) {
         rest.onInput(e)
@@ -97,7 +97,7 @@ function InputTextComponent(props: InputTextProps, forwardedRef: Ref<HTMLInputEl
         key={inputKey}
         ref={inputRef}
         type={inputType}
-        {...(testId && { 'data-test': testId })}
+        {...(testId && { 'data-testid': testId })}
         {...inputProps}
         onInput={handleInput}
       />

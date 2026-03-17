@@ -2,6 +2,50 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.2.299](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.298...i18n-labels@1.2.299) (2026-03-10)
+
+
+
+## [1.2.298](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.297...i18n-labels@1.2.298) (2026-03-06)
+
+
+
+## [1.2.297](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.296...i18n-labels@1.2.297) (2026-03-06)
+
+
+
+## [1.2.296](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.295...i18n-labels@1.2.296) (2026-03-02)
+
+
+
+## [1.2.295](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.294...i18n-labels@1.2.295) (2026-02-27)
+
+
+
+## [1.2.294](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.293...i18n-labels@1.2.294) (2026-02-25)
+
+
+
+## [1.2.293](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.292...i18n-labels@1.2.293) (2026-02-25)
+
+
+
+## [1.2.292](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.291...i18n-labels@1.2.292) (2026-02-24)
+
+
+
+## [1.2.291](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.290...i18n-labels@1.2.291) (2026-02-23)
+
+
+
+## [1.2.290](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.289...i18n-labels@1.2.290) (2026-02-20)
+
+
+
+## [1.2.289](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.288...i18n-labels@1.2.289) (2026-02-17)
+
+
+
 ## [1.2.288](https://github.com/GlobalFishingWatch/frontend/compare/i18n-labels@1.2.287...i18n-labels@1.2.288) (2026-02-02)
 
 

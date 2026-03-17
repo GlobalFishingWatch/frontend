@@ -1,0 +1,10 @@
+services:
+  test:
+    image: mcr.microsoft.com/playwright:v1.58.2-noble
+    volumes:
+      - ../..:/workspace
+    working_dir: /workspace
+    environment:
+      - NEXT_PUBLIC_API_GATEWAY=https://gateway.api.dev.globalfishingwatch.org
+      - NEXT_PUBLIC_WORKSPACE_ENV=development
+    command: bash -c "yarn install && yarn nx test fishing-map --browser='chromium'"

@@ -1,6 +1,5 @@
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSlice } from '@reduxjs/toolkit'
-import type { DateTimeFormatOptions } from 'luxon'
 import type { RootState } from 'reducers'
 
 export enum FeatureFlag {
@@ -8,7 +7,6 @@ export enum FeatureFlag {
 }
 
 export enum DebugOption {
-  DatasetRelationship = 'datasetRelationship',
   DebugTiles = 'debugTiles',
   MapStats = 'mapStats',
   Thinning = 'thinning',
@@ -31,13 +29,12 @@ interface DebugState {
   options: DebugOptions
 }
 
-const initialState: DebugState = {
+export const debugInitialState: DebugState = {
   active: false,
   featureFlags: {
     workspaceGenerator: false,
   },
   options: {
-    datasetRelationship: false,
     debugTiles: false,
     mapStats: false,
     thinning: true,
@@ -53,7 +50,7 @@ const initialState: DebugState = {
 
 const debugSlice = createSlice({
   name: 'debug',
-  initialState,
+  initialState: debugInitialState,
   reducers: {
     toggleDebugMenu: (state) => {
       state.active = !state.active

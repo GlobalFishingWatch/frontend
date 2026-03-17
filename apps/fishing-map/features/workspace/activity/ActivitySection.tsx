@@ -113,7 +113,7 @@ function ActivitySection(): React.ReactElement<any> {
   return (
     <Section
       id={DataviewCategory.Activity}
-      data-testid="activity-section"
+      testId="activity-section"
       className="hover-target"
       title={
         <span>
@@ -141,6 +141,7 @@ function ActivitySection(): React.ReactElement<any> {
               tooltip={t((t) => t.layer.add)}
               tooltipPlacement="top"
               onClick={() => onAddLayerClick()}
+              data-testid="activity-add-layer-button"
             />
           </div>
         ) : null

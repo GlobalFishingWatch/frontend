@@ -11,6 +11,7 @@ import {
 
 import type { DataviewDatasetFilter, FilterOperators } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
+import { getFlattenDatasetFilters } from '@globalfishingwatch/datasets-client'
 import { getDataviewFilters } from '@globalfishingwatch/dataviews-client'
 import type { ResponsiveVisualizationData } from '@globalfishingwatch/responsive-visualizations'
 
@@ -111,8 +112,10 @@ export const selectFetchEventsVesselsParams = createSelector(
         // TODO:CVP2 add other filters using this
       } as DataviewDatasetFilter
 
-      const durationSchema = dataview.datasets?.find((d) => d.type === DatasetTypes.Events)?.schema
-        ?.duration
+      const eventsDataset = dataview.datasets?.find((d) => d.type === DatasetTypes.Events)
+      const durationSchema = getFlattenDatasetFilters(eventsDataset?.filters).find(
+        (f) => f.id === 'duration'
+      )
       const addMinDuration =
         durationSchema !== undefined &&
         filter.duration?.[0] !== undefined &&

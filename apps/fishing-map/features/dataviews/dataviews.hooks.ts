@@ -2,14 +2,16 @@ import { useCallback, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import type { Dataset, DataviewConfig, DataviewInstance } from '@globalfishingwatch/api-types'
+import type { SupportedDatasetFilter } from '@globalfishingwatch/datasets-client'
 import { type UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 
 import { LAYER_LIBRARY_ID_SEPARATOR } from 'data/config'
 import { LEGACY_TO_LATEST_DATAVIEWS } from 'data/dataviews'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchDatasetsByIdsThunk, selectDeprecatedDatasets } from 'features/datasets/datasets.slice'
-import type { SchemaFieldDataview, SupportedDatasetSchema } from 'features/datasets/datasets.utils'
-import { getDatasetsInDataviews, isDataviewSchemaSupported } from 'features/datasets/datasets.utils'
+import { getDatasetsInDataviews } from 'features/datasets/datasets.utils'
+import type { DataviewWithFilters } from 'features/dataviews/dataviews.filters'
+import { isDataviewFilterSupported } from 'features/dataviews/dataviews.filters'
 import { fetchDataviewByIdThunk, selectAllDataviews } from 'features/dataviews/dataviews.slice'
 import { selectDataviewInstancesResolvedVisible } from 'features/dataviews/selectors/dataviews.instances.selectors'
 import { useDataviewInstancesConnect } from 'features/workspace/workspace.hook'
@@ -43,9 +45,9 @@ export function useMigrateToLatestDataview() {
         dataviewInstance.config?.datasets && dataviewInstance.config?.datasets?.length > 0
       const filters = Object.keys(dataviewInstance.config?.filters || {}).reduce(
         (acc, key) => {
-          const allowed = isDataviewSchemaSupported(
-            { ...dataview, datasets } as SchemaFieldDataview,
-            key as SupportedDatasetSchema
+          const allowed = isDataviewFilterSupported(
+            { ...dataview, datasets } as DataviewWithFilters,
+            key as SupportedDatasetFilter
           )
           if (allowed) {
             acc[key] = dataviewInstance.config?.filters?.[key]

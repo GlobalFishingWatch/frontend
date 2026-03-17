@@ -252,6 +252,7 @@ const Highlighter = ({
         showTooltip &&
         createPortal(
           <div
+            data-testid="timebar-highlighter"
             className={cx(styles.tooltipContainer, {
               [styles.fixed]: fixed,
             })}

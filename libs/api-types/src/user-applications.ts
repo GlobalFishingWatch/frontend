@@ -4,14 +4,14 @@ const tuple = <T extends Narrowable[]>(...args: T) => args
 export const USER_APPLICATION_INTENDED_USES = tuple('commercial', 'non-commercial')
 export type UserApplicationIntendedUse = (typeof USER_APPLICATION_INTENDED_USES)[number]
 
-export interface UserApiAdditionalInformation {
+export type UserApiAdditionalInformation = {
   intendedUse?: UserApplicationIntendedUse
   whoEndUsers?: string
   problemToResolve?: string
   pullingDataOtherAPIS?: string
   apiTerms?: string
 }
-export interface UserApplication {
+export type UserApplication = {
   id: number
   name: string
   description: string

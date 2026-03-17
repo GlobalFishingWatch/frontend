@@ -5,6 +5,7 @@ import cx from 'classnames'
 import { uniqBy } from 'es-toolkit'
 
 import type { EventType } from '@globalfishingwatch/api-types'
+import { getDatasetSource } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { SwitchEvent } from '@globalfishingwatch/ui-components'
 import { Switch } from '@globalfishingwatch/ui-components'

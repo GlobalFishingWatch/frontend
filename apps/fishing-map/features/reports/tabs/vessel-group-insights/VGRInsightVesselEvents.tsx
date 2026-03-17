@@ -27,7 +27,7 @@ const VesselGroupReportInsightVesselEvents = ({
   const { data, isLoading, error } = useGetVesselEventsQuery(
     {
       vessels: [vesselId],
-      ...(ids && { ids: ids }),
+      ...(ids && { ids }),
       datasets: [datasetId],
       'start-date': start,
       'end-date': end,

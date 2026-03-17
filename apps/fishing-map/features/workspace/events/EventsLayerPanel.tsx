@@ -11,11 +11,8 @@ import type { ColorBarOption } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { selectReadOnly } from 'features/app/selectors/app.selectors'
-import {
-  getDatasetLabel,
-  getSchemaFiltersInDataview,
-  isPrivateDataset,
-} from 'features/datasets/datasets.utils'
+import { getDatasetLabel, isPrivateDataset } from 'features/datasets/datasets.utils'
+import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { useMigrateToLatestDataview } from 'features/dataviews/dataviews.hooks'
 import { selectIsGFWUser, selectIsGuestUser } from 'features/user/selectors/user.selectors'
 import { useVesselGroupsOptions } from 'features/vessel-groups/vessel-groups.hooks'
@@ -49,7 +46,7 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
   const [filterOpen, setFiltersOpen] = useState(false)
   const [colorOpen, setColorOpen] = useState(false)
   const vesselGroupsOptions = useVesselGroupsOptions()
-  const { filtersAllowed } = getSchemaFiltersInDataview(dataview, {
+  const { filtersAllowed } = getFiltersInDataview(dataview, {
     vesselGroups: vesselGroupsOptions,
   })
   const { onMigrateDataviewClick, getIsDataviewMigrated } = useMigrateToLatestDataview()
@@ -125,6 +122,7 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
           className={styles.switch}
           dataview={dataview}
           onToggle={onToggle}
+          testId={`events-layer-switch-${dataview.id}`}
         />
         <Title
           title={title}
@@ -170,7 +168,11 @@ function EventsLayerPanel({ dataview, onToggle }: EventsLayerPanelProps): React.
             </ExpandedContainer>
           )}
           <InfoModal dataview={dataview} />
-          <Remove dataview={dataview} loading={layerActive && !layerLoaded} />
+          <Remove
+            dataview={dataview}
+            loading={layerActive && !layerLoaded}
+            testId={`events-layer-panel-remove-${dataview.id}`}
+          />
           {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
             <IconButton
               icon="warning"

@@ -7,6 +7,7 @@ import {
   DataviewCategory,
   DataviewType,
 } from '@globalfishingwatch/api-types'
+import { getRelatedDatasetByType } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import {
   getMergedDataviewId,
@@ -19,7 +20,6 @@ import { selectAllDatasets } from 'features/datasets/datasets.slice'
 import {
   getActiveDatasetsInDataview,
   getDatasetsInDataviews,
-  getRelatedDatasetByType,
   isPrivateDataset,
 } from 'features/datasets/datasets.utils'
 import { selectAllDataviews } from 'features/dataviews/dataviews.slice'

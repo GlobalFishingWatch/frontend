@@ -4,18 +4,16 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { DRAW_DATASET_SOURCE } from '@globalfishingwatch/api-types'
+import { checkDatasetReportPermission } from '@globalfishingwatch/datasets-client'
 import { Button, Choice, Icon, Tag } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import type { AreaKeyId } from 'features/areas/areas.slice'
 import DatasetLabel from 'features/datasets/DatasetLabel'
+import { getDatasetsReportNotSupported } from 'features/datasets/datasets.permissions'
 import { selectDatasetById } from 'features/datasets/datasets.slice'
-import {
-  checkDatasetReportPermission,
-  getActiveDatasetsInDataview,
-  getDatasetsReportNotSupported,
-} from 'features/datasets/datasets.utils'
+import { getActiveDatasetsInDataview } from 'features/datasets/datasets.utils'
 import {
   selectActiveHeatmapDowloadDataviewsByTab,
   selectActiveHeatmapVesselDatasets,

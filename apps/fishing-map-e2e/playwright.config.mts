@@ -41,6 +41,10 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     /* Video on failure */
     video: 'retain-on-failure',
+    httpCredentials: {
+      username: process.env.BASIC_AUTH_USER || 'user',
+      password: process.env.BASIC_AUTH_PASS || 'password',
+    }
   },
 
   /* Configure projects for major browsers */

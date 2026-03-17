@@ -95,4 +95,3 @@ variable "machine_type" {
     error_message = "machine_type must be one of: E2_HIGHCPU_8, E2-STANDARD-2"
   }
 }
-

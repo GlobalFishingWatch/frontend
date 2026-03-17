@@ -19,6 +19,7 @@ import type {
 import { FourwingsVectorsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
 import { hexToRgbaString, removeOutliers } from '../../../utils'
+import { IS_TEST_ENV } from '../../layers.config'
 import {
   DYNAMIC_RAMP_VECTOR_CHANGE_THRESHOLD,
   FOURWINGS_TILE_SIZE,
@@ -83,7 +84,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
   initialBinsLoad = false
   // Disable extra chunks buffer to avoid loading a lot of extra data
   chunksBuffer = 0
-  state!: FourwingsVectorsTileLayerState
+  declare state: FourwingsVectorsTileLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
@@ -300,7 +301,7 @@ export class FourwingsVectorsTileLayer extends CompositeLayer<FourwingsVectorsTi
     const arrayBuffer = await response.arrayBuffer()
 
     const data = await parse(arrayBuffer, FourwingsVectorsLoader, {
-      worker: true,
+      worker: !IS_TEST_ENV,
       fourwingsVectors: {
         cols,
         rows,

@@ -35,7 +35,7 @@ export class GraticulesLayer<PropsT = Record<string, unknown>> extends Composite
 > {
   static layerName = 'ContextLayer'
   static defaultProps = defaultProps
-  state!: GraticulesLayerState
+  declare state: GraticulesLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
@@ -104,7 +104,7 @@ export class GraticulesLayer<PropsT = Record<string, unknown>> extends Composite
         id: `${this.props.id}-lines`,
         data: data,
         widthUnits: 'pixels',
-        getPath: (d) => d.geometry.coordinates as Position[],
+        getPath: (d) => d.geometry.coordinates as unknown as Position[],
         getPolygonOffset: (params) => getLayerGroupOffset(LayerGroup.Overlay, params),
         getWidth: this._getLineWidth,
         getColor: hexToDeckColor(color, 0.3),

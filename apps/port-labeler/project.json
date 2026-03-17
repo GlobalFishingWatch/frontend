@@ -4,10 +4,6 @@
   "sourceRoot": "apps/port-labeler",
   "projectType": "application",
   "targets": {
-    "build-deps": {
-      "executor": "nx:noop",
-      "dependsOn": ["^dist"]
-    },
     "watch-deps": {
       "executor": "nx:run-commands",
       "options": {
@@ -18,8 +14,7 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx build port-labeler --parallel"],
-        "parallel": false
+        "command": "nx build port-labeler --parallel"
       }
     },
     "build": {
@@ -35,13 +30,11 @@
     },
     "start": {
       "executor": "nx:run-commands",
-      "dependsOn": ["build-deps"],
       "options": {
         "commands": [
           "nx clean-locales port-labeler",
           "nx serve i18n-labels",
-          "nx serve port-labeler",
-          "nx watch-deps port-labeler"
+          "nx serve port-labeler"
         ],
         "parallel": true
       },
@@ -51,7 +44,7 @@
       "executor": "nx:run-commands",
       "outputs": [],
       "options": {
-        "commands": ["rimraf dist/apps/port-labeler/public/locales"]
+        "command": "rimraf dist/apps/port-labeler/public/locales"
       }
     },
     "serve": {
@@ -82,13 +75,6 @@
           "cp config/entrypoint.sh dist/apps/port-labeler",
           "cp apps/port-labeler/nginx.conf dist/apps/port-labeler"
         ]
-      }
-    },
-    "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/port-labeler"],
-      "options": {
-        "jestConfig": "apps/port-labeler/jest.config.ts"
       }
     },
     "typecheck": {

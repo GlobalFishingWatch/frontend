@@ -6,6 +6,7 @@ import cx from 'classnames'
 import { GFWAPI } from '@globalfishingwatch/api-client'
 import type { Dataset } from '@globalfishingwatch/api-types'
 import { DatasetStatus, DataviewCategory } from '@globalfishingwatch/api-types'
+import { getDatasetConfiguration } from '@globalfishingwatch/datasets-client'
 import type { DrawFeatureType } from '@globalfishingwatch/deck-layers'
 import { Icon, IconButton, Spinner } from '@globalfishingwatch/ui-components'
 
@@ -135,7 +136,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
                 <label id={geometryType} className={styles.categoryLabel}>
                   {t((t: any) => t.dataset.type[geometryType], { defaultValue: geometryType })}
                 </label>
-                {sortByCreationDate<Dataset>(layer).map((dataset) => {
+                {sortByCreationDate<Dataset>(layer).map((dataset, index) => {
                   const datasetError = dataset.status === DatasetStatus.Error
                   const datasetImporting = dataset.status === DatasetStatus.Importing
                   const datasetDescription = dataset.description !== dataset.name
@@ -146,7 +147,8 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
                     infoTooltip = t((t) => t.dataset.importing)
                   }
                   if (datasetError) {
-                    infoTooltip = `${t((t) => t.errors.uploadError)} - ${dataset.importLogs}`
+                    const configuration = getDatasetConfiguration(dataset, 'userContextLayerV1')
+                    infoTooltip = `${t((t) => t.errors.uploadError)} - ${configuration.importLogs}`
                   }
                   const datasetIcon = getDatasetTypeIcon(dataset)
 
@@ -170,6 +172,7 @@ const LayerLibraryUserPanel = ({ searchQuery }: { searchQuery: string }) => {
                         )}
                         {!datasetError && (
                           <IconButton
+                            testId={`${dataset.type}-add-to-map-${index}`}
                             icon="view-on-map"
                             onClick={() => onAddToWorkspaceClick(dataset)}
                             tooltip={t((t) => t.user.seeDataset)}

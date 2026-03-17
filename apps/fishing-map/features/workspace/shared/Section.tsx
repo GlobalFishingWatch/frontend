@@ -15,13 +15,14 @@ import { selectCollapsedSections } from '../workspace.selectors'
 
 import styles from 'features/workspace/shared/Section.module.css'
 
-interface SectionProps {
+type SectionProps = {
   id: DataviewCategory
   title: string | JSX.Element
   hasVisibleDataviews: boolean
   children: JSX.Element | JSX.Element[]
   headerOptions: JSX.Element | JSX.Element[] | null
   className?: string
+  testId?: string
 }
 
 function Section({
@@ -31,6 +32,7 @@ function Section({
   children,
   headerOptions,
   className,
+  testId,
 }: SectionProps): React.ReactElement<any> {
   const { t } = useTranslation()
   const { dispatchQueryParams } = useLocationConnect()
@@ -56,6 +58,7 @@ function Section({
         },
         className
       )}
+      data-testid={testId}
       {...(collapsed && { onClick: onCollapse, role: 'button', tabIndex: 0 })}
     >
       <div className={cx(styles.header, 'print-hidden')}>

@@ -110,7 +110,7 @@ function SearchBasic({
               autoFocus
               disabled={!basicSearchAllowed}
               className={styles.input}
-              testId="seach-vessels-basic-input"
+              testId="search-vessels-basic-input"
               type="search"
               loading={
                 searchStatus === AsyncReducerStatus.Loading ||
@@ -153,6 +153,7 @@ function SearchBasic({
                   setHighlightedIndex={setHighlightedIndex}
                   getItemProps={getItemProps}
                   vesselsSelected={vesselsSelected}
+                  highlightQuery={debouncedQuery || ''}
                 />
                 {hasMoreResults && (
                   <li key="spinner" className={styles.spinner} ref={spinnerRef}>

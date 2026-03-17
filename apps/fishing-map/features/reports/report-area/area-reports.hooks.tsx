@@ -11,7 +11,10 @@ import {
   DataviewType,
   DRAW_DATASET_SOURCE,
 } from '@globalfishingwatch/api-types'
-import { getDatasetConfigurationProperty } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfiguration,
+  getDatasetConfigurationProperty,
+} from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import { useGetDeckLayers } from '@globalfishingwatch/deck-layer-composer'
 import type { ContextFeature, ContextLayer } from '@globalfishingwatch/deck-layers'
@@ -458,14 +461,12 @@ export function useReportTitle() {
       } else {
         const areaDataview = areaDataviews?.[0]
         const dataset = areaDataview?.datasets?.[0]
-        const propertyToInclude = getDatasetConfigurationProperty({
-          dataset,
-          property: 'propertyToInclude',
-        }) as string
+        const configuration = getDatasetConfiguration(dataset, 'userContextLayerV1')
+        const valuePropertyId = configuration.valuePropertyId!
         const valueProperties = getDatasetConfigurationProperty({
           dataset,
           property: 'valueProperties',
-        })
+        })!
         const valueProperty = Array.isArray(valueProperties) ? valueProperties[0] : valueProperties
         if (
           areaDataview?.config?.type === DataviewType.Context ||
@@ -477,9 +478,9 @@ export function useReportTitle() {
               areaName = getDatasetLabel(dataset)
             } else {
               const propertyValue =
-                reportArea?.properties?.[propertyToInclude] ||
+                reportArea?.properties?.[valuePropertyId] ||
                 reportArea?.properties?.[valueProperty] ||
-                (reportArea as any)?.[propertyToInclude?.toLowerCase()] ||
+                (reportArea as any)?.[valuePropertyId?.toLowerCase()] ||
                 (reportArea as any)?.[valueProperty?.toLowerCase()]
               areaName =
                 propertyValue && typeof propertyValue === 'string'

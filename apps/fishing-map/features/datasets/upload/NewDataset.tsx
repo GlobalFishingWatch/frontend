@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import type { Dataset, DatasetGeometryType } from '@globalfishingwatch/api-types'
+import { getDatasetFiltersAllowed } from '@globalfishingwatch/datasets-client'
 import { Button, Modal } from '@globalfishingwatch/ui-components'
 
 import { ROOT_DOM_ELEMENT, SUPPORT_EMAIL } from 'data/config'
@@ -51,15 +52,10 @@ export type NewDatasetProps = {
 export type DatasetMetadata = Partial<
   Pick<
     Dataset,
-    | 'id'
-    | 'name'
-    | 'description'
-    | 'type'
-    | 'schema'
-    | 'category'
-    | 'configuration'
-    | 'fieldsAllowed'
-  > & { public: boolean }
+    'id' | 'name' | 'description' | 'type' | 'filters' | 'category' | 'configuration'
+  > & {
+    public: boolean
+  }
 >
 
 function NewDataset() {
@@ -122,7 +118,8 @@ function NewDataset() {
                   dataviewInstance.config?.filters || {}
                 ).reduce(
                   (acc, [key, value]) => {
-                    if (dataset.fieldsAllowed.includes(key)) {
+                    const fieldsAllowed = getDatasetFiltersAllowed(dataset)
+                    if (fieldsAllowed.includes(key)) {
                       acc[key] = value
                     }
                     return acc
@@ -140,7 +137,7 @@ function NewDataset() {
         }
         trackEvent({
           category: TrackCategory.User,
-          action: `Confirm ${datasetMetadata.configuration?.geometryType} upload`,
+          action: `Confirm ${datasetMetadata.configuration?.frontend?.geometryType} upload`,
           label: datasetMetadata?.name,
         })
         return payload

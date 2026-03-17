@@ -1,85 +1,11 @@
 {
-  "full-chile-fishing-vessels": {
-    "name": "crwdns63923:0crwdne63923:0",
-    "description": "crwdns63925:0crwdne63925:0",
-    "schema": {
-      "fleet": {
-        "keyword": "crwdns63931:0crwdne63931:0",
-        "enum": {
-          "industry": "crwdns63933:0crwdne63933:0",
-          "small_fisheries": "crwdns63935:0crwdne63935:0"
-        }
-      },
-      "source": "crwdns63937:0crwdne63937:0"
-    }
-  },
-  "full-indonesia-fishing-vessels": {
-    "name": "crwdns63949:0crwdne63949:0",
-    "description": "crwdns63951:0crwdne63951:0",
-    "schema": {
-      "source": "crwdns63957:0crwdne63957:0"
-    }
-  },
-  "full-panama-fishing-vessels": {
-    "name": "crwdns63963:0crwdne63963:0",
-    "description": "crwdns63965:0crwdne63965:0",
-    "schema": {
-      "length": "crwdns94100:0crwdne94100:0",
-      "source": "crwdns63973:0crwdne63973:0"
-    }
-  },
-  "full-peru-fishing-vessels": {
-    "name": "crwdns63987:0crwdne63987:0",
-    "description": "crwdns63989:0crwdne63989:0",
-    "schema": {
-      "fleet": {
-        "keyword": "crwdns63997:0crwdne63997:0",
-        "enum": {
-          "industrial": "crwdns63999:0crwdne63999:0",
-          "artisanal": "crwdns64001:0crwdne64001:0",
-          "not defined": "crwdns64003:0crwdne64003:0"
-        }
-      },
-      "length": "crwdns94102:0crwdne94102:0",
-      "origin": {
-        "keyword": "crwdns64009:0crwdne64009:0",
-        "enum": {
-          "Peru": "crwdns64011:0crwdne64011:0",
-          "Foreign": "crwdns64013:0crwdne64013:0"
-        }
-      },
-      "source": "crwdns64015:0crwdne64015:0"
-    }
-  },
   "private-belize-fishing-effort": {
     "name": "crwdns64029:0crwdne64029:0",
-    "description": "crwdns64031:0crwdne64031:0",
-    "schema": {
-      "speed": "crwdns83514:0crwdne83514:0",
-      "bearing": "crwdns83308:0crwdne83308:0"
-    }
-  },
-  "private-belize-fishing-vessels": {
-    "name": "crwdns64057:0crwdne64057:0",
-    "description": "crwdns64059:0crwdne64059:0",
-    "schema": {
-      "source": "crwdns64069:0crwdne64069:0"
-    }
-  },
-  "private-belize-non-fishing-vessels": {
-    "name": "crwdns64089:0crwdne64089:0",
-    "description": "crwdns64091:0crwdne64091:0",
-    "schema": {
-      "source": "crwdns64101:0crwdne64101:0"
-    }
+    "description": "crwdns64031:0crwdne64031:0"
   },
   "private-belize-presence": {
     "name": "crwdns64121:0crwdne64121:0",
-    "description": "crwdns64123:0crwdne64123:0",
-    "schema": {
-      "speed": "crwdns83516:0crwdne83516:0",
-      "bearing": "crwdns83310:0crwdne83310:0"
-    }
+    "description": "crwdns64123:0crwdne64123:0"
   },
   "private-belize-vessel-identity-fishing": {
     "name": "crwdns68818:0crwdne68818:0",
@@ -89,14 +15,20 @@
     "name": "crwdns68836:0crwdne68836:0",
     "description": "crwdns68838:0crwdne68838:0"
   },
-  "private-belize-vessel-identity": {
-    "name": "crwdns68854:0crwdne68854:0",
-    "description": "crwdns68856:0crwdne68856:0"
-  },
   "private-bra-onyxsat-fishing-effort": {
-    "name": "crwdns64151:0crwdne64151:0",
-    "description": "crwdns64153:0crwdne64153:0",
+    "name": "crwdns116292:0crwdne116292:0",
+    "description": "crwdns116294:0crwdne116294:0",
     "schema": {
+      "license_category": {
+        "keyword": "crwdns64243:0crwdne64243:0",
+        "enum": {
+          "Cerco": "crwdns64245:0crwdne64245:0",
+          "Armadilhas": "crwdns64247:0crwdne64247:0",
+          "Rede de emalhe": "crwdns64249:0crwdne64249:0",
+          "Linha": "crwdns64251:0crwdne64251:0",
+          "Arrasto": "crwdns64253:0crwdne64253:0"
+        }
+      },
       "target_species": {
         "keyword": "crwdns64179:0crwdne64179:0",
         "enum": {
@@ -132,115 +64,11 @@
           "Dourado - atuns e afins": "crwdns64239:0crwdne64239:0",
           "Albacoras - atuns e afins": "crwdns64241:0crwdne64241:0"
         }
-      },
-      "license_category": {
-        "keyword": "crwdns64243:0crwdne64243:0",
-        "enum": {
-          "Cerco": "crwdns64245:0crwdne64245:0",
-          "Armadilhas": "crwdns64247:0crwdne64247:0",
-          "Rede de emalhe": "crwdns64249:0crwdne64249:0",
-          "Linha": "crwdns64251:0crwdne64251:0",
-          "Arrasto": "crwdns64253:0crwdne64253:0"
-        }
       }
     }
   },
-  "private-bra-onyxsat-fishing-vessels": {
-    "name": "crwdns64255:0crwdne64255:0",
-    "description": "crwdns64257:0crwdne64257:0",
-    "schema": {
-      "source": "crwdns64263:0crwdne64263:0",
-      "codMarinha": "crwdns64291:0crwdne64291:0",
-      "fishingZone": "crwdns64293:0crwdne64293:0",
-      "licenseCode": "crwdns64295:0crwdne64295:0",
-      "targetSpecies": {
-        "keyword": "crwdns64297:0crwdne64297:0",
-        "enum": {
-          "Sardinha-verdadeira e Bonito-listrado": "crwdns64299:0crwdne64299:0",
-          "Polvo": "crwdns64301:0crwdne64301:0",
-          "Caranguejo-vermelho": "crwdns64303:0crwdne64303:0",
-          "Sardinha-verdadeira e Anchova": "crwdns64305:0crwdne64305:0",
-          "peixes diversos": "crwdns64307:0crwdne64307:0",
-          "Sardinha-laje": "crwdns64309:0crwdne64309:0",
-          "Pescada-gó": "crwdns64311:0crwdne64311:0",
-          "Piramutaba e peixes diversos": "crwdns64313:0crwdne64313:0",
-          "Corvina; Pescadas; Castanha e Abrótea": "crwdns64315:0crwdne64315:0",
-          "Fundo e Superfície": "crwdns64317:0crwdne64317:0",
-          "permissionamento antigo; em processo de conversão": "crwdns64319:0crwdne64319:0",
-          "Tainhas; Anchova e Serras": "crwdns64321:0crwdne64321:0",
-          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "crwdns64323:0crwdne64323:0",
-          "Sardinha-verdadeira e Tainha": "crwdns64325:0crwdne64325:0",
-          "Lagostas": "crwdns64327:0crwdne64327:0",
-          "Espadarte - atuns e afins": "crwdns64329:0crwdne64329:0",
-          "Camarão-rosa e peixes diversos": "crwdns64331:0crwdne64331:0",
-          "Pescada Amarela": "crwdns64333:0crwdne64333:0",
-          "Peixe-sapo": "crwdns64335:0crwdne64335:0",
-          "Piramutaba; Dourada e Gurijuba": "crwdns64337:0crwdne64337:0",
-          "Pargo": "crwdns64339:0crwdne64339:0",
-          "Serras": "crwdns64341:0crwdne64341:0",
-          "Cavala e Albacorinha": "crwdns64343:0crwdne64343:0",
-          "Camarão-sete-barbas": "crwdns64345:0crwdne64345:0",
-          "Bonito-listrado": "crwdns64347:0crwdne64347:0",
-          "camarões": "crwdns64349:0crwdne64349:0",
-          "Abrótea; Galo e Merluza": "crwdns64351:0crwdne64351:0",
-          "peixes demersais": "crwdns64353:0crwdne64353:0",
-          " Camarão-rosa": "crwdns64355:0crwdne64355:0",
-          "Dourado - atuns e afins": "crwdns64357:0crwdne64357:0",
-          "Albacoras - atuns e afins": "crwdns64359:0crwdne64359:0"
-        }
-      },
-      "licensDescription": "crwdns64361:0crwdne64361:0"
-    }
-  },
-  "private-bra-onyxsat-non-fishing-vessels": {
-    "name": "crwdns64367:0crwdne64367:0",
-    "description": "crwdns64369:0crwdne64369:0",
-    "schema": {
-      "source": "crwdns64375:0crwdne64375:0",
-      "codMarinha": "crwdns64403:0crwdne64403:0",
-      "fishingZone": "crwdns64405:0crwdne64405:0",
-      "licenseCode": "crwdns64407:0crwdne64407:0",
-      "targetSpecies": {
-        "keyword": "crwdns64409:0crwdne64409:0",
-        "enum": {
-          "Sardinha-verdadeira e Bonito-listrado": "crwdns64411:0crwdne64411:0",
-          "Polvo": "crwdns64413:0crwdne64413:0",
-          "Caranguejo-vermelho": "crwdns64415:0crwdne64415:0",
-          "Sardinha-verdadeira e Anchova": "crwdns64417:0crwdne64417:0",
-          "peixes diversos": "crwdns64419:0crwdne64419:0",
-          "Sardinha-laje": "crwdns64421:0crwdne64421:0",
-          "Pescada-gó": "crwdns64423:0crwdne64423:0",
-          "Piramutaba e peixes diversos": "crwdns64425:0crwdne64425:0",
-          "Corvina; Pescadas; Castanha e Abrótea": "crwdns64427:0crwdne64427:0",
-          "Fundo e Superfície": "crwdns64429:0crwdne64429:0",
-          "permissionamento antigo; em processo de conversão": "crwdns64431:0crwdne64431:0",
-          "Tainhas; Anchova e Serras": "crwdns64433:0crwdne64433:0",
-          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "crwdns64435:0crwdne64435:0",
-          "Sardinha-verdadeira e Tainha": "crwdns64437:0crwdne64437:0",
-          "Lagostas": "crwdns64439:0crwdne64439:0",
-          "Espadarte - atuns e afins": "crwdns64441:0crwdne64441:0",
-          "Camarão-rosa e peixes diversos": "crwdns64443:0crwdne64443:0",
-          "Pescada Amarela": "crwdns64445:0crwdne64445:0",
-          "Peixe-sapo": "crwdns64447:0crwdne64447:0",
-          "Piramutaba; Dourada e Gurijuba": "crwdns64449:0crwdne64449:0",
-          "Pargo": "crwdns64451:0crwdne64451:0",
-          "Serras": "crwdns64453:0crwdne64453:0",
-          "Cavala e Albacorinha": "crwdns64455:0crwdne64455:0",
-          "Camarão-sete-barbas": "crwdns64457:0crwdne64457:0",
-          "Bonito-listrado": "crwdns64459:0crwdne64459:0",
-          "camarões": "crwdns64461:0crwdne64461:0",
-          "Abrótea; Galo e Merluza": "crwdns64463:0crwdne64463:0",
-          "peixes demersais": "crwdns64465:0crwdne64465:0",
-          " Camarão-rosa": "crwdns64467:0crwdne64467:0",
-          "Dourado - atuns e afins": "crwdns64469:0crwdne64469:0",
-          "Albacoras - atuns e afins": "crwdns64471:0crwdne64471:0"
-        }
-      },
-      "licensDescription": "crwdns64473:0crwdne64473:0"
-    }
-  },
   "private-bra-onyxsat-presence": {
-    "name": "crwdns64479:0crwdne64479:0",
+    "name": "crwdns116452:0crwdne116452:0",
     "description": "crwdns64481:0crwdne64481:0",
     "schema": {
       "shiptype": {
@@ -265,8 +93,8 @@
     "description": "crwdns64499:0crwdne64499:0"
   },
   "private-costa-rica-fishing-effort": {
-    "name": "crwdns64511:0crwdne64511:0",
-    "description": "crwdns64513:0crwdne64513:0",
+    "name": "crwdns116454:0crwdne116454:0",
+    "description": "crwdns116456:0crwdne116456:0",
     "schema": {
       "fleet": {
         "keyword": "crwdns64521:0crwdne64521:0",
@@ -289,20 +117,6 @@
           "costarica_vms_atuneros": "crwdns64553:0crwdne64553:0",
           "costarica_vms_sardineros": "crwdns64555:0crwdne64555:0"
         }
-      },
-      "speed": "crwdns83518:0crwdne83518:0",
-      "bearing": "crwdns83314:0crwdne83314:0"
-    }
-  },
-  "private-ecuador-fishing-effort": {
-    "name": "crwdns64567:0crwdne64567:0",
-    "description": "crwdns64569:0crwdne64569:0",
-    "schema": {
-      "shiptype": {
-        "keyword": "crwdns64579:0crwdne64579:0",
-        "enum": {
-          "fishing": "crwdns64581:0crwdne64581:0"
-        }
       }
     }
   },
@@ -310,8 +124,6 @@
     "name": "crwdns64591:0crwdne64591:0",
     "description": "crwdns106590:0crwdne106590:0",
     "schema": {
-      "speed": "crwdns83520:0crwdne83520:0",
-      "bearing": "crwdns83316:0crwdne83316:0",
       "shiptype": {
         "keyword": "crwdns64601:0crwdne64601:0",
         "enum": {
@@ -327,7 +139,7 @@
   },
   "private-global-gap-ais-off-events": {
     "name": "crwdns108874:0crwdne108874:0",
-    "description": "crwdns108876:0crwdne108876:0",
+    "description": "crwdns116474:0crwdne116474:0",
     "schema": {
       "duration": {
         "keyword": "crwdns108878:0crwdne108878:0",
@@ -336,8 +148,6 @@
           "48": "crwdns108882:0crwdne108882:0"
         }
       },
-      "is_closed": "crwdns108884:0crwdne108884:0",
-      "next_port_id": "crwdns108886:0crwdne108886:0",
       "start_distance_from_port_trunc": {
         "keyword": "crwdns109054:0crwdne109054:0",
         "enum": {
@@ -348,25 +158,16 @@
           "4": "crwdns109064:0crwdne109064:0",
           "5": "crwdns109066:0crwdne109066:0"
         }
-      }
-    }
-  },
-  "private-global-other-vessels": {
-    "name": "crwdns64625:0crwdne64625:0",
-    "description": "crwdns64627:0crwdne64627:0",
-    "schema": {
-      "source": "crwdns64637:0crwdne64637:0"
-    }
-  },
-  "private-global-presence-tracks": {
-    "name": "crwdns83148:0crwdne83148:0",
-    "description": "crwdns83150:0crwdne83150:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns83586:0crwdne83586:0",
+      },
+      "start_distance_from_shore_trunc": {
+        "keyword": "crwdns118216:0crwdne118216:0",
         "enum": {
-          "0": "crwdns83588:0crwdne83588:0",
-          "20": "crwdns83590:0crwdne83590:0"
+          "0": "crwdns118218:0crwdne118218:0",
+          "1": "crwdns118220:0crwdne118220:0",
+          "2": "crwdns118222:0crwdne118222:0",
+          "3": "crwdns118224:0crwdne118224:0",
+          "4": "crwdns118226:0crwdne118226:0",
+          "5": "crwdns118228:0crwdne118228:0"
         }
       }
     }
@@ -377,30 +178,15 @@
   },
   "private-indonesia-aruna-presence": {
     "name": "crwdns64683:0crwdne64683:0",
-    "description": "crwdns64685:0crwdne64685:0",
-    "schema": {
-      "speed": "crwdns83524:0crwdne83524:0",
-      "bearing": "crwdns83318:0crwdne83318:0"
-    }
+    "description": "crwdns64685:0crwdne64685:0"
   },
   "private-indonesia-aruna-vessel-identity": {
     "name": "crwdns68896:0crwdne68896:0",
     "description": "crwdns68898:0crwdne68898:0"
   },
-  "private-indonesia-aruna-vessels": {
-    "name": "crwdns64711:0crwdne64711:0",
-    "description": "crwdns64713:0crwdne64713:0",
-    "schema": {
-      "source": "crwdns64719:0crwdne64719:0"
-    }
-  },
   "private-indonesia-fishing-effort": {
     "name": "crwdns64731:0crwdne64731:0",
     "description": "crwdns64733:0crwdne64733:0"
-  },
-  "private-indonesia-fishing-vessels": {
-    "name": "crwdns69208:0crwdne69208:0",
-    "description": "crwdns69210:0crwdne69210:0"
   },
   "private-indonesia-ipnlf-fishing-effort": {
     "name": "crwdns64791:0crwdne64791:0",
@@ -408,22 +194,11 @@
   },
   "private-indonesia-ipnlf-presence": {
     "name": "crwdns64817:0crwdne64817:0",
-    "description": "crwdns64819:0crwdne64819:0",
-    "schema": {
-      "speed": "crwdns83526:0crwdne83526:0",
-      "bearing": "crwdns83320:0crwdne83320:0"
-    }
+    "description": "crwdns64819:0crwdne64819:0"
   },
   "private-indonesia-ipnlf-vessel-identity": {
     "name": "crwdns68908:0crwdne68908:0",
     "description": "crwdns68910:0crwdne68910:0"
-  },
-  "private-indonesia-ipnlf-vessels": {
-    "name": "crwdns64845:0crwdne64845:0",
-    "description": "crwdns64847:0crwdne64847:0",
-    "schema": {
-      "source": "crwdns64853:0crwdne64853:0"
-    }
   },
   "private-indonesia-pelagic-fishing-effort": {
     "name": "crwdns64865:0crwdne64865:0",
@@ -437,38 +212,9 @@
     "name": "crwdns68926:0crwdne68926:0",
     "description": "crwdns68928:0crwdne68928:0"
   },
-  "private-indonesia-pelagic-vessels": {
-    "name": "crwdns64919:0crwdne64919:0",
-    "description": "crwdns64921:0crwdne64921:0",
-    "schema": {
-      "source": "crwdns64927:0crwdne64927:0"
-    }
-  },
   "private-indonesia-presence": {
     "name": "crwdns64939:0crwdne64939:0",
-    "description": "crwdns64941:0crwdne64941:0",
-    "schema": {
-      "shiptype": {
-        "keyword": "crwdns64949:0crwdne64949:0",
-        "enum": {
-          "Cast Nets": "crwdns64951:0crwdne64951:0",
-          "Anchored gillnets": "crwdns64953:0crwdne64953:0",
-          "Shrimp net": "crwdns64955:0crwdne64955:0",
-          "Purse Seine Big Pelagics with one boat": "crwdns64957:0crwdne64957:0",
-          "Transporter": "crwdns64959:0crwdne64959:0",
-          "Basic longline": "crwdns64961:0crwdne64961:0",
-          "Pole-and-line": "crwdns64963:0crwdne64963:0",
-          "Hand Line Tuna": "crwdns64965:0crwdne64965:0",
-          "Handline": "crwdns64967:0crwdne64967:0",
-          "Purse Seine Small Pelagics": "crwdns64969:0crwdne64969:0",
-          "Stick-Held lift net": "crwdns64971:0crwdne64971:0",
-          "Longline Tuna": "crwdns64973:0crwdne64973:0",
-          "Oceanic gillnet": "crwdns64975:0crwdne64975:0",
-          "Fish net/dragnet": "crwdns64977:0crwdne64977:0",
-          "Squid hooking": "crwdns64979:0crwdne64979:0"
-        }
-      }
-    }
+    "description": "crwdns64941:0crwdne64941:0"
   },
   "private-indonesia-rare-fishing-effort": {
     "name": "crwdns64985:0crwdne64985:0",
@@ -476,71 +222,28 @@
   },
   "private-indonesia-rare-presence": {
     "name": "crwdns65011:0crwdne65011:0",
-    "description": "crwdns65013:0crwdne65013:0",
-    "schema": {
-      "speed": "crwdns83528:0crwdne83528:0",
-      "bearing": "crwdns83322:0crwdne83322:0"
-    }
+    "description": "crwdns65013:0crwdne65013:0"
   },
   "private-indonesia-rare-vessel-identity": {
     "name": "crwdns68938:0crwdne68938:0",
     "description": "crwdns68940:0crwdne68940:0"
   },
-  "private-indonesia-rare-vessels": {
-    "name": "crwdns65039:0crwdne65039:0",
-    "description": "crwdns65041:0crwdne65041:0",
-    "schema": {
-      "source": "crwdns65047:0crwdne65047:0"
-    }
-  },
   "private-indonesia-zebrax-presence": {
     "name": "crwdns65059:0crwdne65059:0",
-    "description": "crwdns65061:0crwdne65061:0",
-    "schema": {
-      "speed": "crwdns83530:0crwdne83530:0",
-      "bearing": "crwdns83324:0crwdne83324:0"
-    }
+    "description": "crwdns65061:0crwdne65061:0"
   },
   "private-indonesia-zebrax-vessel-identity": {
     "name": "crwdns68950:0crwdne68950:0",
     "description": "crwdns68952:0crwdne68952:0"
   },
-  "private-indonesia-zebrax-vessels": {
-    "name": "crwdns65083:0crwdne65083:0",
-    "description": "crwdns65085:0crwdne65085:0",
-    "schema": {
-      "source": "crwdns65091:0crwdne65091:0"
-    }
-  },
-  "private-norway-fishing-effort": {
-    "name": "crwdns65103:0crwdne65103:0",
-    "description": "crwdns65105:0crwdne65105:0"
-  },
   "private-panama-fishing-effort": {
-    "name": "crwdns65127:0crwdne65127:0",
-    "description": "crwdns65129:0crwdne65129:0"
-  },
-  "private-panama-fishing-vessels": {
-    "name": "crwdns65147:0crwdne65147:0",
-    "description": "crwdns65149:0crwdne65149:0",
-    "schema": {
-      "length": "crwdns94104:0crwdne94104:0",
-      "source": "crwdns65159:0crwdne65159:0"
-    }
-  },
-  "private-panama-non-fishing-vessels": {
-    "name": "crwdns65175:0crwdne65175:0",
-    "description": "crwdns65177:0crwdne65177:0",
-    "schema": {
-      "source": "crwdns65183:0crwdne65183:0"
-    }
+    "name": "crwdns116582:0crwdne116582:0",
+    "description": "crwdns116584:0crwdne116584:0"
   },
   "private-panama-presence": {
     "name": "crwdns65195:0crwdne65195:0",
     "description": "crwdns65197:0crwdne65197:0",
     "schema": {
-      "speed": "crwdns83532:0crwdne83532:0",
-      "bearing": "crwdns83326:0crwdne83326:0",
       "shiptype": {
         "keyword": "crwdns65201:0crwdne65201:0",
         "enum": {
@@ -556,12 +259,12 @@
     "description": "crwdns68970:0crwdne68970:0"
   },
   "private-panama-vessel-identity-non-fishing": {
-    "name": "crwdns68980:0crwdne68980:0",
+    "name": "crwdns113968:0crwdne113968:0",
     "description": "crwdns68982:0crwdne68982:0"
   },
   "private-peru-fishing-effort": {
-    "name": "crwdns65213:0crwdne65213:0",
-    "description": "crwdns65215:0crwdne65215:0",
+    "name": "crwdns116604:0crwdne116604:0",
+    "description": "crwdns116606:0crwdne116606:0",
     "schema": {
       "fleet": {
         "keyword": "crwdns65223:0crwdne65223:0",
@@ -581,43 +284,9 @@
       }
     }
   },
-  "private-peru-fishing-vessels": {
-    "name": "crwdns65279:0crwdne65279:0",
-    "description": "crwdns65281:0crwdne65281:0",
-    "schema": {
-      "casco": {
-        "keyword": "crwdns65289:0crwdne65289:0",
-        "enum": {
-          "ACERO NAVAL": "crwdns65291:0crwdne65291:0",
-          "MADERA": "crwdns65293:0crwdne65293:0",
-          "N/E": "crwdns65295:0crwdne65295:0",
-          "NONE": "crwdns65297:0crwdne65297:0",
-          "FIBRA DE VIDRIO": "crwdns65299:0crwdne65299:0"
-        }
-      },
-      "fleet": {
-        "keyword": "crwdns65301:0crwdne65301:0",
-        "enum": {
-          "industrial": "crwdns65303:0crwdne65303:0",
-          "artisanal": "crwdns65305:0crwdne65305:0",
-          "not defined": "crwdns65307:0crwdne65307:0"
-        }
-      },
-      "length": "crwdns94106:0crwdne94106:0",
-      "origin": {
-        "keyword": "crwdns65315:0crwdne65315:0",
-        "enum": {
-          "Peru": "crwdns65317:0crwdne65317:0",
-          "Foreign": "crwdns65319:0crwdne65319:0"
-        }
-      },
-      "source": "crwdns65321:0crwdne65321:0",
-      "chdSpecies": "crwdns65331:0crwdne65331:0"
-    }
-  },
   "private-peru-presence": {
-    "name": "crwdns65343:0crwdne65343:0",
-    "description": "crwdns65345:0crwdne65345:0",
+    "name": "crwdns116644:0crwdne116644:0",
+    "description": "crwdns116646:0crwdne116646:0",
     "schema": {
       "fleet": {
         "keyword": "crwdns65353:0crwdne65353:0",
@@ -645,28 +314,22 @@
     "name": "crwdns65403:0crwdne65403:0",
     "description": "crwdns65405:0crwdne65405:0",
     "schema": {
-      "speed": "crwdns83534:0crwdne83534:0",
-      "bearing": "crwdns83328:0crwdne83328:0"
+      "flag": {
+        "keyword": "crwdns118230:0crwdne118230:0",
+        "enum": {
+          "PNG": "crwdns118232:0crwdne118232:0",
+          "PHL": "crwdns118234:0crwdne118234:0"
+        }
+      }
     }
   },
   "private-png-fishing-identity-vessels": {
     "name": "crwdns70050:0crwdne70050:0",
     "description": "crwdns70052:0crwdne70052:0"
   },
-  "private-png-fishing-vessels": {
-    "name": "crwdns69804:0crwdne69804:0",
-    "description": "crwdns69806:0crwdne69806:0",
-    "schema": {
-      "source": "crwdns70070:0crwdne70070:0"
-    }
-  },
   "private-png-presence": {
     "name": "crwdns65447:0crwdne65447:0",
-    "description": "crwdns65449:0crwdne65449:0",
-    "schema": {
-      "speed": "crwdns83536:0crwdne83536:0",
-      "bearing": "crwdns83330:0crwdne83330:0"
-    }
+    "description": "crwdns65449:0crwdne65449:0"
   },
   "private-vms-blz-encounters-events": {
     "name": "crwdns109092:0crwdne109092:0",
@@ -679,7 +342,6 @@
           "48": "crwdns109100:0crwdne109100:0"
         }
       },
-      "next_port_id": "crwdns109102:0crwdne109102:0",
       "encounter_type": {
         "keyword": "crwdns109104:0crwdne109104:0",
         "enum": {
@@ -692,8 +354,6 @@
     "name": "crwdns109178:0crwdne109178:0",
     "description": "crwdns111650:0crwdne111650:0",
     "schema": {
-      "speed": "crwdns109182:0crwdne109182:0",
-      "bearing": "crwdns109184:0crwdne109184:0",
       "distance_from_port_km": {
         "keyword": "crwdns109186:0crwdne109186:0",
         "enum": {
@@ -711,6 +371,13 @@
     "name": "crwdns109200:0crwdne109200:0",
     "description": "crwdns109202:0crwdne109202:0",
     "schema": {
+      "duration": {
+        "keyword": "crwdns109218:0crwdne109218:0",
+        "enum": {
+          "2": "crwdns118236:0crwdne118236:0",
+          "48": "crwdns109222:0crwdne109222:0"
+        }
+      },
       "type": {
         "keyword": "crwdns109204:0crwdne109204:0",
         "enum": {
@@ -721,21 +388,28 @@
           "RESEARCH": "crwdns109214:0crwdne109214:0",
           "": "crwdns109216:0crwdne109216:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns109218:0crwdne109218:0",
-        "enum": {
-          "0": "crwdns109220:0crwdne109220:0",
-          "48": "crwdns109222:0crwdne109222:0"
-        }
-      },
-      "next_port_id": "crwdns109224:0crwdne109224:0"
+      }
     }
   },
   "private-vms-blz-port-visits-events": {
     "name": "crwdns109226:0crwdne109226:0",
     "description": "crwdns109228:0crwdne109228:0",
     "schema": {
+      "confidences": {
+        "keyword": "crwdns109250:0crwdne109250:0",
+        "enum": {
+          "2": "crwdns109252:0crwdne109252:0",
+          "3": "crwdns109254:0crwdne109254:0",
+          "4": "crwdns109256:0crwdne109256:0"
+        }
+      },
+      "duration": {
+        "keyword": "crwdns109244:0crwdne109244:0",
+        "enum": {
+          "2": "crwdns118238:0crwdne118238:0",
+          "48": "crwdns118240:0crwdne118240:0"
+        }
+      },
       "type": {
         "keyword": "crwdns109230:0crwdne109230:0",
         "enum": {
@@ -745,21 +419,6 @@
           "CARRIER": "crwdns109238:0crwdne109238:0",
           "RESEARCH": "crwdns109240:0crwdne109240:0",
           "": "crwdns109242:0crwdne109242:0"
-        }
-      },
-      "duration": {
-        "keyword": "crwdns109244:0crwdne109244:0",
-        "enum": {
-          "0": "crwdns109246:0crwdne109246:0",
-          "49": "crwdns109248:0crwdne109248:0"
-        }
-      },
-      "confidences": {
-        "keyword": "crwdns109250:0crwdne109250:0",
-        "enum": {
-          "2": "crwdns109252:0crwdne109252:0",
-          "3": "crwdns109254:0crwdne109254:0",
-          "4": "crwdns109256:0crwdne109256:0"
         }
       }
     }
@@ -780,21 +439,22 @@
           ">25": "crwdns109276:0crwdne109276:0"
         }
       },
-      "bearing": "crwdns109278:0crwdne109278:0"
+      "vessel_type": {
+        "keyword": "crwdns118242:0crwdne118242:0",
+        "enum": {
+          "FISHING": "crwdns118244:0crwdne118244:0",
+          "NON_FISHING": "crwdns118246:0crwdne118246:0",
+          "SUPPORT": "crwdns118248:0crwdne118248:0",
+          "CARRIER": "crwdns118250:0crwdne118250:0",
+          "RESEARCH": "crwdns118252:0crwdne118252:0",
+          "": "crwdns118254:0crwdne118254:0"
+        }
+      }
     }
   },
   "private-vms-blz-tracks": {
     "name": "crwdns109280:0crwdne109280:0",
-    "description": "crwdns109282:0crwdne109282:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns109284:0crwdne109284:0",
-        "enum": {
-          "0": "crwdns109286:0crwdne109286:0",
-          "20": "crwdns109288:0crwdne109288:0"
-        }
-      }
-    }
+    "description": "crwdns109282:0crwdne109282:0"
   },
   "private-vms-blz-vessel-identity": {
     "name": "crwdns109290:0crwdne109290:0",
@@ -811,7 +471,6 @@
           "48": "crwdns109302:0crwdne109302:0"
         }
       },
-      "next_port_id": "crwdns109304:0crwdne109304:0",
       "encounter_type": {
         "keyword": "crwdns109306:0crwdne109306:0",
         "enum": {
@@ -827,56 +486,15 @@
     "name": "crwdns109380:0crwdne109380:0",
     "description": "crwdns111656:0crwdne111656:0",
     "schema": {
-      "speed": "crwdns109384:0crwdne109384:0",
-      "bearing": "crwdns109386:0crwdne109386:0",
-      "target_species": {
-        "keyword": "crwdns109388:0crwdne109388:0",
+      "distance_from_port_km": {
+        "keyword": "crwdns109558:0crwdne109558:0",
         "enum": {
-          "": "crwdns112504:0crwdne112504:0",
-          "Agulha": "crwdns112506:0crwdne112506:0",
-          "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).": "crwdns112508:0crwdne112508:0",
-          "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante": "crwdns112510:0crwdne112510:0",
-          "Anchova, tainha e sororoca": "crwdns112512:0crwdne112512:0",
-          "Anchoíta, galo, calamar": "crwdns112514:0crwdne112514:0",
-          "Atuns (albacora laje, albacora branca e albacora bandolim)": "crwdns112516:0crwdne112516:0",
-          "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.": "crwdns112518:0crwdne112518:0",
-          "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro": "crwdns112520:0crwdne112520:0",
-          "Bonito listrado": "crwdns112522:0crwdne112522:0",
-          "Camarão rosa (santana e barba ruça)": "crwdns112524:0crwdne112524:0",
-          "Camarão rosa, sete- barbas e branco": "crwdns112526:0crwdne112526:0",
-          "Camarão santana e barba ruça": "crwdns112528:0crwdne112528:0",
-          "Camarão sete barbas (Santana e barba ruça)": "crwdns112530:0crwdne112530:0",
-          "Camarões (sete- barbas, branco, rosa)": "crwdns112532:0crwdne112532:0",
-          "Camarões de profundidade": "crwdns112534:0crwdne112534:0",
-          "Caranguejo de profundidade (Chaceon spp.)": "crwdns112536:0crwdne112536:0",
-          "Caranguejo vermelho (Chaceon notialis)": "crwdns112538:0crwdne112538:0",
-          "Cavalas, Albacorinhas": "crwdns112540:0crwdne112540:0",
-          "Corvina, castanha, pescada e pescadinha real": "crwdns112542:0crwdne112542:0",
-          "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.": "crwdns112544:0crwdne112544:0",
-          "Corvina, pescada, castanha, abrótea": "crwdns112546:0crwdne112546:0",
-          "Dourada, Piramutaba e Gurijuba": "crwdns112548:0crwdne112548:0",
-          "Dourado": "crwdns112550:0crwdne112550:0",
-          "Espadarte": "crwdns112552:0crwdne112552:0",
-          "Galo-de-fundo, abrótea-de-fundo, merluza": "crwdns112554:0crwdne112554:0",
-          "Lagosta verde e lagosta vermelha": "crwdns112556:0crwdne112556:0",
-          "Pargo": "crwdns109460:0crwdne109460:0",
-          "Pargo rosa": "crwdns112558:0crwdne112558:0",
-          "Peixe sapo": "crwdns112560:0crwdne112560:0",
-          "Peroá, Garoupa e Corvina": "crwdns112562:0crwdne112562:0",
-          "Pescada amarela gurijuba e camurim": "crwdns112564:0crwdne112564:0",
-          "Pescada gó, camurim e corvina": "crwdns112566:0crwdne112566:0",
-          "Piramutaba": "crwdns112568:0crwdne112568:0",
-          "Piramutaba e dourada": "crwdns112570:0crwdne112570:0",
-          "Polvo": "crwdns109394:0crwdne109394:0",
-          "Saramunete": "crwdns112572:0crwdne112572:0",
-          "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ": "crwdns112574:0crwdne112574:0",
-          "Sardinha verdadeira": "crwdns112576:0crwdne112576:0",
-          "Sardinha-lage": "crwdns112578:0crwdne112578:0",
-          "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)": "crwdns112580:0crwdne112580:0",
-          "Serra": "crwdns112582:0crwdne112582:0",
-          "Serranidae e caranjidae (detalhar)": "crwdns112584:0crwdne112584:0",
-          "Tainha": "crwdns112586:0crwdne112586:0",
-          "Vermelhos (especificar)": "crwdns112588:0crwdne112588:0"
+          "0": "crwdns109560:0crwdne109560:0",
+          "1": "crwdns109562:0crwdne109562:0",
+          "2": "crwdns109564:0crwdne109564:0",
+          "3": "crwdns109566:0crwdne109566:0",
+          "4": "crwdns109568:0crwdne109568:0",
+          "5": "crwdns109570:0crwdne109570:0"
         }
       },
       "license_category": {
@@ -943,15 +561,54 @@
           "Sem código IN - Covos": "crwdns112706:0crwdne112706:0"
         }
       },
-      "distance_from_port_km": {
-        "keyword": "crwdns109558:0crwdne109558:0",
+      "target_species": {
+        "keyword": "crwdns109388:0crwdne109388:0",
         "enum": {
-          "0": "crwdns109560:0crwdne109560:0",
-          "1": "crwdns109562:0crwdne109562:0",
-          "2": "crwdns109564:0crwdne109564:0",
-          "3": "crwdns109566:0crwdne109566:0",
-          "4": "crwdns109568:0crwdne109568:0",
-          "5": "crwdns109570:0crwdne109570:0"
+          "": "crwdns112504:0crwdne112504:0",
+          "Agulha": "crwdns112506:0crwdne112506:0",
+          "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).": "crwdns112508:0crwdne112508:0",
+          "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante": "crwdns112510:0crwdne112510:0",
+          "Anchova, tainha e sororoca": "crwdns112512:0crwdne112512:0",
+          "Anchoíta, galo, calamar": "crwdns112514:0crwdne112514:0",
+          "Atuns (albacora laje, albacora branca e albacora bandolim)": "crwdns112516:0crwdne112516:0",
+          "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.": "crwdns112518:0crwdne112518:0",
+          "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro": "crwdns112520:0crwdne112520:0",
+          "Bonito listrado": "crwdns112522:0crwdne112522:0",
+          "Camarão rosa (santana e barba ruça)": "crwdns112524:0crwdne112524:0",
+          "Camarão rosa, sete- barbas e branco": "crwdns112526:0crwdne112526:0",
+          "Camarão santana e barba ruça": "crwdns112528:0crwdne112528:0",
+          "Camarão sete barbas (Santana e barba ruça)": "crwdns112530:0crwdne112530:0",
+          "Camarões (sete- barbas, branco, rosa)": "crwdns112532:0crwdne112532:0",
+          "Camarões de profundidade": "crwdns112534:0crwdne112534:0",
+          "Caranguejo de profundidade (Chaceon spp.)": "crwdns112536:0crwdne112536:0",
+          "Caranguejo vermelho (Chaceon notialis)": "crwdns112538:0crwdne112538:0",
+          "Cavalas, Albacorinhas": "crwdns112540:0crwdne112540:0",
+          "Corvina, castanha, pescada e pescadinha real": "crwdns112542:0crwdne112542:0",
+          "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.": "crwdns112544:0crwdne112544:0",
+          "Corvina, pescada, castanha, abrótea": "crwdns112546:0crwdne112546:0",
+          "Dourada, Piramutaba e Gurijuba": "crwdns112548:0crwdne112548:0",
+          "Dourado": "crwdns112550:0crwdne112550:0",
+          "Espadarte": "crwdns112552:0crwdne112552:0",
+          "Galo-de-fundo, abrótea-de-fundo, merluza": "crwdns112554:0crwdne112554:0",
+          "Lagosta verde e lagosta vermelha": "crwdns112556:0crwdne112556:0",
+          "Pargo": "crwdns109460:0crwdne109460:0",
+          "Pargo rosa": "crwdns112558:0crwdne112558:0",
+          "Peixe sapo": "crwdns112560:0crwdne112560:0",
+          "Peroá, Garoupa e Corvina": "crwdns112562:0crwdne112562:0",
+          "Pescada amarela gurijuba e camurim": "crwdns112564:0crwdne112564:0",
+          "Pescada gó, camurim e corvina": "crwdns112566:0crwdne112566:0",
+          "Piramutaba": "crwdns112568:0crwdne112568:0",
+          "Piramutaba e dourada": "crwdns112570:0crwdne112570:0",
+          "Polvo": "crwdns109394:0crwdne109394:0",
+          "Saramunete": "crwdns112572:0crwdne112572:0",
+          "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ": "crwdns112574:0crwdne112574:0",
+          "Sardinha verdadeira": "crwdns112576:0crwdne112576:0",
+          "Sardinha-lage": "crwdns112578:0crwdne112578:0",
+          "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)": "crwdns112580:0crwdne112580:0",
+          "Serra": "crwdns112582:0crwdne112582:0",
+          "Serranidae e caranjidae (detalhar)": "crwdns112584:0crwdne112584:0",
+          "Tainha": "crwdns112586:0crwdne112586:0",
+          "Vermelhos (especificar)": "crwdns112588:0crwdne112588:0"
         }
       }
     }
@@ -960,6 +617,13 @@
     "name": "crwdns109572:0crwdne109572:0",
     "description": "crwdns111722:0crwdne111722:0",
     "schema": {
+      "duration": {
+        "keyword": "crwdns109590:0crwdne109590:0",
+        "enum": {
+          "0": "crwdns109592:0crwdne109592:0",
+          "48": "crwdns109594:0crwdne109594:0"
+        }
+      },
       "type": {
         "keyword": "crwdns109576:0crwdne109576:0",
         "enum": {
@@ -970,21 +634,20 @@
           "RESEARCH": "crwdns109586:0crwdne109586:0",
           "": "crwdns109588:0crwdne109588:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns109590:0crwdne109590:0",
-        "enum": {
-          "0": "crwdns109592:0crwdne109592:0",
-          "48": "crwdns109594:0crwdne109594:0"
-        }
-      },
-      "next_port_id": "crwdns109596:0crwdne109596:0"
+      }
     }
   },
   "private-vms-bra-loitering-events": {
     "name": "crwdns109598:0crwdne109598:0",
     "description": "crwdns111724:0crwdne111724:0",
     "schema": {
+      "duration": {
+        "keyword": "crwdns109616:0crwdne109616:0",
+        "enum": {
+          "0": "crwdns109618:0crwdne109618:0",
+          "48": "crwdns109620:0crwdne109620:0"
+        }
+      },
       "type": {
         "keyword": "crwdns109602:0crwdne109602:0",
         "enum": {
@@ -995,30 +658,19 @@
           "RESEARCH": "crwdns109612:0crwdne109612:0",
           "": "crwdns109614:0crwdne109614:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns109616:0crwdne109616:0",
-        "enum": {
-          "0": "crwdns109618:0crwdne109618:0",
-          "48": "crwdns109620:0crwdne109620:0"
-        }
-      },
-      "next_port_id": "crwdns109622:0crwdne109622:0"
+      }
     }
   },
   "private-vms-bra-port-visits-events": {
     "name": "crwdns109624:0crwdne109624:0",
     "description": "crwdns111726:0crwdne111726:0",
     "schema": {
-      "type": {
-        "keyword": "crwdns109628:0crwdne109628:0",
+      "confidences": {
+        "keyword": "crwdns109648:0crwdne109648:0",
         "enum": {
-          "FISHING": "crwdns109630:0crwdne109630:0",
-          "NON_FISHING": "crwdns111414:0crwdne111414:0",
-          "SUPPORT": "crwdns109634:0crwdne109634:0",
-          "CARRIER": "crwdns109636:0crwdne109636:0",
-          "RESEARCH": "crwdns109638:0crwdne109638:0",
-          "": "crwdns109640:0crwdne109640:0"
+          "2": "crwdns109650:0crwdne109650:0",
+          "3": "crwdns109652:0crwdne109652:0",
+          "4": "crwdns109654:0crwdne109654:0"
         }
       },
       "duration": {
@@ -1028,12 +680,15 @@
           "49": "crwdns109646:0crwdne109646:0"
         }
       },
-      "confidences": {
-        "keyword": "crwdns109648:0crwdne109648:0",
+      "type": {
+        "keyword": "crwdns109628:0crwdne109628:0",
         "enum": {
-          "2": "crwdns109650:0crwdne109650:0",
-          "3": "crwdns109652:0crwdne109652:0",
-          "4": "crwdns109654:0crwdne109654:0"
+          "FISHING": "crwdns109630:0crwdne109630:0",
+          "NON_FISHING": "crwdns111414:0crwdne111414:0",
+          "SUPPORT": "crwdns109634:0crwdne109634:0",
+          "CARRIER": "crwdns109636:0crwdne109636:0",
+          "RESEARCH": "crwdns109638:0crwdne109638:0",
+          "": "crwdns109640:0crwdne109640:0"
         }
       }
     }
@@ -1054,21 +709,22 @@
           ">25": "crwdns109674:0crwdne109674:0"
         }
       },
-      "bearing": "crwdns109676:0crwdne109676:0"
+      "vessel_type": {
+        "keyword": "crwdns118256:0crwdne118256:0",
+        "enum": {
+          "FISHING": "crwdns118258:0crwdne118258:0",
+          "NON_FISHING": "crwdns118260:0crwdne118260:0",
+          "SUPPORT": "crwdns118262:0crwdne118262:0",
+          "CARRIER": "crwdns118264:0crwdne118264:0",
+          "RESEARCH": "crwdns118266:0crwdne118266:0",
+          "": "crwdns118268:0crwdne118268:0"
+        }
+      }
     }
   },
   "private-vms-bra-tracks": {
     "name": "crwdns109678:0crwdne109678:0",
-    "description": "crwdns109680:0crwdne109680:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns109682:0crwdne109682:0",
-        "enum": {
-          "0": "crwdns109684:0crwdne109684:0",
-          "20": "crwdns109686:0crwdne109686:0"
-        }
-      }
-    }
+    "description": "crwdns109680:0crwdne109680:0"
   },
   "private-vms-bra-vessel-identity": {
     "name": "crwdns109688:0crwdne109688:0",
@@ -1085,7 +741,6 @@
           "48": "crwdns109700:0crwdne109700:0"
         }
       },
-      "next_port_id": "crwdns109702:0crwdne109702:0",
       "encounter_type": {
         "keyword": "crwdns109704:0crwdne109704:0",
         "enum": {
@@ -1101,15 +756,6 @@
     "name": "crwdns109778:0crwdne109778:0",
     "description": "crwdns111732:0%20ecrwdnd111732:0%20pcrwdnd111732:0%20ecrwdnd111732:0%Ccrwdnd111732:0%Bcrwdnd111732:0%20acrwdnd111732:0%20ecrwdnd111732:0%20crwdnd111732:0%20crwdnd111732:0%20crwdne111732:0",
     "schema": {
-      "speed": "crwdns109782:0crwdne109782:0",
-      "bearing": "crwdns109784:0crwdne109784:0",
-      "source_fleet": {
-        "keyword": "crwdns109786:0crwdne109786:0",
-        "enum": {
-          "INDUSTRY": "crwdns109790:0crwdne109790:0",
-          "SMALL_FISHERIES": "crwdns112708:0crwdne112708:0"
-        }
-      },
       "distance_from_port_km": {
         "keyword": "crwdns109792:0crwdne109792:0",
         "enum": {
@@ -1120,6 +766,13 @@
           "4": "crwdns109802:0crwdne109802:0",
           "5": "crwdns109804:0crwdne109804:0"
         }
+      },
+      "source_fleet": {
+        "keyword": "crwdns109786:0crwdne109786:0",
+        "enum": {
+          "SMALL_FISHERIES": "crwdns112708:0crwdne112708:0",
+          "INDUSTRY": "crwdns109790:0crwdne109790:0"
+        }
       }
     }
   },
@@ -1127,6 +780,13 @@
     "name": "crwdns109806:0crwdne109806:0",
     "description": "crwdns111736:0crwdne111736:0",
     "schema": {
+      "duration": {
+        "keyword": "crwdns109824:0crwdne109824:0",
+        "enum": {
+          "2": "crwdns118270:0crwdne118270:0",
+          "48": "crwdns109828:0crwdne109828:0"
+        }
+      },
       "type": {
         "keyword": "crwdns109810:0crwdne109810:0",
         "enum": {
@@ -1137,21 +797,28 @@
           "RESEARCH": "crwdns109820:0crwdne109820:0",
           "": "crwdns109822:0crwdne109822:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns109824:0crwdne109824:0",
-        "enum": {
-          "0": "crwdns109826:0crwdne109826:0",
-          "48": "crwdns109828:0crwdne109828:0"
-        }
-      },
-      "next_port_id": "crwdns109830:0crwdne109830:0"
+      }
     }
   },
   "private-vms-chl-port-visits-events": {
     "name": "crwdns109832:0crwdne109832:0",
     "description": "crwdns111738:0crwdne111738:0",
     "schema": {
+      "confidences": {
+        "keyword": "crwdns109856:0crwdne109856:0",
+        "enum": {
+          "2": "crwdns109858:0crwdne109858:0",
+          "3": "crwdns109860:0crwdne109860:0",
+          "4": "crwdns109862:0crwdne109862:0"
+        }
+      },
+      "duration": {
+        "keyword": "crwdns109850:0crwdne109850:0",
+        "enum": {
+          "2": "crwdns118272:0crwdne118272:0",
+          "48": "crwdns118274:0crwdne118274:0"
+        }
+      },
       "type": {
         "keyword": "crwdns109836:0crwdne109836:0",
         "enum": {
@@ -1162,21 +829,6 @@
           "RESEARCH": "crwdns109846:0crwdne109846:0",
           "": "crwdns109848:0crwdne109848:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns109850:0crwdne109850:0",
-        "enum": {
-          "0": "crwdns109852:0crwdne109852:0",
-          "49": "crwdns109854:0crwdne109854:0"
-        }
-      },
-      "confidences": {
-        "keyword": "crwdns109856:0crwdne109856:0",
-        "enum": {
-          "2": "crwdns109858:0crwdne109858:0",
-          "3": "crwdns109860:0crwdne109860:0",
-          "4": "crwdns109862:0crwdne109862:0"
-        }
       }
     }
   },
@@ -1184,6 +836,15 @@
     "name": "crwdns109864:0crwdne109864:0",
     "description": "crwdns111740:0%20ecrwdnd111740:0%20pcrwdnd111740:0%20ecrwdnd111740:0%Ccrwdnd111740:0%Bcrwdnd111740:0%20acrwdnd111740:0%20ecrwdnd111740:0%20crwdnd111740:0%20crwdnd111740:0%20crwdne111740:0",
     "schema": {
+      "source_fleet": {
+        "keyword": "crwdns109886:0crwdne109886:0",
+        "enum": {
+          "SMALL_FISHERIES": "crwdns109888:0crwdne109888:0",
+          "INDUSTRY": "crwdns109890:0crwdne109890:0",
+          "TRANSPORT": "crwdns109892:0crwdne109892:0",
+          "AQUACULTURE": "crwdns109894:0crwdne109894:0"
+        }
+      },
       "speed": {
         "keyword": "crwdns109868:0crwdne109868:0",
         "enum": {
@@ -1196,30 +857,22 @@
           ">25": "crwdns109882:0crwdne109882:0"
         }
       },
-      "bearing": "crwdns109884:0crwdne109884:0",
-      "source_fleet": {
-        "keyword": "crwdns109886:0crwdne109886:0",
+      "vessel_type": {
+        "keyword": "crwdns118276:0crwdne118276:0",
         "enum": {
-          "AQUACULTURE": "crwdns109894:0crwdne109894:0",
-          "INDUSTRY": "crwdns109890:0crwdne109890:0",
-          "SMALL_FISHERIES": "crwdns109888:0crwdne109888:0",
-          "TRANSPORT": "crwdns109892:0crwdne109892:0"
+          "FISHING": "crwdns118278:0crwdne118278:0",
+          "NON_FISHING": "crwdns118280:0crwdne118280:0",
+          "SUPPORT": "crwdns118282:0crwdne118282:0",
+          "CARRIER": "crwdns118284:0crwdne118284:0",
+          "RESEARCH": "crwdns118286:0crwdne118286:0",
+          "": "crwdns118288:0crwdne118288:0"
         }
       }
     }
   },
   "private-vms-chl-tracks": {
     "name": "crwdns109896:0crwdne109896:0",
-    "description": "crwdns109898:0crwdne109898:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns109900:0crwdne109900:0",
-        "enum": {
-          "0": "crwdns109902:0crwdne109902:0",
-          "20": "crwdns109904:0crwdne109904:0"
-        }
-      }
-    }
+    "description": "crwdns109898:0crwdne109898:0"
   },
   "private-vms-chl-vessel-identity": {
     "name": "crwdns109906:0crwdne109906:0",
@@ -1227,7 +880,7 @@
   },
   "private-vms-cri-encounters-events": {
     "name": "crwdns109910:0crwdne109910:0",
-    "description": "crwdns111742:0crwdne111742:0",
+    "description": "crwdns116724:0crwdne116724:0",
     "schema": {
       "duration": {
         "keyword": "crwdns109914:0crwdne109914:0",
@@ -1236,7 +889,6 @@
           "48": "crwdns109918:0crwdne109918:0"
         }
       },
-      "next_port_id": "crwdns109920:0crwdne109920:0",
       "encounter_type": {
         "keyword": "crwdns109922:0crwdne109922:0",
         "enum": {
@@ -1252,16 +904,6 @@
     "name": "crwdns109996:0crwdne109996:0",
     "description": "crwdns111744:0crwdne111744:0",
     "schema": {
-      "speed": "crwdns110000:0crwdne110000:0",
-      "bearing": "crwdns110002:0crwdne110002:0",
-      "source_fleet": {
-        "keyword": "crwdns110004:0crwdne110004:0",
-        "enum": {
-          "AVANZADOS": "crwdns110006:0crwdne110006:0",
-          "SARDINEROS": "crwdns110008:0crwdne110008:0",
-          "ATUNEROS": "crwdns110010:0crwdne110010:0"
-        }
-      },
       "distance_from_port_km": {
         "keyword": "crwdns110012:0crwdne110012:0",
         "enum": {
@@ -1272,13 +914,28 @@
           "4": "crwdns110022:0crwdne110022:0",
           "5": "crwdns110024:0crwdne110024:0"
         }
+      },
+      "source_fleet": {
+        "keyword": "crwdns110004:0crwdne110004:0",
+        "enum": {
+          "AVANZADOS": "crwdns110006:0crwdne110006:0",
+          "SARDINEROS": "crwdns110008:0crwdne110008:0",
+          "ATUNEROS": "crwdns110010:0crwdne110010:0"
+        }
       }
     }
   },
   "private-vms-cri-loitering-events": {
     "name": "crwdns110026:0crwdne110026:0",
-    "description": "crwdns111746:0crwdne111746:0",
+    "description": "crwdns116732:0crwdne116732:0",
     "schema": {
+      "duration": {
+        "keyword": "crwdns110044:0crwdne110044:0",
+        "enum": {
+          "2": "crwdns118290:0crwdne118290:0",
+          "48": "crwdns110048:0crwdne110048:0"
+        }
+      },
       "type": {
         "keyword": "crwdns110030:0crwdne110030:0",
         "enum": {
@@ -1289,21 +946,28 @@
           "RESEARCH": "crwdns110040:0crwdne110040:0",
           "": "crwdns110042:0crwdne110042:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns110044:0crwdne110044:0",
-        "enum": {
-          "0": "crwdns110046:0crwdne110046:0",
-          "48": "crwdns110048:0crwdne110048:0"
-        }
-      },
-      "next_port_id": "crwdns110050:0crwdne110050:0"
+      }
     }
   },
   "private-vms-cri-port-visits-events": {
     "name": "crwdns110052:0crwdne110052:0",
-    "description": "crwdns111748:0crwdne111748:0",
+    "description": "crwdns116738:0crwdne116738:0",
     "schema": {
+      "confidences": {
+        "keyword": "crwdns110076:0crwdne110076:0",
+        "enum": {
+          "2": "crwdns110078:0crwdne110078:0",
+          "3": "crwdns110080:0crwdne110080:0",
+          "4": "crwdns110082:0crwdne110082:0"
+        }
+      },
+      "duration": {
+        "keyword": "crwdns110070:0crwdne110070:0",
+        "enum": {
+          "2": "crwdns118292:0crwdne118292:0",
+          "48": "crwdns118294:0crwdne118294:0"
+        }
+      },
       "type": {
         "keyword": "crwdns110056:0crwdne110056:0",
         "enum": {
@@ -1314,21 +978,6 @@
           "RESEARCH": "crwdns110066:0crwdne110066:0",
           "": "crwdns110068:0crwdne110068:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns110070:0crwdne110070:0",
-        "enum": {
-          "0": "crwdns110072:0crwdne110072:0",
-          "49": "crwdns110074:0crwdne110074:0"
-        }
-      },
-      "confidences": {
-        "keyword": "crwdns110076:0crwdne110076:0",
-        "enum": {
-          "2": "crwdns110078:0crwdne110078:0",
-          "3": "crwdns110080:0crwdne110080:0",
-          "4": "crwdns110082:0crwdne110082:0"
-        }
       }
     }
   },
@@ -1336,6 +985,14 @@
     "name": "crwdns110084:0crwdne110084:0",
     "description": "crwdns111750:0crwdne111750:0",
     "schema": {
+      "source_fleet": {
+        "keyword": "crwdns110106:0crwdne110106:0",
+        "enum": {
+          "AVANZADOS": "crwdns110108:0crwdne110108:0",
+          "SARDINEROS": "crwdns110110:0crwdne110110:0",
+          "ATUNEROS": "crwdns110112:0crwdne110112:0"
+        }
+      },
       "speed": {
         "keyword": "crwdns110088:0crwdne110088:0",
         "enum": {
@@ -1348,37 +1005,40 @@
           ">25": "crwdns110102:0crwdne110102:0"
         }
       },
-      "bearing": "crwdns110104:0crwdne110104:0",
-      "source_fleet": {
-        "keyword": "crwdns110106:0crwdne110106:0",
+      "vessel_type": {
+        "keyword": "crwdns118296:0crwdne118296:0",
         "enum": {
-          "AVANZADOS": "crwdns110108:0crwdne110108:0",
-          "SARDINEROS": "crwdns110110:0crwdne110110:0",
-          "ATUNEROS": "crwdns110112:0crwdne110112:0"
+          "FISHING": "crwdns118298:0crwdne118298:0",
+          "NON_FISHING": "crwdns118300:0crwdne118300:0",
+          "SUPPORT": "crwdns118302:0crwdne118302:0",
+          "CARRIER": "crwdns118304:0crwdne118304:0",
+          "RESEARCH": "crwdns118306:0crwdne118306:0",
+          "": "crwdns118308:0crwdne118308:0"
         }
       }
     }
   },
   "private-vms-cri-tracks": {
     "name": "crwdns110114:0crwdne110114:0",
-    "description": "crwdns110116:0crwdne110116:0",
+    "description": "crwdns110116:0crwdne110116:0"
+  },
+  "private-vms-cri-vessel-identity": {
+    "name": "crwdns110124:0crwdne110124:0",
+    "description": "crwdns110126:0crwdne110126:0",
     "schema": {
-      "speed": {
-        "keyword": "crwdns110118:0crwdne110118:0",
+      "source_fleet": {
+        "keyword": "crwdns118310:0crwdne118310:0",
         "enum": {
-          "0": "crwdns110120:0crwdne110120:0",
-          "20": "crwdns110122:0crwdne110122:0"
+          "costarica_vms_industrial_longline": "crwdns118312:0crwdne118312:0",
+          "costarica_vms_atuneros": "crwdns118314:0crwdne118314:0",
+          "costarica_vms_sardineros": "crwdns118316:0crwdne118316:0"
         }
       }
     }
   },
-  "private-vms-cri-vessel-identity": {
-    "name": "crwdns110124:0crwdne110124:0",
-    "description": "crwdns110126:0crwdne110126:0"
-  },
   "private-vms-ecu-encounters-events": {
     "name": "crwdns110128:0crwdne110128:0",
-    "description": "crwdns111752:0crwdne111752:0",
+    "description": "crwdns116752:0crwdne116752:0",
     "schema": {
       "duration": {
         "keyword": "crwdns110132:0crwdne110132:0",
@@ -1387,7 +1047,6 @@
           "48": "crwdns110136:0crwdne110136:0"
         }
       },
-      "next_port_id": "crwdns110138:0crwdne110138:0",
       "encounter_type": {
         "keyword": "crwdns110140:0crwdne110140:0",
         "enum": {
@@ -1415,14 +1074,6 @@
     "name": "crwdns110214:0crwdne110214:0",
     "description": "crwdns111754:0crwdne111754:0",
     "schema": {
-      "speed": "crwdns110218:0crwdne110218:0",
-      "bearing": "crwdns110220:0crwdne110220:0",
-      "prod_shiptype": {
-        "keyword": "crwdns111756:0crwdne111756:0",
-        "enum": {
-          "FISHING": "crwdns111758:0crwdne111758:0"
-        }
-      },
       "distance_from_port_km": {
         "keyword": "crwdns110222:0crwdne110222:0",
         "enum": {
@@ -1438,8 +1089,15 @@
   },
   "private-vms-ecu-loitering-events": {
     "name": "crwdns110236:0crwdne110236:0",
-    "description": "crwdns111760:0crwdne111760:0",
+    "description": "crwdns116760:0crwdne116760:0",
     "schema": {
+      "duration": {
+        "keyword": "crwdns110254:0crwdne110254:0",
+        "enum": {
+          "2": "crwdns118318:0crwdne118318:0",
+          "48": "crwdns110258:0crwdne110258:0"
+        }
+      },
       "type": {
         "keyword": "crwdns110240:0crwdne110240:0",
         "enum": {
@@ -1450,21 +1108,28 @@
           "RESEARCH": "crwdns110250:0crwdne110250:0",
           "": "crwdns110252:0crwdne110252:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns110254:0crwdne110254:0",
-        "enum": {
-          "0": "crwdns110256:0crwdne110256:0",
-          "48": "crwdns110258:0crwdne110258:0"
-        }
-      },
-      "next_port_id": "crwdns110260:0crwdne110260:0"
+      }
     }
   },
   "private-vms-ecu-port-visits-events": {
     "name": "crwdns110262:0crwdne110262:0",
     "description": "crwdns111762:0crwdne111762:0",
     "schema": {
+      "confidences": {
+        "keyword": "crwdns110286:0crwdne110286:0",
+        "enum": {
+          "2": "crwdns110288:0crwdne110288:0",
+          "3": "crwdns110290:0crwdne110290:0",
+          "4": "crwdns110292:0crwdne110292:0"
+        }
+      },
+      "duration": {
+        "keyword": "crwdns110280:0crwdne110280:0",
+        "enum": {
+          "2": "crwdns118320:0crwdne118320:0",
+          "48": "crwdns118322:0crwdne118322:0"
+        }
+      },
       "type": {
         "keyword": "crwdns110266:0crwdne110266:0",
         "enum": {
@@ -1474,21 +1139,6 @@
           "CARRIER": "crwdns110274:0crwdne110274:0",
           "RESEARCH": "crwdns110276:0crwdne110276:0",
           "": "crwdns110278:0crwdne110278:0"
-        }
-      },
-      "duration": {
-        "keyword": "crwdns110280:0crwdne110280:0",
-        "enum": {
-          "0": "crwdns110282:0crwdne110282:0",
-          "49": "crwdns110284:0crwdne110284:0"
-        }
-      },
-      "confidences": {
-        "keyword": "crwdns110286:0crwdne110286:0",
-        "enum": {
-          "2": "crwdns110288:0crwdne110288:0",
-          "3": "crwdns110290:0crwdne110290:0",
-          "4": "crwdns110292:0crwdne110292:0"
         }
       }
     }
@@ -1509,32 +1159,22 @@
           ">25": "crwdns110312:0crwdne110312:0"
         }
       },
-      "bearing": "crwdns110314:0crwdne110314:0",
-      "prod_shiptype": {
-        "keyword": "crwdns111766:0crwdne111766:0",
+      "vessel_type": {
+        "keyword": "crwdns118324:0crwdne118324:0",
         "enum": {
-          "FISHING": "crwdns111768:0crwdne111768:0",
-          "NON_FISHING": "crwdns111770:0crwdne111770:0",
-          "SUPPORT": "crwdns111772:0crwdne111772:0",
-          "CARRIER": "crwdns111774:0crwdne111774:0",
-          "RESEARCH": "crwdns111776:0crwdne111776:0",
-          "": "crwdns111778:0crwdne111778:0"
+          "FISHING": "crwdns118326:0crwdne118326:0",
+          "NON_FISHING": "crwdns118328:0crwdne118328:0",
+          "SUPPORT": "crwdns118330:0crwdne118330:0",
+          "CARRIER": "crwdns118332:0crwdne118332:0",
+          "RESEARCH": "crwdns118334:0crwdne118334:0",
+          "": "crwdns118336:0crwdne118336:0"
         }
       }
     }
   },
   "private-vms-ecu-tracks": {
     "name": "crwdns110316:0crwdne110316:0",
-    "description": "crwdns110318:0crwdne110318:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns110320:0crwdne110320:0",
-        "enum": {
-          "0": "crwdns110322:0crwdne110322:0",
-          "20": "crwdns110324:0crwdne110324:0"
-        }
-      }
-    }
+    "description": "crwdns110318:0crwdne110318:0"
   },
   "private-vms-ecu-vessel-identity": {
     "name": "crwdns110326:0crwdne110326:0",
@@ -1551,7 +1191,6 @@
           "48": "crwdns111522:0crwdne111522:0"
         }
       },
-      "next_port_id": "crwdns111524:0crwdne111524:0",
       "encounter_type": {
         "keyword": "crwdns111526:0crwdne111526:0",
         "enum": {
@@ -1562,10 +1201,8 @@
   },
   "private-vms-mne-fishing-effort": {
     "name": "crwdns111530:0crwdne111530:0",
-    "description": "crwdns111532:0crwdne111532:0",
+    "description": "crwdns116780:0crwdne116780:0",
     "schema": {
-      "speed": "crwdns111534:0crwdne111534:0",
-      "bearing": "crwdns111536:0crwdne111536:0",
       "distance_from_port_km": {
         "keyword": "crwdns111538:0crwdne111538:0",
         "enum": {
@@ -1576,6 +1213,17 @@
           "4": "crwdns111548:0crwdne111548:0",
           "5": "crwdns111550:0crwdne111550:0"
         }
+      },
+      "vessel_type": {
+        "keyword": "crwdns118338:0crwdne118338:0",
+        "enum": {
+          "FISHING": "crwdns118340:0crwdne118340:0",
+          "NON_FISHING": "crwdns118342:0crwdne118342:0",
+          "SUPPORT": "crwdns118344:0crwdne118344:0",
+          "CARRIER": "crwdns118346:0crwdne118346:0",
+          "RESEARCH": "crwdns118348:0crwdne118348:0",
+          "": "crwdns118350:0crwdne118350:0"
+        }
       }
     }
   },
@@ -1583,6 +1231,13 @@
     "name": "crwdns111552:0crwdne111552:0",
     "description": "crwdns112712:0crwdne112712:0",
     "schema": {
+      "duration": {
+        "keyword": "crwdns111570:0crwdne111570:0",
+        "enum": {
+          "2": "crwdns118352:0crwdne118352:0",
+          "48": "crwdns111574:0crwdne111574:0"
+        }
+      },
       "type": {
         "keyword": "crwdns111556:0crwdne111556:0",
         "enum": {
@@ -1593,21 +1248,28 @@
           "RESEARCH": "crwdns111566:0crwdne111566:0",
           "": "crwdns111568:0crwdne111568:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns111570:0crwdne111570:0",
-        "enum": {
-          "0": "crwdns111572:0crwdne111572:0",
-          "48": "crwdns111574:0crwdne111574:0"
-        }
-      },
-      "next_port_id": "crwdns111576:0crwdne111576:0"
+      }
     }
   },
   "private-vms-mne-port-visits-events": {
     "name": "crwdns111578:0crwdne111578:0",
     "description": "crwdns112714:0crwdne112714:0",
     "schema": {
+      "confidences": {
+        "keyword": "crwdns111602:0crwdne111602:0",
+        "enum": {
+          "2": "crwdns111604:0crwdne111604:0",
+          "3": "crwdns111606:0crwdne111606:0",
+          "4": "crwdns111608:0crwdne111608:0"
+        }
+      },
+      "duration": {
+        "keyword": "crwdns111596:0crwdne111596:0",
+        "enum": {
+          "2": "crwdns118354:0crwdne118354:0",
+          "48": "crwdns118356:0crwdne118356:0"
+        }
+      },
       "type": {
         "keyword": "crwdns111582:0crwdne111582:0",
         "enum": {
@@ -1618,27 +1280,12 @@
           "RESEARCH": "crwdns111592:0crwdne111592:0",
           "": "crwdns111594:0crwdne111594:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns111596:0crwdne111596:0",
-        "enum": {
-          "0": "crwdns111598:0crwdne111598:0",
-          "49": "crwdns111600:0crwdne111600:0"
-        }
-      },
-      "confidences": {
-        "keyword": "crwdns111602:0crwdne111602:0",
-        "enum": {
-          "2": "crwdns111604:0crwdne111604:0",
-          "3": "crwdns111606:0crwdne111606:0",
-          "4": "crwdns111608:0crwdne111608:0"
-        }
       }
     }
   },
   "private-vms-mne-presence": {
     "name": "crwdns111610:0crwdne111610:0",
-    "description": "crwdns111612:0crwdne111612:0",
+    "description": "crwdns116794:0crwdne116794:0",
     "schema": {
       "speed": {
         "keyword": "crwdns111614:0crwdne111614:0",
@@ -1652,21 +1299,22 @@
           ">25": "crwdns111628:0crwdne111628:0"
         }
       },
-      "bearing": "crwdns111630:0crwdne111630:0"
+      "vessel_type": {
+        "keyword": "crwdns118358:0crwdne118358:0",
+        "enum": {
+          "FISHING": "crwdns118360:0crwdne118360:0",
+          "NON_FISHING": "crwdns118362:0crwdne118362:0",
+          "SUPPORT": "crwdns118364:0crwdne118364:0",
+          "CARRIER": "crwdns118366:0crwdne118366:0",
+          "RESEARCH": "crwdns118368:0crwdne118368:0",
+          "": "crwdns118370:0crwdne118370:0"
+        }
+      }
     }
   },
   "private-vms-mne-tracks": {
     "name": "crwdns111632:0crwdne111632:0",
-    "description": "crwdns111634:0crwdne111634:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns111636:0crwdne111636:0",
-        "enum": {
-          "0": "crwdns111638:0crwdne111638:0",
-          "20": "crwdns111640:0crwdne111640:0"
-        }
-      }
-    }
+    "description": "crwdns111634:0crwdne111634:0"
   },
   "private-vms-mne-vessel-identity": {
     "name": "crwdns111642:0crwdne111642:0",
@@ -1674,7 +1322,7 @@
   },
   "private-vms-nor-encounters-events": {
     "name": "crwdns110330:0crwdne110330:0",
-    "description": "crwdns111780:0crwdne111780:0",
+    "description": "crwdns116804:0crwdne116804:0",
     "schema": {
       "duration": {
         "keyword": "crwdns110334:0crwdne110334:0",
@@ -1683,7 +1331,6 @@
           "48": "crwdns110338:0crwdne110338:0"
         }
       },
-      "next_port_id": "crwdns110340:0crwdne110340:0",
       "encounter_type": {
         "keyword": "crwdns110342:0crwdne110342:0",
         "enum": {
@@ -1698,8 +1345,6 @@
     "name": "crwdns110416:0crwdne110416:0",
     "description": "crwdns111782:0crwdne111782:0",
     "schema": {
-      "speed": "crwdns110420:0crwdne110420:0",
-      "bearing": "crwdns110422:0crwdne110422:0",
       "distance_from_port_km": {
         "keyword": "crwdns110424:0crwdne110424:0",
         "enum": {
@@ -1715,8 +1360,15 @@
   },
   "private-vms-nor-loitering-events": {
     "name": "crwdns110438:0crwdne110438:0",
-    "description": "crwdns111784:0crwdne111784:0",
+    "description": "crwdns116812:0crwdne116812:0",
     "schema": {
+      "duration": {
+        "keyword": "crwdns110456:0crwdne110456:0",
+        "enum": {
+          "2": "crwdns118372:0crwdne118372:0",
+          "48": "crwdns110460:0crwdne110460:0"
+        }
+      },
       "type": {
         "keyword": "crwdns110442:0crwdne110442:0",
         "enum": {
@@ -1727,21 +1379,28 @@
           "RESEARCH": "crwdns110452:0crwdne110452:0",
           "": "crwdns110454:0crwdne110454:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns110456:0crwdne110456:0",
-        "enum": {
-          "0": "crwdns110458:0crwdne110458:0",
-          "48": "crwdns110460:0crwdne110460:0"
-        }
-      },
-      "next_port_id": "crwdns110462:0crwdne110462:0"
+      }
     }
   },
   "private-vms-nor-port-visits-events": {
     "name": "crwdns110464:0crwdne110464:0",
     "description": "crwdns111786:0crwdne111786:0",
     "schema": {
+      "confidences": {
+        "keyword": "crwdns110488:0crwdne110488:0",
+        "enum": {
+          "2": "crwdns110490:0crwdne110490:0",
+          "3": "crwdns110492:0crwdne110492:0",
+          "4": "crwdns110494:0crwdne110494:0"
+        }
+      },
+      "duration": {
+        "keyword": "crwdns110482:0crwdne110482:0",
+        "enum": {
+          "2": "crwdns118374:0crwdne118374:0",
+          "48": "crwdns118376:0crwdne118376:0"
+        }
+      },
       "type": {
         "keyword": "crwdns110468:0crwdne110468:0",
         "enum": {
@@ -1751,21 +1410,6 @@
           "CARRIER": "crwdns110476:0crwdne110476:0",
           "RESEARCH": "crwdns110478:0crwdne110478:0",
           "": "crwdns110480:0crwdne110480:0"
-        }
-      },
-      "duration": {
-        "keyword": "crwdns110482:0crwdne110482:0",
-        "enum": {
-          "0": "crwdns110484:0crwdne110484:0",
-          "49": "crwdns110486:0crwdne110486:0"
-        }
-      },
-      "confidences": {
-        "keyword": "crwdns110488:0crwdne110488:0",
-        "enum": {
-          "2": "crwdns110490:0crwdne110490:0",
-          "3": "crwdns110492:0crwdne110492:0",
-          "4": "crwdns110494:0crwdne110494:0"
         }
       }
     }
@@ -1786,21 +1430,22 @@
           ">25": "crwdns110514:0crwdne110514:0"
         }
       },
-      "bearing": "crwdns110516:0crwdne110516:0"
+      "vessel_type": {
+        "keyword": "crwdns118378:0crwdne118378:0",
+        "enum": {
+          "FISHING": "crwdns118380:0crwdne118380:0",
+          "NON_FISHING": "crwdns118382:0crwdne118382:0",
+          "SUPPORT": "crwdns118384:0crwdne118384:0",
+          "CARRIER": "crwdns118386:0crwdne118386:0",
+          "RESEARCH": "crwdns118388:0crwdne118388:0",
+          "": "crwdns118390:0crwdne118390:0"
+        }
+      }
     }
   },
   "private-vms-nor-tracks": {
     "name": "crwdns110518:0crwdne110518:0",
-    "description": "crwdns110520:0crwdne110520:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns110522:0crwdne110522:0",
-        "enum": {
-          "0": "crwdns110524:0crwdne110524:0",
-          "20": "crwdns110526:0crwdne110526:0"
-        }
-      }
-    }
+    "description": "crwdns110520:0crwdne110520:0"
   },
   "private-vms-nor-vessel-identity": {
     "name": "crwdns110528:0crwdne110528:0",
@@ -1817,7 +1462,6 @@
           "48": "crwdns110540:0crwdne110540:0"
         }
       },
-      "next_port_id": "crwdns110542:0crwdne110542:0",
       "encounter_type": {
         "keyword": "crwdns110544:0crwdne110544:0",
         "enum": {
@@ -1838,16 +1482,6 @@
     "name": "crwdns110618:0crwdne110618:0",
     "description": "crwdns111790:0crwdne111790:0",
     "schema": {
-      "speed": "crwdns110622:0crwdne110622:0",
-      "bearing": "crwdns110624:0crwdne110624:0",
-      "source_fleet": {
-        "keyword": "crwdns110626:0crwdne110626:0",
-        "enum": {
-          "INTERNATIONAL": "crwdns112484:0crwdne112484:0",
-          "LONGLINE": "crwdns112486:0crwdne112486:0",
-          "TRAWLER": "crwdns112488:0crwdne112488:0"
-        }
-      },
       "distance_from_port_km": {
         "keyword": "crwdns110634:0crwdne110634:0",
         "enum": {
@@ -1858,6 +1492,14 @@
           "4": "crwdns110644:0crwdne110644:0",
           "5": "crwdns110646:0crwdne110646:0"
         }
+      },
+      "source_fleet": {
+        "keyword": "crwdns110626:0crwdne110626:0",
+        "enum": {
+          "INTERNATIONAL": "crwdns112484:0crwdne112484:0",
+          "LONGLINE": "crwdns112486:0crwdne112486:0",
+          "TRAWLER": "crwdns112488:0crwdne112488:0"
+        }
       }
     }
   },
@@ -1865,6 +1507,13 @@
     "name": "crwdns110648:0crwdne110648:0",
     "description": "crwdns110650:0crwdne110650:0",
     "schema": {
+      "duration": {
+        "keyword": "crwdns110666:0crwdne110666:0",
+        "enum": {
+          "2": "crwdns118392:0crwdne118392:0",
+          "48": "crwdns110670:0crwdne110670:0"
+        }
+      },
       "type": {
         "keyword": "crwdns110652:0crwdne110652:0",
         "enum": {
@@ -1875,21 +1524,28 @@
           "RESEARCH": "crwdns110662:0crwdne110662:0",
           "": "crwdns110664:0crwdne110664:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns110666:0crwdne110666:0",
-        "enum": {
-          "0": "crwdns110668:0crwdne110668:0",
-          "48": "crwdns110670:0crwdne110670:0"
-        }
-      },
-      "next_port_id": "crwdns110672:0crwdne110672:0"
+      }
     }
   },
   "private-vms-pan-port-visits-events": {
     "name": "crwdns110674:0crwdne110674:0",
     "description": "crwdns110676:0crwdne110676:0",
     "schema": {
+      "confidences": {
+        "keyword": "crwdns110698:0crwdne110698:0",
+        "enum": {
+          "2": "crwdns110700:0crwdne110700:0",
+          "3": "crwdns110702:0crwdne110702:0",
+          "4": "crwdns110704:0crwdne110704:0"
+        }
+      },
+      "duration": {
+        "keyword": "crwdns110692:0crwdne110692:0",
+        "enum": {
+          "2": "crwdns118394:0crwdne118394:0",
+          "48": "crwdns118396:0crwdne118396:0"
+        }
+      },
       "type": {
         "keyword": "crwdns110678:0crwdne110678:0",
         "enum": {
@@ -1900,21 +1556,6 @@
           "RESEARCH": "crwdns110688:0crwdne110688:0",
           "": "crwdns110690:0crwdne110690:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns110692:0crwdne110692:0",
-        "enum": {
-          "0": "crwdns110694:0crwdne110694:0",
-          "49": "crwdns110696:0crwdne110696:0"
-        }
-      },
-      "confidences": {
-        "keyword": "crwdns110698:0crwdne110698:0",
-        "enum": {
-          "2": "crwdns110700:0crwdne110700:0",
-          "3": "crwdns110702:0crwdne110702:0",
-          "4": "crwdns110704:0crwdne110704:0"
-        }
       }
     }
   },
@@ -1922,6 +1563,14 @@
     "name": "crwdns110706:0crwdne110706:0",
     "description": "crwdns111796:0crwdne111796:0",
     "schema": {
+      "source_fleet": {
+        "keyword": "crwdns110728:0crwdne110728:0",
+        "enum": {
+          "INTERNATIONAL": "crwdns112490:0crwdne112490:0",
+          "LONGLINE": "crwdns112492:0crwdne112492:0",
+          "TRAWLER": "crwdns112494:0crwdne112494:0"
+        }
+      },
       "speed": {
         "keyword": "crwdns110710:0crwdne110710:0",
         "enum": {
@@ -1934,29 +1583,22 @@
           ">25": "crwdns110724:0crwdne110724:0"
         }
       },
-      "bearing": "crwdns110726:0crwdne110726:0",
-      "source_fleet": {
-        "keyword": "crwdns110728:0crwdne110728:0",
+      "vessel_type": {
+        "keyword": "crwdns118398:0crwdne118398:0",
         "enum": {
-          "INTERNATIONAL": "crwdns112490:0crwdne112490:0",
-          "LONGLINE": "crwdns112492:0crwdne112492:0",
-          "TRAWLER": "crwdns112494:0crwdne112494:0"
+          "FISHING": "crwdns118400:0crwdne118400:0",
+          "NON_FISHING": "crwdns118402:0crwdne118402:0",
+          "SUPPORT": "crwdns118404:0crwdne118404:0",
+          "CARRIER": "crwdns118406:0crwdne118406:0",
+          "RESEARCH": "crwdns118408:0crwdne118408:0",
+          "": "crwdns118410:0crwdne118410:0"
         }
       }
     }
   },
   "private-vms-pan-tracks": {
     "name": "crwdns110736:0crwdne110736:0",
-    "description": "crwdns110738:0crwdne110738:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns110740:0crwdne110740:0",
-        "enum": {
-          "0": "crwdns110742:0crwdne110742:0",
-          "20": "crwdns110744:0crwdne110744:0"
-        }
-      }
-    }
+    "description": "crwdns110738:0crwdne110738:0"
   },
   "private-vms-pan-vessel-identity": {
     "name": "crwdns110746:0crwdne110746:0",
@@ -1964,7 +1606,7 @@
   },
   "private-vms-per-encounters-events": {
     "name": "crwdns110750:0crwdne110750:0",
-    "description": "crwdns111802:0crwdne111802:0",
+    "description": "crwdns116852:0crwdne116852:0",
     "schema": {
       "duration": {
         "keyword": "crwdns110754:0crwdne110754:0",
@@ -1973,7 +1615,6 @@
           "48": "crwdns110758:0crwdne110758:0"
         }
       },
-      "next_port_id": "crwdns110760:0crwdne110760:0",
       "encounter_type": {
         "keyword": "crwdns110762:0crwdne110762:0",
         "enum": {
@@ -1989,26 +1630,8 @@
   },
   "private-vms-per-fishing-effort": {
     "name": "crwdns110836:0crwdne110836:0",
-    "description": "crwdns111804:0crwdne111804:0",
+    "description": "crwdns116856:0crwdne116856:0",
     "schema": {
-      "speed": "crwdns110840:0crwdne110840:0",
-      "origin": {
-        "keyword": "crwdns110842:0crwdne110842:0",
-        "enum": {
-          "Foreign": "crwdns110844:0crwdne110844:0",
-          "PER": "crwdns110846:0crwdne110846:0"
-        }
-      },
-      "bearing": "crwdns110850:0crwdne110850:0",
-      "source_fleet": {
-        "keyword": "crwdns110852:0crwdne110852:0",
-        "enum": {
-          "": "crwdns112470:0crwdne112470:0",
-          "ARTISANAL": "crwdns112468:0crwdne112468:0",
-          "INDUSTRIAL": "crwdns112464:0crwdne112464:0",
-          "SMALL-SCALE": "crwdns112466:0crwdne112466:0"
-        }
-      },
       "distance_from_port_km": {
         "keyword": "crwdns110862:0crwdne110862:0",
         "enum": {
@@ -2019,13 +1642,37 @@
           "4": "crwdns110872:0crwdne110872:0",
           "5": "crwdns110874:0crwdne110874:0"
         }
+      },
+      "origin": {
+        "keyword": "crwdns110842:0crwdne110842:0",
+        "enum": {
+          "Foreign": "crwdns110844:0crwdne110844:0",
+          "PER": "crwdns110846:0crwdne110846:0",
+          "": "crwdns118412:0crwdne118412:0"
+        }
+      },
+      "source_fleet": {
+        "keyword": "crwdns110852:0crwdne110852:0",
+        "enum": {
+          "": "crwdns112470:0crwdne112470:0",
+          "SMALL-SCALE": "crwdns112466:0crwdne112466:0",
+          "INDUSTRIAL": "crwdns112464:0crwdne112464:0",
+          "ARTISANAL": "crwdns112468:0crwdne112468:0"
+        }
       }
     }
   },
   "private-vms-per-loitering-events": {
     "name": "crwdns110876:0crwdne110876:0",
-    "description": "crwdns111808:0crwdne111808:0",
+    "description": "crwdns116862:0crwdne116862:0",
     "schema": {
+      "duration": {
+        "keyword": "crwdns110894:0crwdne110894:0",
+        "enum": {
+          "2": "crwdns118414:0crwdne118414:0",
+          "48": "crwdns110898:0crwdne110898:0"
+        }
+      },
       "type": {
         "keyword": "crwdns110880:0crwdne110880:0",
         "enum": {
@@ -2036,21 +1683,28 @@
           "RESEARCH": "crwdns110890:0crwdne110890:0",
           "": "crwdns110892:0crwdne110892:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns110894:0crwdne110894:0",
-        "enum": {
-          "0": "crwdns110896:0crwdne110896:0",
-          "48": "crwdns110898:0crwdne110898:0"
-        }
-      },
-      "next_port_id": "crwdns110900:0crwdne110900:0"
+      }
     }
   },
   "private-vms-per-port-visits-events": {
     "name": "crwdns110902:0crwdne110902:0",
-    "description": "crwdns111810:0crwdne111810:0",
+    "description": "crwdns116868:0crwdne116868:0",
     "schema": {
+      "confidences": {
+        "keyword": "crwdns110926:0crwdne110926:0",
+        "enum": {
+          "2": "crwdns110928:0crwdne110928:0",
+          "3": "crwdns110930:0crwdne110930:0",
+          "4": "crwdns110932:0crwdne110932:0"
+        }
+      },
+      "duration": {
+        "keyword": "crwdns110920:0crwdne110920:0",
+        "enum": {
+          "2": "crwdns118416:0crwdne118416:0",
+          "48": "crwdns118418:0crwdne118418:0"
+        }
+      },
       "type": {
         "keyword": "crwdns110906:0crwdne110906:0",
         "enum": {
@@ -2061,28 +1715,29 @@
           "RESEARCH": "crwdns110916:0crwdne110916:0",
           "": "crwdns110918:0crwdne110918:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns110920:0crwdne110920:0",
-        "enum": {
-          "0": "crwdns110922:0crwdne110922:0",
-          "49": "crwdns110924:0crwdne110924:0"
-        }
-      },
-      "confidences": {
-        "keyword": "crwdns110926:0crwdne110926:0",
-        "enum": {
-          "2": "crwdns110928:0crwdne110928:0",
-          "3": "crwdns110930:0crwdne110930:0",
-          "4": "crwdns110932:0crwdne110932:0"
-        }
       }
     }
   },
   "private-vms-per-presence": {
     "name": "crwdns110934:0crwdne110934:0",
-    "description": "crwdns111812:0crwdne111812:0",
+    "description": "crwdns116874:0crwdne116874:0",
     "schema": {
+      "origin": {
+        "keyword": "crwdns110954:0crwdne110954:0",
+        "enum": {
+          "Foreign": "crwdns110956:0crwdne110956:0",
+          "PER": "crwdns110958:0crwdne110958:0"
+        }
+      },
+      "source_fleet": {
+        "keyword": "crwdns110964:0crwdne110964:0",
+        "enum": {
+          "INDUSTRIAL": "crwdns110966:0crwdne110966:0",
+          "SMALL-SCALE": "crwdns110968:0crwdne110968:0",
+          "ARTISANAL": "crwdns110970:0crwdne110970:0",
+          "": "crwdns112472:0crwdne112472:0"
+        }
+      },
       "speed": {
         "keyword": "crwdns110938:0crwdne110938:0",
         "enum": {
@@ -2094,42 +1749,43 @@
           "15-25": "crwdns110950:0crwdne110950:0",
           ">25": "crwdns110952:0crwdne110952:0"
         }
-      },
-      "origin": {
-        "keyword": "crwdns110954:0crwdne110954:0",
-        "enum": {
-          "Foreign": "crwdns110956:0crwdne110956:0",
-          "PER": "crwdns110958:0crwdne110958:0"
-        }
-      },
-      "bearing": "crwdns110962:0crwdne110962:0",
-      "source_fleet": {
-        "keyword": "crwdns110964:0crwdne110964:0",
-        "enum": {
-          "": "crwdns112472:0crwdne112472:0",
-          "ARTISANAL": "crwdns110970:0crwdne110970:0",
-          "INDUSTRIAL": "crwdns110966:0crwdne110966:0",
-          "SMALL-SCALE": "crwdns110968:0crwdne110968:0"
-        }
       }
     }
   },
   "private-vms-per-tracks": {
     "name": "crwdns110974:0crwdne110974:0",
-    "description": "crwdns110976:0crwdne110976:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns110978:0crwdne110978:0",
-        "enum": {
-          "0": "crwdns110980:0crwdne110980:0",
-          "20": "crwdns110982:0crwdne110982:0"
-        }
-      }
-    }
+    "description": "crwdns110976:0crwdne110976:0"
   },
   "private-vms-per-vessel-identity": {
     "name": "crwdns110984:0crwdne110984:0",
-    "description": "crwdns110986:0crwdne110986:0"
+    "description": "crwdns110986:0crwdne110986:0",
+    "schema": {
+      "hull": {
+        "keyword": "crwdns118420:0crwdne118420:0",
+        "enum": {
+          "ACERO NAVAL": "crwdns118422:0crwdne118422:0",
+          "MADERA": "crwdns118424:0crwdne118424:0",
+          "N/E": "crwdns118426:0crwdne118426:0",
+          "NONE": "crwdns118428:0crwdne118428:0",
+          "FIBRA DE VIDRIO": "crwdns118430:0crwdne118430:0"
+        }
+      },
+      "origin": {
+        "keyword": "crwdns118432:0crwdne118432:0",
+        "enum": {
+          "Peru": "crwdns118434:0crwdne118434:0",
+          "Foreign": "crwdns118436:0crwdne118436:0"
+        }
+      },
+      "sourceFleet": {
+        "keyword": "crwdns118438:0crwdne118438:0",
+        "enum": {
+          "industrial": "crwdns118440:0crwdne118440:0",
+          "artisanal": "crwdns118442:0crwdne118442:0",
+          "not defined": "crwdns118444:0crwdne118444:0"
+        }
+      }
+    }
   },
   "private-vms-plw-encounters-events": {
     "name": "crwdns110988:0crwdne110988:0",
@@ -2142,7 +1798,6 @@
           "48": "crwdns110996:0crwdne110996:0"
         }
       },
-      "next_port_id": "crwdns110998:0crwdne110998:0",
       "encounter_type": {
         "keyword": "crwdns111000:0crwdne111000:0",
         "enum": {
@@ -2177,10 +1832,8 @@
   },
   "private-vms-plw-fishing-effort": {
     "name": "crwdns111074:0crwdne111074:0",
-    "description": "crwdns111076:0crwdne111076:0",
+    "description": "crwdns116886:0crwdne116886:0",
     "schema": {
-      "speed": "crwdns111078:0crwdne111078:0",
-      "bearing": "crwdns111080:0crwdne111080:0",
       "distance_from_port_km": {
         "keyword": "crwdns111082:0crwdne111082:0",
         "enum": {
@@ -2191,6 +1844,17 @@
           "4": "crwdns111092:0crwdne111092:0",
           "5": "crwdns111094:0crwdne111094:0"
         }
+      },
+      "vessel_type": {
+        "keyword": "crwdns118446:0crwdne118446:0",
+        "enum": {
+          "FISHING": "crwdns118448:0crwdne118448:0",
+          "NON_FISHING": "crwdns118450:0crwdne118450:0",
+          "SUPPORT": "crwdns118452:0crwdne118452:0",
+          "CARRIER": "crwdns118454:0crwdne118454:0",
+          "RESEARCH": "crwdns118456:0crwdne118456:0",
+          "": "crwdns118458:0crwdne118458:0"
+        }
       }
     }
   },
@@ -2198,6 +1862,13 @@
     "name": "crwdns111096:0crwdne111096:0",
     "description": "crwdns112718:0crwdne112718:0",
     "schema": {
+      "duration": {
+        "keyword": "crwdns111114:0crwdne111114:0",
+        "enum": {
+          "2": "crwdns118460:0crwdne118460:0",
+          "48": "crwdns111118:0crwdne111118:0"
+        }
+      },
       "type": {
         "keyword": "crwdns111100:0crwdne111100:0",
         "enum": {
@@ -2208,21 +1879,28 @@
           "RESEARCH": "crwdns111110:0crwdne111110:0",
           "": "crwdns111112:0crwdne111112:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns111114:0crwdne111114:0",
-        "enum": {
-          "0": "crwdns111116:0crwdne111116:0",
-          "48": "crwdns111118:0crwdne111118:0"
-        }
-      },
-      "next_port_id": "crwdns111120:0crwdne111120:0"
+      }
     }
   },
   "private-vms-plw-port-visits-events": {
     "name": "crwdns111122:0crwdne111122:0",
     "description": "crwdns112720:0crwdne112720:0",
     "schema": {
+      "confidences": {
+        "keyword": "crwdns111146:0crwdne111146:0",
+        "enum": {
+          "2": "crwdns111148:0crwdne111148:0",
+          "3": "crwdns111150:0crwdne111150:0",
+          "4": "crwdns111152:0crwdne111152:0"
+        }
+      },
+      "duration": {
+        "keyword": "crwdns111140:0crwdne111140:0",
+        "enum": {
+          "2": "crwdns118462:0crwdne118462:0",
+          "48": "crwdns118464:0crwdne118464:0"
+        }
+      },
       "type": {
         "keyword": "crwdns111126:0crwdne111126:0",
         "enum": {
@@ -2233,27 +1911,12 @@
           "RESEARCH": "crwdns111136:0crwdne111136:0",
           "": "crwdns111138:0crwdne111138:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns111140:0crwdne111140:0",
-        "enum": {
-          "0": "crwdns111142:0crwdne111142:0",
-          "49": "crwdns111144:0crwdne111144:0"
-        }
-      },
-      "confidences": {
-        "keyword": "crwdns111146:0crwdne111146:0",
-        "enum": {
-          "2": "crwdns111148:0crwdne111148:0",
-          "3": "crwdns111150:0crwdne111150:0",
-          "4": "crwdns111152:0crwdne111152:0"
-        }
       }
     }
   },
   "private-vms-plw-presence": {
     "name": "crwdns111154:0crwdne111154:0",
-    "description": "crwdns111156:0crwdne111156:0",
+    "description": "crwdns116900:0crwdne116900:0",
     "schema": {
       "speed": {
         "keyword": "crwdns111158:0crwdne111158:0",
@@ -2267,21 +1930,22 @@
           ">25": "crwdns111172:0crwdne111172:0"
         }
       },
-      "bearing": "crwdns111174:0crwdne111174:0"
+      "vessel_type": {
+        "keyword": "crwdns118466:0crwdne118466:0",
+        "enum": {
+          "FISHING": "crwdns118468:0crwdne118468:0",
+          "NON_FISHING": "crwdns118470:0crwdne118470:0",
+          "SUPPORT": "crwdns118472:0crwdne118472:0",
+          "CARRIER": "crwdns118474:0crwdne118474:0",
+          "RESEARCH": "crwdns118476:0crwdne118476:0",
+          "": "crwdns118478:0crwdne118478:0"
+        }
+      }
     }
   },
   "private-vms-plw-tracks": {
     "name": "crwdns111176:0crwdne111176:0",
-    "description": "crwdns111178:0crwdne111178:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns111180:0crwdne111180:0",
-        "enum": {
-          "0": "crwdns111182:0crwdne111182:0",
-          "20": "crwdns111184:0crwdne111184:0"
-        }
-      }
-    }
+    "description": "crwdns111178:0crwdne111178:0"
   },
   "private-vms-plw-vessel-identity": {
     "name": "crwdns111186:0crwdne111186:0",
@@ -2298,7 +1962,6 @@
           "48": "crwdns111198:0crwdne111198:0"
         }
       },
-      "next_port_id": "crwdns111200:0crwdne111200:0",
       "encounter_type": {
         "keyword": "crwdns111202:0crwdne111202:0",
         "enum": {
@@ -2315,8 +1978,6 @@
     "name": "crwdns111276:0crwdne111276:0",
     "description": "crwdns111816:0crwdne111816:0",
     "schema": {
-      "speed": "crwdns111280:0crwdne111280:0",
-      "bearing": "crwdns111282:0crwdne111282:0",
       "distance_from_port_km": {
         "keyword": "crwdns111284:0crwdne111284:0",
         "enum": {
@@ -2334,6 +1995,13 @@
     "name": "crwdns111298:0crwdne111298:0",
     "description": "crwdns111818:0crwdne111818:0",
     "schema": {
+      "duration": {
+        "keyword": "crwdns111316:0crwdne111316:0",
+        "enum": {
+          "2": "crwdns118480:0crwdne118480:0",
+          "48": "crwdns111320:0crwdne111320:0"
+        }
+      },
       "type": {
         "keyword": "crwdns111302:0crwdne111302:0",
         "enum": {
@@ -2344,21 +2012,28 @@
           "RESEARCH": "crwdns111312:0crwdne111312:0",
           "": "crwdns111314:0crwdne111314:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns111316:0crwdne111316:0",
-        "enum": {
-          "0": "crwdns111318:0crwdne111318:0",
-          "48": "crwdns111320:0crwdne111320:0"
-        }
-      },
-      "next_port_id": "crwdns111322:0crwdne111322:0"
+      }
     }
   },
   "private-vms-png-port-visits-events": {
     "name": "crwdns111324:0crwdne111324:0",
     "description": "crwdns111820:0crwdne111820:0",
     "schema": {
+      "confidences": {
+        "keyword": "crwdns111348:0crwdne111348:0",
+        "enum": {
+          "2": "crwdns111350:0crwdne111350:0",
+          "3": "crwdns111352:0crwdne111352:0",
+          "4": "crwdns111354:0crwdne111354:0"
+        }
+      },
+      "duration": {
+        "keyword": "crwdns111342:0crwdne111342:0",
+        "enum": {
+          "2": "crwdns118482:0crwdne118482:0",
+          "48": "crwdns118484:0crwdne118484:0"
+        }
+      },
       "type": {
         "keyword": "crwdns111328:0crwdne111328:0",
         "enum": {
@@ -2368,21 +2043,6 @@
           "CARRIER": "crwdns111336:0crwdne111336:0",
           "RESEARCH": "crwdns111338:0crwdne111338:0",
           "": "crwdns111340:0crwdne111340:0"
-        }
-      },
-      "duration": {
-        "keyword": "crwdns111342:0crwdne111342:0",
-        "enum": {
-          "0": "crwdns111344:0crwdne111344:0",
-          "49": "crwdns111346:0crwdne111346:0"
-        }
-      },
-      "confidences": {
-        "keyword": "crwdns111348:0crwdne111348:0",
-        "enum": {
-          "2": "crwdns111350:0crwdne111350:0",
-          "3": "crwdns111352:0crwdne111352:0",
-          "4": "crwdns111354:0crwdne111354:0"
         }
       }
     }
@@ -2403,21 +2063,22 @@
           ">25": "crwdns111374:0crwdne111374:0"
         }
       },
-      "bearing": "crwdns111376:0crwdne111376:0"
+      "vessel_type": {
+        "keyword": "crwdns118486:0crwdne118486:0",
+        "enum": {
+          "FISHING": "crwdns118488:0crwdne118488:0",
+          "NON_FISHING": "crwdns118490:0crwdne118490:0",
+          "SUPPORT": "crwdns118492:0crwdne118492:0",
+          "CARRIER": "crwdns118494:0crwdne118494:0",
+          "RESEARCH": "crwdns118496:0crwdne118496:0",
+          "": "crwdns118498:0crwdne118498:0"
+        }
+      }
     }
   },
   "private-vms-png-tracks": {
     "name": "crwdns111378:0crwdne111378:0",
-    "description": "crwdns111380:0crwdne111380:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns111382:0crwdne111382:0",
-        "enum": {
-          "0": "crwdns111384:0crwdne111384:0",
-          "20": "crwdns111386:0crwdne111386:0"
-        }
-      }
-    }
+    "description": "crwdns111380:0crwdne111380:0"
   },
   "private-vms-png-vessel-identity": {
     "name": "crwdns111388:0crwdne111388:0",
@@ -2427,105 +2088,31 @@
     "name": "crwdns83426:0crwdne83426:0",
     "description": "crwdns83428:0crwdne83428:0",
     "schema": {
-      "duration": "crwdns83430:0crwdne83430:0"
+      "duration": {
+        "keyword": "crwdns118500:0crwdne118500:0",
+        "enum": {
+          "2": "crwdns118502:0crwdne118502:0",
+          "48": "crwdns118504:0crwdne118504:0"
+        }
+      }
     }
-  },
-  "proto-global-encounters-events": {
-    "name": "crwdns65467:0crwdne65467:0",
-    "description": "crwdns65469:0crwdne65469:0"
   },
   "proto-global-skylight-viirs": {
     "name": "crwdns109038:0crwdne109038:0",
     "description": "crwdns109040:0crwdne109040:0",
     "schema": {
-      "name": "crwdns109042:0crwdne109042:0",
       "matched": {
         "keyword": "crwdns109044:0crwdne109044:0",
         "enum": {
           "true": "crwdns109046:0crwdne109046:0",
           "false": "crwdns109048:0crwdne109048:0"
         }
-      }
-    }
-  },
-  "public-ais-presence-viirs-match-prototype": {
-    "name": "crwdns65491:0crwdne65491:0",
-    "description": "crwdns65493:0crwdne65493:0",
-    "schema": {
-      "matched": {
-        "keyword": "crwdns65507:0crwdne65507:0",
-        "enum": {
-          "true": "crwdns70368:0crwdne70368:0",
-          "false": "crwdns70370:0crwdne70370:0"
-        }
       },
       "radiance": {
-        "keyword": "crwdns65513:0crwdne65513:0",
+        "keyword": "crwdns112928:0crwdne112928:0",
         "enum": {
-          "0": "crwdns65515:0crwdne65515:0",
-          "10000": "crwdns65517:0crwdne65517:0"
-        }
-      },
-      "shiptype": {
-        "keyword": "crwdns65519:0crwdne65519:0",
-        "enum": {
-          "unknown": "crwdns65521:0crwdne65521:0",
-          "fishing": "crwdns65523:0crwdne65523:0",
-          "carrier": "crwdns65525:0crwdne65525:0",
-          "support": "crwdns65527:0crwdne65527:0"
-        }
-      },
-      "qf_detect": {
-        "keyword": "crwdns65531:0crwdne65531:0",
-        "enum": {
-          "1": "crwdns65533:0crwdne65533:0",
-          "2": "crwdns65535:0crwdne65535:0",
-          "3": "crwdns65537:0crwdne65537:0",
-          "5": "crwdns65539:0crwdne65539:0",
-          "7": "crwdns65541:0crwdne65541:0",
-          "10": "crwdns65543:0crwdne65543:0"
-        }
-      }
-    }
-  },
-  "public-ais-presence-viirs-match": {
-    "name": "crwdns69830:0crwdne69830:0",
-    "description": "crwdns69832:0crwdne69832:0",
-    "schema": {
-      "speed": "crwdns83538:0crwdne83538:0",
-      "bearing": "crwdns83332:0crwdne83332:0",
-      "matched": {
-        "keyword": "crwdns69846:0crwdne69846:0",
-        "enum": {
-          "true": "crwdns70372:0crwdne70372:0",
-          "false": "crwdns70374:0crwdne70374:0"
-        }
-      },
-      "radiance": {
-        "keyword": "crwdns69852:0crwdne69852:0",
-        "enum": {
-          "0": "crwdns69854:0crwdne69854:0",
-          "10000": "crwdns69856:0crwdne69856:0"
-        }
-      },
-      "shiptype": {
-        "keyword": "crwdns69858:0crwdne69858:0",
-        "enum": {
-          "unknown": "crwdns69860:0crwdne69860:0",
-          "fishing": "crwdns69862:0crwdne69862:0",
-          "carrier": "crwdns69864:0crwdne69864:0",
-          "support": "crwdns69866:0crwdne69866:0"
-        }
-      },
-      "qf_detect": {
-        "keyword": "crwdns69870:0crwdne69870:0",
-        "enum": {
-          "1": "crwdns69872:0crwdne69872:0",
-          "2": "crwdns69874:0crwdne69874:0",
-          "3": "crwdns69876:0crwdne69876:0",
-          "5": "crwdns69878:0crwdne69878:0",
-          "7": "crwdns69880:0crwdne69880:0",
-          "10": "crwdns69882:0crwdne69882:0"
+          "0": "crwdns112930:0crwdne112930:0",
+          "1000": "crwdns112932:0crwdne112932:0"
         }
       }
     }
@@ -2540,33 +2127,16 @@
   },
   "public-belize-fishing-effort": {
     "name": "crwdns65553:0crwdne65553:0",
-    "description": "crwdns65555:0crwdne65555:0",
-    "schema": {
-      "speed": "crwdns83540:0crwdne83540:0",
-      "bearing": "crwdns83312:0crwdne83312:0"
-    }
-  },
-  "public-belize-fishing-vessels": {
-    "name": "crwdns65581:0crwdne65581:0",
-    "description": "crwdns65583:0crwdne65583:0",
-    "schema": {
-      "source": "crwdns65589:0crwdne65589:0"
-    }
+    "description": "crwdns65555:0crwdne65555:0"
   },
   "public-belize-vessel-identity-fishing": {
     "name": "crwdns69004:0crwdne69004:0",
     "description": "crwdns69006:0crwdne69006:0"
   },
-  "public-belize-vessel-identity": {
-    "name": "crwdns69022:0crwdne69022:0",
-    "description": "crwdns69024:0crwdne69024:0"
-  },
   "public-bra-onyxsat-fishing-effort": {
     "name": "crwdns65605:0crwdne65605:0",
     "description": "crwdns83618:0crwdne83618:0",
     "schema": {
-      "speed": "crwdns83620:0crwdne83620:0",
-      "bearing": "crwdns83622:0crwdne83622:0",
       "target_species": {
         "keyword": "crwdns65633:0crwdne65633:0",
         "enum": {
@@ -2605,61 +2175,9 @@
       }
     }
   },
-  "public-bra-onyxsat-fishing-vessels": {
-    "name": "crwdns65697:0crwdne65697:0",
-    "description": "crwdns65699:0crwdne65699:0",
-    "schema": {
-      "source": "crwdns65705:0crwdne65705:0",
-      "codMarinha": "crwdns65733:0crwdne65733:0",
-      "fishingZone": "crwdns65735:0crwdne65735:0",
-      "targetSpecies": {
-        "keyword": "crwdns65737:0crwdne65737:0",
-        "enum": {
-          "Sardinha-verdadeira e Bonito-listrado": "crwdns65739:0crwdne65739:0",
-          "Polvo": "crwdns65741:0crwdne65741:0",
-          "Caranguejo-vermelho": "crwdns65743:0crwdne65743:0",
-          "Sardinha-verdadeira e Anchova": "crwdns65745:0crwdne65745:0",
-          "peixes diversos": "crwdns65747:0crwdne65747:0",
-          "Sardinha-laje": "crwdns65749:0crwdne65749:0",
-          "Pescada-gó": "crwdns65751:0crwdne65751:0",
-          "Piramutaba e peixes diversos": "crwdns65753:0crwdne65753:0",
-          "Corvina; Pescadas; Castanha e Abrótea": "crwdns65755:0crwdne65755:0",
-          "Fundo e Superfície": "crwdns65757:0crwdne65757:0",
-          "permissionamento antigo; em processo de conversão": "crwdns65759:0crwdne65759:0",
-          "Tainhas; Anchova e Serras": "crwdns65761:0crwdne65761:0",
-          "Garoupas; Cherne; Sirigado e outros peixes de fundo": "crwdns65763:0crwdne65763:0",
-          "Sardinha-verdadeira e Tainha": "crwdns65765:0crwdne65765:0",
-          "Lagostas": "crwdns65767:0crwdne65767:0",
-          "Espadarte - atuns e afins": "crwdns65769:0crwdne65769:0",
-          "Camarão-rosa e peixes diversos": "crwdns65771:0crwdne65771:0",
-          "Pescada Amarela": "crwdns65773:0crwdne65773:0",
-          "Peixe-sapo": "crwdns65775:0crwdne65775:0",
-          "Piramutaba; Dourada e Gurijuba": "crwdns65777:0crwdne65777:0",
-          "Pargo": "crwdns65779:0crwdne65779:0",
-          "Serras": "crwdns65781:0crwdne65781:0",
-          "Cavala e Albacorinha": "crwdns65783:0crwdne65783:0",
-          "Camarão-sete-barbas": "crwdns65785:0crwdne65785:0",
-          "Bonito-listrado": "crwdns65787:0crwdne65787:0",
-          "camarões": "crwdns65789:0crwdne65789:0",
-          "Abrótea; Galo e Merluza": "crwdns65791:0crwdne65791:0",
-          "peixes demersais": "crwdns65793:0crwdne65793:0",
-          " Camarão-rosa": "crwdns65795:0crwdne65795:0",
-          "Dourado - atuns e afins": "crwdns65797:0crwdne65797:0",
-          "Albacoras - atuns e afins": "crwdns65799:0crwdne65799:0"
-        }
-      }
-    }
-  },
   "public-bra-onyxsat-vessel-identity-fishing": {
     "name": "crwdns69040:0crwdne69040:0",
     "description": "crwdns69042:0crwdne69042:0"
-  },
-  "public-brazil-opentuna-fishing-vessels": {
-    "name": "crwdns65805:0crwdne65805:0",
-    "description": "crwdns65807:0crwdne65807:0",
-    "schema": {
-      "source": "crwdns65813:0crwdne65813:0"
-    }
   },
   "public-brazil-opentuna-presence": {
     "name": "crwdns65823:0crwdne65823:0",
@@ -2668,109 +2186,6 @@
   "public-brazil-opentuna-vessel-identity-fishing": {
     "name": "crwdns69052:0crwdne69052:0",
     "description": "crwdns69054:0crwdne69054:0"
-  },
-  "public-cfc-exploration-areas-individual": {
-    "name": "crwdns106822:0crwdne106822:0",
-    "description": "crwdns106824:0crwdne106824:0",
-    "schema": {
-      "status": "crwdns106826:0crwdne106826:0",
-      "act_date": {
-        "keyword": "crwdns106828:0crwdne106828:0",
-        "enum": {
-          "1447023600000": "crwdns106830:0crwdne106830:0",
-          "1697752800000": "crwdns106832:0crwdne106832:0"
-        }
-      },
-      "area_key": "crwdns108524:0crwdne108524:0",
-      "blk_cell": "crwdns108120:0crwdne108120:0",
-      "blk_orig": {
-        "keyword": "crwdns108122:0crwdne108122:0",
-        "enum": {}
-      },
-      "sub_area": "crwdns108124:0crwdne108124:0",
-      "area_km_2": {
-        "keyword": "crwdns108126:0crwdne108126:0",
-        "enum": {
-          "0.99879855": "crwdns108128:0crwdne108128:0",
-          "20.0156525": "crwdns108130:0crwdne108130:0"
-        }
-      },
-      "area_type": "crwdns108132:0crwdne108132:0",
-      "clst_orig": {
-        "keyword": "crwdns108134:0crwdne108134:0",
-        "enum": {
-          "978303600000": "crwdns108136:0crwdne108136:0",
-          "999295200000": "crwdns108138:0crwdne108138:0"
-        }
-      },
-      "cluster_id": {
-        "keyword": "crwdns108140:0crwdne108140:0",
-        "enum": {
-          "NR": "crwdns108142:0crwdne108142:0",
-          "KC-1": "crwdns108144:0crwdne108144:0",
-          "KC-2": "crwdns108146:0crwdne108146:0",
-          "KC-3": "crwdns108148:0crwdne108148:0",
-          "KC-4": "crwdns108150:0crwdne108150:0",
-          "KC-5": "crwdns108152:0crwdne108152:0",
-          "KC-6": "crwdns108154:0crwdne108154:0",
-          "KC-7": "crwdns108156:0crwdne108156:0",
-          "KC-8": "crwdns108158:0crwdne108158:0",
-          "KC-9": "crwdns108160:0crwdne108160:0",
-          "NA": "crwdns108162:0crwdne108162:0"
-        }
-      },
-      "blk_cell_id": {
-        "keyword": "crwdns108164:0crwdne108164:0",
-        "enum": {}
-      },
-      "contract_id": {
-        "keyword": "crwdns108166:0crwdne108166:0",
-        "enum": {
-          "KOREACRFC1": "crwdns108168:0crwdne108168:0",
-          "COMRACRFC1": "crwdns108170:0crwdne108170:0",
-          "BrazilCRFC1": "crwdns108172:0crwdne108172:0",
-          "JOGMECCRFC1": "crwdns108174:0crwdne108174:0",
-          "RUSMNRCRFC1": "crwdns108176:0crwdne108176:0"
-        }
-      }
-    }
-  },
-  "public-cfc-reserved-areas-individual": {
-    "name": "crwdns108178:0crwdne108178:0",
-    "description": "crwdns108180:0crwdne108180:0",
-    "schema": {
-      "status": "crwdns108182:0crwdne108182:0",
-      "act_date": {
-        "keyword": "crwdns108184:0crwdne108184:0",
-        "enum": {
-          "1425942000000": "crwdns108186:0crwdne108186:0"
-        }
-      },
-      "area_key": "crwdns108526:0crwdne108526:0",
-      "blk_cell": "crwdns108490:0crwdne108490:0",
-      "blk_orig": {
-        "keyword": "crwdns108492:0crwdne108492:0",
-        "enum": {}
-      },
-      "sub_area": "crwdns108494:0crwdne108494:0",
-      "area_km_2": "crwdns108496:0crwdne108496:0",
-      "area_type": "crwdns108498:0crwdne108498:0",
-      "cluster_id": "crwdns108500:0crwdne108500:0",
-      "blk_cell_id": {
-        "keyword": "crwdns108502:0crwdne108502:0",
-        "enum": {}
-      },
-      "contract_id": {
-        "keyword": "crwdns108504:0crwdne108504:0",
-        "enum": {
-          "CRFCReserved": "crwdns108506:0crwdne108506:0"
-        }
-      }
-    }
-  },
-  "public-chile-all-vessels": {
-    "name": "crwdns65837:0crwdne65837:0",
-    "description": "crwdns65839:0crwdne65839:0"
   },
   "public-chile-fishing-effort": {
     "name": "crwdns65851:0crwdne65851:0",
@@ -2782,18 +2197,8 @@
           "chile_vms_small_fisheries": "crwdns65863:0crwdne65863:0",
           "chile_vms_industry": "crwdns65865:0crwdne65865:0"
         }
-      },
-      "speed": "crwdns83626:0crwdne83626:0",
-      "bearing": "crwdns83628:0crwdne83628:0"
+      }
     }
-  },
-  "public-chile-fishing-vessels": {
-    "name": "crwdns65877:0crwdne65877:0",
-    "description": "crwdns65879:0crwdne65879:0"
-  },
-  "public-chile-non-fishing-vessels": {
-    "name": "crwdns65891:0crwdne65891:0",
-    "description": "crwdns65893:0crwdne65893:0"
   },
   "public-chile-presence": {
     "name": "crwdns65905:0crwdne65905:0",
@@ -2807,9 +2212,7 @@
           "chile_vms_aquaculture": "crwdns65921:0crwdne65921:0",
           "chile_vms_transport": "crwdns65923:0crwdne65923:0"
         }
-      },
-      "speed": "crwdns83632:0crwdne83632:0",
-      "bearing": "crwdns83634:0crwdne83634:0"
+      }
     }
   },
   "public-chile-vessel-identity-fishing": {
@@ -2819,15 +2222,6 @@
   "public-chile-vessel-identity-non-fishing": {
     "name": "crwdns69082:0crwdne69082:0",
     "description": "crwdns69084:0crwdne69084:0"
-  },
-  "public-clarion-clipperton-zone-isa-claim-areas": {
-    "name": "crwdns108528:0crwdne108528:0",
-    "description": "crwdns108530:0crwdne108530:0",
-    "schema": {
-      "type": "crwdns108532:0crwdne108532:0",
-      "label": "crwdns108534:0crwdne108534:0",
-      "contractor": "crwdns108536:0crwdne108536:0"
-    }
   },
   "public-cold-water-corals": {
     "name": "crwdns65927:0crwdne65927:0",
@@ -2848,29 +2242,22 @@
           "costarica_vms_atuneros": "crwdns65945:0crwdne65945:0",
           "costarica_vms_sardineros": "crwdns65947:0crwdne65947:0"
         }
-      },
-      "speed": "crwdns83638:0crwdne83638:0",
-      "bearing": "crwdns83640:0crwdne83640:0"
-    }
-  },
-  "public-costa-rica-fishing-vessels": {
-    "name": "crwdns65959:0crwdne65959:0",
-    "description": "crwdns65961:0crwdne65961:0",
-    "schema": {
-      "source": "crwdns65967:0crwdne65967:0"
+      }
     }
   },
   "public-costa-rica-vessel-identity-vessels": {
     "name": "crwdns69094:0crwdne69094:0",
-    "description": "crwdns69096:0crwdne69096:0"
-  },
-  "public-dgg_sar_caribe_match_2019": {
-    "name": "crwdns65975:0crwdne65975:0",
-    "description": "crwdns65977:0crwdne65977:0"
-  },
-  "public-dgg_sar_caribe_not_match_2019": {
-    "name": "crwdns65979:0crwdne65979:0",
-    "description": "crwdns65981:0crwdne65981:0"
+    "description": "crwdns69096:0crwdne69096:0",
+    "schema": {
+      "fleet": {
+        "keyword": "crwdns118506:0crwdne118506:0",
+        "enum": {
+          "costarica_vms_industrial_longline": "crwdns118508:0crwdne118508:0",
+          "costarica_vms_atuneros": "crwdns118510:0crwdne118510:0",
+          "costarica_vms_sardineros": "crwdns118512:0crwdne118512:0"
+        }
+      }
+    }
   },
   "public-ebsas": {
     "name": "crwdns108892:0crwdne108892:0",
@@ -2878,38 +2265,12 @@
   },
   "public-ecuador-fishing-effort": {
     "name": "crwdns65983:0crwdne65983:0",
-    "description": "crwdns106596:0crwdne106596:0",
-    "schema": {
-      "speed": "crwdns83642:0crwdne83642:0",
-      "bearing": "crwdns83644:0crwdne83644:0",
-      "shiptype": {
-        "keyword": "crwdns65995:0crwdne65995:0",
-        "enum": {
-          "fishing": "crwdns65997:0crwdne65997:0"
-        }
-      }
-    }
-  },
-  "public-ecuador-fishing-vessels": {
-    "name": "crwdns66007:0crwdne66007:0",
-    "description": "crwdns66009:0crwdne66009:0",
-    "schema": {
-      "source": "crwdns66015:0crwdne66015:0"
-    }
-  },
-  "public-ecuador-non-fishing-vessels": {
-    "name": "crwdns66027:0crwdne66027:0",
-    "description": "crwdns66029:0crwdne66029:0",
-    "schema": {
-      "source": "crwdns66035:0crwdne66035:0"
-    }
+    "description": "crwdns106596:0crwdne106596:0"
   },
   "public-ecuador-presence": {
     "name": "crwdns66047:0crwdne66047:0",
     "description": "crwdns106598:0crwdne106598:0",
     "schema": {
-      "speed": "crwdns83542:0crwdne83542:0",
-      "bearing": "crwdns83334:0crwdne83334:0",
       "shiptype": {
         "keyword": "crwdns66057:0crwdne66057:0",
         "enum": {
@@ -2943,29 +2304,13 @@
     "name": "crwdns66089:0crwdne66089:0",
     "description": "crwdns66091:0crwdne66091:0"
   },
-  "public-eez-land": {
-    "name": "crwdns66093:0crwdne66093:0",
-    "description": "crwdns66095:0crwdne66095:0"
-  },
   "public-fao": {
     "name": "crwdns66097:0crwdne66097:0",
     "description": "crwdns66099:0crwdne66099:0"
   },
-  "public-fao-areas-major-subareas": {
-    "name": "crwdns66101:0crwdne66101:0",
-    "description": "crwdns66103:0crwdne66103:0"
-  },
   "public-fao-major": {
     "name": "crwdns66105:0crwdne66105:0",
-    "description": "crwdns66107:0crwdne66107:0",
-    "schema": {
-      "FID": "crwdns66109:0crwdne66109:0",
-      "F_CODE": "crwdns82822:0crwdne82822:0"
-    }
-  },
-  "public-fisheries-restricted-areas": {
-    "name": "crwdns66111:0crwdne66111:0",
-    "description": "crwdns66113:0crwdne66113:0"
+    "description": "crwdns66107:0crwdne66107:0"
   },
   "public-fixed-infrastructure": {
     "name": "crwdns70318:0crwdne70318:0",
@@ -2981,31 +2326,6 @@
       }
     }
   },
-  "public-fixed-infrastructure-filtered-v1.1": {
-    "name": "crwdns83304:0crwdne83304:0",
-    "description": "crwdns83306:0crwdne83306:0",
-    "schema": {
-      "label": {
-        "keyword": "crwdns83276:0crwdne83276:0",
-        "enum": {
-          "oil": "crwdns83278:0crwdne83278:0",
-          "wind": "crwdns83280:0crwdne83280:0",
-          "unknown": "crwdns83282:0crwdne83282:0"
-        }
-      },
-      "structure_id": "crwdns83290:0crwdne83290:0",
-      "label_confidence": {
-        "keyword": "crwdns83292:0crwdne83292:0",
-        "enum": {
-          "high": "crwdns83294:0crwdne83294:0",
-          "low": "crwdns83296:0crwdne83296:0",
-          "medium": "crwdns83298:0crwdne83298:0"
-        }
-      },
-      "structure_end_date": "crwdns83300:0crwdne83300:0",
-      "structure_start_date": "crwdns83302:0crwdne83302:0"
-    }
-  },
   "public-fixed-infrastructure-filtered": {
     "name": "crwdns83352:0crwdne83352:0",
     "description": "crwdns83354:0crwdne83354:0",
@@ -3013,22 +2333,19 @@
       "label": {
         "keyword": "crwdns83356:0crwdne83356:0",
         "enum": {
-          "oil": "crwdns83358:0crwdne83358:0",
           "wind": "crwdns83360:0crwdne83360:0",
+          "oil": "crwdns83358:0crwdne83358:0",
           "unknown": "crwdns83362:0crwdne83362:0"
         }
       },
-      "structure_id": "crwdns83364:0crwdne83364:0",
       "label_confidence": {
         "keyword": "crwdns83366:0crwdne83366:0",
         "enum": {
           "high": "crwdns83368:0crwdne83368:0",
-          "low": "crwdns83370:0crwdne83370:0",
-          "medium": "crwdns83372:0crwdne83372:0"
+          "medium": "crwdns83372:0crwdne83372:0",
+          "low": "crwdns83370:0crwdne83370:0"
         }
-      },
-      "structure_end_date": "crwdns83374:0crwdne83374:0",
-      "structure_start_date": "crwdns83376:0crwdne83376:0"
+      }
     }
   },
   "public-gfcm-fao": {
@@ -3037,48 +2354,19 @@
   },
   "public-global-ais-ports-footprint": {
     "name": "crwdns109002:0crwdne109002:0",
-    "description": "crwdns109004:0crwdne109004:0",
-    "schema": {
-      "port_id": "crwdns109006:0crwdne109006:0"
-    }
+    "description": "crwdns109004:0crwdne109004:0"
   },
   "public-global-ais-ports": {
     "name": "crwdns109008:0crwdne109008:0",
-    "description": "crwdns109010:0crwdne109010:0",
-    "schema": {
-      "name": "crwdns109012:0crwdne109012:0",
-      "ais_gaps": "crwdns109014:0crwdne109014:0",
-      "loitering": "crwdns109016:0crwdne109016:0",
-      "encounters": "crwdns109018:0crwdne109018:0"
-    }
+    "description": "crwdns109010:0crwdne109010:0"
   },
   "public-global-all-tracks": {
     "name": "crwdns69888:0crwdne69888:0",
-    "description": "crwdns83478:0crwdne83478:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns83592:0crwdne83592:0",
-        "enum": {
-          "0": "crwdns83594:0crwdne83594:0",
-          "20": "crwdns83596:0crwdne83596:0"
-        }
-      }
-    }
-  },
-  "public-global-all-vessels": {
-    "name": "crwdns66115:0crwdne66115:0",
-    "description": "crwdns66117:0crwdne66117:0",
-    "schema": {
-      "source": "crwdns66127:0crwdne66127:0"
-    }
+    "description": "crwdns83478:0crwdne83478:0"
   },
   "public-global-bathymetry": {
     "name": "crwdns82824:0crwdne82824:0",
     "description": "crwdns106550:0crwdne106550:0"
-  },
-  "public-global-carrier-vessels": {
-    "name": "crwdns66183:0crwdne66183:0",
-    "description": "crwdns66185:0crwdne66185:0"
   },
   "public-global-chlorophyl-max": {
     "name": "crwdns70240:0crwdne70240:0",
@@ -3096,10 +2384,6 @@
     "name": "crwdns108512:0crwdne108512:0",
     "description": "crwdns108514:0crwdne108514:0"
   },
-  "public-global-encounters-events-carriers-fishing": {
-    "name": "crwdns66209:0crwdne66209:0",
-    "description": "crwdns66211:0crwdne66211:0"
-  },
   "public-global-encounters-events": {
     "name": "crwdns66233:0crwdne66233:0",
     "description": "crwdns106620:0crwdne106620:0",
@@ -3111,7 +2395,6 @@
           "48": "crwdns84616:0crwdne84616:0"
         }
       },
-      "next_port_id": "crwdns84618:0crwdne84618:0",
       "encounter_type": {
         "keyword": "crwdns84348:0crwdne84348:0",
         "enum": {
@@ -3126,12 +2409,14 @@
       }
     }
   },
+  "public-global-fishing-effort-vi-653": {
+    "name": "crwdns118514:0crwdne118514:0",
+    "description": "crwdns118516:0crwdne118516:0"
+  },
   "public-global-fishing-effort": {
     "name": "crwdns66257:0crwdne66257:0",
     "description": "crwdns66259:0crwdne66259:0",
     "schema": {
-      "speed": "crwdns83546:0crwdne83546:0",
-      "bearing": "crwdns83436:0crwdne83436:0",
       "distance_from_port_km": {
         "keyword": "crwdns84698:0crwdne84698:0",
         "enum": {
@@ -3165,25 +2450,21 @@
       }
     }
   },
-  "public-global-fishing-vessels": {
-    "name": "crwdns66305:0crwdne66305:0",
-    "description": "crwdns66307:0crwdne66307:0",
-    "schema": {
-      "source": "crwdns66317:0crwdne66317:0"
-    }
-  },
   "public-global-gaps-events": {
     "name": "crwdns83938:0crwdne83938:0",
     "description": "crwdns83940:0crwdne83940:0"
-  },
-  "public-global-loitering-events-carriers": {
-    "name": "crwdns66373:0crwdne66373:0",
-    "description": "crwdns84594:0crwdne84594:0"
   },
   "public-global-loitering-events": {
     "name": "crwdns66397:0crwdne66397:0",
     "description": "crwdns106622:0crwdne106622:0",
     "schema": {
+      "duration": {
+        "keyword": "crwdns84620:0crwdne84620:0",
+        "enum": {
+          "2": "crwdns118518:0crwdne118518:0",
+          "48": "crwdns84624:0crwdne84624:0"
+        }
+      },
       "type": {
         "keyword": "crwdns84452:0crwdne84452:0",
         "enum": {
@@ -3197,27 +2478,12 @@
           "SEISMIC_VESSEL": "crwdns84468:0crwdne84468:0",
           "SUPPORT": "crwdns84470:0crwdne84470:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns84620:0crwdne84620:0",
-        "enum": {
-          "0": "crwdns84622:0crwdne84622:0",
-          "48": "crwdns84624:0crwdne84624:0"
-        }
-      },
-      "next_port_id": "crwdns84626:0crwdne84626:0"
+      }
     }
   },
   "public-global-nitrate": {
     "name": "crwdns82830:0crwdne82830:0",
     "description": "crwdns83014:0crwdne83014:0"
-  },
-  "public-global-other-vessels": {
-    "name": "crwdns66421:0crwdne66421:0",
-    "description": "crwdns66423:0crwdne66423:0",
-    "schema": {
-      "source": "crwdns66433:0crwdne66433:0"
-    }
   },
   "public-global-oxygen": {
     "name": "crwdns82834:0crwdne82834:0",
@@ -3235,6 +2501,13 @@
     "name": "crwdns83804:0crwdne83804:0",
     "description": "crwdns106624:0crwdne106624:0",
     "schema": {
+      "duration": {
+        "keyword": "crwdns84628:0crwdne84628:0",
+        "enum": {
+          "2": "crwdns84630:0crwdne84630:0",
+          "48": "crwdns84632:0crwdne84632:0"
+        }
+      },
       "type": {
         "keyword": "crwdns84472:0crwdne84472:0",
         "enum": {
@@ -3248,40 +2521,16 @@
           "SEISMIC_VESSEL": "crwdns84488:0crwdne84488:0",
           "SUPPORT": "crwdns84490:0crwdne84490:0"
         }
-      },
-      "duration": {
-        "keyword": "crwdns84628:0crwdne84628:0",
-        "enum": {
-          "2": "crwdns84630:0crwdne84630:0",
-          "48": "crwdns84632:0crwdne84632:0"
-        }
       }
     }
   },
   "public-global-ports-footprint": {
     "name": "crwdns84082:0crwdne84082:0",
-    "description": "crwdns84084:0crwdne84084:0",
-    "schema": {
-      "area": "crwdns84086:0crwdne84086:0",
-      "label": {
-        "keyword": "crwdns84088:0crwdne84088:0",
-        "enum": {}
-      },
-      "perimeter": "crwdns84090:0crwdne84090:0"
-    }
+    "description": "crwdns84084:0crwdne84084:0"
   },
-  "public-global-presence-tracks": {
-    "name": "crwdns83152:0crwdne83152:0",
-    "description": "crwdns83154:0crwdne83154:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns83598:0crwdne83598:0",
-        "enum": {
-          "0": "crwdns83600:0crwdne83600:0",
-          "20": "crwdns83602:0crwdne83602:0"
-        }
-      }
-    }
+  "public-global-presence-vi-653": {
+    "name": "crwdns118520:0crwdne118520:0",
+    "description": "crwdns118522:0crwdne118522:0"
   },
   "public-global-presence": {
     "name": "crwdns66453:0crwdne66453:0",
@@ -3299,7 +2548,21 @@
           ">25": "crwdns83564:0crwdne83564:0"
         }
       },
-      "bearing": "crwdns83438:0crwdne83438:0"
+      "vessel_type": {
+        "keyword": "crwdns118524:0crwdne118524:0",
+        "enum": {
+          "carrier": "crwdns118526:0crwdne118526:0",
+          "seismic_vessel": "crwdns118528:0crwdne118528:0",
+          "passenger": "crwdns118530:0crwdne118530:0",
+          "other": "crwdns118532:0crwdne118532:0",
+          "support": "crwdns118534:0crwdne118534:0",
+          "bunker": "crwdns118536:0crwdne118536:0",
+          "gear": "crwdns118538:0crwdne118538:0",
+          "cargo": "crwdns118540:0crwdne118540:0",
+          "fishing": "crwdns118542:0crwdne118542:0",
+          "discrepancy": "crwdns118544:0crwdne118544:0"
+        }
+      }
     }
   },
   "public-global-salinity": {
@@ -3314,13 +2577,19 @@
     "name": "crwdns69930:0crwdne69930:0",
     "description": "crwdns83470:0crwdne83470:0",
     "schema": {
-      "speed": "crwdns83566:0crwdne83566:0",
-      "bearing": "crwdns83336:0crwdne83336:0",
       "matched": {
         "keyword": "crwdns66503:0crwdne66503:0",
         "enum": {
           "true": "crwdns70376:0crwdne70376:0",
           "false": "crwdns70378:0crwdne70378:0"
+        }
+      },
+      "neural_vessel_type": {
+        "keyword": "crwdns70016:0crwdne70016:0",
+        "enum": {
+          "Likely non-fishing": "crwdns70018:0crwdne70018:0",
+          "Likely Fishing": "crwdns70020:0crwdne70020:0",
+          "Unknown": "crwdns70022:0crwdne70022:0"
         }
       },
       "shiptype": {
@@ -3336,14 +2605,6 @@
           "cargo": "crwdns70008:0crwdne70008:0",
           "fishing": "crwdns70010:0crwdne70010:0",
           "discrepancy": "crwdns70012:0crwdne70012:0"
-        }
-      },
-      "neural_vessel_type": {
-        "keyword": "crwdns70016:0crwdne70016:0",
-        "enum": {
-          "Likely non-fishing": "crwdns70018:0crwdne70018:0",
-          "Likely Fishing": "crwdns70020:0crwdne70020:0",
-          "Unknown": "crwdns70022:0crwdne70022:0"
         }
       }
     }
@@ -3365,7 +2626,6 @@
           ">100": "crwdns94116:0crwdne94116:0"
         }
       },
-      "bearing": "crwdns93696:0crwdne93696:0",
       "matched": {
         "keyword": "crwdns93698:0crwdne93698:0",
         "enum": {
@@ -3414,30 +2674,17 @@
     "name": "crwdns82926:0crwdne82926:0",
     "description": "crwdns83028:0crwdne83028:0"
   },
-  "public-global-support-vessels": {
-    "name": "crwdns66513:0crwdne66513:0",
-    "description": "crwdns66515:0crwdne66515:0",
-    "schema": {
-      "source": "crwdns66525:0crwdne66525:0"
-    }
-  },
   "public-global-thgt": {
     "name": "crwdns83030:0crwdne83030:0",
     "description": "crwdns83032:0crwdne83032:0"
   },
-  "public-global-tracks": {
-    "name": "crwdns83442:0crwdne83442:0",
-    "description": "crwdns83444:0crwdne83444:0",
-    "schema": {
-      "speed": "crwdns83568:0crwdne83568:0"
-    }
+  "public-global-vessel-identity-vi-653": {
+    "name": "crwdns118546:0crwdne118546:0",
+    "description": "crwdns118548:0crwdne118548:0"
   },
   "public-global-vessel-identity": {
     "name": "crwdns70132:0crwdne70132:0",
-    "description": "crwdns70134:0crwdne70134:0",
-    "schema": {
-      "registryTmtExtraFields": "crwdns84020:0crwdne84020:0"
-    }
+    "description": "crwdns70134:0crwdne70134:0"
   },
   "public-global-vessel-insights": {
     "name": "crwdns66547:0crwdne66547:0",
@@ -3447,8 +2694,6 @@
     "name": "crwdns83474:0crwdne83474:0",
     "description": "crwdns66565:0crwdne66565:0",
     "schema": {
-      "speed": "crwdns83570:0crwdne83570:0",
-      "bearing": "crwdns83448:0crwdne83448:0",
       "matched": {
         "keyword": "crwdns83450:0crwdne83450:0",
         "enum": {
@@ -3471,36 +2716,16 @@
           "carrier": "crwdns83466:0crwdne83466:0",
           "support": "crwdns83468:0crwdne83468:0"
         }
-      },
-      "qf_detect": {
-        "keyword": "crwdns66585:0crwdne66585:0",
-        "enum": {
-          "1": "crwdns66587:0crwdne66587:0",
-          "2": "crwdns66589:0crwdne66589:0",
-          "3": "crwdns66591:0crwdne66591:0",
-          "5": "crwdns66593:0crwdne66593:0",
-          "7": "crwdns66595:0crwdne66595:0",
-          "10": "crwdns66597:0crwdne66597:0"
-        }
       }
     }
   },
   "public-global-vms-ports-footprint": {
     "name": "crwdns109020:0crwdne109020:0",
-    "description": "crwdns109022:0crwdne109022:0",
-    "schema": {
-      "port_id": "crwdns109024:0crwdne109024:0"
-    }
+    "description": "crwdns109022:0crwdne109022:0"
   },
   "public-global-vms-ports": {
     "name": "crwdns109026:0crwdne109026:0",
-    "description": "crwdns109028:0crwdne109028:0",
-    "schema": {
-      "name": "crwdns109030:0crwdne109030:0",
-      "vms_gaps": "crwdns109032:0crwdne109032:0",
-      "loitering": "crwdns109034:0crwdne109034:0",
-      "encounters": "crwdns109036:0crwdne109036:0"
-    }
+    "description": "crwdns109028:0crwdne109028:0"
   },
   "public-global-water-salinity-max": {
     "name": "crwdns70248:0crwdne70248:0",
@@ -3554,22 +2779,9 @@
     "name": "crwdns108948:0crwdne108948:0",
     "description": "crwdns108950:0crwdne108950:0"
   },
-  "public-indian-ocean-isa-claim-areas": {
-    "name": "crwdns108538:0crwdne108538:0",
-    "description": "crwdns108540:0crwdne108540:0",
-    "schema": {
-      "type": "crwdns108542:0crwdne108542:0",
-      "label": "crwdns108544:0crwdne108544:0",
-      "contractor": "crwdns108546:0crwdne108546:0"
-    }
-  },
   "public-indonesia-fishing-effort": {
     "name": "crwdns66629:0crwdne66629:0",
     "description": "crwdns66631:0crwdne66631:0"
-  },
-  "public-indonesia-fishing-vessels": {
-    "name": "crwdns83604:0crwdne83604:0",
-    "description": "crwdns83606:0crwdne83606:0"
   },
   "public-indonesia-pelagic-fishing-effort": {
     "name": "crwdns66689:0crwdne66689:0",
@@ -3581,84 +2793,26 @@
   },
   "public-indonesia-zebrax-presence": {
     "name": "crwdns66741:0crwdne66741:0",
-    "description": "crwdns66743:0crwdne66743:0",
-    "schema": {
-      "speed": "crwdns83572:0crwdne83572:0",
-      "bearing": "crwdns83338:0crwdne83338:0"
-    }
+    "description": "crwdns66743:0crwdne66743:0"
   },
   "public-inshore-fishing-zone-1618837176535": {
     "name": "crwdns66765:0crwdne66765:0",
     "description": "crwdns66767:0crwdne66767:0"
   },
-  "public-isa-areas-contractor": {
-    "name": "crwdns106766:0crwdne106766:0",
-    "description": "crwdns106768:0crwdne106768:0",
-    "schema": {
-      "layer": {
-        "keyword": "crwdns106806:0crwdne106806:0",
-        "enum": {
-          "CFC Reserved Areas": "crwdns106808:0crwdne106808:0",
-          "CFC Exploration Areas": "crwdns106810:0crwdne106810:0",
-          "PMN Reserved Areas": "crwdns106812:0crwdne106812:0",
-          "PMN Exploration Areas": "crwdns106814:0crwdne106814:0",
-          "PMS Exploration Areas": "crwdns106816:0crwdne106816:0"
-        }
-      },
-      "contract": {
-        "keyword": "crwdns93736:0crwdne93736:0",
-        "enum": {
-          "BrazilCRFC1": "crwdns93738:0crwdne93738:0",
-          "BGRPMN1": "crwdns93740:0crwdne93740:0",
-          "IFREMERPMN1": "crwdns93742:0crwdne93742:0",
-          "KOREACRFC1": "crwdns93744:0crwdne93744:0",
-          "KOREAPMN1": "crwdns93746:0crwdne93746:0",
-          "JOGMECCRFC1": "crwdns93748:0crwdne93748:0",
-          "IFREMERPMS1": "crwdns93750:0crwdne93750:0",
-          "IOMPMN1": "crwdns93752:0crwdne93752:0",
-          "BPHDCPMN1": "crwdns93754:0crwdne93754:0",
-          "DORDPMN1": "crwdns93756:0crwdne93756:0",
-          "POLPMS1": "crwdns93758:0crwdne93758:0",
-          "UKSRLPMN2": "crwdns93760:0crwdne93760:0",
-          "UKSRLPMN1": "crwdns93762:0crwdne93762:0",
-          "YUZHPMN1": "crwdns93764:0crwdne93764:0",
-          "BMJPMN1": "crwdns93766:0crwdne93766:0",
-          "RUSMNRCRFC1": "crwdns93768:0crwdne93768:0",
-          "CIICPMN1": "crwdns93770:0crwdne93770:0",
-          "IndiaPMS1": "crwdns93772:0crwdne93772:0",
-          "IndiaPMN1": "crwdns93774:0crwdne93774:0",
-          "OMSPMN1": "crwdns93776:0crwdne93776:0",
-          "RUSFEDPMS1": "crwdns93778:0crwdne93778:0",
-          "CRFCReserved": "crwdns93780:0crwdne93780:0",
-          "GSRPMN1": "crwdns93782:0crwdne93782:0",
-          "KOREAPMS1": "crwdns93784:0crwdne93784:0",
-          "MARAWAPMN1": "crwdns93786:0crwdne93786:0",
-          "COMRAPMS1": "crwdns93788:0crwdne93788:0",
-          "COMRACRFC1": "crwdns93790:0crwdne93790:0",
-          "CMMPMN1": "crwdns93792:0crwdne93792:0",
-          "NORIPMN1": "crwdns93794:0crwdne93794:0",
-          "TOMLPMN1": "crwdns93796:0crwdne93796:0",
-          "BGRPMS1": "crwdns93798:0crwdne93798:0",
-          "COMRAPMN1": "crwdns93800:0crwdne93800:0",
-          "PMNReserved": "crwdns93802:0crwdne93802:0"
-        }
-      }
-    }
-  },
   "public-isa-layers": {
-    "name": "crwdns106770:0crwdne106770:0",
-    "description": "crwdns106772:0crwdne106772:0",
+    "name": "crwdns117568:0crwdne117568:0",
+    "description": "crwdns117570:0crwdne117570:0",
     "schema": {
       "label": {
         "keyword": "crwdns106774:0crwdne106774:0",
         "enum": {
+          "Clarion-Clipperton Zone management area": "crwdns106786:0crwdne106786:0",
+          "Areas of particular environmental interest within the Clarion-Clipperton Zone": "crwdns106784:0crwdne106784:0",
+          "CFC Exploration Areas": "crwdns106788:0crwdne106788:0",
           "CFC Reserved Areas": "crwdns106776:0crwdne106776:0",
           "PMN Exploration Areas": "crwdns106778:0crwdne106778:0",
-          "PMS Exploration Areas": "crwdns106780:0crwdne106780:0",
           "PMN Reserved Areas": "crwdns106782:0crwdne106782:0",
-          "Areas of particular environmental interest within the Clarion-Clipperton Zone": "crwdns106784:0crwdne106784:0",
-          "Clarion-Clipperton Zone management area": "crwdns106786:0crwdne106786:0",
-          "CFC Exploration Areas": "crwdns106788:0crwdne106788:0"
+          "PMS Exploration Areas": "crwdns106780:0crwdne106780:0"
         }
       },
       "layer": {
@@ -3712,60 +2866,15 @@
   },
   "public-mexico-fishing-effort": {
     "name": "crwdns66773:0crwdne66773:0",
-    "description": "crwdns106600:0crwdne106600:0",
-    "schema": {
-      "speed": "crwdns83574:0crwdne83574:0",
-      "bearing": "crwdns83340:0crwdne83340:0",
-      "shiptype": {
-        "keyword": "crwdns66785:0crwdne66785:0",
-        "enum": {
-          "fishing": "crwdns66787:0crwdne66787:0"
-        }
-      }
-    }
-  },
-  "public-mexico-fishing-vessels": {
-    "name": "crwdns66799:0crwdne66799:0",
-    "description": "crwdns66801:0crwdne66801:0",
-    "schema": {
-      "source": "crwdns66807:0crwdne66807:0"
-    }
+    "description": "crwdns106600:0crwdne106600:0"
   },
   "public-mexico-presence": {
     "name": "crwdns66819:0crwdne66819:0",
-    "description": "crwdns106602:0crwdne106602:0",
-    "schema": {
-      "speed": "crwdns83576:0crwdne83576:0",
-      "bearing": "crwdns83342:0crwdne83342:0",
-      "shiptype": {
-        "keyword": "crwdns66829:0crwdne66829:0",
-        "enum": {
-          "fishing": "crwdns66831:0crwdne66831:0",
-          "international traffic": "crwdns66833:0crwdne66833:0",
-          "national traffic": "crwdns66835:0crwdne66835:0",
-          "tug": "crwdns66837:0crwdne66837:0",
-          "boat": "crwdns66839:0crwdne66839:0",
-          "auxiliary": "crwdns66841:0crwdne66841:0"
-        }
-      }
-    }
+    "description": "crwdns106602:0crwdne106602:0"
   },
   "public-mexico-vessel-identity-fishing": {
     "name": "crwdns69130:0crwdne69130:0",
     "description": "crwdns69132:0crwdne69132:0"
-  },
-  "public-mid-atlantic-isa-claim-areas": {
-    "name": "crwdns108548:0crwdne108548:0",
-    "description": "crwdns108550:0crwdne108550:0",
-    "schema": {
-      "type": "crwdns108552:0crwdne108552:0",
-      "label": "crwdns108554:0crwdne108554:0",
-      "contractor": "crwdns108556:0crwdne108556:0"
-    }
-  },
-  "public-mp-as-mp-atlas": {
-    "name": "crwdns84730:0crwdne84730:0",
-    "description": "crwdns84732:0crwdne84732:0"
   },
   "public-mp-atlas": {
     "name": "crwdns87892:0crwdne87892:0",
@@ -3806,51 +2915,35 @@
     "name": "crwdns66861:0crwdne66861:0",
     "description": "crwdns66863:0crwdne66863:0"
   },
-  "public-mpa-restricted": {
-    "name": "crwdns66865:0crwdne66865:0",
-    "description": "crwdns66867:0crwdne66867:0"
-  },
   "public-no-take-zone-1618836692786": {
     "name": "crwdns66869:0crwdne66869:0",
     "description": "crwdns66871:0crwdne66871:0"
-  },
-  "public-northwest-pacific-isa-claim-areas": {
-    "name": "crwdns108558:0crwdne108558:0",
-    "description": "crwdns108560:0crwdne108560:0",
-    "schema": {
-      "type": "crwdns108562:0crwdne108562:0",
-      "label": "crwdns108564:0crwdne108564:0",
-      "contractor": "crwdns108566:0crwdne108566:0"
-    }
   },
   "public-norway-fishing-effort": {
     "name": "crwdns66873:0crwdne66873:0",
     "description": "crwdns66875:0crwdne66875:0",
     "schema": {
-      "speed": "crwdns83578:0crwdne83578:0",
-      "bearing": "crwdns83344:0crwdne83344:0"
-    }
-  },
-  "public-norway-fishing-vessels": {
-    "name": "crwdns66923:0crwdne66923:0",
-    "description": "crwdns66925:0crwdne66925:0",
-    "schema": {
-      "source": "crwdns66931:0crwdne66931:0"
-    }
-  },
-  "public-norway-non-fishing-vessels": {
-    "name": "crwdns66967:0crwdne66967:0",
-    "description": "crwdns66969:0crwdne66969:0",
-    "schema": {
-      "source": "crwdns66975:0crwdne66975:0"
+      "flag": {
+        "keyword": "crwdns118550:0crwdne118550:0",
+        "enum": {
+          "NOR": "crwdns118552:0crwdne118552:0"
+        }
+      }
     }
   },
   "public-norway-presence": {
     "name": "crwdns67011:0crwdne67011:0",
     "description": "crwdns106604:0crwdne106604:0",
     "schema": {
-      "speed": "crwdns83580:0crwdne83580:0",
-      "bearing": "crwdns83346:0crwdne83346:0"
+      "vessel_type": {
+        "keyword": "crwdns118554:0crwdne118554:0",
+        "enum": {
+          "fishing": "crwdns118556:0crwdne118556:0",
+          "research": "crwdns118558:0crwdne118558:0",
+          "kelp trawler": "crwdns118560:0crwdne118560:0",
+          "other": "crwdns118562:0crwdne118562:0"
+        }
+      }
     }
   },
   "public-norway-vessel-identity-fishing": {
@@ -3867,25 +2960,7 @@
   },
   "public-panama-fishing-effort": {
     "name": "crwdns67067:0crwdne67067:0",
-    "description": "crwdns83646:0crwdne83646:0",
-    "schema": {
-      "speed": "crwdns83648:0crwdne83648:0",
-      "bearing": "crwdns83650:0crwdne83650:0"
-    }
-  },
-  "public-panama-fishing-vessels": {
-    "name": "crwdns67087:0crwdne67087:0",
-    "description": "crwdns67089:0crwdne67089:0",
-    "schema": {
-      "source": "crwdns67095:0crwdne67095:0"
-    }
-  },
-  "public-panama-non-fishing-vessels": {
-    "name": "crwdns67103:0crwdne67103:0",
-    "description": "crwdns67105:0crwdne67105:0",
-    "schema": {
-      "source": "crwdns67111:0crwdne67111:0"
-    }
+    "description": "crwdns83646:0crwdne83646:0"
   },
   "public-panama-vessel-identity-fishing": {
     "name": "crwdns70430:0crwdne70430:0",
@@ -3908,24 +2983,18 @@
           "not defined": "crwdns67139:0crwdne67139:0"
         }
       },
-      "speed": "crwdns83654:0crwdne83654:0",
       "origin": {
         "keyword": "crwdns67143:0crwdne67143:0",
         "enum": {
           "PER": "crwdns67145:0crwdne67145:0",
           "Foreign": "crwdns67147:0crwdne67147:0"
         }
-      },
-      "bearing": "crwdns83656:0crwdne83656:0"
+      }
     }
-  },
-  "public-peru-fishing-vessels": {
-    "name": "crwdns67187:0crwdne67187:0",
-    "description": "crwdns67189:0crwdne67189:0"
   },
   "public-peru-presence": {
     "name": "crwdns67201:0crwdne67201:0",
-    "description": "crwdns67203:0crwdne67203:0",
+    "description": "crwdns117676:0crwdne117676:0",
     "schema": {
       "fleet": {
         "keyword": "crwdns67211:0crwdne67211:0",
@@ -3947,197 +3016,31 @@
   },
   "public-peru-vessel-identity-fishing": {
     "name": "crwdns69184:0crwdne69184:0",
-    "description": "crwdns69186:0crwdne69186:0"
-  },
-  "public-pmn-exploration-areas-individual": {
-    "name": "crwdns108568:0crwdne108568:0",
-    "description": "crwdns108570:0crwdne108570:0",
+    "description": "crwdns69186:0crwdne69186:0",
     "schema": {
-      "status": "crwdns108572:0crwdne108572:0",
-      "remarks": {
-        "keyword": "crwdns108574:0crwdne108574:0",
+      "casco": {
+        "keyword": "crwdns118564:0crwdne118564:0",
         "enum": {
-          "xx": "crwdns108576:0crwdne108576:0",
-          "Total exploration area of GSR (PMN) is 41,468.91606 sq.km": "crwdns108578:0crwdne108578:0",
-          "Total exploration area of IOM (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns108580:0crwdne108580:0",
-          "Total exploration area of Yuzhmorgeologiya (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns108582:0crwdne108582:0",
-          "Total exploration area of Korea (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns108584:0crwdne108584:0",
-          "Total exploration area of COMRA (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns108586:0crwdne108586:0",
-          "Total exploration area of DORD (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns108588:0crwdne108588:0",
-          "Total exploration area of IFREMER (PMN) is 75,000 sq.km; AreaKM2 was calculated by ISA": "crwdns108590:0crwdne108590:0",
-          "Total exploration area of India (PMN) is 75,000 sq.km, AreaKM2 was calculated by ISA": "crwdns108592:0crwdne108592:0",
-          "Total exploration area of GSR (PMN) is 76,728 sq.km; AreaKM2 was calculated by ISA": "crwdns108594:0crwdne108594:0",
-          "Total exploration area of MARAWA (PMN) is 74,990 sq.km; AreaKM2 was calculated by ISA": "crwdns108596:0crwdne108596:0",
-          "Total exploration area of CIIC (PMN) is 71,937 sq.km; AreaKM2 was calcualted by ISA": "crwdns108598:0crwdne108598:0"
+          "ACERO NAVAL": "crwdns118566:0crwdne118566:0",
+          "MADERA": "crwdns118568:0crwdne118568:0",
+          "N/E": "crwdns118570:0crwdne118570:0",
+          "NONE": "crwdns118572:0crwdne118572:0",
+          "FIBRA DE VIDRIO": "crwdns118574:0crwdne118574:0"
         }
       },
-      "act_date": {
-        "keyword": "crwdns108600:0crwdne108600:0",
+      "fleet": {
+        "keyword": "crwdns118576:0crwdne118576:0",
         "enum": {
-          "985816800000": "crwdns108602:0crwdne108602:0",
-          "1717970400000": "crwdns108604:0crwdne108604:0"
+          "industrial": "crwdns118578:0crwdne118578:0",
+          "artisanal": "crwdns118580:0crwdne118580:0",
+          "not defined": "crwdns118582:0crwdne118582:0"
         }
       },
-      "area_key": "crwdns108606:0crwdne108606:0",
-      "blk_cell": "crwdns108608:0crwdne108608:0",
-      "blk_orig": "crwdns108610:0crwdne108610:0",
-      "sub_area": "crwdns108612:0crwdne108612:0",
-      "area_km_2": {
-        "keyword": "crwdns108614:0crwdne108614:0",
+      "origin": {
+        "keyword": "crwdns118584:0crwdne118584:0",
         "enum": {
-          "74919": "crwdns108616:0crwdne108616:0",
-          "2182.876": "crwdns108618:0crwdne108618:0"
-        }
-      },
-      "area_type": "crwdns108620:0crwdne108620:0",
-      "clst_orig": "crwdns108622:0crwdne108622:0",
-      "cluster_id": "crwdns108624:0crwdne108624:0",
-      "blk_cell_id": "crwdns108626:0crwdne108626:0",
-      "contract_id": {
-        "keyword": "crwdns108628:0crwdne108628:0",
-        "enum": {
-          "KOREAPMN1": "crwdns108630:0crwdne108630:0",
-          "IOMPMN1": "crwdns108632:0crwdne108632:0",
-          "DORDPMN1": "crwdns108634:0crwdne108634:0",
-          "BMJPMN1": "crwdns108636:0crwdne108636:0",
-          "IndiaPMN1": "crwdns108638:0crwdne108638:0",
-          "TOMLPMN1": "crwdns108640:0crwdne108640:0",
-          "IFREMERPMN1": "crwdns108642:0crwdne108642:0",
-          "BGRPMN1": "crwdns108644:0crwdne108644:0",
-          "BPHDCPMN1": "crwdns108646:0crwdne108646:0",
-          "UKSRLPMN2": "crwdns108648:0crwdne108648:0",
-          "UKSRLPMN1": "crwdns108650:0crwdne108650:0",
-          "YUZHPMN1": "crwdns108652:0crwdne108652:0",
-          "CIICPMN1": "crwdns108654:0crwdne108654:0",
-          "OMSPMN1": "crwdns108656:0crwdne108656:0",
-          "GSRPMN1": "crwdns108658:0crwdne108658:0",
-          "MARAWAPMN1": "crwdns108660:0crwdne108660:0",
-          "CMMPMN1": "crwdns108662:0crwdne108662:0",
-          "NORIPMN1": "crwdns108664:0crwdne108664:0",
-          "COMRAPMN1": "crwdns108666:0crwdne108666:0"
-        }
-      }
-    }
-  },
-  "public-pmn-reserved-areas-individual": {
-    "name": "crwdns108668:0crwdne108668:0",
-    "description": "crwdns108670:0crwdne108670:0",
-    "schema": {
-      "status": "crwdns108672:0crwdne108672:0",
-      "remarks": {
-        "keyword": "crwdns108674:0crwdne108674:0",
-        "enum": {
-          "Origin:INDIA": "crwdns108676:0crwdne108676:0",
-          "Origin:COMRA": "crwdns108678:0crwdne108678:0",
-          "Origin:Yuzhmorgeologia": "crwdns108680:0crwdne108680:0",
-          "Origin:DORD": "crwdns108682:0crwdne108682:0",
-          "Origin:IFREMER": "crwdns108684:0crwdne108684:0",
-          "Origin:Government of the Republic of Korea": "crwdns108686:0crwdne108686:0",
-          "Origin:IOM": "crwdns108688:0crwdne108688:0",
-          "Origin:BGR": "crwdns108690:0crwdne108690:0",
-          "Origin:UKSRL-ll": "crwdns108692:0crwdne108692:0"
-        }
-      },
-      "act_date": {
-        "keyword": "crwdns108694:0crwdne108694:0",
-        "enum": {
-          "988322400000": "crwdns108696:0crwdne108696:0",
-          "1617487200000": "crwdns108698:0crwdne108698:0"
-        }
-      },
-      "area_key": "crwdns108700:0crwdne108700:0",
-      "blk_cell": "crwdns108702:0crwdne108702:0",
-      "blk_orig": {
-        "keyword": "crwdns108704:0crwdne108704:0",
-        "enum": {
-          "983401200000": "crwdns108706:0crwdne108706:0",
-          "986076000000": "crwdns108708:0crwdne108708:0"
-        }
-      },
-      "sub_area": "crwdns108710:0crwdne108710:0",
-      "area_km_2": {
-        "keyword": "crwdns108712:0crwdne108712:0",
-        "enum": {
-          "150000": "crwdns108714:0crwdne108714:0",
-          "1032.952": "crwdns108716:0crwdne108716:0"
-        }
-      },
-      "area_type": "crwdns108718:0crwdne108718:0",
-      "clst_orig": "crwdns108720:0crwdne108720:0",
-      "cluster_id": "crwdns108722:0crwdne108722:0",
-      "blk_cell_id": "crwdns108724:0crwdne108724:0",
-      "contract_id": {
-        "keyword": "crwdns108726:0crwdne108726:0",
-        "enum": {
-          "BPHDCPMN1": "crwdns108728:0crwdne108728:0",
-          "PMNReserved": "crwdns108730:0crwdne108730:0"
-        }
-      }
-    }
-  },
-  "public-pms-exploration-areas-individual": {
-    "name": "crwdns108732:0crwdne108732:0",
-    "description": "crwdns108734:0crwdne108734:0",
-    "schema": {
-      "status": "crwdns108736:0crwdne108736:0",
-      "act_date": {
-        "keyword": "crwdns108738:0crwdne108738:0",
-        "enum": {
-          "1474840800000": "crwdns108740:0crwdne108740:0",
-          "1698098400000": "crwdns108742:0crwdne108742:0"
-        }
-      },
-      "area_key": "crwdns108744:0crwdne108744:0",
-      "blk_cell": "crwdns108746:0crwdne108746:0",
-      "blk_orig": {
-        "keyword": "crwdns108748:0crwdne108748:0",
-        "enum": {}
-      },
-      "sub_area": "crwdns108750:0crwdne108750:0",
-      "area_km_2": {
-        "keyword": "crwdns108752:0crwdne108752:0",
-        "enum": {
-          "1": "crwdns108754:0crwdne108754:0",
-          "101": "crwdns108756:0crwdne108756:0"
-        }
-      },
-      "area_type": "crwdns108758:0crwdne108758:0",
-      "clst_orig": {
-        "keyword": "crwdns108760:0crwdne108760:0",
-        "enum": {
-          "A": "crwdns108762:0crwdne108762:0",
-          "B": "crwdns108764:0crwdne108764:0",
-          "C": "crwdns108766:0crwdne108766:0",
-          "D": "crwdns108768:0crwdne108768:0",
-          "E": "crwdns108770:0crwdne108770:0"
-        }
-      },
-      "cluster_id": {
-        "keyword": "crwdns108772:0crwdne108772:0",
-        "enum": {
-          "NR": "crwdns108774:0crwdne108774:0",
-          "A": "crwdns108776:0crwdne108776:0",
-          "B": "crwdns108778:0crwdne108778:0",
-          "C": "crwdns108780:0crwdne108780:0",
-          "D": "crwdns108782:0crwdne108782:0",
-          "E": "crwdns108784:0crwdne108784:0",
-          "NA": "crwdns108786:0crwdne108786:0"
-        }
-      },
-      "blk_cell_id": {
-        "keyword": "crwdns108788:0crwdne108788:0",
-        "enum": {}
-      },
-      "contract_id": {
-        "keyword": "crwdns108790:0crwdne108790:0",
-        "enum": {
-          "KOREAPMS1": "crwdns108792:0crwdne108792:0",
-          "COMRAPMS1": "crwdns108794:0crwdne108794:0",
-          "IFREMERPMS1": "crwdns108796:0crwdne108796:0",
-          "POLPMS1": "crwdns108798:0crwdne108798:0",
-          "RUSFEDPMS1": "crwdns108800:0crwdne108800:0",
-          "BGRPMS1": "crwdns108802:0crwdne108802:0",
-          "IndiaPMS1": "crwdns108804:0crwdne108804:0"
+          "Peru": "crwdns118586:0crwdne118586:0",
+          "Foreign": "crwdns118588:0crwdne118588:0"
         }
       }
     }
@@ -4146,98 +3049,30 @@
     "name": "crwdns67261:0crwdne67261:0",
     "description": "crwdns67263:0crwdne67263:0",
     "schema": {
-      "speed": "crwdns83582:0crwdne83582:0",
-      "bearing": "crwdns83348:0crwdne83348:0"
-    }
-  },
-  "public-png-fishing-vessels": {
-    "name": "crwdns67287:0crwdne67287:0",
-    "description": "crwdns67289:0crwdne67289:0",
-    "schema": {
-      "source": "crwdns67295:0crwdne67295:0"
+      "flag": {
+        "keyword": "crwdns118590:0crwdne118590:0",
+        "enum": {
+          "PNG": "crwdns118592:0crwdne118592:0",
+          "PHL": "crwdns118594:0crwdne118594:0"
+        }
+      }
     }
   },
   "public-png-presence": {
     "name": "crwdns67305:0crwdne67305:0",
-    "description": "crwdns67307:0crwdne67307:0",
-    "schema": {
-      "speed": "crwdns83584:0crwdne83584:0",
-      "bearing": "crwdns83350:0crwdne83350:0"
-    }
+    "description": "crwdns67307:0crwdne67307:0"
   },
   "public-png-vessel-identity-fishing": {
     "name": "crwdns69196:0crwdne69196:0",
-    "description": "crwdns69198:0crwdne69198:0"
+    "description": "crwdns117930:0crwdne117930:0"
   },
   "public-ports": {
     "name": "crwdns106608:0crwdne106608:0",
-    "description": "crwdns106610:0crwdne106610:0",
-    "schema": {
-      "name": "crwdns106612:0crwdne106612:0",
-      "port_id": "crwdns106614:0crwdne106614:0"
-    }
+    "description": "crwdns106610:0crwdne106610:0"
   },
   "public-ports-v1": {
     "name": "crwdns106616:0crwdne106616:0",
     "description": "crwdns106618:0crwdne106618:0"
-  },
-  "public-presence-viirs-match-prototype": {
-    "name": "crwdns67325:0crwdne67325:0",
-    "description": "crwdns67327:0crwdne67327:0",
-    "schema": {
-      "source": {
-        "keyword": "crwdns67341:0crwdne67341:0",
-        "enum": {
-          "unknown": "crwdns67343:0crwdne67343:0",
-          "chile_vms_aquaculture": "crwdns67345:0crwdne67345:0",
-          "peru.trasat_api": "crwdns67347:0crwdne67347:0",
-          "namibia_vms": "crwdns67349:0crwdne67349:0",
-          "indovms": "crwdns67351:0crwdne67351:0",
-          "mexico_vms": "crwdns67353:0crwdne67353:0",
-          "chile_vms_small_fisheries": "crwdns67355:0crwdne67355:0",
-          "peru.historic": "crwdns67357:0crwdne67357:0",
-          "chile_vms_industry": "crwdns67359:0crwdne67359:0",
-          "ais_scored": "crwdns67361:0crwdne67361:0",
-          "AIS": "crwdns67363:0crwdne67363:0",
-          "panama_vms": "crwdns67365:0crwdne67365:0",
-          "chile_vms_transport": "crwdns67367:0crwdne67367:0"
-        }
-      },
-      "matched": {
-        "keyword": "crwdns67369:0crwdne67369:0",
-        "enum": {
-          "true": "crwdns70380:0crwdne70380:0",
-          "false": "crwdns70382:0crwdne70382:0"
-        }
-      },
-      "radiance": {
-        "keyword": "crwdns67513:0crwdne67513:0",
-        "enum": {
-          "1": "crwdns67515:0crwdne67515:0",
-          "1000": "crwdns67517:0crwdne67517:0"
-        }
-      },
-      "shiptype": {
-        "keyword": "crwdns67519:0crwdne67519:0",
-        "enum": {
-          "unknown": "crwdns67521:0crwdne67521:0",
-          "fishing": "crwdns67523:0crwdne67523:0",
-          "carrier": "crwdns67525:0crwdne67525:0",
-          "support": "crwdns67527:0crwdne67527:0"
-        }
-      },
-      "qf_detect": {
-        "keyword": "crwdns67531:0crwdne67531:0",
-        "enum": {
-          "1": "crwdns67533:0crwdne67533:0",
-          "2": "crwdns67535:0crwdne67535:0",
-          "3": "crwdns67537:0crwdne67537:0",
-          "5": "crwdns67539:0crwdne67539:0",
-          "7": "crwdns67541:0crwdne67541:0",
-          "10": "crwdns67543:0crwdne67543:0"
-        }
-      }
-    }
   },
   "public-protectedseas": {
     "name": "crwdns67549:0crwdne67549:0",
@@ -4291,70 +3126,52 @@
     "name": "crwdns67605:0crwdne67605:0",
     "description": "crwdns67607:0crwdne67607:0",
     "schema": {
-      "ID": {
-        "keyword": "crwdns67609:0crwdne67609:0",
+      "id": {
+        "keyword": "crwdns118596:0crwdne118596:0",
         "enum": {
-          "APFIC": "crwdns67611:0crwdne67611:0",
-          "BOBP-IGO": "crwdns67613:0crwdne67613:0",
-          "CCAMLR": "crwdns67615:0crwdne67615:0",
-          "CCBSP": "crwdns67617:0crwdne67617:0",
-          "CCSBT": "crwdns67619:0crwdne67619:0",
-          "CCSBT Primary Area": "crwdns67621:0crwdne67621:0",
-          "COREP": "crwdns67623:0crwdne67623:0",
-          "CPPS": "crwdns67625:0crwdne67625:0",
-          "CRFM": "crwdns67627:0crwdne67627:0",
-          "CTMFM": "crwdns67629:0crwdne67629:0",
-          "FCWC": "crwdns67631:0crwdne67631:0",
-          "FFA": "crwdns67633:0crwdne67633:0",
-          "GFCM": "crwdns67635:0crwdne67635:0",
-          "IATTC": "crwdns67637:0crwdne67637:0",
-          "ICCAT": "crwdns67639:0crwdne67639:0",
-          "ICES": "crwdns67641:0crwdne67641:0",
-          "IOTC": "crwdns67643:0crwdne67643:0",
-          "IPHC": "crwdns67645:0crwdne67645:0",
-          "LTA": "crwdns67647:0crwdne67647:0",
-          "NAFO": "crwdns67649:0crwdne67649:0",
-          "NAMMCO": "crwdns67651:0crwdne67651:0",
-          "NASCO": "crwdns67653:0crwdne67653:0",
-          "NEAFC": "crwdns67655:0crwdne67655:0",
-          "NPAFC": "crwdns67657:0crwdne67657:0",
-          "NPFC": "crwdns67659:0crwdne67659:0",
-          "OSPESCA": "crwdns67661:0crwdne67661:0",
-          "PERSGA": "crwdns67663:0crwdne67663:0",
-          "PICES": "crwdns67665:0crwdne67665:0",
-          "RECOFI": "crwdns67667:0crwdne67667:0",
-          "SEAFDEC": "crwdns67669:0crwdne67669:0",
-          "SIOFA": "crwdns67671:0crwdne67671:0",
-          "SPC": "crwdns67673:0crwdne67673:0",
-          "SPRFMO": "crwdns67675:0crwdne67675:0",
-          "SRFC": "crwdns67677:0crwdne67677:0",
-          "SWIOFC": "crwdns67679:0crwdne67679:0",
-          "WCPFC": "crwdns67681:0crwdne67681:0"
+          "APFIC": "crwdns118598:0crwdne118598:0",
+          "BOBP-IGO": "crwdns118600:0crwdne118600:0",
+          "CCAMLR": "crwdns118602:0crwdne118602:0",
+          "CCBSP": "crwdns118604:0crwdne118604:0",
+          "CCSBT": "crwdns118606:0crwdne118606:0",
+          "CCSBT Primary Area": "crwdns118608:0crwdne118608:0",
+          "COREP": "crwdns118610:0crwdne118610:0",
+          "CPPS": "crwdns118612:0crwdne118612:0",
+          "CRFM": "crwdns118614:0crwdne118614:0",
+          "CTMFM": "crwdns118616:0crwdne118616:0",
+          "FCWC": "crwdns118618:0crwdne118618:0",
+          "FFA": "crwdns118620:0crwdne118620:0",
+          "GFCM": "crwdns118622:0crwdne118622:0",
+          "IATTC": "crwdns118624:0crwdne118624:0",
+          "ICCAT": "crwdns118626:0crwdne118626:0",
+          "ICES": "crwdns118628:0crwdne118628:0",
+          "IOTC": "crwdns118630:0crwdne118630:0",
+          "IPHC": "crwdns118632:0crwdne118632:0",
+          "LTA": "crwdns118634:0crwdne118634:0",
+          "NAFO": "crwdns118636:0crwdne118636:0",
+          "NAMMCO": "crwdns118638:0crwdne118638:0",
+          "NASCO": "crwdns118640:0crwdne118640:0",
+          "NEAFC": "crwdns118642:0crwdne118642:0",
+          "NPAFC": "crwdns118644:0crwdne118644:0",
+          "NPFC": "crwdns118646:0crwdne118646:0",
+          "OSPESCA": "crwdns118648:0crwdne118648:0",
+          "PERSGA": "crwdns118650:0crwdne118650:0",
+          "PICES": "crwdns118652:0crwdne118652:0",
+          "RECOFI": "crwdns118654:0crwdne118654:0",
+          "SEAFDEC": "crwdns118656:0crwdne118656:0",
+          "SIOFA": "crwdns118658:0crwdne118658:0",
+          "SPC": "crwdns118660:0crwdne118660:0",
+          "SPRFMO": "crwdns118662:0crwdne118662:0",
+          "SRFC": "crwdns118664:0crwdne118664:0",
+          "SWIOFC": "crwdns118666:0crwdne118666:0",
+          "WCPFC": "crwdns118668:0crwdne118668:0"
         }
       }
     }
   },
   "public-seagrasses": {
     "name": "crwdns82900:0crwdne82900:0",
-    "description": "crwdns83038:0crwdne83038:0",
-    "schema": {
-      "GENUS": {
-        "keyword": "crwdns82904:0crwdne82904:0",
-        "enum": {}
-      },
-      "FAMILY": {
-        "keyword": "crwdns82906:0crwdne82906:0",
-        "enum": {}
-      },
-      "habitat": {
-        "keyword": "crwdns83040:0crwdne83040:0",
-        "enum": {}
-      },
-      "BIO_CLASS": {
-        "keyword": "crwdns82910:0crwdne82910:0",
-        "enum": {}
-      }
-    }
+    "description": "crwdns83038:0crwdne83038:0"
   },
   "public-seamounts": {
     "name": "crwdns82912:0crwdne82912:0",
@@ -4369,14 +3186,6 @@
       }
     }
   },
-  "public-south-atlantic-isa-claim-areas": {
-    "name": "crwdns108806:0crwdne108806:0",
-    "description": "crwdns108808:0crwdne108808:0",
-    "schema": {
-      "label": "crwdns108810:0crwdne108810:0",
-      "contractor": "crwdns108812:0crwdne108812:0"
-    }
-  },
   "public-tristan-seamounts-200-1618586314138": {
     "name": "crwdns67683:0crwdne67683:0",
     "description": "crwdns67685:0crwdne67685:0"
@@ -4388,10 +3197,6 @@
   "public-tristan-seamounts-existing-1618586378121": {
     "name": "crwdns67691:0crwdne67691:0",
     "description": "crwdns67693:0crwdne67693:0"
-  },
-  "public-tuna-rfmo": {
-    "name": "crwdns111646:0crwdne111646:0",
-    "description": "crwdns67697:0crwdne67697:0"
   },
   "public-vms-blz-presence": {
     "name": "crwdns111824:0crwdne111824:0",
@@ -4409,21 +3214,22 @@
           ">25": "crwdns111842:0crwdne111842:0"
         }
       },
-      "bearing": "crwdns111844:0crwdne111844:0"
+      "vessel_type": {
+        "keyword": "crwdns118670:0crwdne118670:0",
+        "enum": {
+          "FISHING": "crwdns118672:0crwdne118672:0",
+          "NON_FISHING": "crwdns118674:0crwdne118674:0",
+          "SUPPORT": "crwdns118676:0crwdne118676:0",
+          "CARRIER": "crwdns118678:0crwdne118678:0",
+          "RESEARCH": "crwdns118680:0crwdne118680:0",
+          "": "crwdns118682:0crwdne118682:0"
+        }
+      }
     }
   },
   "public-vms-blz-tracks": {
     "name": "crwdns111846:0crwdne111846:0",
-    "description": "crwdns111848:0crwdne111848:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns111850:0crwdne111850:0",
-        "enum": {
-          "0": "crwdns111852:0crwdne111852:0",
-          "20": "crwdns111854:0crwdne111854:0"
-        }
-      }
-    }
+    "description": "crwdns118100:0crwdne118100:0"
   },
   "public-vms-blz-vessel-identity": {
     "name": "crwdns111856:0crwdne111856:0",
@@ -4433,56 +3239,15 @@
     "name": "crwdns111860:0crwdne111860:0",
     "description": "crwdns111862:0crwdne111862:0",
     "schema": {
-      "speed": "crwdns111864:0crwdne111864:0",
-      "bearing": "crwdns111866:0crwdne111866:0",
-      "target_species": {
-        "keyword": "crwdns111868:0crwdne111868:0",
+      "distance_from_port_km": {
+        "keyword": "crwdns111940:0crwdne111940:0",
         "enum": {
-          "": "crwdns112722:0crwdne112722:0",
-          "Agulha": "crwdns112724:0crwdne112724:0",
-          "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).": "crwdns112726:0crwdne112726:0",
-          "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante": "crwdns112728:0crwdne112728:0",
-          "Anchova, tainha e sororoca": "crwdns112730:0crwdne112730:0",
-          "Anchoíta, galo, calamar": "crwdns112732:0crwdne112732:0",
-          "Atuns (albacora laje, albacora branca e albacora bandolim)": "crwdns112734:0crwdne112734:0",
-          "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.": "crwdns112736:0crwdne112736:0",
-          "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro": "crwdns112738:0crwdne112738:0",
-          "Bonito listrado": "crwdns112740:0crwdne112740:0",
-          "Camarão rosa (santana e barba ruça)": "crwdns112742:0crwdne112742:0",
-          "Camarão rosa, sete- barbas e branco": "crwdns112744:0crwdne112744:0",
-          "Camarão santana e barba ruça": "crwdns112746:0crwdne112746:0",
-          "Camarão sete barbas (Santana e barba ruça)": "crwdns112748:0crwdne112748:0",
-          "Camarões (sete- barbas, branco, rosa)": "crwdns112750:0crwdne112750:0",
-          "Camarões de profundidade": "crwdns112752:0crwdne112752:0",
-          "Caranguejo de profundidade (Chaceon spp.)": "crwdns112754:0crwdne112754:0",
-          "Caranguejo vermelho (Chaceon notialis)": "crwdns112756:0crwdne112756:0",
-          "Cavalas, Albacorinhas": "crwdns112758:0crwdne112758:0",
-          "Corvina, castanha, pescada e pescadinha real": "crwdns112760:0crwdne112760:0",
-          "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.": "crwdns112762:0crwdne112762:0",
-          "Corvina, pescada, castanha, abrótea": "crwdns112764:0crwdne112764:0",
-          "Dourada, Piramutaba e Gurijuba": "crwdns112766:0crwdne112766:0",
-          "Dourado": "crwdns112768:0crwdne112768:0",
-          "Espadarte": "crwdns112770:0crwdne112770:0",
-          "Galo-de-fundo, abrótea-de-fundo, merluza": "crwdns112772:0crwdne112772:0",
-          "Lagosta verde e lagosta vermelha": "crwdns112774:0crwdne112774:0",
-          "Pargo": "crwdns111870:0crwdne111870:0",
-          "Pargo rosa": "crwdns112776:0crwdne112776:0",
-          "Peixe sapo": "crwdns112778:0crwdne112778:0",
-          "Peroá, Garoupa e Corvina": "crwdns112780:0crwdne112780:0",
-          "Pescada amarela gurijuba e camurim": "crwdns112782:0crwdne112782:0",
-          "Pescada gó, camurim e corvina": "crwdns112784:0crwdne112784:0",
-          "Piramutaba": "crwdns112786:0crwdne112786:0",
-          "Piramutaba e dourada": "crwdns112788:0crwdne112788:0",
-          "Polvo": "crwdns111902:0crwdne111902:0",
-          "Saramunete": "crwdns112790:0crwdne112790:0",
-          "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ": "crwdns112792:0crwdne112792:0",
-          "Sardinha verdadeira": "crwdns112794:0crwdne112794:0",
-          "Sardinha-lage": "crwdns112796:0crwdne112796:0",
-          "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)": "crwdns112798:0crwdne112798:0",
-          "Serra": "crwdns112800:0crwdne112800:0",
-          "Serranidae e caranjidae (detalhar)": "crwdns112802:0crwdne112802:0",
-          "Tainha": "crwdns112804:0crwdne112804:0",
-          "Vermelhos (especificar)": "crwdns112806:0crwdne112806:0"
+          "0": "crwdns111942:0crwdne111942:0",
+          "1": "crwdns111944:0crwdne111944:0",
+          "2": "crwdns111946:0crwdne111946:0",
+          "3": "crwdns111948:0crwdne111948:0",
+          "4": "crwdns111950:0crwdne111950:0",
+          "5": "crwdns111952:0crwdne111952:0"
         }
       },
       "license_category": {
@@ -4549,31 +3314,90 @@
           "Sem código IN - Covos": "crwdns112924:0crwdne112924:0"
         }
       },
-      "distance_from_port_km": {
-        "keyword": "crwdns111940:0crwdne111940:0",
+      "target_species": {
+        "keyword": "crwdns111868:0crwdne111868:0",
         "enum": {
-          "0": "crwdns111942:0crwdne111942:0",
-          "1": "crwdns111944:0crwdne111944:0",
-          "2": "crwdns111946:0crwdne111946:0",
-          "3": "crwdns111948:0crwdne111948:0",
-          "4": "crwdns111950:0crwdne111950:0",
-          "5": "crwdns111952:0crwdne111952:0"
+          "": "crwdns112722:0crwdne112722:0",
+          "Agulha": "crwdns112724:0crwdne112724:0",
+          "Albacora laje (Thunnus albacares), Albacora bandolim (Thunnus obesus) e Bonito listrado (Katsuwonus pelamis).": "crwdns112726:0crwdne112726:0",
+          "Anchova (Pomatomus saltatrix), corvina (Micropogonias furnieri), pescada (Cynoscion guatucupa), castanha (Umbrina canosai), abrótea (Urophycis brasiliensis) e fauna acompanhante": "crwdns112728:0crwdne112728:0",
+          "Anchova, tainha e sororoca": "crwdns112730:0crwdne112730:0",
+          "Anchoíta, galo, calamar": "crwdns112732:0crwdne112732:0",
+          "Atuns (albacora laje, albacora branca e albacora bandolim)": "crwdns112734:0crwdne112734:0",
+          "Bagres (Ariidae), dourada e pescada branca, arraia, pescada amarela, pescada gó, corvina, tainha.": "crwdns112736:0crwdne112736:0",
+          "Batata, Abrótea de profundidade, Namorado, Garoupa,Bagre e cherne verdadeiro": "crwdns112738:0crwdne112738:0",
+          "Bonito listrado": "crwdns112740:0crwdne112740:0",
+          "Camarão rosa (santana e barba ruça)": "crwdns112742:0crwdne112742:0",
+          "Camarão rosa, sete- barbas e branco": "crwdns112744:0crwdne112744:0",
+          "Camarão santana e barba ruça": "crwdns112746:0crwdne112746:0",
+          "Camarão sete barbas (Santana e barba ruça)": "crwdns112748:0crwdne112748:0",
+          "Camarões (sete- barbas, branco, rosa)": "crwdns112750:0crwdne112750:0",
+          "Camarões de profundidade": "crwdns112752:0crwdne112752:0",
+          "Caranguejo de profundidade (Chaceon spp.)": "crwdns112754:0crwdne112754:0",
+          "Caranguejo vermelho (Chaceon notialis)": "crwdns112756:0crwdne112756:0",
+          "Cavalas, Albacorinhas": "crwdns112758:0crwdne112758:0",
+          "Corvina, castanha, pescada e pescadinha real": "crwdns112760:0crwdne112760:0",
+          "Corvina, castanha, pescada e pescadinha real, linguado, abrotea, cabrinha.": "crwdns112762:0crwdne112762:0",
+          "Corvina, pescada, castanha, abrótea": "crwdns112764:0crwdne112764:0",
+          "Dourada, Piramutaba e Gurijuba": "crwdns112766:0crwdne112766:0",
+          "Dourado": "crwdns112768:0crwdne112768:0",
+          "Espadarte": "crwdns112770:0crwdne112770:0",
+          "Galo-de-fundo, abrótea-de-fundo, merluza": "crwdns112772:0crwdne112772:0",
+          "Lagosta verde e lagosta vermelha": "crwdns112774:0crwdne112774:0",
+          "Pargo": "crwdns111870:0crwdne111870:0",
+          "Pargo rosa": "crwdns112776:0crwdne112776:0",
+          "Peixe sapo": "crwdns112778:0crwdne112778:0",
+          "Peroá, Garoupa e Corvina": "crwdns112780:0crwdne112780:0",
+          "Pescada amarela gurijuba e camurim": "crwdns112782:0crwdne112782:0",
+          "Pescada gó, camurim e corvina": "crwdns112784:0crwdne112784:0",
+          "Piramutaba": "crwdns112786:0crwdne112786:0",
+          "Piramutaba e dourada": "crwdns112788:0crwdne112788:0",
+          "Polvo": "crwdns111902:0crwdne111902:0",
+          "Saramunete": "crwdns112790:0crwdne112790:0",
+          "Sardinha lage, savelha, galo, sardinha-cascuda, peixe-porco, sardinha-boca-torta, xaréu, guaivira, palombeta e cavalinha ": "crwdns112792:0crwdne112792:0",
+          "Sardinha verdadeira": "crwdns112794:0crwdne112794:0",
+          "Sardinha-lage": "crwdns112796:0crwdne112796:0",
+          "Scombridae, Lutjanidae, Serranidae e Caranjidae (a definir) e Vermelhos (cioba, dentão, guaíuba, ariacó)": "crwdns112798:0crwdne112798:0",
+          "Serra": "crwdns112800:0crwdne112800:0",
+          "Serranidae e caranjidae (detalhar)": "crwdns112802:0crwdne112802:0",
+          "Tainha": "crwdns112804:0crwdne112804:0",
+          "Vermelhos (especificar)": "crwdns112806:0crwdne112806:0"
+        }
+      }
+    }
+  },
+  "public-vms-bra-presence": {
+    "name": "crwdns118684:0crwdne118684:0",
+    "description": "crwdns118686:0crwdne118686:0",
+    "schema": {
+      "speed": {
+        "keyword": "crwdns118688:0crwdne118688:0",
+        "enum": {
+          "<2": "crwdns118690:0crwdne118690:0",
+          "2-4": "crwdns118692:0crwdne118692:0",
+          "4-6": "crwdns118694:0crwdne118694:0",
+          "6-10": "crwdns118696:0crwdne118696:0",
+          "10-15": "crwdns118698:0crwdne118698:0",
+          "15-25": "crwdns118700:0crwdne118700:0",
+          ">25": "crwdns118702:0crwdne118702:0"
+        }
+      },
+      "vessel_type": {
+        "keyword": "crwdns118704:0crwdne118704:0",
+        "enum": {
+          "FISHING": "crwdns118706:0crwdne118706:0",
+          "NON_FISHING": "crwdns118708:0crwdne118708:0",
+          "SUPPORT": "crwdns118710:0crwdne118710:0",
+          "CARRIER": "crwdns118712:0crwdne118712:0",
+          "RESEARCH": "crwdns118714:0crwdne118714:0",
+          "<nil>": "crwdns118716:0crwdne118716:0"
         }
       }
     }
   },
   "public-vms-bra-tracks": {
     "name": "crwdns111954:0crwdne111954:0",
-    "description": "crwdns111956:0crwdne111956:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns111958:0crwdne111958:0",
-        "enum": {
-          "0": "crwdns111960:0crwdne111960:0",
-          "20": "crwdns111962:0crwdne111962:0"
-        }
-      }
-    }
+    "description": "crwdns118112:0crwdne118112:0"
   },
   "public-vms-bra-vessel-identity": {
     "name": "crwdns111964:0crwdne111964:0",
@@ -4583,15 +3407,6 @@
     "name": "crwdns111968:0crwdne111968:0",
     "description": "crwdns111970:0%20ecrwdnd111970:0%20pcrwdnd111970:0%20ecrwdnd111970:0%Ccrwdnd111970:0%Bcrwdnd111970:0%20acrwdnd111970:0%20ecrwdnd111970:0%20crwdnd111970:0%20crwdnd111970:0%20crwdne111970:0",
     "schema": {
-      "speed": "crwdns111972:0crwdne111972:0",
-      "bearing": "crwdns111974:0crwdne111974:0",
-      "source_fleet": {
-        "keyword": "crwdns111976:0crwdne111976:0",
-        "enum": {
-          "INDUSTRY": "crwdns111978:0crwdne111978:0",
-          "SMALL_FISHERIES": "crwdns112926:0crwdne112926:0"
-        }
-      },
       "distance_from_port_km": {
         "keyword": "crwdns111982:0crwdne111982:0",
         "enum": {
@@ -4602,6 +3417,13 @@
           "4": "crwdns111992:0crwdne111992:0",
           "5": "crwdns111994:0crwdne111994:0"
         }
+      },
+      "source_fleet": {
+        "keyword": "crwdns111976:0crwdne111976:0",
+        "enum": {
+          "SMALL_FISHERIES": "crwdns112926:0crwdne112926:0",
+          "INDUSTRY": "crwdns111978:0crwdne111978:0"
+        }
       }
     }
   },
@@ -4609,6 +3431,15 @@
     "name": "crwdns111996:0crwdne111996:0",
     "description": "crwdns111998:0%20ecrwdnd111998:0%20pcrwdnd111998:0%20ecrwdnd111998:0%Ccrwdnd111998:0%Bcrwdnd111998:0%20acrwdnd111998:0%20ecrwdnd111998:0%20crwdnd111998:0%20crwdnd111998:0%20crwdne111998:0",
     "schema": {
+      "source_fleet": {
+        "keyword": "crwdns112018:0crwdne112018:0",
+        "enum": {
+          "SMALL_FISHERIES": "crwdns112020:0crwdne112020:0",
+          "INDUSTRY": "crwdns112022:0crwdne112022:0",
+          "TRANSPORT": "crwdns112024:0crwdne112024:0",
+          "AQUACULTURE": "crwdns112026:0crwdne112026:0"
+        }
+      },
       "speed": {
         "keyword": "crwdns112000:0crwdne112000:0",
         "enum": {
@@ -4621,30 +3452,22 @@
           ">25": "crwdns112014:0crwdne112014:0"
         }
       },
-      "bearing": "crwdns112016:0crwdne112016:0",
-      "source_fleet": {
-        "keyword": "crwdns112018:0crwdne112018:0",
+      "vessel_type": {
+        "keyword": "crwdns118718:0crwdne118718:0",
         "enum": {
-          "AQUACULTURE": "crwdns112026:0crwdne112026:0",
-          "INDUSTRY": "crwdns112022:0crwdne112022:0",
-          "SMALL_FISHERIES": "crwdns112020:0crwdne112020:0",
-          "TRANSPORT": "crwdns112024:0crwdne112024:0"
+          "FISHING": "crwdns118720:0crwdne118720:0",
+          "NON_FISHING": "crwdns118722:0crwdne118722:0",
+          "SUPPORT": "crwdns118724:0crwdne118724:0",
+          "CARRIER": "crwdns118726:0crwdne118726:0",
+          "RESEARCH": "crwdns118728:0crwdne118728:0",
+          "": "crwdns118730:0crwdne118730:0"
         }
       }
     }
   },
   "public-vms-chl-tracks": {
     "name": "crwdns112028:0crwdne112028:0",
-    "description": "crwdns112030:0crwdne112030:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns112032:0crwdne112032:0",
-        "enum": {
-          "0": "crwdns112034:0crwdne112034:0",
-          "20": "crwdns112036:0crwdne112036:0"
-        }
-      }
-    }
+    "description": "crwdns118126:0crwdne118126:0"
   },
   "public-vms-chl-vessel-identity": {
     "name": "crwdns112038:0crwdne112038:0",
@@ -4654,16 +3477,6 @@
     "name": "crwdns112042:0crwdne112042:0",
     "description": "crwdns112044:0crwdne112044:0",
     "schema": {
-      "speed": "crwdns112046:0crwdne112046:0",
-      "bearing": "crwdns112048:0crwdne112048:0",
-      "source_fleet": {
-        "keyword": "crwdns112050:0crwdne112050:0",
-        "enum": {
-          "AVANZADOS": "crwdns112052:0crwdne112052:0",
-          "SARDINEROS": "crwdns112054:0crwdne112054:0",
-          "ATUNEROS": "crwdns112056:0crwdne112056:0"
-        }
-      },
       "distance_from_port_km": {
         "keyword": "crwdns112058:0crwdne112058:0",
         "enum": {
@@ -4674,6 +3487,14 @@
           "4": "crwdns112068:0crwdne112068:0",
           "5": "crwdns112070:0crwdne112070:0"
         }
+      },
+      "source_fleet": {
+        "keyword": "crwdns112050:0crwdne112050:0",
+        "enum": {
+          "AVANZADOS": "crwdns112052:0crwdne112052:0",
+          "SARDINEROS": "crwdns112054:0crwdne112054:0",
+          "ATUNEROS": "crwdns112056:0crwdne112056:0"
+        }
       }
     }
   },
@@ -4681,6 +3502,14 @@
     "name": "crwdns112072:0crwdne112072:0",
     "description": "crwdns112074:0crwdne112074:0",
     "schema": {
+      "source_fleet": {
+        "keyword": "crwdns112094:0crwdne112094:0",
+        "enum": {
+          "AVANZADOS": "crwdns112096:0crwdne112096:0",
+          "SARDINEROS": "crwdns112098:0crwdne112098:0",
+          "ATUNEROS": "crwdns112100:0crwdne112100:0"
+        }
+      },
       "speed": {
         "keyword": "crwdns112076:0crwdne112076:0",
         "enum": {
@@ -4693,46 +3522,41 @@
           ">25": "crwdns112090:0crwdne112090:0"
         }
       },
-      "bearing": "crwdns112092:0crwdne112092:0",
-      "source_fleet": {
-        "keyword": "crwdns112094:0crwdne112094:0",
+      "vessel_type": {
+        "keyword": "crwdns118732:0crwdne118732:0",
         "enum": {
-          "AVANZADOS": "crwdns112096:0crwdne112096:0",
-          "SARDINEROS": "crwdns112098:0crwdne112098:0",
-          "ATUNEROS": "crwdns112100:0crwdne112100:0"
+          "FISHING": "crwdns118734:0crwdne118734:0",
+          "NON_FISHING": "crwdns118736:0crwdne118736:0",
+          "SUPPORT": "crwdns118738:0crwdne118738:0",
+          "CARRIER": "crwdns118740:0crwdne118740:0",
+          "RESEARCH": "crwdns118742:0crwdne118742:0",
+          "": "crwdns118744:0crwdne118744:0"
         }
       }
     }
   },
   "public-vms-cri-tracks": {
     "name": "crwdns112102:0crwdne112102:0",
-    "description": "crwdns112104:0crwdne112104:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns112106:0crwdne112106:0",
-        "enum": {
-          "0": "crwdns112108:0crwdne112108:0",
-          "20": "crwdns112110:0crwdne112110:0"
-        }
-      }
-    }
+    "description": "crwdns118140:0crwdne118140:0"
   },
   "public-vms-cri-vessel-identity": {
     "name": "crwdns112112:0crwdne112112:0",
-    "description": "crwdns112114:0crwdne112114:0"
+    "description": "crwdns112114:0crwdne112114:0",
+    "schema": {
+      "source_fleet": {
+        "keyword": "crwdns118746:0crwdne118746:0",
+        "enum": {
+          "costarica_vms_industrial_longline": "crwdns118748:0crwdne118748:0",
+          "costarica_vms_atuneros": "crwdns118750:0crwdne118750:0",
+          "costarica_vms_sardineros": "crwdns118752:0crwdne118752:0"
+        }
+      }
+    }
   },
   "public-vms-ecu-fishing-effort": {
     "name": "crwdns112116:0crwdne112116:0",
     "description": "crwdns112118:0crwdne112118:0",
     "schema": {
-      "speed": "crwdns112120:0crwdne112120:0",
-      "bearing": "crwdns112122:0crwdne112122:0",
-      "prod_shiptype": {
-        "keyword": "crwdns112124:0crwdne112124:0",
-        "enum": {
-          "FISHING": "crwdns112126:0crwdne112126:0"
-        }
-      },
       "distance_from_port_km": {
         "keyword": "crwdns112128:0crwdne112128:0",
         "enum": {
@@ -4746,18 +3570,36 @@
       }
     }
   },
-  "public-vms-ecu-tracks": {
-    "name": "crwdns112142:0crwdne112142:0",
-    "description": "crwdns112144:0crwdne112144:0",
+  "public-vms-ecu-presence": {
+    "name": "crwdns118754:0crwdne118754:0",
+    "description": "crwdns118756:0crwdne118756:0",
     "schema": {
       "speed": {
-        "keyword": "crwdns112146:0crwdne112146:0",
+        "keyword": "crwdns118758:0crwdne118758:0",
         "enum": {
-          "0": "crwdns112148:0crwdne112148:0",
-          "20": "crwdns112150:0crwdne112150:0"
+          "<2": "crwdns118760:0crwdne118760:0",
+          "2-4": "crwdns118762:0crwdne118762:0",
+          "4-6": "crwdns118764:0crwdne118764:0",
+          "6-10": "crwdns118766:0crwdne118766:0",
+          "10-15": "crwdns118768:0crwdne118768:0",
+          "15-25": "crwdns118770:0crwdne118770:0",
+          ">25": "crwdns118772:0crwdne118772:0"
+        }
+      },
+      "vessel_type": {
+        "keyword": "crwdns118774:0crwdne118774:0",
+        "enum": {
+          "": "crwdns118776:0crwdne118776:0",
+          "SUPPORT": "crwdns118778:0crwdne118778:0",
+          "NON-FISHING": "crwdns118780:0crwdne118780:0",
+          "FISHING": "crwdns118782:0crwdne118782:0"
         }
       }
     }
+  },
+  "public-vms-ecu-tracks": {
+    "name": "crwdns112142:0crwdne112142:0",
+    "description": "crwdns112144:0crwdne112144:0"
   },
   "public-vms-ecu-vessel-identity": {
     "name": "crwdns112152:0crwdne112152:0",
@@ -4767,8 +3609,6 @@
     "name": "crwdns112156:0crwdne112156:0",
     "description": "crwdns112158:0crwdne112158:0",
     "schema": {
-      "speed": "crwdns112160:0crwdne112160:0",
-      "bearing": "crwdns112162:0crwdne112162:0",
       "distance_from_port_km": {
         "keyword": "crwdns112164:0crwdne112164:0",
         "enum": {
@@ -4798,21 +3638,22 @@
           ">25": "crwdns112196:0crwdne112196:0"
         }
       },
-      "bearing": "crwdns112198:0crwdne112198:0"
+      "vessel_type": {
+        "keyword": "crwdns118784:0crwdne118784:0",
+        "enum": {
+          "FISHING": "crwdns118786:0crwdne118786:0",
+          "NON_FISHING": "crwdns118788:0crwdne118788:0",
+          "SUPPORT": "crwdns118790:0crwdne118790:0",
+          "CARRIER": "crwdns118792:0crwdne118792:0",
+          "RESEARCH": "crwdns118794:0crwdne118794:0",
+          "": "crwdns118796:0crwdne118796:0"
+        }
+      }
     }
   },
   "public-vms-nor-tracks": {
     "name": "crwdns112200:0crwdne112200:0",
-    "description": "crwdns112202:0crwdne112202:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns112204:0crwdne112204:0",
-        "enum": {
-          "0": "crwdns112206:0crwdne112206:0",
-          "20": "crwdns112208:0crwdne112208:0"
-        }
-      }
-    }
+    "description": "crwdns112202:0crwdne112202:0"
   },
   "public-vms-nor-vessel-identity": {
     "name": "crwdns112210:0crwdne112210:0",
@@ -4822,14 +3663,6 @@
     "name": "crwdns112214:0crwdne112214:0",
     "description": "crwdns112216:0crwdne112216:0",
     "schema": {
-      "speed": "crwdns112218:0crwdne112218:0",
-      "bearing": "crwdns112220:0crwdne112220:0",
-      "source_fleet": {
-        "keyword": "crwdns112222:0crwdne112222:0",
-        "enum": {
-          "INTERNATIONAL": "crwdns112496:0crwdne112496:0"
-        }
-      },
       "distance_from_port_km": {
         "keyword": "crwdns112228:0crwdne112228:0",
         "enum": {
@@ -4840,6 +3673,12 @@
           "4": "crwdns112238:0crwdne112238:0",
           "5": "crwdns112240:0crwdne112240:0"
         }
+      },
+      "source_fleet": {
+        "keyword": "crwdns112222:0crwdne112222:0",
+        "enum": {
+          "INTERNATIONAL": "crwdns112496:0crwdne112496:0"
+        }
       }
     }
   },
@@ -4847,6 +3686,12 @@
     "name": "crwdns112242:0crwdne112242:0",
     "description": "crwdns112244:0crwdne112244:0",
     "schema": {
+      "source_fleet": {
+        "keyword": "crwdns112264:0crwdne112264:0",
+        "enum": {
+          "INTERNATIONAL": "crwdns112498:0crwdne112498:0"
+        }
+      },
       "speed": {
         "keyword": "crwdns112246:0crwdne112246:0",
         "enum": {
@@ -4859,27 +3704,22 @@
           ">25": "crwdns112260:0crwdne112260:0"
         }
       },
-      "bearing": "crwdns112262:0crwdne112262:0",
-      "source_fleet": {
-        "keyword": "crwdns112264:0crwdne112264:0",
+      "vessel_type": {
+        "keyword": "crwdns118798:0crwdne118798:0",
         "enum": {
-          "INTERNATIONAL": "crwdns112498:0crwdne112498:0"
+          "FISHING": "crwdns118800:0crwdne118800:0",
+          "NON_FISHING": "crwdns118802:0crwdne118802:0",
+          "SUPPORT": "crwdns118804:0crwdne118804:0",
+          "CARRIER": "crwdns118806:0crwdne118806:0",
+          "RESEARCH": "crwdns118808:0crwdne118808:0",
+          "": "crwdns118810:0crwdne118810:0"
         }
       }
     }
   },
   "public-vms-pan-tracks": {
     "name": "crwdns112270:0crwdne112270:0",
-    "description": "crwdns112272:0crwdne112272:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns112274:0crwdne112274:0",
-        "enum": {
-          "0": "crwdns112276:0crwdne112276:0",
-          "20": "crwdns112278:0crwdne112278:0"
-        }
-      }
-    }
+    "description": "crwdns112272:0crwdne112272:0"
   },
   "public-vms-pan-vessel-identity": {
     "name": "crwdns112280:0crwdne112280:0",
@@ -4887,26 +3727,8 @@
   },
   "public-vms-per-fishing-effort": {
     "name": "crwdns112284:0crwdne112284:0",
-    "description": "crwdns112286:0crwdne112286:0",
+    "description": "crwdns118182:0crwdne118182:0",
     "schema": {
-      "speed": "crwdns112288:0crwdne112288:0",
-      "origin": {
-        "keyword": "crwdns112290:0crwdne112290:0",
-        "enum": {
-          "Foreign": "crwdns112292:0crwdne112292:0",
-          "PER": "crwdns112294:0crwdne112294:0"
-        }
-      },
-      "bearing": "crwdns112296:0crwdne112296:0",
-      "source_fleet": {
-        "keyword": "crwdns112298:0crwdne112298:0",
-        "enum": {
-          "": "crwdns112480:0crwdne112480:0",
-          "ARTISANAL": "crwdns112478:0crwdne112478:0",
-          "INDUSTRIAL": "crwdns112474:0crwdne112474:0",
-          "SMALL-SCALE": "crwdns112476:0crwdne112476:0"
-        }
-      },
       "distance_from_port_km": {
         "keyword": "crwdns112302:0crwdne112302:0",
         "enum": {
@@ -4917,13 +3739,46 @@
           "4": "crwdns112312:0crwdne112312:0",
           "5": "crwdns112314:0crwdne112314:0"
         }
+      },
+      "origin": {
+        "keyword": "crwdns112290:0crwdne112290:0",
+        "enum": {
+          "Foreign": "crwdns112292:0crwdne112292:0",
+          "PER": "crwdns112294:0crwdne112294:0",
+          "": "crwdns118812:0crwdne118812:0"
+        }
+      },
+      "source_fleet": {
+        "keyword": "crwdns112298:0crwdne112298:0",
+        "enum": {
+          "": "crwdns112480:0crwdne112480:0",
+          "SMALL-SCALE": "crwdns112476:0crwdne112476:0",
+          "INDUSTRIAL": "crwdns112474:0crwdne112474:0",
+          "ARTISANAL": "crwdns112478:0crwdne112478:0"
+        }
       }
     }
   },
   "public-vms-per-presence": {
     "name": "crwdns112316:0crwdne112316:0",
-    "description": "crwdns112318:0crwdne112318:0",
+    "description": "crwdns118188:0crwdne118188:0",
     "schema": {
+      "origin": {
+        "keyword": "crwdns112336:0crwdne112336:0",
+        "enum": {
+          "Foreign": "crwdns112338:0crwdne112338:0",
+          "PER": "crwdns112340:0crwdne112340:0"
+        }
+      },
+      "source_fleet": {
+        "keyword": "crwdns112344:0crwdne112344:0",
+        "enum": {
+          "INDUSTRIAL": "crwdns112346:0crwdne112346:0",
+          "SMALL-SCALE": "crwdns112348:0crwdne112348:0",
+          "ARTISANAL": "crwdns112350:0crwdne112350:0",
+          "": "crwdns112482:0crwdne112482:0"
+        }
+      },
       "speed": {
         "keyword": "crwdns112320:0crwdne112320:0",
         "enum": {
@@ -4935,49 +3790,48 @@
           "15-25": "crwdns112332:0crwdne112332:0",
           ">25": "crwdns112334:0crwdne112334:0"
         }
-      },
-      "origin": {
-        "keyword": "crwdns112336:0crwdne112336:0",
-        "enum": {
-          "Foreign": "crwdns112338:0crwdne112338:0",
-          "PER": "crwdns112340:0crwdne112340:0"
-        }
-      },
-      "bearing": "crwdns112342:0crwdne112342:0",
-      "source_fleet": {
-        "keyword": "crwdns112344:0crwdne112344:0",
-        "enum": {
-          "": "crwdns112482:0crwdne112482:0",
-          "ARTISANAL": "crwdns112350:0crwdne112350:0",
-          "INDUSTRIAL": "crwdns112346:0crwdne112346:0",
-          "SMALL-SCALE": "crwdns112348:0crwdne112348:0"
-        }
       }
     }
   },
   "public-vms-per-tracks": {
     "name": "crwdns112352:0crwdne112352:0",
-    "description": "crwdns112354:0crwdne112354:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns112356:0crwdne112356:0",
-        "enum": {
-          "0": "crwdns112358:0crwdne112358:0",
-          "20": "crwdns112360:0crwdne112360:0"
-        }
-      }
-    }
+    "description": "crwdns118192:0crwdne118192:0"
   },
   "public-vms-per-vessel-identity": {
     "name": "crwdns112362:0crwdne112362:0",
-    "description": "crwdns112364:0crwdne112364:0"
+    "description": "crwdns112364:0crwdne112364:0",
+    "schema": {
+      "hull": {
+        "keyword": "crwdns118814:0crwdne118814:0",
+        "enum": {
+          "ACERO NAVAL": "crwdns118816:0crwdne118816:0",
+          "MADERA": "crwdns118818:0crwdne118818:0",
+          "N/E": "crwdns118820:0crwdne118820:0",
+          "NONE": "crwdns118822:0crwdne118822:0",
+          "FIBRA DE VIDRIO": "crwdns118824:0crwdne118824:0"
+        }
+      },
+      "origin": {
+        "keyword": "crwdns118826:0crwdne118826:0",
+        "enum": {
+          "Peru": "crwdns118828:0crwdne118828:0",
+          "Foreign": "crwdns118830:0crwdne118830:0"
+        }
+      },
+      "sourceFleet": {
+        "keyword": "crwdns118832:0crwdne118832:0",
+        "enum": {
+          "industrial": "crwdns118834:0crwdne118834:0",
+          "artisanal": "crwdns118836:0crwdne118836:0",
+          "not defined": "crwdns118838:0crwdne118838:0"
+        }
+      }
+    }
   },
   "public-vms-png-fishing-effort": {
     "name": "crwdns112366:0crwdne112366:0",
     "description": "crwdns112368:0crwdne112368:0",
     "schema": {
-      "speed": "crwdns112370:0crwdne112370:0",
-      "bearing": "crwdns112372:0crwdne112372:0",
       "distance_from_port_km": {
         "keyword": "crwdns112374:0crwdne112374:0",
         "enum": {
@@ -5007,29 +3861,26 @@
           ">25": "crwdns112406:0crwdne112406:0"
         }
       },
-      "bearing": "crwdns112408:0crwdne112408:0"
-    }
-  },
-  "public-vms-png-tracks": {
-    "name": "crwdns112410:0crwdne112410:0",
-    "description": "crwdns112412:0crwdne112412:0",
-    "schema": {
-      "speed": {
-        "keyword": "crwdns112414:0crwdne112414:0",
+      "vessel_type": {
+        "keyword": "crwdns118840:0crwdne118840:0",
         "enum": {
-          "0": "crwdns112416:0crwdne112416:0",
-          "20": "crwdns112418:0crwdne112418:0"
+          "FISHING": "crwdns118842:0crwdne118842:0",
+          "NON_FISHING": "crwdns118844:0crwdne118844:0",
+          "SUPPORT": "crwdns118846:0crwdne118846:0",
+          "CARRIER": "crwdns118848:0crwdne118848:0",
+          "RESEARCH": "crwdns118850:0crwdne118850:0",
+          "": "crwdns118852:0crwdne118852:0"
         }
       }
     }
   },
+  "public-vms-png-tracks": {
+    "name": "crwdns112410:0crwdne112410:0",
+    "description": "crwdns112412:0crwdne112412:0"
+  },
   "public-vms-png-vessel-identity": {
     "name": "crwdns112420:0crwdne112420:0",
     "description": "crwdns112422:0crwdne112422:0"
-  },
-  "public-wdpa-may-2021-marine": {
-    "name": "crwdns67699:0crwdne67699:0",
-    "description": "crwdns67701:0crwdne67701:0"
   },
   "public-wpp-nri": {
     "name": "crwdns67703:0crwdne67703:0",

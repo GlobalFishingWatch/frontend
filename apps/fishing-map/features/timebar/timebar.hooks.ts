@@ -55,7 +55,7 @@ const getTimerangeFromUrl = (locationUrl = window.location.toString()) => {
     console.warn(e)
   }
 }
-const timerangeState = atom(DEFAULT_TIME_RANGE)
+export const timerangeState = atom(DEFAULT_TIME_RANGE)
 timerangeState.onMount = (setAtom) => {
   // Initializing the atom with the url value until the workspace loads
   const urlTimerange = getTimerangeFromUrl()

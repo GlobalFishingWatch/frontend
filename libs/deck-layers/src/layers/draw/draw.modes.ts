@@ -1,7 +1,4 @@
 import type {
-  ClickEvent,
-  FeatureCollection,
-  ModeProps,
   Pick} from '@deck.gl-community/editable-layers';
 import {
   DrawPointMode,
@@ -20,13 +17,19 @@ export type DrawLayerMode =
   | CustomModifyMode
 
 export class CustomDrawPolygonMode extends DrawPolygonMode {
-  handleClick(event: ClickEvent, props: ModeProps<FeatureCollection>) {
+  handleClick(
+    event: Parameters<DrawPolygonMode['handleClick']>[0],
+    props: Parameters<DrawPolygonMode['handleClick']>[1]
+  ) {
     event.sourceEvent.preventDefault()
     return super.handleClick(event, props)
   }
 }
 export class CustomDrawPointMode extends DrawPointMode {
-  handleClick(event: ClickEvent, props: ModeProps<FeatureCollection>) {
+  handleClick(
+    event: Parameters<DrawPointMode['handleClick']>[0],
+    props: Parameters<DrawPointMode['handleClick']>[1]
+  ) {
     event.sourceEvent.preventDefault()
     return super.handleClick(event, props)
   }
@@ -52,7 +55,10 @@ export function getPickedExistingEditHandle(
 }
 
 export class CustomViewMode extends ViewMode {
-  handleClick(event: ClickEvent, props: ModeProps<FeatureCollection>) {
+  handleClick(
+    event: Parameters<ViewMode['handleClick']>[0],
+    props: Parameters<ViewMode['handleClick']>[1]
+  ) {
     event.sourceEvent.preventDefault()
     if (event.picks.length) {
       props.onEdit({
@@ -67,7 +73,10 @@ export class CustomViewMode extends ViewMode {
 }
 
 export class CustomModifyMode extends ModifyMode {
-  handleClick(event: ClickEvent, props: ModeProps<FeatureCollection>) {
+  handleClick(
+    event: Parameters<ModifyMode['handleClick']>[0],
+    props: Parameters<ModifyMode['handleClick']>[1]
+  ) {
     event.sourceEvent.preventDefault()
     const geometryPicks = uniqBy(
       event.picks.filter((p) => !p.isGuide),

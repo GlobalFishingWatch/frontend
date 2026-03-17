@@ -46,7 +46,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
 > {
   static layerName = 'PolygonsLayer'
   static defaultProps = defaultProps
-  state!: PolygonsLayerState
+  declare state: PolygonsLayerState
 
   constructor(props: PolygonsLayerProps & PropsT) {
     ;(props as LayerProps).onDataLoad = () => {
@@ -124,6 +124,9 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
   }
 
   getFillColor(d: PolygonFeature): Color {
+    if (!this.props.pickable) {
+      return COLOR_TRANSPARENT
+    }
     return d.properties?.highlighted ||
       getPickedFeatureToHighlight(d, this.props.highlightedFeatures)
       ? COLOR_HIGHLIGHT_FILL
@@ -131,6 +134,9 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
   }
 
   getHighlightLineWidth(d: PolygonFeature, lineWidth = 2): number {
+    if (!this.props.pickable) {
+      return 0
+    }
     return d.properties?.highlighted ||
       getPickedFeatureToHighlight(d, this.props.highlightedFeatures)
       ? lineWidth
@@ -143,6 +149,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
       color,
       data,
       dataUrl,
+      pickable,
       group = LayerGroup.OutlinePolygonsBackground,
       highlightedFeatures = [],
     } = this.props
@@ -163,7 +170,7 @@ export class PolygonsLayer<PropsT = Record<string, unknown>> extends CompositeLa
         id: `${id}-highlight-fills`,
         stroked: false,
         data: dataToRender,
-        pickable: this.props.pickable,
+        pickable: pickable,
         getPolygonOffset: (params) => getLayerGroupOffset(group, params),
         getFillColor: (d) => this.getFillColor(d as PolygonFeature),
         updateTriggers: {

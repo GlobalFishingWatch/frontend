@@ -74,47 +74,73 @@ const slice = createSlice({
       state.hover = action.payload
     },
     setSubareas: (state, action: PayloadAction<PortSubarea[]>) => {
+      if (!state.country) {
+        return
+      }
       state.subareas[state.country] = action.payload
     },
     setPorts: (state, action: PayloadAction<PortSubarea[]>) => {
+      if (!state.country) {
+        return
+      }
       state.ports[state.country] = action.payload
     },
     sortOptions: (state) => {
+      if (!state.country) {
+        return
+      }
       const portOptions = [...state.ports[state.country]]
       state.ports[state.country] = portOptions.sort((a, b) => (a.name > b.name ? 1 : -1))
       const subareaOptions = [...state.subareas[state.country]]
       state.subareas[state.country] = subareaOptions.sort((a, b) => (a.name > b.name ? 1 : -1))
     },
     setPortValues: (state, action: PayloadAction<ValuesObject>) => {
+      if (!state.country) {
+        return
+      }
       if (!state.portValues[state.country]) state.portValues[state.country] = action.payload
     },
     setSubareaValues: (state, action: PayloadAction<ValuesObject>) => {
+      if (!state.country) {
+        return
+      }
       if (!state.subareaValues[state.country]) state.subareaValues[state.country] = action.payload
     },
     setPointValues: (state, action: PayloadAction<ValuesObject>) => {
+      if (!state.country) {
+        return
+      }
       if (!state.pointValues[state.country]) state.pointValues[state.country] = action.payload
     },
     changePortValue: (state, action: PayloadAction<{ id: string; value: string }>) => {
+      if (!state.country) {
+        return
+      }
+      const country = state.country
       if (state.selected && state.selected.length) {
         const newPortValues = state.portValues
         state.selected.forEach((selected) => {
-          newPortValues[state.country][selected] = action.payload.value
+          newPortValues[country][selected] = action.payload.value
         })
         state.portValues = newPortValues
       } else {
-        state.portValues[state.country][action.payload.id] = action.payload.value
+        state.portValues[country][action.payload.id] = action.payload.value
       }
-      state.portValues[state.country][action.payload.id] = action.payload.value
+      state.portValues[country][action.payload.id] = action.payload.value
     },
     changeSubareaValue: (state, action: PayloadAction<{ id: string; value: string }>) => {
+      if (!state.country) {
+        return
+      }
+      const country = state.country
       if (state.selected && state.selected.length) {
         const newSubareaValues = state.subareaValues
         state.selected.forEach((selected) => {
-          newSubareaValues[state.country][selected] = action.payload.value
+          newSubareaValues[country][selected] = action.payload.value
         })
         state.subareaValues = newSubareaValues
       } else {
-        state.subareaValues[state.country][action.payload.id] = action.payload.value
+        state.subareaValues[country][action.payload.id] = action.payload.value
       }
     },
     changeAnchoragePort: (state, action: PayloadAction<{ id: string; iso3: string }>) => {
@@ -122,25 +148,29 @@ const slice = createSlice({
         if (point.s2id === action.payload.id) {
           return {
             ...point,
-            port_iso3: null,
-            port_label: null,
-            community_label: null,
+            port_iso3: '',
+            port_label: '',
+            community_label: '',
             iso3: action.payload.iso3,
-            community_iso3: null,
+            community_iso3: '',
           }
         }
         return point
       })
     },
     changePointValue: (state, action: PayloadAction<{ id: string; value: string }>) => {
+      if (!state.country) {
+        return
+      }
+      const country = state.country
       if (state.selected && state.selected.length) {
         const newPointValues = state.pointValues
         state.selected.forEach((selected) => {
-          newPointValues[state.country][selected] = action.payload.value
+          newPointValues[country][selected] = action.payload.value
         })
         state.pointValues = newPointValues
       } else {
-        state.pointValues[state.country][action.payload.id] = action.payload.value
+        state.pointValues[country][action.payload.id] = action.payload.value
       }
     },
     sortPoints: (state, action: PayloadAction<{ orderColumn: string; orderDirection: string }>) => {

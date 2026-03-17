@@ -6,7 +6,11 @@ import {
   DataviewType,
   EndpointId,
 } from '@globalfishingwatch/api-types'
-import { getDatasetsExtent, resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import {
+  getDatasetConfigurationProperty,
+  getDatasetsExtent,
+  resolveEndpoint,
+} from '@globalfishingwatch/datasets-client'
 import type {
   ColorRampId,
   FourwingsDeckSublayer,
@@ -48,7 +52,14 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
   const sublayers: FourwingsDeckSublayer[] = (visibleSublayers || []).map((sublayer) => {
     const units = uniq(sublayer.datasets?.map((dataset) => dataset.unit))
     const positionProperties = uniq(
-      sublayer?.datasets.flatMap((dataset) => Object.keys(dataset?.schema || {}))
+      sublayer?.datasets.flatMap((dataset) => {
+        const positionProperties = getDatasetConfigurationProperty({
+          dataset,
+          property: 'extraPropertiesPositionTiles',
+          type: 'fourwingsV1',
+        })
+        return positionProperties?.map((f) => f.id) || []
+      })
     )
     const { extentStart, extentEnd } = getDatasetsExtent<number>(sublayer.datasets, {
       format: 'timestamp',
@@ -124,23 +135,11 @@ export const resolveDeckFourwingsLayerProps: DeckResolverFunction<
               value: visualizationMode === 'positions' ? 'position' : 'heatmap',
             },
           ],
-        },
-        { absolute: true }
-      )
-    : undefined
-
-  const interactionUrl = dataset
-    ? resolveEndpoint(
-        dataset,
-        {
-          datasetId: dataset.id,
-          endpoint: EndpointId.FourwingsTiles,
-          params: [
+          // Removing dataset as they will be resolved with in the layer
+          query: [
             {
-              id: 'type',
-              // api enpdoint needs 'position' instead of 'positions'
-              // TODO: discuss this with Raul before the release
-              value: visualizationMode === 'positions' ? 'position' : 'heatmap',
+              id: 'datasets',
+              value: [],
             },
           ],
         },

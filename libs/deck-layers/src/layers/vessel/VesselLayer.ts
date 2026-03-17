@@ -3,7 +3,7 @@ import { CompositeLayer } from '@deck.gl/core'
 import bbox from '@turf/bbox'
 import bboxPolygon from '@turf/bbox-polygon'
 import { featureCollection, point } from '@turf/helpers'
-import { rhumbBearing } from '@turf/turf'
+import { rhumbBearing } from '@turf/rhumb-bearing'
 import type { BBox, Position } from 'geojson'
 import { extent } from 'simple-statistics'
 
@@ -19,7 +19,7 @@ import {
 } from '@globalfishingwatch/deck-loaders'
 
 import type { DeckLayerProps } from '../../types'
-import { getFetchLoadOptions, getLayerGroupOffset, LayerGroup } from '../../utils'
+import { fetchWithGFWAPI, getLayerGroupOffset, LayerGroup } from '../../utils'
 import { deckToHexColor } from '../../utils/colors'
 
 import {
@@ -63,7 +63,8 @@ type VesselLayerState = {
 let warnLogged = false
 export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
   static layerName = 'VesselLayer'
-  state!: VesselLayerState
+  declare state: VesselLayerState
+
   initializeState() {
     super.initializeState(this.context)
     this.state = {
@@ -170,7 +171,7 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
         .findLast(([zoomLevel]) => zoom >= parseInt(zoomLevel))?.[1] || TRACK_DEFAULT_THINNING
 
     Object.entries(THINNING_LEVELS[thinningLevel]).forEach(([key, value]) => {
-      trackUrlObject.searchParams.set(key, value)
+      trackUrlObject.searchParams.set(key, value?.toString() as string)
     })
     const format = trackUrlObject.searchParams.get('format') || 'DECKGL'
     if (format !== 'DECKGL' && !warnLogged) {
@@ -234,8 +235,8 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
             zoom,
             trackThinningZoomConfig,
           }),
+          fetch: fetchWithGFWAPI,
           loadOptions: {
-            ...getFetchLoadOptions(),
             'vessel-tracks': {
               maxTimeGapHours,
             },
@@ -292,12 +293,10 @@ export class VesselLayer extends CompositeLayer<VesselLayerProps & LayerProps> {
           ...this.props,
           id: chunkId,
           data: eventUrl.toString(),
+          fetch: fetchWithGFWAPI,
           type,
           visible,
           highlightEventIds,
-          loadOptions: {
-            ...getFetchLoadOptions(),
-          },
           loaders: [VesselEventsLoader],
           onError: (e: any) => this.onSublayerError(type, e),
         })

@@ -1,7 +1,7 @@
 import type { LayerContext, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import type { EditAction, FeatureCollection } from '@deck.gl-community/editable-layers'
+import type { EditAction, SimpleFeatureCollection } from '@deck.gl-community/editable-layers'
 import {
   CompositeMode,
   EditableGeoJsonLayer,
@@ -52,7 +52,7 @@ const POINTS_STYLES = {
   getEditHandlePointColor: COLOR_HIGHLIGHT_LINE as any,
 }
 
-function getFeaturesWithOverlapping(features: FeatureCollection['features']) {
+function getFeaturesWithOverlapping(features: SimpleFeatureCollection['features']) {
   return features.map((feature: any) => ({
     ...feature,
     properties: {
@@ -63,20 +63,20 @@ function getFeaturesWithOverlapping(features: FeatureCollection['features']) {
   }))
 }
 
-function getDrawDataParsed(data: FeatureCollection) {
+function getDrawDataParsed(data: SimpleFeatureCollection) {
   return {
     ...data,
     features: getFeaturesWithOverlapping(data.features),
   }
 }
 
-const INITIAL_FEATURE_COLLECTION: FeatureCollection = {
+const INITIAL_FEATURE_COLLECTION: SimpleFeatureCollection = {
   type: 'FeatureCollection',
   features: [],
 }
 export type DrawLayerState = {
-  data: FeatureCollection
-  tentativeData?: FeatureCollection
+  data: SimpleFeatureCollection
+  tentativeData?: SimpleFeatureCollection
   mode: DrawLayerMode
   selectedFeatureIndexes?: number[]
   selectedPositionIndexes?: number[]
@@ -91,13 +91,13 @@ export type DrawLayerProps = {
 
 export class DrawLayer extends CompositeLayer<DrawLayerProps> {
   static layerName = 'draw-layer'
-  state!: DrawLayerState
+  declare state: DrawLayerState
   isTranslating = false
   isMoving = false
 
   _getModifyMode = () => {
     // return new CustomModifyMode()
-    return new CompositeMode([new CustomModifyMode(), new TranslateMode()])
+    return new CompositeMode([new CustomModifyMode() as any, new TranslateMode()])
   }
 
   _getDrawingMode = () => {
@@ -117,7 +117,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     }
   }
 
-  setData = (data: FeatureCollection) => {
+  setData = (data: SimpleFeatureCollection) => {
     if (data && this.state) {
       return this._setState({ data })
     }
@@ -297,7 +297,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     }
   }
 
-  onEdit = (editAction: EditAction<FeatureCollection>) => {
+  onEdit = (editAction: EditAction<SimpleFeatureCollection>) => {
     const { updatedData, editType, editContext } = editAction
     const { featureType } = this.props
     switch (editType) {
@@ -404,8 +404,8 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
       new EditableGeoJsonLayer({
         id: 'draw',
         data: tentativeData || data,
-        mode,
-        onEdit: this.onEdit,
+        mode: mode as any,
+        onEdit: this.onEdit as any,
         selectedFeatureIndexes,
         ...POLYGON_STYLES,
         ...(featureType === 'polygons' ? LINE_STYLES : POINTS_STYLES),

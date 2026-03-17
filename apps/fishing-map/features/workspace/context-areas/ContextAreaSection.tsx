@@ -63,7 +63,7 @@ function ContextAreaSection(): React.ReactElement<any> {
   return (
     <Section
       id={DataviewCategory.Context}
-      data-testid="context-areas-section"
+      testId="context-areas-section"
       title={
         <span>
           {t((t) => t.common.context_areas)}

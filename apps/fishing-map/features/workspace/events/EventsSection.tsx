@@ -50,7 +50,7 @@ function EventsLayerSection(): React.ReactElement<any> | null {
   return (
     <Section
       id={DataviewCategory.Events}
-      data-testid="events-section"
+      testId="events-section"
       title={
         <span>
           {t((t) => t.common.events)}

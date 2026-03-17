@@ -18,6 +18,7 @@ import type {
 } from '@globalfishingwatch/deck-loaders'
 import { FourwingsLoader, getFourwingsInterval } from '@globalfishingwatch/deck-loaders'
 
+import { IS_TEST_ENV } from '../../layers.config'
 import {
   FOURWINGS_MAX_ZOOM,
   FOURWINGS_TILE_SIZE,
@@ -55,7 +56,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
   static layerName = 'FourwingsFootprintTileLayer'
   static defaultProps = defaultProps
   initialBinsLoad = false
-  state!: FourwingsFootprintTileLayerState
+  declare state: FourwingsFootprintTileLayerState
 
   initializeState(context: LayerContext) {
     super.initializeState(context)
@@ -163,7 +164,7 @@ export class FourwingsFootprintTileLayer extends CompositeLayer<FourwingsFootpri
     })
 
     const data = await parse(arrayBuffers.filter(Boolean) as ArrayBuffer[], FourwingsLoader, {
-      worker: true,
+      worker: !IS_TEST_ENV,
       fourwings: {
         sublayers: 1,
         cols,

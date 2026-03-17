@@ -83,7 +83,7 @@ const TrackGraph = ({ data, steps }: TimebarChartProps) => {
             steps?.find((step) =>
               trackGraphOrientation === 'down' ? value >= step.value : value <= step.value
             )?.color || steps[steps.length - 1].color
-          const colorResolved = hexToDeckColor(color)
+          const colorResolved = [...hexToDeckColor(color)]
           if (
             track.filters &&
             ((track.filters.minElevationFilter && value < track.filters.minElevationFilter) ||

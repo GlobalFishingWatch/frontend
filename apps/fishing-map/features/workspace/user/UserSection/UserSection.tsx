@@ -113,7 +113,7 @@ export function UserSection(): React.ReactElement<any> {
   return (
     <Section
       id={DataviewCategory.User}
-      data-testid="user-section"
+      testId="user-section"
       title={
         <span>
           {t((t) => t.user.datasets)}
@@ -129,6 +129,7 @@ export function UserSection(): React.ReactElement<any> {
             <div className={styles.relative}>
               <Hint id="userContextLayers" />
               <UserLoggedIconButton
+                testId="upload-user-dataset"
                 icon="upload"
                 type="border"
                 size="medium"

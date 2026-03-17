@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux'
 import { stringify } from 'qs'
@@ -11,7 +11,7 @@ import type {
   IdentityVessel,
 } from '@globalfishingwatch/api-types'
 import { DatasetTypes } from '@globalfishingwatch/api-types'
-import { resolveEndpoint } from '@globalfishingwatch/datasets-client'
+import { getRelatedDatasetsByType, resolveEndpoint } from '@globalfishingwatch/datasets-client'
 import type { UrlDataviewInstance } from '@globalfishingwatch/dataviews-client'
 import type { IconButtonSize } from '@globalfishingwatch/ui-components'
 import { IconButton } from '@globalfishingwatch/ui-components'
@@ -19,7 +19,6 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { fetchDatasetByIdThunk, selectDatasetById } from 'features/datasets/datasets.slice'
-import { getRelatedDatasetsByType } from 'features/datasets/datasets.utils'
 import {
   getVesselDataview,
   getVesselDataviewInstance,
@@ -221,8 +220,14 @@ export function VesselPin({
     onClick,
   })
 
+  const vesselName = useMemo(
+    () => vessel?.selfReportedInfo[0].shipname?.toLowerCase()?.replace(/\s/g, '-') || '',
+    [vessel]
+  )
+
   return (
     <IconButton
+      data-testid={`vessel-pin-button-${vesselName}`}
       icon={vesselInWorkspace ? 'pin-filled' : 'pin'}
       loading={loading}
       disabled={disabled}

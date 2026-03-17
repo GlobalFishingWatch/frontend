@@ -1,10 +1,14 @@
 import { render } from 'test/appTestUtils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { selectTimebarVisualisation } from 'features/app/selectors/app.timebar.selectors'
 import { makeStore } from 'store'
+import { TimebarVisualisations } from 'types'
 
 import Timebar from './Timebar'
 import * as timebarHooks from './timebar.hooks'
+
+vi.mock('./timebar.hooks', { spy: true })
 
 describe('Timebar', () => {
   beforeEach(() => {
@@ -12,20 +16,15 @@ describe('Timebar', () => {
   })
 
   it('should render Timebar component with heatmap visualization by default', async () => {
-    render(<Timebar />)
+    const store = makeStore()
+    await render(<Timebar />, { store })
 
-    const spy = vi.mocked(timebarHooks.useTimebarVisualisationConnect)
-
-    expect(spy).toHaveReturnedWith({
-      dispatchTimebarVisualisation: expect.any(Function),
-      timebarVisualisation: 'heatmap',
-    })
+    expect(selectTimebarVisualisation(store.getState())).toBe(TimebarVisualisations.HeatmapActivity)
   })
 
   it('should call onTimebarChange with new time interval on yearly data button click', async () => {
     const store = makeStore()
 
-    vi.mock('./timebar.hooks', { spy: true })
     const onTimebarChangeSpy = vi.fn()
 
     vi.mocked(timebarHooks.useTimerangeConnect).mockReturnValue({

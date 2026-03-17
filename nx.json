@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "tui": {
-    "enabled": true
+    "enabled": false
   },
   "tasksRunnerOptions": {
     "default": {
@@ -86,9 +86,6 @@
         "tsConfig": "{projectRoot}/tsconfig.lib.json",
         "rootDir": "{projectRoot}/src"
       }
-    },
-    "build-deps": {
-      "dependsOn": ["^build"]
     },
     "prepare-loaders": {
       "cache": true,

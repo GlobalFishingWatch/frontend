@@ -15,10 +15,8 @@ import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
 import { selectBivariateDataviews, selectReadOnly } from 'features/app/selectors/app.selectors'
 import { TURNING_TIDES_DESCRIPTION_PREFIX } from 'features/bigquery/turning-tides.config'
-import {
-  getDatasetTitleByDataview,
-  getSchemaFiltersInDataview,
-} from 'features/datasets/datasets.utils'
+import { getDatasetTitleByDataview } from 'features/datasets/datasets.utils'
+import { getFiltersInDataview } from 'features/dataviews/dataviews.filters'
 import { useMigrateToLatestDataview } from 'features/dataviews/dataviews.hooks'
 import Hint from 'features/help/Hint'
 import { selectHintsDismissed, setHintDismissed } from 'features/help/hints.slice'
@@ -176,7 +174,7 @@ function ActivityLayerPanel({
   const showDeprecatedWarning = isWorkspaceOwner && dataview.deprecated
 
   const showFilters = isDefaultActivityDataview(dataview) || isDefaultDetectionsDataview(dataview)
-  const { filtersAllowed } = getSchemaFiltersInDataview(dataview)
+  const { filtersAllowed } = getFiltersInDataview(dataview)
 
   return (
     <div
@@ -194,6 +192,7 @@ function ActivityLayerPanel({
             active={layerActive}
             className={styles.switch}
             dataview={dataview}
+            testId={`activity-layer-panel-switch-${dataview.id}`}
           />
           <Title
             title={datasetTitle}
@@ -237,7 +236,7 @@ function ActivityLayerPanel({
               >
                 <div className={styles.filterButtonWrapper}>
                   <IconButton
-                    data-test={`activity-layer-panel-btn-filter-${dataview.id}`}
+                    testId={`activity-layer-panel-btn-filter-${dataview.id}`}
                     icon={filterOpen ? 'filter-on' : 'filter-off'}
                     size="small"
                     onClick={onToggleFilterOpen}
@@ -259,7 +258,11 @@ function ActivityLayerPanel({
               showAllDatasets={dataview.dataviewId === SAR_DATAVIEW_SLUG}
             />
             {!readOnly && (
-              <Remove onClick={onRemoveLayerClick} loading={layerActive && !layerLoaded} />
+              <Remove
+                onClick={onRemoveLayerClick}
+                loading={layerActive && !layerLoaded}
+                testId={`activity-layer-panel-remove-${dataview.id}`}
+              />
             )}
             {!readOnly && layerActive && (layerError || showDeprecatedWarning) && (
               <IconButton
