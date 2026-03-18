@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import React, { lazy,Suspense } from 'react'
 import cx from 'classnames'
 
@@ -10,18 +11,17 @@ import icons from './icon.config'
 
 import styles from './Icon.module.css'
 
-const IconComponents = icons.reduce(
-  (acc, icon) => {
-    acc[icon] = lazy(() =>
-      import(
-        /* webpackChunkName: "icon-[request]" */
-        `./icons/${icon}.svg`
-      ).then((m) => ({ default: m.ReactComponent || m.default || m }))
-    )
-    return acc
-  },
-  {} as Record<IconType, any>
-)
+type IconComponent = React.LazyExoticComponent<React.ComponentType<any>>
+
+const IconComponents = icons.reduce<Record<IconType, IconComponent>>((acc, icon) => {
+  acc[icon] = lazy(async () => {
+    const svgModule: any = await import(`./icons/${icon}.svg`)
+    return {
+      default: svgModule.ReactComponent || svgModule.default || svgModule,
+    }
+  })
+  return acc
+}, {} as Record<IconType, IconComponent>)
 
 export interface IconProps {
   className?: string
