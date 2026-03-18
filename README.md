@@ -27,8 +27,8 @@ All of them availables with the `@globalfishingwatch/` prefix:
 | --------------------------------------------------- | -------------------------------------- |
 | [api-portal](apps/api-portal)                       | Api documentation portal               |
 | [data-download-portal](apps/data-download-portal)   | The place to download datasets         |
-| [fishing-map-e2e](apps/fishing-map-e2e)             | Cypress e2e testing for the map        |
 | [fishing-map](apps/fishing-map)                     | Version 3.0 of the fishing map project |
+| [fishing-map-e2e](apps/fishing-map-e2e)             | Playwright e2e testing for the map     |
 | [image-labeler](apps/image-labeler)                 | Labeling tool for satellite images     |
 | [port-labeler](apps/port-labeler)                   | Labeling tool for ports                |
 | [track-labeler](apps/track-labeler)                 | Labeling tool for tracks               |
@@ -91,12 +91,20 @@ nx start [app-name]
 To ensure [git flow](https://guides.github.com/introduction/flow/) process, master branch will be protected to force opening PR to every change desired.
 For now, the only one strong recommendation is to tag every PR to prepare the changelog automatically.
 
-### Building
+### Building locally
 
 To test all packages builds process run, useful to test everything works well before publishing.
 
 ```bash
-nx build [app-name] --parallel
+nx build [app-name]
+```
+
+### Building using Docker
+
+To test all packages builds process run, useful to test everything works well before publishing.
+
+```bash
+docker compose up [app-name] --build
 ```
 
 ### Publishing
