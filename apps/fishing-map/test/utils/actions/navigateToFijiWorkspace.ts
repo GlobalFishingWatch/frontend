@@ -29,9 +29,9 @@ export const navigateToFijiWorkspaceAction = {
           category: 'marine-manager',
         },
         query: {},
-        search: undefined,
+        search: 'longitude=-90&latitude=10&zoom=1',
       },
-      kind: 'push',
+      kind: 'redirect',
     },
   },
 }

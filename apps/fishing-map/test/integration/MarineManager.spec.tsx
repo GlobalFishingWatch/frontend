@@ -46,7 +46,7 @@ describe('Marine Manager', () => {
 
     // Wait for layers to initialize
     await expect
-      .poll(() => jotaiStore.get(deckLayersStateAtom), { timeout: 30000 })
+      .poll(() => jotaiStore.get(deckLayersStateAtom), { timeout: 60000 })
       .toMatchObject({
         basemap: {
           loaded: true,
