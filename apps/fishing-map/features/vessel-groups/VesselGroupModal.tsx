@@ -127,11 +127,9 @@ function VesselGroupModal(): React.ReactElement<any> {
   const [transmissionDateFrom, setTransmissionDateFrom] = useState<string>('')
   const [transmissionDateTo, setTransmissionDateTo] = useState<string>('')
   const vesselGroupVessels = useSelector(selectVesselGroupModalVessels)
-  console.log('VesselGroupModal > vesselGroupVessels', vesselGroupVessels)
   const hasVesselsOverflow = useSelector(selectHasVesselGroupVesselsOverflow)
   const isVesselGroupReportLocation = useSelector(selectIsVesselGroupReportLocation)
   const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
-  console.log('VesselGroupModal > hasVesselGroupsVessels', hasVesselGroupsVessels)
   const vesselGroupsInWorkspace = useSelector(selectWorkspaceVessselGroupsIds)
   const presenceDataview = useSelector(selectPresenceDataview)
   const query = useSelector(selectLocationQuery)
@@ -289,8 +287,6 @@ function VesselGroupModal(): React.ReactElement<any> {
   )
 
   const onSearchVesselsClick = useCallback(async () => {
-    console.log(vesselGroupModalSearchIds, searchIdField)
-    console.log(csvData, selectedCsvColumns)
     if (vesselGroupModalSearchIds?.length && searchIdField) {
       dispatchSearchVesselsGroupsThunk({ ids: vesselGroupModalSearchIds, idField: searchIdField })
     }
@@ -425,7 +421,12 @@ function VesselGroupModal(): React.ReactElement<any> {
   )
 
   const searchingByCsvMissingParams =
-    csvData && csvData.length > 0 && (!selectedCsvColumns || selectedCsvColumns.length === 0)
+    csvData !== null &&
+    csvData.length > 0 &&
+    (!selectedCsvColumns ||
+      selectedCsvColumns.length === 0 ||
+      (selectedCsvColumns.length === 1 && selectedCsvColumns[0].toLowerCase() === 'flag'))
+
   const searchingByIdMissingParams =
     searchIdField === '' || !vesselGroupModalSearchIds?.length || !sourcesSelected?.length
 

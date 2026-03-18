@@ -5,19 +5,16 @@ import cx from 'classnames'
 import { parse as parseCSV } from 'papaparse'
 
 import { useDebounce } from '@globalfishingwatch/react-hooks'
-import type { SelectOption} from '@globalfishingwatch/ui-components';
+import type { SelectOption } from '@globalfishingwatch/ui-components'
 import { Checkbox, Select, TextArea } from '@globalfishingwatch/ui-components'
 
 import { useAppDispatch } from 'features/app/app.hooks'
 import FileDropzone from 'features/datasets/upload/FileDropzone'
 import { CSV_COLUMN_LOOKUP, ID_COLUMNS_OPTIONS } from 'features/vessel-groups/vessel-groups.config'
 import { readBlobAs } from 'utils/files'
+import { listAsSentence } from 'utils/shared'
 
-import {
-  selectHasVesselGroupSearchVessels,
-  selectVesselGroupsModalSearchIds,
-} from './vessel-groups.selectors'
-import type { IdField } from './vessel-groups.slice'
+import { selectVesselGroupsModalSearchIds } from './vessel-groups.selectors'
 import {
   selectVesselGroupModalCsvColumns,
   selectVesselGroupModalCsvData,
@@ -42,8 +39,10 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
   const debouncedSearchText = useDebounce(searchText, 200)
   const searchIdField = useSelector(selectVesselGroupModalSearchIdField)
   const vesselGroupModalSearchIds = useSelector(selectVesselGroupsModalSearchIds)
-  const hasVesselGroupsVessels = useSelector(selectHasVesselGroupSearchVessels)
   const hasGroupVesselsToSearch = vesselGroupModalSearchIds && vesselGroupModalSearchIds.length > 0
+  const showIdsSection = !csvData?.length
+  const showDropzoneSection = !vesselGroupModalSearchIds?.length
+  const showDivider = showIdsSection && showDropzoneSection
 
   useEffect(() => {
     if (debouncedSearchText) {
@@ -92,8 +91,13 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
     if (!csvData?.[0]) return []
     return Object.keys(csvData[0]).filter((column) => {
       if (column.toLowerCase() === 'flag') {
-        // Only allow flag column if all flags are 3 characters long (like ISO3)
-        return csvData.map((row) => row[column]).every((flag) => flag?.length === 3)
+        return csvData.map((row) => row[column]).every((flag) => flag?.length === 3) // ISO3
+      }
+      if (column.toLowerCase() === 'mmsi') {
+        return csvData.map((row) => row[column]).every((mmsi) => mmsi?.length === 9) // MMSI
+      }
+      if (column.toLowerCase() === 'vesselid') {
+        return csvData.map((row) => row[column]).every((vesselid) => vesselid?.length === 37) // GFW Vessel ID
       }
       const isSelectable = CSV_COLUMN_LOOKUP.some(
         (lookup) => lookup.toLowerCase() === column.toLowerCase()
@@ -103,15 +107,14 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
   }, [csvData])
 
   return (
-    <div className={styles.vesselGroupInput}>
-      {!csvData?.length && (
+    <div className={styles.vesselGroupSearchContainer}>
+      {showIdsSection && (
         <div className={styles.ids}>
           <Select
             label={t((t) => t.vesselGroup.idField)}
             options={ID_COLUMNS_OPTIONS}
             selectedOption={ID_COLUMNS_OPTIONS.find((o) => o.id === searchIdField)}
             onSelect={onIdFieldChange}
-            disabled={hasVesselGroupsVessels}
           />
           <TextArea
             className={styles.idsArea}
@@ -128,10 +131,11 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
           />
         </div>
       )}
-      {!vesselGroupModalSearchIds?.length && (
+      {showDivider && <div className={styles.divider} />}
+      {showDropzoneSection && (
         <div className={styles.dropzoneContainer}>
-          <label className={styles.dropzoneLabel}>
-            {t((t) => t.dataset.file)}{' '}
+          <label>
+            {t((t) => t.vesselGroup.csvFile)}{' '}
             <a
               href="https://globalfishingwatch.org/user-guide/#Vessel%20groups"
               target="_blank"
@@ -149,7 +153,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
               csvName
                 ? csvName
                 : t((t) => t.vesselGroup.csvPlaceholder, {
-                    field: CSV_COLUMN_LOOKUP.join(', '),
+                    field: listAsSentence(CSV_COLUMN_LOOKUP, 'or'),
                   })
             }
           />
@@ -182,7 +186,7 @@ function VesselGroupSearch({ onError }: { onError: (string: any) => void }) {
                 </tr>
               </thead>
               <tbody>
-                {csvData.slice(0, 10).map((row, rowIndex) => {
+                {csvData.slice(0, 100).map((row, rowIndex) => {
                   return (
                     <tr key={rowIndex} className={rowIndex % 2 !== 0 ? styles.odd : ''}>
                       {Object.keys(row).map((column, cellIndex) => {

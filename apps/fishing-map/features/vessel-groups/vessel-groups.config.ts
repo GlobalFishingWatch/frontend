@@ -4,7 +4,7 @@ import type { IdField } from 'features/vessel-groups/vessel-groups.slice'
 
 // Look for these ID columns by order of preference
 export const ID_COLUMN_LOOKUP: IdField[] = ['mmsi', 'imo', 'vesselId']
-export const CSV_COLUMN_LOOKUP: string[] = [...ID_COLUMN_LOOKUP, 'flag', 'name', 'shipname']
+export const CSV_COLUMN_LOOKUP: string[] = [...ID_COLUMN_LOOKUP, 'flag']
 
 export const ID_COLUMNS_OPTIONS: SelectOption[] = ID_COLUMN_LOOKUP.map((key) => ({
   id: key,

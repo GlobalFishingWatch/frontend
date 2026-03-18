@@ -42,18 +42,24 @@
   margin-right: 2rem;
 }
 
-.vesselGroupInput {
+.vesselGroupSearchContainer {
   display: flex;
   flex: 1;
   gap: var(--space-M);
+  height: calc(100% - 10rem);
 }
 
 .ids {
   display: flex;
   flex-direction: column;
   flex: 1;
-  margin-right: 2rem;
   gap: var(--space-S);
+}
+
+.divider {
+  width: 0;
+  height: 100%;
+  border-right: var(--border-thick);
 }
 
 .dropzoneContainer {
@@ -61,7 +67,7 @@
 }
 
 .dropzone {
-  height: calc(100% - 2.5rem);
+  height: calc(100% - 2.2rem);
 }
 
 .dropzoneContainer .dropzone.filled {
@@ -122,8 +128,10 @@
 .vesselsTableContainer {
   flex: 1;
   max-width: 100%;
-  overflow: auto scroll;
+  max-height: 100%;
+  overflow: auto;
   border: var(--border);
+  border-radius: var(--border-radius);
 }
 
 .vesselsTable {
@@ -209,10 +217,6 @@
   display: flex;
   align-items: center;
   gap: var(--space-S);
-}
-
-.dropzoneLabel {
-  margin-bottom: var(--space-XS);
 }
 
 .dropzoneLink {

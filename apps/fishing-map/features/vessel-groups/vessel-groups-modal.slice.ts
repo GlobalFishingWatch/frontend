@@ -165,8 +165,7 @@ const searchVesselsInVesselGroup = async ({
         .flatMap((row) => {
           const rowClauses = csvColumns
             .flatMap((column) => {
-              const value = row[column].trim().replace(/[^a-zA-Z0-9\s.]/g, '')
-              console.log(column, value)
+              const value = row[column]?.trim().replace(/[\\%_]/g, '') || ''
               if (!value) {
                 return []
               }
@@ -174,14 +173,8 @@ const searchVesselsInVesselGroup = async ({
                 return `id = "${value}"`
               } else if (column.toLowerCase() === 'mmsi') {
                 return `ssvid = "${value}"`
-              } else if (column.toLowerCase() === 'imo') {
-                return `imo = "${value}"`
-              } else if (column.toLowerCase() === 'flag') {
-                return `flag = "${value}"`
-              } else if (column.toLowerCase() === 'name' || column.toLowerCase() === 'shipname') {
-                return `shipname LIKE  "%${value.toUpperCase()}%"`
               }
-              return `${column} = "${value}"`
+              return `${column.toLowerCase()} = "${value}"`
             })
             .join(' AND ')
           return rowClauses ? `(${rowClauses})` : []
@@ -401,7 +394,6 @@ export const vesselGroupModalSlice = createSlice({
     },
     setVesselGroupModalCsvColumns: (state, action: PayloadAction<string[]>) => {
       state.search.csvColumns = action.payload
-      console.log('setVesselGroupModalCsvColumns', state.search.csvColumns)
     },
     setVesselGroupModalCsvData: (state, action: PayloadAction<any[]>) => {
       state.search.csvData = action.payload
