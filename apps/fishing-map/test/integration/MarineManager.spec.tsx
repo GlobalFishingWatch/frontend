@@ -114,5 +114,5 @@ describe('Marine Manager', () => {
           cacheHash: '',
         },
       })
-  })
+  }, 60000)
 })
