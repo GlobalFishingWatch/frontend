@@ -239,7 +239,9 @@ const VesselIdentity = () => {
                       value =
                         (vesselIdentity[key] as any) === API_LOGIN_REQUIRED
                           ? API_LOGIN_REQUIRED
-                          : vesselIdentity[key]?.value?.toString()
+                          : vesselIdentity[key]?.value
+                            ? vesselIdentity[key]?.value?.toString()
+                            : (vesselIdentity[key] as unknown as string)
                     }
                     const labelTranslation = t((t: any) => t.vessel[label], { defaultValue: label })
                     return (
