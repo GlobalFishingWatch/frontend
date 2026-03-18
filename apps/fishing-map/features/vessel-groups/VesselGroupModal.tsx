@@ -23,6 +23,7 @@ import { selectVesselGroupCompatibleDatasets } from 'features/datasets/datasets.
 import { getDatasetLabel } from 'features/datasets/datasets.utils'
 import { selectPresenceDataview } from 'features/dataviews/selectors/dataviews.static.selectors'
 import UserGuideLink from 'features/help/UserGuideLink'
+import { formatI18nDate } from 'features/i18n/i18nDate'
 import { getPlaceholderBySelections } from 'features/i18n/utils'
 import { getVesselGroupDataviewInstance } from 'features/reports/report-vessel-group/vessel-group-report.dataviews'
 import {
@@ -53,6 +54,7 @@ import { useLocationConnect } from 'routes/routes.hook'
 import { selectIsVesselGroupReportLocation, selectLocationQuery } from 'routes/routes.selectors'
 import { getEventLabel } from 'utils/analytics'
 import { AsyncReducerStatus } from 'utils/async-slice'
+import { listAsSentence } from 'utils/shared'
 
 import type { IdField, UpdateVesselGroupThunkParams } from './vessel-groups.slice'
 import {
@@ -421,11 +423,11 @@ function VesselGroupModal(): React.ReactElement<any> {
   )
 
   const searchingByCsvMissingParams =
-    csvData !== null &&
-    csvData.length > 0 &&
-    (!selectedCsvColumns ||
-      selectedCsvColumns.length === 0 ||
-      (selectedCsvColumns.length === 1 && selectedCsvColumns[0].toLowerCase() === 'flag'))
+    csvData === null ||
+    csvData.length === 0 ||
+    !selectedCsvColumns ||
+    selectedCsvColumns.length === 0 ||
+    (selectedCsvColumns.length === 1 && selectedCsvColumns[0].toLowerCase() === 'flag')
 
   const searchingByIdMissingParams =
     searchIdField === '' || !vesselGroupModalSearchIds?.length || !sourcesSelected?.length
@@ -454,9 +456,11 @@ function VesselGroupModal(): React.ReactElement<any> {
         ? t((t) => t.vesselGroup.missingParam, {
             param: t((t) => t.vesselGroup.idField).toLowerCase(),
           })
-        : searchVesselStatus === AsyncReducerStatus.Loading
-          ? t((t) => t.common.loading)
-          : t((t) => t.vesselGroup.searchVesselsRequired)
+        : selectedCsvColumns?.length === 0
+          ? t((t) => t.vesselGroup.columnSelection)
+          : searchVesselStatus === AsyncReducerStatus.Loading
+            ? t((t) => t.common.loading)
+            : t((t) => t.vesselGroup.searchVesselsRequired)
   }
 
   const onSearchClick = useCallback(() => {
@@ -547,22 +551,33 @@ function VesselGroupModal(): React.ReactElement<any> {
         {fullModalLoading ? (
           <Spinner />
         ) : hasVesselGroupsVessels ? (
-          <div className={styles.vesselsTableContainer}>
-            <VesselGroupVessels searchIdField={searchIdField || 'imo'} />
-          </div>
+          <Fragment>
+            <label>
+              {t((t) => t.vesselGroup.searchResultsTable, {
+                field: selectedCsvColumns ? listAsSentence(selectedCsvColumns) : searchIdField,
+                timeRange:
+                  transmissionDateFrom && transmissionDateTo
+                    ? ` ${t((t) => t.common.active)} ${t((t) => t.common.dateRange, {
+                        start: formatI18nDate(transmissionDateTo),
+                        end: formatI18nDate(transmissionDateFrom),
+                      })}`
+                    : transmissionDateFrom
+                      ? ` ${t((t) => t.common.active_before)} ${formatI18nDate(transmissionDateFrom)}`
+                      : transmissionDateTo
+                        ? ` ${t((t) => t.common.active_after)} ${formatI18nDate(transmissionDateTo)}`
+                        : '',
+                number: getVesselGroupVesselsCount({ vessels: vesselGroupVessels } as VesselGroup),
+              })}
+            </label>
+            <div className={styles.vesselsTableContainer}>
+              <VesselGroupVessels searchIdField={searchIdField || 'imo'} />
+            </div>
+          </Fragment>
         ) : (
           <VesselGroupSearch onError={setError} />
         )}
       </div>
       <div className={styles.modalFooter}>
-        {vesselGroupVessels && vesselGroupVessels?.length > 0 && (
-          <label>
-            {t((t) => t.common.vessel, {
-              count: vesselGroupVessels.length,
-            })}
-            : {getVesselGroupVesselsCount({ vessels: vesselGroupVessels } as VesselGroup)}
-          </label>
-        )}
         {!editingVesselGroup && (
           <SwitchRow
             className={styles.row}

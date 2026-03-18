@@ -177,7 +177,7 @@ const searchVesselsInVesselGroup = async ({
               return `${column.toLowerCase()} = "${value}"`
             })
             .join(' AND ')
-          return rowClauses ? `(${rowClauses})` : []
+          return rowClauses || []
         })
         .join(' OR ')})`,
     ]

@@ -1272,6 +1272,7 @@
     "searchLimit": "Search is limited up to {{limit}} vessels",
     "searchLink": "Search to add more vessels to this group",
     "searchNotFound": "No vessels found",
+    "searchResultsTable": "Vessels matched by {{field}}{{timeRange}}: {{number}}",
     "searchVesselsRequired": "Search for vessels to create a vessel group",
     "summary": "This group contains <strong>{{vessels}} vessels</strong> from <strong>{{flags}} flags</strong> active from <strong>{{start}}</strong> to <strong>{{end}}</strong>",
     "tooManyVessels_one": "Maximum number of vessels is {{count}}",
