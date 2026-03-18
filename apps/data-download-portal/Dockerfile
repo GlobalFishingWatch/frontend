@@ -28,7 +28,7 @@ RUN yarn install --immutable --inline-builds && \
 
 # Using stable version that uses alpine 3.14 to fix build errors
 # https://github.com/alpinelinux/docker-alpine/issues/182
-FROM nginx:stable-alpine as production
+FROM nginx:stable-alpine AS production
 RUN apk update && apk upgrade libxml2
 COPY --from=builder /app/dist/apps/data-download-portal/nginx.conf /etc/nginx/nginx.template
 # COPY --from=htpasswd /home/.htpasswd /home/.htpasswd
