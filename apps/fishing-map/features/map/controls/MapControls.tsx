@@ -163,6 +163,7 @@ const MapControls = ({
           )}
           {(isAnyVesselLocation || isAnyReportLocation) && <ReferenceLayersControl />}
           <IconButton
+            testId="map-loading-spinner"
             type="map-tool"
             tooltip={t((t) => t.map.loading)}
             loading={mapLoading}
