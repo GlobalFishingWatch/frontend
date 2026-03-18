@@ -6,6 +6,7 @@ import { IconButton } from '@globalfishingwatch/ui-components'
 
 import { TrackCategory, trackEvent } from 'features/app/analytics.hooks'
 import { useAppDispatch } from 'features/app/app.hooks'
+import { useUserGuidePanel } from 'features/content/content.hooks'
 
 import hintsConfig from './hints.content'
 import { resetHints, selectHintsDismissed } from './hints.slice'
@@ -20,6 +21,7 @@ const HELP_COLOR =
 function HelpHub() {
   const { t, i18n } = useTranslation()
   const dispatch = useAppDispatch()
+  const { open: openUserGuide } = useUserGuidePanel()
   const hintsConfigArray = Object.keys(hintsConfig || {})
   const hintsDismissed = useSelector(selectHintsDismissed)
   const hintsDismissedArray = Object.keys(hintsDismissed || {})
@@ -33,13 +35,6 @@ function HelpHub() {
       label: percentageOfHintsSeen.toString(),
     })
     dispatch(resetHints())
-  }
-
-  const getUserGuideLink = () => {
-    if (i18n.language === 'es') return 'https://globalfishingwatch.org/es/guia-de-usuario/'
-    if (i18n.language === 'fr') return 'https://globalfishingwatch.org/user-guide-french/'
-    if (i18n.language === 'pt') return 'https://globalfishingwatch.org/user-guide-portuguese/'
-    return 'https://globalfishingwatch.org/user-guide/'
   }
 
   const getFAQsLink = () => {
@@ -85,9 +80,19 @@ function HelpHub() {
           )}
         </li>
         <li>
-          <a href={getUserGuideLink()} target="_blank" rel="noreferrer" className={cx(styles.link)}>
+          <button
+            type="button"
+            className={cx(styles.link)}
+            onClick={() => {
+              trackEvent({
+                category: TrackCategory.HelpHints,
+                action: 'Open user guide modal',
+              })
+              openUserGuide()
+            }}
+          >
             {t((t) => t.common.userGuide)}
-          </a>
+          </button>
         </li>
         <li>
           <a
