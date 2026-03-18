@@ -1,7 +1,7 @@
 import type { LayerContext, PickingInfo } from '@deck.gl/core'
 import { CompositeLayer } from '@deck.gl/core'
 import { PathStyleExtension } from '@deck.gl/extensions'
-import type { EditAction, SimpleFeatureCollection } from '@deck.gl-community/editable-layers'
+import type { EditAction, FeatureCollection } from '@deck.gl-community/editable-layers'
 import {
   CompositeMode,
   EditableGeoJsonLayer,
@@ -52,7 +52,7 @@ const POINTS_STYLES = {
   getEditHandlePointColor: COLOR_HIGHLIGHT_LINE as any,
 }
 
-function getFeaturesWithOverlapping(features: SimpleFeatureCollection['features']) {
+function getFeaturesWithOverlapping(features: FeatureCollection['features']) {
   return features.map((feature: any) => ({
     ...feature,
     properties: {
@@ -63,20 +63,20 @@ function getFeaturesWithOverlapping(features: SimpleFeatureCollection['features'
   }))
 }
 
-function getDrawDataParsed(data: SimpleFeatureCollection) {
+function getDrawDataParsed(data: FeatureCollection) {
   return {
     ...data,
     features: getFeaturesWithOverlapping(data.features),
   }
 }
 
-const INITIAL_FEATURE_COLLECTION: SimpleFeatureCollection = {
+const INITIAL_FEATURE_COLLECTION: FeatureCollection = {
   type: 'FeatureCollection',
   features: [],
 }
 export type DrawLayerState = {
-  data: SimpleFeatureCollection
-  tentativeData?: SimpleFeatureCollection
+  data: FeatureCollection
+  tentativeData?: FeatureCollection
   mode: DrawLayerMode
   selectedFeatureIndexes?: number[]
   selectedPositionIndexes?: number[]
@@ -117,7 +117,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     }
   }
 
-  setData = (data: SimpleFeatureCollection) => {
+  setData = (data: FeatureCollection) => {
     if (data && this.state) {
       return this._setState({ data })
     }
@@ -297,7 +297,7 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
     }
   }
 
-  onEdit = (editAction: EditAction<SimpleFeatureCollection>) => {
+  onEdit = (editAction: EditAction<FeatureCollection>) => {
     const { updatedData, editType, editContext } = editAction
     const { featureType } = this.props
     switch (editType) {
@@ -404,8 +404,8 @@ export class DrawLayer extends CompositeLayer<DrawLayerProps> {
       new EditableGeoJsonLayer({
         id: 'draw',
         data: tentativeData || data,
-        mode: mode as any,
-        onEdit: this.onEdit as any,
+        mode: mode,
+        onEdit: this.onEdit,
         selectedFeatureIndexes,
         ...POLYGON_STYLES,
         ...(featureType === 'polygons' ? LINE_STYLES : POINTS_STYLES),

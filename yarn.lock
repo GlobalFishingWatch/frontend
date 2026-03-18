@@ -2956,7 +2956,22 @@ __metadata:
     "@testing-library/react": "npm:16.3.2"
     "@testing-library/user-event": "npm:14.6.1"
     "@tmcw/togeojson": "npm:7.1.2"
+    "@turf/bbox": "npm:7.3.4"
+    "@turf/boolean-overlap": "npm:7.3.4"
+    "@turf/boolean-point-in-polygon": "npm:7.3.4"
+    "@turf/buffer": "npm:^7.3.4"
+    "@turf/center": "npm:7.3.4"
+    "@turf/difference": "npm:^7.3.4"
+    "@turf/great-circle": "npm:7.3.4"
+    "@turf/helpers": "npm:7.3.4"
+    "@turf/kinks": "npm:7.3.4"
+    "@turf/length": "npm:7.3.4"
+    "@turf/line-to-polygon": "npm:7.3.4"
+    "@turf/nearest-point": "npm:7.3.4"
+    "@turf/simplify": "npm:7.3.4"
+    "@turf/truncate": "npm:7.3.4"
     "@turf/turf": "npm:7.3.4"
+    "@turf/union": "npm:7.3.4"
     "@types/circular-dependency-plugin": "npm:5.0.8"
     "@types/d3": "npm:7.4.3"
     "@types/d3-array": "npm:3.2.2"
@@ -13323,7 +13338,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/buffer@npm:7.3.4":
+"@turf/buffer@npm:7.3.4, @turf/buffer@npm:^7.3.4":
   version: 7.3.4
   resolution: "@turf/buffer@npm:7.3.4"
   dependencies:
@@ -13627,7 +13642,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@turf/difference@npm:7.3.4":
+"@turf/difference@npm:7.3.4, @turf/difference@npm:^7.3.4":
   version: 7.3.4
   resolution: "@turf/difference@npm:7.3.4"
   dependencies:
