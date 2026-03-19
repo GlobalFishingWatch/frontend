@@ -1,10 +1,10 @@
 import React from 'react'
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/defaultState'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
 import { addVesselToWorkspaceAction } from 'test/utils/actions/addVesselToWorkspace'
 import { GFWAPITestUtils } from 'test/utils/network/gfw-api-test'
+import { defaultState } from 'test/utils/store/redux-store-test'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
 

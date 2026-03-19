@@ -1,6 +1,4 @@
-import { TEST_END_DATE } from './test.config'
-
-const DEFAULT_STATE = {
+export const REDUX_STORE_DEFAULT_STATE = {
   dataviewStatsApi: {
     queries: {},
     mutations: {},
@@ -190,7 +188,6 @@ const DEFAULT_STATE = {
       'public-vms-bra-tracks:v4.0',
       'public-vms-per-tracks:v4.0',
       'public-vms-cri-tracks:v4.0',
-      'public-hawaii-1771993699463',
     ],
     entities: {
       'public-vms-png-fishing-effort:v4.0': {
@@ -6096,39 +6093,6 @@ const DEFAULT_STATE = {
         createdAt: '2026-02-24T11:06:06.438Z',
         documentation: null,
       },
-      'public-hawaii-1771993699463': {
-        alias: null,
-        id: 'public-hawaii-1771993699463',
-        name: 'Hawaii',
-        type: 'user-context-layer:v1',
-        description: 'Hawaii',
-        startDate: null,
-        endDate: null,
-        unit: 'NA',
-        status: 'done',
-        category: 'context',
-        subcategory: 'user',
-        source: 'drawn_on_gfw_map',
-        ownerId: 389,
-        ownerType: 'user',
-        configuration: {
-          apiSupportedVersions: [],
-          frontend: {
-            translate: false,
-            geometryType: 'polygons',
-          },
-          userContextLayerV1: {
-            filePath: 'dataset-upload-tmp/d3477389-d453-402b-b048-274bc0247b87',
-            format: 'GEOJSON',
-            idProperty: '',
-            valuePropertyId: 'draw_id',
-          },
-        },
-        relatedDatasets: [],
-        filters: null,
-        createdAt: '2026-02-25T04:28:20.143Z',
-        documentation: null,
-      },
     },
     status: 'finished',
     error: {},
@@ -9993,18 +9957,3 @@ const DEFAULT_STATE = {
     currentRequestIds: [],
   },
 }
-
-function getDefaultState() {
-  return {
-    ...DEFAULT_STATE,
-    workspace: {
-      ...DEFAULT_STATE.workspace,
-      data: {
-        ...DEFAULT_STATE.workspace.data,
-        endAt: TEST_END_DATE,
-      },
-    },
-  }
-}
-
-export const defaultState = getDefaultState()

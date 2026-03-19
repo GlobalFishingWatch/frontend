@@ -1,8 +1,12 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/defaultState'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
 import { navigateToPolygonEditorAction } from 'test/utils/actions/navigateToPolygonEditor'
+import { getDefaultStateWithDatasets } from 'test/utils/store/redux-store-test'
+import {
+  USER_POLYGON_DATASET,
+  USER_POLYGON_DATASET_ID,
+} from 'test/utils/store/redux-store-test.data'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
@@ -12,6 +16,8 @@ import App from 'features/app/App'
 import { mapInstanceAtom } from 'features/map/map.atoms'
 import { MAP_VIEW_ID } from 'features/map/map-viewport.hooks'
 import { makeStore } from 'store'
+
+const defaultState = getDefaultStateWithDatasets([USER_POLYGON_DATASET])
 
 describe('Polygon', () => {
   it('should be able to navigate to the polygon editor', async () => {
@@ -32,7 +38,7 @@ describe('Polygon', () => {
 
     await userEvent.hover(getByTestId('context-layer-user-polygons-1771416000000-1771416000000'))
     await new Promise((resolve) => setTimeout(resolve, 300))
-    await userEvent.click(getByTestId('user-layer-edit-public-hawaii-1771993699463'))
+    await userEvent.click(getByTestId(`user-layer-edit-${USER_POLYGON_DATASET_ID}`))
 
     const navigateAction = testingMiddleware.getLastActionByType('HOME')
 
@@ -108,7 +114,7 @@ describe('Polygon', () => {
     const [x, y] = viewport?.project([-159.86, 20.82]) || [0, 0]
 
     await expect
-      .element(getByTestId('user-layer-status-public-hawaii-1771993699463'), { timeout: 10000 })
+      .element(getByTestId(`user-layer-status-${USER_POLYGON_DATASET_ID}`), { timeout: 10000 })
       .toBeEmptyDOMElement()
 
     // Wait for the layer to draw
