@@ -34,7 +34,8 @@ resource "google_cloudbuild_trigger" "dependencies-base-image-trigger" {
     "yarn.lock",
     ".yarnrc.yml",
     ".yarn/releases/**",
-    "Dockerfile"
+    "Dockerfile",
+    "cloudbuild/affected-nx.package.json"
   ]
 
   service_account = "projects/gfw-int-infrastructure/serviceAccounts/cloudbuild@gfw-int-infrastructure.iam.gserviceaccount.com"
@@ -62,6 +63,28 @@ resource "google_cloudbuild_trigger" "dependencies-base-image-trigger" {
       ]
     }
 
+    step {
+      id   = "Build Affected Nx Image"
+      name = "gcr.io/cloud-builders/docker"
+      args = [
+        "build",
+        "-t",
+        "$_AFFECTED_NX_IMAGE_NAME:$_TAG_NAME",
+        "--target",
+        "affected-nx",
+        "."
+      ]
+    }
+
+    step {
+      id   = "Push Affected Nx Image to Registry"
+      name = "gcr.io/cloud-builders/docker"
+      args = [
+        "push",
+        "$_AFFECTED_NX_IMAGE_NAME:$_TAG_NAME"
+      ]
+    }
+
     options {
       logging               = "CLOUD_LOGGING_ONLY"
       machine_type          = "E2_HIGHCPU_8"
@@ -69,8 +92,9 @@ resource "google_cloudbuild_trigger" "dependencies-base-image-trigger" {
     }
 
     substitutions = {
-      _IMAGE_NAME = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies"
-      _TAG_NAME   = "latest"
+      _IMAGE_NAME             = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/dependencies"
+      _AFFECTED_NX_IMAGE_NAME = "us-central1-docker.pkg.dev/gfw-int-infrastructure/frontend/affected-nx"
+      _TAG_NAME               = "latest"
     }
 
     timeout = "1800s"
