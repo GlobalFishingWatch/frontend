@@ -1,14 +1,3 @@
-// TODO: remove this temporary workaround once the router refactor is complete
-const redirectOrPushMatcher = {
-  asymmetricMatch: (value: unknown) => value === 'redirect' || value === 'push',
-  toString: () => 'redirect-or-push',
-}
-
-const stringOrUndefinedMatcher = {
-  asymmetricMatch: (value: unknown) => value === undefined || typeof value === 'string',
-  toString: () => 'string-or-undefined',
-}
-
 export const navigateToFijiWorkspaceAction = {
   type: 'WORKSPACE',
   payload: {
@@ -40,9 +29,9 @@ export const navigateToFijiWorkspaceAction = {
           category: 'marine-manager',
         },
         query: {},
-        search: stringOrUndefinedMatcher,
+        search: 'longitude=-90&latitude=10&zoom=1',
       },
-      kind: redirectOrPushMatcher,
+      kind: 'redirect',
     },
   },
 }
