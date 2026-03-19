@@ -1017,7 +1017,7 @@
     "gearType_short": "gear",
     "geartypes": "Gear types",
     "gearTypes": {
-      "": "",
+      "": "Unknown",
       "bunker": "Bunker",
       "bunker_or_tanker": "Bunker or Tanker",
       "cargo": "Cargo or reefer",
@@ -1079,6 +1079,7 @@
     "goToImage": "Go to image {{number}}",
     "grossTonnage": "Gross Tonnage",
     "grossTonnageRange": "Gross tonnage range",
+    "horsePower": "Horse power",
     "identityDatesOutOfRange": "The dates of this identity don’t overlap with your current time range",
     "imo": "IMO",
     "infoLogin": "Register and login to see more details (free, 2 minutes)",
@@ -1209,7 +1210,7 @@
       "send": "Send correction",
       "title": "Vessel Info Correction"
     },
-    "vesselRegistrationCode": "",
+    "vesselRegistrationCode": "Vessel registration code",
     "vesselType": "Vessel type",
     "vesselTypes": {
       "": "Unknown",
