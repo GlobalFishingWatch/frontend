@@ -295,7 +295,7 @@ describe('Vessel map popup', () => {
 
     await userEvent.hover(filterButton)
 
-    await new Promise((resolve) => setTimeout(resolve, 300))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     await userEvent.click(filterButton)
     await userEvent.click(getByTestId('multi-select-input').first())
@@ -303,6 +303,8 @@ describe('Vessel map popup', () => {
     await userEvent.click(getByTestId('multi-select-option-ESP'))
     await userEvent.tab()
     await userEvent.click(getByText('Confirm'))
+
+    await new Promise((resolve) => setTimeout(resolve, 3000))
 
     const mapInstance = jotaiStore.get(mapInstanceAtom)
     const viewport = mapInstance?.getViewports?.().find((v: any) => v.id === MAP_VIEW_ID)

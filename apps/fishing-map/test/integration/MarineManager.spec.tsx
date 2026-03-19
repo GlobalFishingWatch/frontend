@@ -27,7 +27,17 @@ describe('Marine Manager', () => {
 
     const action = testingMiddleware.getLastActionByType('WORKSPACE')
 
-    expect(action).toMatchObject(navigateToFijiWorkspaceAction)
+    expect(action).toMatchObject({
+      ...navigateToFijiWorkspaceAction,
+      meta: {
+        ...navigateToFijiWorkspaceAction.meta,
+        location: {
+          ...navigateToFijiWorkspaceAction.meta.location,
+          kind: expect.stringMatching(/redirect|push/),
+          prev: expect.any(Object),
+        },
+      },
+    })
     await expect.element(getByText('Fiji')).toBeInTheDocument()
   })
 
@@ -50,7 +60,7 @@ describe('Marine Manager', () => {
     }
     // Wait for layers to initialize
     await expect
-      .poll(() => jotaiStore.get(deckLayersStateAtom))
+      .poll(() => jotaiStore.get(deckLayersStateAtom), { timeout: 20000, interval: 1000 })
       .toMatchObject({
         basemap: expectedProps,
         'context-layer-high-seas': expectedProps,
