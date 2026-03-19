@@ -40,7 +40,7 @@ test/integration/
 import React from 'react'
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/defaultState'
+import { defaultState } from 'test/utils/store/redux-store-test'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'
@@ -786,7 +786,7 @@ Located in [defaultState.ts](../defaultState.ts)
 Provides a consistent starting state for all tests.
 
 ```typescript
-import { defaultState } from 'test/defaultState'
+import { defaultState } from 'test/utils/store/redux-store-test'
 
 const store = makeStore(defaultState, [], true)
 ```
@@ -1051,7 +1051,7 @@ await userEvent.dragAndDrop(source, target, { steps: 1 })
 ```typescript
 import React from 'react'
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/defaultState'
+import { defaultState } from 'test/utils/store/redux-store-test'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { userEvent } from 'vitest/browser'

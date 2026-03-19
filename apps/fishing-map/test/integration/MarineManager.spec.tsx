@@ -1,11 +1,11 @@
 import { createStore as createJotaiStore } from 'jotai'
 import { render } from 'test/appTestUtils'
-import { defaultState } from 'test/defaultState'
 import { createTestingMiddleware } from 'test/testingStoreMiddeware'
 import {
   navigateToFijiWorkspaceAction,
   navigateToFijiWorkspaceWithAllLayersAction,
 } from 'test/utils/actions/navigateToFijiWorkspace'
+import { defaultState } from 'test/utils/store/redux-store-test'
 import { describe, expect, it } from 'vitest'
 import { userEvent } from 'vitest/browser'
 
